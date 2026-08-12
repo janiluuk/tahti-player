@@ -76,7 +76,10 @@ export const useAuthStore = create<AuthState>()(
           set({ user: null, loading: false, hydrated: true });
           await afterUserChange(null);
         } catch {
-          set({ loading: false, hydrated: true });
+          // Network / unexpected errors: do not keep a stale persisted user
+          // as "logged in" when the live session cookie is missing.
+          set({ user: null, loading: false, hydrated: true });
+          await afterUserChange(null);
         }
       },
 

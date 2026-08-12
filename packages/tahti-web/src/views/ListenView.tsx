@@ -2,10 +2,11 @@ import { Link } from '@tanstack/react-router';
 import { HeartIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Button, Card, CardGrid, FilterChips, Input } from '@nuclearplayer/ui';
+import { Box, Button, Card, CardGrid, FilterChips, Input } from '@nuclearplayer/ui';
 
-import { fetchChannel, fetchDirectory, type FetchMeta } from '../api/client';
-import type { ChannelDirectoryItem } from '../api/types';
+import { fetchChannel, fetchDirectory, fetchRadio, type FetchMeta } from '../api/client';
+import type { ChannelDirectoryItem, RadioStation } from '../api/types';
+import { TAHTI_RADIO_SLUG } from '../api/types';
 import { PageFrame, PageHeader } from '../components/PageHeader';
 import { PageEmpty, PageLoading } from '../components/PageStates';
 import { useAuthStore } from '../stores/authStore';
@@ -14,6 +15,7 @@ import { usePlayerStore } from '../stores/playerStore';
 
 export function ListenView() {
   const [items, setItems] = useState<ChannelDirectoryItem[]>([]);
+  const [radio, setRadio] = useState<RadioStation | null>(null);
   const [meta, setMeta] = useState<FetchMeta | null>(null);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
@@ -27,18 +29,28 @@ export function ListenView() {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    void fetchDirectory().then((res) => {
-      if (cancelled) {
-        return;
-      }
-      setItems(res.data.items);
-      setMeta(res.meta);
-      setLoading(false);
-    });
+    void Promise.all([fetchDirectory(), fetchRadio()]).then(
+      ([dir, radioRes]) => {
+        if (cancelled) {
+          return;
+        }
+        setItems(dir.data.items);
+        setMeta(dir.meta);
+        setRadio(radioRes.data.hlsUrl ? radioRes.data : null);
+        setLoading(false);
+      },
+    );
     return () => {
       cancelled = true;
     };
   }, []);
+
+  const playRadio = async () => {
+    const { playable } = await fetchRadio();
+    if (playable) {
+      play(playable);
+    }
+  };
 
   const genres = useMemo(() => {
     const counts = new Map<string, number>();
@@ -132,6 +144,42 @@ export function ListenView() {
       <p className="text-foreground-secondary text-xs">
         Showing {filtered.length} of {items.length} channels
       </p>
+
+      {radio && (
+        <Box variant="secondary" className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
+            <div className="text-foreground-secondary text-xs uppercase tracking-wide">
+              Always on
+            </div>
+            <Link
+              to="/radio"
+              className="text-foreground text-lg font-bold hover:underline"
+            >
+              Tahti Radio
+            </Link>
+            <p className="text-foreground-secondary truncate text-sm">
+              {radio.nowPlaying
+                ? `${radio.nowPlaying.title} — ${radio.nowPlaying.artistName}`
+                : '24/7 community radio'}
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" onClick={() => void playRadio()}>
+              Play Radio
+            </Button>
+            <Link to="/radio">
+              <Button size="sm" variant="secondary">
+                Open
+              </Button>
+            </Link>
+            <Link to="/channel/$slug" params={{ slug: TAHTI_RADIO_SLUG }}>
+              <Button size="sm" variant="text">
+                Channel
+              </Button>
+            </Link>
+          </div>
+        </Box>
+      )}
 
       {loading ? (
         <PageLoading label="Loading channels…" />

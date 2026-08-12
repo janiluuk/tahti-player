@@ -40,16 +40,47 @@ export type PublicChannel = {
   nowPlaying: ChannelNowPlaying | null;
 };
 
+/** Member meta-stream from GET /api/v1/radio — guest relay only, not the 24/7 feed. */
 export type RadioNowPlaying = {
   live: boolean;
   channel: null | {
     slug: string;
+    artistName?: string;
     displayName?: string;
     hlsUrl?: string | null;
     title?: string | null;
     artworkUrl?: string | null;
   };
 };
+
+export type RadioRecentlyPlayedItem = {
+  id: string;
+  title: string;
+  artistName: string;
+  artistUsername: string | null;
+  artworkUrl: string | null;
+  playedAt: string;
+};
+
+/**
+ * Listen surface for Tahti Radio — playable stream is always the
+ * `tahti-radio` channel HLS (Liquidsoap rotation or booked live slot).
+ */
+export type RadioStation = {
+  slug: string;
+  state: string;
+  hlsUrl: string | null;
+  displayName: string;
+  username: string;
+  avatarUrl: string | null;
+  chatEnabled: boolean;
+  nowPlaying: ChannelNowPlaying | null;
+  memberRelay: RadioNowPlaying;
+  recentlyPlayed: RadioRecentlyPlayedItem[];
+};
+
+/** Canonical Tahti Radio channel slug (matches @tahti/shared). */
+export const TAHTI_RADIO_SLUG = 'tahti-radio';
 
 /** Public archive row from GET /api/channels/:slug/items */
 export type ArchiveItem = {

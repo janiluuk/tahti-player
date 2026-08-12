@@ -5,9 +5,10 @@ import {
   setMockOauthConnected,
   type MockOauthId,
 } from './mock-session';
+import { allowMockFallback, apiErrorMeta, isForceMock } from './mode';
 import type { TahtiPlayable } from './types';
 
-const forceMock = () => import.meta.env.VITE_FORCE_MOCK === '1';
+const forceMock = () => isForceMock();
 
 const OAUTH_IDS = new Set<MockOauthId>([
   'bandcamp',
@@ -172,6 +173,30 @@ export function oauthStartUrl(path: string): string {
   return `${apiBase()}${path}`;
 }
 
+/** Absolute OAuth start URL (same-origin /tahti-api in beta). */
+export function oauthStartHref(path: string): string {
+  return oauthStartUrl(path);
+}
+
+/**
+ * Provider callbacks finish on production `appUrl` (e.g. tahti.live/dashboard/…).
+ * After connecting there, return here and refresh status.
+ */
+export function oauthCallbackHint(id: IntegrationId): string {
+  const map: Partial<Record<IntegrationId, string>> = {
+    soundcloud: 'https://tahti.live/dashboard/upload/import/soundcloud',
+    bandcamp: 'https://tahti.live/dashboard/upload/import/bandcamp',
+    'google-drive': 'https://tahti.live/dashboard/upload/import/google-drive',
+    mixcloud: 'https://tahti.live/dashboard?mixcloud=connected',
+  };
+  const dest = map[id];
+  if (!dest) {
+    return 'Complete OAuth in the provider window, then return here and refresh.';
+  }
+  return `OAuth finishes on production (${dest}). When connected, come back to this Sources tile — status refreshes on focus.`;
+}
+
+
 export async function fetchConnectionStatus(
   id: IntegrationId,
 ): Promise<{ data: ConnectionStatus; meta: FetchMeta }> {
@@ -212,9 +237,15 @@ export async function fetchConnectionStatus(
         meta: { source: 'api' },
       };
     } catch (err) {
+      if (allowMockFallback()) {
+        return {
+          data: { connected: false, configured: true },
+          meta: failMeta(err),
+        };
+      }
       return {
         data: { connected: false, configured: true },
-        meta: failMeta(err),
+        meta: apiErrorMeta(err),
       };
     }
   }
@@ -234,9 +265,26 @@ export async function fetchConnectionStatus(
     const { data } = await requestJson<ConnectionStatus>(path);
     return { data, meta: { source: 'api' } };
   } catch (err) {
+    // Prod/beta: never paint a silent "Mock" chip — report API error meta.
+    if (allowMockFallback() && asOauthId(id)) {
+      const oauthId = asOauthId(id)!;
+      return {
+        data: {
+          connected: isMockOauthConnected(oauthId),
+          configured: true,
+        },
+        meta: failMeta(err),
+      };
+    }
+    const msg = err instanceof Error ? err.message : '';
+    const notConfigured =
+      /503|not configured|OAuth is not configured/i.test(msg);
     return {
-      data: { connected: false, configured: false },
-      meta: failMeta(err),
+      data: {
+        connected: false,
+        configured: !notConfigured,
+      },
+      meta: apiErrorMeta(err),
     };
   }
 }
@@ -272,7 +320,10 @@ export async function fetchSoundcloudTracks(): Promise<{
     );
     return { data: data.tracks ?? [], meta: { source: 'api' } };
   } catch (err) {
-    return { data: [], meta: failMeta(err) };
+    if (allowMockFallback()) {
+      return { data: [], meta: failMeta(err) };
+    }
+    return { data: [], meta: apiErrorMeta(err) };
   }
 }
 
@@ -329,7 +380,10 @@ export async function searchSpotifyTracks(q: string): Promise<{
     );
     return { data: data.tracks ?? [], meta: { source: 'api' } };
   } catch (err) {
-    return { data: [], meta: failMeta(err) };
+    if (allowMockFallback()) {
+      return { data: [], meta: failMeta(err) };
+    }
+    return { data: [], meta: apiErrorMeta(err) };
   }
 }
 
@@ -385,6 +439,93 @@ export async function fetchStashDownload(id: string): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     return { data: null, meta: failMeta(err) };
+  }
+}
+
+
+export async function uploadStashFile(
+  file: File,
+  onProgress?: (pct: number) => void,
+): Promise<{ ok: true; id: string; meta: FetchMeta } | { ok: false; error: string }> {
+  if (forceMock()) {
+    onProgress?.(100);
+    const id = `stash-mock-${Date.now()}`;
+    return {
+      ok: true,
+      id,
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    onProgress?.(5);
+    const { data: prep } = await requestJson<{
+      objectKey: string;
+      uploadUrl: string;
+    }>('/api/me/stash/prepare', {
+      method: 'POST',
+      body: JSON.stringify({
+        filename: file.name,
+        contentType: file.type || 'application/octet-stream',
+        sizeBytes: file.size,
+      }),
+    });
+    onProgress?.(25);
+    const put = await fetch(prep.uploadUrl, {
+      method: 'PUT',
+      body: file,
+      headers: { 'Content-Type': file.type || 'application/octet-stream' },
+    });
+    if (!put.ok) {
+      throw new Error(`Stash PUT failed (${put.status})`);
+    }
+    onProgress?.(80);
+    const ext = file.name.split('.').pop()?.toUpperCase() ?? '';
+    const formatMap: Record<string, string> = {
+      FLAC: 'FLAC',
+      WAV: 'WAV',
+      MP3: 'MP3',
+      ZIP: 'ZIP',
+      AIFF: 'AIFF',
+    };
+    const { data: registered } = await requestJson<{ id: string }>(
+      '/api/me/stash',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          objectKey: prep.objectKey,
+          filename: file.name,
+          contentType: file.type || 'application/octet-stream',
+          sizeBytes: file.size,
+          format: formatMap[ext] ?? (ext || undefined),
+        }),
+      },
+    );
+    onProgress?.(100);
+    return { ok: true, id: registered.id, meta: { source: 'api' } };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Stash upload failed',
+    };
+  }
+}
+
+export async function deleteStashFile(
+  id: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (forceMock()) {
+    return { ok: true };
+  }
+  try {
+    await requestJson(`/api/me/stash/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+    });
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Delete failed',
+    };
   }
 }
 

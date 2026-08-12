@@ -21,6 +21,9 @@ type Props = {
   bio?: string | null;
   /** Compact for profile tab; full for Studio. */
   compact?: boolean;
+  /** Side-panel look controls only (no hero preview chrome). */
+  lookOnly?: boolean;
+  onSaved?: () => void;
 };
 
 export function ChannelDesigner({
@@ -30,6 +33,8 @@ export function ChannelDesigner({
   avatarUrl,
   bio,
   compact,
+  lookOnly,
+  onSaved,
 }: Props) {
   const [visual, setVisual] = useState<ChannelVisual | null>(null);
   const [scheme, setScheme] = useState<ColorScheme>({});
@@ -92,6 +97,7 @@ export function ChannelDesigner({
     setScheme(parseColorScheme(result.data.colorSchemeJson));
     setDirty(false);
     setMsg('Look saved — public channel will pick this up.');
+    onSaved?.();
   };
 
   if (!visual) {
@@ -100,83 +106,8 @@ export function ChannelDesigner({
     );
   }
 
-  return (
-    <div className={`flex flex-col gap-4 ${compact ? '' : 'max-w-3xl'}`}>
-      <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <div>
-          <h2 className="font-display text-xl font-bold tracking-tight">
-            Design your channel
-          </h2>
-          <p className="text-foreground-secondary text-xs">
-            Live preview of hero + preset. Source: {source}.
-          </p>
-        </div>
-        <Button size="sm" disabled={busy || !dirty} onClick={() => void save()}>
-          {busy ? 'Saving…' : dirty ? 'Save look' : 'Saved'}
-        </Button>
-      </div>
-
-      {/* Live preview card */}
-      <div
-        className="relative overflow-hidden rounded-xl border border-white/10 p-5 shadow-lg"
-        style={{ background: previewStyle.gradient, color: previewStyle.fg }}
-      >
-        <div
-          className="absolute inset-0 opacity-30"
-          style={{ background: previewStyle.bg }}
-        />
-        <div className="relative flex flex-wrap items-center gap-4">
-          <div
-            className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-2 text-lg font-bold"
-            style={{
-              borderColor: previewStyle.accent,
-              background: previewStyle.bg,
-            }}
-          >
-            {avatarUrl ? (
-              <img
-                src={avatarUrl}
-                alt=""
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              displayName.slice(0, 1).toUpperCase()
-            )}
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="font-display text-2xl font-extrabold tracking-tight">
-              {displayName}
-            </div>
-            <div className="text-sm opacity-80">
-              @{username}
-              {channelSlug ? ` · /${channelSlug}` : ''}
-            </div>
-            {bio && (
-              <p className="mt-1 line-clamp-2 text-sm opacity-90">{bio}</p>
-            )}
-          </div>
-          <span
-            className="rounded px-2 py-1 text-[10px] font-bold tracking-wide uppercase"
-            style={{ background: previewStyle.accent, color: '#0B1220' }}
-          >
-            {visual.visualPreset.replace(/_/g, ' ')}
-          </span>
-        </div>
-        <div className="relative mt-4 flex h-10 items-end gap-0.5">
-          {Array.from({ length: 32 }).map((_, i) => (
-            <div
-              key={i}
-              className="flex-1 rounded-sm opacity-80"
-              style={{
-                height: `${20 + ((i * 17) % 70)}%`,
-                background:
-                  i % 2 === 0 ? previewStyle.accent : previewStyle.highlight,
-              }}
-            />
-          ))}
-        </div>
-      </div>
-
+  const controls = (
+    <>
       <section className="flex flex-col gap-2">
         <h3 className="text-foreground-secondary text-xs tracking-wide uppercase">
           Visual preset
@@ -281,7 +212,96 @@ export function ChannelDesigner({
         ))}
       </section>
 
+      <Button size="sm" disabled={busy || !dirty} onClick={() => void save()}>
+        {busy ? 'Saving…' : dirty ? 'Save look' : 'Saved'}
+      </Button>
       {msg && <p className="text-sm">{msg}</p>}
+      <p className="text-foreground-secondary text-[10px]">Source: {source}</p>
+    </>
+  );
+
+  if (lookOnly) {
+    return <div className="flex flex-col gap-3">{controls}</div>;
+  }
+
+  return (
+    <div className={`flex flex-col gap-4 ${compact ? '' : 'max-w-3xl'}`}>
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <div>
+          <h2 className="font-display text-xl font-bold tracking-tight">
+            Design your channel
+          </h2>
+          <p className="text-foreground-secondary text-xs">
+            Prefer editing on the live channel page — open your channel and hit
+            Edit design. Source: {source}.
+          </p>
+        </div>
+        <Button size="sm" disabled={busy || !dirty} onClick={() => void save()}>
+          {busy ? 'Saving…' : dirty ? 'Save look' : 'Saved'}
+        </Button>
+      </div>
+
+      <div
+        className="relative overflow-hidden rounded-xl border border-white/10 p-5 shadow-lg"
+        style={{ background: previewStyle.gradient, color: previewStyle.fg }}
+      >
+        <div
+          className="absolute inset-0 opacity-30"
+          style={{ background: previewStyle.bg }}
+        />
+        <div className="relative flex flex-wrap items-center gap-4">
+          <div
+            className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-2 text-lg font-bold"
+            style={{
+              borderColor: previewStyle.accent,
+              background: previewStyle.bg,
+            }}
+          >
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt=""
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              displayName.slice(0, 1).toUpperCase()
+            )}
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="font-display text-2xl font-extrabold tracking-tight">
+              {displayName}
+            </div>
+            <div className="text-sm opacity-80">
+              @{username}
+              {channelSlug ? ` · /${channelSlug}` : ''}
+            </div>
+            {bio && (
+              <p className="mt-1 line-clamp-2 text-sm opacity-90">{bio}</p>
+            )}
+          </div>
+          <span
+            className="rounded px-2 py-1 text-[10px] font-bold tracking-wide uppercase"
+            style={{ background: previewStyle.accent, color: '#0B1220' }}
+          >
+            {visual.visualPreset.replace(/_/g, ' ')}
+          </span>
+        </div>
+        <div className="relative mt-4 flex h-10 items-end gap-0.5">
+          {Array.from({ length: 32 }).map((_, i) => (
+            <div
+              key={i}
+              className="flex-1 rounded-sm opacity-80"
+              style={{
+                height: `${20 + ((i * 17) % 70)}%`,
+                background:
+                  i % 2 === 0 ? previewStyle.accent : previewStyle.highlight,
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      {controls}
     </div>
   );
 }

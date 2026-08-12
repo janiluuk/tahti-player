@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 
+import { Link } from '@tanstack/react-router';
+
 import {
   fetchStatsSummary,
   fetchStatsTopCountries,
@@ -41,6 +43,14 @@ export function StudioStatsView() {
           <p className="text-foreground-secondary mt-1 text-sm">
             Plays / downloads lite from <code>/api/me/stats/*</code>. Source:{' '}
             {source}. Fan revenue payouts stay on production financial tools.
+          </p>
+          <p className="mt-2">
+            <Link
+              to="/studio/stats/detail"
+              className="text-primary text-sm font-medium underline-offset-2 hover:underline"
+            >
+              Plays & listeners detail →
+            </Link>
           </p>
         </div>
 

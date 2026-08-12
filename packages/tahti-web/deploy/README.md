@@ -28,11 +28,20 @@ SSH target defaults to `vimage` (root@192.168.2.100). Override with `DEPLOY_HOST
 
 ## API wiring
 
-1. Build leaves `VITE_TAHTI_API_URL` unset → browser calls `/tahti-api/...`.
-2. Container nginx (`nginx.conf`) proxies `/tahti-api/` → `https://api.tahti.live/`.
+1. Build leaves `VITE_TAHTI_API_URL` / `VITE_FORCE_MOCK` / `VITE_ALLOW_MOCK_FALLBACK` unset → browser calls `/tahti-api/...` with **no mock fixtures**.
+2. Container nginx (`nginx.conf`) proxies `/tahti-api/` → `https://api.tahti.live/` (and `/api/` the same way).
 3. Chat: `VITE_CENTRIFUGO_WS=wss://chat.tahti.live/connection/websocket`.
+4. Media / HLS: absolute `cdn.tahti.live` URLs from the API (CORS allows `beta.tahti.live`).
 
 Production CORS already allows `*.tahti.live`.
+
+## Auth / session cookies
+
+`tahti_session` is **host-only** (API sets no `Domain`). Cookies from `tahti.live` / `api.tahti.live` are **not** sent to beta.
+
+**Use a real account on beta:** open [https://beta.tahti.live/login](https://beta.tahti.live/login) and sign in with your production email/password (or TOTP). Login POSTs to same-origin `/tahti-api/api/auth/login`; nginx forwards `Set-Cookie` onto `beta.tahti.live`, then `/tahti-api/api/auth/me` works with `credentials: 'include'`.
+
+Do not point the SPA at `https://api.tahti.live` directly in the beta build — that would set cookies on `api.tahti.live` while the app still calls `/tahti-api` on beta.
 
 ## Nginx Proxy Manager (Pi4)
 

@@ -46,6 +46,7 @@ import { StudioReleasesView } from './views/studio/StudioReleasesView';
 import { StudioRevenueView } from './views/studio/StudioRevenueView';
 import { StudioScheduleView } from './views/studio/StudioScheduleView';
 import { StudioStashView } from './views/studio/StudioStashView';
+import { StudioStatsDetailView } from './views/studio/StudioStatsDetailView';
 import { StudioStatsView } from './views/studio/StudioStatsView';
 import { StudioUpdatesView } from './views/studio/StudioUpdatesView';
 import { StudioUploadView } from './views/studio/StudioUploadView';
@@ -420,6 +421,12 @@ const studioStatsRoute = createRoute({
   component: StudioStatsView,
 });
 
+const studioStatsDetailRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/studio/stats/detail',
+  component: StudioStatsDetailView,
+});
+
 const studioChannelRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/channel',
@@ -528,6 +535,7 @@ const routeTree = rootRoute.addChildren([
     studioStashRoute,
     studioScheduleRoute,
     studioStatsRoute,
+    studioStatsDetailRoute,
     studioChannelRoute,
     studioUpdatesRoute,
     studioRevenueRoute,

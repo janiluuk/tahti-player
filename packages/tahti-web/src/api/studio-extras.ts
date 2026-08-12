@@ -1,4 +1,5 @@
 import type { FetchMeta } from './client';
+import { allowMockFallback, apiErrorMeta } from './mode';
 
 const forceMock = () => import.meta.env.VITE_FORCE_MOCK === '1';
 
@@ -299,6 +300,85 @@ export async function fetchStatsTopCountries(): Promise<{
     return { data: data.items ?? [], meta: { source: 'api' } };
   } catch (err) {
     return { data: [], meta: failMeta(err) };
+  }
+}
+
+
+export type StatsPlaysRange = '7' | '30' | 'all';
+
+export type StatsPlaysDaily = {
+  date: string;
+  plays: number;
+  downloads?: number;
+  smartLinkClicks?: number;
+};
+
+export type StatsPlays = {
+  range: StatsPlaysRange;
+  totalPlays: number;
+  totalDownloads: number;
+  totalSmartLinkClicks?: number;
+  daily: StatsPlaysDaily[];
+  downloadCountries?: Array<{
+    countryCode: string;
+    displayName: string;
+    count: number;
+  }>;
+};
+
+function mockPlays(range: StatsPlaysRange): StatsPlays {
+  const days = range === '7' ? 7 : range === '30' ? 30 : 14;
+  const daily: StatsPlaysDaily[] = [];
+  const now = Date.now();
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(now - i * 86_400_000);
+    daily.push({
+      date: d.toISOString().slice(0, 10),
+      plays: Math.round(8 + Math.random() * 40),
+      downloads: Math.round(Math.random() * 5),
+    });
+  }
+  return {
+    range,
+    totalPlays: daily.reduce((a, b) => a + b.plays, 0),
+    totalDownloads: daily.reduce((a, b) => a + (b.downloads ?? 0), 0),
+    totalSmartLinkClicks: 12,
+    daily,
+    downloadCountries: [
+      { countryCode: 'FI', displayName: 'Finland', count: 40 },
+      { countryCode: 'DE', displayName: 'Germany', count: 18 },
+    ],
+  };
+}
+
+export async function fetchStatsPlays(
+  range: StatsPlaysRange = '30',
+): Promise<{ data: StatsPlays; meta: FetchMeta }> {
+  if (forceMock()) {
+    return {
+      data: mockPlays(range),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const { data } = await requestJson<StatsPlays>(
+      `/api/me/stats/plays?range=${range}`,
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    if (allowMockFallback()) {
+      return { data: mockPlays(range), meta: failMeta(err) };
+    }
+    return {
+      data: {
+        range,
+        totalPlays: 0,
+        totalDownloads: 0,
+        daily: [],
+        downloadCountries: [],
+      },
+      meta: apiErrorMeta(err),
+    };
   }
 }
 

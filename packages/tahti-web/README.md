@@ -14,6 +14,7 @@ VITE_FORCE_MOCK=1 pnpm --filter @nuclearplayer/tahti-web dev
 Open http://localhost:5180 — mock login: `demo@tahti.live` / any password.
 
 - Port checklist (prod → POC): [`FEATURES.md`](FEATURES.md)
+- Production cutover worklist: [`CUTOVER.md`](CUTOVER.md)
 - Offline mocks: [`MOCKS.md`](MOCKS.md)
 
 

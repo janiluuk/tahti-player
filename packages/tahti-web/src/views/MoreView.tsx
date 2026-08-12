@@ -47,7 +47,7 @@ const FEATURES: FeatureRow[] = [
     tahti: '/radio',
     nuclear: '/radio',
     status: 'live',
-    notes: 'GET /api/v1/radio',
+    notes: 'Channel HLS + /api/v1/radio relay + recently-played',
   },
   {
     feature: 'Artist profile',
@@ -116,9 +116,9 @@ const FEATURES: FeatureRow[] = [
   {
     feature: 'Channel chat',
     tahti: '/c/:slug chat',
-    nuclear: '/chat, /chat/$slug, channel tabs',
+    nuclear: '/chat, rail + channel tab',
     status: 'live',
-    notes: 'REST + Centrifugo + hCaptcha + emoji react API',
+    notes: 'Centrifugo + captcha; no prod mock-join; access gating',
   },
   {
     feature: 'Studio schedule / programme',
@@ -355,10 +355,9 @@ export function MoreView() {
           Tahti map
         </h1>
         <p className="text-foreground-secondary mt-1 max-w-2xl text-sm">
-          Every major Tahti public / studio surface mapped into this Nuclear
-          listen client — live, stubbed, or explicitly out of scope. The screen
-          atlas below pairs each major view with a thumbnail so you can see what
-          is what. Full port checklist:{' '}
+          Nuclear listen / studio surfaces aligned with the mermaid user flows.
+          Screen atlas = flow step | live beta screenshot. Flow gallery below
+          for diagrams. Checklist:{' '}
           <code className="text-foreground">FEATURES.md</code>.
         </p>
       </div>

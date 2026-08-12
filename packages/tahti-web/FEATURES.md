@@ -45,20 +45,23 @@ Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
 - [x] Studio: schedule, stats summary, channel design, updates, revenue/Connect
 - [x] Channel visualizer POC + analyser
 - [x] Fan tier create / activate-deactivate
-- [x] Settings shell (Nuclear sections), Sources hub (partial OAuth UX)
+- [x] Settings shell (Nuclear sections), Sources hub (OAuth demock polish)
 - [x] Embeds
+
+**Shipped this wave**
+
+- [x] Channel chat hardening (captcha / rail parity / no prod mock-join)
+- [x] Stash upload UI (prepare → PUT → register + delete)
+- [x] Stats detail page (`/studio/stats/detail` plays series)
+- [x] Sources OAuth demock polish (no false Mock chips; live Connect + refresh)
 
 **Remaining / partial**
 
-- [ ] Channel chat hardening (captcha / rail parity)
 - [ ] Full Three.js visualizer preset set
-- [ ] Stash upload UI (preview/play only today)
-- [ ] Stats detail page (beyond summary)
-- [ ] Sources OAuth silent-mock demock polish
 - [ ] Venue register, membership purchase, password/security
 - [ ] Listener-only dashboard, distribution / radio slots / moderate
 - [ ] Multitrack timeline editing, press-kit / invites polish
-- [ ] Production cutover for `apps/web`
+- [ ] Production cutover for `apps/web` — see [CUTOVER.md](CUTOVER.md)
 
 ---
 
@@ -69,7 +72,7 @@ Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
 | Listen directory | `/listen` | `/` | `live-api` | `GET /api/v1/channels/directory` |
 | Channel live + HLS | `/c/:slug` | `/channel/$slug` | `live-api` | visualizer stage on Live tab |
 | Channel archive | `/c/:slug` | `/channel/$slug` | `live-api` | listen-events after ~15s |
-| Channel chat | `/c/:slug` | rail + `/chat/$slug` | `partial` | REST + Centrifugo; captcha when configured |
+| Channel chat | `/c/:slug` | rail + channel tab + `/chat/$slug` | `live-api` | captcha when sitekey set; no prod mock-join; access gating |
 | Tahti Radio | `/radio` | `/radio` | `live-api` | |
 | Artist profile | `/u/:username` | `/u/$username` | `live-api` | |
 | Collection | `/u/:user/c/:slug` | `/u/$username/c/$slug` | `live-api` | |
@@ -122,11 +125,11 @@ Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
 | Pro editor | `/dashboard/editor` | `/studio/editor` | `partial` | |
 | Releases / collections | `/dashboard/releases`… | `/studio/releases`… | `live-api` | album designer on collections |
 | Schedule / programme | schedule | `/studio/schedule` | `live-api` | |
-| Stats | `/dashboard/stats` | `/studio/stats` | `partial` | no detail page |
+| Stats | `/dashboard/stats` | `/studio/stats` (+ `/detail`) | `live-api` | summary + plays series detail |
 | Channel design | channel/edit | `/studio/channel` | `live-api` | |
 | Updates / newsletter | posts | `/studio/updates` | `live-api` | |
 | Revenue / Connect | revenue | `/studio/revenue` | `live-api` | demock wave 4; onboard/portal redirect to Stripe |
-| Stash | `/dashboard/stash` | `/studio/stash` | `partial` | |
+| Stash | `/dashboard/stash` | `/studio/stash` | `live-api` | upload + play/download/delete |
 | Distribution / radio slots / moderate | various | — | `missing` | |
 
 ## 5. Settings / sources
@@ -138,8 +141,8 @@ Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
 | Notifications / social | settings | sections | `live-api` | |
 | Themes | — | `/settings/themes` | `mock-ok` | Nuclear presets |
 | Fan-sub tier editor | fan-subs settings | Settings → Money | `live-api` | create + activate/deactivate |
-| Sources hub | import | `/sources` | `partial` | |
-| OAuth connect | OAuth start | Sources | `partial` | live href; mock in-app connect |
+| Sources hub | import | `/sources` | `live-api` | status chips; refresh on focus |
+| OAuth connect | OAuth start | Sources | `live-api` | live href; mock Connect only under FORCE_MOCK |
 | SoundCloud / Spotify import | import | Sources | `live-api` | |
 
 ## 6. Embeds / misc
@@ -148,7 +151,7 @@ Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
 |---------|------|-----|--------|-------|
 | Embeds c/r/col | `/embed/*` | `/embed/*` | `live-api` | |
 | Feature map | — | `/more` | `mock-ok` | checklist + flow diagrams |
-| Screen atlas | e2e screenshots | `/more` (Screen atlas) | `mock-ok` | curated prod PNGs under `public/map/` + Nuclear routes |
+| Screen atlas | Nuclear beta captures | `/more` (Screen atlas) | `mock-ok` | flow-aligned side-by-side; `/map/nuclear/` |
 | Board admin | `/admin/*` | — | `out-of-scope` | |
 | WebGL visualizer | channel page | ChannelView Live | `partial` | aurora/grid/bars POC; not full Three.js preset set |
 

@@ -11,6 +11,7 @@ import {
   fetchStashDownload,
   fetchStashFiles,
   importSoundcloudTracks,
+  oauthCallbackHint,
   oauthStartUrl,
   playableFromSoundcloud,
   playableFromSpotify,
@@ -22,6 +23,7 @@ import {
   type SpotifySearchTrack,
   type StashFile,
 } from '../api/sources';
+import { isForceMock } from '../api/mode';
 import {
   SourceServiceIcon,
   sourceTileSubtitle,
@@ -29,11 +31,12 @@ import {
 import { useAuthStore } from '../stores/authStore';
 import { usePlayerStore } from '../stores/playerStore';
 
-const forceMock = () => import.meta.env.VITE_FORCE_MOCK === '1';
+const forceMock = () => isForceMock();
 
 type TileStatus = {
   status: ConnectionStatus | null;
   metaSource: string;
+  errorReason?: string;
 };
 
 function statusChip(
@@ -43,8 +46,15 @@ function statusChip(
   if (!tile?.status) {
     return { label: '…', color: 'secondary' };
   }
-  if (tile.metaSource === 'mock') {
+  // Only label Mock when intentionally offline (FORCE_MOCK), not on API errors.
+  if (forceMock()) {
     return { label: 'Mock', color: 'cyan' };
+  }
+  if (tile.metaSource === 'api' && tile.errorReason) {
+    if (!tile.status.configured) {
+      return { label: 'Not configured', color: 'secondary' };
+    }
+    return { label: 'API error', color: 'orange' };
   }
   if (defKind === 'upload' || defKind === 'tool' || defKind === 'search') {
     if (tile.status.connected) {
@@ -75,7 +85,8 @@ export function SourcesView({ tabId }: { tabId?: IntegrationId }) {
     Partial<Record<IntegrationId, TileStatus>>
   >({});
   const [status, setStatus] = useState<ConnectionStatus | null>(null);
-  const [meta, setMeta] = useState('…');
+  const [metaSource, setMetaSource] = useState('…');
+  const [metaReason, setMetaReason] = useState<string | undefined>();
   const [scTracks, setScTracks] = useState<SoundcloudTrack[]>([]);
   const [stash, setStash] = useState<StashFile[]>([]);
   const [spotifyQ, setSpotifyQ] = useState('');
@@ -90,7 +101,14 @@ export function SourcesView({ tabId }: { tabId?: IntegrationId }) {
     void Promise.all(
       SOURCE_DEFS.map(async (d) => {
         const r = await fetchConnectionStatus(d.id);
-        return [d.id, { status: r.data, metaSource: r.meta.source }] as const;
+        return [
+          d.id,
+          {
+            status: r.data,
+            metaSource: r.meta.source,
+            errorReason: r.meta.reason,
+          },
+        ] as const;
       }),
     ).then((entries) => {
       if (cancelled) {
@@ -114,10 +132,15 @@ export function SourcesView({ tabId }: { tabId?: IntegrationId }) {
         return;
       }
       setStatus(r.data);
-      setMeta(r.meta.source);
+      setMetaSource(r.meta.source);
+      setMetaReason(r.meta.reason);
       setTiles((prev) => ({
         ...prev,
-        [selected]: { status: r.data, metaSource: r.meta.source },
+        [selected]: {
+          status: r.data,
+          metaSource: r.meta.source,
+          errorReason: r.meta.reason,
+        },
       }));
     });
     return () => {
@@ -137,6 +160,64 @@ export function SourcesView({ tabId }: { tabId?: IntegrationId }) {
       return;
     }
     void fetchStashFiles().then((r) => setStash(r.data));
+  }, [selected]);
+
+  function refreshSelectedStatus() {
+    if (!selected) {
+      return;
+    }
+    void fetchConnectionStatus(selected).then((r) => {
+      setStatus(r.data);
+      setMetaSource(r.meta.source);
+      setMetaReason(r.meta.reason);
+      setTiles((prev) => ({
+        ...prev,
+        [selected]: {
+          status: r.data,
+          metaSource: r.meta.source,
+          errorReason: r.meta.reason,
+        },
+      }));
+    });
+  }
+
+  // After OAuth (often finishes on production), refresh when the tab is focused again.
+  useEffect(() => {
+    const onVis = () => {
+      if (document.visibilityState === 'visible') {
+        refreshSelectedStatus();
+      }
+    };
+    window.addEventListener('focus', onVis);
+    document.addEventListener('visibilitychange', onVis);
+    return () => {
+      window.removeEventListener('focus', onVis);
+      document.removeEventListener('visibilitychange', onVis);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- refreshSelectedStatus closes over selected
+  }, [selected]);
+
+  // Soft success hints if the user somehow lands with provider query flags.
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    const q = new URLSearchParams(window.location.search);
+    const flags = [
+      q.get('sc'),
+      q.get('bc'),
+      q.get('gd'),
+      q.get('mixcloud'),
+    ].filter(Boolean);
+    if (flags.includes('connected')) {
+      setNote('OAuth reported connected — refreshing status from live API.');
+      refreshSelectedStatus();
+    } else if (flags.includes('error') || flags.includes('login')) {
+      setNote(
+        'OAuth did not complete (error or login required). Try Connect again while signed in.',
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selected]);
 
   const overview = useMemo(() => SOURCE_DEFS, []);
@@ -228,10 +309,14 @@ export function SourcesView({ tabId }: { tabId?: IntegrationId }) {
               <div className="flex flex-wrap items-center gap-2">
                 <h2 className="font-display text-xl font-bold">{def.name}</h2>
                 {(() => {
-                  const chip = statusChip(def.kind, {
-                    status,
-                    metaSource: meta,
-                  });
+                  const chip = statusChip(
+                    def.kind,
+                    tiles[selected] ?? {
+                      status,
+                      metaSource,
+                      errorReason: metaReason,
+                    },
+                  );
                   return (
                     <Badge variant="pill" color={chip.color}>
                       {chip.label}
@@ -240,11 +325,26 @@ export function SourcesView({ tabId }: { tabId?: IntegrationId }) {
                 })()}
               </div>
               <p className="text-foreground-secondary mt-1 text-xs tracking-wide uppercase">
-                Status source: {meta}
+                Status source: {metaSource}
+                {metaReason ? ` — ${metaReason}` : ''}
               </p>
               <p className="text-foreground-secondary mt-2 text-sm">
                 {def.description}
               </p>
+              {def.kind === 'oauth' && !forceMock() && (
+                <p className="text-foreground-secondary mt-2 text-xs leading-relaxed">
+                  Live OAuth uses the production API. Provider callbacks return
+                  to tahti.live import pages; reopen this tile afterward (or hit
+                  Refresh status). Mock Connect only exists under{' '}
+                  <code>VITE_FORCE_MOCK=1</code>.
+                </p>
+              )}
+              {status?.configured === false && (
+                <p className="text-foreground-secondary mt-2 text-xs">
+                  This integration is not configured on the API (missing client
+                  credentials).
+                </p>
+              )}
 
               <div className="mt-4 flex flex-wrap gap-2">
                 {def.kind === 'oauth' && def.oauthStartPath && (
@@ -262,29 +362,47 @@ export function SourcesView({ tabId }: { tabId?: IntegrationId }) {
                             | 'spotify';
                           void connectIntegrationMock(id).then((r) => {
                             setNote(
-                              r.ok ? `Mock connected ${def.name}.` : r.error,
+                              r.ok
+                                ? `Mock connected ${def.name} (FORCE_MOCK only).`
+                                : r.error,
                             );
-                            void fetchConnectionStatus(selected).then((x) => {
-                              setStatus(x.data);
-                              setTiles((prev) => ({
-                                ...prev,
-                                [selected]: {
-                                  status: x.data,
-                                  metaSource: x.meta.source,
-                                },
-                              }));
-                            });
+                            refreshSelectedStatus();
                           });
                         }}
                       >
-                        {status?.connected ? 'Reconnect' : 'Connect'}
+                        {status?.connected ? 'Reconnect (mock)' : 'Connect (mock)'}
                       </Button>
                     ) : (
-                      <a href={oauthStartUrl(def.oauthStartPath)}>
-                        <Button size="sm" disabled={!user}>
-                          {status?.connected ? 'Reconnect' : 'Connect'}
+                      <>
+                        <a
+                          href={
+                            user ? oauthStartUrl(def.oauthStartPath) : '/login'
+                          }
+                          onClick={() => {
+                            if (!user) {
+                              return;
+                            }
+                            setNote(oauthCallbackHint(selected));
+                          }}
+                        >
+                          <Button
+                            size="sm"
+                            disabled={!user || status?.configured === false}
+                          >
+                            {status?.connected ? 'Reconnect' : 'Connect'}
+                          </Button>
+                        </a>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => {
+                            setNote('Refreshing connection status…');
+                            refreshSelectedStatus();
+                          }}
+                        >
+                          Refresh status
                         </Button>
-                      </a>
+                      </>
                     )}
                     {status?.connected && (
                       <Button
@@ -298,16 +416,7 @@ export function SourcesView({ tabId }: { tabId?: IntegrationId }) {
                             | 'mixcloud';
                           void disconnectIntegration(id).then((r) => {
                             setNote(r.ok ? 'Disconnected.' : r.error);
-                            void fetchConnectionStatus(selected).then((x) => {
-                              setStatus(x.data);
-                              setTiles((prev) => ({
-                                ...prev,
-                                [selected]: {
-                                  status: x.data,
-                                  metaSource: x.meta.source,
-                                },
-                              }));
-                            });
+                            refreshSelectedStatus();
                           });
                         }}
                       >

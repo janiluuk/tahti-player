@@ -9,6 +9,7 @@ import {
   requestChatViewerToken,
   type FetchMeta,
 } from '../api/client';
+import { allowMockFallback } from '../api/mode';
 import { postChatReaction } from '../api/studio-extras';
 import type { ChatMessage } from '../api/types';
 import { useHcaptcha } from '../lib/useHcaptcha';
@@ -45,6 +46,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [meta, setMeta] = useState<FetchMeta | null>(null);
   const [accessNote, setAccessNote] = useState<string | null>(null);
+  const [canPost, setCanPost] = useState(true);
   const [handle, setHandle] = useState('');
   const [pendingHandle, setPendingHandle] = useState('');
   const [input, setInput] = useState('');
@@ -87,8 +89,10 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
     const saved = localStorage.getItem(HANDLE_KEY);
     if (saved) {
       setPendingHandle(saved);
+    } else if (user?.username) {
+      setPendingHandle(user.username);
     }
-  }, []);
+  }, [user?.username]);
 
   useEffect(() => {
     let cancelled = false;
@@ -106,10 +110,13 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
         } else {
           setMode('rest');
         }
+        setCanPost(access.data.canPostInChat !== false);
         if (access.data.subscribersOnly && !access.data.canPostInChat) {
           setAccessNote(
             'Subscribers-only chat — you can read; posting needs a fan sub + login.',
           );
+        } else if (!access.data.canPostInChat) {
+          setAccessNote('You can read this chat, but posting is not allowed.');
         }
       },
     );
@@ -262,17 +269,25 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
         setMode('mock');
       }
     } catch (err) {
-      // Captcha / API down → still allow mock posting with clear status
-      localStorage.setItem(HANDLE_KEY, h);
-      setHandle(h);
-      setPublishToken('mock-local');
-      setMode('mock');
       resetCaptcha();
-      setError(
-        err instanceof Error
-          ? `${err.message} — using local mock send`
-          : 'Join failed — using local mock send',
-      );
+      if (allowMockFallback()) {
+        // Dev / FORCE_MOCK: local send so demos still work offline
+        localStorage.setItem(HANDLE_KEY, h);
+        setHandle(h);
+        setPublishToken('mock-local');
+        setMode('mock');
+        setError(
+          err instanceof Error
+            ? `${err.message} — using local mock send`
+            : 'Join failed — using local mock send',
+        );
+      } else {
+        setError(
+          err instanceof Error
+            ? err.message
+            : 'Could not join chat. Complete captcha and try again.',
+        );
+      }
     } finally {
       setJoining(false);
     }
@@ -449,6 +464,10 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
           <Button size="sm" disabled={joining} onClick={() => void join()}>
             {joining ? 'Joining…' : 'Join chat'}
           </Button>
+        </div>
+      ) : !canPost ? (
+        <div className="border-border text-foreground-secondary border-t px-3 py-3 text-xs">
+          Joined as {handle} — read-only (posting locked for your access).
         </div>
       ) : (
         <div className="border-border flex gap-2 border-t p-3">

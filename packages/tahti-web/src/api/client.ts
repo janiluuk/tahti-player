@@ -10,13 +10,13 @@ import {
   mockDirectory,
   mockFanTiers,
   mockProfile,
-  mockRadio,
+  mockRadioStation,
   mockSmartLink,
   mockTransparencyGrants,
   mockTransparencyLedger,
   mockTransparencyYtd,
   mockVenues,
-  radioToPlayable,
+  radioStationToPlayable,
 } from './mock';
 import {
   buildMockLoginUser,
@@ -56,6 +56,8 @@ import type {
   PublicCollection,
   PublicProfile,
   RadioNowPlaying,
+  RadioRecentlyPlayedItem,
+  RadioStation,
   ReleaseEmbedView,
   SmartLinkView,
   TahtiPlayable,
@@ -64,6 +66,7 @@ import type {
   TransparencyYtd,
   VenueDirectoryItem,
 } from './types';
+import { TAHTI_RADIO_SLUG } from './types';
 
 export type { FetchMeta };
 
@@ -185,51 +188,76 @@ export async function fetchChannelArchive(slug: string): Promise<{
   }
 }
 
+/**
+ * Tahti Radio listen payload.
+ * Playable audio is always GET /api/channels/tahti-radio (24/7 Liquidsoap HLS).
+ * GET /api/v1/radio is only the optional member-relay guest badge.
+ */
 export async function fetchRadio(): Promise<{
-  data: RadioNowPlaying;
+  data: RadioStation;
   meta: FetchMeta;
   playable: TahtiPlayable | null;
 }> {
   if (forceMock()) {
-    const data = mockRadio();
+    const data = mockRadioStation();
     return {
       data,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-      playable: radioToPlayable(data),
+      playable: radioStationToPlayable(data),
     };
   }
   try {
-    const data = await getJson<RadioNowPlaying>('/api/v1/radio');
-    if (data.live && data.channel?.slug && !data.channel.hlsUrl) {
-      const ch = await fetchChannel(data.channel.slug);
-      if (ch.playable) {
-        return {
-          data: {
-            ...data,
-            channel: {
-              ...data.channel,
-              hlsUrl: ch.playable.streamUrl,
-              displayName: ch.data.user.displayName,
-            },
-          },
-          meta: ch.meta,
-          playable: {
-            ...ch.playable,
-            kind: 'radio',
-            id: `radio:${ch.data.slug}`,
-            title: data.channel.title ?? ch.playable.title,
-          },
-        };
-      }
-    }
-    return { data, meta: { source: 'api' }, playable: radioToPlayable(data) };
+    const offlineRelay: RadioNowPlaying = { live: false, channel: null };
+    const [channel, memberRelay, recentlyPlayed] = await Promise.all([
+      getJson<PublicChannel>(
+        `/api/channels/${encodeURIComponent(TAHTI_RADIO_SLUG)}`,
+      ),
+      getJson<RadioNowPlaying>('/api/v1/radio').catch(() => offlineRelay),
+      getJson<RadioRecentlyPlayedItem[]>(
+        '/api/v1/radio/recently-played',
+      ).catch(() => [] as RadioRecentlyPlayedItem[]),
+    ]);
+
+    const data: RadioStation = {
+      slug: channel.slug,
+      state: channel.state,
+      hlsUrl: channel.hlsUrl,
+      displayName: channel.user.displayName,
+      username: channel.user.username,
+      avatarUrl: channel.user.avatarUrl,
+      chatEnabled: channel.chatEnabled !== false,
+      nowPlaying: channel.nowPlaying,
+      memberRelay,
+      recentlyPlayed: Array.isArray(recentlyPlayed) ? recentlyPlayed : [],
+    };
+
+    return {
+      data,
+      meta: { source: 'api' },
+      playable: radioStationToPlayable(data),
+    };
   } catch (err) {
     if (allowMockFallback()) {
-      const data = mockRadio();
-      return { data, meta: failMeta(err), playable: radioToPlayable(data) };
+      const data = mockRadioStation();
+      return {
+        data,
+        meta: failMeta(err),
+        playable: radioStationToPlayable(data),
+      };
     }
     return {
-      data: { live: false, channel: null },
+      data: {
+        slug: TAHTI_RADIO_SLUG,
+        state: 'OFFLINE',
+        hlsUrl: null,
+        displayName: 'Tahti Radio',
+        username: TAHTI_RADIO_SLUG,
+        avatarUrl: null,
+        chatEnabled: false,
+        nowPlaying: null,
+        memberRelay: { live: false, channel: null },
+        recentlyPlayed: [],
+      },
       meta: apiErrorMeta(err),
       playable: null,
     };

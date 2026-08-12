@@ -11,6 +11,7 @@ import {
   type FetchMeta,
 } from '../api/client';
 import type { ArchiveItem, PublicChannel, TahtiPlayable } from '../api/types';
+import { ChannelChatPanel } from '../components/ChannelChatPanel';
 import { ChannelVisualizer } from '../components/ChannelVisualizer';
 import { PlayableTrackTable } from '../components/PlayableTrackTable';
 import { useLayoutStore } from '../stores/layoutStore';
@@ -293,27 +294,30 @@ export function ChannelView({ slug }: { slug: string }) {
       )}
 
       {tab === 'chat' && (
-        <section className="border-border flex max-w-md flex-col gap-3 rounded-lg border p-4">
+        <section className="flex max-w-xl flex-col gap-3">
           {chatOn ? (
             <>
-              <p className="text-sm">
-                Chat lives in the right sidebar — switch Queue / Chat there
-                while you listen.
-              </p>
-              <Button size="sm" onClick={openChat}>
-                <span className="inline-flex items-center gap-1.5">
-                  <MessageCircle size={14} />
-                  Focus chat panel
-                </span>
-              </Button>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="text-foreground-secondary text-xs">
+                  Same panel as the right rail (Queue / Chat). Captcha required
+                  for anonymous join when configured.
+                </p>
+                <Button size="sm" variant="secondary" onClick={openChat}>
+                  <span className="inline-flex items-center gap-1.5">
+                    <MessageCircle size={14} />
+                    Focus rail
+                  </span>
+                </Button>
+              </div>
+              <ChannelChatPanel slug={slug} />
               <p className="text-foreground-secondary text-xs">
-                Prefer a full page?{' '}
+                Full page:{' '}
                 <Link
                   to="/chat/$slug"
                   params={{ slug }}
                   className="underline-offset-2 hover:underline"
                 >
-                  Open /chat/{slug}
+                  /chat/{slug}
                 </Link>
               </p>
             </>

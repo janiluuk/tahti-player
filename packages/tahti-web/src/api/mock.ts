@@ -9,6 +9,7 @@ import type {
   PublicCollection,
   PublicProfile,
   RadioNowPlaying,
+  RadioStation,
   SmartLinkView,
   TahtiPlayable,
   TransparencyGrantReport,
@@ -16,6 +17,7 @@ import type {
   TransparencyYtd,
   VenueDirectoryItem,
 } from './types';
+import { TAHTI_RADIO_SLUG } from './types';
 
 /** Public HLS fixture so the player works without a live Tahti stack. */
 export const DEMO_HLS =
@@ -102,11 +104,49 @@ export function mockRadio(): RadioNowPlaying {
     live: true,
     channel: {
       slug: 'northern-lights',
+      artistName: 'Northern Lights',
       displayName: 'Northern Lights',
       hlsUrl: DEMO_HLS,
       title: 'Featured live (mock)',
       artworkUrl: null,
     },
+  };
+}
+
+export function mockRadioStation(): RadioStation {
+  return {
+    slug: TAHTI_RADIO_SLUG,
+    state: 'LIVE',
+    hlsUrl: DEMO_HLS,
+    displayName: 'Tahti Radio',
+    username: TAHTI_RADIO_SLUG,
+    avatarUrl: null,
+    chatEnabled: true,
+    nowPlaying: {
+      title: 'Tahti Radio (mock)',
+      artistName: 'Community rotation',
+      artistUsername: null,
+      artworkUrl: null,
+    },
+    memberRelay: mockRadio(),
+    recentlyPlayed: [
+      {
+        id: 'mock-rp-1',
+        title: 'Midnight Broadcast',
+        artistName: 'Northern Lights',
+        artistUsername: 'northern-lights',
+        artworkUrl: null,
+        playedAt: new Date(Date.now() - 5 * 60_000).toISOString(),
+      },
+      {
+        id: 'mock-rp-2',
+        title: 'Archive Session 02',
+        artistName: 'Northern Lights',
+        artistUsername: 'northern-lights',
+        artworkUrl: null,
+        playedAt: new Date(Date.now() - 15 * 60_000).toISOString(),
+      },
+    ],
   };
 }
 
@@ -314,7 +354,7 @@ export function channelToPlayable(
   }
   return {
     id: `live:${channel.slug}`,
-    kind: channel.slug === 'tahti-radio' ? 'radio' : 'live',
+    kind: channel.slug === TAHTI_RADIO_SLUG ? 'radio' : 'live',
     title: channel.nowPlaying?.title ?? `${channel.user.displayName} LIVE`,
     artist: channel.nowPlaying?.artistName ?? channel.user.displayName,
     coverUrl:
@@ -325,6 +365,27 @@ export function channelToPlayable(
   };
 }
 
+/** Prefer the always-on station HLS; member-relay-only payloads are not playable alone. */
+export function radioStationToPlayable(
+  station: RadioStation,
+): TahtiPlayable | null {
+  if (!station.hlsUrl) {
+    return null;
+  }
+  return {
+    id: `radio:${station.slug}`,
+    kind: 'radio',
+    title: station.nowPlaying?.title ?? 'Tahti Radio',
+    artist: station.nowPlaying?.artistName ?? station.displayName,
+    coverUrl:
+      station.nowPlaying?.artworkUrl ?? station.avatarUrl ?? undefined,
+    streamUrl: station.hlsUrl,
+    protocol: 'hls',
+    channelSlug: station.slug,
+  };
+}
+
+/** @deprecated Use radioStationToPlayable — /api/v1/radio has no stream URL. */
 export function radioToPlayable(radio: RadioNowPlaying): TahtiPlayable | null {
   const ch = radio.channel;
   if (!radio.live || !ch?.hlsUrl) {
@@ -334,7 +395,7 @@ export function radioToPlayable(radio: RadioNowPlaying): TahtiPlayable | null {
     id: `radio:${ch.slug}`,
     kind: 'radio',
     title: ch.title ?? 'Tahti Radio',
-    artist: ch.displayName ?? ch.slug,
+    artist: ch.artistName ?? ch.displayName ?? ch.slug,
     coverUrl: ch.artworkUrl ?? undefined,
     streamUrl: ch.hlsUrl,
     protocol: 'hls',

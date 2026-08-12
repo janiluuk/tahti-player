@@ -49,10 +49,19 @@ echo "    API: same-origin /tahti-api (proxied to https://api.tahti.live)"
 echo "    Chat WS: ${CENTRIFUGO_WS}"
 cd "$NUCLEAR_ROOT"
 # Leave VITE_TAHTI_API_URL unset so the client uses /tahti-api.
-# Unset mock so production data is used.
-env -u VITE_TAHTI_API_URL -u VITE_FORCE_MOCK \
-  VITE_CENTRIFUGO_WS="${CENTRIFUGO_WS}" \
-  pnpm --filter @nuclearplayer/tahti-web build
+# Unset mock + mock-fallback so production data is used (no Northern Lights fixtures).
+# Optional: export VITE_HCAPTCHA_SITEKEY before deploy for anonymous chat captcha.
+BUILD_ENV=(
+  env
+  -u VITE_TAHTI_API_URL
+  -u VITE_FORCE_MOCK
+  -u VITE_ALLOW_MOCK_FALLBACK
+  "VITE_CENTRIFUGO_WS=${CENTRIFUGO_WS}"
+)
+if [[ -n "${VITE_HCAPTCHA_SITEKEY:-}" ]]; then
+  BUILD_ENV+=("VITE_HCAPTCHA_SITEKEY=${VITE_HCAPTCHA_SITEKEY}")
+fi
+"${BUILD_ENV[@]}" pnpm --filter @nuclearplayer/tahti-web build
 
 if [[ ! -f "$ROOT/dist/index.html" ]]; then
   echo "error: build did not produce dist/index.html" >&2
@@ -87,9 +96,19 @@ ssh "$HOST" "set -e
   code=\$(curl -sS -o /dev/null -w '%{http_code}' http://127.0.0.1:${HOST_PORT}/tahti-api/api/v1/channels/directory)
   echo \"api-proxy:\${code}\"
   test \"\${code}\" = '200'
+  names=\$(curl -sS http://127.0.0.1:${HOST_PORT}/tahti-api/api/v1/channels/directory | python3 -c 'import sys,json; print(\", \".join(i[\"displayName\"] for i in json.load(sys.stdin)[\"items\"][:5]))')
+  echo \"directory-sample:\${names}\"
+  echo \"\${names}\" | grep -vq 'Northern Lights'
+  radio=\$(curl -sS http://127.0.0.1:${HOST_PORT}/tahti-api/api/channels/tahti-radio)
+  echo \"\${radio}\" | python3 -c 'import sys,json; d=json.load(sys.stdin); assert d.get(\"hlsUrl\"), d; print(\"tahti-radio:\", d.get(\"state\"), (d.get(\"hlsUrl\") or \"\")[:64])'
+  # Cookie forwarding (logout clears session cookie on this origin)
+  sc=\$(curl -sS -D - -o /dev/null -X POST http://127.0.0.1:${HOST_PORT}/tahti-api/api/auth/logout | tr -d '\\r' | grep -i '^set-cookie:' || true)
+  echo \"set-cookie-forward:\${sc:-MISSING}\"
+  echo \"\${sc}\" | grep -qi 'tahti_session'
 "
 
 echo "==> Deployed"
 echo "    Local upstream:  http://192.168.2.100:${HOST_PORT}"
 echo "    Public (DNS+NPM): https://beta.tahti.live"
+echo "    Login: https://beta.tahti.live/login (real prod account → cookie on beta via /tahti-api)"
 echo "    See packages/tahti-web/deploy/README.md for Nginx Proxy Manager steps."

@@ -24,18 +24,19 @@
 - [x] **Broadcasting wizard** — Connect → Live → Multistream
 - [x] **Email verify** — `/verify`
 - [x] **Fan-tier editor** — Settings → Money
-- [x] **Screen atlas on `/more`** — curated e2e thumbnails + Nuclear routes (`public/map/`, `ScreenAtlas`)
+- [x] **Screen atlas on `/more`** — Nuclear beta captures, flow-aligned side-by-side (`public/map/nuclear/`, `ScreenAtlas`)
+- [x] **Channel chat hardening** — captcha gate, no prod mock-join, access/read-only, channel tab + rail parity
+- [x] **Stash upload UI** — prepare → PUT → register, play/download/delete
+- [x] **Stats detail** — `/studio/stats/detail` plays series + download countries
+- [x] **Sources OAuth demock polish** — no false Mock chips; live Connect + refresh; mock Connect only under FORCE_MOCK
 
 ## Checklist (remaining)
 
-- [ ] Channel chat hardening
 - [ ] Full Three.js visualizer presets
-- [ ] Stash upload UI
-- [ ] Stats detail page
-- [ ] Sources OAuth demock polish
 - [ ] Venue register / membership purchase / password security
+- [ ] Listener dashboard / distribution / radio slots / moderate
 - [ ] Multitrack timeline + press-kit polish
-- [ ] Production cutover for `apps/web`
+- [ ] Production cutover for `apps/web` — [CUTOVER.md](CUTOVER.md)
 
 ## Verify
 
