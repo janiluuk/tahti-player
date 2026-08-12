@@ -1,6 +1,6 @@
-# Tahti × Nuclear — fork notes
+# Tahti Nuclear Player — project notes
 
-This repository is a **Tahti fork** of [nukeop/nuclear](https://github.com/nukeop/nuclear) (AGPL-3.0).
+Tahti Nuclear Player is built on [nukeop/nuclear](https://github.com/nukeop/nuclear) (AGPL-3.0).
 
 It is **not** the upstream Nuclear project. Do not open Nuclear PRs from this tree without cherry-picking onto a clean upstream branch.
 
@@ -8,7 +8,7 @@ It is **not** the upstream Nuclear project. Do not open Nuclear PRs from this tr
 
 | Remote | URL | Role |
 |--------|-----|------|
-| `origin` | `https://github.com/janiluuk/tahti-nuclear.git` | Tahti fork (push here) |
+| `origin` | `https://github.com/janiluuk/tahti-nuclear.git` | Tahti Nuclear Player (push here) |
 | `upstream` | `https://github.com/nukeop/nuclear.git` | Nuclear upstream (fetch/rebase only) |
 
 Create the GitHub repo once (empty), then:
