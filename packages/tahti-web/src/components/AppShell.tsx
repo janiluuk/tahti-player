@@ -44,7 +44,7 @@ export function AppShell() {
   }, [refresh]);
 
   return (
-    <PlayerShell>
+    <PlayerShell className="h-dvh max-h-dvh w-dvw max-w-dvw">
       <header className="border-border bg-background flex items-center justify-between border-b px-4 py-2">
         <div className="flex items-center gap-3">
           <span className="font-display text-lg font-extrabold tracking-tight">
@@ -126,11 +126,6 @@ export function AppShell() {
                 label="Studio"
               />
               <SidebarNavigationItem
-                to="/sources"
-                icon={<PlugIcon size={16} />}
-                label="Sources"
-              />
-              <SidebarNavigationItem
                 to="/more"
                 icon={<MapIcon size={16} />}
                 label="More"
@@ -144,8 +139,8 @@ export function AppShell() {
           </SidebarNavigation>
         </PlayerWorkspace.LeftSidebar>
 
-        <PlayerWorkspace.Main>
-          <div className="h-full overflow-auto p-4 md:p-6">
+        <PlayerWorkspace.Main className="min-h-0 overflow-hidden">
+          <div className="h-full min-h-0 overflow-auto p-4 md:p-6">
             <Outlet />
           </div>
         </PlayerWorkspace.Main>
