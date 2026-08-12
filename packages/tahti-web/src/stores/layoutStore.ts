@@ -1,20 +1,18 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type RightRailMode = 'queue' | 'chat';
-
 type LayoutState = {
   leftCollapsed: boolean;
   rightCollapsed: boolean;
   leftWidth: number;
   rightWidth: number;
-  /** Queue | Chat toggle in the right rail. */
-  rightRailMode: RightRailMode;
+  /** Expand past | play | upcoming strip in the bottom player. */
+  bottomQueueOpen: boolean;
   /** Channel slug for rail chat (last chat-enabled channel). */
   chatSlug: string | null;
   /** Whether that channel allows chat. */
   chatEnabled: boolean;
-  /** Short reason when chat tab is unavailable. */
+  /** Short reason when chat is unavailable. */
   chatDisabledReason: string | null;
   /** Slugs we've already auto-opened chat for this session. */
   chatAutoOpenedFor: string | null;
@@ -24,8 +22,9 @@ type LayoutState = {
   setLeftWidth: (n: number) => void;
   setRightWidth: (n: number) => void;
   setRightCollapsed: (collapsed: boolean) => void;
-  setRightRailMode: (mode: RightRailMode) => void;
-  /** Bind channel chat context; optionally open Chat tab once per visit. */
+  setBottomQueueOpen: (open: boolean) => void;
+  toggleBottomQueue: () => void;
+  /** Bind channel chat context; optionally open right rail once per visit. */
   setChatContext: (opts: {
     slug: string;
     enabled: boolean;
@@ -43,7 +42,7 @@ export const useLayoutStore = create<LayoutState>()(
       rightCollapsed: false,
       leftWidth: 220,
       rightWidth: 340,
-      rightRailMode: 'queue',
+      bottomQueueOpen: false,
       chatSlug: null,
       chatEnabled: false,
       chatDisabledReason: null,
@@ -54,12 +53,9 @@ export const useLayoutStore = create<LayoutState>()(
       setLeftWidth: (leftWidth) => set({ leftWidth }),
       setRightWidth: (rightWidth) => set({ rightWidth }),
       setRightCollapsed: (rightCollapsed) => set({ rightCollapsed }),
-      setRightRailMode: (rightRailMode) => {
-        if (rightRailMode === 'chat' && !get().chatEnabled) {
-          return;
-        }
-        set({ rightRailMode, rightCollapsed: false });
-      },
+      setBottomQueueOpen: (bottomQueueOpen) => set({ bottomQueueOpen }),
+      toggleBottomQueue: () =>
+        set((s) => ({ bottomQueueOpen: !s.bottomQueueOpen })),
 
       setChatContext: ({ slug, enabled, reason, autoOpen }) => {
         const prev = get();
@@ -70,11 +66,7 @@ export const useLayoutStore = create<LayoutState>()(
             ? null
             : (reason ?? 'Chat is disabled for this channel'),
         };
-        if (!enabled && prev.rightRailMode === 'chat') {
-          next.rightRailMode = 'queue';
-        }
         if (enabled && autoOpen && prev.chatAutoOpenedFor !== slug) {
-          next.rightRailMode = 'chat';
           // Keep persisted collapse preference; only mark auto-open once.
           next.chatAutoOpenedFor = slug;
         }
@@ -87,7 +79,6 @@ export const useLayoutStore = create<LayoutState>()(
           chatDisabledReason: s.chatSlug
             ? 'Open a channel to use chat'
             : 'No channel chat yet',
-          rightRailMode: s.rightRailMode === 'chat' ? 'queue' : s.rightRailMode,
         })),
 
       openChatRail: (slug) => {
@@ -98,7 +89,6 @@ export const useLayoutStore = create<LayoutState>()(
         }
         set({
           chatSlug: target,
-          rightRailMode: 'chat',
           rightCollapsed: false,
         });
       },
@@ -108,13 +98,20 @@ export const useLayoutStore = create<LayoutState>()(
       partialize: (s) => ({
         leftCollapsed: s.leftCollapsed,
         rightCollapsed: s.rightCollapsed,
-        rightRailMode: s.rightRailMode,
+        bottomQueueOpen: s.bottomQueueOpen,
         rightWidth: s.rightWidth,
         leftWidth: s.leftWidth,
         chatSlug: s.chatSlug,
         chatEnabled: s.chatEnabled,
         chatAutoOpenedFor: s.chatAutoOpenedFor,
       }),
+      migrate: (persisted) => {
+        const p = (persisted ?? {}) as Record<string, unknown>;
+        // Drop legacy rightRailMode ('queue' | 'chat').
+        const { rightRailMode: _legacy, ...rest } = p;
+        return rest;
+      },
+      version: 2,
     },
   ),
 );
