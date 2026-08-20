@@ -1,18 +1,13 @@
-import {
-  ChevronDownIcon,
-  ListMusicIcon,
-  Maximize2Icon,
-  XIcon,
-} from 'lucide-react';
+import { ChevronDownIcon, ListMusicIcon, Maximize2Icon } from 'lucide-react';
 
 import { formatArtistNames } from '@nuclearplayer/model';
-import { Button, cn, PlayerBar } from '@nuclearplayer/ui';
+import { Button, PlayerBar } from '@nuclearplayer/ui';
 
 import { archiveItemIdFromPlayableId } from '../lib/archiveId';
 import { useLayoutStore } from '../stores/layoutStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { AddToPlaylistButton } from './AddToPlaylistButton';
-import { BottomQueueStrip } from './BottomQueueStrip';
+import { QueueFlyout } from './QueueFlyout';
 
 export function ConnectedPlayerBar() {
   const queue = usePlayerStore((s) => s.queue);
@@ -30,6 +25,8 @@ export function ConnectedPlayerBar() {
   const setVolume = usePlayerStore((s) => s.setVolume);
   const next = usePlayerStore((s) => s.next);
   const previous = usePlayerStore((s) => s.previous);
+  const playQueueIndex = usePlayerStore((s) => s.playQueueIndex);
+  const removeFromQueue = usePlayerStore((s) => s.removeFromQueue);
   const toggleShuffle = usePlayerStore((s) => s.toggleShuffle);
   const cycleRepeat = usePlayerStore((s) => s.cycleRepeat);
   const seekTo = usePlayerStore((s) => s.seekTo);
@@ -116,10 +113,18 @@ export function ConnectedPlayerBar() {
   );
 
   return (
-    <PlayerBar
-      className={cn(queueOpen && 'h-auto min-h-16 items-stretch py-2')}
-      left={
-        queueOpen ? undefined : (
+    <div className="relative">
+      {queueOpen && (
+        <QueueFlyout
+          items={queue}
+          currentId={currentId}
+          onPlay={playQueueIndex}
+          onRemove={removeFromQueue}
+          onClose={() => setBottomQueueOpen(false)}
+        />
+      )}
+      <PlayerBar
+        left={
           <div className="flex min-w-0 items-center gap-2">
             <PlayerBar.NowPlaying
               title={title}
@@ -136,67 +141,64 @@ export function ConnectedPlayerBar() {
               />
             )}
           </div>
-        )
-      }
-      center={
-        <div
-          className={cn(
-            'flex w-full flex-col items-center',
-            queueOpen ? 'max-w-none min-w-0' : 'max-w-xl',
-          )}
-        >
-          {queueOpen ? <BottomQueueStrip controls={controls} /> : controls}
-        </div>
-      }
-      right={
-        <div className="flex items-center gap-2">
-          {playable && (
+        }
+        center={
+          <div className="flex w-full max-w-xl flex-col items-center">
+            {controls}
+          </div>
+        }
+        right={
+          <div className="flex items-center gap-2">
+            {playable && (
+              <Button
+                size="icon-sm"
+                variant="text"
+                onClick={() => setFullScreenPlayerOpen(true)}
+                title="Full screen"
+                aria-label="Full screen"
+                data-testid="expand-full-screen-player"
+              >
+                <Maximize2Icon size={16} />
+              </Button>
+            )}
+            <Button
+              size="icon-sm"
+              variant={queueOpen ? 'secondary' : 'text'}
+              onClick={() => setBottomQueueOpen(!queueOpen)}
+              title={queueOpen ? 'Close queue' : 'Open queue'}
+              aria-label={queueOpen ? 'Close queue' : 'Open queue'}
+              aria-pressed={queueOpen}
+              data-testid={
+                queueOpen ? 'close-bottom-queue' : 'open-bottom-queue'
+              }
+            >
+              <ListMusicIcon size={16} />
+            </Button>
+            {queue.length > 0 && (
+              <span className="text-foreground-secondary text-xs tabular-nums">
+                {queue.length}
+              </span>
+            )}
+            <PlayerBar.Volume
+              value={muted ? 0 : Math.round(volume * 100)}
+              onValueChange={(v) => setVolume(v / 100)}
+            />
             <Button
               size="icon-sm"
               variant="text"
-              onClick={() => setFullScreenPlayerOpen(true)}
-              title="Full screen"
-              aria-label="Full screen"
-              data-testid="expand-full-screen-player"
+              onClick={() => {
+                setBottomQueueOpen(false);
+                hidePlayerBar();
+              }}
+              title="Hide player"
+              aria-label="Hide player"
+              data-testid="hide-player-bar"
             >
-              <Maximize2Icon size={16} />
+              <ChevronDownIcon size={16} />
             </Button>
-          )}
-          <Button
-            size="icon-sm"
-            variant={queueOpen ? 'secondary' : 'text'}
-            onClick={() => setBottomQueueOpen(!queueOpen)}
-            title={queueOpen ? 'Close queue' : 'Open queue'}
-            aria-label={queueOpen ? 'Close queue' : 'Open queue'}
-            aria-pressed={queueOpen}
-            data-testid={queueOpen ? 'close-bottom-queue' : 'open-bottom-queue'}
-          >
-            {queueOpen ? <XIcon size={16} /> : <ListMusicIcon size={16} />}
-          </Button>
-          {!queueOpen && queue.length > 0 && (
-            <span className="text-foreground-secondary text-xs tabular-nums">
-              {queue.length}
-            </span>
-          )}
-          <PlayerBar.Volume
-            value={muted ? 0 : Math.round(volume * 100)}
-            onValueChange={(v) => setVolume(v / 100)}
-          />
-          <Button
-            size="icon-sm"
-            variant="text"
-            onClick={() => {
-              setBottomQueueOpen(false);
-              hidePlayerBar();
-            }}
-            title="Hide player"
-            aria-label="Hide player"
-            data-testid="hide-player-bar"
-          >
-            <ChevronDownIcon size={16} />
-          </Button>
-        </div>
-      }
-    />
+          </div>
+        }
+      />
+    </div>
   );
 }
