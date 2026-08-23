@@ -727,7 +727,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
       'Studio is route-based (not only in-page tabs). Sources is a sibling hub.',
     mermaid: `flowchart TD
   Login["/login"] --> Studio["/studio"]
-  Studio --> Setup["/studio/setup-channel if needed"]
+  Studio --> Setup["/studio/channel?tab=setup if needed"]
 
   Studio --> GL["/studio/go-live"]
   Studio --> Arch["/studio/archive"]

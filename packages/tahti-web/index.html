@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Tahti · Independent music, live</title>
     <meta
       name="description"
@@ -34,7 +35,8 @@
               if (typeof state.dark === 'boolean') dark = state.dark;
             }
           }
-          if (!themeId) themeId = localStorage.getItem('tahti-nuclear-theme-id');
+          if (!themeId)
+            themeId = localStorage.getItem('tahti-nuclear-theme-id');
           var darkRaw = localStorage.getItem('tahti-nuclear-dark');
           if (darkRaw != null) dark = darkRaw === '1';
           if (themeId)

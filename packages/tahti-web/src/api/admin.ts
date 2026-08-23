@@ -1,4 +1,6 @@
+import { getAccountRole } from '../lib/accountRoles';
 import type { FetchMeta } from './client';
+import type { AccountRole } from './types';
 
 const forceMock = () => import.meta.env.VITE_FORCE_MOCK === '1';
 
@@ -435,6 +437,7 @@ export type AdminUserRow = {
   displayName: string;
   email: string;
   username: string;
+  role: AccountRole;
   tier: string;
   isMember: boolean;
   isBoard: boolean;
@@ -459,6 +462,7 @@ export type AdminUserDetail = AdminUserRow & {
 };
 
 export type AdminUserPatch = {
+  role?: AccountRole;
   tier?: 'FREE' | 'ARTIST' | 'STUDIO';
   isMember?: boolean;
   isBoard?: boolean;
@@ -479,6 +483,7 @@ function mockUsers(): AdminUserRow[] {
       displayName: 'DJ Moonlight',
       email: 'moonlight@example.com',
       username: 'dj-moonlight',
+      role: 'ARTIST',
       tier: 'ARTIST',
       isMember: true,
       isBoard: false,
@@ -492,6 +497,7 @@ function mockUsers(): AdminUserRow[] {
       displayName: 'Northern Lights',
       email: 'aurora@example.com',
       username: 'northern-lights',
+      role: 'BOARD',
       tier: 'ARTIST',
       isMember: true,
       isBoard: true,
@@ -505,6 +511,7 @@ function mockUsers(): AdminUserRow[] {
       displayName: 'Listener One',
       email: 'listener1@example.com',
       username: 'listener-one',
+      role: 'LISTENER',
       tier: 'FREE',
       isMember: false,
       isBoard: false,
@@ -518,6 +525,7 @@ function mockUsers(): AdminUserRow[] {
       displayName: 'Midnight Cartography',
       email: 'midnight@example.com',
       username: 'midnight-cartography',
+      role: 'ARTIST',
       tier: 'ARTIST',
       isMember: true,
       isBoard: false,
@@ -534,8 +542,8 @@ function mockUserDetail(user: AdminUserRow): AdminUserDetail {
     ...user,
     memberSince: user.isMember ? '2025-01-15T00:00:00.000Z' : null,
     suspendReason: mockSuspendReasons.get(user.id) ?? null,
-    fanSubscriptionsAsArtist: user.tier === 'ARTIST' ? 18 : 0,
-    stripeConnectChargesEnabled: user.tier === 'ARTIST',
+    fanSubscriptionsAsArtist: user.role !== 'LISTENER' ? 18 : 0,
+    stripeConnectChargesEnabled: user.role !== 'LISTENER',
     channel: user.channelState
       ? {
           id: `channel-${user.id}`,
@@ -551,7 +559,7 @@ function mockUserDetail(user: AdminUserRow): AdminUserDetail {
 
 export async function fetchAdminUsers(filters: {
   q?: string;
-  tier?: string;
+  role?: string;
   isMember?: string;
 }): Promise<{ data: AdminUserRow[]; total: number; meta: FetchMeta }> {
   if (forceMock()) {
@@ -565,8 +573,8 @@ export async function fetchAdminUsers(filters: {
           u.username.toLowerCase().includes(q),
       );
     }
-    if (filters.tier) {
-      rows = rows.filter((u) => u.tier === filters.tier);
+    if (filters.role) {
+      rows = rows.filter((user) => user.role === filters.role);
     }
     if (filters.isMember) {
       rows = rows.filter((u) => String(u.isMember) === filters.isMember);
@@ -582,8 +590,10 @@ export async function fetchAdminUsers(filters: {
     if (filters.q) {
       qs.set('search', filters.q);
     }
-    if (filters.tier) {
-      qs.set('tier', filters.tier);
+    if (filters.role === 'ARTIST' || filters.role === 'BOARD') {
+      qs.set('tier', 'ARTIST');
+    } else if (filters.role === 'LISTENER') {
+      qs.set('tier', 'FREE');
     }
     if (filters.isMember) {
       qs.set('isMember', filters.isMember);
@@ -591,7 +601,18 @@ export async function fetchAdminUsers(filters: {
     const data = await getJson<{ total: number; users: AdminUserRow[] }>(
       `/api/admin/users${qs.toString() ? `?${qs.toString()}` : ''}`,
     );
-    return { data: data.users, total: data.total, meta: { source: 'api' } };
+    const users = data.users.map((user) => ({
+      ...user,
+      role: getAccountRole(user),
+    }));
+    const filteredUsers = filters.role
+      ? users.filter((user) => user.role === filters.role)
+      : users;
+    return {
+      data: filteredUsers,
+      total: filters.role ? filteredUsers.length : data.total,
+      meta: { source: 'api' },
+    };
   } catch (err) {
     return { data: [], total: 0, meta: failMeta(err) };
   }
@@ -611,7 +632,10 @@ export async function fetchAdminUser(
     const data = await getJson<AdminUserDetail>(
       `/api/admin/users/${encodeURIComponent(id)}`,
     );
-    return { data, meta: { source: 'api' } };
+    return {
+      data: { ...data, role: getAccountRole(data) },
+      meta: { source: 'api' },
+    };
   } catch (err) {
     return { data: null, meta: failMeta(err) };
   }
@@ -628,20 +652,35 @@ export async function patchAdminUser(
       return { ok: false, error: 'User not found' };
     }
     const current = users[index]!;
+    const role = patch.role ?? current.role;
+    const legacyRole = {
+      tier: role === 'LISTENER' ? 'FREE' : 'ARTIST',
+      isBoard: role === 'BOARD',
+    };
     users[index] = {
       ...current,
       ...patch,
-      isMember: patch.isBoard ? true : (patch.isMember ?? current.isMember),
+      ...legacyRole,
+      role,
+      isMember: role === 'BOARD' ? true : (patch.isMember ?? current.isMember),
     };
     return { ok: true, data: mockUserDetail(users[index]!) };
   }
   try {
+    const legacyPatch = patch.role
+      ? {
+          ...patch,
+          tier:
+            patch.role === 'LISTENER' ? ('FREE' as const) : ('ARTIST' as const),
+          isBoard: patch.role === 'BOARD',
+        }
+      : patch;
     const data = await sendJson<AdminUserDetail>(
       `/api/admin/users/${encodeURIComponent(id)}`,
       'PATCH',
-      patch,
+      legacyPatch,
     );
-    return { ok: true, data };
+    return { ok: true, data: { ...data, role: getAccountRole(data) } };
   } catch (err) {
     return {
       ok: false,

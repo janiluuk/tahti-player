@@ -361,13 +361,15 @@ export function ArtistView({ username }: { username: string }) {
               Open channel ({channel.state})
             </Link>
           )}
-          <Link
-            to="/subscribe/$username"
-            params={{ username: artist.username }}
-            className="text-foreground-secondary underline-offset-2 hover:underline"
-          >
-            Subscribe
-          </Link>
+          {fanTiers.length > 0 ? (
+            <Link
+              to="/subscribe/$username"
+              params={{ username: artist.username }}
+              className="text-foreground-secondary underline-offset-2 hover:underline"
+            >
+              Support artist
+            </Link>
+          ) : null}
           {channel && (
             <Link
               to="/u/$username/green-room"
@@ -377,7 +379,7 @@ export function ArtistView({ username }: { username: string }) {
               Green room
             </Link>
           )}
-          {!isOwner && (
+          {!isOwner && artist.freeSubscriptionsEnabled !== false && (
             <NewsletterSubscribeToggle
               artistUsername={artist.username}
               artistDisplayName={artist.displayName}
@@ -594,6 +596,7 @@ export function ArtistView({ username }: { username: string }) {
             <Eyebrow>Catalog</Eyebrow>
             <PlayableTrackTable
               items={catalogPlayables}
+              artistUsername={artist.username}
               emptyMessage={
                 pinnedPlayables.length > 0
                   ? 'No other tracks on this profile.'

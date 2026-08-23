@@ -42,6 +42,7 @@ export function SortableRow<T extends Track = Track>({
   return (
     <tr
       data-testid="track-row"
+      aria-current={isCurrent ? 'true' : undefined}
       ref={setNodeRef}
       style={style}
       className={cn(
@@ -53,8 +54,8 @@ export function SortableRow<T extends Track = Track>({
           'border-l-primary bg-primary/10 border-l-2': isCurrent,
         },
       )}
-      {...attributes}
-      {...listeners}
+      {...(isReorderable ? attributes : {})}
+      {...(isReorderable ? listeners : {})}
     >
       {row.getVisibleCells().map((cell) => (
         <Cell key={cell.id} cell={cell} />

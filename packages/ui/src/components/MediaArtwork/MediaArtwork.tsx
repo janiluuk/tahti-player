@@ -1,4 +1,4 @@
-import { CassetteTape, Heart, ListPlus, Play } from 'lucide-react';
+import { CassetteTape, Heart, ListPlus, Pause, Play } from 'lucide-react';
 import { FC, ReactNode, type MouseEvent } from 'react';
 
 import { cn } from '../../utils';
@@ -25,11 +25,14 @@ export type MediaArtworkProps = {
   /** Centered circular play control. */
   onPlay?: () => void;
   playLabel?: string;
+  pauseLabel?: string;
+  isPlaying?: boolean;
   playDisabled?: boolean;
   /** Convenience queue action (top-right overlay). */
   onQueue?: () => void;
   queueLabel?: string;
   queueDisabled?: boolean;
+  queueActive?: boolean;
   /** Convenience favorite action (top-right overlay). */
   onFavorite?: () => void;
   favorited?: boolean;
@@ -75,10 +78,13 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
   placeholder,
   onPlay,
   playLabel = 'Play',
+  pauseLabel = 'Pause',
+  isPlaying = false,
   playDisabled,
   onQueue,
   queueLabel = 'Add to queue',
   queueDisabled,
+  queueActive = false,
   onFavorite,
   favorited = false,
   favoriteLabel = 'Favorite',
@@ -99,6 +105,7 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
             icon: <ListPlus size={overlayPx} />,
             onClick: onQueue,
             disabled: queueDisabled,
+            active: queueActive,
           } satisfies MediaArtworkAction,
         ]
       : []),
@@ -216,16 +223,21 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
                 size="icon-sm"
                 variant="default"
                 disabled={playDisabled}
-                title={playLabel}
-                aria-label={playLabel}
+                title={isPlaying ? pauseLabel : playLabel}
+                aria-label={isPlaying ? pauseLabel : playLabel}
+                aria-pressed={isPlaying || undefined}
                 data-testid="media-artwork-play"
-                className="pointer-events-auto size-7 rounded-full shadow-md"
+                className="pointer-events-auto size-6 rounded-full shadow-md"
                 onClick={(e) => {
                   stop(e);
                   onPlay?.();
                 }}
               >
-                <Play size={iconPx} className="translate-x-px fill-current" />
+                {isPlaying ? (
+                  <Pause size={iconPx} className="fill-current" />
+                ) : (
+                  <Play size={iconPx} className="translate-x-px fill-current" />
+                )}
               </Button>
             )}
             {secondary.map((action) => (
@@ -239,7 +251,10 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
                 aria-label={action.label}
                 aria-pressed={action.active}
                 data-testid={`media-artwork-${action.id}`}
-                className="pointer-events-auto size-5 rounded-full bg-black/55 text-white shadow-sm backdrop-blur-sm"
+                className={cn(
+                  'pointer-events-auto size-4 rounded-full bg-black/55 text-white shadow-sm backdrop-blur-sm',
+                  action.active && 'bg-primary text-primary-foreground',
+                )}
                 onClick={(e) => {
                   stop(e);
                   action.onClick();
@@ -264,8 +279,9 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
                 size="icon-sm"
                 variant="default"
                 disabled={playDisabled}
-                title={playLabel}
-                aria-label={playLabel}
+                title={isPlaying ? pauseLabel : playLabel}
+                aria-label={isPlaying ? pauseLabel : playLabel}
+                aria-pressed={isPlaying || undefined}
                 data-testid="media-artwork-play"
                 className={cn(
                   'pointer-events-auto rounded-full shadow-md',
@@ -276,7 +292,11 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
                   onPlay?.();
                 }}
               >
-                <Play size={iconPx} className="translate-x-px fill-current" />
+                {isPlaying ? (
+                  <Pause size={iconPx} className="fill-current" />
+                ) : (
+                  <Play size={iconPx} className="translate-x-px fill-current" />
+                )}
               </Button>
             </div>
           )}

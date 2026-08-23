@@ -123,7 +123,7 @@ Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
 | Feature | Prod | POC | Status | Notes |
 |---------|------|-----|--------|-------|
 | Studio home | `/dashboard` | `/studio` | `live-api` | |
-| Setup channel | `/dashboard/setup-channel` | `/studio/setup-channel` | `live-api` | `POST /api/me/channel/provision`; prod path aliases redirect |
+| Channel setup and design | `/dashboard/setup-channel` | `/studio/channel?tab=setup` | `live-api` | `POST /api/me/channel/provision`; setup continues into the shared channel workspace |
 | Go Live | `/dashboard/broadcast` | `/studio/go-live` | `live-api` | broadcast wizard steps; simulator only under FORCE_MOCK |
 | Multistream RTMP | broadcast | go-live tab | `live-api` | |
 | Archive / Music | `/dashboard/archive` | `/studio/archive` | `live-api` | |

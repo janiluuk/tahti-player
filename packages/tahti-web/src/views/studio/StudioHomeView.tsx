@@ -16,7 +16,6 @@ import {
   NewspaperIcon,
   PlugIcon,
   RadioIcon,
-  RocketIcon,
   ScissorsIcon,
   ShieldCheckIcon,
   UploadCloudIcon,
@@ -28,18 +27,15 @@ import { useEffect, useState, type FC, type ReactNode } from 'react';
 
 import { CardGrid } from '@nuclearplayer/ui';
 
-import {
-  fetchStudioArchive,
-  fetchStudioCollections,
-  fetchStudioReleases,
-} from '../../api/studio';
+import { fetchStudioArchive, fetchStudioCollections } from '../../api/studio';
 import { fetchStatsSummary, type StatsSummary } from '../../api/studio-extras';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioNav } from '../../components/StudioNav';
 import { Eyebrow } from '../../components/tahti/Eyebrow';
+import { timeOfDayGreeting } from '../../lib/greeting';
 import { useAuthStore } from '../../stores/authStore';
 
-type Counts = { archive: number; releases: number; collections: number };
+type Counts = { archive: number; collections: number };
 
 const EMPTY_STATS: StatsSummary = {
   playsToday: 0,
@@ -170,7 +166,6 @@ export function StudioHomeView() {
   const user = useAuthStore((s) => s.user);
   const [counts, setCounts] = useState<Counts>({
     archive: 0,
-    releases: 0,
     collections: 0,
   });
   const [stats, setStats] = useState<StatsSummary>(EMPTY_STATS);
@@ -182,14 +177,12 @@ export function StudioHomeView() {
     }
     void Promise.all([
       fetchStudioArchive(),
-      fetchStudioReleases(),
       fetchStudioCollections(),
       fetchStatsSummary(),
-    ]).then(([a, r, c, summary]) => {
+    ]).then(([archive, collections, summary]) => {
       setCounts({
-        archive: a.data.length,
-        releases: r.data.releases.length,
-        collections: c.data.length,
+        archive: archive.data.length,
+        collections: collections.data.length,
       });
       setStats(summary.data);
     });
@@ -205,8 +198,15 @@ export function StudioHomeView() {
         <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h1 className="font-display text-3xl font-extrabold tracking-tight">
-              Studio
+              {user
+                ? `${timeOfDayGreeting(new Date().getHours())}, ${user.displayName || user.username}`
+                : 'Studio'}
             </h1>
+            {user ? (
+              <p className="text-foreground-secondary mt-1 text-xs font-semibold tracking-wide uppercase">
+                Studio
+              </p>
+            ) : null}
             {channel ? (
               <p className="text-foreground-secondary mt-1 text-sm">
                 <span className="text-foreground font-medium">
@@ -220,7 +220,8 @@ export function StudioHomeView() {
             ) : (
               <p className="text-foreground-secondary mt-1 text-sm">
                 <Link
-                  to="/studio/setup-channel"
+                  to="/studio/channel"
+                  search={{ tab: 'setup' }}
                   className="text-foreground underline-offset-2 hover:underline"
                 >
                   Create your channel
@@ -319,17 +320,6 @@ export function StudioHomeView() {
                       : 'Albums, EPs, DJ sets & playlists'
                   }
                   color="var(--accent-yellow)"
-                />
-                <StudioActionTile
-                  to="/studio/releases"
-                  icon={RocketIcon}
-                  label="Releases"
-                  subtitle={
-                    counts.releases
-                      ? `${counts.releases} releases`
-                      : 'Share releases'
-                  }
-                  color="var(--primary)"
                 />
                 <StudioActionTile
                   to="/studio/embeds"

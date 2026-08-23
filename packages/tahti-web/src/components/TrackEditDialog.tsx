@@ -108,6 +108,11 @@ export function TrackEditDialog({ archiveItemId, onClose, onSaved }: Props) {
           contentType: res.data.contentType ?? 'STUDIO',
           license: res.data.license ?? '',
           isPublic: res.data.isPublic ?? true,
+          visibility:
+            res.data.visibility ??
+            (res.data.isPublic === false ? 'PRIVATE' : 'PUBLIC'),
+          releaseDate: res.data.releaseDate ?? '',
+          downloadsEnabled: res.data.downloadsEnabled ?? false,
           commentsEnabled: res.data.commentsEnabled ?? true,
           bannerUrl: res.data.bannerUrl ?? '',
         });
@@ -186,6 +191,8 @@ export function TrackEditDialog({ archiveItemId, onClose, onSaved }: Props) {
       title: form.title.trim(),
       artistName: form.artistName?.trim() || null,
       genre: form.genre?.trim() || null,
+      isPublic: form.visibility === 'PUBLIC',
+      releaseDate: form.releaseDate || null,
     });
     setSaving(false);
     if (!result.ok) {
@@ -202,6 +209,11 @@ export function TrackEditDialog({ archiveItemId, onClose, onSaved }: Props) {
       contentType: result.data.contentType ?? current.contentType,
       license: result.data.license ?? '',
       isPublic: result.data.isPublic ?? true,
+      visibility:
+        result.data.visibility ??
+        (result.data.isPublic === false ? 'PRIVATE' : 'PUBLIC'),
+      releaseDate: result.data.releaseDate ?? '',
+      downloadsEnabled: result.data.downloadsEnabled ?? false,
       commentsEnabled: result.data.commentsEnabled ?? true,
       bannerUrl: result.data.bannerUrl ?? '',
     }));
@@ -282,6 +294,17 @@ export function TrackEditDialog({ archiveItemId, onClose, onSaved }: Props) {
                   normalize={capitalizeGenre}
                 />
                 <label className="flex flex-col gap-1 text-sm">
+                  Release date
+                  <input
+                    type="date"
+                    value={form.releaseDate ?? ''}
+                    onChange={(event) =>
+                      setForm({ ...form, releaseDate: event.target.value })
+                    }
+                    className="border-border bg-background h-10 rounded-md border px-3 text-sm"
+                  />
+                </label>
+                <label className="flex flex-col gap-1 text-sm">
                   Content type
                   <select
                     value={form.contentType ?? 'STUDIO'}
@@ -313,21 +336,40 @@ export function TrackEditDialog({ archiveItemId, onClose, onSaved }: Props) {
                     ))}
                   </select>
                 </label>
-                <label className="flex items-start gap-2 text-sm">
+                <label className="flex flex-col gap-1 text-sm">
+                  Visibility
+                  <select
+                    value={form.visibility ?? 'PUBLIC'}
+                    onChange={(event) =>
+                      setForm({
+                        ...form,
+                        visibility: event.target.value as
+                          | 'PUBLIC'
+                          | 'UNLISTED'
+                          | 'PRIVATE',
+                      })
+                    }
+                    className="border-border bg-background h-10 rounded-md border px-3 text-sm"
+                  >
+                    <option value="PUBLIC">Public</option>
+                    <option value="UNLISTED">
+                      Unlisted — direct link only
+                    </option>
+                    <option value="PRIVATE">Private — only you</option>
+                  </select>
+                </label>
+                <label className="flex items-center gap-2 text-sm">
                   <input
                     type="checkbox"
-                    checked={form.isPublic === false}
+                    checked={form.downloadsEnabled ?? false}
                     onChange={(event) =>
-                      setForm({ ...form, isPublic: !event.target.checked })
+                      setForm({
+                        ...form,
+                        downloadsEnabled: event.target.checked,
+                      })
                     }
-                    className="mt-0.5"
                   />
-                  <span>
-                    <span className="block font-medium">Private track</span>
-                    <span className="text-foreground-secondary block text-xs">
-                      Only you can see and play this track.
-                    </span>
-                  </span>
+                  Allow downloads
                 </label>
                 <label className="flex items-center gap-2 text-sm">
                   <input

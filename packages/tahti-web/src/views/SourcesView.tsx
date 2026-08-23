@@ -70,6 +70,7 @@ import { usePlayerStore } from '../stores/playerStore';
 
 const forceMock = () => import.meta.env.VITE_FORCE_MOCK === '1';
 const HEARTHIS_IMPORTS_STORAGE_KEY = 'tahti-web-hearthis-imports';
+const NEW_PLAYLIST_DESTINATION = '__new_playlist__';
 
 type TileStatus = {
   status: ConnectionStatus | null;
@@ -133,6 +134,7 @@ export function SourcesView({ tabId }: { tabId?: IntegrationId }) {
     StudioCollection[]
   >([]);
   const [destinationId, setDestinationId] = useState('');
+  const [newDestinationName, setNewDestinationName] = useState('');
   const [urlPaste, setUrlPaste] = useState('');
   const [note, setNote] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -330,9 +332,37 @@ export function SourcesView({ tabId }: { tabId?: IntegrationId }) {
     });
   };
 
+  const resolveDestinationId = async (): Promise<string | null> => {
+    if (destinationId !== NEW_PLAYLIST_DESTINATION) {
+      return destinationId || null;
+    }
+    const name = newDestinationName.trim();
+    if (!name) {
+      setNote('Give the new playlist a name first.');
+      return null;
+    }
+    const created = await createStudioCollection({
+      name,
+      style: 'PLAYLIST',
+      isPublic: false,
+    });
+    if (!created.ok || !created.data.id) {
+      setNote(
+        created.ok ? 'Created playlist has no import ID.' : created.error,
+      );
+      return null;
+    }
+    setDestinationCollections((current) => [created.data, ...current]);
+    setDestinationId(created.data.id);
+    setNewDestinationName('');
+    toast.success(`Created playlist “${created.data.name}”.`);
+    return created.data.id;
+  };
+
   const importTracksToDestination = async (tracks: HearthisTrack[]) => {
-    if (!destinationId) {
-      setNote('Choose an existing playlist first.');
+    const resolvedDestinationId = await resolveDestinationId();
+    if (!resolvedDestinationId) {
+      setNote((current) => current ?? 'Choose or create a playlist first.');
       return;
     }
     const pendingTracks = tracks.filter(
@@ -349,7 +379,10 @@ export function SourcesView({ tabId }: { tabId?: IntegrationId }) {
     const notificationId = toast.loading(
       `Import started for ${pendingTracks.length} item${pendingTracks.length === 1 ? '' : 's'}…`,
     );
-    const result = await importHearthisTracks(destinationId, pendingTracks);
+    const result = await importHearthisTracks(
+      resolvedDestinationId,
+      pendingTracks,
+    );
     setBusy(false);
     setHearthisSelected(new Set());
     const nextImportedIds = new Set(importedHearthisIds);
@@ -887,12 +920,26 @@ export function SourcesView({ tabId }: { tabId?: IntegrationId }) {
                     aria-label="Import destination playlist"
                   >
                     <option value="">Choose destination playlist</option>
+                    <option value={NEW_PLAYLIST_DESTINATION}>
+                      New playlist…
+                    </option>
                     {playlistDestinations.map((collection) => (
                       <option key={collection.slug} value={collection.id}>
                         {collection.name}
                       </option>
                     ))}
                   </select>
+                  {destinationId === NEW_PLAYLIST_DESTINATION ? (
+                    <input
+                      value={newDestinationName}
+                      onChange={(event) =>
+                        setNewDestinationName(event.target.value)
+                      }
+                      aria-label="New playlist name"
+                      placeholder="Playlist name"
+                      className="border-border bg-background min-w-48 flex-1 rounded border px-2 py-1.5 text-sm"
+                    />
+                  ) : null}
                   <Button
                     size="sm"
                     variant="secondary"
@@ -915,7 +962,11 @@ export function SourcesView({ tabId }: { tabId?: IntegrationId }) {
                   <Button
                     size="sm"
                     disabled={
-                      busy || !destinationId || hearthisSelected.size === 0
+                      busy ||
+                      !destinationId ||
+                      (destinationId === NEW_PLAYLIST_DESTINATION &&
+                        !newDestinationName.trim()) ||
+                      hearthisSelected.size === 0
                     }
                     onClick={() => void importHearthisSelection()}
                   >
@@ -1043,6 +1094,8 @@ export function SourcesView({ tabId }: { tabId?: IntegrationId }) {
                         disabled={
                           busy ||
                           !destinationId ||
+                          (destinationId === NEW_PLAYLIST_DESTINATION &&
+                            !newDestinationName.trim()) ||
                           importedHearthisIds.has(track.id)
                         }
                         onClick={() => void importTracksToDestination([track])}

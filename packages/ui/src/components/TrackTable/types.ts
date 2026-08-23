@@ -11,9 +11,12 @@ export type TrackTableLabels = {
   };
   favorite: string;
   unfavorite: string;
+  play: string;
+  pause: string;
   playAll: string;
   addAllToQueue: string;
   addToQueue: string;
+  inQueue: string;
   trackOptions: string;
   remove: string;
   filterPlaceholder: string;
@@ -26,6 +29,7 @@ export type TrackTableClasses = {
 export type TrackTableActions<T extends Track = Track> = {
   onReorder?: (fromIndex: number, toIndex: number) => void;
   onPlayNow?: (track: T) => void;
+  onOpenDetails?: (track: T) => void;
   onPlayNext?: (track: T) => void;
   onAddToQueue?: (track: T) => void;
   onToggleFavorite?: (track: T) => void;
@@ -72,6 +76,7 @@ export type TrackTableProps<T extends Track = Track> = {
   meta?: {
     isTrackFavorite?: (track: T) => boolean;
     isCurrentTrack?: (track: T) => boolean;
+    isTrackPlaying?: (track: T) => boolean;
     isTrackQueued?: (track: T) => boolean;
     /** Per-row gate for actions.onEdit's icon -- absent/false hides it,
      * same as onToggleFavorite/onAddToQueue being absent hides theirs. */

@@ -31,12 +31,13 @@ const ToasterImpl: FC<ToasterProps> = ({
         unstyled: true,
         classNames: {
           toast:
-            'bg-background text-foreground border-border border-(length:--border-width) font-bold shadow-shadow rounded-md text-sm flex items-center gap-2 p-4 w-80 [&:has(button)]:justify-between select-none',
-          description: 'font-normal',
+            'bg-background text-foreground border-border border-(length:--border-width) shadow-shadow rounded-md text-sm flex items-start gap-3 p-3.5 w-[min(22rem,calc(100vw-2rem))] select-none [&_[data-content]]:min-w-0 [&_[data-content]]:flex-1 [&_[data-title]]:font-semibold [&_[data-title]]:leading-snug',
+          description:
+            'text-foreground-secondary mt-0.5 font-normal leading-snug',
           actionButton:
-            'font-normal border-(length:--border-width) text-smh-6 px-2 bg-primary text-foreground border-border rounded-md shrink-0',
+            'h-8 shrink-0 rounded-md border-(length:--border-width) border-border bg-primary px-2.5 text-xs font-semibold text-primary-foreground',
           cancelButton:
-            'font-normal border-(length:--border-width) text-sm h-6 px-2 bg-background-secondary text-foreground border-border rounded-md shrink-0',
+            'h-8 shrink-0 rounded-md border-(length:--border-width) border-border bg-background-secondary px-2.5 text-xs font-semibold text-foreground',
           loading:
             '[&[data-sonner-toast]_[data-icon]]:flex [&[data-sonner-toast]_[data-icon]]:size-4 [&[data-sonner-toast]_[data-icon]]:relative [&[data-sonner-toast]_[data-icon]]:justify-start [&[data-sonner-toast]_[data-icon]]:items-center [&[data-sonner-toast]_[data-icon]]:flex-shrink-0',
           success:

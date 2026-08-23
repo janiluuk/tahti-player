@@ -1,4 +1,5 @@
 import type { FetchMeta } from './client';
+import { setMockFreeSubscriptionsEnabled } from './mock-profile-preferences';
 
 const forceMock = () => import.meta.env.VITE_FORCE_MOCK === '1';
 
@@ -620,6 +621,7 @@ export type ProfileFields = {
   tipJarUrl: string | null;
   pronouns: string | null;
   chatEnabled: boolean;
+  freeSubscriptionsEnabled: boolean;
   artistKind?: 'SINGLE' | 'COLLECTIVE';
   /** ISO 3166-1 alpha-2, e.g. 'FI'. */
   countryCode?: string | null;
@@ -637,6 +639,7 @@ let mockProfile: ProfileFields = {
   tipJarUrl: null,
   pronouns: null,
   chatEnabled: true,
+  freeSubscriptionsEnabled: true,
   artistKind: 'SINGLE',
   countryCode: null,
   defaultLocation: null,
@@ -674,6 +677,7 @@ export async function patchMeProfile(
       | 'tipJarUrl'
       | 'pronouns'
       | 'chatEnabled'
+      | 'freeSubscriptionsEnabled'
       | 'artistKind'
       | 'countryCode'
       | 'defaultLocation'
@@ -684,6 +688,12 @@ export async function patchMeProfile(
 ): Promise<{ ok: true; data: ProfileFields } | { ok: false; error: string }> {
   if (forceMock()) {
     mockProfile = { ...mockProfile, ...patch };
+    if (patch.freeSubscriptionsEnabled !== undefined) {
+      setMockFreeSubscriptionsEnabled(
+        mockProfile.username,
+        patch.freeSubscriptionsEnabled,
+      );
+    }
     return { ok: true, data: { ...mockProfile } };
   }
   try {

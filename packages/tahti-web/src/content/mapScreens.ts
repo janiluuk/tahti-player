@@ -502,10 +502,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
       },
       {
         id: 'artist-setup-channel',
-        title: 'Setup channel (no channel yet)',
-        viewName: 'Setup',
+        title: 'Channel setup and design',
+        viewName: 'Channel',
         caption:
-          'Fresh artist must create a channel before studio tools unlock.',
+          'Create a channel, then continue directly into its profile, visual design, radio, and domain settings.',
         old: {
           image: '/map/studio/setup-channel.png',
           route: '/dashboard/setup-channel',
@@ -513,8 +513,8 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/setup-channel-gated.png',
-          route: '/studio (gated)',
-          caption: 'Nuclear studio home nudges channel creation inline',
+          route: '/studio/channel?tab=setup',
+          caption: 'Nuclear combines channel setup and design',
         },
       },
       {

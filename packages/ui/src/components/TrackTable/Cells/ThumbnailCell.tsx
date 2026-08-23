@@ -9,10 +9,19 @@ import { useTrackTableContext } from '../TrackTableContext';
 export const ThumbnailCell = <T extends Track>({
   getValue,
   row,
+  table,
 }: CellContext<T, Artwork>) => {
   const { actions, labels } = useTrackTableContext<T>();
   const track = row.original;
   const artwork = getValue();
+  const meta = table.options.meta as
+    | {
+        isTrackPlaying?: (candidate: T) => boolean;
+        isTrackQueued?: (candidate: T) => boolean;
+      }
+    | undefined;
+  const isPlaying = meta?.isTrackPlaying?.(track) ?? false;
+  const isQueued = meta?.isTrackQueued?.(track) ?? false;
 
   return (
     <td className="w-10 text-center">
@@ -29,7 +38,9 @@ export const ThumbnailCell = <T extends Track>({
                 }
               : undefined
           }
-          playLabel="Play"
+          playLabel={`${labels.play} ${track.title}`}
+          pauseLabel={`${labels.pause} ${track.title}`}
+          isPlaying={isPlaying}
           onQueue={
             actions.onAddToQueue
               ? () => {
@@ -37,7 +48,9 @@ export const ThumbnailCell = <T extends Track>({
                 }
               : undefined
           }
-          queueLabel={labels.addToQueue}
+          queueLabel={isQueued ? labels.inQueue : labels.addToQueue}
+          queueDisabled={isQueued}
+          queueActive={isQueued}
           placeholder={
             <Music size={16} absoluteStrokeWidth className="opacity-20" />
           }

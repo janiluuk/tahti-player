@@ -83,3 +83,9 @@ export function syncDocumentMetadata(pathname: string): void {
     .querySelector<HTMLLinkElement>('link[rel="canonical"]')
     ?.setAttribute('href', canonicalUrl);
 }
+
+export function scrollingPlaybackTitle(title: string, offset: number): string {
+  const marquee = `${title}   `;
+  const position = offset % marquee.length;
+  return `${marquee.slice(position)}${marquee.slice(0, position)}`;
+}

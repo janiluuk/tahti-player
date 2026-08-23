@@ -62,7 +62,7 @@ function SignedInToggle({ artistUsername }: { artistUsername: string }) {
       title={
         subscribed
           ? 'Subscribed to email updates — click to unsubscribe'
-          : 'Get notified of newsletters, events, and activity'
+          : 'Subscribe for free to newsletters, events, and activity'
       }
       onClick={toggle}
     >
@@ -71,7 +71,7 @@ function SignedInToggle({ artistUsername }: { artistUsername: string }) {
         ? 'Updates'
         : subscribed
           ? 'Subscribed'
-          : 'Get updates'}
+          : 'Subscribe free'}
     </Button>
   );
 }
@@ -86,7 +86,7 @@ function AnonymousForm({ artistUsername, artistDisplayName }: Props) {
     return (
       <Button size="sm" variant="secondary" onClick={() => setOpen(true)}>
         <MailIcon size={14} aria-hidden className="mr-1.5" />
-        Get updates
+        Subscribe free
       </Button>
     );
   }

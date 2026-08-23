@@ -2,12 +2,14 @@ import { Link } from '@tanstack/react-router';
 import {
   AudioLinesIcon,
   BarChart3Icon,
+  ListMusicIcon,
   PauseIcon,
   PinIcon,
   PinOffIcon,
   PlayIcon,
   RadioTowerIcon,
   SaveIcon,
+  TagsIcon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -32,6 +34,7 @@ import {
   type EditList,
   type StudioArchiveItem,
 } from '../../api/studio-types';
+import { AddToPlaylistPanel } from '../../components/AddToPlaylistPanel';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioNav } from '../../components/StudioNav';
 import { Eyebrow } from '../../components/tahti/Eyebrow';
@@ -89,7 +92,14 @@ export function StudioArchiveItemView({ id }: { id: string }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [genre, setGenre] = useState('');
-  const [isPublic, setIsPublic] = useState(true);
+  const [visibility, setVisibility] = useState<
+    'PUBLIC' | 'UNLISTED' | 'PRIVATE'
+  >('PUBLIC');
+  const [releaseDate, setReleaseDate] = useState('');
+  const [downloadsEnabled, setDownloadsEnabled] = useState(false);
+  const [commentsEnabled, setCommentsEnabled] = useState(true);
+  const [tab, setTab] = useState<'details' | 'playlists'>('details');
+  const [playlistOpen, setPlaylistOpen] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [pinBusy, setPinBusy] = useState(false);
@@ -114,7 +124,13 @@ export function StudioArchiveItemView({ id }: { id: string }) {
       setTitle(res.data.title);
       setDescription(res.data.description ?? '');
       setGenre(res.data.genre ? capitalizeGenre(res.data.genre) : '');
-      setIsPublic(res.data.isPublic !== false);
+      setVisibility(
+        res.data.visibility ??
+          (res.data.isPublic === false ? 'PRIVATE' : 'PUBLIC'),
+      );
+      setReleaseDate(res.data.releaseDate ?? '');
+      setDownloadsEnabled(res.data.downloadsEnabled ?? false);
+      setCommentsEnabled(res.data.commentsEnabled ?? true);
     });
     void fetchStudioArchive().then((res) => {
       setPinnedCount(countPinnedTracks(res.data));
@@ -134,7 +150,11 @@ export function StudioArchiveItemView({ id }: { id: string }) {
       title,
       description,
       genre: genre || null,
-      isPublic,
+      isPublic: visibility === 'PUBLIC',
+      visibility,
+      releaseDate: releaseDate || null,
+      downloadsEnabled,
+      commentsEnabled,
     });
     setSaving(false);
     if (!result.ok) {
@@ -283,10 +303,14 @@ export function StudioArchiveItemView({ id }: { id: string }) {
     });
   };
 
-  const visibility = item
-    ? item.isPublic === false
-      ? 'Private'
-      : 'Public'
+  const visibilityLabel = item
+    ? (item.visibility ?? (item.isPublic === false ? 'PRIVATE' : 'PUBLIC'))
+        .charAt(0)
+        .concat(
+          (item.visibility ?? (item.isPublic === false ? 'PRIVATE' : 'PUBLIC'))
+            .slice(1)
+            .toLowerCase(),
+        )
     : '';
   const pinned = item ? isPinned(item) : false;
   const pinBlocked = !pinned && pinnedCount >= MAX_PINNED_TRACKS;
@@ -331,7 +355,7 @@ export function StudioArchiveItemView({ id }: { id: string }) {
                 <p className="text-foreground-secondary mt-1 text-sm">
                   Edit title, description, and visibility.
                   <span className="ml-2 text-xs tracking-wide uppercase opacity-70">
-                    {item.status}, {visibility}
+                    {item.status}, {visibilityLabel}
                     {pinned ? ', Pinned' : ''}
                   </span>
                 </p>
@@ -404,13 +428,15 @@ export function StudioArchiveItemView({ id }: { id: string }) {
                     Insights
                   </Button>
                 </Link>
-                <Button
-                  disabled={saving || !title.trim()}
-                  onClick={() => void save()}
-                >
-                  <SaveIcon size={16} aria-hidden className="mr-1.5" />
-                  {saving ? 'Saving…' : 'Save'}
-                </Button>
+                {tab === 'details' ? (
+                  <Button
+                    disabled={saving || !title.trim()}
+                    onClick={() => void save()}
+                  >
+                    <SaveIcon size={16} aria-hidden className="mr-1.5" />
+                    {saving ? 'Saving…' : 'Save'}
+                  </Button>
+                ) : null}
               </div>
             </header>
 
@@ -420,169 +446,309 @@ export function StudioArchiveItemView({ id }: { id: string }) {
               </p>
             )}
 
-            <div className="flex flex-col gap-4">
-              <Input
-                label="Title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-              <label className="flex flex-col gap-1 text-sm">
-                <span className="text-foreground-secondary text-xs uppercase">
-                  Description
-                </span>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows={4}
-                  className="border-border bg-background focus:border-primary rounded-md border px-3 py-2 outline-none"
-                />
-              </label>
-              <CreatableCombobox
-                label="Genre"
-                options={[...PRESET_GENRES]}
-                value={genre}
-                onValueChange={setGenre}
-                normalize={capitalizeGenre}
-              />
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  checked={isPublic}
-                  onChange={(e) => setIsPublic(e.target.checked)}
-                />
-                Public on channel
-              </label>
+            <div
+              className="border-border flex gap-1 overflow-x-auto border-b"
+              role="tablist"
+              aria-label="Track detail sections"
+            >
+              <button
+                type="button"
+                role="tab"
+                aria-selected={tab === 'details'}
+                onClick={() => setTab('details')}
+                className={`-mb-px inline-flex items-center gap-1.5 border-b-2 px-3 py-2 text-sm font-medium ${
+                  tab === 'details'
+                    ? 'border-primary text-foreground'
+                    : 'text-foreground-secondary hover:text-foreground border-transparent'
+                }`}
+              >
+                <TagsIcon size={15} aria-hidden />
+                Details
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={tab === 'playlists'}
+                onClick={() => setTab('playlists')}
+                className={`-mb-px inline-flex items-center gap-1.5 border-b-2 px-3 py-2 text-sm font-medium ${
+                  tab === 'playlists'
+                    ? 'border-primary text-foreground'
+                    : 'text-foreground-secondary hover:text-foreground border-transparent'
+                }`}
+              >
+                <ListMusicIcon size={15} aria-hidden />
+                Playlists
+              </button>
             </div>
 
             {message && (
               <p className="text-foreground-secondary text-sm">{message}</p>
             )}
 
-            <section
-              className="flex flex-col gap-3"
-              aria-label="Waveform preview"
-            >
-              <h2>
-                <Eyebrow>Waveform preview</Eyebrow>
-              </h2>
-              <WaveformCanvas
-                peaks={peaks}
-                durationSec={editList?.sourceDuration ?? item.durationSec ?? 0}
-                currentTime={isCurrent ? currentTime : 0}
-                cuts={editList?.cuts ?? []}
-                selection={null}
-                onSeek={(seconds) => void startPlayback(seconds)}
-              />
-              <div className="flex flex-wrap items-center gap-2">
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  disabled={quickBusy !== null}
-                  onClick={onNormalize}
-                >
-                  {quickBusy === 'normalize' ? 'Normalizing…' : 'Normalize'}
-                </Button>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  disabled={quickBusy !== null}
-                  onClick={onAutoTrim}
-                >
-                  {quickBusy === 'trim' ? 'Trimming…' : 'Auto-trim silence'}
-                </Button>
-                <Link
-                  to="/studio/archive/$id/editor"
-                  params={{ id }}
-                  aria-label="Open audio editor"
-                >
-                  <Button size="sm" variant="text">
-                    <AudioLinesIcon size={16} aria-hidden className="mr-1.5" />
-                    Open audio editor
-                  </Button>
-                </Link>
-                {isCurrent && playerDuration > 0 ? (
-                  <span className="text-foreground-secondary ml-auto text-xs tabular-nums">
-                    {Math.floor(currentTime / 60)}:
-                    {String(Math.floor(currentTime % 60)).padStart(2, '0')} /{' '}
-                    {Math.floor(playerDuration / 60)}:
-                    {String(Math.floor(playerDuration % 60)).padStart(2, '0')}
-                  </span>
-                ) : null}
-              </div>
-              {quickMsg && (
-                <p className="text-foreground-secondary text-xs">{quickMsg}</p>
-              )}
-            </section>
+            {tab === 'details' ? (
+              <>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Input
+                    label="Title"
+                    value={title}
+                    onChange={(event) => setTitle(event.target.value)}
+                  />
+                  <label className="flex flex-col gap-1 text-sm">
+                    Release date
+                    <input
+                      type="date"
+                      value={releaseDate}
+                      onChange={(event) => setReleaseDate(event.target.value)}
+                      className="border-border bg-background h-10 rounded-md border px-3 text-sm"
+                    />
+                  </label>
+                  <div className="sm:col-span-2">
+                    <label className="flex flex-col gap-1 text-sm">
+                      <span className="text-foreground-secondary text-xs uppercase">
+                        Description
+                      </span>
+                      <textarea
+                        value={description}
+                        onChange={(event) => setDescription(event.target.value)}
+                        rows={4}
+                        className="border-border bg-background focus:border-primary rounded-md border px-3 py-2 outline-none"
+                      />
+                    </label>
+                  </div>
+                  <CreatableCombobox
+                    label="Genre"
+                    options={[...PRESET_GENRES]}
+                    value={genre}
+                    onValueChange={setGenre}
+                    normalize={capitalizeGenre}
+                  />
+                  <label className="flex flex-col gap-1 text-sm">
+                    Visibility
+                    <select
+                      aria-label="Visibility"
+                      value={visibility}
+                      onChange={(event) =>
+                        setVisibility(
+                          event.target.value as
+                            | 'PUBLIC'
+                            | 'UNLISTED'
+                            | 'PRIVATE',
+                        )
+                      }
+                      className="border-border bg-background h-10 rounded-md border px-3 text-sm"
+                    >
+                      <option value="PUBLIC">Public</option>
+                      <option value="UNLISTED">
+                        Unlisted — direct link only
+                      </option>
+                      <option value="PRIVATE">Private — only you</option>
+                    </select>
+                  </label>
+                  <label className="border-border flex items-start gap-3 rounded-lg border p-3 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={downloadsEnabled}
+                      onChange={(event) =>
+                        setDownloadsEnabled(event.target.checked)
+                      }
+                      aria-label="Allow downloads"
+                      className="mt-0.5"
+                    />
+                    <span>
+                      <span className="block font-medium">Allow downloads</span>
+                      <span className="text-foreground-secondary block text-xs">
+                        Listeners can download the released audio file.
+                      </span>
+                    </span>
+                  </label>
+                  <label className="border-border flex items-start gap-3 rounded-lg border p-3 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={commentsEnabled}
+                      onChange={(event) =>
+                        setCommentsEnabled(event.target.checked)
+                      }
+                      aria-label="Allow comments"
+                      className="mt-0.5"
+                    />
+                    <span>
+                      <span className="block font-medium">Allow comments</span>
+                      <span className="text-foreground-secondary block text-xs">
+                        Listeners can discuss this track on its public page.
+                      </span>
+                    </span>
+                  </label>
+                </div>
 
-            {versions.length > 0 && (
-              <section className="flex flex-col gap-2">
-                <h2>
-                  <Eyebrow>Revision history</Eyebrow>
-                </h2>
-                <p className="text-foreground-secondary text-xs">
-                  Every save or quick fix creates a new version — older ones
-                  stay here until they're cleaned up server-side.
-                </p>
-                <ul className="flex flex-col gap-1.5">
-                  {versions
-                    .slice()
-                    .reverse()
-                    .map((v) => (
-                      <li
-                        key={v.id}
-                        className="border-border flex flex-wrap items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm"
-                      >
-                        <div>
-                          <div className="font-medium">
-                            v{v.versionNumber} — {v.versionLabel}
-                            {v.isActive && (
-                              <span className="text-primary ml-2 text-xs uppercase">
-                                Active
-                              </span>
-                            )}
-                          </div>
-                          <div className="text-foreground-secondary text-xs">
-                            {v.status}
-                            {v.durationSec
-                              ? ` · ${Math.round(v.durationSec)}s`
-                              : ''}
-                            {v.sourceBitrateKbps
-                              ? ` · ${v.sourceBitrateKbps}kbps`
-                              : ''}
-                            {' · '}
-                            {new Date(v.createdAt).toLocaleString()}
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          {v.status === 'READY' && (
-                            <Button
-                              size="sm"
-                              variant="text"
-                              onClick={() => onDownloadVersion(v.id)}
-                            >
-                              Download
-                            </Button>
-                          )}
-                          {!v.isActive && v.status === 'READY' && (
-                            <Button
-                              size="sm"
-                              variant="secondary"
-                              disabled={versionBusy === v.id}
-                              onClick={() => onActivateVersion(v.id)}
-                            >
-                              {versionBusy === v.id
-                                ? 'Switching…'
-                                : 'Use this version'}
-                            </Button>
-                          )}
-                        </div>
-                      </li>
-                    ))}
-                </ul>
+                <section
+                  className="flex flex-col gap-3"
+                  aria-label="Waveform preview"
+                >
+                  <h2>
+                    <Eyebrow>Waveform preview</Eyebrow>
+                  </h2>
+                  <WaveformCanvas
+                    peaks={peaks}
+                    durationSec={
+                      editList?.sourceDuration ?? item.durationSec ?? 0
+                    }
+                    currentTime={isCurrent ? currentTime : 0}
+                    cuts={editList?.cuts ?? []}
+                    selection={null}
+                    onSeek={(seconds) => void startPlayback(seconds)}
+                  />
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      disabled={quickBusy !== null}
+                      onClick={onNormalize}
+                    >
+                      {quickBusy === 'normalize' ? 'Normalizing…' : 'Normalize'}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      disabled={quickBusy !== null}
+                      onClick={onAutoTrim}
+                    >
+                      {quickBusy === 'trim' ? 'Trimming…' : 'Auto-trim silence'}
+                    </Button>
+                    <Link
+                      to="/studio/archive/$id/editor"
+                      params={{ id }}
+                      aria-label="Open audio editor"
+                    >
+                      <Button size="sm" variant="text">
+                        <AudioLinesIcon
+                          size={16}
+                          aria-hidden
+                          className="mr-1.5"
+                        />
+                        Open audio editor
+                      </Button>
+                    </Link>
+                    {isCurrent && playerDuration > 0 ? (
+                      <span className="text-foreground-secondary ml-auto text-xs tabular-nums">
+                        {Math.floor(currentTime / 60)}:
+                        {String(Math.floor(currentTime % 60)).padStart(2, '0')}{' '}
+                        / {Math.floor(playerDuration / 60)}:
+                        {String(Math.floor(playerDuration % 60)).padStart(
+                          2,
+                          '0',
+                        )}
+                      </span>
+                    ) : null}
+                  </div>
+                  {quickMsg && (
+                    <p className="text-foreground-secondary text-xs">
+                      {quickMsg}
+                    </p>
+                  )}
+                </section>
+
+                {versions.length > 0 && (
+                  <section className="flex flex-col gap-2">
+                    <h2>
+                      <Eyebrow>Revision history</Eyebrow>
+                    </h2>
+                    <p className="text-foreground-secondary text-xs">
+                      Every save or quick fix creates a new version — older ones
+                      stay here until they're cleaned up server-side.
+                    </p>
+                    <ul className="flex flex-col gap-1.5">
+                      {versions
+                        .slice()
+                        .reverse()
+                        .map((v) => (
+                          <li
+                            key={v.id}
+                            className="border-border flex flex-wrap items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm"
+                          >
+                            <div>
+                              <div className="font-medium">
+                                v{v.versionNumber} — {v.versionLabel}
+                                {v.isActive && (
+                                  <span className="text-primary ml-2 text-xs uppercase">
+                                    Active
+                                  </span>
+                                )}
+                              </div>
+                              <div className="text-foreground-secondary text-xs">
+                                {v.status}
+                                {v.durationSec
+                                  ? ` · ${Math.round(v.durationSec)}s`
+                                  : ''}
+                                {v.sourceBitrateKbps
+                                  ? ` · ${v.sourceBitrateKbps}kbps`
+                                  : ''}
+                                {' · '}
+                                {new Date(v.createdAt).toLocaleString()}
+                              </div>
+                            </div>
+                            <div className="flex gap-2">
+                              {v.status === 'READY' && (
+                                <Button
+                                  size="sm"
+                                  variant="text"
+                                  onClick={() => onDownloadVersion(v.id)}
+                                >
+                                  Download
+                                </Button>
+                              )}
+                              {!v.isActive && v.status === 'READY' && (
+                                <Button
+                                  size="sm"
+                                  variant="secondary"
+                                  disabled={versionBusy === v.id}
+                                  onClick={() => onActivateVersion(v.id)}
+                                >
+                                  {versionBusy === v.id
+                                    ? 'Switching…'
+                                    : 'Use this version'}
+                                </Button>
+                              )}
+                            </div>
+                          </li>
+                        ))}
+                    </ul>
+                  </section>
+                )}
+              </>
+            ) : (
+              <section className="border-border bg-background-secondary/30 flex flex-col gap-4 rounded-xl border p-5">
+                <div className="flex items-start gap-3">
+                  <ListMusicIcon
+                    size={28}
+                    className="text-primary shrink-0"
+                    aria-hidden
+                  />
+                  <div>
+                    <h2 className="font-semibold">Add to playlists</h2>
+                    <p className="text-foreground-secondary text-sm">
+                      Add this track to one or more playlists, or create a new
+                      playlist without leaving the track page.
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  size="sm"
+                  className="self-start"
+                  onClick={() => setPlaylistOpen(true)}
+                >
+                  <ListMusicIcon size={15} aria-hidden className="mr-1.5" />
+                  Choose playlists
+                </Button>
               </section>
             )}
           </>
         )}
+        <AddToPlaylistPanel
+          isOpen={playlistOpen}
+          archiveItemId={id}
+          trackTitle={item?.title ?? title}
+          onClose={() => setPlaylistOpen(false)}
+        />
       </div>
     </StudioGate>
   );

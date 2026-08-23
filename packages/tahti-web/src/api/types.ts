@@ -91,6 +91,7 @@ export type PublicProfileArtist = {
   tier?: string;
   pronouns?: string | null;
   followerCount?: number | null;
+  freeSubscriptionsEnabled?: boolean;
 };
 
 export type PublicProfileTrack = {
@@ -276,15 +277,18 @@ export type ChatTokenResponse = {
   channelRole?: 'owner' | 'moderator' | null;
 };
 
+export type AccountRole = 'BOARD' | 'ARTIST' | 'LISTENER';
+
 export type AuthUser = {
   id: string;
   email: string;
   username: string;
   displayName: string;
+  role?: AccountRole;
+  roles?: AccountRole[];
   tier?: string;
   avatarUrl?: string | null;
   isMember?: boolean;
-  /** Cooperative board member — gates `/admin/*`. */
   isBoard?: boolean;
   channel?: {
     slug: string;

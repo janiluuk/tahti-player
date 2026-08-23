@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 
 import { Button, EmptyState } from '@nuclearplayer/ui';
 
+import { hasAccountRole } from '../lib/accountRoles';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { PageLoading } from './PageStates';
@@ -28,12 +29,12 @@ export function AdminGate({ children }: { children: ReactNode }) {
     );
   }
 
-  if (!user.isBoard) {
+  if (!hasAccountRole(user, 'BOARD')) {
     return (
       <EmptyState
         icon={<ShieldAlertIcon size={40} className="opacity-40" />}
         title="Board access required"
-        description={`Signed in as @${user.username}, but this account isn't a board member.`}
+        description={`Signed in as @${user.username}, but this account doesn't have the Board role.`}
         action={
           <Link to="/">
             <Button size="sm" variant="secondary">

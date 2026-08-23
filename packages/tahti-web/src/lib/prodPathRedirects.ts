@@ -30,7 +30,7 @@ export const DASHBOARD_REDIRECTS: Record<string, string> = {
   updates: '/studio/updates',
   revenue: '/studio/revenue',
   messages: '/messages',
-  'setup-channel': '/studio/setup-channel',
+  'setup-channel': '/studio/channel?tab=setup',
   settings: '/settings',
   'settings/account': '/settings/account',
   'settings/artist-info': '/settings/artist',

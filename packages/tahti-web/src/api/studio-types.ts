@@ -21,6 +21,9 @@ export type StudioArchiveItem = {
   isPublic?: boolean;
   isFallback?: boolean;
   commentsEnabled?: boolean;
+  downloadsEnabled?: boolean;
+  visibility?: 'PUBLIC' | 'UNLISTED' | 'PRIVATE';
+  releaseDate?: string | null;
   pinnedAt?: string | null;
   effectiveBpm?: number | null;
   effectiveKey?: string | null;
@@ -39,6 +42,9 @@ export type StudioArchivePatch = {
   isPublic?: boolean;
   isFallback?: boolean;
   commentsEnabled?: boolean;
+  downloadsEnabled?: boolean;
+  visibility?: 'PUBLIC' | 'UNLISTED' | 'PRIVATE';
+  releaseDate?: string | null;
   pinned?: boolean;
   bannerUrl?: string | null;
 };

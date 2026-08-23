@@ -16,9 +16,12 @@ const labels: TrackTableLabels = {
   },
   favorite: 'Add to favorites',
   unfavorite: 'Remove from favorites',
+  play: 'Play',
+  pause: 'Pause',
   playAll: 'Play all',
   addAllToQueue: 'Add all to queue',
   addToQueue: 'Add to queue',
+  inQueue: 'In queue',
   trackOptions: 'Track options',
   remove: 'Remove from list',
   filterPlaceholder: 'Filter tracks',
@@ -171,7 +174,7 @@ describe('TrackTable', () => {
         <TrackTable
           tracks={[track]}
           labels={labels}
-          display={{ displayQueueControls: true }}
+          display={{ displayQueueControls: true, displayThumbnail: false }}
           actions={{ onAddToQueue: () => setQueued(true) }}
           meta={{ isTrackQueued: () => queued }}
         />
@@ -185,5 +188,70 @@ describe('TrackTable', () => {
     expect(queuedButton).toBeDisabled();
     expect(queuedButton).toHaveAttribute('aria-label', 'In queue');
     expect(queuedButton).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('updates the active row and play button from playback state', async () => {
+    const track = makeTracks(1)[0]!;
+    const PlaybackHarness: FC = () => {
+      const [currentId, setCurrentId] = useState<string | null>(null);
+      const [playing, setPlaying] = useState(false);
+      return (
+        <TrackTable
+          tracks={[track]}
+          labels={labels}
+          display={{ displayThumbnail: true }}
+          actions={{
+            onPlayNow: (selectedTrack) => {
+              setCurrentId(selectedTrack.source.id);
+              setPlaying((current) =>
+                currentId === selectedTrack.source.id ? !current : true,
+              );
+            },
+          }}
+          meta={{
+            isCurrentTrack: (candidate) => candidate.source.id === currentId,
+            isTrackPlaying: (candidate) =>
+              candidate.source.id === currentId && playing,
+          }}
+        />
+      );
+    };
+
+    render(<PlaybackHarness />);
+    await userEvent.click(screen.getByRole('button', { name: 'Play Track 1' }));
+
+    expect(screen.getByTestId('track-row')).toHaveAttribute(
+      'aria-current',
+      'true',
+    );
+    expect(
+      screen.getByRole('button', { name: 'Pause Track 1' }),
+    ).toBeInTheDocument();
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Pause Track 1' }),
+    );
+    expect(
+      screen.getByRole('button', { name: 'Play Track 1' }),
+    ).toBeInTheDocument();
+  });
+
+  it('opens track details from the title without starting playback', async () => {
+    const track = makeTracks(1)[0]!;
+    const onOpenDetails = vi.fn();
+    const onPlayNow = vi.fn();
+
+    render(
+      <TrackTable
+        tracks={[track]}
+        labels={labels}
+        display={{ displayThumbnail: true }}
+        actions={{ onOpenDetails, onPlayNow }}
+      />,
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'Track 1' }));
+
+    expect(onOpenDetails).toHaveBeenCalledWith(track);
+    expect(onPlayNow).not.toHaveBeenCalled();
   });
 });

@@ -12,6 +12,7 @@ import type { ReactNode } from 'react';
 
 import { Button } from '@nuclearplayer/ui';
 
+import { hasAccountRole } from '../lib/accountRoles';
 import { diagnosticsEnabled } from '../lib/buildPolicy';
 import { cn } from '../lib/cn';
 import { useAuthStore } from '../stores/authStore';
@@ -66,7 +67,7 @@ type MobileBottomNavProps = {
 /** Fixed bottom tab bar for phone layouts. */
 export function MobileBottomNav({ onOpenQueue }: MobileBottomNavProps) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const isBoard = useAuthStore((s) => Boolean(s.user?.isBoard));
+  const isBoard = useAuthStore((state) => hasAccountRole(state.user, 'BOARD'));
   const toggleBottomQueue = useLayoutStore((s) => s.toggleBottomQueue);
   const openQueue = onOpenQueue ?? toggleBottomQueue;
   const items = NAV.filter(

@@ -34,7 +34,11 @@ const RELEASE_TYPES = [
   },
 ] as const;
 
-export function StudioReleasesView() {
+export function StudioReleasesView({
+  embedded = false,
+}: {
+  embedded?: boolean;
+}) {
   const [releases, setReleases] = useState<StudioRelease[]>([]);
   const [loading, setLoading] = useState(true);
   const [createOpen, setCreateOpen] = useState(false);
@@ -87,7 +91,7 @@ export function StudioReleasesView() {
   return (
     <StudioGate>
       <div className="mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
-        <StudioNav current="/studio/releases" />
+        {!embedded ? <StudioNav current="/studio/releases" /> : null}
         <StudioPageHeader
           title="Releases"
           subtitle="Package tracks into singles, EPs, and albums for your public link."

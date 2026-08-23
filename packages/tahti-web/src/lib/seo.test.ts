@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { metadataForPath } from './seo';
+import { metadataForPath, scrollingPlaybackTitle } from './seo';
 
 describe('metadataForPath', () => {
   it.each([
@@ -20,5 +20,13 @@ describe('metadataForPath', () => {
       description:
         'Listen to independent artists, live channels, radio, and lossless releases on Tahti.',
     });
+  });
+});
+
+describe('scrollingPlaybackTitle', () => {
+  it('rotates the playing track through the browser tab title', () => {
+    expect(scrollingPlaybackTitle('Track — Artist · Tahti Radio', 6)).toBe(
+      '— Artist · Tahti Radio   Track ',
+    );
   });
 });

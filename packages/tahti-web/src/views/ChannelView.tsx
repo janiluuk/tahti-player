@@ -28,6 +28,7 @@ import { PlayableTrackTable } from '../components/PlayableTrackTable';
 import { StreamManagerPanel } from '../components/StreamManagerPanel';
 import { Eyebrow } from '../components/tahti/Eyebrow';
 import { OnAirBadge } from '../components/tahti/OnAirBadge';
+import { hasAccountRole } from '../lib/accountRoles';
 import {
   addItemType,
   CHANNEL_PAGE_ITEM_META,
@@ -569,7 +570,7 @@ export function ChannelView({ slug }: { slug: string }) {
           </p>
         </div>
 
-        {live && (isOwner || me?.isBoard) && !editing && (
+        {live && (isOwner || hasAccountRole(me, 'BOARD')) && !editing && (
           <StreamManagerPanel
             slug={slug}
             channelState={channel.state}

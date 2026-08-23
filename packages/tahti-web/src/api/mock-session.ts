@@ -168,6 +168,7 @@ export function buildMockLoginUser(
     email,
     username,
     displayName: username === 'demo' ? 'Demo Artist' : username,
+    role: 'ARTIST',
     tier: 'ARTIST',
     avatarUrl: null,
     isMember: true,

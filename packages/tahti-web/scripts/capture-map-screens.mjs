@@ -51,7 +51,7 @@ const shots = [
   { id: 'stats', path: '/studio/stats' },
   { id: 'stats-detail', path: '/studio/insights/archive/arch-mock-1' },
   { id: 'channel-design', path: '/studio/channel' },
-  { id: 'setup-channel-gated', path: '/studio/setup-channel' },
+  { id: 'setup-channel-gated', path: '/studio/channel?tab=setup' },
   { id: 'updates', path: '/studio/updates' },
   { id: 'revenue', path: '/studio/revenue' },
   { id: 'more', path: '/more' },

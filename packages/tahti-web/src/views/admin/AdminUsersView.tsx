@@ -28,17 +28,17 @@ import {
   startConversation,
   type ChatDm,
 } from '../../api/messages';
-import type { PublicProfile } from '../../api/types';
+import type { AccountRole, PublicProfile } from '../../api/types';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminNav } from '../../components/AdminNav';
 import { ImageLightbox } from '../../components/ImageLightbox';
 import { StudioPageHeader, StudioPanel } from '../../components/StudioPanel';
 
-const TIERS = ['', 'FREE', 'ARTIST', 'STUDIO'] as const;
+const ROLES = ['', 'BOARD', 'ARTIST', 'LISTENER'] as const;
 
 export const AdminUsersView = () => {
   const [query, setQuery] = useState('');
-  const [tier, setTier] = useState('');
+  const [role, setRole] = useState('');
   const [isMember, setIsMember] = useState('');
   const [users, setUsers] = useState<AdminUserRow[]>([]);
   const [total, setTotal] = useState(0);
@@ -46,11 +46,8 @@ export const AdminUsersView = () => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [detail, setDetail] = useState<AdminUserDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
-  const [editTier, setEditTier] = useState<'FREE' | 'ARTIST' | 'STUDIO'>(
-    'FREE',
-  );
+  const [editRole, setEditRole] = useState<AccountRole>('LISTENER');
   const [editMember, setEditMember] = useState(false);
-  const [editBoard, setEditBoard] = useState(false);
   const [editMemberNumber, setEditMemberNumber] = useState('');
   const [suspendReason, setSuspendReason] = useState('');
   const [status, setStatus] = useState<string | null>(null);
@@ -66,15 +63,15 @@ export const AdminUsersView = () => {
 
   const syncDetail = (user: AdminUserDetail) => {
     setDetail(user);
-    setEditTier(user.tier as 'FREE' | 'ARTIST' | 'STUDIO');
+    setEditRole(user.role);
     setEditMember(user.isMember);
-    setEditBoard(user.isBoard);
     setEditMemberNumber(user.memberNumber?.toString() ?? '');
     setUsers((current) =>
       current.map((row) =>
         row.id === user.id
           ? {
               ...row,
+              role: user.role,
               tier: user.tier,
               isMember: user.isMember,
               isBoard: user.isBoard,
@@ -89,7 +86,7 @@ export const AdminUsersView = () => {
   useEffect(() => {
     setLoading(true);
     const handle = setTimeout(() => {
-      void fetchAdminUsers({ q: query, tier, isMember }).then((result) => {
+      void fetchAdminUsers({ q: query, role, isMember }).then((result) => {
         setUsers(result.data);
         setTotal(result.total);
         setSelectedId((current) => {
@@ -102,7 +99,7 @@ export const AdminUsersView = () => {
       });
     }, 200);
     return () => clearTimeout(handle);
-  }, [query, tier, isMember]);
+  }, [query, role, isMember]);
 
   useEffect(() => {
     setStatus(null);
@@ -147,9 +144,8 @@ export const AdminUsersView = () => {
       return;
     }
     const result = await patchAdminUser(detail.id, {
-      tier: editTier,
+      role: editRole,
       isMember: editMember,
-      isBoard: editBoard,
       memberNumber: parsedMemberNumber,
     });
     setBusy(false);
@@ -248,14 +244,16 @@ export const AdminUsersView = () => {
             </div>
             <div className="grid grid-cols-2 gap-2">
               <select
-                aria-label="Filter by tier"
-                value={tier}
-                onChange={(event) => setTier(event.target.value)}
+                aria-label="Filter by role"
+                value={role}
+                onChange={(event) => setRole(event.target.value)}
                 className="border-border bg-background rounded-md border px-2 py-2 text-sm"
               >
-                {TIERS.map((value) => (
+                {ROLES.map((value) => (
                   <option key={value} value={value}>
-                    {value || 'All tiers'}
+                    {value
+                      ? value.charAt(0) + value.slice(1).toLowerCase()
+                      : 'All roles'}
                   </option>
                 ))}
               </select>
@@ -299,12 +297,12 @@ export const AdminUsersView = () => {
                             {user.displayName}
                           </span>
                           <span className="text-foreground-secondary shrink-0 text-[10px] font-semibold tracking-wide uppercase">
-                            {user.tier}
+                            {user.role.charAt(0) +
+                              user.role.slice(1).toLowerCase()}
                           </span>
                         </span>
                         <span className="text-foreground-secondary block truncate text-xs">
                           @{user.username}
-                          {user.isBoard ? ' · board' : ''}
                           {user.suspendedAt ? ' · suspended' : ''}
                         </span>
                       </button>
@@ -363,11 +361,10 @@ export const AdminUsersView = () => {
                           <h2 className="font-display text-2xl font-bold">
                             {detail.displayName}
                           </h2>
-                          {detail.isBoard ? (
-                            <span className="bg-accent-purple/15 text-accent-purple rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase">
-                              Board
-                            </span>
-                          ) : null}
+                          <span className="bg-accent-purple/15 text-accent-purple rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase">
+                            {detail.role.charAt(0) +
+                              detail.role.slice(1).toLowerCase()}
+                          </span>
                           {detail.suspendedAt ? (
                             <span className="bg-accent-red/15 text-accent-red rounded-full px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase">
                               Suspended
@@ -515,23 +512,19 @@ export const AdminUsersView = () => {
                     <div className="flex flex-col gap-3">
                       <label className="flex flex-col gap-1 text-sm">
                         <span className="text-foreground-secondary text-xs uppercase">
-                          Tier
+                          Role
                         </span>
                         <select
-                          value={editTier}
+                          aria-label="Account role"
+                          value={editRole}
                           onChange={(event) =>
-                            setEditTier(
-                              event.target.value as
-                                | 'FREE'
-                                | 'ARTIST'
-                                | 'STUDIO',
-                            )
+                            setEditRole(event.target.value as AccountRole)
                           }
                           className="border-border bg-background rounded-md border px-3 py-2"
                         >
-                          {TIERS.filter(Boolean).map((value) => (
+                          {ROLES.filter(Boolean).map((value) => (
                             <option key={value} value={value}>
-                              {value}
+                              {value.charAt(0) + value.slice(1).toLowerCase()}
                             </option>
                           ))}
                         </select>
@@ -554,16 +547,6 @@ export const AdminUsersView = () => {
                           }
                         />
                         Association member
-                      </label>
-                      <label className="flex items-center gap-2 text-sm">
-                        <input
-                          type="checkbox"
-                          checked={editBoard}
-                          onChange={(event) =>
-                            setEditBoard(event.target.checked)
-                          }
-                        />
-                        Board access
                       </label>
                       <Button
                         size="sm"

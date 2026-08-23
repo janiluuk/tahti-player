@@ -5,6 +5,7 @@ import {
   HeartIcon,
   LibraryBigIcon,
   MicVocalIcon,
+  RocketIcon,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 
@@ -14,10 +15,12 @@ import { HistoryView } from './HistoryView';
 import { MyCollectionsView } from './MyCollectionsView';
 import { MyDiscographyView } from './MyDiscographyView';
 import { StudioRecordingsView } from './studio/StudioRecordingsView';
+import { StudioReleasesView } from './studio/StudioReleasesView';
 
 type Tab =
   | 'discography'
   | 'collections'
+  | 'releases'
   | 'recordings'
   | 'favorites'
   | 'history';
@@ -33,6 +36,12 @@ const ITEMS: {
     to: '/library',
     label: 'All sounds',
     icon: <LibraryBigIcon size={16} aria-hidden />,
+  },
+  {
+    id: 'releases',
+    to: '/library/releases',
+    label: 'Releases',
+    icon: <RocketIcon size={16} aria-hidden />,
   },
   {
     id: 'collections',
@@ -88,6 +97,7 @@ export function LibraryView({ tab = 'discography' }: { tab?: Tab }) {
         <div className="min-w-0 flex-1">
           {tab === 'discography' && <MyDiscographyView />}
           {tab === 'collections' && <MyCollectionsView />}
+          {tab === 'releases' && <StudioReleasesView embedded />}
           {tab === 'recordings' && <StudioRecordingsView embedded />}
           {tab === 'favorites' && <FavoritesView />}
           {tab === 'history' && <HistoryView />}

@@ -197,14 +197,9 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
           </thead>
           <tbody>
             <tr
-              aria-describedby=""
-              aria-disabled="true"
-              aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
               data-testid="track-row"
-              role="button"
               style="height: 42px;"
-              tabindex="0"
             >
               <td
                 class="min-w-10 text-center"
@@ -271,14 +266,9 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
               </td>
             </tr>
             <tr
-              aria-describedby=""
-              aria-disabled="true"
-              aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background"
               data-testid="track-row"
-              role="button"
               style="height: 42px;"
-              tabindex="0"
             >
               <td
                 class="min-w-10 text-center"
@@ -345,14 +335,9 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
               </td>
             </tr>
             <tr
-              aria-describedby=""
-              aria-disabled="true"
-              aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
               data-testid="track-row"
-              role="button"
               style="height: 42px;"
-              tabindex="0"
             >
               <td
                 class="min-w-10 text-center"
@@ -1214,14 +1199,9 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
           </thead>
           <tbody>
             <tr
-              aria-describedby=""
-              aria-disabled="true"
-              aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
               data-testid="track-row"
-              role="button"
               style="height: 42px;"
-              tabindex="0"
             >
               <td
                 class="min-w-10 text-center"
@@ -1288,14 +1268,9 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               </td>
             </tr>
             <tr
-              aria-describedby=""
-              aria-disabled="true"
-              aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background"
               data-testid="track-row"
-              role="button"
               style="height: 42px;"
-              tabindex="0"
             >
               <td
                 class="min-w-10 text-center"
@@ -1362,14 +1337,9 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               </td>
             </tr>
             <tr
-              aria-describedby=""
-              aria-disabled="true"
-              aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
               data-testid="track-row"
-              role="button"
               style="height: 42px;"
-              tabindex="0"
             >
               <td
                 class="min-w-10 text-center"
@@ -1436,14 +1406,9 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               </td>
             </tr>
             <tr
-              aria-describedby=""
-              aria-disabled="true"
-              aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background"
               data-testid="track-row"
-              role="button"
               style="height: 42px;"
-              tabindex="0"
             >
               <td
                 class="min-w-10 text-center"
@@ -1510,14 +1475,9 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               </td>
             </tr>
             <tr
-              aria-describedby=""
-              aria-disabled="true"
-              aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
               data-testid="track-row"
-              role="button"
               style="height: 42px;"
-              tabindex="0"
             >
               <td
                 class="min-w-10 text-center"
@@ -1791,14 +1751,9 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
             </thead>
             <tbody>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
                 data-testid="track-row"
-                role="button"
                 style="height: 42px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -1865,14 +1820,9 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 </td>
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background"
                 data-testid="track-row"
-                role="button"
                 style="height: 42px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -1939,14 +1889,9 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 </td>
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
                 data-testid="track-row"
-                role="button"
                 style="height: 42px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2013,14 +1958,9 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 </td>
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background"
                 data-testid="track-row"
-                role="button"
                 style="height: 42px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2087,14 +2027,9 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 </td>
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
                 data-testid="track-row"
-                role="button"
                 style="height: 42px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2161,14 +2096,9 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 </td>
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background"
                 data-testid="track-row"
-                role="button"
                 style="height: 42px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2235,14 +2165,9 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 </td>
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
                 data-testid="track-row"
-                role="button"
                 style="height: 42px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2309,14 +2234,9 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 </td>
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background"
                 data-testid="track-row"
-                role="button"
                 style="height: 42px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2383,14 +2303,9 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 </td>
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
                 data-testid="track-row"
-                role="button"
                 style="height: 42px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2457,14 +2372,9 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 </td>
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background"
                 data-testid="track-row"
-                role="button"
                 style="height: 42px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2531,14 +2441,9 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 </td>
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
                 data-testid="track-row"
-                role="button"
                 style="height: 42px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2605,14 +2510,9 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 </td>
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background"
                 data-testid="track-row"
-                role="button"
                 style="height: 42px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2679,14 +2579,9 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 </td>
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
                 data-testid="track-row"
-                role="button"
                 style="height: 42px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2753,14 +2648,9 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 </td>
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background"
                 data-testid="track-row"
-                role="button"
                 style="height: 42px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2827,14 +2717,9 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 </td>
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
                 data-testid="track-row"
-                role="button"
                 style="height: 42px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2901,14 +2786,9 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 </td>
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background"
                 data-testid="track-row"
-                role="button"
                 style="height: 42px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -2975,14 +2855,9 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 </td>
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
                 data-testid="track-row"
-                role="button"
                 style="height: 42px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -3049,14 +2924,9 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 </td>
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background"
                 data-testid="track-row"
-                role="button"
                 style="height: 42px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -3123,14 +2993,9 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 </td>
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
                 data-testid="track-row"
-                role="button"
                 style="height: 42px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -3197,14 +3062,9 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 </td>
               </tr>
               <tr
-                aria-describedby=""
-                aria-disabled="true"
-                aria-roledescription="sortable"
                 class="border-border group border-b-(length:--border-width) select-none bg-background"
                 data-testid="track-row"
-                role="button"
                 style="height: 42px;"
-                tabindex="0"
               >
                 <td
                   class="min-w-10 text-center"
@@ -3539,14 +3399,9 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
           </thead>
           <tbody>
             <tr
-              aria-describedby=""
-              aria-disabled="true"
-              aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
               data-testid="track-row"
-              role="button"
               style="height: 42px;"
-              tabindex="0"
             >
               <td
                 class="min-w-10 text-center"
@@ -3613,14 +3468,9 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
               </td>
             </tr>
             <tr
-              aria-describedby=""
-              aria-disabled="true"
-              aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background"
               data-testid="track-row"
-              role="button"
               style="height: 42px;"
-              tabindex="0"
             >
               <td
                 class="min-w-10 text-center"
@@ -3687,14 +3537,9 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
               </td>
             </tr>
             <tr
-              aria-describedby=""
-              aria-disabled="true"
-              aria-roledescription="sortable"
               class="border-border group border-b-(length:--border-width) select-none bg-background-secondary"
               data-testid="track-row"
-              role="button"
               style="height: 42px;"
-              tabindex="0"
             >
               <td
                 class="min-w-10 text-center"

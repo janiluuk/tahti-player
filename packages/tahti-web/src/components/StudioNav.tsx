@@ -5,9 +5,13 @@ import {
   ChevronDownIcon,
   CircleDollarSignIcon,
   CloudUploadIcon,
+  DiscIcon,
+  DoorOpenIcon,
+  FolderLockIcon,
   GalleryVerticalEndIcon,
   LayoutGridIcon,
   LibraryIcon,
+  LockKeyholeIcon,
   MegaphoneIcon,
   PaletteIcon,
   RadioTowerIcon,
@@ -17,10 +21,9 @@ import {
   SparklesIcon,
   TicketIcon,
   TrendingUpIcon,
-  UsersIcon,
   type LucideIcon,
 } from 'lucide-react';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 
 import { cn } from '@nuclearplayer/ui';
 
@@ -30,7 +33,6 @@ const PRIMARY = [
   { to: '/studio', label: 'Overview' },
   { to: '/studio/go-live', label: 'Go Live' },
   { to: '/library', label: 'My Library' },
-  { to: '/studio/releases', label: 'Releases' },
   { to: '/studio/shows', label: 'Shows' },
 ] as const;
 
@@ -38,6 +40,7 @@ type StudioTool = {
   to: string;
   label: string;
   icon: LucideIcon;
+  section?: string;
 };
 
 type StudioToolGroup = {
@@ -48,11 +51,12 @@ type StudioToolGroup = {
 
 const TOOL_GROUPS: readonly StudioToolGroup[] = [
   {
-    label: 'Release',
+    label: 'Music',
     icon: SparklesIcon,
     tools: [
       { to: '/studio/upload', label: 'Upload', icon: CloudUploadIcon },
       { to: '/studio/collections', label: 'Collections', icon: LibraryIcon },
+      { to: '/studio/recordings', label: 'Recordings', icon: DiscIcon },
       { to: '/studio/editor', label: 'Audio editor', icon: AudioLinesIcon },
       { to: '/studio/embeds', label: 'Embeds', icon: GalleryVerticalEndIcon },
     ],
@@ -77,6 +81,24 @@ const TOOL_GROUPS: readonly StudioToolGroup[] = [
         icon: CircleDollarSignIcon,
       },
       { to: '/studio/updates', label: 'Updates', icon: MegaphoneIcon },
+      {
+        to: '/settings/broadcast',
+        label: 'Green room',
+        icon: DoorOpenIcon,
+        section: 'Member content',
+      },
+      {
+        to: '/studio/stash',
+        label: 'Stash',
+        icon: FolderLockIcon,
+        section: 'Member content',
+      },
+      {
+        to: '/studio/shows',
+        label: 'Exclusive shows',
+        icon: LockKeyholeIcon,
+        section: 'Member content',
+      },
     ],
   },
   {
@@ -90,7 +112,6 @@ const TOOL_GROUPS: readonly StudioToolGroup[] = [
         icon: GalleryVerticalEndIcon,
       },
       { to: '/studio/moderation', label: 'Moderation', icon: ShieldCheckIcon },
-      { to: '/studio/setup-channel', label: 'Channel setup', icon: UsersIcon },
     ],
   },
 ];
@@ -132,7 +153,11 @@ export const StudioNav = ({ current }: { current?: string }) => {
           />
         </button>
         {toolsOpen ? (
-          <div className="border-border grid gap-px border-t bg-(--border) sm:grid-cols-2 lg:grid-cols-4">
+          <div
+            role="region"
+            aria-label="Studio tool groups"
+            className="border-border grid gap-px border-t bg-(--border) sm:grid-cols-2 lg:grid-cols-4"
+          >
             {TOOL_GROUPS.map((group) => {
               const GroupIcon = group.icon;
               return (
@@ -144,23 +169,32 @@ export const StudioNav = ({ current }: { current?: string }) => {
                     <GroupIcon size={14} aria-hidden />
                     {group.label}
                   </h2>
-                  {group.tools.map((tool) => {
+                  {group.tools.map((tool, index) => {
                     const ToolIcon = tool.icon;
                     const active = isActive(current, tool.to);
+                    const showSection =
+                      tool.section &&
+                      group.tools[index - 1]?.section !== tool.section;
                     return (
-                      <Link
-                        key={tool.to}
-                        to={tool.to}
-                        className={cn(
-                          'flex items-center gap-2 rounded-md px-2 py-2 text-sm transition-colors',
-                          active
-                            ? 'bg-primary text-foreground font-semibold'
-                            : 'text-foreground-secondary hover:bg-background-secondary hover:text-foreground',
-                        )}
-                      >
-                        <ToolIcon size={15} aria-hidden />
-                        <span className="truncate">{tool.label}</span>
-                      </Link>
+                      <Fragment key={`${tool.to}-${tool.label}`}>
+                        {showSection ? (
+                          <h3 className="text-foreground-secondary mt-2 px-2 pt-2 text-[10px] font-semibold tracking-widest uppercase">
+                            {tool.section}
+                          </h3>
+                        ) : null}
+                        <Link
+                          to={tool.to}
+                          className={cn(
+                            'flex items-center gap-2 rounded-md px-2 py-2 text-sm transition-colors',
+                            active
+                              ? 'bg-primary text-foreground font-semibold'
+                              : 'text-foreground-secondary hover:bg-background-secondary hover:text-foreground',
+                          )}
+                        >
+                          <ToolIcon size={15} aria-hidden />
+                          <span className="truncate">{tool.label}</span>
+                        </Link>
+                      </Fragment>
                     );
                   })}
                 </section>

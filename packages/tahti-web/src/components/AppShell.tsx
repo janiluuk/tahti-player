@@ -23,9 +23,10 @@ import {
 
 import { useIsMobile } from '../hooks/useIsMobile';
 import { MAIN_CONTENT_PADDING } from '../layout/contentPadding';
+import { hasAccountRole } from '../lib/accountRoles';
 import { diagnosticsEnabled } from '../lib/buildPolicy';
 import { cn } from '../lib/cn';
-import { syncDocumentMetadata } from '../lib/seo';
+import { scrollingPlaybackTitle, syncDocumentMetadata } from '../lib/seo';
 import { useAuthStore } from '../stores/authStore';
 import { useLayoutStore } from '../stores/layoutStore';
 import { usePlayerStore } from '../stores/playerStore';
@@ -41,7 +42,7 @@ import { MobileBottomNav, MobileDrawer } from './MobileChrome';
 import { RightRailPanel } from './RightRailPanel';
 
 function SidebarNavItems({ compact }: { compact: boolean }) {
-  const isBoard = useAuthStore((s) => Boolean(s.user?.isBoard));
+  const isBoard = useAuthStore((state) => hasAccountRole(state.user, 'BOARD'));
   return (
     <SidebarNavigation isCompact={compact}>
       <div className="flex flex-1 flex-col gap-2 overflow-y-auto p-1">
@@ -111,12 +112,15 @@ export function AppShell() {
     setFullScreenPlayerOpen,
   } = useLayoutStore();
   const refresh = useAuthStore((s) => s.refresh);
-  const isBoard = useAuthStore((s) => Boolean(s.user?.isBoard));
+  const isBoard = useAuthStore((state) => hasAccountRole(state.user, 'BOARD'));
   const userId = useAuthStore((s) => s.user?.id);
   const openSettings = useSettingsModalStore((s) => s.open);
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const currentTrackId = usePlayerStore((state) => state.currentId);
+  const playerQueue = usePlayerStore((state) => state.queue);
+  const playerStatus = usePlayerStore((state) => state.status);
+  const isLivePlayback = usePlayerStore((state) => state.isLive);
 
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [mobileQueueOpen, setMobileQueueOpen] = useState(false);
@@ -128,6 +132,33 @@ export function AppShell() {
   useEffect(() => {
     syncDocumentMetadata(pathname);
   }, [pathname]);
+
+  useEffect(() => {
+    const currentItem = playerQueue.find((item) => item.id === currentTrackId);
+    const radioPlaying =
+      isLivePlayback &&
+      (playerStatus === 'playing' || playerStatus === 'loading') &&
+      currentItem;
+    if (!radioPlaying) {
+      return;
+    }
+
+    const artist = currentItem.track.artists
+      .map((entry) => entry.name)
+      .filter(Boolean)
+      .join(', ');
+    const title = `▶ ${currentItem.track.title}${artist ? ` — ${artist}` : ''} · Tahti Radio`;
+    let offset = 0;
+    document.title = scrollingPlaybackTitle(title, offset);
+    const interval = window.setInterval(() => {
+      offset += 1;
+      document.title = scrollingPlaybackTitle(title, offset);
+    }, 450);
+    return () => {
+      window.clearInterval(interval);
+      syncDocumentMetadata(pathname);
+    };
+  }, [currentTrackId, isLivePlayback, pathname, playerQueue, playerStatus]);
 
   // First sign-in of the session: send a new user through onboarding once.
   // Skips/finishes mark the flag, so this never fires again for them.
@@ -307,7 +338,7 @@ export function AppShell() {
       <FullScreenPlayer />
       <AuthDialog />
       <ConnectedSettingsModal />
-      <Toaster position="bottom-right" richColors closeButton />
+      <Toaster position="bottom-right" richColors />
 
       <MobileDrawer
         open={mobileNavOpen}

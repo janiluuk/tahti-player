@@ -9,6 +9,7 @@ describe('resolveDashboardRedirect', () => {
     ['events', '/studio/events'],
     ['venues', '/studio/venues'],
     ['recordings', '/studio/recordings'],
+    ['setup-channel', '/studio/channel?tab=setup'],
     ['posts', '/studio/updates'],
     ['upload/from-broadcast', '/studio/recordings'],
     ['archive/track-1/editor', '/studio/archive/track-1/editor'],

@@ -248,6 +248,9 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
   const queue = usePlayerStore((s) => s.queue);
+  const currentId = usePlayerStore((s) => s.currentId);
+  const playerStatus = usePlayerStore((s) => s.status);
+  const setPlayerStatus = usePlayerStore((s) => s.setStatus);
   const isDjSet = col?.style === 'DJ_SET_SERIES' || col?.style === 'MIX_SERIES';
   const kindLabel = isDjSet ? 'DJ set' : 'Playlist';
 
@@ -449,7 +452,17 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                       onPlayNow: (t) => {
                         const item = items.find((i) => i.id === t.source.id);
                         if (item?.archiveItem) {
-                          void playArchiveItem(item.archiveItem.id, t.title);
+                          const playableId = `archive:${item.archiveItem.id}`;
+                          if (currentId === playableId) {
+                            setPlayerStatus(
+                              playerStatus === 'playing' ||
+                                playerStatus === 'loading'
+                                ? 'paused'
+                                : 'playing',
+                            );
+                          } else {
+                            void playArchiveItem(item.archiveItem.id, t.title);
+                          }
                         }
                       },
                       onAddToQueue: (t) => {
@@ -460,12 +473,37 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                       },
                     }}
                     meta={{
+                      isCurrentTrack: (track) => {
+                        const item = items.find(
+                          (candidate) => candidate.id === track.source.id,
+                        );
+                        return Boolean(
+                          item?.archiveItem &&
+                          currentId === `archive:${item.archiveItem.id}`,
+                        );
+                      },
+                      isTrackPlaying: (track) => {
+                        const item = items.find(
+                          (candidate) => candidate.id === track.source.id,
+                        );
+                        return Boolean(
+                          item?.archiveItem &&
+                          currentId === `archive:${item.archiveItem.id}` &&
+                          (playerStatus === 'playing' ||
+                            playerStatus === 'loading'),
+                        );
+                      },
                       isTrackQueued: (track) =>
-                        queue.some(
-                          (queueItem) =>
-                            queueItem.id === `archive:${track.source.id}` ||
-                            queueItem.id === track.source.id,
-                        ),
+                        queue.some((queueItem) => {
+                          const item = items.find(
+                            (candidate) => candidate.id === track.source.id,
+                          );
+                          return (
+                            queueItem.id === track.source.id ||
+                            (item?.archiveItem &&
+                              queueItem.id === `archive:${item.archiveItem.id}`)
+                          );
+                        }),
                     }}
                   />
                 </div>

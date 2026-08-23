@@ -91,7 +91,6 @@ import { StudioReleaseDetailView } from './views/studio/StudioReleaseDetailView'
 import { StudioReleasesView } from './views/studio/StudioReleasesView';
 import { StudioRevenueView } from './views/studio/StudioRevenueView';
 import { StudioScheduleView } from './views/studio/StudioScheduleView';
-import { StudioSetupChannelView } from './views/studio/StudioSetupChannelView';
 import {
   StudioEpisodeReviewView,
   StudioShowDetailView,
@@ -318,9 +317,7 @@ const libraryRoute = createRoute({
 const libraryReleasesRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library/releases',
-  beforeLoad: () => {
-    throw redirect({ to: '/library' });
-  },
+  component: () => <LibraryView tab="releases" />,
 });
 
 const libraryCollectionsRoute = createRoute({
@@ -763,7 +760,9 @@ const studioStatsDetailRoute = createRoute({
 const studioSetupChannelRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/setup-channel',
-  component: StudioSetupChannelView,
+  beforeLoad: () => {
+    throw redirect({ to: '/studio/channel', search: { tab: 'setup' } });
+  },
 });
 
 const studioChannelRoute = createRoute({

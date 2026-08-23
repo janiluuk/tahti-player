@@ -42,7 +42,7 @@ export function StudioGate({ children, requireChannel = true }: Props) {
         description={`Signed in as @${user.username}, but this account has no channel yet.`}
         action={
           <div className="flex flex-wrap justify-center gap-2">
-            <Link to="/studio/setup-channel">
+            <Link to="/studio/channel" search={{ tab: 'setup' }}>
               <Button size="sm">Create channel</Button>
             </Link>
             <Link to="/studio">
