@@ -14,8 +14,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Button, SaveButton } from '@nuclearplayer/ui';
 
 import {
-  isHeaderImageUrl,
-  isValidHeaderBackdropUrl,
+  isValidHeaderVideoUrl,
   patchChannelVisual,
   resolvePublicVisualizerPreset,
   youtubeEmbedUrl,
@@ -204,8 +203,7 @@ export function ChannelView({ slug }: { slug: string }) {
   // preview), so this only branches for VIDEO_LOOP.
   const showHeaderVideo =
     channel.headerStyle === 'VIDEO_LOOP' &&
-    isValidHeaderBackdropUrl(channel.videoBackgroundUrl);
-  const headerBackdropIsImage = isHeaderImageUrl(channel.videoBackgroundUrl);
+    isValidHeaderVideoUrl(channel.videoBackgroundUrl);
   const chatOn = channel.chatEnabled !== false;
   const channelIsCurrent =
     currentId === `live:${slug}` || currentId === `radio:${slug}`;
@@ -323,12 +321,6 @@ export function ChannelView({ slug }: { slug: string }) {
                   className="pointer-events-none absolute inset-0 h-full w-full"
                   allow="autoplay; encrypted-media"
                   aria-hidden="true"
-                />
-              ) : headerBackdropIsImage ? (
-                <img
-                  className="absolute inset-0 h-full w-full object-cover"
-                  src={channel.videoBackgroundUrl ?? undefined}
-                  alt=""
                 />
               ) : (
                 <video
@@ -626,14 +618,6 @@ export function ChannelView({ slug }: { slug: string }) {
               }`}
               allow="autoplay; encrypted-media"
               aria-hidden="true"
-            />
-          ) : headerBackdropIsImage ? (
-            <img
-              className={`pointer-events-none absolute inset-0 z-0 h-full w-full object-cover ${
-                live ? 'opacity-[0.32]' : 'opacity-[0.55]'
-              }`}
-              src={channel.videoBackgroundUrl ?? undefined}
-              alt=""
             />
           ) : (
             <video

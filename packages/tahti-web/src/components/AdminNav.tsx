@@ -8,7 +8,6 @@ import {
   GaugeIcon,
   LanguagesIcon,
   LibraryIcon,
-  MapPinIcon,
   MegaphoneIcon,
   RadioIcon,
   ServerIcon,
@@ -75,12 +74,6 @@ const PRIMARY = [
     label: 'Streams',
     icon: <ServerIcon size={16} aria-hidden />,
     description: 'Monitor live ingest and stream health across channels.',
-  },
-  {
-    to: '/admin/venues',
-    label: 'Venues',
-    icon: <MapPinIcon size={16} aria-hidden />,
-    description: 'Verify and manage registered venue listings.',
   },
   {
     to: '/admin/top-lists',
@@ -212,6 +205,7 @@ const ADMIN_SECTIONS = [
       [
         '/admin/streams',
         '/admin/venues',
+        '/admin/files',
         '/admin/disco-widgets',
         '/admin/i18n',
         '/admin/tahti-selects',

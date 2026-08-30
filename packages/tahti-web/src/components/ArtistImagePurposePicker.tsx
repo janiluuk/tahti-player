@@ -150,11 +150,7 @@ export const ArtistImagePurposePicker: FC<Props> = ({
       <div className="group relative inline-flex">
         <div className="border-border bg-background-secondary flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-2 text-xl font-bold">
           {avatarUrl ? (
-            <img
-              src={avatarUrl}
-              alt=""
-              className="h-full w-full object-cover"
-            />
+            <img src={avatarUrl} alt="" className="h-full w-full object-cover" />
           ) : (
             displayName.slice(0, 1).toUpperCase()
           )}
@@ -166,7 +162,7 @@ export const ArtistImagePurposePicker: FC<Props> = ({
           title="Change profile image"
           className="bg-background/80 text-foreground absolute inset-0 flex items-center justify-center rounded-full opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
         >
-          <UploadCloudIcon size={20} aria-hidden />
+          <UploadCloudIcon size={22} aria-hidden />
         </button>
       </div>
 

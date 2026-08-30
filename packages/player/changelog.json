@@ -1,41 +1,6 @@
 [
   {
     "date": "2026-08-30T00:00",
-    "description": "Perform → Go Live now has an Info tab built in, so setting your show name and details no longer means leaving the Go Live page.",
-    "type": "improvement",
-    "contributors": ["jani"],
-    "tags": [{ "label": "Studio", "color": "cyan" }]
-  },
-  {
-    "date": "2026-08-30T00:00",
-    "description": "Admin → Logs now shows real entries for storage uploads/deletes and track encoding jobs, including how long each one took.",
-    "type": "improvement",
-    "contributors": ["jani"],
-    "tags": [{ "label": "Admin", "color": "purple" }]
-  },
-  {
-    "date": "2026-08-30T00:00",
-    "description": "Fixed several Studio and Admin pages (Branding, Playlists, Venues, and a couple of others) not highlighting any navigation tab as active.",
-    "type": "fix",
-    "contributors": ["jani"],
-    "tags": [{ "label": "Navigation", "color": "cyan" }]
-  },
-  {
-    "date": "2026-08-30T00:00",
-    "description": "Channel Designer's backdrop can now be set to an uploaded image, not just a video loop or gradient.",
-    "type": "feature",
-    "contributors": ["jani"],
-    "tags": [{ "label": "Studio", "color": "cyan" }]
-  },
-  {
-    "date": "2026-08-30T00:00",
-    "description": "Settings → Artist's profile image picker is now a compact circle with an upload button that appears on hover, instead of a large always-visible drop zone.",
-    "type": "improvement",
-    "contributors": ["jani"],
-    "tags": [{ "label": "Settings", "color": "purple" }]
-  },
-  {
-    "date": "2026-08-30T00:00",
     "description": "Settings → Channel & Design's visualizer preview now actually shows the visualizer when nothing else is using it, instead of always staying blank.",
     "type": "fix",
     "contributors": ["jani"],

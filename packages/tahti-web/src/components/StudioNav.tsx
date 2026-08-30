@@ -3,6 +3,7 @@ import {
   FolderOpenIcon,
   HeartIcon,
   ImageIcon,
+  InfoIcon,
   LandmarkIcon,
   LayersIcon,
   LayoutGridIcon,
@@ -109,6 +110,11 @@ const SUBMENUS = {
       icon: <RadioTowerIcon size={16} />,
     },
     {
+      to: '/studio/info',
+      label: 'Info',
+      icon: <InfoIcon size={16} />,
+    },
+    {
       to: '/studio/schedule',
       label: 'Schedule',
       icon: <RadioIcon size={16} />,
@@ -184,7 +190,6 @@ const SECTION_PREFIXES: Record<string, readonly string[]> = {
     '/studio/editor',
     '/studio/mastering',
     '/studio/stash',
-    '/studio/playlists',
   ],
   '/studio/go-live': [
     '/studio/go-live',
@@ -193,13 +198,7 @@ const SECTION_PREFIXES: Record<string, readonly string[]> = {
     '/studio/events',
     '/studio/shows',
   ],
-  '/studio/channel': [
-    '/studio/channel',
-    '/sources',
-    '/studio/moderation',
-    '/studio/branding',
-    '/studio/venues',
-  ],
+  '/studio/channel': ['/studio/channel', '/sources', '/studio/moderation'],
 };
 
 const SUBMENU_SLOT_CLASS = 'min-h-0 sm:min-h-56';

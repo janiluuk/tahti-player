@@ -47,7 +47,7 @@ export function AdminRadioStationSuggestionsView() {
   return (
     <AdminGate>
       <div className="admin-page-layout mx-auto flex max-w-3xl flex-col gap-6 px-1 py-2">
-        <AdminNav current="/admin/moderation" />
+        <AdminNav current="/admin/radio-station-suggestions" />
         <StudioPageHeader
           title="Radio stations"
           subtitle="Listener-suggested internet radio stations for the Widgets store — approve to add them to the shared catalog."

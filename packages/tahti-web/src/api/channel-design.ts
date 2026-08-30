@@ -78,20 +78,6 @@ export type HeaderStyle = (typeof HEADER_STYLES)[number];
  * header. YouTube links are rendered as muted looped iframe embeds. */
 const HEADER_VIDEO_URL_PATTERN = /^https:\/\/\S+\.(mp4|webm)(\?\S*)?$/i;
 
-/** VIDEO_LOOP's `videoBackgroundUrl` column is deliberately generic (see the
- * backend schema comment: "YouTube/Vimeo or image URL for channel backdrop")
- * — a static image is a valid backdrop through the same field, not a
- * separate header style. */
-const HEADER_IMAGE_URL_PATTERN =
-  /^https:\/\/\S+\.(jpe?g|png|webp|gif)(\?\S*)?$/i;
-
-export function isHeaderImageUrl(url: string | null | undefined): boolean {
-  if (!url) {
-    return false;
-  }
-  return HEADER_IMAGE_URL_PATTERN.test(url.trim());
-}
-
 export function youtubeEmbedUrl(url: string | null | undefined): string | null {
   if (!url) {
     return null;
@@ -126,14 +112,6 @@ export function isValidHeaderVideoUrl(url: string | null | undefined): boolean {
   return (
     HEADER_VIDEO_URL_PATTERN.test(url.trim()) || youtubeEmbedUrl(url) !== null
   );
-}
-
-/** Whether the VIDEO_LOOP header has *some* valid backdrop — a video source
- * or a static image, both stored in the same `videoBackgroundUrl` field. */
-export function isValidHeaderBackdropUrl(
-  url: string | null | undefined,
-): boolean {
-  return isValidHeaderVideoUrl(url) || isHeaderImageUrl(url);
 }
 
 export const MAX_HEADER_VIDEO_BYTES = 10 * 1024 * 1024;
