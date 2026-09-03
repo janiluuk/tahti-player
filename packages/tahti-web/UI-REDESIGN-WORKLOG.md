@@ -1,5 +1,42 @@
 # UI redesign worklog — Nuclear (artist + admin)
 
+## 2026-09-04 — TopList Storybook on all top lists (planned)
+
+**Status:** planned.
+
+**Goal:** Every ranked “top list” (tracks, artists, channels, genres, buckets
+with play/listen counts) in Admin, Studio, Listen, and Discover must use
+Storybook **`Components/TopList`** (`@tahti-player/ui` `TopList` /
+`TopListRow`) instead of hand-rolled rank rows or progress bars.
+
+**Storybook / contract:** [`packages/storybook/src/TopList.stories.tsx`](../../storybook/src/TopList.stories.tsx)
+— titled list of `TopListEntry` (`id`, `label`, optional `sublabel` /
+`imageUrl`, numeric `value`) with rank + relative fill bar + `formatValue`.
+
+### Audit
+
+| Surface | Current | Gap |
+| --- | --- | --- |
+| Listen History stats (`HistoryStatsSection`) | Already `TopList` | OK — leave; keep as reference |
+| Admin → Top lists (`AdminTopListsView`) | Custom per-bucket progress-bar lists | → map buckets to `TopList` (+ filters stay as Select/FilterChips) |
+| Studio → Stats → Top lists (`StudioStatsView`) | Custom ranking UI in `StudioPanel` | → `TopList` per bucket / top-tracks block |
+| Library dashboard top tracks (`LibraryView`) | Hand-rolled numbered rows | → `TopList` |
+| Discover widgets (top / loved / ranked lists) | `WidgetTrackRow` + optional `rank` inside `WidgetCard` | Prefer `TopList` when the widget is a pure ranking; keep track play/queue affordances via row click or wrap entries — do not drop play |
+| Listen Discover artists / other ranked strips | If any bespoke top-N lists remain | Sweep and swap |
+| Player History / Dashboard TopArtists/TopTracks | Nuclear player already on design-system patterns | Out of tahti-web scope unless shared |
+
+### Planned tasks
+
+1. Document `TopListEntry` mapping helpers (plays → `value`, title/artist → label/sublabel, cover → `imageUrl`).
+2. Convert `AdminTopListsView` buckets to `TopList`; empty/loading via `PageEmpty` / `PageLoading`.
+3. Convert `StudioStatsView` top-lists tab (+ any top-tracks list on that page) to `TopList`.
+4. Convert `LibraryView` top-tracks block to `TopList`.
+5. Discover ranked widgets: migrate list body to `TopList` where play overlays still work (or `TopList` + adjacent play control); update Storybook Discover/widget stories.
+6. Storybook: note production consumers on `TopList` story; flag any remaining orphans.
+7. WORKPLAN checklist item added (Storybook medium priority).
+
+**Constraint:** Keep filters, periods, and play/navigation behavior; swap visual list primitive only. Persistent chrome unchanged.
+
 ## 2026-09-04 — Listen / Discover CardGrid vs Storybook (planned)
 
 **Goal:** Every card-shaped media grid on Listen and Discover must match
