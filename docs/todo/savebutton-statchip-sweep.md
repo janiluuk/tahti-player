@@ -1,6 +1,8 @@
 # SaveButton + StatChip sweep
 
-Status: planned (lists only — do not start replacements until the lists are accepted).
+Status: first pass shipped (`0.0.57`). Studio Sound toolbar left icon-only.
+Further StatChip KPI cards (admin dashboard, track insights, fan-sub money)
+remain.
 
 Storybook: `Components/SaveButton` (Idle, Saving, CustomLabel — add Disabled) and
 `Components/StatChip` (Default, WithIcon, Row). Player reference for chips:

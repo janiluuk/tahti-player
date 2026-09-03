@@ -1,8 +1,8 @@
-import { CheckCircle2Icon, ImageIcon, SaveIcon } from 'lucide-react';
+import { CheckCircle2Icon, ImageIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Input, Select } from '@tahti-player/ui';
+import { Input, SaveButton, Select } from '@tahti-player/ui';
 
 import { uploadProfileAvatar } from '../api/artist-settings';
 import {
@@ -275,10 +275,12 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
         <p className="text-foreground-secondary text-[11px]">
           This appears on your channel while you are live.
         </p>
-        <Button size="sm" disabled={saving} onClick={() => void save()}>
-          <SaveIcon size={14} aria-hidden className="mr-1.5" />
-          {saving ? 'Saving…' : 'Show info'}
-        </Button>
+        <SaveButton
+          size="sm"
+          saving={saving}
+          label="Save show info"
+          onClick={() => void save()}
+        />
       </div>
     </section>
   );

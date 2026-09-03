@@ -13,6 +13,7 @@ import {
   Dialog,
   FilePicker,
   Input,
+  SaveButton,
   Tabs,
   Textarea,
   Toggle,
@@ -579,13 +580,12 @@ export function StudioUpdatesView() {
             </div>
             <Dialog.Actions>
               <Dialog.Close>Cancel</Dialog.Close>
-              <Button
+              <SaveButton
                 type="submit"
-                disabled={!nlSubject.trim() || !nlBody.trim() || busy}
-              >
-                <PlusIcon size={16} aria-hidden className="mr-1.5" />
-                {busy ? 'Saving…' : 'Save draft'}
-              </Button>
+                disabled={!nlSubject.trim() || !nlBody.trim()}
+                saving={busy}
+                label="Save draft"
+              />
             </Dialog.Actions>
           </form>
         </Dialog.Root>
