@@ -1,4 +1,10 @@
 import { listenerFingerprint } from '../lib/listenerFingerprint';
+import {
+  mockGovernanceDocuments,
+  mockGovernanceMeetings,
+  mockGovernanceMembers,
+  mockGovernanceQuarterlyReports,
+} from './governanceMocks';
 import { listEnabledMockInternetRadioPresets } from './internetRadioPresetsMockStore';
 import {
   archiveItemToPlayable,
@@ -65,8 +71,10 @@ import type {
   FollowListUser,
   GovernanceDocument,
   GovernanceMeeting,
+  GovernanceMember,
   GovernanceMotion,
   GovernanceMotionDraft,
+  GovernanceQuarterlyReport,
   MembershipStatus,
   OnAirChannelResponse,
   PlatformStatus,
@@ -2017,6 +2025,16 @@ let mockMotions: GovernanceMotion[] = [
     tally: { YES: 1, NO: 1, ABSTAIN: 1 },
   },
   {
+    id: 'motion-3',
+    title: 'Keep overnight radio hours uncapped',
+    state: 'OPEN',
+    proposer: 'Demo Member',
+    totalVotes: 4,
+    youVoted: false,
+    commentCount: 1,
+    tally: { YES: 1, NO: 2, ABSTAIN: 1 },
+  },
+  {
     id: 'motion-2',
     title: 'Confirm annual report',
     state: 'CLOSED',
@@ -2026,6 +2044,17 @@ let mockMotions: GovernanceMotion[] = [
     yourChoice: 'YES',
     tally: { YES: 10, NO: 1, ABSTAIN: 1 },
     commentCount: 0,
+  },
+  {
+    id: 'motion-4',
+    title: 'Require overnight radio blackout',
+    state: 'CLOSED',
+    proposer: 'Board',
+    totalVotes: 13,
+    youVoted: true,
+    yourChoice: 'YES',
+    tally: { YES: 3, NO: 9, ABSTAIN: 1 },
+    commentCount: 2,
   },
 ];
 
@@ -2037,8 +2066,36 @@ const mockMotionComments: Record<string, MotionComment[]> = {
       authorDisplayName: 'Demo Member',
       createdAt: new Date().toISOString(),
     },
+    {
+      id: 'c1-against',
+      body: 'This formula underweights overnight shows and should be voted down.',
+      authorDisplayName: 'Northern Lights',
+      createdAt: new Date().toISOString(),
+    },
   ],
   'motion-2': [],
+  'motion-3': [
+    {
+      id: 'c3',
+      body: 'Uncapped overnight hours keep small stations off the grid.',
+      authorDisplayName: 'Kaiku Collective',
+      createdAt: new Date().toISOString(),
+    },
+  ],
+  'motion-4': [
+    {
+      id: 'c4-for',
+      body: 'A blackout would protect overnight presenters.',
+      authorDisplayName: 'Demo Member',
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: 'c4-against',
+      body: 'Members rejected this — keep the overnight window open.',
+      authorDisplayName: 'Board',
+      createdAt: new Date().toISOString(),
+    },
+  ],
 };
 
 export async function fetchGovernanceMotions(): Promise<{
@@ -2123,11 +2180,23 @@ export async function fetchPublicGovernanceMotions(year?: number): Promise<{
         {
           id: 'motion-2',
           title: 'Confirm annual report',
-          description: 'Public mock decision history.',
+          description:
+            'Public mock decision history. Members favored YES — the report stands.',
           closedAt: '2026-02-15T00:00:00.000Z',
           proposer: 'Board',
           voteFor: 10,
           voteAgainst: 1,
+          voteAbstain: 1,
+        },
+        {
+          id: 'motion-4',
+          title: 'Require overnight radio blackout',
+          description:
+            'Public mock decision history. Members favored NO — the blackout did not pass.',
+          closedAt: '2026-03-01T00:00:00.000Z',
+          proposer: 'Board',
+          voteFor: 3,
+          voteAgainst: 9,
           voteAbstain: 1,
         },
       ],
@@ -2149,7 +2218,10 @@ export async function fetchGovernanceMeetings(): Promise<{
   meta: FetchMeta;
 }> {
   if (forceMock()) {
-    return { data: [], meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
+    return {
+      data: mockGovernanceMeetings(),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
   }
   try {
     const data = await getJson<GovernanceMeeting[]>(
@@ -2166,11 +2238,60 @@ export async function fetchGovernanceDocuments(): Promise<{
   meta: FetchMeta;
 }> {
   if (forceMock()) {
-    return { data: [], meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
+    return {
+      data: mockGovernanceDocuments(),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
   }
   try {
     const data = await getJson<GovernanceDocument[]>(
       '/api/v1/governance/documents',
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: [], meta: apiErrorMeta(err) };
+  }
+}
+
+export async function fetchGovernanceMembers(): Promise<{
+  data: GovernanceMember[];
+  meta: FetchMeta;
+  forbidden?: boolean;
+}> {
+  if (forceMock()) {
+    return {
+      data: mockGovernanceMembers(),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const data = await getJson<GovernanceMember[]>(
+      '/api/v1/governance/members',
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : '';
+    const forbidden =
+      message.includes('401') ||
+      message.includes('403') ||
+      /member/i.test(message);
+    return { data: [], meta: apiErrorMeta(err), forbidden };
+  }
+}
+
+export async function fetchGovernanceQuarterlyReports(): Promise<{
+  data: GovernanceQuarterlyReport[];
+  meta: FetchMeta;
+}> {
+  if (forceMock()) {
+    return {
+      data: mockGovernanceQuarterlyReports(),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const data = await getJson<GovernanceQuarterlyReport[]>(
+      '/api/v1/governance/quarterly-reports',
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
@@ -2327,12 +2448,28 @@ let mockFeatureRequests: FeatureRequest[] = [
     proposer: 'Northern Lights',
     voteCount: 2,
     youVoted: false,
-    commentCount: 0,
+    commentCount: 1,
     reviewNote: null,
     reviewedAt: null,
     mergedIntoId: null,
     mergedIntoTitle: null,
     createdAt: new Date(Date.now() - 86_400_000 * 1).toISOString(),
+  },
+  {
+    id: 'fr-3',
+    title: 'Show listening history on Listen',
+    description:
+      'Members asked for a History tab. The board closed this after it shipped.',
+    status: 'DONE',
+    proposer: 'Kaiku Collective',
+    voteCount: 12,
+    youVoted: true,
+    commentCount: 2,
+    reviewNote: 'Resolved: Listen now has a History tab.',
+    reviewedAt: new Date(Date.now() - 86_400_000 * 20).toISOString(),
+    mergedIntoId: null,
+    mergedIntoTitle: null,
+    createdAt: new Date(Date.now() - 86_400_000 * 40).toISOString(),
   },
 ];
 
@@ -2345,7 +2482,28 @@ const mockFeatureRequestComments: Record<string, MotionComment[]> = {
       createdAt: new Date().toISOString(),
     },
   ],
-  'fr-2': [],
+  'fr-2': [
+    {
+      id: 'frc-2-need',
+      body: 'This is still unresolved — tagging one track at a time does not scale.',
+      authorDisplayName: 'Northern Lights',
+      createdAt: new Date().toISOString(),
+    },
+  ],
+  'fr-3': [
+    {
+      id: 'frc-3-ask',
+      body: 'We needed a place to find what we already played.',
+      authorDisplayName: 'Kaiku Collective',
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: 'frc-3-done',
+      body: 'Resolved — History is on the Listen tab row.',
+      authorDisplayName: 'Board',
+      createdAt: new Date().toISOString(),
+    },
+  ],
 };
 
 export async function fetchFeatureRequests(): Promise<{

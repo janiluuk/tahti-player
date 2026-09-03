@@ -188,6 +188,10 @@ const SECTION_PREFIXES: Record<string, readonly string[]> = {
     '/studio/mastering',
     '/studio/stash',
     '/studio/playlists',
+    '/studio/insights',
+    '/studio/setup-channel',
+    '/studio/archive',
+    '/library/media',
   ],
   '/studio/go-live': [
     '/studio/go-live',
@@ -249,6 +253,30 @@ const isSubmenuActive = (current: string | undefined, to: string) => {
       current !== '/studio/channel?tab=multicast'
     );
   }
+  if (to === '/studio/go-live') {
+    return pathname === '/studio/go-live' || pathname === '/studio/info';
+  }
+  if (to === '/studio/branding') {
+    return (
+      pathname === '/studio/branding' || pathname === '/studio/setup-channel'
+    );
+  }
+  if (to === '/studio/stats') {
+    return (
+      pathname === '/studio/stats' ||
+      pathname?.startsWith('/studio/stats/') === true ||
+      pathname === '/studio/insights' ||
+      pathname?.startsWith('/studio/insights/') === true
+    );
+  }
+  if (to === '/studio/editor') {
+    return (
+      pathname === '/studio/editor' ||
+      pathname?.startsWith('/studio/editor/') === true ||
+      pathname === '/studio/mastering' ||
+      pathname?.startsWith('/studio/mastering/') === true
+    );
+  }
   return (
     (to.includes('?')
       ? current === to
@@ -256,13 +284,36 @@ const isSubmenuActive = (current: string | undefined, to: string) => {
         ? pathname === to
         : pathname === to || pathname?.startsWith(`${to}/`) === true) ||
     (to === '/studio/releases' && pathname === '/studio/distribution') ||
-    (to === '/library/sounds' && pathname?.startsWith('/studio/sounds')) ||
+    (to === '/library/sounds' &&
+      (pathname?.startsWith('/studio/sounds') === true ||
+        pathname?.startsWith('/studio/archive') === true)) ||
     (to === '/library/collections' &&
       (pathname === '/studio/collections' ||
         pathname?.startsWith('/studio/collections/') === true ||
-        pathname?.startsWith('/studio/playlists/') === true))
+        pathname === '/studio/playlists' ||
+        pathname?.startsWith('/studio/playlists/') === true ||
+        pathname === '/studio/stash' ||
+        pathname?.startsWith('/studio/stash/') === true ||
+        pathname === '/studio/recordings' ||
+        pathname?.startsWith('/studio/recordings/') === true ||
+        pathname === '/library/recordings' ||
+        pathname === '/library/media' ||
+        pathname === '/library/smartlinks'))
   );
 };
+
+export function litStudioSubmenuDestinations(
+  current: string | undefined,
+  options: { stripeConfigured?: boolean } = {},
+): string[] {
+  const section = getStudioPrimaryRoute(current);
+  if (!section || !(section in SUBMENUS)) {
+    return [];
+  }
+  return getStudioSubmenuItems(section, options)
+    .filter((item) => isSubmenuActive(current, item.to))
+    .map((item) => item.to);
+}
 
 export const StudioNav = ({
   current,

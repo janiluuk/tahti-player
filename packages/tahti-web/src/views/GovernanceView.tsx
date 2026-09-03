@@ -8,7 +8,9 @@ import {
   fetchFeatureRequests,
   fetchGovernanceDocuments,
   fetchGovernanceMeetings,
+  fetchGovernanceMembers,
   fetchGovernanceMotions,
+  fetchGovernanceQuarterlyReports,
   fetchMotionComments,
   postMotionComment,
   voteOnMotion,
@@ -18,8 +20,11 @@ import type {
   FeatureRequest,
   GovernanceDocument,
   GovernanceMeeting,
+  GovernanceMember,
   GovernanceMotion,
+  GovernanceQuarterlyReport,
 } from '../api/types';
+import { parseMeetingAgenda } from '../api/governanceMocks';
 import { PageFrame, PageHeader } from '../components/PageHeader';
 import { PageLoading } from '../components/PageStates';
 import { useAuthModalStore } from '../stores/authModalStore';
@@ -39,6 +44,25 @@ function stateBadge(state: string): {
   return { color: 'orange', label: state };
 }
 
+function advisoryResultLabel(motion: GovernanceMotion): string | null {
+  if (motion.state !== 'CLOSED' || !motion.tally) {
+    return null;
+  }
+  const favoredYes = motion.tally.YES > motion.tally.NO;
+  const favoredNo = motion.tally.NO > motion.tally.YES;
+  const majority = favoredYes ? 'YES' : favoredNo ? 'NO' : null;
+  const result = majority
+    ? `Advisory result: members favored ${majority}`
+    : 'Advisory result: no majority';
+  if (!motion.youVoted || !motion.yourChoice || !majority) {
+    return result;
+  }
+  const won = motion.yourChoice === majority;
+  return won
+    ? `${result}. You voted with the majority.`
+    : `${result}. You voted with the minority.`;
+}
+
 function isExpiredMotion(motion: GovernanceMotion): boolean {
   return (
     motion.state === 'OPEN' &&
@@ -54,6 +78,8 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
   const [requests, setRequests] = useState<FeatureRequest[]>([]);
   const [meetings, setMeetings] = useState<GovernanceMeeting[]>([]);
   const [documents, setDocuments] = useState<GovernanceDocument[]>([]);
+  const [members, setMembers] = useState<GovernanceMember[]>([]);
+  const [reports, setReports] = useState<GovernanceQuarterlyReport[]>([]);
   const [forbidden, setForbidden] = useState(false);
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -74,12 +100,23 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
       fetchFeatureRequests(),
       fetchGovernanceMeetings(),
       fetchGovernanceDocuments(),
+      fetchGovernanceMembers(),
+      fetchGovernanceQuarterlyReports(),
     ]).then(
-      ([motionsResult, requestsResult, meetingsResult, documentsResult]) => {
+      ([
+        motionsResult,
+        requestsResult,
+        meetingsResult,
+        documentsResult,
+        membersResult,
+        reportsResult,
+      ]) => {
         setMotions(motionsResult.data);
         setRequests(requestsResult.data);
         setMeetings(meetingsResult.data);
         setDocuments(documentsResult.data);
+        setMembers(membersResult.data);
+        setReports(reportsResult.data);
         setForbidden(
           Boolean(motionsResult.forbidden || requestsResult.forbidden) &&
             motionsResult.data.length === 0 &&
@@ -114,13 +151,37 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
           title="Governance"
           subtitle="Cooperative motions — vote YES / NO / ABSTAIN and join the discussion."
           meta={
-            <Link
-              to="/governance/feature-requests"
-              onClick={closeSettings}
-              className="text-foreground-secondary inline-block w-fit text-xs underline-offset-2 hover:underline"
-            >
-              Feature requests →
-            </Link>
+            <div className="flex flex-col gap-1">
+              <Link
+                to="/governance/feature-requests"
+                onClick={closeSettings}
+                className="text-foreground-secondary inline-block w-fit text-xs underline-offset-2 hover:underline"
+              >
+                Feature requests →
+              </Link>
+              <Link
+                to="/governance/history"
+                onClick={closeSettings}
+                className="text-foreground-secondary inline-block w-fit text-xs underline-offset-2 hover:underline"
+              >
+                Closed decision history →
+              </Link>
+              <Link
+                to="/transparency"
+                onClick={closeSettings}
+                className="text-foreground-secondary inline-block w-fit text-xs underline-offset-2 hover:underline"
+              >
+                Transparency ledger →
+              </Link>
+              <Link
+                to="/help/$slug"
+                params={{ slug: 'governance' }}
+                onClick={closeSettings}
+                className="text-foreground-secondary inline-block w-fit text-xs underline-offset-2 hover:underline"
+              >
+                Governance help →
+              </Link>
+            </div>
           }
         />
       )}
@@ -134,20 +195,39 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
               </p>
             ) : (
               <ul className="divide-border divide-y">
-                {meetings.map((meeting) => (
-                  <li
-                    key={meeting.id}
-                    className="py-2 text-sm first:pt-0 last:pb-0"
-                  >
-                    <div className="font-medium">{meeting.title}</div>
-                    <div className="text-foreground-secondary mt-0.5 text-xs">
-                      {meeting.scheduledAt
-                        ? new Date(meeting.scheduledAt).toLocaleDateString()
-                        : 'Date not listed'}{' '}
-                      · {meeting.state}
-                    </div>
-                  </li>
-                ))}
+                {meetings.map((meeting) => {
+                  const agenda = parseMeetingAgenda(meeting.agenda);
+                  return (
+                    <li
+                      key={meeting.id}
+                      className="py-2 text-sm first:pt-0 last:pb-0"
+                    >
+                      <div className="font-medium">{meeting.title}</div>
+                      <div className="text-foreground-secondary mt-0.5 text-xs">
+                        {meeting.scheduledAt
+                          ? new Date(meeting.scheduledAt).toLocaleDateString()
+                          : 'Date not listed'}{' '}
+                        · {meeting.state}
+                      </div>
+                      {agenda.length > 0 ? (
+                        <ul className="mt-2 flex flex-col gap-1">
+                          {agenda.map((item) => (
+                            <li key={item.title}>
+                              <p className="text-xs font-semibold">
+                                {item.title}
+                              </p>
+                              {item.description ? (
+                                <p className="text-foreground-secondary text-xs">
+                                  {item.description}
+                                </p>
+                              ) : null}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : null}
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </SectionShell>
@@ -182,6 +262,60 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
                     <div className="text-foreground-secondary mt-0.5 text-xs">
                       {document.type} · version {document.version}
                     </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </SectionShell>
+          <SectionShell title="Quarterly review reports">
+            {reports.length === 0 ? (
+              <p className="text-foreground-secondary text-sm">
+                No quarterly feature-request reviews have been published yet.
+              </p>
+            ) : (
+              <ul className="divide-border divide-y">
+                {reports.map((report) => (
+                  <li
+                    key={report.id}
+                    className="py-2 text-sm first:pt-0 last:pb-0"
+                  >
+                    {report.downloadUrl ? (
+                      <a
+                        href={report.downloadUrl}
+                        className="font-medium underline-offset-2 hover:underline"
+                      >
+                        Q{report.quarter} {report.year} feature-request review
+                      </a>
+                    ) : (
+                      <span className="font-medium">
+                        Q{report.quarter} {report.year} feature-request review
+                      </span>
+                    )}
+                    <div className="text-foreground-secondary mt-0.5 text-xs">
+                      Prepared by {report.generatedByDisplayName}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </SectionShell>
+          <SectionShell title="Member directory">
+            {members.length === 0 ? (
+              <p className="text-foreground-secondary text-sm">
+                No member directory is published yet.
+              </p>
+            ) : (
+              <ul className="divide-border divide-y">
+                {members.map((member) => (
+                  <li
+                    key={member.username}
+                    className="py-2 text-sm first:pt-0 last:pb-0"
+                  >
+                    <span className="font-medium">{member.displayName}</span>
+                    <span className="text-foreground-secondary ml-2 text-xs">
+                      @{member.username}
+                      {member.isBoard ? ' · Board' : ''}
+                    </span>
                   </li>
                 ))}
               </ul>

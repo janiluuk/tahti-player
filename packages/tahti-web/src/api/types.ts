@@ -654,6 +654,30 @@ export type GovernanceMeeting = {
   updatedAt: string;
 };
 
+export type GovernanceAgendaItem = {
+  title: string;
+  description?: string;
+};
+
+export type GovernanceMember = {
+  memberNumber: number | null;
+  displayName: string;
+  username: string;
+  memberSince: string | null;
+  isBoard: boolean;
+  channelSlug: string | null;
+};
+
+export type GovernanceQuarterlyReport = {
+  id: string;
+  year: number;
+  quarter: number;
+  storageKey: string;
+  generatedAt: string;
+  generatedByDisplayName: string;
+  downloadUrl: string | null;
+};
+
 export type GovernanceDocument = {
   id: string;
   title: string;

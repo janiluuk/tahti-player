@@ -636,6 +636,46 @@ test('branding and radio own gallery, channel designer, and multicast', async ({
   );
 });
 
+test('listen chrome lights Listen on child tabs and Favorites alone on favorites', async ({
+  page,
+}) => {
+  await page.goto('/');
+  const sidebar = page.getByTestId('sidebar-navigation');
+  await expect(sidebar.getByRole('link', { name: 'Listen' })).toHaveAttribute(
+    'aria-current',
+    'page',
+  );
+  await expect(page.getByRole('tab', { name: 'Listen' })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  );
+
+  await page.goto('/listen/feed');
+  await expect(sidebar.getByRole('link', { name: 'Listen' })).toHaveAttribute(
+    'aria-current',
+    'page',
+  );
+  await expect(
+    sidebar.getByRole('link', { name: 'Favorites' }),
+  ).not.toHaveAttribute('aria-current', 'page');
+  await expect(page.getByRole('tab', { name: 'Feed' })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  );
+
+  await page.goto('/listen/favorites');
+  await expect(
+    sidebar.getByRole('link', { name: 'Favorites' }),
+  ).toHaveAttribute('aria-current', 'page');
+  await expect(
+    sidebar.getByRole('link', { name: 'Listen' }),
+  ).not.toHaveAttribute('aria-current', 'page');
+  await expect(page.getByRole('tab', { name: 'Favorites' })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  );
+});
+
 test('artist creates a four-image promotion kit and another user can download the same kit from the artist page', async ({
   browser,
   page,

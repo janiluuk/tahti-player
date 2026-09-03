@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   getStudioPrimaryRoute,
   getStudioSubmenuItems,
+  litStudioSubmenuDestinations,
   SUBMENUS,
 } from './StudioNav';
 
@@ -45,6 +46,37 @@ describe('StudioNav section coverage', () => {
     expect(getStudioPrimaryRoute('/library/upload')).toBe('/studio');
     expect(getStudioPrimaryRoute('/studio/releases')).toBe('/studio');
     expect(getStudioPrimaryRoute('/studio/go-live')).toBe('/studio/go-live');
+  });
+
+  it('lights exactly one Studio submenu item on covered catalog routes', () => {
+    const covered: [string, string][] = [
+      ['/studio', '/studio'],
+      ['/studio/branding', '/studio/branding'],
+      ['/studio/setup-channel', '/studio/branding'],
+      ['/studio/stats', '/studio/stats'],
+      ['/studio/insights', '/studio/stats'],
+      ['/library', '/library'],
+      ['/library/sounds', '/library/sounds'],
+      ['/studio/archive/arch-1', '/library/sounds'],
+      ['/library/collections', '/library/collections'],
+      ['/studio/playlists', '/library/collections'],
+      ['/studio/stash', '/library/collections'],
+      ['/library/smartlinks', '/library/collections'],
+      ['/library/media', '/library/collections'],
+      ['/studio/editor', '/studio/editor'],
+      ['/studio/mastering/arch-1', '/studio/editor'],
+      ['/studio/releases', '/studio/releases'],
+      ['/studio/distribution', '/studio/releases'],
+      ['/studio/go-live', '/studio/go-live'],
+      ['/studio/info', '/studio/go-live'],
+      ['/studio/channel', '/studio/channel'],
+      ['/studio/channel?tab=radio', '/studio/channel?tab=radio'],
+    ];
+    for (const [location, expected] of covered) {
+      expect(litStudioSubmenuDestinations(location), location).toEqual([
+        expected,
+      ]);
+    }
   });
 
   it('keeps Stripe out of Studio nav unless Stripe is configured', () => {

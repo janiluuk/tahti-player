@@ -59,6 +59,8 @@ const plugin: TahtiPlugin = {
 export default plugin;
 ```
 
+
+
 ## Provider Types
 
 **Streaming** - resolve tracks to playable audio:
@@ -92,6 +94,8 @@ const provider: MetadataProvider = {
 };
 ```
 
+
+
 ## Available APIs
 
 - `api.Providers` - register/unregister providers
@@ -102,6 +106,8 @@ const provider: MetadataProvider = {
 - `api.Metadata` - search music metadata
 - `api.Streaming` - resolve streams
 - `api.Logger` - logging (trace/debug/info/warn/error)
+
+
 
 ## Publishing
 
@@ -127,11 +133,12 @@ jobs:
           generate_release_notes: true
 ```
 
-3. Bump `package.json` `version`, tag the release (`git tag vX.Y.Z && git push origin vX.Y.Z`).
-4. Update [janiluuk/tahti-registry](https://github.com/janiluuk/tahti-registry) `plugins.json` in
-   the same change set (sibling `../tahti-registry`):
-   - **New plugin** — add a row. Users must see it in that repo.
-   - **Changed plugin** — bump the catalog `version` and `downloadUrl` to the new release.
-     Player auto-update reads the catalog, not GitHub latest alone.
-5. Run `pnpm validate` / `pnpm check-plugins` in `tahti-registry`. Do not use
-   `NuclearPlayer/plugin-registry`.
+1. Bump `package.json` `version`, tag the release (`git tag vX.Y.Z && git push origin vX.Y.Z`).
+2. Update [janiluuk/tahti-registry](https://github.com/janiluuk/tahti-registry) `plugins.json` in
+  the same change set (sibling `../tahti-registry`):
+  - **New plugin** — add a row. Users must see it in that repo.
+  - **Changed plugin** — bump the catalog `version` and `downloadUrl` to the new release.
+  Player auto-update reads the catalog, not GitHub latest alone.
+3. Run `pnpm validate` / `pnpm check-plugins` in `tahti-registry`. Do not use
+  `NuclearPlayer/plugin-registry`.
+

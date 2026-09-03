@@ -1,4 +1,4 @@
-import { Link, useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
 import {
   ChevronDownIcon,
   HeartIcon,
@@ -53,6 +53,7 @@ import { PageFrame, PageHeader } from '../components/PageHeader';
 import { PageEmpty, PageLoading } from '../components/PageStates';
 import { QueueConfirmDialog } from '../components/QueueConfirmDialog';
 import { RadioStationCoverEditButton } from '../components/RadioStationCover';
+import { activeListenTab } from '../lib/navigationActive';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
@@ -73,8 +74,12 @@ const ARTIST_TYPE_OPTIONS = [
   { id: 'radio-host', label: 'Radio host' },
 ] as const;
 
-export function ListenView({ tab = 'listen' }: { tab?: ListenTab }) {
+export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
   const navigate = useNavigate();
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  });
+  const tab = activeListenTab(pathname) ?? tabProp;
   const [items, setItems] = useState<ChannelDirectoryItem[]>([]);
   const [onAir, setOnAir] = useState<OnAirChannel[]>([]);
   const [radio, setRadio] = useState<PublicChannel | null>(null);

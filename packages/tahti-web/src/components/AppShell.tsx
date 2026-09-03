@@ -25,6 +25,7 @@ import { MAIN_CONTENT_PADDING } from '../layout/contentPadding';
 import { hasAccountRole } from '../lib/accountRoles';
 import { diagnosticsEnabled } from '../lib/buildPolicy';
 import { cn } from '../lib/cn';
+import { activeSidebarItem } from '../lib/navigationActive';
 import {
   reapplyLastMetadata,
   scrollingPlaybackTitle,
@@ -82,6 +83,7 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
   const pathname = useRouterState({
     select: (state) => state.location.pathname,
   });
+  const sidebarActive = activeSidebarItem(pathname);
   return (
     <SidebarNavigation isCompact={compact}>
       <div className="flex h-full min-h-0 flex-col p-1">
@@ -91,11 +93,7 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
               to="/"
               icon={<GaugeIcon size={16} />}
               label="Listen"
-              isSelected={
-                pathname === '/' ||
-                pathname.startsWith('/feed') ||
-                pathname.startsWith('/history')
-              }
+              isSelected={sidebarActive === 'listen'}
             />
           </div>
           <div data-tour-id="nav-radio">
@@ -103,6 +101,7 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
               to="/radio"
               icon={<RadioIcon size={16} />}
               label="Radio"
+              isSelected={sidebarActive === 'radio'}
             />
           </div>
           <div data-tour-id="nav-discover">
@@ -110,6 +109,7 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
               to="/discover"
               icon={<CompassIcon size={16} />}
               label="Discover"
+              isSelected={sidebarActive === 'discover'}
             />
           </div>
           <div data-tour-id="nav-favorites">
@@ -117,11 +117,7 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
               to="/listen/favorites"
               icon={<HeartIcon size={16} />}
               label="Favorites"
-              isSelected={
-                pathname.startsWith('/listen/favorites') ||
-                pathname.startsWith('/library/favorites') ||
-                pathname.startsWith('/favorites')
-              }
+              isSelected={sidebarActive === 'favorites'}
             />
           </div>
           <div data-tour-id="nav-studio" className="flex flex-col gap-2">
@@ -129,7 +125,7 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
               to="/studio"
               icon={<LayoutDashboardIcon size={16} />}
               label="Studio"
-              isSelected={getStudioPrimaryRoute(pathname) === '/studio'}
+              isSelected={sidebarActive === 'studio'}
             />
             {isLoggedIn && <StudioMainNavItems />}
           </div>
@@ -139,6 +135,7 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
                 to="/admin"
                 icon={<ShieldIcon size={16} />}
                 label="Admin"
+                isSelected={sidebarActive === 'admin'}
               />
             </div>
           )}
@@ -149,6 +146,7 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
               to="/help"
               icon={<HelpCircleIcon size={16} />}
               label="Help center"
+              isSelected={sidebarActive === 'help'}
             />
           </div>
           <div data-tour-id="nav-settings">
@@ -220,10 +218,8 @@ export function AppShell() {
     (s) => s.setFullScreenPlayerOpen,
   );
   const refresh = useAuthStore((s) => s.refresh);
-  const isBoard = useAuthStore((state) => hasAccountRole(state.user, 'BOARD'));
   const userId = useAuthStore((s) => s.user?.id);
   const authHydrated = useAuthStore((s) => s.hydrated);
-  const openSettings = useSettingsModalStore((s) => s.open);
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigationLocation = useRouterState({
@@ -459,77 +455,7 @@ export function AppShell() {
             onWidthChange={setLeftWidth}
             onToggle={toggleLeft}
           >
-            <SidebarNavigation isCompact={leftCollapsed}>
-              <div className="flex h-full min-h-0 flex-col p-1">
-                <div className="flex flex-1 flex-col gap-2 overflow-y-auto">
-                  <div data-tour-id="nav-listen">
-                    <SidebarNavigationItem
-                      to="/"
-                      icon={<GaugeIcon size={16} />}
-                      label="Listen"
-                    />
-                  </div>
-                  <div data-tour-id="nav-radio">
-                    <SidebarNavigationItem
-                      to="/radio"
-                      icon={<RadioIcon size={16} />}
-                      label="Radio"
-                    />
-                  </div>
-                  <div data-tour-id="nav-discover">
-                    <SidebarNavigationItem
-                      to="/discover"
-                      icon={<CompassIcon size={16} />}
-                      label="Discover"
-                    />
-                  </div>
-                  <div data-tour-id="nav-favorites">
-                    <SidebarNavigationItem
-                      to="/listen/favorites"
-                      icon={<HeartIcon size={16} />}
-                      label="Favorites"
-                    />
-                  </div>
-                  <div
-                    data-tour-id="nav-studio"
-                    className="flex flex-col gap-2"
-                  >
-                    <SidebarNavigationItem
-                      to="/studio"
-                      icon={<LayoutDashboardIcon size={16} />}
-                      label="Studio"
-                      isSelected={getStudioPrimaryRoute(pathname) === '/studio'}
-                    />
-                    {userId && <StudioMainNavItems />}
-                  </div>
-                  {userId && isBoard && diagnosticsEnabled && (
-                    <div data-tour-id="nav-admin">
-                      <SidebarNavigationItem
-                        to="/admin"
-                        icon={<ShieldIcon size={16} />}
-                        label="Admin"
-                      />
-                    </div>
-                  )}
-                </div>
-                <div className="border-border mt-2 flex shrink-0 flex-col gap-2 border-t pt-2">
-                  <div data-tour-id="nav-help">
-                    <SidebarNavigationItem
-                      to="/help"
-                      icon={<HelpCircleIcon size={16} />}
-                      label="Help center"
-                    />
-                  </div>
-                  <div data-tour-id="nav-settings">
-                    <SidebarNavigationItem
-                      icon={<SettingsIcon size={16} />}
-                      label="Settings"
-                      onClick={() => openSettings()}
-                    />
-                  </div>
-                </div>
-              </div>
-            </SidebarNavigation>
+            <SidebarNavItems compact={leftCollapsed} />
           </PlayerWorkspace.LeftSidebar>
 
           {/*

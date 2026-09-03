@@ -49,12 +49,15 @@ export function LibraryView({
   const activeCollectionTab = collectionTab ?? tab;
   const overviewTab =
     tab === 'sounds' ||
+    tab === 'smartlinks' ||
     activeCollectionTab === 'collections' ||
     activeCollectionTab === 'recordings' ||
     activeCollectionTab === 'media' ||
     activeCollectionTab === 'stash' ||
     activeCollectionTab === 'embeds'
-      ? activeCollectionTab
+      ? activeCollectionTab === 'smartlinks'
+        ? 'smartlinks'
+        : activeCollectionTab
       : null;
 
   return (
@@ -81,7 +84,13 @@ export function LibraryView({
                   ? 'Recordings'
                   : overviewTab === 'embeds'
                     ? 'Embeds'
-                    : 'Collections'
+                    : overviewTab === 'media'
+                      ? 'Media'
+                      : overviewTab === 'stash'
+                        ? 'Stash'
+                        : overviewTab === 'smartlinks'
+                          ? 'Smart links'
+                          : 'Collections'
             }
             subtitle="Your sounds, collections, recordings, media, and imported embeds."
           />
@@ -102,6 +111,7 @@ export function LibraryView({
                 ['media', 'Media', '/library/collections?tab=media'],
                 ['stash', 'Stash', '/library/collections?tab=stash'],
                 ['embeds', 'Embeds', '/library/collections?tab=embeds'],
+                ['smartlinks', 'Smart links', '/library/smartlinks'],
               ] as const
             ).map(([id, label, to]) => (
               <Link

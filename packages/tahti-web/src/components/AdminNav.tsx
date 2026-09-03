@@ -8,6 +8,7 @@ import {
   ImageIcon,
   LanguagesIcon,
   LibraryIcon,
+  MapIcon,
   MapPinIcon,
   MegaphoneIcon,
   PuzzleIcon,
@@ -178,6 +179,12 @@ export const PRIMARY = [
     description:
       'Real pages that shipped without a menu entry or an in-app link, gathered here as tabs.',
   },
+  {
+    to: '/admin/map',
+    label: 'Map',
+    icon: <MapIcon size={16} aria-hidden />,
+    description: 'Screen atlas of listener, studio, and admin surfaces.',
+  },
 ] as const;
 
 export const ADMIN_SECTIONS = [
@@ -240,6 +247,7 @@ export const ADMIN_SECTIONS = [
         '/admin/disco-widgets',
         '/admin/i18n',
         '/admin/orphan-pages',
+        '/admin/map',
       ].includes(item.to),
     ),
   },
@@ -267,7 +275,7 @@ function useAdminNavParts(
   const routeSection = ADMIN_SECTIONS.find((section) =>
     section.items.some((item) => isActive(current, item.to)),
   );
-  const section = routeSection ?? ADMIN_SECTIONS[0];
+  const section = routeSection;
 
   const tabs = (
     <div
@@ -277,7 +285,7 @@ function useAdminNavParts(
       data-admin-section-tabs
     >
       {ADMIN_SECTIONS.map((item) => {
-        const active = item.id === section.id;
+        const active = item.id === section?.id;
         return (
           <button
             key={item.id}
@@ -305,19 +313,21 @@ function useAdminNavParts(
   );
   const menu = (
     <div className={SUBMENU_SLOT_CLASS} data-admin-section-menu>
-      <SectionTabs
-        aria-label={`Admin ${section.label}`}
-        items={section.items.map((link) => ({
-          id: link.to,
-          label:
-            link.to === '/admin/moderation' && moderationPendingCount != null
-              ? `${link.label} (${moderationPendingCount})`
-              : link.label,
-          icon: link.icon,
-          to: link.to,
-          active: isActive(current, link.to),
-        }))}
-      />
+      {section ? (
+        <SectionTabs
+          aria-label={`Admin ${section.label}`}
+          items={section.items.map((link) => ({
+            id: link.to,
+            label:
+              link.to === '/admin/moderation' && moderationPendingCount != null
+                ? `${link.label} (${moderationPendingCount})`
+                : link.label,
+            icon: link.icon,
+            to: link.to,
+            active: isActive(current, link.to),
+          }))}
+        />
+      ) : null}
     </div>
   );
 

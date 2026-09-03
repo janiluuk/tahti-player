@@ -14,43 +14,44 @@ import { Button } from '@tahti-player/ui';
 
 import { hasAccountRole } from '../lib/accountRoles';
 import { cn } from '../lib/cn';
+import { activeMobileItem, type MobileItemId } from '../lib/navigationActive';
 import { useAuthStore } from '../stores/authStore';
 import { useLayoutStore } from '../stores/layoutStore';
 
 const NAV = [
   {
     to: '/',
+    id: 'listen' as const satisfies MobileItemId,
     label: 'Listen',
     icon: GaugeIcon,
-    match: (p: string) => p === '/' || p.startsWith('/listen'),
     boardOnly: false,
   },
   {
     to: '/radio',
+    id: 'radio' as const satisfies MobileItemId,
     label: 'Radio',
     icon: RadioIcon,
-    match: (p: string) => p.startsWith('/radio'),
     boardOnly: false,
   },
   {
     to: '/discover',
+    id: 'discover' as const satisfies MobileItemId,
     label: 'Discover',
     icon: CompassIcon,
-    match: (p: string) => p.startsWith('/discover'),
     boardOnly: false,
   },
   {
     to: '/library',
+    id: 'library' as const satisfies MobileItemId,
     label: 'Library',
     icon: LibraryIcon,
-    match: (p: string) => p.startsWith('/library'),
     boardOnly: false,
   },
   {
     to: '/studio',
+    id: 'studio' as const satisfies MobileItemId,
     label: 'Studio',
     icon: LayoutDashboardIcon,
-    match: (p: string) => p.startsWith('/studio'),
     boardOnly: false,
   },
 ] as const;
@@ -66,6 +67,7 @@ export function MobileBottomNav({ onOpenQueue }: MobileBottomNavProps) {
   const toggleBottomQueue = useLayoutStore((s) => s.toggleBottomQueue);
   const openQueue = onOpenQueue ?? toggleBottomQueue;
   const items = NAV.filter((item) => !item.boardOnly || isBoard);
+  const mobileActive = activeMobileItem(pathname);
 
   return (
     <nav
@@ -74,7 +76,7 @@ export function MobileBottomNav({ onOpenQueue }: MobileBottomNavProps) {
     >
       {items.map((item) => {
         const Icon = item.icon;
-        const active = item.match(pathname);
+        const active = mobileActive === item.id;
         return (
           <Link
             key={item.to}
