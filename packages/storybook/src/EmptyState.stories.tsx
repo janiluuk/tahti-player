@@ -7,6 +7,14 @@ const meta = {
   title: 'Components/EmptyState',
   component: EmptyState,
   tags: ['autodocs'],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          'Inline empty copy. tahti-web page-level empty often uses PageEmpty instead. Next: Admin Radio ×4, Storage ×5, moderation tabs, and other bare <p> empties in the Admin sweep. See Tahti/Reference/Storybook-first backlog.',
+      },
+    },
+  },
   argTypes: {
     size: {
       control: { type: 'select' },

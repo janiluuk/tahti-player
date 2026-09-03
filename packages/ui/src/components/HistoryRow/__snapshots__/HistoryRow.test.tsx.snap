@@ -10,11 +10,11 @@ exports[`HistoryRow > (Snapshot) renders a placeholder when artwork is missing 1
       class="flex w-10 justify-center"
     />
     <div
-      class="flex h-10 w-10 min-w-10 items-center justify-center overflow-hidden"
+      class="flex size-12 min-w-12 items-center justify-center overflow-hidden"
       data-testid="history-row-thumbnail"
     >
       <div
-        class="group relative overflow-hidden size-10 min-w-10"
+        class="group relative overflow-hidden size-12 min-w-12"
         data-testid="media-artwork"
       >
         <div
@@ -116,11 +116,11 @@ exports[`HistoryRow > (Snapshot) renders with artwork and all actions 1`] = `
       </button>
     </div>
     <div
-      class="flex h-10 w-10 min-w-10 items-center justify-center overflow-hidden"
+      class="flex size-12 min-w-12 items-center justify-center overflow-hidden"
       data-testid="history-row-thumbnail"
     >
       <div
-        class="group relative overflow-hidden size-10 min-w-10 cursor-pointer"
+        class="group relative overflow-hidden size-12 min-w-12 cursor-pointer"
         data-testid="media-artwork"
       >
         <img
@@ -133,11 +133,11 @@ exports[`HistoryRow > (Snapshot) renders with artwork and all actions 1`] = `
           class="pointer-events-none absolute inset-0 bg-black/0 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:bg-black/45 [@media(hover:hover)_and_(pointer:fine)]:group-hover:bg-black/45 [@media(hover:none)]:bg-black/35"
         />
         <div
-          class="pointer-events-none absolute inset-0 flex items-center justify-center gap-0.5 opacity-100 transition-opacity [@media(hover:hover)_and_(pointer:fine)]:invisible [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:visible [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:visible [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:opacity-100"
+          class="pointer-events-none absolute inset-0 flex items-center justify-center opacity-100 transition-opacity [@media(hover:hover)_and_(pointer:fine)]:invisible [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:visible [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:visible [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:opacity-100"
         >
           <button
             aria-label="Play"
-            class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none justify-center pointer-events-auto size-6 rounded-full shadow-md"
+            class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center pointer-events-auto rounded-full text-white"
             data-headlessui-state=""
             data-testid="media-artwork-play"
             title="Play"
@@ -147,13 +147,13 @@ exports[`HistoryRow > (Snapshot) renders with artwork and all actions 1`] = `
               aria-hidden="true"
               class="lucide lucide-play translate-x-px fill-current"
               fill="none"
-              height="14"
+              height="16"
               stroke="currentColor"
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
               viewBox="0 0 24 24"
-              width="14"
+              width="16"
               xmlns="http://www.w3.org/2000/svg"
             >
               <path

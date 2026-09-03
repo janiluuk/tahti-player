@@ -2,6 +2,41 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-04 — Listen / Discover CardGrid
+
+Shared `DirectoryArtistCardGrid` on Listen + Discover Artists. WidgetCard /
+embeds stay non-CardGrid. Folded from `cardgrid-listen-discover.md`.
+
+## 2026-09-04 — TopList on all top lists
+
+Admin Top lists, Studio Stats rankings/tracks/countries, and Library
+overview use Storybook `TopList`. History already compliant. Discover
+widgets stay `WidgetTrackRow`. Folded from `toplist-storybook-sweep.md`.
+
+## 2026-09-04 — Help keyboard navigation
+
+Help hub quick start → `/help/keyboard-shortcuts` with Storybook
+`KeyCombo`. Settings remapping still deferred. Folded from
+`help-keyboard-navigation.md`.
+
+## 2026-09-04 — TrackContextMenu first pass
+
+`PlayableTrackContextMenu` Header + playlist With Submenu + Audio tools;
+`StudioSoundRowMenu` on Studio Sounds. Queue/history/feed custom menus
+and Sound detail Quick edits still open. Folded from
+`track-context-menu-sweep.md`.
+
+## 2026-09-04 — Settings themes compact
+
+Themes use `ThemeController` + `Toggle` for Dynamic; compact
+`ThemeStoreItem`; configure controls receive `themeId`. Folded from
+`settings-themes-compact.md`.
+
+## 2026-09-04 — Remove About from Settings footer
+
+About link removed from Settings modal footer. `/about` and Help About remain.
+Folded from `settings-remove-about.md`.
+
 ## 2026-09-04 — SaveButton + StatChip sweep (0.0.57)
 
 Persist-edit controls use Storybook `SaveButton` (custom labels, Saving/Disabled). Create/publish stay `Button`. Studio Sound toolbar left icon-only. Disabled story added.

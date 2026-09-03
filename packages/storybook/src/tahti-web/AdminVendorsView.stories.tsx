@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminVendorsContent } from '@tahti-web/views/admin/AdminVendorsView';
 
+import { ADMIN_SWEEP_DOCS } from './_lib/adminStoryDocs';
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 
 // Vendors is now only a tab on the Admin dashboard (AdminDashboardView),
@@ -9,7 +10,15 @@ import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 const meta: Meta<typeof AdminVendorsContent> = {
   title: 'Tahti/Admin/AdminVendorsView',
   component: AdminVendorsContent,
-  parameters: { layout: 'fullscreen' },
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      description: {
+        component: `${ADMIN_SWEEP_DOCS} Badge status already. Leave vendor tables.`,
+      },
+    },
+  },
+  tags: ['autodocs'],
   decorators: [withTahtiRouter('/admin'), withMockAuth()],
 };
 

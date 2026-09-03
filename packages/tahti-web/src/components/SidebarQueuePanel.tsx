@@ -4,15 +4,19 @@ import { useState } from 'react';
 
 import { Button, QueuePanel } from '@tahti-player/ui';
 
+import { cn } from '../lib/cn';
 import { soundIdFromPlayableId } from '../lib/archiveId';
 import { useLibraryStore } from '../stores/libraryStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { ClearQueueConfirmDialog } from './ClearQueueConfirmDialog';
 import { SaveQueueAsPlaylistDialog } from './SaveQueueAsPlaylistDialog';
 
-/** Sidebar queue tab — a second, always-reorderable queue surface alongside
- * the playerbar's own (collapsed) queue strip. Not a replacement for it. */
-export function SidebarQueuePanel() {
+/** Max height for the compact queue viewport (~6 rows). */
+const QUEUE_VIEWPORT_MAX = 'max-h-80';
+
+/** Sidebar queue tab — reorderable queue on the right rail (and mobile drawer /
+ * signed-out popover). Compact mode caps the list height and fades past items. */
+export function SidebarQueuePanel({ compact = false }: { compact?: boolean }) {
   const navigate = useNavigate();
   const queue = usePlayerStore((s) => s.queue);
   const currentId = usePlayerStore((s) => s.currentId);
@@ -28,11 +32,15 @@ export function SidebarQueuePanel() {
   const [savingAsPlaylist, setSavingAsPlaylist] = useState(false);
 
   return (
-    <div className="flex h-full min-h-0 flex-col" data-testid="sidebar-queue">
+    <div
+      className={cn('flex min-h-0 flex-col', compact ? QUEUE_VIEWPORT_MAX : 'h-full')}
+      data-testid="sidebar-queue"
+    >
       <div className="min-h-0 flex-1">
         <QueuePanel
           items={queue}
           currentItemId={currentId ?? undefined}
+          fadePastItems
           reorderable
           onReorder={reorderQueue}
           onSelectItem={(id) => playQueueIndex(id)}

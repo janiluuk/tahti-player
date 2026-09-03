@@ -9,6 +9,12 @@ const meta: Meta<typeof ImageReveal> = {
   component: ImageReveal,
   parameters: {
     layout: 'centered',
+    docs: {
+      description: {
+        component:
+          'Grid/list cover treatment. Next Admin: Artwork presets <img> grid. Leave RadioStationCover hover-replace. Studio discography/collections still on the Studio sweep. See Tahti/Reference/Storybook-first backlog.',
+      },
+    },
   },
   tags: ['autodocs'],
 };

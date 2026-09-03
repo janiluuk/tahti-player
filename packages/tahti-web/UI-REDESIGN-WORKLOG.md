@@ -1,5 +1,46 @@
 # UI redesign worklog — Nuclear (artist + admin)
 
+## 2026-09-04 — Player bar queue on the right rail
+
+**Status:** executed (round 1).
+
+Queue button toggles the right-rail Queue tab (`toggleQueueRail`) without
+expanding the player bar. Seek uses `WaveformSeekbar` (title click expands
+height). Artist name navigates to `/u/$username` when a channel slug exists.
+Mobile uses the existing drawer via `bottomQueueOpen`; signed-out desktop
+gets an anchored compact queue panel. `QueuePanel` fades past items;
+`SidebarQueuePanel` supports `compact` max-height.
+
+Tracked: [`docs/todo/playerbar-queue-right-rail.md`](../../docs/todo/playerbar-queue-right-rail.md).
+
+## 2026-09-04 — Admin Storybook primitive sweep (planned)
+
+**Status:** planned (audit done) — tracked in [`WORKPLAN.md`](WORKPLAN.md)
+and [`docs/todo/admin-storybook-sweep.md`](../../docs/todo/admin-storybook-sweep.md).
+Storybook catalogue: `Tahti/Reference/Storybook-first backlog`.
+
+**Goal:** Swap Admin surfaces onto existing Storybook primitives. Do not
+rebuild the 2026-09-03 UX sweep (icons, Tooltip help, StudioPanel clones).
+
+### Swap
+
+- `AdminTopListsView` period/dimension/sort `FilterRow` → `FilterChips`
+- Users / Top lists / Storage search overlay icons → `Input` `startAddon`
+  `SearchIcon`; Support and Selects archive search move icon to start
+- Radio preset Enable/Disable and Storage “Group by user” → `Toggle`
+- ~25 empty/error `<p>` blocks → `PageEmpty` / `PageError` / `EmptyState`
+- Governance KPI tiles → `StatChip`; artwork preset grid → `ImageReveal`
+
+### Leave
+
+Operational moderation tables; Map/`ScreenAtlas`; grant EUR; hover-replace
+radio covers; Logs alert box until a shared Banner exists.
+
+### Storybook this pass
+
+Added missing Admin section stories (Content, Venues, Artwork presets,
+Reports, Selects, Orphan pages, Map) and the backlog reference page.
+
 ## 2026-09-04 — Remove About from Settings footer
 
 Dropped About from the Settings modal `navFooter`. GitHub, Discord, API docs,
@@ -86,10 +127,10 @@ gains an icon slot. Schedule cards/list is icon-only, not FilterChips.
 
 **Chrome:** Studio nav and section tabs stay mounted.
 
-## 2026-09-04 — Remove About from Settings (planned)
+## 2026-09-04 — Remove About from Settings
 
-**Status:** planned — tracked in [`WORKPLAN.md`](WORKPLAN.md) and
-[`docs/todo/settings-remove-about.md`](../../docs/todo/settings-remove-about.md).
+**Status:** executed. About is gone from the Settings modal footer. `/about`
+and Help → About Tahti remain. Folded: `docs/todo/HISTORY.md`.
 
 **Goal:** Remove the **About** footer link from the Settings modal. Keep
 `/about` and Help → About Tahti.

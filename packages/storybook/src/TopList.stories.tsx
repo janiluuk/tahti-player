@@ -6,6 +6,14 @@ const meta = {
   title: 'Components/TopList',
   component: TopList,
   tags: ['autodocs'],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          'Production: Admin Top lists, Studio Stats rankings, Library overview, History. List rows are done. Next: Admin Top lists FilterRow → FilterChips. Discover widgets stay WidgetTrackRow. See Tahti/Reference/Storybook-first backlog.',
+      },
+    },
+  },
 } satisfies Meta<typeof TopList>;
 
 export default meta;

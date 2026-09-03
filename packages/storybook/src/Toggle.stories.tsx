@@ -8,6 +8,12 @@ const meta = {
   component: Toggle,
   parameters: {
     layout: 'centered',
+    docs: {
+      description: {
+        component:
+          'On/off control. Next Admin: Radio preset Enable/Disable buttons and Storage Group by user. Announcements and AGM already use Toggle. See Tahti/Reference/Storybook-first backlog.',
+      },
+    },
   },
   tags: ['autodocs'],
   argTypes: {

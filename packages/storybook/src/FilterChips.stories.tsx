@@ -7,6 +7,14 @@ const meta = {
   title: 'Components/FilterChips',
   component: FilterChips,
   tags: ['autodocs'],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          'Exclusive or multi label filters. Production: Listen/Discover listings, Admin Disco widgets. Next: Admin Top lists FilterRow; Studio Stats range/dimension/sort. Missing states: icon slot — StyleChip/TypeChip stay custom until then. See Tahti/Reference/Storybook-first backlog.',
+      },
+    },
+  },
 } satisfies Meta<typeof FilterChips>;
 
 export default meta;

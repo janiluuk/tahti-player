@@ -1,12 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminGate } from '@tahti-web/components/AdminGate';
 
+import { ADMIN_SWEEP_DOCS } from './_lib/adminStoryDocs';
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
 
 const meta: Meta<typeof AdminGate> = {
   title: 'Tahti/Admin/AdminGate',
   component: AdminGate,
-  parameters: { layout: 'padded' },
+  parameters: {
+    layout: 'padded',
+    docs: {
+      description: {
+        component: `${ADMIN_SWEEP_DOCS} Access gate, not a primitive swap target.`,
+      },
+    },
+  },
   tags: ['autodocs'],
   decorators: [withTahtiRouter('/admin')],
 };

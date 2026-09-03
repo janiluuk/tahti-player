@@ -8,6 +8,14 @@ const meta: Meta<typeof Input> = {
   title: 'Components/Input',
   component: Input,
   tags: ['autodocs'],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          'Search/filter embed SearchIcon via startAddon and FilterIcon via endAddon — not overlay pl-9 or a sibling Search button. Next Admin: Users, Top lists, Storage search; Support/Selects move icon to start. Remaining natives: see input-storybook-sweep.md and Tahti/Reference/Storybook-first backlog.',
+      },
+    },
+  },
 };
 
 export default meta;

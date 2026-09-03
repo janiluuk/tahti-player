@@ -1,12 +1,21 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminModerationView } from '@tahti-web/views/admin/moderation/AdminModerationView';
 
+import { ADMIN_SWEEP_DOCS } from './_lib/adminStoryDocs';
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 
 const meta: Meta<typeof AdminModerationView> = {
   title: 'Tahti/Admin/AdminModerationView',
   component: AdminModerationView,
-  parameters: { layout: 'fullscreen' },
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      description: {
+        component: `${ADMIN_SWEEP_DOCS} Next: Support search startAddon; tab empty copy → PageEmpty. Leave dense queue tables. Missing states: Selects is not a moderation tab (lives at /admin/tahti-selects).`,
+      },
+    },
+  },
+  tags: ['autodocs'],
   decorators: [withTahtiRouter('/admin/moderation'), withMockAuth()],
 };
 

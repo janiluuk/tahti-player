@@ -13,6 +13,14 @@ const meta = {
   title: 'Components/LogViewer',
   component: LogViewer,
   tags: ['autodocs'],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          'Production: Admin Logs (audit + container) and Admin Activity. Next: empty copy still hand-rolled; the red warning box waits on a shared Alert/Banner. See Tahti/Reference/Storybook-first backlog.',
+      },
+    },
+  },
 } satisfies Meta<typeof LogViewer>;
 
 export default meta;

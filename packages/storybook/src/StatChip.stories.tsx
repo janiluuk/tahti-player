@@ -8,6 +8,12 @@ const meta: Meta<typeof StatChip> = {
   component: StatChip,
   parameters: {
     layout: 'centered',
+    docs: {
+      description: {
+        component:
+          'KPI tiles. Production: Admin Dashboard, Content, Storage used/free/total. Next: Admin Governance hand-rolled stat cards. Grant EUR stays StatNumber. See Tahti/Reference/Storybook-first backlog.',
+      },
+    },
   },
   tags: ['autodocs'],
 };

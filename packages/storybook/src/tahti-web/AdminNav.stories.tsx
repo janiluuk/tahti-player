@@ -1,12 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminNav } from '@tahti-web/components/AdminNav';
 
+import { ADMIN_SWEEP_DOCS } from './_lib/adminStoryDocs';
 import { withTahtiRouter } from './_lib/decorators';
 
 const meta: Meta<typeof AdminNav> = {
   title: 'Tahti/Admin/AdminNav',
   component: AdminNav,
-  parameters: { layout: 'padded' },
+  parameters: {
+    layout: 'padded',
+    docs: {
+      description: {
+        component: `${ADMIN_SWEEP_DOCS} Chrome for all Admin sections. New section stories: Content, Venues, Artwork presets, Reports, Selects, Orphan pages, Map. Grant cycle stays documented-only.`,
+      },
+    },
+  },
   tags: ['autodocs'],
   decorators: [withTahtiRouter('/admin')],
 };
