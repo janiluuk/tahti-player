@@ -147,6 +147,7 @@ import { PageLoading } from './PageStates';
 import { RadioStationCover } from './RadioStationCover';
 import { SourceServiceIcon } from './SourceServiceIcon';
 import { ThemeVisualizationSettings } from './ThemeVisualizationSettings';
+import { DiscordBotAddonCard } from '../plugins/discord-bot/DiscordBotAddonCard';
 
 function visualizerDescription(id: string): string {
   return visualizerMetadata(id).description;
@@ -3071,6 +3072,7 @@ function RadioCategory() {
 
   return (
     <div className="flex flex-col gap-3">
+      <DiscordBotAddonCard />
       <PersonalRadioStreamCard />
       <RadioBrowserDirectoryCard />
       <div className="flex flex-wrap items-center justify-end gap-2">
