@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, Input, Select, Textarea } from '@tahti-player/ui';
+import { Button, Input, SaveButton, Select, Textarea } from '@tahti-player/ui';
 
 import {
   createAdminResolution,
@@ -302,7 +302,7 @@ export function AdminGovernanceView() {
                   placeholder="Abstentions"
                 />
               </div>
-              <Button
+              <SaveButton
                 size="sm"
                 className="mt-3"
                 disabled={
@@ -310,6 +310,8 @@ export function AdminGovernanceView() {
                   !resolutionTitle.trim() ||
                   !resolutionBody.trim()
                 }
+                saving={resolutionBusy}
+                label="Record resolution"
                 onClick={() => {
                   setResolutionBusy(true);
                   void createAdminResolution({
@@ -329,9 +331,7 @@ export function AdminGovernanceView() {
                     }
                   });
                 }}
-              >
-                {resolutionBusy ? 'Saving…' : 'Record resolution'}
-              </Button>
+              />
               <ul className="divide-border mt-4 divide-y">
                 {resolutions.map((resolution) => (
                   <li

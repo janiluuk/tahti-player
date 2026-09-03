@@ -33,4 +33,9 @@ describe('SaveButton', () => {
 
     expect(onClick).toHaveBeenCalledTimes(1);
   });
+
+  it('stays disabled when disabled is set', () => {
+    render(<SaveButton label="Save profile" disabled />);
+    expect(screen.getByRole('button', { name: 'Save profile' })).toBeDisabled();
+  });
 });

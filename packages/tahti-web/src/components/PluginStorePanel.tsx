@@ -30,6 +30,7 @@ import {
   Input,
   MediaArtwork,
   PluginStoreItem,
+  SaveButton,
   Select,
   Slider,
   Tabs,
@@ -1531,13 +1532,12 @@ function OAuthServiceCard({
                 placeholder="https://soundcloud.com/your-name"
               />
               <div className="flex items-center gap-2">
-                <Button
+                <SaveButton
                   size="sm"
                   disabled={!profileDraft.trim() || profileDraft === profileUrl}
+                  label="Save profile URL"
                   onClick={saveProfileUrl}
-                >
-                  Save profile URL
-                </Button>
+                />
                 {profileMsg && (
                   <p className="text-foreground-secondary text-xs">
                     {profileMsg}
@@ -2353,9 +2353,7 @@ function MulticastConfigureDialog({
       </div>
       <Dialog.Actions>
         <Dialog.Close>Cancel</Dialog.Close>
-        <Button onClick={save} disabled={saving}>
-          {saving ? 'Saving…' : 'Save'}
-        </Button>
+        <SaveButton saving={saving} label="Save destination" onClick={save} />
       </Dialog.Actions>
     </Dialog.Root>
   );
@@ -3433,7 +3431,7 @@ function RadioCategory() {
             </div>
             <Dialog.Actions>
               <Dialog.Close>Cancel</Dialog.Close>
-              <Button type="submit">Save station</Button>
+              <SaveButton type="submit" label="Save station" />
             </Dialog.Actions>
           </form>
         )}

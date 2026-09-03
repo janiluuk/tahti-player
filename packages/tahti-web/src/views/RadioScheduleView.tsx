@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 
-import { Button, Dialog, Input, Tabs } from '@tahti-player/ui';
+import { Button, Dialog, Input, SaveButton, Tabs } from '@tahti-player/ui';
 
 import {
   cancelShowBooking,
@@ -744,9 +744,12 @@ export function RadioScheduleView() {
                 >
                   Cancel booking
                 </Button>
-                <Button disabled={busy} onClick={saveBookingEdits}>
-                  {busy ? 'Saving…' : 'Save changes'}
-                </Button>
+                <SaveButton
+                  disabled={busy}
+                  saving={busy}
+                  label="Save changes"
+                  onClick={saveBookingEdits}
+                />
               </Dialog.Actions>
             </>
           ))}
