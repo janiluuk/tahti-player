@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, Dialog, Input } from '@tahti-player/ui';
+import { Button, Dialog, Input, SaveButton } from '@tahti-player/ui';
 
 import {
   createRtmpTarget,
@@ -339,20 +339,22 @@ function DestinationDialog({
             {deleting ? 'Removing…' : 'Remove'}
           </Button>
         )}
-        {providerId && (
-          <Button
-            disabled={
-              saving || !label.trim() || (!savedTarget && !streamKey.trim())
-            }
-            onClick={save}
-          >
-            {saving
-              ? 'Saving…'
-              : savedTarget
-                ? 'Save changes'
-                : 'Add destination'}
-          </Button>
-        )}
+        {providerId &&
+          (savedTarget ? (
+            <SaveButton
+              disabled={saving || !label.trim()}
+              saving={saving}
+              label="Save changes"
+              onClick={save}
+            />
+          ) : (
+            <Button
+              disabled={saving || !label.trim() || !streamKey.trim()}
+              onClick={save}
+            >
+              {saving ? 'Saving…' : 'Add destination'}
+            </Button>
+          ))}
       </Dialog.Actions>
     </Dialog.Root>
   );

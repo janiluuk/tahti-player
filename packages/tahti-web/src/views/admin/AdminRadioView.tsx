@@ -1,7 +1,14 @@
 import { PauseIcon, PlayIcon, PlusIcon, RadioTowerIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Badge, Button, Dialog, Input, Textarea } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  Dialog,
+  Input,
+  SaveButton,
+  Textarea,
+} from '@tahti-player/ui';
 
 import {
   createAdminInternetRadioPreset,
@@ -365,13 +372,23 @@ function InternetRadioPresetsPanel() {
         </div>
         <Dialog.Actions>
           <Dialog.Close>Cancel</Dialog.Close>
-          <Button
-            type="button"
-            disabled={pending || !draft.name.trim()}
-            onClick={save}
-          >
-            {pending ? 'Saving…' : editingId ? 'Save changes' : 'Add station'}
-          </Button>
+          {editingId ? (
+            <SaveButton
+              type="button"
+              disabled={pending || !draft.name.trim()}
+              saving={pending}
+              label="Save changes"
+              onClick={save}
+            />
+          ) : (
+            <Button
+              type="button"
+              disabled={pending || !draft.name.trim()}
+              onClick={save}
+            >
+              Add station
+            </Button>
+          )}
         </Dialog.Actions>
       </Dialog.Root>
     </StudioPanel>

@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-09-04T01:00",
+    "description": "Save actions look the same across Studio and Admin, with a clear Saving state. Artist and channel follower counts use the same chips as the rest of the app.",
+    "type": "improvement",
+    "contributors": ["jani"],
+    "tags": [{ "label": "Studio", "color": "purple" }]
+  },
+  {
     "date": "2026-09-04T00:50",
     "description": "Add a News widget from Listen add-ons: paste an RSS feed, set a thumbnail, and a slider of articles shows on Listen and Discover.",
     "type": "feature",

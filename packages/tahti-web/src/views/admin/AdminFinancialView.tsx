@@ -1,7 +1,7 @@
 import { PlusIcon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, Input, Select } from '@tahti-player/ui';
+import { Button, Input, SaveButton, Select } from '@tahti-player/ui';
 
 import {
   createLedgerEntry,
@@ -143,11 +143,11 @@ export function AdminFinancialView() {
                         className="h-8 text-xs"
                       />
                       <div>
-                        <Button
+                        <SaveButton
                           size="sm"
-                          disabled={
-                            saving || !amount.trim() || !description.trim()
-                          }
+                          disabled={!amount.trim() || !description.trim()}
+                          saving={saving}
+                          label="Save entry"
                           onClick={() => {
                             const eur = Number(amount);
                             if (!Number.isFinite(eur)) {
@@ -166,9 +166,7 @@ export function AdminFinancialView() {
                               reload();
                             });
                           }}
-                        >
-                          {saving ? 'Saving…' : 'Save entry'}
-                        </Button>
+                        />
                       </div>
                     </div>
                   )}
