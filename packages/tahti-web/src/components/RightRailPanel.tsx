@@ -135,7 +135,7 @@ export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
 
       <div className="min-h-0 flex-1 overflow-hidden">
         {tab === 'queue' ? (
-          <SidebarQueuePanel />
+          <SidebarQueuePanel compact />
         ) : tab === 'notifications' ? (
           <NotificationList
             notifications={notifications}

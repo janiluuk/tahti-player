@@ -8,6 +8,7 @@ import {
   FolderIcon,
   PencilIcon,
   PlayIcon,
+  SearchIcon,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -314,6 +315,13 @@ export function StudioSoundsView() {
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search…"
                 className="max-w-md flex-1"
+                startAddon={
+                  <SearchIcon
+                    size={16}
+                    aria-hidden
+                    className="text-foreground-secondary"
+                  />
+                }
               />
               <Button
                 type="button"

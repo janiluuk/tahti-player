@@ -734,20 +734,20 @@ function FilesBrowserTab() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-2">
-        <div className="relative max-w-sm flex-1">
-          <SearchIcon
-            size={15}
-            aria-hidden
-            className="text-foreground-secondary pointer-events-none absolute top-1/2 left-3 -translate-y-1/2"
-          />
-          <Input
-            aria-label="Search files"
-            placeholder="Search by title, artist, or username…"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="pl-9"
-          />
-        </div>
+        <Input
+          aria-label="Search files"
+          placeholder="Search by title, artist, or username…"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="max-w-sm flex-1"
+          startAddon={
+            <SearchIcon
+              size={16}
+              aria-hidden
+              className="text-foreground-secondary"
+            />
+          }
+        />
         <Button
           size="sm"
           variant={groupByUser ? 'secondary' : 'text'}

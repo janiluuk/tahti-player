@@ -1,6 +1,8 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 
+import { FilterChips } from '@tahti-player/ui';
+
 import {
   fetchStatsPlays,
   type StatsPlays,
@@ -14,7 +16,11 @@ import { Eyebrow } from '../../components/tahti/Eyebrow';
 import { StatNumber } from '../../components/tahti/StatNumber';
 import { flagEmoji } from '../../lib/countries';
 
-const RANGES: StatsPlaysRange[] = ['7', '30', 'all'];
+const RANGES: Array<{ id: StatsPlaysRange; label: string }> = [
+  { id: '7', label: '7d' },
+  { id: '30', label: '30d' },
+  { id: 'all', label: 'All' },
+];
 
 function formatAxisDate(iso: string): string {
   const d = new Date(`${iso}T12:00:00Z`);
@@ -47,7 +53,11 @@ export function StudioStatsDetailView() {
   );
 
   const label =
-    range === '7' ? '7 days' : range === '30' ? '30 days' : 'all time';
+    range === '7'
+      ? '7 days'
+      : range === '30'
+        ? '30 days'
+        : 'all time';
 
   return (
     <StudioGate>
@@ -65,26 +75,12 @@ export function StudioStatsDetailView() {
           title="Insights"
           subtitle="Daily plays, downloads, and listener activity."
           action={
-            <div
-              className="border-border flex gap-1 rounded-lg border p-1"
-              role="group"
+            <FilterChips
+              items={RANGES}
+              selected={range}
+              onChange={(id) => setRange(id as StatsPlaysRange)}
               aria-label="Plays time range"
-            >
-              {RANGES.map((r) => (
-                <button
-                  key={r}
-                  type="button"
-                  onClick={() => setRange(r)}
-                  className={`rounded-md px-2.5 py-1 text-xs font-semibold tracking-wide uppercase ${
-                    range === r
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-foreground-secondary hover:text-foreground'
-                  }`}
-                >
-                  {r === 'all' ? 'All' : `${r}d`}
-                </button>
-              ))}
-            </div>
+            />
           }
         />
 

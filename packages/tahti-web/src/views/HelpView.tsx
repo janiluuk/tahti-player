@@ -445,20 +445,20 @@ export function HelpHubView() {
           <p className="text-foreground-secondary text-xs font-bold tracking-[0.16em] uppercase">
             Guide index
           </p>
-          <div className="relative w-full sm:max-w-sm">
-            <SearchIcon
-              size={16}
-              aria-hidden
-              className="text-foreground-secondary pointer-events-none absolute top-1/2 left-3 -translate-y-1/2"
-            />
-            <Input
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search guides…"
-              aria-label="Search help guides"
-              className="pl-9"
-            />
-          </div>
+          <Input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search guides…"
+            aria-label="Search help guides"
+            className="w-full sm:max-w-sm"
+            startAddon={
+              <SearchIcon
+                size={16}
+                aria-hidden
+                className="text-foreground-secondary"
+              />
+            }
+          />
         </div>
 
         {visibleGroups.length === 0 ? (

@@ -14,6 +14,7 @@ export type QueuePanelProps = {
   items: QueueItemType[];
   currentItemId?: string;
   isCollapsed?: boolean;
+  fadePastItems?: boolean;
   reorderable?: boolean;
   onReorder?: (fromIndex: number, toIndex: number) => void;
   onSelectItem?: (itemId: string) => void;
@@ -39,6 +40,7 @@ export const QueuePanel: FC<QueuePanelProps> = ({
   items,
   currentItemId,
   isCollapsed = false,
+  fadePastItems = false,
   reorderable = true,
   onReorder,
   onSelectItem,
@@ -98,6 +100,9 @@ export const QueuePanel: FC<QueuePanelProps> = ({
   }
 
   const itemIds = items.map((item) => item.id);
+  const currentIndex = currentItemId
+    ? items.findIndex((item) => item.id === currentItemId)
+    : -1;
 
   return (
     <div
@@ -117,27 +122,41 @@ export const QueuePanel: FC<QueuePanelProps> = ({
               classes?.list,
             )}
           >
-            {items.map((item) => (
-              <ReorderableQueueItem
-                key={item.id}
-                item={item}
-                isCurrent={item.id === currentItemId}
-                isCollapsed={isCollapsed}
-                isReorderable={reorderable}
-                onSelect={onSelectItem}
-                onRemove={onRemoveItem}
-                onSelectCandidate={onSelectCandidate}
-                onTitleClick={onTitleClick}
-                isLiked={isLiked}
-                onToggleLike={onToggleLike}
-                labels={{
-                  removeButton: labels?.removeButton,
-                  playbackError: labels?.playbackError,
-                  noCandidates: labels?.noCandidates,
-                  candidateFailed: labels?.candidateFailed,
-                }}
-              />
-            ))}
+            {items.map((item, index) => {
+              const pastOffset =
+                fadePastItems && currentIndex >= 0 && index < currentIndex
+                  ? currentIndex - index
+                  : 0;
+              return (
+                <div
+                  key={item.id}
+                  className={cn(
+                    pastOffset === 1 && 'opacity-55',
+                    pastOffset === 2 && 'opacity-35',
+                    pastOffset > 2 && 'opacity-20',
+                  )}
+                >
+                  <ReorderableQueueItem
+                    item={item}
+                    isCurrent={item.id === currentItemId}
+                    isCollapsed={isCollapsed}
+                    isReorderable={reorderable}
+                    onSelect={onSelectItem}
+                    onRemove={onRemoveItem}
+                    onSelectCandidate={onSelectCandidate}
+                    onTitleClick={onTitleClick}
+                    isLiked={isLiked}
+                    onToggleLike={onToggleLike}
+                    labels={{
+                      removeButton: labels?.removeButton,
+                      playbackError: labels?.playbackError,
+                      noCandidates: labels?.noCandidates,
+                      candidateFailed: labels?.candidateFailed,
+                    }}
+                  />
+                </div>
+              );
+            })}
           </div>
         </QueueReorderLayer>
       </ScrollableArea>

@@ -117,20 +117,20 @@ export function AdminTopListsView() {
             />
 
             <div className="flex flex-col gap-3">
-              <div className="relative max-w-xl">
-                <SearchIcon
-                  size={16}
-                  aria-hidden
-                  className="text-foreground-secondary pointer-events-none absolute top-1/2 left-3 -translate-y-1/2"
-                />
-                <Input
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Search title, artist, or channel…"
-                  aria-label="Search top lists"
-                  className="pl-9"
-                />
-              </div>
+              <Input
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Search title, artist, or channel…"
+                aria-label="Search top lists"
+                className="max-w-xl"
+                startAddon={
+                  <SearchIcon
+                    size={16}
+                    aria-hidden
+                    className="text-foreground-secondary"
+                  />
+                }
+              />
               <div className="flex flex-wrap items-center gap-2">
                 <ListFilterIcon
                   size={15}

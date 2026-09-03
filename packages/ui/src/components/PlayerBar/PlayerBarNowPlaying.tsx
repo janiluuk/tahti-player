@@ -9,6 +9,8 @@ type PlayerBarNowPlayingProps = {
   coverUrl?: string;
   className?: string;
   action?: ReactNode;
+  onTitleClick?: () => void;
+  onArtistClick?: () => void;
 };
 
 export const PlayerBarNowPlaying: FC<PlayerBarNowPlayingProps> = ({
@@ -17,6 +19,8 @@ export const PlayerBarNowPlaying: FC<PlayerBarNowPlayingProps> = ({
   coverUrl,
   className = '',
   action,
+  onTitleClick,
+  onArtistClick,
 }) => (
   <div className={cn('flex min-w-0 items-center gap-3.5', className)}>
     <div className="border-border bg-background-secondary size-12 shrink-0 overflow-hidden rounded-lg border-(length:--border-width) shadow-sm ring-1 ring-white/5">
@@ -37,18 +41,40 @@ export const PlayerBarNowPlaying: FC<PlayerBarNowPlayingProps> = ({
       )}
     </div>
     <div className="min-w-0 flex-1">
-      <div
-        className="text-foreground truncate text-sm font-semibold tracking-tight"
-        data-testid="now-playing-title"
-      >
-        {title}
-      </div>
-      <div
-        className="text-foreground-secondary truncate text-xs"
-        data-testid="player-now-playing-artist"
-      >
-        {artist}
-      </div>
+      {onTitleClick ? (
+        <button
+          type="button"
+          className="text-foreground block w-full truncate text-left text-sm font-semibold tracking-tight hover:underline"
+          data-testid="now-playing-title"
+          onClick={onTitleClick}
+        >
+          {title}
+        </button>
+      ) : (
+        <div
+          className="text-foreground truncate text-sm font-semibold tracking-tight"
+          data-testid="now-playing-title"
+        >
+          {title}
+        </div>
+      )}
+      {onArtistClick ? (
+        <button
+          type="button"
+          className="text-foreground-secondary block w-full truncate text-left text-xs hover:underline"
+          data-testid="player-now-playing-artist"
+          onClick={onArtistClick}
+        >
+          {artist}
+        </button>
+      ) : (
+        <div
+          className="text-foreground-secondary truncate text-xs"
+          data-testid="player-now-playing-artist"
+        >
+          {artist}
+        </div>
+      )}
     </div>
     {action}
   </div>

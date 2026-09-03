@@ -51,20 +51,19 @@ export const AdminUsersView = () => {
 
             <div className="grid min-h-[36rem] gap-4 lg:grid-cols-[20rem_minmax(0,1fr)]">
               <StudioPanel className="flex min-h-0 flex-col gap-3">
-                <div className="relative">
-                  <SearchIcon
-                    size={15}
-                    aria-hidden
-                    className="text-foreground-secondary pointer-events-none absolute top-1/2 left-3 -translate-y-1/2"
-                  />
-                  <Input
-                    aria-label="Search users"
-                    placeholder="Name, email, or username"
-                    value={query}
-                    onChange={(event) => setQuery(event.target.value)}
-                    className="pl-9"
-                  />
-                </div>
+                <Input
+                  aria-label="Search users"
+                  placeholder="Name, email, or username"
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  startAddon={
+                    <SearchIcon
+                      size={16}
+                      aria-hidden
+                      className="text-foreground-secondary"
+                    />
+                  }
+                />
                 <div className="grid grid-cols-2 gap-2">
                   <Select
                     label="Filter by role"

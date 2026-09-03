@@ -244,7 +244,8 @@ export function AppShell() {
   const toggleTour = useTourStore((state) => state.toggle);
 
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const [mobileQueueOpen, setMobileQueueOpen] = useState(false);
+  const bottomQueueOpen = useLayoutStore((s) => s.bottomQueueOpen);
+  const setBottomQueueOpen = useLayoutStore((s) => s.setBottomQueueOpen);
   const previousEditorSidebarState = useRef<boolean | null>(null);
   const isAudioEditorRoute =
     /^\/studio\/(?:archive\/[^/]+\/editor|editor\/[^/]+)$/.test(pathname);
@@ -441,9 +442,7 @@ export function AppShell() {
               />
             </RouteContent>
           </div>
-          {!isArtistPage && (
-            <MobileBottomNav onOpenQueue={() => setMobileQueueOpen(true)} />
-          )}
+          {!isArtistPage && <MobileBottomNav />}
         </div>
       ) : isArtistPage ? (
         <div
@@ -540,9 +539,9 @@ export function AppShell() {
       </MobileDrawer>
 
       <MobileDrawer
-        open={mobileQueueOpen}
+        open={bottomQueueOpen}
         side="right"
-        onClose={() => setMobileQueueOpen(false)}
+        onClose={() => setBottomQueueOpen(false)}
       >
         <RightRailPanel isCollapsed={false} />
       </MobileDrawer>
