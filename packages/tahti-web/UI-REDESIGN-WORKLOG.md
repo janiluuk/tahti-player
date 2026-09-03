@@ -1,5 +1,218 @@
 # UI redesign worklog — Nuclear (artist + admin)
 
+## 2026-09-04 — Help: keyboard navigation page (planned)
+
+**Status:** planned — tracked in [`WORKPLAN.md`](WORKPLAN.md) Storybook backlog
+(medium priority).
+
+**Goal:** Keep global keyboard shortcuts working; surface a **Keyboard
+navigation** help page from the Help center hub (frontpage) using Storybook
+`KeyCombo` (and related layout primitives), not plain “Alt+1 — Listen” text.
+
+### Still there today (verify, do not regress)
+
+| Surface | Status |
+| --- | --- |
+| `AppShell` Alt+1…5 nav, `V` fullscreen, `H` page tour | Live in `AppShell.tsx` |
+| Help article `/help/keyboard-shortcuts` | Exists in `content/help.ts`; under Account and support group |
+| Desktop player Settings → Shortcuts | Nuclear `KeyboardShortcuts` + `KeyCombo` rows (customizable) |
+| tahti-web Settings shortcuts panel | **Missing** — web has no Settings → Shortcuts equivalent |
+
+### Storybook reference
+
+- **`Components/KeyCombo`** — `packages/storybook/src/KeyCombo.stories.tsx`:
+  label + `<KeyCombo shortcut="…" />` rows (single key, arrows, `mod+…`,
+  multi-modifier).
+- Player settings rows use the same `KeyCombo` via `ShortcutRow` — read-only
+  help should mirror that row shape (label left, keys right), without the
+  recorder UI unless we later add web remapping.
+
+### Gaps
+
+1. Help hub frontpage (`/help`) has no quick-start / essentials link to
+   keyboard navigation — article is buried under Account and support only.
+2. Article body is prose strings; should render **`KeyCombo` +
+   `SectionShell`/`Box` rows** like Storybook AllVariants / player ShortcutRow.
+3. Optional: Settings entry in tahti-web pointing at
+   `/help/keyboard-shortcuts` so the option stays discoverable outside Help.
+
+### Planned tasks
+
+1. Smoke-check AppShell shortcuts (nav / tour / fullscreen); add focused
+   test if none exists.
+2. Help hub frontpage: add Keyboard navigation to `QUICK_STARTS` (or an
+   essentials strip) → `/help/keyboard-shortcuts`.
+3. Rewrite article presentation: structured shortcut list + `KeyCombo`
+   bindings; sections Page tour / Navigation / Player / Notes.
+4. Storybook: `Tahti/Reference/Help keyboard navigation` story.
+5. Settings (optional): link “Keyboard shortcuts” → same page; no remapping
+   in web until a store exists.
+6. Copy audit: keep help in sync with live bindings (Alt+1–5, H, ←/→/Esc, V).
+
+**Constraint:** Storybook-first — `KeyCombo`, `SectionShell`, `Box`, `Button`,
+`PageHeader`; no hand-rolled `<kbd>` chips.
+
+## 2026-09-04 — SaveButton + StatChip sweep (first pass)
+
+Bumped `@tahti-player/tahti-web` to `0.0.57`.
+
+Persist-edit controls now use Storybook `SaveButton` (Idle/Saving/Disabled/custom label): overlay, ledger entry, disco widget edits, radio schedule, show info, newsletter draft, admin radio edits, governance resolution, multicast destination edits, SoundCloud profile URL, multicast dest dialog, and station save. Create actions stay `Button` (Register widget / Add station / Add destination). Studio Sound toolbar stays icon-only (`SaveIcon`) — no room for a labeled control.
+
+Artist/channel follower rows and Studio home summary counts use Storybook `StatChip`. Channel Designer reuses ChannelView’s stats block. Remaining KPI cards (admin dashboard, track insights, fan-sub money) stay for a later pass.
+
+## 2026-09-04 — Desktop pro library side panel (project plan)
+
+**Status:** planned (epics + tasks only — not started).
+
+**Vision:** In **desktop** layout (not mobile bottom-nav), give listeners and
+pros a serious **music management** surface in the side panel: browse a
+local/library catalog backed by an audio metadata database, import their own
+tracks to play through the shared player, and reach Soulseek via a dedicated
+connectivity widget (search → download → import into the library). This is
+the “pro DJ / collector” library, not another Listen widget strip.
+
+**Chrome constraint:** Persistent desktop sidebar / right rail rules still
+apply. The library lives *in* the side panel (new tab or dedicated rail
+mode), not by unmounting Listen/Studio nav. Mobile keeps today’s library
+routes; this plan is desktop-first.
+
+**Storybook-first:** Prefer existing `TrackTable`, `MediaArtwork`, `EmptyState`,
+`SectionShell`, `Tabs`, `Input`, `Dialog`, `BottomBar` Status Bar counts, and
+`PluginStoreItem` for the Soulseek add-on card. Add stories for any new
+panel chrome before shipping.
+
+**Platform note:** Browser-only cannot speak Soulseek or watch arbitrary local
+folders. Desktop Tahti Player (Tauri) or a signed-in local agent/sidecar is
+required for filesystem watch + Soulseek protocol. Web desktop mode can host
+the UI and cloud archive; local/Soulseek features gate on native capability
+(feature-detect, show install/connect CTA when missing).
+
+---
+
+### Epic A — Desktop library side panel chrome
+
+Library as a first-class panel in the desktop shell (right rail tab or
+left-rail library mode), not only `/library*` full pages.
+
+| ID | Task | Notes |
+| --- | --- | --- |
+| A1 | IA: choose Library as RightRail tab vs collapsible left “Library” mode; document in `NAVIGATION-SITEMAP.md` | Prefer extending `RightRailPanel` with Library / Queue / Chat tabs unless Library needs width of left rail |
+| A2 | Desktop-only Library panel shell (Storybook): search, filters, tree/list, empty/loading/error | Reuse `Tabs`, `Input`, `EmptyState`, `PageLoading` |
+| A3 | Wire panel to existing cloud library routes (`/library/sounds`, favorites, playlists) as deep links from panel rows | Do not duplicate Studio CRUD in v1 |
+| A4 | Status Bar / TopNav: “♪ N sounds” opens/focuses the Library panel on desktop | Align with Status Bar work (`ConnectedStatusBar`) |
+| A5 | Keyboard: focus search, play selected, queue selected | Match Nuclear player library shortcuts where possible |
+| A6 | Collapse/expand + remember width in `layoutStore` | Persist like left/right sidebar widths |
+
+### Epic B — Audio metadata database
+
+Durable catalog of tracks with tags, duration, artwork, path/URL, and play
+state — shared by panel, player queue, and import pipelines.
+
+| ID | Task | Notes |
+| --- | --- | --- |
+| B1 | Schema: track id, title, artists, album, duration, bitrate, format, artwork, source (`local` \| `archive` \| `soulseek` \| `import`), uris, addedAt, lastPlayedAt | Zod + sibling or local DB contract |
+| B2 | Choose storage: Tauri store/SQLite on desktop; IndexedDB or API for web-cloud subset | Document decision in `docs/` / AGENTS |
+| B3 | Metadata extract on import (duration, tags, cover) via existing upload/processing path where possible | Reuse processing jobs + Status Bar encoding strip |
+| B4 | CRUD API/host domain for plugins (`library` domain) if player plugins must see the catalog | Follow host-pattern skill; no premature abstraction |
+| B5 | Reconcile with `/api/me/archive` Studio sounds so cloud uploads appear in the same panel | Dedupe by content hash or archive id |
+| B6 | Indexes: search by title/artist/album/tag; sort by added/played/title | Panel list performance |
+| B7 | Artwork cache + `MediaArtwork` thumbnails in panel rows | Storybook `thumb` size |
+
+### Epic C — Import own tracks and play
+
+Bring user files into the metadata DB and play them through the shared
+`ConnectedPlayerBar` / queue.
+
+| ID | Task | Notes |
+| --- | --- | --- |
+| C1 | Import UX: file picker + drag-drop onto Library panel | Storybook `FilePicker` / existing upload patterns |
+| C2 | Local file playback path (Tauri/blob URL) → `TahtiPlayable` / queue item | Protocol honesty: `file` / blob vs `https` |
+| C3 | Folder import / watch folder (desktop native only) | Background scan → metadata DB; progress in Status Bar |
+| C4 | Deduplicate imports (hash) and conflict UI (skip / replace / keep both) | |
+| C5 | Playlist/collection add from panel selection | Reuse Add-to-playlist |
+| C6 | Permission/privacy copy: files stay local unless user uploads to Tahti archive | Settings → Library |
+| C7 | E2E: import fixture audio → appears in panel → play → seek in player bar | Playwright + mock/native harness |
+
+### Epic D — Soulseek connectivity widget
+
+Pro discovery: search Soulseek, download, import into the metadata library.
+
+| ID | Task | Notes |
+| --- | --- | --- |
+| D1 | Product/legal: document Soulseek use (P2P, user credentials, no official Tahti relay of copyrighted content) in help + settings | Block shipping UI without this |
+| D2 | Add-ons listing: Soulseek as installable desktop plugin (`PluginStoreItem`) with Configure modal (user/pass, listen port, shared folders) | Import-plugin configure pattern: test connection → save → enable |
+| D3 | Native Soulseek client bridge (Tauri sidecar or known client API) — connection status host | Out of browser scope; feature-flag |
+| D4 | Widget UI in Library panel: search box, results list (user, bitrate, free slot, size), download queue | Storybook states: disconnected, searching, results, downloading, error |
+| D5 | Download → land in metadata DB + optional auto-play; progress in Status Bar encoding/activity slot | Reuse processing merge pattern |
+| D6 | Wishlist / browse user shares (stretch) | After D4–D5 stable |
+| D7 | Registry: `tahti-registry` plugin row when marketplace-distributed | Per AGENTS registry rules |
+| D8 | Failure modes: banned, firewall, no slots — actionable empty/error copy | `EmptyState` / `PageError` |
+
+### Epic E — Pro music management polish
+
+Make the panel feel like a tool for working musicians/DJs, not a thin list.
+
+| ID | Task | Notes |
+| --- | --- | --- |
+| E1 | Bulk select: queue, favorite, add to playlist, delete/remove from library | |
+| E2 | Smart filters: BPM/key/genre when metadata exists; missing-tag bucket | |
+| E3 | Rating / cue / color labels (if in schema) | Defer if fights archive model |
+| E4 | Export playlist (M3U) / reveal in folder (native) | Desktop only |
+| E5 | Sync subset to Tahti cloud archive (opt-in upload) | Studio sounds pipeline |
+| E6 | Performance: virtualized list for 10k+ tracks | |
+| E7 | Atlas / help tour: “Desktop library for pros” | `pageTour` + Screen atlas |
+
+---
+
+### Suggested delivery order
+
+1. **A1–A2, B1–B2** — panel shell + schema decision  
+2. **C1–C2, B3, B7** — import + play + thumbs  
+3. **B5, A3–A4** — cloud archive parity + Status Bar link  
+4. **D1–D5** — Soulseek widget behind desktop capability gate  
+5. **E\*** — pro polish as follow-ups  
+
+### Explicit non-goals (v1)
+
+- Mobile Library panel parity  
+- Replacing Studio upload / Sounds management  
+- Hosting Soulseek searches on Tahti servers  
+- CardsRow/Cards grid for the panel list (use `TrackTable` / dense rows)
+
+### Tracking
+
+- Worklog: this entry  
+- Todo pointer: `docs/todo/desktop-pro-library.md`  
+- Related: Status Bar idle (`ConnectedStatusBar`), Listen add-ons, import-plugin contracts in sibling `../tahti`
+
+## 2026-09-04 — Status Bar when player bar is hidden
+
+Bumped `@tahti-player/tahti-web` to `0.0.57`.
+
+**Goal:** When the compact player bar is not shown, fill the bottom chrome with
+Storybook `Layout/BottomBar` **Status Bar** pattern (not a second footer
+primitive): library sound totals, unread notifications and messages on the
+left; encoding progress + label on the right while uploads process.
+
+**Storybook:** `BottomBar` → `StatusBar` story
+(`packages/storybook/src/BottomBar.stories.tsx`). Production:
+`ConnectedStatusBar` in AppShell beside `ConnectedPlayerBar` (mutually
+exclusive).
+
+**Visibility:** signed-in only; same compact-bar absence rules as
+`ConnectedPlayerBar`; hidden while full-screen player is open; anonymous
+renders nothing. Storage/GB from the demo story is out of scope (no listener
+quota endpoint wired).
+
+**Data:** `fetchStudioSounds` (5s poll), `notificationInboxStore` unread,
+`fetchConversations` unread sum, `mergeProcessingItems` (shared with TopNav).
+
+### Executed
+
+- `ConnectedStatusBar` + `lib/processingItems` helpers
+- AppShell wire, Storybook tahti-web story, unit tests
+- BottomBar StatusBar story notes production consumer
+
 ## 2026-09-04 — Listen / Discover CardGrid vs Storybook (planned)
 
 **Goal:** Every card-shaped media grid on Listen and Discover must match

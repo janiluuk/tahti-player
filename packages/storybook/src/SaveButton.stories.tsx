@@ -40,3 +40,9 @@ export const CustomLabel: Story = {
     savingLabel: 'Saving broadcast…',
   },
 };
+
+export const Disabled: Story = {
+  args: {
+    disabled: true,
+  },
+};

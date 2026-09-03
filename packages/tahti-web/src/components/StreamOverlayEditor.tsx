@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, FilePicker, Input } from '@tahti-player/ui';
+import { FilePicker, Input, SaveButton } from '@tahti-player/ui';
 
 import { fetchStreamOverlay, patchStreamOverlay } from '../api/broadcast';
 import { uploadUserMediaFile } from '../api/user-media';
@@ -126,13 +126,13 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
           });
         }}
       />
-      <Button
-        disabled={saving || coverUploading}
+      <SaveButton
+        disabled={coverUploading}
+        saving={saving}
+        label="Save overlay"
         onClick={save}
         className="self-start"
-      >
-        {saving ? 'Saving…' : 'Save overlay'}
-      </Button>
+      />
     </div>
   );
 }

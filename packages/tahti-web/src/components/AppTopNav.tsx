@@ -29,6 +29,7 @@ import type { StudioSound } from '../api/studio-types';
 import { useCanGoForward } from '../hooks/useCanGoForward';
 import { useOwnBroadcastPresence } from '../hooks/useOwnBroadcastPresence';
 import { cn } from '../lib/cn';
+import { mergeProcessingItems } from '../lib/processingItems';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { useNotificationInboxStore } from '../stores/notificationInboxStore';
@@ -205,20 +206,9 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
   const unreadNotifications = notifications.filter(
     (notification) => !notification.readAt,
   );
-  const processingItems = [
-    ...localProcessingJobs,
-    ...archiveItems
-      .filter(
-        (item) => item.status === 'PENDING' || item.status === 'PROCESSING',
-      )
-      .map((item) => ({
-        id: item.id,
-        title: item.title,
-        status: item.status as 'PENDING' | 'PROCESSING',
-      })),
-  ].filter(
-    (job, index, jobs) =>
-      jobs.findIndex((candidate) => candidate.id === job.id) === index,
+  const processingItems = mergeProcessingItems(
+    localProcessingJobs,
+    archiveItems,
   );
 
   useEffect(() => {

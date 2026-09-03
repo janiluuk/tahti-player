@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState, type FC, type ReactNode } from 'react';
 
-import { Badge, Button, CardGrid } from '@tahti-player/ui';
+import { Badge, Button, CardGrid, StatChip } from '@tahti-player/ui';
 
 import {
   fetchRecentBroadcasts,
@@ -220,13 +220,11 @@ const SummaryStat: FC<SummaryStatProps> = ({
     aria-label={`${value.toLocaleString()} ${label.toLowerCase()}`}
     className="border-border bg-background-secondary/35 hover:bg-background-secondary group flex min-w-0 flex-col gap-2 rounded-xl border p-4 shadow-sm transition-transform hover:-translate-y-0.5"
   >
-    <span className="text-foreground-secondary flex items-center gap-2 text-xs font-semibold tracking-wide uppercase">
-      <Icon size={15} aria-hidden className="text-primary" />
-      {label}
-    </span>
-    <span className="font-display text-2xl font-extrabold tabular-nums">
-      {value.toLocaleString()}
-    </span>
+    <StatChip
+      value={value.toLocaleString()}
+      label={label}
+      icon={<Icon size={16} aria-hidden className="text-primary" />}
+    />
     <span className="text-foreground-secondary text-xs">{note}</span>
   </Link>
 );

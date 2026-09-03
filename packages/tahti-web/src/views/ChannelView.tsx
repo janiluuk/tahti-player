@@ -13,7 +13,14 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { Badge, Button, Loader, SaveButton, Tabs } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  Loader,
+  SaveButton,
+  StatChip,
+  Tabs,
+} from '@tahti-player/ui';
 
 import {
   isHeaderImageUrl,
@@ -888,14 +895,7 @@ export function ChannelView({ slug }: { slug: string }) {
           <section
             className={`flex items-center gap-6 px-4 py-3 ${editing ? '' : 'border-border rounded-lg border'}`}
           >
-            <div>
-              <div className="text-xl font-bold tracking-tight">
-                {channel.followerCount ?? '—'}
-              </div>
-              <div className="text-foreground-secondary text-xs uppercase">
-                Followers
-              </div>
-            </div>
+            <StatChip value={channel.followerCount ?? '—'} label="Followers" />
           </section>
         );
       case 'events': {

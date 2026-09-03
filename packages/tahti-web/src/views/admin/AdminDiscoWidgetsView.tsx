@@ -7,6 +7,7 @@ import {
   Dialog,
   FilterChips,
   Input,
+  SaveButton,
   Select,
   Textarea,
 } from '@tahti-player/ui';
@@ -164,20 +165,37 @@ function WidgetEditor({
       ) : null}
       <Dialog.Actions>
         <Dialog.Close>Cancel</Dialog.Close>
-        <Button
-          type="button"
-          disabled={
-            pending ||
-            !draft.slug.trim() ||
-            !draft.name.trim() ||
-            !draft.description.trim() ||
-            !draft.authorName.trim() ||
-            draft.categories.length === 0
-          }
-          onClick={onSave}
-        >
-          {pending ? 'Saving…' : editing ? 'Save changes' : 'Register widget'}
-        </Button>
+        {editing ? (
+          <SaveButton
+            type="button"
+            disabled={
+              pending ||
+              !draft.slug.trim() ||
+              !draft.name.trim() ||
+              !draft.description.trim() ||
+              !draft.authorName.trim() ||
+              draft.categories.length === 0
+            }
+            saving={pending}
+            label="Save changes"
+            onClick={onSave}
+          />
+        ) : (
+          <Button
+            type="button"
+            disabled={
+              pending ||
+              !draft.slug.trim() ||
+              !draft.name.trim() ||
+              !draft.description.trim() ||
+              !draft.authorName.trim() ||
+              draft.categories.length === 0
+            }
+            onClick={onSave}
+          >
+            Register widget
+          </Button>
+        )}
       </Dialog.Actions>
     </div>
   );
