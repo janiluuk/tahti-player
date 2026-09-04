@@ -1,6 +1,6 @@
 # Channel Designer → Storybook elements
 
-**Status:** in progress — Player panel extracted; layout-only rows next.
+**Status:** in progress — layout-only + visualizer extracted; overlay/video next.
 
 ## Goal
 
@@ -16,7 +16,8 @@ Review and fix Channel Designer UI **one element at a time** in Storybook
 | Backdrop | `BackdropPanel` | Extracted; exclusive header styles |
 | Player | `PlayerPanel` | Gradient / Video / Visualizer / Overlay |
 | Player gradient | `PlayerGradientControls` | Separate palette toggle |
-| Releases…Gallery | layout-only hints | Visibility eye only — next |
+| Player visualizer | `PlayerVisualizerControls` | Preset chrome + tuning slot |
+| Layout-only rows | `LayoutOnlyLookHint` | Releases…Gallery visibility copy |
 | Color scheme fields | `ColorSchemeFields` | Shared pickers |
 | Header style tabs | `HeaderStyleTabs` | Segmented control |
 | Page background | `PageBackgroundField` | Always-on swatch |
@@ -31,7 +32,8 @@ Review and fix Channel Designer UI **one element at a time** in Storybook
 3. ~~Player (`PlayerPanel` + `PlayerGradientControls`)~~
 4. ~~Layers menu + Background always-on row (fixed translucent dock)~~
 5. ~~Playlist picker + block displays~~
-6. Layout-only look rows (releases…gallery) copy/visibility
+6. ~~Layout-only look rows (releases…gallery)~~
+7. Player overlay + video slots (still ChannelDesigner-owned)
 
 When correcting an element: extract its panel from `ChannelDesigner.tsx`
 into `components/channel-designer/` if it is still an inline JSX blob,
@@ -42,5 +44,4 @@ wire the live designer to the extracted component, update the story.
 - Live Three.js dual-context issues (stories use `livePreview: false`
   unless explicitly testing visualizer)
 - Saving / API (mock under Storybook `VITE_FORCE_MOCK`)
-- Visualizer / overlay / video slots still owned by ChannelDesigner (mock
-  placeholders in Storybook until those extract)
+- Video upload / now-playing overlay grids still slots until extracted

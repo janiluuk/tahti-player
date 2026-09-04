@@ -26,43 +26,42 @@ export function AdminOrphanPagesView({ tab }: { tab?: AdminOrphanPageTabId }) {
     ? tab
     : DEFAULT_ADMIN_ORPHAN_PAGE_TAB;
   const selectedIndex = ADMIN_ORPHAN_PAGE_TABS.findIndex(
-    (t) => t.id === active,
+    (entry) => entry.id === active,
   );
 
   return (
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/orphan-pages">
-          <div className="flex max-w-5xl flex-col gap-6">
-            <Tabs.Root
-              selectedIndex={selectedIndex < 0 ? 0 : selectedIndex}
-              onChange={(index) => {
-                void navigate({
-                  to: '/admin/orphan-pages/$tab',
-                  params: { tab: ADMIN_ORPHAN_PAGE_TABS[index].id },
-                  replace: true,
-                });
-              }}
-              listClassName="flex flex-wrap gap-3"
-              tabClassName="h-8 rounded-md border border-border px-2.5 text-xs font-semibold tracking-wide uppercase"
-            >
-              <Tabs.List aria-label="Orphan pages">
-                {ADMIN_ORPHAN_PAGE_TABS.map((item) => (
-                  <Tabs.Tab key={item.id}>
-                    <TabLabel icon={<RadioIcon size={14} />}>
-                      {item.label}
-                    </TabLabel>
-                  </Tabs.Tab>
-                ))}
-              </Tabs.List>
-            </Tabs.Root>
-            <ViewShell
-              title="Orphan pages"
-              classes={{ root: 'px-0 pt-0 max-w-5xl' }}
-            >
-              {tabContent(active)}
-            </ViewShell>
-          </div>
+          <Tabs.Root
+            selectedIndex={selectedIndex < 0 ? 0 : selectedIndex}
+            onChange={(index) => {
+              void navigate({
+                to: '/admin/orphan-pages/$tab',
+                params: { tab: ADMIN_ORPHAN_PAGE_TABS[index].id },
+                replace: true,
+              });
+            }}
+            listClassName="flex flex-wrap gap-3"
+            tabClassName="h-8 rounded-md border border-border px-2.5 text-xs font-semibold tracking-wide uppercase"
+          >
+            <Tabs.List aria-label="Orphan pages">
+              {ADMIN_ORPHAN_PAGE_TABS.map((item) => (
+                <Tabs.Tab key={item.id}>
+                  <TabLabel icon={<RadioIcon size={14} />}>
+                    {item.label}
+                  </TabLabel>
+                </Tabs.Tab>
+              ))}
+            </Tabs.List>
+          </Tabs.Root>
+          <ViewShell
+            title="Orphan pages"
+            subtitle="Pages with no menu entry."
+            classes={{ root: 'px-0 pt-0 max-w-5xl' }}
+          >
+            {tabContent(active)}
+          </ViewShell>
         </AdminPageLayout>
       </div>
     </AdminGate>

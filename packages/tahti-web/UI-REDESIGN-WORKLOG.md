@@ -1,3 +1,13 @@
+## 2026-09-05 — Channel Designer layout hints + visualizer extract (0.0.83)
+
+**Status:** executed.
+
+`LayoutOnlyLookHint` for Releases…Gallery Look rows; `PlayerVisualizerControls`
+for the Player → Visualizer chrome. Storybook under
+`Tahti/Channel/Designer/LayoutOnlyLookHint` and `PlayerVisualizerControls`.
+
+Todo: `docs/todo/channel-designer-storybook-elements.md`.
+
 ## 2026-09-05 — Channel Designer PlayerPanel extract (0.0.82)
 
 **Status:** executed.

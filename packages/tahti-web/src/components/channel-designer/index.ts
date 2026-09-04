@@ -9,6 +9,8 @@ export {
   resolveHeaderDesignMode,
   type HeaderDesignMode,
 } from './HeaderStyleTabs';
+export { LAYOUT_ONLY_LOOK_IDS, LayoutOnlyLookHint } from './LayoutOnlyLookHint';
 export { PageBackgroundField } from './PageBackgroundField';
 export { PlayerGradientControls } from './PlayerGradientControls';
 export { PlayerPanel, type PlayerDesignTab } from './PlayerPanel';
+export { PlayerVisualizerControls } from './PlayerVisualizerControls';

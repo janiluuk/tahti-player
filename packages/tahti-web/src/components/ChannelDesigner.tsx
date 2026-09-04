@@ -2,11 +2,8 @@ import { Link } from '@tanstack/react-router';
 import {
   BookmarkPlusIcon,
   CheckIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
   ImageIcon,
   LinkIcon,
-  PlaySquareIcon,
   RotateCcwIcon,
   SettingsIcon,
   Trash2Icon,
@@ -27,7 +24,6 @@ import {
   DropdownButton,
   FilePicker,
   Input,
-  PluginItem,
   SaveButton,
   Select,
   Slider,
@@ -100,7 +96,10 @@ import {
 } from '../plugins/visualizers';
 import {
   BackdropPanel,
+  LAYOUT_ONLY_LOOK_IDS,
+  LayoutOnlyLookHint,
   PlayerPanel,
+  PlayerVisualizerControls,
   resolveHeaderDesignMode,
   type HeaderDesignMode,
   type PlayerDesignTab,
@@ -1225,127 +1224,30 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
     );
 
     const visualizerSlot = (
-      <section className="flex flex-col gap-4">
-        {(() => {
-          const meta = visualizerMetadata(activeVisualizer);
-          return (
-            <PluginItem
-              icon={
-                <button
-                  type="button"
-                  className="hover:bg-background-secondary flex size-full items-center justify-center rounded-lg transition-colors"
-                  aria-label="Choose visualizer"
-                  title="Choose visualizer"
-                  onClick={() => {
-                    setVisualizerPickerPreset(activeVisualizer);
-                    setVisualizerPickerOpen(true);
-                  }}
-                >
-                  <meta.Icon size={22} aria-hidden />
-                </button>
-              }
-              name={
-                <span className="inline-flex flex-wrap items-center gap-2 text-base">
-                  {activeVisualizer.replace(/_/g, ' ')}
-                  {meta.audioReactive ? (
-                    <Badge variant="pill" color="blue">
-                      Audio reactive
-                    </Badge>
-                  ) : null}
-                </span>
-              }
-              description={meta.description}
-              descriptionBelow
-              className={`ring-primary bg-primary/10 ring-2 ring-inset ${
-                !visualizerEnabled ? 'opacity-50 grayscale' : ''
-              }`}
-              rightAccessory={
-                <div className="flex items-center gap-1">
-                  <Tooltip content="Previous visualizer" side="top">
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      disabled={!visualizerEnabled}
-                      onClick={() => changeVisualizer(-1)}
-                      aria-label="Previous visualizer"
-                    >
-                      <ChevronLeftIcon size={16} aria-hidden />
-                    </Button>
-                  </Tooltip>
-                  <Tooltip content="Next visualizer" side="top">
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      disabled={!visualizerEnabled}
-                      onClick={() => changeVisualizer(1)}
-                      aria-label="Next visualizer"
-                    >
-                      <ChevronRightIcon size={16} aria-hidden />
-                    </Button>
-                  </Tooltip>
-                  <Tooltip
-                    content={`Configure ${activeVisualizer.replace(/_/g, ' ')}`}
-                    side="top"
-                  >
-                    <Button
-                      size="icon-sm"
-                      variant={showVisualizerSettings ? 'default' : 'text'}
-                      disabled={!visualizerEnabled}
-                      aria-pressed={showVisualizerSettings}
-                      aria-label={`Configure ${activeVisualizer.replace(/_/g, ' ')}`}
-                      onClick={() =>
-                        setShowVisualizerSettings((isVisible) => !isVisible)
-                      }
-                    >
-                      <SettingsIcon size={15} aria-hidden />
-                    </Button>
-                  </Tooltip>
-                  <Tooltip
-                    content={
-                      visualizerEnabled
-                        ? 'Disable visualizer'
-                        : 'Enable visualizer'
-                    }
-                    side="top"
-                  >
-                    <Button
-                      size="icon-sm"
-                      variant={visualizerEnabled ? 'default' : 'secondary'}
-                      aria-pressed={visualizerEnabled}
-                      aria-label={
-                        visualizerEnabled
-                          ? 'Disable visualizer'
-                          : 'Enable visualizer'
-                      }
-                      onClick={() => {
-                        if (visualizerEnabled) {
-                          setPreviewPreset('MINIMAL');
-                          applyLocal({ visualPreset: 'MINIMAL' });
-                        } else {
-                          setPreviewPreset(activeVisualizer);
-                          applyLocal({ visualPreset: activeVisualizer });
-                        }
-                      }}
-                    >
-                      {visualizerEnabled ? (
-                        <CheckIcon size={15} aria-hidden />
-                      ) : (
-                        <PlaySquareIcon size={15} aria-hidden />
-                      )}
-                    </Button>
-                  </Tooltip>
-                </div>
-              }
-            />
-          );
-        })()}
-        {dockTuning && (
-          <div className="border-border flex flex-col gap-4 rounded-lg border p-3">
-            <Eyebrow>Tune {visual.visualPreset.replace(/_/g, ' ')}</Eyebrow>
-            {tuningSliders(visual.visualPreset)}
-          </div>
-        )}
-      </section>
+      <PlayerVisualizerControls
+        activeVisualizer={activeVisualizer}
+        visualizerEnabled={visualizerEnabled}
+        showSettings={showVisualizerSettings}
+        tuningSlot={dockTuning ? tuningSliders(visual.visualPreset) : undefined}
+        onOpenPicker={() => {
+          setVisualizerPickerPreset(activeVisualizer);
+          setVisualizerPickerOpen(true);
+        }}
+        onPrevious={() => changeVisualizer(-1)}
+        onNext={() => changeVisualizer(1)}
+        onToggleSettings={() =>
+          setShowVisualizerSettings((isVisible) => !isVisible)
+        }
+        onToggleEnabled={() => {
+          if (visualizerEnabled) {
+            setPreviewPreset('MINIMAL');
+            applyLocal({ visualPreset: 'MINIMAL' });
+          } else {
+            setPreviewPreset(activeVisualizer);
+            applyLocal({ visualPreset: activeVisualizer });
+          }
+        }}
+      />
     );
 
     const channelTextOverlaySection = (
@@ -1559,16 +1461,6 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       </Link>
     );
 
-    const layoutOnlyHint = (id: ChannelLookElementId) => {
-      const meta = CHANNEL_LOOK_ELEMENTS.find((element) => element.id === id);
-      return (
-        <p className="text-foreground-secondary text-sm">
-          {meta?.hint}. Hide this block with the eye button — visitors will not
-          see it on your channel.
-        </p>
-      );
-    };
-
     const selectLookElement = (id: ChannelLookElementId) => {
       setSelectedLookId(id);
       if (id === 'backdrop') {
@@ -1608,46 +1500,11 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
     };
 
     const lookEditorItems = [
-      {
-        id: 'releases' as const,
-        disabled: !lookBlockVisible('releases'),
-        content: layoutOnlyHint('releases'),
-      },
-      {
-        id: 'tracks' as const,
-        disabled: !lookBlockVisible('tracks'),
-        content: layoutOnlyHint('tracks'),
-      },
-      {
-        id: 'latest' as const,
-        disabled: !lookBlockVisible('latest'),
-        content: layoutOnlyHint('latest'),
-      },
-      {
-        id: 'feed' as const,
-        disabled: !lookBlockVisible('feed'),
-        content: layoutOnlyHint('feed'),
-      },
-      {
-        id: 'news' as const,
-        disabled: !lookBlockVisible('news'),
-        content: layoutOnlyHint('news'),
-      },
-      {
-        id: 'bio' as const,
-        disabled: !lookBlockVisible('bio'),
-        content: layoutOnlyHint('bio'),
-      },
-      {
-        id: 'shows' as const,
-        disabled: !lookBlockVisible('shows'),
-        content: layoutOnlyHint('shows'),
-      },
-      {
-        id: 'gallery' as const,
-        disabled: !lookBlockVisible('gallery'),
-        content: layoutOnlyHint('gallery'),
-      },
+      ...LAYOUT_ONLY_LOOK_IDS.map((id) => ({
+        id,
+        disabled: !lookBlockVisible(id),
+        content: <LayoutOnlyLookHint elementId={id} />,
+      })),
       {
         id: 'player' as const,
         disabled: !lookBlockVisible('player'),
