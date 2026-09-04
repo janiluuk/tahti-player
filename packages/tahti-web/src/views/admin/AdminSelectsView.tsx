@@ -11,7 +11,7 @@ export function AdminSelectsView() {
         <AdminPageLayout current="/admin/tahti-selects">
           <ViewShell
             title="Tahti Selects"
-            classes={{ root: 'px-0 pt-0 mx-auto max-w-5xl' }}
+            classes={{ root: 'px-0 pt-0 max-w-5xl' }}
           >
             <SelectsTab />
           </ViewShell>

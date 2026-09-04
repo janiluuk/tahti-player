@@ -36,7 +36,7 @@ export function AdminOrphanPagesView({ tab }: { tab?: AdminOrphanPageTabId }) {
           <ViewShell
             title="Orphan pages"
             subtitle="Pages with no menu entry."
-            classes={{ root: 'px-0 pt-0 mx-auto max-w-5xl' }}
+            classes={{ root: 'px-0 pt-0 max-w-5xl' }}
           >
             <Tabs.Root
               selectedIndex={selectedIndex < 0 ? 0 : selectedIndex}

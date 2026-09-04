@@ -45,7 +45,7 @@ export const AdminUsersView = () => {
         <AdminPageLayout current="/admin/users">
           <ViewShell
             title="Users"
-            classes={{ root: 'px-0 pt-0 mx-auto max-w-7xl' }}
+            classes={{ root: 'px-0 pt-0 max-w-7xl' }}
           >
             <p className="text-foreground-secondary text-sm">
               {total} accounts

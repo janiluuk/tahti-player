@@ -11,7 +11,7 @@ export function AdminStreamsView() {
         <AdminPageLayout current="/admin/streams">
           <ViewShell
             title="Streams"
-            classes={{ root: 'px-0 pt-0 mx-auto max-w-5xl' }}
+            classes={{ root: 'px-0 pt-0 max-w-5xl' }}
           >
             <AdminStreamManagerPanel />
           </ViewShell>

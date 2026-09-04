@@ -87,7 +87,7 @@ export function AdminNewsView() {
         <AdminPageLayout current="/admin/news">
           <ViewShell
             title="News"
-            classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl' }}
+            classes={{ root: 'px-0 pt-0 max-w-3xl' }}
           >
             <div className="mb-4">
               <Tooltip content="Write post" side="top">

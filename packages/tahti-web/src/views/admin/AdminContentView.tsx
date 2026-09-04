@@ -47,7 +47,7 @@ export function AdminContentView() {
         <AdminPageLayout current="/admin/content">
           <ViewShell
             title="Content"
-            classes={{ root: 'px-0 pt-0 mx-auto max-w-5xl' }}
+            classes={{ root: 'px-0 pt-0 max-w-5xl' }}
           >
             <div>
               <Link to="/admin/top-lists">

@@ -59,7 +59,7 @@ export function AdminStatusView() {
         <AdminPageLayout current="/admin/status">
           <ViewShell
             title="Status"
-            classes={{ root: 'px-0 pt-0 mx-auto max-w-4xl' }}
+            classes={{ root: 'px-0 pt-0 max-w-4xl' }}
           >
             <StudioPanel>
               {loading ? (

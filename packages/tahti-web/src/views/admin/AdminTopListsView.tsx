@@ -76,7 +76,7 @@ export function AdminTopListsView() {
         <AdminPageLayout current="/admin/top-lists">
           <ViewShell
             title="Top lists"
-            classes={{ root: 'px-0 pt-0 mx-auto max-w-4xl' }}
+            classes={{ root: 'px-0 pt-0 max-w-4xl' }}
           >
             <div className="flex flex-col gap-3">
               <Input

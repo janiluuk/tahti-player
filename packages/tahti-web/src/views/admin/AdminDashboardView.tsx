@@ -47,7 +47,7 @@ export function AdminDashboardView() {
         <AdminPageLayout current="/admin">
           <ViewShell
             title="Dashboard"
-            classes={{ root: 'px-0 pt-0 mx-auto max-w-5xl' }}
+            classes={{ root: 'px-0 pt-0 max-w-5xl' }}
           >
             {loading || !data ? (
               <StudioPanel>

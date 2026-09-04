@@ -74,7 +74,7 @@ export function AdminAnnouncementsView() {
         <AdminPageLayout current="/admin/announcements">
           <ViewShell
             title="Announcements"
-            classes={{ root: 'px-0 pt-0 mx-auto max-w-4xl' }}
+            classes={{ root: 'px-0 pt-0 max-w-4xl' }}
           >
             {msg && (
               <p className="text-foreground-secondary text-sm" role="status">
