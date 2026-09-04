@@ -15,6 +15,8 @@
     "deploy:tahti-storybook": "pnpm --filter @tahti-player/storybook run deploy:vimage",
     "build": "turbo build",
     "build:linux:run": "./scripts/build-and-run-linux.sh",
+    "player:build:run": "./scripts/build-and-run-linux.sh",
+    "player:run": "./scripts/run-linux.sh",
     "build:android:run": "./scripts/build-and-run-android.sh",
     "lint": "turbo lint",
     "lint:fix": "turbo lint:fix",
