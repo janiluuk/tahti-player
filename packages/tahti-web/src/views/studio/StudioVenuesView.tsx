@@ -190,14 +190,16 @@ function VenueCard({
                     </div>
                   )}
                 </div>
-                <Button
-                  size="icon-sm"
-                  variant="text"
-                  aria-label={`Cancel booking on ${new Date(b.startAt).toLocaleString()}`}
-                  onClick={() => setPendingCancel(b)}
-                >
-                  <Trash2Icon size={14} aria-hidden />
-                </Button>
+                <Tooltip content="Cancel booking" side="top">
+                  <Button
+                    size="icon-sm"
+                    variant="text"
+                    aria-label={`Cancel booking on ${new Date(b.startAt).toLocaleString()}`}
+                    onClick={() => setPendingCancel(b)}
+                  >
+                    <Trash2Icon size={14} aria-hidden />
+                  </Button>
+                </Tooltip>
               </li>
             ))}
           </ul>

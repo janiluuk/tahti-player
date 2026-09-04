@@ -23,6 +23,7 @@ import {
   SaveButton,
   Select,
   Tabs,
+  Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -596,17 +597,19 @@ function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
                   setCredits(next);
                 }}
               />
-              <Button
-                size="icon-sm"
-                variant="text"
-                disabled={busy}
-                aria-label={`Remove credit ${credit.name || index + 1}`}
-                onClick={() =>
-                  setCredits(credits.filter((_, i) => i !== index))
-                }
-              >
-                <Trash2Icon size={14} aria-hidden />
-              </Button>
+              <Tooltip content="Remove credit" side="top">
+                <Button
+                  size="icon-sm"
+                  variant="text"
+                  disabled={busy}
+                  aria-label={`Remove credit ${credit.name || index + 1}`}
+                  onClick={() =>
+                    setCredits(credits.filter((_, i) => i !== index))
+                  }
+                >
+                  <Trash2Icon size={14} aria-hidden />
+                </Button>
+              </Tooltip>
             </li>
           ))}
         </ul>

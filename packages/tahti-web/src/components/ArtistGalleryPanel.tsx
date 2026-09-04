@@ -9,7 +9,7 @@ import {
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, ImageReveal } from '@tahti-player/ui';
+import { Button, ImageReveal, Tooltip } from '@tahti-player/ui';
 
 import {
   deletePressKitImage,
@@ -195,20 +195,21 @@ export function ArtistGalleryPanel({
           ) : null}
           {isOwner && showUpload ? (
             <>
-              <Button
-                size="icon-sm"
-                variant="secondary"
-                disabled={busy}
-                aria-label={
-                  busy
-                    ? 'Uploading gallery images'
-                    : 'Upload more gallery images'
-                }
-                title="Upload more gallery images"
-                onClick={() => inputRef.current?.click()}
-              >
-                <ImagePlusIcon size={16} aria-hidden />
-              </Button>
+              <Tooltip content="Upload more gallery images" side="top">
+                <Button
+                  size="icon-sm"
+                  variant="secondary"
+                  disabled={busy}
+                  aria-label={
+                    busy
+                      ? 'Uploading gallery images'
+                      : 'Upload more gallery images'
+                  }
+                  onClick={() => inputRef.current?.click()}
+                >
+                  <ImagePlusIcon size={16} aria-hidden />
+                </Button>
+              </Tooltip>
               <input
                 ref={inputRef}
                 type="file"
@@ -267,60 +268,69 @@ export function ArtistGalleryPanel({
                 </Button>
                 {isOwner ? (
                   <>
-                    <Button
-                      type="button"
-                      size="icon-sm"
-                      variant="text"
-                      className={`absolute top-1.5 left-1.5 flex size-6 items-center justify-center rounded-md border transition-opacity ${
-                        selected.has(img.id)
-                          ? 'bg-primary border-primary text-primary-foreground opacity-100'
-                          : 'bg-background/80 border-border/60 text-transparent opacity-0 group-hover:opacity-100'
-                      }`}
-                      title={selected.has(img.id) ? 'Deselect' : 'Select'}
-                      aria-label={
-                        selected.has(img.id) ? 'Deselect photo' : 'Select photo'
-                      }
-                      aria-pressed={selected.has(img.id)}
-                      onClick={() => toggleSelected(img.id)}
+                    <Tooltip
+                      content={selected.has(img.id) ? 'Deselect' : 'Select'}
+                      side="top"
                     >
-                      <CheckIcon size={14} aria-hidden />
-                    </Button>
-                    <Button
-                      type="button"
-                      size="icon-sm"
-                      variant="text"
-                      className="bg-background/80 text-foreground absolute top-1.5 right-1.5 rounded-md p-1 opacity-0 transition-opacity group-hover:opacity-100"
-                      title="Remove photo"
-                      aria-label="Remove photo"
-                      onClick={() => requestDelete(img.id)}
-                    >
-                      <Trash2Icon size={14} />
-                    </Button>
+                      <Button
+                        type="button"
+                        size="icon-sm"
+                        variant="text"
+                        className={`absolute top-1.5 left-1.5 flex size-6 items-center justify-center rounded-md border transition-opacity ${
+                          selected.has(img.id)
+                            ? 'bg-primary border-primary text-primary-foreground opacity-100'
+                            : 'bg-background/80 border-border/60 text-transparent opacity-0 group-hover:opacity-100'
+                        }`}
+                        aria-label={
+                          selected.has(img.id)
+                            ? 'Deselect photo'
+                            : 'Select photo'
+                        }
+                        aria-pressed={selected.has(img.id)}
+                        onClick={() => toggleSelected(img.id)}
+                      >
+                        <CheckIcon size={14} aria-hidden />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip content="Remove photo" side="top">
+                      <Button
+                        type="button"
+                        size="icon-sm"
+                        variant="text"
+                        className="bg-background/80 text-foreground absolute top-1.5 right-1.5 rounded-md p-1 opacity-0 transition-opacity group-hover:opacity-100"
+                        aria-label="Remove photo"
+                        onClick={() => requestDelete(img.id)}
+                      >
+                        <Trash2Icon size={14} />
+                      </Button>
+                    </Tooltip>
                     <div className="absolute inset-x-1.5 bottom-1.5 flex justify-between opacity-0 transition-opacity group-hover:opacity-100">
-                      <Button
-                        type="button"
-                        size="icon-sm"
-                        variant="text"
-                        className="bg-background/80 text-foreground rounded-md p-1 disabled:pointer-events-none disabled:opacity-30"
-                        title="Move earlier"
-                        aria-label="Move photo earlier"
-                        disabled={index === 0}
-                        onClick={() => moveBy(img.id, -1)}
-                      >
-                        <ChevronLeftIcon size={14} />
-                      </Button>
-                      <Button
-                        type="button"
-                        size="icon-sm"
-                        variant="text"
-                        className="bg-background/80 text-foreground rounded-md p-1 disabled:pointer-events-none disabled:opacity-30"
-                        title="Move later"
-                        aria-label="Move photo later"
-                        disabled={index === images.length - 1}
-                        onClick={() => moveBy(img.id, 1)}
-                      >
-                        <ChevronRightIcon size={14} />
-                      </Button>
+                      <Tooltip content="Move earlier" side="top">
+                        <Button
+                          type="button"
+                          size="icon-sm"
+                          variant="text"
+                          className="bg-background/80 text-foreground rounded-md p-1 disabled:pointer-events-none disabled:opacity-30"
+                          aria-label="Move photo earlier"
+                          disabled={index === 0}
+                          onClick={() => moveBy(img.id, -1)}
+                        >
+                          <ChevronLeftIcon size={14} />
+                        </Button>
+                      </Tooltip>
+                      <Tooltip content="Move later" side="top">
+                        <Button
+                          type="button"
+                          size="icon-sm"
+                          variant="text"
+                          className="bg-background/80 text-foreground rounded-md p-1 disabled:pointer-events-none disabled:opacity-30"
+                          aria-label="Move photo later"
+                          disabled={index === images.length - 1}
+                          onClick={() => moveBy(img.id, 1)}
+                        >
+                          <ChevronRightIcon size={14} />
+                        </Button>
+                      </Tooltip>
                     </div>
                   </>
                 ) : null}
@@ -400,17 +410,18 @@ export function ArtistGalleryAddIcon({
 
   return (
     <div className="flex flex-col items-start gap-1">
-      <Button
-        type="button"
-        size="icon-sm"
-        variant="secondary"
-        disabled={busy}
-        title={busy ? 'Uploading…' : 'Add gallery images'}
-        aria-label={busy ? 'Uploading gallery images' : 'Add gallery images'}
-        onClick={() => inputRef.current?.click()}
-      >
-        <ImagePlusIcon size={16} />
-      </Button>
+      <Tooltip content={busy ? 'Uploading…' : 'Add gallery images'} side="top">
+        <Button
+          type="button"
+          size="icon-sm"
+          variant="secondary"
+          disabled={busy}
+          aria-label={busy ? 'Uploading gallery images' : 'Add gallery images'}
+          onClick={() => inputRef.current?.click()}
+        >
+          <ImagePlusIcon size={16} />
+        </Button>
+      </Tooltip>
       <input
         ref={inputRef}
         type="file"

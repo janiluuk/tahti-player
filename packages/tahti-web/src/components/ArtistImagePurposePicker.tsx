@@ -1,7 +1,7 @@
 import { UploadCloudIcon, XIcon } from 'lucide-react';
 import { useState, type FC } from 'react';
 
-import { Button, Dialog, FilePicker } from '@tahti-player/ui';
+import { Button, Dialog, FilePicker, Tooltip } from '@tahti-player/ui';
 
 import {
   updatePressKitImage,
@@ -257,16 +257,17 @@ export const ArtistImagePurposePicker: FC<Props> = ({
                   ))}
                 </div>
               </div>
-              <Button
-                size="icon-sm"
-                variant="text"
-                aria-label={`Remove ${image.file.name}`}
-                title="Remove image"
-                onClick={() => remove(image.id)}
-                disabled={busy}
-              >
-                <XIcon size={16} aria-hidden />
-              </Button>
+              <Tooltip content="Remove image" side="top">
+                <Button
+                  size="icon-sm"
+                  variant="text"
+                  aria-label={`Remove ${image.file.name}`}
+                  onClick={() => remove(image.id)}
+                  disabled={busy}
+                >
+                  <XIcon size={16} aria-hidden />
+                </Button>
+              </Tooltip>
             </article>
           ))}
         </div>

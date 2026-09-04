@@ -2,6 +2,43 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-04 — Icon Tooltip pass 3 (Studio)
+
+Wrapped Studio ProEditor, CollectionEdit, ChannelDesigner, Studio list/detail
+views, channel panels, TrackEdit/StreamManager/Gallery/Stash, and related
+editors. Admin + PluginStore remain in `icon-button-tooltips.md`.
+
+## 2026-09-04 — Tabs Storybook migration (icons + count pills)
+
+Canonical `@tahti-player/ui` `Tabs` + `TabLabel` (`icon`, `count` Badge pill).
+Storybook `Layout/Tabs`: With icons, With count pills, Icons + count pills,
+Vertical icon-only. App tab strips migrated across Listen/Studio/Admin/player;
+Settings **nav** stays `SettingsPanel`. Collapsed right rail uses vertical
+icon-only `Tabs` (kept the post-login notification `useMemo` fix).
+
+Shipped in commit on master; Storybook + beta redeployed.
+
+## 2026-09-04 — Entity social header + Admin/Studio KPI restore
+
+Nuclear-style `EntitySocialHeader` on public Artist, Collection, Channel
+(when designer hero off), Radio show, Venue, Smart link/release, Subscribe.
+Track listen page stays immersive player.
+
+Admin/Studio dashboard KPIs restored to large `StatNumber` panels (not
+`StatChip`). StatChip remains only inside EntitySocialHeader and Stream
+Manager live status cells.
+
+Storybook: `Tahti/Page/EntitySocialHeader`.
+
+## 2026-09-04 — Listing thumbnail ImageReveal sweep
+
+Listing covers (rows, widget cards, directory tiles, news, radio logos,
+add-on store rows) use Storybook `ImageReveal`. Playable row thumbs stay
+on `MediaArtwork`. Left as-is: upload/edit pickers, channel designer,
+entity heroes, fullscreen player, map atlas, comment avatars, video backdrops.
+
+Details: `packages/tahti-web/UI-REDESIGN-WORKLOG.md`.
+
 ## 2026-09-04 — Fixed: post-login infinite-loop crash (React #185)
 
 Root cause found and fixed. `RightRailPanel` selected from

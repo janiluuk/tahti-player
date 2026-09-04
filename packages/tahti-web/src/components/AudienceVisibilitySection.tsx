@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { PlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, Select, Toggle } from '@tahti-player/ui';
+import { Button, Select, Toggle, Tooltip } from '@tahti-player/ui';
 
 import { fetchMyFanTiers, type FanTierRow } from '../api/fan-tiers';
 
@@ -48,14 +48,15 @@ export function AudienceVisibilitySection({
               </p>
             </div>
             <Link to="/studio/revenue">
-              <Button
-                size="icon-sm"
-                variant="secondary"
-                aria-label="Add fan tier"
-                title="Add fan tier"
-              >
-                <PlusIcon size={15} aria-hidden />
-              </Button>
+              <Tooltip content="Add fan tier" side="top">
+                <Button
+                  size="icon-sm"
+                  variant="secondary"
+                  aria-label="Add fan tier"
+                >
+                  <PlusIcon size={15} aria-hidden />
+                </Button>
+              </Tooltip>
             </Link>
           </div>
           {tiers.length > 0 ? (

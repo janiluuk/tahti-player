@@ -27,6 +27,7 @@ import {
   Tabs,
   Textarea,
   Toggle,
+  Tooltip,
   TrackContextMenu,
 } from '@tahti-player/ui';
 
@@ -58,6 +59,12 @@ import { SELECTABLE_CONTENT_TYPES } from '../../content/contentTypes';
 import { autoTrimCuts } from '../../lib/autoTrimCuts';
 import { capitalizeGenre, PRESET_GENRES } from '../../lib/genres';
 import { isPinned } from '../../lib/pinnedTracks';
+import { playableFromStudioHearthis } from '../../lib/embedPlayback';
+import {
+  EMBED_PROVIDER_HEIGHT,
+  EMBED_PROVIDER_LABEL,
+  embedSrcFor,
+} from '../../lib/embedSrc';
 import { useMasteringFeatureStore } from '../../plugins/mastering/store';
 import { useAuthStore } from '../../stores/authStore';
 import { usePlayerStore } from '../../stores/playerStore';
@@ -226,6 +233,18 @@ export function StudioSoundView({ id }: { id: string }) {
       return;
     }
     const playableId = `archive:${id}`;
+    const hearthis = playableFromStudioHearthis(item);
+    if (hearthis) {
+      if (currentId === playableId) {
+        setPlayerStatus('playing');
+        return;
+      }
+      play(hearthis);
+      return;
+    }
+    if (item.embedProvider) {
+      return;
+    }
     if (currentId === playableId) {
       if (startAt !== undefined) {
         seekTo(startAt);
@@ -342,26 +361,30 @@ export function StudioSoundView({ id }: { id: string }) {
                   </div>
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/20" />
-                <Button
-                  size="icon"
-                  className="absolute top-5 left-5 size-14 rounded-full shadow-xl"
-                  disabled={playBusy || notReady || hasError}
-                  aria-label={isPlaying ? 'Pause track' : 'Play track'}
-                  title={isPlaying ? 'Pause track' : 'Play track'}
-                  onClick={() => {
-                    if (isPlaying) {
-                      setPlayerStatus('paused');
-                    } else {
-                      void startPlayback();
-                    }
-                  }}
+                <Tooltip
+                  content={isPlaying ? 'Pause track' : 'Play track'}
+                  side="top"
                 >
-                  {isPlaying ? (
-                    <PauseIcon size={24} aria-hidden />
-                  ) : (
-                    <PlayIcon size={24} aria-hidden />
-                  )}
-                </Button>
+                  <Button
+                    size="icon"
+                    className="absolute top-5 left-5 size-14 rounded-full shadow-xl"
+                    disabled={playBusy || notReady || hasError}
+                    aria-label={isPlaying ? 'Pause track' : 'Play track'}
+                    onClick={() => {
+                      if (isPlaying) {
+                        setPlayerStatus('paused');
+                      } else {
+                        void startPlayback();
+                      }
+                    }}
+                  >
+                    {isPlaying ? (
+                      <PauseIcon size={24} aria-hidden />
+                    ) : (
+                      <PlayIcon size={24} aria-hidden />
+                    )}
+                  </Button>
+                </Tooltip>
                 <div className="absolute right-5 bottom-5 left-5 text-white">
                   <StudioPageHeader
                     title={item.title}
@@ -411,43 +434,49 @@ export function StudioSoundView({ id }: { id: string }) {
                 </div>
               </div>
               <div className="border-border flex flex-wrap items-center gap-2 border-t p-3">
-                <Button
-                  size="icon-sm"
-                  variant="secondary"
-                  disabled={pinBusy}
-                  onClick={() => void togglePin()}
-                  aria-label={pinned ? 'Unpin from page' : 'Pin to page'}
-                  title={pinned ? 'Unpin from page' : 'Pin to page'}
+                <Tooltip
+                  content={pinned ? 'Unpin from page' : 'Pin to page'}
+                  side="top"
                 >
-                  {pinned ? (
-                    <PinOffIcon size={16} aria-hidden />
-                  ) : (
-                    <PinIcon size={16} aria-hidden />
-                  )}
-                </Button>
-                {tab === 'details' ? (
                   <Button
                     size="icon-sm"
-                    disabled={!title.trim() || saving}
-                    onClick={() => void save()}
-                    aria-label="Save changes"
-                    title="Save changes"
+                    variant="secondary"
+                    disabled={pinBusy}
+                    onClick={() => void togglePin()}
+                    aria-label={pinned ? 'Unpin from page' : 'Pin to page'}
                   >
-                    <SaveIcon size={16} aria-hidden />
+                    {pinned ? (
+                      <PinOffIcon size={16} aria-hidden />
+                    ) : (
+                      <PinIcon size={16} aria-hidden />
+                    )}
                   </Button>
+                </Tooltip>
+                {tab === 'details' ? (
+                  <Tooltip content="Save changes" side="top">
+                    <Button
+                      size="icon-sm"
+                      disabled={!title.trim() || saving}
+                      onClick={() => void save()}
+                      aria-label="Save changes"
+                    >
+                      <SaveIcon size={16} aria-hidden />
+                    </Button>
+                  </Tooltip>
                 ) : null}
                 <span className="bg-border mx-1 h-5 w-px" aria-hidden />
                 <TrackContextMenu>
                   <TrackContextMenu.Trigger>
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      disabled={notReady || hasError}
-                      aria-label="Quick edits"
-                      title="Quick edits"
-                    >
-                      <MoreHorizontalIcon size={16} aria-hidden />
-                    </Button>
+                    <Tooltip content="Quick edits" side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        disabled={notReady || hasError}
+                        aria-label="Quick edits"
+                      >
+                        <MoreHorizontalIcon size={16} aria-hidden />
+                      </Button>
+                    </Tooltip>
                   </TrackContextMenu.Trigger>
                   <TrackContextMenu.Content>
                     <TrackContextMenu.Header title="Quick edits" />
@@ -484,17 +513,18 @@ export function StudioSoundView({ id }: { id: string }) {
                     )}
                   </TrackContextMenu.Content>
                 </TrackContextMenu>
-                <Link to="/studio/sounds/$id/editor" params={{ id }}>
-                  <Button
-                    size="icon-sm"
-                    variant="text"
-                    disabled={notReady || hasError}
-                    aria-label="Open audio editor"
-                    title="Open audio editor"
-                  >
-                    <AudioLinesIcon size={16} aria-hidden />
-                  </Button>
-                </Link>
+                <Tooltip content="Open audio editor" side="top">
+                  <Link to="/studio/sounds/$id/editor" params={{ id }}>
+                    <Button
+                      size="icon-sm"
+                      variant="text"
+                      disabled={notReady || hasError}
+                      aria-label="Open audio editor"
+                    >
+                      <AudioLinesIcon size={16} aria-hidden />
+                    </Button>
+                  </Link>
+                </Tooltip>
               </div>
             </header>
 

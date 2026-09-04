@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { Mic } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-import { Button } from '@tahti-player/ui';
+import { Button, Tooltip } from '@tahti-player/ui';
 
 import type { PublicRadioShowEpisode } from '../api/shows';
 import { isGreenRoomWindow } from '../lib/radioSchedule';
@@ -85,14 +85,15 @@ export function ShowEpisodeList({
                 params={{ username }}
                 className="shrink-0"
               >
-                <Button
-                  size="icon-sm"
-                  variant="secondary"
-                  aria-label="Open green room"
-                  title="Green room"
-                >
-                  <Mic size={16} aria-hidden />
-                </Button>
+                <Tooltip content="Green room" side="top">
+                  <Button
+                    size="icon-sm"
+                    variant="secondary"
+                    aria-label="Open green room"
+                  >
+                    <Mic size={16} aria-hidden />
+                  </Button>
+                </Tooltip>
               </Link>
             ) : null}
           </li>

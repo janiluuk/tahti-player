@@ -9,7 +9,7 @@ import {
   WrenchIcon,
 } from 'lucide-react';
 
-import { Button, TrackContextMenu } from '@tahti-player/ui';
+import { Button, Tooltip, TrackContextMenu } from '@tahti-player/ui';
 
 import type { StudioSound } from '../api/studio-types';
 import { isPinned } from '../lib/pinnedTracks';
@@ -38,14 +38,15 @@ export function StudioSoundRowMenu({
   return (
     <TrackContextMenu>
       <TrackContextMenu.Trigger>
-        <Button
-          size="icon-sm"
-          variant="text"
-          aria-label={`More actions for ${item.title}`}
-          title="More"
-        >
-          <MoreHorizontalIcon size={16} aria-hidden />
-        </Button>
+        <Tooltip content="More" side="top">
+          <Button
+            size="icon-sm"
+            variant="text"
+            aria-label={`More actions for ${item.title}`}
+          >
+            <MoreHorizontalIcon size={16} aria-hidden />
+          </Button>
+        </Tooltip>
       </TrackContextMenu.Trigger>
       <TrackContextMenu.Content>
         <TrackContextMenu.Header title={item.title} subtitle={item.status} />

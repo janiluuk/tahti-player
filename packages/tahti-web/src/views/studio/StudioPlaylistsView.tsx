@@ -187,14 +187,15 @@ export function StudioPlaylistsView() {
                 title="No playlists yet"
                 description="Create a playlist to organize tracks and releases."
                 action={
-                  <Button
-                    size="icon-sm"
-                    onClick={() => setCreateOpen(true)}
-                    aria-label="New playlist"
-                    title="New playlist"
-                  >
-                    <PlusIcon size={16} aria-hidden />
-                  </Button>
+                  <Tooltip content="New playlist" side="top">
+                    <Button
+                      size="icon-sm"
+                      onClick={() => setCreateOpen(true)}
+                      aria-label="New playlist"
+                    >
+                      <PlusIcon size={16} aria-hidden />
+                    </Button>
+                  </Tooltip>
                 }
               />
             ) : (

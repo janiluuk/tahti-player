@@ -8,6 +8,7 @@ import {
   FilePicker,
   Input,
   Select,
+  Tooltip,
 } from '@tahti-player/ui';
 
 import {
@@ -285,54 +286,59 @@ export const StashFilesPanel = () => {
                     </div>
                   </div>
                   <div className="flex gap-1">
-                    <Button
-                      size="icon-sm"
-                      variant={sharingFileId === file.id ? 'secondary' : 'text'}
-                      title="Share access"
-                      aria-label={`Share ${file.filename}`}
-                      aria-pressed={sharingFileId === file.id}
-                      onClick={() =>
-                        setSharingFileId((current) =>
-                          current === file.id ? null : file.id,
-                        )
-                      }
-                    >
-                      <Share2Icon size={16} />
-                    </Button>
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      title="Play"
-                      aria-label={`Play ${file.filename}`}
-                      onClick={() => {
-                        void fetchStashDownload(file.id).then((result) => {
-                          if (!result.data?.url) {
-                            setMessage('Download is unavailable.');
-                            return;
-                          }
-                          play({
-                            id: `stash:${file.id}`,
-                            kind: 'archive',
-                            title: file.filename,
-                            artist: 'Stash',
-                            streamUrl: result.data.url,
-                            protocol: 'https',
-                            sourceProvider: 'stash',
+                    <Tooltip content="Share access" side="top">
+                      <Button
+                        size="icon-sm"
+                        variant={
+                          sharingFileId === file.id ? 'secondary' : 'text'
+                        }
+                        aria-label={`Share ${file.filename}`}
+                        aria-pressed={sharingFileId === file.id}
+                        onClick={() =>
+                          setSharingFileId((current) =>
+                            current === file.id ? null : file.id,
+                          )
+                        }
+                      >
+                        <Share2Icon size={16} />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip content="Play" side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        aria-label={`Play ${file.filename}`}
+                        onClick={() => {
+                          void fetchStashDownload(file.id).then((result) => {
+                            if (!result.data?.url) {
+                              setMessage('Download is unavailable.');
+                              return;
+                            }
+                            play({
+                              id: `stash:${file.id}`,
+                              kind: 'archive',
+                              title: file.filename,
+                              artist: 'Stash',
+                              streamUrl: result.data.url,
+                              protocol: 'https',
+                              sourceProvider: 'stash',
+                            });
                           });
-                        });
-                      }}
-                    >
-                      <PlayIcon size={16} className="fill-current" />
-                    </Button>
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      title="Delete"
-                      aria-label={`Delete ${file.filename}`}
-                      onClick={() => setPendingDelete(file)}
-                    >
-                      <Trash2Icon size={16} />
-                    </Button>
+                        }}
+                      >
+                        <PlayIcon size={16} className="fill-current" />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip content="Delete" side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        aria-label={`Delete ${file.filename}`}
+                        onClick={() => setPendingDelete(file)}
+                      >
+                        <Trash2Icon size={16} />
+                      </Button>
+                    </Tooltip>
                   </div>
                 </div>
 
@@ -404,16 +410,17 @@ export const StashFilesPanel = () => {
                             · {formatExpiry(share.expiresAt)}
                           </div>
                         </div>
-                        <Button
-                          size="icon-sm"
-                          variant="text"
-                          title="Revoke access"
-                          aria-label={`Revoke access for ${share.granteeUsername ? `@${share.granteeUsername}` : 'link'}`}
-                          disabled={busy}
-                          onClick={() => void revokeShare(file.id, share.id)}
-                        >
-                          <XIcon size={14} aria-hidden />
-                        </Button>
+                        <Tooltip content="Revoke access" side="top">
+                          <Button
+                            size="icon-sm"
+                            variant="text"
+                            aria-label={`Revoke access for ${share.granteeUsername ? `@${share.granteeUsername}` : 'link'}`}
+                            disabled={busy}
+                            onClick={() => void revokeShare(file.id, share.id)}
+                          >
+                            <XIcon size={14} aria-hidden />
+                          </Button>
+                        </Tooltip>
                       </li>
                     ))}
                   </ul>

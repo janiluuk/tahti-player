@@ -22,6 +22,7 @@ import {
   Tabs,
   Textarea,
   Toggle,
+  Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -456,15 +457,16 @@ export const StudioBrandingPanel: FC<{
                     aria-label="Public gallery"
                   />
                 </label>
-                <Button
-                  size="icon-sm"
-                  variant="secondary"
-                  aria-label="Upload more gallery images"
-                  title="Upload more gallery images"
-                  onClick={() => setGalleryUploadOpen(true)}
-                >
-                  <ImagePlusIcon size={16} aria-hidden />
-                </Button>
+                <Tooltip content="Upload more gallery images" side="top">
+                  <Button
+                    size="icon-sm"
+                    variant="secondary"
+                    aria-label="Upload more gallery images"
+                    onClick={() => setGalleryUploadOpen(true)}
+                  >
+                    <ImagePlusIcon size={16} aria-hidden />
+                  </Button>
+                </Tooltip>
               </div>
             }
           >
@@ -676,15 +678,16 @@ export const StudioBrandingPanel: FC<{
                             checked={image.includeInZip}
                             onChange={() => void togglePressKitImage(image)}
                           />
-                          <Button
-                            size="icon-sm"
-                            variant="text"
-                            aria-label="Remove image from gallery"
-                            title="Remove image"
-                            onClick={() => void removeImage(image.id)}
-                          >
-                            <Trash2Icon size={14} aria-hidden />
-                          </Button>
+                          <Tooltip content="Remove image" side="top">
+                            <Button
+                              size="icon-sm"
+                              variant="text"
+                              aria-label="Remove image from gallery"
+                              onClick={() => void removeImage(image.id)}
+                            >
+                              <Trash2Icon size={14} aria-hidden />
+                            </Button>
+                          </Tooltip>
                         </div>
                       </div>
                     </div>

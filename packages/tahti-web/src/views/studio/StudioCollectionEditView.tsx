@@ -23,6 +23,7 @@ import {
   SaveButton,
   Select,
   Textarea,
+  Tooltip,
 } from '@tahti-player/ui';
 
 import {
@@ -212,71 +213,92 @@ function TrackRow({
           {formatDuration(durationSec)}
         </span>
         {item.sound && !isEmbed && (
-          <Button
-            size="icon-sm"
-            variant="text"
-            aria-label={
+          <Tooltip
+            content={
               isCurrent && isPlaying ? 'Pause' : `Play ${trackTitle(item)}`
             }
-            title={isCurrent && isPlaying ? 'Pause' : 'Play'}
-            onClick={onPlay}
+            side="top"
           >
-            {isCurrent && isPlaying ? (
-              <PauseIcon size={16} aria-hidden />
-            ) : (
-              <PlayIcon size={16} aria-hidden />
-            )}
-          </Button>
+            <Button
+              size="icon-sm"
+              variant="text"
+              aria-label={
+                isCurrent && isPlaying ? 'Pause' : `Play ${trackTitle(item)}`
+              }
+              onClick={onPlay}
+            >
+              {isCurrent && isPlaying ? (
+                <PauseIcon size={16} aria-hidden />
+              ) : (
+                <PlayIcon size={16} aria-hidden />
+              )}
+            </Button>
+          </Tooltip>
         )}
         {item.sound && isEmbed && (
-          <Button
-            size="icon-sm"
-            variant="text"
-            aria-label={
+          <Tooltip
+            content={
               isExpanded
                 ? 'Hide player'
                 : `Play ${trackTitle(item)} on ${EMBED_PROVIDER_LABEL[embedProvider!]}`
             }
-            title={
-              isExpanded
-                ? 'Hide player'
-                : `Play on ${EMBED_PROVIDER_LABEL[embedProvider!]}`
-            }
-            onClick={onToggleExpand}
+            side="top"
           >
-            <PlayIcon size={16} className="fill-current" aria-hidden />
-          </Button>
+            <Button
+              size="icon-sm"
+              variant="text"
+              aria-label={
+                isExpanded
+                  ? 'Hide player'
+                  : `Play ${trackTitle(item)} on ${EMBED_PROVIDER_LABEL[embedProvider!]}`
+              }
+              onClick={onToggleExpand}
+            >
+              <PlayIcon size={16} className="fill-current" aria-hidden />
+            </Button>
+          </Tooltip>
         )}
         {item.sound && !isEmbed && (
-          <Button
-            size="icon-sm"
-            variant="text"
-            aria-label={
+          <Tooltip
+            content={
               isExpanded
                 ? 'Collapse'
                 : isEmbed
                   ? 'Show player'
                   : 'Expand waveform'
             }
-            title={isExpanded ? 'Collapse' : isEmbed ? 'Show player' : 'Expand'}
-            onClick={onToggleExpand}
+            side="top"
           >
-            {isExpanded ? (
-              <Minimize2Icon size={14} aria-hidden />
-            ) : (
-              <Maximize2Icon size={14} aria-hidden />
-            )}
-          </Button>
+            <Button
+              size="icon-sm"
+              variant="text"
+              aria-label={
+                isExpanded
+                  ? 'Collapse'
+                  : isEmbed
+                    ? 'Show player'
+                    : 'Expand waveform'
+              }
+              onClick={onToggleExpand}
+            >
+              {isExpanded ? (
+                <Minimize2Icon size={14} aria-hidden />
+              ) : (
+                <Maximize2Icon size={14} aria-hidden />
+              )}
+            </Button>
+          </Tooltip>
         )}
-        <Button
-          size="icon-sm"
-          variant="text"
-          aria-label="Remove track"
-          title="Remove"
-          onClick={onRemove}
-        >
-          <Trash2Icon size={16} aria-hidden />
-        </Button>
+        <Tooltip content="Remove track" side="top">
+          <Button
+            size="icon-sm"
+            variant="text"
+            aria-label="Remove track"
+            onClick={onRemove}
+          >
+            <Trash2Icon size={16} aria-hidden />
+          </Button>
+        </Tooltip>
       </div>
 
       {isExpanded && isEmbed && (
@@ -786,20 +808,22 @@ export function StudioCollectionEditView({ slug }: { slug: string }) {
 
                 {nowPlayingItem?.sound && (
                   <div className="border-border bg-background-input flex items-center gap-3 rounded-lg border px-3 py-2">
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      aria-label={isPlaying ? 'Pause' : 'Play'}
-                      onClick={() =>
-                        setStatus(isPlaying ? 'paused' : 'playing')
-                      }
-                    >
-                      {isPlaying ? (
-                        <PauseIcon size={16} aria-hidden />
-                      ) : (
-                        <PlayIcon size={16} aria-hidden />
-                      )}
-                    </Button>
+                    <Tooltip content={isPlaying ? 'Pause' : 'Play'} side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        aria-label={isPlaying ? 'Pause' : 'Play'}
+                        onClick={() =>
+                          setStatus(isPlaying ? 'paused' : 'playing')
+                        }
+                      >
+                        {isPlaying ? (
+                          <PauseIcon size={16} aria-hidden />
+                        ) : (
+                          <PlayIcon size={16} aria-hidden />
+                        )}
+                      </Button>
+                    </Tooltip>
                     <span className="truncate text-sm font-medium">
                       {nowPlayingItem.sound.title}
                     </span>
@@ -892,14 +916,18 @@ export function StudioCollectionEditView({ slug }: { slug: string }) {
               </ul>
 
               <div className="border-border mt-4 flex justify-end border-t pt-4">
-                <Button
-                  size="icon"
-                  aria-label={`Add content to ${isAlbumLike ? 'album' : 'collection'}`}
-                  title={`Add content to ${isAlbumLike ? 'album' : 'collection'}`}
-                  onClick={() => setAddPickerOpen(true)}
+                <Tooltip
+                  content={`Add content to ${isAlbumLike ? 'album' : 'collection'}`}
+                  side="top"
                 >
-                  <PlusIcon size={18} aria-hidden />
-                </Button>
+                  <Button
+                    size="icon"
+                    aria-label={`Add content to ${isAlbumLike ? 'album' : 'collection'}`}
+                    onClick={() => setAddPickerOpen(true)}
+                  >
+                    <PlusIcon size={18} aria-hidden />
+                  </Button>
+                </Tooltip>
               </div>
             </StudioPanel>
           </>
@@ -965,25 +993,29 @@ export function StudioCollectionEditView({ slug }: { slug: string }) {
                           key={sound.id}
                           className={`flex items-center gap-3 px-3 py-2.5 text-sm ${index % 2 === 1 ? 'bg-background-secondary/40' : 'bg-background'}`}
                         >
-                          <Button
-                            size="icon-sm"
-                            variant={itemIsPlaying ? 'secondary' : 'text'}
-                            aria-label={`${itemIsPlaying ? 'Pause' : 'Preview'} ${sound.title}`}
-                            title={itemIsPlaying ? 'Pause' : 'Preview'}
-                            onClick={() => {
-                              if (itemIsPlaying) {
-                                setStatus('paused');
-                              } else {
-                                void playSound(sound.id, sound.title);
-                              }
-                            }}
+                          <Tooltip
+                            content={`${itemIsPlaying ? 'Pause' : 'Preview'} ${sound.title}`}
+                            side="top"
                           >
-                            {itemIsPlaying ? (
-                              <PauseIcon size={15} aria-hidden />
-                            ) : (
-                              <PlayIcon size={15} aria-hidden />
-                            )}
-                          </Button>
+                            <Button
+                              size="icon-sm"
+                              variant={itemIsPlaying ? 'secondary' : 'text'}
+                              aria-label={`${itemIsPlaying ? 'Pause' : 'Preview'} ${sound.title}`}
+                              onClick={() => {
+                                if (itemIsPlaying) {
+                                  setStatus('paused');
+                                } else {
+                                  void playSound(sound.id, sound.title);
+                                }
+                              }}
+                            >
+                              {itemIsPlaying ? (
+                                <PauseIcon size={15} aria-hidden />
+                              ) : (
+                                <PlayIcon size={15} aria-hidden />
+                              )}
+                            </Button>
+                          </Tooltip>
                           <div className="min-w-0 flex-1">
                             <p className="truncate font-medium">
                               {sound.title}

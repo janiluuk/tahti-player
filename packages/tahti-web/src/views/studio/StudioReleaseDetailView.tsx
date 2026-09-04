@@ -26,6 +26,7 @@ import {
   Select,
   Tabs,
   Textarea,
+  Tooltip,
 } from '@tahti-player/ui';
 
 import {
@@ -478,24 +479,25 @@ function ReleaseTrackRow({
     >
       <span className="min-w-0 flex-1 truncate">{track.title}</span>
       {sourceUrl ? (
-        <Button
-          size="icon-sm"
-          variant="secondary"
-          aria-label={`Play ${track.title}`}
-          title={`Play ${track.title}`}
-          onClick={() =>
-            play({
-              id: `archive:${track.soundId}`,
-              kind: 'archive',
-              title: track.title,
-              artist: 'You',
-              streamUrl: sourceUrl,
-              protocol: sourceUrl.includes('.m3u8') ? 'hls' : 'https',
-            })
-          }
-        >
-          <PlayIcon size={15} aria-hidden />
-        </Button>
+        <Tooltip content={`Play ${track.title}`} side="top">
+          <Button
+            size="icon-sm"
+            variant="secondary"
+            aria-label={`Play ${track.title}`}
+            onClick={() =>
+              play({
+                id: `archive:${track.soundId}`,
+                kind: 'archive',
+                title: track.title,
+                artist: 'You',
+                streamUrl: sourceUrl,
+                protocol: sourceUrl.includes('.m3u8') ? 'hls' : 'https',
+              })
+            }
+          >
+            <PlayIcon size={15} aria-hidden />
+          </Button>
+        </Tooltip>
       ) : null}
       {track.soundId ? (
         <Link
@@ -778,16 +780,17 @@ function ReleaseSmartLinksPanel({
             onClick={() => void saveTargets()}
             label="Save destinations"
           />
-          <Link to="/r/$slug" params={{ slug: release.smartLinkSlug }}>
-            <Button
-              size="icon-sm"
-              variant="text"
-              aria-label="Open smart link"
-              title="Open smart link"
-            >
-              <ExternalLinkIcon size={16} aria-hidden />
-            </Button>
-          </Link>
+          <Tooltip content="Open smart link" side="top">
+            <Link to="/r/$slug" params={{ slug: release.smartLinkSlug }}>
+              <Button
+                size="icon-sm"
+                variant="text"
+                aria-label="Open smart link"
+              >
+                <ExternalLinkIcon size={16} aria-hidden />
+              </Button>
+            </Link>
+          </Tooltip>
           <span className="text-foreground-secondary text-xs">
             {release.smartLinkViewCount ?? 0} views · /r/{release.smartLinkSlug}
           </span>
@@ -832,20 +835,21 @@ function ReleaseSmartLinksPanel({
                   {track.title}
                 </span>
                 <ReleaseTrackRow track={track} shopUrl={targets.bandcamp} />
-                <Button
-                  size="icon-sm"
-                  variant="text"
-                  aria-label={`Remove ${track.title}`}
-                  title="Remove from release"
-                  onClick={() =>
-                    setPendingRemoveTrack({
-                      id: track.id,
-                      title: track.title,
-                    })
-                  }
-                >
-                  <Trash2Icon size={15} aria-hidden />
-                </Button>
+                <Tooltip content="Remove from release" side="top">
+                  <Button
+                    size="icon-sm"
+                    variant="text"
+                    aria-label={`Remove ${track.title}`}
+                    onClick={() =>
+                      setPendingRemoveTrack({
+                        id: track.id,
+                        title: track.title,
+                      })
+                    }
+                  >
+                    <Trash2Icon size={15} aria-hidden />
+                  </Button>
+                </Tooltip>
               </li>
             ))}
           </ol>

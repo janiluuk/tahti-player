@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, Dialog, Input, SaveButton } from '@tahti-player/ui';
+import { Button, Dialog, Input, SaveButton, Tooltip } from '@tahti-player/ui';
 
 import {
   createRtmpTarget,
@@ -380,14 +380,15 @@ function DestinationsGrid() {
         <p className="text-foreground-secondary text-sm">
           Configure the destinations that should receive your live broadcast.
         </p>
-        <Button
-          size="icon-sm"
-          aria-label="Add multicast source"
-          title="Add multicast source"
-          onClick={() => setEditing({ providerId: null, target: null })}
-        >
-          <PlusIcon size={17} aria-hidden />
-        </Button>
+        <Tooltip content="Add multicast source" side="top">
+          <Button
+            size="icon-sm"
+            aria-label="Add multicast source"
+            onClick={() => setEditing({ providerId: null, target: null })}
+          >
+            <PlusIcon size={17} aria-hidden />
+          </Button>
+        </Tooltip>
       </div>
       {loading ? (
         <p className="text-foreground-secondary text-sm">

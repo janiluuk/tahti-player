@@ -2,7 +2,7 @@ import { CheckIcon, LinkIcon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, CopyButton, Input, Select } from '@tahti-player/ui';
+import { Button, CopyButton, Input, Select, Tooltip } from '@tahti-player/ui';
 
 import {
   createSoundShare,
@@ -136,16 +136,17 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
                   variant="text"
                   toastMessage="Link copied."
                 />
-                <Button
-                  size="icon-sm"
-                  variant="text"
-                  disabled={busy}
-                  aria-label="Revoke link"
-                  title="Revoke link"
-                  onClick={() => setPendingRevokeId(share.id)}
-                >
-                  <XIcon size={13} aria-hidden />
-                </Button>
+                <Tooltip content="Revoke link" side="top">
+                  <Button
+                    size="icon-sm"
+                    variant="text"
+                    disabled={busy}
+                    aria-label="Revoke link"
+                    onClick={() => setPendingRevokeId(share.id)}
+                  >
+                    <XIcon size={13} aria-hidden />
+                  </Button>
+                </Tooltip>
               </div>
             </li>
           ))}

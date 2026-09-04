@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
-import { Button } from '@tahti-player/ui';
+import { Button, Tooltip } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
 
@@ -48,32 +48,32 @@ export function MediaIconActions({ actions, className }: Props) {
   return (
     <div className={cn('flex flex-wrap items-center gap-1', className)}>
       {actions.map((a) => (
-        <Button
-          key={a.id}
-          type="button"
-          size="icon-sm"
-          variant={a.variant ?? (a.id === 'play' ? 'default' : 'text')}
-          disabled={
-            a.disabled ||
-            (a.active && a.disableWhenActive !== false) ||
-            flashingId === a.id
-          }
-          className={cn(
-            (a.active || flashingId === a.id) &&
-              'bg-primary/20 text-primary motion-safe:animate-pulse',
-          )}
-          title={a.title ?? a.label}
-          aria-label={a.label}
-          aria-pressed={a.active}
-          onClick={() => {
-            if (a.id === 'queue') {
-              setFlashingId(a.id);
+        <Tooltip key={a.id} content={a.title ?? a.label} side="top">
+          <Button
+            type="button"
+            size="icon-sm"
+            variant={a.variant ?? (a.id === 'play' ? 'default' : 'text')}
+            disabled={
+              a.disabled ||
+              (a.active && a.disableWhenActive !== false) ||
+              flashingId === a.id
             }
-            a.onClick();
-          }}
-        >
-          {a.icon}
-        </Button>
+            className={cn(
+              (a.active || flashingId === a.id) &&
+                'bg-primary/20 text-primary motion-safe:animate-pulse',
+            )}
+            aria-label={a.label}
+            aria-pressed={a.active}
+            onClick={() => {
+              if (a.id === 'queue') {
+                setFlashingId(a.id);
+              }
+              a.onClick();
+            }}
+          >
+            {a.icon}
+          </Button>
+        </Tooltip>
       ))}
     </div>
   );

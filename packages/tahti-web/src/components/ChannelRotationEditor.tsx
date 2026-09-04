@@ -1,7 +1,7 @@
 import { ListMusicIcon, PauseIcon, PlayIcon, Trash2Icon } from 'lucide-react';
 import { FC, useState } from 'react';
 
-import { Box, Button, Select } from '@tahti-player/ui';
+import { Box, Button, Select, Tooltip } from '@tahti-player/ui';
 
 import type { ProgrammeItem } from '../api/studio-extras';
 import { cn } from '../lib/cn';
@@ -110,16 +110,17 @@ export const ChannelRotationEditor: FC<ChannelRotationEditorProps> = ({
                     {group.items.length === 1 ? '' : 's'}
                   </span>
                 </span>
-                <Button
-                  size="icon-sm"
-                  variant="secondary"
-                  disabled={busy || group.items.length === 0}
-                  onClick={() => onAddGroup(group)}
-                  aria-label={`Add ${group.label}`}
-                  title={`Add ${group.label}`}
-                >
-                  <ListMusicIcon size={14} aria-hidden />
-                </Button>
+                <Tooltip content={`Add ${group.label}`} side="top">
+                  <Button
+                    size="icon-sm"
+                    variant="secondary"
+                    disabled={busy || group.items.length === 0}
+                    onClick={() => onAddGroup(group)}
+                    aria-label={`Add ${group.label}`}
+                  >
+                    <ListMusicIcon size={14} aria-hidden />
+                  </Button>
+                </Tooltip>
               </Box>
             ))}
           </div>
@@ -208,31 +209,33 @@ export const ChannelRotationEditor: FC<ChannelRotationEditorProps> = ({
                 </div>
                 <div className="flex shrink-0 gap-1">
                   {onPlay ? (
+                    <Tooltip content={showPause ? 'Pause' : 'Play'} side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        disabled={busy}
+                        onClick={() => onPlay(item)}
+                        aria-label={`${showPause ? 'Pause' : 'Play'} ${item.title}`}
+                      >
+                        {showPause ? (
+                          <PauseIcon size={14} aria-hidden />
+                        ) : (
+                          <PlayIcon size={14} aria-hidden />
+                        )}
+                      </Button>
+                    </Tooltip>
+                  ) : null}
+                  <Tooltip content="Remove" side="top">
                     <Button
                       size="icon-sm"
                       variant="text"
                       disabled={busy}
-                      onClick={() => onPlay(item)}
-                      aria-label={`${showPause ? 'Pause' : 'Play'} ${item.title}`}
-                      title={showPause ? 'Pause' : 'Play'}
+                      onClick={() => onRemove(item)}
+                      aria-label={`Remove ${item.title} from rotation`}
                     >
-                      {showPause ? (
-                        <PauseIcon size={14} aria-hidden />
-                      ) : (
-                        <PlayIcon size={14} aria-hidden />
-                      )}
+                      <Trash2Icon size={14} aria-hidden />
                     </Button>
-                  ) : null}
-                  <Button
-                    size="icon-sm"
-                    variant="text"
-                    disabled={busy}
-                    onClick={() => onRemove(item)}
-                    aria-label={`Remove ${item.title} from rotation`}
-                    title="Remove"
-                  >
-                    <Trash2Icon size={14} aria-hidden />
-                  </Button>
+                  </Tooltip>
                 </div>
               </li>
             );

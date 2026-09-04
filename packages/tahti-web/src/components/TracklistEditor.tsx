@@ -16,7 +16,14 @@ import {
   type FC,
 } from 'react';
 
-import { Button, Input, Tabs, Textarea, Toggle } from '@tahti-player/ui';
+import {
+  Button,
+  Input,
+  Tabs,
+  Textarea,
+  Toggle,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import { searchMentionUsers, type MentionUser } from '../api/mentions';
 import type {
@@ -442,20 +449,22 @@ export const TracklistEditor: FC<Props> = ({
                       <span className="text-foreground-secondary w-12 text-right text-xs tabular-nums">
                         {formatTime(entry.startSec)}
                       </span>
-                      <Button
-                        size="icon-sm"
-                        variant="text"
-                        aria-label={`Remove ${entry.title}`}
-                        onClick={() =>
-                          onChange(
-                            value.filter(
-                              (candidate) => candidate.id !== entry.id,
-                            ),
-                          )
-                        }
-                      >
-                        <Trash2Icon size={15} aria-hidden />
-                      </Button>
+                      <Tooltip content={`Remove ${entry.title}`} side="top">
+                        <Button
+                          size="icon-sm"
+                          variant="text"
+                          aria-label={`Remove ${entry.title}`}
+                          onClick={() =>
+                            onChange(
+                              value.filter(
+                                (candidate) => candidate.id !== entry.id,
+                              ),
+                            )
+                          }
+                        >
+                          <Trash2Icon size={15} aria-hidden />
+                        </Button>
+                      </Tooltip>
                     </li>
                   ))
                 )}

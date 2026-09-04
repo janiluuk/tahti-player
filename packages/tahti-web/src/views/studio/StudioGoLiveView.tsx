@@ -19,6 +19,7 @@ import {
   CopyButton,
   Dialog,
   Toggle,
+  Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -542,15 +543,16 @@ export function StudioGoLiveView() {
                   title="Multistream"
                   description="Mirror your broadcast to other platforms."
                   action={
-                    <Button
-                      size="icon-sm"
-                      variant="secondary"
-                      onClick={() => setShowAddDestination(true)}
-                      aria-label="Add destination"
-                      title="Add destination"
-                    >
-                      <PlusIcon size={16} />
-                    </Button>
+                    <Tooltip content="Add destination" side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="secondary"
+                        onClick={() => setShowAddDestination(true)}
+                        aria-label="Add destination"
+                      >
+                        <PlusIcon size={16} />
+                      </Button>
+                    </Tooltip>
                   }
                 >
                   {targets.length === 0 ? (
@@ -587,15 +589,16 @@ export function StudioGoLiveView() {
                               >
                                 {target.enabled ? 'Disable' : 'Enable'}
                               </Button>
-                              <Button
-                                size="icon-sm"
-                                variant="text"
-                                onClick={() => setPendingDeleteTarget(target)}
-                                aria-label={`Remove ${target.label || target.provider}`}
-                                title="Remove destination"
-                              >
-                                <Trash2Icon size={14} aria-hidden />
-                              </Button>
+                              <Tooltip content="Remove destination" side="top">
+                                <Button
+                                  size="icon-sm"
+                                  variant="text"
+                                  onClick={() => setPendingDeleteTarget(target)}
+                                  aria-label={`Remove ${target.label || target.provider}`}
+                                >
+                                  <Trash2Icon size={14} aria-hidden />
+                                </Button>
+                              </Tooltip>
                             </div>
                           </div>
                         </li>

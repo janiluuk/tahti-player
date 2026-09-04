@@ -22,6 +22,7 @@ import {
   TabLabel,
   Tabs,
   Toggle,
+  Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -175,16 +176,18 @@ export function StudioCollectionsView() {
           classes={{ root: 'px-0 pt-0' }}
         >
           <div className="mb-4">
-            <Button
-              size="icon-sm"
-              onClick={() => {
-                setMsg(null);
-                setCreateOpen(true);
-              }}
-              aria-label="New collection"
-            >
-              <PlusIcon size={16} aria-hidden />
-            </Button>
+            <Tooltip content="New collection" side="top">
+              <Button
+                size="icon-sm"
+                onClick={() => {
+                  setMsg(null);
+                  setCreateOpen(true);
+                }}
+                aria-label="New collection"
+              >
+                <PlusIcon size={16} aria-hidden />
+              </Button>
+            </Tooltip>
           </div>
 
           {msg && <p className="mb-4 text-sm">{msg}</p>}
@@ -339,14 +342,15 @@ export function StudioCollectionsView() {
                 title="No collections yet"
                 description="Create an album, EP, DJ set, podcast, or playlist."
                 action={
-                  <Button
-                    size="icon-sm"
-                    onClick={() => setCreateOpen(true)}
-                    aria-label="New collection"
-                    title="New collection"
-                  >
-                    <PlusIcon size={16} aria-hidden />
-                  </Button>
+                  <Tooltip content="New collection" side="top">
+                    <Button
+                      size="icon-sm"
+                      onClick={() => setCreateOpen(true)}
+                      aria-label="New collection"
+                    >
+                      <PlusIcon size={16} aria-hidden />
+                    </Button>
+                  </Tooltip>
                 }
               />
             ) : filteredRows.length === 0 ? (

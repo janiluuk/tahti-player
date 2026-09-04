@@ -35,6 +35,7 @@ import {
   TabLabel,
   Tabs,
   Toggle,
+  Tooltip,
 } from '@tahti-player/ui';
 
 import { fetchArchiveVersions } from '../../api/archive-versions';
@@ -727,16 +728,17 @@ export function StudioProEditorView({ soundId }: { soundId: string }) {
                     )}
                     {playing ? 'Pause' : 'Play'}
                   </Button>
-                  <Button
-                    size="icon-sm"
-                    variant="text"
-                    disabled={!selection}
-                    onClick={previewSelection}
-                    aria-label="Preview selection"
-                    title="Preview selection — plays just the selection, through the enabled EQ/Compressor/Limiter"
-                  >
-                    <Volume2Icon size={16} aria-hidden />
-                  </Button>
+                  <Tooltip content="Preview selection" side="top">
+                    <Button
+                      size="icon-sm"
+                      variant="text"
+                      disabled={!selection}
+                      onClick={previewSelection}
+                      aria-label="Preview selection"
+                    >
+                      <Volume2Icon size={16} aria-hidden />
+                    </Button>
+                  </Tooltip>
                 </div>
 
                 <div className="bg-border mx-1 h-6 w-px" aria-hidden />
@@ -746,70 +748,78 @@ export function StudioProEditorView({ soundId }: { soundId: string }) {
                   role="group"
                   aria-label="Cut and trim"
                 >
-                  <Button
-                    size="icon-sm"
-                    variant="text"
-                    disabled={!selection}
-                    onClick={addCutFromSelection}
-                    aria-label="Cut selection"
-                    title="Cut selection"
-                  >
-                    <ScissorsIcon size={16} aria-hidden />
-                  </Button>
-                  <Button
-                    size="icon-sm"
-                    variant="text"
-                    disabled={!selection}
-                    onClick={trimToSelection}
-                    aria-label="Trim to selection"
-                    title="Trim to selection"
-                  >
-                    <CropIcon size={16} aria-hidden />
-                  </Button>
-                  <Button
-                    size="icon-sm"
-                    variant="text"
-                    onClick={trimSilence}
-                    aria-label="Trim leading/trailing silence"
-                    title="Trim leading/trailing silence"
-                  >
-                    <VolumeXIcon size={16} aria-hidden />
-                  </Button>
-                  <Button
-                    size="icon-sm"
-                    variant="text"
-                    disabled={editList.cuts.length === 0}
-                    onClick={clearCuts}
-                    aria-label="Clear cuts"
-                    title="Clear cuts"
-                  >
-                    <Trash2Icon size={16} aria-hidden />
-                  </Button>
-                  <Button
-                    size="icon-sm"
-                    variant="text"
-                    disabled={!selection}
-                    onClick={() => setSelection(null)}
-                    aria-label="Clear selection"
-                    title="Clear selection"
-                  >
-                    <XIcon size={16} aria-hidden />
-                  </Button>
+                  <Tooltip content="Cut selection" side="top">
+                    <Button
+                      size="icon-sm"
+                      variant="text"
+                      disabled={!selection}
+                      onClick={addCutFromSelection}
+                      aria-label="Cut selection"
+                    >
+                      <ScissorsIcon size={16} aria-hidden />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip content="Trim to selection" side="top">
+                    <Button
+                      size="icon-sm"
+                      variant="text"
+                      disabled={!selection}
+                      onClick={trimToSelection}
+                      aria-label="Trim to selection"
+                    >
+                      <CropIcon size={16} aria-hidden />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip content="Trim leading/trailing silence" side="top">
+                    <Button
+                      size="icon-sm"
+                      variant="text"
+                      onClick={trimSilence}
+                      aria-label="Trim leading/trailing silence"
+                    >
+                      <VolumeXIcon size={16} aria-hidden />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip content="Clear cuts" side="top">
+                    <Button
+                      size="icon-sm"
+                      variant="text"
+                      disabled={editList.cuts.length === 0}
+                      onClick={clearCuts}
+                      aria-label="Clear cuts"
+                    >
+                      <Trash2Icon size={16} aria-hidden />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip content="Clear selection" side="top">
+                    <Button
+                      size="icon-sm"
+                      variant="text"
+                      disabled={!selection}
+                      onClick={() => setSelection(null)}
+                      aria-label="Clear selection"
+                    >
+                      <XIcon size={16} aria-hidden />
+                    </Button>
+                  </Tooltip>
                 </div>
 
                 <div className="bg-border mx-1 h-6 w-px" aria-hidden />
 
-                <Button
-                  size="icon-sm"
-                  variant="text"
-                  onClick={() =>
-                    setMarkers((m) => [...m, currentTime].sort((a, b) => a - b))
-                  }
-                  aria-label="Add marker at playhead"
-                  title="Add marker at playhead"
-                >
-                  <MapPinIcon size={16} aria-hidden />
-                </Button>
+                <Tooltip content="Add marker at playhead" side="top">
+                  <Button
+                    size="icon-sm"
+                    variant="text"
+                    onClick={() =>
+                      setMarkers((m) =>
+                        [...m, currentTime].sort((a, b) => a - b),
+                      )
+                    }
+                    aria-label="Add marker at playhead"
+                  >
+                    <MapPinIcon size={16} aria-hidden />
+                  </Button>
+                </Tooltip>
 
                 <div className="bg-border mx-1 h-6 w-px" aria-hidden />
 
@@ -818,37 +828,40 @@ export function StudioProEditorView({ soundId }: { soundId: string }) {
                   role="group"
                   aria-label="Zoom"
                 >
-                  <Button
-                    size="icon-sm"
-                    variant="text"
-                    onClick={() => zoomBy(1.25)}
-                    aria-label="Zoom out"
-                    title="Zoom out"
-                  >
-                    <ZoomOutIcon size={16} aria-hidden />
-                  </Button>
-                  <Button
-                    size="icon-sm"
-                    variant="text"
-                    onClick={() => zoomBy(0.8)}
-                    aria-label="Zoom in"
-                    title="Zoom in"
-                  >
-                    <ZoomInIcon size={16} aria-hidden />
-                  </Button>
-                  <Button
-                    size="icon-sm"
-                    variant="text"
-                    disabled={viewStart === 0 && viewEnd === 1}
-                    onClick={() => {
-                      setViewStart(0);
-                      setViewEnd(1);
-                    }}
-                    aria-label="Reset zoom"
-                    title="Reset zoom"
-                  >
-                    <Maximize2Icon size={16} aria-hidden />
-                  </Button>
+                  <Tooltip content="Zoom out" side="top">
+                    <Button
+                      size="icon-sm"
+                      variant="text"
+                      onClick={() => zoomBy(1.25)}
+                      aria-label="Zoom out"
+                    >
+                      <ZoomOutIcon size={16} aria-hidden />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip content="Zoom in" side="top">
+                    <Button
+                      size="icon-sm"
+                      variant="text"
+                      onClick={() => zoomBy(0.8)}
+                      aria-label="Zoom in"
+                    >
+                      <ZoomInIcon size={16} aria-hidden />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip content="Reset zoom" side="top">
+                    <Button
+                      size="icon-sm"
+                      variant="text"
+                      disabled={viewStart === 0 && viewEnd === 1}
+                      onClick={() => {
+                        setViewStart(0);
+                        setViewEnd(1);
+                      }}
+                      aria-label="Reset zoom"
+                    >
+                      <Maximize2Icon size={16} aria-hidden />
+                    </Button>
+                  </Tooltip>
                 </div>
 
                 <div className="flex-1" />
@@ -1079,23 +1092,31 @@ export function StudioProEditorView({ soundId }: { soundId: string }) {
                   : 'Enabled effects are audible live in Play and Preview selection — this is a real-time approximation for monitoring, not the final render.'
               }
               action={
-                <Button
-                  size="icon-sm"
-                  variant="text"
-                  aria-label={
+                <Tooltip
+                  content={
                     masteringCollapsed
                       ? 'Expand mastering'
                       : 'Minimize mastering'
                   }
-                  title={masteringCollapsed ? 'Expand' : 'Minimize'}
-                  onClick={() => setMasteringCollapsed((v) => !v)}
+                  side="top"
                 >
-                  {masteringCollapsed ? (
-                    <ChevronRightIcon size={16} aria-hidden />
-                  ) : (
-                    <ChevronDownIcon size={16} aria-hidden />
-                  )}
-                </Button>
+                  <Button
+                    size="icon-sm"
+                    variant="text"
+                    aria-label={
+                      masteringCollapsed
+                        ? 'Expand mastering'
+                        : 'Minimize mastering'
+                    }
+                    onClick={() => setMasteringCollapsed((v) => !v)}
+                  >
+                    {masteringCollapsed ? (
+                      <ChevronRightIcon size={16} aria-hidden />
+                    ) : (
+                      <ChevronDownIcon size={16} aria-hidden />
+                    )}
+                  </Button>
+                </Tooltip>
               }
             >
               {!masteringCollapsed && (
@@ -1181,15 +1202,19 @@ export function StudioProEditorView({ soundId }: { soundId: string }) {
                                 onChange={() => togglePluginEnabled(id)}
                                 aria-label={`${meta.isEnabled(editList) ? 'Disable' : 'Enable'} ${meta.label}`}
                               />
-                              <Button
-                                size="icon-sm"
-                                variant="text"
-                                aria-label={`Remove ${meta.label}`}
-                                title="Remove"
-                                onClick={() => removePlugin(id)}
+                              <Tooltip
+                                content={`Remove ${meta.label}`}
+                                side="top"
                               >
-                                <XIcon size={14} aria-hidden />
-                              </Button>
+                                <Button
+                                  size="icon-sm"
+                                  variant="text"
+                                  aria-label={`Remove ${meta.label}`}
+                                  onClick={() => removePlugin(id)}
+                                >
+                                  <XIcon size={14} aria-hidden />
+                                </Button>
+                              </Tooltip>
                             </div>
 
                             {id === 'eq' && (

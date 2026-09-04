@@ -1175,16 +1175,20 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
                       className="size-full object-cover"
                     />
                   </button>
-                  <Button
-                    size="icon-sm"
-                    variant="secondary"
-                    className="absolute top-1 right-1 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
-                    aria-label={`Remove slideshow image ${index + 1}`}
-                    title="Remove image"
-                    onClick={() => removeGalleryImage(index)}
+                  <Tooltip
+                    content={`Remove slideshow image ${index + 1}`}
+                    side="top"
                   >
-                    <Trash2Icon size={14} aria-hidden />
-                  </Button>
+                    <Button
+                      size="icon-sm"
+                      variant="secondary"
+                      className="absolute top-1 right-1 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
+                      aria-label={`Remove slideshow image ${index + 1}`}
+                      onClick={() => removeGalleryImage(index)}
+                    >
+                      <Trash2Icon size={14} aria-hidden />
+                    </Button>
+                  </Tooltip>
                 </div>
               ))}
             </div>
@@ -1270,16 +1274,17 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
     ) : null;
 
     const videoUrlToggle = (
-      <Button
-        size="icon-sm"
-        variant="text"
-        aria-label="Show URL field"
-        title="Use a video or image URL"
-        aria-pressed={videoUrlOpen}
-        onClick={() => setVideoUrlOpen((open) => !open)}
-      >
-        <LinkIcon size={15} aria-hidden />
-      </Button>
+      <Tooltip content="Show URL field" side="top">
+        <Button
+          size="icon-sm"
+          variant="text"
+          aria-label="Show URL field"
+          aria-pressed={videoUrlOpen}
+          onClick={() => setVideoUrlOpen((open) => !open)}
+        >
+          <LinkIcon size={15} aria-hidden />
+        </Button>
+      </Tooltip>
     );
 
     const visualizerItem = {
@@ -1323,69 +1328,79 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
                 }`}
                 rightAccessory={
                   <div className="flex items-center gap-1">
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      disabled={!visualizerEnabled}
-                      onClick={() => changeVisualizer(-1)}
-                      aria-label="Previous visualizer"
-                      title="Previous visualizer"
+                    <Tooltip content="Previous visualizer" side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        disabled={!visualizerEnabled}
+                        onClick={() => changeVisualizer(-1)}
+                        aria-label="Previous visualizer"
+                      >
+                        <ChevronLeftIcon size={16} aria-hidden />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip content="Next visualizer" side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        disabled={!visualizerEnabled}
+                        onClick={() => changeVisualizer(1)}
+                        aria-label="Next visualizer"
+                      >
+                        <ChevronRightIcon size={16} aria-hidden />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip
+                      content={`Configure ${activeVisualizer.replace(/_/g, ' ')}`}
+                      side="top"
                     >
-                      <ChevronLeftIcon size={16} aria-hidden />
-                    </Button>
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      disabled={!visualizerEnabled}
-                      onClick={() => changeVisualizer(1)}
-                      aria-label="Next visualizer"
-                      title="Next visualizer"
-                    >
-                      <ChevronRightIcon size={16} aria-hidden />
-                    </Button>
-                    <Button
-                      size="icon-sm"
-                      variant={showVisualizerSettings ? 'default' : 'text'}
-                      disabled={!visualizerEnabled}
-                      aria-pressed={showVisualizerSettings}
-                      aria-label={`Configure ${activeVisualizer.replace(/_/g, ' ')}`}
-                      title={`Configure ${activeVisualizer.replace(/_/g, ' ')}`}
-                      onClick={() =>
-                        setShowVisualizerSettings((isVisible) => !isVisible)
-                      }
-                    >
-                      <SettingsIcon size={15} aria-hidden />
-                    </Button>
-                    <Button
-                      size="icon-sm"
-                      variant={visualizerEnabled ? 'default' : 'secondary'}
-                      aria-pressed={visualizerEnabled}
-                      aria-label={
-                        visualizerEnabled
-                          ? 'Disable visualizer'
-                          : 'Enable visualizer'
-                      }
-                      title={
-                        visualizerEnabled
-                          ? 'Disable visualizer'
-                          : 'Enable visualizer'
-                      }
-                      onClick={() => {
-                        if (visualizerEnabled) {
-                          setPreviewPreset('MINIMAL');
-                          applyLocal({ visualPreset: 'MINIMAL' });
-                        } else {
-                          setPreviewPreset(activeVisualizer);
-                          applyLocal({ visualPreset: activeVisualizer });
+                      <Button
+                        size="icon-sm"
+                        variant={showVisualizerSettings ? 'default' : 'text'}
+                        disabled={!visualizerEnabled}
+                        aria-pressed={showVisualizerSettings}
+                        aria-label={`Configure ${activeVisualizer.replace(/_/g, ' ')}`}
+                        onClick={() =>
+                          setShowVisualizerSettings((isVisible) => !isVisible)
                         }
-                      }}
+                      >
+                        <SettingsIcon size={15} aria-hidden />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip
+                      content={
+                        visualizerEnabled
+                          ? 'Disable visualizer'
+                          : 'Enable visualizer'
+                      }
+                      side="top"
                     >
-                      {visualizerEnabled ? (
-                        <CheckIcon size={15} aria-hidden />
-                      ) : (
-                        <PlaySquareIcon size={15} aria-hidden />
-                      )}
-                    </Button>
+                      <Button
+                        size="icon-sm"
+                        variant={visualizerEnabled ? 'default' : 'secondary'}
+                        aria-pressed={visualizerEnabled}
+                        aria-label={
+                          visualizerEnabled
+                            ? 'Disable visualizer'
+                            : 'Enable visualizer'
+                        }
+                        onClick={() => {
+                          if (visualizerEnabled) {
+                            setPreviewPreset('MINIMAL');
+                            applyLocal({ visualPreset: 'MINIMAL' });
+                          } else {
+                            setPreviewPreset(activeVisualizer);
+                            applyLocal({ visualPreset: activeVisualizer });
+                          }
+                        }}
+                      >
+                        {visualizerEnabled ? (
+                          <CheckIcon size={15} aria-hidden />
+                        ) : (
+                          <PlaySquareIcon size={15} aria-hidden />
+                        )}
+                      </Button>
+                    </Tooltip>
                   </div>
                 }
               />
@@ -1406,28 +1421,30 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
         <div className="flex items-center justify-between gap-3">
           <Eyebrow>Header style</Eyebrow>
           {hasBackdrop ? (
-            <Button
-              size="icon-sm"
-              variant="text"
-              aria-label="Remove backdrop"
-              title="Remove backdrop"
-              onClick={removeBackdrop}
-            >
-              <Trash2Icon size={15} aria-hidden />
-            </Button>
+            <Tooltip content="Remove backdrop" side="top">
+              <Button
+                size="icon-sm"
+                variant="text"
+                aria-label="Remove backdrop"
+                onClick={removeBackdrop}
+              >
+                <Trash2Icon size={15} aria-hidden />
+              </Button>
+            </Tooltip>
           ) : (
-            <Button
-              size="icon-sm"
-              variant="text"
-              aria-label="Add backdrop"
-              title="Add backdrop"
-              onClick={() => {
-                setGalleryMode('NONE');
-                applyLocal({ headerStyle: 'VIDEO_LOOP' });
-              }}
-            >
-              <ImageIcon size={15} aria-hidden />
-            </Button>
+            <Tooltip content="Add backdrop" side="top">
+              <Button
+                size="icon-sm"
+                variant="text"
+                aria-label="Add backdrop"
+                onClick={() => {
+                  setGalleryMode('NONE');
+                  applyLocal({ headerStyle: 'VIDEO_LOOP' });
+                }}
+              >
+                <ImageIcon size={15} aria-hidden />
+              </Button>
+            </Tooltip>
           )}
         </div>
         <Tabs
