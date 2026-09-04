@@ -6,6 +6,7 @@ import {
   listMockInternetRadioPresets,
   patchMockInternetRadioPreset,
 } from './internetRadioPresetsMockStore';
+import { listMockCommerceAudit } from './mock-commerce-ledger';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
 import type {
   AccountRole,
@@ -4444,7 +4445,17 @@ export async function fetchAdminActivity(
   const limit = filters.limit ?? 50;
 
   if (forceMock()) {
-    const rows = mockActivityEntries();
+    const ledger = listMockCommerceAudit().map((row) => ({
+      id: row.id,
+      action: row.action,
+      actorId: `e2e-${row.actorUsername}`,
+      actorDisplayName: row.actorDisplayName,
+      actorUsername: row.actorUsername,
+      targetId: null,
+      meta: row.meta,
+      createdAt: row.createdAt,
+    }));
+    const rows = [...ledger, ...mockActivityEntries()];
     return {
       data: rows,
       total: rows.length,

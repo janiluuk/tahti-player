@@ -4,11 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
 
-import {
-  grantBoardView,
-  installStripeMock,
-  rememberFanOnLatestSub,
-} from './helpers/mockStripe';
+import { grantBoardView, installStripeMock } from './helpers/mockStripe';
 
 const RIFF_CANDIDATES = [
   path.join(os.homedir(), 'Downloads', 'riff.wav'),
@@ -75,6 +71,27 @@ async function signIn(
   });
 }
 
+async function signOut(page: Page): Promise<void> {
+  const menu = page.getByRole('button', { name: /^Signed in as/ });
+  if (await menu.isVisible().catch(() => false)) {
+    await menu.click();
+    const logOut = page.getByRole('menuitem', { name: /^Log out$/ });
+    if (await logOut.isVisible().catch(() => false)) {
+      await logOut.click();
+      await expect(
+        page.getByRole('button', { name: 'Log in' }).first(),
+      ).toBeVisible({
+        timeout: 10_000,
+      });
+      return;
+    }
+  }
+  await page.evaluate(() => {
+    localStorage.removeItem('tahti-web-auth');
+  });
+  await page.goto('/login');
+}
+
 async function signUpFan(
   page: Page,
   email: string,
@@ -92,6 +109,13 @@ async function signUpFan(
   const signedIn = page.getByRole('button', { name: /^Signed in as/ });
   const signInButton = page.getByRole('button', { name: 'Sign in' });
   if (await signedIn.isVisible().catch(() => false)) {
+    await page.evaluate(() => {
+      const raw = localStorage.getItem('tahti-web-auth');
+      const userId = raw ? JSON.parse(raw)?.state?.user?.id : null;
+      if (typeof userId === 'string') {
+        localStorage.setItem(`tahti-web-onboarded:${userId}`, '1');
+      }
+    });
     return;
   }
   if (await signInButton.isVisible().catch(() => false)) {
@@ -100,11 +124,21 @@ async function signUpFan(
     await signInButton.click();
   }
   await expect(signedIn).toBeVisible({ timeout: 20_000 });
+  await page.evaluate(() => {
+    const raw = localStorage.getItem('tahti-web-auth');
+    const userId = raw ? JSON.parse(raw)?.state?.user?.id : null;
+    if (typeof userId === 'string') {
+      localStorage.setItem(`tahti-web-onboarded:${userId}`, '1');
+    }
+  });
 }
 
-async function captureDownload(page: Page): Promise<Buffer> {
+async function captureDownload(
+  page: Page,
+  buttonName: RegExp | string,
+): Promise<Buffer> {
   const downloadPromise = page.waitForEvent('download', { timeout: 20_000 });
-  await page.getByRole('button', { name: /^Download$/ }).click();
+  await page.getByRole('button', { name: buttonName }).click();
   const download = await downloadPromise;
   const dest = path.join(
     os.tmpdir(),
@@ -114,9 +148,8 @@ async function captureDownload(page: Page): Promise<Buffer> {
   return fs.readFileSync(dest);
 }
 
-test('subscriber and separate track download both get the original WAV; artist sees both orders; audit log records them', async ({
+test('subscriber and track purchase both get the original WAV; artist sees both orders; audit log records them', async ({
   page,
-  browser,
 }) => {
   test.setTimeout(180_000);
 
@@ -138,6 +171,12 @@ test('subscriber and separate track download both get the original WAV; artist s
   const existingFans = Boolean(
     process.env.TAHTI_E2E_FAN_SUB_EMAIL && process.env.TAHTI_E2E_FAN_BUY_EMAIL,
   );
+
+  await page.goto('/');
+  await page.evaluate(() => {
+    localStorage.removeItem('tahti-mock-commerce-ledger');
+    localStorage.removeItem('tahti-mock-purchase-tiers');
+  });
 
   await signIn(page, artistEmail, artistPassword);
   await page.goto('/studio/upload');
@@ -161,6 +200,25 @@ test('subscriber and separate track download both get the original WAV; artist s
   if (!soundId) {
     throw new Error(`Could not extract sound id from ${page.url()}`);
   }
+
+  const purchaseSetup = await page.evaluate(async (id) => {
+    const mod = await import('/src/api/purchase-tiers.ts');
+    const created = await mod.createPurchaseTier({
+      name: 'Track download',
+      priceCents: 500,
+      description: 'One-time unlock for this track',
+    });
+    if (!created.ok) {
+      return { ok: false as const, error: created.error };
+    }
+    const access = await mod.setSoundPurchaseAccess(id, created.data.id);
+    if (!access.ok) {
+      return { ok: false as const, error: access.error };
+    }
+    return { ok: true as const, tierId: created.data.id };
+  }, soundId);
+  expect(purchaseSetup).toMatchObject({ ok: true });
+
   await page.goto('/studio/branding');
   const profileHref = await page
     .getByRole('link', { name: 'View public profile' })
@@ -171,50 +229,35 @@ test('subscriber and separate track download both get the original WAV; artist s
   }
   const trackUrl = `/t/${soundId}`;
 
-  const fanSubContext = await browser.newContext();
-  const fanSubPage = await fanSubContext.newPage();
-  await installStripeMock(fanSubPage, stripeState);
+  await signOut(page);
   if (existingFans) {
-    await signIn(fanSubPage, fanSubEmail, fanPassword);
+    await signIn(page, fanSubEmail, fanPassword);
   } else {
-    await signUpFan(fanSubPage, fanSubEmail, fanPassword);
+    await signUpFan(page, fanSubEmail, fanPassword);
   }
-  rememberFanOnLatestSub(stripeState, {
-    username: fanSubEmail.split('@')[0] ?? 'e2e-sub',
-    displayName: fanSubEmail.split('@')[0] ?? 'e2e-sub',
-  });
-  await fanSubPage.goto(`/subscribe/${username}`);
-  await fanSubPage.getByRole('button', { name: 'Subscribe' }).first().click();
+  await page.goto(`/subscribe/${username}`);
+  await page.getByRole('button', { name: 'Subscribe' }).first().click();
   await expect(
-    fanSubPage.getByText(/subscribed|Mock subscribed|dev activate/i),
+    page.getByText(/subscribed|Mock subscribed|dev activate/i),
   ).toBeVisible({ timeout: 15_000 });
-  rememberFanOnLatestSub(stripeState, {
-    username: fanSubEmail.split('@')[0] ?? 'e2e-sub',
-    displayName: fanSubEmail.split('@')[0] ?? 'e2e-sub',
-  });
-  await fanSubPage.goto(trackUrl);
-  const subscriberFile = wavIdentity(await captureDownload(fanSubPage));
-  await fanSubContext.close();
+  await page.goto(trackUrl);
+  const subscriberFile = wavIdentity(
+    await captureDownload(page, /^Download$/),
+  );
 
-  const fanBuyContext = await browser.newContext();
-  const fanBuyPage = await fanBuyContext.newPage();
-  await installStripeMock(fanBuyPage, stripeState);
+  await signOut(page);
   if (existingFans) {
-    await signIn(fanBuyPage, fanBuyEmail, fanPassword);
+    await signIn(page, fanBuyEmail, fanPassword);
   } else {
-    await signUpFan(fanBuyPage, fanBuyEmail, fanPassword);
+    await signUpFan(page, fanBuyEmail, fanPassword);
   }
-  await fanBuyPage.goto(trackUrl);
-  expect(
-    await fanBuyPage.getByRole('button', { name: /buy this track/i }).count(),
-  ).toBe(0);
-  const purchaseFile = wavIdentity(await captureDownload(fanBuyPage));
-  stripeState.trackOrders.push({
-    fanUsername: fanBuyEmail.split('@')[0] ?? 'e2e-buy',
-    fanDisplayName: fanBuyEmail.split('@')[0] ?? 'e2e-buy',
-    title: 'riff.wav',
-  });
-  await fanBuyContext.close();
+  await page.goto(trackUrl);
+  await expect(
+    page.getByRole('button', { name: /buy this track/i }),
+  ).toBeVisible();
+  const purchaseFile = wavIdentity(
+    await captureDownload(page, /buy this track/i),
+  );
 
   expect(subscriberFile.sha256).toBe(purchaseFile.sha256);
   expect(subscriberFile.looksLikeWav).toBe(true);
@@ -223,6 +266,8 @@ test('subscriber and separate track download both get the original WAV; artist s
   expect(subscriberFile.channels).toBe(original.channels);
   expect(subscriberFile.sha256).toBe(original.sha256);
 
+  await signOut(page);
+  await signIn(page, artistEmail, artistPassword);
   await page.goto('/studio/revenue');
   await expect(page.getByRole('heading', { name: 'Audience' })).toBeVisible();
   const orders = page.getByTestId('fan-order-list');
@@ -234,6 +279,6 @@ test('subscriber and separate track download both get the original WAV; artist s
   await expect(page.getByRole('heading', { name: 'Activity' })).toBeVisible();
   await expect(page.getByText(/subscribed/i).first()).toBeVisible();
   await expect(
-    page.getByText(/ledger entry create|riff\.wav/i).first(),
+    page.getByText(/ledger entry|riff\.wav/i).first(),
   ).toBeVisible();
 });

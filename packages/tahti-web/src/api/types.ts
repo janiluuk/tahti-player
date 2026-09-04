@@ -187,6 +187,12 @@ export type PublicTrackDetail = {
   peaks: number[] | null;
   commentCount: number;
   downloadCount: number;
+  /** When PURCHASE, listeners without a buy (or active fan-sub) need Buy. */
+  accessMode?: 'FREE' | 'SUBSCRIBERS_ONLY' | 'PURCHASE';
+  purchaseTierId?: string | null;
+  purchaseTierName?: string | null;
+  purchaseTierPriceCents?: number | null;
+  downloadsEnabled?: boolean;
 };
 
 export type TrackComment = {

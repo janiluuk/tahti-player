@@ -4,6 +4,7 @@
  * consistent across API modules for one browser session.
  */
 
+import { recordMockFanSub } from './mock-commerce-ledger';
 import { mockChannel, mockDirectory } from './mock';
 import type { AuthUser, FanSubscriptionRow, FollowListUser } from './types';
 
@@ -126,6 +127,14 @@ export function mockActivateSubscription(
     ...subscriptions.filter((s) => s.artist.username !== username),
     row,
   ];
+  const fan = sessionUser;
+  recordMockFanSub({
+    fanUsername: fan?.username ?? 'pending',
+    fanDisplayName: fan?.displayName ?? fan?.username ?? 'pending',
+    artistUsername: channel.user.username,
+    tierName,
+    amountCents,
+  });
   return row;
 }
 

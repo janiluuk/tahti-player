@@ -1,6 +1,11 @@
 import type { FetchMeta } from './client';
 import {
+  listMockCommerceFanSubs,
+  listMockCommerceTrackOrders,
+} from './mock-commerce-ledger';
+import {
   getMockConnectStatus,
+  getMockSessionUser,
   mockCompleteConnectOnboard,
 } from './mock-session';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
@@ -120,14 +125,35 @@ const mockEstimate = (): GrantEstimate => ({
   fanSubEuros: 35,
 });
 
-const mockFanPayoutStats = (): FanPayoutStats => ({
-  activeSubscribers: 26,
-  thisMonthNetCents: 12840,
-  paidYtdNetCents: 84210,
-  pending: 1,
-  failed: 0,
-  paidLast30Days: 8,
-  recent: [
+const mockFanPayoutStats = (): FanPayoutStats => {
+  const artistUsername = getMockSessionUser()?.username;
+  const ledgerSubs = listMockCommerceFanSubs().filter(
+    (sub) => !artistUsername || sub.artistUsername === artistUsername,
+  );
+  const ledgerTracks = listMockCommerceTrackOrders().filter(
+    (order) => !artistUsername || order.artistUsername === artistUsername,
+  );
+  const ledgerRecent = [
+    ...ledgerSubs.map((sub) => ({
+      id: sub.id,
+      state: 'PAID' as const,
+      tierName: sub.tierName,
+      grossCents: sub.amountCents,
+      netToArtistCents: Math.round(sub.amountCents * 0.89),
+      paidAt: sub.createdAt,
+      createdAt: sub.createdAt,
+    })),
+    ...ledgerTracks.map((order) => ({
+      id: order.id,
+      state: 'PAID' as const,
+      tierName: `Track purchase — ${order.title}`,
+      grossCents: order.amountCents,
+      netToArtistCents: Math.round(order.amountCents * 0.89),
+      paidAt: order.createdAt,
+      createdAt: order.createdAt,
+    })),
+  ];
+  const canned: FanPayoutStats['recent'] = [
     {
       id: 'fan-payout-mock-1',
       state: 'PAID',
@@ -146,8 +172,19 @@ const mockFanPayoutStats = (): FanPayoutStats => ({
       paidAt: null,
       createdAt: '2026-08-22T14:30:00.000Z',
     },
-  ],
-});
+  ];
+  return {
+    activeSubscribers: 26 + ledgerSubs.length,
+    thisMonthNetCents:
+      12840 +
+      ledgerRecent.reduce((sum, row) => sum + row.netToArtistCents, 0),
+    paidYtdNetCents: 84210,
+    pending: 1,
+    failed: 0,
+    paidLast30Days: 8 + ledgerRecent.length,
+    recent: [...ledgerRecent, ...canned],
+  };
+};
 
 const emptyFanPayoutStats = (): FanPayoutStats => ({
   activeSubscribers: 0,

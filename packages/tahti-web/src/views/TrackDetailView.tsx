@@ -9,6 +9,7 @@ import {
   PlusIcon,
   Repeat2Icon,
   Share2Icon,
+  ShoppingBagIcon,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -24,6 +25,12 @@ import {
   fetchTrackDetail,
   postTrackComment,
 } from '../api/client';
+import { isForceMock } from '../api/mode';
+import { listMockSubscriptions } from '../api/mock-session';
+import {
+  checkoutPurchaseTier,
+  mockOwnsPurchaseTier,
+} from '../api/purchase-tiers';
 import type {
   PublicChannel,
   PublicProfile,
@@ -129,6 +136,8 @@ export function TrackDetailView({
   const [loading, setLoading] = useState(true);
   const [playlistOpen, setPlaylistOpen] = useState(false);
   const [downloadBusy, setDownloadBusy] = useState(false);
+  const [buyBusy, setBuyBusy] = useState(false);
+  const [purchaseBump, setPurchaseBump] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -358,6 +367,59 @@ export function TrackDetailView({
     document.body.appendChild(link);
     link.click();
     link.remove();
+  };
+
+  const purchaseEntitled = useMemo(() => {
+    if (!detail || detail.accessMode !== 'PURCHASE' || !detail.purchaseTierId) {
+      return true;
+    }
+    if (!isForceMock()) {
+      return false;
+    }
+    const subscribed = listMockSubscriptions().some(
+      (row) =>
+        row.artist.username === detail.channel.username &&
+        row.state === 'ACTIVE',
+    );
+    if (subscribed) {
+      return true;
+    }
+    return mockOwnsPurchaseTier(detail.purchaseTierId);
+  }, [detail, user?.id, purchaseBump]);
+
+  const showBuyTrack =
+    Boolean(detail?.accessMode === 'PURCHASE' && detail.purchaseTierId) &&
+    !purchaseEntitled;
+
+  const buyTrack = async () => {
+    if (!detail?.purchaseTierId) {
+      return;
+    }
+    if (!user) {
+      toast.error('Sign in to buy this track');
+      return;
+    }
+    setBuyBusy(true);
+    const result = await checkoutPurchaseTier(
+      detail.channel.username,
+      detail.purchaseTierId,
+      {
+        trackTitle: detail.title,
+        amountCents: detail.purchaseTierPriceCents ?? undefined,
+      },
+    );
+    setBuyBusy(false);
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    if ('checkoutUrl' in result) {
+      window.location.assign(result.checkoutUrl);
+      return;
+    }
+    setPurchaseBump((value) => value + 1);
+    toast.success('Purchase complete');
+    await downloadTrack();
   };
 
   return (
@@ -603,16 +665,28 @@ export function TrackDetailView({
                 <PlusIcon size={14} aria-hidden className="mr-1.5" />
                 Add
               </Button>
-              <Button
-                size="sm"
-                variant="secondary"
-                aria-label={downloadBusy ? 'Preparing download' : 'Download'}
-                disabled={downloadBusy || !detail || Boolean(embedSrc)}
-                onClick={() => void downloadTrack()}
-              >
-                <DownloadIcon size={14} aria-hidden className="mr-1.5" />
-                Download
-              </Button>
+              {showBuyTrack ? (
+                <Button
+                  size="sm"
+                  variant="default"
+                  disabled={buyBusy || !detail}
+                  onClick={() => void buyTrack()}
+                >
+                  <ShoppingBagIcon size={14} aria-hidden className="mr-1.5" />
+                  {buyBusy ? 'Buying…' : 'Buy this track'}
+                </Button>
+              ) : (
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  aria-label={downloadBusy ? 'Preparing download' : 'Download'}
+                  disabled={downloadBusy || !detail || Boolean(embedSrc)}
+                  onClick={() => void downloadTrack()}
+                >
+                  <DownloadIcon size={14} aria-hidden className="mr-1.5" />
+                  Download
+                </Button>
+              )}
               <Tooltip
                 content={
                   favorited
