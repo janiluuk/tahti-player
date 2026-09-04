@@ -1,3 +1,4 @@
+import { playableFromHearthisEmbed } from '../lib/embedPlayback';
 import { useProcessingJobsStore } from '../stores/processingJobsStore';
 import type { FetchMeta } from './client';
 import { DEMO_MP3 } from './mock';
@@ -623,7 +624,7 @@ export async function fetchHearthisLibrary(): Promise<{
       durationSec: 214,
       kind: 'Track',
       coverUrl: null,
-      streamUrl: DEMO_MP3,
+      streamUrl: null,
     };
     return {
       data: {
@@ -834,7 +835,7 @@ export async function searchHearthisTracks(q: string): Promise<{
           username: 'mockartist',
           durationSec: 214,
           coverUrl: null,
-          streamUrl: DEMO_MP3,
+          streamUrl: null,
         },
       ],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -858,19 +859,14 @@ export async function fetchHearthisTrackById(
 }
 
 export function playableFromHearthis(t: HearthisTrack): TahtiPlayable {
-  return {
-    id: `hearthis:${t.id}`,
-    kind: 'archive',
+  return playableFromHearthisEmbed({
+    playerId: `hearthis:${t.id}`,
     title: t.title,
     artist: t.username || 'hearthis.at',
     coverUrl: t.coverUrl ?? undefined,
-    streamUrl: t.streamUrl ?? '',
-    protocol: 'https',
-    sourceProvider: 'hearthis',
-    ...(t.streamUrl
-      ? {}
-      : { embed: { provider: 'hearthis' as const, embedUri: t.id } }),
-  };
+    embedUri: t.id,
+    durationSec: t.durationSec,
+  });
 }
 
 export type TrackExportStatus = {

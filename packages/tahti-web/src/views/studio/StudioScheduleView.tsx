@@ -164,32 +164,34 @@ function ScheduledTimes({
             role="group"
             aria-label="Schedule view"
           >
-            <Button
-              size="icon-sm"
-              variant="text"
-              aria-label="Card view"
-              title="Card view"
-              aria-pressed={viewMode === 'cards'}
-              className={
-                viewMode === 'cards' ? 'bg-primary/15 text-primary' : ''
-              }
-              onClick={() => setViewMode('cards')}
-            >
-              <CalendarDaysIcon size={14} aria-hidden />
-            </Button>
-            <Button
-              size="icon-sm"
-              variant="text"
-              aria-label="List view"
-              title="List view"
-              aria-pressed={viewMode === 'list'}
-              className={
-                viewMode === 'list' ? 'bg-primary/15 text-primary' : ''
-              }
-              onClick={() => setViewMode('list')}
-            >
-              <ListIcon size={14} aria-hidden />
-            </Button>
+            <Tooltip content="Card view" side="top">
+              <Button
+                size="icon-sm"
+                variant="text"
+                aria-label="Card view"
+                aria-pressed={viewMode === 'cards'}
+                className={
+                  viewMode === 'cards' ? 'bg-primary/15 text-primary' : ''
+                }
+                onClick={() => setViewMode('cards')}
+              >
+                <CalendarDaysIcon size={14} aria-hidden />
+              </Button>
+            </Tooltip>
+            <Tooltip content="List view" side="top">
+              <Button
+                size="icon-sm"
+                variant="text"
+                aria-label="List view"
+                aria-pressed={viewMode === 'list'}
+                className={
+                  viewMode === 'list' ? 'bg-primary/15 text-primary' : ''
+                }
+                onClick={() => setViewMode('list')}
+              >
+                <ListIcon size={14} aria-hidden />
+              </Button>
+            </Tooltip>
           </div>
           <span className="text-foreground-secondary text-xs">{timezone}</span>
         </div>
@@ -231,15 +233,16 @@ function ScheduledTimes({
                       </span>
                     ) : null}
                     {index === 0 ? (
-                      <Button
-                        size="icon-sm"
-                        variant="text"
-                        aria-label="Edit next broadcast"
-                        title="Edit next broadcast"
-                        onClick={onEdit}
-                      >
-                        <PencilIcon size={14} aria-hidden />
-                      </Button>
+                      <Tooltip content="Edit next broadcast" side="top">
+                        <Button
+                          size="icon-sm"
+                          variant="text"
+                          aria-label="Edit next broadcast"
+                          onClick={onEdit}
+                        >
+                          <PencilIcon size={14} aria-hidden />
+                        </Button>
+                      </Tooltip>
                     ) : null}
                   </div>
                 </div>
@@ -864,18 +867,19 @@ export function StudioScheduleView() {
                   Next Friday
                 </Button>
                 {(date || time) && (
-                  <Button
-                    size="icon-sm"
-                    variant="text"
-                    aria-label="Clear planned time"
-                    title="Clear planned time"
-                    onClick={() => {
-                      setDate('');
-                      setTime('');
-                    }}
-                  >
-                    <XIcon size={15} aria-hidden />
-                  </Button>
+                  <Tooltip content="Clear planned time" side="top">
+                    <Button
+                      size="icon-sm"
+                      variant="text"
+                      aria-label="Clear planned time"
+                      onClick={() => {
+                        setDate('');
+                        setTime('');
+                      }}
+                    >
+                      <XIcon size={15} aria-hidden />
+                    </Button>
+                  </Tooltip>
                 )}
               </div>
 

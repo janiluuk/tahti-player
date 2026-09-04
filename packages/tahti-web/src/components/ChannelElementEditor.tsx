@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
-import { Button, Select } from '@tahti-player/ui';
+import { Button, Select, Tooltip } from '@tahti-player/ui';
 
 import {
   adjacentLookElementId,
@@ -91,47 +91,53 @@ export function ChannelElementEditor({
             />
           </div>
           <div className="flex shrink-0 items-center gap-1 pb-0.5">
-            <Button
-              size="icon-sm"
-              variant="secondary"
-              aria-label="Previous section"
-              title="Previous section"
-              onClick={() => onSelect(adjacentLookElementId(selectedId, -1))}
-            >
-              <ChevronLeftIcon size={16} aria-hidden />
-            </Button>
-            <Button
-              size="icon-sm"
-              variant="secondary"
-              aria-label="Next section"
-              title="Next section"
-              onClick={() => onSelect(adjacentLookElementId(selectedId, 1))}
-            >
-              <ChevronRightIcon size={16} aria-hidden />
-            </Button>
-            {canDisable ? (
+            <Tooltip content="Previous section" side="top">
               <Button
                 size="icon-sm"
-                variant={selectedItem?.disabled ? 'secondary' : 'default'}
-                aria-pressed={!selectedItem?.disabled}
-                aria-label={
-                  selectedItem?.disabled
-                    ? `Show ${selectedMeta.label}`
-                    : `Hide ${selectedMeta.label}`
-                }
-                title={
-                  selectedItem?.disabled
-                    ? `Show ${selectedMeta.label}`
-                    : `Hide ${selectedMeta.label}`
-                }
-                onClick={() => onToggleDisabled?.(selectedId)}
+                variant="secondary"
+                aria-label="Previous section"
+                onClick={() => onSelect(adjacentLookElementId(selectedId, -1))}
               >
-                {selectedItem?.disabled ? (
-                  <EyeOffIcon size={15} aria-hidden />
-                ) : (
-                  <EyeIcon size={15} aria-hidden />
-                )}
+                <ChevronLeftIcon size={16} aria-hidden />
               </Button>
+            </Tooltip>
+            <Tooltip content="Next section" side="top">
+              <Button
+                size="icon-sm"
+                variant="secondary"
+                aria-label="Next section"
+                onClick={() => onSelect(adjacentLookElementId(selectedId, 1))}
+              >
+                <ChevronRightIcon size={16} aria-hidden />
+              </Button>
+            </Tooltip>
+            {canDisable ? (
+              <Tooltip
+                content={
+                  selectedItem?.disabled
+                    ? `Show ${selectedMeta.label}`
+                    : `Hide ${selectedMeta.label}`
+                }
+                side="top"
+              >
+                <Button
+                  size="icon-sm"
+                  variant={selectedItem?.disabled ? 'secondary' : 'default'}
+                  aria-pressed={!selectedItem?.disabled}
+                  aria-label={
+                    selectedItem?.disabled
+                      ? `Show ${selectedMeta.label}`
+                      : `Hide ${selectedMeta.label}`
+                  }
+                  onClick={() => onToggleDisabled?.(selectedId)}
+                >
+                  {selectedItem?.disabled ? (
+                    <EyeOffIcon size={15} aria-hidden />
+                  ) : (
+                    <EyeIcon size={15} aria-hidden />
+                  )}
+                </Button>
+              </Tooltip>
             ) : null}
           </div>
         </div>

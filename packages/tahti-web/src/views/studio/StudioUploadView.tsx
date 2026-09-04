@@ -18,6 +18,7 @@ import {
   FilePicker,
   Loader,
   Toggle,
+  Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -260,20 +261,24 @@ function RecordedBroadcastCard({
   return (
     <li className="border-border bg-background-secondary rounded-lg border p-3">
       <div className="flex items-start gap-3">
-        <Button
-          size="icon-sm"
-          variant="secondary"
-          disabled={loading || !broadcast.soundId}
-          onClick={onPlay}
-          aria-label={`${isPlaying ? 'Pause' : 'Play'} ${title}`}
-          title={isPlaying ? 'Pause recording' : 'Play recording'}
+        <Tooltip
+          content={isPlaying ? 'Pause recording' : 'Play recording'}
+          side="top"
         >
-          {isPlaying ? (
-            <PauseIcon size={14} aria-hidden />
-          ) : (
-            <PlayIcon size={14} aria-hidden />
-          )}
-        </Button>
+          <Button
+            size="icon-sm"
+            variant="secondary"
+            disabled={loading || !broadcast.soundId}
+            onClick={onPlay}
+            aria-label={`${isPlaying ? 'Pause' : 'Play'} ${title}`}
+          >
+            {isPlaying ? (
+              <PauseIcon size={14} aria-hidden />
+            ) : (
+              <PlayIcon size={14} aria-hidden />
+            )}
+          </Button>
+        </Tooltip>
         <div className="min-w-0 flex-1">
           <div className="truncate text-sm font-semibold">{title}</div>
           <div className="text-foreground-secondary truncate text-xs">
@@ -282,16 +287,17 @@ function RecordedBroadcastCard({
           </div>
         </div>
         {broadcast.soundId ? (
-          <Link to="/studio/sounds/$id" params={{ id: broadcast.soundId }}>
-            <Button
-              size="icon-sm"
-              variant="text"
-              aria-label={`Edit ${title}`}
-              title="Edit recording"
-            >
-              <PencilIcon size={14} aria-hidden />
-            </Button>
-          </Link>
+          <Tooltip content="Edit recording" side="top">
+            <Link to="/studio/sounds/$id" params={{ id: broadcast.soundId }}>
+              <Button
+                size="icon-sm"
+                variant="text"
+                aria-label={`Edit ${title}`}
+              >
+                <PencilIcon size={14} aria-hidden />
+              </Button>
+            </Link>
+          </Tooltip>
         ) : null}
       </div>
       <WaveformSeekbar

@@ -25,6 +25,7 @@ import {
   Select,
   Tabs,
   Toggle,
+  Tooltip,
 } from '@tahti-player/ui';
 
 import { parseCredits } from '../api/distribution';
@@ -50,6 +51,7 @@ import type {
 import { createDefaultEditList } from '../api/studio-types';
 import { SELECTABLE_CONTENT_TYPES } from '../content/contentTypes';
 import { autoTrimCuts } from '../lib/autoTrimCuts';
+import { playableFromStudioHearthis } from '../lib/embedPlayback';
 import { capitalizeGenre, PRESET_GENRES } from '../lib/genres';
 import { useMasteringFeatureStore } from '../plugins/mastering/store';
 import { usePlayerStore } from '../stores/playerStore';
@@ -297,6 +299,22 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
         seekTo(startAt);
       }
       setPlayerStatus('playing');
+      return;
+    }
+    const hearthis = playableFromStudioHearthis({
+      id: soundId,
+      title: item.title,
+      artistName: item.artistName,
+      bannerUrl: item.bannerUrl,
+      embedProvider: item.embedProvider,
+      embedUri: item.embedUri,
+      durationSec: item.durationSec,
+    });
+    if (hearthis) {
+      play(hearthis);
+      return;
+    }
+    if (item.embedProvider) {
       return;
     }
     setPlayBusy(true);
@@ -734,55 +752,67 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
                         </div>
 
                         <div className="flex flex-wrap items-center gap-1.5">
-                          <Button
-                            size="icon-sm"
-                            disabled={playBusy}
-                            onClick={() =>
-                              void (isPlaying
-                                ? setPlayerStatus('paused')
-                                : startPlayback())
-                            }
-                            aria-label={isPlaying ? 'Pause' : 'Play'}
-                            title={isPlaying ? 'Pause' : 'Play'}
+                          <Tooltip
+                            content={isPlaying ? 'Pause' : 'Play'}
+                            side="top"
                           >
-                            {isPlaying ? (
-                              <PauseIcon size={16} aria-hidden />
-                            ) : (
-                              <PlayIcon size={16} aria-hidden />
-                            )}
-                          </Button>
+                            <Button
+                              size="icon-sm"
+                              disabled={playBusy}
+                              onClick={() =>
+                                void (isPlaying
+                                  ? setPlayerStatus('paused')
+                                  : startPlayback())
+                              }
+                              aria-label={isPlaying ? 'Pause' : 'Play'}
+                            >
+                              {isPlaying ? (
+                                <PauseIcon size={16} aria-hidden />
+                              ) : (
+                                <PlayIcon size={16} aria-hidden />
+                              )}
+                            </Button>
+                          </Tooltip>
                           <span
                             className="bg-border mx-1 h-6 w-px"
                             aria-hidden
                           />
-                          <Button
-                            size="icon-sm"
-                            variant="secondary"
-                            disabled={quickBusy !== null}
-                            onClick={onNormalize}
-                            aria-label="Normalize audio"
-                            title={
+                          <Tooltip
+                            content={
                               quickBusy === 'normalize'
                                 ? 'Normalizing…'
                                 : 'Normalize audio'
                             }
+                            side="top"
                           >
-                            <GaugeIcon size={16} aria-hidden />
-                          </Button>
-                          <Button
-                            size="icon-sm"
-                            variant="secondary"
-                            disabled={quickBusy !== null}
-                            onClick={onAutoTrim}
-                            aria-label="Trim silence"
-                            title={
+                            <Button
+                              size="icon-sm"
+                              variant="secondary"
+                              disabled={quickBusy !== null}
+                              onClick={onNormalize}
+                              aria-label="Normalize audio"
+                            >
+                              <GaugeIcon size={16} aria-hidden />
+                            </Button>
+                          </Tooltip>
+                          <Tooltip
+                            content={
                               quickBusy === 'trim'
                                 ? 'Trimming silence…'
                                 : 'Trim silence'
                             }
+                            side="top"
                           >
-                            <ScissorsIcon size={16} aria-hidden />
-                          </Button>
+                            <Button
+                              size="icon-sm"
+                              variant="secondary"
+                              disabled={quickBusy !== null}
+                              onClick={onAutoTrim}
+                              aria-label="Trim silence"
+                            >
+                              <ScissorsIcon size={16} aria-hidden />
+                            </Button>
+                          </Tooltip>
                           <span
                             className="bg-border mx-1 h-6 w-px"
                             aria-hidden
@@ -791,28 +821,36 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
                             to="/studio/sounds/$id/editor"
                             params={{ id: item.id }}
                           >
-                            <Button
-                              size="icon-sm"
-                              variant="text"
-                              aria-label="Open full audio editor"
-                              title="Open full audio editor"
+                            <Tooltip
+                              content="Open full audio editor"
+                              side="top"
                             >
-                              <AudioLinesIcon size={16} aria-hidden />
-                            </Button>
+                              <Button
+                                size="icon-sm"
+                                variant="text"
+                                aria-label="Open full audio editor"
+                              >
+                                <AudioLinesIcon size={16} aria-hidden />
+                              </Button>
+                            </Tooltip>
                           </Link>
                           {masteringEnabled && (
                             <Link
                               to="/studio/mastering/$id"
                               params={{ id: item.id }}
                             >
-                              <Button
-                                size="icon-sm"
-                                variant="text"
-                                aria-label="Match to a reference track"
-                                title="Match to a reference track"
+                              <Tooltip
+                                content="Match to a reference track"
+                                side="top"
                               >
-                                <Wand2Icon size={16} aria-hidden />
-                              </Button>
+                                <Button
+                                  size="icon-sm"
+                                  variant="text"
+                                  aria-label="Match to a reference track"
+                                >
+                                  <Wand2Icon size={16} aria-hidden />
+                                </Button>
+                              </Tooltip>
                             </Link>
                           )}
                         </div>

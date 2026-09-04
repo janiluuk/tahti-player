@@ -1,6 +1,6 @@
 import { PlusIcon, Trash2Icon } from 'lucide-react';
 
-import { Button, Input } from '@tahti-player/ui';
+import { Button, Input, Tooltip } from '@tahti-player/ui';
 
 import type { ChannelLink } from '../api/channel-design';
 import { SocialLinkIcon } from './SocialLinkIcon';
@@ -56,15 +56,17 @@ export function ChannelLinksEditor({
             onChange={(e) => updateLink(i, 'url', e.target.value)}
             className="min-w-0 flex-1"
           />
-          <Button
-            type="button"
-            size="icon-sm"
-            variant="text"
-            aria-label="Remove link"
-            onClick={() => removeLink(i)}
-          >
-            <Trash2Icon size={14} />
-          </Button>
+          <Tooltip content="Remove link" side="top">
+            <Button
+              type="button"
+              size="icon-sm"
+              variant="text"
+              aria-label="Remove link"
+              onClick={() => removeLink(i)}
+            >
+              <Trash2Icon size={14} />
+            </Button>
+          </Tooltip>
         </div>
       ))}
       <Button type="button" size="sm" variant="secondary" onClick={addLink}>

@@ -198,14 +198,15 @@ export function StudioReleasesView({
                   No releases yet. Create one to share a public link.
                 </p>
                 <div>
-                  <Button
-                    size="icon-sm"
-                    onClick={() => setCreateOpen(true)}
-                    aria-label="New release"
-                    title="New release"
-                  >
-                    <PlusIcon size={16} aria-hidden />
-                  </Button>
+                  <Tooltip content="New release" side="top">
+                    <Button
+                      size="icon-sm"
+                      onClick={() => setCreateOpen(true)}
+                      aria-label="New release"
+                    >
+                      <PlusIcon size={16} aria-hidden />
+                    </Button>
+                  </Tooltip>
                 </div>
               </div>
             ) : (
@@ -259,39 +260,48 @@ export function StudioReleasesView({
                         <SourceServiceIcon id="bandcamp" size="detail" />
                       </a>
                     ) : null}
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      aria-label={openMoreId === r.id ? 'Less' : 'More'}
-                      title={openMoreId === r.id ? 'Less' : 'More'}
-                      onClick={() =>
-                        setOpenMoreId((id) => (id === r.id ? null : r.id))
-                      }
+                    <Tooltip
+                      content={openMoreId === r.id ? 'Less' : 'More'}
+                      side="top"
                     >
-                      <MoreHorizontalIcon size={16} aria-hidden />
-                    </Button>
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        aria-label={openMoreId === r.id ? 'Less' : 'More'}
+                        onClick={() =>
+                          setOpenMoreId((id) => (id === r.id ? null : r.id))
+                        }
+                      >
+                        <MoreHorizontalIcon size={16} aria-hidden />
+                      </Button>
+                    </Tooltip>
                     {openMoreId === r.id && (
                       <div className="flex w-full flex-wrap gap-2 pt-1">
-                        <Link to="/r/$slug" params={{ slug: r.smartLinkSlug }}>
-                          <Button
-                            size="icon-sm"
-                            variant="text"
-                            aria-label="Public link"
-                            title="Public link"
+                        <Tooltip content="Public link" side="top">
+                          <Link
+                            to="/r/$slug"
+                            params={{ slug: r.smartLinkSlug }}
                           >
-                            <ExternalLinkIcon size={16} aria-hidden />
-                          </Button>
-                        </Link>
-                        <Link to="/studio/distribution">
-                          <Button
-                            size="icon-sm"
-                            variant="text"
-                            aria-label="Distribution"
-                            title="Distribution"
-                          >
-                            <Share2Icon size={16} aria-hidden />
-                          </Button>
-                        </Link>
+                            <Button
+                              size="icon-sm"
+                              variant="text"
+                              aria-label="Public link"
+                            >
+                              <ExternalLinkIcon size={16} aria-hidden />
+                            </Button>
+                          </Link>
+                        </Tooltip>
+                        <Tooltip content="Distribution" side="top">
+                          <Link to="/studio/distribution">
+                            <Button
+                              size="icon-sm"
+                              variant="text"
+                              aria-label="Distribution"
+                            >
+                              <Share2Icon size={16} aria-hidden />
+                            </Button>
+                          </Link>
+                        </Tooltip>
                       </div>
                     )}
                   </li>

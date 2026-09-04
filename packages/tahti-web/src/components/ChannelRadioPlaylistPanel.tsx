@@ -13,6 +13,7 @@ import {
   TabLabel,
   Tabs,
   Toggle,
+  Tooltip,
 } from '@tahti-player/ui';
 
 import {
@@ -414,16 +415,17 @@ export const ChannelRadioPlaylistPanel: FC = () => {
                   </Button>
                 </Link>
               ) : null}
-              <Button
-                size="icon-sm"
-                variant="text"
-                onClick={() => setCreating((current) => !current)}
-                aria-label="Create playlist"
-                title="Create playlist"
-                aria-pressed={creating}
-              >
-                <PlusIcon size={16} aria-hidden />
-              </Button>
+              <Tooltip content="Create playlist" side="top">
+                <Button
+                  size="icon-sm"
+                  variant="text"
+                  onClick={() => setCreating((current) => !current)}
+                  aria-label="Create playlist"
+                  aria-pressed={creating}
+                >
+                  <PlusIcon size={16} aria-hidden />
+                </Button>
+              </Tooltip>
             </div>
 
             {creating ? (

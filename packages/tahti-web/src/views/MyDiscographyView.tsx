@@ -30,7 +30,12 @@ import type { StudioSound } from '../api/studio-types';
 import { PageEmpty, PageLoading } from '../components/PageStates';
 import { WaveformSeekbar } from '../components/tahti/WaveformSeekbar';
 import { TrackEditDialog } from '../components/TrackEditDialog';
-import { EMBED_PROVIDER_LABEL } from '../lib/embedSrc';
+import { playableFromStudioHearthis } from '../lib/embedPlayback';
+import {
+  EMBED_PROVIDER_HEIGHT,
+  EMBED_PROVIDER_LABEL,
+  embedSrcFor,
+} from '../lib/embedSrc';
 import { isPinned, sortPinnedFirst } from '../lib/pinnedTracks';
 import { useAuthStore } from '../stores/authStore';
 import { usePlayerStore } from '../stores/playerStore';
@@ -91,6 +96,7 @@ export const MyDiscographyView: FC = () => {
   const [editingArchiveId, setEditingArchiveId] = useState<string | null>(null);
   const [busyPinId, setBusyPinId] = useState<string | null>(null);
   const [pinMessage, setPinMessage] = useState<string | null>(null);
+  const [embedOpenId, setEmbedOpenId] = useState<string | null>(null);
 
   const reload = () => {
     setLoading(true);
@@ -145,6 +151,16 @@ export const MyDiscographyView: FC = () => {
   const playItem = async (item: StudioSound) => {
     if (isCurrentItem(item)) {
       setStatus(status === 'playing' ? 'paused' : 'playing');
+      return;
+    }
+    const hearthis = playableFromStudioHearthis(item);
+    if (hearthis) {
+      play(hearthis);
+      setEmbedOpenId(null);
+      return;
+    }
+    if (item.embedProvider && item.embedUri) {
+      setEmbedOpenId((openId) => (openId === item.id ? null : item.id));
       return;
     }
     setLoadingId(item.id);
@@ -350,7 +366,9 @@ export const MyDiscographyView: FC = () => {
                       content={
                         isPlayingItem(item)
                           ? `Pause ${item.title}`
-                          : `Play ${item.title}`
+                          : item.embedProvider && item.embedProvider !== 'HEARTHIS'
+                            ? `Play on ${EMBED_PROVIDER_LABEL[item.embedProvider]}`
+                            : `Play ${item.title}`
                       }
                       side="top"
                     >
@@ -361,7 +379,10 @@ export const MyDiscographyView: FC = () => {
                         aria-label={
                           isPlayingItem(item)
                             ? `Pause ${item.title}`
-                            : `Play ${item.title}`
+                            : item.embedProvider &&
+                                item.embedProvider !== 'HEARTHIS'
+                              ? `Play ${item.title} on ${EMBED_PROVIDER_LABEL[item.embedProvider]}`
+                              : `Play ${item.title}`
                         }
                         onClick={() => void playItem(item)}
                       >
@@ -382,23 +403,41 @@ export const MyDiscographyView: FC = () => {
                         <PencilIcon size={16} aria-hidden />
                       </Button>
                     </Tooltip>
-                    <Link
-                      to="/studio/sounds/$id/editor"
-                      params={{ id: item.id }}
-                    >
-                      <Tooltip
-                        content={`Open ${item.title} in audio editor`}
-                        side="top"
+                    {item.embedProvider ? null : (
+                      <Link
+                        to="/studio/sounds/$id/editor"
+                        params={{ id: item.id }}
                       >
-                        <Button
-                          size="icon-sm"
-                          variant="text"
-                          aria-label={`Open ${item.title} in audio editor`}
+                        <Tooltip
+                          content={`Open ${item.title} in audio editor`}
+                          side="top"
                         >
-                          <AudioLinesIcon size={16} aria-hidden />
-                        </Button>
-                      </Tooltip>
-                    </Link>
+                          <Button
+                            size="icon-sm"
+                            variant="text"
+                            aria-label={`Open ${item.title} in audio editor`}
+                          >
+                            <AudioLinesIcon size={16} aria-hidden />
+                          </Button>
+                        </Tooltip>
+                      </Link>
+                    )}
+                    {item.embedProvider &&
+                    item.embedProvider !== 'HEARTHIS' &&
+                    item.embedUri &&
+                    embedOpenId === item.id ? (
+                      <iframe
+                        title={item.title}
+                        src={
+                          embedSrcFor(item.embedProvider, item.embedUri) ?? ''
+                        }
+                        width="100%"
+                        height={EMBED_PROVIDER_HEIGHT[item.embedProvider]}
+                        className="border-border mt-1 block w-full basis-full rounded-md border"
+                        allow="autoplay; encrypted-media"
+                        loading="lazy"
+                      />
+                    ) : null}
                   </li>
                 ))}
               </ul>

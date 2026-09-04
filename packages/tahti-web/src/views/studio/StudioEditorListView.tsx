@@ -8,6 +8,7 @@ import {
   Input,
   Select,
   Tabs,
+  Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -118,17 +119,18 @@ export function StudioEditorListView() {
         >
           {projects.length > 0 && (
             <div className="flex items-center gap-2">
-              <Button
-                size="icon-sm"
-                onClick={() => {
-                  setMessage(null);
-                  setCreateOpen(true);
-                }}
-                aria-label="New session"
-                title="New session"
-              >
-                <PlusIcon size={16} aria-hidden />
-              </Button>
+              <Tooltip content="New session" side="top">
+                <Button
+                  size="icon-sm"
+                  onClick={() => {
+                    setMessage(null);
+                    setCreateOpen(true);
+                  }}
+                  aria-label="New session"
+                >
+                  <PlusIcon size={16} aria-hidden />
+                </Button>
+              </Tooltip>
             </div>
           )}
 
@@ -189,14 +191,15 @@ export function StudioEditorListView() {
                   No editor projects yet.
                 </p>
                 <div>
-                  <Button
-                    size="icon-sm"
-                    onClick={() => setCreateOpen(true)}
-                    aria-label="New session"
-                    title="New session"
-                  >
-                    <PlusIcon size={16} aria-hidden />
-                  </Button>
+                  <Tooltip content="New session" side="top">
+                    <Button
+                      size="icon-sm"
+                      onClick={() => setCreateOpen(true)}
+                      aria-label="New session"
+                    >
+                      <PlusIcon size={16} aria-hidden />
+                    </Button>
+                  </Tooltip>
                 </div>
               </div>
             ) : (
@@ -213,30 +216,32 @@ export function StudioEditorListView() {
                         {p.soundId ? ', linked archive' : ''}
                       </p>
                     </div>
-                    <Link to="/studio/editor/$id" params={{ id: p.id }}>
-                      <Button
-                        size="icon-sm"
-                        variant="secondary"
-                        aria-label={`Open ${p.title}`}
-                        title="Open session"
-                      >
-                        <FolderOpenIcon size={16} aria-hidden />
-                      </Button>
-                    </Link>
-                    {p.soundId && (
-                      <Link
-                        to="/studio/sounds/$id/editor"
-                        params={{ id: p.soundId }}
-                      >
+                    <Tooltip content="Open session" side="top">
+                      <Link to="/studio/editor/$id" params={{ id: p.id }}>
                         <Button
                           size="icon-sm"
-                          variant="text"
-                          aria-label="Pro editor"
-                          title="Pro editor"
+                          variant="secondary"
+                          aria-label={`Open ${p.title}`}
                         >
-                          <AudioLinesIcon size={16} aria-hidden />
+                          <FolderOpenIcon size={16} aria-hidden />
                         </Button>
                       </Link>
+                    </Tooltip>
+                    {p.soundId && (
+                      <Tooltip content="Pro editor" side="top">
+                        <Link
+                          to="/studio/sounds/$id/editor"
+                          params={{ id: p.soundId }}
+                        >
+                          <Button
+                            size="icon-sm"
+                            variant="text"
+                            aria-label="Pro editor"
+                          >
+                            <AudioLinesIcon size={16} aria-hidden />
+                          </Button>
+                        </Link>
+                      </Tooltip>
                     )}
                   </li>
                 ))}

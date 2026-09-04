@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { CircleHelpIcon, LayersIcon, LayoutDashboardIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Alert, Button, Tabs, ViewShell } from '@tahti-player/ui';
+import { Alert, Button, Tabs, Tooltip, ViewShell } from '@tahti-player/ui';
 
 import { fetchAllRoyalties } from '../../api/distribution';
 import { fetchMyFanTiers } from '../../api/fan-tiers';
@@ -98,15 +98,16 @@ export function StudioRevenueView() {
                 Earnings guide
               </Button>
             </Link>
-            <Button
-              size="icon-sm"
-              variant="secondary"
-              aria-label="Help — take a guided tour of order management"
-              title="Help"
-              onClick={() => openTour()}
-            >
-              <CircleHelpIcon size={16} aria-hidden />
-            </Button>
+            <Tooltip content="Help" side="top">
+              <Button
+                size="icon-sm"
+                variant="secondary"
+                aria-label="Help — take a guided tour of order management"
+                onClick={() => openTour()}
+              >
+                <CircleHelpIcon size={16} aria-hidden />
+              </Button>
+            </Tooltip>
           </div>
 
           <Tabs

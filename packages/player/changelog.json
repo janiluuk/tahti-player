@@ -7,6 +7,13 @@
     "tags": [{ "label": "Listen", "color": "cyan" }]
   },
   {
+    "date": "2026-09-04T16:40",
+    "description": "hearthis.at tracks in Studio Sounds and Library play through the real hearthis player instead of three minutes of silent placeholder audio.",
+    "type": "fix",
+    "contributors": ["jani"],
+    "tags": [{ "label": "Studio", "color": "purple" }]
+  },
+  {
     "date": "2026-09-04T16:05",
     "description": "Album, widget, news, and directory covers fade in the same way as the rest of the app instead of popping in as a raw image.",
     "type": "improvement",

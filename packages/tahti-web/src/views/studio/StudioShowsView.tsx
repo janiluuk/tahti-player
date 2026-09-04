@@ -238,13 +238,15 @@ export function StudioShowsView() {
                 title="No shows yet"
                 description="Create one to start numbering episodes."
                 action={
-                  <Button
-                    size="icon-sm"
-                    onClick={() => setCreateOpen(true)}
-                    aria-label="New show"
-                  >
-                    <PlusIcon size={16} aria-hidden />
-                  </Button>
+                  <Tooltip content="New show" side="top">
+                    <Button
+                      size="icon-sm"
+                      onClick={() => setCreateOpen(true)}
+                      aria-label="New show"
+                    >
+                      <PlusIcon size={16} aria-hidden />
+                    </Button>
+                  </Tooltip>
                 }
               />
             ) : (

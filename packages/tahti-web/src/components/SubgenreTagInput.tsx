@@ -1,7 +1,7 @@
 import { XIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button, CreatableCombobox } from '@tahti-player/ui';
+import { Button, CreatableCombobox, Tooltip } from '@tahti-player/ui';
 
 const MAX_SUBGENRES = 12;
 const MAX_SUBGENRE_LENGTH = 40;
@@ -55,15 +55,17 @@ export function SubgenreTagInput({ value, onChange, suggestions = [] }: Props) {
               className="bg-background-secondary text-foreground inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs"
             >
               {tag}
-              <Button
-                type="button"
-                size="icon-sm"
-                variant="text"
-                onClick={() => remove(tag)}
-                aria-label={`Remove ${tag}`}
-              >
-                <XIcon size={12} aria-hidden />
-              </Button>
+              <Tooltip content={`Remove ${tag}`} side="top">
+                <Button
+                  type="button"
+                  size="icon-sm"
+                  variant="text"
+                  onClick={() => remove(tag)}
+                  aria-label={`Remove ${tag}`}
+                >
+                  <XIcon size={12} aria-hidden />
+                </Button>
+              </Tooltip>
             </span>
           ))}
         </div>

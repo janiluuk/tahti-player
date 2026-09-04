@@ -46,6 +46,7 @@ import {
   setMockSessionUser,
 } from './mock-session';
 import { getMockUploadedSound } from './mock-uploads';
+import { findMockPurchaseTier } from './purchase-tiers';
 import {
   allowMockFallback,
   apiErrorMeta,
@@ -316,6 +317,11 @@ function mockTrackDetailFromUpload(id: string): PublicTrackDetail | null {
     return null;
   }
   const channel = mockChannel(uploaded.channelSlug);
+  const purchaseTierId = uploaded.purchaseTierId ?? null;
+  const tier =
+    purchaseTierId && uploaded.channelSlug
+      ? findMockPurchaseTier(uploaded.channelSlug, purchaseTierId)
+      : null;
   return {
     id: uploaded.id,
     title: uploaded.title,
@@ -348,6 +354,11 @@ function mockTrackDetailFromUpload(id: string): PublicTrackDetail | null {
     peaks: null,
     commentCount: 0,
     downloadCount: 0,
+    accessMode: uploaded.accessMode ?? 'FREE',
+    purchaseTierId,
+    purchaseTierName: tier?.name ?? null,
+    purchaseTierPriceCents: tier?.priceCents ?? null,
+    downloadsEnabled: uploaded.downloadsEnabled,
   };
 }
 

@@ -1,5 +1,22 @@
 # UI redesign worklog — Nuclear (artist + admin)
 
+## 2026-09-04 — Hearthis embed playback (0.0.68)
+
+**Status:** executed.
+
+Studio → Sounds and Library music were playing EMBED_ONLY hearthis.at
+rows through `fetchEditorSource` / mock `DEMO_MP3` (~3 min silent). The
+shared player bar already supports a hearthis widget when `embed` is set
+and `streamUrl` is empty; the Studio/Library play paths never built that
+shape (and `lib/embedPlayback.ts` was missing while still imported).
+
+Now: `playableFromHearthisEmbed` / `playableFromStudioHearthis` always
+route hearthis through the widget; Import search/library mocks no longer
+attach DEMO_MP3 as a stream; Music library, Track edit, and collection
+rows use the same helper. Mixcloud/Spotify/Bandcamp stay inline iframes.
+
+Todo: [`docs/todo/hearthis-embed-playback.md`](../../docs/todo/hearthis-embed-playback.md).
+
 ## 2026-09-04 — Tabs Storybook migration (icons + count pills)
 
 **Status:** executed.

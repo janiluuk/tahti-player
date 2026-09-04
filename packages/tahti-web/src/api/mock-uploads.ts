@@ -6,6 +6,8 @@ export type MockUploadedSound = {
   channelSlug: string;
   downloadsEnabled: boolean;
   visibility: 'PUBLIC' | 'UNLISTED' | 'PRIVATE' | 'STASH';
+  accessMode?: 'FREE' | 'SUBSCRIBERS_ONLY' | 'PURCHASE';
+  purchaseTierId?: string | null;
 };
 
 const uploads = new Map<string, MockUploadedSound>();
@@ -60,6 +62,8 @@ function persistIndex(): void {
     channelSlug: row.channelSlug,
     downloadsEnabled: row.downloadsEnabled,
     visibility: row.visibility,
+    accessMode: row.accessMode ?? 'FREE',
+    purchaseTierId: row.purchaseTierId ?? null,
   }));
   localStorage.setItem(STORAGE_KEY, JSON.stringify(rows));
 }

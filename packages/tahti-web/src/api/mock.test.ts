@@ -40,6 +40,8 @@ describe('archiveItemToPlayable', () => {
       provider: 'hearthis',
       embedUri: '123456',
     });
+    expect(playable?.sourceProvider).toBe('hearthis');
+    expect(playable?.streamUrl).toBe('');
   });
 
   it('returns null for a non-hearthis embed provider with no audioUrl (no inline widget here)', () => {

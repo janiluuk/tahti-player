@@ -2,7 +2,7 @@ import { PlayIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, FilePicker, Toggle } from '@tahti-player/ui';
+import { Button, FilePicker, Toggle, Tooltip } from '@tahti-player/ui';
 
 import {
   deleteAnnouncementClip,
@@ -170,15 +170,16 @@ export function ChannelAnnouncementsPanel() {
                 />
                 {clip.isEnabled ? 'On' : 'Off'}
               </label>
-              <Button
-                size="icon-sm"
-                variant="text"
-                aria-label={`Preview ${clip.title}`}
-                title="Preview"
-                onClick={() => void preview(clip)}
-              >
-                <PlayIcon size={16} aria-hidden />
-              </Button>
+              <Tooltip content="Preview" side="top">
+                <Button
+                  size="icon-sm"
+                  variant="text"
+                  aria-label={`Preview ${clip.title}`}
+                  onClick={() => void preview(clip)}
+                >
+                  <PlayIcon size={16} aria-hidden />
+                </Button>
+              </Tooltip>
               <Button
                 size="sm"
                 variant={clip.isProfileBackground ? undefined : 'secondary'}
@@ -189,15 +190,16 @@ export function ChannelAnnouncementsPanel() {
                   ? 'Page music on'
                   : 'Use as page music'}
               </Button>
-              <Button
-                size="icon-sm"
-                variant="text"
-                aria-label={`Delete ${clip.title}`}
-                title="Delete"
-                onClick={() => setPendingDelete(clip)}
-              >
-                <Trash2Icon size={16} aria-hidden />
-              </Button>
+              <Tooltip content="Delete" side="top">
+                <Button
+                  size="icon-sm"
+                  variant="text"
+                  aria-label={`Delete ${clip.title}`}
+                  onClick={() => setPendingDelete(clip)}
+                >
+                  <Trash2Icon size={16} aria-hidden />
+                </Button>
+              </Tooltip>
               {previewId === clip.id && previewUrl ? (
                 <audio
                   src={previewUrl}

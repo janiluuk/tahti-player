@@ -8,7 +8,14 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Button, EmptyState, Input, Select, ViewShell } from '@tahti-player/ui';
+import {
+  Button,
+  EmptyState,
+  Input,
+  Select,
+  Tooltip,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import {
   fetchRecentBroadcasts,
@@ -165,15 +172,16 @@ function RecordingRow({
         </span>
       </div>
       {show.soundId ? (
-        <Button
-          size="icon-sm"
-          variant="text"
-          aria-label={`Edit ${title}`}
-          title="Edit track"
-          onClick={() => onEdit(show.soundId!)}
-        >
-          <PencilIcon size={16} aria-hidden />
-        </Button>
+        <Tooltip content="Edit track" side="top">
+          <Button
+            size="icon-sm"
+            variant="text"
+            aria-label={`Edit ${title}`}
+            onClick={() => onEdit(show.soundId!)}
+          >
+            <PencilIcon size={16} aria-hidden />
+          </Button>
+        </Tooltip>
       ) : (
         <Link to="/studio/sounds">
           <Button size="sm" variant="secondary">

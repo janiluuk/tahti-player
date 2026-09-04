@@ -22,6 +22,7 @@ import {
   Tabs,
   Textarea,
   Toggle,
+  Tooltip,
 } from '@tahti-player/ui';
 
 import {
@@ -392,14 +393,15 @@ export function StudioShowDetailView({ id }: { id: string }) {
               }
               action={
                 show.mode === 'SINGLE' ? undefined : (
-                  <Button
-                    size="icon-sm"
-                    onClick={() => setCreateOpen(true)}
-                    aria-label="New episode"
-                    title="New episode"
-                  >
-                    <PlusIcon size={16} aria-hidden />
-                  </Button>
+                  <Tooltip content="New episode" side="top">
+                    <Button
+                      size="icon-sm"
+                      onClick={() => setCreateOpen(true)}
+                      aria-label="New episode"
+                    >
+                      <PlusIcon size={16} aria-hidden />
+                    </Button>
+                  </Tooltip>
                 )
               }
             />

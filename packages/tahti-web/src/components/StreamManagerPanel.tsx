@@ -27,6 +27,7 @@ import {
   StatChip,
   TabLabel,
   Tabs,
+  Tooltip,
 } from '@tahti-player/ui';
 
 import {
@@ -479,43 +480,51 @@ export function StreamManagerPanel({
             role="group"
             aria-label="Rotation controls"
           >
-            <Button
-              size="icon-sm"
-              variant="secondary"
-              disabled={transportBusy !== null}
-              onClick={() => void handleTransport('previous')}
-              aria-label="Previous track"
-              title="Previous track"
+            <Tooltip content="Previous track" side="top">
+              <Button
+                size="icon-sm"
+                variant="secondary"
+                disabled={transportBusy !== null}
+                onClick={() => void handleTransport('previous')}
+                aria-label="Previous track"
+              >
+                <SkipBackIcon size={14} aria-hidden />
+              </Button>
+            </Tooltip>
+            <Tooltip
+              content={rotationPlaying ? 'Stop rotation' : 'Start rotation'}
+              side="top"
             >
-              <SkipBackIcon size={14} aria-hidden />
-            </Button>
-            <Button
-              size="icon-sm"
-              variant="secondary"
-              intent="danger"
-              disabled={transportBusy !== null}
-              onClick={() =>
-                void handleTransport(rotationPlaying ? 'pause' : 'resume')
-              }
-              aria-label={rotationPlaying ? 'Stop rotation' : 'Start rotation'}
-              title={rotationPlaying ? 'Stop rotation' : 'Start rotation'}
-            >
-              {rotationPlaying ? (
-                <SquareIcon size={14} aria-hidden className="fill-current" />
-              ) : (
-                <PlayIcon size={14} aria-hidden />
-              )}
-            </Button>
-            <Button
-              size="icon-sm"
-              variant="secondary"
-              disabled={transportBusy !== null}
-              onClick={() => void handleTransport('skip')}
-              aria-label="Skip track"
-              title="Skip track"
-            >
-              <SkipForwardIcon size={14} aria-hidden />
-            </Button>
+              <Button
+                size="icon-sm"
+                variant="secondary"
+                intent="danger"
+                disabled={transportBusy !== null}
+                onClick={() =>
+                  void handleTransport(rotationPlaying ? 'pause' : 'resume')
+                }
+                aria-label={
+                  rotationPlaying ? 'Stop rotation' : 'Start rotation'
+                }
+              >
+                {rotationPlaying ? (
+                  <SquareIcon size={14} aria-hidden className="fill-current" />
+                ) : (
+                  <PlayIcon size={14} aria-hidden />
+                )}
+              </Button>
+            </Tooltip>
+            <Tooltip content="Skip track" side="top">
+              <Button
+                size="icon-sm"
+                variant="secondary"
+                disabled={transportBusy !== null}
+                onClick={() => void handleTransport('skip')}
+                aria-label="Skip track"
+              >
+                <SkipForwardIcon size={14} aria-hidden />
+              </Button>
+            </Tooltip>
           </div>
         )}
         <div className="order-2 min-w-0 flex-1 text-right sm:order-3">
@@ -554,31 +563,39 @@ export function StreamManagerPanel({
             </Button>
           )}
           {rotationPlaying && (
-            <Button
-              size="icon-sm"
-              variant="secondary"
-              onClick={() => setRotationExpanded((v) => !v)}
-              aria-label={rotationExpanded ? 'Show less' : 'Show more'}
-              title={rotationExpanded ? 'Show less' : 'Show more'}
-              aria-expanded={rotationExpanded}
+            <Tooltip
+              content={rotationExpanded ? 'Show less' : 'Show more'}
+              side="top"
             >
-              {rotationExpanded ? (
-                <ChevronDownIcon size={15} aria-hidden />
-              ) : (
-                <ChevronRightIcon size={15} aria-hidden />
-              )}
-            </Button>
+              <Button
+                size="icon-sm"
+                variant="secondary"
+                onClick={() => setRotationExpanded((v) => !v)}
+                aria-label={rotationExpanded ? 'Show less' : 'Show more'}
+                aria-expanded={rotationExpanded}
+              >
+                {rotationExpanded ? (
+                  <ChevronDownIcon size={15} aria-hidden />
+                ) : (
+                  <ChevronRightIcon size={15} aria-hidden />
+                )}
+              </Button>
+            </Tooltip>
           )}
           {canControl && onPlaybackToggle && (
-            <Button
-              size="icon-sm"
-              variant="secondary"
-              onClick={onPlaybackToggle}
-              aria-label={isPlaying ? 'Pause stream' : 'Play stream'}
-              title={isPlaying ? 'Pause stream' : 'Play stream'}
+            <Tooltip
+              content={isPlaying ? 'Pause stream' : 'Play stream'}
+              side="top"
             >
-              {isPlaying ? <PauseIcon size={15} /> : <PlayIcon size={15} />}
-            </Button>
+              <Button
+                size="icon-sm"
+                variant="secondary"
+                onClick={onPlaybackToggle}
+                aria-label={isPlaying ? 'Pause stream' : 'Play stream'}
+              >
+                {isPlaying ? <PauseIcon size={15} /> : <PlayIcon size={15} />}
+              </Button>
+            </Tooltip>
           )}
           {canControl && signalConnected && (
             <Button

@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { HeartIcon, ListMusicIcon, ListPlusIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button, Dialog, ImageReveal } from '@tahti-player/ui';
+import { Button, Dialog, ImageReveal, Tooltip } from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../api/types';
 import { soundIdFromPlayableId } from '../lib/archiveId';
@@ -84,31 +84,35 @@ export function TrackInfoDialog({
                 )}
                 {playable && (
                   <div className="mt-2 flex items-center gap-1">
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      aria-label={favorited ? 'Loved' : 'Love'}
-                      aria-pressed={favorited}
-                      title={favorited ? 'Loved' : 'Love'}
-                      onClick={() => toggleFavoriteTrack(playable)}
-                    >
-                      <HeartIcon
-                        size={16}
-                        className={
-                          favorited ? 'text-accent-red fill-current' : undefined
-                        }
-                      />
-                    </Button>
-                    {soundId && (
+                    <Tooltip content={favorited ? 'Loved' : 'Love'} side="top">
                       <Button
                         size="icon-sm"
                         variant="text"
-                        aria-label="Add to playlist"
-                        title="Add to playlist"
-                        onClick={() => setPlaylistOpen(true)}
+                        aria-label={favorited ? 'Loved' : 'Love'}
+                        aria-pressed={favorited}
+                        onClick={() => toggleFavoriteTrack(playable)}
                       >
-                        <ListPlusIcon size={16} />
+                        <HeartIcon
+                          size={16}
+                          className={
+                            favorited
+                              ? 'text-accent-red fill-current'
+                              : undefined
+                          }
+                        />
                       </Button>
+                    </Tooltip>
+                    {soundId && (
+                      <Tooltip content="Add to playlist" side="top">
+                        <Button
+                          size="icon-sm"
+                          variant="text"
+                          aria-label="Add to playlist"
+                          onClick={() => setPlaylistOpen(true)}
+                        >
+                          <ListPlusIcon size={16} />
+                        </Button>
+                      </Tooltip>
                     )}
                   </div>
                 )}

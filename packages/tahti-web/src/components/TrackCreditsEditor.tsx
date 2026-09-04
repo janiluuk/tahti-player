@@ -1,7 +1,7 @@
 import { ChevronDownIcon, PlusIcon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button, Input, Select } from '@tahti-player/ui';
+import { Button, Input, Select, Tooltip } from '@tahti-player/ui';
 
 import {
   RELEASE_CREDIT_ROLES,
@@ -110,15 +110,22 @@ export function TrackCreditsEditor({ value, onChange, disabled }: Props) {
                     onChange(next);
                   }}
                 />
-                <Button
-                  size="icon-sm"
-                  variant="text"
-                  disabled={disabled}
-                  aria-label={`Remove credit ${credit.name || index + 1}`}
-                  onClick={() => onChange(value.filter((_, i) => i !== index))}
+                <Tooltip
+                  content={`Remove credit ${credit.name || index + 1}`}
+                  side="top"
                 >
-                  <Trash2Icon size={14} aria-hidden />
-                </Button>
+                  <Button
+                    size="icon-sm"
+                    variant="text"
+                    disabled={disabled}
+                    aria-label={`Remove credit ${credit.name || index + 1}`}
+                    onClick={() =>
+                      onChange(value.filter((_, i) => i !== index))
+                    }
+                  >
+                    <Trash2Icon size={14} aria-hidden />
+                  </Button>
+                </Tooltip>
               </li>
             ))}
           </ul>

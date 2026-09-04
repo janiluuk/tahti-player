@@ -7,7 +7,7 @@ import {
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Input, Tabs, ViewShell } from '@tahti-player/ui';
+import { Button, Input, Tabs, Tooltip, ViewShell } from '@tahti-player/ui';
 
 import {
   addModerator,
@@ -89,15 +89,16 @@ export function StudioModerationView({
                           <span>
                             {m.displayName} (@{m.username})
                           </span>
-                          <Button
-                            size="icon-sm"
-                            variant="text"
-                            aria-label={`Remove ${m.displayName} as moderator`}
-                            title="Remove moderator"
-                            onClick={() => setPendingRemoveMod(m)}
-                          >
-                            <Trash2Icon size={14} aria-hidden />
-                          </Button>
+                          <Tooltip content="Remove moderator" side="top">
+                            <Button
+                              size="icon-sm"
+                              variant="text"
+                              aria-label={`Remove ${m.displayName} as moderator`}
+                              onClick={() => setPendingRemoveMod(m)}
+                            >
+                              <Trash2Icon size={14} aria-hidden />
+                            </Button>
+                          </Tooltip>
                         </li>
                       ))}
                     </ul>
@@ -110,27 +111,28 @@ export function StudioModerationView({
                       placeholder="listener-handle"
                       className="min-w-0 sm:min-w-48"
                     />
-                    <Button
-                      size="icon-sm"
-                      disabled={!newModUsername.trim()}
-                      aria-label="Add moderator"
-                      title="Add moderator"
-                      onClick={() => {
-                        void addModerator(newModUsername.trim()).then((r) => {
-                          if (!r.ok) {
-                            toast.error(r.error);
-                          } else {
-                            setNewModUsername('');
-                            toast.success(
-                              `Added ${r.data.displayName} as moderator.`,
-                            );
-                            reload();
-                          }
-                        });
-                      }}
-                    >
-                      <UserRoundPlusIcon size={15} aria-hidden />
-                    </Button>
+                    <Tooltip content="Add moderator" side="top">
+                      <Button
+                        size="icon-sm"
+                        disabled={!newModUsername.trim()}
+                        aria-label="Add moderator"
+                        onClick={() => {
+                          void addModerator(newModUsername.trim()).then((r) => {
+                            if (!r.ok) {
+                              toast.error(r.error);
+                            } else {
+                              setNewModUsername('');
+                              toast.success(
+                                `Added ${r.data.displayName} as moderator.`,
+                              );
+                              reload();
+                            }
+                          });
+                        }}
+                      >
+                        <UserRoundPlusIcon size={15} aria-hidden />
+                      </Button>
+                    </Tooltip>
                   </div>
                 </div>
               </StudioPanel>
@@ -167,27 +169,28 @@ export function StudioModerationView({
                               Banned {new Date(b.bannedAt).toLocaleString()}
                             </div>
                           </div>
-                          <Button
-                            size="icon-sm"
-                            variant="text"
-                            aria-label={`Unban ${b.fingerprintHash}`}
-                            title="Unban fingerprint"
-                            onClick={() => {
-                              void unbanChatFingerprint(
-                                slug,
-                                b.fingerprintHash,
-                              ).then((r) => {
-                                if (!r.ok) {
-                                  toast.error(r.error);
-                                } else {
-                                  toast.success('Unbanned.');
-                                  reload();
-                                }
-                              });
-                            }}
-                          >
-                            <Trash2Icon size={14} aria-hidden />
-                          </Button>
+                          <Tooltip content="Unban fingerprint" side="top">
+                            <Button
+                              size="icon-sm"
+                              variant="text"
+                              aria-label={`Unban ${b.fingerprintHash}`}
+                              onClick={() => {
+                                void unbanChatFingerprint(
+                                  slug,
+                                  b.fingerprintHash,
+                                ).then((r) => {
+                                  if (!r.ok) {
+                                    toast.error(r.error);
+                                  } else {
+                                    toast.success('Unbanned.');
+                                    reload();
+                                  }
+                                });
+                              }}
+                            >
+                              <Trash2Icon size={14} aria-hidden />
+                            </Button>
+                          </Tooltip>
                         </li>
                       ))}
                     </ul>
@@ -200,27 +203,28 @@ export function StudioModerationView({
                       placeholder="from a chat message's report action"
                       className="min-w-0 sm:min-w-48"
                     />
-                    <Button
-                      size="icon-sm"
-                      disabled={!newBanHash.trim()}
-                      aria-label="Ban fingerprint"
-                      title="Ban fingerprint"
-                      onClick={() => {
-                        void banChatFingerprint(slug, newBanHash.trim()).then(
-                          (r) => {
-                            if (!r.ok) {
-                              toast.error(r.error);
-                            } else {
-                              setNewBanHash('');
-                              toast.success('Fingerprint banned.');
-                              reload();
-                            }
-                          },
-                        );
-                      }}
-                    >
-                      <BanIcon size={15} aria-hidden />
-                    </Button>
+                    <Tooltip content="Ban fingerprint" side="top">
+                      <Button
+                        size="icon-sm"
+                        disabled={!newBanHash.trim()}
+                        aria-label="Ban fingerprint"
+                        onClick={() => {
+                          void banChatFingerprint(slug, newBanHash.trim()).then(
+                            (r) => {
+                              if (!r.ok) {
+                                toast.error(r.error);
+                              } else {
+                                setNewBanHash('');
+                                toast.success('Fingerprint banned.');
+                                reload();
+                              }
+                            },
+                          );
+                        }}
+                      >
+                        <BanIcon size={15} aria-hidden />
+                      </Button>
+                    </Tooltip>
                   </div>
                 </div>
               </StudioPanel>

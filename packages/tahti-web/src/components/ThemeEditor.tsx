@@ -6,7 +6,15 @@ import {
   clearAdvancedTheme,
   type AdvancedTheme,
 } from '@tahti-player/themes';
-import { Box, Button, Dialog, Input, Slider, Textarea } from '@tahti-player/ui';
+import {
+  Box,
+  Button,
+  Dialog,
+  Input,
+  Slider,
+  Textarea,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import { useThemeStore } from '../plugins/themes';
 
@@ -233,14 +241,16 @@ function ColorTokenRow({
               className="font-mono text-xs"
             />
             {overridden ? (
-              <Button
-                size="icon-sm"
-                variant="text"
-                aria-label={`Clear ${field.label} override`}
-                onClick={onClear}
-              >
-                <XIcon size={14} aria-hidden />
-              </Button>
+              <Tooltip content={`Clear ${field.label} override`} side="top">
+                <Button
+                  size="icon-sm"
+                  variant="text"
+                  aria-label={`Clear ${field.label} override`}
+                  onClick={onClear}
+                >
+                  <XIcon size={14} aria-hidden />
+                </Button>
+              </Tooltip>
             ) : null}
           </div>
           <Slider
@@ -363,15 +373,16 @@ export function ThemeEditor() {
         <Button size="sm" onClick={save}>
           Save
         </Button>
-        <Button
-          size="icon-sm"
-          variant="secondary"
-          aria-label="Import theme JSON"
-          title="Import theme JSON"
-          onClick={() => setImportOpen(true)}
-        >
-          <FileJson size={16} aria-hidden />
-        </Button>
+        <Tooltip content="Import theme JSON" side="top">
+          <Button
+            size="icon-sm"
+            variant="secondary"
+            aria-label="Import theme JSON"
+            onClick={() => setImportOpen(true)}
+          >
+            <FileJson size={16} aria-hidden />
+          </Button>
+        </Tooltip>
       </div>
       <p className="text-foreground-secondary text-xs">
         Editing the <strong>{dark ? 'dark' : 'light'}</strong> variant. Use the

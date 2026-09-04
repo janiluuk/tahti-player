@@ -1132,7 +1132,7 @@ export function archiveItemToPlayable(
         streamUrl: '',
         protocol: 'https',
         channelSlug,
-        sourceProvider: item.sourceProvider ?? 'tahti',
+        sourceProvider: 'hearthis',
         durationSec: item.durationSec,
         releaseDate: item.createdAt ?? null,
         embed: { provider: 'hearthis', embedUri: item.embedUri },

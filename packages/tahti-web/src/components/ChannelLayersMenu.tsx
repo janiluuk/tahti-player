@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
-import { Button } from '@tahti-player/ui';
+import { Button, Tooltip } from '@tahti-player/ui';
 
 import {
   CHANNEL_LAYOUT_PRESETS,
@@ -209,16 +209,17 @@ export function ChannelLayersMenu({
                     item.visible ? '' : 'opacity-60'
                   }`}
                 >
-                  <Button
-                    type="button"
-                    size="icon-sm"
-                    variant="text"
-                    className="text-foreground-secondary hover:text-foreground w-auto cursor-grab px-0.5 active:cursor-grabbing"
-                    aria-label={`Drag ${meta.label}`}
-                    title="Drag to reorder"
-                  >
-                    <GripVerticalIcon size={14} />
-                  </Button>
+                  <Tooltip content="Drag to reorder" side="top">
+                    <Button
+                      type="button"
+                      size="icon-sm"
+                      variant="text"
+                      className="text-foreground-secondary hover:text-foreground w-auto cursor-grab px-0.5 active:cursor-grabbing"
+                      aria-label={`Drag ${meta.label}`}
+                    >
+                      <GripVerticalIcon size={14} />
+                    </Button>
+                  </Tooltip>
                   <button
                     type="button"
                     className="min-w-0 flex-1 text-left"
@@ -253,30 +254,35 @@ export function ChannelLayersMenu({
                       </button>
                     ))}
                   </div>
-                  <Button
-                    type="button"
-                    size="icon-sm"
-                    variant="text"
-                    aria-label={item.visible ? 'Hide' : 'Show'}
-                    title={item.visible ? 'Hide layer' : 'Show layer'}
-                    onClick={() => onToggleVisible(item.id)}
+                  <Tooltip
+                    content={item.visible ? 'Hide layer' : 'Show layer'}
+                    side="top"
                   >
-                    {item.visible ? (
-                      <EyeIcon size={14} />
-                    ) : (
-                      <EyeOffIcon size={14} />
-                    )}
-                  </Button>
-                  <Button
-                    type="button"
-                    size="icon-sm"
-                    variant="text"
-                    aria-label="Remove from page"
-                    title="Remove from page"
-                    onClick={() => onRemove(item.id)}
-                  >
-                    <Trash2Icon size={14} />
-                  </Button>
+                    <Button
+                      type="button"
+                      size="icon-sm"
+                      variant="text"
+                      aria-label={item.visible ? 'Hide' : 'Show'}
+                      onClick={() => onToggleVisible(item.id)}
+                    >
+                      {item.visible ? (
+                        <EyeIcon size={14} />
+                      ) : (
+                        <EyeOffIcon size={14} />
+                      )}
+                    </Button>
+                  </Tooltip>
+                  <Tooltip content="Remove from page" side="top">
+                    <Button
+                      type="button"
+                      size="icon-sm"
+                      variant="text"
+                      aria-label="Remove from page"
+                      onClick={() => onRemove(item.id)}
+                    >
+                      <Trash2Icon size={14} />
+                    </Button>
+                  </Tooltip>
                 </li>
               );
             })}

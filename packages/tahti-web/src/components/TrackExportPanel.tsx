@@ -1,7 +1,7 @@
 import { CheckCircle2Icon, ExternalLinkIcon, UploadIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button } from '@tahti-player/ui';
+import { Button, Tooltip } from '@tahti-player/ui';
 
 import {
   exportTrack,
@@ -65,14 +65,15 @@ export function TrackExportPanel({ soundId }: { soundId: string }) {
         </div>
         {status?.url ? (
           <a href={status.url} target="_blank" rel="noreferrer">
-            <Button
-              size="icon-sm"
-              variant="secondary"
-              aria-label="Open Mixcloud export"
-              title="Open Mixcloud export"
-            >
-              <ExternalLinkIcon size={15} />
-            </Button>
+            <Tooltip content="Open Mixcloud export" side="top">
+              <Button
+                size="icon-sm"
+                variant="secondary"
+                aria-label="Open Mixcloud export"
+              >
+                <ExternalLinkIcon size={15} />
+              </Button>
+            </Tooltip>
           </a>
         ) : alreadyExported ? (
           <CheckCircle2Icon

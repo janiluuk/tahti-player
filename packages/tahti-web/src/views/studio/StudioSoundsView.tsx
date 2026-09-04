@@ -21,13 +21,10 @@ import {
   Select,
   TabLabel,
   Tabs,
+  Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
-import {
-  fetchHearthisTrackById,
-  playableFromHearthis,
-} from '../../api/sources';
 import {
   deleteStudioSound,
   fetchEditorSource,
@@ -46,6 +43,7 @@ import { StudioPanel } from '../../components/StudioPanel';
 import { StudioSoundRowMenu } from '../../components/StudioSoundRowMenu';
 import { TrackEditDialog } from '../../components/TrackEditDialog';
 import { TrackInsightsPanel } from '../../components/TrackInsightsPanel';
+import { playableFromStudioHearthis } from '../../lib/embedPlayback';
 import {
   EMBED_PROVIDER_HEIGHT,
   EMBED_PROVIDER_LABEL,
@@ -217,27 +215,14 @@ export function StudioSoundsView() {
     setBusyId(null);
   };
 
-  const playEmbedItem = async (item: StudioSound) => {
-    if (item.embedProvider !== 'HEARTHIS' || !item.embedUri) {
-      setEmbedOpenId((id) => (id === item.id ? null : item.id));
+  const playEmbedItem = (item: StudioSound) => {
+    const hearthis = playableFromStudioHearthis(item);
+    if (hearthis) {
+      play(hearthis);
+      setEmbedOpenId(null);
       return;
     }
-
-    setBusyId(item.id);
-    try {
-      const track = await fetchHearthisTrackById(item.embedUri);
-      if (track?.streamUrl) {
-        play({ ...playableFromHearthis({ ...track, title: item.title }) });
-        setEmbedOpenId(null);
-        return;
-      }
-      setEmbedOpenId((id) => (id === item.id ? null : item.id));
-    } catch {
-      setEmbedOpenId((id) => (id === item.id ? null : item.id));
-      toast.error('Could not load the hearthis.at track.');
-    } finally {
-      setBusyId(null);
-    }
+    setEmbedOpenId((id) => (id === item.id ? null : item.id));
   };
 
   const downloadItem = async (item: StudioSound) => {
@@ -326,24 +311,28 @@ export function StudioSoundsView() {
                     <SearchIcon size={14} aria-hidden className="opacity-70" />
                   }
                 />
-                <Button
-                  type="button"
-                  size="icon-sm"
-                  variant="secondary"
-                  aria-expanded={filtersOpen}
-                  aria-label={
-                    filtersOpen ? 'Collapse filters' : 'Expand filters'
-                  }
-                  title={filtersOpen ? 'Collapse filters' : 'Expand filters'}
-                  onClick={() => setFiltersOpen((current) => !current)}
+                <Tooltip
+                  content={filtersOpen ? 'Collapse filters' : 'Expand filters'}
+                  side="top"
                 >
-                  <FilterIcon size={15} aria-hidden />
-                  <ChevronDownIcon
-                    size={13}
-                    aria-hidden
-                    className={filtersOpen ? 'rotate-180' : ''}
-                  />
-                </Button>
+                  <Button
+                    type="button"
+                    size="icon-sm"
+                    variant="secondary"
+                    aria-expanded={filtersOpen}
+                    aria-label={
+                      filtersOpen ? 'Collapse filters' : 'Expand filters'
+                    }
+                    onClick={() => setFiltersOpen((current) => !current)}
+                  >
+                    <FilterIcon size={15} aria-hidden />
+                    <ChevronDownIcon
+                      size={13}
+                      aria-hidden
+                      className={filtersOpen ? 'rotate-180' : ''}
+                    />
+                  </Button>
+                </Tooltip>
                 <span className="text-foreground-secondary text-xs">
                   Pinned {pinnedCount}
                 </span>
@@ -443,57 +432,64 @@ export function StudioSoundsView() {
                               : ''}
                           </p>
                         </div>
-                        <Button
-                          size="icon-sm"
-                          disabled={busyId === item.id}
-                          onClick={() =>
-                            embedSrc
-                              ? void playEmbedItem(item)
-                              : void playItem(item.id, item.title)
-                          }
-                          aria-label={
-                            embedSrc
-                              ? `Play ${item.title} on ${EMBED_PROVIDER_LABEL[item.embedProvider!]}`
-                              : `Play ${item.title}`
-                          }
-                          title={
+                        <Tooltip
+                          content={
                             embedSrc
                               ? `Play on ${EMBED_PROVIDER_LABEL[item.embedProvider!]}`
                               : 'Play'
                           }
+                          side="top"
                         >
-                          <PlayIcon size={16} aria-hidden />
-                        </Button>
+                          <Button
+                            size="icon-sm"
+                            disabled={busyId === item.id}
+                            onClick={() =>
+                              embedSrc
+                                ? void playEmbedItem(item)
+                                : void playItem(item.id, item.title)
+                            }
+                            aria-label={
+                              embedSrc
+                                ? `Play ${item.title} on ${EMBED_PROVIDER_LABEL[item.embedProvider!]}`
+                                : `Play ${item.title}`
+                            }
+                          >
+                            <PlayIcon size={16} aria-hidden />
+                          </Button>
+                        </Tooltip>
                         {item.downloadsEnabled ? (
+                          <Tooltip content="Download original" side="top">
+                            <Button
+                              size="icon-sm"
+                              variant="text"
+                              disabled={busyId === item.id}
+                              onClick={() => void downloadItem(item)}
+                              aria-label={`Download ${item.title}`}
+                            >
+                              <DownloadIcon size={16} aria-hidden />
+                            </Button>
+                          </Tooltip>
+                        ) : null}
+                        <Tooltip content="Edit track" side="top">
+                          <Button
+                            size="icon-sm"
+                            variant="secondary"
+                            aria-label={`Edit ${item.title}`}
+                            onClick={() => setEditingId(item.id)}
+                          >
+                            <PencilIcon size={16} aria-hidden />
+                          </Button>
+                        </Tooltip>
+                        <Tooltip content="Stats" side="top">
                           <Button
                             size="icon-sm"
                             variant="text"
-                            disabled={busyId === item.id}
-                            onClick={() => void downloadItem(item)}
-                            aria-label={`Download ${item.title}`}
-                            title="Download original"
+                            onClick={() => setStatsItem(item)}
+                            aria-label={`Show stats for ${item.title}`}
                           >
-                            <DownloadIcon size={16} aria-hidden />
+                            <BarChart3Icon size={16} aria-hidden />
                           </Button>
-                        ) : null}
-                        <Button
-                          size="icon-sm"
-                          variant="secondary"
-                          aria-label={`Edit ${item.title}`}
-                          title="Edit track"
-                          onClick={() => setEditingId(item.id)}
-                        >
-                          <PencilIcon size={16} aria-hidden />
-                        </Button>
-                        <Button
-                          size="icon-sm"
-                          variant="text"
-                          onClick={() => setStatsItem(item)}
-                          aria-label={`Show stats for ${item.title}`}
-                          title="Stats"
-                        >
-                          <BarChart3Icon size={16} aria-hidden />
-                        </Button>
+                        </Tooltip>
                         <AddToPlaylistButton
                           soundId={item.id}
                           trackTitle={item.title}
