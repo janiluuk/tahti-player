@@ -187,6 +187,11 @@ export type PublicTrackDetail = {
   peaks: number[] | null;
   commentCount: number;
   downloadCount: number;
+  accessMode?: 'FREE' | 'SUBSCRIBERS_ONLY' | 'PURCHASE';
+  purchaseTierId?: string | null;
+  purchaseTierName?: string | null;
+  purchaseTierPriceCents?: number | null;
+  downloadsEnabled?: boolean;
 };
 
 export type TrackComment = {
