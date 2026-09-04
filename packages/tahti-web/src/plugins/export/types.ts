@@ -1,13 +1,10 @@
 /**
- * A place a release or track can be pushed out to. This is a metadata
- * registry, not a behavioral plugin yet — every DSP with a fixed `to`
- * pointing at `/studio/distribution` goes through the same one Revelator
- * submission regardless of which target's tile got clicked, and the
- * Sources-backed targets (`bandcamp`, `soundcloud`, ...) deep-link into
- * the existing Sources flow rather than exposing their own submit/status
- * behavior. See PLUGIN-STORE-PLAN.md §4 for what a real `ExportProvider`
- * (submit/status/webhook) would need — that doesn't exist in the API yet,
- * so this doesn't fake one.
+ * A place a release or track can be pushed out to.
+ *
+ * Catalog tiles remain `ExportTarget` metadata (deep links into Studio
+ * distribution / Sources). Behavioral submit/status lives on
+ * `ExportProvider` (`provider.ts` / `revelator.ts`) against sibling
+ * `GET /api/me/export-plugins` — see ../tahti docs/technical/export-plugin-contracts.md.
  */
 export type ExportTarget = {
   id: string;

@@ -13,13 +13,11 @@ import { useLibraryStore } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { useTrackDetailStore } from '../stores/trackDetailStore';
 import { PlayableTrackContextMenu } from './PlayableTrackContextMenu';
-import { TrackInfoDialog, type TrackInfo } from './TrackInfoDialog';
 
 type Props = {
   items: TahtiPlayable[];
   emptyMessage?: string;
   playAll?: boolean;
-  artistUsername?: string;
   compactActions?: boolean;
   /** Present only when the caller has already decided the viewer can
    * edit these tracks (e.g. their own catalog) -- omit entirely to keep
@@ -31,7 +29,6 @@ export function PlayableTrackTable({
   items,
   emptyMessage = 'No tracks yet.',
   playAll = true,
-  artistUsername,
   compactActions = false,
   onEdit,
 }: Props) {
@@ -44,7 +41,6 @@ export function PlayableTrackTable({
   const setPlayerStatus = usePlayerStore((s) => s.setStatus);
   const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
   const favoriteTracks = useLibraryStore((s) => s.favoriteTracks);
-  const [trackInfo, setTrackInfo] = useState<TrackInfo | null>(null);
   const [confirmAddAllOpen, setConfirmAddAllOpen] = useState(false);
   const rememberTrackDetail = useTrackDetailStore((s) => s.remember);
 
@@ -57,6 +53,35 @@ export function PlayableTrackTable({
 
   const resolve = (track: Track): TahtiPlayable | null =>
     byId.get(track.source.id) ?? null;
+
+  // The listener-facing track page (waveform, artwork, comments — see
+  // TrackDetailView) is the default destination for both the title text
+  // and the "Open track" action icon. Embed-only sources (hearthis.at,
+  // etc.) have no internal detail page, so clicking the title falls back
+  // to playing instead (matching TrackTable's own default when there's no
+  // onOpenDetails handler at all).
+  const openDetail = (track: Track) => {
+    const item = resolve(track);
+    if (!item) {
+      return;
+    }
+    const archiveId = soundIdFromPlayableId(track.source.id);
+    if (archiveId) {
+      rememberTrackDetail(item);
+      void navigate({ to: '/t/$id', params: { id: archiveId } });
+      return;
+    }
+    if (currentId === item.id) {
+      setPlayerStatus(
+        playerStatus === 'playing' || playerStatus === 'loading'
+          ? 'paused'
+          : 'playing',
+      );
+      return;
+    }
+    const rest = items.filter((i) => i.id !== item.id);
+    play(item, { enqueueRest: rest });
+  };
 
   const addAllToQueue = () => {
     const queuedIds = new Set(queue.map((queueItem) => queueItem.id));
@@ -118,26 +143,8 @@ export function PlayableTrackTable({
               const rest = items.filter((i) => i.id !== item.id);
               play(item, { enqueueRest: rest });
             },
-            onOpenDetails: (track) => {
-              const item = resolve(track);
-              if (item) {
-                setTrackInfo({
-                  title: item.title,
-                  artistName: item.artist,
-                  artistUsername: artistUsername ?? item.channelSlug ?? null,
-                  artworkUrl: item.coverUrl ?? null,
-                  playable: item,
-                });
-              }
-            },
-            onOpenDetail: (track) => {
-              const item = resolve(track);
-              const archiveId = soundIdFromPlayableId(track.source.id);
-              if (item && archiveId) {
-                rememberTrackDetail(item);
-                void navigate({ to: '/t/$id', params: { id: archiveId } });
-              }
-            },
+            onOpenDetails: openDetail,
+            onOpenDetail: openDetail,
             onAddToQueue: (track) => {
               const item = resolve(track);
               if (item) {
@@ -190,11 +197,6 @@ export function PlayableTrackTable({
           }}
         />
       </div>
-      <TrackInfoDialog
-        isOpen={Boolean(trackInfo)}
-        track={trackInfo}
-        onClose={() => setTrackInfo(null)}
-      />
       <Dialog.Root
         isOpen={confirmAddAllOpen}
         onClose={() => setConfirmAddAllOpen(false)}
