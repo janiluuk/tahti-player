@@ -55,6 +55,20 @@ describe('mergeRevenueOrders', () => {
     expect(rows[1]?.description).toBe('Fan-sub — Patron');
   });
 
+  it('keeps track-purchase payout labels without a Fan-sub prefix', () => {
+    const rows = mergeRevenueOrders(
+      [
+        payout({
+          id: 'buy-1',
+          tierName: 'Track purchase — riff.wav',
+          paidAt: '2026-08-12T10:00:00.000Z',
+        }),
+      ],
+      [],
+    );
+    expect(rows[0]?.description).toBe('Track purchase — riff.wav');
+  });
+
   it('caps the combined list at twelve rows', () => {
     const payouts = Array.from({ length: 8 }, (_, index) =>
       payout({

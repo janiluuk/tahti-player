@@ -54,6 +54,7 @@ import {
   withMockFallback,
   type FetchMeta,
 } from './mode';
+import { findMockPurchaseTier } from './purchase-tiers';
 import type {
   Announcement,
   ArchiveItem,
@@ -316,6 +317,10 @@ function mockTrackDetailFromUpload(id: string): PublicTrackDetail | null {
     return null;
   }
   const channel = mockChannel(uploaded.channelSlug);
+  const purchaseTierId = uploaded.purchaseTierId ?? null;
+  const tier = purchaseTierId
+    ? findMockPurchaseTier(uploaded.channelSlug, purchaseTierId)
+    : null;
   return {
     id: uploaded.id,
     title: uploaded.title,
@@ -348,6 +353,11 @@ function mockTrackDetailFromUpload(id: string): PublicTrackDetail | null {
     peaks: null,
     commentCount: 0,
     downloadCount: 0,
+    accessMode: uploaded.accessMode ?? 'FREE',
+    purchaseTierId,
+    purchaseTierName: tier?.name ?? null,
+    purchaseTierPriceCents: tier?.priceCents ?? null,
+    downloadsEnabled: uploaded.downloadsEnabled,
   };
 }
 

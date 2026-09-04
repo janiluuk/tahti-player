@@ -21,7 +21,9 @@ export function mergeRevenueOrders(
     ...payouts.map((payout) => ({
       id: payout.id,
       date: new Date(payout.paidAt ?? payout.createdAt),
-      description: `Fan-sub — ${payout.tierName}`,
+      description: payout.tierName.startsWith('Track purchase')
+        ? payout.tierName
+        : `Fan-sub — ${payout.tierName}`,
       grossCents: payout.grossCents,
       netCents: payout.netToArtistCents,
       state: payout.state,
