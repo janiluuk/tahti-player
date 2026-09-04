@@ -31,13 +31,11 @@ import {
   SaveButton,
   Select,
   Slider,
-  Tabs,
   Toggle,
   Tooltip,
 } from '@tahti-player/ui';
 
 import {
-  BRAND_ACCENTS,
   channelLookExtrasFromPatch,
   channelLookExtrasFromVisual,
   deleteChannelVisualPreset,
@@ -102,10 +100,11 @@ import {
 } from '../plugins/visualizers';
 import {
   BackdropPanel,
+  PlayerPanel,
   resolveHeaderDesignMode,
   type HeaderDesignMode,
+  type PlayerDesignTab,
 } from './channel-designer';
-import { ColorSchemeFields } from './channel-designer/ColorSchemeFields';
 import { ChannelBackdropCard } from './ChannelBackdropCard';
 import { ChannelElementEditor } from './ChannelElementEditor';
 import { ChannelTextOverlayEditor } from './ChannelTextOverlayEditor';
@@ -116,7 +115,6 @@ import { PageLoading } from './PageStates';
 import { Eyebrow } from './tahti/Eyebrow';
 
 type TabId = 'visualizer' | 'color-scheme' | 'header';
-type PlayerDesignTab = 'gradient' | 'video-image' | 'visualizer' | 'overlay';
 type LookSection =
   | ChannelLookElementId
   | 'player-design'
@@ -939,81 +937,6 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       applyLocal({ headerStyle: mode });
     };
 
-    const playerGradientControls = (
-      <section className="flex flex-col gap-4">
-        <div className="border-border bg-background-secondary/40 flex items-center justify-between gap-3 rounded-lg border p-3 text-sm">
-          <span>
-            <span className="block font-semibold">
-              Use a separate gradient for the player
-            </span>
-            <span className="text-foreground-secondary block text-xs">
-              Off by default — the player reuses the gradient set above for the
-              channel header.
-            </span>
-          </span>
-          <Toggle
-            label="Use a separate gradient for the player"
-            checked={visual.usePlayerGradient ?? false}
-            onChange={(usePlayerGradient) => {
-              if (usePlayerGradient && !visual.playerColorSchemeJson) {
-                setPlayerScheme(scheme);
-              }
-              applyLocal({ usePlayerGradient });
-            }}
-          />
-        </div>
-        {visual.usePlayerGradient ? (
-          <>
-            <div className="flex flex-col gap-2">
-              <Eyebrow>Gradient presets</Eyebrow>
-              <div className="flex flex-wrap gap-2">
-                {BRAND_ACCENTS.map((brand) => {
-                  const isSelected =
-                    playerScheme.accent === brand.accent &&
-                    playerScheme.highlight === brand.highlight;
-                  return (
-                    <button
-                      key={brand.id}
-                      type="button"
-                      title={brand.label}
-                      aria-label={`${brand.label} player gradient`}
-                      aria-pressed={isSelected}
-                      onClick={() => {
-                        setPlayerScheme({
-                          ...playerScheme,
-                          accent: brand.accent,
-                          highlight: brand.highlight,
-                        });
-                        setDirty(true);
-                      }}
-                      className={`h-10 w-16 rounded-md border-2 transition-transform hover:scale-105 ${
-                        isSelected
-                          ? 'border-primary shadow-md'
-                          : 'border-transparent'
-                      }`}
-                      style={{ background: brand.gradient }}
-                    />
-                  );
-                })}
-              </div>
-            </div>
-            <ColorSchemeFields
-              scheme={playerScheme}
-              onChange={(next) => {
-                setPlayerScheme(next);
-                setDirty(true);
-              }}
-            />
-          </>
-        ) : (
-          <p className="text-foreground-secondary text-xs">
-            The player currently matches the channel header's gradient, set in
-            Header.
-          </p>
-        )}
-      </section>
-    );
-
     const slideshowControls = (
       <section className="flex flex-col gap-4">
         <FilePicker
@@ -1301,134 +1224,129 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       />
     );
 
-    const visualizerItem = {
-      id: 'visualizer',
-      label: 'Visualizer',
-      icon: <PlaySquareIcon size={14} />,
-      content: (
-        <section className="flex flex-col gap-4">
-          {(() => {
-            const meta = visualizerMetadata(activeVisualizer);
-            return (
-              <PluginItem
-                icon={
-                  <button
-                    type="button"
-                    className="hover:bg-background-secondary flex size-full items-center justify-center rounded-lg transition-colors"
-                    aria-label="Choose visualizer"
-                    title="Choose visualizer"
-                    onClick={() => {
-                      setVisualizerPickerPreset(activeVisualizer);
-                      setVisualizerPickerOpen(true);
-                    }}
-                  >
-                    <meta.Icon size={22} aria-hidden />
-                  </button>
-                }
-                name={
-                  <span className="inline-flex flex-wrap items-center gap-2 text-base">
-                    {activeVisualizer.replace(/_/g, ' ')}
-                    {meta.audioReactive ? (
-                      <Badge variant="pill" color="blue">
-                        Audio reactive
-                      </Badge>
-                    ) : null}
-                  </span>
-                }
-                description={meta.description}
-                descriptionBelow
-                className={`ring-primary bg-primary/10 ring-2 ring-inset ${
-                  !visualizerEnabled ? 'opacity-50 grayscale' : ''
-                }`}
-                rightAccessory={
-                  <div className="flex items-center gap-1">
-                    <Tooltip content="Previous visualizer" side="top">
-                      <Button
-                        size="icon-sm"
-                        variant="text"
-                        disabled={!visualizerEnabled}
-                        onClick={() => changeVisualizer(-1)}
-                        aria-label="Previous visualizer"
-                      >
-                        <ChevronLeftIcon size={16} aria-hidden />
-                      </Button>
-                    </Tooltip>
-                    <Tooltip content="Next visualizer" side="top">
-                      <Button
-                        size="icon-sm"
-                        variant="text"
-                        disabled={!visualizerEnabled}
-                        onClick={() => changeVisualizer(1)}
-                        aria-label="Next visualizer"
-                      >
-                        <ChevronRightIcon size={16} aria-hidden />
-                      </Button>
-                    </Tooltip>
-                    <Tooltip
-                      content={`Configure ${activeVisualizer.replace(/_/g, ' ')}`}
-                      side="top"
+    const visualizerSlot = (
+      <section className="flex flex-col gap-4">
+        {(() => {
+          const meta = visualizerMetadata(activeVisualizer);
+          return (
+            <PluginItem
+              icon={
+                <button
+                  type="button"
+                  className="hover:bg-background-secondary flex size-full items-center justify-center rounded-lg transition-colors"
+                  aria-label="Choose visualizer"
+                  title="Choose visualizer"
+                  onClick={() => {
+                    setVisualizerPickerPreset(activeVisualizer);
+                    setVisualizerPickerOpen(true);
+                  }}
+                >
+                  <meta.Icon size={22} aria-hidden />
+                </button>
+              }
+              name={
+                <span className="inline-flex flex-wrap items-center gap-2 text-base">
+                  {activeVisualizer.replace(/_/g, ' ')}
+                  {meta.audioReactive ? (
+                    <Badge variant="pill" color="blue">
+                      Audio reactive
+                    </Badge>
+                  ) : null}
+                </span>
+              }
+              description={meta.description}
+              descriptionBelow
+              className={`ring-primary bg-primary/10 ring-2 ring-inset ${
+                !visualizerEnabled ? 'opacity-50 grayscale' : ''
+              }`}
+              rightAccessory={
+                <div className="flex items-center gap-1">
+                  <Tooltip content="Previous visualizer" side="top">
+                    <Button
+                      size="icon-sm"
+                      variant="text"
+                      disabled={!visualizerEnabled}
+                      onClick={() => changeVisualizer(-1)}
+                      aria-label="Previous visualizer"
                     >
-                      <Button
-                        size="icon-sm"
-                        variant={showVisualizerSettings ? 'default' : 'text'}
-                        disabled={!visualizerEnabled}
-                        aria-pressed={showVisualizerSettings}
-                        aria-label={`Configure ${activeVisualizer.replace(/_/g, ' ')}`}
-                        onClick={() =>
-                          setShowVisualizerSettings((isVisible) => !isVisible)
-                        }
-                      >
-                        <SettingsIcon size={15} aria-hidden />
-                      </Button>
-                    </Tooltip>
-                    <Tooltip
-                      content={
+                      <ChevronLeftIcon size={16} aria-hidden />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip content="Next visualizer" side="top">
+                    <Button
+                      size="icon-sm"
+                      variant="text"
+                      disabled={!visualizerEnabled}
+                      onClick={() => changeVisualizer(1)}
+                      aria-label="Next visualizer"
+                    >
+                      <ChevronRightIcon size={16} aria-hidden />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip
+                    content={`Configure ${activeVisualizer.replace(/_/g, ' ')}`}
+                    side="top"
+                  >
+                    <Button
+                      size="icon-sm"
+                      variant={showVisualizerSettings ? 'default' : 'text'}
+                      disabled={!visualizerEnabled}
+                      aria-pressed={showVisualizerSettings}
+                      aria-label={`Configure ${activeVisualizer.replace(/_/g, ' ')}`}
+                      onClick={() =>
+                        setShowVisualizerSettings((isVisible) => !isVisible)
+                      }
+                    >
+                      <SettingsIcon size={15} aria-hidden />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip
+                    content={
+                      visualizerEnabled
+                        ? 'Disable visualizer'
+                        : 'Enable visualizer'
+                    }
+                    side="top"
+                  >
+                    <Button
+                      size="icon-sm"
+                      variant={visualizerEnabled ? 'default' : 'secondary'}
+                      aria-pressed={visualizerEnabled}
+                      aria-label={
                         visualizerEnabled
                           ? 'Disable visualizer'
                           : 'Enable visualizer'
                       }
-                      side="top"
-                    >
-                      <Button
-                        size="icon-sm"
-                        variant={visualizerEnabled ? 'default' : 'secondary'}
-                        aria-pressed={visualizerEnabled}
-                        aria-label={
-                          visualizerEnabled
-                            ? 'Disable visualizer'
-                            : 'Enable visualizer'
+                      onClick={() => {
+                        if (visualizerEnabled) {
+                          setPreviewPreset('MINIMAL');
+                          applyLocal({ visualPreset: 'MINIMAL' });
+                        } else {
+                          setPreviewPreset(activeVisualizer);
+                          applyLocal({ visualPreset: activeVisualizer });
                         }
-                        onClick={() => {
-                          if (visualizerEnabled) {
-                            setPreviewPreset('MINIMAL');
-                            applyLocal({ visualPreset: 'MINIMAL' });
-                          } else {
-                            setPreviewPreset(activeVisualizer);
-                            applyLocal({ visualPreset: activeVisualizer });
-                          }
-                        }}
-                      >
-                        {visualizerEnabled ? (
-                          <CheckIcon size={15} aria-hidden />
-                        ) : (
-                          <PlaySquareIcon size={15} aria-hidden />
-                        )}
-                      </Button>
-                    </Tooltip>
-                  </div>
-                }
-              />
-            );
-          })()}
-          {dockTuning && (
-            <div className="border-border flex flex-col gap-4 rounded-lg border p-3">
-              <Eyebrow>Tune {visual.visualPreset.replace(/_/g, ' ')}</Eyebrow>
-              {tuningSliders(visual.visualPreset)}
-            </div>
-          )}
-        </section>
-      ),
-    };
+                      }}
+                    >
+                      {visualizerEnabled ? (
+                        <CheckIcon size={15} aria-hidden />
+                      ) : (
+                        <PlaySquareIcon size={15} aria-hidden />
+                      )}
+                    </Button>
+                  </Tooltip>
+                </div>
+              }
+            />
+          );
+        })()}
+        {dockTuning && (
+          <div className="border-border flex flex-col gap-4 rounded-lg border p-3">
+            <Eyebrow>Tune {visual.visualPreset.replace(/_/g, ' ')}</Eyebrow>
+            {tuningSliders(visual.visualPreset)}
+          </div>
+        )}
+      </section>
+    );
 
     const channelTextOverlaySection = (
       <ChannelTextOverlayEditor
@@ -1564,70 +1482,52 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       </div>
     );
 
-    const playerDesignTabsContent = (
-      <Tabs
-        listClassName="flex-wrap border-border border-b pb-3"
-        panelClassName="pt-2"
-        selectedIndex={
-          playerDesignTab === 'gradient'
-            ? 0
-            : playerDesignTab === 'video-image'
-              ? 1
-              : playerDesignTab === 'visualizer'
-                ? 2
-                : 3
-        }
-        onChange={(index) => {
-          const nextTab: PlayerDesignTab =
-            index === 0
-              ? 'gradient'
-              : index === 1
-                ? 'video-image'
-                : index === 2
-                  ? 'visualizer'
-                  : 'overlay';
-          setPlayerDesignTab(nextTab);
+    const playerVideoSlot = (
+      <div className="relative">
+        <FilePicker
+          accept="video/mp4,video/webm,image/jpeg,image/png,image/webp,image/gif"
+          disabled={busy}
+          selectedFiles={pendingVideoFile ? [pendingVideoFile] : []}
+          labels={{
+            title: 'Choose a video or image',
+            description: 'MP4, WebM, JPEG, PNG, WebP, or GIF · maximum 10 MB',
+            browse: 'Browse files',
+          }}
+          onFiles={selectVideoFile}
+        />
+        <div className="absolute top-2 right-2">{videoUrlToggle}</div>
+        {videoUrlInput}
+      </div>
+    );
+
+    const playerPanel = (
+      <PlayerPanel
+        tab={playerDesignTab}
+        onTabChange={setPlayerDesignTab}
+        usePlayerGradient={visual.usePlayerGradient ?? false}
+        playerScheme={playerScheme}
+        onUsePlayerGradient={(usePlayerGradient) => {
+          if (usePlayerGradient && !visual.playerColorSchemeJson) {
+            setPlayerScheme(scheme);
+          }
+          applyLocal({ usePlayerGradient });
         }}
-        items={[
-          {
-            id: 'gradient',
-            label: 'Gradient',
-            content: playerGradientControls,
-          },
-          {
-            id: 'video-image',
-            label: 'Video / image',
-            content: (
-              <div className="flex flex-col gap-3">
-                <p className="text-foreground-secondary text-xs">
-                  Use a looping video or still image behind the channel header.
-                </p>
-                <div className="relative">
-                  <FilePicker
-                    accept="video/mp4,video/webm,image/jpeg,image/png,image/webp,image/gif"
-                    disabled={busy}
-                    selectedFiles={pendingVideoFile ? [pendingVideoFile] : []}
-                    labels={{
-                      title: 'Choose a video or image',
-                      description:
-                        'MP4, WebM, JPEG, PNG, WebP, or GIF · maximum 10 MB',
-                      browse: 'Browse files',
-                    }}
-                    onFiles={selectVideoFile}
-                  />
-                  <div className="absolute top-2 right-2">{videoUrlToggle}</div>
-                </div>
-                {videoUrlInput}
-              </div>
-            ),
-          },
-          visualizerItem,
-          {
-            id: 'overlay',
-            label: 'Overlay',
-            content: playerOverlaySection,
-          },
-        ]}
+        onPlayerSchemeChange={(next) => {
+          setPlayerScheme(next);
+          setDirty(true);
+        }}
+        onPlayerBrandAccent={(brand) => {
+          setPlayerScheme({
+            ...playerScheme,
+            accent: brand.accent,
+            highlight: brand.highlight,
+          });
+          setDirty(true);
+        }}
+        videoSlot={playerVideoSlot}
+        visualizerSlot={visualizerSlot}
+        overlaySlot={playerOverlaySection}
+        footerSlot={channelTextOverlaySection}
       />
     );
 
@@ -1751,12 +1651,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       {
         id: 'player' as const,
         disabled: !lookBlockVisible('player'),
-        content: (
-          <div id="channel-designer-section-player">
-            {playerDesignTabsContent}
-            <div className="mt-5">{channelTextOverlaySection}</div>
-          </div>
-        ),
+        content: playerPanel,
       },
       {
         id: 'backdrop' as const,

@@ -10,3 +10,5 @@ export {
   type HeaderDesignMode,
 } from './HeaderStyleTabs';
 export { PageBackgroundField } from './PageBackgroundField';
+export { PlayerGradientControls } from './PlayerGradientControls';
+export { PlayerPanel, type PlayerDesignTab } from './PlayerPanel';

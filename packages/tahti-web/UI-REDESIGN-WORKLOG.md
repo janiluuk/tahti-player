@@ -1,3 +1,14 @@
+## 2026-09-05 — Channel Designer PlayerPanel extract (0.0.82)
+
+**Status:** executed.
+
+Look → Player is `PlayerPanel` + `PlayerGradientControls` under
+`components/channel-designer/`. Storybook:
+`Tahti/Channel/Designer/PlayerPanel` and `PlayerGradientControls`.
+Visualizer / video / overlay remain slots for later extracts.
+
+Todo: `docs/todo/channel-designer-storybook-elements.md`.
+
 ## 2026-09-05 — Channel Designer BackdropPanel extract (0.0.81)
 
 **Status:** executed.
