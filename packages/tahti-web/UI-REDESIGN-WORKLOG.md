@@ -1,5 +1,16 @@
 # UI redesign worklog — Nuclear (artist + admin)
 
+## 2026-09-04 — Artist look: brandAccent + textLayer live mapping (0.0.70)
+
+**Status:** executed.
+
+Public channel carries `brandAccentPreset` for GRADIENT washes on artist and
+channel pages. `fetchChannel` maps live `textLayer*` → `textOverlay*`; save
+also PATCHes `/api/me/channel/text-layer`. Mock exposes player/background
+look extras on PublicChannel. E2E covers artist header `data-header-style`.
+
+Todo: `docs/todo/channel-designer-artist-full.md`.
+
 ## 2026-09-04 — Channel Designer controls the artist page look (0.0.69)
 
 **Status:** executed (client). API extras still localStorage-only.

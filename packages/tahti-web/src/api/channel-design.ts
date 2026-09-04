@@ -554,6 +554,14 @@ export function getMockChannelColorScheme(): Required<ColorScheme> {
   return fillColorScheme(parseColorScheme(mockVisual.colorSchemeJson));
 }
 
+export function getMockBrandAccentPreset(): string | null {
+  return mockVisual.brandAccentPreset ?? null;
+}
+
+export function getMockVisualSettingsJson(): string | null {
+  return mockVisual.visualSettingsJson ?? null;
+}
+
 export function getMockChannelLinks(): ChannelLink[] {
   return mockVisual.channelLinks ?? [];
 }
@@ -903,7 +911,46 @@ export async function patchChannelVisual(
         body: JSON.stringify(toChannelVisualApiPatch(patch)),
       },
     );
-    return { ok: true, data };
+    const textLayerTouched =
+      patch.textOverlayMode !== undefined ||
+      patch.textOverlayText !== undefined ||
+      patch.textOverlayAlign !== undefined;
+    if (textLayerTouched) {
+      try {
+        await requestJson('/api/me/channel/text-layer', {
+          method: 'PATCH',
+          body: JSON.stringify({
+            ...(patch.textOverlayMode !== undefined
+              ? { textLayerMode: patch.textOverlayMode }
+              : {}),
+            ...(patch.textOverlayText !== undefined
+              ? { textLayerText: patch.textOverlayText }
+              : {}),
+            ...(patch.textOverlayAlign !== undefined
+              ? { textLayerAlign: patch.textOverlayAlign }
+              : {}),
+          }),
+        });
+      } catch {
+        // Visual save already succeeded; text layer is best-effort until
+        // designer stores exclusively against the text-layer route.
+      }
+    }
+    return {
+      ok: true,
+      data: {
+        ...data,
+        ...(patch.textOverlayMode !== undefined
+          ? { textOverlayMode: patch.textOverlayMode }
+          : {}),
+        ...(patch.textOverlayText !== undefined
+          ? { textOverlayText: patch.textOverlayText }
+          : {}),
+        ...(patch.textOverlayAlign !== undefined
+          ? { textOverlayAlign: patch.textOverlayAlign }
+          : {}),
+      },
+    };
   } catch (err) {
     return {
       ok: false,

@@ -42,6 +42,7 @@ import {
   type PublicPressKitImage,
 } from '../api/artist-settings';
 import {
+  BRAND_ACCENTS,
   isActiveTextOverlay,
   loadChannelLookExtras,
   parseColorScheme,
@@ -295,6 +296,7 @@ export function ArtistView({ username }: { username: string }) {
     | 'colorScheme'
     | 'colorSchemeJson'
     | 'headerStyle'
+    | 'brandAccentPreset'
     | 'hlsUrl'
     | 'videoBackgroundUrl'
     | 'slideshowImages'
@@ -303,6 +305,11 @@ export function ArtistView({ username }: { username: string }) {
     | 'playerOverlayMode'
     | 'playerOverlayText'
     | 'playerOverlayAlign'
+    | 'usePlayerGradient'
+    | 'playerColorSchemeJson'
+    | 'useBackgroundGradient'
+    | 'backgroundColorSchemeJson'
+    | 'backgroundVisualPreset'
   > | null>(null);
   const [lookExtras, setLookExtras] = useState<
     ReturnType<typeof loadChannelLookExtras>
@@ -421,6 +428,7 @@ export function ArtistView({ username }: { username: string }) {
         colorScheme: res.data.colorScheme,
         colorSchemeJson: res.data.colorSchemeJson,
         headerStyle: res.data.headerStyle,
+        brandAccentPreset: res.data.brandAccentPreset,
         hlsUrl: res.data.hlsUrl,
         videoBackgroundUrl: res.data.videoBackgroundUrl,
         slideshowImages: res.data.slideshowImages,
@@ -429,8 +437,30 @@ export function ArtistView({ username }: { username: string }) {
         playerOverlayMode: res.data.playerOverlayMode,
         playerOverlayText: res.data.playerOverlayText,
         playerOverlayAlign: res.data.playerOverlayAlign,
+        usePlayerGradient: res.data.usePlayerGradient,
+        playerColorSchemeJson: res.data.playerColorSchemeJson,
+        useBackgroundGradient: res.data.useBackgroundGradient,
+        backgroundColorSchemeJson: res.data.backgroundColorSchemeJson,
+        backgroundVisualPreset: res.data.backgroundVisualPreset,
       });
-      setLookExtras(loadChannelLookExtras(slug));
+      setLookExtras({
+        ...loadChannelLookExtras(slug),
+        ...(res.data.usePlayerGradient !== undefined
+          ? { usePlayerGradient: res.data.usePlayerGradient }
+          : {}),
+        ...(res.data.playerColorSchemeJson !== undefined
+          ? { playerColorSchemeJson: res.data.playerColorSchemeJson }
+          : {}),
+        ...(res.data.useBackgroundGradient !== undefined
+          ? { useBackgroundGradient: res.data.useBackgroundGradient }
+          : {}),
+        ...(res.data.backgroundColorSchemeJson !== undefined
+          ? { backgroundColorSchemeJson: res.data.backgroundColorSchemeJson }
+          : {}),
+        ...(res.data.backgroundVisualPreset !== undefined
+          ? { backgroundVisualPreset: res.data.backgroundVisualPreset }
+          : {}),
+      });
       setDiscoWidgets(widgets.data);
       setChannelPosts(posts.data);
       setChannelNews(news);
@@ -724,7 +754,13 @@ export function ArtistView({ username }: { username: string }) {
     lookExtras.playerOverlayText ?? channelVisual?.playerOverlayText ?? null;
   const playerOverlayAlign =
     lookExtras.playerOverlayAlign ?? channelVisual?.playerOverlayAlign ?? null;
-  const backgroundVisualPreset = lookExtras.backgroundVisualPreset ?? null;
+  const backgroundVisualPreset =
+    lookExtras.backgroundVisualPreset ??
+    channelVisual?.backgroundVisualPreset ??
+    null;
+  const brandGradient = BRAND_ACCENTS.find(
+    (brand) => brand.id === channelVisual?.brandAccentPreset,
+  )?.gradient;
   const showPlayerOverlay = isActiveTextOverlay({
     mode: playerOverlayMode,
     text: playerOverlayText,
@@ -768,6 +804,7 @@ export function ArtistView({ username }: { username: string }) {
         colorScheme={headerScheme}
         headerStyle={channelVisual?.headerStyle}
         videoBackgroundUrl={channelVisual?.videoBackgroundUrl}
+        gradientOverride={brandGradient}
         subtitle={`@${artist.username}${artist.pronouns ? ` · ${artist.pronouns}` : ''}`}
         description={
           artist.bio ? (
@@ -1571,7 +1608,6 @@ export function ArtistView({ username }: { username: string }) {
               if (!slug) {
                 return;
               }
-              setLookExtras(loadChannelLookExtras(slug));
               void fetchChannel(slug).then((res) => {
                 if (!res.data) {
                   return;
@@ -1582,6 +1618,7 @@ export function ArtistView({ username }: { username: string }) {
                   colorScheme: res.data.colorScheme,
                   colorSchemeJson: res.data.colorSchemeJson,
                   headerStyle: res.data.headerStyle,
+                  brandAccentPreset: res.data.brandAccentPreset,
                   hlsUrl: res.data.hlsUrl,
                   videoBackgroundUrl: res.data.videoBackgroundUrl,
                   slideshowImages: res.data.slideshowImages,
@@ -1591,6 +1628,34 @@ export function ArtistView({ username }: { username: string }) {
                   playerOverlayMode: res.data.playerOverlayMode,
                   playerOverlayText: res.data.playerOverlayText,
                   playerOverlayAlign: res.data.playerOverlayAlign,
+                  usePlayerGradient: res.data.usePlayerGradient,
+                  playerColorSchemeJson: res.data.playerColorSchemeJson,
+                  useBackgroundGradient: res.data.useBackgroundGradient,
+                  backgroundColorSchemeJson: res.data.backgroundColorSchemeJson,
+                  backgroundVisualPreset: res.data.backgroundVisualPreset,
+                });
+                setLookExtras({
+                  ...loadChannelLookExtras(slug),
+                  ...(res.data.usePlayerGradient !== undefined
+                    ? { usePlayerGradient: res.data.usePlayerGradient }
+                    : {}),
+                  ...(res.data.playerColorSchemeJson !== undefined
+                    ? { playerColorSchemeJson: res.data.playerColorSchemeJson }
+                    : {}),
+                  ...(res.data.useBackgroundGradient !== undefined
+                    ? { useBackgroundGradient: res.data.useBackgroundGradient }
+                    : {}),
+                  ...(res.data.backgroundColorSchemeJson !== undefined
+                    ? {
+                        backgroundColorSchemeJson:
+                          res.data.backgroundColorSchemeJson,
+                      }
+                    : {}),
+                  ...(res.data.backgroundVisualPreset !== undefined
+                    ? {
+                        backgroundVisualPreset: res.data.backgroundVisualPreset,
+                      }
+                    : {}),
                 });
               });
             }}

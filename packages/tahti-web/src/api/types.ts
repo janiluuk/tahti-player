@@ -74,13 +74,17 @@ export type PublicChannel = {
     background?: string;
     foreground?: string;
   } | null;
+  /** Channel Designer brand accent id (aurora/ember/…) — drives GRADIENT
+   * header wash when present on the public channel DTO. */
+  brandAccentPreset?: string | null;
   /** Now-playing title/artist overlay layout — see
    * content/nowPlayingOverlayPresets.ts. Defaults to 'classic' when unset. */
   nowPlayingOverlayStyle?: string | null;
   nowPlayingOverlaySettingsJson?: string | null;
   /** Outbound links shown in the channel page's Links block. */
   channelLinks?: Array<{ label: string; url: string }> | null;
-  /** Stylized headline shown in the channel page's Text overlay block. */
+  /** Stylized headline shown in the channel page's Text overlay block.
+   * Live API returns these as `textLayer*`; fetchChannel normalizes. */
   textOverlayMode?: string | null;
   textOverlayText?: string | null;
   textOverlayAlign?: string | null;
@@ -89,6 +93,12 @@ export type PublicChannel = {
   playerOverlayMode?: string | null;
   playerOverlayText?: string | null;
   playerOverlayAlign?: string | null;
+  /** Client/mock look extras — live API may omit until columns land. */
+  usePlayerGradient?: boolean;
+  playerColorSchemeJson?: string | null;
+  useBackgroundGradient?: boolean;
+  backgroundColorSchemeJson?: string | null;
+  backgroundVisualPreset?: string | null;
   user: {
     username: string;
     displayName: string;

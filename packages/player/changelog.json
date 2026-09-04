@@ -1,5 +1,19 @@
 [
   {
+    "date": "2026-09-04T21:20",
+    "description": "Your artist page picks up Channel Designer brand gradients and text overlays from the live channel API, not only the local preview.",
+    "type": "improvement",
+    "contributors": [
+      "jani"
+    ],
+    "tags": [
+      {
+        "label": "Studio",
+        "color": "purple"
+      }
+    ]
+  },
+  {
     "date": "2026-09-04T17:15",
     "description": "Channel Designer look settings now shape your public artist page \u2014 header style and colors, player visualizer and gradients, and page background effects \u2014 not only the channel preview.",
     "type": "improvement",

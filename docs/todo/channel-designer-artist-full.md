@@ -1,42 +1,25 @@
 # Channel Designer → artist page full control
 
-**Status:** implemented client-side (2026-09-04). Remaining gaps are API.
+**Status:** shipped client-side 2026-09-04 (0.0.69+).
 
-## Done on artist page (`ArtistView`)
+## Done
 
-- Header: `headerStyle` (GRADIENT/SOLID/VIDEO_LOOP), `videoBackgroundUrl`,
-  color scheme, visualizer preset + `visualSettingsJson` via
-  `EntitySocialHeader`
-- Player stage: separate player gradient when enabled, visualizer preset /
-  settings, `NowPlayingOverlay`, player text overlay
-- Page: background palette + ambient `backgroundVisualPreset` visualizer
-- Look extras reload after Channel Designer save
-- Designer: background visualizer preset picker (Backdrop)
+- Artist header: headerStyle, video, color scheme, brandAccentPreset
+  gradient, visualizer + visualSettingsJson
+- Player stage: player gradient, visualizer, NowPlayingOverlay, player
+  text overlay
+- Page: background palette + ambient backgroundVisualPreset
+- Designer: background visualizer picker
+- ChannelView: same player/background schemes + brand gradient
+- PublicChannel: brandAccentPreset + mock look extras; fetchChannel maps
+  live `textLayer*` → `textOverlay*`; live save also PATCHes
+  `/api/me/channel/text-layer`
+- E2E: `e2e/channel-designer-artist-look.spec.ts`
 
-## Done on channel page (`ChannelView`)
+## Still API-limited (live multi-device)
 
-- Player vs header color schemes when `usePlayerGradient`
-- Page background palette + ambient background visualizer
-- Hero uses `visualSettingsJson` when present (else radio default tuning)
-
-## Still unwired / missing (flagged)
-
-1. **Live API columns** for look extras — `usePlayerGradient`,
-   `playerColorSchemeJson`, `useBackgroundGradient`,
-   `backgroundColorSchemeJson`, `backgroundVisualPreset`,
-   `nowPlayingOverlay*`, `playerOverlay*`, `channelLinks`, `textOverlay*`
-   remain `localStorage` (`tahti.channelLookExtras.{slug}`) until sibling
-   API / Prisma adds them. Other browsers/devices will not see these.
-2. **`brandAccentPreset`** not on `PublicChannel` — GRADIENT uses scheme
-   colors; brand preset gradient string is designer-preview-only on live.
-3. **`textLayer*` live API** vs designer `textOverlay*` naming mismatch —
-   public GET may return text layers that designer still stores as extras.
-4. **Nuclear app themes** (Settings themes) are global chrome, not a
-   Channel Designer surface — by design.
-5. E2E parity still targets `/channel/` more than `/u/:username`.
-
-## Files
-
-- `EntitySocialHeader.tsx`, `ArtistView.tsx`, `ChannelView.tsx`,
-  `ChannelBackdropCard.tsx`, `ChannelDesigner.tsx`, `channel-design.ts`
-- Storybook: EntitySocialHeader GRADIENT story
+Player/background gradient JSON and backgroundVisualPreset still lack
+dedicated Prisma columns — mock exposes them on PublicChannel; live
+clients keep `tahti.channelLookExtras.{slug}` until sibling API adds them.
+`visualSettingsJson` is still missing from PublicChannelViewSchema on
+live GET (designer saves it; public page may not receive tuning).

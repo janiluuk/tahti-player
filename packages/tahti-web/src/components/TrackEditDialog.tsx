@@ -461,7 +461,7 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
                 icon: <TagsIcon size={15} />,
                 content: (
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="sm:col-span-2">
+                    <div className="relative sm:col-span-2">
                       <BackdropUploadButton
                         label="Backdrop"
                         value={form.backgroundUrl}
@@ -469,11 +469,11 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
                           setForm({ ...form, backgroundUrl })
                         }
                       />
-                      <div className="-mt-10 ml-3 flex">
+                      <div className="absolute top-3 right-3">
                         <RoundImageUploadButton
                           label="Cover art"
                           value={form.bannerUrl}
-                          sizeClassName="h-20 w-20"
+                          sizeClassName="h-28 w-28"
                           className="ring-background ring-4"
                           upload={(file) =>
                             uploadSoundBanner(soundId!, file).then((r) =>
@@ -494,7 +494,7 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
                       }
                     />
                     <Input
-                      label="Artist credit"
+                      label="Artist"
                       value={form.artistName ?? ''}
                       placeholder="Use channel artist name"
                       onChange={(event) =>

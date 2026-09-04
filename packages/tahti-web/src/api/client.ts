@@ -245,13 +245,36 @@ export async function fetchOnAirChannels(): Promise<{
   }
 }
 
+/** Live API returns `textLayer*`; designer/UI use `textOverlay*`. Also
+ * accepts either shape so mock and live paths share one PublicChannel. */
+export function normalizePublicChannel(
+  raw: PublicChannel & {
+    textLayerMode?: string | null;
+    textLayerText?: string | null;
+    textLayerAlign?: string | null;
+  },
+): PublicChannel {
+  const textOverlayMode =
+    raw.textOverlayMode ?? raw.textLayerMode ?? null;
+  const textOverlayText =
+    raw.textOverlayText ?? raw.textLayerText ?? null;
+  const textOverlayAlign =
+    raw.textOverlayAlign ?? raw.textLayerAlign ?? null;
+  return {
+    ...raw,
+    textOverlayMode,
+    textOverlayText,
+    textOverlayAlign,
+  };
+}
+
 export async function fetchChannel(slug: string): Promise<{
   data: PublicChannel;
   meta: FetchMeta;
   playable: TahtiPlayable | null;
 }> {
   if (forceMock()) {
-    const data = mockChannel(slug);
+    const data = normalizePublicChannel(mockChannel(slug));
     return {
       data,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -259,13 +282,22 @@ export async function fetchChannel(slug: string): Promise<{
     };
   }
   try {
-    const data = await getJson<PublicChannel>(
-      `/api/channels/${encodeURIComponent(slug)}`,
-    );
-    return { data, meta: { source: 'api' }, playable: channelToPlayable(data) };
+    const data = await getJson<
+      PublicChannel & {
+        textLayerMode?: string | null;
+        textLayerText?: string | null;
+        textLayerAlign?: string | null;
+      }
+    >(`/api/channels/${encodeURIComponent(slug)}`);
+    const normalized = normalizePublicChannel(data);
+    return {
+      data: normalized,
+      meta: { source: 'api' },
+      playable: channelToPlayable(normalized),
+    };
   } catch (err) {
     if (allowMockFallback()) {
-      const data = mockChannel(slug);
+      const data = normalizePublicChannel(mockChannel(slug));
       return { data, meta: failMeta(err), playable: channelToPlayable(data) };
     }
     throw err instanceof Error ? err : new Error('Channel fetch failed');

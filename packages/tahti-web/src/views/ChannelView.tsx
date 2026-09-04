@@ -28,6 +28,7 @@ import {
 } from '@tahti-player/ui';
 
 import {
+  BRAND_ACCENTS,
   fillColorScheme,
   isHeaderImageUrl,
   isValidHeaderBackdropUrl,
@@ -338,10 +339,27 @@ export function ChannelView({ slug }: { slug: string }) {
     channel.headerStyle === 'VIDEO_LOOP' &&
     isValidHeaderBackdropUrl(channel.videoBackgroundUrl);
   const showSolidHeader = channel.headerStyle === 'SOLID';
-  const lookExtras = useMemo(
-    () => loadChannelLookExtras(slug),
-    [slug, lookExtrasTick],
-  );
+  const lookExtras = useMemo(() => {
+    const stored = loadChannelLookExtras(slug);
+    return {
+      ...stored,
+      ...(channel.usePlayerGradient !== undefined
+        ? { usePlayerGradient: channel.usePlayerGradient }
+        : {}),
+      ...(channel.playerColorSchemeJson !== undefined
+        ? { playerColorSchemeJson: channel.playerColorSchemeJson }
+        : {}),
+      ...(channel.useBackgroundGradient !== undefined
+        ? { useBackgroundGradient: channel.useBackgroundGradient }
+        : {}),
+      ...(channel.backgroundColorSchemeJson !== undefined
+        ? { backgroundColorSchemeJson: channel.backgroundColorSchemeJson }
+        : {}),
+      ...(channel.backgroundVisualPreset !== undefined
+        ? { backgroundVisualPreset: channel.backgroundVisualPreset }
+        : {}),
+    };
+  }, [slug, lookExtrasTick, channel]);
   const pageScheme = normalizeColorScheme(
     lookExtras.useBackgroundGradient
       ? parseColorScheme(lookExtras.backgroundColorSchemeJson)
@@ -359,6 +377,9 @@ export function ChannelView({ slug }: { slug: string }) {
     ? undefined
     : CHANNEL_RADIO_VIZ_SETTINGS;
   const backgroundVisualPreset = lookExtras.backgroundVisualPreset ?? null;
+  const brandGradient = BRAND_ACCENTS.find(
+    (brand) => brand.id === channel.brandAccentPreset,
+  )?.gradient;
   const headerBackdropIsImage = isHeaderImageUrl(channel.videoBackgroundUrl);
   const chatOn = channel.chatEnabled !== false;
   const channelIsCurrent =
@@ -552,6 +573,7 @@ export function ChannelView({ slug }: { slug: string }) {
             highlight={headerHighlight}
             bg={headerBackground}
             fg={headerForeground}
+            gradientOverride={brandGradient}
             visualPreset={channel.visualPreset ?? 'AURORA'}
             colorScheme={playerScheme}
             colorSchemeJson={
