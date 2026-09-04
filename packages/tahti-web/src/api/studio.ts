@@ -1522,7 +1522,7 @@ export async function uploadSoundFile(input: {
       isPublic: false,
       createdAt: new Date().toISOString(),
     });
-    registerMockUploadedSound({
+    await registerMockUploadedSound({
       id,
       title: input.title || filename,
       filename,
@@ -1530,6 +1530,7 @@ export async function uploadSoundFile(input: {
       channelSlug,
       downloadsEnabled: false,
       visibility: 'PRIVATE',
+      mimeType: input.file.type || 'audio/wav',
     });
     return {
       ok: true,
