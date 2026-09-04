@@ -1,13 +1,20 @@
 import {
+  getMockBackgroundColorSchemeJson,
+  getMockBackgroundVisualPreset,
+  getMockBrandAccentPreset,
   getMockChannelColorScheme,
   getMockChannelLinks,
   getMockHeaderStyle,
   getMockNowPlayingOverlaySettingsJson,
   getMockNowPlayingOverlayStyle,
+  getMockPlayerColorSchemeJson,
   getMockPlayerOverlay,
   getMockTextOverlay,
+  getMockUseBackgroundGradient,
+  getMockUsePlayerGradient,
   getMockVideoBackgroundUrl,
   getMockVisualPreset,
+  getMockVisualSettingsJson,
 } from './channel-design';
 import { getMockFreeSubscriptionsEnabled } from './mock-profile-preferences';
 import type {
@@ -465,6 +472,21 @@ export function mockChannel(slug: string): PublicChannel {
         : 'AURORA',
     headerStyle: usesOwnDesign ? getMockHeaderStyle() : 'GRADIENT',
     videoBackgroundUrl: usesOwnDesign ? getMockVideoBackgroundUrl() : null,
+    brandAccentPreset: usesOwnDesign ? getMockBrandAccentPreset() : 'aurora',
+    visualSettingsJson: usesOwnDesign ? getMockVisualSettingsJson() : null,
+    usePlayerGradient: usesOwnDesign ? getMockUsePlayerGradient() : false,
+    playerColorSchemeJson: usesOwnDesign
+      ? getMockPlayerColorSchemeJson()
+      : null,
+    useBackgroundGradient: usesOwnDesign
+      ? getMockUseBackgroundGradient()
+      : false,
+    backgroundColorSchemeJson: usesOwnDesign
+      ? getMockBackgroundColorSchemeJson()
+      : null,
+    backgroundVisualPreset: usesOwnDesign
+      ? getMockBackgroundVisualPreset()
+      : null,
     colorSchemeJson: JSON.stringify(
       usesOwnDesign
         ? {

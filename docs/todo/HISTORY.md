@@ -2,6 +2,17 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-04 — Fan-sub + track purchase e2e (mock Vite)
+
+Playwright `e2e/fan-sub-and-track-purchase.spec.ts` green under
+`VITE_FORCE_MOCK=1`. Mock commerce ledger (`mock-commerce-ledger.ts`) records
+fan-sub activate + à la carte purchase tiers; Track detail shows Buy when
+`accessMode=PURCHASE`; Audience/admin audit read the ledger; IndexedDB keeps
+upload blobs across reload. Live Stripe path still separate.
+
+Shipped on nuclear master (`bc1283993` … `36d44f30e`). Sibling purchase-tier
+APIs already existed.
+
 ## 2026-09-04 — Icon Tooltip pass 4 (Admin + PluginStore)
 
 Wrapped PluginStorePanel, AdminStreamManager, Storage, AGM, Disco widgets,
