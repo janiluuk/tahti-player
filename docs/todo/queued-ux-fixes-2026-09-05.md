@@ -281,20 +281,11 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   current editing session only (lost on reload) vs. something durable —
   in-memory is the cheaper/likely-intended reading given "temporarily",
   but confirm rather than assume if it matters.
-- [ ] **Channel Designer: gallery "+" add-images modal + hover
-  delete/reorder.** Find the gallery/slideshow section in
-  `ChannelDesigner.tsx` (search for `galleryMode`/`slideshowImages`,
-  already referenced elsewhere in this file per the `ChannelView.tsx`
-  hero block props) — add a "+" tile/button that opens a modal to pick
-  which images become part of the slideshow (reuse whatever image-
-  picker/upload pattern the rest of the designer already uses, e.g. the
-  image-slot hover pattern from `docs/todo/stream-overlay-cover-upload-and-title-toggle.md`
-  — delete-badge + reveal-on-hover is the established convention here).
-  On existing gallery images, hovering should reveal a delete icon and a
-  drag handle for reordering (check if any existing list in this app
-  already has drag-to-reorder — e.g. rotation/playlist editors — reuse
-  that mechanism rather than adding a new drag library if one isn't
-  already a dependency).
+- [x] **Channel Designer: gallery "+" add-images modal + hover
+  delete/reorder — shipped 2026-09-05.** Hover-delete and drag-reorder
+  already existed in `ChannelDesigner.tsx`; only the "+"-tile/modal add
+  flow and a drag-handle hover indicator were missing. See
+  `docs/todo/channel-designer-gallery-plus-tile.md`.
 
 - [ ] **Channel Designer: Background section — visualization tab +
   solid-only color + gradient preset wiring.** Three related asks in
