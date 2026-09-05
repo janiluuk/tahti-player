@@ -36,6 +36,7 @@ import {
   Tabs,
   Toggle,
   Tooltip,
+  ViewShell,
 } from '@tahti-player/ui';
 
 import { fetchArchiveVersions } from '../../api/archive-versions';
@@ -57,7 +58,7 @@ import { PageLoading } from '../../components/PageStates';
 import { StemPlayer } from '../../components/StemPlayer';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioNav } from '../../components/StudioNav';
-import { StudioPageHeader, StudioPanel } from '../../components/StudioPanel';
+import { StudioPanel } from '../../components/StudioPanel';
 import { WaveformCanvas } from '../../components/WaveformCanvas';
 import { WaveformMinimap } from '../../components/WaveformMinimap';
 import { useAudioPreviewGraph } from '../../lib/audioPreviewGraph';
@@ -693,293 +694,297 @@ export function StudioProEditorView({ soundId }: { soundId: string }) {
           )}
         </div>
 
-        <StudioPageHeader title={title || 'Pro editor'} />
+        <ViewShell
+          title={title || 'Pro editor'}
+          classes={{ root: 'px-0 pt-0' }}
+        >
+          <ClientCapabilityNotice kind="partial" title="Single-track editor">
+            Cut, trim, adjust effects, or request stems here. Use a multitrack
+            session when you need to arrange several tracks together.
+          </ClientCapabilityNotice>
 
-        <ClientCapabilityNotice kind="partial" title="Single-track editor">
-          Cut, trim, adjust effects, or request stems here. Use a multitrack
-          session when you need to arrange several tracks together.
-        </ClientCapabilityNotice>
-
-        {loading || !editList ? (
-          <StudioPanel>
-            <PageLoading label="Loading editor…" />
-          </StudioPanel>
-        ) : (
-          <>
-            <StudioPanel className="!p-0">
-              <div
-                role="toolbar"
-                aria-label="Editor tools"
-                className="border-border bg-background-secondary flex flex-wrap items-center gap-1 rounded-t-xl border-b px-3 py-2"
-              >
+          {loading || !editList ? (
+            <StudioPanel>
+              <PageLoading label="Loading editor…" />
+            </StudioPanel>
+          ) : (
+            <>
+              <StudioPanel className="!p-0">
                 <div
-                  className="flex items-center gap-1"
-                  role="group"
-                  aria-label="Transport"
+                  role="toolbar"
+                  aria-label="Editor tools"
+                  className="border-border bg-background-secondary flex flex-wrap items-center gap-1 rounded-t-xl border-b px-3 py-2"
                 >
-                  <Button size="sm" onClick={togglePlay}>
-                    {playing ? (
-                      <PauseIcon size={16} aria-hidden className="mr-1.5" />
-                    ) : (
-                      <PlayIcon size={16} aria-hidden className="mr-1.5" />
-                    )}
-                    {playing ? 'Pause' : 'Play'}
-                  </Button>
-                  <Tooltip content="Preview selection" side="top">
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      disabled={!selection}
-                      onClick={previewSelection}
-                      aria-label="Preview selection"
-                    >
-                      <Volume2Icon size={16} aria-hidden />
-                    </Button>
-                  </Tooltip>
-                </div>
-
-                <div className="bg-border mx-1 h-6 w-px" aria-hidden />
-
-                <div
-                  className="flex items-center gap-1"
-                  role="group"
-                  aria-label="Cut and trim"
-                >
-                  <Tooltip content="Cut selection" side="top">
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      disabled={!selection}
-                      onClick={addCutFromSelection}
-                      aria-label="Cut selection"
-                    >
-                      <ScissorsIcon size={16} aria-hidden />
-                    </Button>
-                  </Tooltip>
-                  <Tooltip content="Trim to selection" side="top">
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      disabled={!selection}
-                      onClick={trimToSelection}
-                      aria-label="Trim to selection"
-                    >
-                      <CropIcon size={16} aria-hidden />
-                    </Button>
-                  </Tooltip>
-                  <Tooltip content="Trim leading/trailing silence" side="top">
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      onClick={trimSilence}
-                      aria-label="Trim leading/trailing silence"
-                    >
-                      <VolumeXIcon size={16} aria-hidden />
-                    </Button>
-                  </Tooltip>
-                  <Tooltip content="Clear cuts" side="top">
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      disabled={editList.cuts.length === 0}
-                      onClick={clearCuts}
-                      aria-label="Clear cuts"
-                    >
-                      <Trash2Icon size={16} aria-hidden />
-                    </Button>
-                  </Tooltip>
-                  <Tooltip content="Clear selection" side="top">
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      disabled={!selection}
-                      onClick={() => setSelection(null)}
-                      aria-label="Clear selection"
-                    >
-                      <XIcon size={16} aria-hidden />
-                    </Button>
-                  </Tooltip>
-                </div>
-
-                <div className="bg-border mx-1 h-6 w-px" aria-hidden />
-
-                <Tooltip content="Add marker at playhead" side="top">
-                  <Button
-                    size="icon-sm"
-                    variant="text"
-                    onClick={() =>
-                      setMarkers((m) =>
-                        [...m, currentTime].sort((a, b) => a - b),
-                      )
-                    }
-                    aria-label="Add marker at playhead"
+                  <div
+                    className="flex items-center gap-1"
+                    role="group"
+                    aria-label="Transport"
                   >
-                    <MapPinIcon size={16} aria-hidden />
-                  </Button>
-                </Tooltip>
+                    <Button size="sm" onClick={togglePlay}>
+                      {playing ? (
+                        <PauseIcon size={16} aria-hidden className="mr-1.5" />
+                      ) : (
+                        <PlayIcon size={16} aria-hidden className="mr-1.5" />
+                      )}
+                      {playing ? 'Pause' : 'Play'}
+                    </Button>
+                    <Tooltip content="Preview selection" side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        disabled={!selection}
+                        onClick={previewSelection}
+                        aria-label="Preview selection"
+                      >
+                        <Volume2Icon size={16} aria-hidden />
+                      </Button>
+                    </Tooltip>
+                  </div>
 
-                <div className="bg-border mx-1 h-6 w-px" aria-hidden />
+                  <div className="bg-border mx-1 h-6 w-px" aria-hidden />
 
-                <div
-                  className="flex items-center gap-1"
-                  role="group"
-                  aria-label="Zoom"
-                >
-                  <Tooltip content="Zoom out" side="top">
+                  <div
+                    className="flex items-center gap-1"
+                    role="group"
+                    aria-label="Cut and trim"
+                  >
+                    <Tooltip content="Cut selection" side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        disabled={!selection}
+                        onClick={addCutFromSelection}
+                        aria-label="Cut selection"
+                      >
+                        <ScissorsIcon size={16} aria-hidden />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip content="Trim to selection" side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        disabled={!selection}
+                        onClick={trimToSelection}
+                        aria-label="Trim to selection"
+                      >
+                        <CropIcon size={16} aria-hidden />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip content="Trim leading/trailing silence" side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        onClick={trimSilence}
+                        aria-label="Trim leading/trailing silence"
+                      >
+                        <VolumeXIcon size={16} aria-hidden />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip content="Clear cuts" side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        disabled={editList.cuts.length === 0}
+                        onClick={clearCuts}
+                        aria-label="Clear cuts"
+                      >
+                        <Trash2Icon size={16} aria-hidden />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip content="Clear selection" side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        disabled={!selection}
+                        onClick={() => setSelection(null)}
+                        aria-label="Clear selection"
+                      >
+                        <XIcon size={16} aria-hidden />
+                      </Button>
+                    </Tooltip>
+                  </div>
+
+                  <div className="bg-border mx-1 h-6 w-px" aria-hidden />
+
+                  <Tooltip content="Add marker at playhead" side="top">
                     <Button
                       size="icon-sm"
                       variant="text"
-                      onClick={() => zoomBy(1.25)}
-                      aria-label="Zoom out"
+                      onClick={() =>
+                        setMarkers((m) =>
+                          [...m, currentTime].sort((a, b) => a - b),
+                        )
+                      }
+                      aria-label="Add marker at playhead"
                     >
-                      <ZoomOutIcon size={16} aria-hidden />
+                      <MapPinIcon size={16} aria-hidden />
                     </Button>
                   </Tooltip>
-                  <Tooltip content="Zoom in" side="top">
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      onClick={() => zoomBy(0.8)}
-                      aria-label="Zoom in"
-                    >
-                      <ZoomInIcon size={16} aria-hidden />
-                    </Button>
-                  </Tooltip>
-                  <Tooltip content="Reset zoom" side="top">
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      disabled={viewStart === 0 && viewEnd === 1}
-                      onClick={() => {
-                        setViewStart(0);
-                        setViewEnd(1);
-                      }}
-                      aria-label="Reset zoom"
-                    >
-                      <Maximize2Icon size={16} aria-hidden />
-                    </Button>
-                  </Tooltip>
+
+                  <div className="bg-border mx-1 h-6 w-px" aria-hidden />
+
+                  <div
+                    className="flex items-center gap-1"
+                    role="group"
+                    aria-label="Zoom"
+                  >
+                    <Tooltip content="Zoom out" side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        onClick={() => zoomBy(1.25)}
+                        aria-label="Zoom out"
+                      >
+                        <ZoomOutIcon size={16} aria-hidden />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip content="Zoom in" side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        onClick={() => zoomBy(0.8)}
+                        aria-label="Zoom in"
+                      >
+                        <ZoomInIcon size={16} aria-hidden />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip content="Reset zoom" side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        disabled={viewStart === 0 && viewEnd === 1}
+                        onClick={() => {
+                          setViewStart(0);
+                          setViewEnd(1);
+                        }}
+                        aria-label="Reset zoom"
+                      >
+                        <Maximize2Icon size={16} aria-hidden />
+                      </Button>
+                    </Tooltip>
+                  </div>
+
+                  <div className="flex-1" />
+
+                  <div className="text-foreground-secondary hidden items-center gap-3 text-xs sm:flex">
+                    <span>
+                      {formatTime(currentTime)} / {formatTime(duration)}
+                    </span>
+                    <span>Kept: {formatTime(keptDuration)}</span>
+                    <span>{editList.cuts.length} cut(s)</span>
+                  </div>
                 </div>
 
-                <div className="flex-1" />
-
-                <div className="text-foreground-secondary hidden items-center gap-3 text-xs sm:flex">
-                  <span>
-                    {formatTime(currentTime)} / {formatTime(duration)}
-                  </span>
-                  <span>Kept: {formatTime(keptDuration)}</span>
-                  <span>{editList.cuts.length} cut(s)</span>
-                </div>
-              </div>
-
-              <div className="p-5 sm:p-6">
-                <WaveformCanvas
-                  peaks={peaks}
-                  durationSec={duration}
-                  currentTime={currentTime}
-                  cuts={editList.cuts}
-                  selection={selection}
-                  viewStart={viewStart}
-                  viewEnd={viewEnd}
-                  onViewChange={(start, end) => {
-                    setViewStart(start);
-                    setViewEnd(end);
-                  }}
-                  onSeek={seek}
-                  onSelectRange={(start, end) => setSelection({ start, end })}
-                />
-
-                <div className="mt-2">
-                  <WaveformMinimap
+                <div className="p-5 sm:p-6">
+                  <WaveformCanvas
                     peaks={peaks}
+                    durationSec={duration}
+                    currentTime={currentTime}
+                    cuts={editList.cuts}
+                    selection={selection}
                     viewStart={viewStart}
                     viewEnd={viewEnd}
-                    onSeek={(frac) => seek(frac * duration)}
+                    onViewChange={(start, end) => {
+                      setViewStart(start);
+                      setViewEnd(end);
+                    }}
+                    onSeek={seek}
+                    onSelectRange={(start, end) => setSelection({ start, end })}
                   />
-                </div>
 
-                <div className="text-foreground-secondary mt-3 flex flex-wrap items-center gap-3 text-xs sm:hidden">
-                  <span>
-                    {formatTime(currentTime)} / {formatTime(duration)}
-                  </span>
-                  <span>Kept after cuts: {formatTime(keptDuration)}</span>
-                  <span>{editList.cuts.length} cut(s)</span>
-                </div>
-                {selection && (
-                  <div className="text-foreground-secondary mt-1 text-xs">
-                    Selection {formatTime(selection.start)}–
-                    {formatTime(selection.end)}
+                  <div className="mt-2">
+                    <WaveformMinimap
+                      peaks={peaks}
+                      viewStart={viewStart}
+                      viewEnd={viewEnd}
+                      onSeek={(frac) => seek(frac * duration)}
+                    />
                   </div>
-                )}
 
-                {markers.length > 0 && (
-                  <div className="text-foreground-secondary mt-3 flex flex-wrap items-center gap-2 text-xs">
-                    Markers:{' '}
-                    {markers.map((m) => (
-                      <button
-                        key={m}
-                        type="button"
-                        className="border-border rounded border px-1.5 py-0.5 hover:underline"
-                        onClick={() => seek(m)}
-                      >
-                        {formatTime(m)}
-                      </button>
-                    ))}
-                    <button
-                      type="button"
-                      className="underline"
-                      onClick={() => setMarkers([])}
-                    >
-                      clear
-                    </button>
+                  <div className="text-foreground-secondary mt-3 flex flex-wrap items-center gap-3 text-xs sm:hidden">
+                    <span>
+                      {formatTime(currentTime)} / {formatTime(duration)}
+                    </span>
+                    <span>Kept after cuts: {formatTime(keptDuration)}</span>
+                    <span>{editList.cuts.length} cut(s)</span>
                   </div>
-                )}
-              </div>
-            </StudioPanel>
+                  {selection && (
+                    <div className="text-foreground-secondary mt-1 text-xs">
+                      Selection {formatTime(selection.start)}–
+                      {formatTime(selection.end)}
+                    </div>
+                  )}
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <StudioPanel title="Stems">
-                <div className="mb-4 flex flex-col gap-2">
-                  <Tabs.Root
-                    selectedIndex={activeStemSet === 'FOUR_STEM' ? 1 : 0}
-                    onChange={(index) =>
-                      setActiveStemSet(index === 1 ? 'FOUR_STEM' : 'TWO_STEM')
-                    }
-                  >
-                    <Tabs.List className="w-fit">
-                      {(['TWO_STEM', 'FOUR_STEM'] as const).map((stemSet) => (
-                        <Tabs.Tab key={stemSet}>
-                          <TabLabel
-                            icon={<SplitIcon size={14} />}
-                            count={stemSet === 'TWO_STEM' ? 2 : 4}
-                          >
-                            {STEM_SET_LABELS[stemSet]}
-                          </TabLabel>
-                        </Tabs.Tab>
+                  {markers.length > 0 && (
+                    <div className="text-foreground-secondary mt-3 flex flex-wrap items-center gap-2 text-xs">
+                      Markers:{' '}
+                      {markers.map((m) => (
+                        <button
+                          key={m}
+                          type="button"
+                          className="border-border rounded border px-1.5 py-0.5 hover:underline"
+                          onClick={() => seek(m)}
+                        >
+                          {formatTime(m)}
+                        </button>
                       ))}
-                    </Tabs.List>
-                  </Tabs.Root>
+                      <button
+                        type="button"
+                        className="underline"
+                        onClick={() => setMarkers([])}
+                      >
+                        clear
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </StudioPanel>
 
-                  {(() => {
-                    const existing = stems.find(
-                      (s) => s.stemSet === activeStemSet,
-                    );
-                    const busyStem =
-                      existing?.status === 'PENDING' ||
-                      existing?.status === 'PROCESSING';
-                    return (
-                      <div className="flex flex-col gap-1.5">
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          disabled={busyStem}
-                          className="self-start"
-                          onClick={() => {
-                            toast.info(
-                              `Splitting into ${STEM_SET_LABELS[activeStemSet].toLowerCase()}…`,
-                            );
-                            void requestSoundStems(soundId, activeStemSet).then(
-                              (r) => {
+              <div className="grid gap-4 md:grid-cols-2">
+                <StudioPanel title="Stems">
+                  <div className="mb-4 flex flex-col gap-2">
+                    <Tabs.Root
+                      selectedIndex={activeStemSet === 'FOUR_STEM' ? 1 : 0}
+                      onChange={(index) =>
+                        setActiveStemSet(index === 1 ? 'FOUR_STEM' : 'TWO_STEM')
+                      }
+                    >
+                      <Tabs.List className="w-fit">
+                        {(['TWO_STEM', 'FOUR_STEM'] as const).map((stemSet) => (
+                          <Tabs.Tab key={stemSet}>
+                            <TabLabel
+                              icon={<SplitIcon size={14} />}
+                              count={stemSet === 'TWO_STEM' ? 2 : 4}
+                            >
+                              {STEM_SET_LABELS[stemSet]}
+                            </TabLabel>
+                          </Tabs.Tab>
+                        ))}
+                      </Tabs.List>
+                    </Tabs.Root>
+
+                    {(() => {
+                      const existing = stems.find(
+                        (s) => s.stemSet === activeStemSet,
+                      );
+                      const busyStem =
+                        existing?.status === 'PENDING' ||
+                        existing?.status === 'PROCESSING';
+                      return (
+                        <div className="flex flex-col gap-1.5">
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            disabled={busyStem}
+                            className="self-start"
+                            onClick={() => {
+                              toast.info(
+                                `Splitting into ${STEM_SET_LABELS[activeStemSet].toLowerCase()}…`,
+                              );
+                              void requestSoundStems(
+                                soundId,
+                                activeStemSet,
+                              ).then((r) => {
                                 if (!r.ok) {
                                   toast.error(r.error);
                                 } else {
@@ -987,465 +992,467 @@ export function StudioProEditorView({ soundId }: { soundId: string }) {
                                     setStems(s.data),
                                   );
                                 }
-                              },
-                            );
-                          }}
-                        >
-                          {busyStem
-                            ? 'Splitting…'
-                            : `Split ${STEM_SET_LABELS[activeStemSet].toLowerCase()}`}
-                        </Button>
-                        {busyStem && (
-                          <div
-                            className="bg-background-secondary relative h-1.5 w-48 overflow-hidden rounded-full"
-                            role="progressbar"
-                            aria-label={`Splitting into ${STEM_SET_LABELS[activeStemSet]}`}
+                              });
+                            }}
                           >
-                            <div className="bg-primary absolute inset-0 w-1/3 animate-pulse rounded-full" />
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })()}
-                </div>
-
-                {stems.length === 0 ? (
-                  <p className="text-foreground-secondary text-sm">
-                    No stem jobs yet — request a split above. Splits are cached
-                    for 7 days, then cleared automatically.
-                  </p>
-                ) : (
-                  <ul className="divide-border divide-y">
-                    {stems.map((job) => (
-                      <li
-                        key={job.stemSet}
-                        className="py-2.5 text-sm first:pt-0 last:pb-0"
-                      >
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium">
-                            {STEM_SET_LABELS[job.stemSet as StemSet] ??
-                              job.stemSet}
-                          </span>
-                          <span className="text-foreground-secondary font-mono text-xs uppercase">
-                            {job.status}
-                          </span>
+                            {busyStem
+                              ? 'Splitting…'
+                              : `Split ${STEM_SET_LABELS[activeStemSet].toLowerCase()}`}
+                          </Button>
+                          {busyStem && (
+                            <div
+                              className="bg-background-secondary relative h-1.5 w-48 overflow-hidden rounded-full"
+                              role="progressbar"
+                              aria-label={`Splitting into ${STEM_SET_LABELS[activeStemSet]}`}
+                            >
+                              <div className="bg-primary absolute inset-0 w-1/3 animate-pulse rounded-full" />
+                            </div>
+                          )}
                         </div>
-                        {job.status === 'ERROR' && job.errorMessage && (
-                          <p className="text-accent-red mt-1 text-xs">
-                            {job.errorMessage}
-                          </p>
-                        )}
-                        {job.files && job.files.length > 0 && (
-                          <div className="mt-2">
-                            <StemPlayer files={job.files} />
-                          </div>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </StudioPanel>
-
-              <StudioPanel title="Export">
-                <div className="flex flex-col gap-3">
-                  <Input
-                    label="Version label"
-                    value={versionLabel}
-                    onChange={(e) => setVersionLabel(e.target.value)}
-                  />
-                  <div className="flex flex-wrap justify-end gap-2">
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      disabled={busy}
-                      onClick={() => setRenderPromptOpen(true)}
-                    >
-                      <UploadIcon size={16} aria-hidden className="mr-1.5" />
-                      Render version
-                    </Button>
-                    <SaveButton
-                      saving={busy}
-                      label="Save draft"
-                      onClick={() => void save()}
-                    />
+                      );
+                    })()}
                   </div>
-                  {message && (
-                    <p
-                      className="text-foreground-secondary text-sm"
-                      role="status"
-                    >
-                      {message}
-                    </p>
-                  )}
-                </div>
-              </StudioPanel>
-            </div>
 
-            <StudioPanel
-              title="Mastering"
-              description={
-                masteringCollapsed
-                  ? undefined
-                  : 'Enabled effects are audible live in Play and Preview selection — this is a real-time approximation for monitoring, not the final render.'
-              }
-              action={
-                <Tooltip
-                  content={
-                    masteringCollapsed
-                      ? 'Expand mastering'
-                      : 'Minimize mastering'
-                  }
-                  side="top"
-                >
-                  <Button
-                    size="icon-sm"
-                    variant="text"
-                    aria-label={
+                  {stems.length === 0 ? (
+                    <p className="text-foreground-secondary text-sm">
+                      No stem jobs yet — request a split above. Splits are
+                      cached for 7 days, then cleared automatically.
+                    </p>
+                  ) : (
+                    <ul className="divide-border divide-y">
+                      {stems.map((job) => (
+                        <li
+                          key={job.stemSet}
+                          className="py-2.5 text-sm first:pt-0 last:pb-0"
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="font-medium">
+                              {STEM_SET_LABELS[job.stemSet as StemSet] ??
+                                job.stemSet}
+                            </span>
+                            <span className="text-foreground-secondary font-mono text-xs uppercase">
+                              {job.status}
+                            </span>
+                          </div>
+                          {job.status === 'ERROR' && job.errorMessage && (
+                            <p className="text-accent-red mt-1 text-xs">
+                              {job.errorMessage}
+                            </p>
+                          )}
+                          {job.files && job.files.length > 0 && (
+                            <div className="mt-2">
+                              <StemPlayer files={job.files} />
+                            </div>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </StudioPanel>
+
+                <StudioPanel title="Export">
+                  <div className="flex flex-col gap-3">
+                    <Input
+                      label="Version label"
+                      value={versionLabel}
+                      onChange={(e) => setVersionLabel(e.target.value)}
+                    />
+                    <div className="flex flex-wrap justify-end gap-2">
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        disabled={busy}
+                        onClick={() => setRenderPromptOpen(true)}
+                      >
+                        <UploadIcon size={16} aria-hidden className="mr-1.5" />
+                        Render version
+                      </Button>
+                      <SaveButton
+                        saving={busy}
+                        label="Save draft"
+                        onClick={() => void save()}
+                      />
+                    </div>
+                    {message && (
+                      <p
+                        className="text-foreground-secondary text-sm"
+                        role="status"
+                      >
+                        {message}
+                      </p>
+                    )}
+                  </div>
+                </StudioPanel>
+              </div>
+
+              <StudioPanel
+                title="Mastering"
+                description={
+                  masteringCollapsed
+                    ? undefined
+                    : 'Enabled effects are audible live in Play and Preview selection — this is a real-time approximation for monitoring, not the final render.'
+                }
+                action={
+                  <Tooltip
+                    content={
                       masteringCollapsed
                         ? 'Expand mastering'
                         : 'Minimize mastering'
                     }
-                    onClick={() => setMasteringCollapsed((v) => !v)}
+                    side="top"
                   >
-                    {masteringCollapsed ? (
-                      <ChevronRightIcon size={16} aria-hidden />
-                    ) : (
-                      <ChevronDownIcon size={16} aria-hidden />
-                    )}
-                  </Button>
-                </Tooltip>
-              }
-            >
-              {!masteringCollapsed && (
-                <div className="flex flex-col gap-5">
-                  <div className="flex flex-wrap gap-2">
                     <Button
-                      size="sm"
-                      variant={
-                        editList.loudnorm.enabled ? 'default' : 'secondary'
+                      size="icon-sm"
+                      variant="text"
+                      aria-label={
+                        masteringCollapsed
+                          ? 'Expand mastering'
+                          : 'Minimize mastering'
                       }
-                      onClick={normalize}
+                      onClick={() => setMasteringCollapsed((v) => !v)}
                     >
-                      <Wand2Icon size={14} aria-hidden className="mr-1.5" />
-                      {editList.loudnorm.enabled
-                        ? `Normalizing (${editList.loudnorm.targetLufs} LUFS)`
-                        : 'Normalize'}
+                      {masteringCollapsed ? (
+                        <ChevronRightIcon size={16} aria-hidden />
+                      ) : (
+                        <ChevronDownIcon size={16} aria-hidden />
+                      )}
                     </Button>
-                  </div>
+                  </Tooltip>
+                }
+              >
+                {!masteringCollapsed && (
+                  <div className="flex flex-col gap-5">
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        size="sm"
+                        variant={
+                          editList.loudnorm.enabled ? 'default' : 'secondary'
+                        }
+                        onClick={normalize}
+                      >
+                        <Wand2Icon size={14} aria-hidden className="mr-1.5" />
+                        {editList.loudnorm.enabled
+                          ? `Normalizing (${editList.loudnorm.targetLufs} LUFS)`
+                          : 'Normalize'}
+                      </Button>
+                    </div>
 
-                  <Slider
-                    label="Master gain"
-                    value={editList.gainDb}
-                    min={-24}
-                    max={12}
-                    step={0.5}
-                    unit="dB"
-                    showFooter={false}
-                    className="max-w-xs"
-                    onValueChange={(gainDb) =>
-                      setEditList({
-                        ...editList,
-                        gainDb,
-                      })
-                    }
-                  />
+                    <Slider
+                      label="Master gain"
+                      value={editList.gainDb}
+                      min={-24}
+                      max={12}
+                      step={0.5}
+                      unit="dB"
+                      showFooter={false}
+                      className="max-w-xs"
+                      onValueChange={(gainDb) =>
+                        setEditList({
+                          ...editList,
+                          gainDb,
+                        })
+                      }
+                    />
 
-                  <div className="flex flex-row items-start gap-3 overflow-x-auto pb-2">
-                    {visiblePluginChain.length === 0 ? (
-                      <p className="text-foreground-secondary text-sm">
-                        No plugins in the chain yet.
-                      </p>
-                    ) : (
-                      visiblePluginChain.map((id) => {
-                        const meta = AUDIO_FX_PLUGINS[id];
-                        return (
-                          <div
-                            key={id}
-                            draggable
-                            onDragStart={() => {
-                              dragPluginRef.current = id;
-                            }}
-                            onDragOver={(e) => e.preventDefault()}
-                            onDrop={(e) => {
-                              e.preventDefault();
-                              if (dragPluginRef.current) {
-                                reorderPlugin(dragPluginRef.current, id);
-                              }
-                              dragPluginRef.current = null;
-                            }}
-                            className="border-border bg-background-secondary/40 w-80 shrink-0 rounded-lg border p-3"
-                          >
-                            <div className="mb-3 flex items-center gap-2">
-                              <span
-                                className="cursor-grab touch-none"
-                                aria-hidden
-                              >
-                                <GripVerticalIcon
-                                  size={16}
-                                  className="text-foreground-secondary"
-                                />
-                              </span>
-                              <div className="size-7 shrink-0 overflow-hidden rounded">
-                                <PluginIcon id={id} size={16} />
-                              </div>
-                              <span className="text-sm font-semibold">
-                                {meta.label}
-                              </span>
-                              <span className="text-foreground-secondary flex-1 truncate text-xs">
-                                {meta.description}
-                              </span>
-                              <Toggle
-                                checked={meta.isEnabled(editList)}
-                                onChange={() => togglePluginEnabled(id)}
-                                aria-label={`${meta.isEnabled(editList) ? 'Disable' : 'Enable'} ${meta.label}`}
-                              />
-                              <Tooltip
-                                content={`Remove ${meta.label}`}
-                                side="top"
-                              >
-                                <Button
-                                  size="icon-sm"
-                                  variant="text"
-                                  aria-label={`Remove ${meta.label}`}
-                                  onClick={() => removePlugin(id)}
+                    <div className="flex flex-row items-start gap-3 overflow-x-auto pb-2">
+                      {visiblePluginChain.length === 0 ? (
+                        <p className="text-foreground-secondary text-sm">
+                          No plugins in the chain yet.
+                        </p>
+                      ) : (
+                        visiblePluginChain.map((id) => {
+                          const meta = AUDIO_FX_PLUGINS[id];
+                          return (
+                            <div
+                              key={id}
+                              draggable
+                              onDragStart={() => {
+                                dragPluginRef.current = id;
+                              }}
+                              onDragOver={(e) => e.preventDefault()}
+                              onDrop={(e) => {
+                                e.preventDefault();
+                                if (dragPluginRef.current) {
+                                  reorderPlugin(dragPluginRef.current, id);
+                                }
+                                dragPluginRef.current = null;
+                              }}
+                              className="border-border bg-background-secondary/40 w-80 shrink-0 rounded-lg border p-3"
+                            >
+                              <div className="mb-3 flex items-center gap-2">
+                                <span
+                                  className="cursor-grab touch-none"
+                                  aria-hidden
                                 >
-                                  <XIcon size={14} aria-hidden />
-                                </Button>
-                              </Tooltip>
-                            </div>
+                                  <GripVerticalIcon
+                                    size={16}
+                                    className="text-foreground-secondary"
+                                  />
+                                </span>
+                                <div className="size-7 shrink-0 overflow-hidden rounded">
+                                  <PluginIcon id={id} size={16} />
+                                </div>
+                                <span className="text-sm font-semibold">
+                                  {meta.label}
+                                </span>
+                                <span className="text-foreground-secondary flex-1 truncate text-xs">
+                                  {meta.description}
+                                </span>
+                                <Toggle
+                                  checked={meta.isEnabled(editList)}
+                                  onChange={() => togglePluginEnabled(id)}
+                                  aria-label={`${meta.isEnabled(editList) ? 'Disable' : 'Enable'} ${meta.label}`}
+                                />
+                                <Tooltip
+                                  content={`Remove ${meta.label}`}
+                                  side="top"
+                                >
+                                  <Button
+                                    size="icon-sm"
+                                    variant="text"
+                                    aria-label={`Remove ${meta.label}`}
+                                    onClick={() => removePlugin(id)}
+                                  >
+                                    <XIcon size={14} aria-hidden />
+                                  </Button>
+                                </Tooltip>
+                              </div>
 
-                            {id === 'eq' && (
-                              <div className="grid gap-2 sm:grid-cols-3">
-                                {editList.eq.bands.map((band, i) => (
+                              {id === 'eq' && (
+                                <div className="grid gap-2 sm:grid-cols-3">
+                                  {editList.eq.bands.map((band, i) => (
+                                    <Slider
+                                      key={band.freq}
+                                      label={`${band.freq} Hz gain`}
+                                      value={band.gainDb}
+                                      min={-12}
+                                      max={12}
+                                      step={0.5}
+                                      unit="dB"
+                                      showFooter={false}
+                                      onValueChange={(gainDb) => {
+                                        const bands = editList.eq.bands.map(
+                                          (entry, idx) =>
+                                            idx === i
+                                              ? {
+                                                  ...entry,
+                                                  gainDb,
+                                                }
+                                              : entry,
+                                        );
+                                        setEditList({
+                                          ...editList,
+                                          eq: { ...editList.eq, bands },
+                                        });
+                                      }}
+                                    />
+                                  ))}
+                                </div>
+                              )}
+
+                              {id === 'comp' && (
+                                <div className="grid gap-2 sm:grid-cols-2">
                                   <Slider
-                                    key={band.freq}
-                                    label={`${band.freq} Hz gain`}
-                                    value={band.gainDb}
-                                    min={-12}
-                                    max={12}
-                                    step={0.5}
+                                    label="Threshold"
+                                    value={editList.comp.thresholdDb}
+                                    min={-40}
+                                    max={0}
+                                    step={1}
                                     unit="dB"
                                     showFooter={false}
-                                    onValueChange={(gainDb) => {
-                                      const bands = editList.eq.bands.map(
-                                        (entry, idx) =>
-                                          idx === i
-                                            ? {
-                                                ...entry,
-                                                gainDb,
-                                              }
-                                            : entry,
-                                      );
+                                    onValueChange={(thresholdDb) =>
                                       setEditList({
                                         ...editList,
-                                        eq: { ...editList.eq, bands },
-                                      });
-                                    }}
+                                        comp: {
+                                          ...editList.comp,
+                                          thresholdDb,
+                                        },
+                                      })
+                                    }
                                   />
-                                ))}
-                              </div>
-                            )}
+                                  <Slider
+                                    label="Ratio"
+                                    value={editList.comp.ratio}
+                                    min={1}
+                                    max={20}
+                                    step={0.5}
+                                    unit=":1"
+                                    showFooter={false}
+                                    onValueChange={(ratio) =>
+                                      setEditList({
+                                        ...editList,
+                                        comp: {
+                                          ...editList.comp,
+                                          ratio,
+                                        },
+                                      })
+                                    }
+                                  />
+                                </div>
+                              )}
 
-                            {id === 'comp' && (
-                              <div className="grid gap-2 sm:grid-cols-2">
+                              {id === 'limiter' && (
                                 <Slider
-                                  label="Threshold"
-                                  value={editList.comp.thresholdDb}
-                                  min={-40}
+                                  label="Ceiling"
+                                  value={editList.limiter.ceilingDb}
+                                  min={-6}
                                   max={0}
-                                  step={1}
+                                  step={0.1}
                                   unit="dB"
                                   showFooter={false}
-                                  onValueChange={(thresholdDb) =>
+                                  className="max-w-xs"
+                                  onValueChange={(ceilingDb) =>
                                     setEditList({
                                       ...editList,
-                                      comp: {
-                                        ...editList.comp,
-                                        thresholdDb,
+                                      limiter: {
+                                        ...editList.limiter,
+                                        ceilingDb,
                                       },
                                     })
                                   }
                                 />
-                                <Slider
-                                  label="Ratio"
-                                  value={editList.comp.ratio}
-                                  min={1}
-                                  max={20}
-                                  step={0.5}
-                                  unit=":1"
-                                  showFooter={false}
-                                  onValueChange={(ratio) =>
-                                    setEditList({
-                                      ...editList,
-                                      comp: {
-                                        ...editList.comp,
-                                        ratio,
-                                      },
-                                    })
-                                  }
-                                />
-                              </div>
-                            )}
+                              )}
 
-                            {id === 'limiter' && (
-                              <Slider
-                                label="Ceiling"
-                                value={editList.limiter.ceilingDb}
-                                min={-6}
-                                max={0}
-                                step={0.1}
-                                unit="dB"
-                                showFooter={false}
-                                className="max-w-xs"
-                                onValueChange={(ceilingDb) =>
-                                  setEditList({
-                                    ...editList,
-                                    limiter: {
-                                      ...editList.limiter,
-                                      ceilingDb,
-                                    },
-                                  })
-                                }
-                              />
-                            )}
-
-                            {id === 'filter' && (
-                              <div className="flex flex-col gap-3">
-                                <div>
-                                  <p className="text-foreground-secondary mb-2 text-xs uppercase">
-                                    Filter type
-                                  </p>
-                                  <FilterChips
-                                    aria-label="Filter type"
-                                    items={FILTER_MODES.map((option) => ({
-                                      id: option.id,
-                                      label: option.label,
-                                    }))}
-                                    selected={editList.filter.mode}
-                                    onChange={(mode) => {
-                                      const next = FILTER_MODES.find(
-                                        (option) => option.id === mode,
+                              {id === 'filter' && (
+                                <div className="flex flex-col gap-3">
+                                  <div>
+                                    <p className="text-foreground-secondary mb-2 text-xs uppercase">
+                                      Filter type
+                                    </p>
+                                    <FilterChips
+                                      aria-label="Filter type"
+                                      items={FILTER_MODES.map((option) => ({
+                                        id: option.id,
+                                        label: option.label,
+                                      }))}
+                                      selected={editList.filter.mode}
+                                      onChange={(mode) => {
+                                        const next = FILTER_MODES.find(
+                                          (option) => option.id === mode,
+                                        );
+                                        if (!next) {
+                                          return;
+                                        }
+                                        setEditList({
+                                          ...editList,
+                                          filter: {
+                                            ...editList.filter,
+                                            mode: next.id,
+                                          },
+                                        });
+                                      }}
+                                    />
+                                    {(() => {
+                                      const selectedMode = FILTER_MODES.find(
+                                        (option) =>
+                                          option.id === editList.filter.mode,
                                       );
-                                      if (!next) {
-                                        return;
-                                      }
+                                      return selectedMode ? (
+                                        <div className="border-border mt-2 flex justify-center rounded border p-2">
+                                          <FilterCurve
+                                            path={selectedMode.path}
+                                          />
+                                        </div>
+                                      ) : null;
+                                    })()}
+                                  </div>
+                                  <Slider
+                                    label="Freq"
+                                    value={editList.filter.freq}
+                                    min={20}
+                                    max={20000}
+                                    step={10}
+                                    unit="Hz"
+                                    showFooter={false}
+                                    onValueChange={(freq) =>
                                       setEditList({
                                         ...editList,
                                         filter: {
                                           ...editList.filter,
-                                          mode: next.id,
+                                          freq,
                                         },
-                                      });
-                                    }}
+                                      })
+                                    }
                                   />
-                                  {(() => {
-                                    const selectedMode = FILTER_MODES.find(
-                                      (option) =>
-                                        option.id === editList.filter.mode,
-                                    );
-                                    return selectedMode ? (
-                                      <div className="border-border mt-2 flex justify-center rounded border p-2">
-                                        <FilterCurve path={selectedMode.path} />
-                                      </div>
-                                    ) : null;
-                                  })()}
-                                </div>
-                                <Slider
-                                  label="Freq"
-                                  value={editList.filter.freq}
-                                  min={20}
-                                  max={20000}
-                                  step={10}
-                                  unit="Hz"
-                                  showFooter={false}
-                                  onValueChange={(freq) =>
-                                    setEditList({
-                                      ...editList,
-                                      filter: {
-                                        ...editList.filter,
-                                        freq,
-                                      },
-                                    })
-                                  }
-                                />
-                                <div>
-                                  <p className="text-foreground-secondary mb-2 text-xs uppercase">
-                                    Slope
-                                  </p>
-                                  <div className="flex flex-wrap gap-2">
-                                    {FILTER_SLOPES.map((option) => (
-                                      <button
-                                        key={option.id}
-                                        type="button"
-                                        aria-pressed={
-                                          editList.filter.slope === option.id
-                                        }
-                                        onClick={() =>
-                                          setEditList({
-                                            ...editList,
-                                            filter: {
-                                              ...editList.filter,
-                                              slope: option.id,
-                                            },
-                                          })
-                                        }
-                                        className={`border-border flex items-center gap-2 rounded border px-2 py-1 text-xs ${editList.filter.slope === option.id ? 'border-primary bg-primary/10 text-foreground' : 'text-foreground-secondary hover:text-foreground'}`}
-                                      >
-                                        <FilterCurve path={option.path} />
-                                        {option.label}
-                                      </button>
-                                    ))}
+                                  <div>
+                                    <p className="text-foreground-secondary mb-2 text-xs uppercase">
+                                      Slope
+                                    </p>
+                                    <div className="flex flex-wrap gap-2">
+                                      {FILTER_SLOPES.map((option) => (
+                                        <button
+                                          key={option.id}
+                                          type="button"
+                                          aria-pressed={
+                                            editList.filter.slope === option.id
+                                          }
+                                          onClick={() =>
+                                            setEditList({
+                                              ...editList,
+                                              filter: {
+                                                ...editList.filter,
+                                                slope: option.id,
+                                              },
+                                            })
+                                          }
+                                          className={`border-border flex items-center gap-2 rounded border px-2 py-1 text-xs ${editList.filter.slope === option.id ? 'border-primary bg-primary/10 text-foreground' : 'text-foreground-secondary hover:text-foreground'}`}
+                                        >
+                                          <FilterCurve path={option.path} />
+                                          {option.label}
+                                        </button>
+                                      ))}
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })
-                    )}
+                              )}
+                            </div>
+                          );
+                        })
+                      )}
 
-                    {enabledPluginIds.some(
-                      (id) => !pluginChain.includes(id),
-                    ) && (
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        onClick={() => setPluginPickerOpen(true)}
-                        className="shrink-0 self-start"
-                      >
-                        <PlusIcon size={14} aria-hidden className="mr-1.5" />
-                        Add plugin
-                      </Button>
-                    )}
+                      {enabledPluginIds.some(
+                        (id) => !pluginChain.includes(id),
+                      ) && (
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => setPluginPickerOpen(true)}
+                          className="shrink-0 self-start"
+                        >
+                          <PlusIcon size={14} aria-hidden className="mr-1.5" />
+                          Add plugin
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
-            </StudioPanel>
+                )}
+              </StudioPanel>
 
-            <Dialog.Root
-              isOpen={pluginPickerOpen}
-              onClose={() => setPluginPickerOpen(false)}
-            >
-              <Dialog.Title>Add a plugin</Dialog.Title>
-              <CardGrid className="grid-cols-[repeat(auto-fit,minmax(8rem,1fr))]">
-                {enabledPluginIds
-                  .filter((id) => !pluginChain.includes(id))
-                  .map((id) => (
-                    <Card
-                      key={id}
-                      title={AUDIO_FX_PLUGINS[id].label}
-                      subtitle={AUDIO_FX_PLUGINS[id].description}
-                      image={<PluginIcon id={id} />}
-                      onClick={() => addPlugin(id)}
-                    />
-                  ))}
-              </CardGrid>
-              <Dialog.Actions>
-                <Dialog.Close>Close</Dialog.Close>
-              </Dialog.Actions>
-            </Dialog.Root>
-          </>
-        )}
+              <Dialog.Root
+                isOpen={pluginPickerOpen}
+                onClose={() => setPluginPickerOpen(false)}
+              >
+                <Dialog.Title>Add a plugin</Dialog.Title>
+                <CardGrid className="grid-cols-[repeat(auto-fit,minmax(8rem,1fr))]">
+                  {enabledPluginIds
+                    .filter((id) => !pluginChain.includes(id))
+                    .map((id) => (
+                      <Card
+                        key={id}
+                        title={AUDIO_FX_PLUGINS[id].label}
+                        subtitle={AUDIO_FX_PLUGINS[id].description}
+                        image={<PluginIcon id={id} />}
+                        onClick={() => addPlugin(id)}
+                      />
+                    ))}
+                </CardGrid>
+                <Dialog.Actions>
+                  <Dialog.Close>Close</Dialog.Close>
+                </Dialog.Actions>
+              </Dialog.Root>
+            </>
+          )}
+        </ViewShell>
 
         <Dialog.Root
           isOpen={renderPromptOpen}
