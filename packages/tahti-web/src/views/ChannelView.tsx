@@ -262,6 +262,26 @@ export function ChannelView({ slug }: { slug: string }) {
                   }
                 : current,
             );
+            // Pre-fill the Links block from the artist's social links if
+            // they haven't set up any channel-specific links yet — saves
+            // re-entering the same URLs. Never overwrites an existing,
+            // already-saved Links block.
+            if (!ch.data.channelLinks || ch.data.channelLinks.length === 0) {
+              const socialEntries = Object.entries(
+                profile.data.artist.socialLinks ?? {},
+              ).filter(
+                ([key, url]) =>
+                  Boolean(url) && key !== 'genres' && key !== 'showConnections',
+              );
+              if (socialEntries.length > 0) {
+                setChannelLinksDraft(
+                  socialEntries.map(([label, url]) => ({
+                    label: label.charAt(0).toUpperCase() + label.slice(1),
+                    url,
+                  })),
+                );
+              }
+            }
           })
           .catch(() => {});
       }
@@ -553,7 +573,7 @@ export function ChannelView({ slug }: { slug: string }) {
             visualizerSettings={heroVisualizerSettings}
             visualSettingsJson={channel.visualSettingsJson}
             navItems={[
-              { id: 'home', label: 'Home', active: true },
+              { id: 'home', label: 'Stage', active: true },
               {
                 id: 'tracks',
                 label: 'Tracks',

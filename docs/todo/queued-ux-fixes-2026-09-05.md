@@ -400,26 +400,16 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   part of the same effort as the earlier tabs-under-player item, not
   separately — they're the same feature.
 
-- [ ] **Channel Designer: pre-fill Links from social links, eye-icon
-  visibility toggle, move player out of backdrop into Home/"Stage".**
-  Three related asks in `ChannelDesigner.tsx`/`ChannelLayersMenu.tsx`:
-  (1) If the artist has already set up social links elsewhere (check
-  `ChannelLinksEditor`/wherever social links are stored — possibly the
-  same data as a profile/settings social-links field, not necessarily
-  channel-specific), the Links section in the designer should come
-  pre-filled with those instead of starting empty. (2) Add an eye icon
-  next to each item for show/hide, matching the icon-button convention
-  — check whether this is for the Layers list items specifically (which
-  already has `onToggleDisabled`/eye icons in some places per
-  `ChannelElementEditor.tsx`) or a different list. (3) Move the player
-  (the hero block's audio player, `case 'hero'` in `renderBlock`) out of
-  the backdrop/header container into the "Home" area — relates to but is
-  distinct from the earlier "move the player above the tabs" resolution
-  (that was about the owner-only Overview/Manage tabs, already replaced
-  with a Stream Manager modal; this is about where the player physically
-  sits relative to the backdrop within the page content itself).
-  Separately: rename "Home" to "Stage" wherever it's labeled as a
-  section/tab (check `navItems`'s `{ id: 'home', label: 'Home' }` in
-  `ChannelView.tsx` and any other "Home" references for this channel
-  content area — don't rename unrelated "Home" labels elsewhere in the
-  app, e.g. the main nav).
+- [x] **Channel Designer: Links prefill + "Home"→"Stage" — 2 of 4
+  shipped 2026-09-05.** Links editor now pre-fills from the artist's
+  real social links (`PublicProfile.artist.socialLinks`, already
+  fetched for follower count — not `ProfileFields.socialLinks`, a
+  same-named-but-different field that's actually cross-posting
+  handles) when no channel-specific Links block is saved yet. "Home" →
+  "Stage" in the hero nav. **Not attempted**: per-link eye-icon
+  show/hide (the `ChannelLink` type has no visibility field — needs a
+  real schema addition, not a UI-only bolt-on) and moving the player
+  out of the backdrop into the Home/Stage area (same category of risky
+  block-rendering-system surgery as the earlier deferred "move player
+  above tabs" item). See
+  `docs/todo/channel-designer-links-prefill-and-home-rename.md`.
