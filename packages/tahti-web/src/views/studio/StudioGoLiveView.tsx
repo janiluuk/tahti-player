@@ -10,7 +10,6 @@ import {
   ListMusicIcon,
   PlusIcon,
   RadioIcon,
-  Settings2Icon,
   Trash2Icon,
   VideoIcon,
 } from 'lucide-react';
@@ -495,11 +494,6 @@ export function StudioGoLiveView() {
 
                 <StudioPanel
                   title="Connect broadcasting software"
-                  description={
-                    credentialsExpanded
-                      ? 'Choose your app, then copy the matching credentials.'
-                      : undefined
-                  }
                   action={
                     <Tooltip
                       content={
@@ -579,15 +573,9 @@ export function StudioGoLiveView() {
                       {renderCredentials()}
                       {ingest === 'obs' && settings && slug ? (
                         <div className="border-border bg-background-secondary/40 mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border p-3">
-                          <div className="min-w-0">
-                            <p className="text-sm font-semibold">
-                              Ready-made OBS setup
-                            </p>
-                            <p className="text-foreground-secondary mt-1 text-xs">
-                              Download a preset containing this channel&apos;s
-                              scene and current stream credentials.
-                            </p>
-                          </div>
+                          <p className="text-sm font-semibold">
+                            Ready-made OBS setup
+                          </p>
                           <ObsPresetButton
                             channelName={displayName}
                             channelSlug={slug}
@@ -596,26 +584,13 @@ export function StudioGoLiveView() {
                           />
                         </div>
                       ) : null}
-                      <div className="text-foreground-secondary mt-4 flex items-start gap-2 text-xs">
-                        <Settings2Icon
-                          size={14}
-                          className="mt-0.5 shrink-0"
-                          aria-hidden
-                        />
-                        {ingest === 'obs'
-                          ? 'In OBS, open Settings → Stream → Custom, paste both values, then choose Start Streaming.'
-                          : 'Paste these values into the broadcasting section of your audio app, then enable its On Air control.'}
-                      </div>
                     </>
                   )}
                 </StudioPanel>
               </div>
 
               <div className="flex min-w-0 flex-col gap-5">
-                <StudioPanel
-                  title="Recording"
-                  description="Save this and future broadcasts to your recordings archive."
-                >
+                <StudioPanel title="Recording">
                   <div className="border-border bg-background flex w-full items-center gap-3 rounded-lg border p-3">
                     <CircleDotIcon
                       size={20}
@@ -655,7 +630,6 @@ export function StudioGoLiveView() {
 
                 <StudioPanel
                   title="Multistream"
-                  description="Mirror your broadcast to other platforms."
                   action={
                     <Tooltip content="Add destination" side="top">
                       <Button

@@ -141,20 +141,23 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   the studio sounds list (extra fetch, likely N+1-ish if done per-poll —
   needs a real endpoint change instead). Don't build this without that
   backend piece; flagging rather than guessing at a workaround.
-- [ ] **Go Live: move header subtext into the help layer; restore the
-  calendar view.** Strip the explanatory subtext currently sitting under
-  each panel header on `StudioGoLiveView.tsx` (e.g. "Choose your app,
-  then copy the matching credentials", "Save this and future broadcasts
-  to your recordings archive", etc.) and relocate/expand those
-  explanations into the page's help layer instead — same
-  inline-help-text-to-help-layer pattern as the `StreamOverlayEditor` item
-  above; do both in the same pass since they're the same convention
-  applied to the same page. Separately: "restore the calendar view to the
-  top panel" — there was apparently a calendar/schedule view on this page
-  before that's since been removed or moved; find it via git history on
-  `StudioGoLiveView.tsx` (or ask the user which calendar, if git history
-  doesn't turn up an obvious candidate) before attempting to "restore"
-  anything.
+- [x] **Go Live: move header subtext into the help layer — shipped
+  2026-09-05.** Dropped trivial `StudioPanel` `description` captions
+  (Connect broadcasting software / Recording / Multistream) and the
+  always-visible OBS/Icecast paste instructions; expanded the
+  `broadcast` Help Center article to cover what was removed. **Not
+  done**: "restore the calendar view to the top panel" — no "calendar"
+  reference has ever existed in this file's git history; needs the user
+  to point at which calendar (candidates: `StudioScheduleView.tsx`,
+  `RadioBookingCalendar.tsx`, `StudioEventsView.tsx`) rather than a
+  guess. **Important open question surfaced mid-task**: the sibling
+  `tahti` repo has a real, small `DesignerHelpLayer` component (inline
+  collapsible "? Help" toggle, not a separate page) that's a more literal
+  match for "help layer" than the Help-Center-article approach used
+  here — not yet ported, user said "not sure" whether to. See
+  `docs/todo/go-live-header-subtext-cleanup.md` for the full writeup;
+  this affects how the `StreamOverlayEditor` subtext item below (still
+  unstarted) should be done too.
 - [x] **Top-nav broadcast icon: rotation dot + live-only flash + Stream
   Manager quick-access icon — shipped 2026-09-05.** `AppTopNav.tsx`: the
   previous `hasConnectionIssue` (`channelState === 'LIVE' &&
