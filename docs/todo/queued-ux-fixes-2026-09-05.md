@@ -385,15 +385,15 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   `StudioGoLiveView.tsx`'s `isStreamPlaying`/`channelIsPlaying` checks)
   instead of always showing a static play icon.
 
-- [ ] **Channel Designer: Save/Reset layout buttons no longer visible;
-  right panel should be only as tall as needed.** In `ChannelDesigner.tsx`
-  (non-`lookOnly` mode — the layout editor, not the look-only sidebar),
-  the top action row (`saveButton`, the "More" dropdown with Reset, and
-  `openChannelLink`, ~line 1362) is apparently not visible/reachable
-  now — check whether a recent change (e.g. the dock/scroll fix
-  mentioned in this branch's git history, "Fix Channel Designer dock
-  scroll") pushed it out of view, or whether the right design panel's
-  container has a fixed/overflow height that clips it. Fix by sizing
-  the right panel to its actual content height (`h-fit`/`min-h-0`-style
-  fix) rather than a fixed/flex-stretched height, so Save/Reset stay
-  visible without needing to scroll a fixed-height panel.
+- [x] **Channel Designer: Save/Reset layout buttons no longer visible;
+  right panel should be only as tall as needed — shipped 2026-09-05,
+  not live-verified.** Root cause: `ChannelElementEditor`'s `h-full`
+  className was correct in the sidebar-embedded (`lookOnly`) context but
+  wrong in the full/wide `StudioBrandingView` context, where it sits
+  inside a CSS Grid item with no explicit height — `height: 100%` in an
+  auto-sized grid track is a known layout-quirk category, plausibly
+  causing the panel to cover the Save/"More"(Reset)/link row above it.
+  Made the `h-full` conditional on `lookOnly`; the wide-mode panel now
+  sizes to its natural content height. See
+  `docs/todo/channel-designer-panel-height-fix.md` — flagged there as
+  static-analysis-only, worth a live check.

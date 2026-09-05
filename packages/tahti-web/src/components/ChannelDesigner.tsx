@@ -1351,7 +1351,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
         onSelect={selectLookElement}
         onToggleDisabled={toggleSelectedLook}
         items={lookEditorItems}
-        className={`h-full ${highlightSection ? 'ring-primary ring-2' : ''}`}
+        className={`${lookOnly ? 'h-full' : ''} ${highlightSection ? 'ring-primary ring-2' : ''}`}
       />
     );
     if (lookOnly) {
