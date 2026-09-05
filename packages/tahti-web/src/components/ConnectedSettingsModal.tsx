@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 
 import { Button, SettingsPanel } from '@tahti-player/ui';
 
-import { MAIN_CONTENT_PADDING } from '../layout/contentPadding';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
@@ -73,9 +72,10 @@ export function ConnectedSettingsModal() {
       id: item.id,
       label: item.label,
       icon: <Icon size={16} />,
-      // SettingsPanel dialog uses p-0; pad here so section headers match AppShell.
+      // Settings dialog is p-0; pad sections. `min-w-0` + slightly tighter
+      // mobile padding keep wide Add-ons / Themes bodies inside the pane.
       content: () => (
-        <div className={MAIN_CONTENT_PADDING}>
+        <div className={`min-w-0 p-4 md:p-6 lg:p-8`}>
           <SettingsSectionBody section={item.id} />
         </div>
       ),
