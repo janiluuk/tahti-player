@@ -15,6 +15,7 @@ import {
   Card,
   CardGrid,
   Dialog,
+  EmptyState,
   FilePicker,
   Loader,
   Toggle,
@@ -432,15 +433,19 @@ export function StudioUploadView() {
                   </span>
                 </div>
               ) : recordings.length === 0 ? (
-                <p className="text-foreground-secondary mt-4 text-sm">
-                  No recordings yet.{' '}
-                  <Link
-                    to="/studio/go-live"
-                    className="text-accent-cyan underline-offset-2 hover:underline"
-                  >
-                    Go live to record one.
-                  </Link>
-                </p>
+                <EmptyState
+                  size="sm"
+                  className="mt-4"
+                  title="No recordings yet"
+                  action={
+                    <Link
+                      to="/studio/go-live"
+                      className="text-accent-cyan text-sm underline-offset-2 hover:underline"
+                    >
+                      Go live to record one.
+                    </Link>
+                  }
+                />
               ) : (
                 <ul className="mt-4 flex flex-col gap-2">
                   {recordings.map((recording) => (

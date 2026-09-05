@@ -2,6 +2,7 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+<<<<<<< HEAD
 ## 2026-09-06 — Stream Manager replace-rotation wipe
 
 Folded from `stream-manager-rotation-replace-wipe.md`.
@@ -11,6 +12,27 @@ adding playlist tracks. Empty / release-only / embed-only playlists, or
 a failed add, left the live rotation empty. Adds now run first; old
 fallbacks are removed only after every add succeeds; programme state
 refreshes after apply. Shipped in tahti-web 0.0.84.
+
+## 2026-09-05 — CI snapshot digest + PR #2/#3
+
+Folded from `ci-snapshot-digest.md` and `pr2-merge-ready.md`.
+
+- Vitest snapshot digest reporter, Playwright PNGs, sticky PR comment,
+  CI/coverage artifacts (`<!-- tahti-snapshot-digest -->`). Shipped in
+  PR #3 (`perf/audit`), merged to master.
+- PR #2 (`feat/studio-subtabs-help-layer`) merge-ready work completed and
+  merged earlier the same day.
+=======
+## 2026-09-05 — CI snapshot digest + PR #2/#3
+
+Folded from `ci-snapshot-digest.md` and `pr2-merge-ready.md`.
+
+- Vitest snapshot digest reporter, Playwright PNGs, sticky PR comment,
+  CI/coverage artifacts (`<!-- tahti-snapshot-digest -->`). Shipped in
+  PR #3 (`perf/audit`), merged to master.
+- PR #2 (`feat/studio-subtabs-help-layer`) merge-ready work completed and
+  merged earlier the same day.
+>>>>>>> e35b72618 (Use EmptyState for remaining Studio empty surfaces.)
 
 ---
 
