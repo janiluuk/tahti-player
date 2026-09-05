@@ -326,17 +326,17 @@ export function PluginStorePanel() {
   return (
     <Tabs
       vertical
-      className="flex flex-col gap-4 sm:flex-row"
-      listClassName="flex sm:flex-col gap-1 sm:w-48 shrink-0"
+      className="flex min-w-0 flex-col gap-4 sm:flex-row"
+      listClassName="flex min-w-0 w-full flex-wrap gap-1 sm:w-48 sm:flex-nowrap sm:flex-col shrink-0"
       panelClassName="min-w-0 flex-1"
       selectedIndex={selectedIndex}
       onChange={(index) => setCategory(categories[index]!.id)}
       items={categories.map((c) => ({
         id: c.id,
         label: (
-          <span className="flex items-center gap-2">
-            <c.icon size={14} aria-hidden />
-            {c.label}
+          <span className="flex min-w-0 items-center gap-2">
+            <c.icon size={14} aria-hidden className="shrink-0" />
+            <span className="truncate">{c.label}</span>
           </span>
         ),
         content: <CategoryBody categoryId={c.id} />,
