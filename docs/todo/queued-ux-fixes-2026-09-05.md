@@ -305,15 +305,16 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   (4) The gradient color swatches are labeled with names that belong to
   a different container/context (a copy-paste labeling bug, not a logic
   bug) — find and fix the mismatched labels once located.
-- [ ] **Channel Designer: PlayerVisualizerControls under "Player
-  visualizer" tab.** `ChannelDesigner.tsx` already has a
-  `ChannelDesignerPlayerVisualizer.stories.tsx` (Storybook) and likely a
-  "Player visualizer" tab/section already exists but doesn't currently
-  render `PlayerVisualizerControls` — locate that component (search the
-  repo for `PlayerVisualizerControls`) and confirm whether it exists
-  already or needs to be built, then wire it into that tab. Update the
-  corresponding Storybook story to match once done (same "keep
-  Storybook in sync" ask as the broader Storybook-refresh item above).
+- [x] **Channel Designer: PlayerVisualizerControls — already done,
+  confirmed 2026-09-05.** Checked: `PlayerVisualizerControls` already
+  exists (`components/channel-designer/PlayerVisualizerControls.tsx`),
+  is already imported and wired into `ChannelDesigner.tsx` (`visualizerSlot`,
+  passed into the "Player" element's panel), and already has a
+  Storybook story documenting it as "Player → Visualizer" chrome. No
+  code change made — the request appears to already be satisfied by
+  existing work. If this doesn't match what's actually seen in the
+  running app, it's likely a rendering/visibility issue rather than a
+  missing wire-up; would need a live repro to dig further.
 
 - [ ] **Radio browser directory: layout, cover images, enable flow.**
   Multiple asks for whatever view is the "radio browser directory"
