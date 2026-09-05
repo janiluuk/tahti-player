@@ -49,21 +49,61 @@ pnpm test                   # Run all tests
 pnpm test:coverage          # Run tests with coverage
 pnpm clean                  # Clean build artifacts
 
-# Package-specific testing
-pnpm --filter @tahti-player/ui test -- src/components/Badge/Badge.test.tsx
-pnpm --filter @tahti-player/ui test -- --testNamePattern="renders"
+# Package-specific tests: pass Vitest arguments directly, without an extra --
+pnpm --filter @tahti-player/ui test src/components/Badge/Badge.test.tsx
+pnpm --filter @tahti-player/ui test --testNamePattern="renders"
 
-# Update snapshots (run at root for all, or filter to a specific package)
-
-# At root
-pnpm test -- -u
-
-# Filtering for a specific package
-pnpm --filter @tahti-player/ui test -- -u
-
-# After cd'ing into a package
-pnpm test -u
+# Update only reviewed snapshots, then rerun the same tests without -u
+pnpm --filter @tahti-player/ui test src/components/Badge/Badge.test.tsx -u
 ```
+
+Check the runner's reported package path, selected test files, and test count.
+An unexpected full-suite run is not evidence that the requested filter worked.
+Root `pnpm test` uses Turbo; use package scripts for focused tests and snapshot
+updates rather than copying argument forwarding between the two command layers.
+
+## CI investigation and isolated checkouts
+
+Use `--repo janiluuk/tahti-player` on repository-scoped `gh` commands. The CLI
+can otherwise select the upstream Nuclear repository. Start from the linked
+run's branch and SHA, not the current checkout's branch:
+
+```bash
+gh run view RUN_ID --repo janiluuk/tahti-player --json headBranch,headSha,jobs
+gh run view RUN_ID --repo janiluuk/tahti-player --job JOB_ID --log-failed
+```
+
+If failed-log output is empty, download the job log directly:
+
+```bash
+gh api repos/janiluuk/tahti-player/actions/jobs/JOB_ID/logs > /tmp/tahti-ci-job.log
+```
+
+1. Inspect `git status --short`, `git worktree list`, and the run SHA. Fetch
+   `origin` and compare the current remote target with that SHA; a newer branch
+   may already contain the fix.
+2. If the current checkout is dirty or on another branch, use an isolated
+   worktree for the target. Preserve existing edits; do not stash, reset, or
+   transfer unrelated changes. Reuse an existing worktree only after checking
+   its branch and status.
+3. Install dependencies in that worktree with `pnpm install --frozen-lockfile`.
+   Do not symlink another checkout's root or package `node_modules`: workspace
+   links and command resolution can point at the wrong source tree. Confirm
+   the package path printed by each validation command belongs to this worktree.
+4. Match the failed workflow: `.github/workflows/ci.yml` runs lint, tests, then
+   build; `.github/workflows/coverage.yml` runs `pnpm test:coverage`. Reproduce
+   the failed package first. For snapshot failures, compare the diff with the
+   actual component before updating only the affected snapshots, then rerun
+   without update mode and check affected consumer tests.
+5. Keep fixing, committing, pushing, rebasing, and deploying distinct. Follow
+   authorization already given in this conversation; a request to fix alone
+   does not override the no-commit rule. Report the worktree, branch, validation,
+   and whether the fix was committed/pushed. For an authorized rebase push,
+   use a lease against the remote SHA observed before the rebase.
+
+Resolve sibling repositories using the canonical map in
+[`TAHTI.md`](./TAHTI.md#repository-and-checkout-map). A worktree under `/tmp`
+does not acquire backend or registry siblings automatically.
 
 ## Code Style
 

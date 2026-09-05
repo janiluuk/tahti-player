@@ -1,7 +1,16 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
+import { Suspense } from 'react';
 
-import { Dashboard } from '../views/Dashboard';
+const Dashboard = lazy(() =>
+  import('../views/Dashboard').then((module) => ({
+    default: module.Dashboard,
+  })),
+);
 
 export const Route = createFileRoute('/dashboard')({
-  component: Dashboard,
+  component: (
+    <Suspense fallback={<div>Loading Dashboard…</div>}>
+      <Dashboard />
+    </Suspense>
+  ),
 });

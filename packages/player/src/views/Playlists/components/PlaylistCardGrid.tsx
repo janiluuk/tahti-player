@@ -1,4 +1,4 @@
-import { type FC } from 'react';
+import { type FC, memo } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import type { PlaylistIndexEntry } from '@tahti-player/model';
@@ -11,28 +11,19 @@ type PlaylistCardGridProps = {
   onCardClick: (id: string) => void;
 };
 
-export const PlaylistCardGrid: FC<PlaylistCardGridProps> = ({
-  playlists,
-  onCardClick,
-}) => {
+export const PlaylistCardGrid = memo<PlaylistCardGridProps>(({ playlists, onCardClick }) => {
   const { t } = useTranslation('playlists');
 
   return (
     <CardGrid>
       {playlists.map((playlist) => (
-        <Card
-          key={playlist.id}
-          image={
-            <PlaylistArtwork
-              name={playlist.name}
-              thumbnails={playlist.thumbnails}
-            />
-          }
-          title={playlist.name}
-          subtitle={t('trackCount', { count: playlist.itemCount })}
-          onClick={() => onCardClick(playlist.id)}
-        />
+        <Card key={playlist.id} onClick={() => onCardClick(playlist.id)}>
+          <PlaylistArtwork playlist={playlist} />
+          <span className="text-foreground-secondary truncate line-clamp-1">
+            {playlist.name}
+          </span>
+        </Card>
       ))}
     </CardGrid>
   );
-};
+});

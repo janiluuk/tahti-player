@@ -1,11 +1,16 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { z } from 'zod';
+import { createFileRoute, redirect } from '@tanstack/react-router';
+import { Suspense } from 'react';
 
-import { Search } from '../views/Search/Search';
+const Search = lazy(() =>
+  import('../views/Search').then((module) => ({
+    default: module.Search,
+  })),
+);
 
 export const Route = createFileRoute('/search')({
-  component: Search,
-  validateSearch: z.object({
-    q: z.string().min(1).max(100).default(''),
-  }),
+  component: (
+    <Suspense fallback={<div>Loading Search…</div>}>
+      <Search />
+    </Suspense>
+  ),
 });

@@ -110,6 +110,50 @@ fn run_ytdlp(args: &[&str]) -> Result<String, String> {
 }
 
 fn parse_ndjson_entries(stdout: &str) -> Vec<YtdlpJson> {
+
+async fn run_ytdlp_async(args: &[&str]) -> Result<String, String> { 
+    let program = get_ytdlp_path()?; 
+    let mut cmd = tokio::process::Command::new(&program); 
+    cmd.args(args) 
+        .stdout(std::process::Stdio::piped()) 
+        .stderr(std::process::Stdio::piped()); 
+ 
+    #[cfg(target_os = "windows")] { 
+        use std::os::windows::process::CommandExt; 
+        const CREATE_NO_WINDOW: u32 = 0x08000000; 
+        cmd.creation_flags(CREATE_NO_WINDOW); 
+    } 
+ 
+    let child = cmd 
+        .spawn() 
+        .map_err(|error| { 
+            error!("[yt-dlp] Failed to execute: {}", error); 
+            format!("Failed to execute yt-dlp: {}. Is yt-dlp installed?", error) 
+        })?; 
+ 
+    let output = tokio::time::timeout 
+        (std::time::Duration::from_secs(60), 
+         child.wait_with_output(), 
+    ) 
+    .await 
+    .map_err(|_| { 
+        error!("[yt-dlp] yt-dlp timed out after 60 seconds"); 
+        format!("yt-dlp timed out after 60 seconds") 
+    })?; 
+ 
+    let output = output.map_err(|_| { 
+        error!("[yt-dlp] yt-dlp wait timed out"); 
+        format!("yt-dlp wait timed out") 
+    })?; 
+ 
+    if !output.status.success() { 
+        let stderr = String::from_utf8_lossy(&output.stderr); 
+        error!("[yt-dlp] Command failed: {}", stderr); 
+        return Err(format!("yt-dlp failed: {}", stderr)); 
+    } 
+ 
+    Ok(String::from_utf8_lossy(&output.stdout).into_owned()) 
+}
     stdout
         .lines()
         .filter(|line| !line.trim().is_empty())

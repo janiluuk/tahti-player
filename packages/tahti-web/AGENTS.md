@@ -15,6 +15,12 @@ this file (both repos sit side by side under the same parent workspace directory
 developed together but versioned separately, each with their own git history — check `git status`
 in both when a task spans the boundary.
 
+Repository identity and path resolution are defined in the root
+[`TAHTI.md` repository map](../../TAHTI.md#repository-and-checkout-map).
+The backend's local directory is `tahti`; its GitHub repository is
+`janiluuk/tahti-org`. Resolve and verify its absolute path once per task,
+especially when working from an isolated player worktree.
+
 - Anything that touches HTTP contracts, new endpoints, DB schema, or the OG/sitemap/metadata
   server-side pieces happens in `tahti/apps/api` (`src/routes/`, response DTOs in
   `packages/shared/src/dto/api-responses.ts`, registered in `src/server.ts`).
