@@ -573,12 +573,14 @@ export async function testRtmpTarget(
 export type StreamOverlay = {
   streamOverlayTitle: string | null;
   streamOverlaySubtitle: string | null;
+  streamOverlayShowTitle: boolean;
   streamOverlayCoverUrl: string | null;
 };
 
 let mockStreamOverlay: StreamOverlay = {
   streamOverlayTitle: null,
   streamOverlaySubtitle: null,
+  streamOverlayShowTitle: false,
   streamOverlayCoverUrl: null,
 };
 
@@ -605,6 +607,7 @@ export async function fetchStreamOverlay(): Promise<{
       data: {
         streamOverlayTitle: null,
         streamOverlaySubtitle: null,
+        streamOverlayShowTitle: false,
         streamOverlayCoverUrl: null,
       },
       meta: apiErrorMeta(err),
