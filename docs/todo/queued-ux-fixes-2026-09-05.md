@@ -34,14 +34,14 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   list) were each independently guarded already — only its "Stop stream"
   button is intentionally unguarded (a primary action that should stay
   reachable while collapsed). No second instance of the drift found.
-- [ ] **Collapse "Connect Broadcasting Software" by default.** Currently
-  shows full broadcasting options up front. Should default collapsed,
-  showing only server name + stream key (key hidden behind a reveal icon,
-  with copy next to it), with an expand control that reveals the rest.
-  User's own note: this likely requires moving the RTMP credentials
-  display out of whatever tab structure currently hosts it, since a
-  collapsed summary needs to sit above/outside the tabs to be visible
-  before expanding.
+- [x] **Collapse "Connect Broadcasting Software" by default — shipped
+  2026-09-05.** `StudioGoLiveView.tsx`'s "Connect broadcasting software"
+  panel now always shows a compact RTMP server + stream key summary
+  (`CopyField` gained a `maskable` prop — dots + eye-icon reveal toggle +
+  copy), pulled out of the OBS/Traktor/Icecast app-picker entirely so it
+  doesn't depend on which one is selected. A chevron button in the panel
+  header (`credentialsExpanded` state, default `false`) reveals the full
+  app picker + per-app credentials + OBS preset + instructions.
 - [ ] **Go Live: proper toaster on save, and the notification toaster's
   scrollbar.** Saving settings in Go Live should show a real `toast`
   (success/error), not just silent state updates — audit
@@ -81,3 +81,33 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   (`STUDIO-ADMIN-UX-SWEEP.md`), just routed to the page help layer here
   instead of a Tooltip badge since a help layer already exists for this
   page.
+- [ ] **Stream Manager stats + overlay restructuring.** In
+  `StreamManagerPanel.tsx`'s `stats` tab: show "Offline" instead of
+  "Rotation" for the `Signal` stat's rotation-fallback value (currently
+  `rotationPlaying ? 'Rotation' : 'No encoder'` — user wants the rotation
+  case itself to read differently, likely "Offline" for the whole stat
+  set when only rotation is running, not actually broadcasting — clarify
+  exact wording/condition before implementing). Rename the `Output`
+  `StatChip` label to `Mode`. Replace the `Time left` `StatChip` entirely
+  with an "Overlay" stat showing on/off (from
+  `streamOverlayShowTitle`) — clicking it opens the overlay config
+  (`StreamOverlayEditor`) in a modal (reuse the `Dialog` pattern already
+  used elsewhere in this file, e.g. the multistream destination dialog),
+  where the artist can edit fields and toggle the overlay on/off; on save,
+  show a toast with the result and update the stat chip's on/off state
+  from the response (not just optimistically). Once this ships, remove
+  the separate `overlay` tab from the manager entirely (`Tabs.List`'s
+  third tab, `activeTab === 'overlay'` block, and the now-unused
+  `MonitorPlayIcon` import) — the modal replaces it as the only entry
+  point to the overlay editor from this panel.
+- [ ] **Go Live multistream "Add destination" modal is broken/unusable.**
+  Reported: the dropdown-based add-destination modal in
+  `StudioGoLiveView.tsx` (`showAddDestination` state,
+  `MulticastDestinationForm`?) doesn't work well. There's apparently
+  already a *working* multistream configuration UI elsewhere in the app —
+  find it (grep other consumers of `MulticastDestinationForm` /
+  `createRtmpTarget` / multicast provider selection, possibly in
+  Settings or a dedicated Multistream settings page) and either reuse
+  that same component/flow here instead of the broken one, or figure out
+  why this instance behaves differently from the working one before
+  touching anything.

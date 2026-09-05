@@ -1,6 +1,10 @@
 import { Link } from '@tanstack/react-router';
 import {
+  ChevronDownIcon,
+  ChevronUpIcon,
   CircleDotIcon,
+  EyeIcon,
+  EyeOffIcon,
   FolderOpenIcon,
   HeadphonesIcon,
   ListMusicIcon,
@@ -72,7 +76,19 @@ type Ingest = 'obs' | 'icecast' | 'traktor';
 // CopyButton (@tahti-player/ui) — this used to hand-roll the same
 // check-icon-swap CopyButton already provides. See WORKPLAN.md's
 // URL-field copy convention entry.
-function CopyField({ label, value }: { label: string; value: string }) {
+function CopyField({
+  label,
+  value,
+  maskable = false,
+}: {
+  label: string;
+  value: string;
+  /** Starts hidden behind dots with a reveal toggle — for secrets
+   * (stream keys, passwords) rather than public-facing values (server
+   * host, mount point). */
+  maskable?: boolean;
+}) {
+  const [revealed, setRevealed] = useState(!maskable);
   return (
     <div className="border-border bg-background-secondary flex flex-col gap-1 rounded-lg border p-3">
       <div className="text-foreground-secondary font-mono text-xs tracking-wide uppercase">
@@ -80,8 +96,24 @@ function CopyField({ label, value }: { label: string; value: string }) {
       </div>
       <div className="flex items-center gap-2">
         <code className="text-foreground flex-1 overflow-x-auto font-mono text-sm whitespace-nowrap">
-          {value}
+          {revealed ? value : '•'.repeat(Math.min(value.length, 24))}
         </code>
+        {maskable && (
+          <Tooltip content={revealed ? `Hide ${label}` : `Show ${label}`}>
+            <Button
+              size="icon-sm"
+              variant="secondary"
+              onClick={() => setRevealed((current) => !current)}
+              aria-label={revealed ? `Hide ${label}` : `Show ${label}`}
+            >
+              {revealed ? (
+                <EyeOffIcon size={14} aria-hidden />
+              ) : (
+                <EyeIcon size={14} aria-hidden />
+              )}
+            </Button>
+          </Tooltip>
+        )}
         <CopyButton
           text={value}
           variant="secondary"
@@ -121,6 +153,7 @@ export function StudioGoLiveView() {
   );
   const [rotationPlaying, setRotationPlaying] = useState(false);
   const [ingest, setIngest] = useState<Ingest>('obs');
+  const [credentialsExpanded, setCredentialsExpanded] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [newProvider, setNewProvider] = useState<MulticastProviderId>('TWITCH');
@@ -428,68 +461,119 @@ export function StudioGoLiveView() {
 
                 <StudioPanel
                   title="Connect broadcasting software"
-                  description="Choose your app, then copy the matching credentials."
+                  description={
+                    credentialsExpanded
+                      ? 'Choose your app, then copy the matching credentials.'
+                      : undefined
+                  }
+                  action={
+                    <Tooltip
+                      content={
+                        credentialsExpanded
+                          ? 'Hide broadcasting options'
+                          : 'Show broadcasting options'
+                      }
+                    >
+                      <Button
+                        size="icon-sm"
+                        variant="secondary"
+                        onClick={() =>
+                          setCredentialsExpanded((current) => !current)
+                        }
+                        aria-label={
+                          credentialsExpanded
+                            ? 'Hide broadcasting options'
+                            : 'Show broadcasting options'
+                        }
+                        aria-expanded={credentialsExpanded}
+                      >
+                        {credentialsExpanded ? (
+                          <ChevronUpIcon size={16} aria-hidden />
+                        ) : (
+                          <ChevronDownIcon size={16} aria-hidden />
+                        )}
+                      </Button>
+                    </Tooltip>
+                  }
                 >
-                  <div className="mb-4 flex flex-wrap gap-2">
-                    <Button
-                      size="sm"
-                      variant={ingest === 'obs' ? 'default' : 'secondary'}
-                      onClick={() => setIngest('obs')}
-                    >
-                      <VideoIcon size={14} aria-hidden className="mr-1.5" />
-                      OBS
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={ingest === 'traktor' ? 'default' : 'secondary'}
-                      onClick={() => setIngest('traktor')}
-                    >
-                      <HeadphonesIcon
-                        size={14}
-                        aria-hidden
-                        className="mr-1.5"
-                      />
-                      Traktor
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={ingest === 'icecast' ? 'default' : 'secondary'}
-                      onClick={() => setIngest('icecast')}
-                    >
-                      <RadioIcon size={14} aria-hidden className="mr-1.5" />
-                      Icecast
-                    </Button>
-                  </div>
-                  {renderCredentials()}
-                  {ingest === 'obs' && settings && slug ? (
-                    <div className="border-border bg-background-secondary/40 mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border p-3">
-                      <div className="min-w-0">
-                        <p className="text-sm font-semibold">
-                          Ready-made OBS setup
-                        </p>
-                        <p className="text-foreground-secondary mt-1 text-xs">
-                          Download a preset containing this channel&apos;s scene
-                          and current stream credentials.
-                        </p>
-                      </div>
-                      <ObsPresetButton
-                        channelName={displayName}
-                        channelSlug={slug}
-                        server={settings.rtmp.server}
-                        streamKey={settings.rtmp.streamKey}
+                  {settings && (
+                    <div className="flex flex-col gap-2">
+                      <CopyField label="Server" value={settings.rtmp.server} />
+                      <CopyField
+                        label="Stream key"
+                        value={settings.rtmp.streamKey}
+                        maskable
                       />
                     </div>
-                  ) : null}
-                  <div className="text-foreground-secondary mt-4 flex items-start gap-2 text-xs">
-                    <Settings2Icon
-                      size={14}
-                      className="mt-0.5 shrink-0"
-                      aria-hidden
-                    />
-                    {ingest === 'obs'
-                      ? 'In OBS, open Settings → Stream → Custom, paste both values, then choose Start Streaming.'
-                      : 'Paste these values into the broadcasting section of your audio app, then enable its On Air control.'}
-                  </div>
+                  )}
+                  {credentialsExpanded && (
+                    <>
+                      <div className="mt-4 mb-4 flex flex-wrap gap-2">
+                        <Button
+                          size="sm"
+                          variant={ingest === 'obs' ? 'default' : 'secondary'}
+                          onClick={() => setIngest('obs')}
+                        >
+                          <VideoIcon size={14} aria-hidden className="mr-1.5" />
+                          OBS
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant={
+                            ingest === 'traktor' ? 'default' : 'secondary'
+                          }
+                          onClick={() => setIngest('traktor')}
+                        >
+                          <HeadphonesIcon
+                            size={14}
+                            aria-hidden
+                            className="mr-1.5"
+                          />
+                          Traktor
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant={
+                            ingest === 'icecast' ? 'default' : 'secondary'
+                          }
+                          onClick={() => setIngest('icecast')}
+                        >
+                          <RadioIcon size={14} aria-hidden className="mr-1.5" />
+                          Icecast
+                        </Button>
+                      </div>
+                      {renderCredentials()}
+                      {ingest === 'obs' && settings && slug ? (
+                        <div className="border-border bg-background-secondary/40 mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border p-3">
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold">
+                              Ready-made OBS setup
+                            </p>
+                            <p className="text-foreground-secondary mt-1 text-xs">
+                              Download a preset containing this channel&apos;s
+                              scene and current stream credentials.
+                            </p>
+                          </div>
+                          <ObsPresetButton
+                            channelName={displayName}
+                            channelSlug={slug}
+                            server={settings.rtmp.server}
+                            streamKey={settings.rtmp.streamKey}
+                          />
+                        </div>
+                      ) : null}
+                      <div className="text-foreground-secondary mt-4 flex items-start gap-2 text-xs">
+                        <Settings2Icon
+                          size={14}
+                          className="mt-0.5 shrink-0"
+                          aria-hidden
+                        />
+                        {ingest === 'obs'
+                          ? 'In OBS, open Settings → Stream → Custom, paste both values, then choose Start Streaming.'
+                          : 'Paste these values into the broadcasting section of your audio app, then enable its On Air control.'}
+                      </div>
+                    </>
+                  )}
                 </StudioPanel>
               </div>
 
