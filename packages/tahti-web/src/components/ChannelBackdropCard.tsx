@@ -73,7 +73,7 @@ export type ChannelBackdropCardProps = {
 };
 
 const DEFAULT_NAV_ITEMS: ChannelBackdropNavItem[] = [
-  { id: 'home', label: 'Home', active: true },
+  { id: 'home', label: 'Stage', active: true },
   { id: 'tracks', label: 'Tracks' },
   { id: 'about', label: 'About' },
 ];
@@ -274,82 +274,88 @@ export function ChannelBackdropCard({
           </div>
           {badge}
         </div>
-        <nav
-          aria-label="Channel navigation"
-          className="relative mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-white/20 pt-3 text-xs font-semibold uppercase opacity-90"
-        >
-          {navItems.map((navItem) =>
-            navItem.onClick ? (
+        {navItems.length > 0 ? (
+          <nav
+            aria-label="Channel navigation"
+            className="relative mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-white/20 pt-3 text-xs font-semibold uppercase opacity-90"
+          >
+            {navItems.map((navItem) =>
+              navItem.onClick ? (
+                <button
+                  key={navItem.id}
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    navItem.onClick?.();
+                  }}
+                  className={navItem.active ? 'border-b-2 pb-2' : 'pb-2'}
+                  style={navItem.active ? { borderColor: accent } : undefined}
+                >
+                  {navItem.label}
+                </button>
+              ) : (
+                <span
+                  key={navItem.id}
+                  className={navItem.active ? 'border-b-2 pb-2' : 'pb-2'}
+                  style={navItem.active ? { borderColor: accent } : undefined}
+                >
+                  {navItem.label}
+                </span>
+              ),
+            )}
+            {quickAdd?.map((chip) => (
               <button
-                key={navItem.id}
+                key={chip.id}
                 type="button"
                 onClick={(event) => {
                   event.stopPropagation();
-                  navItem.onClick?.();
+                  chip.onClick();
                 }}
-                className={navItem.active ? 'border-b-2 pb-2' : 'pb-2'}
-                style={navItem.active ? { borderColor: accent } : undefined}
+                className="ml-auto rounded-full border border-white/30 px-2.5 py-1 text-[10px] normal-case opacity-90 hover:bg-white/10 hover:opacity-100"
               >
-                {navItem.label}
+                + {chip.label}
               </button>
-            ) : (
-              <span
-                key={navItem.id}
-                className={navItem.active ? 'border-b-2 pb-2' : 'pb-2'}
-                style={navItem.active ? { borderColor: accent } : undefined}
-              >
-                {navItem.label}
-              </span>
-            ),
-          )}
-          {quickAdd?.map((chip) => (
-            <button
-              key={chip.id}
-              type="button"
-              onClick={(event) => {
-                event.stopPropagation();
-                chip.onClick();
-              }}
-              className="ml-auto rounded-full border border-white/30 px-2.5 py-1 text-[10px] normal-case opacity-90 hover:bg-white/10 hover:opacity-100"
-            >
-              + {chip.label}
-            </button>
-          ))}
-        </nav>
+            ))}
+          </nav>
+        ) : null}
       </div>
 
-      <div
-        role={onEditBackground ? 'button' : undefined}
-        tabIndex={onEditBackground ? 0 : undefined}
-        aria-label={onEditBackground ? 'Edit player design' : undefined}
-        title={onEditBackground ? 'Edit player design' : undefined}
-        onClick={
-          onEditBackground
-            ? (event) => {
-                event.stopPropagation();
-                onEditBackground();
-              }
-            : undefined
-        }
-        onKeyDown={
-          onEditBackground
-            ? (event) => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                  event.preventDefault();
+      {bottomSlot != null ? (
+        <div
+          role={onEditBackground ? 'button' : undefined}
+          tabIndex={onEditBackground ? 0 : undefined}
+          aria-label={onEditBackground ? 'Edit player design' : undefined}
+          title={onEditBackground ? 'Edit player design' : undefined}
+          onClick={
+            onEditBackground
+              ? (event) => {
                   event.stopPropagation();
                   onEditBackground();
                 }
-              }
-            : undefined
-        }
-        className={`absolute inset-x-0 bottom-0 z-[1] outline-none ${
-          onEditBackground ? 'cursor-pointer' : ''
-        } ${
-          editable && backgroundSelected ? 'ring-primary ring-2 ring-inset' : ''
-        }`}
-      >
-        {bottomSlot}
-      </div>
+              : undefined
+          }
+          onKeyDown={
+            onEditBackground
+              ? (event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    onEditBackground();
+                  }
+                }
+              : undefined
+          }
+          className={`absolute inset-x-0 bottom-0 z-[1] outline-none ${
+            onEditBackground ? 'cursor-pointer' : ''
+          } ${
+            editable && backgroundSelected
+              ? 'ring-primary ring-2 ring-inset'
+              : ''
+          }`}
+        >
+          {bottomSlot}
+        </div>
+      ) : null}
     </div>
   );
 }

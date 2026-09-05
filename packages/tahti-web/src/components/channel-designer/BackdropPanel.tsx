@@ -36,8 +36,9 @@ type Props = {
 };
 
 /**
- * Look → Background panel: page fill, exclusive header-style bodies, then
- * optional separate palette + ambient visualizer.
+ * Look → Background panel: page fill, exclusive header-style bodies, or the
+ * Visualization focus tab (ambient visualizer + optional separate palette).
+ * Visualization does not clear headerStyle — it only focuses this UI.
  */
 export function BackdropPanel({
   scheme,
@@ -67,6 +68,7 @@ export function BackdropPanel({
   const accents = (
     <AccentPairFields scheme={scheme} onChange={onSchemeChange} />
   );
+  const visualizationTab = headerMode === 'VISUALIZATION';
 
   return (
     <div
@@ -75,7 +77,7 @@ export function BackdropPanel({
       data-testid="channel-backdrop-panel"
     >
       <section className="flex flex-col gap-3">
-        {headerMode !== 'GRADIENT' ? (
+        {!visualizationTab && headerMode !== 'GRADIENT' ? (
           <PageBackgroundField
             scheme={scheme}
             backgroundScheme={backgroundScheme}
@@ -99,6 +101,17 @@ export function BackdropPanel({
           ) : null}
         </div>
         <HeaderStyleTabs value={headerMode} onChange={onHeaderModeChange} />
+
+        {visualizationTab ? (
+          <BackdropBackgroundExtras
+            useBackgroundGradient={useBackgroundGradient}
+            onUseBackgroundGradient={onUseBackgroundGradient}
+            backgroundScheme={backgroundScheme}
+            onBackgroundSchemeChange={onBackgroundSchemeChange}
+            backgroundVisualPreset={backgroundVisualPreset}
+            onBackgroundVisualPreset={onBackgroundVisualPreset}
+          />
+        ) : null}
 
         {headerMode === 'GRADIENT' ? (
           <div className="flex flex-col gap-2">
@@ -151,15 +164,6 @@ export function BackdropPanel({
           </div>
         ) : null}
       </section>
-
-      <BackdropBackgroundExtras
-        useBackgroundGradient={useBackgroundGradient}
-        onUseBackgroundGradient={onUseBackgroundGradient}
-        backgroundScheme={backgroundScheme}
-        onBackgroundSchemeChange={onBackgroundSchemeChange}
-        backgroundVisualPreset={backgroundVisualPreset}
-        onBackgroundVisualPreset={onBackgroundVisualPreset}
-      />
     </div>
   );
 }

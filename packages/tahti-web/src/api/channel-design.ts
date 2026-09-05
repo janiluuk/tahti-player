@@ -359,7 +359,12 @@ export type ChannelVisual = {
   playerOverlayAlign?: TextOverlayAlign | string | null;
 };
 
-export type ChannelLink = { label: string; url: string };
+export type ChannelLink = {
+  label: string;
+  url: string;
+  /** Editor-only hide; omitted from the public Links block when true. */
+  hidden?: boolean;
+};
 
 /** Live GET may return `channelLinksJson` (string) instead of `channelLinks`. */
 export function parseChannelLinksJson(
@@ -374,15 +379,20 @@ export function parseChannelLinksJson(
       return null;
     }
     return parsed
-      .filter((entry): entry is ChannelLink =>
-        Boolean(
-          entry &&
-          typeof entry === 'object' &&
-          typeof (entry as ChannelLink).label === 'string' &&
-          typeof (entry as ChannelLink).url === 'string',
-        ),
+      .filter(
+        (entry): entry is { label: string; url: string; hidden?: unknown } =>
+          Boolean(
+            entry &&
+            typeof entry === 'object' &&
+            typeof (entry as ChannelLink).label === 'string' &&
+            typeof (entry as ChannelLink).url === 'string',
+          ),
       )
-      .map((entry) => ({ label: entry.label, url: entry.url }));
+      .map((entry) => ({
+        label: entry.label,
+        url: entry.url,
+        ...(entry.hidden === true ? { hidden: true } : {}),
+      }));
   } catch {
     return null;
   }

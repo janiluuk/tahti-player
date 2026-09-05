@@ -541,249 +541,310 @@ export function ChannelView({ slug }: { slug: string }) {
 
   const renderBlock = (item: ChannelPageItem) => {
     switch (item.type) {
-      case 'hero':
-        return (
-          <ChannelBackdropCard
-            className={
-              editing
-                ? ''
-                : subtle
-                  ? 'border-border/60 bg-background-input rounded-lg border'
-                  : 'border-border rounded-xl border'
-            }
-            displayName={channel.user.displayName}
-            username={channel.user.username}
-            channelSlug={slug}
-            avatarUrl={channel.user.avatarUrl}
-            bio={channel.user.bio}
-            headerStyle={channel.headerStyle ?? 'GRADIENT'}
-            videoBackgroundUrl={channel.videoBackgroundUrl}
-            muted={channelVideoMuted}
-            accent={headerAccent}
-            highlight={headerHighlight}
-            bg={headerBackground}
-            fg={headerForeground}
-            gradientOverride={brandGradient}
-            visualPreset={channel.visualPreset ?? 'AURORA'}
-            colorScheme={playerScheme}
-            colorSchemeJson={
-              lookExtras.usePlayerGradient
-                ? (lookExtras.playerColorSchemeJson ?? null)
-                : channel.colorSchemeJson
-            }
-            artworkUrl={
-              channel.nowPlaying?.artworkUrl ?? channel.user.avatarUrl
-            }
-            galleryMode={channel.galleryMode}
-            slideshowImages={channel.slideshowImages}
-            visualizerSettings={heroVisualizerSettings}
-            visualSettingsJson={channel.visualSettingsJson}
-            navItems={[
-              { id: 'home', label: 'Stage', active: true },
-              {
-                id: 'tracks',
-                label: 'Tracks',
-                onClick: () =>
-                  document
-                    .getElementById('channel-block-archive')
-                    ?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
-              },
-              {
-                id: 'about',
-                label: 'About',
-                onClick: () =>
-                  document
-                    .getElementById('channel-block-about')
-                    ?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
-              },
-            ]}
-            quickAdd={
-              editing
-                ? [
-                    !layout.find((i) => i.type === 'links')?.visible
-                      ? {
-                          id: 'links',
-                          label: 'Links',
-                          onClick: () =>
-                            updateLayout((prev) => addItemType(prev, 'links')),
-                        }
-                      : null,
-                    !layout.find((i) => i.type === 'about')?.visible
-                      ? {
-                          id: 'about',
-                          label: 'Bio',
-                          onClick: () =>
-                            updateLayout((prev) => addItemType(prev, 'about')),
-                        }
-                      : null,
-                    !layout.find((i) => i.type === 'stats')?.visible
-                      ? {
-                          id: 'stats',
-                          label: 'Stats',
-                          onClick: () =>
-                            updateLayout((prev) => addItemType(prev, 'stats')),
-                        }
-                      : null,
-                  ].filter((chip): chip is NonNullable<typeof chip> =>
-                    Boolean(chip),
-                  )
-                : undefined
-            }
-            onEditIdentity={editing ? () => setSelectedId('header') : undefined}
-            identitySelected={selectedId === 'header'}
-            backgroundSelected={selectedId === item.id}
-            editable={editing}
-            bottomSlot={
-              !live && !channel.nowPlaying ? (
-                <div className="flex items-center justify-center py-16">
-                  <WifiOffIcon
-                    size={56}
-                    strokeWidth={1.5}
-                    className="text-white/25"
-                    aria-hidden
-                  />
-                </div>
-              ) : (
-                <div
-                  className={`p-4 pr-24 sm:p-6 sm:pr-40 ${
-                    subtle
-                      ? 'bg-gradient-to-t from-black/80 via-black/35 to-transparent'
-                      : 'bg-gradient-to-t from-black/70 to-transparent'
-                  }`}
-                >
-                  {channel.nowPlaying ? (
-                    <NowPlayingOverlay
-                      presetId={resolveNowPlayingOverlayPreset(
-                        channel.nowPlayingOverlayStyle,
-                      )}
-                      title={channel.nowPlaying.title}
-                      artist={channel.nowPlaying.artistName}
-                      artworkUrl={channel.nowPlaying.artworkUrl}
-                      settings={parseNowPlayingOverlaySettings(
-                        channel.nowPlayingOverlaySettingsJson,
-                      )}
-                      seekbar={
-                        <WaveformSeekbar
-                          trackId={`channel:${slug}`}
-                          progress={
-                            channelIsCurrent && duration > 0
-                              ? currentTime / duration
-                              : 0
-                          }
-                          bars={72}
-                          className="mt-3 h-10 max-w-2xl"
-                          playedColor={channel.colorScheme?.accent}
-                          unplayedColor={channel.colorScheme?.muted}
-                          onSeek={
-                            channelIsCurrent && duration > 0
-                              ? (fraction) => seekTo(fraction * duration)
-                              : undefined
-                          }
-                        />
+      case 'hero': {
+        const stageNavItems = [
+          { id: 'home', label: 'Stage', active: true as const },
+          {
+            id: 'tracks',
+            label: 'Tracks',
+            onClick: () =>
+              document
+                .getElementById('channel-block-archive')
+                ?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+          },
+          {
+            id: 'about',
+            label: 'About',
+            onClick: () =>
+              document
+                .getElementById('channel-block-about')
+                ?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
+          },
+        ];
+        const stageQuickAdd = editing
+          ? [
+              !layout.find((i) => i.type === 'links')?.visible
+                ? {
+                    id: 'links',
+                    label: 'Links',
+                    onClick: () =>
+                      updateLayout((prev) => addItemType(prev, 'links')),
+                  }
+                : null,
+              !layout.find((i) => i.type === 'about')?.visible
+                ? {
+                    id: 'about',
+                    label: 'Bio',
+                    onClick: () =>
+                      updateLayout((prev) => addItemType(prev, 'about')),
+                  }
+                : null,
+              !layout.find((i) => i.type === 'stats')?.visible
+                ? {
+                    id: 'stats',
+                    label: 'Stats',
+                    onClick: () =>
+                      updateLayout((prev) => addItemType(prev, 'stats')),
+                  }
+                : null,
+            ].filter((chip): chip is NonNullable<typeof chip> => Boolean(chip))
+          : undefined;
+
+        const stagePlayer =
+          !live && !channel.nowPlaying ? (
+            <div className="bg-background-secondary flex items-center justify-center py-12">
+              <WifiOffIcon
+                size={56}
+                strokeWidth={1.5}
+                className="text-foreground-secondary/40"
+                aria-hidden
+              />
+            </div>
+          ) : (
+            <div
+              className={`relative p-4 pr-24 sm:p-6 sm:pr-40 ${
+                subtle
+                  ? 'bg-gradient-to-t from-black/80 via-black/35 to-black/10'
+                  : 'bg-gradient-to-t from-black/70 to-black/5'
+              }`}
+            >
+              {channel.nowPlaying ? (
+                <NowPlayingOverlay
+                  presetId={resolveNowPlayingOverlayPreset(
+                    channel.nowPlayingOverlayStyle,
+                  )}
+                  title={channel.nowPlaying.title}
+                  artist={channel.nowPlaying.artistName}
+                  artworkUrl={channel.nowPlaying.artworkUrl}
+                  settings={parseNowPlayingOverlaySettings(
+                    channel.nowPlayingOverlaySettingsJson,
+                  )}
+                  seekbar={
+                    <WaveformSeekbar
+                      trackId={`channel:${slug}`}
+                      progress={
+                        channelIsCurrent && duration > 0
+                          ? currentTime / duration
+                          : 0
+                      }
+                      bars={72}
+                      className="mt-3 h-10 max-w-2xl"
+                      playedColor={channel.colorScheme?.accent}
+                      unplayedColor={channel.colorScheme?.muted}
+                      onSeek={
+                        channelIsCurrent && duration > 0
+                          ? (fraction) => seekTo(fraction * duration)
+                          : undefined
                       }
                     />
-                  ) : (
-                    <p className="text-sm text-white/80">
-                      Stream is live — hit Play live to drive the visualizer.
-                    </p>
-                  )}
-                  {(live || channel.hlsUrl) && (
-                    <div className="absolute right-4 bottom-4 z-[2] flex items-center gap-3">
-                      {chatOn && (
-                        <Tooltip
-                          content={
-                            rightCollapsed ? 'Expand chat' : 'Collapse chat'
-                          }
-                          side="top"
-                        >
-                          <Button
-                            size="icon"
-                            variant="text"
-                            className="size-11 bg-black/45 text-white backdrop-blur-sm hover:bg-black/65"
-                            onClick={handleToggleChat}
-                            aria-pressed={!rightCollapsed}
-                            aria-label={
-                              rightCollapsed ? 'Expand chat' : 'Collapse chat'
-                            }
-                          >
-                            <MessageCircle size={20} aria-hidden />
-                          </Button>
-                        </Tooltip>
-                      )}
-                      <Tooltip
-                        content={favorited ? 'Favorited' : 'Favorite'}
-                        side="top"
-                      >
-                        <Button
-                          size="icon"
-                          variant="text"
-                          className="size-11 bg-black/45 text-white backdrop-blur-sm hover:bg-black/65"
-                          onClick={handleToggleFavoriteChannel}
-                          aria-pressed={favorited}
-                          aria-label={favorited ? 'Favorited' : 'Favorite'}
-                        >
-                          <HeartIcon
-                            size={20}
-                            className={
-                              favorited
-                                ? 'text-accent-red fill-current'
-                                : undefined
-                            }
-                            aria-hidden
-                          />
-                        </Button>
-                      </Tooltip>
-                      <Tooltip
-                        content={
-                          channelIsLoading
-                            ? 'Loading stream'
-                            : channelIsPlaying
-                              ? 'Pause stream'
-                              : live
-                                ? 'Play live'
-                                : 'Play stream'
+                  }
+                />
+              ) : (
+                <p className="text-sm text-white/80">
+                  Stream is live — hit Play live to drive the visualizer.
+                </p>
+              )}
+              {(live || channel.hlsUrl) && (
+                <div className="absolute right-4 bottom-4 z-[2] flex items-center gap-3">
+                  {chatOn && (
+                    <Tooltip
+                      content={rightCollapsed ? 'Expand chat' : 'Collapse chat'}
+                      side="top"
+                    >
+                      <Button
+                        size="icon"
+                        variant="text"
+                        className="size-11 bg-black/45 text-white backdrop-blur-sm hover:bg-black/65"
+                        onClick={handleToggleChat}
+                        aria-pressed={!rightCollapsed}
+                        aria-label={
+                          rightCollapsed ? 'Expand chat' : 'Collapse chat'
                         }
-                        side="top"
                       >
-                        <Button
-                          size="icon"
-                          className="bg-primary text-primary-foreground h-16 w-16 rounded-full shadow-lg"
-                          onClick={handlePlayChannel}
-                          aria-label={
-                            channelIsLoading
-                              ? 'Loading stream'
-                              : channelIsPlaying
-                                ? 'Pause stream'
-                                : live
-                                  ? 'Play live'
-                                  : 'Play stream'
-                          }
-                          aria-pressed={channelIsPlaying}
-                        >
-                          {channelIsLoading ? (
-                            <Loader />
-                          ) : channelIsPlaying ? (
-                            <PauseIcon
-                              size={26}
-                              className="fill-current"
-                              aria-hidden
-                            />
-                          ) : (
-                            <PlayIcon
-                              size={26}
-                              className="fill-current"
-                              aria-hidden
-                            />
-                          )}
-                        </Button>
-                      </Tooltip>
-                    </div>
+                        <MessageCircle size={20} aria-hidden />
+                      </Button>
+                    </Tooltip>
                   )}
+                  <Tooltip
+                    content={favorited ? 'Favorited' : 'Favorite'}
+                    side="top"
+                  >
+                    <Button
+                      size="icon"
+                      variant="text"
+                      className="size-11 bg-black/45 text-white backdrop-blur-sm hover:bg-black/65"
+                      onClick={handleToggleFavoriteChannel}
+                      aria-pressed={favorited}
+                      aria-label={favorited ? 'Favorited' : 'Favorite'}
+                    >
+                      <HeartIcon
+                        size={20}
+                        className={
+                          favorited ? 'text-accent-red fill-current' : undefined
+                        }
+                        aria-hidden
+                      />
+                    </Button>
+                  </Tooltip>
+                  <Tooltip
+                    content={
+                      channelIsLoading
+                        ? 'Loading stream'
+                        : channelIsPlaying
+                          ? 'Pause stream'
+                          : live
+                            ? 'Play live'
+                            : 'Play stream'
+                    }
+                    side="top"
+                  >
+                    <Button
+                      size="icon"
+                      className="bg-primary text-primary-foreground h-16 w-16 rounded-full shadow-lg"
+                      onClick={handlePlayChannel}
+                      aria-label={
+                        channelIsLoading
+                          ? 'Loading stream'
+                          : channelIsPlaying
+                            ? 'Pause stream'
+                            : live
+                              ? 'Play live'
+                              : 'Play stream'
+                      }
+                      aria-pressed={channelIsPlaying}
+                    >
+                      {channelIsLoading ? (
+                        <Loader />
+                      ) : channelIsPlaying ? (
+                        <PauseIcon
+                          size={26}
+                          className="fill-current"
+                          aria-hidden
+                        />
+                      ) : (
+                        <PlayIcon
+                          size={26}
+                          className="fill-current"
+                          aria-hidden
+                        />
+                      )}
+                    </Button>
+                  </Tooltip>
                 </div>
-              )
-            }
-          />
+              )}
+            </div>
+          );
+
+        return (
+          <div className="flex flex-col gap-0">
+            <ChannelBackdropCard
+              className={
+                editing
+                  ? ''
+                  : subtle
+                    ? 'border-border/60 bg-background-input rounded-t-lg border border-b-0'
+                    : 'border-border rounded-t-xl border border-b-0'
+              }
+              minHeightClassName="min-h-[12rem] sm:min-h-[14rem]"
+              displayName={channel.user.displayName}
+              username={channel.user.username}
+              channelSlug={slug}
+              avatarUrl={channel.user.avatarUrl}
+              bio={channel.user.bio}
+              headerStyle={channel.headerStyle ?? 'GRADIENT'}
+              videoBackgroundUrl={channel.videoBackgroundUrl}
+              muted={channelVideoMuted}
+              accent={headerAccent}
+              highlight={headerHighlight}
+              bg={headerBackground}
+              fg={headerForeground}
+              gradientOverride={brandGradient}
+              visualPreset={channel.visualPreset ?? 'AURORA'}
+              colorScheme={playerScheme}
+              colorSchemeJson={
+                lookExtras.usePlayerGradient
+                  ? (lookExtras.playerColorSchemeJson ?? null)
+                  : channel.colorSchemeJson
+              }
+              artworkUrl={
+                channel.nowPlaying?.artworkUrl ?? channel.user.avatarUrl
+              }
+              galleryMode={channel.galleryMode}
+              slideshowImages={channel.slideshowImages}
+              visualizerSettings={heroVisualizerSettings}
+              visualSettingsJson={channel.visualSettingsJson}
+              navItems={[]}
+              onEditIdentity={
+                editing ? () => setSelectedId('header') : undefined
+              }
+              identitySelected={selectedId === 'header'}
+              backgroundSelected={selectedId === item.id}
+              editable={editing}
+            />
+            <div
+              className={
+                editing
+                  ? 'overflow-hidden'
+                  : subtle
+                    ? 'border-border/60 overflow-hidden border border-y-0'
+                    : 'border-border overflow-hidden border border-y-0'
+              }
+              data-testid="channel-stage-player"
+            >
+              {stagePlayer}
+            </div>
+            <nav
+              aria-label="Channel navigation"
+              className={
+                editing
+                  ? 'relative flex flex-wrap items-center gap-x-5 gap-y-2 px-4 py-3 text-xs font-semibold uppercase'
+                  : subtle
+                    ? 'border-border/60 relative flex flex-wrap items-center gap-x-5 gap-y-2 rounded-b-lg border border-t-0 px-4 py-3 text-xs font-semibold uppercase'
+                    : 'border-border relative flex flex-wrap items-center gap-x-5 gap-y-2 rounded-b-xl border border-t-0 px-4 py-3 text-xs font-semibold uppercase'
+              }
+              data-testid="channel-stage-nav"
+            >
+              {stageNavItems.map((navItem) =>
+                navItem.onClick ? (
+                  <button
+                    key={navItem.id}
+                    type="button"
+                    onClick={navItem.onClick}
+                    className={
+                      navItem.active
+                        ? 'border-primary border-b-2 pb-2'
+                        : 'text-foreground-secondary hover:text-foreground pb-2'
+                    }
+                  >
+                    {navItem.label}
+                  </button>
+                ) : (
+                  <span
+                    key={navItem.id}
+                    className={
+                      navItem.active
+                        ? 'border-primary border-b-2 pb-2'
+                        : 'text-foreground-secondary pb-2'
+                    }
+                  >
+                    {navItem.label}
+                  </span>
+                ),
+              )}
+              {stageQuickAdd?.map((chip) => (
+                <button
+                  key={chip.id}
+                  type="button"
+                  onClick={chip.onClick}
+                  className="border-border text-foreground-secondary hover:bg-background-secondary ml-auto rounded-full border px-2.5 py-1 text-[10px] normal-case"
+                >
+                  + {chip.label}
+                </button>
+              ))}
+            </nav>
+          </div>
         );
+      }
       case 'archive':
         return (
           <section id="channel-block-archive" className="flex flex-col gap-6">
@@ -881,7 +942,12 @@ export function ChannelView({ slug }: { slug: string }) {
             ) : (
               <div className="mt-2 flex flex-wrap gap-2">
                 {links
-                  .filter((link) => link.label.trim() && link.url.trim())
+                  .filter(
+                    (link) =>
+                      link.label.trim() &&
+                      link.url.trim() &&
+                      (editing || !link.hidden),
+                  )
                   .map((link) => (
                     <a
                       key={`${link.label}-${link.url}`}
@@ -890,7 +956,9 @@ export function ChannelView({ slug }: { slug: string }) {
                         link.url.startsWith('mailto:') ? undefined : '_blank'
                       }
                       rel="noopener noreferrer"
-                      className="border-border hover:border-primary/50 hover:bg-primary/5 inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold"
+                      className={`border-border hover:border-primary/50 hover:bg-primary/5 inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold ${
+                        editing && link.hidden ? 'opacity-50' : ''
+                      }`}
                     >
                       <SocialLinkIcon label={link.label} url={link.url} />
                       {link.label}
