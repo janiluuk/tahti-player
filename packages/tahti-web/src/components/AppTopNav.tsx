@@ -454,7 +454,7 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
                     className="py-3"
                   />
                 ) : (
-                  <ul className="flex max-h-80 flex-col gap-1 overflow-y-auto">
+                  <ul className="tahti-hide-scrollbar flex max-h-80 flex-col gap-1 overflow-y-auto">
                     {notifications.map((notification) => (
                       <li
                         key={notification.id}

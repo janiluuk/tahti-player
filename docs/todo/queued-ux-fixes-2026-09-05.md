@@ -38,15 +38,26 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   doesn't depend on which one is selected. A chevron button in the panel
   header (`credentialsExpanded` state, default `false`) reveals the full
   app picker + per-app credentials + OBS preset + instructions.
-- [ ] **Go Live: proper toaster on save, and the notification toaster's
-  scrollbar.** Saving settings in Go Live should show a real `toast`
-  (success/error), not just silent state updates — audit
-  `StudioGoLiveView.tsx`/`StreamManagerPanel.tsx` save handlers for spots
-  still missing one (mirrors the `toast` vs. hand-rolled `msg` consolidation
-  already tracked in `packages/tahti-web/WORKPLAN.md`). Separately: the
-  notifications toaster shows a visible scrollbar — investigate the
-  Sonner/Toast container's overflow styling; user wants bigger icons
-  there instead of (implicitly) small ones causing cramped layout.
+- [x] **Go Live: proper toaster on save — shipped 2026-09-05 (partial;
+  see flag).** Found two genuinely silent-on-success actions in
+  `StudioGoLiveView.tsx`: `toggleRecording` (only ever showed an error
+  banner, never confirmed success) and the per-target Enable/Disable
+  button (gave *no* feedback at all, not even on failure). Both now use
+  `toast.success`/`toast.error`. **Flag**: did *not* touch the `message`/
+  `setMessage` live-status banner (go-live/end-broadcast text) — a prior
+  sweep (`WORKPLAN.md`'s toast-consolidation entry, 2026-09-04) already
+  reviewed this exact file and explicitly decided it's an intentional
+  persistent status banner, not transient feedback to convert. If "proper
+  toaster on save" was actually asking to revisit *that* decision (not
+  just the two silent gaps found), say so explicitly — this pass assumed
+  it wasn't. Notification dropdown's visible scrollbar (`AppTopNav.tsx`)
+  fixed by adding the app's existing `tahti-hide-scrollbar` utility class
+  (already used the same way in `AppShell`/`RightRailPanel`/
+  `DesktopLibraryPanel`). **Not done**: "use big icons instead" — the
+  notification list items currently have *no* icon at all (just
+  title/body text + an optional badge/button), so it's unclear what this
+  refers to exactly; needs clarification (per-notification-type icons?
+  something else visible only in a screenshot?) rather than a guess.
 - [ ] **Stream overlay text styling: color picker + opacity-layer toggle.**
   In `StreamOverlayEditor.tsx` (now with a "Show overlay title" toggle and
   live cover preview, shipped 2026-09-05 — see
@@ -206,3 +217,18 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   share channel modal (`ChannelShareButton.tsx`) — another
   inline-help-text-must-go instance, matching the pattern used elsewhere
   today.
+- [ ] **CatalogView: invisible artist titles + hide support widgets until
+  configured.** No file named `CatalogView` (or close variants) exists in
+  `packages/tahti-web/src` — this may be a `Catalog`-named view in the
+  *sibling* `tahti` repo's `apps/web` instead of here, or a differently-
+  named component in this repo (check `DirectoryArtistCardGrid` and the
+  Discover/Listen artist grids first). Confirm which repo/file before
+  starting. Once located: (1) artist title text is invisible — almost
+  certainly a text-color-on-background contrast bug (a dark-on-dark or
+  light-on-light class), fix the color token, not a one-off hardcoded
+  color. (2) Don't show "support" widgets (fan-sub / tip / purchase-tier
+  prompts — check `FanTiersEditor.tsx`/`AudienceVisibilitySection.tsx`
+  for the relevant enabled/configured flag) on an artist's page/catalog
+  until that artist has actually set up and enabled their subscription
+  tiers — needs whatever flag distinguishes "tiers configured" from
+  "tiers exist but not enabled" from "no tiers at all".

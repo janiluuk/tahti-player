@@ -301,13 +301,14 @@ export function StudioGoLiveView() {
     const next = !recordEnabled;
     setRecordEnabled(next);
     setRecordBusy(true);
-    setMessage(null);
     const result = await patchBroadcastPreflight({ autoArchive: next });
     setRecordBusy(false);
     if ('error' in result) {
       setRecordEnabled(!next);
-      setMessage(result.error);
+      toast.error(result.error);
+      return;
     }
+    toast.success(next ? 'Recording enabled.' : 'Recording disabled.');
   };
 
   const renderCredentials = () => {
@@ -662,9 +663,19 @@ export function StudioGoLiveView() {
                                 size="sm"
                                 variant="secondary"
                                 onClick={() => {
+                                  const nextEnabled = !target.enabled;
                                   void patchRtmpTarget(target.id, {
-                                    enabled: !target.enabled,
-                                  }).then(() => reload());
+                                    enabled: nextEnabled,
+                                  }).then((result) => {
+                                    if (!result.ok) {
+                                      toast.error(result.error);
+                                      return;
+                                    }
+                                    toast.success(
+                                      `${target.label || multicastProviderLabel(target.provider)} ${nextEnabled ? 'enabled' : 'disabled'}.`,
+                                    );
+                                    void reload();
+                                  });
                                 }}
                               >
                                 {target.enabled ? 'Disable' : 'Enable'}
