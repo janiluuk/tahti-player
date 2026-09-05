@@ -11,4 +11,7 @@ Venues/Shows/Stats EmptyState).
 `Input`. No further hand-rolled empty-state `<p>` found via a text-pattern
 search of Studio views in this pass, but that search was not exhaustive.
 
-Further Studio EmptyState / remaining chip groups remain.
+2026-09-06: more EmptyState swaps in Events, Releases, Updates,
+Moderation, Home, Revenue, Upload, Distribution — see
+`studio-emptystate-remaining.md`. Inline form hints and CollectionEdit
+track empty still open; remaining chip groups remain.

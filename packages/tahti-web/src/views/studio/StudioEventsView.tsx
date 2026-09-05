@@ -9,7 +9,7 @@ import {
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Tabs, Tooltip, ViewShell } from '@tahti-player/ui';
+import { Button, EmptyState, Tabs, Tooltip, ViewShell } from '@tahti-player/ui';
 
 import { deleteEvent, fetchMyEvents, type ArtistEvent } from '../../api/events';
 import { PageLoading } from '../../components/PageStates';
@@ -40,7 +40,7 @@ export function StudioEventsView() {
 
   const renderEvents = (items: ArtistEvent[]) =>
     items.length === 0 ? (
-      <p className="text-foreground-secondary text-sm">No events listed yet.</p>
+      <EmptyState size="sm" title="No events listed yet" />
     ) : (
       <ul className="flex flex-col gap-2">
         {items.map((event) => (

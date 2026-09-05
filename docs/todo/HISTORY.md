@@ -2,6 +2,18 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-05 — CI snapshot digest + PR #2/#3
+
+Folded from `ci-snapshot-digest.md` and `pr2-merge-ready.md`.
+
+- Vitest snapshot digest reporter, Playwright PNGs, sticky PR comment,
+  CI/coverage artifacts (`<!-- tahti-snapshot-digest -->`). Shipped in
+  PR #3 (`perf/audit`), merged to master.
+- PR #2 (`feat/studio-subtabs-help-layer`) merge-ready work completed and
+  merged earlier the same day.
+
+---
+
 ## 2026-09-05 — Channel Designer background + playlists
 
 Folded from `channel-designer-background-playlists.md`.

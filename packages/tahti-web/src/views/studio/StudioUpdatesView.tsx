@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import {
   Button,
   Dialog,
+  EmptyState,
   FilePicker,
   ImageReveal,
   Input,
@@ -209,12 +210,11 @@ export function StudioUpdatesView() {
           {tab === 'posts' && (
             <StudioPanel>
               {posts.length === 0 ? (
-                <div className="flex flex-col gap-3 py-4 text-center">
-                  <p className="text-foreground-secondary text-sm">
-                    No posts yet.
-                  </p>
-                  {!isEmpty && (
-                    <div>
+                <EmptyState
+                  size="sm"
+                  title="No posts yet"
+                  action={
+                    !isEmpty ? (
                       <Tooltip content="New post" side="top">
                         <Button
                           size="icon-sm"
@@ -224,9 +224,9 @@ export function StudioUpdatesView() {
                           <PlusIcon size={16} aria-hidden />
                         </Button>
                       </Tooltip>
-                    </div>
-                  )}
-                </div>
+                    ) : undefined
+                  }
+                />
               ) : (
                 <ul className="divide-border divide-y">
                   {posts.map((p) => (
@@ -296,12 +296,11 @@ export function StudioUpdatesView() {
           {tab === 'newsletter' && (
             <StudioPanel>
               {drafts.length === 0 ? (
-                <div className="flex flex-col gap-3 py-4 text-center">
-                  <p className="text-foreground-secondary text-sm">
-                    No drafts yet.
-                  </p>
-                  {!isEmpty && (
-                    <div>
+                <EmptyState
+                  size="sm"
+                  title="No drafts yet"
+                  action={
+                    !isEmpty ? (
                       <Tooltip content="New draft" side="top">
                         <Button
                           size="icon-sm"
@@ -311,9 +310,9 @@ export function StudioUpdatesView() {
                           <PlusIcon size={16} aria-hidden />
                         </Button>
                       </Tooltip>
-                    </div>
-                  )}
-                </div>
+                    ) : undefined
+                  }
+                />
               ) : (
                 <ul className="divide-border divide-y">
                   {drafts.map((d) => (

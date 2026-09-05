@@ -7,7 +7,14 @@ import {
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Input, Tabs, Tooltip, ViewShell } from '@tahti-player/ui';
+import {
+  Button,
+  EmptyState,
+  Input,
+  Tabs,
+  Tooltip,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import {
   addModerator,
@@ -76,9 +83,7 @@ export function StudioModerationView({
                   {loading ? (
                     <PageLoading label="Loading…" />
                   ) : mods.length === 0 ? (
-                    <p className="text-foreground-secondary text-sm">
-                      No moderators yet.
-                    </p>
+                    <EmptyState size="sm" title="No moderators yet" />
                   ) : (
                     <ul className="flex flex-col gap-2">
                       {mods.map((m) => (

@@ -16,6 +16,7 @@ import {
   Button,
   CopyButton,
   Dialog,
+  EmptyState,
   Input,
   Tooltip,
   ViewShell,
@@ -189,11 +190,11 @@ export function StudioReleasesView({
             {loading ? (
               <PageLoading label="Loading…" />
             ) : releases.length === 0 ? (
-              <div className="flex flex-col gap-3 py-4 text-center">
-                <p className="text-foreground-secondary text-sm">
-                  No releases yet. Create one to share a public link.
-                </p>
-                <div>
+              <EmptyState
+                size="sm"
+                title="No releases yet"
+                description="Create one to share a public link."
+                action={
                   <Tooltip content="New release" side="top">
                     <Button
                       size="icon-sm"
@@ -203,8 +204,8 @@ export function StudioReleasesView({
                       <PlusIcon size={16} aria-hidden />
                     </Button>
                   </Tooltip>
-                </div>
-              </div>
+                }
+              />
             ) : (
               <ul className="divide-border divide-y">
                 {releases.map((r) => (

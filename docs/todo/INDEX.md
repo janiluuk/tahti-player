@@ -7,7 +7,6 @@ Status values: `open` | `blocked` | `partial`.
 
 | Status | File | One-line |
 | --- | --- | --- |
-| open | [ci-snapshot-digest.md](ci-snapshot-digest.md) | CI Vitest snapshot digest / PR comment |
 | partial | [channel-designer-background-section-fixes.md](channel-designer-background-section-fixes.md) | Designer background section; design decision remains |
 | partial | [channel-designer-links-prefill-and-home-rename.md](channel-designer-links-prefill-and-home-rename.md) | Links prefill / home rename; flagged sub-asks |
 | partial | [channelview-badge-dedup-and-share-modal.md](channelview-badge-dedup-and-share-modal.md) | Badge dedup + share modal leftovers |
@@ -20,12 +19,12 @@ Status values: `open` | `blocked` | `partial`.
 | partial | [local-files-moved-to-library-tab.md](local-files-moved-to-library-tab.md) | Move done; desktop-mode gating open |
 | blocked | [map-screenshot-refresh.md](map-screenshot-refresh.md) | Signed-in recapture blocked post-ViewShell |
 | open | [plugin-registry-extraction.md](plugin-registry-extraction.md) | Pointer to sibling extraction checklist |
-| open | [pr2-merge-ready.md](pr2-merge-ready.md) | Keep PR #2 merge-ready |
 | open | [queued-ux-fixes-2026-09-05.md](queued-ux-fixes-2026-09-05.md) | Queued UX: 4 open (artwork, catalog, designer tabs) |
 | partial | [radio-browser-directory-fixes.md](radio-browser-directory-fixes.md) | Cover-image sub-ask needs decision |
 | partial | [storybook-ui-sweep.md](storybook-ui-sweep.md) | Sweep executed; follow-ups continue |
 | partial | [stream-overlay-auto-fill-and-avatar-placeholder.md](stream-overlay-auto-fill-and-avatar-placeholder.md) | Now-playing artwork remaining |
 | partial | [stream-overlay-text-color.md](stream-overlay-text-color.md) | Opacity/scrim toggle remaining |
+| open | [studio-emptystate-remaining.md](studio-emptystate-remaining.md) | Studio EmptyState swaps (this pass in progress) |
 | partial | [studio-storybook-sweep.md](studio-storybook-sweep.md) | Remaining Studio primitive swaps |
 | partial | [viewshell-page-headers.md](viewshell-page-headers.md) | Cover-overlay Studio entity headers excluded |
 
