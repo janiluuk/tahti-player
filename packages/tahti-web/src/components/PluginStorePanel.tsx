@@ -11,6 +11,7 @@ import {
   ListPlus,
   PauseIcon,
   PlayIcon,
+  PowerIcon,
   Radio as RadioIcon,
   SearchIcon,
   SettingsIcon,
@@ -107,7 +108,7 @@ import {
   radioStationPlayable,
   type RadioStation,
 } from '../content/radioStations';
-import { hasAccountRole } from '../lib/accountRoles';
+import { getAccountRole, hasAccountRole } from '../lib/accountRoles';
 import { flagEmoji } from '../lib/countries';
 import {
   ALL_PLUGIN_IDS,
@@ -290,9 +291,17 @@ export function PluginStorePanel() {
   const pluginCategory = useSettingsModalStore((s) => s.pluginCategory);
   const user = useAuthStore((s) => s.user);
   const isBoard = hasAccountRole(user, 'BOARD');
+  const isArtistOrAbove = Boolean(user && getAccountRole(user) !== 'LISTENER');
   const categories = useMemo(
-    () => PLUGIN_CATEGORIES.filter((c) => (c.id === 'tools' ? isBoard : true)),
-    [isBoard],
+    () =>
+      PLUGIN_CATEGORIES.filter((c) =>
+        c.id === 'tools'
+          ? isBoard
+          : c.id === 'audio-plugins'
+            ? isArtistOrAbove
+            : true,
+      ),
+    [isBoard, isArtistOrAbove],
   );
   const [category, setCategory] = useState<PluginCategoryId>('themes');
 
@@ -2417,11 +2426,17 @@ function AudioPluginToggleRow({
       onInstall={onToggle}
       labels={{ install: 'Activate', installed: 'Active' }}
       accessory={
-        <Toggle
-          label={`${enabled ? 'Deactivate' : 'Activate'} ${name}`}
-          checked={enabled}
-          onChange={() => onToggle()}
-        />
+        <Tooltip content={enabled ? `Deactivate ${name}` : `Activate ${name}`}>
+          <Button
+            size="icon-sm"
+            variant={enabled ? 'default' : 'secondary'}
+            onClick={() => onToggle()}
+            aria-label={enabled ? `Deactivate ${name}` : `Activate ${name}`}
+            aria-pressed={enabled}
+          >
+            <PowerIcon size={16} aria-hidden />
+          </Button>
+        </Tooltip>
       }
     />
   );
@@ -2442,8 +2457,8 @@ function AudioPluginsCategory() {
        * there) — this is the client-side reference-track matching tool,
        * see plugins/mastering/README.md. */}
       <AudioPluginToggleRow
-        name="Mastering (reference matching)"
-        author="Client-side · always available"
+        name="Reference Match"
+        author="Pro Editor"
         description="Match a track's loudness and tonal balance toward a reference track — the 'Master' / 'Match to a reference track' entry points on Sounds and the track editor."
         enabled={masteringEnabled}
         onToggle={() => setMasteringEnabled(!masteringEnabled)}

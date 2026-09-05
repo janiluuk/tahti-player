@@ -345,16 +345,35 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   users get, removing it outright could be the wrong fix vs. e.g.
   replacing it with a toast).
 
-- [ ] **Audio plugins/add-ons: rename Mastering, relabel section, icon
-  active button, access tier.** Locate the audio plugins/add-ons list
-  (likely `PluginStorePanel.tsx` or a dedicated audio-tools catalog —
-  there's already a Pro Editor view (`StudioProEditorView.tsx`), so
-  check whatever registers it as a plugin/add-on entry). Rename the
-  "Mastering" entry's label to "Reference Match", with "by: Pro Editor"
-  as its attribution/subtitle. Change its active/enabled indicator to
-  an icon button (matching the icon-button convention used elsewhere —
-  `Tooltip` + `aria-label`) instead of whatever it uses today. Label the
-  whole section/category as "Audio tools". Set its access tier to
-  "Artists and above" — find whatever access-tier/role field gates
-  other plugins (e.g. free vs. member-only add-ons) and apply the same
-  mechanism rather than inventing a new one.
+- [x] **Audio plugins/add-ons: rename Mastering, relabel section, icon
+  active button, access tier — shipped 2026-09-05.** "Mastering
+  (reference matching)" → "Reference Match" / `author="Pro Editor"`;
+  category label "Audio plugins" → "Audio tools"; the `Toggle` switch
+  accessory replaced with an icon-only `PowerIcon` button; category
+  gated on `getAccountRole(user) !== 'LISTENER'` (artist-and-above),
+  reusing the idiom already used in `api/admin.ts`. See
+  `docs/todo/audio-plugins-relabel-and-access-tier.md`.
+
+- [ ] **Remove desktop-specific UI from web build; Local files as a
+  Library tab, desktop-only.** The desktop-only "add audio files"/local
+  file import entry currently lives in the right sidebar (per the
+  earlier session summary: "the right rail is your queue, chat, and —
+  on desktop — a Library tab for local files you import this session" —
+  so this may already be conditionally shown; check
+  `DesktopLibraryPanel`/`AppShell`'s right-rail code first). Move it
+  under Library as a "Local files" tab, and make sure that tab (and any
+  other desktop-specific chrome) only renders when running in the
+  desktop app build, not the web build — find whatever flag/check
+  already distinguishes desktop vs. web (there's a
+  `desktop-mcp` Help article per `content/help.ts`, suggesting a desktop
+  build variant already exists with its own capability checks). Remove
+  the old right-sidebar entry once moved.
+- [ ] **Listen page radio channels: reflect actual play state on the
+  play icon.** Under Listen → radio channels, the play icon doesn't
+  currently update to show "playing" when a station is actually
+  playing. Find the radio channel list component (likely in
+  `ListenView.tsx` or a radio-specific card component) and wire its
+  play icon to the same `usePlayerStore` status the rest of the app uses
+  (`currentId`/`playbackStatus`, the same pattern used in
+  `StudioGoLiveView.tsx`'s `isStreamPlaying`/`channelIsPlaying` checks)
+  instead of always showing a static play icon.

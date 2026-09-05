@@ -96,7 +96,7 @@ export const PLUGIN_CATEGORIES: PluginCategory[] = [
   },
   {
     id: 'audio-plugins',
-    label: 'Audio plugins',
+    label: 'Audio tools',
     description: 'DSP chain available in the Pro Editor.',
     icon: SlidersHorizontalIcon,
   },
