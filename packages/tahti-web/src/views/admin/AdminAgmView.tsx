@@ -56,7 +56,6 @@ function AgendaBuilder() {
           size="sm"
           variant="secondary"
           aria-label="Copy agenda"
-          title="Copy agenda"
         />
       }
     >

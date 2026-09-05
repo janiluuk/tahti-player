@@ -93,7 +93,6 @@ export function MusicBrainzSubmissionAssistant({
             size="sm"
             variant="text"
             aria-label="Copy metadata"
-            title="Copy metadata"
           />
           {isRelease ? (
             <form action={RELEASE_EDITOR_URL} method="post" target="_blank">

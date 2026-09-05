@@ -242,7 +242,6 @@ export function StudioReleasesView({
                       size="icon-sm"
                       variant="text"
                       aria-label={`Copy smartlink for ${r.title}`}
-                      title="Copy smartlink"
                     />
                     {r.smartLinkTargets?.bandcamp ? (
                       <a

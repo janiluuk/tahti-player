@@ -3,6 +3,7 @@ import { ComponentProps, FC, memo, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '../Button';
+import { Tooltip } from '../Tooltip';
 
 const COPY_FEEDBACK_DURATION_MS = 10_000;
 
@@ -22,6 +23,8 @@ const CopyButtonImpl: FC<CopyButtonProps> = ({
   size = 'icon-sm',
   feedbackDurationMs = COPY_FEEDBACK_DURATION_MS,
   toastMessage,
+  'aria-label': ariaLabel,
+  title,
   ...props
 }) => {
   const [copied, setCopied] = useState(false);
@@ -34,6 +37,8 @@ const CopyButtonImpl: FC<CopyButtonProps> = ({
       }
     };
   }, []);
+
+  const label = ariaLabel ?? title ?? 'Copy';
 
   const handleCopy = () => {
     navigator.clipboard.writeText(text);
@@ -52,9 +57,15 @@ const CopyButtonImpl: FC<CopyButtonProps> = ({
   };
 
   return (
-    <Button size={size} onClick={handleCopy} {...props}>
-      {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
-    </Button>
+    <Tooltip content={label} side="top">
+      <Button size={size} onClick={handleCopy} aria-label={label} {...props}>
+        {copied ? (
+          <Check className="size-3.5" />
+        ) : (
+          <Copy className="size-3.5" />
+        )}
+      </Button>
+    </Tooltip>
   );
 };
 
