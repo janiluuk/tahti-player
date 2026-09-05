@@ -287,24 +287,24 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   flow and a drag-handle hover indicator were missing. See
   `docs/todo/channel-designer-gallery-plus-tile.md`.
 
-- [ ] **Channel Designer: Background section — visualization tab +
-  solid-only color + gradient preset wiring.** Three related asks in
-  `ChannelDesigner.tsx`'s Background section (search for
-  `ChannelDesignerBackdropPanel`-related fields — there's already a
-  `ChannelDesignerBackdropPanel.stories.tsx`, likely the same
-  component): (1) add a "Visualization" tab showing previews of the
-  different visualizer presets the user says were "reserved for it" —
-  find whatever preset catalog already exists
-  (`resolvePublicVisualizerPreset`/`ChannelVisualizer`, used in
-  `ChannelView.tsx` — check there for a full preset enum/list) and
-  confirm what "reserved" refers to before assuming presets already
-  exist unused. (2) The background color picker should only show when
-  the mode is "solid" — currently presumably always visible regardless
-  of mode. (3) Picking a gradient preset should actually update/preview
-  the background gradient live — currently described as not doing that.
-  (4) The gradient color swatches are labeled with names that belong to
-  a different container/context (a copy-paste labeling bug, not a logic
-  bug) — find and fix the mismatched labels once located.
+- [x] **Channel Designer: Background section fixes — 2 of 3 shipped
+  2026-09-05.** (1) Background color picker now hidden under Gradient
+  mode specifically (not literally "solid only" — Video/Slideshow also
+  need it, since their own accent picker has no `bg` field; hiding it
+  there would have removed the only way to set that color). (2) Fixed
+  the mismatched gradient/background color labels — `ColorSchemeFields`
+  gained a `variant` prop so header/background contexts drop the
+  player-specific "waveform played/unplayed" wording. (3) NOT changed:
+  "Visualization tab" — a "Background visualizer" preset-preview grid
+  already exists (`BackdropBackgroundExtras.tsx`), just not as a
+  mutually-exclusive tab like Gradient/Solid/Video/Slideshow, because
+  it's currently an orthogonal setting (layers over any header style,
+  not a replacement for one) — converting it to a tab is a real
+  semantic decision, not a relabel; needs the user's call. Also
+  couldn't find a code-level bug in "gradient preset doesn't update
+  live" — the wiring looks correct on inspection; may already work, or
+  needs a live repro to pin down. See
+  `docs/todo/channel-designer-background-section-fixes.md`.
 - [x] **Channel Designer: PlayerVisualizerControls — already done,
   confirmed 2026-09-05.** Checked: `PlayerVisualizerControls` already
   exists (`components/channel-designer/PlayerVisualizerControls.tsx`),

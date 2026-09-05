@@ -49,6 +49,7 @@ export function BackdropBackgroundExtras({
         <ColorSchemeFields
           scheme={backgroundScheme}
           onChange={onBackgroundSchemeChange}
+          variant="generic"
         />
       ) : (
         <p className="text-foreground-secondary text-xs">

@@ -18,17 +18,27 @@ const meta: Meta<typeof ColorSchemeFields> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-function Interactive() {
+function Interactive({ variant }: { variant?: 'player' | 'generic' }) {
   const [scheme, setScheme] = useState({ ...DEFAULT_COLOR_SCHEME });
   return (
     <div className="max-w-lg">
-      <ColorSchemeFields scheme={scheme} onChange={setScheme} />
+      <ColorSchemeFields
+        scheme={scheme}
+        onChange={setScheme}
+        variant={variant}
+      />
     </div>
   );
 }
 
 export const Default: Story = {
-  render: () => <Interactive />,
+  name: 'Player (default — waveform-labeled)',
+  render: () => <Interactive variant="player" />,
+};
+
+export const Generic: Story = {
+  name: 'Generic (header / page background — no waveform wording)',
+  render: () => <Interactive variant="generic" />,
 };
 
 export const PartialScheme: Story = {

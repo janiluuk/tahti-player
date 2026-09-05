@@ -75,12 +75,14 @@ export function BackdropPanel({
       data-testid="channel-backdrop-panel"
     >
       <section className="flex flex-col gap-3">
-        <PageBackgroundField
-          scheme={scheme}
-          backgroundScheme={backgroundScheme}
-          useBackgroundGradient={useBackgroundGradient}
-          onChange={onPageBackgroundChange}
-        />
+        {headerMode !== 'GRADIENT' ? (
+          <PageBackgroundField
+            scheme={scheme}
+            backgroundScheme={backgroundScheme}
+            useBackgroundGradient={useBackgroundGradient}
+            onChange={onPageBackgroundChange}
+          />
+        ) : null}
         <div className="flex items-center justify-between gap-3">
           <Eyebrow>Header style</Eyebrow>
           {hasBackdrop && onRemoveBackdrop ? (
@@ -106,7 +108,11 @@ export function BackdropPanel({
             </p>
             <section className="flex flex-col gap-3">
               {brandRow}
-              <ColorSchemeFields scheme={scheme} onChange={onSchemeChange} />
+              <ColorSchemeFields
+                scheme={scheme}
+                onChange={onSchemeChange}
+                variant="generic"
+              />
             </section>
           </div>
         ) : null}
