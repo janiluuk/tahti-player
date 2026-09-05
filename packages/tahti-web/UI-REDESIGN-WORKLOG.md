@@ -3,6 +3,14 @@
 > Finished tasks fold into [`docs/todo/HISTORY.md`](../../docs/todo/HISTORY.md) — do not re-scan this whole file for “what’s next”.
 > Sibling API path is **`../tahti-org`** (older entries may still say `../tahti`).
 
+## 2026-09-06 — Settings mobile list/detail + wrapping tabs (0.0.84)
+
+**Status:** executed.
+
+Settings modal on narrow viewports: section list and detail no longer stack
+(nav `flex!` no longer overrides `hidden`). Add-ons category chips and other
+settings tab strips wrap instead of overflowing horizontally.
+
 ## 2026-09-05 — Channel Designer layout hints + visualizer extract (0.0.83)
 
 **Status:** executed.
