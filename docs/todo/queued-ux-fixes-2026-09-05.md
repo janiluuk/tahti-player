@@ -397,3 +397,17 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   sizes to its natural content height. See
   `docs/todo/channel-designer-panel-height-fix.md` — flagged there as
   static-analysis-only, worth a live check.
+
+- [ ] **(Later) Channel Designer: tabs off by default, opt-in via
+  Navigation section + configuration dialog.** Lower priority per the
+  user ("add to later todo"). Relates to the earlier-queued "Channel
+  Designer: tabs under the player, dynamic per enabled section" item
+  above — refines it: tabs should not appear in the profile by default
+  at all; the user has to explicitly turn them on from a "Navigation"
+  section that should be selectable/available in the Layers list
+  (`ChannelLayersMenu`'s "Layers" tab — see `addItemType`/layout item
+  types for the pattern to add a new configurable layout element type).
+  Add a configuration dialog for that Navigation section letting the
+  user pick which content sections appear under each tab. Do this as
+  part of the same effort as the earlier tabs-under-player item, not
+  separately — they're the same feature.
