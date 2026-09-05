@@ -1,4 +1,5 @@
-import { render } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import {
   BlocksIcon,
   PaletteIcon,
@@ -31,7 +32,7 @@ const TABS: SettingsTab[] = [
     id: 'logs',
     label: 'Logs',
     icon: <ScrollTextIcon />,
-    content: () => <div>Logs content</div>,
+    content: () => <div>Log viewer content</div>,
   },
 ];
 
@@ -47,5 +48,53 @@ describe('SettingsPanel', () => {
       />,
     );
     expect(asFragment()).toMatchSnapshot();
+  });
+
+  it('starts on the section list and hides content until a tab is chosen', () => {
+    render(
+      <SettingsPanel
+        isOpen
+        onClose={() => {}}
+        tabs={TABS}
+        activeTab="general"
+        onTabChange={() => {}}
+      />,
+    );
+
+    expect(screen.getByTestId('settings-panel-nav')).toBeVisible();
+    expect(screen.getByTestId('settings-panel-content')).not.toBeVisible();
+  });
+
+  it('swaps to section content on mobile after choosing a tab, and back via Back', async () => {
+    const user = userEvent.setup();
+    const onTabChange = vi.fn();
+
+    render(
+      <SettingsPanel
+        isOpen
+        onClose={() => {}}
+        tabs={TABS}
+        activeTab="general"
+        onTabChange={onTabChange}
+      />,
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Plugins' }));
+    expect(onTabChange).toHaveBeenCalledWith('plugins');
+
+    expect(screen.getByTestId('settings-panel-nav')).not.toBeVisible();
+    const content = screen.getByTestId('settings-panel-content');
+    expect(content).toBeVisible();
+    expect(
+      within(content).getByRole('button', {
+        name: 'Back to settings sections',
+      }),
+    ).toBeVisible();
+
+    await user.click(
+      screen.getByRole('button', { name: 'Back to settings sections' }),
+    );
+    expect(screen.getByTestId('settings-panel-nav')).toBeVisible();
+    expect(screen.getByTestId('settings-panel-content')).not.toBeVisible();
   });
 });
