@@ -211,9 +211,6 @@ function ConfigurableCard({
         className={dialogClassName}
       >
         <Dialog.Title>Configure {title}</Dialog.Title>
-        <Dialog.Description>
-          Changes are saved for this add-on.
-        </Dialog.Description>
         <div className="mt-4 flex flex-col gap-4">{children}</div>
         <Dialog.Actions>
           <Dialog.Close>Done</Dialog.Close>
@@ -2863,14 +2860,23 @@ function CuratedFinnishStationRow({
           <SettingsIcon size={14} aria-hidden />
         </Button>
       </Tooltip>
-      <SaveButton
-        size="sm"
-        label={enabled ? 'Enabled' : 'Enable'}
-        onClick={onToggleEnable}
-        aria-label={
-          enabled ? `Disable ${station.name}` : `Enable ${station.name}`
-        }
-      />
+      <Tooltip
+        content={enabled ? `Disable ${station.name}` : `Enable ${station.name}`}
+        side="top"
+      >
+        <Button
+          type="button"
+          size="icon-sm"
+          variant={enabled ? 'default' : 'secondary'}
+          aria-label={
+            enabled ? `Disable ${station.name}` : `Enable ${station.name}`
+          }
+          aria-pressed={enabled}
+          onClick={onToggleEnable}
+        >
+          <PowerIcon size={14} aria-hidden />
+        </Button>
+      </Tooltip>
     </li>
   );
 }
@@ -2899,6 +2905,7 @@ function RadioBrowserDirectoryCard() {
   const [tags, setTags] = useState<RadioBrowserTag[]>([]);
   const [query, setQuery] = useState('');
   const [genres, setGenres] = useState<string[]>([]);
+  const [genresExpanded, setGenresExpanded] = useState(false);
   const [country, setCountry] = useState('');
   const [results, setResults] = useState<PublicRadioStation[]>([]);
   const [searching, setSearching] = useState(false);
@@ -2965,7 +2972,11 @@ function RadioBrowserDirectoryCard() {
   const curatedStations = RADIO_STATIONS.map((baseStation) => ({
     ...baseStation,
     ...stationOverrides[baseStation.id],
-  }));
+  })).sort((a, b) => {
+    const aEnabled = enabledStationIds.includes(a.id);
+    const bEnabled = enabledStationIds.includes(b.id);
+    return aEnabled === bEnabled ? 0 : aEnabled ? -1 : 1;
+  });
 
   const genreOptions = tags.slice(0, 24).map((tag) => ({
     id: tag.name,
@@ -2995,91 +3006,6 @@ function RadioBrowserDirectoryCard() {
         ) : (
           <Tabs
             items={[
-              {
-                id: 'browser',
-                label: 'Browser',
-                content: (
-                  <div className="flex flex-col gap-3">
-                    <div className="flex flex-col gap-2">
-                      <Input
-                        size="sm"
-                        type="search"
-                        value={query}
-                        onChange={(event) => setQuery(event.target.value)}
-                        onKeyDown={(event) => {
-                          if (event.key === 'Enter') {
-                            runSearch();
-                          }
-                        }}
-                        placeholder="Search stations"
-                        aria-label="Search stations"
-                        startAddon={
-                          <SearchIcon
-                            size={14}
-                            aria-hidden
-                            className="opacity-70"
-                          />
-                        }
-                      />
-                      {genreOptions.length > 0 ? (
-                        <FilterChips
-                          multiple
-                          items={genreOptions}
-                          selected={genres}
-                          onChange={setGenres}
-                          aria-label="Genres"
-                        />
-                      ) : null}
-                      <Select
-                        className="w-full"
-                        options={[
-                          { id: '', label: 'All countries' },
-                          ...countries.map((entry) => ({
-                            id: entry.code,
-                            label: `${flagEmoji(entry.code)} ${entry.name} (${entry.stationCount})`,
-                          })),
-                        ]}
-                        value={country}
-                        onValueChange={setCountry}
-                      />
-                      <Button
-                        size="sm"
-                        disabled={searching}
-                        onClick={runSearch}
-                        className="self-start"
-                      >
-                        {searching ? 'Searching…' : 'Search'}
-                      </Button>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <h3 className="font-display text-sm font-bold tracking-wide uppercase">
-                        {isFiltered ? 'Results' : 'Popular stations'}
-                        {stationCount
-                          ? ` · ${stationCount.toLocaleString()} total`
-                          : ''}
-                      </h3>
-                      {results.length === 0 ? (
-                        <EmptyState
-                          size="sm"
-                          title="No stations found"
-                          description="Try another search or clear the filters."
-                        />
-                      ) : (
-                        <ul className="grid max-h-72 grid-cols-1 gap-1.5 overflow-y-auto sm:grid-cols-2">
-                          {results.map((station) => (
-                            <RadioBrowserStationRow
-                              key={station.id}
-                              station={station}
-                              onPlay={() => playStation(station)}
-                              {...saveProps(station)}
-                            />
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  </div>
-                ),
-              },
               {
                 id: 'stations',
                 label: 'Stations',
@@ -3167,6 +3093,109 @@ function RadioBrowserDirectoryCard() {
                           );
                         })}
                       </ul>
+                    </div>
+                  </div>
+                ),
+              },
+              {
+                id: 'browser',
+                label: 'Browser',
+                content: (
+                  <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-2">
+                      <Input
+                        size="sm"
+                        type="search"
+                        value={query}
+                        onChange={(event) => setQuery(event.target.value)}
+                        onKeyDown={(event) => {
+                          if (event.key === 'Enter') {
+                            runSearch();
+                          }
+                        }}
+                        placeholder="Search stations"
+                        aria-label="Search stations"
+                        startAddon={
+                          <SearchIcon
+                            size={14}
+                            aria-hidden
+                            className="opacity-70"
+                          />
+                        }
+                        endAddon={
+                          <Tooltip content="Search" side="top">
+                            <button
+                              type="button"
+                              disabled={searching}
+                              onClick={runSearch}
+                              aria-label="Search"
+                              className="disabled:opacity-60"
+                            >
+                              <SearchIcon size={14} aria-hidden />
+                            </button>
+                          </Tooltip>
+                        }
+                      />
+                      {genreOptions.length > 0 ? (
+                        <div className="flex flex-col gap-1.5">
+                          <button
+                            type="button"
+                            className="text-foreground-secondary hover:text-foreground self-start text-xs font-medium underline-offset-2 hover:underline"
+                            onClick={() =>
+                              setGenresExpanded((current) => !current)
+                            }
+                          >
+                            {genresExpanded ? 'Hide genres' : 'All genres'}
+                          </button>
+                          {genresExpanded || genres.length > 0 ? (
+                            <FilterChips
+                              multiple
+                              items={genreOptions}
+                              selected={genres}
+                              onChange={setGenres}
+                              aria-label="Genres"
+                            />
+                          ) : null}
+                        </div>
+                      ) : null}
+                      <Select
+                        className="w-full"
+                        options={[
+                          { id: '', label: 'All countries' },
+                          ...countries.map((entry) => ({
+                            id: entry.code,
+                            label: `${flagEmoji(entry.code)} ${entry.name} (${entry.stationCount})`,
+                          })),
+                        ]}
+                        value={country}
+                        onValueChange={setCountry}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <h3 className="font-display text-sm font-bold tracking-wide uppercase">
+                        {isFiltered ? 'Results' : 'Popular stations'}
+                        {stationCount
+                          ? ` · ${stationCount.toLocaleString()} total`
+                          : ''}
+                      </h3>
+                      {results.length === 0 ? (
+                        <EmptyState
+                          size="sm"
+                          title="No stations found"
+                          description="Try another search or clear the filters."
+                        />
+                      ) : (
+                        <ul className="grid max-h-72 grid-cols-1 gap-1.5 overflow-y-auto sm:grid-cols-2">
+                          {results.map((station) => (
+                            <RadioBrowserStationRow
+                              key={station.id}
+                              station={station}
+                              onPlay={() => playStation(station)}
+                              {...saveProps(station)}
+                            />
+                          ))}
+                        </ul>
+                      )}
                     </div>
                   </div>
                 ),

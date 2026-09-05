@@ -311,33 +311,19 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   running app, it's likely a rendering/visibility issue rather than a
   missing wire-up; would need a live repro to dig further.
 
-- [ ] **Radio browser directory: layout, cover images, enable flow.**
-  Multiple asks for whatever view is the "radio browser directory"
-  (likely `RadioView.tsx` and/or a dedicated stations-directory
-  component under Discover — need to locate the exact file first,
-  there's also `RadioStationCover.tsx` for individual station covers).
-  (1) Collapse the genre icon grid under an "All genres" disclosure
-  instead of always showing every genre icon. (2) Move the search bar
-  above the search button, with the search button embedded inside the
-  search box itself (icon-button suffix, not a separate button below).
-  (3) Make the Stations tab the first/default tab (find whatever tab
-  list controls this view — Genres/Stations/etc.). (4) Station cover
-  images can't be updated/edited currently — investigate why (permission
-  check? broken upload handler? read-only by design for imported
-  stations?) and fix; the user separately asked to "scrape them to
-  production if you can already" — that's a data/content task (fetching
-  real station artwork and pushing it to the production database),
-  not a UI change, and needs its own scoping (source of the images,
-  which stations, whether this repo even has prod DB access) before
-  attempting. (5) Enabling a station should add it to a list at the top
-  (of what — the directory itself, or a separate "enabled stations"
-  panel? — confirm), using an icon button for the enable action instead
-  of whatever control it uses today. (6) Remove a "changes are saved for
-  this add-on" message somewhere in this same area (likely a toast or
-  inline notice tied to enabling/reordering stations — find its exact
-  source before removing, since if it's the only save-confirmation
-  users get, removing it outright could be the wrong fix vs. e.g.
-  replacing it with a toast).
+- [x] **Radio browser directory: layout, cover images, enable flow — 5
+  of 6 shipped 2026-09-05.** Located in `PluginStorePanel.tsx`'s
+  `RadioBrowserDirectoryCard`. Genre chips collapse behind "All genres";
+  search input+button merged into one `endAddon`; Stations tab now
+  first/default; enable control is now an icon button; enabled stations
+  sort to the top of the list; removed the generic (shared by every
+  add-on, not Radio-specific) "Changes are saved for this add-on"
+  caption. **Not changed**: cover-image editing is already
+  implemented, gated on `BOARD` role with its own test coverage — if
+  the account really is BOARD and it still doesn't work, that's a
+  role-detection bug elsewhere, not this gate; needs a live session
+  check. "Scrape to production" is a data task, out of scope here. See
+  `docs/todo/radio-browser-directory-fixes.md`.
 
 - [x] **Audio plugins/add-ons: rename Mastering, relabel section, icon
   active button, access tier — shipped 2026-09-05.** "Mastering
