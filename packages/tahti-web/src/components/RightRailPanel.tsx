@@ -1,11 +1,5 @@
-import {
-  Bell,
-  Check,
-  LibraryIcon,
-  ListMusicIcon,
-  MessageCircle,
-} from 'lucide-react';
-import { useEffect, useMemo } from 'react';
+import { Bell, Check, ListMusicIcon, MessageCircle } from 'lucide-react';
+import { useMemo } from 'react';
 
 import {
   Badge,
@@ -19,19 +13,12 @@ import {
 import type { TahtiNotification } from '../api/notifications';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { useLayoutStore, type RightRailTab } from '../stores/layoutStore';
-import { useLocalLibraryStore } from '../stores/localLibraryStore';
 import { useNotificationInboxStore } from '../stores/notificationInboxStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { ChannelChatPanel } from './ChannelChatPanel';
-import { DesktopLibraryPanel } from './DesktopLibraryPanel';
 import { SidebarQueuePanel } from './SidebarQueuePanel';
 
-const DESKTOP_TABS: RightRailTab[] = [
-  'chat',
-  'notifications',
-  'queue',
-  'library',
-];
+const DESKTOP_TABS: RightRailTab[] = ['chat', 'notifications', 'queue'];
 const MOBILE_TABS: RightRailTab[] = ['chat', 'notifications', 'queue'];
 
 const COLLAPSED_TAB_CLASS =
@@ -60,14 +47,7 @@ export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
   );
   const toggleRight = useLayoutStore((s) => s.toggleRight);
   const queueCount = usePlayerStore((s) => s.queue.length);
-  const localTrackCount = useLocalLibraryStore((s) => s.tracks.length);
   const tabs = isMobile ? MOBILE_TABS : DESKTOP_TABS;
-
-  useEffect(() => {
-    if (isMobile && tab === 'library') {
-      setRightRailTab('chat');
-    }
-  }, [isMobile, tab, setRightRailTab]);
 
   const openTab = (next: RightRailTab) => {
     setRightRailTab(next);
@@ -87,11 +67,7 @@ export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
         tabClassName={COLLAPSED_TAB_CLASS}
       >
         <Tabs.List
-          aria-label={
-            isMobile
-              ? 'Chat, notifications, and queue'
-              : 'Chat, notifications, queue, and library'
-          }
+          aria-label="Chat, notifications, and queue"
           className="w-auto flex-col"
         >
           <Tabs.Tab aria-label="Open chat" title="Open chat">
@@ -117,16 +93,6 @@ export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
               <span className="sr-only">Queue</span>
             </TabLabel>
           </Tabs.Tab>
-          {isMobile ? null : (
-            <Tabs.Tab aria-label="Open library" title="Open library">
-              <TabLabel
-                icon={<LibraryIcon size={18} />}
-                count={localTrackCount > 0 ? localTrackCount : undefined}
-              >
-                <span className="sr-only">Library</span>
-              </TabLabel>
-            </Tabs.Tab>
-          )}
         </Tabs.List>
       </Tabs.Root>
     );
@@ -139,11 +105,7 @@ export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
         onChange={(index) => setRightRailTab(tabs[index] ?? 'chat')}
       >
         <Tabs.List
-          aria-label={
-            isMobile
-              ? 'Chat, notifications, and queue'
-              : 'Chat, notifications, queue, and library'
-          }
+          aria-label="Chat, notifications, and queue"
           className="border-border shrink-0 border-b px-2 py-1"
         >
           <Tabs.Tab>
@@ -167,23 +129,11 @@ export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
               Queue
             </TabLabel>
           </Tabs.Tab>
-          {isMobile ? null : (
-            <Tabs.Tab>
-              <TabLabel
-                icon={<LibraryIcon size={13} />}
-                count={localTrackCount > 0 ? localTrackCount : undefined}
-              >
-                Library
-              </TabLabel>
-            </Tabs.Tab>
-          )}
         </Tabs.List>
       </Tabs.Root>
 
       <div className="min-h-0 flex-1 overflow-hidden">
-        {tab === 'library' && !isMobile ? (
-          <DesktopLibraryPanel />
-        ) : tab === 'queue' ? (
+        {tab === 'queue' ? (
           <SidebarQueuePanel compact />
         ) : tab === 'notifications' ? (
           <NotificationList

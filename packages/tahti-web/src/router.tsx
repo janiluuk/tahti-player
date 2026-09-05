@@ -785,6 +785,12 @@ const libraryMediaRoute = createRoute({
   component: () => <LibraryView tab="media" />,
 });
 
+const libraryLocalRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/library/local',
+  component: () => <LibraryView tab="local" />,
+});
+
 const libraryMessagesRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library/messages',
@@ -1699,6 +1705,7 @@ const routeTree = rootRoute.addChildren([
     libraryHistoryRoute,
     librarySmartLinksRoute,
     libraryMediaRoute,
+    libraryLocalRoute,
     libraryMessagesRoute,
     messagesAliasRoute,
     messagesThreadRoute,

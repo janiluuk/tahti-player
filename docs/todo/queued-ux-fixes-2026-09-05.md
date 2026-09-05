@@ -361,20 +361,20 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   reusing the idiom already used in `api/admin.ts`. See
   `docs/todo/audio-plugins-relabel-and-access-tier.md`.
 
-- [ ] **Remove desktop-specific UI from web build; Local files as a
-  Library tab, desktop-only.** The desktop-only "add audio files"/local
-  file import entry currently lives in the right sidebar (per the
-  earlier session summary: "the right rail is your queue, chat, and —
-  on desktop — a Library tab for local files you import this session" —
-  so this may already be conditionally shown; check
-  `DesktopLibraryPanel`/`AppShell`'s right-rail code first). Move it
-  under Library as a "Local files" tab, and make sure that tab (and any
-  other desktop-specific chrome) only renders when running in the
-  desktop app build, not the web build — find whatever flag/check
-  already distinguishes desktop vs. web (there's a
-  `desktop-mcp` Help article per `content/help.ts`, suggesting a desktop
-  build variant already exists with its own capability checks). Remove
-  the old right-sidebar entry once moved.
+- [x] **Local files moved from right sidebar to a Library tab — shipped
+  2026-09-05, "desktop-only" gating not implementable as asked.** New
+  "Local files" tab in `LibraryView.tsx` (route `/library/local`)
+  renders `DesktopLibraryPanel`; removed the old right-sidebar entry
+  entirely. **Important finding**: `tahti-web` and the Tahti Player
+  desktop app (`packages/player`, Tauri) are separate codebases with no
+  shared runtime — confirmed via `content/help.ts`'s own `desktop-mcp`
+  article ("This is a separate app, not this website"). There is no
+  "am I in the desktop app" signal anywhere in `tahti-web` to gate on
+  (grepped for `__TAURI__`/`isTauri` — zero matches), so the tab is
+  visible unconditionally rather than gated on something fake. See
+  `docs/todo/local-files-moved-to-library-tab.md` — this needs a real
+  decision (embed tahti-web in Tauri, or pick a proxy signal) before
+  "desktop-only" can mean anything concrete.
 - [x] **Radio play icon didn't reflect actual play state — shipped
   2026-09-05.** Found it in `RadioView.tsx`'s hero station card (not
   `ListenView.tsx`'s own Radio card, which was already correct and
