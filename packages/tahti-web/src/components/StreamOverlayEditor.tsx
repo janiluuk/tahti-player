@@ -12,6 +12,7 @@ import {
 
 import { fetchStreamOverlay, patchStreamOverlay } from '../api/broadcast';
 import { uploadUserMediaFile } from '../api/user-media';
+import { HelpLayer } from './HelpLayer';
 import { ImageSlotDeleteBadge } from './imageSlot/ImageSlotDeleteBadge';
 import { ImageSlotPreviewDialog } from './imageSlot/ImageSlotPreviewDialog';
 import { useImageSlotChrome } from './imageSlot/useImageSlotChrome';
@@ -123,11 +124,13 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-foreground-secondary text-sm">
-        RTMP has no built-in title metadata, so YouTube/Twitch/etc. mirrors
-        carry a static video frame with this cover baked in. Leave the cover
-        blank to use your avatar.
-      </p>
+      <HelpLayer title="How the stream overlay works">
+        <p>
+          RTMP has no built-in title metadata, so YouTube/Twitch/etc. mirrors
+          carry a static video frame with this cover baked in. Leave the cover
+          blank to use your avatar.
+        </p>
+      </HelpLayer>
       {error && (
         <p className="text-accent-red text-sm" role="alert">
           {error}

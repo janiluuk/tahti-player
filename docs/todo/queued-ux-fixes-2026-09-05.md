@@ -72,6 +72,11 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   unconditionally — when this ships, that scrim should become
   conditional on the new toggle, shown in the preview exactly when
   enabled, matching the "Show overlay title" preview-gating pattern.
+- [x] **StreamOverlayEditor subtext → HelpLayer — shipped 2026-09-05.**
+  The "RTMP has no built-in title metadata..." paragraph now sits inside
+  a `HelpLayer` disclosure ("How the stream overlay works") instead of
+  as permanent body text, using the newly-ported component (see
+  `docs/todo/help-layer-component-port.md`).
 - [ ] **Stream overlay cover: default placeholder + auto-fill text.**
   When no custom cover is set, show the currently-playing track's artwork
   as the placeholder in the cover slot (not just a bare `ImageIcon`) —
@@ -79,15 +84,7 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   Default `streamOverlayTitle`/`streamOverlaySubtitle` (when the artist
   hasn't set custom ones) to the current show's artist/title and tagline
   respectively — skip the tagline entirely (don't render an empty
-  subtitle line) when it's blank, rather than showing blank text. Also:
-  remove the explanatory paragraph at the top of `StreamOverlayEditor`
-  ("RTMP has no built-in title metadata...") and move that copy into the
-  page's help layer instead of sitting permanently in the form body —
-  same "inline-help-text → Tooltip/help-layer" pattern as the
-  Studio/Admin UX sweep's `inline-help-text` category
-  (`STUDIO-ADMIN-UX-SWEEP.md`), just routed to the page help layer here
-  instead of a Tooltip badge since a help layer already exists for this
-  page.
+  subtitle line) when it's blank, rather than showing blank text.
 - [x] **Stream Manager stats + overlay restructuring — shipped
   2026-09-05.** `Signal` stat's rotation case now reads `Offline` (not
   `Rotation`). `Output` renamed to `Mode`. `Time left` replaced with a
@@ -347,3 +344,17 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   source before removing, since if it's the only save-confirmation
   users get, removing it outright could be the wrong fix vs. e.g.
   replacing it with a toast).
+
+- [ ] **Audio plugins/add-ons: rename Mastering, relabel section, icon
+  active button, access tier.** Locate the audio plugins/add-ons list
+  (likely `PluginStorePanel.tsx` or a dedicated audio-tools catalog —
+  there's already a Pro Editor view (`StudioProEditorView.tsx`), so
+  check whatever registers it as a plugin/add-on entry). Rename the
+  "Mastering" entry's label to "Reference Match", with "by: Pro Editor"
+  as its attribution/subtitle. Change its active/enabled indicator to
+  an icon button (matching the icon-button convention used elsewhere —
+  `Tooltip` + `aria-label`) instead of whatever it uses today. Label the
+  whole section/category as "Audio tools". Set its access tier to
+  "Artists and above" — find whatever access-tier/role field gates
+  other plugins (e.g. free vs. member-only add-ons) and apply the same
+  mechanism rather than inventing a new one.
