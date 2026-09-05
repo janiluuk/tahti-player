@@ -150,14 +150,19 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   reference has ever existed in this file's git history; needs the user
   to point at which calendar (candidates: `StudioScheduleView.tsx`,
   `RadioBookingCalendar.tsx`, `StudioEventsView.tsx`) rather than a
-  guess. **Important open question surfaced mid-task**: the sibling
-  `tahti` repo has a real, small `DesignerHelpLayer` component (inline
-  collapsible "? Help" toggle, not a separate page) that's a more literal
-  match for "help layer" than the Help-Center-article approach used
-  here — not yet ported, user said "not sure" whether to. See
-  `docs/todo/go-live-header-subtext-cleanup.md` for the full writeup;
-  this affects how the `StreamOverlayEditor` subtext item below (still
-  unstarted) should be done too.
+  guess.
+- [x] **Port `HelpLayer` from tahti, use it on Go Live — shipped
+  2026-09-05.** The sibling `tahti` repo's `DesignerHelpLayer` (inline
+  collapsible "? Help" toggle) was ported to
+  `packages/tahti-web/src/components/HelpLayer.tsx` (asked the user
+  whether to port it; confirmed yes) and wired into `StudioGoLiveView.tsx`
+  as one page-level "How broadcasting works here" disclosure containing
+  the explanations moved out in the item above. The Help Center article
+  content from that earlier pass was kept too (durable reference,
+  doesn't conflict with the inline copy). See
+  `docs/todo/help-layer-component-port.md`. **Follow-up**: the
+  `StreamOverlayEditor` subtext item below should use this new
+  `HelpLayer` component too, not the Help Center.
 - [x] **Top-nav broadcast icon: rotation dot + live-only flash + Stream
   Manager quick-access icon — shipped 2026-09-05.** `AppTopNav.tsx`: the
   previous `hasConnectionIssue` (`channelState === 'LIVE' &&
@@ -314,3 +319,31 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   already or needs to be built, then wire it into that tab. Update the
   corresponding Storybook story to match once done (same "keep
   Storybook in sync" ask as the broader Storybook-refresh item above).
+
+- [ ] **Radio browser directory: layout, cover images, enable flow.**
+  Multiple asks for whatever view is the "radio browser directory"
+  (likely `RadioView.tsx` and/or a dedicated stations-directory
+  component under Discover — need to locate the exact file first,
+  there's also `RadioStationCover.tsx` for individual station covers).
+  (1) Collapse the genre icon grid under an "All genres" disclosure
+  instead of always showing every genre icon. (2) Move the search bar
+  above the search button, with the search button embedded inside the
+  search box itself (icon-button suffix, not a separate button below).
+  (3) Make the Stations tab the first/default tab (find whatever tab
+  list controls this view — Genres/Stations/etc.). (4) Station cover
+  images can't be updated/edited currently — investigate why (permission
+  check? broken upload handler? read-only by design for imported
+  stations?) and fix; the user separately asked to "scrape them to
+  production if you can already" — that's a data/content task (fetching
+  real station artwork and pushing it to the production database),
+  not a UI change, and needs its own scoping (source of the images,
+  which stations, whether this repo even has prod DB access) before
+  attempting. (5) Enabling a station should add it to a list at the top
+  (of what — the directory itself, or a separate "enabled stations"
+  panel? — confirm), using an icon button for the enable action instead
+  of whatever control it uses today. (6) Remove a "changes are saved for
+  this add-on" message somewhere in this same area (likely a toast or
+  inline notice tied to enabling/reordering stations — find its exact
+  source before removing, since if it's the only save-confirmation
+  users get, removing it outright could be the wrong fix vs. e.g.
+  replacing it with a toast).

@@ -51,6 +51,7 @@ import {
 } from '../../components/BroadcastPreflightPanel';
 import { ChannelShareButton } from '../../components/ChannelShareButton';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
+import { HelpLayer } from '../../components/HelpLayer';
 import {
   MulticastConfigureDialog,
   type MulticastConfiguring,
@@ -360,6 +361,30 @@ export function StudioGoLiveView() {
               </Badge>
             )}
           </div>
+
+          <HelpLayer title="How broadcasting works here" className="mb-4">
+            <p>
+              Connect OBS, Streamlabs, Traktor, Mixxx, or another
+              Icecast-compatible app using the Server and Stream key (or
+              Mount/Password) shown below — pick your app under "Connect
+              broadcasting software" to see the matching fields.
+            </p>
+            <p>
+              Using OBS? The "Ready-made OBS setup" download bundles a scene
+              preset with this channel&apos;s current credentials already filled
+              in, so you don&apos;t have to type them in by hand.
+            </p>
+            <p>
+              Multistream mirrors your broadcast to other platforms like YouTube
+              or Twitch at the same time — add a destination from the
+              Multistream panel once you&apos;re set up.
+            </p>
+            <p>
+              Recording saves this and future broadcasts to your recordings
+              archive automatically; turn it off if you&apos;d rather not keep a
+              copy.
+            </p>
+          </HelpLayer>
 
           {message && (
             <p
