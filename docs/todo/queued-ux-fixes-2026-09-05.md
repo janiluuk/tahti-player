@@ -77,14 +77,15 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   a `HelpLayer` disclosure ("How the stream overlay works") instead of
   as permanent body text, using the newly-ported component (see
   `docs/todo/help-layer-component-port.md`).
-- [ ] **Stream overlay cover: default placeholder + auto-fill text.**
-  When no custom cover is set, show the currently-playing track's artwork
-  as the placeholder in the cover slot (not just a bare `ImageIcon`) —
-  needs whatever "now playing" data source Studio Go Live already has.
-  Default `streamOverlayTitle`/`streamOverlaySubtitle` (when the artist
-  hasn't set custom ones) to the current show's artist/title and tagline
-  respectively — skip the tagline entirely (don't render an empty
-  subtitle line) when it's blank, rather than showing blank text.
+- [x] **Stream overlay cover placeholder + text auto-fill — 2 of 3
+  shipped 2026-09-05.** Title/subtitle now default to the artist's
+  configured show info (`BroadcastPreflightPanel`'s title/tagline) when
+  blank. Cover placeholder now shows the artist's avatar (dimmed)
+  instead of a bare icon, matching the component's own documented
+  fallback behavior. **Not shipped**: now-playing-track artwork as the
+  placeholder specifically — blocked on the same missing backend field
+  as the Stream Manager artwork item above. See
+  `docs/todo/stream-overlay-auto-fill-and-avatar-placeholder.md`.
 - [x] **Stream Manager stats + overlay restructuring — shipped
   2026-09-05.** `Signal` stat's rotation case now reads `Offline` (not
   `Rotation`). `Output` renamed to `Mode`. `Time left` replaced with a

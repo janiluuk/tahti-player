@@ -10,7 +10,12 @@ import {
   Toggle,
 } from '@tahti-player/ui';
 
-import { fetchStreamOverlay, patchStreamOverlay } from '../api/broadcast';
+import {
+  fetchBroadcastPreflight,
+  fetchStreamOverlay,
+  patchStreamOverlay,
+} from '../api/broadcast';
+import { fetchMeProfile } from '../api/studio-extras';
 import { uploadUserMediaFile } from '../api/user-media';
 import { HelpLayer } from './HelpLayer';
 import { ImageSlotDeleteBadge } from './imageSlot/ImageSlotDeleteBadge';
@@ -60,19 +65,28 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
   const [coverUploadOpen, setCoverUploadOpen] = useState(false);
   const [coverUploading, setCoverUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const coverChrome = useImageSlotChrome({
     onClear: () =>
       setOverlay((current) => ({ ...current, streamOverlayCoverUrl: '' })),
   });
 
   useEffect(() => {
-    void fetchStreamOverlay().then((result) => {
+    void Promise.all([
+      fetchStreamOverlay(),
+      fetchBroadcastPreflight(),
+      fetchMeProfile(),
+    ]).then(([overlayResult, preflightResult, profileResult]) => {
+      const preflight = preflightResult.data;
       setOverlay({
-        streamOverlayTitle: result.data.streamOverlayTitle ?? '',
-        streamOverlaySubtitle: result.data.streamOverlaySubtitle ?? '',
-        streamOverlayShowTitle: result.data.streamOverlayShowTitle,
-        streamOverlayCoverUrl: result.data.streamOverlayCoverUrl ?? '',
+        streamOverlayTitle:
+          overlayResult.data.streamOverlayTitle || preflight?.title || '',
+        streamOverlaySubtitle:
+          overlayResult.data.streamOverlaySubtitle || preflight?.tagline || '',
+        streamOverlayShowTitle: overlayResult.data.streamOverlayShowTitle,
+        streamOverlayCoverUrl: overlayResult.data.streamOverlayCoverUrl ?? '',
       });
+      setAvatarUrl(profileResult.data.avatarUrl ?? null);
     });
   }, []);
 
@@ -164,6 +178,12 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
               src={overlay.streamOverlayCoverUrl}
               alt=""
               className="size-full object-cover"
+            />
+          ) : avatarUrl ? (
+            <img
+              src={avatarUrl}
+              alt=""
+              className="size-full object-cover opacity-60"
             />
           ) : (
             <ImageIcon
