@@ -45,31 +45,17 @@ part deliberately deferred.
   design, not an explanatory caption) since the request's "subtext"
   reads as the title-adjacent caption, not this.
 
-## Not done — flagged, needs its own pass
+## Resolved differently: "move the player above the tabs"
 
-**"Move the player above the tabs."** Investigated: "the tabs" are
-`Tabs.Root` (`ChannelView.tsx` ~line 1384, "Overview"/"Manage" — shown
-only to the channel owner/admin). "The player" is the channel's hero
-content block (`case 'hero'` in `renderBlock`, ~line 537 —
-`ChannelBackdropCard` with the play/pause transport, waveform seekbar,
-now-playing overlay), which is one item in the channel's
-user-configurable, order-and-visibility-driven layout (`visibleItems`,
-rendered via `pageBody`). Today, for an owner, `Tabs.Root` renders
-first and `pageBody` (which contains the hero block, wherever it sits
-in that channel's saved layout order) only renders when
-`channelTab === 'overview'` — so switching to "Manage" hides the player
-entirely. Making the player persist above the tabs means extracting
-just the hero block's render out of the generic `renderBlock`/
-`visibleItems.map` loop and rendering it unconditionally above
-`Tabs.Root`, while making sure it does NOT also render a second time
-inside `pageBody` when that owner-tabs wrapper is active (regular
-visitors, who never see `Tabs.Root`, must keep the current single
-render path unchanged). This is a real structural change to a
-data-driven block-rendering system on a ~1600-line view — didn't want
-to guess at the extraction boundary live; needs a deliberate pass (and
-ideally a quick check with the user on whether "the tabs" really means
-this owner-only Overview/Manage strip, since that's non-obvious from
-the report alone).
+At the time this was written, "the tabs" were confirmed to be the
+owner-only `Tabs.Root` ("Overview"/"Manage") strip, but extracting just
+the hero block to render persistently above it looked like a risky
+structural change to guess at blind. The user later gave an explicit,
+different instruction for this exact tab strip — remove it entirely,
+replace it with a Stream Manager icon that opens the control center in
+a modal — which is a cleaner resolution than the player-extraction
+approach considered here. See
+`docs/todo/channelview-stream-manager-modal-replaces-tabs.md`.
 
 ## Verification
 

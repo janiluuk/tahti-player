@@ -203,10 +203,17 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   kept). Replaced the "download as playlist" button with a "Playlist"
   copy-link row in `ChannelShareButton`'s modal (copies the live stream
   URL, toasts). Added X/Facebook/LinkedIn/email share icons. Removed the
-  modal's subtext caption. **Not done**: "move the player above the
-  tabs" — real structural change to the block-rendering system, needs
-  its own pass; see `docs/todo/channelview-badge-dedup-and-share-modal.md`
-  for exactly what that requires.
+  modal's subtext caption. "Move the player above the tabs" was
+  resolved differently (see below, "Overview/Manage tabs → Stream
+  Manager modal") rather than the risky block-extraction approach
+  originally considered.
+- [x] **ChannelView: Overview/Manage tabs → Stream Manager modal —
+  shipped 2026-09-05.** Removed the owner/admin-only "Overview"/"Manage"
+  tab strip entirely; added a `ListMusicIcon` "Open Stream Manager" icon
+  button to the channel toolbar (same visibility gate the tab strip
+  had) that opens `StreamManagerPanel` in a modal, collapsed (not
+  `defaultExpanded`). See
+  `docs/todo/channelview-stream-manager-modal-replaces-tabs.md`.
 - [ ] **CatalogView: invisible artist titles + hide support widgets until
   configured.** No file named `CatalogView` (or close variants) exists in
   `packages/tahti-web/src` — this may be a `Catalog`-named view in the
@@ -377,3 +384,16 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   (`currentId`/`playbackStatus`, the same pattern used in
   `StudioGoLiveView.tsx`'s `isStreamPlaying`/`channelIsPlaying` checks)
   instead of always showing a static play icon.
+
+- [ ] **Channel Designer: Save/Reset layout buttons no longer visible;
+  right panel should be only as tall as needed.** In `ChannelDesigner.tsx`
+  (non-`lookOnly` mode — the layout editor, not the look-only sidebar),
+  the top action row (`saveButton`, the "More" dropdown with Reset, and
+  `openChannelLink`, ~line 1362) is apparently not visible/reachable
+  now — check whether a recent change (e.g. the dock/scroll fix
+  mentioned in this branch's git history, "Fix Channel Designer dock
+  scroll") pushed it out of view, or whether the right design panel's
+  container has a fixed/overflow height that clips it. Fix by sizing
+  the right panel to its actual content height (`h-fit`/`min-h-0`-style
+  fix) rather than a fixed/flex-stretched height, so Save/Reset stay
+  visible without needing to scroll a fixed-height panel.

@@ -2,13 +2,12 @@ import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import {
   GripVerticalIcon,
   HeartIcon,
-  LayoutDashboardIcon,
+  ListMusicIcon,
   MessageCircle,
   Mic,
   PauseIcon,
   PencilIcon,
   PlayIcon,
-  Settings2Icon,
   UsersIcon,
   WifiOffIcon,
   XIcon,
@@ -18,12 +17,11 @@ import { toast } from 'sonner';
 
 import {
   Button,
+  Dialog,
   FilterChips,
   Loader,
   SaveButton,
   StatChip,
-  TabLabel,
-  Tabs,
   Tooltip,
 } from '@tahti-player/ui';
 
@@ -71,7 +69,6 @@ import {
 } from '../components/EntitySocialHeader';
 import { ListenerWidgetEmbed } from '../components/ListenerWidgetEmbed';
 import { NowPlayingOverlay } from '../components/NowPlayingOverlay';
-import { PageHeader } from '../components/PageHeader';
 import { PageEmpty, PageLoading } from '../components/PageStates';
 import { PlayableTrackTable } from '../components/PlayableTrackTable';
 import { ShowEpisodeList } from '../components/ShowEpisodeList';
@@ -160,9 +157,7 @@ export function ChannelView({ slug }: { slug: string }) {
   const [presetNote, setPresetNote] = useState<string | null>(null);
   const [discoWidgets, setDiscoWidgets] = useState<DiscoWidgetRenderItem[]>([]);
   const [liveShows, setLiveShows] = useState<PublicRadioShow | null>(null);
-  const [channelTab, setChannelTab] = useState<'overview' | 'manage'>(
-    'overview',
-  );
+  const [streamManagerOpen, setStreamManagerOpen] = useState(false);
   const listenerWidgetInstances = useListenerWidgetsStore((s) => s.instances);
 
   const play = usePlayerStore((s) => s.play);
@@ -1130,6 +1125,18 @@ export function ChannelView({ slug }: { slug: string }) {
                 </span>
               </Button>
             )}
+            {(isOwner || isAdministrator) && !editing && (
+              <Tooltip content="Open Stream Manager" side="top">
+                <Button
+                  size="icon-sm"
+                  variant="secondary"
+                  onClick={() => setStreamManagerOpen(true)}
+                  aria-label="Open Stream Manager"
+                >
+                  <ListMusicIcon size={16} aria-hidden />
+                </Button>
+              </Tooltip>
+            )}
             {!editing && (
               <ChannelShareButton
                 channelSlug={slug}
@@ -1343,47 +1350,24 @@ export function ChannelView({ slug }: { slug: string }) {
       return pageBody;
     }
 
-    const isLiveChannel = channel.state === 'LIVE';
     return (
-      <div className="flex min-h-full flex-col gap-3">
-        <Tabs.Root
-          selectedIndex={channelTab === 'manage' ? 1 : 0}
-          onChange={(index) =>
-            setChannelTab(index === 1 ? 'manage' : 'overview')
-          }
+      <>
+        {pageBody}
+        <Dialog.Root
+          isOpen={streamManagerOpen}
+          onClose={() => setStreamManagerOpen(false)}
+          className="max-w-xl"
         >
-          <Tabs.List>
-            <Tabs.Tab>
-              <TabLabel icon={<LayoutDashboardIcon size={14} />}>
-                Overview
-              </TabLabel>
-            </Tabs.Tab>
-            <Tabs.Tab>
-              <TabLabel icon={<Settings2Icon size={14} />}>Manage</TabLabel>
-            </Tabs.Tab>
-          </Tabs.List>
-        </Tabs.Root>
-        {channelTab === 'overview' ? (
-          pageBody
-        ) : (
-          <section className="flex flex-col gap-4">
-            <PageHeader
-              title={isLiveChannel ? 'Command center' : 'Stream manager'}
-              subtitle={
-                isLiveChannel
-                  ? 'Monitor and control this live channel.'
-                  : 'Manage the channel replay and its rotation.'
-              }
-            />
+          <Dialog.Title>Stream Manager</Dialog.Title>
+          <div className="mt-4">
             <StreamManagerPanel
               slug={channel.slug}
               channelState={channel.state}
               readOnly={!isOwner && !isAdministrator}
-              defaultExpanded
             />
-          </section>
-        )}
-      </div>
+          </div>
+        </Dialog.Root>
+      </>
     );
   }
 
