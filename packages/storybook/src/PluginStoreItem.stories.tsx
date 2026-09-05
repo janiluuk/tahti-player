@@ -76,6 +76,19 @@ export const LongDescription: Story = {
   },
 };
 
+export const Compact: Story = {
+  name: 'Compact (browsing many in limited space)',
+  args: {
+    name: 'Spotify',
+    description:
+      'Stream music directly from Spotify with full search and playlist support.',
+    author: 'Spotify',
+    categories: ['Streaming'],
+    compact: true,
+    onInstall: fn(),
+  },
+};
+
 export const WithAccessory: Story = {
   args: {
     name: 'Spectrum Bars',

@@ -248,7 +248,7 @@ export function ListenAddonsPanel({
       .length;
   const availableCount = LISTENER_WIDGET_TYPES.length + 2 - installedCount;
   const listClassName = compact
-    ? 'grid gap-3 sm:grid-cols-2'
+    ? 'flex flex-col gap-1.5'
     : 'flex flex-col gap-3';
 
   return (
@@ -274,11 +274,6 @@ export function ListenAddonsPanel({
             title="Favorites"
             open={configuringId === 'favorites'}
             onOpenChange={(open) => setConfiguringId(open ? 'favorites' : null)}
-            className={
-              compact && configuringId === 'favorites'
-                ? 'sm:col-span-2'
-                : undefined
-            }
             header={
               <PluginStoreItem
                 icon={listenAddonIcon('favorites')}
@@ -288,6 +283,7 @@ export function ListenAddonsPanel({
                 category="Listen"
                 isInstalled={favoritesInstalled}
                 onInstall={() => handleInstall('favorites')}
+                compact={compact}
               />
             }
           >
@@ -312,11 +308,6 @@ export function ListenAddonsPanel({
             onOpenChange={(open) =>
               setConfiguringId(open ? NEWS_WIDGET_TYPE_ID : null)
             }
-            className={
-              compact && configuringId === NEWS_WIDGET_TYPE_ID
-                ? 'sm:col-span-2'
-                : undefined
-            }
             header={
               <PluginStoreItem
                 icon={listenAddonIcon(NEWS_WIDGET_TYPE_ID)}
@@ -326,6 +317,7 @@ export function ListenAddonsPanel({
                 category="Listen"
                 isInstalled={newsInstalled}
                 onInstall={() => handleInstall(NEWS_WIDGET_TYPE_ID)}
+                compact={compact}
               />
             }
           >
@@ -427,11 +419,6 @@ export function ListenAddonsPanel({
               title={type.name}
               open={configuringId === type.id}
               onOpenChange={(open) => setConfiguringId(open ? type.id : null)}
-              className={
-                compact && configuringId === type.id
-                  ? 'sm:col-span-2'
-                  : undefined
-              }
               header={
                 <PluginStoreItem
                   icon={listenAddonIcon(type.id)}
@@ -441,6 +428,7 @@ export function ListenAddonsPanel({
                   category={type.category}
                   isInstalled={isInstalled}
                   onInstall={() => handleInstall(type.id)}
+                  compact={compact}
                 />
               }
             >

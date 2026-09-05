@@ -142,6 +142,35 @@ describe('PluginStoreItem', () => {
     expect(getByTestId('plugin-store-item')).toHaveClass('custom-class');
   });
 
+  it('(Snapshot) renders compact', () => {
+    const { container } = render(<PluginStoreItem {...defaultProps} compact />);
+    expect(container.firstChild).toMatchSnapshot();
+  });
+
+  it('omits author and description in compact mode', () => {
+    const { queryByTestId, queryByText } = render(
+      <PluginStoreItem {...defaultProps} compact />,
+    );
+    expect(queryByTestId('plugin-store-item-author')).not.toBeInTheDocument();
+    expect(
+      queryByTestId('plugin-store-item-description'),
+    ).not.toBeInTheDocument();
+    expect(queryByText(defaultProps.name)).toBeInTheDocument();
+  });
+
+  it('still calls onInstall in compact mode', async () => {
+    const user = userEvent.setup();
+    const handleInstall = vi.fn();
+
+    const { getByRole } = render(
+      <PluginStoreItem {...defaultProps} compact onInstall={handleInstall} />,
+    );
+
+    await user.click(getByRole('button', { name: /install/i }));
+
+    expect(handleInstall).toHaveBeenCalledTimes(1);
+  });
+
   it('renders an icon when provided, and omits the slot when absent', () => {
     const { getByText, queryByText, rerender } = render(
       <PluginStoreItem {...defaultProps} icon={<span>ICON</span>} />,

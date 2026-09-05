@@ -3,7 +3,6 @@ import { useState } from 'react';
 
 import { Button, Dialog, Tooltip } from '@tahti-player/ui';
 
-import { DiscoWidgetManagerPanel } from './disco-widgets/DiscoWidgetManagerPanel';
 import { ListenAddonsPanel } from './ListenAddonsPanel';
 
 export function ListenWidgetStoreDialog() {
@@ -32,19 +31,8 @@ export function ListenWidgetStoreDialog() {
           Install the same Listen add-ons as Settings → Add-ons, then configure
           visibility and order.
         </Dialog.Description>
-        <div className="mt-4 flex flex-col gap-8">
-          <section className="flex flex-col gap-3">
-            <h3 className="text-sm font-semibold tracking-wide uppercase">
-              Listen add-ons
-            </h3>
-            <ListenAddonsPanel initialTab="available" compact />
-          </section>
-          <section className="flex flex-col gap-3">
-            <h3 className="text-sm font-semibold tracking-wide uppercase">
-              Discovery widgets
-            </h3>
-            <DiscoWidgetManagerPanel scope="LISTENER" compact />
-          </section>
+        <div className="mt-4 flex flex-col gap-3">
+          <ListenAddonsPanel initialTab="available" compact />
         </div>
       </Dialog.Root>
     </>
