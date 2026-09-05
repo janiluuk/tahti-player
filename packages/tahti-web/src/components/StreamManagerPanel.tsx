@@ -6,8 +6,8 @@ import {
   ListMusicIcon,
   MonitorPlayIcon,
   PauseIcon,
+  PencilIcon,
   PlayIcon,
-  PlusIcon,
   RadioIcon,
   SkipBackIcon,
   SkipForwardIcon,
@@ -61,6 +61,7 @@ import { multicastProviderLabel } from '../plugins/multicast';
 import { useBroadcastPresenceStore } from '../stores/broadcastPresenceStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { ChannelRotationEditor } from './ChannelRotationEditor';
+import { ConfirmDialog } from './ConfirmDialog';
 import { StreamOverlayEditor } from './StreamOverlayEditor';
 
 const STATS_POLL_MS = 5000;
@@ -124,6 +125,9 @@ export function StreamManagerPanel({
   const [selectedCollection, setSelectedCollection] =
     useState<StudioCollection | null>(null);
   const [playlistDialogOpen, setPlaylistDialogOpen] = useState(false);
+  const [pendingApply, setPendingApply] = useState<{
+    replace: boolean;
+  } | null>(null);
   const [playlistLoading, setPlaylistLoading] = useState(false);
   const [rotationBusy, setRotationBusy] = useState(false);
   const [rotationMsg, setRotationMsg] = useState<string | null>(null);
@@ -546,16 +550,16 @@ export function StreamManagerPanel({
         </div>
         <div className="order-4 flex shrink-0 items-center gap-2">
           {canControl && collections.length > 0 && (
-            <Button
-              size="sm"
-              variant="secondary"
-              onClick={openPlaylistDialog}
-              aria-label="Choose playlist"
-              title="Choose playlist"
-            >
-              <PlusIcon size={14} aria-hidden />
-              Playlist
-            </Button>
+            <Tooltip content="Edit playlist" side="top">
+              <Button
+                size="icon-sm"
+                variant="secondary"
+                onClick={openPlaylistDialog}
+                aria-label="Edit playlist"
+              >
+                <PencilIcon size={14} aria-hidden />
+              </Button>
+            </Tooltip>
           )}
           {rotationPlaying && (
             <Tooltip
@@ -884,20 +888,51 @@ export function StreamManagerPanel({
                 disabled={
                   !selectedCollectionSlug || playlistLoading || rotationBusy
                 }
-                onClick={() => void handleApplyCollectionToRotation(false)}
+                onClick={() => setPendingApply({ replace: false })}
               >
-                {rotationBusy ? 'Adding…' : 'Add to rotation'}
+                Add to rotation
               </Button>
               <Button
                 disabled={
                   !selectedCollectionSlug || playlistLoading || rotationBusy
                 }
-                onClick={() => void handleApplyCollectionToRotation(true)}
+                onClick={() => setPendingApply({ replace: true })}
               >
                 Replace rotation
               </Button>
             </Dialog.Actions>
           </Dialog.Root>
+          <ConfirmDialog
+            isOpen={pendingApply !== null}
+            title={
+              pendingApply?.replace
+                ? 'Replace the current rotation?'
+                : 'Add this playlist to the rotation?'
+            }
+            description={
+              pendingApply?.replace
+                ? `This removes every track currently in rotation and replaces it with "${selectedCollection?.name ?? 'this playlist'}".`
+                : `This adds "${selectedCollection?.name ?? 'this playlist'}"'s tracks to the current rotation.`
+            }
+            confirmLabel={
+              rotationBusy
+                ? pendingApply?.replace
+                  ? 'Replacing…'
+                  : 'Adding…'
+                : pendingApply?.replace
+                  ? 'Replace rotation'
+                  : 'Add to rotation'
+            }
+            onCancel={() => setPendingApply(null)}
+            onConfirm={() => {
+              if (!pendingApply) {
+                return;
+              }
+              const { replace } = pendingApply;
+              setPendingApply(null);
+              void handleApplyCollectionToRotation(replace);
+            }}
+          />
           <Dialog.Root
             isOpen={confirmEndOpen}
             onClose={() => setConfirmEndOpen(false)}

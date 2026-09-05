@@ -106,13 +106,15 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   since deleting displayed data seemed the riskier misread; revisit if
   that's not what was wanted. See
   `docs/todo/stream-manager-header-and-overlay-modal.md`.
-- [ ] **Stream Manager: icon-button playlist edit, with confirm.** Replace
-  the current playlist-switch button with an icon-only edit button for
-  the *current* playlist; must show a confirm dialog before actually
-  switching/changing anything (destructive-ish — switching live rotation
-  content). Reuse `ConfirmDialog` (already imported in
-  `StudioGoLiveView.tsx` and used elsewhere in this app) rather than a new
-  one-off.
+- [x] **Stream Manager: icon-button playlist edit, with confirm — shipped
+  2026-09-05.** `StreamManagerPanel.tsx`'s text "Playlist" button (`+`
+  icon) is now an icon-only pencil button (`Tooltip` + `aria-label="Edit
+  playlist"`, per the icon-button convention). "Add to rotation"/"Replace
+  rotation" no longer apply immediately — they set a `pendingApply`
+  state that a new `ConfirmDialog` (reused, not a one-off) confirms
+  before actually calling `handleApplyCollectionToRotation`; "Replace"
+  gets an explicit warning that it removes every track currently in
+  rotation.
 - [ ] **Stream Manager: now-playing artwork with hover play/pause.** Add
   the current stream item's artwork next to the playback controls;
   clicking it plays/pauses the stream (mirrors the existing "media
@@ -185,3 +187,22 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   small "confirmed" indicator component next to this panel — check
   whether it should be replaced by the new status button or kept
   alongside it.
+- [ ] **ChannelView (Storybook component): player position, duplicate
+  OnAir badge, playlist-download → share modal.** Located: `views/
+  ChannelView.tsx` has two `OnAirBadge` usages (line ~576 and ~1142) —
+  one is the reported duplicate "on air" at the top; figure out which one
+  is the real one to keep before removing the other (they may be for
+  different render paths, e.g. mobile vs desktop — check before deleting
+  either). Move the player above the `Tabs.Root` (~line 1384) — check
+  current DOM order relative to the tabs first. Remove the
+  `DownloadIcon`-labeled "download as playlist" button (~line 1164,
+  near `ChannelShareButton` ~1169) and instead add a "Playlist" button
+  with a copy icon inside `ChannelShareButton`'s share modal — clicking
+  copies the playlist link to the clipboard (use the shared `CopyButton`
+  component, not a hand-rolled clipboard call) and shows a toast. In that
+  same share section, add common social-media share icons (check if a
+  shared "share to X" icon set/component already exists anywhere in the
+  app before building one). Also: remove the explanatory subtext from the
+  share channel modal (`ChannelShareButton.tsx`) — another
+  inline-help-text-must-go instance, matching the pattern used elsewhere
+  today.
