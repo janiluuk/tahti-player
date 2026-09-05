@@ -17,20 +17,16 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   tab, line ~803). Before renaming anything, confirm with the user (or
   screenshot) exactly which visible label they mean — there may be
   nothing to rename yet, just something to *add* as "Stream Manager".
-- [x] **Stream overlay tab leaks after collapsing the manager — root
-  cause found, not yet fixed.** `StreamManagerPanel.tsx`: the
-  collapse/expand state is `rotationExpanded` +
-  `(!rotationPlaying || rotationExpanded)`, and that guard wraps the tab
-  list itself (line ~624) and the `stats` tab's content (line ~653,
-  `activeTab === 'stats' && (!rotationPlaying || rotationExpanded)`) —
-  but the `overlay` tab's content block (line ~800,
-  `activeTab === 'overlay' && canControl && (...)`) was never given the
-  same `(!rotationPlaying || rotationExpanded)` condition. That's the
-  whole bug: one missing clause. Fix: add the same guard to the overlay
-  block (and re-verify the `rotation` tab's own block at line ~738 has it
-  too, for consistency — do the "integrity check" the user asked for
-  across all three tab blocks, not just overlay, in case there's a
-  second instance of the same drift).
+- [x] **Stream overlay tab leaks after collapsing the manager — fixed
+  2026-09-05.** Root cause: `StreamManagerPanel.tsx`'s collapse/expand
+  guard `(!rotationPlaying || rotationExpanded)` wraps the tab list and
+  the `stats`/`rotation` tabs' content, but the `overlay` tab's block
+  never had it. Added the same guard there. Integrity check of the other
+  two tabs: `stats` was already correctly guarded as a whole;
+  `rotation`'s two sub-sections (`ChannelRotationEditor`, the RTMP targets
+  list) were each independently guarded already — only its "Stop stream"
+  button is intentionally unguarded (a primary action that should stay
+  reachable while collapsed). No second instance of the drift found.
 - [ ] **Collapse "Connect Broadcasting Software" by default.** Currently
   shows full broadcasting options up front. Should default collapsed,
   showing only server name + stream key (key hidden behind a reveal icon,

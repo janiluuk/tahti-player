@@ -797,14 +797,18 @@ export function StreamManagerPanel({
         </>
       )}
 
-      {activeTab === 'overlay' && canControl && (
-        <div className="flex flex-col gap-4">
-          <div>
-            <h3 className="font-display text-base font-bold">Stream overlay</h3>
+      {activeTab === 'overlay' &&
+        canControl &&
+        (!rotationPlaying || rotationExpanded) && (
+          <div className="flex flex-col gap-4">
+            <div>
+              <h3 className="font-display text-base font-bold">
+                Stream overlay
+              </h3>
+            </div>
+            <StreamOverlayEditor onSaved={() => setActiveTab('rotation')} />
           </div>
-          <StreamOverlayEditor onSaved={() => setActiveTab('rotation')} />
-        </div>
-      )}
+        )}
 
       {error && <p className="text-accent-red text-xs">{error}</p>}
 
