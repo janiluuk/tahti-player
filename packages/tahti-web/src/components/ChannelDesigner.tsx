@@ -1444,7 +1444,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
               aria-label="Channel page preview"
               className="border-border bg-background min-w-0 overflow-x-hidden overflow-y-auto rounded-xl border shadow-lg lg:max-h-[calc(100vh-7rem)]"
             >
-              <div className="border-border bg-background-secondary/40 flex items-center justify-between gap-1.5 border-b px-4 py-2.5">
+              <div className="border-border bg-background-secondary/40 flex items-center gap-1.5 border-b px-4 py-2.5">
                 <div className="flex items-center gap-1.5">
                   <span className="text-foreground-secondary text-xs font-semibold tracking-wide uppercase">
                     Live page preview
@@ -1471,7 +1471,6 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
                     </span>
                   </Tooltip>
                 </div>
-                {openChannelLink}
               </div>
               <ChannelBackdropCard
                 minHeightClassName="min-h-[24rem]"

@@ -248,23 +248,47 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   sequence it as its own effort rather than a quick pass; don't start
   implementation without confirming which real (non-Storybook) view this
   maps to.
-- [ ] **Storybook refresh + Channel Designer modal duplicate link +
-  layout save/restore.** Three separate asks bundled together:
-  (1) Generate/update Storybook stories to reflect the current state of
-  tahti-player — broad, cross-cutting; needs its own pass to find which
-  components have drifted from their stories (new props added this
-  session alone: `PluginStoreItem.compact`, `CopyField.maskable`,
-  `MulticastConfigureDialog` extraction, `ConfigurableCard.asModal`,
-  etc. — likely more repo-wide). (2) In the Channel Designer (component
-  under `packages/storybook/src/tahti-web/`, likely the same `Designer`
-  named in the tabs-relocation item above — confirm same component),
-  remove a duplicate text link "Open my channel" from the modal's top
-  right corner. (3) Layout save/restore: when the user presses "Save
-  layout" in the designer, keep the previous layout around temporarily;
-  add an icon button next to "Save layout" to restore that previous
-  state — only show this restore button after "Save layout" has actually
-  been pressed (not before, and presumably not after a page
-  reload/navigation away — clarify persistence scope, e.g. in-memory for
-  the current editing session only, vs. needing real undo history).
-  Needs the same Designer-component location work as the tabs item
-  before starting either.
+- [x] **Channel Designer: duplicate "Open my channel" link — fixed
+  2026-09-05.** Located the real component:
+  `packages/tahti-web/src/components/ChannelDesigner.tsx` (the
+  Storybook-cataloged `Designer`, per the many `ChannelDesigner*.stories.tsx`
+  files — this is a hand-authored component, not one exclusive to
+  Storybook). `openChannelLink` was rendered twice: once in the main
+  top action row (next to "More"/Save, line ~1384) and again in the
+  "Live page preview" panel's own header, right-aligned (line ~1474) —
+  that second one is "the right corner" the report meant. Removed the
+  second occurrence and the now-pointless `justify-between` on its
+  wrapper; kept the one next to Save (more useful — it's where you'd
+  look right after saving).
+- [ ] **Storybook refresh + Channel Designer layout save/restore.**
+  Two separate asks, not done: (1) Generate/update Storybook stories to
+  reflect the current state of tahti-player — broad, cross-cutting;
+  needs its own pass to find which components have drifted from their
+  stories (new props added this session alone: `PluginStoreItem.compact`,
+  `CopyField.maskable`, `MulticastConfigureDialog` extraction,
+  `ConfigurableCard.asModal`, etc. — likely more repo-wide, worth a
+  dedicated sweep rather than folding into this item). (2) Layout
+  save/restore: `ChannelDesigner.tsx`'s `saveButton` (`SaveButton`,
+  ~line 1265, label "Save layout" when not `lookOnly`) currently has no
+  concept of a previous-state snapshot — `save()` (search this file) just
+  persists `layout`/`layoutDirty` directly. Add: on save, stash the
+  previous layout value; show a new icon button next to `saveButton`
+  that restores it — only after a save has actually happened (not
+  before). Clarify persistence scope before building: in-memory for the
+  current editing session only (lost on reload) vs. something durable —
+  in-memory is the cheaper/likely-intended reading given "temporarily",
+  but confirm rather than assume if it matters.
+- [ ] **Channel Designer: gallery "+" add-images modal + hover
+  delete/reorder.** Find the gallery/slideshow section in
+  `ChannelDesigner.tsx` (search for `galleryMode`/`slideshowImages`,
+  already referenced elsewhere in this file per the `ChannelView.tsx`
+  hero block props) — add a "+" tile/button that opens a modal to pick
+  which images become part of the slideshow (reuse whatever image-
+  picker/upload pattern the rest of the designer already uses, e.g. the
+  image-slot hover pattern from `docs/todo/stream-overlay-cover-upload-and-title-toggle.md`
+  — delete-badge + reveal-on-hover is the established convention here).
+  On existing gallery images, hovering should reveal a delete icon and a
+  drag handle for reordering (check if any existing list in this app
+  already has drag-to-reorder — e.g. rotation/playlist editors — reuse
+  that mechanism rather than adding a new drag library if one isn't
+  already a dependency).
