@@ -149,6 +149,27 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   `StudioGoLiveView.tsx` (or ask the user which calendar, if git history
   doesn't turn up an obvious candidate) before attempting to "restore"
   anything.
+- [ ] **Top-nav broadcast icon: rotation dot + live-only flash + Stream
+  Manager quick-access icon.** `AppTopNav.tsx`'s broadcast icon already
+  has everything needed to distinguish states —
+  `useOwnBroadcastPresence`/`resolveBroadcastPresence`
+  (`lib/broadcastPresence.ts`) returns `kind: 'live' | 'rotation' |
+  'preview' | 'offline'` — but `broadcastTone` only branches on
+  `isLive`/`hasConnectionIssue`(error)/`hasBroadcastWarning`(preview,
+  warning); `rotation` and `offline` both fall through to the same
+  `'idle'` (no color, no dot) bucket today. Add a `rotation` case: a
+  static yellow dot (no pulse animation — reuse the existing
+  `border-accent-yellow/70 bg-accent-yellow/15 text-accent-yellow` color
+  but drop the `motion-safe:animate-[pulse_...]` part). Per the request,
+  pulsing/flashing should be reserved for `live` only — check whether
+  `preview`'s current pulse should also become static, or if pulsing for
+  "preview" (about to go live) is intentional and only rotation should be
+  exempted; clarify if unsure rather than silently changing preview's
+  behavior too. Separately: add a Stream Manager icon next to the
+  broadcast one in the top nav that, on click, opens `StreamManagerPanel`
+  inside a modal only (no navigation) — check `StreamManagerPanel`'s
+  props for what it needs (`slug`, `channelState`, etc. — see its usage
+  in `StudioGoLiveView.tsx`) to render it standalone in a `Dialog`.
 - [ ] **Show creation flow: episode auto-fill + one-off/episode toggle +
   empty-state CTA.** When creating a show entry from a *series episode*
   picker, auto-fill the show form's fields from the selected series show.
