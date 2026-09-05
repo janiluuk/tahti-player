@@ -9,10 +9,7 @@ export function AdminStreamsView() {
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/streams">
-          <ViewShell
-            title="Streams"
-            classes={{ root: 'px-0 pt-0 mx-auto max-w-5xl' }}
-          >
+          <ViewShell title="Streams" classes={{ root: 'px-0 pt-0' }}>
             <AdminStreamManagerPanel />
           </ViewShell>
         </AdminPageLayout>

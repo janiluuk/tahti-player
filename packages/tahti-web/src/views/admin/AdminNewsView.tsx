@@ -85,10 +85,7 @@ export function AdminNewsView() {
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/news">
-          <ViewShell
-            title="News"
-            classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl' }}
-          >
+          <ViewShell title="News" classes={{ root: 'px-0 pt-0' }}>
             <div className="mb-4">
               <Tooltip content="Write post" side="top">
                 <Button

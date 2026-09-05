@@ -43,10 +43,7 @@ export const AdminUsersView = () => {
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/users">
-          <ViewShell
-            title="Users"
-            classes={{ root: 'px-0 pt-0 mx-auto max-w-7xl' }}
-          >
+          <ViewShell title="Users" classes={{ root: 'px-0 pt-0' }}>
             <p className="text-foreground-secondary text-sm">
               {total} accounts
             </p>

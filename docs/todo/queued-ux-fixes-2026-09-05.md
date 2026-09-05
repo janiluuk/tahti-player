@@ -3,11 +3,18 @@
 **Status:** open — queued by the user during a session, not yet started.
 One item per fix; check each off and fold into HISTORY.md once shipped.
 
-- [ ] **Admin panel left padding.** Admin content starts with noticeably
-  more left padding than Library/Studio — should begin at the same
-  horizontal position. Likely an `AppShell`/`AdminPageLayout` padding
-  mismatch against the Studio/Library shells; compare their root
-  container classes.
+- [x] **Admin panel left padding — fixed 2026-09-05.** Root cause: 9 of
+  25 Admin views' `ViewShell` had `classes={{ root: 'px-0 pt-0 mx-auto
+  max-w-{3xl,4xl,5xl,7xl}' }}` — a centered, width-capped column — while
+  every Studio/Library view (and the other 16 Admin views) uses just
+  `px-0 pt-0` (full width, flush left). On a normal desktop viewport that
+  centering reads as "extra left padding" versus Studio/Library, which is
+  exactly the report. `AppShell`'s own `MAIN_CONTENT_PADDING` wrapper is
+  identical for every route — not the cause. Stripped `mx-auto max-w-*`
+  from all 9 (`AdminContentView`, `AdminAnnouncementsView`,
+  `AdminSelectsView`, `AdminNewsView`, `AdminTopListsView`,
+  `AdminDashboardView`, `AdminUsersView`, `AdminStreamsView`,
+  `AdminStatusView`) for consistency with the rest.
 - [ ] **Rename "Stream Playlist Manager" → "Stream Manager".** No literal
   string `"Stream Playlist Manager"` exists anywhere in
   `packages/tahti-web/src` (checked 2026-09-05) — this is almost

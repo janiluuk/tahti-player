@@ -45,10 +45,7 @@ export function AdminContentView() {
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/content">
-          <ViewShell
-            title="Content"
-            classes={{ root: 'px-0 pt-0 mx-auto max-w-5xl' }}
-          >
+          <ViewShell title="Content" classes={{ root: 'px-0 pt-0' }}>
             <div>
               <Link to="/admin/top-lists">
                 <Button size="sm" variant="secondary">
