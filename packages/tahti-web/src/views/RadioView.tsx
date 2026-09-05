@@ -6,6 +6,7 @@ import {
   ListOrderedIcon,
   MessageCircleIcon,
   MicIcon,
+  PauseIcon,
   PlayIcon,
   RadioTowerIcon,
 } from 'lucide-react';
@@ -170,7 +171,17 @@ export function RadioView() {
     .filter((s): s is string => Boolean(s))
     .sort((a, b) => a.length - b.length)[0];
 
+  const radioPlayableId = `radio:${TAHTI_RADIO_SLUG}`;
+  const isRadioCurrent = currentId === radioPlayableId;
+  const isRadioPlaying =
+    isRadioCurrent &&
+    (playerStatus === 'playing' || playerStatus === 'loading');
+
   const playStation = () => {
+    if (isRadioCurrent) {
+      setPlayerStatus(isRadioPlaying ? 'paused' : 'playing');
+      return;
+    }
     void fetchRadioStation().then(({ playable }) => {
       if (playable) {
         play(playable);
@@ -347,9 +358,15 @@ export function RadioView() {
                     actions={[
                       {
                         id: 'play',
-                        label: 'Play Radio',
-                        icon: <PlayIcon size={16} className="fill-current" />,
+                        label: isRadioPlaying ? 'Pause Radio' : 'Play Radio',
+                        icon: isRadioPlaying ? (
+                          <PauseIcon size={16} className="fill-current" />
+                        ) : (
+                          <PlayIcon size={16} className="fill-current" />
+                        ),
                         onClick: playStation,
+                        active: isRadioPlaying,
+                        disableWhenActive: false,
                       },
                       {
                         id: 'favorite',

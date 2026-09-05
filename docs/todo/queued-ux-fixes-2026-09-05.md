@@ -375,15 +375,11 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   `desktop-mcp` Help article per `content/help.ts`, suggesting a desktop
   build variant already exists with its own capability checks). Remove
   the old right-sidebar entry once moved.
-- [ ] **Listen page radio channels: reflect actual play state on the
-  play icon.** Under Listen → radio channels, the play icon doesn't
-  currently update to show "playing" when a station is actually
-  playing. Find the radio channel list component (likely in
-  `ListenView.tsx` or a radio-specific card component) and wire its
-  play icon to the same `usePlayerStore` status the rest of the app uses
-  (`currentId`/`playbackStatus`, the same pattern used in
-  `StudioGoLiveView.tsx`'s `isStreamPlaying`/`channelIsPlaying` checks)
-  instead of always showing a static play icon.
+- [x] **Radio play icon didn't reflect actual play state — shipped
+  2026-09-05.** Found it in `RadioView.tsx`'s hero station card (not
+  `ListenView.tsx`'s own Radio card, which was already correct and
+  served as the reference pattern to copy). See
+  `docs/todo/radio-view-play-state-icon.md`.
 
 - [x] **Channel Designer: Save/Reset layout buttons no longer visible;
   right panel should be only as tall as needed — shipped 2026-09-05,
@@ -411,3 +407,27 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   user pick which content sections appear under each tab. Do this as
   part of the same effort as the earlier tabs-under-player item, not
   separately — they're the same feature.
+
+- [ ] **Channel Designer: pre-fill Links from social links, eye-icon
+  visibility toggle, move player out of backdrop into Home/"Stage".**
+  Three related asks in `ChannelDesigner.tsx`/`ChannelLayersMenu.tsx`:
+  (1) If the artist has already set up social links elsewhere (check
+  `ChannelLinksEditor`/wherever social links are stored — possibly the
+  same data as a profile/settings social-links field, not necessarily
+  channel-specific), the Links section in the designer should come
+  pre-filled with those instead of starting empty. (2) Add an eye icon
+  next to each item for show/hide, matching the icon-button convention
+  — check whether this is for the Layers list items specifically (which
+  already has `onToggleDisabled`/eye icons in some places per
+  `ChannelElementEditor.tsx`) or a different list. (3) Move the player
+  (the hero block's audio player, `case 'hero'` in `renderBlock`) out of
+  the backdrop/header container into the "Home" area — relates to but is
+  distinct from the earlier "move the player above the tabs" resolution
+  (that was about the owner-only Overview/Manage tabs, already replaced
+  with a Stream Manager modal; this is about where the player physically
+  sits relative to the backdrop within the page content itself).
+  Separately: rename "Home" to "Stage" wherever it's labeled as a
+  section/tab (check `navItems`'s `{ id: 'home', label: 'Home' }` in
+  `ChannelView.tsx` and any other "Home" references for this channel
+  content area — don't rename unrelated "Home" labels elsewhere in the
+  app, e.g. the main nav).
