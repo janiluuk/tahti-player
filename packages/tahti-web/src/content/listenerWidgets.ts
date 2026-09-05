@@ -167,14 +167,105 @@ function hearthisEmbedUrl(input: string): string | null {
 
   const host = url.hostname.replace(/^www\./, '');
   const pathParts = url.pathname.split('/').filter(Boolean);
-  if (
-    host !== 'hearthis.at' ||
-    pathParts[0]?.toLowerCase() !== 'embed' ||
-    !/^\d+$/.test(pathParts[1] ?? '')
-  ) {
+  if (host !== 'hearthis.at') {
     return null;
   }
-  return hearthisEmbedUrlForId(pathParts[1]);
+  if (
+    pathParts[0]?.toLowerCase() === 'embed' &&
+    /^\d+$/.test(pathParts[1] ?? '')
+  ) {
+    return hearthisEmbedUrlForId(pathParts[1]);
+  }
+  // Set embeds look like hearthis.at/set/<setId>-<userId>/embed/<token>/ —
+  // the token isn't derivable from the id, so a resolved set embed URL
+  // (from resolveHearthisPageEmbedUrl below) is accepted as-is.
+  if (
+    pathParts[0]?.toLowerCase() === 'set' &&
+    /^\d+-\d+$/.test(pathParts[1] ?? '') &&
+    pathParts[2]?.toLowerCase() === 'embed' &&
+    pathParts[3]
+  ) {
+    return url.toString();
+  }
+  return null;
+}
+
+/** Resolves any public hearthis.at track/set page URL to its real embed
+ * iframe src via the platform's own oEmbed endpoint — the embed token in
+ * set URLs (and some track URLs) can't be derived client-side, so this
+ * asks hearthis.at for the canonical embed markup instead of guessing.
+ * Returns null for non-hearthis.at URLs or on any fetch/parse failure. */
+export async function resolveHearthisPageEmbedUrl(
+  pageUrl: string,
+): Promise<string | null> {
+  let url: URL;
+  try {
+    url = new URL(pageUrl.trim());
+  } catch {
+    return null;
+  }
+  if (url.hostname.replace(/^www\./, '') !== 'hearthis.at') {
+    return null;
+  }
+  const oembedUrl = `${url.origin}${url.pathname.replace(/\/?$/, '/')}oembed.json`;
+  try {
+    const res = await fetch(oembedUrl);
+    if (!res.ok) {
+      return null;
+    }
+    const data = (await res.json()) as { html?: string };
+    const src = data.html?.match(/src="([^"]+)"/)?.[1];
+    return src ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export type HearthisSet = {
+  id: string;
+  title: string;
+  description: string;
+  trackCount: number;
+  thumbUrl: string;
+  pageUrl: string;
+};
+
+/** Lists a hearthis.at user's public sets (playlists) via their API, for
+ * "browse my sets to embed" in the widget config UI. Each result's
+ * `pageUrl` still needs resolveHearthisPageEmbedUrl() to get an embed src
+ * — the set-embed token isn't included in this listing. */
+export async function fetchHearthisUserSets(
+  username: string,
+): Promise<HearthisSet[] | null> {
+  const handle = username.trim().replace(/^@/, '');
+  if (!/^[a-zA-Z0-9_-]+$/.test(handle)) {
+    return null;
+  }
+  try {
+    const res = await fetch(
+      `https://api-v2.hearthis.at/${encodeURIComponent(handle)}/?type=playlists&page=1&count=50`,
+    );
+    if (!res.ok) {
+      return null;
+    }
+    const data = (await res.json()) as unknown;
+    if (!Array.isArray(data)) {
+      return null;
+    }
+    return data.map((raw) => {
+      const set = raw as Record<string, unknown>;
+      return {
+        id: String(set.id ?? ''),
+        title: String(set.title ?? 'Untitled set'),
+        description: String(set.description ?? ''),
+        trackCount: Number(set.track_count ?? 0),
+        thumbUrl: String(set.thumb ?? ''),
+        pageUrl: String(set.permalink_url ?? ''),
+      };
+    });
+  } catch {
+    return null;
+  }
 }
 
 function hearthisEmbedUrlForId(trackId: string): string {
@@ -236,11 +327,12 @@ export const LISTENER_WIDGET_TYPES: ListenerWidgetType[] = [
     name: 'hearthis.at',
     author: 'hearthis.at',
     description:
-      "Play a hearthis.at track inline using hearthis.at's official embedded player.",
+      "Play a hearthis.at track or set inline using hearthis.at's official embedded player.",
     category: 'Streaming',
-    placeholder: 'https://hearthis.at/embed/12345/… or 12345',
+    placeholder:
+      'https://hearthis.at/yourname/your-track/ or a numeric track ID',
     helpText:
-      'Paste a hearthis.at embed URL or numeric track ID. Track pages without an embed ID are not supported yet.',
+      'Paste any hearthis.at track or set link (or a numeric track ID) — the embed resolves automatically. Or browse your own sets below.',
     embedHeight: 150,
     toEmbedUrl: hearthisEmbedUrl,
   },

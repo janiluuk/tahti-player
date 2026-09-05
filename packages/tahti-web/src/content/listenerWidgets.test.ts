@@ -1,8 +1,10 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
+  fetchHearthisUserSets,
   LISTENER_WIDGET_TYPES,
   listenerWidgetType,
+  resolveHearthisPageEmbedUrl,
   resolveListenerWidgetInput,
   soundcloudProfileUrl,
 } from './listenerWidgets';
@@ -40,6 +42,127 @@ describe('hearthis.at listener embed', () => {
   it('rejects unrelated URLs and slug-only track pages', () => {
     expect(hearthis?.toEmbedUrl('https://example.com/12345')).toBeNull();
     expect(hearthis?.toEmbedUrl('https://hearthis.at/dj/track/')).toBeNull();
+  });
+
+  it('accepts a resolved set-embed URL', () => {
+    expect(
+      hearthis?.toEmbedUrl(
+        'https://hearthis.at/set/378936-9675121/embed/rw76K/',
+      ),
+    ).toBe('https://hearthis.at/set/378936-9675121/embed/rw76K/');
+  });
+
+  it('rejects a set page URL that has not been resolved to an embed yet', () => {
+    expect(
+      hearthis?.toEmbedUrl('https://hearthis.at/yaniho/set/some-set/'),
+    ).toBeNull();
+  });
+});
+
+describe('resolveHearthisPageEmbedUrl', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('extracts the iframe src from the oEmbed response', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            html: '<iframe src="https://hearthis.at/set/378936-9675121/embed/rw76K/"></iframe>',
+          }),
+      }),
+    );
+
+    await expect(
+      resolveHearthisPageEmbedUrl(
+        'https://hearthis.at/yaniho/set/recorded-sets-from-gigs/',
+      ),
+    ).resolves.toBe('https://hearthis.at/set/378936-9675121/embed/rw76K/');
+
+    expect(fetch).toHaveBeenCalledWith(
+      'https://hearthis.at/yaniho/set/recorded-sets-from-gigs/oembed.json',
+    );
+  });
+
+  it('returns null for a non-hearthis.at URL without fetching', async () => {
+    const fetchSpy = vi.fn();
+    vi.stubGlobal('fetch', fetchSpy);
+
+    await expect(
+      resolveHearthisPageEmbedUrl('https://example.com/set/1/'),
+    ).resolves.toBeNull();
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it('returns null when the request fails', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false }));
+
+    await expect(
+      resolveHearthisPageEmbedUrl('https://hearthis.at/yaniho/set/x/'),
+    ).resolves.toBeNull();
+  });
+});
+
+describe('fetchHearthisUserSets', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('maps the API response into HearthisSet rows', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: () =>
+          Promise.resolve([
+            {
+              id: '378936',
+              title: 'Recorded sets from gigs',
+              description: 'Recordings of past sets',
+              track_count: 171,
+              thumb: 'https://img.hearthis.at/thumb.jpg',
+              permalink_url: 'https://hearthis.at/set/378936-9675121/',
+            },
+          ]),
+      }),
+    );
+
+    await expect(fetchHearthisUserSets('yaniho')).resolves.toEqual([
+      {
+        id: '378936',
+        title: 'Recorded sets from gigs',
+        description: 'Recordings of past sets',
+        trackCount: 171,
+        thumbUrl: 'https://img.hearthis.at/thumb.jpg',
+        pageUrl: 'https://hearthis.at/set/378936-9675121/',
+      },
+    ]);
+    expect(fetch).toHaveBeenCalledWith(
+      'https://api-v2.hearthis.at/yaniho/?type=playlists&page=1&count=50',
+    );
+  });
+
+  it('rejects a username with unsafe characters without fetching', async () => {
+    const fetchSpy = vi.fn();
+    vi.stubGlobal('fetch', fetchSpy);
+
+    await expect(fetchHearthisUserSets('yaniho/../admin')).resolves.toBeNull();
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it('returns null when the response is not an array', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({ status: 'error' }),
+      }),
+    );
+
+    await expect(fetchHearthisUserSets('yaniho')).resolves.toBeNull();
   });
 });
 

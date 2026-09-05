@@ -4,6 +4,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import {
   Box,
   Button,
+  Dialog,
   Input,
   PluginStoreItem,
   TabLabel,
@@ -14,9 +15,12 @@ import {
 
 import { fetchMeProfile, patchMeProfile } from '../api/studio-extras';
 import {
+  fetchHearthisUserSets,
   LISTENER_WIDGET_TYPES,
+  resolveHearthisPageEmbedUrl,
   resolveListenerWidgetInput,
   soundcloudProfileUrl,
+  type HearthisSet,
 } from '../content/listenerWidgets';
 import { cn } from '../lib/cn';
 import { isHttpUrl } from '../lib/parseRss';
@@ -37,6 +41,7 @@ function ConfigurableCard({
   open,
   onOpenChange,
   className,
+  asModal = false,
 }: {
   header: ReactNode | ((open: () => void) => ReactNode);
   children: ReactNode;
@@ -44,6 +49,9 @@ function ConfigurableCard({
   open: boolean;
   onOpenChange: (open: boolean) => void;
   className?: string;
+  /** Show the config panel in a Dialog instead of expanding inline — for
+   * configs too tall/rich to sit comfortably inside the addon list. */
+  asModal?: boolean;
 }) {
   return (
     <div className={cn('flex flex-col gap-2', className)}>
@@ -69,7 +77,21 @@ function ConfigurableCard({
           </Button>
         </Tooltip>
       </div>
-      {open ? (
+      {asModal ? (
+        <Dialog.Root
+          isOpen={open}
+          onClose={() => onOpenChange(false)}
+          className="max-w-lg"
+        >
+          <Dialog.Title>{title} configuration</Dialog.Title>
+          <div
+            className="mt-4 flex flex-col gap-4"
+            data-testid={`listen-addon-config-${title}`}
+          >
+            {children}
+          </div>
+        </Dialog.Root>
+      ) : open ? (
         <Box
           variant="tertiary"
           shadow="none"
@@ -133,6 +155,16 @@ export function ListenAddonsPanel({
   const [newsShowListen, setNewsShowListen] = useState(true);
   const [newsShowDiscover, setNewsShowDiscover] = useState(true);
   const [newsError, setNewsError] = useState<string | null>(null);
+  const [resolvingHearthisUrl, setResolvingHearthisUrl] = useState(false);
+  const [hearthisUsername, setHearthisUsername] = useState('');
+  const [hearthisSets, setHearthisSets] = useState<HearthisSet[] | null>(null);
+  const [hearthisSetsLoading, setHearthisSetsLoading] = useState(false);
+  const [hearthisSetsError, setHearthisSetsError] = useState<string | null>(
+    null,
+  );
+  const [addingHearthisSetId, setAddingHearthisSetId] = useState<string | null>(
+    null,
+  );
 
   useEffect(() => {
     void fetchMeProfile()
@@ -165,7 +197,18 @@ export function ListenAddonsPanel({
   const addWidgetInstance = async (typeId: string, label: string) => {
     const rawInput =
       inputByType[typeId] ?? (typeId === 'soundcloud' ? soundcloudProfile : '');
-    const resolved = resolveListenerWidgetInput(typeId, rawInput);
+    let resolved = resolveListenerWidgetInput(typeId, rawInput);
+    if (!resolved.ok && typeId === 'hearthis' && isHttpUrl(rawInput.trim())) {
+      // A plain hearthis.at track/set page URL (not an /embed/ link) — ask
+      // hearthis.at's own oEmbed endpoint for the real embed src rather
+      // than rejecting it; set embeds carry a token that can't be guessed.
+      setResolvingHearthisUrl(true);
+      const embedUrl = await resolveHearthisPageEmbedUrl(rawInput.trim());
+      setResolvingHearthisUrl(false);
+      if (embedUrl) {
+        resolved = resolveListenerWidgetInput(typeId, embedUrl);
+      }
+    }
     if (!resolved.ok) {
       setErrorByType((prev) => ({ ...prev, [typeId]: resolved.error }));
       return;
@@ -212,6 +255,40 @@ export function ListenAddonsPanel({
       delete next[typeId];
       return next;
     });
+  };
+
+  const loadHearthisSets = async () => {
+    const handle = hearthisUsername.trim();
+    if (!handle) {
+      setHearthisSetsError('Enter your hearthis.at username.');
+      return;
+    }
+    setHearthisSetsLoading(true);
+    setHearthisSetsError(null);
+    const sets = await fetchHearthisUserSets(handle);
+    setHearthisSetsLoading(false);
+    if (!sets) {
+      setHearthisSetsError(
+        "Couldn't load sets for that username. Check the spelling and try again.",
+      );
+      setHearthisSets(null);
+      return;
+    }
+    if (sets.length === 0) {
+      setHearthisSetsError("This account doesn't have any public sets.");
+    }
+    setHearthisSets(sets);
+  };
+
+  const addHearthisSet = async (set: HearthisSet) => {
+    setAddingHearthisSetId(set.id);
+    const embedUrl = await resolveHearthisPageEmbedUrl(set.pageUrl);
+    setAddingHearthisSetId(null);
+    if (!embedUrl) {
+      setHearthisSetsError(`Couldn't resolve an embed for "${set.title}".`);
+      return;
+    }
+    addInstance('hearthis', embedUrl, set.title);
   };
 
   const addNewsFeed = () => {
@@ -419,6 +496,7 @@ export function ListenAddonsPanel({
               title={type.name}
               open={configuringId === type.id}
               onOpenChange={(open) => setConfiguringId(open ? type.id : null)}
+              asModal={type.id === 'hearthis'}
               header={
                 <PluginStoreItem
                   icon={listenAddonIcon(type.id)}
@@ -480,6 +558,7 @@ export function ListenAddonsPanel({
                         (type.id === 'soundcloud' &&
                           (soundcloudProfileLoading ||
                             savingSoundcloudProfile)) ||
+                        (type.id === 'hearthis' && resolvingHearthisUrl) ||
                         !(
                           inputByType[type.id] ??
                           (type.id === 'soundcloud' ? soundcloudProfile : '')
@@ -488,7 +567,9 @@ export function ListenAddonsPanel({
                     >
                       {type.id === 'soundcloud' && savingSoundcloudProfile
                         ? 'Saving…'
-                        : 'Add'}
+                        : type.id === 'hearthis' && resolvingHearthisUrl
+                          ? 'Resolving…'
+                          : 'Add'}
                     </Button>
                   </form>
                   {errorByType[type.id] ? (
@@ -496,6 +577,80 @@ export function ListenAddonsPanel({
                       {errorByType[type.id]}
                     </p>
                   ) : null}
+                  {type.id === 'hearthis' && (
+                    <div className="border-border flex flex-col gap-2 border-t pt-3">
+                      <p className="text-foreground-secondary text-xs">
+                        Or browse your own sets to embed one directly.
+                      </p>
+                      <form
+                        className="flex flex-wrap items-end gap-2"
+                        onSubmit={(event) => {
+                          event.preventDefault();
+                          void loadHearthisSets();
+                        }}
+                      >
+                        <Input
+                          label="Your hearthis.at username"
+                          value={hearthisUsername}
+                          onChange={(event) =>
+                            setHearthisUsername(event.target.value)
+                          }
+                          placeholder="yourname"
+                          className="min-w-[14rem] flex-1"
+                        />
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          type="submit"
+                          disabled={hearthisSetsLoading}
+                        >
+                          {hearthisSetsLoading ? 'Loading…' : 'Load my sets'}
+                        </Button>
+                      </form>
+                      {hearthisSetsError ? (
+                        <p className="text-destructive text-xs" role="alert">
+                          {hearthisSetsError}
+                        </p>
+                      ) : null}
+                      {hearthisSets && hearthisSets.length > 0 ? (
+                        <ul className="flex flex-col gap-1.5">
+                          {hearthisSets.map((set) => (
+                            <li
+                              key={set.id}
+                              className="border-border bg-background-secondary flex items-center gap-2 rounded-md border p-2"
+                            >
+                              {set.thumbUrl ? (
+                                <img
+                                  src={set.thumbUrl}
+                                  alt=""
+                                  className="size-8 shrink-0 rounded object-cover"
+                                />
+                              ) : null}
+                              <div className="min-w-0 flex-1">
+                                <p className="truncate text-sm font-medium">
+                                  {set.title}
+                                </p>
+                                <p className="text-foreground-secondary text-xs">
+                                  {set.trackCount} track
+                                  {set.trackCount === 1 ? '' : 's'}
+                                </p>
+                              </div>
+                              <Button
+                                size="sm"
+                                variant="secondary"
+                                disabled={addingHearthisSetId === set.id}
+                                onClick={() => void addHearthisSet(set)}
+                              >
+                                {addingHearthisSetId === set.id
+                                  ? 'Adding…'
+                                  : 'Add'}
+                              </Button>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : null}
+                    </div>
+                  )}
                   <div className="flex items-center justify-between">
                     <p className="text-foreground-secondary text-xs">
                       {type.helpText}
