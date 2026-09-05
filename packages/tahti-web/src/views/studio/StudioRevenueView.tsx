@@ -2,7 +2,14 @@ import { Link } from '@tanstack/react-router';
 import { CircleHelpIcon, LayersIcon, LayoutDashboardIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Alert, Button, Tabs, Tooltip, ViewShell } from '@tahti-player/ui';
+import {
+  Alert,
+  Button,
+  EmptyState,
+  Tabs,
+  Tooltip,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import { fetchAllRoyalties } from '../../api/distribution';
 import { fetchMyFanTiers } from '../../api/fan-tiers';
@@ -118,27 +125,26 @@ export function StudioRevenueView() {
                 content:
                   hasFanTiers === false ? (
                     <StudioPanel title="Fan subscriptions">
-                      <div
-                        className="border-border bg-background-secondary/40 flex flex-col gap-3 rounded-lg border p-6 text-center"
+                      <EmptyState
+                        size="sm"
                         data-testid="fan-subs-empty-state"
-                      >
-                        <p className="font-medium">No fan subscriptions yet.</p>
-                        <p className="text-foreground-secondary text-sm">
-                          Set up subscription tiers so fans can support you
-                          directly — head to{' '}
-                          <Link
-                            to="/settings/$section"
-                            params={{ section: 'fan-tiers' }}
-                            className="text-foreground font-semibold underline-offset-2 hover:underline"
-                          >
-                            Settings → Fan tiers
-                          </Link>{' '}
-                          or use the Tiers tab here.
-                        </p>
-                        <Button size="sm" onClick={() => setAudienceTab(1)}>
-                          Open tiers editor
-                        </Button>
-                      </div>
+                        title="No fan subscriptions yet"
+                        description="Set up subscription tiers so fans can support you directly."
+                        action={
+                          <div className="flex flex-col items-center gap-2">
+                            <Button size="sm" onClick={() => setAudienceTab(1)}>
+                              Open tiers editor
+                            </Button>
+                            <Link
+                              to="/settings/$section"
+                              params={{ section: 'fan-tiers' }}
+                              className="text-foreground text-sm font-semibold underline-offset-2 hover:underline"
+                            >
+                              Settings → Fan tiers
+                            </Link>
+                          </div>
+                        }
+                      />
                     </StudioPanel>
                   ) : (
                     <>
@@ -228,9 +234,7 @@ export function StudioRevenueView() {
 
                       <StudioPanel title="Past grants">
                         {grants.length === 0 ? (
-                          <p className="text-foreground-secondary text-sm">
-                            No disbursements yet.
-                          </p>
+                          <EmptyState size="sm" title="No disbursements yet" />
                         ) : (
                           <ul className="divide-border divide-y">
                             {grants.map((g) => (

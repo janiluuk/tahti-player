@@ -19,6 +19,7 @@ import { toast } from 'sonner';
 import {
   Badge,
   Button,
+  EmptyState,
   Input,
   SaveButton,
   Select,
@@ -752,9 +753,11 @@ function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
           {!royaltiesLoaded ? (
             <PageLoading label="Loading…" />
           ) : royalties.length === 0 ? (
-            <p className="text-foreground-secondary text-xs">
-              No reports yet — synced monthly after DSP delivery.
-            </p>
+            <EmptyState
+              size="sm"
+              title="No reports yet"
+              description="Synced monthly after DSP delivery."
+            />
           ) : (
             <ul className="divide-border divide-y text-xs">
               {royalties.map((row) => (
@@ -979,13 +982,19 @@ export function StudioDistributionView() {
             {loading ? (
               <PageLoading label="Loading…" />
             ) : releases.length === 0 ? (
-              <p className="text-foreground-secondary text-sm">
-                No releases yet — create one under{' '}
-                <Link to="/studio/releases" className="underline">
-                  Releases
-                </Link>{' '}
-                first.
-              </p>
+              <EmptyState
+                size="sm"
+                title="No releases yet"
+                description="Create one under Releases first."
+                action={
+                  <Link
+                    to="/studio/releases"
+                    className="text-sm underline underline-offset-2"
+                  >
+                    Releases
+                  </Link>
+                }
+              />
             ) : (
               releases.map((release) => (
                 <ReleaseOpsPanel key={release.id} release={release} />

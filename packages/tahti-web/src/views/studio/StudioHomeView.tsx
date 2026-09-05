@@ -17,7 +17,13 @@ import {
 } from 'lucide-react';
 import { useEffect, useState, type FC, type ReactNode } from 'react';
 
-import { Badge, Button, CardGrid, ViewShell } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  CardGrid,
+  EmptyState,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import {
   fetchRecentBroadcasts,
@@ -404,14 +410,12 @@ export function StudioHomeView() {
               </Group>
               <Group title="Recent broadcasts">
                 {recentBroadcasts.length === 0 ? (
-                  <div className="border-border rounded-xl border px-4 py-4">
-                    <p className="text-foreground-secondary text-sm">
-                      No broadcasts yet.
-                    </p>
-                    <p className="text-foreground-secondary mt-1 text-xs">
-                      Completed recordings will appear here.
-                    </p>
-                  </div>
+                  <EmptyState
+                    size="sm"
+                    className="border-border rounded-xl border"
+                    title="No broadcasts yet"
+                    description="Completed recordings will appear here."
+                  />
                 ) : (
                   <div className="border-border overflow-hidden rounded-xl border">
                     <ul>
