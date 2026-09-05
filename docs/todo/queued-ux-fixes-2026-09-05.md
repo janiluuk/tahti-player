@@ -258,24 +258,16 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   second occurrence and the now-pointless `justify-between` on its
   wrapper; kept the one next to Save (more useful — it's where you'd
   look right after saving).
-- [ ] **Storybook refresh + Channel Designer layout save/restore.**
-  Two separate asks, not done: (1) Generate/update Storybook stories to
-  reflect the current state of tahti-player — broad, cross-cutting;
-  needs its own pass to find which components have drifted from their
-  stories (new props added this session alone: `PluginStoreItem.compact`,
-  `CopyField.maskable`, `MulticastConfigureDialog` extraction,
-  `ConfigurableCard.asModal`, etc. — likely more repo-wide, worth a
-  dedicated sweep rather than folding into this item). (2) Layout
-  save/restore: `ChannelDesigner.tsx`'s `saveButton` (`SaveButton`,
-  ~line 1265, label "Save layout" when not `lookOnly`) currently has no
-  concept of a previous-state snapshot — `save()` (search this file) just
-  persists `layout`/`layoutDirty` directly. Add: on save, stash the
-  previous layout value; show a new icon button next to `saveButton`
-  that restores it — only after a save has actually happened (not
-  before). Clarify persistence scope before building: in-memory for the
-  current editing session only (lost on reload) vs. something durable —
-  in-memory is the cheaper/likely-intended reading given "temporarily",
-  but confirm rather than assume if it matters.
+- [x] **Channel Designer layout save/restore — shipped 2026-09-05.**
+  "Save layout" now tracks a one-level-back snapshot of everything it
+  persists (confirmed complete against `applyPreset`'s own full
+  field list, not guessed); a new "Restore previous save" icon button
+  appears only after a save has happened, re-applying that snapshot as
+  a new draft the artist still has to Save again to actually persist.
+  In-memory only, one level of undo. See
+  `docs/todo/channel-designer-save-restore.md`. **Storybook refresh**
+  (the other half of this item) remains not done — still a broad,
+  open-ended sweep, not folded in here.
 - [x] **Channel Designer: gallery "+" add-images modal + hover
   delete/reorder — shipped 2026-09-05.** Hover-delete and drag-reorder
   already existed in `ChannelDesigner.tsx`; only the "+"-tile/modal add

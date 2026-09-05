@@ -6,6 +6,7 @@ import {
   PlusIcon,
   RotateCcwIcon,
   Trash2Icon,
+  Undo2Icon,
 } from 'lucide-react';
 import {
   forwardRef,
@@ -147,6 +148,26 @@ const SLIDESHOW_PRESETS = [
   ['LIQUID_DISTORTION', 'Liquid distortion'],
 ] as const;
 
+/** Everything "Save layout" persists — captured before each save so a
+ * "Restore" action can undo it. In-memory only (per the branch's own
+ * design intent): lost on reload, not a durable version history. */
+type LookSnapshot = {
+  visual: ChannelVisual;
+  scheme: ColorScheme;
+  playerScheme: ColorScheme;
+  backgroundScheme: ColorScheme;
+  visualSettings: VisualSettingsMap;
+  galleryMode: ChannelGalleryMode;
+  galleryImages: string;
+  videoBackgroundUrl: string;
+  slideshowPreset: string;
+  slideshowInterval: number;
+  slideshowTransition: number;
+  slideshowAutoplay: boolean;
+  overlaySettings: NowPlayingOverlaySettings;
+  previewPreset: VisualPreset;
+};
+
 type Props = {
   displayName: string;
   username: string;
@@ -253,6 +274,13 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
     const [appliedPresetName, setAppliedPresetName] = useState<string | null>(
       null,
     );
+    // What's currently live/saved — refreshed on load and after each
+    // successful save. `previousSave` is a one-level-back copy of this,
+    // captured right before it gets overwritten, so "Restore" can undo the
+    // most recent save.
+    const [baselineSnapshot, setBaselineSnapshot] =
+      useState<LookSnapshot | null>(null);
+    const [previousSave, setPreviousSave] = useState<LookSnapshot | null>(null);
 
     useEffect(() => {
       if (!lookOpenSection) {
@@ -321,40 +349,76 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
             loadChannelLookExtras(layoutSlug),
           );
           const mergedVisual = { ...visualResult.data, ...extras };
-          setVisual(mergedVisual);
-          setOverlaySettings(
-            parseNowPlayingOverlaySettings(
-              mergedVisual.nowPlayingOverlaySettingsJson,
-            ),
+          const loadedScheme = parseColorScheme(mergedVisual.colorSchemeJson);
+          const loadedPlayerScheme = parseColorScheme(
+            mergedVisual.playerColorSchemeJson,
           );
-          setScheme(parseColorScheme(mergedVisual.colorSchemeJson));
-          setPlayerScheme(parseColorScheme(mergedVisual.playerColorSchemeJson));
-          setBackgroundScheme(
-            parseColorScheme(mergedVisual.backgroundColorSchemeJson),
+          const loadedBackgroundScheme = parseColorScheme(
+            mergedVisual.backgroundColorSchemeJson,
           );
-          setVisualSettings(
-            parseVisualSettingsMap(visualResult.data.visualSettingsJson),
+          const loadedVisualSettings = parseVisualSettingsMap(
+            visualResult.data.visualSettingsJson,
           );
-          if (
+          const loadedOverlaySettings = parseNowPlayingOverlaySettings(
+            mergedVisual.nowPlayingOverlaySettingsJson,
+          );
+          const loadedPreviewPreset =
             isVisualPreset(mergedVisual.visualPreset) &&
             mergedVisual.visualPreset !== 'MINIMAL'
-          ) {
-            setPreviewPreset(mergedVisual.visualPreset);
-          } else {
-            setPreviewPreset('AURORA');
+              ? mergedVisual.visualPreset
+              : 'AURORA';
+          const loadedSlideshowPreset =
+            visualResult.data.slideshowPreset ?? 'FADE';
+          const loadedSlideshowInterval =
+            visualResult.data.slideshowIntervalSeconds ?? 8;
+          const loadedSlideshowTransition =
+            visualResult.data.slideshowTransitionMs ?? 600;
+          const loadedSlideshowAutoplay =
+            visualResult.data.slideshowAutoplay ?? true;
+          const loadedGalleryImages =
+            galleryResult.data.slideshowImages.join('\n');
+          const loadedVideoBackgroundUrl =
+            galleryResult.data.videoBackgroundUrl ?? '';
+
+          setVisual(mergedVisual);
+          setOverlaySettings(loadedOverlaySettings);
+          setScheme(loadedScheme);
+          setPlayerScheme(loadedPlayerScheme);
+          setBackgroundScheme(loadedBackgroundScheme);
+          setVisualSettings(loadedVisualSettings);
+          setPreviewPreset(loadedPreviewPreset);
+          const presetNeedsCorrection =
+            !isVisualPreset(mergedVisual.visualPreset) ||
+            mergedVisual.visualPreset === 'MINIMAL';
+          if (presetNeedsCorrection) {
             setVisual({ ...mergedVisual, visualPreset: 'AURORA' });
             setDirty(true);
           }
           setGalleryMode(galleryResult.data.galleryMode);
-          setGalleryImages(galleryResult.data.slideshowImages.join('\n'));
-          setVideoBackgroundUrl(galleryResult.data.videoBackgroundUrl ?? '');
-          setSlideshowPreset(visualResult.data.slideshowPreset ?? 'FADE');
-          setSlideshowInterval(visualResult.data.slideshowIntervalSeconds ?? 8);
-          setSlideshowTransition(
-            visualResult.data.slideshowTransitionMs ?? 600,
-          );
-          setSlideshowAutoplay(visualResult.data.slideshowAutoplay ?? true);
+          setGalleryImages(loadedGalleryImages);
+          setVideoBackgroundUrl(loadedVideoBackgroundUrl);
+          setSlideshowPreset(loadedSlideshowPreset);
+          setSlideshowInterval(loadedSlideshowInterval);
+          setSlideshowTransition(loadedSlideshowTransition);
+          setSlideshowAutoplay(loadedSlideshowAutoplay);
           setDirty(false);
+          setPreviousSave(null);
+          setBaselineSnapshot({
+            visual: mergedVisual,
+            scheme: loadedScheme,
+            playerScheme: loadedPlayerScheme,
+            backgroundScheme: loadedBackgroundScheme,
+            visualSettings: loadedVisualSettings,
+            galleryMode: galleryResult.data.galleryMode,
+            galleryImages: loadedGalleryImages,
+            videoBackgroundUrl: loadedVideoBackgroundUrl,
+            slideshowPreset: loadedSlideshowPreset,
+            slideshowInterval: loadedSlideshowInterval,
+            slideshowTransition: loadedSlideshowTransition,
+            slideshowAutoplay: loadedSlideshowAutoplay,
+            overlaySettings: loadedOverlaySettings,
+            previewPreset: loadedPreviewPreset,
+          });
         },
       );
     };
@@ -590,6 +654,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       if (!visual) {
         return;
       }
+      const previousBaseline = baselineSnapshot;
       const images = galleryImages
         .split(/\r?\n/)
         .map((image) => image.trim())
@@ -639,21 +704,32 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       // The visual endpoint is the source of truth for the header and player
       // design. Apply it immediately so a gallery endpoint failure cannot make
       // an otherwise successful backdrop save look like it failed.
+      const newScheme = parseColorScheme(result.data.colorSchemeJson);
+      const newPlayerScheme = parseColorScheme(
+        result.data.playerColorSchemeJson,
+      );
+      const newBackgroundScheme = parseColorScheme(
+        result.data.backgroundColorSchemeJson,
+      );
+      const newVisualSettings = parseVisualSettingsMap(
+        result.data.visualSettingsJson,
+      );
+      const newSlideshowPreset = result.data.slideshowPreset ?? slideshowPreset;
+      const newSlideshowInterval =
+        result.data.slideshowIntervalSeconds ?? slideshowInterval;
+      const newSlideshowTransition =
+        result.data.slideshowTransitionMs ?? slideshowTransition;
+      const newSlideshowAutoplay =
+        result.data.slideshowAutoplay ?? slideshowAutoplay;
       setVisual(result.data);
-      setScheme(parseColorScheme(result.data.colorSchemeJson));
-      setPlayerScheme(parseColorScheme(result.data.playerColorSchemeJson));
-      setBackgroundScheme(
-        parseColorScheme(result.data.backgroundColorSchemeJson),
-      );
-      setVisualSettings(parseVisualSettingsMap(result.data.visualSettingsJson));
-      setSlideshowPreset(result.data.slideshowPreset ?? slideshowPreset);
-      setSlideshowInterval(
-        result.data.slideshowIntervalSeconds ?? slideshowInterval,
-      );
-      setSlideshowTransition(
-        result.data.slideshowTransitionMs ?? slideshowTransition,
-      );
-      setSlideshowAutoplay(result.data.slideshowAutoplay ?? slideshowAutoplay);
+      setScheme(newScheme);
+      setPlayerScheme(newPlayerScheme);
+      setBackgroundScheme(newBackgroundScheme);
+      setVisualSettings(newVisualSettings);
+      setSlideshowPreset(newSlideshowPreset);
+      setSlideshowInterval(newSlideshowInterval);
+      setSlideshowTransition(newSlideshowTransition);
+      setSlideshowAutoplay(newSlideshowAutoplay);
       setDirty(false);
       setAppliedPresetName(null);
       onSaved?.();
@@ -671,6 +747,25 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       } else {
         toast.success('Look saved — public channel will pick this up.');
       }
+      if (previousBaseline) {
+        setPreviousSave(previousBaseline);
+      }
+      setBaselineSnapshot({
+        visual: result.data,
+        scheme: newScheme,
+        playerScheme: newPlayerScheme,
+        backgroundScheme: newBackgroundScheme,
+        visualSettings: newVisualSettings,
+        galleryMode,
+        galleryImages: images.join('\n'),
+        videoBackgroundUrl: savedVideoUrl ?? '',
+        slideshowPreset: newSlideshowPreset,
+        slideshowInterval: newSlideshowInterval,
+        slideshowTransition: newSlideshowTransition,
+        slideshowAutoplay: newSlideshowAutoplay,
+        overlaySettings,
+        previewPreset,
+      });
     };
 
     useImperativeHandle(ref, () => ({ save }), [save]);
@@ -790,6 +885,32 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
     const revertAppliedPreset = () => {
       loadFromServer();
       setAppliedPresetName(null);
+    };
+
+    /** Undoes the most recent "Save layout" — reapplies the snapshot taken
+     * right before that save as a new local draft (same "dirty until Saved"
+     * flow as everything else here), so pressing Save again actually
+     * persists the revert. In-memory only; gone on reload. */
+    const restorePreviousSave = () => {
+      if (!previousSave) {
+        return;
+      }
+      setVisual(previousSave.visual);
+      setScheme(previousSave.scheme);
+      setPlayerScheme(previousSave.playerScheme);
+      setBackgroundScheme(previousSave.backgroundScheme);
+      setVisualSettings(previousSave.visualSettings);
+      setGalleryMode(previousSave.galleryMode);
+      setGalleryImages(previousSave.galleryImages);
+      setVideoBackgroundUrl(previousSave.videoBackgroundUrl);
+      setSlideshowPreset(previousSave.slideshowPreset);
+      setSlideshowInterval(previousSave.slideshowInterval);
+      setSlideshowTransition(previousSave.slideshowTransition);
+      setSlideshowAutoplay(previousSave.slideshowAutoplay);
+      setOverlaySettings(previousSave.overlaySettings);
+      setPreviewPreset(previousSave.previewPreset);
+      setDirty(true);
+      toast.success('Previous save restored — press Save to keep it.');
     };
 
     /** Discards unsaved edits, restoring the live saved look — same replay
@@ -1412,6 +1533,18 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
                 },
               ]}
             />
+            {previousSave ? (
+              <Tooltip content="Restore previous save" side="top">
+                <Button
+                  size="icon-sm"
+                  variant="secondary"
+                  aria-label="Restore previous save"
+                  onClick={restorePreviousSave}
+                >
+                  <Undo2Icon size={15} aria-hidden />
+                </Button>
+              </Tooltip>
+            ) : null}
             {saveButton}
             {openChannelLink}
           </div>
