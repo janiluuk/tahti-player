@@ -1,13 +1,15 @@
-import { ImageIcon, UploadCloudIcon } from 'lucide-react';
+import { ImageIcon, RotateCcwIcon, UploadCloudIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
+  Button,
   Dialog,
   FilePicker,
   Input,
   SaveButton,
   Toggle,
+  Tooltip,
 } from '@tahti-player/ui';
 
 import {
@@ -29,19 +31,27 @@ import { useImageSlotChrome } from './imageSlot/useImageSlotChrome';
 function OverlayTextPreview({
   title,
   subtitle,
+  color,
 }: {
   title: string;
   subtitle: string;
+  color: string | null;
 }) {
   return (
     <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col gap-0.5 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-3 pt-8 pb-2">
       {title ? (
-        <p className="truncate text-sm leading-tight font-bold text-white">
+        <p
+          className="truncate text-sm leading-tight font-bold text-white"
+          style={color ? { color } : undefined}
+        >
           {title}
         </p>
       ) : null}
       {subtitle ? (
-        <p className="truncate text-xs leading-tight text-slate-300">
+        <p
+          className="truncate text-xs leading-tight text-slate-300"
+          style={color ? { color } : undefined}
+        >
           {subtitle}
         </p>
       ) : null}
@@ -59,6 +69,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
     streamOverlayTitle: '',
     streamOverlaySubtitle: '',
     streamOverlayShowTitle: false,
+    streamOverlayTextColor: '',
     streamOverlayCoverUrl: '',
   });
   const [saving, setSaving] = useState(false);
@@ -84,6 +95,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
         streamOverlaySubtitle:
           overlayResult.data.streamOverlaySubtitle || preflight?.tagline || '',
         streamOverlayShowTitle: overlayResult.data.streamOverlayShowTitle,
+        streamOverlayTextColor: overlayResult.data.streamOverlayTextColor ?? '',
         streamOverlayCoverUrl: overlayResult.data.streamOverlayCoverUrl ?? '',
       });
       setAvatarUrl(profileResult.data.avatarUrl ?? null);
@@ -97,6 +109,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
       streamOverlayTitle: overlay.streamOverlayTitle.trim(),
       streamOverlaySubtitle: overlay.streamOverlaySubtitle.trim(),
       streamOverlayShowTitle: overlay.streamOverlayShowTitle,
+      streamOverlayTextColor: overlay.streamOverlayTextColor.trim(),
       streamOverlayCoverUrl: overlay.streamOverlayCoverUrl.trim(),
     }).then((result) => {
       setSaving(false);
@@ -201,6 +214,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
             <OverlayTextPreview
               title={overlay.streamOverlayTitle}
               subtitle={overlay.streamOverlaySubtitle}
+              color={overlay.streamOverlayTextColor || null}
             />
           ) : null}
         </button>
@@ -301,6 +315,45 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
               }))
             }
           />
+          <label className="border-border bg-background-secondary/40 flex items-center gap-3 rounded-lg border p-2.5 text-sm">
+            <input
+              type="color"
+              value={overlay.streamOverlayTextColor || '#ffffff'}
+              onChange={(event) =>
+                setOverlay((current) => ({
+                  ...current,
+                  streamOverlayTextColor: event.target.value,
+                }))
+              }
+              className="h-9 w-11 cursor-pointer rounded border-0 bg-transparent"
+              aria-label="Overlay text color"
+            />
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-semibold">Text color</span>
+              <span className="text-foreground-secondary block text-xs">
+                {overlay.streamOverlayTextColor ||
+                  'Default (white / light gray)'}
+              </span>
+            </span>
+            {overlay.streamOverlayTextColor ? (
+              <Tooltip content="Reset to default colors" side="top">
+                <Button
+                  type="button"
+                  size="icon-sm"
+                  variant="secondary"
+                  aria-label="Reset to default colors"
+                  onClick={() =>
+                    setOverlay((current) => ({
+                      ...current,
+                      streamOverlayTextColor: '',
+                    }))
+                  }
+                >
+                  <RotateCcwIcon size={14} aria-hidden />
+                </Button>
+              </Tooltip>
+            ) : null}
+          </label>
         </>
       ) : null}
 

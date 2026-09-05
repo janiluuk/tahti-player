@@ -58,20 +58,19 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   title/body text + an optional badge/button), so it's unclear what this
   refers to exactly; needs clarification (per-notification-type icons?
   something else visible only in a screenshot?) rather than a guess.
-- [ ] **Stream overlay text styling: color picker + opacity-layer toggle.**
-  In `StreamOverlayEditor.tsx` (now with a "Show overlay title" toggle and
-  live cover preview, shipped 2026-09-05 — see
-  `docs/todo/stream-overlay-cover-upload-and-title-toggle.md`), add: (1) a
-  color picker for the title/subtitle text color (currently hardcoded
-  white/`0xcbd5e1` in `buildRtmpMirrorOutput` on the sibling `tahti`
-  repo's orchestrator — this needs a new persisted field there too, same
-  shape as `streamOverlayShowTitle`), (2) a toggle for a dark
-  opacity/scrim layer behind the text (also needs to actually render in
-  the real ffmpeg/Liquidsoap output, not just the preview). The preview's
-  `OverlayTextPreview` component already has a gradient scrim baked in
-  unconditionally — when this ships, that scrim should become
-  conditional on the new toggle, shown in the preview exactly when
-  enabled, matching the "Show overlay title" preview-gating pattern.
+- [x] **Stream overlay text color picker — shipped 2026-09-05
+  (cross-repo); opacity-layer toggle not attempted.** Added
+  `Channel.streamOverlayTextColor` to the sibling `tahti` repo (pushed
+  to the already-open PR #441, not merged — awaiting the user's
+  review), and a matching color-swatch input + live-preview coloring in
+  `StreamOverlayEditor.tsx` here. Won't take effect until PR #441 is
+  merged and the main stack redeployed. **Not attempted**: the
+  opacity/scrim toggle — the real Liquidsoap RTMP output has no scrim
+  at all today (only the frontend preview does, as a CSS aesthetic);
+  adding one means unverified new Liquidsoap video-composition syntax
+  with no live runtime to test against, which risks breaking
+  multistream mirroring for every channel in production if wrong. See
+  `docs/todo/stream-overlay-text-color.md`.
 - [x] **StreamOverlayEditor subtext → HelpLayer — shipped 2026-09-05.**
   The "RTMP has no built-in title metadata..." paragraph now sits inside
   a `HelpLayer` disclosure ("How the stream overlay works") instead of
