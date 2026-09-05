@@ -20,8 +20,16 @@ type Props = {
   onDirty?: () => void;
 };
 
-const segmentClassName =
-  'border-border flex min-h-8 flex-1 cursor-pointer items-center justify-center rounded-md border px-2 py-1 text-xs font-medium transition-colors';
+const SHOW_TYPE_OPTIONS = [
+  { id: 'LIVE_SET', label: 'Live set' },
+  { id: 'TALK', label: 'Talk' },
+];
+
+const VISIBILITY_OPTIONS = [
+  { id: 'PUBLIC', label: 'Public' },
+  { id: 'PRIVATE', label: 'Private' },
+  { id: 'FAN_ONLY', label: 'Fans' },
+];
 
 export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
   const [preflight, setPreflight] = useState<BroadcastPreflight | null>(null);
@@ -150,7 +158,7 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
         />
       </div>
 
-      <div className="grid gap-2.5 sm:grid-cols-[minmax(0,1.3fr)_7rem]">
+      <div className="grid gap-2.5 sm:grid-cols-2">
         <Input
           label="Show name"
           size="sm"
@@ -161,83 +169,41 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
           }}
           placeholder="Show name"
         />
-        {preflight.plannedLiveShow?.seriesId ? (
-          <Input
-            type="number"
-            variant="number"
-            label="Episode"
-            size="sm"
-            min={1}
-            value={episodeNumber ?? ''}
-            disabled
-          />
-        ) : null}
+        <Input
+          label="Tagline"
+          size="sm"
+          value={tagline}
+          onChange={(event) => {
+            setTagline(event.target.value);
+            markDirty();
+          }}
+          placeholder="What is this broadcast about?"
+          maxLength={200}
+        />
       </div>
 
       <div className="mt-2.5 grid gap-2.5 sm:grid-cols-2">
-        <fieldset>
-          <legend className="mb-1 text-xs font-medium">Show type</legend>
-          <div
-            className="flex gap-1.5"
-            role="radiogroup"
-            aria-label="Show type"
-          >
-            {(['LIVE_SET', 'TALK'] as const).map((value) => (
-              <label
-                key={value}
-                className={`${segmentClassName} ${showType === value ? 'border-primary bg-primary/10 text-primary' : 'hover:bg-background'}`}
-              >
-                <input
-                  type="radio"
-                  name="broadcast-show-type"
-                  className="sr-only"
-                  checked={showType === value}
-                  onChange={() => {
-                    setShowType(value);
-                    markDirty();
-                  }}
-                />
-                {value === 'LIVE_SET' ? 'Live set' : 'Talk'}
-              </label>
-            ))}
-          </div>
-        </fieldset>
-        <fieldset>
-          <legend className="mb-1 text-xs font-medium">Visibility</legend>
-          <div
-            className="flex gap-1.5"
-            role="radiogroup"
-            aria-label="Show visibility"
-          >
-            {(
-              [
-                ['PUBLIC', 'Public'],
-                ['PRIVATE', 'Private'],
-                ['FAN_ONLY', 'Fans'],
-              ] as const
-            ).map(([value, label]) => (
-              <label
-                key={value}
-                className={`${segmentClassName} ${visibility === value ? 'border-primary bg-primary/10 text-primary' : 'hover:bg-background'}`}
-              >
-                <input
-                  type="radio"
-                  name="broadcast-visibility"
-                  className="sr-only"
-                  checked={visibility === value}
-                  onChange={() => {
-                    setVisibility(value);
-                    markDirty();
-                  }}
-                />
-                {label}
-              </label>
-            ))}
-          </div>
-        </fieldset>
+        <Select
+          label="Show type"
+          value={showType}
+          onValueChange={(value) => {
+            setShowType(value as BroadcastPreflight['showType']);
+            markDirty();
+          }}
+          options={SHOW_TYPE_OPTIONS}
+        />
+        <Select
+          label="Visibility"
+          value={visibility}
+          onValueChange={(value) => {
+            setVisibility(value as BroadcastPreflight['visibility']);
+            markDirty();
+          }}
+          options={VISIBILITY_OPTIONS}
+        />
       </div>
 
-      <div className="mt-2.5 grid gap-2.5 sm:grid-cols-2">
+      <div className="mt-2.5 grid gap-2.5 sm:grid-cols-[minmax(0,1fr)_7rem]">
         {series.length > 0 && (
           <Select
             label="Series episode"
@@ -256,17 +222,15 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
             ]}
           />
         )}
-        {episodeNumber !== null ? (
+        {preflight.plannedLiveShow?.seriesId ? (
           <Input
-            label="Tagline"
+            type="number"
+            variant="number"
+            label="Episode"
             size="sm"
-            value={tagline}
-            onChange={(event) => {
-              setTagline(event.target.value);
-              markDirty();
-            }}
-            placeholder="What is this broadcast about?"
-            maxLength={200}
+            min={1}
+            value={episodeNumber ?? ''}
+            disabled
           />
         ) : null}
       </div>

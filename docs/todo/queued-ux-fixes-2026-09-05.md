@@ -126,14 +126,21 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   before actually calling `handleApplyCollectionToRotation`; "Replace"
   gets an explicit warning that it removes every track currently in
   rotation.
-- [ ] **Stream Manager: now-playing artwork with hover play/pause.** Add
-  the current stream item's artwork next to the playback controls;
-  clicking it plays/pauses the stream (mirrors the existing "media
-  artwork play" hover pattern already used elsewhere — e.g. Listen/Discover
-  card artwork, `MediaArtwork` — reuse that component/pattern rather than
-  a new hand-rolled hover overlay). Show a play icon on hover when
-  paused, pause icon on hover when playing, matching current playback
-  state.
+- [ ] **Stream Manager: now-playing artwork with hover play/pause —
+  blocked on missing data, investigated 2026-09-05.** UI side is easy:
+  `MediaArtwork` (`packages/ui/src/components/MediaArtwork/MediaArtwork.tsx`)
+  already has exactly this pattern built in (`onPlay`/`isPlaying` props
+  render a centered hover play/pause button at any size). The blocker:
+  `StreamManagerPanel.tsx`'s current-track data (`RotationPlayback`,
+  wrapping `ProgrammeItem` from `api/studio-extras.ts`) carries no
+  artwork field at all — checked `ProgrammeItem`, `SignalStatus`,
+  `ChannelManageStats` (`api/broadcast.ts`) — none of them return a cover/
+  artwork URL for the currently-playing rotation item. This needs either
+  a backend addition (the rotation-status endpoint returning the sound's
+  artwork URL) or a client-side lookup from `rotation.item.id` against
+  the studio sounds list (extra fetch, likely N+1-ish if done per-poll —
+  needs a real endpoint change instead). Don't build this without that
+  backend piece; flagging rather than guessing at a workaround.
 - [ ] **Go Live: move header subtext into the help layer; restore the
   calendar view.** Strip the explanatory subtext currently sitting under
   each panel header on `StudioGoLiveView.tsx` (e.g. "Choose your app,
@@ -178,24 +185,13 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   CTA to create one, opening a modal (reuse whatever the existing
   show/series creation modal is, if one already exists, rather than
   building a new one).
-- [ ] **Show info form: dropdowns + layout + status button.** Located:
-  `BroadcastPreflightPanel.tsx` (rendered inline in
-  `StudioGoLiveView.tsx`'s "Before you start" section) — `showType` and
-  `visibility` are currently hand-rolled segmented-control-style radio
-  groups (`role`/`checked` pattern around line 188–227), not the shared
-  `Select` component; replace both with `Select` and make them fit
-  better (narrower row — check whether they should sit side by side).
-  Move the tagline field onto the same row as the show name field.
-  Separately: add a compact status button on the "Ready to take over the
-  rotation" panel (`StudioGoLiveView.tsx`, the panel whose title switches
-  between that and "Signal ready"/etc., around line ~372) labeled "Show
-  info" — yellow status if `showInfoConfirmed` is false / fields are
-  empty, green once filled in. Clicking it opens `BroadcastPreflightPanel`
-  in a modal to edit, instead of (or in addition to — clarify) its current
-  always-inline placement. Note: `ShowInfoConfirmed` already exists as a
-  small "confirmed" indicator component next to this panel — check
-  whether it should be replaced by the new status button or kept
-  alongside it.
+- [x] **Show info form: dropdowns + layout + status button — shipped
+  2026-09-05.** `showType`/`visibility` segmented controls replaced with
+  `Select`; tagline moved onto the show-name row; added a yellow/green
+  "Show info" status button to the "Ready to take over the rotation"
+  panel that opens the form in a modal. **Flag**: kept the inline panel
+  in place rather than removing it (ambiguous which was wanted) — see
+  `docs/todo/show-info-form-dropdowns-and-status-button.md`.
 - [ ] **ChannelView (Storybook component): player position, duplicate
   OnAir badge, playlist-download → share modal.** Located: `views/
   ChannelView.tsx` has two `OnAirBadge` usages (line ~576 and ~1142) —
@@ -252,3 +248,23 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   sequence it as its own effort rather than a quick pass; don't start
   implementation without confirming which real (non-Storybook) view this
   maps to.
+- [ ] **Storybook refresh + Channel Designer modal duplicate link +
+  layout save/restore.** Three separate asks bundled together:
+  (1) Generate/update Storybook stories to reflect the current state of
+  tahti-player — broad, cross-cutting; needs its own pass to find which
+  components have drifted from their stories (new props added this
+  session alone: `PluginStoreItem.compact`, `CopyField.maskable`,
+  `MulticastConfigureDialog` extraction, `ConfigurableCard.asModal`,
+  etc. — likely more repo-wide). (2) In the Channel Designer (component
+  under `packages/storybook/src/tahti-web/`, likely the same `Designer`
+  named in the tabs-relocation item above — confirm same component),
+  remove a duplicate text link "Open my channel" from the modal's top
+  right corner. (3) Layout save/restore: when the user presses "Save
+  layout" in the designer, keep the previous layout around temporarily;
+  add an icon button next to "Save layout" to restore that previous
+  state — only show this restore button after "Save layout" has actually
+  been pressed (not before, and presumably not after a page
+  reload/navigation away — clarify persistence scope, e.g. in-memory for
+  the current editing session only, vs. needing real undo history).
+  Needs the same Designer-component location work as the tabs item
+  before starting either.

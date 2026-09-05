@@ -165,6 +165,7 @@ export function StudioGoLiveView() {
   const [recordBusy, setRecordBusy] = useState(false);
   const [preflight, setPreflight] = useState<BroadcastPreflight | null>(null);
   const [showInfoConfirmed, setShowInfoConfirmed] = useState(false);
+  const [showInfoModalOpen, setShowInfoModalOpen] = useState(false);
   const [pendingDeleteTarget, setPendingDeleteTarget] =
     useState<RtmpTarget | null>(null);
 
@@ -180,6 +181,7 @@ export function StudioGoLiveView() {
     (playbackStatus === 'playing' || playbackStatus === 'loading');
   const isPreviewListening =
     currentId === streamPlayableId && playbackStatus === 'playing';
+  const showInfoReady = showInfoConfirmed || Boolean(preflight?.title?.trim());
 
   const patchLocalChannel = useCallback((state: string) => {
     setChannelState(state);
@@ -401,6 +403,24 @@ export function StudioGoLiveView() {
               onDirty={() => setShowInfoConfirmed(false)}
             />
 
+            <Dialog.Root
+              isOpen={showInfoModalOpen}
+              onClose={() => setShowInfoModalOpen(false)}
+              className="max-w-lg"
+            >
+              <Dialog.Title>Show info</Dialog.Title>
+              <div className="mt-4">
+                <BroadcastPreflightPanel
+                  onSaved={() => {
+                    setShowInfoConfirmed(true);
+                    setShowInfoModalOpen(false);
+                    void reload();
+                  }}
+                  onDirty={() => setShowInfoConfirmed(false)}
+                />
+              </div>
+            </Dialog.Root>
+
             <div className="grid gap-5 lg:grid-cols-[minmax(0,3fr)_minmax(17rem,2fr)]">
               <div className="flex min-w-0 flex-col gap-5">
                 <StudioPanel
@@ -419,19 +439,32 @@ export function StudioGoLiveView() {
                       : 'Start streaming in OBS, Traktor, Mixxx, or another Icecast-compatible app.'
                   }
                   action={
-                    !isBroadcastLive ? (
-                      <Button
-                        disabled={busy || !signalOk || usage?.blocked}
-                        onClick={() => void onGoLive()}
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setShowInfoModalOpen(true)}
+                        className="border-border hover:bg-background-secondary inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors"
                       >
-                        <RadioIcon size={16} aria-hidden className="mr-1.5" />
-                        {busy
-                          ? 'Going live…'
-                          : rotationPlaying
-                            ? 'Take over rotation'
-                            : 'Go Live'}
-                      </Button>
-                    ) : undefined
+                        <Badge
+                          variant="dot"
+                          color={showInfoReady ? 'green' : 'yellow'}
+                        />
+                        Show info
+                      </button>
+                      {!isBroadcastLive ? (
+                        <Button
+                          disabled={busy || !signalOk || usage?.blocked}
+                          onClick={() => void onGoLive()}
+                        >
+                          <RadioIcon size={16} aria-hidden className="mr-1.5" />
+                          {busy
+                            ? 'Going live…'
+                            : rotationPlaying
+                              ? 'Take over rotation'
+                              : 'Go Live'}
+                        </Button>
+                      ) : null}
+                    </div>
                   }
                 >
                   {rotationPlaying && !isBroadcastLive && !preflight?.title ? (
