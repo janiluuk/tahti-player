@@ -1,0 +1,16 @@
+{
+  "name": "Tahti Player",
+  "user": "ubuntu",
+  "install": "bash .cursor/install.sh",
+  "terminals": [
+    {
+      "name": "tahti-web",
+      "command": "VITE_FORCE_MOCK=1 pnpm dev:tahti"
+    },
+    {
+      "name": "storybook",
+      "command": "pnpm storybook"
+    }
+  ],
+  "ports": [5180, 6006]
+}
