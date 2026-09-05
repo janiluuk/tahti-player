@@ -1,4 +1,4 @@
-import { PlusIcon, Trash2Icon } from 'lucide-react';
+import { EyeIcon, EyeOffIcon, PlusIcon, Trash2Icon } from 'lucide-react';
 
 import { Button, Input, Tooltip } from '@tahti-player/ui';
 
@@ -24,6 +24,12 @@ export function ChannelLinksEditor({
     onChange(rows.map((l, i) => (i === index ? { ...l, [field]: value } : l)));
   };
 
+  const toggleHidden = (index: number) => {
+    onChange(
+      rows.map((l, i) => (i === index ? { ...l, hidden: !l.hidden } : l)),
+    );
+  };
+
   const removeLink = (index: number) => {
     onChange(rows.filter((_, i) => i !== index));
   };
@@ -34,41 +40,68 @@ export function ChannelLinksEditor({
 
   return (
     <div className="flex flex-col gap-2">
-      {rows.map((link, i) => (
-        <div key={i} className="flex items-center gap-1.5">
-          <span className="text-foreground-secondary flex size-7 shrink-0 items-center justify-center">
-            <SocialLinkIcon label={link.label} url={link.url} />
-          </span>
-          <Input
-            size="sm"
-            placeholder="Label (e.g. Bandcamp)"
-            value={link.label}
-            maxLength={40}
-            onChange={(e) => updateLink(i, 'label', e.target.value)}
-            className="min-w-0 flex-[0.8]"
-          />
-          <Input
-            size="sm"
-            type="text"
-            placeholder="https://…"
-            value={link.url}
-            maxLength={2000}
-            onChange={(e) => updateLink(i, 'url', e.target.value)}
-            className="min-w-0 flex-1"
-          />
-          <Tooltip content="Remove link" side="top">
-            <Button
-              type="button"
-              size="icon-sm"
-              variant="text"
-              aria-label="Remove link"
-              onClick={() => removeLink(i)}
+      {rows.map((link, i) => {
+        const hidden = Boolean(link.hidden);
+        return (
+          <div
+            key={i}
+            className={`flex items-center gap-1.5 ${hidden ? 'opacity-50' : ''}`}
+          >
+            <span className="text-foreground-secondary flex size-7 shrink-0 items-center justify-center">
+              <SocialLinkIcon label={link.label} url={link.url} />
+            </span>
+            <Input
+              size="sm"
+              placeholder="Label (e.g. Bandcamp)"
+              value={link.label}
+              maxLength={40}
+              onChange={(e) => updateLink(i, 'label', e.target.value)}
+              className="min-w-0 flex-[0.8]"
+            />
+            <Input
+              size="sm"
+              type="text"
+              placeholder="https://…"
+              value={link.url}
+              maxLength={2000}
+              onChange={(e) => updateLink(i, 'url', e.target.value)}
+              className="min-w-0 flex-1"
+            />
+            <Tooltip
+              content={hidden ? 'Show on channel' : 'Hide from channel'}
+              side="top"
             >
-              <Trash2Icon size={14} />
-            </Button>
-          </Tooltip>
-        </div>
-      ))}
+              <Button
+                type="button"
+                size="icon-sm"
+                variant="text"
+                aria-label={
+                  hidden ? 'Show link on channel' : 'Hide link from channel'
+                }
+                aria-pressed={hidden}
+                onClick={() => toggleHidden(i)}
+              >
+                {hidden ? (
+                  <EyeOffIcon size={14} aria-hidden />
+                ) : (
+                  <EyeIcon size={14} aria-hidden />
+                )}
+              </Button>
+            </Tooltip>
+            <Tooltip content="Remove link" side="top">
+              <Button
+                type="button"
+                size="icon-sm"
+                variant="text"
+                aria-label="Remove link"
+                onClick={() => removeLink(i)}
+              >
+                <Trash2Icon size={14} />
+              </Button>
+            </Tooltip>
+          </div>
+        );
+      })}
       <Button type="button" size="sm" variant="secondary" onClick={addLink}>
         <span className="inline-flex items-center gap-1.5">
           <PlusIcon size={14} />

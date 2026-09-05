@@ -1,7 +1,17 @@
 import { HEADER_STYLES, type HeaderStyle } from '../../api/channel-design';
 
-export const HEADER_DESIGN_OPTIONS = [...HEADER_STYLES, 'SLIDESHOW'] as const;
+export const HEADER_DESIGN_OPTIONS = [
+  ...HEADER_STYLES,
+  'SLIDESHOW',
+  'VISUALIZATION',
+] as const;
 export type HeaderDesignMode = (typeof HEADER_DESIGN_OPTIONS)[number];
+
+/** Exclusive header chrome modes — Visualization is a focus tab only. */
+export const HEADER_STYLE_MUTATING_MODES = [
+  ...HEADER_STYLES,
+  'SLIDESHOW',
+] as const satisfies readonly HeaderDesignMode[];
 
 type Props = {
   value: HeaderDesignMode;
@@ -15,10 +25,13 @@ function labelFor(mode: HeaderDesignMode): string {
   if (mode === 'VIDEO_LOOP') {
     return 'Video / image';
   }
+  if (mode === 'VISUALIZATION') {
+    return 'Visualization';
+  }
   return mode.replace(/_/g, ' ');
 }
 
-/** Segmented Gradient / Solid / Video / Slideshow control for Backdrop. */
+/** Segmented Gradient / Solid / Video / Slideshow / Visualization control. */
 export function HeaderStyleTabs({ value, onChange }: Props) {
   return (
     <div
@@ -52,7 +65,7 @@ export function HeaderStyleTabs({ value, onChange }: Props) {
 export function resolveHeaderDesignMode(
   headerStyle: string,
   slideshowSelected: boolean,
-): HeaderDesignMode {
+): Exclude<HeaderDesignMode, 'VISUALIZATION'> {
   if (slideshowSelected) {
     return 'SLIDESHOW';
   }

@@ -106,3 +106,7 @@ export const VideoLoop: Story = {
 export const Slideshow: Story = {
   render: () => <Demo mode="SLIDESHOW" />,
 };
+
+export const Visualization: Story = {
+  render: () => <Demo mode="VISUALIZATION" />,
+};
