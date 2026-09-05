@@ -20,7 +20,6 @@ import {
   type StatsTopTrack,
   type StorageUsage,
 } from '../api/studio-extras';
-import { StudioNav } from '../components/StudioNav';
 import { StudioPanel } from '../components/StudioPanel';
 import { formatPlayCount } from '../lib/topListEntries';
 import { LibraryEmbedsView } from './LibraryEmbedsView';
@@ -39,17 +38,6 @@ type CollectionTab =
   | 'media'
   | 'stash'
   | 'embeds';
-
-const LIBRARY_ROUTE_BY_TAB: Record<Tab, string> = {
-  library: '/library',
-  sounds: '/library/sounds',
-  collections: '/library/collections',
-  smartlinks: '/library/smartlinks',
-  media: '/library/media',
-};
-
-const libraryNavRoute = (tab: Tab): string =>
-  tab === 'media' ? '/library/collections' : LIBRARY_ROUTE_BY_TAB[tab];
 
 const LIBRARY_SECTION_TABS = [
   {
@@ -137,7 +125,6 @@ export function LibraryView({
 
   return (
     <div className="studio-page-layout flex w-full flex-col gap-6">
-      <StudioNav current={libraryNavRoute(tab)} />
       {overviewTab ? (
         <Tabs.Root
           selectedIndex={Math.max(
