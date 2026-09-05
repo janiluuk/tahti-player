@@ -212,6 +212,15 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
             onValueChange={(value) => {
               setSeriesId(value);
               markDirty();
+              // Auto-fill the title from the picked series when the artist
+              // hasn't already typed one — matches StudioShowDetailView's
+              // own "<Series> — Episode <n>" default for a new episode.
+              const picked = series.find((show) => show.id === value);
+              if (picked && !title.trim()) {
+                setTitle(
+                  `${picked.title} — Episode ${picked.nextEpisodeNumber}`,
+                );
+              }
             }}
             options={[
               { id: '', label: 'One-off broadcast' },

@@ -179,17 +179,11 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   `Dialog.Root` modal — no navigation, no other props wired (playback
   toggle, rotation-change callback) since this is a quick-glance/control
   surface, not the full Go Live page context.
-- [ ] **Show creation flow: episode auto-fill + one-off/episode toggle +
-  empty-state CTA.** When creating a show entry from a *series episode*
-  picker, auto-fill the show form's fields from the selected series show.
-  On the show form itself, add a toggle between "One-off show" and "New
-  episode" (of an existing series) — need to locate the actual show
-  creation view/dialog first (`StudioShowsView`? `StudioShowDetailView`?
-  a dedicated create dialog?) to see current field structure before
-  designing the toggle. If the artist has no shows/series yet, show a
-  CTA to create one, opening a modal (reuse whatever the existing
-  show/series creation modal is, if one already exists, rather than
-  building a new one).
+- [x] **Show creation flow — shipped 2026-09-05.** Two of three parts
+  already existed (`BroadcastPreflightPanel`'s one-off/series toggle,
+  `StudioShowsView`'s empty-state CTA); only the auto-fill-from-series
+  was actually missing, now added. See
+  `docs/todo/show-creation-flow-audit.md`.
 - [x] **Show info form: dropdowns + layout + status button — shipped
   2026-09-05.** `showType`/`visibility` segmented controls replaced with
   `Select`; tagline moved onto the show-name row; added a yellow/green
