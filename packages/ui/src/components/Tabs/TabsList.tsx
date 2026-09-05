@@ -22,7 +22,11 @@ export const TabsList: FC<TabsListProps> = ({
     <TabList
       id={listId}
       aria-label={ariaLabel}
-      className={cn('flex w-full items-center gap-2', listClassName, className)}
+      className={cn(
+        'flex w-full flex-wrap items-center gap-2',
+        listClassName,
+        className,
+      )}
     >
       {children}
     </TabList>
