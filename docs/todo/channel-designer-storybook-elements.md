@@ -1,6 +1,6 @@
 # Channel Designer → Storybook elements
 
-**Status:** in progress — layout-only + visualizer extracted; overlay/video next.
+**Status:** correction order complete — every listed element extracted and wired.
 
 ## Goal
 
@@ -17,6 +17,8 @@ Review and fix Channel Designer UI **one element at a time** in Storybook
 | Player | `PlayerPanel` | Gradient / Video / Visualizer / Overlay |
 | Player gradient | `PlayerGradientControls` | Separate palette toggle |
 | Player visualizer | `PlayerVisualizerControls` | Preset chrome + tuning slot |
+| Player overlay | `PlayerOverlayControls` | Stage text layer + now-playing preset grid |
+| Video/image field | `VideoOrImageField` | Shared `compact` (Player tab) / `backdrop` (Header) picker |
 | Layout-only rows | `LayoutOnlyLookHint` | Releases…Gallery visibility copy |
 | Color scheme fields | `ColorSchemeFields` | Shared pickers |
 | Header style tabs | `HeaderStyleTabs` | Segmented control |
@@ -33,7 +35,15 @@ Review and fix Channel Designer UI **one element at a time** in Storybook
 4. ~~Layers menu + Background always-on row (fixed translucent dock)~~
 5. ~~Playlist picker + block displays~~
 6. ~~Layout-only look rows (releases…gallery)~~
-7. Player overlay + video slots (still ChannelDesigner-owned)
+7. ~~Player overlay + video slots~~ — extracted to
+   `components/channel-designer/PlayerOverlayControls.tsx` (stage text
+   layer + now-playing preset grid, "Configure text" dialog stays
+   ChannelDesigner-owned) and `VideoOrImageField.tsx` (shared
+   `compact`/`backdrop` picker — Player tab and Header backdrop render the
+   *same* upload state through two variants of one component, not two
+   independent uploads). Stories added:
+   `ChannelDesignerPlayerOverlay.stories.tsx`,
+   `ChannelDesignerVideoOrImageField.stories.tsx`.
 
 When correcting an element: extract its panel from `ChannelDesigner.tsx`
 into `components/channel-designer/` if it is still an inline JSX blob,
@@ -44,4 +54,10 @@ wire the live designer to the extracted component, update the story.
 - Live Three.js dual-context issues (stories use `livePreview: false`
   unless explicitly testing visualizer)
 - Saving / API (mock under Storybook `VITE_FORCE_MOCK`)
-- Video upload / now-playing overlay grids still slots until extracted
+- `NowPlayingOverlayConfigDialog` ("Configure text") itself — still
+  ChannelDesigner-owned, not extracted this pass
+- The header video/image URL field's "paste any URL, not just YouTube"
+  behavior (`ChannelDesigner.tsx`'s `videoUrlInput`, now inside
+  `VideoOrImageField`) is a known convention exception flagged elsewhere
+  (see `packages/tahti-web/WORKPLAN.md`'s media-upload-convention entry) —
+  out of scope here, this pass only moved the JSX, not the behavior

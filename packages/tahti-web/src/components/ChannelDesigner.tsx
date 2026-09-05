@@ -1,11 +1,8 @@
 import { Link } from '@tanstack/react-router';
 import {
   BookmarkPlusIcon,
-  CheckIcon,
   ImageIcon,
-  LinkIcon,
   RotateCcwIcon,
-  SettingsIcon,
   Trash2Icon,
 } from 'lucide-react';
 import {
@@ -53,7 +50,6 @@ import {
   shouldDockVisualizerTuning,
   uploadChannelHeaderVideo,
   VISUAL_PRESETS,
-  youtubeEmbedUrl,
   type ChannelVisual,
   type ChannelVisualPatch,
   type ChannelVisualPreset,
@@ -69,9 +65,7 @@ import {
 import { uploadUserMediaFile } from '../api/user-media';
 import {
   DEFAULT_NOW_PLAYING_OVERLAY_SETTINGS,
-  NOW_PLAYING_OVERLAY_PRESETS,
   parseNowPlayingOverlaySettings,
-  resolveNowPlayingOverlayPreset,
   type NowPlayingOverlaySettings,
 } from '../content/nowPlayingOverlayPresets';
 import {
@@ -98,18 +92,18 @@ import {
   BackdropPanel,
   LAYOUT_ONLY_LOOK_IDS,
   LayoutOnlyLookHint,
+  PlayerOverlayControls,
   PlayerPanel,
   PlayerVisualizerControls,
   resolveHeaderDesignMode,
+  VideoOrImageField,
   type HeaderDesignMode,
   type PlayerDesignTab,
 } from './channel-designer';
 import { ChannelBackdropCard } from './ChannelBackdropCard';
 import { ChannelElementEditor } from './ChannelElementEditor';
 import { ChannelTextOverlayEditor } from './ChannelTextOverlayEditor';
-import { ChannelTextOverlayView } from './ChannelTextOverlayView';
 import { ChannelVisualizer } from './ChannelVisualizer';
-import { NowPlayingOverlay } from './NowPlayingOverlay';
 import { PageLoading } from './PageStates';
 import { Eyebrow } from './tahti/Eyebrow';
 
@@ -1083,96 +1077,27 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       </section>
     );
 
-    const videoUrlInput = videoUrlOpen ? (
-      <Input
-        label="YouTube, video, or image URL"
-        value={videoBackgroundUrl}
-        placeholder="https://youtube.com/watch?v=… or https://…/backdrop.jpg"
-        onChange={(event) => {
-          setVideoBackgroundUrl(event.target.value);
-          setPendingVideoFile(null);
-          setPendingVideoPreviewUrl(null);
-          setDirty(true);
-        }}
-      />
-    ) : null;
-
-    const videoUrlToggle = (
-      <Tooltip content="Show URL field" side="top">
-        <Button
-          size="icon-sm"
-          variant="text"
-          aria-label="Show URL field"
-          aria-pressed={videoUrlOpen}
-          onClick={() => setVideoUrlOpen((open) => !open)}
-        >
-          <LinkIcon size={15} aria-hidden />
-        </Button>
-      </Tooltip>
-    );
+    const handleVideoUrlChange = (url: string) => {
+      setVideoBackgroundUrl(url);
+      setPendingVideoFile(null);
+      setPendingVideoPreviewUrl(null);
+      setDirty(true);
+    };
 
     const videoBackdropSlot = (
-      <div className="flex flex-col gap-3">
-        <div>
-          <Eyebrow>Video or image backdrop</Eyebrow>
-          <p className="text-foreground-secondary mt-1 text-xs">
-            Upload an MP4/WebM video or image, up to 10 MB.
-          </p>
-        </div>
-        <div className="relative">
-          <FilePicker
-            accept="video/mp4,video/webm,image/jpeg,image/png,image/webp,image/gif"
-            disabled={busy}
-            selectedFiles={pendingVideoFile ? [pendingVideoFile] : []}
-            labels={{
-              title: 'Choose a video or image',
-              description: 'MP4, WebM, JPEG, PNG, WebP, or GIF · maximum 10 MB',
-              browse: 'Browse files',
-            }}
-            onFiles={selectVideoFile}
-          />
-          <div className="absolute top-2 right-2">{videoUrlToggle}</div>
-        </div>
-        {videoUrlInput}
-        {(pendingVideoPreviewUrl || videoBackgroundUrl) && (
-          <div className="border-border bg-background relative overflow-hidden rounded-lg border">
-            {youtubeEmbedUrl(videoBackgroundUrl) && !pendingVideoPreviewUrl ? (
-              <iframe
-                title="YouTube backdrop preview"
-                src={youtubeEmbedUrl(videoBackgroundUrl) ?? undefined}
-                className="pointer-events-none aspect-video w-full"
-                allow="autoplay; encrypted-media"
-              />
-            ) : headerBackdropIsImage ? (
-              <img
-                src={pendingVideoPreviewUrl ?? videoBackgroundUrl}
-                alt=""
-                className="aspect-video w-full object-cover"
-              />
-            ) : (
-              <video
-                src={pendingVideoPreviewUrl ?? videoBackgroundUrl}
-                muted
-                loop
-                autoPlay
-                playsInline
-                controls
-                className="aspect-video w-full object-cover"
-              />
-            )}
-          </div>
-        )}
-        {(pendingVideoFile || videoBackgroundUrl) && (
-          <Button
-            size="sm"
-            variant="secondary"
-            className="self-start"
-            onClick={clearVideo}
-          >
-            Remove backdrop
-          </Button>
-        )}
-      </div>
+      <VideoOrImageField
+        variant="backdrop"
+        disabled={busy}
+        pendingFile={pendingVideoFile}
+        url={videoBackgroundUrl}
+        urlOpen={videoUrlOpen}
+        onUrlOpenChange={setVideoUrlOpen}
+        onUrlChange={handleVideoUrlChange}
+        onFiles={selectVideoFile}
+        previewUrl={pendingVideoPreviewUrl}
+        isImage={headerBackdropIsImage}
+        onRemove={clearVideo}
+      />
     );
 
     const backdropPanel = (
@@ -1268,138 +1193,42 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
     );
 
     const playerOverlaySection = (
-      <div className="flex flex-col gap-5">
-        <div className="flex flex-col gap-3">
-          <Eyebrow>Stage overlay</Eyebrow>
-          <ChannelTextOverlayEditor
-            value={{
-              mode: visual.playerOverlayMode ?? 'NONE',
-              text: visual.playerOverlayText ?? '',
-              align: visual.playerOverlayAlign ?? 'CENTER',
-            }}
-            onChange={(next) =>
-              applyLocal({
-                playerOverlayMode: next.mode,
-                playerOverlayText: next.text,
-                playerOverlayAlign: next.align,
-              })
-            }
-          />
-          <div
-            className="relative flex min-h-24 items-center overflow-hidden rounded-lg border border-white/10 p-4"
-            style={{ background: previewStyle.bg }}
-          >
-            <ChannelTextOverlayView
-              mode={visual.playerOverlayMode}
-              text={visual.playerOverlayText}
-              align={visual.playerOverlayAlign}
-              accent={previewStyle.accent}
-              highlight={previewStyle.highlight}
-              size="sm"
-              className="w-full"
-            />
-            {!visual.playerOverlayText?.trim() && (
-              <p className="text-foreground-secondary text-xs">
-                Preview — enter text above to see it on the player stage.
-              </p>
-            )}
-          </div>
-        </div>
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between gap-3">
-            <Eyebrow>Now playing</Eyebrow>
-            <Button
-              size="sm"
-              variant="secondary"
-              onClick={() => setOverlayConfigOpen(true)}
-            >
-              <SettingsIcon size={14} aria-hidden />
-              Configure text
-            </Button>
-          </div>
-          <p className="text-foreground-secondary text-xs">
-            How the title and artist sit over live audio or an archive track.
-          </p>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {NOW_PLAYING_OVERLAY_PRESETS.map((preset) => {
-              const active =
-                resolveNowPlayingOverlayPreset(
-                  visual.nowPlayingOverlayStyle,
-                ) === preset.id;
-              return (
-                <button
-                  key={preset.id}
-                  type="button"
-                  aria-pressed={active}
-                  onClick={() =>
-                    applyLocal({ nowPlayingOverlayStyle: preset.id })
-                  }
-                  className={`flex flex-col gap-2 rounded-lg border p-2 text-left transition-colors ${
-                    active
-                      ? 'border-primary bg-primary/10 ring-primary ring-1'
-                      : 'border-border bg-background hover:bg-background-secondary'
-                  }`}
-                >
-                  <div
-                    className="relative flex aspect-video items-end overflow-hidden rounded-md bg-cover bg-center p-2"
-                    style={{
-                      backgroundColor: '#0B1220',
-                      backgroundImage: avatarUrl
-                        ? `url(${avatarUrl})`
-                        : undefined,
-                    }}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 to-transparent" />
-                    <div className="relative w-full">
-                      <NowPlayingOverlay
-                        presetId={preset.id}
-                        title="Sample Track"
-                        artist={displayName}
-                        artworkUrl={avatarUrl}
-                        compact
-                        settings={overlaySettings}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-1.5 text-sm font-semibold">
-                      {preset.name}
-                      {active && (
-                        <CheckIcon
-                          size={14}
-                          className="text-primary"
-                          aria-hidden
-                        />
-                      )}
-                    </div>
-                    <p className="text-foreground-secondary text-xs">
-                      {preset.description}
-                    </p>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
+      <PlayerOverlayControls
+        playerOverlay={{
+          mode: visual.playerOverlayMode ?? 'NONE',
+          text: visual.playerOverlayText ?? '',
+          align: visual.playerOverlayAlign ?? 'CENTER',
+        }}
+        onPlayerOverlayChange={(next) =>
+          applyLocal({
+            playerOverlayMode: next.mode,
+            playerOverlayText: next.text,
+            playerOverlayAlign: next.align,
+          })
+        }
+        previewStyle={previewStyle}
+        nowPlayingStyle={visual.nowPlayingOverlayStyle}
+        onNowPlayingStyleChange={(id) =>
+          applyLocal({ nowPlayingOverlayStyle: id })
+        }
+        overlaySettings={overlaySettings}
+        displayName={displayName}
+        avatarUrl={avatarUrl}
+        onConfigureText={() => setOverlayConfigOpen(true)}
+      />
     );
 
     const playerVideoSlot = (
-      <div className="relative">
-        <FilePicker
-          accept="video/mp4,video/webm,image/jpeg,image/png,image/webp,image/gif"
-          disabled={busy}
-          selectedFiles={pendingVideoFile ? [pendingVideoFile] : []}
-          labels={{
-            title: 'Choose a video or image',
-            description: 'MP4, WebM, JPEG, PNG, WebP, or GIF · maximum 10 MB',
-            browse: 'Browse files',
-          }}
-          onFiles={selectVideoFile}
-        />
-        <div className="absolute top-2 right-2">{videoUrlToggle}</div>
-        {videoUrlInput}
-      </div>
+      <VideoOrImageField
+        variant="compact"
+        disabled={busy}
+        pendingFile={pendingVideoFile}
+        url={videoBackgroundUrl}
+        urlOpen={videoUrlOpen}
+        onUrlOpenChange={setVideoUrlOpen}
+        onUrlChange={handleVideoUrlChange}
+        onFiles={selectVideoFile}
+      />
     );
 
     const playerPanel = (
