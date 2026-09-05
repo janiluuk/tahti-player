@@ -29,10 +29,9 @@ export const SettingsPanel: FC<SettingsPanelProps> = ({
   navFooter,
 }) => {
   const activeTabMeta = tabs.find((tab) => tab.id === activeTab);
-  // Below `sm`, nav and content share one screen's worth of space and can't
-  // sit side by side — show the section list first, then swap to the
-  // section's content on selection (native "settings app" pattern). Desktop
-  // always shows both; this state only ever matters below the sm breakpoint.
+  // Below `sm`, nav and content share one screen — list first, then detail.
+  // Desktop always shows both; `sm:flex!` on each pane overrides the mobile
+  // `hidden`/`flex` toggle above the breakpoint.
   const [mobileShowList, setMobileShowList] = useState(true);
 
   useEffect(() => {
@@ -45,13 +44,10 @@ export const SettingsPanel: FC<SettingsPanelProps> = ({
     <DialogRoot
       isOpen={isOpen}
       onClose={onClose}
-      // `sm:flex-row!` forced important: same cascade conflict as
-      // SettingsPanelNav/SettingsPanelContent (see the comments there) — a
-      // later unprefixed rule for `flex-direction` wins over this `sm:`
-      // variant at equal specificity. Without `!`, nav and content stay
-      // stacked in a column above the sm breakpoint instead of sitting
-      // side by side.
-      className="flex h-[calc(100vh-2rem)] w-[calc(100vw-2rem)] max-w-none flex-col overflow-hidden p-0 sm:h-[80vh] sm:max-h-[900px] sm:w-[80vw] sm:max-w-6xl sm:flex-row!"
+      // Fill the DialogRoot padded viewport on mobile (`w-full` + dvh), not a
+      // second `100vw-2rem` that stacks with the overlay's `p-4`. `min-w-0`
+      // + `overflow-hidden` keep section bodies scrolling inside the pane.
+      className="flex h-[calc(100dvh-2rem)] max-h-[calc(100dvh-2rem)] w-full max-w-none min-w-0 flex-col overflow-hidden p-0 sm:h-[80vh] sm:max-h-[900px] sm:w-[80vw] sm:max-w-6xl sm:flex-row!"
     >
       <SettingsPanelNav
         tabs={tabs}

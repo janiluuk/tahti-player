@@ -21,21 +21,19 @@ export const SettingsPanelNav: FC<SettingsPanelNavProps> = ({
   footer,
   className,
 }) => (
-  // `sm:w-56!`/`sm:flex!` are forced important: this codebase's compiled
-  // Tailwind output emits a second, later plain (unprefixed) rule for the
-  // same property — from a separately-scanned @source root — that wins the
-  // cascade over the `sm:` variant at equal specificity despite the `sm:`
-  // rule appearing earlier in the file — confirmed by inspecting the built
-  // CSS, not a specificity mistake here. Without `!`, `sm:w-56` silently
-  // stays full-width above the sm breakpoint and squeezes
-  // SettingsPanelContent to ~0, and `sm:flex` silently stays `hidden`
-  // whenever the caller's mobile list/detail toggle set this pane to
-  // `hidden` — i.e. every time a tab was ever selected, permanently.
+  // Do **not** put unconditional `flex!` here. On mobile the caller passes
+  // `hidden` after a section is selected; `flex!` would win and keep the
+  // list mounted full-height while content stacks below and overflows.
+  // Desktop still needs `sm:flex!` so the same `hidden` class is overridden
+  // above the sm breakpoint (Tailwind cascade quirk in this monorepo —
+  // unprefixed display rules can beat `sm:flex` without `!`).
+  // `sm:w-56!` is forced for the same cascade reason.
   <nav
     className={cn(
-      'border-border flex! h-full min-h-0 w-full shrink-0 flex-col border-b-(length:--border-width) p-2 sm:w-56! sm:border-r-(length:--border-width) sm:border-b-0 sm:p-4',
+      'border-border flex h-full min-h-0 w-full shrink-0 flex-col border-b-(length:--border-width) p-2 sm:flex! sm:w-56! sm:border-r-(length:--border-width) sm:border-b-0 sm:p-4',
       className,
     )}
+    data-testid="settings-panel-nav"
   >
     <div className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto">
       {tabs.map((tab) => (
