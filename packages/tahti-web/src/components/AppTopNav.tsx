@@ -10,6 +10,7 @@ import {
   ChevronRightIcon,
   ExternalLinkIcon,
   LayoutDashboardIcon,
+  ListMusicIcon,
   LogInIcon,
   LogOutIcon,
   MenuIcon,
@@ -21,7 +22,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
-import { Badge, Button, EmptyState } from '@tahti-player/ui';
+import { Badge, Button, Dialog, EmptyState } from '@tahti-player/ui';
 
 import { fetchConversations, type ConversationSummary } from '../api/messages';
 import { fetchStudioSounds } from '../api/studio';
@@ -35,6 +36,7 @@ import { useNotificationInboxStore } from '../stores/notificationInboxStore';
 import { useProcessingJobsStore } from '../stores/processingJobsStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 import { GlobalSearch } from './GlobalSearch';
+import { StreamManagerPanel } from './StreamManagerPanel';
 import { TahtiLogoLink } from './TahtiLogo';
 import { UploadTrackDialog } from './UploadTrackDialog';
 
@@ -63,6 +65,7 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
   const [open, setOpen] = useState(false);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [broadcastOpen, setBroadcastOpen] = useState(false);
+  const [streamManagerOpen, setStreamManagerOpen] = useState(false);
   const [messagesOpen, setMessagesOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [processingOpen, setProcessingOpen] = useState(false);
@@ -87,23 +90,25 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
     refreshWhen: broadcastOpen,
   });
   const isLive = broadcast.kind === 'live';
-  const hasConnectionIssue =
-    user?.channel?.state === 'LIVE' && !broadcast.signalConnected;
+  // channelState === 'LIVE' with no ingest signal is the normal state for
+  // a channel whose 24/7 fallback rotation is carrying it — not an error.
+  // (See resolveBroadcastPresence's own comment: only signal + LIVE is a
+  // real broadcast.) Only `live` gets to flash/pulse; rotation and
+  // preview are informational, not alarms.
+  const isRotation = broadcast.kind === 'rotation';
   const hasBroadcastWarning = broadcast.kind === 'preview';
   const broadcastTone = isLive
     ? 'healthy'
-    : hasConnectionIssue
-      ? 'error'
+    : isRotation
+      ? 'rotation'
       : hasBroadcastWarning
         ? 'warning'
         : 'idle';
   const broadcastToneClass = {
     healthy:
       'border-accent-green/70 bg-accent-green/15 text-accent-green motion-safe:animate-[pulse_1.4s_ease-in-out_infinite]',
-    error:
-      'border-accent-red/70 bg-accent-red/15 text-accent-red motion-safe:animate-[pulse_1.1s_ease-in-out_infinite]',
-    warning:
-      'border-accent-yellow/70 bg-accent-yellow/15 text-accent-yellow motion-safe:animate-[pulse_1.6s_ease-in-out_infinite]',
+    rotation: 'border-accent-yellow/70 bg-accent-yellow/15 text-accent-yellow',
+    warning: 'border-accent-yellow/70 bg-accent-yellow/15 text-accent-yellow',
     idle: '',
   }[broadcastTone];
   const displayName = user?.displayName?.trim() || user?.username || '';
@@ -355,16 +360,12 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
                         'size-2 rounded-full',
                         broadcastTone === 'healthy'
                           ? 'bg-accent-green'
-                          : broadcastTone === 'error'
-                            ? 'bg-accent-red'
-                            : broadcastTone === 'warning'
-                              ? 'bg-accent-yellow'
-                              : broadcast.kind === 'rotation'
-                                ? 'bg-accent-cyan'
-                                : 'bg-foreground-secondary/40',
-                        (broadcastTone !== 'idle' &&
-                          'motion-safe:animate-pulse') ||
-                          '',
+                          : broadcastTone === 'rotation' ||
+                              broadcastTone === 'warning'
+                            ? 'bg-accent-yellow'
+                            : 'bg-foreground-secondary/40',
+                        broadcastTone === 'healthy' &&
+                          'motion-safe:animate-pulse',
                       )}
                       aria-hidden
                     />
@@ -394,6 +395,15 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
                 </div>
               ) : null}
             </div>
+            <button
+              type="button"
+              className={cn('hidden sm:inline-flex', iconBtnClass)}
+              aria-label="Open stream manager"
+              title="Stream manager"
+              onClick={() => setStreamManagerOpen(true)}
+            >
+              <ListMusicIcon size={16} />
+            </button>
             <button
               type="button"
               className={cn('hidden sm:inline-flex', iconBtnClass)}
@@ -773,6 +783,22 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
         isOpen={uploadOpen}
         onClose={() => setUploadOpen(false)}
       />
+      {user && hasChannel && user.channel ? (
+        <Dialog.Root
+          isOpen={streamManagerOpen}
+          onClose={() => setStreamManagerOpen(false)}
+          className="max-w-xl"
+        >
+          <Dialog.Title>Stream Manager</Dialog.Title>
+          <div className="mt-4">
+            <StreamManagerPanel
+              slug={user.channel.slug}
+              channelState={user.channel.state}
+              defaultExpanded
+            />
+          </div>
+        </Dialog.Root>
+      ) : null}
     </header>
   );
 }

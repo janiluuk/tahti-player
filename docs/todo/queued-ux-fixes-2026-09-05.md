@@ -148,27 +148,25 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   `StudioGoLiveView.tsx` (or ask the user which calendar, if git history
   doesn't turn up an obvious candidate) before attempting to "restore"
   anything.
-- [ ] **Top-nav broadcast icon: rotation dot + live-only flash + Stream
-  Manager quick-access icon.** `AppTopNav.tsx`'s broadcast icon already
-  has everything needed to distinguish states —
-  `useOwnBroadcastPresence`/`resolveBroadcastPresence`
-  (`lib/broadcastPresence.ts`) returns `kind: 'live' | 'rotation' |
-  'preview' | 'offline'` — but `broadcastTone` only branches on
-  `isLive`/`hasConnectionIssue`(error)/`hasBroadcastWarning`(preview,
-  warning); `rotation` and `offline` both fall through to the same
-  `'idle'` (no color, no dot) bucket today. Add a `rotation` case: a
-  static yellow dot (no pulse animation — reuse the existing
-  `border-accent-yellow/70 bg-accent-yellow/15 text-accent-yellow` color
-  but drop the `motion-safe:animate-[pulse_...]` part). Per the request,
-  pulsing/flashing should be reserved for `live` only — check whether
-  `preview`'s current pulse should also become static, or if pulsing for
-  "preview" (about to go live) is intentional and only rotation should be
-  exempted; clarify if unsure rather than silently changing preview's
-  behavior too. Separately: add a Stream Manager icon next to the
-  broadcast one in the top nav that, on click, opens `StreamManagerPanel`
-  inside a modal only (no navigation) — check `StreamManagerPanel`'s
-  props for what it needs (`slug`, `channelState`, etc. — see its usage
-  in `StudioGoLiveView.tsx`) to render it standalone in a `Dialog`.
+- [x] **Top-nav broadcast icon: rotation dot + live-only flash + Stream
+  Manager quick-access icon — shipped 2026-09-05.** `AppTopNav.tsx`: the
+  previous `hasConnectionIssue` (`channelState === 'LIVE' &&
+  !signalConnected`) branch was mathematically identical to
+  `broadcast.kind === 'rotation'` and rendered as a *red pulsing error* —
+  i.e. the normal "24/7 rotation is carrying the channel, nothing is
+  actually broadcasting" state looked like an outage. Replaced with an
+  explicit `isRotation` check rendering a **static** yellow dot (no
+  pulse); `preview` also stays static (`warning` class, pulse dropped) —
+  only `live` pulses/flashes now, matching "only flash the top
+  notification if user is live". Applied the same tone mapping to the
+  expanded dropdown's own status dot for consistency (it already treated
+  this state as non-error before the fix; now the collapsed icon agrees
+  with it). Separately: added a `ListMusicIcon` "Stream manager" icon
+  button next to the broadcast icon that opens `StreamManagerPanel`
+  (`slug`, `channelState` from `user.channel`) standalone inside a
+  `Dialog.Root` modal — no navigation, no other props wired (playback
+  toggle, rotation-change callback) since this is a quick-glance/control
+  surface, not the full Go Live page context.
 - [ ] **Show creation flow: episode auto-fill + one-off/episode toggle +
   empty-state CTA.** When creating a show entry from a *series episode*
   picker, auto-fill the show form's fields from the selected series show.
@@ -232,3 +230,25 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   until that artist has actually set up and enabled their subscription
   tiers — needs whatever flag distinguishes "tiers configured" from
   "tiers exist but not enabled" from "no tiers at all".
+- [ ] **Channel Designer: tabs under the player, dynamic per enabled
+  section, visual editor for adding them.** Locate the `Designer`
+  component in Storybook (`packages/storybook/src/tahti-web/`) and its
+  real counterpart (likely the channel-editing view backing
+  `ChannelView`/a dedicated designer route — confirm which before
+  editing). Move the tabs from the header to below the video player.
+  Remove the "Published on your channel" text. Tabs should be dynamic
+  based on which sections the artist has enabled — by default only
+  "Home" exists, so hide the tab bar entirely when there's only one
+  section (nothing to switch between). Clicking the tabs area, or
+  selecting a "tabs" element in the designer's own editing UI, should
+  open configuration for which sections to add (e.g. a separate
+  "Releases" tab) — needs a visual/inline editor for adding sections, not
+  a settings-panel-only flow (check if the designer already has some
+  visual-editing affordance for other elements to match its pattern).
+  Switching tabs should animate the content transition to the newly
+  selected section instead of an instant swap. This is a substantial,
+  multi-part feature (new data model for "which sections are enabled",
+  new visual tab-config UI, content-switch animation) — scope and
+  sequence it as its own effort rather than a quick pass; don't start
+  implementation without confirming which real (non-Storybook) view this
+  maps to.
