@@ -28,7 +28,6 @@ import {
 } from '@tahti-player/ui';
 
 import {
-  createRtmpTarget,
   deleteRtmpTarget,
   fetchBroadcastPreflight,
   fetchBroadcastUsage,
@@ -53,7 +52,10 @@ import {
 } from '../../components/BroadcastPreflightPanel';
 import { ChannelShareButton } from '../../components/ChannelShareButton';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
-import { MulticastDestinationForm } from '../../components/MulticastDestinationForm';
+import {
+  MulticastConfigureDialog,
+  type MulticastConfiguring,
+} from '../../components/MulticastConfigureDialog';
 import { ObsPresetButton } from '../../components/ObsPresetButton';
 import { SignalCheckWidget } from '../../components/SignalCheckWidget';
 import { StreamManagerPanel } from '../../components/StreamManagerPanel';
@@ -63,7 +65,7 @@ import { StudioPanel } from '../../components/StudioPanel';
 import { OnAirBadge } from '../../components/tahti/OnAirBadge';
 import {
   multicastProviderLabel,
-  type MulticastProviderId,
+  multicastProviders,
 } from '../../plugins/multicast';
 import { useAuthStore } from '../../stores/authStore';
 import { useBroadcastPresenceStore } from '../../stores/broadcastPresenceStore';
@@ -156,11 +158,9 @@ export function StudioGoLiveView() {
   const [credentialsExpanded, setCredentialsExpanded] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const [newProvider, setNewProvider] = useState<MulticastProviderId>('TWITCH');
-  const [newKey, setNewKey] = useState('');
-  const [newLabel, setNewLabel] = useState('');
-  const [newRtmpUrl, setNewRtmpUrl] = useState('');
   const [showAddDestination, setShowAddDestination] = useState(false);
+  const [configuringDestination, setConfiguringDestination] =
+    useState<MulticastConfiguring | null>(null);
   const [recordEnabled, setRecordEnabled] = useState(true);
   const [recordBusy, setRecordBusy] = useState(false);
   const [preflight, setPreflight] = useState<BroadcastPreflight | null>(null);
@@ -692,62 +692,55 @@ export function StudioGoLiveView() {
 
           <Dialog.Root
             isOpen={showAddDestination}
-            onClose={() => {
-              setShowAddDestination(false);
-              setNewKey('');
-              setNewLabel('');
-              setNewRtmpUrl('');
-            }}
+            onClose={() => setShowAddDestination(false)}
           >
-            <form
-              onSubmit={(event) => {
-                event.preventDefault();
-                event.preventDefault();
-              }}
-            >
-              <Dialog.Title>
-                <span className="inline-flex items-center gap-2">
-                  <ListMusicIcon size={18} aria-hidden />
-                  Add multistream destination
-                </span>
-              </Dialog.Title>
-              <div className="mt-4">
-                <MulticastDestinationForm
-                  provider={newProvider}
-                  label={newLabel}
-                  streamKey={newKey}
-                  rtmpUrl={newRtmpUrl}
-                  onProviderChange={setNewProvider}
-                  onLabelChange={setNewLabel}
-                  onStreamKeyChange={setNewKey}
-                  onRtmpUrlChange={setNewRtmpUrl}
-                  submitLabel="Save destination"
-                  onSubmit={() => {
-                    void createRtmpTarget({
-                      provider: newProvider,
-                      streamKey: newKey.trim(),
-                      label: newLabel.trim() || undefined,
-                      rtmpUrl: newRtmpUrl.trim() || undefined,
-                      enabled: true,
-                    }).then((result) => {
-                      if (!result.ok) {
-                        setMessage(result.error);
-                        return;
-                      }
-                      setNewKey('');
-                      setNewLabel('');
-                      setNewRtmpUrl('');
-                      setShowAddDestination(false);
-                      void reload();
-                    });
-                  }}
-                />
-              </div>
-              <Dialog.Actions>
-                <Dialog.Close>Cancel</Dialog.Close>
-              </Dialog.Actions>
-            </form>
+            <Dialog.Title>
+              <span className="inline-flex items-center gap-2">
+                <ListMusicIcon size={18} aria-hidden />
+                Add multistream destination
+              </span>
+            </Dialog.Title>
+            <Dialog.Description>
+              Choose a platform to configure.
+            </Dialog.Description>
+            <ul className="mt-4 flex flex-col gap-1.5">
+              {multicastProviders
+                .filter(
+                  (provider) =>
+                    !targets.some((t) => t.provider === provider.id),
+                )
+                .map((provider) => (
+                  <li key={provider.id}>
+                    <Button
+                      variant="secondary"
+                      className="w-full justify-start"
+                      onClick={() => {
+                        setShowAddDestination(false);
+                        setConfiguringDestination({
+                          provider: provider.id,
+                          existing: null,
+                        });
+                      }}
+                    >
+                      {provider.label}
+                    </Button>
+                  </li>
+                ))}
+            </ul>
+            <Dialog.Actions>
+              <Dialog.Close>Cancel</Dialog.Close>
+            </Dialog.Actions>
           </Dialog.Root>
+          {configuringDestination ? (
+            <MulticastConfigureDialog
+              configuring={configuringDestination}
+              onClose={() => setConfiguringDestination(null)}
+              onSaved={() => {
+                setConfiguringDestination(null);
+                void reload();
+              }}
+            />
+          ) : null}
           <ConfirmDialog
             isOpen={pendingDeleteTarget !== null}
             title={

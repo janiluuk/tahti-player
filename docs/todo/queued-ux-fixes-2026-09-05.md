@@ -100,14 +100,63 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   third tab, `activeTab === 'overlay'` block, and the now-unused
   `MonitorPlayIcon` import) — the modal replaces it as the only entry
   point to the overlay editor from this panel.
-- [ ] **Go Live multistream "Add destination" modal is broken/unusable.**
-  Reported: the dropdown-based add-destination modal in
-  `StudioGoLiveView.tsx` (`showAddDestination` state,
-  `MulticastDestinationForm`?) doesn't work well. There's apparently
-  already a *working* multistream configuration UI elsewhere in the app —
-  find it (grep other consumers of `MulticastDestinationForm` /
-  `createRtmpTarget` / multicast provider selection, possibly in
-  Settings or a dedicated Multistream settings page) and either reuse
-  that same component/flow here instead of the broken one, or figure out
-  why this instance behaves differently from the working one before
-  touching anything.
+- [x] **Go Live multistream "Add destination" modal was broken/unusable —
+  fixed 2026-09-05.** Confirmed: `MulticastDestinationForm.tsx` (dropdown
+  `Select` for provider, cramped one-row layout, no port split, no
+  enabled toggle, no wired save/error state) was exactly the "unusable"
+  one. The real, working version was `MulticastConfigureDialog`, local to
+  `PluginStorePanel.tsx` (Settings → Add-ons → Multistream). Extracted it
+  to its own shared file and rewired Go Live to use it via a small
+  provider-picker step; deleted the old form entirely. See
+  `docs/todo/multicast-configure-dialog-unification.md`.
+- [ ] **Stream Manager: artist/track/status stat layout.** Move the
+  artist name out from next to duration; put the current *track* where
+  the artist currently sits (need to re-check exact current layout of
+  whichever stat row this refers to — likely near the rotation/now-playing
+  display, not the `StatChip` grid). Replace a "Playing" status label with
+  "Rotation" text, shown as a status *light* (dot) — yellow for rotation,
+  green for live — and remove the redundant text label next to the light
+  once the color itself carries the state. Likely overlaps with the stats
+  restructuring item above (`Output`→`Mode`, rotation-vs-offline wording)
+  — do them together, not as two separate passes that touch the same
+  stat row twice.
+- [ ] **Stream Manager: icon-button playlist edit, with confirm.** Replace
+  the current playlist-switch button with an icon-only edit button for
+  the *current* playlist; must show a confirm dialog before actually
+  switching/changing anything (destructive-ish — switching live rotation
+  content). Reuse `ConfirmDialog` (already imported in
+  `StudioGoLiveView.tsx` and used elsewhere in this app) rather than a new
+  one-off.
+- [ ] **Stream Manager: now-playing artwork with hover play/pause.** Add
+  the current stream item's artwork next to the playback controls;
+  clicking it plays/pauses the stream (mirrors the existing "media
+  artwork play" hover pattern already used elsewhere — e.g. Listen/Discover
+  card artwork, `MediaArtwork` — reuse that component/pattern rather than
+  a new hand-rolled hover overlay). Show a play icon on hover when
+  paused, pause icon on hover when playing, matching current playback
+  state.
+- [ ] **Go Live: move header subtext into the help layer; restore the
+  calendar view.** Strip the explanatory subtext currently sitting under
+  each panel header on `StudioGoLiveView.tsx` (e.g. "Choose your app,
+  then copy the matching credentials", "Save this and future broadcasts
+  to your recordings archive", etc.) and relocate/expand those
+  explanations into the page's help layer instead — same
+  inline-help-text-to-help-layer pattern as the `StreamOverlayEditor` item
+  above; do both in the same pass since they're the same convention
+  applied to the same page. Separately: "restore the calendar view to the
+  top panel" — there was apparently a calendar/schedule view on this page
+  before that's since been removed or moved; find it via git history on
+  `StudioGoLiveView.tsx` (or ask the user which calendar, if git history
+  doesn't turn up an obvious candidate) before attempting to "restore"
+  anything.
+- [ ] **Show creation flow: episode auto-fill + one-off/episode toggle +
+  empty-state CTA.** When creating a show entry from a *series episode*
+  picker, auto-fill the show form's fields from the selected series show.
+  On the show form itself, add a toggle between "One-off show" and "New
+  episode" (of an existing series) — need to locate the actual show
+  creation view/dialog first (`StudioShowsView`? `StudioShowDetailView`?
+  a dedicated create dialog?) to see current field structure before
+  designing the toggle. If the artist has no shows/series yet, show a
+  CTA to create one, opening a modal (reuse whatever the existing
+  show/series creation modal is, if one already exists, rather than
+  building a new one).
