@@ -12,6 +12,14 @@ before adding the new playlist. An empty playlist or one without archive
 sound IDs left the live rotation empty. Adds now run first; old fallbacks
 are removed only after every add succeeds; empty playlists abort.
 
+## 2026-09-06 — Settings mobile list/detail + wrapping tabs (0.0.84)
+
+**Status:** executed.
+
+Settings modal on narrow viewports: section list and detail no longer stack
+(nav `flex!` no longer overrides `hidden`). Add-ons category chips and other
+settings tab strips wrap instead of overflowing horizontally.
+
 ## 2026-09-05 — Channel Designer layout hints + visualizer extract (0.0.83)
 
 **Status:** executed.

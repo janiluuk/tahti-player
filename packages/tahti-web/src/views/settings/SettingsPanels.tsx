@@ -1738,7 +1738,7 @@ export function BroadcastPanel({
     );
   }
 
-  return <Tabs items={items} />;
+  return <Tabs listClassName="flex-wrap" items={items} />;
 }
 
 export function MoneyPanel() {
@@ -2293,6 +2293,7 @@ function ThemesPanel() {
       </div>
 
       <Tabs
+        listClassName="flex-wrap"
         items={[
           {
             id: 'browse',
