@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
   BlocksIcon,
@@ -36,6 +36,8 @@ const TABS: SettingsTab[] = [
   },
 ];
 
+const classTokens = (element: HTMLElement) => element.className.split(/\s+/);
+
 describe('SettingsPanel', () => {
   it('(Snapshot) renders when open', () => {
     const { asFragment } = render(
@@ -50,7 +52,7 @@ describe('SettingsPanel', () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
-  it('starts on the section list and hides content until a tab is chosen', () => {
+  it('starts in list mode: nav flex, content hidden (mobile list-first)', () => {
     render(
       <SettingsPanel
         isOpen
@@ -61,11 +63,15 @@ describe('SettingsPanel', () => {
       />,
     );
 
-    expect(screen.getByTestId('settings-panel-nav')).toBeVisible();
-    expect(screen.getByTestId('settings-panel-content')).not.toBeVisible();
+    expect(classTokens(screen.getByTestId('settings-panel-nav'))).toContain(
+      'flex',
+    );
+    expect(classTokens(screen.getByTestId('settings-panel-content'))).toContain(
+      'hidden',
+    );
   });
 
-  it('swaps to section content on mobile after choosing a tab, and back via Back', async () => {
+  it('enters detail mode after a tab click and returns to list on Back', async () => {
     const user = userEvent.setup();
     const onTabChange = vi.fn();
 
@@ -82,19 +88,40 @@ describe('SettingsPanel', () => {
     await user.click(screen.getByRole('button', { name: 'Plugins' }));
     expect(onTabChange).toHaveBeenCalledWith('plugins');
 
-    expect(screen.getByTestId('settings-panel-nav')).not.toBeVisible();
-    const content = screen.getByTestId('settings-panel-content');
-    expect(content).toBeVisible();
+    expect(classTokens(screen.getByTestId('settings-panel-nav'))).toContain(
+      'hidden',
+    );
+    expect(classTokens(screen.getByTestId('settings-panel-content'))).toContain(
+      'flex',
+    );
     expect(
-      within(content).getByRole('button', {
-        name: 'Back to settings sections',
-      }),
-    ).toBeVisible();
+      screen.getByRole('button', { name: 'Back to settings sections' }),
+    ).toBeInTheDocument();
 
     await user.click(
       screen.getByRole('button', { name: 'Back to settings sections' }),
     );
-    expect(screen.getByTestId('settings-panel-nav')).toBeVisible();
-    expect(screen.getByTestId('settings-panel-content')).not.toBeVisible();
+    expect(classTokens(screen.getByTestId('settings-panel-nav'))).toContain(
+      'flex',
+    );
+    expect(classTokens(screen.getByTestId('settings-panel-content'))).toContain(
+      'hidden',
+    );
+  });
+
+  it('does not force nav visible with unconditional flex! (regression)', () => {
+    render(
+      <SettingsPanel
+        isOpen
+        onClose={() => {}}
+        tabs={TABS}
+        activeTab="general"
+        onTabChange={() => {}}
+      />,
+    );
+
+    const navClass = screen.getByTestId('settings-panel-nav').className;
+    expect(navClass.split(/\s+/)).not.toContain('flex!');
+    expect(navClass).toMatch(/sm:flex!/);
   });
 });
