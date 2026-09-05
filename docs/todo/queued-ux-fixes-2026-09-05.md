@@ -15,15 +15,11 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   `AdminSelectsView`, `AdminNewsView`, `AdminTopListsView`,
   `AdminDashboardView`, `AdminUsersView`, `AdminStreamsView`,
   `AdminStatusView`) for consistency with the rest.
-- [ ] **Rename "Stream Playlist Manager" → "Stream Manager".** No literal
-  string `"Stream Playlist Manager"` exists anywhere in
-  `packages/tahti-web/src` (checked 2026-09-05) — this is almost
-  certainly the user's own name for `StreamManagerPanel.tsx` (rendered
-  from `StudioGoLiveView.tsx`), which has no panel-level heading of its
-  own today (only an internal `<h3>Stream overlay</h3>` on its Overlay
-  tab, line ~803). Before renaming anything, confirm with the user (or
-  screenshot) exactly which visible label they mean — there may be
-  nothing to rename yet, just something to *add* as "Stream Manager".
+- [x] **Rename "Stream Playlist Manager" → "Stream Manager" — fixed
+  2026-09-05.** Found it: `StreamManagerPanel.tsx`'s title text was
+  `"Stream playlist manager"` (lowercase p/m — the earlier case-sensitive
+  grep for the capitalized form missed it). Changed to `"Stream
+  Manager"`.
 - [x] **Stream overlay tab leaks after collapsing the manager — fixed
   2026-09-05.** Root cause: `StreamManagerPanel.tsx`'s collapse/expand
   guard `(!rotationPlaying || rotationExpanded)` wraps the tab list and
@@ -81,25 +77,15 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   (`STUDIO-ADMIN-UX-SWEEP.md`), just routed to the page help layer here
   instead of a Tooltip badge since a help layer already exists for this
   page.
-- [ ] **Stream Manager stats + overlay restructuring.** In
-  `StreamManagerPanel.tsx`'s `stats` tab: show "Offline" instead of
-  "Rotation" for the `Signal` stat's rotation-fallback value (currently
-  `rotationPlaying ? 'Rotation' : 'No encoder'` — user wants the rotation
-  case itself to read differently, likely "Offline" for the whole stat
-  set when only rotation is running, not actually broadcasting — clarify
-  exact wording/condition before implementing). Rename the `Output`
-  `StatChip` label to `Mode`. Replace the `Time left` `StatChip` entirely
-  with an "Overlay" stat showing on/off (from
-  `streamOverlayShowTitle`) — clicking it opens the overlay config
-  (`StreamOverlayEditor`) in a modal (reuse the `Dialog` pattern already
-  used elsewhere in this file, e.g. the multistream destination dialog),
-  where the artist can edit fields and toggle the overlay on/off; on save,
-  show a toast with the result and update the stat chip's on/off state
-  from the response (not just optimistically). Once this ships, remove
-  the separate `overlay` tab from the manager entirely (`Tabs.List`'s
-  third tab, `activeTab === 'overlay'` block, and the now-unused
-  `MonitorPlayIcon` import) — the modal replaces it as the only entry
-  point to the overlay editor from this panel.
+- [x] **Stream Manager stats + overlay restructuring — shipped
+  2026-09-05.** `Signal` stat's rotation case now reads `Offline` (not
+  `Rotation`). `Output` renamed to `Mode`. `Time left` replaced with a
+  clickable `Overlay` (`On`/`Off`) stat that opens `StreamOverlayEditor`
+  in a modal — it already toasts its own save result and has the on/off
+  toggle. The `overlay` tab is gone entirely (tab list, content block,
+  `activeTab` narrowed to `'rotation' | 'stats'`); the modal is now the
+  only entry point. See
+  `docs/todo/stream-manager-header-and-overlay-modal.md`.
 - [x] **Go Live multistream "Add destination" modal was broken/unusable —
   fixed 2026-09-05.** Confirmed: `MulticastDestinationForm.tsx` (dropdown
   `Select` for provider, cramped one-row layout, no port split, no
@@ -109,17 +95,17 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   to its own shared file and rewired Go Live to use it via a small
   provider-picker step; deleted the old form entirely. See
   `docs/todo/multicast-configure-dialog-unification.md`.
-- [ ] **Stream Manager: artist/track/status stat layout.** Move the
-  artist name out from next to duration; put the current *track* where
-  the artist currently sits (need to re-check exact current layout of
-  whichever stat row this refers to — likely near the rotation/now-playing
-  display, not the `StatChip` grid). Replace a "Playing" status label with
-  "Rotation" text, shown as a status *light* (dot) — yellow for rotation,
-  green for live — and remove the redundant text label next to the light
-  once the color itself carries the state. Likely overlaps with the stats
-  restructuring item above (`Output`→`Mode`, rotation-vs-offline wording)
-  — do them together, not as two separate passes that touch the same
-  stat row twice.
+- [x] **Stream Manager: artist/track/status stat layout — shipped
+  2026-09-05.** Header "Current track" block: bold/primary line now shows
+  `artistName`, secondary line shows `title` + duration (artist no longer
+  paired with duration). Status dot: green pulsing for `Live`, static
+  yellow for `Playing` (rotation), none for `Paused`/`Stopped`; the
+  redundant text pill next to it removed. **Flag**: "replace the current
+  track with the artist" could also have meant dropping the title
+  entirely rather than demoting it — kept the title on the secondary line
+  since deleting displayed data seemed the riskier misread; revisit if
+  that's not what was wanted. See
+  `docs/todo/stream-manager-header-and-overlay-modal.md`.
 - [ ] **Stream Manager: icon-button playlist edit, with confirm.** Replace
   the current playlist-switch button with an icon-only edit button for
   the *current* playlist; must show a confirm dialog before actually
@@ -181,3 +167,21 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   CTA to create one, opening a modal (reuse whatever the existing
   show/series creation modal is, if one already exists, rather than
   building a new one).
+- [ ] **Show info form: dropdowns + layout + status button.** Located:
+  `BroadcastPreflightPanel.tsx` (rendered inline in
+  `StudioGoLiveView.tsx`'s "Before you start" section) — `showType` and
+  `visibility` are currently hand-rolled segmented-control-style radio
+  groups (`role`/`checked` pattern around line 188–227), not the shared
+  `Select` component; replace both with `Select` and make them fit
+  better (narrower row — check whether they should sit side by side).
+  Move the tagline field onto the same row as the show name field.
+  Separately: add a compact status button on the "Ready to take over the
+  rotation" panel (`StudioGoLiveView.tsx`, the panel whose title switches
+  between that and "Signal ready"/etc., around line ~372) labeled "Show
+  info" — yellow status if `showInfoConfirmed` is false / fields are
+  empty, green once filled in. Clicking it opens `BroadcastPreflightPanel`
+  in a modal to edit, instead of (or in addition to — clarify) its current
+  always-inline placement. Note: `ShowInfoConfirmed` already exists as a
+  small "confirmed" indicator component next to this panel — check
+  whether it should be replaced by the new status button or kept
+  alongside it.
