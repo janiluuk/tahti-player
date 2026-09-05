@@ -20,6 +20,7 @@
     "lint:fix": "turbo lint:fix",
     "test": "turbo test",
     "test:coverage": "turbo test:coverage",
+    "snapshot-digest": "node scripts/ci/build-snapshot-digest.mjs",
     "tauri": "pnpm --filter player tauri",
     "release:prepare": "node packages/tools/src/prepare-release.mjs",
     "storybook": "pnpm --filter @tahti-player/storybook dev",

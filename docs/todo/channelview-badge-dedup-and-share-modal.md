@@ -1,6 +1,6 @@
 # ChannelView: OnAirBadge dedup, playlist-as-copy-link, share modal cleanup
 
-**Status:** partially done (2026-09-05) — see "Not done" below for the
+**Status:** partial
 part deliberately deferred.
 
 ## What shipped

@@ -424,7 +424,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         heading: 'The money flow',
         body: [
           'A listener pays you monthly through Stripe. On a €5 order, Stripe keeps about €0.45 (2.9% + €0.30), Tahti keeps €0.10 as a 2% operational fee, and you receive €4.45 via Stripe Connect in the ledger model.',
-          'That split is what Audience and this guide show. The sibling payout runbook (`../tahti/docs/flows/payouts.md`) still tracks whether the live Stripe balance transaction always matches €4.45 — treat the on-screen number as the documented flow, not a guaranteed bank deposit until that check closes.',
+          'That split is what Audience and this guide show. The sibling payout runbook (`../tahti-org/docs/flows/payouts.md`) still tracks whether the live Stripe balance transaction always matches €4.45 — treat the on-screen number as the documented flow, not a guaranteed bank deposit until that check closes.',
           'The 2% fee covers Connect platform costs, billing support, disputes, and GDPR work. It is operational, not org profit — leftover from that line rolls into the next artist grant pool.',
         ],
       },

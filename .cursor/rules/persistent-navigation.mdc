@@ -1,18 +1,14 @@
 ---
-description: App chrome must stay visible on ordinary pages; hide it only on fullscreen, release/share, and maximized editor surfaces.
+description: Persistent chrome on ordinary pages; confirm nav mounted in tests. Takeover surfaces may hide chrome.
 alwaysApply: true
 ---
 
-# Persistent chrome visibility
+# Persistent chrome + nav tests
 
-On every ordinary app surface (Listen, Radio, Discover, Studio, Admin, Settings, Help, member governance, and their child routes), the navigation that belongs there must stay visible at every moment: desktop sidebar, mobile drawer trigger and bottom bar, Studio/Admin section tabs, and in-page subtabs. Do not unmount, hide, or swap that chrome away during route transitions, loading, or content swaps. A flash of empty chrome is a bug.
+Ordinary surfaces (Listen, Radio, Discover, Studio, Admin, Settings, Help, governance, children): keep sidebar, drawer, bottom bar, and section/subtabs mounted for the whole visit. A flash of empty chrome is a bug.
 
-This does **not** apply to surfaces that are supposed to take over the window:
+Takeover surfaces may hide chrome: full-screen player, public release/share canvases, maximized Pro Editor.
 
-- Full-screen player
-- Public release/share canvases
-- Maximized workspaces such as the audio editor (Pro Editor)
+Tests on chrome views: assert nav is mounted before `aria-current` / `aria-selected`. Missing nav on takeover surfaces is correct.
 
-Missing sidebar or tab chrome there is correct. Do not force the sidebar back onto those pages.
-
-Full text: root `AGENTS.md` → Persistent chrome visibility; `packages/tahti-web/AGENTS.md`.
+Canonical text: root `AGENTS.md` (Persistent chrome + Testing); `packages/tahti-web/AGENTS.md`; `NAVIGATION-SITEMAP.md`.

@@ -1,5 +1,7 @@
 # Independent desktop player — pro library, Soulseek, Tahti chrome
 
+**Status:** open
+
 Roadmap item: independent music player with pro management features and
 Soulseek integration. Durable plan lives here and in
 `packages/tahti-web/UI-REDESIGN-WORKLOG.md` (2026-09-04 — Independent

@@ -9,6 +9,8 @@ import react from '@vitejs/plugin-react';
 import { defineConfig, loadEnv } from 'vite';
 import svgr from 'vite-plugin-svgr';
 
+import { vitestCiReporters } from '../../scripts/ci/vitest-ci-reporters.mjs';
+
 const commitHash = (() => {
   try {
     return execSync('git rev-parse --short HEAD').toString().trim();
@@ -60,7 +62,7 @@ export default defineConfig(({ mode }) => {
       clearMocks: true,
       environment: 'jsdom',
       setupFiles: ['./src/test/setup.ts'],
-      reporters: ['default', ...(process.env.CI ? ['junit'] : [])],
+      reporters: vitestCiReporters(import.meta.url),
       outputFile: { junit: './test-results/junit.xml' },
       coverage: {
         reporter: ['text', 'lcov', 'html'],

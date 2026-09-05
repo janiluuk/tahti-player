@@ -6,7 +6,7 @@ import process from 'node:process';
 const scriptDirectory = path.dirname(new URL(import.meta.url).pathname);
 const openApiPath = path.resolve(
   scriptDirectory,
-  '../../../../tahti/openapi.json',
+  '../../../../tahti-org/openapi.json',
 );
 const referencePath = path.resolve(scriptDirectory, '../docs/API-REFERENCE.md');
 
@@ -25,4 +25,4 @@ if (marker !== expectedHash) {
   process.exit(1);
 }
 
-console.log(`API docs match ../tahti/openapi.json (${expectedHash}).`);
+console.log(`API docs match ../tahti-org/openapi.json (${expectedHash}).`);

@@ -1,6 +1,10 @@
 # Tahti Map screenshot + diagram refresh
 
-**Status:** signed-in recapture blocked 2026-09-04 (post-ViewShell `0.0.60` / `0.0.61`)
+**Status:** blocked
+
+## Remaining
+
+signed-in recapture
 
 Recaptured Nuclear atlas PNGs under `packages/tahti-web/public/map/nuclear/`
 via `scripts/capture-map-screens.mjs`. Aligned `mapScreens.ts`,

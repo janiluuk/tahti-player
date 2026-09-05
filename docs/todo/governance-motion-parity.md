@@ -1,5 +1,7 @@
 # Governance: motion parity with tahti (apps/web) dashboard
 
+**Status:** open
+
 User compared `https://tahti.live/dashboard/governance/` (production
 Next.js app, `tahti` repo) against tahti-player's `/governance`
 (`GovernanceView.tsx`) and found the latter missing real functionality —

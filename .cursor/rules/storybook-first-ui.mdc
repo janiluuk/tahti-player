@@ -5,11 +5,6 @@ alwaysApply: true
 
 # Storybook-first UI
 
-When changing UI, look up the component in Storybook first (`packages/storybook/src/`, including `tahti-web/`) and use it.
+Look up Storybook (`packages/storybook/src/`, including `tahti-web/`) before hand-rolling UI. Keep live data/behavior. Add missing components + stories; flag `Missing states:` / `Orphan:`.
 
-- Do not hand-roll a second badge, tab strip, dialog, empty state, loader, or image treatment if Storybook already has one.
-- Keep the screen's existing data and features. Adapt the Storybook primitive to that data; do not overwrite behavior to match a simpler demo.
-- If nothing in Storybook matches, add the component there with the states that exist today, and flag missing states on the story.
-- If a Storybook story is unused in the player and tahti-web, flag it as an orphan on that story.
-
-Full text: root `AGENTS.md` → Storybook-first UI; `packages/tahti-web/AGENTS.md` Design system compliance.
+Cheat sheet: `packages/tahti-web/STORYBOOK-SURFACES.md`. Full text: root `AGENTS.md` → Storybook-first UI; `packages/tahti-web/AGENTS.md`.

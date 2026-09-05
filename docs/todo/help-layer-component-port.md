@@ -1,6 +1,10 @@
 # Port HelpLayer from tahti, use it on Go Live
 
-**Status:** done (2026-09-05) for the port + first usage. Other queued
+**Status:** partial
+
+## Remaining
+
+port shipped; queued help work remains
 items that reference "the help layer" should now use this component
 too — see the follow-ups list below.
 

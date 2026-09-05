@@ -1,7 +1,7 @@
 /**
  * Catalog tiles remain ExportTarget metadata (deep links). Behavioral
  * submit/status lives on ExportProvider against sibling
- * GET /api/me/export-plugins — see ../tahti docs/technical/export-plugin-contracts.md.
+ * GET /api/me/export-plugins — see ../tahti-org docs/technical/export-plugin-contracts.md.
  */
 export type ExportTarget = {
   id: string;

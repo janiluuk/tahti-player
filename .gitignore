@@ -9,6 +9,8 @@ build
 storybook-static
 coverage
 test-results
+snapshot-digest
+packages/*/snapshot-digest
 .DS_Store
 
 # Local Tahti fit planning (not part of upstream Nuclear)

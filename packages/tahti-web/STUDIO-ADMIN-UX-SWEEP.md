@@ -1,12 +1,13 @@
 # Studio/Admin UX sweep (2026-09-03)
 
 Full audit of every Studio and Admin view + subtab (34 `views/studio/*.tsx`, 27
-`views/admin/*.tsx`, plus `views/admin/moderation/tabs/*` and
-`views/admin/orphanPages/tabs/*` — ~68 files) against this repo's established
-design system (`Button`, `Tooltip`, `StudioPanel`, `PageHeader`, `PageLoading`/
-`PageEmpty`/`PageError`, `Badge`, `Tabs`). Read-only audit; nothing in this
-sweep has been changed yet — see WORKPLAN.md's Storybook UI compliance
-backlog for the checklist items this feeds and their priority/status.
+`views/admin/*.tsx`, plus moderation/orphan tabs — ~68 files) against the design
+system. **Archive / file:line table only.**
+
+**Open punch list (use this first):** [`STUDIO-ADMIN-UX-SWEEP-OPEN.md`](STUDIO-ADMIN-UX-SWEEP-OPEN.md).
+Leaf tracking: [`docs/todo/INDEX.md`](../../docs/todo/INDEX.md).
+WORKPLAN epics: [`WORKPLAN.md`](WORKPLAN.md).
+
 
 **Two items were explicitly called out as must-fix targets, not just
 nice-to-haves:** every real action `Button` should carry a lucide icon, and

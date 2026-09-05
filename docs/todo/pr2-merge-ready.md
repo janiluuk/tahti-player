@@ -1,5 +1,7 @@
 # PR #2 merge-ready autopilot
 
+**Status:** open
+
 Goal: make https://github.com/janiluuk/tahti-player/pull/2 merge-ready (green CI, mergeable, comments triaged). Do not merge.
 
 ## Pass 1 findings (2026-09-04)

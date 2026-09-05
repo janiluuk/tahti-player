@@ -17,7 +17,7 @@ without breaking unrelated categories.
 ## Before writing code
 
 1. Read the relevant entry in [`PLUGIN-STORE-PLAN.md`](../PLUGIN-STORE-PLAN.md).
-2. Search the sibling `../tahti` checkout for the production page, API client, route, DTO, and
+2. Search the sibling `../tahti-org` checkout for the production page, API client, route, DTO, and
    database model. The sibling API is the contract source of truth; this repository is only the
    frontend half.
 3. Confirm the API counterpart exists before adding a live operation. Record the exact method and
@@ -49,7 +49,7 @@ provider registry for behavior. Validate user input before calling the host API.
 
 ## API parity checklist
 
-For every feature, verify all of these against `../tahti` before calling it live:
+For every feature, verify all of these against `../tahti-org` before calling it live:
 
 - request method and path;
 - request body/query names and enum values;
@@ -61,7 +61,7 @@ For every feature, verify all of these against `../tahti` before calling it live
 
 The current counterpart inventory is intentionally explicit:
 
-| Integration boundary | `../tahti` counterpart | Permission boundary |
+| Integration boundary | `../tahti-org` counterpart | Permission boundary |
 | --- | --- | --- |
 | User integrations | `apps/api/src/routes/me/integrations.ts` (`/api/me/integrations`) | Authenticated user; provider-specific OAuth/API-key validation |
 | RTMP multicast | `apps/api/src/routes/me/rtmp-targets.ts` (`/api/me/rtmp-targets`) | Authenticated channel owner |
@@ -116,6 +116,6 @@ tests and user-facing coverage for every new configuration flow.
 - Extract a generic Audio FX chain host UI from `StudioProEditorView`.
 - Share the multicast destination form between Go Live and Settings, keeping provider-specific
   credentials inside each provider configuration.
-- ExportProvider submit/status/webhook contracts land in `../tahti` (`GET /api/me/export-plugins`); Nuclear `revelatorExportProvider` calls them.
+- ExportProvider submit/status/webhook contracts land in `../tahti-org` (`GET /api/me/export-plugins`); Nuclear `revelatorExportProvider` calls them.
 - Integrations marketplace credentials: sibling `/api/me/integrations` + `SCROBBLE` ListenBrainz and Last.fm (see `src/plugins/scrobble`). Discovery dashboards still blocked.
 - Remaining registry runtime blockers: `bandcamp-dashboard`, `deezer-dashboard`, `listenbrainz-dashboard` (charts), `omnisource`, `youtube-liked-songs-sync`.

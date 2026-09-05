@@ -2,6 +2,9 @@
 
 Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
 
+> **Open work:** unfinished items live in [`WORKPLAN.md`](WORKPLAN.md) and [`docs/todo/INDEX.md`](../../docs/todo/INDEX.md). Shipped rows stay here as the product matrix — do not copy them into WORKPLAN.
+
+
 **Status**
 
 | Tag | Meaning |
@@ -49,30 +52,11 @@ Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
 - [x] Embeds
 - [x] Artist Branding workspace: profile picture, channel outlook, gallery visibility, fullscreen slideshow, and 10-image press kit selection
 
-**Remaining / partial**
+**Remaining / partial** — short copy: [`FEATURES-REMAINING.md`](FEATURES-REMAINING.md) (open only; shipped rows in HISTORY)
 
-- [x] Channel chat hardening — hCaptcha wired on anonymous join (`useHcaptcha` in `ChannelChatPanel`), one shared component powers both the rail and standalone `/chat/$slug` route (parity by construction). Not yet soak-tested against a live hCaptcha site key in production.
-- [x] Full Three.js visualizer preset set — all ten production preset names now have distinct Three.js scenes, use the shared analyser, honor reduced motion, and load from a separate lazy chunk (`ChannelVisualizer.tsx`, `visuals/ThreeVisualizer.tsx`)
-- [x] Stash upload / delete
-- [x] Stats detail page (beyond summary) — `/studio/stats/detail` (`StudioStatsDetailView.tsx`) shipped, worklog row 14 approved
-- [x] Sources OAuth silent-mock demock polish — start URLs are real (`oauthStartUrl()` → `/api/me/*/oauth/start`, `api/sources.ts:189`) and mock-connect is hard-gated behind `VITE_FORCE_MOCK`; browser verification covers the API's production return shapes for SoundCloud, Bandcamp, Google Drive, and Mixcloud, including provider selection, visible connected/error/login messaging, and query cleanup in the SPA.
-- [x] Venue register
-- [x] Membership purchase (`/signup/payment`) — Stripe checkout + mock activate
-- [x] TOTP at login (manage/settings depth still thin)
-- [x] Account security — TOTP enroll/manage panel in Settings (`SecurityTotpPanel`); matches prod (TOTP is the only account security setting there too)
-- [x] Distribution (catalog + Revelator + Spotify profile)
-- [x] Channel moderators (`/studio/moderation`)
-- [x] Listener-only dashboard (`/dashboard` routes non-artists to `/library`)
-- [x] Board admin — all 22 pages ported, gated on `user.isBoard` (see UI-REDESIGN-WORKLOG.md admin table); several sub-pages deliberately scope-trimmed, see §6 note
-- [x] Radio slots depth — series and episodes are now **live-API**, matching bookings. Added `LiveShowEpisode` model + `intervalHours`/`scheduleNote` on the existing `LiveShowSeries` table in `tahti-org` (`packages/db/prisma/schema.prisma`, migration `20260822140000_live_show_episodes`), plus `PATCH /api/me/channel/show-series/:seriesId`, `GET/POST /api/me/channel/show-series/:seriesId/live-show-episodes`, `GET/PATCH /api/me/channel/live-show-episodes/:id` on the existing `channel-schedule.ts` route plugin (17 passing tests). `api/shows.ts` in this repo now calls those endpoints with the standard mock-fallback pattern (`forceMock()`/`allowMockFallback()`, mirroring `fetchShowBookings`); verified against a real local instance of the `tahti-org` API (create series, create episode with a custom title, list — all round-trip correctly). `SERIES_KEY`/`EPISODES_KEY` localStorage remain only as the `VITE_FORCE_MOCK` fixture path.
 - [ ] Multitrack timeline editing — confirmed greenfield (no track array/timeline model anywhere), a multi-day build needing a rendering-architecture decision first, not a slice. Press-kit gallery is done (see above); member invites checked and mostly already covered — adding a moderator by existing username is live-API at `/studio/moderation`. A true email-invite-for-non-account-holders flow is a separate, larger feature with no backing API; deferred, not clearly needed.
-- [x] Settings modal mobile responsiveness — was broken two ways: (1) a horizontal-scroll tab strip with no scroll affordance made most sections undiscoverable, and (2) the section list and content panes visually overlapped (root cause: `sm:flex` was silently losing to a later plain `hidden` rule in this codebase's compiled Tailwind output — same class of bug already worked around once in `SettingsPanelNav.tsx`'s `sm:w-56!`). Redesigned `SettingsPanel`/`SettingsPanelNav`/`SettingsPanelContent` (`@tahti-player/ui`) to a native list-then-detail mobile pattern: below `sm`, tapping a section swaps a full vertical section list for that section's content plus a back button; `sm:` and up shows both panes side by side as before (now with `sm:flex!` to make the override reliable). Verified in-browser at both a narrow and a desktop viewport; 237 `@tahti-player/ui` tests pass.
-- [x] Player bar seek bar now spans the full bottom bar width — it lived inside the center controls column (capped by `max-w-xl`), so it only ever covered a fraction of the bar. Pulled out of `ConnectedPlayerBar`'s controls block into a full-width strip above the whole bar, matching the bar's own padding so its edges line up with the transport controls beneath it.
-- [x] Discover dashboard (`/discover`) — six configurable widgets (this week most/least played, most played, latest tracks, new to you, loved), addable/removable/reorderable via a "+" tile, with genre and content-type filter chips persisted alongside the widget layout (`stores/discoverStore.ts`). Backed almost entirely by existing `tahti-org` infrastructure discovered mid-build (no schema migration needed — logged-in listens already dedupe by `user:<id>`, and `new-to-you` personalization already existed server-side); only two small additions landed there: `sort`/`genre` query params on `/api/top-lists` and a new `GET /api/discover/latest-tracks`. "Loved" and "New to you" intentionally ignore the dashboard filters since neither's data carries genre/content-type metadata to filter by.
 - [ ] Production cutover for `apps/web`
-- [ ] À la carte track purchase (public track page is Download, not Buy) — see WORKPLAN fan-sub vs track-purchase worklist
-
----
+- [ ] À la carte track purchase (public track page is Download, not Buy) — live Stripe path exists; Buy UX on public track still incomplete
 
 ## 1. Anonymous listen
 

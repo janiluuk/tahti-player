@@ -1,0 +1,13 @@
+---
+description: Read AGENTS-START-HERE.md and docs/todo/INDEX.md before other agent docs.
+alwaysApply: true
+---
+
+# Agent start path
+
+Before opening AGENTS.md, worklogs, or FEATURES:
+
+1. Read [`AGENTS-START-HERE.md`](AGENTS-START-HERE.md) (task → file → stop).
+2. Read [`docs/todo/INDEX.md`](docs/todo/INDEX.md) for open work.
+
+Do not skim `docs/todo/` or `UI-REDESIGN-WORKLOG.md` for “what’s next”. Done work folds into `docs/todo/HISTORY.md` and is deleted from `docs/todo/`.

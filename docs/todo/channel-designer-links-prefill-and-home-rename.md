@@ -1,6 +1,6 @@
 # Channel Designer: Links prefill from social links, "Home" → "Stage"
 
-**Status:** 2 of 4 sub-asks shipped (2026-09-05); 2 flagged, not
+**Status:** partial
 attempted — see below for why.
 
 ## Shipped

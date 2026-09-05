@@ -1,5 +1,7 @@
 # Image upload widgets — hover delete + preview modal
 
+**Status:** partial
+
 Status: shared primitives done (2026-09-04). New chrome lives under
 `src/components/imageSlot/` (`useImageSlotChrome`, `ImageSlotDeleteBadge`,
 `ImageSlotPreviewDialog`) and is wired into `RoundImageUploadButton`,

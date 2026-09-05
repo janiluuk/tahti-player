@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
+import { vitestCiReporters } from '../../scripts/ci/vitest-ci-reporters.mjs';
+
 export default defineConfig(({ command }) => {
   const isProduction = command === 'build';
 
@@ -42,7 +44,7 @@ export default defineConfig(({ command }) => {
       globals: true,
       environment: 'jsdom',
       setupFiles: ['./src/test/setup.ts'],
-      reporters: ['default', ...(process.env.CI ? ['junit'] : [])],
+      reporters: vitestCiReporters(import.meta.url),
       outputFile: { junit: './test-results/junit.xml' },
       coverage: {
         reporter: ['text', 'lcov', 'html'],

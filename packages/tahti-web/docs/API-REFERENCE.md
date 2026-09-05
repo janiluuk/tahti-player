@@ -6,10 +6,10 @@ description: Local API contract guide for the Tahti Nuclear client.
 
 This client is maintained in the
 [Tahti Player repository](https://github.com/janiluuk/tahti-player) and uses
-the API served by the sibling `../tahti` repository. The
+the API served by the sibling `../tahti-org` repository. The
 authoritative interactive documentation is available at
 [`https://api.tahti.live/api`](https://api.tahti.live/api), with the machine
-readable contract at [`../tahti/openapi.json`](../../../tahti/openapi.json)
+readable contract at [`../tahti-org/openapi.json`](../../../tahti-org/openapi.json)
 when both repositories are checked out together.
 
 This page records the contract areas used by the Nuclear client and the
@@ -63,12 +63,12 @@ Login is `POST /api/auth/login`, TOTP login is
 - Download gates, stash access, fan tiers, and private audience content must
   be checked server-side for every request, including direct URLs.
 
-## Proposed contract — not yet implemented in `../tahti`
+## Proposed contract — not yet implemented in `../tahti-org`
 
 These client wrappers exist and typecheck, with a mock fallback, but the
 backend route does not exist yet — verified 2026-09-02 by reading
 `apps/api/src/routes/tracks/get.ts`, `apps/api/src/routes/comments/index.ts`,
-and `apps/api/src/routes/me/stash.ts` in `../tahti` directly. Do not treat
+and `apps/api/src/routes/me/stash.ts` in `../tahti-org` directly. Do not treat
 these as live until a corresponding route lands there and this section is
 moved into the verified table above.
 
@@ -109,7 +109,7 @@ once an authenticated comment is posted while viewing via that key.
 ## Adding or changing an API call
 
 1. Find the route, Zod/shared DTO, permission check, and mock fixture in
-   `../tahti` before changing the client.
+   `../tahti-org` before changing the client.
 2. Put the request in a focused `src/api/*.ts` wrapper using the existing
    response and error conventions; views should not call `fetch` directly.
 3. Match method, path, query/body names, enum values, nullable fields, and
@@ -128,5 +128,5 @@ pnpm --filter @tahti-player/tahti-web check:api-docs
 
 The check hashes the sibling OpenAPI `paths` object and compares it with the
 marker in this page. If the check fails, review new and removed paths in
-`../tahti/openapi.json`, update this reference, and re-audit affected client
+`../tahti-org/openapi.json`, update this reference, and re-audit affected client
 wrappers before committing.

@@ -1,3 +1,8 @@
+> **Agent note (2026-09-05):** This file is an **append-only ship diary**, not the open backlog.
+> Open work: [`docs/todo/INDEX.md`](../../docs/todo/INDEX.md) and [`WORKPLAN.md`](WORKPLAN.md) (open-only).
+> Finished tasks fold into [`docs/todo/HISTORY.md`](../../docs/todo/HISTORY.md) — do not re-scan this whole file for “what’s next”.
+> Sibling API path is **`../tahti-org`** (older entries may still say `../tahti`).
+
 ## 2026-09-05 — Channel Designer layout hints + visualizer extract (0.0.83)
 
 **Status:** executed.

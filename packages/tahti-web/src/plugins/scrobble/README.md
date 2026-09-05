@@ -13,7 +13,7 @@ Sibling API owns credentials and outbound scrobble calls:
 | Last.fm | `GET /api/me/integrations/lastfm/oauth/start?returnTo=` → Last.fm auth → callback stores `sessionKey` | `track.scrobble` after recorded listen-events |
 | Disconnect | `DELETE /api/me/integrations/:slug` | — |
 
-Full API note: `../tahti/docs/technical/scrobble-plugin-contracts.md` and
+Full API note: `../tahti-org/docs/technical/scrobble-plugin-contracts.md` and
 `integration-credential-lifecycle.md`.
 
 Last.fm needs server env `LASTFM_API_KEY` + `LASTFM_API_SECRET`.

@@ -1,6 +1,6 @@
 # Radio Browser directory: layout, cover images, enable flow
 
-**Status:** 5 of 6 shipped (2026-09-05); the cover-image sub-ask needs a
+**Status:** partial
 live session check, not a code change.
 
 ## Located

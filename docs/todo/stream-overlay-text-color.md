@@ -1,6 +1,10 @@
 # Stream overlay: artist-configurable text color
 
-**Status:** color picker done (2026-09-05); opacity/scrim toggle not
+**Status:** partial
+
+## Remaining
+
+opacity/scrim remaining
 attempted — flagged below. Backend half shipped to the sibling `tahti`
 repo's already-open PR #441, still awaiting review/merge.
 

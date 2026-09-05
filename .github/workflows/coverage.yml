@@ -10,6 +10,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  pull-requests: write
+
 env:
   DO_NOT_TRACK: 1
 
@@ -46,7 +50,52 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run tests with coverage
+        id: test
+        continue-on-error: true
         run: pnpm test:coverage
+
+      - name: Install Playwright Chromium
+        if: steps.test.outcome == 'failure'
+        run: pnpm --filter @tahti-player/tahti-web exec playwright install chromium --with-deps
+
+      - name: Build snapshot digest
+        if: steps.test.outcome == 'failure'
+        run: node scripts/ci/build-snapshot-digest.mjs
+
+      - name: Write snapshot digest to job summary
+        if: steps.test.outcome == 'failure'
+        run: |
+          if [ -f snapshot-digest/digest.md ]; then
+            cat snapshot-digest/digest.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload snapshot digest artifact
+        if: steps.test.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: snapshot-digest-coverage
+          path: snapshot-digest/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Comment snapshot digest on PR
+        if: steps.test.outcome == 'failure' && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        env:
+          SNAPSHOT_DIGEST_MD: snapshot-digest/digest.md
+        with:
+          script: |
+            const { pathToFileURL } = require('node:url');
+            const mod = await import(
+              pathToFileURL(`${process.env.GITHUB_WORKSPACE}/scripts/ci/comment-snapshot-digest.mjs`).href
+            );
+            await mod.default({ github, context, core });
+
+      - name: Fail job if tests failed
+        if: steps.test.outcome == 'failure'
+        run: |
+          echo "Coverage tests failed — see snapshot-digest-coverage artifact / PR comment if snapshots mismatched."
+          exit 1
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v7

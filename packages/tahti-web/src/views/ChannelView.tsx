@@ -149,6 +149,8 @@ export function ChannelView({ slug }: { slug: string }) {
   const [lookDirty, setLookDirty] = useState(false);
   const [linksDirty, setLinksDirty] = useState(false);
   const [channelLinksDraft, setChannelLinksDraft] = useState<ChannelLink[]>([]);
+  const linksDirtyRef = useRef(false);
+  linksDirtyRef.current = linksDirty;
   const [savingLook, setSavingLook] = useState(false);
   const channelDesignerRef = useRef<ChannelDesignerHandle>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(true);
@@ -264,8 +266,9 @@ export function ChannelView({ slug }: { slug: string }) {
             );
             // Pre-fill the Links block from the artist's social links if
             // they haven't set up any channel-specific links yet — saves
-            // re-entering the same URLs. Never overwrites an existing,
-            // already-saved Links block.
+            // re-entering the same URLs. Never overwrites a saved Links
+            // block, an in-progress draft, or a dirty empty edit (lookTick
+            // refetches must not clobber Links while the artist types).
             if (!ch.data.channelLinks || ch.data.channelLinks.length === 0) {
               const socialEntries = Object.entries(
                 profile.data.artist.socialLinks ?? {},
@@ -274,12 +277,15 @@ export function ChannelView({ slug }: { slug: string }) {
                   Boolean(url) && key !== 'genres' && key !== 'showConnections',
               );
               if (socialEntries.length > 0) {
-                setChannelLinksDraft(
-                  socialEntries.map(([label, url]) => ({
+                setChannelLinksDraft((current) => {
+                  if (linksDirtyRef.current || current.length > 0) {
+                    return current;
+                  }
+                  return socialEntries.map(([label, url]) => ({
                     label: label.charAt(0).toUpperCase() + label.slice(1),
                     url,
-                  })),
-                );
+                  }));
+                });
               }
             }
           })

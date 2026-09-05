@@ -1,6 +1,6 @@
 # Channel Designer Background section: three related reports
 
-**Status:** 2 of 3 fixed (2026-09-05); the third needs a design decision,
+**Status:** partial
 not a guess.
 
 ## 1. Background color shown in every header mode, not just Solid — fixed

@@ -1,6 +1,6 @@
 # Go Live: drop static panel subtext, fold into Help center
 
-**Status:** partially done (2026-09-05) — "restore the calendar view" not
+**Status:** partial
 attempted; see below. Also see the `HelpLayer`-port comment at the
 bottom, which changes what "the right fix" might look like going
 forward.

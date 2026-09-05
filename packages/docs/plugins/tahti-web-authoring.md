@@ -7,7 +7,7 @@ description: Agent and contributor guide for extending Tahti add-ons and Tahti P
 This page is the GitHub-hosted contributor guide for extending the Tahti web client. It complements the general [plugin system](plugin-system.md), [settings](settings.md), and [providers](providers.md) references.
 
 {% hint style="warning" %}
-Tahti web has no backend of its own. Before adding a live integration, inspect the sibling `../tahti` repository. Its Fastify route, shared DTO, permission check, and persistence behavior are the API contract.
+Tahti web has no backend of its own. Before adding a live integration, inspect the sibling `../tahti-org` repository. Its Fastify route, shared DTO, permission check, and persistence behavior are the API contract.
 {% endhint %}
 
 ## Choose the right extension type
@@ -70,7 +70,7 @@ For a Tahti page add-on, put the equivalent schema next to the add-on registry a
 
 Before marking an integration available, record and verify:
 
-1. the exact `../tahti` method and route;
+1. the exact `../tahti-org` method and route;
 2. request body, query names and enum values;
 3. response DTO, nullable fields and error responses;
 4. authentication, owner/artist/board permission checks;
@@ -78,7 +78,7 @@ Before marking an integration available, record and verify:
 6. mock fixtures and loading, empty, error and unavailable states;
 7. a focused test that proves the adapter sends the agreed contract.
 
-Useful counterpart locations include `../tahti/apps/api/src/routes/me`, `../tahti/apps/api/src/routes/admin`, and `../tahti/packages/shared/src/dto`. For example, RTMP destinations are defined by `/api/me/rtmp-targets`, widget management by `/api/admin/disco-widgets`, and user integrations by `/api/me/integrations`. If no counterpart exists, expose configuration as clearly labelled pending/UI-only state and add the missing API work to the Tahti workplan. Never invent a successful mutation.
+Useful counterpart locations include `../tahti-org/apps/api/src/routes/me`, `../tahti-org/apps/api/src/routes/admin`, and `../tahti-org/packages/shared/src/dto`. For example, RTMP destinations are defined by `/api/me/rtmp-targets`, widget management by `/api/admin/disco-widgets`, and user integrations by `/api/me/integrations`. If no counterpart exists, expose configuration as clearly labelled pending/UI-only state and add the missing API work to the Tahti workplan. Never invent a successful mutation.
 
 ## Existing integration inventory
 
@@ -91,7 +91,7 @@ Useful counterpart locations include `../tahti/apps/api/src/routes/me`, `../taht
 | Import / Sources | OAuth, search, link and tool source families | OAuth, search, and tool/upload adapters implemented; HTTP remains in `api/sources.ts` |
 | Export | Destination registry and Revelator submit/status | Revelator runtime live via `/api/me/export-plugins`; other DSPs may still be deep links |
 | Fingerprinting | AcoustID match and check adapter | One provider implemented; more providers pending |
-| Scrobble (ListenBrainz / Last.fm) | Submit-listens / track.scrobble after recorded listen-events | Integrations `SCROBBLE` scope; Settings → Add-ons → Scrobbling. Sibling: `../tahti/docs/technical/scrobble-plugin-contracts.md`. Charts stay out of scope |
+| Scrobble (ListenBrainz / Last.fm) | Submit-listens / track.scrobble after recorded listen-events | Integrations `SCROBBLE` scope; Settings → Add-ons → Scrobbling. Sibling: `../tahti-org/docs/technical/scrobble-plugin-contracts.md`. Charts stay out of scope |
 | Radio and embeds | Configurable stations and SoundCloud/YouTube/hearthis.at embeds | Page add-ons implemented; provider-specific runtime varies |
 | Discovery and channel widgets | Sandboxed listener/channel catalog | `/api/admin/disco-widgets` and install routes available; UI parity continues |
 | Tahti Player registry integrations | Discogs, Deezer, YouTube, Bandcamp, SoundCloud and OmniSource entries | Status varies; ListenBrainz + Last.fm scrobble are live; chart dashboards and OmniSource remain planned. See `packages/tahti-web/docs/PLUGIN-INTEGRATIONS.md` |

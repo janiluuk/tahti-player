@@ -1,6 +1,6 @@
 # Stream overlay: auto-fill title/subtitle, avatar placeholder for cover
 
-**Status:** 2 of 3 shipped (2026-09-05); the now-playing-artwork
+**Status:** partial
 placeholder is blocked on the same missing backend field as the
 already-documented Stream Manager artwork item.
 
