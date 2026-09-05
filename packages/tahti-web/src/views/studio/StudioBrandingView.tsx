@@ -404,9 +404,25 @@ export const StudioBrandingPanel: FC<{
                 </div>
               </div>
               <div className="flex flex-col gap-2">
-                <p className="text-foreground-secondary text-xs">
-                  JPEG, PNG, or WebP. The original is kept for full-size use.
-                </p>
+                <Tooltip
+                  side="bottom"
+                  content={
+                    <p className="max-w-64 text-xs leading-relaxed">
+                      JPEG, PNG, or WebP. The original is kept for full-size
+                      use.
+                    </p>
+                  }
+                >
+                  <span
+                    tabIndex={0}
+                    aria-label="Accepted image formats"
+                    className="text-foreground-secondary hover:text-foreground inline-flex size-4 cursor-help items-center justify-center rounded-full border border-current"
+                  >
+                    <span className="text-[10px] leading-none font-bold">
+                      ?
+                    </span>
+                  </span>
+                </Tooltip>
                 <input
                   ref={avatarInputRef}
                   type="file"
