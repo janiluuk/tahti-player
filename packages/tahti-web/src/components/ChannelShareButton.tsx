@@ -1,8 +1,17 @@
-import { CodeIcon, Share2Icon } from 'lucide-react';
-import { useState } from 'react';
+import {
+  CodeIcon,
+  FacebookIcon,
+  LinkedinIcon,
+  ListMusicIcon,
+  MailIcon,
+  Share2Icon,
+  TwitterIcon,
+} from 'lucide-react';
+import { useEffect, useState } from 'react';
 
-import { Button, CopyButton, Dialog } from '@tahti-player/ui';
+import { Button, CopyButton, Dialog, Tooltip } from '@tahti-player/ui';
 
+import { fetchChannel } from '../api/client';
 import { useChannelShareStore } from '../stores/channelShareStore';
 
 export function ChannelShareButton({
@@ -15,6 +24,7 @@ export function ChannelShareButton({
   iconOnly?: boolean;
 }) {
   const [open, setOpen] = useState(false);
+  const [playlistUrl, setPlaylistUrl] = useState<string | null>(null);
   const enabled = useChannelShareStore(
     (state) => state.enabledByChannel[channelSlug] !== false,
   );
@@ -22,6 +32,48 @@ export function ChannelShareButton({
   const embedUrl = `${window.location.origin}/embed/c/${channelSlug}`;
   const embedSnippet = `<iframe src="${embedUrl}" width="100%" height="180" frameborder="0" allow="autoplay"></iframe>`;
   const text = `Listen to ${displayName} on Tahti`;
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+    let cancelled = false;
+    void fetchChannel(channelSlug).then(({ playable }) => {
+      if (!cancelled) {
+        setPlaylistUrl(playable?.streamUrl ?? null);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [open, channelSlug]);
+
+  const socialLinks = [
+    {
+      id: 'twitter',
+      label: 'Share on X',
+      icon: TwitterIcon,
+      href: `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
+    },
+    {
+      id: 'facebook',
+      label: 'Share on Facebook',
+      icon: FacebookIcon,
+      href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+    },
+    {
+      id: 'linkedin',
+      label: 'Share on LinkedIn',
+      icon: LinkedinIcon,
+      href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+    },
+    {
+      id: 'email',
+      label: 'Share by email',
+      icon: MailIcon,
+      href: `mailto:?subject=${encodeURIComponent(text)}&body=${encodeURIComponent(url)}`,
+    },
+  ];
 
   if (!enabled) {
     return null;
@@ -41,9 +93,6 @@ export function ChannelShareButton({
       </Button>
       <Dialog.Root isOpen={open} onClose={() => setOpen(false)}>
         <Dialog.Title>Share channel</Dialog.Title>
-        <Dialog.Description>
-          Share this channel or add its player to another site.
-        </Dialog.Description>
         <div className="mt-4 flex flex-col gap-5">
           <section className="flex flex-col gap-3">
             <div className="flex items-center gap-2">
@@ -70,6 +119,33 @@ export function ChannelShareButton({
                 aria-label="Copy share message"
                 toastMessage="Message copied."
               />
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <span className="flex items-center gap-2 text-sm font-medium">
+                <ListMusicIcon size={16} aria-hidden />
+                Playlist
+              </span>
+              <CopyButton
+                text={playlistUrl ?? ''}
+                disabled={!playlistUrl}
+                aria-label="Copy playlist link"
+                toastMessage="Playlist link copied."
+              />
+            </div>
+            <div className="flex items-center gap-2 pt-1">
+              {socialLinks.map((link) => (
+                <Tooltip key={link.id} content={link.label} side="top">
+                  <a
+                    href={link.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={link.label}
+                    className="border-border hover:bg-background-secondary text-foreground-secondary hover:text-foreground inline-flex size-8 items-center justify-center rounded-lg border transition-colors"
+                  >
+                    <link.icon size={16} aria-hidden />
+                  </a>
+                </Tooltip>
+              ))}
             </div>
           </section>
           <section className="flex flex-col gap-3">

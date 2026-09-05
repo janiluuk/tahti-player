@@ -1,0 +1,82 @@
+# ChannelView: OnAirBadge dedup, playlist-as-copy-link, share modal cleanup
+
+**Status:** partially done (2026-09-05) — see "Not done" below for the
+part deliberately deferred.
+
+## What shipped
+
+- **Duplicate on-air badge.** `ChannelView.tsx` had two: one in the
+  always-present page masthead toolbar (line ~1121, next to "← Listen",
+  Edit design, Share), and a second passed as the `badge` prop into
+  `ChannelBackdropCard` for the "hero" content block (only present when
+  a hero block exists in the channel's layout). When a layout includes a
+  hero block, both rendered simultaneously. Removed the hero block's own
+  `badge` prop (it's optional on `ChannelBackdropCard`) — the masthead's
+  badge is the one universal indicator that exists regardless of which
+  blocks a channel's layout has, so it's the one kept.
+- **Download-as-playlist → copy-link in the share modal.** The masthead
+  had a `DownloadIcon` "Download playlist" button that called
+  `downloadM3uPlaylist` (client-generated `.m3u` blob download, gated
+  on `live`). Removed it and the now-dead `handleDownloadPlaylist`
+  function / `downloadM3uPlaylist` import entirely. `ChannelShareButton.tsx`
+  gained a "Playlist" row (label + `ListMusicIcon`) with a `CopyButton`
+  that copies the raw stream URL to the clipboard, toasting
+  "Playlist link copied." — there's no persistent server-hosted `.m3u`
+  URL to link to (the old download built the file client-side from a
+  freshly-fetched live stream URL), so "the playlist link" is
+  interpreted as that same stream URL, just delivered via clipboard
+  instead of a downloaded file. The URL is fetched lazily
+  (`fetchChannel(channelSlug)`) when the share dialog opens, so the
+  button is disabled until it resolves.
+- **Social share icons.** Added a row of icon link-buttons (X/Twitter,
+  Facebook, LinkedIn, email) under the Share section, each opening the
+  platform's own share-intent URL in a new tab (`target="_blank"`) with
+  the channel URL + share text prefilled — no existing shared
+  "share-to-X" component was found anywhere in the app, so this is a
+  small local `socialLinks` array using `lucide-react`'s bundled
+  (legacy) brand icons rather than pulling in a new icon set for four
+  icons.
+- **Subtext removed.** Dropped `ChannelShareButton`'s
+  `<Dialog.Description>` ("Share this channel or add its player to
+  another site.") under the modal title — same inline-help-text
+  convention applied elsewhere this session. Left the `<p>{text}</p>`
+  line inside the Share section as-is (it's the actual shareable
+  message content, duplicated below in a copyable `<code>` block by
+  design, not an explanatory caption) since the request's "subtext"
+  reads as the title-adjacent caption, not this.
+
+## Not done — flagged, needs its own pass
+
+**"Move the player above the tabs."** Investigated: "the tabs" are
+`Tabs.Root` (`ChannelView.tsx` ~line 1384, "Overview"/"Manage" — shown
+only to the channel owner/admin). "The player" is the channel's hero
+content block (`case 'hero'` in `renderBlock`, ~line 537 —
+`ChannelBackdropCard` with the play/pause transport, waveform seekbar,
+now-playing overlay), which is one item in the channel's
+user-configurable, order-and-visibility-driven layout (`visibleItems`,
+rendered via `pageBody`). Today, for an owner, `Tabs.Root` renders
+first and `pageBody` (which contains the hero block, wherever it sits
+in that channel's saved layout order) only renders when
+`channelTab === 'overview'` — so switching to "Manage" hides the player
+entirely. Making the player persist above the tabs means extracting
+just the hero block's render out of the generic `renderBlock`/
+`visibleItems.map` loop and rendering it unconditionally above
+`Tabs.Root`, while making sure it does NOT also render a second time
+inside `pageBody` when that owner-tabs wrapper is active (regular
+visitors, who never see `Tabs.Root`, must keep the current single
+render path unchanged). This is a real structural change to a
+data-driven block-rendering system on a ~1600-line view — didn't want
+to guess at the extraction boundary live; needs a deliberate pass (and
+ideally a quick check with the user on whether "the tabs" really means
+this owner-only Overview/Manage strip, since that's non-obvious from
+the report alone).
+
+## Verification
+
+`tsc --noEmit`, `eslint`, and `pnpm --filter @tahti-player/tahti-web
+build` all clean on all three touched files
+(`ChannelView.tsx`, `ChannelShareButton.tsx`, plus the unrelated
+`ChannelDesigner.tsx` fix from the same session). No existing test file
+for either component; none added. Not manually verified in a running
+browser — the social icon URLs, the lazy playlist-link fetch, and the
+badge dedup are all worth a live check.

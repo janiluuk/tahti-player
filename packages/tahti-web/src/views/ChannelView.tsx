@@ -1,6 +1,5 @@
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import {
-  DownloadIcon,
   GripVerticalIcon,
   HeartIcon,
   LayoutDashboardIcon,
@@ -108,7 +107,6 @@ import {
   type ChannelPageItemType,
 } from '../lib/channelPageLayout';
 import { colorSchemeCssVars, normalizeColorScheme } from '../lib/colorScheme';
-import { downloadM3uPlaylist } from '../lib/m3uPlaylist';
 import { isPinned } from '../lib/pinnedTracks';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { syncDocumentMetadata } from '../lib/seo';
@@ -403,18 +401,6 @@ export function ChannelView({ slug }: { slug: string }) {
     });
   };
 
-  const handleDownloadPlaylist = () => {
-    void fetchChannel(slug).then(({ playable }) => {
-      if (playable) {
-        downloadM3uPlaylist({
-          title: `${channel.user.displayName} on Tahti`,
-          streamUrl: playable.streamUrl,
-          fileSlug: slug,
-        });
-      }
-    });
-  };
-
   const handleToggleFavoriteChannel = () =>
     toggleFavoriteChannel({
       slug,
@@ -571,15 +557,6 @@ export function ChannelView({ slug }: { slug: string }) {
             slideshowImages={channel.slideshowImages}
             visualizerSettings={heroVisualizerSettings}
             visualSettingsJson={channel.visualSettingsJson}
-            badge={
-              live ? (
-                <OnAirBadge />
-              ) : (
-                <span className="rounded border border-white/25 px-2 py-0.5 font-mono text-[10px] uppercase opacity-80">
-                  {channel.state}
-                </span>
-              )
-            }
             navItems={[
               { id: 'home', label: 'Home', active: true },
               {
@@ -1152,18 +1129,6 @@ export function ChannelView({ slug }: { slug: string }) {
                   Edit design
                 </span>
               </Button>
-            )}
-            {!editing && live && (
-              <Tooltip content="Download playlist" side="top">
-                <Button
-                  size="icon-sm"
-                  variant="secondary"
-                  onClick={handleDownloadPlaylist}
-                  aria-label="Download playlist"
-                >
-                  <DownloadIcon size={16} aria-hidden />
-                </Button>
-              </Tooltip>
             )}
             {!editing && (
               <ChannelShareButton

@@ -192,25 +192,16 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   panel that opens the form in a modal. **Flag**: kept the inline panel
   in place rather than removing it (ambiguous which was wanted) — see
   `docs/todo/show-info-form-dropdowns-and-status-button.md`.
-- [ ] **ChannelView (Storybook component): player position, duplicate
-  OnAir badge, playlist-download → share modal.** Located: `views/
-  ChannelView.tsx` has two `OnAirBadge` usages (line ~576 and ~1142) —
-  one is the reported duplicate "on air" at the top; figure out which one
-  is the real one to keep before removing the other (they may be for
-  different render paths, e.g. mobile vs desktop — check before deleting
-  either). Move the player above the `Tabs.Root` (~line 1384) — check
-  current DOM order relative to the tabs first. Remove the
-  `DownloadIcon`-labeled "download as playlist" button (~line 1164,
-  near `ChannelShareButton` ~1169) and instead add a "Playlist" button
-  with a copy icon inside `ChannelShareButton`'s share modal — clicking
-  copies the playlist link to the clipboard (use the shared `CopyButton`
-  component, not a hand-rolled clipboard call) and shows a toast. In that
-  same share section, add common social-media share icons (check if a
-  shared "share to X" icon set/component already exists anywhere in the
-  app before building one). Also: remove the explanatory subtext from the
-  share channel modal (`ChannelShareButton.tsx`) — another
-  inline-help-text-must-go instance, matching the pattern used elsewhere
-  today.
+- [x] **ChannelView: duplicate OnAir badge, playlist-download → share
+  modal, social icons, subtext — shipped 2026-09-05 (partial; see flag).**
+  Removed the hero block's own duplicate on-air badge (masthead's is
+  kept). Replaced the "download as playlist" button with a "Playlist"
+  copy-link row in `ChannelShareButton`'s modal (copies the live stream
+  URL, toasts). Added X/Facebook/LinkedIn/email share icons. Removed the
+  modal's subtext caption. **Not done**: "move the player above the
+  tabs" — real structural change to the block-rendering system, needs
+  its own pass; see `docs/todo/channelview-badge-dedup-and-share-modal.md`
+  for exactly what that requires.
 - [ ] **CatalogView: invisible artist titles + hide support widgets until
   configured.** No file named `CatalogView` (or close variants) exists in
   `packages/tahti-web/src` — this may be a `Catalog`-named view in the
@@ -292,3 +283,31 @@ One item per fix; check each off and fold into HISTORY.md once shipped.
   already has drag-to-reorder — e.g. rotation/playlist editors — reuse
   that mechanism rather than adding a new drag library if one isn't
   already a dependency).
+
+- [ ] **Channel Designer: Background section — visualization tab +
+  solid-only color + gradient preset wiring.** Three related asks in
+  `ChannelDesigner.tsx`'s Background section (search for
+  `ChannelDesignerBackdropPanel`-related fields — there's already a
+  `ChannelDesignerBackdropPanel.stories.tsx`, likely the same
+  component): (1) add a "Visualization" tab showing previews of the
+  different visualizer presets the user says were "reserved for it" —
+  find whatever preset catalog already exists
+  (`resolvePublicVisualizerPreset`/`ChannelVisualizer`, used in
+  `ChannelView.tsx` — check there for a full preset enum/list) and
+  confirm what "reserved" refers to before assuming presets already
+  exist unused. (2) The background color picker should only show when
+  the mode is "solid" — currently presumably always visible regardless
+  of mode. (3) Picking a gradient preset should actually update/preview
+  the background gradient live — currently described as not doing that.
+  (4) The gradient color swatches are labeled with names that belong to
+  a different container/context (a copy-paste labeling bug, not a logic
+  bug) — find and fix the mismatched labels once located.
+- [ ] **Channel Designer: PlayerVisualizerControls under "Player
+  visualizer" tab.** `ChannelDesigner.tsx` already has a
+  `ChannelDesignerPlayerVisualizer.stories.tsx` (Storybook) and likely a
+  "Player visualizer" tab/section already exists but doesn't currently
+  render `PlayerVisualizerControls` — locate that component (search the
+  repo for `PlayerVisualizerControls`) and confirm whether it exists
+  already or needs to be built, then wire it into that tab. Update the
+  corresponding Storybook story to match once done (same "keep
+  Storybook in sync" ask as the broader Storybook-refresh item above).
