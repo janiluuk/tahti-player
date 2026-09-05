@@ -1,5 +1,4 @@
 use log::{debug, error};
-use std::process::{Command, Stdio};
 use std::sync::RwLock;
 use tauri::command;
 
@@ -83,10 +82,12 @@ struct YtdlpJson {
     channel: Option<String>,
 }
 
-fn run_ytdlp(args: &[&str]) -> Result<String, String> {
+async fn run_ytdlp_async(args: &[&str]) -> Result<String, String> {
     let program = get_ytdlp_path()?;
-    let mut cmd = Command::new(&program);
-    cmd.args(args).stdout(Stdio::piped()).stderr(Stdio::piped());
+    let mut cmd = tokio::process::Command::new(&program);
+    cmd.args(args)
+        .stdout(std::process::Stdio::piped())
+        .stderr(std::process::Stdio::piped());
 
     #[cfg(target_os = "windows")]
     {
@@ -95,9 +96,26 @@ fn run_ytdlp(args: &[&str]) -> Result<String, String> {
         cmd.creation_flags(CREATE_NO_WINDOW);
     }
 
-    let output = cmd.output().map_err(|error| {
-        error!("[yt-dlp] Failed to execute: {}", error);
-        format!("Failed to execute yt-dlp: {}. Is yt-dlp installed?", error)
+    let child = cmd
+        .spawn()
+        .map_err(|error| {
+            error!("[yt-dlp] Failed to execute: {}", error);
+            format!("Failed to execute yt-dlp: {}. Is yt-dlp installed?", error)
+        })?;
+
+    let output = tokio::time::timeout(
+        std::time::Duration::from_secs(60),
+        child.wait_with_output(),
+    )
+    .await
+    .map_err(|_| {
+        error!("[yt-dlp] yt-dlp timed out after 60 seconds");
+        format!("yt-dlp timed out after 60 seconds")
+    })?;
+
+    let output = output.map_err(|_| {
+        error!("[yt-dlp] yt-dlp wait timed out");
+        format!("yt-dlp wait timed out")
     })?;
 
     if !output.status.success() {
@@ -127,12 +145,13 @@ pub async fn ytdlp_search(
     debug!("[yt-dlp] Searching: {} (limit: {})", query, limit);
 
     let search_url = format!("ytsearch{}:{}", limit, query);
-    let stdout = run_ytdlp(&[
+    let stdout = run_ytdlp_async(&[
         "--dump-json",
         "--flat-playlist",
         "--no-warnings",
         &search_url,
-    ])?;
+    ])
+        .await?;
 
     let results: Vec<YtdlpSearchResult> = parse_ndjson_entries(&stdout)
         .into_iter()
@@ -163,14 +182,15 @@ pub async fn ytdlp_get_stream(video_id: String) -> Result<YtdlpStreamInfo, Strin
     debug!("[yt-dlp] Getting stream for: {}", video_id);
 
     let url = format!("https://www.youtube.com/watch?v={}", video_id);
-    let stdout = run_ytdlp(&[
+    let stdout = run_ytdlp_async(&[
         "-f",
         "bestaudio[ext=m4a]/bestaudio[ext=webm]/bestaudio",
         "--dump-json",
         "--no-playlist",
         "--no-warnings",
         &url,
-    ])?;
+    ])
+        .await?;
 
     let info: YtdlpJson = serde_json::from_str(&stdout).map_err(|error| {
         error!("[yt-dlp] Failed to parse output: {}", error);
@@ -202,7 +222,8 @@ pub async fn ytdlp_get_stream(video_id: String) -> Result<YtdlpStreamInfo, Strin
 pub async fn ytdlp_get_playlist(url: String) -> Result<YtdlpPlaylistInfo, String> {
     debug!("[yt-dlp] Getting playlist: {}", url);
 
-    let stdout = run_ytdlp(&["--dump-json", "--flat-playlist", "--no-warnings", &url])?;
+    let stdout = run_ytdlp_async(&["--dump-json", "--flat-playlist", "--no-warnings", &url])
+        .await?;
     let entries_json = parse_ndjson_entries(&stdout);
 
     let playlist_title = entries_json

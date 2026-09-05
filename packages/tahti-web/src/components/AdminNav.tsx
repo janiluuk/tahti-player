@@ -204,20 +204,6 @@ export const ADMIN_SECTIONS = [
     ].map((to) => PRIMARY.find((item) => item.to === to)!),
   },
   {
-    id: 'community',
-    label: 'Community',
-    items: PRIMARY.filter((item) =>
-      [
-        '/admin/moderation',
-        '/admin/users',
-        '/admin/governance',
-        '/admin/reports',
-        '/admin/grants',
-        '/admin/agm',
-      ].includes(item.to),
-    ),
-  },
-  {
     id: 'content',
     label: 'Content',
     items: PRIMARY.filter((item) =>

@@ -25,6 +25,12 @@ export function PublicGovernanceHistoryView() {
       classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl' }}
     >
       <Link
+        to="/governance"
+        className="text-foreground-secondary mb-2 block w-fit text-xs underline-offset-2 hover:underline"
+      >
+        ← Governance
+      </Link>
+      <Link
         to="/transparency"
         className="text-foreground-secondary mb-2 block w-fit text-xs underline-offset-2 hover:underline"
       >

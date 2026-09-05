@@ -12,6 +12,7 @@ import {
   getRegistryEntry,
   listRegistryEntries,
   setRegistryEntryWarnings,
+  upsertRegistryEntry,
 } from './pluginRegistry';
 
 const isManagedPath = async (absPath: string): Promise<boolean> => {
@@ -33,32 +34,41 @@ export const hydratePluginsFromRegistry = async (): Promise<void> => {
     if (!(await isManagedPath(entry.path))) {
       continue;
     }
-    const pluginLoadStartTime = Date.now();
     try {
       const loader = new PluginLoader(entry.path);
       const metadata = await loader.loadMetadata();
       const api = createPluginAPI(metadata.id, metadata.displayName);
       const { instance } = await loader.load(api);
       const warnings = entry.warnings ?? loader.getWarnings() ?? [];
-      usePluginStore.setState((state) => ({
-        plugins: {
-          ...state.plugins,
-          [entry.id]: {
-            metadata,
-            path: entry.path,
-            enabled: false,
-            warning: warnings.length > 0,
-            warnings,
-            installationMethod: entry.installationMethod,
-            originalPath: entry.originalPath,
-            instance,
-            api,
-          },
-        },
-      }));
-      if (entry.enabled) {
-        await usePluginStore.getState().enablePlugin(entry.id);
-      }
+
+      const enabled = entry.enabled ?? false;
+
+      await upsertRegistryEntry({
+        id: entry.id,
+        version: metadata.version,
+        path: entry.path,
+        installationMethod: entry.installationMethod,
+        originalPath: entry.originalPath,
+        enabled,
+        installedAt: entry.installedAt,
+        lastUpdatedAt: new Date().toISOString(),
+        warnings,
+      });
+
+      usePluginStore.setState((state) => {
+        state.plugins[entry.id] = {
+          metadata,
+          path: entry.path,
+          enabled,
+          warning: warnings.length > 0,
+          warnings,
+          installationMethod: entry.installationMethod,
+          originalPath: entry.originalPath,
+          instance,
+          api,
+        };
+        return state;
+      });
     } catch (error) {
       const message = errorMessage(error);
       const current = await getRegistryEntry(entry.id);
@@ -66,14 +76,6 @@ export const hydratePluginsFromRegistry = async (): Promise<void> => {
         new Set([...(current?.warnings ?? []), message]),
       );
       await setRegistryEntryWarnings(entry.id, merged);
-    } finally {
-      const pluginLoadFinishTime = Date.now();
-      useStartupStore
-        .getState()
-        .setPluginDuration(
-          entry.id,
-          pluginLoadFinishTime - pluginLoadStartTime,
-        );
     }
   }
 

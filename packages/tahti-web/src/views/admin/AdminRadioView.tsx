@@ -61,6 +61,7 @@ const EMPTY_PRESET_DRAFT: AdminInternetRadioPresetInput = {
   streamUrl: '',
 };
 
+
 function catalogStationIdForName(name: string): string | undefined {
   return RADIO_STATIONS.find((station) => station.name === name.trim())?.id;
 }
