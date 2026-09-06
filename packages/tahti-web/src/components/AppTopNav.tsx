@@ -30,6 +30,7 @@ import type { StudioSound } from '../api/studio-types';
 import { useCanGoForward } from '../hooks/useCanGoForward';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { useOwnBroadcastPresence } from '../hooks/useOwnBroadcastPresence';
+import { usePolling } from '../hooks/usePolling';
 import { cn } from '../lib/cn';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
@@ -181,33 +182,21 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
     void markNonStickyRead();
   }, [markNonStickyRead, notificationsOpen, user]);
 
-  useEffect(() => {
+  const loadArchiveStatus = () => {
     if (!user) {
-      setArchiveItems([]);
       return;
     }
-    let cancelled = false;
-    const loadArchiveStatus = () => {
-      void fetchStudioSounds().then((result) => {
-        if (!cancelled) {
-          setArchiveItems(result.data);
-          settleProcessingJobs(
-            result.data
-              .filter(
-                (item) => item.status === 'READY' || item.status === 'ERROR',
-              )
-              .map((item) => item.id),
-          );
-        }
-      });
-    };
-    loadArchiveStatus();
-    const timer = window.setInterval(loadArchiveStatus, 5000);
-    return () => {
-      cancelled = true;
-      window.clearInterval(timer);
-    };
-  }, [user]);
+    void fetchStudioSounds().then((result) => {
+      setArchiveItems(result.data);
+      settleProcessingJobs(
+        result.data
+          .filter((item) => item.status === 'READY' || item.status === 'ERROR')
+          .map((item) => item.id),
+      );
+    });
+  };
+
+  usePolling(loadArchiveStatus, 5000, Boolean(user));
 
   const unreadNotifications = notifications.filter(
     (notification) => !notification.readAt,

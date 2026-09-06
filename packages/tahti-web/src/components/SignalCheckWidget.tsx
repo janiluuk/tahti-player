@@ -53,7 +53,7 @@ function SignalMeter({
   useEffect(() => {
     if (!analyser || !active) {
       if (fillRef.current) {
-        fillRef.current.style.width = '0%';
+        fillRef.current.style.transform = 'scaleX(0)';
       }
       return;
     }
@@ -70,7 +70,7 @@ function SignalMeter({
         peak.heldAt = now;
       }
       if (fillRef.current) {
-        fillRef.current.style.width = `${dbfsToPercent(dbfs)}%`;
+        fillRef.current.style.transform = `scaleX(${dbfsToPercent(dbfs) / 100})`;
       }
       if (peakRef.current) {
         peakRef.current.textContent =
@@ -93,8 +93,8 @@ function SignalMeter({
       <div className="bg-border relative mb-1 h-2.5 overflow-hidden rounded-full">
         <div
           ref={fillRef}
-          className="from-accent-green via-accent-green to-accent-red h-full rounded-full bg-gradient-to-r transition-[width] duration-75"
-          style={{ width: '0%' }}
+          className="from-accent-green via-accent-green to-accent-red h-full origin-left rounded-full bg-gradient-to-r will-change-transform"
+          style={{ transform: 'scaleX(0)' }}
         />
       </div>
       <div

@@ -186,21 +186,25 @@ export function ChannelView({ slug }: { slug: string }) {
   );
   const isAdministrator = hasAccountRole(me, 'BOARD');
   const subtle = activePresetId === 'subtle';
-  const configuredEmbedItems = listenerWidgetInstances
-    .filter((instance) => Boolean(listenerWidgetType(instance.typeId)))
-    .filter(
-      (instance) =>
-        !layout.some(
-          (item) =>
-            item.type === 'embed' && item.embedInstanceId === instance.id,
-        ),
-    )
-    .map((instance) => ({
-      id: instance.id,
-      label: instance.label,
-      hint: listenerWidgetType(instance.typeId)?.name ?? 'External player',
-      embedInstanceId: instance.id,
-    }));
+  const configuredEmbedItems = useMemo(
+    () =>
+      listenerWidgetInstances
+        .filter((instance) => Boolean(listenerWidgetType(instance.typeId)))
+        .filter(
+          (instance) =>
+            !layout.some(
+              (item) =>
+                item.type === 'embed' && item.embedInstanceId === instance.id,
+            ),
+        )
+        .map((instance) => ({
+          id: instance.id,
+          label: instance.label,
+          hint: listenerWidgetType(instance.typeId)?.name ?? 'External player',
+          embedInstanceId: instance.id,
+        })),
+    [listenerWidgetInstances, layout],
+  );
 
   useEffect(() => {
     setLayout(loadChannelPageLayout(slug));
