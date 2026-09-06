@@ -57,6 +57,10 @@ import {
   type ProgrammeView,
 } from '../api/studio-extras';
 import type { StudioCollection } from '../api/studio-types';
+import {
+  collectionRotationSoundIds,
+  planCollectionRotationApply,
+} from '../lib/rotationCollectionApply';
 import { multicastProviderLabel } from '../plugins/multicast';
 import { useBroadcastPresenceStore } from '../stores/broadcastPresenceStore';
 import { usePlayerStore } from '../stores/playerStore';
@@ -296,6 +300,10 @@ export function StreamManagerPanel({
       ),
     [programme],
   );
+  const selectedRotationSoundIds = collectionRotationSoundIds(
+    selectedCollection?.items,
+  );
+  const selectedPlaylistHasRotationTracks = selectedRotationSoundIds.length > 0;
 
   const handleTransport = async (
     action: 'skip' | 'previous' | 'pause' | 'resume',
@@ -343,17 +351,24 @@ export function StreamManagerPanel({
       selectedCollection?.slug === selectedCollectionSlug
         ? selectedCollection
         : (await fetchStudioCollection(selectedCollectionSlug)).data;
-    const soundIds = (collection?.items ?? [])
-      .map((item) => item.soundId)
-      .filter((id): id is string => Boolean(id));
-    if (replace && programme) {
-      for (const item of editableRotation) {
-        await patchStudioSound(item.id, { isFallback: false });
-      }
+    const plan = planCollectionRotationApply({
+      replace,
+      currentFallbackIds: editableRotation.map((item) => item.id),
+      incomingSoundIds: collectionRotationSoundIds(collection?.items),
+    });
+    if (plan.action === 'abort') {
+      setRotationBusy(false);
+      setRotationMsg(
+        plan.reason === 'already-in-rotation'
+          ? 'Nothing to add — those tracks are already in the rotation.'
+          : 'Nothing to add — that playlist has no tracks.',
+      );
+      setPlaylistDialogOpen(false);
+      return;
     }
     let added = 0;
     let failed = 0;
-    for (const soundId of soundIds) {
+    for (const soundId of plan.addIds) {
       const result = await patchStudioSound(soundId, {
         isFallback: true,
       });
@@ -363,13 +378,22 @@ export function StreamManagerPanel({
         failed++;
       }
     }
+    if (plan.action === 'replace' && failed === 0) {
+      for (const soundId of plan.removeIds) {
+        await patchStudioSound(soundId, { isFallback: false });
+      }
+    }
+    const programmeResult = await fetchProgramme();
+    if (programmeResult.data) {
+      setProgramme(programmeResult.data);
+    }
     setRotationBusy(false);
     setRotationMsg(
       failed > 0
-        ? `${replace ? 'Replaced with' : 'Added'} ${added} track${added === 1 ? '' : 's'} — ${failed} could not be added.`
-        : added === 0
-          ? 'Nothing to add — that playlist has no tracks.'
-          : `${replace ? 'Replaced rotation with' : 'Added'} ${added} track${added === 1 ? '' : 's'}${replace ? '' : ' to the rotation'}.`,
+        ? replace
+          ? `${added} track${added === 1 ? '' : 's'} added — ${failed} could not be added. Current rotation was left in place.`
+          : `Added ${added} track${added === 1 ? '' : 's'} — ${failed} could not be added.`
+        : `${replace ? 'Replaced rotation with' : 'Added'} ${added} track${added === 1 ? '' : 's'}${replace ? '' : ' to the rotation'}.`,
     );
     setPlaylistDialogOpen(false);
   };
@@ -873,6 +897,13 @@ export function StreamManagerPanel({
                         This playlist has no tracks.
                       </p>
                     )}
+                    {(selectedCollection.items ?? []).length > 0 &&
+                      !selectedPlaylistHasRotationTracks && (
+                        <p className="text-foreground-secondary mt-2 text-xs">
+                          This playlist has no archive tracks that can play in
+                          24/7 rotation.
+                        </p>
+                      )}
                   </>
                 ) : (
                   <p className="text-foreground-secondary text-sm">
@@ -886,7 +917,9 @@ export function StreamManagerPanel({
               <Button
                 variant="secondary"
                 disabled={
-                  !selectedCollectionSlug || playlistLoading || rotationBusy
+                  !selectedPlaylistHasRotationTracks ||
+                  playlistLoading ||
+                  rotationBusy
                 }
                 onClick={() => setPendingApply({ replace: false })}
               >
@@ -894,7 +927,9 @@ export function StreamManagerPanel({
               </Button>
               <Button
                 disabled={
-                  !selectedCollectionSlug || playlistLoading || rotationBusy
+                  !selectedPlaylistHasRotationTracks ||
+                  playlistLoading ||
+                  rotationBusy
                 }
                 onClick={() => setPendingApply({ replace: true })}
               >

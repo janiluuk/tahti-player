@@ -2,6 +2,18 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-06 — Stream Manager replace-rotation wipe
+
+Folded from `stream-manager-rotation-replace-wipe.md`.
+
+Stream Manager "Replace rotation" cleared every 24/7 fallback before
+adding playlist tracks. Empty / release-only / embed-only playlists, or
+a failed add, left the live rotation empty. Adds now run first; old
+fallbacks are removed only after every add succeeds; programme state
+refreshes after apply. Shipped in tahti-web 0.0.84.
+
+---
+
 ## 2026-09-05 — Channel Designer background + playlists
 
 Folded from `channel-designer-background-playlists.md`.
