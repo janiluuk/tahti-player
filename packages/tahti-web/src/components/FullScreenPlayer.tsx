@@ -107,7 +107,7 @@ export function FullScreenPlayer() {
   return (
     <div
       className={cn(
-        'bg-background fixed inset-0 z-50 flex flex-col overflow-hidden transition-all',
+        'bg-background fixed inset-0 z-[60] flex flex-col overflow-hidden transition-all',
         visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0',
       )}
       style={{ ...bgStyle, transitionDuration: `${ANIMATION_MS}ms` }}

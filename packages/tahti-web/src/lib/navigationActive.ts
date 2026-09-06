@@ -91,6 +91,27 @@ export function activeMobileItem(
   return null;
 }
 
+export function isMobileMoreRoute(
+  location: string | undefined,
+  opts: { studioIsPrimary: boolean },
+): boolean {
+  const id = activeMobileItem(location);
+  if (id === 'library') {
+    return true;
+  }
+  if (id === 'studio' && !opts.studioIsPrimary) {
+    return true;
+  }
+  const path = locationPathname(location);
+  return matchesSectionRoute(path, [
+    '/settings',
+    '/account',
+    '/help',
+    '/admin',
+    '/governance',
+  ]);
+}
+
 export function activeListenTab(
   location: string | undefined,
 ): ListenTabId | null {

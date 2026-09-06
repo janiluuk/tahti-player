@@ -10,7 +10,7 @@ Read this first. Open one more file only if the table says so. Stop when you hav
 | Marketplace catalog | `../tahti-registry` | Store `plugins.json` / themes |
 | This player fork | `.` (`tahti-nuclear`) | Nuclear player + `packages/tahti-web` |
 
-Do not invent sibling API shapes. Inspect `../tahti-org` routes/DTOs first. Do not commit/push/deploy the sibling unless the user asks.
+Do not invent sibling API shapes. Inspect `../tahti-org` routes/DTOs first. Do not commit/push/deploy the sibling unless the user asks. Before every push of this repo, rebase onto the latest PR base (usually `origin/master`).
 
 ## Task → open this → stop
 

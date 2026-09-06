@@ -13,6 +13,7 @@ Extracted from root `AGENTS.md` for on-demand reading.
 - Small, focused changes over large dumps
 - Trim dead code and copy-paste when you see it
 - Never commit unless explicitly asked
+- Before every push: `git fetch` the remote and rebase onto the target base (usually `origin/master`). Do not push a diverged branch.
 
 ### TypeScript
 

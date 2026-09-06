@@ -452,7 +452,13 @@ export function AppShell() {
               />
             </RouteContent>
           </div>
-          {!isArtistPage && <MobileBottomNav />}
+          <ConnectedPlayerBar />
+          {!isArtistPage && (
+            <MobileBottomNav
+              onOpenMore={() => setMobileNavOpen(true)}
+              moreOpen={mobileNavOpen}
+            />
+          )}
         </div>
       ) : isArtistPage ? (
         <div
@@ -519,7 +525,7 @@ export function AppShell() {
         </PlayerWorkspace>
       )}
 
-      <ConnectedPlayerBar />
+      {!isMobile && <ConnectedPlayerBar />}
       <ConnectedStatusBar />
       <FullScreenPlayer />
       <AuthDialog />

@@ -1,3 +1,7 @@
+.tahti-mobile-shell {
+  --mobile-nav-h: 64px;
+}
+
 /* App chrome owns scrolling — never show browser scrollbars. */
 html,
 body,

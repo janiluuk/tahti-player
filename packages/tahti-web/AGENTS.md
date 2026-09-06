@@ -56,4 +56,4 @@ Page widgets configure from **Settings → Add-ons** only (not a second Widgets 
 
 6. Bump `packages/tahti-web/package.json` patch on user-visible commits (e.g. `0.0.83` → `0.0.84`). Skip docs-only.
 7. **Close todos:** fold → `docs/todo/HISTORY.md`, delete todo file, update INDEX, strip finished lines from `WORKPLAN.md`. Skill: `tahti-web-ship-loop`.
-8. Do not commit, push, deploy, or modify `../tahti-org` unless the user asks.
+8. Do not commit, push, deploy, or modify `../tahti-org` unless the user asks. Before every push of this repo, rebase onto the latest PR base (usually `origin/master`).

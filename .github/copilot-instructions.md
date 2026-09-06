@@ -21,3 +21,4 @@ Done work → append [`docs/todo/HISTORY.md`](../docs/todo/HISTORY.md) → delet
 - Do not invent API shapes for `tahti-web`. Check `../tahti-org` first.
 - Do not skip `tahti-registry` after adding or changing a Store plugin or theme.
 - Do not skim the full UI redesign worklog or HISTORY for “what’s next” — use INDEX + open-only WORKPLAN.
+- Do not push a diverged branch — `git fetch` and rebase onto the PR base (usually `origin/master`) first.

@@ -85,7 +85,7 @@ export function ConnectedPlayerBar() {
     return () => document.removeEventListener('pointerdown', onPointerDown);
   }, [signedOutPopoverOpen]);
 
-  if (!playerBarVisible || !playable || (isMobile && isPlaying)) {
+  if (!playerBarVisible || !playable) {
     return null;
   }
 

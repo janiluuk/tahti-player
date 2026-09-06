@@ -204,10 +204,12 @@ test('library is a Studio tab and keeps /library routes selected on Studio', asy
 
   await page.setViewportSize({ width: 390, height: 844 });
   const mobilePrimary = page.getByRole('navigation', { name: 'Primary' });
+  await expect(mobilePrimary).toBeVisible();
   await expect(
-    mobilePrimary.getByRole('link', { name: 'Library' }),
+    mobilePrimary.getByRole('link', { name: 'Listen' }),
   ).toBeVisible();
-  await mobilePrimary.getByRole('link', { name: 'Library' }).click();
+  await mobilePrimary.getByRole('button', { name: 'More' }).click();
+  await page.getByRole('dialog').getByRole('link', { name: 'Library' }).click();
   await expect(page).toHaveURL(/\/library$/);
   await expect(
     page.getByRole('navigation', { name: 'Studio pages' }),
