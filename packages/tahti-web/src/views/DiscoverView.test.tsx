@@ -78,9 +78,26 @@ class ResizeObserverStub {
   disconnect() {}
 }
 
+/** jsdom has no matchMedia — useIsMobile/useIsCompactDesktop and
+ * Tooltip's coarse-pointer check both call it, and this suite renders
+ * the full component tree rather than mocking those hooks away. */
+function stubMatchMedia() {
+  vi.stubGlobal('matchMedia', (query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    addListener: () => {},
+    removeListener: () => {},
+    dispatchEvent: () => false,
+  }));
+}
+
 describe('DiscoverView', () => {
   beforeEach(() => {
     vi.stubGlobal('ResizeObserver', ResizeObserverStub);
+    stubMatchMedia();
     vi.stubEnv('VITE_FORCE_MOCK', '1');
     localStorage.clear();
     useDiscoverStore.setState({
