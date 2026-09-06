@@ -3,6 +3,15 @@
 > Finished tasks fold into [`docs/todo/HISTORY.md`](../../docs/todo/HISTORY.md) — do not re-scan this whole file for “what’s next”.
 > Sibling API path is **`../tahti-org`** (older entries may still say `../tahti`).
 
+## 2026-09-06 — Stream Manager replace rotation no longer wipes 24/7 (0.0.85)
+
+**Status:** executed.
+
+Replace playlist in Stream Manager used to clear every fallback track
+before adding the new playlist. An empty playlist or one without archive
+sound IDs left the live rotation empty. Adds now run first; old fallbacks
+are removed only after every add succeeds; empty playlists abort.
+
 ## 2026-09-06 — Settings mobile list/detail + wrapping tabs (0.0.84)
 
 **Status:** executed.
