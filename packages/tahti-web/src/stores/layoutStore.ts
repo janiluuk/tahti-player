@@ -1,14 +1,9 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type RightRailTab = 'chat' | 'notifications' | 'queue' | 'library';
+export type RightRailTab = 'chat' | 'notifications' | 'queue';
 
-const RIGHT_RAIL_TABS: RightRailTab[] = [
-  'chat',
-  'notifications',
-  'queue',
-  'library',
-];
+const RIGHT_RAIL_TABS: RightRailTab[] = ['chat', 'notifications', 'queue'];
 
 export function isRightRailTab(value: unknown): value is RightRailTab {
   return (
@@ -51,8 +46,6 @@ type LayoutState = {
   setRightRailTab: (tab: RightRailTab) => void;
   /** Queue button: open rail on Queue, or restore previous tab / collapse. */
   toggleQueueRail: () => void;
-  /** Library button: open rail on Library, or restore previous tab / collapse. */
-  toggleLibraryRail: () => void;
   setFullScreenPlayerOpen: (open: boolean) => void;
   /** Bind channel chat context; optionally open right rail once per visit. */
   setChatContext: (opts: {
@@ -110,36 +103,6 @@ export const useLayoutStore = create<LayoutState>()(
         }
         const previous = state.rightRailTabBeforeQueue;
         if (previous && previous !== 'queue') {
-          set({
-            rightRailTab: previous,
-            rightRailTabBeforeQueue: null,
-          });
-          return;
-        }
-        set({
-          rightCollapsed: true,
-          rightRailTabBeforeQueue: null,
-        });
-      },
-      toggleLibraryRail: () => {
-        const state = get();
-        if (state.rightCollapsed) {
-          set({
-            rightCollapsed: false,
-            rightRailTabBeforeQueue: state.rightRailTab,
-            rightRailTab: 'library',
-          });
-          return;
-        }
-        if (state.rightRailTab !== 'library') {
-          set({
-            rightRailTabBeforeQueue: state.rightRailTab,
-            rightRailTab: 'library',
-          });
-          return;
-        }
-        const previous = state.rightRailTabBeforeQueue;
-        if (previous && previous !== 'library') {
           set({
             rightRailTab: previous,
             rightRailTabBeforeQueue: null,
