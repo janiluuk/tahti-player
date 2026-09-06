@@ -1,29 +1,17 @@
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
-import {
-  HistoryIcon,
-  ListMusicIcon,
-  NewspaperIcon,
-  PauseIcon,
-  PlayIcon,
-  RadioIcon,
-  RadioTowerIcon,
-} from 'lucide-react';
+import { HistoryIcon, ListMusicIcon, NewspaperIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
-  Box,
   Button,
   Card,
   CardGrid,
-  ImageReveal,
   SectionShell,
   TabLabel,
   Tabs,
-  Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
-import { resolvePublicVisualizerPreset } from '../api/channel-design';
 import {
   fetchChannel,
   fetchEnabledInternetRadioPresets,
@@ -38,10 +26,10 @@ import {
   type DiscoWidgetRenderItem,
 } from '../api/disco-widgets';
 import type { OnAirChannel, PublicChannel } from '../api/types';
-import { ChannelVisualizer } from '../components/ChannelVisualizer';
 import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
 import { ListenerWidgetsSection } from '../components/ListenerWidgetsSection';
 import { ListenWidgetStoreDialog } from '../components/ListenWidgetStoreDialog';
+import { RadioListItem } from '../components/RadioListItem';
 import { RadioStationCoverEditButton } from '../components/RadioStationCover';
 import { RADIO_STATIONS } from '../content/radioStations';
 import { activeListenTab } from '../lib/navigationActive';
@@ -246,82 +234,26 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
             <DiscoWidgetsSection widgets={discoWidgets} />
 
             {radio ? (
-              <Box
-                variant="secondary"
-                className="relative flex flex-wrap items-center justify-between gap-3 overflow-hidden"
-              >
-                {radioIsPlaying ? (
-                  <div className="pointer-events-none absolute inset-0 opacity-45">
-                    <ChannelVisualizer
-                      preset={resolvePublicVisualizerPreset(radio.visualPreset)}
-                      colorScheme={radio.colorScheme}
-                      colorSchemeJson={radio.colorSchemeJson}
-                      visualSettingsJson={radio.visualSettingsJson}
-                      artworkUrl={radio.nowPlaying?.artworkUrl ?? undefined}
-                      className="h-full min-h-28 w-full"
-                    />
-                  </div>
-                ) : null}
-                <div className="relative z-10 flex min-w-0 items-start gap-3">
-                  <div className="bg-surface-secondary flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg text-sm font-bold tracking-tight">
-                    <ImageReveal
-                      src={radioLogo ?? undefined}
-                      alt=""
-                      className="size-full"
-                      placeholder={
-                        <RadioIcon
-                          size={20}
-                          className="text-foreground-secondary"
-                        />
-                      }
-                    />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-sm font-bold tracking-tight">
-                      {radioName}
-                    </div>
-                    <p className="text-foreground-secondary text-xs">
-                      {radio.hlsUrl
-                        ? (radio.nowPlaying?.title ?? '24/7 community stream')
-                        : 'Temporarily offline'}
-                      {radio.nowPlaying?.artistName
-                        ? ` · ${radio.nowPlaying.artistName}`
-                        : ''}
-                    </p>
-                  </div>
-                </div>
-                <div className="relative z-10 flex flex-wrap items-center gap-2">
-                  <Tooltip
-                    content={radioIsPlaying ? 'Pause Radio' : 'Play Radio'}
-                    side="top"
-                  >
-                    <Button
-                      size="icon-sm"
-                      disabled={!radio.hlsUrl}
-                      aria-label={radioIsPlaying ? 'Pause Radio' : 'Play Radio'}
-                      aria-pressed={radioIsPlaying}
-                      onClick={toggleRadioPlayback}
-                    >
-                      {radioIsPlaying ? (
-                        <PauseIcon size={16} className="fill-current" />
-                      ) : (
-                        <PlayIcon size={16} className="fill-current" />
-                      )}
-                    </Button>
-                  </Tooltip>
-                  <Tooltip content="Open radio" side="top">
-                    <Link to="/radio">
-                      <Button
-                        size="icon-sm"
-                        variant="secondary"
-                        aria-label="Open radio"
-                      >
-                        <RadioTowerIcon size={16} aria-hidden />
-                      </Button>
-                    </Link>
-                  </Tooltip>
-                </div>
-              </Box>
+              <RadioListItem
+                name={radioName}
+                coverUrl={radioLogo}
+                subtitle={`${
+                  radio.hlsUrl
+                    ? (radio.nowPlaying?.title ?? '24/7 community stream')
+                    : 'Temporarily offline'
+                }${
+                  radio.nowPlaying?.artistName
+                    ? ` · ${radio.nowPlaying.artistName}`
+                    : ''
+                }`}
+                isPlaying={radioIsPlaying}
+                disabled={!radio.hlsUrl}
+                onTogglePlay={toggleRadioPlayback}
+                visualPreset={radio.visualPreset}
+                colorScheme={radio.colorScheme}
+                colorSchemeJson={radio.colorSchemeJson}
+                visualSettingsJson={radio.visualSettingsJson}
+              />
             ) : null}
 
             {radioPresets.length > 0 ? (

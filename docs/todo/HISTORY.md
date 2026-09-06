@@ -2,6 +2,19 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-06 — RadioListItem component + hover play on cover art
+
+Folded from `radio-list-item-component.md`. Extracted the Listen
+page's bespoke Tahti Radio row into `components/RadioListItem.tsx`
+(cover art + live-audio-reactive backdrop + now-playing text + "Open
+radio" link) with a Storybook story
+(`Tahti/Radio/RadioListItem` — Idle/Playing/Offline/No-cover states).
+The separate play/pause icon button moved to a hover overlay on the
+cover art itself, using `MediaArtwork`'s existing `onPlay`/`isPlaying`
+pattern (already built for exactly this, just not reused here yet).
+`ListenView.tsx` now renders `<RadioListItem />` instead of ~75 lines
+of inline markup.
+
 ## 2026-09-06 — HelpLayer port fully closed
 
 Folded from `help-layer-component-port.md`. The component shipped and
