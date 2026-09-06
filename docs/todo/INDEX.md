@@ -23,6 +23,7 @@ Status values: `open` | `blocked` | `partial`.
 | blocked | [map-screenshot-refresh.md](map-screenshot-refresh.md) | Signed-in recapture blocked post-ViewShell |
 | open | [listener-purchase-flow.md](listener-purchase-flow.md) | Listener register → buy/subscribe → see purchases & manage subscriptions in account; e2e |
 | open | [pay-what-you-want-pricing.md](pay-what-you-want-pricing.md) | PWYW pricing option for fan subs/purchases with default pre-filled price |
+| open | [performance-cleanup-bulk.md](performance-cleanup-bulk.md) | Dead deps, dead components, dedup API layer, migrate remaining polling, split monoliths |
 | open | [plugin-registry-extraction.md](plugin-registry-extraction.md) | Pointer to sibling extraction checklist |
 | open | [queued-ux-fixes-2026-09-05.md](queued-ux-fixes-2026-09-05.md) | Queued UX: 3 open, all blocked/scoped-out (artwork backend, designer tabs feature) |
 | partial | [radio-browser-directory-fixes.md](radio-browser-directory-fixes.md) | Cover-image sub-ask needs decision |
