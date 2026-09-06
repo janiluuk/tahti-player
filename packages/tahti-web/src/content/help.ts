@@ -162,7 +162,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         ],
       },
       {
-        heading: 'Go live & publish',
+        heading: 'Broadcast & publish',
         body: [
           'Copy RTMP or Icecast credentials from the broadcast studio, then stream from OBS, Mixxx, or Traktor.',
           'Upload archive sets and releases from the studio; they appear on your channel and profile.',
@@ -273,16 +273,16 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'OBS / Streamlabs (RTMP)',
         body: [
-          'Dashboard → Go Live → copy Server and Stream Key.',
+          'Dashboard → Broadcast → copy Server and Stream Key.',
           'OBS → Settings → Stream: Service Custom, paste server and key.',
           'Audio bitrate 128–192 kbps AAC. Start Streaming — channel shows Live when ingest connects.',
-          'Go Live has a "Ready-made OBS setup" download that bundles a scene preset with this channel\'s current server and stream key already filled in, if you would rather import a profile than type the values in by hand.',
+          'Broadcast has a "Ready-made OBS setup" download that bundles a scene preset with this channel\'s current server and stream key already filled in, if you would rather import a profile than type the values in by hand.',
         ],
       },
       {
         heading: 'Traktor, Mixxx, and other Icecast-compatible apps',
         body: [
-          'Go Live → Connect broadcasting software → choose Traktor or Icecast to see the matching Server, Mount, and Password fields for that app.',
+          'Broadcast → Connect broadcasting software → choose Traktor or Icecast to see the matching Server, Mount, and Password fields for that app.',
           'Paste those values into the broadcasting section of your audio app, then enable its On Air / broadcast control the same way you would in OBS.',
         ],
       },

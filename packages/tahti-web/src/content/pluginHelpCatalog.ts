@@ -135,7 +135,7 @@ export const READY_PLUGIN_HELP: PluginHelpEntry[] = [
     state: 'ready',
     stateLabel: 'Ready',
     description: 'Mirrors your Tahti broadcast to a YouTube Live stream.',
-    help: 'Add a YouTube destination in Settings → Add-ons → Multicast or Studio → Go Live. Paste the stream key from YouTube Studio.',
+    help: 'Add a YouTube destination in Settings → Add-ons → Multicast or Studio → Broadcast. Paste the stream key from YouTube Studio.',
   },
   {
     name: 'Twitch',

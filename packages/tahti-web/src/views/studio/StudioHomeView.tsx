@@ -354,7 +354,7 @@ export function StudioHomeView() {
               >
                 Create your channel
               </button>{' '}
-              to unlock Music and Go Live.
+              to unlock Music and Broadcast.
             </p>
           ) : null}
 
@@ -395,7 +395,7 @@ export function StudioHomeView() {
                   <CompactBroadcastTile
                     to="/studio/go-live"
                     icon={RadioIcon}
-                    label="Go Live"
+                    label="Broadcast"
                     subtitle="Keys, signal, on-air"
                     color="var(--accent-red)"
                   />

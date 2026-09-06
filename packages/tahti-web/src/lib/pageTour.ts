@@ -72,7 +72,7 @@ const TOPBAR_STEPS: TourStep[] = [
   },
   {
     id: 'topbar-golive',
-    label: 'Go live',
+    label: 'Broadcast',
     description: 'Jump straight to starting a broadcast on your channel.',
   },
   {

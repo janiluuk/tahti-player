@@ -21,7 +21,7 @@ export type MulticastConfiguring = {
 /** Add or edit one multistream RTMP destination — the real configuration
  * dialog (address/port split for custom RTMP, ingest-server hint for
  * known platforms, an enabled toggle, save/error state). Shared between
- * Settings → Add-ons → Multistream and Studio → Go Live's "Add
+ * Settings → Add-ons → Multistream and Studio → Broadcast's "Add
  * destination" so both use the same form instead of a second, lesser one. */
 export function MulticastConfigureDialog({
   configuring,

@@ -1345,7 +1345,7 @@ function ChannelPanel() {
           ) : (
             <div className="flex flex-col gap-6">
               <SettingsToggle
-                label="Show share button on my channel and Go Live"
+                label="Show share button on my channel and Broadcast"
                 description="Let listeners and collaborators copy or share your live channel link."
                 value={shareEnabled}
                 onChange={(value) => {
@@ -1681,7 +1681,7 @@ export function BroadcastPanel({
           />
           <Link to="/studio/go-live" onClick={closeSettings}>
             <Button size="sm" variant="secondary">
-              Go Live
+              Broadcast
             </Button>
           </Link>
         </div>
