@@ -23,8 +23,16 @@ live data, overlays, routes, or actions.
 
 ## Still open
 
-- Remaining ViewShell migrations (History, Studio Releases/Schedule/Go Live, Admin list pages)
-- Remaining icon-button Tooltip surfaces (Studio toolbars / Admin / PluginStore)
 - More Studio EmptyState / FilterChips from `studio-storybook-sweep.md`
+
+**2026-09-06:** re-checked the other two "still open" lines against
+current code — both are already done, just never folded back into this
+file. `HistoryView`, `StudioReleasesView`, `StudioScheduleView`, and
+`StudioGoLiveView` all already render `<ViewShell>` (grepped directly).
+A grep sweep for icon buttons with a bare `title=` attribute instead of
+a styled `Tooltip` across every Studio/Admin/PluginStore file turned up
+zero real hits — every `title={...}` match left was a `StudioPanel`
+heading prop, not a native HTML tooltip on an icon button. Removed both
+stale lines.
 
 Keep StudioNav / Listen tabs / Admin tabs mounted.
