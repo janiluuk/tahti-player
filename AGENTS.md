@@ -9,6 +9,7 @@ On-demand detail (do not load unless the task needs it):
 | Topic | File |
 | --- | --- |
 | Code style / components / domains / i18n | [`docs/agent/CODE-STYLE.md`](./docs/agent/CODE-STYLE.md) |
+| View catalog (Storybook coverage, routes, candidates) | [`docs/VIEW-CATALOG.md`](./docs/VIEW-CATALOG.md) |
 | Marketplace registry checklist | [`docs/agent/REGISTRY.md`](./docs/agent/REGISTRY.md) |
 | Testing wrappers & conventions | [`docs/agent/TESTING.md`](./docs/agent/TESTING.md) |
 | Tauri / Rust backend | [`docs/agent/RUST.md`](./docs/agent/RUST.md) |
@@ -49,6 +50,7 @@ pnpm --filter @tahti-player/ui test -- src/components/Badge/Badge.test.tsx
 - Governance API in `../tahti-org`. Contexts: member `/governance`, artist `/studio/governance`, board `/admin/governance` + `/admin/agm`. No invented DTOs; advisory ≠ AGM ballot until sibling contracts exist.
 - Registry: after plugin/theme add/change, update `../tahti-registry` — full checklist in [`docs/agent/REGISTRY.md`](./docs/agent/REGISTRY.md). Do not migrate runtime `plugins.json` yet.
 - Storybook-first UI (see START-HERE / Storybook cheat sheet).
+- **View catalog cross-check:** when adding/removing a view, Storybook story, or navigation item, update [`docs/VIEW-CATALOG.md`](./docs/VIEW-CATALOG.md) — verify route, file path, Storybook status, and candidate flags.
 - Persistent chrome on ordinary surfaces; takeover surfaces may hide it. Tests: assert nav mounted before `aria-current`. Details: [`docs/agent/TESTING.md`](./docs/agent/TESTING.md).
 - User-facing player strings via i18n (`en_US.json` only here).
 - Changelog / release: [`docs/agent/RELEASE.md`](./docs/agent/RELEASE.md).

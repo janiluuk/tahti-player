@@ -28,6 +28,7 @@ Ordinary surfaces: keep sidebar / drawer / bottom bar / Studio/Admin / in-page t
 2. Else local shared (`ViewShell`, `StudioPanel`, `PageStates`, `InPageNav`, gates/navs).
 3. Else build + add story; flag `Missing states:` / `Orphan:`.
 4. Keep live data/features when swapping primitives.
+5. **Cross-check [`docs/VIEW-CATALOG.md`](../../docs/VIEW-CATALOG.md)** after adding/removing views, stories, or navigation items.
 
 Ordinary chrome pages use **`ViewShell`** (short title + optional one-line subtitle). Header actions live in children. `StudioNav` / Admin / Listen tabs stay **outside** the shell. Entity cover-overlay headers and takeover surfaces are exceptions.
 
@@ -43,6 +44,7 @@ Page widgets configure from **Settings → Add-ons** only (not a second Widgets 
 2. Prefer existing API clients and Storybook/`ViewShell` primitives.
 3. API in `src/api`; changelog/worklog diary entry for user-visible ships.
 4. Nav changes: chrome stays mounted on chrome views; verify selection + governance entry points.
+5. **Cross-check [`docs/VIEW-CATALOG.md`](../../docs/VIEW-CATALOG.md)** — update route, file path, Storybook status, and candidate flags when adding/removing views, stories, or nav items.
 5. Checks:
 
    ```bash
