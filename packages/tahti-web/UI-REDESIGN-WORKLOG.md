@@ -3,6 +3,14 @@
 > Finished tasks fold into [`docs/todo/HISTORY.md`](../../docs/todo/HISTORY.md) — do not re-scan this whole file for “what’s next”.
 > Sibling API path is **`../tahti-org`** (older entries may still say `../tahti`).
 
+## 2026-09-06 — Mobile compact player + slim bottom nav (0.0.86)
+
+**Status:** executed.
+
+Phone chrome keeps the compact player above a slim Listen / Discover /
+Radio / More bar while playing (artists also get Studio). Queue is a
+player-bar control. More opens the existing navigate drawer.
+
 ## 2026-09-06 — Stream Manager replace rotation no longer wipes 24/7 (0.0.85)
 
 **Status:** executed.

@@ -4,6 +4,7 @@ import {
   activeListenTab,
   activeMobileItem,
   activeSidebarItem,
+  isMobileMoreRoute,
   SIDEBAR_UNLIT_INTENTIONAL,
 } from './navigationActive';
 
@@ -87,6 +88,17 @@ describe('navigation active states', () => {
     expect(activeMobileItem('/library/favorites')).toBe('library');
     expect(activeMobileItem('/library')).toBe('library');
     expect(activeMobileItem('/studio/go-live')).toBe('studio');
+  });
+
+  it('lights More for destinations that are not primary phone tabs', () => {
+    expect(isMobileMoreRoute('/library', { studioIsPrimary: true })).toBe(true);
+    expect(isMobileMoreRoute('/settings', { studioIsPrimary: true })).toBe(
+      true,
+    );
+    expect(isMobileMoreRoute('/help', { studioIsPrimary: false })).toBe(true);
+    expect(isMobileMoreRoute('/studio', { studioIsPrimary: false })).toBe(true);
+    expect(isMobileMoreRoute('/studio', { studioIsPrimary: true })).toBe(false);
+    expect(isMobileMoreRoute('/', { studioIsPrimary: false })).toBe(false);
   });
 
   it('flags intentional unlit sidebar routes instead of guessing a tab', () => {

@@ -97,7 +97,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         body: [
           'Select a track or choose Play on a channel, release, playlist, or radio station. The current item appears in the player at the bottom of the app.',
           'When nothing is loaded, the player stays hidden so it does not take space from the page. Load a track to show the controls.',
-          'On mobile, the bottom navigation gives way to the active player while music is playing so the controls remain easy to reach.',
+          'On mobile, the compact player sits above the bottom navigation so you can change sections without hiding the controls. Expand it for the full-screen player.',
         ],
       },
       {

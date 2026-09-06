@@ -1,10 +1,9 @@
 import { Link, useRouterState } from '@tanstack/react-router';
 import {
   CompassIcon,
+  EllipsisIcon,
   GaugeIcon,
   LayoutDashboardIcon,
-  LibraryIcon,
-  ListMusicIcon,
   RadioIcon,
   XIcon,
 } from 'lucide-react';
@@ -14,65 +13,65 @@ import { Button, Tooltip } from '@tahti-player/ui';
 
 import { hasAccountRole } from '../lib/accountRoles';
 import { cn } from '../lib/cn';
-import { activeMobileItem, type MobileItemId } from '../lib/navigationActive';
+import {
+  activeMobileItem,
+  isMobileMoreRoute,
+  type MobileItemId,
+} from '../lib/navigationActive';
 import { useAuthStore } from '../stores/authStore';
-import { useLayoutStore } from '../stores/layoutStore';
 
-const NAV = [
+const PRIMARY = [
   {
     to: '/',
     id: 'listen' as const satisfies MobileItemId,
     label: 'Listen',
     icon: GaugeIcon,
-    boardOnly: false,
-  },
-  {
-    to: '/radio',
-    id: 'radio' as const satisfies MobileItemId,
-    label: 'Radio',
-    icon: RadioIcon,
-    boardOnly: false,
   },
   {
     to: '/discover',
     id: 'discover' as const satisfies MobileItemId,
     label: 'Discover',
     icon: CompassIcon,
-    boardOnly: false,
   },
   {
-    to: '/library',
-    id: 'library' as const satisfies MobileItemId,
-    label: 'Library',
-    icon: LibraryIcon,
-    boardOnly: false,
-  },
-  {
-    to: '/studio',
-    id: 'studio' as const satisfies MobileItemId,
-    label: 'Studio',
-    icon: LayoutDashboardIcon,
-    boardOnly: false,
+    to: '/radio',
+    id: 'radio' as const satisfies MobileItemId,
+    label: 'Radio',
+    icon: RadioIcon,
   },
 ] as const;
 
-type MobileBottomNavProps = {
-  onOpenQueue?: () => void;
+const STUDIO_TAB = {
+  to: '/studio',
+  id: 'studio' as const satisfies MobileItemId,
+  label: 'Studio',
+  icon: LayoutDashboardIcon,
 };
 
-/** Fixed bottom tab bar for phone layouts. */
-export function MobileBottomNav({ onOpenQueue }: MobileBottomNavProps) {
+type MobileBottomNavProps = {
+  onOpenMore?: () => void;
+  moreOpen?: boolean;
+};
+
+export function MobileBottomNav({
+  onOpenMore,
+  moreOpen = false,
+}: MobileBottomNavProps) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const isBoard = useAuthStore((state) => hasAccountRole(state.user, 'BOARD'));
-  const toggleBottomQueue = useLayoutStore((s) => s.toggleBottomQueue);
-  const openQueue = onOpenQueue ?? toggleBottomQueue;
-  const items = NAV.filter((item) => !item.boardOnly || isBoard);
+  const user = useAuthStore((state) => state.user);
+  const showStudio =
+    hasAccountRole(user, 'ARTIST') || hasAccountRole(user, 'BOARD');
+  const items = showStudio ? [...PRIMARY, STUDIO_TAB] : [...PRIMARY];
   const mobileActive = activeMobileItem(pathname);
+  const moreActive = isMobileMoreRoute(pathname, {
+    studioIsPrimary: showStudio,
+  });
 
   return (
     <nav
-      className="border-border bg-background z-40 flex shrink-0 items-stretch justify-around border-t px-1 pt-1 pb-[max(0.35rem,env(safe-area-inset-bottom))] md:hidden"
+      className="border-border bg-background z-40 flex h-16 shrink-0 items-stretch justify-around border-t px-1 pt-1 pb-[max(0.35rem,env(safe-area-inset-bottom))] md:hidden"
       aria-label="Primary"
+      style={{ minHeight: 'var(--mobile-nav-h, 64px)' }}
     >
       {items.map((item) => {
         const Icon = item.icon;
@@ -85,7 +84,7 @@ export function MobileBottomNav({ onOpenQueue }: MobileBottomNavProps) {
             className={cn(
               'flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-md px-1 py-1.5 text-[10px] tracking-wide',
               active
-                ? 'text-foreground'
+                ? 'text-primary'
                 : 'text-foreground-secondary hover:text-foreground',
             )}
           >
@@ -96,11 +95,21 @@ export function MobileBottomNav({ onOpenQueue }: MobileBottomNavProps) {
       })}
       <button
         type="button"
-        onClick={openQueue}
-        className="text-foreground-secondary hover:text-foreground flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-md px-1 py-1.5 text-[10px] tracking-wide"
+        onClick={onOpenMore}
+        aria-label="More"
+        aria-expanded={moreOpen}
+        className={cn(
+          'flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-md px-1 py-1.5 text-[10px] tracking-wide',
+          moreActive || moreOpen
+            ? 'text-primary'
+            : 'text-foreground-secondary hover:text-foreground',
+        )}
       >
-        <ListMusicIcon size={18} />
-        <span className="truncate">Queue</span>
+        <EllipsisIcon
+          size={18}
+          strokeWidth={moreActive || moreOpen ? 2.5 : 2}
+        />
+        <span className="truncate">More</span>
       </button>
     </nav>
   );
@@ -108,9 +117,6 @@ export function MobileBottomNav({ onOpenQueue }: MobileBottomNavProps) {
 
 type MobileDrawerProps = {
   open: boolean;
-  /** Omit when the drawer's own content already renders a header
-   * (e.g. RightRailPanel's icon + "Chat" label) -- avoids a duplicate,
-   * icon-less title stacked above it. */
   title?: string;
   onClose: () => void;
   children: ReactNode;
@@ -120,11 +126,6 @@ type MobileDrawerProps = {
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-/** Full-height slide-over used for nav / panels on mobile. Hand-rolled
- * rather than the shared headlessui-backed `Dialog` (different slide-over
- * shape, and `@headlessui/react` isn't a direct dependency of this
- * package) — so it needs its own focus trap and Escape handling instead
- * of getting them for free. */
 export function MobileDrawer({
   open,
   title,
