@@ -10,7 +10,7 @@ import {
   RadioTowerIcon,
   SearchIcon,
 } from 'lucide-react';
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import {
   Button,
@@ -34,7 +34,7 @@ import type { StudioCollection } from '../../api/studio-types';
 import { PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioNav } from '../../components/StudioNav';
-import { StudioPanel } from '../../components/StudioPanel';
+import { StudioPanel, StudioToggleChip } from '../../components/StudioPanel';
 import {
   collectionStyleLabel,
   normalizeCollectionStyle,
@@ -213,7 +213,7 @@ export function StudioCollectionsView() {
                 />
                 <div className="flex flex-wrap gap-2">
                   {CREATE_STYLES.map((s) => (
-                    <StyleChip
+                    <StudioToggleChip
                       key={s.id}
                       selected={style === s.id}
                       icon={s.icon}
@@ -408,36 +408,5 @@ export function StudioCollectionsView() {
         </ViewShell>
       </div>
     </StudioGate>
-  );
-}
-
-function StyleChip({
-  selected,
-  icon,
-  label,
-  onClick,
-}: {
-  selected: boolean;
-  icon: ReactNode;
-  label: string;
-  onClick: () => void;
-}) {
-  return (
-    <Button
-      type="button"
-      variant="text"
-      size="flexible"
-      className={`gap-1.5 rounded-md border px-2.5 py-1.5 text-xs ${
-        selected
-          ? 'border-primary bg-primary/15 text-primary'
-          : 'border-border text-foreground-secondary'
-      }`}
-      onClick={onClick}
-      aria-pressed={selected}
-      title={label}
-    >
-      {icon}
-      <span>{label}</span>
-    </Button>
   );
 }
