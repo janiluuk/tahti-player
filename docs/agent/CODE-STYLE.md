@@ -62,6 +62,8 @@ When changing anything a user sees (layout, controls, status, empty/loading, ove
 4. If a Storybook story is an **orphan** (nothing in the player or tahti-web renders that component), flag it on the story (`Orphan:` in the docs description, and why). Do not delete it in the same pass as a UI sweep unless the user asked to remove it.
 5. New `@tahti-player/ui` components still follow the directory/test/export checklist below.
 
+**Cross-check [`docs/VIEW-CATALOG.md`](../VIEW-CATALOG.md) after any of these changes:** adding/removing a view, adding/removing a Storybook story, or changing navigation items. Update the route, file path, Storybook status, and candidate flags in the catalog.
+
 ### Adding UI Components
 
 When adding a new component to `@tahti-player/ui`:

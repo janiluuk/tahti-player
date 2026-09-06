@@ -25,6 +25,7 @@ Do not invent sibling API shapes. Inspect `../tahti-org` routes/DTOs first. Do n
 | Player core / plugins / themes | Root [`AGENTS.md`](AGENTS.md) + [`docs/agent/`](docs/agent/) | Matching on-demand file only |
 | Settled forks / “already decided” | [`docs/DECISIONS.md`](docs/DECISIONS.md) | Matching decision |
 | Storybook surface lookup | [`packages/tahti-web/STORYBOOK-SURFACES.md`](packages/tahti-web/STORYBOOK-SURFACES.md) | Matching row |
+| View catalog / Storybook coverage | [`docs/VIEW-CATALOG.md`](docs/VIEW-CATALOG.md) | Cross-check after adding/removing views, stories, or nav items |
 | Fork / API relationship | [`TAHTI.md`](TAHTI.md) | Path + ownership split |
 | Ship loop (bump / deploy) | Skill `tahti-web-ship-loop` | Checklist |
 
@@ -57,6 +58,7 @@ Status values: `open` | `blocked` | `partial` | (file deleted when done — neve
 | `GAP-MAPPING.md` | No-drop ledger vs legacy `apps/web` |
 | `UI-REDESIGN-WORKLOG.md` | Chronological ship diary (append only) |
 | `docs/DECISIONS.md` | Settled design forks |
+| `docs/VIEW-CATALOG.md` | View index with Storybook coverage and unification candidates |
 
 ## Always-on rules (pointers)
 
