@@ -45,14 +45,24 @@ dropdowns aren't loud by default, and/or (c) fixing the specific theme's
 `--primary`/`--primary-foreground` pair to have real contrast if it's
 going to be used this broadly regardless.
 
-**Not yet determined:** which theme(s) are affected. The screenshot used
-above was a session with a **custom, pending-review** theme active (its
-own "Theme is in review" banner), not necessarily one of the built-in
-"Tahti" presets (`nuclear:tahti-dark`, `custom:tahti-blue` — see
-`plugins/themes/presets.ts`). Needs checking against the actual named
-"Tahti theme" the report means before touching any specific theme's
-color tokens — the `Button`/`Select` default-styling issue above is real
-and theme-agnostic either way, but a color-token fix is theme-specific.
+**Not yet determined:** which theme(s) are affected, and this matters —
+a second screenshot (`Settings > Account`, `variant="secondary"` button)
+showed the "Keyboard shortcuts" button in the *same* orange as the
+default-variant ones nearby, even though `secondary` is a genuinely
+different token (`bg-secondary`, not `bg-primary` — see
+`Button.tsx`'s `buttonVariants`). That session had no theme explicitly
+selected, so it fell back to `DEFAULT_THEME_ID = 'nuclear:default'`
+(`plugins/themes/store.ts`) — which reads as **stock upstream Nuclear's
+own default palette** (Nuclear's real branding is exactly this kind of
+reddish-orange), not a Tahti preset (`nuclear:tahti-dark` /
+`custom:tahti-blue`, `plugins/themes/presets.ts`) or a broken custom
+theme. So the orange-everywhere complaint may really be "logged-in
+default state before picking a theme still looks like unbranded stock
+Nuclear" rather than a bug in a specific named Tahti theme — if so, the
+fix is giving `nuclear:default` (or whatever ships as the actual
+out-of-the-box experience) a real `--secondary`/`--tertiary` distinct
+from `--primary`, not auditing component variants. Needs confirming
+which theme the report means before doing anything.
 
 ## Background visualizer
 
