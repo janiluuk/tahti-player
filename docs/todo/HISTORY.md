@@ -2,6 +2,20 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-06 — Governance motion parity with prod dashboard
+
+Folded from `governance-motion-parity.md`. `GovernanceView.tsx` gained
+DRAFT-state badge + circulation-period copy, board-only open/close
+motion controls (`patchGovernanceMotion`), turnout math against the
+member directory count, and meeting quorum display — closing every
+real gap found against `tahti`'s prod governance dashboard. New
+`GovernanceView.test.tsx` (6 cases). Implementation was already complete before this session; this session
+found and fixed a `window.matchMedia` crash in the test suite itself
+(a regression from this same session's Tooltip fix, unrelated to
+governance) that had been silently failing all 6 of its tests. Pending:
+push + deploy + live verification (tracked with this branch's other
+pending work).
+
 ## 2026-09-06 — Mobile player bar: real play/pause + full-screen queue
 
 Folded from `mobile-player-bar-controls-and-queue.md`.

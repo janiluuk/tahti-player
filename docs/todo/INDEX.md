@@ -15,7 +15,6 @@ Status values: `open` | `blocked` | `partial`.
 | open | [desktop-pro-library.md](desktop-pro-library.md) | Independent desktop player / library / Soulseek |
 | partial | [go-live-header-subtext-cleanup.md](go-live-header-subtext-cleanup.md) | Calendar view restore still open |
 | open | [player-bar-fake-live-indicator.md](player-bar-fake-live-indicator.md) | LIVE badge shows for radio/rotation, needs real signal check |
-| open | [governance-motion-parity.md](governance-motion-parity.md) | Member governance vs prod dashboard parity |
 | blocked | [governance-out-of-account-section.md](governance-out-of-account-section.md) | Studio governance is artist/board-only; removing Account's would strand regular members — needs a decision |
 | partial | [help-keyboard-navigation.md](help-keyboard-navigation.md) | Settings remapping deep link still open |
 | partial | [help-layer-component-port.md](help-layer-component-port.md) | Port shipped; other queued help work |
