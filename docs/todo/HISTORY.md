@@ -2,7 +2,27 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
-<<<<<<< HEAD
+## 2026-09-06 — CatalogView invisible-title / support-widget items investigated
+
+Two sub-asks folded from `queued-ux-fixes-2026-09-05.md`'s "CatalogView"
+item (no such file/view exists in this repo or the sibling `tahti-org`
+repo checked out at `../tahti-org`; closest match is the "Catalog" tab
+inside `ArtistView.tsx`/`ChannelView.tsx`).
+
+- **Support widgets showing before tiers configured — not a bug.**
+  `../tahti-org`'s public-profile route already filters `fanTiers`/
+  `purchaseTiers` to `where: { active: true }` server-side
+  (`apps/api/src/routes/profile/public.ts:224-233`), so a disabled tier
+  never reaches the client. `ArtistView.tsx`'s `fanTiers.length > 0`
+  gates are already correct given that contract.
+- **Invisible artist title — real bug, fixed.** `normalizeColorScheme`
+  (`lib/colorScheme.ts`) filled `bg`/`text` independently from a shared
+  fallback; a custom scheme setting only `bg` (no `text` override) kept
+  falling back to white text regardless of how light the custom `bg`
+  was. Added a luminance check so an unset `text` now picks black/white
+  based on the actual custom `bg`'s brightness instead of always
+  defaulting to white. New `colorScheme.test.ts`.
+
 ## 2026-09-06 — Stream Manager replace-rotation wipe
 
 Folded from `stream-manager-rotation-replace-wipe.md`.
@@ -22,17 +42,6 @@ Folded from `ci-snapshot-digest.md` and `pr2-merge-ready.md`.
   PR #3 (`perf/audit`), merged to master.
 - PR #2 (`feat/studio-subtabs-help-layer`) merge-ready work completed and
   merged earlier the same day.
-=======
-## 2026-09-05 — CI snapshot digest + PR #2/#3
-
-Folded from `ci-snapshot-digest.md` and `pr2-merge-ready.md`.
-
-- Vitest snapshot digest reporter, Playwright PNGs, sticky PR comment,
-  CI/coverage artifacts (`<!-- tahti-snapshot-digest -->`). Shipped in
-  PR #3 (`perf/audit`), merged to master.
-- PR #2 (`feat/studio-subtabs-help-layer`) merge-ready work completed and
-  merged earlier the same day.
->>>>>>> e35b72618 (Use EmptyState for remaining Studio empty surfaces.)
 
 ---
 

@@ -36,14 +36,45 @@ export type LooseColorScheme =
   | null
   | undefined;
 
+/** Relative luminance of a `#rrggbb` hex color, or `null` if unparseable. */
+function luminance(hex: string): number | null {
+  const match = /^#?([0-9a-f]{6})$/i.exec(hex.trim());
+  if (!match) {
+    return null;
+  }
+  const value = match[1];
+  const r = parseInt(value.slice(0, 2), 16);
+  const g = parseInt(value.slice(2, 4), 16);
+  const b = parseInt(value.slice(4, 6), 16);
+  return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+}
+
+/**
+ * A custom `bg` with no matching `text` override would otherwise fall back
+ * to FALLBACK.text (white) regardless of how light the custom bg is,
+ * producing invisible text on a light background — pick based on the
+ * actual bg's luminance instead.
+ */
+function contrastingText(bg: string): string {
+  const l = luminance(bg);
+  if (l === null) {
+    return FALLBACK.text;
+  }
+  return l > 0.6 ? FALLBACK.bg : FALLBACK.text;
+}
+
 export function normalizeColorScheme(
   scheme: LooseColorScheme,
 ): NormalizedColorScheme {
   if (!scheme) {
     return { ...FALLBACK };
   }
-  const bg = scheme.bg ?? scheme.background ?? FALLBACK.bg;
-  const text = scheme.text ?? scheme.foreground ?? FALLBACK.text;
+  const customBg = scheme.bg ?? scheme.background ?? null;
+  const bg = customBg ?? FALLBACK.bg;
+  const text =
+    scheme.text ??
+    scheme.foreground ??
+    (customBg ? contrastingText(customBg) : FALLBACK.text);
   const accent = scheme.accent ?? FALLBACK.accent;
   const highlight = scheme.highlight ?? FALLBACK.highlight;
   const muted = scheme.muted ?? FALLBACK.muted;
