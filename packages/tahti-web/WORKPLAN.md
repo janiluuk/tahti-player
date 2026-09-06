@@ -14,6 +14,10 @@ Sibling API: **`../tahti-org`**. Product matrix: [`FEATURES.md`](FEATURES.md) Re
 - [ ] **Governance / Channel Designer / overlay leftovers** — see INDEX (`governance-motion-parity`, `channel-designer-*`, `stream-overlay-*`, `queued-ux-fixes-*`, …).
 - [ ] **Sibling archive mentions API** — extend `../tahti-org` metadata, then remove artist-page fallback.
 
+## Next (queued after today's cycles)
+
+- [ ] **Tahti theme refactor** — `Button` default variant + `Select`'s only variant both hardcode `bg-primary`, so a theme with an orange `--primary` turns every ordinary button/dropdown orange with poor contrast, not just important actions. Also: background visualizer barely visible, and its Settings → Themes toggle (`ThemeVisualizationSettings.tsx`, already built) is gated to a 2-theme allow-list that likely excludes the affected theme. Leaf: [tahti-theme-refactor.md](../../docs/todo/tahti-theme-refactor.md).
+
 ## Reference
 
 Storybook cheat sheet: [`STORYBOOK-SURFACES.md`](STORYBOOK-SURFACES.md). Full audit archive: [`STUDIO-ADMIN-UX-SWEEP.md`](STUDIO-ADMIN-UX-SWEEP.md) (do not scan for backlog).

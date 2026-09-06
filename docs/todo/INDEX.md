@@ -25,6 +25,7 @@ Status values: `open` | `blocked` | `partial`.
 | partial | [stream-overlay-text-color.md](stream-overlay-text-color.md) | Opacity/scrim toggle remaining |
 | partial | [studio-emptystate-remaining.md](studio-emptystate-remaining.md) | Inline form hints + Settings-scope empties remain |
 | open | [tahti-cli-tool.md](tahti-cli-tool.md) | CLI (gumroad-cli-inspired) wrapping api-client — list library items, maybe TUI player |
+| open | [tahti-theme-refactor.md](tahti-theme-refactor.md) | Orange-everywhere Button/Select defaults, contrast, visualizer visibility + settings gate |
 | partial | [viewshell-page-headers.md](viewshell-page-headers.md) | Cover-overlay Studio entity headers excluded |
 
 ## Fold rule (copy into CLAUDE / chat)
