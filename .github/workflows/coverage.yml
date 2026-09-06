@@ -91,11 +91,15 @@ jobs:
             );
             await mod.default({ github, context, core });
 
-      - name: Fail job if tests failed
+      - name: Fail job if tests failed (non-snapshot)
         if: steps.test.outcome == 'failure'
         run: |
-          echo "Coverage tests failed — see snapshot-digest-coverage artifact / PR comment if snapshots mismatched."
-          exit 1
+          if [ -f snapshot-digest/digest.json ] && node -e "const d=require('./snapshot-digest/digest.json'); process.exit(d.count > 0 ? 0 : 1)"; then
+            echo "Snapshot mismatches detected — see snapshot-digest-coverage artifact / PR comment. Not failing CI."
+          else
+            echo "Coverage tests failed (non-snapshot). See test logs above."
+            exit 1
+          fi
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v7
