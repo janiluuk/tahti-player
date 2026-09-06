@@ -5,6 +5,7 @@ import {
   HeartIcon,
   MessageCircleIcon,
   PauseIcon,
+  PencilIcon,
   PlayIcon,
   PlusIcon,
   Repeat2Icon,
@@ -44,6 +45,8 @@ import { ChannelVisualizer } from '../components/ChannelVisualizer';
 import { PageEmpty, PageLoading } from '../components/PageStates';
 import { WaveformSeekbar } from '../components/tahti/WaveformSeekbar';
 import { TimelineReactionBar } from '../components/TimelineReactionBar';
+import { TrackEditDialog } from '../components/TrackEditDialog';
+import { hasAccountRole } from '../lib/accountRoles';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
 import { cn } from '../lib/cn';
 import { normalizeColorScheme } from '../lib/colorScheme';
@@ -142,6 +145,13 @@ export function TrackDetailView({
   const [downloadBusy, setDownloadBusy] = useState(false);
   const [buyBusy, setBuyBusy] = useState(false);
   const [purchaseBump, setPurchaseBump] = useState(0);
+  const [editOpen, setEditOpen] = useState(false);
+
+  const reloadDetail = () => {
+    void fetchTrackDetail(id, shareKey).then(({ data }) => {
+      setDetail(data);
+    });
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -194,7 +204,6 @@ export function TrackDetailView({
     () => parsePublicTracklist(detail?.tracklist),
     [detail?.tracklist],
   );
-
   const purchaseEntitled = useMemo(() => {
     if (!detail || detail.accessMode !== 'PURCHASE' || !detail.purchaseTierId) {
       return true;
@@ -301,6 +310,8 @@ export function TrackDetailView({
     }
     return cue.id;
   }, null);
+  const isOwner = Boolean(user && detail?.channel.username === user.username);
+  const canEdit = isOwner || hasAccountRole(user, 'BOARD');
   const artistLive = channel?.state === 'LIVE';
   const relatedTracks = (profile?.tracks ?? [])
     .filter((track) => track.id !== id)
@@ -655,6 +666,18 @@ export function TrackDetailView({
 
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-1.5">
+              {canEdit ? (
+                <Tooltip content="Edit this sound" side="top">
+                  <Button
+                    size="icon-sm"
+                    variant="default"
+                    aria-label="Edit"
+                    onClick={() => setEditOpen(true)}
+                  >
+                    <PencilIcon size={15} aria-hidden />
+                  </Button>
+                </Tooltip>
+              ) : null}
               <Button
                 size="sm"
                 variant="secondary"
@@ -945,6 +968,14 @@ export function TrackDetailView({
         trackTitle={playable.title}
         onClose={() => setPlaylistOpen(false)}
       />
+
+      {canEdit ? (
+        <TrackEditDialog
+          soundId={editOpen ? id : null}
+          onClose={() => setEditOpen(false)}
+          onSaved={reloadDetail}
+        />
+      ) : null}
     </div>
   );
 }

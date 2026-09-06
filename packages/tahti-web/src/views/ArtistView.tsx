@@ -1464,7 +1464,6 @@ export function ArtistView({ username }: { username: string }) {
               <Eyebrow>Catalog</Eyebrow>
               <PlayableTrackTable
                 items={catalogPlayables}
-                artistUsername={artist.username}
                 compactActions
                 emptyMessage={
                   pinnedPlayables.length > 0
