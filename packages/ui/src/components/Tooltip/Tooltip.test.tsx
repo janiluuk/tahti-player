@@ -75,6 +75,40 @@ describe('Tooltip', () => {
     }
   });
 
+  it('renders fine when window.matchMedia is undefined entirely', async () => {
+    const original = window.matchMedia;
+    // @ts-expect-error -- simulating a jsdom setup that never defines it
+    delete window.matchMedia;
+    try {
+      render(
+        <Tooltip content="Settings">
+          <button>Hover me</button>
+        </Tooltip>,
+      );
+      await userEvent.hover(screen.getByText('Hover me'));
+      expect(await screen.findByRole('tooltip')).toHaveTextContent('Settings');
+    } finally {
+      window.matchMedia = original;
+    }
+  });
+
+  it('renders fine when matchMedia is stubbed to return undefined', async () => {
+    const original = window.matchMedia;
+    window.matchMedia = (() =>
+      undefined) as unknown as typeof window.matchMedia;
+    try {
+      render(
+        <Tooltip content="Settings">
+          <button>Hover me</button>
+        </Tooltip>,
+      );
+      await userEvent.hover(screen.getByText('Hover me'));
+      expect(await screen.findByRole('tooltip')).toHaveTextContent('Settings');
+    } finally {
+      window.matchMedia = original;
+    }
+  });
+
   it('renders ReactNode content', async () => {
     render(
       <Tooltip content={<span data-testid="custom-content">Custom</span>}>

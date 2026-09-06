@@ -17,6 +17,26 @@ const COARSE_POINTER_QUERY = '(pointer: coarse)';
 type TooltipSide = 'top' | 'right' | 'bottom' | 'left';
 
 /**
+ * Safe wrapper around `window.matchMedia` — some jsdom-based test setups
+ * leave `matchMedia` undefined, others stub it with a function that
+ * returns `undefined` rather than a real `MediaQueryList`. Never let a
+ * missing/broken implementation crash the component that calls this.
+ */
+function safeMatchMedia(query: string): MediaQueryList | null {
+  if (
+    typeof window === 'undefined' ||
+    typeof window.matchMedia !== 'function'
+  ) {
+    return null;
+  }
+  try {
+    return window.matchMedia(query) ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * True on touch-primary devices. Tooltip only opens/closes on
  * mouseenter/mouseleave/focus/blur — a touch tap fires mouseenter (and
  * focus) with no matching mouseleave, so tooltips get stuck open after a
@@ -24,14 +44,15 @@ type TooltipSide = 'top' | 'right' | 'bottom' | 'left';
  * rather than trying to fake a close event.
  */
 function useCoarsePointer(): boolean {
-  const [coarse, setCoarse] = useState(() =>
-    typeof window !== 'undefined'
-      ? window.matchMedia(COARSE_POINTER_QUERY).matches
-      : false,
+  const [coarse, setCoarse] = useState(
+    () => safeMatchMedia(COARSE_POINTER_QUERY)?.matches ?? false,
   );
 
   useEffect(() => {
-    const mql = window.matchMedia(COARSE_POINTER_QUERY);
+    const mql = safeMatchMedia(COARSE_POINTER_QUERY);
+    if (!mql) {
+      return;
+    }
     const onChange = () => setCoarse(mql.matches);
     onChange();
     mql.addEventListener('change', onChange);
