@@ -1,4 +1,4 @@
-import { Minimize2Icon } from 'lucide-react';
+import { ArrowLeftIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { formatArtistNames } from '@tahti-player/model';
@@ -116,19 +116,20 @@ export function FullScreenPlayer() {
       aria-modal="true"
       aria-label="Now playing, full screen"
     >
-      <div className="absolute inset-0 opacity-60">
+      <div className="bg-background/35 absolute inset-0 backdrop-blur-md">
         <ChannelVisualizer className="h-full w-full" artworkUrl={coverUrl} />
       </div>
 
-      <div className="relative z-10 flex justify-end p-4">
-        <Tooltip content="Minimize player" side="top">
+      <div className="absolute inset-x-0 top-0 z-10 flex items-start p-4">
+        <Tooltip content="Back to player" side="right">
           <Button
-            size="icon-sm"
+            size="icon"
             variant="text"
             onClick={close}
             aria-label="Minimize player"
+            className="size-12 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50"
           >
-            <Minimize2Icon size={20} aria-hidden />
+            <ArrowLeftIcon size={28} aria-hidden />
           </Button>
         </Tooltip>
       </div>

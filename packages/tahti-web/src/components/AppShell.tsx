@@ -11,6 +11,7 @@ import {
   ShieldIcon,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   PlayerShell,
@@ -38,7 +39,7 @@ import { useLayoutStore } from '../stores/layoutStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 import { useTourStore } from '../stores/tourStore';
-import { hasSeenOnboarding } from '../views/OnboardingView';
+import { hasSeenOnboarding, markOnboardingSeen } from '../views/OnboardingView';
 import { AmbientBackground } from './AmbientBackground';
 import { AppTopNav } from './AppTopNav';
 import { AudioEngine } from './AudioEngine';
@@ -322,16 +323,27 @@ export function AppShell() {
     };
   }, [currentTrackId, isLivePlayback, pathname, playerQueue, playerStatus]);
 
-  // First sign-in of the session: send a new user through onboarding once.
-  // Skips/finishes mark the flag, so this never fires again for them.
+  // First sign-in of the session: offer onboarding via a dismissible toast
+  // instead of forcing a redirect. "Not now" marks it seen the same way
+  // OnboardingView's own "Skip for now" does; letting the toast time out
+  // without a click just offers it again next session.
   useEffect(() => {
-    if (!userId || pathname === '/onboarding') {
+    if (!userId || pathname === '/onboarding' || hasSeenOnboarding(userId)) {
       return;
     }
-    if (!hasSeenOnboarding(userId)) {
-      void navigate({ to: '/onboarding' });
-    }
-  }, [userId, pathname, navigate]);
+    toast('Finish setting up your profile?', {
+      description: 'A few quick steps to personalize your channel.',
+      action: {
+        label: 'Set up profile',
+        onClick: () => void navigate({ to: '/onboarding' }),
+      },
+      cancel: {
+        label: 'Not now',
+        onClick: () => markOnboardingSeen(userId),
+      },
+    });
+    // Fire once per signed-in session, not on every route change.
+  }, [userId]);
 
   useEffect(() => {
     if (!isMobile) {
@@ -425,10 +437,12 @@ export function AppShell() {
 
   return (
     <PlayerShell className={isMobile ? 'tahti-mobile-shell' : undefined}>
-      <AppTopNav
-        showMenuButton={isMobile && !isArtistPage}
-        onOpenMenu={() => setMobileNavOpen(true)}
-      />
+      {!fullScreenPlayerOpen && (
+        <AppTopNav
+          showMenuButton={isMobile && !isArtistPage}
+          onOpenMenu={() => setMobileNavOpen(true)}
+        />
+      )}
       <AmbientBackground />
       <NotificationToasts />
 
@@ -453,7 +467,7 @@ export function AppShell() {
               />
             </RouteContent>
           </div>
-          <ConnectedPlayerBar />
+          {!fullScreenPlayerOpen && <ConnectedPlayerBar />}
           {!isArtistPage && (
             <MobileBottomNav
               onOpenMore={() => setMobileNavOpen(true)}
@@ -526,7 +540,7 @@ export function AppShell() {
         </PlayerWorkspace>
       )}
 
-      {!isMobile && <ConnectedPlayerBar />}
+      {!isMobile && !fullScreenPlayerOpen && <ConnectedPlayerBar />}
       <ConnectedStatusBar />
       <FullScreenPlayer />
       <AuthDialog />

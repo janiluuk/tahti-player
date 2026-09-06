@@ -2,6 +2,38 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-07 — Fullscreen player: translucent backdrop, back arrow, hidden chrome
+
+Folded from `fullscreen-player-background-translucent-layer.md` and
+`fullscreen-player-topbar-and-back-arrow.md` (both pre-spec'd with exact
+diffs from an earlier investigation pass; implemented as written, line
+numbers had drifted slightly but the referenced code matched exactly).
+
+`FullScreenPlayer.tsx`: the `ChannelVisualizer` backdrop now uses
+`bg-background/35 backdrop-blur-md` (was flat `opacity-60`), matching the
+title card's translucent treatment. The top-right `Minimize2Icon` became a
+top-left `ArrowLeftIcon` back button (`size-12`, translucent black
+circular background, "Back to player" tooltip) — bigger and easier to hit
+than the old `size-8` control.
+
+`AppShell.tsx`: `AppTopNav` and both `ConnectedPlayerBar` mounts (mobile
+and desktop) now skip rendering while `fullScreenPlayerOpen` is true, so
+the fullscreen overlay's cover art isn't cropped by chrome underneath it.
+
+## 2026-09-07 — Onboarding: opt-in toast instead of forced redirect
+
+Folded from `onboarding-cta-not-forced-redirect.md`. `AppShell.tsx`'s
+first-sign-in `useEffect` no longer force-navigates to `/onboarding`; it
+shows a dismissible `sonner` toast ("Finish setting up your profile?")
+with a "Set up profile" action (navigates to `/onboarding`) and a
+"Not now" action that calls the same `markOnboardingSeen` OnboardingView's
+own "Skip for now" button already uses. Letting the toast time out without
+a click marks nothing, so it offers again next session rather than either
+nagging forever or permanently vanishing on inaction — the doc's own
+open question ("skip vs. dismissed-forever") is resolved by reusing the
+existing skip semantics for the explicit action only, not for a timeout.
+The route and `/onboarding` page itself are unchanged.
+
 ## 2026-09-07 — Settings → Keyboard shortcuts deep link
 
 Folded from `help-keyboard-navigation.md`. Added a "Keyboard shortcuts"

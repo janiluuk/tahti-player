@@ -5015,3 +5015,45 @@ scoped `eslint` on `SettingsPanels.tsx` pass clean. `vitest run`: 478/478
 unit tests pass (the 11 "failed" files are pre-existing e2e Playwright
 specs vitest's glob picks up and can't import — unrelated, not introduced
 this round). Bumped `packages/tahti-web/package.json` to `0.0.88`.
+
+## 2026-09-07 — Workplan cycle 3: fullscreen player polish, opt-in onboarding toast; bump to 0.0.89
+
+**Topic 1 — Fullscreen player translucent backdrop + back arrow.** Closes
+`fullscreen-player-background-translucent-layer.md` and
+`fullscreen-player-topbar-and-back-arrow.md` (both pre-spec'd with exact
+diffs from an earlier pass; line numbers had drifted but the referenced
+code matched verbatim, so implemented as written). `FullScreenPlayer.tsx`:
+the `ChannelVisualizer` backdrop now uses `bg-background/35
+backdrop-blur-md` instead of flat `opacity-60`, matching the title card's
+existing translucent treatment. The top-right `Minimize2Icon` became a
+top-left `ArrowLeftIcon` "Back to player" button — `size-12` (was
+`size-8`) with a translucent `bg-black/30` circular background, `p-4`
+inset from the corner, sized and padded for an easy tap target.
+`AppShell.tsx`: `AppTopNav` and both `ConnectedPlayerBar` mounts (mobile
+and desktop) now skip rendering while `fullScreenPlayerOpen` is true, so
+top chrome doesn't crop the fullscreen cover art underneath it.
+
+**Topic 2 — Onboarding: opt-in toast instead of forced redirect.** Closes
+`onboarding-cta-not-forced-redirect.md`. `AppShell.tsx`'s first-sign-in
+effect no longer force-navigates to `/onboarding`; it shows a dismissible
+`sonner` toast ("Finish setting up your profile?") with a "Set up
+profile" action (navigates to `/onboarding`) and a "Not now" action that
+calls the same `markOnboardingSeen` `OnboardingView`'s own "Skip for now"
+button already uses. A toast that times out without a click marks
+nothing, so it offers again next session rather than nagging forever or
+vanishing permanently on inaction — resolves the doc's own flagged open
+question (skip vs. dismissed-forever) by only applying skip semantics to
+the explicit action, never to a timeout.
+
+Only 2 topics again — searched `governance-gap-list.md`,
+`listener-purchase-flow.md`, `pay-what-you-want-pricing.md`,
+`plugin-registry-extraction.md` for a bounded third, but each is either a
+multi-repo feature needing its own scoping pass or explicitly gated on a
+sibling-repo decision (`plugin-registry-extraction.md` says outright:
+"do not migrate... until that doc's checklist is accepted").
+
+**Validation:** `pnpm --filter @tahti-player/tahti-web type-check`, a
+scoped `eslint` on `FullScreenPlayer.tsx`/`AppShell.tsx`, and
+`pnpm --filter @tahti-player/tahti-web test` (the package's own script,
+`vitest run --exclude 'e2e/**'`) all pass clean — 84/84 files, 478/478
+tests. Bumped `packages/tahti-web/package.json` to `0.0.89`.

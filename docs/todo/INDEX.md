@@ -12,15 +12,12 @@ Status values: `open` | `blocked` | `partial`.
 | blocked | [channelview-move-player-to-stage.md](channelview-move-player-to-stage.md) | Player-in-backdrop extraction needs a design decision |
 | open | [desktop-pro-library.md](desktop-pro-library.md) | Independent desktop player / library / Soulseek |
 | partial | [go-live-header-subtext-cleanup.md](go-live-header-subtext-cleanup.md) | Calendar view restore still open |
-| open | [fullscreen-player-background-translucent-layer.md](fullscreen-player-background-translucent-layer.md) | Fullscreen player: match background art translucent layer to title card treatment |
-| open | [fullscreen-player-topbar-and-back-arrow.md](fullscreen-player-topbar-and-back-arrow.md) | Fullscreen player: hide top bar, replace minimize icon with big back arrow top-left |
 | open | [governance-gap-list.md](governance-gap-list.md) | Governance features missing from tahti-player (18 gaps vs tahti-org) |
 | blocked | [governance-out-of-account-section.md](governance-out-of-account-section.md) | Studio governance is artist/board-only; removing Account's would strand regular members — needs a decision |
 | partial | [image-upload-hover-lightbox.md](image-upload-hover-lightbox.md) | Shared chrome done; remaining surfaces |
 | partial | [local-files-moved-to-library-tab.md](local-files-moved-to-library-tab.md) | Move done; desktop-mode gating open |
 | open | [listener-purchase-flow.md](listener-purchase-flow.md) | Listener register → buy/subscribe → see purchases & manage subscriptions in account; e2e |
 | open | [pay-what-you-want-pricing.md](pay-what-you-want-pricing.md) | PWYW pricing option for fan subs/purchases with default pre-filled price |
-| open | [onboarding-cta-not-forced-redirect.md](onboarding-cta-not-forced-redirect.md) | Stop force-redirecting new sign-ins to /onboarding; make it an opt-in CTA instead |
 | open | [plugin-registry-extraction.md](plugin-registry-extraction.md) | Pointer to sibling extraction checklist |
 | open | [queued-ux-fixes-2026-09-05.md](queued-ux-fixes-2026-09-05.md) | Queued UX: 3 open, all blocked/scoped-out (artwork backend, designer tabs feature) |
 | partial | [radio-browser-directory-fixes.md](radio-browser-directory-fixes.md) | Cover-image sub-ask needs decision |
