@@ -2,6 +2,37 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-06 — Real LIVE badge (not radio/rotation false-positive)
+
+Folded from `player-bar-fake-live-indicator.md`. Confirmed via
+`../tahti-org` that `channel.state === 'LIVE'` is genuinely overloaded
+(the 24/7 fallback rotation sets it too, `channel-fallback-reconciler.ts`)
+and no public endpoint exposed real ingest signal — `manage-stats` is
+owner/board-gated. User authorized editing `tahti-org` mid-session.
+
+**Backend (`tahti-org`, implemented but uncommitted):** `GET
+/api/channels/:slug` now also returns `signalConnected` (via the same
+`fetchMountSignalStatus` manage-stats already uses, only when `state
+=== 'LIVE'`), added to `PublicChannelViewSchema`. `get.test.ts` gained
+2 assertions. Verified against a disposable Postgres, not the shared
+dev DB. **Left uncommitted**: `tahti-org` has an in-progress git merge
+(`origin/main` → `main`, conflicts already resolved, awaiting a final
+commit from whoever started it) — concluding someone else's merge
+under this session's commit isn't this session's call. The diff sits
+cleanly on top of the merge; whoever commits it will see it as an
+additional uncommitted change afterward.
+
+**Frontend (`tahti-web`, committed):** `TahtiPlayable`/`PublicChannel`
+gained `signalConnected`/`isRealLive`. New `playerStore.isRealLive`
+(distinct from `isLive`, which still governs live-style playback UI
+for both real broadcasts and rotations) is set from `item.isRealLive`
+in `play()` — conservatively `false` in `playQueueIndex()` since
+`playableFromQueueItem` can't reconstruct it from the queued `Track`.
+`ConnectedPlayerBar`/`FullScreenPlayer`'s LIVE badge now gates on
+`isRealLive`. Mock data (`mockChannel`) reflects the same contract:
+Tahti Radio (rotation) never shows `signalConnected`, other live mock
+channels do.
+
 ## 2026-09-06 — Channel Designer Links: hide/show eye icon confirmed shipped
 
 Folded item 3 from `channel-designer-links-prefill-and-home-rename.md`,

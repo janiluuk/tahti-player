@@ -34,6 +34,7 @@ export function ConnectedPlayerBar() {
   const volume = usePlayerStore((s) => s.volume);
   const muted = usePlayerStore((s) => s.muted);
   const isLive = usePlayerStore((s) => s.isLive);
+  const isRealLive = usePlayerStore((s) => s.isRealLive);
   const shuffle = usePlayerStore((s) => s.shuffle);
   const repeatMode = usePlayerStore((s) => s.repeatMode);
   const playerBarVisible = usePlayerStore((s) => s.playerBarVisible);
@@ -276,7 +277,7 @@ export function ConnectedPlayerBar() {
                 {artist}
               </span>
             </span>
-            {isLive ? <PlayerLiveBadge /> : null}
+            {isRealLive ? <PlayerLiveBadge /> : null}
           </button>
           {mobilePlayPauseButton}
           {queueButton}
@@ -296,7 +297,7 @@ export function ConnectedPlayerBar() {
               title={title}
               artist={artist}
               coverUrl={coverUrl}
-              action={isLive ? <PlayerLiveBadge /> : undefined}
+              action={isRealLive ? <PlayerLiveBadge /> : undefined}
               onTitleClick={
                 isLive
                   ? undefined

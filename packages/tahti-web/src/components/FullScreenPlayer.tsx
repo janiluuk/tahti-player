@@ -30,6 +30,7 @@ export function FullScreenPlayer() {
   const volume = usePlayerStore((s) => s.volume);
   const muted = usePlayerStore((s) => s.muted);
   const isLive = usePlayerStore((s) => s.isLive);
+  const isRealLive = usePlayerStore((s) => s.isRealLive);
   const shuffle = usePlayerStore((s) => s.shuffle);
   const repeatMode = usePlayerStore((s) => s.repeatMode);
   const setStatus = usePlayerStore((s) => s.setStatus);
@@ -205,9 +206,9 @@ export function FullScreenPlayer() {
             <div className="text-foreground-secondary text-xs tracking-wide uppercase">
               Error
             </div>
-          ) : isLive ? (
+          ) : isRealLive ? (
             <PlayerLiveIndicator />
-          ) : (
+          ) : isLive ? null : (
             <div className="w-full">
               <ConnectedSeekBar />
             </div>

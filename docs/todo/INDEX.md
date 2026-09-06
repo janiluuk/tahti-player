@@ -14,7 +14,6 @@ Status values: `open` | `blocked` | `partial`.
 | partial | [channelview-badge-dedup-and-share-modal.md](channelview-badge-dedup-and-share-modal.md) | Badge dedup + share modal leftovers |
 | open | [desktop-pro-library.md](desktop-pro-library.md) | Independent desktop player / library / Soulseek |
 | partial | [go-live-header-subtext-cleanup.md](go-live-header-subtext-cleanup.md) | Calendar view restore still open |
-| open | [player-bar-fake-live-indicator.md](player-bar-fake-live-indicator.md) | LIVE badge shows for radio/rotation, needs real signal check |
 | open | [governance-gap-list.md](governance-gap-list.md) | Governance features missing from tahti-player (18 gaps vs tahti-org) |
 | blocked | [governance-out-of-account-section.md](governance-out-of-account-section.md) | Studio governance is artist/board-only; removing Account's would strand regular members — needs a decision |
 | partial | [help-keyboard-navigation.md](help-keyboard-navigation.md) | Settings remapping deep link still open |
