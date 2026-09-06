@@ -177,11 +177,19 @@ export function AudioEngine() {
       }
       next();
     };
-    const onTime = () =>
+    let lastProgressUpdate = 0;
+    const PROGRESS_THROTTLE_MS = 1000;
+    const onTime = () => {
+      const now = performance.now();
+      if (now - lastProgressUpdate < PROGRESS_THROTTLE_MS) {
+        return;
+      }
+      lastProgressUpdate = now;
       setProgress(
         audio.currentTime,
         Number.isFinite(audio.duration) ? audio.duration : 0,
       );
+    };
     // crossOrigin is required for the shared analyser (see the graph
     // effect above) -- without it, connecting a MediaElementAudioSourceNode
     // to a cross-origin stream still plays audio fine but the analyser

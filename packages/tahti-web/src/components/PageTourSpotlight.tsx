@@ -77,11 +77,22 @@ export function PageTourSpotlight() {
     if (!open) {
       return;
     }
-    window.addEventListener('resize', measure);
-    window.addEventListener('scroll', measure, true);
+    let rafId = 0;
+    const throttledMeasure = () => {
+      if (rafId) {
+        return;
+      }
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        measure();
+      });
+    };
+    window.addEventListener('resize', throttledMeasure);
+    window.addEventListener('scroll', throttledMeasure, true);
     return () => {
-      window.removeEventListener('resize', measure);
-      window.removeEventListener('scroll', measure, true);
+      cancelAnimationFrame(rafId);
+      window.removeEventListener('resize', throttledMeasure);
+      window.removeEventListener('scroll', throttledMeasure, true);
     };
   }, [open, measure]);
 

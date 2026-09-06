@@ -46,6 +46,7 @@ import { RadioBookingCalendar } from '../components/RadioBookingCalendar';
 import { Eyebrow } from '../components/tahti/Eyebrow';
 import { OnAirBadge } from '../components/tahti/OnAirBadge';
 import { TrackInfoDialog, type TrackInfo } from '../components/TrackInfoDialog';
+import { usePolling } from '../hooks/usePolling';
 import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';
@@ -141,17 +142,13 @@ export function RadioView() {
     reload();
   }, []);
 
-  useEffect(() => {
-    const refreshNowPlaying = () => {
-      void fetchRadioStation().then((response) => {
-        if (response?.data) {
-          setStation(response.data);
-        }
-      });
-    };
-    const interval = window.setInterval(refreshNowPlaying, 30_000);
-    return () => window.clearInterval(interval);
-  }, []);
+  usePolling(() => {
+    void fetchRadioStation().then((response) => {
+      if (response?.data) {
+        setStation(response.data);
+      }
+    });
+  }, 30_000);
 
   const online = Boolean(station?.hlsUrl);
   const nowPlaying = station?.nowPlaying;

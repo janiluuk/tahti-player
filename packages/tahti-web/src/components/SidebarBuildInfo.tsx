@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+
+import { usePolling } from '../hooks/usePolling';
 
 const RELATIVE_TIME_UPDATE_MS = 60_000;
 
@@ -27,13 +29,7 @@ function relativeBuildTime(now: number): string {
 export function SidebarBuildInfo() {
   const [now, setNow] = useState(() => Date.now());
 
-  useEffect(() => {
-    const interval = window.setInterval(
-      () => setNow(Date.now()),
-      RELATIVE_TIME_UPDATE_MS,
-    );
-    return () => window.clearInterval(interval);
-  }, []);
+  usePolling(() => setNow(Date.now()), RELATIVE_TIME_UPDATE_MS);
 
   return (
     <div className="text-foreground-secondary px-2 py-1 text-[11px] leading-tight select-text">

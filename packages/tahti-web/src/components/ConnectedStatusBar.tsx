@@ -1,11 +1,12 @@
 import { Link } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { BottomBar, cn } from '@tahti-player/ui';
 
 import { fetchConversations } from '../api/messages';
 import { fetchStudioSounds } from '../api/studio';
 import type { StudioSound } from '../api/studio-types';
+import { usePolling } from '../hooks/usePolling';
 import {
   encodingStatusLabel,
   mergeProcessingItems,
@@ -124,44 +125,29 @@ export function ConnectedStatusBar() {
     fullScreenPlayerOpen,
   });
 
-  useEffect(() => {
+  const load = useCallback(() => {
     if (!user || !visible) {
       return;
     }
-    let cancelled = false;
-    const load = () => {
-      void fetchStudioSounds().then((result) => {
-        if (cancelled) {
-          return;
-        }
-        setArchiveItems(result.data);
-        settleProcessingJobs(
-          result.data
-            .filter(
-              (item) => item.status === 'READY' || item.status === 'ERROR',
-            )
-            .map((item) => item.id),
-        );
-      });
-      void fetchConversations().then((result) => {
-        if (cancelled) {
-          return;
-        }
-        setUnreadMessages(
-          result.data.reduce(
-            (total, conversation) => total + conversation.unreadCount,
-            0,
-          ),
-        );
-      });
-    };
-    load();
-    const timer = window.setInterval(load, POLL_MS);
-    return () => {
-      cancelled = true;
-      window.clearInterval(timer);
-    };
-  }, [settleProcessingJobs, user, visible]);
+    void fetchStudioSounds().then((result) => {
+      setArchiveItems(result.data);
+      settleProcessingJobs(
+        result.data
+          .filter((item) => item.status === 'READY' || item.status === 'ERROR')
+          .map((item) => item.id),
+      );
+    });
+    void fetchConversations().then((result) => {
+      setUnreadMessages(
+        result.data.reduce(
+          (total, conversation) => total + conversation.unreadCount,
+          0,
+        ),
+      );
+    });
+  }, [user, visible, settleProcessingJobs]);
+
+  usePolling(load, POLL_MS, Boolean(user && visible));
 
   if (!visible) {
     return null;
