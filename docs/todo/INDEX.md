@@ -10,7 +10,7 @@ Status values: `open` | `blocked` | `partial`.
 | open | [ci-snapshot-digest.md](ci-snapshot-digest.md) | CI Vitest snapshot digest / PR comment |
 | open | [mobile-player-nav-and-tahti-theme-visuals.md](mobile-player-nav-and-tahti-theme-visuals.md) | Port apps/web mobile player+nav stack, thumbnail glow, Discover BgCanvas; Storybook |
 | partial | [channel-designer-background-section-fixes.md](channel-designer-background-section-fixes.md) | Designer background section; design decision remains |
-| partial | [channel-designer-links-prefill-and-home-rename.md](channel-designer-links-prefill-and-home-rename.md) | Links prefill / home rename; flagged sub-asks |
+| blocked | [channelview-move-player-to-stage.md](channelview-move-player-to-stage.md) | Player-in-backdrop extraction needs a design decision |
 | partial | [channelview-badge-dedup-and-share-modal.md](channelview-badge-dedup-and-share-modal.md) | Badge dedup + share modal leftovers |
 | open | [desktop-pro-library.md](desktop-pro-library.md) | Independent desktop player / library / Soulseek |
 | partial | [go-live-header-subtext-cleanup.md](go-live-header-subtext-cleanup.md) | Calendar view restore still open |

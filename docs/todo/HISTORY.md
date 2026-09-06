@@ -2,6 +2,21 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-06 — Channel Designer Links: hide/show eye icon confirmed shipped
+
+Folded item 3 from `channel-designer-links-prefill-and-home-rename.md`,
+previously flagged as needing a backend schema check before
+attempting. Re-checked against `../tahti-org`: `ChannelLinkSchema`
+(`packages/shared/src/dto/visual-preset.ts`) already has `hidden:
+z.boolean().optional()` — the backend already had room for this field
+(`channelLinksJson` is a loosely-typed JSON blob column, no migration
+needed). Turns out the full feature was already shipped end-to-end
+since this was written and just never folded back: `ChannelLink`
+(tahti-web `api/channel-design.ts`) already carries `hidden?: boolean`,
+`ChannelLinksEditor.tsx` already has the Eye/EyeOff toggle button per
+link, and `ChannelView.tsx:949` already filters hidden links from the
+public render (`editing || !link.hidden`). Nothing left to build here.
+
 ## 2026-09-06 — RadioListItem component + hover play on cover art
 
 Folded from `radio-list-item-component.md`. Extracted the Listen
