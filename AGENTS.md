@@ -44,7 +44,7 @@ pnpm --filter @tahti-player/ui test -- src/components/Badge/Badge.test.tsx
 
 ## Invariants (keep short)
 
-- No comments in code; never commit unless asked; small focused changes.
+- No comments in code; never commit unless asked; rebase onto the latest base before every push; small focused changes.
 - Import-provider Configure lives in this Nuclear repo (modal: settings → test → save/enable). Open API questions → [`docs/DECISIONS.md`](./docs/DECISIONS.md).
 - **Todo lifecycle:** `docs/todo/` + INDEX (`open|blocked|partial`) → when done fold HISTORY, delete file, strip WORKPLAN. See [`CLAUDE.md`](./CLAUDE.md).
 - Governance API in `../tahti-org`. Contexts: member `/governance`, artist `/studio/governance`, board `/admin/governance` + `/admin/agm`. No invented DTOs; advisory ≠ AGM ballot until sibling contracts exist.

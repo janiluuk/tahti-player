@@ -39,4 +39,4 @@ pnpm --filter @tahti-player/tahti-web lint
 
 ## Never without explicit ask
 
-Commit, push, deploy, or modify `../tahti-org`.
+Commit, push, deploy, or modify `../tahti-org`. When pushing this repo, rebase onto the latest PR base first.

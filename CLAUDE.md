@@ -24,3 +24,4 @@ For every task with a technical implementation (not a one-line fix):
 - Skim all of `docs/todo/` or the full UI redesign worklog to find “what’s next”.
 - Re-open finished work from HISTORY into active WORKPLAN checkboxes.
 - Commit, push, deploy, or edit `../tahti-org` unless the user asks.
+- Push without rebasing first — `git fetch` and rebase onto the PR base (usually `origin/master`) before every push.
