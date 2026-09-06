@@ -2,6 +2,15 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-06 — HelpLayer port fully closed
+
+Folded from `help-layer-component-port.md`. The component shipped and
+was wired into `StudioGoLiveView.tsx` in an earlier pass; this
+session confirmed its one flagged follow-up (`StreamOverlayEditor`'s
+explanatory paragraph moving from the Help Center to `HelpLayer`) was
+also already done — grepped and found `HelpLayer` already imported and
+wired there ("How the stream overlay works").
+
 ## 2026-09-06 — Governance motion parity with prod dashboard
 
 Folded from `governance-motion-parity.md`. `GovernanceView.tsx` gained
