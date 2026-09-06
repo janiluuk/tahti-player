@@ -18,6 +18,7 @@ import {
   Badge,
   Button,
   Dialog,
+  EmptyState,
   FilePicker,
   Input,
   SaveButton,
@@ -868,68 +869,70 @@ export function StudioCollectionEditView({ slug }: { slug: string }) {
                 )}
               </div>
 
-              <ul className="border-border divide-border divide-y overflow-hidden rounded-xl border">
-                {items.length === 0 && (
-                  <li className="text-foreground-secondary py-3 text-sm">
-                    No tracks yet — add archive items below.
-                  </li>
-                )}
-                {items.length > 0 && filteredItems.length === 0 && (
-                  <li className="text-foreground-secondary py-3 text-sm">
-                    No tracks match “{trackQuery}”.
-                  </li>
-                )}
-                {filteredItems.map((item) => {
-                  const idx = items.indexOf(item);
-                  const isCurrent = Boolean(
-                    item.sound && currentId === `archive:${item.sound.id}`,
-                  );
-                  return (
-                    <TrackRow
-                      key={item.id}
-                      item={item}
-                      idx={idx}
-                      isExpanded={expandedItemId === item.id}
-                      isCurrent={isCurrent}
-                      isPlaying={isCurrent && isPlaying}
-                      currentTime={currentTime}
-                      onToggleExpand={() =>
-                        setExpandedItemId((cur) =>
-                          cur === item.id ? null : item.id,
-                        )
-                      }
-                      onPlay={() => togglePlayItem(item)}
-                      onSeek={(sec) => {
-                        if (isCurrent) {
-                          seekTo(sec);
-                        } else if (item.sound) {
-                          void playSound(item.sound);
+              {items.length === 0 ? (
+                <EmptyState
+                  size="sm"
+                  title="No tracks yet — add archive items below."
+                />
+              ) : (
+                <ul className="border-border divide-border divide-y overflow-hidden rounded-xl border">
+                  {filteredItems.length === 0 && (
+                    <li className="text-foreground-secondary py-3 text-sm">
+                      No tracks match “{trackQuery}”.
+                    </li>
+                  )}
+                  {filteredItems.map((item) => {
+                    const idx = items.indexOf(item);
+                    const isCurrent = Boolean(
+                      item.sound && currentId === `archive:${item.sound.id}`,
+                    );
+                    return (
+                      <TrackRow
+                        key={item.id}
+                        item={item}
+                        idx={idx}
+                        isExpanded={expandedItemId === item.id}
+                        isCurrent={isCurrent}
+                        isPlaying={isCurrent && isPlaying}
+                        currentTime={currentTime}
+                        onToggleExpand={() =>
+                          setExpandedItemId((cur) =>
+                            cur === item.id ? null : item.id,
+                          )
                         }
-                      }}
-                      isDragging={draggedId === item.id}
-                      reorderable={!trackQuery.trim()}
-                      onDragStart={() => setDraggedId(item.id)}
-                      onDragEnd={() => setDraggedId(null)}
-                      onDrop={() => {
-                        if (draggedId) {
-                          void reorderByDrop(draggedId, item.id);
+                        onPlay={() => togglePlayItem(item)}
+                        onSeek={(sec) => {
+                          if (isCurrent) {
+                            seekTo(sec);
+                          } else if (item.sound) {
+                            void playSound(item.sound);
+                          }
+                        }}
+                        isDragging={draggedId === item.id}
+                        reorderable={!trackQuery.trim()}
+                        onDragStart={() => setDraggedId(item.id)}
+                        onDragEnd={() => setDraggedId(null)}
+                        onDrop={() => {
+                          if (draggedId) {
+                            void reorderByDrop(draggedId, item.id);
+                          }
+                          setDraggedId(null);
+                        }}
+                        genre={
+                          item.sound?.genre ??
+                          archive.find((sound) => sound.id === item.sound?.id)
+                            ?.genre
                         }
-                        setDraggedId(null);
-                      }}
-                      genre={
-                        item.sound?.genre ??
-                        archive.find((sound) => sound.id === item.sound?.id)
-                          ?.genre
-                      }
-                      onRemove={() => {
-                        void removeStudioCollectionItem(slug, item.id).then(
-                          () => reload(),
-                        );
-                      }}
-                    />
-                  );
-                })}
-              </ul>
+                        onRemove={() => {
+                          void removeStudioCollectionItem(slug, item.id).then(
+                            () => reload(),
+                          );
+                        }}
+                      />
+                    );
+                  })}
+                </ul>
+              )}
 
               <div className="border-border mt-4 flex justify-end border-t pt-4">
                 <Tooltip

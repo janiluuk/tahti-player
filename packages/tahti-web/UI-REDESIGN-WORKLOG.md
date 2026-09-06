@@ -4938,3 +4938,46 @@ Large multi-slice session: nav/content-taxonomy robustness, a full internal rena
 **Slice 8 — two new system rules, tracked for a sweep.** (1) URL-field copy convention: any field displaying a URL pairs it with `@tahti-player/ui`'s `CopyButton` inline, never a bare copy icon with no visible URL or a hand-rolled copy handler — applied to Slice 7's share links; known unswept violators noted in `WORKPLAN.md` (`StudioReleasesView`'s smartlink copy button has no visible field, `StudioGoLiveView`'s local `copyText` hand-rolls what `CopyButton` already does). (2) Media upload convention: placeholder-first, hover-to-open-widget when >1 image vs. direct dialog for exactly 1, never accept a pasted link instead of a file, toast + immediate preview refresh on upload, a processing progress bar for video, R2-under-user-namespace by default — reference implementations are `RoundImageUploadButton.tsx`/`BackdropUploadButton.tsx`/`ImageUploadField.tsx`; sweep not yet executed. Also fixed `StudioStashView`'s visibility filter, which never matched `UNLISTED` sounds despite the page's own "private locker, share a link" framing.
 
 **Validation:** `tsc --noEmit` and `eslint` clean throughout; `vitest run` (56 files, 342 tests) passes after every slice. New Playwright coverage: `e2e/stash-and-subscriber-access.spec.ts` (upload → visibility → cross-session access/download; upload → subscriber-gated → listing-exclusion check) — typechecks and lists cleanly via `playwright test --list`, not run live against `beta.tahti.live` this session. Two things found with no real feature behind them yet, documented rather than faked: collections have no subscriber-gated visibility option (only track-level), and subscribing has no test-mode path (real Stripe Checkout) for an end-to-end "subscriber sees gated content" test. Bumped `packages/tahti-web/package.json` to `0.0.22`.
+
+## 2026-09-07 — Workplan cycle 1: map recapture, ChannelView doc close-out, collection empty state; bump to 0.0.87
+
+Three-topic round from `docs/todo/INDEX.md`, run in an isolated worktree
+after discovering this checkout was being concurrently branch-switched by
+another session mid-turn (see git reflog around `perf/polling-and-dom-audit`
+that day) — uncommitted work from that shared checkout was stashed and
+carried over cleanly rather than lost.
+
+**Topic 1 — signed-in map/atlas recapture.** Folded `map-screenshot-refresh.md`
+into `docs/todo/HISTORY.md`. The blocker (`RightRailPanel`'s unstable Zustand
+selector) was already fixed in 0.0.62; the recapture itself just hadn't run
+since. `scripts/capture-map-screens.mjs` against a local `VITE_FORCE_MOCK=1`
+dev server: 141/142 shots captured, all previously-stale signed-in surfaces
+(Library, Feed, Favorites, History, Messages, Studio, Admin, all three
+Governance contexts) now current. `show-episode` still fails a
+`waitForFunction` content-check timeout on both the primary attempt and the
+soft retry — left as a known single-shot gap rather than blocking the round.
+`sitemap.json` regenerated (1121 images).
+
+**Topic 2 — ChannelView badge/share doc close-out.** `channelview-badge-dedup-and-share-modal.md`
+had no code left to write: every item in its own "What shipped" section was
+already done, and its one remaining thread ("move the player above the
+tabs") had been explicitly superseded by a later, different instruction
+that replaced the tab strip with a Stream Manager modal instead — which
+already shipped and folded under `channelview-stream-manager-modal-replaces-tabs.md`.
+Closed the doc; no source changes.
+
+**Topic 3 — `StudioCollectionEditView` empty state.** Continues
+`studio-emptystate-remaining.md`. The genuinely-empty track list ("No tracks
+yet — add archive items below.") now renders Storybook `EmptyState` instead
+of a bare `<li>` text row, matching the `StudioModerationView` precedent of
+swapping the whole `<ul>` for `EmptyState` (an `EmptyState` renders a `<div>`,
+so it can't nest inside the list the way the old `<li>` did). Left the
+filtered-zero-results row ("No tracks match "…"") as inline text inside the
+list — that's a search-filter message on an existing list, not an
+actually-empty list, so it doesn't fit the `EmptyState` swap.
+
+**Validation:** `pnpm --filter @tahti-player/tahti-web type-check` and a
+scoped `eslint` on `StudioCollectionEditView.tsx` pass clean. No existing
+test file for this view; none added, matching its prior state. Screenshot
+changes are static assets, not exercised by the test suite. Bumped
+`packages/tahti-web/package.json` to `0.0.87`.

@@ -13,10 +13,7 @@ Sibling API: **`../tahti-org`**. Product matrix: [`FEATURES.md`](FEATURES.md) Re
 - [ ] **Image slot chrome** — hover delete + preview modal on remaining upload surfaces. Leaf: [image-upload-hover-lightbox.md](../../docs/todo/image-upload-hover-lightbox.md).
 - [ ] **Governance / Channel Designer / overlay leftovers** — see INDEX (`governance-motion-parity`, `channel-designer-*`, `stream-overlay-*`, `queued-ux-fixes-*`, …).
 - [ ] **Sibling archive mentions API** — extend `../tahti-org` metadata, then remove artist-page fallback.
-
-## Later / blocked
-
-- [ ] Map screenshot signed-in recapture — [map-screenshot-refresh.md](../../docs/todo/map-screenshot-refresh.md) (`blocked`).
+- [ ] **Onboarding as opt-in CTA** — stop force-redirecting every new sign-in to `/onboarding`; surface it as a dismissible CTA button after registration instead. Leaf: [onboarding-cta-not-forced-redirect.md](../../docs/todo/onboarding-cta-not-forced-redirect.md).
 
 ## Reference
 

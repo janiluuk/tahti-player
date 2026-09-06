@@ -2,7 +2,33 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
-## 2026-09-06 — Real LIVE badge (not radio/rotation false-positive)
+## 2026-09-07 — ChannelView badge/share cleanup: last open thread resolved elsewhere
+
+Folded from `channelview-badge-dedup-and-share-modal.md`. All real work
+(on-air badge dedup, playlist-copy-link, social share icons, dropped
+subtext) already shipped per that doc's own "What shipped" section. Its
+one open thread — "move the player above the tabs" — was explicitly
+superseded by a later, different user instruction to remove the tab strip
+entirely in favor of a Stream Manager modal; that replacement already
+shipped and folded (`channelview-stream-manager-modal-replaces-tabs.md`,
+see the HISTORY entry above/below this one). Nothing left to implement;
+closing the doc.
+
+## 2026-09-07 — Signed-in map/atlas recapture (post-0.0.62 RightRailPanel fix)
+
+Folded from `map-screenshot-refresh.md`. The signed-in blocker
+(`RightRailPanel`'s unstable Zustand selector causing "Maximum update depth
+exceeded") was already fixed upstream in 0.0.62; the recapture itself just
+hadn't been re-run since. Ran `scripts/capture-map-screens.mjs` against a
+local `VITE_FORCE_MOCK=1` dev server end to end: 141/142 shots captured
+cleanly (all previously-blocked signed-in surfaces — Library, Feed,
+Favorites, History, Messages, Studio, Admin, all three Governance contexts —
+now show live chrome, not stale pre-ViewShell shots). One shot,
+`show-episode`, still fails (`waitForFunction` timeout waiting for content)
+on both the primary attempt and the soft retry; left as a known gap rather
+than blocking the rest of the recapture on it. `sitemap.json` regenerated
+(1121 images). No script changes were needed — the earlier suspicion of a
+`/library/sounds`-specific hang did not reproduce this run.
 
 Folded from `player-bar-fake-live-indicator.md`. Confirmed via
 `../tahti-org` that `channel.state === 'LIVE'` is genuinely overloaded

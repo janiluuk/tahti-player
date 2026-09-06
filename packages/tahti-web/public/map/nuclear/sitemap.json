@@ -1924,8 +1924,20 @@
       "url": "/map/nuclear/archive-item--1-playlists.png"
     },
     {
+      "file": "archive-item--10-tab.png",
+      "url": "/map/nuclear/archive-item--10-tab.png"
+    },
+    {
+      "file": "archive-item--11-tab.png",
+      "url": "/map/nuclear/archive-item--11-tab.png"
+    },
+    {
       "file": "archive-item--2-insights.png",
       "url": "/map/nuclear/archive-item--2-insights.png"
+    },
+    {
+      "file": "archive-item--9-tab.png",
+      "url": "/map/nuclear/archive-item--9-tab.png"
     },
     {
       "file": "archive-item-editor--0-vocals-instrumental.png",
@@ -3792,6 +3804,10 @@
       "url": "/map/nuclear/studio-channel-announcements.png"
     },
     {
+      "file": "studio-channel-multicast--0-broadcast.png",
+      "url": "/map/nuclear/studio-channel-multicast--0-broadcast.png"
+    },
+    {
       "file": "studio-channel-multicast--0-stream.png",
       "url": "/map/nuclear/studio-channel-multicast--0-stream.png"
     },
@@ -3800,12 +3816,36 @@
       "url": "/map/nuclear/studio-channel-multicast--1-24-7.png"
     },
     {
+      "file": "studio-channel-multicast--1-schedule.png",
+      "url": "/map/nuclear/studio-channel-multicast--1-schedule.png"
+    },
+    {
+      "file": "studio-channel-multicast--10-tahti-radio.png",
+      "url": "/map/nuclear/studio-channel-multicast--10-tahti-radio.png"
+    },
+    {
+      "file": "studio-channel-multicast--11-multicast.png",
+      "url": "/map/nuclear/studio-channel-multicast--11-multicast.png"
+    },
+    {
       "file": "studio-channel-multicast--2-announcements.png",
       "url": "/map/nuclear/studio-channel-multicast--2-announcements.png"
     },
     {
+      "file": "studio-channel-multicast--2-events.png",
+      "url": "/map/nuclear/studio-channel-multicast--2-events.png"
+    },
+    {
       "file": "studio-channel-multicast--3-pinned.png",
       "url": "/map/nuclear/studio-channel-multicast--3-pinned.png"
+    },
+    {
+      "file": "studio-channel-multicast--3-shows.png",
+      "url": "/map/nuclear/studio-channel-multicast--3-shows.png"
+    },
+    {
+      "file": "studio-channel-multicast--4-channel.png",
+      "url": "/map/nuclear/studio-channel-multicast--4-channel.png"
     },
     {
       "file": "studio-channel-multicast--4-tahti-radio.png",
@@ -3816,8 +3856,32 @@
       "url": "/map/nuclear/studio-channel-multicast--5-multicast.png"
     },
     {
+      "file": "studio-channel-multicast--5-radio.png",
+      "url": "/map/nuclear/studio-channel-multicast--5-radio.png"
+    },
+    {
+      "file": "studio-channel-multicast--6-stream.png",
+      "url": "/map/nuclear/studio-channel-multicast--6-stream.png"
+    },
+    {
+      "file": "studio-channel-multicast--7-24-7.png",
+      "url": "/map/nuclear/studio-channel-multicast--7-24-7.png"
+    },
+    {
+      "file": "studio-channel-multicast--8-announcements.png",
+      "url": "/map/nuclear/studio-channel-multicast--8-announcements.png"
+    },
+    {
+      "file": "studio-channel-multicast--9-pinned.png",
+      "url": "/map/nuclear/studio-channel-multicast--9-pinned.png"
+    },
+    {
       "file": "studio-channel-multicast.png",
       "url": "/map/nuclear/studio-channel-multicast.png"
+    },
+    {
+      "file": "studio-channel-radio--0-broadcast.png",
+      "url": "/map/nuclear/studio-channel-radio--0-broadcast.png"
     },
     {
       "file": "studio-channel-radio--0-stream.png",
@@ -3828,12 +3892,44 @@
       "url": "/map/nuclear/studio-channel-radio--1-24-7.png"
     },
     {
+      "file": "studio-channel-radio--1-schedule.png",
+      "url": "/map/nuclear/studio-channel-radio--1-schedule.png"
+    },
+    {
+      "file": "studio-channel-radio--10-tahti-radio.png",
+      "url": "/map/nuclear/studio-channel-radio--10-tahti-radio.png"
+    },
+    {
+      "file": "studio-channel-radio--11-multicast.png",
+      "url": "/map/nuclear/studio-channel-radio--11-multicast.png"
+    },
+    {
+      "file": "studio-channel-radio--12-tab.png",
+      "url": "/map/nuclear/studio-channel-radio--12-tab.png"
+    },
+    {
+      "file": "studio-channel-radio--13-tab.png",
+      "url": "/map/nuclear/studio-channel-radio--13-tab.png"
+    },
+    {
       "file": "studio-channel-radio--2-announcements.png",
       "url": "/map/nuclear/studio-channel-radio--2-announcements.png"
     },
     {
+      "file": "studio-channel-radio--2-events.png",
+      "url": "/map/nuclear/studio-channel-radio--2-events.png"
+    },
+    {
       "file": "studio-channel-radio--3-pinned.png",
       "url": "/map/nuclear/studio-channel-radio--3-pinned.png"
+    },
+    {
+      "file": "studio-channel-radio--3-shows.png",
+      "url": "/map/nuclear/studio-channel-radio--3-shows.png"
+    },
+    {
+      "file": "studio-channel-radio--4-channel.png",
+      "url": "/map/nuclear/studio-channel-radio--4-channel.png"
     },
     {
       "file": "studio-channel-radio--4-tahti-radio.png",
@@ -3844,16 +3940,36 @@
       "url": "/map/nuclear/studio-channel-radio--5-multicast.png"
     },
     {
+      "file": "studio-channel-radio--5-radio.png",
+      "url": "/map/nuclear/studio-channel-radio--5-radio.png"
+    },
+    {
+      "file": "studio-channel-radio--6-stream.png",
+      "url": "/map/nuclear/studio-channel-radio--6-stream.png"
+    },
+    {
       "file": "studio-channel-radio--6-tab.png",
       "url": "/map/nuclear/studio-channel-radio--6-tab.png"
+    },
+    {
+      "file": "studio-channel-radio--7-24-7.png",
+      "url": "/map/nuclear/studio-channel-radio--7-24-7.png"
     },
     {
       "file": "studio-channel-radio--7-tab.png",
       "url": "/map/nuclear/studio-channel-radio--7-tab.png"
     },
     {
+      "file": "studio-channel-radio--8-announcements.png",
+      "url": "/map/nuclear/studio-channel-radio--8-announcements.png"
+    },
+    {
       "file": "studio-channel-radio--8-tab.png",
       "url": "/map/nuclear/studio-channel-radio--8-tab.png"
+    },
+    {
+      "file": "studio-channel-radio--9-pinned.png",
+      "url": "/map/nuclear/studio-channel-radio--9-pinned.png"
     },
     {
       "file": "studio-channel-radio.png",
@@ -3868,12 +3984,44 @@
       "url": "/map/nuclear/studio-event-new.png"
     },
     {
+      "file": "studio-events--0-broadcast.png",
+      "url": "/map/nuclear/studio-events--0-broadcast.png"
+    },
+    {
       "file": "studio-events--0-upcoming.png",
       "url": "/map/nuclear/studio-events--0-upcoming.png"
     },
     {
       "file": "studio-events--1-past.png",
       "url": "/map/nuclear/studio-events--1-past.png"
+    },
+    {
+      "file": "studio-events--1-schedule.png",
+      "url": "/map/nuclear/studio-events--1-schedule.png"
+    },
+    {
+      "file": "studio-events--2-events.png",
+      "url": "/map/nuclear/studio-events--2-events.png"
+    },
+    {
+      "file": "studio-events--3-shows.png",
+      "url": "/map/nuclear/studio-events--3-shows.png"
+    },
+    {
+      "file": "studio-events--4-channel.png",
+      "url": "/map/nuclear/studio-events--4-channel.png"
+    },
+    {
+      "file": "studio-events--5-radio.png",
+      "url": "/map/nuclear/studio-events--5-radio.png"
+    },
+    {
+      "file": "studio-events--6-stream.png",
+      "url": "/map/nuclear/studio-events--6-stream.png"
+    },
+    {
+      "file": "studio-events--7-24-7.png",
+      "url": "/map/nuclear/studio-events--7-24-7.png"
     },
     {
       "file": "studio-events.png",
@@ -3884,8 +4032,52 @@
       "url": "/map/nuclear/studio-governance--0-motions.png"
     },
     {
+      "file": "studio-governance--0-overview.png",
+      "url": "/map/nuclear/studio-governance--0-overview.png"
+    },
+    {
+      "file": "studio-governance--1-branding.png",
+      "url": "/map/nuclear/studio-governance--1-branding.png"
+    },
+    {
       "file": "studio-governance--1-topics.png",
       "url": "/map/nuclear/studio-governance--1-topics.png"
+    },
+    {
+      "file": "studio-governance--10-tab.png",
+      "url": "/map/nuclear/studio-governance--10-tab.png"
+    },
+    {
+      "file": "studio-governance--2-stats.png",
+      "url": "/map/nuclear/studio-governance--2-stats.png"
+    },
+    {
+      "file": "studio-governance--3-governance.png",
+      "url": "/map/nuclear/studio-governance--3-governance.png"
+    },
+    {
+      "file": "studio-governance--4-posts.png",
+      "url": "/map/nuclear/studio-governance--4-posts.png"
+    },
+    {
+      "file": "studio-governance--5-audience.png",
+      "url": "/map/nuclear/studio-governance--5-audience.png"
+    },
+    {
+      "file": "studio-governance--6-stripe.png",
+      "url": "/map/nuclear/studio-governance--6-stripe.png"
+    },
+    {
+      "file": "studio-governance--7-releases.png",
+      "url": "/map/nuclear/studio-governance--7-releases.png"
+    },
+    {
+      "file": "studio-governance--8-editor.png",
+      "url": "/map/nuclear/studio-governance--8-editor.png"
+    },
+    {
+      "file": "studio-governance--9-tab.png",
+      "url": "/map/nuclear/studio-governance--9-tab.png"
     },
     {
       "file": "studio-governance.png",
