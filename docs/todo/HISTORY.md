@@ -2,6 +2,33 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-06 — Mobile player bar: real play/pause + full-screen queue
+
+Folded from `mobile-player-bar-controls-and-queue.md`.
+
+Root cause of "only a mute button, no working play/pause" on mobile:
+`ConnectedPlayerBar.tsx` unconditionally hid the whole compact bar
+whenever `isMobile && isPlaying` (added when the full-screen player
+shipped, with nothing ever wired up to replace it — `ConnectedStatusBar`
+filled the gap instead, showing sound-count/notification text with zero
+playback controls). Removed that hide condition entirely; the compact
+bar now stays mounted during mobile playback. Added a dedicated mobile
+layout: tapping the now-playing info opens the full-screen player,
+alongside a large primary play/pause button and the queue button
+(desktop layout, with its Volume/shuffle/repeat/prev/next controls,
+is unchanged). `shouldShowConnectedStatusBar` simplified to drop the
+now-dead `isMobile`/`isPlaying` params.
+
+Mobile queue button now opens a full-screen sheet (new `fullScreen`
+prop on `MobileDrawer`) with `SidebarQueuePanel` — reusing `QueuePanel`'s
+existing `currentItemId` highlight — instead of the narrow side-drawer
+tabbed `RightRailPanel`.
+
+Not verified live in a real mobile browser this session (Chrome
+extension wasn't connected) — validated via `tsc --noEmit`, `eslint`,
+and the existing `vitest` suite only. Worth a manual phone/DevTools
+pass before shipping.
+
 ## 2026-09-06 — CatalogView invisible-title / support-widget items investigated
 
 Two sub-asks folded from `queued-ux-fixes-2026-09-05.md`'s "CatalogView"

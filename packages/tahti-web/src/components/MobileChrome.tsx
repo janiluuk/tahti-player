@@ -115,6 +115,9 @@ type MobileDrawerProps = {
   onClose: () => void;
   children: ReactNode;
   side?: 'left' | 'right';
+  /** Full-viewport sheet instead of a `min(100%,20rem)` side panel --
+   * for content that wants the whole screen (e.g. a queue tracklist). */
+  fullScreen?: boolean;
 };
 
 const FOCUSABLE_SELECTOR =
@@ -131,6 +134,7 @@ export function MobileDrawer({
   onClose,
   children,
   side = 'right',
+  fullScreen = false,
 }: MobileDrawerProps) {
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -190,8 +194,10 @@ export function MobileDrawer({
       <div
         ref={panelRef}
         className={cn(
-          'border-border bg-background absolute inset-y-0 flex w-[min(100%,20rem)] flex-col border shadow-lg',
-          side === 'left' ? 'left-0' : 'right-0',
+          'border-border bg-background absolute inset-y-0 flex flex-col border shadow-lg',
+          fullScreen
+            ? 'inset-x-0 w-full'
+            : cn('w-[min(100%,20rem)]', side === 'left' ? 'left-0' : 'right-0'),
         )}
       >
         <div className="border-border flex items-center justify-between border-b px-3 py-2">

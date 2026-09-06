@@ -6,7 +6,6 @@ import { BottomBar, cn } from '@tahti-player/ui';
 import { fetchConversations } from '../api/messages';
 import { fetchStudioSounds } from '../api/studio';
 import type { StudioSound } from '../api/studio-types';
-import { useIsMobile } from '../hooks/useIsMobile';
 import {
   encodingStatusLabel,
   mergeProcessingItems,
@@ -102,10 +101,8 @@ export function StatusBarContent({
 /** Bottom Status Bar when the compact player is not showing (signed-in). */
 export function ConnectedStatusBar() {
   const user = useAuthStore((state) => state.user);
-  const isMobile = useIsMobile();
   const queue = usePlayerStore((state) => state.queue);
   const currentId = usePlayerStore((state) => state.currentId);
-  const status = usePlayerStore((state) => state.status);
   const playerBarVisible = usePlayerStore((state) => state.playerBarVisible);
   const fullScreenPlayerOpen = useLayoutStore(
     (state) => state.fullScreenPlayerOpen,
@@ -119,14 +116,11 @@ export function ConnectedStatusBar() {
 
   const current = queue.find((item) => item.id === currentId);
   const playable = current ? playableFromQueueItem(current) : null;
-  const isPlaying = status === 'playing' || status === 'loading';
 
   const visible = shouldShowConnectedStatusBar({
     signedIn: Boolean(user),
     playerBarVisible,
     hasPlayable: Boolean(playable),
-    isMobile,
-    isPlaying,
     fullScreenPlayerOpen,
   });
 

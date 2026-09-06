@@ -52,6 +52,7 @@ import { MobileBottomNav, MobileDrawer } from './MobileChrome';
 import { NotificationToasts } from './NotificationToasts';
 import { PageTourSpotlight } from './PageTourSpotlight';
 import { RightRailPanel } from './RightRailPanel';
+import { SidebarQueuePanel } from './SidebarQueuePanel';
 import {
   getStudioPrimaryRoute,
   StudioMainNavItems,
@@ -550,10 +551,11 @@ export function AppShell() {
 
       <MobileDrawer
         open={bottomQueueOpen}
-        side="right"
+        title="Queue"
+        fullScreen
         onClose={() => setBottomQueueOpen(false)}
       >
-        <RightRailPanel isCollapsed={false} />
+        <SidebarQueuePanel />
       </MobileDrawer>
     </PlayerShell>
   );

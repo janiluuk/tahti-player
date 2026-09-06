@@ -29,17 +29,12 @@ export function shouldShowConnectedStatusBar(opts: {
   signedIn: boolean;
   playerBarVisible: boolean;
   hasPlayable: boolean;
-  isMobile: boolean;
-  isPlaying: boolean;
   fullScreenPlayerOpen: boolean;
 }): boolean {
   if (!opts.signedIn || opts.fullScreenPlayerOpen) {
     return false;
   }
-  const compactPlayerShowing =
-    opts.playerBarVisible &&
-    opts.hasPlayable &&
-    !(opts.isMobile && opts.isPlaying);
+  const compactPlayerShowing = opts.playerBarVisible && opts.hasPlayable;
   return !compactPlayerShowing;
 }
 

@@ -15,8 +15,6 @@ describe('shouldShowConnectedStatusBar', () => {
         signedIn: true,
         playerBarVisible: true,
         hasPlayable: false,
-        isMobile: false,
-        isPlaying: false,
         fullScreenPlayerOpen: false,
       }),
     ).toBe(true);
@@ -28,8 +26,17 @@ describe('shouldShowConnectedStatusBar', () => {
         signedIn: true,
         playerBarVisible: true,
         hasPlayable: true,
-        isMobile: false,
-        isPlaying: true,
+        fullScreenPlayerOpen: false,
+      }),
+    ).toBe(false);
+  });
+
+  it('hides even while playing (compact bar stays visible on mobile too)', () => {
+    expect(
+      shouldShowConnectedStatusBar({
+        signedIn: true,
+        playerBarVisible: true,
+        hasPlayable: true,
         fullScreenPlayerOpen: false,
       }),
     ).toBe(false);
@@ -41,8 +48,6 @@ describe('shouldShowConnectedStatusBar', () => {
         signedIn: true,
         playerBarVisible: false,
         hasPlayable: false,
-        isMobile: false,
-        isPlaying: false,
         fullScreenPlayerOpen: true,
       }),
     ).toBe(false);
