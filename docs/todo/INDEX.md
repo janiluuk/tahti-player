@@ -16,7 +16,6 @@ Status values: `open` | `blocked` | `partial`.
 | open | [fullscreen-player-topbar-and-back-arrow.md](fullscreen-player-topbar-and-back-arrow.md) | Fullscreen player: hide top bar, replace minimize icon with big back arrow top-left |
 | open | [governance-gap-list.md](governance-gap-list.md) | Governance features missing from tahti-player (18 gaps vs tahti-org) |
 | blocked | [governance-out-of-account-section.md](governance-out-of-account-section.md) | Studio governance is artist/board-only; removing Account's would strand regular members — needs a decision |
-| partial | [help-keyboard-navigation.md](help-keyboard-navigation.md) | Settings remapping deep link still open |
 | partial | [image-upload-hover-lightbox.md](image-upload-hover-lightbox.md) | Shared chrome done; remaining surfaces |
 | partial | [local-files-moved-to-library-tab.md](local-files-moved-to-library-tab.md) | Move done; desktop-mode gating open |
 | open | [listener-purchase-flow.md](listener-purchase-flow.md) | Listener register → buy/subscribe → see purchases & manage subscriptions in account; e2e |
@@ -25,11 +24,9 @@ Status values: `open` | `blocked` | `partial`.
 | open | [plugin-registry-extraction.md](plugin-registry-extraction.md) | Pointer to sibling extraction checklist |
 | open | [queued-ux-fixes-2026-09-05.md](queued-ux-fixes-2026-09-05.md) | Queued UX: 3 open, all blocked/scoped-out (artwork backend, designer tabs feature) |
 | partial | [radio-browser-directory-fixes.md](radio-browser-directory-fixes.md) | Cover-image sub-ask needs decision |
-| partial | [storybook-ui-sweep.md](storybook-ui-sweep.md) | Sweep executed; follow-ups continue |
 | partial | [stream-overlay-auto-fill-and-avatar-placeholder.md](stream-overlay-auto-fill-and-avatar-placeholder.md) | Now-playing artwork remaining |
 | partial | [stream-overlay-text-color.md](stream-overlay-text-color.md) | Opacity/scrim toggle remaining |
 | partial | [studio-emptystate-remaining.md](studio-emptystate-remaining.md) | Inline form hints + Settings-scope empties remain |
-| partial | [studio-storybook-sweep.md](studio-storybook-sweep.md) | Remaining Studio primitive swaps |
 | open | [tahti-cli-tool.md](tahti-cli-tool.md) | CLI (gumroad-cli-inspired) wrapping api-client — list library items, maybe TUI player |
 | partial | [viewshell-page-headers.md](viewshell-page-headers.md) | Cover-overlay Studio entity headers excluded |
 

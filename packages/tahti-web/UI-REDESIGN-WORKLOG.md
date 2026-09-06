@@ -4981,3 +4981,37 @@ scoped `eslint` on `StudioCollectionEditView.tsx` pass clean. No existing
 test file for this view; none added, matching its prior state. Screenshot
 changes are static assets, not exercised by the test suite. Bumped
 `packages/tahti-web/package.json` to `0.0.87`.
+
+## 2026-09-07 — Workplan cycle 2: Settings keyboard-shortcuts link, Storybook sweep doc close-out; bump to 0.0.88
+
+**Topic 1 — Settings → Keyboard shortcuts deep link.** Closes the one
+remaining line in `help-keyboard-navigation.md`. Added a "Keyboard
+shortcuts" `Button` (next to Log out) to Settings → Account → Session,
+linking to `/help/$slug` (`slug: 'keyboard-shortcuts'`) via the same
+`<Link onClick={closeSettings}>` pattern already used elsewhere in
+`SettingsPanels.tsx` (Governance, Go Live, Stripe). The remapping *store*
+itself was out of this deep link's scope per the doc's original text
+(player-only today) and isn't addressed here.
+
+**Topic 2 — Storybook sweep doc consolidation.** `storybook-ui-sweep.md`
+had nothing left unique to itself (its own 2026-09-06 note already found
+both "still open" lines done, leaving only a pointer duplicate of
+`studio-storybook-sweep.md`). `studio-storybook-sweep.md`'s own last line
+("CollectionEdit track empty; remaining chip groups") is now also done —
+CollectionEdit shipped in workplan cycle 1 above, and a fresh grep for
+unswept hand-rolled `FilterChips`-shaped segment strips across every
+Studio/Admin view found none. Closed both docs, folded to
+`docs/todo/HISTORY.md`, and trimmed the now-stale INDEX references out of
+`WORKPLAN.md`'s "Storybook / design-system sweeps" line (the epic itself
+stays open — `STUDIO-ADMIN-UX-SWEEP-OPEN.md`'s punch list is unrelated
+and still has real items).
+
+**Topic 3** was folded into Topic 2 once the doc investigation showed both
+sweep docs closing together rather than needing a separate third slice —
+no filler work was substituted.
+
+**Validation:** `pnpm --filter @tahti-player/tahti-web type-check` and a
+scoped `eslint` on `SettingsPanels.tsx` pass clean. `vitest run`: 478/478
+unit tests pass (the 11 "failed" files are pre-existing e2e Playwright
+specs vitest's glob picks up and can't import — unrelated, not introduced
+this round). Bumped `packages/tahti-web/package.json` to `0.0.88`.

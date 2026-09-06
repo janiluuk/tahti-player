@@ -10,6 +10,7 @@ import {
   Gift,
   Globe,
   InfoIcon,
+  Keyboard,
   KeyRound,
   Landmark,
   LayoutGrid,
@@ -407,6 +408,16 @@ function AccountPanel() {
               <SettingsInfo label="Display name" value={user.displayName} />
               {user.email && <SettingsInfo label="Email" value={user.email} />}
               <div className="flex flex-wrap gap-2">
+                <Link
+                  to="/help/$slug"
+                  params={{ slug: 'keyboard-shortcuts' }}
+                  onClick={closeSettings}
+                >
+                  <Button size="sm" variant="secondary">
+                    <Keyboard size={15} aria-hidden className="mr-1.5" />
+                    Keyboard shortcuts
+                  </Button>
+                </Link>
                 <Button size="sm" variant="text" onClick={() => void logout()}>
                   <LogOutIcon size={15} aria-hidden className="mr-1.5" />
                   Log out

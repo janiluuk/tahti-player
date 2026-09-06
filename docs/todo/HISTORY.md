@@ -2,6 +2,28 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-07 — Settings → Keyboard shortcuts deep link
+
+Folded from `help-keyboard-navigation.md`. Added a "Keyboard shortcuts"
+button to Settings → Account → Session (next to Log out), linking to
+`/help/$slug` (`slug: 'keyboard-shortcuts'`) — the article shipped in the
+0.0.58 pass this doc was already tracking. Closes the doc's one remaining
+line ("Settings remapping deep link"); the remapping *store* itself
+(player-only today, per the doc's original scope) was never in this deep
+link's scope and isn't addressed here.
+
+## 2026-09-07 — Storybook sweep docs fully closed
+
+`storybook-ui-sweep.md` had nothing left unique to itself: its own
+2026-09-06 note already found both of its "still open" lines done and
+removed them, leaving only a pointer duplicate of `studio-storybook-sweep.md`.
+`studio-storybook-sweep.md`'s own last remaining line — "CollectionEdit
+track empty" — is now done too (this round's workplan-cycle-1
+`StudioCollectionEditView` `EmptyState` swap, see
+`packages/tahti-web/UI-REDESIGN-WORKLOG.md`); a fresh grep for unswept
+hand-rolled `FilterChips`-shaped segment strips across Studio/Admin views
+found none. Closed both docs.
+
 ## 2026-09-07 — ChannelView badge/share cleanup: last open thread resolved elsewhere
 
 Folded from `channelview-badge-dedup-and-share-modal.md`. All real work
