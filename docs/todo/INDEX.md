@@ -7,7 +7,7 @@ Status values: `open` | `blocked` | `partial`.
 
 | Status | File | One-line |
 | --- | --- | --- |
-| open | [mobile-player-nav-and-tahti-theme-visuals.md](mobile-player-nav-and-tahti-theme-visuals.md) | Port apps/web mobile player+nav stack, thumbnail glow, Discover BgCanvas; Storybook |
+| partial | [mobile-player-nav-and-tahti-theme-visuals.md](mobile-player-nav-and-tahti-theme-visuals.md) | Mobile player hide-bug fixed; stacking/slim-nav, thumbnail glow, Discover BgCanvas still open |
 | partial | [channel-designer-background-section-fixes.md](channel-designer-background-section-fixes.md) | Designer background section; design decision remains |
 | blocked | [channelview-move-player-to-stage.md](channelview-move-player-to-stage.md) | Player-in-backdrop extraction needs a design decision |
 | partial | [channelview-badge-dedup-and-share-modal.md](channelview-badge-dedup-and-share-modal.md) | Badge dedup + share modal leftovers |

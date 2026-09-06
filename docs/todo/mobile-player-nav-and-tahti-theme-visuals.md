@@ -1,7 +1,29 @@
 # Port mobile player/nav + Tahti-theme visuals from `apps/web`
 
-**Status:** open
+**Status:** partial — item 1's core hide-bug fixed 2026-09-06 (see below);
+items 1's stacking/slim-nav details, 2, and 3 still fully open.
 **Repo:** this checkout (`tahti-nuclear` / Tahti Player). Source of truth for look-and-feel: sibling `../tahti-org`.
+
+## 2026-09-06 progress
+
+Fixed independently (a user bug report, not this ticket) then found to
+overlap it: **"Compact player vanishes on mobile while playing" (item
+1's first bullet, and target #1) is done.** `ConnectedPlayerBar` no
+longer returns `null` for `isMobile && isPlaying` — removed that
+condition entirely, gave mobile its own simplified layout (now-playing
+info + large play/pause + queue button), and `ConnectedStatusBar`'s
+`shouldShowConnectedStatusBar` no longer special-cases mobile+playing
+either. See `docs/todo/HISTORY.md`'s "Mobile player bar: real play/pause
++ full-screen queue" entry for the full change.
+
+**Not verified against this ticket's specific stacking requirement**
+("stack it on top of the bottom nav with the same calc(nav height +
+safe-area) offset; nav still tappable") — the fix makes the bar render,
+but whether it visually sits correctly above `MobileBottomNav` (z-index/
+position, not just DOM order) was not checked against a running app in
+a mobile viewport; the Chrome extension was unavailable this session.
+Worth a live check before considering target #1 fully closed. Targets
+#2 (thumbnail glow) and #3 (Discover gateway viz) are untouched.
 
 Three related ports. Done when a phone-width Tahti-theme session can: navigate from a slim bottom bar with a lit active section, keep a compact player stacked on that bar, open fullscreen player with visualizations, see cover-art glow on thumbnails, and see the Discover gateway background viz.
 
