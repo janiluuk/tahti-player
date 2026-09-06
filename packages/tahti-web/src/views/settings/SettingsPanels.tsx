@@ -879,6 +879,7 @@ function ArtistPanel() {
 
   return (
     <Tabs
+      listClassName="flex-wrap"
       items={[
         {
           id: 'identity',
@@ -1313,6 +1314,7 @@ function ChannelPanel() {
 
   return (
     <Tabs
+      listClassName="flex-wrap"
       items={[
         {
           id: 'appearance',
@@ -1736,7 +1738,7 @@ export function BroadcastPanel({
     );
   }
 
-  return <Tabs items={items} />;
+  return <Tabs listClassName="flex-wrap" items={items} />;
 }
 
 export function MoneyPanel() {
@@ -1772,6 +1774,7 @@ export function MoneyPanel() {
 
   return (
     <Tabs
+      listClassName="flex-wrap"
       items={[
         {
           id: 'fan-tiers',
@@ -2290,6 +2293,7 @@ function ThemesPanel() {
       </div>
 
       <Tabs
+        listClassName="flex-wrap"
         items={[
           {
             id: 'browse',

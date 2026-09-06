@@ -7,7 +7,7 @@ exports[`Tabs > (Snapshot) renders correctly 1`] = `
   >
     <div
       aria-orientation="horizontal"
-      class="flex w-full items-center gap-2"
+      class="flex w-full flex-wrap items-center gap-2"
       id="tabs-:r0:-list"
       role="tablist"
     >
@@ -507,7 +507,7 @@ exports[`Tabs > (Snapshot) renders icons and count pills 1`] = `
   >
     <div
       aria-orientation="horizontal"
-      class="flex w-full items-center gap-2"
+      class="flex w-full flex-wrap items-center gap-2"
       id="tabs-:rd:-list"
       role="tablist"
     >
@@ -617,7 +617,7 @@ exports[`Tabs > (Snapshot) renders in composition mode 1`] = `
   >
     <div
       aria-orientation="horizontal"
-      class="flex w-full items-center gap-2"
+      class="flex w-full flex-wrap items-center gap-2"
       id="tabs-:r13:-list"
       role="tablist"
     >
@@ -699,7 +699,7 @@ exports[`Tabs > (Snapshot) switches tabs 1`] = `
   >
     <div
       aria-orientation="horizontal"
-      class="flex w-full items-center gap-2"
+      class="flex w-full flex-wrap items-center gap-2"
       id="tabs-:rm:-list"
       role="tablist"
     >

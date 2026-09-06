@@ -326,17 +326,17 @@ export function PluginStorePanel() {
   return (
     <Tabs
       vertical
-      className="flex flex-col gap-4 sm:flex-row"
-      listClassName="flex sm:flex-col gap-1 sm:w-48 shrink-0"
+      className="flex min-w-0 flex-col gap-4 sm:flex-row"
+      listClassName="flex min-w-0 w-full flex-wrap gap-1 sm:w-48 sm:flex-nowrap sm:flex-col shrink-0"
       panelClassName="min-w-0 flex-1"
       selectedIndex={selectedIndex}
       onChange={(index) => setCategory(categories[index]!.id)}
       items={categories.map((c) => ({
         id: c.id,
         label: (
-          <span className="flex items-center gap-2">
-            <c.icon size={14} aria-hidden />
-            {c.label}
+          <span className="flex min-w-0 items-center gap-2">
+            <c.icon size={14} aria-hidden className="shrink-0" />
+            <span className="truncate">{c.label}</span>
           </span>
         ),
         content: <CategoryBody categoryId={c.id} />,
@@ -1982,7 +1982,7 @@ function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
           </span>
         )}
         <Input
-          className="min-w-[10rem] flex-1"
+          className="min-w-0 flex-1 basis-40"
           size="sm"
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
@@ -2055,7 +2055,7 @@ function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
           {tab === 'search' && (
             <div className="flex flex-wrap gap-2">
               <Input
-                className="min-w-[200px] flex-1"
+                className="min-w-0 flex-1 basis-40"
                 size="sm"
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
@@ -2081,7 +2081,7 @@ function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
           {tab !== 'collections' && (
             <div className="border-border bg-background-secondary/40 flex flex-wrap items-center gap-2 rounded-lg border p-3">
               <Select
-                className="min-w-48 flex-1"
+                className="min-w-0 flex-1 basis-40"
                 options={[
                   { id: '', label: 'Choose destination playlist' },
                   { id: NEW_PLAYLIST_DESTINATION, label: 'New playlist…' },
@@ -2100,7 +2100,7 @@ function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                   onChange={(e) => setNewDestinationName(e.target.value)}
                   aria-label="New playlist name"
                   placeholder="Playlist name"
-                  className="min-w-48 flex-1"
+                  className="min-w-0 flex-1 basis-40"
                 />
               ) : null}
               <Button
@@ -2574,7 +2574,7 @@ function PersonalRadioStreamCard() {
         </p>
         <div className="flex flex-wrap gap-2">
           <Input
-            className="min-w-[240px] flex-1"
+            className="min-w-0 flex-1 basis-48"
             size="sm"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
@@ -2648,7 +2648,7 @@ function PersonalRadioStreamCard() {
         </h3>
         <div className="flex flex-wrap gap-2">
           <Input
-            className="min-w-[200px] flex-1"
+            className="min-w-0 flex-1 basis-40"
             size="sm"
             value={query}
             onChange={(e) => setQuery(e.target.value)}

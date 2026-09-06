@@ -22,23 +22,17 @@ export const SettingsPanelContent: FC<SettingsPanelContentProps> = ({
   title,
   onBack,
 }) => (
-  // `sm:flex!` forced important: see the matching comment in
-  // SettingsPanelNav.tsx — a plain (unprefixed) rule for the same property
-  // wins the cascade over the `sm:` variant in this codebase's compiled
-  // Tailwind output despite equal specificity. Without `!`, this pane
-  // silently stays `hidden` on desktop after the caller's mobile
-  // list/detail toggle set it to `hidden` (i.e. any time a tab was ever
-  // selected).
+  // `sm:flex!` forces the pane visible on desktop even when the caller
+  // passes `hidden` for the mobile list-first state. `min-w-0` keeps wide
+  // section bodies from blowing out the dialog width on small screens.
   <div
     className={cn(
-      'min-h-0 flex-1 flex-col overflow-hidden sm:flex!',
+      'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden sm:flex!',
       className,
     )}
+    data-testid="settings-panel-content"
   >
     {onBack && (
-      // `sm:hidden!` forced important: same cascade conflict noted above —
-      // without `!`, this mobile-only back header stays visible on desktop
-      // too, above the actual settings content it's supposed to replace.
       <div className="border-border flex shrink-0 items-center gap-1 border-b-(length:--border-width) p-2 sm:hidden!">
         <Tooltip content="Back to settings sections" side="top">
           <Button
@@ -50,9 +44,18 @@ export const SettingsPanelContent: FC<SettingsPanelContentProps> = ({
             <ArrowLeftIcon size={16} />
           </Button>
         </Tooltip>
-        {title && <span className="text-sm font-semibold">{title}</span>}
+        {title && (
+          <span className="min-w-0 truncate text-sm font-semibold">
+            {title}
+          </span>
+        )}
       </div>
     )}
-    <div className="min-h-0 flex-1 overflow-y-auto">{children}</div>
+    <div
+      className="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto"
+      data-testid="settings-panel-content-scroll"
+    >
+      {children}
+    </div>
   </div>
 );

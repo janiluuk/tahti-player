@@ -7,6 +7,8 @@ Status values: `open` | `blocked` | `partial`.
 
 | Status | File | One-line |
 | --- | --- | --- |
+| open | [ci-snapshot-digest.md](ci-snapshot-digest.md) | CI Vitest snapshot digest / PR comment |
+| open | [mobile-player-nav-and-tahti-theme-visuals.md](mobile-player-nav-and-tahti-theme-visuals.md) | Port apps/web mobile player+nav stack, thumbnail glow, Discover BgCanvas; Storybook |
 | partial | [channel-designer-background-section-fixes.md](channel-designer-background-section-fixes.md) | Designer background section; design decision remains |
 | partial | [channel-designer-links-prefill-and-home-rename.md](channel-designer-links-prefill-and-home-rename.md) | Links prefill / home rename; flagged sub-asks |
 | partial | [channelview-badge-dedup-and-share-modal.md](channelview-badge-dedup-and-share-modal.md) | Badge dedup + share modal leftovers |

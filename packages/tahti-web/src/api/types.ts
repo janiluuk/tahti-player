@@ -82,7 +82,7 @@ export type PublicChannel = {
   nowPlayingOverlayStyle?: string | null;
   nowPlayingOverlaySettingsJson?: string | null;
   /** Outbound links shown in the channel page's Links block. */
-  channelLinks?: Array<{ label: string; url: string }> | null;
+  channelLinks?: Array<{ label: string; url: string; hidden?: boolean }> | null;
   /** Stylized headline shown in the channel page's Text overlay block.
    * Live API returns these as `textLayer*`; fetchChannel normalizes. */
   textOverlayMode?: string | null;

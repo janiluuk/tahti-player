@@ -62,6 +62,12 @@ const meta: Meta<typeof SettingsPanel> = {
   tags: ['autodocs'],
   parameters: {
     layout: 'fullscreen',
+    docs: {
+      description: {
+        component:
+          'Settings shell: desktop side-by-side nav + content; below `sm`, list-then-detail (nav hides after a section is chosen; Back returns to the list). Missing states: signed-out footer, very long section bodies.',
+      },
+    },
   },
 };
 
@@ -87,5 +93,18 @@ const SettingsPanelDemo = () => {
 };
 
 export const Default: Story = {
+  render: () => <SettingsPanelDemo />,
+};
+
+export const MobileViewport: Story = {
+  parameters: {
+    viewport: { defaultViewport: 'mobile1' },
+    docs: {
+      description: {
+        story:
+          'Below `sm`: section list first. Tap a section to open detail with Back. Nav must not stay mounted beside content.',
+      },
+    },
+  },
   render: () => <SettingsPanelDemo />,
 };

@@ -254,6 +254,8 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
     const [activeTab, setActiveTab] = useState<TabId>('visualizer');
     const [playerDesignTab, setPlayerDesignTab] =
       useState<PlayerDesignTab>('gradient');
+    const [backdropFocusTab, setBackdropFocusTab] =
+      useState<HeaderDesignMode | null>(null);
     const [highlightSection, setHighlightSection] = useState<
       'header' | 'visualizer' | null
     >(null);
@@ -1037,12 +1039,19 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       showVisualizerSettings &&
       !visualizerPickerOpen;
 
-    const headerDesignMode: HeaderDesignMode = resolveHeaderDesignMode(
+    const resolvedHeaderDesignMode = resolveHeaderDesignMode(
       visual.headerStyle,
       slideshowHeaderSelected,
     );
+    const headerDesignMode: HeaderDesignMode =
+      backdropFocusTab ?? resolvedHeaderDesignMode;
 
     const setHeaderDesignMode = (mode: HeaderDesignMode) => {
+      if (mode === 'VISUALIZATION') {
+        setBackdropFocusTab('VISUALIZATION');
+        return;
+      }
+      setBackdropFocusTab(null);
       if (mode === 'SLIDESHOW') {
         setGalleryMode((modeValue) =>
           modeValue === 'NONE' ? 'STATIC_SLIDESHOW' : modeValue,
@@ -1638,7 +1647,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
                 </div>
               </div>
               <ChannelBackdropCard
-                minHeightClassName="min-h-[24rem]"
+                minHeightClassName="min-h-[14rem]"
                 displayName={displayName}
                 username={username}
                 channelSlug={channelSlug}
@@ -1661,19 +1670,13 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
                 mountVisualizer={hasLivePreview && visualizerEnabled}
                 editable
                 identitySelected={highlightSection === 'header'}
-                backgroundSelected={highlightSection === 'visualizer'}
+                backgroundSelected={false}
+                navItems={[]}
                 onEditIdentity={() => {
                   selectLookElement('backdrop');
                   focusPreviewSection(
                     'header',
                     'channel-designer-section-header',
-                  );
-                }}
-                onEditBackground={() => {
-                  selectLookElement('player');
-                  focusPreviewSection(
-                    'visualizer',
-                    'channel-designer-section-player',
                   );
                 }}
                 badge={
@@ -1687,28 +1690,61 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
                     Artist channel
                   </span>
                 }
-                bottomSlot={
-                  <div className="bg-gradient-to-t from-black/85 via-black/45 to-transparent p-4 pt-16">
-                    <div className="text-[10px] font-semibold tracking-wide text-white/70 uppercase">
-                      Now playing
-                    </div>
-                    <div className="mt-1 text-2xl font-extrabold text-white">
-                      Your live channel
-                    </div>
-                    <div className="text-sm text-white/80">
-                      A live preview of the artist stage
-                    </div>
-                  </div>
-                }
               />
+              <div
+                role="button"
+                tabIndex={0}
+                data-testid="channel-designer-stage-player"
+                aria-label="Edit player design"
+                title="Edit player design"
+                onClick={() => {
+                  selectLookElement('player');
+                  focusPreviewSection(
+                    'visualizer',
+                    'channel-designer-section-player',
+                  );
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    selectLookElement('player');
+                    focusPreviewSection(
+                      'visualizer',
+                      'channel-designer-section-player',
+                    );
+                  }
+                }}
+                className={`border-border cursor-pointer overflow-hidden border border-y-0 outline-none ${
+                  highlightSection === 'visualizer'
+                    ? 'ring-primary ring-2 ring-inset'
+                    : ''
+                }`}
+              >
+                <div className="bg-gradient-to-t from-black/85 via-black/45 to-black/10 p-4 pt-10">
+                  <div className="text-[10px] font-semibold tracking-wide text-white/70 uppercase">
+                    Now playing
+                  </div>
+                  <div className="mt-1 text-2xl font-extrabold text-white">
+                    Your live channel
+                  </div>
+                  <div className="text-sm text-white/80">
+                    A live preview of the artist stage
+                  </div>
+                </div>
+              </div>
+              <nav
+                aria-label="Channel navigation"
+                className="border-border relative flex flex-wrap items-center gap-x-5 gap-y-2 border border-t-0 px-4 py-3 text-xs font-semibold uppercase"
+              >
+                <span className="border-primary border-b-2 pb-2">Stage</span>
+                <span className="text-foreground-secondary pb-2">Tracks</span>
+                <span className="text-foreground-secondary pb-2">About</span>
+              </nav>
 
               <div className="flex flex-col gap-5 p-4 sm:p-6">
                 <section>
                   <div className="mb-3 flex items-center justify-between">
                     <h3 className="text-lg font-bold">Tracks</h3>
-                    <span className="text-foreground-secondary text-xs">
-                      Published on your channel
-                    </span>
                   </div>
                   <div className="border-border divide-border divide-y overflow-hidden rounded-lg border">
                     {['Latest release', 'Live session', 'Featured track'].map(

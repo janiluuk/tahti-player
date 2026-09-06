@@ -1071,3 +1071,14 @@ Folded from `agent-docs-audit.md` after P0–P2 remediations on `perf/audit`.
 - Canvas: agent-docs-audit.canvas.tsx
 
 ---
+
+## 2026-09-06 — Settings menu mobile responsive
+
+Folded from `settings-mobile-responsive.md`.
+
+- Shell: drop unconditional nav `flex!` so list/detail hide works; `w-full` + `dvh` dialog.
+- Add-ons category tabs wrap on mobile; TabsList defaults to `flex-wrap`.
+- Settings section Tabs (Artist/Channel/Money/Themes/Broadcast) wrap; PluginStore toolbars use soft `min-w-0`/`basis-*`.
+- tahti-web `0.0.84`.
+
+---

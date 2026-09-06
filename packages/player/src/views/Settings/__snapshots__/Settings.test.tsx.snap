@@ -34,7 +34,7 @@ exports[`Settings view > (Snapshot) renders the settings view 1`] = `
       transition="[object Object]"
     >
       <div
-        class="border-border bg-background shadow-shadow relative mx-auto max-h-[calc(100dvh-2rem)] rounded-md border-(length:--border-width) flex h-[calc(100vh-2rem)] w-[calc(100vw-2rem)] max-w-none flex-col overflow-hidden p-0 sm:h-[80vh] sm:max-h-[900px] sm:w-[80vw] sm:max-w-6xl sm:flex-row!"
+        class="border-border bg-background shadow-shadow relative mx-auto rounded-md border-(length:--border-width) flex h-[calc(100dvh-2rem)] max-h-[calc(100dvh-2rem)] w-full max-w-none min-w-0 flex-col overflow-hidden p-0 sm:h-[80vh] sm:max-h-[900px] sm:w-[80vw] sm:max-w-6xl sm:flex-row!"
         data-headlessui-state="open"
         data-open=""
         id="headlessui-dialog-panel-:ra:"
@@ -70,7 +70,8 @@ exports[`Settings view > (Snapshot) renders the settings view 1`] = `
           </button>
         </div>
         <nav
-          class="border-border flex! h-full min-h-0 w-full shrink-0 flex-col border-b-(length:--border-width) p-2 sm:w-56! sm:border-r-(length:--border-width) sm:border-b-0 sm:p-4 hidden"
+          class="border-border h-full min-h-0 w-full shrink-0 flex-col border-b-(length:--border-width) p-2 sm:flex! sm:w-56! sm:border-r-(length:--border-width) sm:border-b-0 sm:p-4 hidden"
+          data-testid="settings-panel-nav"
         >
           <div
             class="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto"
@@ -398,7 +399,8 @@ exports[`Settings view > (Snapshot) renders the settings view 1`] = `
           </div>
         </nav>
         <div
-          class="min-h-0 flex-1 flex-col overflow-hidden sm:flex! flex"
+          class="min-h-0 min-w-0 flex-1 flex-col overflow-hidden sm:flex! flex"
+          data-testid="settings-panel-content"
         >
           <div
             class="border-border flex shrink-0 items-center gap-1 border-b-(length:--border-width) p-2 sm:hidden!"
@@ -433,13 +435,14 @@ exports[`Settings view > (Snapshot) renders the settings view 1`] = `
               </button>
             </div>
             <span
-              class="text-sm font-semibold"
+              class="min-w-0 truncate text-sm font-semibold"
             >
               General
             </span>
           </div>
           <div
-            class="min-h-0 flex-1 overflow-y-auto"
+            class="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto"
+            data-testid="settings-panel-content-scroll"
           >
             <div
               class="bg-background relative flex h-full min-h-0 w-full flex-1 flex-col items-start justify-start px-6 pt-6"
