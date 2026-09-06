@@ -1,9 +1,25 @@
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { PluginCategoryProvider } from '../PluginCategoryContext';
 import { PluginStoreItem } from './PluginStoreItem';
 
 describe('PluginStoreItem', () => {
+  it('shows its host category without duplicating explicit labels', () => {
+    const result = render(
+      <PluginCategoryProvider category="Import">
+        <PluginStoreItem
+          name="Provider"
+          description="Import audio"
+          author="Tahti"
+          categories={['Import', 'Connected']}
+          onInstall={vi.fn()}
+        />
+      </PluginCategoryProvider>,
+    );
+    expect(result.getAllByText('Import')).toHaveLength(1);
+    expect(result.getByText('Connected')).toBeInTheDocument();
+  });
   const defaultProps = {
     name: 'YouTube Music',
     description:

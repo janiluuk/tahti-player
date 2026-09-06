@@ -32,6 +32,7 @@ export * from './PlayerBar';
 export * from './PlayerShell';
 export * from './PlayerWorkspace';
 export * from './PluginItem';
+export * from './PluginCategoryContext';
 export * from './PluginStoreItem';
 export * from './PulsingText';
 export * from './ThemeStoreItem';

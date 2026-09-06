@@ -1,7 +1,8 @@
 import { Meta, StoryObj } from '@storybook/react-vite';
+import { Settings } from 'lucide-react';
 import { fn } from 'storybook/test';
 
-import { PluginStoreItem } from '@tahti-player/ui';
+import { Button, PluginStoreItem, Tooltip } from '@tahti-player/ui';
 
 const meta = {
   title: 'Components/PluginStoreItem',
@@ -85,9 +86,11 @@ export const WithAccessory: Story = {
     isInstalled: true,
     onInstall: fn(),
     accessory: (
-      <button type="button" className="text-sm underline">
-        Configure
-      </button>
+      <Tooltip content="Configure">
+        <Button size="icon-sm" aria-label="Configure" onClick={fn()}>
+          <Settings size={16} />
+        </Button>
+      </Tooltip>
     ),
   },
 };

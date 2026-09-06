@@ -179,7 +179,7 @@ export function RadioView() {
   };
 
   return (
-    <ViewShell title="Radio" classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl' }}>
+    <ViewShell title="Radio" classes={{ root: 'px-0 pt-0 w-full' }}>
       {loading ? (
         <PageLoading label="Tuning Tahti Radio…" />
       ) : !station ? (

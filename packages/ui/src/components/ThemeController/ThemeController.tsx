@@ -40,15 +40,23 @@ export const ThemeController: FC<ThemeControllerProps> = ({
   }, [isDark]);
 
   return (
-    <Toggle
-      checked={isDark}
-      defaultChecked={defaultIsDark}
-      onChange={handleThemeChange}
-      disabled={disabled}
-      className={className}
-      label="Toggle theme"
-      thumbIcon={<Sun size={ICON_SIZE} className="text-foreground" />}
-      checkedThumbIcon={<Moon size={ICON_SIZE} className="text-foreground" />}
-    />
+    <div className={className}>
+      <span className="inline-flex items-center gap-2 text-sm">
+        <span>Theme:</span>
+        <span>Light</span>
+        <Toggle
+          checked={isDark}
+          defaultChecked={defaultIsDark}
+          onChange={handleThemeChange}
+          disabled={disabled}
+          label="Toggle theme"
+          thumbIcon={<Sun size={ICON_SIZE} className="text-foreground" />}
+          checkedThumbIcon={
+            <Moon size={ICON_SIZE} className="text-foreground" />
+          }
+        />
+        <span>Dark</span>
+      </span>
+    </div>
   );
 };

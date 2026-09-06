@@ -6,8 +6,6 @@ import {
 } from '@tanstack/react-router';
 import {
   BellIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
   ExternalLinkIcon,
   LayoutDashboardIcon,
   LogInIcon,
@@ -21,7 +19,13 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
-import { Badge, Button, EmptyState } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  EmptyState,
+  TahtiLogo,
+  TopBarNavigation,
+} from '@tahti-player/ui';
 
 import { fetchConversations, type ConversationSummary } from '../api/messages';
 import { fetchStudioSounds } from '../api/studio';
@@ -34,8 +38,8 @@ import { useAuthStore } from '../stores/authStore';
 import { useNotificationInboxStore } from '../stores/notificationInboxStore';
 import { useProcessingJobsStore } from '../stores/processingJobsStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
+import { ApiConnectionIndicator } from './ApiConnectionIndicator';
 import { GlobalSearch } from './GlobalSearch';
-import { TahtiLogoLink } from './TahtiLogo';
 import { UploadTrackDialog } from './UploadTrackDialog';
 
 type AppTopNavProps = {
@@ -242,7 +246,8 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
             <MenuIcon size={18} />
           </button>
         ) : null}
-        <TahtiLogoLink />
+        <TahtiLogo markOnly aria-label="Tahti" />
+        <ApiConnectionIndicator />
         {user && processingItems.length > 0 ? (
           <div className="relative">
             <button
@@ -285,34 +290,12 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
             ) : null}
           </div>
         ) : null}
-        <div className="hidden items-center gap-0.5 sm:flex">
-          <button
-            type="button"
-            className={cn(
-              iconBtnClass,
-              'disabled:pointer-events-none disabled:opacity-30',
-            )}
-            disabled={!canGoBack}
-            aria-label="Go back"
-            title="Go back"
-            onClick={() => router.history.back()}
-          >
-            <ChevronLeftIcon size={16} />
-          </button>
-          <button
-            type="button"
-            className={cn(
-              iconBtnClass,
-              'disabled:pointer-events-none disabled:opacity-30',
-            )}
-            disabled={!canGoForward}
-            aria-label="Go forward"
-            title="Go forward"
-            onClick={() => router.history.forward()}
-          >
-            <ChevronRightIcon size={16} />
-          </button>
-        </div>
+        <TopBarNavigation
+          canGoBack={canGoBack}
+          canGoForward={canGoForward}
+          onBack={() => router.history.back()}
+          onForward={() => router.history.forward()}
+        />
       </div>
 
       <div className="hidden min-w-0 flex-1 justify-center px-4 sm:flex">

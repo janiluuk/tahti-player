@@ -33,6 +33,9 @@ export function shouldShowConnectedStatusBar(opts: {
   isPlaying: boolean;
   fullScreenPlayerOpen: boolean;
 }): boolean {
+  if (!opts.isMobile) {
+    return !opts.fullScreenPlayerOpen;
+  }
   if (!opts.signedIn || opts.fullScreenPlayerOpen) {
     return false;
   }

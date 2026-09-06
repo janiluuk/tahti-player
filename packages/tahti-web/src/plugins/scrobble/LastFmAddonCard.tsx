@@ -1,8 +1,8 @@
-import { RadioIcon } from 'lucide-react';
+import { RadioIcon, SettingsIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, PluginStoreItem } from '@tahti-player/ui';
+import { Button, Dialog, PluginStoreItem, Tooltip } from '@tahti-player/ui';
 
 import {
   fetchMeIntegrations,
@@ -21,6 +21,7 @@ const ADDON = {
 };
 
 export function LastFmAddonCard() {
+  const [open, setOpen] = useState(false);
   const [connected, setConnected] = useState(false);
   const [busy, setBusy] = useState(false);
 
@@ -90,31 +91,62 @@ export function LastFmAddonCard() {
   };
 
   return (
-    <PluginStoreItem
-      icon={<RadioIcon size={22} aria-hidden />}
-      name={ADDON.name}
-      author={ADDON.author}
-      description={ADDON.description}
-      categories={['Scrobbling']}
-      isInstalled={connected}
-      onInstall={connect}
-      accessory={
-        connected ? (
-          <Button
-            size="sm"
-            variant="text"
-            intent="danger"
-            disabled={busy}
-            onClick={() => void remove()}
-          >
-            Disconnect
+    <>
+      <PluginStoreItem
+        icon={<RadioIcon size={22} aria-hidden />}
+        name={ADDON.name}
+        author={ADDON.author}
+        description={ADDON.description}
+        categories={['Scrobbling']}
+        isInstalled={connected}
+        onInstall={() => setOpen(true)}
+        accessory={
+          <div className="flex items-center gap-2">
+            <Tooltip content="Configure Last.fm">
+              <Button
+                size="icon-sm"
+                variant="secondary"
+                aria-label="Configure Last.fm"
+                onClick={() => setOpen(true)}
+              >
+                <SettingsIcon size={16} />
+              </Button>
+            </Tooltip>
+            {connected ? (
+              <Button
+                size="sm"
+                variant="secondary"
+                intent="danger"
+                disabled={busy}
+                onClick={() => void remove()}
+              >
+                Disconnect
+              </Button>
+            ) : null}
+          </div>
+        }
+        labels={{
+          install: 'Configure',
+          installed: 'Connected',
+        }}
+      />
+      <Dialog.Root
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        className="max-w-lg"
+      >
+        <Dialog.Title>Configure Last.fm</Dialog.Title>
+        <Dialog.Description>
+          Connect your Last.fm account to enable scrobbling. Authorization
+          continues on Last.fm.
+        </Dialog.Description>
+        <Dialog.Actions>
+          <Dialog.Close>Cancel</Dialog.Close>
+          <Button disabled={busy} onClick={connect}>
+            {connected ? 'Reconnect Last.fm' : 'Connect Last.fm'}
           </Button>
-        ) : null
-      }
-      labels={{
-        install: 'Connect',
-        installed: 'Connected',
-      }}
-    />
+        </Dialog.Actions>
+      </Dialog.Root>
+    </>
   );
 }

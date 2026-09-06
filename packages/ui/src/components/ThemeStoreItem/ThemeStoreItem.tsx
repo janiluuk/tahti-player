@@ -6,6 +6,7 @@ import { Badge } from '../Badge';
 import { Box } from '../Box';
 import { Button } from '../Button';
 import { Loader } from '../Loader';
+import { usePluginCategories } from '../PluginCategoryContext';
 import { Tooltip } from '../Tooltip';
 
 type ThemeStoreItemProps = {
@@ -41,7 +42,7 @@ export const ThemeStoreItem: FC<ThemeStoreItemProps> = ({
   description,
   author,
   palette,
-  tags,
+  tags: suppliedTags,
   isInstalled = false,
   isInstalling = false,
   isActive = false,
@@ -54,6 +55,7 @@ export const ThemeStoreItem: FC<ThemeStoreItemProps> = ({
   labels = {},
   className,
 }) => {
+  const tags = usePluginCategories(suppliedTags);
   const {
     install = 'Install',
     installing = 'Installing',

@@ -22,6 +22,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     name: 'YouTube Music',
+    categories: ['Streaming', 'Metadata'],
     author: 'Tahti Team',
     description:
       'Stream music directly from YouTube Music with full search and playlist support.',

@@ -1,4 +1,4 @@
-import { RadioIcon } from 'lucide-react';
+import { RadioIcon, SettingsIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -8,6 +8,7 @@ import {
   Input,
   PluginStoreItem,
   SaveButton,
+  Tooltip,
 } from '@tahti-player/ui';
 
 import {
@@ -90,17 +91,29 @@ export function ListenBrainzAddonCard() {
         isInstalled={installed}
         onInstall={() => setOpen(true)}
         accessory={
-          installed ? (
-            <Button
-              size="sm"
-              variant="text"
-              intent="danger"
-              disabled={busy}
-              onClick={() => void remove()}
-            >
-              Disconnect
-            </Button>
-          ) : null
+          <div className="flex items-center gap-2">
+            <Tooltip content="Configure ListenBrainz">
+              <Button
+                size="icon-sm"
+                variant="secondary"
+                aria-label="Configure ListenBrainz"
+                onClick={() => setOpen(true)}
+              >
+                <SettingsIcon size={16} />
+              </Button>
+            </Tooltip>
+            {installed ? (
+              <Button
+                size="sm"
+                variant="secondary"
+                intent="danger"
+                disabled={busy}
+                onClick={() => void remove()}
+              >
+                Disconnect
+              </Button>
+            ) : null}
+          </div>
         }
         labels={{
           install: 'Configure',

@@ -2,8 +2,8 @@ import { Heart, Newspaper, SettingsIcon, Youtube } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
 import {
-  Box,
   Button,
+  Dialog,
   Input,
   PluginStoreItem,
   TabLabel,
@@ -69,16 +69,23 @@ function ConfigurableCard({
           </Button>
         </Tooltip>
       </div>
-      {open ? (
-        <Box
-          variant="tertiary"
-          shadow="none"
-          className="gap-4 p-3"
+      <Dialog.Root
+        isOpen={open}
+        onClose={() => onOpenChange(false)}
+        className="max-w-xl"
+      >
+        <Dialog.Title>Configure {title}</Dialog.Title>
+        <Dialog.Description>Settings for this add-on.</Dialog.Description>
+        <div
+          className="mt-4 flex flex-col gap-4"
           data-testid={`listen-addon-config-${title}`}
         >
           {children}
-        </Box>
-      ) : null}
+        </div>
+        <Dialog.Actions>
+          <Dialog.Close>Done</Dialog.Close>
+        </Dialog.Actions>
+      </Dialog.Root>
     </div>
   );
 }
@@ -297,7 +304,7 @@ export function ListenAddonsPanel({
               </p>
               <Button
                 size="sm"
-                variant="text"
+                variant="secondary"
                 onClick={() => handleUninstall('favorites')}
               >
                 Uninstall
@@ -401,7 +408,7 @@ export function ListenAddonsPanel({
                   </p>
                   <Button
                     size="sm"
-                    variant="text"
+                    variant="secondary"
                     onClick={() => handleUninstall(NEWS_WIDGET_TYPE_ID)}
                   >
                     Uninstall
@@ -514,7 +521,7 @@ export function ListenAddonsPanel({
                     </p>
                     <Button
                       size="sm"
-                      variant="text"
+                      variant="secondary"
                       onClick={() => handleUninstall(type.id)}
                     >
                       Uninstall

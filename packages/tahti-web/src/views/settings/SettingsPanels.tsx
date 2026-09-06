@@ -2258,7 +2258,7 @@ function ThemesPanel() {
           Choose a palette and the light, dark, or time-of-day appearance that
           suits you.
         </SettingsHint>
-        <div className="flex flex-wrap items-center gap-4">
+        <div className="flex flex-col items-start gap-3">
           <ThemeController
             isDark={dark}
             onThemeChange={(nextDark) =>

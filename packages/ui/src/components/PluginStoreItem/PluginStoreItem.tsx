@@ -6,6 +6,7 @@ import { Badge } from '../Badge';
 import { Box } from '../Box';
 import { Button } from '../Button';
 import { Loader } from '../Loader';
+import { usePluginCategories } from '../PluginCategoryContext';
 
 type PluginStoreItemProps = Omit<ComponentProps<'div'>, 'children'> & {
   icon?: ReactNode;
@@ -45,6 +46,9 @@ export const PluginStoreItem: FC<PluginStoreItemProps> = ({
   className,
   ...props
 }) => {
+  const categoryLabels = usePluginCategories(
+    categories ?? (category ? [category] : []),
+  );
   const {
     install = 'Install',
     installing = 'Installing',
@@ -85,7 +89,7 @@ export const PluginStoreItem: FC<PluginStoreItemProps> = ({
               v{version}
             </Badge>
           )}
-          {(categories ?? (category ? [category] : [])).map((cat) => (
+          {categoryLabels.map((cat) => (
             <Badge key={cat} variant="pill" color="cyan">
               {cat}
             </Badge>

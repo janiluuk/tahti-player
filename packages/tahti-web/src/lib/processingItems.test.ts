@@ -22,7 +22,7 @@ describe('shouldShowConnectedStatusBar', () => {
     ).toBe(true);
   });
 
-  it('hides when the compact player is showing', () => {
+  it('keeps the desktop status bar visible alongside the compact player', () => {
     expect(
       shouldShowConnectedStatusBar({
         signedIn: true,
@@ -32,7 +32,7 @@ describe('shouldShowConnectedStatusBar', () => {
         isPlaying: true,
         fullScreenPlayerOpen: false,
       }),
-    ).toBe(false);
+    ).toBe(true);
   });
 
   it('hides while the full-screen player is open', () => {

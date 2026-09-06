@@ -2,6 +2,8 @@ import { Link, useNavigate } from '@tanstack/react-router';
 import {
   Cast,
   CheckSquareIcon,
+  ChevronDown,
+  ChevronUp,
   CircleHelpIcon,
   DownloadIcon,
   Eye,
@@ -16,7 +18,7 @@ import {
   SettingsIcon,
   XIcon,
 } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
@@ -30,6 +32,7 @@ import {
   ImageReveal,
   Input,
   MediaArtwork,
+  PluginCategoryProvider,
   PluginStoreItem,
   SaveButton,
   Select,
@@ -166,13 +169,8 @@ function visualizerDescription(id: string): string {
 
 const IMPORT_SOURCE_KINDS = new Set(['oauth', 'search', 'tool']);
 
-/** Fold-out shell shared by every configurable plugin card: a gear toggle
- * next to the card that reveals an inline settings form below it (tabs
- * inside `children` when there's enough to configure to warrant them —
- * see VisualizersCategory). Every plugin gets one — nothing in this store
- * navigates away to configure itself. `header` can be a render prop when
- * the card's own primary button should also open the same panel as the
- * gear (e.g. a "Configure" button rather than an unrelated action). */
+/** Shared modal configuration shell. Both the card action and gear open
+ * the same dialog, preserving each add-on's own settings and save handlers. */
 function ConfigurableCard({
   header,
   children,
@@ -288,6 +286,7 @@ function InstalledAvailableTabs({
  * below) so shared services can stay a single entry without duplicating
  * their configuration UI. */
 export function PluginStorePanel() {
+  const categoryViewport = useRef<HTMLDivElement>(null);
   const isOpen = useSettingsModalStore((s) => s.isOpen);
   const pluginCategory = useSettingsModalStore((s) => s.pluginCategory);
   const user = useAuthStore((s) => s.user);
@@ -320,24 +319,67 @@ export function PluginStorePanel() {
   );
 
   return (
-    <Tabs
+    <Tabs.Root
       vertical
-      className="flex flex-col gap-4 sm:flex-row"
-      listClassName="flex sm:flex-col gap-1 sm:w-48 shrink-0"
+      className="flex gap-4"
+      listClassName="flex-col items-stretch gap-1"
       panelClassName="min-w-0 flex-1"
       selectedIndex={selectedIndex}
       onChange={(index) => setCategory(categories[index]!.id)}
-      items={categories.map((c) => ({
-        id: c.id,
-        label: (
-          <span className="flex items-center gap-2">
-            <c.icon size={14} aria-hidden />
-            {c.label}
-          </span>
-        ),
-        content: <CategoryBody categoryId={c.id} />,
-      }))}
-    />
+    >
+      <div className="flex w-36 shrink-0 items-start gap-1 sm:w-48">
+        <div
+          ref={categoryViewport}
+          className="max-h-[60vh] min-w-0 flex-1 overflow-y-auto"
+        >
+          <Tabs.List aria-label="Add-on categories">
+            {categories.map((item) => (
+              <Tabs.Tab key={item.id}>
+                <span className="flex items-center gap-2">
+                  <item.icon size={14} aria-hidden />
+                  {item.label}
+                </span>
+              </Tabs.Tab>
+            ))}
+          </Tabs.List>
+        </div>
+        <div className="flex flex-col gap-1">
+          <Button
+            size="icon-sm"
+            variant="secondary"
+            aria-label="Scroll categories up"
+            onClick={() =>
+              categoryViewport.current?.scrollBy({
+                top: -160,
+                behavior: 'smooth',
+              })
+            }
+          >
+            <ChevronUp size={16} />
+          </Button>
+          <Button
+            size="icon-sm"
+            variant="secondary"
+            aria-label="Scroll categories down"
+            onClick={() =>
+              categoryViewport.current?.scrollBy({
+                top: 160,
+                behavior: 'smooth',
+              })
+            }
+          >
+            <ChevronDown size={16} />
+          </Button>
+        </div>
+      </div>
+      <Tabs.Panels className="min-w-0 flex-1">
+        {categories.map((item) => (
+          <Tabs.Panel key={item.id}>
+            <CategoryBody categoryId={item.id} />
+          </Tabs.Panel>
+        ))}
+      </Tabs.Panels>
+    </Tabs.Root>
   );
 }
 
@@ -346,60 +388,62 @@ function CategoryBody({ categoryId }: { categoryId: PluginCategoryId }) {
   const [showInfo, setShowInfo] = useState(false);
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex items-center justify-end">
-        <Tooltip content={`About ${category.label}`} side="top">
-          <Button
-            size="icon-sm"
-            variant="secondary"
-            aria-label={`About ${category.label}`}
-            aria-expanded={showInfo}
-            onClick={() => setShowInfo((value) => !value)}
+    <PluginCategoryProvider category={category.label}>
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-end">
+          <Tooltip content={`About ${category.label}`} side="top">
+            <Button
+              size="icon-sm"
+              variant="secondary"
+              aria-label={`About ${category.label}`}
+              aria-expanded={showInfo}
+              onClick={() => setShowInfo((value) => !value)}
+            >
+              <InfoIcon size={16} aria-hidden />
+            </Button>
+          </Tooltip>
+        </div>
+        {showInfo ? (
+          <Box
+            variant="tertiary"
+            role="note"
+            className="border-primary/40 bg-primary/10 flex-row items-start gap-2 py-3"
           >
-            <InfoIcon size={16} aria-hidden />
-          </Button>
-        </Tooltip>
+            <InfoIcon
+              className="text-primary mt-0.5 shrink-0"
+              size={16}
+              aria-hidden
+            />
+            <p className="text-foreground text-sm">
+              <span className="font-semibold">{category.label}</span>{' '}
+              {category.description}
+            </p>
+          </Box>
+        ) : null}
+        {categoryId === 'themes' && <ThemesCategory />}
+        {categoryId === 'visualizers' && <VisualizersCategory />}
+        {categoryId === 'export' && <DspUrlPasteCard />}
+        {(categoryId === 'export' ||
+          categoryId === 'import' ||
+          categoryId === 'fingerprinting') && (
+          <ServiceCategory categoryId={categoryId} />
+        )}
+        {categoryId === 'import' && <SoulseekAddonCard />}
+        {categoryId === 'scrobbling' && (
+          <>
+            <ListenBrainzAddonCard />
+            <LastFmAddonCard />
+          </>
+        )}
+        {categoryId === 'multicast' && <MulticastCategory />}
+        {categoryId === 'audio-plugins' && <AudioPluginsCategory />}
+        {categoryId === 'tools' && <ToolsCategory />}
+        {categoryId === 'radio' && <RadioCategory />}
+        {categoryId === 'listen' && <ListenAddonsPanel />}
+        {categoryId === 'discovery' && <DiscoveryCategory />}
+        {categoryId === 'channel' && <ChannelCategory />}
       </div>
-      {showInfo ? (
-        <Box
-          variant="tertiary"
-          role="note"
-          className="border-primary/40 bg-primary/10 flex-row items-start gap-2 py-3"
-        >
-          <InfoIcon
-            className="text-primary mt-0.5 shrink-0"
-            size={16}
-            aria-hidden
-          />
-          <p className="text-foreground text-sm">
-            <span className="font-semibold">{category.label}</span>{' '}
-            {category.description}
-          </p>
-        </Box>
-      ) : null}
-      {categoryId === 'themes' && <ThemesCategory />}
-      {categoryId === 'visualizers' && <VisualizersCategory />}
-      {categoryId === 'export' && <DspUrlPasteCard />}
-      {(categoryId === 'export' ||
-        categoryId === 'import' ||
-        categoryId === 'fingerprinting') && (
-        <ServiceCategory categoryId={categoryId} />
-      )}
-      {categoryId === 'import' && <SoulseekAddonCard />}
-      {categoryId === 'scrobbling' && (
-        <>
-          <ListenBrainzAddonCard />
-          <LastFmAddonCard />
-        </>
-      )}
-      {categoryId === 'multicast' && <MulticastCategory />}
-      {categoryId === 'audio-plugins' && <AudioPluginsCategory />}
-      {categoryId === 'tools' && <ToolsCategory />}
-      {categoryId === 'radio' && <RadioCategory />}
-      {categoryId === 'listen' && <ListenAddonsPanel />}
-      {categoryId === 'discovery' && <DiscoveryCategory />}
-      {categoryId === 'channel' && <ChannelCategory />}
-    </div>
+    </PluginCategoryProvider>
   );
 }
 
@@ -591,7 +635,7 @@ function VisualizersCategory() {
             <ChannelVisualizer
               preset={previewPreset}
               visualSettingsJson={JSON.stringify(settingsMap)}
-              className="h-full w-full"
+              className="absolute inset-0 h-full w-full"
             />
           )}
           <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 bg-gradient-to-t from-black/80 to-transparent p-4 pt-12 text-white">
@@ -800,7 +844,7 @@ function VisualizersCategory() {
             ) : null}
             <Button
               size="sm"
-              variant="text"
+              variant="secondary"
               className="self-start"
               onClick={() =>
                 saveTuning(configurationPreset, DEFAULT_VISUAL_PRESET_SETTINGS)
@@ -1201,7 +1245,7 @@ function SpotifyCard({ plugin }: { plugin: ServicePlugin }) {
             </Button>
             <Button
               size="sm"
-              variant="text"
+              variant="secondary"
               onClick={() => {
                 void unlinkSpotifyArtistProfile().then((result) => {
                   if (result.ok) {
@@ -2518,7 +2562,7 @@ function MulticastCategory() {
                       <Tooltip content="Remove" side="top">
                         <Button
                           size="icon-sm"
-                          variant="text"
+                          variant="secondary"
                           intent="danger"
                           aria-label={`Remove ${destination.label}`}
                           onClick={() =>
@@ -2815,7 +2859,7 @@ function PersonalRadioStreamCard() {
                 key={s.id}
                 className="border-border hover:bg-background-secondary flex items-center gap-1 rounded-md border pr-1"
               >
-                <button
+                <Button
                   type="button"
                   className="flex min-w-0 flex-1 items-center justify-between px-3 py-2 text-left text-sm"
                   onClick={() => openStation(s)}
@@ -2825,7 +2869,7 @@ function PersonalRadioStreamCard() {
                     {s.codec}
                     {s.bitrateKbps ? ` ${s.bitrateKbps}kbps` : ''}
                   </span>
-                </button>
+                </Button>
                 <FavoriteButton
                   size="sm"
                   isFavorite={isFavoriteTrack(`radio:${s.id}`)}
@@ -2851,7 +2895,7 @@ function PersonalRadioStreamCard() {
               key={s.id}
               className="border-border hover:bg-background-secondary flex items-center gap-1 rounded-md border pr-1"
             >
-              <button
+              <Button
                 type="button"
                 className="flex min-w-0 flex-1 items-center justify-between px-3 py-2 text-left text-sm"
                 onClick={() => openStation(s)}
@@ -2860,7 +2904,7 @@ function PersonalRadioStreamCard() {
                 <span className="text-foreground-secondary ml-2 shrink-0 text-xs">
                   {s.tags?.[0]}
                 </span>
-              </button>
+              </Button>
               <FavoriteButton
                 size="sm"
                 isFavorite={isFavoriteTrack(`radio:${s.id}`)}
@@ -2906,7 +2950,7 @@ function RadioBrowserStationRow({
           }
         />
       </div>
-      <button
+      <Button
         type="button"
         className="flex min-w-0 flex-1 flex-col items-start text-left"
         onClick={onPlay}
@@ -2915,7 +2959,7 @@ function RadioBrowserStationRow({
         <span className="text-foreground-secondary w-full truncate text-xs">
           {station.country ?? station.tags?.[0] ?? 'Unknown'}
         </span>
-      </button>
+      </Button>
       <Tooltip content={`Play ${station.name}`} side="top">
         <Button
           size="icon-sm"
