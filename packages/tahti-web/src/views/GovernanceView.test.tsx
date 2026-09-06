@@ -41,9 +41,26 @@ class StubResizeObserver {
   disconnect() {}
 }
 
+/** jsdom has no matchMedia — useIsMobile/useIsCompactDesktop and
+ * Tooltip's coarse-pointer check both call it, and this suite renders
+ * the full component tree rather than mocking those hooks away. */
+function stubMatchMedia() {
+  vi.stubGlobal('matchMedia', (query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    addListener: () => {},
+    removeListener: () => {},
+    dispatchEvent: () => false,
+  }));
+}
+
 beforeEach(() => {
   vi.stubEnv('VITE_FORCE_MOCK', '1');
   vi.stubGlobal('ResizeObserver', StubResizeObserver);
+  stubMatchMedia();
   container = document.createElement('div');
   document.body.appendChild(container);
   root = createRoot(container);
@@ -53,6 +70,7 @@ afterEach(() => {
   act(() => root.unmount());
   container.remove();
   vi.unstubAllEnvs();
+  vi.unstubAllGlobals();
   useAuthStore.setState({ user: null, hydrated: true, loading: false });
 });
 

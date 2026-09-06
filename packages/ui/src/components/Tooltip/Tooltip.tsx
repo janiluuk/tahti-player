@@ -5,15 +5,41 @@ import {
   shift,
   useFloating,
 } from '@floating-ui/react-dom';
-import { FC, PropsWithChildren, ReactNode, useState } from 'react';
+import { FC, PropsWithChildren, ReactNode, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { cn } from '../../utils';
 
 const TOOLTIP_OFFSET_PX = 12;
 const VIEWPORT_PADDING_PX = 8;
+const COARSE_POINTER_QUERY = '(pointer: coarse)';
 
 type TooltipSide = 'top' | 'right' | 'bottom' | 'left';
+
+/**
+ * True on touch-primary devices. Tooltip only opens/closes on
+ * mouseenter/mouseleave/focus/blur — a touch tap fires mouseenter (and
+ * focus) with no matching mouseleave, so tooltips get stuck open after a
+ * tap on coarse-pointer devices. Suppress hover-tooltips there entirely
+ * rather than trying to fake a close event.
+ */
+function useCoarsePointer(): boolean {
+  const [coarse, setCoarse] = useState(() =>
+    typeof window !== 'undefined'
+      ? window.matchMedia(COARSE_POINTER_QUERY).matches
+      : false,
+  );
+
+  useEffect(() => {
+    const mql = window.matchMedia(COARSE_POINTER_QUERY);
+    const onChange = () => setCoarse(mql.matches);
+    onChange();
+    mql.addEventListener('change', onChange);
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
+
+  return coarse;
+}
 
 type TooltipProps = PropsWithChildren<{
   content: ReactNode;
@@ -32,6 +58,8 @@ export const Tooltip: FC<TooltipProps> = ({
   wrapperClassName,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const coarsePointer = useCoarsePointer();
+  const suppressed = disabled || coarsePointer;
   const { refs, floatingStyles } = useFloating({
     placement: side,
     open: isOpen,
@@ -47,14 +75,14 @@ export const Tooltip: FC<TooltipProps> = ({
     <div
       ref={refs.setReference}
       className={wrapperClassName}
-      onMouseEnter={disabled ? undefined : () => setIsOpen(true)}
-      onMouseLeave={disabled ? undefined : () => setIsOpen(false)}
-      onFocus={disabled ? undefined : () => setIsOpen(true)}
-      onBlur={disabled ? undefined : () => setIsOpen(false)}
+      onMouseEnter={suppressed ? undefined : () => setIsOpen(true)}
+      onMouseLeave={suppressed ? undefined : () => setIsOpen(false)}
+      onFocus={suppressed ? undefined : () => setIsOpen(true)}
+      onBlur={suppressed ? undefined : () => setIsOpen(false)}
     >
       {children}
       {isOpen &&
-        !disabled &&
+        !suppressed &&
         createPortal(
           <div
             ref={refs.setFloating}

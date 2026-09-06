@@ -738,7 +738,7 @@ export function StudioScheduleView() {
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
         <StudioNav current="/studio/schedule" />
-        <ViewShell title="Broadcast" classes={{ root: 'px-0 pt-0' }}>
+        <ViewShell title="Schedule" classes={{ root: 'px-0 pt-0' }}>
           <div className="mb-4">
             <Tooltip content="Add next broadcast" side="top">
               <Button

@@ -52,6 +52,11 @@ export type PublicChannel = {
   slug: string;
   state: 'LIVE' | 'OFFLINE' | string;
   hlsUrl: string | null;
+  /** True only when there's a real ingest signal on the live mount right
+   * now — `state === 'LIVE'` alone doesn't distinguish an actual human
+   * broadcast from the always-on 24/7 fallback rotation, which also sets
+   * state to LIVE. */
+  signalConnected?: boolean;
   /** When false, channel chat is off — right rail chat unavailable. */
   chatEnabled?: boolean;
   visualPreset?: string | null;
@@ -426,6 +431,10 @@ export type TahtiPlayable = {
   /** ISO date this track/release went live — shown as a "Released" column
    * in track listings when present. */
   releaseDate?: string | null;
+  /** True only for a `live`/`radio` playable that's an actual human
+   * broadcast right now, not a 24/7 fallback rotation (which shares the
+   * same `kind` and channel `state: 'LIVE'`). Drives the LIVE badge. */
+  isRealLive?: boolean;
 };
 
 export type ChatMessage = {

@@ -46,5 +46,5 @@ Every listen/live/directory card paints a blurred blow-up of its own cover/avata
 ## Out of scope
 
 - Changing Tahti org `apps/web` except if a missing API/palette field is discovered (then a sibling PR).
-- Porting every M31 channel visualizer preset.
+- Porting every M31 channel visualizer preset (already partially in `ChannelVisualizer`); this task is gateway Discover + card glow + mobile chrome/player viz.
 - Desktop sidebar density.

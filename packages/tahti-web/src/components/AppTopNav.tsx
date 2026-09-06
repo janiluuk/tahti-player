@@ -28,6 +28,7 @@ import { fetchConversations, type ConversationSummary } from '../api/messages';
 import { fetchStudioSounds } from '../api/studio';
 import type { StudioSound } from '../api/studio-types';
 import { useCanGoForward } from '../hooks/useCanGoForward';
+import { useIsMobile } from '../hooks/useIsMobile';
 import { useOwnBroadcastPresence } from '../hooks/useOwnBroadcastPresence';
 import { cn } from '../lib/cn';
 import { useAuthModalStore } from '../stores/authModalStore';
@@ -55,6 +56,7 @@ const iconBtnClass =
  */
 export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isMobile = useIsMobile();
   const router = useRouter();
   const canGoBack = useCanGoBack();
   const canGoForward = useCanGoForward();
@@ -247,7 +249,7 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
             <MenuIcon size={18} />
           </button>
         ) : null}
-        <TahtiLogoLink />
+        <TahtiLogoLink markOnly={isMobile} />
         {user && processingItems.length > 0 ? (
           <div className="relative">
             <button

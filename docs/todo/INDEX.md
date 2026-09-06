@@ -9,18 +9,18 @@ Status values: `open` | `blocked` | `partial`.
 | --- | --- | --- |
 | partial | [mobile-player-nav-and-tahti-theme-visuals.md](mobile-player-nav-and-tahti-theme-visuals.md) | Mobile player+nav stack shipped; thumbnail glow + Discover BgCanvas remain |
 | partial | [channel-designer-background-section-fixes.md](channel-designer-background-section-fixes.md) | Designer background section; design decision remains |
-| partial | [channel-designer-links-prefill-and-home-rename.md](channel-designer-links-prefill-and-home-rename.md) | Links prefill / home rename; flagged sub-asks |
+| blocked | [channelview-move-player-to-stage.md](channelview-move-player-to-stage.md) | Player-in-backdrop extraction needs a design decision |
 | partial | [channelview-badge-dedup-and-share-modal.md](channelview-badge-dedup-and-share-modal.md) | Badge dedup + share modal leftovers |
 | open | [desktop-pro-library.md](desktop-pro-library.md) | Independent desktop player / library / Soulseek |
 | partial | [go-live-header-subtext-cleanup.md](go-live-header-subtext-cleanup.md) | Calendar view restore still open |
-| open | [governance-motion-parity.md](governance-motion-parity.md) | Member governance vs prod dashboard parity |
+| open | [governance-gap-list.md](governance-gap-list.md) | Governance features missing from tahti-player (18 gaps vs tahti-org) |
+| blocked | [governance-out-of-account-section.md](governance-out-of-account-section.md) | Studio governance is artist/board-only; removing Account's would strand regular members — needs a decision |
 | partial | [help-keyboard-navigation.md](help-keyboard-navigation.md) | Settings remapping deep link still open |
-| partial | [help-layer-component-port.md](help-layer-component-port.md) | Port shipped; other queued help work |
 | partial | [image-upload-hover-lightbox.md](image-upload-hover-lightbox.md) | Shared chrome done; remaining surfaces |
 | partial | [local-files-moved-to-library-tab.md](local-files-moved-to-library-tab.md) | Move done; desktop-mode gating open |
 | blocked | [map-screenshot-refresh.md](map-screenshot-refresh.md) | Signed-in recapture blocked post-ViewShell |
 | open | [plugin-registry-extraction.md](plugin-registry-extraction.md) | Pointer to sibling extraction checklist |
-| open | [queued-ux-fixes-2026-09-05.md](queued-ux-fixes-2026-09-05.md) | Queued UX: 4 open (artwork, catalog, designer tabs) |
+| open | [queued-ux-fixes-2026-09-05.md](queued-ux-fixes-2026-09-05.md) | Queued UX: 3 open, all blocked/scoped-out (artwork backend, designer tabs feature) |
 | partial | [radio-browser-directory-fixes.md](radio-browser-directory-fixes.md) | Cover-image sub-ask needs decision |
 | partial | [storybook-ui-sweep.md](storybook-ui-sweep.md) | Sweep executed; follow-ups continue |
 | partial | [stream-overlay-auto-fill-and-avatar-placeholder.md](stream-overlay-auto-fill-and-avatar-placeholder.md) | Now-playing artwork remaining |

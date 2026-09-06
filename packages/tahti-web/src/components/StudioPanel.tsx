@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 
+import { Button } from '@tahti-player/ui';
+
 /** Elevated studio panel — consistent padding, border, subtle depth. */
 export function StudioPanel({
   title,
@@ -64,5 +66,39 @@ export function StudioPageHeader({
       </div>
       {action ? <div className="shrink-0 pb-0.5">{action}</div> : null}
     </header>
+  );
+}
+
+/** Small bordered toggle chip (type/style filter pills) — was duplicated
+ * verbatim as StudioCollectionsView's StyleChip and StudioReleasesView's
+ * TypeChip. */
+export function StudioToggleChip({
+  selected,
+  icon,
+  label,
+  onClick,
+}: {
+  selected: boolean;
+  icon: ReactNode;
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <Button
+      type="button"
+      variant="text"
+      size="flexible"
+      className={`gap-1.5 rounded-md border px-2.5 py-1.5 text-xs ${
+        selected
+          ? 'border-primary bg-primary/15 text-primary'
+          : 'border-border text-foreground-secondary'
+      }`}
+      onClick={onClick}
+      aria-pressed={selected}
+      title={label}
+    >
+      {icon}
+      <span>{label}</span>
+    </Button>
   );
 }

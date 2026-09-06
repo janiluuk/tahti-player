@@ -20,22 +20,6 @@ Open items only. Shipped bullets folded to HISTORY.md on 2026-09-05.
   needs a real endpoint change instead). Don't build this without that
   backend piece; flagging rather than guessing at a workaround.
 
-- [ ] **CatalogView: invisible artist titles + hide support widgets until
-  configured.** No file named `CatalogView` (or close variants) exists in
-  `packages/tahti-web/src` — this may be a `Catalog`-named view in the
-  *sibling* `tahti` repo's `apps/web` instead of here, or a differently-
-  named component in this repo (check `DirectoryArtistCardGrid` and the
-  Discover/Listen artist grids first). Confirm which repo/file before
-  starting. Once located: (1) artist title text is invisible — almost
-  certainly a text-color-on-background contrast bug (a dark-on-dark or
-  light-on-light class), fix the color token, not a one-off hardcoded
-  color. (2) Don't show "support" widgets (fan-sub / tip / purchase-tier
-  prompts — check `FanTiersEditor.tsx`/`AudienceVisibilitySection.tsx`
-  for the relevant enabled/configured flag) on an artist's page/catalog
-  until that artist has actually set up and enabled their subscription
-  tiers — needs whatever flag distinguishes "tiers configured" from
-  "tiers exist but not enabled" from "no tiers at all".
-
 - [ ] **Channel Designer: tabs under the player, dynamic per enabled
   section, visual editor for adding them.** Locate the `Designer`
   component in Storybook (`packages/storybook/src/tahti-web/`) and its

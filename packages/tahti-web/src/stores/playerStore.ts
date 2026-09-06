@@ -25,6 +25,11 @@ type PlayerState = {
   currentTime: number;
   duration: number;
   isLive: boolean;
+  /** True only for an actual live human broadcast right now, not a 24/7
+   * fallback rotation sharing the same `kind`/channel state -- drives the
+   * LIVE badge specifically. `isLive` above still governs live-style
+   * playback UI (no seekbar, shuffle disabled) for both cases. */
+  isRealLive: boolean;
   shuffle: boolean;
   repeatMode: RepeatMode;
   /** True after the user has started playback at least once this session. */
@@ -132,6 +137,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   currentTime: 0,
   duration: 0,
   isLive: true,
+  isRealLive: false,
   shuffle: false,
   repeatMode: 'off',
   hasPlayed: false,
@@ -157,6 +163,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       duration: 0,
       seekTarget: null,
       isLive: isRadioOrLive,
+      isRealLive: isRadioOrLive && Boolean(item.isRealLive),
       hasPlayed: true,
       lastRadioPlayable: isRadioOrLive ? item : get().lastRadioPlayable,
       playerBarVisible: true,
@@ -220,6 +227,12 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       currentTime: 0,
       seekTarget: null,
       isLive: isRadioOrLive,
+      // playableFromQueueItem rebuilds a TahtiPlayable from the queued
+      // Track, which never carried isRealLive through -- conservatively
+      // false here rather than guessing, so a rotation never falsely
+      // reads as LIVE. Only play() (the normal way to start a live
+      // channel) has the real signal.
+      isRealLive: false,
       hasPlayed: true,
       lastRadioPlayable:
         isRadioOrLive && playable ? playable : get().lastRadioPlayable,

@@ -2,6 +2,136 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-06 — Real LIVE badge (not radio/rotation false-positive)
+
+Folded from `player-bar-fake-live-indicator.md`. Confirmed via
+`../tahti-org` that `channel.state === 'LIVE'` is genuinely overloaded
+(the 24/7 fallback rotation sets it too, `channel-fallback-reconciler.ts`)
+and no public endpoint exposed real ingest signal — `manage-stats` is
+owner/board-gated. User authorized editing `tahti-org` mid-session.
+
+**Backend (`tahti-org`, implemented but uncommitted):** `GET
+/api/channels/:slug` now also returns `signalConnected` (via the same
+`fetchMountSignalStatus` manage-stats already uses, only when `state
+=== 'LIVE'`), added to `PublicChannelViewSchema`. `get.test.ts` gained
+2 assertions. Verified against a disposable Postgres, not the shared
+dev DB. **Left uncommitted**: `tahti-org` has an in-progress git merge
+(`origin/main` → `main`, conflicts already resolved, awaiting a final
+commit from whoever started it) — concluding someone else's merge
+under this session's commit isn't this session's call. The diff sits
+cleanly on top of the merge; whoever commits it will see it as an
+additional uncommitted change afterward.
+
+**Frontend (`tahti-web`, committed):** `TahtiPlayable`/`PublicChannel`
+gained `signalConnected`/`isRealLive`. New `playerStore.isRealLive`
+(distinct from `isLive`, which still governs live-style playback UI
+for both real broadcasts and rotations) is set from `item.isRealLive`
+in `play()` — conservatively `false` in `playQueueIndex()` since
+`playableFromQueueItem` can't reconstruct it from the queued `Track`.
+`ConnectedPlayerBar`/`FullScreenPlayer`'s LIVE badge now gates on
+`isRealLive`. Mock data (`mockChannel`) reflects the same contract:
+Tahti Radio (rotation) never shows `signalConnected`, other live mock
+channels do.
+
+## 2026-09-06 — Channel Designer Links: hide/show eye icon confirmed shipped
+
+Folded item 3 from `channel-designer-links-prefill-and-home-rename.md`,
+previously flagged as needing a backend schema check before
+attempting. Re-checked against `../tahti-org`: `ChannelLinkSchema`
+(`packages/shared/src/dto/visual-preset.ts`) already has `hidden:
+z.boolean().optional()` — the backend already had room for this field
+(`channelLinksJson` is a loosely-typed JSON blob column, no migration
+needed). Turns out the full feature was already shipped end-to-end
+since this was written and just never folded back: `ChannelLink`
+(tahti-web `api/channel-design.ts`) already carries `hidden?: boolean`,
+`ChannelLinksEditor.tsx` already has the Eye/EyeOff toggle button per
+link, and `ChannelView.tsx:949` already filters hidden links from the
+public render (`editing || !link.hidden`). Nothing left to build here.
+
+## 2026-09-06 — RadioListItem component + hover play on cover art
+
+Folded from `radio-list-item-component.md`. Extracted the Listen
+page's bespoke Tahti Radio row into `components/RadioListItem.tsx`
+(cover art + live-audio-reactive backdrop + now-playing text + "Open
+radio" link) with a Storybook story
+(`Tahti/Radio/RadioListItem` — Idle/Playing/Offline/No-cover states).
+The separate play/pause icon button moved to a hover overlay on the
+cover art itself, using `MediaArtwork`'s existing `onPlay`/`isPlaying`
+pattern (already built for exactly this, just not reused here yet).
+`ListenView.tsx` now renders `<RadioListItem />` instead of ~75 lines
+of inline markup.
+
+## 2026-09-06 — HelpLayer port fully closed
+
+Folded from `help-layer-component-port.md`. The component shipped and
+was wired into `StudioGoLiveView.tsx` in an earlier pass; this
+session confirmed its one flagged follow-up (`StreamOverlayEditor`'s
+explanatory paragraph moving from the Help Center to `HelpLayer`) was
+also already done — grepped and found `HelpLayer` already imported and
+wired there ("How the stream overlay works").
+
+## 2026-09-06 — Governance motion parity with prod dashboard
+
+Folded from `governance-motion-parity.md`. `GovernanceView.tsx` gained
+DRAFT-state badge + circulation-period copy, board-only open/close
+motion controls (`patchGovernanceMotion`), turnout math against the
+member directory count, and meeting quorum display — closing every
+real gap found against `tahti`'s prod governance dashboard. New
+`GovernanceView.test.tsx` (6 cases). Implementation was already complete before this session; this session
+found and fixed a `window.matchMedia` crash in the test suite itself
+(a regression from this same session's Tooltip fix, unrelated to
+governance) that had been silently failing all 6 of its tests. Pending:
+push + deploy + live verification (tracked with this branch's other
+pending work).
+
+## 2026-09-06 — Mobile player bar: real play/pause + full-screen queue
+
+Folded from `mobile-player-bar-controls-and-queue.md`.
+
+Root cause of "only a mute button, no working play/pause" on mobile:
+`ConnectedPlayerBar.tsx` unconditionally hid the whole compact bar
+whenever `isMobile && isPlaying` (added when the full-screen player
+shipped, with nothing ever wired up to replace it — `ConnectedStatusBar`
+filled the gap instead, showing sound-count/notification text with zero
+playback controls). Removed that hide condition entirely; the compact
+bar now stays mounted during mobile playback. Added a dedicated mobile
+layout: tapping the now-playing info opens the full-screen player,
+alongside a large primary play/pause button and the queue button
+(desktop layout, with its Volume/shuffle/repeat/prev/next controls,
+is unchanged). `shouldShowConnectedStatusBar` simplified to drop the
+now-dead `isMobile`/`isPlaying` params.
+
+Mobile queue button now opens a full-screen sheet (new `fullScreen`
+prop on `MobileDrawer`) with `SidebarQueuePanel` — reusing `QueuePanel`'s
+existing `currentItemId` highlight — instead of the narrow side-drawer
+tabbed `RightRailPanel`.
+
+Not verified live in a real mobile browser this session (Chrome
+extension wasn't connected) — validated via `tsc --noEmit`, `eslint`,
+and the existing `vitest` suite only. Worth a manual phone/DevTools
+pass before shipping.
+
+## 2026-09-06 — CatalogView invisible-title / support-widget items investigated
+
+Two sub-asks folded from `queued-ux-fixes-2026-09-05.md`'s "CatalogView"
+item (no such file/view exists in this repo or the sibling `tahti-org`
+repo checked out at `../tahti-org`; closest match is the "Catalog" tab
+inside `ArtistView.tsx`/`ChannelView.tsx`).
+
+- **Support widgets showing before tiers configured — not a bug.**
+  `../tahti-org`'s public-profile route already filters `fanTiers`/
+  `purchaseTiers` to `where: { active: true }` server-side
+  (`apps/api/src/routes/profile/public.ts:224-233`), so a disabled tier
+  never reaches the client. `ArtistView.tsx`'s `fanTiers.length > 0`
+  gates are already correct given that contract.
+- **Invisible artist title — real bug, fixed.** `normalizeColorScheme`
+  (`lib/colorScheme.ts`) filled `bg`/`text` independently from a shared
+  fallback; a custom scheme setting only `bg` (no `text` override) kept
+  falling back to white text regardless of how light the custom `bg`
+  was. Added a luminance check so an unset `text` now picks black/white
+  based on the actual custom `bg`'s brightness instead of always
+  defaulting to white. New `colorScheme.test.ts`.
+
 ## 2026-09-06 — Stream Manager replace-rotation wipe
 
 Folded from `stream-manager-rotation-replace-wipe.md`.

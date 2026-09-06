@@ -12,5 +12,8 @@
       "command": "pnpm storybook"
     }
   ],
-  "ports": [5180, 6006]
+  "ports": [
+    { "name": "tahti-web", "port": 5180 },
+    { "name": "storybook", "port": 6006 }
+  ]
 }

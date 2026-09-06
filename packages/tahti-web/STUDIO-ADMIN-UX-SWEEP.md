@@ -4,6 +4,16 @@ Full audit of every Studio and Admin view + subtab (34 `views/studio/*.tsx`, 27
 `views/admin/*.tsx`, plus moderation/orphan tabs — ~68 files) against the design
 system. **Archive / file:line table only.**
 
+**2026-09-06: this table is largely stale.** Five `missing-icon` rows
+spot-checked at random (`StudioReleasesView` Edit, `AdminAnnouncementsView`
+Delete, `StudioEventsView` Remove, `AdminGrantCycleView` Approve
+distribution, plus the `STUDIO-ADMIN-UX-SWEEP-OPEN.md` reference
+examples checked separately) were **all already fixed** — icons
+already paired with their button text. This table was evidently closed
+out across several later sessions that never came back to update or
+delete it. Treat every remaining row as unverified; re-grep the actual
+file before trusting a row still describes real, unfixed code.
+
 **Open punch list (use this first):** [`STUDIO-ADMIN-UX-SWEEP-OPEN.md`](STUDIO-ADMIN-UX-SWEEP-OPEN.md).
 Leaf tracking: [`docs/todo/INDEX.md`](../../docs/todo/INDEX.md).
 WORKPLAN epics: [`WORKPLAN.md`](WORKPLAN.md).

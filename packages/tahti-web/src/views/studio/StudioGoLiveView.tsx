@@ -343,7 +343,7 @@ export function StudioGoLiveView() {
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6">
         <StudioNav current="/studio/go-live" />
 
-        <ViewShell title="Go live" classes={{ root: 'px-0 pt-0' }}>
+        <ViewShell title="Broadcast" classes={{ root: 'px-0 pt-0' }}>
           <div className="mb-4 flex flex-wrap items-center gap-2">
             {slug && (
               <ChannelShareButton

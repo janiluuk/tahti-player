@@ -9,7 +9,7 @@ import {
   PlusIcon,
   Share2Icon,
 } from 'lucide-react';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
@@ -32,7 +32,7 @@ import { PageLoading } from '../../components/PageStates';
 import { SourceServiceIcon } from '../../components/SourceServiceIcon';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioNav } from '../../components/StudioNav';
-import { StudioPanel } from '../../components/StudioPanel';
+import { StudioPanel, StudioToggleChip } from '../../components/StudioPanel';
 import { resolveNewReleaseVisualizer } from '../../lib/releaseVisualizer';
 
 const RELEASE_TYPES = [
@@ -157,7 +157,7 @@ export function StudioReleasesView({
                 />
                 <div className="flex flex-wrap gap-2">
                   {RELEASE_TYPES.map((t) => (
-                    <TypeChip
+                    <StudioToggleChip
                       key={t.id}
                       selected={type === t.id}
                       icon={t.icon}
@@ -308,36 +308,5 @@ export function StudioReleasesView({
         </ViewShell>
       </div>
     </StudioGate>
-  );
-}
-
-function TypeChip({
-  selected,
-  icon,
-  label,
-  onClick,
-}: {
-  selected: boolean;
-  icon: ReactNode;
-  label: string;
-  onClick: () => void;
-}) {
-  return (
-    <Button
-      type="button"
-      variant="text"
-      size="flexible"
-      className={`gap-1.5 rounded-md border px-2.5 py-1.5 text-xs ${
-        selected
-          ? 'border-primary bg-primary/15 text-primary'
-          : 'border-border text-foreground-secondary'
-      }`}
-      onClick={onClick}
-      aria-pressed={selected}
-      title={label}
-    >
-      {icon}
-      <span>{label}</span>
-    </Button>
   );
 }

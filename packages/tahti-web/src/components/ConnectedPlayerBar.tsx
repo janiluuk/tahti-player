@@ -1,5 +1,10 @@
 import { useNavigate } from '@tanstack/react-router';
-import { ListMusicIcon, Maximize2Icon } from 'lucide-react';
+import {
+  ListMusicIcon,
+  Maximize2Icon,
+  PauseIcon,
+  PlayIcon,
+} from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 import { formatArtistNames } from '@tahti-player/model';
@@ -29,6 +34,7 @@ export function ConnectedPlayerBar() {
   const volume = usePlayerStore((s) => s.volume);
   const muted = usePlayerStore((s) => s.muted);
   const isLive = usePlayerStore((s) => s.isLive);
+  const isRealLive = usePlayerStore((s) => s.isRealLive);
   const shuffle = usePlayerStore((s) => s.shuffle);
   const repeatMode = usePlayerStore((s) => s.repeatMode);
   const playerBarVisible = usePlayerStore((s) => s.playerBarVisible);
@@ -106,6 +112,7 @@ export function ConnectedPlayerBar() {
   const soundId = soundIdFromPlayableId(playable?.id ?? currentId);
   const artistSlug = playable?.channelSlug;
   const progress = duration > 0 ? currentTime / duration : 0;
+  const coverUrl = playable?.coverUrl ?? current?.track.artwork?.items[0]?.url;
 
   const onQueueClick = () => {
     if (canUseRightRail) {
@@ -117,6 +124,13 @@ export function ConnectedPlayerBar() {
       return;
     }
     setSignedOutPopoverOpen((open) => !open);
+  };
+
+  const onPlayPause = () => {
+    if (!playable) {
+      return;
+    }
+    setStatus(isPlaying ? 'paused' : 'playing');
   };
 
   const controls = (
@@ -133,16 +147,7 @@ export function ConnectedPlayerBar() {
           repeatAll: 'Repeat all',
           repeatOne: 'Repeat one',
         }}
-        onPlayPause={() => {
-          if (!playable) {
-            return;
-          }
-          if (isPlaying) {
-            setStatus('paused');
-          } else {
-            setStatus('playing');
-          }
-        }}
+        onPlayPause={onPlayPause}
         onNext={next}
         onPrevious={previous}
         onShuffleToggle={toggleShuffle}
@@ -154,6 +159,27 @@ export function ConnectedPlayerBar() {
         </div>
       ) : null}
     </div>
+  );
+
+  const mobilePlayPauseButton = (
+    <Button
+      size="icon"
+      onClick={onPlayPause}
+      className={cn(
+        'size-12 shrink-0 rounded-full shadow-md',
+        isPlaying &&
+          'bg-accent-green active:bg-accent-green text-black active:text-black',
+      )}
+      aria-label={isPlaying ? 'Pause' : 'Play'}
+      aria-pressed={isPlaying}
+      data-testid={isPlaying ? 'player-pause-button' : 'player-play-button'}
+    >
+      {isPlaying ? (
+        <PauseIcon size={22} />
+      ) : (
+        <PlayIcon size={22} className="ml-0.5" />
+      )}
+    </Button>
   );
 
   const queueLabel = queuePressed
@@ -190,49 +216,88 @@ export function ConnectedPlayerBar() {
     </div>
   );
 
+  const waveform = isLive ? null : (
+    <div className="px-4 pt-1">
+      <WaveformSeekbar
+        trackId={playable?.id ?? currentId ?? 'none'}
+        progress={progress}
+        onSeek={(fraction) => {
+          if (duration <= 0) {
+            return;
+          }
+          seekTo(fraction * duration);
+        }}
+        className={cn(
+          'w-full transition-[height] duration-200',
+          waveformExpanded ? WAVEFORM_EXPANDED : WAVEFORM_COMPACT,
+        )}
+      />
+    </div>
+  );
+
+  const hearthisPanel = hearthisEmbed ? (
+    <div className="bg-background-secondary px-4 py-2">
+      <HearthisEmbedSurface
+        embedUri={hearthisEmbed.embedUri}
+        title={title}
+        autoplay={isPlaying}
+        compact
+      />
+      <p className="text-foreground-secondary mt-1 text-center text-[11px]">
+        Playback is controlled by the hearthis.at widget.
+      </p>
+    </div>
+  ) : null;
+
+  if (isMobile) {
+    return (
+      <div className="flex w-full flex-col">
+        {waveform}
+        {hearthisPanel}
+        <div className="flex w-full items-center gap-3 px-4 py-2">
+          <button
+            type="button"
+            className="flex min-w-0 flex-1 items-center gap-3 text-left"
+            onClick={() => setFullScreenPlayerOpen(true)}
+            aria-label="Open full-screen player"
+            data-testid="expand-full-screen-player"
+          >
+            {coverUrl ? (
+              <img
+                src={coverUrl}
+                alt=""
+                className="size-10 shrink-0 rounded-md object-cover"
+              />
+            ) : null}
+            <span className="min-w-0">
+              <span className="block truncate text-sm font-semibold">
+                {title}
+              </span>
+              <span className="text-foreground-secondary block truncate text-xs">
+                {artist}
+              </span>
+            </span>
+            {isRealLive ? <PlayerLiveBadge /> : null}
+          </button>
+          {mobilePlayPauseButton}
+          {queueButton}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex w-full flex-col">
-      {isLive ? null : (
-        <div className="px-4 pt-1">
-          <WaveformSeekbar
-            trackId={playable?.id ?? currentId ?? 'none'}
-            progress={progress}
-            onSeek={(fraction) => {
-              if (duration <= 0) {
-                return;
-              }
-              seekTo(fraction * duration);
-            }}
-            className={cn(
-              'w-full transition-[height] duration-200',
-              waveformExpanded ? WAVEFORM_EXPANDED : WAVEFORM_COMPACT,
-            )}
-          />
-        </div>
-      )}
-      {hearthisEmbed ? (
-        <div className="bg-background-secondary px-4 py-2">
-          <HearthisEmbedSurface
-            embedUri={hearthisEmbed.embedUri}
-            title={title}
-            autoplay={isPlaying}
-            compact
-          />
-          <p className="text-foreground-secondary mt-1 text-center text-[11px]">
-            Playback is controlled by the hearthis.at widget.
-          </p>
-        </div>
-      ) : null}
+      {waveform}
+      {hearthisPanel}
       <PlayerBar
         left={
           <div className="flex min-w-0 items-center gap-2">
             <PlayerBar.NowPlaying
               title={title}
               artist={artist}
-              coverUrl={
-                playable?.coverUrl ?? current?.track.artwork?.items[0]?.url
-              }
-              action={isLive ? <PlayerLiveBadge /> : undefined}
+              coverUrl={coverUrl}
+              action={isRealLive ? <PlayerLiveBadge /> : undefined}
               onTitleClick={
                 isLive
                   ? undefined

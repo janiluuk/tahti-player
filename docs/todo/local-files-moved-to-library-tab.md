@@ -50,16 +50,14 @@ embedded in a Tauri shell at some point (a bigger, separate effort), or
 desktop" preference toggle, or gating on window width as a rough
 proxy) — needs a decision, not a guess.
 
-## Also found, not touched
+## Also found, and now cleaned up (2026-09-06)
 
-`layoutStore.ts` has a `toggleLibraryRail` action and `'library'` still
-in the `RightRailTab` type, referencing the now-removed sidebar tab —
-but grepping the whole `tahti-web` tree found **zero callers** of
-`toggleLibraryRail` anywhere, so it was already dead code before this
-change, not something this change orphaned. Left as-is since fully
-purging it means touching `layoutStore.ts`'s type and several
-conditionals unrelated to what was asked; flagging for a future
-cleanup pass rather than doing it opportunistically here.
+`layoutStore.ts` had a `toggleLibraryRail` action and `'library'` still
+in the `RightRailTab` type, referencing the now-removed sidebar tab, with
+zero callers anywhere in the tree. Removed `toggleLibraryRail`, its
+implementation, and `'library'` from `RightRailTab`/`RIGHT_RAIL_TABS`.
+`RightRailPanel.tsx`'s own `DESKTOP_TABS`/`MOBILE_TABS` already only
+listed `chat`/`notifications`/`queue`, so no other change was needed.
 
 ## Verification
 

@@ -463,6 +463,11 @@ export function mockChannel(slug: string): PublicChannel {
   return {
     slug,
     state: live ? 'LIVE' : 'OFFLINE',
+    // Tahti Radio's "LIVE" is the always-on 24/7 rotation, not a real
+    // broadcast -- mirrors the real backend's signalConnected contract
+    // (an ingest signal, not just channel state) so mock mode exercises
+    // the same LIVE-badge distinction as production.
+    signalConnected: live && slug !== TAHTI_RADIO_SLUG,
     hlsUrl: live ? DEMO_HLS : null,
     chatEnabled: true,
     visualPreset: isRadio
@@ -1112,6 +1117,7 @@ export function channelToPlayable(
     streamUrl: channel.hlsUrl,
     protocol: 'hls',
     channelSlug: channel.slug,
+    isRealLive: Boolean(channel.signalConnected),
   };
 }
 
@@ -1129,6 +1135,10 @@ export function radioToPlayable(radio: RadioNowPlaying): TahtiPlayable | null {
     streamUrl: ch.hlsUrl,
     protocol: 'hls',
     channelSlug: ch.slug,
+    // Only returned non-null when `radio.live` is true (a real booked
+    // artist relaying right now), unlike channelToPlayable's overloaded
+    // channel.state.
+    isRealLive: true,
   };
 }
 
