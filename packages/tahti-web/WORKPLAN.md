@@ -11,10 +11,10 @@ Sibling API: **`../tahti-org`**. Product matrix: [`FEATURES.md`](FEATURES.md) Re
 - [ ] **Registry runtime parity (remaining dashboards)** — bandcamp/deezer/listenbrainz dashboards, omnisource, youtube-liked-songs-sync (or mark out-of-scope).
 - [ ] **Storybook / design-system sweeps** — Input sweep, Studio/Admin UX punch list (Studio primitive sweep finished 2026-09-07, see HISTORY). Open punch list: [`STUDIO-ADMIN-UX-SWEEP-OPEN.md`](STUDIO-ADMIN-UX-SWEEP-OPEN.md).
 - [ ] **Image slot chrome** — hover delete + preview modal on remaining upload surfaces. Leaf: [image-upload-hover-lightbox.md](../../docs/todo/image-upload-hover-lightbox.md).
-- [ ] **Governance / Channel Designer / overlay leftovers** — see INDEX (`governance-motion-parity`, `channel-designer-*`, `stream-overlay-*`, …).
+- [ ] **Governance / Channel Designer / overlay leftovers** — see INDEX (`governance-motion-parity`, `channel-designer-*`, `stream-overlay-*`, `queued-ux-fixes-*`, …).
+- [ ] **Broadcast dialog: booking calendar link + move Stream Manager in** — see INDEX (`broadcast-dialog-booking-link-and-stream-manager`).
 - [ ] **Sibling archive mentions API** — extend `../tahti-org` metadata, then remove artist-page fallback.
-- [ ] **Waveform detail/accuracy** — full track view (and similar places) needs a much more detailed, accurate waveform; current `WaveformSeekbar` downsamples to a fixed 64 bars and fabricates fake bars when no real peaks exist. Leaf: [waveform-detail-accuracy.md](../../docs/todo/waveform-detail-accuracy.md).
-- [ ] **Studio nav: Perform → Broadcast, tab-coverage sweep** — move Perform out of the primary nav into a new Studio→Broadcast section; audit every Studio page for missing/wrong active nav-tab state at both primary and submenu level. Leaf: [studio-nav-perform-to-broadcast.md](../../docs/todo/studio-nav-perform-to-broadcast.md).
+- [ ] **Fix player release workflow (secrets pending)** — root cause fixed 2026-09-07 (step-level `if:` comparing a `secrets.*` value broke GitHub's whole-file parse; moved the check into the shell script instead). New signing keypair generated but the two `gh secret set` commands need the user to run them (Claude Code can't set repo secrets). Leaf: [release-player-workflow-broken.md](../../docs/todo/release-player-workflow-broken.md).
 
 ## Next (queued after today's cycles)
 

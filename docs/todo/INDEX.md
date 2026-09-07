@@ -19,10 +19,11 @@ Status values: `open` | `blocked` | `partial`.
 | partial | [pay-what-you-want-pricing.md](pay-what-you-want-pricing.md) | Buyer amount dialog shipped; not live-verified (no tier ever exists to test against) |
 | open | [purchase-tier-artist-editor-missing.md](purchase-tier-artist-editor-missing.md) | One-time track purchases have zero artist-facing UI — tier create/edit + per-track assignment |
 | open | [plugin-registry-extraction.md](plugin-registry-extraction.md) | Pointer to sibling extraction checklist |
+| open | [broadcast-dialog-booking-link-and-stream-manager.md](broadcast-dialog-booking-link-and-stream-manager.md) | Add booking calendar link to Broadcast popover; move Stream Manager icon into it |
+| open | [queued-ux-fixes-2026-09-05.md](queued-ux-fixes-2026-09-05.md) | Queued UX: Channel Designer tabs feature (2 items), scoped-out multi-part effort |
+| partial | [release-player-workflow-broken.md](release-player-workflow-broken.md) | Root cause fixed 2026-09-07; user needs to run 2 `gh secret set` commands to finish |
 | partial | [radio-browser-directory-fixes.md](radio-browser-directory-fixes.md) | Cover-image sub-ask needs decision |
 | partial | [stream-overlay-auto-fill-and-avatar-placeholder.md](stream-overlay-auto-fill-and-avatar-placeholder.md) | Now-playing artwork remaining |
-| open | [continue-listening-card-missing-isplaying.md](continue-listening-card-missing-isplaying.md) | Listen page "Continue listening" card never shows pause icon |
-| open | [mobile-topbar-notifications-messages-to-user-menu.md](mobile-topbar-notifications-messages-to-user-menu.md) | Move Notifications/Messages into user menu on mobile only |
 | partial | [stream-overlay-text-color.md](stream-overlay-text-color.md) | Scrim backend shipped (../tahti-org PR #459, awaiting merge); frontend toggle UI remaining |
 | partial | [studio-emptystate-remaining.md](studio-emptystate-remaining.md) | Inline form hints + Settings-scope empties remain |
 | open | [tahti-cli-tool.md](tahti-cli-tool.md) | CLI (gumroad-cli-inspired) wrapping api-client — list library items, maybe TUI player |

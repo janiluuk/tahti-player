@@ -1479,5 +1479,33 @@ second "Releases" tab, moved Tracks into it out of Home, exited
 editing, and confirmed the live tab bar renders, Home hides Tracks,
 and clicking Releases swaps to show only Tracks with About/Subscribe
 hidden.
+## 2026-09-07 — Continue-listening pause icon + mobile topbar notifications/messages
+
+Folded from `continue-listening-card-missing-isplaying.md` and
+`mobile-topbar-notifications-messages-to-user-menu.md`.
+
+- `ListenView.tsx`: "Continue listening" `Card` now derives
+  `lastPlayedIsCurrent`/`lastPlayedIsPlaying` from `usePlayerStore`
+  (same pattern as `radioIsPlaying`/`radioPreset` cards on the same
+  page) and passes `isPlaying`, toggling pause instead of always
+  restarting when already the current track.
+- `AppTopNav.tsx`: on mobile (`useIsMobile()`), the standalone
+  Notifications/Messages top-bar buttons are hidden (`isMobile &&
+  'hidden'`, popovers untouched so they still anchor/render when
+  opened) and two new menu items are added to the user-menu dropdown
+  instead, each opening the same existing popover state
+  (`setNotificationsOpen`/`setMessagesOpen`) and each carrying its own
+  unread-count `Badge` (same pill/red styling as the original
+  top-bar badges). A combined unread dot is added to the avatar
+  trigger itself on mobile so unread state stays visible without the
+  standalone icons. Desktop is untouched (`isMobile` false → same as
+  before).
+- Not live-verified on an actual narrow viewport — the browser
+  automation's window-resize didn't take effect in this environment
+  (viewport stayed desktop-width despite the resize call reporting
+  success); desktop path was screenshot-confirmed unaffected (menu
+  opens normally, no stray items, no badge). Flagging so it gets a
+  real mobile-viewport check if anything looks off in practice.
+- tahti-web `0.0.96`.
 
 ---
