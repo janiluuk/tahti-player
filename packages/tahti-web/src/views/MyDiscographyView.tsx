@@ -190,7 +190,13 @@ export const MyDiscographyView: FC = () => {
 
   return (
     <div className="flex flex-col gap-8">
-      {!hasChannel ? (
+      {loading ? (
+        <PageLoading label="Loading sounds…" />
+      ) : !hasChannel && items.length === 0 ? (
+        // Only show the "go live" nudge when there's genuinely nothing to
+        // show — a channel-less state must never hide sounds the fetch
+        // actually returned (e.g. a stale/late channel field on an
+        // account that already has archive items).
         <PageEmpty
           title="No sounds yet"
           description="Go live or upload music to start your complete audio archive."
@@ -203,8 +209,6 @@ export const MyDiscographyView: FC = () => {
             </Link>
           }
         />
-      ) : loading ? (
-        <PageLoading label="Loading sounds…" />
       ) : (
         <>
           <section className="flex flex-col gap-4">

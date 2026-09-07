@@ -1380,3 +1380,42 @@ One half of a two-part report folded from `queued-ux-fixes-2026-09-05.md`
   that actually controls whether `AppShell` renders `StudioNav` at all.
 
 ---
+
+## 2026-09-07 — Library missing tracks + full-player back arrow, both fixed and live-verified
+
+Folded from `queued-ux-fixes-2026-09-05.md`. Launched the `tahti-web` dev
+server with `VITE_FORCE_MOCK=1` and drove it with `claude-in-chrome` to
+actually reproduce both reports instead of guessing from source.
+
+**Library missing tracks.** `MyDiscographyView`'s `hasChannel` gate hid
+the entire success branch — including already-fetched `items` — whenever
+`user?.channel` was falsy, regardless of `loading`/whether the fetch
+returned real sounds. Reproduced live: forced a mock session's persisted
+`user.channel` to `null` via `localStorage`, kept 3 real mock sounds, and
+the Sounds tab showed "No sounds yet" instead of them. Fix: reordered the
+gate to only show the "go live" empty state when `!hasChannel &&
+items.length === 0` — a channel-less state now only wins when there is
+genuinely nothing to show, never over data the fetch actually returned.
+Added `MyDiscographyView.test.tsx` (3 cases: channel-less with sounds,
+channel-less with none, has-channel with sounds) and re-verified live
+after the fix.
+
+**Full player back arrow.** Genuinely broken, not a false alarm — but not
+in the handler (`onClick={close}` was always correctly wired). Real
+cause: `FullScreenPlayer.tsx`'s header (`absolute inset-x-0 top-0 z-10`)
+and its only in-flow sibling, the centered content column (`relative
+flex-1 z-10`), tied at `z-10` — and since the header is `absolute` (out
+of flow), the content column's `flex-1` stretches it to cover the same
+top strip. Equal z-index resolves hit-testing by DOM order, so the
+content column (which paints nothing at that point, which is why the
+arrow still looked correctly rendered) intercepted real pointer clicks
+meant for the button underneath. A synthetic `.click()` on the button
+bypasses hit-testing and "worked", which is exactly why this looked fine
+from source alone and needed a real coordinate click (confirmed via
+`document.elementFromPoint` at the button's own rect resolving to the
+content div, not the button) to catch. Fix: bumped the header to `z-20`.
+Added `e2e/fullscreen-player-minimize.spec.ts`, confirmed it fails
+against the pre-fix code (Playwright's own error: "content column
+intercepts pointer events") and passes after.
+
+---

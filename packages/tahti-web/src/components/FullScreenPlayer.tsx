@@ -120,7 +120,12 @@ export function FullScreenPlayer() {
         <ChannelVisualizer className="h-full w-full" artworkUrl={coverUrl} />
       </div>
 
-      <div className="absolute inset-x-0 top-0 z-10 flex items-start p-4">
+      {/* Must outrank the content column below: that div is `absolute`'s
+       * only in-flow sibling here, so flex-1 stretches it to cover this
+       * same top strip. Equal z-index would let DOM order hand it click
+       * priority over this back button despite the button painting on
+       * top visually. */}
+      <div className="absolute inset-x-0 top-0 z-20 flex items-start p-4">
         <Tooltip content="Back to player" side="right">
           <Button
             size="icon"
