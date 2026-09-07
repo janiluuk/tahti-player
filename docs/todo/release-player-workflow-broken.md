@@ -1,6 +1,37 @@
 # Release Player workflow (`release-player.yml`) is broken — 0 jobs on every run
 
-**Status:** open
+**Status:** partial
+
+## Update 2026-09-07 — root cause found and fixed
+
+Root cause: the `release-android` job's "Configure Android signing" step
+had `if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}` — a step-level
+`if:` directly comparing a `secrets.*` value. GitHub's Actions parser
+silently rejects the **entire workflow file** for this (not just the
+one step) — confirmed via bisection on a throwaway branch
+(`diag/release-player-yml-bisect`, deleted after): stripped the file down
+to a trivial job (clean), added back `release-desktop`'s full
+matrix+steps (still clean), added back `release-android`+`verify-ios-build`
+verbatim (**reproduced**), isolated to just `release-android` (reproduced),
+stripped `release-android` to a trivial step (clean again), then
+isolated to *only* the one `if: ${{ secrets.X != '' }}` line on a
+trivial step (**reproduced** — confirmed root cause).
+
+Fix: moved the empty-check into the shell script itself
+(`if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then ... exit 0; fi` as the
+first line of the `run:` block) instead of a step-level `if:`. Also
+fixed a latent bug found along the way: the heredoc terminator
+(`cat > keystore.properties <<EOF`) had indented `EOF` with no `-`,
+which bash requires for an indented terminator — changed to `<<-EOF`.
+
+**Not yet done:** `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` secret still
+missing. Generated a fresh Tauri signing keypair locally (safe to
+rotate — `gh release list` confirms this repo has **zero** published
+releases, so no existing installed app depends on the old key for
+auto-update verification) but setting the actual repo secrets via
+`gh secret set` was blocked by the Claude Code auto-mode classifier
+(sensitive account-modifying action). Handed the generated key/password
+to the user directly to set themselves.
 
 ## Symptom
 
@@ -39,23 +70,13 @@ invocation used elsewhere in this repo), then set both
 `TAURI_SIGNING_PRIVATE_KEY` and `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` as repo
 secrets together so they're always a matched pair.
 
-## Next diagnostic step
-
-Local YAML parsing (PyYAML) doesn't catch it, so the problem is in
-GitHub's stricter Actions-schema validation, not raw YAML syntax. Fastest
-path: open the file in the GitHub web editor (Settings → Actions →
-workflow file, or the Actions tab's "..." → view/edit) which surfaces
-inline schema errors GitHub's own parser catches, or run `actionlint`
-locally against it. Only then attempt an actual content fix — guessing at
-the schema issue blind risks masking the real one.
-
 ## Scope
 
-- [ ] Root-cause the schema/parse issue GitHub's Actions runner is
-      rejecting (see diagnostic step above).
-- [ ] Fix `release-player.yml` so a normal `player@*.*.*` tag push actually
-      dispatches the `release-desktop` matrix jobs.
-- [ ] Regenerate the Tauri signing keypair (`TAURI_SIGNING_PRIVATE_KEY` +
-      `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`) if the current key's password
-      is unrecoverable, and set both secrets together.
-- [ ] Verify end-to-end with a real tag push once both are fixed.
+- [x] Root-cause the schema/parse issue GitHub's Actions runner was
+      rejecting — done, see "root cause found and fixed" above.
+- [x] Fix `release-player.yml` so a normal `player@*.*.*` tag push
+      actually dispatches the `release-desktop` matrix jobs.
+- [ ] User needs to run the two `gh secret set` commands handed to them
+      (Claude Code blocked setting repo secrets directly) to finish
+      pairing `TAURI_SIGNING_PRIVATE_KEY` / `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`.
+- [ ] Verify end-to-end with a real tag push once the secrets are set.
