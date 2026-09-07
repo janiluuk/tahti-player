@@ -29,6 +29,22 @@ as a follow-up, not done in this pass.
 own hover-reveal delete button, a select toggle, and a click-to-lightbox
 preview, independently matching this ticket's intent.
 
+**2026-09-07:** Onboarding avatar converted to `RoundImageUploadButton`
+(`OnboardingView.tsx`) — was a bespoke `<img>`/letter-placeholder +
+"Replace/Add photo" button + raw hidden file input, now the shared
+primitive with its own hover-delete X, confirm dialog, and preview
+modal. Kept the dedicated `uploadProfileAvatar` endpoint (adapted its
+`{ok, avatarUrl}` return shape to the primitive's `{ok, data:{url}}`
+contract, same adapter pattern `TrackEditDialog` already uses for its
+own upload override) and the existing `refresh()` call after a
+successful change so the top-nav avatar stays in sync — wired into
+`onChange` since the primitive doesn't know about the auth store.
+Live-verified in the browser (`VITE_FORCE_MOCK=1`): empty → upload →
+set-with-delete-badge → confirm delete → back to empty, no console
+errors. One accepted visual change: the letter-initial placeholder is
+gone, replaced by the primitive's standard `ImageIcon` empty state —
+consistent with every other consumer of this shared component.
+
 ## Not done in this pass (bespoke, not on the shared primitives)
 
 - `StudioBrandingView` avatar/press-kit multi-image upload
@@ -36,7 +52,6 @@ preview, independently matching this ticket's intent.
 - Collection cover + slideshow
 - Admin: radio station logo (blocked on the `RadioStationCover` redesign
   above), announcements
-- Onboarding avatar
 
 These are all larger, bespoke multi-image or reorderable-gallery flows
 (not simple single-image slots) — right-sized as their own follow-up
@@ -87,7 +102,7 @@ preview modal when nothing is set.
 | Studio branding / channel | `StudioBrandingView`, `ChannelDesigner`, archive banner, header media |
 | Collections / gallery | collection cover + slideshow, `ArtistGalleryPanel` |
 | Admin | radio station logo, disco widgets, news images, announcements |
-| Other | venue / show image pickers, release artwork, onboarding avatar |
+| Other | venue / show image pickers, release artwork |
 
 ## Out of scope for this ticket
 
