@@ -117,5 +117,21 @@ tests and user-facing coverage for every new configuration flow.
 - Share the multicast destination form between Go Live and Settings, keeping provider-specific
   credentials inside each provider configuration.
 - ExportProvider submit/status/webhook contracts land in `../tahti-org` (`GET /api/me/export-plugins`); Nuclear `revelatorExportProvider` calls them.
-- Integrations marketplace credentials: sibling `/api/me/integrations` + `SCROBBLE` ListenBrainz and Last.fm (see `src/plugins/scrobble`). Discovery dashboards still blocked.
-- Remaining registry runtime blockers: `bandcamp-dashboard`, `deezer-dashboard`, `listenbrainz-dashboard` (charts), `omnisource`, `youtube-liked-songs-sync`.
+- Integrations marketplace credentials: sibling `/api/me/integrations` + `SCROBBLE` ListenBrainz and Last.fm (see `src/plugins/scrobble`). Discovery dashboards are out of scope, not blocked — see below.
+
+**2026-09-07:** re-checked `bandcamp-dashboard`, `deezer-dashboard`,
+`listenbrainz-dashboard` (charts), `omnisource`, `youtube-liked-songs-sync` —
+these aren't "remaining runtime blockers" waiting on anything; the
+Nuclear-registry-parity system this list's own item 2 above describes
+(`apiCounterpart`/implementation-state metadata per add-on) no longer
+exists in the codebase at all (`grep` for `apiCounterpart`/`realFeature`
+across `src/` returns zero hits) — it was superseded by the current
+`SERVICE_PLUGINS`/import-export/OAuth model in `PluginStorePanel.tsx`,
+which has no personal "dashboard" concept for any provider.
+`src/plugins/scrobble/README.md`'s own "Out of scope" section already
+says exactly this for the ListenBrainz/OmniSource/Bandcamp-Deezer items
+("stay out of scope / constitutionally blocked" — a deliberate product
+decision, not a technical blocker). Aligned `FEATURES.md` to match
+(was contradictorily marked "still planned"). Nothing left to track
+here; do not re-open as a runtime blocker without a new product
+decision to actually build personal listening dashboards.

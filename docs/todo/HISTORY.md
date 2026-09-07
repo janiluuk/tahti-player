@@ -1702,3 +1702,28 @@ surviving routes.
 and `tahti-web`; `eslint` clean on both changed story files.
 
 ---
+
+## 2026-09-07 — "Registry runtime parity" WORKPLAN item was stale; closed as docs-only
+
+Removed the WORKPLAN "Now" row for `bandcamp-dashboard`,
+`deezer-dashboard`, `listenbrainz-dashboard` (charts), `omnisource`,
+`youtube-liked-songs-sync` — investigated as the next queued item and
+found there was no code left to write. The Nuclear-registry-parity
+system these IDs came from (`apiCounterpart`/per-add-on
+implementation-state metadata, per `docs/PLUGIN-INTEGRATIONS.md`'s own
+description of it) no longer exists anywhere in `src/`
+(`apiCounterpart`/`realFeature`: zero hits) — superseded by the current
+`SERVICE_PLUGINS`/import-export/OAuth model in `PluginStorePanel.tsx`,
+which has no personal "dashboard" concept for any provider at all.
+`src/plugins/scrobble/README.md`'s own "Out of scope" section already
+said these five are meant to "stay out of scope / constitutionally
+blocked" — a deliberate product decision (Tahti owns credentials and
+outbound calls server-side; there's no client-side aggregation layer
+for cross-service personal charts/dashboards), not a technical
+blocker waiting to be unblocked. `FEATURES.md` and
+`docs/PLUGIN-INTEGRATIONS.md` both contradicted that (the former said
+"still planned", the latter called them "remaining runtime blockers")
+— corrected both to match the scrobble README's already-settled
+answer.
+
+---
