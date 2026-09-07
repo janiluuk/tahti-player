@@ -16,7 +16,21 @@ Sibling API: **`../tahti-org`**. Product matrix: [`FEATURES.md`](FEATURES.md) Re
 
 ## Next (queued after today's cycles)
 
-- [ ] **Tahti theme refactor** — `Button` default variant + `Select`'s only variant both hardcode `bg-primary`, so a theme with an orange `--primary` turns every ordinary button/dropdown orange with poor contrast, not just important actions. Also: background visualizer barely visible, and its Settings → Themes toggle (`ThemeVisualizationSettings.tsx`, already built) is gated to a 2-theme allow-list that likely excludes the affected theme. Leaf: [tahti-theme-refactor.md](../../docs/todo/tahti-theme-refactor.md).
+- [ ] **Tahti theme refactor** — `Select`'s orange-by-default fixed 2026-09-07 (now matches `Input`'s `bg-background-input` token). Still open: `Button`'s default variant hardcodes `bg-primary` (needs a per-callsite audit, not a blanket swap — deliberately not attempted blind). Also: background visualizer barely visible, and its Settings → Themes toggle (`ThemeVisualizationSettings.tsx`, already built) is gated to a 2-theme allow-list that likely excludes the affected theme. Leaf: [tahti-theme-refactor.md](../../docs/todo/tahti-theme-refactor.md).
+
+## Cross-repo work (`../tahti-org` — user-authorized 2026-09-07)
+
+User has explicitly authorized editing `../tahti-org` for cross-repo
+blockers found in this backlog, so these don't get silently skipped as
+"blocked" forever. Not started — pick these up once the tahti-web-only
+workplan cycles are done. Each needs its own backend slice in
+`../tahti-org` (schema/route/DTO) before the frontend half can ship:
+
+- [ ] **Stream Manager now-playing artwork** — `ProgrammeItem`/rotation-status has no artwork field; frontend (`MediaArtwork`'s `onPlay`/`isPlaying` hover pattern) is ready and waiting. See `queued-ux-fixes-2026-09-05.md`.
+- [ ] **Stream overlay opacity/scrim toggle** — needs a real semi-transparent layer added to `buildRtmpMirrorOutput`'s Liquidsoap script (no scrim exists in the actual broadcast output today, only in the frontend preview CSS). See `stream-overlay-text-color.md`.
+- [ ] **Pay-what-you-want pricing** — needs `pricingModel`/`minimumPrice` fields on the subscription/tier schema plus API validation before any frontend UI. See `pay-what-you-want-pricing.md`.
+- [ ] **Listener purchase flow e2e** — needs a test-mode Stripe Checkout path in `../tahti-org` to actually exercise "subscriber sees gated content" end to end. See `listener-purchase-flow.md`.
+- [ ] **Plugin registry extraction** — gated on `../tahti-org/docs/todo/plugin-registry-extraction.md`'s own adapter + contract-test checklist being accepted first; do not migrate runtime registry keys before that lands. See `plugin-registry-extraction.md`.
 
 ## Reference
 
