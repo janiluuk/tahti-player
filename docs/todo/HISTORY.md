@@ -1779,3 +1779,87 @@ icon, updating the `HelpLayer` copy to match. `tsc --noEmit`, eslint,
 `pnpm test` (487 tests), and `pnpm build` all pass.
 
 ---
+
+## 2026-09-08 — Library section: clean `/library/*` paths for Recordings/Stash/Media/Embeds
+
+`LIBRARY_SECTION_TABS` (`LibraryView.tsx`) previously routed Recordings,
+Media, Stash, and Embeds through `/library/collections?tab=X` query
+params instead of their own paths, even though Sounds and Collections
+already had clean top-level routes. Gave all four real routes
+(`/library/recordings`, `/library/media` — already existed but was
+mis-wired, `/library/stash`, `/library/embeds`), dropped the
+`collectionTab`/`CollectionTab` indirection from `LibraryView` now that
+`tab` maps directly to a section, and made `/library/collections?tab=X`
+redirect forward to the new path for old bookmarks. `/studio/recordings`
+and `/studio/stash` (the old duplicate standalone Studio pages using
+the same `StudioRecordingsView`/`StudioStashView` components, just not
+`embedded`) now redirect to their `/library/*` equivalents instead of
+rendering — matches the existing archive/playlists redirect convention.
+Repointed every hardcoded internal link (`StudioHomeView`,
+`StudioGoLiveView`), `prodPathRedirects.ts` (tahti.live cutover
+compatibility map), and the map/port-inventory/flow-diagram content
+docs. `StudioSoundsView`/`StudioCollectionsView` (the full-featured
+standalone `/studio/sounds` and `/studio/collections` pages, distinct
+from `MyDiscographyView`/`MyCollectionsView` used at `/library/sounds`
+and `/library/collections`) were deliberately left untouched — merging
+those would mean picking a winner between two genuinely different
+feature sets, not just a path rename, and wasn't asked for.
+`tsc --noEmit`, `eslint`, `pnpm test` (487 tests), and `pnpm build` all
+pass. Verified live in a running browser (`VITE_FORCE_MOCK=1`):
+`/library/stash`, `/library/embeds`, `/library/recordings` all render
+correctly; `/studio/stash`, `/studio/recordings`, and
+`/library/collections?tab=stash` all redirect to the new clean paths.
+
+---
+
+## 2026-09-08 — Perform folded into Studio → Broadcast; nav-tab audit resolved
+
+Closes `studio-nav-perform-to-broadcast.md`. Part 2 (the nav-tab
+coverage audit) found Perform/go-live's own section was already fully
+correct, and that five other Studio routes (Sounds, Recordings,
+Collections, Stash, the playlist editor) light the Studio primary tab
+with no submenu tab — Recordings and Stash are now resolved by the
+`/library/*` path-cleanup entry above (they're pure redirects out of
+Studio now, not real pages); Sounds/Collections/playlist-editor remain
+open, tracked as a follow-up since fixing them means picking between
+duplicate implementations (see the entry above) or growing a "Library
+Domain" concept.
+
+Part 1 (the actual move), on user direction: Perform's top-level
+primary nav item is gone from `StudioNav.tsx`'s `PRIMARY`
+(`StudioMainNavItems`, which used to render it in the sidebar beneath
+"Studio", now maps over an empty list — a harmless no-op, not deleted,
+since `PRIMARY` is still a real extensibility point). A single
+"Broadcast" tab (`/studio/go-live`) was added to `SUBMENUS['/studio']`
+instead. The six pages that used to be go-live's own submenu (Go Live,
+Schedule, Events, Shows, Channel, Radio) needed a decision on where
+they'd live — user chose nesting them one level deeper as their own
+in-page tab strip rather than flattening all six into Studio's already
+8-item submenu. Built `BroadcastSubNav` (`StudioNav.tsx`) for that,
+reusing the exact match logic the old `/studio/go-live` submenu used,
+and wired it into `StudioGoLiveView`, `StudioScheduleView`,
+`StudioEventsView`, `StudioEventCreateView`, `StudioShowsView`,
+`StudioShowDetailView`, and `StudioChannelView` — replacing a
+`<StudioNav current="...">` call in each that turned out to already be
+a dead no-op (`StudioNav` only renders when passed `global`, which none
+of these per-page call sites did; the real nav bar is the one instance
+AppShell renders globally). `isSubmenuActive` now folds all six former
+go-live pages into lighting the single Broadcast tab.
+
+`lib/navigationActive.ts`'s `activeSidebarItem`/`activeMobileItem` had
+their own separate `'perform'` sidebar-icon id that never actually
+matched anything in `AppShell.tsx` (`sidebarActive === 'perform'` was
+never checked there) — meaning the desktop "Studio" sidebar icon never
+actually lit up while browsing any Perform page, a pre-existing bug.
+Removing the special-case naturally fixes it: those routes now resolve
+to `'studio'` like every other Studio page, matching the user's "parent
+and subparent tabs are active" ask.
+
+`tsc --noEmit`, `eslint`, `pnpm test` (483 tests, all updated
+call-sites and two new precise coverage tables — one for the folded
+Studio submenu, one for `BroadcastSubNav`'s own per-page resolution),
+and `pnpm build` all pass. Verified live in a running browser
+(`VITE_FORCE_MOCK=1`, unauthenticated `/studio/go-live`): sidebar shows
+only "Studio" lit, no separate "Perform" item.
+
+---
