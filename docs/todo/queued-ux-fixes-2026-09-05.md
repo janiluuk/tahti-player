@@ -18,38 +18,23 @@ Open items only. Shipped bullets folded to HISTORY.md on 2026-09-05.
   possibly an overlay/z-index stealing the click, a stale build, or a
   different left-arrow element entirely that this pass didn't find.
 
-- [ ] **Library: shows Studio tabs instead of its own, and no tracks
-  appear.** Reported 2026-09-07. Two separate root causes found
-  (diagnosed, not yet fixed):
-
-  1. **Wrong tabs.** `AppShell.tsx:460-462`/`:518-520` unconditionally
-     renders `<StudioNav current={navigationLocation} global />` above
-     `RouteContent` whenever `getStudioPrimaryRoute(pathname)` is
-     truthy. `StudioNav.tsx:146-173`'s `SECTION_PREFIXES['/studio']`
-     includes `/library`, `/library/collections`,
-     `/library/recordings`, `/library/smartlinks`, `/library/upload`,
-     `/library/media` (lines 155-172) — so every `/library/*` path
-     resolves to the `/studio` primary section and renders Studio's
-     `SUBMENUS['/studio']` tab strip (Overview/Branding/Stats/
-     Governance/Posts/Audience/Releases/Editor) directly above
-     `LibraryView`'s own tab row (`LIBRARY_SECTION_TABS`,
-     `LibraryView.tsx:50-99`/`:148-167`) — two tab rows stack, the
-     Studio one is the "wrong tabs" the user sees. Pre-existing from
-     commit `959073ed2` ("Library is now a Studio tab…", 2026-09-03),
-     not introduced by this branch's perf work.
-
-  2. **Missing tracks.** `MyDiscographyView.tsx` (Library's Sounds tab)
-     is fully migrated post-"Archive → Sounds" rename — clean
-     `fetchStudioSounds()`/`StudioSound`/`soundId` usage, no leftover
-     `archiveItemId`/`fetchStudioArchive*` anywhere in `src`. Suspect
-     instead: `hasChannel = Boolean(user?.channel)`
-     (`MyDiscographyView.tsx:189`) gates the entire success branch —
-     falsy renders "No sounds yet" even after a successful fetch
-     populates `items`. `StudioSoundsView.tsx` calls the same
-     `fetchStudioSounds()` (line 138) with no such gate, which would
-     explain why Studio's own Sounds tab still shows tracks while
-     Library's doesn't. Not confirmed as root cause — check
-     `user.channel` shape/populate order in `authStore.ts` next.
+- [ ] **Library: tracks missing for some users.** Reported 2026-09-07
+  alongside a "Library shows Studio tabs" report — that half is fixed
+  (see HISTORY, 2026-09-07). Remaining, unconfirmed: `MyDiscographyView`
+  (Library's Sounds tab, `MyDiscographyView.tsx:189`) gates its entire
+  success branch on `hasChannel = Boolean(user?.channel)` — falsy
+  renders "No sounds yet" regardless of `loading`/fetched `items`.
+  Checked whether this gate is simply wrong: `StudioGate.tsx`'s
+  `requireChannel` guard means Studio upload routes already require a
+  channel, so in principle any user with real sound records already has
+  `user.channel` truthy, and this gate should never trip for them —
+  which means removing it blindly could be the wrong fix. Needs live
+  repro against a real signed-in session that has sounds but shows
+  none, to see whether `user.channel` is actually falsy at that moment
+  (a real regression, e.g. stale auth-store hydration or a backend
+  response change) or whether the bug is elsewhere (e.g.
+  `fetchStudioSounds()` itself returning empty for that account).
+  Don't guess-fix without that confirmation.
 
 - [ ] **Channel Designer: tabs under the player, dynamic per enabled
   section, visual editor for adding them.** Locate the `Designer`

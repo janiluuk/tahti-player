@@ -19,7 +19,7 @@ Status values: `open` | `blocked` | `partial`.
 | partial | [pay-what-you-want-pricing.md](pay-what-you-want-pricing.md) | Buyer amount dialog shipped; not live-verified (no tier ever exists to test against) |
 | open | [purchase-tier-artist-editor-missing.md](purchase-tier-artist-editor-missing.md) | One-time track purchases have zero artist-facing UI — tier create/edit + per-track assignment |
 | open | [plugin-registry-extraction.md](plugin-registry-extraction.md) | Pointer to sibling extraction checklist |
-| open | [queued-ux-fixes-2026-09-05.md](queued-ux-fixes-2026-09-05.md) | Queued UX: 4 open — designer tabs feature (2 items, scoped-out), full-player back arrow (needs live repro), Library wrong tabs + missing tracks (root causes diagnosed) |
+| open | [queued-ux-fixes-2026-09-05.md](queued-ux-fixes-2026-09-05.md) | Queued UX: 3 open — designer tabs feature (2 items, scoped-out), full-player back arrow (needs live repro), Library missing tracks (needs live repro; wrong-tabs half fixed 2026-09-07) |
 | partial | [radio-browser-directory-fixes.md](radio-browser-directory-fixes.md) | Cover-image sub-ask needs decision |
 | partial | [stream-overlay-auto-fill-and-avatar-placeholder.md](stream-overlay-auto-fill-and-avatar-placeholder.md) | Now-playing artwork remaining |
 | open | [continue-listening-card-missing-isplaying.md](continue-listening-card-missing-isplaying.md) | Listen page "Continue listening" card never shows pause icon |

@@ -1358,3 +1358,25 @@ Folded from `settings-mobile-responsive.md`.
 - tahti-web `0.0.84`.
 
 ---
+
+## 2026-09-07 — Library showed Studio's tabs instead of its own
+
+One half of a two-part report folded from `queued-ux-fixes-2026-09-05.md`
+(the other half, missing tracks, is still open — needs live repro).
+
+- Root cause: `StudioNav.tsx`'s `SECTION_PREFIXES['/studio']` listed every
+  `/library/*` prefix, so `getStudioPrimaryRoute('/library/...')` resolved
+  to `/studio` and `AppShell` rendered Studio's own submenu tab strip
+  above `LibraryView`'s tab row — two tab rows stacked, Studio's showing
+  as the "wrong" one. Pre-existing since `959073ed2` (2026-09-03).
+- Fix: dropped the `/library*` entries from `SECTION_PREFIXES['/studio']`
+  — Library already has its own top-level sidebar/bottom-nav entry via
+  `navigationActive.ts`'s independent `/library` check, so nothing else
+  depended on Studio claiming those paths.
+- Added a regression test (`StudioNav.test.ts`) asserting
+  `getStudioPrimaryRoute` returns `null` for every `/library/*` path —
+  the existing "lights nothing in Studio for Library routes" test only
+  checked derived submenu-item highlighting, not this primary-route gate
+  that actually controls whether `AppShell` renders `StudioNav` at all.
+
+---
