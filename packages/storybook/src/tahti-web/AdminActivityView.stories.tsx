@@ -7,7 +7,9 @@ const meta: Meta<typeof AdminActivityView> = {
   title: 'Tahti/Admin/AdminActivityView',
   component: AdminActivityView,
   parameters: { layout: 'fullscreen' },
-  decorators: [withTahtiRouter('/admin/activity'), withMockAuth()],
+  // /admin/activity redirects to /admin/logs (router.tsx); point the
+  // decorator at the surviving route so it isn't testing a dead path.
+  decorators: [withTahtiRouter('/admin/logs'), withMockAuth()],
 };
 
 export default meta;

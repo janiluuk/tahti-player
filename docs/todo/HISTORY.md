@@ -1671,3 +1671,34 @@ minus 2 timeouts confirmed pre-existing/environmental — both pass in
 isolation) all green.
 
 ---
+
+## 2026-09-07 — Studio orphan routes: stale premise; Storybook decorators fixed
+
+Folded from `studio-orphan-routes-and-storybook-mismatch.md`.
+
+**The "5 orphan studio routes" half was a false alarm.** Checked
+`StudioNav.tsx`'s `isSubmenuActive` and its own test suite before
+touching anything: `/studio/sounds`, `/studio/recordings`,
+`/studio/collections`, `/studio/stash` are deliberately Library-domain
+routes that light nothing in Studio's submenu by design — Library owns
+them via its own main-menu sidebar entry (matching the earlier
+"Library page showed Studio's submenu" fix already in this file) — and
+`/studio/distribution` deliberately lights `/studio/releases`. All of
+this is already asserted by `StudioNav.test.ts`'s
+`'lights nothing in Studio for Library-domain routes'` and
+`'lights exactly one Studio submenu item on covered catalog routes'`
+tests. Not a gap; the doc's own "document as intentionally
+navigation-less" option was already true before this pass.
+
+**The Storybook half was real and is fixed:** `AdminActivityView.stories.tsx`
+and `AdminMissedShowsView.stories.tsx` had `withTahtiRouter(...)`
+decorators pointing at two now-redirected routes
+(`/admin/activity` → `/admin/logs`, `/admin/missed-shows` →
+`/admin/moderation/$tab` with `tab: 'missed-shows'`, both confirmed
+against `router.tsx`). Repointed both decorators at the real
+surviving routes.
+
+**Validation:** `tsc --noEmit` clean on `storybook` (`tsconfig.tahti.json`)
+and `tahti-web`; `eslint` clean on both changed story files.
+
+---
