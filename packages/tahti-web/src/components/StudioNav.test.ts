@@ -83,6 +83,20 @@ describe('StudioNav section coverage', () => {
     }
   });
 
+  it('does not treat Library routes as a Studio primary section (AppShell renders StudioNav whenever this is truthy)', () => {
+    for (const location of [
+      '/library',
+      '/library/sounds',
+      '/library/collections',
+      '/library/recordings',
+      '/library/smartlinks',
+      '/library/upload',
+      '/library/media',
+    ]) {
+      expect(getStudioPrimaryRoute(location), location).toBeNull();
+    }
+  });
+
   it('keeps Stripe out of Studio nav unless Stripe is configured', () => {
     const withoutStripe = getStudioSubmenuItems('/studio').map(
       (item) => item.to,
