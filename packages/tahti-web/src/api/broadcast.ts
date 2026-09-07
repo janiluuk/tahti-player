@@ -576,6 +576,9 @@ export type StreamOverlay = {
   streamOverlayShowTitle: boolean;
   /** Hex "#RRGGBB", or null to use the default title/subtitle colors. */
   streamOverlayTextColor: string | null;
+  /** Darkening rectangle behind the title/subtitle text in the RTMP mirror
+   * (video.add_rectangle) — improves legibility over busy cover art. */
+  streamOverlayScrimEnabled: boolean;
   streamOverlayCoverUrl: string | null;
 };
 
@@ -584,6 +587,7 @@ let mockStreamOverlay: StreamOverlay = {
   streamOverlaySubtitle: null,
   streamOverlayShowTitle: false,
   streamOverlayTextColor: null,
+  streamOverlayScrimEnabled: false,
   streamOverlayCoverUrl: null,
 };
 
@@ -612,6 +616,7 @@ export async function fetchStreamOverlay(): Promise<{
         streamOverlaySubtitle: null,
         streamOverlayShowTitle: false,
         streamOverlayTextColor: null,
+        streamOverlayScrimEnabled: false,
         streamOverlayCoverUrl: null,
       },
       meta: apiErrorMeta(err),

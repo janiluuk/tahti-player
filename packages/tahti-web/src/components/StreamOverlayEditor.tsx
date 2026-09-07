@@ -32,13 +32,22 @@ function OverlayTextPreview({
   title,
   subtitle,
   color,
+  scrimEnabled,
 }: {
   title: string;
   subtitle: string;
   color: string | null;
+  scrimEnabled: boolean;
 }) {
   return (
-    <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col gap-0.5 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-3 pt-8 pb-2">
+    <div
+      className={
+        'pointer-events-none absolute inset-x-0 bottom-0 flex flex-col gap-0.5 px-3 pt-8 pb-2 ' +
+        (scrimEnabled
+          ? 'bg-black/50'
+          : 'bg-gradient-to-t from-black/80 via-black/40 to-transparent')
+      }
+    >
       {title ? (
         <p
           className="truncate text-sm leading-tight font-bold text-white"
@@ -70,6 +79,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
     streamOverlaySubtitle: '',
     streamOverlayShowTitle: false,
     streamOverlayTextColor: '',
+    streamOverlayScrimEnabled: false,
     streamOverlayCoverUrl: '',
   });
   const [saving, setSaving] = useState(false);
@@ -96,6 +106,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
           overlayResult.data.streamOverlaySubtitle || preflight?.tagline || '',
         streamOverlayShowTitle: overlayResult.data.streamOverlayShowTitle,
         streamOverlayTextColor: overlayResult.data.streamOverlayTextColor ?? '',
+        streamOverlayScrimEnabled: overlayResult.data.streamOverlayScrimEnabled,
         streamOverlayCoverUrl: overlayResult.data.streamOverlayCoverUrl ?? '',
       });
       setAvatarUrl(profileResult.data.avatarUrl ?? null);
@@ -110,6 +121,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
       streamOverlaySubtitle: overlay.streamOverlaySubtitle.trim(),
       streamOverlayShowTitle: overlay.streamOverlayShowTitle,
       streamOverlayTextColor: overlay.streamOverlayTextColor.trim(),
+      streamOverlayScrimEnabled: overlay.streamOverlayScrimEnabled,
       streamOverlayCoverUrl: overlay.streamOverlayCoverUrl.trim(),
     }).then((result) => {
       setSaving(false);
@@ -215,6 +227,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
               title={overlay.streamOverlayTitle}
               subtitle={overlay.streamOverlaySubtitle}
               color={overlay.streamOverlayTextColor || null}
+              scrimEnabled={overlay.streamOverlayScrimEnabled}
             />
           ) : null}
         </button>
@@ -354,6 +367,25 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
               </Tooltip>
             ) : null}
           </label>
+          <div className="border-border bg-background-secondary/40 flex items-center justify-between gap-3 rounded-lg border p-2.5 text-sm">
+            <span className="min-w-0 flex-1">
+              <span className="block font-semibold">Darken behind text</span>
+              <span className="text-foreground-secondary block text-xs">
+                Adds a semi-transparent scrim so title/subtitle stay legible
+                over busy cover art.
+              </span>
+            </span>
+            <Toggle
+              label="Darken behind text"
+              checked={overlay.streamOverlayScrimEnabled}
+              onChange={(checked) =>
+                setOverlay((current) => ({
+                  ...current,
+                  streamOverlayScrimEnabled: checked,
+                }))
+              }
+            />
+          </div>
         </>
       ) : null}
 

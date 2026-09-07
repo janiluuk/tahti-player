@@ -1583,3 +1583,32 @@ Built both pieces:
 - tahti-web `0.0.98`.
 
 ---
+
+## 2026-09-07 — Stream overlay scrim toggle: frontend piece, closes the doc
+
+Folded from `stream-overlay-text-color.md`. The backend
+(`Channel.streamOverlayScrimEnabled` + `video.add_rectangle` in
+`buildRtmpMirrorOutput`, verified earlier this session against the real
+`savonet/liquidsoap:v2.2.5` binary) shipped in `../tahti-org` PR #459,
+which merged during this session. Wired up the frontend half that was
+waiting on it:
+
+- `api/broadcast.ts`: `StreamOverlay` type gained
+  `streamOverlayScrimEnabled: boolean`, threaded through the mock
+  store and API-error fallback object.
+- `StreamOverlayEditor.tsx`: new "Darken behind text" toggle (visible
+  bordered-row + `Toggle` pattern, gated behind "Show overlay title"
+  same as the color picker), included in the save patch and initial
+  load. `OverlayTextPreview` now swaps its always-on CSS gradient for
+  a flat `bg-black/50` band when the scrim is on — a closer match to
+  the real render, which has no gradient at all without the scrim
+  (the gradient was always just a web-preview aesthetic choice, per
+  the doc's own earlier investigation).
+- Live-verified in the browser: Broadcast → Stream stats → Overlay
+  chip → Stream overlay dialog. Typed a title, toggled "Darken behind
+  text" on, confirmed the preview swapped from the fading gradient to
+  a flat dark band, saved, reopened the dialog and confirmed both the
+  toggle state and the preview persisted.
+- tahti-web `0.0.99`.
+
+---

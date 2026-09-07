@@ -5490,3 +5490,33 @@ selection persisted correctly.
 `eslint --fix`, and `pnpm --filter @tahti-player/tahti-web test` all
 pass clean — 85/85 files, 487/487 tests. Bumped
 `packages/tahti-web/package.json` to `0.0.98`.
+
+## 2026-09-07 — Stream overlay scrim toggle (frontend, closes the doc)
+
+`../tahti-org` PR #459 (the scrim backend, verified earlier this
+session against the real `savonet/liquidsoap:v2.2.5` binary) merged
+during this session — picked up the frontend half that was blocked on
+it.
+
+`api/broadcast.ts`'s `StreamOverlay` type gained
+`streamOverlayScrimEnabled: boolean`. `StreamOverlayEditor.tsx` got a
+new "Darken behind text" toggle (same visible bordered-row pattern as
+the text-color picker right above it), and `OverlayTextPreview` now
+swaps its always-on CSS gradient for a flat `bg-black/50` band when
+the scrim is on — the real RTMP render has no gradient at all without
+it (confirmed via this session's earlier Liquidsoap investigation),
+so the previous always-visible gradient was a pure preview
+approximation; only the scrim-on state needed to become accurate.
+
+Live-verified: Broadcast → Stream stats → Overlay chip opens the
+`StreamOverlayEditor` dialog (had to find this entry point — it's
+gated behind "Stream stats" tab + a multicast target being enabled,
+not the default "Active rotation" tab). Typed a title, toggled the
+new control, watched the preview swap from gradient to flat band,
+saved, reopened and confirmed both the toggle and the preview
+persisted.
+
+**Validation:** `pnpm --filter @tahti-player/tahti-web type-check`,
+`eslint --fix`, and `pnpm --filter @tahti-player/tahti-web test` all
+pass clean — 85/85 files, 487/487 tests. Bumped
+`packages/tahti-web/package.json` to `0.0.99`.
