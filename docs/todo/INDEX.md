@@ -29,7 +29,6 @@ Status values: `open` | `blocked` | `partial`.
 | open | [sticky-theme-review-toast.md](sticky-theme-review-toast.md) | (Later) "Theme is in review" mock toast reappears every reload — mock dismiss is a no-op; same root cause as onboarding-toast-noise |
 | open | [channel-designer-backdrop-fold-and-widgets.md](channel-designer-backdrop-fold-and-widgets.md) | (Later) Fold bio/CTA/avatar into backdrop show-toggles (not separate blocks); feed/posts as configurable widgets with tracklist/card-row display toggle |
 | partial | [viewshell-page-headers.md](viewshell-page-headers.md) | Cover-overlay Studio entity headers excluded |
-| open | [crossfade-playback-wiring.md](crossfade-playback-wiring.md) | Crossfade setting exists but Sound component doesn't support it — wire CrossfadeSound |
 | open | [studio-orphan-routes-and-storybook-mismatch.md](studio-orphan-routes-and-storybook-mismatch.md) | 5 studio routes missing nav entry + 2 Storybook stories on retired routes |
 
 ## Fold rule (copy into CLAUDE / chat)

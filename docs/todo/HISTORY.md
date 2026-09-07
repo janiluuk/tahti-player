@@ -1632,3 +1632,42 @@ live: this fix's own push deployed cleanly (`spa:200`/`api-proxy:200`
 on the first attempt, no retry needed that run).
 
 ---
+
+## 2026-09-07 — Crossfade playback setting wired to the audio engine
+
+Folded from `crossfade-playback-wiring.md`. The setting existed (Settings
+→ Playback, 0-5000ms, persisted via Tauri store) and `CrossfadeSound`
+(dual audio elements, full crossfade logic) existed, but
+`SoundProvider.tsx` always rendered plain `Sound` -- nothing consumed
+`crossfadeMs` at runtime.
+
+- `SoundProvider.tsx`: renders `CrossfadeSound` when `crossfadeMs > 0`,
+  falls back to `Sound` at `0`/`undefined`, passing the same prop set
+  either way.
+- `CrossfadeSound.tsx` had three real gaps vs `Sound`'s `SoundProps`
+  contract, closed:
+  - `volume` was destructured but never applied — now set on both
+    underlying audio elements (both can be audible mid-crossfade, and
+    the inactive one is rendered ahead of becoming active).
+  - `onCanPlay` was missing entirely. Naively wiring it to both audio
+    elements would have been a real bug: the inactive element preloads
+    the next track ahead of a crossfade, and its `canplay` firing
+    `onCanPlay` would signal "track started" before the track is
+    actually audible. Wired per-element, gated on `id === activeIndex`.
+  - `onSourceInvalid` is accepted for `SoundProps` interface parity but
+    deliberately not wired to a call site: it's an MSE/HLS-exclusive
+    signal (`useMseSource` → `MseController`) and confirmed (via
+    `Sound.tsx`'s own native-audio `onError` handler) that it's never
+    invoked for a plain `<audio>` error path even in `Sound` itself.
+    `CrossfadeSound` has no MSE support at all, so there's no honest
+    call site yet — left as a documented no-op for future MSE work.
+- Added 2 new `CrossfadeSound.test.tsx` cases (volume applied to both
+  elements; `onCanPlay` fires only for the active element's `canplay`,
+  not the preloading one) alongside the existing crossfade-timing test.
+
+**Validation:** `tsc --noEmit` and `eslint` clean on `hifi` and
+`player`; `vitest run` on `hifi` (79 tests) and `player` (687 tests,
+minus 2 timeouts confirmed pre-existing/environmental — both pass in
+isolation) all green.
+
+---

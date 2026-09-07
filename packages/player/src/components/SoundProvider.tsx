@@ -1,7 +1,12 @@
 import type { FC, PropsWithChildren } from 'react';
 import { useCallback, useEffect, useRef } from 'react';
 
-import { LoggerProvider, Sound, SoundError } from '@tahti-player/hifi';
+import {
+  CrossfadeSound,
+  LoggerProvider,
+  Sound,
+  SoundError,
+} from '@tahti-player/hifi';
 import type { TFunction } from '@tahti-player/i18n';
 import { useTranslation } from '@tahti-player/i18n';
 
@@ -101,21 +106,37 @@ export const SoundProvider: FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <>
-      {src && (
-        <Sound
-          src={src}
-          status={status}
-          seek={seek}
-          volume={volumePercent}
-          preload={preload}
-          crossOrigin={crossOrigin}
-          onTimeUpdate={handleTimeUpdate}
-          onEnd={handleEnd}
-          onCanPlay={handleCanPlay}
-          onError={handleError}
-          onSourceInvalid={handleSourceInvalid}
-        />
-      )}
+      {src &&
+        (crossfadeMs ? (
+          <CrossfadeSound
+            src={src}
+            status={status}
+            seek={seek}
+            volume={volumePercent}
+            crossfadeMs={crossfadeMs}
+            preload={preload}
+            crossOrigin={crossOrigin}
+            onTimeUpdate={handleTimeUpdate}
+            onEnd={handleEnd}
+            onCanPlay={handleCanPlay}
+            onError={handleError}
+            onSourceInvalid={handleSourceInvalid}
+          />
+        ) : (
+          <Sound
+            src={src}
+            status={status}
+            seek={seek}
+            volume={volumePercent}
+            preload={preload}
+            crossOrigin={crossOrigin}
+            onTimeUpdate={handleTimeUpdate}
+            onEnd={handleEnd}
+            onCanPlay={handleCanPlay}
+            onError={handleError}
+            onSourceInvalid={handleSourceInvalid}
+          />
+        ))}
       {children}
     </>
   );
