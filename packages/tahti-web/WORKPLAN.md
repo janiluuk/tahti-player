@@ -13,6 +13,7 @@ Sibling API: **`../tahti-org`**. Product matrix: [`FEATURES.md`](FEATURES.md) Re
 - [ ] **Image slot chrome** — hover delete + preview modal on remaining upload surfaces. Leaf: [image-upload-hover-lightbox.md](../../docs/todo/image-upload-hover-lightbox.md).
 - [ ] **Governance / Channel Designer / overlay leftovers** — see INDEX (`governance-motion-parity`, `channel-designer-*`, `stream-overlay-*`, `queued-ux-fixes-*`, …).
 - [ ] **Sibling archive mentions API** — extend `../tahti-org` metadata, then remove artist-page fallback.
+- [ ] **Waveform detail/accuracy** — full track view (and similar places) needs a much more detailed, accurate waveform; current `WaveformSeekbar` downsamples to a fixed 64 bars and fabricates fake bars when no real peaks exist. Leaf: [waveform-detail-accuracy.md](../../docs/todo/waveform-detail-accuracy.md).
 
 ## Next (queued after today's cycles)
 
