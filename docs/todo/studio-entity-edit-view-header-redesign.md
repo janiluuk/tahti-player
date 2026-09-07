@@ -119,10 +119,37 @@ fields (release date, genres, style, visibility) below the header.
   the current row's visual structure — e.g. add a thumbnail column) vs.
   accept losing them for exact visual parity with the reference.
 
+## Shipped this pass: Release edit header
+
+`StudioReleaseDetailView.tsx`'s Overview-tab cover card (a bespoke
+gradient-overlay image block with title/type/state text baked into the
+image, a hover-reveal floating Play button, and a hover-reveal "Change
+artwork" text button) is replaced with the same `EntitySocialHeader`
+used by `CollectionView.tsx` and the Collection edit page, now sitting
+above the `Tabs` block instead of inside the Overview tab: cover image
+via `onImageClick` opening the existing artwork upload dialog (moved
+above the tabs, no longer duplicated inside Overview), `{type} ·
+{state}` subtitle, live `description` state as the header description,
+a `Tracks` stat chip, the existing "Open release embed" (`/r/$slug`)
+icon-link and `SaveButton` in the actions row, and a `Play` button
+(existing `playFirstTrack`) as a header child — mirroring Collection's
+Play/queue-row placement. The Overview tab's "Details" `StudioPanel`
+now follows Collection's expand/collapse pattern (`detailsExpanded`
+state, pencil "Edit details" toggle, collapsed one-line summary) so
+the description isn't shown live-editable and as static header text
+at the same time. Tracks list, Publish button, and the other three
+tabs (Smart links, Fingerprinting, Export) are unchanged.
+
+Verification: `tsc --noEmit`, `eslint`, `pnpm test` (483 tests),
+`pnpm build` all pass. Verified live in a running browser
+(`VITE_FORCE_MOCK=1`, `/studio/releases/rel-mock-1`): header renders
+title/subtitle ("ALBUM · PUBLISHED")/Tracks stat/Play/embed-link/Save;
+the empty-cover placeholder opens the artwork upload dialog; Details
+panel's "Edit details" toggle expands to the description textarea and
+collapses back to the one-line summary. No console errors.
+
 ## Not started
 
-- `StudioReleaseDetailView.tsx` — same header treatment as Collection,
-  not attempted this pass.
 - `StudioPlaylistEditorView` (in `StudioPlaylistsView.tsx`) — same gap,
   plus its relationship to `StudioCollectionEditView` needs untangling
   first (are these two edit UIs for the same entities, and if so why
@@ -131,6 +158,9 @@ fields (release date, genres, style, visibility) below the header.
   (`playlists.png`) — `MyCollectionsView.tsx` is tahti-web's
   equivalent listing page; not compared against the reference or
   touched this pass.
+- "⋮" menu (Export as JSON / Delete) and the shared `TrackTable`
+  primitive swap — same open decisions noted above for Collection,
+  apply equally to Release; not attempted this pass.
 
 ## Verification (header change only)
 
