@@ -27,6 +27,7 @@ Status values: `open` | `blocked` | `partial`.
 | partial | [listen-widget-hearthis-config-and-set-embed-bug.md](listen-widget-hearthis-config-and-set-embed-bug.md) | Auto-fill username + set-embed bug (real root cause: set pages 302-redirect, oembed.json only exists post-redirect) shipped; icon-button config UI needs user to point at specifics |
 | open | [channel-designer-backdrop-fold-and-widgets.md](channel-designer-backdrop-fold-and-widgets.md) | (Later) Fold bio/CTA/avatar into backdrop show-toggles (not separate blocks); feed/posts as configurable widgets with tracklist/card-row display toggle |
 | partial | [channel-slideshow-transitions-unwired.md](channel-slideshow-transitions-unwired.md) | Rotation + all 8 transitions wired 2026-09-09; CSS path live-verified rotating/crossfading 2026-09-09, WebGL presets fail in this sandboxed browser (GPU context, not app code) — real-browser recheck + gallery-strip modes still open |
+| open | [studio-orphan-routes-and-storybook-mismatch.md](studio-orphan-routes-and-storybook-mismatch.md) | 5 studio routes missing nav entry + 2 Storybook stories on retired routes |
 
 ## Fold rule (copy into CLAUDE / chat)
 
