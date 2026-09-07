@@ -31,6 +31,7 @@ Status values: `open` | `blocked` | `partial`.
 | open | [waveform-detail-accuracy.md](waveform-detail-accuracy.md) | Full track view waveform needs real detail/accuracy — WaveformSeekbar downsamples to 64 bars, fabricates fake bars when no peaks |
 | open | [studio-nav-perform-to-broadcast.md](studio-nav-perform-to-broadcast.md) | Move Perform into Studio→Broadcast; sweep all Studio pages for missing/wrong nav-tab active state at both levels |
 | open | [onboarding-toast-noise.md](onboarding-toast-noise.md) | (Later) "Finish your profile" toast: exempt seeded users, once-per-session even without explicit dismiss, mark done before screenshots |
+| open | [sticky-theme-review-toast.md](sticky-theme-review-toast.md) | (Later) "Theme is in review" mock toast reappears every reload — mock dismiss is a no-op; same root cause as onboarding-toast-noise |
 | partial | [viewshell-page-headers.md](viewshell-page-headers.md) | Cover-overlay Studio entity headers excluded |
 
 ## Fold rule (copy into CLAUDE / chat)
