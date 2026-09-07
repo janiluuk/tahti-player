@@ -119,18 +119,78 @@ fields (release date, genres, style, visibility) below the header.
   the current row's visual structure — e.g. add a thumbnail column) vs.
   accept losing them for exact visual parity with the reference.
 
-## Not started
+## Shipped this pass: Release edit header
 
-- `StudioReleaseDetailView.tsx` — same header treatment as Collection,
-  not attempted this pass.
-- `StudioPlaylistEditorView` (in `StudioPlaylistsView.tsx`) — same gap,
-  plus its relationship to `StudioCollectionEditView` needs untangling
-  first (are these two edit UIs for the same entities, and if so why
-  do both exist?).
+`StudioReleaseDetailView.tsx`'s Overview-tab cover card (a bespoke
+gradient-overlay image block with title/type/state text baked into the
+image, a hover-reveal floating Play button, and a hover-reveal "Change
+artwork" text button) is replaced with the same `EntitySocialHeader`
+used by `CollectionView.tsx` and the Collection edit page, now sitting
+above the `Tabs` block instead of inside the Overview tab: cover image
+via `onImageClick` opening the existing artwork upload dialog (moved
+above the tabs, no longer duplicated inside Overview), `{type} ·
+{state}` subtitle, live `description` state as the header description,
+a `Tracks` stat chip, the existing "Open release embed" (`/r/$slug`)
+icon-link and `SaveButton` in the actions row, and a `Play` button
+(existing `playFirstTrack`) as a header child — mirroring Collection's
+Play/queue-row placement. The Overview tab's "Details" `StudioPanel`
+now follows Collection's expand/collapse pattern (`detailsExpanded`
+state, pencil "Edit details" toggle, collapsed one-line summary) so
+the description isn't shown live-editable and as static header text
+at the same time. Tracks list, Publish button, and the other three
+tabs (Smart links, Fingerprinting, Export) are unchanged.
+
+Verification: `tsc --noEmit`, `eslint`, `pnpm test` (483 tests),
+`pnpm build` all pass. Verified live in a running browser
+(`VITE_FORCE_MOCK=1`, `/studio/releases/rel-mock-1`): header renders
+title/subtitle ("ALBUM · PUBLISHED")/Tracks stat/Play/embed-link/Save;
+the empty-cover placeholder opens the artwork upload dialog; Details
+panel's "Edit details" toggle expands to the description textarea and
+collapses back to the one-line summary. No console errors.
+
+## Investigated (2026-09-08): StudioPlaylistEditorView vs StudioCollectionEditView
+
+Both edit the same `StudioCollection` entity, but they are two
+genuinely separate, actively-diverging implementations, not a simple
+duplicate to fold:
+- `StudioCollectionEditView` (`/studio/collections/$slug`,
+  `/library/collections/$slug`) is the one every live in-app link
+  points to. `StudioCollectionsView.tsx` (the real `/studio/collections`
+  list) routes **every** style — album, EP, single, playlist, DJ set —
+  to this same URL unconditionally (`views/studio/StudioCollectionsView.tsx:376,396`).
+- `StudioPlaylistEditorView` (`StudioPlaylistsView.tsx`, mounted at
+  `/studio/playlists/$slug`) has **no in-app link anywhere** pointing
+  to it — grepped the whole `src/` tree. `StudioPlaylistsView` (the
+  list component in the same file, at `/studio/playlists` which is a
+  pure `redirect` to `/studio/collections`) is confirmed dead per the
+  prior pass. But the *editor* export is not simply dead: it already
+  uses the shared `TrackTable` primitive (reorder + delete + queue
+  controls, `views/studio/StudioPlaylistsView.tsx:480-567`) — closer to
+  the reference screenshot's track-table look than either Collection
+  or Release currently gets — and `e2e/cutover-vital.spec.ts`
+  ("collections combine albums, EPs, DJ sets, and playlists") directly
+  navigates to `/studio/playlists/favorites-mix` and asserts on its
+  track-row play/pause behavior. `content/mapScreens.ts` also still
+  documents `/studio/playlists/$slug` as "a playlist/DJ-set
+  collection's editor" distinct from `/studio/collections/$slug`'s
+  "album/EP collection's Design editor".
+
+**Not resolved — needs a decision, not a guess:** is
+`StudioPlaylistEditorView` an intentional second editor that a link
+was simply never wired up for (a real nav gap — playlists/DJ-sets
+should route here instead of `StudioCollectionEditView`), or a
+superseded leftover that should be deleted along with its dead list
+sibling and its passing e2e coverage retired/rewritten? Either answer
+changes the migration target: if it's meant to stay, its `TrackTable`
+usage is the pattern to backport into Collection/Release rather than
+vice versa. Left untouched this pass.
 - Nuclear's Playlists **grid/listing** page reference
   (`playlists.png`) — `MyCollectionsView.tsx` is tahti-web's
   equivalent listing page; not compared against the reference or
   touched this pass.
+- "⋮" menu (Export as JSON / Delete) and the shared `TrackTable`
+  primitive swap — same open decisions noted above for Collection,
+  apply equally to Release; not attempted this pass.
 
 ## Verification (header change only)
 

@@ -7,6 +7,8 @@ import {
   GripVerticalIcon,
   LayoutDashboardIcon,
   Link2Icon,
+  MusicIcon,
+  PencilIcon,
   PlayIcon,
   PlusIcon,
   SearchIcon,
@@ -47,13 +49,17 @@ import type {
 } from '../../api/studio-types';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { EmbedTrackRow } from '../../components/EmbedTrackRow';
+import {
+  EntitySocialHeader,
+  type EntitySocialStat,
+} from '../../components/EntitySocialHeader';
 import { FingerprintTrackPanel } from '../../components/FingerprintTrackPanel';
 import { MusicBrainzSubmissionAssistant } from '../../components/MusicBrainzSubmissionAssistant';
 import { PageEmpty } from '../../components/PageStates';
 import { SourceServiceIcon } from '../../components/SourceServiceIcon';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioNav } from '../../components/StudioNav';
-import { StudioPageHeader, StudioPanel } from '../../components/StudioPanel';
+import { StudioPanel } from '../../components/StudioPanel';
 import {
   composeDspUrl,
   displayDspPrefix,
@@ -79,6 +85,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
   const [artworkPreview, setArtworkPreview] = useState<string | null>(null);
   const [artworkPickerOpen, setArtworkPickerOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [detailsExpanded, setDetailsExpanded] = useState(false);
 
   useEffect(() => {
     void fetchStudioReleases().then((res) => {
@@ -148,6 +155,18 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
     );
   };
 
+  const headerStats: EntitySocialStat[] =
+    release?.tracks && release.tracks.length > 0
+      ? [
+          {
+            key: 'tracks',
+            label: 'Tracks',
+            value: release.tracks.length,
+            icon: MusicIcon,
+          },
+        ]
+      : [];
+
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-2xl flex-col gap-6 px-1 py-2">
@@ -164,14 +183,75 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
           </StudioPanel>
         ) : (
           <>
-            <StudioPageHeader
+            <EntitySocialHeader
               title={release.title}
-              action={
-                <div className="flex flex-wrap justify-end gap-2">
+              imageUrl={artworkPreview}
+              imageAlt=""
+              onImageClick={() => setArtworkPickerOpen(true)}
+              subtitle={`${release.type} · ${release.state}`}
+              description={description.trim() || undefined}
+              stats={headerStats}
+              actions={
+                <>
+                  <Tooltip content="Open release embed" side="top">
+                    <Link
+                      to="/r/$slug"
+                      params={{ slug: release.smartLinkSlug }}
+                      className="bg-background border-border text-foreground flex size-9 items-center justify-center rounded-md border-(length:--border-width)"
+                      aria-label="Open release embed"
+                    >
+                      <Code2Icon size={16} aria-hidden />
+                    </Link>
+                  </Tooltip>
                   <SaveButton saving={saving} onClick={() => void save()} />
-                </div>
+                </>
               }
-            />
+              data-testid="studio-release-social-header"
+            >
+              <Button
+                variant="secondary"
+                onClick={() => void playFirstTrack()}
+                disabled={!release.tracks?.length}
+              >
+                <PlayIcon size={16} aria-hidden className="mr-1.5" />
+                Play
+              </Button>
+            </EntitySocialHeader>
+
+            <Dialog.Root
+              isOpen={artworkPickerOpen}
+              onClose={() => setArtworkPickerOpen(false)}
+              className="max-w-lg"
+            >
+              <Dialog.Title>Release artwork</Dialog.Title>
+              <div className="mt-4">
+                <FilePicker
+                  labels={{
+                    title: 'Release artwork',
+                    description: 'JPEG, PNG, or WebP',
+                    browse: 'Choose image',
+                  }}
+                  accept="image/jpeg,image/png,image/webp"
+                  onFiles={(files) => {
+                    const file = files[0];
+                    if (!file) {
+                      return;
+                    }
+                    void uploadReleaseArtwork(id, file).then((r) => {
+                      if (!r.ok) {
+                        setMessage(r.error);
+                        toast.error(r.error);
+                      } else {
+                        setArtworkPreview(r.artworkUrl);
+                        setMessage('Artwork uploaded.');
+                        toast.success('Artwork uploaded.');
+                      }
+                      setArtworkPickerOpen(false);
+                    });
+                  }}
+                />
+              </div>
+            </Dialog.Root>
 
             <Tabs
               listClassName="border-border border-b pb-3"
@@ -183,99 +263,20 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                   icon: <LayoutDashboardIcon size={14} />,
                   content: (
                     <>
-                      <div className="group border-border bg-background-secondary relative isolate min-h-64 overflow-hidden rounded-xl border shadow-sm sm:min-h-72">
-                        {artworkPreview ? (
-                          <img
-                            src={artworkPreview}
-                            alt=""
-                            className="absolute inset-0 size-full object-cover"
-                          />
-                        ) : (
-                          <div className="bg-background text-foreground-secondary absolute inset-0 flex items-center justify-center text-sm">
-                            No artwork
-                          </div>
-                        )}
-                        <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/25 to-black/70" />
-                        <div className="absolute inset-x-0 top-0 flex items-start justify-between gap-3 p-4 text-white">
-                          <div className="min-w-0">
-                            <p className="text-xs font-semibold tracking-[0.16em] text-white/70 uppercase">
-                              {release.type} · {release.state}
-                            </p>
-                            <h2 className="mt-1 truncate text-2xl leading-tight font-bold sm:text-3xl">
-                              {release.title}
-                            </h2>
-                            <p className="mt-1 truncate text-sm text-white/80">
-                              {user?.displayName ?? 'Tahti artist'}
-                            </p>
-                          </div>
-                          <Link
-                            to="/r/$slug"
-                            params={{ slug: release.smartLinkSlug }}
-                            className="flex size-9 shrink-0 items-center justify-center rounded-md border border-white/30 bg-black/30 text-white backdrop-blur-sm transition-colors hover:bg-white/20"
-                            aria-label="Open release embed"
-                            title="Open release embed"
+                      <StudioPanel
+                        title="Details"
+                        action={
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            onClick={() => setDetailsExpanded((v) => !v)}
                           >
-                            <Code2Icon size={17} aria-hidden />
-                          </Link>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => void playFirstTrack()}
-                          disabled={!release.tracks?.length}
-                          className="bg-primary text-primary-foreground focus-visible:outline-primary absolute right-4 bottom-4 flex size-12 items-center justify-center rounded-full opacity-0 shadow-lg transition-opacity group-hover:opacity-100 hover:scale-105 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none"
-                          aria-label={`Play ${release.title}`}
-                          title={`Play ${release.title}`}
-                        >
-                          <PlayIcon size={20} fill="currentColor" aria-hidden />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setArtworkPickerOpen(true)}
-                          aria-label="Change release artwork"
-                          title="Change release artwork"
-                          className="absolute bottom-4 left-4 rounded-md border border-white/30 bg-black/30 px-2.5 py-1.5 text-xs text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:bg-white/20 focus-visible:opacity-100"
-                        >
-                          Change artwork
-                        </button>
-                      </div>
-
-                      <Dialog.Root
-                        isOpen={artworkPickerOpen}
-                        onClose={() => setArtworkPickerOpen(false)}
-                        className="max-w-lg"
+                            <PencilIcon size={14} aria-hidden />
+                            {detailsExpanded ? 'Done' : 'Edit details'}
+                          </Button>
+                        }
                       >
-                        <Dialog.Title>Release artwork</Dialog.Title>
-                        <div className="mt-4">
-                          <FilePicker
-                            labels={{
-                              title: 'Release artwork',
-                              description: 'JPEG, PNG, or WebP',
-                              browse: 'Choose image',
-                            }}
-                            accept="image/jpeg,image/png,image/webp"
-                            onFiles={(files) => {
-                              const file = files[0];
-                              if (!file) {
-                                return;
-                              }
-                              void uploadReleaseArtwork(id, file).then((r) => {
-                                if (!r.ok) {
-                                  setMessage(r.error);
-                                  toast.error(r.error);
-                                } else {
-                                  setArtworkPreview(r.artworkUrl);
-                                  setMessage('Artwork uploaded.');
-                                  toast.success('Artwork uploaded.');
-                                }
-                                setArtworkPickerOpen(false);
-                              });
-                            }}
-                          />
-                        </div>
-                      </Dialog.Root>
-
-                      <StudioPanel title="Details">
-                        <div className="flex flex-col gap-3">
+                        {detailsExpanded ? (
                           <label className="flex flex-col gap-1 text-sm">
                             <span className="text-foreground-secondary text-xs uppercase">
                               Description
@@ -287,7 +288,11 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                               rows={3}
                             />
                           </label>
-                        </div>
+                        ) : (
+                          <p className="text-foreground-secondary text-sm">
+                            {description.trim() || 'No description set yet.'}
+                          </p>
+                        )}
                       </StudioPanel>
 
                       {release.tracks && release.tracks.length > 0 && (
