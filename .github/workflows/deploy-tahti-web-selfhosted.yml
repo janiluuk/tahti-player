@@ -131,12 +131,27 @@ jobs:
       - name: Smoke checks
         run: |
           set -e
-          code=$(curl -sS -o /dev/null -w '%{http_code}' "http://127.0.0.1:${DEPLOY_HOST_PORT}/")
-          echo "spa:${code}"
-          test "${code}" = '200'
-          code=$(curl -sS -o /dev/null -w '%{http_code}' "http://127.0.0.1:${DEPLOY_HOST_PORT}/tahti-api/api/v1/channels/directory")
-          echo "api-proxy:${code}"
-          test "${code}" = '200'
+          # --force-recreate above returns before the container is actually
+          # accepting connections, so an immediate curl flakes with
+          # "Recv failure: Connection reset by peer" a few times a day.
+          # Retry for up to ~15s before failing the job.
+          check() {
+            local url="$1"
+            local label="$2"
+            local code=""
+            for _ in $(seq 1 10); do
+              code=$(curl -sS -o /dev/null -w '%{http_code}' "$url" 2>/dev/null) || true
+              if [ "${code}" = '200' ]; then
+                echo "${label}:${code}"
+                return 0
+              fi
+              sleep 1.5
+            done
+            echo "${label}:${code} (gave up after retries)"
+            return 1
+          }
+          check "http://127.0.0.1:${DEPLOY_HOST_PORT}/" "spa"
+          check "http://127.0.0.1:${DEPLOY_HOST_PORT}/tahti-api/api/v1/channels/directory" "api-proxy"
 
       - name: Notify on failure
         if: failure()
