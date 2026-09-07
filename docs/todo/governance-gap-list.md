@@ -12,7 +12,7 @@ Gap analysis of governance features available in the sibling API (`../tahti-org`
 | 2 | **Bulk motion comments** | `GET /api/v1/governance/motions/comments?ids=...` | Avoids N+1 on list pages. Currently fetched per-card on expand. |
 | 3 | **Public resolutions page** (`/transparency/resolutions`) | `GET /api/v1/transparency/resolutions?year=` | Published board resolutions by year. TransparencyView shows grants/ledger but not resolutions. |
 | 4 | **Standalone member directory** | `GET /api/v1/governance/members` | Data fetched and shown in GovernanceView sidebar; no dedicated page. |
-| 5 | **Quarterly report download UI** | `GET /api/v1/governance/quarterly-reports` | Listed but no download button using presigned URLs. |
+| ~~5~~ | ~~**Quarterly report download UI**~~ | `GET /api/v1/governance/quarterly-reports` | **Done** — `GovernanceView.tsx` already renders `report.downloadUrl` as a link on each report row (verified 2026-09-07; doc was stale). |
 
 ## Board admin gaps
 
@@ -39,7 +39,7 @@ Gap analysis of governance features available in the sibling API (`../tahti-org`
 | 14 | **Motion editing (board)** | Title/description editable on DRAFT via PATCH but no edit UI. |
 | 15 | **Voting window adjustment** | Board can patch closeAt on drafts; no UI. |
 | 16 | **Meeting detail view** | No standalone page showing full agenda, attendance, minutes, quorum. |
-| 17 | **Document preview/download** | `downloadUrl` from API not surfaced in UI. |
+| ~~17~~ | ~~**Document preview/download**~~ | **Done** — `GovernanceView.tsx` already links `document.downloadUrl ?? document.externalUrl` on each document row (verified 2026-09-07; doc was stale). |
 | 18 | **Cursor pagination** | Motions use cursor pagination but frontend fetches all at once. |
 
 ## Priority order

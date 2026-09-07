@@ -5057,3 +5057,60 @@ scoped `eslint` on `FullScreenPlayer.tsx`/`AppShell.tsx`, and
 `pnpm --filter @tahti-player/tahti-web test` (the package's own script,
 `vitest run --exclude 'e2e/**'`) all pass clean — 84/84 files, 478/478
 tests. Bumped `packages/tahti-web/package.json` to `0.0.89`.
+
+## 2026-09-07 — Workplan cycle 4: Select's orange-by-default fixed; governance/theme-visuals doc corrections; bump to 0.0.90
+
+**Topic 1 — `Select` no longer defaults to `bg-primary`.** Root cause for
+part of `tahti-theme-refactor.md`'s "all dropdown backgrounds are orange
+with black text" complaint: `packages/ui/src/components/Select/Select.tsx`
+hardcoded `bg-primary text-primary-foreground` on the closed control (the
+open dropdown menu, `SelectOptions.tsx`, was already correctly
+`bg-background-secondary`/`text-foreground` — only the collapsed button
+was wrong). Changed to `bg-background-input text-foreground`, matching
+`Input`'s own established `tone: primary` token
+(`packages/ui/src/components/Input/Input.tsx`) — `Select` is a form
+control like `Input`, not a CTA, so it now follows the same convention
+instead of being the one component still using the button-CTA color.
+This is theme-agnostic (fixes every theme, not just the one reported)
+and doesn't touch `Button`'s much larger default-variant-audit question,
+which stays queued in `tahti-theme-refactor.md`.
+
+Cross-package fallout: `packages/player` (the desktop app) also consumes
+this `Select` and had 3 stale snapshots (`Themes`, `Settings`, `Sources`
+test files) capturing the old class string — same shared-component
+blast-radius pattern as the `Tooltip` fix from `player-bar-fake-live-indicator`
+earlier this project. Updated all 3 snapshots via `vitest -u` and
+diffed each one to confirm only the expected class string changed,
+nothing else.
+
+**Topic 2 — `governance-gap-list.md` correction.** Gaps #5 (quarterly
+report download UI) and #17 (document preview/download) were already
+shipped — `GovernanceView.tsx` already renders `report.downloadUrl` and
+`document.downloadUrl ?? document.externalUrl` as links on their
+respective rows. The gap-list doc (generated 2026-09-06) was stale;
+marked both done rather than re-implementing already-working UI.
+
+**Topic 3 — thumbnail glow attempt documented, not shipped.** Tried
+porting `.listen-card::before`'s blurred-backdrop technique
+(`mobile-player-nav-and-tahti-theme-visuals.md` item 2) onto
+`DirectoryArtistCardGrid.tsx`'s `Card`s, live-verified on `/discover` →
+Artists. Doesn't work as a direct port: `Card` (`packages/ui`) is fully
+opaque (`bg-primary` + hard `shadow-shadow`), unlike `apps/web`'s
+translucent glass card, and `CardGrid`'s `gap-4` gutter is too narrow
+for a blurred halo to read as intentional rather than a rendering
+glitch — confirmed with two different inset/blur/opacity combinations,
+both photographed. Reverted the code change; documented the specific
+finding and two candidate alternative techniques (blur the page
+background behind the whole grid instead of per-card, or give `Card`
+a translucent variant) in the todo doc so the next attempt doesn't
+repeat the same dead end.
+
+**Validation:** `pnpm type-check` (root, all 16 workspace packages) and
+`pnpm test` (root, via Turborepo) both pass clean across the whole
+monorepo — `ui` (287 tests), `player` (677 tests, 1 todo), `tahti-web`
+(478 tests via its own `--exclude e2e` script). Scoped `eslint` on
+`Select.tsx` clean. 3 topics this round (the theme-visuals one is a
+documented negative result, not a revert-and-pretend-it-didn't-happen)
+— the rest of the backlog remained blocked on product decisions or
+cross-repo work, consistent with prior cycles. Bumped
+`packages/tahti-web/package.json` to `0.0.90`.

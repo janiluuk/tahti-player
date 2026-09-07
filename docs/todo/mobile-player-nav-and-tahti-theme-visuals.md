@@ -20,6 +20,24 @@ Verify at 375px: play a track → bar visible above nav → expand fullscreen �
 
 Still open — see original spec below.
 
+**Attempted and reverted (2026-09-07):** wrapped each `Card` in
+`DirectoryArtistCardGrid.tsx` with a `-inset-N -z-10 blur-* opacity-*`
+div painting `--card-bg-image` behind it, same technique as
+`.listen-card::before`. Live-verified on `/discover` → Artists: doesn't
+work here. `Card` (`packages/ui`) is **fully opaque**
+(`bg-primary`/hard `shadow-shadow`, not `apps/web`'s translucent
+`rgba(255,255,255,0.03)` glass card) and `CardGrid` only has a `gap-4`
+(1rem) gutter between cells — so the glow has almost no opaque-free area
+to bleed into. A small inset+blur produced a thin, confusing color ring
+that reads as a rendering glitch, not ambience; a larger inset/blur only
+showed faintly above the top row (nothing to occlude it there) and was
+invisible between/below other cards. **This needs a different technique
+than a direct port**, not just tuned numbers — e.g. blurring the page
+background behind the whole grid instead of per-card, or a bigger
+grid `gap` specifically to give per-card glows room, or giving `Card`
+itself a translucent variant. Left `Card`/`DirectoryArtistCardGrid`
+unchanged.
+
 ## 3. Discover-page background visualization (Tahti theme)
 
 Still open.
