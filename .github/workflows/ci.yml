@@ -84,10 +84,13 @@ jobs:
       - name: Build upstream packages
         run: pnpm turbo build --filter='!@tahti-player/player'
 
-      - name: Lint and test
+      - name: Lint
+        run: pnpm turbo lint
+
+      - name: Test
         id: test
         continue-on-error: true
-        run: pnpm turbo lint test
+        run: pnpm turbo test
 
       - name: Build player (frontend-only)
         if: steps.rust-changes.outputs.rust != 'true'
