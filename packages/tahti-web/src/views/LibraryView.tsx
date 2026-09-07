@@ -136,8 +136,6 @@ export function LibrarySectionTabs({ active }: { active: LibrarySectionId }) {
 }
 
 export function LibraryView({ tab = 'library' }: { tab?: Tab }) {
-  const navigate = useNavigate();
-
   const libraryTitle =
     tab === 'library'
       ? 'Overview'
