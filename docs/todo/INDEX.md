@@ -31,6 +31,7 @@ Status values: `open` | `blocked` | `partial`.
 | open | [studio-nav-perform-to-broadcast.md](studio-nav-perform-to-broadcast.md) | Move Perform into Studio→Broadcast; sweep all Studio pages for missing/wrong nav-tab active state at both levels |
 | open | [onboarding-toast-noise.md](onboarding-toast-noise.md) | (Later) "Finish your profile" toast: exempt seeded users, once-per-session even without explicit dismiss, mark done before screenshots |
 | open | [sticky-theme-review-toast.md](sticky-theme-review-toast.md) | (Later) "Theme is in review" mock toast reappears every reload — mock dismiss is a no-op; same root cause as onboarding-toast-noise |
+| open | [channel-designer-backdrop-fold-and-widgets.md](channel-designer-backdrop-fold-and-widgets.md) | (Later) Fold bio/CTA/avatar into backdrop show-toggles (not separate blocks); feed/posts as configurable widgets with tracklist/card-row display toggle |
 | partial | [viewshell-page-headers.md](viewshell-page-headers.md) | Cover-overlay Studio entity headers excluded |
 
 ## Fold rule (copy into CLAUDE / chat)
