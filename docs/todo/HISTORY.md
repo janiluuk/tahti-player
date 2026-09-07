@@ -1419,3 +1419,65 @@ against the pre-fix code (Playwright's own error: "content column
 intercepts pointer events") and passes after.
 
 ---
+
+## 2026-09-07 — Channel Designer: opt-in Navigation tabs under the player
+
+Folded from `queued-ux-fixes-2026-09-05.md` (both remaining items —
+the original "dynamic tabs" request and its later refinement to
+off-by-default/opt-in were the same feature, built as one).
+
+Scoping first found the original request's premise partly stale: no
+"Published on your channel" text exists anywhere in the codebase
+(removed pre-existing), and `ChannelView.tsx` already had a static,
+hardcoded Stage/Tracks/About nav bar below the player (not in the
+header) — so "move tabs below the player" was already true; what
+needed building was making that bar dynamic and opt-in.
+
+**Data model** (`channelPageLayout.ts`): new `navigation` entry in
+`CHANNEL_PAGE_ITEM_TYPES`/`CHANNEL_PAGE_ITEM_META`, a `navigationTabs?:
+ChannelNavigationTab[]` field (`{id, label, itemIds}`) on
+`ChannelPageItem`, and `setNavigationTabs()`. `addItemType('navigation')`
+seeds a single "Home" tab holding every currently-visible block —
+one tab alone never shows the bar (nothing to switch between), so
+turning Navigation on changes nothing until a second tab exists.
+`navigation` is a hidden default stub like `links`/`stats`/etc.
+(off by default, not auto-shown), covered by the existing
+`defaultChannelPageLayout` exhaustiveness test.
+
+**Editor** (`ChannelNavigationEditor.tsx`, new): add/rename/remove
+tabs, and per tab a `FilterChips` multi-select of which other visible
+blocks appear under it — mirrors `ChannelLinksEditor`'s controlled
+`onChange(nextArray)` pattern. Wired into `ChannelView.tsx`'s existing
+click-to-configure `lookSlot` machinery (select the Navigation block →
+its own editor swaps into the Layers panel), same mechanism `links`/
+`playlist` already use.
+
+**Rendering** (`ChannelView.tsx`): the old hardcoded Stage/Tracks/About
+bar is now driven by `navTabs`; the bar renders only when 2+ tabs
+exist, in both editing and view mode (what the artist sees while
+editing is exactly what listeners see, not a preview-only stand-in).
+An item assigned to any tab only shows while that tab is active; an
+item never assigned to any tab always shows, so a block added after
+tabs exist doesn't silently disappear. Tab-switch content fades via a
+small local rAF-based transition (same technique as `FadeSwitch` in
+`ChannelLayersMenu.tsx`/`ChannelElementEditor.tsx`, not extracted since
+it's one 6-line effect).
+
+Caught and fixed one real bug from this pass: the tab-derived state
+and its content-fade `useEffect` had been placed after `ChannelView`'s
+`if (loading)`/`if (!channel)` early returns, tripping "Rendered more
+hooks than during the previous render" the moment a channel actually
+loaded — moved above both early returns.
+
+**Validation:** `tsc --noEmit` and `vitest run src` (487 tests) pass
+clean; 5 new `channelPageLayout.test.ts` cases cover tab seeding,
+reseeding a previously-hidden stub, preserving artist-configured tabs
+across a hide/show cycle, and `normalizeLayout` accepting well-shaped
+tabs while dropping malformed ones. Live-verified end-to-end in the
+browser (`VITE_FORCE_MOCK=1`): added the Navigation block, added a
+second "Releases" tab, moved Tracks into it out of Home, exited
+editing, and confirmed the live tab bar renders, Home hides Tracks,
+and clicking Releases swaps to show only Tracks with About/Subscribe
+hidden.
+
+---

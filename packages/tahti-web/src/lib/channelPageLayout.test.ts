@@ -10,6 +10,7 @@ import {
   setItemOffset,
   setItemVisible,
   setItemWidth,
+  setNavigationTabs,
   setPlaylistDisplay,
   setPlaylistSlug,
   type ChannelPageItem,
@@ -269,6 +270,82 @@ describe('addItemType', () => {
     layout = addItemType(layout, 'stats');
     layout = addItemType(layout, 'stats');
     expect(layout.filter((i) => i.type === 'stats')).toHaveLength(1);
+  });
+});
+
+describe('navigation tabs (opt-in tab bar)', () => {
+  it('adding navigation seeds a single "Home" tab holding everything currently visible', () => {
+    const base = defaultChannelPageLayout();
+    const out = addItemType(base, 'navigation');
+    const nav = out.find((i) => i.type === 'navigation');
+    expect(nav?.visible).toBe(true);
+    expect(nav?.navigationTabs).toHaveLength(1);
+    expect(nav?.navigationTabs?.[0]?.label).toBe('Home');
+    // Home starts holding every other block already visible by default
+    // (hero/archive/about/subscribe) -- turning navigation on must not
+    // change what a listener sees until a second tab exists.
+    const heroId = base.find((i) => i.type === 'hero')?.id;
+    expect(nav?.navigationTabs?.[0]?.itemIds).not.toContain(heroId);
+    expect(nav?.navigationTabs?.[0]?.itemIds.length).toBeGreaterThan(0);
+  });
+
+  it('re-adding navigation after it was hidden reseeds tabs if it never had any', () => {
+    // defaultChannelPageLayout carries navigation as a hidden stub with
+    // no tabs -- addItemType's "existing" branch must still seed the
+    // default Home tab, not just the "brand new item" branch.
+    const base = defaultChannelPageLayout();
+    expect(
+      base.find((i) => i.type === 'navigation')?.navigationTabs,
+    ).toBeUndefined();
+    const out = addItemType(base, 'navigation');
+    expect(
+      out.find((i) => i.type === 'navigation')?.navigationTabs,
+    ).toHaveLength(1);
+  });
+
+  it('does not reseed tabs the artist already configured', () => {
+    let layout = addItemType(defaultChannelPageLayout(), 'navigation');
+    const navId = layout.find((i) => i.type === 'navigation')!.id;
+    layout = setNavigationTabs(layout, navId, [
+      { id: 't1', label: 'Home', itemIds: [] },
+      { id: 't2', label: 'Releases', itemIds: ['archive'] },
+    ]);
+    layout = setItemVisible(layout, navId, false);
+    layout = addItemType(layout, 'navigation');
+    const tabs = layout.find((i) => i.id === navId)?.navigationTabs;
+    expect(tabs).toHaveLength(2);
+    expect(tabs?.[1]?.label).toBe('Releases');
+  });
+
+  it('setNavigationTabs only updates the matching navigation item', () => {
+    const layout = addItemType(defaultChannelPageLayout(), 'navigation');
+    const navId = layout.find((i) => i.type === 'navigation')!.id;
+    const out = setNavigationTabs(layout, navId, [
+      { id: 't1', label: 'Home', itemIds: [] },
+      { id: 't2', label: 'Releases', itemIds: ['archive'] },
+    ]);
+    expect(out.find((i) => i.id === navId)?.navigationTabs).toHaveLength(2);
+    expect(out.find((i) => i.type === 'hero')).toEqual(
+      layout.find((i) => i.type === 'hero'),
+    );
+  });
+
+  it('normalizeLayout preserves well-shaped navigationTabs and drops malformed ones', () => {
+    const out = normalizeLayout([
+      { id: 'hero', type: 'hero', visible: true },
+      {
+        id: 'nav',
+        type: 'navigation',
+        visible: true,
+        navigationTabs: [
+          { id: 't1', label: 'Home', itemIds: ['hero'] },
+          { bad: true } as never,
+        ],
+      },
+    ]);
+    const nav = out.find((i) => i.id === 'nav');
+    expect(nav?.navigationTabs).toHaveLength(1);
+    expect(nav?.navigationTabs?.[0]?.id).toBe('t1');
   });
 });
 

@@ -2,6 +2,7 @@ import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import {
   GripVerticalIcon,
   HeartIcon,
+  LayoutTemplateIcon,
   ListMusicIcon,
   MessageCircle,
   Mic,
@@ -58,6 +59,7 @@ import {
 } from '../components/ChannelDesigner';
 import { ChannelLayersMenu } from '../components/ChannelLayersMenu';
 import { ChannelLinksEditor } from '../components/ChannelLinksEditor';
+import { ChannelNavigationEditor } from '../components/ChannelNavigationEditor';
 import { ChannelPlaylistBlock } from '../components/ChannelPlaylistBlock';
 import { ChannelPlaylistPicker } from '../components/ChannelPlaylistPicker';
 import { ChannelShareButton } from '../components/ChannelShareButton';
@@ -97,6 +99,7 @@ import {
   setItemOffset,
   setItemVisible,
   setItemWidth,
+  setNavigationTabs,
   setPlaylistDisplay,
   setPlaylistSlug,
   type ChannelLayoutPresetId,
@@ -137,6 +140,8 @@ export function ChannelView({ slug }: { slug: string }) {
     );
   const [editing, setEditing] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [activeNavTabId, setActiveNavTabId] = useState<string | null>(null);
+  const [navTabContentVisible, setNavTabContentVisible] = useState(true);
   const [dragId, setDragId] = useState<string | null>(null);
   const [moveDrag, setMoveDrag] = useState<{
     id: string;
@@ -345,6 +350,28 @@ export function ChannelView({ slug }: { slug: string }) {
     return resolveChannelLookExtras(slug, channelLookExtrasFromVisual(channel));
   }, [slug, lookExtrasTick, channel]);
 
+  // Opt-in section tabs: off entirely (no bar, no filtering) unless a
+  // `navigation` block exists with 2+ tabs -- see channelPageLayout.ts's
+  // addItemType, which seeds a single "Home" tab that alone never shows
+  // the bar. An item id absent from every tab always renders, so a block
+  // added after tabs exist doesn't silently disappear. Computed (and its
+  // effect run) above the loading/not-found early returns below so hook
+  // call order never changes between renders.
+  const navigationItem = layout.find((i) => i.type === 'navigation');
+  const navTabs = navigationItem?.visible
+    ? (navigationItem.navigationTabs ?? [])
+    : [];
+  const showNavTabs = navTabs.length > 1;
+  const activeNavTab =
+    navTabs.find((tab) => tab.id === activeNavTabId) ?? navTabs[0] ?? null;
+  const navTabbedItemIds = new Set(navTabs.flatMap((tab) => tab.itemIds));
+
+  useEffect(() => {
+    setNavTabContentVisible(false);
+    const frame = requestAnimationFrame(() => setNavTabContentVisible(true));
+    return () => cancelAnimationFrame(frame);
+  }, [activeNavTab?.id]);
+
   if (loading) {
     return <PageLoading label="Loading channel…" />;
   }
@@ -546,25 +573,21 @@ export function ChannelView({ slug }: { slug: string }) {
   const renderBlock = (item: ChannelPageItem) => {
     switch (item.type) {
       case 'hero': {
-        const stageNavItems = [
-          { id: 'home', label: 'Stage', active: true as const },
-          {
-            id: 'tracks',
-            label: 'Tracks',
-            onClick: () =>
-              document
-                .getElementById('channel-block-archive')
-                ?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
-          },
-          {
-            id: 'about',
-            label: 'About',
-            onClick: () =>
-              document
-                .getElementById('channel-block-about')
-                ?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
-          },
-        ];
+        // Opt-in: no bar at all until the artist adds a Navigation block
+        // with 2+ tabs (see navTabs/showNavTabs above) -- what shows here
+        // while editing is exactly what listeners see, not a preview-only
+        // placeholder.
+        const stageNavItems = showNavTabs
+          ? navTabs.map((tab) => ({
+              id: tab.id,
+              label: tab.label || 'Untitled',
+              active: tab.id === activeNavTab?.id,
+              onClick:
+                tab.id === activeNavTab?.id
+                  ? undefined
+                  : () => setActiveNavTabId(tab.id),
+            }))
+          : [];
         const stageQuickAdd = editing
           ? [
               !layout.find((i) => i.type === 'links')?.visible
@@ -797,55 +820,57 @@ export function ChannelView({ slug }: { slug: string }) {
             >
               {stagePlayer}
             </div>
-            <nav
-              aria-label="Channel navigation"
-              className={
-                editing
-                  ? 'relative flex flex-wrap items-center gap-x-5 gap-y-2 px-4 py-3 text-xs font-semibold uppercase'
-                  : subtle
-                    ? 'border-border/60 relative flex flex-wrap items-center gap-x-5 gap-y-2 rounded-b-lg border border-t-0 px-4 py-3 text-xs font-semibold uppercase'
-                    : 'border-border relative flex flex-wrap items-center gap-x-5 gap-y-2 rounded-b-xl border border-t-0 px-4 py-3 text-xs font-semibold uppercase'
-              }
-              data-testid="channel-stage-nav"
-            >
-              {stageNavItems.map((navItem) =>
-                navItem.onClick ? (
+            {stageNavItems.length > 0 || (stageQuickAdd?.length ?? 0) > 0 ? (
+              <nav
+                aria-label="Channel navigation"
+                className={
+                  editing
+                    ? 'relative flex flex-wrap items-center gap-x-5 gap-y-2 px-4 py-3 text-xs font-semibold uppercase'
+                    : subtle
+                      ? 'border-border/60 relative flex flex-wrap items-center gap-x-5 gap-y-2 rounded-b-lg border border-t-0 px-4 py-3 text-xs font-semibold uppercase'
+                      : 'border-border relative flex flex-wrap items-center gap-x-5 gap-y-2 rounded-b-xl border border-t-0 px-4 py-3 text-xs font-semibold uppercase'
+                }
+                data-testid="channel-stage-nav"
+              >
+                {stageNavItems.map((navItem) =>
+                  navItem.onClick ? (
+                    <button
+                      key={navItem.id}
+                      type="button"
+                      onClick={navItem.onClick}
+                      className={
+                        navItem.active
+                          ? 'border-primary border-b-2 pb-2'
+                          : 'text-foreground-secondary hover:text-foreground pb-2'
+                      }
+                    >
+                      {navItem.label}
+                    </button>
+                  ) : (
+                    <span
+                      key={navItem.id}
+                      className={
+                        navItem.active
+                          ? 'border-primary border-b-2 pb-2'
+                          : 'text-foreground-secondary pb-2'
+                      }
+                    >
+                      {navItem.label}
+                    </span>
+                  ),
+                )}
+                {stageQuickAdd?.map((chip) => (
                   <button
-                    key={navItem.id}
+                    key={chip.id}
                     type="button"
-                    onClick={navItem.onClick}
-                    className={
-                      navItem.active
-                        ? 'border-primary border-b-2 pb-2'
-                        : 'text-foreground-secondary hover:text-foreground pb-2'
-                    }
+                    onClick={chip.onClick}
+                    className="border-border text-foreground-secondary hover:bg-background-secondary ml-auto rounded-full border px-2.5 py-1 text-[10px] normal-case"
                   >
-                    {navItem.label}
+                    + {chip.label}
                   </button>
-                ) : (
-                  <span
-                    key={navItem.id}
-                    className={
-                      navItem.active
-                        ? 'border-primary border-b-2 pb-2'
-                        : 'text-foreground-secondary pb-2'
-                    }
-                  >
-                    {navItem.label}
-                  </span>
-                ),
-              )}
-              {stageQuickAdd?.map((chip) => (
-                <button
-                  key={chip.id}
-                  type="button"
-                  onClick={chip.onClick}
-                  className="border-border text-foreground-secondary hover:bg-background-secondary ml-auto rounded-full border px-2.5 py-1 text-[10px] normal-case"
-                >
-                  + {chip.label}
-                </button>
-              ))}
-            </nav>
+                ))}
+              </nav>
+            ) : null}
           </div>
         );
       }
@@ -909,6 +934,27 @@ export function ChannelView({ slug }: { slug: string }) {
             ) : null}
           </section>
         );
+      case 'navigation': {
+        const navTabCount = item.navigationTabs?.length ?? 0;
+        return (
+          <section
+            className={`flex max-w-xl items-center gap-3 px-4 py-3 ${editing ? '' : 'border-border rounded-lg border border-dashed'}`}
+          >
+            <LayoutTemplateIcon
+              size={18}
+              className="text-foreground-secondary shrink-0 opacity-70"
+            />
+            <div className="min-w-0 flex-1">
+              <div className="text-sm font-bold tracking-tight">Navigation</div>
+              <p className="text-foreground-secondary text-xs">
+                {navTabCount >= 2
+                  ? `${navTabCount} tabs shown under the player.`
+                  : 'Off — add a second tab to show the bar under the player.'}
+              </p>
+            </div>
+          </section>
+        );
+      }
       case 'about':
         return (
           <section id="channel-block-about" className="flex flex-col gap-3">
@@ -1082,11 +1128,28 @@ export function ChannelView({ slug }: { slug: string }) {
     }
   };
 
-  // Chat is the right rail — never show an in-page chat block in view mode
-  // (even if an older saved layout still has chat visible).
+  // Chat is the right rail, and navigation is config-only (it drives the
+  // tab bar rendered inside the hero block above) — neither ever shows as
+  // its own in-page block in view mode, even if an older saved layout still
+  // has one marked visible. When a navigation block has 2+ tabs, an item
+  // assigned to any tab only shows while its tab is active; an item never
+  // assigned to any tab always shows, so adding a new block after tabs
+  // exist doesn't silently disappear from every tab.
   const visibleItems = editing
     ? layout
-    : layout.filter((item) => item.visible && item.type !== 'chat');
+    : layout.filter((item) => {
+        if (
+          !item.visible ||
+          item.type === 'chat' ||
+          item.type === 'navigation'
+        ) {
+          return false;
+        }
+        if (showNavTabs && navTabbedItemIds.has(item.id)) {
+          return activeNavTab?.itemIds.includes(item.id) ?? true;
+        }
+        return true;
+      });
 
   // Exactly one <ChannelVisualizer> (one WebGL context, one RAF loop) per
   // page view, matching prod ("no point running two full WebGL scenes when
@@ -1290,154 +1353,163 @@ export function ChannelView({ slug }: { slug: string }) {
           </div>
         )}
 
-        {visibleItems.map((item) => {
-          if (!editing && !item.visible) {
-            return null;
+        <div
+          key={activeNavTab?.id ?? 'no-tabs'}
+          className={
+            !editing && showNavTabs
+              ? `flex flex-col gap-3 transition-opacity duration-200 ${navTabContentVisible ? 'opacity-100' : 'opacity-0'}`
+              : 'contents'
           }
-          if (!editing && !heroVisible && item.type === 'stats') {
-            return null;
-          }
-          const metaItem = CHANNEL_PAGE_ITEM_META[item.type];
-          const selected = selectedId === item.id;
-          return (
-            <div
-              key={item.id}
-              draggable={editing}
-              onDragStart={() => {
-                if (editing) {
-                  setDragId(item.id);
-                }
-              }}
-              onDragEnd={() => setDragId(null)}
-              onDragOver={(e) => {
-                if (editing) {
+        >
+          {visibleItems.map((item) => {
+            if (!editing && !item.visible) {
+              return null;
+            }
+            if (!editing && !heroVisible && item.type === 'stats') {
+              return null;
+            }
+            const metaItem = CHANNEL_PAGE_ITEM_META[item.type];
+            const selected = selectedId === item.id;
+            return (
+              <div
+                key={item.id}
+                draggable={editing}
+                onDragStart={() => {
+                  if (editing) {
+                    setDragId(item.id);
+                  }
+                }}
+                onDragEnd={() => setDragId(null)}
+                onDragOver={(e) => {
+                  if (editing) {
+                    e.preventDefault();
+                  }
+                }}
+                onDrop={(e) => {
+                  if (!editing || !dragId) {
+                    return;
+                  }
                   e.preventDefault();
-                }
-              }}
-              onDrop={(e) => {
-                if (!editing || !dragId) {
-                  return;
-                }
-                e.preventDefault();
-                updateLayout((prev) => moveItem(prev, dragId, item.id));
-                setDragId(null);
-              }}
-              onClick={() => {
-                if (editing) {
-                  setSelectedId(item.id);
-                }
-              }}
-              onPointerMove={(event) => {
-                if (moveDrag?.id !== item.id) {
-                  return;
-                }
-                updateLayout((prev) =>
-                  setItemOffset(
-                    prev,
-                    item.id,
-                    snapToGrid(
-                      moveDrag.offsetX + event.clientX - moveDrag.startX,
+                  updateLayout((prev) => moveItem(prev, dragId, item.id));
+                  setDragId(null);
+                }}
+                onClick={() => {
+                  if (editing) {
+                    setSelectedId(item.id);
+                  }
+                }}
+                onPointerMove={(event) => {
+                  if (moveDrag?.id !== item.id) {
+                    return;
+                  }
+                  updateLayout((prev) =>
+                    setItemOffset(
+                      prev,
+                      item.id,
+                      snapToGrid(
+                        moveDrag.offsetX + event.clientX - moveDrag.startX,
+                      ),
+                      snapToGrid(
+                        moveDrag.offsetY + event.clientY - moveDrag.startY,
+                      ),
                     ),
-                    snapToGrid(
-                      moveDrag.offsetY + event.clientY - moveDrag.startY,
-                    ),
-                  ),
-                );
-              }}
-              onPointerUp={() => setMoveDrag(null)}
-              onPointerCancel={() => setMoveDrag(null)}
-              className={`group relative ${
-                editing
-                  ? `rounded-xl border border-dashed p-2 ${
-                      selected
-                        ? 'border-primary bg-primary/5'
-                        : 'border-border/80'
-                    } ${item.visible ? '' : 'opacity-40'} ${
-                      dragId === item.id ? 'opacity-50' : ''
-                    }`
-                  : ''
-              } ${
-                item.width === 'compact'
-                  ? 'mx-auto w-[65%] max-w-full'
-                  : item.width === 'wide'
-                    ? 'mx-auto w-[85%] max-w-full'
-                    : 'w-full'
-              }`}
-              style={
-                editing &&
-                (item.offsetX !== undefined || item.offsetY !== undefined)
-                  ? {
-                      transform: `translate(${item.offsetX ?? 0}px, ${item.offsetY ?? 0}px)`,
-                      zIndex: selected ? 2 : 1,
-                    }
-                  : undefined
-              }
-            >
-              {editing && (
-                <>
-                  <div
-                    className="text-foreground-secondary mb-2 flex touch-none items-center gap-2 pr-9 text-[10px] tracking-wide uppercase"
-                    // Opts this handle out of the block's own `draggable`
-                    // (used for stack reordering, above) — without this the
-                    // browser's native drag-and-drop and this handle's
-                    // pointer-capture free-offset drag both try to own the
-                    // same gesture, so grabbing the handle would sometimes
-                    // reorder the stack instead of (or in addition to)
-                    // repositioning the block.
-                    draggable={false}
-                    onDragStart={(event) => event.preventDefault()}
-                    onPointerDown={(event) => {
-                      event.preventDefault();
-                      event.stopPropagation();
-                      event.currentTarget.setPointerCapture(event.pointerId);
-                      setMoveDrag({
-                        id: item.id,
-                        startX: event.clientX,
-                        startY: event.clientY,
-                        offsetX: item.offsetX ?? 0,
-                        offsetY: item.offsetY ?? 0,
-                      });
-                    }}
-                    onPointerUp={(event) => {
-                      if (
-                        event.currentTarget.hasPointerCapture(event.pointerId)
-                      ) {
-                        event.currentTarget.releasePointerCapture(
-                          event.pointerId,
-                        );
+                  );
+                }}
+                onPointerUp={() => setMoveDrag(null)}
+                onPointerCancel={() => setMoveDrag(null)}
+                className={`group relative ${
+                  editing
+                    ? `rounded-xl border border-dashed p-2 ${
+                        selected
+                          ? 'border-primary bg-primary/5'
+                          : 'border-border/80'
+                      } ${item.visible ? '' : 'opacity-40'} ${
+                        dragId === item.id ? 'opacity-50' : ''
+                      }`
+                    : ''
+                } ${
+                  item.width === 'compact'
+                    ? 'mx-auto w-[65%] max-w-full'
+                    : item.width === 'wide'
+                      ? 'mx-auto w-[85%] max-w-full'
+                      : 'w-full'
+                }`}
+                style={
+                  editing &&
+                  (item.offsetX !== undefined || item.offsetY !== undefined)
+                    ? {
+                        transform: `translate(${item.offsetX ?? 0}px, ${item.offsetY ?? 0}px)`,
+                        zIndex: selected ? 2 : 1,
                       }
-                      setMoveDrag(null);
-                    }}
-                  >
-                    <GripVerticalIcon size={12} className="cursor-grab" />
-                    {metaItem.label}
-                    {!item.visible && <span>(hidden)</span>}
-                    <span className="text-foreground-secondary/70 normal-case">
-                      · drag to place
-                    </span>
-                  </div>
-                  <Tooltip content={`Remove ${metaItem.label}`} side="top">
-                    <Button
-                      type="button"
-                      size="icon-sm"
-                      variant="text"
-                      className="text-foreground-secondary hover:text-foreground absolute top-2 right-2 z-10 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
-                      aria-label={`Remove ${metaItem.label}`}
-                      onClick={(event) => {
+                    : undefined
+                }
+              >
+                {editing && (
+                  <>
+                    <div
+                      className="text-foreground-secondary mb-2 flex touch-none items-center gap-2 pr-9 text-[10px] tracking-wide uppercase"
+                      // Opts this handle out of the block's own `draggable`
+                      // (used for stack reordering, above) — without this the
+                      // browser's native drag-and-drop and this handle's
+                      // pointer-capture free-offset drag both try to own the
+                      // same gesture, so grabbing the handle would sometimes
+                      // reorder the stack instead of (or in addition to)
+                      // repositioning the block.
+                      draggable={false}
+                      onDragStart={(event) => event.preventDefault()}
+                      onPointerDown={(event) => {
+                        event.preventDefault();
                         event.stopPropagation();
-                        removeLayoutItem(item.id);
+                        event.currentTarget.setPointerCapture(event.pointerId);
+                        setMoveDrag({
+                          id: item.id,
+                          startX: event.clientX,
+                          startY: event.clientY,
+                          offsetX: item.offsetX ?? 0,
+                          offsetY: item.offsetY ?? 0,
+                        });
                       }}
-                      onPointerDown={(event) => event.stopPropagation()}
+                      onPointerUp={(event) => {
+                        if (
+                          event.currentTarget.hasPointerCapture(event.pointerId)
+                        ) {
+                          event.currentTarget.releasePointerCapture(
+                            event.pointerId,
+                          );
+                        }
+                        setMoveDrag(null);
+                      }}
                     >
-                      <XIcon size={15} aria-hidden />
-                    </Button>
-                  </Tooltip>
-                </>
-              )}
-              {renderBlock(item)}
-            </div>
-          );
-        })}
+                      <GripVerticalIcon size={12} className="cursor-grab" />
+                      {metaItem.label}
+                      {!item.visible && <span>(hidden)</span>}
+                      <span className="text-foreground-secondary/70 normal-case">
+                        · drag to place
+                      </span>
+                    </div>
+                    <Tooltip content={`Remove ${metaItem.label}`} side="top">
+                      <Button
+                        type="button"
+                        size="icon-sm"
+                        variant="text"
+                        className="text-foreground-secondary hover:text-foreground absolute top-2 right-2 z-10 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
+                        aria-label={`Remove ${metaItem.label}`}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          removeLayoutItem(item.id);
+                        }}
+                        onPointerDown={(event) => event.stopPropagation()}
+                      >
+                        <XIcon size={15} aria-hidden />
+                      </Button>
+                    </Tooltip>
+                  </>
+                )}
+                {renderBlock(item)}
+              </div>
+            );
+          })}
+        </div>
         {!editing ? <DiscoWidgetsSection widgets={discoWidgets} /> : null}
       </div>
     </div>
@@ -1486,10 +1558,17 @@ export function ChannelView({ slug }: { slug: string }) {
       ? 'links'
       : selectedType === 'playlist'
         ? 'playlist'
-        : lookElementId;
+        : selectedType === 'navigation'
+          ? 'navigation'
+          : lookElementId;
 
   const selectedPlaylistItem =
     selectedType === 'playlist'
+      ? layout.find((item) => item.id === selectedId)
+      : undefined;
+
+  const selectedNavigationItem =
+    selectedType === 'navigation'
       ? layout.find((item) => item.id === selectedId)
       : undefined;
 
@@ -1596,6 +1675,30 @@ export function ChannelView({ slug }: { slug: string }) {
               />
             </div>
           </div>
+        ) : lookOpenSection === 'navigation' && selectedNavigationItem ? (
+          <ChannelNavigationEditor
+            tabs={selectedNavigationItem.navigationTabs ?? []}
+            candidateItems={layout
+              .filter(
+                (candidate) =>
+                  candidate.visible &&
+                  candidate.type !== 'hero' &&
+                  candidate.type !== 'chat' &&
+                  candidate.type !== 'navigation',
+              )
+              .map((candidate) => ({
+                id: candidate.id,
+                label:
+                  candidate.type === 'playlist' && candidate.playlistSlug
+                    ? candidate.playlistSlug
+                    : CHANNEL_PAGE_ITEM_META[candidate.type].label,
+              }))}
+            onChange={(tabs) => {
+              updateLayout((prev) =>
+                setNavigationTabs(prev, selectedNavigationItem.id, tabs),
+              );
+            }}
+          />
         ) : (
           <ChannelDesigner
             ref={channelDesignerRef}
