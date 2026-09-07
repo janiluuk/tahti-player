@@ -21,7 +21,9 @@ Status values: `open` | `blocked` | `partial`.
 | open | [queued-ux-fixes-2026-09-05.md](queued-ux-fixes-2026-09-05.md) | Queued UX: Channel Designer tabs feature (2 items), scoped-out multi-part effort |
 | partial | [radio-browser-directory-fixes.md](radio-browser-directory-fixes.md) | Cover-image sub-ask needs decision |
 | partial | [stream-overlay-auto-fill-and-avatar-placeholder.md](stream-overlay-auto-fill-and-avatar-placeholder.md) | Now-playing artwork remaining |
-| partial | [stream-overlay-text-color.md](stream-overlay-text-color.md) | Opacity/scrim toggle remaining |
+| open | [continue-listening-card-missing-isplaying.md](continue-listening-card-missing-isplaying.md) | Listen page "Continue listening" card never shows pause icon |
+| open | [mobile-topbar-notifications-messages-to-user-menu.md](mobile-topbar-notifications-messages-to-user-menu.md) | Move Notifications/Messages into user menu on mobile only |
+| partial | [stream-overlay-text-color.md](stream-overlay-text-color.md) | Scrim backend shipped (../tahti-org PR #459, awaiting merge); frontend toggle UI remaining |
 | partial | [studio-emptystate-remaining.md](studio-emptystate-remaining.md) | Inline form hints + Settings-scope empties remain |
 | open | [tahti-cli-tool.md](tahti-cli-tool.md) | CLI (gumroad-cli-inspired) wrapping api-client — list library items, maybe TUI player |
 | open | [tahti-theme-refactor.md](tahti-theme-refactor.md) | Orange-everywhere Button/Select defaults, contrast, visualizer visibility + settings gate |

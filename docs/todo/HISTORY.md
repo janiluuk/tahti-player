@@ -2,6 +2,31 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-07 — Fixed: Library's own tabs (incl. Local files) were unreachable from /library
+
+User-reported ("the lost library issue"). Root cause, found via live
+screenshot diffing: `LibraryView.tsx`'s `overviewTab` computation
+resolved to `null` for the plain `tab === 'library'` case (the actual
+`/library` landing route reached from the sidebar), and the tab strip
+was only rendered when `overviewTab` was truthy — so the real Library
+section tabs (Sounds/Collections/Recordings/Media/Stash/Embeds/Smart
+links/**Local files**) never appeared on the page you land on by
+clicking "Library" in the sidebar. What looked like a working tab bar
+in its place was actually a second, unrelated bug: `/library` was
+listed in `StudioNav.tsx`'s `SECTION_PREFIXES['/studio']`, so
+`AppShell.tsx` rendered Studio's own tab strip (Overview/Branding/
+Stats/Governance/…) on top of Library's page — visually plausible, but
+navigating nowhere useful from a Library context.
+
+Fixed both: added `'library'` (Overview) as a real first entry in
+`LIBRARY_SECTION_TABS` so the strip always resolves to a valid tab
+instead of hiding itself, and removed `/library` and its `/library/*`
+sub-paths from Studio's `SECTION_PREFIXES` (confirmed via
+`navigationActive.ts` that sidebar highlighting for Library already
+short-circuits before reaching the Studio check, so this didn't depend
+on the stale prefix list for anything else). Live-verified before/after
+via Playwright screenshots against a local `VITE_FORCE_MOCK=1` session.
+
 ## 2026-09-07 — Stream Manager now-playing artwork (backend already had it)
 
 Folded one bullet from `queued-ux-fixes-2026-09-05.md`. Re-checked the

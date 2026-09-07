@@ -4,9 +4,20 @@
 
 ## Remaining
 
-opacity/scrim remaining
-attempted — flagged below. Backend half shipped to the sibling `tahti`
-repo's already-open PR #441, still awaiting review/merge.
+**2026-09-07:** the scrim/opacity toggle's backend now shipped —
+`Channel.streamOverlayScrimEnabled` + `video.add_rectangle` in
+`buildRtmpMirrorOutput`, verified against the real
+`savonet/liquidsoap:v2.2.5` binary. `../tahti-org` PR
+[#459](https://github.com/janiluuk/tahti-org/pull/459), awaiting
+review/merge. Remaining: the frontend toggle in
+`StreamOverlayEditor.tsx` (plus `OverlayTextPreview` showing the scrim
+visually) once that PR lands — see
+`../tahti-org/docs/todo/stream-overlay-scrim-toggle.md` for exact
+field names.
+
+Below (opacity/scrim "attempted — flagged below") was the earlier,
+now-superseded investigation; backend half shipped to the sibling
+`tahti` repo's already-open PR #441, still awaiting review/merge.
 
 ## Cross-repo scope
 

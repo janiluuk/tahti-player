@@ -4,6 +4,7 @@ import {
   FolderIcon,
   HardDriveIcon,
   HeadphonesIcon,
+  LayoutGridIcon,
   LibraryIcon,
   Link2Icon,
   MicIcon,
@@ -48,6 +49,12 @@ type CollectionTab =
   | 'embeds';
 
 const LIBRARY_SECTION_TABS = [
+  {
+    id: 'library' as const,
+    label: 'Overview',
+    icon: LayoutGridIcon,
+    to: '/library',
+  },
   {
     id: 'sounds' as const,
     label: 'Sounds',
@@ -106,6 +113,9 @@ export function LibraryView({
   collectionTab?: CollectionTab;
 }) {
   const activeCollectionTab = collectionTab ?? tab;
+  // Always resolves to a real section id — 'library' (Overview) is one of
+  // LIBRARY_SECTION_TABS too, so the tab strip (with Local files etc.) is
+  // never hidden, including on the plain /library landing route.
   const overviewTab =
     tab === 'sounds' ||
     tab === 'smartlinks' ||
@@ -120,7 +130,7 @@ export function LibraryView({
         : activeCollectionTab === 'local'
           ? 'local'
           : activeCollectionTab
-      : null;
+      : 'library';
   const navigate = useNavigate();
 
   const libraryTitle =
@@ -144,28 +154,26 @@ export function LibraryView({
 
   return (
     <div className="studio-page-layout flex w-full flex-col gap-6">
-      {overviewTab ? (
-        <Tabs.Root
-          selectedIndex={Math.max(
-            0,
-            LIBRARY_SECTION_TABS.findIndex((item) => item.id === overviewTab),
-          )}
-          onChange={(index) => {
-            const next = LIBRARY_SECTION_TABS[index];
-            if (next) {
-              void navigate({ to: next.to as never });
-            }
-          }}
-        >
-          <Tabs.List aria-label="Library sections" className="overflow-x-auto">
-            {LIBRARY_SECTION_TABS.map((item) => (
-              <Tabs.Tab key={item.id}>
-                <TabLabel icon={<item.icon size={14} />}>{item.label}</TabLabel>
-              </Tabs.Tab>
-            ))}
-          </Tabs.List>
-        </Tabs.Root>
-      ) : null}
+      <Tabs.Root
+        selectedIndex={Math.max(
+          0,
+          LIBRARY_SECTION_TABS.findIndex((item) => item.id === overviewTab),
+        )}
+        onChange={(index) => {
+          const next = LIBRARY_SECTION_TABS[index];
+          if (next) {
+            void navigate({ to: next.to as never });
+          }
+        }}
+      >
+        <Tabs.List aria-label="Library sections" className="overflow-x-auto">
+          {LIBRARY_SECTION_TABS.map((item) => (
+            <Tabs.Tab key={item.id}>
+              <TabLabel icon={<item.icon size={14} />}>{item.label}</TabLabel>
+            </Tabs.Tab>
+          ))}
+        </Tabs.List>
+      </Tabs.Root>
       <ViewShell title={libraryTitle} classes={{ root: 'px-0 pt-0' }}>
         {tab === 'library' ? (
           <div className="mt-2">

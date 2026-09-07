@@ -5253,3 +5253,50 @@ repos' pointer docs to record exactly what's done vs. still open —
 **Validation:** `packages/player`: `tsc -p tsconfig.tahti.json --noEmit`
 clean, `eslint` clean, full suite 69/69 files (686/686 tests, 1 todo) —
 no regressions from the two new files or the pre-existing suite.
+
+## 2026-09-07 — Fixed the "lost library" bug; checked fullscreen player (no issue found); bump to 0.0.93
+
+**Checked first, per the user's request: fullscreen player.** Re-verified
+`FullScreenPlayer.tsx`/`AppShell.tsx` from workplan cycle 3 (translucent
+backdrop, back-left arrow, hidden top chrome) against a live mock
+session, desktop width — renders correctly, back-arrow closes back to
+the compact bar cleanly. No defect found on this pass; flagging that if
+something specific is still visibly wrong, it needs a screenshot or
+more precise repro to pin down further.
+
+**Found and fixed a real regression: Library's own tabs, including
+Local files, were unreachable from `/library`.** Root cause:
+`LibraryView.tsx`'s `overviewTab` resolved to `null` specifically for
+the plain `/library` landing route (the page you land on by clicking
+"Library" in the sidebar), and the whole `LIBRARY_SECTION_TABS` strip
+(Sounds/Collections/Recordings/Media/Stash/Embeds/Smart links/**Local
+files**) was gated on `overviewTab` being truthy — so it silently never
+rendered on that exact page. What looked like a plausible tab bar in
+its place turned out to be a second, independent bug: `/library` was
+listed in `StudioNav.tsx`'s `SECTION_PREFIXES['/studio']`, so
+`AppShell.tsx` rendered **Studio's** own tab strip
+(Overview/Branding/Stats/Governance/…) over the Library page instead —
+visually convincing, navigationally useless there. Added `'library'`
+(Overview) as a real entry in `LIBRARY_SECTION_TABS` so the strip
+always resolves instead of hiding, and removed `/library`+sub-paths
+from Studio's `SECTION_PREFIXES` (confirmed via `navigationActive.ts`
+that sidebar highlighting for Library was already independent of that
+list, so nothing else relied on it). Live-verified before/after with
+Playwright screenshots.
+
+**Logged, not fixed this round (per explicit "add to todo" requests):**
+- `continue-listening-card-missing-isplaying.md` — Listen page's
+  "Continue listening" card never shows a pause icon; found the exact
+  cause (`Card`'s `isPlaying` prop is simply never passed there, unlike
+  the sibling `RadioListItem` right below it).
+- `mobile-topbar-notifications-messages-to-user-menu.md` — move
+  Notifications/Messages into the user menu on mobile only, to free up
+  top-bar space; scoped exact files/line ranges, flagged the unread-
+  indicator placement as needing a decision before implementing.
+
+**Validation:** `pnpm --filter @tahti-player/tahti-web type-check`,
+scoped `eslint` on `LibraryView.tsx`/`StudioNav.tsx`, and
+`pnpm --filter @tahti-player/tahti-web test` all pass clean — 84/84
+files, 478/478 tests (including `StudioNav.test.ts`'s 19 tests, still
+green after the `SECTION_PREFIXES` trim). Bumped
+`packages/tahti-web/package.json` to `0.0.93`.
