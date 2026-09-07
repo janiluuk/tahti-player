@@ -1,15 +1,17 @@
 import { Link } from '@tanstack/react-router';
 import {
+  ImageIcon,
   ListMusicIcon,
+  ListPlusIcon,
   Maximize2Icon,
   Minimize2Icon,
+  MusicIcon,
   PauseIcon,
   PencilIcon,
   PlayIcon,
   PlusIcon,
   SearchIcon,
   Trash2Icon,
-  UploadCloudIcon,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -44,11 +46,16 @@ import type {
   StudioCollectionItem,
   StudioSound,
 } from '../../api/studio-types';
+import type { TahtiPlayable } from '../../api/types';
 import { uploadUserMediaFile } from '../../api/user-media';
+import {
+  EntitySocialHeader,
+  type EntitySocialStat,
+} from '../../components/EntitySocialHeader';
 import { PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioNav } from '../../components/StudioNav';
-import { StudioPageHeader, StudioPanel } from '../../components/StudioPanel';
+import { StudioPanel } from '../../components/StudioPanel';
 import { WaveformCanvas } from '../../components/WaveformCanvas';
 import { COLLECTION_STYLES } from '../../content/collectionStyles';
 import { playableFromStudioHearthis } from '../../lib/embedPlayback';
@@ -381,6 +388,7 @@ export function StudioCollectionEditView({
   const [draggedId, setDraggedId] = useState<string | null>(null);
 
   const play = usePlayerStore((s) => s.play);
+  const enqueue = usePlayerStore((s) => s.enqueue);
   const currentId = usePlayerStore((s) => s.currentId);
   const status = usePlayerStore((s) => s.status);
   const currentTime = usePlayerStore((s) => s.currentTime);
@@ -427,6 +435,18 @@ export function StudioCollectionEditView({
     [style],
   );
 
+  const headerStats: EntitySocialStat[] =
+    items.length > 0
+      ? [
+          {
+            key: 'tracks',
+            label: 'Tracks',
+            value: items.length,
+            icon: MusicIcon,
+          },
+        ]
+      : [];
+
   const filteredItems = useMemo(() => {
     const q = trackQuery.trim().toLowerCase();
     if (!q) {
@@ -460,7 +480,7 @@ export function StudioCollectionEditView({
     (i) => i.sound && currentId === `archive:${i.sound.id}`,
   );
 
-  const playSound = async (sound: {
+  type PlayableSound = {
     id: string;
     title: string;
     artistName?: string | null;
@@ -468,21 +488,66 @@ export function StudioCollectionEditView({
     embedProvider?: string | null;
     embedUri?: string | null;
     durationSec?: number | null;
-  }) => {
+  };
+
+  /** Non-hearthis EMBED_ONLY sounds have no Tahti-hosted audio and no
+   * shared-player widget to build a playable from. */
+  const buildPlayable = async (
+    sound: PlayableSound,
+  ): Promise<TahtiPlayable | null> => {
     const hearthis = playableFromStudioHearthis(sound);
     if (hearthis) {
-      play(hearthis);
-      return;
+      return hearthis;
+    }
+    if (sound.embedProvider && sound.embedProvider !== 'HEARTHIS') {
+      return null;
     }
     const { data } = await fetchEditorSource(sound.id);
-    play({
+    return {
       id: `archive:${sound.id}`,
       kind: 'archive',
       title: data.title || sound.title,
       artist: 'You',
       streamUrl: data.url,
       protocol: data.url.includes('.m3u8') ? 'hls' : 'https',
-    });
+    };
+  };
+
+  const playSound = async (sound: PlayableSound) => {
+    const playable = await buildPlayable(sound);
+    if (playable) {
+      play(playable);
+    }
+  };
+
+  const playAllTracks = async () => {
+    const first = items.find((item) => item.sound);
+    if (!first?.sound) {
+      return;
+    }
+    await playSound(first.sound);
+  };
+
+  const queueAllTracks = async () => {
+    const withSound = items.filter(
+      (item): item is StudioCollectionItem & { sound: StudioSound } =>
+        Boolean(item.sound),
+    );
+    let queued = 0;
+    for (const item of withSound) {
+      const playable = await buildPlayable(item.sound);
+      if (playable) {
+        enqueue(playable);
+        queued += 1;
+      }
+    }
+    if (queued === 0) {
+      toast.info('No playable tracks to queue.');
+    } else {
+      toast.success(
+        `Added ${queued} track${queued === 1 ? '' : 's'} to the queue.`,
+      );
+    }
   };
 
   const togglePlayItem = (item: StudioCollectionItem) => {
@@ -652,75 +717,82 @@ export function StudioCollectionEditView({
           </StudioPanel>
         ) : (
           <>
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
-              <div className="grid min-w-0 grid-cols-2 gap-3 sm:flex">
-                {(
-                  [
-                    [
-                      'cover',
-                      coverUrl,
-                      isAlbumLike ? 'Album cover' : 'Cover art',
-                    ],
-                    ['backdrop', backdropUrl, 'Backdrop'],
-                  ] as const
-                ).map(([target, imageUrl, emptyLabel]) => (
-                  <Button
-                    key={target}
-                    type="button"
-                    variant="text"
-                    size="flexible"
-                    className={`group border-border bg-background relative block h-44 overflow-hidden rounded-xl border p-0 text-left shadow-sm ${target === 'cover' ? 'aspect-square sm:w-44' : 'min-w-0 sm:w-72'}`}
-                    onClick={() => setUploadTarget(target)}
-                    aria-label={`Upload ${emptyLabel.toLowerCase()}`}
+            <EntitySocialHeader
+              title={name || col.name}
+              imageUrl={coverUrl}
+              imageAlt=""
+              onImageClick={() => setUploadTarget('cover')}
+              backdropUrl={backdropUrl}
+              subtitle={
+                <>
+                  {COLLECTION_STYLES.find((s) => s.id === style)?.label ??
+                    style}
+                  {slideshowImages.length > 1
+                    ? ` · ${slideshowImages.length}-image backdrop slideshow`
+                    : ''}
+                </>
+              }
+              description={description.trim() || undefined}
+              stats={headerStats}
+              actions={
+                <>
+                  <Tooltip content="Change backdrop" side="top">
+                    <Button
+                      variant="secondary"
+                      size="icon-sm"
+                      className="bg-background border-border rounded-md border-(length:--border-width)"
+                      aria-label="Change backdrop"
+                      onClick={() => setUploadTarget('backdrop')}
+                    >
+                      <ImageIcon size={14} aria-hidden />
+                    </Button>
+                  </Tooltip>
+                  <Badge
+                    variant="pill"
+                    color={visibility === 'PUBLIC' ? 'green' : 'secondary'}
                   >
-                    {imageUrl ? (
-                      <img
-                        src={imageUrl}
-                        alt=""
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <span className="text-foreground-secondary flex h-full items-center justify-center p-4 text-center text-xs">
-                        {emptyLabel}
-                      </span>
-                    )}
-                    {target === 'backdrop' && slideshowImages.length > 1 ? (
-                      <Badge
-                        variant="pill"
-                        color="secondary"
-                        className="bg-background/80 absolute top-2 right-2"
-                      >
-                        {slideshowImages.length} images
-                      </Badge>
-                    ) : null}
-                    <span className="absolute inset-0 flex items-center justify-center bg-black/0 text-white opacity-0 transition group-hover:bg-black/45 group-hover:opacity-100 group-focus-visible:bg-black/45 group-focus-visible:opacity-100">
-                      <UploadCloudIcon size={24} aria-hidden />
-                      <span className="sr-only">Upload {emptyLabel}</span>
-                    </span>
+                    {visibility.charAt(0) + visibility.slice(1).toLowerCase()}
+                  </Badge>
+                  <SaveButton saving={saving} onClick={() => void saveMeta()} />
+                </>
+              }
+              data-testid="studio-collection-social-header"
+            >
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  variant="secondary"
+                  onClick={() => void playAllTracks()}
+                  disabled={items.length === 0}
+                >
+                  <PlayIcon size={16} aria-hidden className="mr-1.5" />
+                  Play
+                </Button>
+                <Tooltip content="Add all to queue" side="top">
+                  <Button
+                    variant="secondary"
+                    size="icon"
+                    onClick={() => void queueAllTracks()}
+                    disabled={items.length === 0}
+                    aria-label="Add all to queue"
+                  >
+                    <ListPlusIcon size={16} aria-hidden />
                   </Button>
-                ))}
+                </Tooltip>
+                <Tooltip
+                  content={`Add content to ${isAlbumLike ? 'album' : 'collection'}`}
+                  side="top"
+                >
+                  <Button
+                    variant="secondary"
+                    size="icon"
+                    aria-label={`Add content to ${isAlbumLike ? 'album' : 'collection'}`}
+                    onClick={() => setAddPickerOpen(true)}
+                  >
+                    <PlusIcon size={16} aria-hidden />
+                  </Button>
+                </Tooltip>
               </div>
-              <div className="min-w-0 flex-1">
-                <StudioPageHeader
-                  title={name || col.name}
-                  action={
-                    <div className="flex items-center gap-2">
-                      <Badge
-                        variant="pill"
-                        color={visibility === 'PUBLIC' ? 'green' : 'secondary'}
-                      >
-                        {visibility.charAt(0) +
-                          visibility.slice(1).toLowerCase()}
-                      </Badge>
-                      <SaveButton
-                        saving={saving}
-                        onClick={() => void saveMeta()}
-                      />
-                    </div>
-                  }
-                />
-              </div>
-            </div>
+            </EntitySocialHeader>
 
             <StudioPanel
               title="Details"
@@ -812,15 +884,16 @@ export function StudioCollectionEditView({
                   </section>
                 </div>
               ) : (
-                <div className="flex flex-col gap-2">
-                  <p className="text-foreground-secondary text-sm whitespace-pre-wrap">
-                    {description.trim() || 'No description yet.'}
-                  </p>
-                  <p className="text-foreground-secondary text-xs">
-                    {releaseDate ? `Release ${releaseDate} · ` : ''}
-                    {genres.trim() ? `${genres} · ` : ''}
-                  </p>
-                </div>
+                <p className="text-foreground-secondary text-sm">
+                  {releaseDate || genres.trim()
+                    ? [
+                        releaseDate ? `Release ${releaseDate}` : null,
+                        genres.trim() || null,
+                      ]
+                        .filter(Boolean)
+                        .join(' · ')
+                    : 'No release date or genres set yet.'}
+                </p>
               )}
             </StudioPanel>
 
@@ -947,21 +1020,6 @@ export function StudioCollectionEditView({
                   })}
                 </ul>
               )}
-
-              <div className="border-border mt-4 flex justify-end border-t pt-4">
-                <Tooltip
-                  content={`Add content to ${isAlbumLike ? 'album' : 'collection'}`}
-                  side="top"
-                >
-                  <Button
-                    size="icon"
-                    aria-label={`Add content to ${isAlbumLike ? 'album' : 'collection'}`}
-                    onClick={() => setAddPickerOpen(true)}
-                  >
-                    <PlusIcon size={18} aria-hidden />
-                  </Button>
-                </Tooltip>
-              </div>
             </StudioPanel>
           </>
         )}
