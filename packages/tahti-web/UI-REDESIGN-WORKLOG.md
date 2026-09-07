@@ -5300,3 +5300,53 @@ scoped `eslint` on `LibraryView.tsx`/`StudioNav.tsx`, and
 files, 478/478 tests (including `StudioNav.test.ts`'s 19 tests, still
 green after the `SECTION_PREFIXES` trim). Bumped
 `packages/tahti-web/package.json` to `0.0.93`.
+
+## 2026-09-07 — PWYW pricing: shipped the actual missing piece, found a bigger gap; bump to 0.0.94
+
+Continuation of the cross-repo cycle. Checked `../tahti-org`'s real
+schema/routes before writing any code — `pay-what-you-want-pricing.md`
+had assumed PWYW needed new schema (`pricingModel` enum,
+`minimumPrice`) from scratch. It didn't:
+`PurchaseTier.priceOptional` and the checkout endpoint's `amountCents`
+override already existed and have been shipping. The doc was simply
+never checked against current code, same pattern as workplan cycle
+4/6's stale-doc corrections.
+
+**What was actually missing:** `GET /api/tracks/:id` never returned
+`priceOptional`, so the frontend had no way to know a tier was PWYW.
+Fixed in `../tahti-org` (PR
+[#461](https://github.com/janiluuk/tahti-org/pull/461) — adds
+`purchaseTierPriceOptional` to the route + `PublicTrackDetailSchema`,
+regenerated SDK, 6/6 route tests pass against an ephemeral Postgres).
+
+**Frontend (this repo):** `TrackDetailView.tsx`'s "Buy this track" now
+opens a "Name your price" `Dialog` (pre-filled with the suggested
+price, floor €0, same euros-string-input parsing as
+`FanTiersEditor.tsx`) instead of always silently charging the
+suggested amount, when `purchaseTierPriceOptional` is true. `api/types.ts`
+and the mock upload path (`mockTrackDetailFromUpload` in
+`api/client.ts`) both updated to carry the new field.
+
+**Found a bigger, separate gap while doing this:** there is currently
+**no artist-facing UI anywhere** to create a `PurchaseTier` or gate a
+track behind one — `createPurchaseTier`/`updatePurchaseTier` exist in
+`api/purchase-tiers.ts` with zero callers, and `TrackEditDialog.tsx`
+has no tier-assignment field (compare to `FanTiersEditor.tsx`, the real
+wired-up equivalent for recurring subscriptions). So today's fix has
+no practical path to a `PURCHASE`-gated track outside manually-seeded
+mock data. Logged as its own doc
+(`purchase-tier-artist-editor-missing.md`) rather than folded into the
+PWYW doc, since it's a different, larger problem PWYW just happened to
+expose.
+
+**Not live-verified:** building a mock `PURCHASE`-gated, `priceOptional`
+track needs either the missing editor above or manually seeding
+`tahti-mock-uploaded-sounds` localStorage + its IndexedDB blob, neither
+done this pass — flagged explicitly in the todo doc rather than
+claiming a browser check that didn't happen.
+
+**Validation:** `pnpm --filter @tahti-player/tahti-web type-check`,
+scoped `eslint` on all touched files, and
+`pnpm --filter @tahti-player/tahti-web test` all pass clean — 84/84
+files, 478/478 tests. Bumped `packages/tahti-web/package.json` to
+`0.0.94`.

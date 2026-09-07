@@ -16,7 +16,8 @@ Status values: `open` | `blocked` | `partial`.
 | partial | [image-upload-hover-lightbox.md](image-upload-hover-lightbox.md) | Shared chrome done; remaining surfaces |
 | partial | [local-files-moved-to-library-tab.md](local-files-moved-to-library-tab.md) | Move done; desktop-mode gating open |
 | open | [listener-purchase-flow.md](listener-purchase-flow.md) | Listener register → buy/subscribe → see purchases & manage subscriptions in account; e2e |
-| open | [pay-what-you-want-pricing.md](pay-what-you-want-pricing.md) | PWYW pricing option for fan subs/purchases with default pre-filled price |
+| partial | [pay-what-you-want-pricing.md](pay-what-you-want-pricing.md) | Buyer amount dialog shipped; not live-verified (no tier ever exists to test against) |
+| open | [purchase-tier-artist-editor-missing.md](purchase-tier-artist-editor-missing.md) | One-time track purchases have zero artist-facing UI — tier create/edit + per-track assignment |
 | open | [plugin-registry-extraction.md](plugin-registry-extraction.md) | Pointer to sibling extraction checklist |
 | open | [queued-ux-fixes-2026-09-05.md](queued-ux-fixes-2026-09-05.md) | Queued UX: Channel Designer tabs feature (2 items), scoped-out multi-part effort |
 | partial | [radio-browser-directory-fixes.md](radio-browser-directory-fixes.md) | Cover-image sub-ask needs decision |

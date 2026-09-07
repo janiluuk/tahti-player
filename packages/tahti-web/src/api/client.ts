@@ -409,6 +409,7 @@ function mockTrackDetailFromUpload(id: string): PublicTrackDetail | null {
     purchaseTierId,
     purchaseTierName: tier?.name ?? null,
     purchaseTierPriceCents: tier?.priceCents ?? null,
+    purchaseTierPriceOptional: tier?.priceOptional ?? false,
     downloadsEnabled: uploaded.downloadsEnabled,
   };
 }

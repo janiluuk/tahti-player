@@ -15,7 +15,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Tooltip } from '@tahti-player/ui';
+import { Button, Dialog, Input, Tooltip } from '@tahti-player/ui';
 
 import { isHeaderImageUrl } from '../api/channel-design';
 import {
@@ -144,6 +144,8 @@ export function TrackDetailView({
   const [playlistOpen, setPlaylistOpen] = useState(false);
   const [downloadBusy, setDownloadBusy] = useState(false);
   const [buyBusy, setBuyBusy] = useState(false);
+  const [pwywOpen, setPwywOpen] = useState(false);
+  const [pwywAmt, setPwywAmt] = useState('');
   const [purchaseBump, setPurchaseBump] = useState(0);
   const [editOpen, setEditOpen] = useState(false);
 
@@ -409,7 +411,7 @@ export function TrackDetailView({
     Boolean(detail?.accessMode === 'PURCHASE' && detail.purchaseTierId) &&
     !purchaseEntitled;
 
-  const buyTrack = async () => {
+  const buyTrack = async (amountCentsOverride?: number) => {
     if (!detail?.purchaseTierId) {
       return;
     }
@@ -423,7 +425,8 @@ export function TrackDetailView({
       detail.purchaseTierId,
       {
         trackTitle: detail.title,
-        amountCents: detail.purchaseTierPriceCents ?? undefined,
+        amountCents:
+          amountCentsOverride ?? detail.purchaseTierPriceCents ?? undefined,
       },
     );
     setBuyBusy(false);
@@ -700,7 +703,16 @@ export function TrackDetailView({
                   size="sm"
                   variant="default"
                   disabled={buyBusy || !detail}
-                  onClick={() => void buyTrack()}
+                  onClick={() => {
+                    if (detail?.purchaseTierPriceOptional) {
+                      setPwywAmt(
+                        ((detail.purchaseTierPriceCents ?? 0) / 100).toFixed(2),
+                      );
+                      setPwywOpen(true);
+                      return;
+                    }
+                    void buyTrack();
+                  }}
                 >
                   <ShoppingBagIcon size={14} aria-hidden className="mr-1.5" />
                   {buyBusy ? 'Buying…' : 'Buy this track'}
@@ -968,6 +980,42 @@ export function TrackDetailView({
         trackTitle={playable.title}
         onClose={() => setPlaylistOpen(false)}
       />
+
+      <Dialog.Root isOpen={pwywOpen} onClose={() => setPwywOpen(false)}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            const eurosN = Number(pwywAmt.replace(',', '.'));
+            if (!Number.isFinite(eurosN) || eurosN < 0) {
+              toast.error('Enter an amount of €0 or more.');
+              return;
+            }
+            setPwywOpen(false);
+            void buyTrack(Math.round(eurosN * 100));
+          }}
+        >
+          <Dialog.Title>Name your price</Dialog.Title>
+          <Dialog.Description>
+            The artist set €
+            {((detail?.purchaseTierPriceCents ?? 0) / 100).toFixed(2)} as a
+            suggestion — pay that, more, or less (down to €0).
+          </Dialog.Description>
+          <div className="mt-4">
+            <Input
+              label="Amount (€)"
+              value={pwywAmt}
+              onChange={(e) => setPwywAmt(e.target.value)}
+              autoFocus
+            />
+          </div>
+          <Dialog.Actions>
+            <Dialog.Close>Cancel</Dialog.Close>
+            <Button type="submit" disabled={buyBusy}>
+              {buyBusy ? 'Buying…' : 'Buy this track'}
+            </Button>
+          </Dialog.Actions>
+        </form>
+      </Dialog.Root>
 
       {canEdit ? (
         <TrackEditDialog

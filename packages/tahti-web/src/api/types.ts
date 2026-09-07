@@ -211,6 +211,9 @@ export type PublicTrackDetail = {
   purchaseTierId?: string | null;
   purchaseTierName?: string | null;
   purchaseTierPriceCents?: number | null;
+  /** True = buyer may enter any amount >= 0 ("pay what you want", incl.
+   * free) instead of paying purchaseTierPriceCents exactly. */
+  purchaseTierPriceOptional?: boolean;
   downloadsEnabled?: boolean;
 };
 
