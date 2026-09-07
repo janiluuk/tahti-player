@@ -691,6 +691,22 @@ export type GovernanceAgendaItem = {
   description?: string;
 };
 
+export type GovernanceAttendanceStatus = 'PRESENT' | 'ABSENT' | 'EXCUSED';
+
+export type GovernanceAttendanceItem = {
+  id: string;
+  memberId: string | null;
+  displayName: string;
+  status: GovernanceAttendanceStatus;
+  recordedAt: string;
+};
+
+export type UpsertGovernanceAttendance = {
+  memberId?: string | null;
+  displayName: string;
+  status: GovernanceAttendanceStatus;
+};
+
 export type GovernanceMember = {
   memberNumber: number | null;
   displayName: string;

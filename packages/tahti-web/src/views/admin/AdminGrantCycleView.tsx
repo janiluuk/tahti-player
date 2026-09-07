@@ -78,7 +78,7 @@ export function AdminGrantCycleView() {
   return (
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
-        <AdminPageLayout current="/admin/grants">
+        <AdminPageLayout current="/admin/governance">
           <div className="flex max-w-5xl flex-col gap-6">
             <ViewShell
               title={`${year} grant cycle`}
@@ -90,7 +90,7 @@ export function AdminGrantCycleView() {
                     Board CSV
                   </Button>
                 </a>
-                <Link to="/admin/grants">
+                <Link to="/admin/governance/$tab" params={{ tab: 'grants' }}>
                   <Button size="sm" variant="secondary">
                     All cycles
                   </Button>

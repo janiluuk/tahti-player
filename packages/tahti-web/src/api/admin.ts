@@ -11,8 +11,10 @@ import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
 import type {
   AccountRole,
   BoardResolution,
+  GovernanceAttendanceItem,
   GovernanceDocument,
   GovernanceMeeting,
+  UpsertGovernanceAttendance,
 } from './types';
 
 const forceMock = isForceMock;
@@ -3736,6 +3738,38 @@ export async function patchAdminGovernanceMeeting(
     const data = await sendJson<GovernanceMeeting>(
       `/api/admin/governance/meetings/${encodeURIComponent(id)}`,
       'PATCH',
+      input,
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: null, meta: failMeta(err) };
+  }
+}
+
+export async function fetchAdminGovernanceAttendance(
+  meetingId: string,
+): Promise<{ data: GovernanceAttendanceItem[]; meta: FetchMeta }> {
+  try {
+    const data = await getJson<GovernanceAttendanceItem[]>(
+      `/api/admin/governance/meetings/${encodeURIComponent(meetingId)}/attendance`,
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: [], meta: failMeta(err) };
+  }
+}
+
+/** Upserts by `memberId` server-side — omitting it (manual roll-call entry
+ * by name) always inserts a new row rather than updating one, since the
+ * backend has no other identity to match on. */
+export async function upsertAdminGovernanceAttendance(
+  meetingId: string,
+  input: UpsertGovernanceAttendance,
+): Promise<{ data: GovernanceAttendanceItem | null; meta: FetchMeta }> {
+  try {
+    const data = await sendJson<GovernanceAttendanceItem>(
+      `/api/admin/governance/meetings/${encodeURIComponent(meetingId)}/attendance`,
+      'POST',
       input,
     );
     return { data, meta: { source: 'api' } };

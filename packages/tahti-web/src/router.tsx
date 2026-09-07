@@ -16,6 +16,7 @@ import {
 import { parseDiscoverSearch } from './lib/discoverTabs';
 import { resolveDashboardRedirect } from './lib/prodPathRedirects';
 import { useAuthStore } from './stores/authStore';
+import type { AdminGovernanceTabId } from './views/admin/governance/governanceNav';
 import type { AdminModerationTabId } from './views/admin/moderation/moderationNav';
 import type { AdminOrphanPageTabId } from './views/admin/orphanPages/orphanPagesNav';
 import { AgplView } from './views/AgplView';
@@ -78,10 +79,6 @@ import { WhatsNewView } from './views/WhatsNewView';
 // Board-only, gated on user.isBoard — never needed on the anonymous listen
 // path, so keep these 22 pages out of the main bundle entirely rather than
 // paying for them on every page load (see CUTOVER.md's Bundle budget item).
-const AdminAgmView = lazyRouteComponent(
-  () => import('./views/admin/AdminAgmView'),
-  'AdminAgmView',
-);
 const StudioSoundView = lazyRouteComponent(
   () => import('./views/studio/StudioSoundView'),
   'StudioSoundView',
@@ -181,14 +178,6 @@ const AdminFinancialView = lazyRouteComponent(
 const AdminGovernanceView = lazyRouteComponent(
   () => import('./views/admin/AdminGovernanceView'),
   'AdminGovernanceView',
-);
-const AdminReportsView = lazyRouteComponent(
-  () => import('./views/admin/AdminReportsView'),
-  'AdminReportsView',
-);
-const AdminGrantsView = lazyRouteComponent(
-  () => import('./views/admin/AdminGrantsView'),
-  'AdminGrantsView',
 );
 const AdminGrantCycleView = lazyRouteComponent(
   () => import('./views/admin/AdminGrantCycleView'),
@@ -589,13 +578,29 @@ const adminFinancialRoute = createRoute({
 const adminGovernanceRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/admin/governance',
-  component: AdminGovernanceView,
+  component: () => <AdminGovernanceView />,
+});
+
+const adminGovernanceTabRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/admin/governance/$tab',
+  component: function AdminGovernanceTabRoute() {
+    const { tab } = adminGovernanceTabRoute.useParams();
+    return (
+      <AdminGovernanceView tab={tab as AdminGovernanceTabId | undefined} />
+    );
+  },
 });
 
 const adminReportsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/admin/reports',
-  component: AdminReportsView,
+  beforeLoad: () => {
+    throw redirect({
+      to: '/admin/governance/$tab',
+      params: { tab: 'reports' },
+    });
+  },
 });
 
 const adminFeatureRequestsRoute = createRoute({
@@ -629,7 +634,12 @@ const adminModerationTabRoute = createRoute({
 const adminGrantsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/admin/grants',
-  component: AdminGrantsView,
+  beforeLoad: () => {
+    throw redirect({
+      to: '/admin/governance/$tab',
+      params: { tab: 'grants' },
+    });
+  },
 });
 
 const adminGrantCycleRoute = createRoute({
@@ -641,7 +651,12 @@ const adminGrantCycleRoute = createRoute({
 const adminAgmRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/admin/agm',
-  component: AdminAgmView,
+  beforeLoad: () => {
+    throw redirect({
+      to: '/admin/governance/$tab',
+      params: { tab: 'agm' },
+    });
+  },
 });
 
 const adminMissedShowsRoute = createRoute({
@@ -1706,6 +1721,7 @@ const routeTree = rootRoute.addChildren([
     adminContentReportsRoute,
     adminFinancialRoute,
     adminGovernanceRoute,
+    adminGovernanceTabRoute,
     adminReportsRoute,
     adminFeatureRequestsRoute,
     adminGrantsRoute,
