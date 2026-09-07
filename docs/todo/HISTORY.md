@@ -1359,126 +1359,6 @@ Folded from `settings-mobile-responsive.md`.
 
 ---
 
-## 2026-09-07 — Library showed Studio's tabs instead of its own
-
-One half of a two-part report folded from `queued-ux-fixes-2026-09-05.md`
-(the other half, missing tracks, is still open — needs live repro).
-
-- Root cause: `StudioNav.tsx`'s `SECTION_PREFIXES['/studio']` listed every
-  `/library/*` prefix, so `getStudioPrimaryRoute('/library/...')` resolved
-  to `/studio` and `AppShell` rendered Studio's own submenu tab strip
-  above `LibraryView`'s tab row — two tab rows stacked, Studio's showing
-  as the "wrong" one. Pre-existing since `959073ed2` (2026-09-03).
-- Fix: dropped the `/library*` entries from `SECTION_PREFIXES['/studio']`
-  — Library already has its own top-level sidebar/bottom-nav entry via
-  `navigationActive.ts`'s independent `/library` check, so nothing else
-  depended on Studio claiming those paths.
-- Added a regression test (`StudioNav.test.ts`) asserting
-  `getStudioPrimaryRoute` returns `null` for every `/library/*` path —
-  the existing "lights nothing in Studio for Library routes" test only
-  checked derived submenu-item highlighting, not this primary-route gate
-  that actually controls whether `AppShell` renders `StudioNav` at all.
-
----
-
-## 2026-09-07 — Library missing tracks + full-player back arrow, both fixed and live-verified
-
-Folded from `queued-ux-fixes-2026-09-05.md`. Launched the `tahti-web` dev
-server with `VITE_FORCE_MOCK=1` and drove it with `claude-in-chrome` to
-actually reproduce both reports instead of guessing from source.
-
-**Library missing tracks.** `MyDiscographyView`'s `hasChannel` gate hid
-the entire success branch — including already-fetched `items` — whenever
-`user?.channel` was falsy, regardless of `loading`/whether the fetch
-returned real sounds. Reproduced live: forced a mock session's persisted
-`user.channel` to `null` via `localStorage`, kept 3 real mock sounds, and
-the Sounds tab showed "No sounds yet" instead of them. Fix: reordered the
-gate to only show the "go live" empty state when `!hasChannel &&
-items.length === 0` — a channel-less state now only wins when there is
-genuinely nothing to show, never over data the fetch actually returned.
-Added `MyDiscographyView.test.tsx` (3 cases: channel-less with sounds,
-channel-less with none, has-channel with sounds) and re-verified live
-after the fix.
-
-**Full player back arrow.** Genuinely broken, not a false alarm — but not
-in the handler (`onClick={close}` was always correctly wired). Real
-cause: `FullScreenPlayer.tsx`'s header (`absolute inset-x-0 top-0 z-10`)
-and its only in-flow sibling, the centered content column (`relative
-flex-1 z-10`), tied at `z-10` — and since the header is `absolute` (out
-of flow), the content column's `flex-1` stretches it to cover the same
-top strip. Equal z-index resolves hit-testing by DOM order, so the
-content column (which paints nothing at that point, which is why the
-arrow still looked correctly rendered) intercepted real pointer clicks
-meant for the button underneath. A synthetic `.click()` on the button
-bypasses hit-testing and "worked", which is exactly why this looked fine
-from source alone and needed a real coordinate click (confirmed via
-`document.elementFromPoint` at the button's own rect resolving to the
-content div, not the button) to catch. Fix: bumped the header to `z-20`.
-Added `e2e/fullscreen-player-minimize.spec.ts`, confirmed it fails
-against the pre-fix code (Playwright's own error: "content column
-intercepts pointer events") and passes after.
-
----
-
-## 2026-09-07 — Channel Designer: opt-in Navigation tabs under the player
-
-Folded from `queued-ux-fixes-2026-09-05.md` (both remaining items —
-the original "dynamic tabs" request and its later refinement to
-off-by-default/opt-in were the same feature, built as one).
-
-Scoping first found the original request's premise partly stale: no
-"Published on your channel" text exists anywhere in the codebase
-(removed pre-existing), and `ChannelView.tsx` already had a static,
-hardcoded Stage/Tracks/About nav bar below the player (not in the
-header) — so "move tabs below the player" was already true; what
-needed building was making that bar dynamic and opt-in.
-
-**Data model** (`channelPageLayout.ts`): new `navigation` entry in
-`CHANNEL_PAGE_ITEM_TYPES`/`CHANNEL_PAGE_ITEM_META`, a `navigationTabs?:
-ChannelNavigationTab[]` field (`{id, label, itemIds}`) on
-`ChannelPageItem`, and `setNavigationTabs()`. `addItemType('navigation')`
-seeds a single "Home" tab holding every currently-visible block —
-one tab alone never shows the bar (nothing to switch between), so
-turning Navigation on changes nothing until a second tab exists.
-`navigation` is a hidden default stub like `links`/`stats`/etc.
-(off by default, not auto-shown), covered by the existing
-`defaultChannelPageLayout` exhaustiveness test.
-
-**Editor** (`ChannelNavigationEditor.tsx`, new): add/rename/remove
-tabs, and per tab a `FilterChips` multi-select of which other visible
-blocks appear under it — mirrors `ChannelLinksEditor`'s controlled
-`onChange(nextArray)` pattern. Wired into `ChannelView.tsx`'s existing
-click-to-configure `lookSlot` machinery (select the Navigation block →
-its own editor swaps into the Layers panel), same mechanism `links`/
-`playlist` already use.
-
-**Rendering** (`ChannelView.tsx`): the old hardcoded Stage/Tracks/About
-bar is now driven by `navTabs`; the bar renders only when 2+ tabs
-exist, in both editing and view mode (what the artist sees while
-editing is exactly what listeners see, not a preview-only stand-in).
-An item assigned to any tab only shows while that tab is active; an
-item never assigned to any tab always shows, so a block added after
-tabs exist doesn't silently disappear. Tab-switch content fades via a
-small local rAF-based transition (same technique as `FadeSwitch` in
-`ChannelLayersMenu.tsx`/`ChannelElementEditor.tsx`, not extracted since
-it's one 6-line effect).
-
-Caught and fixed one real bug from this pass: the tab-derived state
-and its content-fade `useEffect` had been placed after `ChannelView`'s
-`if (loading)`/`if (!channel)` early returns, tripping "Rendered more
-hooks than during the previous render" the moment a channel actually
-loaded — moved above both early returns.
-
-**Validation:** `tsc --noEmit` and `vitest run src` (487 tests) pass
-clean; 5 new `channelPageLayout.test.ts` cases cover tab seeding,
-reseeding a previously-hidden stub, preserving artist-configured tabs
-across a hide/show cycle, and `normalizeLayout` accepting well-shaped
-tabs while dropping malformed ones. Live-verified end-to-end in the
-browser (`VITE_FORCE_MOCK=1`): added the Navigation block, added a
-second "Releases" tab, moved Tracks into it out of Home, exited
-editing, and confirmed the live tab bar renders, Home hides Tracks,
-and clicking Releases swaps to show only Tracks with About/Subscribe
-hidden.
 ## 2026-09-07 — Continue-listening pause icon + mobile topbar notifications/messages
 
 Folded from `continue-listening-card-missing-isplaying.md` and
@@ -1507,5 +1387,27 @@ Folded from `continue-listening-card-missing-isplaying.md` and
   opens normally, no stray items, no badge). Flagging so it gets a
   real mobile-viewport check if anything looks off in practice.
 - tahti-web `0.0.96`.
+
+---
+
+## 2026-09-07 — Broadcast dialog: booking calendar link + Stream Manager moved in
+
+Folded from `broadcast-dialog-booking-link-and-stream-manager.md`.
+
+- `AppTopNav.tsx`: the Broadcast-status popover (`RadioIcon` top-bar
+  trigger) gained two new `role="menuitem"` entries — "Booking
+  calendar" (`/studio/schedule`, confirmed live as the artist's own
+  broadcast schedule: "Your next broadcasts" + analytics) and "Stream
+  manager" (opens the existing `StreamManagerPanel` `Dialog` via
+  `setStreamManagerOpen(true)`, closing the popover first).
+- Removed the standalone top-bar Stream Manager icon button — its
+  `Dialog` and `streamManagerOpen` state didn't move, only the
+  trigger.
+- Live-verified in the browser: popover shows all four items
+  (broadcast status, Open broadcast studio, Open Green Room chat,
+  Booking calendar, Stream manager), Stream manager opens the same
+  dialog as before, Booking calendar correctly lands on
+  `/studio/schedule`.
+- tahti-web `0.0.97`.
 
 ---

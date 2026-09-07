@@ -12,16 +12,12 @@ Sibling API: **`../tahti-org`**. Product matrix: [`FEATURES.md`](FEATURES.md) Re
 - [ ] **Storybook / design-system sweeps** — Input sweep, Studio/Admin UX punch list (Studio primitive sweep finished 2026-09-07, see HISTORY). Open punch list: [`STUDIO-ADMIN-UX-SWEEP-OPEN.md`](STUDIO-ADMIN-UX-SWEEP-OPEN.md).
 - [ ] **Image slot chrome** — hover delete + preview modal on remaining upload surfaces. Leaf: [image-upload-hover-lightbox.md](../../docs/todo/image-upload-hover-lightbox.md).
 - [ ] **Governance / Channel Designer / overlay leftovers** — see INDEX (`governance-motion-parity`, `channel-designer-*`, `stream-overlay-*`, `queued-ux-fixes-*`, …).
-- [ ] **Broadcast dialog: booking calendar link + move Stream Manager in** — see INDEX (`broadcast-dialog-booking-link-and-stream-manager`).
 - [ ] **Sibling archive mentions API** — extend `../tahti-org` metadata, then remove artist-page fallback.
 - [ ] **Fix player release workflow (secrets pending)** — root cause fixed 2026-09-07 (step-level `if:` comparing a `secrets.*` value broke GitHub's whole-file parse; moved the check into the shell script instead). New signing keypair generated but the two `gh secret set` commands need the user to run them (Claude Code can't set repo secrets). Leaf: [release-player-workflow-broken.md](../../docs/todo/release-player-workflow-broken.md).
 
 ## Next (queued after today's cycles)
 
 - [ ] **Tahti theme refactor** — `Select`'s orange-by-default fixed 2026-09-07 (now matches `Input`'s `bg-background-input` token). Still open: `Button`'s default variant hardcodes `bg-primary` (needs a per-callsite audit, not a blanket swap — deliberately not attempted blind). Also: background visualizer barely visible, and its Settings → Themes toggle (`ThemeVisualizationSettings.tsx`, already built) is gated to a 2-theme allow-list that likely excludes the affected theme. Leaf: [tahti-theme-refactor.md](../../docs/todo/tahti-theme-refactor.md).
-- [ ] **(Later) Onboarding toast noise** — exempt seeded/mock users, show at most once per session even without explicit dismiss, mark onboarding done before automated screenshots. Leaf: [onboarding-toast-noise.md](../../docs/todo/onboarding-toast-noise.md).
-- [ ] **(Later) "Theme is in review" mock toast reappears every reload** — same root cause as the onboarding toast noise item (module-level dedup state, and mock dismiss is a no-op); fix both together. Leaf: [sticky-theme-review-toast.md](../../docs/todo/sticky-theme-review-toast.md).
-- [ ] **(Later) Channel Designer: fold bio/CTA/avatar into backdrop toggles; feed/posts widgets** — bio/CTA/avatar stop being separate draggable blocks, become backdrop show-toggles; add configurable feed/posts channel widgets with tracklist/card-row display toggle. Leaf: [channel-designer-backdrop-fold-and-widgets.md](../../docs/todo/channel-designer-backdrop-fold-and-widgets.md).
 
 ## Cross-repo work (`../tahti-org` — user-authorized 2026-09-07)
 

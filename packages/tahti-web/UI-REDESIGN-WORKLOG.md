@@ -5418,3 +5418,31 @@ Flagged in `HISTORY.md` so it gets a real check if anything looks off.
 scoped `eslint`, and `pnpm --filter @tahti-player/tahti-web test` all
 pass clean — 84/84 files, 478/478 tests. Bumped
 `packages/tahti-web/package.json` to `0.0.96`.
+
+## 2026-09-07 — Broadcast dialog: booking calendar link + move Stream Manager in
+
+User asked to add booking calendar + Stream Manager to the Broadcast
+dialog; well-scoped enough to implement in the same pass after
+resolving which of two "booking calendar" routes was the right one
+(`/schedule` is listener-facing radio schedule; `/studio/schedule` is
+the artist's own broadcast schedule — confirmed the latter by reading
+`StudioScheduleView.tsx`, which is exactly what an artist-facing
+Broadcast popover should link to).
+
+`AppTopNav.tsx`: added "Booking calendar" (`/studio/schedule`) and
+"Stream manager" (opens the existing `StreamManagerPanel` `Dialog` via
+`setStreamManagerOpen(true)`) as two new `role="menuitem"` entries in
+the Broadcast-status popover, alongside the existing "Open broadcast
+studio" / "Open Green Room chat" items. Removed the standalone
+top-bar Stream Manager icon button — only its trigger moved, the
+dialog itself is unchanged.
+
+Live-verified with Playwright screenshots (desktop, mock sign-in):
+popover shows all four items, Stream manager opens the same dialog as
+before, Booking calendar correctly lands on `/studio/schedule` showing
+"Your next broadcasts" + analytics.
+
+**Validation:** `pnpm --filter @tahti-player/tahti-web type-check`,
+scoped `eslint`, and `pnpm --filter @tahti-player/tahti-web test` all
+pass clean — 84/84 files, 478/478 tests. Bumped
+`packages/tahti-web/package.json` to `0.0.97`.

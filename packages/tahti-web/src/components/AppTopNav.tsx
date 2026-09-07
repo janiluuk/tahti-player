@@ -6,6 +6,7 @@ import {
 } from '@tanstack/react-router';
 import {
   BellIcon,
+  CalendarIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   ExternalLinkIcon,
@@ -387,18 +388,30 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
                       Open Green Room chat
                     </Link>
                   ) : null}
+                  <Link
+                    to="/studio/schedule"
+                    role="menuitem"
+                    onClick={() => setBroadcastOpen(false)}
+                    className="hover:bg-background-secondary flex items-center gap-2 rounded-md px-2 py-2 text-xs"
+                  >
+                    <CalendarIcon size={14} aria-hidden />
+                    Booking calendar
+                  </Link>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => {
+                      setBroadcastOpen(false);
+                      setStreamManagerOpen(true);
+                    }}
+                    className="hover:bg-background-secondary flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-xs"
+                  >
+                    <ListMusicIcon size={14} aria-hidden />
+                    Stream manager
+                  </button>
                 </div>
               ) : null}
             </div>
-            <button
-              type="button"
-              className={cn('hidden sm:inline-flex', iconBtnClass)}
-              aria-label="Open stream manager"
-              title="Stream manager"
-              onClick={() => setStreamManagerOpen(true)}
-            >
-              <ListMusicIcon size={16} />
-            </button>
             <button
               type="button"
               className={cn('hidden sm:inline-flex', iconBtnClass)}
