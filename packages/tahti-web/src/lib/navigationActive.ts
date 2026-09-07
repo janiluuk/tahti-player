@@ -8,7 +8,6 @@ export type SidebarItemId =
   | 'favorites'
   | 'library'
   | 'studio'
-  | 'perform'
   | 'admin'
   | 'help'
   | 'settings';
@@ -43,11 +42,7 @@ export function activeSidebarItem(
   if (matchesSectionRoute(path, ['/library'])) {
     return 'library';
   }
-  const studioSection = getStudioPrimaryRoute(path);
-  if (studioSection === '/studio/go-live') {
-    return 'perform';
-  }
-  if (studioSection === '/studio') {
+  if (getStudioPrimaryRoute(path) === '/studio') {
     return 'studio';
   }
   if (matchesSectionRoute(path, ['/admin'])) {
@@ -78,9 +73,6 @@ export function activeMobileItem(
   }
   if (matchesSectionRoute(path, ['/library'])) {
     return 'library';
-  }
-  if (getStudioPrimaryRoute(path) === '/studio/go-live') {
-    return 'studio';
   }
   if (getStudioPrimaryRoute(path) === '/studio') {
     return 'studio';

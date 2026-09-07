@@ -14,7 +14,7 @@ import { Button, EmptyState, Tabs, Tooltip, ViewShell } from '@tahti-player/ui';
 import { deleteEvent, fetchMyEvents, type ArtistEvent } from '../../api/events';
 import { PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
+import { BroadcastSubNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 
 export function StudioEventsView() {
@@ -102,7 +102,7 @@ export function StudioEventsView() {
   return (
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-6">
-        <StudioNav current="/studio/events" />
+        <BroadcastSubNav current="/studio/events" />
         <ViewShell
           title="Events"
           classes={{ root: 'px-0 pt-0' }}

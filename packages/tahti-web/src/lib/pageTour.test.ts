@@ -22,11 +22,9 @@ describe('getPageTourSteps', () => {
   it('includes Studio section steps on /studio and /library, not elsewhere', () => {
     const studioIds = ids('/studio/upload');
     expect(studioIds).toContain('nav-item-/studio');
-    expect(studioIds).toContain('nav-item-/studio/go-live');
     expect(studioIds).not.toContain('nav-item-/library');
     expect(studioIds).not.toContain('nav-item-tool-Upload');
     expect(ids('/library')).toContain('nav-item-/studio');
-    expect(ids('/library/sounds')).toContain('nav-item-/studio/go-live');
     expect(ids('/radio')).not.toContain('nav-item-/studio');
   });
 

@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  BROADCAST_SUBNAV_ITEMS,
   getStudioPrimaryRoute,
   getStudioSubmenuItems,
+  isBroadcastSubnavActive,
   litStudioSubmenuDestinations,
   SUBMENUS,
 } from './StudioNav';
@@ -10,9 +12,9 @@ import {
 describe('StudioNav section coverage', () => {
   // A submenu link whose own path doesn't resolve back to the primary
   // section it lives under falls back to StudioNavigation's '/studio'
-  // default: landing on that page highlights no top-level tab (Studio /
-  // Perform) and no submenu item, even though the page renders a
-  // real subtabs bar. This caught /studio/branding shipping unregistered.
+  // default: landing on that page highlights no top-level tab and no
+  // submenu item, even though the page renders a real subtabs bar. This
+  // caught /studio/branding shipping unregistered.
   for (const [section, items] of Object.entries(SUBMENUS)) {
     for (const item of items) {
       it(`"${item.to}" (under ${section}) resolves back to ${section}`, () => {
@@ -21,8 +23,8 @@ describe('StudioNav section coverage', () => {
     }
   }
 
-  it('keeps multicast under Radio instead of a Perform sibling', () => {
-    const destinations = SUBMENUS['/studio/go-live'].map((item) => item.to);
+  it('keeps multicast under Radio instead of a Broadcast sibling', () => {
+    const destinations = BROADCAST_SUBNAV_ITEMS.map((item) => item.to);
     expect(destinations).not.toContain('/studio/channel?tab=multicast');
     expect(destinations).toContain('/studio/channel?tab=radio');
   });
@@ -39,13 +41,17 @@ describe('StudioNav section coverage', () => {
       ]),
     );
     expect(destinations).toEqual(
-      expect.arrayContaining(['/studio/releases', '/studio/editor']),
+      expect.arrayContaining([
+        '/studio/releases',
+        '/studio/editor',
+        '/studio/go-live',
+      ]),
     );
     expect(getStudioPrimaryRoute('/studio/releases')).toBe('/studio');
-    expect(getStudioPrimaryRoute('/studio/go-live')).toBe('/studio/go-live');
+    expect(getStudioPrimaryRoute('/studio/go-live')).toBe('/studio');
   });
 
-  it('lights exactly one Studio submenu item on covered catalog routes', () => {
+  it('lights exactly one Studio submenu item on covered catalog routes, folding Perform/go-live pages into the single Broadcast tab', () => {
     const covered: [string, string][] = [
       ['/studio', '/studio'],
       ['/studio/branding', '/studio/branding'],
@@ -58,13 +64,37 @@ describe('StudioNav section coverage', () => {
       ['/studio/distribution', '/studio/releases'],
       ['/studio/go-live', '/studio/go-live'],
       ['/studio/info', '/studio/go-live'],
-      ['/studio/channel', '/studio/channel'],
-      ['/studio/channel?tab=radio', '/studio/channel?tab=radio'],
+      ['/studio/schedule', '/studio/go-live'],
+      ['/studio/events', '/studio/go-live'],
+      ['/studio/events/new', '/studio/go-live'],
+      ['/studio/shows', '/studio/go-live'],
+      ['/studio/shows/abc', '/studio/go-live'],
+      ['/studio/channel', '/studio/go-live'],
+      ['/studio/channel?tab=radio', '/studio/go-live'],
     ];
     for (const [location, expected] of covered) {
       expect(litStudioSubmenuDestinations(location), location).toEqual([
         expected,
       ]);
+    }
+  });
+
+  it('lights the right Broadcast sub-tab for each folded-in Perform page', () => {
+    const covered: [string, string][] = [
+      ['/studio/go-live', '/studio/go-live'],
+      ['/studio/info', '/studio/go-live'],
+      ['/studio/schedule', '/studio/schedule'],
+      ['/studio/events', '/studio/events'],
+      ['/studio/shows', '/studio/shows'],
+      ['/studio/channel', '/studio/channel'],
+      ['/studio/channel?tab=radio', '/studio/channel?tab=radio'],
+      ['/studio/channel?tab=multicast', '/studio/channel?tab=radio'],
+    ];
+    for (const [location, expectedTo] of covered) {
+      const lit = BROADCAST_SUBNAV_ITEMS.filter((item) =>
+        isBroadcastSubnavActive(location, item.to),
+      ).map((item) => item.to);
+      expect(lit, location).toEqual([expectedTo]);
     }
   });
 
