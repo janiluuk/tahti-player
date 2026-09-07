@@ -29,6 +29,7 @@ import {
 } from '@tahti-player/ui';
 
 import { parseCredits } from '../api/distribution';
+import { setSoundPurchaseAccess } from '../api/purchase-tiers';
 import { fetchHearthisTrackById } from '../api/sources';
 import {
   fetchEditorDraft,
@@ -65,6 +66,7 @@ import { BackdropUploadButton } from './BackdropUploadButton';
 import { MentionTextarea } from './MentionTextarea';
 import { MusicBrainzSubmissionAssistant } from './MusicBrainzSubmissionAssistant';
 import { PageLoading } from './PageStates';
+import { PurchaseAccessSection } from './PurchaseAccessSection';
 import { RoundImageUploadButton } from './RoundImageUploadButton';
 import { SoundShareLinksSection } from './SoundShareLinksSection';
 import { SubgenreTagInput } from './SubgenreTagInput';
@@ -130,6 +132,7 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
   const [tab, setTab] = useState<Tab>('basics');
   const [item, setItem] = useState<StudioSound | null>(null);
   const [form, setForm] = useState<StudioSoundPatch>({});
+  const [purchaseTierId, setPurchaseTierId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [playlistOpen, setPlaylistOpen] = useState(false);
@@ -213,6 +216,7 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
             preset: 'cards',
           },
         });
+        setPurchaseTierId(res.data.purchaseTierId ?? null);
       })
       .catch((err: unknown) => {
         if (!cancelled) {
@@ -404,6 +408,18 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
     if (!result.ok) {
       toast.error(result.error);
       return;
+    }
+    if (purchaseTierId !== (item.purchaseTierId ?? null)) {
+      const accessResult = await setSoundPurchaseAccess(
+        soundId,
+        purchaseTierId,
+      );
+      if (!accessResult.ok) {
+        toast.error(accessResult.error);
+      } else {
+        result.data.purchaseTierId = purchaseTierId;
+        result.data.accessMode = purchaseTierId ? 'PURCHASE' : 'FREE';
+      }
     }
     setItem(result.data);
     setForm((current) => ({
@@ -888,6 +904,10 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
                       onTierIdsChange={(fanTierIds) =>
                         setForm({ ...form, fanTierIds })
                       }
+                    />
+                    <PurchaseAccessSection
+                      purchaseTierId={purchaseTierId}
+                      onPurchaseTierIdChange={setPurchaseTierId}
                     />
                     {form.visibility === 'PRIVATE' ||
                     form.visibility === 'STASH' ? (

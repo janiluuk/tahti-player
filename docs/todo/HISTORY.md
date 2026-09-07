@@ -1531,3 +1531,55 @@ Folded from `broadcast-dialog-booking-link-and-stream-manager.md`.
 - tahti-web `0.0.97`.
 
 ---
+
+## 2026-09-07 — Purchase-tier artist editor built (closes the PWYW reachability gap)
+
+Folded from `purchase-tier-artist-editor-missing.md` and
+`pay-what-you-want-pricing.md`. The buyer-side PWYW dialog shipped
+earlier this session had no real path to a `PURCHASE`-gated track —
+zero artist-facing UI existed to create a `PurchaseTier` or assign one.
+Built both pieces:
+
+- **`PurchaseTiersEditor.tsx`** (new): create/deactivate one-time
+  purchase tiers — name, price, description, and a "pay what you want"
+  toggle — mirroring `FanTiersEditor.tsx`'s exact pattern. Mounted in
+  `StudioRevenueView.tsx`'s "Tiers" tab alongside (not replacing) the
+  existing fan-subscription editor.
+- **`PurchaseAccessSection.tsx`** (new): a "Sell this track" picker
+  added to `TrackEditDialog.tsx`'s Sharing tab, selecting an active
+  tier (or "No purchase gate") for the track; saved via the real
+  `PATCH /api/me/sound/:id/access` contract alongside the main save.
+- **Real bugs found and fixed along the way**, not just new UI:
+  - `setSoundPurchaseAccess` (`api/purchase-tiers.ts`) was calling a
+    wrong path (`/api/me/archive/:id/access` — the real route is
+    `/api/me/sound/:id/access`) and couldn't clear a gate back to
+    `FREE` (no support for `purchaseTierId: null`). Both fixed to match
+    `apps/api/src/routes/me/sound.ts`'s real contract.
+  - Mock mode has three disconnected mock stores for what should be
+    one "sound" entity — `mockSoundStore` (studio.ts, read by the
+    Studio editor), the `mock-uploads.ts` store (read by the public
+    track-detail page), and `mock.ts`'s static `-archive-N` fixtures.
+    Added `setMockSoundPurchaseAccess` (studio.ts) and dual-write both
+    mock stores from `setSoundPurchaseAccess`, matching the existing
+    `patchStudioSound` convention — but `patchMockUploadedSound`
+    silently no-ops for tracks that only ever existed as static
+    `mockSoundStore` seed data (never went through a real upload into
+    the `mock-uploads.ts` store), so the public track-detail page still
+    won't reflect a purchase-tier change made against one of those
+    specific seed tracks in mock mode. Pre-existing mock-fixture
+    architecture gap, not present in the real (non-mock) API path —
+    flagging rather than attempting a full mock-store unification here.
+  - `Toggle`'s `label` prop is `aria-label`-only, never rendered
+    visibly (confirmed by reading `Toggle.tsx`) — the first draft of
+    `PurchaseTiersEditor.tsx` used it bare, shipping an invisible
+    checkbox label; caught before commit via live screenshot and fixed
+    to match `TrackEditDialog.tsx`'s established bordered-row pattern
+    (visible `<span>` beside the `Toggle`).
+- Live-verified: created a tier from Studio → Audience → Tiers
+  (including the pay-what-you-want toggle), assigned it to a track from
+  `TrackEditDialog`, saved, reopened the dialog and confirmed the
+  selection persisted. Buyer-side click-through to "Buy this track"
+  itself was not re-verified past the mock-store gap noted above.
+- tahti-web `0.0.98`.
+
+---

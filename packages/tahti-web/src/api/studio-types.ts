@@ -35,6 +35,10 @@ export type StudioSound = {
   downloadsEnabled?: boolean;
   visibility?: 'PUBLIC' | 'UNLISTED' | 'PRIVATE' | 'STASH';
   fanTierIds?: string[];
+  /** One-time-purchase gate — set via `setSoundPurchaseAccess`, not part
+   * of the general `patchStudioSound` body. */
+  accessMode?: 'FREE' | 'SUBSCRIBERS_ONLY' | 'PURCHASE';
+  purchaseTierId?: string | null;
   releaseDate?: string | null;
   pinnedAt?: string | null;
   effectiveBpm?: number | null;

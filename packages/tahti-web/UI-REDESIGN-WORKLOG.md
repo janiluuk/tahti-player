@@ -5446,3 +5446,47 @@ before, Booking calendar correctly lands on `/studio/schedule` showing
 scoped `eslint`, and `pnpm --filter @tahti-player/tahti-web test` all
 pass clean — 84/84 files, 478/478 tests. Bumped
 `packages/tahti-web/package.json` to `0.0.97`.
+
+## 2026-09-07 — Purchase-tier artist editor (closes the PWYW reachability gap)
+
+Picked up the next WORKPLAN item: the buyer-side PWYW dialog shipped
+earlier this session had no real path to a `PURCHASE`-gated track,
+since no artist-facing UI existed anywhere to create a `PurchaseTier`
+or assign one. Checked `../tahti-org`'s real route
+(`apps/api/src/routes/me/sound.ts`) before building anything —
+`PATCH /api/me/sound/:id/access` already fully supports set/clear.
+
+New `PurchaseTiersEditor.tsx` (create/deactivate purchase tiers, incl.
+a "pay what you want" toggle — mirrors `FanTiersEditor.tsx` exactly)
+mounted in `StudioRevenueView.tsx`'s Tiers tab alongside the existing
+fan-subscription editor. New `PurchaseAccessSection.tsx` ("Sell this
+track" tier picker) added to `TrackEditDialog.tsx`'s Sharing tab,
+saved via `setSoundPurchaseAccess` alongside the main patch.
+
+Found and fixed two real bugs while wiring this up: `setSoundPurchaseAccess`
+was calling the wrong path (`/api/me/archive/:id/access` instead of the
+real `/api/me/sound/:id/access`) and couldn't clear a gate back to
+FREE; and `Toggle`'s `label` prop turned out to be `aria-label`-only
+(never rendered visibly) — my first draft shipped an invisible
+checkbox label, caught via a live screenshot before committing and
+fixed to the established bordered-row + visible `<span>` pattern.
+
+Also found, but did not fix (documented, out of scope for this pass):
+mock mode has three disconnected mock stores for one "sound" entity —
+dual-wrote the two that matter for the Studio-editor round trip
+(`mockSoundStore` in studio.ts, `mock-uploads.ts`'s store), matching
+`patchStudioSound`'s existing convention, but `patchMockUploadedSound`
+silently no-ops for the static `-archive-N` seed tracks that never went
+through a real upload — so the public track-detail page won't reflect
+a purchase-tier change made against those specific seed tracks in mock
+mode. Doesn't affect the real (non-mock) API path.
+
+Live-verified in the browser: created a purchase tier (incl. the PWYW
+toggle) from Studio → Audience → Tiers, assigned it to a track from
+`TrackEditDialog`, saved, reopened the dialog and confirmed the
+selection persisted correctly.
+
+**Validation:** `pnpm --filter @tahti-player/tahti-web type-check`,
+`eslint --fix`, and `pnpm --filter @tahti-player/tahti-web test` all
+pass clean — 85/85 files, 487/487 tests. Bumped
+`packages/tahti-web/package.json` to `0.0.98`.

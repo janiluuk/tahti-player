@@ -27,6 +27,7 @@ import {
 import { FanSubOrderBreakdown } from '../../components/FanSubOrderBreakdown';
 import { FanSubscriptionStats } from '../../components/FanSubscriptionStats';
 import { FanTiersEditor } from '../../components/FanTiersEditor';
+import { PurchaseTiersEditor } from '../../components/PurchaseTiersEditor';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -261,12 +262,20 @@ export function StudioRevenueView() {
                 label: 'Tiers',
                 icon: <LayersIcon size={14} />,
                 content: (
-                  <StudioPanel
-                    title="Tiers"
-                    description="Set the monthly support tiers fans can subscribe to."
-                  >
-                    <FanTiersEditor />
-                  </StudioPanel>
+                  <div className="flex flex-col gap-4">
+                    <StudioPanel
+                      title="Fan subscription tiers"
+                      description="Set the monthly support tiers fans can subscribe to."
+                    >
+                      <FanTiersEditor />
+                    </StudioPanel>
+                    <StudioPanel
+                      title="One-time purchase tiers"
+                      description="Sell individual tracks. Assign a tier to a track from its edit dialog."
+                    >
+                      <PurchaseTiersEditor />
+                    </StudioPanel>
+                  </div>
                 ),
               },
             ]}

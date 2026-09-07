@@ -306,6 +306,25 @@ export async function patchStudioSound(
  * audit log (who/when/via which share). This client only mints, sends,
  * and revokes the token — it cannot itself enforce that server-side
  * behavior. */
+/** Mock-mode mirror of the real `PATCH /api/me/sound/:id/access` effect
+ * on `mockSoundStore`, so `fetchStudioSound`/`TrackEditDialog` see the
+ * change immediately — `setSoundPurchaseAccess` (purchase-tiers.ts) calls
+ * this in mock mode instead of duplicating the store lookup. */
+export function setMockSoundPurchaseAccess(
+  id: string,
+  accessMode: 'FREE' | 'PURCHASE',
+  purchaseTierId: string | null,
+): void {
+  const idx = mockSoundStore.findIndex((a) => a.id === id);
+  if (idx >= 0) {
+    mockSoundStore[idx] = {
+      ...mockSoundStore[idx]!,
+      accessMode,
+      purchaseTierId,
+    };
+  }
+}
+
 export type SoundShare = {
   id: string;
   granteeUsername: string | null;
