@@ -19,6 +19,8 @@ Status values: `open` | `blocked` | `partial`.
 | open | [plugin-registry-extraction.md](plugin-registry-extraction.md) | Pointer to sibling extraction checklist |
 | partial | [release-player-workflow-broken.md](release-player-workflow-broken.md) | Root cause fixed 2026-09-07; user needs to run 2 `gh secret set` commands to finish |
 | partial | [radio-browser-directory-fixes.md](radio-browser-directory-fixes.md) | Cover-image sub-ask needs decision |
+| partial | [stream-overlay-auto-fill-and-avatar-placeholder.md](stream-overlay-auto-fill-and-avatar-placeholder.md) | Now-playing artwork remaining |
+| partial | [studio-entity-edit-view-header-redesign.md](studio-entity-edit-view-header-redesign.md) | Collection edit header now uses EntitySocialHeader; Release/Playlist-editor headers + track-table swap + delete/export still open |
 | partial | [studio-emptystate-remaining.md](studio-emptystate-remaining.md) | Inline form hints + Settings-scope empties remain |
 | open | [tahti-cli-tool.md](tahti-cli-tool.md) | CLI (gumroad-cli-inspired) wrapping api-client — list library items, maybe TUI player |
 | open | [tahti-theme-refactor.md](tahti-theme-refactor.md) | Orange-everywhere Button/Select defaults, contrast, visualizer visibility + settings gate |
@@ -30,6 +32,7 @@ Status values: `open` | `blocked` | `partial`.
 | open | [sticky-theme-review-toast.md](sticky-theme-review-toast.md) | (Later) "Theme is in review" mock toast reappears every reload — mock dismiss is a no-op; same root cause as onboarding-toast-noise |
 | open | [channel-designer-backdrop-fold-and-widgets.md](channel-designer-backdrop-fold-and-widgets.md) | (Later) Fold bio/CTA/avatar into backdrop show-toggles (not separate blocks); feed/posts as configurable widgets with tracklist/card-row display toggle |
 | open | [pagetour-functionality-only-with-annotations.md](pagetour-functionality-only-with-annotations.md) | (Later) Page tour: inner pages show only page functionality (no menus); menus only on front-page tour; always annotate page purpose |
+| open | [admin-artwork-presets-modal-redesign.md](admin-artwork-presets-modal-redesign.md) | (Later) Artwork presets: modal editor (compact), live grid update, top-right Add-new + guarded Reset-to-defaults |
 | partial | [viewshell-page-headers.md](viewshell-page-headers.md) | Cover-overlay Studio entity headers excluded |
 
 ## Fold rule (copy into CLAUDE / chat)

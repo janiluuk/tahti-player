@@ -1,4 +1,4 @@
-import { MapPinIcon, type LucideIcon } from 'lucide-react';
+import { MapPinIcon, UploadCloudIcon, type LucideIcon } from 'lucide-react';
 import type { CSSProperties, ReactNode } from 'react';
 
 import { StatChip } from '@tahti-player/ui';
@@ -274,6 +274,18 @@ export function EntitySocialHeader({
               )}
             />
           )
+        ) : onImageClick ? (
+          <button
+            type="button"
+            onClick={onImageClick}
+            className={cn(
+              'border-border bg-background-secondary/40 text-foreground-secondary shadow-shadow flex size-24 shrink-0 items-center justify-center border-(length:--border-width)',
+              roundImage ? 'rounded-full' : 'rounded-md',
+            )}
+            aria-label={`Upload ${title} artwork`}
+          >
+            <UploadCloudIcon size={22} aria-hidden />
+          </button>
         ) : (
           <div
             className={cn(
