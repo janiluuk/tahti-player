@@ -30,6 +30,7 @@ Status values: `open` | `blocked` | `partial`.
 | open | [tahti-theme-refactor.md](tahti-theme-refactor.md) | Orange-everywhere Button/Select defaults, contrast, visualizer visibility + settings gate |
 | open | [waveform-detail-accuracy.md](waveform-detail-accuracy.md) | Full track view waveform needs real detail/accuracy — WaveformSeekbar downsamples to 64 bars, fabricates fake bars when no peaks |
 | open | [studio-nav-perform-to-broadcast.md](studio-nav-perform-to-broadcast.md) | Move Perform into Studio→Broadcast; sweep all Studio pages for missing/wrong nav-tab active state at both levels |
+| open | [onboarding-toast-noise.md](onboarding-toast-noise.md) | (Later) "Finish your profile" toast: exempt seeded users, once-per-session even without explicit dismiss, mark done before screenshots |
 | partial | [viewshell-page-headers.md](viewshell-page-headers.md) | Cover-overlay Studio entity headers excluded |
 
 ## Fold rule (copy into CLAUDE / chat)

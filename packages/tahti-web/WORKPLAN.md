@@ -19,6 +19,7 @@ Sibling API: **`../tahti-org`**. Product matrix: [`FEATURES.md`](FEATURES.md) Re
 ## Next (queued after today's cycles)
 
 - [ ] **Tahti theme refactor** — `Select`'s orange-by-default fixed 2026-09-07 (now matches `Input`'s `bg-background-input` token). Still open: `Button`'s default variant hardcodes `bg-primary` (needs a per-callsite audit, not a blanket swap — deliberately not attempted blind). Also: background visualizer barely visible, and its Settings → Themes toggle (`ThemeVisualizationSettings.tsx`, already built) is gated to a 2-theme allow-list that likely excludes the affected theme. Leaf: [tahti-theme-refactor.md](../../docs/todo/tahti-theme-refactor.md).
+- [ ] **(Later) Onboarding toast noise** — exempt seeded/mock users, show at most once per session even without explicit dismiss, mark onboarding done before automated screenshots. Leaf: [onboarding-toast-noise.md](../../docs/todo/onboarding-toast-noise.md).
 
 ## Cross-repo work (`../tahti-org` — user-authorized 2026-09-07)
 
