@@ -5199,3 +5199,57 @@ scoped `eslint` on `StreamManagerPanel.tsx`, and
 files, 478/478 tests (no dedicated test file exists for
 `StreamManagerPanel.tsx`, so no snapshot risk). Bumped
 `packages/tahti-web/package.json` to `0.0.92`.
+
+## 2026-09-07 — Cross-repo: stream overlay scrim (PR) + plugin registry adapter (packages/player, no tahti-web changes this round)
+
+No `tahti-web` files touched this round — no version bump.
+
+**Stream overlay scrim toggle (`../tahti-org`).** Implemented
+`Channel.streamOverlayScrimEnabled` end to end in the sibling repo:
+schema + migration, `ChannelStreamOverlayPatchSchema`, the
+`/api/me/channel/stream-overlay` GET/PATCH route, and
+`buildRtmpMirrorOutput` drawing a `video.add_rectangle` scrim behind
+title/subtitle text when enabled. `video.add_rectangle` wasn't
+previously used anywhere in that codebase — rather than guess at its
+signature (the original doc's stated risk: "guessing at new
+video-composition syntax... risks silently breaking every channel's
+multistream mirroring in production"), verified it against the real
+`savonet/liquidsoap:v2.2.5` image, already running locally as this
+environment's own channel containers: `--list-functions-md` for the
+exact signature, `--check` against the precise nested-call form the
+generator produces (confirmed a deliberately broken script fails with
+a real parser error, so `--check` passing is meaningful, not silent).
+`liquidsoap-mirror.test.ts` (19/19, 3 new) and `sound.test.ts` (14/14,
+against an ephemeral `postgres:16-alpine`) both pass. Opened as
+`../tahti-org` PR [#459](https://github.com/janiluuk/tahti-org/pull/459)
+— not merged (tahti-org's `main` requires PR review; this session's
+standing practice is not to self-merge there without the user's own
+sign-off). Frontend toggle UI in `StreamOverlayEditor.tsx` is a
+follow-up once that PR lands.
+
+**Plugin registry extraction, §5.1/§5.2 (`packages/player`, this repo).**
+The sibling doc's already-fully-specified adapter plan
+(`../tahti-org/docs/todo/plugin-registry-extraction.md` §5) had two
+concrete, additive, non-breaking next steps ready to implement exactly
+as designed: `pluginRegistryContract.ts` (shared types +
+`PluginRegistryStore`/`PluginRegistryHost` interfaces) and
+`pluginRegistryAdapter.ts` (default adapter delegating to today's
+`pluginRegistry.ts` — same LazyStore file, same key prefix, same
+managed path layout; no storage change at all, matching the doc's own
+"adapter-only PR" rollback-plan step). Added a first contract-test
+suite (`pluginRegistryAdapter.test.ts`, 10 tests) covering the
+store-layer half of §6's checklist: upsert/get/list round-trip,
+`setEnabled` (including missing-id no-op), `setWarnings` (including
+empty-array-omits-the-field), `remove` (including orphan-remove), and
+dev-install `originalPath` preservation. The `PluginRegistryHost` half
+(install/enable/disable/update orchestration, today spread across
+`pluginStore.tsx`/`pluginBootstrap.ts`/`pluginAutoUpdate.ts`) has no
+implementation yet, so those §6 cases aren't covered — not guessed at.
+Caller migration (§5.4) also not started; existing code still imports
+`pluginRegistry.ts` directly, unaffected by this change. Updated both
+repos' pointer docs to record exactly what's done vs. still open —
+`../tahti-org` PR [#460](https://github.com/janiluuk/tahti-org/pull/460).
+
+**Validation:** `packages/player`: `tsc -p tsconfig.tahti.json --noEmit`
+clean, `eslint` clean, full suite 69/69 files (686/686 tests, 1 todo) —
+no regressions from the two new files or the pre-existing suite.

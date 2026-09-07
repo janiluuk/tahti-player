@@ -4,7 +4,12 @@
 
 ## Remaining
 
-pointer to sibling checklist
+pointer to sibling checklist. **2026-09-07:** the sibling doc's §5.1/§5.2
+adapter is now implemented here — `packages/player/src/services/plugins/
+pluginRegistryContract.ts` + `pluginRegistryAdapter.ts`, additive only
+(existing callers still import `pluginRegistry.ts` directly; migrating
+them is §5.4, not done yet). A first contract-test suite exists
+(`pluginRegistryAdapter.test.ts`, store-layer subset).
 
 Canonical inventory and remaining-work checklist live in the Tahti org repo
 (remaining-work is tracked there):
