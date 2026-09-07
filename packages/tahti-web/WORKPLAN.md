@@ -14,6 +14,7 @@ Sibling API: **`../tahti-org`**. Product matrix: [`FEATURES.md`](FEATURES.md) Re
 - [ ] **Governance / Channel Designer / overlay leftovers** — see INDEX (`governance-motion-parity`, `channel-designer-*`, `stream-overlay-*`, `queued-ux-fixes-*`, …).
 - [ ] **Sibling archive mentions API** — extend `../tahti-org` metadata, then remove artist-page fallback.
 - [ ] **Waveform detail/accuracy** — full track view (and similar places) needs a much more detailed, accurate waveform; current `WaveformSeekbar` downsamples to a fixed 64 bars and fabricates fake bars when no real peaks exist. Leaf: [waveform-detail-accuracy.md](../../docs/todo/waveform-detail-accuracy.md).
+- [ ] **Studio nav: Perform → Broadcast, tab-coverage sweep** — move Perform out of the primary nav into a new Studio→Broadcast section; audit every Studio page for missing/wrong active nav-tab state at both primary and submenu level. Leaf: [studio-nav-perform-to-broadcast.md](../../docs/todo/studio-nav-perform-to-broadcast.md).
 
 ## Next (queued after today's cycles)
 
