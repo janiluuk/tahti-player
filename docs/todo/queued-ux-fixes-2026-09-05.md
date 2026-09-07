@@ -19,19 +19,37 @@ Open items only. Shipped bullets folded to HISTORY.md on 2026-09-05.
   different left-arrow element entirely that this pass didn't find.
 
 - [ ] **Library: shows Studio tabs instead of its own, and no tracks
-  appear.** Reported 2026-09-07. Two symptoms: (1) the Library
-  section's tab bar renders Studio's sections rather than Library's
-  own; (2) the signed-in user's tracks are missing from the listing
-  entirely. Possibly related to the recent "Archive → Sounds" rename
-  (`StudioArchiveView`→`StudioSoundsView`,
-  `fetchStudioArchive*`→`fetchStudioSounds*`,
-  `archiveItemId`/`archiveItem`→`soundId`/`sound`, ~60+ files) or to
-  the Slice 3 move of Favorites/History out of Library into
-  `/listen/*` — needs live repro plus a look at `router.tsx`'s
-  `/library/*` route wiring and whichever nav-config file feeds
-  Library's tab bar, to check for a stale import pointing at
-  `StudioNav`'s sections instead of Library's own, and at the
-  track-fetching path for a half-migrated field/query-key name.
+  appear.** Reported 2026-09-07. Two separate root causes found
+  (diagnosed, not yet fixed):
+
+  1. **Wrong tabs.** `AppShell.tsx:460-462`/`:518-520` unconditionally
+     renders `<StudioNav current={navigationLocation} global />` above
+     `RouteContent` whenever `getStudioPrimaryRoute(pathname)` is
+     truthy. `StudioNav.tsx:146-173`'s `SECTION_PREFIXES['/studio']`
+     includes `/library`, `/library/collections`,
+     `/library/recordings`, `/library/smartlinks`, `/library/upload`,
+     `/library/media` (lines 155-172) — so every `/library/*` path
+     resolves to the `/studio` primary section and renders Studio's
+     `SUBMENUS['/studio']` tab strip (Overview/Branding/Stats/
+     Governance/Posts/Audience/Releases/Editor) directly above
+     `LibraryView`'s own tab row (`LIBRARY_SECTION_TABS`,
+     `LibraryView.tsx:50-99`/`:148-167`) — two tab rows stack, the
+     Studio one is the "wrong tabs" the user sees. Pre-existing from
+     commit `959073ed2` ("Library is now a Studio tab…", 2026-09-03),
+     not introduced by this branch's perf work.
+
+  2. **Missing tracks.** `MyDiscographyView.tsx` (Library's Sounds tab)
+     is fully migrated post-"Archive → Sounds" rename — clean
+     `fetchStudioSounds()`/`StudioSound`/`soundId` usage, no leftover
+     `archiveItemId`/`fetchStudioArchive*` anywhere in `src`. Suspect
+     instead: `hasChannel = Boolean(user?.channel)`
+     (`MyDiscographyView.tsx:189`) gates the entire success branch —
+     falsy renders "No sounds yet" even after a successful fetch
+     populates `items`. `StudioSoundsView.tsx` calls the same
+     `fetchStudioSounds()` (line 138) with no such gate, which would
+     explain why Studio's own Sounds tab still shows tracks while
+     Library's doesn't. Not confirmed as root cause — check
+     `user.channel` shape/populate order in `authStore.ts` next.
 
 - [ ] **Channel Designer: tabs under the player, dynamic per enabled
   section, visual editor for adding them.** Locate the `Designer`
