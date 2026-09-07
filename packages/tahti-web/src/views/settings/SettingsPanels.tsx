@@ -510,12 +510,6 @@ function AccountPanel() {
                   )}
                 </div>
               )}
-              <Link to="/governance" onClick={closeSettings}>
-                <Button size="sm" variant="secondary">
-                  <Landmark size={15} aria-hidden className="mr-1.5" />
-                  Governance
-                </Button>
-              </Link>
             </div>
           ),
         },
@@ -2231,6 +2225,10 @@ function ThemesPanel() {
   const [configuringThemeId, setConfiguringThemeId] = useState<string | null>(
     null,
   );
+  const [renamingTheme, setRenamingTheme] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
   // Close the nested "Configure theme" dialog in step with the outer
   // Settings modal, not after it — leaving it open while the parent's own
   // exit animation plays stacks two independently-animating overlays and
@@ -2411,15 +2409,12 @@ function ThemesPanel() {
                                     size="icon-sm"
                                     variant="secondary"
                                     aria-label={`Rename ${theme.name}`}
-                                    onClick={() => {
-                                      const nextName = window.prompt(
-                                        'Rename theme',
-                                        theme.name,
-                                      );
-                                      if (nextName !== null) {
-                                        renameCustomTheme(id, nextName);
-                                      }
-                                    }}
+                                    onClick={() =>
+                                      setRenamingTheme({
+                                        id,
+                                        name: theme.name,
+                                      })
+                                    }
                                   >
                                     <Pencil size={14} aria-hidden />
                                   </Button>
@@ -2528,6 +2523,41 @@ function ThemesPanel() {
         <Dialog.Actions>
           <Dialog.Close>Done</Dialog.Close>
         </Dialog.Actions>
+      </Dialog.Root>
+
+      <Dialog.Root
+        isOpen={renamingTheme !== null}
+        onClose={() => setRenamingTheme(null)}
+      >
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (renamingTheme) {
+              renameCustomTheme(renamingTheme.id, renamingTheme.name);
+            }
+            setRenamingTheme(null);
+          }}
+        >
+          <Dialog.Title>Rename theme</Dialog.Title>
+          <div className="mt-4">
+            <Input
+              label="Name"
+              value={renamingTheme?.name ?? ''}
+              onChange={(e) =>
+                setRenamingTheme((cur) =>
+                  cur ? { ...cur, name: e.target.value } : cur,
+                )
+              }
+              autoFocus
+            />
+          </div>
+          <Dialog.Actions>
+            <Dialog.Close>Cancel</Dialog.Close>
+            <Button type="submit" disabled={!renamingTheme?.name.trim()}>
+              Save
+            </Button>
+          </Dialog.Actions>
+        </form>
       </Dialog.Root>
     </div>
   );

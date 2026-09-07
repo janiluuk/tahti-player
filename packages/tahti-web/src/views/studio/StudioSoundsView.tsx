@@ -35,6 +35,7 @@ import {
 import type { StudioSound } from '../../api/studio-types';
 import { AddToMusicActions } from '../../components/AddToMusicActions';
 import { AddToPlaylistButton } from '../../components/AddToPlaylistButton';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { PageLoading } from '../../components/PageStates';
 import { StashFilesPanel } from '../../components/StashFilesPanel';
 import { StudioGate } from '../../components/StudioGate';
@@ -128,6 +129,8 @@ export function StudioSoundsView() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [embedOpenId, setEmbedOpenId] = useState<string | null>(null);
   const [statsItem, setStatsItem] = useState<StudioSound | null>(null);
+  const [pendingDeleteItem, setPendingDeleteItem] =
+    useState<StudioSound | null>(null);
   const play = usePlayerStore((s) => s.play);
 
   const reload = () => {
@@ -494,14 +497,7 @@ export function StudioSoundsView() {
                           busy={busyId === item.id}
                           hasEmbed={Boolean(embedSrc)}
                           onTogglePin={() => void togglePin(item)}
-                          onDelete={() => {
-                            if (!confirm(`Delete “${item.title}”?`)) {
-                              return;
-                            }
-                            void deleteStudioSound(item.id).then(() =>
-                              reload(),
-                            );
-                          }}
+                          onDelete={() => setPendingDeleteItem(item)}
                         />
                         {embedSrc && embedOpenId === item.id && (
                           <iframe
@@ -548,6 +544,25 @@ export function StudioSoundsView() {
           <Dialog.Close>Close</Dialog.Close>
         </Dialog.Actions>
       </Dialog.Root>
+      <ConfirmDialog
+        isOpen={pendingDeleteItem !== null}
+        title={
+          pendingDeleteItem
+            ? `Delete “${pendingDeleteItem.title}”?`
+            : 'Delete sound?'
+        }
+        description="This cannot be undone."
+        confirmLabel="Delete"
+        onCancel={() => setPendingDeleteItem(null)}
+        onConfirm={() => {
+          const item = pendingDeleteItem;
+          setPendingDeleteItem(null);
+          if (!item) {
+            return;
+          }
+          void deleteStudioSound(item.id).then(() => reload());
+        }}
+      />
     </StudioGate>
   );
 }

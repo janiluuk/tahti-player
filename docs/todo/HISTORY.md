@@ -2,6 +2,20 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-07 — Governance Account-tab duplicate entry point removed
+
+Folded from `governance-out-of-account-section.md`, resolved via its own
+Option 2 (the conservative choice — no navigation/discoverability
+change, so no access regression for non-artist members who rely on
+Settings → Account as their only path to governance): removed the
+"Governance" link-out button from Settings → Account → Membership
+(`SettingsPanels.tsx`), which duplicated the dedicated Settings →
+Account → Governance tab right next to it — same `GovernanceView`
+content, two ways to reach it from the same section. The dedicated tab
+and the standalone `/governance` route both still exist unchanged.
+Options 1 (new top-level nav entry) and 3 (something else) are real
+product-IA decisions and were not attempted.
+
 ## 2026-09-07 — Fullscreen player: translucent backdrop, back arrow, hidden chrome
 
 Folded from `fullscreen-player-background-translucent-layer.md` and

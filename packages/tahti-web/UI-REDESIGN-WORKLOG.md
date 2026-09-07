@@ -5114,3 +5114,45 @@ documented negative result, not a revert-and-pretend-it-didn't-happen)
 — the rest of the backlog remained blocked on product decisions or
 cross-repo work, consistent with prior cycles. Bumped
 `packages/tahti-web/package.json` to `0.0.90`.
+
+## 2026-09-07 — Workplan cycle 5: native browser dialogs swept out, governance dedup; bump to 0.0.91
+
+**Topic 1 — Governance Account-tab duplicate entry point removed.**
+Resolved `governance-out-of-account-section.md` via its own Option 2 —
+the conservative choice with no navigation/discoverability change (so
+no access regression for non-artist members who rely on Settings →
+Account as their only path to governance). Removed the redundant
+"Governance" link-out button from Settings → Account → Membership
+(`SettingsPanels.tsx`) — it duplicated the dedicated Settings → Account
+→ Governance tab right next to it, both rendering the exact same
+`GovernanceView` content. Options 1 (new top-level nav entry) and 3
+(something else) are real product-IA decisions and stay open.
+
+**Topic 2 — Theme rename no longer uses `window.prompt`.** Settings →
+Themes' rename action opened a native browser prompt instead of the
+app's own dialog chrome. Replaced with a small `Dialog.Root` + `Input`
+form (same shape as `StudioPlaylistsView`'s "New playlist" dialog),
+keyed off new local `renamingTheme` state instead of `window.prompt`'s
+return value.
+
+**Topic 3 — `StudioSoundsView`'s delete uses `ConfirmDialog`, not bare
+`confirm()`.** Found via a fresh sweep for native dialog calls
+(`window.confirm`/`alert`/`prompt` were already clean from earlier
+rounds, but a bare unprefixed `confirm(...)` call had been missed by
+those searches). Wired up `pendingDeleteItem` state and the shared
+`ConfirmDialog` component — the same pattern `StudioUpdatesView`'s post
+delete already uses — instead of the native dialog. Swept the rest of
+`tahti-web` for `confirm(`/`alert(`/`prompt(` in any form (prefixed or
+bare): none left.
+
+Looked for 2 more topics to reach 5 (grepped for stale `console.log`,
+`eslint-disable`, and `// TODO`/`// FIXME` comments as other common
+"forgotten cleanup" signals) — found none; this codebase's own
+maintenance history has already swept those categories clean. 3 real
+topics this round.
+
+**Validation:** `pnpm --filter @tahti-player/tahti-web type-check`,
+scoped `eslint` on all three touched files, and
+`pnpm --filter @tahti-player/tahti-web test` all pass clean — 84/84
+files, 478/478 tests. Bumped `packages/tahti-web/package.json` to
+`0.0.91`.
