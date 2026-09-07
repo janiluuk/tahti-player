@@ -1612,3 +1612,23 @@ waiting on it:
 - tahti-web `0.0.99`.
 
 ---
+
+## 2026-09-07 — CI: self-hosted deploy smoke checks retry instead of failing on first attempt
+
+`.github/workflows/deploy-tahti-web-selfhosted.yml`'s "Smoke checks"
+step ran `curl` immediately after `docker compose up -d
+--force-recreate`, which returns before the container is actually
+accepting connections — flaked with "Recv failure: Connection reset
+by peer" on 2 of the last ~13 self-hosted deploy runs today, always on
+the very first request. Wrapped both checks in a retry loop (up to
+~15s) instead of failing on the first non-200/connection-refused
+response.
+
+Verified locally against three scenarios (connection refused,
+connected-but-non-200, real 200) before shipping — caught a real bug
+in an earlier draft where curl's own `%{http_code}="000"` fallback
+plus a redundant `|| echo "000"` doubled up into `"000000"`. Confirmed
+live: this fix's own push deployed cleanly (`spa:200`/`api-proxy:200`
+on the first attempt, no retry needed that run).
+
+---
