@@ -1,7 +1,7 @@
 {
   "surface": "nuclear",
   "capturedAt": "2026-09-04",
-  "baseUrl": "http://127.0.0.1:5180",
+  "baseUrl": "http://localhost:5185",
   "images": [
     {
       "file": "about.png",
@@ -1920,6 +1920,14 @@
       "url": "/map/nuclear/archive-item--0-details.png"
     },
     {
+      "file": "archive-item--0-overview.png",
+      "url": "/map/nuclear/archive-item--0-overview.png"
+    },
+    {
+      "file": "archive-item--1-branding.png",
+      "url": "/map/nuclear/archive-item--1-branding.png"
+    },
+    {
       "file": "archive-item--1-playlists.png",
       "url": "/map/nuclear/archive-item--1-playlists.png"
     },
@@ -1934,6 +1942,34 @@
     {
       "file": "archive-item--2-insights.png",
       "url": "/map/nuclear/archive-item--2-insights.png"
+    },
+    {
+      "file": "archive-item--2-stats.png",
+      "url": "/map/nuclear/archive-item--2-stats.png"
+    },
+    {
+      "file": "archive-item--3-governance.png",
+      "url": "/map/nuclear/archive-item--3-governance.png"
+    },
+    {
+      "file": "archive-item--4-posts.png",
+      "url": "/map/nuclear/archive-item--4-posts.png"
+    },
+    {
+      "file": "archive-item--5-audience.png",
+      "url": "/map/nuclear/archive-item--5-audience.png"
+    },
+    {
+      "file": "archive-item--6-stripe.png",
+      "url": "/map/nuclear/archive-item--6-stripe.png"
+    },
+    {
+      "file": "archive-item--7-releases.png",
+      "url": "/map/nuclear/archive-item--7-releases.png"
+    },
+    {
+      "file": "archive-item--8-editor.png",
+      "url": "/map/nuclear/archive-item--8-editor.png"
     },
     {
       "file": "archive-item--9-tab.png",
@@ -2472,24 +2508,64 @@
       "url": "/map/nuclear/join.png"
     },
     {
+      "file": "library--0-overview.png",
+      "url": "/map/nuclear/library--0-overview.png"
+    },
+    {
       "file": "library--0-themes.png",
       "url": "/map/nuclear/library--0-themes.png"
+    },
+    {
+      "file": "library--1-sounds.png",
+      "url": "/map/nuclear/library--1-sounds.png"
     },
     {
       "file": "library--1-what-s-new.png",
       "url": "/map/nuclear/library--1-what-s-new.png"
     },
     {
+      "file": "library--2-collections.png",
+      "url": "/map/nuclear/library--2-collections.png"
+    },
+    {
       "file": "library--2-tab.png",
       "url": "/map/nuclear/library--2-tab.png"
+    },
+    {
+      "file": "library--3-recordings.png",
+      "url": "/map/nuclear/library--3-recordings.png"
     },
     {
       "file": "library--3-tab.png",
       "url": "/map/nuclear/library--3-tab.png"
     },
     {
+      "file": "library--4-media.png",
+      "url": "/map/nuclear/library--4-media.png"
+    },
+    {
       "file": "library--4-tab.png",
       "url": "/map/nuclear/library--4-tab.png"
+    },
+    {
+      "file": "library--5-stash.png",
+      "url": "/map/nuclear/library--5-stash.png"
+    },
+    {
+      "file": "library--6-embeds.png",
+      "url": "/map/nuclear/library--6-embeds.png"
+    },
+    {
+      "file": "library--7-smart-links.png",
+      "url": "/map/nuclear/library--7-smart-links.png"
+    },
+    {
+      "file": "library--8-local-files.png",
+      "url": "/map/nuclear/library--8-local-files.png"
+    },
+    {
+      "file": "library-collections--0-overview.png",
+      "url": "/map/nuclear/library-collections--0-overview.png"
     },
     {
       "file": "library-collections--0-sounds.png",
@@ -2504,8 +2580,16 @@
       "url": "/map/nuclear/library-collections--1-collections.png"
     },
     {
+      "file": "library-collections--1-sounds.png",
+      "url": "/map/nuclear/library-collections--1-sounds.png"
+    },
+    {
       "file": "library-collections--1-what-s-new.png",
       "url": "/map/nuclear/library-collections--1-what-s-new.png"
+    },
+    {
+      "file": "library-collections--2-collections.png",
+      "url": "/map/nuclear/library-collections--2-collections.png"
     },
     {
       "file": "library-collections--2-recordings.png",
@@ -2520,8 +2604,16 @@
       "url": "/map/nuclear/library-collections--3-media.png"
     },
     {
+      "file": "library-collections--3-recordings.png",
+      "url": "/map/nuclear/library-collections--3-recordings.png"
+    },
+    {
       "file": "library-collections--3-tab.png",
       "url": "/map/nuclear/library-collections--3-tab.png"
+    },
+    {
+      "file": "library-collections--4-media.png",
+      "url": "/map/nuclear/library-collections--4-media.png"
     },
     {
       "file": "library-collections--4-stash.png",
@@ -2534,6 +2626,22 @@
     {
       "file": "library-collections--5-embeds.png",
       "url": "/map/nuclear/library-collections--5-embeds.png"
+    },
+    {
+      "file": "library-collections--5-stash.png",
+      "url": "/map/nuclear/library-collections--5-stash.png"
+    },
+    {
+      "file": "library-collections--6-embeds.png",
+      "url": "/map/nuclear/library-collections--6-embeds.png"
+    },
+    {
+      "file": "library-collections--7-smart-links.png",
+      "url": "/map/nuclear/library-collections--7-smart-links.png"
+    },
+    {
+      "file": "library-collections--8-local-files.png",
+      "url": "/map/nuclear/library-collections--8-local-files.png"
     },
     {
       "file": "library-collections.png",
@@ -2728,6 +2836,10 @@
       "url": "/map/nuclear/library-smartlinks.png"
     },
     {
+      "file": "library-sounds--0-overview.png",
+      "url": "/map/nuclear/library-sounds--0-overview.png"
+    },
+    {
       "file": "library-sounds--0-sounds.png",
       "url": "/map/nuclear/library-sounds--0-sounds.png"
     },
@@ -2740,8 +2852,16 @@
       "url": "/map/nuclear/library-sounds--1-collections.png"
     },
     {
+      "file": "library-sounds--1-sounds.png",
+      "url": "/map/nuclear/library-sounds--1-sounds.png"
+    },
+    {
       "file": "library-sounds--1-what-s-new.png",
       "url": "/map/nuclear/library-sounds--1-what-s-new.png"
+    },
+    {
+      "file": "library-sounds--2-collections.png",
+      "url": "/map/nuclear/library-sounds--2-collections.png"
     },
     {
       "file": "library-sounds--2-recordings.png",
@@ -2756,8 +2876,16 @@
       "url": "/map/nuclear/library-sounds--3-media.png"
     },
     {
+      "file": "library-sounds--3-recordings.png",
+      "url": "/map/nuclear/library-sounds--3-recordings.png"
+    },
+    {
       "file": "library-sounds--3-tab.png",
       "url": "/map/nuclear/library-sounds--3-tab.png"
+    },
+    {
+      "file": "library-sounds--4-media.png",
+      "url": "/map/nuclear/library-sounds--4-media.png"
     },
     {
       "file": "library-sounds--4-stash.png",
@@ -2770,6 +2898,22 @@
     {
       "file": "library-sounds--5-embeds.png",
       "url": "/map/nuclear/library-sounds--5-embeds.png"
+    },
+    {
+      "file": "library-sounds--5-stash.png",
+      "url": "/map/nuclear/library-sounds--5-stash.png"
+    },
+    {
+      "file": "library-sounds--6-embeds.png",
+      "url": "/map/nuclear/library-sounds--6-embeds.png"
+    },
+    {
+      "file": "library-sounds--7-smart-links.png",
+      "url": "/map/nuclear/library-sounds--7-smart-links.png"
+    },
+    {
+      "file": "library-sounds--8-local-files.png",
+      "url": "/map/nuclear/library-sounds--8-local-files.png"
     },
     {
       "file": "library-sounds.png",
@@ -2824,6 +2968,10 @@
       "url": "/map/nuclear/listen--3-history.png"
     },
     {
+      "file": "listen-favorites.png",
+      "url": "/map/nuclear/listen-favorites.png"
+    },
+    {
       "file": "listen-feed-alias--0-listen.png",
       "url": "/map/nuclear/listen-feed-alias--0-listen.png"
     },
@@ -2838,6 +2986,10 @@
     {
       "file": "listen-feed-alias.png",
       "url": "/map/nuclear/listen-feed-alias.png"
+    },
+    {
+      "file": "listen-feed.png",
+      "url": "/map/nuclear/listen-feed.png"
     },
     {
       "file": "listen-history-alias--0-listen.png",
@@ -2866,6 +3018,10 @@
     {
       "file": "listen-history-alias.png",
       "url": "/map/nuclear/listen-history-alias.png"
+    },
+    {
+      "file": "listen-history.png",
+      "url": "/map/nuclear/listen-history.png"
     },
     {
       "file": "listen.png",
@@ -3264,12 +3420,20 @@
       "url": "/map/nuclear/settings--0-account.png"
     },
     {
+      "file": "settings--0-session.png",
+      "url": "/map/nuclear/settings--0-session.png"
+    },
+    {
       "file": "settings--0-themes.png",
       "url": "/map/nuclear/settings--0-themes.png"
     },
     {
       "file": "settings--1-artist.png",
       "url": "/map/nuclear/settings--1-artist.png"
+    },
+    {
+      "file": "settings--1-security.png",
+      "url": "/map/nuclear/settings--1-security.png"
     },
     {
       "file": "settings--1-what-s-new.png",
@@ -3304,12 +3468,20 @@
       "url": "/map/nuclear/settings--2-channel-design.png"
     },
     {
+      "file": "settings--2-membership.png",
+      "url": "/map/nuclear/settings--2-membership.png"
+    },
+    {
       "file": "settings--2-tab.png",
       "url": "/map/nuclear/settings--2-tab.png"
     },
     {
       "file": "settings--3-broadcast.png",
       "url": "/map/nuclear/settings--3-broadcast.png"
+    },
+    {
+      "file": "settings--3-governance.png",
+      "url": "/map/nuclear/settings--3-governance.png"
     },
     {
       "file": "settings--3-tab.png",
@@ -3320,8 +3492,16 @@
       "url": "/map/nuclear/settings--4-audience.png"
     },
     {
+      "file": "settings--4-storage.png",
+      "url": "/map/nuclear/settings--4-storage.png"
+    },
+    {
       "file": "settings--4-tab.png",
       "url": "/map/nuclear/settings--4-tab.png"
+    },
+    {
+      "file": "settings--5-notifications-visibility.png",
+      "url": "/map/nuclear/settings--5-notifications-visibility.png"
     },
     {
       "file": "settings--5-themes.png",
@@ -3330,6 +3510,14 @@
     {
       "file": "settings--6-add-ons.png",
       "url": "/map/nuclear/settings--6-add-ons.png"
+    },
+    {
+      "file": "settings--6-your-subs.png",
+      "url": "/map/nuclear/settings--6-your-subs.png"
+    },
+    {
+      "file": "settings--7-privacy-data.png",
+      "url": "/map/nuclear/settings--7-privacy-data.png"
     },
     {
       "file": "settings--7-what-s-new.png",
@@ -3348,8 +3536,16 @@
       "url": "/map/nuclear/settings-account--0-account.png"
     },
     {
+      "file": "settings-account--0-session.png",
+      "url": "/map/nuclear/settings-account--0-session.png"
+    },
+    {
       "file": "settings-account--1-artist.png",
       "url": "/map/nuclear/settings-account--1-artist.png"
+    },
+    {
+      "file": "settings-account--1-security.png",
+      "url": "/map/nuclear/settings-account--1-security.png"
     },
     {
       "file": "settings-account--10-tab.png",
@@ -3380,12 +3576,28 @@
       "url": "/map/nuclear/settings-account--2-channel-design.png"
     },
     {
+      "file": "settings-account--2-membership.png",
+      "url": "/map/nuclear/settings-account--2-membership.png"
+    },
+    {
       "file": "settings-account--3-broadcast.png",
       "url": "/map/nuclear/settings-account--3-broadcast.png"
     },
     {
+      "file": "settings-account--3-governance.png",
+      "url": "/map/nuclear/settings-account--3-governance.png"
+    },
+    {
       "file": "settings-account--4-audience.png",
       "url": "/map/nuclear/settings-account--4-audience.png"
+    },
+    {
+      "file": "settings-account--4-storage.png",
+      "url": "/map/nuclear/settings-account--4-storage.png"
+    },
+    {
+      "file": "settings-account--5-notifications-visibility.png",
+      "url": "/map/nuclear/settings-account--5-notifications-visibility.png"
     },
     {
       "file": "settings-account--5-themes.png",
@@ -3394,6 +3606,14 @@
     {
       "file": "settings-account--6-add-ons.png",
       "url": "/map/nuclear/settings-account--6-add-ons.png"
+    },
+    {
+      "file": "settings-account--6-your-subs.png",
+      "url": "/map/nuclear/settings-account--6-your-subs.png"
+    },
+    {
+      "file": "settings-account--7-privacy-data.png",
+      "url": "/map/nuclear/settings-account--7-privacy-data.png"
     },
     {
       "file": "settings-account--7-what-s-new.png",
@@ -3412,8 +3632,112 @@
       "url": "/map/nuclear/settings-account.png"
     },
     {
+      "file": "settings-addons--0-themes.png",
+      "url": "/map/nuclear/settings-addons--0-themes.png"
+    },
+    {
+      "file": "settings-addons--1-visualizers.png",
+      "url": "/map/nuclear/settings-addons--1-visualizers.png"
+    },
+    {
+      "file": "settings-addons--10-listen.png",
+      "url": "/map/nuclear/settings-addons--10-listen.png"
+    },
+    {
+      "file": "settings-addons--11-discovery.png",
+      "url": "/map/nuclear/settings-addons--11-discovery.png"
+    },
+    {
+      "file": "settings-addons--12-channel.png",
+      "url": "/map/nuclear/settings-addons--12-channel.png"
+    },
+    {
+      "file": "settings-addons--2-export.png",
+      "url": "/map/nuclear/settings-addons--2-export.png"
+    },
+    {
+      "file": "settings-addons--3-import.png",
+      "url": "/map/nuclear/settings-addons--3-import.png"
+    },
+    {
+      "file": "settings-addons--4-multicast.png",
+      "url": "/map/nuclear/settings-addons--4-multicast.png"
+    },
+    {
+      "file": "settings-addons--5-fingerprinting.png",
+      "url": "/map/nuclear/settings-addons--5-fingerprinting.png"
+    },
+    {
+      "file": "settings-addons--6-scrobbling.png",
+      "url": "/map/nuclear/settings-addons--6-scrobbling.png"
+    },
+    {
+      "file": "settings-addons--7-audio-tools.png",
+      "url": "/map/nuclear/settings-addons--7-audio-tools.png"
+    },
+    {
+      "file": "settings-addons--8-tools.png",
+      "url": "/map/nuclear/settings-addons--8-tools.png"
+    },
+    {
+      "file": "settings-addons--9-radio.png",
+      "url": "/map/nuclear/settings-addons--9-radio.png"
+    },
+    {
       "file": "settings-addons.png",
       "url": "/map/nuclear/settings-addons.png"
+    },
+    {
+      "file": "settings-audience--0-fan-tiers.png",
+      "url": "/map/nuclear/settings-audience--0-fan-tiers.png"
+    },
+    {
+      "file": "settings-audience--1-fan-subs.png",
+      "url": "/map/nuclear/settings-audience--1-fan-subs.png"
+    },
+    {
+      "file": "settings-audience--2-grants.png",
+      "url": "/map/nuclear/settings-audience--2-grants.png"
+    },
+    {
+      "file": "settings-audience--3-your-subs.png",
+      "url": "/map/nuclear/settings-audience--3-your-subs.png"
+    },
+    {
+      "file": "settings-audience.png",
+      "url": "/map/nuclear/settings-audience.png"
+    },
+    {
+      "file": "settings-notifications--0-session.png",
+      "url": "/map/nuclear/settings-notifications--0-session.png"
+    },
+    {
+      "file": "settings-notifications--1-security.png",
+      "url": "/map/nuclear/settings-notifications--1-security.png"
+    },
+    {
+      "file": "settings-notifications--2-membership.png",
+      "url": "/map/nuclear/settings-notifications--2-membership.png"
+    },
+    {
+      "file": "settings-notifications--3-governance.png",
+      "url": "/map/nuclear/settings-notifications--3-governance.png"
+    },
+    {
+      "file": "settings-notifications--4-storage.png",
+      "url": "/map/nuclear/settings-notifications--4-storage.png"
+    },
+    {
+      "file": "settings-notifications--5-notifications-visibility.png",
+      "url": "/map/nuclear/settings-notifications--5-notifications-visibility.png"
+    },
+    {
+      "file": "settings-notifications--6-your-subs.png",
+      "url": "/map/nuclear/settings-notifications--6-your-subs.png"
+    },
+    {
+      "file": "settings-notifications--7-privacy-data.png",
+      "url": "/map/nuclear/settings-notifications--7-privacy-data.png"
     },
     {
       "file": "settings-notifications.png",
@@ -3424,12 +3748,20 @@
       "url": "/map/nuclear/settings-section--0-account.png"
     },
     {
+      "file": "settings-section--0-identity.png",
+      "url": "/map/nuclear/settings-section--0-identity.png"
+    },
+    {
       "file": "settings-section--0-themes.png",
       "url": "/map/nuclear/settings-section--0-themes.png"
     },
     {
       "file": "settings-section--1-artist.png",
       "url": "/map/nuclear/settings-section--1-artist.png"
+    },
+    {
+      "file": "settings-section--1-story.png",
+      "url": "/map/nuclear/settings-section--1-story.png"
     },
     {
       "file": "settings-section--1-what-s-new.png",
@@ -3452,8 +3784,16 @@
       "url": "/map/nuclear/settings-section--2-channel-design.png"
     },
     {
+      "file": "settings-section--2-connections.png",
+      "url": "/map/nuclear/settings-section--2-connections.png"
+    },
+    {
       "file": "settings-section--2-tab.png",
       "url": "/map/nuclear/settings-section--2-tab.png"
+    },
+    {
+      "file": "settings-section--3-branding.png",
+      "url": "/map/nuclear/settings-section--3-branding.png"
     },
     {
       "file": "settings-section--3-broadcast.png",
@@ -3466,6 +3806,10 @@
     {
       "file": "settings-section--4-audience.png",
       "url": "/map/nuclear/settings-section--4-audience.png"
+    },
+    {
+      "file": "settings-section--4-releases.png",
+      "url": "/map/nuclear/settings-section--4-releases.png"
     },
     {
       "file": "settings-section--4-tab.png",
@@ -3494,6 +3838,18 @@
     {
       "file": "settings-section.png",
       "url": "/map/nuclear/settings-section.png"
+    },
+    {
+      "file": "settings-themes--0-browse.png",
+      "url": "/map/nuclear/settings-themes--0-browse.png"
+    },
+    {
+      "file": "settings-themes--1-editor.png",
+      "url": "/map/nuclear/settings-themes--1-editor.png"
+    },
+    {
+      "file": "settings-themes--2-import-json.png",
+      "url": "/map/nuclear/settings-themes--2-import-json.png"
     },
     {
       "file": "settings-themes.png",
