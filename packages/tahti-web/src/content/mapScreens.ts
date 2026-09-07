@@ -993,7 +993,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         goesTo: [
           {
             label: 'Open recordings once broadcasting',
-            to: '/studio/recordings',
+            to: '/library/recordings',
           },
           {
             label: 'Open the public channel page once live',
@@ -1133,7 +1133,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/stash.png',
-          route: '/studio/stash',
+          route: '/library/stash',
           caption: 'Nuclear stash',
         },
       },

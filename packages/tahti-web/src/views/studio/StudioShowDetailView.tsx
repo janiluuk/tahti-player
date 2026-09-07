@@ -41,7 +41,7 @@ import { uploadSoundFile } from '../../api/studio';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { ShowImagePicker } from '../../components/ShowImagePicker';
 import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
+import { BroadcastSubNav } from '../../components/StudioNav';
 import { StudioPageHeader, StudioPanel } from '../../components/StudioPanel';
 import { Eyebrow } from '../../components/tahti/Eyebrow';
 import { EpisodeSourceIcon, episodeStatusLabel } from './StudioShowsView';
@@ -370,7 +370,7 @@ export function StudioShowDetailView({ id }: { id: string }) {
   return (
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-6 px-1 py-2">
-        <StudioNav current="/studio/shows" />
+        <BroadcastSubNav current="/studio/shows" />
         <Link
           to="/studio/shows"
           className="text-foreground-secondary -mt-2 text-xs hover:underline"
@@ -825,7 +825,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
     return (
       <StudioGate>
         <div className="studio-page-layout mx-auto max-w-2xl">
-          <StudioNav current="/studio/shows" />
+          <BroadcastSubNav current="/studio/shows" />
           <PageLoading label="Loading…" />
         </div>
       </StudioGate>
@@ -856,7 +856,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
   return (
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-2xl flex-col gap-6">
-        <StudioNav current="/studio/shows" />
+        <BroadcastSubNav current="/studio/shows" />
         <Link
           to="/studio/shows/$id"
           params={{ id: episode.showId }}

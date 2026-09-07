@@ -1041,7 +1041,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   Home --> GL["/studio/go-live"]
   Home --> Up["/studio/upload"]
   Home --> Arch["/studio/sounds"]
-  Home --> Stash["/studio/stash"]
+  Home --> Stash["/library/stash"]
   Home --> Coll["/studio/collections"]
   Home --> Stats["/studio/stats"]
   Home --> Rev["/studio/revenue"]

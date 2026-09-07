@@ -48,14 +48,6 @@ const PRIMARY = [
     descriptionKey: 'studio.studioDescription',
     icon: <LayoutGridIcon size={16} aria-hidden />,
   },
-  {
-    to: '/studio/go-live',
-    label: 'Perform',
-    labelKey: 'nav.perform',
-    description: 'Go live, schedule broadcasts, and manage performances.',
-    descriptionKey: 'studio.performDescription',
-    icon: <RadioTowerIcon size={16} aria-hidden />,
-  },
 ] as const;
 
 export const SUBMENUS = {
@@ -100,40 +92,50 @@ export const SUBMENUS = {
       labelKey: 'studio.editor',
       icon: <SlidersHorizontalIcon size={16} />,
     },
-  ],
-  '/studio/go-live': [
     {
       to: '/studio/go-live',
       labelKey: 'studio.goLive',
       icon: <RadioTowerIcon size={16} />,
     },
-    {
-      to: '/studio/schedule',
-      labelKey: 'studio.schedule',
-      icon: <RadioIcon size={16} />,
-    },
-    {
-      to: '/studio/events',
-      labelKey: 'studio.events',
-      icon: <RadioIcon size={16} />,
-    },
-    {
-      to: '/studio/shows',
-      labelKey: 'studio.shows',
-      icon: <RadioIcon size={16} />,
-    },
-    {
-      to: '/studio/channel',
-      labelKey: 'studio.channel',
-      icon: <Settings2Icon size={16} />,
-    },
-    {
-      to: '/studio/channel?tab=radio',
-      labelKey: 'nav.radio',
-      icon: <RadioIcon size={16} />,
-    },
   ],
 } as const;
+
+/** Perform used to be its own primary nav item with this submenu; it's now
+ * folded into Studio as a single "Broadcast" tab (`studio.goLive` above),
+ * and these pages get their own nested tab strip via `BroadcastSubNav`
+ * instead of a second top-level Studio submenu section. */
+export const BROADCAST_SUBNAV_ITEMS = [
+  {
+    to: '/studio/go-live',
+    labelKey: 'studio.goLive' as const,
+    icon: <RadioTowerIcon size={16} />,
+  },
+  {
+    to: '/studio/schedule',
+    labelKey: 'studio.schedule' as const,
+    icon: <RadioIcon size={16} />,
+  },
+  {
+    to: '/studio/events',
+    labelKey: 'studio.events' as const,
+    icon: <RadioIcon size={16} />,
+  },
+  {
+    to: '/studio/shows',
+    labelKey: 'studio.shows' as const,
+    icon: <RadioIcon size={16} />,
+  },
+  {
+    to: '/studio/channel',
+    labelKey: 'studio.channel' as const,
+    icon: <Settings2Icon size={16} />,
+  },
+  {
+    to: '/studio/channel?tab=radio',
+    labelKey: 'nav.radio' as const,
+    icon: <RadioIcon size={16} />,
+  },
+] as const;
 
 export const STUDIO_NAV_TOUR_STEPS: TourStep[] = PRIMARY.map(
   (item): TourStep => ({
@@ -164,8 +166,6 @@ const SECTION_PREFIXES: Record<string, readonly string[]> = {
     '/studio/insights',
     '/studio/setup-channel',
     '/studio/archive',
-  ],
-  '/studio/go-live': [
     '/studio/go-live',
     '/studio/info',
     '/studio/schedule',
@@ -212,21 +212,19 @@ export function getStudioSubmenuItems(
 
 const isSubmenuActive = (current: string | undefined, to: string) => {
   const pathname = current?.split('?')[0];
-  if (to === '/studio/channel?tab=radio') {
-    return (
-      current === '/studio/channel?tab=radio' ||
-      current === '/studio/channel?tab=multicast'
-    );
-  }
-  if (to === '/studio/channel') {
-    return (
-      pathname === '/studio/channel' &&
-      current !== '/studio/channel?tab=radio' &&
-      current !== '/studio/channel?tab=multicast'
-    );
-  }
+  // Every former Perform/go-live page (now nested under this single
+  // Broadcast tab via BroadcastSubNav) lights Studio's Broadcast tab.
   if (to === '/studio/go-live') {
-    return pathname === '/studio/go-live' || pathname === '/studio/info';
+    return (
+      pathname === '/studio/go-live' ||
+      pathname === '/studio/info' ||
+      pathname === '/studio/schedule' ||
+      pathname === '/studio/events' ||
+      pathname?.startsWith('/studio/events/') === true ||
+      pathname === '/studio/shows' ||
+      pathname?.startsWith('/studio/shows/') === true ||
+      pathname === '/studio/channel'
+    );
   }
   if (to === '/studio/branding') {
     return (
@@ -285,6 +283,56 @@ export function litStudioSubmenuDestinations(
   return getStudioSubmenuItems(section, options)
     .filter((item) => isSubmenuActive(current, item.to))
     .map((item) => item.to);
+}
+
+export const isBroadcastSubnavActive = (
+  current: string | undefined,
+  to: string,
+) => {
+  const pathname = current?.split('?')[0];
+  if (to === '/studio/channel?tab=radio') {
+    return (
+      current === '/studio/channel?tab=radio' ||
+      current === '/studio/channel?tab=multicast'
+    );
+  }
+  if (to === '/studio/channel') {
+    return (
+      pathname === '/studio/channel' &&
+      current !== '/studio/channel?tab=radio' &&
+      current !== '/studio/channel?tab=multicast'
+    );
+  }
+  if (to === '/studio/go-live') {
+    return pathname === '/studio/go-live' || pathname === '/studio/info';
+  }
+  return pathname === to || pathname?.startsWith(`${to}/`) === true;
+};
+
+/** Second-level tab strip nested inside every Broadcast-group page
+ * (go-live, schedule, events, shows, channel) — Studio's own submenu only
+ * shows one "Broadcast" tab for all of these (see `isSubmenuActive`
+ * above), so this is where Schedule/Events/Shows/Channel/Radio become
+ * reachable. */
+export function BroadcastSubNav({ current }: { current?: string }) {
+  const { t } = useTranslation('web');
+  return (
+    <div
+      className="border-border min-w-0 border-b pb-2"
+      data-broadcast-navigation
+    >
+      <SectionTabs
+        aria-label="Broadcast pages"
+        items={BROADCAST_SUBNAV_ITEMS.map((item) => ({
+          id: item.to,
+          to: item.to,
+          label: t(item.labelKey),
+          icon: item.icon,
+          active: isBroadcastSubnavActive(current, item.to),
+        }))}
+      />
+    </div>
+  );
 }
 
 export const StudioNav = ({
