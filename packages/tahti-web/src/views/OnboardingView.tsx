@@ -1,13 +1,12 @@
 import { useNavigate } from '@tanstack/react-router';
 import {
-  ImagePlusIcon,
   MapPinIcon,
   MusicIcon,
   PaletteIcon,
   Settings2Icon,
   UserIcon,
 } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
@@ -30,6 +29,7 @@ import { provisionChannel } from '../api/channel-provision';
 import { fetchMeProfile, patchMeProfile } from '../api/studio-extras';
 import { GenrePicker } from '../components/GenrePicker';
 import { PageLoading } from '../components/PageStates';
+import { RoundImageUploadButton } from '../components/RoundImageUploadButton';
 import { COUNTRIES, flagEmoji } from '../lib/countries';
 import {
   formatGenreTags,
@@ -91,8 +91,6 @@ export function OnboardingView() {
     'SINGLE',
   );
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [avatarBusy, setAvatarBusy] = useState(false);
-  const avatarInputRef = useRef<HTMLInputElement>(null);
 
   const [countryCode, setCountryCode] = useState('');
   const [defaultLocation, setDefaultLocation] = useState('');
@@ -156,22 +154,6 @@ export function OnboardingView() {
       clearTimeout(t);
     };
   }, [slug, slugChanged]);
-
-  const uploadAvatar = async (file: File | undefined) => {
-    if (!file) {
-      return;
-    }
-    setAvatarBusy(true);
-    const result = await uploadProfileAvatar(file);
-    setAvatarBusy(false);
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
-    setAvatarUrl(result.avatarUrl);
-    toast.success('Profile photo updated.');
-    await refresh();
-  };
 
   const finish = async (skip: boolean) => {
     if (!user) {
@@ -263,47 +245,28 @@ export function OnboardingView() {
                 content: (
                   <div className="flex flex-col gap-6">
                     <div className="flex items-center gap-4">
-                      {avatarUrl ? (
-                        <img
-                          src={avatarUrl}
-                          alt=""
-                          className="border-border size-16 shrink-0 rounded-xl border object-cover"
-                        />
-                      ) : (
-                        <div className="bg-primary/15 text-primary flex size-16 shrink-0 items-center justify-center rounded-xl text-2xl font-bold">
-                          {(displayName || user.displayName || 'A')
-                            .slice(0, 1)
-                            .toUpperCase()}
-                        </div>
-                      )}
-                      <div className="flex flex-col gap-1.5">
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          disabled={avatarBusy}
-                          onClick={() => avatarInputRef.current?.click()}
-                        >
-                          <ImagePlusIcon
-                            size={15}
-                            aria-hidden
-                            className="mr-1.5"
-                          />
-                          {avatarUrl ? 'Replace photo' : 'Add photo'}
-                        </Button>
-                        <p className="text-foreground-secondary text-xs">
-                          Optional — JPEG, PNG, or WebP.
-                        </p>
-                        <input
-                          ref={avatarInputRef}
-                          type="file"
-                          accept="image/jpeg,image/png,image/webp"
-                          className="sr-only"
-                          aria-label="Profile photo"
-                          onChange={(e) =>
-                            void uploadAvatar(e.target.files?.[0])
-                          }
-                        />
-                      </div>
+                      <RoundImageUploadButton
+                        label="Profile photo"
+                        value={avatarUrl}
+                        sizeClassName="h-16 w-16"
+                        upload={(file) =>
+                          uploadProfileAvatar(file).then((r) =>
+                            r.ok
+                              ? {
+                                  ok: true as const,
+                                  data: { url: r.avatarUrl },
+                                }
+                              : r,
+                          )
+                        }
+                        onChange={(url) => {
+                          setAvatarUrl(url);
+                          void refresh();
+                        }}
+                      />
+                      <p className="text-foreground-secondary text-xs">
+                        Optional — JPEG, PNG, or WebP.
+                      </p>
                     </div>
                     <label className="flex flex-col gap-1.5 text-sm">
                       <span className="text-foreground-secondary text-xs uppercase">
