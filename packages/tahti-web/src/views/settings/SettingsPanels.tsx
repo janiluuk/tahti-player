@@ -77,6 +77,7 @@ import {
   verifyCustomDomain,
 } from '../../api/channel-design';
 import {
+  cancelMySubscription,
   fetchMembership,
   fetchMySubscriptions,
   requestAccountDeletion,
@@ -111,6 +112,7 @@ import { AMBIENT_SCHEME } from '../../components/AmbientBackground';
 import { ApiTokensPanel } from '../../components/ApiTokensPanel';
 import { ArtistImagePurposePicker } from '../../components/ArtistImagePurposePicker';
 import { ChannelVisualizer } from '../../components/ChannelVisualizer';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { FanSubscriptionStats } from '../../components/FanSubscriptionStats';
 import { FanTiersEditor } from '../../components/FanTiersEditor';
 import { GenrePicker } from '../../components/GenrePicker';
@@ -364,6 +366,13 @@ function AccountPanel() {
   const closeSettings = useSettingsModalStore((s) => s.close);
   const [membership, setMembership] = useState<MembershipStatus | null>(null);
   const [subscriptions, setSubscriptions] = useState<FanSubscriptionRow[]>([]);
+  const [pendingCancel, setPendingCancel] = useState<FanSubscriptionRow | null>(
+    null,
+  );
+  const [cancelBusy, setCancelBusy] = useState(false);
+
+  const reloadSubscriptions = () =>
+    fetchMySubscriptions().then((r) => setSubscriptions(r.data));
 
   useEffect(() => {
     if (!user) {
@@ -375,7 +384,7 @@ function AccountPanel() {
   }, [user]);
 
   useEffect(() => {
-    void fetchMySubscriptions().then((r) => setSubscriptions(r.data));
+    void reloadSubscriptions();
   }, []);
 
   if (!user) {
@@ -564,13 +573,55 @@ function AccountPanel() {
                         <p className="text-foreground-secondary text-xs">
                           {subscription.tierName},{' '}
                           {euros(subscription.amountCents)}/mo,{' '}
-                          {subscription.state}
+                          {subscription.canceledAt &&
+                          subscription.currentPeriodEnd
+                            ? `cancels ${new Date(
+                                subscription.currentPeriodEnd,
+                              ).toLocaleDateString()}`
+                            : subscription.state}
                         </p>
                       </div>
+                      {subscription.canceledAt ? null : (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setPendingCancel(subscription)}
+                        >
+                          Manage
+                        </Button>
+                      )}
                     </li>
                   ))}
                 </ul>
               )}
+              <ConfirmDialog
+                isOpen={pendingCancel !== null}
+                title={
+                  pendingCancel
+                    ? `Cancel your ${pendingCancel.tierName} subscription to ${pendingCancel.artist.displayName}?`
+                    : 'Cancel subscription?'
+                }
+                description="You'll keep access until the end of the current billing period, then it won't renew."
+                confirmLabel={
+                  cancelBusy ? 'Cancelling…' : 'Cancel subscription'
+                }
+                cancelLabel="Keep subscription"
+                onCancel={() => setPendingCancel(null)}
+                onConfirm={() => {
+                  const target = pendingCancel;
+                  if (!target || cancelBusy) {
+                    return;
+                  }
+                  setCancelBusy(true);
+                  void cancelMySubscription(target.id).then((r) => {
+                    setCancelBusy(false);
+                    setPendingCancel(null);
+                    if (r.ok) {
+                      void reloadSubscriptions();
+                    }
+                  });
+                }}
+              />
             </div>
           ),
         },

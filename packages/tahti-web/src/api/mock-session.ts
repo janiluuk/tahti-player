@@ -104,6 +104,18 @@ export function listMockSubscriptions(): FanSubscriptionRow[] {
   return subscriptions.map((s) => ({ ...s, artist: { ...s.artist } }));
 }
 
+/** Matches the real POST /api/me/subscriptions/:id/cancel: marks
+ * canceledAt, access lasts until currentPeriodEnd — doesn't remove or
+ * flip state immediately. */
+export function mockCancelSubscription(id: string): FanSubscriptionRow | null {
+  const row = subscriptions.find((s) => s.id === id);
+  if (!row) {
+    return null;
+  }
+  row.canceledAt = new Date().toISOString();
+  return { ...row, artist: { ...row.artist } };
+}
+
 export function mockActivateSubscription(
   username: string,
   tierId: string,

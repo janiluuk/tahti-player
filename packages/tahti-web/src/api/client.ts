@@ -41,6 +41,7 @@ import {
   listMockFollowing,
   listMockSubscriptions,
   mockActivateSubscription,
+  mockCancelSubscription,
   mockFollow,
   mockUnfollow,
   setMockSessionUser,
@@ -2066,6 +2067,34 @@ export async function fetchMySubscriptions(): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     return { data: [], meta: apiErrorMeta(err) };
+  }
+}
+
+/** Cancels at the end of the current billing period — the row stays
+ * ACTIVE with `canceledAt` set, not removed or flipped immediately,
+ * matching the real POST /api/me/subscriptions/:id/cancel response. */
+export async function cancelMySubscription(
+  id: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (forceMock()) {
+    const row = mockCancelSubscription(id);
+    if (!row) {
+      return { ok: false, error: 'Subscription not found' };
+    }
+    return { ok: true };
+  }
+  try {
+    await requestJson(
+      `/api/me/subscriptions/${encodeURIComponent(id)}/cancel`,
+      { method: 'POST' },
+    );
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error:
+        err instanceof Error ? err.message : 'Could not cancel subscription',
+    };
   }
 }
 

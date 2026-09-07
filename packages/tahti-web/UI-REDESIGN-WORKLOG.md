@@ -5350,3 +5350,35 @@ scoped `eslint` on all touched files, and
 `pnpm --filter @tahti-player/tahti-web test` all pass clean — 84/84
 files, 478/478 tests. Bumped `packages/tahti-web/package.json` to
 `0.0.94`.
+
+## 2026-09-07 — Purchase flow: subscription cancel wiring
+
+Continuing `listener-purchase-flow.md`: the "Your subs" tab in
+Settings → Account already listed real subscription data but had
+**no action button at all** — no Manage/Cancel. The backend endpoint
+(`POST /api/me/subscriptions/:id/cancel` in `../tahti-org`) already
+existed and works exactly as expected: marks `canceledAt`, access
+continues until `currentPeriodEnd`, doesn't flip state or remove the
+row immediately — another instance of "backend already built, frontend
+never wired."
+
+Added `cancelMySubscription()` to `api/client.ts` (real fetch + a
+`mockCancelSubscription()` fallback in `api/mock-session.ts` for
+`VITE_FORCE_MOCK=1`), a "Manage" button per active subscription row in
+`SettingsPanels.tsx`'s `AccountPanel`, and a `ConfirmDialog` (matching
+the existing delete-confirm pattern from `StudioSoundsView.tsx`)
+warning that access lasts until the period end rather than cancelling
+immediately. Once cancelled, the row's `canceledAt` is reflected as
+"cancels <date>" instead of the raw `ACTIVE` state, and the Manage
+button disappears (nothing left to manage).
+
+Full `listener-purchase-flow.md` scope also includes a "Purchases" tab
+for one-time buys (doesn't exist yet) and a 3-scenario Playwright e2e
+suite gated on a test-mode Stripe Checkout path in `../tahti-org` —
+both out of scope for this pass; doc updated to reflect exactly what
+shipped vs. what's still open.
+
+**Validation:** `pnpm --filter @tahti-player/tahti-web type-check`,
+scoped `eslint --fix`, and `pnpm --filter @tahti-player/tahti-web test`
+all pass clean — 84/84 files, 478/478 tests. Bumped
+`packages/tahti-web/package.json` to `0.0.95`.

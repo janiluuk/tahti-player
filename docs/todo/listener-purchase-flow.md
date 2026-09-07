@@ -1,6 +1,21 @@
 # Listener Purchase & Subscription Flow — Register, Buy/Subscribe, Account Panel
 
-**Status:** open
+**Status:** partial
+
+## Update 2026-09-07
+
+Shipped: the Subscriptions tab (`/settings/account` → "Your subs") now has
+a **Manage → Cancel subscription** action, wired to the real
+`POST /api/me/subscriptions/:id/cancel` (already existed in
+`../tahti-org`, unused until now) via a new `cancelMySubscription()` in
+`api/client.ts`, with a `ConfirmDialog` confirming the access-until-period-end
+semantics. Cancelled rows show "cancels &lt;date&gt;" instead of the raw
+state and lose the Manage button.
+
+Still open, unchanged from below: the **Purchases tab doesn't exist**, and
+the **E2E test** needs a test-mode Stripe Checkout path in `../tahti-org`
+to exercise real purchase/subscribe UI flows end to end — both judged too
+large to build blind in one pass on top of the cancel-flow piece.
 
 As a listener, I should be able to register, purchase a product or subscribe
 to an artist, and see both in my account. Subscriptions should be manageable
