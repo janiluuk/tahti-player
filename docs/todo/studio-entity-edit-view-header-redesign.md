@@ -148,12 +148,42 @@ the empty-cover placeholder opens the artwork upload dialog; Details
 panel's "Edit details" toggle expands to the description textarea and
 collapses back to the one-line summary. No console errors.
 
-## Not started
+## Investigated (2026-09-08): StudioPlaylistEditorView vs StudioCollectionEditView
 
-- `StudioPlaylistEditorView` (in `StudioPlaylistsView.tsx`) — same gap,
-  plus its relationship to `StudioCollectionEditView` needs untangling
-  first (are these two edit UIs for the same entities, and if so why
-  do both exist?).
+Both edit the same `StudioCollection` entity, but they are two
+genuinely separate, actively-diverging implementations, not a simple
+duplicate to fold:
+- `StudioCollectionEditView` (`/studio/collections/$slug`,
+  `/library/collections/$slug`) is the one every live in-app link
+  points to. `StudioCollectionsView.tsx` (the real `/studio/collections`
+  list) routes **every** style — album, EP, single, playlist, DJ set —
+  to this same URL unconditionally (`views/studio/StudioCollectionsView.tsx:376,396`).
+- `StudioPlaylistEditorView` (`StudioPlaylistsView.tsx`, mounted at
+  `/studio/playlists/$slug`) has **no in-app link anywhere** pointing
+  to it — grepped the whole `src/` tree. `StudioPlaylistsView` (the
+  list component in the same file, at `/studio/playlists` which is a
+  pure `redirect` to `/studio/collections`) is confirmed dead per the
+  prior pass. But the *editor* export is not simply dead: it already
+  uses the shared `TrackTable` primitive (reorder + delete + queue
+  controls, `views/studio/StudioPlaylistsView.tsx:480-567`) — closer to
+  the reference screenshot's track-table look than either Collection
+  or Release currently gets — and `e2e/cutover-vital.spec.ts`
+  ("collections combine albums, EPs, DJ sets, and playlists") directly
+  navigates to `/studio/playlists/favorites-mix` and asserts on its
+  track-row play/pause behavior. `content/mapScreens.ts` also still
+  documents `/studio/playlists/$slug` as "a playlist/DJ-set
+  collection's editor" distinct from `/studio/collections/$slug`'s
+  "album/EP collection's Design editor".
+
+**Not resolved — needs a decision, not a guess:** is
+`StudioPlaylistEditorView` an intentional second editor that a link
+was simply never wired up for (a real nav gap — playlists/DJ-sets
+should route here instead of `StudioCollectionEditView`), or a
+superseded leftover that should be deleted along with its dead list
+sibling and its passing e2e coverage retired/rewritten? Either answer
+changes the migration target: if it's meant to stay, its `TrackTable`
+usage is the pattern to backport into Collection/Release rather than
+vice versa. Left untouched this pass.
 - Nuclear's Playlists **grid/listing** page reference
   (`playlists.png`) — `MyCollectionsView.tsx` is tahti-web's
   equivalent listing page; not compared against the reference or
