@@ -17,8 +17,10 @@ import {
   fetchStreamOverlay,
   patchStreamOverlay,
 } from '../api/broadcast';
+import { fetchChannel } from '../api/client';
 import { fetchMeProfile } from '../api/studio-extras';
 import { uploadUserMediaFile } from '../api/user-media';
+import { useAuthStore } from '../stores/authStore';
 import { HelpLayer } from './HelpLayer';
 import { ImageSlotDeleteBadge } from './imageSlot/ImageSlotDeleteBadge';
 import { ImageSlotPreviewDialog } from './imageSlot/ImageSlotPreviewDialog';
@@ -74,6 +76,7 @@ function OverlayTextPreview({
  * Go Live stream manager (StreamManagerPanel) and from Manage → Multicast →
  * Overlay, so it owns its own fetch/save rather than taking props for it. */
 export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
+  const channelSlug = useAuthStore((s) => s.user?.channel?.slug);
   const [overlay, setOverlay] = useState({
     streamOverlayTitle: '',
     streamOverlaySubtitle: '',
@@ -87,6 +90,12 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
   const [coverUploading, setCoverUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  // Same nowPlaying.artworkUrl field StreamManagerPanel.tsx already reads
+  // off fetchChannel — null whenever the channel isn't currently playing
+  // anything, in which case the avatar below is the honest fallback.
+  const [nowPlayingArtworkUrl, setNowPlayingArtworkUrl] = useState<
+    string | null
+  >(null);
   const coverChrome = useImageSlotChrome({
     onClear: () =>
       setOverlay((current) => ({ ...current, streamOverlayCoverUrl: '' })),
@@ -97,21 +106,31 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
       fetchStreamOverlay(),
       fetchBroadcastPreflight(),
       fetchMeProfile(),
-    ]).then(([overlayResult, preflightResult, profileResult]) => {
-      const preflight = preflightResult.data;
-      setOverlay({
-        streamOverlayTitle:
-          overlayResult.data.streamOverlayTitle || preflight?.title || '',
-        streamOverlaySubtitle:
-          overlayResult.data.streamOverlaySubtitle || preflight?.tagline || '',
-        streamOverlayShowTitle: overlayResult.data.streamOverlayShowTitle,
-        streamOverlayTextColor: overlayResult.data.streamOverlayTextColor ?? '',
-        streamOverlayScrimEnabled: overlayResult.data.streamOverlayScrimEnabled,
-        streamOverlayCoverUrl: overlayResult.data.streamOverlayCoverUrl ?? '',
-      });
-      setAvatarUrl(profileResult.data.avatarUrl ?? null);
-    });
-  }, []);
+      channelSlug ? fetchChannel(channelSlug) : null,
+    ]).then(
+      ([overlayResult, preflightResult, profileResult, channelResult]) => {
+        const preflight = preflightResult.data;
+        setOverlay({
+          streamOverlayTitle:
+            overlayResult.data.streamOverlayTitle || preflight?.title || '',
+          streamOverlaySubtitle:
+            overlayResult.data.streamOverlaySubtitle ||
+            preflight?.tagline ||
+            '',
+          streamOverlayShowTitle: overlayResult.data.streamOverlayShowTitle,
+          streamOverlayTextColor:
+            overlayResult.data.streamOverlayTextColor ?? '',
+          streamOverlayScrimEnabled:
+            overlayResult.data.streamOverlayScrimEnabled,
+          streamOverlayCoverUrl: overlayResult.data.streamOverlayCoverUrl ?? '',
+        });
+        setAvatarUrl(profileResult.data.avatarUrl ?? null);
+        setNowPlayingArtworkUrl(
+          channelResult?.data.nowPlaying?.artworkUrl ?? null,
+        );
+      },
+    );
+  }, [channelSlug]);
 
   const save = () => {
     setSaving(true);
@@ -167,7 +186,8 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
         <p>
           RTMP has no built-in title metadata, so YouTube/Twitch/etc. mirrors
           carry a static video frame with this cover baked in. Leave the cover
-          blank to use your avatar.
+          blank to use whatever's currently playing, or your avatar when
+          nothing's live.
         </p>
       </HelpLayer>
       {error && (
@@ -203,6 +223,12 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
               src={overlay.streamOverlayCoverUrl}
               alt=""
               className="size-full object-cover"
+            />
+          ) : nowPlayingArtworkUrl ? (
+            <img
+              src={nowPlayingArtworkUrl}
+              alt=""
+              className="size-full object-cover opacity-60"
             />
           ) : avatarUrl ? (
             <img

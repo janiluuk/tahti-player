@@ -1727,3 +1727,21 @@ blocker waiting to be unblocked. `FEATURES.md` and
 answer.
 
 ---
+
+## 2026-09-08 — Stream overlay cover placeholder: now-playing artwork
+
+Finished the one remaining piece of
+`stream-overlay-auto-fill-and-avatar-placeholder.md`. That doc had
+marked the now-playing-track-artwork placeholder as blocked on a
+missing backend field — true when it was written, but the 2026-09-07
+Stream Manager artwork entry above found `PublicChannel.nowPlaying
+.artworkUrl` already exists and is already read by
+`StreamManagerPanel.tsx`. `StreamOverlayEditor.tsx` now fetches the
+artist's own channel (`fetchChannel(channelSlug)` off
+`useAuthStore`'s `user.channel.slug`) alongside its existing overlay/
+preflight/profile calls, and the cover placeholder falls back through
+`streamOverlayCoverUrl` → `nowPlaying.artworkUrl` → avatar → generic
+icon, updating the `HelpLayer` copy to match. `tsc --noEmit`, eslint,
+`pnpm test` (487 tests), and `pnpm build` all pass.
+
+---
