@@ -24,6 +24,7 @@ Status values: `open` | `blocked` | `partial`.
 | open | [tahti-cli-tool.md](tahti-cli-tool.md) | CLI (gumroad-cli-inspired) wrapping api-client — list library items, maybe TUI player |
 | open | [tahti-theme-refactor.md](tahti-theme-refactor.md) | Orange-everywhere Button/Select defaults, contrast, visualizer visibility + settings gate |
 | open | [waveform-detail-accuracy.md](waveform-detail-accuracy.md) | Full track view waveform needs real detail/accuracy — WaveformSeekbar downsamples to 64 bars, fabricates fake bars when no peaks |
+| open | [archive-mentions-source-url.md](archive-mentions-source-url.md) | Mentions API never selects/resolves `Mention.sourceId` into a real link — every mention falls back to the artist page; fully scoped per-surface, needs a dedicated tahti-org worktree |
 | open | [studio-nav-perform-to-broadcast.md](studio-nav-perform-to-broadcast.md) | Move Perform into Studio→Broadcast; sweep all Studio pages for missing/wrong nav-tab active state at both levels |
 | open | [onboarding-toast-noise.md](onboarding-toast-noise.md) | (Later) "Finish your profile" toast: exempt seeded users, once-per-session even without explicit dismiss, mark done before screenshots |
 | open | [sticky-theme-review-toast.md](sticky-theme-review-toast.md) | (Later) "Theme is in review" mock toast reappears every reload — mock dismiss is a no-op; same root cause as onboarding-toast-noise |
