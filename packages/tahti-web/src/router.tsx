@@ -274,10 +274,6 @@ const StudioGovernanceView = lazyRouteComponent(
   () => import('./views/studio/StudioGovernanceView'),
   'StudioGovernanceView',
 );
-const StudioRecordingsView = lazyRouteComponent(
-  () => import('./views/studio/StudioRecordingsView'),
-  'StudioRecordingsView',
-);
 const StudioRevenueView = lazyRouteComponent(
   () => import('./views/studio/StudioRevenueView'),
   'StudioRevenueView',
@@ -285,10 +281,6 @@ const StudioRevenueView = lazyRouteComponent(
 const StudioStripeView = lazyRouteComponent(
   () => import('./views/studio/StudioStripeView'),
   'StudioStripeView',
-);
-const StudioStashView = lazyRouteComponent(
-  () => import('./views/studio/StudioStashView'),
-  'StudioStashView',
 );
 const StudioTrackInsightsView = lazyRouteComponent(
   () => import('./views/studio/StudioTrackInsightsView'),
@@ -727,13 +719,16 @@ const libraryReleasesRoute = createRoute({
   },
 });
 
+/** `?tab=` sub-tabs are legacy bookmarks — each now has its own clean
+ * `/library/<tab>` route, so old links redirect forward instead of
+ * being rendered inline here. */
 const libraryCollectionsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library/collections',
   validateSearch: (
     search: Record<string, unknown>,
   ): {
-    tab?: 'collections' | 'recordings' | 'media' | 'stash' | 'embeds';
+    tab?: 'recordings' | 'media' | 'stash' | 'embeds';
   } => ({
     tab:
       search.tab === 'recordings' ||
@@ -743,10 +738,12 @@ const libraryCollectionsRoute = createRoute({
         ? search.tab
         : undefined,
   }),
-  component: function LibraryCollectionsRoute() {
-    const search = libraryCollectionsRoute.useSearch();
-    return <LibraryView tab="collections" collectionTab={search.tab} />;
+  beforeLoad: ({ search }) => {
+    if (search.tab) {
+      throw redirect({ to: `/library/${search.tab}` });
+    }
   },
+  component: () => <LibraryView tab="collections" />,
 });
 
 const libraryCollectionEditRoute = createRoute({
@@ -761,9 +758,19 @@ const libraryCollectionEditRoute = createRoute({
 const libraryRecordingsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library/recordings',
-  beforeLoad: () => {
-    throw redirect({ to: '/studio/recordings' });
-  },
+  component: () => <LibraryView tab="recordings" />,
+});
+
+const libraryStashRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/library/stash',
+  component: () => <LibraryView tab="stash" />,
+});
+
+const libraryEmbedsRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/library/embeds',
+  component: () => <LibraryView tab="embeds" />,
 });
 
 const libraryFavoritesRoute = createRoute({
@@ -1217,10 +1224,13 @@ const studioArchiveRedirectRoute = createRoute({
   },
 });
 
+/** Old path — Recordings is now a Library tab, not a Studio one. */
 const studioRecordingsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/recordings',
-  component: StudioRecordingsView,
+  beforeLoad: () => {
+    throw redirect({ to: '/library/recordings' });
+  },
 });
 
 const studioSoundItemRoute = createRoute({
@@ -1325,10 +1335,13 @@ const studioEditorProjectRoute = createRoute({
   },
 });
 
+/** Old path — Stash is now a Library tab, not a Studio one. */
 const studioStashRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/stash',
-  component: StudioStashView,
+  beforeLoad: () => {
+    throw redirect({ to: '/library/stash' });
+  },
 });
 
 const studioScheduleRoute = createRoute({
@@ -1711,6 +1724,8 @@ const routeTree = rootRoute.addChildren([
     libraryCollectionsRoute,
     libraryCollectionEditRoute,
     libraryRecordingsRoute,
+    libraryStashRoute,
+    libraryEmbedsRoute,
     libraryFavoritesRoute,
     libraryHistoryRoute,
     librarySmartLinksRoute,

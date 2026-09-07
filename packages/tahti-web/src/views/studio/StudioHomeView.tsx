@@ -99,7 +99,7 @@ function RecentBroadcastRow({ broadcast }: { broadcast: RecentBroadcast }) {
         {published ? 'Published' : 'Recorded'}
       </span>
       <Link
-        to={broadcast.soundId ? '/studio/sounds/$id' : '/studio/recordings'}
+        to={broadcast.soundId ? '/studio/sounds/$id' : '/library/recordings'}
         params={broadcast.soundId ? { id: broadcast.soundId } : undefined}
       >
         <Button size="sm" variant="secondary">
@@ -428,7 +428,7 @@ export function StudioHomeView() {
                     </ul>
                     <div className="border-border border-t px-4 py-3">
                       <Link
-                        to="/studio/recordings"
+                        to="/library/recordings"
                         className="text-foreground-secondary text-xs underline-offset-2 hover:underline"
                       >
                         View all recordings →

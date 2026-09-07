@@ -37,16 +37,12 @@ export type Tab =
   | 'library'
   | 'sounds'
   | 'collections'
-  | 'smartlinks'
-  | 'media'
-  | 'local';
-
-type CollectionTab =
-  | 'collections'
   | 'recordings'
   | 'media'
   | 'stash'
-  | 'embeds';
+  | 'embeds'
+  | 'smartlinks'
+  | 'local';
 
 export const LIBRARY_SECTION_TABS = [
   {
@@ -71,25 +67,25 @@ export const LIBRARY_SECTION_TABS = [
     id: 'recordings' as const,
     label: 'Recordings',
     icon: MicIcon,
-    to: '/library/collections?tab=recordings',
+    to: '/library/recordings',
   },
   {
     id: 'media' as const,
     label: 'Media',
     icon: HardDriveIcon,
-    to: '/library/collections?tab=media',
+    to: '/library/media',
   },
   {
     id: 'stash' as const,
     label: 'Stash',
     icon: PackageIcon,
-    to: '/library/collections?tab=stash',
+    to: '/library/stash',
   },
   {
     id: 'embeds' as const,
     label: 'Embeds',
     icon: Code2Icon,
-    to: '/library/collections?tab=embeds',
+    to: '/library/embeds',
   },
   {
     id: 'smartlinks' as const,
@@ -139,93 +135,69 @@ export function LibrarySectionTabs({ active }: { active: LibrarySectionId }) {
   );
 }
 
-export function LibraryView({
-  tab = 'library',
-  collectionTab,
-}: {
-  tab?: Tab;
-  collectionTab?: CollectionTab;
-}) {
-  const activeCollectionTab = collectionTab ?? tab;
-  // Always resolves to a real section id — 'library' (Overview) is one of
-  // LIBRARY_SECTION_TABS too, so the tab strip (with Local files etc.) is
-  // never hidden, including on the plain /library landing route.
-  const overviewTab =
-    tab === 'sounds' ||
-    tab === 'smartlinks' ||
-    tab === 'local' ||
-    activeCollectionTab === 'collections' ||
-    activeCollectionTab === 'recordings' ||
-    activeCollectionTab === 'media' ||
-    activeCollectionTab === 'stash' ||
-    activeCollectionTab === 'embeds'
-      ? activeCollectionTab === 'smartlinks'
-        ? 'smartlinks'
-        : activeCollectionTab === 'local'
-          ? 'local'
-          : activeCollectionTab
-      : 'library';
+export function LibraryView({ tab = 'library' }: { tab?: Tab }) {
+  const navigate = useNavigate();
 
   const libraryTitle =
     tab === 'library'
       ? 'Overview'
-      : overviewTab === 'sounds'
+      : tab === 'sounds'
         ? 'Sounds'
-        : overviewTab === 'recordings'
+        : tab === 'recordings'
           ? 'Recordings'
-          : overviewTab === 'embeds'
+          : tab === 'embeds'
             ? 'Embeds'
-            : overviewTab === 'media'
+            : tab === 'media'
               ? 'Media'
-              : overviewTab === 'stash'
+              : tab === 'stash'
                 ? 'Stash'
-                : overviewTab === 'smartlinks'
+                : tab === 'smartlinks'
                   ? 'Smart links'
-                  : overviewTab === 'local'
+                  : tab === 'local'
                     ? 'Local files'
                     : 'Collections';
 
   return (
     <div className="studio-page-layout flex w-full flex-col gap-6">
-      <LibrarySectionTabs active={overviewTab} />
+      <LibrarySectionTabs active={tab} />
       <ViewShell title={libraryTitle} classes={{ root: 'px-0 pt-0' }}>
         {tab === 'library' ? (
           <div className="mt-2">
             <LibraryStats />
           </div>
         ) : null}
-        {overviewTab === 'sounds' || tab === 'sounds' ? (
+        {tab === 'sounds' ? (
           <div className="mt-2">
             <MyDiscographyView />
           </div>
         ) : null}
-        {overviewTab === 'collections' ? (
+        {tab === 'collections' ? (
           <div className="mt-2">
             <MyCollectionsView embedded />
           </div>
         ) : null}
-        {overviewTab === 'recordings' ? (
+        {tab === 'recordings' ? (
           <div className="mt-2">
             <StudioRecordingsView embedded />
           </div>
         ) : null}
-        {overviewTab === 'media' ? (
+        {tab === 'media' ? (
           <div className="mt-2">
             <LibraryMediaView />
           </div>
         ) : null}
-        {overviewTab === 'stash' ? (
+        {tab === 'stash' ? (
           <div className="mt-2">
             <StudioStashView embedded />
           </div>
         ) : null}
-        {overviewTab === 'embeds' ? (
+        {tab === 'embeds' ? (
           <div className="mt-2">
             <LibraryEmbedsView />
           </div>
         ) : null}
         {tab === 'smartlinks' ? <LibrarySmartLinksView /> : null}
-        {overviewTab === 'local' ? (
+        {tab === 'local' ? (
           <div className="mt-2 h-[28rem]">
             <DesktopLibraryPanel />
           </div>

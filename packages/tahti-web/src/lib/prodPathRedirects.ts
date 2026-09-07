@@ -15,8 +15,8 @@ export const DASHBOARD_REDIRECTS: Record<string, string> = {
   embeds: '/studio/releases',
   events: '/studio/events',
   venues: '/studio/venues',
-  recordings: '/studio/recordings',
-  stash: '/studio/stash',
+  recordings: '/library/recordings',
+  stash: '/library/stash',
   schedule: '/studio/schedule',
   stats: '/studio/stats',
   channel: '/studio/channel',
@@ -49,7 +49,7 @@ export const DASHBOARD_REDIRECTS: Record<string, string> = {
   'settings/distribution': '/studio/distribution',
   'settings/moderators': '/studio/moderation',
   'settings/multistream': '/studio/channel?tab=multicast',
-  'upload/from-broadcast': '/studio/recordings',
+  'upload/from-broadcast': '/library/recordings',
 };
 
 /** Resolve /dashboard/... rest path to Nuclear target, or /studio fallback. */
