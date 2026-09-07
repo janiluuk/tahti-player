@@ -201,6 +201,10 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
   const unreadNotifications = notifications.filter(
     (notification) => !notification.readAt,
   );
+  const unreadMessagesCount = conversations.reduce(
+    (total, conversation) => total + conversation.unreadCount,
+    0,
+  );
   const processingItems = [
     ...localProcessingJobs,
     ...archiveItems
@@ -415,6 +419,7 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
               className={cn(
                 iconBtnClass,
                 'relative',
+                isMobile && 'hidden',
                 notificationsOpen &&
                   'border-primary bg-primary/15 text-primary',
               )}
@@ -542,6 +547,7 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
               className={cn(
                 iconBtnClass,
                 'relative',
+                isMobile && 'hidden',
                 (messagesOpen || pathname.startsWith('/messages')) &&
                   'border-primary bg-primary/15 text-primary',
               )}
@@ -677,6 +683,16 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
                 {open ? '▴' : '▾'}
               </span>
             </button>
+            {isMobile &&
+            (unreadNotifications.length > 0 || unreadMessagesCount > 0) ? (
+              <Badge
+                variant="pill"
+                color="red"
+                className="absolute -top-1 -right-1 min-w-4 px-1 text-center text-[9px] font-bold"
+              >
+                {Math.min(9, unreadNotifications.length + unreadMessagesCount)}
+              </Badge>
+            ) : null}
 
             {open ? (
               <div
@@ -692,6 +708,59 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
                   ) : null}
                 </div>
                 <div className="bg-border mx-1 my-0.5 h-px" role="separator" />
+
+                {isMobile ? (
+                  <>
+                    <button
+                      type="button"
+                      className="hover:bg-background-secondary flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs"
+                      role="menuitem"
+                      onClick={() => {
+                        setOpen(false);
+                        setMessagesOpen(false);
+                        setNotificationsOpen(true);
+                      }}
+                    >
+                      <BellIcon size={14} />
+                      Notifications
+                      {unreadNotifications.length > 0 ? (
+                        <Badge
+                          variant="pill"
+                          color="red"
+                          className="ml-auto min-w-4 px-1 text-center text-[9px] font-bold"
+                        >
+                          {Math.min(9, unreadNotifications.length)}
+                        </Badge>
+                      ) : null}
+                    </button>
+                    <button
+                      type="button"
+                      className="hover:bg-background-secondary flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs"
+                      role="menuitem"
+                      onClick={() => {
+                        setOpen(false);
+                        setNotificationsOpen(false);
+                        setMessagesOpen(true);
+                      }}
+                    >
+                      <MessageSquareIcon size={14} />
+                      Messages
+                      {unreadMessagesCount > 0 ? (
+                        <Badge
+                          variant="pill"
+                          color="red"
+                          className="ml-auto min-w-4 px-1 text-center text-[9px] font-bold"
+                        >
+                          {Math.min(9, unreadMessagesCount)}
+                        </Badge>
+                      ) : null}
+                    </button>
+                    <div
+                      className="bg-border mx-1 my-0.5 h-px"
+                      role="separator"
+                    />
+                  </>
+                ) : null}
 
                 {hasChannel ? (
                   <>

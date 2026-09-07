@@ -13,6 +13,7 @@ Sibling API: **`../tahti-org`**. Product matrix: [`FEATURES.md`](FEATURES.md) Re
 - [ ] **Image slot chrome** — hover delete + preview modal on remaining upload surfaces. Leaf: [image-upload-hover-lightbox.md](../../docs/todo/image-upload-hover-lightbox.md).
 - [ ] **Governance / Channel Designer / overlay leftovers** — see INDEX (`governance-motion-parity`, `channel-designer-*`, `stream-overlay-*`, `queued-ux-fixes-*`, …).
 - [ ] **Sibling archive mentions API** — extend `../tahti-org` metadata, then remove artist-page fallback.
+- [ ] **Fix player release workflow** — `release-player.yml` dispatches 0 jobs on every push (GitHub rejects the file, not a local YAML syntax error; pre-existing, not a recent regression). Also missing `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` secret — regenerate the signing keypair if the current one's password is unknown. Leaf: [release-player-workflow-broken.md](../../docs/todo/release-player-workflow-broken.md).
 
 ## Next (queued after today's cycles)
 

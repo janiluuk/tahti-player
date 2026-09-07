@@ -5382,3 +5382,39 @@ shipped vs. what's still open.
 scoped `eslint --fix`, and `pnpm --filter @tahti-player/tahti-web test`
 all pass clean — 84/84 files, 478/478 tests. Bumped
 `packages/tahti-web/package.json` to `0.0.95`.
+
+## 2026-09-07 — Two logged-only bugs: continue-listening pause icon, mobile topbar notifications/messages
+
+User asked to add these to the todo list earlier this session; picked
+them up now as quick, well-scoped wins.
+
+**Continue-listening pause icon** — `ListenView.tsx`'s "Continue
+listening" `Card` was missing `isPlaying` entirely (every sibling
+control on the same page, e.g. `radioIsPlaying`, already wires this
+up). Added `lastPlayedIsCurrent`/`lastPlayedIsPlaying` derived from
+`usePlayerStore`'s `currentId`/`status`, same pattern as the radio
+preset cards just below it, and made `onPlay` toggle pause instead of
+always restarting when it's already the current track.
+
+**Mobile topbar Notifications/Messages → user menu** — both were
+always-visible top-bar icon buttons regardless of viewport. On mobile
+(`useIsMobile()`) they're now hidden (`isMobile && 'hidden'` on just
+the button, not the wrapping popover-anchor div, so the popovers still
+render correctly when opened) and two new items were added to the
+user-menu dropdown that open the same existing popovers. Added a
+combined unread-count `Badge` on the avatar trigger itself (mobile
+only) so unread state doesn't disappear along with the icons — reusing
+the exact `Badge`/pill-red styling already used for the original
+top-bar badges rather than inventing a new indicator.
+
+**Not live-verified on an actual mobile viewport** — the browser
+automation's `resize_window` call reported success but
+`window.innerWidth` never actually changed in this environment (tried
+twice), so I could only screenshot-confirm the desktop path is
+unaffected (menu opens normally, no stray mobile items, no badge).
+Flagged in `HISTORY.md` so it gets a real check if anything looks off.
+
+**Validation:** `pnpm --filter @tahti-player/tahti-web type-check`,
+scoped `eslint`, and `pnpm --filter @tahti-player/tahti-web test` all
+pass clean — 84/84 files, 478/478 tests. Bumped
+`packages/tahti-web/package.json` to `0.0.96`.
