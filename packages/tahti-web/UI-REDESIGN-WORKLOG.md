@@ -5156,3 +5156,46 @@ scoped `eslint` on all three touched files, and
 `pnpm --filter @tahti-player/tahti-web test` all pass clean — 84/84
 files, 478/478 tests. Bumped `packages/tahti-web/package.json` to
 `0.0.91`.
+
+## 2026-09-07 — Workplan cycle 6: Stream Manager now-playing artwork (cross-repo check, frontend-only fix); bump to 0.0.92
+
+Per the user's standing authorization to touch `../tahti-org` for
+cross-repo blockers, checked the first item queued for that
+(`queued-ux-fixes-2026-09-05.md`'s Stream Manager artwork item,
+also listed as a `../tahti-org` blocker in `WORKPLAN.md`) before
+touching the sibling repo. It turned out to already be resolved on the
+backend: `GET /api/channels/:slug` (`apps/api/src/routes/channels/get.ts`
+in `../tahti-org`) already selects and returns `nowPlayingArtworkUrl` as
+`nowPlaying.artworkUrl` — `tahti-web`'s own `api/types.ts` already
+declared `ChannelNowPlaying.artworkUrl`, it was just never read by
+`StreamManagerPanel.tsx`. No `../tahti-org` change was needed after all
+— the 2026-09-05 investigation's finding had gone stale, same pattern
+as the governance-gap-list.md corrections in workplan cycle 4.
+
+Wired it up: `RotationPlayback` now carries `artworkUrl`; the "Current
+track" block renders it via `MediaArtwork` (`size="thumb"`, the
+existing "inline track-row thumbnail" preset) with `onPlay`/`isPlaying`
+wired to the same rotation pause/resume transport the separate
+play/pause icon button already calls — same control, second surface,
+matching the original ask ("now-playing artwork with hover play/pause").
+
+Checked the other 4 items queued in `WORKPLAN.md`'s cross-repo section
+before starting real work on any of them, to avoid the same stale-doc
+trap: `pay-what-you-want-pricing.md` (no `pricingModel`/`minimumPrice`
+schema exists yet — still genuinely unstarted), stream-overlay scrim
+(no `video.add_image` fill-rectangle call in `liquidsoap.ts` — still
+genuinely missing, and still too risky to guess at without a live
+Liquidsoap runtime per the original doc's own caution),
+`plugin-registry-extraction.md` (`../tahti-org`'s own checklist still
+explicitly un-accepted: contract tests and ownership definition both
+unchecked, guardrail against extraction still active), and
+`listener-purchase-flow.md` (needs a test-mode Stripe path that doesn't
+exist). None of these four were touched — genuinely still blocked, not
+just stale.
+
+**Validation:** `pnpm --filter @tahti-player/tahti-web type-check`,
+scoped `eslint` on `StreamManagerPanel.tsx`, and
+`pnpm --filter @tahti-player/tahti-web test` all pass clean — 84/84
+files, 478/478 tests (no dedicated test file exists for
+`StreamManagerPanel.tsx`, so no snapshot risk). Bumped
+`packages/tahti-web/package.json` to `0.0.92`.

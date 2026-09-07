@@ -4,22 +4,6 @@
 
 Open items only. Shipped bullets folded to HISTORY.md on 2026-09-05.
 
-- [ ] **Stream Manager: now-playing artwork with hover play/pause —
-  blocked on missing data, investigated 2026-09-05.** UI side is easy:
-  `MediaArtwork` (`packages/ui/src/components/MediaArtwork/MediaArtwork.tsx`)
-  already has exactly this pattern built in (`onPlay`/`isPlaying` props
-  render a centered hover play/pause button at any size). The blocker:
-  `StreamManagerPanel.tsx`'s current-track data (`RotationPlayback`,
-  wrapping `ProgrammeItem` from `api/studio-extras.ts`) carries no
-  artwork field at all — checked `ProgrammeItem`, `SignalStatus`,
-  `ChannelManageStats` (`api/broadcast.ts`) — none of them return a cover/
-  artwork URL for the currently-playing rotation item. This needs either
-  a backend addition (the rotation-status endpoint returning the sound's
-  artwork URL) or a client-side lookup from `rotation.item.id` against
-  the studio sounds list (extra fetch, likely N+1-ish if done per-poll —
-  needs a real endpoint change instead). Don't build this without that
-  backend piece; flagging rather than guessing at a workaround.
-
 - [ ] **Channel Designer: tabs under the player, dynamic per enabled
   section, visual editor for adding them.** Locate the `Designer`
   component in Storybook (`packages/storybook/src/tahti-web/`) and its

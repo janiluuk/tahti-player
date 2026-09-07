@@ -26,7 +26,6 @@ blockers found in this backlog, so these don't get silently skipped as
 workplan cycles are done. Each needs its own backend slice in
 `../tahti-org` (schema/route/DTO) before the frontend half can ship:
 
-- [ ] **Stream Manager now-playing artwork** — `ProgrammeItem`/rotation-status has no artwork field; frontend (`MediaArtwork`'s `onPlay`/`isPlaying` hover pattern) is ready and waiting. See `queued-ux-fixes-2026-09-05.md`.
 - [ ] **Stream overlay opacity/scrim toggle** — needs a real semi-transparent layer added to `buildRtmpMirrorOutput`'s Liquidsoap script (no scrim exists in the actual broadcast output today, only in the frontend preview CSS). See `stream-overlay-text-color.md`.
 - [ ] **Pay-what-you-want pricing** — needs `pricingModel`/`minimumPrice` fields on the subscription/tier schema plus API validation before any frontend UI. See `pay-what-you-want-pricing.md`.
 - [ ] **Listener purchase flow e2e** — needs a test-mode Stripe Checkout path in `../tahti-org` to actually exercise "subscriber sees gated content" end to end. See `listener-purchase-flow.md`.

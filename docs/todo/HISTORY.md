@@ -2,6 +2,21 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-07 — Stream Manager now-playing artwork (backend already had it)
+
+Folded one bullet from `queued-ux-fixes-2026-09-05.md`. Re-checked the
+"blocked on missing data" finding from 2026-09-05 against current
+`../tahti-org`: `GET /api/channels/:slug` (`apps/api/src/routes/channels/get.ts`)
+already selects and returns `nowPlayingArtworkUrl` as `nowPlaying.artworkUrl`
+— a `PublicChannel.nowPlaying.artworkUrl` field tahti-web's own
+`api/types.ts` already declared, just never consumed. The blocker had
+been resolved by someone else's backend work without this doc being
+updated. Wired it up purely on the frontend: `StreamManagerPanel.tsx`'s
+`RotationPlayback` now carries `artworkUrl`, rendered via `MediaArtwork`
+(`size="thumb"`) next to the current-track text, with `onPlay`/`isPlaying`
+wired to the same rotation pause/resume transport the separate
+play/pause button already uses.
+
 ## 2026-09-07 — Governance Account-tab duplicate entry point removed
 
 Folded from `governance-out-of-account-section.md`, resolved via its own
