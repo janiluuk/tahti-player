@@ -4,6 +4,35 @@
 
 Open items only. Shipped bullets folded to HISTORY.md on 2026-09-05.
 
+- [ ] **Full player view: left/back arrow does nothing — should minimize
+  the player.** Reported 2026-09-07. `FullScreenPlayer.tsx`'s top-right
+  button (`packages/tahti-web/src/components/FullScreenPlayer.tsx`,
+  around line 123) already wires `onClick={close}` →
+  `useLayoutStore`'s `setFullScreenPlayerOpen(false)`, and on this
+  branch (`perf/polling-and-dom-audit`) it renders as a `Minimize2Icon`;
+  the `.claude/worktrees/workplan-cycle` copy of the same file instead
+  renders an `ArrowLeftIcon` in that same spot with the same
+  `onClick={close}` wiring. Since the handler looks correctly wired in
+  both variants read from source, this needs live browser
+  verification (deployed/dev build) to find the actual failure —
+  possibly an overlay/z-index stealing the click, a stale build, or a
+  different left-arrow element entirely that this pass didn't find.
+
+- [ ] **Library: shows Studio tabs instead of its own, and no tracks
+  appear.** Reported 2026-09-07. Two symptoms: (1) the Library
+  section's tab bar renders Studio's sections rather than Library's
+  own; (2) the signed-in user's tracks are missing from the listing
+  entirely. Possibly related to the recent "Archive → Sounds" rename
+  (`StudioArchiveView`→`StudioSoundsView`,
+  `fetchStudioArchive*`→`fetchStudioSounds*`,
+  `archiveItemId`/`archiveItem`→`soundId`/`sound`, ~60+ files) or to
+  the Slice 3 move of Favorites/History out of Library into
+  `/listen/*` — needs live repro plus a look at `router.tsx`'s
+  `/library/*` route wiring and whichever nav-config file feeds
+  Library's tab bar, to check for a stale import pointing at
+  `StudioNav`'s sections instead of Library's own, and at the
+  track-fetching path for a half-migrated field/query-key name.
+
 - [ ] **Channel Designer: tabs under the player, dynamic per enabled
   section, visual editor for adding them.** Locate the `Designer`
   component in Storybook (`packages/storybook/src/tahti-web/`) and its
