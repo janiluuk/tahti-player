@@ -103,8 +103,10 @@ export function StudioEventsView() {
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-6">
         <StudioNav current="/studio/events" />
-        <ViewShell title="Events" classes={{ root: 'px-0 pt-0' }}>
-          <div className="mb-4">
+        <ViewShell
+          title="Events"
+          classes={{ root: 'px-0 pt-0' }}
+          actions={
             <Tooltip content="Add event" side="top">
               <Link to="/studio/events/new">
                 <Button size="icon-sm" aria-label="Add event">
@@ -112,8 +114,8 @@ export function StudioEventsView() {
                 </Button>
               </Link>
             </Tooltip>
-          </div>
-
+          }
+        >
           <Tabs
             listClassName="border-border border-b pb-3"
             panelClassName="pt-2"

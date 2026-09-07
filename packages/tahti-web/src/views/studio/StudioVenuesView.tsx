@@ -302,16 +302,18 @@ export function StudioVenuesView() {
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-6">
         <StudioNav current="/studio/venues" />
-        <ViewShell title="Venues" classes={{ root: 'px-0 pt-0' }}>
-          <div className="mb-4">
+        <ViewShell
+          title="Venues"
+          classes={{ root: 'px-0 pt-0' }}
+          actions={
             <Link to="/venues/register">
               <Button size="sm" variant="secondary">
                 <PlusIcon size={14} aria-hidden className="mr-1.5" />
                 Register a venue
               </Button>
             </Link>
-          </div>
-
+          }
+        >
           {loading ? (
             <PageLoading label="Loading…" />
           ) : venues.length === 0 ? (

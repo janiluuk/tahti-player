@@ -85,8 +85,10 @@ export function AdminNewsView() {
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/news">
-          <ViewShell title="News" classes={{ root: 'px-0 pt-0' }}>
-            <div className="mb-4">
+          <ViewShell
+            title="News"
+            classes={{ root: 'px-0 pt-0' }}
+            actions={
               <Tooltip content="Write post" side="top">
                 <Button
                   size="icon-sm"
@@ -96,8 +98,8 @@ export function AdminNewsView() {
                   <PlusIcon size={16} aria-hidden />
                 </Button>
               </Tooltip>
-            </div>
-
+            }
+          >
             {msg && (
               <p className="text-foreground-secondary text-sm" role="status">
                 {msg}

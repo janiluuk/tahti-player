@@ -20,6 +20,7 @@ Sibling API: **`../tahti-org`**. Product matrix: [`FEATURES.md`](FEATURES.md) Re
 - [ ] **(Later) Onboarding toast noise** — exempt seeded/mock users, show at most once per session even without explicit dismiss, mark onboarding done before automated screenshots. Leaf: [onboarding-toast-noise.md](../../docs/todo/onboarding-toast-noise.md).
 - [ ] **(Later) "Theme is in review" mock toast reappears every reload** — same root cause as the onboarding toast noise item (module-level dedup state, and mock dismiss is a no-op); fix both together. Leaf: [sticky-theme-review-toast.md](../../docs/todo/sticky-theme-review-toast.md).
 - [ ] **(Later) Channel Designer: fold bio/CTA/avatar into backdrop toggles; feed/posts widgets** — bio/CTA/avatar stop being separate draggable blocks, become backdrop show-toggles; add configurable feed/posts channel widgets with tracklist/card-row display toggle. Leaf: [channel-designer-backdrop-fold-and-widgets.md](../../docs/todo/channel-designer-backdrop-fold-and-widgets.md).
+- [ ] **(Later) Next-broadcast card: title + "Next" on one row, gradient banner fallback** — `StudioScheduleView.tsx`'s schedule list (~line 225-255): the "Next"/"Upcoming N" label sits on its own row above the title; put them on the same row instead. Also add an event banner strip using the show's cover image, falling back to a gradient when no cover is assigned (none of the "Next"/"Upcoming" cards show any banner today).
 
 ## Cross-repo work (`../tahti-org` — user-authorized 2026-09-07)
 

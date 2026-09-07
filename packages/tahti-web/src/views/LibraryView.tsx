@@ -33,7 +33,7 @@ import { MyDiscographyView } from './MyDiscographyView';
 import { StudioRecordingsView } from './studio/StudioRecordingsView';
 import { StudioStashView } from './studio/StudioStashView';
 
-type Tab =
+export type Tab =
   | 'library'
   | 'sounds'
   | 'collections'
@@ -48,7 +48,7 @@ type CollectionTab =
   | 'stash'
   | 'embeds';
 
-const LIBRARY_SECTION_TABS = [
+export const LIBRARY_SECTION_TABS = [
   {
     id: 'library' as const,
     label: 'Overview',
@@ -105,6 +105,40 @@ const LIBRARY_SECTION_TABS = [
   },
 ];
 
+export type LibrarySectionId = (typeof LIBRARY_SECTION_TABS)[number]['id'];
+
+/**
+ * The horizontal Overview/Sounds/Collections/... tab strip shown at the top
+ * of every Library page. Reused outside LibraryView by pages that live one
+ * level under a Library tab (e.g. an individual collection's detail page)
+ * so they still show Library's top navigation with the right tab active.
+ */
+export function LibrarySectionTabs({ active }: { active: LibrarySectionId }) {
+  const navigate = useNavigate();
+  return (
+    <Tabs.Root
+      selectedIndex={Math.max(
+        0,
+        LIBRARY_SECTION_TABS.findIndex((item) => item.id === active),
+      )}
+      onChange={(index) => {
+        const next = LIBRARY_SECTION_TABS[index];
+        if (next) {
+          void navigate({ to: next.to as never });
+        }
+      }}
+    >
+      <Tabs.List aria-label="Library sections" className="overflow-x-auto">
+        {LIBRARY_SECTION_TABS.map((item) => (
+          <Tabs.Tab key={item.id}>
+            <TabLabel icon={<item.icon size={14} />}>{item.label}</TabLabel>
+          </Tabs.Tab>
+        ))}
+      </Tabs.List>
+    </Tabs.Root>
+  );
+}
+
 export function LibraryView({
   tab = 'library',
   collectionTab,
@@ -131,7 +165,6 @@ export function LibraryView({
           ? 'local'
           : activeCollectionTab
       : 'library';
-  const navigate = useNavigate();
 
   const libraryTitle =
     tab === 'library'
@@ -154,26 +187,7 @@ export function LibraryView({
 
   return (
     <div className="studio-page-layout flex w-full flex-col gap-6">
-      <Tabs.Root
-        selectedIndex={Math.max(
-          0,
-          LIBRARY_SECTION_TABS.findIndex((item) => item.id === overviewTab),
-        )}
-        onChange={(index) => {
-          const next = LIBRARY_SECTION_TABS[index];
-          if (next) {
-            void navigate({ to: next.to as never });
-          }
-        }}
-      >
-        <Tabs.List aria-label="Library sections" className="overflow-x-auto">
-          {LIBRARY_SECTION_TABS.map((item) => (
-            <Tabs.Tab key={item.id}>
-              <TabLabel icon={<item.icon size={14} />}>{item.label}</TabLabel>
-            </Tabs.Tab>
-          ))}
-        </Tabs.List>
-      </Tabs.Root>
+      <LibrarySectionTabs active={overviewTab} />
       <ViewShell title={libraryTitle} classes={{ root: 'px-0 pt-0' }}>
         {tab === 'library' ? (
           <div className="mt-2">

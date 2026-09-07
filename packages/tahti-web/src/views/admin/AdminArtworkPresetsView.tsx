@@ -134,11 +134,16 @@ export function AdminArtworkPresetsView() {
     <AdminGate>
       <AdminPageLayout current="/admin/artwork-presets">
         <div className="flex flex-col gap-6">
-          <ViewShell title="Artwork presets" classes={{ root: 'px-0 pt-0' }}>
-            <Button variant="secondary" onClick={resetToDefaults}>
-              <RotateCcwIcon size={15} aria-hidden className="mr-1.5" />
-              Reset to defaults
-            </Button>
+          <ViewShell
+            title="Artwork presets"
+            classes={{ root: 'px-0 pt-0' }}
+            actions={
+              <Button variant="secondary" onClick={resetToDefaults}>
+                <RotateCcwIcon size={15} aria-hidden className="mr-1.5" />
+                Reset to defaults
+              </Button>
+            }
+          >
             <div className="grid gap-3 sm:grid-cols-4 lg:grid-cols-8">
               {DEFAULT_ARTWORKS.map((_, index) => (
                 <button

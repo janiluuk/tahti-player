@@ -100,8 +100,10 @@ export function StudioPlaylistsView() {
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
         <StudioNav current="/studio/playlists" />
-        <ViewShell title="Playlists" classes={{ root: 'px-0 pt-0' }}>
-          <div className="mb-4">
+        <ViewShell
+          title="Playlists"
+          classes={{ root: 'px-0 pt-0' }}
+          actions={
             <Tooltip content="New playlist" side="top">
               <Button
                 size="icon-sm"
@@ -111,8 +113,8 @@ export function StudioPlaylistsView() {
                 <PlusIcon size={16} aria-hidden />
               </Button>
             </Tooltip>
-          </div>
-
+          }
+        >
           <nav className="flex flex-wrap gap-2" aria-label="Collection views">
             <Link to="/studio/collections">
               <Button size="sm" variant="secondary">

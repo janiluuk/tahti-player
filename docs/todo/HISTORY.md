@@ -2,6 +2,40 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-08 — Collection detail page: moved under /library, fixed wrong nav
+
+User-reported via screenshot: opening a collection from Library
+(`/library/collections` → `MyCollectionsView`) landed on
+`/studio/collections/$slug`, which unconditionally rendered
+`StudioNav`'s "Studio" submenu (Overview/Branding/Stats/Governance/
+Posts/Audience/Releases/Editor) — none of which relate to a collection,
+and none of which highlight as active for that route. Same bug family
+as the "lost library issue" fixed 2026-09-07 (Studio's own chrome
+leaking onto a Library-owned page) — `SECTION_PREFIXES`/`isSubmenuActive`
+in `StudioNav.tsx` already had dead-code branches anticipating a
+`/library/collections` route that didn't exist yet, confirming this was
+a known, half-finished migration.
+
+Fixed: added a `/library/collections/$slug` route (`router.tsx`)
+rendering the same `StudioCollectionEditView`, now with a `nav` prop
+(`'studio' | 'library'`, default `'studio'` for the untouched
+`/studio/collections/$slug` call sites — `StudioPlaylistsView`,
+`CollectionView`'s "Edit in Studio" link, `PluginStorePanel`,
+`ChannelRadioPlaylistPanel` — which legitimately stay Studio-context).
+Extracted `LibraryView.tsx`'s Overview/Sounds/Collections/… tab strip
+into a reusable `LibrarySectionTabs` component so
+`StudioCollectionEditView` can render it (with "Collections" active)
+and point its back-link at `/library/collections` when `nav="library"`.
+Updated `MyCollectionsView`'s row links to the new route.
+
+**Verified:** `tsc --noEmit` and `eslint` clean on `tahti-web`;
+`StudioNav.test.ts` (20 tests, unaffected) still passes. Confirmed the
+new route resolves (no 404) and that `/library/collections` itself
+still renders all 9 tabs correctly via a local `VITE_FORCE_MOCK=1`
+dev server — could not screenshot the authenticated detail view itself
+since typing into the mock login form was blocked by this session's own
+credential-entry safeguard.
+
 ## 2026-09-07 — Fixed: Library's own tabs (incl. Local files) were unreachable from /library
 
 User-reported ("the lost library issue"). Root cause, found via live

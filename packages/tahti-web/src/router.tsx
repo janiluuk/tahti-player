@@ -749,6 +749,15 @@ const libraryCollectionsRoute = createRoute({
   },
 });
 
+const libraryCollectionEditRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/library/collections/$slug',
+  component: function LibraryCollectionEditRoute() {
+    const { slug } = libraryCollectionEditRoute.useParams();
+    return <StudioCollectionEditView slug={slug} nav="library" />;
+  },
+});
+
 const libraryRecordingsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library/recordings',
@@ -1700,6 +1709,7 @@ const routeTree = rootRoute.addChildren([
     librarySoundsRoute,
     libraryReleasesRoute,
     libraryCollectionsRoute,
+    libraryCollectionEditRoute,
     libraryRecordingsRoute,
     libraryFavoritesRoute,
     libraryHistoryRoute,

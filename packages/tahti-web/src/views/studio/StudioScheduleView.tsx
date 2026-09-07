@@ -738,8 +738,10 @@ export function StudioScheduleView() {
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
         <StudioNav current="/studio/schedule" />
-        <ViewShell title="Schedule" classes={{ root: 'px-0 pt-0' }}>
-          <div className="mb-4">
+        <ViewShell
+          title="Schedule"
+          classes={{ root: 'px-0 pt-0' }}
+          actions={
             <Tooltip content="Add next broadcast" side="top">
               <Button
                 size="icon-sm"
@@ -749,8 +751,8 @@ export function StudioScheduleView() {
                 <PlusIcon size={16} aria-hidden />
               </Button>
             </Tooltip>
-          </div>
-
+          }
+        >
           <ScheduledTimes items={scheduledTimes} onEdit={openEditor} />
 
           {scheduledShows.length > 0 ? (

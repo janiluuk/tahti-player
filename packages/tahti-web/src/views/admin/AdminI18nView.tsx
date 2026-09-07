@@ -89,17 +89,21 @@ export function AdminI18nView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/i18n">
           <div className="flex max-w-4xl flex-col gap-6">
-            <ViewShell title="Languages" classes={{ root: 'px-0 pt-0' }}>
-              <Tooltip content="New language" side="top">
-                <Button
-                  size="icon-sm"
-                  onClick={() => setNewOpen(true)}
-                  aria-label="New language"
-                >
-                  <PlusIcon size={16} aria-hidden />
-                </Button>
-              </Tooltip>
-
+            <ViewShell
+              title="Languages"
+              classes={{ root: 'px-0 pt-0' }}
+              actions={
+                <Tooltip content="New language" side="top">
+                  <Button
+                    size="icon-sm"
+                    onClick={() => setNewOpen(true)}
+                    aria-label="New language"
+                  >
+                    <PlusIcon size={16} aria-hidden />
+                  </Button>
+                </Tooltip>
+              }
+            >
               {msg && (
                 <p className="text-foreground-secondary text-sm" role="status">
                   {msg}

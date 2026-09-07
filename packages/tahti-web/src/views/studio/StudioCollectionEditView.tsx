@@ -58,6 +58,7 @@ import {
   embedSrcFor,
 } from '../../lib/embedSrc';
 import { usePlayerStore } from '../../stores/playerStore';
+import { LibrarySectionTabs } from '../LibraryView';
 
 const PEAK_BUCKETS = 200;
 
@@ -342,7 +343,14 @@ function TrackRow({
   );
 }
 
-export function StudioCollectionEditView({ slug }: { slug: string }) {
+export function StudioCollectionEditView({
+  slug,
+  nav = 'studio',
+}: {
+  slug: string;
+  /** Which top navigation this page was reached through. */
+  nav?: 'studio' | 'library';
+}) {
   const [col, setCol] = useState<StudioCollection | null>(null);
   const [archive, setArchive] = useState<StudioSound[]>([]);
   const [addPickerOpen, setAddPickerOpen] = useState(false);
@@ -625,9 +633,15 @@ export function StudioCollectionEditView({ slug }: { slug: string }) {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-4xl flex-col gap-6 px-1 py-2">
-        <StudioNav current="/studio/collections" />
+        {nav === 'library' ? (
+          <LibrarySectionTabs active="collections" />
+        ) : (
+          <StudioNav current="/studio/collections" />
+        )}
         <Link
-          to="/studio/collections"
+          to={
+            nav === 'library' ? '/library/collections' : '/studio/collections'
+          }
           className="text-foreground-secondary -mt-2 text-xs hover:underline"
         >
           ← Collections
