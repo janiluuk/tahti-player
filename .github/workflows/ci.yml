@@ -25,6 +25,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v7
 
+      - name: Check for Rust changes
+        id: rust-changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            rust:
+              - 'packages/player/src-tauri/**'
+              - '**/Cargo.lock'
+              - '**/Cargo.toml'
+
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
@@ -47,9 +57,11 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Setup Rust
+        if: steps.rust-changes.outputs.rust == 'true'
         uses: dtolnay/rust-toolchain@stable
 
       - name: Cache cargo dependencies
+        if: steps.rust-changes.outputs.rust == 'true'
         uses: actions/cache@v6
         with:
           path: |
@@ -61,6 +73,7 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Install system dependencies
+        if: steps.rust-changes.outputs.rust == 'true'
         run: |
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
@@ -68,13 +81,27 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build upstream packages
+        run: pnpm turbo build --filter='!@tahti-player/player'
+
       - name: Lint
-        run: pnpm lint
+        run: pnpm turbo lint
 
       - name: Test
         id: test
         continue-on-error: true
-        run: pnpm test
+        run: pnpm turbo test
+
+      - name: Build player (frontend-only)
+        if: steps.rust-changes.outputs.rust != 'true'
+        run: pnpm turbo build:frontend --filter=@tahti-player/player
+
+      - name: Build player (full Tauri)
+        if: steps.rust-changes.outputs.rust == 'true'
+        run: pnpm turbo build --filter=@tahti-player/player
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
 
       - name: Install Playwright Chromium
         if: steps.test.outcome == 'failure'
@@ -117,15 +144,8 @@ jobs:
         if: steps.test.outcome == 'failure'
         run: |
           if [ -f snapshot-digest/digest.json ] && node -e "const d=require('./snapshot-digest/digest.json'); process.exit(d.count > 0 ? 0 : 1)"; then
-            echo "Snapshot mismatches detected — see snapshot-digest artifact / PR comment. Not failing CI."
+            echo "Snapshot mismatches detected — see snapshot digest artifact / PR comment. Not failing CI."
           else
             echo "Tests failed (non-snapshot). See test logs above."
             exit 1
           fi
-
-      - name: Build
-        run: pnpm build
-        env:
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
