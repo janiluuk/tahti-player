@@ -177,10 +177,10 @@ const locations: ElementLocation[] = [
     pages: 'Listen header',
   },
   {
-    element: 'AdminDiscoWidgetsView',
+    element: 'AdminAddonsView',
     kind: 'View',
     pages:
-      'Admin → Disco-widgets — registers/edits/deletes the catalog DiscoWidgetManagerPanel installs from',
+      'Admin → Add-ons — registers/edits/deletes the catalog DiscoWidgetManagerPanel installs from',
   },
   {
     element: 'ChannelView',
