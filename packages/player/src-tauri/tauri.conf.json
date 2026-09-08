@@ -2,7 +2,7 @@
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Tahti Player",
   "mainBinaryName": "tahti-player",
-  "version": "1.47.64",
+  "version": "1.47.65",
   "identifier": "live.tahti.player",
   "build": {
     "frontendDist": "../dist",
