@@ -67,7 +67,7 @@ Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
 | Channel archive | `/c/:slug` | `/channel/$slug` | `live-api` | listen-events after ~15s |
 | Channel chat | `/c/:slug` | rail + `/chat/$slug` | `live-api` | REST + Centrifugo WS; hCaptcha on anonymous join; reactions; subscriber-only gating |
 | Tahti Radio | `/radio` | `/radio` | `live-api` | |
-| Artist profile | `/u/:username` | `/u/$username` | `live-api` | Music tab: pinned tracks (max 4) above catalog; Stage pins via `PATCH /api/me/archive/:id` `{ pinned }` |
+| Artist profile | `/u/:username` | `/u/$username` | `live-api` | Music tab: pinned tracks (max 4) above catalog; Stage pins via `PATCH /api/me/sound/:id` `{ pinned }` |
 | Collection | `/u/:user/c/:slug` | `/u/$username/c/$slug` | `live-api` | |
 | Smart link | `/r/:slug` | `/r/$slug` | `live-api` | |
 | Venues list | `/venues` | `/venues` | `partial` | list only |

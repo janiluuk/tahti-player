@@ -1,3 +1,9 @@
+## 2026-09-08 — Settings footer icon row + toast noise (onboarding + mock theme review)
+
+Settings modal footer links → single icon row. Onboarding "finish profile"
+toast at most once/session (sessionStorage) + mock users pre-marked.
+Mock sticky "Theme is in review" acknowledge now persists for the session.
+
 > **Agent note (2026-09-05):** This file is an **append-only ship diary**, not the open backlog.
 > Open work: [`docs/todo/INDEX.md`](../../docs/todo/INDEX.md) and [`WORKPLAN.md`](WORKPLAN.md) (open-only).
 > Finished tasks fold into [`docs/todo/HISTORY.md`](../../docs/todo/HISTORY.md) — do not re-scan this whole file for “what’s next”.

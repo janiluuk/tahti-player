@@ -187,7 +187,7 @@ export function buildMockLoginUser(
       .split('@')[0]
       ?.replace(/\+.*$/, '')
       .replace(/[^a-zA-Z0-9_-]/g, '') || 'demo';
-  return {
+  const user: AuthUser = {
     id: `mock-${email}`,
     email,
     username,
@@ -207,4 +207,12 @@ export function buildMockLoginUser(
     },
     ...overrides,
   };
+  // Seeded/demo accounts skip the "Finish your profile?" toast — they are
+  // already "set up" for testing (same key OnboardingView uses).
+  try {
+    localStorage.setItem(`tahti-web-onboarded:${user.id}`, '1');
+  } catch {
+    // ignore
+  }
+  return user;
 }

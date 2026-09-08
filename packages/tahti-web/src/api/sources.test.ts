@@ -50,7 +50,7 @@ describe('importHearthisTracks', () => {
     });
     expect(fetchMock).toHaveBeenNthCalledWith(
       2,
-      '/tahti-api/api/me/archive/archive-1/banner/from-url',
+      '/tahti-api/api/me/sound/archive-1/banner/from-url',
       expect.objectContaining({
         body: JSON.stringify({ sourceUrl: track.coverUrl }),
         method: 'POST',

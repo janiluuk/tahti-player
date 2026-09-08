@@ -762,7 +762,7 @@ export async function importHearthisTracks(
             }
             try {
               await requestJson(
-                `/api/me/archive/${encodeURIComponent(data.soundId)}/banner/from-url`,
+                `/api/me/sound/${encodeURIComponent(data.soundId)}/banner/from-url`,
                 {
                   method: 'POST',
                   body: JSON.stringify({ sourceUrl: coverUrl }),
@@ -888,7 +888,7 @@ export async function fetchTrackExportStatus(
       mixcloudUrl: string | null;
       error: string | null;
     }>(
-      `/api/me/archive/${encodeURIComponent(soundId)}/${encodeURIComponent(target)}`,
+      `/api/me/sound/${encodeURIComponent(soundId)}/${encodeURIComponent(target)}`,
     );
     return {
       status: data.status,
@@ -914,7 +914,7 @@ export async function exportTrack(
   }
   try {
     const { data } = await requestJson<{ status: string }>(
-      `/api/me/archive/${encodeURIComponent(soundId)}/${encodeURIComponent(target)}`,
+      `/api/me/sound/${encodeURIComponent(soundId)}/${encodeURIComponent(target)}`,
       { method: 'POST' },
     );
     return {

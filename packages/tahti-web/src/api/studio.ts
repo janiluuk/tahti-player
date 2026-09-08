@@ -177,7 +177,7 @@ export async function fetchStudioSounds(): Promise<{
     };
   }
   try {
-    const { data } = await requestJson<StudioSound[]>('/api/me/archive');
+    const { data } = await requestJson<StudioSound[]>('/api/me/sound');
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
@@ -201,7 +201,7 @@ export async function fetchStudioSound(id: string): Promise<{
   }
   try {
     const { data } = await requestJson<StudioSound>(
-      `/api/me/archive/${encodeURIComponent(id)}`,
+      `/api/me/sound/${encodeURIComponent(id)}`,
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
@@ -231,7 +231,7 @@ export async function fetchStudioSoundDownload(id: string): Promise<
   }
   try {
     const { data } = await requestJson<{ url: string; filename?: string }>(
-      `/api/me/archive/${encodeURIComponent(id)}/download`,
+      `/api/me/sound/${encodeURIComponent(id)}/download`,
     );
     return { ok: true, ...data };
   } catch (error) {
@@ -285,7 +285,7 @@ export async function patchStudioSound(
   }
   try {
     const { data } = await requestJson<StudioSound>(
-      `/api/me/archive/${encodeURIComponent(id)}`,
+      `/api/me/sound/${encodeURIComponent(id)}`,
       { method: 'PATCH', body: JSON.stringify(patch) },
     );
     return { ok: true, data };
@@ -348,7 +348,7 @@ export async function fetchSoundShares(soundId: string): Promise<{
   }
   try {
     const { data } = await requestJson<{ shares: SoundShare[] }>(
-      `/api/me/archive/${encodeURIComponent(soundId)}/shares`,
+      `/api/me/sound/${encodeURIComponent(soundId)}/shares`,
     );
     return { data: data.shares ?? [], meta: { source: 'api' } };
   } catch (err) {
@@ -386,7 +386,7 @@ export async function createSoundShare(
   }
   try {
     const { data } = await requestJson<SoundShare>(
-      `/api/me/archive/${encodeURIComponent(soundId)}/share`,
+      `/api/me/sound/${encodeURIComponent(soundId)}/share`,
       { method: 'POST', body: JSON.stringify(input) },
     );
     return { ok: true, data };
@@ -413,7 +413,7 @@ export async function revokeSoundShare(
   }
   try {
     await requestJson<void>(
-      `/api/me/archive/shares/${encodeURIComponent(shareId)}`,
+      `/api/me/sound/shares/${encodeURIComponent(shareId)}`,
       { method: 'DELETE' },
     );
     return { ok: true };
@@ -547,7 +547,7 @@ export async function uploadSoundBanner(
     const { data: prepared } = await requestJson<{
       uploadKey: string;
       uploadUrl: string;
-    }>(`/api/me/archive/${encodeURIComponent(soundId)}/banner/prepare`, {
+    }>(`/api/me/sound/${encodeURIComponent(soundId)}/banner/prepare`, {
       method: 'POST',
       body: JSON.stringify({
         filename: file.name,
@@ -563,7 +563,7 @@ export async function uploadSoundBanner(
       throw new Error(`Artwork upload failed (${upload.status})`);
     }
     const { data: completed } = await requestJson<{ url: string }>(
-      `/api/me/archive/${encodeURIComponent(soundId)}/banner/complete`,
+      `/api/me/sound/${encodeURIComponent(soundId)}/banner/complete`,
       {
         method: 'POST',
         body: JSON.stringify({ uploadKey: prepared.uploadKey }),
@@ -587,7 +587,7 @@ export async function importSoundBanner(
   }
   try {
     const { data } = await requestJson<{ url: string }>(
-      `/api/me/archive/${encodeURIComponent(soundId)}/banner/from-url`,
+      `/api/me/sound/${encodeURIComponent(soundId)}/banner/from-url`,
       {
         method: 'POST',
         body: JSON.stringify({ sourceUrl }),
@@ -613,7 +613,7 @@ export async function deleteStudioSound(
     return { ok: true };
   }
   try {
-    await requestJson(`/api/me/archive/${encodeURIComponent(id)}`, {
+    await requestJson(`/api/me/sound/${encodeURIComponent(id)}`, {
       method: 'DELETE',
     });
     return { ok: true };
@@ -642,7 +642,7 @@ export async function fetchEditorSource(soundId: string): Promise<{
   }
   try {
     const { data } = await requestJson<EditorSource>(
-      `/api/me/archive/${encodeURIComponent(soundId)}/editor/source`,
+      `/api/me/sound/${encodeURIComponent(soundId)}/editor/source`,
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
@@ -1084,7 +1084,7 @@ export async function fetchSoundStems(soundId: string): Promise<{
   }
   try {
     const { data } = await requestJson<{ jobs: StemJob[] }>(
-      `/api/me/archive/${encodeURIComponent(soundId)}/stems`,
+      `/api/me/sound/${encodeURIComponent(soundId)}/stems`,
     );
     return { data: data.jobs ?? [], meta: { source: 'api' } };
   } catch (err) {
@@ -1101,7 +1101,7 @@ export async function requestSoundStems(
   }
   try {
     const { data } = await requestJson<{ status: string }>(
-      `/api/me/archive/${encodeURIComponent(soundId)}/stems/render`,
+      `/api/me/sound/${encodeURIComponent(soundId)}/stems/render`,
       { method: 'POST', body: JSON.stringify({ stemSet }) },
     );
     return { ok: true, status: data.status };
@@ -1774,7 +1774,7 @@ export async function fetchEditorDraft(soundId: string): Promise<{
   }
   try {
     const { data } = await requestJson<EditorDraft>(
-      `/api/me/archive/${encodeURIComponent(soundId)}/editor/draft`,
+      `/api/me/sound/${encodeURIComponent(soundId)}/editor/draft`,
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
@@ -1803,7 +1803,7 @@ export async function saveEditorDraft(
   }
   try {
     const { data } = await requestJson<{ ok: true; updatedAt: string }>(
-      `/api/me/archive/${encodeURIComponent(soundId)}/editor/draft`,
+      `/api/me/sound/${encodeURIComponent(soundId)}/editor/draft`,
       {
         method: 'PATCH',
         body: JSON.stringify({
@@ -1845,7 +1845,7 @@ export async function renderEditorDraft(
       versionId: string;
       versionNumber: number;
       status: string;
-    }>(`/api/me/archive/${encodeURIComponent(soundId)}/editor/render`, {
+    }>(`/api/me/sound/${encodeURIComponent(soundId)}/editor/render`, {
       method: 'POST',
       body: JSON.stringify({
         editList,

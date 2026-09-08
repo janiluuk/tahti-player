@@ -178,7 +178,7 @@ export async function fetchArchiveVersions(soundId: string): Promise<{
   }
   try {
     const { data } = await requestJson<ArchiveVersion[]>(
-      `/api/me/archive/${encodeURIComponent(soundId)}/versions`,
+      `/api/me/sound/${encodeURIComponent(soundId)}/versions`,
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
@@ -202,7 +202,7 @@ export async function activateArchiveVersion(
   }
   try {
     const { data } = await requestJson<ArchiveVersion[]>(
-      `/api/me/archive/${encodeURIComponent(soundId)}/versions/${encodeURIComponent(versionId)}/activate`,
+      `/api/me/sound/${encodeURIComponent(soundId)}/versions/${encodeURIComponent(versionId)}/activate`,
       { method: 'POST' },
     );
     return { ok: true, data };
@@ -224,7 +224,7 @@ export async function fetchVersionDownloadUrl(
   }
   try {
     const { data } = await requestJson<{ url: string; contentType: string }>(
-      `/api/me/archive/${encodeURIComponent(soundId)}/versions/${encodeURIComponent(versionId)}/download`,
+      `/api/me/sound/${encodeURIComponent(soundId)}/versions/${encodeURIComponent(versionId)}/download`,
     );
     return { ok: true, url: data.url };
   } catch (err) {
@@ -261,7 +261,7 @@ export async function uploadArchiveVersion(
     const { data: prep } = await requestJson<{
       uploadId: string;
       uploadUrl: string;
-    }>(`/api/me/archive/${encodeURIComponent(soundId)}/versions/prepare`, {
+    }>(`/api/me/sound/${encodeURIComponent(soundId)}/versions/prepare`, {
       method: 'POST',
       body: JSON.stringify({
         filename: file.name,
@@ -280,7 +280,7 @@ export async function uploadArchiveVersion(
       versionId: string;
       versionNumber: number;
       status: string;
-    }>(`/api/me/archive/${encodeURIComponent(soundId)}/versions/complete`, {
+    }>(`/api/me/sound/${encodeURIComponent(soundId)}/versions/complete`, {
       method: 'POST',
       body: JSON.stringify({
         uploadId: prep.uploadId,

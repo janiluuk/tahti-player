@@ -39,7 +39,12 @@ import { useLayoutStore } from '../stores/layoutStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 import { useTourStore } from '../stores/tourStore';
-import { hasSeenOnboarding, markOnboardingSeen } from '../views/OnboardingView';
+import {
+  deferOnboardingPrompt,
+  hasDeferredOnboardingPrompt,
+  hasSeenOnboarding,
+  markOnboardingSeen,
+} from '../views/OnboardingView';
 import { AmbientBackground } from './AmbientBackground';
 import { AppTopNav } from './AppTopNav';
 import { AudioEngine } from './AudioEngine';
@@ -323,14 +328,22 @@ export function AppShell() {
     };
   }, [currentTrackId, isLivePlayback, pathname, playerQueue, playerStatus]);
 
-  // First sign-in of the session: offer onboarding via a dismissible toast
-  // instead of forcing a redirect. "Not now" marks it seen the same way
-  // OnboardingView's own "Skip for now" does; letting the toast time out
-  // without a click just offers it again next session.
+  // Offer onboarding via a dismissible toast instead of forcing a redirect.
+  // At most once per browser session (sessionStorage), even if the toast
+  // times out without a click. "Not now" also permanently marks it seen
+  // (localStorage), same as OnboardingView's "Skip for now". Screenshot /
+  // e2e drivers should call markOnboardingSeen after sign-in (see
+  // e2e/real-user-journeys.spec.ts signIn helper) so the toast never covers UI.
   useEffect(() => {
-    if (!userId || pathname === '/onboarding' || hasSeenOnboarding(userId)) {
+    if (
+      !userId ||
+      pathname === '/onboarding' ||
+      hasSeenOnboarding(userId) ||
+      hasDeferredOnboardingPrompt(userId)
+    ) {
       return;
     }
+    deferOnboardingPrompt(userId);
     toast('Finish setting up your profile?', {
       description: 'A few quick steps to personalize your channel.',
       action: {
@@ -342,7 +355,8 @@ export function AppShell() {
         onClick: () => markOnboardingSeen(userId),
       },
     });
-    // Fire once per signed-in session, not on every route change.
+    // Fire once per signed-in user id for this mount cycle; sessionStorage
+    // blocks re-offers after reload within the same browser session.
   }, [userId]);
 
   useEffect(() => {

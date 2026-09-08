@@ -67,7 +67,7 @@ The current counterpart inventory is intentionally explicit:
 | RTMP multicast | `apps/api/src/routes/me/rtmp-targets.ts` (`/api/me/rtmp-targets`) | Authenticated channel owner |
 | Artist widgets | `apps/api/src/routes/me/disco-widgets.ts` (`/api/me/disco-widgets/installs`) | Authenticated artist |
 | Admin widget catalog | `apps/api/src/routes/admin/disco-widgets.ts` (`/api/admin/disco-widgets`) | Board only |
-| Audio editor | `apps/api/src/routes/me/archive-editor.ts` (`/api/me/archive/:id/editor/draft`) | Authenticated owner of archive item |
+| Audio editor | `apps/api/src/routes/me/archive-editor.ts` (`/api/me/sound/:id/editor/draft`) | Authenticated owner of archive item |
 | Track insights | `apps/api/src/routes/me/track-insights.ts` | Authenticated owner or permitted viewer |
 | Export/delivery | `apps/api/src/routes/releases` + `GET /api/me/export-plugins` | Authenticated artist; Revelator submit/status live |
 | Scrobble (ListenBrainz / Last.fm) | `listenbrainz` install + `lastfm` OAuth start/callback + listen-events scrobble | Authenticated user; LB token validated on install; Last.fm needs `LASTFM_API_*`; scrobble is fire-and-forget after recorded listens |

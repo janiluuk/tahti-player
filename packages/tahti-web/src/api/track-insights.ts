@@ -82,7 +82,7 @@ function mockInsights(period: InsightsPeriod, title: string): TrackInsights {
 }
 
 const KIND_PATH: Record<InsightsKind, string> = {
-  sound: '/api/me/archive',
+  sound: '/api/me/sound',
   'release-tracks': '/api/me/release-tracks',
 };
 

@@ -2,6 +2,41 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-08 — Settings footer icons + onboarding/theme toast noise
+
+**Settings footer:** GitHub / Discord / API docs in the settings modal nav
+footer are now a single centered icon row (18px) with aria-label/title,
+above SidebarBuildInfo.
+
+**Onboarding toast:** At most once per browser session via sessionStorage
+(`deferOnboardingPrompt`), even if the toast times out without a click.
+"Not now" still permanently marks seen. Mock/seed logins
+(`buildMockLoginUser`) pre-mark onboarding seen so demo users never get
+the popup. Screenshot/e2e drivers should keep calling markOnboardingSeen
+after sign-in (already done in `e2e/real-user-journeys.spec.ts`).
+
+**Theme-in-review mock toast:** `dismissNotification` / mark-all under
+`VITE_FORCE_MOCK` now persist dismissed ids in sessionStorage, so
+Acknowledge actually removes the fixture from subsequent fetches across
+reloads in the same session.
+
+## 2026-09-08 — Admin panel left padding + Sounds empty library
+
+**Admin left gap:** `.admin-page-layout` / `.admin-moderation-layout` still
+used a CSS grid with an 11rem left column from the old docked-sidebar
+AdminNav. After `AdminPageLayout` nested tabs/menu inside a flex wrapper,
+that column stayed empty — content started ~11rem inset. Switched both
+layouts to the same flex column as `.studio-page-layout`.
+
+**Sounds empty in prod:** tahti-web still called `/api/me/archive*`; the
+sibling API renamed those routes to `/api/me/sound*` (production Next client
+already used the new paths). Failed GETs returned `{ data: [], meta:
+apiErrorMeta }` with no UI surface, so a 404 looked like an empty library.
+Fixed every `/api/me/archive` client path to `/api/me/sound`, and
+`MyDiscographyView` now shows a retryable `PageError` when `meta.reason` is
+set. Sort control moved into the filter row as a `DropdownButton` (dropped
+the labeled `Select`).
+
 ## 2026-09-08 — Collection detail page: moved under /library, fixed wrong nav
 
 User-reported via screenshot: opening a collection from Library

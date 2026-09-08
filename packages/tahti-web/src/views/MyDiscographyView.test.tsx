@@ -28,6 +28,9 @@ const mockSound: StudioSound = {
 } as StudioSound;
 
 let fetchedSounds: StudioSound[] = [];
+let fetchedMeta: { source: 'api' | 'mock'; reason?: string } = {
+  source: 'mock',
+};
 
 vi.mock('../api/studio', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../api/studio')>();
@@ -35,7 +38,7 @@ vi.mock('../api/studio', async (importOriginal) => {
     ...actual,
     fetchStudioSounds: async () => ({
       data: fetchedSounds,
-      meta: { source: 'mock' },
+      meta: fetchedMeta,
     }),
   };
 });
@@ -64,6 +67,7 @@ let root: Root;
 beforeEach(() => {
   vi.stubEnv('VITE_FORCE_MOCK', '1');
   fetchedSounds = [];
+  fetchedMeta = { source: 'mock' };
   container = document.createElement('div');
   document.body.appendChild(container);
   root = createRoot(container);
@@ -121,5 +125,14 @@ describe('MyDiscographyView', () => {
     fetchedSounds = [mockSound];
     await renderAsUser({ slug: 'user', state: 'OFFLINE' });
     expect(container.textContent).toContain('Test Track');
+  });
+
+  it('shows a retryable error when the API returns empty with an error reason', async () => {
+    fetchedSounds = [];
+    fetchedMeta = { source: 'api', reason: 'Not Found' };
+    await renderAsUser({ slug: 'user', state: 'OFFLINE' });
+    expect(container.textContent).toContain('Could not load sounds');
+    expect(container.textContent).toContain('Not Found');
+    expect(container.textContent).not.toContain('No sounds yet');
   });
 });

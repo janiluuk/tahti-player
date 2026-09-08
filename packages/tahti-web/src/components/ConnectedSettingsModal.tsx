@@ -21,12 +21,12 @@ const GITHUB_REPO_URL = 'https://github.com/janiluuk/tahti-player';
 const API_DOCS_URL = 'https://api.tahti.live/api';
 const DISCORD_URL = 'https://discord.gg/M6K43kbMa';
 
-const footerLinkClass =
-  'text-foreground-secondary hover:text-foreground hover:bg-background-secondary flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs transition-colors';
+const footerIconLinkClass =
+  'text-foreground-secondary hover:text-foreground hover:bg-background-secondary inline-flex size-9 items-center justify-center rounded-md transition-colors';
 
 /** Lucide has no Discord glyph — same hand-drawn-brand-mark pattern as
  * `SourceServiceIcon.tsx` for services outside its icon set. */
-function DiscordIcon({ size = 14 }: { size?: number }) {
+function DiscordIcon({ size = 18 }: { size?: number }) {
   return (
     <svg
       width={size}
@@ -101,34 +101,37 @@ export function ConnectedSettingsModal() {
               <span className="ml-1.5">Log in</span>
             </Button>
           ) : null}
-          <div className="border-border flex flex-col gap-0.5 border-t pt-2">
-            <div className="flex flex-col gap-0.5">
+          <div className="border-border flex flex-col gap-2 border-t pt-2">
+            <div className="flex items-center justify-center gap-1">
               <a
                 href={GITHUB_REPO_URL}
-                className={footerLinkClass}
+                className={footerIconLinkClass}
                 target="_blank"
                 rel="noreferrer"
+                aria-label="GitHub"
+                title="GitHub"
               >
-                <GithubIcon size={14} aria-hidden />
-                GitHub
+                <GithubIcon size={18} aria-hidden />
               </a>
               <a
                 href={DISCORD_URL}
-                className={footerLinkClass}
+                className={footerIconLinkClass}
                 target="_blank"
                 rel="noreferrer"
+                aria-label="Discord"
+                title="Discord"
               >
-                <DiscordIcon />
-                Discord
+                <DiscordIcon size={18} />
               </a>
               <a
                 href={API_DOCS_URL}
-                className={footerLinkClass}
+                className={footerIconLinkClass}
                 target="_blank"
                 rel="noreferrer"
+                aria-label="API docs"
+                title="API docs"
               >
-                <BookOpenIcon size={14} aria-hidden />
-                API docs
+                <BookOpenIcon size={18} aria-hidden />
               </a>
             </div>
             <SidebarBuildInfo />

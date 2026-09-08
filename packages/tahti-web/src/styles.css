@@ -112,58 +112,16 @@ body,
     column-gap: 1.5rem;
   }
 
-  .studio-page-layout {
+  /* Studio + Admin both use horizontal section tabs (AdminPageLayout nests
+   * [data-admin-section-tabs]/[data-admin-section-menu] inside a flex
+   * wrapper). Do not reserve a left sidebar column — that left an empty
+   * 11rem gap after AdminNav moved off the docked-sidebar layout. */
+  .studio-page-layout,
+  .admin-page-layout,
+  .admin-moderation-layout {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-  }
-
-  .admin-moderation-layout,
-  .admin-page-layout {
-    display: grid;
-    grid-template-columns: 11rem minmax(0, 1fr);
-    grid-template-rows: auto auto;
-    align-items: start;
-    position: relative;
-    row-gap: 0;
-  }
-
-  .admin-moderation-layout > [data-admin-section-tabs] {
-    grid-column: 2;
-    grid-row: 1;
-  }
-
-  .admin-moderation-layout > [data-admin-section-menu] {
-    grid-column: 1;
-    grid-row: 2;
-    position: absolute;
-    align-self: start;
-    width: 11rem;
-  }
-
-  .admin-moderation-layout
-    > :not([data-admin-section-tabs]):not([data-admin-section-menu]) {
-    grid-column: 2;
-    min-width: 0;
-  }
-
-  .admin-page-layout > [data-admin-section-tabs] {
-    grid-column: 2;
-    grid-row: 1;
-  }
-
-  .admin-page-layout > [data-admin-section-menu] {
-    grid-column: 1;
-    grid-row: 2;
-    position: absolute;
-    align-self: start;
-    width: 11rem;
-  }
-
-  .admin-page-layout
-    > :not([data-admin-section-tabs]):not([data-admin-section-menu]) {
-    grid-column: 2;
-    min-width: 0;
   }
 
   [role='tablist'] > button[role='tab'],

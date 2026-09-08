@@ -40,7 +40,7 @@ Login is `POST /api/auth/login`, TOTP login is
 | Broadcast controls | `POST /api/channels/{slug}/skip`, `/pause`, `/resume`, `/previous`; `GET /api/channels/{slug}/rtmp-status` | Go Live, Radio, stream manager |
 | Rotation and programming | `GET/PATCH /api/channels/{slug}/fallback-collections`, `GET /api/channels/{slug}/programme`, `PATCH /api/channels/{slug}/fallback-collection` | 24/7 rotation and radio management |
 | Multicast | `GET/POST /api/me/rtmp-targets`, `PATCH/DELETE /api/me/rtmp-targets/{id}`, `GET /api/me/rtmp-targets/{id}/stream-key` | Studio → Manage → Multicast and Go Live |
-| Archive and editing | `/api/me/archive`, `/api/me/archive/{id}`, `/api/me/archive/{id}/editor/draft`, `/api/me/archive/{id}/fingerprint` | Sounds, upload, stash, track editor, audio editor |
+| Archive and editing | `/api/me/sound`, `/api/me/sound/{id}`, `/api/me/sound/{id}/editor/draft`, `/api/me/sound/{id}/fingerprint` | Sounds, upload, stash, track editor, audio editor |
 | Collections and releases | `/api/me/collections`, `/api/me/releases`, `/api/me/releases/{id}`, release export and royalty routes | Collections, releases, distribution, smartlinks |
 | Shows and schedule | `/api/me/shows`, `/api/me/shows/{id}`, `/api/me/show-bookings`, `/api/me/episodes` | Shows, calendar, Studio Broadcast (`/studio/schedule`), recordings |
 | Profile and audience | `/api/me/profile`, `/api/me/notification-preferences`, `/api/me/fan-tiers`, `/api/me/fan-sub-payouts`, `/api/me/fan-sub-payouts/summary`, `/api/me/fan-subs/connect`, `/api/me/revelator/royalties`, `/api/me/fan-subscriptions`, `/api/me/grants` | Settings, Studio → Audience, subscriptions |
@@ -79,15 +79,15 @@ on the real, existing `POST /api/me/stash/:id/share` /
 `DELETE /api/me/stash/shares/:shareId` contract (`StashShare`), same
 request/response shape, same auth (`requireAuth`, ownership-checked):
 
-- `POST /api/me/archive/:id/share` — body `{ granteeUsername?: string,
+- `POST /api/me/sound/:id/share` — body `{ granteeUsername?: string,
   permission: 'READ' | 'DOWNLOAD', expiresInDays?: number }` → `{ id,
   token, permission, expiresAt }`.
-- `DELETE /api/me/archive/shares/:shareId`.
-- `GET /api/me/archive/:id/shares` → `{ shares: SoundShare[] }` (list, for
+- `DELETE /api/me/sound/shares/:shareId`.
+- `GET /api/me/sound/:id/shares` → `{ shares: SoundShare[] }` (list, for
   the panel to show existing links — the stash contract doesn't have a
   standalone list-by-id endpoint since `GET /api/me/stash` already returns
   each file's `shares` inline; a real archive equivalent should decide
-  whether to do the same on `GET /api/me/archive` or keep this separate
+  whether to do the same on `GET /api/me/sound` or keep this separate
   endpoint).
 
 **Keyed public access.** `GET /api/tracks/:id` today hard-codes
