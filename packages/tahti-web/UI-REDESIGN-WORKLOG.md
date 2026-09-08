@@ -1,3 +1,12 @@
+## 2026-09-08 — Playlist + Release cover hover-delete
+
+Wired `EntitySocialHeader`'s `onImageDelete` into Studio Playlist and
+Release covers (Collection was done earlier the same day). Release
+needed a new backend route — `DELETE /api/me/releases/:id/artwork` in
+`../tahti-org` (committed locally on `feat/release-artwork-delete`, not
+pushed) — since nothing could clear release artwork before. Show/Sound
+detail headers checked: their images are read-only, no delete to add.
+
 ## 2026-09-08 — Next-broadcast cards, status-bar icons, page-tour chrome
 
 Schedule next/upcoming cards: same-row Next+title + cover/gradient banner.

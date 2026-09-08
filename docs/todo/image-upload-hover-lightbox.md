@@ -85,6 +85,33 @@ image slot), a different problem than the corner-X pattern used here.
 `tsc --noEmit`, `eslint`, `pnpm vitest run` (485/485) all pass. Not
 live-browser-verified.
 
+**2026-09-08 (3):** Wired `onImageDelete` into Playlist and Release
+covers (the two of the four remaining `EntitySocialHeader` consumers
+that actually have an editable image — `StudioSoundView` and
+`StudioShowDetailView` render a read-only `bannerUrl`/`thumbnailUrl`
+with no `onImageClick`, so there's no image to delete there; checked,
+no change needed). Playlist reused the same `patchStudioCollection(slug,
+{ coverUrl: null })` path Collection already uses (same backend model).
+Release had no way to clear artwork at all — `patchStudioRelease` never
+accepted an `artworkUrl` field, and the dedicated
+`/artwork/{prepare,complete,from-url}` routes only ever set it. Added
+`DELETE /api/me/releases/:id/artwork` in `../tahti-org`
+(`apps/api/src/routes/releases/artwork.ts`, branch
+`feat/release-artwork-delete`, committed locally — not pushed, no PR
+opened) nulling `artworkKey`/`artworkUrl`, plus a
+`apps/api/src/routes/releases/artwork.test.ts` covering the happy path
+and a 404-for-other-owner case (`pnpm vitest run` in `apps/api`: 2/2
+pass; this route previously had zero test coverage). Added
+`removeReleaseArtwork()` to this repo's `src/api/studio.ts` and wired
+both views' `onImageDelete` to their own `ConfirmDialog`, same pattern
+as Collection. `tsc --noEmit`, `eslint`, `pnpm vitest run` (485/485) all
+pass. Not live-browser-verified (Chrome extension unavailable this
+session).
+
+Remaining from the "not done" list below: `StudioBrandingView` →
+shared primitives migration, `ChannelDesigner` backdrop/gallery,
+Collection backdrop/slideshow delete, and admin radio/announcements.
+
 ## Not done in this pass (bespoke, not on the shared primitives)
 
 - `StudioBrandingView` avatar/press-kit gallery: hover-delete + preview
