@@ -2,6 +2,25 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-08 — Mentions: real sourceUrl/sourceTitle resolved in `../tahti-org`
+
+`archive-mentions-source-url.md` was fully scoped from a prior pass;
+this pass implemented it in a dedicated `tahti-org-worktrees/` worktree
+(avoided the shared main checkout, which had another session's
+uncommitted work at the time). `GET /api/v1/u/:username/mentions` now
+resolves `Mention.sourceId` into a real `sourceUrl`/`sourceTitle` per
+surface (BIO → `/u/:username`, TRACKLIST → `/t/:soundId` with the
+sound's title, ANNOUNCEMENT → the mentioner's `/channel/:slug` — not
+the announcement row itself, since it rotates out after 3 — CHAT →
+parses the composite sourceId to the channel's `/chat/:slug`).
+RELEASE/NEWSLETTER confirmed dead (no `recordMentions()` call site).
+Also checked "notifications end to end": `GET /api/me/mentions` and
+`Mention.notifiedAt` are both unused/dead (no frontend consumer
+anywhere, notifiedAt never written) — left as-is, not built out
+(would be new feature scope, not this ticket). `tahti-web`'s
+`PublicMention` client type already had the fields typed, no client
+change needed. PR: `tahti-org#481` (not merged by this session).
+
 ## 2026-09-08 — Studio EmptyState sweep: closed out, remaining items are intentional non-fits
 
 `studio-emptystate-remaining.md` was a leftover from the already-closed
