@@ -1979,3 +1979,28 @@ Release Overview `TrackTable` (no trash/reorder) all render and behave
 correctly; the Smart Links tab's own reorder/delete UI is unaffected.
 
 ---
+
+## 2026-09-08: Sounds view — silent-empty prod bug fixed + sort control redesign
+
+Root cause of the reported "library shows empty under Sounds in
+production" bug: `fetchStudioSounds()` (`api/studio.ts`) already
+returned `{ data: [], meta: apiErrorMeta(err) }` on a non-mock fetch
+failure, but `MyDiscographyView` never read `meta` — a real
+backend/auth failure rendered identically to the genuine "All (0)"
+empty state. Fixed by threading `meta.reason` into a new `error` state
+and rendering the shared `PageError` component (`title`, `description`,
+`onRetry`) instead of the empty state whenever `meta.source === 'api'`
+carries a `reason`. Added a regression test asserting a real fetch
+failure shows "Couldn't load your sounds" (not "No sounds yet").
+
+Sort control redesign: swapped the labeled `Select` ("Sort all sounds")
+for the shared `DropdownButton`, moved into the same top-bar row as the
+filter chips/search instead of its own row below. Note left in the code
+— `DropdownButton`'s `Popover` root is `position: absolute` so it drops
+out of flex flow; needed an explicit `w-44` wrapper or the search
+input's `flex-1` sibling grows over it.
+
+`tsc --noEmit` (clean) and `pnpm vitest run
+MyDiscographyView.test.tsx` (7 passed) verified.
+
+---
