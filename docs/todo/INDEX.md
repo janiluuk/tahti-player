@@ -12,7 +12,7 @@ Status values: `open` | `blocked` | `partial`.
 | blocked | [channelview-move-player-to-stage.md](channelview-move-player-to-stage.md) | Player-in-backdrop extraction needs a design decision |
 | open | [desktop-pro-library.md](desktop-pro-library.md) | Independent desktop player / library / Soulseek |
 | partial | [go-live-header-subtext-cleanup.md](go-live-header-subtext-cleanup.md) | Calendar view restore still open |
-| open | [governance-gap-list.md](governance-gap-list.md) | Governance gaps vs tahti-org: 12 of 16 shipped/corrected (see HISTORY + doc); remaining: audit log viewer (#7), bulk comments (#2), minutes upload (#10), meeting detail (#16), cursor pagination (#18), voting window (#15, backend-blocked) |
+| open | [governance-gap-list.md](governance-gap-list.md) | Governance gaps vs tahti-org: 14 of 18 shipped/corrected (see HISTORY + doc); remaining: bulk comments (#2, needs a product call), minutes upload (#10, needs new tahti-org backend), cursor pagination (#18, low-priority perf), voting window (#15, backend-blocked) |
 | partial | [image-upload-hover-lightbox.md](image-upload-hover-lightbox.md) | Cover-image delete now on Collection/Playlist/Release (Release needed a new `../tahti-org` DELETE artwork route, committed not pushed); slideshow/backdrop + other surfaces remain |
 | partial | [local-files-moved-to-library-tab.md](local-files-moved-to-library-tab.md) | Move done; desktop-mode gating open |
 | partial | [listener-purchase-flow.md](listener-purchase-flow.md) | Subscription cancel shipped 2026-09-07; Purchases tab shipped 2026-09-08 (new `../tahti-org` `GET /api/me/purchases`); e2e still open |

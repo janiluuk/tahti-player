@@ -127,6 +127,10 @@ const GovernanceMembersView = lazyRouteComponent(
   () => import('./views/GovernanceMembersView'),
   'GovernanceMembersView',
 );
+const GovernanceMeetingDetailView = lazyRouteComponent(
+  () => import('./views/GovernanceMeetingDetailView'),
+  'GovernanceMeetingDetailView',
+);
 const PublicGovernanceHistoryView = lazyRouteComponent(
   () => import('./views/PublicGovernanceHistoryView'),
   'PublicGovernanceHistoryView',
@@ -1193,6 +1197,15 @@ const governanceMembersRoute = createRoute({
   component: GovernanceMembersView,
 });
 
+const governanceMeetingDetailRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/governance/meetings/$id',
+  component: function GovernanceMeetingDetailRoute() {
+    const { id } = governanceMeetingDetailRoute.useParams();
+    return <GovernanceMeetingDetailView id={id} />;
+  },
+});
+
 const governanceMotionDetailRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/governance/motions/$id',
@@ -1866,6 +1879,7 @@ const routeTree = rootRoute.addChildren([
     governanceRoute,
     governanceMotionDetailRoute,
     governanceMembersRoute,
+    governanceMeetingDetailRoute,
     publicGovernanceHistoryRoute,
     featureRequestsRoute,
     aboutRoute,

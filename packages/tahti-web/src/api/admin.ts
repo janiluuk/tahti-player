@@ -4429,6 +4429,10 @@ export type AdminActivityFilters = {
   actorId?: string;
   since?: string;
   until?: string;
+  /** Backend defaults to 'governance' (deliberately excludes login/like/chat
+   * "ops noise" for the board-facing governance audit view) — this admin
+   * activity feed wants everything, so it defaults to 'all' here instead. */
+  scope?: 'governance' | 'all';
 };
 
 function mockActivityEntries(): AdminActivityEntry[] {
@@ -4564,6 +4568,7 @@ export async function fetchAdminActivity(
     const qs = new URLSearchParams({
       page: String(page),
       limit: String(limit),
+      scope: filters.scope ?? 'all',
     });
     if (filters.action) {
       qs.set('action', filters.action);
@@ -4634,7 +4639,7 @@ export async function fetchAdminGovernanceActivity(): Promise<{
 }
 
 export function adminActivityExportCsvUrl(): string {
-  return `${apiBase()}/api/admin/audit/export.csv`;
+  return `${apiBase()}/api/admin/audit/export.csv?scope=all`;
 }
 
 // ── Admin container logs ─────────────────────────────────────────────────

@@ -150,7 +150,13 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
                       key={meeting.id}
                       className="py-2 text-sm first:pt-0 last:pb-0"
                     >
-                      <div className="font-medium">{meeting.title}</div>
+                      <Link
+                        to="/governance/meetings/$id"
+                        params={{ id: meeting.id }}
+                        className="font-medium hover:underline"
+                      >
+                        {meeting.title}
+                      </Link>
                       <div className="text-foreground-secondary mt-0.5 text-xs">
                         {meeting.scheduledAt
                           ? new Date(meeting.scheduledAt).toLocaleDateString()

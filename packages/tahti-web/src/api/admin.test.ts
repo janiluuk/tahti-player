@@ -1,6 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { fetchAdminDashboard, fetchAdminNews } from './admin';
+import {
+  fetchAdminActivity,
+  fetchAdminDashboard,
+  fetchAdminNews,
+} from './admin';
 
 describe('fetchAdminNews', () => {
   afterEach(() => {
@@ -70,5 +74,45 @@ describe('fetchAdminDashboard', () => {
 
     expect(result.data.kpis.activeMembers).toBe(214);
     expect(result.meta.source).toBe('mock');
+  });
+});
+
+describe('fetchAdminActivity', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("requests scope=all by default, not the backend's governance-only default", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(
+        new Response(
+          JSON.stringify({ page: 1, limit: 50, total: 0, items: [] }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } },
+        ),
+      );
+    vi.stubGlobal('fetch', fetchMock);
+
+    await fetchAdminActivity();
+
+    const url = new URL(fetchMock.mock.calls[0]?.[0] as string, 'http://x');
+    expect(url.searchParams.get('scope')).toBe('all');
+  });
+
+  it('lets a caller opt into the backend-default governance scope', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(
+        new Response(
+          JSON.stringify({ page: 1, limit: 50, total: 0, items: [] }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } },
+        ),
+      );
+    vi.stubGlobal('fetch', fetchMock);
+
+    await fetchAdminActivity({ scope: 'governance' });
+
+    const url = new URL(fetchMock.mock.calls[0]?.[0] as string, 'http://x');
+    expect(url.searchParams.get('scope')).toBe('governance');
   });
 });
