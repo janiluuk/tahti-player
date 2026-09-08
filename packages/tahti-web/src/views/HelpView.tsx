@@ -3,6 +3,7 @@ import {
   ArrowLeftIcon,
   ArrowRightIcon,
   BookOpenIcon,
+  CompassIcon,
   HeadphonesIcon,
   KeyboardIcon,
   LifeBuoyIcon,
@@ -23,6 +24,7 @@ import {
   Input,
   SectionShell,
   Tabs,
+  Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -36,6 +38,7 @@ import {
   type HelpArticle,
 } from '../content/help';
 import { KEYBOARD_NAVIGATION_SECTIONS } from '../content/keyboardNavigation';
+import { useTourStore } from '../stores/tourStore';
 
 const PRODUCTION = 'https://tahti.live';
 
@@ -95,11 +98,11 @@ const GUIDE_GROUPS: Array<{
     slugs: ['tier-limits', 'keyboard-shortcuts', 'support'],
   },
   {
-    id: 'governance-admin',
-    title: 'Governance and admin',
-    description: 'Understand member decisions and platform operations.',
+    id: 'admin',
+    title: 'Admin',
+    description: 'Understand platform operations.',
     icon: ShieldCheckIcon,
-    slugs: ['governance', 'admin-guide'],
+    slugs: ['admin-guide'],
   },
   {
     id: 'add-ons',
@@ -185,7 +188,7 @@ const DOCUMENT_GROUPS = [
       {
         title: 'Governance guide',
         description: 'How cooperative decisions and advisory votes work.',
-        to: '/help/governance',
+        to: '/studio/governance?tab=guide',
       },
     ],
   },
@@ -340,6 +343,7 @@ function HelpGuideCard({ article }: { article: HelpArticle }) {
 
 export function HelpHubView() {
   const [query, setQuery] = useState('');
+  const startTour = useTourStore((state) => state.start);
   const visibleGroups = useMemo(
     () =>
       GUIDE_GROUPS.map((group) => ({
@@ -360,12 +364,16 @@ export function HelpHubView() {
       classes={{ root: 'px-0 pt-0 mx-auto max-w-full min-w-0 pb-8' }}
     >
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        <Link to="/about">
-          <Button size="sm" variant="secondary">
-            <BookOpenIcon size={16} aria-hidden className="mr-1.5" />
-            About Tahti
+        <Tooltip content="Take a guided tour of this page" side="bottom">
+          <Button
+            size="icon-sm"
+            aria-label="Take Tour"
+            className="bg-accent-purple hover:bg-accent-purple/90 text-white"
+            onClick={() => startTour()}
+          >
+            <CompassIcon size={16} aria-hidden />
           </Button>
-        </Link>
+        </Tooltip>
       </div>
 
       <StudioPanel

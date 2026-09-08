@@ -536,28 +536,6 @@ export const HELP_ARTICLES: HelpArticle[] = [
     ],
   },
   {
-    slug: 'governance',
-    title: 'Governance and member decisions',
-    description:
-      'Find discussions, advisory votes, member motions, meetings, and public records.',
-    sections: [
-      {
-        heading: 'Where governance lives',
-        body: [
-          'Listeners open Governance from Settings → Account. Artists use Studio → Governance. Board users use Admin → Governance and Admin → AGM.',
-          'The active subtab always follows the page you opened, so you can use browser back and shared links without losing your place.',
-        ],
-      },
-      {
-        heading: 'Advisory consultation and official votes',
-        body: [
-          'Advisory discussions and votes collect member input. They are clearly separate from binding association decisions.',
-          'Do not treat an advisory result as an official AGM ballot. Official records are published when the association’s eligibility, quorum, ballot, minutes, and result contracts are in place.',
-        ],
-      },
-    ],
-  },
-  {
     slug: 'admin-guide',
     title: 'Admin guide',
     description:

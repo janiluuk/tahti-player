@@ -107,7 +107,7 @@ export function mockGovernanceDocuments(): GovernanceDocument[] {
       publishedAt: '2026-01-02T00:00:00.000Z',
       meetingId: null,
       downloadUrl: null,
-      externalUrl: '/help/governance',
+      externalUrl: '/studio/governance?tab=guide',
       createdAt: '2026-01-02T00:00:00.000Z',
       updatedAt: '2026-01-02T00:00:00.000Z',
     },

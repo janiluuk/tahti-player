@@ -124,8 +124,8 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             Transparency ledger →
           </Link>
           <Link
-            to="/help/$slug"
-            params={{ slug: 'governance' }}
+            to="/studio/governance"
+            search={{ tab: 'guide' }}
             onClick={closeSettings}
             className="text-foreground-secondary inline-block w-fit text-xs underline-offset-2 hover:underline"
           >
