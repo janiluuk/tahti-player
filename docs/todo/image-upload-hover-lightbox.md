@@ -45,9 +45,27 @@ errors. One accepted visual change: the letter-initial placeholder is
 gone, replaced by the primitive's standard `ImageIcon` empty state —
 consistent with every other consumer of this shared component.
 
+**2026-09-08:** `StudioBrandingView` (avatar + press-kit gallery) checked —
+it already had its own bespoke hover-delete (X/trash on hover) and
+click-to-preview (`ImageLightbox`) for the avatar, and hover-delete for
+each gallery photo, independently matching this ticket's UX goal (like
+`ArtistGalleryPanel` above). The one real gap: neither delete path had a
+confirm step — both `removeAvatar` and `removeImage` fired immediately
+on click, violating this doc's own "Confirm before delete... never
+silent clear" rule. Added a `ConfirmDialog` for each (avatar: "Remove
+profile picture?"; gallery photo: "Remove this image from your
+gallery?"), reusing the same shared `ConfirmDialog` component the
+file's existing "replace all gallery images" prompt already uses.
+Still bespoke, not migrated onto the shared `imageSlot` primitives —
+not attempted here, out of scope for a confirm-dialog fix.
+`tsc --noEmit`, `eslint`, `pnpm vitest run` (485/485) all pass. Not
+live-browser-verified (no seeded studio session available this pass).
+
 ## Not done in this pass (bespoke, not on the shared primitives)
 
-- `StudioBrandingView` avatar/press-kit multi-image upload
+- `StudioBrandingView` avatar/press-kit gallery: hover-delete + preview
+  UX and confirm-before-delete are done (2026-09-08); migrating onto
+  the shared `imageSlot` primitives is still open, not attempted.
 - `ChannelDesigner` backdrop + gallery slideshow
 - Collection cover + slideshow
 - Admin: radio station logo (blocked on the `RadioStationCover` redesign
