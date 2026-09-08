@@ -4,10 +4,33 @@
 
 ## Remaining
 
-cover-overlay entity headers excluded
-headers remain open — see Order of work below. Everything else in this
-doc's Listener/Studio/Admin scope is converted (round-4 batches
-2026-09-04, docs/todo/HISTORY.md).
+**2026-09-08:** all 4 cover-overlay Studio entity headers now converted
+to `EntitySocialHeader` — `StudioReleaseDetailView` and
+`StudioCollectionEditView` were done earlier this session (see recent
+commits), `StudioSoundView` and `StudioShowDetailView` converted just
+now. `StudioSoundView`'s bespoke full-bleed banner hero (big play
+button + inline waveform scrubber) was folded into `EntitySocialHeader`
+via its `children` slot rather than dropped — cover art moved from a
+full-bleed background to the standard square `imageUrl` thumbnail,
+`backgroundUrl` (the sound's existing wide-backdrop field) feeds the
+new `backdropUrl` blur. `StudioShowDetailView`'s show hero now actually
+renders the show's `coverUrl`/`backdropUrl` (previously collected via
+`ShowImagePicker` but never shown in the header itself).
+
+One item deliberately left out of this pass: `StudioEpisodeReviewView`
+(same file, a separate exported component further down) still uses the
+plain `StudioPageHeader` for its title + episode-number badge — it's
+not a cover-overlay case and wasn't in the original 4-view "Remaining"
+list, so `StudioPageHeader` isn't fully narrowable yet (see item 6
+below). Small, low-risk follow-up if anyone picks it back up.
+
+`tsc --noEmit`, `eslint --fix`, and `pnpm vitest run` (484 tests) all
+pass. Not verified in a live browser this session (no Chrome extension
+connection available) — worth a manual look at `/studio/sounds/:id`
+and `/studio/shows/:id` before calling this fully shipped.
+
+Everything else in this doc's Listener/Studio/Admin scope is converted
+(round-4 batches 2026-09-04, docs/todo/HISTORY.md).
 
 **2026-09-05:** verified and converted Pro Editor. There is no runtime
 "maximized" chrome toggle anywhere in `StudioProEditorView.tsx` — the
@@ -130,8 +153,8 @@ Shorten the current paragraph-subtitles (streams, artwork presets, storage, acti
 1. Storybook states + padding rule (`classes.root` vs AppShell).
 2. ~~Listener hubs (Listen, Discover, Radio, Help, History, Radio schedule, Feed, Favorites, Account, Messages, Status, Chat, More/map, Transparency + methodology/grant-year, Legal, Governance, Venues, Onboarding, Subscribe, Green room)~~ — listener bucket done.
 3. ~~Studio Home, Sounds, Collections, Playlists, Upload, Schedule, Go Live, Releases, Stats, Shows, Library tabs, Stash, Recordings, Events, Channel, Revenue, Editor list, Editor project, Mastering, Track insights, Governance, Moderation, Branding, Distribution, Stripe, Events create, Library smart links~~ — every plain title/subtitle/action `StudioPageHeader` in Studio done (2026-09-04).
-4. Remaining Studio: only entity-detail headers that are a cover image + chips overlay, out of scope for this contract per "Leave" above — `StudioSoundView`, `StudioReleaseDetailView`, `StudioShowDetailView`, `StudioCollectionEditView`. These need the separate Box/cover-header sweep the doc already calls out, not a `ViewShell` swap. (`StudioProEditorView` converted 2026-09-05 — it was never actually one of these, see status note above.)
+4. ~~Remaining Studio cover-overlay headers~~ — all 4 done 2026-09-08: `StudioReleaseDetailView`, `StudioCollectionEditView` (earlier this session), `StudioSoundView`, `StudioShowDetailView` (this pass). All now use `EntitySocialHeader`. (`StudioProEditorView` converted 2026-09-05 — it was never actually one of these, see status note above.)
 5. ~~Admin~~ — all 18 board pages done (2026-09-04): Dashboard, Users, Streams, Content, Selects, Status, Storage + user, Radio, Activity, Logs, Financial, Grants + cycle, Governance, AGM, Reports, Venues, I18n, Moderation, Artwork presets, Disco-widgets, Vendors, plus News/Announcements/Top lists/Orphan pages (already `ViewShell` from other work).
-6. Delete or narrow `StudioPageHeader`: only `StudioPanel.tsx` (the definition) and the 4 excluded cover-overlay Studio views (item 4) still import it. Safe to narrow its usage note once those are resolved, not yet safe to delete the component.
+6. Delete or narrow `StudioPageHeader`: `StudioPanel.tsx` (the definition) and `StudioEpisodeReviewView` (in `StudioShowDetailView.tsx`, title + episode-number badge, not a cover-overlay case) still import it. Safe to delete once that one page is converted too.
 
 Do not hide `StudioNav` / Admin tabs / Listen tabs during the swap.

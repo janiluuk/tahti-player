@@ -38,6 +38,7 @@ import {
   type StudioShowSeries,
 } from '../../api/shows';
 import { uploadSoundFile } from '../../api/studio';
+import { EntitySocialHeader } from '../../components/EntitySocialHeader';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { ShowImagePicker } from '../../components/ShowImagePicker';
 import { StudioGate } from '../../components/StudioGate';
@@ -384,13 +385,20 @@ export function StudioShowDetailView({ id }: { id: string }) {
           </StudioPanel>
         ) : (
           <>
-            <StudioPageHeader
+            <EntitySocialHeader
               title={show.title}
-              action={
+              imageUrl={thumbnailUrl}
+              imageAlt=""
+              backdropUrl={backdropUrl}
+              subtitle={`${show.showType === 'LIVE_SET' ? 'Live set' : 'Talk show'} · ${show.mode === 'SINGLE' ? 'Single show' : 'Series'}`}
+              description={description.trim() || undefined}
+              actions={
                 show.mode === 'SINGLE' ? undefined : (
                   <Tooltip content="New episode" side="top">
                     <Button
+                      variant="secondary"
                       size="icon-sm"
+                      className="bg-background border-border rounded-md border-(length:--border-width)"
                       onClick={() => setCreateOpen(true)}
                       aria-label="New episode"
                     >
@@ -399,6 +407,7 @@ export function StudioShowDetailView({ id }: { id: string }) {
                   </Tooltip>
                 )
               }
+              data-testid="studio-show-social-header"
             />
 
             <Tabs.Root

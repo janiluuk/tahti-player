@@ -31,7 +31,7 @@ Status values: `open` | `blocked` | `partial`.
 | open | [listen-widget-hearthis-config-and-set-embed-bug.md](listen-widget-hearthis-config-and-set-embed-bug.md) | (Later) Hearthis widget: auto-fill username from artist settings, icon-button config UI, fix broken set-embed add |
 | open | [channel-designer-backdrop-fold-and-widgets.md](channel-designer-backdrop-fold-and-widgets.md) | (Later) Fold bio/CTA/avatar into backdrop show-toggles (not separate blocks); feed/posts as configurable widgets with tracklist/card-row display toggle |
 | open | [admin-artwork-presets-modal-redesign.md](admin-artwork-presets-modal-redesign.md) | (Later) Artwork presets: modal editor (compact), live grid update, top-right Add-new + guarded Reset-to-defaults |
-| partial | [viewshell-page-headers.md](viewshell-page-headers.md) | Cover-overlay Studio entity headers excluded |
+| partial | [viewshell-page-headers.md](viewshell-page-headers.md) | Cover-overlay Studio entity headers all done 2026-09-08; only StudioEpisodeReviewView's plain header left |
 
 ## Fold rule (copy into CLAUDE / chat)
 
