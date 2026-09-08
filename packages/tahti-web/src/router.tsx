@@ -155,6 +155,10 @@ const TransparencyView = lazyRouteComponent(
   () => import('./views/TransparencyView'),
   'TransparencyView',
 );
+const TransparencyResolutionsView = lazyRouteComponent(
+  () => import('./views/TransparencyResolutionsView'),
+  'TransparencyResolutionsView',
+);
 const TransparencyGrantYearView = lazyRouteComponent(
   () => import('./views/TransparencyGrantYearView'),
   'TransparencyGrantYearView',
@@ -1060,6 +1064,12 @@ const transparencyRoute = createRoute({
   component: TransparencyView,
 });
 
+const transparencyResolutionsRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/transparency/resolutions',
+  component: TransparencyResolutionsView,
+});
+
 const transparencyMethodologyRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/transparency/methodology',
@@ -1828,6 +1838,7 @@ const routeTree = rootRoute.addChildren([
     greenRoomRoute,
     transparencyRoute,
     transparencyGrantYearRoute,
+    transparencyResolutionsRoute,
     transparencyMethodologyRoute,
     helpRoute,
     helpSlugRoute,

@@ -8,9 +8,9 @@ Gap analysis of governance features available in the sibling API (`../tahti-org`
 
 | # | Gap | API endpoint | Notes |
 | --- | --- | --- | --- |
-| 1 | **Motion detail view** (`/governance/motions/:id`) | `GET /api/v1/governance/motions/:id` | Full description, per-choice tally, comment thread, vote history. Currently list-only. |
+| ~~1~~ | ~~**Motion detail view**~~ (`/governance/motions/:id`) | `GET /api/v1/governance/motions/:id` | **Done** (2026-09-08) — `GovernanceMotionDetailView.tsx` + `fetchGovernanceMotion(id)`; see `governance-gap-list-top3.md` fold in HISTORY. |
 | 2 | **Bulk motion comments** | `GET /api/v1/governance/motions/comments?ids=...` | Avoids N+1 on list pages. Currently fetched per-card on expand. |
-| 3 | **Public resolutions page** (`/transparency/resolutions`) | `GET /api/v1/transparency/resolutions?year=` | Published board resolutions by year. TransparencyView shows grants/ledger but not resolutions. |
+| ~~3~~ | ~~**Public resolutions page**~~ (`/transparency/resolutions`) | `GET /api/v1/transparency/resolutions?year=` | **Done** (2026-09-08) — `TransparencyResolutionsView.tsx` + `fetchTransparencyResolutions(year)`; see `governance-gap-list-top3.md` fold in HISTORY. |
 | 4 | **Standalone member directory** | `GET /api/v1/governance/members` | Data fetched and shown in GovernanceView sidebar; no dedicated page. |
 | ~~5~~ | ~~**Quarterly report download UI**~~ | `GET /api/v1/governance/quarterly-reports` | **Done** — `GovernanceView.tsx` already renders `report.downloadUrl` as a link on each report row (verified 2026-09-07; doc was stale). |
 
@@ -18,7 +18,7 @@ Gap analysis of governance features available in the sibling API (`../tahti-org`
 
 | # | Gap | API endpoint | Notes |
 | --- | --- | --- | --- |
-| 6 | **Meeting attendance management** | `GET/POST /api/admin/governance/meetings/:id/attendance` | Upsert records (PRESENT/ABSENT/EXCUSED). AdminAgmView shows meetings but no attendance UI. |
+| ~~6~~ | ~~**Meeting attendance management**~~ | `GET/POST /api/admin/governance/meetings/:id/attendance` | **Done** (2026-09-07) — `AttendancePanel` in the AGM tab; see `governance-gap-list-top3.md` fold in HISTORY. |
 | 7 | **Governance audit log viewer** | `GET /api/admin/audit?scope=governance` | Paginated, topic/action/actor filters, secret ballot redaction, CSV export. Currently no dedicated viewer. |
 | 8 | **Feature request quarterly report generation** | `POST /api/admin/feature-requests/reports` | Board generates markdown reports per quarter. No generate button or workflow. |
 | 9 | **Feature request admin management** | `GET/PATCH /api/admin/feature-requests` | API client exists; `/admin/feature-requests` redirects to moderation tab instead of dedicated review panel. |
@@ -28,9 +28,9 @@ Gap analysis of governance features available in the sibling API (`../tahti-org`
 
 | # | Gap | Notes |
 | --- | --- | --- |
-| 11 | **Transparency resolution types** | `TransparencyResolutionListSchema` not in `tahti-web/src/api/types.ts`. |
-| 12 | **Attendance types** | `GovernanceAttendanceItem`, `UpsertGovernanceAttendance` not defined. |
-| 13 | **Motion detail description** | `MotionDetailSchema` extends Summary with `description`; frontend doesn't fetch individual motions. |
+| ~~11~~ | ~~**Transparency resolution types**~~ | **Done** (2026-09-08) — reused `BoardResolution` (`tahti-web/src/api/types.ts`), superset of `TransparencyResolutionListSchema`'s fields. |
+| ~~12~~ | ~~**Attendance types**~~ | **Done** (2026-09-07) — `GovernanceAttendanceItem`/`UpsertGovernanceAttendance` added to `api/types.ts`. |
+| ~~13~~ | ~~**Motion detail description**~~ | **Done** (2026-09-08) — `GovernanceMotionDetail` type + `fetchGovernanceMotion(id)`. |
 
 ## UI/UX gaps
 
@@ -44,12 +44,12 @@ Gap analysis of governance features available in the sibling API (`../tahti-org`
 
 ## Priority order
 
-1. Motion detail view (#1)
-2. Meeting attendance management (#6)
-3. Public resolutions page (#3)
-4. Governance audit log viewer (#7)
-5. Feature request admin management (#9)
-6. Quarterly report generation (#8)
+Top 3 (#1, #6, #3) shipped 2026-09-07/08 — see `governance-gap-list-top3.md`
+fold in HISTORY. Remaining, in priority order:
+
+1. Governance audit log viewer (#7)
+2. Feature request admin management (#9)
+3. Quarterly report generation (#8)
 
 ## Source
 

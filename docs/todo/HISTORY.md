@@ -2,6 +2,82 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-08 — Governance: top-3 gaps + admin consolidation closed out
+
+`governance-gap-list-top3.md` is done — all three priority gaps from
+`governance-gap-list.md` shipped, plus a mid-task admin-nav consolidation
+ask:
+
+- **Admin consolidation** (2026-09-07): `/admin/governance`,
+  `/admin/reports`, `/admin/grants` (bare), `/admin/agm` — four separate
+  `AdminNav` entries/pages — folded into one `/admin/governance` page
+  (`AdminGovernanceView.tsx`, tabs Overview/Annual reports/Grants/AGM,
+  mirrors `AdminModerationView`'s tab-container pattern). Old routes
+  redirect into `/admin/governance/$tab`. Deleted the three old standalone
+  view files + their stories, folded into `AdminGovernanceView.stories.tsx`.
+  Fixed `e2e/real-user-journeys.spec.ts`'s stale "AGM" tab assertion.
+- **Gap #6 — meeting attendance management** (2026-09-07): admin can
+  record PRESENT/ABSENT/EXCUSED per meeting from an `AttendancePanel` in
+  the AGM tab, via new `fetchAdminGovernanceAttendance`/
+  `upsertAdminGovernanceAttendance` mirroring `../tahti-org`'s
+  `GET/POST /api/admin/governance/meetings/:id/attendance` exactly.
+  Recorded by free-text display name (not member id) by design — the
+  backend upserts by `memberId`, which the frontend member-list APIs
+  don't expose; documented as a known limitation, not silently papered
+  over.
+- **Gap #1 — motion detail view** (2026-09-08): `fetchGovernanceMotion(id)`
+  + `GovernanceMotionDetail` type + `/governance/motions/$id` route
+  (`GovernanceMotionDetailView.tsx`). The list's per-motion card (badge,
+  tally, vote buttons, board open/close controls, discussion thread) was
+  extracted out of `GovernanceView.tsx` into a shared, self-contained
+  `components/governance/MotionCard.tsx` so the detail page reuses it
+  with `description` + `defaultExpanded` — all 6 existing
+  `GovernanceView.test.tsx` tests passed unchanged after the extraction.
+- **Gap #3 — public resolutions page** (2026-09-08):
+  `fetchTransparencyResolutions(year)` + new
+  `TransparencyResolutionsView.tsx` at `/transparency/resolutions`
+  (year picker, outcome badge, vote tally per resolution), linked from
+  `TransparencyView.tsx`. Reused the existing `BoardResolution` type
+  (already a superset of the backend's `TransparencyResolutionListSchema`)
+  rather than adding a new one.
+- Also closed the corresponding type-gap rows in `governance-gap-list.md`
+  (#11 transparency resolution types, #12 attendance types, #13 motion
+  detail description) — all now shipped as part of the above. That
+  parent 16-gap list stays open with #2, #4, #7–#10, #14–#16, #18
+  remaining, re-prioritized to #7/#9/#8 next.
+
+Not live-browser-verified this pass (no Chrome extension available in
+these sessions) — `tsc --noEmit`, `eslint`, and the full `pnpm vitest run`
+suite (488/488) all passed after each piece.
+
+## 2026-09-08 — Admin artwork presets: modal editor + guarded reset + Add new
+
+`admin-artwork-presets-modal-redesign.md` — all 4 asks shipped in
+`AdminArtworkPresetsView.tsx`:
+
+1. Clicking a grid tile now opens a compact `Dialog` (preview + hover
+   upload, "Assign from your artwork" swatches, Save/Cancel) instead of
+   the inline section that used to sit below the grid.
+2. Live grid update on upload/reassign — checked, already worked: the
+   grid's `activeUrls` was already a `useMemo` derived from `assignments`
+   state, so `assignToSelected` (called on both direct swatch-click and
+   post-upload) already re-renders the grid with no reload. No code
+   change needed for this one, just verification.
+3. Added a top-right "Add new" icon button (`ViewShell`'s `actions` slot)
+   that opens the existing `ArtworkPresetUploadDialog` in a new "pool"
+   mode — adds to the custom-artwork library without auto-assigning it to
+   whichever slot happened to be last selected, distinct from the
+   per-slot upload triggers (hover overlay, dashed "+" swatch inside the
+   editor) which keep the existing auto-assign-to-this-slot behavior.
+4. "Reset to defaults" moved to an icon button next to "Add new" and now
+   goes through a `ConfirmDialog` before clearing every custom
+   assignment — previously a bare `Button` with zero confirmation on a
+   destructive, all-slots-at-once action.
+
+`tsc --noEmit`, `eslint` clean. No pre-existing tests or stories for this
+view (none added — matches other admin-view precedent this session). Not
+live-browser-verified.
+
 ## 2026-09-08 — Mentions: real sourceUrl/sourceTitle resolved in `../tahti-org`
 
 `archive-mentions-source-url.md` was fully scoped from a prior pass;

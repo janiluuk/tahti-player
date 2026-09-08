@@ -28,6 +28,7 @@ import {
   mockTrackDetail,
   mockTransparencyGrants,
   mockTransparencyLedger,
+  mockTransparencyResolutions,
   mockTransparencyYtd,
   mockVenueProfile,
   mockVenues,
@@ -61,6 +62,7 @@ import type {
   Announcement,
   ArchiveItem,
   AuthUser,
+  BoardResolution,
   ChannelDirectoryResponse,
   ChannelEmbedView,
   ChatAccess,
@@ -1465,6 +1467,31 @@ export async function fetchTransparencyLedger(): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     return withMockFallback(err, mockTransparencyLedger, () => []);
+  }
+}
+
+export async function fetchTransparencyResolutions(year?: number): Promise<{
+  data: BoardResolution[];
+  meta: FetchMeta;
+}> {
+  const y = year ?? new Date().getFullYear();
+  if (forceMock()) {
+    return {
+      data: mockTransparencyResolutions(y),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const data = await getJson<BoardResolution[]>(
+      `/api/v1/transparency/resolutions?year=${y}`,
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return withMockFallback(
+      err,
+      () => mockTransparencyResolutions(y),
+      () => [],
+    );
   }
 }
 

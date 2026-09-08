@@ -70,6 +70,12 @@ export function TransparencyView() {
         >
           Closed governance decisions →
         </Link>
+        <Link
+          to="/transparency/resolutions"
+          className="text-foreground-secondary w-fit text-xs underline-offset-2 hover:underline"
+        >
+          Board resolutions →
+        </Link>
       </div>
 
       {loading ? (
