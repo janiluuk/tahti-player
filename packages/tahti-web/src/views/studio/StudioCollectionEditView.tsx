@@ -104,6 +104,7 @@ export function StudioCollectionEditView({
     null,
   );
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [pendingCoverDelete, setPendingCoverDelete] = useState(false);
   const [saving, setSaving] = useState(false);
   const [detailsExpanded, setDetailsExpanded] = useState(false);
   const [archiveQuery, setArchiveQuery] = useState('');
@@ -411,6 +412,17 @@ export function StudioCollectionEditView({
     );
   };
 
+  const removeCover = async () => {
+    const result = await patchStudioCollection(slug, { coverUrl: null });
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    setCoverUrl(null);
+    setCol((current) => (current ? { ...current, coverUrl: null } : current));
+    toast.success('Cover removed.');
+  };
+
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-4xl flex-col gap-6 px-1 py-2">
@@ -438,6 +450,9 @@ export function StudioCollectionEditView({
               imageUrl={coverUrl}
               imageAlt=""
               onImageClick={() => setUploadTarget('cover')}
+              onImageDelete={
+                coverUrl ? () => setPendingCoverDelete(true) : undefined
+              }
               backdropUrl={backdropUrl}
               subtitle={
                 <>
@@ -932,6 +947,18 @@ export function StudioCollectionEditView({
                 toast.error(result.error);
               }
             });
+          }}
+        />
+
+        <ConfirmDialog
+          isOpen={pendingCoverDelete}
+          title="Remove cover image?"
+          description="The collection will fall back to its default placeholder until you upload a new cover."
+          confirmLabel="Remove cover"
+          onCancel={() => setPendingCoverDelete(false)}
+          onConfirm={() => {
+            setPendingCoverDelete(false);
+            void removeCover();
           }}
         />
       </div>

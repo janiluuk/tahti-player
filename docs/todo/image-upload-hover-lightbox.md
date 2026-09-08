@@ -61,13 +61,41 @@ not attempted here, out of scope for a confirm-dialog fix.
 `tsc --noEmit`, `eslint`, `pnpm vitest run` (485/485) all pass. Not
 live-browser-verified (no seeded studio session available this pass).
 
+**2026-09-08 (2):** `EntitySocialHeader` (the shared cover/backdrop
+header used by Collection, Release, Show, Sound, and Playlist Studio
+edit views, plus 7 read-only listener/artist pages) gained an optional
+`onImageDelete` prop — additive, only rendered when both `imageUrl` and
+`onImageDelete` are passed, so the other 11 existing consumers that
+don't pass it are unaffected. When set, hovering the cover image
+reveals a small corner X (matching the `StudioBrandingView` hover
+pattern above); clicking it calls the handler, which the view wires to
+its own `ConfirmDialog` (the shared header component doesn't own
+dialog state itself, consistent with every other confirm-delete in
+this codebase). Wired it into `StudioCollectionEditView`'s cover image:
+new `removeCover()` calls `patchStudioCollection(slug, { coverUrl:
+null })`. Added a `CollectionEditable` Storybook story documenting the
+`onImageClick` + `onImageDelete` pairing.
+
+Only Collection's **cover** got wired this pass — the plumbing is now
+on the shared component, so wiring `onImageDelete` into Release/Show/
+Sound/Playlist's cover images (they already pass `onImageClick`) is a
+small follow-up, not attempted here. Collection's **backdrop/slideshow**
+also still needs its own delete UX — it's multi-frame (not a single
+image slot), a different problem than the corner-X pattern used here.
+`tsc --noEmit`, `eslint`, `pnpm vitest run` (485/485) all pass. Not
+live-browser-verified.
+
 ## Not done in this pass (bespoke, not on the shared primitives)
 
 - `StudioBrandingView` avatar/press-kit gallery: hover-delete + preview
   UX and confirm-before-delete are done (2026-09-08); migrating onto
   the shared `imageSlot` primitives is still open, not attempted.
+- `EntitySocialHeader` cover-image delete: done for Collection
+  (2026-09-08); Release/Show/Sound/Playlist edit views have the same
+  `onImageClick` wiring and just need `onImageDelete` added too —
+  small follow-up, not attempted.
 - `ChannelDesigner` backdrop + gallery slideshow
-- Collection cover + slideshow
+- Collection backdrop / slideshow delete (multi-frame, cover is done)
 - Admin: radio station logo (blocked on the `RadioStationCover` redesign
   above), announcements
 

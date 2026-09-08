@@ -14,7 +14,7 @@ Status values: `open` | `blocked` | `partial`.
 | partial | [go-live-header-subtext-cleanup.md](go-live-header-subtext-cleanup.md) | Calendar view restore still open |
 | open | [governance-gap-list.md](governance-gap-list.md) | Governance features missing from tahti-player (16 gaps vs tahti-org; 2 already shipped) |
 | partial | [governance-gap-list-top3.md](governance-gap-list-top3.md) | Admin governance consolidated under one tabbed page + attendance mgmt (#6) shipped; motion detail (#1) and public resolutions page (#3) remain |
-| partial | [image-upload-hover-lightbox.md](image-upload-hover-lightbox.md) | Shared chrome done; remaining surfaces |
+| partial | [image-upload-hover-lightbox.md](image-upload-hover-lightbox.md) | StudioBranding confirm-delete + Collection cover delete shipped 2026-09-08; slideshow/backdrop + other surfaces remain |
 | partial | [local-files-moved-to-library-tab.md](local-files-moved-to-library-tab.md) | Move done; desktop-mode gating open |
 | partial | [listener-purchase-flow.md](listener-purchase-flow.md) | Subscription cancel shipped 2026-09-07; Purchases tab + e2e still open |
 | open | [plugin-registry-extraction.md](plugin-registry-extraction.md) | Pointer to sibling extraction checklist; PluginRegistryHost façade + §6 contract tests added 2026-09-08 |
