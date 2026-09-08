@@ -689,6 +689,7 @@ export type GovernanceMeeting = {
   noticeAt: string | null;
   agenda?: unknown;
   minutesKey: string | null;
+  minutesUrl?: string | null;
   minutesApprovedAt: string | null;
   eligibleMemberCount: number | null;
   quorumRequired: number | null;

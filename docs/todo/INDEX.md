@@ -12,12 +12,12 @@ Status values: `open` | `blocked` | `partial`.
 | blocked | [channelview-move-player-to-stage.md](channelview-move-player-to-stage.md) | Player-in-backdrop extraction needs a design decision |
 | open | [desktop-pro-library.md](desktop-pro-library.md) | Independent desktop player / library / Soulseek |
 | partial | [go-live-header-subtext-cleanup.md](go-live-header-subtext-cleanup.md) | Calendar view restore still open |
-| open | [governance-gap-list.md](governance-gap-list.md) | Governance gaps vs tahti-org: 14 of 18 shipped/corrected (see HISTORY + doc); remaining: bulk comments (#2, needs a product call), minutes upload (#10, needs new tahti-org backend), cursor pagination (#18, low-priority perf), voting window (#15, backend-blocked) |
+| open | [governance-gap-list.md](governance-gap-list.md) | Governance gaps vs tahti-org: 15 of 18 shipped/corrected incl. real minutes-upload backend route 2026-09-08 (see HISTORY + doc); remaining: bulk comments (#2, needs a product call), cursor pagination (#18, low-priority perf), voting window (#15, backend-blocked) |
 | partial | [image-upload-hover-lightbox.md](image-upload-hover-lightbox.md) | Cover-image delete now on Collection/Playlist/Release (Release needed a new `../tahti-org` DELETE artwork route, committed not pushed); slideshow/backdrop + other surfaces remain |
 | partial | [local-files-moved-to-library-tab.md](local-files-moved-to-library-tab.md) | Move done; desktop-mode gating open |
 | partial | [listener-purchase-flow.md](listener-purchase-flow.md) | Subscription cancel shipped 2026-09-07; Purchases tab shipped 2026-09-08 (new `../tahti-org` `GET /api/me/purchases`); e2e still open |
 | open | [plugin-registry-extraction.md](plugin-registry-extraction.md) | Pointer to sibling extraction checklist; PluginRegistryHost façade + §6 contract tests added 2026-09-08 |
-| partial | [admin-plugin-management-panel.md](admin-plugin-management-panel.md) | Admin panel renamed disco widgets→Add-ons + PENDING review filter shipped 2026-09-08; default-enable, default settings, all-13-category scoping remain |
+| partial | [admin-plugin-management-panel.md](admin-plugin-management-panel.md) | Discovery/Add-ons category done 2026-09-08 (approve/reject, disable, enabled-by-default, default-settings — real ../tahti-org API existed under a different name, earlier "mock-only" claim was wrong); all-13-category scoping still open |
 | partial | [release-player-workflow-broken.md](release-player-workflow-broken.md) | Root cause fixed 2026-09-07; user needs to run 2 `gh secret set` commands to finish |
 | partial | [radio-browser-directory-fixes.md](radio-browser-directory-fixes.md) | Cover-image sub-ask needs decision |
 | open | [tahti-cli-tool.md](tahti-cli-tool.md) | CLI (gumroad-cli-inspired) wrapping api-client — list library items, maybe TUI player |

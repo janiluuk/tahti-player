@@ -82,6 +82,7 @@ export function mockGovernanceMeetings(): GovernanceMeeting[] {
         },
       ],
       minutesKey: 'minutes/2026-06-board.pdf',
+      minutesUrl: 'https://mock-storage.example/minutes/2026-06-board.pdf',
       minutesApprovedAt: '2026-06-17T00:00:00.000Z',
       eligibleMemberCount: 5,
       quorumRequired: 3,

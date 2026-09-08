@@ -15,7 +15,78 @@ Under `/admin` → Manage, there should be a management section covering
   separately.
 - Every plugin must have its category defined.
 
-## Shipped this pass (2026-09-08)
+## Major correction (2026-09-08, later pass): the earlier "mock-only, no backend" claim was wrong
+
+The first rename pass on this ticket (see "Shipped this pass" below) said
+*"no backend route exists for either yet — this whole surface is still
+mock-only"* and *"Both would need new API + schema work even for this
+category"* for enabled-by-default/default-settings. **Both claims are
+false** — found by grepping `../tahti-org` for `discoWidget`/`disco-widget`
+(the OLD name), which correctly found nothing, and wrongly concluding no
+backend existed at all, without also grepping for the generic term
+`addon`. The real backend was there the whole time, under its own name,
+independent of this repo's disco-widget→Add-ons rename:
+
+- `packages/db/prisma/schema.prisma`'s `Addon`/`AddonVersion`/
+  `AddonInstall` models — a **full widget-bundle store**: versioned JS
+  bundles (`bundleKey`/`bundleHash`, sandboxed rendering), a moderation
+  lifecycle (DRAFT → PENDING → APPROVED/REJECTED, DISABLED), per-scope
+  installs (listener/channel/admin-surface), **and already has both
+  `enabledByDefault: Boolean` and `defaultConfigJson: Json?`** — exactly
+  the two fields this ticket's ask wanted, already modeled.
+- `apps/api/src/routes/admin/addons.ts` — real routes: `GET/POST
+  /api/admin/addons`, `prepare-upload`/`publish-version` (bundle upload),
+  `approve`/`reject`/`disable` (moderation), `default-config` and
+  `enabled-by-default` (POST, one action each — **not** a generic PATCH),
+  plus ADMIN-scope install CRUD (`/api/admin/addons/installs`).
+- This is a fundamentally different shape than what this repo's
+  `AdminAddon`/`AdminAddonsView.tsx` assumed after the rename: no generic
+  PATCH/DELETE for an addon's own record exists server-side at all (only
+  the specific action endpoints above), and the list response key is
+  `widgets`, not `addons` — the rename-pass frontend's `patchAdminAddon`/
+  `deleteAdminAddon` and `{ addons: [...] }` parsing would have silently
+  done nothing / returned an empty list against the real API the moment
+  mock mode was off, with no error surfaced.
+
+**Fixed this pass**, all in this repo (no `../tahti-org` changes needed —
+the backend was already complete): rewrote `admin.ts`'s Add-ons section to
+match the real contract — `AdminAddon` gained `defaultConfigJson`/
+`enabledByDefault`; `fetchAdminAddons` reads `widgets` not `addons`;
+`patchAdminAddon`/`deleteAdminAddon` (no server equivalent) replaced with
+`approveAdminAddon`/`rejectAdminAddon`/`disableAdminAddon`/
+`setAdminAddonEnabledByDefault`/`setAdminAddonDefaultConfig`, each POSTing
+to its own action endpoint. Rewrote `AdminAddonsView.tsx`: removed the
+per-item "Edit" pencil (no metadata-edit endpoint exists server-side —
+keeping a UI that silently no-ops against real prod would be worse than
+not having it) and the "Delete" trash icon (no DELETE-the-addon route
+exists — replaced with "Disable," which is the real terminal action and
+matches the backend's own "only a fresh bundle publish brings it back"
+semantics); added Approve/Reject icon buttons on PENDING cards (Reject
+requires a moderation note, server-enforced `min(1)`); added a "Manage"
+dialog on APPROVED cards with the `enabledByDefault` `Toggle` and a
+`defaultConfigJson` JSON textarea (client-validated before sending) —
+**the literal original ask, now real**. "Register a new add-on" still
+only sets metadata (matches the real `POST /api/admin/addons` fields) —
+a newly-registered addon stays in DRAFT, invisible everywhere, until a
+bundle version is published; **no UI for authoring/uploading that JS
+bundle exists anywhere in this repo** and wasn't attempted this pass (a
+real, separate, larger feature — needs a product decision on where the
+bundle comes from, e.g. a widget SDK/build step) — the dialog's copy says
+so explicitly so nobody mistakes "registered" for "usable."
+
+Added 2 tests in `admin.test.ts` locking in the two contract bugs found
+(`widgets` response key, real per-action `approve` endpoint vs. a generic
+PATCH) so a future pass can't silently regress either. `tsc --noEmit`,
+`eslint` clean, full `pnpm vitest run` (497/497) and `pnpm --filter
+@tahti-player/storybook build` (the existing `AdminAddonsView.stories.tsx`
+still renders) both pass. Not live-browser-verified, and this pass did
+**not** attempt: bundle upload/publish UI, ADMIN-scope install management
+(the `/api/admin/addons/installs` CRUD — installing an addon onto a
+shared admin surface like the homepage), or the still-open "all 13
+categories" scoping question below (unchanged by this pass — this addon
+system only covers the `discovery`/Add-ons category, same as before).
+
+## Shipped this pass (2026-09-08, first pass — rename)
 
 The user separately asked to rename "disco widgets" to "add-ons" (scoped to
 the admin panel + its direct API, per an explicit scope choice — the
@@ -76,18 +147,14 @@ Listen-page widgets):
   (`PENDING` = a submission); as of this pass the view has a "Needs
   review" filter chip and a distinct `PENDING` badge color (previously
   missing — see "Shipped this pass" above).
-- Metadata editing (name/description/authorName/iconUrl) and `categories:
-  string[]` tagging already work via `registerAdminAddon` /
-  `patchAdminAddon`.
-- **No "enabled by default for all users" toggle and no "default settings"
-  concept exist anywhere in `AdminAddon`** — `status: DISABLED` is a
-  global kill switch, not a per-user default-state control, and there's no
-  settings/config field on the type at all. Both would need new API +
-  schema work even for this category, before this ask can be met. (Also
-  note: no backend route for this category exists in `../tahti-org` at
-  all yet — `fetchAdminAddons`/etc. only work today via the mock branch;
-  the "new API work" this bullet flags would be new work on both sides,
-  not just extending an existing route.)
+- Metadata (name/description/authorName/iconUrl/categories) can only be
+  set at registration (`registerAdminAddon`) — there's no edit endpoint,
+  see the correction above.
+- **Done** (2026-09-08, see correction above): "enabled by default for all
+  users" (`enabledByDefault` Toggle) and "default settings"
+  (`defaultConfigJson` JSON editor) both exist now, backed by a real,
+  already-built `../tahti-org` API — no schema work was needed, the
+  backend already modeled exactly this.
 
 ## Why this isn't a small "add a nav item" task
 

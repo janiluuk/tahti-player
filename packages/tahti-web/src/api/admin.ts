@@ -3818,6 +3818,56 @@ export async function patchAdminGovernanceMeeting(
   }
 }
 
+export async function uploadAdminGovernanceMinutes(
+  meetingId: string,
+  file: File,
+): Promise<
+  { ok: true; data: GovernanceMeeting } | { ok: false; error: string }
+> {
+  if (forceMock()) {
+    const patched = await patchAdminGovernanceMeeting(meetingId, {
+      minutesKey: `mock/governance/meetings/${meetingId}/minutes.pdf`,
+    });
+    if (!patched.data) {
+      return { ok: false, error: 'Meeting not found' };
+    }
+    return { ok: true, data: patched.data };
+  }
+  try {
+    const prep = await sendJson<{
+      uploadUrl: string;
+      minutesKey: string;
+    }>(
+      `/api/admin/governance/meetings/${encodeURIComponent(meetingId)}/minutes/prepare-upload`,
+      'POST',
+      {
+        contentType: file.type || 'application/pdf',
+        fileSizeBytes: file.size,
+      },
+    );
+    const put = await fetch(prep.uploadUrl, {
+      method: 'PUT',
+      body: file,
+      headers: { 'Content-Type': file.type || 'application/pdf' },
+    });
+    if (!put.ok) {
+      return { ok: false, error: `Upload failed (${put.status})` };
+    }
+    const patched = await patchAdminGovernanceMeeting(meetingId, {
+      minutesKey: prep.minutesKey,
+    });
+    if (!patched.data) {
+      return { ok: false, error: 'Could not save the uploaded minutes' };
+    }
+    return { ok: true, data: patched.data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Upload failed',
+    };
+  }
+}
+
 export async function fetchAdminGovernanceAttendance(
   meetingId: string,
 ): Promise<{ data: GovernanceAttendanceItem[]; meta: FetchMeta }> {
@@ -4025,6 +4075,14 @@ export type AdminAddonStatus =
   | 'REJECTED'
   | 'DISABLED';
 
+// The real ../tahti-org backend (packages/db/prisma/schema.prisma's `Addon`
+// model + apps/api/src/routes/admin/addons.ts) is a full widget-bundle store
+// with versioning, sandboxed rendering, and a moderation lifecycle — not a
+// plain metadata CRUD resource. There is no generic PATCH/DELETE for an
+// addon's own record: only `register` (create, status DRAFT), `prepare-
+// upload`/`publish-version` (JS bundle, not modeled here — no UI for
+// authoring/uploading a widget bundle exists yet), and the specific actions
+// below (approve/reject/disable, default-config, enabled-by-default).
 export type AdminAddon = {
   id: string;
   slug: string;
@@ -4038,6 +4096,12 @@ export type AdminAddon = {
   currentVersion: string;
   bundleSizeBytes: number;
   moderationNote: string | null;
+  /** Starting configJson every NEW install of this addon gets, across every
+   * scope. Existing installs are untouched when this changes. */
+  defaultConfigJson: unknown;
+  /** Platform-wide "on by default": an APPROVED addon with this set renders
+   * on its scope's surfaces even with no explicit install row. */
+  enabledByDefault: boolean;
   createdAt: string;
   updatedAt: string;
 };
@@ -4056,6 +4120,8 @@ const MOCK_ADDONS: AdminAddon[] = [
     currentVersion: '1.0.0',
     bundleSizeBytes: 18400,
     moderationNote: null,
+    defaultConfigJson: null,
+    enabledByDefault: false,
     createdAt: '2026-08-01T00:00:00.000Z',
     updatedAt: '2026-08-01T00:00:00.000Z',
   },
@@ -4072,8 +4138,28 @@ const MOCK_ADDONS: AdminAddon[] = [
     currentVersion: '1.2.0',
     bundleSizeBytes: 22100,
     moderationNote: null,
+    defaultConfigJson: null,
+    enabledByDefault: true,
     createdAt: '2026-07-15T00:00:00.000Z',
     updatedAt: '2026-07-15T00:00:00.000Z',
+  },
+  {
+    id: 'addon-pending-example',
+    slug: 'pending-example',
+    scope: 'LISTENER',
+    status: 'PENDING',
+    name: 'Now spinning ticker',
+    description: 'Scrolling ticker of what every station is playing right now.',
+    authorName: 'Community',
+    categories: ['other'],
+    iconUrl: null,
+    currentVersion: '0.1.0',
+    bundleSizeBytes: 4200,
+    moderationNote: null,
+    defaultConfigJson: null,
+    enabledByDefault: false,
+    createdAt: '2026-09-01T00:00:00.000Z',
+    updatedAt: '2026-09-01T00:00:00.000Z',
   },
 ];
 
@@ -4102,16 +4188,18 @@ export async function fetchAdminAddons(
       query.set('status', status);
     }
     const suffix = query.size > 0 ? `?${query.toString()}` : '';
-    const data = await getJson<{ addons: AdminAddon[] }>(
+    const data = await getJson<{ widgets: AdminAddon[] }>(
       `/api/admin/addons${suffix}`,
     );
-    return { data: data.addons, meta: { source: 'api' } };
+    return { data: data.widgets, meta: { source: 'api' } };
   } catch (err) {
     return { data: [], meta: failMeta(err) };
   }
 }
 
-export type AdminAddonPatch = {
+export type AdminAddonRegisterInput = {
+  slug: string;
+  scope: AdminAddonScope;
   name: string;
   description: string;
   authorName: string;
@@ -4120,10 +4208,7 @@ export type AdminAddonPatch = {
 };
 
 export async function registerAdminAddon(
-  input: AdminAddonPatch & {
-    slug: string;
-    scope: AdminAddonScope;
-  },
+  input: AdminAddonRegisterInput,
 ): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
   if (forceMock()) {
     const addon: AdminAddon = {
@@ -4134,6 +4219,8 @@ export async function registerAdminAddon(
       currentVersion: '0.0.0',
       bundleSizeBytes: 0,
       moderationNote: null,
+      defaultConfigJson: null,
+      enabledByDefault: false,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -4151,24 +4238,109 @@ export async function registerAdminAddon(
   }
 }
 
-export async function patchAdminAddon(
+function mockModerate(
   id: string,
-  patch: AdminAddonPatch,
+  status: AdminAddonStatus,
+  moderationNote: string | null,
+): { ok: true; data: AdminAddon } | { ok: false; error: string } {
+  const existing = mockAddons.find((addon) => addon.id === id);
+  if (!existing) {
+    return { ok: false, error: 'Add-on not found' };
+  }
+  const updated: AdminAddon = {
+    ...existing,
+    status,
+    moderationNote,
+    updatedAt: new Date().toISOString(),
+  };
+  mockAddons = mockAddons.map((addon) => (addon.id === id ? updated : addon));
+  return { ok: true, data: updated };
+}
+
+export async function approveAdminAddon(
+  id: string,
+  moderationNote?: string,
+): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
+  if (forceMock()) {
+    return mockModerate(id, 'APPROVED', moderationNote ?? null);
+  }
+  try {
+    const data = await sendJson<AdminAddon>(
+      `/api/admin/addons/${encodeURIComponent(id)}/approve`,
+      'POST',
+      moderationNote ? { moderationNote } : {},
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Approve failed',
+    };
+  }
+}
+
+export async function rejectAdminAddon(
+  id: string,
+  moderationNote: string,
+): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
+  if (forceMock()) {
+    return mockModerate(id, 'REJECTED', moderationNote);
+  }
+  try {
+    const data = await sendJson<AdminAddon>(
+      `/api/admin/addons/${encodeURIComponent(id)}/reject`,
+      'POST',
+      { moderationNote },
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Reject failed',
+    };
+  }
+}
+
+export async function disableAdminAddon(
+  id: string,
+  moderationNote?: string,
+): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
+  if (forceMock()) {
+    return mockModerate(id, 'DISABLED', moderationNote ?? null);
+  }
+  try {
+    const data = await sendJson<AdminAddon>(
+      `/api/admin/addons/${encodeURIComponent(id)}/disable`,
+      'POST',
+      moderationNote ? { moderationNote } : {},
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Disable failed',
+    };
+  }
+}
+
+export async function setAdminAddonEnabledByDefault(
+  id: string,
+  enabledByDefault: boolean,
 ): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
   if (forceMock()) {
     const existing = mockAddons.find((addon) => addon.id === id);
     if (!existing) {
       return { ok: false, error: 'Add-on not found' };
     }
-    const updated = { ...existing, ...patch, iconUrl: patch.iconUrl || null };
+    const updated: AdminAddon = { ...existing, enabledByDefault };
     mockAddons = mockAddons.map((addon) => (addon.id === id ? updated : addon));
     return { ok: true, data: updated };
   }
   try {
     const data = await sendJson<AdminAddon>(
-      `/api/admin/addons/${encodeURIComponent(id)}`,
-      'PATCH',
-      patch,
+      `/api/admin/addons/${encodeURIComponent(id)}/enabled-by-default`,
+      'POST',
+      { enabledByDefault },
     );
     return { ok: true, data };
   } catch (err) {
@@ -4179,14 +4351,32 @@ export async function patchAdminAddon(
   }
 }
 
-export async function deleteAdminAddon(
+export async function setAdminAddonDefaultConfig(
   id: string,
-): Promise<{ ok: true } | { ok: false; error: string }> {
+  defaultConfigJson: Record<string, unknown> | null,
+): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
   if (forceMock()) {
-    mockAddons = mockAddons.filter((addon) => addon.id !== id);
-    return { ok: true };
+    const existing = mockAddons.find((addon) => addon.id === id);
+    if (!existing) {
+      return { ok: false, error: 'Add-on not found' };
+    }
+    const updated: AdminAddon = { ...existing, defaultConfigJson };
+    mockAddons = mockAddons.map((addon) => (addon.id === id ? updated : addon));
+    return { ok: true, data: updated };
   }
-  return mutate(`/api/admin/addons/${encodeURIComponent(id)}`, 'DELETE');
+  try {
+    const data = await sendJson<AdminAddon>(
+      `/api/admin/addons/${encodeURIComponent(id)}/default-config`,
+      'POST',
+      { defaultConfigJson },
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Update failed',
+    };
+  }
 }
 
 // ── Status ──────────────────────────────────────────────────────────────────

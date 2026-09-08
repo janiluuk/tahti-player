@@ -19,6 +19,7 @@ import {
   fetchAdminGovernanceDocuments,
   fetchAdminGovernanceMeetings,
   patchAdminGovernanceMeeting,
+  uploadAdminGovernanceMinutes,
   upsertAdminGovernanceAttendance,
   type AdminMotion,
 } from '../../../../api/admin';
@@ -279,6 +280,11 @@ export function AgmTab() {
   const [meetingStateSaving, setMeetingStateSaving] = useState<string | null>(
     null,
   );
+  const [minutesUploading, setMinutesUploading] = useState<string | null>(null);
+  const [minutesError, setMinutesError] = useState<{
+    meetingId: string;
+    message: string;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -402,6 +408,95 @@ export function AgmTab() {
                     </span>
                   )}
                 </div>
+                <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
+                  <span className="text-foreground-secondary">
+                    Minutes:{' '}
+                    {meeting.minutesApprovedAt
+                      ? 'Approved'
+                      : meeting.minutesKey
+                        ? 'Uploaded, pending approval'
+                        : 'Not uploaded'}
+                  </span>
+                  {meeting.minutesUrl && (
+                    <a
+                      href={meeting.minutesUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="underline-offset-2 hover:underline"
+                    >
+                      Download
+                    </a>
+                  )}
+                  <label className="text-primary cursor-pointer underline-offset-2 hover:underline">
+                    {minutesUploading === meeting.id
+                      ? 'Uploading…'
+                      : meeting.minutesKey
+                        ? 'Replace file'
+                        : 'Upload file'}
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      className="hidden"
+                      disabled={minutesUploading === meeting.id}
+                      onChange={(event) => {
+                        const file = event.target.files?.[0];
+                        event.target.value = '';
+                        if (!file) {
+                          return;
+                        }
+                        setMinutesUploading(meeting.id);
+                        setMinutesError(null);
+                        void uploadAdminGovernanceMinutes(
+                          meeting.id,
+                          file,
+                        ).then((result) => {
+                          setMinutesUploading(null);
+                          if (!result.ok) {
+                            setMinutesError({
+                              meetingId: meeting.id,
+                              message: result.error,
+                            });
+                            return;
+                          }
+                          setMeetings((current) =>
+                            current.map((item) =>
+                              item.id === meeting.id ? result.data : item,
+                            ),
+                          );
+                        });
+                      }}
+                    />
+                  </label>
+                  {!meeting.minutesApprovedAt && meeting.minutesKey && (
+                    <Button
+                      size="sm"
+                      variant="text"
+                      disabled={meetingStateSaving === meeting.id}
+                      onClick={() => {
+                        setMeetingStateSaving(meeting.id);
+                        void patchAdminGovernanceMeeting(meeting.id, {
+                          minutesApprovedAt: new Date().toISOString(),
+                        }).then((result) => {
+                          setMeetingStateSaving(null);
+                          if (result.data) {
+                            setMeetings((current) =>
+                              current.map((item) =>
+                                item.id === meeting.id ? result.data! : item,
+                              ),
+                            );
+                          }
+                        });
+                      }}
+                    >
+                      Approve minutes
+                    </Button>
+                  )}
+                </div>
+                {minutesError?.meetingId === meeting.id && (
+                  <p className="text-accent-red mt-1 text-xs">
+                    {minutesError.message}
+                  </p>
+                )}
                 <AttendancePanel meeting={meeting} />
               </li>
             ))}

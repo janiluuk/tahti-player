@@ -112,6 +112,19 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
                   : meeting.minutesKey
                     ? 'Uploaded, pending approval'
                     : 'Not yet uploaded'}
+                {meeting.minutesUrl && (
+                  <>
+                    {' · '}
+                    <a
+                      href={meeting.minutesUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="underline-offset-2 hover:underline"
+                    >
+                      Download
+                    </a>
+                  </>
+                )}
               </dd>
             </dl>
           </SectionShell>

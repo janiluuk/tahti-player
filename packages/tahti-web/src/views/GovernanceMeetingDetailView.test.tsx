@@ -108,6 +108,12 @@ describe('GovernanceMeetingDetailView', () => {
     expect(container.textContent).toContain('Board meeting');
     expect(container.textContent).toContain('Approved');
     expect(container.textContent).toContain('Met');
+    const downloadLink = Array.from(container.querySelectorAll('a')).find(
+      (a) => a.textContent === 'Download',
+    );
+    expect(downloadLink?.getAttribute('href')).toContain(
+      'minutes/2026-06-board.pdf',
+    );
   });
 
   it('shows a not-found message for an unknown meeting id', async () => {
