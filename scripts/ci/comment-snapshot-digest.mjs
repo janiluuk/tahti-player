@@ -19,8 +19,17 @@ export default async function commentSnapshotDigest({ github, context, core }) {
     return;
   }
 
-  const digestMd = readFileSync(digestPath, 'utf8').trim();
+  let digestMd = readFileSync(digestPath, 'utf8').trim();
   const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+
+  // GitHub caps a comment body at 65536 characters — leave headroom for the
+  // footer below so a large digest degrades to "see the artifact" instead
+  // of a hard API error that drops the comment entirely.
+  const MAX_DIGEST_CHARS = 60_000;
+  if (digestMd.length > MAX_DIGEST_CHARS) {
+    digestMd = `${digestMd.slice(0, MAX_DIGEST_CHARS)}\n\n_…truncated — this run had too many/large mismatches to inline. Download the **snapshot-digest** artifact below for the rest._`;
+  }
+
   const body = [
     MARKER,
     digestMd,

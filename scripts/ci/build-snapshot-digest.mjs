@@ -65,7 +65,7 @@ for (const [index, failure] of failures.entries()) {
     receivedHtmlPath: receivedHtml ? path.basename(receivedPath) : null,
     expectedPng: null,
     receivedPng: null,
-    messageExcerpt: excerpt(failure.message, 400),
+    messageExcerpt: excerpt(failure.message, 6000),
   });
 }
 
@@ -244,7 +244,7 @@ function renderMarkdown(digest) {
         item.receivedPng ? `- Received PNG: \`${item.receivedPng}\`` : null,
         '',
         item.messageExcerpt
-          ? ['```', item.messageExcerpt, '```'].join('\n')
+          ? ['```diff', item.messageExcerpt, '```'].join('\n')
           : null,
         '',
         `</details>`,
@@ -263,7 +263,7 @@ function renderMarkdown(digest) {
     'pnpm --filter <package> test -- -u -- <test-file>',
     '```',
     '',
-    'PNG expected/received screenshots (and HTML) are in this run’s **snapshot-digest** artifact.',
+    'The diff for each mismatch below is the real Vitest expected/received output. PNG screenshots (and full HTML) are in this run’s **snapshot-digest** artifact for anything too large to inline here.',
     '',
     '| Package | Snapshot | Likely cause |',
     '| --- | --- | --- |',
