@@ -13,7 +13,7 @@ Status values: `open` | `blocked` | `partial`.
 | open | [desktop-pro-library.md](desktop-pro-library.md) | Independent desktop player / library / Soulseek |
 | partial | [go-live-header-subtext-cleanup.md](go-live-header-subtext-cleanup.md) | Calendar view restore still open |
 | open | [governance-gap-list.md](governance-gap-list.md) | Governance gaps vs tahti-org: 15 of 18 shipped/corrected incl. real minutes-upload backend route 2026-09-08 (see HISTORY + doc); remaining: bulk comments (#2, needs a product call), cursor pagination (#18, low-priority perf), voting window (#15, backend-blocked) |
-| partial | [image-upload-hover-lightbox.md](image-upload-hover-lightbox.md) | Cover-image delete now on Collection/Playlist/Release (Release needed a new `../tahti-org` DELETE artwork route, committed not pushed); slideshow/backdrop + other surfaces remain |
+| partial | [image-upload-hover-lightbox.md](image-upload-hover-lightbox.md) | Cover-image delete on Collection/Playlist/Release + Collection backdrop/slideshow delete (2026-09-09) done; StudioBrandingView primitive migration, ChannelDesigner backdrop/gallery, admin radio logo remain |
 | partial | [local-files-moved-to-library-tab.md](local-files-moved-to-library-tab.md) | Move done; desktop-mode gating open |
 | partial | [listener-purchase-flow.md](listener-purchase-flow.md) | Subscription cancel shipped 2026-09-07; Purchases tab shipped 2026-09-08 (new `../tahti-org` `GET /api/me/purchases`); e2e still open |
 | open | [plugin-registry-extraction.md](plugin-registry-extraction.md) | Pointer to sibling extraction checklist; PluginRegistryHost façade + §6 contract tests added 2026-09-08 |

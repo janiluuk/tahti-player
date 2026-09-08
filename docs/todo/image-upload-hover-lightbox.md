@@ -110,7 +110,36 @@ session).
 
 Remaining from the "not done" list below: `StudioBrandingView` →
 shared primitives migration, `ChannelDesigner` backdrop/gallery,
-Collection backdrop/slideshow delete, and admin radio/announcements.
+and admin radio/announcements.
+
+**2026-09-09:** Collection backdrop/slideshow delete shipped —
+`StudioCollectionEditView`'s "Change backdrop" button is now a
+`group relative` slot: click opens the shared `ImageSlotPreviewDialog`
+(large preview + frame strip) when a backdrop is set, or the existing
+upload dialog when empty; an `ImageSlotDeleteBadge` hover-X on the
+button clears the whole backdrop through the shared confirm flow
+(`useImageSlotChrome`). Per-frame delete in the strip goes through its
+own `ConfirmDialog` (not the shared primitive's bare immediate-delete
+X) — added at the call-site rather than inside `ImageSlotPreviewDialog`
+itself, since this is the primitive's first real `frames` consumer and
+the "confirm every delete, including per-row" rule applies. Removing
+the last frame falls back to clearing the whole backdrop (returns to
+the empty placeholder), matching this doc's slideshow rule; removing
+one of several frames only updates `patchCollectionGallery` — the
+collection's legacy `backdropUrl` fallback field only needs patching
+when the gallery becomes fully empty. `tsc --noEmit`, `eslint`, and
+`vitest run` (499/499 unit tests; the 12 failing files are pre-existing
+Playwright e2e specs vitest picks up under the wrong runner, unrelated)
+all pass. Not live-browser-verified (Chrome extension unavailable this
+session) — no dedicated test file existed for this view before or
+after.
+
+Checked `AdminAnnouncementsView` (the "admin announcements" row below)
+while scoping this pass: it's an audio-clip list (upload/play/delete),
+not an image slot, so it's out of this ticket's scope as written. Its
+delete button has no confirm step at all, which is a real gap against
+this repo's own "confirm before delete" rule — flagged, not fixed here
+(different bug class, would be its own small fix).
 
 ## Not done in this pass (bespoke, not on the shared primitives)
 
@@ -122,9 +151,9 @@ Collection backdrop/slideshow delete, and admin radio/announcements.
   `onImageClick` wiring and just need `onImageDelete` added too —
   small follow-up, not attempted.
 - `ChannelDesigner` backdrop + gallery slideshow
-- Collection backdrop / slideshow delete (multi-frame, cover is done)
 - Admin: radio station logo (blocked on the `RadioStationCover` redesign
-  above), announcements
+  above); announcements has no image slot (see 2026-09-09 note) — its
+  missing delete-confirm is a separate, un-fixed bug.
 
 These are all larger, bespoke multi-image or reorderable-gallery flows
 (not simple single-image slots) — right-sized as their own follow-up
