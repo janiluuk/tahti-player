@@ -15,6 +15,15 @@ Under `/admin` → Manage, there should be a management section covering
   separately.
 - Every plugin must have its category defined.
 
+**Note:** a second, independent session found this exact same backend
+around the same time and shipped a smaller additive fix (enabled-by-default
++ default-config only, leaving the broken metadata-edit/delete UI in place
+and documented as a known gap — merged as PR #35). The pass below
+supersedes it: same discovery, plus it also removes the broken edit/delete
+UI and adds the real approve/reject/disable moderation actions PR #35
+didn't attempt. Reconciled via `git merge` when this branch caught up to
+master.
+
 ## Major correction (2026-09-08, later pass): the earlier "mock-only, no backend" claim was wrong
 
 The first rename pass on this ticket (see "Shipped this pass" below) said
