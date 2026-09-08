@@ -11,7 +11,6 @@ Sibling API: **`../tahti-org`**. Product matrix: [`FEATURES.md`](FEATURES.md) Re
 - [ ] **Storybook / design-system sweeps** — Input sweep, Studio/Admin UX punch list (Studio primitive sweep finished 2026-09-07, see HISTORY). Open punch list: [`STUDIO-ADMIN-UX-SWEEP-OPEN.md`](STUDIO-ADMIN-UX-SWEEP-OPEN.md).
 - [ ] **Image slot chrome** — hover delete + preview modal on remaining upload surfaces. Leaf: [image-upload-hover-lightbox.md](../../docs/todo/image-upload-hover-lightbox.md).
 - [ ] **Governance / Channel Designer leftovers** — see INDEX (`governance-gap-list`, `channel-designer-*`, …).
-- [ ] **Mentions: real source links** — `Mention.sourceId` already exists in `../tahti-org`'s schema and is populated per-surface, but the public mentions route never selects or resolves it, so every mention falls back to the artist-page link. Traced every `recordMentions()` call site and what `sourceId` means per surface — fully scoped, needs a dedicated `tahti-org` worktree (main worktree has another session's uncommitted work). Leaf: [archive-mentions-source-url.md](../../docs/todo/archive-mentions-source-url.md).
 - [ ] **Fix player release workflow (secrets pending)** — root cause fixed 2026-09-07 (step-level `if:` comparing a `secrets.*` value broke GitHub's whole-file parse; moved the check into the shell script instead). New signing keypair generated but the two `gh secret set` commands need the user to run them (Claude Code can't set repo secrets). Leaf: [release-player-workflow-broken.md](../../docs/todo/release-player-workflow-broken.md).
 
 ## Next (queued after today's cycles)
@@ -30,7 +29,7 @@ blockers found in this backlog, so these don't get silently skipped as
 
 - [x] **Stream Manager now-playing artwork** — turned out to already be resolved on the `../tahti-org` backend; only needed wiring on this side. Shipped 2026-09-07 (workplan cycle 6).
 - [ ] **Plugin registry extraction (partial)** — §5.1/§5.2 adapter (`pluginRegistryContract.ts`/`pluginRegistryAdapter.ts`, additive) + a first contract-test suite shipped 2026-09-07 (`packages/player`). Caller migration (§5.4) and the `PluginRegistryHost` half are not started. `../tahti-org` doc updated in PR [#460](https://github.com/janiluuk/tahti-org/pull/460).
-- [ ] **Listener purchase flow e2e** — subscription cancel UI shipped 2026-09-07 (backend already existed). Still needs: a Purchases tab (doesn't exist) and a test-mode Stripe Checkout path in `../tahti-org` to actually exercise "subscriber sees gated content" end to end. See `listener-purchase-flow.md`.
+- [ ] **Listener purchase flow e2e** — subscription cancel UI shipped 2026-09-07; Purchases tab shipped 2026-09-08 (new `GET /api/me/purchases` in `../tahti-org`, PR [#483](https://github.com/janiluuk/tahti-org/pull/483), not merged by this session). Still needs: a test-mode Stripe Checkout path in `../tahti-org` to actually exercise "subscriber sees gated content" end to end. See `listener-purchase-flow.md`.
 
 ## Reference
 

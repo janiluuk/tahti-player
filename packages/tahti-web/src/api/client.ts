@@ -28,6 +28,7 @@ import {
   mockTrackDetail,
   mockTransparencyGrants,
   mockTransparencyLedger,
+  mockTransparencyResolutions,
   mockTransparencyYtd,
   mockVenueProfile,
   mockVenues,
@@ -39,6 +40,7 @@ import {
   clearMockSessionUser,
   getMockSessionUser,
   listMockFollowing,
+  listMockPurchases,
   listMockSubscriptions,
   mockActivateSubscription,
   mockCancelSubscription,
@@ -60,6 +62,7 @@ import type {
   Announcement,
   ArchiveItem,
   AuthUser,
+  BoardResolution,
   ChannelDirectoryResponse,
   ChannelEmbedView,
   ChatAccess,
@@ -75,6 +78,7 @@ import type {
   GovernanceMeeting,
   GovernanceMember,
   GovernanceMotion,
+  GovernanceMotionDetail,
   GovernanceMotionDraft,
   GovernanceQuarterlyReport,
   MembershipStatus,
@@ -85,6 +89,7 @@ import type {
   PublicGovernanceMotion,
   PublicProfile,
   PublicTrackDetail,
+  PurchaseRow,
   RadioNowPlaying,
   RadioRecentlyPlayedItem,
   ReleaseEmbedView,
@@ -1465,6 +1470,31 @@ export async function fetchTransparencyLedger(): Promise<{
   }
 }
 
+export async function fetchTransparencyResolutions(year?: number): Promise<{
+  data: BoardResolution[];
+  meta: FetchMeta;
+}> {
+  const y = year ?? new Date().getFullYear();
+  if (forceMock()) {
+    return {
+      data: mockTransparencyResolutions(y),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const data = await getJson<BoardResolution[]>(
+      `/api/v1/transparency/resolutions?year=${y}`,
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return withMockFallback(
+      err,
+      () => mockTransparencyResolutions(y),
+      () => [],
+    );
+  }
+}
+
 /** Artists the user follows — closest server analogue to “favorite channels”. */
 export async function fetchFollowing(username: string): Promise<{
   data: FollowListUser[];
@@ -2070,6 +2100,24 @@ export async function fetchMySubscriptions(): Promise<{
   }
 }
 
+export async function fetchMyPurchases(): Promise<{
+  data: PurchaseRow[];
+  meta: FetchMeta;
+}> {
+  if (forceMock()) {
+    return {
+      data: listMockPurchases(),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const data = await getJson<PurchaseRow[]>('/api/me/purchases');
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: [], meta: apiErrorMeta(err) };
+  }
+}
+
 /** Cancels at the end of the current billing period — the row stays
  * ACTIVE with `canceledAt` set, not removed or flipped immediately,
  * matching the real POST /api/me/subscriptions/:id/cancel response. */
@@ -2161,6 +2209,19 @@ let mockMotions: GovernanceMotion[] = [
   },
 ];
 
+const mockMotionDescriptions: Record<string, string> = {
+  'motion-5':
+    'Adopts a written code of conduct governing chat moderation across all channels, including an escalation ladder before a member can be banned.',
+  'motion-1':
+    'Approves the 2026 grant funding formula, weighting overnight and daytime programming slots evenly per the finance committee proposal.',
+  'motion-3':
+    'Keeps overnight radio broadcast hours uncapped rather than introducing the proposed midnight–6am shift limit, to protect small overnight stations.',
+  'motion-2':
+    'Confirms the board-prepared annual report for the prior fiscal year as the official record.',
+  'motion-4':
+    'Requires an overnight broadcast blackout window to reduce infrastructure costs; rejected by members in favor of keeping overnight hours uncapped (motion-3).',
+};
+
 const mockMotionComments: Record<string, MotionComment[]> = {
   'motion-5': [
     {
@@ -2232,6 +2293,41 @@ export async function fetchGovernanceMotions(): Promise<{
       message.includes('403') ||
       /member/i.test(message);
     return { data: [], meta: apiErrorMeta(err), forbidden };
+  }
+}
+
+export async function fetchGovernanceMotion(
+  id: string,
+): Promise<
+  | { ok: true; data: GovernanceMotionDetail }
+  | { ok: false; error: string; forbidden?: boolean }
+> {
+  if (forceMock()) {
+    const motion = mockMotions.find((m) => m.id === id);
+    if (!motion) {
+      return { ok: false, error: 'Motion not found' };
+    }
+    return {
+      ok: true,
+      data: { ...motion, description: mockMotionDescriptions[id] ?? '' },
+    };
+  }
+  try {
+    const data = await getJson<GovernanceMotionDetail>(
+      `/api/v1/governance/motions/${encodeURIComponent(id)}`,
+    );
+    return { ok: true, data };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : '';
+    const forbidden =
+      message.includes('401') ||
+      message.includes('403') ||
+      /member/i.test(message);
+    return {
+      ok: false,
+      error: message || 'Could not load motion',
+      forbidden,
+    };
   }
 }
 
@@ -2452,16 +2548,27 @@ export async function voteOnMotion(
  * or close an OPEN one and publish its tally. */
 export async function patchGovernanceMotion(
   id: string,
-  state: 'OPEN' | 'CLOSED',
+  patch: { state?: 'OPEN' | 'CLOSED'; title?: string; description?: string },
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   if (forceMock()) {
-    mockMotions = mockMotions.map((m) => (m.id === id ? { ...m, state } : m));
+    mockMotions = mockMotions.map((m) =>
+      m.id === id
+        ? {
+            ...m,
+            ...(patch.state ? { state: patch.state } : {}),
+            ...(patch.title ? { title: patch.title } : {}),
+          }
+        : m,
+    );
+    if (patch.description) {
+      mockMotionDescriptions[id] = patch.description;
+    }
     return { ok: true };
   }
   try {
     await requestJson(`/api/v1/governance/motions/${encodeURIComponent(id)}`, {
       method: 'PATCH',
-      body: JSON.stringify({ state }),
+      body: JSON.stringify(patch),
     });
     return { ok: true };
   } catch (err) {

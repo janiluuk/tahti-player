@@ -126,6 +126,24 @@ export const Collection: Story = {
   },
 };
 
+export const CollectionEditable: Story = {
+  name: 'Collection / playlist — editable cover',
+  args: {
+    ...Collection.args,
+    onImageClick: () => {},
+    onImageDelete: () => {},
+    'data-testid': 'collection-social-header-editable',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Studio edit views pass `onImageClick` (upload/replace) and `onImageDelete` (hover-reveal X, clears the image) together — used by Collection, Release, Show, and Sound edit headers.',
+      },
+    },
+  },
+};
+
 export const Channel: Story = {
   args: {
     title: 'Northern Lights',

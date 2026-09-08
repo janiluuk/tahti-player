@@ -101,6 +101,10 @@ export const StudioBrandingPanel: FC<{
     files: File[];
     includeInZip: boolean;
   } | null>(null);
+  const [pendingAvatarDelete, setPendingAvatarDelete] = useState(false);
+  const [pendingImageDeleteId, setPendingImageDeleteId] = useState<
+    string | null
+  >(null);
 
   const reload = async () => {
     const [profileResult, imageResult, pressResult] = await Promise.all([
@@ -392,7 +396,7 @@ export const StudioBrandingPanel: FC<{
                       disabled={busy}
                       onClick={(event) => {
                         event.stopPropagation();
-                        void removeAvatar();
+                        setPendingAvatarDelete(true);
                       }}
                       aria-label="Remove profile picture"
                       title="Remove picture"
@@ -699,7 +703,7 @@ export const StudioBrandingPanel: FC<{
                               size="icon-sm"
                               variant="text"
                               aria-label="Remove image from gallery"
-                              onClick={() => void removeImage(image.id)}
+                              onClick={() => setPendingImageDeleteId(image.id)}
                             >
                               <Trash2Icon size={14} aria-hidden />
                             </Button>
@@ -747,6 +751,32 @@ export const StudioBrandingPanel: FC<{
             return;
           }
           void applyGalleryUpload(pending.files, pending.includeInZip);
+        }}
+      />
+      <ConfirmDialog
+        isOpen={pendingAvatarDelete}
+        title="Remove profile picture?"
+        description="Your profile will show your initial instead until you upload a new picture."
+        confirmLabel={busy ? 'Removing…' : 'Remove picture'}
+        onCancel={() => setPendingAvatarDelete(false)}
+        onConfirm={() => {
+          setPendingAvatarDelete(false);
+          void removeAvatar();
+        }}
+      />
+      <ConfirmDialog
+        isOpen={pendingImageDeleteId !== null}
+        title="Remove this image from your gallery?"
+        description="It will no longer appear in your public press kit or the downloadable zip."
+        confirmLabel="Remove image"
+        onCancel={() => setPendingImageDeleteId(null)}
+        onConfirm={() => {
+          const id = pendingImageDeleteId;
+          setPendingImageDeleteId(null);
+          if (!id) {
+            return;
+          }
+          void removeImage(id);
         }}
       />
     </div>

@@ -628,6 +628,15 @@ export type FanSubscriptionRow = {
   artist: { username: string; displayName: string };
 };
 
+export type PurchaseRow = {
+  id: string;
+  tierName: string;
+  amountCents: number;
+  createdAt: string;
+  artist: { username: string; displayName: string };
+  tracks: { id: string; title: string }[];
+};
+
 export type GovernanceMotion = {
   id: string;
   title: string;
@@ -646,6 +655,10 @@ export type GovernanceMotion = {
 export type GovernanceMotionDraft = {
   id: string;
   state: string;
+};
+
+export type GovernanceMotionDetail = GovernanceMotion & {
+  description: string;
 };
 
 export type PublicGovernanceMotion = {

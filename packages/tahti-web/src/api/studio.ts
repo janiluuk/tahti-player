@@ -974,6 +974,28 @@ export async function uploadReleaseArtwork(
   }
 }
 
+export async function removeReleaseArtwork(
+  releaseId: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (forceMock()) {
+    return { ok: true };
+  }
+  try {
+    await requestJson(
+      `/api/me/releases/${encodeURIComponent(releaseId)}/artwork`,
+      {
+        method: 'DELETE',
+      },
+    );
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Artwork removal failed',
+    };
+  }
+}
+
 export type FingerprintResult = {
   fingerprint: string | null;
   match: FingerprintMatch | null;
@@ -1283,6 +1305,25 @@ export async function removeStudioCollectionItem(
     return {
       ok: false,
       error: err instanceof Error ? err.message : 'Remove failed',
+    };
+  }
+}
+
+export async function deleteStudioCollection(
+  slug: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (forceMock()) {
+    return { ok: true };
+  }
+  try {
+    await requestJson(`/api/me/collections/${encodeURIComponent(slug)}`, {
+      method: 'DELETE',
+    });
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Delete failed',
     };
   }
 }

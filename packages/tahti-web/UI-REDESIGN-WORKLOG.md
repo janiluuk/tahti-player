@@ -1,3 +1,35 @@
+## 2026-09-08 — Purchases tab + hearthis.at widget fixes
+
+Account settings gained a Purchases tab (`/settings/account`, next to
+"Your subs") listing track purchases with a Listen link — needed a new
+`GET /api/me/purchases` in `../tahti-org` (PR #483, buyer-side listing
+never existed, only an artist-side orders endpoint did). Separately,
+`ListenAddonsPanel`'s hearthis.at widget: username now auto-fills from
+the artist's saved handle, and the "add a set" bug is actually fixed —
+root cause (found by testing against the live API) was that set page
+URLs 302-redirect to a different canonical path where `oembed.json`
+actually lives; the old code appended `oembed.json` to the pre-redirect
+URL and got a 200 with an empty body every time.
+
+## 2026-09-08 — Track detail waveform: real peaks at native resolution
+
+`TrackDetailView`'s full-track waveform was already overriding the
+seekbar's 64-bar default up to 180, but still discarding most of a real
+track's detail — confirmed the backend (`../tahti-org`) decodes 600 real
+amplitude buckets per track. Now renders real peaks 1:1 (no downsampling)
+when present; the 180 constant is only for the synthetic no-peaks
+fallback. Other `WaveformSeekbar` consumers still cap at 64 — not
+touched this pass, see `docs/todo/waveform-detail-accuracy.md`.
+
+## 2026-09-08 — Playlist + Release cover hover-delete
+
+Wired `EntitySocialHeader`'s `onImageDelete` into Studio Playlist and
+Release covers (Collection was done earlier the same day). Release
+needed a new backend route — `DELETE /api/me/releases/:id/artwork` in
+`../tahti-org` (committed locally on `feat/release-artwork-delete`, not
+pushed) — since nothing could clear release artwork before. Show/Sound
+detail headers checked: their images are read-only, no delete to add.
+
 ## 2026-09-08 — Next-broadcast cards, status-bar icons, page-tour chrome
 
 Schedule next/upcoming cards: same-row Next+title + cover/gradient banner.

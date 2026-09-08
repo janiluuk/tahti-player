@@ -14,6 +14,7 @@ import type {
   GovernanceAttendanceItem,
   GovernanceDocument,
   GovernanceMeeting,
+  GovernanceQuarterlyReport,
   UpsertGovernanceAttendance,
 } from './types';
 
@@ -3471,6 +3472,77 @@ export function updateFeatureRequestStatus(
   );
 }
 
+let mockQuarterlyReports: GovernanceQuarterlyReport[] = [];
+
+function currentQuarter(): { year: number; quarter: number } {
+  const now = new Date();
+  return {
+    year: now.getUTCFullYear(),
+    quarter: Math.floor(now.getUTCMonth() / 3) + 1,
+  };
+}
+
+export async function fetchAdminFeatureRequestReports(): Promise<{
+  data: GovernanceQuarterlyReport[];
+  meta: FetchMeta;
+}> {
+  if (forceMock()) {
+    return {
+      data: mockQuarterlyReports,
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const data = await getJson<GovernanceQuarterlyReport[]>(
+      '/api/admin/feature-requests/reports',
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: [], meta: failMeta(err) };
+  }
+}
+
+export async function generateFeatureRequestQuarterlyReport(input?: {
+  year?: number;
+  quarter?: number;
+}): Promise<
+  { ok: true; data: GovernanceQuarterlyReport } | { ok: false; error: string }
+> {
+  const { year, quarter } = { ...currentQuarter(), ...input };
+  if (forceMock()) {
+    const existing = mockQuarterlyReports.find(
+      (r) => r.year === year && r.quarter === quarter,
+    );
+    if (existing) {
+      return { ok: false, error: `Q${quarter} ${year} was already generated` };
+    }
+    const report: GovernanceQuarterlyReport = {
+      id: `report-${year}-${quarter}`,
+      year,
+      quarter,
+      storageKey: `mock/feature-request-reports/${year}-Q${quarter}.md`,
+      generatedAt: new Date().toISOString(),
+      generatedByDisplayName: 'You',
+      downloadUrl: null,
+    };
+    mockQuarterlyReports = [report, ...mockQuarterlyReports];
+    return { ok: true, data: report };
+  }
+  try {
+    const data = await sendJson<GovernanceQuarterlyReport>(
+      '/api/admin/feature-requests/reports',
+      'POST',
+      input ?? {},
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not generate report',
+    };
+  }
+}
+
 // ── Grants ──────────────────────────────────────────────────────────────────
 
 export type AdminGrantYearSummary = {
@@ -3943,21 +4015,21 @@ export async function fetchAdminIntegrationStatus(): Promise<{
   }
 }
 
-// ── Disco-widgets ──────────────────────────────────────────────────────────
+// ── Admin add-ons ────────────────────────────────────────────────────────
 
-export type AdminDiscoWidgetScope = 'LISTENER' | 'ARTIST' | 'ADMIN';
-export type AdminDiscoWidgetStatus =
+export type AdminAddonScope = 'LISTENER' | 'ARTIST' | 'ADMIN';
+export type AdminAddonStatus =
   | 'DRAFT'
   | 'PENDING'
   | 'APPROVED'
   | 'REJECTED'
   | 'DISABLED';
 
-export type AdminDiscoWidget = {
+export type AdminAddon = {
   id: string;
   slug: string;
-  scope: AdminDiscoWidgetScope;
-  status: AdminDiscoWidgetStatus;
+  scope: AdminAddonScope;
+  status: AdminAddonStatus;
   name: string;
   description: string;
   authorName: string;
@@ -3970,9 +4042,9 @@ export type AdminDiscoWidget = {
   updatedAt: string;
 };
 
-const MOCK_DISCO_WIDGETS: AdminDiscoWidget[] = [
+const MOCK_ADDONS: AdminAddon[] = [
   {
-    id: 'widget-random-artist',
+    id: 'addon-random-artist',
     slug: 'random-artist-week',
     scope: 'LISTENER',
     status: 'APPROVED',
@@ -3988,7 +4060,7 @@ const MOCK_DISCO_WIDGETS: AdminDiscoWidget[] = [
     updatedAt: '2026-08-01T00:00:00.000Z',
   },
   {
-    id: 'widget-channel-stats',
+    id: 'addon-channel-stats',
     slug: 'channel-stats',
     scope: 'ARTIST',
     status: 'APPROVED',
@@ -4005,18 +4077,18 @@ const MOCK_DISCO_WIDGETS: AdminDiscoWidget[] = [
   },
 ];
 
-let mockDiscoWidgets = [...MOCK_DISCO_WIDGETS];
+let mockAddons = [...MOCK_ADDONS];
 
-export async function fetchAdminDiscoWidgets(
-  scope?: AdminDiscoWidgetScope,
-  status?: AdminDiscoWidgetStatus,
-): Promise<{ data: AdminDiscoWidget[]; meta: FetchMeta }> {
+export async function fetchAdminAddons(
+  scope?: AdminAddonScope,
+  status?: AdminAddonStatus,
+): Promise<{ data: AdminAddon[]; meta: FetchMeta }> {
   if (forceMock()) {
     return {
-      data: mockDiscoWidgets.filter(
-        (widget) =>
-          (!scope || widget.scope === scope) &&
-          (!status || widget.status === status),
+      data: mockAddons.filter(
+        (addon) =>
+          (!scope || addon.scope === scope) &&
+          (!status || addon.status === status),
       ),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
@@ -4030,16 +4102,16 @@ export async function fetchAdminDiscoWidgets(
       query.set('status', status);
     }
     const suffix = query.size > 0 ? `?${query.toString()}` : '';
-    const data = await getJson<{ widgets: AdminDiscoWidget[] }>(
-      `/api/admin/disco-widgets${suffix}`,
+    const data = await getJson<{ addons: AdminAddon[] }>(
+      `/api/admin/addons${suffix}`,
     );
-    return { data: data.widgets, meta: { source: 'api' } };
+    return { data: data.addons, meta: { source: 'api' } };
   } catch (err) {
     return { data: [], meta: failMeta(err) };
   }
 }
 
-export type AdminDiscoWidgetPatch = {
+export type AdminAddonPatch = {
   name: string;
   description: string;
   authorName: string;
@@ -4047,17 +4119,15 @@ export type AdminDiscoWidgetPatch = {
   iconUrl?: string;
 };
 
-export async function registerAdminDiscoWidget(
-  input: AdminDiscoWidgetPatch & {
+export async function registerAdminAddon(
+  input: AdminAddonPatch & {
     slug: string;
-    scope: AdminDiscoWidgetScope;
+    scope: AdminAddonScope;
   },
-): Promise<
-  { ok: true; data: AdminDiscoWidget } | { ok: false; error: string }
-> {
+): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
   if (forceMock()) {
-    const widget: AdminDiscoWidget = {
-      id: `widget-${Date.now()}`,
+    const addon: AdminAddon = {
+      id: `addon-${Date.now()}`,
       ...input,
       iconUrl: input.iconUrl || null,
       status: 'DRAFT',
@@ -4067,15 +4137,11 @@ export async function registerAdminDiscoWidget(
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-    mockDiscoWidgets = [widget, ...mockDiscoWidgets];
-    return { ok: true, data: widget };
+    mockAddons = [addon, ...mockAddons];
+    return { ok: true, data: addon };
   }
   try {
-    const data = await sendJson<AdminDiscoWidget>(
-      '/api/admin/disco-widgets',
-      'POST',
-      input,
-    );
+    const data = await sendJson<AdminAddon>('/api/admin/addons', 'POST', input);
     return { ok: true, data };
   } catch (err) {
     return {
@@ -4085,26 +4151,22 @@ export async function registerAdminDiscoWidget(
   }
 }
 
-export async function patchAdminDiscoWidget(
+export async function patchAdminAddon(
   id: string,
-  patch: AdminDiscoWidgetPatch,
-): Promise<
-  { ok: true; data: AdminDiscoWidget } | { ok: false; error: string }
-> {
+  patch: AdminAddonPatch,
+): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
   if (forceMock()) {
-    const existing = mockDiscoWidgets.find((widget) => widget.id === id);
+    const existing = mockAddons.find((addon) => addon.id === id);
     if (!existing) {
-      return { ok: false, error: 'Widget not found' };
+      return { ok: false, error: 'Add-on not found' };
     }
     const updated = { ...existing, ...patch, iconUrl: patch.iconUrl || null };
-    mockDiscoWidgets = mockDiscoWidgets.map((widget) =>
-      widget.id === id ? updated : widget,
-    );
+    mockAddons = mockAddons.map((addon) => (addon.id === id ? updated : addon));
     return { ok: true, data: updated };
   }
   try {
-    const data = await sendJson<AdminDiscoWidget>(
-      `/api/admin/disco-widgets/${encodeURIComponent(id)}`,
+    const data = await sendJson<AdminAddon>(
+      `/api/admin/addons/${encodeURIComponent(id)}`,
       'PATCH',
       patch,
     );
@@ -4117,14 +4179,14 @@ export async function patchAdminDiscoWidget(
   }
 }
 
-export async function deleteAdminDiscoWidget(
+export async function deleteAdminAddon(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   if (forceMock()) {
-    mockDiscoWidgets = mockDiscoWidgets.filter((widget) => widget.id !== id);
+    mockAddons = mockAddons.filter((addon) => addon.id !== id);
     return { ok: true };
   }
-  return mutate(`/api/admin/disco-widgets/${encodeURIComponent(id)}`, 'DELETE');
+  return mutate(`/api/admin/addons/${encodeURIComponent(id)}`, 'DELETE');
 }
 
 // ── Status ──────────────────────────────────────────────────────────────────

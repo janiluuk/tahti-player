@@ -177,10 +177,10 @@ const locations: ElementLocation[] = [
     pages: 'Listen header',
   },
   {
-    element: 'AdminDiscoWidgetsView',
+    element: 'AdminAddonsView',
     kind: 'View',
     pages:
-      'Admin → Disco-widgets — registers/edits/deletes the catalog DiscoWidgetManagerPanel installs from',
+      'Admin → Add-ons — registers/edits/deletes the catalog DiscoWidgetManagerPanel installs from',
   },
   {
     element: 'ChannelView',
@@ -225,18 +225,13 @@ const locations: ElementLocation[] = [
     element: 'ViewShell',
     kind: 'Component',
     pages:
-      'List-page frame (title + short subtitle) on Listen, Discover, Help, Radio, History, Feed, Favorites, Account, Messages, Status, Studio Home/Sounds/Collections/Playlists/Upload/Schedule/Go Live/Releases/Stats/Shows, Library, Admin Dashboard/Users/Streams/Content/Selects/Status, News, What’s New. Persistent nav stays outside. Remaining Studio/Admin still StudioPageHeader. Plan: docs/todo/viewshell-page-headers.md',
+      'List-page frame (title + short subtitle) on Listen, Discover, Help, Radio, History, Feed, Favorites, Account, Messages, Status, Studio Home/Sounds/Collections/Playlists/Upload/Schedule/Go Live/Releases/Stats/Shows, Library, Admin Dashboard/Users/Streams/Content/Selects/Status, News, What’s New. Persistent nav stays outside.',
   },
   {
     element: 'PageHeader',
     kind: 'Component',
     pages:
       'Listener list headers until ViewShell lands; then entity/legal only where a cover or back row is still needed',
-  },
-  {
-    element: 'StudioPageHeader',
-    kind: 'Component',
-    pages: 'Studio and Admin list headers until ViewShell lands; then remove',
   },
   {
     element: 'WaveformCanvas',

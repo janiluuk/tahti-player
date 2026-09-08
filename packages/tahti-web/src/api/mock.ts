@@ -21,6 +21,7 @@ import type {
   Announcement,
   ArchiveItem,
   AuthUser,
+  BoardResolution,
   ChannelDirectoryResponse,
   ChatAccess,
   ChatMessage,
@@ -1322,6 +1323,35 @@ export function mockTransparencyLedger(): TransparencyLedgerEntry[] {
       category: 'COST_INFRASTRUCTURE',
       amountCents: '-15000',
       createdAt: '2026-07-02T10:00:00.000Z',
+    },
+  ];
+}
+
+export function mockTransparencyResolutions(
+  year = new Date().getFullYear(),
+): BoardResolution[] {
+  return [
+    {
+      id: 'resolution-1',
+      title: 'Adopt updated grant disbursement schedule',
+      body: 'The board resolves to disburse artist grants quarterly instead of annually, starting the following fiscal quarter.',
+      votedAt: `${year}-02-10T18:00:00.000Z`,
+      outcome: 'PASSED',
+      voteFor: 4,
+      voteAgainst: 0,
+      voteAbstain: 1,
+      publishedAt: `${year}-02-11T09:00:00.000Z`,
+    },
+    {
+      id: 'resolution-2',
+      title: 'Decline overnight broadcast blackout proposal',
+      body: 'The board resolves not to adopt a mandatory overnight broadcast blackout window, following member feedback against the proposal.',
+      votedAt: `${year}-04-03T18:00:00.000Z`,
+      outcome: 'FAILED',
+      voteFor: 1,
+      voteAgainst: 4,
+      voteAbstain: 0,
+      publishedAt: `${year}-04-04T09:00:00.000Z`,
     },
   ];
 }

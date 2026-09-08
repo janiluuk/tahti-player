@@ -104,6 +104,43 @@ describe('resolveHearthisPageEmbedUrl', () => {
       resolveHearthisPageEmbedUrl('https://hearthis.at/yaniho/set/x/'),
     ).resolves.toBeNull();
   });
+
+  it('resolves oembed.json at the redirected canonical URL, not the pre-redirect one', async () => {
+    // Set permalink_urls from the hearthis.at API (e.g. /set/94377-304336/)
+    // 302-redirect to a different, human-readable path — oembed.json only
+    // exists at that canonical path; the pre-redirect one 200s with an
+    // empty body (confirmed against the real API).
+    const fetchMock = vi.fn((input: string, init?: RequestInit) => {
+      if (init?.method === 'HEAD') {
+        return Promise.resolve({
+          url: 'https://hearthis.at/rdubzuk/set/rdubz-journeys-inapt/',
+        });
+      }
+      return Promise.resolve({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            html: '<iframe src="https://hearthis.at/set/94377-304336/embed/abc/"></iframe>',
+          }),
+      });
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    await expect(
+      resolveHearthisPageEmbedUrl('https://hearthis.at/set/94377-304336/'),
+    ).resolves.toBe('https://hearthis.at/set/94377-304336/embed/abc/');
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://hearthis.at/set/94377-304336/',
+      {
+        method: 'HEAD',
+        redirect: 'follow',
+      },
+    );
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://hearthis.at/rdubzuk/set/rdubz-journeys-inapt/oembed.json',
+    );
+  });
 });
 
 describe('fetchHearthisUserSets', () => {

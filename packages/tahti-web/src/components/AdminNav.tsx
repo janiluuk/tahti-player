@@ -126,8 +126,8 @@ export const PRIMARY = [
       'Member votes, annual reports, grants, and AGM — one tabbed hub.',
   },
   {
-    to: '/admin/disco-widgets',
-    label: 'Disco widgets',
+    to: '/admin/addons',
+    label: 'Add-ons',
     icon: <SettingsIcon size={16} aria-hidden />,
     description:
       'Register and manage available listener, artist, and admin add-ons.',
@@ -223,7 +223,7 @@ export const ADMIN_SECTIONS = [
       [
         '/admin/streams',
         '/admin/venues',
-        '/admin/disco-widgets',
+        '/admin/addons',
         '/admin/i18n',
         '/admin/orphan-pages',
         '/admin/map',

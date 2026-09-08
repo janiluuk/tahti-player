@@ -1,11 +1,12 @@
-import { PlusIcon, RotateCcwIcon, SaveIcon, UploadIcon } from 'lucide-react';
+import { PlusIcon, RotateCcwIcon, UploadIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Button, Input, ViewShell } from '@tahti-player/ui';
+import { Button, Dialog, Input, Tooltip, ViewShell } from '@tahti-player/ui';
 
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { ArtworkPresetUploadDialog } from '../../components/ArtworkPresetUploadDialog';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
 import {
   GENERATED_ARTWORK_COUNT,
   generatedArtworkUrl,
@@ -81,8 +82,13 @@ export function AdminArtworkPresetsView() {
   const [assignments, setAssignments] = useState<Record<number, string>>({});
   const [customPool, setCustomPool] = useState<string[]>([]);
   const [selected, setSelected] = useState(0);
-  const [saved, setSaved] = useState(false);
+  const [editorOpen, setEditorOpen] = useState(false);
+  const [resetConfirmOpen, setResetConfirmOpen] = useState(false);
   const [uploadOpen, setUploadOpen] = useState(false);
+  /** "slot" (opened from within the editor) auto-assigns the upload to the
+   * slot being edited; "pool" (the top-right "Add new" action) just adds it
+   * to the library without assigning it anywhere. */
+  const [uploadTarget, setUploadTarget] = useState<'slot' | 'pool'>('slot');
 
   const activeUrls = useMemo(
     () => DEFAULT_ARTWORKS.map((url, index) => assignments[index] ?? url),
@@ -115,12 +121,6 @@ export function AdminArtworkPresetsView() {
     window.localStorage.setItem(storageKey(userId), JSON.stringify(next));
   };
 
-  const save = () => {
-    persist({ assignments, customPool });
-    setSaved(true);
-    window.setTimeout(() => setSaved(false), 1800);
-  };
-
   const resetToDefaults = () => {
     setAssignments({});
     persist({ assignments: {}, customPool });
@@ -128,6 +128,16 @@ export function AdminArtworkPresetsView() {
 
   const assignToSelected = (url: string) => {
     setAssignments((current) => ({ ...current, [selected]: url }));
+  };
+
+  const openSlotEditor = (index: number) => {
+    setSelected(index);
+    setEditorOpen(true);
+  };
+
+  const saveEditor = () => {
+    persist({ assignments, customPool });
+    setEditorOpen(false);
   };
 
   return (
@@ -138,10 +148,32 @@ export function AdminArtworkPresetsView() {
             title="Artwork presets"
             classes={{ root: 'px-0 pt-0' }}
             actions={
-              <Button variant="secondary" onClick={resetToDefaults}>
-                <RotateCcwIcon size={15} aria-hidden className="mr-1.5" />
-                Reset to defaults
-              </Button>
+              <div className="flex items-center gap-1.5">
+                <Tooltip content="Add new artwork" side="top">
+                  <Button
+                    type="button"
+                    size="icon-sm"
+                    aria-label="Add new artwork"
+                    onClick={() => {
+                      setUploadTarget('pool');
+                      setUploadOpen(true);
+                    }}
+                  >
+                    <PlusIcon size={18} aria-hidden />
+                  </Button>
+                </Tooltip>
+                <Tooltip content="Reset to defaults" side="top">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="icon-sm"
+                    aria-label="Reset to defaults"
+                    onClick={() => setResetConfirmOpen(true)}
+                  >
+                    <RotateCcwIcon size={15} aria-hidden />
+                  </Button>
+                </Tooltip>
+              </div>
             }
           >
             <div className="grid gap-3 sm:grid-cols-4 lg:grid-cols-8">
@@ -149,8 +181,8 @@ export function AdminArtworkPresetsView() {
                 <button
                   key={DEFAULT_NAMES[index]}
                   type="button"
-                  onClick={() => setSelected(index)}
-                  className={`border-border overflow-hidden rounded-lg border text-left ${selected === index ? 'ring-primary ring-2' : ''}`}
+                  onClick={() => openSlotEditor(index)}
+                  className={`border-border overflow-hidden rounded-lg border text-left ${selected === index && editorOpen ? 'ring-primary ring-2' : ''}`}
                   aria-label={`Edit ${DEFAULT_NAMES[index]}`}
                 >
                   <img
@@ -165,90 +197,117 @@ export function AdminArtworkPresetsView() {
                 </button>
               ))}
             </div>
-            <div className="border-border bg-background-secondary grid gap-5 rounded-xl border p-4 sm:grid-cols-[1fr_auto]">
-              <div className="flex flex-col gap-4">
-                <Input
-                  label="Editing slot"
-                  value={DEFAULT_NAMES[selected] ?? ''}
-                  readOnly
-                  description={
-                    selectedIsCustom
-                      ? 'Showing a custom artwork assigned to this slot instead of its default.'
-                      : "Showing this slot's default artwork — assign a custom one below, or upload a new one."
-                  }
-                />
-                {customPool.length > 0 ? (
-                  <div className="flex flex-col gap-1.5">
-                    <span className="text-foreground text-sm font-semibold">
-                      Assign from your artwork
-                    </span>
-                    <div className="flex flex-wrap gap-2">
-                      {customPool.map((url) => (
-                        <button
-                          key={url}
-                          type="button"
-                          onClick={() => assignToSelected(url)}
-                          aria-label="Assign this artwork to the selected slot"
-                          className={`size-12 overflow-hidden rounded-md border ${assignments[selected] === url ? 'border-primary ring-primary ring-2' : 'border-border'}`}
-                        >
-                          <img
-                            src={url}
-                            alt=""
-                            className="h-full w-full object-cover"
-                          />
-                        </button>
-                      ))}
-                      <button
-                        type="button"
-                        onClick={() => setUploadOpen(true)}
-                        aria-label="Upload a new artwork"
-                        title="Upload a new artwork"
-                        className="border-border text-foreground-secondary flex size-12 items-center justify-center rounded-md border border-dashed"
-                      >
-                        <PlusIcon size={16} aria-hidden />
-                      </button>
-                    </div>
-                  </div>
-                ) : null}
-                <Button onClick={save}>
-                  {saved ? (
-                    'Saved'
-                  ) : (
-                    <>
-                      <SaveIcon size={15} aria-hidden className="mr-1.5" />
-                      Save presets
-                    </>
-                  )}
-                </Button>
-              </div>
-              <div className="group relative aspect-square w-full max-w-64">
-                <img
-                  src={selectedUrl}
-                  alt="Selected artwork preset"
-                  className="h-full w-full rounded-xl object-cover"
-                />
-                <button
-                  type="button"
-                  onClick={() => setUploadOpen(true)}
-                  aria-label={`Upload artwork for ${DEFAULT_NAMES[selected] ?? 'this slot'}`}
-                  className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/0 opacity-0 transition group-hover:bg-black/40 group-hover:opacity-100"
-                >
-                  <UploadIcon size={28} aria-hidden className="text-white" />
-                </button>
-              </div>
-            </div>
           </ViewShell>
         </div>
       </AdminPageLayout>
+
+      <Dialog.Root
+        isOpen={editorOpen}
+        onClose={() => setEditorOpen(false)}
+        className="max-w-md"
+      >
+        <Dialog.Title>{DEFAULT_NAMES[selected] ?? 'Edit artwork'}</Dialog.Title>
+        <div className="flex flex-col gap-4">
+          <div className="group relative aspect-square w-full max-w-64">
+            <img
+              src={selectedUrl}
+              alt="Selected artwork preset"
+              className="h-full w-full rounded-xl object-cover"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                setUploadTarget('slot');
+                setUploadOpen(true);
+              }}
+              aria-label={`Upload artwork for ${DEFAULT_NAMES[selected] ?? 'this slot'}`}
+              className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/0 opacity-0 transition group-hover:bg-black/40 group-hover:opacity-100"
+            >
+              <UploadIcon size={28} aria-hidden className="text-white" />
+            </button>
+          </div>
+          <Input
+            label="Editing slot"
+            value={DEFAULT_NAMES[selected] ?? ''}
+            readOnly
+            description={
+              selectedIsCustom
+                ? 'Showing a custom artwork assigned to this slot instead of its default.'
+                : "Showing this slot's default artwork — assign a custom one below, or upload a new one."
+            }
+          />
+          {customPool.length > 0 ? (
+            <div className="flex flex-col gap-1.5">
+              <span className="text-foreground text-sm font-semibold">
+                Assign from your artwork
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {customPool.map((url) => (
+                  <button
+                    key={url}
+                    type="button"
+                    onClick={() => assignToSelected(url)}
+                    aria-label="Assign this artwork to the selected slot"
+                    className={`size-12 overflow-hidden rounded-md border ${assignments[selected] === url ? 'border-primary ring-primary ring-2' : 'border-border'}`}
+                  >
+                    <img
+                      src={url}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setUploadTarget('slot');
+                    setUploadOpen(true);
+                  }}
+                  aria-label="Upload a new artwork"
+                  title="Upload a new artwork"
+                  className="border-border text-foreground-secondary flex size-12 items-center justify-center rounded-md border border-dashed"
+                >
+                  <PlusIcon size={16} aria-hidden />
+                </button>
+              </div>
+            </div>
+          ) : null}
+        </div>
+        <Dialog.Actions>
+          <Dialog.Close>Cancel</Dialog.Close>
+          <Button type="button" onClick={saveEditor}>
+            Save
+          </Button>
+        </Dialog.Actions>
+      </Dialog.Root>
+
+      <ConfirmDialog
+        isOpen={resetConfirmOpen}
+        title="Reset artwork presets?"
+        description="This clears every custom artwork assignment and reverts all slots to their default images. Uploaded artwork stays in your library."
+        confirmLabel="Reset"
+        onCancel={() => setResetConfirmOpen(false)}
+        onConfirm={() => {
+          setResetConfirmOpen(false);
+          resetToDefaults();
+        }}
+      />
+
       <ArtworkPresetUploadDialog
         isOpen={uploadOpen}
-        label={DEFAULT_NAMES[selected] ?? 'preset'}
+        label={
+          uploadTarget === 'pool'
+            ? 'your library'
+            : (DEFAULT_NAMES[selected] ?? 'preset')
+        }
         onClose={() => setUploadOpen(false)}
         onUploaded={(url) => {
           setCustomPool((current) =>
             current.includes(url) ? current : [...current, url],
           );
-          assignToSelected(url);
+          if (uploadTarget === 'slot') {
+            assignToSelected(url);
+          }
         }}
       />
     </AdminGate>

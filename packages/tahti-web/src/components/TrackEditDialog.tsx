@@ -728,6 +728,7 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
                           <WaveformSeekbar
                             trackId={item.id}
                             peaks={peaks}
+                            bars={peaks.length || 180}
                             progress={
                               isCurrentPlayable && playerDuration > 0
                                 ? currentTime / playerDuration

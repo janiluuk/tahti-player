@@ -2,6 +2,149 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-08 — Governance: top-3 gaps + admin consolidation closed out
+
+`governance-gap-list-top3.md` is done — all three priority gaps from
+`governance-gap-list.md` shipped, plus a mid-task admin-nav consolidation
+ask:
+
+- **Admin consolidation** (2026-09-07): `/admin/governance`,
+  `/admin/reports`, `/admin/grants` (bare), `/admin/agm` — four separate
+  `AdminNav` entries/pages — folded into one `/admin/governance` page
+  (`AdminGovernanceView.tsx`, tabs Overview/Annual reports/Grants/AGM,
+  mirrors `AdminModerationView`'s tab-container pattern). Old routes
+  redirect into `/admin/governance/$tab`. Deleted the three old standalone
+  view files + their stories, folded into `AdminGovernanceView.stories.tsx`.
+  Fixed `e2e/real-user-journeys.spec.ts`'s stale "AGM" tab assertion.
+- **Gap #6 — meeting attendance management** (2026-09-07): admin can
+  record PRESENT/ABSENT/EXCUSED per meeting from an `AttendancePanel` in
+  the AGM tab, via new `fetchAdminGovernanceAttendance`/
+  `upsertAdminGovernanceAttendance` mirroring `../tahti-org`'s
+  `GET/POST /api/admin/governance/meetings/:id/attendance` exactly.
+  Recorded by free-text display name (not member id) by design — the
+  backend upserts by `memberId`, which the frontend member-list APIs
+  don't expose; documented as a known limitation, not silently papered
+  over.
+- **Gap #1 — motion detail view** (2026-09-08): `fetchGovernanceMotion(id)`
+  + `GovernanceMotionDetail` type + `/governance/motions/$id` route
+  (`GovernanceMotionDetailView.tsx`). The list's per-motion card (badge,
+  tally, vote buttons, board open/close controls, discussion thread) was
+  extracted out of `GovernanceView.tsx` into a shared, self-contained
+  `components/governance/MotionCard.tsx` so the detail page reuses it
+  with `description` + `defaultExpanded` — all 6 existing
+  `GovernanceView.test.tsx` tests passed unchanged after the extraction.
+- **Gap #3 — public resolutions page** (2026-09-08):
+  `fetchTransparencyResolutions(year)` + new
+  `TransparencyResolutionsView.tsx` at `/transparency/resolutions`
+  (year picker, outcome badge, vote tally per resolution), linked from
+  `TransparencyView.tsx`. Reused the existing `BoardResolution` type
+  (already a superset of the backend's `TransparencyResolutionListSchema`)
+  rather than adding a new one.
+- Also closed the corresponding type-gap rows in `governance-gap-list.md`
+  (#11 transparency resolution types, #12 attendance types, #13 motion
+  detail description) — all now shipped as part of the above. That
+  parent 16-gap list stays open with #2, #4, #7–#10, #14–#16, #18
+  remaining, re-prioritized to #7/#9/#8 next.
+
+Not live-browser-verified this pass (no Chrome extension available in
+these sessions) — `tsc --noEmit`, `eslint`, and the full `pnpm vitest run`
+suite (488/488) all passed after each piece.
+
+## 2026-09-08 — Admin artwork presets: modal editor + guarded reset + Add new
+
+`admin-artwork-presets-modal-redesign.md` — all 4 asks shipped in
+`AdminArtworkPresetsView.tsx`:
+
+1. Clicking a grid tile now opens a compact `Dialog` (preview + hover
+   upload, "Assign from your artwork" swatches, Save/Cancel) instead of
+   the inline section that used to sit below the grid.
+2. Live grid update on upload/reassign — checked, already worked: the
+   grid's `activeUrls` was already a `useMemo` derived from `assignments`
+   state, so `assignToSelected` (called on both direct swatch-click and
+   post-upload) already re-renders the grid with no reload. No code
+   change needed for this one, just verification.
+3. Added a top-right "Add new" icon button (`ViewShell`'s `actions` slot)
+   that opens the existing `ArtworkPresetUploadDialog` in a new "pool"
+   mode — adds to the custom-artwork library without auto-assigning it to
+   whichever slot happened to be last selected, distinct from the
+   per-slot upload triggers (hover overlay, dashed "+" swatch inside the
+   editor) which keep the existing auto-assign-to-this-slot behavior.
+4. "Reset to defaults" moved to an icon button next to "Add new" and now
+   goes through a `ConfirmDialog` before clearing every custom
+   assignment — previously a bare `Button` with zero confirmation on a
+   destructive, all-slots-at-once action.
+
+`tsc --noEmit`, `eslint` clean. No pre-existing tests or stories for this
+view (none added — matches other admin-view precedent this session). Not
+live-browser-verified.
+
+## 2026-09-08 — Mentions: real sourceUrl/sourceTitle resolved in `../tahti-org`
+
+`archive-mentions-source-url.md` was fully scoped from a prior pass;
+this pass implemented it in a dedicated `tahti-org-worktrees/` worktree
+(avoided the shared main checkout, which had another session's
+uncommitted work at the time). `GET /api/v1/u/:username/mentions` now
+resolves `Mention.sourceId` into a real `sourceUrl`/`sourceTitle` per
+surface (BIO → `/u/:username`, TRACKLIST → `/t/:soundId` with the
+sound's title, ANNOUNCEMENT → the mentioner's `/channel/:slug` — not
+the announcement row itself, since it rotates out after 3 — CHAT →
+parses the composite sourceId to the channel's `/chat/:slug`).
+RELEASE/NEWSLETTER confirmed dead (no `recordMentions()` call site).
+Also checked "notifications end to end": `GET /api/me/mentions` and
+`Mention.notifiedAt` are both unused/dead (no frontend consumer
+anywhere, notifiedAt never written) — left as-is, not built out
+(would be new feature scope, not this ticket). `tahti-web`'s
+`PublicMention` client type already had the fields typed, no client
+change needed. PR: `tahti-org#481` (not merged by this session).
+
+## 2026-09-08 — Studio EmptyState sweep: closed out, remaining items are intentional non-fits
+
+`studio-emptystate-remaining.md` was a leftover from the already-closed
+`studio-storybook-sweep.md` parent task. Its "Still open" list had two
+items, both non-actionable as written: (1) Distribution's "No credits
+yet" caption is a one-line inline hint above an editable, non-empty
+list row (not a section-level empty state) — the shared `EmptyState`
+component is a centered, padded block (even at `size="sm"`) meant for
+a genuinely empty section, and would be a visual downgrade wrapped
+around a one-line caption; (2) "Settings panels with SettingsHint
+empties" turned out to reference a component that doesn't exist in
+this codebase (`grep` found nothing) and was already flagged
+out-of-Studio-scope in the doc itself. Closing rather than converting
+— every real Studio `EmptyState` swap from that sweep already shipped
+(see the "Done this pass" list this doc carried).
+
+Also dropped `stream-overlay-auto-fill-and-avatar-placeholder.md` and
+`admin-panel-left-padding.md` INDEX rows — both already shipped and
+folded into HISTORY earlier (2026-09-07/08) but their INDEX rows/file
+links had gone stale (file deleted, row left behind).
+
+## 2026-09-08 — ViewShell page headers: last holdout converted, StudioPageHeader deleted
+
+`StudioEpisodeReviewView` (in `StudioShowDetailView.tsx`) was the one
+component still left on the plain `StudioPageHeader` (title +
+episode-number badge, not a cover-overlay case, so it wasn't part of
+the earlier 4-view "Remaining" cover-overlay batch). Converted to
+`ViewShell` (`classes={{ root: 'px-0 pt-0' }}`, episode number badge
+moved into the `actions` prop — same right-aligned slot `StudioPageHeader`'s
+`action` used). Breadcrumb (`← {show title}`) and `BroadcastSubNav` stay
+outside `ViewShell`, matching every other Studio detail page.
+
+With that last consumer gone, `StudioPageHeader` (the component
+definition in `StudioPanel.tsx`) was deleted per the todo's item 6.
+Also removed its now-broken Storybook story (`StudioPanel.stories.tsx`)
+and its row in `ElementLocations.stories.tsx`; the `ViewShell` element
+row there had its stale "Remaining Studio/Admin still StudioPageHeader"
+clause dropped since nothing does anymore.
+
+`tsc --noEmit` (tahti-web) and `eslint` clean; `pnpm vitest run` 484/484
+passing. Not verified in a live browser — doing so needs the sibling
+`tahti-org` API running plus a seeded show/episode and studio login,
+disproportionate for a change matching ~15 already-verified `ViewShell`
+conversions elsewhere in the codebase.
+
+This closes out `docs/todo/viewshell-page-headers.md` — the whole
+Listener/Studio/Admin `ViewShell` migration is done.
+
 ## 2026-09-08 — Next-broadcast cards, status-bar icons, page-tour chrome
 
 **Next-broadcast cards:** Studio schedule "Next"/"Upcoming" list puts the
@@ -1911,5 +2054,96 @@ Studio submenu, one for `BroadcastSubNav`'s own per-page resolution),
 and `pnpm build` all pass. Verified live in a running browser
 (`VITE_FORCE_MOCK=1`, unauthenticated `/studio/go-live`): sidebar shows
 only "Studio" lit, no separate "Perform" item.
+
+## 2026-09-08 — Studio Collection/Playlist/Release: playlist routing, TrackTable swap, delete/export
+
+Closes `studio-entity-edit-view-header-redesign.md`'s three remaining
+"needs a decision, not a guess" items, all resolved by the user this
+pass: wire up the playlist editor, swap to the shared `TrackTable`
+primitive accepting the feature loss, and build delete/export.
+
+**Playlist routing** — `StudioCollectionsView.tsx`'s title and row-action
+`<Link>`s now route `PLAYLIST`/`DJ_SET_SERIES` styles to
+`/studio/playlists/$slug` (the dedicated `StudioPlaylistEditorView`)
+instead of `/studio/collections/$slug`, via a new `editorRouteFor()`
+helper; every other style is unchanged. Fixed a stray
+`content/mapScreens.ts` reference that still pointed playlists at the
+Collection route. `/studio/playlists` stays a redirect to
+`/studio/collections`; the dead `StudioPlaylistsView` grid component is
+untouched.
+
+**`StudioPlaylistEditorView` header parity** — now wrapped in
+`EntitySocialHeader` (cover upload via `uploadCollectionCover`, subtitle
+"Playlist"/"DJ set", description, track-count stat, a Play button, the
+existing Save button), matching Collection's header shape. Its already-
+correct `TrackTable` wiring (reorder/remove/play/queue) is untouched.
+
+**TrackTable swap** — `StudioCollectionEditView.tsx`'s bespoke
+`TrackRow`/native-HTML5-DnD/in-row waveform-decode/inline-embed-iframe
+block is replaced by the shared `TrackTable` (reorder, trash column,
+built-in filter toolbar — replacing the old manual search box), modeled
+on the playlist editor's proven usage. Extracted a shared
+`collectionItemToTrack()` helper (`lib/collectionTrackMapping.ts`) used
+by both views. Accepted regression: no more in-row waveform preview or
+inline embed-provider iframe playback; embed tracks fall back to the
+same `playSound`/`playableFromStudioHearthis` path the playlist editor
+already used. `StudioReleaseDetailView.tsx`'s Overview tab also gets a
+`TrackTable` (read/play-only — no reorder or delete, since the Smart
+Links tab already owns those for release tracks via its own
+`ConfirmDialog`-gated flow, left untouched).
+
+**Delete + Export ("⋮" menu)**, Collection and Playlist only (Release
+has no delete endpoint and wasn't part of the original ask): new shared
+`StudioCollectionMoreMenu` component, a `Popover` with "Export as JSON"
+(client-side `Blob` + `<a download>`, no API call — no export endpoint
+exists) and "Delete" (new `deleteStudioCollection()` in `api/studio.ts`,
+hitting `DELETE /api/me/collections/:slug` — this endpoint already
+existed in `tahti-org`, unused by the frontend until now). No `tahti-org`
+changes were needed.
+
+**Delete confirmation, unprompted user feedback mid-pass**: "always
+confirm with modal with the delete buttons" — applied beyond just
+`StudioCollectionMoreMenu`'s "Delete collection/playlist": `TrackTable`'s
+per-track trash column in both Collection and Playlist editors now opens
+the shared `ConfirmDialog` before calling `removeStudioCollectionItem`,
+where before (playlist editor) and previously (Collection's old
+`TrackRow`) it removed immediately on click.
+
+`tsc --noEmit`, `eslint`, `pnpm test` (483 tests) and `pnpm build` all
+pass. The repo's own `e2e/cutover-vital.spec.ts` (which covers both
+`/studio/collections/midnight-archive` and
+`/studio/playlists/favorites-mix`) targets the real `beta.tahti.live`
+deployment and needs `TAHTI_E2E_PASSWORD` staging credentials not
+available in this environment — verified manually instead
+(`VITE_FORCE_MOCK=1`, live browser): Collection and Playlist headers,
+"⋮" menus (correct "album"/"collection"/"playlist" labels), the
+track-removal confirm dialog, the list-view routing split, and the
+Release Overview `TrackTable` (no trash/reorder) all render and behave
+correctly; the Smart Links tab's own reorder/delete UI is unaffected.
+
+---
+
+## 2026-09-08: Sounds view — silent-empty prod bug fixed + sort control redesign
+
+Root cause of the reported "library shows empty under Sounds in
+production" bug: `fetchStudioSounds()` (`api/studio.ts`) already
+returned `{ data: [], meta: apiErrorMeta(err) }` on a non-mock fetch
+failure, but `MyDiscographyView` never read `meta` — a real
+backend/auth failure rendered identically to the genuine "All (0)"
+empty state. Fixed by threading `meta.reason` into a new `error` state
+and rendering the shared `PageError` component (`title`, `description`,
+`onRetry`) instead of the empty state whenever `meta.source === 'api'`
+carries a `reason`. Added a regression test asserting a real fetch
+failure shows "Couldn't load your sounds" (not "No sounds yet").
+
+Sort control redesign: swapped the labeled `Select` ("Sort all sounds")
+for the shared `DropdownButton`, moved into the same top-bar row as the
+filter chips/search instead of its own row below. Note left in the code
+— `DropdownButton`'s `Popover` root is `position: absolute` so it drops
+out of flex flow; needed an explicit `w-44` wrapper or the search
+input's `flex-1` sibling grows over it.
+
+`tsc --noEmit` (clean) and `pnpm vitest run
+MyDiscographyView.test.tsx` (7 passed) verified.
 
 ---

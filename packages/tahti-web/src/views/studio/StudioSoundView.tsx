@@ -11,7 +11,6 @@ import {
   PinOffIcon,
   PlayIcon,
   RadioTowerIcon,
-  SaveIcon,
   ScissorsIcon,
   SparklesIcon,
   TagsIcon,
@@ -20,9 +19,11 @@ import { useEffect, useState } from 'react';
 
 import {
   Alert,
+  Badge,
   Button,
   CreatableCombobox,
   Input,
+  SaveButton,
   Select,
   Tabs,
   Textarea,
@@ -49,10 +50,10 @@ import {
   type TrackVisibility,
 } from '../../components/AudienceVisibilitySection';
 import { AudioRevisionList } from '../../components/AudioRevisionList';
+import { EntitySocialHeader } from '../../components/EntitySocialHeader';
 import { PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioNav } from '../../components/StudioNav';
-import { StudioPageHeader } from '../../components/StudioPanel';
 import { WaveformSeekbar } from '../../components/tahti/WaveformSeekbar';
 import { TrackInsightsPanel } from '../../components/TrackInsightsPanel';
 import { SELECTABLE_CONTENT_TYPES } from '../../content/contentTypes';
@@ -310,6 +311,9 @@ export function StudioSoundView({ id }: { id: string }) {
   const isCurrent = currentId === `archive:${id}`;
   const isPlaying =
     isCurrent && (playerStatus === 'playing' || playerStatus === 'loading');
+  const contentTypeLabel =
+    SELECTABLE_CONTENT_TYPES.find((option) => option.id === contentType)
+      ?.label ?? contentType;
 
   return (
     <StudioGate requireChannel={false}>
@@ -325,31 +329,121 @@ export function StudioSoundView({ id }: { id: string }) {
           <PageLoading label="Loading…" />
         ) : (
           <>
-            <header className="border-border bg-background-secondary/30 overflow-hidden rounded-xl border">
-              <div className="relative min-h-72 overflow-hidden">
-                {item.bannerUrl ? (
-                  <img
-                    src={item.bannerUrl}
-                    alt=""
-                    className="absolute inset-0 size-full object-cover"
-                  />
-                ) : (
-                  <div className="bg-background-secondary absolute inset-0 flex items-center justify-center">
-                    <AudioLinesIcon
-                      size={56}
-                      aria-hidden
-                      className="text-foreground-secondary"
+            <EntitySocialHeader
+              title={item.title}
+              imageUrl={item.bannerUrl}
+              imageAlt=""
+              backdropUrl={item.backgroundUrl ?? item.bannerUrl}
+              subtitle={contentTypeLabel}
+              description={description.trim() || undefined}
+              actions={
+                <>
+                  <Tooltip
+                    content={pinned ? 'Unpin from page' : 'Pin to page'}
+                    side="top"
+                  >
+                    <Button
+                      variant="secondary"
+                      size="icon-sm"
+                      className="bg-background border-border rounded-md border-(length:--border-width)"
+                      disabled={pinBusy}
+                      onClick={() => void togglePin()}
+                      aria-label={pinned ? 'Unpin from page' : 'Pin to page'}
+                    >
+                      {pinned ? (
+                        <PinOffIcon size={16} aria-hidden />
+                      ) : (
+                        <PinIcon size={16} aria-hidden />
+                      )}
+                    </Button>
+                  </Tooltip>
+                  <TrackContextMenu>
+                    <TrackContextMenu.Trigger>
+                      <Tooltip content="Quick edits" side="top">
+                        <Button
+                          variant="secondary"
+                          size="icon-sm"
+                          className="bg-background border-border rounded-md border-(length:--border-width)"
+                          disabled={notReady || hasError}
+                          aria-label="Quick edits"
+                        >
+                          <MoreHorizontalIcon size={16} aria-hidden />
+                        </Button>
+                      </Tooltip>
+                    </TrackContextMenu.Trigger>
+                    <TrackContextMenu.Content>
+                      <TrackContextMenu.Header title="Quick edits" />
+                      <TrackContextMenu.Action
+                        disabled={quickBusy !== null}
+                        onClick={onNormalize}
+                        icon={<GaugeIcon size={16} aria-hidden />}
+                      >
+                        {quickBusy === 'normalize'
+                          ? 'Normalizing…'
+                          : 'Normalize audio'}
+                      </TrackContextMenu.Action>
+                      <TrackContextMenu.Action
+                        disabled={quickBusy !== null}
+                        onClick={onAutoTrim}
+                        icon={<ScissorsIcon size={16} aria-hidden />}
+                      >
+                        {quickBusy === 'trim'
+                          ? 'Trimming silence…'
+                          : 'Trim silence'}
+                      </TrackContextMenu.Action>
+                      {masteringEnabled && (
+                        <TrackContextMenu.Action
+                          onClick={() =>
+                            void navigate({
+                              to: '/studio/mastering/$id',
+                              params: { id },
+                            })
+                          }
+                          icon={<SparklesIcon size={16} aria-hidden />}
+                        >
+                          Master
+                        </TrackContextMenu.Action>
+                      )}
+                    </TrackContextMenu.Content>
+                  </TrackContextMenu>
+                  <Tooltip content="Open audio editor" side="top">
+                    <Link to="/studio/sounds/$id/editor" params={{ id }}>
+                      <Button
+                        variant="secondary"
+                        size="icon-sm"
+                        className="bg-background border-border rounded-md border-(length:--border-width)"
+                        disabled={notReady || hasError}
+                        aria-label="Open audio editor"
+                      >
+                        <AudioLinesIcon size={16} aria-hidden />
+                      </Button>
+                    </Link>
+                  </Tooltip>
+                  <Badge
+                    variant="pill"
+                    color={visibility === 'PUBLIC' ? 'green' : 'secondary'}
+                  >
+                    {visibility.charAt(0) + visibility.slice(1).toLowerCase()}
+                  </Badge>
+                  {tab === 'details' ? (
+                    <SaveButton
+                      saving={saving}
+                      disabled={!title.trim()}
+                      onClick={() => void save()}
                     />
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/20" />
+                  ) : null}
+                </>
+              }
+              data-testid="studio-sound-social-header"
+            >
+              <div className="flex items-center gap-4">
                 <Tooltip
                   content={isPlaying ? 'Pause track' : 'Play track'}
                   side="top"
                 >
                   <Button
                     size="icon"
-                    className="absolute top-5 left-5 size-14 rounded-full shadow-xl"
+                    className="size-14 shrink-0 rounded-full shadow-xl"
                     disabled={playBusy || notReady || hasError}
                     aria-label={isPlaying ? 'Pause track' : 'Play track'}
                     onClick={() => {
@@ -367,145 +461,47 @@ export function StudioSoundView({ id }: { id: string }) {
                     )}
                   </Button>
                 </Tooltip>
-                <div className="absolute right-5 bottom-5 left-5 text-white">
-                  <StudioPageHeader title={item.title} />
-                  <div className="mt-5">
-                    <WaveformSeekbar
-                      trackId={id}
-                      peaks={peaks}
-                      progress={
-                        isCurrent && playerDuration > 0
-                          ? currentTime / playerDuration
-                          : 0
-                      }
-                      className="h-14"
-                      playedColor="#ffffff"
-                      unplayedColor="rgba(255,255,255,0.35)"
-                      onSeek={(fraction) =>
-                        void startPlayback(
-                          fraction *
-                            (editList?.sourceDuration ?? item.durationSec ?? 0),
-                        )
-                      }
-                    />
-                    <div className="mt-1 flex justify-between text-xs text-white/70 tabular-nums">
-                      <span>
-                        {isCurrent
-                          ? `${Math.floor(currentTime / 60)}:${String(Math.floor(currentTime % 60)).padStart(2, '0')}`
-                          : '0:00'}
-                      </span>
-                      <span>
-                        {Math.floor(
-                          (editList?.sourceDuration ?? item.durationSec ?? 0) /
+                <div className="min-w-0 flex-1">
+                  <WaveformSeekbar
+                    trackId={id}
+                    peaks={peaks}
+                    bars={peaks.length || 180}
+                    progress={
+                      isCurrent && playerDuration > 0
+                        ? currentTime / playerDuration
+                        : 0
+                    }
+                    className="h-14"
+                    onSeek={(fraction) =>
+                      void startPlayback(
+                        fraction *
+                          (editList?.sourceDuration ?? item.durationSec ?? 0),
+                      )
+                    }
+                  />
+                  <div className="text-foreground-secondary mt-1 flex justify-between text-xs tabular-nums">
+                    <span>
+                      {isCurrent
+                        ? `${Math.floor(currentTime / 60)}:${String(Math.floor(currentTime % 60)).padStart(2, '0')}`
+                        : '0:00'}
+                    </span>
+                    <span>
+                      {Math.floor(
+                        (editList?.sourceDuration ?? item.durationSec ?? 0) /
+                          60,
+                      )}
+                      :
+                      {String(
+                        Math.floor(
+                          (editList?.sourceDuration ?? item.durationSec ?? 0) %
                             60,
-                        )}
-                        :
-                        {String(
-                          Math.floor(
-                            (editList?.sourceDuration ??
-                              item.durationSec ??
-                              0) % 60,
-                          ),
-                        ).padStart(2, '0')}
-                      </span>
-                    </div>
+                        ),
+                      ).padStart(2, '0')}
+                    </span>
                   </div>
                 </div>
               </div>
-              <div className="border-border flex flex-wrap items-center gap-2 border-t p-3">
-                <Tooltip
-                  content={pinned ? 'Unpin from page' : 'Pin to page'}
-                  side="top"
-                >
-                  <Button
-                    size="icon-sm"
-                    variant="secondary"
-                    disabled={pinBusy}
-                    onClick={() => void togglePin()}
-                    aria-label={pinned ? 'Unpin from page' : 'Pin to page'}
-                  >
-                    {pinned ? (
-                      <PinOffIcon size={16} aria-hidden />
-                    ) : (
-                      <PinIcon size={16} aria-hidden />
-                    )}
-                  </Button>
-                </Tooltip>
-                {tab === 'details' ? (
-                  <Tooltip content="Save changes" side="top">
-                    <Button
-                      size="icon-sm"
-                      disabled={!title.trim() || saving}
-                      onClick={() => void save()}
-                      aria-label="Save changes"
-                    >
-                      <SaveIcon size={16} aria-hidden />
-                    </Button>
-                  </Tooltip>
-                ) : null}
-                <span className="bg-border mx-1 h-5 w-px" aria-hidden />
-                <TrackContextMenu>
-                  <TrackContextMenu.Trigger>
-                    <Tooltip content="Quick edits" side="top">
-                      <Button
-                        size="icon-sm"
-                        variant="text"
-                        disabled={notReady || hasError}
-                        aria-label="Quick edits"
-                      >
-                        <MoreHorizontalIcon size={16} aria-hidden />
-                      </Button>
-                    </Tooltip>
-                  </TrackContextMenu.Trigger>
-                  <TrackContextMenu.Content>
-                    <TrackContextMenu.Header title="Quick edits" />
-                    <TrackContextMenu.Action
-                      disabled={quickBusy !== null}
-                      onClick={onNormalize}
-                      icon={<GaugeIcon size={16} aria-hidden />}
-                    >
-                      {quickBusy === 'normalize'
-                        ? 'Normalizing…'
-                        : 'Normalize audio'}
-                    </TrackContextMenu.Action>
-                    <TrackContextMenu.Action
-                      disabled={quickBusy !== null}
-                      onClick={onAutoTrim}
-                      icon={<ScissorsIcon size={16} aria-hidden />}
-                    >
-                      {quickBusy === 'trim'
-                        ? 'Trimming silence…'
-                        : 'Trim silence'}
-                    </TrackContextMenu.Action>
-                    {masteringEnabled && (
-                      <TrackContextMenu.Action
-                        onClick={() =>
-                          void navigate({
-                            to: '/studio/mastering/$id',
-                            params: { id },
-                          })
-                        }
-                        icon={<SparklesIcon size={16} aria-hidden />}
-                      >
-                        Master
-                      </TrackContextMenu.Action>
-                    )}
-                  </TrackContextMenu.Content>
-                </TrackContextMenu>
-                <Tooltip content="Open audio editor" side="top">
-                  <Link to="/studio/sounds/$id/editor" params={{ id }}>
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      disabled={notReady || hasError}
-                      aria-label="Open audio editor"
-                    >
-                      <AudioLinesIcon size={16} aria-hidden />
-                    </Button>
-                  </Link>
-                </Tooltip>
-              </div>
-            </header>
+            </EntitySocialHeader>
 
             {notReady && (
               <Alert tone="neutral" aria-live="polite">

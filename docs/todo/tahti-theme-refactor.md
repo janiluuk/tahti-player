@@ -1,8 +1,35 @@
 # Tahti theme refactor: orange overuse, contrast, visualizer visibility/toggle
 
-**Status:** open
+**Status:** partial
 
 Roadmap item (2026-09-07, queued for after the current workplan cycles).
+
+## Correction (2026-09-08): item 3 was already shipped, doc just wasn't updated
+
+Checked this doc's own "root cause" claim against the current code before
+picking up more scope — it's **stale**. `Select`'s hardcoded `bg-primary`
+was already fixed in commit `c0cfd4195` ("Workplan cycle 4: fix Select's
+orange-by-default"), authored 2026-09-07 — the same day this doc was
+written, but that commit never touched this file. `Select.tsx`'s
+`selectVariants` now uses `bg-background-input text-foreground` (matching
+`Input`'s own convention), not `bg-primary`/`bg-primary-foreground`.
+Verified via `git log` on `Select.tsx`/`SelectButton.tsx` and reading the
+current source — this is fixed, not a stale grep. `Button`'s default
+variant is untouched (still `bg-primary`, as intended — it's the
+call-site-variant-audit half of the fix, item 2/scope-(a) below, that's
+still undone, not the component itself).
+
+Did **not** go further and try to trace `nuclear:default`'s actual
+`--primary`/`--secondary` CSS values to fix "logged-in before picking a
+theme still looks like unbranded stock Nuclear" blind — grepped for the
+literal theme id across `packages/ui`, `packages/themes`, and
+`packages/tahti-web` and found only id-list references
+(`packages/themes/src/basic/index.ts`), no CSS block defining its
+`--primary`/`--secondary` pair directly; those tokens likely come from
+root/base CSS custom properties this pass didn't fully trace. This is
+exactly the "needs confirming which theme, not a guess" case the doc
+already flagged — didn't want to repeat that mistake blind, same as the
+prior session's own restraint here.
 
 ## Reported problem
 
@@ -88,18 +115,21 @@ default and the theme's background color — possibly the background is
 too opaque over the canvas, or the default opacity is too low. Needs
 visual verification with the actual affected theme active, not a guess.
 
-## Scope (not started)
+## Scope
 
-1. Identify the exact theme(s) with the orange-everywhere problem.
+1. Identify the exact theme(s) with the orange-everywhere problem. — not
+   started, needs live verification.
 2. Decide the fix direction for `Button`/`Select` defaults: per-callsite
-   variant audit vs. a new neutral default vs. both.
-3. Give `Select` a non-primary default variant (or a `variant` prop at
-   all — it currently has none).
+   variant audit vs. a new neutral default vs. both. — `Select`'s default
+   is fixed (item 3); `Button`'s per-callsite audit (option (a)) not
+   started.
+3. ~~Give `Select` a non-primary default variant~~ — **done**, shipped
+   2026-09-07 in `c0cfd4195`, see correction note above.
 4. Confirm contrast (`--primary` vs `--primary-foreground`) meets a
    reasonable readability bar for whichever theme(s) keep using primary
-   broadly.
+   broadly. — not started, needs live verification.
 5. Fix visualizer visibility (opacity/transparency) for the affected
-   theme, live-verified.
+   theme, live-verified. — not started, needs live verification.
 6. Add the affected theme id(s) to `VISUALIZATION_THEME_IDS` (or
    generalize the gate) so the existing `ThemeVisualizationSettings`
-   panel actually shows up for it.
+   panel actually shows up for it. — not started, blocked on item 1.

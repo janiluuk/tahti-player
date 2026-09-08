@@ -3,19 +3,17 @@ import {
   ImageIcon,
   ListMusicIcon,
   ListPlusIcon,
-  Maximize2Icon,
-  Minimize2Icon,
   MusicIcon,
   PauseIcon,
   PencilIcon,
   PlayIcon,
   PlusIcon,
   SearchIcon,
-  Trash2Icon,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import type { Track } from '@tahti-player/model';
 import {
   Badge,
   Button,
@@ -27,6 +25,7 @@ import {
   Select,
   Textarea,
   Tooltip,
+  TrackTable,
 } from '@tahti-player/ui';
 
 import {
@@ -48,26 +47,22 @@ import type {
 } from '../../api/studio-types';
 import type { TahtiPlayable } from '../../api/types';
 import { uploadUserMediaFile } from '../../api/user-media';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
 import {
   EntitySocialHeader,
   type EntitySocialStat,
 } from '../../components/EntitySocialHeader';
 import { PageLoading } from '../../components/PageStates';
+import { StudioCollectionMoreMenu } from '../../components/StudioCollectionMoreMenu';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
-import { WaveformCanvas } from '../../components/WaveformCanvas';
 import { COLLECTION_STYLES } from '../../content/collectionStyles';
+import { collectionItemToTrack } from '../../lib/collectionTrackMapping';
 import { playableFromStudioHearthis } from '../../lib/embedPlayback';
-import {
-  EMBED_PROVIDER_HEIGHT,
-  EMBED_PROVIDER_LABEL,
-  embedSrcFor,
-} from '../../lib/embedSrc';
+import { trackTableLabels } from '../../lib/trackTableLabels';
 import { usePlayerStore } from '../../stores/playerStore';
 import { LibrarySectionTabs } from '../LibraryView';
-
-const PEAK_BUCKETS = 200;
 
 function formatDuration(sec: number | null | undefined): string {
   if (sec == null || !Number.isFinite(sec)) {
@@ -77,277 +72,6 @@ function formatDuration(sec: number | null | undefined): string {
   const m = Math.floor(s / 60);
   const r = s % 60;
   return `${m}:${String(r).padStart(2, '0')}`;
-}
-
-function trackTitle(item: StudioCollectionItem): string {
-  return item.sound?.title ?? item.release?.title ?? item.id;
-}
-
-/** Decodes a track's audio in-browser into a bucketed peaks array the
- * first time its row expands — same "attempt then degrade" approach as
- * the pro editor's own waveform decode, just scoped to one track. */
-function useTrackPeaks(soundId: string | undefined, enabled: boolean) {
-  const [peaks, setPeaks] = useState<number[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (!enabled || !soundId || peaks.length > 0) {
-      return;
-    }
-    let cancelled = false;
-    setLoading(true);
-    void (async () => {
-      try {
-        const { data } = await fetchEditorSource(soundId);
-        const res = await fetch(data.url);
-        const buf = await res.arrayBuffer();
-        const ctx = new AudioContext();
-        const decoded = await ctx.decodeAudioData(buf.slice(0));
-        await ctx.close();
-        if (cancelled) {
-          return;
-        }
-        const channel = decoded.getChannelData(0);
-        const block = Math.floor(channel.length / PEAK_BUCKETS) || 1;
-        const next: number[] = [];
-        for (let i = 0; i < PEAK_BUCKETS; i++) {
-          let peak = 0;
-          const start = i * block;
-          for (let j = 0; j < block && start + j < channel.length; j++) {
-            peak = Math.max(peak, Math.abs(channel[start + j]!));
-          }
-          next.push(peak);
-        }
-        const max = Math.max(...next, 0.001);
-        setPeaks(next.map((v) => v / max));
-      } catch {
-        // Row falls back to a plain progress bar when decode fails.
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [enabled, soundId, peaks.length]);
-
-  return { peaks, loading };
-}
-
-function TrackRow({
-  item,
-  idx,
-  isExpanded,
-  isCurrent,
-  isPlaying,
-  isDragging,
-  reorderable,
-  currentTime,
-  onToggleExpand,
-  onPlay,
-  onSeek,
-  onDragStart,
-  onDragEnd,
-  onDrop,
-  onRemove,
-  genre,
-}: {
-  item: StudioCollectionItem;
-  idx: number;
-  isExpanded: boolean;
-  isCurrent: boolean;
-  isPlaying: boolean;
-  isDragging: boolean;
-  reorderable: boolean;
-  currentTime: number;
-  onToggleExpand: () => void;
-  onPlay: () => void;
-  onSeek: (sec: number) => void;
-  onDragStart: () => void;
-  onDragEnd: () => void;
-  onDrop: () => void;
-  onRemove: () => void;
-  genre?: string | null;
-}) {
-  const { peaks } = useTrackPeaks(item.sound?.id, isExpanded);
-  const durationSec = item.sound?.durationSec ?? 0;
-  // EMBED_ONLY items have no audio of ours to play or draw a waveform from.
-  const embedProvider = item.sound?.embedProvider ?? null;
-  const embedUri = item.sound?.embedUri ?? null;
-  const isEmbed = Boolean(embedProvider && embedUri);
-
-  return (
-    <li
-      draggable={reorderable}
-      onDragStart={(event) => {
-        event.dataTransfer.effectAllowed = 'move';
-        event.dataTransfer.setData('text/plain', item.id);
-        onDragStart();
-      }}
-      onDragEnd={onDragEnd}
-      onDragOver={(event) => {
-        event.preventDefault();
-        event.dataTransfer.dropEffect = 'move';
-      }}
-      onDrop={(event) => {
-        event.preventDefault();
-        onDrop();
-      }}
-      className={`${idx % 2 === 1 ? 'bg-background-secondary/40' : ''} ${
-        isCurrent ? 'border-l-primary bg-primary/10' : 'border-l-transparent'
-      } ${reorderable ? 'cursor-grab active:cursor-grabbing' : ''} ${
-        isDragging ? 'opacity-50' : ''
-      } hover:bg-primary/5 border-l-4 transition-colors`}
-    >
-      <div className="flex flex-wrap items-center gap-2 p-3 text-sm">
-        <span
-          className={`min-w-0 flex-1 truncate font-medium ${
-            isCurrent ? 'text-accent-green' : ''
-          }`}
-        >
-          {trackTitle(item)}
-        </span>
-        {isEmbed && (
-          <span className="text-foreground-secondary shrink-0 font-mono text-[10px] tracking-wide uppercase">
-            {EMBED_PROVIDER_LABEL[embedProvider!]}
-          </span>
-        )}
-        {genre ? (
-          <span className="text-foreground-secondary shrink-0 text-xs">
-            {genre}
-          </span>
-        ) : null}
-        <span className="text-foreground-secondary text-xs tabular-nums">
-          {formatDuration(durationSec)}
-        </span>
-        {item.sound && !isEmbed && (
-          <Tooltip
-            content={
-              isCurrent && isPlaying ? 'Pause' : `Play ${trackTitle(item)}`
-            }
-            side="top"
-          >
-            <Button
-              size="icon-sm"
-              variant="text"
-              aria-label={
-                isCurrent && isPlaying ? 'Pause' : `Play ${trackTitle(item)}`
-              }
-              onClick={onPlay}
-            >
-              {isCurrent && isPlaying ? (
-                <PauseIcon size={16} aria-hidden />
-              ) : (
-                <PlayIcon size={16} aria-hidden />
-              )}
-            </Button>
-          </Tooltip>
-        )}
-        {item.sound && isEmbed && (
-          <Tooltip
-            content={
-              isExpanded
-                ? 'Hide player'
-                : `Play ${trackTitle(item)} on ${EMBED_PROVIDER_LABEL[embedProvider!]}`
-            }
-            side="top"
-          >
-            <Button
-              size="icon-sm"
-              variant="text"
-              aria-label={
-                isExpanded
-                  ? 'Hide player'
-                  : `Play ${trackTitle(item)} on ${EMBED_PROVIDER_LABEL[embedProvider!]}`
-              }
-              onClick={onToggleExpand}
-            >
-              <PlayIcon size={16} className="fill-current" aria-hidden />
-            </Button>
-          </Tooltip>
-        )}
-        {item.sound && !isEmbed && (
-          <Tooltip
-            content={
-              isExpanded
-                ? 'Collapse'
-                : isEmbed
-                  ? 'Show player'
-                  : 'Expand waveform'
-            }
-            side="top"
-          >
-            <Button
-              size="icon-sm"
-              variant="text"
-              aria-label={
-                isExpanded
-                  ? 'Collapse'
-                  : isEmbed
-                    ? 'Show player'
-                    : 'Expand waveform'
-              }
-              onClick={onToggleExpand}
-            >
-              {isExpanded ? (
-                <Minimize2Icon size={14} aria-hidden />
-              ) : (
-                <Maximize2Icon size={14} aria-hidden />
-              )}
-            </Button>
-          </Tooltip>
-        )}
-        <Tooltip content="Remove track" side="top">
-          <Button
-            size="icon-sm"
-            variant="text"
-            aria-label="Remove track"
-            onClick={onRemove}
-          >
-            <Trash2Icon size={16} aria-hidden />
-          </Button>
-        </Tooltip>
-      </div>
-
-      {isExpanded && isEmbed && (
-        <div className="px-3 pb-3">
-          <iframe
-            title={trackTitle(item)}
-            src={embedSrcFor(embedProvider!, embedUri!) ?? ''}
-            width="100%"
-            height={EMBED_PROVIDER_HEIGHT[embedProvider!]}
-            style={{ border: 0, display: 'block' }}
-            allow="autoplay; encrypted-media"
-            loading="lazy"
-            className="border-border overflow-hidden rounded-lg border"
-          />
-        </div>
-      )}
-
-      {isExpanded && item.sound && !isEmbed && (
-        <div className="px-3 pb-3">
-          {durationSec > 0 && peaks.length > 0 ? (
-            <div className="border-border bg-background h-24 overflow-hidden rounded-lg border">
-              <WaveformCanvas
-                peaks={peaks}
-                durationSec={durationSec}
-                currentTime={isCurrent ? currentTime : 0}
-                cuts={[]}
-                selection={null}
-                onSeek={onSeek}
-              />
-            </div>
-          ) : (
-            <div className="border-border bg-background text-foreground-secondary flex h-24 items-center justify-center rounded-lg border text-xs">
-              Decoding waveform…
-            </div>
-          )}
-        </div>
-      )}
-    </li>
-  );
 }
 
 export function StudioCollectionEditView({
@@ -380,15 +104,18 @@ export function StudioCollectionEditView({
     null,
   );
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [pendingCoverDelete, setPendingCoverDelete] = useState(false);
   const [saving, setSaving] = useState(false);
   const [detailsExpanded, setDetailsExpanded] = useState(false);
-  const [trackQuery, setTrackQuery] = useState('');
   const [archiveQuery, setArchiveQuery] = useState('');
-  const [expandedItemId, setExpandedItemId] = useState<string | null>(null);
-  const [draggedId, setDraggedId] = useState<string | null>(null);
+  const [pendingRemove, setPendingRemove] = useState<{
+    id: string;
+    title: string;
+  } | null>(null);
 
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
+  const queue = usePlayerStore((s) => s.queue);
   const currentId = usePlayerStore((s) => s.currentId);
   const status = usePlayerStore((s) => s.status);
   const currentTime = usePlayerStore((s) => s.currentTime);
@@ -447,13 +174,10 @@ export function StudioCollectionEditView({
         ]
       : [];
 
-  const filteredItems = useMemo(() => {
-    const q = trackQuery.trim().toLowerCase();
-    if (!q) {
-      return items;
-    }
-    return items.filter((item) => trackTitle(item).toLowerCase().includes(q));
-  }, [items, trackQuery]);
+  const tracks: Track[] = useMemo(
+    () => items.map(collectionItemToTrack),
+    [items],
+  );
 
   const filteredSounds = useMemo(() => {
     const query = archiveQuery.trim().toLowerCase();
@@ -579,32 +303,25 @@ export function StudioCollectionEditView({
     reload();
   };
 
-  const reorderByDrop = async (fromId: string, toId: string) => {
-    if (fromId === toId) {
-      return;
-    }
-    const fromIndex = items.findIndex((candidate) => candidate.id === fromId);
-    const toIndex = items.findIndex((candidate) => candidate.id === toId);
-    if (fromIndex < 0 || toIndex < 0) {
-      return;
-    }
+  const onReorder = (from: number, to: number) => {
     const next = [...items];
-    const [moved] = next.splice(fromIndex, 1);
+    const [moved] = next.splice(from, 1);
     if (!moved) {
       return;
     }
-    next.splice(toIndex, 0, moved);
+    next.splice(to, 0, moved);
     setCol((c) => (c ? { ...c, items: next } : c));
-    const result = await reorderStudioCollectionItems(
+    void reorderStudioCollectionItems(
       slug,
       next.map((i) => i.id),
-    );
-    if (result.ok) {
-      toast.success('Tracklist reordered.');
-    } else {
-      toast.error(result.error);
-      reload();
-    }
+    ).then((result) => {
+      if (result.ok) {
+        toast.success('Tracklist reordered.');
+      } else {
+        toast.error(result.error);
+        reload();
+      }
+    });
   };
 
   const saveMeta = async () => {
@@ -695,6 +412,17 @@ export function StudioCollectionEditView({
     );
   };
 
+  const removeCover = async () => {
+    const result = await patchStudioCollection(slug, { coverUrl: null });
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    setCoverUrl(null);
+    setCol((current) => (current ? { ...current, coverUrl: null } : current));
+    toast.success('Cover removed.');
+  };
+
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-4xl flex-col gap-6 px-1 py-2">
@@ -722,6 +450,9 @@ export function StudioCollectionEditView({
               imageUrl={coverUrl}
               imageAlt=""
               onImageClick={() => setUploadTarget('cover')}
+              onImageDelete={
+                coverUrl ? () => setPendingCoverDelete(true) : undefined
+              }
               backdropUrl={backdropUrl}
               subtitle={
                 <>
@@ -791,6 +522,10 @@ export function StudioCollectionEditView({
                     <PlusIcon size={16} aria-hidden />
                   </Button>
                 </Tooltip>
+                <StudioCollectionMoreMenu
+                  col={col}
+                  kindLabel={isAlbumLike ? 'album' : 'collection'}
+                />
               </div>
             </EntitySocialHeader>
 
@@ -902,14 +637,6 @@ export function StudioCollectionEditView({
               description={`${items.length} track${items.length === 1 ? '' : 's'}`}
             >
               <div className="mb-3 flex flex-col gap-3">
-                <Input
-                  value={trackQuery}
-                  onChange={(e) => setTrackQuery(e.target.value)}
-                  placeholder="Search tracks…"
-                  className="max-w-xs"
-                  aria-label="Search tracks"
-                />
-
                 {nowPlayingItem?.sound && (
                   <div className="border-border bg-background-input flex items-center gap-3 rounded-lg border px-3 py-2">
                     <Tooltip content={isPlaying ? 'Pause' : 'Play'} side="top">
@@ -962,63 +689,85 @@ export function StudioCollectionEditView({
                   title="No tracks yet — add archive items below."
                 />
               ) : (
-                <ul className="border-border divide-border divide-y overflow-hidden rounded-xl border">
-                  {filteredItems.length === 0 && (
-                    <li className="text-foreground-secondary py-3 text-sm">
-                      No tracks match “{trackQuery}”.
-                    </li>
-                  )}
-                  {filteredItems.map((item) => {
-                    const idx = items.indexOf(item);
-                    const isCurrent = Boolean(
-                      item.sound && currentId === `archive:${item.sound.id}`,
-                    );
-                    return (
-                      <TrackRow
-                        key={item.id}
-                        item={item}
-                        idx={idx}
-                        isExpanded={expandedItemId === item.id}
-                        isCurrent={isCurrent}
-                        isPlaying={isCurrent && isPlaying}
-                        currentTime={currentTime}
-                        onToggleExpand={() =>
-                          setExpandedItemId((cur) =>
-                            cur === item.id ? null : item.id,
-                          )
+                <div className="min-h-[200px]">
+                  <TrackTable
+                    tracks={tracks}
+                    labels={trackTableLabels}
+                    getItemId={(_t, index) => items[index]?.id ?? String(index)}
+                    features={{
+                      header: true,
+                      reorderable: true,
+                      filterable: true,
+                      sortable: false,
+                    }}
+                    display={{
+                      displayPosition: false,
+                      displayArtist: false,
+                      displayDuration: true,
+                      displayDeleteButton: true,
+                      displayThumbnail: true,
+                      displayQueueControls: true,
+                    }}
+                    actions={{
+                      onReorder,
+                      onRemove: (t, index) => {
+                        const item = items[index];
+                        if (!item) {
+                          return;
                         }
-                        onPlay={() => togglePlayItem(item)}
-                        onSeek={(sec) => {
-                          if (isCurrent) {
-                            seekTo(sec);
-                          } else if (item.sound) {
-                            void playSound(item.sound);
-                          }
-                        }}
-                        isDragging={draggedId === item.id}
-                        reorderable={!trackQuery.trim()}
-                        onDragStart={() => setDraggedId(item.id)}
-                        onDragEnd={() => setDraggedId(null)}
-                        onDrop={() => {
-                          if (draggedId) {
-                            void reorderByDrop(draggedId, item.id);
-                          }
-                          setDraggedId(null);
-                        }}
-                        genre={
-                          item.sound?.genre ??
-                          archive.find((sound) => sound.id === item.sound?.id)
-                            ?.genre
+                        setPendingRemove({ id: item.id, title: t.title });
+                      },
+                      onPlayNow: (t) => {
+                        const item = items.find((i) => i.id === t.source.id);
+                        if (item) {
+                          togglePlayItem(item);
                         }
-                        onRemove={() => {
-                          void removeStudioCollectionItem(slug, item.id).then(
-                            () => reload(),
+                      },
+                      onAddToQueue: (t) => {
+                        const item = items.find((i) => i.id === t.source.id);
+                        if (item?.sound) {
+                          void buildPlayable(item.sound).then((playable) => {
+                            if (playable) {
+                              enqueue(playable);
+                            }
+                          });
+                        }
+                      },
+                    }}
+                    meta={{
+                      isCurrentTrack: (track) => {
+                        const item = items.find(
+                          (candidate) => candidate.id === track.source.id,
+                        );
+                        return Boolean(
+                          item?.sound &&
+                          currentId === `archive:${item.sound.id}`,
+                        );
+                      },
+                      isTrackPlaying: (track) => {
+                        const item = items.find(
+                          (candidate) => candidate.id === track.source.id,
+                        );
+                        return Boolean(
+                          item?.sound &&
+                          currentId === `archive:${item.sound.id}` &&
+                          isPlaying,
+                        );
+                      },
+                      isTrackQueued: (track) =>
+                        queue.some((queueItem) => {
+                          const item = items.find(
+                            (candidate) => candidate.id === track.source.id,
                           );
-                        }}
-                      />
-                    );
-                  })}
-                </ul>
+                          return (
+                            queueItem.id === track.source.id ||
+                            (item?.sound &&
+                              queueItem.id === `archive:${item.sound.id}`)
+                          );
+                        }),
+                    }}
+                  />
+                </div>
               )}
             </StudioPanel>
           </>
@@ -1177,6 +926,41 @@ export function StudioCollectionEditView({
             <Dialog.Close>Cancel</Dialog.Close>
           </Dialog.Actions>
         </Dialog.Root>
+
+        <ConfirmDialog
+          isOpen={pendingRemove !== null}
+          title={`Remove "${pendingRemove?.title}"?`}
+          description={`This removes the track from this ${isAlbumLike ? 'album' : 'collection'}. It stays in your library.`}
+          confirmLabel="Remove"
+          onCancel={() => setPendingRemove(null)}
+          onConfirm={() => {
+            if (!pendingRemove) {
+              return;
+            }
+            const id = pendingRemove.id;
+            setPendingRemove(null);
+            void removeStudioCollectionItem(slug, id).then((result) => {
+              if (result.ok) {
+                toast.success('Track removed.');
+                reload();
+              } else {
+                toast.error(result.error);
+              }
+            });
+          }}
+        />
+
+        <ConfirmDialog
+          isOpen={pendingCoverDelete}
+          title="Remove cover image?"
+          description="The collection will fall back to its default placeholder until you upload a new cover."
+          confirmLabel="Remove cover"
+          onCancel={() => setPendingCoverDelete(false)}
+          onConfirm={() => {
+            setPendingCoverDelete(false);
+            void removeCover();
+          }}
+        />
       </div>
     </StudioGate>
   );

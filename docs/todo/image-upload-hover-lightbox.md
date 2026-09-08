@@ -15,7 +15,7 @@ the corner X badge.
 Consumers of the three primitives get the new behavior automatically —
 verified via `grep`: `TrackEditDialog` (release artwork), `ShowImagePicker`,
 `VenueRegisterView`, `StudioScheduleView`, `StudioVenuesView`,
-`AdminDiscoWidgetsView`, `AdminNewsView`, `BroadcastPreflightPanel`,
+`AdminAddonsView`, `AdminNewsView`, `BroadcastPreflightPanel`,
 `ListenAddonsPanel` all render one of the three shared components directly.
 
 `RadioStationCover` was left untouched: it has no "empty" state (`src` is
@@ -45,11 +45,84 @@ errors. One accepted visual change: the letter-initial placeholder is
 gone, replaced by the primitive's standard `ImageIcon` empty state —
 consistent with every other consumer of this shared component.
 
+**2026-09-08:** `StudioBrandingView` (avatar + press-kit gallery) checked —
+it already had its own bespoke hover-delete (X/trash on hover) and
+click-to-preview (`ImageLightbox`) for the avatar, and hover-delete for
+each gallery photo, independently matching this ticket's UX goal (like
+`ArtistGalleryPanel` above). The one real gap: neither delete path had a
+confirm step — both `removeAvatar` and `removeImage` fired immediately
+on click, violating this doc's own "Confirm before delete... never
+silent clear" rule. Added a `ConfirmDialog` for each (avatar: "Remove
+profile picture?"; gallery photo: "Remove this image from your
+gallery?"), reusing the same shared `ConfirmDialog` component the
+file's existing "replace all gallery images" prompt already uses.
+Still bespoke, not migrated onto the shared `imageSlot` primitives —
+not attempted here, out of scope for a confirm-dialog fix.
+`tsc --noEmit`, `eslint`, `pnpm vitest run` (485/485) all pass. Not
+live-browser-verified (no seeded studio session available this pass).
+
+**2026-09-08 (2):** `EntitySocialHeader` (the shared cover/backdrop
+header used by Collection, Release, Show, Sound, and Playlist Studio
+edit views, plus 7 read-only listener/artist pages) gained an optional
+`onImageDelete` prop — additive, only rendered when both `imageUrl` and
+`onImageDelete` are passed, so the other 11 existing consumers that
+don't pass it are unaffected. When set, hovering the cover image
+reveals a small corner X (matching the `StudioBrandingView` hover
+pattern above); clicking it calls the handler, which the view wires to
+its own `ConfirmDialog` (the shared header component doesn't own
+dialog state itself, consistent with every other confirm-delete in
+this codebase). Wired it into `StudioCollectionEditView`'s cover image:
+new `removeCover()` calls `patchStudioCollection(slug, { coverUrl:
+null })`. Added a `CollectionEditable` Storybook story documenting the
+`onImageClick` + `onImageDelete` pairing.
+
+Only Collection's **cover** got wired this pass — the plumbing is now
+on the shared component, so wiring `onImageDelete` into Release/Show/
+Sound/Playlist's cover images (they already pass `onImageClick`) is a
+small follow-up, not attempted here. Collection's **backdrop/slideshow**
+also still needs its own delete UX — it's multi-frame (not a single
+image slot), a different problem than the corner-X pattern used here.
+`tsc --noEmit`, `eslint`, `pnpm vitest run` (485/485) all pass. Not
+live-browser-verified.
+
+**2026-09-08 (3):** Wired `onImageDelete` into Playlist and Release
+covers (the two of the four remaining `EntitySocialHeader` consumers
+that actually have an editable image — `StudioSoundView` and
+`StudioShowDetailView` render a read-only `bannerUrl`/`thumbnailUrl`
+with no `onImageClick`, so there's no image to delete there; checked,
+no change needed). Playlist reused the same `patchStudioCollection(slug,
+{ coverUrl: null })` path Collection already uses (same backend model).
+Release had no way to clear artwork at all — `patchStudioRelease` never
+accepted an `artworkUrl` field, and the dedicated
+`/artwork/{prepare,complete,from-url}` routes only ever set it. Added
+`DELETE /api/me/releases/:id/artwork` in `../tahti-org`
+(`apps/api/src/routes/releases/artwork.ts`, branch
+`feat/release-artwork-delete`, committed locally — not pushed, no PR
+opened) nulling `artworkKey`/`artworkUrl`, plus a
+`apps/api/src/routes/releases/artwork.test.ts` covering the happy path
+and a 404-for-other-owner case (`pnpm vitest run` in `apps/api`: 2/2
+pass; this route previously had zero test coverage). Added
+`removeReleaseArtwork()` to this repo's `src/api/studio.ts` and wired
+both views' `onImageDelete` to their own `ConfirmDialog`, same pattern
+as Collection. `tsc --noEmit`, `eslint`, `pnpm vitest run` (485/485) all
+pass. Not live-browser-verified (Chrome extension unavailable this
+session).
+
+Remaining from the "not done" list below: `StudioBrandingView` →
+shared primitives migration, `ChannelDesigner` backdrop/gallery,
+Collection backdrop/slideshow delete, and admin radio/announcements.
+
 ## Not done in this pass (bespoke, not on the shared primitives)
 
-- `StudioBrandingView` avatar/press-kit multi-image upload
+- `StudioBrandingView` avatar/press-kit gallery: hover-delete + preview
+  UX and confirm-before-delete are done (2026-09-08); migrating onto
+  the shared `imageSlot` primitives is still open, not attempted.
+- `EntitySocialHeader` cover-image delete: done for Collection
+  (2026-09-08); Release/Show/Sound/Playlist edit views have the same
+  `onImageClick` wiring and just need `onImageDelete` added too —
+  small follow-up, not attempted.
 - `ChannelDesigner` backdrop + gallery slideshow
-- Collection cover + slideshow
+- Collection backdrop / slideshow delete (multi-frame, cover is done)
 - Admin: radio station logo (blocked on the `RadioStationCover` redesign
   above), announcements
 

@@ -1,4 +1,9 @@
-import { MapPinIcon, UploadCloudIcon, type LucideIcon } from 'lucide-react';
+import {
+  MapPinIcon,
+  UploadCloudIcon,
+  XIcon,
+  type LucideIcon,
+} from 'lucide-react';
 import type { CSSProperties, ReactNode } from 'react';
 
 import { StatChip } from '@tahti-player/ui';
@@ -79,6 +84,8 @@ export type EntitySocialHeaderProps = {
    */
   colorScheme?: LooseColorScheme;
   onImageClick?: () => void;
+  /** When set alongside `imageUrl`, a hover-reveal X badge clears the image. */
+  onImageDelete?: () => void;
   className?: string;
   children?: ReactNode;
   'data-testid'?: string;
@@ -109,6 +116,7 @@ export function EntitySocialHeader({
   artworkUrlForVisualizer,
   colorScheme,
   onImageClick,
+  onImageDelete,
   className,
   children,
   'data-testid': dataTestId = 'entity-social-header',
@@ -249,21 +257,37 @@ export function EntitySocialHeader({
       <div className="flex flex-wrap items-center gap-5">
         {imageUrl ? (
           onImageClick ? (
-            <button
-              type="button"
-              onClick={onImageClick}
-              className={cn(
-                'border-border shadow-shadow size-24 shrink-0 overflow-hidden border-(length:--border-width) p-0',
-                roundImage ? 'rounded-full' : 'rounded-md',
-              )}
-              aria-label={`View ${title} artwork`}
-            >
-              <img
-                src={imageUrl}
-                alt={imageAlt}
-                className="size-full object-cover"
-              />
-            </button>
+            <div className="group relative size-24 shrink-0">
+              <button
+                type="button"
+                onClick={onImageClick}
+                className={cn(
+                  'border-border shadow-shadow size-24 overflow-hidden border-(length:--border-width) p-0',
+                  roundImage ? 'rounded-full' : 'rounded-md',
+                )}
+                aria-label={`Change ${title} artwork`}
+              >
+                <img
+                  src={imageUrl}
+                  alt={imageAlt}
+                  className="size-full object-cover"
+                />
+              </button>
+              {onImageDelete ? (
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onImageDelete();
+                  }}
+                  aria-label={`Remove ${title} artwork`}
+                  title="Remove artwork"
+                  className="border-border bg-background text-accent-red shadow-shadow hover:bg-background-secondary absolute -top-1.5 -right-1.5 flex size-6 items-center justify-center rounded-full border-(length:--border-width) opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100"
+                >
+                  <XIcon size={12} aria-hidden />
+                </button>
+              ) : null}
+            </div>
           ) : (
             <img
               src={imageUrl}

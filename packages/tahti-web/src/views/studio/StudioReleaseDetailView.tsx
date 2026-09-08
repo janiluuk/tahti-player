@@ -18,6 +18,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import type { Track } from '@tahti-player/model';
 import {
   Button,
   Dialog,
@@ -29,6 +30,7 @@ import {
   Tabs,
   Textarea,
   Tooltip,
+  TrackTable,
 } from '@tahti-player/ui';
 
 import {
@@ -38,6 +40,7 @@ import {
   fetchStudioSound,
   fetchStudioSounds,
   patchStudioRelease,
+  removeReleaseArtwork,
   removeStudioReleaseTrack,
   reorderStudioReleaseTracks,
   uploadReleaseArtwork,
@@ -45,8 +48,10 @@ import {
 import type {
   FingerprintMatch,
   StudioRelease,
+  StudioReleaseTrack,
   StudioSound,
 } from '../../api/studio-types';
+import type { TahtiPlayable } from '../../api/types';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { EmbedTrackRow } from '../../components/EmbedTrackRow';
 import {
@@ -69,6 +74,8 @@ import {
   loadDspPluginPrefixes,
   prefixesForServices,
 } from '../../lib/dspPluginDefaults';
+import { playableFromStudioHearthis } from '../../lib/embedPlayback';
+import { trackTableLabels } from '../../lib/trackTableLabels';
 import { useAuthStore } from '../../stores/authStore';
 import { usePlayerStore } from '../../stores/playerStore';
 
@@ -76,7 +83,9 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
   const user = useAuthStore((state) => state.user);
   const currentId = usePlayerStore((state) => state.currentId);
   const playbackStatus = usePlayerStore((state) => state.status);
+  const setPlaybackStatus = usePlayerStore((state) => state.setStatus);
   const play = usePlayerStore((state) => state.play);
+  const enqueue = usePlayerStore((state) => state.enqueue);
   const [release, setRelease] = useState<StudioRelease | null>(null);
   const [description, setDescription] = useState('');
   const [spotify, setSpotify] = useState('');
@@ -84,8 +93,10 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
   const [message, setMessage] = useState<string | null>(null);
   const [artworkPreview, setArtworkPreview] = useState<string | null>(null);
   const [artworkPickerOpen, setArtworkPickerOpen] = useState(false);
+  const [pendingArtworkDelete, setPendingArtworkDelete] = useState(false);
   const [saving, setSaving] = useState(false);
   const [detailsExpanded, setDetailsExpanded] = useState(false);
+  const [soundsById, setSoundsById] = useState<Record<string, StudioSound>>({});
 
   useEffect(() => {
     void fetchStudioReleases().then((res) => {
@@ -97,6 +108,57 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
       setArtworkPreview(found?.artworkUrl ?? null);
     });
   }, [id]);
+
+  useEffect(() => {
+    void fetchStudioSounds().then((res) => {
+      setSoundsById(Object.fromEntries(res.data.map((s) => [s.id, s])));
+    });
+  }, []);
+
+  /** Non-hearthis EMBED_ONLY sounds have no Tahti-hosted audio and no
+   * shared-player widget — same accepted gap as the Collection editor's
+   * TrackTable. */
+  const buildPlayable = async (
+    releaseTrack: StudioReleaseTrack,
+  ): Promise<TahtiPlayable | null> => {
+    if (!releaseTrack.soundId) {
+      return null;
+    }
+    const sound = soundsById[releaseTrack.soundId];
+    if (sound) {
+      const hearthis = playableFromStudioHearthis(sound);
+      if (hearthis) {
+        return hearthis;
+      }
+      if (sound.embedProvider && sound.embedProvider !== 'HEARTHIS') {
+        return null;
+      }
+    }
+    const { data } = await fetchEditorSource(releaseTrack.soundId);
+    if (!data.url) {
+      return null;
+    }
+    return {
+      id: `archive:${releaseTrack.soundId}`,
+      kind: 'archive',
+      title: data.title || releaseTrack.title,
+      artist: user?.displayName ?? 'You',
+      streamUrl: data.url,
+      protocol: data.url.includes('.m3u8') ? 'hls' : 'https',
+    };
+  };
+
+  const releaseTracks: Track[] = useMemo(
+    () =>
+      (release?.tracks ?? []).map((t) => ({
+        title: t.title,
+        artists: [{ name: 'You', roles: ['performer'] }],
+        durationMs:
+          t.durationSec != null ? Math.round(t.durationSec * 1000) : undefined,
+        source: { provider: 'tahti', id: t.id },
+      })),
+    [release?.tracks],
+  );
 
   const save = async () => {
     setMessage(null);
@@ -116,6 +178,16 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
     }
     setRelease(result.data);
     setMessage('Saved.');
+  };
+
+  const removeArtwork = async () => {
+    const result = await removeReleaseArtwork(id);
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    setArtworkPreview(null);
+    toast.success('Artwork removed.');
   };
 
   const playFirstTrack = async () => {
@@ -188,6 +260,9 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
               imageUrl={artworkPreview}
               imageAlt=""
               onImageClick={() => setArtworkPickerOpen(true)}
+              onImageDelete={
+                artworkPreview ? () => setPendingArtworkDelete(true) : undefined
+              }
               subtitle={`${release.type} · ${release.state}`}
               description={description.trim() || undefined}
               stats={headerStats}
@@ -253,6 +328,18 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
               </div>
             </Dialog.Root>
 
+            <ConfirmDialog
+              isOpen={pendingArtworkDelete}
+              title="Remove artwork?"
+              description="The release will fall back to its default placeholder until you upload new artwork."
+              confirmLabel="Remove artwork"
+              onCancel={() => setPendingArtworkDelete(false)}
+              onConfirm={() => {
+                setPendingArtworkDelete(false);
+                void removeArtwork();
+              }}
+            />
+
             <Tabs
               listClassName="border-border border-b pb-3"
               panelClassName="flex flex-col gap-6 pt-2"
@@ -297,20 +384,90 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
 
                       {release.tracks && release.tracks.length > 0 && (
                         <StudioPanel title="Tracks">
-                          <ol className="text-foreground-secondary list-decimal space-y-2 pl-5 text-sm">
-                            {release.tracks.map((t) => (
-                              <ReleaseTrackRow
-                                key={t.id}
-                                track={t}
-                                shopUrl={release.smartLinkTargets?.bandcamp}
-                                isPlaying={
-                                  currentId === `archive:${t.soundId}` &&
-                                  (playbackStatus === 'playing' ||
-                                    playbackStatus === 'loading')
-                                }
-                              />
-                            ))}
-                          </ol>
+                          <div className="min-h-[200px]">
+                            <TrackTable
+                              tracks={releaseTracks}
+                              labels={trackTableLabels}
+                              getItemId={(_t, index) =>
+                                release.tracks?.[index]?.id ?? String(index)
+                              }
+                              features={{
+                                header: true,
+                                reorderable: false,
+                                filterable: true,
+                                sortable: false,
+                              }}
+                              display={{
+                                displayPosition: false,
+                                displayArtist: false,
+                                displayDuration: true,
+                                displayDeleteButton: false,
+                                displayThumbnail: true,
+                                displayQueueControls: true,
+                              }}
+                              actions={{
+                                onPlayNow: (t) => {
+                                  const rt = release.tracks?.find(
+                                    (candidate) => candidate.id === t.source.id,
+                                  );
+                                  if (!rt) {
+                                    return;
+                                  }
+                                  const playableId = `archive:${rt.soundId}`;
+                                  if (currentId === playableId) {
+                                    setPlaybackStatus(
+                                      playbackStatus === 'playing' ||
+                                        playbackStatus === 'loading'
+                                        ? 'paused'
+                                        : 'playing',
+                                    );
+                                  } else {
+                                    void buildPlayable(rt).then((playable) => {
+                                      if (playable) {
+                                        play(playable);
+                                      }
+                                    });
+                                  }
+                                },
+                                onAddToQueue: (t) => {
+                                  const rt = release.tracks?.find(
+                                    (candidate) => candidate.id === t.source.id,
+                                  );
+                                  if (rt) {
+                                    void buildPlayable(rt).then((playable) => {
+                                      if (playable) {
+                                        enqueue(playable);
+                                      }
+                                    });
+                                  }
+                                },
+                              }}
+                              meta={{
+                                isCurrentTrack: (track) => {
+                                  const rt = release.tracks?.find(
+                                    (candidate) =>
+                                      candidate.id === track.source.id,
+                                  );
+                                  return Boolean(
+                                    rt?.soundId &&
+                                    currentId === `archive:${rt.soundId}`,
+                                  );
+                                },
+                                isTrackPlaying: (track) => {
+                                  const rt = release.tracks?.find(
+                                    (candidate) =>
+                                      candidate.id === track.source.id,
+                                  );
+                                  return Boolean(
+                                    rt?.soundId &&
+                                    currentId === `archive:${rt.soundId}` &&
+                                    (playbackStatus === 'playing' ||
+                                      playbackStatus === 'loading'),
+                                  );
+                                },
+                              }}
+                            />
+                          </div>
                         </StudioPanel>
                       )}
 
@@ -430,6 +587,8 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
   );
 }
 
+/** Per-row play/editor/Bandcamp affordance used by the Smart Links tab's
+ * own reorderable tracklist (untouched by the Overview TrackTable swap). */
 function ReleaseTrackRow({
   track,
   shopUrl,
