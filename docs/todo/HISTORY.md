@@ -2,6 +2,33 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-08 — ViewShell page headers: last holdout converted, StudioPageHeader deleted
+
+`StudioEpisodeReviewView` (in `StudioShowDetailView.tsx`) was the one
+component still left on the plain `StudioPageHeader` (title +
+episode-number badge, not a cover-overlay case, so it wasn't part of
+the earlier 4-view "Remaining" cover-overlay batch). Converted to
+`ViewShell` (`classes={{ root: 'px-0 pt-0' }}`, episode number badge
+moved into the `actions` prop — same right-aligned slot `StudioPageHeader`'s
+`action` used). Breadcrumb (`← {show title}`) and `BroadcastSubNav` stay
+outside `ViewShell`, matching every other Studio detail page.
+
+With that last consumer gone, `StudioPageHeader` (the component
+definition in `StudioPanel.tsx`) was deleted per the todo's item 6.
+Also removed its now-broken Storybook story (`StudioPanel.stories.tsx`)
+and its row in `ElementLocations.stories.tsx`; the `ViewShell` element
+row there had its stale "Remaining Studio/Admin still StudioPageHeader"
+clause dropped since nothing does anymore.
+
+`tsc --noEmit` (tahti-web) and `eslint` clean; `pnpm vitest run` 484/484
+passing. Not verified in a live browser — doing so needs the sibling
+`tahti-org` API running plus a seeded show/episode and studio login,
+disproportionate for a change matching ~15 already-verified `ViewShell`
+conversions elsewhere in the codebase.
+
+This closes out `docs/todo/viewshell-page-headers.md` — the whole
+Listener/Studio/Admin `ViewShell` migration is done.
+
 ## 2026-09-08 — Next-broadcast cards, status-bar icons, page-tour chrome
 
 **Next-broadcast cards:** Studio schedule "Next"/"Upcoming" list puts the
