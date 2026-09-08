@@ -3,6 +3,7 @@ import {
   CheckCircle2Icon,
   Clock3Icon,
   CopyIcon,
+  FileTextIcon,
   ListFilterIcon,
   LoaderCircleIcon,
 } from 'lucide-react';
@@ -11,14 +12,107 @@ import { useEffect, useState } from 'react';
 import { Badge, Button } from '@tahti-player/ui';
 
 import {
+  fetchAdminFeatureRequestReports,
   fetchAdminFeatureRequests,
+  generateFeatureRequestQuarterlyReport,
   updateFeatureRequestStatus,
   type AdminFeatureRequestRow,
   type AdminFeatureRequestStatus,
 } from '../../../../api/admin';
+import type { GovernanceQuarterlyReport } from '../../../../api/types';
 import { PageLoading } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { ModerationTabs } from '../ModerationTabs';
+
+function currentQuarterLabel(): string {
+  const now = new Date();
+  const quarter = Math.floor(now.getUTCMonth() / 3) + 1;
+  return `Q${quarter} ${now.getUTCFullYear()}`;
+}
+
+function QuarterlyReportsPanel() {
+  const [reports, setReports] = useState<GovernanceQuarterlyReport[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [generating, setGenerating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const reload = () => {
+    setLoading(true);
+    void fetchAdminFeatureRequestReports().then((res) => {
+      setReports(res.data);
+      setLoading(false);
+    });
+  };
+
+  useEffect(reload, []);
+
+  return (
+    <StudioPanel>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h3 className="font-display text-sm font-bold">
+          Quarterly review reports
+        </h3>
+        <Button
+          size="sm"
+          variant="secondary"
+          disabled={generating}
+          onClick={() => {
+            setGenerating(true);
+            setError(null);
+            void generateFeatureRequestQuarterlyReport().then((result) => {
+              setGenerating(false);
+              if (!result.ok) {
+                setError(result.error);
+                return;
+              }
+              reload();
+            });
+          }}
+        >
+          <FileTextIcon size={14} aria-hidden />
+          {generating
+            ? 'Generating…'
+            : `Generate ${currentQuarterLabel()} report`}
+        </Button>
+      </div>
+      {error && <p className="text-accent-red mt-2 text-xs">{error}</p>}
+      {loading ? (
+        <PageLoading label="Loading reports…" />
+      ) : reports.length === 0 ? (
+        <p className="text-foreground-secondary mt-2 text-sm">
+          No quarterly reports generated yet.
+        </p>
+      ) : (
+        <ul className="divide-border mt-2 divide-y">
+          {reports.map((report) => (
+            <li
+              key={report.id}
+              className="flex items-center justify-between gap-3 py-2 text-sm first:pt-0 last:pb-0"
+            >
+              <div>
+                {report.downloadUrl ? (
+                  <a
+                    href={report.downloadUrl}
+                    className="font-medium underline-offset-2 hover:underline"
+                  >
+                    Q{report.quarter} {report.year}
+                  </a>
+                ) : (
+                  <span className="font-medium">
+                    Q{report.quarter} {report.year}
+                  </span>
+                )}
+                <span className="text-foreground-secondary ml-2 text-xs">
+                  by {report.generatedByDisplayName}
+                </span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </StudioPanel>
+  );
+}
 
 const FILTERS: { id: AdminFeatureRequestStatus | 'all'; label: string }[] = [
   { id: 'all', label: 'All' },
@@ -152,6 +246,8 @@ export function FeatureRequestsTab() {
       <p className="text-foreground-secondary text-sm">
         Member-suggested features, ranked by votes. Review quarterly.
       </p>
+
+      <QuarterlyReportsPanel />
 
       <ModerationTabs
         activeId={filter}

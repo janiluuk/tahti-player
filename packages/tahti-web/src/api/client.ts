@@ -2548,16 +2548,27 @@ export async function voteOnMotion(
  * or close an OPEN one and publish its tally. */
 export async function patchGovernanceMotion(
   id: string,
-  state: 'OPEN' | 'CLOSED',
+  patch: { state?: 'OPEN' | 'CLOSED'; title?: string; description?: string },
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   if (forceMock()) {
-    mockMotions = mockMotions.map((m) => (m.id === id ? { ...m, state } : m));
+    mockMotions = mockMotions.map((m) =>
+      m.id === id
+        ? {
+            ...m,
+            ...(patch.state ? { state: patch.state } : {}),
+            ...(patch.title ? { title: patch.title } : {}),
+          }
+        : m,
+    );
+    if (patch.description) {
+      mockMotionDescriptions[id] = patch.description;
+    }
     return { ok: true };
   }
   try {
     await requestJson(`/api/v1/governance/motions/${encodeURIComponent(id)}`, {
       method: 'PATCH',
-      body: JSON.stringify({ state }),
+      body: JSON.stringify(patch),
     });
     return { ok: true };
   } catch (err) {

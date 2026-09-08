@@ -81,6 +81,10 @@ export function MotionCard({
   const [actionMsg, setActionMsg] = useState<string | null>(null);
   const [voting, setVoting] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState(motion.title);
+  const [editDescription, setEditDescription] = useState(description ?? '');
+  const [savingEdit, setSavingEdit] = useState(false);
 
   const openThread = () => {
     setExpanded(true);
@@ -127,9 +131,75 @@ export function MotionCard({
           ? `, ${m.commentCount} comments`
           : ''}
       </p>
-      {description ? (
+      {description !== undefined && editing ? (
+        <div className="mt-2 flex flex-col gap-2">
+          <Input
+            value={editTitle}
+            onChange={(e) => setEditTitle(e.target.value)}
+            placeholder="Motion title"
+            maxLength={200}
+          />
+          <textarea
+            value={editDescription}
+            onChange={(e) => setEditDescription(e.target.value)}
+            rows={4}
+            maxLength={10000}
+            className="border-border bg-background rounded-md border px-3 py-2 text-sm"
+          />
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              disabled={
+                savingEdit || !editTitle.trim() || !editDescription.trim()
+              }
+              onClick={() => {
+                setSavingEdit(true);
+                void patchGovernanceMotion(m.id, {
+                  title: editTitle.trim(),
+                  description: editDescription.trim(),
+                }).then((r) => {
+                  setSavingEdit(false);
+                  setActionMsg(r.ok ? 'Motion updated.' : r.error);
+                  if (r.ok) {
+                    setEditing(false);
+                    onChanged();
+                  }
+                });
+              }}
+            >
+              Save changes
+            </Button>
+            <Button
+              size="sm"
+              variant="secondary"
+              disabled={savingEdit}
+              onClick={() => setEditing(false)}
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      ) : description ? (
         <p className="mt-2 text-sm leading-relaxed">{description}</p>
       ) : null}
+      {description !== undefined &&
+        !editing &&
+        isBoard &&
+        m.state === 'DRAFT' && (
+          <div className="mt-2">
+            <Button
+              size="sm"
+              variant="text"
+              onClick={() => {
+                setEditTitle(m.title);
+                setEditDescription(description ?? '');
+                setEditing(true);
+              }}
+            >
+              Edit motion
+            </Button>
+          </div>
+        )}
       {m.state === 'DRAFT' && (
         <p className="text-foreground-secondary mt-1 text-xs">
           {m.openAt
@@ -212,19 +282,21 @@ export function MotionCard({
             onClick={() => {
               setTransitioning(true);
               const nextState = m.state === 'DRAFT' ? 'OPEN' : 'CLOSED';
-              void patchGovernanceMotion(m.id, nextState).then((r) => {
-                setTransitioning(false);
-                setActionMsg(
-                  r.ok
-                    ? nextState === 'OPEN'
-                      ? 'Voting opened.'
-                      : 'Motion closed and result published.'
-                    : r.error,
-                );
-                if (r.ok) {
-                  onChanged();
-                }
-              });
+              void patchGovernanceMotion(m.id, { state: nextState }).then(
+                (r) => {
+                  setTransitioning(false);
+                  setActionMsg(
+                    r.ok
+                      ? nextState === 'OPEN'
+                        ? 'Voting opened.'
+                        : 'Motion closed and result published.'
+                      : r.error,
+                  );
+                  if (r.ok) {
+                    onChanged();
+                  }
+                },
+              );
             }}
           >
             {m.state === 'DRAFT' ? 'Open voting' : 'Close & publish result'}

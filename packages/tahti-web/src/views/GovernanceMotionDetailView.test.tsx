@@ -106,4 +106,50 @@ describe('GovernanceMotionDetailView', () => {
     });
     expect(container.textContent).toContain('Motion not found');
   });
+
+  it('lets a board member start editing a DRAFT motion, pre-filled with its title and description', async () => {
+    const router = createDetailRouter('motion-5');
+    await act(async () => {
+      root.render(<RouterProvider router={router} />);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    const editButton = Array.from(container.querySelectorAll('button')).find(
+      (b) => b.textContent === 'Edit motion',
+    );
+    expect(editButton).toBeTruthy();
+    await act(async () => {
+      editButton!.click();
+    });
+    const titleInput = container.querySelector(
+      'input',
+    ) as HTMLInputElement | null;
+    expect(titleInput?.value).toBe(
+      'Adopt a code of conduct for chat moderation',
+    );
+    const textarea = container.querySelector('textarea');
+    expect(textarea?.value).toContain('escalation ladder');
+    expect(container.textContent).toContain('Save changes');
+  });
+
+  it('does not show the edit control to a non-board member', async () => {
+    useAuthStore.setState({
+      user: {
+        id: 'listener-1',
+        email: 'listener@tahti.live',
+        username: 'listener-liina',
+        displayName: 'Liina',
+        role: 'LISTENER',
+        isMember: true,
+      },
+      hydrated: true,
+      loading: false,
+    });
+    const router = createDetailRouter('motion-5');
+    await act(async () => {
+      root.render(<RouterProvider router={router} />);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    const buttons = Array.from(container.querySelectorAll('button'));
+    expect(buttons.some((b) => b.textContent === 'Edit motion')).toBe(false);
+  });
 });

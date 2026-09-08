@@ -258,7 +258,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
               </p>
             ) : (
               <ul className="divide-border divide-y">
-                {members.map((member) => (
+                {members.slice(0, 8).map((member) => (
                   <li
                     key={member.username}
                     className="py-2 text-sm first:pt-0 last:pb-0"
@@ -272,6 +272,13 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
                 ))}
               </ul>
             )}
+            <Link
+              to="/governance/members"
+              onClick={closeSettings}
+              className="text-foreground-secondary mt-3 text-xs hover:underline"
+            >
+              View full directory →
+            </Link>
           </SectionShell>
         </div>
       )}

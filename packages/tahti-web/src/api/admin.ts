@@ -14,6 +14,7 @@ import type {
   GovernanceAttendanceItem,
   GovernanceDocument,
   GovernanceMeeting,
+  GovernanceQuarterlyReport,
   UpsertGovernanceAttendance,
 } from './types';
 
@@ -3469,6 +3470,77 @@ export function updateFeatureRequestStatus(
       reviewNote: note,
     },
   );
+}
+
+let mockQuarterlyReports: GovernanceQuarterlyReport[] = [];
+
+function currentQuarter(): { year: number; quarter: number } {
+  const now = new Date();
+  return {
+    year: now.getUTCFullYear(),
+    quarter: Math.floor(now.getUTCMonth() / 3) + 1,
+  };
+}
+
+export async function fetchAdminFeatureRequestReports(): Promise<{
+  data: GovernanceQuarterlyReport[];
+  meta: FetchMeta;
+}> {
+  if (forceMock()) {
+    return {
+      data: mockQuarterlyReports,
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const data = await getJson<GovernanceQuarterlyReport[]>(
+      '/api/admin/feature-requests/reports',
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: [], meta: failMeta(err) };
+  }
+}
+
+export async function generateFeatureRequestQuarterlyReport(input?: {
+  year?: number;
+  quarter?: number;
+}): Promise<
+  { ok: true; data: GovernanceQuarterlyReport } | { ok: false; error: string }
+> {
+  const { year, quarter } = { ...currentQuarter(), ...input };
+  if (forceMock()) {
+    const existing = mockQuarterlyReports.find(
+      (r) => r.year === year && r.quarter === quarter,
+    );
+    if (existing) {
+      return { ok: false, error: `Q${quarter} ${year} was already generated` };
+    }
+    const report: GovernanceQuarterlyReport = {
+      id: `report-${year}-${quarter}`,
+      year,
+      quarter,
+      storageKey: `mock/feature-request-reports/${year}-Q${quarter}.md`,
+      generatedAt: new Date().toISOString(),
+      generatedByDisplayName: 'You',
+      downloadUrl: null,
+    };
+    mockQuarterlyReports = [report, ...mockQuarterlyReports];
+    return { ok: true, data: report };
+  }
+  try {
+    const data = await sendJson<GovernanceQuarterlyReport>(
+      '/api/admin/feature-requests/reports',
+      'POST',
+      input ?? {},
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not generate report',
+    };
+  }
 }
 
 // ── Grants ──────────────────────────────────────────────────────────────────
