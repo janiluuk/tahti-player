@@ -62,6 +62,59 @@ concrete missing piece, not the larger enabled-by-default/default-settings
 asks below. `tsc --noEmit`, `eslint` clean. No existing tests referenced
 the old names (none broke). Not live-browser-verified.
 
+## Shipped this pass (2026-09-08, round 2)
+
+**Correction to the previous pass's claim:** a real backend for this
+category exists after all — `../tahti-org`'s
+`apps/api/src/routes/admin/addons.ts`, and it's considerably more built
+out than the frontend assumed: full moderation (`approve`/`reject`/
+`disable`), a bundle upload + versioning system (`prepare-upload` →
+`publish-version`, MinIO-backed, hash-verified, `packages/addon-sdk`),
+and — directly relevant here — `POST .../:id/enabled-by-default` and
+`POST .../:id/default-config` already existed, unused by this frontend.
+`enabledByDefault: boolean` and `defaultConfigJson: unknown | null` are
+real, typed fields (`AddonAdminItemSchema` in
+`../tahti-org/packages/shared/src/dto/addons.ts`) on the real `Addon`
+model, not something that needed inventing.
+
+Also found and fixed a real bug blocking all of this from ever working
+against a live backend: `fetchAdminAddons` read `data.addons`, but the
+real `GET /api/admin/addons` responds `{ widgets: [...] }`. Every fetch
+against a real API was silently returning an empty list; only mock mode
+ever showed data.
+
+Added:
+- `AdminAddon.enabledByDefault` / `.defaultConfigJson` fields.
+- `setAdminAddonEnabledByDefault(id, enabledByDefault)` and
+  `setAdminAddonDefaultConfig(id, defaultConfigJson)` in `api/admin.ts`,
+  same real/mock-branch convention as every other function in that file.
+- `AdminAddonsView.tsx`: a visible "Enabled by default" `Toggle` on each
+  add-on card (posts immediately, no separate save step, matching the
+  moderation-action pattern the real backend expects) and a "Default
+  settings" button opening a small dialog with a JSON-object textarea
+  (parsed and validated client-side before `POST .../default-config`;
+  empty clears the default, matching the endpoint's `null` semantics).
+
+Verified: `tsc --noEmit` and `eslint` clean; `pnpm --filter
+@tahti-player/storybook build` succeeds (exercises the full view via
+`AdminAddonsView.stories.tsx`). Not live-browser-verified — no dev
+server/backend/browser available in this session. No vitest test added:
+this repo has no unit tests for any `views/admin/*` view (verified by
+search) — Storybook + e2e are the established verification surfaces here,
+and a new unit test would be going against that convention rather than
+following it.
+
+**New gap found, not fixed here:** the real backend has **no** generic
+`PATCH /api/admin/addons/:id` (metadata edit) or `DELETE
+/api/admin/addons/:id` route — only the specific POST actions listed
+above. `patchAdminAddon`/`deleteAdminAddon` in `api/admin.ts` call routes
+that don't exist server-side, so — like the `enabled-by-default`/
+`default-config` gap before this pass — **metadata editing and deleting
+an add-on only ever worked in mock mode**, never against a real backend.
+Out of scope for this pass (the user's ask was specifically
+enabled-by-default + default-settings); flagging for whoever picks up
+metadata-edit/delete next, in either repo.
+
 ## What already exists (closest precedent, discovery category only)
 
 `packages/tahti-web/src/views/admin/AdminAddonsView.tsx` +
@@ -79,15 +132,13 @@ Listen-page widgets):
 - Metadata editing (name/description/authorName/iconUrl) and `categories:
   string[]` tagging already work via `registerAdminAddon` /
   `patchAdminAddon`.
-- **No "enabled by default for all users" toggle and no "default settings"
-  concept exist anywhere in `AdminAddon`** — `status: DISABLED` is a
-  global kill switch, not a per-user default-state control, and there's no
-  settings/config field on the type at all. Both would need new API +
-  schema work even for this category, before this ask can be met. (Also
-  note: no backend route for this category exists in `../tahti-org` at
-  all yet — `fetchAdminAddons`/etc. only work today via the mock branch;
-  the "new API work" this bullet flags would be new work on both sides,
-  not just extending an existing route.)
+- ~~No "enabled by default for all users" toggle and no "default
+  settings" concept exist~~ — **wrong, corrected 2026-09-08 round 2**: the
+  real backend already had both (`enabledByDefault`,
+  `defaultConfigJson`), just never wired up on this side — see "Shipped
+  this pass (round 2)" above. Metadata edit and delete, on the other
+  hand, genuinely have no backend route — the inverse of what this
+  bullet originally claimed.
 
 ## Why this isn't a small "add a nav item" task
 
