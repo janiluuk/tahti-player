@@ -65,6 +65,8 @@ import { useLibraryStore } from '../stores/libraryStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { useTrackDetailStore } from '../stores/trackDetailStore';
 
+/** Fallback bar count for the synthetic (no-peaks) waveform only. Real peaks
+ * render at their native resolution instead of being downsampled to this. */
 const WAVEFORM_BARS = 180;
 const PLAYED_WAVE_COLOR = '#6CFF6B';
 const UNPLAYED_WAVE_COLOR = 'rgba(255,255,255,0.78)';
@@ -567,7 +569,7 @@ export function TrackDetailView({
                       trackId={playable.id}
                       progress={progress}
                       peaks={detail?.peaks}
-                      bars={WAVEFORM_BARS}
+                      bars={detail?.peaks?.length || WAVEFORM_BARS}
                       markers={commentMarkers}
                       className="h-28"
                       playedColor={PLAYED_WAVE_COLOR}

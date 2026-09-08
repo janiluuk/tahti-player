@@ -1,3 +1,13 @@
+## 2026-09-08 — Track detail waveform: real peaks at native resolution
+
+`TrackDetailView`'s full-track waveform was already overriding the
+seekbar's 64-bar default up to 180, but still discarding most of a real
+track's detail — confirmed the backend (`../tahti-org`) decodes 600 real
+amplitude buckets per track. Now renders real peaks 1:1 (no downsampling)
+when present; the 180 constant is only for the synthetic no-peaks
+fallback. Other `WaveformSeekbar` consumers still cap at 64 — not
+touched this pass, see `docs/todo/waveform-detail-accuracy.md`.
+
 ## 2026-09-08 — Playlist + Release cover hover-delete
 
 Wired `EntitySocialHeader`'s `onImageDelete` into Studio Playlist and
