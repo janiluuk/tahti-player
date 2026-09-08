@@ -20,7 +20,28 @@ Audited every other `WaveformSeekbar` consumer's `bars=`/`peaks=` this pass (not
 - `MyDiscographyView.tsx` (`bars={48}`) passes real `peaks` but is a dense row list — deliberately low, left alone (raising it there is the "similar places, decide per-surface" tradeoff below, not a clear win).
 - `StudioSoundView.tsx`, `TrackEditDialog.tsx`, `ConnectedPlayerBar.tsx`, `CollectionTrackList.tsx`, `DiscoverView.tsx` all pass real `peaks` at the component's **default** 64 bars (no override) — same class of bug as `TrackDetailView` had, not fixed this pass.
 
+## What shipped this pass (2026-09-08)
+
+Re-audited the "other real-`peaks` consumers ... at the component's default
+64 bars" list from the previous pass against the actual current code —
+**it was stale**: only 2 of the 5 named consumers actually pass `peaks`.
+`ConnectedPlayerBar.tsx` (mini player bar), `DiscoverView.tsx`, and
+`CollectionTrackList.tsx` don't pass a `peaks` prop to `WaveformSeekbar` at
+all — same class as `ChannelView`/`StudioUploadView` (always the synthetic
+fallback), so the bar-count fix doesn't apply to them; corrected here so a
+future pass doesn't re-flag them as "still capped."
+
+The two that actually did pass real `peaks` at the default 64 got the same
+fix as `TrackDetailView`: `StudioSoundView.tsx` (`bars={peaks.length ||
+180}`, single-sound edit view, `h-14`) and `TrackEditDialog.tsx`
+(`bars={peaks.length || 180}`, edit-dialog seekbar, `h-16`) — both
+single-track-focused surfaces where native resolution is a clear win, same
+reasoning as `TrackDetailView`. `MyDiscographyView.tsx` (`bars={48}`, dense
+row list) intentionally left alone, unchanged from the previous pass's
+reasoning. `tsc --noEmit`, `eslint`, `pnpm vitest run` all pass. Not
+live-browser-verified.
+
 ## Still open
 
-1. The other real-`peaks` consumers listed above still cap at 64 bars — same fix pattern applies, but each is a smaller/denser surface than the full track view (list rows, a compact edit-dialog seekbar, the mini player bar) where more bars may not be a clear win visually vs. DOM cost. Decide per-surface rather than blanket-applying.
-2. The synthetic fake-waveform fallback (item 4 from the original scope) is unaddressed: it still fabricates PRNG noise that looks like real audio for genuinely peakless tracks, rather than an explicit "no waveform data" state. Left alone this pass — it's a visual-language decision (flat/dim placeholder vs. today's stable-noise motif) affecting every consumer at once, not a bounded fix.
+1. The synthetic fake-waveform fallback (item 4 from the original scope) is unaddressed: it still fabricates PRNG noise that looks like real audio for genuinely peakless tracks, rather than an explicit "no waveform data" state. Left alone this pass — it's a visual-language decision (flat/dim placeholder vs. today's stable-noise motif) affecting every consumer at once, not a bounded fix.
+2. `ConnectedPlayerBar.tsx`, `DiscoverView.tsx`, `CollectionTrackList.tsx` never pass real `peaks` to their `WaveformSeekbar` at all (always synthetic) — wiring real peak data into those three call sites, if wanted, is separate from this ticket's bar-count-cap scope and would need each surface's data-fetch path checked for whether peaks are even available there today.

@@ -119,6 +119,10 @@ const GovernanceView = lazyRouteComponent(
   () => import('./views/GovernanceView'),
   'GovernanceView',
 );
+const GovernanceMotionDetailView = lazyRouteComponent(
+  () => import('./views/GovernanceMotionDetailView'),
+  'GovernanceMotionDetailView',
+);
 const PublicGovernanceHistoryView = lazyRouteComponent(
   () => import('./views/PublicGovernanceHistoryView'),
   'PublicGovernanceHistoryView',
@@ -251,9 +255,9 @@ const AdminVenuesView = lazyRouteComponent(
   () => import('./views/admin/AdminVenuesView'),
   'AdminVenuesView',
 );
-const AdminDiscoWidgetsView = lazyRouteComponent(
-  () => import('./views/admin/AdminDiscoWidgetsView'),
-  'AdminDiscoWidgetsView',
+const AdminAddonsView = lazyRouteComponent(
+  () => import('./views/admin/AdminAddonsView'),
+  'AdminAddonsView',
 );
 const StudioEventCreateView = lazyRouteComponent(
   () => import('./views/studio/StudioEventCreateView'),
@@ -699,10 +703,19 @@ const adminVenuesRoute = createRoute({
   component: AdminVenuesView,
 });
 
-const adminDiscoWidgetsRoute = createRoute({
+const adminAddonsRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/admin/addons',
+  component: AdminAddonsView,
+});
+
+/** Old path — disco widgets are now called add-ons. */
+const adminDiscoWidgetsRedirectRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/admin/disco-widgets',
-  component: AdminDiscoWidgetsView,
+  beforeLoad: () => {
+    throw redirect({ to: '/admin/addons' });
+  },
 });
 
 const adminStatusRoute = createRoute({
@@ -1158,6 +1171,15 @@ const governanceRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/governance',
   component: GovernanceView,
+});
+
+const governanceMotionDetailRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/governance/motions/$id',
+  component: function GovernanceMotionDetailRoute() {
+    const { id } = governanceMotionDetailRoute.useParams();
+    return <GovernanceMotionDetailView id={id} />;
+  },
 });
 
 const publicGovernanceHistoryRoute = createRoute({
@@ -1762,7 +1784,8 @@ const routeTree = rootRoute.addChildren([
     adminVendorsRoute,
     adminMapRoute,
     adminVenuesRoute,
-    adminDiscoWidgetsRoute,
+    adminAddonsRoute,
+    adminDiscoWidgetsRedirectRoute,
     adminStatusRoute,
     adminI18nRoute,
     libraryRoute,
@@ -1820,6 +1843,7 @@ const routeTree = rootRoute.addChildren([
     accountRoute,
     statusRoute,
     governanceRoute,
+    governanceMotionDetailRoute,
     publicGovernanceHistoryRoute,
     featureRequestsRoute,
     aboutRoute,

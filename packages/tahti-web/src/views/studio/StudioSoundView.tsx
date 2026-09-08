@@ -465,6 +465,7 @@ export function StudioSoundView({ id }: { id: string }) {
                   <WaveformSeekbar
                     trackId={id}
                     peaks={peaks}
+                    bars={peaks.length || 180}
                     progress={
                       isCurrent && playerDuration > 0
                         ? currentTime / playerDuration

@@ -657,6 +657,10 @@ export type GovernanceMotionDraft = {
   state: string;
 };
 
+export type GovernanceMotionDetail = GovernanceMotion & {
+  description: string;
+};
+
 export type PublicGovernanceMotion = {
   id: string;
   title: string;

@@ -81,17 +81,30 @@ with tab navigation (not separate top-level pages).
 
 ## Remaining
 
-- [ ] Gap #1 — motion detail view (member-facing `/governance`).
-      Backend already has `GET /api/v1/governance/motions/:id`
-      (`MotionDetailSchema` = `MotionSummarySchema` + `description`).
-      Frontend has no per-motion fetch or route yet — the list
-      (`GovernanceView.tsx`) never shows a motion's full description,
-      only title + metadata + inline-expandable comment thread
-      (voting/comments/tally already fully handled there). Plan: add
-      `fetchGovernanceMotion(id)` to `api/client.ts`, a
-      `/governance/motions/$id` route, extract the list's per-motion
-      card into a shared component so the detail page can reuse
-      voting/comments/tally and just add the description.
+- [x] Gap #1 — motion detail view (member-facing `/governance`),
+      **2026-09-08**. Added `fetchGovernanceMotion(id)` (`api/client.ts`,
+      hits `GET /api/v1/governance/motions/:id`, mock branch keyed off
+      `mockMotions` + a new `mockMotionDescriptions` map) and a
+      `GovernanceMotionDetail = GovernanceMotion & { description: string }`
+      type (`api/types.ts`), matching the backend's `MotionDetailSchema`.
+      Extracted the list's per-motion card (badge, tally, vote buttons,
+      board open/close controls, discussion thread) out of
+      `GovernanceView.tsx` into `components/governance/MotionCard.tsx` —
+      now self-contained (owns its own expanded/comments/voting/
+      transitioning state instead of being lifted to the list), taking an
+      optional `description` prop (only the detail page passes one) and a
+      `linkTitle` prop (only the list passes it, wrapping the title in a
+      `Link` to the detail route). New `GovernanceMotionDetailView.tsx`
+      fetches the single motion + member count, renders the same
+      `MotionCard` with `defaultExpanded` and the description filled in,
+      with its own loading/forbidden/not-found states mirroring
+      `GovernanceView.tsx`'s pattern. New route
+      `/governance/motions/$id` in `router.tsx`. All 6 existing
+      `GovernanceView.test.tsx` tests still pass unchanged (card
+      extraction preserved behavior); added
+      `GovernanceMotionDetailView.test.tsx` (2 tests: title+description+
+      expanded discussion, not-found id). `tsc --noEmit`, `eslint`,
+      `pnpm vitest run` all pass. Not live-browser-verified.
 - [ ] Gap #3 — public resolutions page (`/transparency/resolutions`).
       Backend: `GET /api/v1/transparency/resolutions?year=`. Admin-side
       resolution creation/publishing already exists

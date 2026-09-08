@@ -76,6 +76,7 @@ import type {
   GovernanceMeeting,
   GovernanceMember,
   GovernanceMotion,
+  GovernanceMotionDetail,
   GovernanceMotionDraft,
   GovernanceQuarterlyReport,
   MembershipStatus,
@@ -2181,6 +2182,19 @@ let mockMotions: GovernanceMotion[] = [
   },
 ];
 
+const mockMotionDescriptions: Record<string, string> = {
+  'motion-5':
+    'Adopts a written code of conduct governing chat moderation across all channels, including an escalation ladder before a member can be banned.',
+  'motion-1':
+    'Approves the 2026 grant funding formula, weighting overnight and daytime programming slots evenly per the finance committee proposal.',
+  'motion-3':
+    'Keeps overnight radio broadcast hours uncapped rather than introducing the proposed midnight–6am shift limit, to protect small overnight stations.',
+  'motion-2':
+    'Confirms the board-prepared annual report for the prior fiscal year as the official record.',
+  'motion-4':
+    'Requires an overnight broadcast blackout window to reduce infrastructure costs; rejected by members in favor of keeping overnight hours uncapped (motion-3).',
+};
+
 const mockMotionComments: Record<string, MotionComment[]> = {
   'motion-5': [
     {
@@ -2252,6 +2266,41 @@ export async function fetchGovernanceMotions(): Promise<{
       message.includes('403') ||
       /member/i.test(message);
     return { data: [], meta: apiErrorMeta(err), forbidden };
+  }
+}
+
+export async function fetchGovernanceMotion(
+  id: string,
+): Promise<
+  | { ok: true; data: GovernanceMotionDetail }
+  | { ok: false; error: string; forbidden?: boolean }
+> {
+  if (forceMock()) {
+    const motion = mockMotions.find((m) => m.id === id);
+    if (!motion) {
+      return { ok: false, error: 'Motion not found' };
+    }
+    return {
+      ok: true,
+      data: { ...motion, description: mockMotionDescriptions[id] ?? '' },
+    };
+  }
+  try {
+    const data = await getJson<GovernanceMotionDetail>(
+      `/api/v1/governance/motions/${encodeURIComponent(id)}`,
+    );
+    return { ok: true, data };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : '';
+    const forbidden =
+      message.includes('401') ||
+      message.includes('403') ||
+      /member/i.test(message);
+    return {
+      ok: false,
+      error: message || 'Could not load motion',
+      forbidden,
+    };
   }
 }
 

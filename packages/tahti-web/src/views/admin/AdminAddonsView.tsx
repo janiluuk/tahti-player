@@ -16,13 +16,13 @@ import {
 } from '@tahti-player/ui';
 
 import {
-  deleteAdminDiscoWidget,
-  fetchAdminDiscoWidgets,
-  patchAdminDiscoWidget,
-  registerAdminDiscoWidget,
-  type AdminDiscoWidget,
-  type AdminDiscoWidgetPatch,
-  type AdminDiscoWidgetScope,
+  deleteAdminAddon,
+  fetchAdminAddons,
+  patchAdminAddon,
+  registerAdminAddon,
+  type AdminAddon,
+  type AdminAddonPatch,
+  type AdminAddonScope,
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
@@ -30,18 +30,18 @@ import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { ImageUploadField } from '../../components/ImageUploadField';
 import { PageLoading } from '../../components/PageStates';
 
-const SCOPES: Array<{ id: AdminDiscoWidgetScope; label: string }> = [
+const SCOPES: Array<{ id: AdminAddonScope; label: string }> = [
   { id: 'LISTENER', label: 'Listener' },
   { id: 'ARTIST', label: 'Artist' },
   { id: 'ADMIN', label: 'Admin' },
 ];
 
-type WidgetDraft = AdminDiscoWidgetPatch & {
+type AddonDraft = AdminAddonPatch & {
   slug: string;
-  scope: AdminDiscoWidgetScope;
+  scope: AdminAddonScope;
 };
 
-const EMPTY_DRAFT: WidgetDraft = {
+const EMPTY_DRAFT: AddonDraft = {
   slug: '',
   scope: 'ARTIST',
   name: '',
@@ -51,27 +51,34 @@ const EMPTY_DRAFT: WidgetDraft = {
   iconUrl: '',
 };
 
-function draftFromWidget(widget: AdminDiscoWidget): WidgetDraft {
+function draftFromAddon(addon: AdminAddon): AddonDraft {
   return {
-    slug: widget.slug,
-    scope: widget.scope,
-    name: widget.name,
-    description: widget.description,
-    authorName: widget.authorName,
-    categories: widget.categories,
-    iconUrl: widget.iconUrl ?? '',
+    slug: addon.slug,
+    scope: addon.scope,
+    name: addon.name,
+    description: addon.description,
+    authorName: addon.authorName,
+    categories: addon.categories,
+    iconUrl: addon.iconUrl ?? '',
   };
 }
 
-function statusColor(status: AdminDiscoWidget['status']) {
-  return status === 'APPROVED'
-    ? 'green'
-    : status === 'DISABLED'
-      ? 'orange'
-      : 'blue';
+function statusColor(status: AdminAddon['status']) {
+  switch (status) {
+    case 'APPROVED':
+      return 'green';
+    case 'PENDING':
+      return 'purple';
+    case 'REJECTED':
+      return 'red';
+    case 'DISABLED':
+      return 'orange';
+    default:
+      return 'blue';
+  }
 }
 
-function WidgetEditor({
+function AddonEditor({
   draft,
   editing,
   pending,
@@ -79,11 +86,11 @@ function WidgetEditor({
   onChange,
   onSave,
 }: {
-  draft: WidgetDraft;
+  draft: AddonDraft;
   editing: boolean;
   pending: boolean;
   error: string | null;
-  onChange: (next: WidgetDraft) => void;
+  onChange: (next: AddonDraft) => void;
   onSave: () => void;
 }) {
   return (
@@ -103,7 +110,7 @@ function WidgetEditor({
           onValueChange={(value) =>
             onChange({
               ...draft,
-              scope: value as AdminDiscoWidgetScope,
+              scope: value as AdminAddonScope,
             })
           }
           options={SCOPES.map((scope) => ({
@@ -139,7 +146,7 @@ function WidgetEditor({
           }
         />
         <ImageUploadField
-          label="Widget cover"
+          label="Add-on cover"
           description="JPEG, PNG, WebP, or GIF"
           value={draft.iconUrl ?? ''}
           onChange={(iconUrl) => onChange({ ...draft, iconUrl })}
@@ -196,7 +203,7 @@ function WidgetEditor({
             onClick={onSave}
           >
             <Plus size={15} aria-hidden className="mr-1.5" />
-            Register widget
+            Register add-on
           </Button>
         )}
       </Dialog.Actions>
@@ -204,25 +211,22 @@ function WidgetEditor({
   );
 }
 
-export function AdminDiscoWidgetsView() {
-  const [widgets, setWidgets] = useState<AdminDiscoWidget[]>([]);
-  const [scope, setScope] = useState<AdminDiscoWidgetScope | 'ALL'>('ALL');
+export function AdminAddonsView() {
+  const [addons, setAddons] = useState<AdminAddon[]>([]);
+  const [scope, setScope] = useState<AdminAddonScope | 'ALL'>('ALL');
+  const [needsReviewOnly, setNeedsReviewOnly] = useState(false);
   const [loading, setLoading] = useState(true);
   const [editorOpen, setEditorOpen] = useState(false);
-  const [editingWidget, setEditingWidget] = useState<AdminDiscoWidget | null>(
-    null,
-  );
-  const [draft, setDraft] = useState<WidgetDraft>(EMPTY_DRAFT);
+  const [editingAddon, setEditingAddon] = useState<AdminAddon | null>(null);
+  const [draft, setDraft] = useState<AddonDraft>(EMPTY_DRAFT);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [pendingDelete, setPendingDelete] = useState<AdminDiscoWidget | null>(
-    null,
-  );
+  const [pendingDelete, setPendingDelete] = useState<AdminAddon | null>(null);
 
   const reload = () => {
     setLoading(true);
-    void fetchAdminDiscoWidgets().then((result) => {
-      setWidgets(result.data);
+    void fetchAdminAddons().then((result) => {
+      setAddons(result.data);
       setLoading(false);
     });
   };
@@ -232,15 +236,15 @@ export function AdminDiscoWidgetsView() {
   }, []);
 
   const openNew = () => {
-    setEditingWidget(null);
+    setEditingAddon(null);
     setDraft(EMPTY_DRAFT);
     setError(null);
     setEditorOpen(true);
   };
 
-  const openEdit = (widget: AdminDiscoWidget) => {
-    setEditingWidget(widget);
-    setDraft(draftFromWidget(widget));
+  const openEdit = (addon: AdminAddon) => {
+    setEditingAddon(addon);
+    setDraft(draftFromAddon(addon));
     setError(null);
     setEditorOpen(true);
   };
@@ -248,26 +252,26 @@ export function AdminDiscoWidgetsView() {
   const save = () => {
     setPending(true);
     setError(null);
-    const editableFields: AdminDiscoWidgetPatch = {
+    const editableFields: AdminAddonPatch = {
       name: draft.name,
       description: draft.description,
       authorName: draft.authorName,
       categories: draft.categories,
       iconUrl: draft.iconUrl,
     };
-    const request = editingWidget
-      ? patchAdminDiscoWidget(editingWidget.id, editableFields)
-      : registerAdminDiscoWidget(draft);
+    const request = editingAddon
+      ? patchAdminAddon(editingAddon.id, editableFields)
+      : registerAdminAddon(draft);
     void request.then((result) => {
       setPending(false);
       if (!result.ok) {
         setError(result.error);
         return;
       }
-      setWidgets((current) =>
-        editingWidget
-          ? current.map((widget) =>
-              widget.id === result.data.id ? result.data : widget,
+      setAddons((current) =>
+        editingAddon
+          ? current.map((addon) =>
+              addon.id === result.data.id ? result.data : addon,
             )
           : [result.data, ...current],
       );
@@ -275,32 +279,35 @@ export function AdminDiscoWidgetsView() {
     });
   };
 
-  const remove = (widget: AdminDiscoWidget) => {
-    void deleteAdminDiscoWidget(widget.id).then((result) => {
+  const remove = (addon: AdminAddon) => {
+    void deleteAdminAddon(addon.id).then((result) => {
       if (!result.ok) {
         setError(result.error);
         return;
       }
-      setWidgets((current) => current.filter((item) => item.id !== widget.id));
+      setAddons((current) => current.filter((item) => item.id !== addon.id));
     });
   };
 
-  const visibleWidgets =
-    scope === 'ALL'
-      ? widgets
-      : widgets.filter((widget) => widget.scope === scope);
+  const pendingCount = addons.filter(
+    (addon) => addon.status === 'PENDING',
+  ).length;
+
+  const visibleAddons = addons
+    .filter((addon) => scope === 'ALL' || addon.scope === scope)
+    .filter((addon) => !needsReviewOnly || addon.status === 'PENDING');
 
   return (
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
-        <AdminPageLayout current="/admin/disco-widgets">
+        <AdminPageLayout current="/admin/addons">
           <div className="flex max-w-5xl flex-col gap-6">
-            <ViewShell title="Disco widgets" classes={{ root: 'px-0 pt-0' }}>
-              <Tooltip content="Register a new widget" side="top">
+            <ViewShell title="Add-ons" classes={{ root: 'px-0 pt-0' }}>
+              <Tooltip content="Register a new add-on" side="top">
                 <Button
                   type="button"
                   size="icon-sm"
-                  aria-label="Register a new widget"
+                  aria-label="Register a new add-on"
                   onClick={openNew}
                 >
                   <Plus size={18} aria-hidden />
@@ -308,14 +315,31 @@ export function AdminDiscoWidgetsView() {
               </Tooltip>
 
               <FilterChips
-                aria-label="Widget types"
+                aria-label="Add-on types"
                 className="border-border border-b pb-3"
                 items={[
                   { id: 'ALL', label: 'All add-ons' },
                   ...SCOPES.map((item) => ({ id: item.id, label: item.label })),
                 ]}
                 selected={scope}
-                onChange={(id) => setScope(id as AdminDiscoWidgetScope | 'ALL')}
+                onChange={(id) => setScope(id as AdminAddonScope | 'ALL')}
+              />
+
+              <FilterChips
+                aria-label="Add-on review status"
+                className="border-border border-b pb-3"
+                items={[
+                  { id: 'ALL', label: 'All statuses' },
+                  {
+                    id: 'PENDING',
+                    label:
+                      pendingCount > 0
+                        ? `Needs review (${pendingCount})`
+                        : 'Needs review',
+                  },
+                ]}
+                selected={needsReviewOnly ? 'PENDING' : 'ALL'}
+                onChange={(id) => setNeedsReviewOnly(id === 'PENDING')}
               />
 
               {error && !editorOpen ? (
@@ -324,77 +348,78 @@ export function AdminDiscoWidgetsView() {
                 </p>
               ) : null}
               {loading ? (
-                <PageLoading label="Loading widget catalog…" />
-              ) : visibleWidgets.length === 0 ? (
+                <PageLoading label="Loading add-on catalog…" />
+              ) : visibleAddons.length === 0 ? (
                 <p className="text-foreground-secondary text-sm">
-                  No widgets registered for this type yet.
+                  {needsReviewOnly
+                    ? 'No add-ons need review right now.'
+                    : 'No add-ons registered for this type yet.'}
                 </p>
               ) : (
                 <div className="grid gap-4 md:grid-cols-2">
-                  {visibleWidgets.map((widget) => (
+                  {visibleAddons.map((addon) => (
                     <article
-                      key={widget.id}
+                      key={addon.id}
                       className="border-border bg-background-secondary/40 flex gap-4 rounded-xl border p-4"
                     >
                       <div className="border-border bg-background flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-lg border">
                         <ImageReveal
-                          src={widget.iconUrl ?? undefined}
+                          src={addon.iconUrl ?? undefined}
                           alt=""
                           className="size-full"
                           placeholder={
                             <span className="text-foreground-secondary text-lg font-bold">
-                              {widget.name.slice(0, 2).toUpperCase()}
+                              {addon.name.slice(0, 2).toUpperCase()}
                             </span>
                           }
                         />
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <h2 className="font-semibold">{widget.name}</h2>
+                          <h2 className="font-semibold">{addon.name}</h2>
                           <Badge
                             variant="pill"
-                            color={statusColor(widget.status)}
+                            color={statusColor(addon.status)}
                           >
-                            {widget.status}
+                            {addon.status}
                           </Badge>
                         </div>
                         <p className="text-foreground-secondary mt-1 text-xs">
-                          {widget.scope} · v{widget.currentVersion} ·{' '}
-                          {widget.slug}
+                          {addon.scope} · v{addon.currentVersion} · {addon.slug}
                         </p>
                         <p className="text-foreground-secondary mt-2 text-sm">
-                          {widget.description}
+                          {addon.description}
                         </p>
                         <div className="mt-3 flex flex-wrap items-center gap-2">
-                          {widget.categories.map((category) => (
+                          {addon.categories.map((category) => (
                             <Badge key={category} variant="pill" color="blue">
                               {category}
                             </Badge>
                           ))}
                           <span className="text-foreground-secondary text-xs">
-                            by {widget.authorName}
+                            by {addon.authorName}
                           </span>
                         </div>
                       </div>
                       <div className="flex shrink-0 items-start gap-1">
-                        <Tooltip content={`Edit ${widget.name}`} side="top">
+                        <Tooltip content={`Edit ${addon.name}`} side="top">
                           <Button
                             type="button"
                             size="icon-sm"
                             variant="text"
-                            aria-label={`Edit ${widget.name}`}
-                            onClick={() => openEdit(widget)}
+                            aria-label={`Edit ${addon.name}`}
+                            onClick={() => openEdit(addon)}
                           >
                             <Pencil size={16} aria-hidden />
                           </Button>
                         </Tooltip>
-                        <Tooltip content={`Delete ${widget.name}`} side="top">
+                        <Tooltip content={`Delete ${addon.name}`} side="top">
                           <Button
                             type="button"
                             size="icon-sm"
                             variant="text"
-                            aria-label={`Delete ${widget.name}`}
-                            onClick={() => setPendingDelete(widget)}
+                            aria-label={`Delete ${addon.name}`}
+                            onClick={() => setPendingDelete(addon)}
                           >
                             <Trash2 size={16} aria-hidden />
                           </Button>
@@ -411,17 +436,17 @@ export function AdminDiscoWidgetsView() {
                 className="max-w-2xl"
               >
                 <Dialog.Title>
-                  {editingWidget
-                    ? `Edit ${editingWidget.name}`
-                    : 'Register a new widget'}
+                  {editingAddon
+                    ? `Edit ${editingAddon.name}`
+                    : 'Register a new add-on'}
                 </Dialog.Title>
                 <Dialog.Description>
-                  Set the widget identity, store type, cover image, and filter
+                  Set the add-on identity, store type, cover image, and filter
                   parameters.
                 </Dialog.Description>
-                <WidgetEditor
+                <AddonEditor
                   draft={draft}
-                  editing={editingWidget !== null}
+                  editing={editingAddon !== null}
                   pending={pending}
                   error={error}
                   onChange={setDraft}
@@ -433,16 +458,16 @@ export function AdminDiscoWidgetsView() {
                 title={
                   pendingDelete
                     ? `Delete “${pendingDelete.name}”?`
-                    : 'Delete widget?'
+                    : 'Delete add-on?'
                 }
-                description="This removes the widget from every add-on store permanently."
+                description="This removes the add-on from every store permanently."
                 confirmLabel="Delete"
                 onCancel={() => setPendingDelete(null)}
                 onConfirm={() => {
-                  const widget = pendingDelete;
+                  const addon = pendingDelete;
                   setPendingDelete(null);
-                  if (widget) {
-                    remove(widget);
+                  if (addon) {
+                    remove(addon);
                   }
                 }}
               />

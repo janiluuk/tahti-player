@@ -15,7 +15,7 @@ the corner X badge.
 Consumers of the three primitives get the new behavior automatically —
 verified via `grep`: `TrackEditDialog` (release artwork), `ShowImagePicker`,
 `VenueRegisterView`, `StudioScheduleView`, `StudioVenuesView`,
-`AdminDiscoWidgetsView`, `AdminNewsView`, `BroadcastPreflightPanel`,
+`AdminAddonsView`, `AdminNewsView`, `BroadcastPreflightPanel`,
 `ListenAddonsPanel` all render one of the three shared components directly.
 
 `RadioStationCover` was left untouched: it has no "empty" state (`src` is
