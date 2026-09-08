@@ -77,6 +77,7 @@ import {
 import {
   cancelMySubscription,
   fetchMembership,
+  fetchMyPurchases,
   fetchMySubscriptions,
   requestAccountDeletion,
   startMembershipCheckout,
@@ -91,7 +92,11 @@ import {
   type ProgrammeView,
   type StorageUsage,
 } from '../../api/studio-extras';
-import type { FanSubscriptionRow, MembershipStatus } from '../../api/types';
+import type {
+  FanSubscriptionRow,
+  MembershipStatus,
+  PurchaseRow,
+} from '../../api/types';
 import { AMBIENT_SCHEME } from '../../components/AmbientBackground';
 import { ApiTokensPanel } from '../../components/ApiTokensPanel';
 import { ArtistImagePurposePicker } from '../../components/ArtistImagePurposePicker';
@@ -344,6 +349,7 @@ function AccountPanel() {
   const closeSettings = useSettingsModalStore((s) => s.close);
   const [membership, setMembership] = useState<MembershipStatus | null>(null);
   const [subscriptions, setSubscriptions] = useState<FanSubscriptionRow[]>([]);
+  const [purchases, setPurchases] = useState<PurchaseRow[]>([]);
   const [pendingCancel, setPendingCancel] = useState<FanSubscriptionRow | null>(
     null,
   );
@@ -363,6 +369,7 @@ function AccountPanel() {
 
   useEffect(() => {
     void reloadSubscriptions();
+    void fetchMyPurchases().then((r) => setPurchases(r.data));
   }, []);
 
   if (!user) {
@@ -602,6 +609,56 @@ function AccountPanel() {
               />
             </div>
           ),
+        },
+        {
+          id: 'purchases',
+          label: 'Purchases',
+          icon: <CreditCardIcon size={14} />,
+          content:
+            purchases.length === 0 ? (
+              <SettingsHint>No track purchases on this account.</SettingsHint>
+            ) : (
+              <ul className="flex flex-col gap-2">
+                {purchases.map((purchase) => (
+                  <li
+                    key={purchase.id}
+                    className="border-border flex flex-wrap items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm"
+                  >
+                    <div>
+                      <p className="font-medium">
+                        {purchase.tracks.map((t) => t.title).join(', ') ||
+                          purchase.tierName}
+                      </p>
+                      <p className="text-foreground-secondary text-xs">
+                        <Link
+                          to="/u/$username"
+                          params={{ username: purchase.artist.username }}
+                          onClick={closeSettings}
+                          className="underline-offset-2 hover:underline"
+                        >
+                          {purchase.artist.displayName}
+                        </Link>
+                        {' · '}
+                        {euros(purchase.amountCents)}
+                        {' · '}
+                        {new Date(purchase.createdAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                    {purchase.tracks[0] ? (
+                      <Link
+                        to="/t/$id"
+                        params={{ id: purchase.tracks[0].id }}
+                        onClick={closeSettings}
+                      >
+                        <Button variant="ghost" size="sm">
+                          Listen
+                        </Button>
+                      </Link>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            ),
         },
         {
           id: 'privacy',

@@ -39,6 +39,7 @@ import {
   clearMockSessionUser,
   getMockSessionUser,
   listMockFollowing,
+  listMockPurchases,
   listMockSubscriptions,
   mockActivateSubscription,
   mockCancelSubscription,
@@ -85,6 +86,7 @@ import type {
   PublicGovernanceMotion,
   PublicProfile,
   PublicTrackDetail,
+  PurchaseRow,
   RadioNowPlaying,
   RadioRecentlyPlayedItem,
   ReleaseEmbedView,
@@ -2064,6 +2066,24 @@ export async function fetchMySubscriptions(): Promise<{
   }
   try {
     const data = await getJson<FanSubscriptionRow[]>('/api/me/subscriptions');
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: [], meta: apiErrorMeta(err) };
+  }
+}
+
+export async function fetchMyPurchases(): Promise<{
+  data: PurchaseRow[];
+  meta: FetchMeta;
+}> {
+  if (forceMock()) {
+    return {
+      data: listMockPurchases(),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const data = await getJson<PurchaseRow[]>('/api/me/purchases');
     return { data, meta: { source: 'api' } };
   } catch (err) {
     return { data: [], meta: apiErrorMeta(err) };

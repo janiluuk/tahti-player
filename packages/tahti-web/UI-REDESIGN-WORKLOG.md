@@ -1,3 +1,16 @@
+## 2026-09-08 — Purchases tab + hearthis.at widget fixes
+
+Account settings gained a Purchases tab (`/settings/account`, next to
+"Your subs") listing track purchases with a Listen link — needed a new
+`GET /api/me/purchases` in `../tahti-org` (PR #483, buyer-side listing
+never existed, only an artist-side orders endpoint did). Separately,
+`ListenAddonsPanel`'s hearthis.at widget: username now auto-fills from
+the artist's saved handle, and the "add a set" bug is actually fixed —
+root cause (found by testing against the live API) was that set page
+URLs 302-redirect to a different canonical path where `oembed.json`
+actually lives; the old code appended `oembed.json` to the pre-redirect
+URL and got a 200 with an empty body every time.
+
 ## 2026-09-08 — Track detail waveform: real peaks at native resolution
 
 `TrackDetailView`'s full-track waveform was already overriding the

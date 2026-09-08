@@ -6,7 +6,12 @@
 
 import { mockChannel, mockDirectory } from './mock';
 import { recordMockFanSub } from './mock-commerce-ledger';
-import type { AuthUser, FanSubscriptionRow, FollowListUser } from './types';
+import type {
+  AuthUser,
+  FanSubscriptionRow,
+  FollowListUser,
+  PurchaseRow,
+} from './types';
 
 export type MockConnectStatus = {
   stripeConfigured: boolean;
@@ -50,6 +55,20 @@ let subscriptions: FanSubscriptionRow[] = [
       username: 'northern-lights',
       displayName: 'Northern Lights',
     },
+  },
+];
+
+const purchases: PurchaseRow[] = [
+  {
+    id: 'mock-purchase-1',
+    tierName: 'Digital download',
+    amountCents: 300,
+    createdAt: new Date(Date.now() - 86400000 * 4).toISOString(),
+    artist: {
+      username: 'midnight-cartography',
+      displayName: 'Midnight Cartography',
+    },
+    tracks: [{ id: 'mock-track-1', title: 'Nightfall Over Helsinki' }],
   },
 ];
 
@@ -102,6 +121,14 @@ export function mockUnfollow(username: string): void {
 
 export function listMockSubscriptions(): FanSubscriptionRow[] {
   return subscriptions.map((s) => ({ ...s, artist: { ...s.artist } }));
+}
+
+export function listMockPurchases(): PurchaseRow[] {
+  return purchases.map((p) => ({
+    ...p,
+    artist: { ...p.artist },
+    tracks: p.tracks.map((t) => ({ ...t })),
+  }));
 }
 
 /** Matches the real POST /api/me/subscriptions/:id/cancel: marks

@@ -29,7 +29,7 @@ blockers found in this backlog, so these don't get silently skipped as
 
 - [x] **Stream Manager now-playing artwork** — turned out to already be resolved on the `../tahti-org` backend; only needed wiring on this side. Shipped 2026-09-07 (workplan cycle 6).
 - [ ] **Plugin registry extraction (partial)** — §5.1/§5.2 adapter (`pluginRegistryContract.ts`/`pluginRegistryAdapter.ts`, additive) + a first contract-test suite shipped 2026-09-07 (`packages/player`). Caller migration (§5.4) and the `PluginRegistryHost` half are not started. `../tahti-org` doc updated in PR [#460](https://github.com/janiluuk/tahti-org/pull/460).
-- [ ] **Listener purchase flow e2e** — subscription cancel UI shipped 2026-09-07 (backend already existed). Still needs: a Purchases tab (doesn't exist) and a test-mode Stripe Checkout path in `../tahti-org` to actually exercise "subscriber sees gated content" end to end. See `listener-purchase-flow.md`.
+- [ ] **Listener purchase flow e2e** — subscription cancel UI shipped 2026-09-07; Purchases tab shipped 2026-09-08 (new `GET /api/me/purchases` in `../tahti-org`, PR [#483](https://github.com/janiluuk/tahti-org/pull/483), not merged by this session). Still needs: a test-mode Stripe Checkout path in `../tahti-org` to actually exercise "subscriber sees gated content" end to end. See `listener-purchase-flow.md`.
 
 ## Reference
 
