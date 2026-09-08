@@ -37,7 +37,7 @@ export function resolveDashboardCallbackRedirect(
 
   const fanSubscriptions = stringValue(search, 'fansubs');
   if (fanSubscriptions) {
-    return appendSearchParams('/settings/money', {
+    return appendSearchParams('/studio/audience', {
       fansubs: fanSubscriptions,
     });
   }

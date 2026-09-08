@@ -12,7 +12,7 @@ describe('resolveDashboardCallbackRedirect', () => {
       '/settings/plugin-store?status=connected&category=import',
     ],
     [{ fanConnect: 'return' }, '/studio/stripe?fanConnect=return'],
-    [{ fansubs: 'portal' }, '/settings/money?fansubs=portal'],
+    [{ fansubs: 'portal' }, '/studio/audience?fansubs=portal'],
     [{ membership: 'success' }, '/settings/account?membership=success'],
     [
       { distribution: 'success', releaseId: 'release-1' },

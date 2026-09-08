@@ -180,7 +180,7 @@ export function getPageTourSteps(pathname: string): TourStep[] {
   if (pathname.startsWith('/admin')) {
     steps.push(...ADMIN_NAV_TOUR_STEPS);
   }
-  if (pathname === '/studio/revenue') {
+  if (pathname === '/studio/audience' || pathname === '/studio/revenue') {
     steps.push(...REVENUE_PAGE_STEPS);
   }
   if (pathname === '/studio/stripe') {

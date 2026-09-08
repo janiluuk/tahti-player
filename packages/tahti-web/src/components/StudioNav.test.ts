@@ -140,10 +140,10 @@ describe('StudioNav section coverage', () => {
       '/studio/stripe',
     );
     expect(withStripe).toEqual(
-      expect.arrayContaining(['/studio/revenue', '/studio/stripe']),
+      expect.arrayContaining(['/studio/audience', '/studio/stripe']),
     );
     expect(withStripe.indexOf('/studio/stripe')).toBe(
-      withStripe.indexOf('/studio/revenue') + 1,
+      withStripe.indexOf('/studio/audience') + 1,
     );
     expect(getStudioPrimaryRoute('/studio/stripe')).toBe('/studio');
   });

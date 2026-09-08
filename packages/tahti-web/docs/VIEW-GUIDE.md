@@ -30,7 +30,7 @@ Capture: [`scripts/capture-readme-guide.mjs`](../scripts/capture-readme-guide.mj
 | [Settings / Artist](#settings-artist) | `/settings/artist` |
 | [Settings / Channel](#settings-channel) | `/settings/channel` |
 | [Settings / Broadcast](#settings-broadcast) | `/settings/broadcast` |
-| [Settings / Audience](#settings-audience) | `/settings/audience` |
+| [Studio / Audience](#studio-audience) | `/studio/audience` |
 | [Settings / Themes](#settings-themes) | `/settings/themes` |
 | [Settings / Add-ons](#settings-addons) | `/settings/plugin-store` |
 | [Settings / What’s new](#settings-whats-new) | `/settings/whats-new` |
@@ -194,7 +194,7 @@ Configure radio, green room and multicast destinations.
 
 Manage tiers, subscriptions and grants.
 
-`/settings/audience`
+`/studio/audience`
 
 ### Settings / Themes
 
@@ -307,7 +307,7 @@ Check service health and operational status.
 | [Studio / Posts](#studio-posts) | `/studio/updates` |
 | [Studio / Distribution](#studio-distribution) | `/studio/distribution` |
 | [Studio / Insights](#studio-insights) | `/studio/insights` |
-| [Studio / Audience](#studio-audience) | `/studio/revenue` |
+| [Studio / Audience](#studio-audience) | `/studio/audience` |
 | [Studio / Library / Sounds](#studio-sounds) | `/studio/archive` |
 | [Studio / Library / Clips](#studio-clips) | `/studio/archive?tab=clips` |
 | [Studio / Library / Collections](#studio-collections) | `/studio/collections` |
@@ -408,7 +408,7 @@ Review track and catalogue insights.
 
 Manage audience relationships and fan revenue.
 
-`/studio/revenue`
+`/studio/audience`
 
 ### Studio / Library / Sounds
 

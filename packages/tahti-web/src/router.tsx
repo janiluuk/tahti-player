@@ -371,6 +371,17 @@ const settingsRoute = createRoute({
 const settingsSectionRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/settings/$section',
+  beforeLoad: ({ params }) => {
+    // Former Settings → Audience / money panels now live under Studio.
+    if (
+      params.section === 'audience' ||
+      params.section === 'money' ||
+      params.section === 'fan-subs' ||
+      params.section === 'fan-tiers'
+    ) {
+      throw redirect({ to: '/studio/audience' });
+    }
+  },
   component: function SettingsSectionRoute() {
     const { section } = settingsSectionRoute.useParams();
     return <SettingsView sectionId={section} />;
@@ -1470,10 +1481,18 @@ const studioUpdatesRoute = createRoute({
   component: StudioUpdatesView,
 });
 
+const studioAudienceRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/studio/audience',
+  component: StudioRevenueView,
+});
+
 const studioRevenueRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/revenue',
-  component: StudioRevenueView,
+  beforeLoad: () => {
+    throw redirect({ to: '/studio/audience' });
+  },
 });
 
 const studioStripeRoute = createRoute({
@@ -1831,6 +1850,7 @@ const routeTree = rootRoute.addChildren([
     studioPlaylistsRoute,
     studioPlaylistEditRoute,
     studioUpdatesRoute,
+    studioAudienceRoute,
     studioRevenueRoute,
     studioStripeRoute,
     studioDistributionRoute,

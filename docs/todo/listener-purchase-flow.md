@@ -71,7 +71,7 @@ real UI.
 7. Assert subscription status changes to Cancelled (or disappears).
 
 #### Test 3: Round-trip verification (lightweight)
-1. After Test 1 purchase → sign in as artist → `/studio/revenue`.
+1. After Test 1 purchase → sign in as artist → `/studio/audience`.
 2. Assert the order appears in the fan order list.
 
 ### What NOT to mock

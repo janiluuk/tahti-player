@@ -41,7 +41,7 @@ export function PurchaseAccessSection({
             fan subscriptions.
           </p>
         </div>
-        <Link to="/studio/revenue">
+        <Link to="/studio/audience">
           <Tooltip content="Manage purchase tiers" side="top">
             <Button
               size="icon-sm"

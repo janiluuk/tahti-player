@@ -78,7 +78,7 @@ export const SUBMENUS = {
       icon: <TrendingUpIcon size={16} />,
     },
     {
-      to: '/studio/revenue',
+      to: '/studio/audience',
       labelKey: 'studio.audience',
       icon: <HeartIcon size={16} />,
     },
@@ -152,6 +152,7 @@ const SECTION_PREFIXES: Record<string, readonly string[]> = {
     '/studio/stats',
     '/studio/governance',
     '/studio/updates',
+    '/studio/audience',
     '/studio/revenue',
     '/studio/stripe',
     '/studio/sounds',
@@ -202,7 +203,7 @@ export function getStudioSubmenuItems(
   const items: StudioSubmenuItem[] = [...SUBMENUS[section]];
   if (section === '/studio' && options.stripeConfigured === true) {
     const audienceIndex = items.findIndex(
-      (item) => item.to === '/studio/revenue',
+      (item) => item.to === '/studio/audience',
     );
     const insertAt = audienceIndex === -1 ? items.length : audienceIndex + 1;
     items.splice(insertAt, 0, STRIPE_NAV_ITEM);
@@ -230,6 +231,9 @@ const isSubmenuActive = (current: string | undefined, to: string) => {
     return (
       pathname === '/studio/branding' || pathname === '/studio/setup-channel'
     );
+  }
+  if (to === '/studio/audience') {
+    return pathname === '/studio/audience' || pathname === '/studio/revenue';
   }
   if (to === '/studio/stats') {
     return (

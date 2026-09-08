@@ -647,7 +647,7 @@ export function StudioHomeView() {
                     color="var(--accent-cyan)"
                   />
                   <StudioActionTile
-                    to="/studio/revenue"
+                    to="/studio/audience"
                     icon={WalletIcon}
                     label="Revenue"
                     subtitle="Orders & grants"

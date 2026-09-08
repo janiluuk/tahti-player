@@ -1215,7 +1215,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           { label: "Open a track's catalog entry", to: '/studio/sounds/$id' },
           {
             label: 'Open Revenue for money-side metrics',
-            to: '/studio/revenue',
+            to: '/studio/audience',
           },
         ],
         old: {
@@ -1314,7 +1314,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/revenue.png',
-          route: '/studio/revenue',
+          route: '/studio/audience',
           caption: 'Nuclear revenue',
         },
       },
@@ -1333,7 +1333,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         goesTo: [
           {
             label: 'Back to Audience orders and grants',
-            to: '/studio/revenue',
+            to: '/studio/audience',
           },
         ],
         old: {
@@ -1469,7 +1469,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           'Switch settings sections',
         ],
         goesTo: [
-          { label: 'Open Audience (fan tiers)', to: '/settings/audience' },
+          { label: 'Open Audience (fan tiers)', to: '/studio/audience' },
           { label: 'Open Broadcast / green room', to: '/settings/broadcast' },
           { label: 'Open Themes', to: '/settings/themes' },
           { label: 'Open Add-ons', to: '/settings/plugin-store' },
@@ -1550,7 +1550,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           {
             label:
               'Open fan subscription performance (same route, different tab)',
-            to: '/settings/audience',
+            to: '/studio/audience',
           },
         ],
         old: {
@@ -1560,7 +1560,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/money-tiers.png',
-          route: '/settings/audience',
+          route: '/studio/audience',
           caption: 'Nuclear Audience · fan tiers',
         },
       },
@@ -1579,7 +1579,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         goesTo: [
           {
             label: 'Open fan tier configuration (same route, different tab)',
-            to: '/settings/audience',
+            to: '/studio/audience',
           },
         ],
         old: {
@@ -1589,7 +1589,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/money-fan-subs.png',
-          route: '/settings/audience',
+          route: '/studio/audience',
           caption: 'Nuclear Audience · fan subscription performance',
         },
       },
@@ -2160,7 +2160,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/revenue.png',
-          route: '/studio/revenue',
+          route: '/studio/audience',
           caption: 'Nuclear revenue',
         },
       },

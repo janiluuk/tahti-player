@@ -67,7 +67,7 @@ export function StudioStripeView() {
                 Fan-sub orders still appear under Audience. Turn Stripe on to
                 connect a payout account and open the Express dashboard.
               </p>
-              <Link to="/studio/revenue" className="mt-3 inline-block">
+              <Link to="/studio/audience" className="mt-3 inline-block">
                 <Button size="sm" variant="secondary">
                   Back to Audience
                 </Button>
@@ -188,7 +188,7 @@ export function StudioStripeView() {
                 Express dashboard payouts to your bank follow Stripe’s schedule.
                 A paid order here means Tahti booked the period.{' '}
                 <Link
-                  to="/studio/revenue"
+                  to="/studio/audience"
                   className="text-foreground underline-offset-2 hover:underline"
                 >
                   Order flow and grants live on Audience

@@ -1,3 +1,10 @@
+## 2026-09-08 — Settings Audience removed; Studio → Audience is canonical
+
+Dropped Settings → Audience (`MoneyPanel`). Fan tiers, fan-sub stats, grants,
+and Stripe already lived on Studio Audience (`/studio/audience`, formerly
+`/studio/revenue`). Listener "Your subs" remain under Settings → Account.
+Old `/settings/money|audience|fan-subs` and `/studio/revenue` redirect in.
+
 ## 2026-09-08 — Settings footer icon row + toast noise (onboarding + mock theme review)
 
 Settings modal footer links → single icon row. Onboarding "finish profile"

@@ -7,7 +7,6 @@ import {
   CreditCardIcon,
   Database,
   Download,
-  Gift,
   Globe,
   InfoIcon,
   Keyboard,
@@ -25,7 +24,6 @@ import {
   Share2,
   Shield,
   Sparkles,
-  Tag,
   Trash2,
   Upload,
   User,
@@ -83,20 +81,6 @@ import {
   requestAccountDeletion,
   startMembershipCheckout,
 } from '../../api/client';
-import { fetchAllRoyalties } from '../../api/distribution';
-import {
-  fanSubscriberExportUrl,
-  fetchFanConnectPortal,
-  fetchFanConnectStatus,
-  fetchFanPayoutStats,
-  fetchGrantEstimate,
-  fetchMyGrants,
-  startFanConnectOnboard,
-  type FanConnectStatus,
-  type FanPayoutStats,
-  type GrantEstimate,
-  type GrantRow,
-} from '../../api/revenue';
 import {
   fetchMeProfile,
   fetchProgramme,
@@ -113,8 +97,6 @@ import { ApiTokensPanel } from '../../components/ApiTokensPanel';
 import { ArtistImagePurposePicker } from '../../components/ArtistImagePurposePicker';
 import { ChannelVisualizer } from '../../components/ChannelVisualizer';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
-import { FanSubscriptionStats } from '../../components/FanSubscriptionStats';
-import { FanTiersEditor } from '../../components/FanTiersEditor';
 import { GenrePicker } from '../../components/GenrePicker';
 import { MentionTextarea } from '../../components/MentionTextarea';
 import { MulticastSection } from '../../components/MulticastSection';
@@ -141,7 +123,6 @@ import {
   saveReleaseVisualizerPreference,
   type ReleaseVisualizerMode,
 } from '../../lib/releaseVisualizer';
-import { mergeRevenueOrders } from '../../lib/revenueOrders';
 import { useThemeStore } from '../../plugins/themes';
 import { useAmbientStore } from '../../stores/ambientStore';
 import { useAuthModalStore } from '../../stores/authModalStore';
@@ -239,9 +220,6 @@ export function SettingsSectionBody({
       break;
     case 'broadcast':
       content = <BroadcastPanel />;
-      break;
-    case 'audience':
-      content = <MoneyPanel />;
       break;
     case 'themes':
       content = <ThemesPanel />;
@@ -1795,216 +1773,6 @@ export function BroadcastPanel({
   }
 
   return <Tabs listClassName="flex-wrap" items={items} />;
-}
-
-export function MoneyPanel() {
-  const user = useAuthStore((s) => s.user);
-  const closeSettings = useSettingsModalStore((s) => s.close);
-  const [connect, setConnect] = useState<FanConnectStatus | null>(null);
-  const [fanPayouts, setFanPayouts] = useState<FanPayoutStats | null>(null);
-  const [payoutOrders, setPayoutOrders] = useState(mergeRevenueOrders([], []));
-  const [grants, setGrants] = useState<GrantRow[]>([]);
-  const [estimate, setEstimate] = useState<GrantEstimate | null>(null);
-  const [subs, setSubs] = useState<FanSubscriptionRow[]>([]);
-  const [msg, setMsg] = useState<string | null>(null);
-
-  useEffect(() => {
-    void Promise.all([
-      fetchFanConnectStatus(),
-      fetchFanPayoutStats(),
-      fetchAllRoyalties(),
-      fetchMyGrants(),
-      fetchGrantEstimate(),
-      user
-        ? fetchMySubscriptions()
-        : Promise.resolve({ data: [] as FanSubscriptionRow[] }),
-    ]).then(([c, payouts, royalties, g, e, s]) => {
-      setConnect(c.data);
-      setFanPayouts(payouts.data);
-      setPayoutOrders(mergeRevenueOrders(payouts.data.recent, royalties.data));
-      setGrants(g.data);
-      setEstimate(e.data);
-      setSubs(s.data);
-    });
-  }, [user]);
-
-  return (
-    <Tabs
-      listClassName="flex-wrap"
-      items={[
-        {
-          id: 'fan-tiers',
-          label: 'Fan tiers',
-          icon: <Tag size={14} />,
-          content: <FanTiersEditor />,
-        },
-        {
-          id: 'fan-subs',
-          label: 'Fan subs',
-          icon: <Landmark size={14} />,
-          content: !connect ? (
-            <SettingsHint>Loading…</SettingsHint>
-          ) : (
-            <div className="flex flex-col gap-4">
-              {fanPayouts ? (
-                <FanSubscriptionStats
-                  stats={fanPayouts}
-                  orders={payoutOrders}
-                  exportUrl={fanSubscriberExportUrl()}
-                />
-              ) : null}
-              <SettingsInfo
-                label="Payments ready"
-                value={connect.paymentsReady ? 'Yes' : 'Not yet'}
-              />
-              <SettingsInfo
-                label="Charges enabled"
-                value={connect.chargesEnabled ? 'Yes' : 'No'}
-              />
-              {connect.accountId && (
-                <SettingsInfo
-                  label="Connect account"
-                  value={connect.accountId}
-                />
-              )}
-              <div className="flex flex-wrap gap-2">
-                {connect.stripeConfigured ? (
-                  <>
-                    {!connect.paymentsReady && (
-                      <Button
-                        size="sm"
-                        onClick={() => {
-                          void startFanConnectOnboard().then((r) => {
-                            if (!r.ok) {
-                              setMsg(r.error);
-                              return;
-                            }
-                            if ('mockActivated' in r) {
-                              setMsg(r.message);
-                              void fetchFanConnectStatus().then((x) =>
-                                setConnect(x.data),
-                              );
-                              return;
-                            }
-                            window.open(r.url, '_blank', 'noopener,noreferrer');
-                          });
-                        }}
-                      >
-                        Start / resume onboarding
-                      </Button>
-                    )}
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={() => {
-                        void fetchFanConnectPortal().then((r) => {
-                          if (!r.ok) {
-                            setMsg(r.error);
-                            return;
-                          }
-                          if ('mockActivated' in r) {
-                            setMsg(r.message);
-                            return;
-                          }
-                          window.open(r.url, '_blank', 'noopener,noreferrer');
-                        });
-                      }}
-                    >
-                      Stripe portal
-                    </Button>
-                    <Link to="/studio/stripe" onClick={closeSettings}>
-                      <Button size="sm" variant="text">
-                        Stripe dashboard
-                      </Button>
-                    </Link>
-                  </>
-                ) : null}
-                <Link to="/studio/revenue" onClick={closeSettings}>
-                  <Button size="sm" variant="text">
-                    Studio revenue
-                  </Button>
-                </Link>
-              </div>
-              {msg && <SettingsHint>{msg}</SettingsHint>}
-            </div>
-          ),
-        },
-        {
-          id: 'grants',
-          label: 'Grants',
-          icon: <Gift size={14} />,
-          content: (
-            <div className="flex flex-col gap-4">
-              {estimate && (
-                <SettingsInfo
-                  label={`Estimate ${estimate.year}`}
-                  value={`${euros(estimate.estimateCents)} (${estimate.units} units)`}
-                  description={
-                    estimate.eligible ? 'Eligible' : 'Not currently eligible'
-                  }
-                />
-              )}
-              {grants.length === 0 ? (
-                <SettingsHint>No grant rows yet.</SettingsHint>
-              ) : (
-                <ul className="flex flex-col gap-2 text-sm">
-                  {grants.map((g) => (
-                    <li
-                      key={`${g.forYear}-${g.state}`}
-                      className="border-border rounded-md border px-3 py-2"
-                    >
-                      {g.forYear}: {euros(g.amountCents)} — {g.state}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ),
-        },
-        {
-          id: 'subscriptions',
-          label: 'Your subs',
-          icon: <Wallet size={14} />,
-          content: (
-            <div className="flex flex-col gap-4">
-              {!user ? (
-                <SettingsHint>
-                  Sign in to see subscriptions you pay for.
-                </SettingsHint>
-              ) : subs.length === 0 ? (
-                <SettingsHint>
-                  No fan subscriptions on this account.
-                </SettingsHint>
-              ) : (
-                <ul className="flex flex-col gap-2">
-                  {subs.map((s) => (
-                    <li
-                      key={s.id}
-                      className="border-border flex flex-wrap items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm"
-                    >
-                      <div>
-                        <Link
-                          to="/u/$username"
-                          params={{ username: s.artist.username }}
-                          onClick={closeSettings}
-                          className="font-medium underline-offset-2 hover:underline"
-                        >
-                          {s.artist.displayName}
-                        </Link>
-                        <p className="text-foreground-secondary text-xs">
-                          {s.tierName}, {euros(s.amountCents)}/mo, {s.state}
-                        </p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ),
-        },
-      ]}
-    />
-  );
 }
 
 function NotificationsPanel() {

@@ -94,7 +94,7 @@ export function StudioRevenueView() {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-4 px-1 py-2">
-        <StudioNav current="/studio/revenue" />
+        <StudioNav current="/studio/audience" />
         <ViewShell title="Audience" classes={{ root: 'px-0 pt-0' }}>
           <div className="flex items-center gap-2">
             <Link to="/help/$slug" params={{ slug: 'earnings' }}>
@@ -132,18 +132,9 @@ export function StudioRevenueView() {
                         title="No fan subscriptions yet"
                         description="Set up subscription tiers so fans can support you directly."
                         action={
-                          <div className="flex flex-col items-center gap-2">
-                            <Button size="sm" onClick={() => setAudienceTab(1)}>
-                              Open tiers editor
-                            </Button>
-                            <Link
-                              to="/settings/$section"
-                              params={{ section: 'fan-tiers' }}
-                              className="text-foreground text-sm font-semibold underline-offset-2 hover:underline"
-                            >
-                              Settings → Fan tiers
-                            </Link>
-                          </div>
+                          <Button size="sm" onClick={() => setAudienceTab(1)}>
+                            Open tiers editor
+                          </Button>
                         }
                       />
                     </StudioPanel>
@@ -178,19 +169,6 @@ export function StudioRevenueView() {
                               stats={fanPayouts}
                               orders={mergedOrders}
                               exportUrl={fanSubscriberExportUrl()}
-                              footnote={
-                                <>
-                                  Subscriber CSV export and GDPR tools live in{' '}
-                                  <Link
-                                    to="/settings/$section"
-                                    params={{ section: 'fan-subs' }}
-                                    className="text-foreground font-semibold underline-offset-2 hover:underline"
-                                  >
-                                    Settings → Fan subs
-                                  </Link>
-                                  .
-                                </>
-                              }
                             />
                           </StudioPanel>
                           <StudioPanel

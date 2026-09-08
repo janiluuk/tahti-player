@@ -162,7 +162,7 @@ const FEATURES: FeatureRow[] = [
     tahti: '/dashboard/stats',
     nuclear: '/studio/stats',
     status: 'live',
-    notes: 'summary + top tracks/countries; ledger via /studio/revenue lite',
+    notes: 'summary + top tracks/countries; ledger via /studio/audience lite',
   },
   {
     feature: 'Studio channel settings',
@@ -195,7 +195,7 @@ const FEATURES: FeatureRow[] = [
   {
     feature: 'Revenue lite',
     tahti: 'fan-subs connect + grants',
-    nuclear: '/studio/revenue',
+    nuclear: '/studio/audience',
     status: 'live',
     notes:
       'Orders, grants, and a link to the Stripe dashboard when Stripe is on',

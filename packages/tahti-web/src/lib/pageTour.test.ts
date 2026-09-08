@@ -38,7 +38,7 @@ describe('getPageTourSteps', () => {
     for (const pathname of [
       '/',
       '/studio/shows',
-      '/studio/revenue',
+      '/studio/audience',
       '/studio/stripe',
       '/admin/users',
       '/library',
@@ -56,7 +56,7 @@ describe('getPageTourSteps', () => {
   });
 
   it('adds order-management steps on Studio Audience', () => {
-    const revenueIds = ids('/studio/revenue');
+    const revenueIds = ids('/studio/audience');
     expect(revenueIds).toEqual(
       expect.arrayContaining([
         'revenue-stats',
@@ -78,6 +78,6 @@ describe('getPageTourSteps', () => {
         'stripe-charges',
       ]),
     );
-    expect(ids('/studio/revenue')).not.toContain('stripe-status');
+    expect(ids('/studio/audience')).not.toContain('stripe-status');
   });
 });

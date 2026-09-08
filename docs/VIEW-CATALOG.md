@@ -145,7 +145,7 @@ Legend:
 | [Show Detail](#show-detail) | `/studio/shows/$id` | `src/views/studio/StudioShowDetailView.tsx` | No Story | ShowEpisodeList, Form |
 | [Playlists](#playlists-studio) | `/studio/playlists/$slug` | `src/views/studio/StudioPlaylistsView.tsx` | No Story | TrackTable, DragReorder |
 | [Updates](#updates) | `/studio/updates` | `src/views/studio/StudioUpdatesView.tsx` | No Story | MentionTextarea |
-| [Revenue](#revenue) | `/studio/revenue` | `src/views/studio/StudioRevenueView.tsx` | No Story | FanSubscriptionStats |
+| [Audience](#audience) | `/studio/audience` | `src/views/studio/StudioRevenueView.tsx` | No Story | FanSubscriptionStats |
 | [Stripe](#stripe) | `/studio/stripe` | `src/views/studio/StudioStripeView.tsx` | Has Story | — |
 | [Distribution](#distribution) | `/studio/distribution` | `src/views/studio/StudioDistributionView.tsx` | No Story | Form |
 | [Governance](#governance-studio) | `/studio/governance` | `src/views/studio/StudioGovernanceView.tsx` | No Story | Tabs, Card layout |
