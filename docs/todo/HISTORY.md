@@ -2,6 +2,27 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-08 — Studio EmptyState sweep: closed out, remaining items are intentional non-fits
+
+`studio-emptystate-remaining.md` was a leftover from the already-closed
+`studio-storybook-sweep.md` parent task. Its "Still open" list had two
+items, both non-actionable as written: (1) Distribution's "No credits
+yet" caption is a one-line inline hint above an editable, non-empty
+list row (not a section-level empty state) — the shared `EmptyState`
+component is a centered, padded block (even at `size="sm"`) meant for
+a genuinely empty section, and would be a visual downgrade wrapped
+around a one-line caption; (2) "Settings panels with SettingsHint
+empties" turned out to reference a component that doesn't exist in
+this codebase (`grep` found nothing) and was already flagged
+out-of-Studio-scope in the doc itself. Closing rather than converting
+— every real Studio `EmptyState` swap from that sweep already shipped
+(see the "Done this pass" list this doc carried).
+
+Also dropped `stream-overlay-auto-fill-and-avatar-placeholder.md` and
+`admin-panel-left-padding.md` INDEX rows — both already shipped and
+folded into HISTORY earlier (2026-09-07/08) but their INDEX rows/file
+links had gone stale (file deleted, row left behind).
+
 ## 2026-09-08 — ViewShell page headers: last holdout converted, StudioPageHeader deleted
 
 `StudioEpisodeReviewView` (in `StudioShowDetailView.tsx`) was the one
