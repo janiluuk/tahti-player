@@ -2,6 +2,21 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-08 — Next-broadcast cards, status-bar icons, page-tour chrome
+
+**Next-broadcast cards:** Studio schedule "Next"/"Upcoming" list puts the
+label and title on one row, with a cover/backdrop banner strip (gradient
+fallback when no artwork).
+
+**Status bar:** `StatusBarContent` uses lucide icons + tooltips for sounds,
+notifications, messages, and encoding; adds cloud storage used via
+`/api/me/storage` (links to Settings → Account). Desktop local-track
+count/size still open — see WORKPLAN Later.
+
+**Page tour:** Inner pages only get a purpose annotation (+ page-specific
+functionality steps such as Audience/Stripe). Sidebar/top-bar chrome
+steps only on `/`. `annotationOnly` steps render without a DOM cutout.
+
 ## 2026-09-08 — Settings footer icons + onboarding/theme toast noise
 
 **Settings footer:** GitHub / Discord / API docs in the settings modal nav

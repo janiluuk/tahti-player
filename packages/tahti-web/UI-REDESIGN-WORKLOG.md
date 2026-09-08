@@ -1,3 +1,9 @@
+## 2026-09-08 — Next-broadcast cards, status-bar icons, page-tour chrome
+
+Schedule next/upcoming cards: same-row Next+title + cover/gradient banner.
+Status bar: icon row + cloud storage used. Page tour: purpose annotation
+everywhere; shared chrome only on home; inner pages = page functionality.
+
 ## 2026-09-08 — Audience nav tree: parent Studio tab + nested Overview/Tiers/Stripe
 
 Mirror Broadcast: Studio submenu keeps a single Audience tab lit for

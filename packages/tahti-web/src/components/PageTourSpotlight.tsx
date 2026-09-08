@@ -11,11 +11,11 @@ function targetFor(step: TourStep): HTMLElement | null {
 }
 
 /**
- * Guided tour of the current page (press H). Highlights nav items in place
- * with a cutout + glow, one at a time, walking through whichever ones
- * actually exist on the current page — sidebar always, the top bar only on
- * the homepage, Studio/Admin panel items while inside those sections. See
- * `lib/pageTour.ts` for the per-page step lists.
+ * Guided tour of the current page (press H). Highlights controls in place
+ * with a cutout + glow when a `data-tour-id` target exists. Page-purpose
+ * annotations (`annotationOnly`) show the card without a cutout. Shared
+ * chrome (sidebar / top bar / section nav) is only in the homepage tour —
+ * see `lib/pageTour.ts`.
  */
 export function PageTourSpotlight() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -44,8 +44,8 @@ export function PageTourSpotlight() {
     // nodes land a render-commit cycle later than the first paint after
     // `open` flips. A short timeout reliably clears that extra cycle.
     const handle = window.setTimeout(() => {
-      const available = getPageTourSteps(pathname).filter((step) =>
-        targetFor(step),
+      const available = getPageTourSteps(pathname).filter(
+        (step) => step.annotationOnly || targetFor(step),
       );
       setSteps(available);
     }, 60);
