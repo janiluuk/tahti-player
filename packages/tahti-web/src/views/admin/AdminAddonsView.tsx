@@ -11,6 +11,7 @@ import {
   SaveButton,
   Select,
   Textarea,
+  Toggle,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
@@ -20,6 +21,8 @@ import {
   fetchAdminAddons,
   patchAdminAddon,
   registerAdminAddon,
+  setAdminAddonDefaultConfig,
+  setAdminAddonEnabledByDefault,
   type AdminAddon,
   type AdminAddonPatch,
   type AdminAddonScope,
@@ -222,6 +225,11 @@ export function AdminAddonsView() {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] = useState<AdminAddon | null>(null);
+  const [togglingId, setTogglingId] = useState<string | null>(null);
+  const [configFor, setConfigFor] = useState<AdminAddon | null>(null);
+  const [configText, setConfigText] = useState('');
+  const [configError, setConfigError] = useState<string | null>(null);
+  const [configPending, setConfigPending] = useState(false);
 
   const reload = () => {
     setLoading(true);
@@ -286,6 +294,72 @@ export function AdminAddonsView() {
         return;
       }
       setAddons((current) => current.filter((item) => item.id !== addon.id));
+    });
+  };
+
+  const toggleEnabledByDefault = (addon: AdminAddon) => {
+    setTogglingId(addon.id);
+    void setAdminAddonEnabledByDefault(addon.id, !addon.enabledByDefault).then(
+      (result) => {
+        setTogglingId(null);
+        if (!result.ok) {
+          setError(result.error);
+          return;
+        }
+        setAddons((current) =>
+          current.map((item) =>
+            item.id === result.data.id ? result.data : item,
+          ),
+        );
+      },
+    );
+  };
+
+  const openConfig = (addon: AdminAddon) => {
+    setConfigFor(addon);
+    setConfigText(
+      addon.defaultConfigJson
+        ? JSON.stringify(addon.defaultConfigJson, null, 2)
+        : '',
+    );
+    setConfigError(null);
+  };
+
+  const saveConfig = () => {
+    if (!configFor) {
+      return;
+    }
+    let parsed: Record<string, unknown> | null = null;
+    if (configText.trim()) {
+      try {
+        const value: unknown = JSON.parse(configText);
+        if (
+          typeof value !== 'object' ||
+          value === null ||
+          Array.isArray(value)
+        ) {
+          throw new Error('Must be a JSON object');
+        }
+        parsed = value as Record<string, unknown>;
+      } catch {
+        setConfigError('Invalid JSON object — check the syntax and retry.');
+        return;
+      }
+    }
+    setConfigPending(true);
+    setConfigError(null);
+    void setAdminAddonDefaultConfig(configFor.id, parsed).then((result) => {
+      setConfigPending(false);
+      if (!result.ok) {
+        setConfigError(result.error);
+        return;
+      }
+      setAddons((current) =>
+        current.map((item) =>
+          item.id === result.data.id ? result.data : item,
+        ),
+      );
+      setConfigFor(null);
     });
   };
 
@@ -400,6 +474,24 @@ export function AdminAddonsView() {
                             by {addon.authorName}
                           </span>
                         </div>
+                        <div className="border-border mt-3 flex flex-wrap items-center justify-between gap-2 border-t pt-3">
+                          <label className="flex items-center gap-2 text-sm">
+                            <Toggle
+                              checked={addon.enabledByDefault}
+                              disabled={togglingId === addon.id}
+                              onChange={() => toggleEnabledByDefault(addon)}
+                            />
+                            <span>Enabled by default</span>
+                          </label>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="text"
+                            onClick={() => openConfig(addon)}
+                          >
+                            Default settings
+                          </Button>
+                        </div>
                       </div>
                       <div className="flex shrink-0 items-start gap-1">
                         <Tooltip content={`Edit ${addon.name}`} side="top">
@@ -471,6 +563,46 @@ export function AdminAddonsView() {
                   }
                 }}
               />
+              <Dialog.Root
+                isOpen={configFor !== null}
+                onClose={() => setConfigFor(null)}
+                className="max-w-lg"
+              >
+                <Dialog.Title>
+                  {configFor
+                    ? `Default settings — ${configFor.name}`
+                    : 'Default settings'}
+                </Dialog.Title>
+                <Dialog.Description>
+                  Starting configuration every new install of this add-on gets
+                  from now on, across every scope. Existing installs are
+                  untouched. Leave empty to clear the default.
+                </Dialog.Description>
+                <div className="flex flex-col gap-3">
+                  <Textarea
+                    value={configText}
+                    rows={8}
+                    placeholder={'{\n  "showFollowers": true\n}'}
+                    className="font-mono text-xs"
+                    onChange={(event) => setConfigText(event.target.value)}
+                  />
+                  {configError ? (
+                    <p className="text-accent-red text-sm" role="alert">
+                      {configError}
+                    </p>
+                  ) : null}
+                  <Dialog.Actions>
+                    <Dialog.Close>Cancel</Dialog.Close>
+                    <SaveButton
+                      type="button"
+                      saving={configPending}
+                      disabled={configPending}
+                      label="Save default"
+                      onClick={saveConfig}
+                    />
+                  </Dialog.Actions>
+                </div>
+              </Dialog.Root>
             </ViewShell>
           </div>
         </AdminPageLayout>

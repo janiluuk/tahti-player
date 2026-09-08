@@ -4038,6 +4038,13 @@ export type AdminAddon = {
   currentVersion: string;
   bundleSizeBytes: number;
   moderationNote: string | null;
+  /** Board-only: starting configJson every new install of this widget
+   * gets from here on (all scopes). Existing installs are untouched. */
+  defaultConfigJson: unknown | null;
+  /** Board-only: platform-wide "on by default" — an APPROVED addon with
+   * this set renders on its scope's surfaces for every owner with no
+   * install row of their own, no per-owner opt-in needed. */
+  enabledByDefault: boolean;
   createdAt: string;
   updatedAt: string;
 };
@@ -4056,6 +4063,8 @@ const MOCK_ADDONS: AdminAddon[] = [
     currentVersion: '1.0.0',
     bundleSizeBytes: 18400,
     moderationNote: null,
+    defaultConfigJson: null,
+    enabledByDefault: true,
     createdAt: '2026-08-01T00:00:00.000Z',
     updatedAt: '2026-08-01T00:00:00.000Z',
   },
@@ -4072,6 +4081,8 @@ const MOCK_ADDONS: AdminAddon[] = [
     currentVersion: '1.2.0',
     bundleSizeBytes: 22100,
     moderationNote: null,
+    defaultConfigJson: { showFollowers: true },
+    enabledByDefault: false,
     createdAt: '2026-07-15T00:00:00.000Z',
     updatedAt: '2026-07-15T00:00:00.000Z',
   },
@@ -4102,10 +4113,15 @@ export async function fetchAdminAddons(
       query.set('status', status);
     }
     const suffix = query.size > 0 ? `?${query.toString()}` : '';
-    const data = await getJson<{ addons: AdminAddon[] }>(
+    // The real route (apps/api/src/routes/admin/addons.ts) responds
+    // { widgets: [...] }, not { addons: [...] } — this previously read
+    // the wrong field and silently returned an empty list against a
+    // real backend (only worked in mock mode, where the shape is built
+    // by hand below).
+    const data = await getJson<{ widgets: AdminAddon[] }>(
       `/api/admin/addons${suffix}`,
     );
-    return { data: data.addons, meta: { source: 'api' } };
+    return { data: data.widgets, meta: { source: 'api' } };
   } catch (err) {
     return { data: [], meta: failMeta(err) };
   }
@@ -4134,6 +4150,8 @@ export async function registerAdminAddon(
       currentVersion: '0.0.0',
       bundleSizeBytes: 0,
       moderationNote: null,
+      defaultConfigJson: null,
+      enabledByDefault: false,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -4187,6 +4205,62 @@ export async function deleteAdminAddon(
     return { ok: true };
   }
   return mutate(`/api/admin/addons/${encodeURIComponent(id)}`, 'DELETE');
+}
+
+export async function setAdminAddonEnabledByDefault(
+  id: string,
+  enabledByDefault: boolean,
+): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
+  if (forceMock()) {
+    const existing = mockAddons.find((addon) => addon.id === id);
+    if (!existing) {
+      return { ok: false, error: 'Add-on not found' };
+    }
+    const updated = { ...existing, enabledByDefault };
+    mockAddons = mockAddons.map((addon) => (addon.id === id ? updated : addon));
+    return { ok: true, data: updated };
+  }
+  try {
+    const data = await sendJson<AdminAddon>(
+      `/api/admin/addons/${encodeURIComponent(id)}/enabled-by-default`,
+      'POST',
+      { enabledByDefault },
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Update failed',
+    };
+  }
+}
+
+export async function setAdminAddonDefaultConfig(
+  id: string,
+  defaultConfigJson: Record<string, unknown> | null,
+): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
+  if (forceMock()) {
+    const existing = mockAddons.find((addon) => addon.id === id);
+    if (!existing) {
+      return { ok: false, error: 'Add-on not found' };
+    }
+    const updated = { ...existing, defaultConfigJson };
+    mockAddons = mockAddons.map((addon) => (addon.id === id ? updated : addon));
+    return { ok: true, data: updated };
+  }
+  try {
+    const data = await sendJson<AdminAddon>(
+      `/api/admin/addons/${encodeURIComponent(id)}/default-config`,
+      'POST',
+      { defaultConfigJson },
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Update failed',
+    };
+  }
 }
 
 // ── Status ──────────────────────────────────────────────────────────────────
