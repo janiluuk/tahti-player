@@ -11,6 +11,18 @@ pluginRegistryContract.ts` + `pluginRegistryAdapter.ts`, additive only
 them is §5.4, not done yet). A first contract-test suite exists
 (`pluginRegistryAdapter.test.ts`, store-layer subset).
 
+**2026-09-08:** the §5 `PluginRegistryHost` half (previously unimplemented)
+now exists too — `pluginRegistryHost.ts`, a thin façade composing
+`pluginBootstrap`/`pluginStore`/`pluginAutoUpdate` behind the interface
+without changing their behavior (still additive; existing call sites are
+unchanged, migrating them is still §5.4). `pluginRegistryHost.test.ts`
+covers all 8 interface methods (12 tests) — install-from-marketplace
+(including the double-upsert entry-shape lock flagged in the sibling doc's
+open-risks §3), install-from-path, enable/disable, reloadDev, remove,
+checkAndUpdateStorePlugins, and hydrateFromRegistry (incl. confirming
+`providersHost.resolveActiveOnBootstrap` runs after the hydrate loop).
+Full `../tahti-player` plugin test suite (78 tests) still green.
+
 Canonical inventory and remaining-work checklist live in the Tahti org repo
 (remaining-work is tracked there):
 
