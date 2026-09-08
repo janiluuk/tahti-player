@@ -171,6 +171,10 @@ export function ListenAddonsPanel({
       .then((profile) => {
         const accountLink = profile.data.socialLinks?.soundcloud ?? '';
         setSoundcloudProfile(soundcloudProfileUrl(accountLink) ?? accountLink);
+        const hearthisHandle = profile.data.socialLinks?.hearthisAt ?? '';
+        if (hearthisHandle) {
+          setHearthisUsername(hearthisHandle);
+        }
       })
       .catch(() => undefined)
       .finally(() => {

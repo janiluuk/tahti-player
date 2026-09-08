@@ -16,7 +16,7 @@ Status values: `open` | `blocked` | `partial`.
 | partial | [governance-gap-list-top3.md](governance-gap-list-top3.md) | Admin governance consolidated under one tabbed page + attendance mgmt (#6) shipped; motion detail (#1) and public resolutions page (#3) remain |
 | partial | [image-upload-hover-lightbox.md](image-upload-hover-lightbox.md) | Cover-image delete now on Collection/Playlist/Release (Release needed a new `../tahti-org` DELETE artwork route, committed not pushed); slideshow/backdrop + other surfaces remain |
 | partial | [local-files-moved-to-library-tab.md](local-files-moved-to-library-tab.md) | Move done; desktop-mode gating open |
-| partial | [listener-purchase-flow.md](listener-purchase-flow.md) | Subscription cancel shipped 2026-09-07; Purchases tab + e2e still open |
+| partial | [listener-purchase-flow.md](listener-purchase-flow.md) | Subscription cancel shipped 2026-09-07; Purchases tab shipped 2026-09-08 (new `../tahti-org` `GET /api/me/purchases`); e2e still open |
 | open | [plugin-registry-extraction.md](plugin-registry-extraction.md) | Pointer to sibling extraction checklist; PluginRegistryHost façade + §6 contract tests added 2026-09-08 |
 | open | [admin-plugin-management-panel.md](admin-plugin-management-panel.md) | Admin-manage all plugin categories (not just disco widgets): default-enable, default settings, metadata edit, submissions queue, role filter |
 | partial | [release-player-workflow-broken.md](release-player-workflow-broken.md) | Root cause fixed 2026-09-07; user needs to run 2 `gh secret set` commands to finish |
@@ -25,7 +25,7 @@ Status values: `open` | `blocked` | `partial`.
 | open | [tahti-org-ci-skip-full-e2e.md](tahti-org-ci-skip-full-e2e.md) | (tahti-org) CI always runs full e2e (vital-flows + user-journeys) on every push/PR; needs a skip/path-filter strategy |
 | open | [tahti-theme-refactor.md](tahti-theme-refactor.md) | Orange-everywhere Button/Select defaults, contrast, visualizer visibility + settings gate |
 | partial | [waveform-detail-accuracy.md](waveform-detail-accuracy.md) | TrackDetailView now renders real peaks at native resolution (up to 600 bars, was capped at 180); other real-peaks surfaces still capped at 64, fake-fallback noise still unaddressed |
-| open | [listen-widget-hearthis-config-and-set-embed-bug.md](listen-widget-hearthis-config-and-set-embed-bug.md) | (Later) Hearthis widget: auto-fill username from artist settings, icon-button config UI, fix broken set-embed add |
+| partial | [listen-widget-hearthis-config-and-set-embed-bug.md](listen-widget-hearthis-config-and-set-embed-bug.md) | Auto-fill username + set-embed bug (real root cause: set pages 302-redirect, oembed.json only exists post-redirect) shipped; icon-button config UI needs user to point at specifics |
 | open | [channel-designer-backdrop-fold-and-widgets.md](channel-designer-backdrop-fold-and-widgets.md) | (Later) Fold bio/CTA/avatar into backdrop show-toggles (not separate blocks); feed/posts as configurable widgets with tracklist/card-row display toggle |
 | open | [admin-artwork-presets-modal-redesign.md](admin-artwork-presets-modal-redesign.md) | (Later) Artwork presets: modal editor (compact), live grid update, top-right Add-new + guarded Reset-to-defaults |
 
