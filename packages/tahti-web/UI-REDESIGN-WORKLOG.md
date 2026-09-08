@@ -1,3 +1,10 @@
+## 2026-09-08 — Audience nav tree: parent Studio tab + nested Overview/Tiers/Stripe
+
+Mirror Broadcast: Studio submenu keeps a single Audience tab lit for
+`/studio/audience`, `?tab=tiers`, and `/studio/stripe`. Nested
+`AudienceSubNav` carries Overview / Tiers / Stripe (Stripe only when
+configured). Removed the old sibling Stripe Studio tab.
+
 ## 2026-09-08 — Settings Audience removed; Studio → Audience is canonical
 
 Dropped Settings → Audience (`MoneyPanel`). Fan tiers, fan-sub stats, grants,

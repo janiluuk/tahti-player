@@ -1484,14 +1484,26 @@ const studioUpdatesRoute = createRoute({
 const studioAudienceRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/audience',
+  validateSearch: (search: Record<string, unknown>): { tab?: 'tiers' } => ({
+    tab: search.tab === 'tiers' ? 'tiers' : undefined,
+  }),
   component: StudioRevenueView,
 });
 
 const studioRevenueRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/revenue',
-  beforeLoad: () => {
-    throw redirect({ to: '/studio/audience' });
+  beforeLoad: ({ search }) => {
+    throw redirect({
+      to: '/studio/audience',
+      search:
+        typeof search === 'object' &&
+        search &&
+        'tab' in search &&
+        (search as { tab?: unknown }).tab === 'tiers'
+          ? { tab: 'tiers' as const }
+          : {},
+    });
   },
 });
 

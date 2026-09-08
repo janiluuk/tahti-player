@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  AUDIENCE_SUBNAV_ITEMS,
   BROADCAST_SUBNAV_ITEMS,
   getStudioPrimaryRoute,
   getStudioSubmenuItems,
+  isAudienceSubnavActive,
   isBroadcastSubnavActive,
   litStudioSubmenuDestinations,
   SUBMENUS,
@@ -71,6 +73,10 @@ describe('StudioNav section coverage', () => {
       ['/studio/shows/abc', '/studio/go-live'],
       ['/studio/channel', '/studio/go-live'],
       ['/studio/channel?tab=radio', '/studio/go-live'],
+      ['/studio/audience', '/studio/audience'],
+      ['/studio/audience?tab=tiers', '/studio/audience'],
+      ['/studio/stripe', '/studio/audience'],
+      ['/studio/revenue', '/studio/audience'],
     ];
     for (const [location, expected] of covered) {
       expect(litStudioSubmenuDestinations(location), location).toEqual([
@@ -96,6 +102,35 @@ describe('StudioNav section coverage', () => {
       ).map((item) => item.to);
       expect(lit, location).toEqual([expectedTo]);
     }
+  });
+
+  it('lights the right Audience sub-tab for overview, tiers, and Stripe', () => {
+    const covered: [string, string][] = [
+      ['/studio/audience', '/studio/audience'],
+      ['/studio/revenue', '/studio/audience'],
+      ['/studio/audience?tab=tiers', '/studio/audience?tab=tiers'],
+      ['/studio/stripe', '/studio/stripe'],
+    ];
+    for (const [location, expectedTo] of covered) {
+      const lit = AUDIENCE_SUBNAV_ITEMS.filter((item) =>
+        isAudienceSubnavActive(location, item.to),
+      ).map((item) => item.to);
+      expect(lit, location).toEqual([expectedTo]);
+    }
+  });
+
+  it('keeps Stripe out of the Studio submenu (nested under Audience instead)', () => {
+    const items = getStudioSubmenuItems('/studio').map((item) => item.to);
+
+    expect(items).not.toContain('/studio/stripe');
+    expect(SUBMENUS['/studio'].map((item) => item.to)).not.toContain(
+      '/studio/stripe',
+    );
+    expect(items).toContain('/studio/audience');
+    expect(getStudioPrimaryRoute('/studio/stripe')).toBe('/studio');
+    expect(litStudioSubmenuDestinations('/studio/stripe')).toEqual([
+      '/studio/audience',
+    ]);
   });
 
   it('lights nothing in Studio for Library-domain routes (they moved to the main-menu Library item)', () => {
@@ -125,26 +160,5 @@ describe('StudioNav section coverage', () => {
     ]) {
       expect(getStudioPrimaryRoute(location), location).toBeNull();
     }
-  });
-
-  it('keeps Stripe out of Studio nav unless Stripe is configured', () => {
-    const withoutStripe = getStudioSubmenuItems('/studio').map(
-      (item) => item.to,
-    );
-    const withStripe = getStudioSubmenuItems('/studio', {
-      stripeConfigured: true,
-    }).map((item) => item.to);
-
-    expect(withoutStripe).not.toContain('/studio/stripe');
-    expect(SUBMENUS['/studio'].map((item) => item.to)).not.toContain(
-      '/studio/stripe',
-    );
-    expect(withStripe).toEqual(
-      expect.arrayContaining(['/studio/audience', '/studio/stripe']),
-    );
-    expect(withStripe.indexOf('/studio/stripe')).toBe(
-      withStripe.indexOf('/studio/audience') + 1,
-    );
-    expect(getStudioPrimaryRoute('/studio/stripe')).toBe('/studio');
   });
 });

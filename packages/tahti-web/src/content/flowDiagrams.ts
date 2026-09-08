@@ -214,7 +214,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   Role -->|Artist| Studio["/studio"]
   Studio --> Perform["Perform: Go Live · Broadcast · Shows · Channel · Radio"]
   Studio --> Library["Library: Sounds · Upload · Collections"]
-  Studio --> Grow["Grow: Stats · Governance · Audience · Posts"]
+  Studio --> Grow["Grow: Stats · Governance · Audience (Overview · Tiers · Stripe) · Posts"]
   Studio --> Settings["Settings: artist and account · broadcast sources"]
   Role -->|Board| Admin["/admin"]
   Admin --> Overview["Overview: needs action and streams"]
