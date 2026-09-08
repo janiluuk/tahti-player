@@ -289,6 +289,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
   const [addArchiveId, setAddArchiveId] = useState('');
   const [addReleaseId, setAddReleaseId] = useState('');
   const [saving, setSaving] = useState(false);
+  const [pendingCoverDelete, setPendingCoverDelete] = useState(false);
   const [pendingRemove, setPendingRemove] = useState<{
     id: string;
     title: string;
@@ -376,6 +377,17 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
     );
     setUploadOpen(false);
     toast.success('Cover uploaded.');
+  };
+
+  const removeCover = async () => {
+    const result = await patchStudioCollection(slug, { coverUrl: null });
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    setCoverUrl(null);
+    setCol((current) => (current ? { ...current, coverUrl: null } : current));
+    toast.success('Cover removed.');
   };
 
   const playSound = async (sound: {
@@ -476,6 +488,9 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
               imageUrl={coverUrl}
               imageAlt=""
               onImageClick={() => setUploadOpen(true)}
+              onImageDelete={
+                coverUrl ? () => setPendingCoverDelete(true) : undefined
+              }
               subtitle={isDjSet ? 'DJ set' : 'Playlist'}
               description={description.trim() || undefined}
               stats={headerStats}
@@ -754,6 +769,18 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
             const id = pendingRemove.id;
             setPendingRemove(null);
             void removeStudioCollectionItem(slug, id).then(() => reload());
+          }}
+        />
+
+        <ConfirmDialog
+          isOpen={pendingCoverDelete}
+          title="Remove cover image?"
+          description={`The ${kindLabel} will fall back to its default placeholder until you upload a new cover.`}
+          confirmLabel="Remove cover"
+          onCancel={() => setPendingCoverDelete(false)}
+          onConfirm={() => {
+            setPendingCoverDelete(false);
+            void removeCover();
           }}
         />
       </div>

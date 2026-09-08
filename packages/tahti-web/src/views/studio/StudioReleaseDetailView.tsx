@@ -40,6 +40,7 @@ import {
   fetchStudioSound,
   fetchStudioSounds,
   patchStudioRelease,
+  removeReleaseArtwork,
   removeStudioReleaseTrack,
   reorderStudioReleaseTracks,
   uploadReleaseArtwork,
@@ -92,6 +93,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
   const [message, setMessage] = useState<string | null>(null);
   const [artworkPreview, setArtworkPreview] = useState<string | null>(null);
   const [artworkPickerOpen, setArtworkPickerOpen] = useState(false);
+  const [pendingArtworkDelete, setPendingArtworkDelete] = useState(false);
   const [saving, setSaving] = useState(false);
   const [detailsExpanded, setDetailsExpanded] = useState(false);
   const [soundsById, setSoundsById] = useState<Record<string, StudioSound>>({});
@@ -178,6 +180,16 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
     setMessage('Saved.');
   };
 
+  const removeArtwork = async () => {
+    const result = await removeReleaseArtwork(id);
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    setArtworkPreview(null);
+    toast.success('Artwork removed.');
+  };
+
   const playFirstTrack = async () => {
     const firstTrack = release?.tracks?.[0];
     if (!firstTrack?.soundId) {
@@ -248,6 +260,9 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
               imageUrl={artworkPreview}
               imageAlt=""
               onImageClick={() => setArtworkPickerOpen(true)}
+              onImageDelete={
+                artworkPreview ? () => setPendingArtworkDelete(true) : undefined
+              }
               subtitle={`${release.type} · ${release.state}`}
               description={description.trim() || undefined}
               stats={headerStats}
@@ -312,6 +327,18 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                 />
               </div>
             </Dialog.Root>
+
+            <ConfirmDialog
+              isOpen={pendingArtworkDelete}
+              title="Remove artwork?"
+              description="The release will fall back to its default placeholder until you upload new artwork."
+              confirmLabel="Remove artwork"
+              onCancel={() => setPendingArtworkDelete(false)}
+              onConfirm={() => {
+                setPendingArtworkDelete(false);
+                void removeArtwork();
+              }}
+            />
 
             <Tabs
               listClassName="border-border border-b pb-3"
