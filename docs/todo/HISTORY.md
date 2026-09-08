@@ -1912,4 +1912,70 @@ and `pnpm build` all pass. Verified live in a running browser
 (`VITE_FORCE_MOCK=1`, unauthenticated `/studio/go-live`): sidebar shows
 only "Studio" lit, no separate "Perform" item.
 
+## 2026-09-08 — Studio Collection/Playlist/Release: playlist routing, TrackTable swap, delete/export
+
+Closes `studio-entity-edit-view-header-redesign.md`'s three remaining
+"needs a decision, not a guess" items, all resolved by the user this
+pass: wire up the playlist editor, swap to the shared `TrackTable`
+primitive accepting the feature loss, and build delete/export.
+
+**Playlist routing** — `StudioCollectionsView.tsx`'s title and row-action
+`<Link>`s now route `PLAYLIST`/`DJ_SET_SERIES` styles to
+`/studio/playlists/$slug` (the dedicated `StudioPlaylistEditorView`)
+instead of `/studio/collections/$slug`, via a new `editorRouteFor()`
+helper; every other style is unchanged. Fixed a stray
+`content/mapScreens.ts` reference that still pointed playlists at the
+Collection route. `/studio/playlists` stays a redirect to
+`/studio/collections`; the dead `StudioPlaylistsView` grid component is
+untouched.
+
+**`StudioPlaylistEditorView` header parity** — now wrapped in
+`EntitySocialHeader` (cover upload via `uploadCollectionCover`, subtitle
+"Playlist"/"DJ set", description, track-count stat, a Play button, the
+existing Save button), matching Collection's header shape. Its already-
+correct `TrackTable` wiring (reorder/remove/play/queue) is untouched.
+
+**TrackTable swap** — `StudioCollectionEditView.tsx`'s bespoke
+`TrackRow`/native-HTML5-DnD/in-row waveform-decode/inline-embed-iframe
+block is replaced by the shared `TrackTable` (reorder, trash column,
+built-in filter toolbar — replacing the old manual search box), modeled
+on the playlist editor's proven usage. Extracted a shared
+`collectionItemToTrack()` helper (`lib/collectionTrackMapping.ts`) used
+by both views. Accepted regression: no more in-row waveform preview or
+inline embed-provider iframe playback; embed tracks fall back to the
+same `playSound`/`playableFromStudioHearthis` path the playlist editor
+already used. `StudioReleaseDetailView.tsx`'s Overview tab also gets a
+`TrackTable` (read/play-only — no reorder or delete, since the Smart
+Links tab already owns those for release tracks via its own
+`ConfirmDialog`-gated flow, left untouched).
+
+**Delete + Export ("⋮" menu)**, Collection and Playlist only (Release
+has no delete endpoint and wasn't part of the original ask): new shared
+`StudioCollectionMoreMenu` component, a `Popover` with "Export as JSON"
+(client-side `Blob` + `<a download>`, no API call — no export endpoint
+exists) and "Delete" (new `deleteStudioCollection()` in `api/studio.ts`,
+hitting `DELETE /api/me/collections/:slug` — this endpoint already
+existed in `tahti-org`, unused by the frontend until now). No `tahti-org`
+changes were needed.
+
+**Delete confirmation, unprompted user feedback mid-pass**: "always
+confirm with modal with the delete buttons" — applied beyond just
+`StudioCollectionMoreMenu`'s "Delete collection/playlist": `TrackTable`'s
+per-track trash column in both Collection and Playlist editors now opens
+the shared `ConfirmDialog` before calling `removeStudioCollectionItem`,
+where before (playlist editor) and previously (Collection's old
+`TrackRow`) it removed immediately on click.
+
+`tsc --noEmit`, `eslint`, `pnpm test` (483 tests) and `pnpm build` all
+pass. The repo's own `e2e/cutover-vital.spec.ts` (which covers both
+`/studio/collections/midnight-archive` and
+`/studio/playlists/favorites-mix`) targets the real `beta.tahti.live`
+deployment and needs `TAHTI_E2E_PASSWORD` staging credentials not
+available in this environment — verified manually instead
+(`VITE_FORCE_MOCK=1`, live browser): Collection and Playlist headers,
+"⋮" menus (correct "album"/"collection"/"playlist" labels), the
+track-removal confirm dialog, the list-view routing split, and the
+Release Overview `TrackTable` (no trash/reorder) all render and behave
+correctly; the Smart Links tab's own reorder/delete UI is unaffected.
+
 ---

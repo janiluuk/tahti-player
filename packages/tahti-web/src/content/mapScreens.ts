@@ -1276,8 +1276,8 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
             to: '/studio/sounds/$id',
           },
           {
-            label: 'Land in Collections when importing into a playlist',
-            to: '/studio/collections/$slug',
+            label: 'Land in the playlist editor when importing into a playlist',
+            to: '/studio/playlists/$slug',
           },
         ],
         old: {

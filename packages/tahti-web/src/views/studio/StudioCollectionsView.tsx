@@ -73,6 +73,13 @@ const collectionStyle = (collection: StudioCollection): CreateStyle => {
   return normalized === 'SINGLE' ? 'ALBUM' : normalized;
 };
 
+/** Playlists and DJ sets get the dedicated playlist editor
+ * (`StudioPlaylistEditorView`); every other style keeps the Design editor. */
+const editorRouteFor = (collection: StudioCollection) =>
+  ['PLAYLIST', 'DJ_SET_SERIES'].includes(collectionStyle(collection))
+    ? '/studio/playlists/$slug'
+    : '/studio/collections/$slug';
+
 export function StudioCollectionsView() {
   const [rows, setRows] = useState<StudioCollection[]>([]);
   const [loading, setLoading] = useState(true);
@@ -373,7 +380,7 @@ export function StudioCollectionsView() {
                     />
                     <div className="min-w-0 flex-1">
                       <Link
-                        to="/studio/collections/$slug"
+                        to={editorRouteFor(c)}
                         params={{ slug: c.slug }}
                         className="font-medium hover:underline"
                       >
@@ -392,10 +399,7 @@ export function StudioCollectionsView() {
                         {`, ${(c.visibility ?? (c.isPublic === false ? 'PRIVATE' : 'PUBLIC')).toLowerCase()}`}
                       </p>
                     </div>
-                    <Link
-                      to="/studio/collections/$slug"
-                      params={{ slug: c.slug }}
-                    >
+                    <Link to={editorRouteFor(c)} params={{ slug: c.slug }}>
                       <Button size="sm">
                         {['ALBUM', 'EP'].includes(collectionStyle(c))
                           ? 'Design'

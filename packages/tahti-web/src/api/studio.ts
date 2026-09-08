@@ -1287,6 +1287,25 @@ export async function removeStudioCollectionItem(
   }
 }
 
+export async function deleteStudioCollection(
+  slug: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (forceMock()) {
+    return { ok: true };
+  }
+  try {
+    await requestJson(`/api/me/collections/${encodeURIComponent(slug)}`, {
+      method: 'DELETE',
+    });
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Delete failed',
+    };
+  }
+}
+
 export async function createStudioCollection(input: {
   name: string;
   style?: string;
