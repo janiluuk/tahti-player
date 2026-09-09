@@ -26,6 +26,7 @@ Status values: `open` | `blocked` | `partial`.
 | partial | [waveform-detail-accuracy.md](waveform-detail-accuracy.md) | TrackDetailView, StudioSoundView, TrackEditDialog now render real peaks at native resolution; fake-fallback noise + wiring real peaks into player bar/Discover/CollectionTrackList still unaddressed |
 | partial | [listen-widget-hearthis-config-and-set-embed-bug.md](listen-widget-hearthis-config-and-set-embed-bug.md) | Auto-fill username + set-embed bug (real root cause: set pages 302-redirect, oembed.json only exists post-redirect) shipped; icon-button config UI needs user to point at specifics |
 | open | [channel-designer-backdrop-fold-and-widgets.md](channel-designer-backdrop-fold-and-widgets.md) | (Later) Fold bio/CTA/avatar into backdrop show-toggles (not separate blocks); feed/posts as configurable widgets with tracklist/card-row display toggle |
+| partial | [channel-slideshow-transitions-unwired.md](channel-slideshow-transitions-unwired.md) | Rotation + all 8 transitions (4 CSS, 4 WebGL ported from tahti-org) wired end-to-end 2026-09-09; not live-browser-verified, gallery-strip modes still out of scope |
 
 ## Fold rule (copy into CLAUDE / chat)
 

@@ -5578,3 +5578,43 @@ persisted.
 `eslint --fix`, and `pnpm --filter @tahti-player/tahti-web test` all
 pass clean — 85/85 files, 487/487 tests. Bumped
 `packages/tahti-web/package.json` to `0.0.99`.
+
+## 2026-09-09 — Channel backdrop slideshow actually rotates + transitions
+
+`ChannelDesigner`'s "Static slideshow" gallery mode let a user configure
+a preset (FADE/ZOOM/PAN/BLUR_CROSS/PARTICLE_DISSOLVE/GLITCH_WIPE/
+CUBE_FLIP/LIQUID_DISTORTION), interval, transition duration, and
+autoplay — all saved correctly, but the real published channel page
+(`ChannelBackdropCard.tsx`) just rendered `slideshowImages[0]` as a
+static `<img>` and ignored every one of those settings. Confirmed it
+wasn't a backend gap: `../tahti-org`'s public channel/profile routes
+already return all 4 fields.
+
+Added the 4 fields to `PublicChannel` (`api/types.ts`) and wired them
+through `ChannelView.tsx` and `ChannelDesigner`'s own live preview.
+Ported the 4 WebGL transition shaders from `../tahti-org/apps/web/src/
+components/visuals/slideshow-transitions/` (pure Three.js/DOM, no
+Next.js-specific code beyond swapping `next/dynamic` for `React.lazy`)
+into `components/visuals/slideshowTransitions/`, and wrote a new CSS
+crossfade counterpart for the other 4 presets (those don't need WebGL).
+New `ChannelSlideshowBackdrop.tsx` owns the rotation timer and picks
+between the two transition renderers; `ChannelBackdropCard`'s
+`showSlideshow` branch now renders it instead of a bare `<img>`.
+
+Storybook: `ChannelBackdropCard.stories.tsx` gained slideshow stories
+(preset-selectable, two named WebGL showcases, autoplay-off, and two
+color-scheme variants) and a new dedicated `ChannelSlideshowBackdrop
+.stories.tsx` demoing all 8 presets as their own primitive — the first
+story in the repo to vary per-story background/palette args, closing
+part of a repo-wide "no story varies background" gap found while
+scoping this. `storybook build` succeeds with the new stories included.
+
+**Validation:** `tsc --noEmit`, `eslint`, `pnpm --filter
+@tahti-player/tahti-web test` all pass — 504/504 unit tests (5 new,
+covering the CSS-preset rotation timing with fake timers; the WebGL
+path isn't unit-testable here, same as `ChannelVisualizer` — no canvas/
+WebGL mock exists in this repo's jsdom setup). **Not
+live-browser-verified** — Claude-in-Chrome wasn't connected this
+session, so the actual WebGL shader rendering (cube-flip's 3D rotation,
+the 3 shader crossfades) is unverified beyond "compiles and Storybook
+serves it." Bumped `packages/tahti-web/package.json` to `0.0.106`.

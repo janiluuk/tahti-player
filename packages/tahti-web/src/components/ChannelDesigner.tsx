@@ -1677,6 +1677,10 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
                 artworkUrl={avatarUrl}
                 galleryMode={galleryMode}
                 slideshowImages={galleryImageList}
+                slideshowPreset={slideshowPreset}
+                slideshowIntervalSeconds={slideshowInterval}
+                slideshowTransitionMs={slideshowTransition}
+                slideshowAutoplay={slideshowAutoplay}
                 mountVisualizer={hasLivePreview && visualizerEnabled}
                 editable
                 identitySelected={highlightSection === 'header'}
