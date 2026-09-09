@@ -79,14 +79,6 @@ body,
   min-width: 0;
 }
 
-.studio-page-layout--fixed-width {
-  box-sizing: border-box;
-  width: min(100%, 64rem) !important;
-  min-width: 0 !important;
-  max-width: 64rem !important;
-  margin-inline: auto !important;
-}
-
 @media (max-width: 639px) {
   .studio-page-layout,
   .admin-page-layout,

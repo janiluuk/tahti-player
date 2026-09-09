@@ -1,5 +1,6 @@
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import {
+  ArrowLeftIcon,
   GripVerticalIcon,
   HeartIcon,
   LayoutTemplateIcon,
@@ -1263,15 +1264,18 @@ export function ChannelView({ slug }: { slug: string }) {
           />
         ))}
 
-      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col gap-3 px-4 py-6 sm:px-6">
+      <div className="relative z-10 flex w-full flex-col gap-3 px-4 py-6 sm:px-6">
         <div className="flex flex-wrap items-center justify-between gap-2">
           {!editing ? (
-            <Link
-              to="/"
-              className="text-foreground-secondary text-xs hover:underline"
-            >
-              ← Listen
-            </Link>
+            <Tooltip content="Back to Listen" side="right">
+              <Link
+                to="/"
+                aria-label="Back to Listen"
+                className="text-foreground-secondary hover:bg-background-secondary inline-flex size-8 items-center justify-center rounded-full"
+              >
+                <ArrowLeftIcon size={16} aria-hidden />
+              </Link>
+            </Tooltip>
           ) : (
             <span />
           )}

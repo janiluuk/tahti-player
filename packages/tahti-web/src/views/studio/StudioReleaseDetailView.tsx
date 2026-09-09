@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import {
+  ArrowLeftIcon,
   Code2Icon,
   ExternalLinkIcon,
   FilterIcon,
@@ -239,14 +240,17 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
 
   return (
     <StudioGate requireChannel={false}>
-      <div className="studio-page-layout mx-auto flex max-w-2xl flex-col gap-6 px-1 py-2">
+      <div className="studio-page-layout flex w-full flex-col gap-6 px-1 py-2">
         <StudioNav current="/studio/releases" />
-        <Link
-          to="/studio/releases"
-          className="text-foreground-secondary -mt-2 text-xs hover:underline"
-        >
-          ← Releases
-        </Link>
+        <Tooltip content="Back to Releases" side="right">
+          <Link
+            to="/studio/releases"
+            aria-label="Back to Releases"
+            className="text-foreground-secondary hover:bg-background-secondary -mt-2 inline-flex size-8 w-fit items-center justify-center rounded-full"
+          >
+            <ArrowLeftIcon size={16} aria-hidden />
+          </Link>
+        </Tooltip>
         {!release ? (
           <StudioPanel>
             <PageEmpty title="Release not found in list" />

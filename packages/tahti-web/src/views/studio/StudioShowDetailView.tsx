@@ -1,5 +1,6 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import {
+  ArrowLeftIcon,
   BarChart3Icon,
   CheckIcon,
   CircleDotIcon,
@@ -371,14 +372,17 @@ export function StudioShowDetailView({ id }: { id: string }) {
 
   return (
     <StudioGate>
-      <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-6 px-1 py-2">
+      <div className="studio-page-layout flex w-full flex-col gap-6 px-1 py-2">
         <BroadcastSubNav current="/studio/shows" />
-        <Link
-          to="/studio/shows"
-          className="text-foreground-secondary -mt-2 text-xs hover:underline"
-        >
-          ← Shows
-        </Link>
+        <Tooltip content="Back to Shows" side="right">
+          <Link
+            to="/studio/shows"
+            aria-label="Back to Shows"
+            className="text-foreground-secondary hover:bg-background-secondary -mt-2 inline-flex size-8 w-fit items-center justify-center rounded-full"
+          >
+            <ArrowLeftIcon size={16} aria-hidden />
+          </Link>
+        </Tooltip>
 
         {!show ? (
           <StudioPanel>
@@ -834,7 +838,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
   if (!episode) {
     return (
       <StudioGate>
-        <div className="studio-page-layout mx-auto max-w-2xl">
+        <div className="studio-page-layout flex w-full flex-col">
           <BroadcastSubNav current="/studio/shows" />
           <PageLoading label="Loading…" />
         </div>
@@ -865,15 +869,18 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
 
   return (
     <StudioGate>
-      <div className="studio-page-layout mx-auto flex max-w-2xl flex-col gap-6">
+      <div className="studio-page-layout flex w-full flex-col gap-6">
         <BroadcastSubNav current="/studio/shows" />
-        <Link
-          to="/studio/shows/$id"
-          params={{ id: episode.showId }}
-          className="text-foreground-secondary text-xs hover:underline"
-        >
-          ← {show?.title ?? 'Show'}
-        </Link>
+        <Tooltip content={`Back to ${show?.title ?? 'Show'}`} side="right">
+          <Link
+            to="/studio/shows/$id"
+            params={{ id: episode.showId }}
+            aria-label={`Back to ${show?.title ?? 'Show'}`}
+            className="text-foreground-secondary hover:bg-background-secondary inline-flex size-8 w-fit items-center justify-center rounded-full"
+          >
+            <ArrowLeftIcon size={16} aria-hidden />
+          </Link>
+        </Tooltip>
 
         <ViewShell
           title={episode.title}

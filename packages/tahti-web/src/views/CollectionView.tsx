@@ -1,5 +1,6 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import {
+  ArrowLeftIcon,
   BookmarkIcon,
   ListMusicIcon,
   ListPlusIcon,
@@ -68,13 +69,7 @@ function collectionToPlayables(col: PublicCollection): TahtiPlayable[] {
   return out;
 }
 
-export function CollectionView({
-  username,
-  slug,
-}: {
-  username: string;
-  slug: string;
-}) {
+export function CollectionView({ slug }: { slug: string }) {
   const [collection, setCollection] = useState<PublicCollection | null>(null);
   const [loading, setLoading] = useState(true);
   const me = useAuthStore((s) => s.user);
@@ -240,19 +235,16 @@ export function CollectionView({
   };
 
   return (
-    <PageFrame>
-      <div className="flex flex-wrap gap-3 text-xs">
-        <Link to="/" className="text-foreground-secondary hover:underline">
-          ← Listen
-        </Link>
+    <PageFrame maxWidth="full">
+      <Tooltip content="Back to Listen" side="right">
         <Link
-          to="/u/$username"
-          params={{ username }}
-          className="text-foreground-secondary hover:underline"
+          to="/"
+          aria-label="Back to Listen"
+          className="text-foreground-secondary hover:bg-background-secondary inline-flex size-8 w-fit items-center justify-center rounded-full"
         >
-          @{username}
+          <ArrowLeftIcon size={16} aria-hidden />
         </Link>
-      </div>
+      </Tooltip>
 
       <EntitySocialHeader
         title={collection.name}

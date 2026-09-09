@@ -1,5 +1,6 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import {
+  ArrowLeftIcon,
   CalendarDays,
   Disc3Icon,
   DownloadIcon,
@@ -753,7 +754,7 @@ export function ArtistView({ username }: { username: string }) {
 
   return (
     <div
-      className="relative isolate mx-auto flex max-w-5xl flex-col gap-6 overflow-hidden rounded-2xl p-4 sm:p-6"
+      className="relative isolate flex w-full flex-col gap-6 overflow-hidden rounded-2xl p-4 sm:p-6"
       style={{
         ...colorSchemeCssVars(pageScheme),
         color: pageScheme.text,
@@ -773,13 +774,16 @@ export function ArtistView({ username }: { username: string }) {
           preset={resolvePublicVisualizerPreset(backgroundVisualPreset)}
         />
       ) : null}
-      <Link
-        to="/"
-        className="text-xs hover:underline"
-        style={{ color: pageScheme.muted }}
-      >
-        ← Listen
-      </Link>
+      <Tooltip content="Back to Listen" side="right">
+        <Link
+          to="/"
+          aria-label="Back to Listen"
+          className="inline-flex size-8 w-fit items-center justify-center rounded-full hover:bg-white/10"
+          style={{ color: pageScheme.muted }}
+        >
+          <ArrowLeftIcon size={16} aria-hidden />
+        </Link>
+      </Tooltip>
 
       <EntitySocialHeader
         title={artist.displayName}

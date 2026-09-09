@@ -1,6 +1,7 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import {
   ArchiveIcon,
+  ArrowLeftIcon,
   AudioLinesIcon,
   BarChart3Icon,
   GaugeIcon,
@@ -317,14 +318,17 @@ export function StudioSoundView({ id }: { id: string }) {
 
   return (
     <StudioGate requireChannel={false}>
-      <div className="studio-page-layout studio-page-layout--fixed-width mx-auto flex max-w-4xl flex-col gap-6">
+      <div className="studio-page-layout flex w-full flex-col gap-6">
         <StudioNav current={`/studio/sounds/${id}`} />
-        <Link
-          to="/studio/sounds"
-          className="text-foreground-secondary text-xs hover:underline"
-        >
-          ← Music
-        </Link>
+        <Tooltip content="Back to Music" side="right">
+          <Link
+            to="/studio/sounds"
+            aria-label="Back to Music"
+            className="text-foreground-secondary hover:bg-background-secondary inline-flex size-8 w-fit items-center justify-center rounded-full"
+          >
+            <ArrowLeftIcon size={16} aria-hidden />
+          </Link>
+        </Tooltip>
         {!item ? (
           <PageLoading label="Loading…" />
         ) : (

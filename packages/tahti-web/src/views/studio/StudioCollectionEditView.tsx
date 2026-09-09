@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import {
+  ArrowLeftIcon,
   ImageIcon,
   ListMusicIcon,
   ListPlusIcon,
@@ -477,20 +478,23 @@ export function StudioCollectionEditView({
 
   return (
     <StudioGate requireChannel={false}>
-      <div className="studio-page-layout mx-auto flex max-w-4xl flex-col gap-6 px-1 py-2">
+      <div className="studio-page-layout flex w-full flex-col gap-6 px-1 py-2">
         {nav === 'library' ? (
           <LibrarySectionTabs active="collections" />
         ) : (
           <StudioNav current="/studio/collections" />
         )}
-        <Link
-          to={
-            nav === 'library' ? '/library/collections' : '/studio/collections'
-          }
-          className="text-foreground-secondary -mt-2 text-xs hover:underline"
-        >
-          ← Collections
-        </Link>
+        <Tooltip content="Back to Collections" side="right">
+          <Link
+            to={
+              nav === 'library' ? '/library/collections' : '/studio/collections'
+            }
+            aria-label="Back to Collections"
+            className="text-foreground-secondary hover:bg-background-secondary -mt-2 inline-flex size-8 w-fit items-center justify-center rounded-full"
+          >
+            <ArrowLeftIcon size={16} aria-hidden />
+          </Link>
+        </Tooltip>
         {!col ? (
           <StudioPanel>
             <PageLoading label="Loading…" />
