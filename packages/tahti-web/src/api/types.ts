@@ -67,6 +67,12 @@ export type PublicChannel = {
   videoBackgroundUrl?: string | null;
   galleryMode?: string | null;
   slideshowImages?: string[];
+  /** One of `ChannelDesigner`'s 8 `SLIDESHOW_PRESETS` — how the slideshow
+   * (2+ `slideshowImages`) transitions between slides. */
+  slideshowPreset?: string | null;
+  slideshowIntervalSeconds?: number;
+  slideshowTransitionMs?: number;
+  slideshowAutoplay?: boolean;
   colorSchemeJson?: string | null;
   colorScheme?: {
     accent?: string;

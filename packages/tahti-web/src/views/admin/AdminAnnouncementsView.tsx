@@ -22,6 +22,7 @@ import {
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { usePlayerStore } from '../../stores/playerStore';
@@ -42,6 +43,8 @@ export function AdminAnnouncementsView() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  const [pendingDelete, setPendingDelete] =
+    useState<AdminAnnouncementClip | null>(null);
 
   const reload = () => {
     void fetchAdminAnnouncements().then((res) => {
@@ -224,15 +227,7 @@ export function AdminAnnouncementsView() {
                         <Button
                           size="sm"
                           variant="text"
-                          onClick={() => {
-                            void deleteAnnouncementClip(clip.id).then((r) => {
-                              if (!r.ok) {
-                                setMsg(r.error);
-                              } else {
-                                reload();
-                              }
-                            });
-                          }}
+                          onClick={() => setPendingDelete(clip)}
                         >
                           <Trash2Icon
                             size={14}
@@ -248,6 +243,27 @@ export function AdminAnnouncementsView() {
               )}
             </StudioPanel>
           </ViewShell>
+          <ConfirmDialog
+            isOpen={pendingDelete !== null}
+            title={`Delete "${pendingDelete?.title ?? ''}"?`}
+            description="This announcement clip will be removed from the schedule for everyone."
+            confirmLabel="Delete"
+            onCancel={() => setPendingDelete(null)}
+            onConfirm={() => {
+              const clip = pendingDelete;
+              setPendingDelete(null);
+              if (!clip) {
+                return;
+              }
+              void deleteAnnouncementClip(clip.id).then((r) => {
+                if (!r.ok) {
+                  setMsg(r.error);
+                } else {
+                  reload();
+                }
+              });
+            }}
+          />
         </AdminPageLayout>
       </div>
     </AdminGate>

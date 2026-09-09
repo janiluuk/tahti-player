@@ -804,6 +804,10 @@ export function ChannelView({ slug }: { slug: string }) {
               }
               galleryMode={channel.galleryMode}
               slideshowImages={channel.slideshowImages}
+              slideshowPreset={channel.slideshowPreset}
+              slideshowIntervalSeconds={channel.slideshowIntervalSeconds}
+              slideshowTransitionMs={channel.slideshowTransitionMs}
+              slideshowAutoplay={channel.slideshowAutoplay}
               visualizerSettings={heroVisualizerSettings}
               visualSettingsJson={channel.visualSettingsJson}
               navItems={[]}
