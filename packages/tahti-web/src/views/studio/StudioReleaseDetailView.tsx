@@ -90,7 +90,6 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
   const [description, setDescription] = useState('');
   const [spotify, setSpotify] = useState('');
   const [bandcamp, setBandcamp] = useState('');
-  const [message, setMessage] = useState<string | null>(null);
   const [artworkPreview, setArtworkPreview] = useState<string | null>(null);
   const [artworkPickerOpen, setArtworkPickerOpen] = useState(false);
   const [pendingArtworkDelete, setPendingArtworkDelete] = useState(false);
@@ -161,7 +160,6 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
   );
 
   const save = async () => {
-    setMessage(null);
     setSaving(true);
     const result = await patchStudioRelease(id, {
       description,
@@ -173,11 +171,11 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
     });
     setSaving(false);
     if (!result.ok) {
-      setMessage(result.error);
+      toast.error(result.error);
       return;
     }
     setRelease(result.data);
-    setMessage('Saved.');
+    toast.success('Saved.');
   };
 
   const removeArtwork = async () => {
@@ -314,11 +312,9 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                     }
                     void uploadReleaseArtwork(id, file).then((r) => {
                       if (!r.ok) {
-                        setMessage(r.error);
                         toast.error(r.error);
                       } else {
                         setArtworkPreview(r.artworkUrl);
-                        setMessage('Artwork uploaded.');
                         toast.success('Artwork uploaded.');
                       }
                       setArtworkPickerOpen(false);
@@ -471,8 +467,6 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                         </StudioPanel>
                       )}
 
-                      {message && <p className="text-sm">{message}</p>}
-
                       <div className="flex flex-wrap items-center gap-2">
                         <Button
                           variant="secondary"
@@ -481,10 +475,10 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                               state: 'PUBLISHED',
                             }).then((r) => {
                               if (!r.ok) {
-                                setMessage(r.error);
+                                toast.error(r.error);
                               } else {
                                 setRelease(r.data);
-                                setMessage('Published.');
+                                toast.success('Published.');
                               }
                             });
                           }}
@@ -513,7 +507,6 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                             : current,
                         )
                       }
-                      onMessage={setMessage}
                       onReleaseChange={setRelease}
                     />
                   ),
@@ -694,7 +687,6 @@ function ReleaseSmartLinksPanel({
   onSpotifyChange,
   onBandcampChange,
   onTargetsSaved,
-  onMessage,
   onReleaseChange,
 }: {
   release: StudioRelease;
@@ -703,7 +695,6 @@ function ReleaseSmartLinksPanel({
   onSpotifyChange: (value: string) => void;
   onBandcampChange: (value: string) => void;
   onTargetsSaved: (targets: Record<string, string>) => void;
-  onMessage: (message: string) => void;
   onReleaseChange: (release: StudioRelease) => void;
 }) {
   const [targets, setTargets] = useState<Record<string, string>>(
@@ -769,11 +760,11 @@ function ReleaseSmartLinksPanel({
       smartLinkTargets: cleaned,
     });
     if (!result.ok) {
-      onMessage(result.error);
+      toast.error(result.error);
       return;
     }
     onTargetsSaved(cleaned);
-    onMessage('Smart-link targets saved.');
+    toast.success('Smart-link targets saved.');
   };
 
   const moveTrack = async (trackId: string, targetId: string) => {
@@ -796,7 +787,7 @@ function ReleaseSmartLinksPanel({
       next.map((track) => track.id),
     );
     if (!result.ok) {
-      onMessage(result.error);
+      toast.error(result.error);
       return;
     }
     setTracks(next.map((track, index) => ({ ...track, position: index + 1 })));
@@ -831,13 +822,13 @@ function ReleaseSmartLinksPanel({
       durationSec: item.durationSec,
     });
     if (!result.ok) {
-      onMessage(result.error);
+      toast.error(result.error);
       return;
     }
     const next = [...tracks, result.data];
     setTracks(next);
     onReleaseChange({ ...release, tracks: next });
-    onMessage(`${item.title} added to release.`);
+    toast.success(`${item.title} added to release.`);
   };
 
   const dspPrefixes = prefixesForServices(pluginPrefixes);

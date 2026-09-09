@@ -4,6 +4,7 @@ import {
   ListMusicIcon,
   LockIcon,
   MusicIcon,
+  PencilIcon,
   PlayIcon,
   PlusIcon,
   UsersIcon,
@@ -261,7 +262,10 @@ export function StudioPlaylistsView() {
                       to="/studio/collections/$slug"
                       params={{ slug: c.slug }}
                     >
-                      <Button size="sm">Edit</Button>
+                      <Button size="sm">
+                        <PencilIcon size={14} aria-hidden className="mr-1.5" />
+                        Edit
+                      </Button>
                     </Link>
                   </li>
                 ))}
@@ -690,6 +694,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                       });
                     }}
                   >
+                    <PlusIcon size={14} aria-hidden className="mr-1.5" />
                     Add track
                   </Button>
                 </div>
@@ -718,6 +723,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                       });
                     }}
                   >
+                    <PlusIcon size={14} aria-hidden className="mr-1.5" />
                     Add release
                   </Button>
                 </div>
