@@ -112,6 +112,30 @@ All 4 steps of the plan above are done:
 Left `partial` (not folded to HISTORY) because of the unverified WebGL
 render and the explicitly-scoped-out items below.
 
+## 2026-09-09: live-browser verification (Claude-in-Chrome)
+
+- **CSS path confirmed working for real**: loaded `ChannelBackdropCard
+  — Slideshow (rotating, preset-selectable)` in Storybook
+  (FADE, 3s interval, 700ms transition) and watched it live —
+  screenshots taken ~3s apart show the backdrop actually cycling
+  through the 3 configured `picsum.photos` seed images (dune → foggy
+  lake → snowy forest → back to dune), not a static first frame. This
+  is the fix this ticket set out to make; it's real.
+- **WebGL presets (Cube flip, Glitch wipe) fail to render in this
+  automation environment specifically** — both throw at mount:
+  `THREE.WebGLRenderer: A WebGL context could not be created. Reason:
+  Could not create a WebGL context, VENDOR = 0x10de, DEVICE = 0x1c03,
+  Sandboxed = yes, Optimus = yes, ... BindToCurrentSequence failed`.
+  That's the Chrome GPU process failing to init on this NVIDIA-Optimus
+  Linux box under the extension's sandboxed renderer — a host/browser
+  limitation, not a code path caught by the error boundary (which
+  itself worked correctly, showing an error state instead of a blank
+  crash). Consistent with the existing repo pattern noted above of
+  Three.js components being Storybook-only/hard-to-headless-test here.
+  Not re-confirmed against a normal (non-automated) browser tab this
+  session — if the user wants a stronger guarantee before shipping,
+  that's the one remaining check.
+
 ## Explicitly out of scope (follow-ups, not started)
 
 - The 5 `WEBGL_GALLERY_MODES` horizontal gallery-strip renderers

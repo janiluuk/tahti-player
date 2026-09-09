@@ -180,6 +180,17 @@ delete button has no confirm step at all, which is a real gap against
 this repo's own "confirm before delete" rule — flagged, not fixed here
 (different bug class, would be its own small fix).
 
+**2026-09-09 (2):** Fixed the flagged `AdminAnnouncementsView` gap above
+— its clip Delete button fired `deleteAnnouncementClip` immediately with
+no confirm step. Added a `ConfirmDialog` (`Delete "<title>"?`), same
+pattern as every other delete in this doc; delete button now just sets
+`pendingDelete`, the dialog's `onConfirm` does the actual API call.
+`tsc --noEmit`, `eslint`, `vitest run` (504/504) all pass. Live-verified
+in the browser (`VITE_FORCE_MOCK=1 VITE_MOCK_ADMIN=1`, `/admin/announcements`):
+clicking Delete on a real clip opens the confirm dialog with the clip's
+title, Cancel closes it without deleting. No dedicated test file exists
+for this view (none did before either).
+
 ## Not done in this pass (bespoke, not on the shared primitives)
 
 - `StudioBrandingView` press-kit gallery (`ArtistGalleryPanel`): still
