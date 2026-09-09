@@ -46,7 +46,7 @@ import { accountRoleLabel, getAccountRole } from '../../lib/accountRoles';
 import { useAuthStore } from '../../stores/authStore';
 import { useChannelSetupModalStore } from '../../stores/channelSetupModalStore';
 
-type Counts = { archive: number; collections: number; releases: number };
+type Counts = { sounds: number; collections: number; releases: number };
 
 function formatBroadcastDate(iso: string): string {
   return new Date(iso).toLocaleString([], {
@@ -240,7 +240,7 @@ export function StudioHomeView() {
   const openChannelSetup = useChannelSetupModalStore((s) => s.open);
   const stripeConfigured = useStripeConfigured();
   const [counts, setCounts] = useState<Counts>({
-    archive: 0,
+    sounds: 0,
     collections: 0,
     releases: 0,
   });
@@ -268,9 +268,9 @@ export function StudioHomeView() {
       fetchShowSchedule(),
       fetchRecentBroadcasts(5),
     ]).then(
-      ([archive, collections, releases, summary, showSchedule, broadcasts]) => {
+      ([sounds, collections, releases, summary, showSchedule, broadcasts]) => {
         setCounts({
-          archive: archive.data.length,
+          sounds: sounds.data.length,
           collections: collections.data.length,
           releases: releases.data.releases.length,
         });
@@ -593,8 +593,8 @@ export function StudioHomeView() {
                     icon={LibraryBigIcon}
                     label="Music"
                     subtitle={
-                      counts.archive
-                        ? `${counts.archive} items`
+                      counts.sounds
+                        ? `${counts.sounds} items`
                         : 'Sounds & files'
                     }
                     color="var(--accent-orange)"

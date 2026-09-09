@@ -22,8 +22,8 @@ import {
   type RecentBroadcast,
 } from '../../api/broadcast';
 import {
-  fetchShowRefByArchiveItemId,
-  type ShowRefByArchiveItemId,
+  fetchShowRefBySoundItemId,
+  type ShowRefBySoundItemId,
 } from '../../api/shows';
 import { PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
@@ -84,12 +84,12 @@ type ShowGroup = {
 
 function groupByShow(
   items: RecentBroadcast[],
-  showRefByArchiveItemId: ShowRefByArchiveItemId,
+  showRefBySoundItemId: ShowRefBySoundItemId,
 ): ShowGroup[] {
   const map = new Map<string, ShowGroup>();
   for (const item of items) {
     const ref = item.soundId
-      ? showRefByArchiveItemId.get(item.soundId)
+      ? showRefBySoundItemId.get(item.soundId)
       : undefined;
     const key = ref ? `show:${ref.showId}` : `title:${untitledGroupKey(item)}`;
     const existing = map.get(key);
@@ -200,21 +200,21 @@ export function StudioRecordingsView({
   embedded?: boolean;
 }) {
   const [recordings, setRecordings] = useState<RecentBroadcast[]>([]);
-  const [showRefByArchiveItemId, setShowRefByArchiveItemId] =
-    useState<ShowRefByArchiveItemId>(new Map());
+  const [showRefBySoundItemId, setShowRefBySoundItemId] =
+    useState<ShowRefBySoundItemId>(new Map());
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState<SortKey>('newest');
-  const [editingArchiveId, setEditingArchiveId] = useState<string | null>(null);
+  const [editingSoundId, setEditingSoundId] = useState<string | null>(null);
 
   const reload = () => {
     setLoading(true);
     void Promise.all([
       fetchRecentBroadcasts(500),
-      fetchShowRefByArchiveItemId(),
+      fetchShowRefBySoundItemId(),
     ]).then(([broadcastsRes, showRefRes]) => {
       setRecordings(broadcastsRes.data);
-      setShowRefByArchiveItemId(showRefRes.data);
+      setShowRefBySoundItemId(showRefRes.data);
       setLoading(false);
     });
   };
@@ -246,11 +246,11 @@ export function StudioRecordingsView({
 
   const groups = useMemo(() => {
     const published = filtered.filter(isPublished);
-    return groupByShow(published, showRefByArchiveItemId).map((group) => ({
+    return groupByShow(published, showRefBySoundItemId).map((group) => ({
       ...group,
       items: sortShows(group.items, sort),
     }));
-  }, [filtered, sort, showRefByArchiveItemId]);
+  }, [filtered, sort, showRefBySoundItemId]);
 
   const browseShowsAction = (
     <Link to="/studio/shows">
@@ -331,7 +331,7 @@ export function StudioRecordingsView({
                           key={show.id}
                           show={show}
                           index={index}
-                          onEdit={setEditingArchiveId}
+                          onEdit={setEditingSoundId}
                         />
                       ))}
                     </ul>
@@ -362,7 +362,7 @@ export function StudioRecordingsView({
                           key={show.id}
                           show={show}
                           index={index}
-                          onEdit={setEditingArchiveId}
+                          onEdit={setEditingSoundId}
                         />
                       ))}
                     </ul>
@@ -372,8 +372,8 @@ export function StudioRecordingsView({
             )}
           </StudioPanel>
           <TrackEditDialog
-            soundId={editingArchiveId}
-            onClose={() => setEditingArchiveId(null)}
+            soundId={editingSoundId}
+            onClose={() => setEditingSoundId(null)}
             onSaved={reload}
           />
         </ViewShell>
@@ -443,7 +443,7 @@ export function StudioRecordingsView({
                           key={show.id}
                           show={show}
                           index={index}
-                          onEdit={setEditingArchiveId}
+                          onEdit={setEditingSoundId}
                         />
                       ))}
                     </ul>
@@ -474,7 +474,7 @@ export function StudioRecordingsView({
                           key={show.id}
                           show={show}
                           index={index}
-                          onEdit={setEditingArchiveId}
+                          onEdit={setEditingSoundId}
                         />
                       ))}
                     </ul>
@@ -484,8 +484,8 @@ export function StudioRecordingsView({
             )}
           </StudioPanel>
           <TrackEditDialog
-            soundId={editingArchiveId}
-            onClose={() => setEditingArchiveId(null)}
+            soundId={editingSoundId}
+            onClose={() => setEditingSoundId(null)}
             onSaved={reload}
           />
         </>

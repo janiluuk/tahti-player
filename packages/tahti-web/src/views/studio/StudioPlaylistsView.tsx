@@ -1,9 +1,11 @@
 import { Link } from '@tanstack/react-router';
 import {
+  ArrowLeftIcon,
   GlobeIcon,
   ListMusicIcon,
   LockIcon,
   MusicIcon,
+  PencilIcon,
   PlayIcon,
   PlusIcon,
   UsersIcon,
@@ -261,7 +263,10 @@ export function StudioPlaylistsView() {
                       to="/studio/collections/$slug"
                       params={{ slug: c.slug }}
                     >
-                      <Button size="sm">Edit</Button>
+                      <Button size="sm">
+                        <PencilIcon size={14} aria-hidden className="mr-1.5" />
+                        Edit
+                      </Button>
                     </Link>
                   </li>
                 ))}
@@ -276,7 +281,7 @@ export function StudioPlaylistsView() {
 
 export function StudioPlaylistEditorView({ slug }: { slug: string }) {
   const [col, setCol] = useState<StudioCollection | null>(null);
-  const [archive, setArchive] = useState<StudioSound[]>([]);
+  const [sounds, setSounds] = useState<StudioSound[]>([]);
   const [releases, setReleases] = useState<StudioRelease[]>([]);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -286,7 +291,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
   const [uploadOpen, setUploadOpen] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
-  const [addArchiveId, setAddArchiveId] = useState('');
+  const [addSoundId, setAddSoundId] = useState('');
   const [addReleaseId, setAddReleaseId] = useState('');
   const [saving, setSaving] = useState(false);
   const [pendingCoverDelete, setPendingCoverDelete] = useState(false);
@@ -315,7 +320,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
       setIsPublic(c.data.isPublic !== false);
       setCollaborative(Boolean(c.data.collaborative));
       setCoverUrl(c.data.coverUrl ?? null);
-      setArchive(a.data);
+      setSounds(a.data);
       setReleases(r.data.releases);
     });
   };
@@ -406,8 +411,8 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
     }
     const { data } = await fetchEditorSource(sound.id);
     play({
-      id: `archive:${sound.id}`,
-      kind: 'archive',
+      id: `sound:${sound.id}`,
+      kind: 'sound',
       title: data.title || sound.title,
       artist: 'You',
       streamUrl: data.url,
@@ -431,8 +436,8 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
     }
     const { data } = await fetchEditorSource(sound.id);
     enqueue({
-      id: `archive:${sound.id}`,
-      kind: 'archive',
+      id: `sound:${sound.id}`,
+      kind: 'sound',
       title: data.title || sound.title,
       artist: 'You',
       streamUrl: data.url,
@@ -468,14 +473,17 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
 
   return (
     <StudioGate requireChannel={false}>
-      <div className="studio-page-layout mx-auto flex max-w-4xl flex-col gap-6 px-1 py-2">
+      <div className="studio-page-layout flex w-full flex-col gap-6 px-1 py-2">
         <StudioNav current="/studio/collections" />
-        <Link
-          to="/studio/collections"
-          className="text-foreground-secondary -mt-2 text-xs hover:underline"
-        >
-          ← Collections
-        </Link>
+        <Tooltip content="Back to Collections" side="right">
+          <Link
+            to="/studio/collections"
+            aria-label="Back to Collections"
+            className="text-foreground-secondary hover:bg-background-secondary -mt-2 inline-flex size-8 w-fit items-center justify-center rounded-full"
+          >
+            <ArrowLeftIcon size={16} aria-hidden />
+          </Link>
+        </Tooltip>
 
         {!col ? (
           <StudioPanel>
@@ -571,8 +579,8 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
             >
               {tracks.length === 0 ? (
                 <p className="text-foreground-secondary text-sm">
-                  Empty {kindLabel} — add archive tracks or whole releases
-                  below.
+                  Empty {kindLabel.toLowerCase()} — add sound tracks or whole
+                  releases below.
                 </p>
               ) : (
                 <div className="min-h-[200px]">
@@ -596,17 +604,19 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                     }}
                     actions={{
                       onReorder,
-                      onRemove: (t, index) => {
+                      onRemove: (_t, index) => {
                         const item = items[index];
                         if (!item) {
                           return;
                         }
-                        setPendingRemove({ id: item.id, title: t.title });
+                        void removeStudioCollectionItem(slug, item.id).then(
+                          () => reload(),
+                        );
                       },
                       onPlayNow: (t) => {
                         const item = items.find((i) => i.id === t.source.id);
                         if (item?.sound) {
-                          const playableId = `archive:${item.sound.id}`;
+                          const playableId = `sound:${item.sound.id}`;
                           if (currentId === playableId) {
                             setPlayerStatus(
                               playerStatus === 'playing' ||
@@ -632,8 +642,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                           (candidate) => candidate.id === track.source.id,
                         );
                         return Boolean(
-                          item?.sound &&
-                          currentId === `archive:${item.sound.id}`,
+                          item?.sound && currentId === `sound:${item.sound.id}`,
                         );
                       },
                       isTrackPlaying: (track) => {
@@ -642,7 +651,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                         );
                         return Boolean(
                           item?.sound &&
-                          currentId === `archive:${item.sound.id}` &&
+                          currentId === `sound:${item.sound.id}` &&
                           (playerStatus === 'playing' ||
                             playerStatus === 'loading'),
                         );
@@ -655,7 +664,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                           return (
                             queueItem.id === track.source.id ||
                             (item?.sound &&
-                              queueItem.id === `archive:${item.sound.id}`)
+                              queueItem.id === `sound:${item.sound.id}`)
                           );
                         }),
                     }}
@@ -667,28 +676,29 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                 <div className="flex flex-col gap-2">
                   <Select
                     label="Add from Library"
-                    value={addArchiveId}
-                    onValueChange={setAddArchiveId}
+                    value={addSoundId}
+                    onValueChange={setAddSoundId}
                     options={[
                       { id: '', label: 'Select track…' },
-                      ...archive.map((a) => ({ id: a.id, label: a.title })),
+                      ...sounds.map((a) => ({ id: a.id, label: a.title })),
                     ]}
                   />
                   <Button
                     size="sm"
-                    disabled={!addArchiveId}
+                    disabled={!addSoundId}
                     onClick={() => {
                       void addStudioCollectionItem(slug, {
-                        soundId: addArchiveId,
+                        soundId: addSoundId,
                       }).then((r) => {
                         setMsg(r.ok ? 'Track added.' : r.error);
                         if (r.ok) {
-                          setAddArchiveId('');
+                          setAddSoundId('');
                           reload();
                         }
                       });
                     }}
                   >
+                    <PlusIcon size={14} aria-hidden className="mr-1.5" />
                     Add track
                   </Button>
                 </div>
@@ -717,6 +727,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                       });
                     }}
                   >
+                    <PlusIcon size={14} aria-hidden className="mr-1.5" />
                     Add release
                   </Button>
                 </div>

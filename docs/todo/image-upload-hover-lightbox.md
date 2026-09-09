@@ -206,8 +206,8 @@ for this view (none did before either).
   above) — not a real gap against this ticket except the literal
   "modal preview with frames" ask, which is minor.
 - Admin: radio station logo (blocked on the `RadioStationCover` redesign
-  above); announcements has no image slot (see 2026-09-09 note) — its
-  missing delete-confirm is a separate, un-fixed bug.
+  above). Announcements has no image slot (see 2026-09-09 note) — its
+  delete-confirm gap was fixed separately (2026-09-09 (2) above).
 
 These are all larger, bespoke multi-image or reorderable-gallery flows
 (not simple single-image slots) — right-sized as their own follow-up

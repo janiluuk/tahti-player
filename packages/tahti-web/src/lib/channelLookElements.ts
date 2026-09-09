@@ -36,8 +36,8 @@ export const CHANNEL_LOOK_ELEMENTS: readonly ChannelLookElement[] = [
   {
     id: 'tracks',
     label: 'Tracks',
-    hint: CHANNEL_PAGE_ITEM_META.archive.hint,
-    layoutType: 'archive',
+    hint: CHANNEL_PAGE_ITEM_META.sound.hint,
+    layoutType: 'sound',
     canDisable: true,
   },
   {

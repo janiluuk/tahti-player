@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import {
+  ArrowLeftIcon,
   ImageIcon,
   ListMusicIcon,
   ListPlusIcon,
@@ -86,7 +87,7 @@ export function StudioCollectionEditView({
   nav?: 'studio' | 'library';
 }) {
   const [col, setCol] = useState<StudioCollection | null>(null);
-  const [archive, setArchive] = useState<StudioSound[]>([]);
+  const [sounds, setSounds] = useState<StudioSound[]>([]);
   const [addPickerOpen, setAddPickerOpen] = useState(false);
   const [addBusyId, setAddBusyId] = useState<string | null>(null);
   const [name, setName] = useState('');
@@ -113,7 +114,7 @@ export function StudioCollectionEditView({
   );
   const [saving, setSaving] = useState(false);
   const [detailsExpanded, setDetailsExpanded] = useState(false);
-  const [archiveQuery, setArchiveQuery] = useState('');
+  const [soundQuery, setSoundQuery] = useState('');
   const [pendingRemove, setPendingRemove] = useState<{
     id: string;
     title: string;
@@ -137,7 +138,7 @@ export function StudioCollectionEditView({
       fetchCollectionGallery(slug),
     ]).then(([c, a, g]) => {
       setCol(c.data);
-      setArchive(a.data);
+      setSounds(a.data);
       setName(c.data.name);
       setDescription(c.data.description ?? '');
       setStyle(c.data.style ?? c.data.type ?? 'ALBUM');
@@ -186,28 +187,28 @@ export function StudioCollectionEditView({
   );
 
   const filteredSounds = useMemo(() => {
-    const query = archiveQuery.trim().toLowerCase();
+    const query = soundQuery.trim().toLowerCase();
     if (!query) {
-      return archive;
+      return sounds;
     }
-    return archive.filter((item) =>
+    return sounds.filter((item) =>
       [item.title, item.genre, item.contentType]
         .filter(Boolean)
         .join(' ')
         .toLowerCase()
         .includes(query),
     );
-  }, [archive, archiveQuery]);
-  const existingArchiveIds = useMemo(
+  }, [sounds, soundQuery]);
+  const existingSoundIds = useMemo(
     () => new Set(items.map((item) => item.sound?.id).filter(Boolean)),
     [items],
   );
   const availableSounds = filteredSounds.filter(
-    (sound) => !existingArchiveIds.has(sound.id),
+    (sound) => !existingSoundIds.has(sound.id),
   );
 
   const nowPlayingItem = items.find(
-    (i) => i.sound && currentId === `archive:${i.sound.id}`,
+    (i) => i.sound && currentId === `sound:${i.sound.id}`,
   );
 
   type PlayableSound = {
@@ -234,8 +235,8 @@ export function StudioCollectionEditView({
     }
     const { data } = await fetchEditorSource(sound.id);
     return {
-      id: `archive:${sound.id}`,
-      kind: 'archive',
+      id: `sound:${sound.id}`,
+      kind: 'sound',
       title: data.title || sound.title,
       artist: 'You',
       streamUrl: data.url,
@@ -289,7 +290,7 @@ export function StudioCollectionEditView({
     ) {
       return;
     }
-    const isThisCurrent = currentId === `archive:${item.sound.id}`;
+    const isThisCurrent = currentId === `sound:${item.sound.id}`;
     if (isThisCurrent) {
       setStatus(isPlaying ? 'paused' : 'playing');
       return;
@@ -477,20 +478,23 @@ export function StudioCollectionEditView({
 
   return (
     <StudioGate requireChannel={false}>
-      <div className="studio-page-layout mx-auto flex max-w-4xl flex-col gap-6 px-1 py-2">
+      <div className="studio-page-layout flex w-full flex-col gap-6 px-1 py-2">
         {nav === 'library' ? (
           <LibrarySectionTabs active="collections" />
         ) : (
           <StudioNav current="/studio/collections" />
         )}
-        <Link
-          to={
-            nav === 'library' ? '/library/collections' : '/studio/collections'
-          }
-          className="text-foreground-secondary -mt-2 text-xs hover:underline"
-        >
-          ← Collections
-        </Link>
+        <Tooltip content="Back to Collections" side="right">
+          <Link
+            to={
+              nav === 'library' ? '/library/collections' : '/studio/collections'
+            }
+            aria-label="Back to Collections"
+            className="text-foreground-secondary hover:bg-background-secondary -mt-2 inline-flex size-8 w-fit items-center justify-center rounded-full"
+          >
+            <ArrowLeftIcon size={16} aria-hidden />
+          </Link>
+        </Tooltip>
         {!col ? (
           <StudioPanel>
             <PageLoading label="Loading…" />
@@ -757,7 +761,7 @@ export function StudioCollectionEditView({
               {items.length === 0 ? (
                 <EmptyState
                   size="sm"
-                  title="No tracks yet — add archive items below."
+                  title="No tracks yet — add sound items below."
                 />
               ) : (
                 <div className="min-h-[200px]">
@@ -811,8 +815,7 @@ export function StudioCollectionEditView({
                           (candidate) => candidate.id === track.source.id,
                         );
                         return Boolean(
-                          item?.sound &&
-                          currentId === `archive:${item.sound.id}`,
+                          item?.sound && currentId === `sound:${item.sound.id}`,
                         );
                       },
                       isTrackPlaying: (track) => {
@@ -821,7 +824,7 @@ export function StudioCollectionEditView({
                         );
                         return Boolean(
                           item?.sound &&
-                          currentId === `archive:${item.sound.id}` &&
+                          currentId === `sound:${item.sound.id}` &&
                           isPlaying,
                         );
                       },
@@ -833,7 +836,7 @@ export function StudioCollectionEditView({
                           return (
                             queueItem.id === track.source.id ||
                             (item?.sound &&
-                              queueItem.id === `archive:${item.sound.id}`)
+                              queueItem.id === `sound:${item.sound.id}`)
                           );
                         }),
                     }}
@@ -881,8 +884,8 @@ export function StudioCollectionEditView({
             </nav>
             <div className="flex min-w-0 flex-col gap-3">
               <Input
-                value={archiveQuery}
-                onChange={(event) => setArchiveQuery(event.target.value)}
+                value={soundQuery}
+                onChange={(event) => setSoundQuery(event.target.value)}
                 placeholder="Search tracks by title, genre, or type…"
                 aria-label="Search library tracks"
                 endAddon={<SearchIcon size={16} aria-hidden />}
@@ -890,7 +893,7 @@ export function StudioCollectionEditView({
               <div className="border-border min-h-0 overflow-auto rounded-md border">
                 {availableSounds.length === 0 ? (
                   <p className="text-foreground-secondary p-4 text-sm">
-                    {archiveQuery.trim()
+                    {soundQuery.trim()
                       ? 'No available tracks match your search.'
                       : 'All library tracks are already in this collection.'}
                   </p>
@@ -898,7 +901,7 @@ export function StudioCollectionEditView({
                   <ul aria-label="Available library tracks">
                     {availableSounds.map((sound, index) => {
                       const itemIsPlaying =
-                        currentId === `archive:${sound.id}` && isPlaying;
+                        currentId === `sound:${sound.id}` && isPlaying;
                       return (
                         <li
                           key={sound.id}

@@ -1,4 +1,3 @@
-import { addMockArchiveVersion } from './archive-versions';
 import type { FetchMeta } from './client';
 import { DEMO_MP3 } from './mock';
 import { getMockSessionUser } from './mock-session';
@@ -8,6 +7,7 @@ import {
   registerMockUploadedSound,
 } from './mock-uploads';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
+import { addMockSoundVersion } from './sound-versions';
 import type {
   EditList,
   EditorDraft,
@@ -1874,7 +1874,7 @@ export async function renderEditorDraft(
   { ok: true; versionId: string; status: string } | { ok: false; error: string }
 > {
   if (forceMock()) {
-    const row = addMockArchiveVersion(soundId, {
+    const row = addMockSoundVersion(soundId, {
       versionLabel,
       activate,
     });

@@ -445,8 +445,8 @@ export function StreamManagerPanel({
   const play = usePlayerStore((state) => state.play);
   const previewCurrentId = usePlayerStore((state) => state.currentId);
   const previewStatus = usePlayerStore((state) => state.status);
-  const previewItemId = previewCurrentId?.startsWith('archive:')
-    ? previewCurrentId.slice('archive:'.length)
+  const previewItemId = previewCurrentId?.startsWith('sound:')
+    ? previewCurrentId.slice('sound:'.length)
     : null;
   const previewPlaying = previewStatus === 'playing';
   const rotationCurrentId = rotationPlaying
@@ -457,8 +457,8 @@ export function StreamManagerPanel({
   const previewRotationItem = async (item: ProgrammeItem) => {
     const { data } = await fetchEditorSource(item.id);
     play({
-      id: `archive:${item.id}`,
-      kind: 'archive',
+      id: `sound:${item.id}`,
+      kind: 'sound',
       title: item.title,
       artist: 'You',
       streamUrl: data.url,
@@ -926,7 +926,7 @@ export function StreamManagerPanel({
                     {(selectedCollection.items ?? []).length > 0 &&
                       !selectedPlaylistHasRotationTracks && (
                         <p className="text-foreground-secondary mt-2 text-xs">
-                          This playlist has no archive tracks that can play in
+                          This playlist has no sound tracks that can play in
                           24/7 rotation.
                         </p>
                       )}

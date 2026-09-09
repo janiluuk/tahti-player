@@ -90,7 +90,7 @@ export const MyDiscographyView: FC = () => {
   const [filter, setFilter] = useState<VisibilityFilter>('all');
   const [sort, setSort] = useState<SortKey>('newest');
   const [loadingId, setLoadingId] = useState<string | null>(null);
-  const [editingArchiveId, setEditingArchiveId] = useState<string | null>(null);
+  const [editingSoundId, setEditingSoundId] = useState<string | null>(null);
   const [busyPinId, setBusyPinId] = useState<string | null>(null);
   const [pinMessage, setPinMessage] = useState<string | null>(null);
 
@@ -150,7 +150,7 @@ export const MyDiscographyView: FC = () => {
     return sortPinnedFirst(sortItems(filtered, sort));
   }, [filter, items, query, sort]);
 
-  const playableId = (item: StudioSound) => `archive:${item.id}`;
+  const playableId = (item: StudioSound) => `sound:${item.id}`;
   const isCurrentItem = (item: StudioSound) => currentId === playableId(item);
   const isPlayingItem = (item: StudioSound) =>
     isCurrentItem(item) && status === 'playing';
@@ -169,7 +169,7 @@ export const MyDiscographyView: FC = () => {
     const { data } = await fetchEditorSource(item.id);
     play({
       id: playableId(item),
-      kind: 'archive',
+      kind: 'sound',
       title: item.title,
       artist: item.artistName || user?.displayName || 'You',
       coverUrl: item.bannerUrl ?? undefined,
@@ -408,7 +408,7 @@ export const MyDiscographyView: FC = () => {
                         size="icon-sm"
                         variant="text"
                         aria-label={`Edit ${item.title}`}
-                        onClick={() => setEditingArchiveId(item.id)}
+                        onClick={() => setEditingSoundId(item.id)}
                       >
                         <PencilIcon size={16} aria-hidden />
                       </Button>
@@ -439,8 +439,8 @@ export const MyDiscographyView: FC = () => {
       )}
 
       <TrackEditDialog
-        soundId={editingArchiveId}
-        onClose={() => setEditingArchiveId(null)}
+        soundId={editingSoundId}
+        onClose={() => setEditingSoundId(null)}
         onSaved={reload}
       />
     </div>

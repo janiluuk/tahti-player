@@ -1145,7 +1145,7 @@ export async function revokeStashShare(
 export function playableFromSpotify(t: SpotifySearchTrack): TahtiPlayable {
   return {
     id: `spotify:${t.id}`,
-    kind: 'archive',
+    kind: 'sound',
     title: t.name,
     artist: t.artists?.join(', ') || 'Spotify',
     coverUrl: t.artworkUrl ?? undefined,
@@ -1159,7 +1159,7 @@ export function playableFromSpotify(t: SpotifySearchTrack): TahtiPlayable {
 export function playableFromSoundcloud(t: SoundcloudTrack): TahtiPlayable {
   return {
     id: `soundcloud:${t.id}`,
-    kind: 'archive',
+    kind: 'sound',
     title: t.title,
     artist: 'SoundCloud',
     coverUrl: t.artworkUrl ?? undefined,

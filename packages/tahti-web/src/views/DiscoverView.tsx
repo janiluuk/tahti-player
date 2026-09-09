@@ -290,13 +290,13 @@ export function DiscoverView() {
           bannerUrl: item.coverUrl,
           durationSec: null,
         }
-      : (await fetchTrackDetail(item.id.replace(/^archive:/, ''))).data;
+      : (await fetchTrackDetail(item.id.replace(/^sound:/, ''))).data;
     if (!detail?.audioUrl) {
       return;
     }
     const playable: TahtiPlayable = {
       id: item.id,
-      kind: 'archive',
+      kind: 'sound',
       title: detail.title,
       artist: detail.artistName,
       coverUrl: detail.bannerUrl ?? undefined,

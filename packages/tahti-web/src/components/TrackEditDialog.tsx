@@ -4,6 +4,7 @@ import {
   AudioLinesIcon,
   DownloadIcon,
   GaugeIcon,
+  HelpCircleIcon,
   ListMusicIcon,
   PauseIcon,
   PlayIcon,
@@ -55,6 +56,7 @@ import { autoTrimCuts } from '../lib/autoTrimCuts';
 import { playableFromStudioHearthis } from '../lib/embedPlayback';
 import { capitalizeGenre, PRESET_GENRES } from '../lib/genres';
 import { useMasteringFeatureStore } from '../plugins/mastering/store';
+import { useAuthStore } from '../stores/authStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { AddToPlaylistPanel } from './AddToPlaylistPanel';
 import {
@@ -121,6 +123,7 @@ const TAB_ORDER: Tab[] = [
 
 export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
   const masteringEnabled = useMasteringFeatureStore((state) => state.enabled);
+  const user = useAuthStore((state) => state.user);
   const play = usePlayerStore((state) => state.play);
   const setPlayerStatus = usePlayerStore((state) => state.setStatus);
   const seekTo = usePlayerStore((state) => state.seekTo);
@@ -288,7 +291,7 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
     link.remove();
   };
 
-  const isCurrentPlayable = currentId === `archive:${soundId}`;
+  const isCurrentPlayable = currentId === `sound:${soundId}`;
   const isPlaying =
     isCurrentPlayable &&
     (playerStatus === 'playing' || playerStatus === 'loading');
@@ -297,7 +300,7 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
     if (!item || !soundId) {
       return;
     }
-    const playableId = `archive:${soundId}`;
+    const playableId = `sound:${soundId}`;
     if (currentId === playableId) {
       if (startAt !== undefined) {
         seekTo(startAt);
@@ -318,7 +321,7 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
     setPlayBusy(false);
     play({
       id: playableId,
-      kind: 'archive',
+      kind: 'sound',
       title: item.title,
       artist: item.artistName || '',
       coverUrl: item.bannerUrl ?? undefined,
@@ -457,9 +460,6 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
     <>
       <Dialog.Root isOpen={isOpen} onClose={onClose} className="max-w-4xl">
         <Dialog.Title>Edit track</Dialog.Title>
-        <Dialog.Description>
-          {item ? `Manage “${item.title}”` : 'Loading track…'}
-        </Dialog.Description>
 
         {loading ? (
           <PageLoading label="Loading track…" />
@@ -476,20 +476,22 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
                 label: 'Basics',
                 icon: <TagsIcon size={15} />,
                 content: (
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="relative sm:col-span-2">
+                  <div className="flex flex-col gap-4">
+                    <div className="relative overflow-hidden rounded-xl">
                       <BackdropUploadButton
                         label="Backdrop"
                         value={form.backgroundUrl}
                         onChange={(backgroundUrl) =>
                           setForm({ ...form, backgroundUrl })
                         }
+                        fill
                       />
-                      <div className="absolute top-3 right-3">
+                      <div className="from-background via-background/85 pointer-events-none absolute inset-0 bg-gradient-to-t to-transparent" />
+                      <div className="relative flex items-end gap-4 p-4">
                         <RoundImageUploadButton
                           label="Cover art"
                           value={form.bannerUrl}
-                          sizeClassName="h-28 w-28"
+                          sizeClassName="h-20 w-20 shrink-0 sm:h-24 sm:w-24"
                           className="ring-background ring-4"
                           upload={(file) =>
                             uploadSoundBanner(soundId!, file).then((r) =>
@@ -500,114 +502,100 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
                           }
                           onChange={updateArtwork}
                         />
+                        <div className="grid flex-1 gap-3 pb-1 sm:grid-cols-3">
+                          <Input
+                            label="Title"
+                            value={form.title ?? ''}
+                            onChange={(event) =>
+                              setForm({ ...form, title: event.target.value })
+                            }
+                          />
+                          <div className="flex flex-col gap-2">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-foreground text-sm font-semibold">
+                                Artist
+                              </span>
+                              <Tooltip
+                                content="Defaults to your channel's artist name — override here for this track only."
+                                side="top"
+                              >
+                                <HelpCircleIcon
+                                  size={14}
+                                  className="text-foreground-secondary"
+                                  aria-hidden
+                                />
+                              </Tooltip>
+                            </div>
+                            <Input
+                              value={form.artistName ?? user?.displayName ?? ''}
+                              onChange={(event) =>
+                                setForm({
+                                  ...form,
+                                  artistName: event.target.value,
+                                })
+                              }
+                            />
+                          </div>
+                          <Select
+                            label="Content type"
+                            value={form.contentType ?? 'TRACK'}
+                            onValueChange={(value) =>
+                              setForm({ ...form, contentType: value })
+                            }
+                            options={SELECTABLE_CONTENT_TYPES.map(
+                              ({ id, label }) => ({
+                                id,
+                                label,
+                              }),
+                            )}
+                          />
+                        </div>
                       </div>
                     </div>
-                    <Input
-                      label="Title"
-                      value={form.title ?? ''}
-                      onChange={(event) =>
-                        setForm({ ...form, title: event.target.value })
+                    <MentionTextarea
+                      label="Description"
+                      rows={4}
+                      value={form.description ?? ''}
+                      onChange={(description) =>
+                        setForm({ ...form, description })
                       }
                     />
-                    <Input
-                      label="Artist"
-                      value={form.artistName ?? ''}
-                      placeholder="Use channel artist name"
-                      onChange={(event) =>
-                        setForm({ ...form, artistName: event.target.value })
-                      }
-                    />
-                    <div className="sm:col-span-2">
-                      <MentionTextarea
-                        label="Description"
-                        rows={4}
-                        value={form.description ?? ''}
-                        onChange={(description) =>
-                          setForm({ ...form, description })
-                        }
-                      />
-                    </div>
                     {!isAudioClip ? (
-                      <>
-                        <CreatableCombobox
-                          label="Genre"
-                          options={[...PRESET_GENRES]}
-                          value={form.genre ?? ''}
-                          onValueChange={(genre) => setForm({ ...form, genre })}
-                          normalize={capitalizeGenre}
-                        />
-                        <Input
-                          type="date"
-                          label="Release date"
-                          value={form.releaseDate ?? ''}
-                          onChange={(event) =>
-                            setForm({
-                              ...form,
-                              releaseDate: event.target.value,
-                            })
-                          }
-                        />
-                        <div className="sm:col-span-2">
-                          <SubgenreTagInput
-                            value={form.subGenres ?? []}
-                            onChange={(subGenres) =>
-                              setForm({ ...form, subGenres })
+                      <div className="flex flex-col gap-4 sm:flex-row">
+                        <div className="flex-1">
+                          <CreatableCombobox
+                            label="Genre"
+                            options={[...PRESET_GENRES]}
+                            value={form.genre ?? ''}
+                            onValueChange={(genre) =>
+                              setForm({ ...form, genre })
+                            }
+                            normalize={capitalizeGenre}
+                          />
+                        </div>
+                        <div className="w-full sm:w-36">
+                          <Input
+                            type="date"
+                            label="Release date"
+                            value={form.releaseDate ?? ''}
+                            onChange={(event) =>
+                              setForm({
+                                ...form,
+                                releaseDate: event.target.value,
+                              })
                             }
                           />
                         </div>
-                      </>
+                      </div>
                     ) : null}
-                    <Select
-                      label="Content type"
-                      value={form.contentType ?? 'TRACK'}
-                      onValueChange={(value) =>
-                        setForm({ ...form, contentType: value })
-                      }
-                      options={SELECTABLE_CONTENT_TYPES.map(
-                        ({ id, label }) => ({
-                          id,
-                          label,
-                        }),
-                      )}
-                    />
-                    <div className="border-border bg-background-secondary/30 flex items-center justify-between gap-3 rounded-lg border p-3 text-sm">
-                      <span className="font-medium">Allow downloads</span>
-                      <Toggle
-                        label="Allow downloads"
-                        checked={form.downloadsEnabled ?? false}
-                        onChange={(downloadsEnabled) =>
-                          setForm({ ...form, downloadsEnabled })
+                    {!isAudioClip ? (
+                      <SubgenreTagInput
+                        value={form.subGenres ?? []}
+                        onChange={(subGenres) =>
+                          setForm({ ...form, subGenres })
                         }
                       />
-                    </div>
-                    {item.embedProvider === 'HEARTHIS' &&
-                    form.downloadsEnabled ? (
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        disabled={downloadingEmbed}
-                        onClick={() => void downloadHearthisEmbed()}
-                      >
-                        <DownloadIcon
-                          size={15}
-                          aria-hidden
-                          className="mr-1.5"
-                        />
-                        {downloadingEmbed
-                          ? 'Preparing download…'
-                          : 'Download from HearThis'}
-                      </Button>
                     ) : null}
-                    <div className="border-border bg-background-secondary/30 flex items-center justify-between gap-3 rounded-lg border p-3 text-sm">
-                      <span className="font-medium">Allow comments</span>
-                      <Toggle
-                        label="Allow comments"
-                        checked={form.commentsEnabled ?? true}
-                        onChange={(commentsEnabled) =>
-                          setForm({ ...form, commentsEnabled })
-                        }
-                      />
-                    </div>
                   </div>
                 ),
               },
@@ -651,7 +639,7 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
                 content: (
                   <div className="flex flex-col gap-4">
                     <div className="border-border bg-background-secondary/40 rounded-xl border p-4">
-                      <p className="font-medium">Audio source</p>
+                      <p className="font-medium">Properties</p>
                       <p className="text-foreground-secondary mt-1 text-sm">
                         {item.embedUri
                           ? 'This track is embedded from its original source.'
@@ -724,42 +712,6 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
 
                     {!item.embedUri && (
                       <>
-                        <div className="flex flex-col gap-2">
-                          <WaveformSeekbar
-                            trackId={item.id}
-                            peaks={peaks}
-                            bars={peaks.length || 180}
-                            progress={
-                              isCurrentPlayable && playerDuration > 0
-                                ? currentTime / playerDuration
-                                : 0
-                            }
-                            className="h-16"
-                            onSeek={(fraction) =>
-                              void startPlayback(
-                                fraction *
-                                  (editList?.sourceDuration ??
-                                    item.durationSec ??
-                                    0),
-                              )
-                            }
-                          />
-                          <div className="text-foreground-secondary flex justify-between text-xs tabular-nums">
-                            <span>
-                              {isCurrentPlayable
-                                ? formatTime(currentTime)
-                                : '0:00'}
-                            </span>
-                            <span>
-                              {formatTime(
-                                editList?.sourceDuration ??
-                                  item.durationSec ??
-                                  0,
-                              )}
-                            </span>
-                          </div>
-                        </div>
-
                         <div className="flex flex-wrap items-center gap-1.5">
                           <Tooltip
                             content={isPlaying ? 'Pause' : 'Play'}
@@ -864,6 +816,42 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
                           )}
                         </div>
 
+                        <div className="flex flex-col gap-2">
+                          <WaveformSeekbar
+                            trackId={item.id}
+                            peaks={peaks}
+                            bars={peaks.length || 180}
+                            progress={
+                              isCurrentPlayable && playerDuration > 0
+                                ? currentTime / playerDuration
+                                : 0
+                            }
+                            className="h-16"
+                            onSeek={(fraction) =>
+                              void startPlayback(
+                                fraction *
+                                  (editList?.sourceDuration ??
+                                    item.durationSec ??
+                                    0),
+                              )
+                            }
+                          />
+                          <div className="text-foreground-secondary flex justify-between text-xs tabular-nums">
+                            <span>
+                              {isCurrentPlayable
+                                ? formatTime(currentTime)
+                                : '0:00'}
+                            </span>
+                            <span>
+                              {formatTime(
+                                editList?.sourceDuration ??
+                                  item.durationSec ??
+                                  0,
+                              )}
+                            </span>
+                          </div>
+                        </div>
+
                         {soundId && item ? (
                           <AudioRevisionList
                             soundId={soundId}
@@ -885,8 +873,8 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
                 label: 'Sharing',
                 icon: <Share2Icon size={15} />,
                 content: (
-                  <div className="flex flex-col gap-4">
-                    <p className="text-foreground-secondary text-sm">
+                  <div className="flex flex-col gap-3">
+                    <p className="text-foreground-secondary text-xs">
                       Choose where this track can appear and whether it can be
                       selected for shared programming.
                     </p>
@@ -914,6 +902,44 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
                     form.visibility === 'STASH' ? (
                       <SoundShareLinksSection soundId={soundId!} />
                     ) : null}
+                    <div className="border-border bg-background-secondary/30 flex items-center justify-between gap-2 rounded-lg border p-2.5 text-sm">
+                      <span className="font-medium">Allow downloads</span>
+                      <Toggle
+                        label="Allow downloads"
+                        checked={form.downloadsEnabled ?? false}
+                        onChange={(downloadsEnabled) =>
+                          setForm({ ...form, downloadsEnabled })
+                        }
+                      />
+                    </div>
+                    {item.embedProvider === 'HEARTHIS' &&
+                    form.downloadsEnabled ? (
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        disabled={downloadingEmbed}
+                        onClick={() => void downloadHearthisEmbed()}
+                      >
+                        <DownloadIcon
+                          size={15}
+                          aria-hidden
+                          className="mr-1.5"
+                        />
+                        {downloadingEmbed
+                          ? 'Preparing download…'
+                          : 'Download from HearThis'}
+                      </Button>
+                    ) : null}
+                    <div className="border-border bg-background-secondary/30 flex items-center justify-between gap-2 rounded-lg border p-2.5 text-sm">
+                      <span className="font-medium">Allow comments</span>
+                      <Toggle
+                        label="Allow comments"
+                        checked={form.commentsEnabled ?? true}
+                        onChange={(commentsEnabled) =>
+                          setForm({ ...form, commentsEnabled })
+                        }
+                      />
+                    </div>
                     {!isAudioClip ? (
                       <div className="border-border bg-background-secondary/40 flex flex-col gap-3 rounded-xl border p-3">
                         <div className="flex items-start justify-between gap-3 text-sm">
@@ -1037,11 +1063,6 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
                         }
                       />
                     </div>
-                    <SaveButton
-                      saving={saving}
-                      disabled={!form.title?.trim()}
-                      onClick={() => void save()}
-                    />
                   </div>
                 ),
               },
@@ -1062,17 +1083,19 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
                 icon: <Settings2Icon size={15} />,
                 content: (
                   <div className="flex flex-col gap-4">
-                    <Select
-                      label="License (optional)"
-                      value={form.license ?? ''}
-                      onValueChange={(value) =>
-                        setForm({ ...form, license: value })
-                      }
-                      options={LICENSES.map(([value, label]) => ({
-                        id: value,
-                        label,
-                      }))}
-                    />
+                    <div className="sm:max-w-xs">
+                      <Select
+                        label="License (optional)"
+                        value={form.license ?? ''}
+                        onValueChange={(value) =>
+                          setForm({ ...form, license: value })
+                        }
+                        options={LICENSES.map(([value, label]) => ({
+                          id: value,
+                          label,
+                        }))}
+                      />
+                    </div>
                     {!isAudioClip ? (
                       <div className="border-border flex items-center gap-4 rounded-xl border p-4">
                         <ListMusicIcon

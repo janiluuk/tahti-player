@@ -6,8 +6,8 @@ import type { Track } from '@tahti-player/model';
 import { Button, Dialog, TrackTable } from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../api/types';
-import { soundIdFromPlayableId } from '../lib/archiveId';
 import { playableToTrack } from '../lib/playableToTrack';
+import { soundIdFromPlayableId } from '../lib/soundId';
 import { trackTableLabels } from '../lib/trackTableLabels';
 import { useLibraryStore } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';
@@ -65,10 +65,10 @@ export function PlayableTrackTable({
     if (!item) {
       return;
     }
-    const archiveId = soundIdFromPlayableId(track.source.id);
-    if (archiveId) {
+    const soundId = soundIdFromPlayableId(track.source.id);
+    if (soundId) {
       rememberTrackDetail(item);
-      void navigate({ to: '/t/$id', params: { id: archiveId } });
+      void navigate({ to: '/t/$id', params: { id: soundId } });
       return;
     }
     if (currentId === item.id) {

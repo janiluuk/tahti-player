@@ -2,7 +2,7 @@
 
 export const CHANNEL_PAGE_ITEM_TYPES = [
   'hero',
-  'archive',
+  'sound',
   'chat',
   'about',
   'links',
@@ -52,7 +52,7 @@ export const CHANNEL_PAGE_ITEM_META: Record<
     label: 'Live stage',
     hint: 'Visualizer + now playing',
   },
-  archive: {
+  sound: {
     label: 'Tracks',
     hint: 'Published channel tracks',
   },
@@ -137,7 +137,7 @@ export const CHANNEL_LAYOUT_PRESETS: ChannelLayoutPreset[] = [
     items: [
       item('hero', true),
       item('about', true),
-      item('archive', true),
+      item('sound', true),
       item('subscribe', false),
       item('chat', false),
       item('links', false),
@@ -163,7 +163,7 @@ export const CHANNEL_LAYOUT_PRESETS: ChannelLayoutPreset[] = [
     items: [
       item('hero', true),
       item('subscribe', true),
-      item('archive', true),
+      item('sound', true),
       item('about', true),
       item('chat', false),
       item('links', false),
@@ -187,7 +187,7 @@ export const CHANNEL_LAYOUT_PRESETS: ChannelLayoutPreset[] = [
     name: 'Archive-first',
     description: 'Catalog up front.',
     items: [
-      item('archive', true),
+      item('sound', true),
       item('hero', true),
       item('about', true),
       item('subscribe', true),
@@ -215,7 +215,7 @@ export const CHANNEL_LAYOUT_PRESETS: ChannelLayoutPreset[] = [
     items: [
       item('hero', true),
       item('subscribe', true),
-      item('archive', true),
+      item('sound', true),
       item('about', true),
       item('links', false),
       item('chat', false),
@@ -249,7 +249,7 @@ export function defaultChannelPageLayout(): Array<{
 }> {
   return [
     item('hero', true),
-    item('archive', true),
+    item('sound', true),
     item('about', true),
     item('links', false),
     item('subscribe', true),

@@ -133,7 +133,7 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
                                 onClick={() =>
                                   play({
                                     id: `admin-storage-file:${f.id}`,
-                                    kind: 'archive',
+                                    kind: 'sound',
                                     title: f.title,
                                     artist: detail.displayName,
                                     streamUrl: f.previewUrl!,

@@ -1,6 +1,7 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import {
   ArchiveIcon,
+  ArrowLeftIcon,
   AudioLinesIcon,
   BarChart3Icon,
   GaugeIcon,
@@ -228,7 +229,7 @@ export function StudioSoundView({ id }: { id: string }) {
     if (!item) {
       return;
     }
-    const playableId = `archive:${id}`;
+    const playableId = `sound:${id}`;
     if (currentId === playableId) {
       if (startAt !== undefined) {
         seekTo(startAt);
@@ -248,7 +249,7 @@ export function StudioSoundView({ id }: { id: string }) {
     const { data } = await fetchEditorSource(id);
     play({
       id: playableId,
-      kind: 'archive',
+      kind: 'sound',
       title: item.title,
       artist: item.artistName || user?.displayName || 'You',
       coverUrl: item.bannerUrl ?? undefined,
@@ -308,7 +309,7 @@ export function StudioSoundView({ id }: { id: string }) {
   const pinned = item ? isPinned(item) : false;
   const hasError = status === 'ERROR';
   const notReady = status != null && status !== 'READY' && !hasError;
-  const isCurrent = currentId === `archive:${id}`;
+  const isCurrent = currentId === `sound:${id}`;
   const isPlaying =
     isCurrent && (playerStatus === 'playing' || playerStatus === 'loading');
   const contentTypeLabel =
@@ -317,14 +318,17 @@ export function StudioSoundView({ id }: { id: string }) {
 
   return (
     <StudioGate requireChannel={false}>
-      <div className="studio-page-layout studio-page-layout--fixed-width mx-auto flex max-w-4xl flex-col gap-6">
+      <div className="studio-page-layout flex w-full flex-col gap-6">
         <StudioNav current={`/studio/sounds/${id}`} />
-        <Link
-          to="/studio/sounds"
-          className="text-foreground-secondary text-xs hover:underline"
-        >
-          ← Music
-        </Link>
+        <Tooltip content="Back to Music" side="right">
+          <Link
+            to="/studio/sounds"
+            aria-label="Back to Music"
+            className="text-foreground-secondary hover:bg-background-secondary inline-flex size-8 w-fit items-center justify-center rounded-full"
+          >
+            <ArrowLeftIcon size={16} aria-hidden />
+          </Link>
+        </Tooltip>
         {!item ? (
           <PageLoading label="Loading…" />
         ) : (

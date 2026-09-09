@@ -149,7 +149,7 @@ export type RadioRecentlyPlayedItem = {
 };
 
 /** Public archive row from GET /api/channels/:slug/items */
-export type ArchiveItem = {
+export type ChannelSoundItem = {
   id: string;
   title: string;
   artistName?: string | null;
@@ -256,7 +256,7 @@ export type PublicProfileTrack = {
   bannerUrl?: string | null;
   playUrl?: string | null;
   releaseSlug?: string | null;
-  /** Same field as ArchiveItem.createdAt -- carried onto the profile track
+  /** Same field as ChannelSoundItem.createdAt -- carried onto the profile track
    * DTO so the catalog table can show a release date. */
   createdAt?: string;
   /** Stage pin — GET /api/v1/u/:username/profile */
@@ -311,7 +311,7 @@ export type PublicProfile = {
   links: {
     channel: string | null;
     subscribe: string;
-    feeds: { archive: string | null };
+    feeds: { sound: string | null };
     presskit: string;
   };
   backgroundMusicUrl?: string | null;
@@ -423,7 +423,7 @@ export type VenueProfile = VenueDirectoryItem & {
 /** Playable item in the Tahti listen client (live channel, radio, or archive URL). */
 export type TahtiPlayable = {
   id: string;
-  kind: 'live' | 'radio' | 'archive';
+  kind: 'live' | 'radio' | 'sound';
   title: string;
   artist: string;
   coverUrl?: string;

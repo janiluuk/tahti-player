@@ -70,7 +70,7 @@ export function normalizeTimeline(
         clips: [
           {
             id: 'clip-1',
-            sourceArchiveItemId: source.sourceKey ?? source.title,
+            sourceSoundId: source.sourceKey ?? source.title,
             startSec: 0,
             sourceOffsetSec: 0,
             durationSec: source.durationSec ?? duration,
@@ -210,7 +210,7 @@ export const MultitrackTimeline = ({
   useEffect(() => {
     audio.current.forEach((element, key) => {
       const track = value.tracks.find((item) =>
-        item.clips.some((clip) => clip.sourceArchiveItemId === key),
+        item.clips.some((clip) => clip.sourceSoundId === key),
       );
       const clip = track?.clips.find(
         (item) =>
@@ -449,9 +449,9 @@ export const MultitrackTimeline = ({
                 className="relative h-20 border-b bg-[repeating-linear-gradient(90deg,transparent,transparent_239px,rgba(148,163,184,.12)_240px)]"
               >
                 {track.clips.map((clip) => {
-                  const source = sourceMap.get(clip.sourceArchiveItemId);
+                  const source = sourceMap.get(clip.sourceSoundId);
                   const unavailable =
-                    unavailableSourceIds.includes(clip.sourceArchiveItemId) ||
+                    unavailableSourceIds.includes(clip.sourceSoundId) ||
                     !source?.url;
                   return (
                     <button

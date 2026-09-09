@@ -5,8 +5,8 @@ import { Card, CardGrid } from '@tahti-player/ui';
 
 import { fetchCollection } from '../api/client';
 import type { PublicCollection, TahtiPlayable } from '../api/types';
-import { soundIdFromPlayableId } from '../lib/archiveId';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
+import { soundIdFromPlayableId } from '../lib/soundId';
 import { usePlayerStore } from '../stores/playerStore';
 import { PageEmpty, PageLoading } from './PageStates';
 import { PlayableTrackTable } from './PlayableTrackTable';
@@ -14,23 +14,23 @@ import { PlayableTrackTable } from './PlayableTrackTable';
 function collectionToPlayables(col: PublicCollection): TahtiPlayable[] {
   const out: TahtiPlayable[] = [];
   for (const item of col.items) {
-    const archive = item.sound;
-    if (!archive?.audioUrl) {
+    const sound = item.sound;
+    if (!sound?.audioUrl) {
       continue;
     }
-    const isHls = archive.audioUrl.includes('.m3u8');
+    const isHls = sound.audioUrl.includes('.m3u8');
     out.push({
-      id: `archive:${archive.id}`,
-      kind: 'archive',
-      title: archive.title,
+      id: `sound:${sound.id}`,
+      kind: 'sound',
+      title: sound.title,
       artist: col.user.displayName,
       coverUrl:
-        archive.bannerUrl ??
+        sound.bannerUrl ??
         col.coverUrl ??
-        placeholderArtworkUrl(`${col.slug}:${archive.id}`),
-      streamUrl: archive.audioUrl,
+        placeholderArtworkUrl(`${col.slug}:${sound.id}`),
+      streamUrl: sound.audioUrl,
       protocol: isHls ? 'hls' : 'https',
-      channelSlug: archive.channel?.slug,
+      channelSlug: sound.channel?.slug,
     });
   }
   return out;

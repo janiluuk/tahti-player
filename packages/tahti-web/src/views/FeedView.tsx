@@ -125,7 +125,7 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
           const result = await fetchArtistPlayables(item.artist.username);
           const playable =
             result.data.find(
-              (candidate) => candidate.id === `archive:${item.id}`,
+              (candidate) => candidate.id === `sound:${item.id}`,
             ) ??
             result.data.find((candidate) => candidate.title === item.title);
           return playable ? ([item.id, playable] as const) : null;
@@ -286,8 +286,8 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
                       (() => {
                         const playable: TahtiPlayable | null = item.audioUrl
                           ? {
-                              id: `archive:${item.id}`,
-                              kind: 'archive',
+                              id: `sound:${item.id}`,
+                              kind: 'sound',
                               title: item.title,
                               artist: item.artist.displayName,
                               coverUrl: item.bannerUrl ?? undefined,

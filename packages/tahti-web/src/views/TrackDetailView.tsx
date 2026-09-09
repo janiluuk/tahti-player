@@ -1,6 +1,7 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useRouter } from '@tanstack/react-router';
 import {
   ActivityIcon,
+  ArrowLeftIcon,
   DownloadIcon,
   HeartIcon,
   MessageCircleIcon,
@@ -21,7 +22,7 @@ import { isHeaderImageUrl } from '../api/channel-design';
 import {
   fetchChannel,
   fetchProfile,
-  fetchPublicArchiveDownload,
+  fetchPublicSoundDownload,
   fetchTrackComments,
   fetchTrackDetail,
   postTrackComment,
@@ -76,8 +77,8 @@ function playableFromDetail(
   detail: PublicTrackDetail,
 ): TahtiPlayable {
   return {
-    id: `archive:${id}`,
-    kind: 'archive',
+    id: `sound:${id}`,
+    kind: 'sound',
     title: detail.title,
     artist: detail.artistName,
     coverUrl: detail.bannerUrl ?? undefined,
@@ -124,8 +125,9 @@ export function TrackDetailView({
    * treating it as public activity. */
   shareKey?: string;
 }) {
+  const router = useRouter();
   const user = useAuthStore((s) => s.user);
-  const playableId = `archive:${id}`;
+  const playableId = `sound:${id}`;
   const remembered = useTrackDetailStore((s) => s.cache[playableId]);
   const queueItem = usePlayerStore((s) =>
     s.queue.find((q) => q.id === playableId),
@@ -391,7 +393,7 @@ export function TrackDetailView({
       return;
     }
     setDownloadBusy(true);
-    const result = await fetchPublicArchiveDownload(detail.channelSlug, id);
+    const result = await fetchPublicSoundDownload(detail.channelSlug, id);
     setDownloadBusy(false);
     if (!result.ok) {
       toast.error(result.error);
@@ -489,6 +491,16 @@ export function TrackDetailView({
         <div className="pointer-events-none absolute inset-0 bg-black/45" />
 
         <div className="relative z-10 flex flex-col gap-5 text-white">
+          <Tooltip content="Back" side="right">
+            <button
+              type="button"
+              onClick={() => router.history.back()}
+              aria-label="Back"
+              className="flex size-8 w-fit items-center justify-center rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/20"
+            >
+              <ArrowLeftIcon size={16} aria-hidden />
+            </button>
+          </Tooltip>
           {shareKey ? (
             <span
               role="status"

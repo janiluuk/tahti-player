@@ -111,8 +111,8 @@ export function playableFromQueueItem(qi: QueueItem): TahtiPlayable | null {
     id: qi.id,
     kind: qi.id.startsWith('radio:')
       ? 'radio'
-      : qi.id.startsWith('archive:')
-        ? 'archive'
+      : qi.id.startsWith('sound:')
+        ? 'sound'
         : 'live',
     title: qi.track.title,
     artist: qi.track.artists.map((a) => a.name).join(', '),

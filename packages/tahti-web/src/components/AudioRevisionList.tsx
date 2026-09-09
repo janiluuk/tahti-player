@@ -11,22 +11,22 @@ import {
 } from '@tahti-player/ui';
 
 import {
-  activateArchiveVersion,
-  fetchArchiveVersions,
+  activateSoundVersion,
+  fetchSoundVersions,
   fetchVersionDownloadUrl,
-  uploadArchiveVersion,
-  type ArchiveVersion,
-} from '../api/archive-versions';
+  uploadSoundVersion,
+  type SoundVersion,
+} from '../api/sound-versions';
 import { usePlayerStore } from '../stores/playerStore';
 import { Eyebrow } from './tahti/Eyebrow';
 
 const REVISION_POLL_MS = 4000;
 
 export function versionPlayableId(soundId: string, versionId: string): string {
-  return `archive-version:${soundId}:${versionId}`;
+  return `sound-version:${soundId}:${versionId}`;
 }
 
-function formatRevisionMeta(version: ArchiveVersion): string {
+function formatRevisionMeta(version: SoundVersion): string {
   const parts = [version.status];
   if (version.durationSec) {
     parts.push(`${Math.round(version.durationSec)}s`);
@@ -69,7 +69,7 @@ export function AudioRevisionList({
   const setPlayerStatus = usePlayerStore((state) => state.setStatus);
   const seekTo = usePlayerStore((state) => state.seekTo);
 
-  const [versions, setVersions] = useState<ArchiveVersion[]>([]);
+  const [versions, setVersions] = useState<SoundVersion[]>([]);
   const [message, setMessage] = useState<string | null>(null);
   const [versionBusy, setVersionBusy] = useState<string | null>(null);
   const [previewBusy, setPreviewBusy] = useState<string | null>(null);
@@ -80,7 +80,7 @@ export function AudioRevisionList({
   const [compareB, setCompareB] = useState<string>('');
 
   const load = useCallback(() => {
-    void fetchArchiveVersions(soundId).then((result) => {
+    void fetchSoundVersions(soundId).then((result) => {
       setVersions(result.data.map((version) => ({ ...version })));
     });
   }, [soundId]);
@@ -116,7 +116,7 @@ export function AudioRevisionList({
       ? compareB
       : (readyVersions[readyVersions.length - 1]?.id ?? '');
 
-  const previewVersion = async (version: ArchiveVersion, keepTime: boolean) => {
+  const previewVersion = async (version: SoundVersion, keepTime: boolean) => {
     const playableId = versionPlayableId(soundId, version.id);
     if (currentId === playableId && playerStatus === 'playing') {
       setPlayerStatus('paused');
@@ -136,7 +136,7 @@ export function AudioRevisionList({
     }
     play({
       id: playableId,
-      kind: 'archive',
+      kind: 'sound',
       title: `${trackTitle} · v${version.versionNumber}`,
       artist: artistName,
       coverUrl: coverUrl ?? undefined,
@@ -151,7 +151,7 @@ export function AudioRevisionList({
 
   const onActivate = (versionId: string) => {
     setVersionBusy(versionId);
-    void activateArchiveVersion(soundId, versionId).then((result) => {
+    void activateSoundVersion(soundId, versionId).then((result) => {
       setVersionBusy(null);
       if (!result.ok) {
         setMessage(result.error);
@@ -184,7 +184,7 @@ export function AudioRevisionList({
     }
     setUploading(true);
     setMessage(null);
-    const result = await uploadArchiveVersion(
+    const result = await uploadSoundVersion(
       soundId,
       file,
       label.trim() || file.name.replace(/\.[^.]+$/, ''),

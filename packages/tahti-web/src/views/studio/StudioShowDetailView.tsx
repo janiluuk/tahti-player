@@ -1,5 +1,6 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import {
+  ArrowLeftIcon,
   BarChart3Icon,
   CheckIcon,
   CircleDotIcon,
@@ -202,7 +203,7 @@ export function StudioShowDetailView({ id }: { id: string }) {
   const [backdropUrl, setBackdropUrl] = useState('');
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [backdropFile, setBackdropFile] = useState<File | null>(null);
-  const [autoArchive, setAutoArchive] = useState(true);
+  const [autoPublish, setAutoPublish] = useState(true);
   const [savingMeta, setSavingMeta] = useState(false);
   const [showTab, setShowTab] = useState<
     'overview' | 'episodes' | 'recordings'
@@ -219,7 +220,7 @@ export function StudioShowDetailView({ id }: { id: string }) {
         setDescription(r.data.description);
         setThumbnailUrl(r.data.coverUrl ?? '');
         setBackdropUrl(r.data.backdropUrl ?? '');
-        setAutoArchive(r.data.autoArchive ?? true);
+        setAutoPublish(r.data.autoPublish ?? true);
       }
     });
     void fetchEpisodesForShow(id).then((r) => setEpisodes(r.data));
@@ -264,7 +265,7 @@ export function StudioShowDetailView({ id }: { id: string }) {
       description: description.trim(),
       coverUrl: thumbnailUrl.trim() || null,
       backdropUrl: backdropUrl.trim() || null,
-      autoArchive,
+      autoPublish,
     });
     setSavingMeta(false);
     if (!r.ok) {
@@ -371,14 +372,17 @@ export function StudioShowDetailView({ id }: { id: string }) {
 
   return (
     <StudioGate>
-      <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-6 px-1 py-2">
+      <div className="studio-page-layout flex w-full flex-col gap-6 px-1 py-2">
         <BroadcastSubNav current="/studio/shows" />
-        <Link
-          to="/studio/shows"
-          className="text-foreground-secondary -mt-2 text-xs hover:underline"
-        >
-          ← Shows
-        </Link>
+        <Tooltip content="Back to Shows" side="right">
+          <Link
+            to="/studio/shows"
+            aria-label="Back to Shows"
+            className="text-foreground-secondary hover:bg-background-secondary -mt-2 inline-flex size-8 w-fit items-center justify-center rounded-full"
+          >
+            <ArrowLeftIcon size={16} aria-hidden />
+          </Link>
+        </Tooltip>
 
         {!show ? (
           <StudioPanel>
@@ -505,8 +509,8 @@ export function StudioShowDetailView({ id }: { id: string }) {
                       </span>
                       <Toggle
                         label="Record broadcasts by default"
-                        checked={autoArchive}
-                        onChange={setAutoArchive}
+                        checked={autoPublish}
+                        onChange={setAutoPublish}
                       />
                     </div>
                     <div className="flex justify-end">
@@ -834,7 +838,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
   if (!episode) {
     return (
       <StudioGate>
-        <div className="studio-page-layout mx-auto max-w-2xl">
+        <div className="studio-page-layout flex w-full flex-col">
           <BroadcastSubNav current="/studio/shows" />
           <PageLoading label="Loading…" />
         </div>
@@ -865,15 +869,18 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
 
   return (
     <StudioGate>
-      <div className="studio-page-layout mx-auto flex max-w-2xl flex-col gap-6">
+      <div className="studio-page-layout flex w-full flex-col gap-6">
         <BroadcastSubNav current="/studio/shows" />
-        <Link
-          to="/studio/shows/$id"
-          params={{ id: episode.showId }}
-          className="text-foreground-secondary text-xs hover:underline"
-        >
-          ← {show?.title ?? 'Show'}
-        </Link>
+        <Tooltip content={`Back to ${show?.title ?? 'Show'}`} side="right">
+          <Link
+            to="/studio/shows/$id"
+            params={{ id: episode.showId }}
+            aria-label={`Back to ${show?.title ?? 'Show'}`}
+            className="text-foreground-secondary hover:bg-background-secondary inline-flex size-8 w-fit items-center justify-center rounded-full"
+          >
+            <ArrowLeftIcon size={16} aria-hidden />
+          </Link>
+        </Tooltip>
 
         <ViewShell
           title={episode.title}

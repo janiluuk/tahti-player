@@ -170,14 +170,12 @@ export function EmbedReleaseView({ id }: { id: string }) {
                 <span className="truncate">
                   {t.position}. {t.title}
                 </span>
-                {playables.find((p) => p.id === `archive:${t.id}`) && (
+                {playables.find((p) => p.id === `sound:${t.id}`) && (
                   <Button
                     size="sm"
                     variant="text"
                     onClick={() => {
-                      const p = playables.find(
-                        (x) => x.id === `archive:${t.id}`,
-                      );
+                      const p = playables.find((x) => x.id === `sound:${t.id}`);
                       if (p) {
                         play(p);
                       }
@@ -291,14 +289,12 @@ export function EmbedCollectionView({
                 className="flex items-center justify-between gap-2"
               >
                 <span className="truncate">{t.title}</span>
-                {playables.find((p) => p.id === `archive:${t.id}`) && (
+                {playables.find((p) => p.id === `sound:${t.id}`) && (
                   <Button
                     size="sm"
                     variant="text"
                     onClick={() => {
-                      const p = playables.find(
-                        (x) => x.id === `archive:${t.id}`,
-                      );
+                      const p = playables.find((x) => x.id === `sound:${t.id}`);
                       if (p) {
                         play(p, {
                           enqueueRest: playables.filter((x) => x.id !== p.id),

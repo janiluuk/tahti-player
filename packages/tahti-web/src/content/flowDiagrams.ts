@@ -18,9 +18,9 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
     title:
       'Content data model — sound types, collection styles, where they list',
     blurb:
-      'Every ArchiveContentType a single sound can be, every CollectionStyle a group of sounds can be, which sound types feed which collection styles, and the real surfaces each one shows up on. Kept in sync by hand with packages/shared/src/dto/archive-metadata.ts and collection.ts whenever the taxonomy changes.',
+      'Every SoundContentType a single sound can be, every CollectionStyle a group of sounds can be, which sound types feed which collection styles, and the real surfaces each one shows up on. Kept in sync by hand with packages/shared/src/dto/archive-metadata.ts and collection.ts whenever the taxonomy changes.',
     mermaid: `flowchart TB
-  subgraph sounds["Sound content types · ArchiveContentType"]
+  subgraph sounds["Sound content types · SoundContentType"]
     direction TB
     TRACK["TRACK<br/><small>ordinary upload</small>"]
     LIVE["LIVE<br/><small>live recording</small>"]

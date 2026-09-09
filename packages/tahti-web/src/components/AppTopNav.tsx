@@ -81,7 +81,7 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
   const markNonStickyRead = useNotificationInboxStore(
     (s) => s.markNonStickyRead,
   );
-  const [archiveItems, setArchiveItems] = useState<StudioSound[]>([]);
+  const [soundItems, setSoundItems] = useState<StudioSound[]>([]);
   const localProcessingJobs = useProcessingJobsStore((state) => state.jobs);
   const settleProcessingJobs = useProcessingJobsStore((state) => state.settle);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -183,12 +183,12 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
     void markNonStickyRead();
   }, [markNonStickyRead, notificationsOpen, user]);
 
-  const loadArchiveStatus = () => {
+  const loadSoundStatus = () => {
     if (!user) {
       return;
     }
     void fetchStudioSounds().then((result) => {
-      setArchiveItems(result.data);
+      setSoundItems(result.data);
       settleProcessingJobs(
         result.data
           .filter((item) => item.status === 'READY' || item.status === 'ERROR')
@@ -197,7 +197,7 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
     });
   };
 
-  usePolling(loadArchiveStatus, 5000, Boolean(user));
+  usePolling(loadSoundStatus, 5000, Boolean(user));
 
   const unreadNotifications = notifications.filter(
     (notification) => !notification.readAt,
@@ -208,7 +208,7 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
   );
   const processingItems = [
     ...localProcessingJobs,
-    ...archiveItems
+    ...soundItems
       .filter(
         (item) => item.status === 'PENDING' || item.status === 'PROCESSING',
       )

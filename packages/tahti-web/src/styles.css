@@ -77,15 +77,6 @@ body,
 .admin-page-layout,
 .admin-moderation-layout {
   min-width: 0;
-  max-width: none;
-}
-
-.studio-page-layout--fixed-width {
-  box-sizing: border-box;
-  width: min(100%, 64rem) !important;
-  min-width: 0 !important;
-  max-width: 64rem !important;
-  margin-inline: auto !important;
 }
 
 @media (max-width: 639px) {
@@ -105,8 +96,6 @@ body,
     box-sizing: border-box;
     width: 100%;
     min-width: 0 !important;
-    max-width: none !important;
-    margin-inline: 0 !important;
     padding-inline: 0.5rem !important;
     justify-self: stretch;
     column-gap: 1.5rem;

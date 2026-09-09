@@ -39,16 +39,17 @@ export function TimelineReactionBar({
           {emoticon}
         </button>
       ))}
-      <button
-        type="button"
-        className="inline-flex items-center gap-1 rounded-full bg-black/35 px-2.5 py-1 text-xs font-semibold text-white/85 transition-colors hover:bg-black/55"
-        onClick={onComment}
-        aria-expanded={commentOpen}
-        aria-label={`Comment at ${clock}`}
-      >
-        <MessageCircleIcon size={14} aria-hidden />
-        Comment
-      </button>
+      {commentsEnabled ? (
+        <button
+          type="button"
+          className="rounded-full bg-black/35 p-1.5 text-white/85 transition-transform hover:scale-110"
+          onClick={onComment}
+          aria-expanded={commentOpen}
+          aria-label={`Comment at ${clock}`}
+        >
+          <MessageCircleIcon size={16} aria-hidden />
+        </button>
+      ) : null}
     </div>
   );
 }

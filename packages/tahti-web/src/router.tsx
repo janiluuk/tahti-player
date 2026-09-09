@@ -1006,8 +1006,8 @@ const collectionRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/u/$username/c/$slug',
   component: function CollectionRoute() {
-    const { username, slug } = collectionRoute.useParams();
-    return <CollectionView username={username} slug={slug} />;
+    const { slug } = collectionRoute.useParams();
+    return <CollectionView slug={slug} />;
   },
 });
 

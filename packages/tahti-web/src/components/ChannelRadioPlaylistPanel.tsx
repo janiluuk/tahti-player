@@ -65,8 +65,8 @@ export const ChannelRadioPlaylistPanel: FC = () => {
   const play = usePlayerStore((state) => state.play);
   const previewCurrentId = usePlayerStore((state) => state.currentId);
   const previewStatus = usePlayerStore((state) => state.status);
-  const previewItemId = previewCurrentId?.startsWith('archive:')
-    ? previewCurrentId.slice('archive:'.length)
+  const previewItemId = previewCurrentId?.startsWith('sound:')
+    ? previewCurrentId.slice('sound:'.length)
     : null;
   const previewPlaying = previewStatus === 'playing';
 
@@ -85,10 +85,10 @@ export const ChannelRadioPlaylistPanel: FC = () => {
       fetchStudioSounds(),
       fetchStudioReleases(),
     ]).then(
-      ([programmeResult, collectionResult, archiveResult, releaseResult]) => {
+      ([programmeResult, collectionResult, soundResult, releaseResult]) => {
         applyProgramme(programmeResult.data);
         setLibraryItems(
-          archiveResult.data
+          soundResult.data
             // EMBED_ONLY items have no Tahti-hosted audio, so they can't
             // play unattended in the 24/7 fallback rotation — keep them
             // out of the rotation candidate pool entirely.
@@ -282,8 +282,8 @@ export const ChannelRadioPlaylistPanel: FC = () => {
   const playRotationItem = async (item: ProgrammeItem) => {
     const { data } = await fetchEditorSource(item.id);
     play({
-      id: `archive:${item.id}`,
-      kind: 'archive',
+      id: `sound:${item.id}`,
+      kind: 'sound',
       title: item.title,
       artist: 'You',
       streamUrl: data.url,

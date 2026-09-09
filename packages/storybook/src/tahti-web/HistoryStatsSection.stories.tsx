@@ -15,7 +15,7 @@ function entry(
     playedAt: playedAt.toISOString(),
     playable: {
       id: `${title}-${daysAgo}-${hour}`,
-      kind: 'archive',
+      kind: 'sound',
       title,
       artist,
       coverUrl: undefined,

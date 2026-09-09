@@ -63,7 +63,7 @@ export type StudioShowSeries = {
   /** Optional recurring note / weekday hint for booking. */
   scheduleNote: string | null;
   visibility?: 'PUBLIC' | 'FAN_ONLY';
-  autoArchive?: boolean;
+  autoPublish?: boolean;
   episodeNumberEnabled?: boolean;
   recurrenceEnabled?: boolean;
   recurrenceDays?: number[];
@@ -87,7 +87,7 @@ export type ScheduledShow = {
   artworkUrl: string | null;
   showType: ShowType;
   visibility: 'PUBLIC' | 'FAN_ONLY';
-  autoArchive: boolean;
+  autoPublish: boolean;
 };
 
 export type EpisodeSource = 'upload' | 'broadcast';
@@ -427,7 +427,7 @@ type WireLiveShowSeries = {
   intervalHours: 1 | 2;
   scheduleNote: string | null;
   visibility?: 'PUBLIC' | 'FAN_ONLY';
-  autoArchive?: boolean;
+  autoPublish?: boolean;
   episodeNumberEnabled?: boolean;
   recurrenceEnabled?: boolean;
   recurrenceDays?: number[];
@@ -469,7 +469,7 @@ function seriesFromWire(w: WireLiveShowSeries): StudioShowSeries {
     intervalHours: w.intervalHours,
     scheduleNote: w.scheduleNote,
     visibility: w.visibility,
-    autoArchive: w.autoArchive,
+    autoPublish: w.autoPublish,
     episodeNumberEnabled: w.episodeNumberEnabled,
     recurrenceEnabled: w.recurrenceEnabled,
     recurrenceDays: w.recurrenceDays,
@@ -572,7 +572,7 @@ export async function createShowSeries(input: {
   intervalHours?: 1 | 2;
   scheduleNote?: string | null;
   visibility?: 'PUBLIC' | 'FAN_ONLY';
-  autoArchive?: boolean;
+  autoPublish?: boolean;
   episodeNumberEnabled?: boolean;
   nextEpisodeNumber?: number;
   recurrenceEnabled?: boolean;
@@ -602,7 +602,7 @@ export async function createShowSeries(input: {
       intervalHours: input.intervalHours ?? 1,
       scheduleNote: input.scheduleNote?.trim() || null,
       visibility: input.visibility ?? 'PUBLIC',
-      autoArchive: input.autoArchive ?? true,
+      autoPublish: input.autoPublish ?? true,
       episodeNumberEnabled: input.episodeNumberEnabled ?? true,
       recurrenceEnabled: input.recurrenceEnabled ?? false,
       recurrenceDays: input.recurrenceDays ?? [],
@@ -630,7 +630,7 @@ export async function createShowSeries(input: {
           intervalHours: input.intervalHours,
           scheduleNote: input.scheduleNote,
           visibility: input.visibility,
-          autoArchive: input.autoArchive,
+          autoPublish: input.autoPublish,
           episodeNumberEnabled: input.episodeNumberEnabled,
           nextEpisodeNumber: input.nextEpisodeNumber,
           recurrenceEnabled: input.recurrenceEnabled,
@@ -698,7 +698,7 @@ export async function scheduleShowEpisode(
         artworkUrl: input.artworkUrl ?? show.coverUrl,
         showType: show.showType,
         visibility: show.visibility ?? 'PUBLIC',
-        autoArchive: show.autoArchive ?? true,
+        autoPublish: show.autoPublish ?? true,
       },
     };
   }
@@ -753,7 +753,7 @@ export async function patchShowSeries(
       | 'scheduleNote'
       | 'nextEpisodeNumber'
       | 'visibility'
-      | 'autoArchive'
+      | 'autoPublish'
       | 'episodeNumberEnabled'
       | 'recurrenceEnabled'
       | 'recurrenceDays'
@@ -808,8 +808,8 @@ export async function patchShowSeries(
     if ('visibility' in patch) {
       body.visibility = patch.visibility;
     }
-    if ('autoArchive' in patch) {
-      body.autoArchive = patch.autoArchive;
+    if ('autoPublish' in patch) {
+      body.autoPublish = patch.autoPublish;
     }
     if ('episodeNumberEnabled' in patch) {
       body.episodeNumberEnabled = patch.episodeNumberEnabled;
@@ -893,20 +893,20 @@ export async function fetchEpisodesForShow(
  * and merges them; callers needing "which show made this recording"
  * (e.g. StudioRecordingsView) should use this instead of matching on
  * title text, which drifts as soon as two shows share a name. */
-export type ShowRefByArchiveItemId = Map<
+export type ShowRefBySoundItemId = Map<
   string,
   { showId: string; title: string }
 >;
 
-export async function fetchShowRefByArchiveItemId(): Promise<{
-  data: ShowRefByArchiveItemId;
+export async function fetchShowRefBySoundItemId(): Promise<{
+  data: ShowRefBySoundItemId;
   meta: FetchMeta;
 }> {
   const { data: series, meta } = await fetchShowSeries();
   const episodeLists = await Promise.all(
     series.map((show) => fetchEpisodesForShow(show.id)),
   );
-  const map: ShowRefByArchiveItemId = new Map();
+  const map: ShowRefBySoundItemId = new Map();
   series.forEach((show, index) => {
     for (const episode of episodeLists[index].data) {
       if (episode.soundId) {

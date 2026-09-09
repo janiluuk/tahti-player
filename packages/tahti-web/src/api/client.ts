@@ -7,11 +7,9 @@ import {
 } from './governanceMocks';
 import { listEnabledMockInternetRadioPresets } from './internetRadioPresetsMockStore';
 import {
-  archiveItemToPlayable,
   channelToPlayable,
   DEMO_MP3,
   mockAnnouncements,
-  mockArchiveItems,
   mockChannel,
   mockChatAccess,
   mockChatHistory,
@@ -24,6 +22,7 @@ import {
   mockRadioRecentlyPlayed,
   mockSearch,
   mockSmartLink,
+  mockSoundItems,
   mockTrackComments,
   mockTrackDetail,
   mockTransparencyGrants,
@@ -33,6 +32,7 @@ import {
   mockVenueProfile,
   mockVenues,
   radioToPlayable,
+  soundItemToPlayable,
   TAHTI_RADIO_SLUG,
 } from './mock';
 import {
@@ -60,11 +60,11 @@ import {
 import { findMockPurchaseTier } from './purchase-tiers';
 import type {
   Announcement,
-  ArchiveItem,
   AuthUser,
   BoardResolution,
   ChannelDirectoryResponse,
   ChannelEmbedView,
+  ChannelSoundItem,
   ChatAccess,
   ChatMessage,
   ChatTokenResponse,
@@ -330,25 +330,25 @@ export async function fetchChannel(slug: string): Promise<{
   }
 }
 
-export async function fetchChannelArchive(slug: string): Promise<{
-  data: ArchiveItem[];
+export async function fetchChannelSound(slug: string): Promise<{
+  data: ChannelSoundItem[];
   meta: FetchMeta;
 }> {
   if (forceMock()) {
     return {
-      data: mockArchiveItems(slug),
+      data: mockSoundItems(slug),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
   try {
-    const data = await getJson<ArchiveItem[]>(
+    const data = await getJson<ChannelSoundItem[]>(
       `/api/channels/${encodeURIComponent(slug)}/items`,
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
     return withMockFallback(
       err,
-      () => mockArchiveItems(slug),
+      () => mockSoundItems(slug),
       () => [],
     );
   }
@@ -421,7 +421,7 @@ function mockTrackDetailFromUpload(id: string): PublicTrackDetail | null {
 }
 
 /** Full detail for a standalone track page — reached only by track id, so
- * (unlike fetchChannelArchive) it can't rely on already knowing the channel.
+ * (unlike fetchChannelSound) it can't rely on already knowing the channel.
  * `shareKey` is the token from a PRIVATE/STASH sound's share link
  * (`/t/$id?key=...`) — see withShareKey. */
 export async function fetchTrackDetail(
@@ -515,9 +515,9 @@ export async function postTrackComment(
   }
 }
 
-const ARCHIVE_DOWNLOAD_SOURCE_FORMAT = 'source';
+const SOUND_DOWNLOAD_SOURCE_FORMAT = 'source';
 
-export async function fetchPublicArchiveDownload(
+export async function fetchPublicSoundDownload(
   channelSlug: string,
   itemId: string,
 ): Promise<
@@ -537,7 +537,7 @@ export async function fetchPublicArchiveDownload(
   try {
     const fp = encodeURIComponent(listenerFingerprint());
     const path = `/api/v1/c/${encodeURIComponent(channelSlug)}/archive/${encodeURIComponent(itemId)}/download`;
-    const tryFormats = [ARCHIVE_DOWNLOAD_SOURCE_FORMAT, undefined] as const;
+    const tryFormats = [SOUND_DOWNLOAD_SOURCE_FORMAT, undefined] as const;
     for (const format of tryFormats) {
       try {
         const query = format ? `?fp=${fp}&format=${format}` : `?fp=${fp}`;
@@ -711,8 +711,8 @@ export async function fetchArtistPlayables(username: string): Promise<{
     }
     return [
       {
-        id: `archive:${track.id}`,
-        kind: 'archive' as const,
+        id: `sound:${track.id}`,
+        kind: 'sound' as const,
         title: track.title,
         artist: track.artistName ?? profile.data.artist.displayName,
         coverUrl: track.bannerUrl ?? undefined,
@@ -1654,8 +1654,8 @@ export async function fetchEmbedRelease(id: string): Promise<{
     };
     const playables = data.tracks.map(
       (t): TahtiPlayable => ({
-        id: `archive:${t.id}`,
-        kind: 'archive',
+        id: `sound:${t.id}`,
+        kind: 'sound',
         title: t.title,
         artist: data.artist.displayName,
         streamUrl: DEMO_MP3,
@@ -1683,8 +1683,8 @@ export async function fetchEmbedRelease(id: string): Promise<{
         );
         if (play.url) {
           playables.push({
-            id: `archive:${t.id}`,
-            kind: 'archive',
+            id: `sound:${t.id}`,
+            kind: 'sound',
             title: t.title,
             artist: data.artist.displayName,
             coverUrl: data.artworkUrl ?? undefined,
@@ -1720,8 +1720,8 @@ export async function fetchEmbedRelease(id: string): Promise<{
       meta: failMeta(err),
       playables: [
         {
-          id: `archive:${id}-t1`,
-          kind: 'archive',
+          id: `sound:${id}-t1`,
+          kind: 'sound',
           title: 'Track one',
           artist: data.artist.displayName,
           streamUrl: DEMO_MP3,
@@ -1757,8 +1757,8 @@ export async function fetchEmbedCollection(slug: string): Promise<{
       .filter((i) => i.sound?.audioUrl)
       .map(
         (i): TahtiPlayable => ({
-          id: `archive:${i.sound!.id}`,
-          kind: 'archive',
+          id: `sound:${i.sound!.id}`,
+          kind: 'sound',
           title: i.sound!.title,
           artist: col.user.displayName,
           coverUrl: col.coverUrl ?? undefined,
@@ -1787,8 +1787,8 @@ export async function fetchEmbedCollection(slug: string): Promise<{
         );
         if (play.url) {
           playables.push({
-            id: `archive:${t.id}`,
-            kind: 'archive',
+            id: `sound:${t.id}`,
+            kind: 'sound',
             title: t.title,
             artist: data.artist.displayName,
             coverUrl: data.coverUrl ?? undefined,
@@ -1825,8 +1825,8 @@ export async function fetchEmbedCollection(slug: string): Promise<{
         .filter((i) => i.sound?.audioUrl)
         .map(
           (i): TahtiPlayable => ({
-            id: `archive:${i.sound!.id}`,
-            kind: 'archive',
+            id: `sound:${i.sound!.id}`,
+            kind: 'sound',
             title: i.sound!.title,
             artist: col.user.displayName,
             streamUrl: i.sound!.audioUrl!,
@@ -2997,4 +2997,4 @@ export async function subscribeNewsletterByEmail(
   }
 }
 
-export { archiveItemToPlayable };
+export { soundItemToPlayable };

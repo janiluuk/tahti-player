@@ -29,7 +29,7 @@ const timeline: EditorTimeline = {
       clips: [
         {
           id: 'clip',
-          sourceArchiveItemId: 'archive-1',
+          sourceSoundId: 'archive-1',
           startSec: 5,
           sourceOffsetSec: 0,
           durationSec: 30,
