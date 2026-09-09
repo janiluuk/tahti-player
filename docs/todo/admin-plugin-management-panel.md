@@ -15,7 +15,87 @@ Under `/admin` → Manage, there should be a management section covering
   separately.
 - Every plugin must have its category defined.
 
-## Shipped this pass (2026-09-08)
+**Note:** a second, independent session found this exact same backend
+around the same time and shipped a smaller additive fix (enabled-by-default
++ default-config only, leaving the broken metadata-edit/delete UI in place
+and documented as a known gap — merged as PR #35). The pass below
+supersedes it: same discovery, plus it also removes the broken edit/delete
+UI and adds the real approve/reject/disable moderation actions PR #35
+didn't attempt. Reconciled via `git merge` when this branch caught up to
+master.
+
+## Major correction (2026-09-08, later pass): the earlier "mock-only, no backend" claim was wrong
+
+The first rename pass on this ticket (see "Shipped this pass" below) said
+*"no backend route exists for either yet — this whole surface is still
+mock-only"* and *"Both would need new API + schema work even for this
+category"* for enabled-by-default/default-settings. **Both claims are
+false** — found by grepping `../tahti-org` for `discoWidget`/`disco-widget`
+(the OLD name), which correctly found nothing, and wrongly concluding no
+backend existed at all, without also grepping for the generic term
+`addon`. The real backend was there the whole time, under its own name,
+independent of this repo's disco-widget→Add-ons rename:
+
+- `packages/db/prisma/schema.prisma`'s `Addon`/`AddonVersion`/
+  `AddonInstall` models — a **full widget-bundle store**: versioned JS
+  bundles (`bundleKey`/`bundleHash`, sandboxed rendering), a moderation
+  lifecycle (DRAFT → PENDING → APPROVED/REJECTED, DISABLED), per-scope
+  installs (listener/channel/admin-surface), **and already has both
+  `enabledByDefault: Boolean` and `defaultConfigJson: Json?`** — exactly
+  the two fields this ticket's ask wanted, already modeled.
+- `apps/api/src/routes/admin/addons.ts` — real routes: `GET/POST
+  /api/admin/addons`, `prepare-upload`/`publish-version` (bundle upload),
+  `approve`/`reject`/`disable` (moderation), `default-config` and
+  `enabled-by-default` (POST, one action each — **not** a generic PATCH),
+  plus ADMIN-scope install CRUD (`/api/admin/addons/installs`).
+- This is a fundamentally different shape than what this repo's
+  `AdminAddon`/`AdminAddonsView.tsx` assumed after the rename: no generic
+  PATCH/DELETE for an addon's own record exists server-side at all (only
+  the specific action endpoints above), and the list response key is
+  `widgets`, not `addons` — the rename-pass frontend's `patchAdminAddon`/
+  `deleteAdminAddon` and `{ addons: [...] }` parsing would have silently
+  done nothing / returned an empty list against the real API the moment
+  mock mode was off, with no error surfaced.
+
+**Fixed this pass**, all in this repo (no `../tahti-org` changes needed —
+the backend was already complete): rewrote `admin.ts`'s Add-ons section to
+match the real contract — `AdminAddon` gained `defaultConfigJson`/
+`enabledByDefault`; `fetchAdminAddons` reads `widgets` not `addons`;
+`patchAdminAddon`/`deleteAdminAddon` (no server equivalent) replaced with
+`approveAdminAddon`/`rejectAdminAddon`/`disableAdminAddon`/
+`setAdminAddonEnabledByDefault`/`setAdminAddonDefaultConfig`, each POSTing
+to its own action endpoint. Rewrote `AdminAddonsView.tsx`: removed the
+per-item "Edit" pencil (no metadata-edit endpoint exists server-side —
+keeping a UI that silently no-ops against real prod would be worse than
+not having it) and the "Delete" trash icon (no DELETE-the-addon route
+exists — replaced with "Disable," which is the real terminal action and
+matches the backend's own "only a fresh bundle publish brings it back"
+semantics); added Approve/Reject icon buttons on PENDING cards (Reject
+requires a moderation note, server-enforced `min(1)`); added a "Manage"
+dialog on APPROVED cards with the `enabledByDefault` `Toggle` and a
+`defaultConfigJson` JSON textarea (client-validated before sending) —
+**the literal original ask, now real**. "Register a new add-on" still
+only sets metadata (matches the real `POST /api/admin/addons` fields) —
+a newly-registered addon stays in DRAFT, invisible everywhere, until a
+bundle version is published; **no UI for authoring/uploading that JS
+bundle exists anywhere in this repo** and wasn't attempted this pass (a
+real, separate, larger feature — needs a product decision on where the
+bundle comes from, e.g. a widget SDK/build step) — the dialog's copy says
+so explicitly so nobody mistakes "registered" for "usable."
+
+Added 2 tests in `admin.test.ts` locking in the two contract bugs found
+(`widgets` response key, real per-action `approve` endpoint vs. a generic
+PATCH) so a future pass can't silently regress either. `tsc --noEmit`,
+`eslint` clean, full `pnpm vitest run` (497/497) and `pnpm --filter
+@tahti-player/storybook build` (the existing `AdminAddonsView.stories.tsx`
+still renders) both pass. Not live-browser-verified, and this pass did
+**not** attempt: bundle upload/publish UI, ADMIN-scope install management
+(the `/api/admin/addons/installs` CRUD — installing an addon onto a
+shared admin surface like the homepage), or the still-open "all 13
+categories" scoping question below (unchanged by this pass — this addon
+system only covers the `discovery`/Add-ons category, same as before).
+
+## Shipped this pass (2026-09-08, first pass — rename)
 
 The user separately asked to rename "disco widgets" to "add-ons" (scoped to
 the admin panel + its direct API, per an explicit scope choice — the
@@ -62,59 +142,6 @@ concrete missing piece, not the larger enabled-by-default/default-settings
 asks below. `tsc --noEmit`, `eslint` clean. No existing tests referenced
 the old names (none broke). Not live-browser-verified.
 
-## Shipped this pass (2026-09-08, round 2)
-
-**Correction to the previous pass's claim:** a real backend for this
-category exists after all — `../tahti-org`'s
-`apps/api/src/routes/admin/addons.ts`, and it's considerably more built
-out than the frontend assumed: full moderation (`approve`/`reject`/
-`disable`), a bundle upload + versioning system (`prepare-upload` →
-`publish-version`, MinIO-backed, hash-verified, `packages/addon-sdk`),
-and — directly relevant here — `POST .../:id/enabled-by-default` and
-`POST .../:id/default-config` already existed, unused by this frontend.
-`enabledByDefault: boolean` and `defaultConfigJson: unknown | null` are
-real, typed fields (`AddonAdminItemSchema` in
-`../tahti-org/packages/shared/src/dto/addons.ts`) on the real `Addon`
-model, not something that needed inventing.
-
-Also found and fixed a real bug blocking all of this from ever working
-against a live backend: `fetchAdminAddons` read `data.addons`, but the
-real `GET /api/admin/addons` responds `{ widgets: [...] }`. Every fetch
-against a real API was silently returning an empty list; only mock mode
-ever showed data.
-
-Added:
-- `AdminAddon.enabledByDefault` / `.defaultConfigJson` fields.
-- `setAdminAddonEnabledByDefault(id, enabledByDefault)` and
-  `setAdminAddonDefaultConfig(id, defaultConfigJson)` in `api/admin.ts`,
-  same real/mock-branch convention as every other function in that file.
-- `AdminAddonsView.tsx`: a visible "Enabled by default" `Toggle` on each
-  add-on card (posts immediately, no separate save step, matching the
-  moderation-action pattern the real backend expects) and a "Default
-  settings" button opening a small dialog with a JSON-object textarea
-  (parsed and validated client-side before `POST .../default-config`;
-  empty clears the default, matching the endpoint's `null` semantics).
-
-Verified: `tsc --noEmit` and `eslint` clean; `pnpm --filter
-@tahti-player/storybook build` succeeds (exercises the full view via
-`AdminAddonsView.stories.tsx`). Not live-browser-verified — no dev
-server/backend/browser available in this session. No vitest test added:
-this repo has no unit tests for any `views/admin/*` view (verified by
-search) — Storybook + e2e are the established verification surfaces here,
-and a new unit test would be going against that convention rather than
-following it.
-
-**New gap found, not fixed here:** the real backend has **no** generic
-`PATCH /api/admin/addons/:id` (metadata edit) or `DELETE
-/api/admin/addons/:id` route — only the specific POST actions listed
-above. `patchAdminAddon`/`deleteAdminAddon` in `api/admin.ts` call routes
-that don't exist server-side, so — like the `enabled-by-default`/
-`default-config` gap before this pass — **metadata editing and deleting
-an add-on only ever worked in mock mode**, never against a real backend.
-Out of scope for this pass (the user's ask was specifically
-enabled-by-default + default-settings); flagging for whoever picks up
-metadata-edit/delete next, in either repo.
-
 ## What already exists (closest precedent, discovery category only)
 
 `packages/tahti-web/src/views/admin/AdminAddonsView.tsx` +
@@ -129,16 +156,14 @@ Listen-page widgets):
   (`PENDING` = a submission); as of this pass the view has a "Needs
   review" filter chip and a distinct `PENDING` badge color (previously
   missing — see "Shipped this pass" above).
-- Metadata editing (name/description/authorName/iconUrl) and `categories:
-  string[]` tagging already work via `registerAdminAddon` /
-  `patchAdminAddon`.
-- ~~No "enabled by default for all users" toggle and no "default
-  settings" concept exist~~ — **wrong, corrected 2026-09-08 round 2**: the
-  real backend already had both (`enabledByDefault`,
-  `defaultConfigJson`), just never wired up on this side — see "Shipped
-  this pass (round 2)" above. Metadata edit and delete, on the other
-  hand, genuinely have no backend route — the inverse of what this
-  bullet originally claimed.
+- Metadata (name/description/authorName/iconUrl/categories) can only be
+  set at registration (`registerAdminAddon`) — there's no edit endpoint,
+  see the correction above.
+- **Done** (2026-09-08, see correction above): "enabled by default for all
+  users" (`enabledByDefault` Toggle) and "default settings"
+  (`defaultConfigJson` JSON editor) both exist now, backed by a real,
+  already-built `../tahti-org` API — no schema work was needed, the
+  backend already modeled exactly this.
 
 ## Why this isn't a small "add a nav item" task
 

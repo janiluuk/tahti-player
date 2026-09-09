@@ -127,6 +127,10 @@ const GovernanceMembersView = lazyRouteComponent(
   () => import('./views/GovernanceMembersView'),
   'GovernanceMembersView',
 );
+const GovernanceMeetingDetailView = lazyRouteComponent(
+  () => import('./views/GovernanceMeetingDetailView'),
+  'GovernanceMeetingDetailView',
+);
 const PublicGovernanceHistoryView = lazyRouteComponent(
   () => import('./views/PublicGovernanceHistoryView'),
   'PublicGovernanceHistoryView',
@@ -1104,6 +1108,16 @@ const helpSlugRoute = createRoute({
   },
 });
 
+/** Old path — the governance guide moved into Studio → Governance's own
+ * Guide tab, closer to where members actually use it. */
+const helpGovernanceRedirectRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/help/governance',
+  beforeLoad: () => {
+    throw redirect({ to: '/studio/governance', search: { tab: 'guide' } });
+  },
+});
+
 const joinRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/join',
@@ -1191,6 +1205,15 @@ const governanceMembersRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/governance/members',
   component: GovernanceMembersView,
+});
+
+const governanceMeetingDetailRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/governance/meetings/$id',
+  component: function GovernanceMeetingDetailRoute() {
+    const { id } = governanceMeetingDetailRoute.useParams();
+    return <GovernanceMeetingDetailView id={id} />;
+  },
 });
 
 const governanceMotionDetailRoute = createRoute({
@@ -1427,11 +1450,15 @@ const studioStatsRoute = createRoute({
 const studioGovernanceRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/governance',
-  validateSearch: (search: Record<string, unknown>): { tab?: 'topics' } => ({
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { tab?: 'topics' | 'guide' } => ({
     tab:
       search.tab === 'topics' || search.tab === 'feature-requests'
         ? 'topics'
-        : undefined,
+        : search.tab === 'guide'
+          ? 'guide'
+          : undefined,
   }),
   component: function StudioGovernanceRoute() {
     const search = studioGovernanceRoute.useSearch();
@@ -1851,6 +1878,7 @@ const routeTree = rootRoute.addChildren([
     transparencyResolutionsRoute,
     transparencyMethodologyRoute,
     helpRoute,
+    helpGovernanceRedirectRoute,
     helpSlugRoute,
     joinRoute,
     applyRoute,
@@ -1866,6 +1894,7 @@ const routeTree = rootRoute.addChildren([
     governanceRoute,
     governanceMotionDetailRoute,
     governanceMembersRoute,
+    governanceMeetingDetailRoute,
     publicGovernanceHistoryRoute,
     featureRequestsRoute,
     aboutRoute,

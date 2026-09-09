@@ -52,6 +52,9 @@ import {
   EntitySocialHeader,
   type EntitySocialStat,
 } from '../../components/EntitySocialHeader';
+import { ImageSlotDeleteBadge } from '../../components/imageSlot/ImageSlotDeleteBadge';
+import { ImageSlotPreviewDialog } from '../../components/imageSlot/ImageSlotPreviewDialog';
+import { useImageSlotChrome } from '../../components/imageSlot/useImageSlotChrome';
 import { PageLoading } from '../../components/PageStates';
 import { StudioCollectionMoreMenu } from '../../components/StudioCollectionMoreMenu';
 import { StudioGate } from '../../components/StudioGate';
@@ -105,6 +108,9 @@ export function StudioCollectionEditView({
   );
   const [uploadingImage, setUploadingImage] = useState(false);
   const [pendingCoverDelete, setPendingCoverDelete] = useState(false);
+  const [pendingFrameDelete, setPendingFrameDelete] = useState<string | null>(
+    null,
+  );
   const [saving, setSaving] = useState(false);
   const [detailsExpanded, setDetailsExpanded] = useState(false);
   const [archiveQuery, setArchiveQuery] = useState('');
@@ -423,6 +429,52 @@ export function StudioCollectionEditView({
     toast.success('Cover removed.');
   };
 
+  const removeBackdrop = async () => {
+    const galleryResult = await patchCollectionGallery(slug, {
+      slideshowImages: [],
+      galleryMode: 'NONE',
+    });
+    if (!galleryResult.ok) {
+      toast.error(galleryResult.error);
+      return;
+    }
+    const result = await patchStudioCollection(slug, { backdropUrl: null });
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    setBackdropUrl(null);
+    setSlideshowImages([]);
+    setCol((current) =>
+      current ? { ...current, backdropUrl: null } : current,
+    );
+    toast.success('Backdrop removed.');
+  };
+
+  /** Removing the last frame falls back to the empty placeholder (clears
+   * the whole backdrop); otherwise only that frame is dropped from the
+   * slideshow. */
+  const removeSlideshowFrame = async (url: string) => {
+    const next = slideshowImages.filter((image) => image !== url);
+    if (next.length === 0) {
+      await removeBackdrop();
+      return;
+    }
+    const galleryResult = await patchCollectionGallery(slug, {
+      slideshowImages: next,
+      galleryMode: next.length > 1 ? 'STATIC_SLIDESHOW' : 'NONE',
+    });
+    if (!galleryResult.ok) {
+      toast.error(galleryResult.error);
+      return;
+    }
+    setSlideshowImages(next);
+    setBackdropUrl(next[0] ?? null);
+    toast.success('Image removed from backdrop.');
+  };
+
+  const backdropChrome = useImageSlotChrome({ onClear: removeBackdrop });
+
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-4xl flex-col gap-6 px-1 py-2">
@@ -467,17 +519,36 @@ export function StudioCollectionEditView({
               stats={headerStats}
               actions={
                 <>
-                  <Tooltip content="Change backdrop" side="top">
-                    <Button
-                      variant="secondary"
-                      size="icon-sm"
-                      className="bg-background border-border rounded-md border-(length:--border-width)"
-                      aria-label="Change backdrop"
-                      onClick={() => setUploadTarget('backdrop')}
+                  <div className="group relative">
+                    <Tooltip
+                      content={
+                        backdropUrl ? 'Preview backdrop' : 'Change backdrop'
+                      }
+                      side="top"
                     >
-                      <ImageIcon size={14} aria-hidden />
-                    </Button>
-                  </Tooltip>
+                      <Button
+                        variant="secondary"
+                        size="icon-sm"
+                        className="bg-background border-border rounded-md border-(length:--border-width)"
+                        aria-label={
+                          backdropUrl ? 'Preview backdrop' : 'Change backdrop'
+                        }
+                        onClick={() =>
+                          backdropUrl
+                            ? backdropChrome.openPreview()
+                            : setUploadTarget('backdrop')
+                        }
+                      >
+                        <ImageIcon size={14} aria-hidden />
+                      </Button>
+                    </Tooltip>
+                    {backdropUrl ? (
+                      <ImageSlotDeleteBadge
+                        label="Backdrop"
+                        onClick={backdropChrome.requestDelete}
+                      />
+                    ) : null}
+                  </div>
                   <Badge
                     variant="pill"
                     color={visibility === 'PUBLIC' ? 'green' : 'secondary'}
@@ -959,6 +1030,45 @@ export function StudioCollectionEditView({
           onConfirm={() => {
             setPendingCoverDelete(false);
             void removeCover();
+          }}
+        />
+
+        <ImageSlotPreviewDialog
+          isOpen={backdropChrome.previewOpen && pendingFrameDelete === null}
+          onClose={backdropChrome.closePreview}
+          label="Backdrop"
+          src={backdropUrl}
+          frames={
+            slideshowImages.length > 1
+              ? slideshowImages.map((url) => ({
+                  url,
+                  onDelete: () => setPendingFrameDelete(url),
+                }))
+              : undefined
+          }
+          onChangeClick={() => {
+            backdropChrome.closePreview();
+            setUploadTarget('backdrop');
+          }}
+          confirmOpen={backdropChrome.confirmOpen}
+          clearing={backdropChrome.clearing}
+          onRequestDelete={backdropChrome.requestDelete}
+          onCancelDelete={backdropChrome.cancelDelete}
+          onConfirmDelete={backdropChrome.confirmDelete}
+        />
+
+        <ConfirmDialog
+          isOpen={pendingFrameDelete !== null}
+          title="Remove this image from the backdrop?"
+          description="It will be removed from the slideshow immediately."
+          confirmLabel="Remove"
+          onCancel={() => setPendingFrameDelete(null)}
+          onConfirm={() => {
+            const url = pendingFrameDelete;
+            setPendingFrameDelete(null);
+            if (url) {
+              void removeSlideshowFrame(url);
+            }
           }}
         />
       </div>

@@ -108,23 +108,95 @@ as Collection. `tsc --noEmit`, `eslint`, `pnpm vitest run` (485/485) all
 pass. Not live-browser-verified (Chrome extension unavailable this
 session).
 
-Remaining from the "not done" list below: `StudioBrandingView` →
-shared primitives migration, `ChannelDesigner` backdrop/gallery,
-Collection backdrop/slideshow delete, and admin radio/announcements.
+Remaining from the "not done" list below: `ChannelDesigner`
+backdrop/gallery (claim corrected 2026-09-09, see below), and admin
+radio station logo.
+
+**2026-09-09:** Checked `ChannelDesigner`'s backdrop/gallery slideshow
+(this doc's other remaining item) before touching it — **stale claim,
+corrected**. It already has hover-delete (a `Trash2Icon` button that
+fades in on hover, `removeGalleryImage`), drag-to-reorder, an "Add
+gallery images" flow, and an inline live preview + thumbnail strip
+(`slideshowControls` in `ChannelDesigner.tsx`); "Remove backdrop" in
+`BackdropPanel.tsx` clears the whole thing. None of these confirm
+before removing — but unlike every other surface in this ticket,
+`ChannelDesigner` is a live-editing canvas: nothing here persists
+until the user clicks Save, and it already has a global "discard
+unsaved edits" revert (`previousSave` snapshot) as its safety net, the
+same as every other field on the page (colors, toggles, sliders — none
+of which confirm either). Adding a Collection-style per-click confirm
+dialog here would be inconsistent with the rest of the form and isn't
+what this ticket's "confirm before delete" rule was written for
+(persisted, one-click-and-it's-gone deletes). Left as-is; no code
+change. If a future pass wants a true modal-preview-with-frames here
+(the ticket's literal ask), that's still a small gap, but the delete
+UX itself is not.
+
+**2026-09-09 (2):** `StudioBrandingView`'s avatar migrated onto the
+shared `RoundImageUploadButton` primitive, replacing the bespoke
+`group relative` hover overlay + `ImageLightbox` + two `ConfirmDialog`s
+(avatar viewer, avatar delete) added 2026-09-08. Same upload-adapter
+pattern as `OnboardingView`'s earlier migration:
+`uploadProfileAvatar(file).then((r) => r.ok ? {ok, data:{url:
+r.avatarUrl}} : r)`; `onChange('')` (the primitive's delete signal)
+routes to the existing `removeProfileAvatar()` call, which only
+updates local state on success — a failed delete leaves the old avatar
+displayed rather than optimistically clearing it. One accepted visual
+change, same tradeoff already made for Onboarding: the letter-initial
+placeholder is gone, replaced by the primitive's standard `ImageIcon`
+empty state. Press-kit gallery (`ArtistGalleryPanel`, its own
+hover-delete + confirm) was not touched — still bespoke, matching
+`ArtistGalleryPanel`'s existing independent UX noted above. `tsc
+--noEmit`, `eslint`, `vitest run` (499/499) all pass. Not
+live-browser-verified (Chrome extension unavailable this session) — no
+dedicated test file existed for this view before or after.
+
+**2026-09-09:** Collection backdrop/slideshow delete shipped —
+`StudioCollectionEditView`'s "Change backdrop" button is now a
+`group relative` slot: click opens the shared `ImageSlotPreviewDialog`
+(large preview + frame strip) when a backdrop is set, or the existing
+upload dialog when empty; an `ImageSlotDeleteBadge` hover-X on the
+button clears the whole backdrop through the shared confirm flow
+(`useImageSlotChrome`). Per-frame delete in the strip goes through its
+own `ConfirmDialog` (not the shared primitive's bare immediate-delete
+X) — added at the call-site rather than inside `ImageSlotPreviewDialog`
+itself, since this is the primitive's first real `frames` consumer and
+the "confirm every delete, including per-row" rule applies. Removing
+the last frame falls back to clearing the whole backdrop (returns to
+the empty placeholder), matching this doc's slideshow rule; removing
+one of several frames only updates `patchCollectionGallery` — the
+collection's legacy `backdropUrl` fallback field only needs patching
+when the gallery becomes fully empty. `tsc --noEmit`, `eslint`, and
+`vitest run` (499/499 unit tests; the 12 failing files are pre-existing
+Playwright e2e specs vitest picks up under the wrong runner, unrelated)
+all pass. Not live-browser-verified (Chrome extension unavailable this
+session) — no dedicated test file existed for this view before or
+after.
+
+Checked `AdminAnnouncementsView` (the "admin announcements" row below)
+while scoping this pass: it's an audio-clip list (upload/play/delete),
+not an image slot, so it's out of this ticket's scope as written. Its
+delete button has no confirm step at all, which is a real gap against
+this repo's own "confirm before delete" rule — flagged, not fixed here
+(different bug class, would be its own small fix).
 
 ## Not done in this pass (bespoke, not on the shared primitives)
 
-- `StudioBrandingView` avatar/press-kit gallery: hover-delete + preview
-  UX and confirm-before-delete are done (2026-09-08); migrating onto
-  the shared `imageSlot` primitives is still open, not attempted.
+- `StudioBrandingView` press-kit gallery (`ArtistGalleryPanel`): still
+  its own bespoke hover-delete + confirm, independently matching this
+  ticket's UX goal — not migrated onto the shared primitives (avatar
+  was, 2026-09-09).
 - `EntitySocialHeader` cover-image delete: done for Collection
   (2026-09-08); Release/Show/Sound/Playlist edit views have the same
   `onImageClick` wiring and just need `onImageDelete` added too —
   small follow-up, not attempted.
-- `ChannelDesigner` backdrop + gallery slideshow
-- Collection backdrop / slideshow delete (multi-frame, cover is done)
+- `ChannelDesigner` backdrop + gallery slideshow: already has
+  hover-delete, reorder, add, and preview (see 2026-09-09 correction
+  above) — not a real gap against this ticket except the literal
+  "modal preview with frames" ask, which is minor.
 - Admin: radio station logo (blocked on the `RadioStationCover` redesign
-  above), announcements
+  above); announcements has no image slot (see 2026-09-09 note) — its
+  missing delete-confirm is a separate, un-fixed bug.
 
 These are all larger, bespoke multi-image or reorderable-gallery flows
 (not simple single-image slots) — right-sized as their own follow-up

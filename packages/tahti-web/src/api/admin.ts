@@ -3818,6 +3818,56 @@ export async function patchAdminGovernanceMeeting(
   }
 }
 
+export async function uploadAdminGovernanceMinutes(
+  meetingId: string,
+  file: File,
+): Promise<
+  { ok: true; data: GovernanceMeeting } | { ok: false; error: string }
+> {
+  if (forceMock()) {
+    const patched = await patchAdminGovernanceMeeting(meetingId, {
+      minutesKey: `mock/governance/meetings/${meetingId}/minutes.pdf`,
+    });
+    if (!patched.data) {
+      return { ok: false, error: 'Meeting not found' };
+    }
+    return { ok: true, data: patched.data };
+  }
+  try {
+    const prep = await sendJson<{
+      uploadUrl: string;
+      minutesKey: string;
+    }>(
+      `/api/admin/governance/meetings/${encodeURIComponent(meetingId)}/minutes/prepare-upload`,
+      'POST',
+      {
+        contentType: file.type || 'application/pdf',
+        fileSizeBytes: file.size,
+      },
+    );
+    const put = await fetch(prep.uploadUrl, {
+      method: 'PUT',
+      body: file,
+      headers: { 'Content-Type': file.type || 'application/pdf' },
+    });
+    if (!put.ok) {
+      return { ok: false, error: `Upload failed (${put.status})` };
+    }
+    const patched = await patchAdminGovernanceMeeting(meetingId, {
+      minutesKey: prep.minutesKey,
+    });
+    if (!patched.data) {
+      return { ok: false, error: 'Could not save the uploaded minutes' };
+    }
+    return { ok: true, data: patched.data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Upload failed',
+    };
+  }
+}
+
 export async function fetchAdminGovernanceAttendance(
   meetingId: string,
 ): Promise<{ data: GovernanceAttendanceItem[]; meta: FetchMeta }> {
@@ -4025,6 +4075,14 @@ export type AdminAddonStatus =
   | 'REJECTED'
   | 'DISABLED';
 
+// The real ../tahti-org backend (packages/db/prisma/schema.prisma's `Addon`
+// model + apps/api/src/routes/admin/addons.ts) is a full widget-bundle store
+// with versioning, sandboxed rendering, and a moderation lifecycle — not a
+// plain metadata CRUD resource. There is no generic PATCH/DELETE for an
+// addon's own record: only `register` (create, status DRAFT), `prepare-
+// upload`/`publish-version` (JS bundle, not modeled here — no UI for
+// authoring/uploading a widget bundle exists yet), and the specific actions
+// below (approve/reject/disable, default-config, enabled-by-default).
 export type AdminAddon = {
   id: string;
   slug: string;
@@ -4038,12 +4096,11 @@ export type AdminAddon = {
   currentVersion: string;
   bundleSizeBytes: number;
   moderationNote: string | null;
-  /** Board-only: starting configJson every new install of this widget
-   * gets from here on (all scopes). Existing installs are untouched. */
-  defaultConfigJson: unknown | null;
-  /** Board-only: platform-wide "on by default" — an APPROVED addon with
-   * this set renders on its scope's surfaces for every owner with no
-   * install row of their own, no per-owner opt-in needed. */
+  /** Starting configJson every NEW install of this addon gets, across every
+   * scope. Existing installs are untouched when this changes. */
+  defaultConfigJson: unknown;
+  /** Platform-wide "on by default": an APPROVED addon with this set renders
+   * on its scope's surfaces even with no explicit install row. */
   enabledByDefault: boolean;
   createdAt: string;
   updatedAt: string;
@@ -4064,7 +4121,7 @@ const MOCK_ADDONS: AdminAddon[] = [
     bundleSizeBytes: 18400,
     moderationNote: null,
     defaultConfigJson: null,
-    enabledByDefault: true,
+    enabledByDefault: false,
     createdAt: '2026-08-01T00:00:00.000Z',
     updatedAt: '2026-08-01T00:00:00.000Z',
   },
@@ -4081,10 +4138,28 @@ const MOCK_ADDONS: AdminAddon[] = [
     currentVersion: '1.2.0',
     bundleSizeBytes: 22100,
     moderationNote: null,
-    defaultConfigJson: { showFollowers: true },
-    enabledByDefault: false,
+    defaultConfigJson: null,
+    enabledByDefault: true,
     createdAt: '2026-07-15T00:00:00.000Z',
     updatedAt: '2026-07-15T00:00:00.000Z',
+  },
+  {
+    id: 'addon-pending-example',
+    slug: 'pending-example',
+    scope: 'LISTENER',
+    status: 'PENDING',
+    name: 'Now spinning ticker',
+    description: 'Scrolling ticker of what every station is playing right now.',
+    authorName: 'Community',
+    categories: ['other'],
+    iconUrl: null,
+    currentVersion: '0.1.0',
+    bundleSizeBytes: 4200,
+    moderationNote: null,
+    defaultConfigJson: null,
+    enabledByDefault: false,
+    createdAt: '2026-09-01T00:00:00.000Z',
+    updatedAt: '2026-09-01T00:00:00.000Z',
   },
 ];
 
@@ -4113,11 +4188,6 @@ export async function fetchAdminAddons(
       query.set('status', status);
     }
     const suffix = query.size > 0 ? `?${query.toString()}` : '';
-    // The real route (apps/api/src/routes/admin/addons.ts) responds
-    // { widgets: [...] }, not { addons: [...] } — this previously read
-    // the wrong field and silently returned an empty list against a
-    // real backend (only worked in mock mode, where the shape is built
-    // by hand below).
     const data = await getJson<{ widgets: AdminAddon[] }>(
       `/api/admin/addons${suffix}`,
     );
@@ -4127,7 +4197,9 @@ export async function fetchAdminAddons(
   }
 }
 
-export type AdminAddonPatch = {
+export type AdminAddonRegisterInput = {
+  slug: string;
+  scope: AdminAddonScope;
   name: string;
   description: string;
   authorName: string;
@@ -4136,10 +4208,7 @@ export type AdminAddonPatch = {
 };
 
 export async function registerAdminAddon(
-  input: AdminAddonPatch & {
-    slug: string;
-    scope: AdminAddonScope;
-  },
+  input: AdminAddonRegisterInput,
 ): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
   if (forceMock()) {
     const addon: AdminAddon = {
@@ -4169,42 +4238,89 @@ export async function registerAdminAddon(
   }
 }
 
-export async function patchAdminAddon(
+function mockModerate(
   id: string,
-  patch: AdminAddonPatch,
+  status: AdminAddonStatus,
+  moderationNote: string | null,
+): { ok: true; data: AdminAddon } | { ok: false; error: string } {
+  const existing = mockAddons.find((addon) => addon.id === id);
+  if (!existing) {
+    return { ok: false, error: 'Add-on not found' };
+  }
+  const updated: AdminAddon = {
+    ...existing,
+    status,
+    moderationNote,
+    updatedAt: new Date().toISOString(),
+  };
+  mockAddons = mockAddons.map((addon) => (addon.id === id ? updated : addon));
+  return { ok: true, data: updated };
+}
+
+export async function approveAdminAddon(
+  id: string,
+  moderationNote?: string,
 ): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
   if (forceMock()) {
-    const existing = mockAddons.find((addon) => addon.id === id);
-    if (!existing) {
-      return { ok: false, error: 'Add-on not found' };
-    }
-    const updated = { ...existing, ...patch, iconUrl: patch.iconUrl || null };
-    mockAddons = mockAddons.map((addon) => (addon.id === id ? updated : addon));
-    return { ok: true, data: updated };
+    return mockModerate(id, 'APPROVED', moderationNote ?? null);
   }
   try {
     const data = await sendJson<AdminAddon>(
-      `/api/admin/addons/${encodeURIComponent(id)}`,
-      'PATCH',
-      patch,
+      `/api/admin/addons/${encodeURIComponent(id)}/approve`,
+      'POST',
+      moderationNote ? { moderationNote } : {},
     );
     return { ok: true, data };
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Update failed',
+      error: err instanceof Error ? err.message : 'Approve failed',
     };
   }
 }
 
-export async function deleteAdminAddon(
+export async function rejectAdminAddon(
   id: string,
-): Promise<{ ok: true } | { ok: false; error: string }> {
+  moderationNote: string,
+): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
   if (forceMock()) {
-    mockAddons = mockAddons.filter((addon) => addon.id !== id);
-    return { ok: true };
+    return mockModerate(id, 'REJECTED', moderationNote);
   }
-  return mutate(`/api/admin/addons/${encodeURIComponent(id)}`, 'DELETE');
+  try {
+    const data = await sendJson<AdminAddon>(
+      `/api/admin/addons/${encodeURIComponent(id)}/reject`,
+      'POST',
+      { moderationNote },
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Reject failed',
+    };
+  }
+}
+
+export async function disableAdminAddon(
+  id: string,
+  moderationNote?: string,
+): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
+  if (forceMock()) {
+    return mockModerate(id, 'DISABLED', moderationNote ?? null);
+  }
+  try {
+    const data = await sendJson<AdminAddon>(
+      `/api/admin/addons/${encodeURIComponent(id)}/disable`,
+      'POST',
+      moderationNote ? { moderationNote } : {},
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Disable failed',
+    };
+  }
 }
 
 export async function setAdminAddonEnabledByDefault(
@@ -4216,7 +4332,7 @@ export async function setAdminAddonEnabledByDefault(
     if (!existing) {
       return { ok: false, error: 'Add-on not found' };
     }
-    const updated = { ...existing, enabledByDefault };
+    const updated: AdminAddon = { ...existing, enabledByDefault };
     mockAddons = mockAddons.map((addon) => (addon.id === id ? updated : addon));
     return { ok: true, data: updated };
   }
@@ -4244,7 +4360,7 @@ export async function setAdminAddonDefaultConfig(
     if (!existing) {
       return { ok: false, error: 'Add-on not found' };
     }
-    const updated = { ...existing, defaultConfigJson };
+    const updated: AdminAddon = { ...existing, defaultConfigJson };
     mockAddons = mockAddons.map((addon) => (addon.id === id ? updated : addon));
     return { ok: true, data: updated };
   }
@@ -4503,6 +4619,10 @@ export type AdminActivityFilters = {
   actorId?: string;
   since?: string;
   until?: string;
+  /** Backend defaults to 'governance' (deliberately excludes login/like/chat
+   * "ops noise" for the board-facing governance audit view) — this admin
+   * activity feed wants everything, so it defaults to 'all' here instead. */
+  scope?: 'governance' | 'all';
 };
 
 function mockActivityEntries(): AdminActivityEntry[] {
@@ -4638,6 +4758,7 @@ export async function fetchAdminActivity(
     const qs = new URLSearchParams({
       page: String(page),
       limit: String(limit),
+      scope: filters.scope ?? 'all',
     });
     if (filters.action) {
       qs.set('action', filters.action);
@@ -4708,7 +4829,7 @@ export async function fetchAdminGovernanceActivity(): Promise<{
 }
 
 export function adminActivityExportCsvUrl(): string {
-  return `${apiBase()}/api/admin/audit/export.csv`;
+  return `${apiBase()}/api/admin/audit/export.csv?scope=all`;
 }
 
 // ── Admin container logs ─────────────────────────────────────────────────
