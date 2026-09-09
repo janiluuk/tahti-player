@@ -41,17 +41,21 @@ import {
   type ChannelLink,
 } from '../api/channel-design';
 import {
-  archiveItemToPlayable,
   fetchChannel,
-  fetchChannelArchive,
+  fetchChannelSound,
   fetchProfile,
+  soundItemToPlayable,
 } from '../api/client';
 import {
   fetchChannelDiscoWidgets,
   type DiscoWidgetRenderItem,
 } from '../api/disco-widgets';
 import { fetchPublicRadioShow, type PublicRadioShow } from '../api/shows';
-import type { ArchiveItem, PublicChannel, TahtiPlayable } from '../api/types';
+import type {
+  ChannelSoundItem,
+  PublicChannel,
+  TahtiPlayable,
+} from '../api/types';
 import { ChannelBackdropCard } from '../components/ChannelBackdropCard';
 import {
   ChannelDesigner,
@@ -129,7 +133,7 @@ export function ChannelView({ slug }: { slug: string }) {
   const search = useSearch({ strict: false }) as { edit?: boolean };
   const me = useAuthStore((s) => s.user);
   const [channel, setChannel] = useState<PublicChannel | null>(null);
-  const [archive, setArchive] = useState<ArchiveItem[]>([]);
+  const [sounds, setSounds] = useState<ChannelSoundItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [layout, setLayout] = useState<ChannelPageItem[]>(() =>
     loadChannelPageLayout(slug),
@@ -233,7 +237,7 @@ export function ChannelView({ slug }: { slug: string }) {
     });
     void Promise.all([
       fetchChannel(slug),
-      fetchChannelArchive(slug),
+      fetchChannelSound(slug),
       fetchChannelDiscoWidgets(slug),
       fetchPublicRadioShow(slug),
     ]).then(([ch, items, widgets, shows]) => {
@@ -241,7 +245,7 @@ export function ChannelView({ slug }: { slug: string }) {
         return;
       }
       setChannel(ch.data);
-      setArchive(items.data);
+      setSounds(items.data);
       setDiscoWidgets(widgets.data);
       setLiveShows(shows.data);
       setLoading(false);
@@ -327,21 +331,22 @@ export function ChannelView({ slug }: { slug: string }) {
   }, [channel?.slug]);
 
   const { pinnedPlayables, catalogPlayables } = useMemo(() => {
-    const pinnedItems = [...archive]
+    const pinnedItems = [...sounds]
       .filter((item) => isPinned(item))
       .sort((a, b) => (b.pinnedAt ?? '').localeCompare(a.pinnedAt ?? ''));
     const pinnedIds = new Set(pinnedItems.map((i) => i.id));
-    const toPlayable = (item: ArchiveItem) => archiveItemToPlayable(item, slug);
+    const toPlayable = (item: ChannelSoundItem) =>
+      soundItemToPlayable(item, slug);
     return {
       pinnedPlayables: pinnedItems
         .map(toPlayable)
         .filter((p): p is TahtiPlayable => Boolean(p)),
-      catalogPlayables: archive
+      catalogPlayables: sounds
         .filter((item) => !pinnedIds.has(item.id))
         .map(toPlayable)
         .filter((p): p is TahtiPlayable => Boolean(p)),
     };
-  }, [archive, slug]);
+  }, [sounds, slug]);
 
   const lookExtras = useMemo(() => {
     if (!channel) {
@@ -874,9 +879,9 @@ export function ChannelView({ slug }: { slug: string }) {
           </div>
         );
       }
-      case 'archive':
+      case 'sound':
         return (
-          <section id="channel-block-archive" className="flex flex-col gap-6">
+          <section id="channel-block-sound" className="flex flex-col gap-6">
             {!editing && (
               <h2 className="text-xl font-bold tracking-tight">Tracks</h2>
             )}
@@ -1550,7 +1555,7 @@ export function ChannelView({ slug }: { slug: string }) {
       ? 'player'
       : selectedType === 'header'
         ? 'backdrop'
-        : selectedType === 'archive'
+        : selectedType === 'sound'
           ? 'tracks'
           : null;
   const lookOpenSection =

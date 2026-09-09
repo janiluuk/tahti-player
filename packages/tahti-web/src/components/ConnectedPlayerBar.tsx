@@ -11,7 +11,7 @@ import { formatArtistNames } from '@tahti-player/model';
 import { Badge, Button, cn, PlayerBar, Tooltip } from '@tahti-player/ui';
 
 import { useIsMobile } from '../hooks/useIsMobile';
-import { soundIdFromPlayableId } from '../lib/archiveId';
+import { soundIdFromPlayableId } from '../lib/soundId';
 import { useAuthStore } from '../stores/authStore';
 import { useLayoutStore } from '../stores/layoutStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';

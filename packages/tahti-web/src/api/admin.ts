@@ -2786,7 +2786,7 @@ export function setUserStorageQuota(userId: string, quotaBytes: number) {
 
 export type AdminStorageUserFile = {
   id: string;
-  kind: 'archive' | 'stash';
+  kind: 'sound' | 'stash';
   title: string;
   sizeBytes: number | null;
   createdAt: string;
@@ -2838,7 +2838,7 @@ function mockStorageUserDetail(userId: string): AdminStorageUserDetail | null {
       running += f.sizeBytes ?? 0;
       return {
         id: f.id,
-        kind: f.contentType === 'STASH' ? 'stash' : 'archive',
+        kind: f.contentType === 'STASH' ? 'stash' : 'sound',
         title: f.title,
         sizeBytes: f.sizeBytes,
         createdAt: f.createdAt,
@@ -2890,10 +2890,10 @@ export type AdminFileRow = {
   username: string;
   displayName: string;
   audioUrl: string | null;
-  /** Count of ArchiveItemVersion rows — real, always populated by
+  /** Count of SoundItemVersion rows — real, always populated by
    * /api/admin/files (../tahti/apps/api/src/routes/admin/files.ts). */
   revisionCount: number;
-  /** ArchiveItem has no per-item R2-mirror field in the schema yet (unlike
+  /** ChannelSoundItem has no per-item R2-mirror field in the schema yet (unlike
    * ReleaseTrack/ReleaseTrackVersion, which do) — genuinely not tracked, not
    * just unwired here. Stays optional/undefined against the real API until
    * that schema + worker support exists; mock data fills it in for the UI. */
@@ -3082,7 +3082,7 @@ export type AdminContentReportStatus =
 export type AdminContentReportRow = {
   id: string;
   targetType:
-    | 'ARCHIVE_ITEM'
+    | 'SOUND_ITEM'
     | 'RELEASE'
     | 'CHANNEL'
     | 'COLLECTION'
@@ -3100,7 +3100,7 @@ function mockContentReports(): AdminContentReportRow[] {
   return [
     {
       id: 'rep-1',
-      targetType: 'ARCHIVE_ITEM',
+      targetType: 'SOUND_ITEM',
       targetId: 'arch-sub-1',
       reason: 'COPYRIGHT',
       details: 'Uses an unlicensed sample around 1:40.',
@@ -4641,7 +4641,7 @@ function mockActivityEntries(): AdminActivityEntry[] {
     },
     {
       id: 'mock-act-2',
-      action: 'ARCHIVE_ITEM_LIKE',
+      action: 'SOUND_ITEM_LIKE',
       actorId: 'u-2',
       actorDisplayName: 'Echo Harbor',
       actorUsername: 'echo-harbor',

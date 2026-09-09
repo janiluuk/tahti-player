@@ -32,7 +32,7 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
     (track) => track.kind === 'radio',
   );
   const audioFavorites = favoriteTracks.filter(
-    (track) => track.kind === 'archive' || Boolean(track.embed),
+    (track) => track.kind === 'sound' || Boolean(track.embed),
   );
 
   const body = (

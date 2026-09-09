@@ -101,7 +101,6 @@ import {
   resolveNowPlayingOverlayPreset,
 } from '../content/nowPlayingOverlayPresets';
 import { hasAccountRole } from '../lib/accountRoles';
-import { soundIdFromPlayableId } from '../lib/archiveId';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
 import {
   loadArtistLookVisibility,
@@ -112,6 +111,7 @@ import { isPinned } from '../lib/pinnedTracks';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { formatDuration } from '../lib/playableToTrack';
 import { syncDocumentMetadata } from '../lib/seo';
+import { soundIdFromPlayableId } from '../lib/soundId';
 import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
@@ -143,8 +143,8 @@ function releaseToPlayable(
   }
   const isHls = track.playUrl.includes('.m3u8');
   return {
-    id: `archive:${track.soundId ?? release.id}`,
-    kind: 'archive',
+    id: `sound:${track.soundId ?? release.id}`,
+    kind: 'sound',
     title: track.title,
     artist,
     coverUrl: release.artworkUrl ?? undefined,
@@ -258,8 +258,8 @@ export function profileTrackToPlayable(
   }
   const isHls = track.playUrl.includes('.m3u8');
   return {
-    id: `archive:${track.id}`,
-    kind: 'archive',
+    id: `sound:${track.id}`,
+    kind: 'sound',
     title: track.title,
     artist: track.artistName ?? artist,
     coverUrl: track.bannerUrl ?? undefined,
@@ -314,7 +314,7 @@ export function ArtistView({ username }: { username: string }) {
     | 'backgroundVisualPreset'
   > | null>(null);
   const [lookExtras, setLookExtras] = useState<ChannelLookExtras>({});
-  const [editingArchiveId, setEditingArchiveId] = useState<string | null>(null);
+  const [editingSoundId, setEditingSoundId] = useState<string | null>(null);
   const [avatarOpen, setAvatarOpen] = useState(false);
   const [discoWidgets, setDiscoWidgets] = useState<DiscoWidgetRenderItem[]>([]);
   const [liveShows, setLiveShows] = useState<PublicRadioShow | null>(null);
@@ -606,7 +606,7 @@ export function ArtistView({ username }: { username: string }) {
     currentPlayable?.artist === artist.displayName ? currentPlayable : null;
   const featuredPlayable = pinnedPlayables[0] ?? catalogPlayables[0] ?? null;
   const featuredTrack = profile.tracks.find(
-    (track) => `archive:${track.id}` === featuredPlayable?.id,
+    (track) => `sound:${track.id}` === featuredPlayable?.id,
   );
   const featuredIsCurrent = featuredPlayable?.id === currentId;
   const featuredIsPlaying =
@@ -1311,7 +1311,7 @@ export function ArtistView({ username }: { username: string }) {
               </Button>
               <Link
                 to="/t/$id"
-                params={{ id: featuredPlayable.id.replace(/^archive:/, '') }}
+                params={{ id: featuredPlayable.id.replace(/^sound:/, '') }}
                 className="text-foreground-secondary hover:text-foreground inline-flex items-center gap-1.5 text-sm transition-colors"
                 aria-label={`Comments on ${featuredPlayable.title}`}
               >
@@ -1473,7 +1473,7 @@ export function ArtistView({ username }: { username: string }) {
                 onEdit={
                   isOwner
                     ? (item) =>
-                        setEditingArchiveId(soundIdFromPlayableId(item.id))
+                        setEditingSoundId(soundIdFromPlayableId(item.id))
                     : undefined
                 }
               />
@@ -1667,8 +1667,8 @@ export function ArtistView({ username }: { username: string }) {
       />
 
       <TrackEditDialog
-        soundId={editingArchiveId}
-        onClose={() => setEditingArchiveId(null)}
+        soundId={editingSoundId}
+        onClose={() => setEditingSoundId(null)}
         onSaved={() => {
           void fetchProfile(username).then((res) => setProfile(res.data));
         }}

@@ -280,16 +280,16 @@ export function AudioEngine() {
 
   // Best-effort listen analytics once an archive item has played long enough.
   useEffect(() => {
-    if (!playable || playable.kind !== 'archive') {
+    if (!playable || playable.kind !== 'sound') {
       return;
     }
     if (currentTime < LISTEN_EVENT_AFTER_SEC) {
       return;
     }
-    if (!playable.id.startsWith('archive:')) {
+    if (!playable.id.startsWith('sound:')) {
       return;
     }
-    const soundId = playable.id.slice('archive:'.length);
+    const soundId = playable.id.slice('sound:'.length);
     if (!soundId || listenReportedRef.current.has(soundId)) {
       return;
     }

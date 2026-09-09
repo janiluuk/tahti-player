@@ -59,7 +59,7 @@ import {
 import { usePlayerStore } from '../../stores/playerStore';
 
 const FOLDERS = [
-  { id: 'archive' as const, label: 'Sounds', icon: AudioLinesIcon },
+  { id: 'sound' as const, label: 'Sounds', icon: AudioLinesIcon },
   { id: 'clips' as const, label: 'Clips', icon: AudioLinesIcon },
   { id: 'files' as const, label: 'Move to stash', icon: FolderIcon },
 ];
@@ -115,7 +115,7 @@ export function StudioSoundsView() {
       ? 'files'
       : search.folder === 'clips'
         ? 'clips'
-        : 'archive';
+        : 'sound';
   const [items, setItems] = useState<StudioSound[]>([]);
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(true);
@@ -162,7 +162,7 @@ export function StudioSoundsView() {
       if (folder === 'clips' && item.contentType !== 'CLIP') {
         return false;
       }
-      if (folder === 'archive' && item.contentType === 'CLIP') {
+      if (folder === 'sound' && item.contentType === 'CLIP') {
         return false;
       }
       const provider = item.embedProvider ?? 'NATIVE';
@@ -208,8 +208,8 @@ export function StudioSoundsView() {
     setBusyId(id);
     const { data } = await fetchEditorSource(id);
     play({
-      id: `archive:${id}`,
-      kind: 'archive',
+      id: `sound:${id}`,
+      kind: 'sound',
       title: data.title || title,
       artist: 'You',
       streamUrl: data.url,
@@ -272,7 +272,7 @@ export function StudioSoundsView() {
             }
             void navigate({
               to: '/studio/sounds',
-              search: next.id === 'archive' ? {} : { folder: next.id },
+              search: next.id === 'sound' ? {} : { folder: next.id },
             });
           }}
         >
@@ -287,7 +287,7 @@ export function StudioSoundsView() {
           </Tabs.List>
         </Tabs.Root>
         <ViewShell title="Sounds" classes={{ root: 'px-0 pt-0' }}>
-          {folder === 'archive' ? (
+          {folder === 'sound' ? (
             <div className="mb-4">
               <AddToMusicActions onUploaded={reload} />
             </div>
@@ -300,7 +300,7 @@ export function StudioSoundsView() {
               <div className="mb-4 flex flex-wrap items-center gap-3">
                 <Input
                   type="search"
-                  aria-label="Search archive"
+                  aria-label="Search sounds"
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder="Search…"

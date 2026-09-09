@@ -29,7 +29,7 @@ const isSingleTrack = (item: StudioSound) =>
   item.contentType !== 'CLIP';
 
 export function StudioRadioSubmissionPanel() {
-  const [archive, setArchive] = useState<StudioSound[]>([]);
+  const [sounds, setSounds] = useState<StudioSound[]>([]);
   const [submissions, setSubmissions] = useState<RadioSubmission[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
   const [note, setNote] = useState('');
@@ -43,8 +43,8 @@ export function StudioRadioSubmissionPanel() {
       fetchStudioSounds(),
       fetchMyRadioSubmissions(),
       fetchMetaStreamPreference(),
-    ]).then(([archiveResult, submissionResult, preference]) => {
-      setArchive(archiveResult.data);
+    ]).then(([soundResult, submissionResult, preference]) => {
+      setSounds(soundResult.data);
       setSubmissions(submissionResult.data);
       setOptedOut(preference.data.metaStreamOptOut);
       setLoading(false);
@@ -52,7 +52,7 @@ export function StudioRadioSubmissionPanel() {
   };
   useEffect(reload, []);
 
-  const candidates = useMemo(() => archive.filter(isSingleTrack), [archive]);
+  const candidates = useMemo(() => sounds.filter(isSingleTrack), [sounds]);
   const submitted = useMemo(
     () => new Map(submissions.map((item) => [item.sound.id, item])),
     [submissions],

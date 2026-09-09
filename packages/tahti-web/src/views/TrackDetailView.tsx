@@ -21,7 +21,7 @@ import { isHeaderImageUrl } from '../api/channel-design';
 import {
   fetchChannel,
   fetchProfile,
-  fetchPublicArchiveDownload,
+  fetchPublicSoundDownload,
   fetchTrackComments,
   fetchTrackDetail,
   postTrackComment,
@@ -76,8 +76,8 @@ function playableFromDetail(
   detail: PublicTrackDetail,
 ): TahtiPlayable {
   return {
-    id: `archive:${id}`,
-    kind: 'archive',
+    id: `sound:${id}`,
+    kind: 'sound',
     title: detail.title,
     artist: detail.artistName,
     coverUrl: detail.bannerUrl ?? undefined,
@@ -125,7 +125,7 @@ export function TrackDetailView({
   shareKey?: string;
 }) {
   const user = useAuthStore((s) => s.user);
-  const playableId = `archive:${id}`;
+  const playableId = `sound:${id}`;
   const remembered = useTrackDetailStore((s) => s.cache[playableId]);
   const queueItem = usePlayerStore((s) =>
     s.queue.find((q) => q.id === playableId),
@@ -391,7 +391,7 @@ export function TrackDetailView({
       return;
     }
     setDownloadBusy(true);
-    const result = await fetchPublicArchiveDownload(detail.channelSlug, id);
+    const result = await fetchPublicSoundDownload(detail.channelSlug, id);
     setDownloadBusy(false);
     if (!result.ok) {
       toast.error(result.error);

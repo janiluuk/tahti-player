@@ -14,8 +14,9 @@ type Props = {
 };
 
 /** Free-text tag input for track subgenres — pick a suggestion or type a
- * new one, matching the archive item's `subGenres` field (up to 12 entries,
- * 40 chars each — same limits the backend enforces). */
+ * new one and press Tab or Enter to commit it as a chip, matching the sound
+ * item's `subGenres` field (up to 12 entries, 40 chars each — same limits
+ * the backend enforces in SoundMetadataFieldsSchema). */
 export function SubgenreTagInput({ value, onChange, suggestions = [] }: Props) {
   const [draftKey, setDraftKey] = useState(0);
   const atLimit = value.length >= MAX_SUBGENRES;

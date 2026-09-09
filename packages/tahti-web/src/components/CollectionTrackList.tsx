@@ -3,9 +3,9 @@ import { Link } from '@tanstack/react-router';
 import { FavoriteButton, MediaArtwork } from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../api/types';
-import { soundIdFromPlayableId } from '../lib/archiveId';
 import { generatedArtworkUrl } from '../lib/placeholderArt';
 import { formatDuration } from '../lib/playableToTrack';
+import { soundIdFromPlayableId } from '../lib/soundId';
 import { useDominantColor } from '../lib/useDominantColor';
 import { useLibraryStore } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';

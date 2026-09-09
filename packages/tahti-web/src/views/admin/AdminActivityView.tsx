@@ -33,7 +33,7 @@ const ACTION_SCOPE: Record<string, string> = {
   ARCHIVE_EDIT_BOUNCE: 'content',
   ARCHIVE_EDIT_PUBLISH: 'content',
   ARCHIVE_METADATA_ADMIN_EDIT: 'content',
-  ARCHIVE_ITEM_LIKE: 'engagement',
+  SOUND_ITEM_LIKE: 'engagement',
   ARTIST_FOLLOW: 'engagement',
   FAN_SUBSCRIPTION_CREATE: 'money',
   LEDGER_ENTRY_CREATE: 'money',
@@ -107,7 +107,7 @@ function messageFor(entry: AdminActivityEntry): string {
       return `${actor} uploaded ${str('title') ?? 'a track'}`;
     case 'RELEASE_PUBLISH':
       return `${actor} published ${str('title') ?? 'a release'}`;
-    case 'ARCHIVE_ITEM_LIKE':
+    case 'SOUND_ITEM_LIKE':
       return `${actor} liked ${str('title') ?? 'a track'}`;
     case 'ARTIST_FOLLOW':
       return `${actor} followed ${str('artistDisplayName') ?? str('artistUsername') ?? 'an artist'}`;

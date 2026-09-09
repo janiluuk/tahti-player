@@ -725,7 +725,7 @@ function FilesBrowserTab() {
     }
     play({
       id: `admin-file:${file.id}`,
-      kind: 'archive',
+      kind: 'sound',
       title: resolved.title,
       artist: resolved.artistName,
       streamUrl: resolved.audioUrl,

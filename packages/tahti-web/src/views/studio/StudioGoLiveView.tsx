@@ -210,7 +210,7 @@ export function StudioGoLiveView() {
     setUsage(usageResult.data);
     setTargets(targetResult.data);
     setPreflight(preflightResult.data);
-    setRecordEnabled(preflightResult.data?.autoArchive ?? true);
+    setRecordEnabled(preflightResult.data?.autoPublish ?? true);
     if (
       !settingsResult.data &&
       settingsResult.meta.source === 'api' &&
@@ -303,7 +303,8 @@ export function StudioGoLiveView() {
     const next = !recordEnabled;
     setRecordEnabled(next);
     setRecordBusy(true);
-    const result = await patchBroadcastPreflight({ autoArchive: next });
+    setMessage(null);
+    const result = await patchBroadcastPreflight({ autoPublish: next });
     setRecordBusy(false);
     if ('error' in result) {
       setRecordEnabled(!next);

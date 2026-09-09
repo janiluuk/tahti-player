@@ -209,7 +209,7 @@ export function AdminAnnouncementsView() {
                               onClick={() => {
                                 play({
                                   id: `announcement:${clip.id}`,
-                                  kind: 'archive',
+                                  kind: 'sound',
                                   title: clip.title,
                                   artist: 'System announcement',
                                   streamUrl: clip.audioUrl!,

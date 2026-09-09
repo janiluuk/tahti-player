@@ -146,8 +146,8 @@ export function AdminTopListsView() {
                       onClick: () => {
                         if (entry.audioUrl) {
                           play({
-                            id: `archive:${entry.soundId}`,
-                            kind: 'archive',
+                            id: `sound:${entry.soundId}`,
+                            kind: 'sound',
                             title: entry.title,
                             artist: entry.artistName,
                             streamUrl: entry.audioUrl,

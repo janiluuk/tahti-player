@@ -39,7 +39,7 @@ import {
   ViewShell,
 } from '@tahti-player/ui';
 
-import { fetchArchiveVersions } from '../../api/archive-versions';
+import { fetchSoundVersions } from '../../api/sound-versions';
 import {
   fetchEditorDraft,
   fetchEditorSource,
@@ -262,7 +262,7 @@ export function StudioProEditorView({ soundId }: { soundId: string }) {
       return;
     }
     const timer = setInterval(() => {
-      void fetchArchiveVersions(soundId).then((r) => {
+      void fetchSoundVersions(soundId).then((r) => {
         const version = r.data.find((v) => v.id === renderPendingVersionId);
         if (
           !version ||

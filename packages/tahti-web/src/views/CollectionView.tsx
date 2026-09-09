@@ -46,23 +46,23 @@ import { usePlayerStore } from '../stores/playerStore';
 function collectionToPlayables(col: PublicCollection): TahtiPlayable[] {
   const out: TahtiPlayable[] = [];
   for (const item of col.items) {
-    const archive = item.sound;
-    if (!archive?.audioUrl) {
+    const sound = item.sound;
+    if (!sound?.audioUrl) {
       continue;
     }
-    const isHls = archive.audioUrl.includes('.m3u8');
+    const isHls = sound.audioUrl.includes('.m3u8');
     out.push({
-      id: `archive:${archive.id}`,
-      kind: 'archive',
-      title: archive.title,
+      id: `sound:${sound.id}`,
+      kind: 'sound',
+      title: sound.title,
       artist: col.user.displayName,
       coverUrl:
-        archive.bannerUrl ??
+        sound.bannerUrl ??
         col.coverUrl ??
-        placeholderArtworkUrl(`${col.slug}:${archive.id}`),
-      streamUrl: archive.audioUrl,
+        placeholderArtworkUrl(`${col.slug}:${sound.id}`),
+      streamUrl: sound.audioUrl,
       protocol: isHls ? 'hls' : 'https',
-      channelSlug: archive.channel?.slug,
+      channelSlug: sound.channel?.slug,
     });
   }
   return out;
@@ -140,16 +140,11 @@ export function CollectionView({
     if (!collection) {
       return [];
     }
-    const out: { archive: CollectionSound; provider: EmbedProvider }[] = [];
+    const out: { sound: CollectionSound; provider: EmbedProvider }[] = [];
     for (const item of collection.items) {
-      const archive = item.sound;
-      if (
-        archive &&
-        !archive.audioUrl &&
-        archive.embedProvider &&
-        archive.embedUri
-      ) {
-        out.push({ archive, provider: archive.embedProvider });
+      const sound = item.sound;
+      if (sound && !sound.audioUrl && sound.embedProvider && sound.embedUri) {
+        out.push({ sound, provider: sound.embedProvider });
       }
     }
     return out;
@@ -396,12 +391,12 @@ export function CollectionView({
             <Eyebrow>Elsewhere</Eyebrow>
           </h2>
           <ul className="flex flex-col gap-2">
-            {embedItems.map(({ archive, provider }) => (
+            {embedItems.map(({ sound, provider }) => (
               <EmbedTrackRow
-                key={archive.id}
-                title={archive.title}
+                key={sound.id}
+                title={sound.title}
                 provider={provider}
-                embedUri={archive.embedUri!}
+                embedUri={sound.embedUri!}
               />
             ))}
           </ul>

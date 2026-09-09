@@ -445,7 +445,7 @@ export function StudioScheduleView() {
   const [showVisibility, setShowVisibility] = useState<'PUBLIC' | 'FAN_ONLY'>(
     'PUBLIC',
   );
-  const [autoArchive, setAutoArchive] = useState(true);
+  const [autoPublish, setAutoPublish] = useState(true);
   const [episodeNumberEnabled, setEpisodeNumberEnabled] = useState(true);
   const [nextEpisodeNumber, setNextEpisodeNumber] = useState(1);
 
@@ -492,7 +492,7 @@ export function StudioScheduleView() {
     setDurationHours(show.intervalHours);
     setShowTagline(show.scheduleNote ?? '');
     setShowVisibility(show.visibility ?? 'PUBLIC');
-    setAutoArchive(show.autoArchive ?? true);
+    setAutoPublish(show.autoPublish ?? true);
     setEpisodeNumberEnabled(show.episodeNumberEnabled ?? true);
     setNextEpisodeNumber(show.nextEpisodeNumber);
     setFrequencyDays(show.recurrenceDays ?? []);
@@ -718,7 +718,7 @@ export function StudioScheduleView() {
         intervalHours: durationHours,
         scheduleNote: showTagline.trim() || null,
         visibility: showVisibility,
-        autoArchive,
+        autoPublish,
         episodeNumberEnabled,
         nextEpisodeNumber,
       });
@@ -954,8 +954,8 @@ export function StudioScheduleView() {
                   </span>
                   <Toggle
                     label="Publish recordings automatically"
-                    checked={autoArchive}
-                    onChange={setAutoArchive}
+                    checked={autoPublish}
+                    onChange={setAutoPublish}
                   />
                 </div>
                 {showMode === 'SERIES' ? (

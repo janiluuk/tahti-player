@@ -47,9 +47,9 @@ function failMeta(err: unknown): FetchMeta {
   };
 }
 
-/** A rendered/uploaded revision of an archive track. Old versions are kept
+/** A rendered/uploaded revision of a sound track. Old versions are kept
  * (not deleted) when a new one is rendered — GC is a server-side concern. */
-export type ArchiveVersion = {
+export type SoundVersion = {
   id: string;
   versionNumber: number;
   versionLabel: string;
@@ -64,7 +64,7 @@ export type ArchiveVersion = {
   createdAt: string;
 };
 
-const mockVersionsByItem = new Map<string, ArchiveVersion[]>();
+const mockVersionsByItem = new Map<string, SoundVersion[]>();
 const mockVersionFiles = new Map<string, { url: string; filename: string }>();
 
 function sourceFormatFromName(filename: string): string {
@@ -87,7 +87,7 @@ function sourceFormatFromName(filename: string): string {
   return 'mp3';
 }
 
-export function addMockArchiveVersion(
+export function addMockSoundVersion(
   soundId: string,
   input: {
     versionLabel: string;
@@ -95,7 +95,7 @@ export function addMockArchiveVersion(
     filename?: string;
     activate?: boolean;
   },
-): ArchiveVersion {
+): SoundVersion {
   const versions = mockVersions(soundId);
   const nextNumber =
     versions.reduce(
@@ -105,7 +105,7 @@ export function addMockArchiveVersion(
   const id = `ver-mock-${soundId}-${nextNumber}-${Date.now()}`;
   const filename = input.filename ?? 'revision.wav';
   const url = input.url ?? DEMO_MP3;
-  const row: ArchiveVersion = {
+  const row: SoundVersion = {
     id,
     versionNumber: nextNumber,
     versionLabel: input.versionLabel,
@@ -132,12 +132,12 @@ export function addMockArchiveVersion(
   return row;
 }
 
-function mockVersions(soundId: string): ArchiveVersion[] {
+function mockVersions(soundId: string): SoundVersion[] {
   const existing = mockVersionsByItem.get(soundId);
   if (existing) {
     return existing;
   }
-  const initial: ArchiveVersion[] = [
+  const initial: SoundVersion[] = [
     {
       id: `ver-mock-${soundId}-1`,
       versionNumber: 1,
@@ -166,8 +166,8 @@ function mockVersions(soundId: string): ArchiveVersion[] {
   return initial;
 }
 
-export async function fetchArchiveVersions(soundId: string): Promise<{
-  data: ArchiveVersion[];
+export async function fetchSoundVersions(soundId: string): Promise<{
+  data: SoundVersion[];
   meta: FetchMeta;
 }> {
   if (forceMock()) {
@@ -177,7 +177,7 @@ export async function fetchArchiveVersions(soundId: string): Promise<{
     };
   }
   try {
-    const { data } = await requestJson<ArchiveVersion[]>(
+    const { data } = await requestJson<SoundVersion[]>(
       `/api/me/sound/${encodeURIComponent(soundId)}/versions`,
     );
     return { data, meta: { source: 'api' } };
@@ -186,12 +186,10 @@ export async function fetchArchiveVersions(soundId: string): Promise<{
   }
 }
 
-export async function activateArchiveVersion(
+export async function activateSoundVersion(
   soundId: string,
   versionId: string,
-): Promise<
-  { ok: true; data: ArchiveVersion[] } | { ok: false; error: string }
-> {
+): Promise<{ ok: true; data: SoundVersion[] } | { ok: false; error: string }> {
   if (forceMock()) {
     const versions = mockVersions(soundId).map((v) => ({
       ...v,
@@ -201,7 +199,7 @@ export async function activateArchiveVersion(
     return { ok: true, data: versions };
   }
   try {
-    const { data } = await requestJson<ArchiveVersion[]>(
+    const { data } = await requestJson<SoundVersion[]>(
       `/api/me/sound/${encodeURIComponent(soundId)}/versions/${encodeURIComponent(versionId)}/activate`,
       { method: 'POST' },
     );
@@ -235,7 +233,7 @@ export async function fetchVersionDownloadUrl(
   }
 }
 
-export async function uploadArchiveVersion(
+export async function uploadSoundVersion(
   soundId: string,
   file: File,
   versionLabel: string,
@@ -245,7 +243,7 @@ export async function uploadArchiveVersion(
 > {
   const label = versionLabel.trim() || file.name || 'New revision';
   if (forceMock()) {
-    const row = addMockArchiveVersion(soundId, {
+    const row = addMockSoundVersion(soundId, {
       versionLabel: label,
       url: URL.createObjectURL(file),
       filename: file.name,

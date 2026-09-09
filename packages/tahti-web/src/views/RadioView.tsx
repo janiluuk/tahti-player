@@ -487,8 +487,8 @@ export function RadioView() {
                         {recent.map((item) => {
                           const playable: TahtiPlayable | null = item.audioUrl
                             ? {
-                                id: `archive:${item.id}`,
-                                kind: 'archive',
+                                id: `sound:${item.id}`,
+                                kind: 'sound',
                                 title: item.title,
                                 artist: item.artistName,
                                 coverUrl: item.artworkUrl ?? undefined,

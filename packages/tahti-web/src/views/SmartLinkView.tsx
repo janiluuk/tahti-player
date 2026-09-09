@@ -4,11 +4,7 @@ import { useEffect, useState, type FC } from 'react';
 
 import { Button } from '@tahti-player/ui';
 
-import {
-  fetchChannelArchive,
-  fetchProfile,
-  fetchSmartLink,
-} from '../api/client';
+import { fetchChannelSound, fetchProfile, fetchSmartLink } from '../api/client';
 import type {
   SmartLinkView as SmartLinkData,
   TahtiPlayable,
@@ -77,8 +73,8 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
             ?.filter((track) => track.playUrl)
             .map(
               (track): TahtiPlayable => ({
-                id: `archive:${track.soundId ?? `${matched.id}-${track.position}`}`,
-                kind: 'archive',
+                id: `sound:${track.soundId ?? `${matched.id}-${track.position}`}`,
+                kind: 'sound',
                 title: track.title,
                 artist: result.data.artist.displayName,
                 coverUrl: matched.artworkUrl ?? undefined,
@@ -87,20 +83,20 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
                 channelSlug: profile.data.channel?.slug,
               }),
             ) ?? [];
-        let archiveGenre = matched?.genre ?? null;
-        if (!archiveGenre && profile.data.channel?.slug && matched?.tracks) {
-          const archive = await fetchChannelArchive(profile.data.channel.slug);
-          const archiveIds = new Set(
+        let soundGenre = matched?.genre ?? null;
+        if (!soundGenre && profile.data.channel?.slug && matched?.tracks) {
+          const sound = await fetchChannelSound(profile.data.channel.slug);
+          const soundIds = new Set(
             matched.tracks
               .map((track) => track.soundId)
               .filter((id): id is string => Boolean(id)),
           );
-          archiveGenre =
-            archive.data.find((item) => archiveIds.has(item.id))?.genre ?? null;
+          soundGenre =
+            sound.data.find((item) => soundIds.has(item.id))?.genre ?? null;
         }
         if (!cancelled) {
           setPlayables(fromRelease);
-          setGenre(result.data.release.genre ?? archiveGenre);
+          setGenre(result.data.release.genre ?? soundGenre);
         }
       } catch {
         if (!cancelled) {

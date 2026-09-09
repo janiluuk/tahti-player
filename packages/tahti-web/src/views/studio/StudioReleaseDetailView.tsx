@@ -139,8 +139,8 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
       return null;
     }
     return {
-      id: `archive:${releaseTrack.soundId}`,
-      kind: 'archive',
+      id: `sound:${releaseTrack.soundId}`,
+      kind: 'sound',
       title: data.title || releaseTrack.title,
       artist: user?.displayName ?? 'You',
       streamUrl: data.url,
@@ -202,8 +202,8 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
       return;
     }
     play({
-      id: `archive:${firstTrack.soundId}`,
-      kind: 'archive',
+      id: `sound:${firstTrack.soundId}`,
+      kind: 'sound',
       title: firstTrack.title,
       artist: user?.displayName ?? 'You',
       streamUrl: source.data.url,
@@ -413,7 +413,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                                   if (!rt) {
                                     return;
                                   }
-                                  const playableId = `archive:${rt.soundId}`;
+                                  const playableId = `sound:${rt.soundId}`;
                                   if (currentId === playableId) {
                                     setPlaybackStatus(
                                       playbackStatus === 'playing' ||
@@ -450,7 +450,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                                   );
                                   return Boolean(
                                     rt?.soundId &&
-                                    currentId === `archive:${rt.soundId}`,
+                                    currentId === `sound:${rt.soundId}`,
                                   );
                                 },
                                 isTrackPlaying: (track) => {
@@ -460,7 +460,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                                   );
                                   return Boolean(
                                     rt?.soundId &&
-                                    currentId === `archive:${rt.soundId}` &&
+                                    currentId === `sound:${rt.soundId}` &&
                                     (playbackStatus === 'playing' ||
                                       playbackStatus === 'loading'),
                                   );
@@ -609,8 +609,8 @@ function ReleaseTrackRow({
     if (!track.soundId) {
       return;
     }
-    const archiveId = track.soundId;
-    void fetchStudioSound(archiveId).then((result) => {
+    const soundId = track.soundId;
+    void fetchStudioSound(soundId).then((result) => {
       if (result.data.embedProvider && result.data.embedUri) {
         setEmbed({
           provider: result.data.embedProvider,
@@ -618,7 +618,7 @@ function ReleaseTrackRow({
         });
         return;
       }
-      void fetchEditorSource(archiveId).then((source) =>
+      void fetchEditorSource(soundId).then((source) =>
         setSourceUrl(source.data.url),
       );
     });
@@ -649,8 +649,8 @@ function ReleaseTrackRow({
             aria-label={`Play ${track.title}`}
             onClick={() =>
               play({
-                id: `archive:${track.soundId}`,
-                kind: 'archive',
+                id: `sound:${track.soundId}`,
+                kind: 'sound',
                 title: track.title,
                 artist: 'You',
                 streamUrl: sourceUrl,
@@ -710,7 +710,7 @@ function ReleaseSmartLinksPanel({
     release.smartLinkTargets ?? {},
   );
   const [tracks, setTracks] = useState(release.tracks ?? []);
-  const [archive, setArchive] = useState<StudioSound[]>([]);
+  const [sounds, setSounds] = useState<StudioSound[]>([]);
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [contentType, setContentType] = useState('ALL');
@@ -730,7 +730,7 @@ function ReleaseSmartLinksPanel({
   }, [release]);
 
   useEffect(() => {
-    void fetchStudioSounds().then((result) => setArchive(result.data));
+    void fetchStudioSounds().then((result) => setSounds(result.data));
   }, []);
 
   useEffect(() => {
@@ -739,7 +739,7 @@ function ReleaseSmartLinksPanel({
 
   const filteredSounds = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
-    return archive.filter((item) => {
+    return sounds.filter((item) => {
       const matchesType =
         contentType === 'ALL' || item.contentType === contentType;
       const matchesQuery =
@@ -751,7 +751,7 @@ function ReleaseSmartLinksPanel({
           .includes(normalizedQuery);
       return matchesType && matchesQuery;
     });
-  }, [archive, contentType, query]);
+  }, [sounds, contentType, query]);
 
   const saveTargets = async () => {
     const cleaned = Object.fromEntries(
@@ -1045,7 +1045,7 @@ function ReleaseSmartLinksPanel({
               { id: 'ALL', label: 'All content' },
               ...[
                 ...new Set(
-                  archive.map((item) => item.contentType).filter(Boolean),
+                  sounds.map((item) => item.contentType).filter(Boolean),
                 ),
               ].map((type) => ({ id: type ?? '', label: type ?? '' })),
             ]}

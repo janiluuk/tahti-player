@@ -59,7 +59,7 @@ export const StashFilesPanel = () => {
   const [granteeUsername, setGranteeUsername] = useState('');
   const [permission, setPermission] = useState<'READ' | 'DOWNLOAD'>('DOWNLOAD');
   const [expiryDays, setExpiryDays] = useState(7);
-  const [archiveItems, setArchiveItems] = useState<StudioSound[]>([]);
+  const [soundItems, setSoundItems] = useState<StudioSound[]>([]);
   const [collections, setCollections] = useState<StudioCollection[]>([]);
   const [pendingDelete, setPendingDelete] = useState<StashFile | null>(null);
 
@@ -71,8 +71,8 @@ export const StashFilesPanel = () => {
   useEffect(() => {
     void reload();
     void Promise.all([fetchStudioSounds(), fetchStudioCollections()]).then(
-      ([archive, collectionResult]) => {
-        setArchiveItems(archive.data);
+      ([soundResult, collectionResult]) => {
+        setSoundItems(soundResult.data);
         setCollections(collectionResult.data);
       },
     );
@@ -89,7 +89,7 @@ export const StashFilesPanel = () => {
       setMessage(result.error);
       return;
     }
-    setArchiveItems((current) =>
+    setSoundItems((current) =>
       current.filter((candidate) => candidate.id !== item.id),
     );
     setMessage(`${item.title} moved to your private stash.`);
@@ -212,7 +212,7 @@ export const StashFilesPanel = () => {
         title="Add from your library"
         description="Move tracks and collections into your private stash. Private items are removed from public listings."
       >
-        {archiveItems.length === 0 && collections.length === 0 ? (
+        {soundItems.length === 0 && collections.length === 0 ? (
           <EmptyState
             size="sm"
             title="Nothing to move"
@@ -220,7 +220,7 @@ export const StashFilesPanel = () => {
           />
         ) : (
           <div className="flex flex-col gap-2">
-            {archiveItems
+            {soundItems
               .filter(
                 (item) =>
                   item.visibility !== 'PRIVATE' && item.isPublic !== false,
@@ -316,7 +316,7 @@ export const StashFilesPanel = () => {
                             }
                             play({
                               id: `stash:${file.id}`,
-                              kind: 'archive',
+                              kind: 'sound',
                               title: file.filename,
                               artist: 'Stash',
                               streamUrl: result.data.url,

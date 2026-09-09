@@ -67,7 +67,7 @@ export type SignalStatus = {
 export type BroadcastPreflight = {
   title: string | null;
   visibility: 'PUBLIC' | 'PRIVATE' | 'FAN_ONLY';
-  autoArchive: boolean;
+  autoPublish: boolean;
   showType: 'LIVE_SET' | 'TALK';
   episodeNumber: number | null;
   tagline: string | null;
@@ -88,7 +88,7 @@ export async function fetchBroadcastPreflight(): Promise<{
       data: {
         title: null,
         visibility: 'PUBLIC',
-        autoArchive: true,
+        autoPublish: true,
         showType: 'LIVE_SET',
         episodeNumber: null,
         tagline: null,

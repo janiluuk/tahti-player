@@ -57,7 +57,7 @@ export function playableFromLocalTrack(
   }
   return {
     id: `local:${track.id}`,
-    kind: 'archive',
+    kind: 'sound',
     title: track.title,
     artist: track.artist,
     streamUrl: track.objectUrl,

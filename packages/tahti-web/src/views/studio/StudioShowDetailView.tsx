@@ -202,7 +202,7 @@ export function StudioShowDetailView({ id }: { id: string }) {
   const [backdropUrl, setBackdropUrl] = useState('');
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [backdropFile, setBackdropFile] = useState<File | null>(null);
-  const [autoArchive, setAutoArchive] = useState(true);
+  const [autoPublish, setAutoPublish] = useState(true);
   const [savingMeta, setSavingMeta] = useState(false);
   const [showTab, setShowTab] = useState<
     'overview' | 'episodes' | 'recordings'
@@ -219,7 +219,7 @@ export function StudioShowDetailView({ id }: { id: string }) {
         setDescription(r.data.description);
         setThumbnailUrl(r.data.coverUrl ?? '');
         setBackdropUrl(r.data.backdropUrl ?? '');
-        setAutoArchive(r.data.autoArchive ?? true);
+        setAutoPublish(r.data.autoPublish ?? true);
       }
     });
     void fetchEpisodesForShow(id).then((r) => setEpisodes(r.data));
@@ -264,7 +264,7 @@ export function StudioShowDetailView({ id }: { id: string }) {
       description: description.trim(),
       coverUrl: thumbnailUrl.trim() || null,
       backdropUrl: backdropUrl.trim() || null,
-      autoArchive,
+      autoPublish,
     });
     setSavingMeta(false);
     if (!r.ok) {
@@ -505,8 +505,8 @@ export function StudioShowDetailView({ id }: { id: string }) {
                       </span>
                       <Toggle
                         label="Record broadcasts by default"
-                        checked={autoArchive}
-                        onChange={setAutoArchive}
+                        checked={autoPublish}
+                        onChange={setAutoPublish}
                       />
                     </div>
                     <div className="flex justify-end">

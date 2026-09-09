@@ -13,7 +13,7 @@ export function playableFromHearthisEmbed(input: {
 }): TahtiPlayable {
   return {
     id: input.playerId,
-    kind: 'archive',
+    kind: 'sound',
     title: input.title,
     artist: input.artist,
     coverUrl: input.coverUrl,
@@ -38,7 +38,7 @@ export function playableFromStudioHearthis(item: {
     return null;
   }
   return playableFromHearthisEmbed({
-    playerId: `archive:${item.id}`,
+    playerId: `sound:${item.id}`,
     title: item.title,
     artist: item.artistName || 'hearthis.at',
     coverUrl: item.bannerUrl ?? undefined,

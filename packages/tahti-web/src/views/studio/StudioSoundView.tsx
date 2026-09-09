@@ -228,7 +228,7 @@ export function StudioSoundView({ id }: { id: string }) {
     if (!item) {
       return;
     }
-    const playableId = `archive:${id}`;
+    const playableId = `sound:${id}`;
     if (currentId === playableId) {
       if (startAt !== undefined) {
         seekTo(startAt);
@@ -248,7 +248,7 @@ export function StudioSoundView({ id }: { id: string }) {
     const { data } = await fetchEditorSource(id);
     play({
       id: playableId,
-      kind: 'archive',
+      kind: 'sound',
       title: item.title,
       artist: item.artistName || user?.displayName || 'You',
       coverUrl: item.bannerUrl ?? undefined,
@@ -308,7 +308,7 @@ export function StudioSoundView({ id }: { id: string }) {
   const pinned = item ? isPinned(item) : false;
   const hasError = status === 'ERROR';
   const notReady = status != null && status !== 'READY' && !hasError;
-  const isCurrent = currentId === `archive:${id}`;
+  const isCurrent = currentId === `sound:${id}`;
   const isPlaying =
     isCurrent && (playerStatus === 'playing' || playerStatus === 'loading');
   const contentTypeLabel =

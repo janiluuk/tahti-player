@@ -45,7 +45,7 @@ export function StudioShowsView() {
   const [backdropFile, setBackdropFile] = useState<File | null>(null);
   const [intervalHours, setIntervalHours] = useState<1 | 2>(1);
   const [mode, setMode] = useState<ShowMode>('SERIES');
-  const [autoArchive, setAutoArchive] = useState(true);
+  const [autoPublish, setAutoPublish] = useState(true);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
@@ -80,7 +80,7 @@ export function StudioShowsView() {
       description: description.trim(),
       intervalHours,
       mode,
-      autoArchive,
+      autoPublish,
       coverUrl: thumbnailUrl.trim() || null,
       backdropUrl: backdropUrl.trim() || null,
     });
@@ -96,7 +96,7 @@ export function StudioShowsView() {
     setBackdropUrl('');
     setThumbnailFile(null);
     setBackdropFile(null);
-    setAutoArchive(true);
+    setAutoPublish(true);
     void navigate({ to: '/studio/shows/$id', params: { id: r.data.id } });
   };
 
@@ -193,8 +193,8 @@ export function StudioShowsView() {
                   </span>
                   <Toggle
                     label="Record broadcasts by default"
-                    checked={autoArchive}
-                    onChange={setAutoArchive}
+                    checked={autoPublish}
+                    onChange={setAutoPublish}
                   />
                 </div>
                 <FilterChips
