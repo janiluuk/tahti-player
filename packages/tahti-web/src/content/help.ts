@@ -32,7 +32,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
           'Library (signed in) holds sounds, collections, recordings, uploads, and related catalogue work under Studio.',
           'Studio is for artists: overview, branding, stats, posts, audience, go live, broadcast schedule, and channel controls.',
           'Help center and Settings live at the bottom of the sidebar. Settings covers account, themes, add-ons, and preferences.',
-          'The right rail is your queue, chat, and — on desktop — a Library tab for local files you import this session. The player appears only after a track is loaded.',
+          'The right rail is queue, chat, and notifications. Local audio import lives under Library → Local files. The player appears only after a track is loaded.',
         ],
       },
       {
@@ -219,23 +219,23 @@ export const HELP_ARTICLES: HelpArticle[] = [
   },
   {
     slug: 'desktop-library',
-    title: 'Desktop library and Soulseek',
+    title: 'Local files and Soulseek',
     description:
-      'Import local files into the player from the right-rail Library tab, and how Soulseek will connect later.',
+      'Import local audio from Library → Local files, and how Soulseek will connect later.',
     sections: [
       {
-        heading: 'Local library (desktop)',
+        heading: 'Local files',
         body: [
-          'On a wide desktop window, the right rail has a Library tab next to Chat, Notifications, and Queue. Choose audio files there to play them in the shared Tahti player.',
+          'Library → Local files lets you pick audio from this device and play it in the shared Tahti player. It uses the browser file picker, so it works in any browser session — not only a desktop app shell.',
           'Those files stay on this device for this browser session. Reloading the page clears the list. Uploading into your Tahti archive is still Studio → Upload.',
-          'Phones keep Chat, Notifications, and Queue only — the Library rail is desktop-only for now.',
+          'The Tahti Player desktop app (separate from this website) will later add deeper local-library and Soulseek bridges; until then, Local files stays available here without a fake “desktop-only” gate.',
         ],
       },
       {
         heading: 'Soulseek',
         body: [
           'Soulseek is peer-to-peer. Tahti does not search or transfer files through its servers. A later desktop add-on will connect with your own Soulseek account from the Tahti Player app.',
-          'Until that native bridge ships, Settings → Add-ons → Import shows a Configure dialog that explains the limit. Use the Library tab to import files you already have.',
+          'Until that native bridge ships, Settings → Add-ons → Import shows a Configure dialog that explains the limit. Use Library → Local files to import files you already have.',
           'You are responsible for what you share and download. Only use material you have the rights to.',
         ],
       },

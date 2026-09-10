@@ -2025,6 +2025,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
             <Dialog.Close>Cancel</Dialog.Close>
             <Button
               disabled={presetBusy}
+              variant="secondary"
               onClick={() => void confirmDeletePreset()}
             >
               Delete preset
@@ -2043,7 +2044,9 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
           </Dialog.Description>
           <Dialog.Actions>
             <Dialog.Close>Cancel</Dialog.Close>
-            <Button onClick={confirmReset}>Reset</Button>
+            <Button onClick={confirmReset} variant="secondary">
+              Reset
+            </Button>
           </Dialog.Actions>
         </Dialog.Root>
       </>

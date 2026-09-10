@@ -1,7 +1,9 @@
 import { Link } from '@tanstack/react-router';
+import { useEffect } from 'react';
 
 import { FavoriteButton, MediaArtwork } from '@tahti-player/ui';
 
+import { fetchTrackDetail } from '../api/client';
 import type { TahtiPlayable } from '../api/types';
 import { generatedArtworkUrl } from '../lib/placeholderArt';
 import { formatDuration } from '../lib/playableToTrack';
@@ -23,6 +25,8 @@ function TrackRow({ item }: { item: TahtiPlayable }) {
   const status = usePlayerStore((s) => s.status);
   const currentTime = usePlayerStore((s) => s.currentTime);
   const duration = usePlayerStore((s) => s.duration);
+  const peaksById = usePlayerStore((s) => s.peaksById);
+  const cachePeaks = usePlayerStore((s) => s.cachePeaks);
   const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
   const favorited = useLibraryStore((s) =>
     s.favoriteTracks.some((t) => t.id === item.id),
@@ -39,18 +43,39 @@ function TrackRow({ item }: { item: TahtiPlayable }) {
   const ambient = rgb
     ? `radial-gradient(circle at 15% 0%, rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.5), transparent 60%)`
     : undefined;
+  const peaks =
+    (item.peaks?.length ? item.peaks : null) ?? peaksById[item.id] ?? null;
+
+  useEffect(() => {
+    if (!isCurrent || peaks?.length || !soundId) {
+      return;
+    }
+    let cancelled = false;
+    void fetchTrackDetail(soundId)
+      .then(({ data }) => {
+        if (!cancelled && data?.peaks?.length) {
+          cachePeaks(item.id, data.peaks);
+        }
+      })
+      .catch(() => {
+        /* peaks are visual-only */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [isCurrent, peaks?.length, soundId, item.id, cachePeaks]);
 
   const togglePlayback = () => {
     if (isCurrent) {
       setStatus(isPlaying ? 'paused' : 'playing');
       return;
     }
-    play(item);
+    play(peaks?.length ? { ...item, peaks } : item);
   };
 
   const seekFraction = (fraction: number) => {
     if (!isCurrent) {
-      play(item);
+      play(peaks?.length ? { ...item, peaks } : item);
       return;
     }
     if (totalDuration > 0) {
@@ -107,6 +132,8 @@ function TrackRow({ item }: { item: TahtiPlayable }) {
           <WaveformSeekbar
             trackId={item.id}
             progress={progress}
+            peaks={peaks}
+            bars={peaks?.length || 64}
             className="mt-2 h-10 sm:h-12"
             playedColor={PLAYED_WAVE_COLOR}
             unplayedColor={UNPLAYED_WAVE_COLOR}

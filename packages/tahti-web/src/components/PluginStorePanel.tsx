@@ -1016,7 +1016,7 @@ function DspUrlPasteCard() {
         to={(urlTool?.studioDeepLink ?? '/studio/releases') as never}
         onClick={() => useSettingsModalStore.getState().close()}
       >
-        <Button size="sm">
+        <Button size="sm" variant="secondary">
           <Link2Icon size={16} aria-hidden className="mr-1.5" />
           Open releases editor
         </Button>

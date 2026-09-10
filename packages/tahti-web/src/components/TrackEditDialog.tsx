@@ -719,6 +719,7 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
                           >
                             <Button
                               size="icon-sm"
+                              variant="secondary"
                               disabled={playBusy}
                               onClick={() =>
                                 void (isPlaying
@@ -1112,7 +1113,11 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
                             new one.
                           </p>
                         </div>
-                        <Button size="sm" onClick={() => setPlaylistOpen(true)}>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => setPlaylistOpen(true)}
+                        >
                           <ListMusicIcon size={15} aria-hidden />
                           Choose playlists
                         </Button>

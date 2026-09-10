@@ -15,17 +15,12 @@ Sibling API: **`../tahti-org`**. Product matrix: [`FEATURES.md`](FEATURES.md) Re
 
 ## Next (queued after today's cycles)
 
-- [ ] **Tahti theme refactor** — Select orange-by-default fixed; tahti-web
-  default is now `nuclear:tahti-dark` (2026-09-10); viz gate includes
-  `nuclear:default`; ambient opacity/surface transparency bumped. Still
-  open: Button call-site audit + contrast live-verify. Leaf:
-  [tahti-theme-refactor.md](../../docs/todo/tahti-theme-refactor.md).
 - [ ] **(Later) Channel Designer: fold bio/CTA/avatar into backdrop toggles; feed/posts widgets** — bio/CTA/avatar stop being separate draggable blocks, become backdrop show-toggles; add configurable feed/posts channel widgets with tracklist/card-row display toggle. Leaf: [channel-designer-backdrop-fold-and-widgets.md](../../docs/todo/channel-designer-backdrop-fold-and-widgets.md).
 - [ ] **(Later) Restyle /governance page** — `views/GovernanceView.tsx` (public/member-facing, route `/governance`, distinct from `AdminGovernanceView`/`StudioGovernanceView`). Rebuild with proper Storybook `@tahti-player/ui` components, a real visual grid layout, and add some color — currently plain/flat.
 - [ ] **(Later) Desktop status bar: local track count/size** — web icons + cloud storage shipped 2026-09-08; desktop app should still show local library totals beside cloud.
 - [ ] **(Later) Discussion topics, not just feature requests** — `admin/moderation/tabs/FeatureRequestsTab.tsx` currently only handles feature-request tickets. Add admin-creatable discussion topics as a distinct concept (not a feature request). Participants get notified on new updates to a topic they're in; users can mute a specific topic.
 
-- [ ] **(Later) Codebase refactor hotspots** — god modules / mega-files backlog. Leaf: [codebase-refactor-hotspots.md](../../docs/todo/codebase-refactor-hotspots.md).
+- [ ] **(Later) Codebase refactor hotspots** — god modules / mega-files backlog. First slice (`api/http.ts`) shipped 2026-09-10. Leaf: [codebase-refactor-hotspots.md](../../docs/todo/codebase-refactor-hotspots.md).
 
 ## Cross-repo work (`../tahti-org` — user-authorized 2026-09-07)
 

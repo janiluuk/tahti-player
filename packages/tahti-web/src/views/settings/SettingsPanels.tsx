@@ -1422,7 +1422,9 @@ function ChannelPanel() {
                 search={{ tab: 'channel-designer' }}
                 onClick={closeSettings}
               >
-                <Button size="sm">Open Channel Designer</Button>
+                <Button size="sm" variant="secondary">
+                  Open Channel Designer
+                </Button>
               </Link>
             </div>
           ),

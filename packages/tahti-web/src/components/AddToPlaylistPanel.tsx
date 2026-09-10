@@ -225,7 +225,11 @@ export function AddToPlaylistPanel({
                 title="No playlists yet"
                 description="Create one to save this track."
                 action={
-                  <Button size="sm" onClick={() => setCreating(true)}>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => setCreating(true)}
+                  >
                     New
                   </Button>
                 }

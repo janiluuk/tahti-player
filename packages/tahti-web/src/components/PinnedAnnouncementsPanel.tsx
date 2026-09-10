@@ -73,6 +73,7 @@ export function PinnedAnnouncementsPanel({ slug }: { slug: string }) {
           <Tooltip content="Pin announcement" side="top">
             <Button
               size="icon-sm"
+              variant="secondary"
               aria-label="Pin announcement"
               disabled={busy || !body.trim()}
               onClick={() => void publish()}

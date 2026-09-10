@@ -45,7 +45,10 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
 
 ## Suggested first slices (when picked up)
 
-1. **Shared admin/client HTTP helper** — extract `api/http.ts` (credentials, JSON, error detail) used by admin + one migrated client call; no behavior change. Unlocks safer subsequent splits.
+1. ~~**Shared admin/client HTTP helper**~~ — **2026-09-10:** extracted
+   `api/http.ts` (`apiBase` / `getJson` / `sendJson` / `mutate`);
+   `admin.ts` imports it. `client.ts` still has its own `requestJson` —
+   adopt when splitting client domains.
 2. **`PluginStorePanel` category extraction** — move Radio + Service (OAuth/Spotify/Hearthis) cards to sibling files; leave Themes/Visualizers for a follow-up. High readability win, low API risk.
 3. **`admin.ts` domain peel (radio + storage + addons)** — three of the densest clusters (~17 / storage / ~7 addon functions); keep `admin.ts` as re-export barrel until importers migrate optionally.
 

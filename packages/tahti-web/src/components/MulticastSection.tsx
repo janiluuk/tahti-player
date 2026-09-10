@@ -383,6 +383,7 @@ function DestinationsGrid() {
         <Tooltip content="Add multicast source" side="top">
           <Button
             size="icon-sm"
+            variant="secondary"
             aria-label="Add multicast source"
             onClick={() => setEditing({ providerId: null, target: null })}
           >

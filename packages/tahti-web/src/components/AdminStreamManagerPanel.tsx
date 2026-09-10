@@ -426,7 +426,7 @@ export function AdminStreamManagerPanel({
                 target="_blank"
                 rel="noreferrer"
               >
-                <Button>Open channel</Button>
+                <Button variant="secondary">Open channel</Button>
               </a>
             </Dialog.Actions>
           </>
