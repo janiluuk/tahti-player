@@ -88,7 +88,9 @@ export function ImageSlotPreviewDialog({
           <Button variant="secondary" onClick={onRequestDelete}>
             Delete
           </Button>
-          <Button onClick={onChangeClick}>Change</Button>
+          <Button onClick={onChangeClick} variant="secondary">
+            Change
+          </Button>
         </Dialog.Actions>
       </Dialog.Root>
 

@@ -59,7 +59,7 @@ export function PageError({
       description={description}
       action={
         onRetry ? (
-          <Button size="sm" onClick={onRetry}>
+          <Button size="sm" onClick={onRetry} variant="secondary">
             Retry
           </Button>
         ) : undefined

@@ -1,3 +1,11 @@
+## 2026-09-10 — v0.0.109: collection peaks, directory ambient glow, Button audit, local-files close, api/http
+
+Collection rows lazy-fetch real peaks for the current track. Discover/Listen
+artist grids get a page-level avatar wash (not per-card bleed). Ordinary
+actions audited onto `variant="secondary"`. Local-files desktop gate closed
+as “keep visible / browser File API” with Help updated. First
+codebase-refactor slice: shared `api/http.ts` for admin transport.
+
 ## 2026-09-10 — v0.0.108: empty waveform, motions Load more, tahti-dark default, Discover gateway
 
 Peakless waveforms are a flat dim placeholder (no fake PRNG). Governance

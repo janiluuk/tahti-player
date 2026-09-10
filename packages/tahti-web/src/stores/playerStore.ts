@@ -48,6 +48,8 @@ type PlayerState = {
   /** Shared Web Audio analyser for channel visualizers (set by AudioEngine). */
   analyser: AnalyserNode | null;
   setAnalyser: (analyser: AnalyserNode | null) => void;
+  /** Cache waveform peaks for a playable id; updates currentPeaks when that id is playing. */
+  cachePeaks: (id: string, peaks: number[]) => void;
   play: (item: TahtiPlayable, opts?: { enqueueRest?: TahtiPlayable[] }) => void;
   enqueue: (item: TahtiPlayable) => void;
   /** Insert right after the current track, replacing any earlier occurrence. */
@@ -154,6 +156,16 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   analyser: null,
 
   setAnalyser: (analyser) => set({ analyser }),
+
+  cachePeaks: (id, peaks) => {
+    if (!peaks.length) {
+      return;
+    }
+    set((s) => ({
+      peaksById: { ...s.peaksById, [id]: peaks },
+      currentPeaks: s.currentId === id ? peaks : s.currentPeaks,
+    }));
+  },
 
   play: (item, opts) => {
     const head = toQueueItem(item);

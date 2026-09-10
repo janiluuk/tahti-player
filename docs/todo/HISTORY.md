@@ -2,6 +2,23 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-10 — Collection peaks; directory ambient; Button audit; local-files; api/http
+
+Workplan cycle shipped as **0.0.109**:
+
+- **waveform-detail-accuracy:** CollectionTrackList lazy-fetches
+  `fetchTrackDetail` peaks for the current row + `cachePeaks` on
+  playerStore (collection list API still has no peaks field).
+- **mobile-player-nav-and-tahti-theme-visuals:** thumbnail glow via
+  grid-level avatar wash + wider CardGrid gap (per-card bleed abandoned).
+- **tahti-theme-refactor:** Button call-site audit (ordinary actions →
+  `secondary`); tahti-dark `--primary`/`--secondary` pair verified from
+  theme tokens (dark fg on coral primary; teal secondary).
+- **local-files-moved-to-library-tab:** desktop-mode gate closed —
+  no Tauri signal in tahti-web; tab stays visible; Help updated.
+- **codebase-refactor-hotspots:** first slice — `api/http.ts` shared
+  transport; `admin.ts` imports it (god-module split backlog remains).
+
 ## 2026-09-10 — Waveform empty placeholder; motions cursor; theme default; Discover gateway; gallery lightbox delete
 
 Workplan cycle after v0.0.107 (shipped as **0.0.108**):
