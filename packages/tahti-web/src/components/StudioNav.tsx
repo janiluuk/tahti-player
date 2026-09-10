@@ -3,6 +3,7 @@ import {
   CreditCardIcon,
   HeartIcon,
   LandmarkIcon,
+  LayersIcon,
   LayoutGridIcon,
   ListMusicIcon,
   PaletteIcon,
@@ -24,18 +25,13 @@ import { SectionTabs } from './SectionTabs';
 
 type StudioSubmenuLabelKey =
   | (typeof SUBMENUS)[keyof typeof SUBMENUS][number]['labelKey']
-  | 'studio.stripe';
+  | 'studio.stripe'
+  | 'studio.tiers';
 
 type StudioSubmenuItem = {
   to: string;
   labelKey: StudioSubmenuLabelKey;
   icon: ReactNode;
-};
-
-export const STRIPE_NAV_ITEM: StudioSubmenuItem = {
-  to: '/studio/stripe',
-  labelKey: 'studio.stripe',
-  icon: <CreditCardIcon size={16} />,
 };
 
 const PRIMARY = [
@@ -47,14 +43,6 @@ const PRIMARY = [
       'Your channel snapshot — status, quick links, and recent activity.',
     descriptionKey: 'studio.studioDescription',
     icon: <LayoutGridIcon size={16} aria-hidden />,
-  },
-  {
-    to: '/studio/go-live',
-    label: 'Perform',
-    labelKey: 'nav.perform',
-    description: 'Go live, schedule broadcasts, and manage performances.',
-    descriptionKey: 'studio.performDescription',
-    icon: <RadioTowerIcon size={16} aria-hidden />,
   },
 ] as const;
 
@@ -86,7 +74,7 @@ export const SUBMENUS = {
       icon: <TrendingUpIcon size={16} />,
     },
     {
-      to: '/studio/revenue',
+      to: '/studio/audience',
       labelKey: 'studio.audience',
       icon: <HeartIcon size={16} />,
     },
@@ -100,40 +88,72 @@ export const SUBMENUS = {
       labelKey: 'studio.editor',
       icon: <SlidersHorizontalIcon size={16} />,
     },
-  ],
-  '/studio/go-live': [
     {
       to: '/studio/go-live',
       labelKey: 'studio.goLive',
       icon: <RadioTowerIcon size={16} />,
     },
-    {
-      to: '/studio/schedule',
-      labelKey: 'studio.schedule',
-      icon: <RadioIcon size={16} />,
-    },
-    {
-      to: '/studio/events',
-      labelKey: 'studio.events',
-      icon: <RadioIcon size={16} />,
-    },
-    {
-      to: '/studio/shows',
-      labelKey: 'studio.shows',
-      icon: <RadioIcon size={16} />,
-    },
-    {
-      to: '/studio/channel',
-      labelKey: 'studio.channel',
-      icon: <Settings2Icon size={16} />,
-    },
-    {
-      to: '/studio/channel?tab=radio',
-      labelKey: 'nav.radio',
-      icon: <RadioIcon size={16} />,
-    },
   ],
 } as const;
+
+/** Perform used to be its own primary nav item with this submenu; it's now
+ * folded into Studio as a single "Broadcast" tab (`studio.goLive` above),
+ * and these pages get their own nested tab strip via `BroadcastSubNav`
+ * instead of a second top-level Studio submenu section. */
+export const BROADCAST_SUBNAV_ITEMS = [
+  {
+    to: '/studio/go-live',
+    labelKey: 'studio.goLive' as const,
+    icon: <RadioTowerIcon size={16} />,
+  },
+  {
+    to: '/studio/schedule',
+    labelKey: 'studio.schedule' as const,
+    icon: <RadioIcon size={16} />,
+  },
+  {
+    to: '/studio/events',
+    labelKey: 'studio.events' as const,
+    icon: <RadioIcon size={16} />,
+  },
+  {
+    to: '/studio/shows',
+    labelKey: 'studio.shows' as const,
+    icon: <RadioIcon size={16} />,
+  },
+  {
+    to: '/studio/channel',
+    labelKey: 'studio.channel' as const,
+    icon: <Settings2Icon size={16} />,
+  },
+  {
+    to: '/studio/channel?tab=radio',
+    labelKey: 'nav.radio' as const,
+    icon: <RadioIcon size={16} />,
+  },
+] as const;
+
+/** Audience used to grow a sibling "Stripe" Studio tab when Connect was
+ * configured. Mirror Broadcast: one Studio "Audience" tab stays lit for the
+ * whole group, and Overview / Tiers / Stripe live in `AudienceSubNav`. */
+export const AUDIENCE_SUBNAV_ITEMS = [
+  {
+    to: '/studio/audience',
+    labelKey: 'studio.overview' as const,
+    icon: <LayoutGridIcon size={16} />,
+  },
+  {
+    to: '/studio/audience?tab=tiers',
+    labelKey: 'studio.tiers' as const,
+    icon: <LayersIcon size={16} />,
+  },
+  {
+    to: '/studio/stripe',
+    labelKey: 'studio.stripe' as const,
+    icon: <CreditCardIcon size={16} />,
+    stripeOnly: true,
+  },
+] as const;
 
 export const STUDIO_NAV_TOUR_STEPS: TourStep[] = PRIMARY.map(
   (item): TourStep => ({
@@ -150,18 +170,14 @@ const SECTION_PREFIXES: Record<string, readonly string[]> = {
     '/studio/stats',
     '/studio/governance',
     '/studio/updates',
+    '/studio/audience',
     '/studio/revenue',
     '/studio/stripe',
-    '/library',
     '/studio/sounds',
     '/studio/releases',
     '/studio/distribution',
-    '/library/collections',
     '/studio/collections',
-    '/library/recordings',
     '/studio/recordings',
-    '/library/smartlinks',
-    '/library/upload',
     '/studio/editor',
     '/studio/mastering',
     '/studio/stash',
@@ -169,9 +185,6 @@ const SECTION_PREFIXES: Record<string, readonly string[]> = {
     '/studio/insights',
     '/studio/setup-channel',
     '/studio/archive',
-    '/library/media',
-  ],
-  '/studio/go-live': [
     '/studio/go-live',
     '/studio/info',
     '/studio/schedule',
@@ -203,40 +216,39 @@ export const getStudioPrimaryRoute = (current: string | undefined) =>
 
 export function getStudioSubmenuItems(
   section: keyof typeof SUBMENUS,
-  options: { stripeConfigured?: boolean } = {},
 ): StudioSubmenuItem[] {
-  const items: StudioSubmenuItem[] = [...SUBMENUS[section]];
-  if (section === '/studio' && options.stripeConfigured === true) {
-    const audienceIndex = items.findIndex(
-      (item) => item.to === '/studio/revenue',
-    );
-    const insertAt = audienceIndex === -1 ? items.length : audienceIndex + 1;
-    items.splice(insertAt, 0, STRIPE_NAV_ITEM);
-  }
-  return items;
+  // Stripe is nested under Audience via AudienceSubNav (same pattern as
+  // BroadcastSubNav) — do not insert it as a Studio sibling tab.
+  return [...SUBMENUS[section]];
 }
 
 const isSubmenuActive = (current: string | undefined, to: string) => {
   const pathname = current?.split('?')[0];
-  if (to === '/studio/channel?tab=radio') {
-    return (
-      current === '/studio/channel?tab=radio' ||
-      current === '/studio/channel?tab=multicast'
-    );
-  }
-  if (to === '/studio/channel') {
-    return (
-      pathname === '/studio/channel' &&
-      current !== '/studio/channel?tab=radio' &&
-      current !== '/studio/channel?tab=multicast'
-    );
-  }
+  // Every former Perform/go-live page (now nested under this single
+  // Broadcast tab via BroadcastSubNav) lights Studio's Broadcast tab.
   if (to === '/studio/go-live') {
-    return pathname === '/studio/go-live' || pathname === '/studio/info';
+    return (
+      pathname === '/studio/go-live' ||
+      pathname === '/studio/info' ||
+      pathname === '/studio/schedule' ||
+      pathname === '/studio/events' ||
+      pathname?.startsWith('/studio/events/') === true ||
+      pathname === '/studio/shows' ||
+      pathname?.startsWith('/studio/shows/') === true ||
+      pathname === '/studio/channel'
+    );
   }
   if (to === '/studio/branding') {
     return (
       pathname === '/studio/branding' || pathname === '/studio/setup-channel'
+    );
+  }
+  // Audience parent tab stays lit for Overview, Tiers, and Stripe.
+  if (to === '/studio/audience') {
+    return (
+      pathname === '/studio/audience' ||
+      pathname === '/studio/revenue' ||
+      pathname === '/studio/stripe'
     );
   }
   if (to === '/studio/stats') {
@@ -282,15 +294,116 @@ const isSubmenuActive = (current: string | undefined, to: string) => {
 
 export function litStudioSubmenuDestinations(
   current: string | undefined,
-  options: { stripeConfigured?: boolean } = {},
 ): string[] {
   const section = getStudioPrimaryRoute(current);
   if (!section || !(section in SUBMENUS)) {
     return [];
   }
-  return getStudioSubmenuItems(section, options)
+  return getStudioSubmenuItems(section as keyof typeof SUBMENUS)
     .filter((item) => isSubmenuActive(current, item.to))
     .map((item) => item.to);
+}
+
+export const isBroadcastSubnavActive = (
+  current: string | undefined,
+  to: string,
+) => {
+  const pathname = current?.split('?')[0];
+  if (to === '/studio/channel?tab=radio') {
+    return (
+      current === '/studio/channel?tab=radio' ||
+      current === '/studio/channel?tab=multicast'
+    );
+  }
+  if (to === '/studio/channel') {
+    return (
+      pathname === '/studio/channel' &&
+      current !== '/studio/channel?tab=radio' &&
+      current !== '/studio/channel?tab=multicast'
+    );
+  }
+  if (to === '/studio/go-live') {
+    return pathname === '/studio/go-live' || pathname === '/studio/info';
+  }
+  return pathname === to || pathname?.startsWith(`${to}/`) === true;
+};
+
+/** Second-level tab strip nested inside every Broadcast-group page
+ * (go-live, schedule, events, shows, channel) — Studio's own submenu only
+ * shows one "Broadcast" tab for all of these (see `isSubmenuActive`
+ * above), so this is where Schedule/Events/Shows/Channel/Radio become
+ * reachable. */
+export function BroadcastSubNav({ current }: { current?: string }) {
+  const { t } = useTranslation('web');
+  return (
+    <div
+      className="border-border min-w-0 border-b pb-2"
+      data-broadcast-navigation
+    >
+      <SectionTabs
+        aria-label="Broadcast pages"
+        items={BROADCAST_SUBNAV_ITEMS.map((item) => ({
+          id: item.to,
+          to: item.to,
+          label: t(item.labelKey),
+          icon: item.icon,
+          active: isBroadcastSubnavActive(current, item.to),
+        }))}
+      />
+    </div>
+  );
+}
+
+export const isAudienceSubnavActive = (
+  current: string | undefined,
+  to: string,
+) => {
+  const pathname = current?.split('?')[0];
+  if (to === '/studio/audience?tab=tiers') {
+    return (
+      current === '/studio/audience?tab=tiers' ||
+      (pathname === '/studio/audience' &&
+        current?.includes('tab=tiers') === true)
+    );
+  }
+  if (to === '/studio/audience') {
+    return (
+      (pathname === '/studio/audience' || pathname === '/studio/revenue') &&
+      current?.includes('tab=tiers') !== true
+    );
+  }
+  if (to === '/studio/stripe') {
+    return pathname === '/studio/stripe';
+  }
+  return pathname === to;
+};
+
+/** Second-level tab strip for Audience-group pages (overview, tiers, Stripe).
+ * Studio's submenu only shows one "Audience" tab for all of these. */
+export function AudienceSubNav({ current }: { current?: string }) {
+  const { t } = useTranslation('web');
+  const stripeConfigured = useStripeConfigured();
+  const items = AUDIENCE_SUBNAV_ITEMS.filter(
+    (item) => !('stripeOnly' in item && item.stripeOnly) || stripeConfigured,
+  );
+
+  return (
+    <div
+      className="border-border min-w-0 border-b pb-2"
+      data-audience-navigation
+    >
+      <SectionTabs
+        aria-label="Audience pages"
+        items={items.map((item) => ({
+          id: item.to,
+          to: item.to,
+          label: t(item.labelKey),
+          icon: item.icon,
+          active: isAudienceSubnavActive(current, item.to),
+        }))}
+      />
+    </div>
+  );
 }
 
 export const StudioNav = ({
@@ -324,7 +437,6 @@ export function StudioMainNavItems() {
 
 function StudioNavigation({ current }: { current?: string }) {
   const { t } = useTranslation('web');
-  const stripeConfigured = useStripeConfigured();
   const selectedSection = getStudioPrimaryRoute(current) ?? '/studio';
   const sectionLabel =
     PRIMARY.find((item) => item.to === selectedSection)?.labelKey ??
@@ -332,7 +444,6 @@ function StudioNavigation({ current }: { current?: string }) {
 
   const submenu = getStudioSubmenuItems(
     selectedSection as keyof typeof SUBMENUS,
-    { stripeConfigured },
   );
 
   if (submenu.length === 0) {

@@ -4,8 +4,8 @@ import { useState } from 'react';
 
 import { Button, QueuePanel, Tooltip } from '@tahti-player/ui';
 
-import { soundIdFromPlayableId } from '../lib/archiveId';
 import { cn } from '../lib/cn';
+import { soundIdFromPlayableId } from '../lib/soundId';
 import { useLibraryStore } from '../stores/libraryStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { ClearQueueConfirmDialog } from './ClearQueueConfirmDialog';

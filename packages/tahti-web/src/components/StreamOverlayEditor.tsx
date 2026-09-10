@@ -17,8 +17,10 @@ import {
   fetchStreamOverlay,
   patchStreamOverlay,
 } from '../api/broadcast';
+import { fetchChannel } from '../api/client';
 import { fetchMeProfile } from '../api/studio-extras';
 import { uploadUserMediaFile } from '../api/user-media';
+import { useAuthStore } from '../stores/authStore';
 import { HelpLayer } from './HelpLayer';
 import { ImageSlotDeleteBadge } from './imageSlot/ImageSlotDeleteBadge';
 import { ImageSlotPreviewDialog } from './imageSlot/ImageSlotPreviewDialog';
@@ -32,13 +34,22 @@ function OverlayTextPreview({
   title,
   subtitle,
   color,
+  scrimEnabled,
 }: {
   title: string;
   subtitle: string;
   color: string | null;
+  scrimEnabled: boolean;
 }) {
   return (
-    <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col gap-0.5 bg-gradient-to-t from-black/80 via-black/40 to-transparent px-3 pt-8 pb-2">
+    <div
+      className={
+        'pointer-events-none absolute inset-x-0 bottom-0 flex flex-col gap-0.5 px-3 pt-8 pb-2 ' +
+        (scrimEnabled
+          ? 'bg-black/50'
+          : 'bg-gradient-to-t from-black/80 via-black/40 to-transparent')
+      }
+    >
       {title ? (
         <p
           className="truncate text-sm leading-tight font-bold text-white"
@@ -65,11 +76,13 @@ function OverlayTextPreview({
  * Go Live stream manager (StreamManagerPanel) and from Manage → Multicast →
  * Overlay, so it owns its own fetch/save rather than taking props for it. */
 export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
+  const channelSlug = useAuthStore((s) => s.user?.channel?.slug);
   const [overlay, setOverlay] = useState({
     streamOverlayTitle: '',
     streamOverlaySubtitle: '',
     streamOverlayShowTitle: false,
     streamOverlayTextColor: '',
+    streamOverlayScrimEnabled: false,
     streamOverlayCoverUrl: '',
   });
   const [saving, setSaving] = useState(false);
@@ -77,6 +90,12 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
   const [coverUploading, setCoverUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  // Same nowPlaying.artworkUrl field StreamManagerPanel.tsx already reads
+  // off fetchChannel — null whenever the channel isn't currently playing
+  // anything, in which case the avatar below is the honest fallback.
+  const [nowPlayingArtworkUrl, setNowPlayingArtworkUrl] = useState<
+    string | null
+  >(null);
   const coverChrome = useImageSlotChrome({
     onClear: () =>
       setOverlay((current) => ({ ...current, streamOverlayCoverUrl: '' })),
@@ -87,20 +106,31 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
       fetchStreamOverlay(),
       fetchBroadcastPreflight(),
       fetchMeProfile(),
-    ]).then(([overlayResult, preflightResult, profileResult]) => {
-      const preflight = preflightResult.data;
-      setOverlay({
-        streamOverlayTitle:
-          overlayResult.data.streamOverlayTitle || preflight?.title || '',
-        streamOverlaySubtitle:
-          overlayResult.data.streamOverlaySubtitle || preflight?.tagline || '',
-        streamOverlayShowTitle: overlayResult.data.streamOverlayShowTitle,
-        streamOverlayTextColor: overlayResult.data.streamOverlayTextColor ?? '',
-        streamOverlayCoverUrl: overlayResult.data.streamOverlayCoverUrl ?? '',
-      });
-      setAvatarUrl(profileResult.data.avatarUrl ?? null);
-    });
-  }, []);
+      channelSlug ? fetchChannel(channelSlug) : null,
+    ]).then(
+      ([overlayResult, preflightResult, profileResult, channelResult]) => {
+        const preflight = preflightResult.data;
+        setOverlay({
+          streamOverlayTitle:
+            overlayResult.data.streamOverlayTitle || preflight?.title || '',
+          streamOverlaySubtitle:
+            overlayResult.data.streamOverlaySubtitle ||
+            preflight?.tagline ||
+            '',
+          streamOverlayShowTitle: overlayResult.data.streamOverlayShowTitle,
+          streamOverlayTextColor:
+            overlayResult.data.streamOverlayTextColor ?? '',
+          streamOverlayScrimEnabled:
+            overlayResult.data.streamOverlayScrimEnabled,
+          streamOverlayCoverUrl: overlayResult.data.streamOverlayCoverUrl ?? '',
+        });
+        setAvatarUrl(profileResult.data.avatarUrl ?? null);
+        setNowPlayingArtworkUrl(
+          channelResult?.data.nowPlaying?.artworkUrl ?? null,
+        );
+      },
+    );
+  }, [channelSlug]);
 
   const save = () => {
     setSaving(true);
@@ -110,6 +140,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
       streamOverlaySubtitle: overlay.streamOverlaySubtitle.trim(),
       streamOverlayShowTitle: overlay.streamOverlayShowTitle,
       streamOverlayTextColor: overlay.streamOverlayTextColor.trim(),
+      streamOverlayScrimEnabled: overlay.streamOverlayScrimEnabled,
       streamOverlayCoverUrl: overlay.streamOverlayCoverUrl.trim(),
     }).then((result) => {
       setSaving(false);
@@ -155,7 +186,8 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
         <p>
           RTMP has no built-in title metadata, so YouTube/Twitch/etc. mirrors
           carry a static video frame with this cover baked in. Leave the cover
-          blank to use your avatar.
+          blank to use whatever's currently playing, or your avatar when
+          nothing's live.
         </p>
       </HelpLayer>
       {error && (
@@ -192,6 +224,12 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
               alt=""
               className="size-full object-cover"
             />
+          ) : nowPlayingArtworkUrl ? (
+            <img
+              src={nowPlayingArtworkUrl}
+              alt=""
+              className="size-full object-cover opacity-60"
+            />
           ) : avatarUrl ? (
             <img
               src={avatarUrl}
@@ -215,6 +253,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
               title={overlay.streamOverlayTitle}
               subtitle={overlay.streamOverlaySubtitle}
               color={overlay.streamOverlayTextColor || null}
+              scrimEnabled={overlay.streamOverlayScrimEnabled}
             />
           ) : null}
         </button>
@@ -354,6 +393,25 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
               </Tooltip>
             ) : null}
           </label>
+          <div className="border-border bg-background-secondary/40 flex items-center justify-between gap-3 rounded-lg border p-2.5 text-sm">
+            <span className="min-w-0 flex-1">
+              <span className="block font-semibold">Darken behind text</span>
+              <span className="text-foreground-secondary block text-xs">
+                Adds a semi-transparent scrim so title/subtitle stay legible
+                over busy cover art.
+              </span>
+            </span>
+            <Toggle
+              label="Darken behind text"
+              checked={overlay.streamOverlayScrimEnabled}
+              onChange={(checked) =>
+                setOverlay((current) => ({
+                  ...current,
+                  streamOverlayScrimEnabled: checked,
+                }))
+              }
+            />
+          </div>
         </>
       ) : null}
 

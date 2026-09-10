@@ -206,7 +206,6 @@ jobs:
         run: pnpm tauri android init
 
       - name: Configure Android signing
-        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
         working-directory: packages/player/src-tauri/gen/android
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -214,8 +213,12 @@ jobs:
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
+          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "No ANDROID_KEYSTORE_BASE64 secret configured, skipping signing setup."
+            exit 0
+          fi
           echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > keystore.jks
-          cat > keystore.properties <<EOF
+          cat > keystore.properties <<-EOF
           password=$ANDROID_KEYSTORE_PASSWORD
           keyAlias=$ANDROID_KEY_ALIAS
           keyPassword=$ANDROID_KEY_PASSWORD

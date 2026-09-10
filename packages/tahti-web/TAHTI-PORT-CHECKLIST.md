@@ -123,7 +123,7 @@ Things that look like product UI but are incomplete, offline-only, or still link
 | Stats + detail/plays                                              | `/studio/stats`              | `done` (plays series; no map viz)                    |
 | Editor                                                            | `/studio/editor`             | `partial`                                            |
 | Distribution, radio slots, moderate                                | matching                     | `done`                                               |
-| Revenue / Audience                                                | `/studio/revenue`            | `done` — fan-sub stats, merged payout history (fan-subs + Revelator royalties), Connect, tiers tab, help tour |
+| Revenue / Audience                                                | `/studio/audience`            | `done` — fan-sub stats, merged payout history (fan-subs + Revelator royalties), Connect, tiers tab, help tour |
 | Press kit / members / moderators                                  | settings sections + link-out | `partial`                                            |
 
 ### Out of scope

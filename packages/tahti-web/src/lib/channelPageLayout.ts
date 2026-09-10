@@ -2,19 +2,30 @@
 
 export const CHANNEL_PAGE_ITEM_TYPES = [
   'hero',
-  'archive',
+  'sound',
   'chat',
   'about',
   'links',
   'subscribe',
   'stats',
   'events',
+  'navigation',
 ] as const;
 
 export type ChannelPageItemType = (typeof CHANNEL_PAGE_ITEM_TYPES)[number];
 
 /** Multi-instance types (like embeds) — not auto-filled as hidden defaults. */
 export type ChannelPageMultiItemType = 'embed' | 'playlist';
+
+/** One tab of a `navigation` block: a label plus which other visible
+ * layout items appear on the page while that tab is active. An item id
+ * that isn't listed in any tab always shows, regardless of active tab —
+ * so adding a new block after tabs exist doesn't silently hide it. */
+export type ChannelNavigationTab = {
+  id: string;
+  label: string;
+  itemIds: string[];
+};
 
 export type ChannelPageItem = {
   id: string;
@@ -28,6 +39,9 @@ export type ChannelPageItem = {
   width?: 'full' | 'wide' | 'compact';
   offsetX?: number;
   offsetY?: number;
+  /** `navigation` blocks only — off the page entirely until this exists
+   * with 2+ tabs (opt-in: no tab bar shows by default). */
+  navigationTabs?: ChannelNavigationTab[];
 };
 
 export const CHANNEL_PAGE_ITEM_META: Record<
@@ -38,7 +52,7 @@ export const CHANNEL_PAGE_ITEM_META: Record<
     label: 'Live stage',
     hint: 'Visualizer + now playing',
   },
-  archive: {
+  sound: {
     label: 'Tracks',
     hint: 'Published channel tracks',
   },
@@ -65,6 +79,10 @@ export const CHANNEL_PAGE_ITEM_META: Record<
   events: {
     label: 'Live shows',
     hint: 'Upcoming & past broadcasts',
+  },
+  navigation: {
+    label: 'Navigation',
+    hint: 'Section tabs under the player',
   },
   embed: {
     label: 'External embed',
@@ -119,7 +137,7 @@ export const CHANNEL_LAYOUT_PRESETS: ChannelLayoutPreset[] = [
     items: [
       item('hero', true),
       item('about', true),
-      item('archive', true),
+      item('sound', true),
       item('subscribe', false),
       item('chat', false),
       item('links', false),
@@ -145,7 +163,7 @@ export const CHANNEL_LAYOUT_PRESETS: ChannelLayoutPreset[] = [
     items: [
       item('hero', true),
       item('subscribe', true),
-      item('archive', true),
+      item('sound', true),
       item('about', true),
       item('chat', false),
       item('links', false),
@@ -169,7 +187,7 @@ export const CHANNEL_LAYOUT_PRESETS: ChannelLayoutPreset[] = [
     name: 'Archive-first',
     description: 'Catalog up front.',
     items: [
-      item('archive', true),
+      item('sound', true),
       item('hero', true),
       item('about', true),
       item('subscribe', true),
@@ -197,7 +215,7 @@ export const CHANNEL_LAYOUT_PRESETS: ChannelLayoutPreset[] = [
     items: [
       item('hero', true),
       item('subscribe', true),
-      item('archive', true),
+      item('sound', true),
       item('about', true),
       item('links', false),
       item('chat', false),
@@ -231,13 +249,14 @@ export function defaultChannelPageLayout(): Array<{
 }> {
   return [
     item('hero', true),
-    item('archive', true),
+    item('sound', true),
     item('about', true),
     item('links', false),
     item('subscribe', true),
     item('stats', false),
     item('events', false),
     item('chat', false),
+    item('navigation', false),
   ];
 }
 
@@ -356,6 +375,17 @@ export function normalizeLayout(items: ChannelPageItem[]): ChannelPageItem[] {
               : {}),
           }
         : {}),
+      ...(layoutItem.type === 'navigation' &&
+      Array.isArray(layoutItem.navigationTabs)
+        ? {
+            navigationTabs: layoutItem.navigationTabs.filter(
+              (tab): tab is ChannelNavigationTab =>
+                typeof tab?.id === 'string' &&
+                typeof tab?.label === 'string' &&
+                Array.isArray(tab?.itemIds),
+            ),
+          }
+        : {}),
       ...(layoutItem.width ? { width: layoutItem.width } : {}),
       ...(layoutItem.offsetX !== undefined
         ? { offsetX: layoutItem.offsetX }
@@ -450,22 +480,67 @@ export function setPlaylistDisplay(
   );
 }
 
+/** A single "Home" tab holding everything already on the page -- one tab
+ * means the bar stays hidden (nothing to switch between), so turning
+ * navigation on changes nothing until a second tab is added and some
+ * items are moved into it. */
+function defaultNavigationTabs(
+  items: ChannelPageItem[],
+): ChannelNavigationTab[] {
+  return [
+    {
+      id: `tab-${Date.now().toString(36)}`,
+      label: 'Home',
+      itemIds: items
+        .filter(
+          (i) =>
+            i.visible &&
+            i.type !== 'hero' &&
+            i.type !== 'chat' &&
+            i.type !== 'navigation',
+        )
+        .map((i) => i.id),
+    },
+  ];
+}
+
 export function addItemType(
   items: ChannelPageItem[],
   type: ChannelPageItemType,
 ): ChannelPageItem[] {
   const existing = items.find((i) => i.type === type);
   if (existing) {
-    return setItemVisible(items, existing.id, true);
+    const next = setItemVisible(items, existing.id, true);
+    // A pre-existing entry can be the hidden default stub every layout
+    // carries for `navigation` (see defaultChannelPageLayout) -- that
+    // stub has no tabs yet, so seed them here too, not just on brand-new
+    // items below.
+    if (type === 'navigation' && !existing.navigationTabs?.length) {
+      return setNavigationTabs(next, existing.id, defaultNavigationTabs(items));
+    }
+    return next;
   }
-  return [
-    ...items,
-    {
-      id: `${type}-${Date.now().toString(36)}`,
-      type,
-      visible: true,
-    },
-  ];
+  const newItem: ChannelPageItem = {
+    id: `${type}-${Date.now().toString(36)}`,
+    type,
+    visible: true,
+    ...(type === 'navigation'
+      ? { navigationTabs: defaultNavigationTabs(items) }
+      : {}),
+  };
+  return [...items, newItem];
+}
+
+export function setNavigationTabs(
+  items: ChannelPageItem[],
+  id: string,
+  navigationTabs: ChannelNavigationTab[],
+): ChannelPageItem[] {
+  return items.map((item) =>
+    item.id === id && item.type === 'navigation'
+      ? { ...item, navigationTabs }
+      : item,
+  );
 }
 
 export function addPlaylistItem(

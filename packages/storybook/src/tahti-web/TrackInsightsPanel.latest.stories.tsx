@@ -13,7 +13,7 @@ const meta: Meta<typeof TrackInsightsPanel> = {
       },
     },
   },
-  args: { kind: 'archive', id: 'track-northern-signals' },
+  args: { kind: 'sound', id: 'track-northern-signals' },
 };
 
 export default meta;

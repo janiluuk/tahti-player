@@ -60,7 +60,7 @@ import { ObsPresetButton } from '../../components/ObsPresetButton';
 import { SignalCheckWidget } from '../../components/SignalCheckWidget';
 import { StreamManagerPanel } from '../../components/StreamManagerPanel';
 import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
+import { BroadcastSubNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { OnAirBadge } from '../../components/tahti/OnAirBadge';
 import {
@@ -210,7 +210,7 @@ export function StudioGoLiveView() {
     setUsage(usageResult.data);
     setTargets(targetResult.data);
     setPreflight(preflightResult.data);
-    setRecordEnabled(preflightResult.data?.autoArchive ?? true);
+    setRecordEnabled(preflightResult.data?.autoPublish ?? true);
     if (
       !settingsResult.data &&
       settingsResult.meta.source === 'api' &&
@@ -303,7 +303,8 @@ export function StudioGoLiveView() {
     const next = !recordEnabled;
     setRecordEnabled(next);
     setRecordBusy(true);
-    const result = await patchBroadcastPreflight({ autoArchive: next });
+    setMessage(null);
+    const result = await patchBroadcastPreflight({ autoPublish: next });
     setRecordBusy(false);
     if ('error' in result) {
       setRecordEnabled(!next);
@@ -341,7 +342,7 @@ export function StudioGoLiveView() {
   return (
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6">
-        <StudioNav current="/studio/go-live" />
+        <BroadcastSubNav current="/studio/go-live" />
 
         <ViewShell title="Broadcast" classes={{ root: 'px-0 pt-0' }}>
           <div className="mb-4 flex flex-wrap items-center gap-2">
@@ -644,7 +645,7 @@ export function StudioGoLiveView() {
                     />
                   </div>
                   <Link
-                    to="/studio/recordings"
+                    to="/library/recordings"
                     aria-label="Open recordings"
                     className="text-foreground-secondary mt-3 inline-flex items-center gap-1.5 text-xs underline-offset-2 hover:underline"
                   >

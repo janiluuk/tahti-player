@@ -1,29 +1,32 @@
 import { Link } from '@tanstack/react-router';
 import {
+  ArrowLeftIcon,
+  ImageIcon,
   ListMusicIcon,
-  Maximize2Icon,
-  Minimize2Icon,
+  ListPlusIcon,
+  MusicIcon,
   PauseIcon,
   PencilIcon,
   PlayIcon,
   PlusIcon,
   SearchIcon,
-  Trash2Icon,
-  UploadCloudIcon,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import type { Track } from '@tahti-player/model';
 import {
   Badge,
   Button,
   Dialog,
+  EmptyState,
   FilePicker,
   Input,
   SaveButton,
   Select,
   Textarea,
   Tooltip,
+  TrackTable,
 } from '@tahti-player/ui';
 
 import {
@@ -43,22 +46,27 @@ import type {
   StudioCollectionItem,
   StudioSound,
 } from '../../api/studio-types';
+import type { TahtiPlayable } from '../../api/types';
 import { uploadUserMediaFile } from '../../api/user-media';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
+import {
+  EntitySocialHeader,
+  type EntitySocialStat,
+} from '../../components/EntitySocialHeader';
+import { ImageSlotDeleteBadge } from '../../components/imageSlot/ImageSlotDeleteBadge';
+import { ImageSlotPreviewDialog } from '../../components/imageSlot/ImageSlotPreviewDialog';
+import { useImageSlotChrome } from '../../components/imageSlot/useImageSlotChrome';
 import { PageLoading } from '../../components/PageStates';
+import { StudioCollectionMoreMenu } from '../../components/StudioCollectionMoreMenu';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioNav } from '../../components/StudioNav';
-import { StudioPageHeader, StudioPanel } from '../../components/StudioPanel';
-import { WaveformCanvas } from '../../components/WaveformCanvas';
+import { StudioPanel } from '../../components/StudioPanel';
 import { COLLECTION_STYLES } from '../../content/collectionStyles';
+import { collectionItemToTrack } from '../../lib/collectionTrackMapping';
 import { playableFromStudioHearthis } from '../../lib/embedPlayback';
-import {
-  EMBED_PROVIDER_HEIGHT,
-  EMBED_PROVIDER_LABEL,
-  embedSrcFor,
-} from '../../lib/embedSrc';
+import { trackTableLabels } from '../../lib/trackTableLabels';
 import { usePlayerStore } from '../../stores/playerStore';
-
-const PEAK_BUCKETS = 200;
+import { LibrarySectionTabs } from '../LibraryView';
 
 function formatDuration(sec: number | null | undefined): string {
   if (sec == null || !Number.isFinite(sec)) {
@@ -70,280 +78,16 @@ function formatDuration(sec: number | null | undefined): string {
   return `${m}:${String(r).padStart(2, '0')}`;
 }
 
-function trackTitle(item: StudioCollectionItem): string {
-  return item.sound?.title ?? item.release?.title ?? item.id;
-}
-
-/** Decodes a track's audio in-browser into a bucketed peaks array the
- * first time its row expands — same "attempt then degrade" approach as
- * the pro editor's own waveform decode, just scoped to one track. */
-function useTrackPeaks(soundId: string | undefined, enabled: boolean) {
-  const [peaks, setPeaks] = useState<number[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (!enabled || !soundId || peaks.length > 0) {
-      return;
-    }
-    let cancelled = false;
-    setLoading(true);
-    void (async () => {
-      try {
-        const { data } = await fetchEditorSource(soundId);
-        const res = await fetch(data.url);
-        const buf = await res.arrayBuffer();
-        const ctx = new AudioContext();
-        const decoded = await ctx.decodeAudioData(buf.slice(0));
-        await ctx.close();
-        if (cancelled) {
-          return;
-        }
-        const channel = decoded.getChannelData(0);
-        const block = Math.floor(channel.length / PEAK_BUCKETS) || 1;
-        const next: number[] = [];
-        for (let i = 0; i < PEAK_BUCKETS; i++) {
-          let peak = 0;
-          const start = i * block;
-          for (let j = 0; j < block && start + j < channel.length; j++) {
-            peak = Math.max(peak, Math.abs(channel[start + j]!));
-          }
-          next.push(peak);
-        }
-        const max = Math.max(...next, 0.001);
-        setPeaks(next.map((v) => v / max));
-      } catch {
-        // Row falls back to a plain progress bar when decode fails.
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [enabled, soundId, peaks.length]);
-
-  return { peaks, loading };
-}
-
-function TrackRow({
-  item,
-  idx,
-  isExpanded,
-  isCurrent,
-  isPlaying,
-  isDragging,
-  reorderable,
-  currentTime,
-  onToggleExpand,
-  onPlay,
-  onSeek,
-  onDragStart,
-  onDragEnd,
-  onDrop,
-  onRemove,
-  genre,
+export function StudioCollectionEditView({
+  slug,
+  nav = 'studio',
 }: {
-  item: StudioCollectionItem;
-  idx: number;
-  isExpanded: boolean;
-  isCurrent: boolean;
-  isPlaying: boolean;
-  isDragging: boolean;
-  reorderable: boolean;
-  currentTime: number;
-  onToggleExpand: () => void;
-  onPlay: () => void;
-  onSeek: (sec: number) => void;
-  onDragStart: () => void;
-  onDragEnd: () => void;
-  onDrop: () => void;
-  onRemove: () => void;
-  genre?: string | null;
+  slug: string;
+  /** Which top navigation this page was reached through. */
+  nav?: 'studio' | 'library';
 }) {
-  const { peaks } = useTrackPeaks(item.sound?.id, isExpanded);
-  const durationSec = item.sound?.durationSec ?? 0;
-  // EMBED_ONLY items have no audio of ours to play or draw a waveform from.
-  const embedProvider = item.sound?.embedProvider ?? null;
-  const embedUri = item.sound?.embedUri ?? null;
-  const isEmbed = Boolean(embedProvider && embedUri);
-
-  return (
-    <li
-      draggable={reorderable}
-      onDragStart={(event) => {
-        event.dataTransfer.effectAllowed = 'move';
-        event.dataTransfer.setData('text/plain', item.id);
-        onDragStart();
-      }}
-      onDragEnd={onDragEnd}
-      onDragOver={(event) => {
-        event.preventDefault();
-        event.dataTransfer.dropEffect = 'move';
-      }}
-      onDrop={(event) => {
-        event.preventDefault();
-        onDrop();
-      }}
-      className={`${idx % 2 === 1 ? 'bg-background-secondary/40' : ''} ${
-        isCurrent ? 'border-l-primary bg-primary/10' : 'border-l-transparent'
-      } ${reorderable ? 'cursor-grab active:cursor-grabbing' : ''} ${
-        isDragging ? 'opacity-50' : ''
-      } hover:bg-primary/5 border-l-4 transition-colors`}
-    >
-      <div className="flex flex-wrap items-center gap-2 p-3 text-sm">
-        <span
-          className={`min-w-0 flex-1 truncate font-medium ${
-            isCurrent ? 'text-accent-green' : ''
-          }`}
-        >
-          {trackTitle(item)}
-        </span>
-        {isEmbed && (
-          <span className="text-foreground-secondary shrink-0 font-mono text-[10px] tracking-wide uppercase">
-            {EMBED_PROVIDER_LABEL[embedProvider!]}
-          </span>
-        )}
-        {genre ? (
-          <span className="text-foreground-secondary shrink-0 text-xs">
-            {genre}
-          </span>
-        ) : null}
-        <span className="text-foreground-secondary text-xs tabular-nums">
-          {formatDuration(durationSec)}
-        </span>
-        {item.sound && !isEmbed && (
-          <Tooltip
-            content={
-              isCurrent && isPlaying ? 'Pause' : `Play ${trackTitle(item)}`
-            }
-            side="top"
-          >
-            <Button
-              size="icon-sm"
-              variant="text"
-              aria-label={
-                isCurrent && isPlaying ? 'Pause' : `Play ${trackTitle(item)}`
-              }
-              onClick={onPlay}
-            >
-              {isCurrent && isPlaying ? (
-                <PauseIcon size={16} aria-hidden />
-              ) : (
-                <PlayIcon size={16} aria-hidden />
-              )}
-            </Button>
-          </Tooltip>
-        )}
-        {item.sound && isEmbed && (
-          <Tooltip
-            content={
-              isExpanded
-                ? 'Hide player'
-                : `Play ${trackTitle(item)} on ${EMBED_PROVIDER_LABEL[embedProvider!]}`
-            }
-            side="top"
-          >
-            <Button
-              size="icon-sm"
-              variant="text"
-              aria-label={
-                isExpanded
-                  ? 'Hide player'
-                  : `Play ${trackTitle(item)} on ${EMBED_PROVIDER_LABEL[embedProvider!]}`
-              }
-              onClick={onToggleExpand}
-            >
-              <PlayIcon size={16} className="fill-current" aria-hidden />
-            </Button>
-          </Tooltip>
-        )}
-        {item.sound && !isEmbed && (
-          <Tooltip
-            content={
-              isExpanded
-                ? 'Collapse'
-                : isEmbed
-                  ? 'Show player'
-                  : 'Expand waveform'
-            }
-            side="top"
-          >
-            <Button
-              size="icon-sm"
-              variant="text"
-              aria-label={
-                isExpanded
-                  ? 'Collapse'
-                  : isEmbed
-                    ? 'Show player'
-                    : 'Expand waveform'
-              }
-              onClick={onToggleExpand}
-            >
-              {isExpanded ? (
-                <Minimize2Icon size={14} aria-hidden />
-              ) : (
-                <Maximize2Icon size={14} aria-hidden />
-              )}
-            </Button>
-          </Tooltip>
-        )}
-        <Tooltip content="Remove track" side="top">
-          <Button
-            size="icon-sm"
-            variant="text"
-            aria-label="Remove track"
-            onClick={onRemove}
-          >
-            <Trash2Icon size={16} aria-hidden />
-          </Button>
-        </Tooltip>
-      </div>
-
-      {isExpanded && isEmbed && (
-        <div className="px-3 pb-3">
-          <iframe
-            title={trackTitle(item)}
-            src={embedSrcFor(embedProvider!, embedUri!) ?? ''}
-            width="100%"
-            height={EMBED_PROVIDER_HEIGHT[embedProvider!]}
-            style={{ border: 0, display: 'block' }}
-            allow="autoplay; encrypted-media"
-            loading="lazy"
-            className="border-border overflow-hidden rounded-lg border"
-          />
-        </div>
-      )}
-
-      {isExpanded && item.sound && !isEmbed && (
-        <div className="px-3 pb-3">
-          {durationSec > 0 && peaks.length > 0 ? (
-            <div className="border-border bg-background h-24 overflow-hidden rounded-lg border">
-              <WaveformCanvas
-                peaks={peaks}
-                durationSec={durationSec}
-                currentTime={isCurrent ? currentTime : 0}
-                cuts={[]}
-                selection={null}
-                onSeek={onSeek}
-              />
-            </div>
-          ) : (
-            <div className="border-border bg-background text-foreground-secondary flex h-24 items-center justify-center rounded-lg border text-xs">
-              Decoding waveform…
-            </div>
-          )}
-        </div>
-      )}
-    </li>
-  );
-}
-
-export function StudioCollectionEditView({ slug }: { slug: string }) {
   const [col, setCol] = useState<StudioCollection | null>(null);
-  const [archive, setArchive] = useState<StudioSound[]>([]);
+  const [sounds, setSounds] = useState<StudioSound[]>([]);
   const [addPickerOpen, setAddPickerOpen] = useState(false);
   const [addBusyId, setAddBusyId] = useState<string | null>(null);
   const [name, setName] = useState('');
@@ -364,14 +108,21 @@ export function StudioCollectionEditView({ slug }: { slug: string }) {
     null,
   );
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [pendingCoverDelete, setPendingCoverDelete] = useState(false);
+  const [pendingFrameDelete, setPendingFrameDelete] = useState<string | null>(
+    null,
+  );
   const [saving, setSaving] = useState(false);
   const [detailsExpanded, setDetailsExpanded] = useState(false);
-  const [trackQuery, setTrackQuery] = useState('');
-  const [archiveQuery, setArchiveQuery] = useState('');
-  const [expandedItemId, setExpandedItemId] = useState<string | null>(null);
-  const [draggedId, setDraggedId] = useState<string | null>(null);
+  const [soundQuery, setSoundQuery] = useState('');
+  const [pendingRemove, setPendingRemove] = useState<{
+    id: string;
+    title: string;
+  } | null>(null);
 
   const play = usePlayerStore((s) => s.play);
+  const enqueue = usePlayerStore((s) => s.enqueue);
+  const queue = usePlayerStore((s) => s.queue);
   const currentId = usePlayerStore((s) => s.currentId);
   const status = usePlayerStore((s) => s.status);
   const currentTime = usePlayerStore((s) => s.currentTime);
@@ -387,7 +138,7 @@ export function StudioCollectionEditView({ slug }: { slug: string }) {
       fetchCollectionGallery(slug),
     ]).then(([c, a, g]) => {
       setCol(c.data);
-      setArchive(a.data);
+      setSounds(a.data);
       setName(c.data.name);
       setDescription(c.data.description ?? '');
       setStyle(c.data.style ?? c.data.type ?? 'ALBUM');
@@ -418,40 +169,49 @@ export function StudioCollectionEditView({ slug }: { slug: string }) {
     [style],
   );
 
-  const filteredItems = useMemo(() => {
-    const q = trackQuery.trim().toLowerCase();
-    if (!q) {
-      return items;
-    }
-    return items.filter((item) => trackTitle(item).toLowerCase().includes(q));
-  }, [items, trackQuery]);
+  const headerStats: EntitySocialStat[] =
+    items.length > 0
+      ? [
+          {
+            key: 'tracks',
+            label: 'Tracks',
+            value: items.length,
+            icon: MusicIcon,
+          },
+        ]
+      : [];
+
+  const tracks: Track[] = useMemo(
+    () => items.map(collectionItemToTrack),
+    [items],
+  );
 
   const filteredSounds = useMemo(() => {
-    const query = archiveQuery.trim().toLowerCase();
+    const query = soundQuery.trim().toLowerCase();
     if (!query) {
-      return archive;
+      return sounds;
     }
-    return archive.filter((item) =>
+    return sounds.filter((item) =>
       [item.title, item.genre, item.contentType]
         .filter(Boolean)
         .join(' ')
         .toLowerCase()
         .includes(query),
     );
-  }, [archive, archiveQuery]);
-  const existingArchiveIds = useMemo(
+  }, [sounds, soundQuery]);
+  const existingSoundIds = useMemo(
     () => new Set(items.map((item) => item.sound?.id).filter(Boolean)),
     [items],
   );
   const availableSounds = filteredSounds.filter(
-    (sound) => !existingArchiveIds.has(sound.id),
+    (sound) => !existingSoundIds.has(sound.id),
   );
 
   const nowPlayingItem = items.find(
-    (i) => i.sound && currentId === `archive:${i.sound.id}`,
+    (i) => i.sound && currentId === `sound:${i.sound.id}`,
   );
 
-  const playSound = async (sound: {
+  type PlayableSound = {
     id: string;
     title: string;
     artistName?: string | null;
@@ -459,21 +219,66 @@ export function StudioCollectionEditView({ slug }: { slug: string }) {
     embedProvider?: string | null;
     embedUri?: string | null;
     durationSec?: number | null;
-  }) => {
+  };
+
+  /** Non-hearthis EMBED_ONLY sounds have no Tahti-hosted audio and no
+   * shared-player widget to build a playable from. */
+  const buildPlayable = async (
+    sound: PlayableSound,
+  ): Promise<TahtiPlayable | null> => {
     const hearthis = playableFromStudioHearthis(sound);
     if (hearthis) {
-      play(hearthis);
-      return;
+      return hearthis;
+    }
+    if (sound.embedProvider && sound.embedProvider !== 'HEARTHIS') {
+      return null;
     }
     const { data } = await fetchEditorSource(sound.id);
-    play({
-      id: `archive:${sound.id}`,
-      kind: 'archive',
+    return {
+      id: `sound:${sound.id}`,
+      kind: 'sound',
       title: data.title || sound.title,
       artist: 'You',
       streamUrl: data.url,
       protocol: data.url.includes('.m3u8') ? 'hls' : 'https',
-    });
+    };
+  };
+
+  const playSound = async (sound: PlayableSound) => {
+    const playable = await buildPlayable(sound);
+    if (playable) {
+      play(playable);
+    }
+  };
+
+  const playAllTracks = async () => {
+    const first = items.find((item) => item.sound);
+    if (!first?.sound) {
+      return;
+    }
+    await playSound(first.sound);
+  };
+
+  const queueAllTracks = async () => {
+    const withSound = items.filter(
+      (item): item is StudioCollectionItem & { sound: StudioSound } =>
+        Boolean(item.sound),
+    );
+    let queued = 0;
+    for (const item of withSound) {
+      const playable = await buildPlayable(item.sound);
+      if (playable) {
+        enqueue(playable);
+        queued += 1;
+      }
+    }
+    if (queued === 0) {
+      toast.info('No playable tracks to queue.');
+    } else {
+      toast.success(
+        `Added ${queued} track${queued === 1 ? '' : 's'} to the queue.`,
+      );
+    }
   };
 
   const togglePlayItem = (item: StudioCollectionItem) => {
@@ -485,7 +290,7 @@ export function StudioCollectionEditView({ slug }: { slug: string }) {
     ) {
       return;
     }
-    const isThisCurrent = currentId === `archive:${item.sound.id}`;
+    const isThisCurrent = currentId === `sound:${item.sound.id}`;
     if (isThisCurrent) {
       setStatus(isPlaying ? 'paused' : 'playing');
       return;
@@ -505,32 +310,25 @@ export function StudioCollectionEditView({ slug }: { slug: string }) {
     reload();
   };
 
-  const reorderByDrop = async (fromId: string, toId: string) => {
-    if (fromId === toId) {
-      return;
-    }
-    const fromIndex = items.findIndex((candidate) => candidate.id === fromId);
-    const toIndex = items.findIndex((candidate) => candidate.id === toId);
-    if (fromIndex < 0 || toIndex < 0) {
-      return;
-    }
+  const onReorder = (from: number, to: number) => {
     const next = [...items];
-    const [moved] = next.splice(fromIndex, 1);
+    const [moved] = next.splice(from, 1);
     if (!moved) {
       return;
     }
-    next.splice(toIndex, 0, moved);
+    next.splice(to, 0, moved);
     setCol((c) => (c ? { ...c, items: next } : c));
-    const result = await reorderStudioCollectionItems(
+    void reorderStudioCollectionItems(
       slug,
       next.map((i) => i.id),
-    );
-    if (result.ok) {
-      toast.success('Tracklist reordered.');
-    } else {
-      toast.error(result.error);
-      reload();
-    }
+    ).then((result) => {
+      if (result.ok) {
+        toast.success('Tracklist reordered.');
+      } else {
+        toast.error(result.error);
+        reload();
+      }
+    });
   };
 
   const saveMeta = async () => {
@@ -621,91 +419,190 @@ export function StudioCollectionEditView({ slug }: { slug: string }) {
     );
   };
 
+  const removeCover = async () => {
+    const result = await patchStudioCollection(slug, { coverUrl: null });
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    setCoverUrl(null);
+    setCol((current) => (current ? { ...current, coverUrl: null } : current));
+    toast.success('Cover removed.');
+  };
+
+  const removeBackdrop = async () => {
+    const galleryResult = await patchCollectionGallery(slug, {
+      slideshowImages: [],
+      galleryMode: 'NONE',
+    });
+    if (!galleryResult.ok) {
+      toast.error(galleryResult.error);
+      return;
+    }
+    const result = await patchStudioCollection(slug, { backdropUrl: null });
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    setBackdropUrl(null);
+    setSlideshowImages([]);
+    setCol((current) =>
+      current ? { ...current, backdropUrl: null } : current,
+    );
+    toast.success('Backdrop removed.');
+  };
+
+  /** Removing the last frame falls back to the empty placeholder (clears
+   * the whole backdrop); otherwise only that frame is dropped from the
+   * slideshow. */
+  const removeSlideshowFrame = async (url: string) => {
+    const next = slideshowImages.filter((image) => image !== url);
+    if (next.length === 0) {
+      await removeBackdrop();
+      return;
+    }
+    const galleryResult = await patchCollectionGallery(slug, {
+      slideshowImages: next,
+      galleryMode: next.length > 1 ? 'STATIC_SLIDESHOW' : 'NONE',
+    });
+    if (!galleryResult.ok) {
+      toast.error(galleryResult.error);
+      return;
+    }
+    setSlideshowImages(next);
+    setBackdropUrl(next[0] ?? null);
+    toast.success('Image removed from backdrop.');
+  };
+
+  const backdropChrome = useImageSlotChrome({ onClear: removeBackdrop });
+
   return (
     <StudioGate requireChannel={false}>
-      <div className="studio-page-layout mx-auto flex max-w-4xl flex-col gap-6 px-1 py-2">
-        <StudioNav current="/studio/collections" />
-        <Link
-          to="/studio/collections"
-          className="text-foreground-secondary -mt-2 text-xs hover:underline"
-        >
-          ← Collections
-        </Link>
+      <div className="studio-page-layout flex w-full flex-col gap-6 px-1 py-2">
+        {nav === 'library' ? (
+          <LibrarySectionTabs active="collections" />
+        ) : (
+          <StudioNav current="/studio/collections" />
+        )}
+        <Tooltip content="Back to Collections" side="right">
+          <Link
+            to={
+              nav === 'library' ? '/library/collections' : '/studio/collections'
+            }
+            aria-label="Back to Collections"
+            className="text-foreground-secondary hover:bg-background-secondary -mt-2 inline-flex size-8 w-fit items-center justify-center rounded-full"
+          >
+            <ArrowLeftIcon size={16} aria-hidden />
+          </Link>
+        </Tooltip>
         {!col ? (
           <StudioPanel>
             <PageLoading label="Loading…" />
           </StudioPanel>
         ) : (
           <>
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
-              <div className="grid min-w-0 grid-cols-2 gap-3 sm:flex">
-                {(
-                  [
-                    [
-                      'cover',
-                      coverUrl,
-                      isAlbumLike ? 'Album cover' : 'Cover art',
-                    ],
-                    ['backdrop', backdropUrl, 'Backdrop'],
-                  ] as const
-                ).map(([target, imageUrl, emptyLabel]) => (
-                  <Button
-                    key={target}
-                    type="button"
-                    variant="text"
-                    size="flexible"
-                    className={`group border-border bg-background relative block h-44 overflow-hidden rounded-xl border p-0 text-left shadow-sm ${target === 'cover' ? 'aspect-square sm:w-44' : 'min-w-0 sm:w-72'}`}
-                    onClick={() => setUploadTarget(target)}
-                    aria-label={`Upload ${emptyLabel.toLowerCase()}`}
-                  >
-                    {imageUrl ? (
-                      <img
-                        src={imageUrl}
-                        alt=""
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <span className="text-foreground-secondary flex h-full items-center justify-center p-4 text-center text-xs">
-                        {emptyLabel}
-                      </span>
-                    )}
-                    {target === 'backdrop' && slideshowImages.length > 1 ? (
-                      <Badge
-                        variant="pill"
-                        color="secondary"
-                        className="bg-background/80 absolute top-2 right-2"
+            <EntitySocialHeader
+              title={name || col.name}
+              imageUrl={coverUrl}
+              imageAlt=""
+              onImageClick={() => setUploadTarget('cover')}
+              onImageDelete={
+                coverUrl ? () => setPendingCoverDelete(true) : undefined
+              }
+              backdropUrl={backdropUrl}
+              subtitle={
+                <>
+                  {COLLECTION_STYLES.find((s) => s.id === style)?.label ??
+                    style}
+                  {slideshowImages.length > 1
+                    ? ` · ${slideshowImages.length}-image backdrop slideshow`
+                    : ''}
+                </>
+              }
+              description={description.trim() || undefined}
+              stats={headerStats}
+              actions={
+                <>
+                  <div className="group relative">
+                    <Tooltip
+                      content={
+                        backdropUrl ? 'Preview backdrop' : 'Change backdrop'
+                      }
+                      side="top"
+                    >
+                      <Button
+                        variant="secondary"
+                        size="icon-sm"
+                        className="bg-background border-border rounded-md border-(length:--border-width)"
+                        aria-label={
+                          backdropUrl ? 'Preview backdrop' : 'Change backdrop'
+                        }
+                        onClick={() =>
+                          backdropUrl
+                            ? backdropChrome.openPreview()
+                            : setUploadTarget('backdrop')
+                        }
                       >
-                        {slideshowImages.length} images
-                      </Badge>
+                        <ImageIcon size={14} aria-hidden />
+                      </Button>
+                    </Tooltip>
+                    {backdropUrl ? (
+                      <ImageSlotDeleteBadge
+                        label="Backdrop"
+                        onClick={backdropChrome.requestDelete}
+                      />
                     ) : null}
-                    <span className="absolute inset-0 flex items-center justify-center bg-black/0 text-white opacity-0 transition group-hover:bg-black/45 group-hover:opacity-100 group-focus-visible:bg-black/45 group-focus-visible:opacity-100">
-                      <UploadCloudIcon size={24} aria-hidden />
-                      <span className="sr-only">Upload {emptyLabel}</span>
-                    </span>
+                  </div>
+                  <Badge
+                    variant="pill"
+                    color={visibility === 'PUBLIC' ? 'green' : 'secondary'}
+                  >
+                    {visibility.charAt(0) + visibility.slice(1).toLowerCase()}
+                  </Badge>
+                  <SaveButton saving={saving} onClick={() => void saveMeta()} />
+                </>
+              }
+              data-testid="studio-collection-social-header"
+            >
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  variant="secondary"
+                  onClick={() => void playAllTracks()}
+                  disabled={items.length === 0}
+                >
+                  <PlayIcon size={16} aria-hidden className="mr-1.5" />
+                  Play
+                </Button>
+                <Tooltip content="Add all to queue" side="top">
+                  <Button
+                    variant="secondary"
+                    size="icon"
+                    onClick={() => void queueAllTracks()}
+                    disabled={items.length === 0}
+                    aria-label="Add all to queue"
+                  >
+                    <ListPlusIcon size={16} aria-hidden />
                   </Button>
-                ))}
-              </div>
-              <div className="min-w-0 flex-1">
-                <StudioPageHeader
-                  title={name || col.name}
-                  action={
-                    <div className="flex items-center gap-2">
-                      <Badge
-                        variant="pill"
-                        color={visibility === 'PUBLIC' ? 'green' : 'secondary'}
-                      >
-                        {visibility.charAt(0) +
-                          visibility.slice(1).toLowerCase()}
-                      </Badge>
-                      <SaveButton
-                        saving={saving}
-                        onClick={() => void saveMeta()}
-                      />
-                    </div>
-                  }
+                </Tooltip>
+                <Tooltip
+                  content={`Add content to ${isAlbumLike ? 'album' : 'collection'}`}
+                  side="top"
+                >
+                  <Button
+                    variant="secondary"
+                    size="icon"
+                    aria-label={`Add content to ${isAlbumLike ? 'album' : 'collection'}`}
+                    onClick={() => setAddPickerOpen(true)}
+                  >
+                    <PlusIcon size={16} aria-hidden />
+                  </Button>
+                </Tooltip>
+                <StudioCollectionMoreMenu
+                  col={col}
+                  kindLabel={isAlbumLike ? 'album' : 'collection'}
                 />
               </div>
-            </div>
+            </EntitySocialHeader>
 
             <StudioPanel
               title="Details"
@@ -797,15 +694,16 @@ export function StudioCollectionEditView({ slug }: { slug: string }) {
                   </section>
                 </div>
               ) : (
-                <div className="flex flex-col gap-2">
-                  <p className="text-foreground-secondary text-sm whitespace-pre-wrap">
-                    {description.trim() || 'No description yet.'}
-                  </p>
-                  <p className="text-foreground-secondary text-xs">
-                    {releaseDate ? `Release ${releaseDate} · ` : ''}
-                    {genres.trim() ? `${genres} · ` : ''}
-                  </p>
-                </div>
+                <p className="text-foreground-secondary text-sm">
+                  {releaseDate || genres.trim()
+                    ? [
+                        releaseDate ? `Release ${releaseDate}` : null,
+                        genres.trim() || null,
+                      ]
+                        .filter(Boolean)
+                        .join(' · ')
+                    : 'No release date or genres set yet.'}
+                </p>
               )}
             </StudioPanel>
 
@@ -814,14 +712,6 @@ export function StudioCollectionEditView({ slug }: { slug: string }) {
               description={`${items.length} track${items.length === 1 ? '' : 's'}`}
             >
               <div className="mb-3 flex flex-col gap-3">
-                <Input
-                  value={trackQuery}
-                  onChange={(e) => setTrackQuery(e.target.value)}
-                  placeholder="Search tracks…"
-                  className="max-w-xs"
-                  aria-label="Search tracks"
-                />
-
                 {nowPlayingItem?.sound && (
                   <div className="border-border bg-background-input flex items-center gap-3 rounded-lg border px-3 py-2">
                     <Tooltip content={isPlaying ? 'Pause' : 'Play'} side="top">
@@ -868,83 +758,91 @@ export function StudioCollectionEditView({ slug }: { slug: string }) {
                 )}
               </div>
 
-              <ul className="border-border divide-border divide-y overflow-hidden rounded-xl border">
-                {items.length === 0 && (
-                  <li className="text-foreground-secondary py-3 text-sm">
-                    No tracks yet — add archive items below.
-                  </li>
-                )}
-                {items.length > 0 && filteredItems.length === 0 && (
-                  <li className="text-foreground-secondary py-3 text-sm">
-                    No tracks match “{trackQuery}”.
-                  </li>
-                )}
-                {filteredItems.map((item) => {
-                  const idx = items.indexOf(item);
-                  const isCurrent = Boolean(
-                    item.sound && currentId === `archive:${item.sound.id}`,
-                  );
-                  return (
-                    <TrackRow
-                      key={item.id}
-                      item={item}
-                      idx={idx}
-                      isExpanded={expandedItemId === item.id}
-                      isCurrent={isCurrent}
-                      isPlaying={isCurrent && isPlaying}
-                      currentTime={currentTime}
-                      onToggleExpand={() =>
-                        setExpandedItemId((cur) =>
-                          cur === item.id ? null : item.id,
-                        )
-                      }
-                      onPlay={() => togglePlayItem(item)}
-                      onSeek={(sec) => {
-                        if (isCurrent) {
-                          seekTo(sec);
-                        } else if (item.sound) {
-                          void playSound(item.sound);
+              {items.length === 0 ? (
+                <EmptyState
+                  size="sm"
+                  title="No tracks yet — add sound items below."
+                />
+              ) : (
+                <div className="min-h-[200px]">
+                  <TrackTable
+                    tracks={tracks}
+                    labels={trackTableLabels}
+                    getItemId={(_t, index) => items[index]?.id ?? String(index)}
+                    features={{
+                      header: true,
+                      reorderable: true,
+                      filterable: true,
+                      sortable: false,
+                    }}
+                    display={{
+                      displayPosition: false,
+                      displayArtist: false,
+                      displayDuration: true,
+                      displayDeleteButton: true,
+                      displayThumbnail: true,
+                      displayQueueControls: true,
+                    }}
+                    actions={{
+                      onReorder,
+                      onRemove: (t, index) => {
+                        const item = items[index];
+                        if (!item) {
+                          return;
                         }
-                      }}
-                      isDragging={draggedId === item.id}
-                      reorderable={!trackQuery.trim()}
-                      onDragStart={() => setDraggedId(item.id)}
-                      onDragEnd={() => setDraggedId(null)}
-                      onDrop={() => {
-                        if (draggedId) {
-                          void reorderByDrop(draggedId, item.id);
+                        setPendingRemove({ id: item.id, title: t.title });
+                      },
+                      onPlayNow: (t) => {
+                        const item = items.find((i) => i.id === t.source.id);
+                        if (item) {
+                          togglePlayItem(item);
                         }
-                        setDraggedId(null);
-                      }}
-                      genre={
-                        item.sound?.genre ??
-                        archive.find((sound) => sound.id === item.sound?.id)
-                          ?.genre
-                      }
-                      onRemove={() => {
-                        void removeStudioCollectionItem(slug, item.id).then(
-                          () => reload(),
+                      },
+                      onAddToQueue: (t) => {
+                        const item = items.find((i) => i.id === t.source.id);
+                        if (item?.sound) {
+                          void buildPlayable(item.sound).then((playable) => {
+                            if (playable) {
+                              enqueue(playable);
+                            }
+                          });
+                        }
+                      },
+                    }}
+                    meta={{
+                      isCurrentTrack: (track) => {
+                        const item = items.find(
+                          (candidate) => candidate.id === track.source.id,
                         );
-                      }}
-                    />
-                  );
-                })}
-              </ul>
-
-              <div className="border-border mt-4 flex justify-end border-t pt-4">
-                <Tooltip
-                  content={`Add content to ${isAlbumLike ? 'album' : 'collection'}`}
-                  side="top"
-                >
-                  <Button
-                    size="icon"
-                    aria-label={`Add content to ${isAlbumLike ? 'album' : 'collection'}`}
-                    onClick={() => setAddPickerOpen(true)}
-                  >
-                    <PlusIcon size={18} aria-hidden />
-                  </Button>
-                </Tooltip>
-              </div>
+                        return Boolean(
+                          item?.sound && currentId === `sound:${item.sound.id}`,
+                        );
+                      },
+                      isTrackPlaying: (track) => {
+                        const item = items.find(
+                          (candidate) => candidate.id === track.source.id,
+                        );
+                        return Boolean(
+                          item?.sound &&
+                          currentId === `sound:${item.sound.id}` &&
+                          isPlaying,
+                        );
+                      },
+                      isTrackQueued: (track) =>
+                        queue.some((queueItem) => {
+                          const item = items.find(
+                            (candidate) => candidate.id === track.source.id,
+                          );
+                          return (
+                            queueItem.id === track.source.id ||
+                            (item?.sound &&
+                              queueItem.id === `sound:${item.sound.id}`)
+                          );
+                        }),
+                    }}
+                  />
+                </div>
+              )}
             </StudioPanel>
           </>
         )}
@@ -986,8 +884,8 @@ export function StudioCollectionEditView({ slug }: { slug: string }) {
             </nav>
             <div className="flex min-w-0 flex-col gap-3">
               <Input
-                value={archiveQuery}
-                onChange={(event) => setArchiveQuery(event.target.value)}
+                value={soundQuery}
+                onChange={(event) => setSoundQuery(event.target.value)}
                 placeholder="Search tracks by title, genre, or type…"
                 aria-label="Search library tracks"
                 endAddon={<SearchIcon size={16} aria-hidden />}
@@ -995,7 +893,7 @@ export function StudioCollectionEditView({ slug }: { slug: string }) {
               <div className="border-border min-h-0 overflow-auto rounded-md border">
                 {availableSounds.length === 0 ? (
                   <p className="text-foreground-secondary p-4 text-sm">
-                    {archiveQuery.trim()
+                    {soundQuery.trim()
                       ? 'No available tracks match your search.'
                       : 'All library tracks are already in this collection.'}
                   </p>
@@ -1003,7 +901,7 @@ export function StudioCollectionEditView({ slug }: { slug: string }) {
                   <ul aria-label="Available library tracks">
                     {availableSounds.map((sound, index) => {
                       const itemIsPlaying =
-                        currentId === `archive:${sound.id}` && isPlaying;
+                        currentId === `sound:${sound.id}` && isPlaying;
                       return (
                         <li
                           key={sound.id}
@@ -1102,6 +1000,80 @@ export function StudioCollectionEditView({ slug }: { slug: string }) {
             <Dialog.Close>Cancel</Dialog.Close>
           </Dialog.Actions>
         </Dialog.Root>
+
+        <ConfirmDialog
+          isOpen={pendingRemove !== null}
+          title={`Remove "${pendingRemove?.title}"?`}
+          description={`This removes the track from this ${isAlbumLike ? 'album' : 'collection'}. It stays in your library.`}
+          confirmLabel="Remove"
+          onCancel={() => setPendingRemove(null)}
+          onConfirm={() => {
+            if (!pendingRemove) {
+              return;
+            }
+            const id = pendingRemove.id;
+            setPendingRemove(null);
+            void removeStudioCollectionItem(slug, id).then((result) => {
+              if (result.ok) {
+                toast.success('Track removed.');
+                reload();
+              } else {
+                toast.error(result.error);
+              }
+            });
+          }}
+        />
+
+        <ConfirmDialog
+          isOpen={pendingCoverDelete}
+          title="Remove cover image?"
+          description="The collection will fall back to its default placeholder until you upload a new cover."
+          confirmLabel="Remove cover"
+          onCancel={() => setPendingCoverDelete(false)}
+          onConfirm={() => {
+            setPendingCoverDelete(false);
+            void removeCover();
+          }}
+        />
+
+        <ImageSlotPreviewDialog
+          isOpen={backdropChrome.previewOpen && pendingFrameDelete === null}
+          onClose={backdropChrome.closePreview}
+          label="Backdrop"
+          src={backdropUrl}
+          frames={
+            slideshowImages.length > 1
+              ? slideshowImages.map((url) => ({
+                  url,
+                  onDelete: () => setPendingFrameDelete(url),
+                }))
+              : undefined
+          }
+          onChangeClick={() => {
+            backdropChrome.closePreview();
+            setUploadTarget('backdrop');
+          }}
+          confirmOpen={backdropChrome.confirmOpen}
+          clearing={backdropChrome.clearing}
+          onRequestDelete={backdropChrome.requestDelete}
+          onCancelDelete={backdropChrome.cancelDelete}
+          onConfirmDelete={backdropChrome.confirmDelete}
+        />
+
+        <ConfirmDialog
+          isOpen={pendingFrameDelete !== null}
+          title="Remove this image from the backdrop?"
+          description="It will be removed from the slideshow immediately."
+          confirmLabel="Remove"
+          onCancel={() => setPendingFrameDelete(null)}
+          onConfirm={() => {
+            const url = pendingFrameDelete;
+            setPendingFrameDelete(null);
+            if (url) {
+              void removeSlideshowFrame(url);
+            }
+          }}
+        />
       </div>
     </StudioGate>
   );

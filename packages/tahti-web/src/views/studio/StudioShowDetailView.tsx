@@ -1,5 +1,6 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import {
+  ArrowLeftIcon,
   BarChart3Icon,
   CheckIcon,
   CircleDotIcon,
@@ -23,6 +24,7 @@ import {
   Textarea,
   Toggle,
   Tooltip,
+  ViewShell,
 } from '@tahti-player/ui';
 
 import {
@@ -38,11 +40,12 @@ import {
   type StudioShowSeries,
 } from '../../api/shows';
 import { uploadSoundFile } from '../../api/studio';
+import { EntitySocialHeader } from '../../components/EntitySocialHeader';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { ShowImagePicker } from '../../components/ShowImagePicker';
 import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
-import { StudioPageHeader, StudioPanel } from '../../components/StudioPanel';
+import { BroadcastSubNav } from '../../components/StudioNav';
+import { StudioPanel } from '../../components/StudioPanel';
 import { Eyebrow } from '../../components/tahti/Eyebrow';
 import { EpisodeSourceIcon, episodeStatusLabel } from './StudioShowsView';
 
@@ -200,7 +203,7 @@ export function StudioShowDetailView({ id }: { id: string }) {
   const [backdropUrl, setBackdropUrl] = useState('');
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [backdropFile, setBackdropFile] = useState<File | null>(null);
-  const [autoArchive, setAutoArchive] = useState(true);
+  const [autoPublish, setAutoPublish] = useState(true);
   const [savingMeta, setSavingMeta] = useState(false);
   const [showTab, setShowTab] = useState<
     'overview' | 'episodes' | 'recordings'
@@ -217,7 +220,7 @@ export function StudioShowDetailView({ id }: { id: string }) {
         setDescription(r.data.description);
         setThumbnailUrl(r.data.coverUrl ?? '');
         setBackdropUrl(r.data.backdropUrl ?? '');
-        setAutoArchive(r.data.autoArchive ?? true);
+        setAutoPublish(r.data.autoPublish ?? true);
       }
     });
     void fetchEpisodesForShow(id).then((r) => setEpisodes(r.data));
@@ -262,7 +265,7 @@ export function StudioShowDetailView({ id }: { id: string }) {
       description: description.trim(),
       coverUrl: thumbnailUrl.trim() || null,
       backdropUrl: backdropUrl.trim() || null,
-      autoArchive,
+      autoPublish,
     });
     setSavingMeta(false);
     if (!r.ok) {
@@ -369,14 +372,17 @@ export function StudioShowDetailView({ id }: { id: string }) {
 
   return (
     <StudioGate>
-      <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-6 px-1 py-2">
-        <StudioNav current="/studio/shows" />
-        <Link
-          to="/studio/shows"
-          className="text-foreground-secondary -mt-2 text-xs hover:underline"
-        >
-          ← Shows
-        </Link>
+      <div className="studio-page-layout flex w-full flex-col gap-6 px-1 py-2">
+        <BroadcastSubNav current="/studio/shows" />
+        <Tooltip content="Back to Shows" side="right">
+          <Link
+            to="/studio/shows"
+            aria-label="Back to Shows"
+            className="text-foreground-secondary hover:bg-background-secondary -mt-2 inline-flex size-8 w-fit items-center justify-center rounded-full"
+          >
+            <ArrowLeftIcon size={16} aria-hidden />
+          </Link>
+        </Tooltip>
 
         {!show ? (
           <StudioPanel>
@@ -384,13 +390,20 @@ export function StudioShowDetailView({ id }: { id: string }) {
           </StudioPanel>
         ) : (
           <>
-            <StudioPageHeader
+            <EntitySocialHeader
               title={show.title}
-              action={
+              imageUrl={thumbnailUrl}
+              imageAlt=""
+              backdropUrl={backdropUrl}
+              subtitle={`${show.showType === 'LIVE_SET' ? 'Live set' : 'Talk show'} · ${show.mode === 'SINGLE' ? 'Single show' : 'Series'}`}
+              description={description.trim() || undefined}
+              actions={
                 show.mode === 'SINGLE' ? undefined : (
                   <Tooltip content="New episode" side="top">
                     <Button
+                      variant="secondary"
                       size="icon-sm"
+                      className="bg-background border-border rounded-md border-(length:--border-width)"
                       onClick={() => setCreateOpen(true)}
                       aria-label="New episode"
                     >
@@ -399,6 +412,7 @@ export function StudioShowDetailView({ id }: { id: string }) {
                   </Tooltip>
                 )
               }
+              data-testid="studio-show-social-header"
             />
 
             <Tabs.Root
@@ -495,8 +509,8 @@ export function StudioShowDetailView({ id }: { id: string }) {
                       </span>
                       <Toggle
                         label="Record broadcasts by default"
-                        checked={autoArchive}
-                        onChange={setAutoArchive}
+                        checked={autoPublish}
+                        onChange={setAutoPublish}
                       />
                     </div>
                     <div className="flex justify-end">
@@ -824,8 +838,8 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
   if (!episode) {
     return (
       <StudioGate>
-        <div className="studio-page-layout mx-auto max-w-2xl">
-          <StudioNav current="/studio/shows" />
+        <div className="studio-page-layout flex w-full flex-col">
+          <BroadcastSubNav current="/studio/shows" />
           <PageLoading label="Loading…" />
         </div>
       </StudioGate>
@@ -855,218 +869,225 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
 
   return (
     <StudioGate>
-      <div className="studio-page-layout mx-auto flex max-w-2xl flex-col gap-6">
-        <StudioNav current="/studio/shows" />
-        <Link
-          to="/studio/shows/$id"
-          params={{ id: episode.showId }}
-          className="text-foreground-secondary text-xs hover:underline"
-        >
-          ← {show?.title ?? 'Show'}
-        </Link>
-
-        <StudioPageHeader
-          title={episode.title}
-          action={<Eyebrow>Episode #{episode.episodeNumber}</Eyebrow>}
-        />
-
-        {episode.description ? (
-          <p className="text-sm">{episode.description}</p>
-        ) : null}
-
-        <StudioPanel
-          title="Public show details"
-          description="What listeners see when they open this show from the Tahti Radio schedule."
-        >
-          <div className="flex flex-col gap-3">
-            <Input
-              label="Episode title"
-              value={publicTitle}
-              onChange={(event) => setPublicTitle(event.target.value)}
-            />
-            <label className="flex flex-col gap-1 text-sm">
-              <span className="text-foreground-secondary text-xs uppercase">
-                Description
-              </span>
-              <Textarea
-                tone="secondary"
-                value={publicDescription}
-                onChange={(event) => setPublicDescription(event.target.value)}
-                rows={4}
-              />
-            </label>
-            <div className="flex justify-end">
-              <SaveButton
-                saving={savingDetails}
-                label="Save public details"
-                onClick={() => void savePublicDetails()}
-              />
-            </div>
-          </div>
-        </StudioPanel>
-
-        {needsApproval && (
-          <StudioPanel
-            title="Review before approve"
-            description="Recorded episodes must be approved before they can go live. Trim and normalize, then approve."
-            className="flex flex-col gap-3"
+      <div className="studio-page-layout flex w-full flex-col gap-6">
+        <BroadcastSubNav current="/studio/shows" />
+        <Tooltip content={`Back to ${show?.title ?? 'Show'}`} side="right">
+          <Link
+            to="/studio/shows/$id"
+            params={{ id: episode.showId }}
+            aria-label={`Back to ${show?.title ?? 'Show'}`}
+            className="text-foreground-secondary hover:bg-background-secondary inline-flex size-8 w-fit items-center justify-center rounded-full"
           >
-            <div className="grid gap-3 sm:grid-cols-2">
+            <ArrowLeftIcon size={16} aria-hidden />
+          </Link>
+        </Tooltip>
+
+        <ViewShell
+          title={episode.title}
+          classes={{ root: 'px-0 pt-0' }}
+          actions={<Eyebrow>Episode #{episode.episodeNumber}</Eyebrow>}
+        >
+          {episode.description ? (
+            <p className="text-sm">{episode.description}</p>
+          ) : null}
+
+          <StudioPanel
+            title="Public show details"
+            description="What listeners see when they open this show from the Tahti Radio schedule."
+          >
+            <div className="flex flex-col gap-3">
               <Input
-                type="number"
-                variant="number"
-                label="Trim start (sec)"
-                min={0}
-                step={0.1}
-                value={trimStart}
-                onChange={(event) => setTrimStart(Number(event.target.value))}
+                label="Episode title"
+                value={publicTitle}
+                onChange={(event) => setPublicTitle(event.target.value)}
               />
-              <Input
-                type="number"
-                variant="number"
-                label="Trim end (sec, 0 = full)"
-                min={0}
-                step={0.1}
-                value={trimEnd}
-                onChange={(event) => setTrimEnd(Number(event.target.value))}
-              />
+              <label className="flex flex-col gap-1 text-sm">
+                <span className="text-foreground-secondary text-xs uppercase">
+                  Description
+                </span>
+                <Textarea
+                  tone="secondary"
+                  value={publicDescription}
+                  onChange={(event) => setPublicDescription(event.target.value)}
+                  rows={4}
+                />
+              </label>
+              <div className="flex justify-end">
+                <SaveButton
+                  saving={savingDetails}
+                  label="Save public details"
+                  onClick={() => void savePublicDetails()}
+                />
+              </div>
             </div>
-            <div className="flex items-center justify-between gap-3 text-sm">
-              <span>Peak normalize / loudness (stream target)</span>
-              <Toggle
-                label="Peak normalize / loudness (stream target)"
-                checked={normalize}
-                onChange={setNormalize}
-              />
-            </div>
-            {episode.soundId ? (
-              <div className="flex flex-wrap gap-2">
-                <Link
-                  to="/studio/sounds/$id/editor"
-                  params={{ id: episode.soundId }}
-                >
-                  <Button size="sm" variant="secondary">
-                    Open full editor
+          </StudioPanel>
+
+          {needsApproval && (
+            <StudioPanel
+              title="Review before approve"
+              description="Recorded episodes must be approved before they can go live. Trim and normalize, then approve."
+              className="flex flex-col gap-3"
+            >
+              <div className="grid gap-3 sm:grid-cols-2">
+                <Input
+                  type="number"
+                  variant="number"
+                  label="Trim start (sec)"
+                  min={0}
+                  step={0.1}
+                  value={trimStart}
+                  onChange={(event) => setTrimStart(Number(event.target.value))}
+                />
+                <Input
+                  type="number"
+                  variant="number"
+                  label="Trim end (sec, 0 = full)"
+                  min={0}
+                  step={0.1}
+                  value={trimEnd}
+                  onChange={(event) => setTrimEnd(Number(event.target.value))}
+                />
+              </div>
+              <div className="flex items-center justify-between gap-3 text-sm">
+                <span>Peak normalize / loudness (stream target)</span>
+                <Toggle
+                  label="Peak normalize / loudness (stream target)"
+                  checked={normalize}
+                  onChange={setNormalize}
+                />
+              </div>
+              {episode.soundId ? (
+                <div className="flex flex-wrap gap-2">
+                  <Link
+                    to="/studio/sounds/$id/editor"
+                    params={{ id: episode.soundId }}
+                  >
+                    <Button size="sm" variant="secondary">
+                      Open full editor
+                    </Button>
+                  </Link>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    disabled={busy}
+                    onClick={() => {
+                      setBusy(true);
+                      void Promise.all([
+                        import('../../api/studio'),
+                        import('../../api/studio-types'),
+                      ]).then(async ([studio, types]) => {
+                        const { data: draft } = await studio.fetchEditorDraft(
+                          episode.soundId!,
+                        );
+                        const base =
+                          draft.editList ?? types.createDefaultEditList(180);
+                        const cuts =
+                          trimEnd > trimStart
+                            ? [{ start: trimStart, end: trimEnd }]
+                            : trimStart > 0
+                              ? [
+                                  {
+                                    start: trimStart,
+                                    end: base.sourceDuration,
+                                  },
+                                ]
+                              : [];
+                        const editList = {
+                          ...base,
+                          cuts: cuts.length ? cuts : base.cuts,
+                          loudnorm: {
+                            enabled: normalize,
+                            targetLufs: -14,
+                            targetTp: -1.5,
+                          },
+                        };
+                        const r = await studio.renderEditorDraft(
+                          episode.soundId!,
+                          editList,
+                          `Episode ${episode.episodeNumber} review`,
+                        );
+                        setBusy(false);
+                        setMsg(
+                          r.ok
+                            ? 'Render queued — check the archive editor for progress.'
+                            : r.error,
+                        );
+                      });
+                    }}
+                  >
+                    {busy ? 'Rendering…' : 'Apply trim / normalize'}
                   </Button>
-                </Link>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  disabled={busy}
-                  onClick={() => {
-                    setBusy(true);
-                    void Promise.all([
-                      import('../../api/studio'),
-                      import('../../api/studio-types'),
-                    ]).then(async ([studio, types]) => {
-                      const { data: draft } = await studio.fetchEditorDraft(
-                        episode.soundId!,
-                      );
-                      const base =
-                        draft.editList ?? types.createDefaultEditList(180);
-                      const cuts =
-                        trimEnd > trimStart
-                          ? [{ start: trimStart, end: trimEnd }]
-                          : trimStart > 0
-                            ? [
-                                {
-                                  start: trimStart,
-                                  end: base.sourceDuration,
-                                },
-                              ]
-                            : [];
-                      const editList = {
-                        ...base,
-                        cuts: cuts.length ? cuts : base.cuts,
-                        loudnorm: {
-                          enabled: normalize,
-                          targetLufs: -14,
-                          targetTp: -1.5,
-                        },
-                      };
-                      const r = await studio.renderEditorDraft(
-                        episode.soundId!,
-                        editList,
-                        `Episode ${episode.episodeNumber} review`,
-                      );
+                </div>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  <Link to="/studio/go-live">
+                    <Button size="sm">
+                      <RadioIcon size={14} aria-hidden className="mr-1" />
+                      Go Live to record
+                    </Button>
+                  </Link>
+                  <p className="text-foreground-secondary w-full text-xs">
+                    After the broadcast ends, open Studio → Recordings to edit
+                    and attach the saved capture, then return here to approve.
+                  </p>
+                </div>
+              )}
+              <Button
+                disabled={busy || episode.status === 'APPROVED'}
+                onClick={() => {
+                  setBusy(true);
+                  void import('../../api/shows').then(({ approveEpisode }) => {
+                    void approveEpisode(episode.id).then((r) => {
                       setBusy(false);
+                      if (!r.ok) {
+                        setMsg(r.error);
+                        return;
+                      }
+                      setEpisode(r.data);
                       setMsg(
-                        r.ok
-                          ? 'Render queued — check the archive editor for progress.'
-                          : r.error,
+                        'Episode approved — ready to schedule or publish.',
                       );
                     });
-                  }}
-                >
-                  {busy ? 'Rendering…' : 'Apply trim / normalize'}
-                </Button>
-              </div>
-            ) : (
-              <div className="flex flex-wrap gap-2">
-                <Link to="/studio/go-live">
-                  <Button size="sm">
-                    <RadioIcon size={14} aria-hidden className="mr-1" />
-                    Go Live to record
+                  });
+                }}
+              >
+                <CheckIcon size={16} aria-hidden className="mr-1.5" />
+                {episode.status === 'APPROVED' ? 'Approved' : 'Approve episode'}
+              </Button>
+            </StudioPanel>
+          )}
+
+          {!needsApproval && (
+            <section className="border-border flex flex-col gap-2 rounded-xl border p-4">
+              <p className="text-sm">
+                Episode #{episode.episodeNumber} is{' '}
+                {episodeStatusLabel(episode)}.
+              </p>
+              {episode.soundId && (
+                <Link to="/studio/sounds/$id" params={{ id: episode.soundId }}>
+                  <Button size="sm" variant="secondary">
+                    Open in Library
                   </Button>
                 </Link>
-                <p className="text-foreground-secondary w-full text-xs">
-                  After the broadcast ends, open Studio → Recordings to edit and
-                  attach the saved capture, then return here to approve.
-                </p>
-              </div>
-            )}
-            <Button
-              disabled={busy || episode.status === 'APPROVED'}
-              onClick={() => {
-                setBusy(true);
-                void import('../../api/shows').then(({ approveEpisode }) => {
-                  void approveEpisode(episode.id).then((r) => {
-                    setBusy(false);
-                    if (!r.ok) {
-                      setMsg(r.error);
-                      return;
-                    }
-                    setEpisode(r.data);
-                    setMsg('Episode approved — ready to schedule or publish.');
-                  });
-                });
-              }}
-            >
-              <CheckIcon size={16} aria-hidden className="mr-1.5" />
-              {episode.status === 'APPROVED' ? 'Approved' : 'Approve episode'}
-            </Button>
-          </StudioPanel>
-        )}
+              )}
+            </section>
+          )}
 
-        {!needsApproval && (
-          <section className="border-border flex flex-col gap-2 rounded-xl border p-4">
-            <p className="text-sm">
-              Episode #{episode.episodeNumber} is {episodeStatusLabel(episode)}.
-            </p>
-            {episode.soundId && (
-              <Link to="/studio/sounds/$id" params={{ id: episode.soundId }}>
-                <Button size="sm" variant="secondary">
-                  Open in Library
-                </Button>
-              </Link>
-            )}
-          </section>
-        )}
+          {msg && <p className="text-sm">{msg}</p>}
 
-        {msg && <p className="text-sm">{msg}</p>}
-
-        <Button
-          size="sm"
-          variant="text"
-          onClick={() =>
-            void navigate({
-              to: '/studio/shows/$id',
-              params: { id: episode.showId },
-            })
-          }
-        >
-          Back to show
-        </Button>
+          <Button
+            size="sm"
+            variant="text"
+            onClick={() =>
+              void navigate({
+                to: '/studio/shows/$id',
+                params: { id: episode.showId },
+              })
+            }
+          >
+            Back to show
+          </Button>
+        </ViewShell>
       </div>
     </StudioGate>
   );

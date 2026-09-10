@@ -1,3 +1,61 @@
+## 2026-09-08 — Purchases tab + hearthis.at widget fixes
+
+Account settings gained a Purchases tab (`/settings/account`, next to
+"Your subs") listing track purchases with a Listen link — needed a new
+`GET /api/me/purchases` in `../tahti-org` (PR #483, buyer-side listing
+never existed, only an artist-side orders endpoint did). Separately,
+`ListenAddonsPanel`'s hearthis.at widget: username now auto-fills from
+the artist's saved handle, and the "add a set" bug is actually fixed —
+root cause (found by testing against the live API) was that set page
+URLs 302-redirect to a different canonical path where `oembed.json`
+actually lives; the old code appended `oembed.json` to the pre-redirect
+URL and got a 200 with an empty body every time.
+
+## 2026-09-08 — Track detail waveform: real peaks at native resolution
+
+`TrackDetailView`'s full-track waveform was already overriding the
+seekbar's 64-bar default up to 180, but still discarding most of a real
+track's detail — confirmed the backend (`../tahti-org`) decodes 600 real
+amplitude buckets per track. Now renders real peaks 1:1 (no downsampling)
+when present; the 180 constant is only for the synthetic no-peaks
+fallback. Other `WaveformSeekbar` consumers still cap at 64 — not
+touched this pass, see `docs/todo/waveform-detail-accuracy.md`.
+
+## 2026-09-08 — Playlist + Release cover hover-delete
+
+Wired `EntitySocialHeader`'s `onImageDelete` into Studio Playlist and
+Release covers (Collection was done earlier the same day). Release
+needed a new backend route — `DELETE /api/me/releases/:id/artwork` in
+`../tahti-org` (committed locally on `feat/release-artwork-delete`, not
+pushed) — since nothing could clear release artwork before. Show/Sound
+detail headers checked: their images are read-only, no delete to add.
+
+## 2026-09-08 — Next-broadcast cards, status-bar icons, page-tour chrome
+
+Schedule next/upcoming cards: same-row Next+title + cover/gradient banner.
+Status bar: icon row + cloud storage used. Page tour: purpose annotation
+everywhere; shared chrome only on home; inner pages = page functionality.
+
+## 2026-09-08 — Audience nav tree: parent Studio tab + nested Overview/Tiers/Stripe
+
+Mirror Broadcast: Studio submenu keeps a single Audience tab lit for
+`/studio/audience`, `?tab=tiers`, and `/studio/stripe`. Nested
+`AudienceSubNav` carries Overview / Tiers / Stripe (Stripe only when
+configured). Removed the old sibling Stripe Studio tab.
+
+## 2026-09-08 — Settings Audience removed; Studio → Audience is canonical
+
+Dropped Settings → Audience (`MoneyPanel`). Fan tiers, fan-sub stats, grants,
+and Stripe already lived on Studio Audience (`/studio/audience`, formerly
+`/studio/revenue`). Listener "Your subs" remain under Settings → Account.
+Old `/settings/money|audience|fan-subs` and `/studio/revenue` redirect in.
+
+## 2026-09-08 — Settings footer icon row + toast noise (onboarding + mock theme review)
+
+Settings modal footer links → single icon row. Onboarding "finish profile"
+toast at most once/session (sessionStorage) + mock users pre-marked.
+Mock sticky "Theme is in review" acknowledge now persists for the session.
+
 > **Agent note (2026-09-05):** This file is an **append-only ship diary**, not the open backlog.
 > Open work: [`docs/todo/INDEX.md`](../../docs/todo/INDEX.md) and [`WORKPLAN.md`](WORKPLAN.md) (open-only).
 > Finished tasks fold into [`docs/todo/HISTORY.md`](../../docs/todo/HISTORY.md) — do not re-scan this whole file for “what’s next”.
@@ -4938,3 +4996,625 @@ Large multi-slice session: nav/content-taxonomy robustness, a full internal rena
 **Slice 8 — two new system rules, tracked for a sweep.** (1) URL-field copy convention: any field displaying a URL pairs it with `@tahti-player/ui`'s `CopyButton` inline, never a bare copy icon with no visible URL or a hand-rolled copy handler — applied to Slice 7's share links; known unswept violators noted in `WORKPLAN.md` (`StudioReleasesView`'s smartlink copy button has no visible field, `StudioGoLiveView`'s local `copyText` hand-rolls what `CopyButton` already does). (2) Media upload convention: placeholder-first, hover-to-open-widget when >1 image vs. direct dialog for exactly 1, never accept a pasted link instead of a file, toast + immediate preview refresh on upload, a processing progress bar for video, R2-under-user-namespace by default — reference implementations are `RoundImageUploadButton.tsx`/`BackdropUploadButton.tsx`/`ImageUploadField.tsx`; sweep not yet executed. Also fixed `StudioStashView`'s visibility filter, which never matched `UNLISTED` sounds despite the page's own "private locker, share a link" framing.
 
 **Validation:** `tsc --noEmit` and `eslint` clean throughout; `vitest run` (56 files, 342 tests) passes after every slice. New Playwright coverage: `e2e/stash-and-subscriber-access.spec.ts` (upload → visibility → cross-session access/download; upload → subscriber-gated → listing-exclusion check) — typechecks and lists cleanly via `playwright test --list`, not run live against `beta.tahti.live` this session. Two things found with no real feature behind them yet, documented rather than faked: collections have no subscriber-gated visibility option (only track-level), and subscribing has no test-mode path (real Stripe Checkout) for an end-to-end "subscriber sees gated content" test. Bumped `packages/tahti-web/package.json` to `0.0.22`.
+
+## 2026-09-07 — Workplan cycle 1: map recapture, ChannelView doc close-out, collection empty state; bump to 0.0.87
+
+Three-topic round from `docs/todo/INDEX.md`, run in an isolated worktree
+after discovering this checkout was being concurrently branch-switched by
+another session mid-turn (see git reflog around `perf/polling-and-dom-audit`
+that day) — uncommitted work from that shared checkout was stashed and
+carried over cleanly rather than lost.
+
+**Topic 1 — signed-in map/atlas recapture.** Folded `map-screenshot-refresh.md`
+into `docs/todo/HISTORY.md`. The blocker (`RightRailPanel`'s unstable Zustand
+selector) was already fixed in 0.0.62; the recapture itself just hadn't run
+since. `scripts/capture-map-screens.mjs` against a local `VITE_FORCE_MOCK=1`
+dev server: 141/142 shots captured, all previously-stale signed-in surfaces
+(Library, Feed, Favorites, History, Messages, Studio, Admin, all three
+Governance contexts) now current. `show-episode` still fails a
+`waitForFunction` content-check timeout on both the primary attempt and the
+soft retry — left as a known single-shot gap rather than blocking the round.
+`sitemap.json` regenerated (1121 images).
+
+**Topic 2 — ChannelView badge/share doc close-out.** `channelview-badge-dedup-and-share-modal.md`
+had no code left to write: every item in its own "What shipped" section was
+already done, and its one remaining thread ("move the player above the
+tabs") had been explicitly superseded by a later, different instruction
+that replaced the tab strip with a Stream Manager modal instead — which
+already shipped and folded under `channelview-stream-manager-modal-replaces-tabs.md`.
+Closed the doc; no source changes.
+
+**Topic 3 — `StudioCollectionEditView` empty state.** Continues
+`studio-emptystate-remaining.md`. The genuinely-empty track list ("No tracks
+yet — add archive items below.") now renders Storybook `EmptyState` instead
+of a bare `<li>` text row, matching the `StudioModerationView` precedent of
+swapping the whole `<ul>` for `EmptyState` (an `EmptyState` renders a `<div>`,
+so it can't nest inside the list the way the old `<li>` did). Left the
+filtered-zero-results row ("No tracks match "…"") as inline text inside the
+list — that's a search-filter message on an existing list, not an
+actually-empty list, so it doesn't fit the `EmptyState` swap.
+
+**Validation:** `pnpm --filter @tahti-player/tahti-web type-check` and a
+scoped `eslint` on `StudioCollectionEditView.tsx` pass clean. No existing
+test file for this view; none added, matching its prior state. Screenshot
+changes are static assets, not exercised by the test suite. Bumped
+`packages/tahti-web/package.json` to `0.0.87`.
+
+## 2026-09-07 — Workplan cycle 2: Settings keyboard-shortcuts link, Storybook sweep doc close-out; bump to 0.0.88
+
+**Topic 1 — Settings → Keyboard shortcuts deep link.** Closes the one
+remaining line in `help-keyboard-navigation.md`. Added a "Keyboard
+shortcuts" `Button` (next to Log out) to Settings → Account → Session,
+linking to `/help/$slug` (`slug: 'keyboard-shortcuts'`) via the same
+`<Link onClick={closeSettings}>` pattern already used elsewhere in
+`SettingsPanels.tsx` (Governance, Go Live, Stripe). The remapping *store*
+itself was out of this deep link's scope per the doc's original text
+(player-only today) and isn't addressed here.
+
+**Topic 2 — Storybook sweep doc consolidation.** `storybook-ui-sweep.md`
+had nothing left unique to itself (its own 2026-09-06 note already found
+both "still open" lines done, leaving only a pointer duplicate of
+`studio-storybook-sweep.md`). `studio-storybook-sweep.md`'s own last line
+("CollectionEdit track empty; remaining chip groups") is now also done —
+CollectionEdit shipped in workplan cycle 1 above, and a fresh grep for
+unswept hand-rolled `FilterChips`-shaped segment strips across every
+Studio/Admin view found none. Closed both docs, folded to
+`docs/todo/HISTORY.md`, and trimmed the now-stale INDEX references out of
+`WORKPLAN.md`'s "Storybook / design-system sweeps" line (the epic itself
+stays open — `STUDIO-ADMIN-UX-SWEEP-OPEN.md`'s punch list is unrelated
+and still has real items).
+
+**Topic 3** was folded into Topic 2 once the doc investigation showed both
+sweep docs closing together rather than needing a separate third slice —
+no filler work was substituted.
+
+**Validation:** `pnpm --filter @tahti-player/tahti-web type-check` and a
+scoped `eslint` on `SettingsPanels.tsx` pass clean. `vitest run`: 478/478
+unit tests pass (the 11 "failed" files are pre-existing e2e Playwright
+specs vitest's glob picks up and can't import — unrelated, not introduced
+this round). Bumped `packages/tahti-web/package.json` to `0.0.88`.
+
+## 2026-09-07 — Workplan cycle 3: fullscreen player polish, opt-in onboarding toast; bump to 0.0.89
+
+**Topic 1 — Fullscreen player translucent backdrop + back arrow.** Closes
+`fullscreen-player-background-translucent-layer.md` and
+`fullscreen-player-topbar-and-back-arrow.md` (both pre-spec'd with exact
+diffs from an earlier pass; line numbers had drifted but the referenced
+code matched verbatim, so implemented as written). `FullScreenPlayer.tsx`:
+the `ChannelVisualizer` backdrop now uses `bg-background/35
+backdrop-blur-md` instead of flat `opacity-60`, matching the title card's
+existing translucent treatment. The top-right `Minimize2Icon` became a
+top-left `ArrowLeftIcon` "Back to player" button — `size-12` (was
+`size-8`) with a translucent `bg-black/30` circular background, `p-4`
+inset from the corner, sized and padded for an easy tap target.
+`AppShell.tsx`: `AppTopNav` and both `ConnectedPlayerBar` mounts (mobile
+and desktop) now skip rendering while `fullScreenPlayerOpen` is true, so
+top chrome doesn't crop the fullscreen cover art underneath it.
+
+**Topic 2 — Onboarding: opt-in toast instead of forced redirect.** Closes
+`onboarding-cta-not-forced-redirect.md`. `AppShell.tsx`'s first-sign-in
+effect no longer force-navigates to `/onboarding`; it shows a dismissible
+`sonner` toast ("Finish setting up your profile?") with a "Set up
+profile" action (navigates to `/onboarding`) and a "Not now" action that
+calls the same `markOnboardingSeen` `OnboardingView`'s own "Skip for now"
+button already uses. A toast that times out without a click marks
+nothing, so it offers again next session rather than nagging forever or
+vanishing permanently on inaction — resolves the doc's own flagged open
+question (skip vs. dismissed-forever) by only applying skip semantics to
+the explicit action, never to a timeout.
+
+Only 2 topics again — searched `governance-gap-list.md`,
+`listener-purchase-flow.md`, `pay-what-you-want-pricing.md`,
+`plugin-registry-extraction.md` for a bounded third, but each is either a
+multi-repo feature needing its own scoping pass or explicitly gated on a
+sibling-repo decision (`plugin-registry-extraction.md` says outright:
+"do not migrate... until that doc's checklist is accepted").
+
+**Validation:** `pnpm --filter @tahti-player/tahti-web type-check`, a
+scoped `eslint` on `FullScreenPlayer.tsx`/`AppShell.tsx`, and
+`pnpm --filter @tahti-player/tahti-web test` (the package's own script,
+`vitest run --exclude 'e2e/**'`) all pass clean — 84/84 files, 478/478
+tests. Bumped `packages/tahti-web/package.json` to `0.0.89`.
+
+## 2026-09-07 — Workplan cycle 4: Select's orange-by-default fixed; governance/theme-visuals doc corrections; bump to 0.0.90
+
+**Topic 1 — `Select` no longer defaults to `bg-primary`.** Root cause for
+part of `tahti-theme-refactor.md`'s "all dropdown backgrounds are orange
+with black text" complaint: `packages/ui/src/components/Select/Select.tsx`
+hardcoded `bg-primary text-primary-foreground` on the closed control (the
+open dropdown menu, `SelectOptions.tsx`, was already correctly
+`bg-background-secondary`/`text-foreground` — only the collapsed button
+was wrong). Changed to `bg-background-input text-foreground`, matching
+`Input`'s own established `tone: primary` token
+(`packages/ui/src/components/Input/Input.tsx`) — `Select` is a form
+control like `Input`, not a CTA, so it now follows the same convention
+instead of being the one component still using the button-CTA color.
+This is theme-agnostic (fixes every theme, not just the one reported)
+and doesn't touch `Button`'s much larger default-variant-audit question,
+which stays queued in `tahti-theme-refactor.md`.
+
+Cross-package fallout: `packages/player` (the desktop app) also consumes
+this `Select` and had 3 stale snapshots (`Themes`, `Settings`, `Sources`
+test files) capturing the old class string — same shared-component
+blast-radius pattern as the `Tooltip` fix from `player-bar-fake-live-indicator`
+earlier this project. Updated all 3 snapshots via `vitest -u` and
+diffed each one to confirm only the expected class string changed,
+nothing else.
+
+**Topic 2 — `governance-gap-list.md` correction.** Gaps #5 (quarterly
+report download UI) and #17 (document preview/download) were already
+shipped — `GovernanceView.tsx` already renders `report.downloadUrl` and
+`document.downloadUrl ?? document.externalUrl` as links on their
+respective rows. The gap-list doc (generated 2026-09-06) was stale;
+marked both done rather than re-implementing already-working UI.
+
+**Topic 3 — thumbnail glow attempt documented, not shipped.** Tried
+porting `.listen-card::before`'s blurred-backdrop technique
+(`mobile-player-nav-and-tahti-theme-visuals.md` item 2) onto
+`DirectoryArtistCardGrid.tsx`'s `Card`s, live-verified on `/discover` →
+Artists. Doesn't work as a direct port: `Card` (`packages/ui`) is fully
+opaque (`bg-primary` + hard `shadow-shadow`), unlike `apps/web`'s
+translucent glass card, and `CardGrid`'s `gap-4` gutter is too narrow
+for a blurred halo to read as intentional rather than a rendering
+glitch — confirmed with two different inset/blur/opacity combinations,
+both photographed. Reverted the code change; documented the specific
+finding and two candidate alternative techniques (blur the page
+background behind the whole grid instead of per-card, or give `Card`
+a translucent variant) in the todo doc so the next attempt doesn't
+repeat the same dead end.
+
+**Validation:** `pnpm type-check` (root, all 16 workspace packages) and
+`pnpm test` (root, via Turborepo) both pass clean across the whole
+monorepo — `ui` (287 tests), `player` (677 tests, 1 todo), `tahti-web`
+(478 tests via its own `--exclude e2e` script). Scoped `eslint` on
+`Select.tsx` clean. 3 topics this round (the theme-visuals one is a
+documented negative result, not a revert-and-pretend-it-didn't-happen)
+— the rest of the backlog remained blocked on product decisions or
+cross-repo work, consistent with prior cycles. Bumped
+`packages/tahti-web/package.json` to `0.0.90`.
+
+## 2026-09-07 — Workplan cycle 5: native browser dialogs swept out, governance dedup; bump to 0.0.91
+
+**Topic 1 — Governance Account-tab duplicate entry point removed.**
+Resolved `governance-out-of-account-section.md` via its own Option 2 —
+the conservative choice with no navigation/discoverability change (so
+no access regression for non-artist members who rely on Settings →
+Account as their only path to governance). Removed the redundant
+"Governance" link-out button from Settings → Account → Membership
+(`SettingsPanels.tsx`) — it duplicated the dedicated Settings → Account
+→ Governance tab right next to it, both rendering the exact same
+`GovernanceView` content. Options 1 (new top-level nav entry) and 3
+(something else) are real product-IA decisions and stay open.
+
+**Topic 2 — Theme rename no longer uses `window.prompt`.** Settings →
+Themes' rename action opened a native browser prompt instead of the
+app's own dialog chrome. Replaced with a small `Dialog.Root` + `Input`
+form (same shape as `StudioPlaylistsView`'s "New playlist" dialog),
+keyed off new local `renamingTheme` state instead of `window.prompt`'s
+return value.
+
+**Topic 3 — `StudioSoundsView`'s delete uses `ConfirmDialog`, not bare
+`confirm()`.** Found via a fresh sweep for native dialog calls
+(`window.confirm`/`alert`/`prompt` were already clean from earlier
+rounds, but a bare unprefixed `confirm(...)` call had been missed by
+those searches). Wired up `pendingDeleteItem` state and the shared
+`ConfirmDialog` component — the same pattern `StudioUpdatesView`'s post
+delete already uses — instead of the native dialog. Swept the rest of
+`tahti-web` for `confirm(`/`alert(`/`prompt(` in any form (prefixed or
+bare): none left.
+
+Looked for 2 more topics to reach 5 (grepped for stale `console.log`,
+`eslint-disable`, and `// TODO`/`// FIXME` comments as other common
+"forgotten cleanup" signals) — found none; this codebase's own
+maintenance history has already swept those categories clean. 3 real
+topics this round.
+
+**Validation:** `pnpm --filter @tahti-player/tahti-web type-check`,
+scoped `eslint` on all three touched files, and
+`pnpm --filter @tahti-player/tahti-web test` all pass clean — 84/84
+files, 478/478 tests. Bumped `packages/tahti-web/package.json` to
+`0.0.91`.
+
+## 2026-09-07 — Workplan cycle 6: Stream Manager now-playing artwork (cross-repo check, frontend-only fix); bump to 0.0.92
+
+Per the user's standing authorization to touch `../tahti-org` for
+cross-repo blockers, checked the first item queued for that
+(`queued-ux-fixes-2026-09-05.md`'s Stream Manager artwork item,
+also listed as a `../tahti-org` blocker in `WORKPLAN.md`) before
+touching the sibling repo. It turned out to already be resolved on the
+backend: `GET /api/channels/:slug` (`apps/api/src/routes/channels/get.ts`
+in `../tahti-org`) already selects and returns `nowPlayingArtworkUrl` as
+`nowPlaying.artworkUrl` — `tahti-web`'s own `api/types.ts` already
+declared `ChannelNowPlaying.artworkUrl`, it was just never read by
+`StreamManagerPanel.tsx`. No `../tahti-org` change was needed after all
+— the 2026-09-05 investigation's finding had gone stale, same pattern
+as the governance-gap-list.md corrections in workplan cycle 4.
+
+Wired it up: `RotationPlayback` now carries `artworkUrl`; the "Current
+track" block renders it via `MediaArtwork` (`size="thumb"`, the
+existing "inline track-row thumbnail" preset) with `onPlay`/`isPlaying`
+wired to the same rotation pause/resume transport the separate
+play/pause icon button already calls — same control, second surface,
+matching the original ask ("now-playing artwork with hover play/pause").
+
+Checked the other 4 items queued in `WORKPLAN.md`'s cross-repo section
+before starting real work on any of them, to avoid the same stale-doc
+trap: `pay-what-you-want-pricing.md` (no `pricingModel`/`minimumPrice`
+schema exists yet — still genuinely unstarted), stream-overlay scrim
+(no `video.add_image` fill-rectangle call in `liquidsoap.ts` — still
+genuinely missing, and still too risky to guess at without a live
+Liquidsoap runtime per the original doc's own caution),
+`plugin-registry-extraction.md` (`../tahti-org`'s own checklist still
+explicitly un-accepted: contract tests and ownership definition both
+unchecked, guardrail against extraction still active), and
+`listener-purchase-flow.md` (needs a test-mode Stripe path that doesn't
+exist). None of these four were touched — genuinely still blocked, not
+just stale.
+
+**Validation:** `pnpm --filter @tahti-player/tahti-web type-check`,
+scoped `eslint` on `StreamManagerPanel.tsx`, and
+`pnpm --filter @tahti-player/tahti-web test` all pass clean — 84/84
+files, 478/478 tests (no dedicated test file exists for
+`StreamManagerPanel.tsx`, so no snapshot risk). Bumped
+`packages/tahti-web/package.json` to `0.0.92`.
+
+## 2026-09-07 — Cross-repo: stream overlay scrim (PR) + plugin registry adapter (packages/player, no tahti-web changes this round)
+
+No `tahti-web` files touched this round — no version bump.
+
+**Stream overlay scrim toggle (`../tahti-org`).** Implemented
+`Channel.streamOverlayScrimEnabled` end to end in the sibling repo:
+schema + migration, `ChannelStreamOverlayPatchSchema`, the
+`/api/me/channel/stream-overlay` GET/PATCH route, and
+`buildRtmpMirrorOutput` drawing a `video.add_rectangle` scrim behind
+title/subtitle text when enabled. `video.add_rectangle` wasn't
+previously used anywhere in that codebase — rather than guess at its
+signature (the original doc's stated risk: "guessing at new
+video-composition syntax... risks silently breaking every channel's
+multistream mirroring in production"), verified it against the real
+`savonet/liquidsoap:v2.2.5` image, already running locally as this
+environment's own channel containers: `--list-functions-md` for the
+exact signature, `--check` against the precise nested-call form the
+generator produces (confirmed a deliberately broken script fails with
+a real parser error, so `--check` passing is meaningful, not silent).
+`liquidsoap-mirror.test.ts` (19/19, 3 new) and `sound.test.ts` (14/14,
+against an ephemeral `postgres:16-alpine`) both pass. Opened as
+`../tahti-org` PR [#459](https://github.com/janiluuk/tahti-org/pull/459)
+— not merged (tahti-org's `main` requires PR review; this session's
+standing practice is not to self-merge there without the user's own
+sign-off). Frontend toggle UI in `StreamOverlayEditor.tsx` is a
+follow-up once that PR lands.
+
+**Plugin registry extraction, §5.1/§5.2 (`packages/player`, this repo).**
+The sibling doc's already-fully-specified adapter plan
+(`../tahti-org/docs/todo/plugin-registry-extraction.md` §5) had two
+concrete, additive, non-breaking next steps ready to implement exactly
+as designed: `pluginRegistryContract.ts` (shared types +
+`PluginRegistryStore`/`PluginRegistryHost` interfaces) and
+`pluginRegistryAdapter.ts` (default adapter delegating to today's
+`pluginRegistry.ts` — same LazyStore file, same key prefix, same
+managed path layout; no storage change at all, matching the doc's own
+"adapter-only PR" rollback-plan step). Added a first contract-test
+suite (`pluginRegistryAdapter.test.ts`, 10 tests) covering the
+store-layer half of §6's checklist: upsert/get/list round-trip,
+`setEnabled` (including missing-id no-op), `setWarnings` (including
+empty-array-omits-the-field), `remove` (including orphan-remove), and
+dev-install `originalPath` preservation. The `PluginRegistryHost` half
+(install/enable/disable/update orchestration, today spread across
+`pluginStore.tsx`/`pluginBootstrap.ts`/`pluginAutoUpdate.ts`) has no
+implementation yet, so those §6 cases aren't covered — not guessed at.
+Caller migration (§5.4) also not started; existing code still imports
+`pluginRegistry.ts` directly, unaffected by this change. Updated both
+repos' pointer docs to record exactly what's done vs. still open —
+`../tahti-org` PR [#460](https://github.com/janiluuk/tahti-org/pull/460).
+
+**Validation:** `packages/player`: `tsc -p tsconfig.tahti.json --noEmit`
+clean, `eslint` clean, full suite 69/69 files (686/686 tests, 1 todo) —
+no regressions from the two new files or the pre-existing suite.
+
+## 2026-09-07 — Fixed the "lost library" bug; checked fullscreen player (no issue found); bump to 0.0.93
+
+**Checked first, per the user's request: fullscreen player.** Re-verified
+`FullScreenPlayer.tsx`/`AppShell.tsx` from workplan cycle 3 (translucent
+backdrop, back-left arrow, hidden top chrome) against a live mock
+session, desktop width — renders correctly, back-arrow closes back to
+the compact bar cleanly. No defect found on this pass; flagging that if
+something specific is still visibly wrong, it needs a screenshot or
+more precise repro to pin down further.
+
+**Found and fixed a real regression: Library's own tabs, including
+Local files, were unreachable from `/library`.** Root cause:
+`LibraryView.tsx`'s `overviewTab` resolved to `null` specifically for
+the plain `/library` landing route (the page you land on by clicking
+"Library" in the sidebar), and the whole `LIBRARY_SECTION_TABS` strip
+(Sounds/Collections/Recordings/Media/Stash/Embeds/Smart links/**Local
+files**) was gated on `overviewTab` being truthy — so it silently never
+rendered on that exact page. What looked like a plausible tab bar in
+its place turned out to be a second, independent bug: `/library` was
+listed in `StudioNav.tsx`'s `SECTION_PREFIXES['/studio']`, so
+`AppShell.tsx` rendered **Studio's** own tab strip
+(Overview/Branding/Stats/Governance/…) over the Library page instead —
+visually convincing, navigationally useless there. Added `'library'`
+(Overview) as a real entry in `LIBRARY_SECTION_TABS` so the strip
+always resolves instead of hiding, and removed `/library`+sub-paths
+from Studio's `SECTION_PREFIXES` (confirmed via `navigationActive.ts`
+that sidebar highlighting for Library was already independent of that
+list, so nothing else relied on it). Live-verified before/after with
+Playwright screenshots.
+
+**Logged, not fixed this round (per explicit "add to todo" requests):**
+- `continue-listening-card-missing-isplaying.md` — Listen page's
+  "Continue listening" card never shows a pause icon; found the exact
+  cause (`Card`'s `isPlaying` prop is simply never passed there, unlike
+  the sibling `RadioListItem` right below it).
+- `mobile-topbar-notifications-messages-to-user-menu.md` — move
+  Notifications/Messages into the user menu on mobile only, to free up
+  top-bar space; scoped exact files/line ranges, flagged the unread-
+  indicator placement as needing a decision before implementing.
+
+**Validation:** `pnpm --filter @tahti-player/tahti-web type-check`,
+scoped `eslint` on `LibraryView.tsx`/`StudioNav.tsx`, and
+`pnpm --filter @tahti-player/tahti-web test` all pass clean — 84/84
+files, 478/478 tests (including `StudioNav.test.ts`'s 19 tests, still
+green after the `SECTION_PREFIXES` trim). Bumped
+`packages/tahti-web/package.json` to `0.0.93`.
+
+## 2026-09-07 — PWYW pricing: shipped the actual missing piece, found a bigger gap; bump to 0.0.94
+
+Continuation of the cross-repo cycle. Checked `../tahti-org`'s real
+schema/routes before writing any code — `pay-what-you-want-pricing.md`
+had assumed PWYW needed new schema (`pricingModel` enum,
+`minimumPrice`) from scratch. It didn't:
+`PurchaseTier.priceOptional` and the checkout endpoint's `amountCents`
+override already existed and have been shipping. The doc was simply
+never checked against current code, same pattern as workplan cycle
+4/6's stale-doc corrections.
+
+**What was actually missing:** `GET /api/tracks/:id` never returned
+`priceOptional`, so the frontend had no way to know a tier was PWYW.
+Fixed in `../tahti-org` (PR
+[#461](https://github.com/janiluuk/tahti-org/pull/461) — adds
+`purchaseTierPriceOptional` to the route + `PublicTrackDetailSchema`,
+regenerated SDK, 6/6 route tests pass against an ephemeral Postgres).
+
+**Frontend (this repo):** `TrackDetailView.tsx`'s "Buy this track" now
+opens a "Name your price" `Dialog` (pre-filled with the suggested
+price, floor €0, same euros-string-input parsing as
+`FanTiersEditor.tsx`) instead of always silently charging the
+suggested amount, when `purchaseTierPriceOptional` is true. `api/types.ts`
+and the mock upload path (`mockTrackDetailFromUpload` in
+`api/client.ts`) both updated to carry the new field.
+
+**Found a bigger, separate gap while doing this:** there is currently
+**no artist-facing UI anywhere** to create a `PurchaseTier` or gate a
+track behind one — `createPurchaseTier`/`updatePurchaseTier` exist in
+`api/purchase-tiers.ts` with zero callers, and `TrackEditDialog.tsx`
+has no tier-assignment field (compare to `FanTiersEditor.tsx`, the real
+wired-up equivalent for recurring subscriptions). So today's fix has
+no practical path to a `PURCHASE`-gated track outside manually-seeded
+mock data. Logged as its own doc
+(`purchase-tier-artist-editor-missing.md`) rather than folded into the
+PWYW doc, since it's a different, larger problem PWYW just happened to
+expose.
+
+**Not live-verified:** building a mock `PURCHASE`-gated, `priceOptional`
+track needs either the missing editor above or manually seeding
+`tahti-mock-uploaded-sounds` localStorage + its IndexedDB blob, neither
+done this pass — flagged explicitly in the todo doc rather than
+claiming a browser check that didn't happen.
+
+**Validation:** `pnpm --filter @tahti-player/tahti-web type-check`,
+scoped `eslint` on all touched files, and
+`pnpm --filter @tahti-player/tahti-web test` all pass clean — 84/84
+files, 478/478 tests. Bumped `packages/tahti-web/package.json` to
+`0.0.94`.
+
+## 2026-09-07 — Purchase flow: subscription cancel wiring
+
+Continuing `listener-purchase-flow.md`: the "Your subs" tab in
+Settings → Account already listed real subscription data but had
+**no action button at all** — no Manage/Cancel. The backend endpoint
+(`POST /api/me/subscriptions/:id/cancel` in `../tahti-org`) already
+existed and works exactly as expected: marks `canceledAt`, access
+continues until `currentPeriodEnd`, doesn't flip state or remove the
+row immediately — another instance of "backend already built, frontend
+never wired."
+
+Added `cancelMySubscription()` to `api/client.ts` (real fetch + a
+`mockCancelSubscription()` fallback in `api/mock-session.ts` for
+`VITE_FORCE_MOCK=1`), a "Manage" button per active subscription row in
+`SettingsPanels.tsx`'s `AccountPanel`, and a `ConfirmDialog` (matching
+the existing delete-confirm pattern from `StudioSoundsView.tsx`)
+warning that access lasts until the period end rather than cancelling
+immediately. Once cancelled, the row's `canceledAt` is reflected as
+"cancels <date>" instead of the raw `ACTIVE` state, and the Manage
+button disappears (nothing left to manage).
+
+Full `listener-purchase-flow.md` scope also includes a "Purchases" tab
+for one-time buys (doesn't exist yet) and a 3-scenario Playwright e2e
+suite gated on a test-mode Stripe Checkout path in `../tahti-org` —
+both out of scope for this pass; doc updated to reflect exactly what
+shipped vs. what's still open.
+
+**Validation:** `pnpm --filter @tahti-player/tahti-web type-check`,
+scoped `eslint --fix`, and `pnpm --filter @tahti-player/tahti-web test`
+all pass clean — 84/84 files, 478/478 tests. Bumped
+`packages/tahti-web/package.json` to `0.0.95`.
+
+## 2026-09-07 — Two logged-only bugs: continue-listening pause icon, mobile topbar notifications/messages
+
+User asked to add these to the todo list earlier this session; picked
+them up now as quick, well-scoped wins.
+
+**Continue-listening pause icon** — `ListenView.tsx`'s "Continue
+listening" `Card` was missing `isPlaying` entirely (every sibling
+control on the same page, e.g. `radioIsPlaying`, already wires this
+up). Added `lastPlayedIsCurrent`/`lastPlayedIsPlaying` derived from
+`usePlayerStore`'s `currentId`/`status`, same pattern as the radio
+preset cards just below it, and made `onPlay` toggle pause instead of
+always restarting when it's already the current track.
+
+**Mobile topbar Notifications/Messages → user menu** — both were
+always-visible top-bar icon buttons regardless of viewport. On mobile
+(`useIsMobile()`) they're now hidden (`isMobile && 'hidden'` on just
+the button, not the wrapping popover-anchor div, so the popovers still
+render correctly when opened) and two new items were added to the
+user-menu dropdown that open the same existing popovers. Added a
+combined unread-count `Badge` on the avatar trigger itself (mobile
+only) so unread state doesn't disappear along with the icons — reusing
+the exact `Badge`/pill-red styling already used for the original
+top-bar badges rather than inventing a new indicator.
+
+**Not live-verified on an actual mobile viewport** — the browser
+automation's `resize_window` call reported success but
+`window.innerWidth` never actually changed in this environment (tried
+twice), so I could only screenshot-confirm the desktop path is
+unaffected (menu opens normally, no stray mobile items, no badge).
+Flagged in `HISTORY.md` so it gets a real check if anything looks off.
+
+**Validation:** `pnpm --filter @tahti-player/tahti-web type-check`,
+scoped `eslint`, and `pnpm --filter @tahti-player/tahti-web test` all
+pass clean — 84/84 files, 478/478 tests. Bumped
+`packages/tahti-web/package.json` to `0.0.96`.
+
+## 2026-09-07 — Broadcast dialog: booking calendar link + move Stream Manager in
+
+User asked to add booking calendar + Stream Manager to the Broadcast
+dialog; well-scoped enough to implement in the same pass after
+resolving which of two "booking calendar" routes was the right one
+(`/schedule` is listener-facing radio schedule; `/studio/schedule` is
+the artist's own broadcast schedule — confirmed the latter by reading
+`StudioScheduleView.tsx`, which is exactly what an artist-facing
+Broadcast popover should link to).
+
+`AppTopNav.tsx`: added "Booking calendar" (`/studio/schedule`) and
+"Stream manager" (opens the existing `StreamManagerPanel` `Dialog` via
+`setStreamManagerOpen(true)`) as two new `role="menuitem"` entries in
+the Broadcast-status popover, alongside the existing "Open broadcast
+studio" / "Open Green Room chat" items. Removed the standalone
+top-bar Stream Manager icon button — only its trigger moved, the
+dialog itself is unchanged.
+
+Live-verified with Playwright screenshots (desktop, mock sign-in):
+popover shows all four items, Stream manager opens the same dialog as
+before, Booking calendar correctly lands on `/studio/schedule` showing
+"Your next broadcasts" + analytics.
+
+**Validation:** `pnpm --filter @tahti-player/tahti-web type-check`,
+scoped `eslint`, and `pnpm --filter @tahti-player/tahti-web test` all
+pass clean — 84/84 files, 478/478 tests. Bumped
+`packages/tahti-web/package.json` to `0.0.97`.
+
+## 2026-09-07 — Purchase-tier artist editor (closes the PWYW reachability gap)
+
+Picked up the next WORKPLAN item: the buyer-side PWYW dialog shipped
+earlier this session had no real path to a `PURCHASE`-gated track,
+since no artist-facing UI existed anywhere to create a `PurchaseTier`
+or assign one. Checked `../tahti-org`'s real route
+(`apps/api/src/routes/me/sound.ts`) before building anything —
+`PATCH /api/me/sound/:id/access` already fully supports set/clear.
+
+New `PurchaseTiersEditor.tsx` (create/deactivate purchase tiers, incl.
+a "pay what you want" toggle — mirrors `FanTiersEditor.tsx` exactly)
+mounted in `StudioRevenueView.tsx`'s Tiers tab alongside the existing
+fan-subscription editor. New `PurchaseAccessSection.tsx` ("Sell this
+track" tier picker) added to `TrackEditDialog.tsx`'s Sharing tab,
+saved via `setSoundPurchaseAccess` alongside the main patch.
+
+Found and fixed two real bugs while wiring this up: `setSoundPurchaseAccess`
+was calling the wrong path (`/api/me/archive/:id/access` instead of the
+real `/api/me/sound/:id/access`) and couldn't clear a gate back to
+FREE; and `Toggle`'s `label` prop turned out to be `aria-label`-only
+(never rendered visibly) — my first draft shipped an invisible
+checkbox label, caught via a live screenshot before committing and
+fixed to the established bordered-row + visible `<span>` pattern.
+
+Also found, but did not fix (documented, out of scope for this pass):
+mock mode has three disconnected mock stores for one "sound" entity —
+dual-wrote the two that matter for the Studio-editor round trip
+(`mockSoundStore` in studio.ts, `mock-uploads.ts`'s store), matching
+`patchStudioSound`'s existing convention, but `patchMockUploadedSound`
+silently no-ops for the static `-archive-N` seed tracks that never went
+through a real upload — so the public track-detail page won't reflect
+a purchase-tier change made against those specific seed tracks in mock
+mode. Doesn't affect the real (non-mock) API path.
+
+Live-verified in the browser: created a purchase tier (incl. the PWYW
+toggle) from Studio → Audience → Tiers, assigned it to a track from
+`TrackEditDialog`, saved, reopened the dialog and confirmed the
+selection persisted correctly.
+
+**Validation:** `pnpm --filter @tahti-player/tahti-web type-check`,
+`eslint --fix`, and `pnpm --filter @tahti-player/tahti-web test` all
+pass clean — 85/85 files, 487/487 tests. Bumped
+`packages/tahti-web/package.json` to `0.0.98`.
+
+## 2026-09-07 — Stream overlay scrim toggle (frontend, closes the doc)
+
+`../tahti-org` PR #459 (the scrim backend, verified earlier this
+session against the real `savonet/liquidsoap:v2.2.5` binary) merged
+during this session — picked up the frontend half that was blocked on
+it.
+
+`api/broadcast.ts`'s `StreamOverlay` type gained
+`streamOverlayScrimEnabled: boolean`. `StreamOverlayEditor.tsx` got a
+new "Darken behind text" toggle (same visible bordered-row pattern as
+the text-color picker right above it), and `OverlayTextPreview` now
+swaps its always-on CSS gradient for a flat `bg-black/50` band when
+the scrim is on — the real RTMP render has no gradient at all without
+it (confirmed via this session's earlier Liquidsoap investigation),
+so the previous always-visible gradient was a pure preview
+approximation; only the scrim-on state needed to become accurate.
+
+Live-verified: Broadcast → Stream stats → Overlay chip opens the
+`StreamOverlayEditor` dialog (had to find this entry point — it's
+gated behind "Stream stats" tab + a multicast target being enabled,
+not the default "Active rotation" tab). Typed a title, toggled the
+new control, watched the preview swap from gradient to flat band,
+saved, reopened and confirmed both the toggle and the preview
+persisted.
+
+**Validation:** `pnpm --filter @tahti-player/tahti-web type-check`,
+`eslint --fix`, and `pnpm --filter @tahti-player/tahti-web test` all
+pass clean — 85/85 files, 487/487 tests. Bumped
+`packages/tahti-web/package.json` to `0.0.99`.
+
+## 2026-09-09 — Channel backdrop slideshow actually rotates + transitions
+
+`ChannelDesigner`'s "Static slideshow" gallery mode let a user configure
+a preset (FADE/ZOOM/PAN/BLUR_CROSS/PARTICLE_DISSOLVE/GLITCH_WIPE/
+CUBE_FLIP/LIQUID_DISTORTION), interval, transition duration, and
+autoplay — all saved correctly, but the real published channel page
+(`ChannelBackdropCard.tsx`) just rendered `slideshowImages[0]` as a
+static `<img>` and ignored every one of those settings. Confirmed it
+wasn't a backend gap: `../tahti-org`'s public channel/profile routes
+already return all 4 fields.
+
+Added the 4 fields to `PublicChannel` (`api/types.ts`) and wired them
+through `ChannelView.tsx` and `ChannelDesigner`'s own live preview.
+Ported the 4 WebGL transition shaders from `../tahti-org/apps/web/src/
+components/visuals/slideshow-transitions/` (pure Three.js/DOM, no
+Next.js-specific code beyond swapping `next/dynamic` for `React.lazy`)
+into `components/visuals/slideshowTransitions/`, and wrote a new CSS
+crossfade counterpart for the other 4 presets (those don't need WebGL).
+New `ChannelSlideshowBackdrop.tsx` owns the rotation timer and picks
+between the two transition renderers; `ChannelBackdropCard`'s
+`showSlideshow` branch now renders it instead of a bare `<img>`.
+
+Storybook: `ChannelBackdropCard.stories.tsx` gained slideshow stories
+(preset-selectable, two named WebGL showcases, autoplay-off, and two
+color-scheme variants) and a new dedicated `ChannelSlideshowBackdrop
+.stories.tsx` demoing all 8 presets as their own primitive — the first
+story in the repo to vary per-story background/palette args, closing
+part of a repo-wide "no story varies background" gap found while
+scoping this. `storybook build` succeeds with the new stories included.
+
+**Validation:** `tsc --noEmit`, `eslint`, `pnpm --filter
+@tahti-player/tahti-web test` all pass — 504/504 unit tests (5 new,
+covering the CSS-preset rotation timing with fake timers; the WebGL
+path isn't unit-testable here, same as `ChannelVisualizer` — no canvas/
+WebGL mock exists in this repo's jsdom setup). **Not
+live-browser-verified** — Claude-in-Chrome wasn't connected this
+session, so the actual WebGL shader rendering (cube-flip's 3D rotation,
+the 3 shader crossfades) is unverified beyond "compiles and Storybook
+serves it." Bumped `packages/tahti-web/package.json` to `0.0.106`.

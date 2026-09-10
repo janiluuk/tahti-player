@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { PencilIcon, PlusIcon, Trash2Icon } from 'lucide-react';
 
-import { ViewShell } from '@tahti-player/ui';
+import { Button, ViewShell } from '@tahti-player/ui';
 
 const meta: Meta<typeof ViewShell> = {
   title: 'Components/ViewShell',
@@ -41,6 +42,36 @@ export const TitleOnly: Story = {
         <p className="text-sm">
           Subtitle omitted when the page name is enough.
         </p>
+      </ViewShell>
+    </div>
+  ),
+};
+
+export const WithActions: Story = {
+  render: () => (
+    <div className="h-[480px]">
+      <ViewShell
+        title="Sounds"
+        subtitle="Your files, in one place."
+        actions={
+          <>
+            <Button size="icon" aria-label="Add new">
+              <PlusIcon />
+            </Button>
+            <Button size="icon" variant="secondary" aria-label="Edit">
+              <PencilIcon />
+            </Button>
+            <Button size="icon" variant="secondary" aria-label="Delete">
+              <Trash2Icon />
+            </Button>
+          </>
+        }
+      >
+        {Array.from({ length: 20 }, (_, i) => (
+          <div key={i} className="border-border w-full border-b py-3 text-sm">
+            Row {i + 1}
+          </div>
+        ))}
       </ViewShell>
     </div>
   ),

@@ -26,12 +26,20 @@ export const CrossfadeSound: React.FC<
   status,
   seek,
   crossfadeMs = DEFAULT_CROSSFADE_MS,
+  volume,
   preload = 'auto',
   crossOrigin = '',
   onTimeUpdate,
   onEnd,
   onLoadStart,
+  onCanPlay,
   onError,
+  // onSourceInvalid is intentionally not destructured: it's part of
+  // SoundProps for interface parity with Sound, but this component has
+  // no MSE/HLS source handling (unlike Sound, which threads it through
+  // useMseSource) -- there's currently no call site that would ever
+  // invoke it. Wire it up for real once CrossfadeSound gains MSE
+  // support.
   children,
 }) => {
   const audioRefA = useRef<HTMLAudioElement | null>(null);
@@ -96,6 +104,22 @@ export const CrossfadeSound: React.FC<
       }
     }
   }, [status, isReady, activeIndex, context, next.ref]);
+
+  useEffect(() => {
+    if (volume === undefined) {
+      return;
+    }
+    const v = Math.max(0, Math.min(1, volume / 100));
+    // Applied to both elements, not just the active one -- during a
+    // crossfade both play simultaneously, and the next element is
+    // rendered before it becomes active.
+    if (audioRefA.current) {
+      audioRefA.current.volume = v;
+    }
+    if (audioRefB.current) {
+      audioRefB.current.volume = v;
+    }
+  }, [volume]);
 
   const lastSeekRef = useRef<number | undefined>(undefined);
   useEffect(() => {
@@ -167,6 +191,19 @@ export const CrossfadeSound: React.FC<
     [onError],
   );
 
+  // Only the currently-active element's canplay should surface -- the
+  // inactive one may be preloading the next track for an upcoming
+  // crossfade, and firing onCanPlay for it would signal "track started"
+  // before the track is actually audible.
+  const handleCanPlay = useCallback(
+    (id: number) => () => {
+      if (id === activeIndex) {
+        onCanPlay?.();
+      }
+    },
+    [activeIndex, onCanPlay],
+  );
+
   return (
     <>
       {[adapters[0], adapters[1]].map((adapter) => (
@@ -180,6 +217,7 @@ export const CrossfadeSound: React.FC<
           onTimeUpdate={handleTimeUpdate}
           onEnded={onEnd}
           onLoadStart={onLoadStart}
+          onCanPlay={handleCanPlay(adapter.id)}
           onError={handleError}
         >
           <source

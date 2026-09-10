@@ -23,8 +23,8 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const playable: TahtiPlayable = {
-  id: 'archive:archive-item-1',
-  kind: 'archive',
+  id: 'sound:archive-item-1',
+  kind: 'sound',
   title: 'Aurora',
   artist: 'Northern Lights',
   coverUrl: 'https://picsum.photos/seed/aurora/200/200',

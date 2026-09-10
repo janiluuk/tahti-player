@@ -145,7 +145,7 @@ Legend:
 | [Show Detail](#show-detail) | `/studio/shows/$id` | `src/views/studio/StudioShowDetailView.tsx` | No Story | ShowEpisodeList, Form |
 | [Playlists](#playlists-studio) | `/studio/playlists/$slug` | `src/views/studio/StudioPlaylistsView.tsx` | No Story | TrackTable, DragReorder |
 | [Updates](#updates) | `/studio/updates` | `src/views/studio/StudioUpdatesView.tsx` | No Story | MentionTextarea |
-| [Revenue](#revenue) | `/studio/revenue` | `src/views/studio/StudioRevenueView.tsx` | No Story | FanSubscriptionStats |
+| [Audience](#audience) | `/studio/audience` | `src/views/studio/StudioRevenueView.tsx` | No Story | FanSubscriptionStats |
 | [Stripe](#stripe) | `/studio/stripe` | `src/views/studio/StudioStripeView.tsx` | Has Story | — |
 | [Distribution](#distribution) | `/studio/distribution` | `src/views/studio/StudioDistributionView.tsx` | No Story | Form |
 | [Governance](#governance-studio) | `/studio/governance` | `src/views/studio/StudioGovernanceView.tsx` | No Story | Tabs, Card layout |
@@ -219,7 +219,7 @@ Legend:
 | [Admin Vendors](#admin-vendors) | `/admin/vendors` | `src/views/admin/AdminVendorsView.tsx` | Has Story | Table |
 | [Admin Map](#admin-map) | `/admin/map` | `src/views/admin/AdminMapView.tsx` | No Story | ListenerWorldMap |
 | [Admin Venues](#admin-venues) | `/admin/venues` | `src/views/admin/AdminVenuesView.tsx` | No Story | Table |
-| [Admin Disco Widgets](#admin-disco-widgets) | `/admin/disco-widgets` | `src/views/admin/AdminDiscoWidgetsView.tsx` | Has Story | DiscoWidgetManagerPanel |
+| [Admin Add-ons](#admin-addons) | `/admin/addons` | `src/views/admin/AdminAddonsView.tsx` | No Story | DiscoWidgetManagerPanel |
 | [Admin Status](#admin-status) | `/admin/status` | `src/views/admin/AdminStatusView.tsx` | Has Story | StatChip, Table |
 | [Admin I18n](#admin-i18n) | `/admin/i18n` | `src/views/admin/AdminI18nView.tsx` | Has Story | Table |
 | [Admin Moderation](#admin-moderation) | `/admin/moderation` | `src/views/admin/moderation/AdminModerationView.tsx` | Has Story | Tabs |

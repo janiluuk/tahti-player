@@ -15,7 +15,7 @@ function toPlayable(item: DiscoverTrackItem) {
   }
   return {
     id: item.id,
-    kind: 'archive' as const,
+    kind: 'sound' as const,
     title: item.title,
     artist: item.artist,
     coverUrl: item.coverUrl ?? undefined,
@@ -37,8 +37,8 @@ function matchesCurrentTrack(
   if (currentId === itemId) {
     return true;
   }
-  const bareId = itemId.replace(/^archive:/, '');
-  return currentId === bareId || currentId === `archive:${bareId}`;
+  const bareId = itemId.replace(/^sound:/, '');
+  return currentId === bareId || currentId === `sound:${bareId}`;
 }
 
 export function WidgetTrackRow({
@@ -69,7 +69,7 @@ export function WidgetTrackRow({
       return;
     }
     setLoading(true);
-    const result = await fetchTrackDetail(item.id.replace(/^archive:/, ''));
+    const result = await fetchTrackDetail(item.id.replace(/^sound:/, ''));
     setLoading(false);
     const detail = result.data;
     if (!detail?.audioUrl) {
@@ -77,7 +77,7 @@ export function WidgetTrackRow({
     }
     play({
       id: item.id,
-      kind: 'archive',
+      kind: 'sound',
       title: detail.title,
       artist: detail.artistName,
       coverUrl: detail.bannerUrl ?? undefined,

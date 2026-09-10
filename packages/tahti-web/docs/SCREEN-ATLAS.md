@@ -100,7 +100,7 @@ Screenshots are Nuclear UI only (mock or beta). Prod is the source of *what must
 | Shows / episodes (prod events-ish) | `/studio/shows` · episodes | `studio-shows-v1.png` | partial (series localStorage) |
 | Playlists | `/studio/playlists` | `studio-playlists-v1.png` | shot |
 | `/dashboard/posts` · newsletter | `/studio/updates` | `studio-updates-v1.png` | ui-no-shot → capture |
-| `/dashboard/revenue` | `/studio/revenue` | `studio-revenue-v1.png` | ui-no-shot → capture |
+| `/dashboard/revenue` | `/studio/audience` | `studio-revenue-v1.png` | ui-no-shot → capture |
 | `/dashboard/distribution` | `/studio/distribution` | `studio-distribution-v1.png` | ui-no-shot → capture |
 | `/dashboard/stash` | `/studio/stash` | `studio-stash-v1.png` | ui-no-shot → capture |
 | `/dashboard/tahti-radio-slots` | — | — | missing |

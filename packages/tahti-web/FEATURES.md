@@ -67,7 +67,7 @@ Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
 | Channel archive | `/c/:slug` | `/channel/$slug` | `live-api` | listen-events after ~15s |
 | Channel chat | `/c/:slug` | rail + `/chat/$slug` | `live-api` | REST + Centrifugo WS; hCaptcha on anonymous join; reactions; subscriber-only gating |
 | Tahti Radio | `/radio` | `/radio` | `live-api` | |
-| Artist profile | `/u/:username` | `/u/$username` | `live-api` | Music tab: pinned tracks (max 4) above catalog; Stage pins via `PATCH /api/me/archive/:id` `{ pinned }` |
+| Artist profile | `/u/:username` | `/u/$username` | `live-api` | Music tab: pinned tracks (max 4) above catalog; Stage pins via `PATCH /api/me/sound/:id` `{ pinned }` |
 | Collection | `/u/:user/c/:slug` | `/u/$username/c/$slug` | `live-api` | |
 | Smart link | `/r/:slug` | `/r/$slug` | `live-api` | |
 | Venues list | `/venues` | `/venues` | `partial` | list only |
@@ -100,7 +100,7 @@ Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
 | Local favorites / history | — | `/favorites`, `/listen/history` | `partial` | localStorage + follows |
 | Add to playlist | mini-player / archive | player bar + Music + tables | `live-api` | create playlist + add archive item |
 | Fan subscribe | `/u/:user/subscribe` | `/subscribe/$username` | `live-api` | demock wave 4; mock activates only under FORCE_MOCK |
-| My subscriptions | account | `/settings/money` | `live-api` | |
+| My subscriptions | account | `/settings/account` (Your subs) | `live-api` | |
 | Membership status | account | `/settings/account` | `live-api` | |
 | Governance list/vote | `/governance` | `/governance` | `live-api` | demock wave 5; 401/403 → forbidden empty |
 | DMs | `/dashboard/messages` | `/messages` | `live-api` | demock wave 5 |
@@ -122,7 +122,7 @@ Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
 | Stats | `/dashboard/stats` | `/studio/stats` | `live-api` | summary + `/studio/stats/detail` range-chip detail page |
 | Channel design | channel/edit | `/channel/$slug?edit=1` + `/studio/channel` | `partial` | Inline Edit design: presets, layers drag/hide/add; layout localStorage; look via API |
 | Updates / newsletter | posts | `/studio/updates` | `live-api` | |
-| Revenue / Connect | revenue | `/studio/revenue` | `live-api` | demock wave 4; onboard/portal redirect to Stripe |
+| Revenue / Connect | revenue | `/studio/audience` | `live-api` | demock wave 4; onboard/portal redirect to Stripe |
 | Stash | `/dashboard/stash` | `/studio/stash` | `live-api` | upload/delete + mock |
 | Sound share links | none (no prod equivalent) | `TrackEditDialog` → Sharing tab (PRIVATE/STASH only) | `partial` | Client + mock complete (`SoundShareLinksSection.tsx`, `api/studio.ts`); backend route and the audit-log-only interaction guarantee don't exist yet — see `docs/API-REFERENCE.md`'s Proposed contract section |
 | Distribution | `/dashboard/distribution` | `/studio/distribution` | `live-api` | catalog, Revelator pay+submit, Spotify profile, royalties |
@@ -214,7 +214,7 @@ Compared `tahti-org` (apps/web + recent API) with this SPA. Ported in this pass:
 
 Still not ported (do not block cutover unless noted):
 
-- [x] Integrations marketplace credentials (`/api/me/integrations`) — ListenBrainz + Last.fm **SCROBBLE** are live (Add-ons → Scrobbling). Sources OAuth and fingerprint plugins remain separate. Chart dashboards / OmniSource still planned.
+- [x] Integrations marketplace credentials (`/api/me/integrations`) — ListenBrainz + Last.fm **SCROBBLE** are live (Add-ons → Scrobbling). Sources OAuth and fingerprint plugins remain separate. Chart dashboards / OmniSource are out of scope — see `src/plugins/scrobble/README.md`'s "Out of scope" note.
 - [ ] Theme editor public-submit / GitHub PR pipeline — local Nuclear themes only.
 - [ ] Internet Radio personal library (`/api/me/internet-radio`) — this client has a local catalog + Radio Browser search, not the server-side station library.
 - [ ] Hearthis export push — import is live; export is still a manual cross-post note.
@@ -226,6 +226,6 @@ Still not ported (do not block cutover unless noted):
 
 - Posts and newsletter compose live together in `/studio/updates`.
 - Channel edit, gallery, text, and rotation settings live together in `/studio/channel`.
-- Fan tiers, subscriber payout statistics, Stripe state, grants, and subscriptions live under Settings → Money (Fan tiers / Fan subs tabs) and Studio → Audience (`/studio/revenue`).
+- Fan tiers, subscriber payout statistics, Stripe state, grants, and subscriptions live under Studio → Audience (`/studio/audience`); listener Your subs stay under Settings → Account.
 - Radio slots, series, and episodes are handled by `/studio/shows`; production dashboard aliases resolve there.
-- Production settings sub-pages map into the smaller Account, Artist, Channel, Broadcast, Money, and Connections sections.
+- Production settings sub-pages map into the smaller Account, Artist, Channel, Broadcast, and Connections sections (Audience lives under Studio).

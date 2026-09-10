@@ -26,10 +26,10 @@ import { contentTypeLabel } from '../../content/contentTypes';
 
 export function StudioEditorListView() {
   const [projects, setProjects] = useState<EditorProjectRow[]>([]);
-  const [archive, setArchive] = useState<StudioSound[]>([]);
+  const [sounds, setSounds] = useState<StudioSound[]>([]);
   const [createOpen, setCreateOpen] = useState(false);
   const [title, setTitle] = useState('');
-  const [soundId, setArchiveItemId] = useState('');
+  const [soundId, setSoundItemId] = useState('');
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -39,16 +39,16 @@ export function StudioEditorListView() {
 
   const libraryTypes = useMemo(() => {
     const types = new Set(
-      archive
+      sounds
         .map((item) => item.contentType?.trim().toUpperCase())
         .filter((type): type is string => Boolean(type)),
     );
     return ['ALL', ...Array.from(types).sort()];
-  }, [archive]);
+  }, [sounds]);
 
   const filteredLibrary = useMemo(() => {
     const query = libraryQuery.trim().toLowerCase();
-    return archive.filter((item) => {
+    return sounds.filter((item) => {
       const matchesType =
         libraryType === 'ALL' ||
         item.contentType?.toUpperCase() === libraryType;
@@ -59,7 +59,7 @@ export function StudioEditorListView() {
           .some((value) => value?.toLowerCase().includes(query));
       return matchesType && matchesQuery;
     });
-  }, [archive, libraryQuery, libraryType]);
+  }, [sounds, libraryQuery, libraryType]);
 
   const formatLibraryType = (type: string) =>
     type === 'ALL' ? 'All' : contentTypeLabel(type);
@@ -71,7 +71,7 @@ export function StudioEditorListView() {
         // EMBED_ONLY items (hearthis.at, Mixcloud, Spotify, Bandcamp) have
         // no Tahti-hosted audio file, so there's nothing for the Pro
         // Editor to open or trim — keep them out of "Open from library".
-        setArchive(a.data.filter((item) => !item.embedProvider));
+        setSounds(a.data.filter((item) => !item.embedProvider));
         setLoading(false);
       },
     );
@@ -84,7 +84,7 @@ export function StudioEditorListView() {
   const closeCreate = () => {
     setCreateOpen(false);
     setTitle('');
-    setArchiveItemId('');
+    setSoundItemId('');
     setBusy(false);
   };
 
@@ -112,9 +112,11 @@ export function StudioEditorListView() {
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex w-full max-w-[1400px] flex-col gap-6 px-1 py-2">
         <StudioNav current="/studio/editor" />
-        <ViewShell title="Editor" classes={{ root: 'px-0 pt-0' }}>
-          {projects.length > 0 && (
-            <div className="flex items-center gap-2">
+        <ViewShell
+          title="Editor"
+          classes={{ root: 'px-0 pt-0' }}
+          actions={
+            projects.length > 0 && (
               <Tooltip content="New session" side="top">
                 <Button
                   size="icon-sm"
@@ -127,9 +129,9 @@ export function StudioEditorListView() {
                   <PlusIcon size={16} aria-hidden />
                 </Button>
               </Tooltip>
-            </div>
-          )}
-
+            )
+          }
+        >
           {message && (
             <p className="text-foreground-secondary text-xs" role="status">
               {message}
@@ -158,11 +160,11 @@ export function StudioEditorListView() {
                   autoFocus
                 />
                 <Select
-                  label="Seed from archive (optional)"
+                  label="Seed from sound (optional)"
                   value={soundId}
-                  onValueChange={setArchiveItemId}
+                  onValueChange={setSoundItemId}
                   placeholder="None"
-                  options={archive.map((item) => ({
+                  options={sounds.map((item) => ({
                     id: item.id,
                     label: item.title,
                   }))}
@@ -209,7 +211,7 @@ export function StudioEditorListView() {
                       <p className="font-medium">{p.title}</p>
                       <p className="text-foreground-secondary text-xs">
                         Updated {new Date(p.updatedAt).toLocaleString()}
-                        {p.soundId ? ', linked archive' : ''}
+                        {p.soundId ? ', linked sound' : ''}
                       </p>
                     </div>
                     <Tooltip content="Open session" side="top">
@@ -305,7 +307,7 @@ export function StudioEditorListView() {
                 />
                 {filteredLibrary.length === 0 ? (
                   <p className="text-foreground-secondary py-8 text-center text-sm">
-                    {archive.length === 0
+                    {sounds.length === 0
                       ? 'Upload content in Library first.'
                       : 'No library items match this selection.'}
                   </p>

@@ -12,7 +12,7 @@ function entry(
     playedAt: new Date(Date.now() - minutesAgo * 60_000).toISOString(),
     playable: {
       id: `${title}-${minutesAgo}`,
-      kind: 'archive',
+      kind: 'sound',
       title,
       artist,
       coverUrl: undefined,

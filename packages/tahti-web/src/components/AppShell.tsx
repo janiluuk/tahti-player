@@ -11,6 +11,7 @@ import {
   ShieldIcon,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   PlayerShell,
@@ -38,7 +39,12 @@ import { useLayoutStore } from '../stores/layoutStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 import { useTourStore } from '../stores/tourStore';
-import { hasSeenOnboarding } from '../views/OnboardingView';
+import {
+  deferOnboardingPrompt,
+  hasDeferredOnboardingPrompt,
+  hasSeenOnboarding,
+  markOnboardingSeen,
+} from '../views/OnboardingView';
 import { AmbientBackground } from './AmbientBackground';
 import { AppTopNav } from './AppTopNav';
 import { AudioEngine } from './AudioEngine';
@@ -322,16 +328,36 @@ export function AppShell() {
     };
   }, [currentTrackId, isLivePlayback, pathname, playerQueue, playerStatus]);
 
-  // First sign-in of the session: send a new user through onboarding once.
-  // Skips/finishes mark the flag, so this never fires again for them.
+  // Offer onboarding via a dismissible toast instead of forcing a redirect.
+  // At most once per browser session (sessionStorage), even if the toast
+  // times out without a click. "Not now" also permanently marks it seen
+  // (localStorage), same as OnboardingView's "Skip for now". Screenshot /
+  // e2e drivers should call markOnboardingSeen after sign-in (see
+  // e2e/real-user-journeys.spec.ts signIn helper) so the toast never covers UI.
   useEffect(() => {
-    if (!userId || pathname === '/onboarding') {
+    if (
+      !userId ||
+      pathname === '/onboarding' ||
+      hasSeenOnboarding(userId) ||
+      hasDeferredOnboardingPrompt(userId)
+    ) {
       return;
     }
-    if (!hasSeenOnboarding(userId)) {
-      void navigate({ to: '/onboarding' });
-    }
-  }, [userId, pathname, navigate]);
+    deferOnboardingPrompt(userId);
+    toast('Finish setting up your profile?', {
+      description: 'A few quick steps to personalize your channel.',
+      action: {
+        label: 'Set up profile',
+        onClick: () => void navigate({ to: '/onboarding' }),
+      },
+      cancel: {
+        label: 'Not now',
+        onClick: () => markOnboardingSeen(userId),
+      },
+    });
+    // Fire once per signed-in user id for this mount cycle; sessionStorage
+    // blocks re-offers after reload within the same browser session.
+  }, [userId]);
 
   useEffect(() => {
     if (!isMobile) {
@@ -425,10 +451,12 @@ export function AppShell() {
 
   return (
     <PlayerShell className={isMobile ? 'tahti-mobile-shell' : undefined}>
-      <AppTopNav
-        showMenuButton={isMobile && !isArtistPage}
-        onOpenMenu={() => setMobileNavOpen(true)}
-      />
+      {!fullScreenPlayerOpen && (
+        <AppTopNav
+          showMenuButton={isMobile && !isArtistPage}
+          onOpenMenu={() => setMobileNavOpen(true)}
+        />
+      )}
       <AmbientBackground />
       <NotificationToasts />
 
@@ -453,7 +481,7 @@ export function AppShell() {
               />
             </RouteContent>
           </div>
-          <ConnectedPlayerBar />
+          {!fullScreenPlayerOpen && <ConnectedPlayerBar />}
           {!isArtistPage && (
             <MobileBottomNav
               onOpenMore={() => setMobileNavOpen(true)}
@@ -526,7 +554,7 @@ export function AppShell() {
         </PlayerWorkspace>
       )}
 
-      {!isMobile && <ConnectedPlayerBar />}
+      {!isMobile && !fullScreenPlayerOpen && <ConnectedPlayerBar />}
       <ConnectedStatusBar />
       <FullScreenPlayer />
       <AuthDialog />

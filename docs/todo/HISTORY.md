@@ -2,7 +2,368 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
-## 2026-09-06 — Real LIVE badge (not radio/rotation false-positive)
+## 2026-09-08 — Governance: top-3 gaps + admin consolidation closed out
+
+`governance-gap-list-top3.md` is done — all three priority gaps from
+`governance-gap-list.md` shipped, plus a mid-task admin-nav consolidation
+ask:
+
+- **Admin consolidation** (2026-09-07): `/admin/governance`,
+  `/admin/reports`, `/admin/grants` (bare), `/admin/agm` — four separate
+  `AdminNav` entries/pages — folded into one `/admin/governance` page
+  (`AdminGovernanceView.tsx`, tabs Overview/Annual reports/Grants/AGM,
+  mirrors `AdminModerationView`'s tab-container pattern). Old routes
+  redirect into `/admin/governance/$tab`. Deleted the three old standalone
+  view files + their stories, folded into `AdminGovernanceView.stories.tsx`.
+  Fixed `e2e/real-user-journeys.spec.ts`'s stale "AGM" tab assertion.
+- **Gap #6 — meeting attendance management** (2026-09-07): admin can
+  record PRESENT/ABSENT/EXCUSED per meeting from an `AttendancePanel` in
+  the AGM tab, via new `fetchAdminGovernanceAttendance`/
+  `upsertAdminGovernanceAttendance` mirroring `../tahti-org`'s
+  `GET/POST /api/admin/governance/meetings/:id/attendance` exactly.
+  Recorded by free-text display name (not member id) by design — the
+  backend upserts by `memberId`, which the frontend member-list APIs
+  don't expose; documented as a known limitation, not silently papered
+  over.
+- **Gap #1 — motion detail view** (2026-09-08): `fetchGovernanceMotion(id)`
+  + `GovernanceMotionDetail` type + `/governance/motions/$id` route
+  (`GovernanceMotionDetailView.tsx`). The list's per-motion card (badge,
+  tally, vote buttons, board open/close controls, discussion thread) was
+  extracted out of `GovernanceView.tsx` into a shared, self-contained
+  `components/governance/MotionCard.tsx` so the detail page reuses it
+  with `description` + `defaultExpanded` — all 6 existing
+  `GovernanceView.test.tsx` tests passed unchanged after the extraction.
+- **Gap #3 — public resolutions page** (2026-09-08):
+  `fetchTransparencyResolutions(year)` + new
+  `TransparencyResolutionsView.tsx` at `/transparency/resolutions`
+  (year picker, outcome badge, vote tally per resolution), linked from
+  `TransparencyView.tsx`. Reused the existing `BoardResolution` type
+  (already a superset of the backend's `TransparencyResolutionListSchema`)
+  rather than adding a new one.
+- Also closed the corresponding type-gap rows in `governance-gap-list.md`
+  (#11 transparency resolution types, #12 attendance types, #13 motion
+  detail description) — all now shipped as part of the above. That
+  parent 16-gap list stays open with #2, #4, #7–#10, #14–#16, #18
+  remaining, re-prioritized to #7/#9/#8 next.
+
+Not live-browser-verified this pass (no Chrome extension available in
+these sessions) — `tsc --noEmit`, `eslint`, and the full `pnpm vitest run`
+suite (488/488) all passed after each piece.
+
+## 2026-09-08 — Admin artwork presets: modal editor + guarded reset + Add new
+
+`admin-artwork-presets-modal-redesign.md` — all 4 asks shipped in
+`AdminArtworkPresetsView.tsx`:
+
+1. Clicking a grid tile now opens a compact `Dialog` (preview + hover
+   upload, "Assign from your artwork" swatches, Save/Cancel) instead of
+   the inline section that used to sit below the grid.
+2. Live grid update on upload/reassign — checked, already worked: the
+   grid's `activeUrls` was already a `useMemo` derived from `assignments`
+   state, so `assignToSelected` (called on both direct swatch-click and
+   post-upload) already re-renders the grid with no reload. No code
+   change needed for this one, just verification.
+3. Added a top-right "Add new" icon button (`ViewShell`'s `actions` slot)
+   that opens the existing `ArtworkPresetUploadDialog` in a new "pool"
+   mode — adds to the custom-artwork library without auto-assigning it to
+   whichever slot happened to be last selected, distinct from the
+   per-slot upload triggers (hover overlay, dashed "+" swatch inside the
+   editor) which keep the existing auto-assign-to-this-slot behavior.
+4. "Reset to defaults" moved to an icon button next to "Add new" and now
+   goes through a `ConfirmDialog` before clearing every custom
+   assignment — previously a bare `Button` with zero confirmation on a
+   destructive, all-slots-at-once action.
+
+`tsc --noEmit`, `eslint` clean. No pre-existing tests or stories for this
+view (none added — matches other admin-view precedent this session). Not
+live-browser-verified.
+
+## 2026-09-08 — Mentions: real sourceUrl/sourceTitle resolved in `../tahti-org`
+
+`archive-mentions-source-url.md` was fully scoped from a prior pass;
+this pass implemented it in a dedicated `tahti-org-worktrees/` worktree
+(avoided the shared main checkout, which had another session's
+uncommitted work at the time). `GET /api/v1/u/:username/mentions` now
+resolves `Mention.sourceId` into a real `sourceUrl`/`sourceTitle` per
+surface (BIO → `/u/:username`, TRACKLIST → `/t/:soundId` with the
+sound's title, ANNOUNCEMENT → the mentioner's `/channel/:slug` — not
+the announcement row itself, since it rotates out after 3 — CHAT →
+parses the composite sourceId to the channel's `/chat/:slug`).
+RELEASE/NEWSLETTER confirmed dead (no `recordMentions()` call site).
+Also checked "notifications end to end": `GET /api/me/mentions` and
+`Mention.notifiedAt` are both unused/dead (no frontend consumer
+anywhere, notifiedAt never written) — left as-is, not built out
+(would be new feature scope, not this ticket). `tahti-web`'s
+`PublicMention` client type already had the fields typed, no client
+change needed. PR: `tahti-org#481` (not merged by this session).
+
+## 2026-09-08 — Studio EmptyState sweep: closed out, remaining items are intentional non-fits
+
+`studio-emptystate-remaining.md` was a leftover from the already-closed
+`studio-storybook-sweep.md` parent task. Its "Still open" list had two
+items, both non-actionable as written: (1) Distribution's "No credits
+yet" caption is a one-line inline hint above an editable, non-empty
+list row (not a section-level empty state) — the shared `EmptyState`
+component is a centered, padded block (even at `size="sm"`) meant for
+a genuinely empty section, and would be a visual downgrade wrapped
+around a one-line caption; (2) "Settings panels with SettingsHint
+empties" turned out to reference a component that doesn't exist in
+this codebase (`grep` found nothing) and was already flagged
+out-of-Studio-scope in the doc itself. Closing rather than converting
+— every real Studio `EmptyState` swap from that sweep already shipped
+(see the "Done this pass" list this doc carried).
+
+Also dropped `stream-overlay-auto-fill-and-avatar-placeholder.md` and
+`admin-panel-left-padding.md` INDEX rows — both already shipped and
+folded into HISTORY earlier (2026-09-07/08) but their INDEX rows/file
+links had gone stale (file deleted, row left behind).
+
+## 2026-09-08 — ViewShell page headers: last holdout converted, StudioPageHeader deleted
+
+`StudioEpisodeReviewView` (in `StudioShowDetailView.tsx`) was the one
+component still left on the plain `StudioPageHeader` (title +
+episode-number badge, not a cover-overlay case, so it wasn't part of
+the earlier 4-view "Remaining" cover-overlay batch). Converted to
+`ViewShell` (`classes={{ root: 'px-0 pt-0' }}`, episode number badge
+moved into the `actions` prop — same right-aligned slot `StudioPageHeader`'s
+`action` used). Breadcrumb (`← {show title}`) and `BroadcastSubNav` stay
+outside `ViewShell`, matching every other Studio detail page.
+
+With that last consumer gone, `StudioPageHeader` (the component
+definition in `StudioPanel.tsx`) was deleted per the todo's item 6.
+Also removed its now-broken Storybook story (`StudioPanel.stories.tsx`)
+and its row in `ElementLocations.stories.tsx`; the `ViewShell` element
+row there had its stale "Remaining Studio/Admin still StudioPageHeader"
+clause dropped since nothing does anymore.
+
+`tsc --noEmit` (tahti-web) and `eslint` clean; `pnpm vitest run` 484/484
+passing. Not verified in a live browser — doing so needs the sibling
+`tahti-org` API running plus a seeded show/episode and studio login,
+disproportionate for a change matching ~15 already-verified `ViewShell`
+conversions elsewhere in the codebase.
+
+This closes out `docs/todo/viewshell-page-headers.md` — the whole
+Listener/Studio/Admin `ViewShell` migration is done.
+
+## 2026-09-08 — Next-broadcast cards, status-bar icons, page-tour chrome
+
+**Next-broadcast cards:** Studio schedule "Next"/"Upcoming" list puts the
+label and title on one row, with a cover/backdrop banner strip (gradient
+fallback when no artwork).
+
+**Status bar:** `StatusBarContent` uses lucide icons + tooltips for sounds,
+notifications, messages, and encoding; adds cloud storage used via
+`/api/me/storage` (links to Settings → Account). Desktop local-track
+count/size still open — see WORKPLAN Later.
+
+**Page tour:** Inner pages only get a purpose annotation (+ page-specific
+functionality steps such as Audience/Stripe). Sidebar/top-bar chrome
+steps only on `/`. `annotationOnly` steps render without a DOM cutout.
+
+## 2026-09-08 — Settings footer icons + onboarding/theme toast noise
+
+**Settings footer:** GitHub / Discord / API docs in the settings modal nav
+footer are now a single centered icon row (18px) with aria-label/title,
+above SidebarBuildInfo.
+
+**Onboarding toast:** At most once per browser session via sessionStorage
+(`deferOnboardingPrompt`), even if the toast times out without a click.
+"Not now" still permanently marks seen. Mock/seed logins
+(`buildMockLoginUser`) pre-mark onboarding seen so demo users never get
+the popup. Screenshot/e2e drivers should keep calling markOnboardingSeen
+after sign-in (already done in `e2e/real-user-journeys.spec.ts`).
+
+**Theme-in-review mock toast:** `dismissNotification` / mark-all under
+`VITE_FORCE_MOCK` now persist dismissed ids in sessionStorage, so
+Acknowledge actually removes the fixture from subsequent fetches across
+reloads in the same session.
+
+## 2026-09-08 — Admin panel left padding + Sounds empty library
+
+**Admin left gap:** `.admin-page-layout` / `.admin-moderation-layout` still
+used a CSS grid with an 11rem left column from the old docked-sidebar
+AdminNav. After `AdminPageLayout` nested tabs/menu inside a flex wrapper,
+that column stayed empty — content started ~11rem inset. Switched both
+layouts to the same flex column as `.studio-page-layout`.
+
+**Sounds empty in prod:** tahti-web still called `/api/me/archive*`; the
+sibling API renamed those routes to `/api/me/sound*` (production Next client
+already used the new paths). Failed GETs returned `{ data: [], meta:
+apiErrorMeta }` with no UI surface, so a 404 looked like an empty library.
+Fixed every `/api/me/archive` client path to `/api/me/sound`, and
+`MyDiscographyView` now shows a retryable `PageError` when `meta.reason` is
+set. Sort control moved into the filter row as a `DropdownButton` (dropped
+the labeled `Select`).
+
+## 2026-09-08 — Collection detail page: moved under /library, fixed wrong nav
+
+User-reported via screenshot: opening a collection from Library
+(`/library/collections` → `MyCollectionsView`) landed on
+`/studio/collections/$slug`, which unconditionally rendered
+`StudioNav`'s "Studio" submenu (Overview/Branding/Stats/Governance/
+Posts/Audience/Releases/Editor) — none of which relate to a collection,
+and none of which highlight as active for that route. Same bug family
+as the "lost library issue" fixed 2026-09-07 (Studio's own chrome
+leaking onto a Library-owned page) — `SECTION_PREFIXES`/`isSubmenuActive`
+in `StudioNav.tsx` already had dead-code branches anticipating a
+`/library/collections` route that didn't exist yet, confirming this was
+a known, half-finished migration.
+
+Fixed: added a `/library/collections/$slug` route (`router.tsx`)
+rendering the same `StudioCollectionEditView`, now with a `nav` prop
+(`'studio' | 'library'`, default `'studio'` for the untouched
+`/studio/collections/$slug` call sites — `StudioPlaylistsView`,
+`CollectionView`'s "Edit in Studio" link, `PluginStorePanel`,
+`ChannelRadioPlaylistPanel` — which legitimately stay Studio-context).
+Extracted `LibraryView.tsx`'s Overview/Sounds/Collections/… tab strip
+into a reusable `LibrarySectionTabs` component so
+`StudioCollectionEditView` can render it (with "Collections" active)
+and point its back-link at `/library/collections` when `nav="library"`.
+Updated `MyCollectionsView`'s row links to the new route.
+
+**Verified:** `tsc --noEmit` and `eslint` clean on `tahti-web`;
+`StudioNav.test.ts` (20 tests, unaffected) still passes. Confirmed the
+new route resolves (no 404) and that `/library/collections` itself
+still renders all 9 tabs correctly via a local `VITE_FORCE_MOCK=1`
+dev server — could not screenshot the authenticated detail view itself
+since typing into the mock login form was blocked by this session's own
+credential-entry safeguard.
+
+## 2026-09-07 — Fixed: Library's own tabs (incl. Local files) were unreachable from /library
+
+User-reported ("the lost library issue"). Root cause, found via live
+screenshot diffing: `LibraryView.tsx`'s `overviewTab` computation
+resolved to `null` for the plain `tab === 'library'` case (the actual
+`/library` landing route reached from the sidebar), and the tab strip
+was only rendered when `overviewTab` was truthy — so the real Library
+section tabs (Sounds/Collections/Recordings/Media/Stash/Embeds/Smart
+links/**Local files**) never appeared on the page you land on by
+clicking "Library" in the sidebar. What looked like a working tab bar
+in its place was actually a second, unrelated bug: `/library` was
+listed in `StudioNav.tsx`'s `SECTION_PREFIXES['/studio']`, so
+`AppShell.tsx` rendered Studio's own tab strip (Overview/Branding/
+Stats/Governance/…) on top of Library's page — visually plausible, but
+navigating nowhere useful from a Library context.
+
+Fixed both: added `'library'` (Overview) as a real first entry in
+`LIBRARY_SECTION_TABS` so the strip always resolves to a valid tab
+instead of hiding itself, and removed `/library` and its `/library/*`
+sub-paths from Studio's `SECTION_PREFIXES` (confirmed via
+`navigationActive.ts` that sidebar highlighting for Library already
+short-circuits before reaching the Studio check, so this didn't depend
+on the stale prefix list for anything else). Live-verified before/after
+via Playwright screenshots against a local `VITE_FORCE_MOCK=1` session.
+
+## 2026-09-07 — Stream Manager now-playing artwork (backend already had it)
+
+Folded one bullet from `queued-ux-fixes-2026-09-05.md`. Re-checked the
+"blocked on missing data" finding from 2026-09-05 against current
+`../tahti-org`: `GET /api/channels/:slug` (`apps/api/src/routes/channels/get.ts`)
+already selects and returns `nowPlayingArtworkUrl` as `nowPlaying.artworkUrl`
+— a `PublicChannel.nowPlaying.artworkUrl` field tahti-web's own
+`api/types.ts` already declared, just never consumed. The blocker had
+been resolved by someone else's backend work without this doc being
+updated. Wired it up purely on the frontend: `StreamManagerPanel.tsx`'s
+`RotationPlayback` now carries `artworkUrl`, rendered via `MediaArtwork`
+(`size="thumb"`) next to the current-track text, with `onPlay`/`isPlaying`
+wired to the same rotation pause/resume transport the separate
+play/pause button already uses.
+
+## 2026-09-07 — Governance Account-tab duplicate entry point removed
+
+Folded from `governance-out-of-account-section.md`, resolved via its own
+Option 2 (the conservative choice — no navigation/discoverability
+change, so no access regression for non-artist members who rely on
+Settings → Account as their only path to governance): removed the
+"Governance" link-out button from Settings → Account → Membership
+(`SettingsPanels.tsx`), which duplicated the dedicated Settings →
+Account → Governance tab right next to it — same `GovernanceView`
+content, two ways to reach it from the same section. The dedicated tab
+and the standalone `/governance` route both still exist unchanged.
+Options 1 (new top-level nav entry) and 3 (something else) are real
+product-IA decisions and were not attempted.
+
+## 2026-09-07 — Fullscreen player: translucent backdrop, back arrow, hidden chrome
+
+Folded from `fullscreen-player-background-translucent-layer.md` and
+`fullscreen-player-topbar-and-back-arrow.md` (both pre-spec'd with exact
+diffs from an earlier investigation pass; implemented as written, line
+numbers had drifted slightly but the referenced code matched exactly).
+
+`FullScreenPlayer.tsx`: the `ChannelVisualizer` backdrop now uses
+`bg-background/35 backdrop-blur-md` (was flat `opacity-60`), matching the
+title card's translucent treatment. The top-right `Minimize2Icon` became a
+top-left `ArrowLeftIcon` back button (`size-12`, translucent black
+circular background, "Back to player" tooltip) — bigger and easier to hit
+than the old `size-8` control.
+
+`AppShell.tsx`: `AppTopNav` and both `ConnectedPlayerBar` mounts (mobile
+and desktop) now skip rendering while `fullScreenPlayerOpen` is true, so
+the fullscreen overlay's cover art isn't cropped by chrome underneath it.
+
+## 2026-09-07 — Onboarding: opt-in toast instead of forced redirect
+
+Folded from `onboarding-cta-not-forced-redirect.md`. `AppShell.tsx`'s
+first-sign-in `useEffect` no longer force-navigates to `/onboarding`; it
+shows a dismissible `sonner` toast ("Finish setting up your profile?")
+with a "Set up profile" action (navigates to `/onboarding`) and a
+"Not now" action that calls the same `markOnboardingSeen` OnboardingView's
+own "Skip for now" button already uses. Letting the toast time out without
+a click marks nothing, so it offers again next session rather than either
+nagging forever or permanently vanishing on inaction — the doc's own
+open question ("skip vs. dismissed-forever") is resolved by reusing the
+existing skip semantics for the explicit action only, not for a timeout.
+The route and `/onboarding` page itself are unchanged.
+
+## 2026-09-07 — Settings → Keyboard shortcuts deep link
+
+Folded from `help-keyboard-navigation.md`. Added a "Keyboard shortcuts"
+button to Settings → Account → Session (next to Log out), linking to
+`/help/$slug` (`slug: 'keyboard-shortcuts'`) — the article shipped in the
+0.0.58 pass this doc was already tracking. Closes the doc's one remaining
+line ("Settings remapping deep link"); the remapping *store* itself
+(player-only today, per the doc's original scope) was never in this deep
+link's scope and isn't addressed here.
+
+## 2026-09-07 — Storybook sweep docs fully closed
+
+`storybook-ui-sweep.md` had nothing left unique to itself: its own
+2026-09-06 note already found both of its "still open" lines done and
+removed them, leaving only a pointer duplicate of `studio-storybook-sweep.md`.
+`studio-storybook-sweep.md`'s own last remaining line — "CollectionEdit
+track empty" — is now done too (this round's workplan-cycle-1
+`StudioCollectionEditView` `EmptyState` swap, see
+`packages/tahti-web/UI-REDESIGN-WORKLOG.md`); a fresh grep for unswept
+hand-rolled `FilterChips`-shaped segment strips across Studio/Admin views
+found none. Closed both docs.
+
+## 2026-09-07 — ChannelView badge/share cleanup: last open thread resolved elsewhere
+
+Folded from `channelview-badge-dedup-and-share-modal.md`. All real work
+(on-air badge dedup, playlist-copy-link, social share icons, dropped
+subtext) already shipped per that doc's own "What shipped" section. Its
+one open thread — "move the player above the tabs" — was explicitly
+superseded by a later, different user instruction to remove the tab strip
+entirely in favor of a Stream Manager modal; that replacement already
+shipped and folded (`channelview-stream-manager-modal-replaces-tabs.md`,
+see the HISTORY entry above/below this one). Nothing left to implement;
+closing the doc.
+
+## 2026-09-07 — Signed-in map/atlas recapture (post-0.0.62 RightRailPanel fix)
+
+Folded from `map-screenshot-refresh.md`. The signed-in blocker
+(`RightRailPanel`'s unstable Zustand selector causing "Maximum update depth
+exceeded") was already fixed upstream in 0.0.62; the recapture itself just
+hadn't been re-run since. Ran `scripts/capture-map-screens.mjs` against a
+local `VITE_FORCE_MOCK=1` dev server end to end: 141/142 shots captured
+cleanly (all previously-blocked signed-in surfaces — Library, Feed,
+Favorites, History, Messages, Studio, Admin, all three Governance contexts —
+now show live chrome, not stale pre-ViewShell shots). One shot,
+`show-episode`, still fails (`waitForFunction` timeout waiting for content)
+on both the primary attempt and the soft retry; left as a known gap rather
+than blocking the rest of the recapture on it. `sitemap.json` regenerated
+(1121 images). No script changes were needed — the earlier suspicion of a
+`/library/sounds`-specific hang did not reproduce this run.
 
 Folded from `player-bar-fake-live-indicator.md`. Confirmed via
 `../tahti-org` that `channel.state === 'LIVE'` is genuinely overloaded
@@ -1222,5 +1583,567 @@ Folded from `settings-mobile-responsive.md`.
 - Add-ons category tabs wrap on mobile; TabsList defaults to `flex-wrap`.
 - Settings section Tabs (Artist/Channel/Money/Themes/Broadcast) wrap; PluginStore toolbars use soft `min-w-0`/`basis-*`.
 - tahti-web `0.0.84`.
+
+---
+
+## 2026-09-07 — Library showed Studio's tabs instead of its own
+
+One half of a two-part report folded from `queued-ux-fixes-2026-09-05.md`
+(the other half, missing tracks, is still open — needs live repro).
+
+- Root cause: `StudioNav.tsx`'s `SECTION_PREFIXES['/studio']` listed every
+  `/library/*` prefix, so `getStudioPrimaryRoute('/library/...')` resolved
+  to `/studio` and `AppShell` rendered Studio's own submenu tab strip
+  above `LibraryView`'s tab row — two tab rows stacked, Studio's showing
+  as the "wrong" one. Pre-existing since `959073ed2` (2026-09-03).
+- Fix: dropped the `/library*` entries from `SECTION_PREFIXES['/studio']`
+  — Library already has its own top-level sidebar/bottom-nav entry via
+  `navigationActive.ts`'s independent `/library` check, so nothing else
+  depended on Studio claiming those paths.
+- Added a regression test (`StudioNav.test.ts`) asserting
+  `getStudioPrimaryRoute` returns `null` for every `/library/*` path —
+  the existing "lights nothing in Studio for Library routes" test only
+  checked derived submenu-item highlighting, not this primary-route gate
+  that actually controls whether `AppShell` renders `StudioNav` at all.
+
+---
+
+## 2026-09-07 — Library missing tracks + full-player back arrow, both fixed and live-verified
+
+Folded from `queued-ux-fixes-2026-09-05.md`. Launched the `tahti-web` dev
+server with `VITE_FORCE_MOCK=1` and drove it with `claude-in-chrome` to
+actually reproduce both reports instead of guessing from source.
+
+**Library missing tracks.** `MyDiscographyView`'s `hasChannel` gate hid
+the entire success branch — including already-fetched `items` — whenever
+`user?.channel` was falsy, regardless of `loading`/whether the fetch
+returned real sounds. Reproduced live: forced a mock session's persisted
+`user.channel` to `null` via `localStorage`, kept 3 real mock sounds, and
+the Sounds tab showed "No sounds yet" instead of them. Fix: reordered the
+gate to only show the "go live" empty state when `!hasChannel &&
+items.length === 0` — a channel-less state now only wins when there is
+genuinely nothing to show, never over data the fetch actually returned.
+Added `MyDiscographyView.test.tsx` (3 cases: channel-less with sounds,
+channel-less with none, has-channel with sounds) and re-verified live
+after the fix.
+
+**Full player back arrow.** Genuinely broken, not a false alarm — but not
+in the handler (`onClick={close}` was always correctly wired). Real
+cause: `FullScreenPlayer.tsx`'s header (`absolute inset-x-0 top-0 z-10`)
+and its only in-flow sibling, the centered content column (`relative
+flex-1 z-10`), tied at `z-10` — and since the header is `absolute` (out
+of flow), the content column's `flex-1` stretches it to cover the same
+top strip. Equal z-index resolves hit-testing by DOM order, so the
+content column (which paints nothing at that point, which is why the
+arrow still looked correctly rendered) intercepted real pointer clicks
+meant for the button underneath. A synthetic `.click()` on the button
+bypasses hit-testing and "worked", which is exactly why this looked fine
+from source alone and needed a real coordinate click (confirmed via
+`document.elementFromPoint` at the button's own rect resolving to the
+content div, not the button) to catch. Fix: bumped the header to `z-20`.
+Added `e2e/fullscreen-player-minimize.spec.ts`, confirmed it fails
+against the pre-fix code (Playwright's own error: "content column
+intercepts pointer events") and passes after.
+
+---
+
+## 2026-09-07 — Channel Designer: opt-in Navigation tabs under the player
+
+Folded from `queued-ux-fixes-2026-09-05.md` (both remaining items —
+the original "dynamic tabs" request and its later refinement to
+off-by-default/opt-in were the same feature, built as one).
+
+Scoping first found the original request's premise partly stale: no
+"Published on your channel" text exists anywhere in the codebase
+(removed pre-existing), and `ChannelView.tsx` already had a static,
+hardcoded Stage/Tracks/About nav bar below the player (not in the
+header) — so "move tabs below the player" was already true; what
+needed building was making that bar dynamic and opt-in.
+
+**Data model** (`channelPageLayout.ts`): new `navigation` entry in
+`CHANNEL_PAGE_ITEM_TYPES`/`CHANNEL_PAGE_ITEM_META`, a `navigationTabs?:
+ChannelNavigationTab[]` field (`{id, label, itemIds}`) on
+`ChannelPageItem`, and `setNavigationTabs()`. `addItemType('navigation')`
+seeds a single "Home" tab holding every currently-visible block —
+one tab alone never shows the bar (nothing to switch between), so
+turning Navigation on changes nothing until a second tab exists.
+`navigation` is a hidden default stub like `links`/`stats`/etc.
+(off by default, not auto-shown), covered by the existing
+`defaultChannelPageLayout` exhaustiveness test.
+
+**Editor** (`ChannelNavigationEditor.tsx`, new): add/rename/remove
+tabs, and per tab a `FilterChips` multi-select of which other visible
+blocks appear under it — mirrors `ChannelLinksEditor`'s controlled
+`onChange(nextArray)` pattern. Wired into `ChannelView.tsx`'s existing
+click-to-configure `lookSlot` machinery (select the Navigation block →
+its own editor swaps into the Layers panel), same mechanism `links`/
+`playlist` already use.
+
+**Rendering** (`ChannelView.tsx`): the old hardcoded Stage/Tracks/About
+bar is now driven by `navTabs`; the bar renders only when 2+ tabs
+exist, in both editing and view mode (what the artist sees while
+editing is exactly what listeners see, not a preview-only stand-in).
+An item assigned to any tab only shows while that tab is active; an
+item never assigned to any tab always shows, so a block added after
+tabs exist doesn't silently disappear. Tab-switch content fades via a
+small local rAF-based transition (same technique as `FadeSwitch` in
+`ChannelLayersMenu.tsx`/`ChannelElementEditor.tsx`, not extracted since
+it's one 6-line effect).
+
+Caught and fixed one real bug from this pass: the tab-derived state
+and its content-fade `useEffect` had been placed after `ChannelView`'s
+`if (loading)`/`if (!channel)` early returns, tripping "Rendered more
+hooks than during the previous render" the moment a channel actually
+loaded — moved above both early returns.
+
+**Validation:** `tsc --noEmit` and `vitest run src` (487 tests) pass
+clean; 5 new `channelPageLayout.test.ts` cases cover tab seeding,
+reseeding a previously-hidden stub, preserving artist-configured tabs
+across a hide/show cycle, and `normalizeLayout` accepting well-shaped
+tabs while dropping malformed ones. Live-verified end-to-end in the
+browser (`VITE_FORCE_MOCK=1`): added the Navigation block, added a
+second "Releases" tab, moved Tracks into it out of Home, exited
+editing, and confirmed the live tab bar renders, Home hides Tracks,
+and clicking Releases swaps to show only Tracks with About/Subscribe
+hidden.
+## 2026-09-07 — Continue-listening pause icon + mobile topbar notifications/messages
+
+Folded from `continue-listening-card-missing-isplaying.md` and
+`mobile-topbar-notifications-messages-to-user-menu.md`.
+
+- `ListenView.tsx`: "Continue listening" `Card` now derives
+  `lastPlayedIsCurrent`/`lastPlayedIsPlaying` from `usePlayerStore`
+  (same pattern as `radioIsPlaying`/`radioPreset` cards on the same
+  page) and passes `isPlaying`, toggling pause instead of always
+  restarting when already the current track.
+- `AppTopNav.tsx`: on mobile (`useIsMobile()`), the standalone
+  Notifications/Messages top-bar buttons are hidden (`isMobile &&
+  'hidden'`, popovers untouched so they still anchor/render when
+  opened) and two new menu items are added to the user-menu dropdown
+  instead, each opening the same existing popover state
+  (`setNotificationsOpen`/`setMessagesOpen`) and each carrying its own
+  unread-count `Badge` (same pill/red styling as the original
+  top-bar badges). A combined unread dot is added to the avatar
+  trigger itself on mobile so unread state stays visible without the
+  standalone icons. Desktop is untouched (`isMobile` false → same as
+  before).
+- Not live-verified on an actual narrow viewport — the browser
+  automation's window-resize didn't take effect in this environment
+  (viewport stayed desktop-width despite the resize call reporting
+  success); desktop path was screenshot-confirmed unaffected (menu
+  opens normally, no stray items, no badge). Flagging so it gets a
+  real mobile-viewport check if anything looks off in practice.
+- tahti-web `0.0.96`.
+
+---
+
+## 2026-09-07 — Broadcast dialog: booking calendar link + Stream Manager moved in
+
+Folded from `broadcast-dialog-booking-link-and-stream-manager.md`.
+
+- `AppTopNav.tsx`: the Broadcast-status popover (`RadioIcon` top-bar
+  trigger) gained two new `role="menuitem"` entries — "Booking
+  calendar" (`/studio/schedule`, confirmed live as the artist's own
+  broadcast schedule: "Your next broadcasts" + analytics) and "Stream
+  manager" (opens the existing `StreamManagerPanel` `Dialog` via
+  `setStreamManagerOpen(true)`, closing the popover first).
+- Removed the standalone top-bar Stream Manager icon button — its
+  `Dialog` and `streamManagerOpen` state didn't move, only the
+  trigger.
+- Live-verified in the browser: popover shows all four items
+  (broadcast status, Open broadcast studio, Open Green Room chat,
+  Booking calendar, Stream manager), Stream manager opens the same
+  dialog as before, Booking calendar correctly lands on
+  `/studio/schedule`.
+- tahti-web `0.0.97`.
+
+---
+
+## 2026-09-07 — Purchase-tier artist editor built (closes the PWYW reachability gap)
+
+Folded from `purchase-tier-artist-editor-missing.md` and
+`pay-what-you-want-pricing.md`. The buyer-side PWYW dialog shipped
+earlier this session had no real path to a `PURCHASE`-gated track —
+zero artist-facing UI existed to create a `PurchaseTier` or assign one.
+Built both pieces:
+
+- **`PurchaseTiersEditor.tsx`** (new): create/deactivate one-time
+  purchase tiers — name, price, description, and a "pay what you want"
+  toggle — mirroring `FanTiersEditor.tsx`'s exact pattern. Mounted in
+  `StudioRevenueView.tsx`'s "Tiers" tab alongside (not replacing) the
+  existing fan-subscription editor.
+- **`PurchaseAccessSection.tsx`** (new): a "Sell this track" picker
+  added to `TrackEditDialog.tsx`'s Sharing tab, selecting an active
+  tier (or "No purchase gate") for the track; saved via the real
+  `PATCH /api/me/sound/:id/access` contract alongside the main save.
+- **Real bugs found and fixed along the way**, not just new UI:
+  - `setSoundPurchaseAccess` (`api/purchase-tiers.ts`) was calling a
+    wrong path (`/api/me/archive/:id/access` — the real route is
+    `/api/me/sound/:id/access`) and couldn't clear a gate back to
+    `FREE` (no support for `purchaseTierId: null`). Both fixed to match
+    `apps/api/src/routes/me/sound.ts`'s real contract.
+  - Mock mode has three disconnected mock stores for what should be
+    one "sound" entity — `mockSoundStore` (studio.ts, read by the
+    Studio editor), the `mock-uploads.ts` store (read by the public
+    track-detail page), and `mock.ts`'s static `-archive-N` fixtures.
+    Added `setMockSoundPurchaseAccess` (studio.ts) and dual-write both
+    mock stores from `setSoundPurchaseAccess`, matching the existing
+    `patchStudioSound` convention — but `patchMockUploadedSound`
+    silently no-ops for tracks that only ever existed as static
+    `mockSoundStore` seed data (never went through a real upload into
+    the `mock-uploads.ts` store), so the public track-detail page still
+    won't reflect a purchase-tier change made against one of those
+    specific seed tracks in mock mode. Pre-existing mock-fixture
+    architecture gap, not present in the real (non-mock) API path —
+    flagging rather than attempting a full mock-store unification here.
+  - `Toggle`'s `label` prop is `aria-label`-only, never rendered
+    visibly (confirmed by reading `Toggle.tsx`) — the first draft of
+    `PurchaseTiersEditor.tsx` used it bare, shipping an invisible
+    checkbox label; caught before commit via live screenshot and fixed
+    to match `TrackEditDialog.tsx`'s established bordered-row pattern
+    (visible `<span>` beside the `Toggle`).
+- Live-verified: created a tier from Studio → Audience → Tiers
+  (including the pay-what-you-want toggle), assigned it to a track from
+  `TrackEditDialog`, saved, reopened the dialog and confirmed the
+  selection persisted. Buyer-side click-through to "Buy this track"
+  itself was not re-verified past the mock-store gap noted above.
+- tahti-web `0.0.98`.
+
+---
+
+## 2026-09-07 — Stream overlay scrim toggle: frontend piece, closes the doc
+
+Folded from `stream-overlay-text-color.md`. The backend
+(`Channel.streamOverlayScrimEnabled` + `video.add_rectangle` in
+`buildRtmpMirrorOutput`, verified earlier this session against the real
+`savonet/liquidsoap:v2.2.5` binary) shipped in `../tahti-org` PR #459,
+which merged during this session. Wired up the frontend half that was
+waiting on it:
+
+- `api/broadcast.ts`: `StreamOverlay` type gained
+  `streamOverlayScrimEnabled: boolean`, threaded through the mock
+  store and API-error fallback object.
+- `StreamOverlayEditor.tsx`: new "Darken behind text" toggle (visible
+  bordered-row + `Toggle` pattern, gated behind "Show overlay title"
+  same as the color picker), included in the save patch and initial
+  load. `OverlayTextPreview` now swaps its always-on CSS gradient for
+  a flat `bg-black/50` band when the scrim is on — a closer match to
+  the real render, which has no gradient at all without the scrim
+  (the gradient was always just a web-preview aesthetic choice, per
+  the doc's own earlier investigation).
+- Live-verified in the browser: Broadcast → Stream stats → Overlay
+  chip → Stream overlay dialog. Typed a title, toggled "Darken behind
+  text" on, confirmed the preview swapped from the fading gradient to
+  a flat dark band, saved, reopened the dialog and confirmed both the
+  toggle state and the preview persisted.
+- tahti-web `0.0.99`.
+
+---
+
+## 2026-09-07 — CI: self-hosted deploy smoke checks retry instead of failing on first attempt
+
+`.github/workflows/deploy-tahti-web-selfhosted.yml`'s "Smoke checks"
+step ran `curl` immediately after `docker compose up -d
+--force-recreate`, which returns before the container is actually
+accepting connections — flaked with "Recv failure: Connection reset
+by peer" on 2 of the last ~13 self-hosted deploy runs today, always on
+the very first request. Wrapped both checks in a retry loop (up to
+~15s) instead of failing on the first non-200/connection-refused
+response.
+
+Verified locally against three scenarios (connection refused,
+connected-but-non-200, real 200) before shipping — caught a real bug
+in an earlier draft where curl's own `%{http_code}="000"` fallback
+plus a redundant `|| echo "000"` doubled up into `"000000"`. Confirmed
+live: this fix's own push deployed cleanly (`spa:200`/`api-proxy:200`
+on the first attempt, no retry needed that run).
+
+---
+
+## 2026-09-07 — Crossfade playback setting wired to the audio engine
+
+Folded from `crossfade-playback-wiring.md`. The setting existed (Settings
+→ Playback, 0-5000ms, persisted via Tauri store) and `CrossfadeSound`
+(dual audio elements, full crossfade logic) existed, but
+`SoundProvider.tsx` always rendered plain `Sound` -- nothing consumed
+`crossfadeMs` at runtime.
+
+- `SoundProvider.tsx`: renders `CrossfadeSound` when `crossfadeMs > 0`,
+  falls back to `Sound` at `0`/`undefined`, passing the same prop set
+  either way.
+- `CrossfadeSound.tsx` had three real gaps vs `Sound`'s `SoundProps`
+  contract, closed:
+  - `volume` was destructured but never applied — now set on both
+    underlying audio elements (both can be audible mid-crossfade, and
+    the inactive one is rendered ahead of becoming active).
+  - `onCanPlay` was missing entirely. Naively wiring it to both audio
+    elements would have been a real bug: the inactive element preloads
+    the next track ahead of a crossfade, and its `canplay` firing
+    `onCanPlay` would signal "track started" before the track is
+    actually audible. Wired per-element, gated on `id === activeIndex`.
+  - `onSourceInvalid` is accepted for `SoundProps` interface parity but
+    deliberately not wired to a call site: it's an MSE/HLS-exclusive
+    signal (`useMseSource` → `MseController`) and confirmed (via
+    `Sound.tsx`'s own native-audio `onError` handler) that it's never
+    invoked for a plain `<audio>` error path even in `Sound` itself.
+    `CrossfadeSound` has no MSE support at all, so there's no honest
+    call site yet — left as a documented no-op for future MSE work.
+- Added 2 new `CrossfadeSound.test.tsx` cases (volume applied to both
+  elements; `onCanPlay` fires only for the active element's `canplay`,
+  not the preloading one) alongside the existing crossfade-timing test.
+
+**Validation:** `tsc --noEmit` and `eslint` clean on `hifi` and
+`player`; `vitest run` on `hifi` (79 tests) and `player` (687 tests,
+minus 2 timeouts confirmed pre-existing/environmental — both pass in
+isolation) all green.
+
+---
+
+## 2026-09-07 — Studio orphan routes: stale premise; Storybook decorators fixed
+
+Folded from `studio-orphan-routes-and-storybook-mismatch.md`.
+
+**The "5 orphan studio routes" half was a false alarm.** Checked
+`StudioNav.tsx`'s `isSubmenuActive` and its own test suite before
+touching anything: `/studio/sounds`, `/studio/recordings`,
+`/studio/collections`, `/studio/stash` are deliberately Library-domain
+routes that light nothing in Studio's submenu by design — Library owns
+them via its own main-menu sidebar entry (matching the earlier
+"Library page showed Studio's submenu" fix already in this file) — and
+`/studio/distribution` deliberately lights `/studio/releases`. All of
+this is already asserted by `StudioNav.test.ts`'s
+`'lights nothing in Studio for Library-domain routes'` and
+`'lights exactly one Studio submenu item on covered catalog routes'`
+tests. Not a gap; the doc's own "document as intentionally
+navigation-less" option was already true before this pass.
+
+**The Storybook half was real and is fixed:** `AdminActivityView.stories.tsx`
+and `AdminMissedShowsView.stories.tsx` had `withTahtiRouter(...)`
+decorators pointing at two now-redirected routes
+(`/admin/activity` → `/admin/logs`, `/admin/missed-shows` →
+`/admin/moderation/$tab` with `tab: 'missed-shows'`, both confirmed
+against `router.tsx`). Repointed both decorators at the real
+surviving routes.
+
+**Validation:** `tsc --noEmit` clean on `storybook` (`tsconfig.tahti.json`)
+and `tahti-web`; `eslint` clean on both changed story files.
+
+---
+
+## 2026-09-07 — "Registry runtime parity" WORKPLAN item was stale; closed as docs-only
+
+Removed the WORKPLAN "Now" row for `bandcamp-dashboard`,
+`deezer-dashboard`, `listenbrainz-dashboard` (charts), `omnisource`,
+`youtube-liked-songs-sync` — investigated as the next queued item and
+found there was no code left to write. The Nuclear-registry-parity
+system these IDs came from (`apiCounterpart`/per-add-on
+implementation-state metadata, per `docs/PLUGIN-INTEGRATIONS.md`'s own
+description of it) no longer exists anywhere in `src/`
+(`apiCounterpart`/`realFeature`: zero hits) — superseded by the current
+`SERVICE_PLUGINS`/import-export/OAuth model in `PluginStorePanel.tsx`,
+which has no personal "dashboard" concept for any provider at all.
+`src/plugins/scrobble/README.md`'s own "Out of scope" section already
+said these five are meant to "stay out of scope / constitutionally
+blocked" — a deliberate product decision (Tahti owns credentials and
+outbound calls server-side; there's no client-side aggregation layer
+for cross-service personal charts/dashboards), not a technical
+blocker waiting to be unblocked. `FEATURES.md` and
+`docs/PLUGIN-INTEGRATIONS.md` both contradicted that (the former said
+"still planned", the latter called them "remaining runtime blockers")
+— corrected both to match the scrobble README's already-settled
+answer.
+
+---
+
+## 2026-09-08 — Stream overlay cover placeholder: now-playing artwork
+
+Finished the one remaining piece of
+`stream-overlay-auto-fill-and-avatar-placeholder.md`. That doc had
+marked the now-playing-track-artwork placeholder as blocked on a
+missing backend field — true when it was written, but the 2026-09-07
+Stream Manager artwork entry above found `PublicChannel.nowPlaying
+.artworkUrl` already exists and is already read by
+`StreamManagerPanel.tsx`. `StreamOverlayEditor.tsx` now fetches the
+artist's own channel (`fetchChannel(channelSlug)` off
+`useAuthStore`'s `user.channel.slug`) alongside its existing overlay/
+preflight/profile calls, and the cover placeholder falls back through
+`streamOverlayCoverUrl` → `nowPlaying.artworkUrl` → avatar → generic
+icon, updating the `HelpLayer` copy to match. `tsc --noEmit`, eslint,
+`pnpm test` (487 tests), and `pnpm build` all pass.
+
+---
+
+## 2026-09-08 — Library section: clean `/library/*` paths for Recordings/Stash/Media/Embeds
+
+`LIBRARY_SECTION_TABS` (`LibraryView.tsx`) previously routed Recordings,
+Media, Stash, and Embeds through `/library/collections?tab=X` query
+params instead of their own paths, even though Sounds and Collections
+already had clean top-level routes. Gave all four real routes
+(`/library/recordings`, `/library/media` — already existed but was
+mis-wired, `/library/stash`, `/library/embeds`), dropped the
+`collectionTab`/`CollectionTab` indirection from `LibraryView` now that
+`tab` maps directly to a section, and made `/library/collections?tab=X`
+redirect forward to the new path for old bookmarks. `/studio/recordings`
+and `/studio/stash` (the old duplicate standalone Studio pages using
+the same `StudioRecordingsView`/`StudioStashView` components, just not
+`embedded`) now redirect to their `/library/*` equivalents instead of
+rendering — matches the existing archive/playlists redirect convention.
+Repointed every hardcoded internal link (`StudioHomeView`,
+`StudioGoLiveView`), `prodPathRedirects.ts` (tahti.live cutover
+compatibility map), and the map/port-inventory/flow-diagram content
+docs. `StudioSoundsView`/`StudioCollectionsView` (the full-featured
+standalone `/studio/sounds` and `/studio/collections` pages, distinct
+from `MyDiscographyView`/`MyCollectionsView` used at `/library/sounds`
+and `/library/collections`) were deliberately left untouched — merging
+those would mean picking a winner between two genuinely different
+feature sets, not just a path rename, and wasn't asked for.
+`tsc --noEmit`, `eslint`, `pnpm test` (487 tests), and `pnpm build` all
+pass. Verified live in a running browser (`VITE_FORCE_MOCK=1`):
+`/library/stash`, `/library/embeds`, `/library/recordings` all render
+correctly; `/studio/stash`, `/studio/recordings`, and
+`/library/collections?tab=stash` all redirect to the new clean paths.
+
+---
+
+## 2026-09-08 — Perform folded into Studio → Broadcast; nav-tab audit resolved
+
+Closes `studio-nav-perform-to-broadcast.md`. Part 2 (the nav-tab
+coverage audit) found Perform/go-live's own section was already fully
+correct, and that five other Studio routes (Sounds, Recordings,
+Collections, Stash, the playlist editor) light the Studio primary tab
+with no submenu tab — Recordings and Stash are now resolved by the
+`/library/*` path-cleanup entry above (they're pure redirects out of
+Studio now, not real pages); Sounds/Collections/playlist-editor remain
+open, tracked as a follow-up since fixing them means picking between
+duplicate implementations (see the entry above) or growing a "Library
+Domain" concept.
+
+Part 1 (the actual move), on user direction: Perform's top-level
+primary nav item is gone from `StudioNav.tsx`'s `PRIMARY`
+(`StudioMainNavItems`, which used to render it in the sidebar beneath
+"Studio", now maps over an empty list — a harmless no-op, not deleted,
+since `PRIMARY` is still a real extensibility point). A single
+"Broadcast" tab (`/studio/go-live`) was added to `SUBMENUS['/studio']`
+instead. The six pages that used to be go-live's own submenu (Go Live,
+Schedule, Events, Shows, Channel, Radio) needed a decision on where
+they'd live — user chose nesting them one level deeper as their own
+in-page tab strip rather than flattening all six into Studio's already
+8-item submenu. Built `BroadcastSubNav` (`StudioNav.tsx`) for that,
+reusing the exact match logic the old `/studio/go-live` submenu used,
+and wired it into `StudioGoLiveView`, `StudioScheduleView`,
+`StudioEventsView`, `StudioEventCreateView`, `StudioShowsView`,
+`StudioShowDetailView`, and `StudioChannelView` — replacing a
+`<StudioNav current="...">` call in each that turned out to already be
+a dead no-op (`StudioNav` only renders when passed `global`, which none
+of these per-page call sites did; the real nav bar is the one instance
+AppShell renders globally). `isSubmenuActive` now folds all six former
+go-live pages into lighting the single Broadcast tab.
+
+`lib/navigationActive.ts`'s `activeSidebarItem`/`activeMobileItem` had
+their own separate `'perform'` sidebar-icon id that never actually
+matched anything in `AppShell.tsx` (`sidebarActive === 'perform'` was
+never checked there) — meaning the desktop "Studio" sidebar icon never
+actually lit up while browsing any Perform page, a pre-existing bug.
+Removing the special-case naturally fixes it: those routes now resolve
+to `'studio'` like every other Studio page, matching the user's "parent
+and subparent tabs are active" ask.
+
+`tsc --noEmit`, `eslint`, `pnpm test` (483 tests, all updated
+call-sites and two new precise coverage tables — one for the folded
+Studio submenu, one for `BroadcastSubNav`'s own per-page resolution),
+and `pnpm build` all pass. Verified live in a running browser
+(`VITE_FORCE_MOCK=1`, unauthenticated `/studio/go-live`): sidebar shows
+only "Studio" lit, no separate "Perform" item.
+
+## 2026-09-08 — Studio Collection/Playlist/Release: playlist routing, TrackTable swap, delete/export
+
+Closes `studio-entity-edit-view-header-redesign.md`'s three remaining
+"needs a decision, not a guess" items, all resolved by the user this
+pass: wire up the playlist editor, swap to the shared `TrackTable`
+primitive accepting the feature loss, and build delete/export.
+
+**Playlist routing** — `StudioCollectionsView.tsx`'s title and row-action
+`<Link>`s now route `PLAYLIST`/`DJ_SET_SERIES` styles to
+`/studio/playlists/$slug` (the dedicated `StudioPlaylistEditorView`)
+instead of `/studio/collections/$slug`, via a new `editorRouteFor()`
+helper; every other style is unchanged. Fixed a stray
+`content/mapScreens.ts` reference that still pointed playlists at the
+Collection route. `/studio/playlists` stays a redirect to
+`/studio/collections`; the dead `StudioPlaylistsView` grid component is
+untouched.
+
+**`StudioPlaylistEditorView` header parity** — now wrapped in
+`EntitySocialHeader` (cover upload via `uploadCollectionCover`, subtitle
+"Playlist"/"DJ set", description, track-count stat, a Play button, the
+existing Save button), matching Collection's header shape. Its already-
+correct `TrackTable` wiring (reorder/remove/play/queue) is untouched.
+
+**TrackTable swap** — `StudioCollectionEditView.tsx`'s bespoke
+`TrackRow`/native-HTML5-DnD/in-row waveform-decode/inline-embed-iframe
+block is replaced by the shared `TrackTable` (reorder, trash column,
+built-in filter toolbar — replacing the old manual search box), modeled
+on the playlist editor's proven usage. Extracted a shared
+`collectionItemToTrack()` helper (`lib/collectionTrackMapping.ts`) used
+by both views. Accepted regression: no more in-row waveform preview or
+inline embed-provider iframe playback; embed tracks fall back to the
+same `playSound`/`playableFromStudioHearthis` path the playlist editor
+already used. `StudioReleaseDetailView.tsx`'s Overview tab also gets a
+`TrackTable` (read/play-only — no reorder or delete, since the Smart
+Links tab already owns those for release tracks via its own
+`ConfirmDialog`-gated flow, left untouched).
+
+**Delete + Export ("⋮" menu)**, Collection and Playlist only (Release
+has no delete endpoint and wasn't part of the original ask): new shared
+`StudioCollectionMoreMenu` component, a `Popover` with "Export as JSON"
+(client-side `Blob` + `<a download>`, no API call — no export endpoint
+exists) and "Delete" (new `deleteStudioCollection()` in `api/studio.ts`,
+hitting `DELETE /api/me/collections/:slug` — this endpoint already
+existed in `tahti-org`, unused by the frontend until now). No `tahti-org`
+changes were needed.
+
+**Delete confirmation, unprompted user feedback mid-pass**: "always
+confirm with modal with the delete buttons" — applied beyond just
+`StudioCollectionMoreMenu`'s "Delete collection/playlist": `TrackTable`'s
+per-track trash column in both Collection and Playlist editors now opens
+the shared `ConfirmDialog` before calling `removeStudioCollectionItem`,
+where before (playlist editor) and previously (Collection's old
+`TrackRow`) it removed immediately on click.
+
+`tsc --noEmit`, `eslint`, `pnpm test` (483 tests) and `pnpm build` all
+pass. The repo's own `e2e/cutover-vital.spec.ts` (which covers both
+`/studio/collections/midnight-archive` and
+`/studio/playlists/favorites-mix`) targets the real `beta.tahti.live`
+deployment and needs `TAHTI_E2E_PASSWORD` staging credentials not
+available in this environment — verified manually instead
+(`VITE_FORCE_MOCK=1`, live browser): Collection and Playlist headers,
+"⋮" menus (correct "album"/"collection"/"playlist" labels), the
+track-removal confirm dialog, the list-view routing split, and the
+Release Overview `TrackTable` (no trash/reorder) all render and behave
+correctly; the Smart Links tab's own reorder/delete UI is unaffected.
+
+---
+
+## 2026-09-08: Sounds view — silent-empty prod bug fixed + sort control redesign
+
+Root cause of the reported "library shows empty under Sounds in
+production" bug: `fetchStudioSounds()` (`api/studio.ts`) already
+returned `{ data: [], meta: apiErrorMeta(err) }` on a non-mock fetch
+failure, but `MyDiscographyView` never read `meta` — a real
+backend/auth failure rendered identically to the genuine "All (0)"
+empty state. Fixed by threading `meta.reason` into a new `error` state
+and rendering the shared `PageError` component (`title`, `description`,
+`onRetry`) instead of the empty state whenever `meta.source === 'api'`
+carries a `reason`. Added a regression test asserting a real fetch
+failure shows "Couldn't load your sounds" (not "No sounds yet").
+
+Sort control redesign: swapped the labeled `Select` ("Sort all sounds")
+for the shared `DropdownButton`, moved into the same top-bar row as the
+filter chips/search instead of its own row below. Note left in the code
+— `DropdownButton`'s `Popover` root is `position: absolute` so it drops
+out of flex flow; needed an explicit `w-44` wrapper or the search
+input's `flex-1` sibling grows over it.
+
+`tsc --noEmit` (clean) and `pnpm vitest run
+MyDiscographyView.test.tsx` (7 passed) verified.
 
 ---

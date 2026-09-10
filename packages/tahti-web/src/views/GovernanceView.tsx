@@ -2,7 +2,6 @@ import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
 import {
-  Badge,
   Button,
   Input,
   SectionShell,
@@ -18,11 +17,6 @@ import {
   fetchGovernanceMembers,
   fetchGovernanceMotions,
   fetchGovernanceQuarterlyReports,
-  fetchMotionComments,
-  patchGovernanceMotion,
-  postMotionComment,
-  voteOnMotion,
-  type MotionComment,
 } from '../api/client';
 import { parseMeetingAgenda } from '../api/governanceMocks';
 import type {
@@ -33,54 +27,12 @@ import type {
   GovernanceMotion,
   GovernanceQuarterlyReport,
 } from '../api/types';
+import { MotionCard } from '../components/governance/MotionCard';
 import { PageLoading } from '../components/PageStates';
 import { hasAccountRole } from '../lib/accountRoles';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
-
-function stateBadge(state: string): {
-  color: 'green' | 'orange' | 'secondary';
-  label: string;
-} {
-  if (state === 'OPEN') {
-    return { color: 'green', label: 'Open' };
-  }
-  if (state === 'CLOSED') {
-    return { color: 'secondary', label: 'Closed' };
-  }
-  if (state === 'DRAFT') {
-    return { color: 'orange', label: 'Discussion · 7-day circulation' };
-  }
-  return { color: 'orange', label: state };
-}
-
-function advisoryResultLabel(motion: GovernanceMotion): string | null {
-  if (motion.state !== 'CLOSED' || !motion.tally) {
-    return null;
-  }
-  const favoredYes = motion.tally.YES > motion.tally.NO;
-  const favoredNo = motion.tally.NO > motion.tally.YES;
-  const majority = favoredYes ? 'YES' : favoredNo ? 'NO' : null;
-  const result = majority
-    ? `Advisory result: members favored ${majority}`
-    : 'Advisory result: no majority';
-  if (!motion.youVoted || !motion.yourChoice || !majority) {
-    return result;
-  }
-  const won = motion.yourChoice === majority;
-  return won
-    ? `${result}. You voted with the majority.`
-    : `${result}. You voted with the minority.`;
-}
-
-function isExpiredMotion(motion: GovernanceMotion): boolean {
-  return (
-    motion.state === 'OPEN' &&
-    Boolean(motion.closeAt) &&
-    new Date(motion.closeAt!).getTime() <= Date.now()
-  );
-}
 
 export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
   const user = useAuthStore((s) => s.user);
@@ -94,12 +46,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
   const [reports, setReports] = useState<GovernanceQuarterlyReport[]>([]);
   const [forbidden, setForbidden] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [comments, setComments] = useState<MotionComment[]>([]);
-  const [commentBody, setCommentBody] = useState('');
   const [actionMsg, setActionMsg] = useState<string | null>(null);
-  const [votingId, setVotingId] = useState<string | null>(null);
-  const [transitioningId, setTransitioningId] = useState<string | null>(null);
   const [draftTitle, setDraftTitle] = useState('');
   const [draftDescription, setDraftDescription] = useState('');
   const [submittingDraft, setSubmittingDraft] = useState(false);
@@ -151,12 +98,6 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
     reload();
   }, [user]);
 
-  const openThread = (id: string) => {
-    setExpandedId(id);
-    setCommentBody('');
-    void fetchMotionComments(id).then((res) => setComments(res.data));
-  };
-
   const body = (
     <>
       {!embedded && (
@@ -183,8 +124,8 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             Transparency ledger →
           </Link>
           <Link
-            to="/help/$slug"
-            params={{ slug: 'governance' }}
+            to="/studio/governance"
+            search={{ tab: 'guide' }}
             onClick={closeSettings}
             className="text-foreground-secondary inline-block w-fit text-xs underline-offset-2 hover:underline"
           >
@@ -209,7 +150,13 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
                       key={meeting.id}
                       className="py-2 text-sm first:pt-0 last:pb-0"
                     >
-                      <div className="font-medium">{meeting.title}</div>
+                      <Link
+                        to="/governance/meetings/$id"
+                        params={{ id: meeting.id }}
+                        className="font-medium hover:underline"
+                      >
+                        {meeting.title}
+                      </Link>
                       <div className="text-foreground-secondary mt-0.5 text-xs">
                         {meeting.scheduledAt
                           ? new Date(meeting.scheduledAt).toLocaleDateString()
@@ -317,7 +264,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
               </p>
             ) : (
               <ul className="divide-border divide-y">
-                {members.map((member) => (
+                {members.slice(0, 8).map((member) => (
                   <li
                     key={member.username}
                     className="py-2 text-sm first:pt-0 last:pb-0"
@@ -331,6 +278,13 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
                 ))}
               </ul>
             )}
+            <Link
+              to="/governance/members"
+              onClick={closeSettings}
+              className="text-foreground-secondary mt-3 text-xs hover:underline"
+            >
+              View full directory →
+            </Link>
           </SectionShell>
         </div>
       )}
@@ -538,210 +492,16 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
 
       {user && motions.length > 0 && (
         <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
-          {motions.map((m) => {
-            const expired = isExpiredMotion(m);
-            const badge = expired
-              ? { color: 'secondary' as const, label: 'Expired' }
-              : stateBadge(m.state);
-            const resultLabel = advisoryResultLabel(m);
-            return (
-              <li key={m.id} className="p-4">
-                <div className="flex flex-wrap items-baseline justify-between gap-2">
-                  <h2 className="font-display text-lg font-bold">{m.title}</h2>
-                  <Badge variant="pill" color={badge.color}>
-                    {badge.label}
-                  </Badge>
-                </div>
-                <p className="text-foreground-secondary mt-1 text-xs">
-                  {m.proposer ? `Proposed by ${m.proposer}` : 'Motion'}
-                  {typeof m.totalVotes === 'number'
-                    ? `, ${m.totalVotes} votes`
-                    : ''}
-                  {typeof m.commentCount === 'number'
-                    ? `, ${m.commentCount} comments`
-                    : ''}
-                </p>
-                {m.state === 'DRAFT' && (
-                  <p className="text-foreground-secondary mt-1 text-xs">
-                    {m.openAt
-                      ? `Voting opens ${new Date(m.openAt).toLocaleDateString()} after circulation period (bylaws §9).`
-                      : 'Voting opens after circulation period (bylaws §9).'}
-                  </p>
-                )}
-                {m.youVoted && (
-                  <p className="mt-2 text-sm">
-                    Your vote:{' '}
-                    <Badge variant="pill" color="cyan">
-                      {m.yourChoice ?? 'recorded'}
-                    </Badge>{' '}
-                    <span className="text-foreground-secondary text-xs">
-                      · votes can&apos;t be changed
-                    </span>
-                  </p>
-                )}
-                {m.tally && (
-                  <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                    <span className="border-border rounded border px-2 py-1">
-                      YES {m.tally.YES}
-                    </span>
-                    <span className="border-border rounded border px-2 py-1">
-                      NO {m.tally.NO}
-                    </span>
-                    <span className="border-border rounded border px-2 py-1">
-                      ABSTAIN {m.tally.ABSTAIN}
-                    </span>
-                  </div>
-                )}
-                {members.length > 0 &&
-                  typeof m.totalVotes === 'number' &&
-                  (m.state === 'OPEN' || m.state === 'CLOSED') && (
-                    <p className="text-foreground-secondary mt-2 text-xs">
-                      {m.totalVotes} of {members.length} members voted
-                      {m.state === 'OPEN'
-                        ? ' · tally revealed at close'
-                        : m.tally
-                          ? ` · ${Math.round(((m.tally.YES ?? 0) / Math.max(1, m.tally.YES + m.tally.NO + m.tally.ABSTAIN)) * 100)}% for`
-                          : ''}
-                    </p>
-                  )}
-                {resultLabel ? (
-                  <p className="text-foreground-secondary mt-2 text-xs">
-                    {resultLabel}
-                  </p>
-                ) : null}
-
-                {m.state === 'OPEN' && !expired && !m.youVoted && (
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {(['YES', 'NO', 'ABSTAIN'] as const).map((choice) => (
-                      <Button
-                        key={choice}
-                        size="sm"
-                        variant={choice === 'YES' ? 'default' : 'secondary'}
-                        disabled={votingId === m.id}
-                        onClick={() => {
-                          setVotingId(m.id);
-                          void voteOnMotion(m.id, choice).then((r) => {
-                            setVotingId(null);
-                            setActionMsg(r.ok ? `Voted ${choice}.` : r.error);
-                            if (r.ok) {
-                              reload();
-                            }
-                          });
-                        }}
-                      >
-                        {choice}
-                      </Button>
-                    ))}
-                  </div>
-                )}
-
-                {isBoard && (m.state === 'DRAFT' || m.state === 'OPEN') && (
-                  <div className="mt-3">
-                    <Button
-                      size="sm"
-                      variant={m.state === 'DRAFT' ? 'default' : 'secondary'}
-                      disabled={transitioningId === m.id}
-                      onClick={() => {
-                        setTransitioningId(m.id);
-                        const nextState =
-                          m.state === 'DRAFT' ? 'OPEN' : 'CLOSED';
-                        void patchGovernanceMotion(m.id, nextState).then(
-                          (r) => {
-                            setTransitioningId(null);
-                            setActionMsg(
-                              r.ok
-                                ? nextState === 'OPEN'
-                                  ? 'Voting opened.'
-                                  : 'Motion closed and result published.'
-                                : r.error,
-                            );
-                            if (r.ok) {
-                              reload();
-                            }
-                          },
-                        );
-                      }}
-                    >
-                      {m.state === 'DRAFT'
-                        ? 'Open voting'
-                        : 'Close & publish result'}
-                    </Button>
-                  </div>
-                )}
-
-                <div className="mt-3">
-                  <Button
-                    size="sm"
-                    variant="text"
-                    onClick={() => {
-                      if (expandedId === m.id) {
-                        setExpandedId(null);
-                      } else {
-                        openThread(m.id);
-                      }
-                    }}
-                  >
-                    {expandedId === m.id ? 'Hide discussion' : 'Discussion'}
-                  </Button>
-                </div>
-
-                {expandedId === m.id && (
-                  <div className="border-border mt-3 flex flex-col gap-2 border-t pt-3">
-                    {comments.length === 0 ? (
-                      <p className="text-foreground-secondary text-xs">
-                        No comments yet.
-                      </p>
-                    ) : (
-                      <ul className="border-border divide-border divide-y overflow-hidden rounded-md border text-sm">
-                        {comments.map((c) => (
-                          <li key={c.id} className="px-3 py-2">
-                            <div className="text-foreground-secondary text-xs">
-                              {c.authorDisplayName ?? 'Member'}
-                              {c.createdAt
-                                ? `, ${new Date(c.createdAt).toLocaleString()}`
-                                : ''}
-                            </div>
-                            <p className="mt-1">{c.body}</p>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                    {m.state !== 'CLOSED' && !expired && (
-                      <div className="flex flex-wrap gap-2">
-                        <Input
-                          className="min-w-[200px] flex-1"
-                          value={commentBody}
-                          onChange={(e) => setCommentBody(e.target.value)}
-                          placeholder="Add a comment…"
-                        />
-                        <Button
-                          size="sm"
-                          disabled={!commentBody.trim()}
-                          onClick={() => {
-                            void postMotionComment(
-                              m.id,
-                              commentBody.trim(),
-                            ).then((r) => {
-                              if (!r.ok) {
-                                setActionMsg(r.error);
-                                return;
-                              }
-                              setComments((prev) => [...prev, r.data]);
-                              setCommentBody('');
-                              setActionMsg('Comment posted.');
-                              reload();
-                            });
-                          }}
-                        >
-                          Post
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </li>
-            );
-          })}
+          {motions.map((m) => (
+            <MotionCard
+              key={m.id}
+              motion={m}
+              isBoard={isBoard}
+              memberCount={members.length}
+              linkTitle
+              onChanged={reload}
+            />
+          ))}
         </ul>
       )}
     </>

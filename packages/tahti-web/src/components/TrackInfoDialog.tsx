@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Button, Dialog, ImageReveal, Tooltip } from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../api/types';
-import { soundIdFromPlayableId } from '../lib/archiveId';
+import { soundIdFromPlayableId } from '../lib/soundId';
 import { useLibraryStore } from '../stores/libraryStore';
 import { AddToPlaylistPanel } from './AddToPlaylistPanel';
 

@@ -16,6 +16,7 @@ import {
 import { parseDiscoverSearch } from './lib/discoverTabs';
 import { resolveDashboardRedirect } from './lib/prodPathRedirects';
 import { useAuthStore } from './stores/authStore';
+import type { AdminGovernanceTabId } from './views/admin/governance/governanceNav';
 import type { AdminModerationTabId } from './views/admin/moderation/moderationNav';
 import type { AdminOrphanPageTabId } from './views/admin/orphanPages/orphanPagesNav';
 import { AgplView } from './views/AgplView';
@@ -78,10 +79,6 @@ import { WhatsNewView } from './views/WhatsNewView';
 // Board-only, gated on user.isBoard — never needed on the anonymous listen
 // path, so keep these 22 pages out of the main bundle entirely rather than
 // paying for them on every page load (see CUTOVER.md's Bundle budget item).
-const AdminAgmView = lazyRouteComponent(
-  () => import('./views/admin/AdminAgmView'),
-  'AdminAgmView',
-);
 const StudioSoundView = lazyRouteComponent(
   () => import('./views/studio/StudioSoundView'),
   'StudioSoundView',
@@ -122,6 +119,18 @@ const GovernanceView = lazyRouteComponent(
   () => import('./views/GovernanceView'),
   'GovernanceView',
 );
+const GovernanceMotionDetailView = lazyRouteComponent(
+  () => import('./views/GovernanceMotionDetailView'),
+  'GovernanceMotionDetailView',
+);
+const GovernanceMembersView = lazyRouteComponent(
+  () => import('./views/GovernanceMembersView'),
+  'GovernanceMembersView',
+);
+const GovernanceMeetingDetailView = lazyRouteComponent(
+  () => import('./views/GovernanceMeetingDetailView'),
+  'GovernanceMeetingDetailView',
+);
 const PublicGovernanceHistoryView = lazyRouteComponent(
   () => import('./views/PublicGovernanceHistoryView'),
   'PublicGovernanceHistoryView',
@@ -154,6 +163,10 @@ const TransparencyView = lazyRouteComponent(
   () => import('./views/TransparencyView'),
   'TransparencyView',
 );
+const TransparencyResolutionsView = lazyRouteComponent(
+  () => import('./views/TransparencyResolutionsView'),
+  'TransparencyResolutionsView',
+);
 const TransparencyGrantYearView = lazyRouteComponent(
   () => import('./views/TransparencyGrantYearView'),
   'TransparencyGrantYearView',
@@ -181,14 +194,6 @@ const AdminFinancialView = lazyRouteComponent(
 const AdminGovernanceView = lazyRouteComponent(
   () => import('./views/admin/AdminGovernanceView'),
   'AdminGovernanceView',
-);
-const AdminReportsView = lazyRouteComponent(
-  () => import('./views/admin/AdminReportsView'),
-  'AdminReportsView',
-);
-const AdminGrantsView = lazyRouteComponent(
-  () => import('./views/admin/AdminGrantsView'),
-  'AdminGrantsView',
 );
 const AdminGrantCycleView = lazyRouteComponent(
   () => import('./views/admin/AdminGrantCycleView'),
@@ -262,9 +267,9 @@ const AdminVenuesView = lazyRouteComponent(
   () => import('./views/admin/AdminVenuesView'),
   'AdminVenuesView',
 );
-const AdminDiscoWidgetsView = lazyRouteComponent(
-  () => import('./views/admin/AdminDiscoWidgetsView'),
-  'AdminDiscoWidgetsView',
+const AdminAddonsView = lazyRouteComponent(
+  () => import('./views/admin/AdminAddonsView'),
+  'AdminAddonsView',
 );
 const StudioEventCreateView = lazyRouteComponent(
   () => import('./views/studio/StudioEventCreateView'),
@@ -274,10 +279,6 @@ const StudioGovernanceView = lazyRouteComponent(
   () => import('./views/studio/StudioGovernanceView'),
   'StudioGovernanceView',
 );
-const StudioRecordingsView = lazyRouteComponent(
-  () => import('./views/studio/StudioRecordingsView'),
-  'StudioRecordingsView',
-);
 const StudioRevenueView = lazyRouteComponent(
   () => import('./views/studio/StudioRevenueView'),
   'StudioRevenueView',
@@ -285,10 +286,6 @@ const StudioRevenueView = lazyRouteComponent(
 const StudioStripeView = lazyRouteComponent(
   () => import('./views/studio/StudioStripeView'),
   'StudioStripeView',
-);
-const StudioStashView = lazyRouteComponent(
-  () => import('./views/studio/StudioStashView'),
-  'StudioStashView',
 );
 const StudioTrackInsightsView = lazyRouteComponent(
   () => import('./views/studio/StudioTrackInsightsView'),
@@ -390,6 +387,17 @@ const settingsRoute = createRoute({
 const settingsSectionRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/settings/$section',
+  beforeLoad: ({ params }) => {
+    // Former Settings → Audience / money panels now live under Studio.
+    if (
+      params.section === 'audience' ||
+      params.section === 'money' ||
+      params.section === 'fan-subs' ||
+      params.section === 'fan-tiers'
+    ) {
+      throw redirect({ to: '/studio/audience' });
+    }
+  },
   component: function SettingsSectionRoute() {
     const { section } = settingsSectionRoute.useParams();
     return <SettingsView sectionId={section} />;
@@ -597,13 +605,29 @@ const adminFinancialRoute = createRoute({
 const adminGovernanceRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/admin/governance',
-  component: AdminGovernanceView,
+  component: () => <AdminGovernanceView />,
+});
+
+const adminGovernanceTabRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/admin/governance/$tab',
+  component: function AdminGovernanceTabRoute() {
+    const { tab } = adminGovernanceTabRoute.useParams();
+    return (
+      <AdminGovernanceView tab={tab as AdminGovernanceTabId | undefined} />
+    );
+  },
 });
 
 const adminReportsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/admin/reports',
-  component: AdminReportsView,
+  beforeLoad: () => {
+    throw redirect({
+      to: '/admin/governance/$tab',
+      params: { tab: 'reports' },
+    });
+  },
 });
 
 const adminFeatureRequestsRoute = createRoute({
@@ -637,7 +661,12 @@ const adminModerationTabRoute = createRoute({
 const adminGrantsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/admin/grants',
-  component: AdminGrantsView,
+  beforeLoad: () => {
+    throw redirect({
+      to: '/admin/governance/$tab',
+      params: { tab: 'grants' },
+    });
+  },
 });
 
 const adminGrantCycleRoute = createRoute({
@@ -649,7 +678,12 @@ const adminGrantCycleRoute = createRoute({
 const adminAgmRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/admin/agm',
-  component: AdminAgmView,
+  beforeLoad: () => {
+    throw redirect({
+      to: '/admin/governance/$tab',
+      params: { tab: 'agm' },
+    });
+  },
 });
 
 const adminMissedShowsRoute = createRoute({
@@ -681,10 +715,19 @@ const adminVenuesRoute = createRoute({
   component: AdminVenuesView,
 });
 
-const adminDiscoWidgetsRoute = createRoute({
+const adminAddonsRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/admin/addons',
+  component: AdminAddonsView,
+});
+
+/** Old path — disco widgets are now called add-ons. */
+const adminDiscoWidgetsRedirectRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/admin/disco-widgets',
-  component: AdminDiscoWidgetsView,
+  beforeLoad: () => {
+    throw redirect({ to: '/admin/addons' });
+  },
 });
 
 const adminStatusRoute = createRoute({
@@ -727,13 +770,16 @@ const libraryReleasesRoute = createRoute({
   },
 });
 
+/** `?tab=` sub-tabs are legacy bookmarks — each now has its own clean
+ * `/library/<tab>` route, so old links redirect forward instead of
+ * being rendered inline here. */
 const libraryCollectionsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library/collections',
   validateSearch: (
     search: Record<string, unknown>,
   ): {
-    tab?: 'collections' | 'recordings' | 'media' | 'stash' | 'embeds';
+    tab?: 'recordings' | 'media' | 'stash' | 'embeds';
   } => ({
     tab:
       search.tab === 'recordings' ||
@@ -743,18 +789,39 @@ const libraryCollectionsRoute = createRoute({
         ? search.tab
         : undefined,
   }),
-  component: function LibraryCollectionsRoute() {
-    const search = libraryCollectionsRoute.useSearch();
-    return <LibraryView tab="collections" collectionTab={search.tab} />;
+  beforeLoad: ({ search }) => {
+    if (search.tab) {
+      throw redirect({ to: `/library/${search.tab}` });
+    }
+  },
+  component: () => <LibraryView tab="collections" />,
+});
+
+const libraryCollectionEditRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/library/collections/$slug',
+  component: function LibraryCollectionEditRoute() {
+    const { slug } = libraryCollectionEditRoute.useParams();
+    return <StudioCollectionEditView slug={slug} nav="library" />;
   },
 });
 
 const libraryRecordingsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library/recordings',
-  beforeLoad: () => {
-    throw redirect({ to: '/studio/recordings' });
-  },
+  component: () => <LibraryView tab="recordings" />,
+});
+
+const libraryStashRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/library/stash',
+  component: () => <LibraryView tab="stash" />,
+});
+
+const libraryEmbedsRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/library/embeds',
+  component: () => <LibraryView tab="embeds" />,
 });
 
 const libraryFavoritesRoute = createRoute({
@@ -939,8 +1006,8 @@ const collectionRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/u/$username/c/$slug',
   component: function CollectionRoute() {
-    const { username, slug } = collectionRoute.useParams();
-    return <CollectionView username={username} slug={slug} />;
+    const { slug } = collectionRoute.useParams();
+    return <CollectionView slug={slug} />;
   },
 });
 
@@ -1005,6 +1072,12 @@ const transparencyRoute = createRoute({
   component: TransparencyView,
 });
 
+const transparencyResolutionsRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/transparency/resolutions',
+  component: TransparencyResolutionsView,
+});
+
 const transparencyMethodologyRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/transparency/methodology',
@@ -1032,6 +1105,16 @@ const helpSlugRoute = createRoute({
   component: function HelpSlugRoute() {
     const { slug } = helpSlugRoute.useParams();
     return <HelpArticleView slug={slug} />;
+  },
+});
+
+/** Old path — the governance guide moved into Studio → Governance's own
+ * Guide tab, closer to where members actually use it. */
+const helpGovernanceRedirectRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/help/governance',
+  beforeLoad: () => {
+    throw redirect({ to: '/studio/governance', search: { tab: 'guide' } });
   },
 });
 
@@ -1116,6 +1199,30 @@ const governanceRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/governance',
   component: GovernanceView,
+});
+
+const governanceMembersRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/governance/members',
+  component: GovernanceMembersView,
+});
+
+const governanceMeetingDetailRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/governance/meetings/$id',
+  component: function GovernanceMeetingDetailRoute() {
+    const { id } = governanceMeetingDetailRoute.useParams();
+    return <GovernanceMeetingDetailView id={id} />;
+  },
+});
+
+const governanceMotionDetailRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/governance/motions/$id',
+  component: function GovernanceMotionDetailRoute() {
+    const { id } = governanceMotionDetailRoute.useParams();
+    return <GovernanceMotionDetailView id={id} />;
+  },
 });
 
 const publicGovernanceHistoryRoute = createRoute({
@@ -1208,10 +1315,13 @@ const studioArchiveRedirectRoute = createRoute({
   },
 });
 
+/** Old path — Recordings is now a Library tab, not a Studio one. */
 const studioRecordingsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/recordings',
-  component: StudioRecordingsView,
+  beforeLoad: () => {
+    throw redirect({ to: '/library/recordings' });
+  },
 });
 
 const studioSoundItemRoute = createRoute({
@@ -1316,10 +1426,13 @@ const studioEditorProjectRoute = createRoute({
   },
 });
 
+/** Old path — Stash is now a Library tab, not a Studio one. */
 const studioStashRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/stash',
-  component: StudioStashView,
+  beforeLoad: () => {
+    throw redirect({ to: '/library/stash' });
+  },
 });
 
 const studioScheduleRoute = createRoute({
@@ -1337,11 +1450,15 @@ const studioStatsRoute = createRoute({
 const studioGovernanceRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/governance',
-  validateSearch: (search: Record<string, unknown>): { tab?: 'topics' } => ({
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { tab?: 'topics' | 'guide' } => ({
     tab:
       search.tab === 'topics' || search.tab === 'feature-requests'
         ? 'topics'
-        : undefined,
+        : search.tab === 'guide'
+          ? 'guide'
+          : undefined,
   }),
   component: function StudioGovernanceRoute() {
     const search = studioGovernanceRoute.useSearch();
@@ -1433,10 +1550,30 @@ const studioUpdatesRoute = createRoute({
   component: StudioUpdatesView,
 });
 
+const studioAudienceRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/studio/audience',
+  validateSearch: (search: Record<string, unknown>): { tab?: 'tiers' } => ({
+    tab: search.tab === 'tiers' ? 'tiers' : undefined,
+  }),
+  component: StudioRevenueView,
+});
+
 const studioRevenueRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/revenue',
-  component: StudioRevenueView,
+  beforeLoad: ({ search }) => {
+    throw redirect({
+      to: '/studio/audience',
+      search:
+        typeof search === 'object' &&
+        search &&
+        'tab' in search &&
+        (search as { tab?: unknown }).tab === 'tiers'
+          ? { tab: 'tiers' as const }
+          : {},
+    });
+  },
 });
 
 const studioStripeRoute = createRoute({
@@ -1684,6 +1821,7 @@ const routeTree = rootRoute.addChildren([
     adminContentReportsRoute,
     adminFinancialRoute,
     adminGovernanceRoute,
+    adminGovernanceTabRoute,
     adminReportsRoute,
     adminFeatureRequestsRoute,
     adminGrantsRoute,
@@ -1693,14 +1831,18 @@ const routeTree = rootRoute.addChildren([
     adminVendorsRoute,
     adminMapRoute,
     adminVenuesRoute,
-    adminDiscoWidgetsRoute,
+    adminAddonsRoute,
+    adminDiscoWidgetsRedirectRoute,
     adminStatusRoute,
     adminI18nRoute,
     libraryRoute,
     librarySoundsRoute,
     libraryReleasesRoute,
     libraryCollectionsRoute,
+    libraryCollectionEditRoute,
     libraryRecordingsRoute,
+    libraryStashRoute,
+    libraryEmbedsRoute,
     libraryFavoritesRoute,
     libraryHistoryRoute,
     librarySmartLinksRoute,
@@ -1733,8 +1875,10 @@ const routeTree = rootRoute.addChildren([
     greenRoomRoute,
     transparencyRoute,
     transparencyGrantYearRoute,
+    transparencyResolutionsRoute,
     transparencyMethodologyRoute,
     helpRoute,
+    helpGovernanceRedirectRoute,
     helpSlugRoute,
     joinRoute,
     applyRoute,
@@ -1748,6 +1892,9 @@ const routeTree = rootRoute.addChildren([
     accountRoute,
     statusRoute,
     governanceRoute,
+    governanceMotionDetailRoute,
+    governanceMembersRoute,
+    governanceMeetingDetailRoute,
     publicGovernanceHistoryRoute,
     featureRequestsRoute,
     aboutRoute,
@@ -1790,6 +1937,7 @@ const routeTree = rootRoute.addChildren([
     studioPlaylistsRoute,
     studioPlaylistEditRoute,
     studioUpdatesRoute,
+    studioAudienceRoute,
     studioRevenueRoute,
     studioStripeRoute,
     studioDistributionRoute,

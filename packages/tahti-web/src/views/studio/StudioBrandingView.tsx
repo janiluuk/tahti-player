@@ -8,7 +8,7 @@ import {
   PaletteIcon,
   Trash2Icon,
 } from 'lucide-react';
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
@@ -45,7 +45,7 @@ import { fetchMeProfile, type ProfileFields } from '../../api/studio-extras';
 import { ArtistGalleryPanel } from '../../components/ArtistGalleryPanel';
 import { ChannelDesigner } from '../../components/ChannelDesigner';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
-import { ImageLightbox } from '../../components/ImageLightbox';
+import { RoundImageUploadButton } from '../../components/RoundImageUploadButton';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -82,7 +82,6 @@ export const StudioBrandingPanel: FC<{
 }> = ({ section, hideSectionNav = section != null, onSectionChange }) => {
   const user = useAuthStore((state) => state.user);
   const refreshAuth = useAuthStore((state) => state.refresh);
-  const avatarInputRef = useRef<HTMLInputElement>(null);
   const [tab, setTab] = useState<StudioBrandingSection>(section ?? 'branding');
   const [profile, setProfile] = useState<ProfileFields | null>(null);
   const [images, setImages] = useState<PressKitImageItem[]>([]);
@@ -96,11 +95,13 @@ export const StudioBrandingPanel: FC<{
     string | null
   >(null);
   const [busy, setBusy] = useState(false);
-  const [avatarViewerOpen, setAvatarViewerOpen] = useState(false);
   const [pendingReplaceUpload, setPendingReplaceUpload] = useState<{
     files: File[];
     includeInZip: boolean;
   } | null>(null);
+  const [pendingImageDeleteId, setPendingImageDeleteId] = useState<
+    string | null
+  >(null);
 
   const reload = async () => {
     const [profileResult, imageResult, pressResult] = await Promise.all([
@@ -268,29 +269,11 @@ export const StudioBrandingPanel: FC<{
     }
   };
 
-  const uploadAvatar = async (file: File | undefined) => {
-    if (!file || !profile) {
-      return;
-    }
-    setBusy(true);
-    const result = await uploadProfileAvatar(file);
-    setBusy(false);
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
-    setProfile({ ...profile, avatarUrl: result.avatarUrl });
-    await refreshAuth();
-    toast.success('Profile picture updated.');
-  };
-
   const removeAvatar = async () => {
     if (!profile) {
       return;
     }
-    setBusy(true);
     const result = await removeProfileAvatar();
-    setBusy(false);
     if (!result.ok) {
       toast.error(result.error);
       return;
@@ -298,6 +281,17 @@ export const StudioBrandingPanel: FC<{
     setProfile({ ...profile, avatarUrl: null });
     await refreshAuth();
     toast.success('Profile picture removed.');
+  };
+
+  const handleAvatarChange = (url: string) => {
+    if (!url) {
+      void removeAvatar();
+      return;
+    }
+    setProfile((current) =>
+      current ? { ...current, avatarUrl: url } : current,
+    );
+    void refreshAuth();
   };
 
   const pressImages = selectedPressKitImages(images);
@@ -339,70 +333,19 @@ export const StudioBrandingPanel: FC<{
             description="Use a clear square portrait or mark. Hover the picture to replace or remove it."
           >
             <div className="flex flex-wrap items-center gap-5">
-              <div className="group relative size-32 shrink-0">
-                <button
-                  type="button"
-                  className="border-border block size-32 overflow-hidden rounded-full border shadow-lg"
-                  aria-label={
-                    avatarUrl
-                      ? `View ${profile?.displayName ?? 'artist'} profile picture`
-                      : 'Upload profile picture'
-                  }
-                  onClick={() =>
-                    avatarUrl
-                      ? setAvatarViewerOpen(true)
-                      : avatarInputRef.current?.click()
-                  }
-                >
-                  {avatarUrl ? (
-                    <img
-                      src={avatarUrl}
-                      alt=""
-                      className="size-full object-cover"
-                    />
-                  ) : (
-                    <div className="bg-primary/15 text-primary flex size-full items-center justify-center text-4xl font-bold">
-                      {(profile?.displayName ?? user?.displayName ?? 'A')
-                        .slice(0, 1)
-                        .toUpperCase()}
-                    </div>
-                  )}
-                </button>
-                <div className="pointer-events-none absolute inset-0 flex items-center justify-center gap-2 rounded-full bg-black/50 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100">
-                  <button
-                    type="button"
-                    disabled={busy}
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      avatarInputRef.current?.click();
-                    }}
-                    aria-label={
-                      avatarUrl
-                        ? 'Replace profile picture'
-                        : 'Upload profile picture'
-                    }
-                    title={avatarUrl ? 'Replace picture' : 'Upload picture'}
-                    className="pointer-events-auto flex size-9 items-center justify-center rounded-full bg-white/90 text-black transition-colors hover:bg-white disabled:opacity-50"
-                  >
-                    <ImagePlusIcon size={16} aria-hidden />
-                  </button>
-                  {avatarUrl ? (
-                    <button
-                      type="button"
-                      disabled={busy}
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        void removeAvatar();
-                      }}
-                      aria-label="Remove profile picture"
-                      title="Remove picture"
-                      className="text-accent-red pointer-events-auto flex size-9 items-center justify-center rounded-full bg-white/90 transition-colors hover:bg-white disabled:opacity-50"
-                    >
-                      <Trash2Icon size={16} aria-hidden />
-                    </button>
-                  ) : null}
-                </div>
-              </div>
+              <RoundImageUploadButton
+                label="Profile picture"
+                value={avatarUrl}
+                sizeClassName="size-32"
+                upload={(file) =>
+                  uploadProfileAvatar(file).then((r) =>
+                    r.ok
+                      ? { ok: true as const, data: { url: r.avatarUrl } }
+                      : r,
+                  )
+                }
+                onChange={handleAvatarChange}
+              />
               <div className="flex flex-col gap-2">
                 <Tooltip
                   side="bottom"
@@ -423,16 +366,6 @@ export const StudioBrandingPanel: FC<{
                     </span>
                   </span>
                 </Tooltip>
-                <input
-                  ref={avatarInputRef}
-                  type="file"
-                  accept={ACCEPTED_IMAGES}
-                  className="sr-only"
-                  aria-label="Profile picture"
-                  onChange={(event) =>
-                    void uploadAvatar(event.target.files?.[0])
-                  }
-                />
               </div>
             </div>
           </StudioPanel>
@@ -699,7 +632,7 @@ export const StudioBrandingPanel: FC<{
                               size="icon-sm"
                               variant="text"
                               aria-label="Remove image from gallery"
-                              onClick={() => void removeImage(image.id)}
+                              onClick={() => setPendingImageDeleteId(image.id)}
                             >
                               <Trash2Icon size={14} aria-hidden />
                             </Button>
@@ -726,14 +659,6 @@ export const StudioBrandingPanel: FC<{
           </StudioPanel>
         </>
       ) : null}
-      {avatarViewerOpen && avatarUrl ? (
-        <ImageLightbox
-          images={[{ imageUrl: avatarUrl }]}
-          index={0}
-          label={`${profile?.displayName ?? 'Artist'} profile picture`}
-          onClose={() => setAvatarViewerOpen(false)}
-        />
-      ) : null}
       <ConfirmDialog
         isOpen={pendingReplaceUpload !== null}
         title={`Replace all ${images.length} existing gallery images?`}
@@ -747,6 +672,21 @@ export const StudioBrandingPanel: FC<{
             return;
           }
           void applyGalleryUpload(pending.files, pending.includeInZip);
+        }}
+      />
+      <ConfirmDialog
+        isOpen={pendingImageDeleteId !== null}
+        title="Remove this image from your gallery?"
+        description="It will no longer appear in your public press kit or the downloadable zip."
+        confirmLabel="Remove image"
+        onCancel={() => setPendingImageDeleteId(null)}
+        onConfirm={() => {
+          const id = pendingImageDeleteId;
+          setPendingImageDeleteId(null);
+          if (!id) {
+            return;
+          }
+          void removeImage(id);
         }}
       />
     </div>

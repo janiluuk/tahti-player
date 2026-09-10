@@ -7,9 +7,9 @@ import {
   CreditCardIcon,
   Database,
   Download,
-  Gift,
   Globe,
   InfoIcon,
+  Keyboard,
   KeyRound,
   Landmark,
   LayoutGrid,
@@ -24,7 +24,6 @@ import {
   Share2,
   Shield,
   Sparkles,
-  Tag,
   Trash2,
   Upload,
   User,
@@ -76,25 +75,13 @@ import {
   verifyCustomDomain,
 } from '../../api/channel-design';
 import {
+  cancelMySubscription,
   fetchMembership,
+  fetchMyPurchases,
   fetchMySubscriptions,
   requestAccountDeletion,
   startMembershipCheckout,
 } from '../../api/client';
-import { fetchAllRoyalties } from '../../api/distribution';
-import {
-  fanSubscriberExportUrl,
-  fetchFanConnectPortal,
-  fetchFanConnectStatus,
-  fetchFanPayoutStats,
-  fetchGrantEstimate,
-  fetchMyGrants,
-  startFanConnectOnboard,
-  type FanConnectStatus,
-  type FanPayoutStats,
-  type GrantEstimate,
-  type GrantRow,
-} from '../../api/revenue';
 import {
   fetchMeProfile,
   fetchProgramme,
@@ -105,13 +92,16 @@ import {
   type ProgrammeView,
   type StorageUsage,
 } from '../../api/studio-extras';
-import type { FanSubscriptionRow, MembershipStatus } from '../../api/types';
+import type {
+  FanSubscriptionRow,
+  MembershipStatus,
+  PurchaseRow,
+} from '../../api/types';
 import { AMBIENT_SCHEME } from '../../components/AmbientBackground';
 import { ApiTokensPanel } from '../../components/ApiTokensPanel';
 import { ArtistImagePurposePicker } from '../../components/ArtistImagePurposePicker';
 import { ChannelVisualizer } from '../../components/ChannelVisualizer';
-import { FanSubscriptionStats } from '../../components/FanSubscriptionStats';
-import { FanTiersEditor } from '../../components/FanTiersEditor';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { GenrePicker } from '../../components/GenrePicker';
 import { MentionTextarea } from '../../components/MentionTextarea';
 import { MulticastSection } from '../../components/MulticastSection';
@@ -138,7 +128,6 @@ import {
   saveReleaseVisualizerPreference,
   type ReleaseVisualizerMode,
 } from '../../lib/releaseVisualizer';
-import { mergeRevenueOrders } from '../../lib/revenueOrders';
 import { useThemeStore } from '../../plugins/themes';
 import { useAmbientStore } from '../../stores/ambientStore';
 import { useAuthModalStore } from '../../stores/authModalStore';
@@ -236,9 +225,6 @@ export function SettingsSectionBody({
       break;
     case 'broadcast':
       content = <BroadcastPanel />;
-      break;
-    case 'audience':
-      content = <MoneyPanel />;
       break;
     case 'themes':
       content = <ThemesPanel />;
@@ -363,6 +349,14 @@ function AccountPanel() {
   const closeSettings = useSettingsModalStore((s) => s.close);
   const [membership, setMembership] = useState<MembershipStatus | null>(null);
   const [subscriptions, setSubscriptions] = useState<FanSubscriptionRow[]>([]);
+  const [purchases, setPurchases] = useState<PurchaseRow[]>([]);
+  const [pendingCancel, setPendingCancel] = useState<FanSubscriptionRow | null>(
+    null,
+  );
+  const [cancelBusy, setCancelBusy] = useState(false);
+
+  const reloadSubscriptions = () =>
+    fetchMySubscriptions().then((r) => setSubscriptions(r.data));
 
   useEffect(() => {
     if (!user) {
@@ -374,7 +368,8 @@ function AccountPanel() {
   }, [user]);
 
   useEffect(() => {
-    void fetchMySubscriptions().then((r) => setSubscriptions(r.data));
+    void reloadSubscriptions();
+    void fetchMyPurchases().then((r) => setPurchases(r.data));
   }, []);
 
   if (!user) {
@@ -407,6 +402,16 @@ function AccountPanel() {
               <SettingsInfo label="Display name" value={user.displayName} />
               {user.email && <SettingsInfo label="Email" value={user.email} />}
               <div className="flex flex-wrap gap-2">
+                <Link
+                  to="/help/$slug"
+                  params={{ slug: 'keyboard-shortcuts' }}
+                  onClick={closeSettings}
+                >
+                  <Button size="sm" variant="secondary">
+                    <Keyboard size={15} aria-hidden className="mr-1.5" />
+                    Keyboard shortcuts
+                  </Button>
+                </Link>
                 <Button size="sm" variant="text" onClick={() => void logout()}>
                   <LogOutIcon size={15} aria-hidden className="mr-1.5" />
                   Log out
@@ -499,12 +504,6 @@ function AccountPanel() {
                   )}
                 </div>
               )}
-              <Link to="/governance" onClick={closeSettings}>
-                <Button size="sm" variant="secondary">
-                  <Landmark size={15} aria-hidden className="mr-1.5" />
-                  Governance
-                </Button>
-              </Link>
             </div>
           ),
         },
@@ -559,15 +558,107 @@ function AccountPanel() {
                         <p className="text-foreground-secondary text-xs">
                           {subscription.tierName},{' '}
                           {euros(subscription.amountCents)}/mo,{' '}
-                          {subscription.state}
+                          {subscription.canceledAt &&
+                          subscription.currentPeriodEnd
+                            ? `cancels ${new Date(
+                                subscription.currentPeriodEnd,
+                              ).toLocaleDateString()}`
+                            : subscription.state}
                         </p>
                       </div>
+                      {subscription.canceledAt ? null : (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setPendingCancel(subscription)}
+                        >
+                          Manage
+                        </Button>
+                      )}
                     </li>
                   ))}
                 </ul>
               )}
+              <ConfirmDialog
+                isOpen={pendingCancel !== null}
+                title={
+                  pendingCancel
+                    ? `Cancel your ${pendingCancel.tierName} subscription to ${pendingCancel.artist.displayName}?`
+                    : 'Cancel subscription?'
+                }
+                description="You'll keep access until the end of the current billing period, then it won't renew."
+                confirmLabel={
+                  cancelBusy ? 'Cancelling…' : 'Cancel subscription'
+                }
+                cancelLabel="Keep subscription"
+                onCancel={() => setPendingCancel(null)}
+                onConfirm={() => {
+                  const target = pendingCancel;
+                  if (!target || cancelBusy) {
+                    return;
+                  }
+                  setCancelBusy(true);
+                  void cancelMySubscription(target.id).then((r) => {
+                    setCancelBusy(false);
+                    setPendingCancel(null);
+                    if (r.ok) {
+                      void reloadSubscriptions();
+                    }
+                  });
+                }}
+              />
             </div>
           ),
+        },
+        {
+          id: 'purchases',
+          label: 'Purchases',
+          icon: <CreditCardIcon size={14} />,
+          content:
+            purchases.length === 0 ? (
+              <SettingsHint>No track purchases on this account.</SettingsHint>
+            ) : (
+              <ul className="flex flex-col gap-2">
+                {purchases.map((purchase) => (
+                  <li
+                    key={purchase.id}
+                    className="border-border flex flex-wrap items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm"
+                  >
+                    <div>
+                      <p className="font-medium">
+                        {purchase.tracks.map((t) => t.title).join(', ') ||
+                          purchase.tierName}
+                      </p>
+                      <p className="text-foreground-secondary text-xs">
+                        <Link
+                          to="/u/$username"
+                          params={{ username: purchase.artist.username }}
+                          onClick={closeSettings}
+                          className="underline-offset-2 hover:underline"
+                        >
+                          {purchase.artist.displayName}
+                        </Link>
+                        {' · '}
+                        {euros(purchase.amountCents)}
+                        {' · '}
+                        {new Date(purchase.createdAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                    {purchase.tracks[0] ? (
+                      <Link
+                        to="/t/$id"
+                        params={{ id: purchase.tracks[0].id }}
+                        onClick={closeSettings}
+                      >
+                        <Button variant="ghost" size="sm">
+                          Listen
+                        </Button>
+                      </Link>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            ),
         },
         {
           id: 'privacy',
@@ -1741,216 +1832,6 @@ export function BroadcastPanel({
   return <Tabs listClassName="flex-wrap" items={items} />;
 }
 
-export function MoneyPanel() {
-  const user = useAuthStore((s) => s.user);
-  const closeSettings = useSettingsModalStore((s) => s.close);
-  const [connect, setConnect] = useState<FanConnectStatus | null>(null);
-  const [fanPayouts, setFanPayouts] = useState<FanPayoutStats | null>(null);
-  const [payoutOrders, setPayoutOrders] = useState(mergeRevenueOrders([], []));
-  const [grants, setGrants] = useState<GrantRow[]>([]);
-  const [estimate, setEstimate] = useState<GrantEstimate | null>(null);
-  const [subs, setSubs] = useState<FanSubscriptionRow[]>([]);
-  const [msg, setMsg] = useState<string | null>(null);
-
-  useEffect(() => {
-    void Promise.all([
-      fetchFanConnectStatus(),
-      fetchFanPayoutStats(),
-      fetchAllRoyalties(),
-      fetchMyGrants(),
-      fetchGrantEstimate(),
-      user
-        ? fetchMySubscriptions()
-        : Promise.resolve({ data: [] as FanSubscriptionRow[] }),
-    ]).then(([c, payouts, royalties, g, e, s]) => {
-      setConnect(c.data);
-      setFanPayouts(payouts.data);
-      setPayoutOrders(mergeRevenueOrders(payouts.data.recent, royalties.data));
-      setGrants(g.data);
-      setEstimate(e.data);
-      setSubs(s.data);
-    });
-  }, [user]);
-
-  return (
-    <Tabs
-      listClassName="flex-wrap"
-      items={[
-        {
-          id: 'fan-tiers',
-          label: 'Fan tiers',
-          icon: <Tag size={14} />,
-          content: <FanTiersEditor />,
-        },
-        {
-          id: 'fan-subs',
-          label: 'Fan subs',
-          icon: <Landmark size={14} />,
-          content: !connect ? (
-            <SettingsHint>Loading…</SettingsHint>
-          ) : (
-            <div className="flex flex-col gap-4">
-              {fanPayouts ? (
-                <FanSubscriptionStats
-                  stats={fanPayouts}
-                  orders={payoutOrders}
-                  exportUrl={fanSubscriberExportUrl()}
-                />
-              ) : null}
-              <SettingsInfo
-                label="Payments ready"
-                value={connect.paymentsReady ? 'Yes' : 'Not yet'}
-              />
-              <SettingsInfo
-                label="Charges enabled"
-                value={connect.chargesEnabled ? 'Yes' : 'No'}
-              />
-              {connect.accountId && (
-                <SettingsInfo
-                  label="Connect account"
-                  value={connect.accountId}
-                />
-              )}
-              <div className="flex flex-wrap gap-2">
-                {connect.stripeConfigured ? (
-                  <>
-                    {!connect.paymentsReady && (
-                      <Button
-                        size="sm"
-                        onClick={() => {
-                          void startFanConnectOnboard().then((r) => {
-                            if (!r.ok) {
-                              setMsg(r.error);
-                              return;
-                            }
-                            if ('mockActivated' in r) {
-                              setMsg(r.message);
-                              void fetchFanConnectStatus().then((x) =>
-                                setConnect(x.data),
-                              );
-                              return;
-                            }
-                            window.open(r.url, '_blank', 'noopener,noreferrer');
-                          });
-                        }}
-                      >
-                        Start / resume onboarding
-                      </Button>
-                    )}
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={() => {
-                        void fetchFanConnectPortal().then((r) => {
-                          if (!r.ok) {
-                            setMsg(r.error);
-                            return;
-                          }
-                          if ('mockActivated' in r) {
-                            setMsg(r.message);
-                            return;
-                          }
-                          window.open(r.url, '_blank', 'noopener,noreferrer');
-                        });
-                      }}
-                    >
-                      Stripe portal
-                    </Button>
-                    <Link to="/studio/stripe" onClick={closeSettings}>
-                      <Button size="sm" variant="text">
-                        Stripe dashboard
-                      </Button>
-                    </Link>
-                  </>
-                ) : null}
-                <Link to="/studio/revenue" onClick={closeSettings}>
-                  <Button size="sm" variant="text">
-                    Studio revenue
-                  </Button>
-                </Link>
-              </div>
-              {msg && <SettingsHint>{msg}</SettingsHint>}
-            </div>
-          ),
-        },
-        {
-          id: 'grants',
-          label: 'Grants',
-          icon: <Gift size={14} />,
-          content: (
-            <div className="flex flex-col gap-4">
-              {estimate && (
-                <SettingsInfo
-                  label={`Estimate ${estimate.year}`}
-                  value={`${euros(estimate.estimateCents)} (${estimate.units} units)`}
-                  description={
-                    estimate.eligible ? 'Eligible' : 'Not currently eligible'
-                  }
-                />
-              )}
-              {grants.length === 0 ? (
-                <SettingsHint>No grant rows yet.</SettingsHint>
-              ) : (
-                <ul className="flex flex-col gap-2 text-sm">
-                  {grants.map((g) => (
-                    <li
-                      key={`${g.forYear}-${g.state}`}
-                      className="border-border rounded-md border px-3 py-2"
-                    >
-                      {g.forYear}: {euros(g.amountCents)} — {g.state}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ),
-        },
-        {
-          id: 'subscriptions',
-          label: 'Your subs',
-          icon: <Wallet size={14} />,
-          content: (
-            <div className="flex flex-col gap-4">
-              {!user ? (
-                <SettingsHint>
-                  Sign in to see subscriptions you pay for.
-                </SettingsHint>
-              ) : subs.length === 0 ? (
-                <SettingsHint>
-                  No fan subscriptions on this account.
-                </SettingsHint>
-              ) : (
-                <ul className="flex flex-col gap-2">
-                  {subs.map((s) => (
-                    <li
-                      key={s.id}
-                      className="border-border flex flex-wrap items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm"
-                    >
-                      <div>
-                        <Link
-                          to="/u/$username"
-                          params={{ username: s.artist.username }}
-                          onClick={closeSettings}
-                          className="font-medium underline-offset-2 hover:underline"
-                        >
-                          {s.artist.displayName}
-                        </Link>
-                        <p className="text-foreground-secondary text-xs">
-                          {s.tierName}, {euros(s.amountCents)}/mo, {s.state}
-                        </p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ),
-        },
-      ]}
-    />
-  );
-}
-
 function NotificationsPanel() {
   const [prefs, setPrefs] = useState<NotificationPrefs | null>(null);
 
@@ -2220,6 +2101,10 @@ function ThemesPanel() {
   const [configuringThemeId, setConfiguringThemeId] = useState<string | null>(
     null,
   );
+  const [renamingTheme, setRenamingTheme] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
   // Close the nested "Configure theme" dialog in step with the outer
   // Settings modal, not after it — leaving it open while the parent's own
   // exit animation plays stacks two independently-animating overlays and
@@ -2400,15 +2285,12 @@ function ThemesPanel() {
                                     size="icon-sm"
                                     variant="secondary"
                                     aria-label={`Rename ${theme.name}`}
-                                    onClick={() => {
-                                      const nextName = window.prompt(
-                                        'Rename theme',
-                                        theme.name,
-                                      );
-                                      if (nextName !== null) {
-                                        renameCustomTheme(id, nextName);
-                                      }
-                                    }}
+                                    onClick={() =>
+                                      setRenamingTheme({
+                                        id,
+                                        name: theme.name,
+                                      })
+                                    }
                                   >
                                     <Pencil size={14} aria-hidden />
                                   </Button>
@@ -2517,6 +2399,41 @@ function ThemesPanel() {
         <Dialog.Actions>
           <Dialog.Close>Done</Dialog.Close>
         </Dialog.Actions>
+      </Dialog.Root>
+
+      <Dialog.Root
+        isOpen={renamingTheme !== null}
+        onClose={() => setRenamingTheme(null)}
+      >
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (renamingTheme) {
+              renameCustomTheme(renamingTheme.id, renamingTheme.name);
+            }
+            setRenamingTheme(null);
+          }}
+        >
+          <Dialog.Title>Rename theme</Dialog.Title>
+          <div className="mt-4">
+            <Input
+              label="Name"
+              value={renamingTheme?.name ?? ''}
+              onChange={(e) =>
+                setRenamingTheme((cur) =>
+                  cur ? { ...cur, name: e.target.value } : cur,
+                )
+              }
+              autoFocus
+            />
+          </div>
+          <Dialog.Actions>
+            <Dialog.Close>Cancel</Dialog.Close>
+            <Button type="submit" disabled={!renamingTheme?.name.trim()}>
+              Save
+            </Button>
+          </Dialog.Actions>
+        </form>
       </Dialog.Root>
     </div>
   );

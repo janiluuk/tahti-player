@@ -71,7 +71,7 @@ export function RadioSubmissionsTab() {
     }
     play({
       id: `radio-sub:${result.data.soundId}`,
-      kind: 'archive',
+      kind: 'sound',
       title: result.data.title,
       artist: result.data.artistName,
       coverUrl: row.sound.bannerUrl ?? undefined,

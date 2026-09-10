@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { addMockArchiveVersion } from '@tahti-web/api/archive-versions';
+import { addMockSoundVersion } from '@tahti-web/api/sound-versions';
 import { AudioRevisionList } from '@tahti-web/components/AudioRevisionList';
 
 import { withMockAuth } from './_lib/decorators';
 
 const SOUND_ID = 'story-revision-track';
-addMockArchiveVersion(SOUND_ID, {
+addMockSoundVersion(SOUND_ID, {
   versionLabel: 'Trimmed intro',
   filename: 'trimmed.wav',
 });

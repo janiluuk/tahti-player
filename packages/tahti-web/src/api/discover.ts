@@ -200,7 +200,7 @@ type WireTopListEntry = {
 
 function topListEntryToTrack(entry: WireTopListEntry): DiscoverTrackItem {
   return {
-    id: `archive:${entry.soundId}`,
+    id: `sound:${entry.soundId}`,
     title: entry.title,
     artist: entry.artistName,
     channelSlug: entry.channelSlug,
@@ -278,7 +278,7 @@ type WireGalleryItem = {
 
 function galleryItemToTrack(item: WireGalleryItem): DiscoverTrackItem {
   return {
-    id: `archive:${item.soundId}`,
+    id: `sound:${item.soundId}`,
     title: item.title,
     artist: item.artistName,
     artistUsername: item.artistUsername,
@@ -414,7 +414,7 @@ export async function fetchLovedTracks(
     const ranked = await Promise.all(
       candidates.data.slice(0, 24).map(async (track) => ({
         track,
-        loves: await countTrackLoves(track.id.replace(/^archive:/, '')),
+        loves: await countTrackLoves(track.id.replace(/^sound:/, '')),
       })),
     );
     return {

@@ -67,6 +67,12 @@ export type PublicChannel = {
   videoBackgroundUrl?: string | null;
   galleryMode?: string | null;
   slideshowImages?: string[];
+  /** One of `ChannelDesigner`'s 8 `SLIDESHOW_PRESETS` — how the slideshow
+   * (2+ `slideshowImages`) transitions between slides. */
+  slideshowPreset?: string | null;
+  slideshowIntervalSeconds?: number;
+  slideshowTransitionMs?: number;
+  slideshowAutoplay?: boolean;
   colorSchemeJson?: string | null;
   colorScheme?: {
     accent?: string;
@@ -143,7 +149,7 @@ export type RadioRecentlyPlayedItem = {
 };
 
 /** Public archive row from GET /api/channels/:slug/items */
-export type ArchiveItem = {
+export type ChannelSoundItem = {
   id: string;
   title: string;
   artistName?: string | null;
@@ -211,6 +217,9 @@ export type PublicTrackDetail = {
   purchaseTierId?: string | null;
   purchaseTierName?: string | null;
   purchaseTierPriceCents?: number | null;
+  /** True = buyer may enter any amount >= 0 ("pay what you want", incl.
+   * free) instead of paying purchaseTierPriceCents exactly. */
+  purchaseTierPriceOptional?: boolean;
   downloadsEnabled?: boolean;
 };
 
@@ -247,7 +256,7 @@ export type PublicProfileTrack = {
   bannerUrl?: string | null;
   playUrl?: string | null;
   releaseSlug?: string | null;
-  /** Same field as ArchiveItem.createdAt -- carried onto the profile track
+  /** Same field as ChannelSoundItem.createdAt -- carried onto the profile track
    * DTO so the catalog table can show a release date. */
   createdAt?: string;
   /** Stage pin — GET /api/v1/u/:username/profile */
@@ -302,7 +311,7 @@ export type PublicProfile = {
   links: {
     channel: string | null;
     subscribe: string;
-    feeds: { archive: string | null };
+    feeds: { sound: string | null };
     presskit: string;
   };
   backgroundMusicUrl?: string | null;
@@ -414,7 +423,7 @@ export type VenueProfile = VenueDirectoryItem & {
 /** Playable item in the Tahti listen client (live channel, radio, or archive URL). */
 export type TahtiPlayable = {
   id: string;
-  kind: 'live' | 'radio' | 'archive';
+  kind: 'live' | 'radio' | 'sound';
   title: string;
   artist: string;
   coverUrl?: string;
@@ -625,6 +634,15 @@ export type FanSubscriptionRow = {
   artist: { username: string; displayName: string };
 };
 
+export type PurchaseRow = {
+  id: string;
+  tierName: string;
+  amountCents: number;
+  createdAt: string;
+  artist: { username: string; displayName: string };
+  tracks: { id: string; title: string }[];
+};
+
 export type GovernanceMotion = {
   id: string;
   title: string;
@@ -643,6 +661,10 @@ export type GovernanceMotion = {
 export type GovernanceMotionDraft = {
   id: string;
   state: string;
+};
+
+export type GovernanceMotionDetail = GovernanceMotion & {
+  description: string;
 };
 
 export type PublicGovernanceMotion = {
@@ -673,6 +695,7 @@ export type GovernanceMeeting = {
   noticeAt: string | null;
   agenda?: unknown;
   minutesKey: string | null;
+  minutesUrl?: string | null;
   minutesApprovedAt: string | null;
   eligibleMemberCount: number | null;
   quorumRequired: number | null;
@@ -686,6 +709,22 @@ export type GovernanceMeeting = {
 export type GovernanceAgendaItem = {
   title: string;
   description?: string;
+};
+
+export type GovernanceAttendanceStatus = 'PRESENT' | 'ABSENT' | 'EXCUSED';
+
+export type GovernanceAttendanceItem = {
+  id: string;
+  memberId: string | null;
+  displayName: string;
+  status: GovernanceAttendanceStatus;
+  recordedAt: string;
+};
+
+export type UpsertGovernanceAttendance = {
+  memberId?: string | null;
+  displayName: string;
+  status: GovernanceAttendanceStatus;
 };
 
 export type GovernanceMember = {

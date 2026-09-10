@@ -184,8 +184,8 @@ export function useJamGuestPlayback(
     if (loadedTrackIdRef.current !== track.id) {
       loadedTrackIdRef.current = track.id;
       play({
-        id: `archive:${track.id}`,
-        kind: 'archive',
+        id: `sound:${track.id}`,
+        kind: 'sound',
         title: track.title,
         artist: track.artistName,
         coverUrl: track.coverUrl ?? undefined,
@@ -205,7 +205,7 @@ export function useJamGuestPlayback(
     }
     const interval = setInterval(() => {
       const state = usePlayerStore.getState();
-      if (state.currentId !== `archive:${track.id}`) {
+      if (state.currentId !== `sound:${track.id}`) {
         return;
       }
       const estimated = estimatedPositionSec(session);

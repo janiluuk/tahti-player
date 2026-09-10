@@ -16,8 +16,8 @@ export function releaseTrackPlayable(
   }
   const isHls = track.playUrl.includes('.m3u8');
   return {
-    id: `archive:${track.soundId ?? `${release.id}-${track.position}`}`,
-    kind: 'archive',
+    id: `sound:${track.soundId ?? `${release.id}-${track.position}`}`,
+    kind: 'sound',
     title: track.title,
     artist,
     coverUrl: release.artworkUrl ?? undefined,

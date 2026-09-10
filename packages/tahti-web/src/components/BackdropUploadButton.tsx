@@ -22,6 +22,10 @@ type Props = {
   className?: string;
   /** Overrides the default generic media upload. */
   upload?: (file: File) => Promise<UploadResult>;
+  /** Renders as an absolutely-positioned full-bleed layer instead of the
+   * default wide aspect-[3/1] banner box — for use as a background behind
+   * other content in a `relative` parent. */
+  fill?: boolean;
 };
 
 /** A wide, clickable backdrop slot — same click-to-upload-modal idiom as
@@ -33,6 +37,7 @@ export function BackdropUploadButton({
   label,
   className,
   upload = uploadUserMediaFile,
+  fill = false,
 }: Props) {
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -57,7 +62,15 @@ export function BackdropUploadButton({
 
   return (
     <>
-      <div className={cn('group relative', className)}>
+      <div
+        className={cn(
+          'group overflow-hidden',
+          fill
+            ? 'absolute inset-0 size-full rounded-none'
+            : 'relative aspect-[3/1] w-full rounded-xl',
+          className,
+        )}
+      >
         <button
           type="button"
           onClick={() => (value ? chrome.openPreview() : setOpen(true))}
@@ -71,7 +84,7 @@ export function BackdropUploadButton({
               ? `Preview ${label.toLowerCase()}`
               : `Change ${label.toLowerCase()}`
           }
-          className="border-border bg-background-secondary flex aspect-[3/1] w-full items-center justify-center overflow-hidden rounded-xl border"
+          className="border-border bg-background-secondary flex size-full items-center justify-center overflow-hidden border"
         >
           {value ? (
             <img src={value} alt="" className="size-full object-cover" />

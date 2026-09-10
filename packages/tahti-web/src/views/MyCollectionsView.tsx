@@ -94,7 +94,7 @@ const collectionKind = (collection: StudioCollection): CollectionKind =>
 
 function CollectionRow({ collection }: { collection: StudioCollection }) {
   const trackCount = collection.itemCount ?? collection.items?.length ?? 0;
-  const destination = '/studio/collections/$slug';
+  const destination = '/library/collections/$slug';
 
   return (
     <li>

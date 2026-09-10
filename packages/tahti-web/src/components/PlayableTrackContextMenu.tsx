@@ -20,7 +20,7 @@ import { Input, TrackContextMenu } from '@tahti-player/ui';
 
 import { addStudioCollectionItem, fetchStudioCollections } from '../api/studio';
 import type { StudioCollection } from '../api/studio-types';
-import { soundIdFromPlayableId } from '../lib/archiveId';
+import { soundIdFromPlayableId } from '../lib/soundId';
 import { useMasteringFeatureStore } from '../plugins/mastering/store';
 import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';

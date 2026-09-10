@@ -207,8 +207,21 @@ export async function resolveHearthisPageEmbedUrl(
   if (url.hostname.replace(/^www\./, '') !== 'hearthis.at') {
     return null;
   }
-  const oembedUrl = `${url.origin}${url.pathname.replace(/\/?$/, '/')}oembed.json`;
   try {
+    // Set pages' `permalink_url` (from the hearthis.at API) 302-redirects to
+    // a different, human-readable canonical path — e.g.
+    // /set/94377-304336/ -> /rdubzuk/set/rdubz-journeys-inapt/. oembed.json
+    // only exists at the canonical path; appending it to the pre-redirect
+    // URL 200s with an empty body (confirmed against the real API), which
+    // is why adding a set embed silently failed. Resolve the redirect first
+    // (HEAD, both hops already send CORS headers) so this also covers any
+    // future track-page redirects, not just sets.
+    const head = await fetch(url.toString(), {
+      method: 'HEAD',
+      redirect: 'follow',
+    });
+    const finalUrl = new URL(head.url || url.toString());
+    const oembedUrl = `${finalUrl.origin}${finalUrl.pathname.replace(/\/?$/, '/')}oembed.json`;
     const res = await fetch(oembedUrl);
     if (!res.ok) {
       return null;

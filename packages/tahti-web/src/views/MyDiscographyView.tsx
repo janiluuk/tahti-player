@@ -14,10 +14,10 @@ import { useEffect, useMemo, useState, type FC } from 'react';
 
 import {
   Button,
+  DropdownButton,
   FilterChips,
   ImageReveal,
   Input,
-  Select,
   Tooltip,
 } from '@tahti-player/ui';
 
@@ -27,7 +27,7 @@ import {
   patchStudioSound,
 } from '../api/studio';
 import type { StudioSound } from '../api/studio-types';
-import { PageEmpty, PageLoading } from '../components/PageStates';
+import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { WaveformSeekbar } from '../components/tahti/WaveformSeekbar';
 import { TrackEditDialog } from '../components/TrackEditDialog';
 import { playableFromStudioHearthis } from '../lib/embedPlayback';
@@ -85,23 +85,35 @@ export const MyDiscographyView: FC = () => {
   const duration = usePlayerStore((state) => state.duration);
   const [items, setItems] = useState<StudioSound[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<VisibilityFilter>('all');
   const [sort, setSort] = useState<SortKey>('newest');
   const [loadingId, setLoadingId] = useState<string | null>(null);
-  const [editingArchiveId, setEditingArchiveId] = useState<string | null>(null);
+  const [editingSoundId, setEditingSoundId] = useState<string | null>(null);
   const [busyPinId, setBusyPinId] = useState<string | null>(null);
   const [pinMessage, setPinMessage] = useState<string | null>(null);
 
   const reload = () => {
     setLoading(true);
+    setLoadError(null);
     void fetchStudioSounds().then((result) => {
       setItems(result.data);
+      // Production returns empty + error meta on failure (no mock fallback).
+      // Surface that instead of looking like a genuinely empty library.
+      setLoadError(
+        result.meta.source === 'api' && result.meta.reason
+          ? result.meta.reason
+          : null,
+      );
       setLoading(false);
     });
   };
 
   useEffect(reload, []);
+
+  const sortLabel =
+    SORT_OPTIONS.find((option) => option.id === sort)?.label ?? 'Sort';
 
   const counts = useMemo(
     () => ({
@@ -138,7 +150,7 @@ export const MyDiscographyView: FC = () => {
     return sortPinnedFirst(sortItems(filtered, sort));
   }, [filter, items, query, sort]);
 
-  const playableId = (item: StudioSound) => `archive:${item.id}`;
+  const playableId = (item: StudioSound) => `sound:${item.id}`;
   const isCurrentItem = (item: StudioSound) => currentId === playableId(item);
   const isPlayingItem = (item: StudioSound) =>
     isCurrentItem(item) && status === 'playing';
@@ -157,7 +169,7 @@ export const MyDiscographyView: FC = () => {
     const { data } = await fetchEditorSource(item.id);
     play({
       id: playableId(item),
-      kind: 'archive',
+      kind: 'sound',
       title: item.title,
       artist: item.artistName || user?.displayName || 'You',
       coverUrl: item.bannerUrl ?? undefined,
@@ -190,7 +202,19 @@ export const MyDiscographyView: FC = () => {
 
   return (
     <div className="flex flex-col gap-8">
-      {!hasChannel ? (
+      {loading ? (
+        <PageLoading label="Loading sounds…" />
+      ) : loadError ? (
+        <PageError
+          title="Could not load sounds"
+          description={loadError}
+          onRetry={reload}
+        />
+      ) : !hasChannel && items.length === 0 ? (
+        // Only show the "go live" nudge when there's genuinely nothing to
+        // show — a channel-less state must never hide sounds the fetch
+        // actually returned (e.g. a stale/late channel field on an
+        // account that already has archive items).
         <PageEmpty
           title="No sounds yet"
           description="Go live or upload music to start your complete audio archive."
@@ -203,41 +227,42 @@ export const MyDiscographyView: FC = () => {
             </Link>
           }
         />
-      ) : loading ? (
-        <PageLoading label="Loading sounds…" />
       ) : (
         <>
           <section className="flex flex-col gap-4">
             <div className="border-border bg-background-secondary/30 flex flex-col gap-3 rounded-xl border p-3">
-              <FilterChips
-                items={FILTERS.map((option) => ({
-                  id: option.id,
-                  label: `${option.label} (${counts[option.id]})`,
-                }))}
-                selected={filter}
-                onChange={(id) => setFilter(id as VisibilityFilter)}
-                aria-label="Filter sounds"
-              />
-              <div className="flex flex-col gap-2 sm:flex-row">
-                <Input
-                  type="search"
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Search all sounds…"
-                  aria-label="Search all sounds"
-                  className="min-w-0 flex-1"
-                  startAddon={
-                    <SearchIcon size={14} aria-hidden className="opacity-70" />
-                  }
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <FilterChips
+                  items={FILTERS.map((option) => ({
+                    id: option.id,
+                    label: `${option.label} (${counts[option.id]})`,
+                  }))}
+                  selected={filter}
+                  onChange={(id) => setFilter(id as VisibilityFilter)}
+                  aria-label="Filter sounds"
                 />
-                <Select
-                  label="Sort all sounds"
-                  value={sort}
-                  onValueChange={(value) => setSort(value as SortKey)}
-                  options={SORT_OPTIONS}
-                  className="sm:w-44"
+                <DropdownButton
+                  label={sortLabel}
+                  variant="secondary"
+                  className="shrink-0"
+                  items={SORT_OPTIONS.map((option) => ({
+                    id: option.id,
+                    label: option.label,
+                    onClick: () => setSort(option.id),
+                  }))}
                 />
               </div>
+              <Input
+                type="search"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Search all sounds…"
+                aria-label="Search all sounds"
+                className="w-full min-w-0"
+                startAddon={
+                  <SearchIcon size={14} aria-hidden className="opacity-70" />
+                }
+              />
               <p className="text-foreground-secondary text-xs">
                 Pinned {counts.pinned} · showing {visible.length} of{' '}
                 {items.length}
@@ -383,7 +408,7 @@ export const MyDiscographyView: FC = () => {
                         size="icon-sm"
                         variant="text"
                         aria-label={`Edit ${item.title}`}
-                        onClick={() => setEditingArchiveId(item.id)}
+                        onClick={() => setEditingSoundId(item.id)}
                       >
                         <PencilIcon size={16} aria-hidden />
                       </Button>
@@ -414,8 +439,8 @@ export const MyDiscographyView: FC = () => {
       )}
 
       <TrackEditDialog
-        soundId={editingArchiveId}
-        onClose={() => setEditingArchiveId(null)}
+        soundId={editingSoundId}
+        onClose={() => setEditingSoundId(null)}
         onSaved={reload}
       />
     </div>

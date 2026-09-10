@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button, Dialog, Input } from '@tahti-player/ui';
 
 import { addStudioCollectionItem, createStudioCollection } from '../api/studio';
-import { soundIdFromPlayableId } from '../lib/archiveId';
+import { soundIdFromPlayableId } from '../lib/soundId';
 import { usePlayerStore } from '../stores/playerStore';
 
 type Props = {
@@ -11,7 +11,7 @@ type Props = {
   onClose: () => void;
 };
 
-/** Creates a new studio collection from the current queue's Tahti archive
+/** Creates a new studio collection from the current queue's Tahti sound
  * tracks (composing the same createStudioCollection/addStudioCollectionItem
  * calls AddToPlaylistPanel uses for single tracks — no new persistence). */
 export function SaveQueueAsPlaylistDialog({ isOpen, onClose }: Props) {

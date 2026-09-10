@@ -7,40 +7,43 @@ function ids(pathname: string): string[] {
 }
 
 describe('getPageTourSteps', () => {
-  it('always includes the sidebar', () => {
-    expect(ids('/radio')).toContain('nav-listen');
-    expect(ids('/radio')).toContain('nav-studio');
+  it('annotates page purpose on every route', () => {
+    for (const pathname of [
+      '/',
+      '/radio',
+      '/studio/shows',
+      '/studio/audience',
+      '/admin/users',
+      '/library/sounds',
+    ]) {
+      const steps = getPageTourSteps(pathname);
+      expect(steps[0]?.id).toBe('page-purpose');
+      expect(steps[0]?.annotationOnly).toBe(true);
+      expect(steps[0]?.label.length).toBeGreaterThan(0);
+      expect(steps[0]?.description.length).toBeGreaterThan(0);
+    }
   });
 
-  it('only includes the top bar on the homepage', () => {
+  it('includes sidebar and top bar chrome only on the homepage', () => {
+    expect(ids('/')).toContain('nav-listen');
     expect(ids('/')).toContain('topbar-golive');
+    expect(ids('/radio')).not.toContain('nav-listen');
     expect(ids('/radio')).not.toContain('topbar-golive');
-    expect(ids('/studio')).not.toContain('topbar-golive');
+    expect(ids('/studio')).not.toContain('nav-listen');
     expect(ids('/admin')).not.toContain('topbar-golive');
   });
 
-  it('includes Studio section steps on /studio and /library, not elsewhere', () => {
-    const studioIds = ids('/studio/upload');
-    expect(studioIds).toContain('nav-item-/studio');
-    expect(studioIds).toContain('nav-item-/studio/go-live');
-    expect(studioIds).not.toContain('nav-item-/library');
-    expect(studioIds).not.toContain('nav-item-tool-Upload');
-    expect(ids('/library')).toContain('nav-item-/studio');
-    expect(ids('/library/sounds')).toContain('nav-item-/studio/go-live');
-    expect(ids('/radio')).not.toContain('nav-item-/studio');
-  });
-
-  it('includes Admin panel steps only under /admin', () => {
-    const adminIds = ids('/admin/users');
-    expect(adminIds).toContain('nav-item-/admin/users');
-    expect(ids('/studio')).not.toContain('nav-item-/admin/users');
+  it('does not include Studio/Admin section nav on inner pages', () => {
+    expect(ids('/studio/upload')).not.toContain('nav-item-/studio');
+    expect(ids('/library')).not.toContain('nav-item-/studio');
+    expect(ids('/admin/users')).not.toContain('nav-item-/admin/users');
   });
 
   it('never produces duplicate step ids', () => {
     for (const pathname of [
       '/',
       '/studio/shows',
-      '/studio/revenue',
+      '/studio/audience',
       '/studio/stripe',
       '/admin/users',
       '/library',
@@ -57,8 +60,9 @@ describe('getPageTourSteps', () => {
     }
   });
 
-  it('adds order-management steps on Studio Audience', () => {
-    const revenueIds = ids('/studio/revenue');
+  it('adds order-management steps on Studio Audience (after purpose)', () => {
+    const revenueIds = ids('/studio/audience');
+    expect(revenueIds[0]).toBe('page-purpose');
     expect(revenueIds).toEqual(
       expect.arrayContaining([
         'revenue-stats',
@@ -80,6 +84,11 @@ describe('getPageTourSteps', () => {
         'stripe-charges',
       ]),
     );
-    expect(ids('/studio/revenue')).not.toContain('stripe-status');
+    expect(ids('/studio/audience')).not.toContain('stripe-status');
+  });
+
+  it('inner pages without page steps are purpose-only', () => {
+    expect(ids('/radio')).toEqual(['page-purpose']);
+    expect(ids('/studio/upload')).toEqual(['page-purpose']);
   });
 });

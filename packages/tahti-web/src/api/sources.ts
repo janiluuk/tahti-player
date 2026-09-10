@@ -762,7 +762,7 @@ export async function importHearthisTracks(
             }
             try {
               await requestJson(
-                `/api/me/archive/${encodeURIComponent(data.soundId)}/banner/from-url`,
+                `/api/me/sound/${encodeURIComponent(data.soundId)}/banner/from-url`,
                 {
                   method: 'POST',
                   body: JSON.stringify({ sourceUrl: coverUrl }),
@@ -888,7 +888,7 @@ export async function fetchTrackExportStatus(
       mixcloudUrl: string | null;
       error: string | null;
     }>(
-      `/api/me/archive/${encodeURIComponent(soundId)}/${encodeURIComponent(target)}`,
+      `/api/me/sound/${encodeURIComponent(soundId)}/${encodeURIComponent(target)}`,
     );
     return {
       status: data.status,
@@ -914,7 +914,7 @@ export async function exportTrack(
   }
   try {
     const { data } = await requestJson<{ status: string }>(
-      `/api/me/archive/${encodeURIComponent(soundId)}/${encodeURIComponent(target)}`,
+      `/api/me/sound/${encodeURIComponent(soundId)}/${encodeURIComponent(target)}`,
       { method: 'POST' },
     );
     return {
@@ -1145,7 +1145,7 @@ export async function revokeStashShare(
 export function playableFromSpotify(t: SpotifySearchTrack): TahtiPlayable {
   return {
     id: `spotify:${t.id}`,
-    kind: 'archive',
+    kind: 'sound',
     title: t.name,
     artist: t.artists?.join(', ') || 'Spotify',
     coverUrl: t.artworkUrl ?? undefined,
@@ -1159,7 +1159,7 @@ export function playableFromSpotify(t: SpotifySearchTrack): TahtiPlayable {
 export function playableFromSoundcloud(t: SoundcloudTrack): TahtiPlayable {
   return {
     id: `soundcloud:${t.id}`,
-    kind: 'archive',
+    kind: 'sound',
     title: t.title,
     artist: 'SoundCloud',
     coverUrl: t.artworkUrl ?? undefined,

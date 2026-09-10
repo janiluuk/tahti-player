@@ -1,10 +1,12 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useRouter } from '@tanstack/react-router';
 import {
   ActivityIcon,
+  ArrowLeftIcon,
   DownloadIcon,
   HeartIcon,
   MessageCircleIcon,
   PauseIcon,
+  PencilIcon,
   PlayIcon,
   PlusIcon,
   Repeat2Icon,
@@ -14,13 +16,13 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Tooltip } from '@tahti-player/ui';
+import { Button, Dialog, Input, Tooltip } from '@tahti-player/ui';
 
 import { isHeaderImageUrl } from '../api/channel-design';
 import {
   fetchChannel,
   fetchProfile,
-  fetchPublicArchiveDownload,
+  fetchPublicSoundDownload,
   fetchTrackComments,
   fetchTrackDetail,
   postTrackComment,
@@ -44,6 +46,8 @@ import { ChannelVisualizer } from '../components/ChannelVisualizer';
 import { PageEmpty, PageLoading } from '../components/PageStates';
 import { WaveformSeekbar } from '../components/tahti/WaveformSeekbar';
 import { TimelineReactionBar } from '../components/TimelineReactionBar';
+import { TrackEditDialog } from '../components/TrackEditDialog';
+import { hasAccountRole } from '../lib/accountRoles';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
 import { cn } from '../lib/cn';
 import { normalizeColorScheme } from '../lib/colorScheme';
@@ -62,6 +66,8 @@ import { useLibraryStore } from '../stores/libraryStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { useTrackDetailStore } from '../stores/trackDetailStore';
 
+/** Fallback bar count for the synthetic (no-peaks) waveform only. Real peaks
+ * render at their native resolution instead of being downsampled to this. */
 const WAVEFORM_BARS = 180;
 const PLAYED_WAVE_COLOR = '#6CFF6B';
 const UNPLAYED_WAVE_COLOR = 'rgba(255,255,255,0.78)';
@@ -71,8 +77,8 @@ function playableFromDetail(
   detail: PublicTrackDetail,
 ): TahtiPlayable {
   return {
-    id: `archive:${id}`,
-    kind: 'archive',
+    id: `sound:${id}`,
+    kind: 'sound',
     title: detail.title,
     artist: detail.artistName,
     coverUrl: detail.bannerUrl ?? undefined,
@@ -119,8 +125,9 @@ export function TrackDetailView({
    * treating it as public activity. */
   shareKey?: string;
 }) {
+  const router = useRouter();
   const user = useAuthStore((s) => s.user);
-  const playableId = `archive:${id}`;
+  const playableId = `sound:${id}`;
   const remembered = useTrackDetailStore((s) => s.cache[playableId]);
   const queueItem = usePlayerStore((s) =>
     s.queue.find((q) => q.id === playableId),
@@ -141,7 +148,16 @@ export function TrackDetailView({
   const [playlistOpen, setPlaylistOpen] = useState(false);
   const [downloadBusy, setDownloadBusy] = useState(false);
   const [buyBusy, setBuyBusy] = useState(false);
+  const [pwywOpen, setPwywOpen] = useState(false);
+  const [pwywAmt, setPwywAmt] = useState('');
   const [purchaseBump, setPurchaseBump] = useState(0);
+  const [editOpen, setEditOpen] = useState(false);
+
+  const reloadDetail = () => {
+    void fetchTrackDetail(id, shareKey).then(({ data }) => {
+      setDetail(data);
+    });
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -194,7 +210,6 @@ export function TrackDetailView({
     () => parsePublicTracklist(detail?.tracklist),
     [detail?.tracklist],
   );
-
   const purchaseEntitled = useMemo(() => {
     if (!detail || detail.accessMode !== 'PURCHASE' || !detail.purchaseTierId) {
       return true;
@@ -301,6 +316,8 @@ export function TrackDetailView({
     }
     return cue.id;
   }, null);
+  const isOwner = Boolean(user && detail?.channel.username === user.username);
+  const canEdit = isOwner || hasAccountRole(user, 'BOARD');
   const artistLive = channel?.state === 'LIVE';
   const relatedTracks = (profile?.tracks ?? [])
     .filter((track) => track.id !== id)
@@ -376,7 +393,7 @@ export function TrackDetailView({
       return;
     }
     setDownloadBusy(true);
-    const result = await fetchPublicArchiveDownload(detail.channelSlug, id);
+    const result = await fetchPublicSoundDownload(detail.channelSlug, id);
     setDownloadBusy(false);
     if (!result.ok) {
       toast.error(result.error);
@@ -398,7 +415,7 @@ export function TrackDetailView({
     Boolean(detail?.accessMode === 'PURCHASE' && detail.purchaseTierId) &&
     !purchaseEntitled;
 
-  const buyTrack = async () => {
+  const buyTrack = async (amountCentsOverride?: number) => {
     if (!detail?.purchaseTierId) {
       return;
     }
@@ -412,7 +429,8 @@ export function TrackDetailView({
       detail.purchaseTierId,
       {
         trackTitle: detail.title,
-        amountCents: detail.purchaseTierPriceCents ?? undefined,
+        amountCents:
+          amountCentsOverride ?? detail.purchaseTierPriceCents ?? undefined,
       },
     );
     setBuyBusy(false);
@@ -473,6 +491,16 @@ export function TrackDetailView({
         <div className="pointer-events-none absolute inset-0 bg-black/45" />
 
         <div className="relative z-10 flex flex-col gap-5 text-white">
+          <Tooltip content="Back" side="right">
+            <button
+              type="button"
+              onClick={() => router.history.back()}
+              aria-label="Back"
+              className="flex size-8 w-fit items-center justify-center rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/20"
+            >
+              <ArrowLeftIcon size={16} aria-hidden />
+            </button>
+          </Tooltip>
           {shareKey ? (
             <span
               role="status"
@@ -553,7 +581,7 @@ export function TrackDetailView({
                       trackId={playable.id}
                       progress={progress}
                       peaks={detail?.peaks}
-                      bars={WAVEFORM_BARS}
+                      bars={detail?.peaks?.length || WAVEFORM_BARS}
                       markers={commentMarkers}
                       className="h-28"
                       playedColor={PLAYED_WAVE_COLOR}
@@ -655,6 +683,18 @@ export function TrackDetailView({
 
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-1.5">
+              {canEdit ? (
+                <Tooltip content="Edit this sound" side="top">
+                  <Button
+                    size="icon-sm"
+                    variant="default"
+                    aria-label="Edit"
+                    onClick={() => setEditOpen(true)}
+                  >
+                    <PencilIcon size={15} aria-hidden />
+                  </Button>
+                </Tooltip>
+              ) : null}
               <Button
                 size="sm"
                 variant="secondary"
@@ -677,7 +717,16 @@ export function TrackDetailView({
                   size="sm"
                   variant="default"
                   disabled={buyBusy || !detail}
-                  onClick={() => void buyTrack()}
+                  onClick={() => {
+                    if (detail?.purchaseTierPriceOptional) {
+                      setPwywAmt(
+                        ((detail.purchaseTierPriceCents ?? 0) / 100).toFixed(2),
+                      );
+                      setPwywOpen(true);
+                      return;
+                    }
+                    void buyTrack();
+                  }}
                 >
                   <ShoppingBagIcon size={14} aria-hidden className="mr-1.5" />
                   {buyBusy ? 'Buying…' : 'Buy this track'}
@@ -945,6 +994,50 @@ export function TrackDetailView({
         trackTitle={playable.title}
         onClose={() => setPlaylistOpen(false)}
       />
+
+      <Dialog.Root isOpen={pwywOpen} onClose={() => setPwywOpen(false)}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            const eurosN = Number(pwywAmt.replace(',', '.'));
+            if (!Number.isFinite(eurosN) || eurosN < 0) {
+              toast.error('Enter an amount of €0 or more.');
+              return;
+            }
+            setPwywOpen(false);
+            void buyTrack(Math.round(eurosN * 100));
+          }}
+        >
+          <Dialog.Title>Name your price</Dialog.Title>
+          <Dialog.Description>
+            The artist set €
+            {((detail?.purchaseTierPriceCents ?? 0) / 100).toFixed(2)} as a
+            suggestion — pay that, more, or less (down to €0).
+          </Dialog.Description>
+          <div className="mt-4">
+            <Input
+              label="Amount (€)"
+              value={pwywAmt}
+              onChange={(e) => setPwywAmt(e.target.value)}
+              autoFocus
+            />
+          </div>
+          <Dialog.Actions>
+            <Dialog.Close>Cancel</Dialog.Close>
+            <Button type="submit" disabled={buyBusy}>
+              {buyBusy ? 'Buying…' : 'Buy this track'}
+            </Button>
+          </Dialog.Actions>
+        </form>
+      </Dialog.Root>
+
+      {canEdit ? (
+        <TrackEditDialog
+          soundId={editOpen ? id : null}
+          onClose={() => setEditOpen(false)}
+          onSaved={reloadDetail}
+        />
+      ) : null}
     </div>
   );
 }

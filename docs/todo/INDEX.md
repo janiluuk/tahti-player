@@ -10,29 +10,23 @@ Status values: `open` | `blocked` | `partial`.
 | partial | [mobile-player-nav-and-tahti-theme-visuals.md](mobile-player-nav-and-tahti-theme-visuals.md) | Mobile player+nav stack shipped; thumbnail glow + Discover BgCanvas remain |
 | partial | [channel-designer-background-section-fixes.md](channel-designer-background-section-fixes.md) | Designer background section; design decision remains |
 | blocked | [channelview-move-player-to-stage.md](channelview-move-player-to-stage.md) | Player-in-backdrop extraction needs a design decision |
-| partial | [channelview-badge-dedup-and-share-modal.md](channelview-badge-dedup-and-share-modal.md) | Badge dedup + share modal leftovers |
 | open | [desktop-pro-library.md](desktop-pro-library.md) | Independent desktop player / library / Soulseek |
 | partial | [go-live-header-subtext-cleanup.md](go-live-header-subtext-cleanup.md) | Calendar view restore still open |
-| open | [fullscreen-player-background-translucent-layer.md](fullscreen-player-background-translucent-layer.md) | Fullscreen player: match background art translucent layer to title card treatment |
-| open | [fullscreen-player-topbar-and-back-arrow.md](fullscreen-player-topbar-and-back-arrow.md) | Fullscreen player: hide top bar, replace minimize icon with big back arrow top-left |
-| open | [governance-gap-list.md](governance-gap-list.md) | Governance features missing from tahti-player (18 gaps vs tahti-org) |
-| blocked | [governance-out-of-account-section.md](governance-out-of-account-section.md) | Studio governance is artist/board-only; removing Account's would strand regular members — needs a decision |
-| partial | [help-keyboard-navigation.md](help-keyboard-navigation.md) | Settings remapping deep link still open |
-| partial | [image-upload-hover-lightbox.md](image-upload-hover-lightbox.md) | Shared chrome done; remaining surfaces |
+| open | [governance-gap-list.md](governance-gap-list.md) | Governance gaps vs tahti-org: 15 of 18 shipped/corrected incl. real minutes-upload backend route 2026-09-08 (see HISTORY + doc); remaining: bulk comments (#2, needs a product call), cursor pagination (#18, low-priority perf), voting window (#15, backend-blocked) |
+| partial | [image-upload-hover-lightbox.md](image-upload-hover-lightbox.md) | Cover/backdrop delete on Collection + avatar-primitive migration + admin announcements delete-confirm fix (2026-09-09) done; ChannelDesigner gap was stale (corrected); remaining: press-kit gallery primitive migration (minor), admin radio logo (blocked on redesign) |
 | partial | [local-files-moved-to-library-tab.md](local-files-moved-to-library-tab.md) | Move done; desktop-mode gating open |
-| blocked | [map-screenshot-refresh.md](map-screenshot-refresh.md) | Signed-in recapture blocked post-ViewShell |
-| open | [listener-purchase-flow.md](listener-purchase-flow.md) | Listener register → buy/subscribe → see purchases & manage subscriptions in account; e2e |
-| open | [pay-what-you-want-pricing.md](pay-what-you-want-pricing.md) | PWYW pricing option for fan subs/purchases with default pre-filled price |
-| open | [performance-cleanup-bulk.md](performance-cleanup-bulk.md) | Dead deps, dead components, dedup API layer, migrate remaining polling, split monoliths |
-| open | [plugin-registry-extraction.md](plugin-registry-extraction.md) | Pointer to sibling extraction checklist |
-| open | [queued-ux-fixes-2026-09-05.md](queued-ux-fixes-2026-09-05.md) | Queued UX: 3 open, all blocked/scoped-out (artwork backend, designer tabs feature) |
+| partial | [listener-purchase-flow.md](listener-purchase-flow.md) | Subscription cancel shipped 2026-09-07; Purchases tab shipped 2026-09-08 (new `../tahti-org` `GET /api/me/purchases`); e2e still open |
+| open | [plugin-registry-extraction.md](plugin-registry-extraction.md) | Pointer to sibling extraction checklist; PluginRegistryHost façade + §6 contract tests added 2026-09-08 |
+| partial | [admin-plugin-management-panel.md](admin-plugin-management-panel.md) | Discovery/Add-ons category done 2026-09-08 (approve/reject, disable, enabled-by-default, default-settings — real ../tahti-org API existed under a different name, earlier "mock-only" claim was wrong); all-13-category scoping still open |
+| partial | [release-player-workflow-broken.md](release-player-workflow-broken.md) | Root cause fixed 2026-09-07; user needs to run 2 `gh secret set` commands to finish |
 | partial | [radio-browser-directory-fixes.md](radio-browser-directory-fixes.md) | Cover-image sub-ask needs decision |
-| partial | [storybook-ui-sweep.md](storybook-ui-sweep.md) | Sweep executed; follow-ups continue |
-| partial | [stream-overlay-auto-fill-and-avatar-placeholder.md](stream-overlay-auto-fill-and-avatar-placeholder.md) | Now-playing artwork remaining |
-| partial | [stream-overlay-text-color.md](stream-overlay-text-color.md) | Opacity/scrim toggle remaining |
-| open | [studio-emptystate-remaining.md](studio-emptystate-remaining.md) | Studio EmptyState swaps (this pass in progress) |
-| partial | [studio-storybook-sweep.md](studio-storybook-sweep.md) | Remaining Studio primitive swaps |
-| partial | [viewshell-page-headers.md](viewshell-page-headers.md) | Cover-overlay Studio entity headers excluded |
+| open | [tahti-cli-tool.md](tahti-cli-tool.md) | CLI (gumroad-cli-inspired) wrapping api-client — list library items, maybe TUI player |
+| open | [tahti-org-ci-skip-full-e2e.md](tahti-org-ci-skip-full-e2e.md) | (tahti-org) CI always runs full e2e (vital-flows + user-journeys) on every push/PR; needs a skip/path-filter strategy |
+| partial | [tahti-theme-refactor.md](tahti-theme-refactor.md) | Select's bg-primary default already fixed (doc was stale); theme identification, Button variant audit, contrast, visualizer visibility all still need live verification |
+| partial | [waveform-detail-accuracy.md](waveform-detail-accuracy.md) | TrackDetailView, StudioSoundView, TrackEditDialog now render real peaks at native resolution; fake-fallback noise + wiring real peaks into player bar/Discover/CollectionTrackList still unaddressed |
+| partial | [listen-widget-hearthis-config-and-set-embed-bug.md](listen-widget-hearthis-config-and-set-embed-bug.md) | Auto-fill username + set-embed bug (real root cause: set pages 302-redirect, oembed.json only exists post-redirect) shipped; icon-button config UI needs user to point at specifics |
+| open | [channel-designer-backdrop-fold-and-widgets.md](channel-designer-backdrop-fold-and-widgets.md) | (Later) Fold bio/CTA/avatar into backdrop show-toggles (not separate blocks); feed/posts as configurable widgets with tracklist/card-row display toggle |
+| partial | [channel-slideshow-transitions-unwired.md](channel-slideshow-transitions-unwired.md) | Rotation + all 8 transitions wired 2026-09-09; CSS path live-verified rotating/crossfading 2026-09-09, WebGL presets fail in this sandboxed browser (GPU context, not app code) — real-browser recheck + gallery-strip modes still open |
 
 ## Fold rule (copy into CLAUDE / chat)
 

@@ -25,7 +25,7 @@ describe('playableFromHearthisEmbed', () => {
 });
 
 describe('playableFromStudioHearthis', () => {
-  it('maps a Studio HEARTHIS archive row onto the shared player widget', () => {
+  it('maps a Studio HEARTHIS sound row onto the shared player widget', () => {
     const playable = playableFromStudioHearthis({
       id: 'snd-1',
       title: 'Studio track',
@@ -35,7 +35,7 @@ describe('playableFromStudioHearthis', () => {
       durationSec: 90,
     });
     expect(playable).toMatchObject({
-      id: 'archive:snd-1',
+      id: 'sound:snd-1',
       streamUrl: '',
       sourceProvider: 'hearthis',
       embed: { provider: 'hearthis', embedUri: '99' },

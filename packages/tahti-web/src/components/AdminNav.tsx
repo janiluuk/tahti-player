@@ -16,7 +16,6 @@ import {
   ServerIcon,
   SettingsIcon,
   ShieldCheckIcon,
-  TicketIcon,
   TrophyIcon,
   UsersIcon,
 } from 'lucide-react';
@@ -123,29 +122,12 @@ export const PRIMARY = [
     to: '/admin/governance',
     label: 'Governance',
     icon: <FlagIcon size={16} aria-hidden />,
-    description: 'Member votes and cooperative governance items.',
+    description:
+      'Member votes, annual reports, grants, and AGM — one tabbed hub.',
   },
   {
-    to: '/admin/reports',
-    label: 'Annual reports',
-    icon: <FileTextIcon size={16} aria-hidden />,
-    description: 'Generate and publish yearly governance reports.',
-  },
-  {
-    to: '/admin/grants',
-    label: 'Grants',
-    icon: <TicketIcon size={16} aria-hidden />,
-    description: 'Artist grant program applications and awards.',
-  },
-  {
-    to: '/admin/agm',
-    label: 'AGM',
-    icon: <UsersIcon size={16} aria-hidden />,
-    description: 'Annual general meeting scheduling and records.',
-  },
-  {
-    to: '/admin/disco-widgets',
-    label: 'Disco widgets',
+    to: '/admin/addons',
+    label: 'Add-ons',
     icon: <SettingsIcon size={16} aria-hidden />,
     description:
       'Register and manage available listener, artist, and admin add-ons.',
@@ -207,14 +189,9 @@ export const ADMIN_SECTIONS = [
     id: 'community',
     label: 'Community',
     items: PRIMARY.filter((item) =>
-      [
-        '/admin/moderation',
-        '/admin/users',
-        '/admin/governance',
-        '/admin/reports',
-        '/admin/grants',
-        '/admin/agm',
-      ].includes(item.to),
+      ['/admin/moderation', '/admin/users', '/admin/governance'].includes(
+        item.to,
+      ),
     ),
   },
   {
@@ -246,7 +223,7 @@ export const ADMIN_SECTIONS = [
       [
         '/admin/streams',
         '/admin/venues',
-        '/admin/disco-widgets',
+        '/admin/addons',
         '/admin/i18n',
         '/admin/orphan-pages',
         '/admin/map',

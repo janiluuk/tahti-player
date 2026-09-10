@@ -47,7 +47,7 @@ export function AudienceVisibilitySection({
                 Only selected subscribers can access this item.
               </p>
             </div>
-            <Link to="/studio/revenue">
+            <Link to="/studio/audience">
               <Tooltip content="Add fan tier" side="top">
                 <Button
                   size="icon-sm"

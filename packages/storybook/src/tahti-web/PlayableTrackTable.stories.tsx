@@ -18,8 +18,8 @@ type Story = StoryObj<typeof meta>;
 
 const items: TahtiPlayable[] = [
   {
-    id: 'archive:archive-item-1',
-    kind: 'archive',
+    id: 'sound:archive-item-1',
+    kind: 'sound',
     title: 'Aurora',
     artist: 'Northern Lights',
     coverUrl: 'https://picsum.photos/seed/aurora/200/200',
@@ -30,8 +30,8 @@ const items: TahtiPlayable[] = [
     releaseDate: '2025-11-03',
   },
   {
-    id: 'archive:archive-item-2',
-    kind: 'archive',
+    id: 'sound:archive-item-2',
+    kind: 'sound',
     title: 'Frost Line',
     artist: 'Northern Lights',
     coverUrl: 'https://picsum.photos/seed/frost/200/200',
@@ -41,8 +41,8 @@ const items: TahtiPlayable[] = [
     durationSec: 198,
   },
   {
-    id: 'archive:archive-item-3',
-    kind: 'archive',
+    id: 'sound:archive-item-3',
+    kind: 'sound',
     title: 'Imported Set',
     artist: 'Northern Lights',
     streamUrl: 'https://soundcloud.example/set.mp3',

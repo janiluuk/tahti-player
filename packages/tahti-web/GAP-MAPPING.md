@@ -46,7 +46,7 @@ This maps the public Tahti product described at [tahti.live](https://tahti.live/
 | Stats and detail reporting | `/studio/stats`, `/studio/stats/detail` | Present | Summary and range-detail views exist. |
 | Channel design / profile / branding | `/studio/channel`, `/channel/$slug?edit=1` | Partial | Presets, layers, layout, gallery, and press-kit workflows exist; parity with the production designer is not complete. |
 | Updates/newsletter | `/studio/updates` | Present | Newsletter/update flow is live-API backed. |
-| Revenue and Stripe Connect | `/studio/revenue` | Present | Merged fan-sub + Revelator payout history, Connect onboarding, empty tier state, order-flow breakdown, and help tour match production `/dashboard/revenue`. |
+| Revenue and Stripe Connect | `/studio/audience` | Present | Merged fan-sub + Revelator payout history, Connect onboarding, empty tier state, order-flow breakdown, and help tour match production `/dashboard/revenue`. |
 | Distribution | `/studio/distribution` | Present | Catalog, Revelator submission/payment, Spotify profile, and royalty surfaces exist. |
 | Stash | `/studio/stash` | Present | Upload/delete and share access are implemented. |
 | Channel moderators | `/studio/moderation` | Present | API-backed assignment/removal; exposed from Studio navigation |

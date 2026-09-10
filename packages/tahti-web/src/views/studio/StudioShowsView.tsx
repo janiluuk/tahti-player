@@ -26,7 +26,7 @@ import {
 import { PageLoading } from '../../components/PageStates';
 import { ShowImagePicker } from '../../components/ShowImagePicker';
 import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
+import { BroadcastSubNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 
 export function StudioShowsView() {
@@ -45,7 +45,7 @@ export function StudioShowsView() {
   const [backdropFile, setBackdropFile] = useState<File | null>(null);
   const [intervalHours, setIntervalHours] = useState<1 | 2>(1);
   const [mode, setMode] = useState<ShowMode>('SERIES');
-  const [autoArchive, setAutoArchive] = useState(true);
+  const [autoPublish, setAutoPublish] = useState(true);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
@@ -80,7 +80,7 @@ export function StudioShowsView() {
       description: description.trim(),
       intervalHours,
       mode,
-      autoArchive,
+      autoPublish,
       coverUrl: thumbnailUrl.trim() || null,
       backdropUrl: backdropUrl.trim() || null,
     });
@@ -96,16 +96,18 @@ export function StudioShowsView() {
     setBackdropUrl('');
     setThumbnailFile(null);
     setBackdropFile(null);
-    setAutoArchive(true);
+    setAutoPublish(true);
     void navigate({ to: '/studio/shows/$id', params: { id: r.data.id } });
   };
 
   return (
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
-        <StudioNav current="/studio/shows" />
-        <ViewShell title="Shows" classes={{ root: 'px-0 pt-0' }}>
-          <div className="mb-4">
+        <BroadcastSubNav current="/studio/shows" />
+        <ViewShell
+          title="Shows"
+          classes={{ root: 'px-0 pt-0' }}
+          actions={
             <Tooltip content="New show" side="top">
               <Button
                 size="icon-sm"
@@ -115,8 +117,8 @@ export function StudioShowsView() {
                 <PlusIcon size={16} aria-hidden />
               </Button>
             </Tooltip>
-          </div>
-
+          }
+        >
           {msg && (
             <p className="text-foreground-secondary mb-4 text-sm">{msg}</p>
           )}
@@ -191,8 +193,8 @@ export function StudioShowsView() {
                   </span>
                   <Toggle
                     label="Record broadcasts by default"
-                    checked={autoArchive}
-                    onChange={setAutoArchive}
+                    checked={autoPublish}
+                    onChange={setAutoPublish}
                   />
                 </div>
                 <FilterChips

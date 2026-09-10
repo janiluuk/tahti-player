@@ -694,7 +694,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           'Play a track',
           'Edit metadata',
           'Open the audio editor',
-          'Switch Collections / Recordings / Releases tabs',
+          'Switch Overview / Sounds / Collections / Recordings / Media / Stash / Embeds / Smart links / Local files tabs',
         ],
         goesTo: [
           {
@@ -993,7 +993,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         goesTo: [
           {
             label: 'Open recordings once broadcasting',
-            to: '/studio/recordings',
+            to: '/library/recordings',
           },
           {
             label: 'Open the public channel page once live',
@@ -1133,7 +1133,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/stash.png',
-          route: '/studio/stash',
+          route: '/library/stash',
           caption: 'Nuclear stash',
         },
       },
@@ -1215,7 +1215,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           { label: "Open a track's catalog entry", to: '/studio/sounds/$id' },
           {
             label: 'Open Revenue for money-side metrics',
-            to: '/studio/revenue',
+            to: '/studio/audience',
           },
         ],
         old: {
@@ -1276,8 +1276,8 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
             to: '/studio/sounds/$id',
           },
           {
-            label: 'Land in Collections when importing into a playlist',
-            to: '/studio/collections/$slug',
+            label: 'Land in the playlist editor when importing into a playlist',
+            to: '/studio/playlists/$slug',
           },
         ],
         old: {
@@ -1314,7 +1314,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/revenue.png',
-          route: '/studio/revenue',
+          route: '/studio/audience',
           caption: 'Nuclear revenue',
         },
       },
@@ -1333,7 +1333,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         goesTo: [
           {
             label: 'Back to Audience orders and grants',
-            to: '/studio/revenue',
+            to: '/studio/audience',
           },
         ],
         old: {
@@ -1379,8 +1379,8 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
       },
       {
         id: 'artist-schedule',
-        title: 'Broadcast / programme',
-        viewName: 'Broadcast',
+        title: 'Schedule / programme',
+        viewName: 'Schedule',
         caption: 'Next show, 24/7 rotation, and programme settings.',
         actions: [
           'Book a Tahti Radio slot',
@@ -1469,7 +1469,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           'Switch settings sections',
         ],
         goesTo: [
-          { label: 'Open Audience (fan tiers)', to: '/settings/audience' },
+          { label: 'Open Audience (fan tiers)', to: '/studio/audience' },
           { label: 'Open Broadcast / green room', to: '/settings/broadcast' },
           { label: 'Open Themes', to: '/settings/themes' },
           { label: 'Open Add-ons', to: '/settings/plugin-store' },
@@ -1550,7 +1550,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           {
             label:
               'Open fan subscription performance (same route, different tab)',
-            to: '/settings/audience',
+            to: '/studio/audience',
           },
         ],
         old: {
@@ -1560,7 +1560,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/money-tiers.png',
-          route: '/settings/audience',
+          route: '/studio/audience',
           caption: 'Nuclear Audience · fan tiers',
         },
       },
@@ -1579,7 +1579,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         goesTo: [
           {
             label: 'Open fan tier configuration (same route, different tab)',
-            to: '/settings/audience',
+            to: '/studio/audience',
           },
         ],
         old: {
@@ -1589,7 +1589,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/money-fan-subs.png',
-          route: '/settings/audience',
+          route: '/studio/audience',
           caption: 'Nuclear Audience · fan subscription performance',
         },
       },
@@ -1731,7 +1731,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         ],
         goesTo: [
           { label: 'Open the new event page', to: '/studio/events/new' },
-          { label: 'Open the Studio Broadcast page', to: '/studio/schedule' },
+          { label: 'Open Schedule', to: '/studio/schedule' },
           { label: 'Open venues', to: '/venues' },
         ],
         old: {
@@ -1759,7 +1759,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         ],
         goesTo: [
           { label: 'Return to Events', to: '/studio/events' },
-          { label: 'Open Broadcast', to: '/studio/schedule' },
+          { label: 'Open Schedule', to: '/studio/schedule' },
         ],
         old: {
           absent: true,
@@ -2160,7 +2160,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/revenue.png',
-          route: '/studio/revenue',
+          route: '/studio/audience',
           caption: 'Nuclear revenue',
         },
       },

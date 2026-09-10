@@ -6,6 +6,7 @@ import {
 } from '@tanstack/react-router';
 import {
   BellIcon,
+  CalendarIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   ExternalLinkIcon,
@@ -30,6 +31,7 @@ import type { StudioSound } from '../api/studio-types';
 import { useCanGoForward } from '../hooks/useCanGoForward';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { useOwnBroadcastPresence } from '../hooks/useOwnBroadcastPresence';
+import { usePolling } from '../hooks/usePolling';
 import { cn } from '../lib/cn';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
@@ -79,7 +81,7 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
   const markNonStickyRead = useNotificationInboxStore(
     (s) => s.markNonStickyRead,
   );
-  const [archiveItems, setArchiveItems] = useState<StudioSound[]>([]);
+  const [soundItems, setSoundItems] = useState<StudioSound[]>([]);
   const localProcessingJobs = useProcessingJobsStore((state) => state.jobs);
   const settleProcessingJobs = useProcessingJobsStore((state) => state.settle);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -181,40 +183,32 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
     void markNonStickyRead();
   }, [markNonStickyRead, notificationsOpen, user]);
 
-  useEffect(() => {
+  const loadSoundStatus = () => {
     if (!user) {
-      setArchiveItems([]);
       return;
     }
-    let cancelled = false;
-    const loadArchiveStatus = () => {
-      void fetchStudioSounds().then((result) => {
-        if (!cancelled) {
-          setArchiveItems(result.data);
-          settleProcessingJobs(
-            result.data
-              .filter(
-                (item) => item.status === 'READY' || item.status === 'ERROR',
-              )
-              .map((item) => item.id),
-          );
-        }
-      });
-    };
-    loadArchiveStatus();
-    const timer = window.setInterval(loadArchiveStatus, 5000);
-    return () => {
-      cancelled = true;
-      window.clearInterval(timer);
-    };
-  }, [user]);
+    void fetchStudioSounds().then((result) => {
+      setSoundItems(result.data);
+      settleProcessingJobs(
+        result.data
+          .filter((item) => item.status === 'READY' || item.status === 'ERROR')
+          .map((item) => item.id),
+      );
+    });
+  };
+
+  usePolling(loadSoundStatus, 5000, Boolean(user));
 
   const unreadNotifications = notifications.filter(
     (notification) => !notification.readAt,
   );
+  const unreadMessagesCount = conversations.reduce(
+    (total, conversation) => total + conversation.unreadCount,
+    0,
+  );
   const processingItems = [
     ...localProcessingJobs,
-    ...archiveItems
+    ...soundItems
       .filter(
         (item) => item.status === 'PENDING' || item.status === 'PROCESSING',
       )
@@ -394,18 +388,30 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
                       Open Green Room chat
                     </Link>
                   ) : null}
+                  <Link
+                    to="/studio/schedule"
+                    role="menuitem"
+                    onClick={() => setBroadcastOpen(false)}
+                    className="hover:bg-background-secondary flex items-center gap-2 rounded-md px-2 py-2 text-xs"
+                  >
+                    <CalendarIcon size={14} aria-hidden />
+                    Booking calendar
+                  </Link>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => {
+                      setBroadcastOpen(false);
+                      setStreamManagerOpen(true);
+                    }}
+                    className="hover:bg-background-secondary flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-xs"
+                  >
+                    <ListMusicIcon size={14} aria-hidden />
+                    Stream manager
+                  </button>
                 </div>
               ) : null}
             </div>
-            <button
-              type="button"
-              className={cn('hidden sm:inline-flex', iconBtnClass)}
-              aria-label="Open stream manager"
-              title="Stream manager"
-              onClick={() => setStreamManagerOpen(true)}
-            >
-              <ListMusicIcon size={16} />
-            </button>
             <button
               type="button"
               className={cn('hidden sm:inline-flex', iconBtnClass)}
@@ -426,6 +432,7 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
               className={cn(
                 iconBtnClass,
                 'relative',
+                isMobile && 'hidden',
                 notificationsOpen &&
                   'border-primary bg-primary/15 text-primary',
               )}
@@ -553,6 +560,7 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
               className={cn(
                 iconBtnClass,
                 'relative',
+                isMobile && 'hidden',
                 (messagesOpen || pathname.startsWith('/messages')) &&
                   'border-primary bg-primary/15 text-primary',
               )}
@@ -688,6 +696,16 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
                 {open ? '▴' : '▾'}
               </span>
             </button>
+            {isMobile &&
+            (unreadNotifications.length > 0 || unreadMessagesCount > 0) ? (
+              <Badge
+                variant="pill"
+                color="red"
+                className="absolute -top-1 -right-1 min-w-4 px-1 text-center text-[9px] font-bold"
+              >
+                {Math.min(9, unreadNotifications.length + unreadMessagesCount)}
+              </Badge>
+            ) : null}
 
             {open ? (
               <div
@@ -703,6 +721,59 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
                   ) : null}
                 </div>
                 <div className="bg-border mx-1 my-0.5 h-px" role="separator" />
+
+                {isMobile ? (
+                  <>
+                    <button
+                      type="button"
+                      className="hover:bg-background-secondary flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs"
+                      role="menuitem"
+                      onClick={() => {
+                        setOpen(false);
+                        setMessagesOpen(false);
+                        setNotificationsOpen(true);
+                      }}
+                    >
+                      <BellIcon size={14} />
+                      Notifications
+                      {unreadNotifications.length > 0 ? (
+                        <Badge
+                          variant="pill"
+                          color="red"
+                          className="ml-auto min-w-4 px-1 text-center text-[9px] font-bold"
+                        >
+                          {Math.min(9, unreadNotifications.length)}
+                        </Badge>
+                      ) : null}
+                    </button>
+                    <button
+                      type="button"
+                      className="hover:bg-background-secondary flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs"
+                      role="menuitem"
+                      onClick={() => {
+                        setOpen(false);
+                        setNotificationsOpen(false);
+                        setMessagesOpen(true);
+                      }}
+                    >
+                      <MessageSquareIcon size={14} />
+                      Messages
+                      {unreadMessagesCount > 0 ? (
+                        <Badge
+                          variant="pill"
+                          color="red"
+                          className="ml-auto min-w-4 px-1 text-center text-[9px] font-bold"
+                        >
+                          {Math.min(9, unreadMessagesCount)}
+                        </Badge>
+                      ) : null}
+                    </button>
+                    <div
+                      className="bg-border mx-1 my-0.5 h-px"
+                      role="separator"
+                    />
+                  </>
+                ) : null}
 
                 {hasChannel ? (
                   <>

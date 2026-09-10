@@ -23,6 +23,7 @@ import {
   Badge,
   Button,
   Dialog,
+  MediaArtwork,
   StatChip,
   TabLabel,
   Tabs,
@@ -77,6 +78,7 @@ const SECONDS_PER_HOUR = 3600;
 type RotationPlayback = {
   title: string;
   artistName: string;
+  artworkUrl: string | null;
   observedAt: number;
   item: ProgrammeItem | null;
 };
@@ -217,10 +219,16 @@ export function StreamManagerPanel({
         ) ?? null;
       setRotation((current) =>
         current?.title === nowPlaying.title
-          ? { ...current, artistName: nowPlaying.artistName, item }
+          ? {
+              ...current,
+              artistName: nowPlaying.artistName,
+              artworkUrl: nowPlaying.artworkUrl,
+              item,
+            }
           : {
               title: nowPlaying.title,
               artistName: nowPlaying.artistName,
+              artworkUrl: nowPlaying.artworkUrl,
               observedAt: Date.now(),
               item,
             },
@@ -437,8 +445,8 @@ export function StreamManagerPanel({
   const play = usePlayerStore((state) => state.play);
   const previewCurrentId = usePlayerStore((state) => state.currentId);
   const previewStatus = usePlayerStore((state) => state.status);
-  const previewItemId = previewCurrentId?.startsWith('archive:')
-    ? previewCurrentId.slice('archive:'.length)
+  const previewItemId = previewCurrentId?.startsWith('sound:')
+    ? previewCurrentId.slice('sound:'.length)
     : null;
   const previewPlaying = previewStatus === 'playing';
   const rotationCurrentId = rotationPlaying
@@ -449,8 +457,8 @@ export function StreamManagerPanel({
   const previewRotationItem = async (item: ProgrammeItem) => {
     const { data } = await fetchEditorSource(item.id);
     play({
-      id: `archive:${item.id}`,
-      kind: 'archive',
+      id: `sound:${item.id}`,
+      kind: 'sound',
       title: item.title,
       artist: 'You',
       streamUrl: data.url,
@@ -550,26 +558,44 @@ export function StreamManagerPanel({
             </Tooltip>
           </div>
         )}
-        <div className="order-2 min-w-0 flex-1 text-right sm:order-3">
-          <p className="text-foreground-secondary text-[10px] font-semibold tracking-wide uppercase">
-            Current track
-          </p>
-          {rotation ? (
-            <>
-              <p className="mt-0.5 truncate text-sm font-semibold">
-                {rotation.artistName}
-              </p>
-              <p className="text-foreground-secondary truncate text-xs">
-                {rotation.title}
-                {durationSec != null
-                  ? ` · ${formatRemaining(Math.min(elapsedSinceObserved, durationSec))} / ${formatRemaining(durationSec)}`
-                  : ''}
-              </p>
-            </>
-          ) : (
-            <p className="text-foreground-secondary mt-0.5 text-sm">
-              No track playing
+        <div className="order-2 flex min-w-0 flex-1 items-center justify-end gap-2 text-right sm:order-3">
+          <div className="min-w-0">
+            <p className="text-foreground-secondary text-[10px] font-semibold tracking-wide uppercase">
+              Current track
             </p>
+            {rotation ? (
+              <>
+                <p className="mt-0.5 truncate text-sm font-semibold">
+                  {rotation.artistName}
+                </p>
+                <p className="text-foreground-secondary truncate text-xs">
+                  {rotation.title}
+                  {durationSec != null
+                    ? ` · ${formatRemaining(Math.min(elapsedSinceObserved, durationSec))} / ${formatRemaining(durationSec)}`
+                    : ''}
+                </p>
+              </>
+            ) : (
+              <p className="text-foreground-secondary mt-0.5 text-sm">
+                No track playing
+              </p>
+            )}
+          </div>
+          {rotation && (
+            <MediaArtwork
+              size="thumb"
+              src={rotation.artworkUrl}
+              alt={rotation.title}
+              className="shrink-0"
+              onPlay={
+                canControl
+                  ? () =>
+                      void handleTransport(rotationPlaying ? 'pause' : 'resume')
+                  : undefined
+              }
+              isPlaying={rotationPlaying}
+              playDisabled={transportBusy !== null}
+            />
           )}
         </div>
         <div className="order-4 flex shrink-0 items-center gap-2">
@@ -900,7 +926,7 @@ export function StreamManagerPanel({
                     {(selectedCollection.items ?? []).length > 0 &&
                       !selectedPlaylistHasRotationTracks && (
                         <p className="text-foreground-secondary mt-2 text-xs">
-                          This playlist has no archive tracks that can play in
+                          This playlist has no sound tracks that can play in
                           24/7 rotation.
                         </p>
                       )}

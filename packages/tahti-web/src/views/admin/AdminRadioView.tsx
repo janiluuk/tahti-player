@@ -475,8 +475,8 @@ export function AdminRadioView() {
       return;
     }
     play({
-      id: `archive:${item.soundId}`,
-      kind: 'archive',
+      id: `sound:${item.soundId}`,
+      kind: 'sound',
       title: item.title,
       artist: item.artistName,
       streamUrl: item.audioUrl,

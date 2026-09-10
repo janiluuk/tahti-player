@@ -23,7 +23,17 @@ type Story = StoryObj<typeof meta>;
 
 export const SignedIn: Story = {};
 export const SignedOut: Story = { args: { signedIn: false } };
-export const CommentsDisabled: Story = { args: { commentsEnabled: false } };
+export const CommentsDisabled: Story = {
+  args: { commentsEnabled: false },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'When comments are disabled, the comment icon is not rendered at all — only the (disabled) reaction emoji stay visible.',
+      },
+    },
+  },
+};
 
 export const Interactive: Story = {
   render: (args) => {

@@ -18,9 +18,9 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
     title:
       'Content data model — sound types, collection styles, where they list',
     blurb:
-      'Every ArchiveContentType a single sound can be, every CollectionStyle a group of sounds can be, which sound types feed which collection styles, and the real surfaces each one shows up on. Kept in sync by hand with packages/shared/src/dto/archive-metadata.ts and collection.ts whenever the taxonomy changes.',
+      'Every SoundContentType a single sound can be, every CollectionStyle a group of sounds can be, which sound types feed which collection styles, and the real surfaces each one shows up on. Kept in sync by hand with packages/shared/src/dto/archive-metadata.ts and collection.ts whenever the taxonomy changes.',
     mermaid: `flowchart TB
-  subgraph sounds["Sound content types · ArchiveContentType"]
+  subgraph sounds["Sound content types · SoundContentType"]
     direction TB
     TRACK["TRACK<br/><small>ordinary upload</small>"]
     LIVE["LIVE<br/><small>live recording</small>"]
@@ -128,7 +128,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   StudioGate --> Studio["Signed in + channel → /studio"]
   Studio --> StudioMenu["Overview · Branding · Stats · Governance · Posts · Audience · Library · Sounds · Collections · Releases · Upload · Editor"]
   Studio --> Perform["Go Live · Broadcast · Events · Shows · Channel · Radio"]
-  Settings --> SettingsAddons["Themes · Add-ons · Audience · no About footer"]
+  Settings --> SettingsAddons["Themes · Add-ons · no About footer"]
   Board["Board role"] --> Admin["/admin"]
   Admin --> AdminOverview["Overview · Financial · Storage · Artwork · Logs · Status · Vendors"]
   Admin --> AdminCommunity["Moderation · Users · Governance · Reports · Grants · AGM"]
@@ -214,7 +214,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   Role -->|Artist| Studio["/studio"]
   Studio --> Perform["Perform: Go Live · Broadcast · Shows · Channel · Radio"]
   Studio --> Library["Library: Sounds · Upload · Collections"]
-  Studio --> Grow["Grow: Stats · Governance · Audience · Posts"]
+  Studio --> Grow["Grow: Stats · Governance · Audience (Overview · Tiers · Stripe) · Posts"]
   Studio --> Settings["Settings: artist and account · broadcast sources"]
   Role -->|Board| Admin["/admin"]
   Admin --> Overview["Overview: needs action and streams"]
@@ -657,7 +657,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   end
 
   subgraph settings["Settings modal"]
-    SET["Account · Artist · Channel · Broadcast · Audience · Themes · Add-ons · What's new"]
+    SET["Account · Artist · Channel · Broadcast · Themes · Add-ons · What's new"]
     Foot["Footer: GitHub · Discord · API docs · no About"]
   end
 
@@ -795,7 +795,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   Studio --> St["/studio/stats"]
   Studio --> Gov["/studio/governance"]
   Studio --> Upd["/studio/updates"]
-  Studio --> Rev["/studio/revenue"]
+  Studio --> Rev["/studio/audience"]
   Studio --> Lib["/library"]
   Studio --> Arch["/library/sounds"]
   Studio --> Rel["/studio/releases"]
@@ -1041,10 +1041,10 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   Home --> GL["/studio/go-live"]
   Home --> Up["/studio/upload"]
   Home --> Arch["/studio/sounds"]
-  Home --> Stash["/studio/stash"]
+  Home --> Stash["/library/stash"]
   Home --> Coll["/studio/collections"]
   Home --> Stats["/studio/stats"]
-  Home --> Rev["/studio/revenue"]
+  Home --> Rev["/studio/audience"]
   Home --> Stripe["/studio/stripe"]
   Home --> Ch["/studio/channel"]
   Home --> Addons["Settings → Add-ons → Import"]
@@ -1057,7 +1057,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
     title: 'Cases — edge / gates',
     blurb: 'Payments not ready, studio logged out, radio HLS vs offline.',
     mermaid: `flowchart TD
-  Rev["/studio/revenue"] --> StripeOn{Stripe enabled?}
+  Rev["/studio/audience"] --> StripeOn{Stripe enabled?}
   StripeOn -->|Yes| Dash["/studio/stripe"]
   StripeOn -->|No| Stay[Audience only]
   Dash --> Conn{Connect ready?}

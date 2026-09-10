@@ -6,7 +6,12 @@
 
 import { mockChannel, mockDirectory } from './mock';
 import { recordMockFanSub } from './mock-commerce-ledger';
-import type { AuthUser, FanSubscriptionRow, FollowListUser } from './types';
+import type {
+  AuthUser,
+  FanSubscriptionRow,
+  FollowListUser,
+  PurchaseRow,
+} from './types';
 
 export type MockConnectStatus = {
   stripeConfigured: boolean;
@@ -50,6 +55,20 @@ let subscriptions: FanSubscriptionRow[] = [
       username: 'northern-lights',
       displayName: 'Northern Lights',
     },
+  },
+];
+
+const purchases: PurchaseRow[] = [
+  {
+    id: 'mock-purchase-1',
+    tierName: 'Digital download',
+    amountCents: 300,
+    createdAt: new Date(Date.now() - 86400000 * 4).toISOString(),
+    artist: {
+      username: 'midnight-cartography',
+      displayName: 'Midnight Cartography',
+    },
+    tracks: [{ id: 'mock-track-1', title: 'Nightfall Over Helsinki' }],
   },
 ];
 
@@ -102,6 +121,26 @@ export function mockUnfollow(username: string): void {
 
 export function listMockSubscriptions(): FanSubscriptionRow[] {
   return subscriptions.map((s) => ({ ...s, artist: { ...s.artist } }));
+}
+
+export function listMockPurchases(): PurchaseRow[] {
+  return purchases.map((p) => ({
+    ...p,
+    artist: { ...p.artist },
+    tracks: p.tracks.map((t) => ({ ...t })),
+  }));
+}
+
+/** Matches the real POST /api/me/subscriptions/:id/cancel: marks
+ * canceledAt, access lasts until currentPeriodEnd — doesn't remove or
+ * flip state immediately. */
+export function mockCancelSubscription(id: string): FanSubscriptionRow | null {
+  const row = subscriptions.find((s) => s.id === id);
+  if (!row) {
+    return null;
+  }
+  row.canceledAt = new Date().toISOString();
+  return { ...row, artist: { ...row.artist } };
 }
 
 export function mockActivateSubscription(
@@ -175,7 +214,7 @@ export function buildMockLoginUser(
       .split('@')[0]
       ?.replace(/\+.*$/, '')
       .replace(/[^a-zA-Z0-9_-]/g, '') || 'demo';
-  return {
+  const user: AuthUser = {
     id: `mock-${email}`,
     email,
     username,
@@ -195,4 +234,12 @@ export function buildMockLoginUser(
     },
     ...overrides,
   };
+  // Seeded/demo accounts skip the "Finish your profile?" toast — they are
+  // already "set up" for testing (same key OnboardingView uses).
+  try {
+    localStorage.setItem(`tahti-web-onboarded:${user.id}`, '1');
+  } catch {
+    // ignore
+  }
+  return user;
 }

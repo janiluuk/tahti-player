@@ -1,10 +1,22 @@
 # Tahti Player navigation sitemap
 
-Updated 2026-09-04 from `src/router.tsx`, `AppShell.tsx`, `StudioNav.tsx`,
-`AdminNav.tsx`, and `MobileChrome.tsx`. Atlas PNGs recaptured the same day. This is the navigation audit source of
-truth for the Nuclear client. Persistent chrome is listed separately from
-routes that exist but are only reached contextually, so an orphan is not
-mistaken for a missing feature.
+Updated 2026-09-07 from `src/router.tsx`, `AppShell.tsx`, `StudioNav.tsx`,
+`AdminNav.tsx`, and `MobileChrome.tsx`. Atlas PNGs recaptured the same day.
+This is the navigation audit source of truth for the Nuclear client.
+Persistent chrome is listed separately from routes that exist but are
+only reached contextually, so an orphan is not mistaken for a missing
+feature.
+
+**2026-09-07 changes:** Library is now fully decoupled from Studio's
+primary nav (`StudioNav`'s `SECTION_PREFIXES['/studio']` no longer
+claims any `/library*` path — Library highlights independently, Studio
+does not light up on Library routes). Library's tab strip now covers
+Smart links directly, so `/library/smartlinks` is no longer an orphan.
+Corrected two stale claims that predated this audit date: Perform's nav
+label is **Perform**, not "Broadcast" (that rename is queued, not
+shipped — see `docs/todo/studio-nav-perform-to-broadcast.md`), and
+Studio's submenu never had Library/Sounds/Collections/Upload items or a
+separate Multicast item.
 
 On ordinary app surfaces the chrome in this table must stay on screen at
 every moment (including route transitions). It may disappear only on
@@ -29,8 +41,8 @@ editor. See root `AGENTS.md` → Persistent chrome visibility.
 
 Studio section menus (`StudioNav` submenu):
 
-- Studio: Overview, Branding, Stats, Governance, Posts, Audience, Stripe (when configured), Library, Sounds, Collections, Releases, Upload, Editor
-- Perform: Go live, Broadcast, Events, Shows, Multicast, Channel, Radio
+- Studio: Overview, Branding, Stats, Governance, Posts, Audience, Stripe (when configured), Releases, Editor
+- Perform: Go live, Schedule, Events, Shows, Channel, Radio (Multicast is a Radio tab within Channel, not its own submenu item)
 
 Admin section menus (`AdminNav`): Dashboard, Logs, Moderation, Users,
 Content, Radio, News, Streams, Venues, Top lists, Announcements, Storage,
@@ -53,11 +65,11 @@ Signed-in desktop right rail tabs: Chat, Notifications, Queue, Library
 | Everyone | Discover | `/discover`, `/discover?tab=artists`, `/discover?tab=venues` | Artists and venues are Discover subtabs. |
 | Everyone | Favorites | `/favorites` | `/listen/favorites` and `/library/favorites` redirect here. |
 | Everyone | Help | `/help`, `/help/$slug` | Sidebar / drawer. Articles also reach `/status`, `/news`, `/whats-new`, legal pages, and `/transparency`. |
-| Signed in | Library | `/library`, `/library/sounds`, `/library/collections` (+ `?tab=` recordings/media/stash/embeds), `/library/upload`, `/studio/releases`, `/studio/editor` | Studio horizontal tabs. `/library*` routes stay. `/library/recordings` and `/library/media` alias into collections tabs. Mobile bottom nav still has Library. |
-| Artist | Studio | `/studio`, `/studio/branding`, `/studio/stats`, `/studio/governance`, `/studio/updates`, `/studio/revenue`, `/studio/stripe`, `/library*` | Stripe submenu only when `stripeConfigured`. Studio stays selected on Library routes. |
-| Artist | Perform | `/studio/go-live`, `/studio/schedule`, `/studio/events`, `/studio/events/new`, `/studio/shows`, `/studio/shows/$id`, `/studio/channel` | Nav label is Broadcast. Multicast/Radio are channel query tabs. 24/7 programme is on `/studio/schedule`. |
+| Signed in | Library | `/library`, `/library/sounds`, `/library/collections` (+ `?tab=` recordings/media/stash/embeds), `/library/smartlinks`, `/library/local`, `/library/upload` | Library's own tab strip (`LIBRARY_SECTION_TABS`): Overview, Sounds, Collections, Recordings, Media, Stash, Embeds, Smart links, Local files. Independent of Studio's primary nav since 2026-09-07 (`StudioNav`'s `SECTION_PREFIXES['/studio']` no longer claims `/library*`) — Library highlights on its own, Studio does not light up on Library routes. Mobile bottom nav still has Library. |
+| Artist | Studio | `/studio`, `/studio/branding`, `/studio/stats`, `/studio/governance`, `/studio/updates`, `/studio/audience` (+ `?tab=tiers`), `/studio/stripe`, `/studio/releases`, `/studio/editor` | Audience parent tab stays lit for Overview / Tiers / Stripe; nested `AudienceSubNav` (Stripe only when `stripeConfigured`). Does **not** cover `/library*` (see Library row above). |
+| Artist | Perform | `/studio/go-live`, `/studio/schedule`, `/studio/events`, `/studio/shows`, `/studio/shows/$id`, `/studio/channel` | Nav label is **Perform**, not Broadcast — no chrome item currently reads "Broadcast" (a Studio→Broadcast rename is queued, see `docs/todo/studio-nav-perform-to-broadcast.md`). Multicast is a Channel→Radio tab, not a separate submenu item. 24/7 programme is on `/studio/schedule`. |
 | Signed in | Settings | `/settings`, `/settings/$section`, `/account`, `/onboarding` | Modal + bookmarkable sections. `/themes` redirects here. `/sources` and `/sources/$id` redirect to Add-ons → Import. |
-| Board | Admin | `/admin`, `/admin/logs`, `/admin/moderation` (+ `$tab`), `/admin/users`, `/admin/content`, `/admin/radio`, `/admin/news`, `/admin/streams`, `/admin/venues`, `/admin/top-lists`, `/admin/announcements`, `/admin/storage`, `/admin/artwork-presets`, `/admin/financial`, `/admin/governance`, `/admin/reports`, `/admin/grants`, `/admin/agm`, `/admin/disco-widgets`, `/admin/status`, `/admin/vendors`, `/admin/i18n`, `/admin/tahti-selects`, `/admin/orphan-pages` | Queue/detail routes stay contextual. |
+| Board | Admin | `/admin`, `/admin/logs`, `/admin/moderation` (+ `$tab`), `/admin/users`, `/admin/content`, `/admin/radio`, `/admin/news`, `/admin/streams`, `/admin/venues`, `/admin/top-lists`, `/admin/announcements`, `/admin/storage`, `/admin/artwork-presets`, `/admin/financial`, `/admin/governance`, `/admin/reports`, `/admin/grants`, `/admin/agm`, `/admin/addons`, `/admin/status`, `/admin/vendors`, `/admin/i18n`, `/admin/tahti-selects`, `/admin/orphan-pages` | Queue/detail routes stay contextual. |
 
 ## Intentional deep links and aliases
 
@@ -91,10 +103,9 @@ Audited 2026-09-03 against `AppShell` / `StudioNav` / `AdminNav` /
 | Route | Inbound from production UI? | Notes |
 | --- | --- | --- |
 | `/venues` | Only venue detail, venue register, and the diagnostics atlas | Sitemap previously listed it under Listen chrome. It is **not** in the sidebar, drawer, or mobile bottom nav. |
-| `/schedule` | Booking calendar + schedule dialog only | Public programme page. Radio chrome does not link it. Distinct from `/studio/schedule` (Studio **Broadcast**). Listed as a compatibility route historically; the page is real. |
-| `/library/smartlinks` | None (direct URL / atlas only) | `LibraryView` can render the tab, but the Library submenu and collections tab strip omit it. |
-| `/studio/distribution` | Studio Releases row + export add-on deep links | Not a StudioNav submenu item. `SECTION_PREFIXES` still highlights Library → Releases. |
-| `/studio/stash` | Library collections tab `?tab=stash` (embedded) | Dedicated `/studio/stash` has no submenu entry. Direct visits still highlight Library via `SECTION_PREFIXES`. |
+| `/schedule` | Booking calendar + schedule dialog only | Public programme page. Radio chrome does not link it. Distinct from `/studio/schedule` (Studio Perform). Listed as a compatibility route historically; the page is real. |
+| `/studio/distribution` | Studio Releases row + export add-on deep links | Not a StudioNav submenu item. `SECTION_PREFIXES` still highlights Studio (not Library — the two are fully decoupled since 2026-09-07). |
+| `/studio/stash` | Library collections tab `?tab=stash` (embedded) | Dedicated `/studio/stash` has no submenu entry. Direct visits highlight Studio via `SECTION_PREFIXES`, not Library. |
 | `/jam/$code` | None in app chrome | Join-by-code surface; atlas-only besides the route itself. |
 
 Still gathered under **`/admin/orphan-pages`** (Admin → Manage): radio

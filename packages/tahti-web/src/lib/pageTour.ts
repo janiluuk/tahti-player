@@ -1,11 +1,13 @@
-import { ADMIN_NAV_TOUR_STEPS } from '../components/AdminNav';
-import { STUDIO_NAV_TOUR_STEPS } from '../components/StudioNav';
-
 export type TourStep = {
   /** Matches a `data-tour-id` attribute on the element this step explains. */
   id: string;
   label: string;
   description: string;
+  /**
+   * When true, the tour card shows without a DOM cutout (used for page-purpose
+   * annotations that explain the screen rather than a control).
+   */
+  annotationOnly?: boolean;
 };
 
 const SIDEBAR_STEPS: TourStep[] = [
@@ -97,17 +99,6 @@ const TOPBAR_STEPS: TourStep[] = [
   },
 ];
 
-function dedupeById(steps: TourStep[]): TourStep[] {
-  const seen = new Set<string>();
-  return steps.filter((step) => {
-    if (seen.has(step.id)) {
-      return false;
-    }
-    seen.add(step.id);
-    return true;
-  });
-}
-
 const REVENUE_PAGE_STEPS: TourStep[] = [
   {
     id: 'revenue-stats',
@@ -162,29 +153,146 @@ const STRIPE_PAGE_STEPS: TourStep[] = [
   },
 ];
 
-/**
- * Steps for the current page's guided tour (H key). Sidebar nav is always
- * explained since it's present everywhere; the top bar only makes sense to
- * call out on the homepage (elsewhere it's the same handful of icon buttons
- * repeated on every page, which would make the tour repetitive); Studio and
- * Admin panel items are explained while inside those sections.
- */
-export function getPageTourSteps(pathname: string): TourStep[] {
-  const steps = [...SIDEBAR_STEPS];
-  if (pathname === '/') {
-    steps.push(...TOPBAR_STEPS);
-  }
-  if (pathname.startsWith('/studio') || pathname.startsWith('/library')) {
-    steps.push(...STUDIO_NAV_TOUR_STEPS);
-  }
-  if (pathname.startsWith('/admin')) {
-    steps.push(...ADMIN_NAV_TOUR_STEPS);
-  }
-  if (pathname === '/studio/revenue') {
+/** Longest-prefix match for page-purpose annotations. */
+const PAGE_PURPOSE_BY_PREFIX: Array<{
+  prefix: string;
+  label: string;
+  description: string;
+}> = [
+  {
+    prefix: '/studio/audience',
+    label: 'Audience overview',
+    description:
+      'Fan-sub stats, recent orders, and earnings flow for your channel — tiers and Stripe live under the same Studio Audience tab.',
+  },
+  {
+    prefix: '/studio/stripe',
+    label: 'Stripe payouts',
+    description:
+      'Connect status and Express dashboard for receiving fan-sub payouts.',
+  },
+  {
+    prefix: '/studio/shows',
+    label: 'Shows & schedule',
+    description:
+      'Plan upcoming broadcasts, edit the next show, and manage your channel schedule.',
+  },
+  {
+    prefix: '/studio/go-live',
+    label: 'Go live',
+    description: 'Start or prepare a live broadcast on your channel.',
+  },
+  {
+    prefix: '/studio/upload',
+    label: 'Upload',
+    description: 'Add new sounds and releases to your library.',
+  },
+  {
+    prefix: '/studio',
+    label: 'Studio',
+    description:
+      'Your artist workspace — broadcasting, library, channel tools, and audience.',
+  },
+  {
+    prefix: '/library/sounds',
+    label: 'Sounds',
+    description: 'Your uploaded tracks and encoding status.',
+  },
+  {
+    prefix: '/library',
+    label: 'Library',
+    description:
+      'Your sounds, releases, collections, recordings, and listening history.',
+  },
+  {
+    prefix: '/admin',
+    label: 'Admin',
+    description: 'Board tools for moderating users, content, and platform ops.',
+  },
+  {
+    prefix: '/messages',
+    label: 'Messages',
+    description: 'Direct messages with artists and other listeners.',
+  },
+  {
+    prefix: '/radio',
+    label: 'Tahti Radio',
+    description: 'The shared 24/7 member relay and its schedule.',
+  },
+  {
+    prefix: '/discover',
+    label: 'Discover',
+    description: 'Find new artists and channels beyond who you already follow.',
+  },
+  {
+    prefix: '/settings',
+    label: 'Settings',
+    description: 'Account, artist, notification, and appearance preferences.',
+  },
+  {
+    prefix: '/feed',
+    label: 'Feed',
+    description: 'Updates and posts from artists and channels you follow.',
+  },
+  {
+    prefix: '/',
+    label: 'Home',
+    description:
+      'The front page of Tahti — who’s live, the channel directory, and shortcuts into Listen, Radio, and Studio.',
+  },
+];
+
+function pagePurposeStep(pathname: string): TourStep {
+  const match =
+    PAGE_PURPOSE_BY_PREFIX.find((entry) =>
+      entry.prefix === '/'
+        ? pathname === '/'
+        : pathname === entry.prefix || pathname.startsWith(`${entry.prefix}/`),
+    ) ?? PAGE_PURPOSE_BY_PREFIX[PAGE_PURPOSE_BY_PREFIX.length - 1];
+
+  return {
+    id: 'page-purpose',
+    label: match.label,
+    description: match.description,
+    annotationOnly: true,
+  };
+}
+
+function dedupeById(steps: TourStep[]): TourStep[] {
+  const seen = new Set<string>();
+  return steps.filter((step) => {
+    if (seen.has(step.id)) {
+      return false;
+    }
+    seen.add(step.id);
+    return true;
+  });
+}
+
+function pageFunctionalitySteps(pathname: string): TourStep[] {
+  const steps: TourStep[] = [];
+  if (pathname === '/studio/audience' || pathname === '/studio/revenue') {
     steps.push(...REVENUE_PAGE_STEPS);
   }
   if (pathname === '/studio/stripe') {
     steps.push(...STRIPE_PAGE_STEPS);
   }
-  return dedupeById(steps);
+  return steps;
+}
+
+/**
+ * Steps for the current page's guided tour (H key).
+ *
+ * - Every page starts with a purpose annotation (what the screen is for).
+ * - Shared chrome (sidebar, top bar, Studio/Admin section nav) only on `/`.
+ * - Inner pages only add that page's own functionality steps.
+ */
+export function getPageTourSteps(pathname: string): TourStep[] {
+  const purpose = pagePurposeStep(pathname);
+
+  if (pathname === '/') {
+    return dedupeById([purpose, ...SIDEBAR_STEPS, ...TOPBAR_STEPS]);
+  }
+
+  return dedupeById([purpose, ...pageFunctionalitySteps(pathname)]);
 }

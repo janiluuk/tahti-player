@@ -67,7 +67,7 @@ The current counterpart inventory is intentionally explicit:
 | RTMP multicast | `apps/api/src/routes/me/rtmp-targets.ts` (`/api/me/rtmp-targets`) | Authenticated channel owner |
 | Artist widgets | `apps/api/src/routes/me/disco-widgets.ts` (`/api/me/disco-widgets/installs`) | Authenticated artist |
 | Admin widget catalog | `apps/api/src/routes/admin/disco-widgets.ts` (`/api/admin/disco-widgets`) | Board only |
-| Audio editor | `apps/api/src/routes/me/archive-editor.ts` (`/api/me/archive/:id/editor/draft`) | Authenticated owner of archive item |
+| Audio editor | `apps/api/src/routes/me/archive-editor.ts` (`/api/me/sound/:id/editor/draft`) | Authenticated owner of archive item |
 | Track insights | `apps/api/src/routes/me/track-insights.ts` | Authenticated owner or permitted viewer |
 | Export/delivery | `apps/api/src/routes/releases` + `GET /api/me/export-plugins` | Authenticated artist; Revelator submit/status live |
 | Scrobble (ListenBrainz / Last.fm) | `listenbrainz` install + `lastfm` OAuth start/callback + listen-events scrobble | Authenticated user; LB token validated on install; Last.fm needs `LASTFM_API_*`; scrobble is fire-and-forget after recorded listens |
@@ -117,5 +117,21 @@ tests and user-facing coverage for every new configuration flow.
 - Share the multicast destination form between Go Live and Settings, keeping provider-specific
   credentials inside each provider configuration.
 - ExportProvider submit/status/webhook contracts land in `../tahti-org` (`GET /api/me/export-plugins`); Nuclear `revelatorExportProvider` calls them.
-- Integrations marketplace credentials: sibling `/api/me/integrations` + `SCROBBLE` ListenBrainz and Last.fm (see `src/plugins/scrobble`). Discovery dashboards still blocked.
-- Remaining registry runtime blockers: `bandcamp-dashboard`, `deezer-dashboard`, `listenbrainz-dashboard` (charts), `omnisource`, `youtube-liked-songs-sync`.
+- Integrations marketplace credentials: sibling `/api/me/integrations` + `SCROBBLE` ListenBrainz and Last.fm (see `src/plugins/scrobble`). Discovery dashboards are out of scope, not blocked — see below.
+
+**2026-09-07:** re-checked `bandcamp-dashboard`, `deezer-dashboard`,
+`listenbrainz-dashboard` (charts), `omnisource`, `youtube-liked-songs-sync` —
+these aren't "remaining runtime blockers" waiting on anything; the
+Nuclear-registry-parity system this list's own item 2 above describes
+(`apiCounterpart`/implementation-state metadata per add-on) no longer
+exists in the codebase at all (`grep` for `apiCounterpart`/`realFeature`
+across `src/` returns zero hits) — it was superseded by the current
+`SERVICE_PLUGINS`/import-export/OAuth model in `PluginStorePanel.tsx`,
+which has no personal "dashboard" concept for any provider.
+`src/plugins/scrobble/README.md`'s own "Out of scope" section already
+says exactly this for the ListenBrainz/OmniSource/Bandcamp-Deezer items
+("stay out of scope / constitutionally blocked" — a deliberate product
+decision, not a technical blocker). Aligned `FEATURES.md` to match
+(was contradictorily marked "still planned"). Nothing left to track
+here; do not re-open as a runtime blocker without a new product
+decision to actually build personal listening dashboards.

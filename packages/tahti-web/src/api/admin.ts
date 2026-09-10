@@ -11,8 +11,11 @@ import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
 import type {
   AccountRole,
   BoardResolution,
+  GovernanceAttendanceItem,
   GovernanceDocument,
   GovernanceMeeting,
+  GovernanceQuarterlyReport,
+  UpsertGovernanceAttendance,
 } from './types';
 
 const forceMock = isForceMock;
@@ -2783,7 +2786,7 @@ export function setUserStorageQuota(userId: string, quotaBytes: number) {
 
 export type AdminStorageUserFile = {
   id: string;
-  kind: 'archive' | 'stash';
+  kind: 'sound' | 'stash';
   title: string;
   sizeBytes: number | null;
   createdAt: string;
@@ -2835,7 +2838,7 @@ function mockStorageUserDetail(userId: string): AdminStorageUserDetail | null {
       running += f.sizeBytes ?? 0;
       return {
         id: f.id,
-        kind: f.contentType === 'STASH' ? 'stash' : 'archive',
+        kind: f.contentType === 'STASH' ? 'stash' : 'sound',
         title: f.title,
         sizeBytes: f.sizeBytes,
         createdAt: f.createdAt,
@@ -2887,10 +2890,10 @@ export type AdminFileRow = {
   username: string;
   displayName: string;
   audioUrl: string | null;
-  /** Count of ArchiveItemVersion rows — real, always populated by
+  /** Count of SoundItemVersion rows — real, always populated by
    * /api/admin/files (../tahti/apps/api/src/routes/admin/files.ts). */
   revisionCount: number;
-  /** ArchiveItem has no per-item R2-mirror field in the schema yet (unlike
+  /** ChannelSoundItem has no per-item R2-mirror field in the schema yet (unlike
    * ReleaseTrack/ReleaseTrackVersion, which do) — genuinely not tracked, not
    * just unwired here. Stays optional/undefined against the real API until
    * that schema + worker support exists; mock data fills it in for the UI. */
@@ -3079,7 +3082,7 @@ export type AdminContentReportStatus =
 export type AdminContentReportRow = {
   id: string;
   targetType:
-    | 'ARCHIVE_ITEM'
+    | 'SOUND_ITEM'
     | 'RELEASE'
     | 'CHANNEL'
     | 'COLLECTION'
@@ -3097,7 +3100,7 @@ function mockContentReports(): AdminContentReportRow[] {
   return [
     {
       id: 'rep-1',
-      targetType: 'ARCHIVE_ITEM',
+      targetType: 'SOUND_ITEM',
       targetId: 'arch-sub-1',
       reason: 'COPYRIGHT',
       details: 'Uses an unlicensed sample around 1:40.',
@@ -3469,6 +3472,77 @@ export function updateFeatureRequestStatus(
   );
 }
 
+let mockQuarterlyReports: GovernanceQuarterlyReport[] = [];
+
+function currentQuarter(): { year: number; quarter: number } {
+  const now = new Date();
+  return {
+    year: now.getUTCFullYear(),
+    quarter: Math.floor(now.getUTCMonth() / 3) + 1,
+  };
+}
+
+export async function fetchAdminFeatureRequestReports(): Promise<{
+  data: GovernanceQuarterlyReport[];
+  meta: FetchMeta;
+}> {
+  if (forceMock()) {
+    return {
+      data: mockQuarterlyReports,
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const data = await getJson<GovernanceQuarterlyReport[]>(
+      '/api/admin/feature-requests/reports',
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: [], meta: failMeta(err) };
+  }
+}
+
+export async function generateFeatureRequestQuarterlyReport(input?: {
+  year?: number;
+  quarter?: number;
+}): Promise<
+  { ok: true; data: GovernanceQuarterlyReport } | { ok: false; error: string }
+> {
+  const { year, quarter } = { ...currentQuarter(), ...input };
+  if (forceMock()) {
+    const existing = mockQuarterlyReports.find(
+      (r) => r.year === year && r.quarter === quarter,
+    );
+    if (existing) {
+      return { ok: false, error: `Q${quarter} ${year} was already generated` };
+    }
+    const report: GovernanceQuarterlyReport = {
+      id: `report-${year}-${quarter}`,
+      year,
+      quarter,
+      storageKey: `mock/feature-request-reports/${year}-Q${quarter}.md`,
+      generatedAt: new Date().toISOString(),
+      generatedByDisplayName: 'You',
+      downloadUrl: null,
+    };
+    mockQuarterlyReports = [report, ...mockQuarterlyReports];
+    return { ok: true, data: report };
+  }
+  try {
+    const data = await sendJson<GovernanceQuarterlyReport>(
+      '/api/admin/feature-requests/reports',
+      'POST',
+      input ?? {},
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not generate report',
+    };
+  }
+}
+
 // ── Grants ──────────────────────────────────────────────────────────────────
 
 export type AdminGrantYearSummary = {
@@ -3744,6 +3818,88 @@ export async function patchAdminGovernanceMeeting(
   }
 }
 
+export async function uploadAdminGovernanceMinutes(
+  meetingId: string,
+  file: File,
+): Promise<
+  { ok: true; data: GovernanceMeeting } | { ok: false; error: string }
+> {
+  if (forceMock()) {
+    const patched = await patchAdminGovernanceMeeting(meetingId, {
+      minutesKey: `mock/governance/meetings/${meetingId}/minutes.pdf`,
+    });
+    if (!patched.data) {
+      return { ok: false, error: 'Meeting not found' };
+    }
+    return { ok: true, data: patched.data };
+  }
+  try {
+    const prep = await sendJson<{
+      uploadUrl: string;
+      minutesKey: string;
+    }>(
+      `/api/admin/governance/meetings/${encodeURIComponent(meetingId)}/minutes/prepare-upload`,
+      'POST',
+      {
+        contentType: file.type || 'application/pdf',
+        fileSizeBytes: file.size,
+      },
+    );
+    const put = await fetch(prep.uploadUrl, {
+      method: 'PUT',
+      body: file,
+      headers: { 'Content-Type': file.type || 'application/pdf' },
+    });
+    if (!put.ok) {
+      return { ok: false, error: `Upload failed (${put.status})` };
+    }
+    const patched = await patchAdminGovernanceMeeting(meetingId, {
+      minutesKey: prep.minutesKey,
+    });
+    if (!patched.data) {
+      return { ok: false, error: 'Could not save the uploaded minutes' };
+    }
+    return { ok: true, data: patched.data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Upload failed',
+    };
+  }
+}
+
+export async function fetchAdminGovernanceAttendance(
+  meetingId: string,
+): Promise<{ data: GovernanceAttendanceItem[]; meta: FetchMeta }> {
+  try {
+    const data = await getJson<GovernanceAttendanceItem[]>(
+      `/api/admin/governance/meetings/${encodeURIComponent(meetingId)}/attendance`,
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: [], meta: failMeta(err) };
+  }
+}
+
+/** Upserts by `memberId` server-side — omitting it (manual roll-call entry
+ * by name) always inserts a new row rather than updating one, since the
+ * backend has no other identity to match on. */
+export async function upsertAdminGovernanceAttendance(
+  meetingId: string,
+  input: UpsertGovernanceAttendance,
+): Promise<{ data: GovernanceAttendanceItem | null; meta: FetchMeta }> {
+  try {
+    const data = await sendJson<GovernanceAttendanceItem>(
+      `/api/admin/governance/meetings/${encodeURIComponent(meetingId)}/attendance`,
+      'POST',
+      input,
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: null, meta: failMeta(err) };
+  }
+}
+
 export async function fetchAdminGovernanceDocuments(): Promise<{
   data: GovernanceDocument[];
   meta: FetchMeta;
@@ -3909,21 +4065,29 @@ export async function fetchAdminIntegrationStatus(): Promise<{
   }
 }
 
-// ── Disco-widgets ──────────────────────────────────────────────────────────
+// ── Admin add-ons ────────────────────────────────────────────────────────
 
-export type AdminDiscoWidgetScope = 'LISTENER' | 'ARTIST' | 'ADMIN';
-export type AdminDiscoWidgetStatus =
+export type AdminAddonScope = 'LISTENER' | 'ARTIST' | 'ADMIN';
+export type AdminAddonStatus =
   | 'DRAFT'
   | 'PENDING'
   | 'APPROVED'
   | 'REJECTED'
   | 'DISABLED';
 
-export type AdminDiscoWidget = {
+// The real ../tahti-org backend (packages/db/prisma/schema.prisma's `Addon`
+// model + apps/api/src/routes/admin/addons.ts) is a full widget-bundle store
+// with versioning, sandboxed rendering, and a moderation lifecycle — not a
+// plain metadata CRUD resource. There is no generic PATCH/DELETE for an
+// addon's own record: only `register` (create, status DRAFT), `prepare-
+// upload`/`publish-version` (JS bundle, not modeled here — no UI for
+// authoring/uploading a widget bundle exists yet), and the specific actions
+// below (approve/reject/disable, default-config, enabled-by-default).
+export type AdminAddon = {
   id: string;
   slug: string;
-  scope: AdminDiscoWidgetScope;
-  status: AdminDiscoWidgetStatus;
+  scope: AdminAddonScope;
+  status: AdminAddonStatus;
   name: string;
   description: string;
   authorName: string;
@@ -3932,13 +4096,19 @@ export type AdminDiscoWidget = {
   currentVersion: string;
   bundleSizeBytes: number;
   moderationNote: string | null;
+  /** Starting configJson every NEW install of this addon gets, across every
+   * scope. Existing installs are untouched when this changes. */
+  defaultConfigJson: unknown;
+  /** Platform-wide "on by default": an APPROVED addon with this set renders
+   * on its scope's surfaces even with no explicit install row. */
+  enabledByDefault: boolean;
   createdAt: string;
   updatedAt: string;
 };
 
-const MOCK_DISCO_WIDGETS: AdminDiscoWidget[] = [
+const MOCK_ADDONS: AdminAddon[] = [
   {
-    id: 'widget-random-artist',
+    id: 'addon-random-artist',
     slug: 'random-artist-week',
     scope: 'LISTENER',
     status: 'APPROVED',
@@ -3950,11 +4120,13 @@ const MOCK_DISCO_WIDGETS: AdminDiscoWidget[] = [
     currentVersion: '1.0.0',
     bundleSizeBytes: 18400,
     moderationNote: null,
+    defaultConfigJson: null,
+    enabledByDefault: false,
     createdAt: '2026-08-01T00:00:00.000Z',
     updatedAt: '2026-08-01T00:00:00.000Z',
   },
   {
-    id: 'widget-channel-stats',
+    id: 'addon-channel-stats',
     slug: 'channel-stats',
     scope: 'ARTIST',
     status: 'APPROVED',
@@ -3966,23 +4138,43 @@ const MOCK_DISCO_WIDGETS: AdminDiscoWidget[] = [
     currentVersion: '1.2.0',
     bundleSizeBytes: 22100,
     moderationNote: null,
+    defaultConfigJson: null,
+    enabledByDefault: true,
     createdAt: '2026-07-15T00:00:00.000Z',
     updatedAt: '2026-07-15T00:00:00.000Z',
   },
+  {
+    id: 'addon-pending-example',
+    slug: 'pending-example',
+    scope: 'LISTENER',
+    status: 'PENDING',
+    name: 'Now spinning ticker',
+    description: 'Scrolling ticker of what every station is playing right now.',
+    authorName: 'Community',
+    categories: ['other'],
+    iconUrl: null,
+    currentVersion: '0.1.0',
+    bundleSizeBytes: 4200,
+    moderationNote: null,
+    defaultConfigJson: null,
+    enabledByDefault: false,
+    createdAt: '2026-09-01T00:00:00.000Z',
+    updatedAt: '2026-09-01T00:00:00.000Z',
+  },
 ];
 
-let mockDiscoWidgets = [...MOCK_DISCO_WIDGETS];
+let mockAddons = [...MOCK_ADDONS];
 
-export async function fetchAdminDiscoWidgets(
-  scope?: AdminDiscoWidgetScope,
-  status?: AdminDiscoWidgetStatus,
-): Promise<{ data: AdminDiscoWidget[]; meta: FetchMeta }> {
+export async function fetchAdminAddons(
+  scope?: AdminAddonScope,
+  status?: AdminAddonStatus,
+): Promise<{ data: AdminAddon[]; meta: FetchMeta }> {
   if (forceMock()) {
     return {
-      data: mockDiscoWidgets.filter(
-        (widget) =>
-          (!scope || widget.scope === scope) &&
-          (!status || widget.status === status),
+      data: mockAddons.filter(
+        (addon) =>
+          (!scope || addon.scope === scope) &&
+          (!status || addon.status === status),
       ),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
@@ -3996,8 +4188,8 @@ export async function fetchAdminDiscoWidgets(
       query.set('status', status);
     }
     const suffix = query.size > 0 ? `?${query.toString()}` : '';
-    const data = await getJson<{ widgets: AdminDiscoWidget[] }>(
-      `/api/admin/disco-widgets${suffix}`,
+    const data = await getJson<{ widgets: AdminAddon[] }>(
+      `/api/admin/addons${suffix}`,
     );
     return { data: data.widgets, meta: { source: 'api' } };
   } catch (err) {
@@ -4005,7 +4197,9 @@ export async function fetchAdminDiscoWidgets(
   }
 }
 
-export type AdminDiscoWidgetPatch = {
+export type AdminAddonRegisterInput = {
+  slug: string;
+  scope: AdminAddonScope;
   name: string;
   description: string;
   authorName: string;
@@ -4013,35 +4207,28 @@ export type AdminDiscoWidgetPatch = {
   iconUrl?: string;
 };
 
-export async function registerAdminDiscoWidget(
-  input: AdminDiscoWidgetPatch & {
-    slug: string;
-    scope: AdminDiscoWidgetScope;
-  },
-): Promise<
-  { ok: true; data: AdminDiscoWidget } | { ok: false; error: string }
-> {
+export async function registerAdminAddon(
+  input: AdminAddonRegisterInput,
+): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
   if (forceMock()) {
-    const widget: AdminDiscoWidget = {
-      id: `widget-${Date.now()}`,
+    const addon: AdminAddon = {
+      id: `addon-${Date.now()}`,
       ...input,
       iconUrl: input.iconUrl || null,
       status: 'DRAFT',
       currentVersion: '0.0.0',
       bundleSizeBytes: 0,
       moderationNote: null,
+      defaultConfigJson: null,
+      enabledByDefault: false,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-    mockDiscoWidgets = [widget, ...mockDiscoWidgets];
-    return { ok: true, data: widget };
+    mockAddons = [addon, ...mockAddons];
+    return { ok: true, data: addon };
   }
   try {
-    const data = await sendJson<AdminDiscoWidget>(
-      '/api/admin/disco-widgets',
-      'POST',
-      input,
-    );
+    const data = await sendJson<AdminAddon>('/api/admin/addons', 'POST', input);
     return { ok: true, data };
   } catch (err) {
     return {
@@ -4051,28 +4238,109 @@ export async function registerAdminDiscoWidget(
   }
 }
 
-export async function patchAdminDiscoWidget(
+function mockModerate(
   id: string,
-  patch: AdminDiscoWidgetPatch,
-): Promise<
-  { ok: true; data: AdminDiscoWidget } | { ok: false; error: string }
-> {
+  status: AdminAddonStatus,
+  moderationNote: string | null,
+): { ok: true; data: AdminAddon } | { ok: false; error: string } {
+  const existing = mockAddons.find((addon) => addon.id === id);
+  if (!existing) {
+    return { ok: false, error: 'Add-on not found' };
+  }
+  const updated: AdminAddon = {
+    ...existing,
+    status,
+    moderationNote,
+    updatedAt: new Date().toISOString(),
+  };
+  mockAddons = mockAddons.map((addon) => (addon.id === id ? updated : addon));
+  return { ok: true, data: updated };
+}
+
+export async function approveAdminAddon(
+  id: string,
+  moderationNote?: string,
+): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
   if (forceMock()) {
-    const existing = mockDiscoWidgets.find((widget) => widget.id === id);
-    if (!existing) {
-      return { ok: false, error: 'Widget not found' };
-    }
-    const updated = { ...existing, ...patch, iconUrl: patch.iconUrl || null };
-    mockDiscoWidgets = mockDiscoWidgets.map((widget) =>
-      widget.id === id ? updated : widget,
+    return mockModerate(id, 'APPROVED', moderationNote ?? null);
+  }
+  try {
+    const data = await sendJson<AdminAddon>(
+      `/api/admin/addons/${encodeURIComponent(id)}/approve`,
+      'POST',
+      moderationNote ? { moderationNote } : {},
     );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Approve failed',
+    };
+  }
+}
+
+export async function rejectAdminAddon(
+  id: string,
+  moderationNote: string,
+): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
+  if (forceMock()) {
+    return mockModerate(id, 'REJECTED', moderationNote);
+  }
+  try {
+    const data = await sendJson<AdminAddon>(
+      `/api/admin/addons/${encodeURIComponent(id)}/reject`,
+      'POST',
+      { moderationNote },
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Reject failed',
+    };
+  }
+}
+
+export async function disableAdminAddon(
+  id: string,
+  moderationNote?: string,
+): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
+  if (forceMock()) {
+    return mockModerate(id, 'DISABLED', moderationNote ?? null);
+  }
+  try {
+    const data = await sendJson<AdminAddon>(
+      `/api/admin/addons/${encodeURIComponent(id)}/disable`,
+      'POST',
+      moderationNote ? { moderationNote } : {},
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Disable failed',
+    };
+  }
+}
+
+export async function setAdminAddonEnabledByDefault(
+  id: string,
+  enabledByDefault: boolean,
+): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
+  if (forceMock()) {
+    const existing = mockAddons.find((addon) => addon.id === id);
+    if (!existing) {
+      return { ok: false, error: 'Add-on not found' };
+    }
+    const updated: AdminAddon = { ...existing, enabledByDefault };
+    mockAddons = mockAddons.map((addon) => (addon.id === id ? updated : addon));
     return { ok: true, data: updated };
   }
   try {
-    const data = await sendJson<AdminDiscoWidget>(
-      `/api/admin/disco-widgets/${encodeURIComponent(id)}`,
-      'PATCH',
-      patch,
+    const data = await sendJson<AdminAddon>(
+      `/api/admin/addons/${encodeURIComponent(id)}/enabled-by-default`,
+      'POST',
+      { enabledByDefault },
     );
     return { ok: true, data };
   } catch (err) {
@@ -4083,14 +4351,32 @@ export async function patchAdminDiscoWidget(
   }
 }
 
-export async function deleteAdminDiscoWidget(
+export async function setAdminAddonDefaultConfig(
   id: string,
-): Promise<{ ok: true } | { ok: false; error: string }> {
+  defaultConfigJson: Record<string, unknown> | null,
+): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
   if (forceMock()) {
-    mockDiscoWidgets = mockDiscoWidgets.filter((widget) => widget.id !== id);
-    return { ok: true };
+    const existing = mockAddons.find((addon) => addon.id === id);
+    if (!existing) {
+      return { ok: false, error: 'Add-on not found' };
+    }
+    const updated: AdminAddon = { ...existing, defaultConfigJson };
+    mockAddons = mockAddons.map((addon) => (addon.id === id ? updated : addon));
+    return { ok: true, data: updated };
   }
-  return mutate(`/api/admin/disco-widgets/${encodeURIComponent(id)}`, 'DELETE');
+  try {
+    const data = await sendJson<AdminAddon>(
+      `/api/admin/addons/${encodeURIComponent(id)}/default-config`,
+      'POST',
+      { defaultConfigJson },
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Update failed',
+    };
+  }
 }
 
 // ── Status ──────────────────────────────────────────────────────────────────
@@ -4333,6 +4619,10 @@ export type AdminActivityFilters = {
   actorId?: string;
   since?: string;
   until?: string;
+  /** Backend defaults to 'governance' (deliberately excludes login/like/chat
+   * "ops noise" for the board-facing governance audit view) — this admin
+   * activity feed wants everything, so it defaults to 'all' here instead. */
+  scope?: 'governance' | 'all';
 };
 
 function mockActivityEntries(): AdminActivityEntry[] {
@@ -4351,7 +4641,7 @@ function mockActivityEntries(): AdminActivityEntry[] {
     },
     {
       id: 'mock-act-2',
-      action: 'ARCHIVE_ITEM_LIKE',
+      action: 'SOUND_ITEM_LIKE',
       actorId: 'u-2',
       actorDisplayName: 'Echo Harbor',
       actorUsername: 'echo-harbor',
@@ -4468,6 +4758,7 @@ export async function fetchAdminActivity(
     const qs = new URLSearchParams({
       page: String(page),
       limit: String(limit),
+      scope: filters.scope ?? 'all',
     });
     if (filters.action) {
       qs.set('action', filters.action);
@@ -4538,7 +4829,7 @@ export async function fetchAdminGovernanceActivity(): Promise<{
 }
 
 export function adminActivityExportCsvUrl(): string {
-  return `${apiBase()}/api/admin/audit/export.csv`;
+  return `${apiBase()}/api/admin/audit/export.csv?scope=all`;
 }
 
 // ── Admin container logs ─────────────────────────────────────────────────

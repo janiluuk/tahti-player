@@ -5,6 +5,7 @@ import {
   isValidHeaderBackdropUrl,
   resolvePublicVisualizerPreset,
 } from '../api/channel-design';
+import { ChannelSlideshowBackdrop } from './ChannelSlideshowBackdrop';
 import { ChannelVisualizer, type VisualColorScheme } from './ChannelVisualizer';
 
 export type ChannelBackdropNavItem = {
@@ -49,6 +50,12 @@ export type ChannelBackdropCardProps = {
   artworkUrl?: string | null;
   galleryMode?: string | null;
   slideshowImages?: string[];
+  /** How the slideshow (2+ `slideshowImages`) cycles — one of
+   * `ChannelDesigner`'s 8 `SLIDESHOW_PRESETS`. Ignored for a single image. */
+  slideshowPreset?: string | null;
+  slideshowIntervalSeconds?: number;
+  slideshowTransitionMs?: number;
+  slideshowAutoplay?: boolean;
   /** Skip mounting a second live ChannelVisualizer WebGL context — set
    * false wherever this card renders underneath a page that may already
    * have one running. Default true. */
@@ -83,7 +90,8 @@ const DEFAULT_NAV_ITEMS: ChannelBackdropNavItem[] = [
  * the two can no longer drift apart the way the old separate mockup did.
  * Background resolution mirrors the real page's original hero logic
  * exactly: VIDEO_LOOP → video/image/YouTube embed, SOLID → flat color,
- * GRADIENT → bg/accent/highlight gradient, STATIC_SLIDESHOW → first image,
+ * GRADIENT → bg/accent/highlight gradient, STATIC_SLIDESHOW → rotating
+ * images with the configured transition (`ChannelSlideshowBackdrop`),
  * else → dimmed artwork + live visualizer. */
 export function ChannelBackdropCard({
   displayName,
@@ -107,6 +115,10 @@ export function ChannelBackdropCard({
   artworkUrl,
   galleryMode,
   slideshowImages,
+  slideshowPreset,
+  slideshowIntervalSeconds,
+  slideshowTransitionMs,
+  slideshowAutoplay,
   mountVisualizer = true,
   visualizerSettings,
   visualSettingsJson,
@@ -178,10 +190,13 @@ export function ChannelBackdropCard({
           aria-hidden
         />
       ) : showSlideshow ? (
-        <img
-          className="absolute inset-0 h-full w-full object-cover"
-          src={slideshowImages?.[0]}
-          alt=""
+        <ChannelSlideshowBackdrop
+          className="absolute inset-0 h-full w-full overflow-hidden"
+          images={slideshowImages ?? []}
+          preset={slideshowPreset}
+          intervalSeconds={slideshowIntervalSeconds}
+          transitionMs={slideshowTransitionMs}
+          autoplay={slideshowAutoplay}
         />
       ) : (
         <>

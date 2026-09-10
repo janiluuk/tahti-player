@@ -22,7 +22,7 @@ This monorepo directory may be `tahti-nuclear` or `tahti-player`. Sibling produc
 | Production | Beta client |
 | --- | --- |
 | `/listen` | `/` |
-| `/dashboard/revenue` | `/studio/revenue` (UI: Audience) |
+| `/dashboard/revenue` | `/studio/audience` (UI: Audience) |
 | `/dashboard/governance` | `/studio/governance` (artist) + `/governance` (member, Settings → Account) |
 | `/dashboard/*` | `/studio/*` (redirects exist) |
 

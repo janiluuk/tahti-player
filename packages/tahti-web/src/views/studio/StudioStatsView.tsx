@@ -646,7 +646,7 @@ export const StudioStatsView: FC = () => {
             <p className="text-foreground-secondary text-xs">
               Fan subscription payouts and grant history remain under{' '}
               <Link
-                to="/studio/revenue"
+                to="/studio/audience"
                 className="underline-offset-2 hover:underline"
               >
                 Revenue

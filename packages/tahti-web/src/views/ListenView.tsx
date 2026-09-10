@@ -149,6 +149,13 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     radioIsCurrent &&
     (playbackStatus === 'playing' || playbackStatus === 'loading');
 
+  const lastPlayedIsCurrent = lastPlayed
+    ? currentId === lastPlayed.playable.id
+    : false;
+  const lastPlayedIsPlaying =
+    lastPlayedIsCurrent &&
+    (playbackStatus === 'playing' || playbackStatus === 'loading');
+
   const toggleRadioPlayback = () => {
     if (radioIsCurrent) {
       setPlaybackStatus(radioIsPlaying ? 'paused' : 'playing');
@@ -220,7 +227,16 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                           lastPlayed.playable.coverUrl ??
                           placeholderArtworkUrl(lastPlayed.playable.id)
                         }
-                        onPlay={() => play(lastPlayed.playable)}
+                        isPlaying={lastPlayedIsPlaying}
+                        onPlay={() => {
+                          if (lastPlayedIsCurrent) {
+                            setPlaybackStatus(
+                              lastPlayedIsPlaying ? 'paused' : 'playing',
+                            );
+                            return;
+                          }
+                          play(lastPlayed.playable);
+                        }}
                       />
                     </CardGrid>
                   </SectionShell>

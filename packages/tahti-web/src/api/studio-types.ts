@@ -35,6 +35,10 @@ export type StudioSound = {
   downloadsEnabled?: boolean;
   visibility?: 'PUBLIC' | 'UNLISTED' | 'PRIVATE' | 'STASH';
   fanTierIds?: string[];
+  /** One-time-purchase gate — set via `setSoundPurchaseAccess`, not part
+   * of the general `patchStudioSound` body. */
+  accessMode?: 'FREE' | 'SUBSCRIBERS_ONLY' | 'PURCHASE';
+  purchaseTierId?: string | null;
   releaseDate?: string | null;
   pinnedAt?: string | null;
   effectiveBpm?: number | null;
@@ -43,7 +47,7 @@ export type StudioSound = {
   updatedAt?: string;
   bannerUrl?: string | null;
   /** Wide backdrop image — real Prisma/API field name is `backgroundUrl`
-   * (ArchiveItem.backgroundUrl); named to match here on purpose so the
+   * (ChannelSoundItem.backgroundUrl); named to match here on purpose so the
    * request/response bodies round-trip without a translation layer. */
   backgroundUrl?: string | null;
   /** Set for EMBED_ONLY items imported by reference (hearthis.at, Mixcloud,
@@ -198,7 +202,7 @@ export type EditorProjectDetail = EditorProjectRow & {
 
 export type EditorTimelineClip = {
   id: string;
-  sourceArchiveItemId: string;
+  sourceSoundId: string;
   startSec: number;
   sourceOffsetSec: number;
   durationSec: number;

@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
-import { archiveItemToPlayable } from './mock';
-import type { ArchiveItem } from './types';
+import { soundItemToPlayable } from './mock';
+import type { ChannelSoundItem } from './types';
 
-function baseItem(overrides: Partial<ArchiveItem> = {}): ArchiveItem {
+function baseItem(overrides: Partial<ChannelSoundItem> = {}): ChannelSoundItem {
   return {
     id: 'item-1',
     title: 'Test track',
@@ -12,14 +12,14 @@ function baseItem(overrides: Partial<ArchiveItem> = {}): ArchiveItem {
   };
 }
 
-describe('archiveItemToPlayable', () => {
+describe('soundItemToPlayable', () => {
   it('builds a normal streaming playable when audioUrl is set', () => {
-    const playable = archiveItemToPlayable(
+    const playable = soundItemToPlayable(
       baseItem({ audioUrl: 'https://cdn.example/track.mp3' }),
       'my-channel',
     );
     expect(playable).toMatchObject({
-      id: 'archive:item-1',
+      id: 'sound:item-1',
       streamUrl: 'https://cdn.example/track.mp3',
       protocol: 'https',
     });
@@ -27,7 +27,7 @@ describe('archiveItemToPlayable', () => {
   });
 
   it('builds an embed-aware playable for a hearthis.at EMBED_ONLY item with no audioUrl', () => {
-    const playable = archiveItemToPlayable(
+    const playable = soundItemToPlayable(
       baseItem({
         audioUrl: null,
         embedProvider: 'HEARTHIS',
@@ -47,7 +47,7 @@ describe('archiveItemToPlayable', () => {
   });
 
   it('returns null for a non-hearthis embed provider with no audioUrl (no inline widget here)', () => {
-    const playable = archiveItemToPlayable(
+    const playable = soundItemToPlayable(
       baseItem({
         audioUrl: null,
         embedProvider: 'BANDCAMP',
@@ -59,7 +59,7 @@ describe('archiveItemToPlayable', () => {
   });
 
   it('returns null when there is neither audioUrl nor embed data', () => {
-    const playable = archiveItemToPlayable(baseItem({ audioUrl: null }));
+    const playable = soundItemToPlayable(baseItem({ audioUrl: null }));
     expect(playable).toBeNull();
   });
 });

@@ -146,8 +146,7 @@ test('fan subscriptions show subscriber, revenue, and payout statistics', async 
   page,
 }) => {
   await signIn(page);
-  await page.goto('/settings/money');
-  await page.getByRole('tab', { name: 'Fan subs' }).click();
+  await page.goto('/studio/audience');
 
   const summary = page.getByRole('region', {
     name: 'Fan subscription summary',

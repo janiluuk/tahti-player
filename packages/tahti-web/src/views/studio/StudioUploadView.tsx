@@ -352,7 +352,7 @@ export function StudioUploadView() {
     const source = await fetchEditorSource(recording.soundId);
     play({
       id: playableId,
-      kind: 'archive',
+      kind: 'sound',
       title: recording.title || recording.soundTitle || 'Recorded broadcast',
       artist: 'Recorded broadcast',
       streamUrl: source.data.url,

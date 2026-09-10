@@ -12,6 +12,12 @@ type ViewShellProps = {
   children: ReactNode;
   title?: string;
   subtitle?: string;
+  /**
+   * Icon buttons (Add new, Edit, ...) shown top-right, opposite the
+   * title. When set, the header switches to a left title / right
+   * actions row with tighter spacing before the content.
+   */
+  actions?: ReactNode;
   'data-testid'?: string;
   classes?: ViewShellClasses;
 };
@@ -20,6 +26,7 @@ export const ViewShell: FC<ViewShellProps> = ({
   children,
   title,
   subtitle,
+  actions,
   'data-testid': dataTestId,
   classes,
 }) => (
@@ -30,18 +37,38 @@ export const ViewShell: FC<ViewShellProps> = ({
     )}
     data-testid={dataTestId}
   >
-    {title && (
-      <h1
-        className="mb-6 flex w-full flex-0 flex-row text-center text-3xl font-bold"
-        data-testid="title"
-      >
-        {title}
-      </h1>
-    )}
-    {subtitle && (
-      <h2 className="mb-4 flex w-full flex-0 flex-row text-center text-xl font-semibold">
-        {subtitle}
-      </h2>
+    {actions ? (
+      <div className="mb-3 flex w-full flex-0 flex-row items-start justify-between gap-4">
+        <div className="flex min-w-0 flex-col text-left">
+          {title && (
+            <h1 className="text-3xl font-bold" data-testid="title">
+              {title}
+            </h1>
+          )}
+          {subtitle && (
+            <h2 className="mt-1 text-xl font-semibold">{subtitle}</h2>
+          )}
+        </div>
+        <div className="flex flex-shrink-0 flex-row items-center gap-2 pt-1">
+          {actions}
+        </div>
+      </div>
+    ) : (
+      <>
+        {title && (
+          <h1
+            className="mb-6 flex w-full flex-0 flex-row text-center text-3xl font-bold"
+            data-testid="title"
+          >
+            {title}
+          </h1>
+        )}
+        {subtitle && (
+          <h2 className="mb-4 flex w-full flex-0 flex-row text-center text-xl font-semibold">
+            {subtitle}
+          </h2>
+        )}
+      </>
     )}
     <ScrollableArea
       className={cn(

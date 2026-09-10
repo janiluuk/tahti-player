@@ -7,9 +7,6 @@ const meta = {
   component: TopBar,
   parameters: {
     layout: 'fullscreen',
-  },
-  tags: ['autodocs'],
-  parameters: {
     docs: {
       description: {
         component:
@@ -17,6 +14,7 @@ const meta = {
       },
     },
   },
+  tags: ['autodocs'],
 } satisfies Meta<typeof TopBar>;
 
 export default meta;

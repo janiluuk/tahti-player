@@ -7,11 +7,9 @@ import {
 } from './governanceMocks';
 import { listEnabledMockInternetRadioPresets } from './internetRadioPresetsMockStore';
 import {
-  archiveItemToPlayable,
   channelToPlayable,
   DEMO_MP3,
   mockAnnouncements,
-  mockArchiveItems,
   mockChannel,
   mockChatAccess,
   mockChatHistory,
@@ -24,14 +22,17 @@ import {
   mockRadioRecentlyPlayed,
   mockSearch,
   mockSmartLink,
+  mockSoundItems,
   mockTrackComments,
   mockTrackDetail,
   mockTransparencyGrants,
   mockTransparencyLedger,
+  mockTransparencyResolutions,
   mockTransparencyYtd,
   mockVenueProfile,
   mockVenues,
   radioToPlayable,
+  soundItemToPlayable,
   TAHTI_RADIO_SLUG,
 } from './mock';
 import {
@@ -39,8 +40,10 @@ import {
   clearMockSessionUser,
   getMockSessionUser,
   listMockFollowing,
+  listMockPurchases,
   listMockSubscriptions,
   mockActivateSubscription,
+  mockCancelSubscription,
   mockFollow,
   mockUnfollow,
   setMockSessionUser,
@@ -57,10 +60,11 @@ import {
 import { findMockPurchaseTier } from './purchase-tiers';
 import type {
   Announcement,
-  ArchiveItem,
   AuthUser,
+  BoardResolution,
   ChannelDirectoryResponse,
   ChannelEmbedView,
+  ChannelSoundItem,
   ChatAccess,
   ChatMessage,
   ChatTokenResponse,
@@ -74,6 +78,7 @@ import type {
   GovernanceMeeting,
   GovernanceMember,
   GovernanceMotion,
+  GovernanceMotionDetail,
   GovernanceMotionDraft,
   GovernanceQuarterlyReport,
   MembershipStatus,
@@ -84,6 +89,7 @@ import type {
   PublicGovernanceMotion,
   PublicProfile,
   PublicTrackDetail,
+  PurchaseRow,
   RadioNowPlaying,
   RadioRecentlyPlayedItem,
   ReleaseEmbedView,
@@ -324,25 +330,25 @@ export async function fetchChannel(slug: string): Promise<{
   }
 }
 
-export async function fetchChannelArchive(slug: string): Promise<{
-  data: ArchiveItem[];
+export async function fetchChannelSound(slug: string): Promise<{
+  data: ChannelSoundItem[];
   meta: FetchMeta;
 }> {
   if (forceMock()) {
     return {
-      data: mockArchiveItems(slug),
+      data: mockSoundItems(slug),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
   try {
-    const data = await getJson<ArchiveItem[]>(
+    const data = await getJson<ChannelSoundItem[]>(
       `/api/channels/${encodeURIComponent(slug)}/items`,
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
     return withMockFallback(
       err,
-      () => mockArchiveItems(slug),
+      () => mockSoundItems(slug),
       () => [],
     );
   }
@@ -409,12 +415,13 @@ function mockTrackDetailFromUpload(id: string): PublicTrackDetail | null {
     purchaseTierId,
     purchaseTierName: tier?.name ?? null,
     purchaseTierPriceCents: tier?.priceCents ?? null,
+    purchaseTierPriceOptional: tier?.priceOptional ?? false,
     downloadsEnabled: uploaded.downloadsEnabled,
   };
 }
 
 /** Full detail for a standalone track page — reached only by track id, so
- * (unlike fetchChannelArchive) it can't rely on already knowing the channel.
+ * (unlike fetchChannelSound) it can't rely on already knowing the channel.
  * `shareKey` is the token from a PRIVATE/STASH sound's share link
  * (`/t/$id?key=...`) — see withShareKey. */
 export async function fetchTrackDetail(
@@ -508,9 +515,9 @@ export async function postTrackComment(
   }
 }
 
-const ARCHIVE_DOWNLOAD_SOURCE_FORMAT = 'source';
+const SOUND_DOWNLOAD_SOURCE_FORMAT = 'source';
 
-export async function fetchPublicArchiveDownload(
+export async function fetchPublicSoundDownload(
   channelSlug: string,
   itemId: string,
 ): Promise<
@@ -530,7 +537,7 @@ export async function fetchPublicArchiveDownload(
   try {
     const fp = encodeURIComponent(listenerFingerprint());
     const path = `/api/v1/c/${encodeURIComponent(channelSlug)}/archive/${encodeURIComponent(itemId)}/download`;
-    const tryFormats = [ARCHIVE_DOWNLOAD_SOURCE_FORMAT, undefined] as const;
+    const tryFormats = [SOUND_DOWNLOAD_SOURCE_FORMAT, undefined] as const;
     for (const format of tryFormats) {
       try {
         const query = format ? `?fp=${fp}&format=${format}` : `?fp=${fp}`;
@@ -704,8 +711,8 @@ export async function fetchArtistPlayables(username: string): Promise<{
     }
     return [
       {
-        id: `archive:${track.id}`,
-        kind: 'archive' as const,
+        id: `sound:${track.id}`,
+        kind: 'sound' as const,
         title: track.title,
         artist: track.artistName ?? profile.data.artist.displayName,
         coverUrl: track.bannerUrl ?? undefined,
@@ -1463,6 +1470,31 @@ export async function fetchTransparencyLedger(): Promise<{
   }
 }
 
+export async function fetchTransparencyResolutions(year?: number): Promise<{
+  data: BoardResolution[];
+  meta: FetchMeta;
+}> {
+  const y = year ?? new Date().getFullYear();
+  if (forceMock()) {
+    return {
+      data: mockTransparencyResolutions(y),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const data = await getJson<BoardResolution[]>(
+      `/api/v1/transparency/resolutions?year=${y}`,
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return withMockFallback(
+      err,
+      () => mockTransparencyResolutions(y),
+      () => [],
+    );
+  }
+}
+
 /** Artists the user follows — closest server analogue to “favorite channels”. */
 export async function fetchFollowing(username: string): Promise<{
   data: FollowListUser[];
@@ -1622,8 +1654,8 @@ export async function fetchEmbedRelease(id: string): Promise<{
     };
     const playables = data.tracks.map(
       (t): TahtiPlayable => ({
-        id: `archive:${t.id}`,
-        kind: 'archive',
+        id: `sound:${t.id}`,
+        kind: 'sound',
         title: t.title,
         artist: data.artist.displayName,
         streamUrl: DEMO_MP3,
@@ -1651,8 +1683,8 @@ export async function fetchEmbedRelease(id: string): Promise<{
         );
         if (play.url) {
           playables.push({
-            id: `archive:${t.id}`,
-            kind: 'archive',
+            id: `sound:${t.id}`,
+            kind: 'sound',
             title: t.title,
             artist: data.artist.displayName,
             coverUrl: data.artworkUrl ?? undefined,
@@ -1688,8 +1720,8 @@ export async function fetchEmbedRelease(id: string): Promise<{
       meta: failMeta(err),
       playables: [
         {
-          id: `archive:${id}-t1`,
-          kind: 'archive',
+          id: `sound:${id}-t1`,
+          kind: 'sound',
           title: 'Track one',
           artist: data.artist.displayName,
           streamUrl: DEMO_MP3,
@@ -1725,8 +1757,8 @@ export async function fetchEmbedCollection(slug: string): Promise<{
       .filter((i) => i.sound?.audioUrl)
       .map(
         (i): TahtiPlayable => ({
-          id: `archive:${i.sound!.id}`,
-          kind: 'archive',
+          id: `sound:${i.sound!.id}`,
+          kind: 'sound',
           title: i.sound!.title,
           artist: col.user.displayName,
           coverUrl: col.coverUrl ?? undefined,
@@ -1755,8 +1787,8 @@ export async function fetchEmbedCollection(slug: string): Promise<{
         );
         if (play.url) {
           playables.push({
-            id: `archive:${t.id}`,
-            kind: 'archive',
+            id: `sound:${t.id}`,
+            kind: 'sound',
             title: t.title,
             artist: data.artist.displayName,
             coverUrl: data.coverUrl ?? undefined,
@@ -1793,8 +1825,8 @@ export async function fetchEmbedCollection(slug: string): Promise<{
         .filter((i) => i.sound?.audioUrl)
         .map(
           (i): TahtiPlayable => ({
-            id: `archive:${i.sound!.id}`,
-            kind: 'archive',
+            id: `sound:${i.sound!.id}`,
+            kind: 'sound',
             title: i.sound!.title,
             artist: col.user.displayName,
             streamUrl: i.sound!.audioUrl!,
@@ -2068,6 +2100,52 @@ export async function fetchMySubscriptions(): Promise<{
   }
 }
 
+export async function fetchMyPurchases(): Promise<{
+  data: PurchaseRow[];
+  meta: FetchMeta;
+}> {
+  if (forceMock()) {
+    return {
+      data: listMockPurchases(),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const data = await getJson<PurchaseRow[]>('/api/me/purchases');
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: [], meta: apiErrorMeta(err) };
+  }
+}
+
+/** Cancels at the end of the current billing period — the row stays
+ * ACTIVE with `canceledAt` set, not removed or flipped immediately,
+ * matching the real POST /api/me/subscriptions/:id/cancel response. */
+export async function cancelMySubscription(
+  id: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (forceMock()) {
+    const row = mockCancelSubscription(id);
+    if (!row) {
+      return { ok: false, error: 'Subscription not found' };
+    }
+    return { ok: true };
+  }
+  try {
+    await requestJson(
+      `/api/me/subscriptions/${encodeURIComponent(id)}/cancel`,
+      { method: 'POST' },
+    );
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error:
+        err instanceof Error ? err.message : 'Could not cancel subscription',
+    };
+  }
+}
+
 export type MotionComment = {
   id: string;
   body: string;
@@ -2130,6 +2208,19 @@ let mockMotions: GovernanceMotion[] = [
     commentCount: 2,
   },
 ];
+
+const mockMotionDescriptions: Record<string, string> = {
+  'motion-5':
+    'Adopts a written code of conduct governing chat moderation across all channels, including an escalation ladder before a member can be banned.',
+  'motion-1':
+    'Approves the 2026 grant funding formula, weighting overnight and daytime programming slots evenly per the finance committee proposal.',
+  'motion-3':
+    'Keeps overnight radio broadcast hours uncapped rather than introducing the proposed midnight–6am shift limit, to protect small overnight stations.',
+  'motion-2':
+    'Confirms the board-prepared annual report for the prior fiscal year as the official record.',
+  'motion-4':
+    'Requires an overnight broadcast blackout window to reduce infrastructure costs; rejected by members in favor of keeping overnight hours uncapped (motion-3).',
+};
 
 const mockMotionComments: Record<string, MotionComment[]> = {
   'motion-5': [
@@ -2202,6 +2293,41 @@ export async function fetchGovernanceMotions(): Promise<{
       message.includes('403') ||
       /member/i.test(message);
     return { data: [], meta: apiErrorMeta(err), forbidden };
+  }
+}
+
+export async function fetchGovernanceMotion(
+  id: string,
+): Promise<
+  | { ok: true; data: GovernanceMotionDetail }
+  | { ok: false; error: string; forbidden?: boolean }
+> {
+  if (forceMock()) {
+    const motion = mockMotions.find((m) => m.id === id);
+    if (!motion) {
+      return { ok: false, error: 'Motion not found' };
+    }
+    return {
+      ok: true,
+      data: { ...motion, description: mockMotionDescriptions[id] ?? '' },
+    };
+  }
+  try {
+    const data = await getJson<GovernanceMotionDetail>(
+      `/api/v1/governance/motions/${encodeURIComponent(id)}`,
+    );
+    return { ok: true, data };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : '';
+    const forbidden =
+      message.includes('401') ||
+      message.includes('403') ||
+      /member/i.test(message);
+    return {
+      ok: false,
+      error: message || 'Could not load motion',
+      forbidden,
+    };
   }
 }
 
@@ -2422,16 +2548,27 @@ export async function voteOnMotion(
  * or close an OPEN one and publish its tally. */
 export async function patchGovernanceMotion(
   id: string,
-  state: 'OPEN' | 'CLOSED',
+  patch: { state?: 'OPEN' | 'CLOSED'; title?: string; description?: string },
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   if (forceMock()) {
-    mockMotions = mockMotions.map((m) => (m.id === id ? { ...m, state } : m));
+    mockMotions = mockMotions.map((m) =>
+      m.id === id
+        ? {
+            ...m,
+            ...(patch.state ? { state: patch.state } : {}),
+            ...(patch.title ? { title: patch.title } : {}),
+          }
+        : m,
+    );
+    if (patch.description) {
+      mockMotionDescriptions[id] = patch.description;
+    }
     return { ok: true };
   }
   try {
     await requestJson(`/api/v1/governance/motions/${encodeURIComponent(id)}`, {
       method: 'PATCH',
-      body: JSON.stringify({ state }),
+      body: JSON.stringify(patch),
     });
     return { ok: true };
   } catch (err) {
@@ -2860,4 +2997,4 @@ export async function subscribeNewsletterByEmail(
   }
 }
 
-export { archiveItemToPlayable };
+export { soundItemToPlayable };

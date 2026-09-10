@@ -1,4 +1,4 @@
-/** Archive item content types — mirrors the backend's ArchiveItem.contentType
+/** Archive item content types — mirrors the backend's ChannelSoundItem.contentType
  * enum. Single source of truth for the label shown wherever content type is
  * picked, filtered, or displayed (Discover, admin Files, track/archive
  * editors, radio submission and rotation panels), so a new backend value

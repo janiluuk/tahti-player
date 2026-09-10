@@ -8,8 +8,9 @@ import {
   recordMockTrackPurchase,
 } from './mock-commerce-ledger';
 import { getMockSessionUser } from './mock-session';
-import { getMockUploadedSound, patchMockUploadedSound } from './mock-uploads';
+import { patchMockUploadedSound } from './mock-uploads';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
+import { setMockSoundPurchaseAccess } from './studio';
 
 const forceMock = isForceMock;
 
@@ -179,26 +180,31 @@ export async function createPurchaseTier(input: {
   }
 }
 
+/** Pass a tier id to gate the track behind that purchase tier, or `null`
+ * to clear the gate back to FREE. Matches the real `PATCH
+ * /api/me/sound/:id/access` contract (accessMode + optional purchaseTierId). */
 export async function setSoundPurchaseAccess(
   soundId: string,
-  purchaseTierId: string,
+  purchaseTierId: string | null,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   if (forceMock()) {
-    const sound = getMockUploadedSound(soundId);
-    if (!sound) {
-      return { ok: false, error: 'Sound not found' };
-    }
-    patchMockUploadedSound(soundId, {
-      accessMode: 'PURCHASE',
-      purchaseTierId,
-      downloadsEnabled: true,
-    });
+    const accessMode = purchaseTierId ? 'PURCHASE' : 'FREE';
+    // Two disconnected mock stores back this one sound: mockSoundStore
+    // (studio.ts, read by the Studio editor) and the mock-uploads.ts store
+    // (read by the public track-detail page) — keep both in sync, same as
+    // patchStudioSound already does for its overlapping fields.
+    setMockSoundPurchaseAccess(soundId, accessMode, purchaseTierId);
+    patchMockUploadedSound(soundId, { accessMode, purchaseTierId });
     return { ok: true };
   }
   try {
-    await requestJson(`/api/me/archive/${encodeURIComponent(soundId)}/access`, {
+    await requestJson(`/api/me/sound/${encodeURIComponent(soundId)}/access`, {
       method: 'PATCH',
-      body: JSON.stringify({ accessMode: 'PURCHASE', purchaseTierId }),
+      body: JSON.stringify(
+        purchaseTierId
+          ? { accessMode: 'PURCHASE', purchaseTierId }
+          : { accessMode: 'FREE' },
+      ),
     });
     return { ok: true };
   } catch (err) {
@@ -268,6 +274,34 @@ export async function checkoutPurchaseTier(
     return {
       ok: false,
       error: err instanceof Error ? err.message : 'Checkout failed',
+    };
+  }
+}
+
+export async function setPurchaseTierActive(
+  id: string,
+  active: boolean,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (forceMock()) {
+    const username = artistKey();
+    const all = readAllTiers();
+    const row = all.find((e) => e.artistUsername === username);
+    if (row) {
+      row.tiers = row.tiers.map((t) => (t.id === id ? { ...t, active } : t));
+      writeAllTiers(all);
+    }
+    return { ok: true };
+  }
+  try {
+    await requestJson(`/api/me/purchase-tiers/${encodeURIComponent(id)}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ active }),
+    });
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Update failed',
     };
   }
 }

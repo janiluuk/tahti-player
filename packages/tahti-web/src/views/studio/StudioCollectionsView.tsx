@@ -73,6 +73,13 @@ const collectionStyle = (collection: StudioCollection): CreateStyle => {
   return normalized === 'SINGLE' ? 'ALBUM' : normalized;
 };
 
+/** Playlists and DJ sets get the dedicated playlist editor
+ * (`StudioPlaylistEditorView`); every other style keeps the Design editor. */
+const editorRouteFor = (collection: StudioCollection) =>
+  ['PLAYLIST', 'DJ_SET_SERIES'].includes(collectionStyle(collection))
+    ? '/studio/playlists/$slug'
+    : '/studio/collections/$slug';
+
 export function StudioCollectionsView() {
   const [rows, setRows] = useState<StudioCollection[]>([]);
   const [loading, setLoading] = useState(true);
@@ -170,8 +177,10 @@ export function StudioCollectionsView() {
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
         <StudioNav current="/studio/collections" />
-        <ViewShell title="Collections" classes={{ root: 'px-0 pt-0' }}>
-          <div className="mb-4">
+        <ViewShell
+          title="Collections"
+          classes={{ root: 'px-0 pt-0' }}
+          actions={
             <Tooltip content="New collection" side="top">
               <Button
                 size="icon-sm"
@@ -184,8 +193,8 @@ export function StudioCollectionsView() {
                 <PlusIcon size={16} aria-hidden />
               </Button>
             </Tooltip>
-          </div>
-
+          }
+        >
           {msg && <p className="mb-4 text-sm">{msg}</p>}
 
           <Dialog.Root isOpen={createOpen} onClose={closeCreate}>
@@ -371,7 +380,7 @@ export function StudioCollectionsView() {
                     />
                     <div className="min-w-0 flex-1">
                       <Link
-                        to="/studio/collections/$slug"
+                        to={editorRouteFor(c)}
                         params={{ slug: c.slug }}
                         className="font-medium hover:underline"
                       >
@@ -390,10 +399,7 @@ export function StudioCollectionsView() {
                         {`, ${(c.visibility ?? (c.isPublic === false ? 'PRIVATE' : 'PUBLIC')).toLowerCase()}`}
                       </p>
                     </div>
-                    <Link
-                      to="/studio/collections/$slug"
-                      params={{ slug: c.slug }}
-                    >
+                    <Link to={editorRouteFor(c)} params={{ slug: c.slug }}>
                       <Button size="sm">
                         {['ALBUM', 'EP'].includes(collectionStyle(c))
                           ? 'Design'

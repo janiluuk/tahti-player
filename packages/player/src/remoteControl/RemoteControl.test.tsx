@@ -11,6 +11,14 @@ vi.mock('@tahti-player/themes', () => ({
   DEFAULT_THEME_ID: 'nuclear:default',
 }));
 
+// `simulateConnection()` already waits up to 5000ms for the connection
+// badge on slow coverage/CI runs (see RemoteControl.test-wrapper.tsx) —
+// that alone can eat the whole default 5000ms test timeout, leaving no
+// room for a test's own work afterward (e.g. the search debounce +
+// mocked fetch round trip). Give this file real headroom instead of
+// leaving individual tests to intermittently time out under CI load.
+vi.setConfig({ testTimeout: 15000 });
+
 describe('RemoteControl', () => {
   beforeEach(() => {
     RemoteControlWrapper.reset();

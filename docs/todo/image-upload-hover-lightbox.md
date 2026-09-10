@@ -15,7 +15,7 @@ the corner X badge.
 Consumers of the three primitives get the new behavior automatically —
 verified via `grep`: `TrackEditDialog` (release artwork), `ShowImagePicker`,
 `VenueRegisterView`, `StudioScheduleView`, `StudioVenuesView`,
-`AdminDiscoWidgetsView`, `AdminNewsView`, `BroadcastPreflightPanel`,
+`AdminAddonsView`, `AdminNewsView`, `BroadcastPreflightPanel`,
 `ListenAddonsPanel` all render one of the three shared components directly.
 
 `RadioStationCover` was left untouched: it has no "empty" state (`src` is
@@ -29,14 +29,185 @@ as a follow-up, not done in this pass.
 own hover-reveal delete button, a select toggle, and a click-to-lightbox
 preview, independently matching this ticket's intent.
 
+**2026-09-07:** Onboarding avatar converted to `RoundImageUploadButton`
+(`OnboardingView.tsx`) — was a bespoke `<img>`/letter-placeholder +
+"Replace/Add photo" button + raw hidden file input, now the shared
+primitive with its own hover-delete X, confirm dialog, and preview
+modal. Kept the dedicated `uploadProfileAvatar` endpoint (adapted its
+`{ok, avatarUrl}` return shape to the primitive's `{ok, data:{url}}`
+contract, same adapter pattern `TrackEditDialog` already uses for its
+own upload override) and the existing `refresh()` call after a
+successful change so the top-nav avatar stays in sync — wired into
+`onChange` since the primitive doesn't know about the auth store.
+Live-verified in the browser (`VITE_FORCE_MOCK=1`): empty → upload →
+set-with-delete-badge → confirm delete → back to empty, no console
+errors. One accepted visual change: the letter-initial placeholder is
+gone, replaced by the primitive's standard `ImageIcon` empty state —
+consistent with every other consumer of this shared component.
+
+**2026-09-08:** `StudioBrandingView` (avatar + press-kit gallery) checked —
+it already had its own bespoke hover-delete (X/trash on hover) and
+click-to-preview (`ImageLightbox`) for the avatar, and hover-delete for
+each gallery photo, independently matching this ticket's UX goal (like
+`ArtistGalleryPanel` above). The one real gap: neither delete path had a
+confirm step — both `removeAvatar` and `removeImage` fired immediately
+on click, violating this doc's own "Confirm before delete... never
+silent clear" rule. Added a `ConfirmDialog` for each (avatar: "Remove
+profile picture?"; gallery photo: "Remove this image from your
+gallery?"), reusing the same shared `ConfirmDialog` component the
+file's existing "replace all gallery images" prompt already uses.
+Still bespoke, not migrated onto the shared `imageSlot` primitives —
+not attempted here, out of scope for a confirm-dialog fix.
+`tsc --noEmit`, `eslint`, `pnpm vitest run` (485/485) all pass. Not
+live-browser-verified (no seeded studio session available this pass).
+
+**2026-09-08 (2):** `EntitySocialHeader` (the shared cover/backdrop
+header used by Collection, Release, Show, Sound, and Playlist Studio
+edit views, plus 7 read-only listener/artist pages) gained an optional
+`onImageDelete` prop — additive, only rendered when both `imageUrl` and
+`onImageDelete` are passed, so the other 11 existing consumers that
+don't pass it are unaffected. When set, hovering the cover image
+reveals a small corner X (matching the `StudioBrandingView` hover
+pattern above); clicking it calls the handler, which the view wires to
+its own `ConfirmDialog` (the shared header component doesn't own
+dialog state itself, consistent with every other confirm-delete in
+this codebase). Wired it into `StudioCollectionEditView`'s cover image:
+new `removeCover()` calls `patchStudioCollection(slug, { coverUrl:
+null })`. Added a `CollectionEditable` Storybook story documenting the
+`onImageClick` + `onImageDelete` pairing.
+
+Only Collection's **cover** got wired this pass — the plumbing is now
+on the shared component, so wiring `onImageDelete` into Release/Show/
+Sound/Playlist's cover images (they already pass `onImageClick`) is a
+small follow-up, not attempted here. Collection's **backdrop/slideshow**
+also still needs its own delete UX — it's multi-frame (not a single
+image slot), a different problem than the corner-X pattern used here.
+`tsc --noEmit`, `eslint`, `pnpm vitest run` (485/485) all pass. Not
+live-browser-verified.
+
+**2026-09-08 (3):** Wired `onImageDelete` into Playlist and Release
+covers (the two of the four remaining `EntitySocialHeader` consumers
+that actually have an editable image — `StudioSoundView` and
+`StudioShowDetailView` render a read-only `bannerUrl`/`thumbnailUrl`
+with no `onImageClick`, so there's no image to delete there; checked,
+no change needed). Playlist reused the same `patchStudioCollection(slug,
+{ coverUrl: null })` path Collection already uses (same backend model).
+Release had no way to clear artwork at all — `patchStudioRelease` never
+accepted an `artworkUrl` field, and the dedicated
+`/artwork/{prepare,complete,from-url}` routes only ever set it. Added
+`DELETE /api/me/releases/:id/artwork` in `../tahti-org`
+(`apps/api/src/routes/releases/artwork.ts`, branch
+`feat/release-artwork-delete`, committed locally — not pushed, no PR
+opened) nulling `artworkKey`/`artworkUrl`, plus a
+`apps/api/src/routes/releases/artwork.test.ts` covering the happy path
+and a 404-for-other-owner case (`pnpm vitest run` in `apps/api`: 2/2
+pass; this route previously had zero test coverage). Added
+`removeReleaseArtwork()` to this repo's `src/api/studio.ts` and wired
+both views' `onImageDelete` to their own `ConfirmDialog`, same pattern
+as Collection. `tsc --noEmit`, `eslint`, `pnpm vitest run` (485/485) all
+pass. Not live-browser-verified (Chrome extension unavailable this
+session).
+
+Remaining from the "not done" list below: `ChannelDesigner`
+backdrop/gallery (claim corrected 2026-09-09, see below), and admin
+radio station logo.
+
+**2026-09-09:** Checked `ChannelDesigner`'s backdrop/gallery slideshow
+(this doc's other remaining item) before touching it — **stale claim,
+corrected**. It already has hover-delete (a `Trash2Icon` button that
+fades in on hover, `removeGalleryImage`), drag-to-reorder, an "Add
+gallery images" flow, and an inline live preview + thumbnail strip
+(`slideshowControls` in `ChannelDesigner.tsx`); "Remove backdrop" in
+`BackdropPanel.tsx` clears the whole thing. None of these confirm
+before removing — but unlike every other surface in this ticket,
+`ChannelDesigner` is a live-editing canvas: nothing here persists
+until the user clicks Save, and it already has a global "discard
+unsaved edits" revert (`previousSave` snapshot) as its safety net, the
+same as every other field on the page (colors, toggles, sliders — none
+of which confirm either). Adding a Collection-style per-click confirm
+dialog here would be inconsistent with the rest of the form and isn't
+what this ticket's "confirm before delete" rule was written for
+(persisted, one-click-and-it's-gone deletes). Left as-is; no code
+change. If a future pass wants a true modal-preview-with-frames here
+(the ticket's literal ask), that's still a small gap, but the delete
+UX itself is not.
+
+**2026-09-09 (2):** `StudioBrandingView`'s avatar migrated onto the
+shared `RoundImageUploadButton` primitive, replacing the bespoke
+`group relative` hover overlay + `ImageLightbox` + two `ConfirmDialog`s
+(avatar viewer, avatar delete) added 2026-09-08. Same upload-adapter
+pattern as `OnboardingView`'s earlier migration:
+`uploadProfileAvatar(file).then((r) => r.ok ? {ok, data:{url:
+r.avatarUrl}} : r)`; `onChange('')` (the primitive's delete signal)
+routes to the existing `removeProfileAvatar()` call, which only
+updates local state on success — a failed delete leaves the old avatar
+displayed rather than optimistically clearing it. One accepted visual
+change, same tradeoff already made for Onboarding: the letter-initial
+placeholder is gone, replaced by the primitive's standard `ImageIcon`
+empty state. Press-kit gallery (`ArtistGalleryPanel`, its own
+hover-delete + confirm) was not touched — still bespoke, matching
+`ArtistGalleryPanel`'s existing independent UX noted above. `tsc
+--noEmit`, `eslint`, `vitest run` (499/499) all pass. Not
+live-browser-verified (Chrome extension unavailable this session) — no
+dedicated test file existed for this view before or after.
+
+**2026-09-09:** Collection backdrop/slideshow delete shipped —
+`StudioCollectionEditView`'s "Change backdrop" button is now a
+`group relative` slot: click opens the shared `ImageSlotPreviewDialog`
+(large preview + frame strip) when a backdrop is set, or the existing
+upload dialog when empty; an `ImageSlotDeleteBadge` hover-X on the
+button clears the whole backdrop through the shared confirm flow
+(`useImageSlotChrome`). Per-frame delete in the strip goes through its
+own `ConfirmDialog` (not the shared primitive's bare immediate-delete
+X) — added at the call-site rather than inside `ImageSlotPreviewDialog`
+itself, since this is the primitive's first real `frames` consumer and
+the "confirm every delete, including per-row" rule applies. Removing
+the last frame falls back to clearing the whole backdrop (returns to
+the empty placeholder), matching this doc's slideshow rule; removing
+one of several frames only updates `patchCollectionGallery` — the
+collection's legacy `backdropUrl` fallback field only needs patching
+when the gallery becomes fully empty. `tsc --noEmit`, `eslint`, and
+`vitest run` (499/499 unit tests; the 12 failing files are pre-existing
+Playwright e2e specs vitest picks up under the wrong runner, unrelated)
+all pass. Not live-browser-verified (Chrome extension unavailable this
+session) — no dedicated test file existed for this view before or
+after.
+
+Checked `AdminAnnouncementsView` (the "admin announcements" row below)
+while scoping this pass: it's an audio-clip list (upload/play/delete),
+not an image slot, so it's out of this ticket's scope as written. Its
+delete button has no confirm step at all, which is a real gap against
+this repo's own "confirm before delete" rule — flagged, not fixed here
+(different bug class, would be its own small fix).
+
+**2026-09-09 (2):** Fixed the flagged `AdminAnnouncementsView` gap above
+— its clip Delete button fired `deleteAnnouncementClip` immediately with
+no confirm step. Added a `ConfirmDialog` (`Delete "<title>"?`), same
+pattern as every other delete in this doc; delete button now just sets
+`pendingDelete`, the dialog's `onConfirm` does the actual API call.
+`tsc --noEmit`, `eslint`, `vitest run` (504/504) all pass. Live-verified
+in the browser (`VITE_FORCE_MOCK=1 VITE_MOCK_ADMIN=1`, `/admin/announcements`):
+clicking Delete on a real clip opens the confirm dialog with the clip's
+title, Cancel closes it without deleting. No dedicated test file exists
+for this view (none did before either).
+
 ## Not done in this pass (bespoke, not on the shared primitives)
 
-- `StudioBrandingView` avatar/press-kit multi-image upload
-- `ChannelDesigner` backdrop + gallery slideshow
-- Collection cover + slideshow
+- `StudioBrandingView` press-kit gallery (`ArtistGalleryPanel`): still
+  its own bespoke hover-delete + confirm, independently matching this
+  ticket's UX goal — not migrated onto the shared primitives (avatar
+  was, 2026-09-09).
+- `EntitySocialHeader` cover-image delete: done for Collection
+  (2026-09-08); Release/Show/Sound/Playlist edit views have the same
+  `onImageClick` wiring and just need `onImageDelete` added too —
+  small follow-up, not attempted.
+- `ChannelDesigner` backdrop + gallery slideshow: already has
+  hover-delete, reorder, add, and preview (see 2026-09-09 correction
+  above) — not a real gap against this ticket except the literal
+  "modal preview with frames" ask, which is minor.
 - Admin: radio station logo (blocked on the `RadioStationCover` redesign
-  above), announcements
-- Onboarding avatar
+  above). Announcements has no image slot (see 2026-09-09 note) — its
+  delete-confirm gap was fixed separately (2026-09-09 (2) above).
 
 These are all larger, bespoke multi-image or reorderable-gallery flows
 (not simple single-image slots) — right-sized as their own follow-up
@@ -87,7 +258,7 @@ preview modal when nothing is set.
 | Studio branding / channel | `StudioBrandingView`, `ChannelDesigner`, archive banner, header media |
 | Collections / gallery | collection cover + slideshow, `ArtistGalleryPanel` |
 | Admin | radio station logo, disco widgets, news images, announcements |
-| Other | venue / show image pickers, release artwork, onboarding avatar |
+| Other | venue / show image pickers, release artwork |
 
 ## Out of scope for this ticket
 

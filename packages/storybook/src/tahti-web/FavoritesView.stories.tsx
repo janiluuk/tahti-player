@@ -17,8 +17,8 @@ const radioFavorite: TahtiPlayable = {
 };
 
 const audioFavorite: TahtiPlayable = {
-  id: 'archive:favourite-track',
-  kind: 'archive',
+  id: 'sound:favourite-track',
+  kind: 'sound',
   title: 'Moonlight Drive',
   artist: 'Northern Lights',
   coverUrl: '/mock/northern-lights/cover-first-light.svg',

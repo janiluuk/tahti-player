@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import {
+  ArrowLeftIcon,
   Code2Icon,
   ExternalLinkIcon,
   FilterIcon,
@@ -7,6 +8,8 @@ import {
   GripVerticalIcon,
   LayoutDashboardIcon,
   Link2Icon,
+  MusicIcon,
+  PencilIcon,
   PlayIcon,
   PlusIcon,
   SearchIcon,
@@ -16,6 +19,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import type { Track } from '@tahti-player/model';
 import {
   Button,
   Dialog,
@@ -27,6 +31,7 @@ import {
   Tabs,
   Textarea,
   Tooltip,
+  TrackTable,
 } from '@tahti-player/ui';
 
 import {
@@ -36,6 +41,7 @@ import {
   fetchStudioSound,
   fetchStudioSounds,
   patchStudioRelease,
+  removeReleaseArtwork,
   removeStudioReleaseTrack,
   reorderStudioReleaseTracks,
   uploadReleaseArtwork,
@@ -43,17 +49,23 @@ import {
 import type {
   FingerprintMatch,
   StudioRelease,
+  StudioReleaseTrack,
   StudioSound,
 } from '../../api/studio-types';
+import type { TahtiPlayable } from '../../api/types';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { EmbedTrackRow } from '../../components/EmbedTrackRow';
+import {
+  EntitySocialHeader,
+  type EntitySocialStat,
+} from '../../components/EntitySocialHeader';
 import { FingerprintTrackPanel } from '../../components/FingerprintTrackPanel';
 import { MusicBrainzSubmissionAssistant } from '../../components/MusicBrainzSubmissionAssistant';
 import { PageEmpty } from '../../components/PageStates';
 import { SourceServiceIcon } from '../../components/SourceServiceIcon';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioNav } from '../../components/StudioNav';
-import { StudioPageHeader, StudioPanel } from '../../components/StudioPanel';
+import { StudioPanel } from '../../components/StudioPanel';
 import {
   composeDspUrl,
   displayDspPrefix,
@@ -63,6 +75,8 @@ import {
   loadDspPluginPrefixes,
   prefixesForServices,
 } from '../../lib/dspPluginDefaults';
+import { playableFromStudioHearthis } from '../../lib/embedPlayback';
+import { trackTableLabels } from '../../lib/trackTableLabels';
 import { useAuthStore } from '../../stores/authStore';
 import { usePlayerStore } from '../../stores/playerStore';
 
@@ -70,15 +84,19 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
   const user = useAuthStore((state) => state.user);
   const currentId = usePlayerStore((state) => state.currentId);
   const playbackStatus = usePlayerStore((state) => state.status);
+  const setPlaybackStatus = usePlayerStore((state) => state.setStatus);
   const play = usePlayerStore((state) => state.play);
+  const enqueue = usePlayerStore((state) => state.enqueue);
   const [release, setRelease] = useState<StudioRelease | null>(null);
   const [description, setDescription] = useState('');
   const [spotify, setSpotify] = useState('');
   const [bandcamp, setBandcamp] = useState('');
-  const [message, setMessage] = useState<string | null>(null);
   const [artworkPreview, setArtworkPreview] = useState<string | null>(null);
   const [artworkPickerOpen, setArtworkPickerOpen] = useState(false);
+  const [pendingArtworkDelete, setPendingArtworkDelete] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [detailsExpanded, setDetailsExpanded] = useState(false);
+  const [soundsById, setSoundsById] = useState<Record<string, StudioSound>>({});
 
   useEffect(() => {
     void fetchStudioReleases().then((res) => {
@@ -91,8 +109,58 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
     });
   }, [id]);
 
+  useEffect(() => {
+    void fetchStudioSounds().then((res) => {
+      setSoundsById(Object.fromEntries(res.data.map((s) => [s.id, s])));
+    });
+  }, []);
+
+  /** Non-hearthis EMBED_ONLY sounds have no Tahti-hosted audio and no
+   * shared-player widget — same accepted gap as the Collection editor's
+   * TrackTable. */
+  const buildPlayable = async (
+    releaseTrack: StudioReleaseTrack,
+  ): Promise<TahtiPlayable | null> => {
+    if (!releaseTrack.soundId) {
+      return null;
+    }
+    const sound = soundsById[releaseTrack.soundId];
+    if (sound) {
+      const hearthis = playableFromStudioHearthis(sound);
+      if (hearthis) {
+        return hearthis;
+      }
+      if (sound.embedProvider && sound.embedProvider !== 'HEARTHIS') {
+        return null;
+      }
+    }
+    const { data } = await fetchEditorSource(releaseTrack.soundId);
+    if (!data.url) {
+      return null;
+    }
+    return {
+      id: `sound:${releaseTrack.soundId}`,
+      kind: 'sound',
+      title: data.title || releaseTrack.title,
+      artist: user?.displayName ?? 'You',
+      streamUrl: data.url,
+      protocol: data.url.includes('.m3u8') ? 'hls' : 'https',
+    };
+  };
+
+  const releaseTracks: Track[] = useMemo(
+    () =>
+      (release?.tracks ?? []).map((t) => ({
+        title: t.title,
+        artists: [{ name: 'You', roles: ['performer'] }],
+        durationMs:
+          t.durationSec != null ? Math.round(t.durationSec * 1000) : undefined,
+        source: { provider: 'tahti', id: t.id },
+      })),
+    [release?.tracks],
+  );
+
   const save = async () => {
-    setMessage(null);
     setSaving(true);
     const result = await patchStudioRelease(id, {
       description,
@@ -104,11 +172,21 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
     });
     setSaving(false);
     if (!result.ok) {
-      setMessage(result.error);
+      toast.error(result.error);
       return;
     }
     setRelease(result.data);
-    setMessage('Saved.');
+    toast.success('Saved.');
+  };
+
+  const removeArtwork = async () => {
+    const result = await removeReleaseArtwork(id);
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    setArtworkPreview(null);
+    toast.success('Artwork removed.');
   };
 
   const playFirstTrack = async () => {
@@ -123,8 +201,8 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
       return;
     }
     play({
-      id: `archive:${firstTrack.soundId}`,
-      kind: 'archive',
+      id: `sound:${firstTrack.soundId}`,
+      kind: 'sound',
       title: firstTrack.title,
       artist: user?.displayName ?? 'You',
       streamUrl: source.data.url,
@@ -148,29 +226,118 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
     );
   };
 
+  const headerStats: EntitySocialStat[] =
+    release?.tracks && release.tracks.length > 0
+      ? [
+          {
+            key: 'tracks',
+            label: 'Tracks',
+            value: release.tracks.length,
+            icon: MusicIcon,
+          },
+        ]
+      : [];
+
   return (
     <StudioGate requireChannel={false}>
-      <div className="studio-page-layout mx-auto flex max-w-2xl flex-col gap-6 px-1 py-2">
+      <div className="studio-page-layout flex w-full flex-col gap-6 px-1 py-2">
         <StudioNav current="/studio/releases" />
-        <Link
-          to="/studio/releases"
-          className="text-foreground-secondary -mt-2 text-xs hover:underline"
-        >
-          ← Releases
-        </Link>
+        <Tooltip content="Back to Releases" side="right">
+          <Link
+            to="/studio/releases"
+            aria-label="Back to Releases"
+            className="text-foreground-secondary hover:bg-background-secondary -mt-2 inline-flex size-8 w-fit items-center justify-center rounded-full"
+          >
+            <ArrowLeftIcon size={16} aria-hidden />
+          </Link>
+        </Tooltip>
         {!release ? (
           <StudioPanel>
             <PageEmpty title="Release not found in list" />
           </StudioPanel>
         ) : (
           <>
-            <StudioPageHeader
+            <EntitySocialHeader
               title={release.title}
-              action={
-                <div className="flex flex-wrap justify-end gap-2">
-                  <SaveButton saving={saving} onClick={() => void save()} />
-                </div>
+              imageUrl={artworkPreview}
+              imageAlt=""
+              onImageClick={() => setArtworkPickerOpen(true)}
+              onImageDelete={
+                artworkPreview ? () => setPendingArtworkDelete(true) : undefined
               }
+              subtitle={`${release.type} · ${release.state}`}
+              description={description.trim() || undefined}
+              stats={headerStats}
+              actions={
+                <>
+                  <Tooltip content="Open release embed" side="top">
+                    <Link
+                      to="/r/$slug"
+                      params={{ slug: release.smartLinkSlug }}
+                      className="bg-background border-border text-foreground flex size-9 items-center justify-center rounded-md border-(length:--border-width)"
+                      aria-label="Open release embed"
+                    >
+                      <Code2Icon size={16} aria-hidden />
+                    </Link>
+                  </Tooltip>
+                  <SaveButton saving={saving} onClick={() => void save()} />
+                </>
+              }
+              data-testid="studio-release-social-header"
+            >
+              <Button
+                variant="secondary"
+                onClick={() => void playFirstTrack()}
+                disabled={!release.tracks?.length}
+              >
+                <PlayIcon size={16} aria-hidden className="mr-1.5" />
+                Play
+              </Button>
+            </EntitySocialHeader>
+
+            <Dialog.Root
+              isOpen={artworkPickerOpen}
+              onClose={() => setArtworkPickerOpen(false)}
+              className="max-w-lg"
+            >
+              <Dialog.Title>Release artwork</Dialog.Title>
+              <div className="mt-4">
+                <FilePicker
+                  labels={{
+                    title: 'Release artwork',
+                    description: 'JPEG, PNG, or WebP',
+                    browse: 'Choose image',
+                  }}
+                  accept="image/jpeg,image/png,image/webp"
+                  onFiles={(files) => {
+                    const file = files[0];
+                    if (!file) {
+                      return;
+                    }
+                    void uploadReleaseArtwork(id, file).then((r) => {
+                      if (!r.ok) {
+                        toast.error(r.error);
+                      } else {
+                        setArtworkPreview(r.artworkUrl);
+                        toast.success('Artwork uploaded.');
+                      }
+                      setArtworkPickerOpen(false);
+                    });
+                  }}
+                />
+              </div>
+            </Dialog.Root>
+
+            <ConfirmDialog
+              isOpen={pendingArtworkDelete}
+              title="Remove artwork?"
+              description="The release will fall back to its default placeholder until you upload new artwork."
+              confirmLabel="Remove artwork"
+              onCancel={() => setPendingArtworkDelete(false)}
+              onConfirm={() => {
+                setPendingArtworkDelete(false);
+                void removeArtwork();
+              }}
             />
 
             <Tabs
@@ -183,99 +350,20 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                   icon: <LayoutDashboardIcon size={14} />,
                   content: (
                     <>
-                      <div className="group border-border bg-background-secondary relative isolate min-h-64 overflow-hidden rounded-xl border shadow-sm sm:min-h-72">
-                        {artworkPreview ? (
-                          <img
-                            src={artworkPreview}
-                            alt=""
-                            className="absolute inset-0 size-full object-cover"
-                          />
-                        ) : (
-                          <div className="bg-background text-foreground-secondary absolute inset-0 flex items-center justify-center text-sm">
-                            No artwork
-                          </div>
-                        )}
-                        <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/25 to-black/70" />
-                        <div className="absolute inset-x-0 top-0 flex items-start justify-between gap-3 p-4 text-white">
-                          <div className="min-w-0">
-                            <p className="text-xs font-semibold tracking-[0.16em] text-white/70 uppercase">
-                              {release.type} · {release.state}
-                            </p>
-                            <h2 className="mt-1 truncate text-2xl leading-tight font-bold sm:text-3xl">
-                              {release.title}
-                            </h2>
-                            <p className="mt-1 truncate text-sm text-white/80">
-                              {user?.displayName ?? 'Tahti artist'}
-                            </p>
-                          </div>
-                          <Link
-                            to="/r/$slug"
-                            params={{ slug: release.smartLinkSlug }}
-                            className="flex size-9 shrink-0 items-center justify-center rounded-md border border-white/30 bg-black/30 text-white backdrop-blur-sm transition-colors hover:bg-white/20"
-                            aria-label="Open release embed"
-                            title="Open release embed"
+                      <StudioPanel
+                        title="Details"
+                        action={
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            onClick={() => setDetailsExpanded((v) => !v)}
                           >
-                            <Code2Icon size={17} aria-hidden />
-                          </Link>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => void playFirstTrack()}
-                          disabled={!release.tracks?.length}
-                          className="bg-primary text-primary-foreground focus-visible:outline-primary absolute right-4 bottom-4 flex size-12 items-center justify-center rounded-full opacity-0 shadow-lg transition-opacity group-hover:opacity-100 hover:scale-105 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none"
-                          aria-label={`Play ${release.title}`}
-                          title={`Play ${release.title}`}
-                        >
-                          <PlayIcon size={20} fill="currentColor" aria-hidden />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setArtworkPickerOpen(true)}
-                          aria-label="Change release artwork"
-                          title="Change release artwork"
-                          className="absolute bottom-4 left-4 rounded-md border border-white/30 bg-black/30 px-2.5 py-1.5 text-xs text-white opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 hover:bg-white/20 focus-visible:opacity-100"
-                        >
-                          Change artwork
-                        </button>
-                      </div>
-
-                      <Dialog.Root
-                        isOpen={artworkPickerOpen}
-                        onClose={() => setArtworkPickerOpen(false)}
-                        className="max-w-lg"
+                            <PencilIcon size={14} aria-hidden />
+                            {detailsExpanded ? 'Done' : 'Edit details'}
+                          </Button>
+                        }
                       >
-                        <Dialog.Title>Release artwork</Dialog.Title>
-                        <div className="mt-4">
-                          <FilePicker
-                            labels={{
-                              title: 'Release artwork',
-                              description: 'JPEG, PNG, or WebP',
-                              browse: 'Choose image',
-                            }}
-                            accept="image/jpeg,image/png,image/webp"
-                            onFiles={(files) => {
-                              const file = files[0];
-                              if (!file) {
-                                return;
-                              }
-                              void uploadReleaseArtwork(id, file).then((r) => {
-                                if (!r.ok) {
-                                  setMessage(r.error);
-                                  toast.error(r.error);
-                                } else {
-                                  setArtworkPreview(r.artworkUrl);
-                                  setMessage('Artwork uploaded.');
-                                  toast.success('Artwork uploaded.');
-                                }
-                                setArtworkPickerOpen(false);
-                              });
-                            }}
-                          />
-                        </div>
-                      </Dialog.Root>
-
-                      <StudioPanel title="Details">
-                        <div className="flex flex-col gap-3">
+                        {detailsExpanded ? (
                           <label className="flex flex-col gap-1 text-sm">
                             <span className="text-foreground-secondary text-xs uppercase">
                               Description
@@ -287,29 +375,101 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                               rows={3}
                             />
                           </label>
-                        </div>
+                        ) : (
+                          <p className="text-foreground-secondary text-sm">
+                            {description.trim() || 'No description set yet.'}
+                          </p>
+                        )}
                       </StudioPanel>
 
                       {release.tracks && release.tracks.length > 0 && (
                         <StudioPanel title="Tracks">
-                          <ol className="text-foreground-secondary list-decimal space-y-2 pl-5 text-sm">
-                            {release.tracks.map((t) => (
-                              <ReleaseTrackRow
-                                key={t.id}
-                                track={t}
-                                shopUrl={release.smartLinkTargets?.bandcamp}
-                                isPlaying={
-                                  currentId === `archive:${t.soundId}` &&
-                                  (playbackStatus === 'playing' ||
-                                    playbackStatus === 'loading')
-                                }
-                              />
-                            ))}
-                          </ol>
+                          <div className="min-h-[200px]">
+                            <TrackTable
+                              tracks={releaseTracks}
+                              labels={trackTableLabels}
+                              getItemId={(_t, index) =>
+                                release.tracks?.[index]?.id ?? String(index)
+                              }
+                              features={{
+                                header: true,
+                                reorderable: false,
+                                filterable: true,
+                                sortable: false,
+                              }}
+                              display={{
+                                displayPosition: false,
+                                displayArtist: false,
+                                displayDuration: true,
+                                displayDeleteButton: false,
+                                displayThumbnail: true,
+                                displayQueueControls: true,
+                              }}
+                              actions={{
+                                onPlayNow: (t) => {
+                                  const rt = release.tracks?.find(
+                                    (candidate) => candidate.id === t.source.id,
+                                  );
+                                  if (!rt) {
+                                    return;
+                                  }
+                                  const playableId = `sound:${rt.soundId}`;
+                                  if (currentId === playableId) {
+                                    setPlaybackStatus(
+                                      playbackStatus === 'playing' ||
+                                        playbackStatus === 'loading'
+                                        ? 'paused'
+                                        : 'playing',
+                                    );
+                                  } else {
+                                    void buildPlayable(rt).then((playable) => {
+                                      if (playable) {
+                                        play(playable);
+                                      }
+                                    });
+                                  }
+                                },
+                                onAddToQueue: (t) => {
+                                  const rt = release.tracks?.find(
+                                    (candidate) => candidate.id === t.source.id,
+                                  );
+                                  if (rt) {
+                                    void buildPlayable(rt).then((playable) => {
+                                      if (playable) {
+                                        enqueue(playable);
+                                      }
+                                    });
+                                  }
+                                },
+                              }}
+                              meta={{
+                                isCurrentTrack: (track) => {
+                                  const rt = release.tracks?.find(
+                                    (candidate) =>
+                                      candidate.id === track.source.id,
+                                  );
+                                  return Boolean(
+                                    rt?.soundId &&
+                                    currentId === `sound:${rt.soundId}`,
+                                  );
+                                },
+                                isTrackPlaying: (track) => {
+                                  const rt = release.tracks?.find(
+                                    (candidate) =>
+                                      candidate.id === track.source.id,
+                                  );
+                                  return Boolean(
+                                    rt?.soundId &&
+                                    currentId === `sound:${rt.soundId}` &&
+                                    (playbackStatus === 'playing' ||
+                                      playbackStatus === 'loading'),
+                                  );
+                                },
+                              }}
+                            />
+                          </div>
                         </StudioPanel>
                       )}
-
-                      {message && <p className="text-sm">{message}</p>}
 
                       <div className="flex flex-wrap items-center gap-2">
                         <Button
@@ -319,10 +479,10 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                               state: 'PUBLISHED',
                             }).then((r) => {
                               if (!r.ok) {
-                                setMessage(r.error);
+                                toast.error(r.error);
                               } else {
                                 setRelease(r.data);
-                                setMessage('Published.');
+                                toast.success('Published.');
                               }
                             });
                           }}
@@ -351,7 +511,6 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                             : current,
                         )
                       }
-                      onMessage={setMessage}
                       onReleaseChange={setRelease}
                     />
                   ),
@@ -425,6 +584,8 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
   );
 }
 
+/** Per-row play/editor/Bandcamp affordance used by the Smart Links tab's
+ * own reorderable tracklist (untouched by the Overview TrackTable swap). */
 function ReleaseTrackRow({
   track,
   shopUrl,
@@ -445,8 +606,8 @@ function ReleaseTrackRow({
     if (!track.soundId) {
       return;
     }
-    const archiveId = track.soundId;
-    void fetchStudioSound(archiveId).then((result) => {
+    const soundId = track.soundId;
+    void fetchStudioSound(soundId).then((result) => {
       if (result.data.embedProvider && result.data.embedUri) {
         setEmbed({
           provider: result.data.embedProvider,
@@ -454,7 +615,7 @@ function ReleaseTrackRow({
         });
         return;
       }
-      void fetchEditorSource(archiveId).then((source) =>
+      void fetchEditorSource(soundId).then((source) =>
         setSourceUrl(source.data.url),
       );
     });
@@ -485,8 +646,8 @@ function ReleaseTrackRow({
             aria-label={`Play ${track.title}`}
             onClick={() =>
               play({
-                id: `archive:${track.soundId}`,
-                kind: 'archive',
+                id: `sound:${track.soundId}`,
+                kind: 'sound',
                 title: track.title,
                 artist: 'You',
                 streamUrl: sourceUrl,
@@ -530,7 +691,6 @@ function ReleaseSmartLinksPanel({
   onSpotifyChange,
   onBandcampChange,
   onTargetsSaved,
-  onMessage,
   onReleaseChange,
 }: {
   release: StudioRelease;
@@ -539,14 +699,13 @@ function ReleaseSmartLinksPanel({
   onSpotifyChange: (value: string) => void;
   onBandcampChange: (value: string) => void;
   onTargetsSaved: (targets: Record<string, string>) => void;
-  onMessage: (message: string) => void;
   onReleaseChange: (release: StudioRelease) => void;
 }) {
   const [targets, setTargets] = useState<Record<string, string>>(
     release.smartLinkTargets ?? {},
   );
   const [tracks, setTracks] = useState(release.tracks ?? []);
-  const [archive, setArchive] = useState<StudioSound[]>([]);
+  const [sounds, setSounds] = useState<StudioSound[]>([]);
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [contentType, setContentType] = useState('ALL');
@@ -566,7 +725,7 @@ function ReleaseSmartLinksPanel({
   }, [release]);
 
   useEffect(() => {
-    void fetchStudioSounds().then((result) => setArchive(result.data));
+    void fetchStudioSounds().then((result) => setSounds(result.data));
   }, []);
 
   useEffect(() => {
@@ -575,7 +734,7 @@ function ReleaseSmartLinksPanel({
 
   const filteredSounds = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
-    return archive.filter((item) => {
+    return sounds.filter((item) => {
       const matchesType =
         contentType === 'ALL' || item.contentType === contentType;
       const matchesQuery =
@@ -587,7 +746,7 @@ function ReleaseSmartLinksPanel({
           .includes(normalizedQuery);
       return matchesType && matchesQuery;
     });
-  }, [archive, contentType, query]);
+  }, [sounds, contentType, query]);
 
   const saveTargets = async () => {
     const cleaned = Object.fromEntries(
@@ -605,11 +764,11 @@ function ReleaseSmartLinksPanel({
       smartLinkTargets: cleaned,
     });
     if (!result.ok) {
-      onMessage(result.error);
+      toast.error(result.error);
       return;
     }
     onTargetsSaved(cleaned);
-    onMessage('Smart-link targets saved.');
+    toast.success('Smart-link targets saved.');
   };
 
   const moveTrack = async (trackId: string, targetId: string) => {
@@ -632,7 +791,7 @@ function ReleaseSmartLinksPanel({
       next.map((track) => track.id),
     );
     if (!result.ok) {
-      onMessage(result.error);
+      toast.error(result.error);
       return;
     }
     setTracks(next.map((track, index) => ({ ...track, position: index + 1 })));
@@ -667,13 +826,13 @@ function ReleaseSmartLinksPanel({
       durationSec: item.durationSec,
     });
     if (!result.ok) {
-      onMessage(result.error);
+      toast.error(result.error);
       return;
     }
     const next = [...tracks, result.data];
     setTracks(next);
     onReleaseChange({ ...release, tracks: next });
-    onMessage(`${item.title} added to release.`);
+    toast.success(`${item.title} added to release.`);
   };
 
   const dspPrefixes = prefixesForServices(pluginPrefixes);
@@ -881,7 +1040,7 @@ function ReleaseSmartLinksPanel({
               { id: 'ALL', label: 'All content' },
               ...[
                 ...new Set(
-                  archive.map((item) => item.contentType).filter(Boolean),
+                  sounds.map((item) => item.contentType).filter(Boolean),
                 ),
               ].map((type) => ({ id: type ?? '', label: type ?? '' })),
             ]}

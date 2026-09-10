@@ -1,8 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import {
-  StudioPageHeader,
-  StudioPanel,
-} from '@tahti-web/components/StudioPanel';
+import { StudioPanel } from '@tahti-web/components/StudioPanel';
 
 import { Badge, Button } from '@tahti-player/ui';
 
@@ -47,15 +44,4 @@ export const NoHeader: Story = {
   args: {
     children: <p className="text-sm">Panel body with no title/action row.</p>,
   },
-};
-
-export const PageHeaderStory: StoryObj = {
-  name: 'StudioPageHeader',
-  render: () => (
-    <StudioPageHeader
-      title="Admin"
-      subtitle="Operations dashboard — members, live streams, and system health."
-      action={<Button size="sm">Export</Button>}
-    />
-  ),
 };

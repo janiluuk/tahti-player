@@ -282,8 +282,8 @@ export function SelectsTab() {
                 return;
               }
               play({
-                id: `archive:${item.soundId}`,
-                kind: 'archive',
+                id: `sound:${item.soundId}`,
+                kind: 'sound',
                 title: item.title,
                 artist: item.artistName,
                 streamUrl: item.audioUrl,
@@ -421,8 +421,8 @@ export function SelectsTab() {
                               aria-label={`Preview ${item.title}`}
                               onClick={() =>
                                 play({
-                                  id: `archive:${item.id}`,
-                                  kind: 'archive',
+                                  id: `sound:${item.id}`,
+                                  kind: 'sound',
                                   title: item.title,
                                   artist: item.artistName,
                                   streamUrl: item.audioUrl!,

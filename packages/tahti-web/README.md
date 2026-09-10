@@ -114,7 +114,7 @@ See the artist identity, story, people and public catalogue. · [`/u/demo`](./do
 
 <img src="./docs/readme-shots/studio-audience.png" alt="Studio / Audience" width="1680" />
 
-Manage audience relationships and fan revenue. · [`/studio/revenue`](./docs/VIEW-GUIDE.md#studio-audience)
+Manage audience relationships and fan revenue. · [`/studio/audience`](./docs/VIEW-GUIDE.md#studio-audience)
 
 #### Messages
 

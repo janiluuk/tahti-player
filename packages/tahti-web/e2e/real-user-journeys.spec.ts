@@ -154,7 +154,11 @@ test('governance navigation keeps member, artist, and board entries reachable an
       .getByRole('tab', { name: 'Governance' }),
   ).toHaveAttribute('aria-selected', 'true');
 
+  // AGM (and Annual reports / Grants) are now tabs inside the single
+  // consolidated /admin/governance page, not their own Admin Community
+  // entries — /admin/agm redirects to /admin/governance/agm.
   await page.goto('/admin/agm');
+  await expect(page).toHaveURL(/\/admin\/governance\/agm$/);
   await expect(page.getByRole('tab', { name: 'Community' })).toHaveAttribute(
     'aria-selected',
     'true',
@@ -162,6 +166,11 @@ test('governance navigation keeps member, artist, and board entries reachable an
   await expect(
     page
       .getByRole('tablist', { name: 'Admin Community' })
+      .getByRole('tab', { name: 'Governance' }),
+  ).toHaveAttribute('aria-selected', 'true');
+  await expect(
+    page
+      .getByRole('tablist', { name: 'Governance sections' })
       .getByRole('tab', { name: 'AGM' }),
   ).toHaveAttribute('aria-selected', 'true');
 });

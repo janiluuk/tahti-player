@@ -19,9 +19,10 @@ import {
 import { getMockFreeSubscriptionsEnabled } from './mock-profile-preferences';
 import type {
   Announcement,
-  ArchiveItem,
   AuthUser,
+  BoardResolution,
   ChannelDirectoryResponse,
+  ChannelSoundItem,
   ChatAccess,
   ChatMessage,
   DiscoverTrackItem,
@@ -410,7 +411,7 @@ export function mockSearch(
     type === 'artists' || type === 'collections'
       ? []
       : MOCK_DIRECTORY.items.flatMap((item) =>
-          mockArchiveItems(item.slug)
+          mockSoundItems(item.slug)
             .filter((track) => track.title.toLowerCase().includes(needle))
             .map((track) => ({
               id: track.id,
@@ -639,7 +640,7 @@ const GENRE_TAGS: Record<string, string> = {
   acoustic: 'folk',
 };
 
-export function mockArchiveItems(slug: string): ArchiveItem[] {
+export function mockSoundItems(slug: string): ChannelSoundItem[] {
   const channel = mockChannel(slug);
   const content = stationContent(slug);
   const artist = channel.user.displayName;
@@ -740,7 +741,7 @@ export function mockTrackDetail(id: string): PublicTrackDetail | null {
   if (!slug || slug === id) {
     return null;
   }
-  const item = mockArchiveItems(slug).find((i) => i.id === id);
+  const item = mockSoundItems(slug).find((i) => i.id === id);
   if (!item) {
     return null;
   }
@@ -798,13 +799,13 @@ export function mockTrackDetail(id: string): PublicTrackDetail | null {
   };
 }
 
-function archiveItemToDiscoverTrack(
-  item: ArchiveItem,
+function soundItemToDiscoverTrack(
+  item: ChannelSoundItem,
   channelSlug: string,
   extra?: { listens?: number },
 ): DiscoverTrackItem {
   return {
-    id: `archive:${item.id}`,
+    id: `sound:${item.id}`,
     title: item.title,
     artist: item.artistName ?? channelSlug,
     artistUsername: channelSlug,
@@ -822,9 +823,7 @@ function archiveItemToDiscoverTrack(
 function discoverTrackPool(): DiscoverTrackItem[] {
   const slugs = ['northern-lights', 'demo'];
   return slugs.flatMap((slug) =>
-    mockArchiveItems(slug).map((item) =>
-      archiveItemToDiscoverTrack(item, slug),
-    ),
+    mockSoundItems(slug).map((item) => soundItemToDiscoverTrack(item, slug)),
   );
 }
 
@@ -843,14 +842,14 @@ export function mockLatestTracks(): DiscoverTrackItem[] {
   const slugs = ['northern-lights', 'demo'];
   return slugs
     .flatMap((slug) =>
-      mockArchiveItems(slug).map((item) => ({
+      mockSoundItems(slug).map((item) => ({
         item,
         slug,
         createdAt: item.createdAt ?? '',
       })),
     )
     .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
-    .map(({ item, slug }) => archiveItemToDiscoverTrack(item, slug));
+    .map(({ item, slug }) => soundItemToDiscoverTrack(item, slug));
 }
 
 export function mockNewToYou(): {
@@ -866,7 +865,7 @@ export function mockNewToYou(): {
 export function mockProfile(username: string): PublicProfile {
   const channel = mockChannel(username);
   const content = stationContent(username);
-  const archive = mockArchiveItems(username);
+  const archive = mockSoundItems(username);
   const releaseSlugFor = (i: number) => `${username}-release-${i + 1}`;
 
   const releases = content.releases.map((rel, i) => ({
@@ -958,7 +957,7 @@ export function mockProfile(username: string): PublicProfile {
     links: {
       channel: `/c/${channel.slug}`,
       subscribe: `/u/${username}/subscribe`,
-      feeds: { archive: `/api/v1/u/${username}/rss.xml` },
+      feeds: { sound: `/api/v1/u/${username}/rss.xml` },
       presskit: `/api/v1/u/${username}/press-kit.zip`,
     },
     backgroundMusicUrl: null,
@@ -969,7 +968,7 @@ export function mockCollection(
   slug: string,
   username = 'northern-lights',
 ): PublicCollection {
-  const archive = mockArchiveItems(username);
+  const archive = mockSoundItems(username);
   return {
     slug,
     name: slug === 'favorites-vault' ? 'Favorites vault' : slug,
@@ -1142,8 +1141,8 @@ export function radioToPlayable(radio: RadioNowPlaying): TahtiPlayable | null {
   };
 }
 
-export function archiveItemToPlayable(
-  item: ArchiveItem,
+export function soundItemToPlayable(
+  item: ChannelSoundItem,
   channelSlug?: string,
 ): TahtiPlayable | null {
   if (!item.audioUrl) {
@@ -1156,8 +1155,8 @@ export function archiveItemToPlayable(
     // "not playable here" below.
     if (item.embedProvider === 'HEARTHIS' && item.embedUri) {
       return {
-        id: `archive:${item.id}`,
-        kind: 'archive',
+        id: `sound:${item.id}`,
+        kind: 'sound',
         title: item.title,
         artist: item.artistName ?? channelSlug ?? 'Unknown',
         coverUrl: item.bannerUrl ?? undefined,
@@ -1174,8 +1173,8 @@ export function archiveItemToPlayable(
   }
   const isHls = item.audioUrl.includes('.m3u8');
   return {
-    id: `archive:${item.id}`,
-    kind: 'archive',
+    id: `sound:${item.id}`,
+    kind: 'sound',
     title: item.title,
     artist: item.artistName ?? channelSlug ?? 'Unknown',
     coverUrl: item.bannerUrl ?? undefined,
@@ -1322,6 +1321,35 @@ export function mockTransparencyLedger(): TransparencyLedgerEntry[] {
       category: 'COST_INFRASTRUCTURE',
       amountCents: '-15000',
       createdAt: '2026-07-02T10:00:00.000Z',
+    },
+  ];
+}
+
+export function mockTransparencyResolutions(
+  year = new Date().getFullYear(),
+): BoardResolution[] {
+  return [
+    {
+      id: 'resolution-1',
+      title: 'Adopt updated grant disbursement schedule',
+      body: 'The board resolves to disburse artist grants quarterly instead of annually, starting the following fiscal quarter.',
+      votedAt: `${year}-02-10T18:00:00.000Z`,
+      outcome: 'PASSED',
+      voteFor: 4,
+      voteAgainst: 0,
+      voteAbstain: 1,
+      publishedAt: `${year}-02-11T09:00:00.000Z`,
+    },
+    {
+      id: 'resolution-2',
+      title: 'Decline overnight broadcast blackout proposal',
+      body: 'The board resolves not to adopt a mandatory overnight broadcast blackout window, following member feedback against the proposal.',
+      votedAt: `${year}-04-03T18:00:00.000Z`,
+      outcome: 'FAILED',
+      voteFor: 1,
+      voteAgainst: 4,
+      voteAbstain: 0,
+      publishedAt: `${year}-04-04T09:00:00.000Z`,
     },
   ];
 }

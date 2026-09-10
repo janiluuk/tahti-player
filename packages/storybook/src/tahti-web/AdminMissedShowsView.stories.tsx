@@ -8,7 +8,12 @@ const meta: Meta<typeof AdminMissedShowsPanel> = {
   component: AdminMissedShowsPanel,
   parameters: { layout: 'fullscreen' },
   tags: ['autodocs'],
-  decorators: [withTahtiRouter('/admin/missed-shows'), withMockAuth()],
+  // /admin/missed-shows redirects to /admin/moderation/$tab (router.tsx);
+  // point the decorator at the surviving route so it isn't testing a dead path.
+  decorators: [
+    withTahtiRouter('/admin/moderation/missed-shows'),
+    withMockAuth(),
+  ],
 };
 
 export default meta;

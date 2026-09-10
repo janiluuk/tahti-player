@@ -65,7 +65,7 @@ export const PORT_BACKLOG: PortInventoryItem[] = [
   {
     id: 'stash-share',
     surface: 'Stash share links',
-    route: '/studio/stash',
+    route: '/library/stash',
     status: 'done',
     detail: 'Grant expiring read/download access and revoke active shares.',
     section: 'backlog',
@@ -278,7 +278,7 @@ export const PORT_GAP_HIGHLIGHTS: PortInventoryItem[] = [
   {
     id: 'gap-stash-upload',
     surface: 'Stash upload / delete',
-    route: '/studio/stash',
+    route: '/library/stash',
     status: 'done',
     detail:
       'Prepare → PUT → register, delete, share, and revoke are in-client.',

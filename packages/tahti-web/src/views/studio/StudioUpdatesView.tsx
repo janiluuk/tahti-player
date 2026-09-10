@@ -170,9 +170,11 @@ export function StudioUpdatesView() {
             </Tabs.Tab>
           </Tabs.List>
         </Tabs.Root>
-        <ViewShell title="Updates" classes={{ root: 'px-0 pt-0' }}>
-          <div className="mb-4">
-            {tab === 'posts' ? (
+        <ViewShell
+          title="Updates"
+          classes={{ root: 'px-0 pt-0' }}
+          actions={
+            tab === 'posts' ? (
               <Tooltip content="New post" side="top">
                 <Button
                   size="icon-sm"
@@ -198,9 +200,9 @@ export function StudioUpdatesView() {
                   <PlusIcon size={16} aria-hidden />
                 </Button>
               </Tooltip>
-            )}
-          </div>
-
+            )
+          }
+        >
           {msg && (
             <p className="text-foreground-secondary text-sm" role="status">
               {msg}

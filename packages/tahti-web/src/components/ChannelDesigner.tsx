@@ -223,6 +223,11 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
     const [playerScheme, setPlayerScheme] = useState<ColorScheme>({});
     const [backgroundScheme, setBackgroundScheme] = useState<ColorScheme>({});
     const [visualSettings, setVisualSettings] = useState<VisualSettingsMap>({});
+
+    const visualSettingsJson = useMemo(
+      () => JSON.stringify(visualSettings),
+      [visualSettings],
+    );
     const [galleryMode, setGalleryMode] = useState<ChannelGalleryMode>('NONE');
     const [galleryImages, setGalleryImages] = useState('');
     const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
@@ -1110,7 +1115,12 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
                   aria-pressed={index === galleryPreviewIndex}
                   onClick={() => setGalleryPreviewIndex(index)}
                 >
-                  <img src={image} alt="" className="size-full object-cover" />
+                  <img
+                    src={image}
+                    alt=""
+                    loading="lazy"
+                    className="size-full object-cover"
+                  />
                 </button>
                 <div
                   aria-hidden
@@ -1667,6 +1677,10 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
                 artworkUrl={avatarUrl}
                 galleryMode={galleryMode}
                 slideshowImages={galleryImageList}
+                slideshowPreset={slideshowPreset}
+                slideshowIntervalSeconds={slideshowInterval}
+                slideshowTransitionMs={slideshowTransition}
+                slideshowAutoplay={slideshowAutoplay}
                 mountVisualizer={hasLivePreview && visualizerEnabled}
                 editable
                 identitySelected={highlightSection === 'header'}
@@ -1873,9 +1887,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
                               <ChannelVisualizer
                                 preset={preset}
                                 colorScheme={scheme}
-                                visualSettingsJson={JSON.stringify(
-                                  visualSettings,
-                                )}
+                                visualSettingsJson={visualSettingsJson}
                                 className="size-full"
                                 audioReactive={false}
                               />
@@ -1922,7 +1934,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
                       className="absolute inset-0 size-full"
                       preset={visualizerPickerPreset}
                       colorScheme={scheme}
-                      visualSettingsJson={JSON.stringify(visualSettings)}
+                      visualSettingsJson={visualSettingsJson}
                       artworkUrl={avatarUrl}
                     />
                   ) : (
