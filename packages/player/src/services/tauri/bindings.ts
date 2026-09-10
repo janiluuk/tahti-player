@@ -5,6 +5,10 @@ import { invoke as __TAURI_INVOKE } from "@tauri-apps/api/core";
 
 /** Commands */
 export const commands = {
+	libraryList: (search: string, offset: number) => typedError<LibraryPage, string>(__TAURI_INVOKE("library_list", { search, offset })),
+	libraryImport: () => typedError<ImportResult, string>(__TAURI_INVOKE("library_import")),
+	libraryResolve: (id: string) => typedError<string, string>(__TAURI_INVOKE("library_resolve", { id })),
+	libraryRemove: (id: string) => typedError<null, string>(__TAURI_INVOKE("library_remove", { id })),
 	isFlatpak: () => __TAURI_INVOKE<boolean>("is_flatpak"),
 	copyDirRecursive: (from: string, to: string) => typedError<null, string>(__TAURI_INVOKE("copy_dir_recursive", { from, to })),
 	extractZip: (zipPath: string, destPath: string) => typedError<null, string>(__TAURI_INVOKE("extract_zip", { zipPath, destPath })),
@@ -96,6 +100,35 @@ export type HttpResponse = {
 	status: number,
 	headers: { [key in string]: string },
 	body: string,
+};
+
+export type ImportFailure = {
+	path: string,
+	error: string,
+};
+
+export type ImportResult = {
+	imported: number,
+	errors: ImportFailure[],
+};
+
+export type LibraryPage = {
+	tracks: LibraryTrack[],
+	total: number,
+};
+
+export type LibraryTrack = {
+	id: string,
+	path: string,
+	title: string,
+	artist: string,
+	album: string,
+	format: string,
+	duration: number | null,
+	sampleRate: number,
+	channels: number,
+	bitsPerSample: number | null,
+	sizeBytes: number,
 };
 
 export type Page<T> = {

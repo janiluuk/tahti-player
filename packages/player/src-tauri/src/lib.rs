@@ -6,6 +6,7 @@ pub mod history;
 pub mod http;
 pub mod http_api;
 pub mod logging;
+pub mod local_library;
 pub mod mcp;
 pub mod mpd;
 pub mod net;
@@ -36,6 +37,10 @@ fn typescript_export_config() -> specta_typescript::Typescript {
 
 fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
     tauri_specta::Builder::<tauri::Wry>::new().commands(tauri_specta::collect_commands![
+        local_library::library_list,
+        local_library::library_import,
+        local_library::library_resolve,
+        local_library::library_remove,
         commands::is_flatpak,
         commands::copy_dir_recursive,
         commands::extract_zip,
@@ -89,6 +94,7 @@ pub fn run() {
         .expect("failed to export typescript bindings");
 
     let mut builder = tauri::Builder::default()
+        .manage(local_library::LibraryState::default())
         .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_dialog::init())

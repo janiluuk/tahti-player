@@ -6,7 +6,7 @@ Sibling API: **`../tahti-org`**. Product matrix: [`FEATURES.md`](FEATURES.md) Re
 
 ## Now
 
-- [ ] **Independent desktop player** — Library rail, Tahti chrome, Soulseek add-on. Leaf: [desktop-pro-library.md](../../docs/todo/desktop-pro-library.md).
+- [ ] **Pro desktop music player** — phased delivery: native catalog → durable import/play → catalog search/sort/filter → local playlists → metadata editing → analysis/smart playlists → folder automation and profiling. Soulseek follows the core library. Leaf: [desktop-pro-library.md](../../docs/todo/desktop-pro-library.md).
 - [ ] **Production cutover** — GAP-MAPPING no-drop ledger before official client switch. See [GAP-MAPPING.md](GAP-MAPPING.md) / [CUTOVER.md](CUTOVER.md).
 - [ ] **Storybook / design-system sweeps** — Input sweep, Studio/Admin UX punch list (Studio primitive sweep finished 2026-09-07, see HISTORY). Open punch list: [`STUDIO-ADMIN-UX-SWEEP-OPEN.md`](STUDIO-ADMIN-UX-SWEEP-OPEN.md).
 - [ ] **Image slot chrome** — hover delete + preview modal on remaining upload surfaces. Leaf: [image-upload-hover-lightbox.md](../../docs/todo/image-upload-hover-lightbox.md).
@@ -15,6 +15,7 @@ Sibling API: **`../tahti-org`**. Product matrix: [`FEATURES.md`](FEATURES.md) Re
 
 ## Next (queued after today's cycles)
 
+- [ ] **(Later) Player performance** — baseline CPU and native memory on the release desktop build, then optimize startup, queue scaling, playback updates, visualizers and section loading; require before/after profiling. Leaf: [player-performance-optimizations.md](../../docs/todo/player-performance-optimizations.md).
 - [ ] **(Later) Channel Designer: fold bio/CTA/avatar into backdrop toggles; feed/posts widgets** — bio/CTA/avatar stop being separate draggable blocks, become backdrop show-toggles; add configurable feed/posts channel widgets with tracklist/card-row display toggle. Leaf: [channel-designer-backdrop-fold-and-widgets.md](../../docs/todo/channel-designer-backdrop-fold-and-widgets.md).
 - [ ] **(Later) Restyle /governance page** — `views/GovernanceView.tsx` (public/member-facing, route `/governance`, distinct from `AdminGovernanceView`/`StudioGovernanceView`). Rebuild with proper Storybook `@tahti-player/ui` components, a real visual grid layout, and add some color — currently plain/flat.
 - [ ] **(Later) Desktop status bar: local track count/size** — web icons + cloud storage shipped 2026-09-08; desktop app should still show local library totals beside cloud.

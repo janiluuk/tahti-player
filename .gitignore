@@ -19,3 +19,6 @@ tahti-fit/
 flatpak/pnpm-sources.json
 flatpak/cargo-sources.json
 flatpak/.flatpak-cargo-generator.py
+
+# Local signing key material — never commit
+.keys/
