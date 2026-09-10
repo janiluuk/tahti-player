@@ -4612,6 +4612,65 @@ export type AdminActivityEntry = {
   createdAt: string;
 };
 
+/** Board-facing governance audit topic ids — mirrors
+ * `GOVERNANCE_AUDIT_TOPIC_IDS` in `../tahti-org` `@tahti/shared`. Kept local
+ * so this package does not import the sibling. */
+export const ADMIN_AUDIT_TOPICS = [
+  { id: 'finance', label: 'Finance & grants' },
+  { id: 'subscriptions', label: 'Fan subscriptions' },
+  { id: 'membership', label: 'Membership & register' },
+  { id: 'decisions', label: 'Motions, votes & resolutions' },
+  { id: 'officers', label: 'Board & roles' },
+  { id: 'meetings', label: 'Meetings & documents' },
+  { id: 'radio', label: 'Radio bookings' },
+] as const;
+
+export type AdminAuditTopicId = (typeof ADMIN_AUDIT_TOPICS)[number]['id'];
+
+/** Mirror of sibling `GOVERNANCE_AUDIT_TOPICS` action sets — mock filter only. */
+const ADMIN_AUDIT_TOPIC_ACTIONS: Record<AdminAuditTopicId, readonly string[]> =
+  {
+    finance: [
+      'LEDGER_ENTRY_CREATE',
+      'GRANT_RUN',
+      'ENGAGEMENT_ADJUSTMENT',
+      'STRIPE_WEBHOOK_ERROR',
+      'DOWNLOAD_FRAUD_ALERT',
+    ],
+    subscriptions: ['FAN_SUBSCRIPTION_CREATE'],
+    membership: [
+      'MEMBER_SUSPEND',
+      'MEMBER_REINSTATE',
+      'MEMBERSHIP_RENEWAL_REMINDER',
+      'MEMBERSHIP_LAPSED',
+      'ACCOUNT_DELETE',
+      'USER_TIER_CHANGE',
+    ],
+    decisions: [
+      'MOTION_CREATE',
+      'MOTION_OPEN',
+      'MOTION_CLOSE',
+      'MOTION_COMMENT_CREATE',
+      'VOTE_CAST',
+      'RESOLUTION_CREATE',
+      'RESOLUTION_UPDATE',
+      'FEATURE_REQUEST_QUARTERLY_REPORT',
+    ],
+    officers: ['BOARD_ROLE_CHANGE', 'USER_SUSPEND', 'USER_UNSUSPEND'],
+    meetings: [
+      'MEETING_CREATE',
+      'MEETING_UPDATE',
+      'MEETING_ATTENDANCE_UPSERT',
+      'DOCUMENT_CREATE',
+      'ANNUAL_REPORT_GENERATE',
+    ],
+    radio: [
+      'RADIO_SLOT_BOOKING_CREATE',
+      'RADIO_SLOT_BOOKING_UPDATE',
+      'RADIO_SLOT_BOOKING_CANCEL',
+    ],
+  };
+
 export type AdminActivityFilters = {
   page?: number;
   limit?: number;
@@ -4619,6 +4678,9 @@ export type AdminActivityFilters = {
   actorId?: string;
   since?: string;
   until?: string;
+  /** Board governance topic (finance, decisions, …). When set, the backend
+   * restricts to that topic's AuditAction set even with scope=all. */
+  topic?: AdminAuditTopicId;
   /** Backend defaults to 'governance' (deliberately excludes login/like/chat
    * "ops noise" for the board-facing governance audit view) — this admin
    * activity feed wants everything, so it defaults to 'all' here instead. */
@@ -4745,12 +4807,18 @@ export async function fetchAdminActivity(
       meta: row.meta,
       createdAt: row.createdAt,
     }));
-    const rows = [...ledger, ...mockActivityEntries()];
+    let rows = [...ledger, ...mockActivityEntries()];
+    if (filters.topic) {
+      const topicActions = new Set(ADMIN_AUDIT_TOPIC_ACTIONS[filters.topic]);
+      rows = rows.filter((row) => topicActions.has(row.action));
+    }
+    const total = rows.length;
+    const start = (page - 1) * limit;
     return {
-      data: rows,
-      total: rows.length,
-      page: 1,
-      limit: rows.length,
+      data: rows.slice(start, start + limit),
+      total,
+      page,
+      limit,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
@@ -4771,6 +4839,9 @@ export async function fetchAdminActivity(
     }
     if (filters.until) {
       qs.set('until', filters.until);
+    }
+    if (filters.topic) {
+      qs.set('topic', filters.topic);
     }
     const data = await getJson<{
       page: number;
@@ -4828,8 +4899,16 @@ export async function fetchAdminGovernanceActivity(): Promise<{
   };
 }
 
-export function adminActivityExportCsvUrl(): string {
-  return `${apiBase()}/api/admin/audit/export.csv?scope=all`;
+export function adminActivityExportCsvUrl(
+  filters: Pick<AdminActivityFilters, 'topic' | 'scope'> = {},
+): string {
+  const qs = new URLSearchParams({
+    scope: filters.scope ?? 'all',
+  });
+  if (filters.topic) {
+    qs.set('topic', filters.topic);
+  }
+  return `${apiBase()}/api/admin/audit/export.csv?${qs.toString()}`;
 }
 
 // ── Admin container logs ─────────────────────────────────────────────────

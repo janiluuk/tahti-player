@@ -352,6 +352,16 @@ export function ArtistGalleryPanel({
           label={images[lightbox]?.title ?? 'Gallery slideshow'}
           onIndexChange={setLightbox}
           onClose={() => setLightbox(null)}
+          onDeleteCurrent={
+            isOwner
+              ? () => {
+                  const current = images[lightbox];
+                  if (current) {
+                    requestDelete(current.id);
+                  }
+                }
+              : undefined
+          }
         />
       ) : null}
 
@@ -363,8 +373,16 @@ export function ArtistGalleryPanel({
         onCancel={() => setPendingDeleteId(null)}
         onConfirm={() => {
           const id = pendingDeleteId;
+          const idx = id ? images.findIndex((img) => img.id === id) : -1;
           setPendingDeleteId(null);
           if (id) {
+            if (lightbox !== null && idx === lightbox) {
+              if (images.length <= 1) {
+                setLightbox(null);
+              } else {
+                setLightbox(Math.min(lightbox, images.length - 2));
+              }
+            }
             void onDelete(id);
           }
         }}

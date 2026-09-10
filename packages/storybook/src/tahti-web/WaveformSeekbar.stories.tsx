@@ -21,6 +21,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Compact: Story = {
+  name: 'EmptyPlaceholder',
   render: () => {
     const [progress, setProgress] = useState(0.35);
     return (
@@ -37,6 +38,7 @@ export const Compact: Story = {
 };
 
 export const Expanded: Story = {
+  name: 'EmptyPlaceholderTall',
   render: () => {
     const [progress, setProgress] = useState(0.55);
     return (

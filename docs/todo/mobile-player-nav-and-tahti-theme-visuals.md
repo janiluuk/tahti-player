@@ -40,11 +40,17 @@ unchanged.
 
 ## 3. Discover-page background visualization (Tahti theme)
 
-Still open.
+**Shipped 2026-09-10:** `DiscoverGatewayBackground` mounts a quiet
+`ChannelVisualizer` AURORA layer behind Discover (opacity 0.14,
+audio-reactive off) whenever the active theme is in
+`VISUALIZATION_THEME_IDS` — same role as apps/web's `BgCanvas
+variant="subtle"`, without requiring the global Settings ambient toggle.
+Not a full Three.js BgCanvas port; uses the existing ambient preset.
 
 ## 4. Storybook
 
-Shipped for the chrome stack. Still needed: thumbnail glow + Discover gateway viz stories.
+Shipped for the chrome stack. Still needed: thumbnail glow stories
+(Discover gateway uses ChannelVisualizer — no dedicated story yet).
 
 ---
 

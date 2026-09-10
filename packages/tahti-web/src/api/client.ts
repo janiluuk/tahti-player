@@ -120,7 +120,7 @@ export const apiBase = () => {
 export async function requestJson<T>(
   path: string,
   init?: RequestInit,
-): Promise<{ data: T; status: number }> {
+): Promise<{ data: T; status: number; headers: Headers }> {
   const { headers: initHeaders, ...rest } = init ?? {};
   const res = await fetch(`${apiBase()}${path}`, {
     credentials: 'include',
@@ -144,9 +144,17 @@ export async function requestJson<T>(
     throw new Error(detail);
   }
   if (res.status === 204) {
-    return { data: undefined as T, status: res.status };
+    return {
+      data: undefined as T,
+      status: res.status,
+      headers: res.headers,
+    };
   }
-  return { data: (await res.json()) as T, status: res.status };
+  return {
+    data: (await res.json()) as T,
+    status: res.status,
+    headers: res.headers,
+  };
 }
 
 async function getJson<T>(path: string): Promise<T> {
@@ -2270,29 +2278,74 @@ const mockMotionComments: Record<string, MotionComment[]> = {
   ],
 };
 
-export async function fetchGovernanceMotions(): Promise<{
+export type FetchGovernanceMotionsOpts = {
+  limit?: number;
+  cursor?: string;
+  state?: string;
+};
+
+export async function fetchGovernanceMotions(
+  opts: FetchGovernanceMotionsOpts = {},
+): Promise<{
   data: GovernanceMotion[];
+  nextCursor: string | null;
   meta: FetchMeta;
   forbidden?: boolean;
 }> {
+  const limit = opts.limit ?? 100;
   if (forceMock()) {
+    let start = 0;
+    if (opts.cursor) {
+      const idx = mockMotions.findIndex((m) => m.id === opts.cursor);
+      start = idx >= 0 ? idx + 1 : 0;
+    }
+    let rows = mockMotions.map((m) => ({ ...m }));
+    if (opts.state) {
+      const allowed = new Set(
+        opts.state
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean),
+      );
+      rows = rows.filter((m) => allowed.has(m.state));
+    }
+    const page = rows.slice(start, start + limit);
+    const nextCursor =
+      start + limit < rows.length ? (page[page.length - 1]?.id ?? null) : null;
     return {
-      data: mockMotions.map((m) => ({ ...m })),
+      data: page,
+      nextCursor,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
   try {
-    const data = await getJson<GovernanceMotion[]>(
-      '/api/v1/governance/motions',
+    const qs = new URLSearchParams({ limit: String(limit) });
+    if (opts.cursor) {
+      qs.set('cursor', opts.cursor);
+    }
+    if (opts.state) {
+      qs.set('state', opts.state);
+    }
+    const { data, headers } = await requestJson<GovernanceMotion[]>(
+      `/api/v1/governance/motions?${qs}`,
     );
-    return { data, meta: { source: 'api' } };
+    return {
+      data,
+      nextCursor: headers.get('x-next-cursor'),
+      meta: { source: 'api' },
+    };
   } catch (err) {
     const message = err instanceof Error ? err.message : '';
     const forbidden =
       message.includes('401') ||
       message.includes('403') ||
       /member/i.test(message);
-    return { data: [], meta: apiErrorMeta(err), forbidden };
+    return {
+      data: [],
+      nextCursor: null,
+      meta: apiErrorMeta(err),
+      forbidden,
+    };
   }
 }
 

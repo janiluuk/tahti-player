@@ -64,7 +64,7 @@ const THEME_KEY = 'tahti-nuclear-theme-id';
 const DARK_KEY = 'tahti-nuclear-dark';
 const PERSIST_NAME = 'tahti-web-theme';
 
-const DEFAULT_THEME_ID = 'nuclear:default';
+const DEFAULT_THEME_ID = 'nuclear:tahti-dark';
 
 export type ColorMode = 'light' | 'dark' | 'dynamic';
 

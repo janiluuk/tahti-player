@@ -96,6 +96,7 @@ function playableFromDetail(
       detail.embedProvider === 'HEARTHIS' ? 'hearthis' : undefined,
     channelSlug: detail.channelSlug,
     durationSec: detail.durationSec ?? undefined,
+    peaks: detail.peaks,
   };
 }
 

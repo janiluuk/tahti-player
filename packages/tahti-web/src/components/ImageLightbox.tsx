@@ -1,4 +1,9 @@
-import { ChevronLeftIcon, ChevronRightIcon, XIcon } from 'lucide-react';
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  Trash2Icon,
+  XIcon,
+} from 'lucide-react';
 import { FC, useEffect, useRef } from 'react';
 
 import { Button, Dialog, ImageReveal, Tooltip } from '@tahti-player/ui';
@@ -14,6 +19,8 @@ type ImageLightboxProps = {
   label: string;
   onIndexChange?: (index: number) => void;
   onClose: () => void;
+  /** When set, shows a Remove control for the current frame (owner gallery). */
+  onDeleteCurrent?: () => void;
 };
 
 export const ImageLightbox: FC<ImageLightboxProps> = ({
@@ -22,6 +29,7 @@ export const ImageLightbox: FC<ImageLightboxProps> = ({
   label,
   onIndexChange,
   onClose,
+  onDeleteCurrent,
 }) => {
   const panelRef = useRef<HTMLDivElement>(null);
   const image = images[index];
@@ -66,17 +74,31 @@ export const ImageLightbox: FC<ImageLightboxProps> = ({
           }
         }}
       >
-        <Tooltip content="Close" side="top">
-          <Button
-            size="icon-sm"
-            variant="secondary"
-            className="absolute top-0 right-0 z-10"
-            aria-label="Close image viewer"
-            onClick={onClose}
-          >
-            <XIcon size={18} aria-hidden />
-          </Button>
-        </Tooltip>
+        <div className="absolute top-0 right-0 z-10 flex gap-1">
+          {onDeleteCurrent ? (
+            <Tooltip content="Remove photo" side="top">
+              <Button
+                size="icon-sm"
+                variant="secondary"
+                className="text-accent-red"
+                aria-label="Remove photo"
+                onClick={onDeleteCurrent}
+              >
+                <Trash2Icon size={18} aria-hidden />
+              </Button>
+            </Tooltip>
+          ) : null}
+          <Tooltip content="Close" side="top">
+            <Button
+              size="icon-sm"
+              variant="secondary"
+              aria-label="Close image viewer"
+              onClick={onClose}
+            >
+              <XIcon size={18} aria-hidden />
+            </Button>
+          </Tooltip>
+        </div>
         {canNavigate ? (
           <>
             <Tooltip content="Previous image" side="top">

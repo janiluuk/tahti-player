@@ -3,23 +3,10 @@ import { useRef } from 'react';
 
 import { cn } from '../../lib/cn';
 
-/** Deterministic pseudo-random bar heights keyed by `seed` — same sequence
- * as the ambient `Waveform` motif, so a track's bar shape is stable across
- * renders without needing real decoded peak data. */
-function barHeights(seed: number, bars: number): number[] {
-  return Array.from({ length: bars }, (_, i) => {
-    const v = Math.sin(i * 12.9898 + seed * 78.233) * 43758.5453;
-    const frac = v - Math.floor(v);
-    return 20 + frac * 80;
-  });
-}
-
-function seedFromId(id: string): number {
-  let hash = 0;
-  for (let i = 0; i < id.length; i++) {
-    hash = (hash * 31 + id.charCodeAt(i)) % 100_000;
-  }
-  return hash / 100_000 || 1;
+/** Flat dim bars for tracks with no decoded peaks — reads as "no waveform
+ * data" instead of fabricated PRNG noise that looked like real audio. */
+function emptyHeights(bars: number): number[] {
+  return Array.from({ length: bars }, () => 16);
 }
 
 /** Downsample real peak buckets to the bar count, averaging each bar's span. */
@@ -51,8 +38,8 @@ function heightsFromPeaks(peaks: number[]): number[] {
 const BAR_COUNT = 64;
 
 /** The tahti waveform motif used as a scrubbable progress bar. Draws real
- * decoded amplitude buckets when `peaks` is given; otherwise falls back to
- * deterministic bars keyed by track id, stable across renders. */
+ * decoded amplitude buckets when `peaks` is given; otherwise a flat dim
+ * placeholder (still seekable) so peakless tracks are not mistaken for audio. */
 export function WaveformSeekbar({
   trackId,
   progress,
@@ -67,8 +54,8 @@ export function WaveformSeekbar({
   trackId: string;
   /** Playback position, 0–1. */
   progress: number;
-  /** Real [0..255] amplitude buckets, when decoded — null/omitted falls back
-   * to the synthetic per-track bars. */
+  /** Real [0..255] amplitude buckets, when decoded — null/omitted uses the
+   * flat empty placeholder. */
   peaks?: number[] | null;
   bars?: number;
   markers?: Array<{ fraction: number }>;
@@ -78,10 +65,10 @@ export function WaveformSeekbar({
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const heights =
-    peaks && peaks.length > 0
-      ? heightsFromPeaks(resamplePeaks(peaks, bars))
-      : barHeights(seedFromId(trackId), bars);
+  const hasPeaks = Boolean(peaks && peaks.length > 0);
+  const heights = hasPeaks
+    ? heightsFromPeaks(resamplePeaks(peaks!, bars))
+    : emptyHeights(bars);
   const clamped = Math.min(1, Math.max(0, progress));
   const filledCount = Math.round(clamped * bars);
 
@@ -105,7 +92,14 @@ export function WaveformSeekbar({
       aria-valuemin={onSeek ? 0 : undefined}
       aria-valuemax={onSeek ? 100 : undefined}
       aria-valuenow={onSeek ? Math.round(clamped * 100) : undefined}
-      className={cn('relative', onSeek && 'cursor-pointer', className)}
+      data-waveform={hasPeaks ? 'peaks' : 'empty'}
+      data-track-id={trackId}
+      className={cn(
+        'relative',
+        onSeek && 'cursor-pointer',
+        !hasPeaks && 'opacity-60',
+        className,
+      )}
       onClick={onSeek ? (e) => seekAt(e.clientX) : undefined}
     >
       <div className="flex h-full items-end gap-px">
@@ -115,8 +109,9 @@ export function WaveformSeekbar({
             className={cn(
               'flex-1 origin-bottom rounded-sm transition-colors',
               i < filledCount
-                ? !playedColor && 'bg-primary'
-                : !unplayedColor && 'bg-foreground-secondary/25',
+                ? !playedColor &&
+                    (hasPeaks ? 'bg-primary' : 'bg-foreground-secondary/40')
+                : !unplayedColor && 'bg-foreground-secondary/20',
             )}
             style={{
               height: `${h}%`,
