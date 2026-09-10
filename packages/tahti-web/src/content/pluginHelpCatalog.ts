@@ -46,7 +46,7 @@ export const READY_PLUGIN_HELP: PluginHelpEntry[] = [
     stateLabel: 'Desktop planned',
     description:
       'Search and download from Soulseek into your local library from the desktop player. The browser cannot speak the Soulseek protocol, and Tahti does not relay peer-to-peer traffic.',
-    help: 'Settings → Add-ons → Import → Soulseek → Configure. Test connection stays disabled until the native desktop bridge ships. Use the right-rail Library tab for local files in the meantime.',
+    help: 'Settings → Add-ons → Import → Soulseek → Configure. Test connection stays disabled until the native desktop bridge ships. Use Library → Local files for local audio in the meantime.',
   },
   {
     name: 'Stash',
