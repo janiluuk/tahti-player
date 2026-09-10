@@ -117,8 +117,12 @@ visual verification with the actual affected theme active, not a guess.
 
 ## Scope
 
-1. Identify the exact theme(s) with the orange-everywhere problem. — not
-   started, needs live verification.
+1. Identify the exact theme(s) with the orange-everywhere problem. —
+   **2026-09-10 partial:** out-of-box experience was stock
+   `nuclear:default` (Nuclear's own orange). tahti-web
+   `DEFAULT_THEME_ID` is now `nuclear:tahti-dark` (desktop Nuclear
+   registry default unchanged). Button/secondary contrast on other
+   themes still needs live verification.
 2. Decide the fix direction for `Button`/`Select` defaults: per-callsite
    variant audit vs. a new neutral default vs. both. — `Select`'s default
    is fixed (item 3); `Button`'s per-callsite audit (option (a)) not
@@ -129,7 +133,10 @@ visual verification with the actual affected theme active, not a guess.
    reasonable readability bar for whichever theme(s) keep using primary
    broadly. — not started, needs live verification.
 5. Fix visualizer visibility (opacity/transparency) for the affected
-   theme, live-verified. — not started, needs live verification.
-6. Add the affected theme id(s) to `VISUALIZATION_THEME_IDS` (or
-   generalize the gate) so the existing `ThemeVisualizationSettings`
-   panel actually shows up for it. — not started, blocked on item 1.
+   theme. — **2026-09-10:** default ambient opacity `0.2` → `0.28`;
+   `.tahti-ambient-surface` mix `84%` → `72%` (also for
+   `custom:tahti-blue`). Still worth a live look.
+6. ~~Add the affected theme id(s) to `VISUALIZATION_THEME_IDS`~~ —
+   **2026-09-10:** gate now includes `nuclear:default` alongside
+   tahti-dark / tahti-blue so Settings → Themes shows the controls when
+   on stock Nuclear too.

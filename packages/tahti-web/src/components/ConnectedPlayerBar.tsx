@@ -40,6 +40,7 @@ export function ConnectedPlayerBar() {
   const playerBarVisible = usePlayerStore((s) => s.playerBarVisible);
   const currentTime = usePlayerStore((s) => s.currentTime);
   const duration = usePlayerStore((s) => s.duration);
+  const currentPeaks = usePlayerStore((s) => s.currentPeaks);
   const seekTo = usePlayerStore((s) => s.seekTo);
   const setStatus = usePlayerStore((s) => s.setStatus);
   const setVolume = usePlayerStore((s) => s.setVolume);
@@ -221,6 +222,8 @@ export function ConnectedPlayerBar() {
       <WaveformSeekbar
         trackId={playable?.id ?? currentId ?? 'none'}
         progress={progress}
+        peaks={currentPeaks}
+        bars={currentPeaks?.length || 64}
         onSeek={(fraction) => {
           if (duration <= 0) {
             return;

@@ -40,6 +40,11 @@ type PlayerState = {
   playerBarVisible: boolean;
   /** Set by UI; AudioEngine applies to the media element then clears. */
   seekTarget: number | null;
+  /** Real waveform peaks for the current track (not stored on QueueItem /
+   * Nuclear Track). Cleared when switching to a track without known peaks. */
+  currentPeaks: number[] | null;
+  /** Peaks remembered by playable id so queue skips keep real waveforms. */
+  peaksById: Record<string, number[]>;
   /** Shared Web Audio analyser for channel visualizers (set by AudioEngine). */
   analyser: AnalyserNode | null;
   setAnalyser: (analyser: AnalyserNode | null) => void;
@@ -144,6 +149,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   lastRadioPlayable: null,
   playerBarVisible: true,
   seekTarget: null,
+  currentPeaks: null,
+  peaksById: {},
   analyser: null,
 
   setAnalyser: (analyser) => set({ analyser }),
@@ -153,8 +160,9 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     const rest = (opts?.enqueueRest ?? []).map(toQueueItem);
     const queue = [head, ...rest.filter((r) => r.id !== head.id)];
     const isRadioOrLive = item.kind === 'live' || item.kind === 'radio';
+    const peaks = item.peaks?.length ? item.peaks : null;
     recordHistory(item);
-    set({
+    set((s) => ({
       queue,
       currentId: head.id,
       status: item.embed ? 'playing' : 'loading',
@@ -162,12 +170,14 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       currentTime: 0,
       duration: 0,
       seekTarget: null,
+      currentPeaks: peaks,
+      peaksById: peaks ? { ...s.peaksById, [head.id]: peaks } : s.peaksById,
       isLive: isRadioOrLive,
       isRealLive: isRadioOrLive && Boolean(item.isRealLive),
       hasPlayed: true,
-      lastRadioPlayable: isRadioOrLive ? item : get().lastRadioPlayable,
+      lastRadioPlayable: isRadioOrLive ? item : s.lastRadioPlayable,
       playerBarVisible: true,
-    });
+    }));
   },
 
   enqueue: (item) => {
@@ -226,6 +236,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       error: null,
       currentTime: 0,
       seekTarget: null,
+      currentPeaks: get().peaksById[id] ?? null,
       isLive: isRadioOrLive,
       // playableFromQueueItem rebuilds a TahtiPlayable from the queued
       // Track, which never carried isRealLive through -- conservatively

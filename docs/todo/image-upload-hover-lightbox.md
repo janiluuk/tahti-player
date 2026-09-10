@@ -193,14 +193,16 @@ for this view (none did before either).
 
 ## Not done in this pass (bespoke, not on the shared primitives)
 
-- `StudioBrandingView` press-kit gallery (`ArtistGalleryPanel`): still
-  its own bespoke hover-delete + confirm, independently matching this
-  ticket's UX goal — not migrated onto the shared primitives (avatar
-  was, 2026-09-09).
+- ~~`StudioBrandingView` press-kit gallery~~ — **2026-09-10:** lightbox
+  gained owner `onDeleteCurrent` (confirm still via existing
+  `ConfirmDialog`); hover-delete + confirm were already present. Not a
+  full `imageSlot` primitive migration (gallery keeps `ImageLightbox`
+  for prev/next slideshow), but the ticket's modal delete ask is met.
 - `EntitySocialHeader` cover-image delete: done for Collection
   (2026-09-08); Release/Show/Sound/Playlist edit views have the same
   `onImageClick` wiring and just need `onImageDelete` added too —
-  small follow-up, not attempted.
+  small follow-up, not attempted. *(Release/Playlist already wired
+  2026-09-08 (3) — this bullet's "just need" note is stale for those.)*
 - `ChannelDesigner` backdrop + gallery slideshow: already has
   hover-delete, reorder, add, and preview (see 2026-09-09 correction
   above) — not a real gap against this ticket except the literal

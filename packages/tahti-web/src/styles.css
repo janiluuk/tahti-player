@@ -36,10 +36,11 @@ body,
   overflow-y: auto;
 }
 
-:root[data-theme-id='nuclear:tahti-dark'] .tahti-ambient-surface {
+:root[data-theme-id='nuclear:tahti-dark'] .tahti-ambient-surface,
+:root[data-theme-id='custom:tahti-blue'] .tahti-ambient-surface {
   background-color: color-mix(
     in srgb,
-    var(--background-secondary) 84%,
+    var(--background-secondary) 72%,
     transparent
   );
   transition:
@@ -68,7 +69,8 @@ body,
 @media (prefers-reduced-motion: reduce) {
   :root[data-theme-id='nuclear:tahti-dark']
     :is(button, a, [role='button'], [role='tab'], summary),
-  :root[data-theme-id='nuclear:tahti-dark'] .tahti-ambient-surface {
+  :root[data-theme-id='nuclear:tahti-dark'] .tahti-ambient-surface,
+  :root[data-theme-id='custom:tahti-blue'] .tahti-ambient-surface {
     transition-duration: 0.01ms;
   }
 }

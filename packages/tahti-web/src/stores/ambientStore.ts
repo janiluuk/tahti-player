@@ -31,7 +31,7 @@ export const useAmbientStore = create<AmbientState>()(
     (set) => ({
       enabled: true,
       preset: 'AURORA',
-      opacity: 0.2,
+      opacity: 0.28,
       speed: 0.16,
       intensity: 0.7,
       audioReactive: true,

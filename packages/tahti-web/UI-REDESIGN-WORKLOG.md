@@ -1,3 +1,19 @@
+## 2026-09-10 — v0.0.108: empty waveform, motions Load more, tahti-dark default, Discover gateway
+
+Peakless waveforms are a flat dim placeholder (no fake PRNG). Governance
+motions page with cursor + Load more. Fresh installs default to
+`nuclear:tahti-dark`; ambient viz settings unlock for stock Nuclear too;
+Discover mounts a quiet gateway visualizer. Press-kit lightbox can delete
+the current photo (owner).
+
+## 2026-09-10 — Audit topic chips + real peaks in player bar
+
+Admin → Logs → Audit events: topic filter chips and page controls against
+the real audit API. Bottom player bar and Discover overlay waveform now
+use real track peaks when play started from track detail / Discover
+(peaks cached per queue id). Collection list rows still synthetic — API
+has no peaks field there yet.
+
 ## 2026-09-08 — Purchases tab + hearthis.at widget fixes
 
 Account settings gained a Purchases tab (`/settings/account`, next to

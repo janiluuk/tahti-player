@@ -287,12 +287,13 @@ export function StudioHomeView() {
         setRecentBroadcasts(broadcasts.data);
       },
     );
-    void Promise.all([fetchGovernanceMotions(), fetchFeatureRequests()]).then(
-      ([motionsResult, requestsResult]) => {
-        setGovernanceMotions(motionsResult.data);
-        setGovernanceRequests(requestsResult.data);
-      },
-    );
+    void Promise.all([
+      fetchGovernanceMotions({ limit: 10 }),
+      fetchFeatureRequests(),
+    ]).then(([motionsResult, requestsResult]) => {
+      setGovernanceMotions(motionsResult.data);
+      setGovernanceRequests(requestsResult.data);
+    });
   }, [user?.channel]);
 
   const channel = user?.channel;

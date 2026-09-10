@@ -39,6 +39,8 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
   const isBoard = hasAccountRole(user, 'BOARD');
   const closeSettings = useSettingsModalStore((s) => s.close);
   const [motions, setMotions] = useState<GovernanceMotion[]>([]);
+  const [motionsCursor, setMotionsCursor] = useState<string | null>(null);
+  const [loadingMoreMotions, setLoadingMoreMotions] = useState(false);
   const [requests, setRequests] = useState<FeatureRequest[]>([]);
   const [meetings, setMeetings] = useState<GovernanceMeeting[]>([]);
   const [documents, setDocuments] = useState<GovernanceDocument[]>([]);
@@ -51,12 +53,14 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
   const [draftDescription, setDraftDescription] = useState('');
   const [submittingDraft, setSubmittingDraft] = useState(false);
 
+  const MOTIONS_PAGE_SIZE = 20;
+
   const reload = () => {
     if (!user) {
       return;
     }
     void Promise.all([
-      fetchGovernanceMotions(),
+      fetchGovernanceMotions({ limit: MOTIONS_PAGE_SIZE }),
       fetchFeatureRequests(),
       fetchGovernanceMeetings(),
       fetchGovernanceDocuments(),
@@ -72,6 +76,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
         reportsResult,
       ]) => {
         setMotions(motionsResult.data);
+        setMotionsCursor(motionsResult.nextCursor);
         setRequests(requestsResult.data);
         setMeetings(meetingsResult.data);
         setDocuments(documentsResult.data);
@@ -85,6 +90,21 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
         setLoading(false);
       },
     );
+  };
+
+  const loadMoreMotions = () => {
+    if (!user || !motionsCursor || loadingMoreMotions) {
+      return;
+    }
+    setLoadingMoreMotions(true);
+    void fetchGovernanceMotions({
+      limit: MOTIONS_PAGE_SIZE,
+      cursor: motionsCursor,
+    }).then((result) => {
+      setMotions((prev) => [...prev, ...result.data]);
+      setMotionsCursor(result.nextCursor);
+      setLoadingMoreMotions(false);
+    });
   };
 
   useEffect(() => {
@@ -491,18 +511,30 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
       )}
 
       {user && motions.length > 0 && (
-        <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
-          {motions.map((m) => (
-            <MotionCard
-              key={m.id}
-              motion={m}
-              isBoard={isBoard}
-              memberCount={members.length}
-              linkTitle
-              onChanged={reload}
-            />
-          ))}
-        </ul>
+        <div className="flex flex-col gap-3">
+          <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
+            {motions.map((m) => (
+              <MotionCard
+                key={m.id}
+                motion={m}
+                isBoard={isBoard}
+                memberCount={members.length}
+                linkTitle
+                onChanged={reload}
+              />
+            ))}
+          </ul>
+          {motionsCursor ? (
+            <Button
+              size="sm"
+              variant="secondary"
+              disabled={loadingMoreMotions}
+              onClick={loadMoreMotions}
+            >
+              {loadingMoreMotions ? 'Loading…' : 'Load more motions'}
+            </Button>
+          ) : null}
+        </div>
       )}
     </>
   );
