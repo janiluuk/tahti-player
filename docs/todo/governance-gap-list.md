@@ -40,19 +40,16 @@ Gap analysis of governance features available in the sibling API (`../tahti-org`
 | 15 | **Voting window adjustment** | **Premise corrected 2026-09-08**: checked `PatchMotionSchema` in `../tahti-org` (`packages/shared/src/dto/governance.ts`) — it only accepts `state`/`title`/`description`, no `closeAt` field at all. "Board can patch closeAt on drafts" is false as written; this would need new backend schema + route work first, not just a frontend UI. |
 | ~~16~~ | ~~**Meeting detail view**~~ | **Done** (2026-09-08) — `GovernanceMeetingDetailView.tsx` at `/governance/meetings/$id` (type, state, scheduled time, location/remote link, notice date, minutes status, quorum, present/eligible counts, full agenda), linked from each meeting title in `GovernanceView.tsx`. No new fetch needed — `fetchGovernanceMeetings()` already returns every field; the "gap" was the missing standalone page, not missing data. |
 | ~~17~~ | ~~**Document preview/download**~~ | **Done** — `GovernanceView.tsx` already links `document.downloadUrl ?? document.externalUrl` on each document row (verified 2026-09-07; doc was stale). |
-| 18 | **Cursor pagination** | Motions use cursor pagination but frontend fetches all at once. |
+| 18 | **Cursor pagination** | ~~Motions use cursor pagination but frontend fetches all at once.~~ **Done (2026-09-10)** — `fetchGovernanceMotions({ limit, cursor, state })` reads `x-next-cursor`; GovernanceView pages 20 + Load more; Studio home preview uses `limit: 10`. |
 
 ## Priority order
 
-Shipped 2026-09-07/08: #1, #3, #4, #6, #7 (mostly already built — fixed a
-real `scope=all` bug; **2026-09-10** closed the topic-filter + page
-controls residue), #8, #9 (corrected — already done, not a code
-change), #10, #14, #16, plus type gaps #11–#13 — 15 of 18. Remaining:
+Shipped 2026-09-07/08/10: #1, #3, #4, #6, #7, #8, #9, #10, #14, #16, #18,
+plus type gaps #11–#13 — 16 of 18. Remaining:
 
 - Bulk motion comments (#2) — perf-only, changes UX (bulk-prefetch vs.
   today's fetch-on-expand); not attempted, needs a product call on the
   tradeoff, not just a code change.
-- Cursor pagination (#18) — perf-only, lowest priority.
 - Voting window adjustment (#15) — blocked on a backend schema change
   (`closeAt` isn't patchable server-side today), not just a frontend gap.
 

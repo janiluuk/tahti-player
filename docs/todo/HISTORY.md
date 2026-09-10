@@ -2,6 +2,20 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-10 — Waveform empty placeholder; motions cursor; theme default; Discover gateway; gallery lightbox delete
+
+Workplan cycle after v0.0.107 (shipped as **0.0.108**):
+
+- **Waveform:** peakless tracks use a flat dim placeholder instead of PRNG noise.
+- **Governance #18:** motions list cursor pagination + Load more (`x-next-cursor`).
+- **Theme:** tahti-web default `nuclear:tahti-dark`; viz settings for
+  `nuclear:default`; ambient opacity / surface transparency bumped.
+- **Discover:** `DiscoverGatewayBackground` subtle AURORA layer.
+- **Press-kit:** lightbox owner delete control (confirm unchanged).
+
+Leaves stay open where noted in INDEX (collection peaks, thumbnail glow,
+Button audit, radio logo, bulk comments, voting window).
+
 ## 2026-09-10 — Admin audit topic filter + pagination; player/Discover peaks
 
 Closed governance gap #7 residue and advanced waveform wiring:

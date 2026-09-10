@@ -15,7 +15,11 @@ Sibling API: **`../tahti-org`**. Product matrix: [`FEATURES.md`](FEATURES.md) Re
 
 ## Next (queued after today's cycles)
 
-- [ ] **Tahti theme refactor** — `Select`'s orange-by-default fixed 2026-09-07 (now matches `Input`'s `bg-background-input` token). Still open: `Button`'s default variant hardcodes `bg-primary` (needs a per-callsite audit, not a blanket swap — deliberately not attempted blind). Also: background visualizer barely visible, and its Settings → Themes toggle (`ThemeVisualizationSettings.tsx`, already built) is gated to a 2-theme allow-list that likely excludes the affected theme. Leaf: [tahti-theme-refactor.md](../../docs/todo/tahti-theme-refactor.md).
+- [ ] **Tahti theme refactor** — Select orange-by-default fixed; tahti-web
+  default is now `nuclear:tahti-dark` (2026-09-10); viz gate includes
+  `nuclear:default`; ambient opacity/surface transparency bumped. Still
+  open: Button call-site audit + contrast live-verify. Leaf:
+  [tahti-theme-refactor.md](../../docs/todo/tahti-theme-refactor.md).
 - [ ] **(Later) Channel Designer: fold bio/CTA/avatar into backdrop toggles; feed/posts widgets** — bio/CTA/avatar stop being separate draggable blocks, become backdrop show-toggles; add configurable feed/posts channel widgets with tracklist/card-row display toggle. Leaf: [channel-designer-backdrop-fold-and-widgets.md](../../docs/todo/channel-designer-backdrop-fold-and-widgets.md).
 - [ ] **(Later) Restyle /governance page** — `views/GovernanceView.tsx` (public/member-facing, route `/governance`, distinct from `AdminGovernanceView`/`StudioGovernanceView`). Rebuild with proper Storybook `@tahti-player/ui` components, a real visual grid layout, and add some color — currently plain/flat.
 - [ ] **(Later) Desktop status bar: local track count/size** — web icons + cloud storage shipped 2026-09-08; desktop app should still show local library totals beside cloud.

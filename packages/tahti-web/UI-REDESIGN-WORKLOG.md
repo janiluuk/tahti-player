@@ -1,3 +1,11 @@
+## 2026-09-10 — v0.0.108: empty waveform, motions Load more, tahti-dark default, Discover gateway
+
+Peakless waveforms are a flat dim placeholder (no fake PRNG). Governance
+motions page with cursor + Load more. Fresh installs default to
+`nuclear:tahti-dark`; ambient viz settings unlock for stock Nuclear too;
+Discover mounts a quiet gateway visualizer. Press-kit lightbox can delete
+the current photo (owner).
+
 ## 2026-09-10 — Audit topic chips + real peaks in player bar
 
 Admin → Logs → Audit events: topic filter chips and page controls against

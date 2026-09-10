@@ -43,8 +43,13 @@ live-browser-verified.
 
 ## Still open
 
-1. The synthetic fake-waveform fallback (item 4 from the original scope) is unaddressed: it still fabricates PRNG noise that looks like real audio for genuinely peakless tracks, rather than an explicit "no waveform data" state. Left alone this pass — it's a visual-language decision (flat/dim placeholder vs. today's stable-noise motif) affecting every consumer at once, not a bounded fix.
-2. `CollectionTrackList.tsx` still has no peaks — the public collection API's `CollectionSound` shape does not include `peaks`, so list rows would need either a sibling select or per-row `fetchTrackDetail` (too heavy for a list). Left alone.
+1. ~~Synthetic fake-waveform fallback~~ — **2026-09-10:** replaced PRNG
+   noise with a flat dim placeholder (`data-waveform="empty"`), still
+   seekable; Storybook Compact/Expanded renamed EmptyPlaceholder*.
+2. `CollectionTrackList.tsx` still has no peaks — the public collection API's
+   `CollectionSound` shape does not include `peaks`, so list rows would need
+   either a sibling select or per-row `fetchTrackDetail` (too heavy for a
+   list). Left alone.
 
 ## 2026-09-10: player bar + Discover peaks wiring
 

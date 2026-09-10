@@ -43,6 +43,7 @@ import type {
 } from '../api/types';
 import { DirectoryArtistsBrowser } from '../components/DirectoryArtistsBrowser';
 import { WidgetCard } from '../components/discover/WidgetCard';
+import { DiscoverGatewayBackground } from '../components/DiscoverGatewayBackground';
 import { NewsFeedWidget } from '../components/NewsFeedWidget';
 import { WaveformSeekbar } from '../components/tahti/WaveformSeekbar';
 import { VenuesDirectory } from '../components/VenuesDirectory';
@@ -303,7 +304,8 @@ export function DiscoverView() {
   };
 
   return (
-    <div className="flex max-w-5xl flex-col gap-6">
+    <div className="relative flex max-w-5xl flex-col gap-6">
+      <DiscoverGatewayBackground />
       <Tabs.Root
         selectedIndex={Math.max(
           0,
