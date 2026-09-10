@@ -1,3 +1,11 @@
+## 2026-09-10 — Audit topic chips + real peaks in player bar
+
+Admin → Logs → Audit events: topic filter chips and page controls against
+the real audit API. Bottom player bar and Discover overlay waveform now
+use real track peaks when play started from track detail / Discover
+(peaks cached per queue id). Collection list rows still synthetic — API
+has no peaks field there yet.
+
 ## 2026-09-08 — Purchases tab + hearthis.at widget fixes
 
 Account settings gained a Purchases tab (`/settings/account`, next to

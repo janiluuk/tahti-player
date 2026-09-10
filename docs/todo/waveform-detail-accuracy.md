@@ -44,4 +44,15 @@ live-browser-verified.
 ## Still open
 
 1. The synthetic fake-waveform fallback (item 4 from the original scope) is unaddressed: it still fabricates PRNG noise that looks like real audio for genuinely peakless tracks, rather than an explicit "no waveform data" state. Left alone this pass — it's a visual-language decision (flat/dim placeholder vs. today's stable-noise motif) affecting every consumer at once, not a bounded fix.
-2. `ConnectedPlayerBar.tsx`, `DiscoverView.tsx`, `CollectionTrackList.tsx` never pass real `peaks` to their `WaveformSeekbar` at all (always synthetic) — wiring real peak data into those three call sites, if wanted, is separate from this ticket's bar-count-cap scope and would need each surface's data-fetch path checked for whether peaks are even available there today.
+2. `CollectionTrackList.tsx` still has no peaks — the public collection API's `CollectionSound` shape does not include `peaks`, so list rows would need either a sibling select or per-row `fetchTrackDetail` (too heavy for a list). Left alone.
+
+## 2026-09-10: player bar + Discover peaks wiring
+
+- Added optional `peaks` on `TahtiPlayable` and `currentPeaks` / `peaksById` on
+  `playerStore` so queue skips keep real waveforms (Nuclear `QueueItem`/`Track`
+  has nowhere to put peaks).
+- `TrackDetailView.playableFromDetail` now passes `detail.peaks` into `play()`.
+- Discover always loads `fetchTrackDetail` on select (so peaks are available)
+  and `DiscoverWaveformPlayer` / `ConnectedPlayerBar` render those peaks at
+  native bar count when present.
+- `CollectionTrackList` unchanged — no peaks on the collection list payload.

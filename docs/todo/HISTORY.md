@@ -2,6 +2,23 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-10 — Admin audit topic filter + pagination; player/Discover peaks
+
+Closed governance gap #7 residue and advanced waveform wiring:
+
+- **AdminActivityView:** topic `FilterChips` (finance / subscriptions /
+  membership / decisions / officers / meetings / radio) forwarded as
+  `?topic=` to `GET /api/admin/audit`; real `Pagination` against
+  `total`/`page`/`limit=50`; CSV export respects the selected topic.
+  Client + mock filter coverage in `admin.test.ts`.
+- **Waveform:** optional `peaks` on `TahtiPlayable`; `playerStore`
+  keeps `currentPeaks`/`peaksById` across queue skips. Track detail
+  play + Discover select (always loads track detail) + ConnectedPlayerBar
+  render real peaks. Collection list still lacks peaks in the public
+  collection payload — left open in `waveform-detail-accuracy.md`.
+
+`governance-gap-list.md` and `waveform-detail-accuracy.md` stay open.
+
 ## 2026-09-08 — Governance: top-3 gaps + admin consolidation closed out
 
 `governance-gap-list-top3.md` is done — all three priority gaps from

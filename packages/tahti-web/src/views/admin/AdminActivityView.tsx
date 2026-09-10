@@ -1,16 +1,20 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import {
+  FilterChips,
   LogViewer,
+  Pagination,
   ViewShell,
   type LogEntryData,
   type LogLevel,
 } from '@tahti-player/ui';
 
 import {
+  ADMIN_AUDIT_TOPICS,
   adminActivityExportCsvUrl,
   fetchAdminActivity,
   type AdminActivityEntry,
+  type AdminAuditTopicId,
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
@@ -18,6 +22,7 @@ import { PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 
 const REFRESH_INTERVAL_MS = 15_000;
+const PAGE_LIMIT = 50;
 
 // Groups the ~40 AuditAction values into a handful of scopes so the
 // ScopeFilter is actually useful — one entry per action would just mirror
@@ -162,15 +167,22 @@ export function AdminActivityView({
   const [entries, setEntries] = useState<AdminActivityEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [topic, setTopic] = useState<AdminAuditTopicId | 'ALL'>('ALL');
 
   const load = useCallback(async () => {
-    const res = await fetchAdminActivity({ limit: 100 });
+    const res = await fetchAdminActivity({
+      page,
+      limit: PAGE_LIMIT,
+      topic: topic === 'ALL' ? undefined : topic,
+    });
     setEntries(res.data);
     setTotal(res.total);
     setLoading(false);
-  }, []);
+  }, [page, topic]);
 
   useEffect(() => {
+    setLoading(true);
     void load();
     const interval = setInterval(() => void load(), REFRESH_INTERVAL_MS);
     return () => clearInterval(interval);
@@ -178,44 +190,84 @@ export function AdminActivityView({
 
   const logs = entries.map(toLogEntry);
   const scopes = [...new Set(logs.map((l) => l.source.scope))].sort();
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_LIMIT));
+  const exportTopic = topic === 'ALL' ? undefined : topic;
 
   const content = (
     <StudioPanel>
       <p className="text-foreground-secondary mb-3 text-xs">
-        {total} event{total === 1 ? '' : 's'} in the current window. Listen
-        counts are anonymous by design (no per-user attribution exists for
-        plays) so individual listens aren&apos;t shown here — see Stats for
+        {total} event{total === 1 ? '' : 's'}
+        {topic !== 'ALL'
+          ? ` in ${ADMIN_AUDIT_TOPICS.find((t) => t.id === topic)?.label ?? topic}`
+          : ''}
+        . Listen counts are anonymous by design (no per-user attribution exists
+        for plays) so individual listens aren&apos;t shown here — see Stats for
         aggregate play counts.{' '}
         <a
-          href={adminActivityExportCsvUrl()}
+          href={adminActivityExportCsvUrl({ topic: exportTopic })}
           className="text-primary underline-offset-2 hover:underline"
         >
-          Export full audit log as CSV
+          Export{topic !== 'ALL' ? ' this topic' : ' full audit log'} as CSV
         </a>
       </p>
+
+      <FilterChips
+        aria-label="Audit topics"
+        className="border-border mb-3 border-b pb-3"
+        items={[
+          { id: 'ALL', label: 'All activity' },
+          ...ADMIN_AUDIT_TOPICS.map((item) => ({
+            id: item.id,
+            label: item.label,
+          })),
+        ]}
+        selected={topic}
+        onChange={(id) => {
+          setTopic(id as AdminAuditTopicId | 'ALL');
+          setPage(1);
+        }}
+      />
+
       {loading ? (
         <PageLoading label="Loading activity…" />
       ) : (
-        <div className="h-[70vh]">
-          <LogViewer.Root
-            logs={logs}
-            scopes={scopes}
-            onClear={() => {}}
-            onExport={() => {}}
-            onOpenLogFolder={() => {}}
-          >
-            <div className="flex flex-wrap items-center gap-4">
-              <LogViewer.SearchInput />
-              <LogViewer.DateRangeFilter />
+        <div className="flex flex-col gap-3">
+          <div className="h-[60vh]">
+            <LogViewer.Root
+              logs={logs}
+              scopes={scopes}
+              onClear={() => {}}
+              onExport={() => {}}
+              onOpenLogFolder={() => {}}
+            >
+              <div className="flex flex-wrap items-center gap-4">
+                <LogViewer.SearchInput />
+                <LogViewer.DateRangeFilter />
+              </div>
+              <div className="flex flex-wrap items-center gap-4">
+                <LogViewer.LevelFilter />
+                <LogViewer.ScopeFilter />
+                <LogViewer.EntryCount />
+              </div>
+              <LogViewer.VirtualizedList />
+              <LogViewer.EntryDetailDialog />
+            </LogViewer.Root>
+          </div>
+          {totalPages > 1 ? (
+            <div className="flex justify-center">
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={setPage}
+                labels={{
+                  navigation: 'Activity pages',
+                  previous: 'Previous page',
+                  next: 'Next page',
+                  page: (n) => `Page ${n}`,
+                }}
+              />
             </div>
-            <div className="flex flex-wrap items-center gap-4">
-              <LogViewer.LevelFilter />
-              <LogViewer.ScopeFilter />
-              <LogViewer.EntryCount />
-            </div>
-            <LogViewer.VirtualizedList />
-            <LogViewer.EntryDetailDialog />
-          </LogViewer.Root>
+          ) : null}
         </div>
       )}
     </StudioPanel>

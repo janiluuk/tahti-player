@@ -21,6 +21,8 @@ Sibling API: **`../tahti-org`**. Product matrix: [`FEATURES.md`](FEATURES.md) Re
 - [ ] **(Later) Desktop status bar: local track count/size** — web icons + cloud storage shipped 2026-09-08; desktop app should still show local library totals beside cloud.
 - [ ] **(Later) Discussion topics, not just feature requests** — `admin/moderation/tabs/FeatureRequestsTab.tsx` currently only handles feature-request tickets. Add admin-creatable discussion topics as a distinct concept (not a feature request). Participants get notified on new updates to a topic they're in; users can mute a specific topic.
 
+- [ ] **(Later) Codebase refactor hotspots** — god modules / mega-files backlog. Leaf: [codebase-refactor-hotspots.md](../../docs/todo/codebase-refactor-hotspots.md).
+
 ## Cross-repo work (`../tahti-org` — user-authorized 2026-09-07)
 
 User has explicitly authorized editing `../tahti-org` for cross-repo

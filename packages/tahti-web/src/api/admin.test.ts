@@ -117,6 +117,25 @@ describe('fetchAdminActivity', () => {
     const url = new URL(fetchMock.mock.calls[0]?.[0] as string, 'http://x');
     expect(url.searchParams.get('scope')).toBe('governance');
   });
+
+  it('forwards topic + page to the audit query string', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(
+        new Response(
+          JSON.stringify({ page: 2, limit: 50, total: 0, items: [] }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } },
+        ),
+      );
+    vi.stubGlobal('fetch', fetchMock);
+
+    await fetchAdminActivity({ topic: 'finance', page: 2, limit: 50 });
+
+    const url = new URL(fetchMock.mock.calls[0]?.[0] as string, 'http://x');
+    expect(url.searchParams.get('topic')).toBe('finance');
+    expect(url.searchParams.get('page')).toBe('2');
+    expect(url.searchParams.get('limit')).toBe('50');
+  });
 });
 
 describe('fetchAdminAddons', () => {

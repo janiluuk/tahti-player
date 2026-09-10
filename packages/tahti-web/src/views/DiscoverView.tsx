@@ -281,16 +281,8 @@ export function DiscoverView() {
   );
 
   const selectTrack = async (item: DiscoverTrackItem) => {
-    const detail = item.audioUrl
-      ? {
-          title: item.title,
-          artistName: item.artist,
-          channelSlug: item.channelSlug,
-          audioUrl: item.audioUrl,
-          bannerUrl: item.coverUrl,
-          durationSec: null,
-        }
-      : (await fetchTrackDetail(item.id.replace(/^sound:/, ''))).data;
+    const detail = (await fetchTrackDetail(item.id.replace(/^sound:/, '')))
+      .data;
     if (!detail?.audioUrl) {
       return;
     }
@@ -299,11 +291,12 @@ export function DiscoverView() {
       kind: 'sound',
       title: detail.title,
       artist: detail.artistName,
-      coverUrl: detail.bannerUrl ?? undefined,
+      coverUrl: detail.bannerUrl ?? item.coverUrl ?? undefined,
       streamUrl: detail.audioUrl,
       protocol: detail.audioUrl.includes('.m3u8') ? 'hls' : 'https',
       channelSlug: detail.channelSlug,
       durationSec: detail.durationSec ?? undefined,
+      peaks: detail.peaks,
     };
     setSelectedTrack({ item, playable });
     play(playable);
@@ -582,12 +575,14 @@ function DiscoverWaveformPlayer({
   const status = usePlayerStore((state) => state.status);
   const currentTime = usePlayerStore((state) => state.currentTime);
   const duration = usePlayerStore((state) => state.duration);
+  const currentPeaks = usePlayerStore((state) => state.currentPeaks);
   const play = usePlayerStore((state) => state.play);
   const setStatus = usePlayerStore((state) => state.setStatus);
   const seekTo = usePlayerStore((state) => state.seekTo);
   const isCurrent = currentId === selection.playable.id;
   const isPlaying = isCurrent && (status === 'playing' || status === 'loading');
   const progress = isCurrent && duration > 0 ? currentTime / duration : 0;
+  const peaks = (isCurrent ? currentPeaks : null) ?? selection.playable.peaks;
 
   return (
     <section
@@ -621,6 +616,8 @@ function DiscoverWaveformPlayer({
           <WaveformSeekbar
             trackId={selection.playable.id}
             progress={progress}
+            peaks={peaks}
+            bars={peaks?.length || 64}
             className="mt-3 h-9 w-full"
             onSeek={
               isCurrent && duration > 0

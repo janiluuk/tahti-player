@@ -444,6 +444,10 @@ export type TahtiPlayable = {
    * broadcast right now, not a 24/7 fallback rotation (which shares the
    * same `kind` and channel `state: 'LIVE'`). Drives the LIVE badge. */
   isRealLive?: boolean;
+  /** Optional [0..255] amplitude buckets when known at play time — drives
+   * the bottom player bar / Discover overlay waveform instead of synthetic
+   * noise. Lost across queue rebuilds unless `currentPeaks` is also set. */
+  peaks?: number[] | null;
 };
 
 export type ChatMessage = {
