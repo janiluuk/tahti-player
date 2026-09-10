@@ -15,7 +15,7 @@ import {
   WalletIcon,
   type LucideIcon,
 } from 'lucide-react';
-import { useEffect, useState, type FC, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type FC, type ReactNode } from 'react';
 
 import {
   Badge,
@@ -255,6 +255,15 @@ export function StudioHomeView() {
   const [governanceRequests, setGovernanceRequests] = useState<
     FeatureRequest[]
   >([]);
+  const autoPromptedChannelSetup = useRef(false);
+
+  useEffect(() => {
+    if (!user || user.channel || autoPromptedChannelSetup.current) {
+      return;
+    }
+    autoPromptedChannelSetup.current = true;
+    openChannelSetup();
+  }, [openChannelSetup, user]);
 
   useEffect(() => {
     if (!user?.channel) {

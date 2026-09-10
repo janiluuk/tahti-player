@@ -2147,3 +2147,18 @@ input's `flex-1` sibling grows over it.
 MyDiscographyView.test.tsx` (7 passed) verified.
 
 ---
+
+## 2026-09-10 — Auto-run channel setup wizard on `/studio`
+
+`StudioHomeView` now auto-opens the existing channel-setup wizard
+(`useChannelSetupModalStore`, the same modal `/studio/setup-channel`
+opens) once per mount when a signed-in artist/board user has no channel,
+instead of relying only on the small "Create your channel" text link.
+Guarded with a ref so closing the dialog doesn't reopen it mid-visit; a
+fresh visit still re-prompts until a channel exists. Kept the inline
+text link as a manual fallback. Verified live in the browser (mock
+session, channel forced to `null`): dialog opens automatically on
+landing at `/studio`, closes cleanly via Cancel, does not reopen.
+`tsc --noEmit` and `eslint` clean on the changed file.
+
+---
