@@ -15,6 +15,7 @@ import { useIsMobile } from '../hooks/useIsMobile';
 import { useLayoutStore, type RightRailTab } from '../stores/layoutStore';
 import { useNotificationInboxStore } from '../stores/notificationInboxStore';
 import { usePlayerStore } from '../stores/playerStore';
+import { useRightRailOverrideStore } from '../stores/rightRailOverrideStore';
 import { ChannelChatPanel } from './ChannelChatPanel';
 import { SidebarQueuePanel } from './SidebarQueuePanel';
 
@@ -26,6 +27,7 @@ const COLLAPSED_TAB_CLASS =
 
 export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
   const isMobile = useIsMobile();
+  const railOverride = useRightRailOverrideStore((s) => s.override);
   const chatSlug = useLayoutStore((s) => s.chatSlug);
   const chatEnabled = useLayoutStore((s) => s.chatEnabled);
   const chatDisabledReason = useLayoutStore((s) => s.chatDisabledReason);
@@ -57,6 +59,20 @@ export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
   const selectedIndex = Math.max(0, tabs.indexOf(tab));
 
   if (isCollapsed) {
+    if (railOverride) {
+      return (
+        <button
+          type="button"
+          className={COLLAPSED_TAB_CLASS}
+          aria-label={`Open ${railOverride.title}`}
+          title={railOverride.title}
+          onClick={() => toggleRight()}
+        >
+          <ListMusicIcon size={18} aria-hidden />
+          <span className="sr-only">{railOverride.title}</span>
+        </button>
+      );
+    }
     return (
       <Tabs.Root
         vertical
@@ -95,6 +111,25 @@ export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
           </Tabs.Tab>
         </Tabs.List>
       </Tabs.Root>
+    );
+  }
+
+  if (railOverride) {
+    return (
+      <div
+        className="flex h-full min-h-0 flex-col"
+        data-testid="right-rail"
+        data-right-rail-override={railOverride.title}
+      >
+        <div className="border-border shrink-0 border-b px-2 py-2">
+          <p className="text-xs font-bold tracking-wide uppercase">
+            {railOverride.title}
+          </p>
+        </div>
+        <div className="tahti-hide-scrollbar min-h-0 flex-1 overflow-y-auto p-2">
+          {railOverride.content}
+        </div>
+      </div>
     );
   }
 

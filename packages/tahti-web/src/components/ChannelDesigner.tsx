@@ -12,8 +12,11 @@ import {
   forwardRef,
   useEffect,
   useImperativeHandle,
+  useLayoutEffect,
   useMemo,
+  useRef,
   useState,
+  type ReactNode,
 } from 'react';
 import { toast } from 'sonner';
 
@@ -71,6 +74,7 @@ import {
   parseNowPlayingOverlaySettings,
   type NowPlayingOverlaySettings,
 } from '../content/nowPlayingOverlayPresets';
+import { useIsMobile } from '../hooks/useIsMobile';
 import {
   CHANNEL_LOOK_ELEMENTS,
   isArtistLookBlockId,
@@ -91,6 +95,8 @@ import {
   visualizerMetadata,
   visualizerSupportsAudioReactive,
 } from '../plugins/visualizers';
+import { useLayoutStore } from '../stores/layoutStore';
+import { useRightRailOverrideStore } from '../stores/rightRailOverrideStore';
 import {
   BackdropPanel,
   LAYOUT_ONLY_LOOK_IDS,
@@ -218,6 +224,36 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
     }: Props,
     ref,
   ) {
+    const isMobile = useIsMobile();
+    const setRightCollapsed = useLayoutStore((s) => s.setRightCollapsed);
+    const setRightWidth = useLayoutStore((s) => s.setRightWidth);
+    const rightWidth = useLayoutStore((s) => s.rightWidth);
+    const setRailOverride = useRightRailOverrideStore((s) => s.setOverride);
+    const dockControlsInRail = !lookOnly && !isMobile;
+    const controlsForRailRef = useRef<ReactNode>(null);
+
+    useLayoutEffect(() => {
+      if (!dockControlsInRail) {
+        setRailOverride(null);
+        return;
+      }
+      const content = controlsForRailRef.current;
+      if (!content) {
+        return;
+      }
+      setRailOverride({ title: 'Channel designer', content });
+      setRightCollapsed(false);
+    });
+
+    useEffect(() => {
+      if (!dockControlsInRail || rightWidth >= 360) {
+        return;
+      }
+      setRightWidth(360);
+    }, [dockControlsInRail, rightWidth, setRightWidth]);
+
+    useEffect(() => () => setRailOverride(null), [setRailOverride]);
+
     const [visual, setVisual] = useState<ChannelVisual | null>(null);
     const [scheme, setScheme] = useState<ColorScheme>({});
     const [playerScheme, setPlayerScheme] = useState<ColorScheme>({});
@@ -1523,9 +1559,11 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
         onSelect={selectLookElement}
         onToggleDisabled={toggleSelectedLook}
         items={lookEditorItems}
-        className={`${lookOnly ? 'h-full' : ''} ${highlightSection ? 'ring-primary ring-2' : ''}`}
+        className={`${lookOnly || dockControlsInRail ? 'h-full' : ''} ${highlightSection ? 'ring-primary ring-2' : ''}`}
       />
     );
+    controlsForRailRef.current = dockControlsInRail ? controls : null;
+
     if (lookOnly) {
       return <div className="flex h-full min-h-0 flex-col">{controls}</div>;
     }
@@ -1623,7 +1661,11 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
             </div>
           )}
 
-          <div className="grid min-h-0 grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-start">
+          <div
+            className={`grid min-h-0 grid-cols-1 gap-4 lg:items-start ${
+              dockControlsInRail ? '' : 'lg:grid-cols-[minmax(0,1fr)_24rem]'
+            }`}
+          >
             <main
               aria-label="Channel page preview"
               className="border-border bg-background min-w-0 overflow-x-hidden overflow-y-auto rounded-xl border shadow-lg lg:max-h-[calc(100vh-7rem)]"
@@ -1795,12 +1837,14 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
               </div>
             </main>
 
-            <section
-              aria-label="Channel appearance controls"
-              className="min-w-0 lg:sticky lg:top-4"
-            >
-              {controls}
-            </section>
+            {!dockControlsInRail ? (
+              <section
+                aria-label="Channel appearance controls"
+                className="min-w-0 lg:sticky lg:top-4"
+              >
+                {controls}
+              </section>
+            ) : null}
           </div>
 
           {overlayConfigOpen ? (

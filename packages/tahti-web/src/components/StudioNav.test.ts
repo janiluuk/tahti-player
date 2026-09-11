@@ -7,6 +7,8 @@ import {
   getStudioSubmenuItems,
   isAudienceSubnavActive,
   isBroadcastSubnavActive,
+  isStudioAudienceGroup,
+  isStudioBroadcastGroup,
   litStudioSubmenuDestinations,
   SUBMENUS,
 } from './StudioNav';
@@ -117,6 +119,15 @@ describe('StudioNav section coverage', () => {
       ).map((item) => item.to);
       expect(lit, location).toEqual([expectedTo]);
     }
+  });
+
+  it('classifies Broadcast and Audience route groups for nested chrome', () => {
+    expect(isStudioBroadcastGroup('/studio/go-live')).toBe(true);
+    expect(isStudioBroadcastGroup('/studio/shows/abc')).toBe(true);
+    expect(isStudioBroadcastGroup('/studio')).toBe(false);
+    expect(isStudioAudienceGroup('/studio/audience?tab=tiers')).toBe(true);
+    expect(isStudioAudienceGroup('/studio/stripe')).toBe(true);
+    expect(isStudioAudienceGroup('/studio/branding')).toBe(false);
   });
 
   it('keeps Stripe out of the Studio submenu (nested under Audience instead)', () => {

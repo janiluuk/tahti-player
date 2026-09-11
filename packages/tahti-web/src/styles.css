@@ -38,11 +38,7 @@ body,
 
 :root[data-theme-id='nuclear:tahti-dark'] .tahti-ambient-surface,
 :root[data-theme-id='custom:tahti-blue'] .tahti-ambient-surface {
-  background-color: color-mix(
-    in srgb,
-    var(--background-secondary) 72%,
-    transparent
-  );
+  background-color: var(--background);
   transition:
     background-color 240ms ease,
     border-color 180ms ease,
@@ -81,6 +77,16 @@ body,
   min-width: 0;
 }
 
+/* Studio pages must share one content origin (top-left). Per-view mx-auto /
+ * max-w-* wrappers otherwise shift the left edge when switching routes. */
+.studio-page-layout {
+  margin-inline: 0 !important;
+  max-width: none !important;
+  width: 100% !important;
+  align-self: stretch;
+  box-sizing: border-box;
+}
+
 @media (max-width: 639px) {
   .studio-page-layout,
   .admin-page-layout,
@@ -88,6 +94,10 @@ body,
     box-sizing: border-box;
     width: 100%;
     padding-inline: 0.25rem;
+  }
+
+  .studio-page-layout {
+    padding-block: 0.5rem;
   }
 }
 
@@ -101,6 +111,10 @@ body,
     padding-inline: 0.5rem !important;
     justify-self: stretch;
     column-gap: 1.5rem;
+  }
+
+  .studio-page-layout {
+    padding-block: 0.5rem;
   }
 
   /* Studio + Admin both use horizontal section tabs (AdminPageLayout nests

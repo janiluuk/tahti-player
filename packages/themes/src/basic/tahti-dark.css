@@ -114,9 +114,5 @@
   color: var(--accent-foreground) !important;
 }
 
-/* Ambient motion should sit behind the interface, not turn every active
- * control into a neon amber block. */
-/* eslint-disable-next-line css/use-baseline */
-:root[data-theme-id='nuclear:tahti-dark']:has([data-ambient-background]) {
-  --accent-orange: oklch(0.56 0.13 58 / 0.78);
-}
+/* Ambient motion should sit behind the interface without remapping
+ * interactive accents — keep token colors stable like other themes. */

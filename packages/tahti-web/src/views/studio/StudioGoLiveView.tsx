@@ -58,9 +58,7 @@ import {
 } from '../../components/MulticastConfigureDialog';
 import { ObsPresetButton } from '../../components/ObsPresetButton';
 import { SignalCheckWidget } from '../../components/SignalCheckWidget';
-import { StreamManagerPanel } from '../../components/StreamManagerPanel';
 import { StudioGate } from '../../components/StudioGate';
-import { BroadcastSubNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { OnAirBadge } from '../../components/tahti/OnAirBadge';
 import { usePolling } from '../../hooks/usePolling';
@@ -154,7 +152,6 @@ export function StudioGoLiveView() {
   const [channelState, setChannelState] = useState(
     user?.channel?.state ?? 'OFFLINE',
   );
-  const [rotationPlaying, setRotationPlaying] = useState(false);
   const [ingest, setIngest] = useState<Ingest>('obs');
   const [credentialsExpanded, setCredentialsExpanded] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -175,6 +172,7 @@ export function StudioGoLiveView() {
   const streamPlayableId = `live:${slug}`;
   const isMock = import.meta.env.VITE_FORCE_MOCK === '1';
   const isBroadcastLive = channelState === 'LIVE' && Boolean(signal?.connected);
+  const rotationPlaying = channelState === 'LIVE' && !signal?.connected;
   const isPreview = channelState === 'PREVIEW';
   const signalOk = Boolean(signal?.connected) || isPreview;
   const isStreamPlaying =
@@ -288,14 +286,6 @@ export function StudioGoLiveView() {
     }
   };
 
-  const handleStreamEnded = () => {
-    patchLocalChannel('OFFLINE');
-    setMessage('Broadcast ended. Your configured rotation can resume.');
-    if (!isMock) {
-      void refresh();
-    }
-  };
-
   const toggleRecording = async () => {
     const next = !recordEnabled;
     setRecordEnabled(next);
@@ -339,8 +329,6 @@ export function StudioGoLiveView() {
   return (
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6">
-        <BroadcastSubNav current="/studio/go-live" />
-
         <ViewShell title="Broadcast" classes={{ root: 'px-0 pt-0' }}>
           <div className="mb-4 flex flex-wrap items-center gap-2">
             {slug && (
@@ -395,17 +383,6 @@ export function StudioGoLiveView() {
             >
               {message}
             </p>
-          )}
-
-          {settings && slug && (
-            <StreamManagerPanel
-              slug={slug}
-              channelState={channelState}
-              isPlaying={isStreamPlaying}
-              onPlaybackToggle={toggleStreamPlayback}
-              onEnded={handleStreamEnded}
-              onRotationChange={setRotationPlaying}
-            />
           )}
 
           <>

@@ -1,3 +1,17 @@
+## 2026-09-11 — v0.0.113: Studio nav origin + stable chrome slots
+
+Studio section menu and nested Broadcast/Audience tabs mount in AppShell
+with reserved height so route switches stop jumping vertically. Studio page
+shells left-align (no mx-auto/max-w origin shift). Continues v0.0.112
+designer rail / Broadcast menu / tahti-dark fixes.
+
+## 2026-09-11 — v0.0.112: designer right rail, Broadcast menu, tahti-dark surfaces
+
+Channel edit / designer tools dock into the Nuclear right rail on desktop
+(no fixed overlay). Tahti dark ambient surfaces use solid `--background`
+again. Top Broadcast menu: booking calendar modal, 24/7 rotation → Stream
+Manager dialog, Broadcast Studio + duplicate Stream Manager entries
+removed; Go Live panel no longer embeds Stream Manager.
 ## 2026-09-11 — v0.0.113: shared apiBase + remaining visibility-aware polls
 
 API modules share `apiBase` from `api/http.ts`. Pro Editor, Jam, notification

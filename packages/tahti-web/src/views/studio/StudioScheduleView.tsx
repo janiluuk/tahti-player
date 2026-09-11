@@ -49,7 +49,6 @@ import {
 import { ChannelRadioPlaylistPanel } from '../../components/ChannelRadioPlaylistPanel';
 import { ImageUploadField } from '../../components/ImageUploadField';
 import { StudioGate } from '../../components/StudioGate';
-import { BroadcastSubNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
@@ -758,7 +757,6 @@ export function StudioScheduleView() {
   return (
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
-        <BroadcastSubNav current="/studio/schedule" />
         <ViewShell
           title="Schedule"
           classes={{ root: 'px-0 pt-0' }}
