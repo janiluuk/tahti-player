@@ -756,7 +756,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
             to: '/governance/history',
           },
           { label: 'Open transparency ledger', to: '/transparency' },
-          { label: 'Open governance help', to: '/help/governance' },
+          {
+            label: 'Open governance help',
+            to: '/studio/governance?tab=guide',
+          },
         ],
         old: {
           image: '/map/auth/governance-member.png',
