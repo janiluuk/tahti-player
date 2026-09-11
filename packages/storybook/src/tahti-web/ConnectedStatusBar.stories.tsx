@@ -47,3 +47,26 @@ export const Encoding: Story = {
     </BottomBar>
   ),
 };
+
+export const Desktop: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Desktop (Tauri) build adds a local-library track count beside cloud storage usage.',
+      },
+    },
+  },
+  render: () => (
+    <BottomBar className="px-5">
+      <StatusBarContent
+        soundCount={42}
+        unreadNotifications={0}
+        unreadMessages={0}
+        encodingLabel={null}
+        storageUsedLabel="1.2 GB"
+        localTrackCount={3841}
+      />
+    </BottomBar>
+  ),
+};

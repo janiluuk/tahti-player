@@ -17,6 +17,8 @@ import {
   fetchGovernanceMembers,
   fetchGovernanceMotions,
   fetchGovernanceQuarterlyReports,
+  fetchMotionCommentsBulk,
+  type MotionComment,
 } from '../api/client';
 import { parseMeetingAgenda } from '../api/governanceMocks';
 import type {
@@ -39,6 +41,9 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
   const isBoard = hasAccountRole(user, 'BOARD');
   const closeSettings = useSettingsModalStore((s) => s.close);
   const [motions, setMotions] = useState<GovernanceMotion[]>([]);
+  const [motionComments, setMotionComments] = useState<
+    Record<string, MotionComment[]>
+  >({});
   const [motionsCursor, setMotionsCursor] = useState<string | null>(null);
   const [loadingMoreMotions, setLoadingMoreMotions] = useState(false);
   const [requests, setRequests] = useState<FeatureRequest[]>([]);
@@ -77,6 +82,11 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
       ]) => {
         setMotions(motionsResult.data);
         setMotionsCursor(motionsResult.nextCursor);
+        if (motionsResult.data.length > 0) {
+          void fetchMotionCommentsBulk(
+            motionsResult.data.map((m) => m.id),
+          ).then((res) => setMotionComments(res.data));
+        }
         setRequests(requestsResult.data);
         setMeetings(meetingsResult.data);
         setDocuments(documentsResult.data);
@@ -104,6 +114,11 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
       setMotions((prev) => [...prev, ...result.data]);
       setMotionsCursor(result.nextCursor);
       setLoadingMoreMotions(false);
+      if (result.data.length > 0) {
+        void fetchMotionCommentsBulk(result.data.map((m) => m.id)).then((res) =>
+          setMotionComments((prev) => ({ ...prev, ...res.data })),
+        );
+      }
     });
   };
 
@@ -520,6 +535,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
                 isBoard={isBoard}
                 memberCount={members.length}
                 linkTitle
+                preloadedComments={motionComments[m.id]}
                 onChanged={reload}
               />
             ))}

@@ -2415,3 +2415,15 @@ Verified via two manual `workflow_dispatch` runs: first confirmed the
 `deploy/` rsync also needed the chown (workflow fix alone wasn't
 sufficient), second run completed clean end-to-end including smoke
 checks.
+
+---
+
+## 2026-09-11 — Desktop status bar: local library track count
+
+`ConnectedStatusBar` (shared by web and the desktop Tauri build) now
+shows a local-library track-count chip next to the cloud-storage chip,
+via `getNativeLibrary().list('', 0).total` — null/hidden on web where
+`getNativeLibrary()` returns null. On-disk byte total is not included:
+the Rust side only exposes per-track `size_bytes`, no aggregate `SUM`
+query exists, so that would need a new Tauri command — left as a
+follow-up if actually wanted, not guessed at.

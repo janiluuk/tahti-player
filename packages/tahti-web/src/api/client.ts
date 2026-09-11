@@ -2293,6 +2293,35 @@ export async function fetchMotionComments(id: string): Promise<{
   }
 }
 
+/** Comments for several motions in one request — governance list pages
+ * need every visible motion's comment thread ready before a card expands,
+ * and fetching them one motion at a time doesn't scale past a handful.
+ * Capped at 100 ids server-side, matching the motions list's own cap. */
+export async function fetchMotionCommentsBulk(ids: string[]): Promise<{
+  data: Record<string, MotionComment[]>;
+  meta: FetchMeta;
+}> {
+  if (ids.length === 0) {
+    return { data: {}, meta: { source: 'api' } };
+  }
+  if (isForceMock()) {
+    return {
+      data: Object.fromEntries(
+        ids.map((id) => [id, [...(mockMotionComments[id] ?? [])]]),
+      ),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const data = await getJson<Record<string, MotionComment[]>>(
+      `/api/v1/governance/motions/comments?ids=${ids.map(encodeURIComponent).join(',')}`,
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: {}, meta: apiErrorMeta(err) };
+  }
+}
+
 export async function postMotionComment(
   id: string,
   body: string,
