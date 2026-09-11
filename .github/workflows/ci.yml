@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
 
 env:
@@ -110,6 +110,14 @@ jobs:
       - name: Build snapshot digest
         if: steps.test.outcome == 'failure'
         run: node scripts/ci/build-snapshot-digest.mjs
+        env:
+          # Where this run's PNGs will live once published below, so the
+          # digest can embed real ![]() image links instead of bare
+          # filenames. Only meaningful for pull_request (no PR to publish
+          # under otherwise) -- the publish step itself also skips then.
+          SNAPSHOT_DIFF_PUBLIC_BASE_URL: >-
+            ${{ github.event_name == 'pull_request' &&
+            format('https://raw.githubusercontent.com/{0}/visual-snapshot-diffs/pr-{1}', github.repository, github.event.pull_request.number) || '' }}
 
       - name: Write snapshot digest to job summary
         if: steps.test.outcome == 'failure'
@@ -126,6 +134,13 @@ jobs:
           path: snapshot-digest/
           if-no-files-found: warn
           retention-days: 14
+
+      - name: Publish visual snapshot diffs
+        if: steps.test.outcome == 'failure' && github.event_name == 'pull_request'
+        run: node scripts/ci/publish-visual-snapshot-diffs.mjs
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GH_TOKEN: ${{ github.token }}
 
       - name: Comment snapshot digest on PR
         if: steps.test.outcome == 'failure' && github.event_name == 'pull_request'

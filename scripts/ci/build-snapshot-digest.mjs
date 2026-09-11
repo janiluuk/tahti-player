@@ -2,15 +2,31 @@ import { createHash } from 'node:crypto';
 import {
   existsSync,
   mkdirSync,
-  readFileSync,
   readdirSync,
+  readFileSync,
   writeFileSync,
 } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import pixelmatch from 'pixelmatch';
+import { PNG } from 'pngjs';
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+const ROOT = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '../..',
+);
 const OUT_DIR = path.join(ROOT, 'snapshot-digest');
+
+// Public base URL where this run's PNGs are hosted (e.g. raw.githubusercontent.com
+// on a dedicated orphan branch — see .github/workflows/ci.yml's "Publish visual
+// snapshot diffs" step). Without it, the digest just names the file (local/
+// non-CI runs, or a run with nothing to publish).
+const PUBLIC_BASE_URL = process.env.SNAPSHOT_DIFF_PUBLIC_BASE_URL?.replace(
+  /\/$/,
+  '',
+);
+
+let cachedAppCss;
 
 const failures = collectFailures(ROOT);
 
@@ -22,7 +38,10 @@ if (failures.length === 0) {
     count: 0,
     items: [],
   };
-  writeFileSync(path.join(OUT_DIR, 'digest.json'), JSON.stringify(empty, null, 2));
+  writeFileSync(
+    path.join(OUT_DIR, 'digest.json'),
+    JSON.stringify(empty, null, 2),
+  );
   writeFileSync(
     path.join(OUT_DIR, 'digest.md'),
     [
@@ -65,11 +84,14 @@ for (const [index, failure] of failures.entries()) {
     receivedHtmlPath: receivedHtml ? path.basename(receivedPath) : null,
     expectedPng: null,
     receivedPng: null,
+    diffPng: null,
+    diffPixels: null,
     messageExcerpt: excerpt(failure.message, 6000),
   });
 }
 
 await maybeScreenshot(items);
+maybeDiffImages(items);
 
 const digest = {
   generatedAt: new Date().toISOString(),
@@ -77,27 +99,22 @@ const digest = {
   items,
 };
 
-writeFileSync(path.join(OUT_DIR, 'digest.json'), JSON.stringify(digest, null, 2));
+writeFileSync(
+  path.join(OUT_DIR, 'digest.json'),
+  JSON.stringify(digest, null, 2),
+);
 writeFileSync(path.join(OUT_DIR, 'digest.md'), renderMarkdown(digest));
 console.log(`snapshot-digest: wrote ${items.length} item(s) to ${OUT_DIR}`);
 
 async function loadChromium() {
   const candidates = [
     'playwright',
+    pathToFileURL(path.join(ROOT, 'node_modules/playwright/index.mjs')).href,
     pathToFileURL(
-      path.join(ROOT, 'node_modules/playwright/index.mjs'),
+      path.join(ROOT, 'packages/tahti-web/node_modules/playwright/index.mjs'),
     ).href,
     pathToFileURL(
-      path.join(
-        ROOT,
-        'packages/tahti-web/node_modules/playwright/index.mjs',
-      ),
-    ).href,
-    pathToFileURL(
-      path.join(
-        ROOT,
-        'node_modules/.pnpm/node_modules/playwright/index.mjs',
-      ),
+      path.join(ROOT, 'node_modules/.pnpm/node_modules/playwright/index.mjs'),
     ).href,
   ];
 
@@ -149,41 +166,53 @@ function collectFailures(root) {
   return collected;
 }
 
+/** Concatenated real app CSS (Tailwind utilities + @tahti-player/ui + theme
+ * tokens) from the built tahti-web bundle, so a snapshot's rendered PNG
+ * actually looks like the app instead of unstyled HTML. `pnpm turbo build`
+ * runs before tests in CI, so `dist/assets/*.css` exists by the time this
+ * script runs; falls back to a plain dark stub (old behavior) if it
+ * doesn't — e.g. a local ad-hoc run with no prior build. */
+function loadAppCss() {
+  if (cachedAppCss !== undefined) {
+    return cachedAppCss;
+  }
+  const assetsDir = path.join(ROOT, 'packages/tahti-web/dist/assets');
+  if (!existsSync(assetsDir)) {
+    cachedAppCss = null;
+    return cachedAppCss;
+  }
+  const cssFiles = readdirSync(assetsDir).filter((f) => f.endsWith('.css'));
+  if (cssFiles.length === 0) {
+    cachedAppCss = null;
+    return cachedAppCss;
+  }
+  cachedAppCss = cssFiles
+    .map((f) => readFileSync(path.join(assetsDir, f), 'utf8'))
+    .join('\n');
+  return cachedAppCss;
+}
+
 function wrapHtmlDocument(fragment, title) {
+  const appCss = loadAppCss();
+  const baseStyle = appCss
+    ? 'body { margin: 0; padding: 24px 24px 48px; }'
+    : `:root { color-scheme: dark; }
+    body { margin: 0; padding: 24px 24px 48px; font-family: ui-sans-serif, system-ui, sans-serif; background: #0b1220; color: #f8fafc; }`;
+  const labelStyle =
+    '.tahti-snapshot-label { font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.6; margin-bottom: 12px; }';
+
   return `<!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <title>${escapeHtml(title)}</title>
-  <style>
-    :root { color-scheme: dark; }
-    body {
-      margin: 0;
-      padding: 24px;
-      font-family: ui-sans-serif, system-ui, sans-serif;
-      background: #0b1220;
-      color: #f8fafc;
-    }
-    .label {
-      font-size: 12px;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      opacity: 0.7;
-      margin-bottom: 12px;
-    }
-    .frame {
-      border: 1px solid #334155;
-      border-radius: 12px;
-      padding: 16px;
-      background: #111827;
-    }
-  </style>
+  <style>${appCss ?? ''}
+${baseStyle}
+${labelStyle}</style>
 </head>
-<body>
-  <div class="label">${escapeHtml(title)}</div>
-  <div class="frame">
+<body class="bg-background text-foreground">
+  <div class="tahti-snapshot-label">${escapeHtml(title)}</div>
 ${fragment}
-  </div>
 </body>
 </html>
 `;
@@ -226,22 +255,108 @@ async function maybeScreenshot(digestItems) {
   }
 }
 
+/** Pixel-diffs expected vs. received PNGs (odiff/pixelmatch-style: same idea
+ * as getsentry/action-visual-snapshot uses internally, run locally instead
+ * of against a proprietary API). Mismatched dimensions are padded onto a
+ * shared canvas first — pixelmatch requires equal width/height — with an
+ * unmissable magenta fill so a size change (not just a content change) is
+ * obvious in the diff image rather than silently cropped. */
+function maybeDiffImages(digestItems) {
+  for (const item of digestItems) {
+    if (!item.expectedPng || !item.receivedPng) {
+      continue;
+    }
+    try {
+      const expected = PNG.sync.read(
+        readFileSync(path.join(OUT_DIR, item.expectedPng)),
+      );
+      const received = PNG.sync.read(
+        readFileSync(path.join(OUT_DIR, item.receivedPng)),
+      );
+      const width = Math.max(expected.width, received.width);
+      const height = Math.max(expected.height, received.height);
+      const a = padPng(expected, width, height);
+      const b = padPng(received, width, height);
+      const diff = new PNG({ width, height });
+      const changedPixels = pixelmatch(
+        a.data,
+        b.data,
+        diff.data,
+        width,
+        height,
+        {
+          threshold: 0.1,
+        },
+      );
+      const diffName = `${item.id}.diff.png`;
+      writeFileSync(path.join(OUT_DIR, diffName), PNG.sync.write(diff));
+      item.diffPng = diffName;
+      item.diffPixels = changedPixels;
+    } catch (error) {
+      console.warn(
+        `snapshot-digest: diff failed for ${item.id}: ${error.message}`,
+      );
+    }
+  }
+}
+
+function padPng(png, width, height) {
+  if (png.width === width && png.height === height) {
+    return png;
+  }
+  const padded = new PNG({ width, height });
+  for (let i = 0; i < padded.data.length; i += 4) {
+    padded.data[i] = 255;
+    padded.data[i + 1] = 0;
+    padded.data[i + 2] = 255;
+    padded.data[i + 3] = 255;
+  }
+  PNG.bitblt(png, padded, 0, 0, png.width, png.height, 0, 0);
+  return padded;
+}
+
+/** Builds an `owner/repo@branch/path` raw URL for an image published by the
+ * "Publish visual snapshot diffs" CI step, or null when there's nowhere
+ * public to point at (no PUBLIC_BASE_URL — local run, or nothing to
+ * publish this time). */
+function imageUrl(fileName) {
+  if (!PUBLIC_BASE_URL || !fileName) {
+    return null;
+  }
+  return `${PUBLIC_BASE_URL}/${fileName}`;
+}
+
 function renderMarkdown(digest) {
-  const rows = digest.items.map(
-    (item) =>
-      `| \`${item.packageName}\` | ${escapeMd(item.testName)} | ${escapeMd(item.likelyCause)} |`,
-  );
+  const rows = digest.items.map((item) => {
+    const diffNote =
+      item.diffPixels != null ? `${item.diffPixels} px changed` : '—';
+    return `| \`${item.packageName}\` | ${escapeMd(item.testName)} | ${escapeMd(item.likelyCause)} | ${diffNote} |`;
+  });
 
   const details = digest.items
     .map((item) => {
+      const expectedUrl = imageUrl(item.expectedPng);
+      const receivedUrl = imageUrl(item.receivedPng);
+      const diffUrl = imageUrl(item.diffPng);
+      const images = [expectedUrl, receivedUrl, diffUrl].some(Boolean)
+        ? [
+            '',
+            '| Expected | Received | Diff |',
+            '| --- | --- | --- |',
+            `| ${expectedUrl ? `![Expected](${expectedUrl})` : '_(none)_'} | ${receivedUrl ? `![Received](${receivedUrl})` : '_(none)_'} | ${diffUrl ? `![Diff](${diffUrl})` : '_(none)_'} |`,
+          ]
+        : [
+            item.expectedPng ? `- Expected PNG: \`${item.expectedPng}\`` : null,
+            item.receivedPng ? `- Received PNG: \`${item.receivedPng}\`` : null,
+          ].filter((line) => line != null);
+
       const lines = [
         `<details>`,
         `<summary><code>${escapeHtml(item.packageName)}</code> — ${escapeHtml(item.testName)}</summary>`,
         '',
         `- File: \`${item.file}\``,
         `- Likely cause: ${item.likelyCause}`,
-        item.expectedPng ? `- Expected PNG: \`${item.expectedPng}\`` : null,
-        item.receivedPng ? `- Received PNG: \`${item.receivedPng}\`` : null,
+        ...images,
         '',
         item.messageExcerpt
           ? ['```diff', item.messageExcerpt, '```'].join('\n')
@@ -254,6 +369,10 @@ function renderMarkdown(digest) {
     })
     .join('\n');
 
+  const imagesNote = PUBLIC_BASE_URL
+    ? 'Expected/received/diff screenshots are rendered with the real app CSS and embedded inline below.'
+    : 'PNG screenshots (and full HTML) are in this run’s **snapshot-digest** artifact — no public image host configured for this run, so they aren’t inlined.';
+
   return [
     '## Snapshot digest',
     '',
@@ -263,10 +382,10 @@ function renderMarkdown(digest) {
     'pnpm --filter <package> test -- -u -- <test-file>',
     '```',
     '',
-    'The diff for each mismatch below is the real Vitest expected/received output. PNG screenshots (and full HTML) are in this run’s **snapshot-digest** artifact for anything too large to inline here.',
+    `The diff for each mismatch below is the real Vitest expected/received output. ${imagesNote}`,
     '',
-    '| Package | Snapshot | Likely cause |',
-    '| --- | --- | --- |',
+    '| Package | Snapshot | Likely cause | Diff |',
+    '| --- | --- | --- | --- |',
     ...rows,
     '',
     details,
@@ -332,5 +451,7 @@ function escapeHtml(value) {
 }
 
 function escapeMd(value) {
-  return String(value ?? '').replaceAll('|', '\\|').replaceAll('\n', ' ');
+  return String(value ?? '')
+    .replaceAll('|', '\\|')
+    .replaceAll('\n', ' ');
 }

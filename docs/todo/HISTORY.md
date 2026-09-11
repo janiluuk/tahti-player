@@ -2,6 +2,62 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-12 — Visual snapshot diffs: real CSS rendering, inline PR images
+
+User request (not from a todo file): CI's Vitest-snapshot-mismatch PR comment
+(`scripts/ci/build-snapshot-digest.mjs`/`comment-snapshot-digest.mjs`) only
+printed a bare PNG filename in backticks — no image ever showed in the
+comment — and the PNGs themselves looked nothing like the real app.
+
+Investigated `getsentry/action-visual-snapshot` (the tool the user pointed
+at) before wiring it in: it requires `api-token` for a Sentry-internal
+"Visual Snapshot API" with no public way to get one, and runs on the
+deprecated `node16` Actions runtime — not usable as a generic drop-in.
+Asked the user; chose a credential-free alternative instead.
+
+- **Real CSS**: `wrapHtmlDocument` used to wrap a failing snapshot's raw
+  HTML in a bare stub (dark background, system font, no app styles at all)
+  before screenshotting it with Playwright — that's why renders looked
+  nothing like the real UI. Now inlines the actual built CSS
+  (`packages/tahti-web/dist/assets/*.css` — Tailwind + `@tahti-player/ui` +
+  theme tokens, already present in CI since `pnpm turbo build` runs before
+  tests) plus the real `data-theme="dark"` / `bg-background text-foreground`
+  the app itself sets on `<html>`/`<body>`. Falls back to the old plain
+  stub only when no build output exists (e.g. an ad-hoc local run).
+- **Real diff images**: added `pixelmatch`/`pngjs` (root devDependencies)
+  to actually pixel-diff expected vs. received PNGs — mismatched
+  dimensions are padded onto a shared canvas with an unmissable magenta
+  fill first (pixelmatch requires equal dimensions) so a size change is
+  obvious rather than silently cropped. Diff-pixel count now shows in the
+  digest table.
+- **Images inline in the PR comment, no external host**: new
+  `scripts/ci/publish-visual-snapshot-diffs.mjs` pushes each run's PNGs to
+  a dedicated orphan branch (`visual-snapshot-diffs`), one folder per PR
+  number, via a separate `git worktree` (the main mid-CI checkout is never
+  touched) — no GCS bucket, no proprietary API, no extra secrets. Prunes
+  folders for PRs that are no longer open so the branch stays bounded, and
+  retries (re-fetch + reapply, not force-push) if another PR's concurrent
+  run pushed to the shared branch first, so it never clobbers their diffs.
+  `comment-snapshot-digest.mjs`'s markdown now embeds
+  `![Expected](.../pr-<n>/....png)` etc. directly via
+  `raw.githubusercontent.com` when `SNAPSHOT_DIFF_PUBLIC_BASE_URL` is set
+  (both `ci.yml` and `coverage.yml`, `pull_request` events only); falls
+  back to the old filename-only text otherwise. Workflow `permissions`
+  bumped `contents: read` → `write` in both workflows so the publish step
+  can push.
+
+Verified locally: ran `build-snapshot-digest.mjs` against a synthetic
+`failures.json` fixture (no real test needed to fail) — confirmed the
+rendered PNG genuinely looks like the real app (real fonts/colors/spacing,
+not a bare div), the diff PNG correctly highlights only the changed pixel
+region, and `digest.md` embeds real `![]()` image markdown when
+`SNAPSHOT_DIFF_PUBLIC_BASE_URL` is set. `eslint`/`node --check` clean on
+both scripts; workflow YAML parses clean. **Not verified against a real
+CI run** — the orphan-branch push, prune, and retry logic only run inside
+GitHub Actions (need a real PR + `GITHUB_TOKEN`/`gh` auth); this is the one
+real remaining risk, worth watching on the first PR that actually hits a
+snapshot mismatch after this ships.
+
 ## 2026-09-11 — PluginStore remaining + admin users/support/gov + client auth peel
 
 Slice of `codebase-refactor-hotspots.md` + `performance-cleanup-bulk.md`
