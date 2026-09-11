@@ -12,6 +12,18 @@ Channel edit / designer tools dock into the Nuclear right rail on desktop
 again. Top Broadcast menu: booking calendar modal, 24/7 rotation → Stream
 Manager dialog, Broadcast Studio + duplicate Stream Manager entries
 removed; Go Live panel no longer embeds Stream Manager.
+## 2026-09-11 — v0.0.113: shared apiBase + remaining visibility-aware polls
+
+API modules share `apiBase` from `api/http.ts`. Pro Editor, Jam, notification
+inbox, and API health probing pause or throttle when the tab is hidden; the
+radio document-title marquee uses `requestAnimationFrame`.
+
+## 2026-09-11 — v0.0.112: dead-weight cleanup + visibility-aware polling
+
+Dropped unused tahti-web deps and unmounted dead views/components. API clients
+now call shared `isForceMock()` instead of local aliases. Stream Manager,
+Go Live, Selects, Admin logs/activity, Sound processing, and revision list
+polls use `usePolling` so background tabs stop hammering the API.
 
 ## 2026-09-10 — v0.0.109: collection peaks, directory ambient glow, Button audit, local-files close, api/http
 

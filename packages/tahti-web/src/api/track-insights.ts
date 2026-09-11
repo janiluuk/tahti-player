@@ -1,13 +1,6 @@
 import type { FetchMeta } from './client';
-
-const forceMock = () => import.meta.env.VITE_FORCE_MOCK === '1';
-
-const apiBase = () => {
-  if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
-    return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
-  }
-  return '/tahti-api';
-};
+import { apiBase } from './http';
+import { isForceMock } from './mode';
 
 async function requestJson<T>(
   path: string,
@@ -91,7 +84,7 @@ export async function fetchTrackInsights(
   id: string,
   period: InsightsPeriod = '30d',
 ): Promise<{ data: TrackInsights | null; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockInsights(period, 'Mock track'),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

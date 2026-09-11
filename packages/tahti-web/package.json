@@ -17,7 +17,6 @@
     "deploy:vimage": "./deploy/deploy-vimage.sh"
   },
   "dependencies": {
-    "@material/material-color-utilities": "^0.4.0",
     "@tahti-player/i18n": "workspace:*",
     "@tahti-player/model": "workspace:*",
     "@tahti-player/tailwind-config": "workspace:*",
@@ -28,7 +27,6 @@
     "hls.js": "^1.5.15",
     "lucide-react": "^0.542.0",
     "mermaid": "^11.16.1",
-    "motion": "^12.23.12",
     "qrcode.react": "4.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

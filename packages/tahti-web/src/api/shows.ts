@@ -1,14 +1,6 @@
 import type { FetchMeta } from './client';
+import { apiBase } from './http';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
-
-const forceMock = isForceMock;
-
-const apiBase = () => {
-  if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
-    return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
-  }
-  return '/tahti-api';
-};
 
 async function requestJson<T>(
   path: string,
@@ -507,7 +499,7 @@ export async function fetchShowSeries(): Promise<{
   data: StudioShowSeries[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: seedSeries(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -530,7 +522,7 @@ export async function fetchShowSchedule(): Promise<{
   data: { series: StudioShowSeries[]; scheduledShows: ScheduledShow[] };
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: { series: seedSeries(), scheduledShows: [] },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -588,7 +580,7 @@ export async function createShowSeries(input: {
   if (!title) {
     return { ok: false, error: 'Title is required' };
   }
-  if (forceMock()) {
+  if (isForceMock()) {
     const list = seedSeries();
     const series: StudioShowSeries = {
       id: `show-${Date.now()}`,
@@ -677,7 +669,7 @@ export async function scheduleShowEpisode(
     artworkUrl?: string | null;
   },
 ): Promise<{ ok: true; data: ScheduledShow } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const show = seedSeries().find((item) => item.id === seriesId);
     if (!show) {
       return { ok: false, error: 'Show not found' };
@@ -719,7 +711,7 @@ export async function scheduleShowEpisode(
 export async function cancelScheduledShow(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {
@@ -766,7 +758,7 @@ export async function patchShowSeries(
 ): Promise<
   { ok: true; data: StudioShowSeries } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const list = seedSeries();
     const idx = list.findIndex((s) => s.id === id);
     if (idx < 0) {
@@ -855,7 +847,7 @@ export async function fetchShowSeriesById(
 export async function fetchEpisodesForShow(
   showId: string,
 ): Promise<{ data: StudioEpisode[]; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const all = seedEpisodes();
     return {
       data: all
@@ -920,7 +912,7 @@ export async function fetchShowRefBySoundItemId(): Promise<{
 export async function fetchEpisode(
   id: string,
 ): Promise<{ data: StudioEpisode | null; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const all = seedEpisodes();
     return {
       data: all.find((e) => e.id === id) ?? null,
@@ -955,7 +947,7 @@ export async function createEpisode(input: {
   /** Override title; defaults to "{show} — Episode {n}". */
   title?: string;
 }): Promise<{ ok: true; data: StudioEpisode } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const seriesList = seedSeries();
     const show = seriesList.find((s) => s.id === input.showId);
     if (!show) {
@@ -1024,7 +1016,7 @@ export async function patchEpisode(
     >
   >,
 ): Promise<{ ok: true; data: StudioEpisode } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const list = seedEpisodes();
     const idx = list.findIndex((e) => e.id === id);
     if (idx < 0) {
@@ -1089,7 +1081,7 @@ export async function fetchShowBookings(
   from: string,
   to: string,
 ): Promise<{ data: StudioShowBooking[]; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockBookings.filter((b) => {
         const s = new Date(b.startAt).getTime();
@@ -1115,7 +1107,7 @@ export async function fetchShowBookings(
 export async function fetchPublicRadioShow(
   channelSlug: string,
 ): Promise<{ data: PublicRadioShow | null; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const now = Date.now();
     const matchingBookings = mockBookings.filter(
       (booking) => booking.channelSlug === channelSlug,
@@ -1185,7 +1177,7 @@ export async function createShowBooking(input: {
 }): Promise<
   { ok: true; data: StudioShowBooking } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const booking: StudioShowBooking = {
       id: `booking-${Date.now()}`,
       startAt: input.startAt,
@@ -1228,7 +1220,7 @@ export async function updateShowBooking(
 ): Promise<
   { ok: true; data: StudioShowBooking } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     let updated: StudioShowBooking | undefined;
     mockBookings = mockBookings.map((b) => {
       if (b.id !== id) {
@@ -1266,7 +1258,7 @@ export async function updateShowBooking(
 export async function cancelShowBooking(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockBookings = mockBookings.filter((b) => b.id !== id);
     return { ok: true };
   }

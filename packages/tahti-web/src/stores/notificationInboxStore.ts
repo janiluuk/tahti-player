@@ -107,10 +107,20 @@ export function startNotificationInboxPolling(): () => void {
   if (pollTimer != null) {
     window.clearInterval(pollTimer);
   }
-  pollTimer = window.setInterval(() => {
-    void useNotificationInboxStore.getState().load();
-  }, POLL_MS);
+  const tick = () => {
+    if (document.visibilityState === 'visible') {
+      void useNotificationInboxStore.getState().load();
+    }
+  };
+  pollTimer = window.setInterval(tick, POLL_MS);
+  const onVisibility = () => {
+    if (document.visibilityState === 'visible') {
+      tick();
+    }
+  };
+  document.addEventListener('visibilitychange', onVisibility);
   return () => {
+    document.removeEventListener('visibilitychange', onVisibility);
     if (pollTimer != null) {
       window.clearInterval(pollTimer);
       pollTimer = null;

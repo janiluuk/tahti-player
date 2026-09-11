@@ -1,15 +1,16 @@
 import { playableFromHearthisEmbed } from '../lib/embedPlayback';
 import { useProcessingJobsStore } from '../stores/processingJobsStore';
 import type { FetchMeta } from './client';
+import { apiBase } from './http';
 import { DEMO_MP3 } from './mock';
 import {
   isMockOauthConnected,
   setMockOauthConnected,
   type MockOauthId,
 } from './mock-session';
+import { isForceMock } from './mode';
 import type { TahtiPlayable } from './types';
 
-const forceMock = () => import.meta.env.VITE_FORCE_MOCK === '1';
 const HEARTHIS_IMPORT_BATCH_SIZE = 5;
 const SOUNDCLOUD_IMPORT_BATCH_SIZE = 20;
 
@@ -25,13 +26,6 @@ const OAUTH_IDS = new Set<MockOauthId>([
 function asOauthId(id: string): MockOauthId | null {
   return OAUTH_IDS.has(id as MockOauthId) ? (id as MockOauthId) : null;
 }
-
-const apiBase = () => {
-  if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
-    return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
-  }
-  return '/tahti-api';
-};
 
 function failMeta(err: unknown): FetchMeta {
   return {
@@ -282,10 +276,10 @@ export async function fetchConnectionStatus(
   ) {
     return {
       data: { connected: true, configured: true },
-      meta: { source: forceMock() ? 'mock' : 'api' },
+      meta: { source: isForceMock() ? 'mock' : 'api' },
     };
   }
-  if (forceMock()) {
+  if (isForceMock()) {
     const oauthId = asOauthId(id);
     if (oauthId) {
       return {
@@ -357,7 +351,7 @@ export async function fetchSoundcloudTracks(): Promise<{
   data: SoundcloudTrack[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [
         {
@@ -383,7 +377,7 @@ export async function fetchSoundcloudTracks(): Promise<{
 export async function importSoundcloudTracks(
   tracks: Array<{ trackId: string; title: string }>,
 ): Promise<{ ok: true; count: number } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true, count: tracks.length };
   }
   try {
@@ -436,7 +430,7 @@ export async function fetchBandcampAlbums(): Promise<{
   message?: string;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [
         {
@@ -476,7 +470,7 @@ export async function fetchBandcampAlbums(): Promise<{
 export async function importBandcampAlbum(
   album: BandcampAlbum,
 ): Promise<{ ok: true; count: number } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true, count: album.trackCount ?? 0 };
   }
   try {
@@ -500,7 +494,7 @@ export async function searchSpotifyTracks(q: string): Promise<{
   data: SpotifySearchTrack[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [
         {
@@ -526,7 +520,7 @@ export async function searchSpotifyTracks(q: string): Promise<{
 export async function importSpotifyTracks(
   tracks: Array<{ trackId: string; title: string; externalUrl?: string }>,
 ): Promise<{ ok: true; count: number } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true, count: tracks.length };
   }
   try {
@@ -615,7 +609,7 @@ export async function fetchHearthisLibrary(): Promise<{
   data: HearthisLibrary;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const track: HearthisTrack = {
       id: 'ht-mock-1',
       url: 'https://hearthis.at/mockartist/deep-space-transmission/',
@@ -702,7 +696,7 @@ export async function fetchHearthisLibrary(): Promise<{
 export async function fetchHearthisCollectionTracks(
   permalink: string,
 ): Promise<HearthisTrack[]> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return (await fetchHearthisLibrary()).data.sets;
   }
   const tracks = await fetchHearthisPublic<HearthisApiTrack[]>(
@@ -720,7 +714,7 @@ export async function importHearthisTracks(
   artworkFailed: number;
   items: Array<{ trackId: string; soundId: string }>;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       imported: tracks.length,
       failed: 0,
@@ -825,7 +819,7 @@ export async function searchHearthisTracks(q: string): Promise<{
   data: HearthisTrack[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [
         {
@@ -879,7 +873,7 @@ export async function fetchTrackExportStatus(
   soundId: string,
   target: 'mixcloud',
 ): Promise<TrackExportStatus | null> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return null;
   }
   try {
@@ -906,7 +900,7 @@ export async function exportTrack(
 ): Promise<
   { ok: true; status: TrackExportStatus } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       ok: true,
       status: { status: 'PENDING', url: null, error: null },
@@ -960,7 +954,7 @@ export async function fetchStashFiles(): Promise<{
   data: StashFile[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [
         {
@@ -989,7 +983,7 @@ export async function fetchStashDownload(id: string): Promise<{
   data: { url: string; filename?: string } | null;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: { url: DEMO_MP3, filename: 'mock.mp3' },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -1008,7 +1002,7 @@ export async function fetchStashDownload(id: string): Promise<{
 export async function uploadStashFile(
   file: File,
 ): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true, id: `mock-stash-${Date.now()}` };
   }
   try {
@@ -1052,7 +1046,7 @@ export async function uploadStashFile(
 export async function deleteStashFile(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {
@@ -1076,7 +1070,7 @@ export async function createStashShare(
     expiresInDays?: number;
   },
 ): Promise<{ ok: true; data: StashShare } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const now = new Date();
     const share: StashShare = {
       id: `mock-share-${Date.now()}`,
@@ -1124,7 +1118,7 @@ export async function createStashShare(
 export async function revokeStashShare(
   shareId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockStashShares = mockStashShares.filter((share) => share.id !== shareId);
     return { ok: true };
   }
@@ -1173,7 +1167,7 @@ export function playableFromSoundcloud(t: SoundcloudTrack): TahtiPlayable {
 export async function connectIntegrationMock(
   id: MockOauthId,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (!forceMock()) {
+  if (!isForceMock()) {
     return { ok: false, error: 'connectIntegrationMock is mock-only' };
   }
   setMockOauthConnected(id, true);
@@ -1183,7 +1177,7 @@ export async function connectIntegrationMock(
 export async function disconnectIntegration(
   id: 'bandcamp' | 'soundcloud' | 'google-drive' | 'mixcloud' | 'musicbrainz',
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     setMockOauthConnected(id, false);
     return { ok: true };
   }

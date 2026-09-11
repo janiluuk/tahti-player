@@ -1,4 +1,5 @@
 import type { FetchMeta } from './client';
+import { apiBase } from './http';
 import { DEMO_MP3 } from './mock';
 import { getMockSessionUser } from './mock-session';
 import {
@@ -23,15 +24,6 @@ import type {
   StudioSoundPatch,
 } from './studio-types';
 import { createDefaultEditList } from './studio-types';
-
-const forceMock = isForceMock;
-
-const apiBase = () => {
-  if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
-    return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
-  }
-  return '/tahti-api';
-};
 
 async function requestJson<T>(
   path: string,
@@ -170,7 +162,7 @@ export async function fetchStudioSounds(): Promise<{
   data: StudioSound[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [...mockSoundStore],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -191,7 +183,7 @@ export async function fetchStudioSound(id: string): Promise<{
   data: StudioSound;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const item = mockSoundStore.find((a) => a.id === id) ?? {
       ...mockSoundStore[0]!,
       id,
@@ -222,7 +214,7 @@ export async function fetchStudioSoundDownload(id: string): Promise<
     }
   | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       ok: true,
       url: getMockUploadedSound(id)?.objectUrl ?? DEMO_MP3,
@@ -247,7 +239,7 @@ export async function patchStudioSound(
   id: string,
   patch: StudioSoundPatch,
 ): Promise<{ ok: true; data: StudioSound } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const idx = mockSoundStore.findIndex((a) => a.id === id);
     const { pinned, ...rest } = patch;
     patchMockUploadedSound(id, {
@@ -340,7 +332,7 @@ export async function fetchSoundShares(soundId: string): Promise<{
   data: SoundShare[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockSoundShares[soundId] ?? [],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -364,7 +356,7 @@ export async function createSoundShare(
     expiresInDays?: number;
   },
 ): Promise<{ ok: true; data: SoundShare } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const now = new Date();
     const share: SoundShare = {
       id: `mock-sound-share-${Date.now()}`,
@@ -402,7 +394,7 @@ export async function revokeSoundShare(
   soundId: string,
   shareId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockSoundShares = {
       ...mockSoundShares,
       [soundId]: (mockSoundShares[soundId] ?? []).filter(
@@ -444,7 +436,7 @@ export async function fetchMyRadioSubmissions(): Promise<{
   data: RadioSubmission[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { data: [], meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
   }
   try {
@@ -469,7 +461,7 @@ export async function submitTracksToRadioRotation(
   soundIds: string[],
   note?: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {
@@ -490,7 +482,7 @@ export async function fetchMetaStreamPreference(): Promise<{
   data: MetaStreamPreference;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: { metaStreamOptOut: false },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -513,7 +505,7 @@ export async function patchMetaStreamPreference(optOut: boolean): Promise<
     }
   | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true, data: { metaStreamOptOut: optOut } };
   }
   try {
@@ -540,7 +532,7 @@ export async function uploadSoundBanner(
   soundId: string,
   file: File,
 ): Promise<{ ok: true; url: string } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true, url: URL.createObjectURL(file) };
   }
   try {
@@ -582,7 +574,7 @@ export async function importSoundBanner(
   soundId: string,
   sourceUrl: string,
 ): Promise<{ ok: true; url: string } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true, url: sourceUrl };
   }
   try {
@@ -605,7 +597,7 @@ export async function importSoundBanner(
 export async function deleteStudioSound(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const idx = mockSoundStore.findIndex((a) => a.id === id);
     if (idx >= 0) {
       mockSoundStore.splice(idx, 1);
@@ -629,7 +621,7 @@ export async function fetchEditorSource(soundId: string): Promise<{
   data: EditorSource;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const item = mockSoundStore.find((a) => a.id === soundId);
     return {
       data: {
@@ -659,7 +651,7 @@ export async function fetchStudioReleases(): Promise<{
   data: StudioReleaseList;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: {
         page: 1,
@@ -763,7 +755,7 @@ export async function patchStudioRelease(
     smartLinkTargets?: Record<string, string>;
   },
 ): Promise<{ ok: true; data: StudioRelease } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       ok: true,
       data: {
@@ -799,7 +791,7 @@ export async function patchStudioReleaseVisual(
   | { ok: true; data: Pick<StudioRelease, 'visualPreset'> }
   | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true, data: { visualPreset } };
   }
   try {
@@ -827,7 +819,7 @@ export async function addStudioReleaseTrack(
   | { ok: true; data: NonNullable<StudioRelease['tracks']>[number] }
   | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       ok: true,
       data: {
@@ -859,7 +851,7 @@ export async function reorderStudioReleaseTracks(
   releaseId: string,
   trackIds: string[],
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {
@@ -883,7 +875,7 @@ export async function removeStudioReleaseTrack(
   releaseId: string,
   trackId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {
@@ -906,7 +898,7 @@ export async function createStudioRelease(input: {
   releaseDate: string;
   description?: string;
 }): Promise<{ ok: true; data: StudioRelease } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const id = `rel-mock-${Date.now()}`;
     const row: StudioRelease = {
       id,
@@ -939,7 +931,7 @@ export async function uploadReleaseArtwork(
   releaseId: string,
   file: File,
 ): Promise<{ ok: true; artworkUrl: string } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true, artworkUrl: URL.createObjectURL(file) };
   }
   try {
@@ -977,7 +969,7 @@ export async function uploadReleaseArtwork(
 export async function removeReleaseArtwork(
   releaseId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {
@@ -1017,7 +1009,7 @@ async function runTrackFingerprint(
 ): Promise<
   { ok: true; data: FingerprintResult } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       ok: true,
       data: {
@@ -1079,7 +1071,7 @@ export async function fetchSoundStems(soundId: string): Promise<{
   data: StemJob[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [
         {
@@ -1118,7 +1110,7 @@ export async function requestSoundStems(
   soundId: string,
   stemSet: StemSet = 'TWO_STEM',
 ): Promise<{ ok: true; status: string } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true, status: 'PENDING' };
   }
   try {
@@ -1141,7 +1133,7 @@ export async function fetchStudioCollections(): Promise<{
   data: StudioCollection[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [
         {
@@ -1198,7 +1190,7 @@ export async function fetchStudioCollection(slug: string): Promise<{
   data: StudioCollection;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: {
         id: `mock-collection-${slug}`,
@@ -1247,7 +1239,7 @@ export async function addStudioCollectionItem(
       : item.soundId
         ? { soundId: item.soundId }
         : { releaseId: item.releaseId };
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {
@@ -1268,7 +1260,7 @@ export async function reorderStudioCollectionItems(
   slug: string,
   itemIds: string[],
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {
@@ -1292,7 +1284,7 @@ export async function removeStudioCollectionItem(
   slug: string,
   itemId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {
@@ -1312,7 +1304,7 @@ export async function removeStudioCollectionItem(
 export async function deleteStudioCollection(
   slug: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {
@@ -1340,7 +1332,7 @@ export async function createStudioCollection(input: {
 }): Promise<
   { ok: true; data: StudioCollection } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const slug =
       input.name
         .toLowerCase()
@@ -1413,7 +1405,7 @@ export async function patchStudioCollection(
 ): Promise<
   { ok: true; data: StudioCollection } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       ok: true,
       data: {
@@ -1451,7 +1443,7 @@ export async function uploadCollectionCover(
   slug: string,
   file: File,
 ): Promise<{ ok: true; coverUrl: string } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const url = URL.createObjectURL(file);
     return { ok: true, coverUrl: url };
   }
@@ -1514,7 +1506,7 @@ const DEFAULT_COLLECTION_GALLERY: CollectionGallery = {
 export async function fetchCollectionGallery(
   slug: string,
 ): Promise<{ data: CollectionGallery }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { data: DEFAULT_COLLECTION_GALLERY };
   }
   try {
@@ -1537,7 +1529,7 @@ export async function patchCollectionGallery(
 ): Promise<
   { ok: true; data: CollectionGallery } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       ok: true,
       data: {
@@ -1570,7 +1562,7 @@ export async function uploadSoundFile(input: {
 }): Promise<
   { ok: true; itemId: string; meta: FetchMeta } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const id = `arch-mock-${Date.now()}`;
     const channelSlug = getMockSessionUser()?.username ?? 'demo';
     const filename = input.file.name || 'upload.wav';
@@ -1647,7 +1639,7 @@ export async function fetchEditorProjects(): Promise<{
   data: EditorProjectRow[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [...mockProjects],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -1672,7 +1664,7 @@ export async function createEditorProject(input: {
 }): Promise<
   { ok: true; data: EditorProjectRow } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const row: EditorProjectRow = {
       id: `proj-mock-${Date.now()}`,
       title: input.title ?? 'Untitled session',
@@ -1703,7 +1695,7 @@ export async function fetchEditorProject(id: string): Promise<{
   data: EditorProjectDetail;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const row = mockProjects.find((p) => p.id === id) ?? {
       id,
       title: 'Mock project',
@@ -1744,7 +1736,7 @@ export async function updateEditorProject(
 ): Promise<
   { ok: true; data: EditorProjectDetail } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const project = mockProjects.find((item) => item.id === id);
     if (!project) {
       return { ok: false, error: 'Project not found' };
@@ -1771,7 +1763,7 @@ export async function updateEditorProject(
 export async function deleteEditorProject(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockProjects = mockProjects.filter((item) => item.id !== id);
     mockProjectTimelines.delete(id);
     return { ok: true };
@@ -1795,7 +1787,7 @@ export async function fetchEditorDraft(soundId: string): Promise<{
   data: EditorDraft;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const existing = mockDrafts.get(soundId);
     if (existing) {
       return {
@@ -1833,7 +1825,7 @@ export async function saveEditorDraft(
   editList: EditList,
   expectedUpdatedAt?: string | null,
 ): Promise<{ ok: true; updatedAt: string } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const updatedAt = new Date().toISOString();
     mockDrafts.set(soundId, {
       editList,
@@ -1873,7 +1865,7 @@ export async function renderEditorDraft(
 ): Promise<
   { ok: true; versionId: string; status: string } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const row = addMockSoundVersion(soundId, {
       versionLabel,
       activate,

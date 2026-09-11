@@ -61,6 +61,7 @@ import { SignalCheckWidget } from '../../components/SignalCheckWidget';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { OnAirBadge } from '../../components/tahti/OnAirBadge';
+import { usePolling } from '../../hooks/usePolling';
 import {
   multicastProviderLabel,
   multicastProviders,
@@ -233,29 +234,25 @@ export function StudioGoLiveView() {
     }
   }, [user?.channel?.state, isMock]);
 
-  useEffect(() => {
-    let cancelled = false;
-    const tick = async () => {
-      const { data } = await fetchSignalStatus();
-      if (!cancelled) {
-        setSignal(data);
-        useBroadcastPresenceStore
-          .getState()
-          .setSignalConnected(Boolean(data.connected));
-      }
-      if (!isMock) {
-        await refresh();
-      } else {
-        setChannelState(getMockChannelState());
-      }
-    };
-    void tick();
-    const intervalId = window.setInterval(() => void tick(), 4000);
-    return () => {
-      cancelled = true;
-      window.clearInterval(intervalId);
-    };
+  const pollSignal = useCallback(async () => {
+    const { data } = await fetchSignalStatus();
+    setSignal(data);
+    useBroadcastPresenceStore
+      .getState()
+      .setSignalConnected(Boolean(data.connected));
+    if (!isMock) {
+      await refresh();
+    } else {
+      setChannelState(getMockChannelState());
+    }
   }, [refresh, isMock]);
+
+  useEffect(() => {
+    void pollSignal();
+  }, [pollSignal]);
+  usePolling(() => {
+    void pollSignal();
+  }, 4000);
 
   const playStream = () => {
     if (!settings || !slug) {

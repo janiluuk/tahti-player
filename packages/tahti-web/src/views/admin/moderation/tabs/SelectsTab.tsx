@@ -26,6 +26,7 @@ import {
 import { PageLoading } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { TahtiRotationPlaylistEditor } from '../../../../components/TahtiRotationPlaylistEditor';
+import { usePolling } from '../../../../hooks/usePolling';
 import { usePlayerStore } from '../../../../stores/playerStore';
 
 function fmtDuration(sec: number | null): string {
@@ -73,11 +74,7 @@ export function SelectsTab() {
   }, []);
 
   useEffect(reload, [reload]);
-
-  useEffect(() => {
-    const intervalId = window.setInterval(reload, 4000);
-    return () => window.clearInterval(intervalId);
-  }, [reload]);
+  usePolling(reload, 4000);
 
   useEffect(() => {
     if (

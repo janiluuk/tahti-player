@@ -1,14 +1,6 @@
 import type { FetchMeta } from './client';
+import { apiBase } from './http';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
-
-const forceMock = isForceMock;
-
-const apiBase = () => {
-  if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
-    return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
-  }
-  return '/tahti-api';
-};
 
 async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${apiBase()}${path}`, {
@@ -51,7 +43,7 @@ export async function fetchChannelGallery(): Promise<{
   data: ChannelGallery;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: DEFAULT_GALLERY,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

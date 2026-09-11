@@ -58,6 +58,7 @@ import { StudioNav } from '../../components/StudioNav';
 import { WaveformSeekbar } from '../../components/tahti/WaveformSeekbar';
 import { TrackInsightsPanel } from '../../components/TrackInsightsPanel';
 import { SELECTABLE_CONTENT_TYPES } from '../../content/contentTypes';
+import { usePolling } from '../../hooks/usePolling';
 import { autoTrimCuts } from '../../lib/autoTrimCuts';
 import { playableFromStudioHearthis } from '../../lib/embedPlayback';
 import { capitalizeGenre, PRESET_GENRES } from '../../lib/genres';
@@ -137,15 +138,13 @@ export function StudioSoundView({ id }: { id: string }) {
   // bookmark of this URL, both need this page to make sense before the file
   // has finished transcoding — poll until it leaves PENDING/PROCESSING
   // rather than silently showing a half-broken "ready" editor.
-  useEffect(() => {
-    if (!status || status === 'READY' || status === 'ERROR') {
-      return;
-    }
-    const timer = setInterval(() => {
+  usePolling(
+    () => {
       void fetchStudioSound(id).then((res) => setItem(res.data));
-    }, 4000);
-    return () => clearInterval(timer);
-  }, [id, status]);
+    },
+    4000,
+    Boolean(status && status !== 'READY' && status !== 'ERROR'),
+  );
 
   const save = async () => {
     setSaving(true);

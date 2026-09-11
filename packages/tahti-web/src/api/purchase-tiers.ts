@@ -3,6 +3,7 @@
  */
 
 import type { FetchMeta } from './client';
+import { apiBase } from './http';
 import {
   mockUserOwnsPurchaseTier,
   recordMockTrackPurchase,
@@ -11,15 +12,6 @@ import { getMockSessionUser, mockRecordPurchase } from './mock-session';
 import { patchMockUploadedSound } from './mock-uploads';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
 import { setMockSoundPurchaseAccess } from './studio';
-
-const forceMock = isForceMock;
-
-const apiBase = () => {
-  if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
-    return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
-  }
-  return '/tahti-api';
-};
 
 async function requestJson<T>(
   path: string,
@@ -108,7 +100,7 @@ export async function fetchMyPurchaseTiers(): Promise<{
   data: PurchaseTierRow[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const row = readAllTiers().find((e) => e.artistUsername === artistKey());
     return {
       data: row?.tiers ?? [],
@@ -136,7 +128,7 @@ export async function createPurchaseTier(input: {
 }): Promise<
   { ok: true; data: PurchaseTierRow } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const username = artistKey();
     const all = readAllTiers();
     const existing = all.find((e) => e.artistUsername === username);
@@ -187,7 +179,7 @@ export async function setSoundPurchaseAccess(
   soundId: string,
   purchaseTierId: string | null,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const accessMode = purchaseTierId ? 'PURCHASE' : 'FREE';
     // Two disconnected mock stores back this one sound: mockSoundStore
     // (studio.ts, read by the Studio editor) and the mock-uploads.ts store
@@ -225,7 +217,7 @@ export async function checkoutPurchaseTier(
   | { ok: true; checkoutUrl: string }
   | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const user = getMockSessionUser();
     if (!user) {
       return { ok: false, error: 'Log in to buy' };
@@ -290,7 +282,7 @@ export async function setPurchaseTierActive(
   id: string,
   active: boolean,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const username = artistKey();
     const all = readAllTiers();
     const row = all.find((e) => e.artistUsername === username);

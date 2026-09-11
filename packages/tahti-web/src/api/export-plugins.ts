@@ -1,13 +1,5 @@
+import { apiBase } from './http';
 import { isForceMock } from './mode';
-
-const forceMock = isForceMock;
-
-const apiBase = () => {
-  if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
-    return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
-  }
-  return '/tahti-api';
-};
 
 export type ExportPluginProviderRow = {
   contractVersion: 1;
@@ -37,7 +29,7 @@ export async function fetchExportPlugins(): Promise<{
   data: ExportPluginProviderRow[];
   source: 'api' | 'mock';
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { data: MOCK_EXPORT_PLUGINS, source: 'mock' };
   }
   try {

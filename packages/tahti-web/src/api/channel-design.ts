@@ -1,14 +1,6 @@
 import type { FetchMeta } from './client';
+import { apiBase } from './http';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
-
-const forceMock = isForceMock;
-
-const apiBase = () => {
-  if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
-    return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
-  }
-  return '/tahti-api';
-};
 
 async function requestJson<T>(
   path: string,
@@ -185,7 +177,7 @@ export async function uploadChannelHeaderVideo(
       error: 'Use an MP4/WebM video or a JPEG/PNG/WebP/GIF image.',
     };
   }
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true, videoBackgroundUrl: URL.createObjectURL(file) };
   }
   try {
@@ -653,7 +645,7 @@ export async function fetchChannelVisual(): Promise<{
   data: ChannelVisual;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: { ...mockVisual },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -989,7 +981,7 @@ export function channelLookExtrasFromPatch(
 export async function patchChannelVisual(
   patch: ChannelVisualPatch,
 ): Promise<{ ok: true; data: ChannelVisual } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockVisual = {
       ...mockVisual,
       ...(patch.visualPreset !== undefined
@@ -1152,7 +1144,7 @@ export async function fetchChannelVisualPresets(): Promise<{
   data: ChannelVisualPreset[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { data: [...mockVisualPresets], meta: { source: 'mock' } };
   }
   try {
@@ -1175,7 +1167,7 @@ export async function saveChannelVisualPreset(
 ): Promise<
   { ok: true; data: ChannelVisualPreset } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const now = new Date().toISOString();
     const existing = mockVisualPresets.find((p) => p.name === name);
     const preset: ChannelVisualPreset = existing
@@ -1209,7 +1201,7 @@ export async function saveChannelVisualPreset(
 export async function deleteChannelVisualPreset(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockVisualPresets = mockVisualPresets.filter((p) => p.id !== id);
     return { ok: true };
   }
@@ -1229,7 +1221,7 @@ export async function deleteChannelVisualPreset(
 export async function checkSlugAvailable(
   slug: string,
 ): Promise<{ available: boolean; reason?: string; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       available: slug.length >= 3 && slug !== 'taken',
       reason: slug === 'taken' ? 'taken' : undefined,
@@ -1249,7 +1241,7 @@ export async function checkSlugAvailable(
 export async function updateChannelSlug(
   slug: string,
 ): Promise<{ ok: true; slug: string } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     if (slug.length < 3) {
       return { ok: false, error: 'Slug too short' };
     }
@@ -1275,7 +1267,7 @@ export async function setCustomDomain(
   | { ok: true; domain: string; txtHost: string; txtRecord: string }
   | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       ok: true,
       domain,
@@ -1304,7 +1296,7 @@ export async function setCustomDomain(
 export async function verifyCustomDomain(): Promise<
   { ok: true; verified: boolean } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true, verified: true };
   }
   try {

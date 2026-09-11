@@ -1,13 +1,6 @@
 import type { FetchMeta } from './client';
-
-const forceMock = () => import.meta.env.VITE_FORCE_MOCK === '1';
-
-const apiBase = () => {
-  if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
-    return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
-  }
-  return '/tahti-api';
-};
+import { apiBase } from './http';
+import { isForceMock } from './mode';
 
 async function requestJson<T>(
   path: string,
@@ -104,7 +97,7 @@ export async function fetchMyVenues(): Promise<{
   data: MyVenue[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [mockVenue],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -133,7 +126,7 @@ export async function patchVenue(
   slug: string,
   patch: PatchVenueInput,
 ): Promise<{ ok: true; data: MyVenue } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     Object.assign(mockVenue, patch);
     return { ok: true, data: mockVenue };
   }
@@ -162,7 +155,7 @@ export async function createVenueBroadcast(
   slug: string,
   input: CreateVenueBroadcastInput,
 ): Promise<{ ok: true; data: VenueBroadcast } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const row: VenueBroadcast = {
       id: `vb-mock-${Date.now()}`,
       startAt: input.startAt,
@@ -192,7 +185,7 @@ export async function cancelVenueBroadcast(
   slug: string,
   broadcastId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockVenue.broadcasts = mockVenue.broadcasts.map((b) =>
       b.id === broadcastId ? { ...b, state: 'CANCELED' } : b,
     );

@@ -1,4 +1,5 @@
 import { parseRssXml, type RssArticle } from '../lib/parseRss';
+import { apiBase } from './http';
 import {
   allowMockFallback,
   apiErrorMeta,
@@ -6,15 +7,6 @@ import {
   isForceMock,
   type FetchMeta,
 } from './mode';
-
-const forceMock = isForceMock;
-
-const apiBase = () => {
-  if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
-    return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
-  }
-  return '/tahti-api';
-};
 
 export const MOCK_RSS_ARTICLES: RssArticle[] = [
   {
@@ -48,7 +40,7 @@ export async function fetchRssArticles(feedUrl: string): Promise<{
   feedTitle?: string;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: MOCK_RSS_ARTICLES,
       feedTitle: 'Tahti News',

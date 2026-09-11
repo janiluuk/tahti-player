@@ -17,7 +17,7 @@ import {
   WifiIcon,
   WifiOffIcon,
 } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   Badge,
@@ -58,6 +58,7 @@ import {
   type ProgrammeView,
 } from '../api/studio-extras';
 import type { StudioCollection } from '../api/studio-types';
+import { usePolling } from '../hooks/usePolling';
 import {
   collectionRotationSoundIds,
   planCollectionRotationApply,
@@ -159,93 +160,81 @@ export function StreamManagerPanel({
     void fetchStudioCollections().then((r) => setCollections(r.data));
   }, []);
 
-  useEffect(() => {
-    let cancelled = false;
-    const tick = async () => {
-      const [signalResult, statsResult] = await Promise.all([
-        fetchSignalStatus(),
-        fetchChannelManageStats(slug),
-      ]);
-      if (!cancelled) {
-        setSignal(signalResult.data);
-        useBroadcastPresenceStore
-          .getState()
-          .setSignalConnected(Boolean(signalResult.data.connected));
-        setStats(statsResult.data);
-        setSignalError(
-          signalResult.meta.source === 'api' &&
-            Boolean(signalResult.meta.reason) &&
-            statsResult.data == null,
-        );
-      }
-    };
-    void tick();
-    const intervalId = window.setInterval(() => void tick(), STATS_POLL_MS);
-    return () => {
-      cancelled = true;
-      window.clearInterval(intervalId);
-    };
+  const pollStats = useCallback(async () => {
+    const [signalResult, statsResult] = await Promise.all([
+      fetchSignalStatus(),
+      fetchChannelManageStats(slug),
+    ]);
+    setSignal(signalResult.data);
+    useBroadcastPresenceStore
+      .getState()
+      .setSignalConnected(Boolean(signalResult.data.connected));
+    setStats(statsResult.data);
+    setSignalError(
+      signalResult.meta.source === 'api' &&
+        Boolean(signalResult.meta.reason) &&
+        statsResult.data == null,
+    );
   }, [slug]);
 
   useEffect(() => {
-    let cancelled = false;
-    const tick = async () => {
-      const [targetResult, programmeResult, channel] = await Promise.all([
-        fetchRtmpTargets(),
-        fetchProgramme(),
-        fetchChannel(slug)
-          .then((result) => result.data)
-          .catch(() => null),
-      ]);
-      if (cancelled) {
-        return;
-      }
-      setTargets(targetResult.data.filter((target) => target.enabled));
-      setProgramme(programmeResult.data);
-      const nowPlaying = channel?.nowPlaying;
-      if (!nowPlaying) {
-        setRotation(null);
-        setRotationPaused(false);
-        rotationTitleRef.current = null;
-        return;
-      }
-      if (rotationTitleRef.current !== nowPlaying.title) {
-        setRotationPaused(false);
-        rotationTitleRef.current = nowPlaying.title;
-      }
-      const item =
-        programmeResult.data.items.find(
-          (candidate) => candidate.title === nowPlaying.title,
-        ) ?? null;
-      setRotation((current) =>
-        current?.title === nowPlaying.title
-          ? {
-              ...current,
-              artistName: nowPlaying.artistName,
-              artworkUrl: nowPlaying.artworkUrl,
-              item,
-            }
-          : {
-              title: nowPlaying.title,
-              artistName: nowPlaying.artistName,
-              artworkUrl: nowPlaying.artworkUrl,
-              observedAt: Date.now(),
-              item,
-            },
-      );
-    };
-    void tick();
-    const intervalId = window.setInterval(() => void tick(), STREAM_POLL_MS);
-    return () => {
-      cancelled = true;
-      window.clearInterval(intervalId);
-    };
+    void pollStats();
+  }, [pollStats]);
+  usePolling(() => {
+    void pollStats();
+  }, STATS_POLL_MS);
+
+  const pollStream = useCallback(async () => {
+    const [targetResult, programmeResult, channel] = await Promise.all([
+      fetchRtmpTargets(),
+      fetchProgramme(),
+      fetchChannel(slug)
+        .then((result) => result.data)
+        .catch(() => null),
+    ]);
+    setTargets(targetResult.data.filter((target) => target.enabled));
+    setProgramme(programmeResult.data);
+    const nowPlaying = channel?.nowPlaying;
+    if (!nowPlaying) {
+      setRotation(null);
+      setRotationPaused(false);
+      rotationTitleRef.current = null;
+      return;
+    }
+    if (rotationTitleRef.current !== nowPlaying.title) {
+      setRotationPaused(false);
+      rotationTitleRef.current = nowPlaying.title;
+    }
+    const item =
+      programmeResult.data.items.find(
+        (candidate) => candidate.title === nowPlaying.title,
+      ) ?? null;
+    setRotation((current) =>
+      current?.title === nowPlaying.title
+        ? {
+            ...current,
+            artistName: nowPlaying.artistName,
+            artworkUrl: nowPlaying.artworkUrl,
+            item,
+          }
+        : {
+            title: nowPlaying.title,
+            artistName: nowPlaying.artistName,
+            artworkUrl: nowPlaying.artworkUrl,
+            observedAt: Date.now(),
+            item,
+          },
+    );
   }, [slug]);
 
   useEffect(() => {
-    const intervalId = window.setInterval(() => setNow(Date.now()), SECOND_MS);
-    return () => window.clearInterval(intervalId);
-  }, []);
+    void pollStream();
+  }, [pollStream]);
+  usePolling(() => {
+    void pollStream();
+  }, STREAM_POLL_MS);
+
+  usePolling(() => setNow(Date.now()), SECOND_MS);
 
   const signalConnected = stats?.signalConnected ?? signal?.connected ?? false;
   const liveActive = channelState === 'LIVE' || signalConnected;

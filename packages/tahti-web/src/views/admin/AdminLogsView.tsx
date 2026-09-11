@@ -19,6 +19,7 @@ import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
+import { usePolling } from '../../hooks/usePolling';
 import { AdminActivityView } from './AdminActivityView';
 
 const REFRESH_INTERVAL_MS = 15_000;
@@ -115,9 +116,10 @@ export function AdminLogsView() {
 
   useEffect(() => {
     void load();
-    const interval = setInterval(() => void load(), REFRESH_INTERVAL_MS);
-    return () => clearInterval(interval);
   }, [load]);
+  usePolling(() => {
+    void load();
+  }, REFRESH_INTERVAL_MS);
 
   const logs = entries.map(toLogEntry);
   const scopes = [...new Set(logs.map((l) => l.source.scope))].sort();

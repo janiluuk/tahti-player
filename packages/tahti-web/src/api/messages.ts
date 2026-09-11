@@ -1,14 +1,6 @@
 import type { FetchMeta } from './client';
+import { apiBase } from './http';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
-
-const forceMock = isForceMock;
-
-const apiBase = () => {
-  if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
-    return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
-  }
-  return '/tahti-api';
-};
 
 async function requestJson<T>(
   path: string,
@@ -122,7 +114,7 @@ export async function fetchConversations(): Promise<{
   data: ConversationSummary[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [...mockConversations],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -156,7 +148,7 @@ function mockConversationDetail(id: string): ConversationDetail | null {
 export async function fetchConversation(
   id: string,
 ): Promise<{ data: ConversationDetail | null; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockConversationDetail(id),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -179,7 +171,7 @@ export async function sendDm(
   conversationId: string,
   body: string,
 ): Promise<{ ok: true; data: ChatDm } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const msg: ChatDm = {
       id: `m-${Date.now()}`,
       senderUsername: 'demo',
@@ -227,7 +219,7 @@ export async function startConversation(
 ): Promise<
   { ok: true; conversationId: string } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const existing = mockConversations.find(
       (c) => c.otherUser.username === username,
     );
@@ -270,7 +262,7 @@ export async function searchUsers(q: string): Promise<{
   }>;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: q
         ? [

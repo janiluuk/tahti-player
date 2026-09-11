@@ -1,4 +1,5 @@
 import type { FetchMeta } from './client';
+import { apiBase } from './http';
 import {
   listMockCommerceFanSubs,
   listMockCommerceTrackOrders,
@@ -9,15 +10,6 @@ import {
   mockCompleteConnectOnboard,
 } from './mock-session';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
-
-const forceMock = isForceMock;
-
-const apiBase = () => {
-  if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
-    return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
-  }
-  return '/tahti-api';
-};
 
 async function requestJson<T>(
   path: string,
@@ -202,7 +194,7 @@ export async function fetchFanPayoutStats(): Promise<{
   data: FanPayoutStats;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockFanPayoutStats(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -237,7 +229,7 @@ export async function fetchFanConnectStatus(): Promise<{
   data: FanConnectStatus;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: getMockConnectStatus(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -261,7 +253,7 @@ export async function startFanConnectOnboard(): Promise<
   | { ok: true; mockActivated: true; message: string }
   | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const status = mockCompleteConnectOnboard();
     return {
       ok: true,
@@ -296,7 +288,7 @@ export async function fetchFanConnectPortal(): Promise<
   | { ok: true; mockActivated: true; message: string }
   | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const status = getMockConnectStatus();
     if (!status.accountId) {
       return {
@@ -327,7 +319,7 @@ export async function fetchMyGrants(): Promise<{
   data: GrantRow[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockGrants(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -348,7 +340,7 @@ export async function fetchGrantEstimate(): Promise<{
   data: GrantEstimate | null;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockEstimate(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

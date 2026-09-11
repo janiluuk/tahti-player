@@ -113,7 +113,7 @@ const locations: ElementLocation[] = [
     element: 'ImageUploadField',
     kind: 'Component',
     pages:
-      'ShowImagePicker, VenueRegisterView, StudioScheduleView, StudioVenuesView, Admin → Disco-widgets, Admin → News',
+      'ShowImagePicker, VenueRegisterView, StudioScheduleView, Admin → Add-ons, Admin → News',
   },
   {
     element: 'AddToMusicActions',

@@ -1,14 +1,6 @@
 import type { FetchMeta } from './client';
+import { apiBase } from './http';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
-
-const forceMock = isForceMock;
-
-const apiBase = () => {
-  if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
-    return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
-  }
-  return '/tahti-api';
-};
 
 async function requestJson<T>(
   path: string,
@@ -66,7 +58,7 @@ export async function fetchMyFanTiers(): Promise<{
   data: FanTierRow[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockTiers.map((t) => ({ ...t })),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -89,7 +81,7 @@ export async function createFanTier(input: {
   description?: string;
   perks?: string[];
 }): Promise<{ ok: true; data?: FanTierRow } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const row: FanTierRow = {
       id: `tier-mock-${Date.now()}`,
       name: input.name,
@@ -119,7 +111,7 @@ export async function setFanTierActive(
   id: string,
   active: boolean,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockTiers = mockTiers.map((t) => (t.id === id ? { ...t, active } : t));
     return { ok: true };
   }

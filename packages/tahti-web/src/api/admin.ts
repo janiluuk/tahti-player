@@ -1,12 +1,6 @@
 import { getAccountRole } from '../lib/accountRoles';
 import type { FetchMeta } from './client';
 import { apiBase, getJson, mutate, sendJson } from './http';
-import {
-  createMockInternetRadioPreset,
-  deleteMockInternetRadioPreset,
-  listMockInternetRadioPresets,
-  patchMockInternetRadioPreset,
-} from './internetRadioPresetsMockStore';
 import { listMockCommerceAudit } from './mock-commerce-ledger';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
 import type {
@@ -18,8 +12,6 @@ import type {
   GovernanceQuarterlyReport,
   UpsertGovernanceAttendance,
 } from './types';
-
-const forceMock = isForceMock;
 
 // ── Dashboard ───────────────────────────────────────────────────────────────
 
@@ -47,7 +39,7 @@ export async function fetchAdminVenues(): Promise<{
   data: AdminVenue[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [
         {
@@ -218,7 +210,7 @@ export async function fetchAdminContentOverview(): Promise<{
   data: AdminContentOverview;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockContentOverview(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -328,7 +320,7 @@ export async function fetchAdminDashboard(): Promise<{
   data: AdminDashboard;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockDashboard(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -487,7 +479,7 @@ function mockBetaApplications(): AdminBetaApplication[] {
 export async function fetchAdminBetaApplications(
   status?: AdminBetaStatus,
 ): Promise<{ data: AdminBetaApplication[]; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const all = mockBetaApplications();
     return {
       data: status ? all.filter((a) => a.status === status) : all,
@@ -514,7 +506,7 @@ export async function approveBetaApplication(
 ): Promise<
   { ok: true; setupUrl: string | null } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       ok: true,
       setupUrl: `https://beta.tahti.live/setup-password?token=mock-${id}`,
@@ -533,7 +525,7 @@ export async function approveBetaApplication(
 }
 
 export async function rejectBetaApplication(id: string) {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true } as const;
   }
   return mutate(
@@ -547,7 +539,7 @@ export async function resendBetaSetupLink(
 ): Promise<
   { ok: true; setupUrl: string | null } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       ok: true,
       setupUrl: `https://beta.tahti.live/setup-password?token=resent-${id}`,
@@ -697,7 +689,7 @@ export async function fetchAdminUsers(filters: {
   role?: string;
   isMember?: string;
 }): Promise<{ data: AdminUserRow[]; total: number; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     let rows = mockUsers();
     if (filters.q) {
       const q = filters.q.toLowerCase();
@@ -756,7 +748,7 @@ export async function fetchAdminUsers(filters: {
 export async function fetchAdminUser(
   id: string,
 ): Promise<{ data: AdminUserDetail | null; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const user = mockUsers().find((candidate) => candidate.id === id);
     return {
       data: user ? mockUserDetail(user) : null,
@@ -780,7 +772,7 @@ export async function patchAdminUser(
   id: string,
   patch: AdminUserPatch,
 ): Promise<{ ok: true; data: AdminUserDetail } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const users = mockUsers();
     const index = users.findIndex((candidate) => candidate.id === id);
     if (index < 0) {
@@ -828,7 +820,7 @@ export async function suspendAdminUser(
   id: string,
   reason: string,
 ): Promise<{ ok: true; data: AdminUserDetail } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const user = mockUsers().find((candidate) => candidate.id === id);
     if (!user) {
       return { ok: false, error: 'User not found' };
@@ -855,7 +847,7 @@ export async function suspendAdminUser(
 export async function unsuspendAdminUser(
   id: string,
 ): Promise<{ ok: true; data: AdminUserDetail } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const user = mockUsers().find((candidate) => candidate.id === id);
     if (!user) {
       return { ok: false, error: 'User not found' };
@@ -878,621 +870,7 @@ export async function unsuspendAdminUser(
   }
 }
 
-// ── Radio ops ───────────────────────────────────────────────────────────────
-
-export type AdminRadioChannel = {
-  channelId: string;
-  slug: string;
-  artistName: string;
-  lastFeaturedAt: string | null;
-};
-
-export type AdminRadioHistoryItem = {
-  channelId: string;
-  slug: string;
-  artistName: string;
-  featuredAt: string;
-};
-
-export type AdminRadioOptedOut = {
-  channelId: string;
-  slug: string;
-  artistName: string;
-  isLive: boolean;
-};
-
-export type AdminRadioData = {
-  nowPlaying: { live: boolean; slug: string | null; artistName: string | null };
-  eligible: AdminRadioChannel[];
-  history: AdminRadioHistoryItem[];
-  optedOut: AdminRadioOptedOut[];
-};
-
-export type AdminRadioRotationItem = {
-  id: string;
-  title: string;
-  artistName: string;
-  durationSec: number | null;
-  soundId: string;
-  audioUrl?: string | null;
-  channelSlug: string;
-  license: string;
-  addedBy: string;
-};
-
-const mockRadioRotation: AdminRadioRotationItem[] = [
-  {
-    id: 'radio-rotation-1',
-    soundId: 'radio-archive-1',
-    title: 'Night Transit',
-    artistName: 'Tahti Radio submissions',
-    durationSec: 288,
-    channelSlug: 'tahti-radio',
-    license: 'CC_BY',
-    addedBy: 'radio-editorial',
-  },
-  {
-    id: 'radio-rotation-2',
-    soundId: 'radio-archive-2',
-    title: 'Signal Bloom',
-    artistName: 'Tahti Radio submissions',
-    durationSec: 346,
-    channelSlug: 'tahti-radio',
-    license: 'CC_BY_SA',
-    addedBy: 'radio-editorial',
-  },
-];
-
-export async function fetchAdminRadioRotation(): Promise<{
-  data: AdminRadioRotationItem[];
-  meta: FetchMeta;
-}> {
-  if (forceMock()) {
-    return {
-      data: mockRadioRotation,
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const data = await getJson<
-      Array<{
-        id: string;
-        title: string;
-        artistName: string;
-        durationSec?: number | null;
-        artistUsername?: string | null;
-      }>
-    >('/api/v1/radio/rotation');
-    return {
-      data: data.map((item) => ({
-        ...item,
-        soundId: item.id,
-        durationSec: item.durationSec ?? null,
-        channelSlug: item.artistUsername ?? 'tahti-radio',
-        license: '',
-        addedBy: 'radio-editorial',
-      })),
-      meta: { source: 'api' },
-    };
-  } catch (err) {
-    return { data: [], meta: failMeta(err) };
-  }
-}
-
-function mockRadioAdmin(): AdminRadioData {
-  return {
-    nowPlaying: {
-      live: false,
-      slug: null,
-      artistName: null,
-    },
-    eligible: [
-      {
-        channelId: 'c1',
-        slug: 'northern-lights',
-        artistName: 'Northern Lights',
-        lastFeaturedAt: '2026-08-16T20:00:00.000Z',
-      },
-      {
-        channelId: 'c2',
-        slug: 'dj-moonlight',
-        artistName: 'DJ Moonlight',
-        lastFeaturedAt: null,
-      },
-    ],
-    history: [
-      {
-        channelId: 'c3',
-        slug: 'kaiku-collective',
-        artistName: 'Kaiku Collective',
-        featuredAt: '2026-08-16T14:00:00.000Z',
-      },
-      {
-        channelId: 'c1',
-        slug: 'northern-lights',
-        artistName: 'Northern Lights',
-        featuredAt: '2026-08-15T21:00:00.000Z',
-      },
-    ],
-    optedOut: [
-      {
-        channelId: 'c4',
-        slug: 'tundra-static',
-        artistName: 'Tundra Static',
-        isLive: false,
-      },
-    ],
-  };
-}
-
-export async function fetchAdminRadio(): Promise<{
-  data: AdminRadioData;
-  meta: FetchMeta;
-}> {
-  if (forceMock()) {
-    return {
-      data: mockRadioAdmin(),
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const data = await getJson<{
-      nowPlaying: {
-        live: boolean;
-        channel: { slug: string; artistName: string } | null;
-      };
-      eligible: AdminRadioChannel[];
-      history: AdminRadioHistoryItem[];
-      optedOut: AdminRadioOptedOut[];
-    }>('/api/admin/radio');
-    return {
-      data: {
-        nowPlaying: {
-          live: data.nowPlaying.live,
-          slug: data.nowPlaying.channel?.slug ?? null,
-          artistName: data.nowPlaying.channel?.artistName ?? null,
-        },
-        eligible: data.eligible,
-        history: data.history,
-        optedOut: data.optedOut,
-      },
-      meta: { source: 'api' },
-    };
-  } catch (err) {
-    if (allowMockFallback()) {
-      return { data: mockRadioAdmin(), meta: failMeta(err) };
-    }
-    return {
-      data: {
-        nowPlaying: { live: false, slug: null, artistName: null },
-        eligible: [],
-        history: [],
-        optedOut: [],
-      },
-      meta: apiErrorMeta(err),
-    };
-  }
-}
-
-export function radioMoveToFront(channelId: string) {
-  if (forceMock()) {
-    return Promise.resolve({ ok: true } as const);
-  }
-  return mutate(
-    `/api/admin/radio/${encodeURIComponent(channelId)}/reset-rotation`,
-    'POST',
-  );
-}
-
-export function radioOptOut(channelId: string) {
-  if (forceMock()) {
-    return Promise.resolve({ ok: true } as const);
-  }
-  return mutate(
-    `/api/admin/radio/${encodeURIComponent(channelId)}/opt-out`,
-    'POST',
-  );
-}
-
-export function radioRemoveOptOut(channelId: string) {
-  if (forceMock()) {
-    return Promise.resolve({ ok: true } as const);
-  }
-  return mutate(
-    `/api/admin/radio/${encodeURIComponent(channelId)}/opt-out`,
-    'DELETE',
-  );
-}
-
-// ── Internet radio presets (Listen page defaults) ───────────────────────────
-
-export type AdminInternetRadioPreset = {
-  id: string;
-  name: string;
-  genre: string | null;
-  description: string | null;
-  iconUrl: string | null;
-  programmingUrl: string | null;
-  streamUrl: string | null;
-  enabled: boolean;
-};
-
-export type AdminInternetRadioPresetInput = {
-  name: string;
-  genre?: string;
-  description?: string;
-  iconUrl?: string;
-  programmingUrl?: string;
-  streamUrl?: string;
-  enabled?: boolean;
-};
-
-export async function fetchAdminInternetRadioPresets(): Promise<{
-  data: AdminInternetRadioPreset[];
-  meta: FetchMeta;
-}> {
-  if (forceMock()) {
-    return {
-      data: listMockInternetRadioPresets(),
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const data = await getJson<{ presets: AdminInternetRadioPreset[] }>(
-      '/api/admin/internet-radio-presets',
-    );
-    return { data: data.presets, meta: { source: 'api' } };
-  } catch (err) {
-    return { data: [], meta: failMeta(err) };
-  }
-}
-
-export async function createAdminInternetRadioPreset(
-  input: AdminInternetRadioPresetInput,
-): Promise<
-  { ok: true; data: AdminInternetRadioPreset } | { ok: false; error: string }
-> {
-  if (forceMock()) {
-    const preset = createMockInternetRadioPreset({
-      genre: null,
-      description: null,
-      iconUrl: null,
-      programmingUrl: null,
-      streamUrl: null,
-      ...input,
-    });
-    return { ok: true, data: preset };
-  }
-  try {
-    const data = await sendJson<AdminInternetRadioPreset>(
-      '/api/admin/internet-radio-presets',
-      'POST',
-      input,
-    );
-    return { ok: true, data };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Create failed',
-    };
-  }
-}
-
-export async function patchAdminInternetRadioPreset(
-  id: string,
-  patch: Partial<AdminInternetRadioPresetInput>,
-): Promise<
-  { ok: true; data: AdminInternetRadioPreset } | { ok: false; error: string }
-> {
-  if (forceMock()) {
-    const updated = patchMockInternetRadioPreset(id, patch);
-    if (!updated) {
-      return { ok: false, error: 'Preset not found' };
-    }
-    return { ok: true, data: updated };
-  }
-  try {
-    const data = await sendJson<AdminInternetRadioPreset>(
-      `/api/admin/internet-radio-presets/${encodeURIComponent(id)}`,
-      'PATCH',
-      patch,
-    );
-    return { ok: true, data };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Update failed',
-    };
-  }
-}
-
-export async function deleteAdminInternetRadioPreset(
-  id: string,
-): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
-    deleteMockInternetRadioPreset(id);
-    return { ok: true };
-  }
-  return mutate(
-    `/api/admin/internet-radio-presets/${encodeURIComponent(id)}`,
-    'DELETE',
-  );
-}
-
-// ── Radio submissions ───────────────────────────────────────────────────────
-
-export type AdminRadioSubmissionStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
-
-export type AdminRadioSubmission = {
-  id: string;
-  status: AdminRadioSubmissionStatus;
-  rejectionNote: string | null;
-  createdAt: string;
-  submitter: { username: string; displayName: string } | null;
-  sound: {
-    id: string;
-    title: string;
-    artistName: string | null;
-    durationSec: number | null;
-    bannerUrl: string | null;
-    audioUrl: string | null;
-  };
-};
-
-function mockRadioSubmissions(): AdminRadioSubmission[] {
-  return [
-    {
-      id: 'sub-1',
-      status: 'PENDING',
-      rejectionNote: null,
-      createdAt: '2026-08-16T12:00:00.000Z',
-      submitter: { username: 'dj-moonlight', displayName: 'DJ Moonlight' },
-      sound: {
-        id: 'arch-sub-1',
-        title: 'Moonlight Drive',
-        artistName: 'DJ Moonlight',
-        durationSec: 312,
-        bannerUrl: '/mock/dj-moonlight/cover-moonlight-drive.svg',
-        audioUrl:
-          'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-      },
-    },
-    {
-      id: 'sub-2',
-      status: 'PENDING',
-      rejectionNote: null,
-      createdAt: '2026-08-15T09:30:00.000Z',
-      submitter: {
-        username: 'kaiku-collective',
-        displayName: 'Kaiku Collective',
-      },
-      sound: {
-        id: 'arch-sub-2',
-        title: 'Echo Chamber Cypher',
-        artistName: 'Kaiku Collective',
-        durationSec: 254,
-        bannerUrl: null,
-        audioUrl:
-          'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
-      },
-    },
-  ];
-}
-
-export async function fetchAdminRadioSubmissions(): Promise<{
-  data: AdminRadioSubmission[];
-  meta: FetchMeta;
-}> {
-  if (forceMock()) {
-    return {
-      data: mockRadioSubmissions(),
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const data = await getJson<{
-      items?: AdminRadioSubmission[];
-      submissions?: AdminRadioSubmission[];
-    }>('/api/admin/radio-submissions?status=PENDING');
-    return {
-      data: data.items ?? data.submissions ?? [],
-      meta: { source: 'api' },
-    };
-  } catch (err) {
-    return { data: [], meta: failMeta(err) };
-  }
-}
-
-export async function fetchAdminRadioSubmissionAudio(id: string): Promise<
-  | {
-      ok: true;
-      data: {
-        audioUrl: string;
-        title: string;
-        artistName: string;
-        soundId: string;
-      };
-    }
-  | { ok: false; error: string }
-> {
-  if (forceMock()) {
-    const row = mockRadioSubmissions().find((item) => item.id === id);
-    if (!row?.sound.audioUrl) {
-      return { ok: false, error: 'No playable audio' };
-    }
-    return {
-      ok: true,
-      data: {
-        audioUrl: row.sound.audioUrl,
-        title: row.sound.title,
-        artistName: row.sound.artistName ?? row.submitter?.displayName ?? '',
-        soundId: row.sound.id,
-      },
-    };
-  }
-  try {
-    const data = await getJson<{
-      audioUrl: string;
-      title: string;
-      artistName: string;
-      soundId: string;
-    }>(`/api/admin/radio-submissions/${encodeURIComponent(id)}/audio`);
-    return { ok: true, data };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Audio could not be loaded',
-    };
-  }
-}
-
-export function approveRadioSubmission(id: string) {
-  if (forceMock()) {
-    return Promise.resolve({ ok: true } as const);
-  }
-  return mutate(
-    `/api/admin/radio-submissions/${encodeURIComponent(id)}/approve`,
-    'POST',
-  );
-}
-
-export function rejectRadioSubmission(id: string, note?: string) {
-  if (forceMock()) {
-    return Promise.resolve({ ok: true } as const);
-  }
-  return mutate(
-    `/api/admin/radio-submissions/${encodeURIComponent(id)}/reject`,
-    'POST',
-    note ? { note } : undefined,
-  );
-}
-
-// ── Internet radio station suggestions ──────────────────────────────────────
-// Listener-submitted *external* internet radio stations (Store & forward
-// widget), not to be confused with AdminRadioSubmission above, which audits
-// tracks submitted for Tahti's own co-op radio rotation.
-
-export type AdminRadioStationSuggestionStatus =
-  | 'PENDING'
-  | 'APPROVED'
-  | 'REJECTED';
-
-export type AdminRadioStationSuggestion = {
-  id: string;
-  status: AdminRadioStationSuggestionStatus;
-  rejectionNote: string | null;
-  createdAt: string;
-  submitter: { username: string; displayName: string } | null;
-  name: string;
-  logoUrl: string | null;
-  language: string;
-  bitrateKbps: number | null;
-  streamUrl: string;
-};
-
-function mockRadioStationSuggestions(): AdminRadioStationSuggestion[] {
-  return [
-    {
-      id: 'station-sug-1',
-      status: 'PENDING',
-      rejectionNote: null,
-      createdAt: '2026-08-20T10:00:00.000Z',
-      submitter: {
-        username: 'kaiku-collective',
-        displayName: 'Kaiku Collective',
-      },
-      name: 'Basso FM',
-      logoUrl: null,
-      language: 'Finnish',
-      bitrateKbps: 128,
-      streamUrl: 'https://stream.example.fi/basso-fm.mp3',
-    },
-    {
-      id: 'station-sug-2',
-      status: 'PENDING',
-      rejectionNote: null,
-      createdAt: '2026-08-18T14:30:00.000Z',
-      submitter: { username: 'valo-radio', displayName: 'Valo Radio' },
-      name: 'Lumo Radio',
-      logoUrl: null,
-      language: 'Finnish',
-      bitrateKbps: 192,
-      streamUrl: 'https://stream.example.fi/lumo-radio.aac',
-    },
-  ];
-}
-
-export async function fetchAdminRadioStationSuggestions(): Promise<{
-  data: AdminRadioStationSuggestion[];
-  meta: FetchMeta;
-}> {
-  if (forceMock()) {
-    return {
-      data: mockRadioStationSuggestions(),
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const data = await getJson<{ items?: AdminRadioStationSuggestion[] }>(
-      '/api/admin/radio-station-suggestions?status=PENDING',
-    );
-    return { data: data.items ?? [], meta: { source: 'api' } };
-  } catch (err) {
-    return { data: [], meta: failMeta(err) };
-  }
-}
-
-export function approveRadioStationSuggestion(id: string) {
-  if (forceMock()) {
-    return Promise.resolve({ ok: true } as const);
-  }
-  return mutate(
-    `/api/admin/radio-station-suggestions/${encodeURIComponent(id)}/approve`,
-    'POST',
-  );
-}
-
-export function rejectRadioStationSuggestion(id: string, note?: string) {
-  if (forceMock()) {
-    return Promise.resolve({ ok: true } as const);
-  }
-  return mutate(
-    `/api/admin/radio-station-suggestions/${encodeURIComponent(id)}/reject`,
-    'POST',
-    note ? { note } : undefined,
-  );
-}
-
-export type RadioStationSuggestionInput = {
-  name: string;
-  logoUrl: string;
-  language: string;
-  bitrateKbps: string;
-  streamUrl: string;
-};
-
-export async function submitRadioStationSuggestion(
-  input: RadioStationSuggestionInput,
-): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
-    return { ok: true };
-  }
-  try {
-    await mutate('/api/me/radio-station-suggestions', 'POST', {
-      name: input.name,
-      logoUrl: input.logoUrl || null,
-      language: input.language,
-      bitrateKbps: input.bitrateKbps ? Number(input.bitrateKbps) : null,
-      streamUrl: input.streamUrl,
-    });
-    return { ok: true };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Could not submit suggestion',
-    };
-  }
-}
+export * from './admin/admin-radio';
 
 // ── News ────────────────────────────────────────────────────────────────────
 
@@ -1571,7 +949,7 @@ export async function fetchAdminNews(): Promise<{
   data: AdminNewsPost[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: newsState(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -1598,7 +976,7 @@ export async function createNewsPost(input: {
   linkLabel?: string;
   publish: boolean;
 }): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const posts = newsState();
     posts.unshift({
       id: `news-${Date.now()}`,
@@ -1628,7 +1006,7 @@ export async function updateNewsPost(
     publish?: boolean;
   },
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const post = newsState().find((p) => p.id === id);
     if (post) {
       if (input.headline != null) {
@@ -1659,7 +1037,7 @@ export async function updateNewsPost(
 export async function deleteNewsPost(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockNewsState = newsState().filter((p) => p.id !== id);
     persistNewsState(mockNewsState);
     return { ok: true };
@@ -1763,7 +1141,7 @@ export async function fetchAdminSelects(): Promise<{
   data: { items: AdminSelectsItem[]; stream: AdminSelectsStream };
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const current = selectsState()[0] ?? null;
     return {
       data: {
@@ -1812,7 +1190,7 @@ export async function fetchAdminSelects(): Promise<{
 export async function searchAdminSelectsBrowse(
   q: string,
 ): Promise<{ data: AdminSelectsBrowseItem[]; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const query = q.toLowerCase();
     return {
       data: mockSelectsBrowse().filter((i) =>
@@ -1832,7 +1210,7 @@ export async function searchAdminSelectsBrowse(
 }
 
 export function addToSelectsRotation(item: AdminSelectsBrowseItem) {
-  if (forceMock()) {
+  if (isForceMock()) {
     selectsState().push({
       id: `sel-${Date.now()}`,
       soundId: item.id,
@@ -1851,7 +1229,7 @@ export function addToSelectsRotation(item: AdminSelectsBrowseItem) {
 }
 
 export function removeFromSelectsRotation(id: string) {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockSelectsItems = selectsState().filter((i) => i.id !== id);
     return Promise.resolve({ ok: true } as const);
   }
@@ -1862,7 +1240,7 @@ export function removeFromSelectsRotation(id: string) {
 }
 
 export function reorderSelectsItem(id: string, position: number) {
-  if (forceMock()) {
+  if (isForceMock()) {
     const items = selectsState();
     const idx = items.findIndex((i) => i.id === id);
     const target = Math.max(0, Math.min(position, items.length - 1));
@@ -1880,7 +1258,7 @@ export function reorderSelectsItem(id: string, position: number) {
 }
 
 export function reorderSelectsRotation(itemIds: string[]) {
-  if (forceMock()) {
+  if (isForceMock()) {
     const byId = new Map(selectsState().map((item) => [item.id, item]));
     mockSelectsItems = itemIds
       .map((id) => byId.get(id))
@@ -1893,7 +1271,7 @@ export function reorderSelectsRotation(itemIds: string[]) {
 }
 
 export function startSelectsStream() {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockSelectsStreamRunning = true;
     return Promise.resolve({ ok: true } as const);
   }
@@ -1901,7 +1279,7 @@ export function startSelectsStream() {
 }
 
 export function stopSelectsStream() {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockSelectsStreamRunning = false;
     return Promise.resolve({ ok: true } as const);
   }
@@ -1949,7 +1327,7 @@ export async function fetchAdminStreams(): Promise<{
   data: AdminLiveStreamRow[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockLiveStreams(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -1966,7 +1344,7 @@ export async function fetchAdminStreams(): Promise<{
 }
 
 export function restartStream(slug: string) {
-  if (forceMock()) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
@@ -1976,21 +1354,21 @@ export function restartStream(slug: string) {
 }
 
 export function skipStreamTrack(slug: string) {
-  if (forceMock()) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(`/api/admin/streams/${encodeURIComponent(slug)}/skip`, 'POST');
 }
 
 export function pauseStream(slug: string) {
-  if (forceMock()) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(`/api/admin/streams/${encodeURIComponent(slug)}/pause`, 'POST');
 }
 
 export function resumeStream(slug: string) {
-  if (forceMock()) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
@@ -2000,7 +1378,7 @@ export function resumeStream(slug: string) {
 }
 
 export function forceStreamOffline(slug: string) {
-  if (forceMock()) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
@@ -2145,7 +1523,7 @@ export async function fetchAdminSupportTickets(params?: {
 }): Promise<{ data: AdminSupportTicket[]; meta: FetchMeta }> {
   const status = params?.status;
   const q = params?.q?.trim();
-  if (forceMock()) {
+  if (isForceMock()) {
     let data = getMockSupportTickets();
     if (status) {
       data = data.filter((t) => t.status === status);
@@ -2186,7 +1564,7 @@ export async function fetchAdminSupportTickets(params?: {
 export async function fetchAdminSupportTicketDetail(
   id: string,
 ): Promise<{ data: AdminSupportTicketDetail | null; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const ticket = getMockSupportTickets().find((t) => t.id === id) ?? null;
     return {
       data: ticket,
@@ -2209,7 +1587,7 @@ export async function updateAdminSupportTicketStatus(
 ): Promise<
   { ok: true; data: AdminSupportTicketDetail } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const ticket = getMockSupportTickets().find((t) => t.id === id);
     if (!ticket) {
       return { ok: false, error: 'Ticket not found' };
@@ -2245,7 +1623,7 @@ export async function postAdminSupportTicketMessage(
 ): Promise<
   { ok: true; data: AdminSupportTicketDetail } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const ticket = getMockSupportTickets().find((t) => t.id === id);
     if (!ticket) {
       return { ok: false, error: 'Ticket not found' };
@@ -2405,7 +1783,7 @@ export async function fetchAdminTopLists(
   dimension: AdminTopListDimension,
   sort: AdminTopListSort,
 ): Promise<{ data: AdminTopListBucket[]; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const buckets = mockTopLists(dimension).map((b) => ({
       bucket: b.bucket,
       entries: [...b.entries].sort((a, c) =>
@@ -2478,7 +1856,7 @@ export async function fetchAdminAnnouncements(): Promise<{
   data: { clips: AdminAnnouncementClip[]; systemEnabled: boolean };
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: {
         clips: announcementState(),
@@ -2502,7 +1880,7 @@ export async function fetchAdminAnnouncements(): Promise<{
 }
 
 export function setAnnouncementsSystemEnabled(enabled: boolean) {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockAnnouncementsSystemEnabled = enabled;
     return Promise.resolve({ ok: true } as const);
   }
@@ -2517,7 +1895,7 @@ export async function patchAnnouncementClip(
     Pick<AdminAnnouncementClip, 'isEnabled' | 'scheduleMode' | 'everyNth'>
   >,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const clip = announcementState().find((c) => c.id === id);
     if (clip) {
       Object.assign(clip, patch);
@@ -2532,7 +1910,7 @@ export async function patchAnnouncementClip(
 }
 
 export function deleteAnnouncementClip(id: string) {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockAnnouncementClips = announcementState().filter((c) => c.id !== id);
     return Promise.resolve({ ok: true } as const);
   }
@@ -2545,7 +1923,7 @@ export async function uploadAnnouncementClip(
   { ok: true; clip: AdminAnnouncementClip } | { ok: false; error: string }
 > {
   const title = file.name.replace(/\.[^.]+$/, '');
-  if (forceMock()) {
+  if (isForceMock()) {
     const clip: AdminAnnouncementClip = {
       id: `ann-${Date.now()}`,
       title,
@@ -2583,431 +1961,7 @@ export async function uploadAnnouncementClip(
   }
 }
 
-// ── Storage ─────────────────────────────────────────────────────────────────
-
-export type AdminStorageUserRow = {
-  userId: string;
-  username: string;
-  displayName: string;
-  quotaBytes: number;
-  usedBytes: number;
-  /** Paying/association-member accounts report unlimited storage — resolved
-   * server-side (see AdminStorageUsageRowSchema in tahti-org); render as-is,
-   * never re-derive from tier client-side. */
-  unlimited: boolean;
-};
-
-/** Free/used/total for a physical or billed storage backend. `totalBytes`/
- * `freeBytes` are `null` when the backend has no fixed capacity to report
- * (a usage-billed object store) or the reading failed (host statfs error);
- * `note` carries the human-readable reason in that case. */
-export type AdminStorageDiskSpace = {
-  totalBytes: number | null;
-  freeBytes: number | null;
-  usedBytes: number | null;
-  note: string | null;
-};
-
-export type AdminStorageOverview = {
-  totalQuotaBytes: number;
-  totalUsedBytes: number;
-  userCount: number;
-  users: AdminStorageUserRow[];
-  /** The API host's local disk — also what the object-storage hot/streaming
-   * cache lives on. */
-  localDisk: AdminStorageDiskSpace;
-  /** The object-storage backend (MinIO/S3-compatible). Billed by usage on
-   * some providers, so totalBytes/freeBytes can be null even when usedBytes
-   * is a real, tracked figure. */
-  objectStorage: AdminStorageDiskSpace;
-};
-
-function mockStorageOverview(): AdminStorageOverview {
-  const users: AdminStorageUserRow[] = [
-    {
-      userId: 'u-1',
-      username: 'dj-moonlight',
-      displayName: 'DJ Moonlight',
-      quotaBytes: 500 * 1024 * 1024,
-      usedBytes: 412 * 1024 * 1024,
-      unlimited: false,
-    },
-    {
-      userId: 'u-2',
-      username: 'midnight-cartography',
-      displayName: 'Midnight Cartography',
-      quotaBytes: 500 * 1024 * 1024,
-      usedBytes: 538 * 1024 * 1024,
-      unlimited: false,
-    },
-    {
-      userId: 'u-3',
-      username: 'kaiku-collective',
-      displayName: 'Kaiku Collective',
-      quotaBytes: 1024 * 1024 * 1024,
-      usedBytes: 201 * 1024 * 1024,
-      // ARTIST-tier/association-member account — the backend resolves this
-      // to unlimited storage regardless of the numeric quotaBytes above.
-      unlimited: true,
-    },
-    {
-      userId: 'u-4',
-      username: 'northern-lights',
-      displayName: 'Northern Lights',
-      quotaBytes: 500 * 1024 * 1024,
-      usedBytes: 89 * 1024 * 1024,
-      unlimited: false,
-    },
-  ];
-  const totalUsedBytes = users.reduce((s, u) => s + u.usedBytes, 0);
-  return {
-    totalQuotaBytes: users.reduce((s, u) => s + u.quotaBytes, 0),
-    totalUsedBytes,
-    userCount: users.length,
-    users,
-    localDisk: {
-      totalBytes: 500 * 1024 ** 3,
-      freeBytes: 120 * 1024 ** 3,
-      usedBytes: 380 * 1024 ** 3,
-      note: null,
-    },
-    objectStorage: {
-      totalBytes: null,
-      freeBytes: null,
-      usedBytes: totalUsedBytes,
-      note: 'Object storage is billed by usage, not a fixed volume — there is no total/free to report.',
-    },
-  };
-}
-
-let mockStorageState: AdminStorageOverview | null = null;
-
-export async function fetchAdminStorage(): Promise<{
-  data: AdminStorageOverview | null;
-  meta: FetchMeta;
-}> {
-  if (forceMock()) {
-    if (!mockStorageState) {
-      mockStorageState = mockStorageOverview();
-    }
-    return {
-      data: mockStorageState,
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const data = await getJson<AdminStorageOverview>('/api/admin/storage');
-    return { data, meta: { source: 'api' } };
-  } catch (err) {
-    return { data: null, meta: failMeta(err) };
-  }
-}
-
-export function setUserStorageQuota(userId: string, quotaBytes: number) {
-  if (forceMock()) {
-    const row = mockStorageState?.users.find((u) => u.userId === userId);
-    if (row) {
-      row.quotaBytes = quotaBytes;
-    }
-    return Promise.resolve({ ok: true } as const);
-  }
-  return mutate(
-    `/api/admin/storage/${encodeURIComponent(userId)}/quota`,
-    'PATCH',
-    {
-      quotaBytes,
-    },
-  );
-}
-
-// ── Storage: per-user file drill-down ───────────────────────────────────────
-
-export type AdminStorageUserFile = {
-  id: string;
-  kind: 'sound' | 'stash';
-  title: string;
-  sizeBytes: number | null;
-  createdAt: string;
-  contentType: string | null;
-  isPublic: boolean | null;
-  /** Gates the play button — never inferred client-side, the backend already
-   * knows which content types/formats are audio. */
-  isAudio: boolean;
-  previewUrl: string | null;
-  /** Cumulative sizeBytes total up to and including this row (oldest-first). */
-  runningTotalBytes: number;
-};
-
-export type AdminStorageUserDetail = {
-  userId: string;
-  username: string;
-  displayName: string;
-  tier: 'FREE' | 'ARTIST' | 'STUDIO';
-  quotaBytes: number | null;
-  usedBytes: number;
-  unlimited: boolean;
-  files: AdminStorageUserFile[];
-};
-
-function mockStorageUserDetail(userId: string): AdminStorageUserDetail | null {
-  const row = (mockStorageState ?? mockStorageOverview()).users.find(
-    (u) => u.userId === userId,
-  );
-  if (!row) {
-    return null;
-  }
-  const files = (mockAdminFilesState ?? mockAdminFiles())
-    .filter((f) => f.username === row.username)
-    .slice()
-    .sort(
-      (a, b) =>
-        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-    );
-  let running = 0;
-  return {
-    userId: row.userId,
-    username: row.username,
-    displayName: row.displayName,
-    tier: row.unlimited ? 'ARTIST' : 'FREE',
-    quotaBytes: row.unlimited ? null : row.quotaBytes,
-    usedBytes: row.usedBytes,
-    unlimited: row.unlimited,
-    files: files.map((f) => {
-      running += f.sizeBytes ?? 0;
-      return {
-        id: f.id,
-        kind: f.contentType === 'STASH' ? 'stash' : 'sound',
-        title: f.title,
-        sizeBytes: f.sizeBytes,
-        createdAt: f.createdAt,
-        contentType: f.contentType,
-        isPublic: f.isPublic,
-        isAudio: f.audioUrl != null,
-        previewUrl: f.audioUrl,
-        runningTotalBytes: running,
-      };
-    }),
-  };
-}
-
-export async function fetchAdminStorageUserFiles(userId: string): Promise<{
-  data: AdminStorageUserDetail | null;
-  meta: FetchMeta;
-}> {
-  if (forceMock()) {
-    return {
-      data: mockStorageUserDetail(userId),
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const data = await getJson<AdminStorageUserDetail>(
-      `/api/admin/storage/users/${encodeURIComponent(userId)}/files`,
-    );
-    return { data, meta: { source: 'api' } };
-  } catch (err) {
-    return { data: null, meta: failMeta(err) };
-  }
-}
-
-// ── Files ───────────────────────────────────────────────────────────────────
-
-export type AdminFileRow = {
-  id: string;
-  title: string;
-  artistName: string;
-  genre: string | null;
-  contentType: string;
-  isPublic: boolean;
-  durationSec: number | null;
-  sizeBytes: number | null;
-  format: string | null;
-  createdAt: string;
-  channelSlug: string;
-  userId: string;
-  username: string;
-  displayName: string;
-  audioUrl: string | null;
-  /** Count of SoundItemVersion rows — real, always populated by
-   * /api/admin/files (../tahti/apps/api/src/routes/admin/files.ts). */
-  revisionCount: number;
-  /** ChannelSoundItem has no per-item R2-mirror field in the schema yet (unlike
-   * ReleaseTrack/ReleaseTrackVersion, which do) — genuinely not tracked, not
-   * just unwired here. Stays optional/undefined against the real API until
-   * that schema + worker support exists; mock data fills it in for the UI. */
-  storageLocation?: 'local' | 'r2' | null;
-};
-
-function mockAdminFiles(): AdminFileRow[] {
-  return [
-    {
-      id: 'file-1',
-      title: 'Moonlight Drive',
-      artistName: 'DJ Moonlight',
-      genre: 'Downtempo',
-      contentType: 'TRACK',
-      isPublic: true,
-      durationSec: 312,
-      sizeBytes: 8_400_000,
-      format: 'MP3',
-      createdAt: '2026-08-10T12:00:00.000Z',
-      channelSlug: 'dj-moonlight',
-      userId: 'u-1',
-      username: 'dj-moonlight',
-      displayName: 'DJ Moonlight',
-      audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-      revisionCount: 3,
-      storageLocation: 'r2',
-    },
-    {
-      id: 'file-2',
-      title: 'Route 550 (live set)',
-      artistName: 'Midnight Cartography',
-      genre: 'Electronic',
-      contentType: 'LIVE_SET',
-      isPublic: true,
-      durationSec: 3480,
-      sizeBytes: 92_000_000,
-      format: 'FLAC',
-      createdAt: '2026-08-09T18:00:00.000Z',
-      channelSlug: 'midnight-cartography',
-      userId: 'u-2',
-      username: 'midnight-cartography',
-      displayName: 'Midnight Cartography',
-      audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
-      revisionCount: 1,
-      storageLocation: 'r2',
-    },
-    {
-      id: 'file-3',
-      title: 'Echo Chamber Cypher',
-      artistName: 'Kaiku Collective',
-      genre: 'Hip-hop',
-      contentType: 'TRACK',
-      isPublic: false,
-      durationSec: 201,
-      sizeBytes: 5_100_000,
-      format: 'MP3',
-      createdAt: '2026-08-05T09:00:00.000Z',
-      channelSlug: 'kaiku-collective',
-      userId: 'u-3',
-      username: 'kaiku-collective',
-      displayName: 'Kaiku Collective',
-      audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
-      revisionCount: 5,
-      storageLocation: 'local',
-    },
-    {
-      id: 'file-4',
-      title: 'Aurora Drift (unmastered)',
-      artistName: 'Northern Lights',
-      genre: null,
-      contentType: 'STASH',
-      isPublic: false,
-      durationSec: 279,
-      sizeBytes: 41_000_000,
-      format: 'WAV',
-      createdAt: '2026-08-01T09:00:00.000Z',
-      channelSlug: 'northern-lights',
-      userId: 'u-4',
-      username: 'northern-lights',
-      displayName: 'Northern Lights',
-      audioUrl: null,
-      revisionCount: 1,
-      storageLocation: 'local',
-    },
-  ];
-}
-
-let mockAdminFilesState: AdminFileRow[] | null = null;
-
-export async function fetchAdminFiles(query?: string): Promise<{
-  data: AdminFileRow[];
-  meta: FetchMeta;
-}> {
-  if (forceMock()) {
-    if (!mockAdminFilesState) {
-      mockAdminFilesState = mockAdminFiles();
-    }
-    const q = query?.trim().toLowerCase();
-    const data = q
-      ? mockAdminFilesState.filter(
-          (f) =>
-            f.title.toLowerCase().includes(q) ||
-            f.artistName.toLowerCase().includes(q) ||
-            f.username.toLowerCase().includes(q),
-        )
-      : mockAdminFilesState;
-    return { data, meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
-  }
-  try {
-    const qs = new URLSearchParams({ limit: '100' });
-    if (query?.trim()) {
-      qs.set('q', query.trim());
-    }
-    const data = await getJson<{ items: AdminFileRow[] }>(
-      `/api/admin/files?${qs.toString()}`,
-    );
-    return { data: data.items, meta: { source: 'api' } };
-  } catch (err) {
-    return { data: [], meta: failMeta(err) };
-  }
-}
-
-export function deleteAdminFile(id: string) {
-  if (forceMock()) {
-    mockAdminFilesState = (mockAdminFilesState ?? mockAdminFiles()).filter(
-      (f) => f.id !== id,
-    );
-    return Promise.resolve({ ok: true } as const);
-  }
-  return mutate(`/api/admin/files/${encodeURIComponent(id)}`, 'DELETE');
-}
-
-export type AdminFileAudio = {
-  audioUrl: string | null;
-  title: string;
-  artistName: string;
-  channelSlug: string;
-  bannerUrl: string | null;
-  durationSec: number | null;
-};
-
-/** Presigned playback URL for one file — fetched lazily on play-button click
- * rather than eagerly for every row in the list (the list can be up to 100
- * rows; the per-user drill-down already returns previewUrl inline instead,
- * since that list is small). */
-export async function fetchAdminFileAudio(id: string): Promise<{
-  data: AdminFileAudio | null;
-  meta: FetchMeta;
-}> {
-  if (forceMock()) {
-    const file = (mockAdminFilesState ?? mockAdminFiles()).find(
-      (f) => f.id === id,
-    );
-    return {
-      data: file
-        ? {
-            audioUrl: file.audioUrl,
-            title: file.title,
-            artistName: file.artistName,
-            channelSlug: file.channelSlug,
-            bannerUrl: null,
-            durationSec: file.durationSec,
-          }
-        : null,
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const data = await getJson<AdminFileAudio>(
-      `/api/admin/files/${encodeURIComponent(id)}/audio`,
-    );
-    return { data, meta: { source: 'api' } };
-  } catch (err) {
-    return { data: null, meta: failMeta(err) };
-  }
-}
+export * from './admin/admin-storage';
 
 // ── Content reports ─────────────────────────────────────────────────────────
 
@@ -3077,7 +2031,7 @@ let mockContentReportsState: AdminContentReportRow[] | null = null;
 export async function fetchAdminContentReports(
   status?: AdminContentReportStatus,
 ): Promise<{ data: AdminContentReportRow[]; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     if (!mockContentReportsState) {
       mockContentReportsState = mockContentReports();
     }
@@ -3105,7 +2059,7 @@ export function resolveContentReport(
   status: 'REVIEWING' | 'ACTIONED' | 'DISMISSED',
   note?: string,
 ) {
-  if (forceMock()) {
+  if (isForceMock()) {
     const row = (mockContentReportsState ?? mockContentReports()).find(
       (r) => r.id === id,
     );
@@ -3204,7 +2158,7 @@ export async function fetchAdminFinancial(): Promise<{
   data: AdminFinancialOverview | null;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     if (!mockFinancialState) {
       mockFinancialState = mockFinancialOverview();
     }
@@ -3239,7 +2193,7 @@ export function createLedgerEntry(entry: {
   amountCents: number;
   description: string;
 }) {
-  if (forceMock()) {
+  if (isForceMock()) {
     const row: AdminLedgerEntry = {
       id: `ledg-${Date.now()}`,
       ...entry,
@@ -3273,7 +2227,7 @@ export async function fetchAdminGovernanceOverview(): Promise<{
   data: AdminGovernanceOverview;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockGovernanceOverview(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -3365,7 +2319,7 @@ let mockFeatureRequestsState: AdminFeatureRequestRow[] | null = null;
 export async function fetchAdminFeatureRequests(
   status?: AdminFeatureRequestStatus,
 ): Promise<{ data: AdminFeatureRequestRow[]; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     if (!mockFeatureRequestsState) {
       mockFeatureRequestsState = mockFeatureRequests();
     }
@@ -3390,7 +2344,7 @@ export function updateFeatureRequestStatus(
   status: AdminFeatureRequestStatus,
   note?: string,
 ) {
-  if (forceMock()) {
+  if (isForceMock()) {
     const row = (mockFeatureRequestsState ?? mockFeatureRequests()).find(
       (r) => r.id === id,
     );
@@ -3424,7 +2378,7 @@ export async function fetchAdminFeatureRequestReports(): Promise<{
   data: GovernanceQuarterlyReport[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockQuarterlyReports,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -3447,7 +2401,7 @@ export async function generateFeatureRequestQuarterlyReport(input?: {
   { ok: true; data: GovernanceQuarterlyReport } | { ok: false; error: string }
 > {
   const { year, quarter } = { ...currentQuarter(), ...input };
-  if (forceMock()) {
+  if (isForceMock()) {
     const existing = mockQuarterlyReports.find(
       (r) => r.year === year && r.quarter === quarter,
     );
@@ -3501,7 +2455,7 @@ export async function fetchAdminGrants(): Promise<{
   data: AdminGrantYearSummary[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockGrantHistory(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -3599,7 +2553,7 @@ function mockGrantPreview(year: number): AdminGrantPreview {
 export async function fetchAdminGrantPreview(
   year: number,
 ): Promise<{ data: AdminGrantPreview | null; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockGrantPreview(year),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -3673,7 +2627,7 @@ export async function fetchAdminAgmMotions(): Promise<{
   data: AdminMotion[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockAgmMotions(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -3762,7 +2716,7 @@ export async function uploadAdminGovernanceMinutes(
 ): Promise<
   { ok: true; data: GovernanceMeeting } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const patched = await patchAdminGovernanceMeeting(meetingId, {
       minutesKey: `mock/governance/meetings/${meetingId}/minutes.pdf`,
     });
@@ -3984,7 +2938,7 @@ export async function fetchAdminIntegrationStatus(): Promise<{
   data: AdminIntegrationStatus[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockIntegrationStatus(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -4003,319 +2957,7 @@ export async function fetchAdminIntegrationStatus(): Promise<{
   }
 }
 
-// ── Admin add-ons ────────────────────────────────────────────────────────
-
-export type AdminAddonScope = 'LISTENER' | 'ARTIST' | 'ADMIN';
-export type AdminAddonStatus =
-  | 'DRAFT'
-  | 'PENDING'
-  | 'APPROVED'
-  | 'REJECTED'
-  | 'DISABLED';
-
-// The real ../tahti-org backend (packages/db/prisma/schema.prisma's `Addon`
-// model + apps/api/src/routes/admin/addons.ts) is a full widget-bundle store
-// with versioning, sandboxed rendering, and a moderation lifecycle — not a
-// plain metadata CRUD resource. There is no generic PATCH/DELETE for an
-// addon's own record: only `register` (create, status DRAFT), `prepare-
-// upload`/`publish-version` (JS bundle, not modeled here — no UI for
-// authoring/uploading a widget bundle exists yet), and the specific actions
-// below (approve/reject/disable, default-config, enabled-by-default).
-export type AdminAddon = {
-  id: string;
-  slug: string;
-  scope: AdminAddonScope;
-  status: AdminAddonStatus;
-  name: string;
-  description: string;
-  authorName: string;
-  categories: string[];
-  iconUrl: string | null;
-  currentVersion: string;
-  bundleSizeBytes: number;
-  moderationNote: string | null;
-  /** Starting configJson every NEW install of this addon gets, across every
-   * scope. Existing installs are untouched when this changes. */
-  defaultConfigJson: unknown;
-  /** Platform-wide "on by default": an APPROVED addon with this set renders
-   * on its scope's surfaces even with no explicit install row. */
-  enabledByDefault: boolean;
-  createdAt: string;
-  updatedAt: string;
-};
-
-const MOCK_ADDONS: AdminAddon[] = [
-  {
-    id: 'addon-random-artist',
-    slug: 'random-artist-week',
-    scope: 'LISTENER',
-    status: 'APPROVED',
-    name: 'Random artist of the week',
-    description: 'Highlights one artist from the community each week.',
-    authorName: 'Tahti',
-    categories: ['social', 'new-releases'],
-    iconUrl: null,
-    currentVersion: '1.0.0',
-    bundleSizeBytes: 18400,
-    moderationNote: null,
-    defaultConfigJson: null,
-    enabledByDefault: false,
-    createdAt: '2026-08-01T00:00:00.000Z',
-    updatedAt: '2026-08-01T00:00:00.000Z',
-  },
-  {
-    id: 'addon-channel-stats',
-    slug: 'channel-stats',
-    scope: 'ARTIST',
-    status: 'APPROVED',
-    name: 'Channel stats',
-    description: 'Shows the artist channel’s current listener statistics.',
-    authorName: 'Tahti',
-    categories: ['stats'],
-    iconUrl: null,
-    currentVersion: '1.2.0',
-    bundleSizeBytes: 22100,
-    moderationNote: null,
-    defaultConfigJson: null,
-    enabledByDefault: true,
-    createdAt: '2026-07-15T00:00:00.000Z',
-    updatedAt: '2026-07-15T00:00:00.000Z',
-  },
-  {
-    id: 'addon-pending-example',
-    slug: 'pending-example',
-    scope: 'LISTENER',
-    status: 'PENDING',
-    name: 'Now spinning ticker',
-    description: 'Scrolling ticker of what every station is playing right now.',
-    authorName: 'Community',
-    categories: ['other'],
-    iconUrl: null,
-    currentVersion: '0.1.0',
-    bundleSizeBytes: 4200,
-    moderationNote: null,
-    defaultConfigJson: null,
-    enabledByDefault: false,
-    createdAt: '2026-09-01T00:00:00.000Z',
-    updatedAt: '2026-09-01T00:00:00.000Z',
-  },
-];
-
-let mockAddons = [...MOCK_ADDONS];
-
-export async function fetchAdminAddons(
-  scope?: AdminAddonScope,
-  status?: AdminAddonStatus,
-): Promise<{ data: AdminAddon[]; meta: FetchMeta }> {
-  if (forceMock()) {
-    return {
-      data: mockAddons.filter(
-        (addon) =>
-          (!scope || addon.scope === scope) &&
-          (!status || addon.status === status),
-      ),
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const query = new URLSearchParams();
-    if (scope) {
-      query.set('scope', scope);
-    }
-    if (status) {
-      query.set('status', status);
-    }
-    const suffix = query.size > 0 ? `?${query.toString()}` : '';
-    const data = await getJson<{ widgets: AdminAddon[] }>(
-      `/api/admin/addons${suffix}`,
-    );
-    return { data: data.widgets, meta: { source: 'api' } };
-  } catch (err) {
-    return { data: [], meta: failMeta(err) };
-  }
-}
-
-export type AdminAddonRegisterInput = {
-  slug: string;
-  scope: AdminAddonScope;
-  name: string;
-  description: string;
-  authorName: string;
-  categories: string[];
-  iconUrl?: string;
-};
-
-export async function registerAdminAddon(
-  input: AdminAddonRegisterInput,
-): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
-  if (forceMock()) {
-    const addon: AdminAddon = {
-      id: `addon-${Date.now()}`,
-      ...input,
-      iconUrl: input.iconUrl || null,
-      status: 'DRAFT',
-      currentVersion: '0.0.0',
-      bundleSizeBytes: 0,
-      moderationNote: null,
-      defaultConfigJson: null,
-      enabledByDefault: false,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    mockAddons = [addon, ...mockAddons];
-    return { ok: true, data: addon };
-  }
-  try {
-    const data = await sendJson<AdminAddon>('/api/admin/addons', 'POST', input);
-    return { ok: true, data };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Registration failed',
-    };
-  }
-}
-
-function mockModerate(
-  id: string,
-  status: AdminAddonStatus,
-  moderationNote: string | null,
-): { ok: true; data: AdminAddon } | { ok: false; error: string } {
-  const existing = mockAddons.find((addon) => addon.id === id);
-  if (!existing) {
-    return { ok: false, error: 'Add-on not found' };
-  }
-  const updated: AdminAddon = {
-    ...existing,
-    status,
-    moderationNote,
-    updatedAt: new Date().toISOString(),
-  };
-  mockAddons = mockAddons.map((addon) => (addon.id === id ? updated : addon));
-  return { ok: true, data: updated };
-}
-
-export async function approveAdminAddon(
-  id: string,
-  moderationNote?: string,
-): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
-  if (forceMock()) {
-    return mockModerate(id, 'APPROVED', moderationNote ?? null);
-  }
-  try {
-    const data = await sendJson<AdminAddon>(
-      `/api/admin/addons/${encodeURIComponent(id)}/approve`,
-      'POST',
-      moderationNote ? { moderationNote } : {},
-    );
-    return { ok: true, data };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Approve failed',
-    };
-  }
-}
-
-export async function rejectAdminAddon(
-  id: string,
-  moderationNote: string,
-): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
-  if (forceMock()) {
-    return mockModerate(id, 'REJECTED', moderationNote);
-  }
-  try {
-    const data = await sendJson<AdminAddon>(
-      `/api/admin/addons/${encodeURIComponent(id)}/reject`,
-      'POST',
-      { moderationNote },
-    );
-    return { ok: true, data };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Reject failed',
-    };
-  }
-}
-
-export async function disableAdminAddon(
-  id: string,
-  moderationNote?: string,
-): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
-  if (forceMock()) {
-    return mockModerate(id, 'DISABLED', moderationNote ?? null);
-  }
-  try {
-    const data = await sendJson<AdminAddon>(
-      `/api/admin/addons/${encodeURIComponent(id)}/disable`,
-      'POST',
-      moderationNote ? { moderationNote } : {},
-    );
-    return { ok: true, data };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Disable failed',
-    };
-  }
-}
-
-export async function setAdminAddonEnabledByDefault(
-  id: string,
-  enabledByDefault: boolean,
-): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
-  if (forceMock()) {
-    const existing = mockAddons.find((addon) => addon.id === id);
-    if (!existing) {
-      return { ok: false, error: 'Add-on not found' };
-    }
-    const updated: AdminAddon = { ...existing, enabledByDefault };
-    mockAddons = mockAddons.map((addon) => (addon.id === id ? updated : addon));
-    return { ok: true, data: updated };
-  }
-  try {
-    const data = await sendJson<AdminAddon>(
-      `/api/admin/addons/${encodeURIComponent(id)}/enabled-by-default`,
-      'POST',
-      { enabledByDefault },
-    );
-    return { ok: true, data };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Update failed',
-    };
-  }
-}
-
-export async function setAdminAddonDefaultConfig(
-  id: string,
-  defaultConfigJson: Record<string, unknown> | null,
-): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
-  if (forceMock()) {
-    const existing = mockAddons.find((addon) => addon.id === id);
-    if (!existing) {
-      return { ok: false, error: 'Add-on not found' };
-    }
-    const updated: AdminAddon = { ...existing, defaultConfigJson };
-    mockAddons = mockAddons.map((addon) => (addon.id === id ? updated : addon));
-    return { ok: true, data: updated };
-  }
-  try {
-    const data = await sendJson<AdminAddon>(
-      `/api/admin/addons/${encodeURIComponent(id)}/default-config`,
-      'POST',
-      { defaultConfigJson },
-    );
-    return { ok: true, data };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Update failed',
-    };
-  }
-}
+export * from './admin/admin-addons';
 
 // ── Status ──────────────────────────────────────────────────────────────────
 
@@ -4357,7 +2999,7 @@ export async function fetchAdminStatus(): Promise<{
   data: AdminStatusData | null;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockStatusData(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -4422,7 +3064,7 @@ export async function fetchAdminLanguages(): Promise<{
   data: AdminLanguage[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockLanguages(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -4445,7 +3087,7 @@ export async function createAdminLanguage(input: {
   code: string;
   name: string;
 }): Promise<{ ok: true; data: AdminLanguage } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     if (mockLanguages().some((l) => l.code === input.code)) {
       return { ok: false, error: `Language "${input.code}" already exists.` };
     }
@@ -4495,7 +3137,7 @@ export async function importAdminLanguageCsv(
     skipped: dataRows.length - validRows.length,
   };
 
-  if (forceMock()) {
+  if (isForceMock()) {
     const lang = mockLanguages().find((l) => l.code === code);
     if (!lang) {
       return { ok: false, error: `Unknown language "${code}".` };
@@ -4734,7 +3376,7 @@ export async function fetchAdminActivity(
   const page = filters.page ?? 1;
   const limit = filters.limit ?? 50;
 
-  if (forceMock()) {
+  if (isForceMock()) {
     const ledger = listMockCommerceAudit().map((row) => ({
       id: row.id,
       action: row.action,
@@ -4904,7 +3546,7 @@ export async function fetchAdminContainerLogs(
   lokiReachable: boolean;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       entries: mockLogEntries(),
       lokiReachable: true,

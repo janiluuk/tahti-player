@@ -17,6 +17,7 @@ import {
   uploadSoundVersion,
   type SoundVersion,
 } from '../api/sound-versions';
+import { usePolling } from '../hooks/usePolling';
 import { usePlayerStore } from '../stores/playerStore';
 import { Eyebrow } from './tahti/Eyebrow';
 
@@ -94,13 +95,7 @@ export function AudioRevisionList({
       version.status === 'PENDING' || version.status === 'PROCESSING',
   );
 
-  useEffect(() => {
-    if (!processing) {
-      return;
-    }
-    const timer = window.setInterval(load, REVISION_POLL_MS);
-    return () => window.clearInterval(timer);
-  }, [processing, load]);
+  usePolling(load, REVISION_POLL_MS, processing);
 
   const readyVersions = useMemo(
     () => versions.filter((version) => version.status === 'READY'),
