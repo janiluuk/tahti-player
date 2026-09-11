@@ -7,9 +7,10 @@ Status values: `open` | `blocked` | `partial`.
 
 | Status | File | One-line |
 | --- | --- | --- |
+| open | [player-performance-optimizations.md](player-performance-optimizations.md) | (Later) Release-build CPU/native-memory profiling, then startup, queue, playback, visualizer and loading optimizations |
 | partial | [channel-designer-background-section-fixes.md](channel-designer-background-section-fixes.md) | Designer background section; design decision remains |
 | blocked | [channelview-move-player-to-stage.md](channelview-move-player-to-stage.md) | Player-in-backdrop extraction needs a design decision |
-| open | [desktop-pro-library.md](desktop-pro-library.md) | Independent desktop player / library / Soulseek |
+| open | [desktop-pro-library.md](desktop-pro-library.md) | Phases 0–7: durable import, searchable catalog, local playlists, metadata editing, analysis, native profiling; Soulseek later |
 | partial | [go-live-header-subtext-cleanup.md](go-live-header-subtext-cleanup.md) | Calendar view restore still open |
 | open | [governance-gap-list.md](governance-gap-list.md) | Governance gaps: 16 of 18 shipped; remaining bulk comments (#2), voting window (#15, backend-blocked) |
 | partial | [image-upload-hover-lightbox.md](image-upload-hover-lightbox.md) | Press-kit lightbox delete shipped 2026-09-10; admin radio logo blocked on redesign |

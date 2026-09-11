@@ -30,6 +30,13 @@ This repository is the Tahti fork of Nuclear (`janiluuk/tahti-player`). Upstream
 - `@tahti-player/tahti-web` — beta.tahti.live
 - `@tahti-player/docs` / `website` / `tools` / shared eslint + tailwind configs
 
+## Environment
+
+- **Node:** `.node-version` = 24; `engines.node >= 24`. Node 20/22 will fail.
+- **pnpm:** `pnpm@10.33.4` pinned in `packageManager`; `corepack enable` or install via npm.
+- **Rust:** ≥ 1.77.2 + Tauri 2 system deps — only for `@tahti-player/player` (`pnpm dev`, `pnpm tauri build`). `pnpm dev:tahti` (web) needs none of this.
+- **Offline web dev:** `VITE_FORCE_MOCK=1 pnpm dev:tahti` — no API needed; login `demo@tahti.live` / any password.
+
 ## Commands
 
 ```bash
@@ -58,3 +65,9 @@ pnpm --filter @tahti-player/ui test -- src/components/Badge/Badge.test.tsx
 ## Design & tooling
 
 Neo-brutalist, purposeful motion, no generic AI chrome. pnpm workspaces, Turborepo, Vite, Vitest, ESLint+Prettier, Husky. TanStack Router regenerates on dev.
+
+## Pitfalls
+
+- Don't install Rust or Tauri system deps to work on `tahti-web` — `pnpm dev:tahti` is pure Vite.
+- The lockfile (`pnpm-lock.yaml`) is committed; don't delete it — installs are deterministic against it.
+- CI snapshot mismatches warn but don't fail the workflow; a red CI run isn't always a real failure — check the logs.

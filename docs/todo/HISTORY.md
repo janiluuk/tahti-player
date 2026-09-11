@@ -2322,3 +2322,7 @@ landing at `/studio`, closes cleanly via Cancel, does not reopen.
 `tsc --noEmit` and `eslint` clean on the changed file.
 
 ---
+
+## 2026-09-10 — Player performance audit
+
+Audited the active desktop/shared Tahti frontend; production bundle measured and five prioritized findings recorded in `docs/PERFORMANCE-AUDIT.md`. No runtime changes. Device profiling remains a stated limitation, not a claimed result.
