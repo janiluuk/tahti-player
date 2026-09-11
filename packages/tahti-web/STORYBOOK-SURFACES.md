@@ -66,11 +66,14 @@ Generated from story `title` fields. Prefer matching title; keep live data when 
 | `Tahti/Channel/ChannelView` | `tahti-web/ChannelView.stories.tsx` |
 | `Tahti/Channel/ChannelVisualizer` | `tahti-web/ChannelVisualizer.stories.tsx` |
 | `Tahti/Widgets/ClientCapabilityNotice` | `tahti-web/ClientCapabilityNotice.stories.tsx` |
+| `Tahti/Track/CollectionTrackList` | `tahti-web/CollectionTrackList.stories.tsx` |
 | `Tahti/Player/ConnectedPlayerBar` | `tahti-web/ConnectedPlayerBar.stories.tsx` |
 | `Tahti/Player/ConnectedQueuePanel` | `tahti-web/ConnectedQueuePanel.stories.tsx` |
 | `Tahti/Player/ConnectedSettingsModal` | `tahti-web/ConnectedSettingsModal.stories.tsx` |
 | `Tahti/Layout/ConnectedStatusBar` | `tahti-web/ConnectedStatusBar.stories.tsx` |
 | `Tahti/Misc/DesktopLibraryPanel` | `tahti-web/DesktopLibraryPanel.stories.tsx` |
+| `Tahti/Discover/DirectoryArtistCardGrid` | `tahti-web/DirectoryArtistCardGrid.stories.tsx` |
+| `Tahti/Discover/DiscoverGatewayBackground` | `tahti-web/DiscoverGatewayBackground.stories.tsx` |
 | `Tahti/Widgets/DiscoWidgetManagerPanel` | `tahti-web/DiscoWidgetManagerPanel.stories.tsx` |
 | `Tahti/Widgets/DiscoWidgetsSection` | `tahti-web/DiscoWidgetsSection.stories.tsx` |
 | `Tahti/Reference/Element locations` | `tahti-web/ElementLocations.stories.tsx` |
@@ -105,18 +108,22 @@ Generated from story `title` fields. Prefer matching title; keep live data when 
 | `Tahti/Widgets/MermaidDiagram` | `tahti-web/MermaidDiagram.stories.tsx` |
 | `Tahti/Chrome/MobileChrome` | `tahti-web/MobileChrome.stories.tsx` |
 | `Tahti/Broadcast/MulticastConfigureDialog` | `tahti-web/MulticastConfigureDialog.stories.tsx` |
+| `Tahti/Broadcast/MulticastSection` | `tahti-web/MulticastSection.stories.tsx` |
 | `Northern Lights` | `tahti-web/MultitrackTimeline.stories.tsx` |
 | `Tahti/Misc/NewsletterSubscribeToggle` | `tahti-web/NewsletterSubscribeToggle.stories.tsx` |
 | `Tahti/Misc/NotificationToasts` | `tahti-web/NotificationToasts.stories.tsx` |
 | `Tahti/Page/PageHeader` | `tahti-web/PageHeader.stories.tsx` |
 | `Tahti/Page/PageStates` | `tahti-web/PageStates.stories.tsx` |
 | `Tahti/Widgets/PageTourSpotlight` | `tahti-web/PageTourSpotlight.stories.tsx` |
+| `Tahti/Studio/PinnedAnnouncementsPanel` | `tahti-web/PinnedAnnouncementsPanel.stories.tsx` |
 | `Tahti/Track/PlayableTrackContextMenu` | `tahti-web/PlayableTrackContextMenu.stories.tsx` |
 | `Tahti/Track/PlayableTrackTable` | `tahti-web/PlayableTrackTable.stories.tsx` |
 | `Tahti/Widgets/PluginStorePanel` | `tahti-web/PluginStorePanel.stories.tsx` |
+| `Tahti/Widgets/PluginStorePanel/Shared cards` | `tahti-web/PluginStoreShared.stories.tsx` |
 | `Tahti/Misc/PortInventoryPanel` | `tahti-web/PortInventoryPanel.stories.tsx` |
 | `Tahti/Studio/RadioBookingCalendar` | `tahti-web/RadioBookingCalendar.stories.tsx` |
 | `Tahti/Settings/RadioBrowserDirectory` | `tahti-web/RadioBrowserDirectory.stories.tsx` |
+| `Tahti/Widgets/PluginStorePanel/Radio category` | `tahti-web/RadioCategory.stories.tsx` |
 | `Tahti/Widgets/RadioStationCover` | `tahti-web/RadioStationCover.stories.tsx` |
 | `Tahti/Admin/RadioStationSuggestionsTab` | `tahti-web/RadioStationSuggestionsTab.stories.tsx` |
 | `Tahti/Track/ReleaseTracklistDialog` | `tahti-web/ReleaseTracklistDialog.stories.tsx` |
@@ -144,6 +151,7 @@ Generated from story `title` fields. Prefer matching title; keep live data when 
 | `Tahti/Misc/TahtiLogo` | `tahti-web/TahtiLogo.stories.tsx` |
 | `Tahti/Studio/TahtiRotationPlaylistEditor` | `tahti-web/TahtiRotationPlaylistEditor.stories.tsx` |
 | `Tahti/Settings/ThemeEditor` | `tahti-web/ThemeEditor.stories.tsx` |
+| `Tahti/Settings/ThemeVisualizationSettings` | `tahti-web/ThemeVisualizationSettings.stories.tsx` |
 | `Tahti/Track/TimelineReactionBar` | `tahti-web/TimelineReactionBar.stories.tsx` |
 | `Tahti/Track/TrackEditDialog` | `tahti-web/TrackEditDialog.stories.tsx` |
 | `Tahti/Track/TrackExportPanel` | `tahti-web/TrackExportPanel.stories.tsx` |

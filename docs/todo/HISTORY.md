@@ -2427,3 +2427,57 @@ via `getNativeLibrary().list('', 0).total` — null/hidden on web where
 the Rust side only exposes per-track `size_bytes`, no aggregate `SUM`
 query exists, so that would need a new Tauri command — left as a
 follow-up if actually wanted, not guessed at.
+
+---
+
+## 2026-09-12 — Storybook stories for recently-changed components + VIEW-CATALOG.md re-audit
+
+`storybook-catalog-refresh.md` — done. Bounded Storybook coverage pass (not
+full-coverage): added stories for `RadioCategory.tsx` and
+`plugin-store/shared.tsx` (both extracted from `PluginStorePanel.tsx` in
+`c25cb6ae`), plus 6 other recently-touched components with zero coverage —
+`CollectionTrackList`, `DirectoryArtistCardGrid`, `MulticastSection`,
+`PinnedAnnouncementsPanel`, `DiscoverGatewayBackground`,
+`ThemeVisualizationSettings`. New files under
+`packages/storybook/src/tahti-web/`: `RadioCategory.stories.tsx`,
+`PluginStoreShared.stories.tsx`, `CollectionTrackList.stories.tsx`,
+`DirectoryArtistCardGrid.stories.tsx`, `MulticastSection.stories.tsx`,
+`PinnedAnnouncementsPanel.stories.tsx`, `DiscoverGatewayBackground.stories.tsx`,
+`ThemeVisualizationSettings.stories.tsx`.
+
+Fixed two misleading stories that didn't render the component they were named
+after: `ApiConnectionIndicator.stories.tsx` hand-built a fake pill from
+`Badge`/`TahtiLogo` instead of mounting the real (currently unwired-into-app)
+`ApiConnectionIndicator`, whose own `/health` probe 404s in Storybook and
+shows the real "API disconnected" pill; `NotificationToasts.stories.tsx`
+demonstrated the toast mechanism directly via `@tahti-player/ui`'s
+`Toaster`/`toast` instead of mounting the real (non-visual)
+`NotificationToasts`, which is now rendered alongside the same toast trigger
+buttons.
+
+Verified rather than changed: `AdminActivityView.stories.tsx` still matches
+the component after its 104-line rewrite in `8a026201`; the WebGL-guard
+change in `b996d587` (`ChannelSlideshowBackdrop`/`ChannelVisualizer` now
+share `lib/webgl.ts`'s `supportsWebGL()`) didn't break either story.
+
+Regenerated `docs/VIEW-CATALOG.md`: fixed the known Discover/WidgetCard
+inconsistency (Discover no longer lists already-covered WidgetCard/
+WidgetTrackRow as pending candidates) plus drift found along the way —
+`TrackDetailView`, `AdminAddonsView`, `AdminContentView`, `AdminSelectsView`,
+`AdminOrphanPagesView` now have stories the catalog didn't reflect;
+`AdminGrantsView.stories.tsx`/`AdminAgmView.stories.tsx` are referenced but
+no longer exist on disk (flagged stale); `AccountView.tsx` is an orphan
+(`/settings` actually routes to `views/settings/SettingsView.tsx`);
+`studio/StudioVenuesView.tsx` is an orphan (no route); added missing rows
+for `AdminActivityView`, `GovernanceMembersView`,
+`GovernanceMeetingDetailView`, `GovernanceMotionDetailView`,
+`TransparencyResolutionsView`, `MessagesView`, `MoreView`,
+`DashboardAliasView`, `StudioSetupChannelRedirect`. Added rows to
+`packages/tahti-web/STORYBOOK-SURFACES.md` for the 8 new stories.
+
+Verified: `pnpm --filter @tahti-player/storybook build` clean (all
+new/fixed stories present in `storybook-static/index.json`),
+`pnpm --filter @tahti-player/storybook type-check` clean, `eslint` +
+`prettier --write` clean on every touched file.
+
+---

@@ -69,7 +69,7 @@ Legend:
 | View | Route | File | Storybook | Candidate For |
 | --- | --- | --- | --- | --- |
 | [Listen](#listen) | `/` | `src/views/ListenView.tsx` | No Story | AppShell, CardsRow, GlowMediaTile, SectionTabs |
-| [Discover](#discover) | `/discover` | `src/views/DiscoverView.tsx` | Has Story | WidgetCard, WidgetTrackRow, FilterChips |
+| [Discover](#discover) | `/discover` | `src/views/DiscoverView.tsx` | Has Story | — (WidgetCard, WidgetTrackRow, DiscoverGatewayBackground, DirectoryArtistCardGrid all have dedicated stories; the view assembly itself — tabs/filters — has no story of its own) |
 | [Feed](#feed) | `/feed` | `src/views/FeedView.tsx` | No Story | PageHeader, TrackTable |
 | [Favorites](#favorites-web) | `/favorites` | `src/views/FavoritesView.tsx` | Has Story | — |
 | [History](#history-web) | (embedded) | `src/views/HistoryView.tsx` | No Story | Tabs, CalendarHeatmap, TopList |
@@ -84,7 +84,7 @@ Legend:
 | [Artist Profile](#artist-profile) | `/u/$username` | `src/views/ArtistView.tsx` | No Story | EntitySocialHeader, Tabs, CardGrid, GlowMediaTile |
 | [Channel](#channel) | `/channel/$slug` | `src/views/ChannelView.tsx` | Has Story | ChannelBackdropCard, ChannelVisualizer, Tabs |
 | [Collection](#collection) | `/u/$username/c/$slug` | `src/views/CollectionView.tsx` | No Story | PlayableTrackTable, PageHeader |
-| [Track Detail](#track-detail) | `/t/$id` | `src/views/TrackDetailView.tsx` | No Story | PlayableTrackTable, TimelineReactionBar |
+| [Track Detail](#track-detail) | `/t/$id` | `src/views/TrackDetailView.tsx` | Has Story | — |
 | [Smart Link](#smart-link) | `/r/$slug` | `src/views/SmartLinkView.tsx` | No Story | PlayableTrackTable, PageHeader |
 | [Subscribe](#subscribe) | `/subscribe/$username` | `src/views/SubscribeView.tsx` | No Story | Card layout |
 | [Green Room](#green-room) | `/u/$username/green-room` | `src/views/GreenRoomView.tsx` | No Story | ConnectedPlayerBar, StemPlayer |
@@ -102,7 +102,7 @@ Legend:
 | [Setup Password](#setup-password) | `/setup-password` | `src/views/SetupPasswordView.tsx` | No Story | Input, Button |
 | [Verify](#verify) | `/verify` | `src/views/VerifyView.tsx` | No Story | Loader |
 | [Signup Payment](#signup-payment) | `/signup/payment` | `src/views/SignupPaymentView.tsx` | No Story | Dialog, Button |
-| [Account](#account) | (settings) | `src/views/AccountView.tsx` | No Story | SettingsPanel |
+| [Account / Settings](#account) | `/settings`, `/settings/$section` | `src/views/settings/SettingsView.tsx` | Has Story | SettingsPanels (component story covers the panels; `src/views/AccountView.tsx` is an orphan file — not imported by `router.tsx`, superseded by `SettingsView`) |
 | [Onboarding](#onboarding) | `/onboarding` | `src/views/OnboardingView.tsx` | No Story | Stepper, Input, GenrePicker |
 
 ### Library Views
@@ -151,15 +151,20 @@ Legend:
 | [Events](#events) | `/studio/events` | `src/views/studio/StudioEventsView.tsx` | No Story | CardGrid |
 | [Create Event](#create-event) | `/studio/events/new` | `src/views/studio/StudioEventCreateView.tsx` | No Story | Form, ImageUploadField |
 | [Stash](#stash) | `/studio/stash` | `src/views/studio/StudioStashView.tsx` | No Story | StashFilesPanel |
+| Studio Venues *(orphan)* | — (no route registered) | `src/views/studio/StudioVenuesView.tsx` | No Story | Table, Card layout — not imported by `router.tsx` or any other view; dead code or a page mid-build |
 
 ### Governance / Transparency Views
 
 | View | Route | File | Storybook | Candidate For |
 | --- | --- | --- | --- | --- |
 | [Governance](#governance) | `/governance` | `src/views/GovernanceView.tsx` | No Story | Tabs, Card layout |
+| [Governance Members](#governance-members) | `/governance/members` | `src/views/GovernanceMembersView.tsx` | No Story | Table, Card layout |
+| [Governance Meeting Detail](#governance-meeting-detail) | `/governance/meetings/$id` | `src/views/GovernanceMeetingDetailView.tsx` | No Story | Card layout |
+| [Governance Motion Detail](#governance-motion-detail) | `/governance/motions/$id` | `src/views/GovernanceMotionDetailView.tsx` | No Story | Card layout |
 | [Feature Requests](#feature-requests) | `/governance/feature-requests` | `src/views/FeatureRequestsView.tsx` | No Story | Card layout, Badge |
 | [Governance History](#governance-history) | `/governance/history` | `src/views/PublicGovernanceHistoryView.tsx` | No Story | Card layout |
 | [Transparency](#transparency) | `/transparency` | `src/views/TransparencyView.tsx` | No Story | StatChip, CardsRow |
+| [Transparency Resolutions](#transparency-resolutions) | `/transparency/resolutions` | `src/views/TransparencyResolutionsView.tsx` | No Story | Table, Card layout |
 | [Grant Year](#grant-year) | `/transparency/grants/$year` | `src/views/TransparencyGrantYearView.tsx` | No Story | Table |
 | [Methodology](#methodology) | `/transparency/methodology` | `src/views/TransparencyMethodologyView.tsx` | No Story | LegalDocShell |
 
@@ -176,6 +181,15 @@ Legend:
 | [News](#news) | `/news` | `src/views/NewsView.tsx` | No Story | NewsWidget |
 | [What's New](#whats-new-web) | `/whats-new` | `src/views/WhatsNewView.tsx` | No Story | Timeline components |
 | [What Is It](#what-is-it) | `/what-is-it` | `src/views/WhatIsItView.tsx` | No Story | Marketing layout |
+
+### Utility / Alias Views
+
+| View | Route | File | Storybook | Candidate For |
+| --- | --- | --- | --- | --- |
+| [Messages](#messages) | `/messages`, `/messages/$id` (also `/library/messages` redirects here) | `src/views/MessagesView.tsx` | No Story | Card layout, InPageNav |
+| [More](#more) | `/more` (diagnostics-gated; redirects to `/` otherwise) | `src/views/MoreView.tsx` | No Story | Card layout |
+| Dashboard alias | `/dashboard` | `src/views/DashboardAliasView.tsx` | No Story | — (thin redirect/alias to Listen) |
+| Studio Setup Channel redirect | `/studio/setup-channel` | `src/views/studio/StudioSetupChannelRedirect.tsx` | No Story | — (redirect-only helper, no real UI) |
 
 ### Venues
 
@@ -197,14 +211,15 @@ Legend:
 | View | Route | File | Storybook | Candidate For |
 | --- | --- | --- | --- | --- |
 | [Admin Dashboard](#admin-dashboard) | `/admin` | `src/views/admin/AdminDashboardView.tsx` | Has Story | StatChip, CardsRow |
+| [Admin Activity](#admin-activity) | `/admin/activity` → redirects to `/admin/logs` | `src/views/admin/AdminActivityView.tsx` | Has Story | LogViewer, FilterChips, Pagination |
 | [Admin Logs](#admin-logs) | `/admin/logs` | `src/views/admin/AdminLogsView.tsx` | Has Story | LogViewer |
 | [Admin Users](#admin-users) | `/admin/users` | `src/views/admin/AdminUsersView.tsx` | Has Story | Table, Input |
 | [Admin Radio](#admin-radio) | `/admin/radio` | `src/views/admin/AdminRadioView.tsx` | Has Story | RadioStationCover |
 | [Admin News](#admin-news) | `/admin/news` | `src/views/admin/AdminNewsView.tsx` | Has Story | Form |
-| [Admin Selects](#admin-selects) | `/admin/tahti-selects` | `src/views/admin/AdminSelectsView.tsx` | No Story | CardGrid |
+| [Admin Selects](#admin-selects) | `/admin/tahti-selects` | `src/views/admin/AdminSelectsView.tsx` | Has Story | CardGrid |
 | [Admin Streams](#admin-streams) | `/admin/streams` | `src/views/admin/AdminStreamsView.tsx` | Has Story | StreamManagerPanel |
 | [Admin Top Lists](#admin-top-lists) | `/admin/top-lists` | `src/views/admin/AdminTopListsView.tsx` | Has Story | Table |
-| [Admin Content](#admin-content) | `/admin/content` | `src/views/admin/AdminContentView.tsx` | No Story | Tabs, Table |
+| [Admin Content](#admin-content) | `/admin/content` | `src/views/admin/AdminContentView.tsx` | Has Story | Tabs, Table |
 | [Admin Announcements](#admin-announcements) | `/admin/announcements` | `src/views/admin/AdminAnnouncementsView.tsx` | Has Story | Form |
 | [Admin Storage](#admin-storage) | `/admin/storage` | `src/views/admin/AdminStorageView.tsx` | Has Story | Table, StatChip |
 | [Admin Storage User](#admin-storage-user) | `/admin/storage/$userId` | `src/views/admin/AdminStorageUserView.tsx` | Has Story | Table |
@@ -212,18 +227,18 @@ Legend:
 | [Admin Financial](#admin-financial) | `/admin/financial` | `src/views/admin/AdminFinancialView.tsx` | Has Story | StatChip, Table |
 | [Admin Governance](#admin-governance) | `/admin/governance` | `src/views/admin/AdminGovernanceView.tsx` | Has Story | Tabs, Card layout |
 | [Admin Reports](#admin-reports) | `/admin/reports` | `src/views/admin/AdminReportsView.tsx` | No Story | Table, Charts |
-| [Admin Grants](#admin-grants) | `/admin/grants` | `src/views/admin/AdminGrantsView.tsx` | Has Story | Table |
+| [Admin Grants](#admin-grants) | `/admin/grants` | `src/views/admin/AdminGrantsView.tsx` | No Story *(stale — `AdminGrantsView.stories.tsx` no longer exists)* | Table |
 | [Admin Grant Cycle](#admin-grant-cycle) | `/admin/grants/$year` | `src/views/admin/AdminGrantCycleView.tsx` | No Story | Table |
-| [Admin AGM](#admin-agm) | `/admin/agm` | `src/views/admin/AdminAgmView.tsx` | Has Story | Tabs, Card layout |
+| [Admin AGM](#admin-agm) | `/admin/agm` | `src/views/admin/AdminAgmView.tsx` | No Story *(stale — `AdminAgmView.stories.tsx` no longer exists)* | Tabs, Card layout |
 | [Admin Vendors](#admin-vendors) | `/admin/vendors` | `src/views/admin/AdminVendorsView.tsx` | Has Story | Table |
 | [Admin Map](#admin-map) | `/admin/map` | `src/views/admin/AdminMapView.tsx` | No Story | ListenerWorldMap |
 | [Admin Venues](#admin-venues) | `/admin/venues` | `src/views/admin/AdminVenuesView.tsx` | No Story | Table |
-| [Admin Add-ons](#admin-addons) | `/admin/addons` | `src/views/admin/AdminAddonsView.tsx` | No Story | DiscoWidgetManagerPanel |
+| [Admin Add-ons](#admin-addons) | `/admin/addons` | `src/views/admin/AdminAddonsView.tsx` | Has Story | DiscoWidgetManagerPanel |
 | [Admin Status](#admin-status) | `/admin/status` | `src/views/admin/AdminStatusView.tsx` | Has Story | StatChip, Table |
 | [Admin I18n](#admin-i18n) | `/admin/i18n` | `src/views/admin/AdminI18nView.tsx` | Has Story | Table |
 | [Admin Moderation](#admin-moderation) | `/admin/moderation` | `src/views/admin/moderation/AdminModerationView.tsx` | Has Story | Tabs |
-| [Admin Orphan Pages](#admin-orphan-pages) | `/admin/orphan-pages` | `src/views/admin/orphanPages/AdminOrphanPagesView.tsx` | No Story | Table, Tabs |
-| [Admin Missed Shows](#admin-missed-shows) | — | — | Has Story | AdminMissedShowsView |
+| [Admin Orphan Pages](#admin-orphan-pages) | `/admin/orphan-pages` | `src/views/admin/orphanPages/AdminOrphanPagesView.tsx` | Has Story | Table, Tabs — its RadioStationSuggestionsTab sub-tab has a dedicated story |
+| [Admin Missed Shows](#admin-missed-shows) | `/admin/missed-shows` → redirects to `/admin/moderation/missed-shows` | `src/views/admin/AdminMissedShowsView.tsx` (exports `AdminMissedShowsPanel`, rendered as a tab inside AdminModerationView) | Has Story | — |
 
 ---
 
@@ -232,15 +247,16 @@ Legend:
 | Package | Total Views | Has Story | No Story | Candidates |
 | --- | --- | --- | --- | --- |
 | `packages/player` | 18 routed + 6 settings + ~30 sub-components | 3 | 21 | 15+ (CardGrid, TrackTable, EmptyState reuse) |
-| `packages/tahti-web` core | 17 | 2 | 15 | 8+ (AppShell, PageHeader, GlowMediaTile) |
-| `packages/tahti-web` auth | 9 | 0 | 9 | 3 (AuthDialog, Input, Button) |
+| `packages/tahti-web` core (Listen/Discovery + Artist/Channel/Collection) | 17 | 4 | 13 | 8+ (AppShell, PageHeader, GlowMediaTile) |
+| `packages/tahti-web` auth | 9 | 1 | 8 | 3 (AuthDialog, Input, Button) — Account/Settings now has a story via `SettingsPanels` |
 | `packages/tahti-web` library | 7 | 0 | 7 | 4 (CardGrid, Tabs, TrackTable) |
-| `packages/tahti-web` studio | 32 | 4 | 28 | 12+ (StudioPanel, Form, ImageUploadField) |
-| `packages/tahti-web` governance | 6 | 0 | 6 | 2 (Tabs, Card layout) |
+| `packages/tahti-web` studio | 33 | 4 | 29 | 12+ (StudioPanel, Form, ImageUploadField) — includes 1 orphan (Studio Venues, no route) |
+| `packages/tahti-web` governance | 10 | 0 | 10 | 2 (Tabs, Card layout) |
 | `packages/tahti-web` help/legal | 9 | 1 | 8 | 2 (LegalDocShell) |
+| `packages/tahti-web` utility/alias | 4 | 0 | 4 | — (redirects and thin aliases, not real pages) |
 | `packages/tahti-web` venues | 2 | 0 | 2 | 1 (Form) |
 | `packages/tahti-web` embeds | 3 | 0 | 3 | 2 (ConnectedPlayerBar, PlayableTrackTable) |
-| `packages/tahti-web` admin | 27 | 18 | 9 | 5 (Table, StatChip) |
+| `packages/tahti-web` admin | 29 | 22 | 7 | 5 (Table, StatChip) |
 
 ### High-Value Unification Candidates
 
