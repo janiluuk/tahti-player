@@ -77,7 +77,7 @@ on `document.visibilitychange`.
 
 | File | Lines | Split plan |
 |---|---|---|
-| `api/admin.ts` | ~2231 | **Partial:** radio/storage/addons/users/support/governance peeled to `api/admin/admin-*.ts`. Still: dashboard, news, selects, streams, announcements, financial, activity/logs, … |
+| `api/admin.ts` | ~2059 | **Partial:** radio/storage/addons/users/support/governance/news peeled to `api/admin/admin-*.ts`. Still: dashboard, selects, streams, announcements, financial, activity/logs, … |
 | `PluginStorePanel.tsx` | ~166 | **Done** as thin shell; categories under `plugin-store/` |
 | `api/client.ts` | ~2694 | **Partial:** `client-request.ts` + `client-auth.ts`. Still: listen/radio/embeds/governance/membership |
 | `SettingsPanels.tsx` | 2523 | Extract each tab to its own file |
