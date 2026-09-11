@@ -2,6 +2,21 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-11 — PluginStore remaining + admin users/support/gov + client auth peel
+
+Slice of `codebase-refactor-hotspots.md` + `performance-cleanup-bulk.md`
+Phase 4 (both still **partial**). Mechanical moves, no behavior change:
+
+1. Remaining PluginStore categories (Multicast / AudioPlugins / Tools /
+   Discovery / Channel) → `plugin-store/RemainingCategories.tsx`. Panel
+   shell ~488 → ~166 lines.
+2. `api/admin/admin-users.ts`
+3. `api/admin/admin-support.ts` (support tickets + missed shows)
+4. `api/admin/admin-governance.ts` (overview, feature requests, grants, AGM)
+5. `api/client-auth.ts` + `client-request.ts` (`requestJson` extracted to
+   break cycles); `client.ts` re-exports. `admin.ts` ~3579 → ~2231;
+   `client.ts` ~3047 → ~2694.
+
 ## 2026-09-11 — PluginStore Service/Themes extract + admin radio/storage/addons peel
 
 Slice of `codebase-refactor-hotspots.md` + `performance-cleanup-bulk.md`

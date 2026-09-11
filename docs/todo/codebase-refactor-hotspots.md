@@ -76,15 +76,25 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
    **2026-09-11:** `ServiceCategory` (+ Spotify/OAuth/Hearthis/`DspUrlPasteCard`)
    → `plugin-store/ServiceCategory.tsx`; `InstalledAvailableTabs` →
    `shared.tsx`; `ThemesCategory`/`VisualizersCategory` →
-   `ThemesCategory.tsx`. Panel ~2359 → ~488 lines. Remaining in the
-   shell: Multicast / AudioPlugins / Tools / Discovery / Channel.
+   `ThemesCategory.tsx`. Panel ~2359 → ~488 lines.
+2c. ~~**`PluginStorePanel` remaining categories**~~ — **2026-09-11:**
+   Multicast / AudioPlugins / Tools / Discovery / Channel →
+   `RemainingCategories.tsx`. Panel ~488 → ~166 lines (thin shell +
+   CategoryBody only).
 3. ~~**`admin.ts` domain peel (radio + storage + addons)**~~ —
    **2026-09-11:** `api/admin/admin-radio.ts`, `admin-storage.ts`,
    `admin-addons.ts`; `admin.ts` re-exports (~4935 → ~3579). Call sites
    unchanged.
+3b. ~~**`admin.ts` users / support / governance peel**~~ — **2026-09-11:**
+   `admin-users.ts`, `admin-support.ts` (tickets + missed shows),
+   `admin-governance.ts` (overview + feature requests + grants + AGM).
+   `admin.ts` ~3579 → ~2231.
+4. ~~**`client.ts` auth + `requestJson` extract**~~ — **2026-09-11:**
+   `client-request.ts` (`requestJson`) + `client-auth.ts` (login/register/
+   password/logout); `client.ts` re-exports (~3047 → ~2694).
 
-Next: SettingsPanels file-per-panel, `client.ts` auth/listen/governance
-splits, remaining PluginStore categories, further admin domains.
+Next: SettingsPanels file-per-panel, further `client.ts` listen/governance
+splits, remaining admin domains (dashboard, news, selects, streams, …).
 
 ## Related open leaves (do not duplicate)
 
