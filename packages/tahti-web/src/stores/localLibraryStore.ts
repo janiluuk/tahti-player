@@ -8,6 +8,9 @@ export type LocalLibraryTrack = {
   title: string;
   artist: string;
   fileName: string;
+  fileSize?: number;
+  mimeType?: string;
+  lastModified?: number;
   /** Empty after reload until the user re-imports the same file. */
   objectUrl: string;
   addedAt: string;
@@ -45,6 +48,40 @@ export function fileStem(fileName: string): string {
   return trimmed.slice(0, dot);
 }
 
+export function metadataFromFile(
+  file: File,
+): Pick<
+  LocalLibraryTrack,
+  'artist' | 'fileName' | 'fileSize' | 'lastModified' | 'mimeType' | 'title'
+> {
+  const stem = fileStem(file.name);
+  const separator = stem.indexOf(' - ');
+  const hasArtistAndTitle = separator > 0 && separator < stem.length - 3;
+  return {
+    title: hasArtistAndTitle ? stem.slice(separator + 3).trim() : stem,
+    artist: hasArtistAndTitle ? stem.slice(0, separator).trim() : 'Local file',
+    fileName: file.name,
+    fileSize: file.size,
+    mimeType: file.type || undefined,
+    lastModified: file.lastModified || undefined,
+  };
+}
+
+export function filterLocalLibraryTracks(
+  tracks: readonly LocalLibraryTrack[],
+  query: string,
+): LocalLibraryTrack[] {
+  const normalized = query.trim().toLocaleLowerCase();
+  if (!normalized) {
+    return [...tracks];
+  }
+  return tracks.filter((track) =>
+    [track.title, track.artist, track.fileName].some((value) =>
+      value.toLocaleLowerCase().includes(normalized),
+    ),
+  );
+}
+
 export function isLocalTrackPlayable(track: LocalLibraryTrack): boolean {
   return Boolean(track.objectUrl);
 }
@@ -70,12 +107,15 @@ export function partializeLocalLibrary(
   state: LocalLibraryState,
 ): PersistedLocalLibrary {
   return {
-    tracks: state.tracks.map(({ id, title, artist, fileName, addedAt }) => ({
-      id,
-      title,
-      artist,
-      fileName,
-      addedAt,
+    tracks: state.tracks.map((track) => ({
+      id: track.id,
+      title: track.title,
+      artist: track.artist,
+      fileName: track.fileName,
+      fileSize: track.fileSize,
+      mimeType: track.mimeType,
+      lastModified: track.lastModified,
+      addedAt: track.addedAt,
     })),
   };
 }
@@ -118,6 +158,7 @@ export const useLocalLibraryStore = create<LocalLibraryState>()(
             const existing = next[existingIndex]!;
             const restored: LocalLibraryTrack = {
               ...existing,
+              ...metadataFromFile(file),
               objectUrl,
             };
             next[existingIndex] = restored;
@@ -126,9 +167,7 @@ export const useLocalLibraryStore = create<LocalLibraryState>()(
           }
           const created: LocalLibraryTrack = {
             id: crypto.randomUUID(),
-            title: fileStem(file.name),
-            artist: 'Local file',
-            fileName: file.name,
+            ...metadataFromFile(file),
             objectUrl,
             addedAt: new Date().toISOString(),
           };

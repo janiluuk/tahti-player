@@ -7,7 +7,7 @@ module.exports = async ({ github, context }) => {
     repo,
     issue_number: issueNumber,
     body: [
-      'Nuclear does not accept external issues.',
+      'Tahti does not accept external issues.',
       '',
       'If you want to discuss Tahti Player, use the [Discussions](https://github.com/janiluuk/tahti-player/discussions) tab.',
     ].join('\n'),

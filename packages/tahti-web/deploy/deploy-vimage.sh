@@ -6,7 +6,7 @@
 #   /srv/tahti-beta     this SPA + nginx → public https://api.tahti.live
 #   host :15180         publish for Nginx Proxy Manager → beta.tahti.live
 #
-# Usage (from Nuclear repo root):
+# Usage (from Tahti Player repo root):
 #   pnpm deploy:tahti-beta
 #   # or
 #   ./packages/tahti-web/deploy/deploy-vimage.sh
@@ -22,7 +22,7 @@ HOST="${DEPLOY_HOST:-vimage}"
 REMOTE_PATH="${REMOTE_PATH:-/srv/tahti-beta}"
 HOST_PORT="${HOST_PORT:-15180}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-NUCLEAR_ROOT="$(cd "$ROOT/../.." && pwd)"
+REPO_ROOT="$(cd "$ROOT/../.." && pwd)"
 IMAGE="${DEPLOY_IMAGE:-tahti-beta-web:local}"
 CENTRIFUGO_WS="${VITE_CENTRIFUGO_WS:-wss://chat.tahti.live/connection/websocket}"
 DEPLOY_VERSION="$(date -u +%Y%m%d%H%M%S%3N)"
@@ -49,7 +49,7 @@ echo "==> Building @tahti-player/tahti-web"
 echo "    API: same-origin /tahti-api (proxied to https://api.tahti.live)"
 echo "    Chat WS: ${CENTRIFUGO_WS}"
 echo "    Deploy version: ${DEPLOY_VERSION}"
-cd "$NUCLEAR_ROOT"
+cd "$REPO_ROOT"
 # Leave VITE_TAHTI_API_URL unset so the client uses /tahti-api.
 # Unset mock so production data is used.
 env -u VITE_TAHTI_API_URL -u VITE_FORCE_MOCK -u VITE_ALLOW_MOCK_FALLBACK \

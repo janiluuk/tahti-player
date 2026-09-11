@@ -1,4 +1,4 @@
-# Beta Nuclear listen client — runs alongside /srv/tahti on vimage.
+# Beta Tahti client — runs alongside /srv/tahti on vimage.
 # Host port 15180 → Nginx Proxy Manager → beta.tahti.live
 #
 # Image is built by deploy-vimage.sh (tahti-beta-web:local).

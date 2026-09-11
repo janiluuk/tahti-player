@@ -1,15 +1,15 @@
-# Maintainer: nukeop
+# Maintainer: Tahti
 
-pkgname=nuclear-player-bin
-_pkgname=nuclear-player
+pkgname=tahti-player-bin
+_pkgname=tahti-player
 pkgver=${PKGVER}
 pkgrel=1
-pkgdesc='Nuclear is a free, open-source music player without ads or tracking.'
+pkgdesc='Tahti Player is a free, open-source music player without ads or tracking.'
 arch=(x86_64)
 url='https://tahti.live'
 license=('AGPL-3.0-only')
-provides=('nuclear-player')
-conflicts=('nuclear-player' 'nuclear-player-git')
+provides=('tahti-player')
+conflicts=('tahti-player-git')
 options=('!strip' '!debug')
 depends=('webkit2gtk-4.1' 'gtk3' 'hicolor-icon-theme' 'gst-plugins-base' 'gst-plugins-good')
 optdepends=(
@@ -18,14 +18,14 @@ optdepends=(
     'gst-libav: FFmpeg-based codec support'
 )
 source=(
-    "nuclear-player-${PKGVER}.deb::https://github.com/janiluuk/tahti-player/releases/download/player@${PKGVER}/Nuclear_${PKGVER}_amd64.deb"
+    "tahti-player-${PKGVER}.deb::https://github.com/janiluuk/tahti-player/releases/download/player@${PKGVER}/Tahti_${PKGVER}_amd64.deb"
     "https://raw.githubusercontent.com/janiluuk/tahti-player/player@${PKGVER}/LICENSE"
 )
-noextract=("nuclear-player-${PKGVER}.deb")
+noextract=("tahti-player-${PKGVER}.deb")
 sha256sums=('${SHA256SUM}'
             'SKIP')
 
 package() {
-    bsdtar -O -xf "${srcdir}/nuclear-player-${pkgver}.deb" 'data.tar*' | bsdtar -C "${pkgdir}" -xf -
+    bsdtar -O -xf "${srcdir}/tahti-player-${pkgver}.deb" 'data.tar*' | bsdtar -C "${pkgdir}" -xf -
     install -Dm644 -t "${pkgdir}/usr/share/licenses/${_pkgname}" LICENSE
 }

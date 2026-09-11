@@ -31,7 +31,7 @@ export const ConnectedTopBar: FC = () => {
             side="bottom"
             wrapperClassName="flex items-center"
           >
-            <TahtiLogo className="text-sm" />
+            <TahtiLogo markOnly className="text-sm" />
           </Tooltip>
         )}
         <UpdateBadge />

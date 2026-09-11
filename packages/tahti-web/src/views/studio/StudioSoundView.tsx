@@ -576,23 +576,27 @@ export function StudioSoundView({ id }: { id: string }) {
                           </label>
                         </div>
                         {!isAudioClip ? (
-                          <>
-                            <Input
-                              type="date"
-                              label="Release date"
-                              value={releaseDate}
-                              onChange={(event) =>
-                                setReleaseDate(event.target.value)
-                              }
-                            />
-                            <CreatableCombobox
-                              label="Genre"
-                              options={[...PRESET_GENRES]}
-                              value={genre}
-                              onValueChange={setGenre}
-                              normalize={capitalizeGenre}
-                            />
-                          </>
+                          <div className="flex flex-col gap-4 sm:flex-row">
+                            <div className="w-full sm:w-36">
+                              <Input
+                                type="date"
+                                label="Release date"
+                                value={releaseDate}
+                                onChange={(event) =>
+                                  setReleaseDate(event.target.value)
+                                }
+                              />
+                            </div>
+                            <div className="flex-1">
+                              <CreatableCombobox
+                                label="Genre"
+                                options={[...PRESET_GENRES]}
+                                value={genre}
+                                onValueChange={setGenre}
+                                normalize={capitalizeGenre}
+                              />
+                            </div>
+                          </div>
                         ) : null}
                         <AudienceVisibilitySection
                           visibility={visibility}

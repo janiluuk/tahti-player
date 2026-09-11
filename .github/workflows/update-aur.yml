@@ -2,12 +2,12 @@ name: Update AUR
 
 on:
   workflow_run:
-    workflows: ["Release Player"]
+    workflows: ['Release Player']
     types: [completed]
   workflow_dispatch:
     inputs:
       version:
-        description: "Version to publish (e.g., 1.23.2)"
+        description: 'Version to publish (e.g., 1.23.2)'
         required: true
 
 jobs:
@@ -32,7 +32,7 @@ jobs:
           key: ${{ secrets.AUR_SSH_KEY }}
           known_hosts: ${{ secrets.AUR_KNOWN_HOSTS }}
 
-      - name: Update nuclear-player-bin
+      - name: Update tahti-player-bin
         run: |
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             VERSION="${{ github.event.inputs.version }}"

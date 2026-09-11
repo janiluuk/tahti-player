@@ -1,7 +1,7 @@
 {
   "name": "@tahti-player/website",
   "version": "2.10.0",
-  "description": "Nuclear website",
+  "description": "Tahti website",
   "type": "module",
   "private": true,
   "scripts": {

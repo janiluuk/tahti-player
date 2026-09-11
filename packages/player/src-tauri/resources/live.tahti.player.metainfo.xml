@@ -10,14 +10,6 @@
     <name>Tahti ry</name>
   </developer>
 
-  <!-- Migration from old Flatpak ID -->
-  <provides>
-    <id>org.js.nuclear.Nuclear</id>
-  </provides>
-  <replaces>
-    <id>org.js.nuclear.Nuclear</id>
-  </replaces>
-
   <description>
     <p>
       Tahti Player is a free, open-source broadcasting and music player for independent artists, with live channels, archives, and fan-supported listening.
@@ -99,7 +91,7 @@
           <li>New releases now start with a polished particle background by default, with settings to choose a visualizer, randomize it, or turn it off.</li>
           <li>Release pages now keep the title and artist visible over the artwork, offer one clear embed action, and make playing tracks easy to spot.</li>
           <li>Go Live now puts a compact show-info confirmation directly above the encoder controls, with a clear save confirmation and quick avatar upload.</li>
-          <li>The Import add-on list now shows only working import sources, with duplicate inactive Nuclear Store entries removed.</li>
+          <li>The Import add-on list now shows only working import sources, with duplicate inactive Tahti Store entries removed.</li>
           <li>EP collections now keep their correct content type when you open them in the editor instead of being mislabeled as albums.</li>
           <li>Collection pages now open with their backdrop and a subtle cover-art ambience, while collections without artwork receive a polished default cover. Visibility is shown clearly as a header badge.</li>
           <li>Library Recordings now keeps Collections selected in navigation, uses the correct page heading, and offers the same search-and-sort browsing experience as Sounds.</li>
@@ -171,7 +163,7 @@
           <li>Channel Designer's backdrop can now be set to an uploaded image, not just a video loop or gradient.</li>
           <li>Settings → Artist's profile image picker is now a compact circle with an upload button that appears on hover, instead of a large always-visible drop zone.</li>
           <li>Settings → Channel &amp; Design's visualizer preview now actually shows the visualizer when nothing else is using it, instead of always staying blank.</li>
-          <li>Removed duplicate Bandcamp and SoundCloud entries from Settings → Add-ons → Nuclear plugins.</li>
+          <li>Removed duplicate Bandcamp and SoundCloud entries from Settings → Add-ons → Tahti plugins.</li>
           <li>Channel Designer's visualizer tuning controls now always sit right below the preset picker, instead of sometimes appearing in a separate panel.</li>
           <li>Admin's Vendors page is now reachable only as a tab on the Admin dashboard, removing the redundant standalone entry from the left-hand menu.</li>
           <li>Fixed Admin storage always showing 0B total used, even for accounts with real uploads.</li>
@@ -212,7 +204,7 @@
     <release version="1.46.2" date="2026-08-10">
       <description>
         <ul>
-          <li>Nuclear starts maximized by default</li>
+          <li>Tahti Player starts maximized by default</li>
         </ul>
       </description>
     </release>

@@ -14,6 +14,7 @@ import {
 import { useMapNotesStore, type MapComment } from '../stores/mapNotesStore';
 import { MapCommentForm } from './MapCommentForm';
 import { MermaidDiagram } from './MermaidDiagram';
+import { NavigationStructureWidget } from './NavigationStructureWidget';
 
 /** route (first alternative, no query/hash) -> case id, for turning a
  * `goesTo` target into a jump-to-card link when it lands on a documented
@@ -589,6 +590,8 @@ export function ScreenAtlas() {
           screenshots captured 2026-09-03
         </p>
       </div>
+
+      <NavigationStructureWidget />
 
       {MAP_CASE_GROUPS.map((group) => (
         <div

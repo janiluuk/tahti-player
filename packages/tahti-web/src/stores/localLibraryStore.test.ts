@@ -2,9 +2,11 @@ import { describe, expect, it } from 'vitest';
 
 import {
   fileStem,
+  filterLocalLibraryTracks,
   isAudioFile,
   isLocalTrackPlayable,
   mergeLocalLibraryPersisted,
+  metadataFromFile,
   partializeLocalLibrary,
   playableFromLocalTrack,
   useLocalLibraryStore,
@@ -25,6 +27,49 @@ describe('localLibraryStore helpers', () => {
     expect(isAudioFile(new File([], 'cover.jpg', { type: 'image/jpeg' }))).toBe(
       false,
     );
+  });
+
+  it('infers artist and title from a conventional file name', () => {
+    const file = new File(
+      [new Uint8Array(2048)],
+      'Vladislav Delay - Huone.flac',
+      {
+        type: 'audio/flac',
+        lastModified: 1234,
+      },
+    );
+    expect(metadataFromFile(file)).toEqual({
+      artist: 'Vladislav Delay',
+      title: 'Huone',
+      fileName: 'Vladislav Delay - Huone.flac',
+      fileSize: 2048,
+      mimeType: 'audio/flac',
+      lastModified: 1234,
+    });
+  });
+
+  it('searches title, artist, and file name case-insensitively', () => {
+    const tracks: LocalLibraryTrack[] = [
+      {
+        id: '1',
+        title: 'Huone',
+        artist: 'Vladislav Delay',
+        fileName: 'Vladislav Delay - Huone.flac',
+        objectUrl: '',
+        addedAt: '2026-09-04T00:00:00.000Z',
+      },
+      {
+        id: '2',
+        title: 'Blue Hour',
+        artist: 'Local file',
+        fileName: 'session-take.wav',
+        objectUrl: '',
+        addedAt: '2026-09-04T00:00:00.000Z',
+      },
+    ];
+    expect(filterLocalLibraryTracks(tracks, 'VLADISLAV')).toEqual([tracks[0]]);
+    expect(filterLocalLibraryTracks(tracks, 'session')).toEqual([tracks[1]]);
+    expect(filterLocalLibraryTracks(tracks, '  ')).toEqual(tracks);
   });
 
   it('builds a blob playable for the shared player', () => {
@@ -77,6 +122,9 @@ describe('localLibraryStore metadata persistence helpers', () => {
         title: 'Riff',
         artist: 'Local file',
         fileName: 'riff.wav',
+        fileSize: undefined,
+        mimeType: undefined,
+        lastModified: undefined,
         addedAt: '2026-09-04T00:00:00.000Z',
       },
     ]);

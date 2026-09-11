@@ -243,7 +243,7 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
             <MenuIcon size={18} />
           </button>
         ) : null}
-        <TahtiLogoLink markOnly={isMobile} />
+        <TahtiLogoLink markOnly />
         {user && processingItems.length > 0 ? (
           <div className="relative">
             <button

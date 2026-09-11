@@ -4,7 +4,7 @@ Deploys this package onto **vimage** beside production Tahti (`/srv/tahti`), tal
 
 ## Quick deploy
 
-From the Nuclear monorepo root:
+From the Tahti Player monorepo root:
 
 ```bash
 pnpm deploy:tahti-beta

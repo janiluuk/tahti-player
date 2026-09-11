@@ -10,7 +10,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'App header under the window TitleBar. Player chrome uses TahtiLogo, not TopBarLogo (Nuclear atom — unused leftover).',
+          'App header under the window TitleBar. Player chrome uses the mark-only TahtiLogo.',
       },
     },
   },
@@ -27,7 +27,7 @@ export const WithContent: Story = {
   args: {
     children: (
       <div className="ml-4 flex items-center gap-4">
-        <TahtiLogo className="text-sm" />
+        <TahtiLogo markOnly className="text-sm" />
         <div className="flex gap-2">
           <button className="bg-secondary rounded-md px-2 py-1 text-xs">
             File
@@ -50,7 +50,7 @@ export const PlayerHeader: Story = {
     children: (
       <>
         <div className="flex flex-row items-center gap-4">
-          <TahtiLogo className="text-sm" />
+          <TahtiLogo markOnly className="text-sm" />
           <TopBarNavigation canGoBack canGoForward />
         </div>
         <span className="text-foreground-secondary text-sm">Search</span>

@@ -27,3 +27,44 @@ export const Empty: Story = {
     },
   ],
 };
+
+export const SearchableLibrary: Story = {
+  decorators: [
+    (Story) => {
+      useEffect(() => {
+        useLocalLibraryStore.setState({
+          tracks: [
+            {
+              id: 'huone',
+              title: 'Huone',
+              artist: 'Vladislav Delay',
+              fileName: 'Vladislav Delay - Huone.flac',
+              fileSize: 38_400_000,
+              mimeType: 'audio/flac',
+              lastModified: Date.now(),
+              objectUrl: 'blob:storybook/huone',
+              addedAt: new Date().toISOString(),
+            },
+            {
+              id: 'field-recording',
+              title: 'Harbour field recording',
+              artist: 'Local file',
+              fileName: 'harbour-field-recording.wav',
+              fileSize: 12_800_000,
+              mimeType: 'audio/wav',
+              lastModified: Date.now(),
+              objectUrl: '',
+              addedAt: new Date().toISOString(),
+            },
+          ],
+        });
+        return () => useLocalLibraryStore.getState().clear();
+      }, []);
+      return (
+        <div className="border-border h-[34rem] w-96 border">
+          <Story />
+        </div>
+      );
+    },
+  ],
+};

@@ -1,7 +1,7 @@
 {
   "name": "@tahti-player/eslint-config",
   "version": "0.0.10",
-  "description": "Shared ESLint and Prettier configuration for Nuclear",
+  "description": "Shared ESLint and Prettier configuration for Tahti",
   "type": "module",
   "main": "eslint.config.ts",
   "exports": {

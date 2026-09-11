@@ -53,18 +53,20 @@ export function PurchaseAccessSection({
           </Tooltip>
         </Link>
       </div>
-      <Select
-        label="Purchase tier"
-        options={[
-          { id: '', label: 'No purchase gate' },
-          ...activeTiers.map((t) => ({
-            id: t.id,
-            label: `${t.name} — ${t.priceOptional ? `pay what you want, suggested ${euros(t.priceCents)}` : euros(t.priceCents)}`,
-          })),
-        ]}
-        value={purchaseTierId ?? ''}
-        onValueChange={(value) => onPurchaseTierIdChange(value || null)}
-      />
+      <div className="sm:max-w-xs">
+        <Select
+          label="Purchase tier"
+          options={[
+            { id: '', label: 'No purchase gate' },
+            ...activeTiers.map((t) => ({
+              id: t.id,
+              label: `${t.name} — ${t.priceOptional ? `pay what you want, suggested ${euros(t.priceCents)}` : euros(t.priceCents)}`,
+            })),
+          ]}
+          value={purchaseTierId ?? ''}
+          onValueChange={(value) => onPurchaseTierIdChange(value || null)}
+        />
+      </div>
     </div>
   );
 }

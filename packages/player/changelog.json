@@ -1,5 +1,17 @@
 [
   {
+    "date": "2026-09-11T11:00",
+    "description": "Tahti Player's app header now uses the clean Tahti mark, and the Linux packaging metadata consistently identifies Tahti Player.",
+    "type": "improvement",
+    "contributors": ["jani"],
+    "tags": [
+      {
+        "label": "Player",
+        "color": "blue"
+      }
+    ]
+  },
+  {
     "date": "2026-09-05T01:40",
     "description": "Channel Design Backdrop settings are a dedicated Storybook panel, so Look → Background is easier to review and keep consistent.",
     "type": "improvement",

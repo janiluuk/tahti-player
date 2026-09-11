@@ -10,7 +10,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Tahti wordmark for player TitleBar/TopBar chrome. Do not use TopBarLogo (Nuclear atom) in the player header.',
+          'Tahti brand component. App chrome uses the mark-only variant.',
       },
     },
   },

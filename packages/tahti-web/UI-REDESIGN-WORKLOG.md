@@ -5642,3 +5642,10 @@ live-browser-verified** — Claude-in-Chrome wasn't connected this
 session, so the actual WebGL shader rendering (cube-flip's 3D rotation,
 the 3 shader crossfades) is unverified beyond "compiles and Storybook
 serves it." Bumped `packages/tahti-web/package.json` to `0.0.106`.
+
+## 2026-09-11 — Tahti mark-only app chrome and atlas navigation draft
+
+Desktop and web app headers now use the compact Tahti mark without the
+wordmark. The Screen Atlas also includes a persisted draft navigation widget:
+users can reorder entries by drag-and-drop or move controls, add label/path
+items, and remove items without changing runtime navigation.
