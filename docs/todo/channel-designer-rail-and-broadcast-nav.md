@@ -1,4 +1,4 @@
-# Channel designer rail + Broadcast menu + Tahti dark
+# Channel designer rail + Broadcast menu + Tahti dark + Studio nav
 
 **Status:** partial
 
@@ -16,7 +16,12 @@
 - Broadcast / Go Live panel no longer embeds `StreamManagerPanel` (rotation
   presence derived from LIVE without ingest signal). Stream Manager remains
   reachable from the top-menu 24/7 rotation entry.
+- Studio nav: stable `data-studio-section-menu` + nested Broadcast/Audience
+  slot in AppShell chrome; `.studio-page-layout` forced top-left (no
+  mx-auto/max-w origin jump). Per-page Broadcast/Audience subnav duplicates
+  removed.
 
 ## Left
 
-- Manual browser pass on Branding designer + channel edit + tahti-dark Listen.
+- Manual browser pass on Branding designer + channel edit + Studio route hop
+  + tahti-dark Listen.

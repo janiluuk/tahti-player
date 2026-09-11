@@ -15,7 +15,6 @@ import {
 import { FanSubscriptionStats } from '../../components/FanSubscriptionStats';
 import { PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
-import { AudienceSubNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { mergeRevenueOrders } from '../../lib/revenueOrders';
 
@@ -48,7 +47,6 @@ export function StudioStripeView() {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-4 px-1 py-2">
-        <AudienceSubNav current="/studio/stripe" />
         <ViewShell title="Stripe" classes={{ root: 'px-0 pt-0' }}>
           {message ? (
             <p className="text-foreground-secondary text-sm" role="status">

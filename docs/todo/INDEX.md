@@ -13,7 +13,7 @@ Status values: `open` | `blocked` | `partial`.
 | partial | [desktop-pro-library.md](desktop-pro-library.md) | Native capability signal shipped; durable import/play, catalog phases, and Soulseek remain |
 | partial | [atlas-navigation-structure-widget.md](atlas-navigation-structure-widget.md) | Atlas navigation draft widget supports persisted reorder/add/remove; runtime wiring intentionally deferred |
 | partial | [go-live-header-subtext-cleanup.md](go-live-header-subtext-cleanup.md) | Calendar view restore still open |
-| partial | [channel-designer-rail-and-broadcast-nav.md](channel-designer-rail-and-broadcast-nav.md) | Designer→right rail, tahti-dark surfaces, Broadcast menu + Go Live Stream Manager strip |
+| partial | [channel-designer-rail-and-broadcast-nav.md](channel-designer-rail-and-broadcast-nav.md) | Designer→right rail, tahti-dark, Broadcast menu, Studio nav origin/slots |
 | open | [governance-gap-list.md](governance-gap-list.md) | Governance gaps: 16 of 18 shipped; remaining bulk comments (#2), voting window (#15, backend-blocked) |
 | partial | [image-upload-hover-lightbox.md](image-upload-hover-lightbox.md) | Press-kit lightbox delete shipped 2026-09-10; admin radio logo blocked on redesign |
 | open | [plugin-registry-extraction.md](plugin-registry-extraction.md) | Pointer to sibling extraction checklist; PluginRegistryHost façade + §6 contract tests added 2026-09-08 |

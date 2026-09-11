@@ -328,29 +328,48 @@ export const isBroadcastSubnavActive = (
   return pathname === to || pathname?.startsWith(`${to}/`) === true;
 };
 
+export function isStudioBroadcastGroup(current: string | undefined): boolean {
+  const pathname = current?.split('?')[0] ?? '';
+  return (
+    pathname === '/studio/go-live' ||
+    pathname === '/studio/info' ||
+    pathname === '/studio/schedule' ||
+    pathname === '/studio/events' ||
+    pathname.startsWith('/studio/events/') ||
+    pathname === '/studio/shows' ||
+    pathname.startsWith('/studio/shows/') ||
+    pathname === '/studio/channel'
+  );
+}
+
+export function isStudioAudienceGroup(current: string | undefined): boolean {
+  const pathname = current?.split('?')[0] ?? '';
+  return (
+    pathname === '/studio/audience' ||
+    pathname === '/studio/revenue' ||
+    pathname === '/studio/stripe'
+  );
+}
+
 /** Second-level tab strip nested inside every Broadcast-group page
  * (go-live, schedule, events, shows, channel) — Studio's own submenu only
  * shows one "Broadcast" tab for all of these (see `isSubmenuActive`
  * above), so this is where Schedule/Events/Shows/Channel/Radio become
- * reachable. */
+ * reachable. Prefer mounting via `StudioNav` (global chrome) rather than
+ * duplicating this inside each page. */
 export function BroadcastSubNav({ current }: { current?: string }) {
   const { t } = useTranslation('web');
   return (
-    <div
-      className="border-border min-w-0 border-b pb-2"
-      data-broadcast-navigation
-    >
-      <SectionTabs
-        aria-label="Broadcast pages"
-        items={BROADCAST_SUBNAV_ITEMS.map((item) => ({
-          id: item.to,
-          to: item.to,
-          label: t(item.labelKey),
-          icon: item.icon,
-          active: isBroadcastSubnavActive(current, item.to),
-        }))}
-      />
-    </div>
+    <SectionTabs
+      aria-label="Broadcast pages"
+      items={BROADCAST_SUBNAV_ITEMS.map((item) => ({
+        id: item.to,
+        to: item.to,
+        label: t(item.labelKey),
+        icon: item.icon,
+        active: isBroadcastSubnavActive(current, item.to),
+      }))}
+    />
   );
 }
 
@@ -379,7 +398,8 @@ export const isAudienceSubnavActive = (
 };
 
 /** Second-level tab strip for Audience-group pages (overview, tiers, Stripe).
- * Studio's submenu only shows one "Audience" tab for all of these. */
+ * Studio's submenu only shows one "Audience" tab for all of these. Prefer
+ * mounting via `StudioNav` (global chrome). */
 export function AudienceSubNav({ current }: { current?: string }) {
   const { t } = useTranslation('web');
   const stripeConfigured = useStripeConfigured();
@@ -388,21 +408,16 @@ export function AudienceSubNav({ current }: { current?: string }) {
   );
 
   return (
-    <div
-      className="border-border min-w-0 border-b pb-2"
-      data-audience-navigation
-    >
-      <SectionTabs
-        aria-label="Audience pages"
-        items={items.map((item) => ({
-          id: item.to,
-          to: item.to,
-          label: t(item.labelKey),
-          icon: item.icon,
-          active: isAudienceSubnavActive(current, item.to),
-        }))}
-      />
-    </div>
+    <SectionTabs
+      aria-label="Audience pages"
+      items={items.map((item) => ({
+        id: item.to,
+        to: item.to,
+        label: t(item.labelKey),
+        icon: item.icon,
+        active: isAudienceSubnavActive(current, item.to),
+      }))}
+    />
   );
 }
 
@@ -435,6 +450,10 @@ export function StudioMainNavItems() {
   );
 }
 
+const STUDIO_SECTION_MENU_SLOT = 'border-border min-h-7 min-w-0 border-b pb-2';
+const STUDIO_NESTED_NAV_SLOT =
+  'border-border flex min-h-10 min-w-0 items-end border-b pb-2';
+
 function StudioNavigation({ current }: { current?: string }) {
   const { t } = useTranslation('web');
   const selectedSection = getStudioPrimaryRoute(current) ?? '/studio';
@@ -450,18 +469,27 @@ function StudioNavigation({ current }: { current?: string }) {
     return null;
   }
 
+  const showBroadcast = isStudioBroadcastGroup(current);
+  const showAudience = isStudioAudienceGroup(current);
+
   return (
-    <div className="border-border min-w-0 border-b pb-2" data-studio-navigation>
-      <SectionTabs
-        aria-label={`${t(sectionLabel)} pages`}
-        items={submenu.map((item) => ({
-          id: item.to,
-          to: item.to,
-          label: t(item.labelKey),
-          icon: item.icon,
-          active: isSubmenuActive(current, item.to),
-        }))}
-      />
+    <div className="flex min-w-0 flex-col" data-studio-navigation>
+      <div className={STUDIO_SECTION_MENU_SLOT} data-studio-section-menu>
+        <SectionTabs
+          aria-label={`${t(sectionLabel)} pages`}
+          items={submenu.map((item) => ({
+            id: item.to,
+            to: item.to,
+            label: t(item.labelKey),
+            icon: item.icon,
+            active: isSubmenuActive(current, item.to),
+          }))}
+        />
+      </div>
+      <div className={STUDIO_NESTED_NAV_SLOT} data-studio-nested-nav>
+        {showBroadcast ? <BroadcastSubNav current={current} /> : null}
+        {showAudience ? <AudienceSubNav current={current} /> : null}
+      </div>
     </div>
   );
 }

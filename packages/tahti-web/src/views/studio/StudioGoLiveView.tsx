@@ -59,7 +59,6 @@ import {
 import { ObsPresetButton } from '../../components/ObsPresetButton';
 import { SignalCheckWidget } from '../../components/SignalCheckWidget';
 import { StudioGate } from '../../components/StudioGate';
-import { BroadcastSubNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { OnAirBadge } from '../../components/tahti/OnAirBadge';
 import {
@@ -333,8 +332,6 @@ export function StudioGoLiveView() {
   return (
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6">
-        <BroadcastSubNav current="/studio/go-live" />
-
         <ViewShell title="Broadcast" classes={{ root: 'px-0 pt-0' }}>
           <div className="mb-4 flex flex-wrap items-center gap-2">
             {slug && (
