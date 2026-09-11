@@ -350,6 +350,7 @@ export function ConnectedPlayerBar() {
               onValueChange={(v) => setVolume(v / 100)}
               muted={muted}
               onMuteToggle={toggleMute}
+              hideSlider={isMobile}
             />
             {!canUseRightRail && !isMobile ? (
               <div className="relative" ref={popoverRef}>
