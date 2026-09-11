@@ -1573,7 +1573,8 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
         <div className={`flex flex-col gap-4 ${compact ? '' : 'w-full'}`}>
           <div className="flex flex-wrap items-center justify-end gap-3">
             <DropdownButton
-              label="More"
+              label="…"
+              aria-label="More options"
               items={[
                 {
                   id: 'save-preset',

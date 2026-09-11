@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { PlusIcon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button, Dialog, Input } from '@tahti-player/ui';
@@ -19,7 +20,10 @@ export const Confirmation: Story = {
     const [isOpen, setIsOpen] = useState(false);
     return (
       <>
-        <Button onClick={() => setIsOpen(true)}>Delete Playlist</Button>
+        <Button onClick={() => setIsOpen(true)}>
+          <Trash2Icon size={16} className="mr-1.5" aria-hidden />
+          Delete Playlist
+        </Button>
         <Dialog
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
@@ -29,6 +33,7 @@ export const Confirmation: Story = {
             <>
               <Dialog.Close>Cancel</Dialog.Close>
               <Button intent="danger" onClick={() => setIsOpen(false)}>
+                <Trash2Icon size={16} className="mr-1.5" aria-hidden />
                 Delete
               </Button>
             </>
@@ -45,7 +50,10 @@ export const WithInput: Story = {
     const [name, setName] = useState('');
     return (
       <>
-        <Button onClick={() => setIsOpen(true)}>Create Playlist</Button>
+        <Button onClick={() => setIsOpen(true)}>
+          <PlusIcon size={16} className="mr-1.5" aria-hidden />
+          Create Playlist
+        </Button>
         <Dialog.Root isOpen={isOpen} onClose={() => setIsOpen(false)}>
           <Dialog.Title>Create new playlist</Dialog.Title>
           <Dialog.Description>
@@ -61,7 +69,10 @@ export const WithInput: Story = {
           </div>
           <Dialog.Actions>
             <Dialog.Close>Cancel</Dialog.Close>
-            <Button onClick={() => setIsOpen(false)}>Create</Button>
+            <Button onClick={() => setIsOpen(false)}>
+              <PlusIcon size={16} className="mr-1.5" aria-hidden />
+              Create
+            </Button>
           </Dialog.Actions>
         </Dialog.Root>
       </>
