@@ -430,6 +430,7 @@ export function TrackDetailView({
       detail.purchaseTierId,
       {
         trackTitle: detail.title,
+        trackId: id,
         amountCents:
           amountCentsOverride ?? detail.purchaseTierPriceCents ?? undefined,
       },

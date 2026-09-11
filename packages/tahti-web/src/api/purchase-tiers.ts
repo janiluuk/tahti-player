@@ -7,7 +7,7 @@ import {
   mockUserOwnsPurchaseTier,
   recordMockTrackPurchase,
 } from './mock-commerce-ledger';
-import { getMockSessionUser } from './mock-session';
+import { getMockSessionUser, mockRecordPurchase } from './mock-session';
 import { patchMockUploadedSound } from './mock-uploads';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
 import { setMockSoundPurchaseAccess } from './studio';
@@ -219,7 +219,7 @@ export async function setSoundPurchaseAccess(
 export async function checkoutPurchaseTier(
   username: string,
   tierId: string,
-  opts?: { amountCents?: number; trackTitle?: string },
+  opts?: { amountCents?: number; trackTitle?: string; trackId?: string },
 ): Promise<
   | { ok: true; activated: true }
   | { ok: true; checkoutUrl: string }
@@ -238,13 +238,21 @@ export async function checkoutPurchaseTier(
       return { ok: false, error: 'Tier not found' };
     }
     const amountCents = opts?.amountCents ?? tier.priceCents;
+    const title = opts?.trackTitle ?? tier.name;
     recordMockTrackPurchase({
       fanUsername: user.username,
       fanDisplayName: user.displayName,
       artistUsername: username,
-      title: opts?.trackTitle ?? tier.name,
+      title,
       amountCents,
       tierId,
+    });
+    mockRecordPurchase({
+      artistUsername: username,
+      tierName: tier.name,
+      amountCents,
+      trackId: opts?.trackId ?? tierId,
+      trackTitle: title,
     });
     return { ok: true, activated: true };
   }

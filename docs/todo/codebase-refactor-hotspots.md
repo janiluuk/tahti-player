@@ -49,7 +49,23 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
    `api/http.ts` (`apiBase` / `getJson` / `sendJson` / `mutate`);
    `admin.ts` imports it. `client.ts` still has its own `requestJson` —
    adopt when splitting client domains.
-2. **`PluginStorePanel` category extraction** — move Radio + Service (OAuth/Spotify/Hearthis) cards to sibling files; leave Themes/Visualizers for a follow-up. High readability win, low API risk.
+2. ~~**`PluginStorePanel` Radio category extraction**~~ — **2026-09-11:**
+   moved `PersonalRadioStreamCard`/`RadioBrowserStationRow`/
+   `CuratedFinnishStationRow`/`RadioBrowserDirectoryCard`/`RadioCategory`
+   (933 lines) to `components/plugin-store/RadioCategory.tsx`; the two
+   generic shells they (and other categories) share,
+   `ConfigurableCard`/`AudioPluginToggleRow`, to
+   `components/plugin-store/shared.tsx`. `PluginStorePanel.tsx`:
+   3564 → 2501 lines. Zero behavior change — mechanical move + import-only
+   cleanup (removed now-unused imports: the whole `../api/radio-sources`
+   block, `RADIO_STATIONS`/`radioStationPlayable`/`RadioStation` type,
+   `flagEmoji`, `RadioStationCover`, three now-unused store hooks,
+   `FavoriteButton`/`FilterChips`, four now-unused icons). Verified:
+   `tsc --noEmit`, `eslint`, full unit suite (506/506), and `vite build` all
+   pass; Storybook's `PluginStorePanel.stories.tsx` only imports the
+   top-level `PluginStorePanel` export, unaffected. **Service category
+   (OAuth/Spotify/Hearthis, ~800 lines) not done this pass** — leave for a
+   follow-up pick-up of this same leaf.
 3. **`admin.ts` domain peel (radio + storage + addons)** — three of the densest clusters (~17 / storage / ~7 addon functions); keep `admin.ts` as re-export barrel until importers migrate optionally.
 
 After those, queue SettingsPanels file-per-panel and `client.ts` auth/listen/governance splits.

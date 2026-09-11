@@ -2,6 +2,58 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-11 — Listener purchase-flow e2e test + a real mock-mode Purchases bug found along the way
+
+`listener-purchase-flow.md` — done. The doc's own prior sessions judged the
+e2e test "too large to build blind" because it assumed a test-mode Stripe
+Checkout path was needed in `../tahti-org` first — turned out not to be true:
+`installStripeMock` (already existing, network-route interception) plus a
+local `VITE_FORCE_MOCK=1` dev server is sufficient, no backend work required.
+
+New `e2e/listener-purchase-flow.spec.ts`, two tests covering all 3 scenarios
+from the doc's spec (Test 1+3 combined into one continuous flow since Test 3
+is just "then check the artist side of the same purchase"):
+- Artist uploads a track (reusing the existing `mastering-target-quiet.wav`
+  fixture rather than needing a new one or the missing `riff.wav` the sibling
+  test depends on), sets it Public, attaches a purchase tier via the same
+  `page.evaluate` + `purchase-tiers.ts` import pattern the sibling
+  `fan-sub-and-track-purchase.spec.ts` already established. A fan account
+  buys it, sees it in `/settings/account` → Purchases, and the artist sees
+  the order in `/studio/audience`.
+- A fan subscribes via `/subscribe/:username`, sees it in Your subs, manages
+  → cancels it, sees the cancelled state — reusing the cancel-flow shipped
+  2026-09-07.
+
+**Found and fixed a real bug while writing this**: buying a track in mock
+mode never showed up in the buyer's own Purchases tab. `checkoutPurchaseTier`'s
+mock branch called `recordMockTrackPurchase` (writes to the
+`mock-commerce-ledger`, localStorage-backed — feeds the *artist's* order
+list and access-gating) but nothing ever appended to `mock-session.ts`'s
+`purchases` array, which is what the *buyer's* own Purchases tab reads from.
+Added `mockRecordPurchase` (mirrors the existing `mockActivateSubscription`
+pattern for subscriptions) and wired it in alongside the ledger call;
+threaded a `trackId` through `checkoutPurchaseTier`'s opts so the row's
+`tracks` field (and its "Listen" link) point at the real track, not a
+placeholder.
+
+**Second finding, test-writing gotcha, not a product bug**: `mock-session.ts`'s
+`subscriptions`/`purchases` state is plain in-memory (not localStorage-backed
+like the ledger), so it resets on a hard page reload. `page.goto('/settings/account')`
+in Playwright is a hard navigation and was silently wiping the just-created
+mock state, making early test runs pass against the seeded demo row instead
+of the real one (a near-miss: "Supporter" is both the seeded row's tier name
+and the real subscribe flow's default tier name, so the wrong assertion
+still went green). Fixed by opening Settings via its sidebar icon (a
+client-side modal, no navigation) instead of `page.goto`, and scoped the
+subscription-row assertion to a `li` containing a link to the specific
+artist's `/u/:username`, not just tier-name text.
+
+Verified: full `tahti-web` unit suite (506/506), `tsc --noEmit`, `eslint`
+all pass; both new e2e tests pass 3 consecutive runs against a local
+`VITE_FORCE_MOCK=1` dev server (Playwright's own default `baseURL` is
+`https://beta.tahti.live` — always override `PLAYWRIGHT_BASE_URL` for local
+runs, never run e2e against that default unchecked).
+
 ## 2026-09-11 — Channel slideshow WebGL-unavailable guard; stale orphan-routes todo re-closed
 
 **`channel-slideshow-transitions-unwired.md` — done.** The rotation +

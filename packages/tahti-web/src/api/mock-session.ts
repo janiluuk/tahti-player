@@ -177,6 +177,34 @@ export function mockActivateSubscription(
   return row;
 }
 
+/** Appends a track purchase to the buyer's own mock Purchases list — separate
+ * from `recordMockTrackPurchase` (mock-commerce-ledger.ts), which tracks the
+ * artist-side order feed and access-gating ownership. Both need updating on
+ * a mock checkout since they back two different UIs (buyer's `/settings/account`
+ * Purchases tab vs. artist's `/studio/audience` order list). */
+export function mockRecordPurchase(input: {
+  artistUsername: string;
+  tierName: string;
+  amountCents: number;
+  trackId: string;
+  trackTitle: string;
+}): PurchaseRow {
+  const channel = mockChannel(input.artistUsername);
+  const row: PurchaseRow = {
+    id: `mock-purchase-${input.artistUsername}-${input.trackId}`,
+    tierName: input.tierName,
+    amountCents: input.amountCents,
+    createdAt: new Date().toISOString(),
+    artist: {
+      username: channel.user.username,
+      displayName: channel.user.displayName,
+    },
+    tracks: [{ id: input.trackId, title: input.trackTitle }],
+  };
+  purchases.push(row);
+  return row;
+}
+
 export function getMockConnectStatus(): MockConnectStatus {
   return { ...connectStatus };
 }
