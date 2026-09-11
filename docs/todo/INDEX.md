@@ -11,7 +11,7 @@ Status values: `open` | `blocked` | `partial`.
 | open | [player-performance-optimizations.md](player-performance-optimizations.md) | (Later) Release-build CPU/native-memory profiling, then startup, queue, playback, visualizer and loading optimizations |
 | partial | [channel-designer-background-section-fixes.md](channel-designer-background-section-fixes.md) | Designer background section; design decision remains |
 | blocked | [channelview-move-player-to-stage.md](channelview-move-player-to-stage.md) | Player-in-backdrop extraction needs a design decision |
-| partial | [desktop-pro-library.md](desktop-pro-library.md) | Native capability signal shipped; durable import/play, catalog phases, and Soulseek remain |
+| partial | [desktop-pro-library.md](desktop-pro-library.md) | Native local-library (Rust/SQLite) shipped on master; real ID3 tag extraction + TrackTable/bulk-select UI built in parallel on a different branch — reconciliation plan written 2026-09-12, not yet merged |
 | partial | [atlas-navigation-structure-widget.md](atlas-navigation-structure-widget.md) | Atlas navigation draft widget supports persisted reorder/add/remove; runtime wiring intentionally deferred |
 | partial | [go-live-header-subtext-cleanup.md](go-live-header-subtext-cleanup.md) | Calendar view restore still open |
 | partial | [channel-designer-rail-and-broadcast-nav.md](channel-designer-rail-and-broadcast-nav.md) | Designer→right rail, tahti-dark, Broadcast menu, Studio nav origin/slots |

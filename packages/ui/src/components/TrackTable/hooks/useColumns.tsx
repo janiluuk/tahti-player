@@ -15,18 +15,23 @@ import { ActionsCell } from '../Cells/ActionsCell';
 import { FavoriteCell } from '../Cells/FavoriteCell';
 import { PositionCell } from '../Cells/PositionCell';
 import { RemoveCell } from '../Cells/RemoveCell';
+import { SelectCell } from '../Cells/SelectCell';
 import { TextCell } from '../Cells/TextCell';
 import { ThumbnailCell } from '../Cells/ThumbnailCell';
 import { TitleCell } from '../Cells/TitleCell';
 import { IconHeader } from '../Headers/IconHeader';
+import { SelectAllHeader } from '../Headers/SelectAllHeader';
 import { TextHeader } from '../Headers/TextHeader';
 import { TrackTableProps } from '../types';
 import { formatReleaseDate } from '../utils/date';
 
 export function useColumns<T extends Track = Track>(
-  props: Pick<TrackTableProps<T>, 'display' | 'labels' | 'actions'>,
+  props: Pick<
+    TrackTableProps<T>,
+    'display' | 'labels' | 'actions' | 'features'
+  >,
 ): ColumnDef<T>[] {
-  const { display, labels, actions } = props;
+  const { display, labels, actions, features } = props;
   const columnHelper = createColumnHelper<T>();
 
   const showFavorite =
@@ -34,8 +39,17 @@ export function useColumns<T extends Track = Track>(
   const showDelete = display?.displayDeleteButton && Boolean(actions?.onRemove);
   const showActions = Boolean(display?.displayQueueControls);
 
+  const showSelect = Boolean(features?.selectable);
+
   const columns: ColumnDef<T>[] = useMemo(
     () => [
+      showSelect &&
+        columnHelper.display({
+          id: 'select',
+          header: SelectAllHeader,
+          cell: SelectCell,
+          enableSorting: false,
+        }),
       display?.displayPosition &&
         columnHelper.accessor((track) => track.trackNumber, {
           id: 'position',
@@ -131,7 +145,7 @@ export function useColumns<T extends Track = Track>(
           cell: RemoveCell,
         }),
     ],
-    [labels, display, showFavorite, showActions, showDelete],
+    [labels, display, showFavorite, showActions, showDelete, showSelect],
   ).filter(Boolean) as ColumnDef<T>[];
 
   return columns;

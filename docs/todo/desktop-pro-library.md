@@ -36,6 +36,53 @@ web fallback. Folder import, relink/missing-file UI, progress/cancellation,
 and E2E coverage remain open. Phase 0's signed-out-access item and most of
 Phase 1 remain open.
 
+## 2026-09-12: parallel web-track work — reconciliation needed
+
+A separate branch (this session) built a **browser-only** track in parallel,
+unaware of the native catalog work above — picked up before this doc's
+"supersedes the old A–F ordering" rewrite landed. Reconciled by keeping the
+native plan above as canonical and folding in only what's still additive:
+
+**Kept (merges cleanly, no native dependency):**
+- `@tahti-player/ui`'s `TrackTable.features.selectable` is now a **real,
+  working feature** (it was a declared-but-unimplemented stub before this
+  pass): `useRowSelection` hook, a checkbox column
+  (`SelectCell`/`SelectAllHeader`, tri-state select-all), and a bulk-action
+  toolbar (N selected / clear / bulk remove + add-to-queue) gated on new
+  `actions.onRemoveSelected`/`onAddSelectedToQueue` callbacks. This is
+  exactly the "multi-select" half of Phase 2's `[ ] Build a virtualized
+  multi-select TrackTable...` checkbox — reusable once Phase 2 wires
+  `TrackTable` to the native catalog; it doesn't care where `tracks` comes
+  from.
+- `PlayableTrackTable` (the `TahtiPlayable`-facing wrapper around
+  `TrackTable`) gained `onRemove` and `selectable`/`onBulkRemove` props to
+  expose the above. No existing caller needed per-row delete before this.
+
+**Reverted for now (real, tested, but redundant with/superseded by the
+native plan — recoverable from commit `0017ae7c` on `master`'s history if
+ever useful for the browser-fallback path specifically):**
+- Real ID3/Vorbis/MP4 tag extraction in `localLibraryStore.ts` via the
+  `music-metadata` npm package (browser-core entry, no Node/WASM deps) —
+  async `addFiles`, `album`/`year`/`genre`/`trackNo`/`durationSec` fields,
+  non-persisted `artworkUrl`. Native tag extraction already exists and is
+  tested (`symphonia`-based, see "Current implementation slice" above), so
+  this would only matter for the browser-only fallback path (no Tauri) —
+  not reinstated now since Phase 1's `[ ] Extract title, artists, ...`
+  checkbox is scoped to the native importer. Worth revisiting only if the
+  web-only fallback needs real tags of its own, separate from native.
+- `DesktopLibraryPanel` rendering local tracks through `PlayableTrackTable`
+  instead of a plain list — superseded by this doc's own native-aware
+  rewrite of that same component (native-capability signal, typed library
+  adapter, paged native queries). Re-doing this properly means wiring
+  `PlayableTrackTable`/`TrackTable` (kept, see above) to the native/browser
+  adapter data, which is what Phase 2 already calls for.
+
+Net: nothing net-new was lost — the generic `TrackTable` selection feature
+is real and kept; the tag-extraction and panel-rendering pieces are proven
+working code sitting in `master`'s history at `0017ae7c`, ready to inform
+Phase 1/2 rather than being redone from scratch, whenever those phases are
+actually picked up.
+
 ## Phase 0 — Native foundation and delivery contract
 
 Depends on: none. Produces the smallest complete desktop catalog boundary.
