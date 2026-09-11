@@ -1,3 +1,4 @@
+import { apiBase } from './http';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
 import type {
   ReleaseCatalog,
@@ -12,13 +13,6 @@ import type {
   SpotifyArtistProfile,
   SpotifyProfileStatus,
 } from './studio-types';
-
-const apiBase = () => {
-  if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
-    return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
-  }
-  return '/tahti-api';
-};
 
 async function requestJson<T>(
   path: string,

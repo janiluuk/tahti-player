@@ -1,6 +1,7 @@
 import { playableFromHearthisEmbed } from '../lib/embedPlayback';
 import { useProcessingJobsStore } from '../stores/processingJobsStore';
 import type { FetchMeta } from './client';
+import { apiBase } from './http';
 import { DEMO_MP3 } from './mock';
 import {
   isMockOauthConnected,
@@ -25,13 +26,6 @@ const OAUTH_IDS = new Set<MockOauthId>([
 function asOauthId(id: string): MockOauthId | null {
   return OAUTH_IDS.has(id as MockOauthId) ? (id as MockOauthId) : null;
 }
-
-const apiBase = () => {
-  if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
-    return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
-  }
-  return '/tahti-api';
-};
 
 function failMeta(err: unknown): FetchMeta {
   return {

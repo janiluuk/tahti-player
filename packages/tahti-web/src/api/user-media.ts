@@ -3,13 +3,7 @@ import {
   resolveImageUploadContentType,
 } from '../lib/imageUploadContentType';
 import type { FetchMeta } from './client';
-
-const apiBase = () => {
-  if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
-    return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
-  }
-  return '/tahti-api';
-};
+import { apiBase } from './http';
 
 async function readErrorMessage(
   response: Response,

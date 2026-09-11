@@ -1,4 +1,5 @@
 import { fetchDirectory, fetchProfile } from './client';
+import { apiBase } from './http';
 import { mockLatestTracks, mockNewToYou, mockTopTracks } from './mock';
 import {
   allowMockFallback,
@@ -7,13 +8,6 @@ import {
   type FetchMeta,
 } from './mode';
 import type { DiscoverCollection, DiscoverTrackItem } from './types';
-
-const apiBase = () => {
-  if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
-    return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
-  }
-  return '/tahti-api';
-};
 
 async function getJson<T>(path: string): Promise<T> {
   const res = await fetch(`${apiBase()}${path}`, {

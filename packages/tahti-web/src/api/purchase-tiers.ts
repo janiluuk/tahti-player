@@ -3,6 +3,7 @@
  */
 
 import type { FetchMeta } from './client';
+import { apiBase } from './http';
 import {
   mockUserOwnsPurchaseTier,
   recordMockTrackPurchase,
@@ -11,13 +12,6 @@ import { getMockSessionUser, mockRecordPurchase } from './mock-session';
 import { patchMockUploadedSound } from './mock-uploads';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
 import { setMockSoundPurchaseAccess } from './studio';
-
-const apiBase = () => {
-  if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
-    return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
-  }
-  return '/tahti-api';
-};
 
 async function requestJson<T>(
   path: string,

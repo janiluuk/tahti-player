@@ -1,18 +1,10 @@
+import { apiBase } from '../../api/http';
 import { isForceMock } from '../../api/mode';
 import type {
   ExportProvider,
   ExportStatusResult,
   ExportSubmitResult,
 } from './provider';
-
-const forceMock = isForceMock;
-
-const apiBase = () => {
-  if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
-    return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
-  }
-  return '/tahti-api';
-};
 
 async function requestJson<T>(
   path: string,
@@ -50,7 +42,7 @@ export const revelatorExportProvider: ExportProvider = {
   label: 'Revelator / DSP delivery',
   behavioral: true,
   async submit(releaseId: string): Promise<ExportSubmitResult> {
-    if (forceMock()) {
+    if (isForceMock()) {
       return { ok: true, status: 'pending' };
     }
     try {
@@ -67,7 +59,7 @@ export const revelatorExportProvider: ExportProvider = {
     }
   },
   async status(releaseId: string): Promise<ExportStatusResult> {
-    if (forceMock()) {
+    if (isForceMock()) {
       return {
         ok: true,
         revelatorId: 'mock-revelator',

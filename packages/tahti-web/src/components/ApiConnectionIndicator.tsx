@@ -38,7 +38,11 @@ export function ApiConnectionIndicator() {
       }
     };
     void probe();
-    const interval = window.setInterval(() => void probe(), 30000);
+    const interval = window.setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        void probe();
+      }
+    }, 30000);
     return () => {
       active = false;
       controller?.abort();

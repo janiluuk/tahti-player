@@ -1,3 +1,9 @@
+## 2026-09-11 — v0.0.113: shared apiBase + remaining visibility-aware polls
+
+API modules share `apiBase` from `api/http.ts`. Pro Editor, Jam, notification
+inbox, and API health probing pause or throttle when the tab is hidden; the
+radio document-title marquee uses `requestAnimationFrame`.
+
 ## 2026-09-11 — v0.0.112: dead-weight cleanup + visibility-aware polling
 
 Dropped unused tahti-web deps and unmounted dead views/components. API clients
