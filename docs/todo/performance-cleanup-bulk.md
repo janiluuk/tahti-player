@@ -77,8 +77,8 @@ on `document.visibilitychange`.
 
 | File | Lines | Split plan |
 |---|---|---|
-| `api/admin.ts` | 4629 | By domain: users, streams, content, logs, governance |
-| `PluginStorePanel.tsx` | 3564 | Card grid, detail view, install flow |
+| `api/admin.ts` | ~3579 | **Partial 2026-09-11:** radio / storage(+files) / addons → `api/admin/admin-*.ts` + re-export. Still: users, streams, content, logs, governance, … |
+| `PluginStorePanel.tsx` | ~488 | **Partial 2026-09-11:** Radio + Service + Themes/Visualizers extracted under `plugin-store/`. Shell left: Multicast / Audio / Tools / Discovery / Channel |
 | `api/client.ts` | 2863 | Fetch helpers, auth, error handling, mock fallback |
 | `SettingsPanels.tsx` | 2523 | Extract each tab to its own file |
 | `ChannelDesigner.tsx` | 2048 | Colors, layout, overlay, page blocks sub-panels |
@@ -100,8 +100,11 @@ on `document.visibilitychange`.
 ## Shipped this pass (2026-09-11)
 
 Phases **1A–1C**, **2A–2B**, **3A–3C**, and **5** are done (ApiConnection
-health probe also pauses when the tab is hidden). Still open: Phase **4**
-monolith splits (see also `codebase-refactor-hotspots.md`).
+health probe also pauses when the tab is hidden). Phase **4** partial:
+PluginStore Service/Themes extracts + admin radio/storage/addons peels
+(see `codebase-refactor-hotspots.md`). Still open in Phase 4: client,
+SettingsPanels, ChannelDesigner, studio, router, Artist/Channel views,
+remaining admin domains.
 
 ## Execution order
 

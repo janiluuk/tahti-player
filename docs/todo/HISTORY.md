@@ -2,6 +2,20 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-11 — PluginStore Service/Themes extract + admin radio/storage/addons peel
+
+Slice of `codebase-refactor-hotspots.md` + `performance-cleanup-bulk.md`
+Phase 4 (both still **partial**). Mechanical moves, no behavior change:
+
+1. `PluginStorePanel` ServiceCategory (+ Spotify/OAuth/Hearthis cards,
+   `DspUrlPasteCard`) → `components/plugin-store/ServiceCategory.tsx`;
+   `InstalledAvailableTabs` → `plugin-store/shared.tsx`.
+2. ThemesCategory + VisualizersCategory → `plugin-store/ThemesCategory.tsx`.
+   Panel shell: ~2359 → ~488 lines.
+3. `api/admin/admin-radio.ts` (ops, presets, submissions, suggestions).
+4. `api/admin/admin-storage.ts` (storage overview, per-user files, files).
+5. `api/admin/admin-addons.ts`. `admin.ts` re-exports; ~4935 → ~3579 lines.
+
 ## 2026-09-11 — Performance cleanup Phase 2A/3/5 + shared apiBase (v0.0.113)
 
 Slice of `performance-cleanup-bulk.md` (still **partial** for Phase 4). Domain
