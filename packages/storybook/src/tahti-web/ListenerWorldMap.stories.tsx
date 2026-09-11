@@ -51,10 +51,3 @@ export const Compact: Story = {
     compact: true,
   },
 };
-
-export const Compact: Story = {
-  args: {
-    data: SAMPLE_DATA,
-    compact: true,
-  },
-};
