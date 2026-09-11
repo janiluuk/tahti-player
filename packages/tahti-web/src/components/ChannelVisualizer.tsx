@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 
+import { supportsWebGL } from '../lib/webgl';
 import type { ThreeVisualizerProps } from './visuals/ThreeVisualizer';
 
 export type VisualColorScheme = {
@@ -112,15 +113,6 @@ function parseStoredAudioReactive(
 ): boolean {
   const parsed = parseJson<Record<string, StoredPresetSettings>>(json);
   return parsed[preset]?.audioReactive ?? DEFAULT_SETTINGS.audioReactive;
-}
-
-function supportsWebGL(): boolean {
-  try {
-    const canvas = document.createElement('canvas');
-    return Boolean(canvas.getContext('webgl2') ?? canvas.getContext('webgl'));
-  } catch {
-    return false;
-  }
 }
 
 export const ChannelVisualizer = ({

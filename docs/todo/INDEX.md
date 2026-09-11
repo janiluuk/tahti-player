@@ -23,9 +23,7 @@ Status values: `open` | `blocked` | `partial`.
 | partial | [listen-widget-hearthis-config-and-set-embed-bug.md](listen-widget-hearthis-config-and-set-embed-bug.md) | Auto-fill username + set-embed bug shipped; icon-button config UI needs user to point at specifics |
 | open | [codebase-refactor-hotspots.md](codebase-refactor-hotspots.md) | Prioritized god-module split; `api/http.ts` extracted 2026-09-10; admin/client/PluginStorePanel still open |
 | open | [performance-cleanup-bulk.md](performance-cleanup-bulk.md) | Dead weight, API dedup, polling migration, monolith splits, env cleanup |
-| open | [studio-orphan-routes-and-storybook-mismatch.md](studio-orphan-routes-and-storybook-mismatch.md) | Studio routes without StudioNav entries + retired-route Storybook stories |
 | open | [channel-designer-backdrop-fold-and-widgets.md](channel-designer-backdrop-fold-and-widgets.md) | (Later) Fold bio/CTA/avatar into backdrop show-toggles; feed/posts widgets |
-| partial | [channel-slideshow-transitions-unwired.md](channel-slideshow-transitions-unwired.md) | Rotation + transitions wired; CSS live-verified; gallery-strip modes still open |
 
 ## Fold rule (copy into CLAUDE / chat)
 

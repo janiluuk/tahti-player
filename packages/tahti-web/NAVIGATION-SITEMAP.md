@@ -105,7 +105,7 @@ Audited 2026-09-03 against `AppShell` / `StudioNav` / `AdminNav` /
 | `/venues` | Only venue detail, venue register, and the diagnostics atlas | Sitemap previously listed it under Listen chrome. It is **not** in the sidebar, drawer, or mobile bottom nav. |
 | `/schedule` | Booking calendar + schedule dialog only | Public programme page. Radio chrome does not link it. Distinct from `/studio/schedule` (Studio Perform). Listed as a compatibility route historically; the page is real. |
 | `/studio/distribution` | Studio Releases row + export add-on deep links | Not a StudioNav submenu item. `SECTION_PREFIXES` still highlights Studio (not Library — the two are fully decoupled since 2026-09-07). |
-| `/studio/stash` | Library collections tab `?tab=stash` (embedded) | Dedicated `/studio/stash` has no submenu entry. Direct visits highlight Studio via `SECTION_PREFIXES`, not Library. |
+| `/studio/stash` | Redirects to `/library/stash` | Old path — Stash is its own `LIBRARY_SECTION_TABS` entry (`/library/stash`, not a `?tab=stash` query on Collections), not a Studio submenu item. |
 | `/jam/$code` | None in app chrome | Join-by-code surface; atlas-only besides the route itself. |
 
 Still gathered under **`/admin/orphan-pages`** (Admin → Manage): radio

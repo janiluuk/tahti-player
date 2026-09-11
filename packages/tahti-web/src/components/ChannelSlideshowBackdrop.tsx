@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
+import { supportsWebGL } from '../lib/webgl';
 import {
   CssCrossfadeTransition,
   isCssSlideshowPreset,
@@ -11,7 +12,8 @@ export type ChannelSlideshowBackdropProps = {
   images: string[];
   /** One of the 8 `SLIDESHOW_PRESETS` from `ChannelDesigner` — FADE/ZOOM/PAN/
    * BLUR_CROSS render as a CSS crossfade, the other 4 as a WebGL transition.
-   * Falls back to a plain crossfade for an unrecognized value. */
+   * Falls back to a plain FADE crossfade for an unrecognized value, or when
+   * the browser can't create a WebGL context (see `lib/webgl.ts`). */
   preset?: string | null;
   intervalSeconds?: number;
   transitionMs?: number;
@@ -36,6 +38,10 @@ export function ChannelSlideshowBackdrop({
 }: ChannelSlideshowBackdropProps) {
   const [index, setIndex] = useState(0);
   const [transitioning, setTransitioning] = useState(false);
+  // Checked once per mount, not per transition — a browser's WebGL capability
+  // doesn't change mid-session, and re-probing on every crossfade would just
+  // create/discard a canvas repeatedly for no reason.
+  const webglOk = useMemo(() => supportsWebGL(), []);
 
   // Reset to the first image whenever the set of images changes (e.g. the
   // editor adds/removes a slide) rather than pointing at a now-stale index.
@@ -67,7 +73,7 @@ export function ChannelSlideshowBackdrop({
 
   if (transitioning && images.length > 1) {
     const nextUrl = images[(index + 1) % images.length]!;
-    if (isWebglSlideshowPreset(preset)) {
+    if (isWebglSlideshowPreset(preset) && webglOk) {
       return (
         <div className={className}>
           <img

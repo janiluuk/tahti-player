@@ -33,12 +33,12 @@ now lists chrome separately from routes it does not actually own.
    Broadcast page (Perform submenu; nav label Broadcast since 2026-09-03) —
    a different page from public `/schedule`.
 
-3. **Library submenu does not include Smart links, Distribution, or Stash
-   as first-class items.** `/library/smartlinks` is a real `LibraryView`
-   tab with zero production inbound links. `/studio/distribution` is a
-   Releases-row + export-add-on deep link. Stash is a collections tab
-   (`/library/collections?tab=stash`); `/studio/stash` itself is only a
-   direct-URL / atlas target.
+3. **Library submenu does not include Smart links or Distribution as
+   first-class items.** `/library/smartlinks` is a real `LibraryView` tab
+   with zero production inbound links. `/studio/distribution` is a
+   Releases-row + export-add-on deep link. (Stash has its own
+   `LIBRARY_SECTION_TABS` entry, `/library/stash` — `/studio/stash` is
+   just a redirect to it, not a separate discoverability gap.)
 
 ### Still open (production orphans)
 
@@ -48,7 +48,6 @@ now lists chrome separately from routes it does not actually own.
 | `/schedule` buried in booking UI | Listeners on Radio cannot see the programme without opening the calendar dialog. |
 | `/library/smartlinks` unlinked | Smart-link manager exists but cannot be chosen from Library Overview / Sounds / Collections. |
 | `/studio/distribution` Releases-only | Artists who are not on the releases list have no StudioNav path to delivery status. |
-| `/studio/stash` vs collections tab | Two URLs for the same locker; only the collections tab is discoverable. |
 | `/jam/$code` unlinked | Join-by-code route has no in-app entry besides the atlas. |
 
 ### Checked this pass, not orphans

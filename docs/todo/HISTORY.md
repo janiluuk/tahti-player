@@ -2,6 +2,47 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-11 — Channel slideshow WebGL-unavailable guard; stale orphan-routes todo re-closed
+
+**`channel-slideshow-transitions-unwired.md` — done.** The rotation +
+transition wiring itself shipped 2026-09-09 (CSS path live-browser
+verified); the remaining open item was WebGL presets (Cube flip, Glitch
+wipe, etc.) throwing on hosts that can't create a WebGL context, previously
+attributed to a "Storybook error boundary" that turned out not to exist in
+app code at all. Extracted `ChannelVisualizer.tsx`'s private `supportsWebGL()`
+check into shared `src/lib/webgl.ts` and wired `ChannelSlideshowBackdrop.tsx`
+to check it once per mount — a WebGL preset falls through to the existing
+CSS-crossfade branch instead of ever mounting the Three.js component when
+`webglOk` is false, same fallback already used for an unrecognized preset
+value. New `ChannelSlideshowBackdrop.test.tsx` case stubs `getContext` to
+return `null` (jsdom's real behavior) and confirms the CSS fallback renders
+with zero `<canvas>` elements. `tsc --noEmit`/`eslint`/full `tahti-web` unit
+suite (506/506) all pass. Gallery-strip WebGL modes and the other explicitly
+out-of-scope items from the original doc remain untouched follow-ups, not
+blockers.
+
+**`studio-orphan-routes-and-storybook-mismatch.md` — closed again, was a
+stale duplicate.** This exact doc (same premise: 5 "orphan" Studio routes,
+2 stale Storybook route decorators) was already investigated and fixed on
+2026-09-07 (commit `16dd6e22`), which deleted the todo file and folded the
+finding into this history. A 2026-09-10 workplan commit (`3953157d`,
+"add studio orphan routes and storybook mismatch audit") re-added the exact
+same file from scratch without checking history first, re-opening an
+already-closed question. Re-verified independently: the two Storybook
+stories on disk already have the 2026-09-07 fix (`withTahtiRouter('/admin/logs')`,
+`withTahtiRouter('/admin/moderation/missed-shows')`); the 5 "orphan" routes
+are deliberate — `StudioNav.test.ts` (17/17 passing, unchanged) explicitly
+asserts Library-domain routes (`sounds`/`collections`/`recordings`/`stash`)
+light nothing in Studio's submenu, and Distribution intentionally folds into
+the Releases submenu tab rather than getting its own. Two of the five
+(`/studio/recordings`, `/studio/stash`) are pure redirects to
+`/library/recordings` / `/library/stash`, not live Studio pages at all.
+Also corrected two stale doc mentions found along the way:
+`NAVIGATION-SITEMAP.md` and `NAVIGATION-GAPS.md` both still described Stash
+as a `/library/collections?tab=stash` query param; it's had its own
+`LIBRARY_SECTION_TABS` entry (`/library/stash`) for a while, so that was no
+longer a discoverability gap worth listing.
+
 ## 2026-09-10 — Collection peaks; directory ambient; Button audit; local-files; api/http
 
 Workplan cycle shipped as **0.0.109**:

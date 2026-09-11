@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { ChannelSlideshowBackdrop } from './ChannelSlideshowBackdrop';
 
@@ -28,9 +28,18 @@ function renderBackdrop(props: {
 }
 
 describe('ChannelSlideshowBackdrop', () => {
+  // jsdom doesn't implement WebGL at all — every mount now probes it via
+  // `supportsWebGL()`, so stub getContext to return null (the same as a real
+  // WebGL-unavailable browser) instead of jsdom's noisy per-call "not
+  // implemented" console.error.
+  beforeEach(() => {
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null);
+  });
+
   afterEach(() => {
     document.body.replaceChildren();
     vi.useRealTimers();
+    vi.restoreAllMocks();
   });
 
   it('renders nothing for an empty image list', () => {
@@ -133,5 +142,33 @@ describe('ChannelSlideshowBackdrop', () => {
     });
     expect(container.querySelectorAll('img')).toHaveLength(1);
     expect(container.querySelector('img')?.getAttribute('src')).toBe(IMAGES[2]);
+  });
+
+  it('falls back to a CSS crossfade for a WebGL preset when the browser has no WebGL context', () => {
+    vi.useFakeTimers();
+    const { container } = renderBackdrop({
+      images: IMAGES,
+      preset: 'CUBE_FLIP',
+      autoplay: true,
+      intervalSeconds: 5,
+      transitionMs: 500,
+    });
+
+    act(() => {
+      vi.advanceTimersByTime(5_000);
+    });
+    // Mid-crossfade: two images, not a WebGL canvas.
+    const midImgs = Array.from(container.querySelectorAll('img')).map((img) =>
+      img.getAttribute('src'),
+    );
+    expect(midImgs).toEqual([IMAGES[0], IMAGES[1]]);
+    expect(container.querySelector('canvas')).toBeNull();
+
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
+    const settledImgs = container.querySelectorAll('img');
+    expect(settledImgs).toHaveLength(1);
+    expect(settledImgs[0]?.getAttribute('src')).toBe(IMAGES[1]);
   });
 });
