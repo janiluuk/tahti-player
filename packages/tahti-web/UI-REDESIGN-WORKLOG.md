@@ -1,3 +1,9 @@
+## 2026-09-11 — v0.0.114: accurate listener world map
+
+Studio Stats and track insights `ListenerWorldMap` now renders Natural Earth
+110m country outlines with choropleth fills and centroid markers instead of
+the old hand-drawn continent blobs. Live geo data and ranking list unchanged.
+
 ## 2026-09-11 — v0.0.113: shared apiBase + remaining visibility-aware polls
 
 API modules share `apiBase` from `api/http.ts`. Pro Editor, Jam, notification
@@ -5675,3 +5681,7 @@ shared Local files surface. Desktop users can import through the native file
 picker, search the SQLite catalog, play resolved asset URLs, remove catalog
 entries, and load larger collections in bounded pages. The browser File API
 remains the web fallback.
+
+## 2026-09-11 — v0.0.115: accurate listener world map
+
+Studio Stats and Track Insights `ListenerWorldMap` no longer uses hand-drawn continent blobs. It now renders Natural Earth 110m country outlines (vendored SVG paths) with choropleth highlights and count bubbles driven by the same `ListenerGeoPoint` live data. Storybook gained a Compact story; unit tests cover path density and empty state.

@@ -2362,3 +2362,7 @@ landing at `/studio`, closes cleanly via Cancel, does not reopen.
 ## 2026-09-10 — Player performance audit
 
 Audited the active desktop/shared Tahti frontend; production bundle measured and five prioritized findings recorded in `docs/PERFORMANCE-AUDIT.md`. No runtime changes. Device profiling remains a stated limitation, not a claimed result.
+
+## 2026-09-11 — Accurate listener world map
+
+Replaced crude continent-blob SVG in `ListenerWorldMap` with Natural Earth 110m country outlines (choropleth + bubbles). Used by Studio Stats and Track Insights. Bumped tahti-web to 0.0.115.

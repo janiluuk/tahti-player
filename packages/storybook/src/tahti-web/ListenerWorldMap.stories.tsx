@@ -44,3 +44,17 @@ export const Empty: Story = {
     data: [],
   },
 };
+
+export const Compact: Story = {
+  args: {
+    data: SAMPLE_DATA,
+    compact: true,
+  },
+};
+
+export const Compact: Story = {
+  args: {
+    data: SAMPLE_DATA,
+    compact: true,
+  },
+};
