@@ -2377,3 +2377,22 @@ landing at `/studio`, closes cleanly via Cancel, does not reopen.
 ## 2026-09-10 — Player performance audit
 
 Audited the active desktop/shared Tahti frontend; production bundle measured and five prioritized findings recorded in `docs/PERFORMANCE-AUDIT.md`. No runtime changes. Device profiling remains a stated limitation, not a claimed result.
+
+---
+
+## 2026-09-11 — Plugin registry §5.4 caller migration confirmed merged
+
+`feat/plugin-registry-caller-migration` had re-done the §5.4 adapter-caller
+migration (`pluginBootstrap.ts`, `pluginStore.tsx`, `pluginAutoUpdate.ts`,
+`useInstallPlugin.ts` → `pluginRegistryStore`) and a small
+`plugin-store/serviceCatalog.ts` extraction from `PluginStorePanel.tsx`.
+Rebasing onto `origin/master` showed both were already upstream: the
+caller migration landed via PR #46 (`83719a74`), and the service-catalog
+extraction was fully subsumed by a larger same-day refactor
+(`2598d37f`, "peel PluginStore categories and admin API domains") that
+produced a byte-identical `serviceCatalog.ts`. Git's rebase auto-dropped
+the now-empty patches; the one PluginStorePanel.tsx conflict (a single
+comment-line rename, "Multicast / Audio plugins" → "…tools") was resolved
+by hand and verified with `tsc --noEmit` (clean). Remaining plugin-registry
+work (ownership split, extraction gate) stays tracked in the sibling
+`../tahti-org` doc, not here.

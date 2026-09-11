@@ -16,7 +16,6 @@ Status values: `open` | `blocked` | `partial`.
 | partial | [channel-designer-rail-and-broadcast-nav.md](channel-designer-rail-and-broadcast-nav.md) | Designer→right rail, tahti-dark, Broadcast menu, Studio nav origin/slots |
 | open | [governance-gap-list.md](governance-gap-list.md) | Governance gaps: 16 of 18 shipped; remaining bulk comments (#2), voting window (#15, backend-blocked) |
 | partial | [image-upload-hover-lightbox.md](image-upload-hover-lightbox.md) | Press-kit lightbox delete shipped 2026-09-10; admin radio logo blocked on redesign |
-| open | [plugin-registry-extraction.md](plugin-registry-extraction.md) | Pointer to sibling extraction checklist; PluginRegistryHost façade + §6 contract tests added 2026-09-08 |
 | partial | [admin-plugin-management-panel.md](admin-plugin-management-panel.md) | Discovery/Add-ons category done 2026-09-08; all-13-category scoping still open |
 | partial | [release-player-workflow-broken.md](release-player-workflow-broken.md) | Root cause fixed 2026-09-07; user needs to run 2 `gh secret set` commands to finish |
 | partial | [radio-browser-directory-fixes.md](radio-browser-directory-fixes.md) | Cover-image sub-ask needs decision |
