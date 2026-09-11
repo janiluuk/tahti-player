@@ -52,13 +52,27 @@ describe('Badge', () => {
 
   it('throws error when dot variant has children', () => {
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    expect(() => {
-      render(
-        <Badge variant="dot" color="green">
-          Invalid
-        </Badge>,
-      );
-    }).toThrow('Badge variant "dot" does not support children');
-    consoleSpy.mockRestore();
+    // React's dev-mode invokeGuardedCallback re-dispatches this render error
+    // through a real DOM event so it can capture a native stack trace. jsdom
+    // reports that dispatch as an "Uncaught" window error in addition to the
+    // exception this test expects synchronously below — left unhandled, that
+    // can surface as a process-level test failure under CI's threaded runner
+    // even though the assertion itself passes. Swallow just that one event.
+    const onWindowError = (event: ErrorEvent) => {
+      event.preventDefault();
+    };
+    window.addEventListener('error', onWindowError);
+    try {
+      expect(() => {
+        render(
+          <Badge variant="dot" color="green">
+            Invalid
+          </Badge>,
+        );
+      }).toThrow('Badge variant "dot" does not support children');
+    } finally {
+      window.removeEventListener('error', onWindowError);
+      consoleSpy.mockRestore();
+    }
   });
 });
