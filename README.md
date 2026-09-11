@@ -78,6 +78,22 @@ Open gaps only (not the full matrix): [`packages/tahti-web/FEATURES-REMAINING.md
 
 Live beta: **https://beta.tahti.live**
 
+## Build and launch the desktop player
+
+From the repository root, compile the Tauri player without creating installer
+bundles and launch the resulting development binary:
+
+```bash
+pnpm player:build:run
+```
+
+The helper is at [`scripts/build-and-run-player.sh`](./scripts/build-and-run-player.sh)
+and accepts arguments that are passed to the player process. The existing
+`pnpm player:run` command launches an already-built Linux binary without
+compiling it first. Release, Flatpak, AUR, and deployment helpers live under
+`scripts/`; package-local capture and deploy helpers remain beside their
+package-specific assets.
+
 ## Screenshots
 
 From `@tahti-player/tahti-web` (mock data for stable docs captures; beta uses the live API).

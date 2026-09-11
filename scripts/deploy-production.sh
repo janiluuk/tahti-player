@@ -2,7 +2,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_DIR="$SCRIPT_DIR"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 VERSION="${1:-}"
 
@@ -12,7 +12,7 @@ if [ -z "$VERSION" ]; then
   exit 1
 fi
 
-echo "=== Nuclear Player Production Deployment ==="
+echo "=== Tahti Player Production Deployment ==="
 echo "Version: $VERSION"
 echo ""
 
@@ -76,5 +76,5 @@ echo ""
 
 echo "=== Deployment preparation complete! ==="
 echo "Version: $VERSION"
-echo "Built binary: packages/player/src-tauri/target/release/nuclear-music-player"
+echo "Built binary: packages/player/src-tauri/target/release/tahti-player"
 echo "To publish: git push origin player@${VERSION}"

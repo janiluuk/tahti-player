@@ -17,10 +17,10 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-OUTPUT_DIR="${1:-$SCRIPT_DIR}"
+OUTPUT_DIR="${1:-$REPO_ROOT/flatpak}"
 
 CARGO_GENERATOR_URL="https://raw.githubusercontent.com/flatpak/flatpak-builder-tools/refs/heads/master/cargo/flatpak-cargo-generator.py"
-CARGO_GENERATOR="$SCRIPT_DIR/.flatpak-cargo-generator.py"
+CARGO_GENERATOR="$REPO_ROOT/flatpak/.flatpak-cargo-generator.py"
 
 # --- preflight checks --------------------------------------------------------
 

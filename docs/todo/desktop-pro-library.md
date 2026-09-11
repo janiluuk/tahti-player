@@ -1,7 +1,7 @@
 # Pro desktop music player — phased implementation workplan
 
 **Status:** partial
-**Updated:** 2026-09-10
+**Updated:** 2026-09-11
 **Goal:** Import a personal music collection once, then catalog, sort, filter, search, analyze, play and build playlists offline as in a desktop music manager.
 
 This is the canonical implementation plan for the independent player roadmap. It supersedes the old A–F ordering and right-rail library proposal. Historical context: `packages/tahti-web/UI-REDESIGN-WORKLOG.md`, 2026-09-04 — Independent desktop player.
@@ -28,7 +28,13 @@ Proposed entities (design targets, not existing contracts): library roots; track
 
 Native side only, not yet wired to the frontend. `packages/player/src-tauri/src/local_library/` has a `library_tracks` SQLite table (migration `0001_init.sql`), FLAC/WAV tag/duration/format extraction via `symphonia` (`metadata.rs`), and four typed commands (`library_list`, `library_import` — native file-picker import, upsert-on-reimport by path, `library_resolve` — existence check + asset-protocol allow, `library_remove`). 8 Rust unit tests cover import, re-import dedup, search (incl. SQL-wildcard escaping), missing-file resolve, and remove, all green; TS bindings regenerated into `packages/player/src/services/tauri/bindings.ts`. Found and fixed in this pass: a real tag-parsing bug where RIFF `LIST`/INFO values (title/artist/album) kept a trailing NUL byte because `symphonia-metadata`'s `riff::parse` includes the terminator in `Tag::value`.
 
-Not started: `DesktopLibraryPanel.tsx`/`localLibraryStore.ts` still only use the browser File API session-only path — nothing in the frontend calls `library_list`/`library_import`/`library_resolve`/`library_remove` yet. No native-capability detection, no folder import, no relink/missing-file UI, no E2E coverage of the native path (a prior note claiming E2E coverage here was inaccurate). Phase 0's capability-detection and signed-out-access items, and all of Phase 1's frontend wiring, remain open.
+The shared frontend now receives a native-capability signal and typed library
+adapter from the Tauri player. Desktop Local files can import through the
+native picker, query the SQLite catalog, resolve asset URLs for playback, and
+remove catalog entries with paged loading; the browser File API remains the
+web fallback. Folder import, relink/missing-file UI, progress/cancellation,
+and E2E coverage remain open. Phase 0's signed-out-access item and most of
+Phase 1 remain open.
 
 ## Phase 0 — Native foundation and delivery contract
 

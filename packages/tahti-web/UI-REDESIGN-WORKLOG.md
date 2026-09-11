@@ -5649,3 +5649,16 @@ Desktop and web app headers now use the compact Tahti mark without the
 wordmark. The Screen Atlas also includes a persisted draft navigation widget:
 users can reorder entries by drag-and-drop or move controls, add label/path
 items, and remove items without changing runtime navigation.
+
+## 2026-09-11 — Desktop native-library capability signal
+
+The shared frontend now knows when it is running inside the Tahti Player Tauri
+runtime. Local files surfaces the native catalog in the desktop runtime and
+keeps the browser File API fallback for web sessions.
+## 2026-09-11 — v0.0.111: native desktop library bridge
+
+The desktop runtime now exposes its typed native library commands to the
+shared Local files surface. Desktop users can import through the native file
+picker, search the SQLite catalog, play resolved asset URLs, remove catalog
+entries, and load larger collections in bounded pages. The browser File API
+remains the web fallback.

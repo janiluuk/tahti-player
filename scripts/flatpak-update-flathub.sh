@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-FLATPAK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${FLATPAK_DIR}/.." && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+FLATPAK_DIR="${REPO_ROOT}/flatpak"
 
 FLATHUB_REPO="flathub/live.tahti.player"
 MANIFEST="live.tahti.player.yml"
@@ -31,7 +32,7 @@ trap 'rm -rf "${WORKDIR}"' EXIT
 git clone "https://x-access-token:${GH_TOKEN}@github.com/${FLATHUB_REPO}.git" "${WORKDIR}"
 git -C "${WORKDIR}" checkout -b "${BRANCH}"
 
-"${FLATPAK_DIR}/generate-sources.sh" "${WORKDIR}"
+"${SCRIPT_DIR}/flatpak-generate-sources.sh" "${WORKDIR}"
 
 export TAG COMMIT PNPM_VERSION PNPM_SHA256
 envsubst '$TAG $COMMIT $PNPM_VERSION $PNPM_SHA256' \

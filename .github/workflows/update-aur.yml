@@ -40,4 +40,4 @@ jobs:
             TAG="${{ github.event.workflow_run.head_branch }}"
             VERSION="${TAG#player@}"
           fi
-          ./aur/update-aur.sh --version "${VERSION}"
+          ./scripts/update-aur.sh --version "${VERSION}"
