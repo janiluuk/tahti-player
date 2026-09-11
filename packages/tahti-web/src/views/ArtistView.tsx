@@ -51,7 +51,7 @@ import {
   resolvePublicVisualizerPreset,
   type ChannelLookExtras,
 } from '../api/channel-design';
-import { fetchChannel, fetchProfile } from '../api/client';
+import { apiBase, fetchChannel, fetchProfile } from '../api/client';
 import {
   fetchChannelDiscoWidgets,
   type DiscoWidgetRenderItem,
@@ -118,10 +118,7 @@ import { useLibraryStore } from '../stores/libraryStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 
 const publicPressKitUrl = (username: string): string => {
-  const base = import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')
-    ? import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '')
-    : '/tahti-api';
-  return `${base}/api/v1/u/${encodeURIComponent(username)}/press-kit.zip`;
+  return `${apiBase()}/api/v1/u/${encodeURIComponent(username)}/press-kit.zip`;
 };
 
 const GLOW_COLORS = [

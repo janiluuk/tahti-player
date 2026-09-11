@@ -28,20 +28,9 @@ and remaining `setInterval` polling that wasn't covered in the first perf pass.
 
 ## Phase 2 — Deduplicate API layer
 
-### 2A. Extract shared `apiBaseUrl()` helper
-The identical `VITE_TAHTI_API_URL` resolution block is copy-pasted across
-**34 API modules** (~68 occurrences). Extract into a single `lib/apiBaseUrl.ts`
-and import everywhere.
-
-**Files to update:** `admin.ts`, `announcements.ts`, `api-tokens.ts`,
-`archive-versions.ts`, `artist-settings.ts`, `broadcast.ts`, `channel-design.ts`,
-`channel-gallery.ts`, `channel-provision.ts`, `client.ts`, `discover.ts`,
-`disco-widgets.ts`, `discord-bot.ts`, `distribution.ts`, `events.ts`,
-`export-plugins.ts`, `fan-tiers.ts`, `integrations.ts`, `mentions.ts`,
-`messages.ts`, `notifications.ts`, `purchase-tiers.ts`, `revenue.ts`,
-`rss-feed.ts`, `security.ts`, `shows.ts`, `sources.ts`, `studio.ts`,
-`studio-extras.ts`, `track-insights.ts`, `user-media.ts`, `venues-manage.ts`,
-plus `views/ArtistView.tsx`.
+### 2A. Extract shared `apiBaseUrl()` helper — **done 2026-09-11**
+- All domain API modules + `client.ts` re-export + `ArtistView` / revelator
+  now use `apiBase` from existing `api/http.ts` (no new `lib/apiBaseUrl.ts`).
 
 ### 2B. Remove local `forceMock` aliases — **done 2026-09-11**
 - Removed `const forceMock = isForceMock` aliases across API modules
@@ -70,17 +59,17 @@ on `document.visibilitychange`.
 |---|---|---|
 | `StudioGoLiveView.tsx:255` | 4s | While mounted (signal check) | **→ usePolling 2026-09-11**
 | `StudioSoundView.tsx:142` | 4s | While status is PENDING/PROCESSING | **→ usePolling 2026-09-11**
-| `StudioProEditorView.tsx:240` | 4s | While stem is PENDING/PROCESSING |
-| `StudioProEditorView.tsx:264` | 4s | While render is pending |
+| `StudioProEditorView.tsx:240` | 4s | While stem is PENDING/PROCESSING | **→ usePolling 2026-09-11**
+| `StudioProEditorView.tsx:264` | 4s | While render is pending | **→ usePolling 2026-09-11**
 | `AudioRevisionList.tsx:101` | 4s | While processing === true | **→ usePolling 2026-09-11**
-| `useJam.ts:137` | 5s | While jam session active (host push) |
-| `useJam.ts:206` | 5s | While guest + playing (drift check) |
+| `useJam.ts:137` | 5s | While jam session active (host push) | **→ usePolling 2026-09-11**
+| `useJam.ts:206` | 5s | While guest + playing (drift check) | **→ usePolling 2026-09-11**
 
 ### 3C. Low priority — special cases
 | File | Interval | Action |
 |---|---|---|
-| `AppShell.tsx:315` | 450ms | Title scrolling → replace with requestAnimationFrame |
-| `notificationInboxStore.ts:110` | 20s | Store-level singleton → add visibility pause |
+| `AppShell.tsx:315` | 450ms | Title scrolling → replace with requestAnimationFrame | **→ rAF 2026-09-11**
+| `notificationInboxStore.ts:110` | 20s | Store-level singleton → add visibility pause | **→ visibility pause 2026-09-11**
 
 ---
 
@@ -100,21 +89,19 @@ on `document.visibilitychange`.
 
 ---
 
-## Phase 5 — Env var and config cleanup
+## Phase 5 — Env var and config cleanup — **done 2026-09-11**
 
-- Remove `VITE_ENABLE_DIAGNOSTICS` (single use, undocumented) or document it
-- Audit `VITE_MOCK_ADMIN` (single use in mock-session)
+- Documented `VITE_ENABLE_DIAGNOSTICS` + `VITE_MOCK_ADMIN` in `vite-env.d.ts`
+  (kept: beta deploy sets diagnostics; mock-admin is intentional offline demo)
 
 ---
 
 
 ## Shipped this pass (2026-09-11)
 
-Phases **1A**, **1B** (minus Storybook primitives), **1C**, **2B**, and the
-high-priority / selected medium **3A/3B** `usePolling` migrations above.
-Still open: Phase **2A** `apiBaseUrl` extract, remaining Phase 3 polls
-(Pro Editor, Jam, AppShell title scroll, notification store), Phase 4
-monolith splits (see also `codebase-refactor-hotspots.md`), Phase 5 env.
+Phases **1A–1C**, **2A–2B**, **3A–3C**, and **5** are done (ApiConnection
+health probe also pauses when the tab is hidden). Still open: Phase **4**
+monolith splits (see also `codebase-refactor-hotspots.md`).
 
 ## Execution order
 

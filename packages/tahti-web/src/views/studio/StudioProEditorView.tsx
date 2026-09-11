@@ -61,6 +61,7 @@ import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { WaveformCanvas } from '../../components/WaveformCanvas';
 import { WaveformMinimap } from '../../components/WaveformMinimap';
+import { usePolling } from '../../hooks/usePolling';
 import { useAudioPreviewGraph } from '../../lib/audioPreviewGraph';
 import { AUDIO_FX_PLUGINS, useAudioFxStore } from '../../plugins/audio-fx';
 import {
@@ -231,13 +232,11 @@ export function StudioProEditorView({ soundId }: { soundId: string }) {
   // Stem separation runs on a GPU worker and can take a while — poll until
   // every requested job has left PENDING/PROCESSING rather than making the
   // user manually refresh to see when a split is ready.
-  useEffect(() => {
-    if (
-      !stems.some((s) => s.status === 'PENDING' || s.status === 'PROCESSING')
-    ) {
-      return;
-    }
-    const timer = setInterval(() => {
+  const stemsProcessing = stems.some(
+    (s) => s.status === 'PENDING' || s.status === 'PROCESSING',
+  );
+  usePolling(
+    () => {
       void fetchSoundStems(soundId).then((r) => {
         for (const next of r.data) {
           const prev = stems.find((s) => s.stemSet === next.stemSet);
@@ -253,15 +252,13 @@ export function StudioProEditorView({ soundId }: { soundId: string }) {
         }
         setStems(r.data);
       });
-    }, 4000);
-    return () => clearInterval(timer);
-  }, [soundId, stems]);
+    },
+    4000,
+    stemsProcessing,
+  );
 
-  useEffect(() => {
-    if (!renderPendingVersionId) {
-      return;
-    }
-    const timer = setInterval(() => {
+  usePolling(
+    () => {
       void fetchSoundVersions(soundId).then((r) => {
         const version = r.data.find((v) => v.id === renderPendingVersionId);
         if (
@@ -278,9 +275,10 @@ export function StudioProEditorView({ soundId }: { soundId: string }) {
             : `Version ${version.versionNumber} failed to render.`,
         );
       });
-    }, 4000);
-    return () => clearInterval(timer);
-  }, [soundId, renderPendingVersionId]);
+    },
+    4000,
+    Boolean(renderPendingVersionId),
+  );
 
   useEffect(() => {
     const audio = audioRef.current;

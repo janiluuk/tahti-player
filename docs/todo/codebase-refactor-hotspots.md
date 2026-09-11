@@ -53,8 +53,10 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
 
 1. ~~**Shared admin/client HTTP helper**~~ — **2026-09-10:** extracted
    `api/http.ts` (`apiBase` / `getJson` / `sendJson` / `mutate`);
-   `admin.ts` imports it. `client.ts` still has its own `requestJson` —
-   adopt when splitting client domains.
+   `admin.ts` imports it. **2026-09-11:** domain API modules + `client.ts`
+   re-export now share `apiBase` from `http.ts` (tracked under
+   `performance-cleanup-bulk` Phase 2A). `client.ts` still has its own
+   `requestJson` — adopt when splitting client domains.
 2. ~~**`PluginStorePanel` Radio category extraction**~~ — **2026-09-11:**
    moved `PersonalRadioStreamCard`/`RadioBrowserStationRow`/
    `CuratedFinnishStationRow`/`RadioBrowserDirectoryCard`/`RadioCategory`

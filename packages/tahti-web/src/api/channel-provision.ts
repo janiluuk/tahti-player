@@ -1,12 +1,6 @@
+import { apiBase } from './http';
 import { getMockSessionUser, setMockSessionUser } from './mock-session';
 import { isForceMock } from './mode';
-
-const apiBase = () => {
-  if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
-    return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
-  }
-  return '/tahti-api';
-};
 
 export async function provisionChannel(): Promise<
   { ok: true; slug: string } | { ok: false; error: string }

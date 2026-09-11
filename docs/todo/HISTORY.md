@@ -2,6 +2,15 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-11 — Performance cleanup Phase 2A/3/5 + shared apiBase (v0.0.113)
+
+Slice of `performance-cleanup-bulk.md` (still **partial** for Phase 4). Domain
+API clients + `client.ts`/`ArtistView`/revelator now share `apiBase` from
+`api/http.ts`. Migrated Pro Editor stem/render polls and Jam host/guest
+intervals to `usePolling`; notification inbox + API health probe pause when
+the tab is hidden; AppShell radio title scroll uses `requestAnimationFrame`.
+Documented `VITE_ENABLE_DIAGNOSTICS` / `VITE_MOCK_ADMIN` in `vite-env.d.ts`.
+
 ## 2026-09-11 — Performance cleanup Phase 1 + forceMock + usePolling (v0.0.112)
 
 Slice of `performance-cleanup-bulk.md` (left **partial**). Removed unused

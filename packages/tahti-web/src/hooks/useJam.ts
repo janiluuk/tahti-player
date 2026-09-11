@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { fetchJam, pushJamState, subscribeToJamEvents } from '../api/jam';
 import type { JamSession } from '../api/types';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
+import { usePolling } from './usePolling';
 
 export type JamConnectionStatus =
   | 'connecting'
@@ -92,54 +93,60 @@ export function useJamHostSync(
   const queue = usePlayerStore((s) => s.queue);
   const lastSentRef = useRef<string>('');
 
+  const push = () => {
+    if (!sessionId || !active) {
+      return;
+    }
+    const state = usePlayerStore.getState();
+    const item = state.queue.find((q) => q.id === state.currentId);
+    const playable = item ? playableFromQueueItem(item) : null;
+    const body = {
+      isPlaying: state.status === 'playing',
+      currentTrack: playable
+        ? {
+            id: playable.id,
+            title: playable.title,
+            artistName: playable.artist,
+            coverUrl: playable.coverUrl ?? null,
+            // Embed-only tracks (Mixcloud/Hearthis/Spotify) have nothing a
+            // guest's own player can stream — leave these null so a guest
+            // sees "now playing" without trying to auto-play them.
+            streamUrl: playable.embed ? null : playable.streamUrl,
+            protocol: playable.embed ? null : playable.protocol,
+            channelSlug: playable.channelSlug ?? null,
+            durationSec: playable.durationSec ?? null,
+          }
+        : null,
+      positionSec: state.currentTime,
+    };
+    // Position ticks constantly; only worth a request when something a
+    // guest would actually notice changed (track/play-state), plus the
+    // regular interval below for position drift.
+    const signature = `${body.isPlaying}:${body.currentTrack?.id ?? ''}`;
+    if (signature === lastSentRef.current) {
+      return;
+    }
+    lastSentRef.current = signature;
+    void pushJamState(sessionId, body).catch(() => {
+      // Transient failure — the next interval tick or state change retries.
+    });
+  };
+
   useEffect(() => {
     if (!sessionId || !active) {
       return;
     }
-
-    const push = () => {
-      const state = usePlayerStore.getState();
-      const item = state.queue.find((q) => q.id === state.currentId);
-      const playable = item ? playableFromQueueItem(item) : null;
-      const body = {
-        isPlaying: state.status === 'playing',
-        currentTrack: playable
-          ? {
-              id: playable.id,
-              title: playable.title,
-              artistName: playable.artist,
-              coverUrl: playable.coverUrl ?? null,
-              // Embed-only tracks (Mixcloud/Hearthis/Spotify) have nothing a
-              // guest's own player can stream — leave these null so a guest
-              // sees "now playing" without trying to auto-play them.
-              streamUrl: playable.embed ? null : playable.streamUrl,
-              protocol: playable.embed ? null : playable.protocol,
-              channelSlug: playable.channelSlug ?? null,
-              durationSec: playable.durationSec ?? null,
-            }
-          : null,
-        positionSec: state.currentTime,
-      };
-      // Position ticks constantly; only worth a request when something a
-      // guest would actually notice changed (track/play-state), plus the
-      // regular interval below for position drift.
-      const signature = `${body.isPlaying}:${body.currentTrack?.id ?? ''}`;
-      if (signature === lastSentRef.current) {
-        return;
-      }
-      lastSentRef.current = signature;
-      void pushJamState(sessionId, body).catch(() => {
-        // Transient failure — the next interval tick or state change retries.
-      });
-    };
-
     push();
-    const interval = setInterval(() => {
+  }, [sessionId, active, status, currentId, queue]);
+
+  usePolling(
+    () => {
       lastSentRef.current = ''; // force-send on the regular tick too, for position drift
       push();
-    }, HOST_PUSH_INTERVAL_MS);
-    return () => clearInterval(interval);
-  }, [sessionId, active, status, currentId, queue]);
+    },
+    HOST_PUSH_INTERVAL_MS,
+    Boolean(sessionId && active),
+  );
 }
 
 const GUEST_DRIFT_THRESHOLD_SEC = 3;
@@ -199,11 +206,11 @@ export function useJamGuestPlayback(
     setStatus(isPlaying ? 'playing' : 'paused');
   }, [enabled, trackId, isPlaying]);
 
-  useEffect(() => {
-    if (!enabled || !session || !isPlaying || !track?.streamUrl) {
-      return;
-    }
-    const interval = setInterval(() => {
+  usePolling(
+    () => {
+      if (!session || !track) {
+        return;
+      }
       const state = usePlayerStore.getState();
       if (state.currentId !== `sound:${track.id}`) {
         return;
@@ -212,7 +219,8 @@ export function useJamGuestPlayback(
       if (Math.abs(state.currentTime - estimated) > GUEST_DRIFT_THRESHOLD_SEC) {
         seekTo(estimated);
       }
-    }, GUEST_DRIFT_CHECK_INTERVAL_MS);
-    return () => clearInterval(interval);
-  }, [enabled, session, isPlaying, track, seekTo]);
+    },
+    GUEST_DRIFT_CHECK_INTERVAL_MS,
+    Boolean(enabled && session && isPlaying && track?.streamUrl),
+  );
 }

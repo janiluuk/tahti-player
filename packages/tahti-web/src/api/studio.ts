@@ -1,4 +1,5 @@
 import type { FetchMeta } from './client';
+import { apiBase } from './http';
 import { DEMO_MP3 } from './mock';
 import { getMockSessionUser } from './mock-session';
 import {
@@ -23,13 +24,6 @@ import type {
   StudioSoundPatch,
 } from './studio-types';
 import { createDefaultEditList } from './studio-types';
-
-const apiBase = () => {
-  if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
-    return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
-  }
-  return '/tahti-api';
-};
 
 async function requestJson<T>(
   path: string,

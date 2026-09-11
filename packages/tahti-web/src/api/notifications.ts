@@ -1,3 +1,7 @@
+/** Mock-mode dismissals that survive reload within this browser session.
+ * Without this, forceMock dismissNotification is a no-op and the sticky
+ * "Theme is in review" fixture reappears every reload. */
+import { apiBase } from './http';
 import {
   allowMockFallback,
   apiErrorMeta,
@@ -6,9 +10,6 @@ import {
   type FetchMeta,
 } from './mode';
 
-/** Mock-mode dismissals that survive reload within this browser session.
- * Without this, forceMock dismissNotification is a no-op and the sticky
- * "Theme is in review" fixture reappears every reload. */
 const MOCK_DISMISSED_KEY = 'tahti-web-mock-notifications-dismissed';
 
 function readMockDismissedIds(): Set<string> {
@@ -39,13 +40,6 @@ function dismissMockNotification(id: string) {
   ids.add(id);
   writeMockDismissedIds(ids);
 }
-
-const apiBase = () => {
-  if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
-    return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
-  }
-  return '/tahti-api';
-};
 
 async function requestJson<T>(
   path: string,

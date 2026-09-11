@@ -5,6 +5,7 @@ import {
   mockGovernanceMembers,
   mockGovernanceQuarterlyReports,
 } from './governanceMocks';
+import { apiBase } from './http';
 import { listEnabledMockInternetRadioPresets } from './internetRadioPresetsMockStore';
 import {
   channelToPlayable,
@@ -108,12 +109,7 @@ export type { FetchMeta };
 export { TAHTI_RADIO_SLUG };
 
 /** Browser calls go through Vite proxy → Tahti API (avoids CORS). */
-export const apiBase = () => {
-  if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
-    return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
-  }
-  return '/tahti-api';
-};
+export { apiBase };
 
 export async function requestJson<T>(
   path: string,

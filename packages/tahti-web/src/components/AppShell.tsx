@@ -318,12 +318,19 @@ export function AppShell() {
     const title = `▶ ${currentItem.track.title}${artist ? ` — ${artist}` : ''} · Tahti Radio`;
     let offset = 0;
     document.title = scrollingPlaybackTitle(title, offset);
-    const interval = window.setInterval(() => {
-      offset += 1;
-      document.title = scrollingPlaybackTitle(title, offset);
-    }, 450);
+    let raf = 0;
+    let last = 0;
+    const step = (now: number) => {
+      if (now - last >= 450) {
+        last = now;
+        offset += 1;
+        document.title = scrollingPlaybackTitle(title, offset);
+      }
+      raf = window.requestAnimationFrame(step);
+    };
+    raf = window.requestAnimationFrame(step);
     return () => {
-      window.clearInterval(interval);
+      window.cancelAnimationFrame(raf);
       reapplyLastMetadata(pathname);
     };
   }, [currentTrackId, isLivePlayback, pathname, playerQueue, playerStatus]);

@@ -1,3 +1,4 @@
+import { apiBase } from './http';
 import {
   allowMockFallback,
   apiErrorMeta,
@@ -11,13 +12,6 @@ export type DiscordBotSettings = {
   tokenConfigured: boolean;
   tokenHint: string | null;
   source: 'database' | 'env' | 'none';
-};
-
-const apiBase = () => {
-  if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
-    return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
-  }
-  return '/tahti-api';
 };
 
 function mockSettings(): DiscordBotSettings {
