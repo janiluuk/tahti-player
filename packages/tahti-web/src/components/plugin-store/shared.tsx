@@ -1,7 +1,17 @@
 import { PowerIcon, SettingsIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button, Dialog, PluginStoreItem, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  EmptyState,
+  PluginStoreItem,
+  TabLabel,
+  Tabs,
+  Tooltip,
+} from '@tahti-player/ui';
+
+import { usePluginInstallStore } from '../../stores/pluginInstallStore';
 
 /** Fold-out shell shared by every configurable plugin card: a gear toggle
  * next to the card that reveals an inline settings form below it (tabs
@@ -93,5 +103,58 @@ export function AudioPluginToggleRow({
         </Tooltip>
       }
     />
+  );
+}
+
+/** Splits a category's plugin list into "Installed" / "Available" tabs.
+ * Install state comes from usePluginInstallStore, which each card writes
+ * to once it knows its own real status (connected/configured/enabled) —
+ * an id this store has never heard from defaults to "Available", same as
+ * a plugin with no install concept at all (e.g. a plain distribution
+ * deep-link). */
+export function InstalledAvailableTabs({
+  ids,
+  renderItem,
+  emptyInstalled = 'Nothing installed yet — check Available below.',
+  emptyAvailable = 'Everything here is installed.',
+}: {
+  ids: string[];
+  renderItem: (id: string) => React.ReactNode;
+  emptyInstalled?: string;
+  emptyAvailable?: string;
+}) {
+  const installedMap = usePluginInstallStore((s) => s.installed);
+  const [tab, setTab] = useState<'installed' | 'available'>('installed');
+  const installedIds = ids.filter((id) => installedMap[id]);
+  const availableIds = ids.filter((id) => !installedMap[id]);
+  const visibleIds = tab === 'installed' ? installedIds : availableIds;
+
+  return (
+    <div className="flex flex-col gap-3">
+      <Tabs.Root
+        selectedIndex={tab === 'installed' ? 0 : 1}
+        onChange={(index) => setTab(index === 0 ? 'installed' : 'available')}
+      >
+        <Tabs.List>
+          <Tabs.Tab>
+            <TabLabel count={installedIds.length}>Installed</TabLabel>
+          </Tabs.Tab>
+          <Tabs.Tab>
+            <TabLabel count={availableIds.length}>Available</TabLabel>
+          </Tabs.Tab>
+        </Tabs.List>
+      </Tabs.Root>
+      {visibleIds.length === 0 ? (
+        <EmptyState
+          size="sm"
+          title={tab === 'installed' ? 'Nothing installed' : 'All installed'}
+          description={tab === 'installed' ? emptyInstalled : emptyAvailable}
+        />
+      ) : (
+        <div className="flex flex-col gap-2">
+          {visibleIds.map((id) => renderItem(id))}
+        </div>
+      )}
+    </div>
   );
 }

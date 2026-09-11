@@ -1,6 +1,6 @@
 # Codebase refactor hotspots (god modules)
 
-**Status:** open
+**Status:** partial
 
 ## Problem
 
@@ -71,12 +71,20 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
    `FavoriteButton`/`FilterChips`, four now-unused icons). Verified:
    `tsc --noEmit`, `eslint`, full unit suite (506/506), and `vite build` all
    pass; Storybook's `PluginStorePanel.stories.tsx` only imports the
-   top-level `PluginStorePanel` export, unaffected. **Service category
-   (OAuth/Spotify/Hearthis, ~800 lines) not done this pass** — leave for a
-   follow-up pick-up of this same leaf.
-3. **`admin.ts` domain peel (radio + storage + addons)** — three of the densest clusters (~17 / storage / ~7 addon functions); keep `admin.ts` as re-export barrel until importers migrate optionally.
+   top-level `PluginStorePanel` export, unaffected.
+2b. ~~**`PluginStorePanel` Service + Themes/Visualizers extract**~~ —
+   **2026-09-11:** `ServiceCategory` (+ Spotify/OAuth/Hearthis/`DspUrlPasteCard`)
+   → `plugin-store/ServiceCategory.tsx`; `InstalledAvailableTabs` →
+   `shared.tsx`; `ThemesCategory`/`VisualizersCategory` →
+   `ThemesCategory.tsx`. Panel ~2359 → ~488 lines. Remaining in the
+   shell: Multicast / AudioPlugins / Tools / Discovery / Channel.
+3. ~~**`admin.ts` domain peel (radio + storage + addons)**~~ —
+   **2026-09-11:** `api/admin/admin-radio.ts`, `admin-storage.ts`,
+   `admin-addons.ts`; `admin.ts` re-exports (~4935 → ~3579). Call sites
+   unchanged.
 
-After those, queue SettingsPanels file-per-panel and `client.ts` auth/listen/governance splits.
+Next: SettingsPanels file-per-panel, `client.ts` auth/listen/governance
+splits, remaining PluginStore categories, further admin domains.
 
 ## Related open leaves (do not duplicate)
 
