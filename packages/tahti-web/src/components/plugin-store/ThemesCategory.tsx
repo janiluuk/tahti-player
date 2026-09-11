@@ -121,6 +121,7 @@ export function ThemesCategory() {
           onThemeChange={(nextDark) =>
             setColorMode(nextDark ? 'dark' : 'light')
           }
+          showLabels
         />
         <div className="flex items-center gap-2">
           <Toggle
