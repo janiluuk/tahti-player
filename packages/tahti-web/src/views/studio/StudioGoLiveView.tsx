@@ -58,7 +58,6 @@ import {
 } from '../../components/MulticastConfigureDialog';
 import { ObsPresetButton } from '../../components/ObsPresetButton';
 import { SignalCheckWidget } from '../../components/SignalCheckWidget';
-import { StreamManagerPanel } from '../../components/StreamManagerPanel';
 import { StudioGate } from '../../components/StudioGate';
 import { BroadcastSubNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -153,7 +152,6 @@ export function StudioGoLiveView() {
   const [channelState, setChannelState] = useState(
     user?.channel?.state ?? 'OFFLINE',
   );
-  const [rotationPlaying, setRotationPlaying] = useState(false);
   const [ingest, setIngest] = useState<Ingest>('obs');
   const [credentialsExpanded, setCredentialsExpanded] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -174,6 +172,7 @@ export function StudioGoLiveView() {
   const streamPlayableId = `live:${slug}`;
   const isMock = import.meta.env.VITE_FORCE_MOCK === '1';
   const isBroadcastLive = channelState === 'LIVE' && Boolean(signal?.connected);
+  const rotationPlaying = channelState === 'LIVE' && !signal?.connected;
   const isPreview = channelState === 'PREVIEW';
   const signalOk = Boolean(signal?.connected) || isPreview;
   const isStreamPlaying =
@@ -291,14 +290,6 @@ export function StudioGoLiveView() {
     }
   };
 
-  const handleStreamEnded = () => {
-    patchLocalChannel('OFFLINE');
-    setMessage('Broadcast ended. Your configured rotation can resume.');
-    if (!isMock) {
-      void refresh();
-    }
-  };
-
   const toggleRecording = async () => {
     const next = !recordEnabled;
     setRecordEnabled(next);
@@ -398,17 +389,6 @@ export function StudioGoLiveView() {
             >
               {message}
             </p>
-          )}
-
-          {settings && slug && (
-            <StreamManagerPanel
-              slug={slug}
-              channelState={channelState}
-              isPlaying={isStreamPlaying}
-              onPlaybackToggle={toggleStreamPlayback}
-              onEnded={handleStreamEnded}
-              onRotationChange={setRotationPlaying}
-            />
           )}
 
           <>

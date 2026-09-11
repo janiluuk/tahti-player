@@ -1,3 +1,11 @@
+## 2026-09-11 — v0.0.112: designer right rail, Broadcast menu, tahti-dark surfaces
+
+Channel edit / designer tools dock into the Nuclear right rail on desktop
+(no fixed overlay). Tahti dark ambient surfaces use solid `--background`
+again. Top Broadcast menu: booking calendar modal, 24/7 rotation → Stream
+Manager dialog, Broadcast Studio + duplicate Stream Manager entries
+removed; Go Live panel no longer embeds Stream Manager.
+
 ## 2026-09-10 — v0.0.109: collection peaks, directory ambient glow, Button audit, local-files close, api/http
 
 Collection rows lazy-fetch real peaks for the current track. Discover/Listen

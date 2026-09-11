@@ -38,11 +38,7 @@ body,
 
 :root[data-theme-id='nuclear:tahti-dark'] .tahti-ambient-surface,
 :root[data-theme-id='custom:tahti-blue'] .tahti-ambient-surface {
-  background-color: color-mix(
-    in srgb,
-    var(--background-secondary) 72%,
-    transparent
-  );
+  background-color: var(--background);
   transition:
     background-color 240ms ease,
     border-color 180ms ease,

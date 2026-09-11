@@ -14,7 +14,7 @@ import {
   WifiOffIcon,
   XIcon,
 } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
@@ -89,6 +89,7 @@ import {
   parseNowPlayingOverlaySettings,
   resolveNowPlayingOverlayPreset,
 } from '../content/nowPlayingOverlayPresets';
+import { useIsMobile } from '../hooks/useIsMobile';
 import { hasAccountRole } from '../lib/accountRoles';
 import type { ChannelLookElementId } from '../lib/channelLookElements';
 import {
@@ -120,6 +121,7 @@ import { useLayoutStore } from '../stores/layoutStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { useListenerWidgetsStore } from '../stores/listenerWidgetsStore';
 import { usePlayerStore } from '../stores/playerStore';
+import { useRightRailOverrideStore } from '../stores/rightRailOverrideStore';
 
 const CHANNEL_RADIO_VIZ_SETTINGS = { speed: 1.15, intensity: 1.8, scale: 1 };
 
@@ -183,11 +185,16 @@ export function ChannelView({ slug }: { slug: string }) {
   const favorited = useLibraryStore((s) =>
     s.favoriteChannels.some((c) => c.slug === slug),
   );
+  const isMobile = useIsMobile();
   const setChatContext = useLayoutStore((s) => s.setChatContext);
   const clearChatContext = useLayoutStore((s) => s.clearChatContext);
   const openChatRail = useLayoutStore((s) => s.openChatRail);
   const rightCollapsed = useLayoutStore((s) => s.rightCollapsed);
   const toggleRight = useLayoutStore((s) => s.toggleRight);
+  const setRightCollapsed = useLayoutStore((s) => s.setRightCollapsed);
+  const setRightWidth = useLayoutStore((s) => s.setRightWidth);
+  const rightWidth = useLayoutStore((s) => s.rightWidth);
+  const setRailOverride = useRightRailOverrideStore((s) => s.setOverride);
 
   useEffect(() => clearChatContext, [clearChatContext]);
 
@@ -1734,6 +1741,27 @@ export function ChannelView({ slug }: { slug: string }) {
     />
   );
 
+  useLayoutEffect(() => {
+    if (!editing || isMobile) {
+      setRailOverride(null);
+      return;
+    }
+    setRailOverride({ title: 'Channel design', content: layersMenu });
+    setRightCollapsed(false);
+    if (rightWidth < 360) {
+      setRightWidth(360);
+    }
+  }, [editing, isMobile, layersMenu, setRailOverride, setRightCollapsed]);
+
+  useEffect(() => {
+    if (!editing || isMobile || rightWidth >= 360) {
+      return;
+    }
+    setRightWidth(360);
+  }, [editing, isMobile, rightWidth, setRightWidth]);
+
+  useEffect(() => () => setRailOverride(null), [setRailOverride]);
+
   return (
     <div className="flex h-full min-h-0 flex-col gap-3">
       <div className="border-border flex flex-wrap items-center justify-between gap-2 border-b pb-3">
@@ -1777,16 +1805,16 @@ export function ChannelView({ slug }: { slug: string }) {
       </div>
 
       <div className="relative min-h-0 flex-1">
-        <div className="h-full min-h-0 overflow-y-auto lg:pr-[25rem]">
-          {pageBody}
-        </div>
-        <div
-          className={`${
-            mobileMenuOpen ? 'flex' : 'hidden'
-          } border-border bg-background/80 fixed inset-x-0 bottom-0 z-40 max-h-[45vh] flex-col overflow-hidden border-t backdrop-blur-md lg:top-[4.5rem] lg:right-3 lg:bottom-3 lg:left-auto lg:flex lg:max-h-none lg:w-[24rem] lg:rounded-xl lg:border`}
-        >
-          {layersMenu}
-        </div>
+        <div className="h-full min-h-0 overflow-y-auto">{pageBody}</div>
+        {isMobile ? (
+          <div
+            className={`${
+              mobileMenuOpen ? 'flex' : 'hidden'
+            } border-border bg-background/80 fixed inset-x-0 bottom-0 z-40 max-h-[45vh] flex-col overflow-hidden border-t backdrop-blur-md`}
+          >
+            {layersMenu}
+          </div>
+        ) : null}
       </div>
     </div>
   );
