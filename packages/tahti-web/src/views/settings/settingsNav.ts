@@ -60,7 +60,7 @@ export const SETTINGS_NAV: SettingsNavItem[] = [
     id: 'plugin-store',
     label: 'Add-ons',
     description:
-      'Themes, visualizers, radio, tools, embeds, discovery, channel widgets, export, import, multicast, fingerprinting, audio plugins — one browser',
+      'Themes, visualizers, radio, tools, embeds, discovery, channel widgets, export, import, multicast, fingerprinting, audio add-ons — one browser',
     Icon: BlocksIcon,
   },
   {

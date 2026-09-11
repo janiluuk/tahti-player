@@ -12,7 +12,7 @@ Tahti is channel-first radio and archive listening: artists broadcast live, publ
 This repository holds:
 
 1. **`@tahti-player/tahti-web`** — the Nuclear-based **listen + studio** web client (the cutover candidate for `apps/web`)
-2. **Tahti Player** — the desktop app (Tauri), plugins, and shared UI packages the web client reuses
+2. **Tahti Player** — the desktop app (Tauri), add-ons, and shared UI packages the web client reuses
 
 The web client is not a separate product backend. It talks to the same public Tahti API (`api.tahti.live`), chat (`chat.tahti.live`), and media CDN that production uses. Cutover planning lives in [`packages/tahti-web/CUTOVER.md`](./packages/tahti-web/CUTOVER.md).
 
@@ -66,7 +66,7 @@ Full prod-parity status per item lives in [`packages/tahti-web/FEATURES.md`](./p
 
 ### Desktop player (Tauri)
 
-- Full Nuclear-based desktop app: search, local library, plugins, themes, remote control
+- Full Nuclear-based desktop app: search, local library, add-ons, themes, remote control
 - Built-in MCP server for AI-agent control (playback, queue, favorites, playlists, providers) — see [MCP](#mcp-desktop-player) below
 
 ### Developers
@@ -166,7 +166,7 @@ same screenshots inline, see [`packages/tahti-web/README.md`](./packages/tahti-w
 ## Who it’s for
 
 - **Tahti contributors** shipping the next listen / studio client (`packages/tahti-web`)
-- **Developers** exploring Tahti Player’s Tauri app, plugins, and shared UI in this fork
+- **Developers** exploring Tahti Player’s Tauri app, add-ons, and shared UI in this fork
 
 ## What’s in this repo
 

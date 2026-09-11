@@ -112,6 +112,7 @@ import {
   type ChannelPageItem,
   type ChannelPageItemType,
 } from '../lib/channelPageLayout';
+import { cn } from '../lib/cn';
 import { colorSchemeCssVars, normalizeColorScheme } from '../lib/colorScheme';
 import { isPinned } from '../lib/pinnedTracks';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
@@ -1189,7 +1190,15 @@ export function ChannelView({ slug }: { slug: string }) {
 
   const pageBody = (
     <div
-      className="relative isolate min-h-full overflow-hidden"
+      className={cn(
+        'relative isolate min-h-full overflow-hidden',
+        // Cancel AppShell's MAIN_CONTENT_PADDING so the channel's own
+        // background reaches the edges of the pane instead of leaving a
+        // plain-bg-background border around it (see TrackDetailView's
+        // same trick). Editing mode stays inset — it sits inline with the
+        // designer toolbar/layers menu, not full-bleed.
+        !editing && '-m-6 md:-m-8',
+      )}
       style={{
         ...colorSchemeCssVars(pageScheme),
         backgroundColor: pageScheme.bg,

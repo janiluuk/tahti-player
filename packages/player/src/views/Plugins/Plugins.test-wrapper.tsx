@@ -11,10 +11,10 @@ export const PluginsWrapper = {
     );
     await userEvent.click(
       await component.findByRole('button', {
-        name: 'Plugins',
+        name: 'Add-ons',
       }),
     );
-    await screen.findByRole('heading', { name: 'Plugins' });
+    await screen.findByRole('heading', { name: 'Add-ons' });
 
     return component;
   },

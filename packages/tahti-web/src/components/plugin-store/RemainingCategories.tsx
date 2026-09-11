@@ -36,7 +36,7 @@ import {
 import { PageLoading } from '../PageStates';
 import { AudioPluginToggleRow } from './shared';
 
-// ── Multicast / Audio plugins ───────────────────────────────────────────────
+// ── Multicast / Audio tools ─────────────────────────────────────────────────
 
 export function MulticastCategory() {
   const [targets, setTargets] = useState<RtmpTarget[] | null>(null);

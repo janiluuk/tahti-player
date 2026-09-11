@@ -17,7 +17,7 @@ describe('READY_PLUGIN_HELP', () => {
 
   it('feeds the Help Center add-ons table', () => {
     const article = getHelpArticle('add-ons');
-    expect(article?.title).toBe('Add-ons and plugins');
+    expect(article?.title).toBe('Add-ons');
     expect(
       article?.sections.some((section) => section.table === PLUGIN_HELP_TABLE),
     ).toBe(true);

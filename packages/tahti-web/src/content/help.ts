@@ -468,19 +468,19 @@ export const HELP_ARTICLES: HelpArticle[] = [
   },
   {
     slug: 'add-ons',
-    title: 'Add-ons and plugins',
+    title: 'Add-ons',
     description:
       'What is ready today in Settings → Add-ons, and how to turn each one on.',
     sections: [
       {
         heading: 'Where add-ons live',
         body: [
-          'Open Settings → Add-ons. Categories match the table below: Themes, Visualizers, Import, Multicast, Fingerprinting, Audio plugins, Radio, Embed, Discovery, Channel, Playback, and Scrobbling.',
+          'Open Settings → Add-ons. Categories match the table below: Themes, Visualizers, Import, Multicast, Fingerprinting, Audio tools, Radio, Embed, Discovery, Channel, Playback, and Scrobbling.',
           'Only integrations you can use now are listed. ListenBrainz and Last.fm scrobbling are ready (submit-listens / track.scrobble only). Planned Nuclear registry items such as ListenBrainz charts, OmniSource, KHInsider, and NetEase stay out of this guide until they have a Tahti contract.',
         ],
       },
       {
-        heading: 'Ready plugins',
+        heading: 'Ready add-ons',
         body: [
           'State Ready means the path works end to end, including in-app playback where the row says so. Importer ready or Search ready means the connect/search half works, but the remaining piece — usually a server-side import contract — is still pending; check the “How to use it” column for the exact limit.',
           'hearthis.at, Mixcloud, Spotify, and Bandcamp tracks are referenced rather than hosted: Tahti keeps only a link, and that provider’s own widget supplies the audio when you press play on one of their tracks, including on a track’s own page.',
@@ -490,7 +490,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'If something is missing',
         body: [
-          'Export destinations such as Spotify or Apple Music are release-delivery links in Studio → Distribution, not installable plugins yet.',
+          'Export destinations such as Spotify or Apple Music are release-delivery links in Studio → Distribution, not installable add-ons yet.',
           'Import sources are managed from Add-ons → Import. Only sources with a working Tahti runtime are shown there.',
         ],
       },
