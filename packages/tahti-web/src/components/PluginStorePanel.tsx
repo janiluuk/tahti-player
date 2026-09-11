@@ -62,7 +62,6 @@ import {
   type BandcampAlbum,
   type HearthisLibrary,
   type HearthisTrack,
-  type IntegrationId,
   type SoundcloudTrack,
   type SpotifySearchTrack,
 } from '../api/sources';
@@ -87,10 +86,8 @@ import {
   useAudioFxStore,
 } from '../plugins/audio-fx';
 import { DiscordBotAddonCard } from '../plugins/discord-bot/DiscordBotAddonCard';
-import { EXPORT_TARGETS } from '../plugins/export';
 import {
   hearthisSourceAdapter,
-  importSourcePlugins,
   oauthAdapterFor,
   spotifySourceAdapter,
   toolSourceAdapter,
@@ -123,6 +120,11 @@ import {
 } from './MulticastConfigureDialog';
 import { PageLoading } from './PageStates';
 import { RadioCategory } from './plugin-store/RadioCategory';
+import {
+  servicePluginsForCategory,
+  type ServiceAction,
+  type ServicePlugin,
+} from './plugin-store/serviceCatalog';
 import { AudioPluginToggleRow, ConfigurableCard } from './plugin-store/shared';
 import { SourceServiceIcon } from './SourceServiceIcon';
 import { ThemeEditor } from './ThemeEditor';
@@ -131,8 +133,6 @@ import { ThemeVisualizationSettings } from './ThemeVisualizationSettings';
 function visualizerDescription(id: string): string {
   return visualizerMetadata(id).description;
 }
-
-const IMPORT_SOURCE_KINDS = new Set(['oauth', 'search', 'tool']);
 
 /** Splits a category's plugin list into "Installed" / "Available" tabs.
  * Install state comes from usePluginInstallStore, which each card writes
@@ -748,148 +748,6 @@ function VisualizersCategory() {
   );
 }
 
-// ── Import / Export / Fingerprinting: one tagged registry ──────────────────
-
-type ServiceAction =
-  | { kind: 'deep-link'; to: string; label?: string }
-  | {
-      kind: 'oauth';
-      integrationId: IntegrationId;
-      oauthPath: string;
-      instructionsHref?: string;
-      instructionsLabel?: string;
-    }
-  | { kind: 'info' };
-
-type ServicePlugin = {
-  id: string;
-  name: string;
-  author: string;
-  description: string;
-  tags: PluginCategoryId[];
-  action: ServiceAction;
-};
-
-// 'url' and 'radio' are paste-a-link tools (capabilities.import: false —
-// they seed a smart-link target / play a stream, not pull tracks into the
-// archive), so they don't belong in this "services you can pull tracks and
-// albums in from" list. They remain fully reachable from the Sources page.
-const NON_IMPORT_TOOL_IDS = new Set<IntegrationId>(['url', 'radio']);
-
-// Real "log in with the provider" links for the sources that have one —
-// shown under the OAuth card's "Not connected yet" state. Google Drive
-// omits one since almost every visitor already has a Google account.
-const OAUTH_SOURCE_INSTRUCTIONS: Partial<
-  Record<IntegrationId, { instructionsHref: string; instructionsLabel: string }>
-> = {
-  bandcamp: {
-    instructionsHref: 'https://bandcamp.com/login',
-    instructionsLabel: 'Log into Bandcamp',
-  },
-  soundcloud: {
-    instructionsHref: 'https://soundcloud.com',
-    instructionsLabel: 'Log into SoundCloud',
-  },
-  mixcloud: {
-    instructionsHref: 'https://www.mixcloud.com',
-    instructionsLabel: 'Log into Mixcloud',
-  },
-};
-
-const IMPORT_SERVICE_PLUGINS: ServicePlugin[] = importSourcePlugins
-  .filter(
-    (s) =>
-      IMPORT_SOURCE_KINDS.has(s.kind) &&
-      s.id !== 'hearthis' &&
-      !NON_IMPORT_TOOL_IDS.has(s.id),
-  )
-  .map((s) => ({
-    id: s.id,
-    name: s.name,
-    author: s.kind === 'oauth' ? 'Connect' : 'Tool',
-    description: s.description,
-    tags: ['import'],
-    // Every oauth-kind source configures inline (connect status, and for
-    // Bandcamp/SoundCloud a real album/track picker) via OAuthServiceCard —
-    // never a deep-link to the old per-source Sources page.
-    action:
-      s.kind === 'oauth'
-        ? {
-            kind: 'oauth' as const,
-            integrationId: s.id,
-            oauthPath: s.oauthStartPath ?? '',
-            ...OAUTH_SOURCE_INSTRUCTIONS[s.id],
-          }
-        : {
-            kind: 'deep-link' as const,
-            to: s.studioDeepLink ?? `/sources/${s.id}`,
-          },
-  }));
-
-// Bandcamp/SoundCloud/Mixcloud's export entries were just a "manage the
-// connection under Sources" pointer to the same account already fully
-// configurable from the Import card above — drop the duplicate rather than
-// re-point it at the retired Sources deep-link. (hearthis has never shown
-// here — it has its own Import-tagged plugin below.)
-const EXPORT_SERVICE_PLUGINS: ServicePlugin[] = EXPORT_TARGETS.filter(
-  (target) =>
-    !['hearthis', 'bandcamp', 'soundcloud', 'mixcloud'].includes(target.id),
-).map((t) => ({
-  id: `export-${t.id}`,
-  name: t.label,
-  author: 'Tahti distribution',
-  description: t.note,
-  tags: ['export'],
-  action: { kind: 'deep-link', to: t.to },
-}));
-
-// hearthis.at is an import source (see the file-level doc comment).
-const HEARTHIS_PLUGIN: ServicePlugin = {
-  id: 'hearthis',
-  name: 'hearthis.at',
-  author: 'Import',
-  description:
-    "Search hearthis.at's public catalogue to import tracks and sets.",
-  tags: ['import'],
-  // HearthisCard configures inline (ConfigurableCard) and ignores this
-  // action entirely — see ServiceCard's id === 'hearthis' branch.
-  action: { kind: 'info' },
-};
-
-const MUSICBRAINZ_PLUGIN: ServicePlugin = {
-  id: 'musicbrainz',
-  name: 'MusicBrainz',
-  author: 'Connect',
-  description:
-    'Connect your MusicBrainz editor account so releases can be cross-referenced and registered under your identity.',
-  tags: ['fingerprinting'],
-  action: {
-    kind: 'oauth',
-    integrationId: 'musicbrainz',
-    oauthPath: '/api/me/musicbrainz/oauth/start',
-    instructionsHref: 'https://musicbrainz.org/register',
-    instructionsLabel: 'Create a free MusicBrainz account',
-  },
-};
-
-const ACOUSTID_PLUGIN: ServicePlugin = {
-  id: 'acoustid',
-  name: 'AcoustID',
-  author: 'Built-in',
-  description:
-    'Matches uploaded tracks against AcoustID for catalog metadata — always on, no configuration needed.',
-  tags: ['fingerprinting'],
-  action: { kind: 'info' },
-};
-
-const SERVICE_PLUGINS: ServicePlugin[] = [
-  ...IMPORT_SERVICE_PLUGINS,
-  ...EXPORT_SERVICE_PLUGINS,
-  HEARTHIS_PLUGIN,
-  MUSICBRAINZ_PLUGIN,
-  ACOUSTID_PLUGIN,
-];
-
 /** Paste a DSP URL (Spotify/Bandcamp/etc.) to seed a smart-link target on a
  * release — not a track/album import, so it doesn't belong in the Import
  * list above. Ported from the retired Sources page's `url` tab; the
@@ -940,7 +798,7 @@ function DspUrlPasteCard() {
 }
 
 function ServiceCategory({ categoryId }: { categoryId: PluginCategoryId }) {
-  const plugins = SERVICE_PLUGINS.filter((p) => p.tags.includes(categoryId));
+  const plugins = servicePluginsForCategory(categoryId);
   return (
     <InstalledAvailableTabs
       ids={plugins.map((p) => p.id)}
