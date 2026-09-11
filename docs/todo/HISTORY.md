@@ -2,6 +2,13 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-11 — Accurate listener world map (v0.0.115)
+
+Replaced crude hand-drawn continent blobs in `ListenerWorldMap` (Studio Stats +
+track insights) with Natural Earth 110m country outlines, choropleth fills, and
+centroid markers. Vendored `worldCountryPaths.json`; Storybook Compact story +
+component test added. Live geo fetch/ranking list unchanged.
+
 ## 2026-09-11 — PluginStore Service/Themes extract + admin radio/storage/addons peel
 
 Slice of `codebase-refactor-hotspots.md` + `performance-cleanup-bulk.md`
@@ -2362,7 +2369,3 @@ landing at `/studio`, closes cleanly via Cancel, does not reopen.
 ## 2026-09-10 — Player performance audit
 
 Audited the active desktop/shared Tahti frontend; production bundle measured and five prioritized findings recorded in `docs/PERFORMANCE-AUDIT.md`. No runtime changes. Device profiling remains a stated limitation, not a claimed result.
-
-## 2026-09-11 — Accurate listener world map
-
-Replaced crude continent-blob SVG in `ListenerWorldMap` with Natural Earth 110m country outlines (choropleth + bubbles). Used by Studio Stats and Track Insights. Bumped tahti-web to 0.0.115.
