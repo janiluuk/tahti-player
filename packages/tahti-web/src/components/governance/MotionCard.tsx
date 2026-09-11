@@ -62,6 +62,7 @@ export function MotionCard({
   description,
   linkTitle = false,
   defaultExpanded = false,
+  preloadedComments,
   onChanged,
 }: {
   motion: GovernanceMotion;
@@ -72,11 +73,21 @@ export function MotionCard({
   /** List view links each title to its detail route; the detail page itself does not. */
   linkTitle?: boolean;
   defaultExpanded?: boolean;
+  /** List pages bulk-fetch every visible motion's comments up front
+   * (fetchMotionCommentsBulk) and pass the result here so expanding a
+   * card doesn't fire its own request. Undefined (not just empty) means
+   * "not preloaded" — the card falls back to fetching on expand itself,
+   * which is what the standalone detail page still does. */
+  preloadedComments?: MotionComment[];
   onChanged: () => void;
 }) {
   const [expanded, setExpanded] = useState(defaultExpanded);
-  const [comments, setComments] = useState<MotionComment[]>([]);
-  const [commentsLoaded, setCommentsLoaded] = useState(false);
+  const [comments, setComments] = useState<MotionComment[]>(
+    preloadedComments ?? [],
+  );
+  const [commentsLoaded, setCommentsLoaded] = useState(
+    preloadedComments !== undefined,
+  );
   const [commentBody, setCommentBody] = useState('');
   const [actionMsg, setActionMsg] = useState<string | null>(null);
   const [voting, setVoting] = useState(false);
