@@ -2396,3 +2396,22 @@ comment-line rename, "Multicast / Audio plugins" → "…tools") was resolved
 by hand and verified with `tsc --noEmit` (clean). Remaining plugin-registry
 work (ownership split, extraction gate) stays tracked in the sibling
 `../tahti-org` doc, not here.
+
+---
+
+## 2026-09-11 — Beta self-hosted deploy fixed (workflow + host)
+
+"Deploy tahti-web (beta, self-hosted)" had failed on every run for at
+least three runs (rsync `mkstemp ... Permission denied` writing into
+`/srv/tahti-beta/{dist,deploy}` on vimage). Two-part fix: (1) workflow
+change — swap the built `dist/` tree into place with `mv` instead of
+`rsync --delete` in place, so a future permission drift can't wedge the
+sync step again; (2) root cause on the host — `/srv/tahti-beta/dist` and
+`/srv/tahti-beta/deploy` (1463 paths) were owned by `jani:jani` instead
+of `gha-runner:gha-runner` (everything else in that tree already was),
+so the unprivileged runner user couldn't write into them. Fixed with a
+one-time `chown -R gha-runner:gha-runner` over SSH (user-authorized).
+Verified via two manual `workflow_dispatch` runs: first confirmed the
+`deploy/` rsync also needed the chown (workflow fix alone wasn't
+sufficient), second run completed clean end-to-end including smoke
+checks.
