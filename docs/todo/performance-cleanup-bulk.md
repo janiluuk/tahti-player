@@ -77,9 +77,9 @@ on `document.visibilitychange`.
 
 | File | Lines | Split plan |
 |---|---|---|
-| `api/admin.ts` | ~3579 | **Partial 2026-09-11:** radio / storage(+files) / addons → `api/admin/admin-*.ts` + re-export. Still: users, streams, content, logs, governance, … |
-| `PluginStorePanel.tsx` | ~488 | **Partial 2026-09-11:** Radio + Service + Themes/Visualizers extracted under `plugin-store/`. Shell left: Multicast / Audio / Tools / Discovery / Channel |
-| `api/client.ts` | 2863 | Fetch helpers, auth, error handling, mock fallback |
+| `api/admin.ts` | ~2231 | **Partial:** radio/storage/addons/users/support/governance peeled to `api/admin/admin-*.ts`. Still: dashboard, news, selects, streams, announcements, financial, activity/logs, … |
+| `PluginStorePanel.tsx` | ~166 | **Done** as thin shell; categories under `plugin-store/` |
+| `api/client.ts` | ~2694 | **Partial:** `client-request.ts` + `client-auth.ts`. Still: listen/radio/embeds/governance/membership |
 | `SettingsPanels.tsx` | 2523 | Extract each tab to its own file |
 | `ChannelDesigner.tsx` | 2048 | Colors, layout, overlay, page blocks sub-panels |
 | `api/studio.ts` | 1845 | Tracks, releases, collections, schedule |
@@ -99,12 +99,11 @@ on `document.visibilitychange`.
 
 ## Shipped this pass (2026-09-11)
 
-Phases **1A–1C**, **2A–2B**, **3A–3C**, and **5** are done (ApiConnection
-health probe also pauses when the tab is hidden). Phase **4** partial:
-PluginStore Service/Themes extracts + admin radio/storage/addons peels
-(see `codebase-refactor-hotspots.md`). Still open in Phase 4: client,
-SettingsPanels, ChannelDesigner, studio, router, Artist/Channel views,
-remaining admin domains.
+Phases **1A–1C**, **2A–2B**, **3A–3C**, and **5** are done. Phase **4**
+partial: PluginStore fully category-split; admin radio/storage/addons/
+users/support/governance peels; client `requestJson` + auth extract.
+Still open in Phase 4: SettingsPanels, ChannelDesigner, studio, router,
+Artist/Channel views, remaining admin/client domains.
 
 ## Execution order
 
