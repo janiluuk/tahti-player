@@ -96,6 +96,10 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
 4b. ~~**`admin.ts` news peel**~~ — **2026-09-11:** `admin-news.ts`
    (`AdminNewsPost`, CRUD + mock-persistence helpers). `admin.ts` ~2231 →
    ~2059.
+4c. ~~**`admin.ts` financial/ledger peel**~~ — **2026-09-11:**
+   `admin-financial.ts` (`AdminLedgerEntry`, `AdminFinancialOverview`,
+   `LEDGER_CATEGORIES`, `fetchAdminFinancial`, `createLedgerEntry`).
+   `admin.ts` ~2059 → ~1935.
 
 Next: SettingsPanels file-per-panel, further `client.ts` listen/governance
 splits, remaining admin domains (dashboard, selects, streams, …).
