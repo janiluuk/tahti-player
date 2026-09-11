@@ -874,7 +874,7 @@ function ReleaseSmartLinksPanel({
             placeholder="polar-nights"
             value={fillSlug}
             onChange={(event) => setFillSlug(event.target.value)}
-            description="Spotify and SoundCloud copy your plugin stream URLs. Other services append this path."
+            description="Spotify and SoundCloud copy your add-on stream URLs. Other services append this path."
           />
           <Button
             variant="secondary"
@@ -896,7 +896,7 @@ function ReleaseSmartLinksPanel({
             >
               Add-ons
             </Link>{' '}
-            (import, embed, or export) to use those plugin stream URLs.
+            (import, embed, or export) to use those add-on stream URLs.
           </p>
         ) : null}
         <div className="mt-4 grid gap-3 sm:grid-cols-2">

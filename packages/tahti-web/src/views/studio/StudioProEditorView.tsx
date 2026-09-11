@@ -1155,7 +1155,7 @@ export function StudioProEditorView({ soundId }: { soundId: string }) {
                     <div className="flex flex-row items-start gap-3 overflow-x-auto pb-2">
                       {visiblePluginChain.length === 0 ? (
                         <p className="text-foreground-secondary text-sm">
-                          No plugins in the chain yet.
+                          No audio add-ons in the chain yet.
                         </p>
                       ) : (
                         visiblePluginChain.map((id) => {
@@ -1418,7 +1418,7 @@ export function StudioProEditorView({ soundId }: { soundId: string }) {
                           className="shrink-0 self-start"
                         >
                           <PlusIcon size={14} aria-hidden className="mr-1.5" />
-                          Add plugin
+                          Add audio add-on
                         </Button>
                       )}
                     </div>
@@ -1430,7 +1430,7 @@ export function StudioProEditorView({ soundId }: { soundId: string }) {
                 isOpen={pluginPickerOpen}
                 onClose={() => setPluginPickerOpen(false)}
               >
-                <Dialog.Title>Add a plugin</Dialog.Title>
+                <Dialog.Title>Add an audio add-on</Dialog.Title>
                 <CardGrid className="grid-cols-[repeat(auto-fit,minmax(8rem,1fr))]">
                   {enabledPluginIds
                     .filter((id) => !pluginChain.includes(id))
