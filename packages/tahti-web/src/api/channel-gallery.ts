@@ -1,8 +1,6 @@
 import type { FetchMeta } from './client';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
 
-const forceMock = isForceMock;
-
 const apiBase = () => {
   if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
     return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
@@ -51,7 +49,7 @@ export async function fetchChannelGallery(): Promise<{
   data: ChannelGallery;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: DEFAULT_GALLERY,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

@@ -1,8 +1,6 @@
 import type { FetchMeta } from './client';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
 
-const forceMock = isForceMock;
-
 const apiBase = () => {
   if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
     return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
@@ -62,7 +60,7 @@ async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
 export async function fetchPinnedAnnouncements(
   slug: string,
 ): Promise<PinnedAnnouncement[]> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return [...mockPinnedAnnouncements];
   }
   try {
@@ -79,7 +77,7 @@ export async function postPinnedAnnouncement(
 ): Promise<
   { ok: true; announcement: PinnedAnnouncement } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const announcement = {
       id: `announcement-${Date.now()}`,
       body,
@@ -112,7 +110,7 @@ export async function postPinnedAnnouncement(
 export async function deletePinnedAnnouncement(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const index = mockPinnedAnnouncements.findIndex((item) => item.id === id);
     if (index >= 0) {
       mockPinnedAnnouncements.splice(index, 1);
@@ -139,7 +137,7 @@ export async function fetchAnnouncementClips(): Promise<{
   data: AnnouncementClip[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [...mockClips],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -166,7 +164,7 @@ export async function uploadAnnouncementClip(file: File): Promise<
   | { ok: false; error: string }
 > {
   const title = file.name.replace(/\.[^.]+$/, '').trim() || 'Announcement';
-  if (forceMock()) {
+  if (isForceMock()) {
     const clip: AnnouncementClip = {
       id: `announcement-${Date.now()}`,
       title,
@@ -229,7 +227,7 @@ export async function patchAnnouncementClip(
 ): Promise<
   { ok: true; clip: AnnouncementClip } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const clip = mockClips.find((item) => item.id === id);
     if (!clip) {
       return { ok: false, error: 'Announcement not found' };
@@ -257,7 +255,7 @@ export async function patchAnnouncementClip(
 export async function deleteAnnouncementClip(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const index = mockClips.findIndex((item) => item.id === id);
     if (index >= 0) {
       mockClips.splice(index, 1);
@@ -283,7 +281,7 @@ export async function deleteAnnouncementClip(
 export async function setProfileBackgroundClip(
   clipId: string | null,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {

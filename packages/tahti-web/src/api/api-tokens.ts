@@ -1,8 +1,6 @@
 import type { FetchMeta } from './client';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
 
-const forceMock = isForceMock;
-
 const apiBase = () => {
   if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
     return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
@@ -62,7 +60,7 @@ export async function fetchApiTokens(): Promise<{
   data: ApiToken[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [...mockTokens],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -83,7 +81,7 @@ export async function createApiToken(
   name: string,
   scopes: Array<'read' | 'write'>,
 ): Promise<{ ok: true; data: CreatedApiToken } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const token: CreatedApiToken = {
       id: `token-mock-${Date.now()}`,
       name,
@@ -121,7 +119,7 @@ export async function createApiToken(
 export async function revokeApiToken(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockTokens = mockTokens.filter((token) => token.id !== id);
     return { ok: true };
   }

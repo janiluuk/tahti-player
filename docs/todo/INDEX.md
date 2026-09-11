@@ -23,7 +23,7 @@ Status values: `open` | `blocked` | `partial`.
 | open | [tahti-org-ci-skip-full-e2e.md](tahti-org-ci-skip-full-e2e.md) | (tahti-org) CI always runs full e2e on every push/PR; needs a skip/path-filter strategy |
 | partial | [listen-widget-hearthis-config-and-set-embed-bug.md](listen-widget-hearthis-config-and-set-embed-bug.md) | Auto-fill username + set-embed bug shipped; icon-button config UI needs user to point at specifics |
 | open | [codebase-refactor-hotspots.md](codebase-refactor-hotspots.md) | Prioritized god-module split; `api/http.ts` extracted 2026-09-10; PluginStorePanel Radio category extracted 2026-09-11; Service category + admin/client peel still open |
-| open | [performance-cleanup-bulk.md](performance-cleanup-bulk.md) | Dead weight, API dedup, polling migration, monolith splits, env cleanup |
+| partial | [performance-cleanup-bulk.md](performance-cleanup-bulk.md) | Phase 1 + forceMock + key usePolling shipped 2026-09-11; 2A/remaining polls/splits open |
 | open | [channel-designer-backdrop-fold-and-widgets.md](channel-designer-backdrop-fold-and-widgets.md) | (Later) Fold bio/CTA/avatar into backdrop show-toggles; feed/posts widgets |
 
 ## Fold rule (copy into CLAUDE / chat)

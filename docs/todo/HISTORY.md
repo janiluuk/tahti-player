@@ -2,6 +2,19 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-11 — Performance cleanup Phase 1 + forceMock + usePolling (v0.0.112)
+
+Slice of `performance-cleanup-bulk.md` (left **partial**). Removed unused
+`@material/material-color-utilities` + `motion` from tahti-web; deleted dead
+`StudioVenuesView`, `MyReleasesView`, `LanguageSwitcher`, `CollectionTrackList`,
+`ScheduleDialog` (kept `InPageNav` / `ConnectedQueuePanel` for Storybook);
+dropped deprecated `MapScreen*` / `MAP_SCREEN_GROUPS`. Deduped API
+`forceMock` aliases onto shared `isForceMock()`. Migrated StreamManager,
+Selects, Admin logs/activity, Go Live signal, Sound processing, and
+AudioRevisionList polls to `usePolling` (pauses when the tab is hidden).
+Documented intentional Library-highlight studio routes in
+`NAVIGATION-SITEMAP.md`.
+
 ## 2026-09-11 — Listener purchase-flow e2e test + a real mock-mode Purchases bug found along the way
 
 `listener-purchase-flow.md` — done. The doc's own prior sessions judged the

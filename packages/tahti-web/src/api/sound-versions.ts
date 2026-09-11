@@ -1,8 +1,7 @@
 import type { FetchMeta } from './client';
 import { DEMO_MP3 } from './mock';
 import { getMockUploadedSound } from './mock-uploads';
-
-const forceMock = () => import.meta.env.VITE_FORCE_MOCK === '1';
+import { isForceMock } from './mode';
 
 const apiBase = () => {
   if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
@@ -170,7 +169,7 @@ export async function fetchSoundVersions(soundId: string): Promise<{
   data: SoundVersion[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockVersions(soundId).map((version) => ({ ...version })),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -190,7 +189,7 @@ export async function activateSoundVersion(
   soundId: string,
   versionId: string,
 ): Promise<{ ok: true; data: SoundVersion[] } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const versions = mockVersions(soundId).map((v) => ({
       ...v,
       isActive: v.id === versionId,
@@ -216,7 +215,7 @@ export async function fetchVersionDownloadUrl(
   soundId: string,
   versionId: string,
 ): Promise<{ ok: true; url: string } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const stored = mockVersionFiles.get(versionId);
     return { ok: true, url: stored?.url ?? DEMO_MP3 };
   }
@@ -242,7 +241,7 @@ export async function uploadSoundVersion(
   | { ok: false; error: string }
 > {
   const label = versionLabel.trim() || file.name || 'New revision';
-  if (forceMock()) {
+  if (isForceMock()) {
     const row = addMockSoundVersion(soundId, {
       versionLabel: label,
       url: URL.createObjectURL(file),

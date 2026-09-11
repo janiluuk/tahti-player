@@ -112,7 +112,6 @@ Legend:
 | [Library](#library) | `/library` | `src/views/LibraryView.tsx` | No Story | Tabs, SectionTabs, CardGrid |
 | [My Discography](#my-discography) | (library) | `src/views/MyDiscographyView.tsx` | No Story | PlayableTrackTable, FilterChips |
 | [My Collections](#my-collections) | (library) | `src/views/MyCollectionsView.tsx` | No Story | CardGrid, Tabs |
-| [My Releases](#my-releases) | (library) | `src/views/MyReleasesView.tsx` | No Story | CardGrid |
 | [Library Embeds](#library-embeds) | (library) | `src/views/LibraryEmbedsView.tsx` | No Story | EmbedTrackRow list |
 | [Library Media](#library-media) | (library) | `src/views/LibraryMediaView.tsx` | No Story | ImageLightbox, CardGrid |
 | [Library Smart Links](#library-smart-links) | `/library/smartlinks` | `src/views/LibrarySmartLinksView.tsx` | No Story | CardGrid |

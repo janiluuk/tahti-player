@@ -6,8 +6,6 @@ import {
   type FetchMeta,
 } from './mode';
 
-const forceMock = isForceMock;
-
 const apiBase = () => {
   if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
     return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
@@ -92,7 +90,7 @@ export async function fetchDiscoWidgetStore(scope: DiscoWidgetScope): Promise<{
   data: DiscoWidgetStoreItem[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { data: [], meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
   }
   try {
@@ -111,7 +109,7 @@ export async function fetchDiscoWidgetInstalls(
   data: DiscoWidgetInstallView[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { data: [], meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
   }
   const path =
@@ -132,7 +130,7 @@ export async function createDiscoWidgetInstall(
   scope: DiscoWidgetScope,
   widgetId: string,
 ): Promise<ActionResult<DiscoWidgetInstallView>> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { error: 'Disco-widgets are unavailable in mock mode' };
   }
   const path =
@@ -157,7 +155,7 @@ export async function patchDiscoWidgetInstall(
   id: string,
   patch: { enabled?: boolean; position?: number },
 ): Promise<ActionResult<DiscoWidgetInstallView>> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { error: 'Disco-widgets are unavailable in mock mode' };
   }
   const path =
@@ -181,7 +179,7 @@ export async function removeDiscoWidgetInstall(
   scope: DiscoWidgetScope,
   id: string,
 ): Promise<ActionResult> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { error: 'Disco-widgets are unavailable in mock mode' };
   }
   const path =
@@ -202,7 +200,7 @@ export async function fetchDiscoverDiscoWidgets(): Promise<{
   data: DiscoWidgetRenderItem[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { data: [], meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
   }
   try {
@@ -219,7 +217,7 @@ export async function fetchHomepageDiscoWidgets(): Promise<{
   data: DiscoWidgetRenderItem[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { data: [], meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
   }
   try {
@@ -236,7 +234,7 @@ export async function fetchChannelDiscoWidgets(slug: string): Promise<{
   data: DiscoWidgetRenderItem[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { data: [], meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
   }
   try {

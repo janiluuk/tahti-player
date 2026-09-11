@@ -8,8 +8,6 @@ import {
 } from './mode';
 import type { DiscoverCollection, DiscoverTrackItem } from './types';
 
-const forceMock = isForceMock;
-
 const apiBase = () => {
   if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
     return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
@@ -42,7 +40,7 @@ export async function fetchPublicCollections(
   data: DiscoverCollection[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [
         {
@@ -232,7 +230,7 @@ export async function fetchTopTracks(
   sort: TopTracksSort,
   filters: DiscoverFilters,
 ): Promise<{ data: DiscoverTrackItem[]; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockTopTracks(sort),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -304,7 +302,7 @@ async function fetchLatestForGenre(
 export async function fetchLatestTracks(
   filters: DiscoverFilters,
 ): Promise<{ data: DiscoverTrackItem[]; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockLatestTracks(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -344,7 +342,7 @@ export async function fetchNewToYou(): Promise<{
   preferenceGenres: string[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const mock = mockNewToYou();
     return {
       data: mock.items,
@@ -400,7 +398,7 @@ async function countTrackLoves(trackId: string): Promise<number> {
 export async function fetchLovedTracks(
   filters: DiscoverFilters,
 ): Promise<{ data: DiscoverTrackItem[]; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockTopTracks('desc').map((item, index) => ({
         ...item,

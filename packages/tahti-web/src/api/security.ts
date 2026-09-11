@@ -5,8 +5,6 @@ import {
   type FetchMeta,
 } from './mode';
 
-const forceMock = isForceMock;
-
 const apiBase = () => {
   if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
     return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
@@ -52,7 +50,7 @@ export async function fetchTotpStatus(): Promise<{
   data: { enabled: boolean };
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: { enabled: mockTotpEnabled },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -75,7 +73,7 @@ export async function setupTotp(): Promise<
   | { ok: true; secret: string; otpauthUri: string }
   | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       ok: true,
       secret: 'MOCKSECRETABCDEFGH',
@@ -100,7 +98,7 @@ export async function setupTotp(): Promise<
 export async function confirmTotp(
   code: string,
 ): Promise<{ ok: true; backupCodes: string[] } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     if (code.replace(/\s/g, '').length < 6) {
       return { ok: false, error: 'Invalid code' };
     }
@@ -127,7 +125,7 @@ export async function confirmTotp(
 export async function disableTotp(
   password: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     if (!password) {
       return { ok: false, error: 'Password required' };
     }

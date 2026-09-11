@@ -161,23 +161,6 @@ export type MapCaseGroup = {
   cases: MapCase[];
 };
 
-/** @deprecated Prefer MAP_CASE_GROUPS — kept for any external imports */
-export type MapScreen = {
-  id: string;
-  title: string;
-  route: string;
-  prodRoute: string;
-  image: string;
-  blurb: string;
-};
-
-export type MapScreenGroup = {
-  id: string;
-  title: string;
-  description: string;
-  screens: MapScreen[];
-};
-
 export const MAP_CASE_GROUPS: MapCaseGroup[] = [
   {
     id: 'anonymous',
@@ -2237,20 +2220,3 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
 
 /** Flat list for counts / deep links */
 export const MAP_CASES: MapCase[] = MAP_CASE_GROUPS.flatMap((g) => g.cases);
-
-/** Legacy single-column groups derived from cases (first image wins). */
-export const MAP_SCREEN_GROUPS: MapScreenGroup[] = MAP_CASE_GROUPS.map(
-  (group) => ({
-    id: group.id,
-    title: group.title,
-    description: group.description,
-    screens: group.cases.map((c) => ({
-      id: c.id,
-      title: c.title,
-      route: c.new.route,
-      prodRoute: c.old.route,
-      image: c.old.image ?? c.new.image ?? '/map/listen/listen.png',
-      blurb: c.caption,
-    })),
-  }),
-);

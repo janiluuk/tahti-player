@@ -1,6 +1,5 @@
 import type { FetchMeta } from './client';
-
-const forceMock = () => import.meta.env.VITE_FORCE_MOCK === '1';
+import { isForceMock } from './mode';
 
 const apiBase = () => {
   if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
@@ -135,7 +134,7 @@ export async function fetchMyEvents(): Promise<{
   data: ArtistEvent[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [...mockEvents],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -161,7 +160,7 @@ export type CreateArtistEventInput = {
 export async function createEvent(
   input: CreateArtistEventInput,
 ): Promise<{ ok: true; data: ArtistEvent } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const row: ArtistEvent = {
       id: `evt-mock-${Date.now()}`,
       title: input.title,
@@ -192,7 +191,7 @@ export async function createEvent(
 export async function deleteEvent(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const idx = mockEvents.findIndex((e) => e.id === id);
     if (idx >= 0) {
       mockEvents.splice(idx, 1);
