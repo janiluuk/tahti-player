@@ -1,6 +1,6 @@
 # Performance Cleanup — Dead Code, Bloat & Remaining Polling
 
-**Status:** open
+**Status:** partial
 
 Comprehensive cleanup of stale dependencies, dead components, duplicate code,
 and remaining `setInterval` polling that wasn't covered in the first perf pass.
@@ -9,21 +9,20 @@ and remaining `setInterval` polling that wasn't covered in the first perf pass.
 
 ## Phase 1 — Dead weight removal (low risk, high signal)
 
-### 1A. Remove unused dependencies from tahti-web package.json
-- `@material/material-color-utilities` — zero imports, 1.4 MB wasted
-- `motion` — zero imports in tahti-web (lives in `@tahti-player/ui`)
+### 1A. Remove unused dependencies from tahti-web package.json — **done 2026-09-11**
+- ~~`@material/material-color-utilities`~~
+- ~~`motion`~~
 
-### 1B. Remove dead components (zero imports from any route/view/component)
-- `views/studio/StudioVenuesView.tsx` (288 lines)
-- `views/MyReleasesView.tsx` (20 lines)
-- `components/LanguageSwitcher.tsx` + `LanguageSwitcher.test.tsx`
-- `components/CollectionTrackList.tsx` (173 lines)
-- `components/InPageNav.tsx` (45 lines)
-- `components/ScheduleDialog.tsx` (60 lines)
-- `components/ConnectedQueuePanel.tsx` (30 lines)
+### 1B. Remove dead components — **partial 2026-09-11**
+- ~~`views/studio/StudioVenuesView.tsx`~~
+- ~~`views/MyReleasesView.tsx`~~
+- ~~`components/LanguageSwitcher.tsx` + test~~
+- ~~`components/CollectionTrackList.tsx`~~
+- ~~`components/ScheduleDialog.tsx`~~
+- Kept `InPageNav` + `ConnectedQueuePanel` (Storybook surfaces / documented primitives)
 
-### 1C. Remove deprecated types
-- `MapScreen` and `MapScreenGroup` in `content/mapScreens.ts` — `@deprecated`, zero imports outside file
+### 1C. Remove deprecated types — **done 2026-09-11**
+- ~~`MapScreen` / `MapScreenGroup` / `MAP_SCREEN_GROUPS`~~
 
 ---
 
@@ -44,10 +43,10 @@ and import everywhere.
 `studio-extras.ts`, `track-insights.ts`, `user-media.ts`, `venues-manage.ts`,
 plus `views/ArtistView.tsx`.
 
-### 2B. Remove 23 local `forceMock` aliases
-- 19 files do `const forceMock = isForceMock;` — use import directly
-- 5 files reimplement inline: `track-insights.ts`, `archive-versions.ts`,
-  `events.ts`, `venues-manage.ts`, `sources.ts`
+### 2B. Remove local `forceMock` aliases — **done 2026-09-11**
+- Removed `const forceMock = isForceMock` aliases across API modules
+- Replaced inline `VITE_FORCE_MOCK` lambdas in `sources` / `sound-versions` /
+  `venues-manage` / `events` / `track-insights` with shared `isForceMock()`
 
 ---
 
@@ -59,21 +58,21 @@ on `document.visibilitychange`.
 ### 3A. High priority — unconditional polls running globally
 | File | Interval | What |
 |---|---|---|
-| `StreamManagerPanel.tsx:181` | 5s | Signal + stats |
-| `StreamManagerPanel.tsx:230` | 15s | Targets, programme, rotation |
-| `StreamManagerPanel.tsx:238` | **1s** | `setNow()` clock — consider rAF or 2s throttle |
-| `SelectsTab.tsx:78` | 4s | Admin selects + stream status |
-| `AdminLogsView.tsx:118` | 15s | Container logs |
-| `AdminActivityView.tsx:175` | 15s | Activity feed |
+| `StreamManagerPanel.tsx:181` | 5s | Signal + stats | **→ usePolling 2026-09-11**
+| `StreamManagerPanel.tsx:230` | 15s | Targets, programme, rotation | **→ usePolling 2026-09-11**
+| `StreamManagerPanel.tsx:238` | **1s** | `setNow()` clock — consider rAF or 2s throttle | **→ usePolling 2026-09-11**
+| `SelectsTab.tsx:78` | 4s | Admin selects + stream status | **→ usePolling 2026-09-11**
+| `AdminLogsView.tsx:118` | 15s | Container logs | **→ usePolling 2026-09-11**
+| `AdminActivityView.tsx:175` | 15s | Activity feed | **→ usePolling 2026-09-11**
 
 ### 3B. Medium priority — conditional polls (processing/transcode)
 | File | Interval | Condition |
 |---|---|---|
-| `StudioGoLiveView.tsx:255` | 4s | While mounted (signal check) |
-| `StudioSoundView.tsx:142` | 4s | While status is PENDING/PROCESSING |
+| `StudioGoLiveView.tsx:255` | 4s | While mounted (signal check) | **→ usePolling 2026-09-11**
+| `StudioSoundView.tsx:142` | 4s | While status is PENDING/PROCESSING | **→ usePolling 2026-09-11**
 | `StudioProEditorView.tsx:240` | 4s | While stem is PENDING/PROCESSING |
 | `StudioProEditorView.tsx:264` | 4s | While render is pending |
-| `AudioRevisionList.tsx:101` | 4s | While processing === true |
+| `AudioRevisionList.tsx:101` | 4s | While processing === true | **→ usePolling 2026-09-11**
 | `useJam.ts:137` | 5s | While jam session active (host push) |
 | `useJam.ts:206` | 5s | While guest + playing (drift check) |
 
@@ -107,6 +106,15 @@ on `document.visibilitychange`.
 - Audit `VITE_MOCK_ADMIN` (single use in mock-session)
 
 ---
+
+
+## Shipped this pass (2026-09-11)
+
+Phases **1A**, **1B** (minus Storybook primitives), **1C**, **2B**, and the
+high-priority / selected medium **3A/3B** `usePolling` migrations above.
+Still open: Phase **2A** `apiBaseUrl` extract, remaining Phase 3 polls
+(Pro Editor, Jam, AppShell title scroll, notification store), Phase 4
+monolith splits (see also `codebase-refactor-hotspots.md`), Phase 5 env.
 
 ## Execution order
 

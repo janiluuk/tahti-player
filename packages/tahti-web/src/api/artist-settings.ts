@@ -1,8 +1,6 @@
 import type { FetchMeta } from './client';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
 
-const forceMock = isForceMock;
-
 const apiBase = () => {
   if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
     return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
@@ -222,7 +220,7 @@ export async function fetchNotificationPrefs(): Promise<{
   data: NotificationPrefs;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: { ...mockNotifications },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -254,7 +252,7 @@ export async function patchNotificationPrefs(
 ): Promise<
   { ok: true; data: NotificationPrefs } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockNotifications = { ...mockNotifications, ...patch };
     return { ok: true, data: { ...mockNotifications } };
   }
@@ -279,7 +277,7 @@ export async function fetchDiscoveryPrefs(): Promise<{
   data: DiscoveryPrefs;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: { ...mockDiscovery },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -309,7 +307,7 @@ export async function fetchDiscoveryPrefs(): Promise<{
 export async function patchDiscoveryPrefs(
   patch: Partial<DiscoveryPrefs>,
 ): Promise<{ ok: true; data: DiscoveryPrefs } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockDiscovery = { ...mockDiscovery, ...patch };
     return { ok: true, data: { ...mockDiscovery } };
   }
@@ -345,7 +343,7 @@ export async function fetchGreenRoomAccess(
   | { ok: true; data: GreenRoomAccess }
   | { ok: false; needsLogin: boolean; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       ok: true,
       data: {
@@ -380,7 +378,7 @@ export async function fetchGreenRoomAccess(
 export async function joinGreenRoom(
   channelSlug: string,
 ): Promise<GreenRoomAccess | null> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return null;
   }
   try {
@@ -398,7 +396,7 @@ export async function fetchGreenRoomPrefs(): Promise<{
   data: GreenRoomPrefs;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: { ...mockGreenRoom },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -441,7 +439,7 @@ export async function fetchGreenRoomPrefs(): Promise<{
 export async function patchGreenRoomPrefs(
   patch: Partial<GreenRoomPrefs>,
 ): Promise<{ ok: true; data: GreenRoomPrefs } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockGreenRoom = { ...mockGreenRoom, ...patch };
     return { ok: true, data: { ...mockGreenRoom } };
   }
@@ -477,7 +475,7 @@ export async function fetchSocialConnections(): Promise<{
   data: SocialConnections;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: { ...mockSocial },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -520,7 +518,7 @@ export async function patchSocialConnections(
 ): Promise<
   { ok: true; data: SocialConnections } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockSocial = { ...mockSocial, ...patch };
     return { ok: true, data: { ...mockSocial } };
   }
@@ -545,7 +543,7 @@ export async function fetchChannelMembers(): Promise<{
   data: ChannelMember[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [...mockMembers],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -585,7 +583,7 @@ export async function fetchModerators(): Promise<{
   data: ModeratorRow[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [...mockMods],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -604,7 +602,7 @@ export async function fetchModerators(): Promise<{
 export async function addModerator(
   username: string,
 ): Promise<{ ok: true; data: ModeratorRow } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const row: ModeratorRow = {
       id: `mod-mock-${Date.now()}`,
       username,
@@ -632,7 +630,7 @@ export async function addModerator(
 export async function removeModerator(
   userId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const idx = mockMods.findIndex((m) => m.id === userId);
     if (idx >= 0) {
       mockMods.splice(idx, 1);
@@ -659,7 +657,7 @@ export async function fetchChatBans(slug: string): Promise<{
   data: ChatBan[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [...mockChatBans],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -679,7 +677,7 @@ export async function banChatFingerprint(
   slug: string,
   fingerprintHash: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     if (!mockChatBans.some((b) => b.fingerprintHash === fingerprintHash)) {
       mockChatBans.unshift({
         fingerprintHash,
@@ -706,7 +704,7 @@ export async function unbanChatFingerprint(
   slug: string,
   fingerprintHash: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const idx = mockChatBans.findIndex(
       (b) => b.fingerprintHash === fingerprintHash,
     );
@@ -733,7 +731,7 @@ export async function fetchPressKitMeta(): Promise<{
   data: PressKitMeta;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: { ...mockPress },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -759,7 +757,7 @@ export async function fetchPressKitMeta(): Promise<{
 export async function patchPressKitBio(
   bioShort: string,
 ): Promise<{ ok: true; data: PressKitMeta } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockPress = { ...mockPress, bioShort };
     return { ok: true, data: { ...mockPress } };
   }
@@ -803,7 +801,7 @@ let mockGalleryImageCounter = 0;
 export async function fetchPublicPressKitImages(
   username: string,
 ): Promise<{ data: PublicPressKitImage[]; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockGalleryPublic
         ? mockGalleryImages.map(({ id, imageUrl, title }) => ({
@@ -830,7 +828,7 @@ export async function fetchMyPressKitImages(): Promise<{
   data: PressKitImageItem[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockGalleryImages.map((i) => ({ ...i })),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -849,7 +847,7 @@ export async function fetchMyPressKitImages(): Promise<{
 export async function setPressKitGalleryPublic(
   pressKitGalleryPublic: boolean,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockGalleryPublic = pressKitGalleryPublic;
     return { ok: true };
   }
@@ -876,7 +874,7 @@ export async function uploadPressKitImage(
   if (!ACCEPTED_PRESS_KIT_TYPES.includes(type)) {
     return { ok: false, error: 'Use JPEG, PNG, or WebP' };
   }
-  if (forceMock()) {
+  if (isForceMock()) {
     if (mockGalleryImages.length >= MAX_PRESS_KIT_IMAGES) {
       return {
         ok: false,
@@ -954,7 +952,7 @@ export async function updatePressKitImage(
 ): Promise<
   { ok: true; data: PressKitImageItem } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const current = mockGalleryImages.find((image) => image.id === id);
     if (!current) {
       return { ok: false, error: 'Image not found' };
@@ -983,7 +981,7 @@ export async function uploadProfileAvatar(
   if (!ACCEPTED_PRESS_KIT_TYPES.includes(contentType)) {
     return { ok: false, error: 'Use JPEG, PNG, or WebP' };
   }
-  if (forceMock()) {
+  if (isForceMock()) {
     const avatarUrl = URL.createObjectURL(file);
     return { ok: true, avatarUrl };
   }
@@ -1022,7 +1020,7 @@ export async function uploadProfileAvatar(
 export async function removeProfileAvatar(): Promise<
   { ok: true } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {
@@ -1043,7 +1041,7 @@ export async function removeProfileAvatar(): Promise<
 export async function deletePressKitImage(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockGalleryImages = mockGalleryImages.filter((i) => i.id !== id);
     mockPress = { ...mockPress, photoCount: mockGalleryImages.length };
     return { ok: true };

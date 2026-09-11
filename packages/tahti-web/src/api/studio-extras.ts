@@ -2,8 +2,6 @@ import type { FetchMeta } from './client';
 import { setMockFreeSubscriptionsEnabled } from './mock-profile-preferences';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
 
-const forceMock = isForceMock;
-
 const apiBase = () => {
   if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
     return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
@@ -121,7 +119,7 @@ export async function fetchChannelSchedule(): Promise<{
   data: ChannelSchedule;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: { ...mockSchedule },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -143,7 +141,7 @@ export async function fetchChannelSchedule(): Promise<{
 export async function patchChannelSchedule(
   patch: Partial<ChannelSchedule>,
 ): Promise<{ ok: true; data: ChannelSchedule } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockSchedule = { ...mockSchedule, ...patch };
     return { ok: true, data: { ...mockSchedule } };
   }
@@ -168,7 +166,7 @@ export async function fetchUpcomingBroadcasts(): Promise<{
   data: UpcomingBroadcast[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const first = mockSchedule.nextBroadcastAt;
     return {
       data: first
@@ -220,7 +218,7 @@ export async function fetchProgramme(): Promise<{
   data: ProgrammeView;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: { ...mockProgramme, items: [...mockProgramme.items] },
       meta: { source: 'mock' },
@@ -262,7 +260,7 @@ export async function patchProgramme(
     >
   > & { items?: ProgrammeItemPatch[] },
 ): Promise<{ ok: true; data: ProgrammeView } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockProgramme = {
       ...mockProgramme,
       ...patch,
@@ -350,7 +348,7 @@ export async function fetchStorageUsage(): Promise<{
   data: StorageUsage;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: {
         usedBytes: 86_000_000,
@@ -396,7 +394,7 @@ export async function fetchStatsSummary(): Promise<{
   data: StatsSummary;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: {
         playsToday: 42,
@@ -431,7 +429,7 @@ export async function fetchStatsTopTracks(
   data: StatsTopTrack[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [
         {
@@ -460,7 +458,7 @@ export async function fetchStatsTopCountries(
   data: StatsTopCountry[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [
         { country: 'FI', count: 120 },
@@ -487,7 +485,7 @@ export async function fetchStatsTopLists(
   data: StatsTopListBucket[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [
         {
@@ -613,7 +611,7 @@ export async function fetchStatsPlays(
     typeof rangeOrQuery === 'string' ? { range: rangeOrQuery } : rangeOrQuery;
   const range = query.range ?? '30';
 
-  if (forceMock()) {
+  if (isForceMock()) {
     const daily =
       range === 'custom' && query.from && query.to
         ? mockDailyBetween(query.from, query.to)
@@ -674,7 +672,7 @@ export async function fetchStatsPlaysHourly(date: string): Promise<{
   data: number[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const seed = date.split('-').reduce((sum, part) => sum + Number(part), 0);
     const hours = Array.from({ length: 24 }, (_, hour) => {
       if (hour < 6) {
@@ -712,7 +710,7 @@ export async function fetchStatsPlaysHourly(date: string): Promise<{
 export async function fetchListenerGeo(
   period: ListenerGeoPeriod = '30d',
 ): Promise<{ data: ListenerGeoPoint[]; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [
         { countryCode: 'FI', displayName: 'Finland', count: 180 },
@@ -739,7 +737,7 @@ export async function fetchChannelEgressStats(): Promise<{
   data: ChannelEgressStats;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: {
         windowDays: 30,
@@ -766,7 +764,7 @@ export async function fetchChannelLiveStats(): Promise<{
   data: ChannelLiveStats;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: {
         windowDays: 14,
@@ -846,7 +844,7 @@ export async function fetchMeProfile(): Promise<{
   data: ProfileFields;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: { ...mockProfile },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -910,7 +908,7 @@ export async function patchMeProfile(
     >
   >,
 ): Promise<{ ok: true; data: ProfileFields } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockProfile = { ...mockProfile, ...patch };
     if (patch.freeSubscriptionsEnabled !== undefined) {
       setMockFreeSubscriptionsEnabled(
@@ -986,7 +984,7 @@ export async function fetchArtistPosts(): Promise<{
   data: ArtistPost[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockPosts.map((post) => ({ ...post, images: [...post.images] })),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -1009,7 +1007,7 @@ export async function fetchChannelPosts(slug: string): Promise<{
   data: ArtistPost[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockPosts.map((post) => ({ ...post, images: [...post.images] })),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -1035,7 +1033,7 @@ export async function createArtistPost(input: {
   body: string;
   linkUrl?: string;
 }): Promise<{ ok: true; data: ArtistPost } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const row: ArtistPost = {
       id: `post-mock-${Date.now()}`,
       title: input.title ?? null,
@@ -1070,7 +1068,7 @@ export async function uploadArtistPostImage(
   if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
     return { ok: false, error: 'Choose a JPEG, PNG, or WebP image.' };
   }
-  if (forceMock()) {
+  if (isForceMock()) {
     const imageUrl = URL.createObjectURL(file);
     const current = mockPosts.find((post) => post.id === postId);
     if (!current) {
@@ -1115,7 +1113,7 @@ export async function uploadArtistPostImage(
 export async function deleteArtistPost(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockPosts = mockPosts.filter((p) => p.id !== id);
     return { ok: true };
   }
@@ -1136,7 +1134,7 @@ export async function fetchNewsletterDrafts(): Promise<{
   data: NewsletterDraft[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [...mockDrafts],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -1158,7 +1156,7 @@ export async function sendNewsletterDraft(
   draftId: string,
   audience?: 'all' | 'fans',
 ): Promise<{ ok: true; queued?: number } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockDrafts = mockDrafts.map((d) =>
       d.id === draftId
         ? { ...d, state: 'SENT', sentAt: new Date().toISOString() }
@@ -1187,7 +1185,7 @@ export async function createNewsletterDraft(input: {
 }): Promise<
   { ok: true; data: NewsletterDraft } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const row: NewsletterDraft = {
       id: `nl-mock-${Date.now()}`,
       subject: input.subject,
@@ -1222,7 +1220,7 @@ export async function postChatReaction(
   slug: string,
   emoji: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {

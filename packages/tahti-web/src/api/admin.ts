@@ -19,8 +19,6 @@ import type {
   UpsertGovernanceAttendance,
 } from './types';
 
-const forceMock = isForceMock;
-
 // ── Dashboard ───────────────────────────────────────────────────────────────
 
 export type AdminActionRow = {
@@ -47,7 +45,7 @@ export async function fetchAdminVenues(): Promise<{
   data: AdminVenue[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [
         {
@@ -218,7 +216,7 @@ export async function fetchAdminContentOverview(): Promise<{
   data: AdminContentOverview;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockContentOverview(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -328,7 +326,7 @@ export async function fetchAdminDashboard(): Promise<{
   data: AdminDashboard;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockDashboard(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -487,7 +485,7 @@ function mockBetaApplications(): AdminBetaApplication[] {
 export async function fetchAdminBetaApplications(
   status?: AdminBetaStatus,
 ): Promise<{ data: AdminBetaApplication[]; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const all = mockBetaApplications();
     return {
       data: status ? all.filter((a) => a.status === status) : all,
@@ -514,7 +512,7 @@ export async function approveBetaApplication(
 ): Promise<
   { ok: true; setupUrl: string | null } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       ok: true,
       setupUrl: `https://beta.tahti.live/setup-password?token=mock-${id}`,
@@ -533,7 +531,7 @@ export async function approveBetaApplication(
 }
 
 export async function rejectBetaApplication(id: string) {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true } as const;
   }
   return mutate(
@@ -547,7 +545,7 @@ export async function resendBetaSetupLink(
 ): Promise<
   { ok: true; setupUrl: string | null } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       ok: true,
       setupUrl: `https://beta.tahti.live/setup-password?token=resent-${id}`,
@@ -697,7 +695,7 @@ export async function fetchAdminUsers(filters: {
   role?: string;
   isMember?: string;
 }): Promise<{ data: AdminUserRow[]; total: number; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     let rows = mockUsers();
     if (filters.q) {
       const q = filters.q.toLowerCase();
@@ -756,7 +754,7 @@ export async function fetchAdminUsers(filters: {
 export async function fetchAdminUser(
   id: string,
 ): Promise<{ data: AdminUserDetail | null; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const user = mockUsers().find((candidate) => candidate.id === id);
     return {
       data: user ? mockUserDetail(user) : null,
@@ -780,7 +778,7 @@ export async function patchAdminUser(
   id: string,
   patch: AdminUserPatch,
 ): Promise<{ ok: true; data: AdminUserDetail } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const users = mockUsers();
     const index = users.findIndex((candidate) => candidate.id === id);
     if (index < 0) {
@@ -828,7 +826,7 @@ export async function suspendAdminUser(
   id: string,
   reason: string,
 ): Promise<{ ok: true; data: AdminUserDetail } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const user = mockUsers().find((candidate) => candidate.id === id);
     if (!user) {
       return { ok: false, error: 'User not found' };
@@ -855,7 +853,7 @@ export async function suspendAdminUser(
 export async function unsuspendAdminUser(
   id: string,
 ): Promise<{ ok: true; data: AdminUserDetail } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const user = mockUsers().find((candidate) => candidate.id === id);
     if (!user) {
       return { ok: false, error: 'User not found' };
@@ -947,7 +945,7 @@ export async function fetchAdminRadioRotation(): Promise<{
   data: AdminRadioRotationItem[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockRadioRotation,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -1029,7 +1027,7 @@ export async function fetchAdminRadio(): Promise<{
   data: AdminRadioData;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockRadioAdmin(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -1075,7 +1073,7 @@ export async function fetchAdminRadio(): Promise<{
 }
 
 export function radioMoveToFront(channelId: string) {
-  if (forceMock()) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
@@ -1085,7 +1083,7 @@ export function radioMoveToFront(channelId: string) {
 }
 
 export function radioOptOut(channelId: string) {
-  if (forceMock()) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
@@ -1095,7 +1093,7 @@ export function radioOptOut(channelId: string) {
 }
 
 export function radioRemoveOptOut(channelId: string) {
-  if (forceMock()) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
@@ -1131,7 +1129,7 @@ export async function fetchAdminInternetRadioPresets(): Promise<{
   data: AdminInternetRadioPreset[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: listMockInternetRadioPresets(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -1152,7 +1150,7 @@ export async function createAdminInternetRadioPreset(
 ): Promise<
   { ok: true; data: AdminInternetRadioPreset } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const preset = createMockInternetRadioPreset({
       genre: null,
       description: null,
@@ -1184,7 +1182,7 @@ export async function patchAdminInternetRadioPreset(
 ): Promise<
   { ok: true; data: AdminInternetRadioPreset } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const updated = patchMockInternetRadioPreset(id, patch);
     if (!updated) {
       return { ok: false, error: 'Preset not found' };
@@ -1209,7 +1207,7 @@ export async function patchAdminInternetRadioPreset(
 export async function deleteAdminInternetRadioPreset(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     deleteMockInternetRadioPreset(id);
     return { ok: true };
   }
@@ -1283,7 +1281,7 @@ export async function fetchAdminRadioSubmissions(): Promise<{
   data: AdminRadioSubmission[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockRadioSubmissions(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -1315,7 +1313,7 @@ export async function fetchAdminRadioSubmissionAudio(id: string): Promise<
     }
   | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const row = mockRadioSubmissions().find((item) => item.id === id);
     if (!row?.sound.audioUrl) {
       return { ok: false, error: 'No playable audio' };
@@ -1347,7 +1345,7 @@ export async function fetchAdminRadioSubmissionAudio(id: string): Promise<
 }
 
 export function approveRadioSubmission(id: string) {
-  if (forceMock()) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
@@ -1357,7 +1355,7 @@ export function approveRadioSubmission(id: string) {
 }
 
 export function rejectRadioSubmission(id: string, note?: string) {
-  if (forceMock()) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
@@ -1426,7 +1424,7 @@ export async function fetchAdminRadioStationSuggestions(): Promise<{
   data: AdminRadioStationSuggestion[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockRadioStationSuggestions(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -1443,7 +1441,7 @@ export async function fetchAdminRadioStationSuggestions(): Promise<{
 }
 
 export function approveRadioStationSuggestion(id: string) {
-  if (forceMock()) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
@@ -1453,7 +1451,7 @@ export function approveRadioStationSuggestion(id: string) {
 }
 
 export function rejectRadioStationSuggestion(id: string, note?: string) {
-  if (forceMock()) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
@@ -1474,7 +1472,7 @@ export type RadioStationSuggestionInput = {
 export async function submitRadioStationSuggestion(
   input: RadioStationSuggestionInput,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {
@@ -1571,7 +1569,7 @@ export async function fetchAdminNews(): Promise<{
   data: AdminNewsPost[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: newsState(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -1598,7 +1596,7 @@ export async function createNewsPost(input: {
   linkLabel?: string;
   publish: boolean;
 }): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const posts = newsState();
     posts.unshift({
       id: `news-${Date.now()}`,
@@ -1628,7 +1626,7 @@ export async function updateNewsPost(
     publish?: boolean;
   },
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const post = newsState().find((p) => p.id === id);
     if (post) {
       if (input.headline != null) {
@@ -1659,7 +1657,7 @@ export async function updateNewsPost(
 export async function deleteNewsPost(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockNewsState = newsState().filter((p) => p.id !== id);
     persistNewsState(mockNewsState);
     return { ok: true };
@@ -1763,7 +1761,7 @@ export async function fetchAdminSelects(): Promise<{
   data: { items: AdminSelectsItem[]; stream: AdminSelectsStream };
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const current = selectsState()[0] ?? null;
     return {
       data: {
@@ -1812,7 +1810,7 @@ export async function fetchAdminSelects(): Promise<{
 export async function searchAdminSelectsBrowse(
   q: string,
 ): Promise<{ data: AdminSelectsBrowseItem[]; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const query = q.toLowerCase();
     return {
       data: mockSelectsBrowse().filter((i) =>
@@ -1832,7 +1830,7 @@ export async function searchAdminSelectsBrowse(
 }
 
 export function addToSelectsRotation(item: AdminSelectsBrowseItem) {
-  if (forceMock()) {
+  if (isForceMock()) {
     selectsState().push({
       id: `sel-${Date.now()}`,
       soundId: item.id,
@@ -1851,7 +1849,7 @@ export function addToSelectsRotation(item: AdminSelectsBrowseItem) {
 }
 
 export function removeFromSelectsRotation(id: string) {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockSelectsItems = selectsState().filter((i) => i.id !== id);
     return Promise.resolve({ ok: true } as const);
   }
@@ -1862,7 +1860,7 @@ export function removeFromSelectsRotation(id: string) {
 }
 
 export function reorderSelectsItem(id: string, position: number) {
-  if (forceMock()) {
+  if (isForceMock()) {
     const items = selectsState();
     const idx = items.findIndex((i) => i.id === id);
     const target = Math.max(0, Math.min(position, items.length - 1));
@@ -1880,7 +1878,7 @@ export function reorderSelectsItem(id: string, position: number) {
 }
 
 export function reorderSelectsRotation(itemIds: string[]) {
-  if (forceMock()) {
+  if (isForceMock()) {
     const byId = new Map(selectsState().map((item) => [item.id, item]));
     mockSelectsItems = itemIds
       .map((id) => byId.get(id))
@@ -1893,7 +1891,7 @@ export function reorderSelectsRotation(itemIds: string[]) {
 }
 
 export function startSelectsStream() {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockSelectsStreamRunning = true;
     return Promise.resolve({ ok: true } as const);
   }
@@ -1901,7 +1899,7 @@ export function startSelectsStream() {
 }
 
 export function stopSelectsStream() {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockSelectsStreamRunning = false;
     return Promise.resolve({ ok: true } as const);
   }
@@ -1949,7 +1947,7 @@ export async function fetchAdminStreams(): Promise<{
   data: AdminLiveStreamRow[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockLiveStreams(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -1966,7 +1964,7 @@ export async function fetchAdminStreams(): Promise<{
 }
 
 export function restartStream(slug: string) {
-  if (forceMock()) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
@@ -1976,21 +1974,21 @@ export function restartStream(slug: string) {
 }
 
 export function skipStreamTrack(slug: string) {
-  if (forceMock()) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(`/api/admin/streams/${encodeURIComponent(slug)}/skip`, 'POST');
 }
 
 export function pauseStream(slug: string) {
-  if (forceMock()) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(`/api/admin/streams/${encodeURIComponent(slug)}/pause`, 'POST');
 }
 
 export function resumeStream(slug: string) {
-  if (forceMock()) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
@@ -2000,7 +1998,7 @@ export function resumeStream(slug: string) {
 }
 
 export function forceStreamOffline(slug: string) {
-  if (forceMock()) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
@@ -2145,7 +2143,7 @@ export async function fetchAdminSupportTickets(params?: {
 }): Promise<{ data: AdminSupportTicket[]; meta: FetchMeta }> {
   const status = params?.status;
   const q = params?.q?.trim();
-  if (forceMock()) {
+  if (isForceMock()) {
     let data = getMockSupportTickets();
     if (status) {
       data = data.filter((t) => t.status === status);
@@ -2186,7 +2184,7 @@ export async function fetchAdminSupportTickets(params?: {
 export async function fetchAdminSupportTicketDetail(
   id: string,
 ): Promise<{ data: AdminSupportTicketDetail | null; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const ticket = getMockSupportTickets().find((t) => t.id === id) ?? null;
     return {
       data: ticket,
@@ -2209,7 +2207,7 @@ export async function updateAdminSupportTicketStatus(
 ): Promise<
   { ok: true; data: AdminSupportTicketDetail } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const ticket = getMockSupportTickets().find((t) => t.id === id);
     if (!ticket) {
       return { ok: false, error: 'Ticket not found' };
@@ -2245,7 +2243,7 @@ export async function postAdminSupportTicketMessage(
 ): Promise<
   { ok: true; data: AdminSupportTicketDetail } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const ticket = getMockSupportTickets().find((t) => t.id === id);
     if (!ticket) {
       return { ok: false, error: 'Ticket not found' };
@@ -2405,7 +2403,7 @@ export async function fetchAdminTopLists(
   dimension: AdminTopListDimension,
   sort: AdminTopListSort,
 ): Promise<{ data: AdminTopListBucket[]; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const buckets = mockTopLists(dimension).map((b) => ({
       bucket: b.bucket,
       entries: [...b.entries].sort((a, c) =>
@@ -2478,7 +2476,7 @@ export async function fetchAdminAnnouncements(): Promise<{
   data: { clips: AdminAnnouncementClip[]; systemEnabled: boolean };
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: {
         clips: announcementState(),
@@ -2502,7 +2500,7 @@ export async function fetchAdminAnnouncements(): Promise<{
 }
 
 export function setAnnouncementsSystemEnabled(enabled: boolean) {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockAnnouncementsSystemEnabled = enabled;
     return Promise.resolve({ ok: true } as const);
   }
@@ -2517,7 +2515,7 @@ export async function patchAnnouncementClip(
     Pick<AdminAnnouncementClip, 'isEnabled' | 'scheduleMode' | 'everyNth'>
   >,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const clip = announcementState().find((c) => c.id === id);
     if (clip) {
       Object.assign(clip, patch);
@@ -2532,7 +2530,7 @@ export async function patchAnnouncementClip(
 }
 
 export function deleteAnnouncementClip(id: string) {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockAnnouncementClips = announcementState().filter((c) => c.id !== id);
     return Promise.resolve({ ok: true } as const);
   }
@@ -2545,7 +2543,7 @@ export async function uploadAnnouncementClip(
   { ok: true; clip: AdminAnnouncementClip } | { ok: false; error: string }
 > {
   const title = file.name.replace(/\.[^.]+$/, '');
-  if (forceMock()) {
+  if (isForceMock()) {
     const clip: AdminAnnouncementClip = {
       id: `ann-${Date.now()}`,
       title,
@@ -2686,7 +2684,7 @@ export async function fetchAdminStorage(): Promise<{
   data: AdminStorageOverview | null;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     if (!mockStorageState) {
       mockStorageState = mockStorageOverview();
     }
@@ -2704,7 +2702,7 @@ export async function fetchAdminStorage(): Promise<{
 }
 
 export function setUserStorageQuota(userId: string, quotaBytes: number) {
-  if (forceMock()) {
+  if (isForceMock()) {
     const row = mockStorageState?.users.find((u) => u.userId === userId);
     if (row) {
       row.quotaBytes = quotaBytes;
@@ -2794,7 +2792,7 @@ export async function fetchAdminStorageUserFiles(userId: string): Promise<{
   data: AdminStorageUserDetail | null;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockStorageUserDetail(userId),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -2925,7 +2923,7 @@ export async function fetchAdminFiles(query?: string): Promise<{
   data: AdminFileRow[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     if (!mockAdminFilesState) {
       mockAdminFilesState = mockAdminFiles();
     }
@@ -2955,7 +2953,7 @@ export async function fetchAdminFiles(query?: string): Promise<{
 }
 
 export function deleteAdminFile(id: string) {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockAdminFilesState = (mockAdminFilesState ?? mockAdminFiles()).filter(
       (f) => f.id !== id,
     );
@@ -2981,7 +2979,7 @@ export async function fetchAdminFileAudio(id: string): Promise<{
   data: AdminFileAudio | null;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const file = (mockAdminFilesState ?? mockAdminFiles()).find(
       (f) => f.id === id,
     );
@@ -3077,7 +3075,7 @@ let mockContentReportsState: AdminContentReportRow[] | null = null;
 export async function fetchAdminContentReports(
   status?: AdminContentReportStatus,
 ): Promise<{ data: AdminContentReportRow[]; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     if (!mockContentReportsState) {
       mockContentReportsState = mockContentReports();
     }
@@ -3105,7 +3103,7 @@ export function resolveContentReport(
   status: 'REVIEWING' | 'ACTIONED' | 'DISMISSED',
   note?: string,
 ) {
-  if (forceMock()) {
+  if (isForceMock()) {
     const row = (mockContentReportsState ?? mockContentReports()).find(
       (r) => r.id === id,
     );
@@ -3204,7 +3202,7 @@ export async function fetchAdminFinancial(): Promise<{
   data: AdminFinancialOverview | null;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     if (!mockFinancialState) {
       mockFinancialState = mockFinancialOverview();
     }
@@ -3239,7 +3237,7 @@ export function createLedgerEntry(entry: {
   amountCents: number;
   description: string;
 }) {
-  if (forceMock()) {
+  if (isForceMock()) {
     const row: AdminLedgerEntry = {
       id: `ledg-${Date.now()}`,
       ...entry,
@@ -3273,7 +3271,7 @@ export async function fetchAdminGovernanceOverview(): Promise<{
   data: AdminGovernanceOverview;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockGovernanceOverview(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -3365,7 +3363,7 @@ let mockFeatureRequestsState: AdminFeatureRequestRow[] | null = null;
 export async function fetchAdminFeatureRequests(
   status?: AdminFeatureRequestStatus,
 ): Promise<{ data: AdminFeatureRequestRow[]; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     if (!mockFeatureRequestsState) {
       mockFeatureRequestsState = mockFeatureRequests();
     }
@@ -3390,7 +3388,7 @@ export function updateFeatureRequestStatus(
   status: AdminFeatureRequestStatus,
   note?: string,
 ) {
-  if (forceMock()) {
+  if (isForceMock()) {
     const row = (mockFeatureRequestsState ?? mockFeatureRequests()).find(
       (r) => r.id === id,
     );
@@ -3424,7 +3422,7 @@ export async function fetchAdminFeatureRequestReports(): Promise<{
   data: GovernanceQuarterlyReport[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockQuarterlyReports,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -3447,7 +3445,7 @@ export async function generateFeatureRequestQuarterlyReport(input?: {
   { ok: true; data: GovernanceQuarterlyReport } | { ok: false; error: string }
 > {
   const { year, quarter } = { ...currentQuarter(), ...input };
-  if (forceMock()) {
+  if (isForceMock()) {
     const existing = mockQuarterlyReports.find(
       (r) => r.year === year && r.quarter === quarter,
     );
@@ -3501,7 +3499,7 @@ export async function fetchAdminGrants(): Promise<{
   data: AdminGrantYearSummary[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockGrantHistory(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -3599,7 +3597,7 @@ function mockGrantPreview(year: number): AdminGrantPreview {
 export async function fetchAdminGrantPreview(
   year: number,
 ): Promise<{ data: AdminGrantPreview | null; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockGrantPreview(year),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -3673,7 +3671,7 @@ export async function fetchAdminAgmMotions(): Promise<{
   data: AdminMotion[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockAgmMotions(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -3762,7 +3760,7 @@ export async function uploadAdminGovernanceMinutes(
 ): Promise<
   { ok: true; data: GovernanceMeeting } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const patched = await patchAdminGovernanceMeeting(meetingId, {
       minutesKey: `mock/governance/meetings/${meetingId}/minutes.pdf`,
     });
@@ -3984,7 +3982,7 @@ export async function fetchAdminIntegrationStatus(): Promise<{
   data: AdminIntegrationStatus[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockIntegrationStatus(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -4107,7 +4105,7 @@ export async function fetchAdminAddons(
   scope?: AdminAddonScope,
   status?: AdminAddonStatus,
 ): Promise<{ data: AdminAddon[]; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockAddons.filter(
         (addon) =>
@@ -4148,7 +4146,7 @@ export type AdminAddonRegisterInput = {
 export async function registerAdminAddon(
   input: AdminAddonRegisterInput,
 ): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const addon: AdminAddon = {
       id: `addon-${Date.now()}`,
       ...input,
@@ -4199,7 +4197,7 @@ export async function approveAdminAddon(
   id: string,
   moderationNote?: string,
 ): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return mockModerate(id, 'APPROVED', moderationNote ?? null);
   }
   try {
@@ -4221,7 +4219,7 @@ export async function rejectAdminAddon(
   id: string,
   moderationNote: string,
 ): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return mockModerate(id, 'REJECTED', moderationNote);
   }
   try {
@@ -4243,7 +4241,7 @@ export async function disableAdminAddon(
   id: string,
   moderationNote?: string,
 ): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return mockModerate(id, 'DISABLED', moderationNote ?? null);
   }
   try {
@@ -4265,7 +4263,7 @@ export async function setAdminAddonEnabledByDefault(
   id: string,
   enabledByDefault: boolean,
 ): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const existing = mockAddons.find((addon) => addon.id === id);
     if (!existing) {
       return { ok: false, error: 'Add-on not found' };
@@ -4293,7 +4291,7 @@ export async function setAdminAddonDefaultConfig(
   id: string,
   defaultConfigJson: Record<string, unknown> | null,
 ): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const existing = mockAddons.find((addon) => addon.id === id);
     if (!existing) {
       return { ok: false, error: 'Add-on not found' };
@@ -4357,7 +4355,7 @@ export async function fetchAdminStatus(): Promise<{
   data: AdminStatusData | null;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockStatusData(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -4422,7 +4420,7 @@ export async function fetchAdminLanguages(): Promise<{
   data: AdminLanguage[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockLanguages(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -4445,7 +4443,7 @@ export async function createAdminLanguage(input: {
   code: string;
   name: string;
 }): Promise<{ ok: true; data: AdminLanguage } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     if (mockLanguages().some((l) => l.code === input.code)) {
       return { ok: false, error: `Language "${input.code}" already exists.` };
     }
@@ -4495,7 +4493,7 @@ export async function importAdminLanguageCsv(
     skipped: dataRows.length - validRows.length,
   };
 
-  if (forceMock()) {
+  if (isForceMock()) {
     const lang = mockLanguages().find((l) => l.code === code);
     if (!lang) {
       return { ok: false, error: `Unknown language "${code}".` };
@@ -4734,7 +4732,7 @@ export async function fetchAdminActivity(
   const page = filters.page ?? 1;
   const limit = filters.limit ?? 50;
 
-  if (forceMock()) {
+  if (isForceMock()) {
     const ledger = listMockCommerceAudit().map((row) => ({
       id: row.id,
       action: row.action,
@@ -4904,7 +4902,7 @@ export async function fetchAdminContainerLogs(
   lokiReachable: boolean;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       entries: mockLogEntries(),
       lokiReachable: true,

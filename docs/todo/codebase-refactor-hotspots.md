@@ -45,6 +45,12 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
 
 ## Suggested first slices (when picked up)
 
+
+1b. ~~**API `forceMock` alias cleanup**~~ — **2026-09-11:** all
+   `const forceMock = isForceMock` / inline `VITE_FORCE_MOCK` lambdas in
+   `api/*.ts` now call `isForceMock()` from `mode.ts` (tracked under
+   `performance-cleanup-bulk` Phase 2B).
+
 1. ~~**Shared admin/client HTTP helper**~~ — **2026-09-10:** extracted
    `api/http.ts` (`apiBase` / `getJson` / `sendJson` / `mutate`);
    `admin.ts` imports it. `client.ts` still has its own `requestJson` —

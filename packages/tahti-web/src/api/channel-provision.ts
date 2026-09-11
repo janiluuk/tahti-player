@@ -1,8 +1,6 @@
 import { getMockSessionUser, setMockSessionUser } from './mock-session';
 import { isForceMock } from './mode';
 
-const forceMock = isForceMock;
-
 const apiBase = () => {
   if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
     return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
@@ -13,7 +11,7 @@ const apiBase = () => {
 export async function provisionChannel(): Promise<
   { ok: true; slug: string } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const user = getMockSessionUser();
     if (!user) {
       return { ok: false, error: 'Log in first to create a channel.' };

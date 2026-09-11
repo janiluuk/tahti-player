@@ -4,8 +4,6 @@ import { DEMO_MP3 } from './mock';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
 import type { TahtiPlayable } from './types';
 
-const forceMock = isForceMock;
-
 const apiBase = () => {
   if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
     return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
@@ -83,7 +81,7 @@ export async function fetchBroadcastPreflight(): Promise<{
   data: BroadcastPreflight | null;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: {
         title: null,
@@ -202,7 +200,7 @@ export async function fetchStreamSettings(): Promise<{
   data: StreamSettings | null;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: MOCK_SETTINGS,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -225,7 +223,7 @@ export async function fetchSignalStatus(): Promise<{
   data: SignalStatus;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: {
         connected: mockSignalConnected,
@@ -257,7 +255,7 @@ export async function fetchSignalStatus(): Promise<{
 export async function fetchChannelManageStats(
   slug: string,
 ): Promise<{ data: ChannelManageStats | null; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: {
         audioBitrateKbps: mockSignalConnected ? 160 : 192,
@@ -283,7 +281,7 @@ export async function fetchBroadcastUsage(): Promise<{
   data: BroadcastUsage | null;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: {
         unlimited: false,
@@ -325,7 +323,7 @@ export async function fetchAutoRecordEnabled(): Promise<{
   data: boolean;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const stored = localStorage.getItem(MOCK_RECORDING_STORAGE_KEY);
     return {
       data: stored === null ? true : stored === 'true',
@@ -345,7 +343,7 @@ export async function fetchAutoRecordEnabled(): Promise<{
 export async function patchAutoRecordEnabled(
   autoRecordEnabled: boolean,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     localStorage.setItem(MOCK_RECORDING_STORAGE_KEY, String(autoRecordEnabled));
     return { ok: true };
   }
@@ -369,7 +367,7 @@ export async function patchAutoRecordEnabled(
 export async function postGoLive(): Promise<
   { ok: true } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     if (!mockSignalConnected && mockChannelState === 'OFFLINE') {
       mockSignalConnected = true;
       mockChannelState = 'PREVIEW';
@@ -393,7 +391,7 @@ export async function postGoLive(): Promise<
 export async function postEndBroadcast(): Promise<
   { ok: true } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockChannelState = 'OFFLINE';
     mockSignalConnected = false;
     return { ok: true };
@@ -418,7 +416,7 @@ async function postChannelTransport(
   slug: string,
   action: 'skip' | 'previous' | 'pause' | 'resume',
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {
@@ -448,7 +446,7 @@ export async function fetchRtmpTargets(): Promise<{
   data: RtmpTarget[];
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: [...mockTargets],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -472,7 +470,7 @@ export async function createRtmpTarget(input: {
   rtmpUrl?: string;
   enabled?: boolean;
 }): Promise<{ ok: true; target: RtmpTarget } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const target: RtmpTarget = {
       id: `rtmp-mock-${Date.now()}`,
       provider: input.provider,
@@ -507,7 +505,7 @@ export async function patchRtmpTarget(
   id: string,
   patch: { enabled?: boolean; alwaysMirror?: boolean; label?: string },
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockTargets = mockTargets.map((t) =>
       t.id === id ? { ...t, ...patch } : t,
     );
@@ -530,7 +528,7 @@ export async function patchRtmpTarget(
 export async function deleteRtmpTarget(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockTargets = mockTargets.filter((t) => t.id !== id);
     return { ok: true };
   }
@@ -553,7 +551,7 @@ export async function testRtmpTarget(
   | { ok: true; reachable: boolean; error?: string }
   | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     return { ok: true, reachable: true };
   }
   try {
@@ -595,7 +593,7 @@ export async function fetchStreamOverlay(): Promise<{
   data: StreamOverlay;
   meta: FetchMeta;
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: { ...mockStreamOverlay },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -627,7 +625,7 @@ export async function fetchStreamOverlay(): Promise<{
 export async function patchStreamOverlay(
   patch: StreamOverlay,
 ): Promise<{ ok: true; data: StreamOverlay } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockStreamOverlay = { ...patch };
     return { ok: true, data: { ...mockStreamOverlay } };
   }
@@ -708,7 +706,7 @@ const mockRecordings: RecentBroadcast[] = [
 export async function fetchRecentBroadcasts(
   limit = 50,
 ): Promise<{ data: RecentBroadcast[]; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockRecordings,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

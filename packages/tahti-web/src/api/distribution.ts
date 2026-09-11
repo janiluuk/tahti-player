@@ -13,8 +13,6 @@ import type {
   SpotifyProfileStatus,
 } from './studio-types';
 
-const forceMock = isForceMock;
-
 const apiBase = () => {
   if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
     return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
@@ -242,7 +240,7 @@ export async function fetchRevelatorStatus(releaseId: string): Promise<{
   data: RevelatorReleaseStatus | null;
   meta: { source: 'api' | 'mock'; reason?: string };
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockStatus(releaseId),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -265,7 +263,7 @@ export async function fetchRevelatorBilling(releaseId: string): Promise<{
   data: RevelatorBillingStatus | null;
   meta: { source: 'api' | 'mock'; reason?: string };
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockBilling(releaseId),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -289,7 +287,7 @@ export async function startRevelatorCheckout(
 ): Promise<
   { ok: true; data: RevelatorCheckoutResponse } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockBillingByRelease[releaseId] = {
       ...mockBilling(releaseId),
       paid: true,
@@ -323,7 +321,7 @@ export async function submitToRevelator(
 ): Promise<
   { ok: true; data: RevelatorSubmitAccepted } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     const billing = mockBilling(releaseId);
     if (!billing.paid) {
       return {
@@ -391,7 +389,7 @@ export async function fetchReleaseRoyalties(releaseId: string): Promise<{
   data: RevelatorRoyaltyReportRow[];
   meta: { source: 'api' | 'mock'; reason?: string };
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockRoyalties().map((r) => ({ ...r, releaseId })),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -414,7 +412,7 @@ export async function fetchAllRoyalties(): Promise<{
   data: RevelatorRoyaltyReportRow[];
   meta: { source: 'api' | 'mock'; reason?: string };
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockRoyalties(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -437,7 +435,7 @@ export async function fetchReleaseCatalog(releaseId: string): Promise<{
   data: ReleaseCatalog | null;
   meta: { source: 'api' | 'mock'; reason?: string };
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockCatalog(releaseId),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -460,7 +458,7 @@ export async function patchReleaseCatalog(
   releaseId: string,
   patch: ReleaseCatalogPatch,
 ): Promise<{ ok: true; data: ReleaseCatalog } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const prev = mockCatalog(releaseId);
     const next: ReleaseCatalog = {
       ...prev,
@@ -488,7 +486,7 @@ export async function patchReleaseCatalog(
 export async function fetchReleaseExportJson(
   releaseId: string,
 ): Promise<{ ok: true; json: string } | { ok: false; error: string }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     const catalog = mockCatalog(releaseId);
     const pack = {
       exportedAt: new Date().toISOString(),
@@ -522,7 +520,7 @@ export async function fetchSpotifyArtistProfile(): Promise<{
   data: SpotifyProfileStatus;
   meta: { source: 'api' | 'mock'; reason?: string };
 }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: { configured: true, profile: mockSpotifyProfile },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -552,7 +550,7 @@ export async function linkSpotifyArtistProfile(
 ): Promise<
   { ok: true; data: SpotifyProfileStatus } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockSpotifyProfile = {
       artistId: 'mock-artist',
       name: 'Mock Artist',
@@ -580,7 +578,7 @@ export async function linkSpotifyArtistProfile(
 export async function unlinkSpotifyArtistProfile(): Promise<
   { ok: true } | { ok: false; error: string }
 > {
-  if (forceMock()) {
+  if (isForceMock()) {
     mockSpotifyProfile = null;
     return { ok: true };
   }

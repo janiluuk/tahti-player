@@ -1,6 +1,5 @@
 import type { FetchMeta } from './client';
-
-const forceMock = () => import.meta.env.VITE_FORCE_MOCK === '1';
+import { isForceMock } from './mode';
 
 const apiBase = () => {
   if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
@@ -91,7 +90,7 @@ export async function fetchTrackInsights(
   id: string,
   period: InsightsPeriod = '30d',
 ): Promise<{ data: TrackInsights | null; meta: FetchMeta }> {
-  if (forceMock()) {
+  if (isForceMock()) {
     return {
       data: mockInsights(period, 'Mock track'),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

@@ -1,3 +1,10 @@
+## 2026-09-11 — v0.0.112: dead-weight cleanup + visibility-aware polling
+
+Dropped unused tahti-web deps and unmounted dead views/components. API clients
+now call shared `isForceMock()` instead of local aliases. Stream Manager,
+Go Live, Selects, Admin logs/activity, Sound processing, and revision list
+polls use `usePolling` so background tabs stop hammering the API.
+
 ## 2026-09-10 — v0.0.109: collection peaks, directory ambient glow, Button audit, local-files close, api/http
 
 Collection rows lazy-fetch real peaks for the current track. Discover/Listen
