@@ -13,6 +13,12 @@ const meta: Meta<typeof DropdownButton> = {
   component: DropdownButton,
   parameters: {
     layout: 'centered',
+    docs: {
+      description: {
+        component:
+          'A packaged trigger-button + `Popover.Menu` for the common "collapse related action variants into one control" case. For anything that needs a custom trigger (an icon button, a table row, a card) or a menu with sections/footer, compose `Popover` + `Popover.Menu`/`Popover.Item` directly instead — see Components/Popover’s **Dropdown Menu** and **Sectioned Menu** stories. Migration plan for existing `DropdownButton` call sites: `docs/todo/dropdown-button-to-popover-menu.md`.',
+      },
+    },
   },
   tags: ['autodocs'],
 };
