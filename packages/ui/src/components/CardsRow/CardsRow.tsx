@@ -1,6 +1,6 @@
 import isEmpty from 'lodash-es/isEmpty';
 import { ChevronLeft, ChevronRight, Filter } from 'lucide-react';
-import { FC } from 'react';
+import { ReactNode } from 'react';
 
 import { cn } from '../../utils';
 import { Badge } from '../Badge';
@@ -23,23 +23,28 @@ export type CardsRowLabels = {
   nothingFound: string;
 };
 
-export type CardsRowProps = {
+export type CardsRowProps<T extends CardsRowItem = CardsRowItem> = {
   title: string;
   badge?: string;
-  items: CardsRowItem[];
+  items: T[];
   labels: CardsRowLabels;
   className?: string;
   'data-testid'?: string;
+  /** Custom card renderer, for callers whose items carry richer content
+   * than the default title/subtitle/imageUrl Card can show. Filtering
+   * (by `.title`) and scrolling still work the same either way. */
+  renderItem?: (item: T) => ReactNode;
 };
 
-export const CardsRow: FC<CardsRowProps> = ({
+export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
   title,
   badge,
   items,
   labels,
   className,
   'data-testid': testId = 'cards-row',
-}) => {
+  renderItem,
+}: CardsRowProps<T>) => {
   const {
     filterText,
     setFilterText,
@@ -123,16 +128,22 @@ export const CardsRow: FC<CardsRowProps> = ({
             {labels.nothingFound}
           </div>
         ) : (
-          filteredItems.map((item) => (
-            <Card
-              key={item.id}
-              className="flex-shrink-0"
-              src={item.imageUrl}
-              title={item.title}
-              subtitle={item.subtitle}
-              onClick={item.onClick}
-            />
-          ))
+          filteredItems.map((item) =>
+            renderItem ? (
+              <div key={item.id} className="flex-shrink-0">
+                {renderItem(item)}
+              </div>
+            ) : (
+              <Card
+                key={item.id}
+                className="flex-shrink-0"
+                src={item.imageUrl}
+                title={item.title}
+                subtitle={item.subtitle}
+                onClick={item.onClick}
+              />
+            ),
+          )
         )}
       </div>
     </div>
