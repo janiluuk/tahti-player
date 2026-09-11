@@ -54,7 +54,7 @@ Upload, organise sounds and releases, and prepare catalogue for the public chann
 
 <img src="./docs/readme-shots/studio-sounds.png" alt="Studio / Library / Sounds" width="1680" />
 
-Filter, sort, play and edit sound content. · [`/studio/archive`](./docs/VIEW-GUIDE.md#studio-sounds)
+Filter, sort, play and edit sound content. · [`/studio/sounds`](./docs/VIEW-GUIDE.md#studio-sounds)
 
 #### Studio / Library / Releases
 
@@ -66,13 +66,13 @@ Manage singles, EPs and albums. · [`/studio/releases`](./docs/VIEW-GUIDE.md#stu
 
 <img src="./docs/readme-shots/studio-upload.png" alt="Studio / Library / Upload" width="1680" />
 
-Add tracks, releases, clips and imports. · [`/studio/upload`](./docs/VIEW-GUIDE.md#studio-upload)
+Add tracks, releases, clips and imports. · [`/library/upload`](./docs/VIEW-GUIDE.md#studio-upload)
 
 #### Studio / Library / Collections
 
 <img src="./docs/readme-shots/studio-collections.png" alt="Studio / Library / Collections" width="1680" />
 
-Create and browse organized collections. · [`/studio/collections`](./docs/VIEW-GUIDE.md#studio-collections)
+Create and browse organized collections. · [`/library/collections`](./docs/VIEW-GUIDE.md#studio-collections)
 
 More in this area: see the [full view guide](./docs/VIEW-GUIDE.md).
 
@@ -86,17 +86,23 @@ Go live, programme the schedule, and run channel / radio controls.
 
 Run pre-flight, rotation and live broadcast controls. · [`/studio/go-live`](./docs/VIEW-GUIDE.md#studio-go-live)
 
-#### Studio / Perform / Broadcast
+#### Studio / Perform / Schedule
 
-<img src="./docs/readme-shots/studio-schedule.png" alt="Studio / Perform / Broadcast" width="1680" />
+<img src="./docs/readme-shots/studio-schedule.png" alt="Studio / Perform / Schedule" width="1680" />
 
-Plan live shows, manage 24/7 rotation, and inspect analytics. · [`/studio/schedule`](./docs/VIEW-GUIDE.md#studio-schedule)
+Plan broadcasts and inspect analytics. · [`/studio/schedule`](./docs/VIEW-GUIDE.md#studio-schedule)
 
 #### Studio / Manage / Radio
 
 <img src="./docs/readme-shots/studio-radio.png" alt="Studio / Manage / Radio" width="1680" />
 
 Control stream statistics and 24/7 rotation. · [`/studio/channel?tab=radio`](./docs/VIEW-GUIDE.md#studio-radio)
+
+#### Studio / Branding
+
+<img src="./docs/readme-shots/studio-branding.png" alt="Studio / Branding" width="1680" />
+
+Design channel look, artwork and public presentation. · [`/studio/branding`](./docs/VIEW-GUIDE.md#studio-branding)
 
 More in this area: see the [full view guide](./docs/VIEW-GUIDE.md).
 
@@ -114,7 +120,7 @@ See the artist identity, story, people and public catalogue. · [`/u/demo`](./do
 
 <img src="./docs/readme-shots/studio-audience.png" alt="Studio / Audience" width="1680" />
 
-Manage audience relationships and fan revenue. · [`/studio/audience`](./docs/VIEW-GUIDE.md#studio-audience)
+Manage audience relationships and fan revenue. · [`/studio/revenue`](./docs/VIEW-GUIDE.md#studio-audience)
 
 #### Messages
 

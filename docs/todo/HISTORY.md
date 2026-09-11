@@ -50,6 +50,25 @@ Closed governance gap #7 residue and advanced waveform wiring:
 
 `governance-gap-list.md` and `waveform-detail-accuracy.md` stay open.
 
+## 2026-09-09 — README refresh: screenshots, features, guide
+
+`readme-refresh-screenshots-features-guide.md` is done. Regenerated all
+Nuclear-UI screenshots (`packages/tahti-web/docs/redesign-shots/` via
+`capture-atlas-shots.mjs`, 112 shots; `packages/tahti-web/docs/readme-shots/`
+via `capture-readme-guide.mjs`, 83 shots) against a local
+`VITE_FORCE_MOCK=1` dev server — picked up both this session's UI change
+(icon-only back buttons, full-width layouts) and route drift since the last
+capture (`/studio/archive` → `/studio/sounds`, `/studio/upload` →
+`/library/upload`), confirmed by re-checking a captured PNG directly.
+Root `README.md`: replaced the compact "What it provides" table with a full
+`## Features` section (Listen / Listener account / Artist studio / Operate /
+Desktop player / Developers, sourced from `packages/tahti-web/FEATURES.md`),
+added a board-admin screenshot to the curated set, and added a `## Guide`
+section pointing to `packages/tahti-web/docs/VIEW-GUIDE.md` (the existing
+full indexed screenshot gallery) and the package README's own View guide.
+`capture-readme-guide.mjs` also regenerated `packages/tahti-web/README.md`'s
+View guide section and `docs/VIEW-GUIDE.md` in place, as it always does.
+
 ## 2026-09-08 — Governance: top-3 gaps + admin consolidation closed out
 
 `governance-gap-list-top3.md` is done — all three priority gaps from

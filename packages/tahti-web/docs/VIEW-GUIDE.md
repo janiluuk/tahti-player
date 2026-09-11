@@ -8,7 +8,7 @@ Capture: [`scripts/capture-readme-guide.mjs`](../scripts/capture-readme-guide.mj
 
 - [Listener and account](#listener-and-account) (20)
 - [Public channel and community](#public-channel-and-community) (5)
-- [Artist studio](#artist-studio) (29)
+- [Artist studio](#artist-studio) (31)
 - [Administration](#administration) (27)
 
 ## Listener and account
@@ -30,7 +30,7 @@ Capture: [`scripts/capture-readme-guide.mjs`](../scripts/capture-readme-guide.mj
 | [Settings / Artist](#settings-artist) | `/settings/artist` |
 | [Settings / Channel](#settings-channel) | `/settings/channel` |
 | [Settings / Broadcast](#settings-broadcast) | `/settings/broadcast` |
-| [Studio / Audience](#studio-audience) | `/studio/audience` |
+| [Settings / Audience](#settings-audience) | `/settings/audience` |
 | [Settings / Themes](#settings-themes) | `/settings/themes` |
 | [Settings / Add-ons](#settings-addons) | `/settings/plugin-store` |
 | [Settings / What’s new](#settings-whats-new) | `/settings/whats-new` |
@@ -194,7 +194,7 @@ Configure radio, green room and multicast destinations.
 
 Manage tiers, subscriptions and grants.
 
-`/studio/audience`
+`/settings/audience`
 
 ### Settings / Themes
 
@@ -301,23 +301,25 @@ Check service health and operational status.
 | View | Path |
 | --- | --- |
 | [Studio / Overview](#studio-overview) | `/studio` |
+| [Studio / Branding](#studio-branding) | `/studio/branding` |
 | [Studio / Stats / Overview](#studio-stats-overview) | `/studio/stats` |
 | [Studio / Stats / Plays & listeners](#studio-stats-plays) | `/studio/stats?tab=plays` |
 | [Studio / Stats / Top lists](#studio-stats-top-lists) | `/studio/stats?tab=top-lists` |
 | [Studio / Posts](#studio-posts) | `/studio/updates` |
 | [Studio / Distribution](#studio-distribution) | `/studio/distribution` |
 | [Studio / Insights](#studio-insights) | `/studio/insights` |
-| [Studio / Audience](#studio-audience) | `/studio/audience` |
-| [Studio / Library / Sounds](#studio-sounds) | `/studio/archive` |
-| [Studio / Library / Clips](#studio-clips) | `/studio/archive?tab=clips` |
-| [Studio / Library / Collections](#studio-collections) | `/studio/collections` |
+| [Studio / Audience](#studio-audience) | `/studio/revenue` |
+| [Studio / Stripe](#studio-stripe) | `/studio/stripe` |
+| [Studio / Library / Sounds](#studio-sounds) | `/studio/sounds` |
+| [Studio / Library / Clips](#studio-clips) | `/studio/sounds?folder=clips` |
+| [Studio / Library / Collections](#studio-collections) | `/library/collections` |
 | [Studio / Library / Releases](#studio-releases) | `/studio/releases` |
 | [Studio / Library / Recordings](#studio-recordings) | `/studio/recordings` |
-| [Studio / Library / Upload](#studio-upload) | `/studio/upload` |
+| [Studio / Library / Upload](#studio-upload) | `/library/upload` |
 | [Studio / Library / Editor](#studio-editor) | `/studio/editor` |
 | [Studio / Library / Stash](#studio-stash) | `/studio/stash` |
 | [Studio / Perform / Go live](#studio-go-live) | `/studio/go-live` |
-| [Studio / Perform / Broadcast](#studio-schedule) | `/studio/schedule` |
+| [Studio / Perform / Schedule](#studio-schedule) | `/studio/schedule` |
 | [Studio / Perform / Events](#studio-events) | `/studio/events` |
 | [Studio / Perform / New event](#studio-event-new) | `/studio/events/new` |
 | [Studio / Perform / Venues](#studio-venues) | `/studio/venues` |
@@ -339,6 +341,16 @@ Check service health and operational status.
 See channel health, upcoming shows and work that needs attention.
 
 `/studio`
+
+### Studio / Branding
+
+<a id="studio-branding"></a>
+
+<img src="./readme-shots/studio-branding.png" alt="Studio / Branding" width="1680" />
+
+Design channel look, artwork and public presentation.
+
+`/studio/branding`
 
 ### Studio / Stats / Overview
 
@@ -408,7 +420,17 @@ Review track and catalogue insights.
 
 Manage audience relationships and fan revenue.
 
-`/studio/audience`
+`/studio/revenue`
+
+### Studio / Stripe
+
+<a id="studio-stripe"></a>
+
+<img src="./readme-shots/studio-stripe.png" alt="Studio / Stripe" width="1680" />
+
+Connect payouts and review subscription billing setup.
+
+`/studio/stripe`
 
 ### Studio / Library / Sounds
 
@@ -418,7 +440,7 @@ Manage audience relationships and fan revenue.
 
 Filter, sort, play and edit sound content.
 
-`/studio/archive`
+`/studio/sounds`
 
 ### Studio / Library / Clips
 
@@ -428,7 +450,7 @@ Filter, sort, play and edit sound content.
 
 Manage short clips and radio announcements.
 
-`/studio/archive?tab=clips`
+`/studio/sounds?folder=clips`
 
 ### Studio / Library / Collections
 
@@ -438,7 +460,7 @@ Manage short clips and radio announcements.
 
 Create and browse organized collections.
 
-`/studio/collections`
+`/library/collections`
 
 ### Studio / Library / Releases
 
@@ -468,7 +490,7 @@ Polish and publish broadcast recordings.
 
 Add tracks, releases, clips and imports.
 
-`/studio/upload`
+`/library/upload`
 
 ### Studio / Library / Editor
 
@@ -500,13 +522,13 @@ Run pre-flight, rotation and live broadcast controls.
 
 `/studio/go-live`
 
-### Studio / Perform / Broadcast
+### Studio / Perform / Schedule
 
 <a id="studio-schedule"></a>
 
-<img src="./readme-shots/studio-schedule.png" alt="Studio / Perform / Broadcast" width="1680" />
+<img src="./readme-shots/studio-schedule.png" alt="Studio / Perform / Schedule" width="1680" />
 
-Plan live shows, manage 24/7 rotation, and inspect analytics.
+Plan broadcasts and inspect analytics.
 
 `/studio/schedule`
 

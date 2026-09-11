@@ -29,14 +29,52 @@ Goals:
 
 Honest status: beta already covers the core listener and studio loops on live data. A few production surfaces remain partial or out of scope for Nuclear UI (board admin, full SEO/SSR, some settings depth). Tracked in [`FEATURES.md`](./packages/tahti-web/FEATURES.md).
 
-## What it provides
+## Features
 
-| Audience | Surfaces |
-|----------|----------|
-| **Listeners** | Channel directory, live/archive listen, Tahti Radio, profiles, collections, smart links, follows, DMs, governance, Stripe fan-subscribe |
-| **Artists** | Studio home, Go Live (OBS/RTMP + multistream), music library/upload, releases, playlists & albums, channel designer, schedule, stats, revenue / Stripe Connect, distribution |
-| **Developers** | Same-origin `/tahti-api` proxy to production API on beta; public OpenAPI/Scalar at [`https://api.tahti.live/api`](https://api.tahti.live/api); offline mock mode for UI work |
-| **Desktop** | Full Tahti Player desktop app (search, local library, plugins, remote control) — separate from the Tahti web cutover |
+Full prod-parity status per item lives in [`packages/tahti-web/FEATURES.md`](./packages/tahti-web/FEATURES.md); this is the reader-friendly summary.
+
+### Listen (public, no account)
+
+- Channel directory, live channel (HLS) + archive replay, Tahti Radio 24/7 stream
+- Channel chat (Centrifugo WS, reactions, subscriber-only gating, hCaptcha on anonymous join)
+- Artist profiles, collections/albums, smart links, embeds (channel / release / collection)
+- Venue directory + venue registration, governance (public motions), transparency reports, platform status
+- Help center, disco-widgets on listen/profile/channel
+
+### Listener account
+
+- Follows, favorites, listening history, add-to-playlist from anywhere (player bar, tables)
+- Fan subscribe (Stripe Checkout) + manage subscriptions
+- DMs, member governance voting
+- Library: sounds, collections, recordings, smart links, history, favorites
+
+### Artist studio — publish & broadcast
+
+- Studio home, Go Live wizard (OBS/RTMP + multistream)
+- Music library, upload, releases & album designer, playlists/collections
+- Pro audio editor (trim/master), stash
+- Schedule / 24/7 programme, radio slots & shows (series + episodes)
+- Channel designer (visual presets, layers, backdrop, gallery, press kit)
+- Stats (summary + detail), Updates/newsletter posts
+- Revenue: fan tiers, Stripe Connect payouts
+- Distribution (Revelator: catalog, pay + submit, Spotify profile, royalties)
+- Channel moderators, sound share links
+
+### Operate (board admin)
+
+- 22 admin surfaces gated on `isBoard`: dashboard, moderation queues, stream oversight, financial, governance, grants, AGM, i18n, files/storage, announcements, feature requests, support, radio submissions, and more
+
+### Desktop player (Tauri)
+
+- Full Nuclear-based desktop app: search, local library, plugins, themes, remote control
+- Built-in MCP server for AI-agent control (playback, queue, favorites, playlists, providers) — see [MCP](#mcp-desktop-player) below
+
+### Developers
+
+- Same-origin `/tahti-api` proxy to the live API on beta; public OpenAPI/Scalar at [`https://api.tahti.live/api`](https://api.tahti.live/api)
+- Offline mock mode (`VITE_FORCE_MOCK=1`) — every fetcher short-circuits to realistic fixture data, zero network calls
+
+Open gaps only (not the full matrix): [`packages/tahti-web/FEATURES-REMAINING.md`](./packages/tahti-web/FEATURES-REMAINING.md).
 
 Live beta: **https://beta.tahti.live**
 
@@ -84,7 +122,30 @@ From `@tahti-player/tahti-web` (mock data for stable docs captures; beta uses th
 
 *Channel designer — look, 24/7 radio, profile, domain.*
 
+### Board admin
+
+![Admin dashboard overview](./packages/tahti-web/docs/redesign-shots/admin-dashboard-current-v1.png)
+
+*Admin dashboard — health, activity, and moderation at a glance.*
+
 More studio captures: [`packages/tahti-web/docs/redesign-shots/`](./packages/tahti-web/docs/redesign-shots/).
+
+## Guide
+
+The screenshots above are highlights. For a complete, indexed screenshot gallery of every
+documented screen — organized as Listener and account, Public channel and community, Artist
+studio, and Administration — see the **[full view guide](./packages/tahti-web/docs/VIEW-GUIDE.md)**.
+It's generated straight from the running app (mock board account, 1680×1050 captures via
+[`scripts/capture-readme-guide.mjs`](./packages/tahti-web/scripts/capture-readme-guide.mjs)), so it
+stays accurate as the UI changes — regenerate it after a UI change with:
+
+```bash
+VITE_FORCE_MOCK=1 pnpm --filter @tahti-player/tahti-web dev &
+pnpm --filter @tahti-player/tahti-web exec node scripts/capture-readme-guide.mjs
+```
+
+For a narrower product-jobs tour (Listen → Publish → Broadcast → Connect → Operate) with the
+same screenshots inline, see [`packages/tahti-web/README.md`](./packages/tahti-web/README.md#view-guide).
 
 ## Who it’s for
 
