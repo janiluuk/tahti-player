@@ -6,7 +6,7 @@ import { getSetting } from '../../stores/settingsStore';
 import { errorMessage } from '../../utils/errorMessage';
 import { Logger } from '../logger';
 import { downloadAndExtractPlugin } from './pluginDownloader';
-import { listRegistryEntries } from './pluginRegistry';
+import { pluginRegistryStore } from './pluginRegistryAdapter';
 
 export const checkAndUpdatePlugins = async (): Promise<void> => {
   const autoUpdate = getSetting('core.plugins.autoUpdate');
@@ -19,7 +19,7 @@ export const checkAndUpdatePlugins = async (): Promise<void> => {
 
   Logger.plugins.info('Checking for plugin updates...');
 
-  const entries = await listRegistryEntries();
+  const entries = await pluginRegistryStore.list();
   const storeEntries = entries.filter(
     (entry) => entry.installationMethod === 'store',
   );

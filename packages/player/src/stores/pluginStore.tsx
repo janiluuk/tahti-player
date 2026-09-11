@@ -11,13 +11,8 @@ import {
   removeManagedPluginInstall,
 } from '../services/plugins/pluginDir';
 import { PluginLoader } from '../services/plugins/PluginLoader';
-import {
-  getRegistryEntry,
-  PluginInstallationMethod,
-  removeRegistryEntry,
-  setRegistryEntryEnabled,
-  upsertRegistryEntry,
-} from '../services/plugins/pluginRegistry';
+import { pluginRegistryStore } from '../services/plugins/pluginRegistryAdapter';
+import type { PluginInstallationMethod } from '../services/plugins/pluginRegistryContract';
 import { errorMessage } from '../utils/errorMessage';
 import { reportError } from '../utils/logging';
 
@@ -111,7 +106,7 @@ export const usePluginStore = create<PluginStore>((set, get) => ({
         return;
       }
 
-      const existing = await getRegistryEntry(id);
+      const existing = await pluginRegistryStore.get(id);
       const installationMethod: PluginInstallationMethod =
         existing?.installationMethod ?? 'dev';
       const originalPath =
@@ -131,7 +126,7 @@ export const usePluginStore = create<PluginStore>((set, get) => ({
       const now = new Date().toISOString();
       const enabled = existing ? existing.enabled : false;
 
-      await upsertRegistryEntry({
+      await pluginRegistryStore.upsert({
         id,
         version: loadedMetadata.version,
         path: managedPath,
@@ -196,7 +191,7 @@ export const usePluginStore = create<PluginStore>((set, get) => ({
           state.plugins[id].enabled = true;
         }),
       );
-      await setRegistryEntryEnabled(id, true);
+      await pluginRegistryStore.setEnabled(id, true);
       Logger.plugins.info(`Plugin ${id} enabled`);
     } catch (error) {
       Logger.plugins.error(
@@ -222,7 +217,7 @@ export const usePluginStore = create<PluginStore>((set, get) => ({
         state.plugins[id].enabled = false;
       }),
     );
-    await setRegistryEntryEnabled(id, false);
+    await pluginRegistryStore.setEnabled(id, false);
     Logger.plugins.info(`Plugin ${id} disabled`);
   },
 
@@ -324,13 +319,13 @@ export const usePluginStore = create<PluginStore>((set, get) => ({
       const api = createPluginAPI(id, loadedMetadata.displayName);
 
       const now = new Date().toISOString();
-      const existingEntry = await getRegistryEntry(id);
+      const existingEntry = await pluginRegistryStore.get(id);
       const installedAt =
         currentVersion === newVersion && existingEntry
           ? existingEntry.installedAt
           : now;
 
-      await upsertRegistryEntry({
+      await pluginRegistryStore.upsert({
         id,
         version: loadedMetadata.version,
         path: managedPath,
@@ -385,7 +380,9 @@ export const usePluginStore = create<PluginStore>((set, get) => ({
   removePlugin: async (id: string) => {
     Logger.plugins.info(`Removing plugin ${id}`);
     const plugin = get().plugins[id];
-    const fallbackEntry = plugin ? undefined : await getRegistryEntry(id);
+    const fallbackEntry = plugin
+      ? undefined
+      : await pluginRegistryStore.get(id);
     if (!plugin && !fallbackEntry) {
       Logger.plugins.error(`Cannot remove plugin ${id}: not found`);
       throw new Error(`Plugin ${id} not found`);
@@ -396,7 +393,7 @@ export const usePluginStore = create<PluginStore>((set, get) => ({
         await get().unloadPlugin(id);
       }
       await removeManagedPluginInstall(managedPath);
-      await removeRegistryEntry(id);
+      await pluginRegistryStore.remove(id);
       Logger.plugins.info(`Plugin ${id} removed successfully`);
     } catch (error) {
       await reportError('plugins', {

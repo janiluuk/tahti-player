@@ -11,7 +11,7 @@ import {
   cleanupDownload,
   downloadAndExtractPlugin,
 } from '../services/plugins/pluginDownloader';
-import { upsertRegistryEntry } from '../services/plugins/pluginRegistry';
+import { pluginRegistryStore } from '../services/plugins/pluginRegistryAdapter';
 import { usePluginStore } from '../stores/pluginStore';
 import { errorMessage } from '../utils/errorMessage';
 
@@ -35,7 +35,7 @@ export const useInstallPlugin = () => {
 
       try {
         const now = new Date().toISOString();
-        await upsertRegistryEntry({
+        await pluginRegistryStore.upsert({
           id: plugin.id,
           version: release.version,
           path: extractedPath,

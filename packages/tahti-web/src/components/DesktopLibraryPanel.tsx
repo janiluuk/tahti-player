@@ -49,18 +49,20 @@ export function DesktopLibraryPanel() {
   const [nativeTotal, setNativeTotal] = useState(0);
   const [nativeQuery, setNativeQuery] = useState('');
   const [nativeLoading, setNativeLoading] = useState(false);
+  const [nativeError, setNativeError] = useState<string | null>(null);
 
   const refreshNative = useCallback(async () => {
     if (!nativeLibrary) {
       return;
     }
     setNativeLoading(true);
+    setNativeError(null);
     try {
       const page = await nativeLibrary.list(nativeQuery, 0);
       setNativeTracks(page.tracks);
       setNativeTotal(page.total);
     } catch (error) {
-      toast.error(
+      setNativeError(
         error instanceof Error ? error.message : 'Library unavailable.',
       );
     } finally {
@@ -73,12 +75,13 @@ export function DesktopLibraryPanel() {
       return;
     }
     setNativeLoading(true);
+    setNativeError(null);
     try {
       const page = await nativeLibrary.list(nativeQuery, nativeTracks.length);
       setNativeTracks((current) => [...current, ...page.tracks]);
       setNativeTotal(page.total);
     } catch (error) {
-      toast.error(
+      setNativeError(
         error instanceof Error ? error.message : 'Library unavailable.',
       );
     } finally {
@@ -234,6 +237,21 @@ export function DesktopLibraryPanel() {
                 </Button>
               ) : null}
             </>
+          ) : nativeError ? (
+            <EmptyState
+              size="sm"
+              title="Desktop library unavailable"
+              description={nativeError}
+              action={
+                <Button
+                  variant="secondary"
+                  onClick={() => void refreshNative()}
+                >
+                  Retry
+                </Button>
+              }
+              className="flex-1"
+            />
           ) : (
             <EmptyState
               size="sm"
