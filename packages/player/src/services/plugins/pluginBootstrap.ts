@@ -8,11 +8,7 @@ import { createPluginAPI } from './createPluginAPI';
 import { checkAndUpdatePlugins } from './pluginAutoUpdate';
 import { getPluginsDir } from './pluginDir';
 import { PluginLoader } from './PluginLoader';
-import {
-  getRegistryEntry,
-  listRegistryEntries,
-  setRegistryEntryWarnings,
-} from './pluginRegistry';
+import { pluginRegistryStore } from './pluginRegistryAdapter';
 
 const isManagedPath = async (absPath: string): Promise<boolean> => {
   const normalizedPath = await normalize(absPath);
@@ -23,7 +19,7 @@ const isManagedPath = async (absPath: string): Promise<boolean> => {
 export const hydratePluginsFromRegistry = async (): Promise<void> => {
   useStartupStore.getState().startStartup();
   const now = Date.now();
-  const entries = (await listRegistryEntries()).sort(
+  const entries = (await pluginRegistryStore.list()).sort(
     (a, b) =>
       new Date(a.installedAt).getTime() - new Date(b.installedAt).getTime(),
   );
@@ -61,11 +57,11 @@ export const hydratePluginsFromRegistry = async (): Promise<void> => {
       }
     } catch (error) {
       const message = errorMessage(error);
-      const current = await getRegistryEntry(entry.id);
+      const current = await pluginRegistryStore.get(entry.id);
       const merged = Array.from(
         new Set([...(current?.warnings ?? []), message]),
       );
-      await setRegistryEntryWarnings(entry.id, merged);
+      await pluginRegistryStore.setWarnings(entry.id, merged);
     } finally {
       const pluginLoadFinishTime = Date.now();
       useStartupStore
