@@ -9,7 +9,7 @@ Gap analysis of governance features available in the sibling API (`../tahti-org`
 | # | Gap | API endpoint | Notes |
 | --- | --- | --- | --- |
 | ~~1~~ | ~~**Motion detail view**~~ (`/governance/motions/:id`) | `GET /api/v1/governance/motions/:id` | **Done** (2026-09-08) — `GovernanceMotionDetailView.tsx` + `fetchGovernanceMotion(id)`; see `governance-gap-list-top3.md` fold in HISTORY. |
-| 2 | **Bulk motion comments** | `GET /api/v1/governance/motions/comments?ids=...` | Avoids N+1 on list pages. Currently fetched per-card on expand. |
+| ~~2~~ | ~~**Bulk motion comments**~~ | `GET /api/v1/governance/motions/comments?ids=...` | **Done** (2026-09-11) — `fetchMotionCommentsBulk` in `GovernanceView.tsx`, passed into `MotionCard`'s new `preloadedComments` prop; detail page unaffected (still fetches on expand). |
 | ~~3~~ | ~~**Public resolutions page**~~ (`/transparency/resolutions`) | `GET /api/v1/transparency/resolutions?year=` | **Done** (2026-09-08) — `TransparencyResolutionsView.tsx` + `fetchTransparencyResolutions(year)`; see `governance-gap-list-top3.md` fold in HISTORY. |
 | ~~4~~ | ~~**Standalone member directory**~~ | `GET /api/v1/governance/members` | **Done** (2026-09-08) — `GovernanceMembersView.tsx` at `/governance/members` (search by name/username, board badge), linked from `GovernanceView.tsx`'s inline preview. |
 | ~~5~~ | ~~**Quarterly report download UI**~~ | `GET /api/v1/governance/quarterly-reports` | **Done** — `GovernanceView.tsx` already renders `report.downloadUrl` as a link on each report row (verified 2026-09-07; doc was stale). |

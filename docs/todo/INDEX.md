@@ -15,7 +15,7 @@ Status values: `open` | `blocked` | `partial`.
 | partial | [atlas-navigation-structure-widget.md](atlas-navigation-structure-widget.md) | Atlas navigation draft widget supports persisted reorder/add/remove; runtime wiring intentionally deferred |
 | partial | [go-live-header-subtext-cleanup.md](go-live-header-subtext-cleanup.md) | Calendar view restore still open |
 | partial | [channel-designer-rail-and-broadcast-nav.md](channel-designer-rail-and-broadcast-nav.md) | Designer→right rail, tahti-dark, Broadcast menu, Studio nav origin/slots |
-| open | [governance-gap-list.md](governance-gap-list.md) | Governance gaps: 16 of 18 shipped; remaining bulk comments (#2), voting window (#15, backend-blocked) |
+| open | [governance-gap-list.md](governance-gap-list.md) | Governance gaps: 17 of 18 shipped; remaining voting window (#15, backend-blocked) |
 | partial | [image-upload-hover-lightbox.md](image-upload-hover-lightbox.md) | Press-kit lightbox delete shipped 2026-09-10; admin radio logo blocked on redesign |
 | partial | [admin-plugin-management-panel.md](admin-plugin-management-panel.md) | Discovery/Add-ons category done 2026-09-08; all-13-category scoping still open |
 | partial | [release-player-workflow-broken.md](release-player-workflow-broken.md) | Root cause fixed 2026-09-07; user needs to run 2 `gh secret set` commands to finish |
