@@ -1,78 +1,33 @@
 import { MapPinIcon } from 'lucide-react';
 import { useMemo, type FC } from 'react';
 
+import worldCountryPaths from './worldCountryPaths.json';
+
 export type ListenerGeoPoint = {
   countryCode: string;
   displayName: string;
   count: number;
 };
 
-type Coordinates = { latitude: number; longitude: number };
-
-const COUNTRY_COORDINATES: Record<string, Coordinates> = {
-  AR: { latitude: -34, longitude: -64 },
-  AT: { latitude: 47.5, longitude: 14.5 },
-  AU: { latitude: -25, longitude: 134 },
-  BE: { latitude: 50.8, longitude: 4.5 },
-  BR: { latitude: -10, longitude: -52 },
-  CA: { latitude: 57, longitude: -106 },
-  CH: { latitude: 46.8, longitude: 8.2 },
-  CL: { latitude: -33, longitude: -71 },
-  CN: { latitude: 35, longitude: 103 },
-  CO: { latitude: 4, longitude: -72 },
-  CZ: { latitude: 49.8, longitude: 15.5 },
-  DE: { latitude: 51, longitude: 10 },
-  DK: { latitude: 56, longitude: 10 },
-  EE: { latitude: 59, longitude: 25.5 },
-  EG: { latitude: 27, longitude: 30 },
-  ES: { latitude: 40, longitude: -4 },
-  FI: { latitude: 64, longitude: 26 },
-  FR: { latitude: 46, longitude: 2 },
-  GB: { latitude: 54, longitude: -2 },
-  GR: { latitude: 39, longitude: 22 },
-  ID: { latitude: -3, longitude: 120 },
-  IE: { latitude: 53, longitude: -8 },
-  IL: { latitude: 31.5, longitude: 35 },
-  IN: { latitude: 21, longitude: 79 },
-  IS: { latitude: 65, longitude: -19 },
-  IT: { latitude: 42.5, longitude: 12.5 },
-  JP: { latitude: 36, longitude: 138 },
-  KE: { latitude: 0, longitude: 38 },
-  KR: { latitude: 36, longitude: 128 },
-  LT: { latitude: 55, longitude: 24 },
-  LV: { latitude: 57, longitude: 25 },
-  MX: { latitude: 23, longitude: -102 },
-  NG: { latitude: 9, longitude: 8 },
-  NL: { latitude: 52.3, longitude: 5.5 },
-  NO: { latitude: 62, longitude: 10 },
-  NZ: { latitude: -42, longitude: 172 },
-  PL: { latitude: 52, longitude: 19 },
-  PT: { latitude: 39.5, longitude: -8 },
-  RO: { latitude: 46, longitude: 25 },
-  SE: { latitude: 62, longitude: 15 },
-  SG: { latitude: 1.3, longitude: 104 },
-  TH: { latitude: 15, longitude: 101 },
-  TR: { latitude: 39, longitude: 35 },
-  UA: { latitude: 49, longitude: 32 },
-  US: { latitude: 39, longitude: -98 },
-  VN: { latitude: 16, longitude: 108 },
-  ZA: { latitude: -30, longitude: 24 },
+type WorldCountry = {
+  code: string;
+  d: string;
+  cx: number;
+  cy: number;
 };
 
-const MAP_WIDTH = 1000;
-const MAP_HEIGHT = 500;
+const MAP_WIDTH = worldCountryPaths.width;
+const MAP_HEIGHT = worldCountryPaths.height;
+const COUNTRIES = worldCountryPaths.countries as WorldCountry[];
+const COUNTRY_BY_CODE = new Map(
+  COUNTRIES.map((country) => [country.code, country]),
+);
 const MAX_COUNTRIES = 10;
-
-const mapCoordinates = ({ latitude, longitude }: Coordinates) => ({
-  x: ((longitude + 180) / 360) * MAP_WIDTH,
-  y: ((90 - latitude) / 180) * MAP_HEIGHT,
-});
 
 export type ListenerWorldMapProps = {
   data: ListenerGeoPoint[];
   loading?: boolean;
   countLabel?: string;
-  /** Smaller map for side-by-side Studio stats layouts. */
   compact?: boolean;
 };
 
@@ -83,8 +38,33 @@ export const ListenerWorldMap: FC<ListenerWorldMapProps> = ({
   compact = false,
 }) => {
   const maxCount = Math.max(1, ...data.map((point) => point.count));
+  const countsByCode = useMemo(() => {
+    const map = new Map<string, ListenerGeoPoint>();
+    for (const point of data) {
+      map.set(point.countryCode, point);
+    }
+    return map;
+  }, [data]);
   const topCountries = useMemo(
     () => [...data].sort((first, second) => second.count - first.count),
+    [data],
+  );
+  const plotted = useMemo(
+    () =>
+      data
+        .map((point) => {
+          const country = COUNTRY_BY_CODE.get(point.countryCode);
+          if (!country) {
+            return null;
+          }
+          return { point, country };
+        })
+        .filter(
+          (
+            entry,
+          ): entry is { point: ListenerGeoPoint; country: WorldCountry } =>
+            entry != null,
+        ),
     [data],
   );
 
@@ -105,46 +85,49 @@ export const ListenerWorldMap: FC<ListenerWorldMapProps> = ({
             height={MAP_HEIGHT}
             className="fill-background"
           />
-          <g
-            className="fill-background-secondary stroke-border"
-            strokeWidth="2"
-          >
-            <path d="M55 115 96 70l84-34 102 19 63 45-16 53-53 20-20 55-49 18-48-35-57-8-45-39Z" />
-            <path d="m250 260 57 24 30 55-22 94-35 43-25-74-35-66Z" />
-            <path d="m407 94 44-38 69 9 36 26 28-9 50 23 79-18 102 29 103 68-33 51-70 5-24 40-87-6-53 32-57-20-31-59-55-7-54-47-51-26Z" />
-            <path d="m480 230 74 7 55 55-11 90-50 72-47-30-25-82-35-50Z" />
-            <path d="m770 340 65-28 79 30 21 58-38 43-82-18-42-38Z" />
-            <path d="m915 439 26-19 24 18-23 19Z" />
+          <g className="stroke-border" strokeWidth={0.6} strokeLinejoin="round">
+            {COUNTRIES.map((country) => {
+              const point = countsByCode.get(country.code);
+              const fillOpacity = point
+                ? 0.22 + Math.sqrt(point.count / maxCount) * 0.58
+                : undefined;
+              return (
+                <path
+                  key={country.code}
+                  d={country.d}
+                  className={
+                    point
+                      ? 'fill-accent-cyan stroke-accent-cyan/50'
+                      : 'fill-background-secondary'
+                  }
+                  fillOpacity={fillOpacity}
+                >
+                  {point ? (
+                    <title>
+                      {point.displayName}: {point.count.toLocaleString()}{' '}
+                      {countLabel}
+                    </title>
+                  ) : null}
+                </path>
+              );
+            })}
           </g>
-          <g className="stroke-border/40" strokeWidth="1">
-            {[100, 200, 300, 400].map((y) => (
-              <line key={`y-${y}`} x1="0" x2={MAP_WIDTH} y1={y} y2={y} />
-            ))}
-            {[200, 400, 600, 800].map((x) => (
-              <line key={`x-${x}`} x1={x} x2={x} y1="0" y2={MAP_HEIGHT} />
-            ))}
-          </g>
-          {data.map((point) => {
-            const coordinates = COUNTRY_COORDINATES[point.countryCode];
-            if (!coordinates) {
-              return null;
-            }
-            const position = mapCoordinates(coordinates);
-            const radius = 6 + Math.sqrt(point.count / maxCount) * 16;
+          {plotted.map(({ point, country }) => {
+            const radius = 5 + Math.sqrt(point.count / maxCount) * 14;
             return (
-              <g key={point.countryCode}>
+              <g key={`bubble-${point.countryCode}`}>
                 <circle
-                  cx={position.x}
-                  cy={position.y}
-                  r={radius + 6}
+                  cx={country.cx}
+                  cy={country.cy}
+                  r={radius + 5}
                   className="fill-accent-cyan/20"
                 />
                 <circle
-                  cx={position.x}
-                  cy={position.y}
+                  cx={country.cx}
+                  cy={country.cy}
                   r={radius}
                   className="fill-accent-cyan stroke-background"
-                  strokeWidth="3"
+                  strokeWidth="2"
                 >
                   <title>
                     {point.displayName}: {point.count.toLocaleString()}{' '}

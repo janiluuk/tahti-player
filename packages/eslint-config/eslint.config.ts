@@ -65,7 +65,10 @@ const config: TSESLint.FlatConfig.ConfigArray = tseslint.config([
       'css/no-important': 0,
     },
   },
-  { ...prettierPlugin, ignores: ['**/*.md', '**/utilities.css'] },
+  {
+    ...prettierPlugin,
+    ignores: ['**/*.md', '**/utilities.css', '**/worldCountryPaths.json'],
+  },
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     rules: {
