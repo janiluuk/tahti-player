@@ -26,6 +26,7 @@ Status values: `open` | `blocked` | `partial`.
 | partial | [codebase-refactor-hotspots.md](codebase-refactor-hotspots.md) | PluginStore categories done; admin users/support/gov/radio/storage/addons peeled; client auth+requestJson extracted; SettingsPanels / more client domains still open |
 | partial | [performance-cleanup-bulk.md](performance-cleanup-bulk.md) | Phases 1–3 + 5 done; Phase 4: PluginStore complete + admin/client peels; SettingsPanels / studio / router still open |
 | open | [channel-designer-backdrop-fold-and-widgets.md](channel-designer-backdrop-fold-and-widgets.md) | (Later) Fold bio/CTA/avatar into backdrop show-toggles; feed/posts widgets |
+| partial | [storybook-theme-unification-sweep.md](storybook-theme-unification-sweep.md) | Pass 1 done 2026-09-12 (~25 views, input/pill/chip only) — punch list of duplicates/no-ops/promote-candidates in VIEW-CATALOG.md; rest of app unswept |
 
 ## Fold rule (copy into CLAUDE / chat)
 

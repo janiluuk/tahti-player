@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { Badge, Button, ViewShell } from '@tahti-player/ui';
 
 import { FlowGallery } from '../components/FlowGallery';
@@ -5,8 +7,8 @@ import { MapCommentForm } from '../components/MapCommentForm';
 import { PortInventoryPanel } from '../components/PortInventoryPanel';
 import { ParityBadges, ScreenAtlas } from '../components/ScreenAtlas';
 import { StudioPanel } from '../components/StudioPanel';
-import type { MapParity } from '../content/mapScreens';
-import { useMapNotesStore } from '../stores/mapNotesStore';
+import { MAP_CASE_GROUPS, type MapParity } from '../content/mapScreens';
+import { useMapNotesStore, type MapComment } from '../stores/mapNotesStore';
 
 /** `storybook dev -p 6006` — see packages/storybook/package.json. Not
  * deployed anywhere; this only resolves when someone has it running
@@ -521,6 +523,84 @@ function FeatureCompareCard({ row }: { row: FeatureRow }) {
   );
 }
 
+/** case id -> route/screenshot, so a copied comment can point back at the
+ * exact page/image it was left on without the reader needing to reopen
+ * the atlas. */
+function caseRefLookup(): Record<
+  string,
+  { viewName: string; route: string; image?: string }
+> {
+  const map: Record<
+    string,
+    { viewName: string; route: string; image?: string }
+  > = {};
+  for (const group of MAP_CASE_GROUPS) {
+    for (const c of group.cases) {
+      map[c.id] = {
+        viewName: c.viewName,
+        route: c.new.route,
+        image: c.new.image,
+      };
+    }
+  }
+  return map;
+}
+
+function commentsToPlainText(comments: MapComment[]): string {
+  const lookup = caseRefLookup();
+  return comments
+    .map((c) => {
+      const ref =
+        c.kind === 'case' || c.kind === 'flow' ? lookup[c.targetId] : undefined;
+      const lines = [`# ${c.title}`];
+      if (ref) {
+        lines.push(`Route: ${ref.route}`);
+        if (ref.image) {
+          lines.push(`Screenshot: https://beta.tahti.live${ref.image}`);
+        }
+      } else if (c.kind === 'feature' && c.feature) {
+        lines.push(`Feature: ${c.feature}`);
+      }
+      if (c.pack) {
+        lines.push(`Pack: ${c.pack}`);
+      }
+      lines.push(`Comment: ${c.text}`);
+      lines.push(`Submitted: ${new Date(c.submittedAt).toLocaleString()}`);
+      return lines.join('\n');
+    })
+    .join('\n\n---\n\n');
+}
+
+function CopyCommentsButton({ comments }: { comments: MapComment[] }) {
+  const [state, setState] = useState<'idle' | 'copied' | 'error'>('idle');
+
+  const copy = async () => {
+    const text = commentsToPlainText(comments);
+    try {
+      await navigator.clipboard.writeText(text);
+      setState('copied');
+    } catch {
+      setState('error');
+    }
+    window.setTimeout(() => setState('idle'), 2500);
+  };
+
+  return (
+    <Button
+      size="sm"
+      onClick={copy}
+      disabled={comments.length === 0}
+      title="Copy all comments as plain text, each with its page route and screenshot link, ready to paste back into a chat"
+    >
+      {state === 'copied'
+        ? 'Copied ✓'
+        : state === 'error'
+          ? 'Copy failed — select & copy manually'
+          : `Copy all (${comments.length})`}
+    </Button>
+  );
+}
+
 function SavedMapComments() {
   const comments = useMapNotesStore((s) => s.comments);
   const clearComments = useMapNotesStore((s) => s.clearComments);
@@ -545,12 +625,16 @@ function SavedMapComments() {
           </h2>
           <p className="text-foreground-secondary mt-1 text-sm">
             Submitted from this page · stored in localStorage (
-            <code className="text-foreground">tahti-web-map-notes</code>).
+            <code className="text-foreground">tahti-web-map-notes</code>). Copy
+            them all and paste into a chat to hand them off for fixing.
           </p>
         </div>
-        <Button size="sm" variant="secondary" onClick={() => clearComments()}>
-          Clear log
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <CopyCommentsButton comments={comments} />
+          <Button size="sm" variant="secondary" onClick={() => clearComments()}>
+            Clear log
+          </Button>
+        </div>
       </div>
       <ul className="flex max-h-80 flex-col gap-2 overflow-y-auto">
         {comments.map((c) => (
