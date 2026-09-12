@@ -2537,3 +2537,54 @@ new/fixed stories present in `storybook-static/index.json`),
 `prettier --write` clean on every touched file.
 
 ---
+
+## 2026-09-12 — Background Visualization is now a real exclusive header mode
+
+Closed out the last open item in `channel-designer-background-section-fixes.md`
+(items 1–2 were already fixed earlier — page-background field's conditional
+hide, and `ColorSchemeFields`'s `variant="generic"` labels). Decision made:
+Visualization becomes a true 5th mutually-exclusive `HeaderStyleTabs` option
+that replaces the header treatment, not an orthogonal always-on layer.
+
+Found that `VISUALIZATION` already existed as a *UI-only* tab (added
+2026-09-06 in `bf65e292`) that never persisted — selecting it only set local
+`backdropFocusTab` state in `ChannelDesigner.tsx`, so it never survived
+reload/save and the previously-selected header style kept rendering
+underneath. Also found that both public renderers
+(`ChannelBackdropCard.tsx`, `ChannelView.tsx`) already have a fallback
+branch — used whenever `headerStyle` matches none of
+`VIDEO_LOOP`/`SOLID`/`GRADIENT`/slideshow — that renders dimmed artwork +
+`ChannelVisualizer`. That fallback is exactly the desired Visualization
+treatment, so no public-render changes were needed at all.
+
+Made the change surgical: `ChannelDesigner.tsx`'s `setHeaderDesignMode` no
+longer special-cases `'VISUALIZATION'` into ephemeral `backdropFocusTab`
+state — it now flows through the same `applyLocal({ headerStyle: mode })`
+path as Gradient/Solid/Video (headerStyle's type was already
+`HeaderStyle | string`, so persisting the literal `'VISUALIZATION'` string
+type-checks and needs no schema change). Removed `backdropFocusTab` state
+entirely (no longer needed). `resolveHeaderDesignMode` in
+`HeaderStyleTabs.tsx` now recognizes `headerStyle === 'VISUALIZATION'` and
+returns it (return type widened from
+`Exclude<HeaderDesignMode, 'VISUALIZATION'>` to the full `HeaderDesignMode`).
+Removed the now-inaccurate `HEADER_STYLE_MUTATING_MODES` const (unused
+elsewhere, and the split it encoded — "Visualization is a focus tab only" —
+no longer applies) and refreshed stale doc comments on both files. Added the
+missing `Visualization` story to
+`ChannelDesignerHeaderStyleTabs.stories.tsx` (the sibling
+`ChannelDesignerBackdropPanel.stories.tsx` already had one, since that
+story drives `BackdropPanel` directly by prop and was unaffected).
+
+Verified: `tahti-web` and `storybook` `type-check` and `lint` clean across
+the whole monorepo (turbo). No test files exist for `ChannelDesigner`,
+`BackdropPanel`, or `HeaderStyleTabs` (matches the prior pass's note); none
+added. Not manually verified in a running browser — no Storybook coverage
+gap remains, but didn't click through. `storybook build` currently fails
+for an unrelated, pre-existing reason (`CollectionTrackList.stories.tsx`
+imports a deleted component, predating this branch — flagged, not fixed,
+out of scope here). A full `pnpm test` run also surfaces pre-existing,
+unrelated failures elsewhere in the monorepo (e.g. `MyDiscographyView.test.tsx`
+zustand-persist/localStorage errors) — none touch the files changed in this
+pass.
+
+---

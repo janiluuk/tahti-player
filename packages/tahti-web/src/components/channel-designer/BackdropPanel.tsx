@@ -36,9 +36,10 @@ type Props = {
 };
 
 /**
- * Look → Background panel: page fill, exclusive header-style bodies, or the
- * Visualization focus tab (ambient visualizer + optional separate palette).
- * Visualization does not clear headerStyle — it only focuses this UI.
+ * Look → Background panel: page fill plus one exclusive header-style body
+ * (Gradient/Solid/Video/Slideshow/Visualization). Visualization replaces the
+ * header treatment with the ambient visualizer + its own palette, same as
+ * any other header style.
  */
 export function BackdropPanel({
   scheme,

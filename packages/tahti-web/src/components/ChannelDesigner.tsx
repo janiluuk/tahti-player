@@ -295,8 +295,6 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
     const [activeTab, setActiveTab] = useState<TabId>('visualizer');
     const [playerDesignTab, setPlayerDesignTab] =
       useState<PlayerDesignTab>('gradient');
-    const [backdropFocusTab, setBackdropFocusTab] =
-      useState<HeaderDesignMode | null>(null);
     const [highlightSection, setHighlightSection] = useState<
       'header' | 'visualizer' | null
     >(null);
@@ -1080,19 +1078,12 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       showVisualizerSettings &&
       !visualizerPickerOpen;
 
-    const resolvedHeaderDesignMode = resolveHeaderDesignMode(
+    const headerDesignMode: HeaderDesignMode = resolveHeaderDesignMode(
       visual.headerStyle,
       slideshowHeaderSelected,
     );
-    const headerDesignMode: HeaderDesignMode =
-      backdropFocusTab ?? resolvedHeaderDesignMode;
 
     const setHeaderDesignMode = (mode: HeaderDesignMode) => {
-      if (mode === 'VISUALIZATION') {
-        setBackdropFocusTab('VISUALIZATION');
-        return;
-      }
-      setBackdropFocusTab(null);
       if (mode === 'SLIDESHOW') {
         setGalleryMode((modeValue) =>
           modeValue === 'NONE' ? 'STATIC_SLIDESHOW' : modeValue,
