@@ -17,7 +17,7 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
 | P0 | `packages/tahti-web/src/api/admin.ts` | ~5000 | God API module: ~110 exports, ~40+ Admin* types, domains from venues → radio → storage → governance → addons → audit/logs. Private `getJson`/`sendJson`/`mutate` duplicated vs other clients. | Split into `api/admin/` barrel: `admin-http.ts` (shared fetch helpers), then domain files (`admin-users.ts`, `admin-radio.ts`, `admin-storage.ts`, `admin-governance.ts`, `admin-addons.ts`, `admin-moderation.ts`, `admin-activity.ts`, …). Re-export from `admin.ts` or `admin/index.ts` so call sites need not churn in one PR. |
 | P0 | `packages/tahti-web/src/components/PluginStorePanel.tsx` | ~3560 | Mega-panel: themes, visualizers, Spotify/OAuth/Hearthis, DSP, multicast, audio plugins, tools, radio browser, discovery, channel categories in one file. | Extract category components under `components/plugin-store/` (`ThemesCategory`, `ServiceCategory` + service cards, `RadioCategory`, …). Keep `PluginStorePanel` as thin shell + tab routing. Align with existing `plugin-registry-extraction` leaf where contracts touch player. |
 | P0 | `packages/tahti-web/src/api/client.ts` | ~3000 | Public/listener API kitchen sink: directory, channel, track, radio, auth, membership, chat, embeds, governance, support, feature requests (~84 functions). | Same pattern as studio already started (`studio.ts` + `studio-extras.ts`): split into named modules (`auth.ts`, `listen.ts`, `radio-public.ts`, `governance-member.ts`, `membership.ts`, `embeds.ts`) + thin re-export. Extract shared HTTP/`withMockFallback` once (shared with admin split). |
-| P1 | `packages/tahti-web/src/views/settings/SettingsPanels.tsx` | ~2440 | Many settings surfaces in one file (Account, Artist, Channel, Broadcast, Notifications, Themes, storage, privacy). | One panel per file under `views/settings/panels/`; `SettingsSectionBody` stays the switch/router. |
+| ~~P1~~ | ~~`packages/tahti-web/src/views/settings/SettingsPanels.tsx`~~ | ~~~2440~~ **done 2026-09-12, now ~110** | Many settings surfaces in one file (Account, Artist, Channel, Broadcast, Notifications, Themes, storage, privacy). | One panel per file under `views/settings/panels/`; `SettingsSectionBody` stays the switch/router. |
 | P1 | `packages/tahti-web/src/components/ChannelDesigner.tsx` | ~2050 | Designer god component (visualizer / color / header / look sections) tightly coupled to Channel + Artist editors. | Extract section editors + snapshot helpers; keep `forwardRef` façade. Coordinate with open designer todos (`channel-designer-*`) — split structure first, product fold later. |
 | P1 | `packages/tahti-web/src/views/ChannelView.tsx` + `ArtistView.tsx` | ~1790 + ~1760 | Parallel public entity pages sharing designer, visualizer, disco widgets, social header patterns; each still owns full layout/data orchestration. | Extract shared hooks/sections (`usePublicChannelLook`, backdrop/visualizer chrome, disco widget block) before merging views. Do not force one route. |
 | P2 | `packages/tahti-web/src/api/studio.ts` (+ `studio-extras.ts` ~1240) | ~1905 | Large but already partially split; still a frequent merge magnet. | Continue domain splits (releases, sounds, playlists, schedule) mirroring extras pattern; avoid expanding `studio.ts`. |
@@ -100,9 +100,27 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
    `admin-financial.ts` (`AdminLedgerEntry`, `AdminFinancialOverview`,
    `LEDGER_CATEGORIES`, `fetchAdminFinancial`, `createLedgerEntry`).
    `admin.ts` ~2059 → ~1935.
+5. ~~**`SettingsPanels.tsx` file-per-panel split**~~ — **2026-09-12:**
+   `views/settings/panels/AccountPanel.tsx` (Account + Storage + Privacy +
+   Membership checkout), `ArtistPanel.tsx` (Artist + Pronouns +
+   ReleaseVisualDefaultsPanel), `ChannelPanel.tsx`, `BroadcastPanel.tsx`,
+   `NotificationsPanel.tsx` (Notifications + Notifications/Visibility),
+   `ThemesPanel.tsx`. `SettingsPanels.tsx` stays as the thin
+   `SettingsSectionBody` router + re-exports (`BroadcastPanel`,
+   `ReleaseVisualDefaultsPanel`) so the 3 external call sites
+   (`ConnectedSettingsModal`, `StudioChannelView`, a Storybook story)
+   needed no changes. ~2440 → ~110 lines; each extracted panel 108–618
+   lines. Zero behavior change — mechanical split, no shared helpers were
+   actually cross-panel (verified each of `euros`/`detectCountryCode`/
+   `parseArtistRoles`/`PronounsField`/`MembershipCheckoutButton` has
+   exactly one call site) so no `shared.tsx` was needed. Verified:
+   `tsc --noEmit` clean, `eslint` clean, full unit suite (515/515 under
+   Node 24, matching CI — Node 26 locally breaks jsdom's `localStorage`,
+   an unrelated pre-existing environment issue), `vite build` and
+   `storybook build` both succeed.
 
-Next: SettingsPanels file-per-panel, further `client.ts` listen/governance
-splits, remaining admin domains (dashboard, selects, streams, …).
+Next: further `client.ts` listen/governance splits, remaining admin
+domains (dashboard, selects, streams, …), `ChannelDesigner.tsx` (P1).
 
 ## Related open leaves (do not duplicate)
 
