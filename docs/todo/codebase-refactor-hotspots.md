@@ -16,7 +16,7 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
 | --- | --- | --- | --- | --- |
 | P0 | `packages/tahti-web/src/api/admin.ts` | ~5000 | God API module: ~110 exports, ~40+ Admin* types, domains from venues → radio → storage → governance → addons → audit/logs. Private `getJson`/`sendJson`/`mutate` duplicated vs other clients. | Split into `api/admin/` barrel: `admin-http.ts` (shared fetch helpers), then domain files (`admin-users.ts`, `admin-radio.ts`, `admin-storage.ts`, `admin-governance.ts`, `admin-addons.ts`, `admin-moderation.ts`, `admin-activity.ts`, …). Re-export from `admin.ts` or `admin/index.ts` so call sites need not churn in one PR. |
 | P0 | `packages/tahti-web/src/components/PluginStorePanel.tsx` | ~3560 | Mega-panel: themes, visualizers, Spotify/OAuth/Hearthis, DSP, multicast, audio plugins, tools, radio browser, discovery, channel categories in one file. | Extract category components under `components/plugin-store/` (`ThemesCategory`, `ServiceCategory` + service cards, `RadioCategory`, …). Keep `PluginStorePanel` as thin shell + tab routing. Align with existing `plugin-registry-extraction` leaf where contracts touch player. |
-| P0 | `packages/tahti-web/src/api/client.ts` | ~3000 | Public/listener API kitchen sink: directory, channel, track, radio, auth, membership, chat, embeds, governance, support, feature requests (~84 functions). | Same pattern as studio already started (`studio.ts` + `studio-extras.ts`): split into named modules (`auth.ts`, `listen.ts`, `radio-public.ts`, `governance-member.ts`, `membership.ts`, `embeds.ts`) + thin re-export. Extract shared HTTP/`withMockFallback` once (shared with admin split). |
+| P0 | `packages/tahti-web/src/api/client.ts` | ~2155 | Public/listener API kitchen sink: directory, channel, track, radio, membership, chat, embeds, support, feature requests (~70 functions left). | **Partial:** `client-request.ts`/`client-auth.ts` (auth) and `governance-member.ts` (motions/meetings/documents/members/reports) peeled. Still: `listen.ts`, `radio-public.ts`, `membership.ts`, `embeds.ts`. |
 | P1 | `packages/tahti-web/src/views/settings/SettingsPanels.tsx` | ~2440 | Many settings surfaces in one file (Account, Artist, Channel, Broadcast, Notifications, Themes, storage, privacy). | One panel per file under `views/settings/panels/`; `SettingsSectionBody` stays the switch/router. |
 | P1 | `packages/tahti-web/src/components/ChannelDesigner.tsx` | ~2050 | Designer god component (visualizer / color / header / look sections) tightly coupled to Channel + Artist editors. | Extract section editors + snapshot helpers; keep `forwardRef` façade. Coordinate with open designer todos (`channel-designer-*`) — split structure first, product fold later. |
 | P1 | `packages/tahti-web/src/views/ChannelView.tsx` + `ArtistView.tsx` | ~1790 + ~1760 | Parallel public entity pages sharing designer, visualizer, disco widgets, social header patterns; each still owns full layout/data orchestration. | Extract shared hooks/sections (`usePublicChannelLook`, backdrop/visualizer chrome, disco widget block) before merging views. Do not force one route. |
@@ -100,9 +100,29 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
    `admin-financial.ts` (`AdminLedgerEntry`, `AdminFinancialOverview`,
    `LEDGER_CATEGORIES`, `fetchAdminFinancial`, `createLedgerEntry`).
    `admin.ts` ~2059 → ~1935.
+6. ~~**`client.ts` governance-member domain peel**~~ — **2026-09-12:**
+   `api/governance-member.ts` — `MotionComment`/`FetchGovernanceMotionsOpts`
+   types + all 13 `fetchGovernanceMotions`/`fetchGovernanceMotion`/
+   `createGovernanceMotion`/`fetchPublicGovernanceMotions`/
+   `fetchGovernanceMeetings`/`fetchGovernanceDocuments`/
+   `fetchGovernanceMembers`/`fetchGovernanceQuarterlyReports`/
+   `voteOnMotion`/`patchGovernanceMotion`/`fetchMotionComments`/
+   `fetchMotionCommentsBulk`/`postMotionComment` functions, plus their mock
+   state. `client.ts` re-exports via `export * from './governance-member'`;
+   kept a local `import type { MotionComment }` since the (unrelated,
+   not-yet-split) feature-requests-comments code in `client.ts` reuses that
+   same shape. Preserved `client.ts`'s own private `getJson`-over-
+   `client-request.ts` wrapper in the new file rather than switching to
+   `http.ts`'s `getJson` — that has subtly different error-message
+   extraction, so swapping it would've been a behavior change, not a
+   mechanical move. `client.ts` ~2724 → ~2155 lines. Verified: `tsc --noEmit`
+   / `eslint` clean, full unit suite (515/515 under Node 24 — matches CI;
+   Node 26 locally breaks jsdom's `localStorage`, an unrelated pre-existing
+   environment issue), `vite build` succeeds.
 
-Next: SettingsPanels file-per-panel, further `client.ts` listen/governance
-splits, remaining admin domains (dashboard, selects, streams, …).
+Next: `client.ts` listen/radio-public/membership/embeds splits, remaining
+admin domains (dashboard, selects, streams, …), `ChannelDesigner.tsx` (P1;
+coordinate with open `channel-designer-*` product todos first).
 
 ## Related open leaves (do not duplicate)
 
