@@ -124,7 +124,7 @@ Legend:
 | [Go Live](#go-live) | `/studio/go-live` | `src/views/studio/StudioGoLiveView.tsx` | Has Story | BroadcastPreflightPanel, StreamManagerPanel |
 | [Sounds](#sounds) | `/studio/sounds` | `src/views/studio/StudioSoundsView.tsx` | Has Story | PlayableTrackTable, StashFilesPanel |
 | [Sound Detail](#sound-detail) | `/studio/sounds/$id` | `src/views/studio/StudioSoundView.tsx` | No Story | AudioRevisionList, TrackEditDialog |
-| [Recordings](#recordings) | `/studio/recordings` | `src/views/studio/StudioRecordingsView.tsx` | No Story | PlayableTrackTable |
+| [Recordings](#recordings) | `/library/recordings` (old `/studio/recordings` redirects here) | `src/views/studio/StudioRecordingsView.tsx` | No Story | PlayableTrackTable |
 | [Releases](#releases) | `/studio/releases` | `src/views/studio/StudioReleasesView.tsx` | No Story | ReleasesPanel, CardGrid |
 | [Release Detail](#release-detail) | `/studio/releases/$id` | `src/views/studio/StudioReleaseDetailView.tsx` | No Story | TrackTable, ImageUploadField |
 | [Collections](#collections-studio) | `/studio/collections` | `src/views/studio/StudioCollectionsView.tsx` | No Story | CardGrid |
@@ -150,8 +150,7 @@ Legend:
 | [Governance](#governance-studio) | `/studio/governance` | `src/views/studio/StudioGovernanceView.tsx` | No Story | Tabs, Card layout |
 | [Events](#events) | `/studio/events` | `src/views/studio/StudioEventsView.tsx` | No Story | CardGrid |
 | [Create Event](#create-event) | `/studio/events/new` | `src/views/studio/StudioEventCreateView.tsx` | No Story | Form, ImageUploadField |
-| [Stash](#stash) | `/studio/stash` | `src/views/studio/StudioStashView.tsx` | No Story | StashFilesPanel |
-| Studio Venues *(orphan)* | — (no route registered) | `src/views/studio/StudioVenuesView.tsx` | No Story | Table, Card layout — not imported by `router.tsx` or any other view; dead code or a page mid-build |
+| [Stash](#stash) | `/library/stash` (old `/studio/stash` redirects here) | `src/views/studio/StudioStashView.tsx` | No Story | StashFilesPanel |
 
 ### Governance / Transparency Views
 
@@ -250,7 +249,7 @@ Legend:
 | `packages/tahti-web` core (Listen/Discovery + Artist/Channel/Collection) | 17 | 4 | 13 | 8+ (AppShell, PageHeader, GlowMediaTile) |
 | `packages/tahti-web` auth | 9 | 1 | 8 | 3 (AuthDialog, Input, Button) — Account/Settings now has a story via `SettingsPanels` |
 | `packages/tahti-web` library | 7 | 0 | 7 | 4 (CardGrid, Tabs, TrackTable) |
-| `packages/tahti-web` studio | 33 | 4 | 29 | 12+ (StudioPanel, Form, ImageUploadField) — includes 1 orphan (Studio Venues, no route) |
+| `packages/tahti-web` studio | 32 | 4 | 28 | 12+ (StudioPanel, Form, ImageUploadField) |
 | `packages/tahti-web` governance | 10 | 0 | 10 | 2 (Tabs, Card layout) |
 | `packages/tahti-web` help/legal | 9 | 1 | 8 | 2 (LegalDocShell) |
 | `packages/tahti-web` utility/alias | 4 | 0 | 4 | — (redirects and thin aliases, not real pages) |
