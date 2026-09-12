@@ -1,7 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-import type { RadioStation } from '../content/radioStations';
+import {
+  DEFAULT_ENABLED_STATION_IDS,
+  type RadioStation,
+} from '../content/radioStations';
 
 export const NEWS_WIDGET_TYPE_ID = 'news';
 
@@ -76,7 +79,7 @@ export const useListenerWidgetsStore = create<ListenerWidgetsState>()(
     (set) => ({
       installedTypeIds: [],
       instances: [],
-      enabledStationIds: [],
+      enabledStationIds: [...DEFAULT_ENABLED_STATION_IDS],
       stationOverrides: {},
       savedBrowserStations: [],
       installType: (typeId) =>
@@ -138,6 +141,20 @@ export const useListenerWidgetsStore = create<ListenerWidgetsState>()(
           ),
         })),
     }),
-    { name: 'tahti-web-listener-widgets' },
+    {
+      name: 'tahti-web-listener-widgets',
+      version: 2,
+      migrate: (persisted, version) => {
+        const state = (persisted ?? {}) as Partial<ListenerWidgetsState>;
+        if (
+          version < 2 &&
+          (!Array.isArray(state.enabledStationIds) ||
+            state.enabledStationIds.length === 0)
+        ) {
+          state.enabledStationIds = [...DEFAULT_ENABLED_STATION_IDS];
+        }
+        return state as ListenerWidgetsState;
+      },
+    },
   ),
 );

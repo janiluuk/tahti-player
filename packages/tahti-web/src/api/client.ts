@@ -581,6 +581,7 @@ export type EnabledInternetRadioPreset = {
   genre: string | null;
   description: string | null;
   iconUrl: string | null;
+  programmingUrl: string | null;
   streamUrl: string | null;
 };
 

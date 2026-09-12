@@ -1,17 +1,3 @@
-/** Seed catalog of Finnish internet radio stations, sourced from
- * https://streamurl.link/country/fi/ (station name, logo, language,
- * bitrate/codec — user-provided source, fetched 2026-08-25).
- *
- * streamurl.link's actual stream URL is loaded client-side behind a
- * "Copy" button and isn't present in the page's static HTML, so it
- * can't be verified here — `streamUrl` is left `null` rather than
- * guessed. `detailUrl` (the station's real streamurl.link page, which
- * *was* fetched directly) is the honest fallback: it always resolves to
- * a real, working way to find the live stream. An admin approving a
- * station suggestion (see RadioStationSuggestionsTab) can fill in
- * a verified `streamUrl` directly.
- */
-
 export type RadioStation = {
   id: string;
   name: string;
@@ -20,111 +6,98 @@ export type RadioStation = {
   bitrateKbps: number;
   codec: string;
   genre: string;
-  /** Real playable stream URL, once verified — null until then. */
   streamUrl: string | null;
-  /** streamurl.link's own station page — always a real, working link. */
   detailUrl: string;
+  programmingUrl?: string | null;
 };
 
 export const RADIO_STATIONS: RadioStation[] = [
   {
-    id: 'nrj-fi',
-    name: 'NRJ',
-    logoUrl: 'https://www.streamurl.link/logos/dxnTnXYfLpc.webp',
-    language: 'Finnish',
-    bitrateKbps: 64,
-    codec: 'AAC',
-    genre: 'Pop',
-    streamUrl: null,
-    detailUrl: 'https://streamurl.link/station/nrj-6/',
-  },
-  {
-    id: 'radio-nova',
-    name: 'Radio Nova',
-    logoUrl: 'https://www.streamurl.link/logos/pcthRzNrd9r.webp',
+    id: 'ylex',
+    name: 'YleX',
+    logoUrl: '/radio-logos/ylex.png',
     language: 'Finnish',
     bitrateKbps: 128,
-    codec: 'MP3',
-    genre: 'Pop',
-    streamUrl: null,
-    detailUrl: 'https://streamurl.link/station/radio-nova-1/',
+    codec: 'AAC',
+    genre: 'Pop / Hits',
+    streamUrl: 'https://icecast.live.yle.fi/radio/YleX/icecast.audio',
+    detailUrl: 'https://areena.yle.fi/podcastit/ohjelmat/57-3BdQK6a2a',
+    programmingUrl: 'https://areena.yle.fi/audio/ohjelmat/yle-x',
   },
   {
     id: 'radio-helsinki',
     name: 'Radio Helsinki',
-    // Self-hosted official playmark (streamurl.link hotlinks return 403).
     logoUrl: '/radio-logos/radio-helsinki.png',
     language: 'Finnish',
     bitrateKbps: 256,
     codec: 'MP3',
-    genre: 'World',
-    streamUrl: null,
-    detailUrl: 'https://streamurl.link/station/radio-helsinki/',
+    genre: 'Talk / Variety',
+    streamUrl: 'https://stream.radiohelsinki.fi/stream',
+    detailUrl: 'https://www.radiohelsinki.fi/',
+    programmingUrl: 'https://www.radiohelsinki.fi/ohjelmakartta/',
   },
   {
-    id: 'popfm',
-    name: 'POPfm',
-    logoUrl: 'https://www.streamurl.link/logos/YuG0WCcB0Zp.webp',
+    id: 'radio-rock',
+    name: 'Radio Rock',
+    logoUrl: '/radio-logos/radio-rock.jpg',
     language: 'Finnish',
-    bitrateKbps: 192,
-    codec: 'MP3',
+    bitrateKbps: 256,
+    codec: 'AAC',
+    genre: 'Rock',
+    streamUrl:
+      'https://aud-stream-radiorock.nm-elemental.nelonenmedia.fi/playlist.m3u8',
+    detailUrl: 'https://www.radiorock.fi/',
+    programmingUrl: 'https://www.radiorock.fi/',
+  },
+  {
+    id: 'suomipop',
+    name: 'Suomipop',
+    logoUrl: '/radio-logos/suomipop.jpg',
+    language: 'Finnish',
+    bitrateKbps: 256,
+    codec: 'AAC',
     genre: 'Pop',
-    streamUrl: null,
-    detailUrl: 'https://streamurl.link/station/popfm/',
+    streamUrl:
+      'https://aud-stream-suomipop.nm-elemental.nelonenmedia.fi/playlist.m3u8',
+    detailUrl: 'https://www.supla.fi/suomipop',
+    programmingUrl: 'https://www.supla.fi/suomipop',
   },
   {
-    id: 'kasari',
-    name: 'Kasari',
-    logoUrl: 'https://www.kasariradio.fi/logos/pOrNqb5dLyS.webp',
+    id: 'nrj-fi',
+    name: 'NRJ',
+    logoUrl: '/radio-logos/nrj.jpg',
     language: 'Finnish',
-    bitrateKbps: 128,
-    codec: 'MP3',
-    genre: '80s',
-    streamUrl: null,
-    detailUrl: 'https://streamurl.link/station/kasari/',
+    bitrateKbps: 64,
+    codec: 'AAC',
+    genre: 'Pop / Hits',
+    streamUrl:
+      'https://stream-redirect.bauermedia.fi/nrj/nrj_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein',
+    detailUrl: 'https://www.radioplay.fi/nrj',
+    programmingUrl: 'https://www.radioplay.fi/nrj',
   },
   {
-    id: 'finest-fm',
-    name: 'Finest FM',
-    logoUrl: 'https://www.streamurl.link/logos/3t2bbAg6o9N.webp',
-    language: 'Estonian',
-    bitrateKbps: 192,
-    codec: 'MP3',
-    genre: 'Classic Hits',
-    streamUrl: null,
-    detailUrl: 'https://streamurl.link/station/finest-fm/',
-  },
-  {
-    id: 'ysari',
-    name: 'Ysäri',
-    logoUrl: 'https://www.streamurl.link/logos/DFc2nDnEDyO.webp',
+    id: 'radio-nova',
+    name: 'Radio Nova',
+    logoUrl: '/radio-logos/radio-nova.jpg',
     language: 'Finnish',
-    bitrateKbps: 128,
-    codec: 'MP3',
-    genre: '90s',
-    streamUrl: null,
-    detailUrl: 'https://streamurl.link/station/ysaeri/',
-  },
-  {
-    id: 'radio-nostalgia',
-    name: 'Radio Nostalgia',
-    logoUrl: 'https://www.streamurl.link/logos/NHnPr5Rwpmq.webp',
-    language: 'Finnish',
-    bitrateKbps: 128,
-    codec: 'MP3',
+    bitrateKbps: 64,
+    codec: 'AAC',
     genre: 'Pop',
-    streamUrl: null,
-    detailUrl: 'https://streamurl.link/station/radio-nostalgia/',
+    streamUrl:
+      'https://stream-redirect.bauermedia.fi/radionova/radionova_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein',
+    detailUrl: 'https://www.radioplay.fi/radio-nova',
+    programmingUrl: 'https://www.radioplay.fi/radio-nova',
   },
 ];
+
+export const DEFAULT_ENABLED_STATION_IDS: string[] = RADIO_STATIONS.map(
+  (station) => station.id,
+);
 
 export function radioStation(id: string): RadioStation | undefined {
   return RADIO_STATIONS.find((s) => s.id === id);
 }
 
-/** Builds a TahtiPlayable for a station with a verified stream — callers
- * must check `station.streamUrl` first (kept nullable rather than typed
- * away so every call site is forced to handle the pending case). */
 export function radioStationPlayable(
   station: RadioStation & { streamUrl: string },
 ): {

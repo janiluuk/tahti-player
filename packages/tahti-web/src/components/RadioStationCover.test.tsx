@@ -106,8 +106,9 @@ describe('RadioStationCover', () => {
           ?.logoUrl,
       ).toMatch(/^data:image\/png/);
     });
-    expect(listMockInternetRadioPresets()[0]?.iconUrl).toMatch(
-      /^data:image\/png/,
-    );
+    expect(
+      listMockInternetRadioPresets().find((p) => p.name === 'Radio Helsinki')
+        ?.iconUrl,
+    ).toMatch(/^data:image\/png/);
   });
 });
