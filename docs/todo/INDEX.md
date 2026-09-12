@@ -25,7 +25,6 @@ Status values: `open` | `blocked` | `partial`.
 | partial | [codebase-refactor-hotspots.md](codebase-refactor-hotspots.md) | PluginStore categories, SettingsPanels file-per-panel done; admin users/support/gov/radio/storage/addons peeled; client auth+requestJson extracted; more client domains / ChannelDesigner still open |
 | partial | [performance-cleanup-bulk.md](performance-cleanup-bulk.md) | Phases 1–3 + 5 done; Phase 4: PluginStore + SettingsPanels done, admin/client peels; ChannelDesigner / studio / router still open |
 | open | [channel-designer-backdrop-fold-and-widgets.md](channel-designer-backdrop-fold-and-widgets.md) | (Later) Fold bio/CTA/avatar into backdrop show-toggles; feed/posts widgets |
-| partial | [dropdown-button-to-popover-menu.md](dropdown-button-to-popover-menu.md) | Both app call sites migrated 2026-09-12; keep-or-deprecate DropdownButton decision pending |
 
 ## Fold rule (copy into CLAUDE / chat)
 
