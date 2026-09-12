@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import {
   AudioLinesIcon,
+  ChevronDownIcon,
   ImageIcon,
   PauseIcon,
   PencilIcon,
@@ -14,10 +15,10 @@ import { useEffect, useMemo, useState, type FC } from 'react';
 
 import {
   Button,
-  DropdownButton,
   FilterChips,
   ImageReveal,
   Input,
+  Popover,
   Tooltip,
 } from '@tahti-player/ui';
 
@@ -241,16 +242,30 @@ export const MyDiscographyView: FC = () => {
                   onChange={(id) => setFilter(id as VisibilityFilter)}
                   aria-label="Filter sounds"
                 />
-                <DropdownButton
-                  label={sortLabel}
-                  variant="secondary"
-                  className="shrink-0"
-                  items={SORT_OPTIONS.map((option) => ({
-                    id: option.id,
-                    label: option.label,
-                    onClick: () => setSort(option.id),
-                  }))}
-                />
+                <Popover
+                  anchor="bottom end"
+                  trigger={
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      className="shrink-0 gap-1.5"
+                    >
+                      {sortLabel}
+                      <ChevronDownIcon size={16} className="opacity-70" />
+                    </Button>
+                  }
+                >
+                  <Popover.Menu>
+                    {SORT_OPTIONS.map((option) => (
+                      <Popover.Item
+                        key={option.id}
+                        onClick={() => setSort(option.id)}
+                      >
+                        {option.label}
+                      </Popover.Item>
+                    ))}
+                  </Popover.Menu>
+                </Popover>
               </div>
               <Input
                 type="search"

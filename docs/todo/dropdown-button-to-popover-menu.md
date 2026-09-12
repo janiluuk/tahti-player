@@ -1,6 +1,29 @@
 # Migrate DropdownButton call sites to raw Popover + Menu
 
-**Status:** open
+**Status:** partial
+
+## Progress (2026-09-12)
+
+Both app call sites migrated to raw `Popover` + `Popover.Menu`/`Popover.Item`:
+
+- `ChannelDesigner.tsx`'s "More" toolbar trigger (icon-only `…` +
+  `aria-label="More options"`, carried over from the a11y fix made on
+  `feat/ui-polish-batch` after this branch forked) — Save preset / Reset
+  items, same icons/disabled-when-!dirty behavior as before.
+- `MyDiscographyView.tsx`'s sort trigger — dynamic `sortLabel`, `SORT_OPTIONS`
+  mapped straight to `Popover.Item`s.
+
+Verified visually via temporary Storybook stories mounting the exact migrated
+JSX (not committed — deleted after checking): trigger renders, menu opens
+with correct items/icons/labels, dynamic sort label updates on select. Menu
+does not auto-close on item click in either case — same as the old
+`DropdownButton` (neither ever wrapped `onClick` to close), so this is not a
+regression. `tsc --noEmit` / `eslint` / `prettier` clean on both files.
+
+Remaining: the "Keep or deprecate `DropdownButton`?" decision below — not
+resolved, so `DropdownButton` itself and its Storybook stories are left in
+place per option 1 (keep as documented convenience wrapper) until someone
+makes that call.
 
 ## Ask (user, 2026-09-11)
 
@@ -28,8 +51,8 @@ composition with the trigger and item-list flattened into props.
 
 | File | Usage | Notes |
 | --- | --- | --- |
-| `packages/tahti-web/src/components/ChannelDesigner.tsx` | `label="…"` (icon-only "more options" toolbar trigger) + Save preset / Reset items | Straightforward: `Popover` trigger = an icon button, `Popover.Menu` with the same two `Popover.Item`s. |
-| `packages/tahti-web/src/views/MyDiscographyView.tsx` | `label={sortLabel}` (dynamic sort-order trigger) + `SORT_OPTIONS.map(...)` items | Trigger needs to show the active sort label; straightforward `Popover` + `Popover.Menu` swap, map `SORT_OPTIONS` to `Popover.Item`s directly instead of through `DropdownButtonItem`. |
+| `packages/tahti-web/src/components/ChannelDesigner.tsx` | Migrated (2026-09-12) — `Popover` trigger with `…` + `aria-label="More options"`, `Popover.Menu` with Save preset / Reset items. | Done. |
+| `packages/tahti-web/src/views/MyDiscographyView.tsx` | Migrated (2026-09-12) — `Popover` trigger showing the dynamic `sortLabel`, `SORT_OPTIONS` mapped to `Popover.Item`s. | Done. |
 | `packages/storybook/src/DropdownButton.stories.tsx` | Demo stories only | Keep `DropdownButton` (and its stories) around as the packaged option for the simple case — see "Keep or deprecate" below. |
 
 ## Keep or deprecate `DropdownButton`?
