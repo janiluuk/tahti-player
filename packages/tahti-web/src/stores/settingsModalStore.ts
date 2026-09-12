@@ -3,6 +3,17 @@ import { create } from 'zustand';
 import type { PluginCategoryId } from '../content/pluginStoreCategories';
 import type { SettingsSectionId } from '../views/settings/settingsNav';
 
+export type ArtistSettingsSection =
+  | 'identity'
+  | 'story'
+  | 'people'
+  | 'connections'
+  | 'branding'
+  | 'gallery'
+  | 'press-kit'
+  | 'channel-designer'
+  | 'release-visuals';
+
 type SettingsModalState = {
   isOpen: boolean;
   activeTab: SettingsSectionId;
@@ -12,7 +23,13 @@ type SettingsModalState = {
    * effects/initializers in dev, and a destructive read there is a race
    * (first invocation clears it before the second can see it). */
   pluginCategory: PluginCategoryId | null;
-  open: (tab?: SettingsSectionId, pluginCategory?: PluginCategoryId) => void;
+  /** Sub-tab when activeTab === 'artist' (branding / gallery / …). */
+  artistSection: ArtistSettingsSection | null;
+  open: (
+    tab?: SettingsSectionId,
+    pluginCategory?: PluginCategoryId,
+    artistSection?: ArtistSettingsSection,
+  ) => void;
   close: () => void;
   setActiveTab: (tab: SettingsSectionId) => void;
 };
@@ -21,12 +38,14 @@ export const useSettingsModalStore = create<SettingsModalState>((set) => ({
   isOpen: false,
   activeTab: 'account',
   pluginCategory: null,
-  open: (tab, pluginCategory) =>
+  artistSection: null,
+  open: (tab, pluginCategory, artistSection) =>
     set((state) => ({
       isOpen: true,
       activeTab: tab ?? state.activeTab,
       pluginCategory: pluginCategory ?? null,
+      artistSection: artistSection ?? null,
     })),
   close: () => set({ isOpen: false }),
-  setActiveTab: (tab) => set({ activeTab: tab }),
+  setActiveTab: (tab) => set({ activeTab: tab, artistSection: null }),
 }));

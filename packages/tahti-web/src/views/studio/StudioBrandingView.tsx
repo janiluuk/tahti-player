@@ -1,7 +1,6 @@
-import { Link, useNavigate, useSearch } from '@tanstack/react-router';
+import { useSearch } from '@tanstack/react-router';
 import {
   DownloadIcon,
-  EyeIcon,
   ImagePlusIcon,
   ImagesIcon,
   PaintbrushIcon,
@@ -23,7 +22,6 @@ import {
   Textarea,
   Toggle,
   Tooltip,
-  ViewShell,
 } from '@tahti-player/ui';
 
 import {
@@ -46,10 +44,9 @@ import { ArtistGalleryPanel } from '../../components/ArtistGalleryPanel';
 import { ChannelDesigner } from '../../components/ChannelDesigner';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { RoundImageUploadButton } from '../../components/RoundImageUploadButton';
-import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { useAuthStore } from '../../stores/authStore';
+import { useSettingsModalStore } from '../../stores/settingsModalStore';
 
 const ACCEPTED_IMAGES = 'image/jpeg,image/png,image/webp';
 
@@ -746,58 +743,13 @@ function PressKitPreview({
 }
 
 export const StudioBrandingView: FC = () => {
-  const profile = useAuthStore((state) => state.user);
-  const navigate = useNavigate();
+  const open = useSettingsModalStore((state) => state.open);
   const search = useSearch({ strict: false }) as { tab?: string };
   const section = isStudioBrandingSection(search.tab) ? search.tab : 'branding';
 
-  return (
-    <StudioGate>
-      <div
-        className={`studio-page-layout mx-auto flex flex-col gap-6 px-1 py-2 ${
-          section === 'channel-designer' ? 'w-full max-w-none' : 'max-w-5xl'
-        }`}
-      >
-        <StudioNav current="/studio/branding" />
-        <Tabs.Root
-          selectedIndex={Math.max(0, STUDIO_BRANDING_SECTIONS.indexOf(section))}
-          onChange={(index) => {
-            const next = STUDIO_BRANDING_SECTIONS[index];
-            if (next) {
-              void navigate({
-                to: '/studio/branding',
-                search: { tab: next === 'branding' ? undefined : next },
-              });
-            }
-          }}
-        >
-          <Tabs.List className="w-fit flex-wrap">
-            {(
-              [
-                ['branding', 'Branding', PaletteIcon],
-                ['gallery', 'Gallery', ImagesIcon],
-                ['press-kit', 'Press kit', DownloadIcon],
-                ['channel-designer', 'Channel Designer', PaintbrushIcon],
-              ] as const
-            ).map(([id, label, Icon]) => (
-              <Tabs.Tab key={id}>
-                <TabLabel icon={<Icon size={15} />}>{label}</TabLabel>
-              </Tabs.Tab>
-            ))}
-          </Tabs.List>
-        </Tabs.Root>
-        <ViewShell title="Branding" classes={{ root: 'px-0 pt-0' }}>
-          {profile ? (
-            <Link to="/u/$username" params={{ username: profile.username }}>
-              <Button size="sm" variant="secondary">
-                <EyeIcon size={15} aria-hidden className="mr-1.5" />
-                View public profile
-              </Button>
-            </Link>
-          ) : null}
-          <StudioBrandingPanel section={section} hideSectionNav />
-        </ViewShell>
-      </div>
-    </StudioGate>
-  );
+  useEffect(() => {
+    open('artist', undefined, section);
+  }, [open, section]);
+
+  return null;
 };

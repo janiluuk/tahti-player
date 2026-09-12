@@ -791,7 +791,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   Login["/login"] --> Studio["/studio"]
   Studio --> Setup["/studio/channel?tab=setup if needed"]
 
-  Studio --> Brand["/studio/branding"]
+  Studio --> Brand["Settings → Artist branding"]
   Studio --> St["/studio/stats"]
   Studio --> Gov["/studio/governance"]
   Studio --> Upd["/studio/updates"]

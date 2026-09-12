@@ -167,7 +167,7 @@ const FEATURES: FeatureRow[] = [
   {
     feature: 'Studio channel settings',
     tahti: '/dashboard/settings/* + channel/edit',
-    nuclear: '/studio/branding?tab=channel-designer',
+    nuclear: '/settings/artist?tab=channel-designer',
     status: 'live',
     notes: 'Design | Profile | Username/domain',
   },
@@ -337,7 +337,7 @@ const FEATURES: FeatureRow[] = [
   {
     feature: 'Press kit / gallery',
     tahti: '/dashboard press kit',
-    nuclear: '/studio/branding',
+    nuclear: '/settings/artist?tab=branding',
     status: 'live',
     notes: 'Bio, links, members, media, gallery, and press-kit metadata',
   },

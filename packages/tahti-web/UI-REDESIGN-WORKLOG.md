@@ -5693,3 +5693,7 @@ remains the web fallback.
 ## 2026-09-11 — Finnish internet radio presets (artwork, streams, defaults)
 
 Curated Listen radio feed now seeds six Finnish stations (YleX, Radio Helsinki, Radio Rock, Suomipop, NRJ, Radio Nova) with self-hosted logos, verified stream/playlist URLs, schedule links, and ICY now-playing subtitles when the stream exposes them. All six are enabled by default for every visitor (API seed + listener widget store defaults).
+
+## 2026-09-12 — Branding moved to Settings → Artist
+
+Studio → Branding is removed from Studio nav. Branding, Gallery, Press kit, and Channel Designer now live under Settings → Artist. Legacy `/studio/branding` opens the Artist settings modal on the matching tab.

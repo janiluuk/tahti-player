@@ -8,6 +8,8 @@ import {
   Database,
   Download,
   Globe,
+  ImagePlus,
+  Images,
   InfoIcon,
   Keyboard,
   KeyRound,
@@ -895,6 +897,7 @@ function PronounsField({
 function ArtistPanel() {
   const user = useAuthStore((s) => s.user);
   const refreshAuth = useAuthStore((s) => s.refresh);
+  const artistSection = useSettingsModalStore((s) => s.artistSection);
   const [profile, setProfile] = useState<ProfileFields | null>(null);
   const [members, setMembers] = useState<ChannelMember[]>([]);
   const [social, setSocial] = useState<SocialConnections | null>(null);
@@ -970,7 +973,26 @@ function ArtistPanel() {
 
   return (
     <Tabs
+      key={artistSection ?? 'identity'}
       listClassName="flex-wrap"
+      defaultIndex={Math.max(
+        0,
+        [
+          'identity',
+          'story',
+          'people',
+          'connections',
+          'branding',
+          'gallery',
+          'press-kit',
+          'channel-designer',
+          'release-visuals',
+        ]
+          .filter(
+            (id) => id !== 'people' || profile?.artistKind === 'COLLECTIVE',
+          )
+          .indexOf(artistSection ?? 'identity'),
+      )}
       items={[
         {
           id: 'identity',
@@ -1305,6 +1327,24 @@ function ArtistPanel() {
           content: <StudioBrandingPanel section="branding" />,
         },
         {
+          id: 'gallery',
+          label: 'Gallery',
+          icon: <Images size={14} />,
+          content: <StudioBrandingPanel section="gallery" />,
+        },
+        {
+          id: 'press-kit',
+          label: 'Press kit',
+          icon: <Download size={14} />,
+          content: <StudioBrandingPanel section="press-kit" />,
+        },
+        {
+          id: 'channel-designer',
+          label: 'Channel Designer',
+          icon: <ImagePlus size={14} />,
+          content: <StudioBrandingPanel section="channel-designer" />,
+        },
+        {
           id: 'release-visuals',
           label: 'Releases',
           icon: <Sparkles size={14} />,
@@ -1375,7 +1415,6 @@ export function ReleaseVisualDefaultsPanel() {
 
 function ChannelPanel() {
   const user = useAuthStore((s) => s.user);
-  const closeSettings = useSettingsModalStore((s) => s.close);
   const channel = user?.channel;
   const [discovery, setDiscovery] = useState<DiscoveryPrefs | null>(null);
   const [channelProfile, setChannelProfile] = useState<ProfileFields | null>(
@@ -1414,18 +1453,19 @@ function ChannelPanel() {
           content: (
             <div className="flex flex-col gap-4">
               <SettingsHint>
-                Channel look now lives in one place: Studio → Branding → Channel
-                Designer.
+                Channel look lives in Settings → Artist → Channel Designer.
               </SettingsHint>
-              <Link
-                to="/studio/branding"
-                search={{ tab: 'channel-designer' }}
-                onClick={closeSettings}
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => {
+                  useSettingsModalStore
+                    .getState()
+                    .open('artist', undefined, 'channel-designer');
+                }}
               >
-                <Button size="sm" variant="secondary">
-                  Open Channel Designer
-                </Button>
-              </Link>
+                Open Channel Designer
+              </Button>
             </div>
           ),
         },
