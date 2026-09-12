@@ -6,7 +6,6 @@ import {
   LayersIcon,
   LayoutGridIcon,
   ListMusicIcon,
-  PaletteIcon,
   RadioIcon,
   RadioTowerIcon,
   Settings2Icon,
@@ -52,11 +51,6 @@ export const SUBMENUS = {
       to: '/studio',
       labelKey: 'studio.overview',
       icon: <LayoutGridIcon size={16} />,
-    },
-    {
-      to: '/studio/branding',
-      labelKey: 'studio.branding',
-      icon: <PaletteIcon size={16} />,
     },
     {
       to: '/studio/stats',
@@ -236,11 +230,6 @@ const isSubmenuActive = (current: string | undefined, to: string) => {
       pathname === '/studio/shows' ||
       pathname?.startsWith('/studio/shows/') === true ||
       pathname === '/studio/channel'
-    );
-  }
-  if (to === '/studio/branding') {
-    return (
-      pathname === '/studio/branding' || pathname === '/studio/setup-channel'
     );
   }
   // Audience parent tab stays lit for Overview, Tiers, and Stripe.

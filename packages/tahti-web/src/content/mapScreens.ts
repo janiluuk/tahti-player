@@ -921,7 +921,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         goesTo: [
           { label: 'Go Live', to: '/studio/go-live' },
           { label: 'Open Sounds', to: '/studio/sounds' },
-          { label: 'Open Channel Designer', to: '/studio/branding' },
+          {
+            label: 'Open Channel Designer',
+            to: '/settings/artist?tab=branding',
+          },
           {
             label: 'If no channel yet, land on setup',
             to: '/studio/channel?tab=setup',
@@ -1338,7 +1341,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         title: 'Channel design',
         viewName: 'Channel design',
         caption:
-          'Look, presets, accent — Studio → Branding → Channel Designer.',
+          'Look, presets, accent — Settings → Artist → Channel Designer.',
         actions: [
           'Pick a visual preset',
           'Pick a brand accent',
@@ -1359,7 +1362,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/channel-design.png',
-          route: '/studio/branding?tab=channel-designer',
+          route: '/settings/artist?tab=channel-designer',
           caption: 'Nuclear channel designer',
         },
       },
@@ -1377,7 +1380,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         goesTo: [
           {
             label: 'Open Channel Designer for rotation/fallback settings',
-            to: '/studio/branding?tab=channel-designer',
+            to: '/settings/artist?tab=channel-designer',
           },
         ],
         old: {
@@ -1600,7 +1603,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           'Submit up to five tracks to Tahti Radio',
         ],
         goesTo: [
-          { label: 'Open Channel Designer', to: '/studio/branding' },
+          {
+            label: 'Open Channel Designer',
+            to: '/settings/artist?tab=branding',
+          },
           { label: 'Open Go Live', to: '/studio/go-live' },
           { label: 'Open the Sounds library', to: '/studio/sounds' },
         ],

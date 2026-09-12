@@ -2,8 +2,31 @@ import { useEffect } from 'react';
 import { toast } from 'sonner';
 
 import type { PluginCategoryId } from '../../content/pluginStoreCategories';
-import { useSettingsModalStore } from '../../stores/settingsModalStore';
+import {
+  useSettingsModalStore,
+  type ArtistSettingsSection,
+} from '../../stores/settingsModalStore';
 import { isSettingsSectionId, type SettingsSectionId } from './settingsNav';
+
+const ARTIST_SECTIONS: readonly ArtistSettingsSection[] = [
+  'identity',
+  'story',
+  'people',
+  'connections',
+  'branding',
+  'gallery',
+  'press-kit',
+  'channel-designer',
+  'release-visuals',
+];
+
+function isArtistSettingsSection(
+  value: string | null,
+): value is ArtistSettingsSection {
+  return Boolean(
+    value && ARTIST_SECTIONS.includes(value as ArtistSettingsSection),
+  );
+}
 
 /** Deep link `/settings` → Nuclear SettingsPanel modal. Also the landing
  * pad for OAuth connect callbacks (see cutoverReturns.ts) — `?status=` is
@@ -17,7 +40,14 @@ export function SettingsView({ sectionId }: { sectionId?: string }) {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const category = params.get('category') as PluginCategoryId | null;
-    open(section, category ?? undefined);
+    const artistTab = params.get('tab');
+    open(
+      section,
+      category ?? undefined,
+      section === 'artist' && isArtistSettingsSection(artistTab)
+        ? artistTab
+        : undefined,
+    );
     const status = params.get('status');
     if (status === 'connected') {
       toast.success('Connected.');

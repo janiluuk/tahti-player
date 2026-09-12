@@ -11,7 +11,9 @@ describe('artist gallery help', () => {
 
     expect(gallery).toBeDefined();
     expect(
-      gallery?.body.some((line) => line.includes('Branding → Gallery')),
+      gallery?.body.some((line) =>
+        line.includes('Settings → Artist → Gallery'),
+      ),
     ).toBe(true);
     expect(
       gallery?.body.some((line) => line.includes('Drag a photo to reorder')),
@@ -23,7 +25,7 @@ describe('artist gallery help', () => {
     ).toBe(true);
   });
 
-  it('points channel design help at Studio Branding Channel Designer', () => {
+  it('points channel design help at Settings Artist Channel Designer', () => {
     const article = getHelpArticle('channel-design');
     const look = article?.sections.find(
       (section) => section.heading === 'Choose a look',
@@ -31,7 +33,9 @@ describe('artist gallery help', () => {
 
     expect(look).toBeDefined();
     expect(
-      look?.body.some((line) => line.includes('Branding → Channel Designer')),
+      look?.body.some((line) =>
+        line.includes('Settings → Artist → Channel Designer'),
+      ),
     ).toBe(true);
   });
 });

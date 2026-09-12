@@ -2541,3 +2541,7 @@ new/fixed stories present in `storybook-static/index.json`),
 ## 2026-09-11 — Finnish internet radio presets
 
 Six Finnish stations (YleX, Radio Helsinki, Radio Rock, Suomipop, NRJ, Radio Nova) now ship with better logos, verified stream/playlist URLs, schedule links, ICY now-playing on Listen when available, and default-enabled for every visitor. Sibling seed script updated; run on API host to apply production DB.
+
+## 2026-09-12 — Branding moved to Settings → Artist
+
+Removed Branding from Studio nav. Branding, Gallery, Press kit, and Channel Designer now live under Settings → Artist. Legacy `/studio/branding` opens the Artist settings modal on the matching tab.

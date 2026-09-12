@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminContentView } from '@tahti-web/views/admin/AdminContentView';
 import { AdminMissedShowsPanel } from '@tahti-web/views/admin/AdminMissedShowsView';
 import { AdminSelectsView } from '@tahti-web/views/admin/AdminSelectsView';
-import { StudioBrandingView } from '@tahti-web/views/studio/StudioBrandingView';
+import { StudioBrandingPanel } from '@tahti-web/views/studio/StudioBrandingView';
 import { StudioChannelView } from '@tahti-web/views/studio/StudioChannelView';
 import { StudioCollectionsView } from '@tahti-web/views/studio/StudioCollectionsView';
 import { StudioDistributionView } from '@tahti-web/views/studio/StudioDistributionView';
@@ -181,12 +181,12 @@ export const StudioBranding: Story = {
     docs: {
       description: {
         story:
-          'Lives on Settings → Artist → Branding and Studio → Manage → Branding.',
+          'Lives on Settings → Artist (Branding / Gallery / Press kit / Channel Designer).',
       },
     },
   },
-  decorators: [withTahtiRouter('/studio/branding')],
-  render: () => <StudioBrandingView />,
+  decorators: [withTahtiRouter('/settings/artist')],
+  render: () => <StudioBrandingPanel />,
 };
 
 export const StudioModeration: Story = {

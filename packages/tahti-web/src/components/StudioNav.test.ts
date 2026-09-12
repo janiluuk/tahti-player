@@ -58,8 +58,6 @@ describe('StudioNav section coverage', () => {
   it('lights exactly one Studio submenu item on covered catalog routes, folding Perform/go-live pages into the single Broadcast tab', () => {
     const covered: [string, string][] = [
       ['/studio', '/studio'],
-      ['/studio/branding', '/studio/branding'],
-      ['/studio/setup-channel', '/studio/branding'],
       ['/studio/stats', '/studio/stats'],
       ['/studio/insights', '/studio/stats'],
       ['/studio/editor', '/studio/editor'],

@@ -139,7 +139,7 @@ Legend:
 | [Stats Detail](#stats-detail) | `/studio/stats/detail` | `src/views/studio/StudioStatsDetailView.tsx` | No Story | Charts |
 | [Track Insights](#track-insights) | `/studio/insights/$kind/$id` | `src/views/studio/StudioTrackInsightsView.tsx` | Has Story | TrackInsightsPanel |
 | [Channel Settings](#channel-settings) | `/studio/channel` | `src/views/studio/StudioChannelView.tsx` | No Story | ChannelDesigner, Input, ImageUploadField |
-| [Branding](#branding) | `/studio/branding` | `src/views/studio/StudioBrandingView.tsx` | No Story | ArtistGalleryPanel, ChannelDesigner |
+| [Branding](#branding) | Settings → Artist (modal); `/studio/branding` redirects | `src/views/studio/StudioBrandingView.tsx` (`StudioBrandingPanel`) | Has Story (`LatestViewSurfaces`) | ArtistGalleryPanel, ChannelDesigner |
 | [Shows](#shows) | `/studio/shows` | `src/views/studio/StudioShowsView.tsx` | No Story | CardGrid |
 | [Show Detail](#show-detail) | `/studio/shows/$id` | `src/views/studio/StudioShowDetailView.tsx` | No Story | ShowEpisodeList, Form |
 | [Playlists](#playlists-studio) | `/studio/playlists/$slug` | `src/views/studio/StudioPlaylistsView.tsx` | No Story | TrackTable, DragReorder |
