@@ -9,6 +9,12 @@ const meta: Meta<typeof Popover> = {
   tags: ['autodocs'],
   parameters: {
     layout: 'centered',
+    docs: {
+      description: {
+        component:
+          'The **Dropdown Menu** and **Sectioned Menu** stories below are the base pattern for any button-triggered action menu. For the common case (a text trigger button collapsing a handful of related action variants), see the packaged Components/DropdownButton instead — reach for raw `Popover` + `Popover.Menu` when the trigger isn’t a plain labeled button, or the menu needs sections/a footer.',
+      },
+    },
   },
 };
 

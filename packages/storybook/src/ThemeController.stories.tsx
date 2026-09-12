@@ -43,3 +43,16 @@ export const Interactive: Story = {
     );
   },
 };
+
+/** Settings → Themes appearance row: "Light" / "Dark" text either side of
+ * the switch, since that page has room to spare (unlike a top-bar icon
+ * strip, where the default `showLabels={false}` keeps it compact). */
+export const WithLabels: Story = {
+  render: () => {
+    const [isDark, setIsDark] = useState(false);
+
+    return (
+      <ThemeController isDark={isDark} onThemeChange={setIsDark} showLabels />
+    );
+  },
+};

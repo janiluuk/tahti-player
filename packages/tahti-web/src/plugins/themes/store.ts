@@ -213,6 +213,13 @@ type ThemeState = {
   importCustomTheme: (
     json: unknown,
   ) => { ok: true; id: string } | { ok: false; error: string };
+  /** Overwrites an existing custom theme's vars/dark/name in place (same
+   * id) — for re-saving edits to an already-saved preset, as opposed to
+   * `importCustomTheme`, which always mints a new id. */
+  updateCustomTheme: (
+    id: string,
+    theme: AdvancedTheme,
+  ) => { ok: true } | { ok: false; error: string };
   renameCustomTheme: (
     id: string,
     name: string,
@@ -292,6 +299,18 @@ export const useThemeStore = create<ThemeState>()(
         applyToDocument(id, get().dark, customThemes);
         set({ customThemes, themeId: id });
         return { ok: true, id };
+      },
+
+      updateCustomTheme: (id, theme) => {
+        if (!get().customThemes[id]) {
+          return { ok: false, error: 'Theme was not found.' };
+        }
+        const customThemes = { ...get().customThemes, [id]: theme };
+        if (get().themeId === id) {
+          applyToDocument(id, get().dark, customThemes);
+        }
+        set({ customThemes });
+        return { ok: true };
       },
 
       renameCustomTheme: (id, name) => {

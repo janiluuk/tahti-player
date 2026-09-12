@@ -21,11 +21,11 @@ Status values: `open` | `blocked` | `partial`.
 | partial | [release-player-workflow-broken.md](release-player-workflow-broken.md) | Root cause fixed 2026-09-07; user needs to run 2 `gh secret set` commands to finish |
 | partial | [radio-browser-directory-fixes.md](radio-browser-directory-fixes.md) | Cover-image sub-ask needs decision |
 | open | [tahti-cli-tool.md](tahti-cli-tool.md) | CLI (gumroad-cli-inspired) wrapping api-client — list library items, maybe TUI player |
-| open | [tahti-org-ci-skip-full-e2e.md](tahti-org-ci-skip-full-e2e.md) | (tahti-org) CI always runs full e2e on every push/PR; needs a skip/path-filter strategy |
 | partial | [listen-widget-hearthis-config-and-set-embed-bug.md](listen-widget-hearthis-config-and-set-embed-bug.md) | Auto-fill username + set-embed bug shipped; icon-button config UI needs user to point at specifics |
-| partial | [codebase-refactor-hotspots.md](codebase-refactor-hotspots.md) | PluginStore categories done; admin users/support/gov/radio/storage/addons peeled; client auth+requestJson extracted; SettingsPanels / more client domains still open |
-| partial | [performance-cleanup-bulk.md](performance-cleanup-bulk.md) | Phases 1–3 + 5 done; Phase 4: PluginStore complete + admin/client peels; SettingsPanels / studio / router still open |
+| partial | [codebase-refactor-hotspots.md](codebase-refactor-hotspots.md) | PluginStore categories, SettingsPanels file-per-panel done; admin users/support/gov/radio/storage/addons peeled; client auth+requestJson extracted; more client domains / ChannelDesigner still open |
+| partial | [performance-cleanup-bulk.md](performance-cleanup-bulk.md) | Phases 1–3 + 5 done; Phase 4: PluginStore + SettingsPanels done, admin/client peels; ChannelDesigner / studio / router still open |
 | open | [channel-designer-backdrop-fold-and-widgets.md](channel-designer-backdrop-fold-and-widgets.md) | (Later) Fold bio/CTA/avatar into backdrop show-toggles; feed/posts widgets |
+| open | [dropdown-button-to-popover-menu.md](dropdown-button-to-popover-menu.md) | Migrate ChannelDesigner/MyDiscographyView off DropdownButton to raw Popover+Menu; keep-or-deprecate decision pending |
 
 ## Fold rule (copy into CLAUDE / chat)
 

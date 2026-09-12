@@ -353,12 +353,16 @@ function ShotPane({
   viewName,
   action,
   absent,
+  storybookUrl,
 }: {
   label: 'Tahti' | 'beta.tahti.live';
   shot: MapShot;
   viewName: string;
   action: string;
   absent: boolean;
+  /** Deep link to this view's Storybook story — `new` (Nuclear/tahti-web)
+   * pane only, Storybook doesn't cover the legacy `old` chrome. */
+  storybookUrl?: string;
 }) {
   const pending = !absent && !shot.image;
   const screenshotUrl = shot.image
@@ -422,17 +426,31 @@ function ShotPane({
           />
         )}
       </div>
-      {screenshotUrl ? (
+      {screenshotUrl || storybookUrl ? (
         <div className="text-foreground-secondary flex flex-wrap items-center gap-x-2 gap-y-1 border-b px-4 py-2 text-[11px]">
-          <span>Screenshot captured 2026-08-31</span>
-          <a
-            href={screenshotUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="text-primary font-mono break-all underline-offset-2 hover:underline"
-          >
-            {screenshotUrl}
-          </a>
+          {screenshotUrl ? (
+            <>
+              <span>Screenshot captured 2026-08-31</span>
+              <a
+                href={screenshotUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="text-primary font-mono break-all underline-offset-2 hover:underline"
+              >
+                {screenshotUrl}
+              </a>
+            </>
+          ) : null}
+          {storybookUrl ? (
+            <a
+              href={storybookUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="text-primary ml-auto font-semibold underline-offset-2 hover:underline"
+            >
+              Storybook →
+            </a>
+          ) : null}
         </div>
       ) : null}
       <p className="text-foreground-secondary px-4 py-3 text-sm leading-snug">
@@ -526,6 +544,7 @@ function ReviewCaseCard({ c }: { c: MapCase }) {
                   viewName={c.viewName}
                   action={c.action ?? c.caption}
                   absent={nuclearAbsent}
+                  storybookUrl={c.storybookUrl}
                 />
               </div>
             </div>

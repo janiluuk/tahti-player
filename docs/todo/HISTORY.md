@@ -2486,6 +2486,20 @@ follow-up if actually wanted, not guessed at.
 
 ---
 
+## 2026-09-11 — tahti-org CI: skip API e2e on backend-irrelevant diffs
+
+Picked the path-filter option from the ticket: added a `changes` job
+(`dorny/paths-filter`) to `../tahti-org/.github/workflows/ci.yml` gating
+`vital-flows-e2e` and `user-journeys-e2e` on `apps/api/**`,
+`apps/worker/**`, `packages/db/**`, `packages/shared/**`, `tests/e2e/**`,
+and the root lockfile/workflow files actually changing. `all-checks`
+already treated a skipped dependency as passing, so no change needed
+there. Shipped and merged as `../tahti-org` PR #507 (squash), verified
+green including the e2e jobs actually running (correctly) on that PR
+itself since it touched `ci.yml`.
+
+---
+
 ## 2026-09-12 — Storybook stories for recently-changed components + VIEW-CATALOG.md re-audit
 
 `storybook-catalog-refresh.md` — done. Bounded Storybook coverage pass (not
