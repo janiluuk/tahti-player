@@ -77,6 +77,7 @@ const ANONYMOUS_ALLOWED_ROUTES = [
   /^\/(radio|discover)(?:\/|$)/,
   /^\/(channel|u|r|t|v|venues)(?:\/|$)/,
   /^\/(listen\/favorites|library\/favorites|favorites)(?:\/|$)/,
+  /^\/library\/local(?:\/|$)/,
   /^\/studio(?:\/|$)/,
   /^\/transparency(?:\/|$)/,
   /^\/governance\/history(?:\/|$)/,
