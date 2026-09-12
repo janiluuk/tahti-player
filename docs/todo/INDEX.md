@@ -27,7 +27,7 @@ Status values: `open` | `blocked` | `partial`.
 | open | [channel-designer-backdrop-fold-and-widgets.md](channel-designer-backdrop-fold-and-widgets.md) | (Later) Fold bio/CTA/avatar into backdrop show-toggles; feed/posts widgets |
 | open | [listen-what-is-it-to-help.md](listen-what-is-it-to-help.md) | Remove "What is tahti.live?" button from Listen; fold WhatIsItView content into Help as a section |
 | open | [storybook-theme-unification-sweep.md](storybook-theme-unification-sweep.md) | Sweep tahti-web elements (input areas, pills, filter chips, etc.) vs. Storybook; flag unification candidates, duplicates, no-ops |
-| open | [dropdown-button-to-popover-menu.md](dropdown-button-to-popover-menu.md) | Migrate ChannelDesigner/MyDiscographyView off DropdownButton to raw Popover+Menu; keep-or-deprecate decision pending |
+| partial | [dropdown-button-to-popover-menu.md](dropdown-button-to-popover-menu.md) | Both app call sites migrated 2026-09-12; keep-or-deprecate DropdownButton decision pending |
 
 ## Fold rule (copy into CLAUDE / chat)
 

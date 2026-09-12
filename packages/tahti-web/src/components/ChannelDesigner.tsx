@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import {
   BookmarkPlusIcon,
+  ChevronDownIcon,
   GripVerticalIcon,
   ImageIcon,
   PlusIcon,
@@ -24,9 +25,9 @@ import {
   Badge,
   Button,
   Dialog,
-  DropdownButton,
   FilePicker,
   Input,
+  Popover,
   SaveButton,
   Select,
   Slider,
@@ -1572,25 +1573,36 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       <>
         <div className={`flex flex-col gap-4 ${compact ? '' : 'w-full'}`}>
           <div className="flex flex-wrap items-center justify-end gap-3">
-            <DropdownButton
-              label="…"
-              aria-label="More options"
-              items={[
-                {
-                  id: 'save-preset',
-                  label: 'Save preset',
-                  icon: <BookmarkPlusIcon size={16} />,
-                  onClick: openSavePresetModal,
-                },
-                {
-                  id: 'reset',
-                  label: 'Reset',
-                  icon: <RotateCcwIcon size={16} />,
-                  disabled: !dirty,
-                  onClick: () => setResetConfirmOpen(true),
-                },
-              ]}
-            />
+            <Popover
+              anchor="bottom end"
+              trigger={
+                <Button
+                  type="button"
+                  variant="secondary"
+                  aria-label="More options"
+                  className="gap-1.5"
+                >
+                  …
+                  <ChevronDownIcon size={16} className="opacity-70" />
+                </Button>
+              }
+            >
+              <Popover.Menu>
+                <Popover.Item
+                  icon={<BookmarkPlusIcon size={16} />}
+                  onClick={openSavePresetModal}
+                >
+                  Save preset
+                </Popover.Item>
+                <Popover.Item
+                  icon={<RotateCcwIcon size={16} />}
+                  disabled={!dirty}
+                  onClick={() => setResetConfirmOpen(true)}
+                >
+                  Reset
+                </Popover.Item>
+              </Popover.Menu>
+            </Popover>
             {previousSave ? (
               <Tooltip content="Restore previous save" side="top">
                 <Button
