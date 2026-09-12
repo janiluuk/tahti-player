@@ -8,7 +8,7 @@ import { useState } from 'react';
 /**
  * Backdrop header style segmented control. Each mode should show exclusive
  * Look content in Channel Designer (Gradient colors vs Solid accents vs
- * Video upload vs Slideshow).
+ * Video upload vs Slideshow vs Visualization).
  */
 const meta: Meta<typeof HeaderStyleTabs> = {
   title: 'Tahti/Channel/Designer/HeaderStyleTabs',
@@ -45,4 +45,8 @@ export const VideoLoop: Story = {
 
 export const Slideshow: Story = {
   render: () => <Demo initial="SLIDESHOW" />,
+};
+
+export const Visualization: Story = {
+  render: () => <Demo initial="VISUALIZATION" />,
 };

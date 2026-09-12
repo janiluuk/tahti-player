@@ -9,7 +9,6 @@ Status values: `open` | `blocked` | `partial`.
 | --- | --- | --- |
 | open | [navigation-audit.md](navigation-audit.md) | Parent/back links, duplicate pages, active-tab consistency, stable content region, nav transition animations |
 | open | [player-performance-optimizations.md](player-performance-optimizations.md) | (Later) Release-build CPU/native-memory profiling, then startup, queue, playback, visualizer and loading optimizations |
-| partial | [channel-designer-background-section-fixes.md](channel-designer-background-section-fixes.md) | Designer background section; design decision remains |
 | blocked | [channelview-move-player-to-stage.md](channelview-move-player-to-stage.md) | Player-in-backdrop extraction needs a design decision |
 | partial | [desktop-pro-library.md](desktop-pro-library.md) | Native local-library (Rust/SQLite) shipped on master; real ID3 tag extraction + TrackTable/bulk-select UI built in parallel on a different branch — reconciliation plan written 2026-09-12, not yet merged |
 | partial | [atlas-navigation-structure-widget.md](atlas-navigation-structure-widget.md) | Atlas navigation draft widget supports persisted reorder/add/remove; runtime wiring intentionally deferred |
