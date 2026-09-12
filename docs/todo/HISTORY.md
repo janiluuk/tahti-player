@@ -2632,3 +2632,24 @@ component/test). `pnpm --filter @tahti-player/storybook type-check` clean;
 `index.json`.
 
 ---
+
+## 2026-09-12 — Wired MembershipStatusPanel into Settings → Account → Membership
+
+`components/MembershipStatusPanel.tsx` — a richer membership presentation
+(active-member badge, thank-you copy, Stripe-portal vs. legacy-pay button,
+renewal-due / migration-required notices, lapsed-membership warning,
+pending-email-verification resend flow — ported from `tahti-org`'s
+`apps/web/src/app/dashboard/membership-panel.tsx`) already existed but was
+only wired into `views/AccountView.tsx`, an orphan file superseded by
+`SettingsView.tsx` when the settings routing was migrated — so the actual
+Membership tab (`views/settings/panels/AccountPanel.tsx`) still rendered
+the old flat label/value grid. Swapped that grid for `MembershipStatusPanel`
+and removed the now-dead local `MembershipCheckoutButton` (and its
+now-unused `startMembershipCheckout`/`CreditCardIcon` imports — `CreditCardIcon`
+stays, still used by the Purchases tab icon). Verified visually via
+temporary Storybook stories covering all 5 states (active/no-Stripe,
+active/Stripe-subscription, active/migration-required, lapsed, pending-email
+— deleted after checking, not committed); `tsc --noEmit` / `eslint` clean;
+full unit suite (515/515 under Node 24, matching CI); `vite build` and
+`storybook build` both succeed. `views/AccountView.tsx` remains an orphan
+(not deleted — out of scope, wasn't asked).
