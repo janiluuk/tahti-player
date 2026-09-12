@@ -16,7 +16,7 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
 | --- | --- | --- | --- | --- |
 | P0 | `packages/tahti-web/src/api/admin.ts` | ~5000 | God API module: ~110 exports, ~40+ Admin* types, domains from venues → radio → storage → governance → addons → audit/logs. Private `getJson`/`sendJson`/`mutate` duplicated vs other clients. | Split into `api/admin/` barrel: `admin-http.ts` (shared fetch helpers), then domain files (`admin-users.ts`, `admin-radio.ts`, `admin-storage.ts`, `admin-governance.ts`, `admin-addons.ts`, `admin-moderation.ts`, `admin-activity.ts`, …). Re-export from `admin.ts` or `admin/index.ts` so call sites need not churn in one PR. |
 | P0 | `packages/tahti-web/src/components/PluginStorePanel.tsx` | ~3560 | Mega-panel: themes, visualizers, Spotify/OAuth/Hearthis, DSP, multicast, audio plugins, tools, radio browser, discovery, channel categories in one file. | Extract category components under `components/plugin-store/` (`ThemesCategory`, `ServiceCategory` + service cards, `RadioCategory`, …). Keep `PluginStorePanel` as thin shell + tab routing. Align with existing `plugin-registry-extraction` leaf where contracts touch player. |
-| P0 | `packages/tahti-web/src/api/client.ts` | ~2155 | Public/listener API kitchen sink: directory, channel, track, radio, membership, chat, embeds, support, feature requests (~70 functions left). | **Partial:** `client-request.ts`/`client-auth.ts` (auth) and `governance-member.ts` (motions/meetings/documents/members/reports) peeled. Still: `listen.ts`, `radio-public.ts`, `membership.ts`, `embeds.ts`. |
+| P0 | `packages/tahti-web/src/api/client.ts` | ~1880 | Public/listener API kitchen sink: directory, channel, track, radio, membership, chat, support, feature requests (~67 functions left). | **Partial:** `client-request.ts`/`client-auth.ts` (auth), `governance-member.ts` (motions/meetings/documents/members/reports), `embeds.ts` (channel/release/collection embed views) peeled. Still: `listen.ts`, `radio-public.ts`, `membership.ts`. |
 | P1 | `packages/tahti-web/src/views/settings/SettingsPanels.tsx` | ~2440 | Many settings surfaces in one file (Account, Artist, Channel, Broadcast, Notifications, Themes, storage, privacy). | One panel per file under `views/settings/panels/`; `SettingsSectionBody` stays the switch/router. |
 | P1 | `packages/tahti-web/src/components/ChannelDesigner.tsx` | ~2050 | Designer god component (visualizer / color / header / look sections) tightly coupled to Channel + Artist editors. | Extract section editors + snapshot helpers; keep `forwardRef` façade. Coordinate with open designer todos (`channel-designer-*`) — split structure first, product fold later. |
 | P1 | `packages/tahti-web/src/views/ChannelView.tsx` + `ArtistView.tsx` | ~1790 + ~1760 | Parallel public entity pages sharing designer, visualizer, disco widgets, social header patterns; each still owns full layout/data orchestration. | Extract shared hooks/sections (`usePublicChannelLook`, backdrop/visualizer chrome, disco widget block) before merging views. Do not force one route. |
@@ -119,8 +119,15 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
    / `eslint` clean, full unit suite (515/515 under Node 24 — matches CI;
    Node 26 locally breaks jsdom's `localStorage`, an unrelated pre-existing
    environment issue), `vite build` succeeds.
+7. ~~**`client.ts` embeds domain peel**~~ — **2026-09-12:**
+   `api/embeds.ts` — `fetchEmbedChannel`/`fetchEmbedRelease`/
+   `fetchEmbedCollection` (the `/embed/*` iframe views), re-exported via
+   `export * from './embeds'`. Only external consumer (`EmbedViews.tsx`)
+   still imports from `../api/client`, unaffected. `client.ts` ~2155 →
+   ~1880 lines. Same verification as slice 6 (`tsc`/`eslint`/515 tests
+   under Node 24/`vite build`).
 
-Next: `client.ts` listen/radio-public/membership/embeds splits, remaining
+Next: `client.ts` listen/radio-public/membership splits, remaining
 admin domains (dashboard, selects, streams, …), `ChannelDesigner.tsx` (P1;
 coordinate with open `channel-designer-*` product todos first).
 
