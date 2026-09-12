@@ -79,7 +79,7 @@ on `document.visibilitychange`.
 |---|---|---|
 | `api/admin.ts` | ~1935 | **Partial:** radio/storage/addons/users/support/governance/news/financial peeled to `api/admin/admin-*.ts`. Still: dashboard, selects, streams, announcements, activity/logs, … |
 | `PluginStorePanel.tsx` | ~166 | **Done** as thin shell; categories under `plugin-store/` |
-| `api/client.ts` | ~1760 | **Partial:** `client-request.ts` + `client-auth.ts` + `governance-member.ts` + `embeds.ts` + `radio-public.ts`. Still: listen/membership |
+| `api/client.ts` | ~1543 | **Partial:** `client-request.ts` + `client-auth.ts` + `governance-member.ts` + `embeds.ts` + `radio-public.ts` + `membership.ts`. Still: `listen.ts` |
 | `SettingsPanels.tsx` | 2523 | Extract each tab to its own file |
 | `ChannelDesigner.tsx` | 2048 | Colors, layout, overlay, page blocks sub-panels |
 | `api/studio.ts` | 1845 | Tracks, releases, collections, schedule |

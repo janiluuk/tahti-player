@@ -16,7 +16,7 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
 | --- | --- | --- | --- | --- |
 | P0 | `packages/tahti-web/src/api/admin.ts` | ~5000 | God API module: ~110 exports, ~40+ Admin* types, domains from venues → radio → storage → governance → addons → audit/logs. Private `getJson`/`sendJson`/`mutate` duplicated vs other clients. | Split into `api/admin/` barrel: `admin-http.ts` (shared fetch helpers), then domain files (`admin-users.ts`, `admin-radio.ts`, `admin-storage.ts`, `admin-governance.ts`, `admin-addons.ts`, `admin-moderation.ts`, `admin-activity.ts`, …). Re-export from `admin.ts` or `admin/index.ts` so call sites need not churn in one PR. |
 | P0 | `packages/tahti-web/src/components/PluginStorePanel.tsx` | ~3560 | Mega-panel: themes, visualizers, Spotify/OAuth/Hearthis, DSP, multicast, audio plugins, tools, radio browser, discovery, channel categories in one file. | Extract category components under `components/plugin-store/` (`ThemesCategory`, `ServiceCategory` + service cards, `RadioCategory`, …). Keep `PluginStorePanel` as thin shell + tab routing. Align with existing `plugin-registry-extraction` leaf where contracts touch player. |
-| P0 | `packages/tahti-web/src/api/client.ts` | ~1760 | Public/listener API kitchen sink: directory, channel, track, membership, chat, support, feature requests (~62 functions left). | **Partial:** `client-request.ts`/`client-auth.ts` (auth), `governance-member.ts` (motions/meetings/documents/members/reports), `embeds.ts` (channel/release/collection embed views), `radio-public.ts` (radio now-playing/presets/station/recently-played) peeled. Still: `listen.ts`, `membership.ts`. |
+| P0 | `packages/tahti-web/src/api/client.ts` | ~1543 | Public/listener API kitchen sink: directory, channel, track, chat, support, feature requests (~54 functions left). | **Partial:** `client-request.ts`/`client-auth.ts` (auth), `governance-member.ts`, `embeds.ts`, `radio-public.ts`, `membership.ts` (checkout/portal/verification/deletion/subscriptions/purchases) peeled. Still: `listen.ts` (`fetchFeed` + directory/search/on-air). |
 | P1 | `packages/tahti-web/src/views/settings/SettingsPanels.tsx` | ~2440 | Many settings surfaces in one file (Account, Artist, Channel, Broadcast, Notifications, Themes, storage, privacy). | One panel per file under `views/settings/panels/`; `SettingsSectionBody` stays the switch/router. |
 | P1 | `packages/tahti-web/src/components/ChannelDesigner.tsx` | ~2050 | Designer god component (visualizer / color / header / look sections) tightly coupled to Channel + Artist editors. | Extract section editors + snapshot helpers; keep `forwardRef` façade. Coordinate with open designer todos (`channel-designer-*`) — split structure first, product fold later. |
 | P1 | `packages/tahti-web/src/views/ChannelView.tsx` + `ArtistView.tsx` | ~1790 + ~1760 | Parallel public entity pages sharing designer, visualizer, disco widgets, social header patterns; each still owns full layout/data orchestration. | Extract shared hooks/sections (`usePublicChannelLook`, backdrop/visualizer chrome, disco widget block) before merging views. Do not force one route. |
@@ -136,9 +136,19 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
    init, so both modules finish evaluating before either is called); 515
    tests still pass, confirming it's fine in practice. `client.ts` ~1880 →
    ~1760 lines. Same verification as slices 6–7.
+9. ~~**`client.ts` membership domain peel**~~ — **2026-09-12:**
+   `api/membership.ts` — `fetchMembership`/`startMembershipCheckout`/
+   `startMembershipPortal`/`resendVerificationEmail`/
+   `requestAccountDeletion`/`fetchMySubscriptions`/`fetchMyPurchases`/
+   `cancelMySubscription`. Left `fetchFeed` in `client.ts` even though it
+   sat in the middle of this block — it's the `/api/me/feed` listener-home
+   fetch, not membership/billing, so it belongs with a future `listen.ts`
+   slice instead; extracted the two non-contiguous halves around it rather
+   than force an unrelated function into the wrong module. `client.ts`
+   ~1760 → ~1543 lines. Same verification as slices 6–8.
 
-Next: `client.ts` listen/membership splits, remaining admin domains
-(dashboard, selects, streams, …), `ChannelDesigner.tsx` (P1;
+Next: `client.ts` listen.ts (directory/search/on-air/feed), remaining
+admin domains (dashboard, selects, streams, …), `ChannelDesigner.tsx` (P1;
 coordinate with open `channel-designer-*` product todos first).
 
 ## Related open leaves (do not duplicate)
