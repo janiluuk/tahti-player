@@ -26,7 +26,6 @@ Status values: `open` | `blocked` | `partial`.
 | open | [channel-designer-backdrop-fold-and-widgets.md](channel-designer-backdrop-fold-and-widgets.md) | (Later) Fold bio/CTA/avatar into backdrop show-toggles; feed/posts widgets |
 | open | [listen-what-is-it-to-help.md](listen-what-is-it-to-help.md) | Remove "What is tahti.live?" button from Listen; fold WhatIsItView content into Help as a section |
 | partial | [storybook-theme-unification-sweep.md](storybook-theme-unification-sweep.md) | Pass 1 done 2026-09-12 (~25 views, input/pill/chip only) — punch list of duplicates/no-ops/promote-candidates in VIEW-CATALOG.md; rest of app unswept |
-| partial | [dropdown-button-to-popover-menu.md](dropdown-button-to-popover-menu.md) | Both app call sites migrated 2026-09-12; keep-or-deprecate DropdownButton decision pending |
 
 ## Fold rule (copy into CLAUDE / chat)
 
