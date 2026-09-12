@@ -25,8 +25,7 @@ Status values: `open` | `blocked` | `partial`.
 | partial | [performance-cleanup-bulk.md](performance-cleanup-bulk.md) | Phases 1–3 + 5 done; Phase 4: PluginStore + SettingsPanels done, admin/client peels; ChannelDesigner / studio / router still open |
 | open | [channel-designer-backdrop-fold-and-widgets.md](channel-designer-backdrop-fold-and-widgets.md) | (Later) Fold bio/CTA/avatar into backdrop show-toggles; feed/posts widgets |
 | open | [listen-what-is-it-to-help.md](listen-what-is-it-to-help.md) | Remove "What is tahti.live?" button from Listen; fold WhatIsItView content into Help as a section |
-| open | [storybook-theme-unification-sweep.md](storybook-theme-unification-sweep.md) | Sweep tahti-web elements (input areas, pills, filter chips, etc.) vs. Storybook; flag unification candidates, duplicates, no-ops |
-| open | [dropdown-button-to-popover-menu.md](dropdown-button-to-popover-menu.md) | Migrate ChannelDesigner/MyDiscographyView off DropdownButton to raw Popover+Menu; keep-or-deprecate decision pending |
+| partial | [storybook-theme-unification-sweep.md](storybook-theme-unification-sweep.md) | Pass 1 done 2026-09-12 (~25 views, input/pill/chip only) — punch list of duplicates/no-ops/promote-candidates in VIEW-CATALOG.md; rest of app unswept |
 
 ## Fold rule (copy into CLAUDE / chat)
 
