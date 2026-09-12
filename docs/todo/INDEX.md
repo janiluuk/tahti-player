@@ -7,7 +7,7 @@ Status values: `open` | `blocked` | `partial`.
 
 | Status | File | One-line |
 | --- | --- | --- |
-| open | [navigation-audit.md](navigation-audit.md) | Parent/back links, duplicate pages, active-tab consistency, stable content region, nav transition animations |
+| partial | [navigation-audit.md](navigation-audit.md) | Audited 2026-09-12: back links/active-tabs/stable-content/transitions already fine; `/studio/collections` vs `/library/collections` overlap needs a product decision |
 | open | [player-performance-optimizations.md](player-performance-optimizations.md) | (Later) Release-build CPU/native-memory profiling, then startup, queue, playback, visualizer and loading optimizations |
 | partial | [channel-designer-background-section-fixes.md](channel-designer-background-section-fixes.md) | Designer background section; design decision remains |
 | blocked | [channelview-move-player-to-stage.md](channelview-move-player-to-stage.md) | Player-in-backdrop extraction needs a design decision |
