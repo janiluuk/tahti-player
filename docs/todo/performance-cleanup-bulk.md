@@ -80,7 +80,7 @@ on `document.visibilitychange`.
 | `api/admin.ts` | ~1935 | **Partial:** radio/storage/addons/users/support/governance/news/financial peeled to `api/admin/admin-*.ts`. Still: dashboard, selects, streams, announcements, activity/logs, … |
 | `PluginStorePanel.tsx` | ~166 | **Done** as thin shell; categories under `plugin-store/` |
 | `api/client.ts` | ~1419 | **Done** (named-module split): `client-request.ts` + `client-auth.ts` + `governance-member.ts` + `embeds.ts` + `radio-public.ts` + `membership.ts` + `listen.ts` |
-| `SettingsPanels.tsx` | 2523 | Extract each tab to its own file |
+| `SettingsPanels.tsx` | ~110 | **Done 2026-09-12** — one panel per file under `views/settings/panels/` |
 | `ChannelDesigner.tsx` | 2048 | Colors, layout, overlay, page blocks sub-panels |
 | `api/studio.ts` | 1845 | Tracks, releases, collections, schedule |
 | `router.tsx` | 1817 | Route definitions by section |
@@ -103,9 +103,10 @@ Phases **1A–1C**, **2A–2B**, **3A–3C**, and **5** are done. Phase **4**
 partial: PluginStore fully category-split; admin radio/storage/addons/
 users/support/governance peels; `client.ts` full named-module split done
 (2026-09-12: `listen`/`radio-public`/`governance-member`/`membership`/
-`embeds` on top of the existing `requestJson`/auth extract).
-Still open in Phase 4: SettingsPanels, ChannelDesigner, studio, router,
-Artist/Channel views, remaining admin domains.
+`embeds` on top of the existing `requestJson`/auth extract);
+SettingsPanels file-per-panel split (2026-09-12).
+Still open in Phase 4: ChannelDesigner, studio, router, Artist/Channel
+views, remaining admin domains.
 
 ## Execution order
 
