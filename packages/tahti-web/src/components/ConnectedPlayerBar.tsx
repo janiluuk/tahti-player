@@ -167,7 +167,7 @@ export function ConnectedPlayerBar() {
       size="icon"
       onClick={onPlayPause}
       className={cn(
-        'size-12 shrink-0 rounded-full shadow-md',
+        'size-16 shrink-0 rounded-full shadow-md',
         isPlaying &&
           'bg-accent-green active:bg-accent-green text-black active:text-black',
       )}
@@ -176,9 +176,9 @@ export function ConnectedPlayerBar() {
       data-testid={isPlaying ? 'player-pause-button' : 'player-play-button'}
     >
       {isPlaying ? (
-        <PauseIcon size={22} />
+        <PauseIcon size={28} />
       ) : (
-        <PlayIcon size={22} className="ml-0.5" />
+        <PlayIcon size={28} className="ml-0.5" />
       )}
     </Button>
   );
@@ -257,7 +257,7 @@ export function ConnectedPlayerBar() {
       <div className="flex w-full flex-col">
         {waveform}
         {hearthisPanel}
-        <div className="flex w-full items-center gap-3 px-4 py-2">
+        <div className="flex w-full items-center gap-3 px-4 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
           <button
             type="button"
             className="flex min-w-0 flex-1 items-center gap-3 text-left"

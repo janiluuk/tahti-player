@@ -5697,3 +5697,7 @@ Curated Listen radio feed now seeds six Finnish stations (YleX, Radio Helsinki, 
 ## 2026-09-12 — Branding moved to Settings → Artist
 
 Studio → Branding is removed from Studio nav. Branding, Gallery, Press kit, and Channel Designer now live under Settings → Artist. Legacy `/studio/branding` opens the Artist settings modal on the matching tab.
+
+## 2026-09-12 — Fix mobile play button hidden under Android's bottom bar
+
+`PlayerShell` used `h-screen` (`100vh`), which Android Chrome sizes against the theoretical full viewport rather than the space actually visible once its dynamic bottom bar is showing — pushing the bottom of the app (mobile play bar + bottom nav) partly offscreen. Switched to `h-dvh`. Also enlarged the mobile play/pause button (`size-12`→`size-16`, icon 22→28) and added `env(safe-area-inset-bottom)` padding to the mobile play bar row for pages where it's the last element (no bottom nav, e.g. artist pages). Bumped `packages/tahti-web/package.json` to `0.0.116`.
