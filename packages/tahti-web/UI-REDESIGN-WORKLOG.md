@@ -5689,3 +5689,7 @@ shared Local files surface. Desktop users can import through the native file
 picker, search the SQLite catalog, play resolved asset URLs, remove catalog
 entries, and load larger collections in bounded pages. The browser File API
 remains the web fallback.
+
+## 2026-09-11 — Finnish internet radio presets (artwork, streams, defaults)
+
+Curated Listen radio feed now seeds six Finnish stations (YleX, Radio Helsinki, Radio Rock, Suomipop, NRJ, Radio Nova) with self-hosted logos, verified stream/playlist URLs, schedule links, and ICY now-playing subtitles when the stream exposes them. All six are enabled by default for every visitor (API seed + listener widget store defaults).

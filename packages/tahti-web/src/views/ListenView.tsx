@@ -25,6 +25,7 @@ import {
   fetchHomepageDiscoWidgets,
   type DiscoWidgetRenderItem,
 } from '../api/disco-widgets';
+import { readIcyStreamTitle } from '../api/radio-sources';
 import type { OnAirChannel, PublicChannel } from '../api/types';
 import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
 import { ListenerWidgetsSection } from '../components/ListenerWidgetsSection';
@@ -58,6 +59,8 @@ const LISTEN_SECTION_TABS = [
   },
 ];
 
+const NOW_PLAYING_POLL_MS = 45_000;
+
 export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
   const navigate = useNavigate();
   const pathname = useRouterState({
@@ -70,6 +73,9 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
   const [radioPresets, setRadioPresets] = useState<
     EnabledInternetRadioPreset[]
   >([]);
+  const [presetNowPlaying, setPresetNowPlaying] = useState<
+    Record<string, string>
+  >({});
   const play = usePlayerStore((s) => s.play);
   const currentId = usePlayerStore((s) => s.currentId);
   const playbackStatus = usePlayerStore((s) => s.status);
@@ -106,6 +112,41 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    if (radioPresets.length === 0) {
+      return;
+    }
+    let cancelled = false;
+    const refresh = () => {
+      void Promise.all(
+        radioPresets.map(async (preset) => {
+          if (!preset.streamUrl) {
+            return [preset.id, null] as const;
+          }
+          const title = await readIcyStreamTitle(preset.streamUrl);
+          return [preset.id, title] as const;
+        }),
+      ).then((entries) => {
+        if (cancelled) {
+          return;
+        }
+        const next: Record<string, string> = {};
+        for (const [id, title] of entries) {
+          if (title) {
+            next[id] = title;
+          }
+        }
+        setPresetNowPlaying(next);
+      });
+    };
+    refresh();
+    const timer = window.setInterval(refresh, NOW_PLAYING_POLL_MS);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, [radioPresets]);
 
   useEffect(() => {
     let cancelled = false;
@@ -306,7 +347,11 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                         />
                         <Card
                           title={preset.name}
-                          subtitle={preset.genre ?? 'Internet radio'}
+                          subtitle={
+                            presetNowPlaying[preset.id] ??
+                            preset.genre ??
+                            'Internet radio'
+                          }
                           src={
                             preset.iconUrl ?? placeholderArtworkUrl(playableId)
                           }
@@ -325,8 +370,8 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                             play({
                               id: playableId,
                               kind: 'radio',
-                              title: preset.name,
-                              artist: preset.genre ?? 'Internet radio',
+                              title: presetNowPlaying[preset.id] ?? preset.name,
+                              artist: preset.name,
                               coverUrl: preset.iconUrl ?? undefined,
                               streamUrl: preset.streamUrl,
                               protocol: 'https',
