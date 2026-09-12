@@ -176,7 +176,6 @@ Generated from story `title` fields. Prefer matching title; keep live data when 
 | `Components/CopyButton` | `CopyButton.stories.tsx` |
 | `Components/HistoryCharts/DayOfWeekChart` | `DayOfWeekChart.stories.tsx` |
 | `Components/Dialog` | `Dialog.stories.tsx` |
-| `Components/DropdownButton` | `DropdownButton.stories.tsx` |
 | `Components/EmptyState` | `EmptyState.stories.tsx` |
 | `Components/FavoriteButton` | `FavoriteButton.stories.tsx` |
 | `Components/FilePicker` | `FilePicker.stories.tsx` |
