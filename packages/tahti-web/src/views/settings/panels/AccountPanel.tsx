@@ -25,7 +25,6 @@ import {
   fetchMyPurchases,
   fetchMySubscriptions,
   requestAccountDeletion,
-  startMembershipCheckout,
 } from '../../../api/client';
 import {
   fetchStorageUsage,
@@ -38,9 +37,9 @@ import type {
 } from '../../../api/types';
 import { ApiTokensPanel } from '../../../components/ApiTokensPanel';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
+import { MembershipStatusPanel } from '../../../components/MembershipStatusPanel';
 import { PageLoading } from '../../../components/PageStates';
 import { SecurityTotpPanel } from '../../../components/SecurityTotpPanel';
-import { membershipStatusLabel } from '../../../lib/membershipStatus';
 import { useAuthModalStore } from '../../../stores/authModalStore';
 import { useAuthStore } from '../../../stores/authStore';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
@@ -59,51 +58,6 @@ function euros(cents: number | string): string {
     return '—';
   }
   return `€${(n / 100).toFixed(n % 100 === 0 ? 0 : 2)}`;
-}
-
-function MembershipCheckoutButton({
-  onActivated,
-}: {
-  onActivated?: () => void;
-}) {
-  const [busy, setBusy] = useState(false);
-  const [msg, setMsg] = useState<string | null>(null);
-
-  return (
-    <div className="flex flex-col gap-2">
-      <Button
-        size="sm"
-        disabled={busy}
-        onClick={() => {
-          setBusy(true);
-          setMsg(null);
-          void startMembershipCheckout().then((res) => {
-            setBusy(false);
-            if (!res.ok) {
-              setMsg(res.error);
-              return;
-            }
-            if ('checkoutUrl' in res && res.checkoutUrl) {
-              window.location.assign(res.checkoutUrl);
-              return;
-            }
-            if ('activated' in res && res.activated) {
-              setMsg(
-                res.memberNumber != null
-                  ? `Membership activated — member #${res.memberNumber}.`
-                  : 'Membership activated.',
-              );
-              onActivated?.();
-            }
-          });
-        }}
-      >
-        <CreditCardIcon size={15} aria-hidden className="mr-1.5" />
-        {busy ? 'Starting…' : 'Pay €40 / year'}
-      </Button>
-      {msg && <p className="text-xs">{msg}</p>}
-    </div>
-  );
 }
 
 export function AccountPanel() {
@@ -213,61 +167,16 @@ export function AccountPanel() {
           id: 'membership',
           label: 'Membership',
           icon: <Wallet size={14} />,
-          content: (
-            <div className="flex flex-col gap-3">
-              {!membership ? (
-                <SettingsHint>Could not load membership.</SettingsHint>
-              ) : (
-                <div className="grid gap-2 sm:grid-cols-2">
-                  <SettingsInfo
-                    label="Status"
-                    value={membershipStatusLabel(membership)}
-                  />
-                  <SettingsInfo
-                    label="Member"
-                    value={membership.isMember ? 'Yes' : 'No'}
-                  />
-                  {membership.memberNumber != null && (
-                    <SettingsInfo
-                      label="Member #"
-                      value={String(membership.memberNumber)}
-                    />
-                  )}
-                  {membership.tier && (
-                    <SettingsInfo label="Tier" value={membership.tier} />
-                  )}
-                  {typeof membership.priceCents === 'number' && (
-                    <SettingsInfo
-                      label="Dues"
-                      value={`${euros(membership.priceCents)} / year`}
-                    />
-                  )}
-                  {membership.renewalDueAt && (
-                    <SettingsInfo
-                      label="Renewal"
-                      value={new Date(
-                        membership.renewalDueAt,
-                      ).toLocaleDateString()}
-                    />
-                  )}
-                  {!membership.isMember && (
-                    <div className="flex flex-col gap-2">
-                      <p className="text-foreground-secondary text-xs">
-                        Tahti ry membership is €40/year — cooperative vote,
-                        FLAC, and stash.
-                      </p>
-                      <MembershipCheckoutButton
-                        onActivated={() => {
-                          void fetchMembership().then((r) => {
-                            setMembership(r.data);
-                          });
-                        }}
-                      />
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
+          content: !membership ? (
+            <SettingsHint>Could not load membership.</SettingsHint>
+          ) : (
+            <MembershipStatusPanel
+              membership={membership}
+              userEmail={user.email}
+              onChange={() => {
+                void fetchMembership().then((r) => setMembership(r.data));
+              }}
+            />
           ),
         },
         {
