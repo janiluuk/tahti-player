@@ -118,6 +118,7 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
    Node 24, matching CI — Node 26 locally breaks jsdom's `localStorage`,
    an unrelated pre-existing environment issue), `vite build` and
    `storybook build` both succeed.
+<<<<<<< HEAD
 6. ~~**`client.ts` governance-member domain peel**~~ — **2026-09-12:**
    `api/governance-member.ts` — `MotionComment`/`FetchGovernanceMotionsOpts`
    types + all 13 `fetchGovernanceMotions`/`fetchGovernanceMotion`/
