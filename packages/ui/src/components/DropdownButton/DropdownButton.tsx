@@ -29,7 +29,10 @@ const triggerVariants = cva('gap-1.5', {
 });
 
 export type DropdownButtonProps = {
-  /** Trigger label — usually names the group ("More", "Save options"). */
+  /** Trigger label — usually names the group ("More", "Save options"). Can
+   * be a short symbol (e.g. "…") when the trigger sits in a tight toolbar —
+   * pass `aria-label` too in that case, since a symbol alone isn't
+   * announced meaningfully by a screen reader. */
   label: ReactNode;
   icon?: ReactNode;
   items: DropdownButtonItem[];
@@ -37,6 +40,7 @@ export type DropdownButtonProps = {
   disabled?: boolean;
   className?: string;
   anchor?: PopoverPanelProps['anchor'];
+  'aria-label'?: string;
 };
 
 /** A single trigger that expands into a menu of related action variants —
@@ -52,6 +56,7 @@ export const DropdownButton: FC<DropdownButtonProps> = ({
   disabled,
   className,
   anchor = 'bottom end',
+  'aria-label': ariaLabel,
 }) => (
   <Popover
     anchor={anchor}
@@ -60,6 +65,7 @@ export const DropdownButton: FC<DropdownButtonProps> = ({
         type="button"
         variant={variant}
         disabled={disabled}
+        aria-label={ariaLabel}
         className={cn(triggerVariants({ variant }), className)}
       >
         {icon}
