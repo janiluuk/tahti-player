@@ -2610,3 +2610,25 @@ zustand-persist/localStorage errors) — none touch the files changed in this
 pass.
 
 ---
+
+## 2026-09-12 — DropdownButton removed, migration to Popover+Menu complete
+
+Both app call sites (`ChannelDesigner.tsx`'s toolbar trigger,
+`MyDiscographyView.tsx`'s sort trigger) had already been migrated to raw
+`Popover` + `Popover.Menu`/`Popover.Item` earlier the same day. With the
+keep-or-deprecate question decided (deprecate), removed `DropdownButton`
+entirely: `packages/ui/src/components/DropdownButton/` (component + test),
+its barrel export in `packages/ui/src/components/index.ts`, and
+`packages/storybook/src/DropdownButton.stories.tsx`. Updated the
+`Popover.stories.tsx` docs blurb to drop the now-dead cross-reference and
+describe composing `Popover` + `Popover.Menu` directly for any trigger/menu
+shape. Removed the now-stale `Components/DropdownButton` row from
+`packages/tahti-web/STORYBOOK-SURFACES.md`.
+
+Verified: `pnpm --filter @tahti-player/ui type-check` / `lint` / `test`
+clean (286 tests, 61 files — no orphaned references to the deleted
+component/test). `pnpm --filter @tahti-player/storybook type-check` clean;
+`storybook build` succeeds with no `DropdownButton` entries in the built
+`index.json`.
+
+---
