@@ -185,7 +185,7 @@ export function AccountPanel() {
           icon: <Landmark size={14} />,
           content: (
             <Suspense fallback={<PageLoading label="Loading governance…" />}>
-              <GovernanceView />
+              <GovernanceView embedded />
             </Suspense>
           ),
         },

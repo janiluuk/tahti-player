@@ -11,7 +11,6 @@ export type ArtistSettingsSection =
   | 'branding'
   | 'gallery'
   | 'press-kit'
-  | 'channel-designer'
   | 'release-visuals';
 
 type SettingsModalState = {

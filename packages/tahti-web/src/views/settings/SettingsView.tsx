@@ -16,7 +16,6 @@ const ARTIST_SECTIONS: readonly ArtistSettingsSection[] = [
   'branding',
   'gallery',
   'press-kit',
-  'channel-designer',
   'release-visuals',
 ];
 

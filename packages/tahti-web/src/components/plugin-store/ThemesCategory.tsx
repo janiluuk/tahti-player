@@ -457,12 +457,11 @@ export function VisualizersCategory() {
         Header style, color scheme, and enable/disable live in{' '}
         <Link
           to="/settings/$section"
-          params={{ section: 'artist' }}
-          search={{ tab: 'channel-designer' }}
+          params={{ section: 'channel' }}
           className="underline underline-offset-2"
           onClick={() => useSettingsModalStore.getState().close()}
         >
-          Settings → Artist → Channel Designer
+          Settings → Channel & design → Channel Designer
         </Link>
         .
       </p>

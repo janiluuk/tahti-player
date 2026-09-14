@@ -29,7 +29,7 @@ import {
 } from '../../../lib/genres';
 import { useAuthStore } from '../../../stores/authStore';
 import { useChannelShareStore } from '../../../stores/channelShareStore';
-import { useSettingsModalStore } from '../../../stores/settingsModalStore';
+import { StudioBrandingPanel } from '../../studio/StudioBrandingView';
 import { StudioModerationView } from '../../studio/StudioModerationView';
 import { SettingsHint, SettingsToggle } from '../SettingsFields';
 
@@ -68,25 +68,10 @@ export function ChannelPanel() {
       items={[
         {
           id: 'appearance',
-          label: 'Appearance',
+          label: 'Channel Designer',
           icon: <Paintbrush size={14} />,
           content: (
-            <div className="flex flex-col gap-4">
-              <SettingsHint>
-                Channel look lives in Settings → Artist → Channel Designer.
-              </SettingsHint>
-              <Button
-                size="sm"
-                variant="secondary"
-                onClick={() => {
-                  useSettingsModalStore
-                    .getState()
-                    .open('artist', undefined, 'channel-designer');
-                }}
-              >
-                Open Channel Designer
-              </Button>
-            </div>
+            <StudioBrandingPanel section="channel-designer" hideSectionNav />
           ),
         },
         {

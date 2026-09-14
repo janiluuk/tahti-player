@@ -169,7 +169,7 @@ const FEATURES: FeatureRow[] = [
   {
     feature: 'Studio channel settings',
     tahti: '/dashboard/settings/* + channel/edit',
-    nuclear: '/settings/artist?tab=channel-designer',
+    nuclear: '/settings/channel',
     status: 'live',
     notes: 'Design | Profile | Username/domain',
   },
