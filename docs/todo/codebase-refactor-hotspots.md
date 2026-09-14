@@ -14,7 +14,7 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
 
 | Priority | File | ~LOC | Smell | Suggested direction |
 | --- | --- | --- | --- | --- |
-| P0 | `packages/tahti-web/src/api/admin.ts` | ~1595 | God API module, shrinking: dashboard, beta applications, top lists, announcements, content reports, vendors, status, i18n, activity feed, container logs remain. Private `getJson`/`sendJson`/`mutate` now shared via `http.ts` (not duplicated). | **Partial:** radio/storage/addons/users/support/governance/news/financial/selects/streams peeled to `api/admin/admin-*.ts`. **Avoid the activity-feed/audit-topic section** — flagged as in-flight elsewhere; leave it for last. |
+| P0 | ~~`packages/tahti-web/src/api/admin.ts`~~ | ~~~1595~~ **~436** | God API module, shrinking. | **2026-09-15:** dashboard (+venues), beta applications, top lists, announcements, content reports, vendors, status, i18n peeled to `api/admin/admin-*.ts`, joining the earlier radio/storage/addons/users/support/governance/news/financial/selects/streams peels. Only activity-feed/audit-topic and container-logs remain in `admin.ts` — deliberately left, per this row's own note (flagged as in-flight elsewhere). Off the P0 hotspot list. |
 | P0 | `packages/tahti-web/src/components/PluginStorePanel.tsx` | ~3560 | Mega-panel: themes, visualizers, Spotify/OAuth/Hearthis, DSP, multicast, audio plugins, tools, radio browser, discovery, channel categories in one file. | Extract category components under `components/plugin-store/` (`ThemesCategory`, `ServiceCategory` + service cards, `RadioCategory`, …). Keep `PluginStorePanel` as thin shell + tab routing. Align with existing `plugin-registry-extraction` leaf where contracts touch player. |
 | ~~P0~~ | ~~`packages/tahti-web/src/api/client.ts`~~ | ~~~3000~~ **~1419** | Public/listener API kitchen sink: directory, channel, track, chat, support, feature requests, transparency, venues, collections, follow, newsletter (~54 functions left, no single dominant domain). | **Original named-module split done 2026-09-12:** `client-request.ts`/`client-auth.ts`, `listen.ts`, `radio-public.ts`, `governance-member.ts`, `membership.ts`, `embeds.ts` all peeled — the exact list this row originally suggested. Remaining domains are smaller/mixed with no obvious next seam; demote off the P0 hotspot list, revisit only if one grows or a merge-conflict pain point shows up. |
 | ~~P1~~ | ~~`packages/tahti-web/src/views/settings/SettingsPanels.tsx`~~ | ~~~2440~~ **done 2026-09-12, now ~110** | Many settings surfaces in one file (Account, Artist, Channel, Broadcast, Notifications, Themes, storage, privacy). | One panel per file under `views/settings/panels/`; `SettingsSectionBody` stays the switch/router. |
@@ -132,7 +132,6 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
    Node 24, matching CI — Node 26 locally breaks jsdom's `localStorage`,
    an unrelated pre-existing environment issue), `vite build` and
    `storybook build` both succeed.
-<<<<<<< HEAD
 6. ~~**`client.ts` governance-member domain peel**~~ — **2026-09-12:**
    `api/governance-member.ts` — `MotionComment`/`FetchGovernanceMotionsOpts`
    types + all 13 `fetchGovernanceMotions`/`fetchGovernanceMotion`/
@@ -187,11 +186,22 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
     suggested (`auth`/`listen`/`radio-public`/`governance-member`/
     `membership`/`embeds`) — see that row's note above; `client.ts` is off
     the P0 hotspot list now.
+11. ~~**`admin.ts` remaining domain peel**~~ — **2026-09-15:**
+    `admin-dashboard.ts` (venues + dashboard KPIs + content overview),
+    `admin-beta.ts`, `admin-top-lists.ts`, `admin-announcements.ts`,
+    `admin-content-reports.ts`, `admin-vendors.ts`, `admin-status.ts`,
+    `admin-i18n.ts` — eight adjacent, self-contained domains, each a
+    mechanical move (types + mock helper + fetch/mutate functions),
+    `admin.ts` re-exporting via `export * from './admin/admin-*'`
+    matching every prior slice. Deliberately left the activity-feed/
+    audit-topic section and admin container logs untouched (this row's own
+    note: activity-feed is flagged as in-flight elsewhere). `admin.ts`
+    ~1595 → ~436 lines; off the P0 hotspot list. Verified: `tsc --noEmit` /
+    `eslint` clean, full unit suite (516/516), `vite build` succeeds.
 
-Next: remaining admin domains (dashboard, beta, top lists, announcements,
-content reports, vendors, status, i18n — activity-feed/audit-topic last,
-once confirmed quiet), `ChannelDesigner.tsx` (P1; coordinate with open
-`channel-designer-*` product todos first).
+Next: `ChannelDesigner.tsx` (P1; coordinate with open `channel-designer-*`
+product todos first). Admin activity-feed/audit-topic and container-logs
+sections remain in `admin.ts` intentionally — revisit once confirmed quiet.
 
 ## Related open leaves (do not duplicate)
 

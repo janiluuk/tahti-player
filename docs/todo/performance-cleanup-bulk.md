@@ -77,7 +77,7 @@ on `document.visibilitychange`.
 
 | File | Lines | Split plan |
 |---|---|---|
-| `api/admin.ts` | ~1595 | **Partial:** radio/storage/addons/users/support/governance/news/financial/selects/streams peeled to `api/admin/admin-*.ts`. Still: dashboard, beta, top lists, announcements, content reports, vendors, status, i18n, activity/logs (last — in-flight elsewhere) |
+| `api/admin.ts` | ~436 | **Done 2026-09-15** — all domains peeled to `api/admin/admin-*.ts` except activity-feed/audit-topic and container logs, deliberately left (flagged as in-flight elsewhere) |
 | `PluginStorePanel.tsx` | ~166 | **Done** as thin shell; categories under `plugin-store/` |
 | `api/client.ts` | ~1419 | **Done** (named-module split): `client-request.ts` + `client-auth.ts` + `governance-member.ts` + `embeds.ts` + `radio-public.ts` + `membership.ts` + `listen.ts` |
 | `SettingsPanels.tsx` | ~110 | **Done 2026-09-12** — one panel per file under `views/settings/panels/` |
@@ -106,7 +106,8 @@ users/support/governance peels; `client.ts` full named-module split done
 `embeds` on top of the existing `requestJson`/auth extract);
 SettingsPanels file-per-panel split (2026-09-12).
 Still open in Phase 4: ChannelDesigner, studio, router, Artist/Channel
-views, remaining admin domains.
+views. `admin.ts` domain peel completed 2026-09-15 (see `codebase-refactor-
+hotspots.md`).
 
 ## Execution order
 
