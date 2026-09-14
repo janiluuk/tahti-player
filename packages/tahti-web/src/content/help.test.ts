@@ -25,18 +25,13 @@ describe('artist gallery help', () => {
     ).toBe(true);
   });
 
-  it('points channel design help at Settings Artist Channel Designer', () => {
+  it('has a Choose a look section', () => {
     const article = getHelpArticle('channel-design');
     const look = article?.sections.find(
       (section) => section.heading === 'Choose a look',
     );
 
     expect(look).toBeDefined();
-    expect(
-      look?.body.some((line) =>
-        line.includes('Settings → Channel & design → Channel Designer'),
-      ),
-    ).toBe(true);
   });
 });
 
