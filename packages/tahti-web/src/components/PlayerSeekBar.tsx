@@ -1,4 +1,4 @@
-import { cn, PlayerBar } from '@tahti-player/ui';
+import { Badge, cn, PlayerBar } from '@tahti-player/ui';
 
 import { usePlayerStore } from '../stores/playerStore';
 
@@ -42,13 +42,17 @@ export function ConnectedSeekBar({ className }: { className?: string }) {
 export function PlayerLiveIndicator({ className }: { className?: string }) {
   return (
     <div className={cn('relative h-6 w-full', className)}>
-      <div className="border-accent-red/40 bg-accent-red/10 text-accent-red absolute top-1/2 left-0 flex -translate-y-1/2 items-center gap-1.5 rounded-full border px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase">
+      <Badge
+        variant="pill"
+        color="red"
+        className="border-accent-red/40 bg-accent-red/10 text-accent-red absolute top-1/2 left-0 -translate-y-1/2 gap-1.5 px-2 py-0.5 text-[10px] tracking-wide"
+      >
         <span
           className="bg-accent-red size-1.5 rounded-full motion-safe:animate-pulse"
           aria-hidden
         />
         Live
-      </div>
+      </Badge>
     </div>
   );
 }
@@ -59,9 +63,11 @@ export function PlayerLiveIndicator({ className }: { className?: string }) {
  * PlayerLiveIndicator, used where that room already exists). */
 export function PlayerLiveBadge({ className }: { className?: string }) {
   return (
-    <span
+    <Badge
+      variant="pill"
+      color="red"
       className={cn(
-        'border-accent-red/40 bg-accent-red/10 text-accent-red inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2 py-0.5 text-[10px] font-semibold tracking-wide uppercase',
+        'border-accent-red/40 bg-accent-red/10 text-accent-red shrink-0 gap-1.5 px-2 py-0.5 text-[10px] tracking-wide',
         className,
       )}
     >
@@ -70,6 +76,6 @@ export function PlayerLiveBadge({ className }: { className?: string }) {
         aria-hidden
       />
       Live
-    </span>
+    </Badge>
   );
 }

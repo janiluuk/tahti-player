@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 
+import { Button } from '@tahti-player/ui';
+
 import {
   isHeaderImageUrl,
   isValidHeaderBackdropUrl,
@@ -319,9 +321,11 @@ export function ChannelBackdropCard({
               ),
             )}
             {quickAdd?.map((chip) => (
-              <button
+              <Button
                 key={chip.id}
                 type="button"
+                variant="text"
+                size="flexible"
                 onClick={(event) => {
                   event.stopPropagation();
                   chip.onClick();
@@ -329,7 +333,7 @@ export function ChannelBackdropCard({
                 className="ml-auto rounded-full border border-white/30 px-2.5 py-1 text-[10px] normal-case opacity-90 hover:bg-white/10 hover:opacity-100"
               >
                 + {chip.label}
-              </button>
+              </Button>
             ))}
           </nav>
         ) : null}

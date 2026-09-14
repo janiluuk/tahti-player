@@ -878,14 +878,16 @@ export function ChannelView({ slug }: { slug: string }) {
                   ),
                 )}
                 {stageQuickAdd?.map((chip) => (
-                  <button
+                  <Button
                     key={chip.id}
                     type="button"
+                    variant="text"
+                    size="flexible"
                     onClick={chip.onClick}
                     className="border-border text-foreground-secondary hover:bg-background-secondary ml-auto rounded-full border px-2.5 py-1 text-[10px] normal-case"
                   >
                     + {chip.label}
-                  </button>
+                  </Button>
                 ))}
               </nav>
             ) : null}

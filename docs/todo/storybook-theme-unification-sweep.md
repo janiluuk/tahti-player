@@ -2,72 +2,143 @@
 
 **Status:** partial
 
-Research complete 2026-09-14: full app swept for input/pill/filter-chip
-patterns — all ~140 views across `packages/player` and `packages/tahti-web`
-(pass 1, 2026-09-12, covered ~25 views + the `Input`/`Badge`/`FilterChips`
-primitive inventory; pass 2, 2026-09-14, covered the remaining ~115).
-Findings folded into `docs/VIEW-CATALOG.md` ("Confirmed Duplicates /
-No-Ops" section). **None of the swaps below have been applied yet** — this
-is still open until the punch list is actioned. Other primitive categories
-(`Table`, `Card`, `Dialog`, `Select`) were out of scope for this sweep.
+Full-app research pass done 2026-09-14 (~140/140 views, input/pill/chip
+patterns). Fix pass done 2026-09-14: punch list actioned. `Table`/`Card`/
+`Dialog`/`Select` categories are still out of scope for both passes.
 
-## Punch list — real duplicates, should swap to the Storybook primitive
+## Fixed (2026-09-14)
 
-### `Badge` duplicates
+- `tahti-web/src/components/tahti/OnAirBadge.tsx` — now composes `Badge`
+  internally (same visual, same exported API)
+- `tahti-web/src/components/PlayerSeekBar.tsx` (`PlayerLiveIndicator`,
+  `PlayerLiveBadge`) — now compose `Badge`
+- `tahti-web/src/views/TrackDetailView.tsx` "Private" pill → `Badge`
+- `tahti-web/src/views/MyDiscographyView.tsx` embed-provider tag → `Badge`
+- `tahti-web/src/views/TransparencyResolutionsView.tsx` — year toggle →
+  `FilterChips`, vote-count pills → `Badge`
+- `tahti-web/src/views/RadioScheduleView.tsx` booking-edit dialog show-type
+  toggle → `FilterChips` (matches the file's existing booking-creation use)
+- `tahti-web/src/views/studio/StudioShowDetailView.tsx` episode-source
+  picker → `FilterChips` (icon support added, see below)
+- `tahti-web/src/views/studio/StudioScheduleView.tsx` weekday-recurrence
+  picker → `FilterChips` (multi-select)
+- `tahti-web/src/views/studio/StudioCollectionEditView.tsx` — raw
+  `<input type="date">` → `Input type="date"`; "Style" picker → `FilterChips`
+- `tahti-web/src/views/studio/StudioCollectionsView.tsx` and
+  `StudioReleasesView.tsx` — `StudioToggleChip` usage replaced with
+  `FilterChips` directly (icon support made this possible); `StudioToggleChip`
+  itself **deleted** from `StudioPanel.tsx` (no remaining usages)
+- `tahti-web/src/components/FanTiersEditor.tsx` — `PerkChip` usage replaced
+  with `FilterChips` (multi-select); `PerkChip` **deleted**
+- `tahti-web/src/views/settings/panels/ArtistPanel.tsx` (moved from the old
+  `SettingsPanels.tsx`) role pills → `FilterChips`
+- `tahti-web/src/views/GovernanceView.tsx` raw `<textarea>` → `Textarea`
+- `player/src/views/Artist/components/ArtistSocialHeader.tsx` location pill
+  → `Badge`
+- `player/src/views/Artist/components/ArtistBioHeader.tsx` genre/mood tags
+  and "on tour" flag → `Badge` (2 sites)
+- `player/src/views/Settings/TextField.tsx` — deleted (pure pass-through
+  wrapper around `Input`); call sites in `SettingField.tsx` now use `Input`
+  directly
 
-- `tahti-web/src/components/tahti/OnAirBadge.tsx` (used by `RadioView.tsx:47,225`) → `Badge variant="pill" color="red" animated`
-- `tahti-web/src/components/PlayerSeekBar.tsx` (`PlayerLiveIndicator`/`PlayerLiveBadge`) → `Badge`
-- `tahti-web/src/views/TrackDetailView.tsx:~509` ("Private" pill) → `Badge`
-- `tahti-web/src/components/HelpLayer.tsx`, `ChannelBackdropCard.tsx` → `Badge`
-- `tahti-web/src/views/ChannelView.tsx:885` (quick-add stage chip) → `FilterChips`/`StudioToggleChip` shape
-- `tahti-web/src/views/MyDiscographyView.tsx:338` (embed-provider tag) → `Badge` (needs a size tweak: px-1.5/text-[10px] vs `Badge`'s px-2/text-xs)
-- `player/src/views/Artist/components/ArtistSocialHeader.tsx:135-138` (location pill) → `Badge` color orange
-- `player/src/views/Artist/components/ArtistBioHeader.tsx:88-94` (genre/mood tags), `:97-101` ("on tour" flag) → `Badge`
-- `tahti-web/src/views/TransparencyResolutionsView.tsx:106-114` (3 vote-count pills) → `Badge`
+### `FilterChips` gained two capabilities to make the above swaps possible without losing behavior
 
-### `FilterChips` duplicates
+- `disabled?: boolean` prop (whole group) — needed for `RadioScheduleView`'s
+  "don't let this change while saving" case
+- `FilterChip.icon?: ReactNode` — needed for `StudioShowDetailView`'s
+  upload/record icons and the promoted `StudioToggleChip`/`PerkChip` call
+  sites
+- Both are covered by new tests in `FilterChips.test.tsx` and a "Disabled"
+  example in `FilterChips.stories.tsx`; `items` is now `readonly FilterChip[]`
+  so `as const` option arrays type-check.
 
-- `tahti-web/src/views/settings/SettingsPanels.tsx:~1041` (role pills) → `FilterChips`
-- `tahti-web/src/components/FanTiersEditor.tsx` → `PerkChip` — 4th reimplementation of the toggle-chip pattern, should use `StudioToggleChip` (or the promoted primitive below)
-- `tahti-web/src/views/RadioScheduleView.tsx:697-726` (booking-edit dialog) → `FilterChips` (same file already uses it correctly at `:553-561`)
-- `tahti-web/src/views/TransparencyResolutionsView.tsx:62-75` (year-toggle) → `FilterChips`
-- `tahti-web/src/views/studio/StudioShowDetailView.tsx:736-761` (episode source) → `FilterChips`
-- `tahti-web/src/views/studio/StudioDistributionView.tsx:412-438` ("Catalog methods") and `:795-805` ("Guides") → `FilterChips`
-- `tahti-web/src/views/studio/StudioCollectionEditView.tsx:647-663` ("Style" picker) → `FilterChips`
-- `tahti-web/src/views/studio/StudioProEditorView.tsx:1380-1401` ("Slope" selector) → `FilterChips` (same file uses it correctly at `:1320`)
-- `tahti-web/src/views/studio/StudioScheduleView.tsx:993-1004` (weekday recurrence) and `:160-194` (card/list toggle) → `FilterChips` (soft/lower priority — already `Button`-built, not raw JSX)
+## Corrected findings (looked like duplicates, turned out not to be — left as-is)
 
-### `Input` duplicates
+- `tahti-web/src/views/ChannelView.tsx:885` and
+  `tahti-web/src/components/ChannelBackdropCard.tsx` quick-add chips — these
+  are **action buttons** ("+ add"), not selectable chips; `FilterChips` uses
+  `role="radio"`/`"checkbox"` semantics that don't fit a momentary action.
+  Fixed instead by swapping the raw `<button>` for `Button variant="text"
+size="flexible"` (already a shared primitive) — same visual, same
+  behavior, no more hand-rolled markup.
+- `tahti-web/src/components/HelpLayer.tsx` disclosure trigger — same
+  situation: an interactive expand/collapse control, not a status `Badge`.
+  Swapped the raw `<button>` for `Button variant="text" size="flexible"`.
+- `tahti-web/src/views/studio/StudioProEditorView.tsx:1380-1401` ("Slope"
+  selector) — each option renders a `<FilterCurve>` SVG preview per item;
+  `FilterChips` has no per-item custom-content slot beyond icon+label, so
+  swapping would drop the curve preview. Left hand-rolled.
+- `tahti-web/src/views/studio/StudioDistributionView.tsx:412-438` ("Catalog
+  methods") and `:795-805` ("Guides") — both are icon+label+description (or
+  icon+label in a tall tile) card grids, not pill lists. Confirmed as
+  **new-primitive candidates** (a "selectable tile" component), not
+  `FilterChips` swaps — see that section below.
+- `tahti-web/src/views/studio/StudioStripeView.tsx` → `StatusPill` — this is
+  a private, file-local helper used 5 times in one file; inlining it would
+  _increase_ duplication (5x repeated ternary), not reduce it. Not a
+  no-op wrapper worth deleting.
+- `packages/player/src/views/Sources/components/ProviderPill.tsx` — used as
+  a `react-i18next` `<Trans components={{ metadata: <ProviderPill .../> }}>`
+  target. `Trans` clones the element and injects translated text into its
+  `children` prop; `ProviderPill`'s separate `Icon` prop (rendered before
+  `{children}`) is what lets a static icon coexist with Trans's dynamic
+  text. Bare `Badge` doesn't have an equivalent separate icon slot, so
+  inlining would silently drop the icon when Trans overwrites `children`.
+  Not a safe no-op to remove.
 
-- `tahti-web/src/views/studio/StudioCollectionEditView.tsx:629-634` — raw `<input type="date">` → `Input type="date"` (same file uses `Input` correctly elsewhere)
+## Not yet actioned (soft/lower priority)
 
-### Other
+- `tahti-web/src/views/studio/StudioScheduleView.tsx:160-194` (card/list
+  view toggle) — icon-only buttons each wrapped in their own `Tooltip`;
+  `FilterChips` has no per-item tooltip slot. Left as `Button`-built
+  (already a shared primitive, just not `FilterChips`).
 
-- `tahti-web/src/views/GovernanceView.tsx:~475` raw `<textarea>` → `Textarea`
+## Promote to `@tahti-player/ui`
 
-## Promote to `@tahti-player/ui` (already locally de-duped, not a violation to "fix" again)
-
-- `tahti-web/src/components/StudioPanel.tsx` → `StudioToggleChip` — already consolidated from `StudioCollectionsView`/`StudioReleasesView` per its own code comment; still in active use (`StudioCollectionsView.tsx:37,225-232`, `StudioReleasesView.tsx`). Worth graduating into the shared library so `FanTiersEditor`'s `PerkChip` and any future toggle-chip use can consume it directly instead of re-copying.
-
-## No-op wrappers — candidates to delete (use the primitive directly)
-
-- `packages/player/src/views/Settings/TextField.tsx` (wraps `Input`, pure pass-through)
-- `tahti-web/src/views/studio/StudioStripeView.tsx` → `StatusPill` (wraps `Badge variant="pill"` + glyph)
-- `packages/player/src/views/Sources/components/ProviderPill.tsx` (wraps `Badge variant="pill"` + icon)
+Superseded — `StudioToggleChip` was deleted rather than promoted, since
+`FilterChips` (with the new icon slot) now directly covers everything it
+did.
 
 ## New-primitive candidates (not swaps — nothing to reuse yet)
 
-- Selectable tile w/ label+hint (`OnboardingView.tsx` artist-kind + appearance toggle groups)
-- `Meter`/`DonutChart` (`AdminStorageView.tsx` progress bar + conic-gradient donut; `AdminI18nView.tsx:142` translation-progress bar)
+- Selectable tile w/ icon + label (+ optional hint/description)
+  (`OnboardingView.tsx` artist-kind + appearance toggle groups;
+  `StudioDistributionView.tsx` "Catalog methods" and "Guides")
+- `Meter`/`DonutChart` (`AdminStorageView.tsx` progress bar + conic-gradient
+  donut; `AdminI18nView.tsx:142` translation-progress bar)
 - Shared list-row selection style (`AdminUsersView.tsx` user picker)
-- Shared image-thumbnail-grid picker (`AdminArtworkPresetsView.tsx`, `StudioReleaseDetailView.tsx` library-picker rows — low priority; `StudioReleaseDetailView.tsx:1077` "Added" span is a soft `Badge` candidate on its own)
+- Shared image-thumbnail-grid picker (`AdminArtworkPresetsView.tsx`,
+  `StudioReleaseDetailView.tsx` library-picker rows — low priority;
+  `StudioReleaseDetailView.tsx:1077` "Added" span is a soft `Badge`
+  candidate on its own)
 
 ## Checked, not a candidate
 
-`SearchBox.tsx` (player), `ChannelView.tsx:1027` social-link pill, `SubgenreTagInput.tsx` (removable tags — different interaction, revisit later), `StudioPanel.tsx` outer shell vs `Box` (low-risk future unification, not a pure duplicate), `AdminUsersView.tsx` selectable list rows (no shared list-row primitive exists yet — legit gap), `JamView.tsx` participant chips (avatar+name, richer than plain `Badge`), `AgmTab.tsx:436` raw file input (hidden-input upload trigger, not a text-input duplicate), `SubscribeView.tsx` text-link buttons (minor, not pill/input), `SignupPaymentView.tsx` status block (full sentence, not a pill), `TransparencyGrantYearView.tsx` stat tile (could reuse `Box` for consistency but not a pill/badge issue). ~65 Admin/Auth/Library/Help/Legal/Utility/Embed views were swept and found already fully on shared primitives with zero duplicates.
+`SearchBox.tsx` (player), `ChannelView.tsx:1027` social-link pill,
+`SubgenreTagInput.tsx` (removable tags — different interaction, revisit
+later), `AdminUsersView.tsx` selectable list rows (no shared list-row
+primitive exists yet — legit gap), `JamView.tsx` participant chips
+(avatar+name, richer than plain `Badge`), `AgmTab.tsx:436` raw file input
+(hidden-input upload trigger, not a text-input duplicate),
+`SubscribeView.tsx` text-link buttons (minor, not pill/input),
+`SignupPaymentView.tsx` status block (full sentence, not a pill),
+`TransparencyGrantYearView.tsx` stat tile (could reuse `Box` for
+consistency but not a pill/badge issue). ~65 Admin/Auth/Library/Help/
+Legal/Utility/Embed views were swept and found already fully on shared
+primitives with zero duplicates.
 
 ## Remaining scope
 
-- Sweep is complete for input/pill/filter-chip patterns across the whole app.
-- Not yet swept: `Table`/`Card`/`Dialog`/`Select` primitive categories (out of scope for this pass).
-- Next step: decide whether to action the punch list above now (small, mechanical swaps, ~20 call sites) vs. batch with a future pass, then flip this todo to `done` and fold into `HISTORY.md` once applied.
+- `Table`/`Card`/`Dialog`/`Select` primitive categories were never in
+  scope for this sweep (input/pill/chip only) — a future pass.
+- The "new-primitive candidates" above are real product/design decisions
+  (what should a selectable tile or a donut chart look like in this design
+  system?) — not mechanical swaps, so left for a deliberate follow-up
+  rather than actioned here.
+- Verified: type-check + lint clean across `tahti-web`, `player`, `ui`.
+  `ui` package tests pass (287/287, with `FilterChips`/`LogViewer` snapshot
+  updates for the new `disabled`/icon classes). `tahti-web` and `player`
+  test suites currently fail widely (~40 and ~324 tests respectively) on a
+  **pre-existing, unrelated** `localStorage`/zustand-persist environment
+  issue that also fails on files this sweep never touched — a peer session
+  in this environment is already tracking it ("CI failure on master").

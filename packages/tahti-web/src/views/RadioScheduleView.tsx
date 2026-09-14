@@ -694,36 +694,16 @@ export function RadioScheduleView() {
                       : ''}
                   </p>
                 )}
-                <div
-                  className="border-border flex w-fit gap-1 rounded-lg border p-1"
-                  role="radiogroup"
+                <FilterChips
+                  items={[
+                    { id: 'LIVE_SET', label: 'Live set' },
+                    { id: 'TALK', label: 'Talk' },
+                  ]}
+                  selected={editShowType}
+                  onChange={(id) => setEditShowType(id as ShowType)}
+                  disabled={busy}
                   aria-label="Show type"
-                >
-                  {(
-                    [
-                      ['LIVE_SET', 'Live set'],
-                      ['TALK', 'Talk'],
-                    ] as const
-                  ).map(([type, label]) => (
-                    <Button
-                      key={type}
-                      type="button"
-                      variant="text"
-                      size="flexible"
-                      onClick={() => setEditShowType(type)}
-                      aria-pressed={editShowType === type}
-                      disabled={busy}
-                      className={cn(
-                        'rounded-md px-2.5 py-1 text-xs font-semibold uppercase',
-                        editShowType === type
-                          ? 'bg-primary text-primary-foreground'
-                          : 'text-foreground-secondary hover:text-foreground',
-                      )}
-                    >
-                      {label}
-                    </Button>
-                  ))}
-                </div>
+                />
                 <Input
                   value={editNote}
                   onChange={(e) => setEditNote(e.target.value)}

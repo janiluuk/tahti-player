@@ -41,6 +41,23 @@ describe('FilterChips', () => {
     expect(handleChange).toHaveBeenCalledWith('streaming');
   });
 
+  it('disabled: does not call onChange when clicked', async () => {
+    const user = userEvent.setup();
+    const handleChange = vi.fn();
+
+    const { getByRole } = render(
+      <FilterChips
+        items={mockItems}
+        selected="all"
+        onChange={handleChange}
+        disabled
+      />,
+    );
+
+    await user.click(getByRole('radio', { name: 'Streaming' }));
+    expect(handleChange).not.toHaveBeenCalled();
+  });
+
   it('multi select: toggles selection on click', async () => {
     const user = userEvent.setup();
     const handleChange = vi.fn();

@@ -21,6 +21,7 @@ import {
   Dialog,
   EmptyState,
   FilePicker,
+  FilterChips,
   Input,
   SaveButton,
   Select,
@@ -624,15 +625,12 @@ export function StudioCollectionEditView({
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
-                  <label className="flex flex-col gap-1 text-sm">
-                    Release date
-                    <input
-                      type="date"
-                      value={releaseDate}
-                      onChange={(event) => setReleaseDate(event.target.value)}
-                      className="border-border bg-background h-10 rounded-md border px-3 text-sm"
-                    />
-                  </label>
+                  <Input
+                    label="Release date"
+                    type="date"
+                    value={releaseDate}
+                    onChange={(event) => setReleaseDate(event.target.value)}
+                  />
                   <Input
                     label="Genres"
                     value={genres}
@@ -643,25 +641,11 @@ export function StudioCollectionEditView({
                     <span className="text-foreground-secondary text-xs uppercase">
                       Style
                     </span>
-                    <div className="flex flex-wrap gap-2">
-                      {COLLECTION_STYLES.map((s) => (
-                        <Button
-                          key={s.id}
-                          type="button"
-                          variant="text"
-                          size="flexible"
-                          aria-pressed={style === s.id}
-                          className={`rounded-md border px-3 py-1 text-xs ${
-                            style === s.id
-                              ? 'border-primary bg-primary/15 text-primary'
-                              : 'border-border text-foreground-secondary'
-                          }`}
-                          onClick={() => setStyle(s.id)}
-                        >
-                          {s.label}
-                        </Button>
-                      ))}
-                    </div>
+                    <FilterChips
+                      items={COLLECTION_STYLES}
+                      selected={style}
+                      onChange={setStyle}
+                    />
                   </label>
                   <label className="flex flex-col gap-1 text-sm sm:col-span-2">
                     <span className="text-foreground-secondary text-xs uppercase">

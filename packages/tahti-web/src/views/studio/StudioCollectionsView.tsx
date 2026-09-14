@@ -16,6 +16,7 @@ import {
   Button,
   Dialog,
   EmptyState,
+  FilterChips,
   ImageReveal,
   Input,
   Select,
@@ -34,7 +35,7 @@ import type { StudioCollection } from '../../api/studio-types';
 import { PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioNav } from '../../components/StudioNav';
-import { StudioPanel, StudioToggleChip } from '../../components/StudioPanel';
+import { StudioPanel } from '../../components/StudioPanel';
 import {
   collectionStyleLabel,
   normalizeCollectionStyle,
@@ -220,17 +221,12 @@ export function StudioCollectionsView() {
                   onChange={(e) => setName(e.target.value)}
                   autoFocus
                 />
-                <div className="flex flex-wrap gap-2">
-                  {CREATE_STYLES.map((s) => (
-                    <StudioToggleChip
-                      key={s.id}
-                      selected={style === s.id}
-                      icon={s.icon}
-                      label={s.label}
-                      onClick={() => setStyle(s.id)}
-                    />
-                  ))}
-                </div>
+                <FilterChips
+                  items={CREATE_STYLES}
+                  selected={style}
+                  onChange={(id) => setStyle(id as CreateStyle)}
+                  aria-label="Collection style"
+                />
                 {style === 'ALBUM' || style === 'EP' ? (
                   <div className="grid gap-3 sm:grid-cols-2">
                     <Input

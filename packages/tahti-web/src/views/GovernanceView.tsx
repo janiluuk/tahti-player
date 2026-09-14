@@ -5,6 +5,7 @@ import {
   Button,
   Input,
   SectionShell,
+  Textarea,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
@@ -472,13 +473,14 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
               placeholder="Motion title"
               maxLength={200}
             />
-            <textarea
+            <Textarea
+              tone="secondary"
               value={draftDescription}
               onChange={(event) => setDraftDescription(event.target.value)}
               placeholder="Explain the proposal"
               maxLength={10000}
               rows={4}
-              className="border-border bg-background rounded-md border px-3 py-2 text-sm"
+              className="text-sm"
             />
             <Button
               size="sm"

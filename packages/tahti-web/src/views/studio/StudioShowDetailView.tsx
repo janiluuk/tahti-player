@@ -17,6 +17,7 @@ import {
   Button,
   Dialog,
   FilePicker,
+  FilterChips,
   Input,
   SaveButton,
   TabLabel,
@@ -732,34 +733,23 @@ export function StudioShowDetailView({ id }: { id: string }) {
                     )}
                   </div>
 
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-2 text-xs ${
-                        source === 'upload'
-                          ? 'border-primary bg-primary/15 text-primary'
-                          : 'border-border text-foreground-secondary'
-                      }`}
-                      onClick={() => setSource('upload')}
-                      aria-pressed={source === 'upload'}
-                    >
-                      <UploadIcon size={14} aria-hidden />
-                      Upload audio
-                    </button>
-                    <button
-                      type="button"
-                      className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-2 text-xs ${
-                        source === 'broadcast'
-                          ? 'border-primary bg-primary/15 text-primary'
-                          : 'border-border text-foreground-secondary'
-                      }`}
-                      onClick={() => setSource('broadcast')}
-                      aria-pressed={source === 'broadcast'}
-                    >
-                      <MicIcon size={14} aria-hidden />
-                      Record from broadcast
-                    </button>
-                  </div>
+                  <FilterChips
+                    items={[
+                      {
+                        id: 'upload',
+                        label: 'Upload audio',
+                        icon: <UploadIcon size={14} aria-hidden />,
+                      },
+                      {
+                        id: 'broadcast',
+                        label: 'Record from broadcast',
+                        icon: <MicIcon size={14} aria-hidden />,
+                      },
+                    ]}
+                    selected={source}
+                    onChange={(id) => setSource(id as 'upload' | 'broadcast')}
+                    aria-label="Episode source"
+                  />
 
                   {source === 'upload' ? (
                     <FilePicker
