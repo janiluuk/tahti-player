@@ -2653,3 +2653,19 @@ active/Stripe-subscription, active/migration-required, lapsed, pending-email
 full unit suite (515/515 under Node 24, matching CI); `vite build` and
 `storybook build` both succeed. `views/AccountView.tsx` remains an orphan
 (not deleted — out of scope, wasn't asked).
+
+---
+
+## 2026-09-14 — CI build speed: Turbo cache, Playwright cache, and (in tahti-org) job parallelism + Docker layer cache
+
+User request (not from a todo file): "look into optimization of the CI workflows to get better speed on builds", following an earlier Redis-memory fix in `tahti-org` done the same session.
+
+Investigated both `tahti-player` and `tahti-org` workflows via a read-only subagent survey before editing. `tahti-org`'s CI was already in decent shape (Turbo remote cache configured, e2e already path-filtered to skip on non-backend changes — an older open todo about that had already been resolved elsewhere). `tahti-player`'s `ci.yml`/`coverage.yml` had no persistent Turbo cache at all (every push rebuilt every package from scratch) and reinstalled Playwright's Chromium binary from scratch on every failed-test retry.
+
+Implemented, isolated in worktrees, tested (YAML validated), committed, and opened as PRs rather than merged directly:
+- **tahti-player** [PR #77](https://github.com/janiluuk/tahti-player/pull/77): cache `node_modules/.cache/turbo` in `ci.yml` + `coverage.yml` (restore-keys fallback); split Playwright install into a cached browser-binary step + an always-run OS-deps step; swap hand-rolled cargo `actions/cache` for `Swatinem/rust-cache`.
+- **tahti-org** [PR #519](https://github.com/janiluuk/tahti-org/pull/519): drop `needs: lint` from `typecheck`/`test` (neither consumes lint's output; `all-checks` already gates on all three independently — this only serialized every run behind lint's time for no reason); switch `website-docker`'s validation build to buildx + GHA layer cache, matching the `release` job's already-cached Docker builds.
+
+Flagged but deliberately not touched: `tahti-org`'s `deploy.yml` and `deploy-production.yml` both trigger on the same `workflow_run: [CI]` completed-on-main event — two deploy pipelines can race on every merge. That's a production-deploy correctness question for the user to resolve, not a speed optimization.
+
+Neither PR is merged yet, so cache-hit effectiveness is unverified against live CI runs — only YAML syntax and job-graph correctness were checked locally.
