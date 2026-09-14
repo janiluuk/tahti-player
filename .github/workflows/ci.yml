@@ -56,21 +56,23 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
+      - name: Cache turbo build outputs
+        uses: actions/cache@v6
+        with:
+          path: node_modules/.cache/turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
       - name: Setup Rust
         if: steps.rust-changes.outputs.rust == 'true'
         uses: dtolnay/rust-toolchain@stable
 
       - name: Cache cargo dependencies
         if: steps.rust-changes.outputs.rust == 'true'
-        uses: actions/cache@v6
+        uses: Swatinem/rust-cache@v2
         with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-            packages/player/src-tauri/target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          workspaces: packages/player/src-tauri
 
       - name: Install system dependencies
         if: steps.rust-changes.outputs.rust == 'true'
@@ -103,9 +105,26 @@ jobs:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
 
-      - name: Install Playwright Chromium
+      - name: Get installed Playwright version
         if: steps.test.outcome == 'failure'
+        id: playwright-version
+        run: echo "version=$(pnpm --filter @tahti-player/tahti-web exec playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        if: steps.test.outcome == 'failure'
+        uses: actions/cache@v6
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
+
+      - name: Install Playwright Chromium
+        if: steps.test.outcome == 'failure' && steps.playwright-cache.outputs.cache-hit != 'true'
         run: pnpm --filter @tahti-player/tahti-web exec playwright install chromium --with-deps
+
+      - name: Install Playwright OS dependencies only
+        if: steps.test.outcome == 'failure' && steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm --filter @tahti-player/tahti-web exec playwright install-deps chromium
 
       - name: Build snapshot digest
         if: steps.test.outcome == 'failure'
