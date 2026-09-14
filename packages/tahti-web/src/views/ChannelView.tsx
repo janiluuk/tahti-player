@@ -584,6 +584,141 @@ export function ChannelView({ slug }: { slug: string }) {
     });
   };
 
+  // Extracted to component scope (not per-block-render): the player must
+  // stay reachable even when the "Live stage" (hero) block is hidden from
+  // the page layout, so it's rendered as a fixed Stage section below,
+  // independent of hero's own visibility — see
+  // docs/todo/channelview-move-player-to-stage.md.
+  const stagePlayer =
+    !live && !channel.nowPlaying ? (
+      <div className="bg-background-secondary flex items-center justify-center py-12">
+        <WifiOffIcon
+          size={56}
+          strokeWidth={1.5}
+          className="text-foreground-secondary/40"
+          aria-hidden
+        />
+      </div>
+    ) : (
+      <div
+        className={`relative p-4 pr-24 sm:p-6 sm:pr-40 ${
+          subtle
+            ? 'bg-gradient-to-t from-black/80 via-black/35 to-black/10'
+            : 'bg-gradient-to-t from-black/70 to-black/5'
+        }`}
+      >
+        {channel.nowPlaying ? (
+          <NowPlayingOverlay
+            presetId={resolveNowPlayingOverlayPreset(
+              channel.nowPlayingOverlayStyle,
+            )}
+            title={channel.nowPlaying.title}
+            artist={channel.nowPlaying.artistName}
+            artworkUrl={channel.nowPlaying.artworkUrl}
+            settings={parseNowPlayingOverlaySettings(
+              channel.nowPlayingOverlaySettingsJson,
+            )}
+            seekbar={
+              <WaveformSeekbar
+                trackId={`channel:${slug}`}
+                progress={
+                  channelIsCurrent && duration > 0 ? currentTime / duration : 0
+                }
+                bars={72}
+                className="mt-3 h-10 max-w-2xl"
+                playedColor={channel.colorScheme?.accent}
+                unplayedColor={channel.colorScheme?.muted}
+                onSeek={
+                  channelIsCurrent && duration > 0
+                    ? (fraction) => seekTo(fraction * duration)
+                    : undefined
+                }
+              />
+            }
+          />
+        ) : (
+          <p className="text-sm text-white/80">
+            Stream is live — hit Play live to drive the visualizer.
+          </p>
+        )}
+        {(live || channel.hlsUrl) && (
+          <div className="absolute right-4 bottom-4 z-[2] flex items-center gap-3">
+            {chatOn && (
+              <Tooltip
+                content={rightCollapsed ? 'Expand chat' : 'Collapse chat'}
+                side="top"
+              >
+                <Button
+                  size="icon"
+                  variant="text"
+                  className="size-11 bg-black/45 text-white backdrop-blur-sm hover:bg-black/65"
+                  onClick={handleToggleChat}
+                  aria-pressed={!rightCollapsed}
+                  aria-label={rightCollapsed ? 'Expand chat' : 'Collapse chat'}
+                >
+                  <MessageCircle size={20} aria-hidden />
+                </Button>
+              </Tooltip>
+            )}
+            <Tooltip content={favorited ? 'Favorited' : 'Favorite'} side="top">
+              <Button
+                size="icon"
+                variant="text"
+                className="size-11 bg-black/45 text-white backdrop-blur-sm hover:bg-black/65"
+                onClick={handleToggleFavoriteChannel}
+                aria-pressed={favorited}
+                aria-label={favorited ? 'Favorited' : 'Favorite'}
+              >
+                <HeartIcon
+                  size={20}
+                  className={
+                    favorited ? 'text-accent-red fill-current' : undefined
+                  }
+                  aria-hidden
+                />
+              </Button>
+            </Tooltip>
+            <Tooltip
+              content={
+                channelIsLoading
+                  ? 'Loading stream'
+                  : channelIsPlaying
+                    ? 'Pause stream'
+                    : live
+                      ? 'Play live'
+                      : 'Play stream'
+              }
+              side="top"
+            >
+              <Button
+                size="icon"
+                className="bg-primary text-primary-foreground h-16 w-16 rounded-full shadow-lg"
+                onClick={handlePlayChannel}
+                aria-label={
+                  channelIsLoading
+                    ? 'Loading stream'
+                    : channelIsPlaying
+                      ? 'Pause stream'
+                      : live
+                        ? 'Play live'
+                        : 'Play stream'
+                }
+                aria-pressed={channelIsPlaying}
+              >
+                {channelIsLoading ? (
+                  <Loader />
+                ) : channelIsPlaying ? (
+                  <PauseIcon size={26} className="fill-current" aria-hidden />
+                ) : (
+                  <PlayIcon size={26} className="fill-current" aria-hidden />
+                )}
+              </Button>
+            </Tooltip>
+          </div>
+        )}
+      </div>
+    );
+
   const renderBlock = (item: ChannelPageItem) => {
     switch (item.type) {
       case 'hero': {
@@ -630,151 +765,6 @@ export function ChannelView({ slug }: { slug: string }) {
                 : null,
             ].filter((chip): chip is NonNullable<typeof chip> => Boolean(chip))
           : undefined;
-
-        const stagePlayer =
-          !live && !channel.nowPlaying ? (
-            <div className="bg-background-secondary flex items-center justify-center py-12">
-              <WifiOffIcon
-                size={56}
-                strokeWidth={1.5}
-                className="text-foreground-secondary/40"
-                aria-hidden
-              />
-            </div>
-          ) : (
-            <div
-              className={`relative p-4 pr-24 sm:p-6 sm:pr-40 ${
-                subtle
-                  ? 'bg-gradient-to-t from-black/80 via-black/35 to-black/10'
-                  : 'bg-gradient-to-t from-black/70 to-black/5'
-              }`}
-            >
-              {channel.nowPlaying ? (
-                <NowPlayingOverlay
-                  presetId={resolveNowPlayingOverlayPreset(
-                    channel.nowPlayingOverlayStyle,
-                  )}
-                  title={channel.nowPlaying.title}
-                  artist={channel.nowPlaying.artistName}
-                  artworkUrl={channel.nowPlaying.artworkUrl}
-                  settings={parseNowPlayingOverlaySettings(
-                    channel.nowPlayingOverlaySettingsJson,
-                  )}
-                  seekbar={
-                    <WaveformSeekbar
-                      trackId={`channel:${slug}`}
-                      progress={
-                        channelIsCurrent && duration > 0
-                          ? currentTime / duration
-                          : 0
-                      }
-                      bars={72}
-                      className="mt-3 h-10 max-w-2xl"
-                      playedColor={channel.colorScheme?.accent}
-                      unplayedColor={channel.colorScheme?.muted}
-                      onSeek={
-                        channelIsCurrent && duration > 0
-                          ? (fraction) => seekTo(fraction * duration)
-                          : undefined
-                      }
-                    />
-                  }
-                />
-              ) : (
-                <p className="text-sm text-white/80">
-                  Stream is live — hit Play live to drive the visualizer.
-                </p>
-              )}
-              {(live || channel.hlsUrl) && (
-                <div className="absolute right-4 bottom-4 z-[2] flex items-center gap-3">
-                  {chatOn && (
-                    <Tooltip
-                      content={rightCollapsed ? 'Expand chat' : 'Collapse chat'}
-                      side="top"
-                    >
-                      <Button
-                        size="icon"
-                        variant="text"
-                        className="size-11 bg-black/45 text-white backdrop-blur-sm hover:bg-black/65"
-                        onClick={handleToggleChat}
-                        aria-pressed={!rightCollapsed}
-                        aria-label={
-                          rightCollapsed ? 'Expand chat' : 'Collapse chat'
-                        }
-                      >
-                        <MessageCircle size={20} aria-hidden />
-                      </Button>
-                    </Tooltip>
-                  )}
-                  <Tooltip
-                    content={favorited ? 'Favorited' : 'Favorite'}
-                    side="top"
-                  >
-                    <Button
-                      size="icon"
-                      variant="text"
-                      className="size-11 bg-black/45 text-white backdrop-blur-sm hover:bg-black/65"
-                      onClick={handleToggleFavoriteChannel}
-                      aria-pressed={favorited}
-                      aria-label={favorited ? 'Favorited' : 'Favorite'}
-                    >
-                      <HeartIcon
-                        size={20}
-                        className={
-                          favorited ? 'text-accent-red fill-current' : undefined
-                        }
-                        aria-hidden
-                      />
-                    </Button>
-                  </Tooltip>
-                  <Tooltip
-                    content={
-                      channelIsLoading
-                        ? 'Loading stream'
-                        : channelIsPlaying
-                          ? 'Pause stream'
-                          : live
-                            ? 'Play live'
-                            : 'Play stream'
-                    }
-                    side="top"
-                  >
-                    <Button
-                      size="icon"
-                      className="bg-primary text-primary-foreground h-16 w-16 rounded-full shadow-lg"
-                      onClick={handlePlayChannel}
-                      aria-label={
-                        channelIsLoading
-                          ? 'Loading stream'
-                          : channelIsPlaying
-                            ? 'Pause stream'
-                            : live
-                              ? 'Play live'
-                              : 'Play stream'
-                      }
-                      aria-pressed={channelIsPlaying}
-                    >
-                      {channelIsLoading ? (
-                        <Loader />
-                      ) : channelIsPlaying ? (
-                        <PauseIcon
-                          size={26}
-                          className="fill-current"
-                          aria-hidden
-                        />
-                      ) : (
-                        <PlayIcon
-                          size={26}
-                          className="fill-current"
-                          aria-hidden
-                        />
-                      )}
-                    </Button>
-                  </Tooltip>
-                </div>
-              )}
-            </div>
-          );
 
         return (
           <div className="flex flex-col gap-0">
@@ -1381,6 +1371,19 @@ export function ChannelView({ slug }: { slug: string }) {
               stats={channelHeaderStats}
               data-testid="channel-social-header"
             />
+          </div>
+        )}
+
+        {!heroVisible && (
+          <div
+            className={
+              subtle
+                ? 'border-border/60 overflow-hidden rounded-lg border'
+                : 'border-border overflow-hidden rounded-xl border'
+            }
+            data-testid="channel-stage-player-fixed"
+          >
+            {stagePlayer}
           </div>
         )}
 
