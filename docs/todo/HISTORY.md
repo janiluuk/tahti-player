@@ -2,6 +2,28 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-15 — Moved "What is tahti.live?" out of Listen into Help
+
+`listen-what-is-it-to-help.md` — done. Removed the signed-out "What is
+tahti.live?" button/`Link` from `ListenView.tsx` (and the now-unused `Button`
+import). Reviewed `WhatIsItView.tsx` (793 lines) before touching anything
+further: it's a marketing/investor-pitch style landing page (hero CTAs,
+pricing plans, funding stats, governance pitch, roadmap) and `/what-is-it` is
+part of the legal-pages family (`content/legal.ts`'s `about` /`what-is-it`/
+`how-it-works`/`for-artists` group, cross-linked via `LegalHubLinks`) — not
+the orphan page the original todo assumed. Copying 793 lines of pitch copy
+into a `HelpArticle` would've been a poor content fit and created drift
+between two copies of the same pitch, so instead of folding the content
+verbatim: added a new "What is tahti.live?" section to the existing
+`getting-around` Help article (`help.ts`) with a short, practical summary and
+a pointer to `/what-is-it` for the full pitch. Left `WhatIsItView.tsx` and its
+route untouched — deleting/redirecting it risked breaking the legal-pages nav
+family and any external inbound links, neither of which the "fold into Help"
+ask was actually about. Verified live in a `VITE_FORCE_MOCK=1` dev server:
+Listen page no longer shows the button; Help → Getting around Tahti renders
+the new section first. Full `tahti-web` suite (516/516), `tsc --noEmit`,
+`eslint` all clean.
+
 ## 2026-09-15 — Listen page play-indicator fix; finished tahti-web vitest/jsdom setup
 
 User request (not from a todo file): "on the listen page, when I push play on

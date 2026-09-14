@@ -25,6 +25,14 @@ export const HELP_ARTICLES: HelpArticle[] = [
       'A simple map of Listen, Library, Studio, Settings, and the player controls.',
     sections: [
       {
+        heading: 'What is tahti.live?',
+        body: [
+          'tahti.live is a nonprofit broadcasting platform for independent artists — built to support artists, not algorithms. Listening is free and lossless on member channels; artist membership is €40/year and funds your own channel, releases, and live shows.',
+          'One member, one vote: proposals and the AGM govern the platform, not a company board. Nearly all fan-support money goes to the artist, and the code is open source under AGPL.',
+          'See the full pitch — plans, funding, and governance — at /what-is-it.',
+        ],
+      },
+      {
         heading: 'The main areas',
         body: [
           'Listen is the starting point for finding music, channels, radio, and public pages. It is available without an account.',

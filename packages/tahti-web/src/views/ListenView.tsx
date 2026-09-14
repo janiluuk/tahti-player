@@ -3,7 +3,6 @@ import { HistoryIcon, ListMusicIcon, NewspaperIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
-  Button,
   Card,
   CardGrid,
   SectionShell,
@@ -241,16 +240,6 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
           tab === 'listen' && signedIn ? <ListenWidgetStoreDialog /> : undefined
         }
       >
-        {tab === 'listen' && !signedIn ? (
-          <div className="mb-4 flex flex-wrap items-center gap-2">
-            <Link to="/what-is-it">
-              <Button size="sm" variant="secondary">
-                What is tahti.live?
-              </Button>
-            </Link>
-          </div>
-        ) : null}
-
         {tab === 'feed' ? <FeedView embedded /> : null}
         {tab === 'history' ? <HistoryView embedded /> : null}
 
