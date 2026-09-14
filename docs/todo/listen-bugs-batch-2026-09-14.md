@@ -1,6 +1,6 @@
 # Listen bugs batch (2026-09-14)
 
-**Status:** partial
+**Status:** blocked
 
 Five small/medium bugs reported together.
 
@@ -13,10 +13,10 @@ Both affected buttons now use `ViewShell`'s `actions` slot instead of a manual c
 - `DiscoverView.tsx` — `DiscoverAddWidgetButton` (`activeTab === 'discover'`).
 (Artist/Channel/Collection views have no such button today — nothing to move there.)
 
-## 3. Radio page: upcoming items, drop footer, now-playing support — PARTIAL, needs a decision
+## 3. Radio page: upcoming items, drop footer, now-playing support — BLOCKED on tahti-org backend work
 - Footer text removed from `RadioView.tsx` (the "Prefer a single artist? Browse the listen directory…" paragraph). Done.
 - "Upcoming items" / now-playing: checked `../tahti-org` — `apps/api/src/routes/radio/index.ts:275-389` (`/api/v1/radio/show/:channelSlug`, backing `RadioShowView.tsx`'s Upcoming/Past tabs) is explicitly booking-slot based ("there's no separate Show entity"). **No route or DTO exists for a channel-level now-playing track or a track-level upcoming/queue list** — only Tahti Radio itself (`/radio`, `RadioView.tsx`) has real now-playing + recently-played track data.
-- Did not implement further — building a track queue/now-playing UI here would mean inventing a backend shape, which the repo rules say not to do. Needs a call from the user: (a) is "radio page" the per-channel show page (`RadioShowView.tsx`, currently episode/booking schedule only) and the ask is actually a **new backend feature** (channel now-playing + upcoming-track endpoints) to scope into `tahti-org`, or (b) was "only shows live shows" about something else already covered by the existing Upcoming/Past **episode** tabs, and the real ask is just reusing `TrackTable`/`QueuePanel`/`HistoryRow` styling for those tabs (no new data).
+- Scope decided 2026-09-15: "radio page" is the per-channel show page (`RadioShowView.tsx`). This is a **new backend feature**, not a frontend restyle — needs a channel-level now-playing-track endpoint and a track-level upcoming/queue endpoint scoped and built in `tahti-org` before any `RadioShowView.tsx` UI work can start. Not implemented here per repo rules (don't edit `../tahti-org` unless asked; don't invent a backend shape).
 
 ## 4. Governance: duplicate header line + confirm Studio-only claim — DONE
 Fixed: `AccountPanel.tsx` now passes `<GovernanceView embedded />` (was missing `embedded`, causing both the Settings tab title row and `GovernanceView`'s own `ViewShell` title to render).
