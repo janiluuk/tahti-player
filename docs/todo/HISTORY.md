@@ -2,6 +2,48 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-15 — Restyled /governance (member-facing) with real components + color
+
+Was queued in WORKPLAN.md's "Next" since 2026-09-08. `GovernanceView.tsx`
+leaned on bare `SectionShell` headings (no border, no background) and four
+plain underlined text links at the top — flat, no visual hierarchy.
+
+- Top nav: the 4 cross-page links (Feature requests / Closed decisions /
+  Transparency ledger / Governance help) are now `Button variant="secondary"`
+  pills with a leading icon each, not plain text.
+- New stat-chip hero row (`StatChip`, 4-up on mobile → responsive grid):
+  open motions / topics / meetings / documents counts, so the page reads at
+  a glance before scrolling into any section.
+- Every section (Needs your attention, Top topics, Published meetings,
+  Published documents, Quarterly reviews, Member directory, Submit a motion
+  draft) now renders inside a small local `GovernancePanel` wrapper — a
+  titled `Box` (from `@tahti-player/ui`) instead of a bare `SectionShell`
+  heading, giving each one a real border/background. "Needs your attention"
+  uses `Box variant="primary"` (the app's accent color) since it's the one
+  actionable panel that should draw the eye first; the rest use `tertiary`.
+  The meetings/documents/reports/directory group moved from a 2-col grid to
+  a `sm:grid-cols-2 xl:grid-cols-4` grid so they read as a real dashboard
+  row on wide screens instead of a tall single column.
+- `ViewShell`'s root went from `max-w-3xl` to `max-w-5xl` to give the wider
+  grid room; content and behavior otherwise unchanged — same data fetching,
+  same motion-list/`MotionCard` rendering, same empty/loading/forbidden
+  states, same text copy everywhere it was preserved from the original
+  (verified against `GovernanceView.test.tsx`'s exact string assertions).
+
+**Verified:** `tsc --noEmit` and `eslint` clean; full `pnpm vitest run`
+(516/516, including `GovernanceView.test.tsx`'s 6 assertions re-run in
+isolation) all green. Screenshotted the signed-out state locally
+(`VITE_FORCE_MOCK=1`) — new Box-styled sign-in panel and icon quick-links
+confirmed rendering correctly in a real browser. Could not screenshot the
+signed-in board-member view: this repo's mock auth keeps its session in an
+unexported in-memory variable (`getMockSessionUser()` in
+`api/mock-session.ts`), not localStorage, so it can only be reached via a
+real login submit — not attempted (this session doesn't enter credentials
+into login forms). The signed-in layout is still exercised end-to-end by
+`GovernanceView.test.tsx`, which renders the same JSX with a real
+board-member mock user and asserts on live DOM text (quorum status, vote
+tallies, DRAFT circulation copy, etc.) — all 6 passed unchanged.
+
 ## 2026-09-15 — Moved "What is tahti.live?" out of Listen into Help
 
 `listen-what-is-it-to-help.md` — done. Removed the signed-out "What is

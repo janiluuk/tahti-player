@@ -1,10 +1,21 @@
 import { Link } from '@tanstack/react-router';
+import {
+  ArrowRightIcon,
+  FileTextIcon,
+  HelpCircleIcon,
+  HistoryIcon,
+  LandmarkIcon,
+  ScrollTextIcon,
+  UsersIcon,
+  VoteIcon,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
+  Box,
   Button,
   Input,
-  SectionShell,
+  StatChip,
   Textarea,
   Tooltip,
   ViewShell,
@@ -36,6 +47,55 @@ import { hasAccountRole } from '../lib/accountRoles';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
+
+const QUICK_LINKS = [
+  {
+    to: '/governance/feature-requests' as const,
+    label: 'Feature requests',
+    icon: VoteIcon,
+  },
+  {
+    to: '/governance/history' as const,
+    label: 'Closed decisions',
+    icon: HistoryIcon,
+  },
+  {
+    to: '/transparency' as const,
+    label: 'Transparency ledger',
+    icon: ScrollTextIcon,
+  },
+  {
+    to: '/studio/governance' as const,
+    search: { tab: 'guide' } as const,
+    label: 'Governance help',
+    icon: HelpCircleIcon,
+  },
+];
+
+/** A titled, colored panel — the shared card treatment for every
+ * governance section on this page (replaces the old plain SectionShell
+ * headings with real visual boundaries). */
+function GovernancePanel({
+  title,
+  icon: Icon,
+  variant = 'tertiary',
+  children,
+}: {
+  title: string;
+  icon?: typeof VoteIcon;
+  variant?: 'primary' | 'secondary' | 'tertiary';
+  children: React.ReactNode;
+}) {
+  return (
+    <Box variant={variant} className="flex flex-col gap-3">
+      <h2 className="flex items-center gap-2 text-lg font-bold">
+        {Icon && <Icon size={18} aria-hidden className="shrink-0" />}
+        {title}
+      </h2>
+      {children}
+    </Box>
+  );
+}
 
 export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
   const user = useAuthStore((s) => s.user);
@@ -134,45 +194,161 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
     reload();
   }, [user]);
 
+  const openMotionsCount = motions.filter(
+    (motion) => motion.state === 'OPEN' && !motion.youVoted,
+  ).length;
+  const openMotionsTotal = motions.filter(
+    (motion) => motion.state === 'OPEN',
+  ).length;
+  const openTopicsCount = requests.filter(
+    (request) => request.status === 'OPEN' && !request.youVoted,
+  ).length;
+
   const body = (
     <>
       {!embedded && (
-        <div className="flex flex-col gap-1">
-          <Link
-            to="/governance/feature-requests"
-            onClick={closeSettings}
-            className="text-foreground-secondary inline-block w-fit text-xs underline-offset-2 hover:underline"
-          >
-            Feature requests →
-          </Link>
-          <Link
-            to="/governance/history"
-            onClick={closeSettings}
-            className="text-foreground-secondary inline-block w-fit text-xs underline-offset-2 hover:underline"
-          >
-            Closed decision history →
-          </Link>
-          <Link
-            to="/transparency"
-            onClick={closeSettings}
-            className="text-foreground-secondary inline-block w-fit text-xs underline-offset-2 hover:underline"
-          >
-            Transparency ledger →
-          </Link>
-          <Link
-            to="/studio/governance"
-            search={{ tab: 'guide' }}
-            onClick={closeSettings}
-            className="text-foreground-secondary inline-block w-fit text-xs underline-offset-2 hover:underline"
-          >
-            Governance help →
-          </Link>
+        <div className="flex flex-wrap gap-2">
+          {QUICK_LINKS.map((link) => (
+            <Link
+              key={link.label}
+              to={link.to}
+              search={'search' in link ? link.search : undefined}
+              onClick={closeSettings}
+            >
+              <Button size="sm" variant="secondary">
+                <link.icon size={14} aria-hidden className="mr-1.5" />
+                {link.label}
+              </Button>
+            </Link>
+          ))}
         </div>
       )}
 
       {user && !loading && !forbidden && (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <StatChip
+            value={openMotionsTotal}
+            label="Open motions"
+            icon={<VoteIcon size={16} aria-hidden />}
+          />
+          <StatChip
+            value={requests.length}
+            label="Topics"
+            icon={<LandmarkIcon size={16} aria-hidden />}
+          />
+          <StatChip
+            value={meetings.length}
+            label="Meetings"
+            icon={<UsersIcon size={16} aria-hidden />}
+          />
+          <StatChip
+            value={documents.length}
+            label="Documents"
+            icon={<FileTextIcon size={16} aria-hidden />}
+          />
+        </div>
+      )}
+
+      {!user && (
+        <Box variant="secondary" className="flex flex-col gap-3">
+          <p className="text-sm">
+            Sign in with a cooperative membership account to vote.
+          </p>
+          <Button
+            size="sm"
+            className="w-fit"
+            onClick={() => useAuthModalStore.getState().open('login')}
+          >
+            Log in
+          </Button>
+        </Box>
+      )}
+
+      {user && loading && <PageLoading label="Loading motions…" />}
+
+      {user && !loading && forbidden && (
+        <Box variant="secondary" className="flex flex-col gap-3">
+          <p className="text-sm">
+            Motions are gated to active Tahti ry members. Signed in as @
+            {user.username}.
+          </p>
+          <Button
+            size="sm"
+            variant="secondary"
+            className="w-fit"
+            onClick={() => useSettingsModalStore.getState().open('account')}
+          >
+            Manage membership
+          </Button>
+        </Box>
+      )}
+
+      {user && !loading && !forbidden && (
         <div className="grid gap-4 md:grid-cols-2">
-          <SectionShell title="Published meetings">
+          <GovernancePanel
+            title="Needs your attention"
+            icon={VoteIcon}
+            variant="primary"
+          >
+            <p className="text-sm opacity-90">
+              {openMotionsCount} open motion
+              {openMotionsCount === 1 ? '' : 's'} still need your vote.
+            </p>
+            <p className="text-xs opacity-70">
+              {openMotionsTotal} open motion
+              {openMotionsTotal === 1 ? '' : 's'} · {openTopicsCount} topics you
+              have not voted on
+            </p>
+            <Link to="/governance" onClick={closeSettings} className="w-fit">
+              <Button size="sm" variant="noShadow" className="mt-1">
+                View all motions
+                <ArrowRightIcon size={14} aria-hidden className="ml-1.5" />
+              </Button>
+            </Link>
+          </GovernancePanel>
+          <GovernancePanel title="Top topics" icon={LandmarkIcon}>
+            {requests.length === 0 ? (
+              <p className="text-foreground-secondary text-sm">
+                No topics yet.
+              </p>
+            ) : (
+              <ul className="divide-border divide-y">
+                {requests
+                  .filter(
+                    (request) =>
+                      !['DONE', 'DECLINED', 'DUPLICATE'].includes(
+                        request.status,
+                      ),
+                  )
+                  .sort((left, right) => right.voteCount - left.voteCount)
+                  .slice(0, 5)
+                  .map((request) => (
+                    <li
+                      key={request.id}
+                      className="flex items-center justify-between gap-3 py-2 text-sm first:pt-0 last:pb-0"
+                    >
+                      <span className="min-w-0 truncate">{request.title}</span>
+                      <span className="text-foreground-secondary shrink-0 text-xs">
+                        {request.voteCount} votes
+                      </span>
+                    </li>
+                  ))}
+              </ul>
+            )}
+            <Link
+              to="/governance/feature-requests"
+              onClick={closeSettings}
+              className="text-foreground-secondary mt-1 text-xs hover:underline"
+            >
+              View all topics →
+            </Link>
+          </GovernancePanel>
+        </div>
+      )}
+
+      {user && !loading && !forbidden && (
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <GovernancePanel title="Published meetings" icon={UsersIcon}>
             {meetings.length === 0 ? (
               <p className="text-foreground-secondary text-sm">
                 No published meeting records yet.
@@ -224,8 +400,8 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
                 })}
               </ul>
             )}
-          </SectionShell>
-          <SectionShell title="Published documents">
+          </GovernancePanel>
+          <GovernancePanel title="Published documents" icon={FileTextIcon}>
             {documents.length === 0 ? (
               <p className="text-foreground-secondary text-sm">
                 No governance documents have been published yet.
@@ -260,8 +436,8 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
                 ))}
               </ul>
             )}
-          </SectionShell>
-          <SectionShell title="Quarterly review reports">
+          </GovernancePanel>
+          <GovernancePanel title="Quarterly reviews" icon={ScrollTextIcon}>
             {reports.length === 0 ? (
               <p className="text-foreground-secondary text-sm">
                 No quarterly feature-request reviews have been published yet.
@@ -292,8 +468,8 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
                 ))}
               </ul>
             )}
-          </SectionShell>
-          <SectionShell title="Member directory">
+          </GovernancePanel>
+          <GovernancePanel title="Member directory" icon={UsersIcon}>
             {members.length === 0 ? (
               <p className="text-foreground-secondary text-sm">
                 No member directory is published yet.
@@ -317,133 +493,16 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             <Link
               to="/governance/members"
               onClick={closeSettings}
-              className="text-foreground-secondary mt-3 text-xs hover:underline"
+              className="text-foreground-secondary mt-1 text-xs hover:underline"
             >
               View full directory →
             </Link>
-          </SectionShell>
-        </div>
-      )}
-
-      {!user && (
-        <div className="border-border flex flex-col gap-3 rounded-lg border p-4">
-          <p className="text-sm">
-            Sign in with a cooperative membership account to vote.
-          </p>
-          <Button
-            size="sm"
-            onClick={() => useAuthModalStore.getState().open('login')}
-          >
-            Log in
-          </Button>
-        </div>
-      )}
-
-      {user && loading && <PageLoading label="Loading motions…" />}
-
-      {user && !loading && forbidden && (
-        <div className="border-border flex flex-col gap-3 rounded-lg border p-4">
-          <p className="text-sm">
-            Motions are gated to active Tahti ry members. Signed in as @
-            {user.username}.
-          </p>
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={() => useSettingsModalStore.getState().open('account')}
-          >
-            Manage membership
-          </Button>
-        </div>
-      )}
-
-      {user && !loading && !forbidden && motions.length === 0 && (
-        <p className="text-foreground-secondary text-sm">
-          No motions returned.
-        </p>
-      )}
-
-      {user && !loading && !forbidden && (
-        <div className="grid gap-4 md:grid-cols-2">
-          <SectionShell title="Needs your attention">
-            <p className="text-foreground-secondary text-sm">
-              {
-                motions.filter(
-                  (motion) => motion.state === 'OPEN' && !motion.youVoted,
-                ).length
-              }{' '}
-              open motion
-              {motions.filter(
-                (motion) => motion.state === 'OPEN' && !motion.youVoted,
-              ).length === 1
-                ? ''
-                : 's'}{' '}
-              still need your vote.
-            </p>
-            <p className="text-foreground-secondary mt-2 text-xs">
-              {motions.filter((motion) => motion.state === 'OPEN').length} open
-              motion
-              {motions.filter((motion) => motion.state === 'OPEN').length === 1
-                ? ''
-                : 's'}{' '}
-              ·{' '}
-              {
-                requests.filter(
-                  (request) => request.status === 'OPEN' && !request.youVoted,
-                ).length
-              }{' '}
-              topics you have not voted on
-            </p>
-            <Link
-              to="/governance"
-              onClick={closeSettings}
-              className="text-foreground-secondary mt-3 text-xs hover:underline"
-            >
-              View all motions →
-            </Link>
-          </SectionShell>
-          <SectionShell title="Top topics">
-            {requests.length === 0 ? (
-              <p className="text-foreground-secondary text-sm">
-                No topics yet.
-              </p>
-            ) : (
-              <ul className="divide-border divide-y">
-                {requests
-                  .filter(
-                    (request) =>
-                      !['DONE', 'DECLINED', 'DUPLICATE'].includes(
-                        request.status,
-                      ),
-                  )
-                  .sort((left, right) => right.voteCount - left.voteCount)
-                  .slice(0, 5)
-                  .map((request) => (
-                    <li
-                      key={request.id}
-                      className="flex items-center justify-between gap-3 py-2 text-sm first:pt-0 last:pb-0"
-                    >
-                      <span className="min-w-0 truncate">{request.title}</span>
-                      <span className="text-foreground-secondary shrink-0 text-xs">
-                        {request.voteCount} votes
-                      </span>
-                    </li>
-                  ))}
-              </ul>
-            )}
-            <Link
-              to="/governance/feature-requests"
-              onClick={closeSettings}
-              className="text-foreground-secondary mt-3 text-xs hover:underline"
-            >
-              View all topics →
-            </Link>
-          </SectionShell>
+          </GovernancePanel>
         </div>
       )}
 
       {user && !loading && !forbidden && (
-        <SectionShell title="Submit a motion draft">
+        <GovernancePanel title="Submit a motion draft" icon={VoteIcon}>
           <div className="flex items-center gap-1.5">
             <span className="text-foreground-secondary text-xs">
               Advisory proposals for board review
@@ -466,7 +525,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
               </span>
             </Tooltip>
           </div>
-          <div className="mt-3 flex flex-col gap-2">
+          <div className="flex flex-col gap-2">
             <Input
               value={draftTitle}
               onChange={(event) => setDraftTitle(event.target.value)}
@@ -518,12 +577,18 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
               {submittingDraft ? 'Submitting…' : 'Submit draft'}
             </Button>
           </div>
-        </SectionShell>
+        </GovernancePanel>
       )}
 
       {actionMsg && (
         <p className="border-border bg-background-secondary rounded-lg border px-3 py-2 text-sm">
           {actionMsg}
+        </p>
+      )}
+
+      {user && !loading && !forbidden && motions.length === 0 && (
+        <p className="text-foreground-secondary text-sm">
+          No motions returned.
         </p>
       )}
 
@@ -565,7 +630,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
     <ViewShell
       title="Governance"
       classes={{
-        root: 'px-0 pt-0 mx-auto max-w-3xl',
+        root: 'px-0 pt-0 mx-auto max-w-5xl',
         scrollableArea: 'gap-6',
       }}
     >
