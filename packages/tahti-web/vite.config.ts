@@ -171,5 +171,11 @@ export default defineConfig(({ command, mode }) => {
     preview: {
       port: 5180,
     },
+    test: {
+      globals: true,
+      clearMocks: true,
+      environment: 'jsdom',
+      setupFiles: ['./src/test/setup.ts'],
+    },
   };
 });

@@ -2,6 +2,46 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-15 — Listen page play-indicator fix; finished tahti-web vitest/jsdom setup
+
+User request (not from a todo file): "on the listen page, when I push play on
+a radio station the play indicator should become active, synced with the
+player state across all stations." The `currentId`/`status` derivation in
+`ListenView.tsx` was already correct for every station (Tahti Radio row,
+radio presets, on-air channel cards) — the actual bug was in the shared
+`MediaArtwork` primitive (`packages/ui`): its play/pause overlay only became
+visible on hover/focus (`overlayReveal`, gated to fine-pointer+hover media),
+so a station could be genuinely playing with zero visible feedback the
+moment the pointer moved away. Fixed by forcing the pause button and its
+dimmed backdrop to stay visible whenever `isPlaying` is true, for every
+`MediaArtwork` size/consumer (Card grid, RadioListItem, HistoryRow, etc.),
+leaving hover-only reveal untouched for the not-playing state and for
+secondary actions (favorite/queue). Verified live against a running
+`VITE_FORCE_MOCK=1` dev server via a scripted headless-Chromium check.
+
+Also finished an in-progress, untracked change already sitting in the working
+tree: `packages/tahti-web`'s vitest config had been switched to a global
+`environment: 'jsdom'` (`vite.config.ts`) with `@testing-library/jest-dom` +
+`jsdom` added and a `src/test/setup.ts`, but it was half-broken — running the
+package's own suite (not the whole monorepo) surfaced real regressions:
+- `setup.ts`'s `localStorage` mock was a permanent-null stub (`getItem: () =>
+  null` always, `setItem` a no-op) — write-then-read round-trips silently
+  failed (`locale.test.ts`, `libraryStore.test.ts`,
+  `mock-commerce-ledger.test.ts`). Root cause: jsdom's own `localStorage`/
+  `sessionStorage` aren't reliably exposed as globals under this vitest 4 +
+  jsdom 26 combo (confirmed via a throwaway debug test — `typeof
+  window.localStorage` was `'undefined'`), which is what the original,
+  broken stub was trying to work around. Replaced it with a real in-memory
+  `Storage` polyfill assigned only when the global is missing.
+- jsdom's `Blob` has no `arrayBuffer()`/`text()`/`stream()` — broke
+  `wav.test.ts`. Polyfilled `globalThis.Blob` with Node's real `Blob` (from
+  `node:buffer`) in `setup.ts` instead of opting that file out of jsdom
+  (which would have reintroduced a `window`-is-undefined crash in
+  `setupDomMocks()` for that one file).
+Verified: full `tahti-web` unit suite (515/515, 91/91 files), `tsc --noEmit`,
+`eslint` all clean; `packages/ui`'s `Card`/`CardGrid`/`CardsRow` suites
+re-checked after the `MediaArtwork` change (10/10, no snapshot diffs).
+
 ## 2026-09-12 — Visual snapshot diffs: real CSS rendering, inline PR images
 
 User request (not from a todo file): CI's Vitest-snapshot-mismatch PR comment
