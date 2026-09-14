@@ -295,11 +295,13 @@ function PersonalRadioStreamCard() {
 function RadioBrowserStationRow({
   station,
   onPlay,
+  isPlaying,
   isSaved,
   onToggleSave,
 }: {
   station: PublicRadioStation;
   onPlay: () => void;
+  isPlaying: boolean;
   isSaved: boolean;
   onToggleSave: () => void;
 }) {
@@ -330,14 +332,24 @@ function RadioBrowserStationRow({
           {station.country ?? station.tags?.[0] ?? 'Unknown'}
         </span>
       </button>
-      <Tooltip content={`Play ${station.name}`} side="top">
+      <Tooltip
+        content={isPlaying ? 'Pause' : `Play ${station.name}`}
+        side="top"
+      >
         <Button
           size="icon-sm"
-          variant="secondary"
-          aria-label={`Play ${station.name}`}
+          variant={isPlaying ? undefined : 'secondary'}
+          aria-label={
+            isPlaying ? `Pause ${station.name}` : `Play ${station.name}`
+          }
+          aria-pressed={isPlaying}
           onClick={onPlay}
         >
-          <PlayIcon size={14} aria-hidden />
+          {isPlaying ? (
+            <PauseIcon size={14} aria-hidden />
+          ) : (
+            <PlayIcon size={14} aria-hidden />
+          )}
         </Button>
       </Tooltip>
       <SaveButton
@@ -508,8 +520,23 @@ function RadioBrowserDirectoryCard() {
     });
   };
 
-  const playStation = (station: PublicRadioStation) =>
+  const browserStationIsPlaying = (station: PublicRadioStation) => {
+    const isCurrent = currentId === `radio:${station.id}`;
+    return (
+      isCurrent &&
+      (playbackStatus === 'playing' || playbackStatus === 'loading')
+    );
+  };
+  const playStation = (station: PublicRadioStation) => {
+    const isCurrent = currentId === `radio:${station.id}`;
+    if (isCurrent) {
+      setPlaybackStatus(
+        browserStationIsPlaying(station) ? 'paused' : 'playing',
+      );
+      return;
+    }
     play(playableFromRadioStation(station));
+  };
   const saveProps = (station: PublicRadioStation) => ({
     isSaved: savedBrowserStations.some((item) => item.id === station.id),
     onToggleSave: () =>
@@ -594,6 +621,7 @@ function RadioBrowserDirectoryCard() {
                                 key={station.id}
                                 station={row}
                                 onPlay={() => playStation(row)}
+                                isPlaying={browserStationIsPlaying(row)}
                                 {...saveProps(row)}
                               />
                             );
@@ -748,6 +776,7 @@ function RadioBrowserDirectoryCard() {
                               key={station.id}
                               station={station}
                               onPlay={() => playStation(station)}
+                              isPlaying={browserStationIsPlaying(station)}
                               {...saveProps(station)}
                             />
                           ))}

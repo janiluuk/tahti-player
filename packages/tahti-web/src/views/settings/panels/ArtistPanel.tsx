@@ -1,6 +1,5 @@
 import {
   Download,
-  ImagePlus,
   Images,
   Paintbrush,
   Share2,
@@ -231,7 +230,6 @@ export function ArtistPanel() {
           'branding',
           'gallery',
           'press-kit',
-          'channel-designer',
           'release-visuals',
         ]
           .filter(
@@ -583,12 +581,6 @@ export function ArtistPanel() {
           label: 'Press kit',
           icon: <Download size={14} />,
           content: <StudioBrandingPanel section="press-kit" />,
-        },
-        {
-          id: 'channel-designer',
-          label: 'Channel Designer',
-          icon: <ImagePlus size={14} />,
-          content: <StudioBrandingPanel section="channel-designer" />,
         },
         {
           id: 'release-visuals',

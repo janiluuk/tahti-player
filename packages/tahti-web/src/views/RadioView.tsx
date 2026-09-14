@@ -590,22 +590,6 @@ export function RadioView() {
               ]}
             />
           </section>
-
-          <p className="text-foreground-secondary text-xs">
-            Prefer a single artist?{' '}
-            <Link to="/" className="underline-offset-2 hover:underline">
-              Browse the listen directory
-            </Link>{' '}
-            (e.g.{' '}
-            <Link
-              to="/channel/$slug"
-              params={{ slug: 'northern-lights' }}
-              className="underline-offset-2 hover:underline"
-            >
-              northern-lights
-            </Link>
-            ).
-          </p>
         </div>
       )}
 

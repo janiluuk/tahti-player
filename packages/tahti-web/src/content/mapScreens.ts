@@ -1390,7 +1390,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         title: 'Channel design',
         viewName: 'Channel design',
         caption:
-          'Look, presets, accent — Settings → Artist → Channel Designer.',
+          'Look, presets, accent — Settings → Channel & design → Channel Designer.',
         actions: [
           'Pick a visual preset',
           'Pick a brand accent',
@@ -1411,7 +1411,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/channel-design.png',
-          route: '/settings/artist?tab=channel-designer',
+          route: '/settings/channel',
           caption: 'Nuclear channel designer',
         },
         storybookUrl: storybookStory('Tahti/Channel/Designer', 'Full'),
@@ -1430,7 +1430,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         goesTo: [
           {
             label: 'Open Channel Designer for rotation/fallback settings',
-            to: '/settings/artist?tab=channel-designer',
+            to: '/settings/channel',
           },
         ],
         old: {

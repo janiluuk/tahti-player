@@ -748,6 +748,10 @@ export const StudioBrandingView: FC = () => {
   const section = isStudioBrandingSection(search.tab) ? search.tab : 'branding';
 
   useEffect(() => {
+    if (section === 'channel-designer') {
+      open('channel');
+      return;
+    }
     open('artist', undefined, section);
   }, [open, section]);
 

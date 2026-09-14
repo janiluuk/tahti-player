@@ -237,17 +237,17 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
           tab === 'feed' ? 'Feed' : tab === 'history' ? 'History' : 'Listen'
         }
         classes={{ root: 'px-0 pt-0' }}
+        actions={
+          tab === 'listen' && signedIn ? <ListenWidgetStoreDialog /> : undefined
+        }
       >
-        {tab === 'listen' ? (
+        {tab === 'listen' && !signedIn ? (
           <div className="mb-4 flex flex-wrap items-center gap-2">
-            {signedIn ? <ListenWidgetStoreDialog /> : null}
-            {!signedIn ? (
-              <Link to="/what-is-it">
-                <Button size="sm" variant="secondary">
-                  What is tahti.live?
-                </Button>
-              </Link>
-            ) : null}
+            <Link to="/what-is-it">
+              <Button size="sm" variant="secondary">
+                What is tahti.live?
+              </Button>
+            </Link>
           </div>
         ) : null}
 
