@@ -14,6 +14,7 @@ import {
 import { useEffect, useMemo, useState, type FC } from 'react';
 
 import {
+  Badge,
   Button,
   FilterChips,
   ImageReveal,
@@ -350,9 +351,13 @@ export const MyDiscographyView: FC = () => {
                           </span>
                         ) : null}
                         {item.embedProvider ? (
-                          <span className="border-border text-foreground-secondary inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[10px] font-semibold tracking-wide uppercase">
+                          <Badge
+                            variant="pill"
+                            color="secondary"
+                            className="gap-1 px-1.5 py-0.5 text-[10px] tracking-wide"
+                          >
                             Embed · {EMBED_PROVIDER_LABEL[item.embedProvider]}
-                          </span>
+                          </Badge>
                         ) : null}
                       </div>
                       {item.peaks && item.peaks.length > 0 ? (

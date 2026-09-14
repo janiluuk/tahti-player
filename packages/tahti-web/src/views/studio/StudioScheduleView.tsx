@@ -13,6 +13,7 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   Button,
   Dialog,
+  FilterChips,
   ImageReveal,
   Input,
   SaveButton,
@@ -500,14 +501,6 @@ export function StudioScheduleView() {
     );
   };
 
-  const toggleFrequencyDay = (day: number) => {
-    setFrequencyDays((current) =>
-      current.includes(day)
-        ? current.filter((value) => value !== day)
-        : [...current, day],
-    );
-  };
-
   const saveRecurringSchedule = async () => {
     const selectedShow = shows.find((show) => show.id === selectedShowId);
     if (!selectedShow || !date || !time || frequencyDays.length === 0) {
@@ -989,20 +982,16 @@ export function StudioScheduleView() {
                 <span className="text-foreground-secondary text-xs font-semibold tracking-wide uppercase">
                   Weekly recurrence
                 </span>
-                <div className="flex flex-wrap gap-1">
-                  {FREQUENCY_DAY_ORDER.map((day) => (
-                    <Button
-                      key={day}
-                      type="button"
-                      size="sm"
-                      variant={frequencyDays.includes(day) ? undefined : 'text'}
-                      aria-pressed={frequencyDays.includes(day)}
-                      onClick={() => toggleFrequencyDay(day)}
-                    >
-                      Every {WEEKDAY_LABELS[day]}
-                    </Button>
-                  ))}
-                </div>
+                <FilterChips
+                  multiple
+                  items={FREQUENCY_DAY_ORDER.map((day) => ({
+                    id: String(day),
+                    label: `Every ${WEEKDAY_LABELS[day]}`,
+                  }))}
+                  selected={frequencyDays.map(String)}
+                  onChange={(ids) => setFrequencyDays(ids.map(Number))}
+                  aria-label="Weekly recurrence"
+                />
                 <p className="text-foreground-secondary text-xs">
                   Select days to generate episodes automatically; leave empty
                   for a one-off show.

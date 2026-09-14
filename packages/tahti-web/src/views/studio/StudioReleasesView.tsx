@@ -17,6 +17,7 @@ import {
   CopyButton,
   Dialog,
   EmptyState,
+  FilterChips,
   Input,
   Tooltip,
   ViewShell,
@@ -32,7 +33,7 @@ import { PageLoading } from '../../components/PageStates';
 import { SourceServiceIcon } from '../../components/SourceServiceIcon';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioNav } from '../../components/StudioNav';
-import { StudioPanel, StudioToggleChip } from '../../components/StudioPanel';
+import { StudioPanel } from '../../components/StudioPanel';
 import { resolveNewReleaseVisualizer } from '../../lib/releaseVisualizer';
 
 const RELEASE_TYPES = [
@@ -157,17 +158,12 @@ export function StudioReleasesView({
                   onChange={(e) => setTitle(e.target.value)}
                   autoFocus
                 />
-                <div className="flex flex-wrap gap-2">
-                  {RELEASE_TYPES.map((t) => (
-                    <StudioToggleChip
-                      key={t.id}
-                      selected={type === t.id}
-                      icon={t.icon}
-                      label={t.label}
-                      onClick={() => setType(t.id)}
-                    />
-                  ))}
-                </div>
+                <FilterChips
+                  items={RELEASE_TYPES}
+                  selected={type}
+                  onChange={setType}
+                  aria-label="Release type"
+                />
                 <Input
                   type="date"
                   label="Release date"

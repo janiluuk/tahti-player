@@ -1,6 +1,8 @@
 import { CircleHelpIcon } from 'lucide-react';
 import { useId, useState, type ReactNode } from 'react';
 
+import { Button } from '@tahti-player/ui';
+
 import { cn } from '../lib/cn';
 
 /**
@@ -25,16 +27,18 @@ export function HelpLayer({
 
   return (
     <div className={cn('flex flex-col items-start gap-2', className)}>
-      <button
+      <Button
         type="button"
-        className="border-border text-foreground-secondary hover:text-foreground hover:bg-background-secondary inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors"
+        variant="text"
+        size="flexible"
+        className="border-border text-foreground-secondary hover:text-foreground hover:bg-background-secondary gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors"
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen((current) => !current)}
       >
         <CircleHelpIcon size={14} aria-hidden />
         {open ? 'Hide help' : title}
-      </button>
+      </Button>
       {open ? (
         <div
           id={panelId}

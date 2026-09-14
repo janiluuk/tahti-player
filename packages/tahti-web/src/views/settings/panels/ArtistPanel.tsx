@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
+  FilterChips,
   Input,
   SaveButton,
   Select,
@@ -263,36 +264,16 @@ export function ArtistPanel() {
                     with you.
                   </p>
                 </div>
-                <div
-                  className="flex flex-wrap gap-2"
-                  role="group"
+                <FilterChips
+                  multiple
+                  items={ARTIST_ROLE_OPTIONS.map(([id, label]) => ({
+                    id,
+                    label,
+                  }))}
+                  selected={artistRoles}
+                  onChange={setArtistRoles}
                   aria-label="Creative roles"
-                >
-                  {ARTIST_ROLE_OPTIONS.map(([id, label]) => {
-                    const selected = artistRoles.includes(id);
-                    return (
-                      <button
-                        key={id}
-                        type="button"
-                        aria-pressed={selected}
-                        onClick={() =>
-                          setArtistRoles((current) =>
-                            selected
-                              ? current.filter((role) => role !== id)
-                              : [...current, id],
-                          )
-                        }
-                        className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
-                          selected
-                            ? 'border-primary bg-primary/10 text-primary'
-                            : 'border-border text-foreground-secondary hover:text-foreground'
-                        }`}
-                      >
-                        {label}
-                      </button>
-                    );
-                  })}
-                </div>
+                />
                 <p className="text-foreground-secondary text-xs">
                   Selected:{' '}
                   {artistRoles.length > 0

@@ -16,7 +16,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, Input, Tooltip } from '@tahti-player/ui';
+import { Badge, Button, Dialog, Input, Tooltip } from '@tahti-player/ui';
 
 import { isHeaderImageUrl } from '../api/channel-design';
 import {
@@ -504,12 +504,14 @@ export function TrackDetailView({
             </button>
           </Tooltip>
           {shareKey ? (
-            <span
+            <Badge
+              variant="pill"
+              color="secondary"
               role="status"
-              className="inline-flex w-fit items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 text-xs font-semibold tracking-wide text-white/80 uppercase"
+              className="w-fit bg-white/15 px-2.5 py-1 tracking-wide text-white/80"
             >
               Private — viewing via share link
-            </span>
+            </Badge>
           ) : null}
           <div className="flex items-start gap-6">
             <div className="min-w-0 flex-1">
