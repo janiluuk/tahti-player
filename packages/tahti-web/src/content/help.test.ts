@@ -34,7 +34,7 @@ describe('artist gallery help', () => {
     expect(look).toBeDefined();
     expect(
       look?.body.some((line) =>
-        line.includes('Settings → Artist → Channel Designer'),
+        line.includes('Settings → Channel & design → Channel Designer'),
       ),
     ).toBe(true);
   });

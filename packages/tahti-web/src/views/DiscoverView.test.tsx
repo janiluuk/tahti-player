@@ -115,11 +115,11 @@ describe('DiscoverView', () => {
     vi.unstubAllGlobals();
   });
 
-  it('puts add-widget in the header and does not render the hero tile', async () => {
+  it('puts add-widget in the ViewShell actions slot and does not render the hero tile', async () => {
     const { container } = await renderDiscover('/discover');
 
     expect(
-      container.querySelector('header [data-testid="discover-add-widget"]'),
+      container.querySelector('[data-testid="discover-add-widget"]'),
     ).not.toBeNull();
     expect(container.textContent).not.toContain('Add a widget');
     expect(container.textContent).toContain('This week: most played');
