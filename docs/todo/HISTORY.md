@@ -20,6 +20,53 @@ once OPEN with 409) — 11/11 green. Frontend: `MotionCard.tsx`'s existing
 `datetime-local` field alongside title/description, sent through
 `patchGovernanceMotion`'s extended `closeAt` param. `eslint`/`tsc --noEmit`
 clean on both repos.
+## 2026-09-15 — ChannelView.tsx rules-of-hooks fix (found during the mega-file refactor design pass)
+
+Found incidentally while designing the ChannelDesigner/ArtistView/ChannelView
+extraction plan (not a pre-tracked ticket): `ChannelView.tsx` called 3 hooks
+(a `useLayoutEffect` + 2 `useEffect`s docking the layers-menu into the right
+rail) *after* two conditional early returns — `if (loading) return
+<PageLoading/>`, `if (!channel) return <PageEmpty/>` — and (until this same
+pass moved it) a third, `if (!editing) return ...`. Since `loading`/
+`channel`/`editing` all change within the same mounted `ChannelView`
+instance (confirmed no remount: `routes-library.tsx`'s `ChannelRoute` renders
+`<ChannelView slug={slug} />` with no `key`), any hook positioned after a
+conditional that flips over the component's lifetime is a rules-of-hooks
+violation — first fix attempt (moving the 3 hooks above only the `!editing`
+return) still crashed on page load, since the loading→loaded transition
+alone was enough to trip it; confirmed via live-reproduced "Rendered more
+hooks than during the previous render" in the browser both before and
+after the first fix attempt, not just reasoned about.
+
+Real fix: moved the 3 hooks (and the `selectedType`/`layersMenu`
+construction they depend on) above all three early returns, gated
+`layersMenu` itself on `editing && channel` (cheap boolean check, not a
+skipped hook) so it degrades to `null` during loading/not-found instead of
+touching `channel` before it's confirmed non-null. Two of the moved JSX
+handlers (`onRemove={removeLayoutItem}`, `onApplyPreset={applyPreset}`)
+hit a real TS "used before declaration" error against `updateLayout`/
+`removeLayoutItem`/`applyPreset` (declared later in the file) — fixed by
+wrapping in inline arrow functions (`onRemove={(id) => removeLayoutItem(id)}`),
+which is a legitimate fix (deferred closure reference, not a workaround):
+those functions are only *called* later from user interaction, long after
+the whole render pass — including their own `const` declarations further
+down — has finished executing, so no temporal-dead-zone issue exists at
+runtime, only in TS's conservative static check for direct (non-deferred)
+references.
+
+Verified live in the browser (`VITE_FORCE_MOCK=1`), the exact sequence
+that would trigger the bug: enter edit mode → exit → re-enter, watching
+the console throughout. Zero errors/warnings across the full sequence,
+both before and after the fix confirmed the bug reproduces on the
+unfixed original code too (stashed the fix, same URL, same crash) and is
+absent after. `tsc --noEmit`, `eslint`, full `vitest run` (516/516, only
+the pre-existing unrelated `HistoryRow` flake), and production `vite
+build` all clean.
+
+Landed as its own isolated commit/PR, deliberately separate from the
+larger ChannelDesigner/ArtistView/ChannelView structural-extraction work
+that's still open (see `codebase-refactor-hotspots.md`) — a correctness
+fix and a structural refactor shouldn't be reviewed as one diff.
 
 ## 2026-09-15 — Storybook theme unification sweep: all 5 new-primitive candidates shipped
 

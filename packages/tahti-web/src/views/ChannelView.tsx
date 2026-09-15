@@ -1,13 +1,10 @@
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import {
   ArrowLeftIcon,
-  CalendarClockIcon,
   GripVerticalIcon,
   HeartIcon,
-  LayoutTemplateIcon,
   ListMusicIcon,
   MessageCircle,
-  Mic,
   PauseIcon,
   PencilIcon,
   PlayIcon,
@@ -24,7 +21,6 @@ import {
   FilterChips,
   Loader,
   SaveButton,
-  StatChip,
   Tooltip,
 } from '@tahti-player/ui';
 
@@ -58,6 +54,7 @@ import type {
   PublicChannel,
   TahtiPlayable,
 } from '../api/types';
+import { renderChannelBlock } from '../components/channel-view';
 import { ChannelBackdropCard } from '../components/ChannelBackdropCard';
 import {
   ChannelDesigner,
@@ -66,7 +63,6 @@ import {
 import { ChannelLayersMenu } from '../components/ChannelLayersMenu';
 import { ChannelLinksEditor } from '../components/ChannelLinksEditor';
 import { ChannelNavigationEditor } from '../components/ChannelNavigationEditor';
-import { ChannelPlaylistBlock } from '../components/ChannelPlaylistBlock';
 import { ChannelPlaylistPicker } from '../components/ChannelPlaylistPicker';
 import { ChannelShareButton } from '../components/ChannelShareButton';
 import { ChannelVisualizer } from '../components/ChannelVisualizer';
@@ -75,14 +71,9 @@ import {
   EntitySocialHeader,
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
-import { ListenerWidgetEmbed } from '../components/ListenerWidgetEmbed';
 import { NowPlayingOverlay } from '../components/NowPlayingOverlay';
 import { PageEmpty, PageLoading } from '../components/PageStates';
-import { PlayableTrackTable } from '../components/PlayableTrackTable';
-import { ShowEpisodeList } from '../components/ShowEpisodeList';
-import { SocialLinkIcon } from '../components/SocialLinkIcon';
 import { StreamManagerPanel } from '../components/StreamManagerPanel';
-import { Eyebrow } from '../components/tahti/Eyebrow';
 import { OnAirBadge } from '../components/tahti/OnAirBadge';
 import { WaveformSeekbar } from '../components/tahti/WaveformSeekbar';
 import { listenerWidgetType } from '../content/listenerWidgets';
@@ -386,6 +377,219 @@ export function ChannelView({ slug }: { slug: string }) {
     const frame = requestAnimationFrame(() => setNavTabContentVisible(true));
     return () => cancelAnimationFrame(frame);
   }, [activeNavTab?.id]);
+
+  // NOTE: this block (through the 3 hooks below) used to sit after both the
+  // `if (loading)`/`if (!channel)` early returns below AND (until an earlier
+  // fix in this same pass) the `if (!editing)` early return further down --
+  // any hook placed after either kind of early return is conditional on it,
+  // a rules-of-hooks violation, since `loading`/`channel`/`editing` all
+  // change within this same mounted instance (no remount on any of them).
+  // Moved above every early return so every hook is always called on every
+  // render; `layersMenu` stays gated on `editing && channel` (cheap check,
+  // and it's expensive JSX that's only ever read once we're past both early
+  // returns anyway -- see the mobile bottom-sheet render further below).
+  const selectedType =
+    selectedId === 'header'
+      ? 'header'
+      : layout.find((i) => i.id === selectedId)?.type;
+  const lookElementId: ChannelLookElementId | null =
+    selectedType === 'hero'
+      ? 'player'
+      : selectedType === 'header'
+        ? 'backdrop'
+        : selectedType === 'sound'
+          ? 'tracks'
+          : null;
+  const lookOpenSection =
+    selectedType === 'links'
+      ? 'links'
+      : selectedType === 'playlist'
+        ? 'playlist'
+        : selectedType === 'navigation'
+          ? 'navigation'
+          : lookElementId;
+
+  const selectedPlaylistItem =
+    selectedType === 'playlist'
+      ? layout.find((item) => item.id === selectedId)
+      : undefined;
+
+  const selectedNavigationItem =
+    selectedType === 'navigation'
+      ? layout.find((item) => item.id === selectedId)
+      : undefined;
+
+  const layersMenu =
+    editing && channel ? (
+      <ChannelLayersMenu
+        items={layout}
+        selectedId={selectedId}
+        lookOpenSection={lookOpenSection}
+        activePresetId={activePresetId}
+        onSelect={setSelectedId}
+        onToggleVisible={(id) => {
+          updateLayout((prev) => {
+            const row = prev.find((i) => i.id === id);
+            return row ? setItemVisible(prev, id, !row.visible) : prev;
+          });
+        }}
+        onResize={(id, width) => {
+          updateLayout((prev) => setItemWidth(prev, id, width));
+        }}
+        onRemove={(id) => removeLayoutItem(id)}
+        onAdd={(type: ChannelPageItemType) => {
+          updateLayout((prev) => addItemType(prev, type));
+        }}
+        embedItems={configuredEmbedItems}
+        onAddEmbed={(embedInstanceId) => {
+          updateLayout((prev) => {
+            const existing = prev.find(
+              (i) =>
+                i.type === 'embed' && i.embedInstanceId === embedInstanceId,
+            );
+            if (existing) {
+              return setItemVisible(prev, existing.id, true);
+            }
+            return [
+              ...prev,
+              {
+                id: `embed-${embedInstanceId}`,
+                type: 'embed',
+                embedInstanceId,
+                visible: true,
+              },
+            ];
+          });
+        }}
+        onAddPlaylist={(playlistSlug) => {
+          updateLayout((prev) => addPlaylistItem(prev, playlistSlug));
+        }}
+        onReorder={(fromId, toId) => {
+          updateLayout((prev) => moveItem(prev, fromId, toId));
+        }}
+        onApplyPreset={(id) => applyPreset(id)}
+        lookSlot={
+          lookOpenSection === 'links' ? (
+            <ChannelLinksEditor
+              links={channelLinksDraft}
+              onChange={(links) => {
+                setChannelLinksDraft(links);
+                setLinksDirty(true);
+              }}
+            />
+          ) : lookOpenSection === 'playlist' && selectedPlaylistItem ? (
+            <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-2">
+                <p className="text-foreground-secondary text-xs">
+                  Choose which playlist this block shows.
+                </p>
+                <ChannelPlaylistPicker
+                  usedSlugs={layout
+                    .filter(
+                      (item) => item.type === 'playlist' && item.playlistSlug,
+                    )
+                    .map((item) => item.playlistSlug as string)}
+                  initialSlug={selectedPlaylistItem.playlistSlug}
+                  applyOnChange
+                  onPick={(playlistSlug) => {
+                    updateLayout((prev) =>
+                      setPlaylistSlug(
+                        prev,
+                        selectedPlaylistItem.id,
+                        playlistSlug,
+                      ),
+                    );
+                  }}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <p className="text-foreground-secondary text-xs">
+                  How tracks appear on the page.
+                </p>
+                <FilterChips
+                  items={[
+                    { id: 'tracklist', label: 'Tracklist' },
+                    { id: 'cards', label: 'Cards' },
+                  ]}
+                  selected={selectedPlaylistItem.playlistDisplay ?? 'tracklist'}
+                  onChange={(id) => {
+                    if (id !== 'tracklist' && id !== 'cards') {
+                      return;
+                    }
+                    updateLayout((prev) =>
+                      setPlaylistDisplay(prev, selectedPlaylistItem.id, id),
+                    );
+                  }}
+                  aria-label="Playlist display"
+                />
+              </div>
+            </div>
+          ) : lookOpenSection === 'navigation' && selectedNavigationItem ? (
+            <ChannelNavigationEditor
+              tabs={selectedNavigationItem.navigationTabs ?? []}
+              candidateItems={layout
+                .filter(
+                  (candidate) =>
+                    candidate.visible &&
+                    candidate.type !== 'hero' &&
+                    candidate.type !== 'chat' &&
+                    candidate.type !== 'navigation',
+                )
+                .map((candidate) => ({
+                  id: candidate.id,
+                  label:
+                    candidate.type === 'playlist' && candidate.playlistSlug
+                      ? candidate.playlistSlug
+                      : CHANNEL_PAGE_ITEM_META[candidate.type].label,
+                }))}
+              onChange={(tabs) => {
+                updateLayout((prev) =>
+                  setNavigationTabs(prev, selectedNavigationItem.id, tabs),
+                );
+              }}
+            />
+          ) : (
+            <ChannelDesigner
+              ref={channelDesignerRef}
+              lookOnly
+              reloadToken={lookTick}
+              displayName={channel.user.displayName}
+              username={channel.user.username}
+              channelSlug={slug}
+              avatarUrl={channel.user.avatarUrl}
+              bio={channel.user.bio}
+              lookOpenSection={lookElementId}
+              onDirtyChange={setLookDirty}
+              onSaved={() => {
+                setLookTick((n) => n + 1);
+                setLookExtrasTick((n) => n + 1);
+              }}
+            />
+          )
+        }
+      />
+    ) : null;
+
+  useLayoutEffect(() => {
+    if (!editing || isMobile) {
+      setRailOverride(null);
+      return;
+    }
+    setRailOverride({ title: 'Channel design', content: layersMenu });
+    setRightCollapsed(false);
+    if (rightWidth < 360) {
+      setRightWidth(360);
+    }
+  }, [editing, isMobile, layersMenu, setRailOverride, setRightCollapsed]);
+
+  useEffect(() => {
+    if (!editing || isMobile || rightWidth >= 360) {
+      return;
+    }
+    setRightWidth(360);
+  }, [editing, isMobile, rightWidth, setRightWidth]);
+
+  useEffect(() => () => setRailOverride(null), [setRailOverride]);
 
   if (loading) {
     return <PageLoading label="Loading channel…" />;
@@ -885,299 +1089,25 @@ export function ChannelView({ slug }: { slug: string }) {
           </div>
         );
       }
-      case 'sound':
-        return (
-          <section id="channel-block-sound" className="flex flex-col gap-6">
-            {!editing && (
-              <h2 className="text-xl font-bold tracking-tight">Tracks</h2>
-            )}
-            {pinnedPlayables.length > 0 && (
-              <div className="flex flex-col gap-3">
-                <Eyebrow>Pinned</Eyebrow>
-                <PlayableTrackTable
-                  items={pinnedPlayables}
-                  emptyMessage="No pinned tracks."
-                />
-              </div>
-            )}
-            <div className="flex flex-col gap-3">
-              {pinnedPlayables.length > 0 && <Eyebrow>Catalog</Eyebrow>}
-              <PlayableTrackTable
-                items={catalogPlayables}
-                emptyMessage={
-                  pinnedPlayables.length > 0
-                    ? 'No other public tracks.'
-                    : 'No public tracks for this channel yet.'
-                }
-              />
-            </div>
-          </section>
-        );
-      case 'chat':
-        // Chat lives in the Nuclear right rail only — never embed a second panel.
-        return (
-          <section
-            className={`flex max-w-xl items-center gap-3 px-4 py-3 ${editing ? '' : 'border-border rounded-lg border border-dashed'}`}
-          >
-            <MessageCircle
-              size={18}
-              className="text-foreground-secondary shrink-0 opacity-70"
-            />
-            <div className="min-w-0 flex-1">
-              <div className="text-sm font-bold tracking-tight">Live chat</div>
-              <p className="text-foreground-secondary text-xs">
-                {chatOn
-                  ? 'Shown in the right sidebar Chat tab — not duplicated on this page.'
-                  : 'Chat is disabled for this channel.'}
-              </p>
-            </div>
-            {chatOn ? (
-              <Tooltip content="Open chat in sidebar" side="top">
-                <Button
-                  size="icon-sm"
-                  variant="secondary"
-                  onClick={openChat}
-                  aria-label="Open chat in sidebar"
-                >
-                  <MessageCircle size={16} aria-hidden />
-                </Button>
-              </Tooltip>
-            ) : null}
-          </section>
-        );
-      case 'navigation': {
-        const navTabCount = item.navigationTabs?.length ?? 0;
-        return (
-          <section
-            className={`flex max-w-xl items-center gap-3 px-4 py-3 ${editing ? '' : 'border-border rounded-lg border border-dashed'}`}
-          >
-            <LayoutTemplateIcon
-              size={18}
-              className="text-foreground-secondary shrink-0 opacity-70"
-            />
-            <div className="min-w-0 flex-1">
-              <div className="text-sm font-bold tracking-tight">Navigation</div>
-              <p className="text-foreground-secondary text-xs">
-                {navTabCount >= 2
-                  ? `${navTabCount} tabs shown under the player.`
-                  : 'Off — add a second tab to show the bar under the player.'}
-              </p>
-            </div>
-          </section>
-        );
-      }
-      case 'about':
-        return (
-          <section id="channel-block-about" className="flex flex-col gap-3">
-            {channel.user.bio ? (
-              <p className="text-foreground text-sm whitespace-pre-wrap">
-                {channel.user.bio}
-              </p>
-            ) : (
-              <p className="text-foreground-secondary text-sm">No bio yet.</p>
-            )}
-            <Link
-              to="/u/$username"
-              params={{ username: channel.user.username }}
-              className="text-sm underline-offset-2 hover:underline"
-            >
-              Full artist profile →
-            </Link>
-          </section>
-        );
-      case 'links': {
-        const links = editing
-          ? channelLinksDraft
-          : (channel.channelLinks ?? []);
-        return (
-          <section
-            className={`px-4 py-3 ${editing ? '' : 'border-border rounded-lg border'}`}
-          >
-            <h2 className="text-sm font-bold tracking-tight">Links</h2>
-            {links.length === 0 ? (
-              <p className="text-foreground-secondary mt-1 text-xs">
-                {editing
-                  ? 'Add links in the side panel to show them here.'
-                  : 'No links yet.'}
-              </p>
-            ) : (
-              <div className="mt-2 flex flex-wrap gap-2">
-                {links
-                  .filter(
-                    (link) =>
-                      link.label.trim() &&
-                      link.url.trim() &&
-                      (editing || !link.hidden),
-                  )
-                  .map((link) => (
-                    <a
-                      key={`${link.label}-${link.url}`}
-                      href={link.url}
-                      target={
-                        link.url.startsWith('mailto:') ? undefined : '_blank'
-                      }
-                      rel="noopener noreferrer"
-                      className={`border-border hover:border-primary/50 hover:bg-primary/5 inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold ${
-                        editing && link.hidden ? 'opacity-50' : ''
-                      }`}
-                    >
-                      <SocialLinkIcon label={link.label} url={link.url} />
-                      {link.label}
-                    </a>
-                  ))}
-              </div>
-            )}
-          </section>
-        );
-      }
-      case 'programming': {
-        const nextAt = channel.nextBroadcastAt
-          ? new Date(channel.nextBroadcastAt)
-          : null;
-        return (
-          <section
-            id="channel-block-programming"
-            className={`flex flex-col gap-3 px-4 py-3 ${editing ? '' : 'border-border rounded-lg border'}`}
-          >
-            <h2 className="flex items-center gap-2 text-sm font-bold tracking-tight">
-              <CalendarClockIcon size={16} aria-hidden />
-              Programming
-            </h2>
-            {nextAt || channel.nextBroadcastNote ? (
-              <p className="text-foreground-secondary text-sm">
-                {nextAt
-                  ? `Next up · ${nextAt.toLocaleDateString([], {
-                      weekday: 'short',
-                      month: 'short',
-                      day: 'numeric',
-                    })} · ${nextAt.toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}`
-                  : null}
-                {nextAt && channel.nextBroadcastNote ? ' — ' : null}
-                {channel.nextBroadcastNote}
-              </p>
-            ) : (
-              <p className="text-foreground-secondary text-sm">
-                No broadcast currently scheduled.
-              </p>
-            )}
-            <Link
-              to="/schedule"
-              className="text-sm underline-offset-2 hover:underline"
-            >
-              View full schedule →
-            </Link>
-          </section>
-        );
-      }
-      case 'stats':
-        return (
-          <section
-            className={`flex items-center gap-6 px-4 py-3 ${editing ? '' : 'border-border rounded-lg border'}`}
-          >
-            <StatChip value={channel.followerCount ?? '—'} label="Followers" />
-          </section>
-        );
-      case 'events': {
-        if (
-          !liveShows ||
-          (liveShows.upcomingEpisodes.length === 0 &&
-            liveShows.pastEpisodes.length === 0)
-        ) {
-          return editing ? (
-            <div className="px-4 py-3 text-sm">
-              <h2 className="text-sm font-bold tracking-tight">Live shows</h2>
-              <p className="text-foreground-secondary mt-1 text-xs">
-                No scheduled or past broadcasts yet — this block shows once
-                there are some.
-              </p>
-            </div>
-          ) : null;
-        }
-        return (
-          <section
-            className={`flex flex-col gap-4 px-4 py-3 ${editing ? '' : 'border-border rounded-lg border'}`}
-          >
-            <h2 className="text-sm font-bold tracking-tight">Live shows</h2>
-            <div className="grid gap-5 lg:grid-cols-2">
-              {liveShows.upcomingEpisodes.length > 0 ? (
-                <ShowEpisodeList
-                  title="Upcoming"
-                  episodes={liveShows.upcomingEpisodes}
-                  icon={<Mic size={16} aria-hidden />}
-                  channelSlug={slug}
-                  username={channel.user.username}
-                />
-              ) : null}
-              {liveShows.pastEpisodes.length > 0 ? (
-                <ShowEpisodeList
-                  title="Past recordings"
-                  episodes={liveShows.pastEpisodes}
-                  icon={<MessageCircle size={16} aria-hidden />}
-                  channelSlug={slug}
-                />
-              ) : null}
-            </div>
-          </section>
-        );
-      }
-      case 'subscribe':
-        return editing ? (
-          <div className="px-4 py-3 text-sm">
-            <h2 className="text-sm font-bold tracking-tight">
-              Support {channel.user.displayName}
-            </h2>
-            <p className="text-foreground-secondary mt-1 text-xs">
-              Fan membership pitch — links out to the subscribe page.
-            </p>
-            <span className="border-primary/40 text-primary mt-3 inline-flex items-center rounded-md border px-3 py-1.5 text-xs font-semibold">
-              Subscribe (preview)
-            </span>
-          </div>
-        ) : isOwner ? null : (
-          <section className="border-border rounded-lg border px-4 py-3">
-            <h2 className="text-sm font-bold tracking-tight">
-              Support {channel.user.displayName}
-            </h2>
-            <p className="text-foreground-secondary mt-1 text-xs">
-              Become a fan member for perks and to help keep the channel
-              running.
-            </p>
-            <Link
-              to="/subscribe/$username"
-              params={{ username: channel.user.username }}
-              className="mt-3 inline-block"
-            >
-              <Button size="sm" variant="secondary">
-                Subscribe
-              </Button>
-            </Link>
-          </section>
-        );
-      case 'embed': {
-        const instance = listenerWidgetInstances.find(
-          (candidate) => candidate.id === item.embedInstanceId,
-        );
-        return instance ? <ListenerWidgetEmbed instance={instance} /> : null;
-      }
-      case 'playlist':
-        return item.playlistSlug ? (
-          <ChannelPlaylistBlock
-            playlistSlug={item.playlistSlug}
-            display={item.playlistDisplay ?? 'tracklist'}
-            editing={editing}
-          />
-        ) : null;
-      default: {
-        // Exhaustiveness guard: adding a type to CHANNEL_PAGE_ITEM_TYPES
-        // without a matching case here used to compile fine and silently
-        // render nothing — this turns that into a build error instead.
-        const unhandled: never = item.type;
-        void unhandled;
-        return null;
-      }
+      default:
+        // Every other block type (sound/chat/navigation/about/links/
+        // programming/stats/events/subscribe/embed/playlist) is small
+        // enough (2-6 free variables each) to live in its own file --
+        // see ChannelViewBlocks.tsx for the exhaustiveness guard covering
+        // these, and CHANNEL_PAGE_ITEM_TYPES.
+        return renderChannelBlock(item, {
+          editing,
+          channel,
+          slug,
+          isOwner,
+          pinnedPlayables,
+          catalogPlayables,
+          channelLinksDraft,
+          liveShows,
+          chatOn,
+          onOpenChat: openChat,
+          listenerWidgetInstances,
+        });
     }
   };
 
@@ -1643,207 +1573,6 @@ export function ChannelView({ slug }: { slug: string }) {
       </>
     );
   }
-
-  const selectedType =
-    selectedId === 'header'
-      ? 'header'
-      : layout.find((i) => i.id === selectedId)?.type;
-  const lookElementId: ChannelLookElementId | null =
-    selectedType === 'hero'
-      ? 'player'
-      : selectedType === 'header'
-        ? 'backdrop'
-        : selectedType === 'sound'
-          ? 'tracks'
-          : null;
-  const lookOpenSection =
-    selectedType === 'links'
-      ? 'links'
-      : selectedType === 'playlist'
-        ? 'playlist'
-        : selectedType === 'navigation'
-          ? 'navigation'
-          : lookElementId;
-
-  const selectedPlaylistItem =
-    selectedType === 'playlist'
-      ? layout.find((item) => item.id === selectedId)
-      : undefined;
-
-  const selectedNavigationItem =
-    selectedType === 'navigation'
-      ? layout.find((item) => item.id === selectedId)
-      : undefined;
-
-  const layersMenu = (
-    <ChannelLayersMenu
-      items={layout}
-      selectedId={selectedId}
-      lookOpenSection={lookOpenSection}
-      activePresetId={activePresetId}
-      onSelect={setSelectedId}
-      onToggleVisible={(id) => {
-        updateLayout((prev) => {
-          const row = prev.find((i) => i.id === id);
-          return row ? setItemVisible(prev, id, !row.visible) : prev;
-        });
-      }}
-      onResize={(id, width) => {
-        updateLayout((prev) => setItemWidth(prev, id, width));
-      }}
-      onRemove={removeLayoutItem}
-      onAdd={(type: ChannelPageItemType) => {
-        updateLayout((prev) => addItemType(prev, type));
-      }}
-      embedItems={configuredEmbedItems}
-      onAddEmbed={(embedInstanceId) => {
-        updateLayout((prev) => {
-          const existing = prev.find(
-            (i) => i.type === 'embed' && i.embedInstanceId === embedInstanceId,
-          );
-          if (existing) {
-            return setItemVisible(prev, existing.id, true);
-          }
-          return [
-            ...prev,
-            {
-              id: `embed-${embedInstanceId}`,
-              type: 'embed',
-              embedInstanceId,
-              visible: true,
-            },
-          ];
-        });
-      }}
-      onAddPlaylist={(playlistSlug) => {
-        updateLayout((prev) => addPlaylistItem(prev, playlistSlug));
-      }}
-      onReorder={(fromId, toId) => {
-        updateLayout((prev) => moveItem(prev, fromId, toId));
-      }}
-      onApplyPreset={applyPreset}
-      lookSlot={
-        lookOpenSection === 'links' ? (
-          <ChannelLinksEditor
-            links={channelLinksDraft}
-            onChange={(links) => {
-              setChannelLinksDraft(links);
-              setLinksDirty(true);
-            }}
-          />
-        ) : lookOpenSection === 'playlist' && selectedPlaylistItem ? (
-          <div className="flex flex-col gap-3">
-            <div className="flex flex-col gap-2">
-              <p className="text-foreground-secondary text-xs">
-                Choose which playlist this block shows.
-              </p>
-              <ChannelPlaylistPicker
-                usedSlugs={layout
-                  .filter(
-                    (item) => item.type === 'playlist' && item.playlistSlug,
-                  )
-                  .map((item) => item.playlistSlug as string)}
-                initialSlug={selectedPlaylistItem.playlistSlug}
-                applyOnChange
-                onPick={(playlistSlug) => {
-                  updateLayout((prev) =>
-                    setPlaylistSlug(
-                      prev,
-                      selectedPlaylistItem.id,
-                      playlistSlug,
-                    ),
-                  );
-                }}
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <p className="text-foreground-secondary text-xs">
-                How tracks appear on the page.
-              </p>
-              <FilterChips
-                items={[
-                  { id: 'tracklist', label: 'Tracklist' },
-                  { id: 'cards', label: 'Cards' },
-                ]}
-                selected={selectedPlaylistItem.playlistDisplay ?? 'tracklist'}
-                onChange={(id) => {
-                  if (id !== 'tracklist' && id !== 'cards') {
-                    return;
-                  }
-                  updateLayout((prev) =>
-                    setPlaylistDisplay(prev, selectedPlaylistItem.id, id),
-                  );
-                }}
-                aria-label="Playlist display"
-              />
-            </div>
-          </div>
-        ) : lookOpenSection === 'navigation' && selectedNavigationItem ? (
-          <ChannelNavigationEditor
-            tabs={selectedNavigationItem.navigationTabs ?? []}
-            candidateItems={layout
-              .filter(
-                (candidate) =>
-                  candidate.visible &&
-                  candidate.type !== 'hero' &&
-                  candidate.type !== 'chat' &&
-                  candidate.type !== 'navigation',
-              )
-              .map((candidate) => ({
-                id: candidate.id,
-                label:
-                  candidate.type === 'playlist' && candidate.playlistSlug
-                    ? candidate.playlistSlug
-                    : CHANNEL_PAGE_ITEM_META[candidate.type].label,
-              }))}
-            onChange={(tabs) => {
-              updateLayout((prev) =>
-                setNavigationTabs(prev, selectedNavigationItem.id, tabs),
-              );
-            }}
-          />
-        ) : (
-          <ChannelDesigner
-            ref={channelDesignerRef}
-            lookOnly
-            reloadToken={lookTick}
-            displayName={channel.user.displayName}
-            username={channel.user.username}
-            channelSlug={slug}
-            avatarUrl={channel.user.avatarUrl}
-            bio={channel.user.bio}
-            lookOpenSection={lookElementId}
-            onDirtyChange={setLookDirty}
-            onSaved={() => {
-              setLookTick((n) => n + 1);
-              setLookExtrasTick((n) => n + 1);
-            }}
-          />
-        )
-      }
-    />
-  );
-
-  useLayoutEffect(() => {
-    if (!editing || isMobile) {
-      setRailOverride(null);
-      return;
-    }
-    setRailOverride({ title: 'Channel design', content: layersMenu });
-    setRightCollapsed(false);
-    if (rightWidth < 360) {
-      setRightWidth(360);
-    }
-  }, [editing, isMobile, layersMenu, setRailOverride, setRightCollapsed]);
-
-  useEffect(() => {
-    if (!editing || isMobile || rightWidth >= 360) {
-      return;
-    }
-    setRightWidth(360);
-  }, [editing, isMobile, rightWidth, setRightWidth]);
-
-  useEffect(() => () => setRailOverride(null), [setRailOverride]);
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-3">
