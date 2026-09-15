@@ -3,6 +3,7 @@ import {
   ArrowLeftIcon,
   Code2Icon,
   ExternalLinkIcon,
+  EyeIcon,
   FilterIcon,
   FingerprintIcon,
   GripVerticalIcon,
@@ -15,6 +16,7 @@ import {
   SearchIcon,
   Share2Icon,
   Trash2Icon,
+  Wand2Icon,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -487,6 +489,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                             });
                           }}
                         >
+                          <EyeIcon size={14} aria-hidden className="mr-1.5" />
                           Publish
                         </Button>
                       </div>
@@ -881,6 +884,7 @@ function ReleaseSmartLinksPanel({
             onClick={fillAllFromPlugins}
             disabled={Object.keys(dspPrefixes).length === 0}
           >
+            <Wand2Icon size={14} aria-hidden className="mr-1.5" />
             Fill all
           </Button>
         </div>

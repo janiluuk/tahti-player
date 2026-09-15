@@ -1,4 +1,4 @@
-import { PlusIcon } from 'lucide-react';
+import { PlusIcon, UploadIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
@@ -157,6 +157,11 @@ export function AdminI18nView() {
                               disabled={busy}
                               onClick={() => triggerImport(lang.code)}
                             >
+                              <UploadIcon
+                                size={14}
+                                aria-hidden
+                                className="mr-1.5"
+                              />
                               Import CSV
                             </Button>
                           )}

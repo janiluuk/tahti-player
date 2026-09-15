@@ -1004,23 +1004,21 @@ export function StudioScheduleView() {
                     disabled={busy}
                     onClick={() => void stopRecurringSchedule()}
                   >
+                    <XIcon size={14} aria-hidden className="mr-1.5" />
                     Stop recurring schedule
                   </Button>
                 ) : null}
-                <Button
-                  size="sm"
-                  variant="text"
+                <SaveButton
                   disabled={
-                    busy ||
                     !selectedShowId ||
                     !date ||
                     !time ||
                     frequencyDays.length === 0
                   }
+                  saving={busy}
+                  label="Save weekly schedule"
                   onClick={() => void saveRecurringSchedule()}
-                >
-                  Save weekly schedule
-                </Button>
+                />
               </div>
 
               <div className="grid gap-3 sm:grid-cols-2">

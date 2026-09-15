@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { toast } from 'sonner';
 
 import { CopyButton } from './CopyButton';
 
@@ -34,5 +35,32 @@ describe('CopyButton', () => {
 
     const iconAfter = button.querySelector('svg')!.innerHTML;
     expect(iconAfter).not.toBe(iconBefore);
+  });
+
+  it('renders a visible label and swaps it to "Copied" after copying', async () => {
+    const user = userEvent.setup();
+    vi.spyOn(navigator.clipboard, 'writeText').mockResolvedValue();
+
+    render(<CopyButton text="copy me" label="Share" data-testid="copy-btn" />);
+
+    const button = screen.getByTestId('copy-btn');
+    expect(button).toHaveTextContent('Share');
+
+    await user.click(button);
+
+    expect(button).toHaveTextContent('Copied');
+  });
+
+  it('shows an error toast and does not enter the copied state when the clipboard write fails', async () => {
+    const errorSpy = vi.spyOn(toast, 'error').mockImplementation(() => '');
+    const user = userEvent.setup();
+    vi.spyOn(navigator.clipboard, 'writeText').mockRejectedValue(
+      new Error('denied'),
+    );
+
+    render(<CopyButton text="copy me" data-testid="copy-btn" />);
+    await user.click(screen.getByTestId('copy-btn'));
+
+    expect(errorSpy).toHaveBeenCalled();
   });
 });

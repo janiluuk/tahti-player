@@ -1,7 +1,8 @@
 import { Link } from '@tanstack/react-router';
+import { ScrollTextIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Badge, ViewShell } from '@tahti-player/ui';
+import { Badge, Box, Button, StatChip, ViewShell } from '@tahti-player/ui';
 
 import { fetchPublicGovernanceMotions } from '../api/client';
 import type { PublicGovernanceMotion } from '../api/types';
@@ -21,14 +22,19 @@ export function PublicGovernanceHistoryView() {
   return (
     <ViewShell
       title="Governance history"
-      classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl' }}
+      classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl', scrollableArea: 'gap-6' }}
     >
-      <Link
-        to="/transparency"
-        className="text-foreground-secondary mb-2 block w-fit text-xs underline-offset-2 hover:underline"
-      >
-        Transparency overview →
+      <Link to="/transparency">
+        <Button size="sm" variant="secondary">
+          <ScrollTextIcon size={14} aria-hidden className="mr-1.5" />
+          Transparency overview
+        </Button>
       </Link>
+
+      {!loading && motions.length > 0 && (
+        <StatChip value={motions.length} label="Closed motions" />
+      )}
+
       {loading ? (
         <PageLoading label="Loading governance history…" />
       ) : motions.length === 0 ? (
@@ -36,9 +42,13 @@ export function PublicGovernanceHistoryView() {
           No closed advisory motions have been published yet.
         </p>
       ) : (
-        <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
+        <div className="flex flex-col gap-4">
           {motions.map((motion) => (
-            <li key={motion.id} className="p-4">
+            <Box
+              key={motion.id}
+              variant="tertiary"
+              className="flex flex-col gap-3"
+            >
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
                   <h2 className="font-display text-lg font-bold">
@@ -53,14 +63,14 @@ export function PublicGovernanceHistoryView() {
                   Closed
                 </Badge>
               </div>
-              <p className="mt-3 text-sm">{motion.description}</p>
-              <p className="text-foreground-secondary mt-3 text-xs">
+              <p className="text-sm">{motion.description}</p>
+              <p className="text-foreground-secondary text-xs">
                 YES {motion.voteFor} · NO {motion.voteAgainst} · ABSTAIN{' '}
                 {motion.voteAbstain}
               </p>
-            </li>
+            </Box>
           ))}
-        </ul>
+        </div>
       )}
     </ViewShell>
   );
