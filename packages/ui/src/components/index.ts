@@ -51,6 +51,7 @@ export * from './SelectableTiles';
 export * from './SidebarNavigation';
 export * from './Slider';
 export * from './StatChip';
+export * from './StatTile';
 export * from './Tabs';
 export * from './Textarea';
 export * from './ThemeController';

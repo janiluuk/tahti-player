@@ -11,7 +11,14 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, Input, SaveButton, Select, Textarea } from '@tahti-player/ui';
+import {
+  Button,
+  Input,
+  SaveButton,
+  Select,
+  StatTile,
+  Textarea,
+} from '@tahti-player/ui';
 
 import {
   createAdminResolution,
@@ -166,30 +173,17 @@ export function OverviewTab() {
         description="Voting and discussion activity across motions and feature topics."
       >
         <div className="grid gap-3 sm:grid-cols-3">
-          <div className="border-border bg-background-secondary/35 rounded-lg border p-3">
-            <p className="text-foreground-secondary text-xs uppercase">
-              Votes recorded
-            </p>
-            <p className="mt-1 text-2xl font-bold">{totalVotes}</p>
-          </div>
-          <div className="border-border bg-background-secondary/35 rounded-lg border p-3">
-            <p className="text-foreground-secondary text-xs uppercase">
-              Discussions
-            </p>
-            <p className="mt-1 text-2xl font-bold">{discussionCount}</p>
-            <p className="text-foreground-secondary text-xs">
-              Subjects with comments
-            </p>
-          </div>
-          <div className="border-border bg-background-secondary/35 rounded-lg border p-3">
-            <p className="text-foreground-secondary text-xs uppercase">
-              Comments
-            </p>
-            <p className="mt-1 text-2xl font-bold">{totalComments}</p>
-            <p className="text-foreground-secondary text-xs">
-              Recorded governance comments
-            </p>
-          </div>
+          <StatTile value={totalVotes} label="Votes recorded" />
+          <StatTile
+            value={discussionCount}
+            label="Discussions"
+            sublabel="Subjects with comments"
+          />
+          <StatTile
+            value={totalComments}
+            label="Comments"
+            sublabel="Recorded governance comments"
+          />
         </div>
 
         <div className="border-border mt-4 overflow-x-auto rounded-lg border">

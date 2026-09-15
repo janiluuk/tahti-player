@@ -101,16 +101,26 @@ did.
 
 ## New-primitive candidates (not swaps — nothing to reuse yet)
 
-- Selectable tile w/ icon + label (+ optional hint/description)
-  (`OnboardingView.tsx` artist-kind + appearance toggle groups;
-  `StudioDistributionView.tsx` "Catalog methods" and "Guides")
-- `Meter`/`DonutChart` (`AdminStorageView.tsx` progress bar + conic-gradient
-  donut; `AdminI18nView.tsx:142` translation-progress bar)
+- ~~Selectable tile w/ icon + label (+ optional hint/description)~~ —
+  **Done (2026-09-15):** `SelectableTiles` (`packages/ui`), reuses
+  `useFilterChips`'s single/multi-select logic. Swapped onto
+  `OnboardingView.tsx` artist-kind + appearance toggle groups and
+  `StudioDistributionView.tsx` "Catalog methods" (multi-select, row
+  layout) and "Guides" (single-select, centered layout).
+- ~~`Meter`/`DonutChart`~~ — **Done (2026-09-15):** both added to
+  `packages/ui`. Swapped onto `AdminStorageView.tsx`'s disk-space bar,
+  per-user usage bars, and storage-by-file-type donut; `AdminI18nView.tsx`'s
+  translation-progress bar.
 - Shared list-row selection style (`AdminUsersView.tsx` user picker)
 - Shared image-thumbnail-grid picker (`AdminArtworkPresetsView.tsx`,
   `StudioReleaseDetailView.tsx` library-picker rows — low priority;
   `StudioReleaseDetailView.tsx:1077` "Added" span is a soft `Badge`
   candidate on its own)
+- `OverviewTab.tsx` (admin governance) 3 value+label+sublabel stat tiles —
+  **Done (2026-09-15):** `StatTile` (`packages/ui`), distinct from
+  `StatChip`'s compact inline icon+value+label pill. Flagged separately in
+  `packages/tahti-web/STUDIO-ADMIN-UX-SWEEP-OPEN.md` theme 3, folded here
+  since it's the same "new stat shape" class of gap.
 
 ## Checked, not a candidate
 
