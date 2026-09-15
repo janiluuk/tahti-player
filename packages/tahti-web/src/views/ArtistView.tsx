@@ -23,7 +23,6 @@ import { useEffect, useMemo, useState } from 'react';
 
 import {
   Button,
-  Card,
   CardGrid,
   Dialog,
   SaveButton,
@@ -69,10 +68,12 @@ import type {
   PublicProfileRelease,
   TahtiPlayable,
 } from '../api/types';
+import { ArtistCollectionsTab } from '../components/ArtistCollectionsTab';
 import {
   ArtistGalleryAddIcon,
   ArtistGalleryPanel,
 } from '../components/ArtistGalleryPanel';
+import { ArtistReleasesTab } from '../components/ArtistReleasesTab';
 import { ChannelDesigner } from '../components/ChannelDesigner';
 import { ChannelTextOverlayView } from '../components/ChannelTextOverlayView';
 import { ChannelVisualizer } from '../components/ChannelVisualizer';
@@ -1483,72 +1484,13 @@ export function ArtistView({ username }: { username: string }) {
         </section>
       )}
 
-      {tab === 'releases' && (
-        <section className="flex flex-col gap-3">
-          {releases.length === 0 ? (
-            <p className="text-foreground-secondary text-sm">
-              No published releases.
-            </p>
-          ) : (
-            <CardGrid>
-              {releases.map((rel) => (
-                <div key={rel.id} className="flex flex-col gap-2">
-                  {rel.smartLinkSlug ? (
-                    <Link to="/r/$slug" params={{ slug: rel.smartLinkSlug }}>
-                      <Card
-                        title={rel.title}
-                        subtitle={rel.type ?? 'Release'}
-                        src={rel.artworkUrl ?? placeholderArtworkUrl(rel.id)}
-                      />
-                    </Link>
-                  ) : (
-                    <Card
-                      title={rel.title}
-                      subtitle={rel.type ?? 'Release'}
-                      src={rel.artworkUrl ?? placeholderArtworkUrl(rel.id)}
-                    />
-                  )}
-                </div>
-              ))}
-            </CardGrid>
-          )}
-        </section>
-      )}
+      {tab === 'releases' && <ArtistReleasesTab releases={releases} />}
 
       {tab === 'collections' && (
-        <section className="flex flex-col gap-3">
-          {collections.length === 0 ? (
-            <p className="text-foreground-secondary text-sm">
-              No public collections.
-            </p>
-          ) : (
-            <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
-              {collections.map((col) => (
-                <li
-                  key={col.slug}
-                  className="flex items-center justify-between gap-3 px-4 py-3"
-                >
-                  <div>
-                    <Link
-                      to="/u/$username/c/$slug"
-                      params={{ username: artist.username, slug: col.slug }}
-                      className="font-medium underline-offset-2 hover:underline"
-                    >
-                      {col.name}
-                    </Link>
-                    <div className="text-foreground-secondary text-xs">
-                      {col.itemCount} items
-                      {col.isFeatured ? ', featured' : ''}
-                    </div>
-                  </div>
-                  <span className="text-foreground-secondary font-mono text-xs uppercase">
-                    {col.type}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
+        <ArtistCollectionsTab
+          collections={collections}
+          username={artist.username}
+        />
       )}
 
       {tab === 'gallery' && hasGallery && (
