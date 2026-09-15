@@ -131,8 +131,13 @@ convention; also fixed a real rules-of-hooks bug found during the
 investigation (3 hooks called after a conditional early return — PR #94,
 landed before this extraction). See `codebase-refactor-hotspots.md`
 item 17.
+**2026-09-16:** `ChannelHeroBlock` (the `hero` case + `stagePlayer`)
+extracted to `components/channel-view/ChannelHeroBlock.tsx` (+ barrel) —
+pure JSX+props, `stagePlayer` passed in ready-built rather than rebuilt,
+matching the pattern from item 17's other 11 blocks. See
+`codebase-refactor-hotspots.md` item 18.
 Still open in Phase 4: `ChannelDesigner.tsx`'s remaining body,
-`ChannelView.tsx`'s `ChannelHeroBlock` + `useChannelLayoutEditing` pieces.
+`ChannelView.tsx`'s `useChannelLayoutEditing` piece.
 
 ## Execution order
 

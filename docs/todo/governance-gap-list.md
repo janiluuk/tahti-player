@@ -37,7 +37,7 @@ Gap analysis of governance features available in the sibling API (`../tahti-org`
 | # | Gap | Notes |
 | --- | --- | --- |
 | ~~14~~ | ~~**Motion editing (board)**~~ | **Done** (2026-09-08) — "Edit motion" toggle in `MotionCard.tsx` (board + DRAFT only, on the detail page where the description is loaded), title `Input` + description `textarea`, `patchGovernanceMotion(id, { title, description })`. |
-| 15 | **Voting window adjustment** | **Premise corrected 2026-09-08**: checked `PatchMotionSchema` in `../tahti-org` (`packages/shared/src/dto/governance.ts`) — it only accepts `state`/`title`/`description`, no `closeAt` field at all. "Board can patch closeAt on drafts" is false as written; this would need new backend schema + route work first, not just a frontend UI. |
+| ~~15~~ | ~~**Voting window adjustment**~~ | **Done (2026-09-15)**: added `closeAt` to `PatchMotionSchema` and the `PATCH /api/v1/governance/motions/:id` handler in `../tahti-org` (same DRAFT-only gate as title/description; `closeAt` must stay after `openAt`), validated with tests (draft patch OK, invalid date 400, blocked once OPEN, 409). `MotionCard.tsx`'s existing "Edit motion" form gained a "Voting closes" `datetime-local` field alongside title/description. |
 | ~~16~~ | ~~**Meeting detail view**~~ | **Done** (2026-09-08) — `GovernanceMeetingDetailView.tsx` at `/governance/meetings/$id` (type, state, scheduled time, location/remote link, notice date, minutes status, quorum, present/eligible counts, full agenda), linked from each meeting title in `GovernanceView.tsx`. No new fetch needed — `fetchGovernanceMeetings()` already returns every field; the "gap" was the missing standalone page, not missing data. |
 | ~~17~~ | ~~**Document preview/download**~~ | **Done** — `GovernanceView.tsx` already links `document.downloadUrl ?? document.externalUrl` on each document row (verified 2026-09-07; doc was stale). |
 | 18 | **Cursor pagination** | ~~Motions use cursor pagination but frontend fetches all at once.~~ **Done (2026-09-10)** — `fetchGovernanceMotions({ limit, cursor, state })` reads `x-next-cursor`; GovernanceView pages 20 + Load more; Studio home preview uses `limit: 10`. |
@@ -50,8 +50,6 @@ plus type gaps #11–#13 — 16 of 18. Remaining:
 - Bulk motion comments (#2) — perf-only, changes UX (bulk-prefetch vs.
   today's fetch-on-expand); not attempted, needs a product call on the
   tradeoff, not just a code change.
-- Voting window adjustment (#15) — blocked on a backend schema change
-  (`closeAt` isn't patchable server-side today), not just a frontend gap.
 
 **2026-09-08, correction on method:** #10 was fixed by using
 `../tahti-org`'s explicit "user has authorized cross-repo edits for

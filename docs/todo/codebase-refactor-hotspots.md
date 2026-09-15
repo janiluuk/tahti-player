@@ -19,7 +19,7 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
 | ~~P0~~ | ~~`packages/tahti-web/src/api/client.ts`~~ | ~~~3000~~ **~1419** | Public/listener API kitchen sink: directory, channel, track, chat, support, feature requests, transparency, venues, collections, follow, newsletter (~54 functions left, no single dominant domain). | **Original named-module split done 2026-09-12:** `client-request.ts`/`client-auth.ts`, `listen.ts`, `radio-public.ts`, `governance-member.ts`, `membership.ts`, `embeds.ts` all peeled — the exact list this row originally suggested. Remaining domains are smaller/mixed with no obvious next seam; demote off the P0 hotspot list, revisit only if one grows or a merge-conflict pain point shows up. |
 | ~~P1~~ | ~~`packages/tahti-web/src/views/settings/SettingsPanels.tsx`~~ | ~~~2440~~ **done 2026-09-12, now ~110** | Many settings surfaces in one file (Account, Artist, Channel, Broadcast, Notifications, Themes, storage, privacy). | One panel per file under `views/settings/panels/`; `SettingsSectionBody` stays the switch/router. |
 | P1 | `packages/tahti-web/src/components/ChannelDesigner.tsx` | ~1988 (was ~2103) | Designer god component (visualizer / color / header / look sections) tightly coupled to Channel + Artist editors. **2026-09-15:** first slice done (4 low-coupling JSX chunks extracted, see item 12 below) — remaining body still tightly closure-coupled. | Extract section editors + snapshot helpers; keep `forwardRef` façade. Coordinate with open designer todos (`channel-designer-*`) — split structure first, product fold later. |
-| P1 | `packages/tahti-web/src/views/ChannelView.tsx` + `ArtistView.tsx` | ~1750 + ~1500 (was ~1754) | Parallel public entity pages sharing designer, visualizer, disco widgets, social header patterns; each still owns full layout/data orchestration. **2026-09-15:** `ArtistView.tsx`'s Releases/Collections tab bodies, then its Music tab body, all extracted (see item 13) — off this row's remaining scope. `ChannelView.tsx`: hooks-order bug fixed (PR #94), then its 11 small `renderBlock` cases extracted to `ChannelViewBlocks.tsx` (see items 14/17) — still open for `ChannelHeroBlock` + `useChannelLayoutEditing`. | ~~Extract shared hooks/sections~~ `ArtistView.tsx` done. `ChannelView.tsx`: blocks slice done; `ChannelHeroBlock` + `useChannelLayoutEditing` custom-hook extraction remain (bigger, riskier — see item 17). |
+| P1 | `packages/tahti-web/src/views/ChannelView.tsx` + `ArtistView.tsx` | ~1500 + ~1500 (was ~1754) | Parallel public entity pages sharing designer, visualizer, disco widgets, social header patterns; each still owns full layout/data orchestration. **2026-09-15:** `ArtistView.tsx`'s Releases/Collections tab bodies, then its Music tab body, all extracted (see item 13) — off this row's remaining scope. `ChannelView.tsx`: hooks-order bug fixed (PR #94), then its 11 small `renderBlock` cases extracted to `ChannelViewBlocks.tsx` (see items 14/17). **2026-09-16:** `ChannelHeroBlock` also extracted (see item 18) — still open for `useChannelLayoutEditing`. | ~~Extract shared hooks/sections~~ `ArtistView.tsx` done. `ChannelView.tsx`: blocks slice + `ChannelHeroBlock` done; `useChannelLayoutEditing` custom-hook extraction remains (bigger, riskier — see item 17). |
 | ~~P2~~ | ~~`packages/tahti-web/src/api/studio.ts`~~ | ~~~1897~~ **barrel only** | Large but already partially split; still a frequent merge magnet. | **Done 2026-09-15:** peeled into `api/studio/studio-{sounds,releases,collections,upload,editor}.ts` + shared `studio-request.ts`/`studio-mock.ts`; `studio.ts` re-exports. Off the P2 list. |
 | ~~P2~~ | ~~`packages/tahti-web/src/router.tsx`~~ | ~~~1965~~ **382, assembly only** | Monolithic route tree (high fan-in). | **Done 2026-09-15:** peeled into `router/routes-*.tsx` by nav section (listen, settings, admin, library/misc, transparency, help, auth, governance, info, studio, embed) + `router/router-core.tsx` (shared parents) + `router/router-lazy-views.ts` (code-split registry); `router.tsx` now only imports every route const and does the `addChildren` tree assembly + `createRouter`. Off the P2 list. |
 | P2 | `packages/tahti-web/src/content/mapScreens.ts` | ~2256 | Data atlas, not runtime logic — bloated but low change risk. | Optional: split by surface under `content/map/`; only if editing pain appears. |
@@ -319,14 +319,34 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
     `stagePlayer`, medium-large) and `useChannelLayoutEditing` (drag/drop +
     layout state, highest risk of the three ChannelView.tsx pieces) — see
     item 14's design notes for both.
+18. **`ChannelHeroBlock` extraction** — **2026-09-16:** the `hero` case
+    (backdrop card, player stage, nav-tab bar + quick-add chips) extracted
+    to `components/channel-view/ChannelHeroBlock.tsx`, joining
+    `ChannelViewBlocks.tsx` under the same barrel. Pure JSX+props: no
+    state/effect migration. `stagePlayer` is passed in as a ready-built
+    `ReactNode` rather than reconstructed inside the new component, since
+    `ChannelView.tsx` renders that same node a second time as the
+    fixed-fallback next to `EntitySocialHeader` when the hero block is
+    hidden (`data-testid="channel-stage-player-fixed"`) — extracting the
+    builder itself would have meant either duplicating it or a bigger
+    refactor than this slice intended. `ChannelView.tsx`'s `renderBlock`
+    now only inline-cases `hero` to assemble+pass the props object.
+    Verified: `tsc --noEmit` / `eslint` clean, full unit suite (516/516,
+    only the pre-existing unrelated Playwright-vs-vitest config failures
+    for `e2e/*.spec.ts` when run outside `--exclude 'e2e/**'`), `vite
+    build` succeeds; live-browser verified against the `dj-moonlight` mock
+    channel (backdrop, avatar, bio, player stage all render; edit-mode
+    query param produces no console errors for a non-owner viewer).
+    Remaining: `useChannelLayoutEditing` (drag/drop + layout state) — see
+    item 14's design notes.
 
 Next: the remaining `ChannelDesigner.tsx` body (item 12) and
-`ChannelView.tsx`'s `ChannelHeroBlock`/`useChannelLayoutEditing` pieces
-(item 17) — each needs either prop-threading 15-30+ closure variables or a
-shared custom hook, bigger/riskier slices than the mechanical `studio.ts`/
-`router.tsx`/`ChannelViewBlocks.tsx` peels above. Admin activity-feed/
-audit-topic and container-logs sections remain in `admin.ts`
-intentionally — revisit once confirmed quiet.
+`ChannelView.tsx`'s `useChannelLayoutEditing` piece (item 14) — each needs
+either prop-threading 15-30+ closure variables or a shared custom hook,
+bigger/riskier slices than the mechanical `studio.ts`/`router.tsx`/
+`ChannelViewBlocks.tsx`/`ChannelHeroBlock.tsx` peels above. Admin
+activity-feed/audit-topic and container-logs sections remain in
+`admin.ts` intentionally — revisit once confirmed quiet.
 
 ## Related open leaves (do not duplicate)
 

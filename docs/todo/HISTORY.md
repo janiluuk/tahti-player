@@ -27,6 +27,24 @@ present / "Delete" absent in the new preview. Full `tahti-web` vitest
 suite: 517/517 (the 13 "failures" vitest reports are pre-existing
 Playwright e2e specs it isn't configured to run, unrelated).
 `tsc --noEmit`/`eslint` clean.
+## 2026-09-15 — governance-gap-list.md #15: voting window adjustment shipped
+
+User decision: scope and build the backend support the gap list's #15
+needed (board patching a draft motion's `closeAt`), since `PatchMotionSchema`
+in `../tahti-org` never had a `closeAt` field at all — "voting window
+adjustment" was previously blocked on real backend work, not a frontend
+gap. Backend (`../tahti-org`): added `closeAt: z.coerce.date().optional()`
+to `PatchMotionSchema`, and the `PATCH /api/v1/governance/motions/:id`
+handler now accepts it under the same DRAFT-only gate as title/description
+(motion.state must be `DRAFT`), validating `closeAt > openAt` the same way
+motion creation does. `openAt` stays fixed (not patchable — a draft hasn't
+opened, so there's nothing to reschedule the start of). 4 new test cases
+in `motions.test.ts` (draft patch succeeds, invalid `closeAt` 400s, blocked
+once OPEN with 409) — 11/11 green. Frontend: `MotionCard.tsx`'s existing
+"Edit motion" form (board + DRAFT only) gained a "Voting closes"
+`datetime-local` field alongside title/description, sent through
+`patchGovernanceMotion`'s extended `closeAt` param. `eslint`/`tsc --noEmit`
+clean on both repos.
 ## 2026-09-15 — ChannelView.tsx rules-of-hooks fix (found during the mega-file refactor design pass)
 
 Found incidentally while designing the ChannelDesigner/ArtistView/ChannelView
