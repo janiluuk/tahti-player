@@ -85,7 +85,7 @@ on `document.visibilitychange`.
 | `api/studio.ts` | ~5 (barrel) | **Done 2026-09-15** — peeled into `api/studio/studio-{sounds,releases,collections,upload,editor}.ts` + shared `studio-request.ts`/`studio-mock.ts`, matching the source file's own section boundaries (not literally "tracks, releases, collections, schedule" as originally guessed here — see `codebase-refactor-hotspots.md` item 15) |
 | `router.tsx` | 382 (assembly only) | **Done 2026-09-15** — peeled into `router/routes-*.tsx` by nav section (listen/settings/admin/library/transparency/help/auth/governance/info/studio/embed) + `router/router-core.tsx` + `router/router-lazy-views.ts`; see `codebase-refactor-hotspots.md` item 16 |
 | `ArtistView.tsx` | ~1500 | **Done 2026-09-15** — Releases/Collections tab bodies extracted, then the "Music" tab body too (turned out to be a pure JSX+props extraction, not closure-coupled state — see `codebase-refactor-hotspots.md` item 13); all three tab components moved into `components/artist-view/` |
-| `ChannelView.tsx` | ~1904 | **Investigated 2026-09-15, left untouched** — its natural componentizable pieces (visualizer, backdrop, layers menu, editors, playlist blocks) were already extracted in earlier work; what's left is one closure-coupled orchestrator with no comparable low-coupling chunk and no test coverage, see `codebase-refactor-hotspots.md` item 14 |
+| `ChannelView.tsx` | ~1750 | **Partial 2026-09-15** — hooks-order bug fixed (PR #94), then the 11 small `renderBlock` cases (everything but `hero`) extracted to `components/channel-view/ChannelViewBlocks.tsx`; `hero`/`stagePlayer`/the layout-editing state remain the tightly closure-coupled part, see `codebase-refactor-hotspots.md` items 14 and 17 |
 
 ---
 
@@ -120,8 +120,19 @@ extracted too — a design investigation found it was pure JSX+props (no
 internal state/effects), unlike `ChannelDesigner.tsx`'s/`ChannelView.tsx`'s
 remaining bodies. `ArtistView.tsx` is now off this backlog; also moved
 all three Artist tab components into `components/artist-view/`.
+**2026-09-15 (later same day):** a follow-up design investigation into
+`ChannelDesigner.tsx`/`ArtistView.tsx`'s (then-open) remaining bodies plus
+`ChannelView.tsx` found `ChannelView.tsx`'s `renderBlock` coupling was
+uneven — `hero` alone is the 50+-variable closure, the other 11 cases are
+small (2-6 vars each). Extracted those 11 to
+`components/channel-view/ChannelViewBlocks.tsx` (+ barrel), matching the
+`components/channel-designer/`/`components/artist-view/` subfolder
+convention; also fixed a real rules-of-hooks bug found during the
+investigation (3 hooks called after a conditional early return — PR #94,
+landed before this extraction). See `codebase-refactor-hotspots.md`
+item 17.
 Still open in Phase 4: `ChannelDesigner.tsx`'s remaining body,
-`ChannelView.tsx`.
+`ChannelView.tsx`'s `ChannelHeroBlock` + `useChannelLayoutEditing` pieces.
 
 ## Execution order
 
