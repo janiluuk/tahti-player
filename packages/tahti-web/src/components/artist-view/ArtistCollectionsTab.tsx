@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
 
-import type { PublicProfileCollection } from '../api/types';
+import type { PublicProfileCollection } from '../../api/types';
 
 type Props = {
   collections: PublicProfileCollection[];

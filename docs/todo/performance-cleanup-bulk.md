@@ -84,8 +84,8 @@ on `document.visibilitychange`.
 | `ChannelDesigner.tsx` | ~1988 | **Partial 2026-09-15** — 4 low-coupling JSX chunks extracted (toolbar, saved-looks row, applied-preset banner, static preview section); remaining body still tightly closure-coupled, see `codebase-refactor-hotspots.md` item 12 |
 | `api/studio.ts` | ~5 (barrel) | **Done 2026-09-15** — peeled into `api/studio/studio-{sounds,releases,collections,upload,editor}.ts` + shared `studio-request.ts`/`studio-mock.ts`, matching the source file's own section boundaries (not literally "tracks, releases, collections, schedule" as originally guessed here — see `codebase-refactor-hotspots.md` item 15) |
 | `router.tsx` | 382 (assembly only) | **Done 2026-09-15** — peeled into `router/routes-*.tsx` by nav section (listen/settings/admin/library/transparency/help/auth/governance/info/studio/embed) + `router/router-core.tsx` + `router/router-lazy-views.ts`; see `codebase-refactor-hotspots.md` item 16 |
-| `ArtistView.tsx` | ~1696 | **Partial 2026-09-15** — Releases/Collections tab bodies extracted; "Music" tab body still closure-coupled (30+ locals), see `codebase-refactor-hotspots.md` item 13 |
-| `ChannelView.tsx` | ~1835 | **Investigated 2026-09-15, left untouched** — its natural componentizable pieces (visualizer, backdrop, layers menu, editors, playlist blocks) were already extracted in earlier work; what's left is one closure-coupled orchestrator with no comparable low-coupling chunk and no test coverage, see `codebase-refactor-hotspots.md` item 14 |
+| `ArtistView.tsx` | ~1500 | **Done 2026-09-15** — Releases/Collections tab bodies extracted, then the "Music" tab body too (turned out to be a pure JSX+props extraction, not closure-coupled state — see `codebase-refactor-hotspots.md` item 13); all three tab components moved into `components/artist-view/` |
+| `ChannelView.tsx` | ~1904 | **Investigated 2026-09-15, left untouched** — its natural componentizable pieces (visualizer, backdrop, layers menu, editors, playlist blocks) were already extracted in earlier work; what's left is one closure-coupled orchestrator with no comparable low-coupling chunk and no test coverage, see `codebase-refactor-hotspots.md` item 14 |
 
 ---
 
@@ -115,8 +115,13 @@ day):** `api/studio.ts` and `router.tsx` both fully split (mechanical,
 no behavior change — see `codebase-refactor-hotspots.md` items 15-16);
 off this backlog. `ChannelView.tsx` investigated and left untouched —
 see item 14 (no low-coupling chunk left to extract, no test coverage).
+**2026-09-15 (later same day):** `ArtistView.tsx`'s "Music" tab body
+extracted too — a design investigation found it was pure JSX+props (no
+internal state/effects), unlike `ChannelDesigner.tsx`'s/`ChannelView.tsx`'s
+remaining bodies. `ArtistView.tsx` is now off this backlog; also moved
+all three Artist tab components into `components/artist-view/`.
 Still open in Phase 4: `ChannelDesigner.tsx`'s remaining body,
-`ArtistView.tsx`'s "Music" tab, `ChannelView.tsx`.
+`ChannelView.tsx`.
 
 ## Execution order
 

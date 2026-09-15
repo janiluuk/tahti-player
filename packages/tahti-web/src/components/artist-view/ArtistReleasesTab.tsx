@@ -2,8 +2,8 @@ import { Link } from '@tanstack/react-router';
 
 import { Card, CardGrid } from '@tahti-player/ui';
 
-import type { PublicProfileRelease } from '../api/types';
-import { placeholderArtworkUrl } from '../lib/placeholderArt';
+import type { PublicProfileRelease } from '../../api/types';
+import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 
 type Props = {
   releases: PublicProfileRelease[];
