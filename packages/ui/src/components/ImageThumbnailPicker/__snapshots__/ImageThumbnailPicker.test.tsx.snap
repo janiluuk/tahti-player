@@ -1,0 +1,75 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ImageThumbnailPicker > (Snapshot) renders grid layout with labels 1`] = `
+<div
+  class="grid gap-3 sm:grid-cols-4 lg:grid-cols-8"
+  data-testid="image-thumbnail-picker"
+>
+  <button
+    aria-label="Hero"
+    aria-pressed="true"
+    class="border-border overflow-hidden rounded-lg border text-left ring-primary ring-2"
+    type="button"
+  >
+    <img
+      alt=""
+      class="aspect-square w-full"
+      src="https://example.com/hero.png"
+    />
+    <span
+      class="block px-2 py-1 text-xs"
+    >
+      Hero
+    </span>
+  </button>
+  <button
+    aria-label="Square"
+    aria-pressed="false"
+    class="border-border overflow-hidden rounded-lg border text-left"
+    type="button"
+  >
+    <img
+      alt=""
+      class="aspect-square w-full"
+      src="https://example.com/square.png"
+    />
+    <span
+      class="block px-2 py-1 text-xs"
+    >
+      Square
+    </span>
+  </button>
+</div>
+`;
+
+exports[`ImageThumbnailPicker > (Snapshot) renders inline layout without labels 1`] = `
+<div
+  class="flex flex-wrap gap-2"
+  data-testid="image-thumbnail-picker"
+>
+  <button
+    aria-label="Hero"
+    aria-pressed="true"
+    class="size-12 overflow-hidden rounded-md border border-primary ring-primary ring-2"
+    type="button"
+  >
+    <img
+      alt=""
+      class="h-full w-full object-cover"
+      src="https://example.com/hero.png"
+    />
+  </button>
+  <button
+    aria-label="Square"
+    aria-pressed="false"
+    class="size-12 overflow-hidden rounded-md border border-border"
+    type="button"
+  >
+    <img
+      alt=""
+      class="h-full w-full object-cover"
+      src="https://example.com/square.png"
+    />
+  </button>
+</div>
+`;
