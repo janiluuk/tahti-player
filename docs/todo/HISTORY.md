@@ -2,6 +2,52 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-15 — hearthis.at import never worked for any playlist (root cause: missing install call)
+
+User report (not from a todo file): "the hearthis.at import does not work,
+whatever the playlist, it will not import them. also downloading the file
+from hearthis.at doesn't seem to work properly."
+
+Root cause found by reading the full path, not guessed: `ServiceCategory.tsx`'s
+`HearthisCard` has always treated "artist saved a hearthis.at handle" as
+"plugin installed" (`usePluginInstallStore.setInstalled(plugin.id,
+Boolean(handle))`), but `../tahti-org`'s `POST /api/v1/imports/hearthis/add`
+(the actual import call, `apps/api/src/routes/imports/hearthis.ts`) requires
+a real `hearthis-import` `IntegrationCredential` row
+(`getUserIntegrationCredential`) — and nothing in the frontend ever called
+`POST /api/me/integrations/hearthis-import/install` to create one. Every
+single import attempt — any track, any set, any playlist — has always 400'd
+with "Install the hearthis.at import plugin first", regardless of which
+playlist was picked. `hearthis-import`'s provider entry
+(`packages/shared/src/integration-providers.ts`) has `fields: []` (public
+API, no real credential needed), so the install call is a no-op upsert, not
+a missing secret.
+
+Verified the rest of the pipeline is sound before concluding this was the
+whole story: `fetchHearthisCollectionTracks`/`getTrackByUrl`
+(`@tahti/hearthis`) resolve real playlist and track data correctly (checked
+live against `api-v2.hearthis.at` for a real user/playlist/track), and the
+worker's download step (`hearthis-embed-localize` job,
+`processHearthisEmbedLocalizationJob`) successfully downloads a real
+`download_url` (verified via `curl -L`, following hearthis.app →
+hearthis.at → stream81.hearthis.at, ending in a 200 with
+`Access-Control-Allow-Origin: *` and the real audio file) — so "downloading
+doesn't work" is very likely the same root cause: since import always
+400'd, the localization job was never enqueued in the first place, nothing
+ever got the chance to download.
+
+Fix: `HearthisCard`'s existing `handle`-driven effect (already the natural
+"is hearthis.at set up" trigger) now also calls
+`installMeIntegration('hearthis-import', {})` whenever `handle` is truthy —
+idempotent, so it also repairs accounts that saved their handle before this
+fix shipped. `eslint`/`tsc --noEmit` clean. Not covered by an automated
+test — `ServiceCategory.tsx`'s `HearthisCard` has no existing test
+scaffolding to extend cheaply (auth/player/plugin-install stores, profile
+fetch, source adapters, studio collections all need mocking) and the fix
+itself is a single conditional call to an already-tested API function
+(`installMeIntegration`, `api/integrations.test.ts`); verified by tracing
+the full request path and the real hearthis.at API instead.
+
 ## 2026-09-15 — Restyled /governance (member-facing) with real components + color
 
 Was queued in WORKPLAN.md's "Next" since 2026-09-08. `GovernanceView.tsx`
