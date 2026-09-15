@@ -2,6 +2,26 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-15 — Player extracted from the hero block into a fixed Stage
+
+`channelview-move-player-to-stage.md` — done. Decision (user, 2026-09-15):
+Stage is player-only and minimal — fixed above/below the tab row; the
+backdrop keeps all its existing header content (title, bio, CTA, avatar)
+unchanged. Investigated `ChannelView.tsx`'s `renderBlock`/`visibleItems.map`
+block system first: the player (`stagePlayer`) was previously computed and
+rendered only inside the `'hero'` case, so hiding the "Live stage" block from
+the page layout removed the play control entirely — there was no way to
+play the channel at all. Fixed by hoisting `stagePlayer` to component scope
+(computed once, not per block) and rendering it unconditionally: the
+existing hero-visible path is untouched (same JSX position, same
+`data-testid="channel-stage-player"`, zero visual change for the common
+case), and a new always-mounted fallback (`data-testid=
+"channel-stage-player-fixed"`) renders the same player next to the existing
+`!heroVisible` `EntitySocialHeader` identity fallback, above the nav-tab
+content. Backdrop rendering (`ChannelBackdropCard` in the hero case,
+`EntitySocialHeader` in the fallback) was not touched. `eslint` and
+`tsc --noEmit` clean on the changed file; no existing tests reference either
+`data-testid`.
 ## 2026-09-15 — hearthis.at import never worked for any playlist (root cause: missing install call)
 
 User report (not from a todo file): "the hearthis.at import does not work,
