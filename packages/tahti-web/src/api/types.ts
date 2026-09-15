@@ -51,6 +51,14 @@ export type ChannelNowPlaying = {
 export type PublicChannel = {
   slug: string;
   state: 'LIVE' | 'OFFLINE' | string;
+  /** ARTIST (default) or RADIO — a radio-station page hides bio/links/
+   * subscribe CTA and shows programming instead. Only ever RADIO on
+   * system-owned rows like tahti-radio today. */
+  channelKind?: 'ARTIST' | 'RADIO';
+  /** LISTENER-002: optional next scheduled broadcast, shown on the
+   * programming block for RADIO channels. */
+  nextBroadcastAt?: string | null;
+  nextBroadcastNote?: string | null;
   hlsUrl: string | null;
   /** True only when there's a real ingest signal on the live mount right
    * now — `state === 'LIVE'` alone doesn't distinguish an actual human
