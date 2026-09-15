@@ -31,6 +31,7 @@ import {
   linkSpotifyArtistProfile,
   unlinkSpotifyArtistProfile,
 } from '../../api/distribution';
+import { installMeIntegration } from '../../api/integrations';
 import {
   playableFromHearthis,
   type BandcampAlbum,
@@ -771,6 +772,19 @@ function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
 
   useEffect(() => {
     usePluginInstallStore.getState().setInstalled(plugin.id, Boolean(handle));
+    // The frontend has always treated "has a saved hearthis.at handle" as
+    // "plugin installed", but /api/v1/imports/hearthis/add requires an
+    // actual hearthis-import IntegrationCredential row — nothing ever
+    // created one, so every import (any playlist, any track) 400'd with
+    // "Install the hearthis.at import plugin first". hearthis-import has
+    // no real fields (public API, no key needed — see
+    // packages/shared/src/integration-providers.ts), so this is just an
+    // idempotent upsert to bring the backend row in line with what the UI
+    // already implied was true. Also covers accounts that saved their
+    // handle before this fix shipped.
+    if (handle) {
+      void installMeIntegration('hearthis-import', {});
+    }
   }, [plugin.id, handle]);
 
   const loadLibrary = () => {
