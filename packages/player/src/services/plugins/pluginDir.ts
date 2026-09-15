@@ -74,14 +74,21 @@ export const installPluginToManagedDir = async (
   return absoluteDestination;
 };
 
+const isPathWithinDir = (path: string, dir: string): boolean =>
+  path === dir || path.startsWith(`${dir}/`) || path.startsWith(`${dir}\\`);
+
 const resolveRelativeManagedPath = async (
   absolutePath: string,
 ): Promise<string | undefined> => {
   const normalizedPath = await normalize(absolutePath);
-  const normalizedBase = await normalize(await appDataDir());
-  if (!normalizedPath.startsWith(normalizedBase)) {
+  // Scoped to the plugins dir specifically (not just anywhere under
+  // appData) — this guards a delete call, so a same-prefix sibling like
+  // "plugins-evil" must not pass as "within plugins".
+  const normalizedPluginsDir = await normalize(await getPluginsDir());
+  if (!isPathWithinDir(normalizedPath, normalizedPluginsDir)) {
     return undefined;
   }
+  const normalizedBase = await normalize(await appDataDir());
   const trimmed = normalizedPath
     .slice(normalizedBase.length)
     .replace(/^[/\\]/, '');

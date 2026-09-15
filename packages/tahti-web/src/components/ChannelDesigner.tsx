@@ -1,13 +1,9 @@
 import { Link } from '@tanstack/react-router';
 import {
-  BookmarkPlusIcon,
-  ChevronDownIcon,
   GripVerticalIcon,
   ImageIcon,
   PlusIcon,
-  RotateCcwIcon,
   Trash2Icon,
-  Undo2Icon,
 } from 'lucide-react';
 import {
   forwardRef,
@@ -27,7 +23,6 @@ import {
   Dialog,
   FilePicker,
   Input,
-  Popover,
   SaveButton,
   Select,
   Slider,
@@ -99,13 +94,17 @@ import {
 import { useLayoutStore } from '../stores/layoutStore';
 import { useRightRailOverrideStore } from '../stores/rightRailOverrideStore';
 import {
+  AppliedPresetBanner,
   BackdropPanel,
+  DesignerToolbar,
   LAYOUT_ONLY_LOOK_IDS,
   LayoutOnlyLookHint,
   PlayerOverlayControls,
   PlayerPanel,
   PlayerVisualizerControls,
+  PreviewTracksPlaceholder,
   resolveHeaderDesignMode,
+  SavedLooksRow,
   VideoOrImageField,
   type HeaderDesignMode,
   type PlayerDesignTab,
@@ -1563,106 +1562,29 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
     return (
       <>
         <div className={`flex flex-col gap-4 ${compact ? '' : 'w-full'}`}>
-          <div className="flex flex-wrap items-center justify-end gap-3">
-            <Popover
-              anchor="bottom end"
-              trigger={
-                <Button
-                  type="button"
-                  variant="secondary"
-                  aria-label="More options"
-                  className="gap-1.5"
-                >
-                  …
-                  <ChevronDownIcon size={16} className="opacity-70" />
-                </Button>
-              }
-            >
-              <Popover.Menu>
-                <Popover.Item
-                  icon={<BookmarkPlusIcon size={16} />}
-                  onClick={openSavePresetModal}
-                >
-                  Save preset
-                </Popover.Item>
-                <Popover.Item
-                  icon={<RotateCcwIcon size={16} />}
-                  disabled={!dirty}
-                  onClick={() => setResetConfirmOpen(true)}
-                >
-                  Reset
-                </Popover.Item>
-              </Popover.Menu>
-            </Popover>
-            {previousSave ? (
-              <Tooltip content="Restore previous save" side="top">
-                <Button
-                  size="icon-sm"
-                  variant="secondary"
-                  aria-label="Restore previous save"
-                  onClick={restorePreviousSave}
-                >
-                  <Undo2Icon size={15} aria-hidden />
-                </Button>
-              </Tooltip>
-            ) : null}
-            {saveButton}
-            {openChannelLink}
-          </div>
+          <DesignerToolbar
+            dirty={dirty}
+            hasPreviousSave={previousSave != null}
+            onOpenSavePresetModal={openSavePresetModal}
+            onRequestReset={() => setResetConfirmOpen(true)}
+            onRestorePreviousSave={restorePreviousSave}
+            saveButton={saveButton}
+            openChannelLink={openChannelLink}
+          />
 
-          {presets.length > 0 && (
-            <div className="border-border bg-background-secondary/30 flex flex-wrap items-center gap-2 rounded-lg border p-3">
-              <span className="text-foreground-secondary text-xs font-semibold tracking-wide uppercase">
-                Saved looks
-              </span>
-              {presets.map((preset) => (
-                <div
-                  key={preset.id}
-                  className="border-border bg-background flex items-center gap-1 rounded-full border py-1 pr-1 pl-3 text-sm"
-                >
-                  <button
-                    type="button"
-                    className="hover:text-primary font-semibold"
-                    disabled={presetBusy}
-                    onClick={() => applyPreset(preset)}
-                  >
-                    {preset.name}
-                  </button>
-                  <Tooltip content="Delete preset">
-                    <button
-                      type="button"
-                      aria-label={`Delete "${preset.name}"`}
-                      className="text-foreground-secondary hover:text-accent-red rounded-full p-1.5"
-                      disabled={presetBusy}
-                      onClick={() => setDeletePresetTarget(preset)}
-                    >
-                      <Trash2Icon size={14} />
-                    </button>
-                  </Tooltip>
-                </div>
-              ))}
-            </div>
-          )}
+          <SavedLooksRow
+            presets={presets}
+            presetBusy={presetBusy}
+            onApply={applyPreset}
+            onRequestDelete={setDeletePresetTarget}
+          />
 
           {appliedPresetName && (
-            <div className="border-primary/40 bg-primary/10 flex flex-wrap items-center justify-between gap-3 rounded-lg border px-4 py-3 text-sm">
-              <span>
-                Applied <strong>&ldquo;{appliedPresetName}&rdquo;</strong>. Keep
-                this look, or revert to what was last saved?
-              </span>
-              <div className="flex items-center gap-2">
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  onClick={revertAppliedPreset}
-                >
-                  Revert
-                </Button>
-                <Button size="sm" onClick={keepAppliedPreset}>
-                  Keep
-                </Button>
-              </div>
-            </div>
+            <AppliedPresetBanner
+              presetName={appliedPresetName}
+              onRevert={revertAppliedPreset}
+              onKeep={keepAppliedPreset}
+            />
           )}
 
           <div
@@ -1801,44 +1723,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
                 <span className="text-foreground-secondary pb-2">About</span>
               </nav>
 
-              <div className="flex flex-col gap-5 p-4 sm:p-6">
-                <section>
-                  <div className="mb-3 flex items-center justify-between">
-                    <h3 className="text-lg font-bold">Tracks</h3>
-                  </div>
-                  <div className="border-border divide-border divide-y overflow-hidden rounded-lg border">
-                    {['Latest release', 'Live session', 'Featured track'].map(
-                      (title, index) => (
-                        <div
-                          key={title}
-                          className="flex items-center gap-3 px-3 py-3"
-                        >
-                          <span className="bg-primary/15 text-primary flex size-8 shrink-0 items-center justify-center rounded-md text-xs font-bold">
-                            {index + 1}
-                          </span>
-                          <div className="min-w-0 flex-1">
-                            <div className="truncate text-sm font-semibold">
-                              {title}
-                            </div>
-                            <div className="text-foreground-secondary text-xs">
-                              {displayName}
-                            </div>
-                          </div>
-                          <span className="text-foreground-secondary text-xs">
-                            Preview
-                          </span>
-                        </div>
-                      ),
-                    )}
-                  </div>
-                </section>
-                <section className="border-border rounded-lg border p-4">
-                  <h3 className="text-sm font-bold">About {displayName}</h3>
-                  <p className="text-foreground-secondary mt-1 line-clamp-2 text-sm">
-                    {bio || 'Your artist bio will appear here for visitors.'}
-                  </p>
-                </section>
-              </div>
+              <PreviewTracksPlaceholder displayName={displayName} bio={bio} />
             </main>
 
             {!dockControlsInRail ? (

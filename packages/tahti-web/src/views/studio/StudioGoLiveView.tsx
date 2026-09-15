@@ -9,6 +9,7 @@ import {
   HeadphonesIcon,
   ListMusicIcon,
   PlusIcon,
+  PowerIcon,
   RadioIcon,
   Trash2Icon,
   VideoIcon,
@@ -685,6 +686,11 @@ export function StudioGoLiveView() {
                                   });
                                 }}
                               >
+                                <PowerIcon
+                                  size={14}
+                                  aria-hidden
+                                  className="mr-1.5"
+                                />
                                 {target.enabled ? 'Disable' : 'Enable'}
                               </Button>
                               <Tooltip content="Remove destination" side="top">

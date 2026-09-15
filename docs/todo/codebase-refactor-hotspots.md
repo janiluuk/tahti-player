@@ -18,10 +18,10 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
 | P0 | `packages/tahti-web/src/components/PluginStorePanel.tsx` | ~3560 | Mega-panel: themes, visualizers, Spotify/OAuth/Hearthis, DSP, multicast, audio plugins, tools, radio browser, discovery, channel categories in one file. | Extract category components under `components/plugin-store/` (`ThemesCategory`, `ServiceCategory` + service cards, `RadioCategory`, …). Keep `PluginStorePanel` as thin shell + tab routing. Align with existing `plugin-registry-extraction` leaf where contracts touch player. |
 | ~~P0~~ | ~~`packages/tahti-web/src/api/client.ts`~~ | ~~~3000~~ **~1419** | Public/listener API kitchen sink: directory, channel, track, chat, support, feature requests, transparency, venues, collections, follow, newsletter (~54 functions left, no single dominant domain). | **Original named-module split done 2026-09-12:** `client-request.ts`/`client-auth.ts`, `listen.ts`, `radio-public.ts`, `governance-member.ts`, `membership.ts`, `embeds.ts` all peeled — the exact list this row originally suggested. Remaining domains are smaller/mixed with no obvious next seam; demote off the P0 hotspot list, revisit only if one grows or a merge-conflict pain point shows up. |
 | ~~P1~~ | ~~`packages/tahti-web/src/views/settings/SettingsPanels.tsx`~~ | ~~~2440~~ **done 2026-09-12, now ~110** | Many settings surfaces in one file (Account, Artist, Channel, Broadcast, Notifications, Themes, storage, privacy). | One panel per file under `views/settings/panels/`; `SettingsSectionBody` stays the switch/router. |
-| P1 | `packages/tahti-web/src/components/ChannelDesigner.tsx` | ~2050 | Designer god component (visualizer / color / header / look sections) tightly coupled to Channel + Artist editors. | Extract section editors + snapshot helpers; keep `forwardRef` façade. Coordinate with open designer todos (`channel-designer-*`) — split structure first, product fold later. |
-| P1 | `packages/tahti-web/src/views/ChannelView.tsx` + `ArtistView.tsx` | ~1790 + ~1760 | Parallel public entity pages sharing designer, visualizer, disco widgets, social header patterns; each still owns full layout/data orchestration. | Extract shared hooks/sections (`usePublicChannelLook`, backdrop/visualizer chrome, disco widget block) before merging views. Do not force one route. |
-| P2 | `packages/tahti-web/src/api/studio.ts` (+ `studio-extras.ts` ~1240) | ~1905 | Large but already partially split; still a frequent merge magnet. | Continue domain splits (releases, sounds, playlists, schedule) mirroring extras pattern; avoid expanding `studio.ts`. |
-| P2 | `packages/tahti-web/src/router.tsx` | ~1965 | Monolithic route tree (high fan-in). | Split route groups (`listenRoutes`, `studioRoutes`, `adminRoutes`) composed into root; typed pieces stay as today. |
+| P1 | `packages/tahti-web/src/components/ChannelDesigner.tsx` | ~1988 (was ~2103) | Designer god component (visualizer / color / header / look sections) tightly coupled to Channel + Artist editors. **2026-09-15:** first slice done (4 low-coupling JSX chunks extracted, see item 12 below) — remaining body still tightly closure-coupled. | Extract section editors + snapshot helpers; keep `forwardRef` façade. Coordinate with open designer todos (`channel-designer-*`) — split structure first, product fold later. |
+| P1 | `packages/tahti-web/src/views/ChannelView.tsx` + `ArtistView.tsx` | ~1750 + ~1500 (was ~1754) | Parallel public entity pages sharing designer, visualizer, disco widgets, social header patterns; each still owns full layout/data orchestration. **2026-09-15:** `ArtistView.tsx`'s Releases/Collections tab bodies, then its Music tab body, all extracted (see item 13) — off this row's remaining scope. `ChannelView.tsx`: hooks-order bug fixed (PR #94), then its 11 small `renderBlock` cases extracted to `ChannelViewBlocks.tsx` (see items 14/17) — still open for `ChannelHeroBlock` + `useChannelLayoutEditing`. | ~~Extract shared hooks/sections~~ `ArtistView.tsx` done. `ChannelView.tsx`: blocks slice done; `ChannelHeroBlock` + `useChannelLayoutEditing` custom-hook extraction remain (bigger, riskier — see item 17). |
+| ~~P2~~ | ~~`packages/tahti-web/src/api/studio.ts`~~ | ~~~1897~~ **barrel only** | Large but already partially split; still a frequent merge magnet. | **Done 2026-09-15:** peeled into `api/studio/studio-{sounds,releases,collections,upload,editor}.ts` + shared `studio-request.ts`/`studio-mock.ts`; `studio.ts` re-exports. Off the P2 list. |
+| ~~P2~~ | ~~`packages/tahti-web/src/router.tsx`~~ | ~~~1965~~ **382, assembly only** | Monolithic route tree (high fan-in). | **Done 2026-09-15:** peeled into `router/routes-*.tsx` by nav section (listen, settings, admin, library/misc, transparency, help, auth, governance, info, studio, embed) + `router/router-core.tsx` (shared parents) + `router/router-lazy-views.ts` (code-split registry); `router.tsx` now only imports every route const and does the `addChildren` tree assembly + `createRouter`. Off the P2 list. |
 | P2 | `packages/tahti-web/src/content/mapScreens.ts` | ~2256 | Data atlas, not runtime logic — bloated but low change risk. | Optional: split by surface under `content/map/`; only if editing pain appears. |
 | P2 | Other 1k+ views/panels | ~1k–1.5k each | `StudioProEditorView`, `TrackEditDialog`, `StudioReleaseDetailView`, `StudioScheduleView`, `mock.ts`, `channel-design.ts`, `shows.ts`, `sources.ts`, `artist-settings.ts`, `TrackDetailView`, etc. | Split when the surface is actively worked; no proactive boil. |
 | P3 | `packages/tahti-web/src/stores/playerStore.ts` | ~408 | Cohesive playback store (queue, live flags, peaks, analyser). Moderate size; peaks recently extended. | Prefer extracting peaks cache / radio-resume helpers only if it grows further. **Defer while waveform peaks work is in flight.** |
@@ -198,10 +198,135 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
     note: activity-feed is flagged as in-flight elsewhere). `admin.ts`
     ~1595 → ~436 lines; off the P0 hotspot list. Verified: `tsc --noEmit` /
     `eslint` clean, full unit suite (516/516), `vite build` succeeds.
+12. **`ChannelDesigner.tsx` first slice** — **2026-09-15:** extracted 4
+    clearly self-contained JSX chunks into `components/channel-designer/`
+    (`DesignerToolbar`, `SavedLooksRow`, `AppliedPresetBanner`,
+    `PreviewTracksPlaceholder`), matching that folder's existing
+    `BackdropPanel`/`PlayerPanel` pattern. ~2103 → ~1988 lines. **Not**
+    done: the remaining ~1350-line body (state, effects, save/preset
+    logic, header/backdrop/visualizer control panels) is far more tightly
+    closure-coupled — each chunk there closes over 15+ local variables, so
+    safe extraction needs either heavy prop-threading or a context, and no
+    automated tests exist for this component to catch a regression
+    (confirmed via `find`). Left for a dedicated follow-up; still P1,
+    still "coordinate with open `channel-designer-*` product todos first."
+13. **`ArtistView.tsx` tab-body slice** — **2026-09-15:** the "Releases"
+    and "Collections" tab bodies (self-contained, small prop surface) were
+    extracted to `components/ArtistReleasesTab.tsx` /
+    `ArtistCollectionsTab.tsx`. ~1754 → ~1696 lines. **Not** done (at the
+    time): the "Music" tab body (~315 lines) closes over 30+ local
+    variables (look-visibility flags, player color scheme, now-playing
+    state, queue actions, favorites, dialogs) — same closure-coupling
+    problem as `ChannelDesigner.tsx`'s remaining body. **Done in a later
+    pass, same day:** a design investigation found this one was actually a
+    pure JSX+props extraction — the Music tab body owns no internal state/
+    effects of its own; everything it reads is either `ArtistView`
+    component state or `const`s derived just above the `return`. Extracted
+    to `ArtistMusicTab.tsx` (grouped props: `player`, `featured`,
+    `pinnedTiles`, `releaseTiles`, flat callbacks) — no state/effect
+    migration, `ArtistView.tsx` unchanged apart from the JSX swap + import
+    cleanup. Also moved all three Artist tab components (`ArtistMusicTab`,
+    `ArtistReleasesTab`, `ArtistCollectionsTab`) into a new
+    `components/artist-view/` subfolder with a barrel `index.ts`, matching
+    the existing `components/channel-designer/` convention — pure file
+    moves + relative-import-depth fixes, no content changes to the two
+    pre-existing files. Verified live in the browser signed in as the mock
+    owner: play/pause toggle, pinned-tile favorite, release tracklist
+    dialog, multi-track queue-confirm dialog, smart-link navigation, tab
+    switching (Music/Releases/Collections/Design), and the owner-only
+    Manage button (`StreamManagerPanel`) all confirmed working. Noticed,
+    not fixed (pre-existing, unrelated to this file): the catalog table's
+    edit-track button never renders here because `compactActions` hides
+    the *entire* actions column in the shared `TrackTable` (`showActions =
+    Boolean(display?.displayQueueControls)` in
+    `packages/ui/src/components/TrackTable/hooks/useColumns.tsx:40`), not
+    just queue controls as the prop name implies — traced, confirmed
+    identical before/after this extraction (same `compactActions`+`onEdit`
+    props passed both times), left alone as out of scope for a structural
+    move. `ChannelView.tsx` (the other half of this row) not attempted —
+    see item 14.
+14. **`ChannelView.tsx` investigated, left untouched** — **2026-09-15:**
+    unlike `ChannelDesigner.tsx`/`ArtistView.tsx`, this file's natural
+    componentizable pieces (visualizer, backdrop, layers menu, links/
+    navigation editors, playlist blocks, track tables) were already
+    extracted into separate files in earlier work — that's most of what
+    this row's own "Suggested direction" column names. What's left
+    (~1700 of ~1835 lines) is a single closure-coupled orchestrating
+    component: `renderBlock`'s cases each read 10-20+ local variables
+    (`editing`, `layout`, `selectedId`, `channel`, a dozen color/scheme
+    values, several setters), and the final render/editing-toolbar
+    section is no less coupled. No test or Storybook coverage exists for
+    this component to catch a regression (confirmed via `find`). Unlike
+    the other two files, no comparable low-coupling chunk was found here
+    to extract even partially — left for a dedicated follow-up (likely a
+    custom-hook extraction for the layout/editing state, which is a
+    bigger, riskier change than anything done so far in this leaf, not a
+    mechanical one).
+15. **`api/studio.ts` domain peel** — **2026-09-15:**
+    `api/studio/studio-{sounds,releases,collections,upload,editor}.ts`
+    (matching each of the source file's own `// ── Section ──` comment
+    boundaries) + shared `studio-request.ts` (the local `requestJson`
+    helper) and `studio-mock.ts` (`mockSoundStore`, mutated across 4 of
+    the 5 domain files). `studio.ts` re-exports via
+    `export * from './studio/studio-*'`; no call site's import path
+    changed (~20 importers). ~1897 → 5-line barrel. Verified:
+    `tsc --noEmit` / `eslint` clean, full unit suite (516/516).
+16. **`router.tsx` route-tree peel** — **2026-09-15:** all 172 routes'
+    `getParentRoute` referenced only `rootRoute`/`appLayoutRoute` (a flat
+    tree, no route-to-route parent chaining), which made a safe split
+    straightforward: `router/routes-*.tsx` by nav section (listen,
+    settings, admin, library/misc, transparency, help, auth, governance,
+    info/legal, studio, embed+aliases), `router/router-core.tsx` (the 2
+    shared parents), `router/router-lazy-views.ts` (the 54
+    `lazyRouteComponent()` code-split registrations, centralized so
+    section files import only what they use). `router.tsx` itself now
+    only imports every route const and does the `addChildren` assembly +
+    `createRouter` — byte-for-byte unchanged. Verified beyond
+    `tsc`/`eslint`/tests: diffed the full `path:` string set before/after
+    (172/172 identical) and diffed the `addChildren` tree-assembly block
+    itself (byte-identical); production build confirms every lazy view
+    still produces its own chunk. ~1965 → 382 lines.
 
-Next: `ChannelDesigner.tsx` (P1; coordinate with open `channel-designer-*`
-product todos first). Admin activity-feed/audit-topic and container-logs
-sections remain in `admin.ts` intentionally — revisit once confirmed quiet.
+17. **`ChannelView.tsx` low-risk blocks slice** — **2026-09-15 (later
+    pass):** a design investigation (following up on item 14's "no
+    comparable low-coupling chunk" finding) found the *per-case* coupling
+    inside `renderBlock` was actually very uneven — `hero` alone accounts
+    for the 50+-variable closure item 14 described, but the other 11 cases
+    (`sound`/`chat`/`navigation`/`about`/`links`/`programming`/`stats`/
+    `events`/`subscribe`/`embed`/`playlist`) are each small (2-6 free
+    variables), matching the same JSX-chunk style that worked for
+    `ChannelDesigner.tsx`'s first slice (item 12). Extracted those 11 into
+    `renderChannelBlock(item, ctx)` in a new
+    `components/channel-view/ChannelViewBlocks.tsx` (+ barrel `index.ts`),
+    matching the `components/channel-designer/`/`components/artist-view/`
+    subfolder convention — pure JSX-and-inputs extraction, no state/effect
+    migration, `hero`/the embedded `stagePlayer`/the bottom edit-mode
+    layers-menu section untouched. `ChannelView.tsx`'s `renderBlock` now
+    just special-cases `hero` inline and delegates everything else to
+    `renderChannelBlock`, preserving the original file's compile-time
+    exhaustiveness guard (adding a new block type without a matching case
+    still fails the build). Also folded in as its own prior commit (not
+    part of this slice): a real rules-of-hooks bug found during the item-14
+    investigation — 3 hooks called after a conditional early return, fixed
+    and merged as PR #94 before this extraction began. Verified: `tsc`/
+    `eslint` clean, full unit suite (516/516, only the pre-existing
+    unrelated `HistoryRow` flake), production build succeeds; live-browser
+    verified all 11 extracted blocks render correctly (both visible and
+    edit-mode hidden-state previews) on an ordinary artist channel, the
+    radio-channel-page's Programming block still renders correctly
+    post-extraction, and an edit→exit→re-enter toggle sequence produced
+    zero console errors. Remaining: `ChannelHeroBlock` (the `hero` case +
+    `stagePlayer`, medium-large) and `useChannelLayoutEditing` (drag/drop +
+    layout state, highest risk of the three ChannelView.tsx pieces) — see
+    item 14's design notes for both.
+
+Next: the remaining `ChannelDesigner.tsx` body (item 12) and
+`ChannelView.tsx`'s `ChannelHeroBlock`/`useChannelLayoutEditing` pieces
+(item 17) — each needs either prop-threading 15-30+ closure variables or a
+shared custom hook, bigger/riskier slices than the mechanical `studio.ts`/
+`router.tsx`/`ChannelViewBlocks.tsx` peels above. Admin activity-feed/
+audit-topic and container-logs sections remain in `admin.ts`
+intentionally — revisit once confirmed quiet.
 
 ## Related open leaves (do not duplicate)
 

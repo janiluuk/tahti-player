@@ -1,0 +1,61 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SelectableList > (Snapshot) renders a list of rows 1`] = `
+<ul
+  class="flex flex-col gap-1"
+  data-testid="selectable-list"
+  role="radiogroup"
+>
+  <li>
+    <button
+      aria-checked="true"
+      class="w-full rounded-lg border px-3 py-2.5 text-left transition-colors border-primary bg-primary/10"
+      role="radio"
+      type="button"
+    >
+      <span
+        class="flex items-center justify-between gap-2"
+      >
+        <span
+          class="truncate text-sm font-medium"
+        >
+          Ada Lovelace
+        </span>
+        <span
+          class="text-foreground-secondary shrink-0 text-[10px] font-semibold tracking-wide uppercase"
+        >
+          ADMIN
+        </span>
+      </span>
+      <span
+        class="text-foreground-secondary block truncate text-xs"
+      >
+        @ada
+      </span>
+    </button>
+  </li>
+  <li>
+    <button
+      aria-checked="false"
+      class="w-full rounded-lg border px-3 py-2.5 text-left transition-colors hover:border-border hover:bg-background-secondary border-transparent"
+      role="radio"
+      type="button"
+    >
+      <span
+        class="flex items-center justify-between gap-2"
+      >
+        <span
+          class="truncate text-sm font-medium"
+        >
+          Grace Hopper
+        </span>
+      </span>
+      <span
+        class="text-foreground-secondary block truncate text-xs"
+      >
+        @grace
+      </span>
+    </button>
+  </li>
+</ul>
+`;

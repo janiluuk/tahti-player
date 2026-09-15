@@ -464,6 +464,9 @@ export function mockChannel(slug: string): PublicChannel {
   return {
     slug,
     state: live ? 'LIVE' : 'OFFLINE',
+    channelKind: isRadio ? 'RADIO' : 'ARTIST',
+    nextBroadcastNote: isRadio ? 'Weekly shows, all week long' : null,
+    nextBroadcastAt: null,
     // Tahti Radio's "LIVE" is the always-on 24/7 rotation, not a real
     // broadcast -- mirrors the real backend's signalConnected contract
     // (an ingest signal, not just channel state) so mock mode exercises

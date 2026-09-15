@@ -23,9 +23,11 @@ import {
   Input,
   SaveButton,
   Select,
+  SelectableTiles,
   Tabs,
   Tooltip,
   ViewShell,
+  type SelectableTile,
 } from '@tahti-player/ui';
 
 import {
@@ -102,6 +104,38 @@ const CATALOG_METHODS = [
     icon: BookOpenIcon,
   },
 ] as const;
+
+const CATALOG_METHOD_TILES: SelectableTile[] = CATALOG_METHODS.map(
+  (method) => ({
+    id: method.id,
+    label: method.label,
+    description: method.description,
+    icon: <method.icon size={18} aria-hidden />,
+  }),
+);
+
+const GUIDE_TILES: SelectableTile[] = [
+  {
+    id: 'musicbrainz',
+    label: 'MusicBrainz',
+    icon: <Music2Icon size={28} aria-hidden />,
+  },
+  {
+    id: 'discogs',
+    label: 'Discogs',
+    icon: <Disc3Icon size={28} aria-hidden />,
+  },
+  {
+    id: 'upc',
+    label: 'UPC / EAN',
+    icon: <BarcodeIcon size={28} aria-hidden />,
+  },
+  {
+    id: 'automation',
+    label: 'Automation',
+    icon: <LinkIcon size={28} aria-hidden />,
+  },
+];
 
 const POST_RELEASE_CLAIM_LINKS = [
   {
@@ -209,9 +243,8 @@ function GuideDetail({
   linkLabel?: string;
 }) {
   return (
-    <div className="border-border bg-background-secondary/30 rounded-lg border p-4">
-      <h3 className="text-sm font-medium">{title}</h3>
-      <ol className="text-foreground-secondary mt-2 list-inside list-decimal space-y-1">
+    <StudioPanel title={title}>
+      <ol className="text-foreground-secondary list-inside list-decimal space-y-1">
         {steps.map((step) => (
           <li key={step}>{step}</li>
         ))}
@@ -227,7 +260,7 @@ function GuideDetail({
           <ExternalLinkIcon size={12} aria-hidden />
         </a>
       ) : null}
-    </div>
+    </StudioPanel>
   );
 }
 
@@ -404,40 +437,13 @@ function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
 
       <div>
         <p className="mb-2 text-xs font-medium">Catalog methods</p>
-        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-          {CATALOG_METHODS.map((method) => {
-            const Icon = method.icon;
-            const active = activeMethods.has(method.id);
-            return (
-              <button
-                key={method.id}
-                type="button"
-                aria-pressed={active}
-                onClick={() =>
-                  setActiveMethods((current) => {
-                    const next = new Set(current);
-                    if (next.has(method.id)) {
-                      next.delete(method.id);
-                    } else {
-                      next.add(method.id);
-                    }
-                    return next;
-                  })
-                }
-                className={`border-border flex items-center gap-2 rounded-md border p-2 text-left text-xs ${active ? 'bg-accent-blue/10 border-accent-blue' : 'opacity-70'}`}
-              >
-                <Icon size={18} aria-hidden />
-                <span className="min-w-0 flex-1">
-                  <span className="block font-medium">{method.label}</span>
-                  <span className="text-foreground-secondary block">
-                    {method.description}
-                  </span>
-                </span>
-                <span aria-hidden>{active ? '✓' : '○'}</span>
-              </button>
-            );
-          })}
-        </div>
+        <SelectableTiles
+          multiple
+          items={CATALOG_METHOD_TILES}
+          selected={[...activeMethods]}
+          onChange={(ids) => setActiveMethods(new Set(ids))}
+          className="text-xs sm:grid-cols-2 lg:grid-cols-4"
+        />
       </div>
 
       <div className="grid gap-2 sm:grid-cols-2">
@@ -783,27 +789,13 @@ function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
 
   const guidesTab = (
     <div className="flex flex-col gap-4 text-xs">
-      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-        {[
-          { id: 'musicbrainz', label: 'MusicBrainz', icon: Music2Icon },
-          { id: 'discogs', label: 'Discogs', icon: Disc3Icon },
-          { id: 'upc', label: 'UPC / EAN', icon: BarcodeIcon },
-          { id: 'automation', label: 'Automation', icon: LinkIcon },
-        ].map((guide) => {
-          const Icon = guide.icon;
-          return (
-            <button
-              key={guide.id}
-              type="button"
-              onClick={() => setSelectedGuide(guide.id)}
-              className={`border-border flex min-h-24 flex-col items-center justify-center gap-2 rounded-lg border p-3 text-center ${selectedGuide === guide.id ? 'bg-accent-blue/10 border-accent-blue' : ''}`}
-            >
-              <Icon size={28} aria-hidden />
-              <span className="font-medium">{guide.label}</span>
-            </button>
-          );
-        })}
-      </div>
+      <SelectableTiles
+        items={GUIDE_TILES}
+        selected={selectedGuide}
+        onChange={setSelectedGuide}
+        layout="centered"
+        className="sm:grid-cols-2 lg:grid-cols-4"
+      />
       {selectedGuide === 'musicbrainz' && (
         <GuideDetail
           title="MusicBrainz"

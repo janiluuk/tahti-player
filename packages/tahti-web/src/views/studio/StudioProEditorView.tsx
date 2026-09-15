@@ -4,6 +4,7 @@ import {
   ChevronRightIcon,
   CropIcon,
   GripVerticalIcon,
+  LoaderCircleIcon,
   MapPinIcon,
   Maximize2Icon,
   PauseIcon,
@@ -993,6 +994,19 @@ export function StudioProEditorView({ soundId }: { soundId: string }) {
                               });
                             }}
                           >
+                            {busyStem ? (
+                              <LoaderCircleIcon
+                                size={14}
+                                aria-hidden
+                                className="mr-1.5 animate-spin"
+                              />
+                            ) : (
+                              <SplitIcon
+                                size={14}
+                                aria-hidden
+                                className="mr-1.5"
+                              />
+                            )}
                             {busyStem
                               ? 'Splitting…'
                               : `Split ${STEM_SET_LABELS[activeStemSet].toLowerCase()}`}

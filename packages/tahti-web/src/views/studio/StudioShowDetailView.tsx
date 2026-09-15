@@ -2,11 +2,13 @@ import { Link, useNavigate } from '@tanstack/react-router';
 import {
   ArrowLeftIcon,
   BarChart3Icon,
+  CalendarPlusIcon,
   CheckIcon,
   CircleDotIcon,
   InfoIcon,
   ListMusicIcon,
   MicIcon,
+  PlayIcon,
   PlusIcon,
   RadioIcon,
   UploadIcon,
@@ -531,6 +533,11 @@ export function StudioShowDetailView({ id }: { id: string }) {
                       disabled={busy}
                       onClick={() => void bookNextInterval()}
                     >
+                      <CalendarPlusIcon
+                        size={14}
+                        aria-hidden
+                        className="mr-1.5"
+                      />
                       Book next {show.intervalHours}h slot
                     </Button>
                   }
@@ -677,6 +684,11 @@ export function StudioShowDetailView({ id }: { id: string }) {
                               params={{ id: episode.soundId }}
                             >
                               <Button size="sm" variant="secondary">
+                                <PlayIcon
+                                  size={14}
+                                  aria-hidden
+                                  className="mr-1.5"
+                                />
                                 Play recording
                               </Button>
                             </Link>

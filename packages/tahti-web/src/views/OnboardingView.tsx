@@ -1,10 +1,14 @@
 import { useNavigate } from '@tanstack/react-router';
 import {
   MapPinIcon,
+  MoonIcon,
   MusicIcon,
   PaletteIcon,
   Settings2Icon,
+  SunIcon,
+  SunMoonIcon,
   UserIcon,
+  UsersIcon,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -13,10 +17,12 @@ import {
   Button,
   Input,
   Select,
+  SelectableTiles,
   Tabs,
   Textarea,
   Toggle,
   ViewShell,
+  type SelectableTile,
 } from '@tahti-player/ui';
 
 import {
@@ -41,17 +47,37 @@ import { takePendingArtistKind } from '../lib/pendingArtistKind';
 import { useThemeStore, type ColorMode } from '../plugins/themes';
 import { useAuthStore } from '../stores/authStore';
 
-const APPEARANCE_OPTIONS: Array<{
-  id: ColorMode;
-  label: string;
-  hint: string;
-}> = [
-  { id: 'light', label: 'Light', hint: 'Bright background, always on.' },
-  { id: 'dark', label: 'Dark', hint: 'Dim background, always on.' },
+const APPEARANCE_OPTIONS: SelectableTile[] = [
+  {
+    id: 'light',
+    label: 'Light',
+    description: 'Bright background, always on.',
+    icon: <SunIcon size={18} aria-hidden />,
+  },
+  {
+    id: 'dark',
+    label: 'Dark',
+    description: 'Dim background, always on.',
+    icon: <MoonIcon size={18} aria-hidden />,
+  },
   {
     id: 'dynamic',
     label: 'Dynamic',
-    hint: 'Light by day, dark by night — switches with the clock.',
+    description: 'Light by day, dark by night — switches with the clock.',
+    icon: <SunMoonIcon size={18} aria-hidden />,
+  },
+];
+
+const ARTIST_KIND_OPTIONS: SelectableTile[] = [
+  {
+    id: 'SINGLE',
+    label: 'Solo artist',
+    icon: <UserIcon size={18} aria-hidden />,
+  },
+  {
+    id: 'COLLECTIVE',
+    label: 'Band / collective',
+    icon: <UsersIcon size={18} aria-hidden />,
   },
 ];
 
@@ -300,28 +326,14 @@ export function OnboardingView() {
                       <span className="text-foreground-secondary text-xs uppercase">
                         I am a…
                       </span>
-                      <div className="flex gap-2">
-                        {(
-                          [
-                            ['SINGLE', 'Solo artist'],
-                            ['COLLECTIVE', 'Band / collective'],
-                          ] as const
-                        ).map(([kind, label]) => (
-                          <button
-                            key={kind}
-                            type="button"
-                            aria-pressed={artistKind === kind}
-                            onClick={() => setArtistKind(kind)}
-                            className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
-                              artistKind === kind
-                                ? 'border-primary bg-primary/10 text-primary'
-                                : 'border-border text-foreground-secondary hover:text-foreground'
-                            }`}
-                          >
-                            {label}
-                          </button>
-                        ))}
-                      </div>
+                      <SelectableTiles
+                        items={ARTIST_KIND_OPTIONS}
+                        selected={artistKind}
+                        onChange={(id) =>
+                          setArtistKind(id as 'SINGLE' | 'COLLECTIVE')
+                        }
+                        className="grid-cols-2"
+                      />
                       {artistKind === 'COLLECTIVE' && (
                         <p className="text-foreground-secondary text-xs">
                           You can invite full band members later from Studio →
@@ -447,26 +459,12 @@ export function OnboardingView() {
                       Light or dark? We started you off matching your device —
                       change it any time in Settings.
                     </p>
-                    <div className="grid gap-2 sm:grid-cols-3">
-                      {APPEARANCE_OPTIONS.map((option) => (
-                        <button
-                          key={option.id}
-                          type="button"
-                          aria-pressed={colorMode === option.id}
-                          onClick={() => setColorMode(option.id)}
-                          className={`flex flex-col gap-1 rounded-lg border px-3 py-2.5 text-left text-sm font-medium transition-colors ${
-                            colorMode === option.id
-                              ? 'border-primary bg-primary/10 text-primary'
-                              : 'border-border text-foreground-secondary hover:text-foreground'
-                          }`}
-                        >
-                          {option.label}
-                          <span className="text-foreground-secondary text-xs font-normal">
-                            {option.hint}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
+                    <SelectableTiles
+                      items={APPEARANCE_OPTIONS}
+                      selected={colorMode}
+                      onChange={(id) => setColorMode(id as ColorMode)}
+                      className="sm:grid-cols-3"
+                    />
                   </div>
                 ),
               },

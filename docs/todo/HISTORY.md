@@ -27,6 +27,351 @@ present / "Delete" absent in the new preview. Full `tahti-web` vitest
 suite: 517/517 (the 13 "failures" vitest reports are pre-existing
 Playwright e2e specs it isn't configured to run, unrelated).
 `tsc --noEmit`/`eslint` clean.
+## 2026-09-15 — ChannelView.tsx rules-of-hooks fix (found during the mega-file refactor design pass)
+
+Found incidentally while designing the ChannelDesigner/ArtistView/ChannelView
+extraction plan (not a pre-tracked ticket): `ChannelView.tsx` called 3 hooks
+(a `useLayoutEffect` + 2 `useEffect`s docking the layers-menu into the right
+rail) *after* two conditional early returns — `if (loading) return
+<PageLoading/>`, `if (!channel) return <PageEmpty/>` — and (until this same
+pass moved it) a third, `if (!editing) return ...`. Since `loading`/
+`channel`/`editing` all change within the same mounted `ChannelView`
+instance (confirmed no remount: `routes-library.tsx`'s `ChannelRoute` renders
+`<ChannelView slug={slug} />` with no `key`), any hook positioned after a
+conditional that flips over the component's lifetime is a rules-of-hooks
+violation — first fix attempt (moving the 3 hooks above only the `!editing`
+return) still crashed on page load, since the loading→loaded transition
+alone was enough to trip it; confirmed via live-reproduced "Rendered more
+hooks than during the previous render" in the browser both before and
+after the first fix attempt, not just reasoned about.
+
+Real fix: moved the 3 hooks (and the `selectedType`/`layersMenu`
+construction they depend on) above all three early returns, gated
+`layersMenu` itself on `editing && channel` (cheap boolean check, not a
+skipped hook) so it degrades to `null` during loading/not-found instead of
+touching `channel` before it's confirmed non-null. Two of the moved JSX
+handlers (`onRemove={removeLayoutItem}`, `onApplyPreset={applyPreset}`)
+hit a real TS "used before declaration" error against `updateLayout`/
+`removeLayoutItem`/`applyPreset` (declared later in the file) — fixed by
+wrapping in inline arrow functions (`onRemove={(id) => removeLayoutItem(id)}`),
+which is a legitimate fix (deferred closure reference, not a workaround):
+those functions are only *called* later from user interaction, long after
+the whole render pass — including their own `const` declarations further
+down — has finished executing, so no temporal-dead-zone issue exists at
+runtime, only in TS's conservative static check for direct (non-deferred)
+references.
+
+Verified live in the browser (`VITE_FORCE_MOCK=1`), the exact sequence
+that would trigger the bug: enter edit mode → exit → re-enter, watching
+the console throughout. Zero errors/warnings across the full sequence,
+both before and after the fix confirmed the bug reproduces on the
+unfixed original code too (stashed the fix, same URL, same crash) and is
+absent after. `tsc --noEmit`, `eslint`, full `vitest run` (516/516, only
+the pre-existing unrelated `HistoryRow` flake), and production `vite
+build` all clean.
+
+Landed as its own isolated commit/PR, deliberately separate from the
+larger ChannelDesigner/ArtistView/ChannelView structural-extraction work
+that's still open (see `codebase-refactor-hotspots.md`) — a correctness
+fix and a structural refactor shouldn't be reviewed as one diff.
+
+## 2026-09-15 — Storybook theme unification sweep: all 5 new-primitive candidates shipped
+
+`storybook-theme-unification-sweep.md` — done, closing the ticket.
+Across two passes the same day, all 5 "new-primitive candidates" the
+sweep identified got built in `packages/ui` and swapped onto their
+named call sites: `SelectableTiles` (icon+label toggle groups, onto
+`OnboardingView.tsx` + `StudioDistributionView.tsx`), `Meter` +
+`DonutChart` (progress bars/donut, onto `AdminStorageView.tsx` +
+`AdminI18nView.tsx`), `StatTile` (value+label+sublabel, onto
+`OverviewTab.tsx`'s 3 admin-governance stat tiles — also closes
+`STUDIO-ADMIN-UX-SWEEP-OPEN.md` theme 3's matching item),
+`SelectableList` (single-select title/subtitle/meta rows, onto
+`AdminUsersView.tsx`'s user picker), and `ImageThumbnailPicker`
+(grid/inline image-tile picker, onto both of
+`AdminArtworkPresetsView.tsx`'s thumbnail grids). Each primitive
+shipped with its own test file and Storybook story, matching this
+repo's established primitive bar (see `FilterChips`/`CopyButton`/
+`SaveButton` precedent).
+
+One doc claim corrected while wiring the last primitive:
+`storybook-theme-unification-sweep.md` named
+`StudioReleaseDetailView.tsx`'s library-picker rows as a second
+`ImageThumbnailPicker` call site, but on inspection that picker is a
+plain text row list (title, content-type, add/added icon) with no
+images at all — left untouched rather than force-fit.
+
+Remaining scope explicitly out of bounds for this ticket from the
+start: `Table`/`Card`/`Dialog`/`Select` primitive categories (never
+in scope — input/pill/chip only) stay a candidate for a future,
+separate sweep if wanted, not a reason to keep this ticket open.
+
+Verified per primitive: `tsc --noEmit`, `eslint`, `vitest run` (`ui`
+320/320 — one pre-existing, unrelated `HistoryRow` Tailwind
+class-order snapshot flake noted and left alone, matching this same
+day's earlier note on it; `tahti-web` 516/516), and
+`storybook build` with both new stories present in the built index.
+
+## 2026-09-15 — Also: api/studio.ts and router.tsx domain peels, ChannelView.tsx investigated
+
+Same session as the primitive sweep above, continuing
+`codebase-refactor-hotspots.md` / `performance-cleanup-bulk.md`'s Phase
+4 backlog. `api/studio.ts` (~1897 lines) peeled into
+`api/studio/studio-{sounds,releases,collections,upload,editor}.ts`
+(matching the source file's own section-comment boundaries) plus
+shared `studio-request.ts`/`studio-mock.ts`; `studio.ts` is now a
+5-line re-export barrel, no call site's import path changed. `router.tsx`
+(~1965 lines) peeled into `router/routes-*.tsx` by nav section (listen,
+settings, admin, library/misc, transparency, help, auth, governance,
+info/legal, studio, embed+aliases) plus `router/router-core.tsx` (the 2
+shared parent routes — every one of the 172 routes' `getParentRoute`
+pointed at one of these two, a flat tree with no other parent chaining,
+which is what made the split safe) and `router/router-lazy-views.ts`
+(the 54 code-split registrations); `router.tsx` itself is now 382 lines
+of imports + the unchanged `addChildren` tree assembly + `createRouter`.
+Verified beyond the usual `tsc`/`eslint`/tests: diffed the full route
+`path:` string set before/after (172/172 identical) and diffed the
+`addChildren` block itself (byte-identical); production build confirms
+every lazy view still produces its own chunk.
+
+`ChannelView.tsx` (~1835 lines, also on that Phase 4 table) was
+investigated and left untouched: unlike `ChannelDesigner.tsx`/
+`ArtistView.tsx` (which each had a genuine low-coupling chunk extracted
+earlier the same day), this file's natural componentizable pieces
+(visualizer, backdrop, layers menu, links/navigation editors, playlist
+blocks, track tables) were already pulled into separate files in
+earlier work. What remains is one closure-coupled orchestrator —
+`renderBlock`'s cases each read 10-20+ local variables — with no test
+or Storybook coverage to verify an extraction against. Left for a
+dedicated follow-up rather than forced.
+
+## 2026-09-15 — Plugin registry §6 test gaps closed
+
+Shipped in [#85](https://github.com/janiluuk/tahti-player/pull/85), closing
+the last two open items in `../tahti-org`'s
+`docs/todo/plugin-registry-extraction.md` §6 test matrix (tracked there, not
+as a file here — see that doc's 2026-09-11 note on where remaining
+plugin-registry work lives). `removeManagedPluginInstall` (`pluginDir.ts`)
+had no test file; added `pluginDir.test.ts` and, while doing so, found its
+safety check only scoped to the whole appData dir rather than the plugins
+dir its own error message claims — tightened `resolveRelativeManagedPath`
+to check against `getPluginsDir()` with a separator-boundary-safe prefix
+check, verified against the one real caller (`pluginStore.tsx`'s
+`removePlugin`, which always passes a path from `installPluginToManagedDir`,
+always under `<appData>/plugins/<id>/<version>`). Also implemented
+`App.hydration.test.tsx`'s `it.todo` for enable/disable state surviving a
+simulated restart (hydrate → enable → unmount + drop in-memory state while
+keeping the persisted registry → re-hydrate → assert it stuck). 84/84
+plugin-related tests pass.
+
+## 2026-09-15 — Studio/Admin UX sweep: verified punch list, fixed the real remainder
+
+`STUDIO-ADMIN-UX-SWEEP-OPEN.md` warned its 5 themes were "largely stale —
+re-verify before acting." Ran a read-only audit first (grep + actually
+reading each site, not trusting old `file:line` references — several had
+moved: `AdminGovernanceView.tsx` → `admin/governance/tabs/*.tsx`,
+`AdminDiscoWidgetsView.tsx` → `AdminAddonsView.tsx`). Most of the original
+list was already fixed in later passes that never folded back into the doc.
+Fixed the real remainder found:
+
+**Theme 1 (missing action icons)** — added a leading icon to 10 text-only
+Studio/Admin action buttons, matching each icon to its already-established
+codebase convention (grepped for precedent before picking one, not
+guessing): `PowerIcon` (enable/disable), `CalendarPlusIcon` (book slot),
+`PlayIcon` (play recording), `SplitIcon` (stem split — matches the tab
+label icon right above it), `EyeIcon` (publish, ×2), `Wand2Icon` (auto-fill
+"Fill all"), `PlusIcon` (create meeting/document, ×2), `UploadIcon` (import
+CSV), `FileTextIcon` (generate report), `CheckCircle2Icon`/`XCircleIcon`
+(approve/reject — matches 3 sibling moderation tabs, this one was missed).
+Also swapped `StudioScheduleView.tsx`'s "Save weekly schedule" text button
+for the shared `SaveButton` (this same file already used it one panel over).
+Theme 2 (inline help → Tooltip): verified zero real remaining instances —
+closed without a fix needed.
+
+**Loading-state icons (user correction mid-pass):** buttons whose label
+already swaps to "Saving…"/"Creating…"/"Generating…"/"Splitting…" while an
+async call is in flight must swap their icon to a spinning
+`LoaderCircleIcon` too, not just the text — added to every button above
+that has such a state, and to the shared `SaveButton` primitive itself
+(`packages/ui`), which now spins `LoaderCircleIcon` in place of `SaveIcon`
+while `saving` (benefits every existing `SaveButton` consumer at once).
+Saved as a standing convention: `feedback_button_loading_icons.md`.
+
+**Theme 3 (missing primitives)** — `Alert` already existed (stale claim).
+No `SegmentedControl` primitive exists, but rather than inventing one,
+swapped the two real hand-rolled bordered-toggle-group instances found
+(`BroadcastDetailsFields.tsx`'s broadcast-type and duration toggles) onto
+the existing `FilterChips` primitive (single-select, already has an icon
+slot from the 2026-09-14 sweep) — no new primitive needed.
+`StudioScheduleView.tsx`'s card/list view toggle was left hand-rolled: it's
+icon-only with a per-item `Tooltip`, which `FilterChips` doesn't support.
+
+**Theme 4 (hand-rolled panels)** — added an optional `icon` prop to the
+shared `StudioPanel` component (title-row leading icon, additive/optional).
+Swapped `StudioDistributionView.tsx`'s `GuideDetail` (a raw bordered div
+duplicating `StudioPanel`'s title+content shape) onto `StudioPanel`.
+Two other candidates from the audit were investigated and left as-is on
+purpose: `StudioScheduleView.tsx`'s "Your next broadcasts" section needs
+full-bleed content (image thumbnails, no padding) that conflicts with
+`StudioPanel`'s fixed `p-5 sm:p-6`, and `StudioHomeView.tsx`'s "Have your
+say" governance card is the *only* bordered box among that dashboard's
+sibling sections (which are all flat, borderless lists) — forcing it onto
+`StudioPanel` would make it inconsistent with its own page rather than more
+consistent. `OverviewTab.tsx`'s 3 stat tiles (value + label + sublabel) are
+a genuine "new primitive candidate" (no existing shared component has that
+exact shape) — left for a deliberate follow-up, not forced into `StatChip`
+or `Box`.
+
+**Theme 5 (custom actions)** — `CopyButton` (`packages/ui`) gained an
+optional `label` prop (renders visible text next to the icon, defaults to
+`icon-sm` size unless a label is given) and proper clipboard-failure
+handling (`try/catch` → `toast.error`, was previously silent on failure).
+`TrackDetailView.tsx`'s "Share" button was investigated but *not* swapped
+onto the enhanced `CopyButton`: it already has its own icon (`Share2Icon`),
+label, and toast handling — forcing it onto `CopyButton` would replace the
+descriptive share icon with a generic copy icon, a real downgrade, not a
+no-op. The primitive enhancement stands on its own for future labeled-copy
+call sites. `MoreView.tsx` and `StudioDistributionView.tsx`'s copy actions
+were checked and are not gaps (both do async pre-copy work that doesn't fit
+`CopyButton`'s plain-`text` API).
+
+**Verified:** `tsc --noEmit`, `eslint`, and full `vitest run` clean across
+`tahti-web` (516/516) and `ui` (290/290, plus 2 new `CopyButton` tests and 1
+new `SaveButton` test covering the loading-spinner swap). One pre-existing,
+unrelated `HistoryRow` snapshot flake in `ui` (Tailwind class-order
+nondeterminism in `MediaArtwork`'s play button, a component this pass never
+touched) — not fixed, out of scope. Not live-browser-verified beyond the
+`BroadcastDetailsFields` swap, which requires an artist channel the mock
+demo account doesn't have; relied on `FilterChips` already being a
+well-tested primitive used at ~20 other sites instead of creating a channel
+to force the check.
+
+## 2026-09-15 — Governance restyle: sibling detail pages
+
+Follow-on to the same day's `/governance` restyle. Extended the `Box`-panel
++ icon treatment to four pages that still had bare `SectionShell` headings
+or plain bordered lists:
+
+- Extracted the local `GovernancePanel` helper out of `GovernanceView.tsx`
+  into `components/governance/GovernancePanel.tsx` so it's shared, not
+  duplicated.
+- `GovernanceMotionDetailView.tsx` — signed-out/forbidden messages now use
+  `Box variant="secondary"` instead of a plain `border p-4` div.
+- `GovernanceMeetingDetailView.tsx` — Overview/Quorum & attendance/Agenda
+  swapped from bare `SectionShell` to `GovernancePanel` with per-section
+  icons (Users/CalendarCheck/ScrollText).
+- `GovernanceMembersView.tsx` — added a 2-up `StatChip` row (member count,
+  board count) above the search input; existing bordered list unchanged
+  (matches the pattern of `GovernanceView.tsx`'s own motions list, which
+  also isn't Box-wrapped).
+- `PublicGovernanceHistoryView.tsx` (`/governance/history`, "Closed
+  decisions") — top link became an icon `Button` pill, added a `StatChip`
+  for the closed-motion count, and each motion row is now a `Box
+  variant="tertiary"` card instead of a plain bordered `<li>`.
+
+Out of scope: `TransparencyView.tsx` (`/transparency`) — a separate,
+table-heavy page; left for its own design pass if wanted.
+
+**Verified:** `tsc --noEmit`, `eslint`, and full `pnpm vitest run`
+(516/516) all clean. Visually checked all four pages in a real browser
+(`VITE_FORCE_MOCK=1` dev server) — `/governance/history` (public, no auth
+needed), `/governance/members`, `/governance/meetings/meeting-agm-2026`,
+and `/governance/motions/motion-1`, all signed in as the mock demo user
+this session (unlike the earlier `/governance` fold, `VITE_FORCE_MOCK`
+did provide a live signed-in session here — no login form needed).
+
+## 2026-09-15 — Player extracted from the hero block into a fixed Stage
+
+`channelview-move-player-to-stage.md` — done. Decision (user, 2026-09-15):
+Stage is player-only and minimal — fixed above/below the tab row; the
+backdrop keeps all its existing header content (title, bio, CTA, avatar)
+unchanged. Investigated `ChannelView.tsx`'s `renderBlock`/`visibleItems.map`
+block system first: the player (`stagePlayer`) was previously computed and
+rendered only inside the `'hero'` case, so hiding the "Live stage" block from
+the page layout removed the play control entirely — there was no way to
+play the channel at all. Fixed by hoisting `stagePlayer` to component scope
+(computed once, not per block) and rendering it unconditionally: the
+existing hero-visible path is untouched (same JSX position, same
+`data-testid="channel-stage-player"`, zero visual change for the common
+case), and a new always-mounted fallback (`data-testid=
+"channel-stage-player-fixed"`) renders the same player next to the existing
+`!heroVisible` `EntitySocialHeader` identity fallback, above the nav-tab
+content. Backdrop rendering (`ChannelBackdropCard` in the hero case,
+`EntitySocialHeader` in the fallback) was not touched. `eslint` and
+`tsc --noEmit` clean on the changed file; no existing tests reference either
+`data-testid`.
+## 2026-09-15 — hearthis.at import never worked for any playlist (root cause: missing install call)
+
+User report (not from a todo file): "the hearthis.at import does not work,
+whatever the playlist, it will not import them. also downloading the file
+from hearthis.at doesn't seem to work properly."
+
+Root cause found by reading the full path, not guessed: `ServiceCategory.tsx`'s
+`HearthisCard` has always treated "artist saved a hearthis.at handle" as
+"plugin installed" (`usePluginInstallStore.setInstalled(plugin.id,
+Boolean(handle))`), but `../tahti-org`'s `POST /api/v1/imports/hearthis/add`
+(the actual import call, `apps/api/src/routes/imports/hearthis.ts`) requires
+a real `hearthis-import` `IntegrationCredential` row
+(`getUserIntegrationCredential`) — and nothing in the frontend ever called
+`POST /api/me/integrations/hearthis-import/install` to create one. Every
+single import attempt — any track, any set, any playlist — has always 400'd
+with "Install the hearthis.at import plugin first", regardless of which
+playlist was picked. `hearthis-import`'s provider entry
+(`packages/shared/src/integration-providers.ts`) has `fields: []` (public
+API, no real credential needed), so the install call is a no-op upsert, not
+a missing secret.
+
+Verified the rest of the pipeline is sound before concluding this was the
+whole story: `fetchHearthisCollectionTracks`/`getTrackByUrl`
+(`@tahti/hearthis`) resolve real playlist and track data correctly (checked
+live against `api-v2.hearthis.at` for a real user/playlist/track), and the
+worker's download step (`hearthis-embed-localize` job,
+`processHearthisEmbedLocalizationJob`) successfully downloads a real
+`download_url` (verified via `curl -L`, following hearthis.app →
+hearthis.at → stream81.hearthis.at, ending in a 200 with
+`Access-Control-Allow-Origin: *` and the real audio file) — so "downloading
+doesn't work" is very likely the same root cause: since import always
+400'd, the localization job was never enqueued in the first place, nothing
+ever got the chance to download.
+
+Fix: `HearthisCard`'s existing `handle`-driven effect (already the natural
+"is hearthis.at set up" trigger) now also calls
+`installMeIntegration('hearthis-import', {})` whenever `handle` is truthy —
+idempotent, so it also repairs accounts that saved their handle before this
+fix shipped. `eslint`/`tsc --noEmit` clean. Not covered by an automated
+test — `ServiceCategory.tsx`'s `HearthisCard` has no existing test
+scaffolding to extend cheaply (auth/player/plugin-install stores, profile
+fetch, source adapters, studio collections all need mocking) and the fix
+itself is a single conditional call to an already-tested API function
+(`installMeIntegration`, `api/integrations.test.ts`); verified by tracing
+the full request path and the real hearthis.at API instead.
+## 2026-09-15 — navigation-audit.md closed: collections split is intentional
+
+`navigation-audit.md`'s one open product question — is `/studio/collections`
+(`StudioCollectionsView`) vs `/library/collections` (`MyCollectionsView`)
+intentional or should one absorb the other — is answered: intentional.
+Both read the same underlying `StudioCollection` data via the same API,
+but serve different jobs — Studio is the artist's creation/management
+surface (create/filter/edit dialogs), Library is the personal browsing
+surface (simpler viewer, embedded in `LibraryView`'s tab set). No code
+change. Rest of the audit (parent/back links, duplicate pages, active-tab
+consistency, stable content regions, transition animations) already
+found no other gaps.
+## 2026-09-15 — Listen bugs batch (2026-09-14), item #5 finished
+
+`listen-bugs-batch-2026-09-14.md` — done, all 5 items. Items 1/2/4/5 shipped
+earlier; item 3 (radio-page now-playing/upcoming) was blocked on a new
+`tahti-org` backend feature — scoped and shipped in
+[tahti-org#521](https://github.com/janiluuk/tahti-org/pull/521) (`GET
+/api/v1/radio/show/:channelSlug/now-playing` and `.../upcoming`, reusing
+the existing per-channel now-playing columns and curated-rotation queue
+logic). Wired here: `api/shows.ts` gained
+`fetchRadioShowNowPlaying`/`fetchRadioShowUpcoming`;
+`RadioShowView.tsx` polls both every 30s (`usePolling`, matching
+`RadioView.tsx`'s convention) and renders a new "Now playing" section
+(current track + "Up next" queue) between the header and the Episodes
+tabs — hidden entirely for a channel with no rotation data, which is most
+artist channels. `eslint`/`tsc --noEmit` clean.
 
 ## 2026-09-15 — Restyled /governance (member-facing) with real components + color
 
@@ -2799,3 +3144,15 @@ Implemented, isolated in worktrees, tested (YAML validated), committed, and open
 Flagged but deliberately not touched: `tahti-org`'s `deploy.yml` and `deploy-production.yml` both trigger on the same `workflow_run: [CI]` completed-on-main event — two deploy pipelines can race on every merge. That's a production-deploy correctness question for the user to resolve, not a speed optimization.
 
 Neither PR is merged yet, so cache-hit effectiveness is unverified against live CI runs — only YAML syntax and job-graph correctness were checked locally.
+
+---
+
+## 2026-09-15 — Listen page: merged "Radio channels" into "Radio" (fixed dead play-button state)
+
+User request: on the Listen page, the lower "Radio" section (board-curated internet-radio presets, `fetchEnabledInternetRadioPresets()`) correctly reacted to play/pause but only had 1 station enabled server-side; the "Radio channels" section (`ListenerWidgetsSection.tsx`, the static `RADIO_STATIONS` catalog, all 6 enabled client-side by default) had every needed channel but its play button never reflected playing/paused state. User: fix the "Radio" entries so they're complete, then remove the redundant "Radio channels" section.
+
+Root cause (confirmed via subagent investigation + code read): `ListenerWidgetsSection.tsx`'s station cards never subscribed to `usePlayerStore` at all — no `currentId`/`status` read, no `isPlaying` prop passed to `Card`, so `MediaArtwork`'s `isPlaying = false` default always applied. Not a stale-id bug — the comparison logic was simply never written for that component.
+
+Fix, in `packages/tahti-web/src/views/ListenView.tsx`'s "Radio" `SectionShell`: after rendering board-curated presets, also render enabled catalog stations (`useListenerWidgetsStore`'s `enabledStationIds`/`stationOverrides`, same data `ListenerWidgetsSection` used) — deduped by name against already-rendered presets, so a preset's admin-uploaded artwork wins when both exist for the same station. Catalog-station cards reuse the exact `isCurrent`/`isPlaying` derivation and `radio-widget:${id}` id scheme already proven in `RadioCategory.tsx`'s settings-panel preview, plus the same cover-edit and remove-with-confirmation affordances the old section had. Removed the now-redundant station rendering from `ListenerWidgetsSection.tsx` (kept saved Radio Browser stations, news feeds, embeds, favorites — genuinely different features, untouched); simplified its title to always "Listen add-ons" since it no longer shows catalog channels.
+
+Verified: `tsc --noEmit` and `eslint` clean; full unit suite (516/516) green; `vite build` succeeds; manually exercised in `VITE_FORCE_MOCK=1` dev mode via browser automation — all 6 catalog stations now render once under "Radio" (no duplicate section), clicking a card's Play button correctly flips it to a reactive Pause state (audio element `src` populated, `aria-pressed`, Media Session tab title, bottom player bar, and "Continue listening" card all update), and clicking again correctly pauses without restarting.
