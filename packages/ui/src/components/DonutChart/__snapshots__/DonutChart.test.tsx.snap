@@ -1,0 +1,28 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`DonutChart > (Snapshot) renders segments with a center value 1`] = `
+<div>
+  <div
+    aria-label="Storage breakdown"
+    class="relative shrink-0 rounded-full"
+    role="img"
+    style="width: 176px; height: 176px; background: conic-gradient(#f00 0% 30%, #0f0 30% 100%);"
+  >
+    <div
+      class="bg-background absolute flex flex-col items-center justify-center rounded-full text-center"
+      style="inset: 28px;"
+    >
+      <span
+        class="text-foreground-secondary text-[10px] uppercase"
+      >
+        Total
+      </span>
+      <span
+        class="text-lg font-bold"
+      >
+        100 GB
+      </span>
+    </div>
+  </div>
+</div>
+`;

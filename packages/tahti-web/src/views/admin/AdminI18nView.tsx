@@ -7,6 +7,7 @@ import {
   Dialog,
   FilePicker,
   Input,
+  Meter,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
@@ -139,12 +140,7 @@ export function AdminI18nView() {
                               )}
                             </div>
                             <div className="mt-1.5 flex items-center gap-2">
-                              <div className="bg-background-secondary h-1.5 w-32 overflow-hidden rounded-full">
-                                <div
-                                  className="bg-primary h-full"
-                                  style={{ width: `${pct}%` }}
-                                />
-                              </div>
+                              <Meter value={pct} className="w-32" />
                               <span className="text-foreground-secondary text-xs">
                                 {lang.translatedKeys}/{lang.totalKeys} ({pct}%)
                               </span>
