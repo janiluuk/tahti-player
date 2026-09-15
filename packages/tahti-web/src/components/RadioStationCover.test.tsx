@@ -111,4 +111,22 @@ describe('RadioStationCover', () => {
         ?.iconUrl,
     ).toMatch(/^data:image\/png/);
   });
+
+  it('opens a Change-only preview on click, with no Delete action', async () => {
+    const { container } = renderCover(BOARD_USER);
+    const previewTrigger = container.querySelector(
+      '[aria-label="Preview Radio Helsinki cover"]',
+    ) as HTMLButtonElement;
+    expect(previewTrigger).not.toBeNull();
+
+    await act(async () => {
+      previewTrigger.click();
+    });
+
+    const dialogButtons = Array.from(document.querySelectorAll('button')).map(
+      (b) => b.textContent,
+    );
+    expect(dialogButtons).toContain('Change');
+    expect(dialogButtons).not.toContain('Delete');
+  });
 });

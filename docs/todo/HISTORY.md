@@ -2,6 +2,31 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-15 — RadioStationCover: full-overlay edit button → corner control + preview
+
+User decision: redesign `RadioStationCover`'s edit affordance to match
+the shared `imageSlot` pattern (`RoundImageUploadButton`,
+`BackdropUploadButton`) instead of the full-area overlay button it had
+before, unblocking the last remaining item in both
+`radio-browser-directory-fixes.md` and `image-upload-hover-lightbox.md`.
+
+`RadioStationCoverEditButton` (exported and used standalone in
+`ListenView.tsx`/`ListenerWidgetsSection.tsx` — untouched, they already
+pass their own small-corner `className`) gained an optional
+`onRegisterOpenPicker` prop so a parent can trigger its internal file
+input imperatively without reaching into its `inputRef`. `RadioStationCover`
+now renders the cover image as a click target that opens
+`ImageSlotPreviewDialog` (large preview + "Change", which calls
+`onRegisterOpenPicker`'s handoff) instead of the button covering the
+whole image. `ImageSlotPreviewDialog` gained an optional `hideDelete`
+prop (default `false`, every other consumer unaffected) since a station
+cover has no "empty" state to clear to — no Delete action makes sense
+here. Same `data-testid`s/`aria-label`s throughout, so the existing
+2-case test suite is unchanged; added a 3rd case pinning "Change"
+present / "Delete" absent in the new preview. Full `tahti-web` vitest
+suite: 517/517 (the 13 "failures" vitest reports are pre-existing
+Playwright e2e specs it isn't configured to run, unrelated).
+`tsc --noEmit`/`eslint` clean.
 ## 2026-09-15 — governance-gap-list.md #15: voting window adjustment shipped
 
 User decision: scope and build the backend support the gap list's #15

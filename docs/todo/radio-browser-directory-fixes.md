@@ -38,18 +38,32 @@ dedicated view file.
    specific) — dropped it, matching today's broader pattern of removing
    low-value permanent captions.
 
-## Not changed: station cover images can't be updated
+## Station cover images: edit gate is a permission check, not a bug — redesigned to match the app's shared pattern
 
 Investigated: `RadioStationCover` (used in the Finnish stations row)
 already has edit capability built in — it renders
 `RadioStationCoverEditButton` internally, gated on
 `canEditRadioStationCover(user)`, which is `hasAccountRole(user,
 'BOARD')` (exact role match, with its own test coverage). This is a
-deliberate, tested permission gate, not obviously a bug. If the
-logged-in account really is a BOARD-role account and covers still
-can't be edited, the bug is elsewhere (a role-detection issue, not this
-gate) — needs checking against an actual live session rather than
-guessing at a code change to a gate that looks intentional and correct.
+deliberate, tested permission gate, not obviously a bug.
+
+**2026-09-15:** The edit affordance itself was still a full-area overlay
+button with no room for hover-delete-X + click-to-preview — redesigned
+to a small corner control (matching `RoundImageUploadButton`/
+`BackdropUploadButton`'s pattern): the whole cover is now a click target
+that opens a large preview (`ImageSlotPreviewDialog`, new `hideDelete`
+prop since a station cover has no "empty" state to clear to), with
+"Change" reusing the existing upload flow via a small imperative
+`onRegisterOpenPicker` handoff (the edit button owns the file input).
+Same `data-testid`s, same `aria-label`s, existing test suite still
+green plus a new case pinning "Change" present / "Delete" absent in the
+preview. See `docs/todo/image-upload-hover-lightbox.md`'s matching entry
+— both todos hit this same blocker.
+
+**Still open:** if the logged-in account really is a BOARD-role account
+and covers still can't be edited, the bug is elsewhere (a role-detection
+issue, not this gate) — needs checking against an actual live session,
+not a guess.
 
 ## Not attempted: "scrape [station artwork] to production"
 

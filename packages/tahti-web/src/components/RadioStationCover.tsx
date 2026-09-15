@@ -1,5 +1,5 @@
 import { LoaderCircleIcon, UploadCloudIcon } from 'lucide-react';
-import { useRef, useState, type FC, type RefObject } from 'react';
+import { useEffect, useRef, useState, type FC, type RefObject } from 'react';
 import { toast } from 'sonner';
 
 import { ImageReveal } from '@tahti-player/ui';
@@ -12,6 +12,7 @@ import {
   uploadRadioCoverFile,
 } from '../lib/radioStationCover';
 import { useAuthStore } from '../stores/authStore';
+import { ImageSlotPreviewDialog } from './imageSlot/ImageSlotPreviewDialog';
 
 type RadioStationCoverProps = {
   src: string;
@@ -26,6 +27,11 @@ type RadioStationCoverProps = {
 
 type RadioStationCoverEditButtonProps = Omit<RadioStationCoverProps, 'src'> & {
   className?: string;
+  /** Lets a parent that renders its own click target (e.g.
+   * RadioStationCover's preview modal "Change" button) trigger this
+   * button's file picker imperatively, without reaching into its
+   * internal `inputRef`. */
+  onRegisterOpenPicker?: (open: () => void) => void;
 };
 
 const openCoverPicker = (
@@ -80,11 +86,16 @@ export const RadioStationCoverEditButton: FC<
   className,
   persist = true,
   onCoverChange,
+  onRegisterOpenPicker,
 }) => {
   const user = useAuthStore((state) => state.user);
   const canEdit = canEditRadioStationCover(user);
   const inputRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    onRegisterOpenPicker?.(() => openCoverPicker(inputRef, busy));
+  }, [busy, onRegisterOpenPicker]);
 
   if (!canEdit) {
     return null;
@@ -154,30 +165,64 @@ export const RadioStationCover: FC<RadioStationCoverProps> = ({
 }) => {
   const user = useAuthStore((state) => state.user);
   const canEdit = canEditRadioStationCover(user);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const openPickerRef = useRef<(() => void) | null>(null);
+
+  const coverImage = (
+    <div data-testid="radio-station-cover-image" className="size-full">
+      <ImageReveal
+        src={src || undefined}
+        alt=""
+        className="size-full"
+        placeholder={<div className="bg-background-secondary size-full" />}
+      />
+    </div>
+  );
 
   return (
     <div
       data-testid="radio-station-cover"
       className={cn('group relative size-full', className)}
     >
-      <div data-testid="radio-station-cover-image" className="size-full">
-        <ImageReveal
-          src={src || undefined}
-          alt=""
-          className="size-full"
-          placeholder={<div className="bg-background-secondary size-full" />}
-        />
-      </div>
       {canEdit ? (
-        <RadioStationCoverEditButton
-          label={label}
-          stationName={stationName}
-          catalogStationId={catalogStationId}
-          presetId={presetId}
-          persist={persist}
-          onCoverChange={onCoverChange}
-          className="absolute inset-0 size-full rounded-[inherit]"
-        />
+        <button
+          type="button"
+          title={`Preview ${label} cover`}
+          aria-label={`Preview ${label} cover`}
+          className="block size-full cursor-pointer border-0 p-0 text-left"
+          onClick={() => setPreviewOpen(true)}
+        >
+          {coverImage}
+        </button>
+      ) : (
+        coverImage
+      )}
+      {canEdit ? (
+        <>
+          <RadioStationCoverEditButton
+            label={label}
+            stationName={stationName}
+            catalogStationId={catalogStationId}
+            presetId={presetId}
+            persist={persist}
+            onCoverChange={onCoverChange}
+            onRegisterOpenPicker={(open) => {
+              openPickerRef.current = open;
+            }}
+            className="absolute top-1 right-1 z-10 size-8 rounded-full"
+          />
+          <ImageSlotPreviewDialog
+            isOpen={previewOpen}
+            onClose={() => setPreviewOpen(false)}
+            label={`${label} cover`}
+            src={src}
+            hideDelete
+            onChangeClick={() => {
+              setPreviewOpen(false);
+              openPickerRef.current?.();
+            }}
+          />
+        </>
       ) : null}
     </div>
   );
