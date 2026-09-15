@@ -2,6 +2,25 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-15 — Plugin registry §6 test gaps closed
+
+Shipped in [#85](https://github.com/janiluuk/tahti-player/pull/85), closing
+the last two open items in `../tahti-org`'s
+`docs/todo/plugin-registry-extraction.md` §6 test matrix (tracked there, not
+as a file here — see that doc's 2026-09-11 note on where remaining
+plugin-registry work lives). `removeManagedPluginInstall` (`pluginDir.ts`)
+had no test file; added `pluginDir.test.ts` and, while doing so, found its
+safety check only scoped to the whole appData dir rather than the plugins
+dir its own error message claims — tightened `resolveRelativeManagedPath`
+to check against `getPluginsDir()` with a separator-boundary-safe prefix
+check, verified against the one real caller (`pluginStore.tsx`'s
+`removePlugin`, which always passes a path from `installPluginToManagedDir`,
+always under `<appData>/plugins/<id>/<version>`). Also implemented
+`App.hydration.test.tsx`'s `it.todo` for enable/disable state surviving a
+simulated restart (hydrate → enable → unmount + drop in-memory state while
+keeping the persisted registry → re-hydrate → assert it stuck). 84/84
+plugin-related tests pass.
+
 ## 2026-09-15 — Studio/Admin UX sweep: verified punch list, fixed the real remainder
 
 `STUDIO-ADMIN-UX-SWEEP-OPEN.md` warned its 5 themes were "largely stale —
