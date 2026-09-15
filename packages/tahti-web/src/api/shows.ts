@@ -1169,6 +1169,64 @@ export async function fetchPublicRadioShow(
   }
 }
 
+export type RadioShowNowPlayingTrack = {
+  title: string;
+  artistName: string;
+  artistUsername: string | null;
+  artworkUrl: string | null;
+  durationSec: number | null;
+  startedAt: string;
+};
+
+/** A channel's current rotation/live track for its Tahti Radio show page —
+ * its own lightweight, independently-pollable endpoint (see
+ * apps/api/src/routes/radio/index.ts in tahti-org), separate from
+ * fetchPublicRadioShow so polling this doesn't re-fetch the whole
+ * past/upcoming episode list every tick. */
+export async function fetchRadioShowNowPlaying(
+  channelSlug: string,
+): Promise<{ data: RadioShowNowPlayingTrack | null; meta: FetchMeta }> {
+  if (isForceMock()) {
+    return { data: null, meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
+  }
+  try {
+    const { data } = await requestJson<{
+      track: RadioShowNowPlayingTrack | null;
+    }>(`/api/v1/radio/show/${encodeURIComponent(channelSlug)}/now-playing`);
+    return { data: data.track, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: null, meta: apiErrorMeta(err) };
+  }
+}
+
+export type RadioShowUpcomingTrack = {
+  id: string;
+  title: string;
+  artistName: string;
+  artistUsername: string | null;
+  artworkUrl: string | null;
+};
+
+/** Upcoming tracks in the channel's curated rotation queue, starting after
+ * the current track. Empty for a channel with no curated rotation
+ * configured (most artist channels — this only applies to Tahti Selects-
+ * style curated-rotation channels). */
+export async function fetchRadioShowUpcoming(
+  channelSlug: string,
+): Promise<{ data: RadioShowUpcomingTrack[]; meta: FetchMeta }> {
+  if (isForceMock()) {
+    return { data: [], meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
+  }
+  try {
+    const { data } = await requestJson<RadioShowUpcomingTrack[]>(
+      `/api/v1/radio/show/${encodeURIComponent(channelSlug)}/upcoming`,
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: [], meta: apiErrorMeta(err) };
+  }
+}
+
 export async function createShowBooking(input: {
   startAt: string;
   endAt: string;

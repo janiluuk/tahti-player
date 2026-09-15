@@ -7,12 +7,22 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, SectionShell, Tabs, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  MediaArtwork,
+  SectionShell,
+  Tabs,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import {
   fetchPublicRadioShow,
+  fetchRadioShowNowPlaying,
+  fetchRadioShowUpcoming,
   type PublicRadioShow,
   type PublicRadioShowEpisode,
+  type RadioShowNowPlayingTrack,
+  type RadioShowUpcomingTrack,
 } from '../api/shows';
 import {
   EntitySocialHeader,
@@ -20,8 +30,12 @@ import {
 } from '../components/EntitySocialHeader';
 import { PageFrame } from '../components/PageHeader';
 import { PageEmpty, PageLoading } from '../components/PageStates';
+import { Eyebrow } from '../components/tahti/Eyebrow';
+import { usePolling } from '../hooks/usePolling';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { isGreenRoomWindow } from '../lib/radioSchedule';
+
+const NOW_PLAYING_POLL_MS = 30_000;
 
 function formatDate(startAt: string, endAt: string) {
   const start = new Date(startAt);
@@ -84,9 +98,81 @@ function EpisodeList({
   );
 }
 
+function NowPlayingSection({
+  track,
+  upcoming,
+}: {
+  track: RadioShowNowPlayingTrack | null;
+  upcoming: RadioShowUpcomingTrack[];
+}) {
+  if (!track && upcoming.length === 0) {
+    return null;
+  }
+
+  return (
+    <SectionShell title="Now playing">
+      <div className="flex flex-col gap-3">
+        {track ? (
+          <div className="flex min-w-0 items-center gap-3">
+            <MediaArtwork
+              size="md"
+              src={track.artworkUrl}
+              alt=""
+              className="bg-surface-secondary rounded-lg text-sm font-bold"
+              placeholder="♪"
+            />
+            <div className="min-w-0">
+              <Eyebrow tone="green">On air</Eyebrow>
+              <div className="text-foreground truncate text-lg font-bold tracking-tight">
+                {track.title}
+              </div>
+              <div className="text-foreground-secondary truncate text-sm">
+                {track.artistName}
+              </div>
+            </div>
+          </div>
+        ) : null}
+        {upcoming.length > 0 ? (
+          <div>
+            <div className="text-foreground-secondary mb-2 text-xs font-semibold uppercase">
+              Up next
+            </div>
+            <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
+              {upcoming.map((item) => (
+                <li key={item.id} className="flex items-center gap-3 p-3">
+                  <MediaArtwork
+                    size="sm"
+                    src={item.artworkUrl}
+                    alt=""
+                    className="bg-surface-secondary rounded text-xs font-bold"
+                    placeholder="♪"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate text-sm font-medium">
+                      {item.title}
+                    </div>
+                    <div className="text-foreground-secondary truncate text-xs">
+                      {item.artistName}
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+      </div>
+    </SectionShell>
+  );
+}
+
 export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
   const [show, setShow] = useState<PublicRadioShow | null>(null);
   const [loading, setLoading] = useState(true);
+  const [nowPlayingTrack, setNowPlayingTrack] =
+    useState<RadioShowNowPlayingTrack | null>(null);
+  const [upcomingTracks, setUpcomingTracks] = useState<
+    RadioShowUpcomingTrack[]
+  >([]);
 
   useEffect(() => {
     setLoading(true);
@@ -95,6 +181,21 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
       setLoading(false);
     });
   }, [channelSlug]);
+
+  const reloadNowPlaying = () => {
+    void fetchRadioShowNowPlaying(channelSlug).then((result) => {
+      setNowPlayingTrack(result.data);
+    });
+    void fetchRadioShowUpcoming(channelSlug).then((result) => {
+      setUpcomingTracks(result.data);
+    });
+  };
+
+  useEffect(() => {
+    reloadNowPlaying();
+  }, [channelSlug]);
+
+  usePolling(reloadNowPlaying, NOW_PLAYING_POLL_MS);
 
   if (loading) {
     return <PageLoading label="Loading show…" />;
@@ -196,6 +297,8 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
         }
         data-testid="radio-show-social-header"
       />
+
+      <NowPlayingSection track={nowPlayingTrack} upcoming={upcomingTracks} />
 
       <SectionShell title="Episodes">
         <Tabs

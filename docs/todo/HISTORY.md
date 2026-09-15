@@ -22,6 +22,120 @@ content. Backdrop rendering (`ChannelBackdropCard` in the hero case,
 `EntitySocialHeader` in the fallback) was not touched. `eslint` and
 `tsc --noEmit` clean on the changed file; no existing tests reference either
 `data-testid`.
+## 2026-09-15 — hearthis.at import never worked for any playlist (root cause: missing install call)
+
+User report (not from a todo file): "the hearthis.at import does not work,
+whatever the playlist, it will not import them. also downloading the file
+from hearthis.at doesn't seem to work properly."
+
+Root cause found by reading the full path, not guessed: `ServiceCategory.tsx`'s
+`HearthisCard` has always treated "artist saved a hearthis.at handle" as
+"plugin installed" (`usePluginInstallStore.setInstalled(plugin.id,
+Boolean(handle))`), but `../tahti-org`'s `POST /api/v1/imports/hearthis/add`
+(the actual import call, `apps/api/src/routes/imports/hearthis.ts`) requires
+a real `hearthis-import` `IntegrationCredential` row
+(`getUserIntegrationCredential`) — and nothing in the frontend ever called
+`POST /api/me/integrations/hearthis-import/install` to create one. Every
+single import attempt — any track, any set, any playlist — has always 400'd
+with "Install the hearthis.at import plugin first", regardless of which
+playlist was picked. `hearthis-import`'s provider entry
+(`packages/shared/src/integration-providers.ts`) has `fields: []` (public
+API, no real credential needed), so the install call is a no-op upsert, not
+a missing secret.
+
+Verified the rest of the pipeline is sound before concluding this was the
+whole story: `fetchHearthisCollectionTracks`/`getTrackByUrl`
+(`@tahti/hearthis`) resolve real playlist and track data correctly (checked
+live against `api-v2.hearthis.at` for a real user/playlist/track), and the
+worker's download step (`hearthis-embed-localize` job,
+`processHearthisEmbedLocalizationJob`) successfully downloads a real
+`download_url` (verified via `curl -L`, following hearthis.app →
+hearthis.at → stream81.hearthis.at, ending in a 200 with
+`Access-Control-Allow-Origin: *` and the real audio file) — so "downloading
+doesn't work" is very likely the same root cause: since import always
+400'd, the localization job was never enqueued in the first place, nothing
+ever got the chance to download.
+
+Fix: `HearthisCard`'s existing `handle`-driven effect (already the natural
+"is hearthis.at set up" trigger) now also calls
+`installMeIntegration('hearthis-import', {})` whenever `handle` is truthy —
+idempotent, so it also repairs accounts that saved their handle before this
+fix shipped. `eslint`/`tsc --noEmit` clean. Not covered by an automated
+test — `ServiceCategory.tsx`'s `HearthisCard` has no existing test
+scaffolding to extend cheaply (auth/player/plugin-install stores, profile
+fetch, source adapters, studio collections all need mocking) and the fix
+itself is a single conditional call to an already-tested API function
+(`installMeIntegration`, `api/integrations.test.ts`); verified by tracing
+the full request path and the real hearthis.at API instead.
+## 2026-09-15 — navigation-audit.md closed: collections split is intentional
+
+`navigation-audit.md`'s one open product question — is `/studio/collections`
+(`StudioCollectionsView`) vs `/library/collections` (`MyCollectionsView`)
+intentional or should one absorb the other — is answered: intentional.
+Both read the same underlying `StudioCollection` data via the same API,
+but serve different jobs — Studio is the artist's creation/management
+surface (create/filter/edit dialogs), Library is the personal browsing
+surface (simpler viewer, embedded in `LibraryView`'s tab set). No code
+change. Rest of the audit (parent/back links, duplicate pages, active-tab
+consistency, stable content regions, transition animations) already
+found no other gaps.
+## 2026-09-15 — Listen bugs batch (2026-09-14), item #5 finished
+
+`listen-bugs-batch-2026-09-14.md` — done, all 5 items. Items 1/2/4/5 shipped
+earlier; item 3 (radio-page now-playing/upcoming) was blocked on a new
+`tahti-org` backend feature — scoped and shipped in
+[tahti-org#521](https://github.com/janiluuk/tahti-org/pull/521) (`GET
+/api/v1/radio/show/:channelSlug/now-playing` and `.../upcoming`, reusing
+the existing per-channel now-playing columns and curated-rotation queue
+logic). Wired here: `api/shows.ts` gained
+`fetchRadioShowNowPlaying`/`fetchRadioShowUpcoming`;
+`RadioShowView.tsx` polls both every 30s (`usePolling`, matching
+`RadioView.tsx`'s convention) and renders a new "Now playing" section
+(current track + "Up next" queue) between the header and the Episodes
+tabs — hidden entirely for a channel with no rotation data, which is most
+artist channels. `eslint`/`tsc --noEmit` clean.
+
+## 2026-09-15 — Restyled /governance (member-facing) with real components + color
+
+Was queued in WORKPLAN.md's "Next" since 2026-09-08. `GovernanceView.tsx`
+leaned on bare `SectionShell` headings (no border, no background) and four
+plain underlined text links at the top — flat, no visual hierarchy.
+
+- Top nav: the 4 cross-page links (Feature requests / Closed decisions /
+  Transparency ledger / Governance help) are now `Button variant="secondary"`
+  pills with a leading icon each, not plain text.
+- New stat-chip hero row (`StatChip`, 4-up on mobile → responsive grid):
+  open motions / topics / meetings / documents counts, so the page reads at
+  a glance before scrolling into any section.
+- Every section (Needs your attention, Top topics, Published meetings,
+  Published documents, Quarterly reviews, Member directory, Submit a motion
+  draft) now renders inside a small local `GovernancePanel` wrapper — a
+  titled `Box` (from `@tahti-player/ui`) instead of a bare `SectionShell`
+  heading, giving each one a real border/background. "Needs your attention"
+  uses `Box variant="primary"` (the app's accent color) since it's the one
+  actionable panel that should draw the eye first; the rest use `tertiary`.
+  The meetings/documents/reports/directory group moved from a 2-col grid to
+  a `sm:grid-cols-2 xl:grid-cols-4` grid so they read as a real dashboard
+  row on wide screens instead of a tall single column.
+- `ViewShell`'s root went from `max-w-3xl` to `max-w-5xl` to give the wider
+  grid room; content and behavior otherwise unchanged — same data fetching,
+  same motion-list/`MotionCard` rendering, same empty/loading/forbidden
+  states, same text copy everywhere it was preserved from the original
+  (verified against `GovernanceView.test.tsx`'s exact string assertions).
+
+**Verified:** `tsc --noEmit` and `eslint` clean; full `pnpm vitest run`
+(516/516, including `GovernanceView.test.tsx`'s 6 assertions re-run in
+isolation) all green. Screenshotted the signed-out state locally
+(`VITE_FORCE_MOCK=1`) — new Box-styled sign-in panel and icon quick-links
+confirmed rendering correctly in a real browser. Could not screenshot the
+signed-in board-member view: this repo's mock auth keeps its session in an
+unexported in-memory variable (`getMockSessionUser()` in
+`api/mock-session.ts`), not localStorage, so it can only be reached via a
+real login submit — not attempted (this session doesn't enter credentials
+into login forms). The signed-in layout is still exercised end-to-end by
+`GovernanceView.test.tsx`, which renders the same JSX with a real
+board-member mock user and asserts on live DOM text (quorum status, vote
+tallies, DRAFT circulation copy, etc.) — all 6 passed unchanged.
 
 ## 2026-09-15 — Moved "What is tahti.live?" out of Listen into Help
 
