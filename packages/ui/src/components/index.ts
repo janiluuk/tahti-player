@@ -45,6 +45,7 @@ export * from './ScrollableArea';
 export * from './SectionShell';
 export * from './SettingsPanel';
 export * from './Select';
+export * from './SelectableTiles';
 export * from './SidebarNavigation';
 export * from './Slider';
 export * from './StatChip';
