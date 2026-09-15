@@ -2,6 +2,19 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-15 — navigation-audit.md closed: collections split is intentional
+
+`navigation-audit.md`'s one open product question — is `/studio/collections`
+(`StudioCollectionsView`) vs `/library/collections` (`MyCollectionsView`)
+intentional or should one absorb the other — is answered: intentional.
+Both read the same underlying `StudioCollection` data via the same API,
+but serve different jobs — Studio is the artist's creation/management
+surface (create/filter/edit dialogs), Library is the personal browsing
+surface (simpler viewer, embedded in `LibraryView`'s tab set). No code
+change. Rest of the audit (parent/back links, duplicate pages, active-tab
+consistency, stable content regions, transition animations) already
+found no other gaps.
+
 ## 2026-09-15 — Restyled /governance (member-facing) with real components + color
 
 Was queued in WORKPLAN.md's "Next" since 2026-09-08. `GovernanceView.tsx`
