@@ -10,6 +10,7 @@ export const CHANNEL_PAGE_ITEM_TYPES = [
   'stats',
   'events',
   'navigation',
+  'programming',
 ] as const;
 
 export type ChannelPageItemType = (typeof CHANNEL_PAGE_ITEM_TYPES)[number];
@@ -83,6 +84,10 @@ export const CHANNEL_PAGE_ITEM_META: Record<
   navigation: {
     label: 'Navigation',
     hint: 'Section tabs under the player',
+  },
+  programming: {
+    label: 'Programming',
+    hint: 'Next up + link to the full schedule — radio-channel pages only',
   },
   embed: {
     label: 'External embed',
@@ -257,6 +262,9 @@ export function defaultChannelPageLayout(): Array<{
     item('events', false),
     item('chat', false),
     item('navigation', false),
+    // Hidden by default for ordinary artist channels -- ChannelView forces
+    // this one into view for RADIO-kind channels regardless of this flag.
+    item('programming', false),
   ];
 }
 

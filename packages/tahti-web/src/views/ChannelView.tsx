@@ -1,6 +1,7 @@
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import {
   ArrowLeftIcon,
+  CalendarClockIcon,
   GripVerticalIcon,
   HeartIcon,
   LayoutTemplateIcon,
@@ -1029,6 +1030,48 @@ export function ChannelView({ slug }: { slug: string }) {
           </section>
         );
       }
+      case 'programming': {
+        const nextAt = channel.nextBroadcastAt
+          ? new Date(channel.nextBroadcastAt)
+          : null;
+        return (
+          <section
+            id="channel-block-programming"
+            className={`flex flex-col gap-3 px-4 py-3 ${editing ? '' : 'border-border rounded-lg border'}`}
+          >
+            <h2 className="flex items-center gap-2 text-sm font-bold tracking-tight">
+              <CalendarClockIcon size={16} aria-hidden />
+              Programming
+            </h2>
+            {nextAt || channel.nextBroadcastNote ? (
+              <p className="text-foreground-secondary text-sm">
+                {nextAt
+                  ? `Next up · ${nextAt.toLocaleDateString([], {
+                      weekday: 'short',
+                      month: 'short',
+                      day: 'numeric',
+                    })} · ${nextAt.toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}`
+                  : null}
+                {nextAt && channel.nextBroadcastNote ? ' — ' : null}
+                {channel.nextBroadcastNote}
+              </p>
+            ) : (
+              <p className="text-foreground-secondary text-sm">
+                No broadcast currently scheduled.
+              </p>
+            )}
+            <Link
+              to="/schedule"
+              className="text-sm underline-offset-2 hover:underline"
+            >
+              View full schedule →
+            </Link>
+          </section>
+        );
+      }
       case 'stats':
         return (
           <section
@@ -1145,7 +1188,7 @@ export function ChannelView({ slug }: { slug: string }) {
   // assigned to any tab only shows while its tab is active; an item never
   // assigned to any tab always shows, so adding a new block after tabs
   // exist doesn't silently disappear from every tab.
-  const visibleItems = editing
+  const baseVisibleItems = editing
     ? layout
     : layout.filter((item) => {
         if (
@@ -1160,6 +1203,32 @@ export function ChannelView({ slug }: { slug: string }) {
         }
         return true;
       });
+
+  // Radio-station pages (tahti-radio today) show programming instead of
+  // artist identity -- no bio/links/subscribe CTA, regardless of what an
+  // older saved layout has marked visible, and always a Programming block
+  // even if the layout was never customized to include one.
+  const isRadioChannel = channel.channelKind === 'RADIO';
+  const visibleItems = isRadioChannel
+    ? (() => {
+        const withoutArtistBlocks = baseVisibleItems.filter(
+          (item) =>
+            item.type !== 'about' &&
+            item.type !== 'links' &&
+            item.type !== 'subscribe',
+        );
+        return withoutArtistBlocks.some((item) => item.type === 'programming')
+          ? withoutArtistBlocks
+          : [
+              ...withoutArtistBlocks,
+              {
+                id: 'programming',
+                type: 'programming' as const,
+                visible: true,
+              },
+            ];
+      })()
+    : baseVisibleItems;
 
   // Exactly one <ChannelVisualizer> (one WebGL context, one RAF loop) per
   // page view, matching prod ("no point running two full WebGL scenes when
