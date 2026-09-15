@@ -1,3 +1,4 @@
+import { FileTextIcon, LoaderCircleIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { Button, Input } from '@tahti-player/ui';
@@ -54,6 +55,15 @@ export function ReportsTab() {
               });
             }}
           >
+            {busy ? (
+              <LoaderCircleIcon
+                size={14}
+                aria-hidden
+                className="mr-1.5 animate-spin"
+              />
+            ) : (
+              <FileTextIcon size={14} aria-hidden className="mr-1.5" />
+            )}
             {busy ? 'Generating…' : 'Generate report'}
           </Button>
         </div>

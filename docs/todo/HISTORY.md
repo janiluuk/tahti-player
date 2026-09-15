@@ -2,6 +2,88 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-15 — Studio/Admin UX sweep: verified punch list, fixed the real remainder
+
+`STUDIO-ADMIN-UX-SWEEP-OPEN.md` warned its 5 themes were "largely stale —
+re-verify before acting." Ran a read-only audit first (grep + actually
+reading each site, not trusting old `file:line` references — several had
+moved: `AdminGovernanceView.tsx` → `admin/governance/tabs/*.tsx`,
+`AdminDiscoWidgetsView.tsx` → `AdminAddonsView.tsx`). Most of the original
+list was already fixed in later passes that never folded back into the doc.
+Fixed the real remainder found:
+
+**Theme 1 (missing action icons)** — added a leading icon to 10 text-only
+Studio/Admin action buttons, matching each icon to its already-established
+codebase convention (grepped for precedent before picking one, not
+guessing): `PowerIcon` (enable/disable), `CalendarPlusIcon` (book slot),
+`PlayIcon` (play recording), `SplitIcon` (stem split — matches the tab
+label icon right above it), `EyeIcon` (publish, ×2), `Wand2Icon` (auto-fill
+"Fill all"), `PlusIcon` (create meeting/document, ×2), `UploadIcon` (import
+CSV), `FileTextIcon` (generate report), `CheckCircle2Icon`/`XCircleIcon`
+(approve/reject — matches 3 sibling moderation tabs, this one was missed).
+Also swapped `StudioScheduleView.tsx`'s "Save weekly schedule" text button
+for the shared `SaveButton` (this same file already used it one panel over).
+Theme 2 (inline help → Tooltip): verified zero real remaining instances —
+closed without a fix needed.
+
+**Loading-state icons (user correction mid-pass):** buttons whose label
+already swaps to "Saving…"/"Creating…"/"Generating…"/"Splitting…" while an
+async call is in flight must swap their icon to a spinning
+`LoaderCircleIcon` too, not just the text — added to every button above
+that has such a state, and to the shared `SaveButton` primitive itself
+(`packages/ui`), which now spins `LoaderCircleIcon` in place of `SaveIcon`
+while `saving` (benefits every existing `SaveButton` consumer at once).
+Saved as a standing convention: `feedback_button_loading_icons.md`.
+
+**Theme 3 (missing primitives)** — `Alert` already existed (stale claim).
+No `SegmentedControl` primitive exists, but rather than inventing one,
+swapped the two real hand-rolled bordered-toggle-group instances found
+(`BroadcastDetailsFields.tsx`'s broadcast-type and duration toggles) onto
+the existing `FilterChips` primitive (single-select, already has an icon
+slot from the 2026-09-14 sweep) — no new primitive needed.
+`StudioScheduleView.tsx`'s card/list view toggle was left hand-rolled: it's
+icon-only with a per-item `Tooltip`, which `FilterChips` doesn't support.
+
+**Theme 4 (hand-rolled panels)** — added an optional `icon` prop to the
+shared `StudioPanel` component (title-row leading icon, additive/optional).
+Swapped `StudioDistributionView.tsx`'s `GuideDetail` (a raw bordered div
+duplicating `StudioPanel`'s title+content shape) onto `StudioPanel`.
+Two other candidates from the audit were investigated and left as-is on
+purpose: `StudioScheduleView.tsx`'s "Your next broadcasts" section needs
+full-bleed content (image thumbnails, no padding) that conflicts with
+`StudioPanel`'s fixed `p-5 sm:p-6`, and `StudioHomeView.tsx`'s "Have your
+say" governance card is the *only* bordered box among that dashboard's
+sibling sections (which are all flat, borderless lists) — forcing it onto
+`StudioPanel` would make it inconsistent with its own page rather than more
+consistent. `OverviewTab.tsx`'s 3 stat tiles (value + label + sublabel) are
+a genuine "new primitive candidate" (no existing shared component has that
+exact shape) — left for a deliberate follow-up, not forced into `StatChip`
+or `Box`.
+
+**Theme 5 (custom actions)** — `CopyButton` (`packages/ui`) gained an
+optional `label` prop (renders visible text next to the icon, defaults to
+`icon-sm` size unless a label is given) and proper clipboard-failure
+handling (`try/catch` → `toast.error`, was previously silent on failure).
+`TrackDetailView.tsx`'s "Share" button was investigated but *not* swapped
+onto the enhanced `CopyButton`: it already has its own icon (`Share2Icon`),
+label, and toast handling — forcing it onto `CopyButton` would replace the
+descriptive share icon with a generic copy icon, a real downgrade, not a
+no-op. The primitive enhancement stands on its own for future labeled-copy
+call sites. `MoreView.tsx` and `StudioDistributionView.tsx`'s copy actions
+were checked and are not gaps (both do async pre-copy work that doesn't fit
+`CopyButton`'s plain-`text` API).
+
+**Verified:** `tsc --noEmit`, `eslint`, and full `vitest run` clean across
+`tahti-web` (516/516) and `ui` (290/290, plus 2 new `CopyButton` tests and 1
+new `SaveButton` test covering the loading-spinner swap). One pre-existing,
+unrelated `HistoryRow` snapshot flake in `ui` (Tailwind class-order
+nondeterminism in `MediaArtwork`'s play button, a component this pass never
+touched) — not fixed, out of scope. Not live-browser-verified beyond the
+`BroadcastDetailsFields` swap, which requires an artist channel the mock
+demo account doesn't have; relied on `FilterChips` already being a
+well-tested primitive used at ~20 other sites instead of creating a channel
+to force the check.
+
 ## 2026-09-15 — Governance restyle: sibling detail pages
 
 Follow-on to the same day's `/governance` restyle. Extended the `Box`-panel

@@ -209,9 +209,8 @@ function GuideDetail({
   linkLabel?: string;
 }) {
   return (
-    <div className="border-border bg-background-secondary/30 rounded-lg border p-4">
-      <h3 className="text-sm font-medium">{title}</h3>
-      <ol className="text-foreground-secondary mt-2 list-inside list-decimal space-y-1">
+    <StudioPanel title={title}>
+      <ol className="text-foreground-secondary list-inside list-decimal space-y-1">
         {steps.map((step) => (
           <li key={step}>{step}</li>
         ))}
@@ -227,7 +226,7 @@ function GuideDetail({
           <ExternalLinkIcon size={12} aria-hidden />
         </a>
       ) : null}
-    </div>
+    </StudioPanel>
   );
 }
 

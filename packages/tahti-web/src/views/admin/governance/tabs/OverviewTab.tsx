@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import {
   BanknoteIcon,
   BuildingIcon,
+  EyeIcon,
   FileTextIcon,
   GavelIcon,
   ScrollTextIcon,
@@ -348,6 +349,7 @@ export function OverviewTab() {
                     });
                   }}
                 >
+                  <EyeIcon size={14} aria-hidden className="mr-1.5" />
                   Publish
                 </Button>
               )}
