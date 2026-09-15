@@ -469,7 +469,13 @@ export async function voteOnMotion(
  * or close an OPEN one and publish its tally. */
 export async function patchGovernanceMotion(
   id: string,
-  patch: { state?: 'OPEN' | 'CLOSED'; title?: string; description?: string },
+  patch: {
+    state?: 'OPEN' | 'CLOSED';
+    title?: string;
+    description?: string;
+    /** Voting window adjustment — DRAFT-only, ISO string. */
+    closeAt?: string;
+  },
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   if (isForceMock()) {
     mockMotions = mockMotions.map((m) =>
@@ -478,6 +484,7 @@ export async function patchGovernanceMotion(
             ...m,
             ...(patch.state ? { state: patch.state } : {}),
             ...(patch.title ? { title: patch.title } : {}),
+            ...(patch.closeAt ? { closeAt: patch.closeAt } : {}),
           }
         : m,
     );
