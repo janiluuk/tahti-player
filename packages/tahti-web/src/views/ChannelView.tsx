@@ -1,13 +1,10 @@
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import {
   ArrowLeftIcon,
-  CalendarClockIcon,
   GripVerticalIcon,
   HeartIcon,
-  LayoutTemplateIcon,
   ListMusicIcon,
   MessageCircle,
-  Mic,
   PauseIcon,
   PencilIcon,
   PlayIcon,
@@ -24,7 +21,6 @@ import {
   FilterChips,
   Loader,
   SaveButton,
-  StatChip,
   Tooltip,
 } from '@tahti-player/ui';
 
@@ -58,6 +54,7 @@ import type {
   PublicChannel,
   TahtiPlayable,
 } from '../api/types';
+import { renderChannelBlock } from '../components/channel-view';
 import { ChannelBackdropCard } from '../components/ChannelBackdropCard';
 import {
   ChannelDesigner,
@@ -66,7 +63,6 @@ import {
 import { ChannelLayersMenu } from '../components/ChannelLayersMenu';
 import { ChannelLinksEditor } from '../components/ChannelLinksEditor';
 import { ChannelNavigationEditor } from '../components/ChannelNavigationEditor';
-import { ChannelPlaylistBlock } from '../components/ChannelPlaylistBlock';
 import { ChannelPlaylistPicker } from '../components/ChannelPlaylistPicker';
 import { ChannelShareButton } from '../components/ChannelShareButton';
 import { ChannelVisualizer } from '../components/ChannelVisualizer';
@@ -75,14 +71,9 @@ import {
   EntitySocialHeader,
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
-import { ListenerWidgetEmbed } from '../components/ListenerWidgetEmbed';
 import { NowPlayingOverlay } from '../components/NowPlayingOverlay';
 import { PageEmpty, PageLoading } from '../components/PageStates';
-import { PlayableTrackTable } from '../components/PlayableTrackTable';
-import { ShowEpisodeList } from '../components/ShowEpisodeList';
-import { SocialLinkIcon } from '../components/SocialLinkIcon';
 import { StreamManagerPanel } from '../components/StreamManagerPanel';
-import { Eyebrow } from '../components/tahti/Eyebrow';
 import { OnAirBadge } from '../components/tahti/OnAirBadge';
 import { WaveformSeekbar } from '../components/tahti/WaveformSeekbar';
 import { listenerWidgetType } from '../content/listenerWidgets';
@@ -1098,299 +1089,25 @@ export function ChannelView({ slug }: { slug: string }) {
           </div>
         );
       }
-      case 'sound':
-        return (
-          <section id="channel-block-sound" className="flex flex-col gap-6">
-            {!editing && (
-              <h2 className="text-xl font-bold tracking-tight">Tracks</h2>
-            )}
-            {pinnedPlayables.length > 0 && (
-              <div className="flex flex-col gap-3">
-                <Eyebrow>Pinned</Eyebrow>
-                <PlayableTrackTable
-                  items={pinnedPlayables}
-                  emptyMessage="No pinned tracks."
-                />
-              </div>
-            )}
-            <div className="flex flex-col gap-3">
-              {pinnedPlayables.length > 0 && <Eyebrow>Catalog</Eyebrow>}
-              <PlayableTrackTable
-                items={catalogPlayables}
-                emptyMessage={
-                  pinnedPlayables.length > 0
-                    ? 'No other public tracks.'
-                    : 'No public tracks for this channel yet.'
-                }
-              />
-            </div>
-          </section>
-        );
-      case 'chat':
-        // Chat lives in the Nuclear right rail only — never embed a second panel.
-        return (
-          <section
-            className={`flex max-w-xl items-center gap-3 px-4 py-3 ${editing ? '' : 'border-border rounded-lg border border-dashed'}`}
-          >
-            <MessageCircle
-              size={18}
-              className="text-foreground-secondary shrink-0 opacity-70"
-            />
-            <div className="min-w-0 flex-1">
-              <div className="text-sm font-bold tracking-tight">Live chat</div>
-              <p className="text-foreground-secondary text-xs">
-                {chatOn
-                  ? 'Shown in the right sidebar Chat tab — not duplicated on this page.'
-                  : 'Chat is disabled for this channel.'}
-              </p>
-            </div>
-            {chatOn ? (
-              <Tooltip content="Open chat in sidebar" side="top">
-                <Button
-                  size="icon-sm"
-                  variant="secondary"
-                  onClick={openChat}
-                  aria-label="Open chat in sidebar"
-                >
-                  <MessageCircle size={16} aria-hidden />
-                </Button>
-              </Tooltip>
-            ) : null}
-          </section>
-        );
-      case 'navigation': {
-        const navTabCount = item.navigationTabs?.length ?? 0;
-        return (
-          <section
-            className={`flex max-w-xl items-center gap-3 px-4 py-3 ${editing ? '' : 'border-border rounded-lg border border-dashed'}`}
-          >
-            <LayoutTemplateIcon
-              size={18}
-              className="text-foreground-secondary shrink-0 opacity-70"
-            />
-            <div className="min-w-0 flex-1">
-              <div className="text-sm font-bold tracking-tight">Navigation</div>
-              <p className="text-foreground-secondary text-xs">
-                {navTabCount >= 2
-                  ? `${navTabCount} tabs shown under the player.`
-                  : 'Off — add a second tab to show the bar under the player.'}
-              </p>
-            </div>
-          </section>
-        );
-      }
-      case 'about':
-        return (
-          <section id="channel-block-about" className="flex flex-col gap-3">
-            {channel.user.bio ? (
-              <p className="text-foreground text-sm whitespace-pre-wrap">
-                {channel.user.bio}
-              </p>
-            ) : (
-              <p className="text-foreground-secondary text-sm">No bio yet.</p>
-            )}
-            <Link
-              to="/u/$username"
-              params={{ username: channel.user.username }}
-              className="text-sm underline-offset-2 hover:underline"
-            >
-              Full artist profile →
-            </Link>
-          </section>
-        );
-      case 'links': {
-        const links = editing
-          ? channelLinksDraft
-          : (channel.channelLinks ?? []);
-        return (
-          <section
-            className={`px-4 py-3 ${editing ? '' : 'border-border rounded-lg border'}`}
-          >
-            <h2 className="text-sm font-bold tracking-tight">Links</h2>
-            {links.length === 0 ? (
-              <p className="text-foreground-secondary mt-1 text-xs">
-                {editing
-                  ? 'Add links in the side panel to show them here.'
-                  : 'No links yet.'}
-              </p>
-            ) : (
-              <div className="mt-2 flex flex-wrap gap-2">
-                {links
-                  .filter(
-                    (link) =>
-                      link.label.trim() &&
-                      link.url.trim() &&
-                      (editing || !link.hidden),
-                  )
-                  .map((link) => (
-                    <a
-                      key={`${link.label}-${link.url}`}
-                      href={link.url}
-                      target={
-                        link.url.startsWith('mailto:') ? undefined : '_blank'
-                      }
-                      rel="noopener noreferrer"
-                      className={`border-border hover:border-primary/50 hover:bg-primary/5 inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold ${
-                        editing && link.hidden ? 'opacity-50' : ''
-                      }`}
-                    >
-                      <SocialLinkIcon label={link.label} url={link.url} />
-                      {link.label}
-                    </a>
-                  ))}
-              </div>
-            )}
-          </section>
-        );
-      }
-      case 'programming': {
-        const nextAt = channel.nextBroadcastAt
-          ? new Date(channel.nextBroadcastAt)
-          : null;
-        return (
-          <section
-            id="channel-block-programming"
-            className={`flex flex-col gap-3 px-4 py-3 ${editing ? '' : 'border-border rounded-lg border'}`}
-          >
-            <h2 className="flex items-center gap-2 text-sm font-bold tracking-tight">
-              <CalendarClockIcon size={16} aria-hidden />
-              Programming
-            </h2>
-            {nextAt || channel.nextBroadcastNote ? (
-              <p className="text-foreground-secondary text-sm">
-                {nextAt
-                  ? `Next up · ${nextAt.toLocaleDateString([], {
-                      weekday: 'short',
-                      month: 'short',
-                      day: 'numeric',
-                    })} · ${nextAt.toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}`
-                  : null}
-                {nextAt && channel.nextBroadcastNote ? ' — ' : null}
-                {channel.nextBroadcastNote}
-              </p>
-            ) : (
-              <p className="text-foreground-secondary text-sm">
-                No broadcast currently scheduled.
-              </p>
-            )}
-            <Link
-              to="/schedule"
-              className="text-sm underline-offset-2 hover:underline"
-            >
-              View full schedule →
-            </Link>
-          </section>
-        );
-      }
-      case 'stats':
-        return (
-          <section
-            className={`flex items-center gap-6 px-4 py-3 ${editing ? '' : 'border-border rounded-lg border'}`}
-          >
-            <StatChip value={channel.followerCount ?? '—'} label="Followers" />
-          </section>
-        );
-      case 'events': {
-        if (
-          !liveShows ||
-          (liveShows.upcomingEpisodes.length === 0 &&
-            liveShows.pastEpisodes.length === 0)
-        ) {
-          return editing ? (
-            <div className="px-4 py-3 text-sm">
-              <h2 className="text-sm font-bold tracking-tight">Live shows</h2>
-              <p className="text-foreground-secondary mt-1 text-xs">
-                No scheduled or past broadcasts yet — this block shows once
-                there are some.
-              </p>
-            </div>
-          ) : null;
-        }
-        return (
-          <section
-            className={`flex flex-col gap-4 px-4 py-3 ${editing ? '' : 'border-border rounded-lg border'}`}
-          >
-            <h2 className="text-sm font-bold tracking-tight">Live shows</h2>
-            <div className="grid gap-5 lg:grid-cols-2">
-              {liveShows.upcomingEpisodes.length > 0 ? (
-                <ShowEpisodeList
-                  title="Upcoming"
-                  episodes={liveShows.upcomingEpisodes}
-                  icon={<Mic size={16} aria-hidden />}
-                  channelSlug={slug}
-                  username={channel.user.username}
-                />
-              ) : null}
-              {liveShows.pastEpisodes.length > 0 ? (
-                <ShowEpisodeList
-                  title="Past recordings"
-                  episodes={liveShows.pastEpisodes}
-                  icon={<MessageCircle size={16} aria-hidden />}
-                  channelSlug={slug}
-                />
-              ) : null}
-            </div>
-          </section>
-        );
-      }
-      case 'subscribe':
-        return editing ? (
-          <div className="px-4 py-3 text-sm">
-            <h2 className="text-sm font-bold tracking-tight">
-              Support {channel.user.displayName}
-            </h2>
-            <p className="text-foreground-secondary mt-1 text-xs">
-              Fan membership pitch — links out to the subscribe page.
-            </p>
-            <span className="border-primary/40 text-primary mt-3 inline-flex items-center rounded-md border px-3 py-1.5 text-xs font-semibold">
-              Subscribe (preview)
-            </span>
-          </div>
-        ) : isOwner ? null : (
-          <section className="border-border rounded-lg border px-4 py-3">
-            <h2 className="text-sm font-bold tracking-tight">
-              Support {channel.user.displayName}
-            </h2>
-            <p className="text-foreground-secondary mt-1 text-xs">
-              Become a fan member for perks and to help keep the channel
-              running.
-            </p>
-            <Link
-              to="/subscribe/$username"
-              params={{ username: channel.user.username }}
-              className="mt-3 inline-block"
-            >
-              <Button size="sm" variant="secondary">
-                Subscribe
-              </Button>
-            </Link>
-          </section>
-        );
-      case 'embed': {
-        const instance = listenerWidgetInstances.find(
-          (candidate) => candidate.id === item.embedInstanceId,
-        );
-        return instance ? <ListenerWidgetEmbed instance={instance} /> : null;
-      }
-      case 'playlist':
-        return item.playlistSlug ? (
-          <ChannelPlaylistBlock
-            playlistSlug={item.playlistSlug}
-            display={item.playlistDisplay ?? 'tracklist'}
-            editing={editing}
-          />
-        ) : null;
-      default: {
-        // Exhaustiveness guard: adding a type to CHANNEL_PAGE_ITEM_TYPES
-        // without a matching case here used to compile fine and silently
-        // render nothing — this turns that into a build error instead.
-        const unhandled: never = item.type;
-        void unhandled;
-        return null;
-      }
+      default:
+        // Every other block type (sound/chat/navigation/about/links/
+        // programming/stats/events/subscribe/embed/playlist) is small
+        // enough (2-6 free variables each) to live in its own file --
+        // see ChannelViewBlocks.tsx for the exhaustiveness guard covering
+        // these, and CHANNEL_PAGE_ITEM_TYPES.
+        return renderChannelBlock(item, {
+          editing,
+          channel,
+          slug,
+          isOwner,
+          pinnedPlayables,
+          catalogPlayables,
+          channelLinksDraft,
+          liveShows,
+          chatOn,
+          onOpenChat: openChat,
+          listenerWidgetInstances,
+        });
     }
   };
 
