@@ -387,6 +387,219 @@ export function ChannelView({ slug }: { slug: string }) {
     return () => cancelAnimationFrame(frame);
   }, [activeNavTab?.id]);
 
+  // NOTE: this block (through the 3 hooks below) used to sit after both the
+  // `if (loading)`/`if (!channel)` early returns below AND (until an earlier
+  // fix in this same pass) the `if (!editing)` early return further down --
+  // any hook placed after either kind of early return is conditional on it,
+  // a rules-of-hooks violation, since `loading`/`channel`/`editing` all
+  // change within this same mounted instance (no remount on any of them).
+  // Moved above every early return so every hook is always called on every
+  // render; `layersMenu` stays gated on `editing && channel` (cheap check,
+  // and it's expensive JSX that's only ever read once we're past both early
+  // returns anyway -- see the mobile bottom-sheet render further below).
+  const selectedType =
+    selectedId === 'header'
+      ? 'header'
+      : layout.find((i) => i.id === selectedId)?.type;
+  const lookElementId: ChannelLookElementId | null =
+    selectedType === 'hero'
+      ? 'player'
+      : selectedType === 'header'
+        ? 'backdrop'
+        : selectedType === 'sound'
+          ? 'tracks'
+          : null;
+  const lookOpenSection =
+    selectedType === 'links'
+      ? 'links'
+      : selectedType === 'playlist'
+        ? 'playlist'
+        : selectedType === 'navigation'
+          ? 'navigation'
+          : lookElementId;
+
+  const selectedPlaylistItem =
+    selectedType === 'playlist'
+      ? layout.find((item) => item.id === selectedId)
+      : undefined;
+
+  const selectedNavigationItem =
+    selectedType === 'navigation'
+      ? layout.find((item) => item.id === selectedId)
+      : undefined;
+
+  const layersMenu =
+    editing && channel ? (
+      <ChannelLayersMenu
+        items={layout}
+        selectedId={selectedId}
+        lookOpenSection={lookOpenSection}
+        activePresetId={activePresetId}
+        onSelect={setSelectedId}
+        onToggleVisible={(id) => {
+          updateLayout((prev) => {
+            const row = prev.find((i) => i.id === id);
+            return row ? setItemVisible(prev, id, !row.visible) : prev;
+          });
+        }}
+        onResize={(id, width) => {
+          updateLayout((prev) => setItemWidth(prev, id, width));
+        }}
+        onRemove={(id) => removeLayoutItem(id)}
+        onAdd={(type: ChannelPageItemType) => {
+          updateLayout((prev) => addItemType(prev, type));
+        }}
+        embedItems={configuredEmbedItems}
+        onAddEmbed={(embedInstanceId) => {
+          updateLayout((prev) => {
+            const existing = prev.find(
+              (i) =>
+                i.type === 'embed' && i.embedInstanceId === embedInstanceId,
+            );
+            if (existing) {
+              return setItemVisible(prev, existing.id, true);
+            }
+            return [
+              ...prev,
+              {
+                id: `embed-${embedInstanceId}`,
+                type: 'embed',
+                embedInstanceId,
+                visible: true,
+              },
+            ];
+          });
+        }}
+        onAddPlaylist={(playlistSlug) => {
+          updateLayout((prev) => addPlaylistItem(prev, playlistSlug));
+        }}
+        onReorder={(fromId, toId) => {
+          updateLayout((prev) => moveItem(prev, fromId, toId));
+        }}
+        onApplyPreset={(id) => applyPreset(id)}
+        lookSlot={
+          lookOpenSection === 'links' ? (
+            <ChannelLinksEditor
+              links={channelLinksDraft}
+              onChange={(links) => {
+                setChannelLinksDraft(links);
+                setLinksDirty(true);
+              }}
+            />
+          ) : lookOpenSection === 'playlist' && selectedPlaylistItem ? (
+            <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-2">
+                <p className="text-foreground-secondary text-xs">
+                  Choose which playlist this block shows.
+                </p>
+                <ChannelPlaylistPicker
+                  usedSlugs={layout
+                    .filter(
+                      (item) => item.type === 'playlist' && item.playlistSlug,
+                    )
+                    .map((item) => item.playlistSlug as string)}
+                  initialSlug={selectedPlaylistItem.playlistSlug}
+                  applyOnChange
+                  onPick={(playlistSlug) => {
+                    updateLayout((prev) =>
+                      setPlaylistSlug(
+                        prev,
+                        selectedPlaylistItem.id,
+                        playlistSlug,
+                      ),
+                    );
+                  }}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <p className="text-foreground-secondary text-xs">
+                  How tracks appear on the page.
+                </p>
+                <FilterChips
+                  items={[
+                    { id: 'tracklist', label: 'Tracklist' },
+                    { id: 'cards', label: 'Cards' },
+                  ]}
+                  selected={selectedPlaylistItem.playlistDisplay ?? 'tracklist'}
+                  onChange={(id) => {
+                    if (id !== 'tracklist' && id !== 'cards') {
+                      return;
+                    }
+                    updateLayout((prev) =>
+                      setPlaylistDisplay(prev, selectedPlaylistItem.id, id),
+                    );
+                  }}
+                  aria-label="Playlist display"
+                />
+              </div>
+            </div>
+          ) : lookOpenSection === 'navigation' && selectedNavigationItem ? (
+            <ChannelNavigationEditor
+              tabs={selectedNavigationItem.navigationTabs ?? []}
+              candidateItems={layout
+                .filter(
+                  (candidate) =>
+                    candidate.visible &&
+                    candidate.type !== 'hero' &&
+                    candidate.type !== 'chat' &&
+                    candidate.type !== 'navigation',
+                )
+                .map((candidate) => ({
+                  id: candidate.id,
+                  label:
+                    candidate.type === 'playlist' && candidate.playlistSlug
+                      ? candidate.playlistSlug
+                      : CHANNEL_PAGE_ITEM_META[candidate.type].label,
+                }))}
+              onChange={(tabs) => {
+                updateLayout((prev) =>
+                  setNavigationTabs(prev, selectedNavigationItem.id, tabs),
+                );
+              }}
+            />
+          ) : (
+            <ChannelDesigner
+              ref={channelDesignerRef}
+              lookOnly
+              reloadToken={lookTick}
+              displayName={channel.user.displayName}
+              username={channel.user.username}
+              channelSlug={slug}
+              avatarUrl={channel.user.avatarUrl}
+              bio={channel.user.bio}
+              lookOpenSection={lookElementId}
+              onDirtyChange={setLookDirty}
+              onSaved={() => {
+                setLookTick((n) => n + 1);
+                setLookExtrasTick((n) => n + 1);
+              }}
+            />
+          )
+        }
+      />
+    ) : null;
+
+  useLayoutEffect(() => {
+    if (!editing || isMobile) {
+      setRailOverride(null);
+      return;
+    }
+    setRailOverride({ title: 'Channel design', content: layersMenu });
+    setRightCollapsed(false);
+    if (rightWidth < 360) {
+      setRightWidth(360);
+    }
+  }, [editing, isMobile, layersMenu, setRailOverride, setRightCollapsed]);
+
+  useEffect(() => {
+    if (!editing || isMobile || rightWidth >= 360) {
+      return;
+    }
+    setRightWidth(360);
+  }, [editing, isMobile, rightWidth, setRightWidth]);
+
+  useEffect(() => () => setRailOverride(null), [setRailOverride]);
+
   if (loading) {
     return <PageLoading label="Loading channel…" />;
   }
@@ -1643,207 +1856,6 @@ export function ChannelView({ slug }: { slug: string }) {
       </>
     );
   }
-
-  const selectedType =
-    selectedId === 'header'
-      ? 'header'
-      : layout.find((i) => i.id === selectedId)?.type;
-  const lookElementId: ChannelLookElementId | null =
-    selectedType === 'hero'
-      ? 'player'
-      : selectedType === 'header'
-        ? 'backdrop'
-        : selectedType === 'sound'
-          ? 'tracks'
-          : null;
-  const lookOpenSection =
-    selectedType === 'links'
-      ? 'links'
-      : selectedType === 'playlist'
-        ? 'playlist'
-        : selectedType === 'navigation'
-          ? 'navigation'
-          : lookElementId;
-
-  const selectedPlaylistItem =
-    selectedType === 'playlist'
-      ? layout.find((item) => item.id === selectedId)
-      : undefined;
-
-  const selectedNavigationItem =
-    selectedType === 'navigation'
-      ? layout.find((item) => item.id === selectedId)
-      : undefined;
-
-  const layersMenu = (
-    <ChannelLayersMenu
-      items={layout}
-      selectedId={selectedId}
-      lookOpenSection={lookOpenSection}
-      activePresetId={activePresetId}
-      onSelect={setSelectedId}
-      onToggleVisible={(id) => {
-        updateLayout((prev) => {
-          const row = prev.find((i) => i.id === id);
-          return row ? setItemVisible(prev, id, !row.visible) : prev;
-        });
-      }}
-      onResize={(id, width) => {
-        updateLayout((prev) => setItemWidth(prev, id, width));
-      }}
-      onRemove={removeLayoutItem}
-      onAdd={(type: ChannelPageItemType) => {
-        updateLayout((prev) => addItemType(prev, type));
-      }}
-      embedItems={configuredEmbedItems}
-      onAddEmbed={(embedInstanceId) => {
-        updateLayout((prev) => {
-          const existing = prev.find(
-            (i) => i.type === 'embed' && i.embedInstanceId === embedInstanceId,
-          );
-          if (existing) {
-            return setItemVisible(prev, existing.id, true);
-          }
-          return [
-            ...prev,
-            {
-              id: `embed-${embedInstanceId}`,
-              type: 'embed',
-              embedInstanceId,
-              visible: true,
-            },
-          ];
-        });
-      }}
-      onAddPlaylist={(playlistSlug) => {
-        updateLayout((prev) => addPlaylistItem(prev, playlistSlug));
-      }}
-      onReorder={(fromId, toId) => {
-        updateLayout((prev) => moveItem(prev, fromId, toId));
-      }}
-      onApplyPreset={applyPreset}
-      lookSlot={
-        lookOpenSection === 'links' ? (
-          <ChannelLinksEditor
-            links={channelLinksDraft}
-            onChange={(links) => {
-              setChannelLinksDraft(links);
-              setLinksDirty(true);
-            }}
-          />
-        ) : lookOpenSection === 'playlist' && selectedPlaylistItem ? (
-          <div className="flex flex-col gap-3">
-            <div className="flex flex-col gap-2">
-              <p className="text-foreground-secondary text-xs">
-                Choose which playlist this block shows.
-              </p>
-              <ChannelPlaylistPicker
-                usedSlugs={layout
-                  .filter(
-                    (item) => item.type === 'playlist' && item.playlistSlug,
-                  )
-                  .map((item) => item.playlistSlug as string)}
-                initialSlug={selectedPlaylistItem.playlistSlug}
-                applyOnChange
-                onPick={(playlistSlug) => {
-                  updateLayout((prev) =>
-                    setPlaylistSlug(
-                      prev,
-                      selectedPlaylistItem.id,
-                      playlistSlug,
-                    ),
-                  );
-                }}
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <p className="text-foreground-secondary text-xs">
-                How tracks appear on the page.
-              </p>
-              <FilterChips
-                items={[
-                  { id: 'tracklist', label: 'Tracklist' },
-                  { id: 'cards', label: 'Cards' },
-                ]}
-                selected={selectedPlaylistItem.playlistDisplay ?? 'tracklist'}
-                onChange={(id) => {
-                  if (id !== 'tracklist' && id !== 'cards') {
-                    return;
-                  }
-                  updateLayout((prev) =>
-                    setPlaylistDisplay(prev, selectedPlaylistItem.id, id),
-                  );
-                }}
-                aria-label="Playlist display"
-              />
-            </div>
-          </div>
-        ) : lookOpenSection === 'navigation' && selectedNavigationItem ? (
-          <ChannelNavigationEditor
-            tabs={selectedNavigationItem.navigationTabs ?? []}
-            candidateItems={layout
-              .filter(
-                (candidate) =>
-                  candidate.visible &&
-                  candidate.type !== 'hero' &&
-                  candidate.type !== 'chat' &&
-                  candidate.type !== 'navigation',
-              )
-              .map((candidate) => ({
-                id: candidate.id,
-                label:
-                  candidate.type === 'playlist' && candidate.playlistSlug
-                    ? candidate.playlistSlug
-                    : CHANNEL_PAGE_ITEM_META[candidate.type].label,
-              }))}
-            onChange={(tabs) => {
-              updateLayout((prev) =>
-                setNavigationTabs(prev, selectedNavigationItem.id, tabs),
-              );
-            }}
-          />
-        ) : (
-          <ChannelDesigner
-            ref={channelDesignerRef}
-            lookOnly
-            reloadToken={lookTick}
-            displayName={channel.user.displayName}
-            username={channel.user.username}
-            channelSlug={slug}
-            avatarUrl={channel.user.avatarUrl}
-            bio={channel.user.bio}
-            lookOpenSection={lookElementId}
-            onDirtyChange={setLookDirty}
-            onSaved={() => {
-              setLookTick((n) => n + 1);
-              setLookExtrasTick((n) => n + 1);
-            }}
-          />
-        )
-      }
-    />
-  );
-
-  useLayoutEffect(() => {
-    if (!editing || isMobile) {
-      setRailOverride(null);
-      return;
-    }
-    setRailOverride({ title: 'Channel design', content: layersMenu });
-    setRightCollapsed(false);
-    if (rightWidth < 360) {
-      setRightWidth(360);
-    }
-  }, [editing, isMobile, layersMenu, setRailOverride, setRightCollapsed]);
-
-  useEffect(() => {
-    if (!editing || isMobile || rightWidth >= 360) {
-      return;
-    }
-    setRightWidth(360);
-  }, [editing, isMobile, rightWidth, setRightWidth]);
-
-  useEffect(() => () => setRailOverride(null), [setRailOverride]);
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-3">
