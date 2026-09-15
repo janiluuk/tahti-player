@@ -41,6 +41,7 @@ import type {
   GovernanceMotion,
   GovernanceQuarterlyReport,
 } from '../api/types';
+import { GovernancePanel } from '../components/governance/GovernancePanel';
 import { MotionCard } from '../components/governance/MotionCard';
 import { PageLoading } from '../components/PageStates';
 import { hasAccountRole } from '../lib/accountRoles';
@@ -71,31 +72,6 @@ const QUICK_LINKS = [
     icon: HelpCircleIcon,
   },
 ];
-
-/** A titled, colored panel — the shared card treatment for every
- * governance section on this page (replaces the old plain SectionShell
- * headings with real visual boundaries). */
-function GovernancePanel({
-  title,
-  icon: Icon,
-  variant = 'tertiary',
-  children,
-}: {
-  title: string;
-  icon?: typeof VoteIcon;
-  variant?: 'primary' | 'secondary' | 'tertiary';
-  children: React.ReactNode;
-}) {
-  return (
-    <Box variant={variant} className="flex flex-col gap-3">
-      <h2 className="flex items-center gap-2 text-lg font-bold">
-        {Icon && <Icon size={18} aria-hidden className="shrink-0" />}
-        {title}
-      </h2>
-      {children}
-    </Box>
-  );
-}
 
 export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
   const user = useAuthStore((s) => s.user);

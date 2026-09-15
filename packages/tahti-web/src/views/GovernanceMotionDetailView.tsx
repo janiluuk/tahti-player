@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { Button, ViewShell } from '@tahti-player/ui';
+import { Box, Button, ViewShell } from '@tahti-player/ui';
 
 import { fetchGovernanceMembers, fetchGovernanceMotion } from '../api/client';
 import type { GovernanceMember, GovernanceMotionDetail } from '../api/types';
@@ -70,23 +70,24 @@ export function GovernanceMotionDetailView({ id }: { id: string }) {
       </Link>
 
       {!user && (
-        <div className="border-border flex flex-col gap-3 rounded-lg border p-4">
+        <Box variant="secondary" className="flex flex-col gap-3">
           <p className="text-sm">
             Sign in with a cooperative membership account to view this motion.
           </p>
           <Button
             size="sm"
+            className="w-fit"
             onClick={() => useAuthModalStore.getState().open('login')}
           >
             Log in
           </Button>
-        </div>
+        </Box>
       )}
 
       {user && loading && <PageLoading label="Loading motion…" />}
 
       {user && !loading && forbidden && (
-        <div className="border-border flex flex-col gap-3 rounded-lg border p-4">
+        <Box variant="secondary" className="flex flex-col gap-3">
           <p className="text-sm">
             Motions are gated to active Tahti ry members. Signed in as @
             {user.username}.
@@ -94,11 +95,12 @@ export function GovernanceMotionDetailView({ id }: { id: string }) {
           <Button
             size="sm"
             variant="secondary"
+            className="w-fit"
             onClick={() => useSettingsModalStore.getState().open('account')}
           >
             Manage membership
           </Button>
-        </div>
+        </Box>
       )}
 
       {user && !loading && !forbidden && !motion && (

@@ -2,6 +2,40 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-15 — Governance restyle: sibling detail pages
+
+Follow-on to the same day's `/governance` restyle. Extended the `Box`-panel
++ icon treatment to four pages that still had bare `SectionShell` headings
+or plain bordered lists:
+
+- Extracted the local `GovernancePanel` helper out of `GovernanceView.tsx`
+  into `components/governance/GovernancePanel.tsx` so it's shared, not
+  duplicated.
+- `GovernanceMotionDetailView.tsx` — signed-out/forbidden messages now use
+  `Box variant="secondary"` instead of a plain `border p-4` div.
+- `GovernanceMeetingDetailView.tsx` — Overview/Quorum & attendance/Agenda
+  swapped from bare `SectionShell` to `GovernancePanel` with per-section
+  icons (Users/CalendarCheck/ScrollText).
+- `GovernanceMembersView.tsx` — added a 2-up `StatChip` row (member count,
+  board count) above the search input; existing bordered list unchanged
+  (matches the pattern of `GovernanceView.tsx`'s own motions list, which
+  also isn't Box-wrapped).
+- `PublicGovernanceHistoryView.tsx` (`/governance/history`, "Closed
+  decisions") — top link became an icon `Button` pill, added a `StatChip`
+  for the closed-motion count, and each motion row is now a `Box
+  variant="tertiary"` card instead of a plain bordered `<li>`.
+
+Out of scope: `TransparencyView.tsx` (`/transparency`) — a separate,
+table-heavy page; left for its own design pass if wanted.
+
+**Verified:** `tsc --noEmit`, `eslint`, and full `pnpm vitest run`
+(516/516) all clean. Visually checked all four pages in a real browser
+(`VITE_FORCE_MOCK=1` dev server) — `/governance/history` (public, no auth
+needed), `/governance/members`, `/governance/meetings/meeting-agm-2026`,
+and `/governance/motions/motion-1`, all signed in as the mock demo user
+this session (unlike the earlier `/governance` fold, `VITE_FORCE_MOCK`
+did provide a live signed-in session here — no login form needed).
+
 ## 2026-09-15 — Player extracted from the hero block into a fixed Stage
 
 `channelview-move-player-to-stage.md` — done. Decision (user, 2026-09-15):

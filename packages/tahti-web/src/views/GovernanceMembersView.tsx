@@ -1,7 +1,8 @@
 import { Link } from '@tanstack/react-router';
+import { LandmarkIcon, UsersIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Badge, Input, ViewShell } from '@tahti-player/ui';
+import { Badge, Input, StatChip, ViewShell } from '@tahti-player/ui';
 
 import { fetchGovernanceMembers } from '../api/client';
 import type { GovernanceMember } from '../api/types';
@@ -61,6 +62,21 @@ export function GovernanceMembersView() {
       )}
 
       {user && loading && <PageLoading label="Loading members…" />}
+
+      {user && !loading && members.length > 0 && (
+        <div className="grid grid-cols-2 gap-3">
+          <StatChip
+            value={members.length}
+            label="Members"
+            icon={<UsersIcon size={16} aria-hidden />}
+          />
+          <StatChip
+            value={members.filter((m) => m.isBoard).length}
+            label="Board"
+            icon={<LandmarkIcon size={16} aria-hidden />}
+          />
+        </div>
+      )}
 
       {user && !loading && (
         <>
