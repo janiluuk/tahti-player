@@ -207,8 +207,12 @@ for this view (none did before either).
   hover-delete, reorder, add, and preview (see 2026-09-09 correction
   above) — not a real gap against this ticket except the literal
   "modal preview with frames" ask, which is minor.
-- Admin: radio station logo (blocked on the `RadioStationCover` redesign
-  above). Announcements has no image slot (see 2026-09-09 note) — its
+- ~~Admin: radio station logo~~ — **2026-09-15:** `RadioStationCover`
+  redesigned from a full-overlay edit button to a small corner control
+  (matching `RoundImageUploadButton`/`BackdropUploadButton`), the cover
+  itself now a click target opening `ImageSlotPreviewDialog` (new
+  `hideDelete` prop — a station cover has no "empty" state to clear to).
+  Announcements has no image slot (see 2026-09-09 note) — its
   delete-confirm gap was fixed separately (2026-09-09 (2) above).
 
 These are all larger, bespoke multi-image or reorderable-gallery flows
