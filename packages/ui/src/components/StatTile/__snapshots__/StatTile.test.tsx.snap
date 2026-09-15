@@ -1,0 +1,44 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`StatTile > (Snapshot) renders with a sublabel 1`] = `
+<div>
+  <div
+    class="border-border bg-background-secondary/35 rounded-lg border p-3"
+  >
+    <p
+      class="text-foreground-secondary text-xs uppercase"
+    >
+      Discussions
+    </p>
+    <p
+      class="mt-1 text-2xl font-bold"
+    >
+      7
+    </p>
+    <p
+      class="text-foreground-secondary text-xs"
+    >
+      Subjects with comments
+    </p>
+  </div>
+</div>
+`;
+
+exports[`StatTile > (Snapshot) renders with value and label 1`] = `
+<div>
+  <div
+    class="border-border bg-background-secondary/35 rounded-lg border p-3"
+  >
+    <p
+      class="text-foreground-secondary text-xs uppercase"
+    >
+      Votes recorded
+    </p>
+    <p
+      class="mt-1 text-2xl font-bold"
+    >
+      42
+    </p>
+  </div>
+</div>
+`;

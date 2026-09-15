@@ -21,8 +21,9 @@ full table unless you need a specific `file:line`.
    fixed padding) and `StudioHomeView.tsx`'s "Have your say" card (the only
    bordered box among that dashboard's otherwise-flat sibling sections —
    swapping it would reduce consistency, not improve it). `OverviewTab.tsx`'s
-   3 stat tiles (value+label+sublabel) are a genuine new-primitive candidate,
-   not a `StudioPanel`/`StatChip`/`Box` swap — needs its own shape.
+   3 stat tiles (value+label+sublabel) — **done 2026-09-15**, new `StatTile`
+   primitive (`packages/ui`), distinct from `StatChip`'s compact inline
+   icon+value+label pill.
 5. **Custom actions** — `CopyButton` gained an optional `label` prop and
    clipboard-failure error handling (2026-09-15), for future labeled-copy
    call sites. `TrackDetailView.tsx`'s Share button was checked and left

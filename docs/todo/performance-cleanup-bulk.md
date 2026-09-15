@@ -81,10 +81,10 @@ on `document.visibilitychange`.
 | `PluginStorePanel.tsx` | ~166 | **Done** as thin shell; categories under `plugin-store/` |
 | `api/client.ts` | ~1419 | **Done** (named-module split): `client-request.ts` + `client-auth.ts` + `governance-member.ts` + `embeds.ts` + `radio-public.ts` + `membership.ts` + `listen.ts` |
 | `SettingsPanels.tsx` | ~110 | **Done 2026-09-12** — one panel per file under `views/settings/panels/` |
-| `ChannelDesigner.tsx` | 2048 | Colors, layout, overlay, page blocks sub-panels |
+| `ChannelDesigner.tsx` | ~1988 | **Partial 2026-09-15** — 4 low-coupling JSX chunks extracted (toolbar, saved-looks row, applied-preset banner, static preview section); remaining body still tightly closure-coupled, see `codebase-refactor-hotspots.md` item 12 |
 | `api/studio.ts` | 1845 | Tracks, releases, collections, schedule |
 | `router.tsx` | 1817 | Route definitions by section |
-| `ArtistView.tsx` | 1754 | Extract tab bodies |
+| `ArtistView.tsx` | ~1696 | **Partial 2026-09-15** — Releases/Collections tab bodies extracted; "Music" tab body still closure-coupled (30+ locals), see `codebase-refactor-hotspots.md` item 13 |
 | `ChannelView.tsx` | 1677 | Chat rail, visualizer, layout blocks |
 
 ---
@@ -107,7 +107,11 @@ users/support/governance peels; `client.ts` full named-module split done
 SettingsPanels file-per-panel split (2026-09-12).
 Still open in Phase 4: ChannelDesigner, studio, router, Artist/Channel
 views. `admin.ts` domain peel completed 2026-09-15 (see `codebase-refactor-
-hotspots.md`).
+hotspots.md`). **2026-09-15:** first slices of `ChannelDesigner.tsx` and
+`ArtistView.tsx` also done (low-coupling chunks only — see
+`codebase-refactor-hotspots.md` items 12-13); both still open for their
+remaining, more tightly closure-coupled bodies. `studio`, `router`,
+`ChannelView.tsx` untouched.
 
 ## Execution order
 

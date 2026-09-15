@@ -18,8 +18,8 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
 | P0 | `packages/tahti-web/src/components/PluginStorePanel.tsx` | ~3560 | Mega-panel: themes, visualizers, Spotify/OAuth/Hearthis, DSP, multicast, audio plugins, tools, radio browser, discovery, channel categories in one file. | Extract category components under `components/plugin-store/` (`ThemesCategory`, `ServiceCategory` + service cards, `RadioCategory`, …). Keep `PluginStorePanel` as thin shell + tab routing. Align with existing `plugin-registry-extraction` leaf where contracts touch player. |
 | ~~P0~~ | ~~`packages/tahti-web/src/api/client.ts`~~ | ~~~3000~~ **~1419** | Public/listener API kitchen sink: directory, channel, track, chat, support, feature requests, transparency, venues, collections, follow, newsletter (~54 functions left, no single dominant domain). | **Original named-module split done 2026-09-12:** `client-request.ts`/`client-auth.ts`, `listen.ts`, `radio-public.ts`, `governance-member.ts`, `membership.ts`, `embeds.ts` all peeled — the exact list this row originally suggested. Remaining domains are smaller/mixed with no obvious next seam; demote off the P0 hotspot list, revisit only if one grows or a merge-conflict pain point shows up. |
 | ~~P1~~ | ~~`packages/tahti-web/src/views/settings/SettingsPanels.tsx`~~ | ~~~2440~~ **done 2026-09-12, now ~110** | Many settings surfaces in one file (Account, Artist, Channel, Broadcast, Notifications, Themes, storage, privacy). | One panel per file under `views/settings/panels/`; `SettingsSectionBody` stays the switch/router. |
-| P1 | `packages/tahti-web/src/components/ChannelDesigner.tsx` | ~2050 | Designer god component (visualizer / color / header / look sections) tightly coupled to Channel + Artist editors. | Extract section editors + snapshot helpers; keep `forwardRef` façade. Coordinate with open designer todos (`channel-designer-*`) — split structure first, product fold later. |
-| P1 | `packages/tahti-web/src/views/ChannelView.tsx` + `ArtistView.tsx` | ~1790 + ~1760 | Parallel public entity pages sharing designer, visualizer, disco widgets, social header patterns; each still owns full layout/data orchestration. | Extract shared hooks/sections (`usePublicChannelLook`, backdrop/visualizer chrome, disco widget block) before merging views. Do not force one route. |
+| P1 | `packages/tahti-web/src/components/ChannelDesigner.tsx` | ~1988 (was ~2103) | Designer god component (visualizer / color / header / look sections) tightly coupled to Channel + Artist editors. **2026-09-15:** first slice done (4 low-coupling JSX chunks extracted, see item 12 below) — remaining body still tightly closure-coupled. | Extract section editors + snapshot helpers; keep `forwardRef` façade. Coordinate with open designer todos (`channel-designer-*`) — split structure first, product fold later. |
+| P1 | `packages/tahti-web/src/views/ChannelView.tsx` + `ArtistView.tsx` | ~1790 + ~1696 (was ~1754) | Parallel public entity pages sharing designer, visualizer, disco widgets, social header patterns; each still owns full layout/data orchestration. **2026-09-15:** `ArtistView.tsx`'s Releases/Collections tab bodies extracted (see item 13 below); `ChannelView.tsx` untouched. | Extract shared hooks/sections (`usePublicChannelLook`, backdrop/visualizer chrome, disco widget block) before merging views. Do not force one route. |
 | P2 | `packages/tahti-web/src/api/studio.ts` (+ `studio-extras.ts` ~1240) | ~1905 | Large but already partially split; still a frequent merge magnet. | Continue domain splits (releases, sounds, playlists, schedule) mirroring extras pattern; avoid expanding `studio.ts`. |
 | P2 | `packages/tahti-web/src/router.tsx` | ~1965 | Monolithic route tree (high fan-in). | Split route groups (`listenRoutes`, `studioRoutes`, `adminRoutes`) composed into root; typed pieces stay as today. |
 | P2 | `packages/tahti-web/src/content/mapScreens.ts` | ~2256 | Data atlas, not runtime logic — bloated but low change risk. | Optional: split by surface under `content/map/`; only if editing pain appears. |
@@ -198,10 +198,35 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
     note: activity-feed is flagged as in-flight elsewhere). `admin.ts`
     ~1595 → ~436 lines; off the P0 hotspot list. Verified: `tsc --noEmit` /
     `eslint` clean, full unit suite (516/516), `vite build` succeeds.
+12. **`ChannelDesigner.tsx` first slice** — **2026-09-15:** extracted 4
+    clearly self-contained JSX chunks into `components/channel-designer/`
+    (`DesignerToolbar`, `SavedLooksRow`, `AppliedPresetBanner`,
+    `PreviewTracksPlaceholder`), matching that folder's existing
+    `BackdropPanel`/`PlayerPanel` pattern. ~2103 → ~1988 lines. **Not**
+    done: the remaining ~1350-line body (state, effects, save/preset
+    logic, header/backdrop/visualizer control panels) is far more tightly
+    closure-coupled — each chunk there closes over 15+ local variables, so
+    safe extraction needs either heavy prop-threading or a context, and no
+    automated tests exist for this component to catch a regression
+    (confirmed via `find`). Left for a dedicated follow-up; still P1,
+    still "coordinate with open `channel-designer-*` product todos first."
+13. **`ArtistView.tsx` tab-body slice** — **2026-09-15:** the "Releases"
+    and "Collections" tab bodies (self-contained, small prop surface) were
+    extracted to `components/ArtistReleasesTab.tsx` /
+    `ArtistCollectionsTab.tsx`. ~1754 → ~1696 lines. **Not** done: the
+    "Music" tab body (~315 lines) closes over 30+ local variables
+    (look-visibility flags, player color scheme, now-playing state, queue
+    actions, favorites, dialogs) — same closure-coupling problem as
+    `ChannelDesigner.tsx`'s remaining body, left for the same reason.
+    `ChannelView.tsx` (the other half of this row) not attempted this
+    pass.
 
-Next: `ChannelDesigner.tsx` (P1; coordinate with open `channel-designer-*`
-product todos first). Admin activity-feed/audit-topic and container-logs
-sections remain in `admin.ts` intentionally — revisit once confirmed quiet.
+Next: the remaining `ChannelDesigner.tsx` body and `ArtistView.tsx`'s
+"Music" tab (P1; both need either prop-threading 15-30+ closure variables
+or a shared context — bigger, riskier slices than anything done so far in
+this leaf), then `ChannelView.tsx`, `studio`, `router`. Admin
+activity-feed/audit-topic and container-logs sections remain in `admin.ts`
+intentionally — revisit once confirmed quiet.
 
 ## Related open leaves (do not duplicate)
 
