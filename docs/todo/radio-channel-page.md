@@ -62,6 +62,41 @@ with their own pages is separate, larger scope, not attempted here.
   pre-existing unrelated `HistoryRow` flake), and production `vite build`
   all pass.
 
+## Production status (2026-09-15, after both PRs merged)
+
+`tahti-org` PR #524 and `tahti-player` PR #89 are merged and deployed —
+production's API now returns a `channelKind` field on `/api/channels/:slug`
+(confirmed via `curl https://api.tahti.live/api/channels/tahti-radio`, no
+error), so the schema change reached prod. **But `tahti-radio`'s row still
+reads `"channelKind":"ARTIST"`, not `"RADIO"`** — the migration's data
+backfill (`UPDATE ... WHERE slug = 'tahti-radio'`) did not take effect,
+only the schema shape did. Best-guess cause: the deploy pipeline's
+container entrypoint likely runs something equivalent to `prisma db push`
+(schema-diff sync) rather than `prisma migrate deploy` (which replays the
+actual migration SQL files, backfill included) — `db push` would explain
+exactly this split (column + default exist, hand-written `UPDATE` never
+ran). Not confirmed by reading the entrypoint/deploy script directly, just
+inferred from the observed symptom.
+
+A manual `npx prisma migrate deploy` attempt against the production
+container was blocked twice by this session's own sandbox ("Production
+Deploy" denied at the tool layer, not something chat approval routes
+around) — and separately turned out to have been using the wrong CLI
+version anyway (`npx prisma` with no lockfile pin resolved to `prisma@8.x`,
+whose CLI renamed `migrate` to `migration` entirely, so even an unblocked
+run would have failed with `CLI.UNKNOWN_COMMAND`). The correct fix needs
+either: (a) the user runs a one-off `UPDATE "channel"."Channel" SET
+"channelKind"='RADIO' WHERE slug='tahti-radio';` directly, or (b) whatever
+actually drives migrations in the deploy pipeline gets identified and
+confirmed to run `migrate deploy` (pinned version) rather than `db push`,
+so future migrations with real data statements don't silently drop their
+non-schema parts.
+
+**End-user impact:** `/channel/tahti-radio` in production still shows the
+old artist-page layout (About/Subscribe), not the new Programming block,
+until this is fixed. The mock-mode demo and local dev DB both show it
+correctly (verified earlier in this doc).
+
 ## Not done / left open
 
 - **Not committed/pushed yet in either repo.** `../tahti-org` has another
