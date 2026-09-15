@@ -2982,3 +2982,15 @@ Implemented, isolated in worktrees, tested (YAML validated), committed, and open
 Flagged but deliberately not touched: `tahti-org`'s `deploy.yml` and `deploy-production.yml` both trigger on the same `workflow_run: [CI]` completed-on-main event — two deploy pipelines can race on every merge. That's a production-deploy correctness question for the user to resolve, not a speed optimization.
 
 Neither PR is merged yet, so cache-hit effectiveness is unverified against live CI runs — only YAML syntax and job-graph correctness were checked locally.
+
+---
+
+## 2026-09-15 — Listen page: merged "Radio channels" into "Radio" (fixed dead play-button state)
+
+User request: on the Listen page, the lower "Radio" section (board-curated internet-radio presets, `fetchEnabledInternetRadioPresets()`) correctly reacted to play/pause but only had 1 station enabled server-side; the "Radio channels" section (`ListenerWidgetsSection.tsx`, the static `RADIO_STATIONS` catalog, all 6 enabled client-side by default) had every needed channel but its play button never reflected playing/paused state. User: fix the "Radio" entries so they're complete, then remove the redundant "Radio channels" section.
+
+Root cause (confirmed via subagent investigation + code read): `ListenerWidgetsSection.tsx`'s station cards never subscribed to `usePlayerStore` at all — no `currentId`/`status` read, no `isPlaying` prop passed to `Card`, so `MediaArtwork`'s `isPlaying = false` default always applied. Not a stale-id bug — the comparison logic was simply never written for that component.
+
+Fix, in `packages/tahti-web/src/views/ListenView.tsx`'s "Radio" `SectionShell`: after rendering board-curated presets, also render enabled catalog stations (`useListenerWidgetsStore`'s `enabledStationIds`/`stationOverrides`, same data `ListenerWidgetsSection` used) — deduped by name against already-rendered presets, so a preset's admin-uploaded artwork wins when both exist for the same station. Catalog-station cards reuse the exact `isCurrent`/`isPlaying` derivation and `radio-widget:${id}` id scheme already proven in `RadioCategory.tsx`'s settings-panel preview, plus the same cover-edit and remove-with-confirmation affordances the old section had. Removed the now-redundant station rendering from `ListenerWidgetsSection.tsx` (kept saved Radio Browser stations, news feeds, embeds, favorites — genuinely different features, untouched); simplified its title to always "Listen add-ons" since it no longer shows catalog channels.
+
+Verified: `tsc --noEmit` and `eslint` clean; full unit suite (516/516) green; `vite build` succeeds; manually exercised in `VITE_FORCE_MOCK=1` dev mode via browser automation — all 6 catalog stations now render once under "Radio" (no duplicate section), clicking a card's Play button correctly flips it to a reactive Pause state (audio element `src` populated, `aria-pressed`, Media Session tab title, bottom player bar, and "Continue listening" card all update), and clicking again correctly pauses without restarting.
