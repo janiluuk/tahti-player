@@ -14,6 +14,21 @@ surface (simpler viewer, embedded in `LibraryView`'s tab set). No code
 change. Rest of the audit (parent/back links, duplicate pages, active-tab
 consistency, stable content regions, transition animations) already
 found no other gaps.
+## 2026-09-15 — Listen bugs batch (2026-09-14), item #5 finished
+
+`listen-bugs-batch-2026-09-14.md` — done, all 5 items. Items 1/2/4/5 shipped
+earlier; item 3 (radio-page now-playing/upcoming) was blocked on a new
+`tahti-org` backend feature — scoped and shipped in
+[tahti-org#521](https://github.com/janiluuk/tahti-org/pull/521) (`GET
+/api/v1/radio/show/:channelSlug/now-playing` and `.../upcoming`, reusing
+the existing per-channel now-playing columns and curated-rotation queue
+logic). Wired here: `api/shows.ts` gained
+`fetchRadioShowNowPlaying`/`fetchRadioShowUpcoming`;
+`RadioShowView.tsx` polls both every 30s (`usePolling`, matching
+`RadioView.tsx`'s convention) and renders a new "Now playing" section
+(current track + "Up next" queue) between the header and the Episodes
+tabs — hidden entirely for a channel with no rotation data, which is most
+artist channels. `eslint`/`tsc --noEmit` clean.
 
 ## 2026-09-15 — Restyled /governance (member-facing) with real components + color
 
