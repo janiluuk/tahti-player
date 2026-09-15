@@ -82,10 +82,10 @@ on `document.visibilitychange`.
 | `api/client.ts` | ~1419 | **Done** (named-module split): `client-request.ts` + `client-auth.ts` + `governance-member.ts` + `embeds.ts` + `radio-public.ts` + `membership.ts` + `listen.ts` |
 | `SettingsPanels.tsx` | ~110 | **Done 2026-09-12** — one panel per file under `views/settings/panels/` |
 | `ChannelDesigner.tsx` | ~1988 | **Partial 2026-09-15** — 4 low-coupling JSX chunks extracted (toolbar, saved-looks row, applied-preset banner, static preview section); remaining body still tightly closure-coupled, see `codebase-refactor-hotspots.md` item 12 |
-| `api/studio.ts` | 1845 | Tracks, releases, collections, schedule |
-| `router.tsx` | 1817 | Route definitions by section |
+| `api/studio.ts` | ~5 (barrel) | **Done 2026-09-15** — peeled into `api/studio/studio-{sounds,releases,collections,upload,editor}.ts` + shared `studio-request.ts`/`studio-mock.ts`, matching the source file's own section boundaries (not literally "tracks, releases, collections, schedule" as originally guessed here — see `codebase-refactor-hotspots.md` item 15) |
+| `router.tsx` | 382 (assembly only) | **Done 2026-09-15** — peeled into `router/routes-*.tsx` by nav section (listen/settings/admin/library/transparency/help/auth/governance/info/studio/embed) + `router/router-core.tsx` + `router/router-lazy-views.ts`; see `codebase-refactor-hotspots.md` item 16 |
 | `ArtistView.tsx` | ~1696 | **Partial 2026-09-15** — Releases/Collections tab bodies extracted; "Music" tab body still closure-coupled (30+ locals), see `codebase-refactor-hotspots.md` item 13 |
-| `ChannelView.tsx` | 1677 | Chat rail, visualizer, layout blocks |
+| `ChannelView.tsx` | ~1835 | **Investigated 2026-09-15, left untouched** — its natural componentizable pieces (visualizer, backdrop, layers menu, editors, playlist blocks) were already extracted in earlier work; what's left is one closure-coupled orchestrator with no comparable low-coupling chunk and no test coverage, see `codebase-refactor-hotspots.md` item 14 |
 
 ---
 
@@ -110,8 +110,13 @@ views. `admin.ts` domain peel completed 2026-09-15 (see `codebase-refactor-
 hotspots.md`). **2026-09-15:** first slices of `ChannelDesigner.tsx` and
 `ArtistView.tsx` also done (low-coupling chunks only — see
 `codebase-refactor-hotspots.md` items 12-13); both still open for their
-remaining, more tightly closure-coupled bodies. `studio`, `router`,
-`ChannelView.tsx` untouched.
+remaining, more tightly closure-coupled bodies. **2026-09-15 (later same
+day):** `api/studio.ts` and `router.tsx` both fully split (mechanical,
+no behavior change — see `codebase-refactor-hotspots.md` items 15-16);
+off this backlog. `ChannelView.tsx` investigated and left untouched —
+see item 14 (no low-coupling chunk left to extract, no test coverage).
+Still open in Phase 4: `ChannelDesigner.tsx`'s remaining body,
+`ArtistView.tsx`'s "Music" tab, `ChannelView.tsx`.
 
 ## Execution order
 

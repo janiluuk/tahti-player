@@ -2,6 +2,76 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-15 — Storybook theme unification sweep: all 5 new-primitive candidates shipped
+
+`storybook-theme-unification-sweep.md` — done, closing the ticket.
+Across two passes the same day, all 5 "new-primitive candidates" the
+sweep identified got built in `packages/ui` and swapped onto their
+named call sites: `SelectableTiles` (icon+label toggle groups, onto
+`OnboardingView.tsx` + `StudioDistributionView.tsx`), `Meter` +
+`DonutChart` (progress bars/donut, onto `AdminStorageView.tsx` +
+`AdminI18nView.tsx`), `StatTile` (value+label+sublabel, onto
+`OverviewTab.tsx`'s 3 admin-governance stat tiles — also closes
+`STUDIO-ADMIN-UX-SWEEP-OPEN.md` theme 3's matching item),
+`SelectableList` (single-select title/subtitle/meta rows, onto
+`AdminUsersView.tsx`'s user picker), and `ImageThumbnailPicker`
+(grid/inline image-tile picker, onto both of
+`AdminArtworkPresetsView.tsx`'s thumbnail grids). Each primitive
+shipped with its own test file and Storybook story, matching this
+repo's established primitive bar (see `FilterChips`/`CopyButton`/
+`SaveButton` precedent).
+
+One doc claim corrected while wiring the last primitive:
+`storybook-theme-unification-sweep.md` named
+`StudioReleaseDetailView.tsx`'s library-picker rows as a second
+`ImageThumbnailPicker` call site, but on inspection that picker is a
+plain text row list (title, content-type, add/added icon) with no
+images at all — left untouched rather than force-fit.
+
+Remaining scope explicitly out of bounds for this ticket from the
+start: `Table`/`Card`/`Dialog`/`Select` primitive categories (never
+in scope — input/pill/chip only) stay a candidate for a future,
+separate sweep if wanted, not a reason to keep this ticket open.
+
+Verified per primitive: `tsc --noEmit`, `eslint`, `vitest run` (`ui`
+320/320 — one pre-existing, unrelated `HistoryRow` Tailwind
+class-order snapshot flake noted and left alone, matching this same
+day's earlier note on it; `tahti-web` 516/516), and
+`storybook build` with both new stories present in the built index.
+
+## 2026-09-15 — Also: api/studio.ts and router.tsx domain peels, ChannelView.tsx investigated
+
+Same session as the primitive sweep above, continuing
+`codebase-refactor-hotspots.md` / `performance-cleanup-bulk.md`'s Phase
+4 backlog. `api/studio.ts` (~1897 lines) peeled into
+`api/studio/studio-{sounds,releases,collections,upload,editor}.ts`
+(matching the source file's own section-comment boundaries) plus
+shared `studio-request.ts`/`studio-mock.ts`; `studio.ts` is now a
+5-line re-export barrel, no call site's import path changed. `router.tsx`
+(~1965 lines) peeled into `router/routes-*.tsx` by nav section (listen,
+settings, admin, library/misc, transparency, help, auth, governance,
+info/legal, studio, embed+aliases) plus `router/router-core.tsx` (the 2
+shared parent routes — every one of the 172 routes' `getParentRoute`
+pointed at one of these two, a flat tree with no other parent chaining,
+which is what made the split safe) and `router/router-lazy-views.ts`
+(the 54 code-split registrations); `router.tsx` itself is now 382 lines
+of imports + the unchanged `addChildren` tree assembly + `createRouter`.
+Verified beyond the usual `tsc`/`eslint`/tests: diffed the full route
+`path:` string set before/after (172/172 identical) and diffed the
+`addChildren` block itself (byte-identical); production build confirms
+every lazy view still produces its own chunk.
+
+`ChannelView.tsx` (~1835 lines, also on that Phase 4 table) was
+investigated and left untouched: unlike `ChannelDesigner.tsx`/
+`ArtistView.tsx` (which each had a genuine low-coupling chunk extracted
+earlier the same day), this file's natural componentizable pieces
+(visualizer, backdrop, layers menu, links/navigation editors, playlist
+blocks, track tables) were already pulled into separate files in
+earlier work. What remains is one closure-coupled orchestrator —
+`renderBlock`'s cases each read 10-20+ local variables — with no test
+or Storybook coverage to verify an extraction against. Left for a
+dedicated follow-up rather than forced.
+
 ## 2026-09-15 — Plugin registry §6 test gaps closed
 
 Shipped in [#85](https://github.com/janiluuk/tahti-player/pull/85), closing
