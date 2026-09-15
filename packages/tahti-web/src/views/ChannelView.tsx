@@ -54,8 +54,10 @@ import type {
   PublicChannel,
   TahtiPlayable,
 } from '../api/types';
-import { renderChannelBlock } from '../components/channel-view';
-import { ChannelBackdropCard } from '../components/ChannelBackdropCard';
+import {
+  ChannelHeroBlock,
+  renderChannelBlock,
+} from '../components/channel-view';
 import {
   ChannelDesigner,
   type ChannelDesignerHandle,
@@ -926,169 +928,35 @@ export function ChannelView({ slug }: { slug: string }) {
 
   const renderBlock = (item: ChannelPageItem) => {
     switch (item.type) {
-      case 'hero': {
-        // Opt-in: no bar at all until the artist adds a Navigation block
-        // with 2+ tabs (see navTabs/showNavTabs above) -- what shows here
-        // while editing is exactly what listeners see, not a preview-only
-        // placeholder.
-        const stageNavItems = showNavTabs
-          ? navTabs.map((tab) => ({
-              id: tab.id,
-              label: tab.label || 'Untitled',
-              active: tab.id === activeNavTab?.id,
-              onClick:
-                tab.id === activeNavTab?.id
-                  ? undefined
-                  : () => setActiveNavTabId(tab.id),
-            }))
-          : [];
-        const stageQuickAdd = editing
-          ? [
-              !layout.find((i) => i.type === 'links')?.visible
-                ? {
-                    id: 'links',
-                    label: 'Links',
-                    onClick: () =>
-                      updateLayout((prev) => addItemType(prev, 'links')),
-                  }
-                : null,
-              !layout.find((i) => i.type === 'about')?.visible
-                ? {
-                    id: 'about',
-                    label: 'Bio',
-                    onClick: () =>
-                      updateLayout((prev) => addItemType(prev, 'about')),
-                  }
-                : null,
-              !layout.find((i) => i.type === 'stats')?.visible
-                ? {
-                    id: 'stats',
-                    label: 'Stats',
-                    onClick: () =>
-                      updateLayout((prev) => addItemType(prev, 'stats')),
-                  }
-                : null,
-            ].filter((chip): chip is NonNullable<typeof chip> => Boolean(chip))
-          : undefined;
-
+      case 'hero':
         return (
-          <div className="flex flex-col gap-0">
-            <ChannelBackdropCard
-              className={
-                editing
-                  ? ''
-                  : subtle
-                    ? 'border-border/60 bg-background-input rounded-t-lg border border-b-0'
-                    : 'border-border rounded-t-xl border border-b-0'
-              }
-              minHeightClassName="min-h-[12rem] sm:min-h-[14rem]"
-              displayName={channel.user.displayName}
-              username={channel.user.username}
-              channelSlug={slug}
-              avatarUrl={channel.user.avatarUrl}
-              bio={channel.user.bio}
-              headerStyle={channel.headerStyle ?? 'GRADIENT'}
-              videoBackgroundUrl={channel.videoBackgroundUrl}
-              muted={channelVideoMuted}
-              accent={headerAccent}
-              highlight={headerHighlight}
-              bg={headerBackground}
-              fg={headerForeground}
-              gradientOverride={brandGradient}
-              visualPreset={channel.visualPreset ?? 'AURORA'}
-              colorScheme={playerScheme}
-              colorSchemeJson={
-                lookExtras.usePlayerGradient
-                  ? (lookExtras.playerColorSchemeJson ?? null)
-                  : channel.colorSchemeJson
-              }
-              artworkUrl={
-                channel.nowPlaying?.artworkUrl ?? channel.user.avatarUrl
-              }
-              galleryMode={channel.galleryMode}
-              slideshowImages={channel.slideshowImages}
-              slideshowPreset={channel.slideshowPreset}
-              slideshowIntervalSeconds={channel.slideshowIntervalSeconds}
-              slideshowTransitionMs={channel.slideshowTransitionMs}
-              slideshowAutoplay={channel.slideshowAutoplay}
-              visualizerSettings={heroVisualizerSettings}
-              visualSettingsJson={channel.visualSettingsJson}
-              navItems={[]}
-              onEditIdentity={
-                editing ? () => setSelectedId('header') : undefined
-              }
-              identitySelected={selectedId === 'header'}
-              backgroundSelected={selectedId === item.id}
-              editable={editing}
-            />
-            <div
-              className={
-                editing
-                  ? 'overflow-hidden'
-                  : subtle
-                    ? 'border-border/60 overflow-hidden border border-y-0'
-                    : 'border-border overflow-hidden border border-y-0'
-              }
-              data-testid="channel-stage-player"
-            >
-              {stagePlayer}
-            </div>
-            {stageNavItems.length > 0 || (stageQuickAdd?.length ?? 0) > 0 ? (
-              <nav
-                aria-label="Channel navigation"
-                className={
-                  editing
-                    ? 'relative flex flex-wrap items-center gap-x-5 gap-y-2 px-4 py-3 text-xs font-semibold uppercase'
-                    : subtle
-                      ? 'border-border/60 relative flex flex-wrap items-center gap-x-5 gap-y-2 rounded-b-lg border border-t-0 px-4 py-3 text-xs font-semibold uppercase'
-                      : 'border-border relative flex flex-wrap items-center gap-x-5 gap-y-2 rounded-b-xl border border-t-0 px-4 py-3 text-xs font-semibold uppercase'
-                }
-                data-testid="channel-stage-nav"
-              >
-                {stageNavItems.map((navItem) =>
-                  navItem.onClick ? (
-                    <button
-                      key={navItem.id}
-                      type="button"
-                      onClick={navItem.onClick}
-                      className={
-                        navItem.active
-                          ? 'border-primary border-b-2 pb-2'
-                          : 'text-foreground-secondary hover:text-foreground pb-2'
-                      }
-                    >
-                      {navItem.label}
-                    </button>
-                  ) : (
-                    <span
-                      key={navItem.id}
-                      className={
-                        navItem.active
-                          ? 'border-primary border-b-2 pb-2'
-                          : 'text-foreground-secondary pb-2'
-                      }
-                    >
-                      {navItem.label}
-                    </span>
-                  ),
-                )}
-                {stageQuickAdd?.map((chip) => (
-                  <Button
-                    key={chip.id}
-                    type="button"
-                    variant="text"
-                    size="flexible"
-                    onClick={chip.onClick}
-                    className="border-border text-foreground-secondary hover:bg-background-secondary ml-auto rounded-full border px-2.5 py-1 text-[10px] normal-case"
-                  >
-                    + {chip.label}
-                  </Button>
-                ))}
-              </nav>
-            ) : null}
-          </div>
+          <ChannelHeroBlock
+            itemId={item.id}
+            channel={channel}
+            slug={slug}
+            editing={editing}
+            subtle={subtle}
+            selectedId={selectedId}
+            onSelectHeader={() => setSelectedId('header')}
+            channelVideoMuted={channelVideoMuted}
+            headerAccent={headerAccent}
+            headerHighlight={headerHighlight}
+            headerBackground={headerBackground}
+            headerForeground={headerForeground}
+            brandGradient={brandGradient}
+            playerScheme={playerScheme}
+            usePlayerGradient={lookExtras.usePlayerGradient}
+            playerColorSchemeJson={lookExtras.playerColorSchemeJson}
+            heroVisualizerSettings={heroVisualizerSettings}
+            showNavTabs={showNavTabs}
+            navTabs={navTabs}
+            activeNavTab={activeNavTab}
+            onSelectNavTab={setActiveNavTabId}
+            layout={layout}
+            updateLayout={updateLayout}
+            stagePlayer={stagePlayer}
+          />
         );
-      }
       default:
         // Every other block type (sound/chat/navigation/about/links/
         // programming/stats/events/subscribe/embed/playlist) is small
