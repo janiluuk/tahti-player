@@ -29,6 +29,10 @@ pub struct LibraryTrack {
     pub bits_per_sample: Option<i64>,
     #[specta(type = Number<i64>)]
     pub size_bytes: i64,
+    /// Persisted from the last `resolve_path` call, not live -- a file
+    /// removed since the last resolve/re-scan still reads `true` here.
+    pub available: bool,
+    pub unavailable_since: Option<String>,
 }
 
 #[derive(Serialize, specta::Type)]
@@ -54,6 +58,28 @@ pub struct ImportResult {
 #[derive(Default)]
 pub struct LibraryState(OnceCell<SqlitePool>);
 
+/// Migration and backup policy (desktop-pro-library.md Phase 0):
+///
+/// - **Migrations** are plain numbered `sqlx::migrate!` SQL files under
+///   `./migrations/library/` (`0001_init.sql`, `0002_availability.sql`, ...),
+///   applied forward-only, in order, exactly once each, tracked by sqlx in
+///   its own `_sqlx_migrations` table inside `library.db` itself -- the same
+///   mechanism `./migrations/history/` already uses for play history, so
+///   there's one convention across both native catalogs, not two. A new
+///   column/table is always additive with a `DEFAULT` (see `0002`'s
+///   `available`/`unavailable_since`) so older code paths and existing rows
+///   keep working; there is no down-migration story, matching sqlx's own
+///   forward-only model -- rolling back means restoring a file backup below,
+///   not running a generated inverse SQL file.
+/// - **Backup** is deliberately out of this crate for now: `library.db` is
+///   one file (WAL mode, so a live copy also needs the `-wal`/`-shm`
+///   sidecars, or a `VACUUM INTO` snapshot instead) under the OS app-data
+///   dir this module already resolves in `pool()` below. No automatic
+///   scheduled backup, export, or restore command exists yet -- Phase 4
+///   ("Add catalog backup/restore including playlists, overrides, roots and
+///   analysis references") owns building that UI/command; this note exists
+///   so a migration author knows *why* there's no rollback path today and
+///   isn't tempted to invent an ad hoc one for a single migration.
 pub async fn open(path: &Path) -> Result<SqlitePool, String> {
     let pool = crate::db::open(path).await?;
     sqlx::migrate!("./migrations/library").run(&pool).await.map_err(|err| err.to_string())?;
@@ -81,7 +107,10 @@ pub async fn import_paths(pool: &SqlitePool, paths: Vec<PathBuf>) -> ImportResul
                 continue;
             }
         };
-        let saved = sqlx::query("INSERT INTO library_tracks (id,path,title,artist,album,format,duration,sample_rate,channels,bits_per_sample,size_bytes) VALUES (?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(path) DO UPDATE SET title=excluded.title, artist=excluded.artist, album=excluded.album, format=excluded.format, duration=excluded.duration, sample_rate=excluded.sample_rate, channels=excluded.channels, bits_per_sample=excluded.bits_per_sample, size_bytes=excluded.size_bytes")
+        // A successful (re)import proves the file exists right now -- clear
+        // any stale missing state a prior resolve/re-scan had persisted,
+        // same self-heal `resolve_path` does on a direct resolve.
+        let saved = sqlx::query("INSERT INTO library_tracks (id,path,title,artist,album,format,duration,sample_rate,channels,bits_per_sample,size_bytes) VALUES (?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(path) DO UPDATE SET title=excluded.title, artist=excluded.artist, album=excluded.album, format=excluded.format, duration=excluded.duration, sample_rate=excluded.sample_rate, channels=excluded.channels, bits_per_sample=excluded.bits_per_sample, size_bytes=excluded.size_bytes, available=1, unavailable_since=NULL")
             .bind(&track.id).bind(&track.path).bind(&track.title).bind(&track.artist).bind(&track.album).bind(&track.format).bind(track.duration).bind(track.sample_rate).bind(track.channels).bind(track.bits_per_sample).bind(track.size_bytes)
             .execute(pool).await;
         match saved {
@@ -123,9 +152,36 @@ pub async fn library_import(app: tauri::AppHandle) -> Result<ImportResult, Strin
 pub async fn resolve_path(pool: &SqlitePool, id: &str) -> Result<String, String> {
     let path = sqlx::query_scalar::<_, String>("SELECT path FROM library_tracks WHERE id=?").bind(id).fetch_optional(pool).await.map_err(|err| err.to_string())?.ok_or("Track is not in the library")?;
     if !tokio::fs::try_exists(&path).await.map_err(|err| err.to_string())? {
+        mark_availability(pool, id, false).await?;
         return Err("Original file is unavailable. Reconnect its drive or restore the file.".into());
     }
+    // Self-heal: a track marked missing by an earlier resolve/re-scan is
+    // available again (reconnected drive, restored file) -- clear the state
+    // rather than leaving it stuck missing until a future Phase 1 re-scan.
+    mark_availability(pool, id, true).await?;
     Ok(path)
+}
+
+/// Persists the availability state `resolve_path` (and, later, Phase 1's
+/// re-scan) observes -- `unavailable_since` is set once on the transition to
+/// missing and cleared on recovery, not bumped on every repeated failure.
+async fn mark_availability(pool: &SqlitePool, id: &str, available: bool) -> Result<(), String> {
+    if available {
+        sqlx::query("UPDATE library_tracks SET available=1, unavailable_since=NULL WHERE id=? AND available=0")
+            .bind(id).execute(pool).await.map_err(|err| err.to_string())?;
+    } else {
+        sqlx::query("UPDATE library_tracks SET available=0, unavailable_since=? WHERE id=? AND available=1")
+            .bind(chrono::Utc::now().to_rfc3339()).bind(id).execute(pool).await.map_err(|err| err.to_string())?;
+    }
+    Ok(())
+}
+
+/// Tracks currently persisted as missing -- the primitive Phase 1's re-scan/
+/// relink UI will list from; only reflects the last `resolve_path`/import
+/// observation, not a live filesystem check (Phase 1's own job).
+pub async fn list_unavailable(pool: &SqlitePool) -> Result<Vec<LibraryTrack>, String> {
+    sqlx::query_as::<_, LibraryTrack>("SELECT * FROM library_tracks WHERE available=0 ORDER BY unavailable_since DESC")
+        .fetch_all(pool).await.map_err(|err| err.to_string())
 }
 
 pub async fn remove(pool: &SqlitePool, id: &str) -> Result<(), String> {
