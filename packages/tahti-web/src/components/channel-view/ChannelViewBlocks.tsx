@@ -4,6 +4,7 @@ import {
   LayoutTemplateIcon,
   MessageCircle,
   Mic,
+  RssIcon,
 } from 'lucide-react';
 
 import { Button, StatChip, Tooltip } from '@tahti-player/ui';
@@ -11,7 +12,10 @@ import { Button, StatChip, Tooltip } from '@tahti-player/ui';
 import type { ChannelLink } from '../../api/channel-design';
 import type { PublicRadioShow } from '../../api/shows';
 import type { PublicChannel, TahtiPlayable } from '../../api/types';
-import type { ChannelPageItem } from '../../lib/channelPageLayout';
+import {
+  FEED_FILTER_OPTIONS,
+  type ChannelPageItem,
+} from '../../lib/channelPageLayout';
 import type { ListenerWidgetInstance } from '../../stores/listenerWidgetsStore';
 import { ChannelPlaylistBlock } from '../ChannelPlaylistBlock';
 import { ListenerWidgetEmbed } from '../ListenerWidgetEmbed';
@@ -49,7 +53,7 @@ export function renderChannelBlock(
   item: ChannelPageItem,
   ctx: ChannelBlockRenderContext,
 ) {
-  const { editing, channel, slug, isOwner } = ctx;
+  const { editing, channel, slug } = ctx;
   switch (item.type) {
     case 'hero':
       return null;
@@ -135,24 +139,13 @@ export function renderChannelBlock(
       );
     }
     case 'about':
-      return (
-        <section id="channel-block-about" className="flex flex-col gap-3">
-          {channel.user.bio ? (
-            <p className="text-foreground text-sm whitespace-pre-wrap">
-              {channel.user.bio}
-            </p>
-          ) : (
-            <p className="text-foreground-secondary text-sm">No bio yet.</p>
-          )}
-          <Link
-            to="/u/$username"
-            params={{ username: channel.user.username }}
-            className="text-sm underline-offset-2 hover:underline"
-          >
-            Full artist profile →
-          </Link>
-        </section>
-      );
+      // Folded into the backdrop (ChannelBackdropCard's bioVisible, driven
+      // by this same item's `visible` flag) -- never reaches this
+      // function in practice since ChannelView filters BACKDROP_FOLDED_
+      // ITEM_TYPES out of the rendered item list before renderBlock ever
+      // sees them. Kept only for the exhaustiveness guard (see this file's
+      // top-of-function comment).
+      return null;
     case 'links': {
       const links = editing
         ? ctx.channelLinksDraft
@@ -292,37 +285,10 @@ export function renderChannelBlock(
       );
     }
     case 'subscribe':
-      return editing ? (
-        <div className="px-4 py-3 text-sm">
-          <h2 className="text-sm font-bold tracking-tight">
-            Support {channel.user.displayName}
-          </h2>
-          <p className="text-foreground-secondary mt-1 text-xs">
-            Fan membership pitch — links out to the subscribe page.
-          </p>
-          <span className="border-primary/40 text-primary mt-3 inline-flex items-center rounded-md border px-3 py-1.5 text-xs font-semibold">
-            Subscribe (preview)
-          </span>
-        </div>
-      ) : isOwner ? null : (
-        <section className="border-border rounded-lg border px-4 py-3">
-          <h2 className="text-sm font-bold tracking-tight">
-            Support {channel.user.displayName}
-          </h2>
-          <p className="text-foreground-secondary mt-1 text-xs">
-            Become a fan member for perks and to help keep the channel running.
-          </p>
-          <Link
-            to="/subscribe/$username"
-            params={{ username: channel.user.username }}
-            className="mt-3 inline-block"
-          >
-            <Button size="sm" variant="secondary">
-              Subscribe
-            </Button>
-          </Link>
-        </section>
-      );
+      // Folded into the backdrop (ChannelBackdropCard's subscribeVisible
+      // CTA button, driven by this same item's `visible` flag) -- see the
+      // 'about' case above for why this never actually runs.
+      return null;
     case 'embed': {
       const instance = ctx.listenerWidgetInstances.find(
         (candidate) => candidate.id === item.embedInstanceId,
@@ -337,6 +303,35 @@ export function renderChannelBlock(
           editing={editing}
         />
       ) : null;
+    case 'avatar':
+      // Folded into the backdrop (ChannelBackdropCard's avatarVisible) --
+      // see the 'about' case above for why this never actually runs.
+      return null;
+    case 'feed': {
+      const filters = item.feedFilters ?? [];
+      const activeLabels = FEED_FILTER_OPTIONS.filter(
+        (option) => filters.length === 0 || filters.includes(option.id),
+      ).map((option) => option.label);
+      return (
+        <section
+          className={`flex flex-col gap-2 px-4 py-3 ${editing ? '' : 'border-border rounded-lg border'}`}
+        >
+          <div className="flex items-center gap-2">
+            <RssIcon size={16} className="text-foreground-secondary shrink-0" />
+            <h2 className="text-sm font-bold tracking-tight">Feed</h2>
+          </div>
+          <p className="text-foreground-secondary text-xs">
+            {channel.user.displayName}&apos;s updates
+            {activeLabels.length > 0 ? ` — ${activeLabels.join(', ')}` : ''} (
+            {item.feedDisplay ?? 'tracklist'} display).
+          </p>
+          <p className="text-foreground-secondary text-xs italic">
+            No live update source is wired in yet — nothing to show until one
+            exists.
+          </p>
+        </section>
+      );
+    }
     default: {
       // Exhaustiveness guard: adding a type to CHANNEL_PAGE_ITEM_TYPES
       // without a matching case here used to compile fine and silently

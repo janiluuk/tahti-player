@@ -12,6 +12,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Button, Tooltip } from '@tahti-player/ui';
 
 import {
+  BACKDROP_FOLDED_ITEM_TYPES,
   CHANNEL_LAYOUT_PRESETS,
   CHANNEL_PAGE_ITEM_META,
   CHANNEL_PAGE_ITEM_TYPES,
@@ -110,6 +111,9 @@ export function ChannelLayersMenu({
   }, [selectedId, lookOpenSection]);
 
   const hiddenCatalog = CHANNEL_PAGE_ITEM_TYPES.filter((type) => {
+    if (BACKDROP_FOLDED_ITEM_TYPES.includes(type)) {
+      return false;
+    }
     const row = items.find((i) => i.type === type);
     return !row || !row.visible;
   });

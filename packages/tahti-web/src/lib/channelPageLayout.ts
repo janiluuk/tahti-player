@@ -11,12 +11,28 @@ export const CHANNEL_PAGE_ITEM_TYPES = [
   'events',
   'navigation',
   'programming',
+  'avatar',
+  'feed',
 ] as const;
 
 export type ChannelPageItemType = (typeof CHANNEL_PAGE_ITEM_TYPES)[number];
 
 /** Multi-instance types (like embeds) — not auto-filled as hidden defaults. */
 export type ChannelPageMultiItemType = 'embed' | 'playlist';
+
+/** `about`/`subscribe`/`avatar` are real `ChannelPageItem` entries (their
+ * `visible` flag persists, and an old saved layout's Navigation tab can
+ * still harmlessly reference their id) but are no longer independently
+ * addable/draggable page blocks — their content folded into the backdrop
+ * itself (bio + CTA render inline in `ChannelBackdropCard`, gated on these
+ * same `visible` flags; avatar's on/off state lives here too even though
+ * it was never a positioned block). Toggled from the backdrop's own
+ * settings panel in `ChannelDesigner`, not the Layers list. */
+export const BACKDROP_FOLDED_ITEM_TYPES: ChannelPageItemType[] = [
+  'about',
+  'subscribe',
+  'avatar',
+];
 
 /** One tab of a `navigation` block: a label plus which other visible
  * layout items appear on the page while that tab is active. An item id
@@ -43,6 +59,11 @@ export type ChannelPageItem = {
   /** `navigation` blocks only — off the page entirely until this exists
    * with 2+ tabs (opt-in: no tab bar shows by default). */
   navigationTabs?: ChannelNavigationTab[];
+  /** `feed` blocks only — which update types to include. Empty/omitted
+   * means "all types". */
+  feedFilters?: string[];
+  /** `feed` blocks only — how updates render. Defaults to `tracklist`. */
+  feedDisplay?: 'tracklist' | 'cards' | 'both';
 };
 
 export const CHANNEL_PAGE_ITEM_META: Record<
@@ -97,7 +118,27 @@ export const CHANNEL_PAGE_ITEM_META: Record<
     label: 'Playlist',
     hint: 'Tracks from your library',
   },
+  avatar: {
+    label: 'Avatar',
+    hint: 'Profile picture in the backdrop — toggle from Backdrop settings',
+  },
+  feed: {
+    label: 'Feed',
+    hint: 'Artist updates, filterable, tracklist/cards/both display',
+  },
 };
+
+/** Fixed update-type tags a `feed` block can filter by. No real "channel
+ * update/post" data model exists yet (checked ListenView.tsx's listener-
+ * facing feed and channel-designer/LayoutOnlyLookHint.tsx's unrelated
+ * artist-profile 'feed' look-element — neither is this) — these are the
+ * placeholder categories the config UI offers until a real backend feed
+ * exists to filter. */
+export const FEED_FILTER_OPTIONS: { id: string; label: string }[] = [
+  { id: 'release', label: 'Releases' },
+  { id: 'show', label: 'Shows' },
+  { id: 'announcement', label: 'Announcements' },
+];
 
 export type ChannelLookBundle = {
   visualPreset: string;
@@ -265,6 +306,12 @@ export function defaultChannelPageLayout(): Array<{
     // Hidden by default for ordinary artist channels -- ChannelView forces
     // this one into view for RADIO-kind channels regardless of this flag.
     item('programming', false),
+    // Was always shown unconditionally by ChannelBackdropCard before this
+    // toggle existed -- defaults true so existing channels see no change;
+    // see normalizeLayout's backfill below for the same reasoning applied
+    // to a layout saved before 'avatar' existed at all.
+    item('avatar', true),
+    item('feed', false),
   ];
 }
 
@@ -394,6 +441,22 @@ export function normalizeLayout(items: ChannelPageItem[]): ChannelPageItem[] {
             ),
           }
         : {}),
+      ...(layoutItem.type === 'feed'
+        ? {
+            ...(Array.isArray(layoutItem.feedFilters)
+              ? {
+                  feedFilters: layoutItem.feedFilters.filter(
+                    (f): f is string => typeof f === 'string',
+                  ),
+                }
+              : {}),
+            ...(layoutItem.feedDisplay === 'cards' ||
+            layoutItem.feedDisplay === 'tracklist' ||
+            layoutItem.feedDisplay === 'both'
+              ? { feedDisplay: layoutItem.feedDisplay }
+              : {}),
+          }
+        : {}),
       ...(layoutItem.width ? { width: layoutItem.width } : {}),
       ...(layoutItem.offsetX !== undefined
         ? { offsetX: layoutItem.offsetX }
@@ -405,7 +468,11 @@ export function normalizeLayout(items: ChannelPageItem[]): ChannelPageItem[] {
   }
   for (const def of defaultChannelPageLayout()) {
     if (!seenTypes.has(def.type)) {
-      out.push({ ...def, visible: false });
+      // 'avatar' predates this toggle existing at all -- every layout saved
+      // before this change is missing the item entirely, and the avatar
+      // was always shown unconditionally, so backfill it visible rather
+      // than following every other type's "new blocks default off" rule.
+      out.push({ ...def, visible: def.type === 'avatar' });
     }
   }
   return out;
@@ -488,6 +555,26 @@ export function setPlaylistDisplay(
   );
 }
 
+export function setFeedFilters(
+  items: ChannelPageItem[],
+  id: string,
+  feedFilters: string[],
+): ChannelPageItem[] {
+  return items.map((item) =>
+    item.id === id && item.type === 'feed' ? { ...item, feedFilters } : item,
+  );
+}
+
+export function setFeedDisplay(
+  items: ChannelPageItem[],
+  id: string,
+  feedDisplay: 'tracklist' | 'cards' | 'both',
+): ChannelPageItem[] {
+  return items.map((item) =>
+    item.id === id && item.type === 'feed' ? { ...item, feedDisplay } : item,
+  );
+}
+
 /** A single "Home" tab holding everything already on the page -- one tab
  * means the bar stays hidden (nothing to switch between), so turning
  * navigation on changes nothing until a second tab is added and some
@@ -505,7 +592,8 @@ function defaultNavigationTabs(
             i.visible &&
             i.type !== 'hero' &&
             i.type !== 'chat' &&
-            i.type !== 'navigation',
+            i.type !== 'navigation' &&
+            !BACKDROP_FOLDED_ITEM_TYPES.includes(i.type as ChannelPageItemType),
         )
         .map((i) => i.id),
     },

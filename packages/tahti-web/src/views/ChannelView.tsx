@@ -21,6 +21,7 @@ import {
   FilterChips,
   Loader,
   SaveButton,
+  Toggle,
   Tooltip,
 } from '@tahti-player/ui';
 
@@ -89,13 +90,17 @@ import type { ChannelLookElementId } from '../lib/channelLookElements';
 import {
   addItemType,
   addPlaylistItem,
+  BACKDROP_FOLDED_ITEM_TYPES,
   CHANNEL_PAGE_ITEM_META,
+  FEED_FILTER_OPTIONS,
   getLayoutPreset,
   loadChannelLayoutPresetId,
   loadChannelPageLayout,
   moveItem,
   saveChannelLayoutPresetId,
   saveChannelPageLayout,
+  setFeedDisplay,
+  setFeedFilters,
   setItemOffset,
   setItemVisible,
   setItemWidth,
@@ -394,6 +399,18 @@ export function ChannelView({ slug }: { slug: string }) {
     selectedId === 'header'
       ? 'header'
       : layout.find((i) => i.id === selectedId)?.type;
+
+  // Bio/CTA/avatar are folded into the backdrop (ChannelBackdropCard),
+  // driven by the same 'about'/'subscribe'/'avatar' ChannelPageItems as
+  // before -- just no longer surfaced as their own draggable blocks (see
+  // BACKDROP_FOLDED_ITEM_TYPES). Fall back true/true/false to match
+  // defaultChannelPageLayout's own defaults in case normalizeLayout ever
+  // runs against a not-yet-normalized array.
+  const avatarVisible =
+    layout.find((i) => i.type === 'avatar')?.visible ?? true;
+  const bioVisible = layout.find((i) => i.type === 'about')?.visible ?? true;
+  const subscribeVisible =
+    layout.find((i) => i.type === 'subscribe')?.visible ?? false;
   const lookElementId: ChannelLookElementId | null =
     selectedType === 'hero'
       ? 'player'
@@ -409,10 +426,17 @@ export function ChannelView({ slug }: { slug: string }) {
         ? 'playlist'
         : selectedType === 'navigation'
           ? 'navigation'
-          : lookElementId;
+          : selectedType === 'feed'
+            ? 'feed'
+            : lookElementId;
 
   const selectedPlaylistItem =
     selectedType === 'playlist'
+      ? layout.find((item) => item.id === selectedId)
+      : undefined;
+
+  const selectedFeedItem =
+    selectedType === 'feed'
       ? layout.find((item) => item.id === selectedId)
       : undefined;
 
@@ -424,7 +448,12 @@ export function ChannelView({ slug }: { slug: string }) {
   const layersMenu =
     editing && channel ? (
       <ChannelLayersMenu
-        items={layout}
+        items={layout.filter(
+          (item) =>
+            !BACKDROP_FOLDED_ITEM_TYPES.includes(
+              item.type as ChannelPageItemType,
+            ),
+        )}
         selectedId={selectedId}
         lookOpenSection={lookOpenSection}
         activePresetId={activePresetId}
@@ -526,6 +555,75 @@ export function ChannelView({ slug }: { slug: string }) {
                 />
               </div>
             </div>
+          ) : lookOpenSection === 'feed' && selectedFeedItem ? (
+            <div className="flex flex-col gap-3">
+              <p className="text-foreground-secondary text-xs">
+                Feed has no live update source wired in yet — these controls
+                shape it for when one exists.
+              </p>
+              <div className="flex flex-col gap-2">
+                <p className="text-foreground-secondary text-xs">
+                  Which update types to include.
+                </p>
+                <div className="flex flex-col gap-2">
+                  {FEED_FILTER_OPTIONS.map((option) => {
+                    const filters = selectedFeedItem.feedFilters ?? [];
+                    const checked =
+                      filters.length === 0 || filters.includes(option.id);
+                    return (
+                      <div
+                        key={option.id}
+                        className="flex items-center justify-between gap-3 text-sm"
+                      >
+                        <span>{option.label}</span>
+                        <Toggle
+                          label={option.label}
+                          checked={checked}
+                          onChange={(next) => {
+                            const current =
+                              filters.length === 0
+                                ? FEED_FILTER_OPTIONS.map((o) => o.id)
+                                : filters;
+                            const nextFilters = next
+                              ? [...new Set([...current, option.id])]
+                              : current.filter((id) => id !== option.id);
+                            updateLayout((prev) =>
+                              setFeedFilters(
+                                prev,
+                                selectedFeedItem.id,
+                                nextFilters,
+                              ),
+                            );
+                          }}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <p className="text-foreground-secondary text-xs">
+                  How updates appear on the page.
+                </p>
+                <FilterChips
+                  items={[
+                    { id: 'tracklist', label: 'Tracklist' },
+                    { id: 'cards', label: 'Cards' },
+                    { id: 'both', label: 'Both' },
+                  ]}
+                  selected={selectedFeedItem.feedDisplay ?? 'tracklist'}
+                  onChange={(id) => {
+                    if (id !== 'tracklist' && id !== 'cards' && id !== 'both') {
+                      return;
+                    }
+                    updateLayout((prev) =>
+                      setFeedDisplay(prev, selectedFeedItem.id, id),
+                    );
+                  }}
+                  aria-label="Feed display"
+                />
+              </div>
+            </div>
           ) : lookOpenSection === 'navigation' && selectedNavigationItem ? (
             <ChannelNavigationEditor
               tabs={selectedNavigationItem.navigationTabs ?? []}
@@ -535,7 +633,10 @@ export function ChannelView({ slug }: { slug: string }) {
                     candidate.visible &&
                     candidate.type !== 'hero' &&
                     candidate.type !== 'chat' &&
-                    candidate.type !== 'navigation',
+                    candidate.type !== 'navigation' &&
+                    !BACKDROP_FOLDED_ITEM_TYPES.includes(
+                      candidate.type as ChannelPageItemType,
+                    ),
                 )
                 .map((candidate) => ({
                   id: candidate.id,
@@ -560,6 +661,8 @@ export function ChannelView({ slug }: { slug: string }) {
               channelSlug={slug}
               avatarUrl={channel.user.avatarUrl}
               bio={channel.user.bio}
+              layout={layout}
+              onLayoutChange={(updater) => updateLayout(updater)}
               lookOpenSection={lookElementId}
               onDirtyChange={setLookDirty}
               onSaved={() => {
@@ -954,6 +1057,9 @@ export function ChannelView({ slug }: { slug: string }) {
             onSelectNavTab={setActiveNavTabId}
             layout={layout}
             updateLayout={updateLayout}
+            avatarVisible={avatarVisible}
+            bioVisible={bioVisible}
+            subscribeVisible={subscribeVisible}
             stagePlayer={stagePlayer}
           />
         );
@@ -986,21 +1092,32 @@ export function ChannelView({ slug }: { slug: string }) {
   // assigned to any tab only shows while its tab is active; an item never
   // assigned to any tab always shows, so adding a new block after tabs
   // exist doesn't silently disappear from every tab.
-  const baseVisibleItems = editing
-    ? layout
-    : layout.filter((item) => {
-        if (
-          !item.visible ||
-          item.type === 'chat' ||
-          item.type === 'navigation'
-        ) {
-          return false;
-        }
-        if (showNavTabs && navTabbedItemIds.has(item.id)) {
-          return activeNavTab?.itemIds.includes(item.id) ?? true;
-        }
-        return true;
-      });
+  const baseVisibleItems = (
+    editing
+      ? layout
+      : layout.filter((item) => {
+          if (
+            !item.visible ||
+            item.type === 'chat' ||
+            item.type === 'navigation'
+          ) {
+            return false;
+          }
+          if (showNavTabs && navTabbedItemIds.has(item.id)) {
+            return activeNavTab?.itemIds.includes(item.id) ?? true;
+          }
+          return true;
+        })
+  ).filter(
+    // Bio/CTA/avatar are folded into the backdrop itself (rendered inside
+    // ChannelHeroBlock's <ChannelBackdropCard>, see avatarVisible/
+    // bioVisible/subscribeVisible below) -- never their own positioned
+    // block/grid card, in either edit or view mode, unlike chat/navigation
+    // above which are still config-only-in-view-mode but do get a
+    // draggable position card while editing.
+    (item) =>
+      !BACKDROP_FOLDED_ITEM_TYPES.includes(item.type as ChannelPageItemType),
+  );
 
   // Radio-station pages (tahti-radio today) show programming instead of
   // artist identity -- no bio/links/subscribe CTA, regardless of what an
