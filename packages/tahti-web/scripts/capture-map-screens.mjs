@@ -295,7 +295,12 @@ async function setLocalStorage(p, signedIn = true) {
           localStorage.setItem('tahti-nuclear-theme-id', theme.state.themeId);
           localStorage.setItem('tahti-nuclear-dark', '1');
         },
-        { auth: AUTH_STATE, theme: THEME_STATE, rightCollapsed: true, signedIn },
+        {
+          auth: AUTH_STATE,
+          theme: THEME_STATE,
+          rightCollapsed: true,
+          signedIn,
+        },
       );
       return;
     } catch (error) {
