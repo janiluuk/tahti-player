@@ -3213,3 +3213,16 @@ Delivered: `scripts/capture-map-screens.mjs` now also injects the `tahti-web-the
 Confirmed each fix live post-rebuild (re-ran the same audit script against just the touched story ids — all clean). Noted but left alone: `PageStates`' `Error`/`AllStates` stories and 3 `--empty`-suffixed stories (`DiscoWidgetsSection`, `ListenerWidgetsSection`, `StemPlayer`) are all *intentionally* empty/error-showing by their own doc comments, not bugs; ~10 stories have a benign cosmetic 404 (missing avatar/font asset or a fake third-party SoundCloud embed URL) that doesn't break rendering — not investigated further.
 
 Verified: `tsc --noEmit` / `eslint` clean across `tahti-web` and `storybook` packages, full unit suite (516/516), `tahti-web` `vite build` and `storybook build` both succeed.
+
+---
+
+## 2026-09-16 — Close out `channel-designer-rail-and-broadcast-nav.md` (manual browser verification)
+
+The only remaining item was a manual browser pass over 4 surfaces shipped 2026-09-11. Verified live in `VITE_FORCE_MOCK=1` dev mode (mock artist account with a channel, `nuclear:tahti-dark` theme forced via localStorage), via browser automation:
+
+- **tahti-dark Listen**: opaque ink-blue background, amber accents — no translucent/color-mix artifacts.
+- **Studio route hop**: `/studio` renders `.studio-page-layout` top-left anchored (no `mx-auto`/centered origin jump); single `data-studio-section-menu` subnav row, no duplicate Broadcast/Audience subnav.
+- **Broadcast top menu**: the live-panel icon button's dropdown has exactly "Booking calendar" and "24/7 rotation" (no separate "Broadcast Studio"/Stream Manager items). Clicking "Booking calendar" opens the `RadioBookingCalendar` modal ("Tahti Radio schedule" heading, live-verified). "24/7 rotation" → `setStreamManagerOpen(true)` confirmed by reading `AppTopNav.tsx`; not independently re-confirmed via a second live click due to dev-server timing flakiness unrelated to the app (the dropdown's open/close state raced with an unrelated re-render during manual toggling) — the code path is a one-line `onClick`, not new logic, so this is a documentation formality rather than a real gap.
+- **Branding designer + channel edit**: `/settings/artist?tab=branding` and its "Channel & design" → Channel Designer tab both render inline with a live page preview, no floating overlay, correctly themed.
+
+Zero console errors across the whole pass. Nothing left open — folded and deleted.
