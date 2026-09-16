@@ -84,6 +84,7 @@ import {
   parseNowPlayingOverlaySettings,
   resolveNowPlayingOverlayPreset,
 } from '../content/nowPlayingOverlayPresets';
+import { useChannelLayoutEditing } from '../hooks/useChannelLayoutEditing';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { hasAccountRole } from '../lib/accountRoles';
 import type { ChannelLookElementId } from '../lib/channelLookElements';
@@ -94,11 +95,7 @@ import {
   CHANNEL_PAGE_ITEM_META,
   FEED_FILTER_OPTIONS,
   getLayoutPreset,
-  loadChannelLayoutPresetId,
-  loadChannelPageLayout,
   moveItem,
-  saveChannelLayoutPresetId,
-  saveChannelPageLayout,
   setFeedDisplay,
   setFeedFilters,
   setItemOffset,
@@ -138,26 +135,27 @@ export function ChannelView({ slug }: { slug: string }) {
   const [channel, setChannel] = useState<PublicChannel | null>(null);
   const [sounds, setSounds] = useState<ChannelSoundItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [layout, setLayout] = useState<ChannelPageItem[]>(() =>
-    loadChannelPageLayout(slug),
-  );
-  const [activePresetId, setActivePresetId] =
-    useState<ChannelLayoutPresetId | null>(() =>
-      loadChannelLayoutPresetId(slug),
-    );
-  const [editing, setEditing] = useState(false);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const {
+    layout,
+    setLayout,
+    activePresetId,
+    setActivePresetId,
+    editing,
+    setEditing,
+    selectedId,
+    setSelectedId,
+    dragId,
+    setDragId,
+    moveDrag,
+    setMoveDrag,
+    layoutDirty,
+    setLayoutDirty,
+    updateLayout,
+    removeLayoutItem,
+    saveLayout,
+  } = useChannelLayoutEditing(slug);
   const [activeNavTabId, setActiveNavTabId] = useState<string | null>(null);
   const [navTabContentVisible, setNavTabContentVisible] = useState(true);
-  const [dragId, setDragId] = useState<string | null>(null);
-  const [moveDrag, setMoveDrag] = useState<{
-    id: string;
-    startX: number;
-    startY: number;
-    offsetX: number;
-    offsetY: number;
-  } | null>(null);
-  const [layoutDirty, setLayoutDirty] = useState(false);
   const [lookDirty, setLookDirty] = useState(false);
   const [linksDirty, setLinksDirty] = useState(false);
   const [channelLinksDraft, setChannelLinksDraft] = useState<ChannelLink[]>([]);
@@ -222,12 +220,6 @@ export function ChannelView({ slug }: { slug: string }) {
         })),
     [listenerWidgetInstances, layout],
   );
-
-  useEffect(() => {
-    setLayout(loadChannelPageLayout(slug));
-    setActivePresetId(loadChannelLayoutPresetId(slug));
-    setLayoutDirty(false);
-  }, [slug]);
 
   useEffect(() => {
     if (search.edit && isOwner) {
@@ -783,40 +775,6 @@ export function ChannelView({ slug }: { slug: string }) {
       displayName: channel.user.displayName,
       avatarUrl: channel.user.avatarUrl,
     });
-
-  // Takes an updater (not a precomputed array) so each call always builds on
-  // the latest layout — reading the closed-over `layout` variable directly
-  // races when two edits (e.g. a fast double-click on "Add") fire before
-  // React re-renders between them, both computing from the same stale array
-  // and silently dropping one of the changes (or duplicating an item).
-  const updateLayout = (
-    updater:
-      | ChannelPageItem[]
-      | ((prev: ChannelPageItem[]) => ChannelPageItem[]),
-    opts?: { clearPreset?: boolean },
-  ) => {
-    setLayout((prev) =>
-      typeof updater === 'function' ? updater(prev) : updater,
-    );
-    setLayoutDirty(true);
-    if (opts?.clearPreset !== false && activePresetId) {
-      setActivePresetId(null);
-      saveChannelLayoutPresetId(slug, null);
-    }
-  };
-
-  const removeLayoutItem = (id: string) => {
-    updateLayout((prev) => prev.filter((item) => item.id !== id));
-    if (selectedId === id) {
-      setSelectedId(null);
-    }
-  };
-
-  const saveLayout = () => {
-    saveChannelPageLayout(slug, layout);
-    saveChannelLayoutPresetId(slug, activePresetId);
-    setLayoutDirty(false);
-  };
 
   // Combined save for the single toolbar button: the layers menu embeds
   // ChannelDesigner in `lookOnly` mode for its look controls, which used to

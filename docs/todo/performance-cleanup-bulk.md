@@ -85,7 +85,7 @@ on `document.visibilitychange`.
 | `api/studio.ts` | ~5 (barrel) | **Done 2026-09-15** — peeled into `api/studio/studio-{sounds,releases,collections,upload,editor}.ts` + shared `studio-request.ts`/`studio-mock.ts`, matching the source file's own section boundaries (not literally "tracks, releases, collections, schedule" as originally guessed here — see `codebase-refactor-hotspots.md` item 15) |
 | `router.tsx` | 382 (assembly only) | **Done 2026-09-15** — peeled into `router/routes-*.tsx` by nav section (listen/settings/admin/library/transparency/help/auth/governance/info/studio/embed) + `router/router-core.tsx` + `router/router-lazy-views.ts`; see `codebase-refactor-hotspots.md` item 16 |
 | `ArtistView.tsx` | ~1500 | **Done 2026-09-15** — Releases/Collections tab bodies extracted, then the "Music" tab body too (turned out to be a pure JSX+props extraction, not closure-coupled state — see `codebase-refactor-hotspots.md` item 13); all three tab components moved into `components/artist-view/` |
-| `ChannelView.tsx` | ~1750 | **Partial 2026-09-15** — hooks-order bug fixed (PR #94), then the 11 small `renderBlock` cases (everything but `hero`) extracted to `components/channel-view/ChannelViewBlocks.tsx`; `hero`/`stagePlayer`/the layout-editing state remain the tightly closure-coupled part, see `codebase-refactor-hotspots.md` items 14 and 17 |
+| `ChannelView.tsx` | ~1450 | **Done 2026-09-16** — hooks-order bug fixed (PR #94), the 11 small `renderBlock` cases extracted to `ChannelViewBlocks.tsx`, then `hero`/`stagePlayer` to `ChannelHeroBlock.tsx`, then the layout-editing state (layout array, selection/drag, dirty/preset bookkeeping) to `hooks/useChannelLayoutEditing.ts` — see `codebase-refactor-hotspots.md` items 14, 17, 18, 19 |
 
 ---
 
@@ -136,8 +136,13 @@ extracted to `components/channel-view/ChannelHeroBlock.tsx` (+ barrel) —
 pure JSX+props, `stagePlayer` passed in ready-built rather than rebuilt,
 matching the pattern from item 17's other 11 blocks. See
 `codebase-refactor-hotspots.md` item 18.
-Still open in Phase 4: `ChannelDesigner.tsx`'s remaining body,
-`ChannelView.tsx`'s `useChannelLayoutEditing` piece.
+**2026-09-16 (2):** `useChannelLayoutEditing` extracted — `ChannelView.tsx`'s
+page-layout editing state (layout array, selection/drag state, dirty/preset
+bookkeeping, the `updateLayout`/`removeLayoutItem`/`saveLayout` helpers)
+moved verbatim into `hooks/useChannelLayoutEditing.ts`, pure relocation, no
+behavior change. `ChannelView.tsx` off this backlog entirely now. See
+`codebase-refactor-hotspots.md` item 19.
+Still open in Phase 4: `ChannelDesigner.tsx`'s remaining body.
 
 ## Execution order
 
