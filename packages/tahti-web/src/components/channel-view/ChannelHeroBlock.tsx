@@ -48,6 +48,12 @@ export type ChannelHeroBlockProps = {
       | ((prev: ChannelPageItem[]) => ChannelPageItem[]),
     opts?: { clearPreset?: boolean },
   ) => void;
+  /** Bio/CTA/avatar folded into the backdrop -- see BACKDROP_FOLDED_ITEM_TYPES
+   * in channelPageLayout.ts. Derived from `layout`'s 'about'/'subscribe'/
+   * 'avatar' items by ChannelView, not read from `layout` here directly. */
+  avatarVisible: boolean;
+  bioVisible: boolean;
+  subscribeVisible: boolean;
   /** The player-stage content (now-playing overlay, play/favorite/chat
    * controls) -- built once in `ChannelView.tsx` and reused verbatim here
    * and in that file's hidden-hero fallback. */
@@ -81,6 +87,9 @@ export function ChannelHeroBlock({
   onSelectNavTab,
   layout,
   updateLayout,
+  avatarVisible,
+  bioVisible,
+  subscribeVisible,
   stagePlayer,
 }: ChannelHeroBlockProps) {
   // Opt-in: no bar at all until the artist adds a Navigation block with 2+
@@ -139,6 +148,9 @@ export function ChannelHeroBlock({
         channelSlug={slug}
         avatarUrl={channel.user.avatarUrl}
         bio={channel.user.bio}
+        avatarVisible={avatarVisible}
+        bioVisible={bioVisible}
+        subscribeVisible={subscribeVisible}
         headerStyle={channel.headerStyle ?? 'GRADIENT'}
         videoBackgroundUrl={channel.videoBackgroundUrl}
         muted={channelVideoMuted}

@@ -157,12 +157,19 @@ describe('normalizeLayout', () => {
 
   it('fills in every missing type as a hidden default entry', () => {
     const out = normalizeLayout([{ id: 'hero', type: 'hero', visible: true }]);
-    const remaining = CHANNEL_PAGE_ITEM_TYPES.filter((t) => t !== 'hero');
+    // 'avatar' predates this toggle existing at all -- a layout saved
+    // before it was introduced is missing the item entirely, and the
+    // avatar was always shown unconditionally, so it backfills visible
+    // (see normalizeLayout's own comment) unlike every other type here.
+    const remaining = CHANNEL_PAGE_ITEM_TYPES.filter(
+      (t) => t !== 'hero' && t !== 'avatar',
+    );
     for (const type of remaining) {
       const item = out.find((i) => i.type === type);
       expect(item).toBeDefined();
       expect(item?.visible).toBe(false);
     }
+    expect(out.find((i) => i.type === 'avatar')?.visible).toBe(true);
   });
 });
 

@@ -199,6 +199,18 @@ type Props = {
   onLookVisibilityChange?: (
     visibility: Record<ArtistLookBlockId, boolean>,
   ) => void;
+  /** The channel page's own layout array + updater — only ever passed by
+   * `ChannelView`'s editing mode, which owns the real `ChannelPageItem[]`.
+   * Backs the Backdrop panel's avatar/bio/subscribe toggles (see
+   * BACKDROP_FOLDED_ITEM_TYPES); those toggles simply don't render for
+   * any other caller of this component (ArtistView, StudioBrandingView,
+   * ChannelSetupDialog), which have no page layout to toggle. */
+  layout?: ChannelPageItem[];
+  onLayoutChange?: (
+    updater:
+      | ChannelPageItem[]
+      | ((prev: ChannelPageItem[]) => ChannelPageItem[]),
+  ) => void;
 };
 
 export type ChannelDesignerHandle = {
@@ -221,6 +233,8 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       lookOpenSection,
       onDirtyChange,
       onLookVisibilityChange,
+      layout,
+      onLayoutChange,
     }: Props,
     ref,
   ) {
@@ -1299,52 +1313,110 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       />
     );
 
+    // Bio/CTA/avatar folded into the backdrop instead of being separate
+    // draggable page blocks (see BACKDROP_FOLDED_ITEM_TYPES in
+    // channelPageLayout.ts) -- only rendered when this ChannelDesigner
+    // instance is nested inside ChannelView's editing mode, which is the
+    // only caller that owns a real page `layout` to toggle.
+    const identityTogglesSlot =
+      layout && onLayoutChange ? (
+        <section className="border-border flex flex-col gap-3 rounded-lg border p-3">
+          <h3 className="text-xs font-semibold tracking-wide uppercase">
+            Identity
+          </h3>
+          {(
+            [
+              {
+                type: 'avatar' as const,
+                label: 'Show avatar',
+              },
+              {
+                type: 'about' as const,
+                label: 'Show bio',
+              },
+              {
+                type: 'subscribe' as const,
+                label: 'Show Subscribe button',
+              },
+            ] satisfies { type: ChannelPageItemType; label: string }[]
+          ).map(({ type, label }) => {
+            const row = layout.find((i) => i.type === type);
+            const checked = row?.visible ?? type === 'avatar';
+            return (
+              <div
+                key={type}
+                className="flex items-center justify-between gap-3 text-sm"
+              >
+                <span>{label}</span>
+                <Toggle
+                  label={label}
+                  checked={checked}
+                  onChange={(next) => {
+                    onLayoutChange((prev) => {
+                      const existing = prev.find((i) => i.type === type);
+                      return existing
+                        ? setItemVisible(prev, existing.id, next)
+                        : prev;
+                    });
+                  }}
+                />
+              </div>
+            );
+          })}
+        </section>
+      ) : null;
+
     const backdropPanel = (
-      <BackdropPanel
-        scheme={scheme}
-        backgroundScheme={backgroundScheme}
-        useBackgroundGradient={visual.useBackgroundGradient ?? false}
-        brandAccentPreset={visual.brandAccentPreset}
-        headerMode={headerDesignMode}
-        hasBackdrop={hasBackdrop}
-        backgroundVisualPreset={visual.backgroundVisualPreset}
-        onPageBackgroundChange={(bg) => {
-          if (visual.useBackgroundGradient) {
-            setBackgroundScheme({ ...backgroundScheme, bg });
+      <>
+        {identityTogglesSlot}
+        <BackdropPanel
+          scheme={scheme}
+          backgroundScheme={backgroundScheme}
+          useBackgroundGradient={visual.useBackgroundGradient ?? false}
+          brandAccentPreset={visual.brandAccentPreset}
+          headerMode={headerDesignMode}
+          hasBackdrop={hasBackdrop}
+          backgroundVisualPreset={visual.backgroundVisualPreset}
+          onPageBackgroundChange={(bg) => {
+            if (visual.useBackgroundGradient) {
+              setBackgroundScheme({ ...backgroundScheme, bg });
+              setDirty(true);
+              return;
+            }
+            applyLocal({ brandAccentPreset: null }, { ...scheme, bg });
+          }}
+          onHeaderModeChange={setHeaderDesignMode}
+          onRemoveBackdrop={removeBackdrop}
+          onSchemeChange={(next) =>
+            applyLocal({ brandAccentPreset: null }, next)
+          }
+          onBrandAccent={(brand) =>
+            applyLocal(
+              { brandAccentPreset: brand.id },
+              {
+                ...scheme,
+                accent: brand.accent,
+                highlight: brand.highlight,
+              },
+            )
+          }
+          onUseBackgroundGradient={(useBackgroundGradient) => {
+            if (useBackgroundGradient && !visual.backgroundColorSchemeJson) {
+              setBackgroundScheme(scheme);
+            }
+            applyLocal({ useBackgroundGradient });
+          }}
+          onBackgroundSchemeChange={(next) => {
+            setBackgroundScheme(next);
             setDirty(true);
-            return;
+          }}
+          onBackgroundVisualPreset={(preset) =>
+            applyLocal({ backgroundVisualPreset: preset })
           }
-          applyLocal({ brandAccentPreset: null }, { ...scheme, bg });
-        }}
-        onHeaderModeChange={setHeaderDesignMode}
-        onRemoveBackdrop={removeBackdrop}
-        onSchemeChange={(next) => applyLocal({ brandAccentPreset: null }, next)}
-        onBrandAccent={(brand) =>
-          applyLocal(
-            { brandAccentPreset: brand.id },
-            {
-              ...scheme,
-              accent: brand.accent,
-              highlight: brand.highlight,
-            },
-          )
-        }
-        onUseBackgroundGradient={(useBackgroundGradient) => {
-          if (useBackgroundGradient && !visual.backgroundColorSchemeJson) {
-            setBackgroundScheme(scheme);
-          }
-          applyLocal({ useBackgroundGradient });
-        }}
-        onBackgroundSchemeChange={(next) => {
-          setBackgroundScheme(next);
-          setDirty(true);
-        }}
-        onBackgroundVisualPreset={(preset) =>
-          applyLocal({ backgroundVisualPreset: preset })
-        }
-        videoSlot={videoBackdropSlot}
-        slideshowSlot={slideshowControls}
-      />
+          videoSlot={videoBackdropSlot}
+          slideshowSlot={slideshowControls}
+        />
+      </>
     );
 
     const visualizerSlot = (
@@ -1631,6 +1703,15 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
                 channelSlug={channelSlug}
                 avatarUrl={avatarUrl}
                 bio={bio}
+                avatarVisible={
+                  layout?.find((i) => i.type === 'avatar')?.visible ?? true
+                }
+                bioVisible={
+                  layout?.find((i) => i.type === 'about')?.visible ?? true
+                }
+                subscribeVisible={
+                  layout?.find((i) => i.type === 'subscribe')?.visible ?? false
+                }
                 headerStyle={visual.headerStyle}
                 videoBackgroundUrl={previewVideoUrl}
                 showVideoOverride={showHeaderVideo}

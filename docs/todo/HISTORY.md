@@ -3226,3 +3226,17 @@ The only remaining item was a manual browser pass over 4 surfaces shipped 2026-0
 - **Branding designer + channel edit**: `/settings/artist?tab=branding` and its "Channel & design" → Channel Designer tab both render inline with a live page preview, no floating overlay, correctly themed.
 
 Zero console errors across the whole pass. Nothing left open — folded and deleted.
+
+---
+
+## 2026-09-16 — Channel Designer: bio/CTA/avatar folded into backdrop toggles; new Feed widget
+
+Implemented `channel-designer-backdrop-fold-and-widgets.md`'s 5-item ask in full:
+
+1-3. **Bio, CTA (Subscribe), and avatar folded into the backdrop.** `about`/`subscribe`/`avatar` remain real `ChannelPageItem` types (their `visible` flag persists, and an old saved layout's Navigation tab can still harmlessly reference their id — new `BACKDROP_FOLDED_ITEM_TYPES` constant marks them) but are no longer independently addable/draggable Layers-list blocks. `ChannelBackdropCard` gained `avatarVisible`/`bioVisible`/`subscribeVisible`/`subscribeLabel` props (avatar defaults `true` — it was always shown before this toggle existed) and now renders the Subscribe CTA as a real button linking to `/subscribe/$username`. `ChannelDesigner` gained an "Identity" toggle section (avatar/bio/Subscribe switches) rendered only when nested inside `ChannelView`'s editing mode (the only caller with a real page `layout` to toggle — `ArtistView`/`StudioBrandingView`/`ChannelSetupDialog` are unaffected). `ChannelViewBlocks.tsx`'s `about`/`subscribe` cases now return `null` (kept only for the exhaustiveness guard; they never actually run since `ChannelView` filters `BACKDROP_FOLDED_ITEM_TYPES` out of the rendered item list, the Layers menu's hidden-catalog, and Navigation-tab candidates before `renderBlock` ever sees them). Existing saved layouts predating the `avatar` item type backfill it `visible: true` via `normalizeLayout` (every other new type defaults hidden) so nothing changes for channels that never touched this.
+4. Releases/latest-releases/collections confirmed untouched — still independent addable blocks, as asked.
+5. **New `feed` block** — configurable update-type filters (`FEED_FILTER_OPTIONS`: releases/shows/announcements) and a tracklist/cards/both display toggle, wired into `ChannelView`'s look-panel (its own `lookOpenSection === 'feed'` case) the same way the `playlist`/`navigation` blocks already have dedicated config panels. No real "channel update/post" data model exists anywhere in this codebase yet (checked `ListenView.tsx`'s unrelated listener-facing feed and `channel-designer/LayoutOnlyLookHint.tsx`'s unrelated artist-profile feed look-element) — the block's own copy says so explicitly ("Feed has no live update source wired in yet") rather than faking data or silently no-oping. Wiring a real backend for this is a separate, larger follow-up, not attempted here.
+
+Verified: `tsc --noEmit` / `eslint` clean (`tahti-web` + `storybook`), full unit suite 517/517 (one pre-existing test, `channelPageLayout.test.ts`'s "fills in every missing type as a hidden default entry", needed updating to expect `avatar`'s intentional `visible: true` backfill exception — not a regression, the test just predated this ticket's own documented design choice), `vite build` and `storybook build` both succeed. Added `SubscribeCtaVisible`/`AvatarAndBioHidden` stories to `ChannelBackdropCard.stories.tsx`.
+
+Nothing left open against this ticket's 5-item ask — folded and deleted.
