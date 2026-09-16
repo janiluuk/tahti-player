@@ -2,7 +2,7 @@ use std::sync::atomic::{AtomicU32, Ordering};
 
 use sqlx::sqlite::{SqliteConnectOptions, SqlitePool};
 
-use super::{import_paths, list, remove, resolve_path};
+use super::{import_paths, list, list_unavailable, remove, resolve_path};
 
 static DB_COUNTER: AtomicU32 = AtomicU32::new(0);
 
@@ -150,6 +150,78 @@ async fn resolve_path_fails_once_file_is_missing() {
     std::fs::remove_file(&path).unwrap();
     let error = resolve_path(&pool, &id).await.unwrap_err();
     assert!(error.contains("unavailable"));
+}
+
+#[tokio::test]
+async fn resolve_path_persists_unavailable_state() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("song.wav");
+    write_wav(&path, "Title", "Artist");
+
+    let pool = pool().await;
+    import_paths(&pool, vec![path.clone()]).await;
+    let id = list(&pool, "", 0).await.unwrap().tracks[0].id.clone();
+    assert!(list(&pool, "", 0).await.unwrap().tracks[0].available);
+
+    std::fs::remove_file(&path).unwrap();
+    assert!(resolve_path(&pool, &id).await.is_err());
+
+    // Unlike the transient error above, this must survive a fresh read --
+    // Phase 1's relink UI needs to list missing tracks without re-resolving
+    // every row on every page load.
+    let row = list(&pool, "", 0).await.unwrap().tracks.into_iter().next().unwrap();
+    assert!(!row.available);
+    assert!(row.unavailable_since.is_some());
+
+    let missing = list_unavailable(&pool).await.unwrap();
+    assert_eq!(missing.len(), 1);
+    assert_eq!(missing[0].id, id);
+}
+
+#[tokio::test]
+async fn resolve_path_self_heals_once_file_returns() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("song.wav");
+    write_wav(&path, "Title", "Artist");
+
+    let pool = pool().await;
+    import_paths(&pool, vec![path.clone()]).await;
+    let id = list(&pool, "", 0).await.unwrap().tracks[0].id.clone();
+
+    std::fs::remove_file(&path).unwrap();
+    assert!(resolve_path(&pool, &id).await.is_err());
+    assert!(!list(&pool, "", 0).await.unwrap().tracks[0].available);
+
+    // Reconnected drive / restored file: the next successful resolve clears
+    // the missing state rather than leaving it stuck until a future re-scan.
+    write_wav(&path, "Title", "Artist");
+    assert!(resolve_path(&pool, &id).await.is_ok());
+    let row = list(&pool, "", 0).await.unwrap().tracks.into_iter().next().unwrap();
+    assert!(row.available);
+    assert!(row.unavailable_since.is_none());
+    assert_eq!(list_unavailable(&pool).await.unwrap().len(), 0);
+}
+
+#[tokio::test]
+async fn reimporting_a_missing_track_clears_unavailable_state() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("song.wav");
+    write_wav(&path, "First Title", "Artist");
+
+    let pool = pool().await;
+    import_paths(&pool, vec![path.clone()]).await;
+    let id = list(&pool, "", 0).await.unwrap().tracks[0].id.clone();
+    std::fs::remove_file(&path).unwrap();
+    resolve_path(&pool, &id).await.ok();
+    assert!(!list(&pool, "", 0).await.unwrap().tracks[0].available);
+
+    write_wav(&path, "Second Title", "Artist");
+    import_paths(&pool, vec![path]).await;
+
+    let row = list(&pool, "", 0).await.unwrap().tracks.into_iter().next().unwrap();
+    assert!(row.available);
+    assert!(row.unavailable_since.is_none());
+    assert_eq!(row.title, "Second Title");
 }
 
 #[tokio::test]

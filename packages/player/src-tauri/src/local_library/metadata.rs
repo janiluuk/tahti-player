@@ -58,6 +58,8 @@ pub fn read(path: &Path) -> Result<LibraryTrack, String> {
         channels: params.channels.map(|channels| channels.count()).unwrap_or(0) as i64,
         bits_per_sample: params.bits_per_sample.map(i64::from),
         size_bytes: size as i64,
+        available: true,
+        unavailable_since: None,
     };
     if let Some(metadata) = probed.metadata.get().and_then(|metadata| metadata.current().cloned()) {
         apply_tags(&mut track, metadata.tags());
