@@ -19,17 +19,6 @@ Sibling API: **`../tahti-org`**. Product matrix: [`FEATURES.md`](FEATURES.md) Re
 
 - [ ] **(Later) Codebase refactor hotspots** — god modules / mega-files backlog. First slice (`api/http.ts`) shipped 2026-09-10. Leaf: [codebase-refactor-hotspots.md](../../docs/todo/codebase-refactor-hotspots.md).
 
-## Cross-repo work (`../tahti-org` — user-authorized 2026-09-07)
-
-User has explicitly authorized editing `../tahti-org` for cross-repo
-blockers found in this backlog, so these don't get silently skipped as
-"blocked" forever.
-
-- [x] **Stream Manager now-playing artwork** — turned out to already be resolved on the `../tahti-org` backend; only needed wiring on this side. Shipped 2026-09-07 (workplan cycle 6).
-- [x] **Meeting minutes upload** — added the missing presigned-upload route (`POST /api/admin/governance/meetings/:id/minutes/prepare-upload`, mirroring the addon bundle-upload pattern) plus a presigned `minutesUrl` on meeting responses (was raw, unfetchable keys before). Shipped 2026-09-08, `../tahti-org` changes verified via `pnpm vitest run` there (6/6 governance-records tests, 289/289 shared-package tests). See `governance-gap-list.md` #10.
-- [x] **Admin Add-ons: found the real backend, fixed the frontend contract** — the disco-widgets→Add-ons rename (2026-09-08) assumed no backend existed for this category; it did, under a different name (`Addon`/`AddonVersion`/`AddonInstall` in `../tahti-org`, full bundle-publish + moderation lifecycle, already had `enabledByDefault`/`defaultConfigJson`). No `../tahti-org` changes needed — rewrote this repo's `admin.ts`/`AdminAddonsView.tsx` to match the real contract (was silently broken against real prod: wrong response key, PATCH/DELETE endpoints that don't exist). See `admin-plugin-management-panel.md`.
-- [ ] **Listener purchase flow e2e** — subscription cancel UI shipped 2026-09-07; Purchases tab shipped 2026-09-08 (new `GET /api/me/purchases` in `../tahti-org`, PR [#483](https://github.com/janiluuk/tahti-org/pull/483), not merged by this session). Still needs: a test-mode Stripe Checkout path in `../tahti-org` to actually exercise "subscriber sees gated content" end to end. See `listener-purchase-flow.md`.
-
 ## Reference
 
 Storybook cheat sheet: [`STORYBOOK-SURFACES.md`](STORYBOOK-SURFACES.md). Full audit archive: [`STUDIO-ADMIN-UX-SWEEP.md`](STUDIO-ADMIN-UX-SWEEP.md) (do not scan for backlog).

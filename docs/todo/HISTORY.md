@@ -45,6 +45,31 @@ once OPEN with 409) — 11/11 green. Frontend: `MotionCard.tsx`'s existing
 `datetime-local` field alongside title/description, sent through
 `patchGovernanceMotion`'s extended `closeAt` param. `eslint`/`tsc --noEmit`
 clean on both repos.
+
+## 2026-09-16 — Listener purchase flow e2e: stale WORKPLAN entry closed out
+
+`WORKPLAN.md`'s "Cross-repo work" section still listed this as the one
+open item ("needs a test-mode Stripe Checkout path in `../tahti-org`"),
+but the actual e2e test (`e2e/listener-purchase-flow.spec.ts`) was already
+written and passing as of 2026-09-11 — that entry was just never stripped
+from WORKPLAN after the fold. No `../tahti-org` work was ever needed;
+`installStripeMock`'s network-route interception plus a local
+`VITE_FORCE_MOCK=1` dev server was sufficient.
+
+Re-ran both tests against a local mock dev server
+(`PLAYWRIGHT_BASE_URL=http://localhost:5180`) to confirm they still pass.
+Test 1 (buy a track) passed outright. Test 2 (subscribe/cancel) failed —
+not a product regression, but the test itself had drifted: it scraped a
+"View public profile" link from `/studio/branding` to get the artist's
+username, and that link no longer exists there (Studio Branding now
+renders through the shared Settings → Artist panel, which has no such
+link). Fixed by having the test read the username directly via
+`fetchMeProfile()` (`api/studio-extras.ts`, same `page.evaluate` +
+dynamic-import pattern the file already used elsewhere) instead of
+scraping DOM. Both tests pass; `tsc --noEmit` and `eslint` on the file
+are clean. Removed the entire "Cross-repo work" section from WORKPLAN.md
+(all 4 of its items were done, none left open).
+
 ## 2026-09-15 — ChannelView.tsx rules-of-hooks fix (found during the mega-file refactor design pass)
 
 Found incidentally while designing the ChannelDesigner/ArtistView/ChannelView
