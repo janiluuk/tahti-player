@@ -18,6 +18,13 @@ export type MapShot = {
    * Prefer setting `parity` on the case; this marks the empty pane.
    */
   absent?: boolean;
+  /**
+   * YYYY-MM-DD this specific `image` was captured, when known — shots get
+   * refreshed individually (not as one bulk sweep), so this is per-shot,
+   * not a single global date. Omit rather than guess; `ShotPane` falls back
+   * to a generic label when unset instead of claiming a date.
+   */
+  capturedAt?: string;
 };
 
 /** Whether both surfaces implement the view, or only one (parity gap). */
@@ -228,6 +235,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           image: '/map/nuclear/listen.png',
           route: '/',
           caption: 'Nuclear Listen hub',
+          capturedAt: '2026-09-16',
         },
       },
       {
@@ -285,7 +293,9 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         new: {
           image: '/map/nuclear/channel.png',
           route: '/channel/$slug',
-          caption: 'Nuclear channel (live or archive)',
+          caption:
+            'Nuclear channel (live or archive) — current shot happens to show an offline demo channel; see the offline case below for the intended state.',
+          capturedAt: '2026-09-16',
         },
         storybookUrl: storybookStory('Tahti/Channel/ChannelView', 'Visitor'),
       },
@@ -317,6 +327,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           image: '/map/nuclear/channel.png',
           route: '/channel/$slug',
           caption: 'Same route; archive library tab',
+          capturedAt: '2026-09-16',
         },
         storybookUrl: storybookStory('Tahti/Channel/ChannelView', 'Visitor'),
       },
@@ -379,6 +390,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           image: '/map/nuclear/profile.png',
           route: '/u/$username',
           caption: 'Nuclear profile tabs',
+          capturedAt: '2026-09-16',
         },
       },
       {
@@ -626,6 +638,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/join',
           caption: 'Nuclear join',
         },
+        storybookUrl: storybookStory('Tahti/Auth/AuthDialog', 'Join'),
       },
       {
         id: 'auth-verify',
@@ -673,6 +686,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/login',
           caption: 'Nuclear login',
         },
+        storybookUrl: storybookStory('Tahti/Auth/AuthDialog', 'Login'),
       },
       {
         id: 'auth-totp',
@@ -692,6 +706,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           caption:
             'Nuclear TOTP step — lives in the AuthDialog modal (opened by /login), not a full-page route.',
         },
+        storybookUrl: storybookStory(
+          'Tahti/Auth/AuthDialog',
+          'Two Factor Challenge',
+        ),
       },
     ],
   },
@@ -857,6 +875,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           image: '/map/nuclear/listen.png',
           route: '/',
           caption: 'Nuclear defaults to Listen shell',
+          capturedAt: '2026-09-16',
         },
       },
       {
@@ -910,6 +929,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/favorites',
           caption: 'Nuclear Favorites (sidebar page)',
         },
+        storybookUrl: storybookStory(
+          'Tahti/Library/FavoritesView',
+          'Radio Channels And Tracks',
+        ),
       },
       {
         id: 'listener-history',
@@ -974,7 +997,9 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         new: {
           image: '/map/nuclear/studio.png',
           route: '/studio',
-          caption: 'Nuclear studio hub',
+          caption:
+            'Nuclear studio hub — shot from a real beta admin account with no content yet, so plays/broadcasts read zero.',
+          capturedAt: '2026-09-16',
         },
       },
       {
@@ -1000,6 +1025,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/studio/channel?tab=setup',
           caption: 'Nuclear combines channel setup and design',
         },
+        storybookUrl: storybookStory(
+          'Tahti/Studio/StudioGate',
+          'No Channel Yet',
+        ),
       },
       {
         id: 'artist-go-live',
@@ -1146,6 +1175,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/studio/sounds/$id',
           caption: 'Nuclear track detail',
         },
+        storybookUrl: storybookStory('Tahti/Track/TrackDetailView', 'Owner'),
       },
       {
         id: 'artist-stash',
@@ -1411,7 +1441,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/channel-design.png',
-          route: '/settings/channel',
+          route: '/studio/channel',
           caption: 'Nuclear channel designer',
         },
         storybookUrl: storybookStory('Tahti/Channel/Designer', 'Full'),
@@ -1430,7 +1460,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         goesTo: [
           {
             label: 'Open Channel Designer for rotation/fallback settings',
-            to: '/settings/channel',
+            to: '/studio/channel',
           },
         ],
         old: {
@@ -1524,6 +1554,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/settings/$section',
           caption: 'Nuclear settings modal (About removed from footer)',
         },
+        storybookUrl: storybookStory(
+          'Tahti/Player/ConnectedSettingsModal',
+          'Signed In Account',
+        ),
       },
       {
         id: 'settings-themes',
@@ -1546,6 +1580,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/settings/themes',
           caption: 'Nuclear Themes modal',
         },
+        storybookUrl: storybookStory(
+          'Tahti/Player/ConnectedSettingsModal',
+          'Themes Tab',
+        ),
       },
       {
         id: 'settings-addons',
@@ -1606,6 +1644,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/studio/audience',
           caption: 'Nuclear Audience · fan tiers',
         },
+        storybookUrl: storybookStory('Tahti/Studio/FanTiersEditor', 'Default'),
       },
       {
         id: 'artist-money-fan-subs',
@@ -1635,6 +1674,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/studio/audience',
           caption: 'Nuclear Audience · fan subscription performance',
         },
+        storybookUrl: storybookStory(
+          'Tahti/Studio/FanSubscriptionStats',
+          'Default',
+        ),
       },
     ],
   },
@@ -1703,6 +1746,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/studio/channel?tab=announcements',
           caption: 'Announcements editor',
         },
+        storybookUrl: storybookStory(
+          'Tahti/Studio/PinnedAnnouncementsPanel',
+          'Default',
+        ),
       },
       {
         id: 'artist-channel-tahti-radio',
@@ -2004,7 +2051,9 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         new: {
           image: '/map/nuclear/admin.png',
           route: '/admin',
-          caption: 'Nuclear Admin dashboard',
+          caption:
+            'Nuclear Admin dashboard — real beta admin session, live platform KPIs.',
+          capturedAt: '2026-09-16',
         },
         storybookUrl: storybookStory(
           'Tahti/Admin/AdminDashboardView',
@@ -2026,7 +2075,9 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         new: {
           image: '/map/nuclear/admin-users.png',
           route: '/admin/users',
-          caption: 'Nuclear user admin',
+          caption:
+            'Nuclear user admin — real beta admin session, real (beta-seeded) accounts.',
+          capturedAt: '2026-09-16',
         },
         storybookUrl: storybookStory('Tahti/Admin/AdminUsersView', 'Default'),
       },
@@ -2255,6 +2306,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/studio → /login',
           caption: 'Nuclear gate → login',
         },
+        storybookUrl: storybookStory('Tahti/Studio/StudioGate', 'Signed Out'),
       },
       {
         id: 'edge-radio-offline',

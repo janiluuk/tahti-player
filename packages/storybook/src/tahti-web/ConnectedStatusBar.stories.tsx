@@ -3,7 +3,7 @@ import { StatusBarContent } from '@tahti-web/components/ConnectedStatusBar';
 
 import { BottomBar } from '@tahti-player/ui';
 
-import { withPageSurface } from './_lib/decorators';
+import { withPageSurface, withTahtiRouter } from './_lib/decorators';
 
 const meta: Meta = {
   title: 'Tahti/Layout/ConnectedStatusBar',
@@ -16,7 +16,8 @@ const meta: Meta = {
       },
     },
   },
-  decorators: [withPageSurface()],
+  // StatusBarContent renders several <Link>s, which need a router context.
+  decorators: [withPageSurface(), withTahtiRouter('/')],
 };
 
 export default meta;

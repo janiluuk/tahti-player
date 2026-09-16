@@ -203,14 +203,26 @@ const shotsToCapture = requestedShotIds.size
   ? selectedShots
   : shots.slice(startIndex);
 
+// MAP_VIEWPORT=mobile switches every capture in this run to a phone
+// viewport and suffixes output filenames with `--mobile` so desktop shots
+// are never overwritten -- run the script twice (default, then
+// MAP_VIEWPORT=mobile) to get both.
+const MOBILE = process.env.MAP_VIEWPORT === 'mobile';
+const VIEWPORT = MOBILE
+  ? { width: 390, height: 844 }
+  : { width: 1280, height: 800 };
+const DEVICE_SCALE_FACTOR = MOBILE ? 2 : 1;
+
 let browser = await chromium.launch({
   headless: true,
   executablePath: process.env.CHROMIUM_PATH || undefined,
   args: ['--no-sandbox', '--disable-setuid-sandbox'],
 });
 let page = await browser.newPage({
-  viewport: { width: 1280, height: 800 },
-  deviceScaleFactor: 1,
+  viewport: VIEWPORT,
+  deviceScaleFactor: DEVICE_SCALE_FACTOR,
+  isMobile: MOBILE,
+  hasTouch: MOBILE,
 });
 
 // Pitch-quality captures: a named, populated artist (not generic "Demo
@@ -231,6 +243,19 @@ const AUTH_STATE = {
   version: 0,
 };
 
+// Dark + amber ("nuclear:tahti-dark" -- the tahti.live pitch palette, see
+// packages/themes/src/basic/tahti-dark.css) for every map capture, matching
+// this leaf's request instead of each viewer's default light theme.
+const THEME_STATE = {
+  state: {
+    themeId: 'nuclear:tahti-dark',
+    dark: true,
+    colorMode: 'dark',
+    customThemes: {},
+  },
+  version: 0,
+};
+
 /** Keep the right rail closed in the map: these are page/surface references,
  * not chat screenshots. This also prevents a page mount from reopening chat
  * and obscuring the content being documented. */
@@ -239,7 +264,7 @@ async function setLocalStorage(p, signedIn = true) {
   for (let attempt = 0; attempt < 3; attempt += 1) {
     try {
       await p.evaluate(
-        ({ auth, rightCollapsed, signedIn: shouldSignIn }) => {
+        ({ auth, theme, rightCollapsed, signedIn: shouldSignIn }) => {
           if (shouldSignIn) {
             localStorage.setItem('tahti-web-auth', JSON.stringify(auth));
           } else {
@@ -264,8 +289,18 @@ async function setLocalStorage(p, signedIn = true) {
               version: 3,
             }),
           );
+          localStorage.setItem('tahti-web-theme', JSON.stringify(theme));
+          // Legacy keys the theme store's early index.html bootstrap reads
+          // before zustand rehydrates -- see plugins/themes/store.ts.
+          localStorage.setItem('tahti-nuclear-theme-id', theme.state.themeId);
+          localStorage.setItem('tahti-nuclear-dark', '1');
         },
-        { auth: AUTH_STATE, rightCollapsed: true, signedIn },
+        {
+          auth: AUTH_STATE,
+          theme: THEME_STATE,
+          rightCollapsed: true,
+          signedIn,
+        },
       );
       return;
     } catch (error) {
@@ -291,8 +326,10 @@ async function ensurePage() {
   }
   if (page.isClosed()) {
     page = await browser.newPage({
-      viewport: { width: 1280, height: 800 },
-      deviceScaleFactor: 1,
+      viewport: VIEWPORT,
+      deviceScaleFactor: DEVICE_SCALE_FACTOR,
+      isMobile: MOBILE,
+      hasTouch: MOBILE,
     });
     try {
       await page.goto(BASE, { waitUntil: 'domcontentloaded', timeout: 45000 });
@@ -392,7 +429,7 @@ async function captureInPageTabs(out, shotId) {
 for (const s of shotsToCapture) {
   await ensurePage();
   const url = `${BASE}${s.path}`;
-  const out = join(outRoot, `${s.id}.png`);
+  const out = join(outRoot, MOBILE ? `${s.id}--mobile.png` : `${s.id}.png`);
   try {
     await setLocalStorage(page, s.auth !== false);
     // Re-apply layout state per shot (some pages reset chatSlug/rightCollapsed
