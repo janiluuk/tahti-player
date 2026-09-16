@@ -197,6 +197,89 @@ pass per category:
   enum used everywhere else), since those are two different,
   currently-unreconciled notions of "category" in the codebase today.
 
+## Category audit + scoping answers (2026-09-16)
+
+Read `PLUGIN-STORE-PLAN.md`, `docs/PLUGINS.md`, `pluginStoreCategories.ts`,
+and each category's implementation under `src/plugins/`/
+`src/components/plugin-store/RemainingCategories.tsx` to answer the three
+open questions above with real findings instead of guesses.
+
+**Key discovery: this admin page already covers 2 of the 13 categories,
+not 1.** `AdminAddonScope` isn't discovery-specific — it's `LISTENER` /
+`ARTIST` / `ADMIN`, and `RemainingCategories.tsx`'s `ChannelCategory()`
+(the "Channel" plugin-store category) literally renders
+`<DiscoWidgetManagerPanel scope="ARTIST" />` — **the same sandboxed
+widget-bundle system as Discovery (`scope="LISTENER"`), just a different
+scope value.** `../tahti-org`'s schema comment confirms this: one
+`AddonInstall` row is discriminated by whichever of
+`listenerUserId`/`channelId`/`adminSurface` is set. So "Add-ons" (this
+page) was never really discovery-only; it was already both `discovery`
+and `channel`, just labeled with raw backend scope names ("Listener"/
+"Artist"/"Admin") that never named the plugin-store categories they map
+to. **Fixed this pass** (no backend/schema change needed — purely a
+labeling fix): `SCOPES` labels now read "Listener (Discovery)" / "Artist
+(Channel)" / "Admin surface", and the page header gained an explanatory
+paragraph stating exactly which 2 of 13 categories it covers and why the
+other 11 don't fit this pattern.
+
+**Q1 — category-by-category admin-governability audit:**
+
+| Category | Admin-governable today? | Why |
+| --- | --- | --- |
+| `discovery` | **Yes** — full lifecycle | `AdminAddonsView`, `scope=LISTENER`; already had approve/reject/disable/enabled-by-default/default-config before this pass |
+| `channel` | **Yes** — full lifecycle, same page | `AdminAddonsView`, `scope=ARTIST` — see discovery above; label fix shipped this pass makes this visible |
+| *(no plugin-store category — `scope=ADMIN`)* | Modeled, unused | `ADMIN`-scope addons are registerable but nothing anywhere installs/renders one on an admin surface — a real gap, but a separate feature (an admin-surface widget host), not attempted here, unchanged from the prior pass's note |
+| `radio` | **Yes** — own dedicated admin page | `/admin/radio` (`AdminRadioView.tsx`) + `RadioStationCover` admin editing — correctly a *separate* pattern from the Addon/bundle-store, since it's a curated stream directory, not installable widgets |
+| `themes` | No | Built-ins are a fixed code registry (`@tahti-player/themes`); user-imported custom themes are private JSON, no publish/sharing path to moderate |
+| `visualizers` | No | Fixed `VisualizerPreset` code registry, no per-user submission |
+| `export` | No | Fixed `EXPORT_TARGETS` metadata array, single centralized Revelator delivery path, no per-target behavior to govern |
+| `import` | No | Fixed `SOURCE_DEFS` registry; per-user OAuth connections are private, not submittable content |
+| `multicast` | No | Fixed 8-provider registry; per-user `RtmpTarget` rows are private broadcast configs, not shared/moderated content |
+| `fingerprinting` | No | Single hardcoded provider (AcoustID), no user choice or submission |
+| `scrobbling` | No | Fixed 2-provider registry (Last.fm/ListenBrainz), per-user private OAuth, nothing to moderate |
+| `audio-plugins` | No | Fixed 4-plugin code registry; host UI still embedded in `StudioProEditorView.tsx` per `PLUGIN-STORE-PLAN.md` |
+| `tools` | No | Single fixed item (Discord bot config card), per-user private integration |
+| `listen` | No | Per-user private embeds (`ListenerWidgetsSection`/`useListenerWidgetsStore`); no admin page exists, none needed — nothing here is shared/submitted content |
+
+**Answer:** only `discovery` + `channel` are genuinely admin-governable in
+this ticket's sense (submissions, enable-by-default, moderation) — and
+both already are, via the same page. `radio` is admin-governed too, but
+correctly through its own separate page (different content shape). The
+other 10 are fixed code registries or private per-user connections where
+"admin management" doesn't apply the way this ticket originally
+envisioned. This is a materially smaller remaining scope than the
+original ask assumed.
+
+**Q2 — unified page vs. per-category (recommendation, not decided here):**
+given the audit above, there is no real unification work left to do —
+the only two categories that fit this pattern already share one page.
+Recommend **not** building a 13-category unified admin shell; the
+current shape (one shared page for the 2 addon/bundle-store categories,
+separate dedicated pages for categories with a fundamentally different
+data model like `radio`) already matches what the categories actually
+need. Left for the user to confirm/override — this is a product call,
+not something to silently implement.
+
+**Q3 — category field reconciliation (answered, not a guess):**
+`AdminAddon.categories` values in the mock/registration data are
+freeform marketplace browse tags (`'social'`, `'new-releases'`,
+`'stats'`, `'events'`, ...) — **none of which are `PluginCategoryId`
+values** (`themes`, `visualizers`, `export`, ... — a fixed 13-value
+navigation enum for the Settings → Add-ons page shell). These are two
+intentionally different concepts: one is content tagging for browsing a
+widget marketplace, the other is store navigation. Narrowing
+`categories` to `PluginCategoryId` would lose real expressiveness and
+doesn't match how the field is actually used. **Recommendation: leave as
+`string[]`, do not reconcile** — documented with a doc comment on the
+type this pass so a future session doesn't retry this without checking
+first.
+
+**Not attempted (still genuinely open, from the prior pass, unchanged):**
+bundle upload/publish UI, `ADMIN`-scope install management (installing a
+widget onto a shared admin surface — the modeled-but-unused gap above),
+and the "category" field's `PluginCategoryId` question (resolved above:
+deliberately not reconciling).
+
 ## Related
 
 - `packages/tahti-web/PLUGIN-STORE-PLAN.md` — per-category extraction

@@ -33,10 +33,17 @@ import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { ImageUploadField } from '../../components/ImageUploadField';
 import { PageLoading } from '../../components/PageStates';
 
+// Labels spell out the listener-facing category each scope corresponds to
+// (see PluginCategoryId in content/pluginStoreCategories.ts) -- this page
+// covers exactly the `discovery` and `channel` plugin categories via the
+// same Addon/AddonInstall backend, just discriminated by install target
+// (listenerUserId / channelId / adminSurface). ADMIN has no installer UI
+// anywhere yet (addons can be registered for it, but nothing renders one) --
+// see docs/todo/admin-plugin-management-panel.md.
 const SCOPES: Array<{ id: AdminAddonScope; label: string }> = [
-  { id: 'LISTENER', label: 'Listener' },
-  { id: 'ARTIST', label: 'Artist' },
-  { id: 'ADMIN', label: 'Admin' },
+  { id: 'LISTENER', label: 'Listener (Discovery)' },
+  { id: 'ARTIST', label: 'Artist (Channel)' },
+  { id: 'ADMIN', label: 'Admin surface' },
 ];
 
 const EMPTY_DRAFT: AdminAddonRegisterInput = {
@@ -471,6 +478,14 @@ export function AdminAddonsView() {
         <AdminPageLayout current="/admin/addons">
           <div className="flex max-w-5xl flex-col gap-6">
             <ViewShell title="Add-ons" classes={{ root: 'px-0 pt-0' }}>
+              <p className="text-foreground-secondary text-sm">
+                Covers the sandboxed widget-bundle store behind two of the 13
+                Settings → Add-ons categories: Discovery (Listen page) and
+                Channel (artist page). The other 11 are fixed code registries or
+                private per-user connections with nothing to moderate here — see
+                docs/todo/admin-plugin-management-panel.md for the full category
+                audit.
+              </p>
               <Tooltip content="Register a new add-on" side="top">
                 <Button
                   type="button"
