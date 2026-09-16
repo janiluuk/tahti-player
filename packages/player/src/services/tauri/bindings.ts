@@ -129,6 +129,8 @@ export type LibraryTrack = {
 	channels: number,
 	bitsPerSample: number | null,
 	sizeBytes: number,
+	available: boolean,
+	unavailableSince: string | null,
 };
 
 export type Page<T> = {
