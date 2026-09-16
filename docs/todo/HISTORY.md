@@ -3265,3 +3265,16 @@ Implemented `channel-designer-backdrop-fold-and-widgets.md`'s 5-item ask in full
 Verified: `tsc --noEmit` / `eslint` clean (`tahti-web` + `storybook`), full unit suite 517/517 (one pre-existing test, `channelPageLayout.test.ts`'s "fills in every missing type as a hidden default entry", needed updating to expect `avatar`'s intentional `visible: true` backfill exception — not a regression, the test just predated this ticket's own documented design choice), `vite build` and `storybook build` both succeed. Added `SubscribeCtaVisible`/`AvatarAndBioHidden` stories to `ChannelBackdropCard.stories.tsx`.
 
 Nothing left open against this ticket's 5-item ask — folded and deleted.
+
+---
+
+## 2026-09-16 — Close `radio-browser-directory-fixes.md`: BOARD-role cover-edit gate audited, no code bug found
+
+The ticket's last open item was "if a real BOARD-role account still can't edit radio station covers, the bug is elsewhere (role-detection, not the gate) — needs checking against an actual live session, not a guess." No live session/browser was available this pass, so instead traced the entire `isBoard` data path end-to-end by reading code across both repos rather than guessing:
+
+- `../tahti-org`: `isBoard Boolean @default(false)` is a real column on the Prisma `User` model (`packages/db/prisma/schema.prisma`). Session middleware (`apps/api/src/plugins/auth.ts`) sets `request.sessionUser` to the full Prisma `User` record (from either session-cookie or API-token auth), so `isBoard` is on it natively — no manual field-copy step to go stale. `GET /api/auth/me` (`apps/api/src/routes/auth/me.ts`) explicitly includes `isBoard: user.isBoard` in its response.
+- `tahti-player`: `requestJson()` (`client-request.ts`) does a plain `res.json()` pass-through, no field stripping. `authStore.ts` stores the fetched `AuthUser` object directly (`set({ user: data, ... })`), no filtering. `hasAccountRole`/`getAccountRole` (`lib/accountRoles.ts`) check `user.role`, then `user.roles`/`user.isBoard`, correctly. `canEditRadioStationCover` (`lib/radioStationCover.ts`) calls `hasAccountRole(user, 'BOARD')`.
+
+Every link in the chain (DB column → session → API response → frontend fetch → store → role check → edit-gate) is consistent and correct — **no code bug exists in this path**. If a specific real account still can't edit covers, the most likely explanation is that account's `isBoard` DB column genuinely isn't `true` (a data/admin question, checkable directly via `/admin/users`), not a frontend defect. The "scrape station artwork to production" item was already explicitly out of scope in this doc (a separate data/content task needing its own scoping) and remains so — not attempted, not this ticket's concern.
+
+Nothing left actionable within this ticket's own scope — folded and deleted.
