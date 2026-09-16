@@ -28,6 +28,13 @@ export type AdminAddon = {
   name: string;
   description: string;
   authorName: string;
+  /** Freeform marketplace browse/filter tags (e.g. 'social', 'new-releases')
+   * -- a deliberately different, unreconciled concept from `PluginCategoryId`
+   * (content/pluginStoreCategories.ts), which is the fixed 13-value nav enum
+   * for the Settings → Add-ons page shell. Narrowing this to that enum would
+   * lose real expressiveness for a widget marketplace; see the "category
+   * field enforcement" question in docs/todo/admin-plugin-management-panel.md
+   * for the full reasoning. */
   categories: string[];
   iconUrl: string | null;
   currentVersion: string;
