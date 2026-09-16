@@ -430,7 +430,11 @@ function ShotPane({
         <div className="text-foreground-secondary flex flex-wrap items-center gap-x-2 gap-y-1 border-b px-4 py-2 text-[11px]">
           {screenshotUrl ? (
             <>
-              <span>Screenshot captured 2026-08-31</span>
+              <span>
+                {shot.capturedAt
+                  ? `Screenshot captured ${shot.capturedAt}`
+                  : 'Screenshot capture date unknown'}
+              </span>
               <a
                 href={screenshotUrl}
                 target="_blank"
@@ -572,6 +576,14 @@ export function ScreenAtlas() {
     (n, g) => n + g.cases.filter((c) => resolveCaseParity(c) !== 'both').length,
     0,
   );
+  // Shots are refreshed individually, not as one bulk sweep -- report the
+  // most recent per-shot capturedAt rather than one (increasingly stale)
+  // fixed date for every screenshot.
+  const latestCapture = MAP_CASE_GROUPS.flatMap((g) => g.cases)
+    .flatMap((c) => [c.old.capturedAt, c.new.capturedAt])
+    .filter((d): d is string => Boolean(d))
+    .sort()
+    .at(-1);
 
   return (
     <section
@@ -605,8 +617,10 @@ export function ScreenAtlas() {
         </p>
         <p className="text-foreground-secondary mt-1 text-xs tracking-wide uppercase">
           {MAP_CASE_GROUPS.length} flows · {total} cases · {gaps} parity gap
-          {gaps === 1 ? '' : 's'} · Tahti | beta.tahti.live columns ·
-          screenshots captured 2026-09-03
+          {gaps === 1 ? '' : 's'} · Tahti | beta.tahti.live columns · shots
+          refreshed individually
+          {latestCapture ? ` (latest ${latestCapture})` : ''} — see each
+          shot&apos;s own capture date
         </p>
       </div>
 
