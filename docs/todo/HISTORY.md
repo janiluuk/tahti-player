@@ -2,6 +2,32 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-17 — Todo-lifecycle cleanup: 2 stale pre-convention files folded, 1 dangling INDEX row removed
+
+Housekeeping pass while triaging open work. Found two files predating the
+current todo lifecycle convention (no `Status:` field, written as
+already-shipped audit summaries from 2026-09-05, never folded/deleted):
+
+- **Add-on presentation audit** — shared `PluginStoreItem`/`PluginItem`/
+  `ThemeStoreItem` de-duplicated category labels; listen-widget config moved
+  to the shared `Dialog`; Last.fm/ListenBrainz Configure actions made
+  accessible; add-on list/dialog actions switched to shared `Button`
+  controls; Storybook's Configure accessory updated to match.
+- **Desktop connection and chrome** — fixed missing CORS headers for
+  `Origin: tauri://localhost` (production API returned 200 with no CORS
+  headers for the native origin); added a periodic credentialed health
+  probe with a red "API disconnected" pill on failure; radio now uses full
+  available width; add-on category tabs became a scrollable region with
+  up/down buttons; theme control row reworked; visualizer preview fills its
+  container; desktop status bar behavior confirmed (visible compact/signed-out,
+  hidden fullscreen).
+
+Also removed a dangling INDEX row for `channelview-move-player-to-stage.md`
+— the file itself was deleted by commit `f25f8684` (#80, 2026-09-15,
+already folded into HISTORY that day) but a stale INDEX row survived,
+likely reintroduced by a later merge. No code changes; INDEX now matches
+the actual `docs/todo/` directory contents.
+
 ## 2026-09-17 — Tracklist import: Traktor/Rekordbox port from `../tracklister`
 
 Ported `../tracklister`'s Traktor/Rekordbox tracklist-file parsing into
