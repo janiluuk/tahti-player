@@ -23,6 +23,7 @@ Do not invent sibling API shapes. Inspect `../tahti-org` routes/DTOs first. Do n
 | Cutover / beta vs prod | [`packages/tahti-web/CUTOVER.md`](packages/tahti-web/CUTOVER.md) | Only if cutover/deploy scope |
 | Listener/artist/admin gap ledger | [`packages/tahti-web/GAP-MAPPING.md`](packages/tahti-web/GAP-MAPPING.md) | Only if parity vs `apps/web` |
 | Player core / plugins / themes | Root [`AGENTS.md`](AGENTS.md) + [`docs/agent/`](docs/agent/) | Matching on-demand file only |
+| How the system fits together (repos, infra, request flow) | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) + [`docs/DATA-FLOW.md`](docs/DATA-FLOW.md) | Have the "why does X talk to Y" answer |
 | Settled forks / “already decided” | [`docs/DECISIONS.md`](docs/DECISIONS.md) | Matching decision |
 | Storybook surface lookup | [`packages/tahti-web/STORYBOOK-SURFACES.md`](packages/tahti-web/STORYBOOK-SURFACES.md) | Matching row |
 | View catalog / Storybook coverage | [`docs/VIEW-CATALOG.md`](docs/VIEW-CATALOG.md) | Cross-check after adding/removing views, stories, or nav items |
@@ -59,6 +60,8 @@ Status values: `open` | `blocked` | `partial` | (file deleted when done — neve
 | `UI-REDESIGN-WORKLOG.md` | Chronological ship diary (append only) |
 | `docs/DECISIONS.md` | Settled design forks |
 | `docs/VIEW-CATALOG.md` | View index with Storybook coverage and unification candidates |
+| `docs/ARCHITECTURE.md` | System overview: repos, infra, diagram |
+| `docs/DATA-FLOW.md` | Same system, traced through 3 concrete request flows |
 
 ## Always-on rules (pointers)
 
