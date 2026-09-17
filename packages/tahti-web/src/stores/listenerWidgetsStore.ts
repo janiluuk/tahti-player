@@ -17,6 +17,10 @@ export type SavedBrowserStation = {
   streamUrl: string;
   favicon?: string;
   country?: string;
+  homepage?: string;
+  countryCode?: string;
+  description?: string;
+  programmingUrl?: string;
 };
 
 /** One user-added external embed — see src/content/listenerWidgets.ts.
@@ -71,6 +75,7 @@ type ListenerWidgetsState = {
   toggleStation: (stationId: string) => void;
   updateStation: (stationId: string, patch: Partial<RadioStation>) => void;
   toggleSavedBrowserStation: (station: SavedBrowserStation) => void;
+  addSavedBrowserStation: (station: SavedBrowserStation) => void;
   removeSavedBrowserStation: (id: string) => void;
 };
 
@@ -133,6 +138,21 @@ export const useListenerWidgetsStore = create<ListenerWidgetsState>()(
               ? s.savedBrowserStations.filter((item) => item.id !== station.id)
               : [...s.savedBrowserStations, station],
           };
+        }),
+      addSavedBrowserStation: (station) =>
+        set((s) => {
+          const existingIndex = s.savedBrowserStations.findIndex(
+            (item) =>
+              item.id === station.id || item.streamUrl === station.streamUrl,
+          );
+          if (existingIndex === -1) {
+            return {
+              savedBrowserStations: [...s.savedBrowserStations, station],
+            };
+          }
+          const next = [...s.savedBrowserStations];
+          next[existingIndex] = { ...next[existingIndex], ...station };
+          return { savedBrowserStations: next };
         }),
       removeSavedBrowserStation: (id) =>
         set((s) => ({

@@ -28,6 +28,38 @@ already folded into HISTORY that day) but a stale INDEX row survived,
 likely reintroduced by a later merge. No code changes; INDEX now matches
 the actual `docs/todo/` directory contents.
 
+## 2026-09-17 — Radio Browser: "Add URL" to personal list + station info view
+
+`RadioBrowserDirectoryCard` (`packages/tahti-web/src/components/plugin-store/RadioCategory.tsx`,
+Settings → Add-ons → Radio) gained:
+
+- An **"Add URL"** button next to "Your stations" opening a dialog that
+  reuses the existing `resolveStreamUrl()` + `lookupStationByUrl()` +
+  `testRadioStream()` flow (a new "Resolve & test" step) to validate a
+  pasted stream/playlist URL and preview its name/country/test result
+  before saving. Saving calls a new store action,
+  `addSavedBrowserStation` (`listenerWidgetsStore.ts`) — merges into an
+  existing entry by id/stream-URL instead of duplicating, unlike the
+  existing `toggleSavedBrowserStation` (which removes on a second call).
+- A per-station **info ("view") icon** in "Your stations" opening a
+  dialog with website link, country flag, description, and — if
+  configured — a "View current programme" link-out.
+- `SavedBrowserStation` extended with `homepage`, `countryCode`,
+  `description`, `programmingUrl`. `homepage`/`countryCode` auto-populate
+  from radio-browser.info's `/stations/byurl/` lookup when the pasted URL
+  matches a known directory station (also now captured when saving from
+  Browser search results, via `saveProps`). `description` and
+  `programmingUrl` are user-entered at add-time — no API source exists for
+  either.
+- **Left open, by design**: "current programme" is link-out only, no live
+  now-playing fetch — matches the `../tahti-org` gap tracked separately as
+  `internet-radio-now-playing-scraper.md`, not attempted here. Description
+  isn't editable after add-time (no edit UI was requested).
+
+Added store tests for `addSavedBrowserStation` (extended-field save,
+merge-not-duplicate by id, merge-by-matching-stream-URL). Full suite:
+93 files / 535 tests passing. `type-check` and `lint` clean.
+
 ## 2026-09-17 — Tracklist import: Traktor/Rekordbox port from `../tracklister`
 
 Ported `../tracklister`'s Traktor/Rekordbox tracklist-file parsing into

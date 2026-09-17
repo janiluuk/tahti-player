@@ -55,6 +55,64 @@ describe('listener widgets store', () => {
     expect(next.instances).toHaveLength(1);
   });
 
+  it('adds a station saved via URL with extended fields, without duplicating', () => {
+    const store = useListenerWidgetsStore.getState();
+    store.addSavedBrowserStation({
+      id: 'https://stream.example.fi/radio.mp3',
+      name: 'Example FM',
+      streamUrl: 'https://stream.example.fi/radio.mp3',
+      favicon: 'https://example.fi/favicon.ico',
+      country: 'Finland',
+      homepage: 'https://example.fi',
+      countryCode: 'FI',
+      description: 'A cozy Finnish station',
+      programmingUrl: 'https://example.fi/schedule',
+    });
+
+    let stations = useListenerWidgetsStore.getState().savedBrowserStations;
+    expect(stations).toHaveLength(1);
+    expect(stations[0]).toMatchObject({
+      id: 'https://stream.example.fi/radio.mp3',
+      name: 'Example FM',
+      homepage: 'https://example.fi',
+      countryCode: 'FI',
+      description: 'A cozy Finnish station',
+      programmingUrl: 'https://example.fi/schedule',
+    });
+
+    useListenerWidgetsStore.getState().addSavedBrowserStation({
+      id: 'https://stream.example.fi/radio.mp3',
+      name: 'Example FM',
+      streamUrl: 'https://stream.example.fi/radio.mp3',
+      description: 'Updated description',
+    });
+
+    stations = useListenerWidgetsStore.getState().savedBrowserStations;
+    expect(stations).toHaveLength(1);
+    expect(stations[0]?.description).toBe('Updated description');
+    expect(stations[0]?.homepage).toBe('https://example.fi');
+  });
+
+  it('adding a station saved by matching stream URL merges into the existing entry', () => {
+    const store = useListenerWidgetsStore.getState();
+    store.addSavedBrowserStation({
+      id: 'station-uuid-1',
+      name: 'Example FM',
+      streamUrl: 'https://stream.example.fi/radio.mp3',
+    });
+
+    store.addSavedBrowserStation({
+      id: 'https://stream.example.fi/radio.mp3',
+      name: 'Example FM',
+      streamUrl: 'https://stream.example.fi/radio.mp3',
+      description: 'Added later',
+    });
+
+    const stations = useListenerWidgetsStore.getState().savedBrowserStations;
+    expect(stations).toHaveLength(1);
+    expect(stations[0]?.description).toBe('Added later');
+  });
+
   it('stores a news feed with thumbnail and page surfaces', () => {
     const store = useListenerWidgetsStore.getState();
     store.installType('news');
