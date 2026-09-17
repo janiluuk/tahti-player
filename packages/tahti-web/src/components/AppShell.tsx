@@ -22,6 +22,7 @@ import {
   Toaster,
 } from '@tahti-player/ui';
 
+import { useAutoHideNavWhilePlaying } from '../hooks/useAutoHideNavWhilePlaying';
 import { useIsCompactDesktop, useIsMobile } from '../hooks/useIsMobile';
 import { MAIN_CONTENT_PADDING } from '../layout/contentPadding';
 import { hasAccountRole } from '../lib/accountRoles';
@@ -260,6 +261,10 @@ export function AppShell() {
   const playerStatus = usePlayerStore((state) => state.status);
   const isLivePlayback = usePlayerStore((state) => state.isLive);
   const toggleTour = useTourStore((state) => state.toggle);
+  const mobileNavHidden = useAutoHideNavWhilePlaying(
+    isMobile,
+    playerStatus === 'playing',
+  );
 
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const bottomQueueOpen = useLayoutStore((s) => s.bottomQueueOpen);
@@ -490,7 +495,7 @@ export function AppShell() {
             </RouteContent>
           </div>
           {!fullScreenPlayerOpen && <ConnectedPlayerBar />}
-          {!isArtistPage && (
+          {!isArtistPage && !mobileNavHidden && (
             <MobileBottomNav
               onOpenMore={() => setMobileNavOpen(true)}
               moreOpen={mobileNavOpen}
