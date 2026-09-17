@@ -30,6 +30,7 @@ import type {
   TracklistEntry,
   TracklistOverlaySettings,
 } from '../api/studio-types';
+import { parseTracklist, readTracklistFile } from '../lib/tracklistImport';
 import { WaveformCanvas } from './WaveformCanvas';
 
 type Props = {
@@ -71,78 +72,6 @@ function formatTime(seconds: number | null | undefined): string {
   return `${minutes}:${Math.floor(seconds % 60)
     .toString()
     .padStart(2, '0')}`;
-}
-
-function parseTimestamp(value: string): number | null {
-  const parts = value.trim().split(':').map(Number);
-  if (parts.some((part) => !Number.isFinite(part)) || parts.length > 3) {
-    return null;
-  }
-  return parts.reduce((total, part) => total * 60 + part, 0);
-}
-
-const TIMESTAMP_TOKEN = '\\d{1,2}(?::\\d{1,2}){1,2}';
-// "Artist - Track - 12:14" (or just "Track 12:14") — timestamp at the end.
-const TRAILING_TIMESTAMP = new RegExp(
-  `^(.*?)\\s*(?:[-–—|]\\s*)?(${TIMESTAMP_TOKEN})$`,
-);
-// "12:14 Artist - Track" (or "12:14 - Track") — timestamp at the start.
-const LEADING_TIMESTAMP = new RegExp(
-  `^(${TIMESTAMP_TOKEN})\\s*(?:[-–—|]\\s*)?(.*)$`,
-);
-
-/** Pulls a leading or trailing "M:SS"/"H:MM:SS" timestamp off a pasted
- * tracklist line, in whichever position it appears — the rest of the line
- * becomes the title. No timestamp in either position leaves the whole
- * line as the title. */
-function splitTimestamp(line: string): {
-  title: string;
-  startSec: number | null;
-} {
-  const trailing = line.match(TRAILING_TIMESTAMP);
-  if (trailing?.[1]?.trim()) {
-    return {
-      title: trailing[1].trim(),
-      startSec: parseTimestamp(trailing[2]!),
-    };
-  }
-  const leading = line.match(LEADING_TIMESTAMP);
-  if (leading?.[2]?.trim()) {
-    return { title: leading[2].trim(), startSec: parseTimestamp(leading[1]!) };
-  }
-  return { title: line, startSec: null };
-}
-
-function parseTracklist(text: string, filename: string): TracklistEntry[] {
-  if (
-    filename.toLowerCase().endsWith('.nml') ||
-    text.trimStart().startsWith('<')
-  ) {
-    const document = new DOMParser().parseFromString(text, 'application/xml');
-    return Array.from(document.querySelectorAll('ENTRY')).map(
-      (entry, index) => ({
-        id: `track-${Date.now()}-${index}`,
-        title:
-          entry.querySelector('TITLE')?.textContent?.trim() ||
-          `Track ${index + 1}`,
-        artist: entry.querySelector('ARTIST')?.textContent?.trim() || null,
-        startSec: null,
-      }),
-    );
-  }
-  return text
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line, index) => {
-      const { title, startSec } = splitTimestamp(line);
-      return {
-        id: `track-${Date.now()}-${index}`,
-        title: title || line,
-        artist: null,
-        startSec,
-      };
-    });
 }
 
 export const TracklistEditor: FC<Props> = ({
@@ -227,7 +156,10 @@ export const TracklistEditor: FC<Props> = ({
   };
 
   const importFile = async (file: File) => {
-    onChange([...value, ...parseTracklist(await file.text(), file.name)]);
+    onChange([
+      ...value,
+      ...parseTracklist(await readTracklistFile(file), file.name),
+    ]);
   };
 
   const distribute = () => {
@@ -491,12 +423,16 @@ export const TracklistEditor: FC<Props> = ({
                     content: (
                       <div className="flex flex-col gap-4">
                         <p className="text-foreground-secondary text-sm">
-                          Import a Traktor playlist (<code>.nml</code>) or a
-                          plain-text tracklist file. A timestamp anywhere on the
-                          line — leading (<code>12:14 Artist – Track</code>),
-                          trailing (<code>Artist – Track – 12:14</code>),
-                          minutes:seconds or hours:minutes:seconds — is picked
-                          up automatically.
+                          Import a Traktor playlist or history (
+                          <code>.nml</code>), a Rekordbox playlist or history
+                          export (<code>.txt</code>), or a plain-text tracklist
+                          file. Traktor history keeps each track&apos;s real
+                          play time; Rekordbox exports and plain text use a
+                          timestamp anywhere on the line — leading (
+                          <code>12:14 Artist – Track</code>), trailing (
+                          <code>Artist – Track – 12:14</code>), or (for
+                          Rekordbox) the track&apos;s length, summed in file
+                          order.
                         </p>
                         <div
                           className={`border-border rounded-xl border border-dashed p-4 transition-colors ${dragActive ? 'border-primary bg-primary/10' : 'bg-background-secondary/30'}`}
@@ -513,8 +449,8 @@ export const TracklistEditor: FC<Props> = ({
                               <FileUpIcon size={18} aria-hidden />
                               <span>
                                 {dragActive
-                                  ? 'Drop Traktor playlist here'
-                                  : 'Drop .nml or text tracklist here'}
+                                  ? 'Drop Traktor or Rekordbox playlist here'
+                                  : 'Drop .nml or .txt tracklist here'}
                               </span>
                             </div>
                             <Button

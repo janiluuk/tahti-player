@@ -2,6 +2,44 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-17 — Tracklist import: Traktor/Rekordbox port from `../tracklister`
+
+Ported `../tracklister`'s Traktor/Rekordbox tracklist-file parsing into
+`TracklistEditor` (`TrackEditDialog`'s "Tracklist" tab for DJ-set sound
+items). New `packages/tahti-web/src/lib/tracklistImport.ts` fixed a real bug
+(Traktor `.nml` import always produced `Track 1`, `Track 2`, … with no
+artist — `TITLE`/`ARTIST` are `<ENTRY>` attributes, not child elements),
+added Traktor **history** exports (`TYPE="PROTOCOL"`, drops unplayed cue-ups,
+times tracks from real `STARTTIME`) and Rekordbox "Export to file" (tab-
+separated, UTF-16LE+BOM via new `readTracklistFile()`). Real fixtures from
+`../tracklister/example_files/` (MIT) copied into
+`packages/tahti-web/src/lib/__fixtures__/tracklist/` and into
+`../tahti-org/apps/api/src/lib/__fixtures__/tracklist/`.
+
+`../tahti-org` API gaps fixed to match the client's
+`StudioSoundPatch.tracklist`/`tracklistOverlay` shape: added
+`Sound.tracklistOverlay Json?` (migration
+`20260916120000_sound_tracklist_overlay`) end-to-end; widened
+`TracklistEntrySchema.startSec` to nullable/optional and added optional
+`id`; `normalizeTracklist` no longer throws on out-of-order `startSec` and
+now preserves/generates row `id`s instead of dropping them. Fixed two
+downstream TS breaks from the `startSec` widening (`audio-edit/compile.ts`,
+legacy `apps/web` tracklist view/editor).
+
+Full `@tahti/api` test confirmation: 193/248 files fail only on
+`beforeAll` DB connection (no live Postgres in-sandbox, pre-existing
+environment limitation) — no sound/tracklist file among them;
+`tracklist.test.ts` (9/9) and `sound-metadata.test.ts` (7/7) pass
+standalone with fake-prisma. `tsc --noEmit` clean across
+`@tahti/shared`/`db`/`api`/`worker`/`web`/`audio-edit`.
+
+**Not done, needs the user:** migration `20260916120000_sound_tracklist_overlay`
+still needs `prisma migrate deploy` against a real dev/staging DB — not
+run here (no DB connection in-sandbox), and `../tahti-org` isn't
+committed/pushed/deployed per standing instructions. Optional, non-blocking:
+legacy `apps/web` tracklist editor has no "unplaced" concept (always
+coerces to a number, defaulting to 0) — left as-is.
+
 ## 2026-09-15 — RadioStationCover: full-overlay edit button → corner control + preview
 
 User decision: redesign `RadioStationCover`'s edit affordance to match

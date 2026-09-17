@@ -276,7 +276,7 @@ Full docs: [`packages/docs/integrations/mcp-server.md`](./packages/docs/integrat
 | Same public API / chat / CDN | Full product stack, Swarm, board admin |
 | Cutover plan: `packages/tahti-web/CUTOVER.md` | Pointer: `ops/nuclear-web-cutover.md` |
 
-Public API docs (Scalar + OpenAPI): [`https://api.tahti.live/api`](https://api.tahti.live/api). Remotes and sync notes: [TAHTI.md](./TAHTI.md).
+Public API docs (Scalar + OpenAPI): [`https://api.tahti.live/api`](https://api.tahti.live/api). Remotes and sync notes: [TAHTI.md](./TAHTI.md). System architecture and diagrams: [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md), [`docs/DATA-FLOW.md`](./docs/DATA-FLOW.md).
 
 ## Agents & contributing
 
