@@ -1,6 +1,7 @@
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
 import { HistoryIcon, ListMusicIcon, NewspaperIcon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   Button,
@@ -39,6 +40,7 @@ import {
   radioStation,
   radioStationPlayable,
 } from '../content/radioStations';
+import { resolveLocalPlayableForReplay } from '../lib/nativeLibrary';
 import { activeListenTab } from '../lib/navigationActive';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { useAuthStore } from '../stores/authStore';
@@ -293,7 +295,23 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                             );
                             return;
                           }
-                          play(lastPlayed.playable);
+                          resolveLocalPlayableForReplay(lastPlayed.playable)
+                            .then((resolved) => {
+                              if (resolved) {
+                                play(resolved);
+                              } else {
+                                toast.error(
+                                  'Re-import this file from your library to play it again.',
+                                );
+                              }
+                            })
+                            .catch((error: unknown) => {
+                              toast.error(
+                                error instanceof Error
+                                  ? error.message
+                                  : 'Track unavailable.',
+                              );
+                            });
                         }}
                       />
                     </CardGrid>
