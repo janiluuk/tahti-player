@@ -18,7 +18,7 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
 | ~~P0~~ | ~~`packages/tahti-web/src/components/PluginStorePanel.tsx`~~ | ~~~3560~~ **166** | Mega-panel: themes, visualizers, Spotify/OAuth/Hearthis, DSP, multicast, audio plugins, tools, radio browser, discovery, channel categories in one file. | **Stale row, corrected 2026-09-16:** already fully split per items 2/2b/2c below (2026-09-11) — `PluginStorePanel.tsx` is a 166-line thin shell + tab routing; this summary row just never got updated when that landed. Off the P0 hotspot list. |
 | ~~P0~~ | ~~`packages/tahti-web/src/api/client.ts`~~ | ~~~3000~~ **~1419** | Public/listener API kitchen sink: directory, channel, track, chat, support, feature requests, transparency, venues, collections, follow, newsletter (~54 functions left, no single dominant domain). | **Original named-module split done 2026-09-12:** `client-request.ts`/`client-auth.ts`, `listen.ts`, `radio-public.ts`, `governance-member.ts`, `membership.ts`, `embeds.ts` all peeled — the exact list this row originally suggested. Remaining domains are smaller/mixed with no obvious next seam; demote off the P0 hotspot list, revisit only if one grows or a merge-conflict pain point shows up. |
 | ~~P1~~ | ~~`packages/tahti-web/src/views/settings/SettingsPanels.tsx`~~ | ~~~2440~~ **done 2026-09-12, now ~110** | Many settings surfaces in one file (Account, Artist, Channel, Broadcast, Notifications, Themes, storage, privacy). | One panel per file under `views/settings/panels/`; `SettingsSectionBody` stays the switch/router. |
-| P1 | `packages/tahti-web/src/components/ChannelDesigner.tsx` | ~1988 (was ~2103) | Designer god component (visualizer / color / header / look sections) tightly coupled to Channel + Artist editors. **2026-09-15:** first slice done (4 low-coupling JSX chunks extracted, see item 12 below) — remaining body still tightly closure-coupled. | Extract section editors + snapshot helpers; keep `forwardRef` façade. Coordinate with open designer todos (`channel-designer-*`) — split structure first, product fold later. |
+| P1 | `packages/tahti-web/src/components/ChannelDesigner.tsx` | ~1800 (was ~2103, then ~2069 after later feature work re-grew it, then ~1988→~1800 with the 2026-09-17 slice) | Designer god component (visualizer / color / header / look sections) tightly coupled to Channel + Artist editors. **2026-09-15:** first slice done (4 low-coupling JSX chunks extracted, see item 12 below). **2026-09-17:** second slice done (5 dialogs + 2 small controls extracted, see item 19) — remaining body (state, effects, save/preset logic) still tightly closure-coupled. | Extract section editors + snapshot helpers; keep `forwardRef` façade. Coordinate with open designer todos (`channel-designer-*`) — split structure first, product fold later. |
 | ~~P1~~ | ~~`packages/tahti-web/src/views/ChannelView.tsx` + `ArtistView.tsx`~~ | ~1450 + ~1500 (was ~1754) | Parallel public entity pages sharing designer, visualizer, disco widgets, social header patterns; each still owns full layout/data orchestration. **2026-09-15:** `ArtistView.tsx`'s Releases/Collections tab bodies, then its Music tab body, all extracted (see item 13) — off this row's remaining scope. `ChannelView.tsx`: hooks-order bug fixed (PR #94), then its 11 small `renderBlock` cases extracted to `ChannelViewBlocks.tsx` (see items 14/17). **2026-09-16:** `ChannelHeroBlock` (item 18) and `useChannelLayoutEditing` (item 19) both extracted — `ChannelView.tsx` off this row entirely now. | **Done 2026-09-16:** both files' extractable pieces are peeled. Off the P1 hotspot list. |
 | ~~P2~~ | ~~`packages/tahti-web/src/api/studio.ts`~~ | ~~~1897~~ **barrel only** | Large but already partially split; still a frequent merge magnet. | **Done 2026-09-15:** peeled into `api/studio/studio-{sounds,releases,collections,upload,editor}.ts` + shared `studio-request.ts`/`studio-mock.ts`; `studio.ts` re-exports. Off the P2 list. |
 | ~~P2~~ | ~~`packages/tahti-web/src/router.tsx`~~ | ~~~1965~~ **382, assembly only** | Monolithic route tree (high fan-in). | **Done 2026-09-15:** peeled into `router/routes-*.tsx` by nav section (listen, settings, admin, library/misc, transparency, help, auth, governance, info, studio, embed) + `router/router-core.tsx` (shared parents) + `router/router-lazy-views.ts` (code-split registry); `router.tsx` now only imports every route const and does the `addChildren` tree assembly + `createRouter`. Off the P2 list. |
@@ -210,6 +210,9 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
     automated tests exist for this component to catch a regression
     (confirmed via `find`). Left for a dedicated follow-up; still P1,
     still "coordinate with open `channel-designer-*` product todos first."
+    (Note: unrelated feature work in the following days — the "fold bio/
+    CTA/avatar into backdrop toggles" + Feed widget commit — re-grew the
+    file to ~2069 lines before item 19 below picked this back up.)
 13. **`ArtistView.tsx` tab-body slice** — **2026-09-15:** the "Releases"
     and "Collections" tab bodies (self-contained, small prop surface) were
     extracted to `components/ArtistReleasesTab.tsx` /
@@ -363,12 +366,48 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
     Verified: `tsc --noEmit` / `eslint` clean, full unit suite
     (517/517), `vite build` succeeds. `ChannelDesigner.tsx`'s own
     remaining body (item 12) was not attempted this pass — still open.
+20. **`ChannelDesigner.tsx` second slice (dialogs + small controls)** —
+    **2026-09-17:** confirmed no automated test coverage still exists for
+    this component (`find` for `ChannelDesigner*.test.*` — none), but a
+    `ChannelDesigner.stories.tsx` safety net already covers `Full`/
+    `Compact`/`LookOnlyShell` plus one story per look element (backdrop,
+    player, releases, tracks, feed, gallery, …), so this slice extracted
+    only pieces that stay behaviorally identical to a Storybook-visible
+    eye and to `tsc`: the 5 modal dialogs (`OverlayConfigDialog`,
+    `VisualizerPickerDialog`, `SavePresetDialog`, `DeletePresetDialog`,
+    `ResetConfirmDialog`) and 2 small non-dialog pieces
+    (`IdentityToggles`, `TuningSliders`) into
+    `components/channel-designer/`, each a pure props-in/JSX-out
+    component with no internal state — same low-coupling shape as item
+    12's four chunks. ~2069 → ~1800 lines. Deliberately left the
+    ~180-line `slideshowControls` gallery/slideshow section alone — it
+    closes over ~20 local variables (gallery images, drag state, preview
+    index, picker-open, slideshow preset/interval/transition/autoplay,
+    several setters), matching this row's own "15+ variables = risky"
+    bar, so it stays with the rest of the tightly closure-coupled core
+    (state, effects, save/preset logic, the slideshow section itself).
+    Verified: `tsc --noEmit` / `eslint` clean (after one `prettier
+    --write` pass), full unit suite (545/545), production `vite build`,
+    and `storybook build` all succeed; live-browser verified against the
+    built Storybook (`Full` and `Player` stories) — the "…" menu → **Save
+    preset** flow opens the extracted `SavePresetDialog` with the same
+    autofocus/copy/buttons as before, and the page shows no console
+    errors before/after. Did not get a live click through on
+    `VisualizerPickerDialog`/`ResetConfirmDialog` specifically (both sit
+    behind either `lookOnly`'s early return or a `!dirty`-disabled Reset
+    button that's awkward to trigger from a decorator-only Storybook
+    environment) — this is a pre-existing gap in what's easy to exercise
+    from Storybook, not something this slice changed; both are literal
+    copies of the original JSX, just parameterized, and `tsc` would catch
+    any prop-shape mismatch.
 
-Next: the remaining `ChannelDesigner.tsx` body (item 12) — the only
-hotspot left on this list, needs either prop-threading 15-30+ closure
-variables or its own extracted hook(s), a bigger/riskier slice than the
-mechanical peels above (including `useChannelLayoutEditing`, item 19).
-Admin activity-feed/audit-topic and container-logs sections remain in
+Next: the remaining `ChannelDesigner.tsx` body (state, effects, save/
+preset logic, the ~180-line slideshow/gallery section — see item 20) —
+the only hotspot left on this list, needs either prop-threading 15-30+
+closure variables or a shared custom hook, a bigger/riskier slice than
+the mechanical `studio.ts`/`router.tsx`/`ChannelViewBlocks.tsx`/
+`ChannelHeroBlock.tsx`/`useChannelLayoutEditing` peels above. Admin
+activity-feed/audit-topic and container-logs sections remain in
 `admin.ts` intentionally — revisit once confirmed quiet.
 
 ## Related open leaves (do not duplicate)

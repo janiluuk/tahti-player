@@ -81,7 +81,7 @@ on `document.visibilitychange`.
 | `PluginStorePanel.tsx` | ~166 | **Done** as thin shell; categories under `plugin-store/` |
 | `api/client.ts` | ~1419 | **Done** (named-module split): `client-request.ts` + `client-auth.ts` + `governance-member.ts` + `embeds.ts` + `radio-public.ts` + `membership.ts` + `listen.ts` |
 | `SettingsPanels.tsx` | ~110 | **Done 2026-09-12** — one panel per file under `views/settings/panels/` |
-| `ChannelDesigner.tsx` | ~1988 | **Partial 2026-09-15** — 4 low-coupling JSX chunks extracted (toolbar, saved-looks row, applied-preset banner, static preview section); remaining body still tightly closure-coupled, see `codebase-refactor-hotspots.md` item 12 |
+| `ChannelDesigner.tsx` | ~1800 | **Partial 2026-09-15, second slice 2026-09-17** — 4 low-coupling JSX chunks extracted 2026-09-15 (toolbar, saved-looks row, applied-preset banner, static preview section), then 5 dialogs + 2 small controls extracted 2026-09-17 (overlay config, visualizer picker, save/delete/reset preset dialogs, identity toggles, tuning sliders); remaining body (state, effects, save/preset logic, ~180-line slideshow section) still tightly closure-coupled, see `codebase-refactor-hotspots.md` items 12 and 20 |
 | `api/studio.ts` | ~5 (barrel) | **Done 2026-09-15** — peeled into `api/studio/studio-{sounds,releases,collections,upload,editor}.ts` + shared `studio-request.ts`/`studio-mock.ts`, matching the source file's own section boundaries (not literally "tracks, releases, collections, schedule" as originally guessed here — see `codebase-refactor-hotspots.md` item 15) |
 | `router.tsx` | 382 (assembly only) | **Done 2026-09-15** — peeled into `router/routes-*.tsx` by nav section (listen/settings/admin/library/transparency/help/auth/governance/info/studio/embed) + `router/router-core.tsx` + `router/router-lazy-views.ts`; see `codebase-refactor-hotspots.md` item 16 |
 | `ArtistView.tsx` | ~1500 | **Done 2026-09-15** — Releases/Collections tab bodies extracted, then the "Music" tab body too (turned out to be a pure JSX+props extraction, not closure-coupled state — see `codebase-refactor-hotspots.md` item 13); all three tab components moved into `components/artist-view/` |
@@ -142,7 +142,17 @@ bookkeeping, the `updateLayout`/`removeLayoutItem`/`saveLayout` helpers)
 moved verbatim into `hooks/useChannelLayoutEditing.ts`, pure relocation, no
 behavior change. `ChannelView.tsx` off this backlog entirely now. See
 `codebase-refactor-hotspots.md` item 19.
-Still open in Phase 4: `ChannelDesigner.tsx`'s remaining body.
+**2026-09-17:** `ChannelDesigner.tsx` second slice — 5 modal dialogs
+(`OverlayConfigDialog`, `VisualizerPickerDialog`, `SavePresetDialog`,
+`DeletePresetDialog`, `ResetConfirmDialog`) + 2 small controls
+(`IdentityToggles`, `TuningSliders`) extracted, all pure props-in/JSX-out
+with no internal state — same low-coupling shape as the first slice.
+~2069 → ~1800 lines. Deliberately left the ~180-line slideshow/gallery
+section (~20 closure variables) with the rest of the tightly-coupled
+core. See `codebase-refactor-hotspots.md` item 20.
+Still open in Phase 4: `ChannelDesigner.tsx`'s remaining body (state,
+effects, save/preset logic, slideshow section) — the only thing left on
+this list.
 
 ## Execution order
 

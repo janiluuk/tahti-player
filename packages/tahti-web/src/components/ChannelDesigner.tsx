@@ -18,11 +18,9 @@ import {
 import { toast } from 'sonner';
 
 import {
-  Badge,
   Button,
   Dialog,
   FilePicker,
-  Input,
   SaveButton,
   Select,
   Slider,
@@ -87,32 +85,34 @@ import {
   type ChannelPageItem,
   type ChannelPageItemType,
 } from '../lib/channelPageLayout';
-import {
-  visualizerMetadata,
-  visualizerSupportsAudioReactive,
-} from '../plugins/visualizers';
 import { useLayoutStore } from '../stores/layoutStore';
 import { useRightRailOverrideStore } from '../stores/rightRailOverrideStore';
 import {
   AppliedPresetBanner,
   BackdropPanel,
+  DeletePresetDialog,
   DesignerToolbar,
+  IdentityToggles,
   LAYOUT_ONLY_LOOK_IDS,
   LayoutOnlyLookHint,
+  OverlayConfigDialog,
   PlayerOverlayControls,
   PlayerPanel,
   PlayerVisualizerControls,
   PreviewTracksPlaceholder,
+  ResetConfirmDialog,
   resolveHeaderDesignMode,
   SavedLooksRow,
+  SavePresetDialog,
+  TuningSliders,
   VideoOrImageField,
+  VisualizerPickerDialog,
   type HeaderDesignMode,
   type PlayerDesignTab,
 } from './channel-designer';
 import { ChannelBackdropCard } from './ChannelBackdropCard';
 import { ChannelElementEditor } from './ChannelElementEditor';
 import { ChannelTextOverlayEditor } from './ChannelTextOverlayEditor';
-import { ChannelVisualizer } from './ChannelVisualizer';
 import { PageLoading } from './PageStates';
 import { Eyebrow } from './tahti/Eyebrow';
 
@@ -1044,41 +1044,6 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       applyLocal({ visualPreset: nextPreset });
     };
 
-    const tuningSliders = (preset: string) => (
-      <>
-        {(['speed', 'intensity'] as const).map((key) => {
-          const current = resolveVisualPresetSettings(visualSettings, preset);
-          return (
-            <Slider
-              key={key}
-              label={key === 'speed' ? 'Speed' : 'Intensity'}
-              min={0.25}
-              max={2}
-              step={0.05}
-              unit="×"
-              value={current[key]}
-              onValueChange={(value) => setPresetSetting(preset, key, value)}
-            />
-          );
-        })}
-        {visualizerSupportsAudioReactive(preset) ? (
-          <div className="flex items-center justify-between gap-3 text-sm">
-            <span>Audio reactive</span>
-            <Toggle
-              label="Audio reactive"
-              checked={
-                resolveVisualPresetSettings(visualSettings, preset)
-                  .audioReactive
-              }
-              onChange={(checked) =>
-                setPresetSetting(preset, 'audioReactive', checked)
-              }
-            />
-          </div>
-        ) : null}
-      </>
-    );
-
     // Only the full (non-lookOnly) chrome, with a live preview allowed, ever
     // gets a real preview to dock tuning into.
     const hasLivePreview = !lookOnly && livePreview;
@@ -1320,50 +1285,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
     // only caller that owns a real page `layout` to toggle.
     const identityTogglesSlot =
       layout && onLayoutChange ? (
-        <section className="border-border flex flex-col gap-3 rounded-lg border p-3">
-          <h3 className="text-xs font-semibold tracking-wide uppercase">
-            Identity
-          </h3>
-          {(
-            [
-              {
-                type: 'avatar' as const,
-                label: 'Show avatar',
-              },
-              {
-                type: 'about' as const,
-                label: 'Show bio',
-              },
-              {
-                type: 'subscribe' as const,
-                label: 'Show Subscribe button',
-              },
-            ] satisfies { type: ChannelPageItemType; label: string }[]
-          ).map(({ type, label }) => {
-            const row = layout.find((i) => i.type === type);
-            const checked = row?.visible ?? type === 'avatar';
-            return (
-              <div
-                key={type}
-                className="flex items-center justify-between gap-3 text-sm"
-              >
-                <span>{label}</span>
-                <Toggle
-                  label={label}
-                  checked={checked}
-                  onChange={(next) => {
-                    onLayoutChange((prev) => {
-                      const existing = prev.find((i) => i.type === type);
-                      return existing
-                        ? setItemVisible(prev, existing.id, next)
-                        : prev;
-                    });
-                  }}
-                />
-              </div>
-            );
-          })}
-        </section>
+        <IdentityToggles layout={layout} onLayoutChange={onLayoutChange} />
       ) : null;
 
     const backdropPanel = (
@@ -1424,7 +1346,15 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
         activeVisualizer={activeVisualizer}
         visualizerEnabled={visualizerEnabled}
         showSettings={showVisualizerSettings}
-        tuningSlot={dockTuning ? tuningSliders(visual.visualPreset) : undefined}
+        tuningSlot={
+          dockTuning ? (
+            <TuningSliders
+              preset={visual.visualPreset}
+              visualSettings={visualSettings}
+              onSettingChange={setPresetSetting}
+            />
+          ) : undefined
+        }
         onOpenPicker={() => {
           setVisualizerPickerPreset(activeVisualizer);
           setVisualizerPickerOpen(true);
@@ -1817,252 +1747,53 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
             ) : null}
           </div>
 
-          {overlayConfigOpen ? (
-            <Dialog.Root
-              isOpen
-              onClose={() => setOverlayConfigOpen(false)}
-              className="max-w-lg"
-            >
-              <Dialog.Title>Configure text overlay</Dialog.Title>
-              <Dialog.Description>
-                Fine-tune the now-playing title and artist overlay used on your
-                channel.
-              </Dialog.Description>
-              <div className="flex flex-col gap-4">
-                <Slider
-                  label={`Text size: ${Math.round(overlaySettings.textScale * 100)}%`}
-                  min={0.6}
-                  max={1.6}
-                  step={0.05}
-                  value={overlaySettings.textScale}
-                  onValueChange={(value) =>
-                    setOverlaySetting('textScale', value)
-                  }
-                />
-                <Slider
-                  label={`Horizontal position: ${overlaySettings.offsetX}px`}
-                  min={-120}
-                  max={120}
-                  step={4}
-                  value={overlaySettings.offsetX}
-                  onValueChange={(value) => setOverlaySetting('offsetX', value)}
-                />
-                <Slider
-                  label={`Vertical position: ${overlaySettings.offsetY}px`}
-                  min={-120}
-                  max={120}
-                  step={4}
-                  value={overlaySettings.offsetY}
-                  onValueChange={(value) => setOverlaySetting('offsetY', value)}
-                />
-                <Slider
-                  label={`Opacity: ${Math.round(overlaySettings.opacity * 100)}%`}
-                  min={0.2}
-                  max={1}
-                  step={0.05}
-                  value={overlaySettings.opacity}
-                  onValueChange={(value) => setOverlaySetting('opacity', value)}
-                />
-              </div>
-            </Dialog.Root>
-          ) : null}
+          <OverlayConfigDialog
+            isOpen={overlayConfigOpen}
+            overlaySettings={overlaySettings}
+            onClose={() => setOverlayConfigOpen(false)}
+            onSettingChange={setOverlaySetting}
+          />
 
-          {visualizerPickerOpen ? (
-            <Dialog.Root
-              isOpen
-              onClose={() => setVisualizerPickerOpen(false)}
-              className="max-w-3xl"
-            >
-              <Dialog.Title>Choose visualizer</Dialog.Title>
-              <Dialog.Description>
-                Preview each animated stage and choose the one that fits your
-                channel.
-              </Dialog.Description>
-              <div className="mt-2 grid gap-4 lg:grid-cols-[minmax(14rem,18rem)_minmax(0,1fr)]">
-                <div className="grid content-start gap-2 sm:grid-cols-2 lg:grid-cols-1">
-                  {availableVisualizers.map((preset) => {
-                    const meta = visualizerMetadata(preset);
-                    const selected = visualizerPickerPreset === preset;
-                    return (
-                      <button
-                        key={preset}
-                        type="button"
-                        aria-pressed={selected}
-                        onClick={() => setVisualizerPickerPreset(preset)}
-                        className={`border-border flex items-center gap-3 rounded-lg border p-3 text-left transition-colors ${
-                          selected
-                            ? 'border-primary bg-primary/10'
-                            : 'hover:border-primary/50'
-                        }`}
-                      >
-                        <span className="bg-background-secondary relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-md">
-                          {livePreview ? (
-                            <span className="absolute inset-0" aria-hidden>
-                              <ChannelVisualizer
-                                preset={preset}
-                                colorScheme={scheme}
-                                visualSettingsJson={visualSettingsJson}
-                                className="size-full"
-                                audioReactive={false}
-                              />
-                            </span>
-                          ) : (
-                            <span
-                              className="absolute inset-0 animate-pulse"
-                              style={{
-                                background: `linear-gradient(135deg, ${scheme.highlight ?? '#A78BFA'}, ${scheme.accent ?? '#22D3EE'}, ${scheme.bg ?? '#0B1220'})`,
-                              }}
-                            />
-                          )}
-                          <meta.Icon
-                            size={16}
-                            className="relative z-[1] text-white drop-shadow"
-                            aria-hidden
-                          />
-                        </span>
-                        <span className="min-w-0">
-                          <span className="flex flex-wrap items-center gap-1.5">
-                            <span className="truncate text-sm font-semibold">
-                              {preset.replace(/_/g, ' ')}
-                            </span>
-                            {meta.audioReactive ? (
-                              <Badge variant="pill" color="blue">
-                                Audio reactive
-                              </Badge>
-                            ) : null}
-                          </span>
-                          <span className="text-foreground-secondary block truncate text-xs">
-                            {meta.description}
-                          </span>
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-                <div
-                  className="border-border bg-background relative min-h-56 overflow-hidden rounded-xl border"
-                  aria-label={`${visualizerPickerPreset.replace(/_/g, ' ')} preview`}
-                >
-                  {livePreview ? (
-                    <ChannelVisualizer
-                      className="absolute inset-0 size-full"
-                      preset={visualizerPickerPreset}
-                      colorScheme={scheme}
-                      visualSettingsJson={visualSettingsJson}
-                      artworkUrl={avatarUrl}
-                    />
-                  ) : (
-                    <div
-                      className="absolute inset-0"
-                      style={{ background: previewStyle.gradient }}
-                    />
-                  )}
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent p-4 pt-16 text-white">
-                    <div className="text-xs font-semibold tracking-wide uppercase">
-                      Live preview
-                    </div>
-                    <div className="mt-1 flex flex-wrap items-center gap-2 text-lg font-bold">
-                      {visualizerPickerPreset.replace(/_/g, ' ')}
-                      {visualizerMetadata(visualizerPickerPreset)
-                        .audioReactive ? (
-                        <Badge variant="pill" color="blue">
-                          Audio reactive
-                        </Badge>
-                      ) : null}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <Dialog.Actions>
-                <Dialog.Close>Cancel</Dialog.Close>
-                <Button
-                  onClick={() => {
-                    setPreviewPreset(visualizerPickerPreset);
-                    applyLocal({ visualPreset: visualizerPickerPreset });
-                    setVisualizerPickerOpen(false);
-                  }}
-                >
-                  Use visualizer
-                </Button>
-              </Dialog.Actions>
-            </Dialog.Root>
-          ) : null}
+          <VisualizerPickerDialog
+            isOpen={visualizerPickerOpen}
+            onClose={() => setVisualizerPickerOpen(false)}
+            availableVisualizers={availableVisualizers}
+            selectedPreset={visualizerPickerPreset}
+            onSelectPreset={setVisualizerPickerPreset}
+            onConfirm={() => {
+              setPreviewPreset(visualizerPickerPreset);
+              applyLocal({ visualPreset: visualizerPickerPreset });
+              setVisualizerPickerOpen(false);
+            }}
+            livePreview={livePreview}
+            scheme={scheme}
+            visualSettingsJson={visualSettingsJson}
+            avatarUrl={avatarUrl}
+            previewGradient={previewStyle.gradient}
+          />
         </div>
 
-        <Dialog.Root
+        <SavePresetDialog
           isOpen={savePresetOpen}
-          onClose={() => {
-            if (!presetBusy) {
-              setSavePresetOpen(false);
-            }
-          }}
-        >
-          <Dialog.Title>Save preset</Dialog.Title>
-          <Dialog.Description>
-            Save the current look under a name so you can switch back to it
-            later.
-          </Dialog.Description>
-          <Input
-            label="Preset name"
-            value={presetNameInput}
-            onChange={(event) => setPresetNameInput(event.target.value)}
-            placeholder="e.g. Neon night"
-            autoFocus
-          />
-          <Dialog.Actions>
-            <Dialog.Close>Cancel</Dialog.Close>
-            <Button
-              disabled={presetBusy}
-              onClick={() => void confirmSavePreset()}
-            >
-              Save preset
-            </Button>
-          </Dialog.Actions>
-        </Dialog.Root>
+          presetBusy={presetBusy}
+          presetNameInput={presetNameInput}
+          onNameChange={setPresetNameInput}
+          onClose={() => setSavePresetOpen(false)}
+          onConfirm={() => void confirmSavePreset()}
+        />
 
-        <Dialog.Root
-          isOpen={deletePresetTarget !== null}
-          onClose={() => {
-            if (!presetBusy) {
-              setDeletePresetTarget(null);
-            }
-          }}
-        >
-          <Dialog.Title>
-            Delete &ldquo;{deletePresetTarget?.name}&rdquo;?
-          </Dialog.Title>
-          <Dialog.Description>
-            This preset will be gone for good. Your current, live look is not
-            affected.
-          </Dialog.Description>
-          <Dialog.Actions>
-            <Dialog.Close>Cancel</Dialog.Close>
-            <Button
-              disabled={presetBusy}
-              variant="secondary"
-              onClick={() => void confirmDeletePreset()}
-            >
-              Delete preset
-            </Button>
-          </Dialog.Actions>
-        </Dialog.Root>
+        <DeletePresetDialog
+          target={deletePresetTarget}
+          presetBusy={presetBusy}
+          onClose={() => setDeletePresetTarget(null)}
+          onConfirm={() => void confirmDeletePreset()}
+        />
 
-        <Dialog.Root
+        <ResetConfirmDialog
           isOpen={resetConfirmOpen}
           onClose={() => setResetConfirmOpen(false)}
-        >
-          <Dialog.Title>Reset unsaved changes?</Dialog.Title>
-          <Dialog.Description>
-            This discards everything you&apos;ve changed since the last save and
-            restores your live look. This can&apos;t be undone.
-          </Dialog.Description>
-          <Dialog.Actions>
-            <Dialog.Close>Cancel</Dialog.Close>
-            <Button onClick={confirmReset} variant="secondary">
-              Reset
-            </Button>
-          </Dialog.Actions>
-        </Dialog.Root>
+          onConfirm={confirmReset}
+        />
       </>
     );
   },
