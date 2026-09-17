@@ -1,5 +1,6 @@
 import { HistoryIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   EmptyState,
@@ -9,8 +10,25 @@ import {
   Select,
 } from '@tahti-player/ui';
 
+import type { TahtiPlayable } from '../../api/types';
+import { resolveLocalPlayableForReplay } from '../../lib/nativeLibrary';
 import { useLibraryStore, type HistoryEntry } from '../../stores/libraryStore';
 import { usePlayerStore } from '../../stores/playerStore';
+
+async function resolvePlayableForReplay(
+  playable: TahtiPlayable,
+): Promise<TahtiPlayable | null> {
+  try {
+    const resolved = await resolveLocalPlayableForReplay(playable);
+    if (!resolved) {
+      toast.error('Re-import this file from your library to play it again.');
+    }
+    return resolved;
+  } catch (error) {
+    toast.error(error instanceof Error ? error.message : 'Track unavailable.');
+    return null;
+  }
+}
 
 const PAGE_SIZES = [10, 25, 50];
 
@@ -100,8 +118,16 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
                 artworkUrl={p.coverUrl}
                 isFavorite={isFavoriteTrack(p.id)}
                 onToggleFavorite={() => toggleFavoriteTrack(p)}
-                onAddToQueue={() => enqueue(p)}
-                onPlayNow={() => play(p)}
+                onAddToQueue={() => {
+                  void resolvePlayableForReplay(p).then(
+                    (resolved) => resolved && enqueue(resolved),
+                  );
+                }}
+                onPlayNow={() => {
+                  void resolvePlayableForReplay(p).then(
+                    (resolved) => resolved && play(resolved),
+                  );
+                }}
                 labels={{
                   favorite: 'Add to favorites',
                   unfavorite: 'Remove from favorites',

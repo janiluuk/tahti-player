@@ -197,6 +197,31 @@ export function DesktopLibraryPanel() {
                         <PlayIcon size={14} aria-hidden />
                       </Button>
                     </Tooltip>
+                    <Tooltip content="Add to queue" side="top">
+                      <Button
+                        size="sm"
+                        variant="text"
+                        aria-label={`Queue ${track.title}`}
+                        onClick={async () => {
+                          try {
+                            enqueue(
+                              playableFromNativeTrack(
+                                track,
+                                await nativeLibrary.resolve(track.id),
+                              ),
+                            );
+                          } catch (error) {
+                            toast.error(
+                              error instanceof Error
+                                ? error.message
+                                : 'Track unavailable.',
+                            );
+                          }
+                        }}
+                      >
+                        Queue
+                      </Button>
+                    </Tooltip>
                     <Tooltip content="Remove" side="top">
                       <Button
                         size="icon-sm"
