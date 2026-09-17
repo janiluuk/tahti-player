@@ -100,13 +100,20 @@ export function DesktopLibraryPanel() {
     setNativeLoading(true);
     try {
       const result = await nativeLibrary.import();
-      toast.success(
-        result.imported === 1
-          ? 'Imported 1 track.'
-          : `Imported ${result.imported} tracks.`,
-      );
+      if (result.imported > 0) {
+        toast.success(
+          result.imported === 1
+            ? 'Imported 1 track.'
+            : `Imported ${result.imported} tracks.`,
+        );
+      }
       if (result.errors.length) {
-        toast.error(`${result.errors.length} files could not be imported.`);
+        toast.error(
+          result.errors.length === 1
+            ? '1 file could not be imported.'
+            : `${result.errors.length} files could not be imported.`,
+          { description: describeImportFailures(result.errors) },
+        );
       }
       await refreshNative();
     } catch (error) {
@@ -417,6 +424,27 @@ export function DesktopLibraryPanel() {
         ))}
     </div>
   );
+}
+
+const MAX_LISTED_IMPORT_FAILURES = 5;
+
+export function describeImportFailures(
+  errors: ReadonlyArray<{ path: string; error: string }>,
+): string {
+  const lines = errors
+    .slice(0, MAX_LISTED_IMPORT_FAILURES)
+    .map((failure) => `${basename(failure.path)}: ${failure.error}`);
+  const remaining = errors.length - lines.length;
+  if (remaining > 0) {
+    lines.push(`…and ${remaining} more.`);
+  }
+  return lines.join('\n');
+}
+
+function basename(path: string): string {
+  const normalized = path.replace(/\\/g, '/');
+  const segments = normalized.split('/');
+  return segments[segments.length - 1] || path;
 }
 
 function formatFileSize(bytes: number): string {
