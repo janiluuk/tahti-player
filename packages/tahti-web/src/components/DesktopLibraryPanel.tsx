@@ -10,6 +10,7 @@ import {
   Tooltip,
 } from '@tahti-player/ui';
 
+import type { TahtiPlayable } from '../api/types';
 import { hasNativePlayer } from '../lib/nativeCapabilities';
 import {
   getNativeLibrary,
@@ -23,6 +24,7 @@ import {
   useLocalLibraryStore,
 } from '../stores/localLibraryStore';
 import { usePlayerStore } from '../stores/playerStore';
+import { PlayableTrackTable } from './PlayableTrackTable';
 
 const FILE_LABELS = {
   title: 'Add audio files',
@@ -38,10 +40,29 @@ export function DesktopLibraryPanel() {
   const remove = useLocalLibraryStore((s) => s.remove);
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
-  const needsReimport = tracks.some((track) => !isLocalTrackPlayable(track));
   const filteredTracks = useMemo(
     () => filterLocalLibraryTracks(tracks, query),
     [query, tracks],
+  );
+  const unresolvedTracks = useMemo(
+    () => filteredTracks.filter((track) => !isLocalTrackPlayable(track)),
+    [filteredTracks],
+  );
+  const playableLocalTracks = useMemo(
+    () => filteredTracks.filter((track) => isLocalTrackPlayable(track)),
+    [filteredTracks],
+  );
+  const playableItems = useMemo(
+    () =>
+      playableLocalTracks
+        .map(playableFromLocalTrack)
+        .filter((item): item is TahtiPlayable => item !== null),
+    [playableLocalTracks],
+  );
+  const playableById = useMemo(
+    () =>
+      new Map(playableLocalTracks.map((track) => [`local:${track.id}`, track])),
+    [playableLocalTracks],
   );
   const nativePlayer = hasNativePlayer();
   const nativeLibrary = getNativeLibrary();
@@ -330,95 +351,77 @@ export function DesktopLibraryPanel() {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
             />
-            {needsReimport ? (
-              <p className="text-foreground-secondary text-xs">
-                Some tracks need the original file again before they can play.
-              </p>
-            ) : null}
-            {filteredTracks.length === 0 ? (
-              <EmptyState
-                size="sm"
-                title="No local files found"
-                description={`Nothing matches “${query.trim()}”.`}
-                className="flex-1"
-              />
-            ) : (
-              <ul className="tahti-hide-scrollbar flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto">
-                {filteredTracks.map((track) => {
-                  const playable = isLocalTrackPlayable(track);
-                  return (
-                    <li
-                      key={track.id}
-                      className="border-border flex items-center gap-2 rounded-md border px-2 py-1.5"
-                    >
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-semibold">
-                          {track.title}
-                        </p>
-                        <p className="text-foreground-secondary truncate text-xs">
-                          {playable
-                            ? track.artist
-                            : `Re-import ${track.fileName} to play`}
-                        </p>
-                        {track.fileSize ? (
-                          <p className="text-foreground-secondary truncate text-[10px] opacity-70">
-                            {formatFileSize(track.fileSize)}
-                            {track.mimeType ? ` · ${track.mimeType}` : ''}
-                          </p>
-                        ) : null}
-                      </div>
-                      <Tooltip content="Play" side="top">
-                        <Button
-                          size="icon-sm"
-                          variant="text"
-                          disabled={!playable}
-                          aria-label={`Play ${track.title}`}
-                          onClick={() => {
-                            const next = playableFromLocalTrack(track);
-                            if (next) {
-                              play(next);
-                            }
-                          }}
-                        >
-                          <PlayIcon size={14} aria-hidden />
-                        </Button>
-                      </Tooltip>
-                      <Tooltip content="Add to queue" side="top">
-                        <Button
-                          size="sm"
-                          variant="text"
-                          disabled={!playable}
-                          aria-label={`Queue ${track.title}`}
-                          onClick={() => {
-                            const next = playableFromLocalTrack(track);
-                            if (!next) {
-                              return;
-                            }
-                            enqueue(next);
-                            toast.success(`Queued “${track.title}”.`);
-                          }}
-                        >
-                          Queue
-                        </Button>
-                      </Tooltip>
-                      <Tooltip content="Remove" side="top">
-                        <Button
-                          size="icon-sm"
-                          variant="text"
-                          intent="danger"
-                          aria-label={`Remove ${track.title}`}
-                          onClick={() => {
-                            remove(track.id);
-                            toast.success(`Removed “${track.title}”.`);
-                          }}
-                        >
-                          <TrashIcon size={14} aria-hidden />
-                        </Button>
-                      </Tooltip>
-                    </li>
-                  );
-                })}
+            {unresolvedTracks.length > 0 ? (
+              <ul className="tahti-hide-scrollbar flex max-h-32 flex-col gap-1 overflow-y-auto">
+                {unresolvedTracks.map((track) => (
+                  <li
+                    key={track.id}
+                    className="border-border flex items-center gap-2 rounded-md border px-2 py-1.5"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold">
+                        {track.title}
+                      </p>
+                      <p className="text-foreground-secondary truncate text-xs">
+                        Re-import {track.fileName} to play
+                      </p>
+                    </div>
+                    <Tooltip content="Remove" side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        intent="danger"
+                        aria-label={`Remove ${track.title}`}
+                        onClick={() => {
+                          remove(track.id);
+                          toast.success(`Removed “${track.title}”.`);
+                        }}
+                      >
+                        <TrashIcon size={14} aria-hidden />
+                      </Button>
+                    </Tooltip>
+                  </li>
+                ))}
               </ul>
+            ) : null}
+            {playableItems.length === 0 ? (
+              unresolvedTracks.length === 0 ? (
+                <EmptyState
+                  size="sm"
+                  title="No local files found"
+                  description={`Nothing matches “${query.trim()}”.`}
+                  className="flex-1"
+                />
+              ) : null
+            ) : (
+              <div className="min-h-0 flex-1 overflow-y-auto">
+                <PlayableTrackTable
+                  items={playableItems}
+                  selectable
+                  onRemove={(item) => {
+                    const track = playableById.get(item.id);
+                    if (!track) {
+                      return;
+                    }
+                    remove(track.id);
+                    toast.success(`Removed “${item.title}”.`);
+                  }}
+                  onBulkRemove={(items) => {
+                    for (const item of items) {
+                      const track = playableById.get(item.id);
+                      if (track) {
+                        remove(track.id);
+                      }
+                    }
+                    toast.success(
+                      items.length === 1
+                        ? 'Removed 1 track.'
+                        : `Removed ${items.length} tracks.`,
+                    );
+                  }}
+                  compactActions
+                />
+              </div>
             )}
           </>
         ))}
