@@ -150,6 +150,10 @@ with no internal state — same low-coupling shape as the first slice.
 ~2069 → ~1800 lines. Deliberately left the ~180-line slideshow/gallery
 section (~20 closure variables) with the rest of the tightly-coupled
 core. See `codebase-refactor-hotspots.md` item 20.
+**2026-09-18:** added `ChannelDesigner.test.tsx` (mount + 3 render-branch
+smoke tests, the component's first automated test ever) so a future slice
+of the remaining body has a regression floor. See
+`codebase-refactor-hotspots.md` item 21.
 Still open in Phase 4: `ChannelDesigner.tsx`'s remaining body (state,
 effects, save/preset logic, slideshow section) — the only thing left on
 this list.
