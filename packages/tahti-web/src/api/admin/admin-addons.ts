@@ -1,5 +1,5 @@
 import type { FetchMeta } from '../client';
-import { getJson, sendJson } from '../http';
+import { getJson, mutate, sendJson } from '../http';
 import { failMeta, isForceMock } from '../mode';
 
 // ── Admin add-ons ────────────────────────────────────────────────────────
@@ -104,6 +104,25 @@ const MOCK_ADDONS: AdminAddon[] = [
     enabledByDefault: false,
     createdAt: '2026-09-01T00:00:00.000Z',
     updatedAt: '2026-09-01T00:00:00.000Z',
+  },
+  {
+    id: 'addon-platform-pulse',
+    slug: 'platform-pulse',
+    scope: 'ADMIN',
+    status: 'APPROVED',
+    name: 'Platform pulse',
+    description:
+      'Live snapshot of active listeners and streams, for a shared admin surface like the homepage.',
+    authorName: 'Tahti',
+    categories: ['stats'],
+    iconUrl: null,
+    currentVersion: '1.0.0',
+    bundleSizeBytes: 15600,
+    moderationNote: null,
+    defaultConfigJson: {},
+    enabledByDefault: false,
+    createdAt: '2026-08-05T00:00:00.000Z',
+    updatedAt: '2026-08-05T00:00:00.000Z',
   },
 ];
 
@@ -321,4 +340,185 @@ export async function setAdminAddonDefaultConfig(
       error: err instanceof Error ? err.message : 'Update failed',
     };
   }
+}
+
+// ── ADMIN-scope installs (shared surfaces, e.g. the homepage) ──────────────
+// Separate from enabledByDefault/defaultConfigJson above: an install is an
+// explicit "this widget renders on this specific surface, at this position,
+// with this per-install config override" row (`AddonInstall` with
+// `adminSurface` set), matching `/api/admin/addons/installs*` in
+// `../tahti-org`'s apps/api/src/routes/admin/addons.ts. `surface` is a free
+// string server-side; 'homepage' is the only one with a public renderer
+// today (`GET /api/v1/addons/homepage`).
+
+export type AdminAddonInstallWidget = Pick<
+  AdminAddon,
+  | 'id'
+  | 'slug'
+  | 'name'
+  | 'description'
+  | 'authorName'
+  | 'categories'
+  | 'iconUrl'
+  | 'currentVersion'
+>;
+
+export type AdminAddonInstall = {
+  id: string;
+  widget: AdminAddonInstallWidget;
+  position: number;
+  enabled: boolean;
+  configJson: unknown;
+  createdAt: string;
+};
+
+function toInstallWidget(addon: AdminAddon): AdminAddonInstallWidget {
+  return {
+    id: addon.id,
+    slug: addon.slug,
+    name: addon.name,
+    description: addon.description,
+    authorName: addon.authorName,
+    categories: addon.categories,
+    iconUrl: addon.iconUrl,
+    currentVersion: addon.currentVersion,
+  };
+}
+
+let mockInstallsBySurface: Record<string, AdminAddonInstall[]> = {
+  homepage: [
+    {
+      id: 'install-platform-pulse-homepage',
+      widget: toInstallWidget(
+        MOCK_ADDONS.find((addon) => addon.slug === 'platform-pulse')!,
+      ),
+      position: 0,
+      enabled: true,
+      configJson: {},
+      createdAt: '2026-08-10T00:00:00.000Z',
+    },
+  ],
+};
+
+export async function fetchAdminAddonInstalls(
+  surface: string,
+): Promise<{ data: AdminAddonInstall[]; meta: FetchMeta }> {
+  if (isForceMock()) {
+    const list = [...(mockInstallsBySurface[surface] ?? [])].sort(
+      (a, b) => a.position - b.position,
+    );
+    return { data: list, meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
+  }
+  try {
+    const data = await getJson<{ installs: AdminAddonInstall[] }>(
+      `/api/admin/addons/installs?surface=${encodeURIComponent(surface)}`,
+    );
+    return { data: data.installs, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: [], meta: failMeta(err) };
+  }
+}
+
+export async function createAdminAddonInstall(
+  widgetId: string,
+  surface: string,
+): Promise<
+  { ok: true; data: AdminAddonInstall } | { ok: false; error: string }
+> {
+  if (isForceMock()) {
+    const widget = mockAddons.find((addon) => addon.id === widgetId);
+    if (!widget || widget.scope !== 'ADMIN' || widget.status !== 'APPROVED') {
+      return { ok: false, error: 'Widget not found' };
+    }
+    const list = mockInstallsBySurface[surface] ?? [];
+    if (list.some((install) => install.widget.id === widgetId)) {
+      return { ok: false, error: 'Already installed on that surface' };
+    }
+    const install: AdminAddonInstall = {
+      id: `install-${Date.now()}`,
+      widget: toInstallWidget(widget),
+      position: list.length,
+      enabled: true,
+      configJson: widget.defaultConfigJson ?? {},
+      createdAt: new Date().toISOString(),
+    };
+    mockInstallsBySurface = {
+      ...mockInstallsBySurface,
+      [surface]: [...list, install],
+    };
+    return { ok: true, data: install };
+  }
+  try {
+    const data = await sendJson<AdminAddonInstall>(
+      '/api/admin/addons/installs',
+      'POST',
+      { widgetId, surface },
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Install failed',
+    };
+  }
+}
+
+export async function patchAdminAddonInstall(
+  id: string,
+  surface: string,
+  patch: {
+    enabled?: boolean;
+    position?: number;
+    configJson?: Record<string, unknown>;
+  },
+): Promise<
+  { ok: true; data: AdminAddonInstall } | { ok: false; error: string }
+> {
+  if (isForceMock()) {
+    const list = mockInstallsBySurface[surface] ?? [];
+    const existing = list.find((install) => install.id === id);
+    if (!existing) {
+      return { ok: false, error: 'Install not found' };
+    }
+    const updated: AdminAddonInstall = { ...existing, ...patch };
+    mockInstallsBySurface = {
+      ...mockInstallsBySurface,
+      [surface]: list.map((install) => (install.id === id ? updated : install)),
+    };
+    return { ok: true, data: updated };
+  }
+  try {
+    const data = await sendJson<AdminAddonInstall>(
+      `/api/admin/addons/installs/${encodeURIComponent(id)}`,
+      'PATCH',
+      patch,
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Update failed',
+    };
+  }
+}
+
+export async function deleteAdminAddonInstall(
+  id: string,
+  surface: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (isForceMock()) {
+    const list = mockInstallsBySurface[surface] ?? [];
+    if (!list.some((install) => install.id === id)) {
+      return { ok: false, error: 'Install not found' };
+    }
+    mockInstallsBySurface = {
+      ...mockInstallsBySurface,
+      [surface]: list.filter((install) => install.id !== id),
+    };
+    return { ok: true };
+  }
+  return mutate(
+    `/api/admin/addons/installs/${encodeURIComponent(id)}`,
+    'DELETE',
+  );
 }
