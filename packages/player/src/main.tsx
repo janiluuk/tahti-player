@@ -30,6 +30,15 @@ const nativeLibrary: TahtiNativeLibrary = {
   async remove(id) {
     unwrapResult(await commands.libraryRemove(id));
   },
+  async listUnavailable() {
+    return unwrapResult(await commands.libraryListUnavailable());
+  },
+  async rescan() {
+    return unwrapResult(await commands.libraryRescan());
+  },
+  async relink(id) {
+    return unwrapResult(await commands.libraryRelink(id));
+  },
 };
 globalThis.__TAHTI_NATIVE_LIBRARY__ = nativeLibrary;
 

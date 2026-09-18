@@ -8,6 +8,8 @@ export type NativeLibraryTrack = {
   format: string;
   duration: number | null;
   sizeBytes: number;
+  available: boolean;
+  unavailableSince: string | null;
 };
 
 export type NativeLibraryPage = {
@@ -25,6 +27,9 @@ export type TahtiNativeLibrary = {
   import: () => Promise<NativeLibraryImportResult>;
   resolve: (id: string) => Promise<string>;
   remove: (id: string) => Promise<void>;
+  listUnavailable: () => Promise<NativeLibraryTrack[]>;
+  rescan: () => Promise<NativeLibraryTrack[]>;
+  relink: (id: string) => Promise<NativeLibraryTrack | null>;
 };
 
 declare global {
