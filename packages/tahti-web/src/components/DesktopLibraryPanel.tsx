@@ -71,6 +71,9 @@ export function DesktopLibraryPanel() {
   const [nativeQuery, setNativeQuery] = useState('');
   const [nativeLoading, setNativeLoading] = useState(false);
   const [nativeError, setNativeError] = useState<string | null>(null);
+  const [nativeUnavailable, setNativeUnavailable] = useState<
+    NativeLibraryTrack[]
+  >([]);
 
   const refreshNative = useCallback(async () => {
     if (!nativeLibrary) {
@@ -79,9 +82,13 @@ export function DesktopLibraryPanel() {
     setNativeLoading(true);
     setNativeError(null);
     try {
-      const page = await nativeLibrary.list(nativeQuery, 0);
+      const [page, unavailable] = await Promise.all([
+        nativeLibrary.list(nativeQuery, 0),
+        nativeLibrary.listUnavailable(),
+      ]);
       setNativeTracks(page.tracks);
       setNativeTotal(page.total);
+      setNativeUnavailable(unavailable);
     } catch (error) {
       setNativeError(
         error instanceof Error ? error.message : 'Library unavailable.',
@@ -144,6 +151,82 @@ export function DesktopLibraryPanel() {
     }
   };
 
+  const importNativeFolder = async () => {
+    if (!nativeLibrary) {
+      return;
+    }
+    setNativeLoading(true);
+    try {
+      const result = await nativeLibrary.importFolder();
+      if (result.imported > 0) {
+        toast.success(
+          result.imported === 1
+            ? 'Imported 1 track.'
+            : `Imported ${result.imported} tracks.`,
+        );
+      }
+      if (result.errors.length) {
+        toast.error(
+          result.errors.length === 1
+            ? '1 file could not be imported.'
+            : `${result.errors.length} files could not be imported.`,
+          { description: describeImportFailures(result.errors) },
+        );
+      }
+      await refreshNative();
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : 'Folder import failed.',
+      );
+    } finally {
+      setNativeLoading(false);
+    }
+  };
+
+  const rescanNative = async () => {
+    if (!nativeLibrary) {
+      return;
+    }
+    setNativeLoading(true);
+    try {
+      const unavailable = await nativeLibrary.rescan();
+      setNativeUnavailable(unavailable);
+      await refreshNative();
+      if (unavailable.length === 0) {
+        toast.success('All library files are available.');
+      } else {
+        toast.info(
+          unavailable.length === 1
+            ? '1 library file is still missing.'
+            : `${unavailable.length} library files are still missing.`,
+        );
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Re-scan failed.');
+    } finally {
+      setNativeLoading(false);
+    }
+  };
+
+  const relinkNative = async (track: NativeLibraryTrack) => {
+    if (!nativeLibrary) {
+      return;
+    }
+    setNativeLoading(true);
+    try {
+      const replacement = await nativeLibrary.relink(track.id);
+      if (!replacement) {
+        return;
+      }
+      await refreshNative();
+      toast.success(`Located “${replacement.title}”.`);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Relink failed.');
+    } finally {
+      setNativeLoading(false);
+    }
+  };
+
   const onFiles = (files: readonly File[]) => {
     const added = addFiles(files);
     if (added.length === 0) {
@@ -164,14 +247,32 @@ export function DesktopLibraryPanel() {
     >
       {nativeLibrary ? (
         <>
-          <Button
-            variant="secondary"
-            onClick={() => void importNative()}
-            disabled={nativeLoading}
-          >
-            <LibraryIcon size={15} aria-hidden />
-            {nativeLoading ? 'Importing…' : 'Import files'}
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="secondary"
+              onClick={() => void importNative()}
+              disabled={nativeLoading}
+            >
+              <LibraryIcon size={15} aria-hidden />
+              {nativeLoading ? 'Working…' : 'Import files'}
+            </Button>
+            <Button
+              variant="text"
+              onClick={() => void importNativeFolder()}
+              disabled={nativeLoading}
+            >
+              Import folder
+            </Button>
+            {nativeUnavailable.length > 0 ? (
+              <Button
+                variant="text"
+                onClick={() => void rescanNative()}
+                disabled={nativeLoading}
+              >
+                Check missing files ({nativeUnavailable.length})
+              </Button>
+            ) : null}
+          </div>
           <Input
             type="search"
             label="Search desktop library"
@@ -199,57 +300,75 @@ export function DesktopLibraryPanel() {
                         {track.format.toUpperCase()} ·{' '}
                         {formatFileSize(track.sizeBytes)}
                       </p>
+                      {!track.available ? (
+                        <p className="text-destructive truncate text-xs">
+                          Original file is missing
+                        </p>
+                      ) : null}
                     </div>
-                    <Tooltip content="Play" side="top">
-                      <Button
-                        size="icon-sm"
-                        variant="text"
-                        aria-label={`Play ${track.title}`}
-                        onClick={async () => {
-                          try {
-                            play(
-                              playableFromNativeTrack(
-                                track,
-                                await nativeLibrary.resolve(track.id),
-                              ),
-                            );
-                          } catch (error) {
-                            toast.error(
-                              error instanceof Error
-                                ? error.message
-                                : 'Track unavailable.',
-                            );
-                          }
-                        }}
-                      >
-                        <PlayIcon size={14} aria-hidden />
-                      </Button>
-                    </Tooltip>
-                    <Tooltip content="Add to queue" side="top">
+                    {!track.available ? (
                       <Button
                         size="sm"
-                        variant="text"
-                        aria-label={`Queue ${track.title}`}
-                        onClick={async () => {
-                          try {
-                            enqueue(
-                              playableFromNativeTrack(
-                                track,
-                                await nativeLibrary.resolve(track.id),
-                              ),
-                            );
-                          } catch (error) {
-                            toast.error(
-                              error instanceof Error
-                                ? error.message
-                                : 'Track unavailable.',
-                            );
-                          }
-                        }}
+                        variant="secondary"
+                        onClick={() => void relinkNative(track)}
+                        disabled={nativeLoading}
                       >
-                        Queue
+                        Locate
                       </Button>
-                    </Tooltip>
+                    ) : (
+                      <>
+                        <Tooltip content="Play" side="top">
+                          <Button
+                            size="icon-sm"
+                            variant="text"
+                            aria-label={`Play ${track.title}`}
+                            onClick={async () => {
+                              try {
+                                play(
+                                  playableFromNativeTrack(
+                                    track,
+                                    await nativeLibrary.resolve(track.id),
+                                  ),
+                                );
+                              } catch (error) {
+                                toast.error(
+                                  error instanceof Error
+                                    ? error.message
+                                    : 'Track unavailable.',
+                                );
+                              }
+                            }}
+                          >
+                            <PlayIcon size={14} aria-hidden />
+                          </Button>
+                        </Tooltip>
+                        <Tooltip content="Add to queue" side="top">
+                          <Button
+                            size="sm"
+                            variant="text"
+                            aria-label={`Queue ${track.title}`}
+                            onClick={async () => {
+                              try {
+                                enqueue(
+                                  playableFromNativeTrack(
+                                    track,
+                                    await nativeLibrary.resolve(track.id),
+                                  ),
+                                );
+                              } catch (error) {
+                                toast.error(
+                                  error instanceof Error
+                                    ? error.message
+                                    : 'Track unavailable.',
+                                );
+                              }
+                            }}
+                          >
+                            Queue
+                          </Button>
+                        </Tooltip>
+                      </>
+                    )}
                     <Tooltip content="Remove" side="top">
                       <Button
                         size="icon-sm"

@@ -21,6 +21,9 @@ const nativeLibrary: TahtiNativeLibrary = {
   async import() {
     return unwrapResult(await commands.libraryImport());
   },
+  async importFolder() {
+    return unwrapResult(await commands.libraryImportFolder());
+  },
   async resolve(id) {
     return convertFileSrc(
       unwrapResult(await commands.libraryResolve(id)),
@@ -29,6 +32,15 @@ const nativeLibrary: TahtiNativeLibrary = {
   },
   async remove(id) {
     unwrapResult(await commands.libraryRemove(id));
+  },
+  async listUnavailable() {
+    return unwrapResult(await commands.libraryListUnavailable());
+  },
+  async rescan() {
+    return unwrapResult(await commands.libraryRescan());
+  },
+  async relink(id) {
+    return unwrapResult(await commands.libraryRelink(id));
   },
 };
 globalThis.__TAHTI_NATIVE_LIBRARY__ = nativeLibrary;

@@ -39,8 +39,12 @@ fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
     tauri_specta::Builder::<tauri::Wry>::new().commands(tauri_specta::collect_commands![
         local_library::library_list,
         local_library::library_import,
+        local_library::library_import_folder,
         local_library::library_resolve,
         local_library::library_remove,
+        local_library::library_list_unavailable,
+        local_library::library_rescan,
+        local_library::library_relink,
         commands::is_flatpak,
         commands::copy_dir_recursive,
         commands::extract_zip,
@@ -76,14 +80,8 @@ fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
     ])
 }
 
-#[cfg_attr(mobile, tauri::mobile_entry_point)]
-pub fn run() {
-    let is_flatpak = std::env::var("FLATPAK_ID").is_ok();
-
-    let specta_builder = specta_builder();
-
-    #[cfg(debug_assertions)]
-    specta_builder
+pub fn export_bindings() -> Result<(), String> {
+    specta_builder()
         .export(
             typescript_export_config(),
             concat!(
@@ -91,7 +89,17 @@ pub fn run() {
                 "/../src/services/tauri/bindings.ts"
             ),
         )
-        .expect("failed to export typescript bindings");
+        .map_err(|err| err.to_string())
+}
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+    let is_flatpak = std::env::var("FLATPAK_ID").is_ok();
+
+    let specta_builder = specta_builder();
+
+    #[cfg(debug_assertions)]
+    export_bindings().expect("failed to export typescript bindings");
 
     let mut builder = tauri::Builder::default()
         .manage(local_library::LibraryState::default())
