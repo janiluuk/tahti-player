@@ -2,6 +2,34 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-18 — Last 2 raw-DOM settings toggles swapped to `SelectableTiles`
+
+Small follow-up gap left by the (already-merged, independently-shipped)
+`SelectableTiles`/`Meter`/`DonutChart` primitive rollout: `ArtistPanel.tsx`'s
+artist-kind toggle and "Sign in" link, and `BroadcastPanel.tsx`'s green-room
+access toggle, were still hand-rolled `<button>` elements — the primitive
+sweep had reached `OnboardingView`, `StudioDistributionView`,
+`AdminStorageView`, and `AdminI18nView` but not these two settings panels.
+Swapped both toggles to `SelectableTiles` and the sign-in link to `Button
+variant="text"`, matching the existing primitive's API exactly (no new
+props needed). Verified: `tsc --noEmit` / `eslint` clean on both files
+(pre-existing, untracked `src/lib/canvas-designer/` WIP is the only other
+source of errors in the package, confirmed present on a clean `master`
+checkout too), full unit suite 545/545 (the one pre-existing failing suite,
+`useAutoHideNavWhilePlaying.test.ts`, also fails identically on a clean
+`master` checkout — unrelated).
+
+**Process note:** this was originally attempted on a branch that had
+diverged from `master` for only 3 commits but sat long enough that
+independent sessions shipped equivalent-or-more-complete versions of
+nearly everything else planned for it (the `router.tsx`/`api/studio.ts`
+splits, most of the `ChannelView.tsx`/`ArtistView.tsx` extraction, the
+`SelectableTiles`/`Meter`/`DonutChart` primitives themselves, and an
+`admin-plugin-management-panel.md` scoping audit reaching the identical
+conclusion). Caught before pushing by diffing the branch against
+`origin/master`; the branch was reset onto `master` and only this
+genuinely non-overlapping fix was reapplied.
+
 ## 2026-09-17 — Todo-lifecycle cleanup: 2 stale pre-convention files folded, 1 dangling INDEX row removed
 
 Housekeeping pass while triaging open work. Found two files predating the

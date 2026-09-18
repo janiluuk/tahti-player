@@ -11,10 +11,13 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
+  Button,
   FilterChips,
   Input,
   SaveButton,
   Select,
+  SelectableTile,
+  SelectableTiles,
   Tabs,
   type SelectOption,
 } from '@tahti-player/ui';
@@ -54,6 +57,11 @@ const PRONOUN_OPTIONS: SelectOption[] = [
   { id: 'she/they', label: 'she/they' },
   { id: 'he/they', label: 'he/they' },
   { id: 'other', label: 'Other' },
+];
+
+const ARTIST_KIND_OPTIONS: SelectableTile[] = [
+  { id: 'SINGLE', label: 'Solo artist' },
+  { id: 'COLLECTIVE', label: 'Band / collective' },
 ];
 
 const ARTIST_ROLE_OPTIONS = [
@@ -205,13 +213,14 @@ export function ArtistPanel() {
   if (!user) {
     return (
       <SettingsHint>
-        <button
-          type="button"
+        <Button
+          variant="text"
+          size="flexible"
           className="underline-offset-2 hover:underline"
           onClick={() => useAuthModalStore.getState().open('login')}
         >
           Sign in
-        </button>{' '}
+        </Button>{' '}
         to edit artist profile.
       </SettingsHint>
     );
@@ -393,30 +402,18 @@ export function ArtistPanel() {
                   Tell listeners whether this profile represents one artist or a
                   collective.
                 </span>
-                <div className="flex gap-2">
-                  {(
-                    [
-                      ['SINGLE', 'Solo artist'],
-                      ['COLLECTIVE', 'Band / collective'],
-                    ] as const
-                  ).map(([kind, label]) => (
-                    <button
-                      key={kind}
-                      type="button"
-                      aria-pressed={(profile?.artistKind ?? 'SINGLE') === kind}
-                      onClick={() =>
-                        profile && setProfile({ ...profile, artistKind: kind })
-                      }
-                      className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
-                        (profile?.artistKind ?? 'SINGLE') === kind
-                          ? 'border-primary bg-primary/10 text-primary'
-                          : 'border-border text-foreground-secondary hover:text-foreground'
-                      }`}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
+                <SelectableTiles
+                  items={ARTIST_KIND_OPTIONS}
+                  selected={profile?.artistKind ?? 'SINGLE'}
+                  onChange={(kind) =>
+                    profile &&
+                    setProfile({
+                      ...profile,
+                      artistKind: kind as 'SINGLE' | 'COLLECTIVE',
+                    })
+                  }
+                  className="grid-cols-2"
+                />
               </label>
               <div className="flex flex-col gap-3">
                 <div>
