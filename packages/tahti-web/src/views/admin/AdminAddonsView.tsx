@@ -1,4 +1,12 @@
-import { CheckIcon, PlusIcon, SettingsIcon, XIcon } from 'lucide-react';
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  CheckIcon,
+  PlusIcon,
+  SettingsIcon,
+  Trash2Icon,
+  XIcon,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
@@ -17,13 +25,18 @@ import {
 
 import {
   approveAdminAddon,
+  createAdminAddonInstall,
+  deleteAdminAddonInstall,
   disableAdminAddon,
+  fetchAdminAddonInstalls,
   fetchAdminAddons,
+  patchAdminAddonInstall,
   registerAdminAddon,
   rejectAdminAddon,
   setAdminAddonDefaultConfig,
   setAdminAddonEnabledByDefault,
   type AdminAddon,
+  type AdminAddonInstall,
   type AdminAddonRegisterInput,
   type AdminAddonScope,
 } from '../../api/admin';
@@ -37,9 +50,10 @@ import { PageLoading } from '../../components/PageStates';
 // (see PluginCategoryId in content/pluginStoreCategories.ts) -- this page
 // covers exactly the `discovery` and `channel` plugin categories via the
 // same Addon/AddonInstall backend, just discriminated by install target
-// (listenerUserId / channelId / adminSurface). ADMIN has no installer UI
-// anywhere yet (addons can be registered for it, but nothing renders one) --
-// see docs/todo/admin-plugin-management-panel.md.
+// (listenerUserId / channelId / adminSurface). ADMIN-scope addons are
+// installed onto a shared surface (e.g. the homepage) via the "Admin
+// surface installs" panel below, rather than the enabled-by-default /
+// scoped-install pattern the other two use.
 const SCOPES: Array<{ id: AdminAddonScope; label: string }> = [
   { id: 'LISTENER', label: 'Listener (Discovery)' },
   { id: 'ARTIST', label: 'Artist (Channel)' },
@@ -373,6 +387,201 @@ function ManageDialog({
   );
 }
 
+function InstallPickerDialog({
+  isOpen,
+  candidates,
+  pending,
+  error,
+  onCancel,
+  onInstall,
+}: {
+  isOpen: boolean;
+  candidates: AdminAddon[];
+  pending: boolean;
+  error: string | null;
+  onCancel: () => void;
+  onInstall: (widgetId: string) => void;
+}) {
+  const [selected, setSelected] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      setSelected(candidates[0]?.id ?? null);
+    }
+  }, [isOpen, candidates]);
+
+  return (
+    <Dialog.Root isOpen={isOpen} onClose={onCancel} className="max-w-md">
+      <Dialog.Title>Install a widget onto this surface</Dialog.Title>
+      <Dialog.Description>
+        Only approved Admin-surface add-ons not already installed here are
+        listed.
+      </Dialog.Description>
+      {candidates.length === 0 ? (
+        <p className="text-foreground-secondary text-sm">
+          Every approved Admin-surface add-on is already installed here. Approve
+          or register another one first.
+        </p>
+      ) : (
+        <FilterChips
+          aria-label="Widget to install"
+          items={candidates.map((addon) => ({
+            id: addon.id,
+            label: addon.name,
+          }))}
+          selected={selected ?? candidates[0].id}
+          onChange={setSelected}
+        />
+      )}
+      {error ? (
+        <p className="text-accent-red text-sm" role="alert">
+          {error}
+        </p>
+      ) : null}
+      <Dialog.Actions>
+        <Dialog.Close>Cancel</Dialog.Close>
+        <Button
+          type="button"
+          disabled={pending || !selected || candidates.length === 0}
+          onClick={() => selected && onInstall(selected)}
+        >
+          Install
+        </Button>
+      </Dialog.Actions>
+    </Dialog.Root>
+  );
+}
+
+function InstallsPanel({
+  surface,
+  onSurfaceChange,
+  installs,
+  loading,
+  pending,
+  error,
+  onOpenPicker,
+  onToggleEnabled,
+  onMove,
+  onRemove,
+}: {
+  surface: string;
+  onSurfaceChange: (value: string) => void;
+  installs: AdminAddonInstall[];
+  loading: boolean;
+  pending: boolean;
+  error: string | null;
+  onOpenPicker: () => void;
+  onToggleEnabled: (install: AdminAddonInstall, enabled: boolean) => void;
+  onMove: (install: AdminAddonInstall, direction: 'up' | 'down') => void;
+  onRemove: (install: AdminAddonInstall) => void;
+}) {
+  return (
+    <div className="border-border mt-2 flex flex-col gap-4 border-t pt-6">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h3 className="font-semibold">Admin surface installs</h3>
+          <p className="text-foreground-secondary text-sm">
+            Explicit, ordered installs of Admin-scope add-ons onto a shared
+            surface. Separate from "enabled by default" above — an install
+            targets one specific surface with its own position and settings
+            override. Only <code>homepage</code> has a public renderer today (
+            <code>GET /api/v1/addons/homepage</code>).
+          </p>
+        </div>
+        <Button type="button" size="sm" onClick={onOpenPicker}>
+          <PlusIcon size={15} aria-hidden className="mr-1.5" />
+          Install widget
+        </Button>
+      </div>
+      <Input
+        label="Surface"
+        value={surface}
+        onChange={(event) => onSurfaceChange(event.target.value)}
+        className="max-w-xs"
+        description="Freeform surface id, e.g. homepage."
+      />
+      {error ? (
+        <p className="text-accent-red text-sm" role="alert">
+          {error}
+        </p>
+      ) : null}
+      {loading ? (
+        <PageLoading label="Loading installs…" />
+      ) : installs.length === 0 ? (
+        <p className="text-foreground-secondary text-sm">
+          Nothing installed on "{surface}" yet.
+        </p>
+      ) : (
+        <ul className="flex flex-col gap-2">
+          {installs.map((install, index) => (
+            <li
+              key={install.id}
+              className="border-border bg-background-secondary/40 flex items-center gap-3 rounded-lg border p-3"
+            >
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="font-medium">{install.widget.name}</span>
+                  <Badge
+                    variant="pill"
+                    color={install.enabled ? 'green' : 'orange'}
+                  >
+                    {install.enabled ? 'Enabled' : 'Disabled'}
+                  </Badge>
+                </div>
+                <p className="text-foreground-secondary text-xs">
+                  Position {install.position} · {install.widget.slug}
+                </p>
+              </div>
+              <Toggle
+                checked={install.enabled}
+                disabled={pending}
+                label={`Enable ${install.widget.name} on ${surface}`}
+                onChange={(checked) => onToggleEnabled(install, checked)}
+              />
+              <Tooltip content="Move up" side="top">
+                <Button
+                  type="button"
+                  size="icon-sm"
+                  variant="text"
+                  aria-label={`Move ${install.widget.name} up`}
+                  disabled={pending || index === 0}
+                  onClick={() => onMove(install, 'up')}
+                >
+                  <ArrowUpIcon size={16} aria-hidden />
+                </Button>
+              </Tooltip>
+              <Tooltip content="Move down" side="top">
+                <Button
+                  type="button"
+                  size="icon-sm"
+                  variant="text"
+                  aria-label={`Move ${install.widget.name} down`}
+                  disabled={pending || index === installs.length - 1}
+                  onClick={() => onMove(install, 'down')}
+                >
+                  <ArrowDownIcon size={16} aria-hidden />
+                </Button>
+              </Tooltip>
+              <Tooltip content="Remove" side="top">
+                <Button
+                  type="button"
+                  size="icon-sm"
+                  variant="text"
+                  aria-label={`Remove ${install.widget.name} from ${surface}`}
+                  disabled={pending}
+                  onClick={() => onRemove(install)}
+                >
+                  <Trash2Icon size={16} aria-hidden />
+                </Button>
+              </Tooltip>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 export function AdminAddonsView() {
   const [addons, setAddons] = useState<AdminAddon[]>([]);
   const [scope, setScope] = useState<AdminAddonScope | 'ALL'>('ALL');
@@ -385,6 +594,18 @@ export function AdminAddonsView() {
   const [rejectTarget, setRejectTarget] = useState<AdminAddon | null>(null);
   const [manageTarget, setManageTarget] = useState<AdminAddon | null>(null);
 
+  const [surface, setSurface] = useState('homepage');
+  const [installs, setInstalls] = useState<AdminAddonInstall[]>([]);
+  const [installsLoading, setInstallsLoading] = useState(true);
+  const [installsError, setInstallsError] = useState<string | null>(null);
+  const [installsPending, setInstallsPending] = useState(false);
+  const [installPickerOpen, setInstallPickerOpen] = useState(false);
+  const [installPickerError, setInstallPickerError] = useState<string | null>(
+    null,
+  );
+  const [removeInstallTarget, setRemoveInstallTarget] =
+    useState<AdminAddonInstall | null>(null);
+
   const reload = () => {
     setLoading(true);
     void fetchAdminAddons().then((result) => {
@@ -393,9 +614,22 @@ export function AdminAddonsView() {
     });
   };
 
+  const reloadInstalls = (targetSurface: string) => {
+    setInstallsLoading(true);
+    setInstallsError(null);
+    void fetchAdminAddonInstalls(targetSurface).then((result) => {
+      setInstalls(result.data);
+      setInstallsLoading(false);
+    });
+  };
+
   useEffect(() => {
     reload();
   }, []);
+
+  useEffect(() => {
+    reloadInstalls(surface);
+  }, [surface]);
 
   const openRegister = () => {
     setDraft(EMPTY_DRAFT);
@@ -461,6 +695,108 @@ export function AdminAddonsView() {
       if (result.ok) {
         setManageTarget(null);
       }
+    });
+  };
+
+  const installCandidates = addons.filter(
+    (addon) =>
+      addon.scope === 'ADMIN' &&
+      addon.status === 'APPROVED' &&
+      !installs.some((install) => install.widget.id === addon.id),
+  );
+
+  const installWidget = (widgetId: string) => {
+    setInstallsPending(true);
+    setInstallPickerError(null);
+    void createAdminAddonInstall(widgetId, surface).then((result) => {
+      setInstallsPending(false);
+      if (!result.ok) {
+        setInstallPickerError(result.error);
+        return;
+      }
+      setInstalls((current) => [...current, result.data]);
+      setInstallPickerOpen(false);
+    });
+  };
+
+  const toggleInstallEnabled = (
+    install: AdminAddonInstall,
+    enabled: boolean,
+  ) => {
+    setInstallsPending(true);
+    setInstallsError(null);
+    void patchAdminAddonInstall(install.id, surface, { enabled }).then(
+      (result) => {
+        setInstallsPending(false);
+        if (!result.ok) {
+          setInstallsError(result.error);
+          return;
+        }
+        setInstalls((current) =>
+          current.map((item) => (item.id === install.id ? result.data : item)),
+        );
+      },
+    );
+  };
+
+  const moveInstall = (
+    install: AdminAddonInstall,
+    direction: 'up' | 'down',
+  ) => {
+    const ordered = [...installs].sort((a, b) => a.position - b.position);
+    const index = ordered.findIndex((item) => item.id === install.id);
+    const swapIndex = direction === 'up' ? index - 1 : index + 1;
+    const neighbor = ordered[swapIndex];
+    if (!neighbor) {
+      return;
+    }
+    setInstallsPending(true);
+    setInstallsError(null);
+    void Promise.all([
+      patchAdminAddonInstall(install.id, surface, {
+        position: neighbor.position,
+      }),
+      patchAdminAddonInstall(neighbor.id, surface, {
+        position: install.position,
+      }),
+    ]).then(([a, b]) => {
+      setInstallsPending(false);
+      if (!a.ok || !b.ok) {
+        setInstallsError(
+          (!a.ok ? a.error : null) ??
+            (!b.ok ? b.error : null) ??
+            'Reorder failed',
+        );
+        reloadInstalls(surface);
+        return;
+      }
+      setInstalls((current) =>
+        current.map((item) => {
+          if (item.id === a.data.id) {
+            return a.data;
+          }
+          if (item.id === b.data.id) {
+            return b.data;
+          }
+          return item;
+        }),
+      );
+    });
+  };
+
+  const removeInstall = (install: AdminAddonInstall) => {
+    setInstallsPending(true);
+    setInstallsError(null);
+    void deleteAdminAddonInstall(install.id, surface).then((result) => {
+      setInstallsPending(false);
+      setRemoveInstallTarget(null);
+      if (!result.ok) {
+        setInstallsError(result.error);
+        return;
+      }
+      setInstalls((current) =>
+        current.filter((item) => item.id !== install.id),
+      );
     });
   };
 
@@ -689,6 +1025,46 @@ export function AdminAddonsView() {
                   ).then(applyUpdate);
                 }}
                 onDisable={disable}
+              />
+
+              <InstallsPanel
+                surface={surface}
+                onSurfaceChange={setSurface}
+                installs={installs}
+                loading={installsLoading}
+                pending={installsPending}
+                error={installsError}
+                onOpenPicker={() => {
+                  setInstallPickerError(null);
+                  setInstallPickerOpen(true);
+                }}
+                onToggleEnabled={toggleInstallEnabled}
+                onMove={moveInstall}
+                onRemove={setRemoveInstallTarget}
+              />
+
+              <InstallPickerDialog
+                isOpen={installPickerOpen}
+                candidates={installCandidates}
+                pending={installsPending}
+                error={installPickerError}
+                onCancel={() => setInstallPickerOpen(false)}
+                onInstall={installWidget}
+              />
+
+              <ConfirmDialog
+                isOpen={removeInstallTarget !== null}
+                title={
+                  removeInstallTarget
+                    ? `Remove "${removeInstallTarget.widget.name}" from ${surface}?`
+                    : 'Remove install?'
+                }
+                description="Stops it rendering on this surface immediately. It stays available to reinstall."
+                confirmLabel="Remove"
+                onCancel={() => setRemoveInstallTarget(null)}
+                onConfirm={() =>
+                  removeInstallTarget && removeInstall(removeInstallTarget)
+                }
               />
             </ViewShell>
           </div>

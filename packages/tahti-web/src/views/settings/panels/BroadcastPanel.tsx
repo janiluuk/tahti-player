@@ -2,12 +2,19 @@ import { Link } from '@tanstack/react-router';
 import { Cast, Mic, Radio as RadioIcon, Shield } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, Input, Tabs } from '@tahti-player/ui';
+import {
+  Button,
+  Input,
+  SelectableTile,
+  SelectableTiles,
+  Tabs,
+} from '@tahti-player/ui';
 
 import {
   fetchGreenRoomPrefs,
   fetchModerators,
   patchGreenRoomPrefs,
+  type GreenRoomAccessLevel,
   type GreenRoomPrefs,
   type ModeratorRow,
 } from '../../../api/artist-settings';
@@ -21,6 +28,11 @@ import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import { SettingsHint, SettingsToggle } from '../SettingsFields';
 
 export type BroadcastSection = 'radio' | 'green-room' | 'multistream';
+
+const GREEN_ROOM_ACCESS_OPTIONS: SelectableTile[] = [
+  { id: 'everyone', label: 'Everyone' },
+  { id: 'subscribers', label: 'Subscribers only' },
+];
 
 export function BroadcastPanel({
   section,
@@ -101,31 +113,16 @@ export function BroadcastPanel({
             <span className="text-foreground text-sm font-semibold">
               Who can join
             </span>
-            <div className="flex gap-2">
-              {(
-                [
-                  ['everyone', 'Everyone'],
-                  ['subscribers', 'Subscribers only'],
-                ] as const
-              ).map(([value, label]) => (
-                <button
-                  key={value}
-                  type="button"
-                  aria-pressed={green.access === value}
-                  onClick={() => {
-                    setGreen({ ...green, access: value });
-                    void patchGreenRoomPrefs({ access: value });
-                  }}
-                  className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
-                    green.access === value
-                      ? 'border-primary bg-primary/10 text-primary'
-                      : 'border-border text-foreground-secondary hover:text-foreground'
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
+            <SelectableTiles
+              items={GREEN_ROOM_ACCESS_OPTIONS}
+              selected={green.access}
+              onChange={(value) => {
+                const access = value as GreenRoomAccessLevel;
+                setGreen({ ...green, access });
+                void patchGreenRoomPrefs({ access });
+              }}
+              className="grid-cols-2"
+            />
             <span className="text-foreground-secondary text-xs">
               Anyone signed in, or only listeners with an active fan
               subscription to you.

@@ -8,6 +8,7 @@ import {
   type PluginCategoryId,
 } from '../content/pluginStoreCategories';
 import { getAccountRole, hasAccountRole } from '../lib/accountRoles';
+import { hasNativePlayer } from '../lib/nativeCapabilities';
 import { LastFmAddonCard } from '../plugins/scrobble/LastFmAddonCard';
 import { ListenBrainzAddonCard } from '../plugins/scrobble/ListenBrainzAddonCard';
 import { SoulseekAddonCard } from '../plugins/soulseek/SoulseekAddonCard';
@@ -147,7 +148,7 @@ function CategoryBody({ categoryId }: { categoryId: PluginCategoryId }) {
         categoryId === 'fingerprinting') && (
         <ServiceCategory categoryId={categoryId} />
       )}
-      {categoryId === 'import' && <SoulseekAddonCard />}
+      {categoryId === 'import' && hasNativePlayer() && <SoulseekAddonCard />}
       {categoryId === 'scrobbling' && (
         <>
           <ListenBrainzAddonCard />

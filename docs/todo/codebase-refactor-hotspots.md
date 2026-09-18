@@ -401,12 +401,35 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
     copies of the original JSX, just parameterized, and `tsc` would catch
     any prop-shape mismatch.
 
+21. **`ChannelDesigner.tsx` smoke test coverage** — **2026-09-18:** added
+    `ChannelDesigner.test.tsx`, the first automated test this component has
+    ever had (item 19/20 both note "no `ChannelDesigner*.test.*`"). Renders
+    the real component (not a mock) through a minimal
+    `@tanstack/react-router` tree — same `createMemoryHistory` +
+    `createRoot`/`act` pattern already established by
+    `DiscoverView.test.tsx` — with `VITE_FORCE_MOCK=1` and
+    `ResizeObserver`/`matchMedia` jsdom stubs. 4 tests: mounts (default
+    props), section-tab chrome renders, mounts in `compact` mode, mounts
+    in `lookOnly` mode with a specific `lookOpenSection`. `livePreview:
+    false` (matches the Storybook stories' own default) turned out to
+    fully skip mounting the Three.js visualizer even in jsdom — no
+    WebGL-related crash to work around, contrary to what item 20's
+    Storybook-only safety net might have suggested was necessary. This is
+    a smoke-test floor (mount + no crash across the 3 major render
+    branches), not behavioral coverage of the save/preset/slideshow logic
+    itself — the actual blocker item 20 flagged (15-30+ closure variables)
+    is unchanged and still needs prop-threading or a shared hook before a
+    real state/effects test is practical. Verified: `tsc --noEmit` /
+    `eslint` clean, all 4 new tests pass, no existing tests affected.
+
 Next: the remaining `ChannelDesigner.tsx` body (state, effects, save/
 preset logic, the ~180-line slideshow/gallery section — see item 20) —
 the only hotspot left on this list, needs either prop-threading 15-30+
 closure variables or a shared custom hook, a bigger/riskier slice than
 the mechanical `studio.ts`/`router.tsx`/`ChannelViewBlocks.tsx`/
-`ChannelHeroBlock.tsx`/`useChannelLayoutEditing` peels above. Admin
+`ChannelHeroBlock.tsx`/`useChannelLayoutEditing` peels above. Item 21's
+smoke tests lower the risk of that slice regressing the 3 major render
+branches, but don't cover the state/effects logic itself. Admin
 activity-feed/audit-topic and container-logs sections remain in
 `admin.ts` intentionally — revisit once confirmed quiet.
 

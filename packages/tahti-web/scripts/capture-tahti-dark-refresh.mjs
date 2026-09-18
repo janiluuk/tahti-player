@@ -24,6 +24,28 @@ const layoutClosed = {
   version: 3,
 };
 
+// Dark + amber ("nuclear:tahti-dark" -- the tahti.live pitch palette, see
+// packages/themes/src/basic/tahti-dark.css), matching this script's own
+// name instead of each viewer's default light theme (same theme + legacy
+// bootstrap keys as capture-map-screens.mjs).
+const THEME_STATE = {
+  state: {
+    themeId: 'nuclear:tahti-dark',
+    dark: true,
+    colorMode: 'dark',
+    customThemes: {},
+  },
+  version: 0,
+};
+
+async function setDarkTheme() {
+  await page.evaluate((theme) => {
+    localStorage.setItem('tahti-web-theme', JSON.stringify(theme));
+    localStorage.setItem('tahti-nuclear-theme-id', theme.state.themeId);
+    localStorage.setItem('tahti-nuclear-dark', '1');
+  }, THEME_STATE);
+}
+
 let browser = await chromium.launch({
   channel: 'chromium',
   args: ['--disable-dev-shm-usage', '--disable-gpu'],
@@ -94,6 +116,7 @@ async function authAs() {
     localStorage.setItem('tahti-web-onboarded:mock-board-1', '1');
     localStorage.setItem('tahti-web-layout', JSON.stringify(layout));
   }, layoutClosed);
+  await setDarkTheme();
 }
 
 let boardAuthed = false;
@@ -123,6 +146,7 @@ async function boardAuthAs() {
     localStorage.setItem('tahti-web-onboarded:mock-board-1', '1');
     localStorage.setItem('tahti-web-layout', JSON.stringify(layout));
   }, layoutClosed);
+  await setDarkTheme();
 }
 
 // [path, output filename] pairs — authenticated as the mock demo artist.
@@ -179,6 +203,8 @@ const authedShots = [
 // dynamic-state shots below.
 const adminShots = [
   ['/admin', 'admin-dashboard-v1.png'],
+  // Root README.md's Screenshots section links this exact filename.
+  ['/admin', 'admin-dashboard-current-v1.png'],
   ['/admin/beta', 'admin-beta-v1.png'],
   ['/admin/users', 'admin-users-v1.png'],
   ['/admin/radio', 'admin-radio-v1.png'],
@@ -240,6 +266,9 @@ async function capture(path, out, retried = false) {
     results.push({ path, out, ok: false });
   }
 }
+
+await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded' });
+await setDarkTheme();
 
 for (const [path, out] of loggedOutShots) {
   await capture(path, out);

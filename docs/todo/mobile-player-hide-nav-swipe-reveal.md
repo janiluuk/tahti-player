@@ -66,13 +66,26 @@ show the navigation by default, swiping bit up should reveal it"
   `e2e/layout-stability.spec.ts`'s mobile Studio/Admin check — neither
   starts playback before asserting the nav is visible, so this change
   doesn't affect them. Did not run the full Playwright suite.
-- **Not verified live**: a real mobile-viewport browser check (resize to
-  phone width, start playback, confirm nav hides, swipe up, confirm
-  reveal) was attempted via Chrome browser automation but the
-  `resize_window` tool failed in this session's environment (bounds
-  error, reproducible even on a no-op resize) — this is a tool/environment
-  limitation, not something ruled out in the app. Needs a manual check on
-  an actual phone or working devtools device emulation.
+- **Live-verified 2026-09-18**: a real mobile-viewport (390×844,
+  `isMobile`/`hasTouch`) headless Playwright session against the local
+  `VITE_FORCE_MOCK=1` dev server, working around the earlier
+  `resize_window` tool failure by driving Playwright directly instead.
+  Signed in as `artist@tahti.live`, opened `/library/sounds`, started a
+  track (real mock playback stalls on network-blocked demo audio URLs in
+  this sandbox — worked around by patching `HTMLMediaElement.prototype.play`
+  to fire a real `'playing'` DOM event, which is exactly what
+  `AudioEngine.tsx` already listens for to set `playerStore.status`; the
+  app's own code path is exercised end-to-end, only the network fetch is
+  stubbed), then dispatched real synthetic `TouchEvent`s. All 6 checks
+  passed: nav visible before playback; nav hidden once playback starts;
+  swipe-up within 40px of the bottom edge reveals it; a second swipe
+  starting mid-screen does **not** hide it again (confirms reveal-and-stay,
+  not reveal-then-auto-hide); nav hides again on the next playback start
+  after stopping and revisiting the page. The built feature matches its
+  own documented assumptions exactly — no code changes from this pass.
+  Still only a headless/synthetic-touch check, not a real touchscreen, so
+  the un-tuned edge-width/swipe-distance feel above is still worth a real
+  device pass, but the logic itself is now confirmed correct.
 
 ## Residual ambiguity / needs user confirmation
 

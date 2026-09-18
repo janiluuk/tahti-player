@@ -16,6 +16,7 @@ import {
   SearchIcon,
   Share2Icon,
   Trash2Icon,
+  UploadIcon,
   Wand2Icon,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
@@ -56,6 +57,7 @@ import type {
 } from '../../api/studio-types';
 import type { TahtiPlayable } from '../../api/types';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
+import { CoverArtGenerator } from '../../components/CoverArtGenerator';
 import { EmbedTrackRow } from '../../components/EmbedTrackRow';
 import {
   EntitySocialHeader,
@@ -95,6 +97,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
   const [bandcamp, setBandcamp] = useState('');
   const [artworkPreview, setArtworkPreview] = useState<string | null>(null);
   const [artworkPickerOpen, setArtworkPickerOpen] = useState(false);
+  const [applyingArtwork, setApplyingArtwork] = useState(false);
   const [pendingArtworkDelete, setPendingArtworkDelete] = useState(false);
   const [saving, setSaving] = useState(false);
   const [detailsExpanded, setDetailsExpanded] = useState(false);
@@ -189,6 +192,19 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
     }
     setArtworkPreview(null);
     toast.success('Artwork removed.');
+  };
+
+  const applyArtwork = async (file: File) => {
+    setApplyingArtwork(true);
+    const result = await uploadReleaseArtwork(id, file);
+    setApplyingArtwork(false);
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    setArtworkPreview(result.artworkUrl);
+    toast.success('Artwork uploaded.');
+    setArtworkPickerOpen(false);
   };
 
   const playFirstTrack = async () => {
@@ -300,34 +316,48 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
             <Dialog.Root
               isOpen={artworkPickerOpen}
               onClose={() => setArtworkPickerOpen(false)}
-              className="max-w-lg"
+              className="max-w-2xl"
             >
               <Dialog.Title>Release artwork</Dialog.Title>
-              <div className="mt-4">
-                <FilePicker
-                  labels={{
-                    title: 'Release artwork',
-                    description: 'JPEG, PNG, or WebP',
-                    browse: 'Choose image',
-                  }}
-                  accept="image/jpeg,image/png,image/webp"
-                  onFiles={(files) => {
-                    const file = files[0];
-                    if (!file) {
-                      return;
-                    }
-                    void uploadReleaseArtwork(id, file).then((r) => {
-                      if (!r.ok) {
-                        toast.error(r.error);
-                      } else {
-                        setArtworkPreview(r.artworkUrl);
-                        toast.success('Artwork uploaded.');
-                      }
-                      setArtworkPickerOpen(false);
-                    });
-                  }}
-                />
-              </div>
+              <Tabs
+                listClassName="border-border mt-4 border-b pb-3"
+                panelClassName="pt-4"
+                items={[
+                  {
+                    id: 'upload',
+                    label: 'Upload',
+                    icon: <UploadIcon size={14} />,
+                    content: (
+                      <FilePicker
+                        labels={{
+                          title: 'Release artwork',
+                          description: 'JPEG, PNG, or WebP',
+                          browse: 'Choose image',
+                        }}
+                        accept="image/jpeg,image/png,image/webp"
+                        onFiles={(files) => {
+                          const file = files[0];
+                          if (!file) {
+                            return;
+                          }
+                          void applyArtwork(file);
+                        }}
+                      />
+                    ),
+                  },
+                  {
+                    id: 'generate',
+                    label: 'Generate',
+                    icon: <Wand2Icon size={14} />,
+                    content: (
+                      <CoverArtGenerator
+                        generating={applyingArtwork}
+                        onGenerate={(file) => void applyArtwork(file)}
+                      />
+                    ),
+                  },
+                ]}
+              />
             </Dialog.Root>
 
             <ConfirmDialog

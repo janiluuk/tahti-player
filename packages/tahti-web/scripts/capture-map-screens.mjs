@@ -93,6 +93,9 @@ const shots = [
   { id: 'messages', path: '/messages' },
   { id: 'messages-thread', path: '/messages/demo-thread' },
   { id: 'schedule-page', path: '/schedule' },
+  // The Tahti map itself (this script's own output) -- referenced by
+  // mapScreens.ts as its own node, previously never in this shot list.
+  { id: 'more', path: '/more' },
   { id: 'settings', path: '/settings' },
   { id: 'settings-section', path: '/settings/artist' },
   { id: 'settings-themes', path: '/settings/themes' },

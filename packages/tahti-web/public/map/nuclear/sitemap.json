@@ -1,7 +1,7 @@
 {
   "surface": "nuclear",
   "capturedAt": "2026-09-04",
-  "baseUrl": "http://localhost:5185",
+  "baseUrl": "http://localhost:5180",
   "images": [
     {
       "file": "about.png",
@@ -996,6 +996,10 @@
       "url": "/map/nuclear/admin-moderation--5-venues.png"
     },
     {
+      "file": "admin-moderation--6-add-ons.png",
+      "url": "/map/nuclear/admin-moderation--6-add-ons.png"
+    },
+    {
       "file": "admin-moderation--6-disco-widgets.png",
       "url": "/map/nuclear/admin-moderation--6-disco-widgets.png"
     },
@@ -1094,6 +1098,10 @@
     {
       "file": "admin-moderation-tab--5-venues.png",
       "url": "/map/nuclear/admin-moderation-tab--5-venues.png"
+    },
+    {
+      "file": "admin-moderation-tab--6-add-ons.png",
+      "url": "/map/nuclear/admin-moderation-tab--6-add-ons.png"
     },
     {
       "file": "admin-moderation-tab--6-disco-widgets.png",
@@ -1932,12 +1940,24 @@
       "url": "/map/nuclear/archive-item--1-playlists.png"
     },
     {
+      "file": "archive-item--1-stats.png",
+      "url": "/map/nuclear/archive-item--1-stats.png"
+    },
+    {
+      "file": "archive-item--10-events.png",
+      "url": "/map/nuclear/archive-item--10-events.png"
+    },
+    {
       "file": "archive-item--10-tab.png",
       "url": "/map/nuclear/archive-item--10-tab.png"
     },
     {
       "file": "archive-item--11-tab.png",
       "url": "/map/nuclear/archive-item--11-tab.png"
+    },
+    {
+      "file": "archive-item--2-governance.png",
+      "url": "/map/nuclear/archive-item--2-governance.png"
     },
     {
       "file": "archive-item--2-insights.png",
@@ -1952,6 +1972,14 @@
       "url": "/map/nuclear/archive-item--3-governance.png"
     },
     {
+      "file": "archive-item--3-posts.png",
+      "url": "/map/nuclear/archive-item--3-posts.png"
+    },
+    {
+      "file": "archive-item--4-audience.png",
+      "url": "/map/nuclear/archive-item--4-audience.png"
+    },
+    {
       "file": "archive-item--4-posts.png",
       "url": "/map/nuclear/archive-item--4-posts.png"
     },
@@ -1960,16 +1988,36 @@
       "url": "/map/nuclear/archive-item--5-audience.png"
     },
     {
+      "file": "archive-item--5-releases.png",
+      "url": "/map/nuclear/archive-item--5-releases.png"
+    },
+    {
+      "file": "archive-item--6-editor.png",
+      "url": "/map/nuclear/archive-item--6-editor.png"
+    },
+    {
       "file": "archive-item--6-stripe.png",
       "url": "/map/nuclear/archive-item--6-stripe.png"
+    },
+    {
+      "file": "archive-item--7-broadcast.png",
+      "url": "/map/nuclear/archive-item--7-broadcast.png"
     },
     {
       "file": "archive-item--7-releases.png",
       "url": "/map/nuclear/archive-item--7-releases.png"
     },
     {
+      "file": "archive-item--8-broadcast.png",
+      "url": "/map/nuclear/archive-item--8-broadcast.png"
+    },
+    {
       "file": "archive-item--8-editor.png",
       "url": "/map/nuclear/archive-item--8-editor.png"
+    },
+    {
+      "file": "archive-item--9-schedule.png",
+      "url": "/map/nuclear/archive-item--9-schedule.png"
     },
     {
       "file": "archive-item--9-tab.png",
@@ -2372,12 +2420,24 @@
       "url": "/map/nuclear/help--1-governance.png"
     },
     {
+      "file": "help--1-legal-policies.png",
+      "url": "/map/nuclear/help--1-legal-policies.png"
+    },
+    {
+      "file": "help--10-add-ons.png",
+      "url": "/map/nuclear/help--10-add-ons.png"
+    },
+    {
       "file": "help--10-governance-and-admin.png",
       "url": "/map/nuclear/help--10-governance-and-admin.png"
     },
     {
       "file": "help--11-add-ons.png",
       "url": "/map/nuclear/help--11-add-ons.png"
+    },
+    {
+      "file": "help--11-build-with-tahti.png",
+      "url": "/map/nuclear/help--11-build-with-tahti.png"
     },
     {
       "file": "help--12-build-with-tahti.png",
@@ -2388,12 +2448,28 @@
       "url": "/map/nuclear/help--2-legal-policies.png"
     },
     {
+      "file": "help--2-operations.png",
+      "url": "/map/nuclear/help--2-operations.png"
+    },
+    {
       "file": "help--3-operations.png",
       "url": "/map/nuclear/help--3-operations.png"
     },
     {
+      "file": "help--3-start-here.png",
+      "url": "/map/nuclear/help--3-start-here.png"
+    },
+    {
+      "file": "help--4-listen-and-share.png",
+      "url": "/map/nuclear/help--4-listen-and-share.png"
+    },
+    {
       "file": "help--4-start-here.png",
       "url": "/map/nuclear/help--4-start-here.png"
+    },
+    {
+      "file": "help--5-artist-tools.png",
+      "url": "/map/nuclear/help--5-artist-tools.png"
     },
     {
       "file": "help--5-listen-and-share.png",
@@ -2404,8 +2480,20 @@
       "url": "/map/nuclear/help--6-artist-tools.png"
     },
     {
+      "file": "help--6-broadcasting.png",
+      "url": "/map/nuclear/help--6-broadcasting.png"
+    },
+    {
       "file": "help--7-broadcasting.png",
       "url": "/map/nuclear/help--7-broadcasting.png"
+    },
+    {
+      "file": "help--7-releasing.png",
+      "url": "/map/nuclear/help--7-releasing.png"
+    },
+    {
+      "file": "help--8-account-and-support.png",
+      "url": "/map/nuclear/help--8-account-and-support.png"
     },
     {
       "file": "help--8-releasing.png",
@@ -2414,6 +2502,10 @@
     {
       "file": "help--9-account-and-support.png",
       "url": "/map/nuclear/help--9-account-and-support.png"
+    },
+    {
+      "file": "help--9-admin.png",
+      "url": "/map/nuclear/help--9-admin.png"
     },
     {
       "file": "help-keyboard-shortcuts.png",
@@ -3156,6 +3248,10 @@
       "url": "/map/nuclear/money-tiers--0-account.png"
     },
     {
+      "file": "money-tiers--0-overview.png",
+      "url": "/map/nuclear/money-tiers--0-overview.png"
+    },
+    {
       "file": "money-tiers--0-themes.png",
       "url": "/map/nuclear/money-tiers--0-themes.png"
     },
@@ -3164,8 +3260,16 @@
       "url": "/map/nuclear/money-tiers--1-artist.png"
     },
     {
+      "file": "money-tiers--1-stats.png",
+      "url": "/map/nuclear/money-tiers--1-stats.png"
+    },
+    {
       "file": "money-tiers--1-what-s-new.png",
       "url": "/map/nuclear/money-tiers--1-what-s-new.png"
+    },
+    {
+      "file": "money-tiers--10-events.png",
+      "url": "/map/nuclear/money-tiers--10-events.png"
     },
     {
       "file": "money-tiers--10-membership.png",
@@ -3196,12 +3300,20 @@
       "url": "/map/nuclear/money-tiers--2-channel-design.png"
     },
     {
+      "file": "money-tiers--2-governance.png",
+      "url": "/map/nuclear/money-tiers--2-governance.png"
+    },
+    {
       "file": "money-tiers--2-tab.png",
       "url": "/map/nuclear/money-tiers--2-tab.png"
     },
     {
       "file": "money-tiers--3-broadcast.png",
       "url": "/map/nuclear/money-tiers--3-broadcast.png"
+    },
+    {
+      "file": "money-tiers--3-posts.png",
+      "url": "/map/nuclear/money-tiers--3-posts.png"
     },
     {
       "file": "money-tiers--3-tab.png",
@@ -3216,6 +3328,10 @@
       "url": "/map/nuclear/money-tiers--4-tab.png"
     },
     {
+      "file": "money-tiers--5-releases.png",
+      "url": "/map/nuclear/money-tiers--5-releases.png"
+    },
+    {
       "file": "money-tiers--5-themes.png",
       "url": "/map/nuclear/money-tiers--5-themes.png"
     },
@@ -3224,12 +3340,28 @@
       "url": "/map/nuclear/money-tiers--6-add-ons.png"
     },
     {
+      "file": "money-tiers--6-editor.png",
+      "url": "/map/nuclear/money-tiers--6-editor.png"
+    },
+    {
+      "file": "money-tiers--7-broadcast.png",
+      "url": "/map/nuclear/money-tiers--7-broadcast.png"
+    },
+    {
       "file": "money-tiers--7-what-s-new.png",
       "url": "/map/nuclear/money-tiers--7-what-s-new.png"
     },
     {
+      "file": "money-tiers--8-broadcast.png",
+      "url": "/map/nuclear/money-tiers--8-broadcast.png"
+    },
+    {
       "file": "money-tiers--8-session.png",
       "url": "/map/nuclear/money-tiers--8-session.png"
+    },
+    {
+      "file": "money-tiers--9-schedule.png",
+      "url": "/map/nuclear/money-tiers--9-schedule.png"
     },
     {
       "file": "money-tiers--9-security.png",
@@ -3520,8 +3652,16 @@
       "url": "/map/nuclear/settings--7-privacy-data.png"
     },
     {
+      "file": "settings--7-purchases.png",
+      "url": "/map/nuclear/settings--7-purchases.png"
+    },
+    {
       "file": "settings--7-what-s-new.png",
       "url": "/map/nuclear/settings--7-what-s-new.png"
+    },
+    {
+      "file": "settings--8-privacy-data.png",
+      "url": "/map/nuclear/settings--8-privacy-data.png"
     },
     {
       "file": "settings--8-tab.png",
@@ -3616,8 +3756,16 @@
       "url": "/map/nuclear/settings-account--7-privacy-data.png"
     },
     {
+      "file": "settings-account--7-purchases.png",
+      "url": "/map/nuclear/settings-account--7-purchases.png"
+    },
+    {
       "file": "settings-account--7-what-s-new.png",
       "url": "/map/nuclear/settings-account--7-what-s-new.png"
+    },
+    {
+      "file": "settings-account--8-privacy-data.png",
+      "url": "/map/nuclear/settings-account--8-privacy-data.png"
     },
     {
       "file": "settings-account--8-tab.png",
@@ -3740,6 +3888,14 @@
       "url": "/map/nuclear/settings-notifications--7-privacy-data.png"
     },
     {
+      "file": "settings-notifications--7-purchases.png",
+      "url": "/map/nuclear/settings-notifications--7-purchases.png"
+    },
+    {
+      "file": "settings-notifications--8-privacy-data.png",
+      "url": "/map/nuclear/settings-notifications--8-privacy-data.png"
+    },
+    {
       "file": "settings-notifications.png",
       "url": "/map/nuclear/settings-notifications.png"
     },
@@ -3808,6 +3964,10 @@
       "url": "/map/nuclear/settings-section--4-audience.png"
     },
     {
+      "file": "settings-section--4-gallery.png",
+      "url": "/map/nuclear/settings-section--4-gallery.png"
+    },
+    {
       "file": "settings-section--4-releases.png",
       "url": "/map/nuclear/settings-section--4-releases.png"
     },
@@ -3816,12 +3976,20 @@
       "url": "/map/nuclear/settings-section--4-tab.png"
     },
     {
+      "file": "settings-section--5-press-kit.png",
+      "url": "/map/nuclear/settings-section--5-press-kit.png"
+    },
+    {
       "file": "settings-section--5-themes.png",
       "url": "/map/nuclear/settings-section--5-themes.png"
     },
     {
       "file": "settings-section--6-add-ons.png",
       "url": "/map/nuclear/settings-section--6-add-ons.png"
+    },
+    {
+      "file": "settings-section--6-releases.png",
+      "url": "/map/nuclear/settings-section--6-releases.png"
     },
     {
       "file": "settings-section--7-what-s-new.png",
@@ -4164,6 +4332,10 @@
       "url": "/map/nuclear/studio-channel-multicast--0-broadcast.png"
     },
     {
+      "file": "studio-channel-multicast--0-overview.png",
+      "url": "/map/nuclear/studio-channel-multicast--0-overview.png"
+    },
+    {
       "file": "studio-channel-multicast--0-stream.png",
       "url": "/map/nuclear/studio-channel-multicast--0-stream.png"
     },
@@ -4176,12 +4348,56 @@
       "url": "/map/nuclear/studio-channel-multicast--1-schedule.png"
     },
     {
+      "file": "studio-channel-multicast--1-stats.png",
+      "url": "/map/nuclear/studio-channel-multicast--1-stats.png"
+    },
+    {
+      "file": "studio-channel-multicast--10-events.png",
+      "url": "/map/nuclear/studio-channel-multicast--10-events.png"
+    },
+    {
       "file": "studio-channel-multicast--10-tahti-radio.png",
       "url": "/map/nuclear/studio-channel-multicast--10-tahti-radio.png"
     },
     {
       "file": "studio-channel-multicast--11-multicast.png",
       "url": "/map/nuclear/studio-channel-multicast--11-multicast.png"
+    },
+    {
+      "file": "studio-channel-multicast--11-shows.png",
+      "url": "/map/nuclear/studio-channel-multicast--11-shows.png"
+    },
+    {
+      "file": "studio-channel-multicast--12-channel.png",
+      "url": "/map/nuclear/studio-channel-multicast--12-channel.png"
+    },
+    {
+      "file": "studio-channel-multicast--13-radio.png",
+      "url": "/map/nuclear/studio-channel-multicast--13-radio.png"
+    },
+    {
+      "file": "studio-channel-multicast--14-stream.png",
+      "url": "/map/nuclear/studio-channel-multicast--14-stream.png"
+    },
+    {
+      "file": "studio-channel-multicast--15-24-7.png",
+      "url": "/map/nuclear/studio-channel-multicast--15-24-7.png"
+    },
+    {
+      "file": "studio-channel-multicast--16-announcements.png",
+      "url": "/map/nuclear/studio-channel-multicast--16-announcements.png"
+    },
+    {
+      "file": "studio-channel-multicast--17-pinned.png",
+      "url": "/map/nuclear/studio-channel-multicast--17-pinned.png"
+    },
+    {
+      "file": "studio-channel-multicast--18-tahti-radio.png",
+      "url": "/map/nuclear/studio-channel-multicast--18-tahti-radio.png"
+    },
+    {
+      "file": "studio-channel-multicast--19-multicast.png",
+      "url": "/map/nuclear/studio-channel-multicast--19-multicast.png"
     },
     {
       "file": "studio-channel-multicast--2-announcements.png",
@@ -4192,12 +4408,24 @@
       "url": "/map/nuclear/studio-channel-multicast--2-events.png"
     },
     {
+      "file": "studio-channel-multicast--2-governance.png",
+      "url": "/map/nuclear/studio-channel-multicast--2-governance.png"
+    },
+    {
       "file": "studio-channel-multicast--3-pinned.png",
       "url": "/map/nuclear/studio-channel-multicast--3-pinned.png"
     },
     {
+      "file": "studio-channel-multicast--3-posts.png",
+      "url": "/map/nuclear/studio-channel-multicast--3-posts.png"
+    },
+    {
       "file": "studio-channel-multicast--3-shows.png",
       "url": "/map/nuclear/studio-channel-multicast--3-shows.png"
+    },
+    {
+      "file": "studio-channel-multicast--4-audience.png",
+      "url": "/map/nuclear/studio-channel-multicast--4-audience.png"
     },
     {
       "file": "studio-channel-multicast--4-channel.png",
@@ -4216,6 +4444,14 @@
       "url": "/map/nuclear/studio-channel-multicast--5-radio.png"
     },
     {
+      "file": "studio-channel-multicast--5-releases.png",
+      "url": "/map/nuclear/studio-channel-multicast--5-releases.png"
+    },
+    {
+      "file": "studio-channel-multicast--6-editor.png",
+      "url": "/map/nuclear/studio-channel-multicast--6-editor.png"
+    },
+    {
       "file": "studio-channel-multicast--6-stream.png",
       "url": "/map/nuclear/studio-channel-multicast--6-stream.png"
     },
@@ -4224,12 +4460,24 @@
       "url": "/map/nuclear/studio-channel-multicast--7-24-7.png"
     },
     {
+      "file": "studio-channel-multicast--7-broadcast.png",
+      "url": "/map/nuclear/studio-channel-multicast--7-broadcast.png"
+    },
+    {
       "file": "studio-channel-multicast--8-announcements.png",
       "url": "/map/nuclear/studio-channel-multicast--8-announcements.png"
     },
     {
+      "file": "studio-channel-multicast--8-broadcast.png",
+      "url": "/map/nuclear/studio-channel-multicast--8-broadcast.png"
+    },
+    {
       "file": "studio-channel-multicast--9-pinned.png",
       "url": "/map/nuclear/studio-channel-multicast--9-pinned.png"
+    },
+    {
+      "file": "studio-channel-multicast--9-schedule.png",
+      "url": "/map/nuclear/studio-channel-multicast--9-schedule.png"
     },
     {
       "file": "studio-channel-multicast.png",
@@ -4238,6 +4486,10 @@
     {
       "file": "studio-channel-radio--0-broadcast.png",
       "url": "/map/nuclear/studio-channel-radio--0-broadcast.png"
+    },
+    {
+      "file": "studio-channel-radio--0-overview.png",
+      "url": "/map/nuclear/studio-channel-radio--0-overview.png"
     },
     {
       "file": "studio-channel-radio--0-stream.png",
@@ -4252,6 +4504,14 @@
       "url": "/map/nuclear/studio-channel-radio--1-schedule.png"
     },
     {
+      "file": "studio-channel-radio--1-stats.png",
+      "url": "/map/nuclear/studio-channel-radio--1-stats.png"
+    },
+    {
+      "file": "studio-channel-radio--10-events.png",
+      "url": "/map/nuclear/studio-channel-radio--10-events.png"
+    },
+    {
       "file": "studio-channel-radio--10-tahti-radio.png",
       "url": "/map/nuclear/studio-channel-radio--10-tahti-radio.png"
     },
@@ -4260,12 +4520,48 @@
       "url": "/map/nuclear/studio-channel-radio--11-multicast.png"
     },
     {
+      "file": "studio-channel-radio--11-shows.png",
+      "url": "/map/nuclear/studio-channel-radio--11-shows.png"
+    },
+    {
+      "file": "studio-channel-radio--12-channel.png",
+      "url": "/map/nuclear/studio-channel-radio--12-channel.png"
+    },
+    {
       "file": "studio-channel-radio--12-tab.png",
       "url": "/map/nuclear/studio-channel-radio--12-tab.png"
     },
     {
+      "file": "studio-channel-radio--13-radio.png",
+      "url": "/map/nuclear/studio-channel-radio--13-radio.png"
+    },
+    {
       "file": "studio-channel-radio--13-tab.png",
       "url": "/map/nuclear/studio-channel-radio--13-tab.png"
+    },
+    {
+      "file": "studio-channel-radio--14-stream.png",
+      "url": "/map/nuclear/studio-channel-radio--14-stream.png"
+    },
+    {
+      "file": "studio-channel-radio--15-24-7.png",
+      "url": "/map/nuclear/studio-channel-radio--15-24-7.png"
+    },
+    {
+      "file": "studio-channel-radio--16-announcements.png",
+      "url": "/map/nuclear/studio-channel-radio--16-announcements.png"
+    },
+    {
+      "file": "studio-channel-radio--17-pinned.png",
+      "url": "/map/nuclear/studio-channel-radio--17-pinned.png"
+    },
+    {
+      "file": "studio-channel-radio--18-tahti-radio.png",
+      "url": "/map/nuclear/studio-channel-radio--18-tahti-radio.png"
+    },
+    {
+      "file": "studio-channel-radio--19-multicast.png",
+      "url": "/map/nuclear/studio-channel-radio--19-multicast.png"
     },
     {
       "file": "studio-channel-radio--2-announcements.png",
@@ -4276,12 +4572,32 @@
       "url": "/map/nuclear/studio-channel-radio--2-events.png"
     },
     {
+      "file": "studio-channel-radio--2-governance.png",
+      "url": "/map/nuclear/studio-channel-radio--2-governance.png"
+    },
+    {
+      "file": "studio-channel-radio--20-tab.png",
+      "url": "/map/nuclear/studio-channel-radio--20-tab.png"
+    },
+    {
+      "file": "studio-channel-radio--21-tab.png",
+      "url": "/map/nuclear/studio-channel-radio--21-tab.png"
+    },
+    {
       "file": "studio-channel-radio--3-pinned.png",
       "url": "/map/nuclear/studio-channel-radio--3-pinned.png"
     },
     {
+      "file": "studio-channel-radio--3-posts.png",
+      "url": "/map/nuclear/studio-channel-radio--3-posts.png"
+    },
+    {
       "file": "studio-channel-radio--3-shows.png",
       "url": "/map/nuclear/studio-channel-radio--3-shows.png"
+    },
+    {
+      "file": "studio-channel-radio--4-audience.png",
+      "url": "/map/nuclear/studio-channel-radio--4-audience.png"
     },
     {
       "file": "studio-channel-radio--4-channel.png",
@@ -4300,6 +4616,14 @@
       "url": "/map/nuclear/studio-channel-radio--5-radio.png"
     },
     {
+      "file": "studio-channel-radio--5-releases.png",
+      "url": "/map/nuclear/studio-channel-radio--5-releases.png"
+    },
+    {
+      "file": "studio-channel-radio--6-editor.png",
+      "url": "/map/nuclear/studio-channel-radio--6-editor.png"
+    },
+    {
       "file": "studio-channel-radio--6-stream.png",
       "url": "/map/nuclear/studio-channel-radio--6-stream.png"
     },
@@ -4312,6 +4636,10 @@
       "url": "/map/nuclear/studio-channel-radio--7-24-7.png"
     },
     {
+      "file": "studio-channel-radio--7-broadcast.png",
+      "url": "/map/nuclear/studio-channel-radio--7-broadcast.png"
+    },
+    {
       "file": "studio-channel-radio--7-tab.png",
       "url": "/map/nuclear/studio-channel-radio--7-tab.png"
     },
@@ -4320,12 +4648,20 @@
       "url": "/map/nuclear/studio-channel-radio--8-announcements.png"
     },
     {
+      "file": "studio-channel-radio--8-broadcast.png",
+      "url": "/map/nuclear/studio-channel-radio--8-broadcast.png"
+    },
+    {
       "file": "studio-channel-radio--8-tab.png",
       "url": "/map/nuclear/studio-channel-radio--8-tab.png"
     },
     {
       "file": "studio-channel-radio--9-pinned.png",
       "url": "/map/nuclear/studio-channel-radio--9-pinned.png"
+    },
+    {
+      "file": "studio-channel-radio--9-schedule.png",
+      "url": "/map/nuclear/studio-channel-radio--9-schedule.png"
     },
     {
       "file": "studio-channel-radio.png",
@@ -4344,6 +4680,10 @@
       "url": "/map/nuclear/studio-events--0-broadcast.png"
     },
     {
+      "file": "studio-events--0-overview.png",
+      "url": "/map/nuclear/studio-events--0-overview.png"
+    },
+    {
       "file": "studio-events--0-upcoming.png",
       "url": "/map/nuclear/studio-events--0-upcoming.png"
     },
@@ -4356,12 +4696,52 @@
       "url": "/map/nuclear/studio-events--1-schedule.png"
     },
     {
+      "file": "studio-events--1-stats.png",
+      "url": "/map/nuclear/studio-events--1-stats.png"
+    },
+    {
+      "file": "studio-events--10-events.png",
+      "url": "/map/nuclear/studio-events--10-events.png"
+    },
+    {
+      "file": "studio-events--11-shows.png",
+      "url": "/map/nuclear/studio-events--11-shows.png"
+    },
+    {
+      "file": "studio-events--12-channel.png",
+      "url": "/map/nuclear/studio-events--12-channel.png"
+    },
+    {
+      "file": "studio-events--13-radio.png",
+      "url": "/map/nuclear/studio-events--13-radio.png"
+    },
+    {
+      "file": "studio-events--14-stream.png",
+      "url": "/map/nuclear/studio-events--14-stream.png"
+    },
+    {
+      "file": "studio-events--15-24-7.png",
+      "url": "/map/nuclear/studio-events--15-24-7.png"
+    },
+    {
       "file": "studio-events--2-events.png",
       "url": "/map/nuclear/studio-events--2-events.png"
     },
     {
+      "file": "studio-events--2-governance.png",
+      "url": "/map/nuclear/studio-events--2-governance.png"
+    },
+    {
+      "file": "studio-events--3-posts.png",
+      "url": "/map/nuclear/studio-events--3-posts.png"
+    },
+    {
       "file": "studio-events--3-shows.png",
       "url": "/map/nuclear/studio-events--3-shows.png"
+    },
+    {
+      "file": "studio-events--4-audience.png",
+      "url": "/map/nuclear/studio-events--4-audience.png"
     },
     {
       "file": "studio-events--4-channel.png",
@@ -4372,12 +4752,32 @@
       "url": "/map/nuclear/studio-events--5-radio.png"
     },
     {
+      "file": "studio-events--5-releases.png",
+      "url": "/map/nuclear/studio-events--5-releases.png"
+    },
+    {
+      "file": "studio-events--6-editor.png",
+      "url": "/map/nuclear/studio-events--6-editor.png"
+    },
+    {
       "file": "studio-events--6-stream.png",
       "url": "/map/nuclear/studio-events--6-stream.png"
     },
     {
       "file": "studio-events--7-24-7.png",
       "url": "/map/nuclear/studio-events--7-24-7.png"
+    },
+    {
+      "file": "studio-events--7-broadcast.png",
+      "url": "/map/nuclear/studio-events--7-broadcast.png"
+    },
+    {
+      "file": "studio-events--8-broadcast.png",
+      "url": "/map/nuclear/studio-events--8-broadcast.png"
+    },
+    {
+      "file": "studio-events--9-schedule.png",
+      "url": "/map/nuclear/studio-events--9-schedule.png"
     },
     {
       "file": "studio-events.png",
@@ -4396,12 +4796,24 @@
       "url": "/map/nuclear/studio-governance--1-branding.png"
     },
     {
+      "file": "studio-governance--1-stats.png",
+      "url": "/map/nuclear/studio-governance--1-stats.png"
+    },
+    {
       "file": "studio-governance--1-topics.png",
       "url": "/map/nuclear/studio-governance--1-topics.png"
     },
     {
+      "file": "studio-governance--10-events.png",
+      "url": "/map/nuclear/studio-governance--10-events.png"
+    },
+    {
       "file": "studio-governance--10-tab.png",
       "url": "/map/nuclear/studio-governance--10-tab.png"
+    },
+    {
+      "file": "studio-governance--2-governance.png",
+      "url": "/map/nuclear/studio-governance--2-governance.png"
     },
     {
       "file": "studio-governance--2-stats.png",
@@ -4412,6 +4824,14 @@
       "url": "/map/nuclear/studio-governance--3-governance.png"
     },
     {
+      "file": "studio-governance--3-posts.png",
+      "url": "/map/nuclear/studio-governance--3-posts.png"
+    },
+    {
+      "file": "studio-governance--4-audience.png",
+      "url": "/map/nuclear/studio-governance--4-audience.png"
+    },
+    {
       "file": "studio-governance--4-posts.png",
       "url": "/map/nuclear/studio-governance--4-posts.png"
     },
@@ -4420,16 +4840,36 @@
       "url": "/map/nuclear/studio-governance--5-audience.png"
     },
     {
+      "file": "studio-governance--5-releases.png",
+      "url": "/map/nuclear/studio-governance--5-releases.png"
+    },
+    {
+      "file": "studio-governance--6-editor.png",
+      "url": "/map/nuclear/studio-governance--6-editor.png"
+    },
+    {
       "file": "studio-governance--6-stripe.png",
       "url": "/map/nuclear/studio-governance--6-stripe.png"
+    },
+    {
+      "file": "studio-governance--7-broadcast.png",
+      "url": "/map/nuclear/studio-governance--7-broadcast.png"
     },
     {
       "file": "studio-governance--7-releases.png",
       "url": "/map/nuclear/studio-governance--7-releases.png"
     },
     {
+      "file": "studio-governance--8-broadcast.png",
+      "url": "/map/nuclear/studio-governance--8-broadcast.png"
+    },
+    {
       "file": "studio-governance--8-editor.png",
       "url": "/map/nuclear/studio-governance--8-editor.png"
+    },
+    {
+      "file": "studio-governance--9-schedule.png",
+      "url": "/map/nuclear/studio-governance--9-schedule.png"
     },
     {
       "file": "studio-governance--9-tab.png",

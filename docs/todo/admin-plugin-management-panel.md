@@ -275,10 +275,38 @@ type this pass so a future session doesn't retry this without checking
 first.
 
 **Not attempted (still genuinely open, from the prior pass, unchanged):**
-bundle upload/publish UI, `ADMIN`-scope install management (installing a
-widget onto a shared admin surface — the modeled-but-unused gap above),
-and the "category" field's `PluginCategoryId` question (resolved above:
-deliberately not reconciling).
+bundle upload/publish UI, and the "category" field's `PluginCategoryId`
+question (resolved above: deliberately not reconciling).
+
+## ADMIN-scope install management (2026-09-18, this pass)
+
+Built the "modeled-but-unused" gap flagged above: `ADMIN`-scope add-ons
+(registerable, but nothing previously installed/rendered one on a shared
+admin surface) can now be installed, ordered, toggled, and removed from a
+surface. Backend was already complete and unchanged — `../tahti-org`'s
+`apps/api/src/routes/admin/addons.ts` already had
+`GET/POST /api/admin/addons/installs` and
+`PATCH/DELETE /api/admin/addons/installs/:id`, confirmed by reading the
+route file directly rather than assuming.
+
+`packages/tahti-web/src/api/admin/admin-addons.ts` gained
+`AdminAddonInstall` + `fetchAdminAddonInstalls`/`createAdminAddonInstall`/
+`patchAdminAddonInstall`/`deleteAdminAddonInstall` (mock-mode state
+included, keyed by surface). `AdminAddonsView.tsx` gained an "Admin
+surface installs" panel: a `surface` text field (defaults to `homepage`,
+the only surface with a public renderer today —
+`GET /api/v1/addons/homepage`), a picker dialog listing not-yet-installed
+`APPROVED` `ADMIN`-scope add-ons, and per-install enable toggle /
+reorder (swaps `position` with its neighbor) / remove (confirm-gated).
+Separate axis from the existing "enabled by default" Toggle on the
+Manage dialog — that's platform-wide "render everywhere with no explicit
+install"; this is "render on this one surface, at this position, with
+this override."
+
+Verified: `tsc --noEmit` / `eslint` clean on both changed files,
+`admin.test.ts` still 8/8. Not live-browser-verified. Bundle
+upload/publish UI and the Q2 unified-page product decision remain open —
+this pass only closes the specific "not attempted" install-CRUD gap.
 
 ## Related
 
