@@ -151,6 +151,38 @@ export function DesktopLibraryPanel() {
     }
   };
 
+  const importNativeFolder = async () => {
+    if (!nativeLibrary) {
+      return;
+    }
+    setNativeLoading(true);
+    try {
+      const result = await nativeLibrary.importFolder();
+      if (result.imported > 0) {
+        toast.success(
+          result.imported === 1
+            ? 'Imported 1 track.'
+            : `Imported ${result.imported} tracks.`,
+        );
+      }
+      if (result.errors.length) {
+        toast.error(
+          result.errors.length === 1
+            ? '1 file could not be imported.'
+            : `${result.errors.length} files could not be imported.`,
+          { description: describeImportFailures(result.errors) },
+        );
+      }
+      await refreshNative();
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : 'Folder import failed.',
+      );
+    } finally {
+      setNativeLoading(false);
+    }
+  };
+
   const rescanNative = async () => {
     if (!nativeLibrary) {
       return;
@@ -223,6 +255,13 @@ export function DesktopLibraryPanel() {
             >
               <LibraryIcon size={15} aria-hidden />
               {nativeLoading ? 'Working…' : 'Import files'}
+            </Button>
+            <Button
+              variant="text"
+              onClick={() => void importNativeFolder()}
+              disabled={nativeLoading}
+            >
+              Import folder
             </Button>
             {nativeUnavailable.length > 0 ? (
               <Button

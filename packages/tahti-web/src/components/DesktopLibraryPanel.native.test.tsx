@@ -34,6 +34,7 @@ describe('DesktopLibraryPanel native missing files', () => {
     const nativeLibrary: TahtiNativeLibrary = {
       list: vi.fn().mockResolvedValue({ tracks: [missingTrack], total: 1 }),
       import: vi.fn().mockResolvedValue({ imported: 0, errors: [] }),
+      importFolder: vi.fn().mockResolvedValue({ imported: 0, errors: [] }),
       resolve: vi.fn(),
       remove: vi.fn(),
       listUnavailable: vi.fn().mockResolvedValue([missingTrack]),

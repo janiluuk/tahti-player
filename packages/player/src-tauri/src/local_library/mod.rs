@@ -53,6 +53,36 @@ pub struct ImportResult {
     pub errors: Vec<ImportFailure>,
 }
 
+fn collect_audio_paths(root: &Path) -> Result<Vec<PathBuf>, String> {
+    if !root.is_dir() {
+        return Err("Selected path is not a folder".into());
+    }
+    let mut paths = Vec::new();
+    let mut pending = vec![root.to_path_buf()];
+    while let Some(directory) = pending.pop() {
+        for entry in std::fs::read_dir(&directory).map_err(|err| err.to_string())? {
+            let entry = entry.map_err(|err| err.to_string())?;
+            let path = entry.path();
+            let file_type = entry.file_type().map_err(|err| err.to_string())?;
+            if file_type.is_dir() {
+                pending.push(path);
+            } else if file_type.is_file()
+                && matches!(
+                    path.extension()
+                        .and_then(|value| value.to_str())
+                        .map(str::to_ascii_lowercase)
+                        .as_deref(),
+                    Some("flac") | Some("wav")
+                )
+            {
+                paths.push(path);
+            }
+        }
+    }
+    paths.sort();
+    Ok(paths)
+}
+
 #[derive(Default)]
 pub struct LibraryState(OnceCell<SqlitePool>);
 
@@ -192,6 +222,25 @@ pub async fn library_import(app: tauri::AppHandle) -> Result<ImportResult, Strin
         .into_iter()
         .map(|file| file.into_path().map_err(|err| err.to_string()))
         .collect::<Result<Vec<_>, _>>()?;
+    Ok(import_paths(&pool(&app).await?, paths).await)
+}
+
+#[tauri::command]
+#[specta::specta]
+pub async fn library_import_folder(app: tauri::AppHandle) -> Result<ImportResult, String> {
+    let dialog_app = app.clone();
+    let selected = tauri::async_runtime::spawn_blocking(move || {
+        dialog_app.dialog().file().blocking_pick_folder()
+    })
+    .await
+    .map_err(|err| err.to_string())?;
+    let Some(folder) = selected else {
+        return Ok(ImportResult::default());
+    };
+    let root = folder.into_path().map_err(|err| err.to_string())?;
+    let paths = tauri::async_runtime::spawn_blocking(move || collect_audio_paths(&root))
+        .await
+        .map_err(|err| err.to_string())??;
     Ok(import_paths(&pool(&app).await?, paths).await)
 }
 

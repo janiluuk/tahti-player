@@ -5759,3 +5759,7 @@ Actioned the punch list from the full-app Storybook unification sweep: ~21 call 
 ## 2026-09-18 — Desktop library missing-file recovery
 
 Local files now lists persisted missing entries, checks whether their original files have returned, and lets desktop users locate a replacement file while preserving the catalog track ID. Relinking refreshes extracted metadata and rejects paths already owned by another catalog row. Added generated Tauri bindings, native and rendered-state tests, and a Storybook missing-file state. Bumped `packages/tahti-web/package.json` to `0.0.123`.
+
+## 2026-09-18 — Recursive desktop library folder import
+
+Local files now offers a native folder picker that recursively imports regular FLAC/WAV files in stable order while ignoring unsupported files and directory symlinks. It reuses the existing per-file error reporting and catalog upsert behavior. Progress, cancellation, drag-drop, watched roots, and background indexing remain open. Bumped `packages/tahti-web/package.json` to `0.0.124`.

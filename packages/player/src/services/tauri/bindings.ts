@@ -7,6 +7,7 @@ import { invoke as __TAURI_INVOKE } from "@tauri-apps/api/core";
 export const commands = {
 	libraryList: (search: string, offset: number) => typedError<LibraryPage, string>(__TAURI_INVOKE("library_list", { search, offset })),
 	libraryImport: () => typedError<ImportResult, string>(__TAURI_INVOKE("library_import")),
+	libraryImportFolder: () => typedError<ImportResult, string>(__TAURI_INVOKE("library_import_folder")),
 	libraryResolve: (id: string) => typedError<string, string>(__TAURI_INVOKE("library_resolve", { id })),
 	libraryRemove: (id: string) => typedError<null, string>(__TAURI_INVOKE("library_remove", { id })),
 	libraryListUnavailable: () => typedError<LibraryTrack[], string>(__TAURI_INVOKE("library_list_unavailable")),

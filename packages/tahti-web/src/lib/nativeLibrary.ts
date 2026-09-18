@@ -25,6 +25,7 @@ export type NativeLibraryImportResult = {
 export type TahtiNativeLibrary = {
   list: (search: string, offset: number) => Promise<NativeLibraryPage>;
   import: () => Promise<NativeLibraryImportResult>;
+  importFolder: () => Promise<NativeLibraryImportResult>;
   resolve: (id: string) => Promise<string>;
   remove: (id: string) => Promise<void>;
   listUnavailable: () => Promise<NativeLibraryTrack[]>;

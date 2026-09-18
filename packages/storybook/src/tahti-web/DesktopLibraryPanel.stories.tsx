@@ -92,6 +92,7 @@ export const MissingNativeFile: Story = {
           total: 1,
         }),
         import: async () => ({ imported: 0, errors: [] }),
+        importFolder: async () => ({ imported: 0, errors: [] }),
         resolve: async () => '',
         remove: async () => undefined,
         listUnavailable: async () => [

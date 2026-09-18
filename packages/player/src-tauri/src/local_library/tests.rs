@@ -3,7 +3,8 @@ use std::sync::atomic::{AtomicU32, Ordering};
 use sqlx::sqlite::{SqliteConnectOptions, SqlitePool};
 
 use super::{
-    import_paths, list, list_unavailable, relink, remove, rescan_unavailable, resolve_path,
+    collect_audio_paths, import_paths, list, list_unavailable, relink, remove, rescan_unavailable,
+    resolve_path,
 };
 
 static DB_COUNTER: AtomicU32 = AtomicU32::new(0);
@@ -81,6 +82,34 @@ async fn imports_wav_and_extracts_tags() {
     assert_eq!(page.tracks[0].artist, "Test Artist");
     assert_eq!(page.tracks[0].format, "wav");
     assert_eq!(page.tracks[0].sample_rate, 44100);
+}
+
+#[test]
+fn collects_supported_audio_recursively_in_stable_order() {
+    let dir = tempfile::tempdir().unwrap();
+    let nested = dir.path().join("Disc 2");
+    std::fs::create_dir_all(&nested).unwrap();
+    let first = dir.path().join("01-first.wav");
+    let second = nested.join("02-second.FLAC");
+    write_wav(&first, "First", "Artist");
+    write_wav(&second, "Second", "Artist");
+    std::fs::write(dir.path().join("cover.jpg"), b"not audio").unwrap();
+
+    let paths = collect_audio_paths(dir.path()).unwrap();
+
+    assert_eq!(paths, vec![first, second]);
+}
+
+#[test]
+fn rejects_a_folder_scan_root_that_is_not_a_directory() {
+    let dir = tempfile::tempdir().unwrap();
+    let file = dir.path().join("track.wav");
+    write_wav(&file, "Track", "Artist");
+
+    assert_eq!(
+        collect_audio_paths(&file).unwrap_err(),
+        "Selected path is not a folder"
+    );
 }
 
 #[tokio::test]

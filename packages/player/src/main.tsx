@@ -21,6 +21,9 @@ const nativeLibrary: TahtiNativeLibrary = {
   async import() {
     return unwrapResult(await commands.libraryImport());
   },
+  async importFolder() {
+    return unwrapResult(await commands.libraryImportFolder());
+  },
   async resolve(id) {
     return convertFileSrc(
       unwrapResult(await commands.libraryResolve(id)),
