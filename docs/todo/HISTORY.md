@@ -2,6 +2,54 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-18 — Fixed and shipped the orphaned `canvas-designer` cover-art generator
+
+User asked to "continue on the canvas designer" — an untracked, undocumented
+WIP at `packages/tahti-web/src/lib/canvas-designer/` (no todo file, no
+WORKPLAN entry, no consumer anywhere) that turned out to be a Weave
+Silk-style generative art tool: draw-to-create symmetric trail art with 5
+presets and 5 palettes, meant to export a 3000x3000 PNG (album art size).
+Asked the user where it should surface, since nothing documented that —
+answer: Studio's release artwork picker.
+
+Found it was genuinely broken, not just unfinished:
+`design-canvas.tsx` had a real syntax error (a duplicated/orphaned block
+sitting outside any function — `Declaration or statement expected`), and
+critically its `onPointerDown`/`onPointerMove` handlers were defined but
+never attached to the `<canvas>` element, so the tool could never have
+drawn anything even before the syntax error was introduced. `state.ts` was
+a dead, unused duplicate of `palette.ts`/`design-presets.ts` with different
+hex values for the same palette IDs (deleted). The PNG-export sizing logic
+had a self-referential ternary condition that was always true (replaced
+with a real cover-fit scale/crop). Rebuilt `DesignCanvas` as a proper
+`forwardRef` + `useImperativeHandle` component (`exportPng()`) matching
+this codebase's existing façade pattern, instead of the previous draft's
+DOM-property hack. Added `engine.test.ts` (trail state, frame capping,
+render) — the directory had no tests before.
+
+Built `components/CoverArtGenerator.tsx`: style picker via `SelectableTiles`
+(reusing the DESIGN_PRESETS' `label`/`description`), palette and background
+swatch-button rows (mirroring the existing `BrandAccentSwatches` pattern),
+brush-size/glow `Slider`s, and a "Use this artwork" button that exports the
+canvas to a `File` for upload. Wired into
+`views/studio/StudioReleaseDetailView.tsx`'s release-artwork `Dialog` as a
+new "Generate" `Tabs` entry alongside the existing "Upload" tab, sharing the
+existing `uploadReleaseArtwork` call (extracted into a shared `applyArtwork`
+helper both tabs now call).
+
+Verified: `tsc --noEmit` / `eslint` clean, full unit suite passing (only the
+pre-existing `useAutoHideNavWhilePlaying.test.ts` failure remains, confirmed
+present on a clean `master` checkout too), `vite build` succeeds. Also
+manually driven end-to-end with a real headless-Chromium Playwright script
+against the mock-mode dev server (`VITE_FORCE_MOCK=1`) — signed in, opened a
+release, switched to Generate, drew on the canvas, switched style/palette,
+clicked "Use this artwork" — zero console errors, toast confirmed, and the
+release header's artwork thumbnail updated to the generated image.
+
+Shipped as a second commit onto the already-open PR #107 (same
+`feat/admin-settings-studio-ui-audit` branch), rather than a separate PR,
+per user direction; PR title/description updated to cover both commits.
+
 ## 2026-09-18 — Last 2 raw-DOM settings toggles swapped to `SelectableTiles`
 
 Small follow-up gap left by the (already-merged, independently-shipped)
