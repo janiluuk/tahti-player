@@ -97,6 +97,45 @@ old artist-page layout (About/Subscribe), not the new Programming block,
 until this is fixed. The mock-mode demo and local dev DB both show it
 correctly (verified earlier in this doc).
 
+## Root cause confirmed + pipeline fix opened (2026-09-18)
+
+Re-verified still broken: `curl https://api.tahti.live/api/channels/tahti-radio`
+still returns `"channelKind":"ARTIST"`. Root cause confirmed by reading
+`../tahti-org`'s deploy path: `infra/docker-compose.stack.yml`'s migration
+service runs `prisma db push --accept-data-loss`, which only diffs schema
+*shape* from `schema.prisma` — it never executes migration `.sql` files, so
+any hand-written data statement inside one (like this backfill) silently
+never runs, even though the column/enum it's next to does land. `db push`
+was adopted deliberately on 2026-09-11 (`docs/todo/HISTORY.md` there) to
+dodge a one-time Prisma migration-history baseline step — nobody anticipated
+a future migration needing a data backfill.
+
+Opened [`tahti-org#532`](https://github.com/janiluuk/tahti-org/pull/532):
+switches the migration step to `prisma migrate deploy` (verified against a
+throwaway Postgres — 7 migrations apply clean from empty, zero drift from
+`schema.prisma`, and the baseline-then-deploy sequence below correctly
+reports no pending migrations). **Not merged/deployed yet** — doing so
+before the one-time baseline below would make the *next* deploy fail loudly
+at the migration step (safe, but blocks deploys).
+
+**Needs the user (prod DB access) to run, in order, before or right after
+merging tahti-org#532:**
+
+```sql
+UPDATE "channel"."Channel" SET "channelKind" = 'RADIO' WHERE "slug" = 'tahti-radio';
+```
+
+```bash
+# from ../tahti-org, against production DATABASE_URL
+for m in $(ls packages/db/prisma/migrations | grep -v migration_lock.toml); do
+  pnpm --filter @tahti/db exec prisma migrate resolve --applied "$m"
+done
+pnpm --filter @tahti/db db:migrate   # should print "No pending migrations to apply."
+```
+
+Full detail and rationale: `../tahti-org/ops/RUNBOOK.md#database-migrations`
+(added by tahti-org#532).
+
 ## Not done / left open
 
 - **Not committed/pushed yet in either repo.** `../tahti-org` has another
