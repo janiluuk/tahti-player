@@ -1,6 +1,6 @@
 # Hide Local library / Soulseek from non-desktop (browser) builds
 
-**Status:** open
+**Status:** partial
 
 ## Request
 
@@ -37,7 +37,27 @@ Both are fully visible today regardless of runtime:
 not to gate visibility of the panel/nav entry itself. This is the
 right check to gate on; no new capability-detection needs inventing.
 
-## Open questions before implementing
+## Shipped this pass (2026-09-18): Soulseek
+
+`PluginStorePanel.tsx`'s `categoryId === 'import' && <SoulseekAddonCard />`
+now also checks `hasNativePlayer()` (the exact existing check this doc
+pointed at — no new capability-detection invented), so the card no longer
+renders at all outside the desktop app. Answers the "does the plugin store
+run in the browser build" open question below: confirmed yes —
+`PluginStorePanel` mounts from `SettingsPanels.tsx` (`/settings/plugin-store`),
+a shared web+desktop route with no higher-level desktop gate — so this
+per-item gate was necessary, not redundant. Chose full hide (not a "desktop
+app only" placeholder): the request said "should not be visible/reachable",
+and no existing precedent for a placeholder pattern was found elsewhere in
+this repo. `tsc --noEmit` / `eslint` clean; no existing test or story
+referenced `SoulseekAddonCard` directly, so nothing broke.
+
+**Local library was deliberately left untouched** — its browser fallback is
+still an intentional, confirmed-by-design feature per
+`desktop-pro-library.md`; hiding it is a product reversal, not a bug fix,
+and still needs the product decision flagged below before anyone acts on it.
+
+## Open questions before implementing (Local library only — Soulseek is done)
 
 - Does "hide" mean remove the nav entry entirely, or show a "desktop
   app only" placeholder? (Desktop-only features elsewhere in this repo
@@ -46,7 +66,3 @@ right check to gate on; no new capability-detection needs inventing.
   away per the current product direction — `desktop-pro-library.md`
   treats it as intentional, so this may need a product decision, not
   just a UI gate, before removing it.
-- Soulseek: does the plugin store itself run in the browser build at
-  all, or only inside desktop? If the whole store is desktop-only
-  already, this may already be covered for Soulseek and only Local
-  library needs the gate.
