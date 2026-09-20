@@ -10,7 +10,10 @@ export const commands = {
 	value: string,
 	/**  Album artist, for `Albums`. */
 	secondary: string | null,
-} | null) => typedError<LibraryPage, string>(__TAURI_INVOKE("library_list", { search, offset, filter })),
+} | null, sort: {
+	column: SortColumn,
+	descending: boolean,
+} | null) => typedError<LibraryPage, string>(__TAURI_INVOKE("library_list", { search, offset, filter, sort })),
 	libraryFacets: (kind: FacetKind) => typedError<FacetGroup[], string>(__TAURI_INVOKE("library_facets", { kind })),
 	libraryTotals: () => typedError<LibraryTotals, string>(__TAURI_INVOKE("library_totals")),
 	libraryImport: () => typedError<ImportResult, string>(__TAURI_INVOKE("library_import")),
@@ -61,6 +64,11 @@ export const commands = {
 	genre: string,
 	comment: string,
 	bitrateKbps: number | null,
+	/**
+	 *  When the track first entered the catalog (UTC, `YYYY-MM-DD HH:MM:SS`).
+	 *  Filled by the database, so extraction leaves it empty.
+	 */
+	addedAt: string,
 } | null, string>(__TAURI_INVOKE("library_relink", { id })),
 	libraryListRoots: () => typedError<LibraryRoot[], string>(__TAURI_INVOKE("library_list_roots")),
 	/**
@@ -278,6 +286,11 @@ export type LibraryTrack = {
 	genre: string,
 	comment: string,
 	bitrateKbps: number | null,
+	/**
+	 *  When the track first entered the catalog (UTC, `YYYY-MM-DD HH:MM:SS`).
+	 *  Filled by the database, so extraction leaves it empty.
+	 */
+	addedAt: string,
 };
 
 export type Page<T> = {
@@ -325,6 +338,12 @@ export type RootScanResult = {
 	errors: ImportFailure[],
 	cancelled: boolean,
 };
+
+/**
+ *  Sortable track-table columns. A closed enum, never user text, so the
+ *  ORDER BY below is assembled from fixed SQL only.
+ */
+export type SortColumn = "title" | "artist" | "album" | "genre" | "year" | "trackNo" | "duration" | "format" | "size" | "bitrate" | "added";
 
 export type StartupLogEntry = {
 	timestamp: string,
@@ -377,6 +396,11 @@ export type TrackSnapshot = {
 	artworkUrl: string | null,
 	provider: string,
 	providerId: string,
+};
+
+export type TrackSort = {
+	column: SortColumn,
+	descending: boolean,
 };
 
 export type YtdlpPlaylistEntry = {

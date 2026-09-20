@@ -6,7 +6,7 @@ use super::{
     add_root, collect_audio_paths, collect_audio_paths_with_skipped, discover_new_paths,
     get_root, import_batch, import_paths, list, list_roots, list_unavailable,
     refresh_root_availability, relink, relink_root, remove, remove_root, rescan_unavailable,
-    resolve_path, facets, folder_of, list_filtered, totals, FacetFilter, FacetKind, ImportResult,
+    resolve_path, facets, folder_of, list_filtered, SortColumn, TrackSort, totals, FacetFilter, FacetKind, ImportResult,
 };
 
 static DB_COUNTER: AtomicU32 = AtomicU32::new(0);
@@ -655,8 +655,20 @@ async fn paginates_100k_generated_rows() {
     }
     let started = std::time::Instant::now();
     let artist_filter = FacetFilter { kind: FacetKind::Artists, value: "Generated Artist 007".into(), secondary: None };
-    let filtered = list_filtered(&pool, "", Some(&artist_filter), 0).await.unwrap();
+    let filtered = list_filtered(&pool, "", Some(&artist_filter), None, 0).await.unwrap();
     let filter_time = started.elapsed();
+    let mut sort_times = Vec::new();
+    for column in ALL_SORTS {
+        let sort = TrackSort { column, descending: false };
+        let started = std::time::Instant::now();
+        list_filtered(&pool, "", None, Some(&sort), 0).await.unwrap();
+        list_filtered(&pool, "", None, Some(&sort), 50_000).await.unwrap();
+        sort_times.push((column, started.elapsed()));
+    }
+    eprintln!("100k sorts (first page + page 500): {sort_times:?}");
+    for (column, took) in &sort_times {
+        assert!(took.as_millis() < 1500, "{column:?} sort took {took:?}");
+    }
     eprintln!("100k rows: first page {browse:?}, indexed search {search:?}, facets {facet_times:?}, filtered page ({} rows) {filter_time:?}", filtered.total);
     for (kind, _, took) in &facet_times {
         assert!(took.as_millis() < 1500, "{kind:?} facets took {took:?}");
@@ -990,22 +1002,22 @@ async fn facets_cover_albums_genres_and_folders() {
 async fn list_filtered_narrows_by_each_facet_and_combines_with_search() {
     let (_dir, pool) = browse_fixture().await;
     let artist = FacetFilter { kind: FacetKind::Artists, value: "vladislav delay".into(), secondary: None };
-    assert_eq!(list_filtered(&pool, "", Some(&artist), 0).await.unwrap().total, 2);
-    assert_eq!(list_filtered(&pool, "Two", Some(&artist), 0).await.unwrap().total, 1);
-    assert_eq!(list_filtered(&pool, "Three", Some(&artist), 0).await.unwrap().total, 0);
+    assert_eq!(list_filtered(&pool, "", Some(&artist), None, 0).await.unwrap().total, 2);
+    assert_eq!(list_filtered(&pool, "Two", Some(&artist), None, 0).await.unwrap().total, 1);
+    assert_eq!(list_filtered(&pool, "Three", Some(&artist), None, 0).await.unwrap().total, 0);
 
     let album = FacetFilter { kind: FacetKind::Albums, value: "Anima".into(), secondary: Some("Guest".into()) };
-    let page = list_filtered(&pool, "", Some(&album), 0).await.unwrap();
+    let page = list_filtered(&pool, "", Some(&album), None, 0).await.unwrap();
     assert_eq!((page.total, page.tracks[0].title.as_str()), (1, "Three"));
 
     let genre = FacetFilter { kind: FacetKind::Genres, value: "Ambient".into(), secondary: None };
-    assert_eq!(list_filtered(&pool, "", Some(&genre), 0).await.unwrap().total, 1);
+    assert_eq!(list_filtered(&pool, "", Some(&genre), None, 0).await.unwrap().total, 1);
     let unknown = FacetFilter { kind: FacetKind::Genres, value: String::new(), secondary: None };
-    assert_eq!(list_filtered(&pool, "", Some(&unknown), 0).await.unwrap().total, 1);
+    assert_eq!(list_filtered(&pool, "", Some(&unknown), None, 0).await.unwrap().total, 1);
 
     let folder = facets(&pool, FacetKind::Folders).await.unwrap().remove(0).name;
     let in_folder = FacetFilter { kind: FacetKind::Folders, value: folder, secondary: None };
-    assert_eq!(list_filtered(&pool, "", Some(&in_folder), 0).await.unwrap().total, 2);
+    assert_eq!(list_filtered(&pool, "", Some(&in_folder), None, 0).await.unwrap().total, 2);
 }
 
 #[tokio::test]
@@ -1026,4 +1038,86 @@ async fn folder_follows_a_root_relink() {
     let folders = facets(&pool, FacetKind::Folders).await.unwrap();
     assert_eq!(folders.len(), 1);
     assert!(folders[0].name.starts_with(new.path().canonicalize().unwrap().to_str().unwrap()));
+}
+
+// --- Sorting ---
+
+const ALL_SORTS: [SortColumn; 11] = [
+    SortColumn::Title,
+    SortColumn::Artist,
+    SortColumn::Album,
+    SortColumn::Genre,
+    SortColumn::Year,
+    SortColumn::TrackNo,
+    SortColumn::Duration,
+    SortColumn::Format,
+    SortColumn::Size,
+    SortColumn::Bitrate,
+    SortColumn::Added,
+];
+
+#[tokio::test]
+async fn every_sort_column_runs_in_both_directions() {
+    let (_dir, pool) = browse_fixture().await;
+    for column in ALL_SORTS {
+        for descending in [false, true] {
+            let sort = TrackSort { column, descending };
+            let page = list_filtered(&pool, "", None, Some(&sort), 0).await;
+            assert_eq!(page.unwrap().total, 4, "{column:?} desc={descending}");
+        }
+    }
+}
+
+#[tokio::test]
+async fn sorting_puts_blank_values_last_in_both_directions() {
+    let (_dir, pool) = browse_fixture().await;
+    // Genres: two "dub techno", "Ambient", and one blank (Solo).
+    for descending in [false, true] {
+        let sort = TrackSort { column: SortColumn::Genre, descending };
+        let tracks = list_filtered(&pool, "", None, Some(&sort), 0).await.unwrap().tracks;
+        assert_eq!(tracks.last().unwrap().title, "Four", "desc={descending}");
+    }
+    let asc = TrackSort { column: SortColumn::Genre, descending: false };
+    let titles: Vec<String> = list_filtered(&pool, "", None, Some(&asc), 0).await.unwrap().tracks.into_iter().map(|t| t.title).collect();
+    assert_eq!(titles[0], "Three", "Ambient sorts before Dub Techno");
+    // Year: 2001 twice, NULL twice.
+    for descending in [false, true] {
+        let sort = TrackSort { column: SortColumn::Year, descending };
+        let tracks = list_filtered(&pool, "", None, Some(&sort), 0).await.unwrap().tracks;
+        assert!(tracks[0].year.is_some() && tracks[3].year.is_none(), "desc={descending}");
+    }
+}
+
+#[tokio::test]
+async fn descending_reverses_the_primary_order() {
+    let (_dir, pool) = browse_fixture().await;
+    let by = |descending| TrackSort { column: SortColumn::Title, descending };
+    let asc: Vec<String> = list_filtered(&pool, "", None, Some(&by(false)), 0).await.unwrap().tracks.into_iter().map(|t| t.title).collect();
+    let mut desc: Vec<String> = list_filtered(&pool, "", None, Some(&by(true)), 0).await.unwrap().tracks.into_iter().map(|t| t.title).collect();
+    desc.reverse();
+    assert_eq!(asc, desc);
+}
+
+#[tokio::test]
+async fn paging_a_sort_with_many_ties_neither_repeats_nor_skips_rows() {
+    let pool = pool().await;
+    seed_generated_rows(&pool, 450).await; // artists repeat every 250 rows, albums every 40
+    for column in [SortColumn::Artist, SortColumn::Album, SortColumn::Format, SortColumn::Year] {
+        for descending in [false, true] {
+            let sort = TrackSort { column, descending };
+            let mut seen = std::collections::HashSet::new();
+            let mut offset = 0;
+            loop {
+                let page = list_filtered(&pool, "", None, Some(&sort), offset).await.unwrap();
+                if page.tracks.is_empty() {
+                    break;
+                }
+                offset += page.tracks.len() as i64;
+                for track in page.tracks {
+                    assert!(seen.insert(track.id), "{column:?} repeated a row");
+                }
+            }
+            assert_eq!(seen.len(), 450, "{column:?} desc={descending} skipped rows");
+        }
+    }
 }

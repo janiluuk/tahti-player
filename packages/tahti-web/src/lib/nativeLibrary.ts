@@ -17,6 +17,27 @@ export type NativeLibraryTrack = {
   genre: string;
   comment: string;
   bitrateKbps: number | null;
+  /** UTC `YYYY-MM-DD HH:MM:SS`; empty when unknown. */
+  addedAt: string;
+};
+
+export type NativeSortColumn =
+  | 'title'
+  | 'artist'
+  | 'album'
+  | 'genre'
+  | 'year'
+  | 'trackNo'
+  | 'duration'
+  | 'format'
+  | 'size'
+  | 'bitrate'
+  | 'added';
+
+/** Sorted in the database with a stable tie-break; blanks always last. */
+export type NativeTrackSort = {
+  column: NativeSortColumn;
+  descending: boolean;
 };
 
 export type NativeFacetKind = 'artists' | 'albums' | 'genres' | 'folders';
@@ -102,6 +123,7 @@ export type TahtiNativeLibrary = {
     search: string,
     offset: number,
     filter?: NativeFacetFilter | null,
+    sort?: NativeTrackSort | null,
   ) => Promise<NativeLibraryPage>;
   facets: (kind: NativeFacetKind) => Promise<NativeFacetGroup[]>;
   totals: () => Promise<NativeLibraryTotals>;
@@ -221,19 +243,19 @@ export function withReadCache(library: TahtiNativeLibrary): TahtiNativeLibrary {
 
   return {
     ...library,
-    list(search, offset, filter) {
+    list(search, offset, filter, sort) {
       const key = `${offset}\u0000${search}\u0000${
         filter
           ? `${filter.kind}\u0000${filter.value}\u0000${filter.secondary ?? ''}`
           : ''
-      }`;
+      }\u0000${sort ? `${sort.column}:${sort.descending}` : ''}`;
       const hit = pages.get(key);
       if (hit) {
         pages.delete(key);
         pages.set(key, hit);
         return hit;
       }
-      const request = library.list(search, offset, filter);
+      const request = library.list(search, offset, filter, sort);
       pages.set(key, request);
       if (pages.size > LIST_CACHE_LIMIT) {
         const oldest = pages.keys().next().value;

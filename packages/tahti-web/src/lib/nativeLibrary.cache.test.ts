@@ -115,4 +115,14 @@ describe('withReadCache', () => {
     expect(base.facets).toHaveBeenCalledTimes(3);
     expect(base.totals).toHaveBeenCalledTimes(2);
   });
+
+  it('keys list pages by sort so a re-sort never serves the old order', async () => {
+    const base = baseLibrary();
+    const cached = withReadCache(base);
+    await cached.list('', 0, null, { column: 'artist', descending: false });
+    await cached.list('', 0, null, { column: 'artist', descending: false });
+    await cached.list('', 0, null, { column: 'artist', descending: true });
+    await cached.list('', 0, null, null);
+    expect(base.list).toHaveBeenCalledTimes(3);
+  });
 });

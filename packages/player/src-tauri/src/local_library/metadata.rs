@@ -99,6 +99,7 @@ pub fn read(path: &Path) -> Result<LibraryTrack, String> {
         year: None,
         genre: String::new(),
         comment: String::new(),
+        added_at: String::new(),
         bitrate_kbps: (duration > 0.0).then(|| (size as f64 * 8.0 / duration / 1000.0).round() as i64),
     };
     if let Some(metadata) = probed.metadata.get().and_then(|metadata| metadata.current().cloned()) {

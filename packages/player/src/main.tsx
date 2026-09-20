@@ -21,9 +21,9 @@ import '../../tahti-web/src/styles.css';
 const nativeCapabilities: TahtiNativeCapabilities = { localLibrary: true };
 globalThis.__TAHTI_NATIVE_CAPABILITIES__ = nativeCapabilities;
 const baseNativeLibrary: TahtiNativeLibrary = {
-  async list(search, offset, filter) {
+  async list(search, offset, filter, sort) {
     return unwrapResult(
-      await commands.libraryList(search, offset, filter ?? null),
+      await commands.libraryList(search, offset, filter ?? null, sort ?? null),
     );
   },
   async facets(kind) {

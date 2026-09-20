@@ -5,7 +5,7 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
 import type {
   NativeLibraryImportProgress,
@@ -32,6 +32,7 @@ const missingTrack: NativeLibraryTrack = {
   genre: '',
   comment: '',
   bitrateKbps: null,
+  addedAt: '2026-09-18 12:00:00',
 };
 
 const availableTrack: NativeLibraryTrack = {
@@ -51,6 +52,7 @@ const availableTrack: NativeLibraryTrack = {
   genre: 'Dub Techno',
   comment: '',
   bitrateKbps: 1411,
+  addedAt: '2026-09-18 12:00:00',
 };
 
 const musicRoot: NativeLibraryRoot = {
@@ -117,6 +119,18 @@ function createNativeLibrary(
   };
 }
 
+beforeAll(() => {
+  // jsdom has no layout; give the table's virtualizer a viewport.
+  Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
+    configurable: true,
+    value: 600,
+  });
+  Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
+    configurable: true,
+    value: 800,
+  });
+});
+
 afterEach(() => {
   globalThis.__TAHTI_NATIVE_LIBRARY__ = undefined;
   globalThis.__TAHTI_NATIVE_CAPABILITIES__ = undefined;
@@ -141,7 +155,7 @@ describe('DesktopLibraryPanel native missing files', () => {
 
     render(<DesktopLibraryPanel />);
 
-    expect(await screen.findByText('Original file is missing')).toBeTruthy();
+    expect(await screen.findByText('Missing')).toBeTruthy();
     fireEvent.click(
       screen.getByRole('button', { name: 'Check missing files (1)' }),
     );
@@ -233,9 +247,9 @@ describe('DesktopLibraryPanel native import', () => {
     render(<DesktopLibraryPanel />);
 
     expect(await screen.findByText('Available track')).toBeTruthy();
-    expect(
-      screen.getByText(/2001 · Dub Techno · FLAC · 20 KB · 1411 kbps/),
-    ).toBeTruthy();
+    expect(screen.getByText('Dub Techno')).toBeTruthy();
+    expect(screen.getByText('2001')).toBeTruthy();
+    expect(screen.getByText('20 KB')).toBeTruthy();
     fireEvent.click(
       screen.getByRole('button', {
         name: 'Reveal Available track in folder',
@@ -301,7 +315,9 @@ describe('DesktopLibraryPanel native import', () => {
     for (const value of ['h', 'ha', 'har', 'harb']) {
       fireEvent.change(input, { target: { value } });
     }
-    await waitFor(() => expect(list).toHaveBeenCalledWith('harb', 0, null));
+    await waitFor(() =>
+      expect(list).toHaveBeenCalledWith('harb', 0, null, null),
+    );
     expect(list).toHaveBeenCalledTimes(2);
   });
 
@@ -358,11 +374,12 @@ describe('DesktopLibraryPanel native import', () => {
 
     fireEvent.click(screen.getByText('Vladislav Delay'));
     await waitFor(() =>
-      expect(list).toHaveBeenCalledWith('', 0, {
-        kind: 'artists',
-        value: 'Vladislav Delay',
-        secondary: null,
-      }),
+      expect(list).toHaveBeenCalledWith(
+        '',
+        0,
+        { kind: 'artists', value: 'Vladislav Delay', secondary: null },
+        null,
+      ),
     );
     expect(await screen.findByText('Available track')).toBeTruthy();
 
@@ -396,11 +413,12 @@ describe('DesktopLibraryPanel native import', () => {
     ).toBeTruthy();
     fireEvent.click(screen.getByText('Anima'));
     await waitFor(() =>
-      expect(list).toHaveBeenCalledWith('', 0, {
-        kind: 'albums',
-        value: 'Anima',
-        secondary: 'Vladislav Delay',
-      }),
+      expect(list).toHaveBeenCalledWith(
+        '',
+        0,
+        { kind: 'albums', value: 'Anima', secondary: 'Vladislav Delay' },
+        null,
+      ),
     );
   });
 });

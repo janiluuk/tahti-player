@@ -49,6 +49,61 @@ pub struct LibraryTrack {
     pub comment: String,
     #[specta(type = Option<Number<i64>>)]
     pub bitrate_kbps: Option<i64>,
+    /// When the track first entered the catalog (UTC, `YYYY-MM-DD HH:MM:SS`).
+    /// Filled by the database, so extraction leaves it empty.
+    #[sqlx(default)]
+    pub added_at: String,
+}
+
+/// Sortable track-table columns. A closed enum, never user text, so the
+/// ORDER BY below is assembled from fixed SQL only.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
+#[serde(rename_all = "camelCase")]
+pub enum SortColumn {
+    Title,
+    Artist,
+    Album,
+    Genre,
+    Year,
+    TrackNo,
+    Duration,
+    Format,
+    Size,
+    Bitrate,
+    Added,
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, specta::Type)]
+#[serde(rename_all = "camelCase")]
+pub struct TrackSort {
+    pub column: SortColumn,
+    pub descending: bool,
+}
+
+/// Stable ORDER BY: the chosen column, blanks/NULLs always last, then title
+/// and id so paging never repeats or skips a row between requests.
+fn order_clause(sort: Option<&TrackSort>) -> String {
+    const TIE_BREAK: &str = "title COLLATE NOCASE, id";
+    let Some(sort) = sort else {
+        return format!("ORDER BY {TIE_BREAK}");
+    };
+    let dir = if sort.descending { "DESC" } else { "ASC" };
+    let text = |expr: &str| format!("({expr} = ''), {expr} COLLATE NOCASE {dir}");
+    let nullable = |expr: &str| format!("({expr} IS NULL), {expr} {dir}");
+    let primary = match sort.column {
+        SortColumn::Title => return format!("ORDER BY title COLLATE NOCASE {dir}, id"),
+        SortColumn::Artist => text(ARTIST_KEY),
+        SortColumn::Album => text("album"),
+        SortColumn::Genre => text("genre"),
+        SortColumn::Year => nullable("year"),
+        SortColumn::TrackNo => nullable("track_no"),
+        SortColumn::Bitrate => nullable("bitrate_kbps"),
+        SortColumn::Duration => format!("duration {dir}"),
+        SortColumn::Format => format!("format {dir}"),
+        SortColumn::Size => format!("size_bytes {dir}"),
+        SortColumn::Added => format!("added_at {dir}"),
+    };
+    format!("ORDER BY {primary}, {TIE_BREAK}")
 }
 
 #[derive(Serialize, specta::Type)]
@@ -474,7 +529,7 @@ fn fts_match_query(search: &str) -> Option<String> {
 }
 
 pub async fn list(pool: &SqlitePool, search: &str, offset: i64) -> Result<LibraryPage, String> {
-    list_filtered(pool, search, None, offset).await
+    list_filtered(pool, search, None, None, offset).await
 }
 
 /// One page of tracks (100, by title) optionally narrowed to a browse group
@@ -483,6 +538,7 @@ pub async fn list_filtered(
     pool: &SqlitePool,
     search: &str,
     filter: Option<&FacetFilter>,
+    sort: Option<&TrackSort>,
     offset: i64,
 ) -> Result<LibraryPage, String> {
     let search = search.trim();
@@ -542,7 +598,8 @@ pub async fn list_filtered(
     }
     let total = count.fetch_one(pool).await.map_err(|err| err.to_string())?;
     let page_sql = format!(
-        "SELECT * FROM library_tracks {where_sql} ORDER BY title COLLATE NOCASE,id LIMIT 100 OFFSET ?"
+        "SELECT * FROM library_tracks {where_sql} {} LIMIT 100 OFFSET ?",
+        order_clause(sort)
     );
     let mut page = sqlx::query_as::<_, LibraryTrack>(&page_sql);
     for value in &binds {
@@ -588,8 +645,16 @@ pub async fn library_list(
     search: String,
     offset: i32,
     filter: Option<FacetFilter>,
+    sort: Option<TrackSort>,
 ) -> Result<LibraryPage, String> {
-    list_filtered(&pool(&app).await?, &search, filter.as_ref(), offset.into()).await
+    list_filtered(
+        &pool(&app).await?,
+        &search,
+        filter.as_ref(),
+        sort.as_ref(),
+        offset.into(),
+    )
+    .await
 }
 
 #[tauri::command]
