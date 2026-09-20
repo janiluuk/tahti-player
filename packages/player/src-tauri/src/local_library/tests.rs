@@ -28,6 +28,11 @@ async fn pool() -> SqlitePool {
 
 /// Writes a minimal PCM16 mono WAV file symphonia can decode and tag.
 fn write_wav(path: &std::path::Path, title: &str, artist: &str) {
+    write_wav_tagged(path, &[("INAM", title), ("IART", artist)]);
+}
+
+/// Same WAV with an arbitrary set of RIFF INFO tags.
+fn write_wav_tagged(path: &std::path::Path, tags: &[(&str, &str)]) {
     let samples: Vec<i16> = (0..4410).map(|i| ((i % 100) * 300) as i16).collect();
     let data_len = (samples.len() * 2) as u32;
     let mut bytes = Vec::new();
@@ -44,7 +49,7 @@ fn write_wav(path: &std::path::Path, title: &str, artist: &str) {
     // The WAV reader returns as soon as it sees the `data` chunk, so `LIST` must precede it.
     let mut list_chunk = Vec::new();
     list_chunk.extend_from_slice(b"INFO");
-    for (tag, value) in [("INAM", title), ("IART", artist)] {
+    for (tag, value) in tags.iter().copied() {
         let mut value_bytes = value.as_bytes().to_vec();
         value_bytes.push(0); // null terminator, counted in len
         let len = value_bytes.len() as u32;
@@ -856,4 +861,51 @@ async fn relinking_onto_another_existing_root_is_rejected() {
     let root_a = add_root(&pool, a.path()).await.unwrap();
     add_root(&pool, b.path()).await.unwrap();
     assert!(relink_root(&pool, &root_a.id, b.path()).await.is_err());
+}
+
+#[tokio::test]
+async fn extracts_rich_tags_bitrate_and_searches_them() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("rich.wav");
+    write_wav_tagged(
+        &path,
+        &[
+            ("INAM", "Huone"),
+            ("IART", "Vladislav Delay"),
+            ("IPRD", "Anima"),
+            ("IGNR", "Dub Techno"),
+            ("ICMT", "Recorded in Helsinki"),
+            ("ICRD", "2001-05-14"),
+            ("IPRT", "3/9"),
+        ],
+    );
+    let pool = pool().await;
+    let result = import_paths(&pool, vec![path]).await;
+    assert_eq!(result.imported, 1, "errors: {:?}", result.errors);
+
+    let track = list(&pool, "", 0).await.unwrap().tracks.remove(0);
+    assert_eq!(track.album, "Anima");
+    assert_eq!(track.genre, "Dub Techno");
+    assert_eq!(track.comment, "Recorded in Helsinki");
+    assert_eq!(track.year, Some(2001));
+    assert_eq!(track.track_no, Some(3));
+    assert!(track.bitrate_kbps.unwrap_or(0) > 0, "bitrate derived from size and duration");
+
+    assert_eq!(list(&pool, "dub tech", 0).await.unwrap().total, 1, "genre is searchable");
+    assert_eq!(list(&pool, "helsinki", 0).await.unwrap().total, 1, "comment is searchable");
+}
+
+#[tokio::test]
+async fn untagged_files_keep_unknown_values_empty_not_guessed() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("plain.wav");
+    write_wav_untagged(&path);
+    let pool = pool().await;
+    import_paths(&pool, vec![path]).await;
+
+    let track = list(&pool, "", 0).await.unwrap().tracks.remove(0);
+    assert_eq!(track.artist, "");
+    assert_eq!(track.album_artist, "");
+    assert_eq!(track.genre, "");
+    assert_eq!((track.year, track.track_no, track.disc_no), (None, None, None));
 }

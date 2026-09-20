@@ -25,6 +25,13 @@ const missingTrack: NativeLibraryTrack = {
   sizeBytes: 10_000,
   available: false,
   unavailableSince: '2026-09-18T12:00:00Z',
+  albumArtist: '',
+  trackNo: null,
+  discNo: null,
+  year: null,
+  genre: '',
+  comment: '',
+  bitrateKbps: null,
 };
 
 const availableTrack: NativeLibraryTrack = {
@@ -37,6 +44,13 @@ const availableTrack: NativeLibraryTrack = {
   sizeBytes: 20_000,
   available: true,
   unavailableSince: null,
+  albumArtist: '',
+  trackNo: null,
+  discNo: null,
+  year: 2001,
+  genre: 'Dub Techno',
+  comment: '',
+  bitrateKbps: 1411,
 };
 
 const musicRoot: NativeLibraryRoot = {
@@ -213,6 +227,9 @@ describe('DesktopLibraryPanel native import', () => {
     render(<DesktopLibraryPanel />);
 
     expect(await screen.findByText('Available track')).toBeTruthy();
+    expect(
+      screen.getByText(/2001 · Dub Techno · FLAC · 20 KB · 1411 kbps/),
+    ).toBeTruthy();
     fireEvent.click(
       screen.getByRole('button', {
         name: 'Reveal Available track in folder',

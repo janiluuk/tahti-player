@@ -38,6 +38,17 @@ pub struct LibraryTrack {
     pub size_bytes: i64,
     pub available: bool,
     pub unavailable_since: Option<String>,
+    pub album_artist: String,
+    #[specta(type = Option<Number<i64>>)]
+    pub track_no: Option<i64>,
+    #[specta(type = Option<Number<i64>>)]
+    pub disc_no: Option<i64>,
+    #[specta(type = Option<Number<i64>>)]
+    pub year: Option<i64>,
+    pub genre: String,
+    pub comment: String,
+    #[specta(type = Option<Number<i64>>)]
+    pub bitrate_kbps: Option<i64>,
 }
 
 #[derive(Serialize, specta::Type)]
@@ -253,8 +264,9 @@ async fn insert_track(
     // same self-heal `resolve_path` does on a direct resolve. Re-importing
     // an ad hoc track under a root adopts it into that root; an existing
     // root membership is never stolen.
-    sqlx::query("INSERT INTO library_tracks (id,path,title,artist,album,format,duration,sample_rate,channels,bits_per_sample,size_bytes,root_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(path) DO UPDATE SET title=excluded.title, artist=excluded.artist, album=excluded.album, format=excluded.format, duration=excluded.duration, sample_rate=excluded.sample_rate, channels=excluded.channels, bits_per_sample=excluded.bits_per_sample, size_bytes=excluded.size_bytes, available=1, unavailable_since=NULL, root_id=COALESCE(library_tracks.root_id, excluded.root_id)")
+    sqlx::query("INSERT INTO library_tracks (id,path,title,artist,album,format,duration,sample_rate,channels,bits_per_sample,size_bytes,root_id,album_artist,track_no,disc_no,year,genre,comment,bitrate_kbps) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(path) DO UPDATE SET title=excluded.title, artist=excluded.artist, album=excluded.album, album_artist=excluded.album_artist, track_no=excluded.track_no, disc_no=excluded.disc_no, year=excluded.year, genre=excluded.genre, comment=excluded.comment, bitrate_kbps=excluded.bitrate_kbps, format=excluded.format, duration=excluded.duration, sample_rate=excluded.sample_rate, channels=excluded.channels, bits_per_sample=excluded.bits_per_sample, size_bytes=excluded.size_bytes, available=1, unavailable_since=NULL, root_id=COALESCE(library_tracks.root_id, excluded.root_id)")
         .bind(&track.id).bind(&track.path).bind(&track.title).bind(&track.artist).bind(&track.album).bind(&track.format).bind(track.duration).bind(track.sample_rate).bind(track.channels).bind(track.bits_per_sample).bind(track.size_bytes).bind(root_id)
+        .bind(&track.album_artist).bind(track.track_no).bind(track.disc_no).bind(track.year).bind(&track.genre).bind(&track.comment).bind(track.bitrate_kbps)
         .execute(conn).await?;
     Ok(())
 }
@@ -683,8 +695,8 @@ pub async fn relink(
     let extracted = tauri::async_runtime::spawn_blocking(move || metadata::read(&new_path))
         .await
         .map_err(|err| err.to_string())??;
-    let updated = sqlx::query("UPDATE library_tracks SET path=?, title=?, artist=?, album=?, format=?, duration=?, sample_rate=?, channels=?, bits_per_sample=?, size_bytes=?, available=1, unavailable_since=NULL WHERE id=?")
-        .bind(&extracted.path).bind(&extracted.title).bind(&extracted.artist).bind(&extracted.album).bind(&extracted.format).bind(extracted.duration).bind(extracted.sample_rate).bind(extracted.channels).bind(extracted.bits_per_sample).bind(extracted.size_bytes)
+    let updated = sqlx::query("UPDATE library_tracks SET path=?, title=?, artist=?, album=?, album_artist=?, track_no=?, disc_no=?, year=?, genre=?, comment=?, bitrate_kbps=?, format=?, duration=?, sample_rate=?, channels=?, bits_per_sample=?, size_bytes=?, available=1, unavailable_since=NULL WHERE id=?")
+        .bind(&extracted.path).bind(&extracted.title).bind(&extracted.artist).bind(&extracted.album).bind(&extracted.album_artist).bind(extracted.track_no).bind(extracted.disc_no).bind(extracted.year).bind(&extracted.genre).bind(&extracted.comment).bind(extracted.bitrate_kbps).bind(&extracted.format).bind(extracted.duration).bind(extracted.sample_rate).bind(extracted.channels).bind(extracted.bits_per_sample).bind(extracted.size_bytes)
         .bind(id)
         .execute(pool).await;
     if let Err(error) = updated {

@@ -636,9 +636,7 @@ export function DesktopLibraryPanel() {
                         {track.artist || 'Unknown artist'}
                       </p>
                       <p className="text-foreground-secondary truncate text-[10px] opacity-70">
-                        {track.album || 'Unknown album'} ·{' '}
-                        {track.format.toUpperCase()} ·{' '}
-                        {formatFileSize(track.sizeBytes)}
+                        {describeTrackDetails(track)}
                       </p>
                       {!track.available ? (
                         <p className="text-destructive truncate text-xs">
@@ -938,4 +936,17 @@ function formatFileSize(bytes: number): string {
     return `${Math.max(1, Math.round(bytes / 1024))} KB`;
   }
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+export function describeTrackDetails(track: NativeLibraryTrack): string {
+  return [
+    track.album || 'Unknown album',
+    track.year ? String(track.year) : null,
+    track.genre || null,
+    track.format.toUpperCase(),
+    formatFileSize(track.sizeBytes),
+    track.bitrateKbps ? `${track.bitrateKbps} kbps` : null,
+  ]
+    .filter(Boolean)
+    .join(' · ');
 }

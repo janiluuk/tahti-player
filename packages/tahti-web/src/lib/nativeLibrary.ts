@@ -10,6 +10,13 @@ export type NativeLibraryTrack = {
   sizeBytes: number;
   available: boolean;
   unavailableSince: string | null;
+  albumArtist: string;
+  trackNo: number | null;
+  discNo: number | null;
+  year: number | null;
+  genre: string;
+  comment: string;
+  bitrateKbps: number | null;
 };
 
 export type NativeLibraryPage = {

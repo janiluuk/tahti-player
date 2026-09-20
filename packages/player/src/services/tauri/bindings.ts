@@ -47,6 +47,13 @@ export const commands = {
 	sizeBytes: number,
 	available: boolean,
 	unavailableSince: string | null,
+	albumArtist: string,
+	trackNo: number | null,
+	discNo: number | null,
+	year: number | null,
+	genre: string,
+	comment: string,
+	bitrateKbps: number | null,
 } | null, string>(__TAURI_INVOKE("library_relink", { id })),
 	libraryListRoots: () => typedError<LibraryRoot[], string>(__TAURI_INVOKE("library_list_roots")),
 	/**
@@ -226,6 +233,13 @@ export type LibraryTrack = {
 	sizeBytes: number,
 	available: boolean,
 	unavailableSince: string | null,
+	albumArtist: string,
+	trackNo: number | null,
+	discNo: number | null,
+	year: number | null,
+	genre: string,
+	comment: string,
+	bitrateKbps: number | null,
 };
 
 export type Page<T> = {
