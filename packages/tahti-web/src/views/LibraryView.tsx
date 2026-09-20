@@ -53,7 +53,7 @@ export const LIBRARY_SECTION_TABS = [
   },
   {
     id: 'sounds' as const,
-    label: 'Sounds',
+    label: 'Tracks',
     icon: Music2Icon,
     to: '/library/sounds',
   },
@@ -104,7 +104,7 @@ export const LIBRARY_SECTION_TABS = [
 export type LibrarySectionId = (typeof LIBRARY_SECTION_TABS)[number]['id'];
 
 /**
- * The horizontal Overview/Sounds/Collections/... tab strip shown at the top
+ * The horizontal Overview/Tracks/Collections/... tab strip shown at the top
  * of every Library page. Reused outside LibraryView by pages that live one
  * level under a Library tab (e.g. an individual collection's detail page)
  * so they still show Library's top navigation with the right tab active.
@@ -140,7 +140,7 @@ export function LibraryView({ tab = 'library' }: { tab?: Tab }) {
     tab === 'library'
       ? 'Overview'
       : tab === 'sounds'
-        ? 'Sounds'
+        ? 'Tracks'
         : tab === 'recordings'
           ? 'Recordings'
           : tab === 'embeds'

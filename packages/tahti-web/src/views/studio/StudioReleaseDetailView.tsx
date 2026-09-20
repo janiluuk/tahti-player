@@ -1105,7 +1105,7 @@ function ReleaseSmartLinksPanel({
               >
                 <span className="min-w-0 flex-1 truncate">{item.title}</span>
                 <span className="text-foreground-secondary text-xs">
-                  {item.contentType ?? 'Sound'}
+                  {item.contentType ?? 'Track'}
                 </span>
                 {alreadyAdded ? (
                   <span className="text-xs">Added</span>

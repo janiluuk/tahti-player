@@ -2,6 +2,49 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-20 — Rename Sound to Library (scope clarified: Sounds tab → Tracks)
+
+Folded from `rename-sound-to-library.md`.
+
+Investigated before editing: the top-level nav section is already called
+"Library" (`stores/navigationStructureStore.ts`, route `/library`,
+`LibraryView.tsx`) — that rename had already happened in an earlier
+session. What was still labeled "Sound(s)" was a narrower, different
+concept: the Library sub-tab (and its Studio counterpart at
+`/studio/sounds`, `StudioSoundsView.tsx`) showing the user's own uploaded
+audio items, rendered by `MyDiscographyView`. Confirmed the actual scope
+with the user — rename that "Sounds" sub-tab to "Tracks" (not "Library",
+since that's the parent section).
+
+Renamed all user-facing copy referring to this entity/tab from
+"Sound(s)" to "Track(s)": `LibraryView.tsx` tab label + page title,
+`StudioSoundsView.tsx` folder-tab label/page title/search
+aria-label/stats-dialog copy/delete-confirm title, `MyDiscographyView.tsx`
+loading/error/empty-state/filter/search copy, `ConnectedStatusBar.tsx`'s
+sound-count pill text, `AdminStorageUserView.tsx`'s file-kind label,
+`StudioHomeView.tsx`'s Music tile subtitle, `FavoritesView.tsx`'s empty
+message, `RemainingCategories.tsx`'s mastering plugin description,
+`StudioReleaseDetailView.tsx`'s content-type fallback badge, and a
+`studio-sounds.ts` error message. Updated the in-app page tour
+(`pageTour.ts`) and Help Hub copy (`help.ts`), the `/more` diagnostics map
+content (`mapScreens.ts`) and Mermaid flow diagrams (`flowDiagrams.ts`),
+the Storybook story for `StudioSoundsView` (renamed the `Sounds` export to
+`Tracks`, updated its description), and `docs/VIEW-CATALOG.md`'s two rows.
+Updated the e2e test and unit test assertions that checked the old label
+text (`real-user-journeys.spec.ts`, `MyDiscographyView.test.tsx`).
+
+Deliberately left unchanged: internal identifiers (`soundId`, `StudioSound`
+type, `/api/me/sound*` routes, `sound-versions.ts`/`studio-sounds.ts`
+filenames, the `/library/sounds` and `/studio/sounds` route paths) — those
+are a distinct, much larger and riskier refactor of the domain/API layer
+that wasn't asked for. Also left `SoundCloud`, genre/vendor names
+containing "Sound", and generic English uses of the word alone.
+
+Verified: `tsc --noEmit` / `eslint` clean on `tahti-web`, `git diff --check`
+clean, the two directly affected unit test files pass. Bumped
+`tahti-web` to `0.0.125`; skipped a release-notes entry per that file's own
+"not every bump" rule (small copy-only rename).
+
 ## 2026-09-18 — Fixed and shipped the orphaned `canvas-designer` cover-art generator
 
 User asked to "continue on the canvas designer" — an untracked, undocumented

@@ -110,14 +110,14 @@ describe('MyDiscographyView', () => {
     // must never override real fetched data.
     fetchedSounds = [mockSound];
     await renderAsUser(null);
-    expect(container.textContent).not.toContain('No sounds yet');
+    expect(container.textContent).not.toContain('No tracks yet');
     expect(container.textContent).toContain('Test Track');
   });
 
   it('shows the "go live" empty state when there is genuinely nothing and no channel', async () => {
     fetchedSounds = [];
     await renderAsUser(null);
-    expect(container.textContent).toContain('No sounds yet');
+    expect(container.textContent).toContain('No tracks yet');
     expect(container.textContent).toContain('Go live or upload music');
   });
 
@@ -131,8 +131,8 @@ describe('MyDiscographyView', () => {
     fetchedSounds = [];
     fetchedMeta = { source: 'api', reason: 'Not Found' };
     await renderAsUser({ slug: 'user', state: 'OFFLINE' });
-    expect(container.textContent).toContain('Could not load sounds');
+    expect(container.textContent).toContain('Could not load tracks');
     expect(container.textContent).toContain('Not Found');
-    expect(container.textContent).not.toContain('No sounds yet');
+    expect(container.textContent).not.toContain('No tracks yet');
   });
 });

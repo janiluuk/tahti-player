@@ -57,7 +57,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
 
   subgraph surfaces["Where they're listed"]
     direction TB
-    Sounds["Studio → Sounds<br/><small>archive / clips folders</small>"]
+    Sounds["Studio → Tracks<br/><small>archive / clips folders</small>"]
     Discover["Discover<br/><small>content-type filter chips</small>"]
     Library["Library<br/><small>owned + followed sounds</small>"]
     Radio["Radio · Tahti Radio<br/><small>rotation + submissions</small>"]
@@ -126,7 +126,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   Account --> Governance["/governance · member"]
   Governance --> GovernanceHistory["/governance/history · public closed motions"]
   StudioGate --> Studio["Signed in + channel → /studio"]
-  Studio --> StudioMenu["Overview · Branding · Stats · Governance · Posts · Audience · Library · Sounds · Collections · Releases · Upload · Editor"]
+  Studio --> StudioMenu["Overview · Branding · Stats · Governance · Posts · Audience · Library · Tracks · Collections · Releases · Upload · Editor"]
   Studio --> Perform["Go Live · Broadcast · Events · Shows · Channel · Radio"]
   Settings --> SettingsAddons["Themes · Add-ons · no About footer"]
   Board["Board role"] --> Admin["/admin"]
@@ -181,7 +181,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   Shell --> Admin["Admin · board role"]
 
   subgraph studio["Studio sections"]
-    Studio --> StudioOverview["Studio: Overview · Branding · Stats · Governance · Posts · Audience · Library · Sounds · Collections · Releases · Upload · Editor"]
+    Studio --> StudioOverview["Studio: Overview · Branding · Stats · Governance · Posts · Audience · Library · Tracks · Collections · Releases · Upload · Editor"]
     Studio --> Perform["Perform: Go Live · Broadcast · Events · Shows · Channel · Radio"]
   end
 
@@ -213,7 +213,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   Login["/login"] --> Role{Role}
   Role -->|Artist| Studio["/studio"]
   Studio --> Perform["Perform: Go Live · Broadcast · Shows · Channel · Radio"]
-  Studio --> Library["Library: Sounds · Upload · Collections"]
+  Studio --> Library["Library: Tracks · Upload · Collections"]
   Studio --> Grow["Grow: Stats · Governance · Audience (Overview · Tiers · Stripe) · Posts"]
   Studio --> Settings["Settings: artist and account · broadcast sources"]
   Role -->|Board| Admin["/admin"]
@@ -652,7 +652,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   subgraph studio["Studio routes"]
     ST["/studio"]
     GL["/studio/go-live"]
-    CAT["Sounds · Releases · Collections · Upload · …"]
+    CAT["Tracks · Releases · Collections · Upload · …"]
     Gov["/studio/governance"]
   end
 

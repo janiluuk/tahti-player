@@ -136,7 +136,7 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
       <SectionShell title="Tracks">
         <PlayableTrackTable
           items={audioFavorites}
-          emptyMessage="No favorite tracks yet. Heart rows in Sounds / Collections."
+          emptyMessage="No favorite tracks yet. Heart rows in Tracks / Collections."
           playAll={false}
         />
       </SectionShell>

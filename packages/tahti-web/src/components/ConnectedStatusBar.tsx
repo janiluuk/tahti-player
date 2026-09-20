@@ -64,7 +64,7 @@ export function StatusBarContent({
   localTrackCount,
   className,
 }: StatusBarContentProps) {
-  const soundsLabel = `${soundCount.toLocaleString()} sound${soundCount === 1 ? '' : 's'}`;
+  const soundsLabel = `${soundCount.toLocaleString()} track${soundCount === 1 ? '' : 's'}`;
   const notificationsLabel =
     unreadNotifications === 0
       ? 'No new notifications'

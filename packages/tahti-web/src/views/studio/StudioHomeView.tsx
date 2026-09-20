@@ -605,7 +605,7 @@ export function StudioHomeView() {
                     subtitle={
                       counts.sounds
                         ? `${counts.sounds} items`
-                        : 'Sounds & files'
+                        : 'Tracks & files'
                     }
                     color="var(--accent-orange)"
                   />

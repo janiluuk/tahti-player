@@ -23,7 +23,6 @@ Status values: `open` | `blocked` | `partial`.
 | partial | [radio-channel-page.md](radio-channel-page.md)                                                           | Root cause confirmed 2026-09-18 (`db push` skips migration data statements) and pipeline fix opened as `tahti-org#532`; still needs the user to run a one-time prod baseline (exact commands in the doc) before/after merging it                          |
 | open    | [listening-party.md](listening-party.md) | Scheduled album playback from start to finish, full tracklist and liner notes, artist/fan live chat, and direct pre-orders or purchases in all available formats |
 | open    | [studio-empty-discography-ctas.md](studio-empty-discography-ctas.md) | Show “Add an album” and “Add a track” CTA buttons on the Studio front page when the user has no uploaded discography |
-| open    | [rename-sound-to-library.md](rename-sound-to-library.md) | Rename the Sound section to Library throughout the UI, including all “Go to Sound” prompts |
 
 ## Fold rule (copy into CLAUDE / chat)
 
