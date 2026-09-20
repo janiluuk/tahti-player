@@ -8,8 +8,29 @@ export const commands = {
 	libraryList: (search: string, offset: number) => typedError<LibraryPage, string>(__TAURI_INVOKE("library_list", { search, offset })),
 	libraryImport: () => typedError<ImportResult, string>(__TAURI_INVOKE("library_import")),
 	libraryImportFolder: () => typedError<ImportResult, string>(__TAURI_INVOKE("library_import_folder")),
+	/**
+	 *  Imports an explicit list of files/folders -- the entry point for native
+	 *  drag-drop, which hands over absolute paths directly rather than going
+	 *  through a picker dialog. Directories are walked the same way folder
+	 *  import does; unsupported files are counted as skipped, not errored.
+	 */
+	libraryImportPaths: (paths: string[]) => typedError<ImportResult, string>(__TAURI_INVOKE("library_import_paths", { paths })),
+	/**
+	 *  Interrupts the in-flight import loop before its next file. Checked
+	 *  cooperatively, so a file already being read/inserted still completes.
+	 */
+	libraryImportCancel: () => typedError<null, string>(__TAURI_INVOKE("library_import_cancel")),
 	libraryResolve: (id: string) => typedError<string, string>(__TAURI_INVOKE("library_resolve", { id })),
 	libraryRemove: (id: string) => typedError<null, string>(__TAURI_INVOKE("library_remove", { id })),
+	/**
+	 *  Reveals a track's original file in the OS file manager. Calls the
+	 *  opener plugin's Rust API directly (`app.opener()`, bypassing the
+	 *  IPC-scoped `reveal-item-in-dir` permission the same way `library_resolve`
+	 *  bypasses the asset-protocol scope with a per-path `allow_file`) since the
+	 *  user already granted access to this exact file by importing it -- a
+	 *  static allow-list can't cover arbitrary import locations.
+	 */
+	libraryReveal: (id: string) => typedError<null, string>(__TAURI_INVOKE("library_reveal", { id })),
 	libraryListUnavailable: () => typedError<LibraryTrack[], string>(__TAURI_INVOKE("library_list_unavailable")),
 	libraryRescan: () => typedError<LibraryTrack[], string>(__TAURI_INVOKE("library_rescan")),
 	libraryRelink: (id: string) => typedError<{
@@ -27,6 +48,35 @@ export const commands = {
 	available: boolean,
 	unavailableSince: string | null,
 } | null, string>(__TAURI_INVOKE("library_relink", { id })),
+	libraryListRoots: () => typedError<LibraryRoot[], string>(__TAURI_INVOKE("library_list_roots")),
+	/**
+	 *  Folder picker -> register as root -> initial scan (imports everything
+	 *  under it, tagged to the root).
+	 */
+	libraryAddRoot: () => typedError<{
+	imported: number,
+	skipped: number,
+	/**  Known tracks whose file is no longer there. */
+	missing: number,
+	/**  Previously-missing tracks whose file is back. */
+	recovered: number,
+	errors: ImportFailure[],
+	cancelled: boolean,
+} | null, string>(__TAURI_INVOKE("library_add_root")),
+	libraryRemoveRoot: (id: string) => typedError<null, string>(__TAURI_INVOKE("library_remove_root", { id })),
+	/**
+	 *  Re-scans every root: imports files that appeared since the last scan and
+	 *  refreshes missing/recovered state. Idempotent -- a second run with no
+	 *  filesystem changes imports and changes nothing.
+	 */
+	libraryRescanRoots: () => typedError<RootScanResult, string>(__TAURI_INVOKE("library_rescan_roots")),
+	libraryRelinkRoot: (id: string) => typedError<{
+	root: LibraryRoot,
+	/**  Tracks re-pointed at the new folder (same relative path and size). */
+	relinked: number,
+	/**  Tracks with no proven match in the new folder; left untouched. */
+	unmatched: number,
+} | null, string>(__TAURI_INVOKE("library_relink_root", { id })),
 	isFlatpak: () => __TAURI_INVOKE<boolean>("is_flatpak"),
 	copyDirRecursive: (from: string, to: string) => typedError<null, string>(__TAURI_INVOKE("copy_dir_recursive", { from, to })),
 	extractZip: (zipPath: string, destPath: string) => typedError<null, string>(__TAURI_INVOKE("extract_zip", { zipPath, destPath })),
@@ -127,12 +177,39 @@ export type ImportFailure = {
 
 export type ImportResult = {
 	imported: number,
+	/**
+	 *  Files walked (folder import / drag-drop) that were neither imported
+	 *  nor errored -- unsupported extensions, silently ignored before this
+	 *  counter existed.
+	 */
+	skipped: number,
 	errors: ImportFailure[],
+	/**
+	 *  True when `library_import_cancel` interrupted the loop before every
+	 *  path was processed. Paths not yet reached are neither imported,
+	 *  skipped nor counted as errors.
+	 */
+	cancelled: boolean,
 };
 
 export type LibraryPage = {
 	tracks: LibraryTrack[],
 	total: number,
+};
+
+/**
+ *  A folder the user asked the library to keep in sync. `track_count` /
+ *  `missing_count` are aggregated on read; `available` is whether the folder
+ *  itself currently exists on disk (false for a disconnected drive).
+ */
+export type LibraryRoot = {
+	id: string,
+	path: string,
+	createdAt: string,
+	lastScannedAt: string | null,
+	trackCount: number,
+	missingCount: number,
+	available: boolean,
 };
 
 export type LibraryTrack = {
@@ -173,6 +250,29 @@ export type PlayEvent = {
 };
 
 export type PlayEventKind = "started" | "paused" | "resumed" | "seeked" | "finished" | "skipped" | "stopped";
+
+export type RelinkRootResult = {
+	root: LibraryRoot,
+	/**  Tracks re-pointed at the new folder (same relative path and size). */
+	relinked: number,
+	/**  Tracks with no proven match in the new folder; left untouched. */
+	unmatched: number,
+};
+
+/**
+ *  Outcome of scanning one or more roots: new files imported, plus how many
+ *  already-known tracks changed availability.
+ */
+export type RootScanResult = {
+	imported: number,
+	skipped: number,
+	/**  Known tracks whose file is no longer there. */
+	missing: number,
+	/**  Previously-missing tracks whose file is back. */
+	recovered: number,
+	errors: ImportFailure[],
+	cancelled: boolean,
+};
 
 export type StartupLogEntry = {
 	timestamp: string,

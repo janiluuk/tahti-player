@@ -1,5 +1,16 @@
-import { LaptopIcon, LibraryIcon, PlayIcon, TrashIcon } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  FolderOpenIcon,
+  FolderPlusIcon,
+  LaptopIcon,
+  LibraryIcon,
+  Link2Icon,
+  LoaderCircleIcon,
+  PlayIcon,
+  RefreshCwIcon,
+  TrashIcon,
+  XIcon,
+} from 'lucide-react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
@@ -15,7 +26,11 @@ import { hasNativePlayer } from '../lib/nativeCapabilities';
 import {
   getNativeLibrary,
   playableFromNativeTrack,
+  type NativeLibraryImportProgress,
+  type NativeLibraryImportResult,
+  type NativeLibraryRoot,
   type NativeLibraryTrack,
+  type NativeRootScanResult,
 } from '../lib/nativeLibrary';
 import {
   filterLocalLibraryTracks,
@@ -24,6 +39,7 @@ import {
   useLocalLibraryStore,
 } from '../stores/localLibraryStore';
 import { usePlayerStore } from '../stores/playerStore';
+import { ConfirmDialog } from './ConfirmDialog';
 import { PlayableTrackTable } from './PlayableTrackTable';
 
 const FILE_LABELS = {
@@ -69,51 +85,101 @@ export function DesktopLibraryPanel() {
   const [nativeTracks, setNativeTracks] = useState<NativeLibraryTrack[]>([]);
   const [nativeTotal, setNativeTotal] = useState(0);
   const [nativeQuery, setNativeQuery] = useState('');
+  const [debouncedNativeQuery, setDebouncedNativeQuery] = useState('');
   const [nativeLoading, setNativeLoading] = useState(false);
   const [nativeError, setNativeError] = useState<string | null>(null);
   const [nativeUnavailable, setNativeUnavailable] = useState<
     NativeLibraryTrack[]
   >([]);
+  const [nativeProgress, setNativeProgress] =
+    useState<NativeLibraryImportProgress | null>(null);
+  const lastFailedPathsRef = useRef<string[]>([]);
+  const listRequestRef = useRef(0);
+  const [roots, setRoots] = useState<NativeLibraryRoot[]>([]);
+  const [rootBusy, setRootBusy] = useState<string | 'add' | 'rescan' | null>(
+    null,
+  );
+  const [rootToRemove, setRootToRemove] = useState<NativeLibraryRoot | null>(
+    null,
+  );
+
+  useEffect(() => {
+    const timer = window.setTimeout(
+      () => setDebouncedNativeQuery(nativeQuery),
+      nativeQuery === '' ? 0 : 120,
+    );
+    return () => window.clearTimeout(timer);
+  }, [nativeQuery]);
+
+  useEffect(() => {
+    if (!nativeLibrary) {
+      return;
+    }
+    return nativeLibrary.onImportProgress((progress) => {
+      setNativeProgress(progress.currentPath === null ? null : progress);
+    });
+  }, [nativeLibrary]);
 
   const refreshNative = useCallback(async () => {
     if (!nativeLibrary) {
       return;
     }
+    const request = ++listRequestRef.current;
     setNativeLoading(true);
     setNativeError(null);
     try {
-      const [page, unavailable] = await Promise.all([
-        nativeLibrary.list(nativeQuery, 0),
+      const [page, unavailable, rootList] = await Promise.all([
+        nativeLibrary.list(debouncedNativeQuery, 0),
         nativeLibrary.listUnavailable(),
+        nativeLibrary.listRoots(),
       ]);
+      if (request !== listRequestRef.current) {
+        return;
+      }
       setNativeTracks(page.tracks);
       setNativeTotal(page.total);
       setNativeUnavailable(unavailable);
+      setRoots(rootList);
     } catch (error) {
-      setNativeError(
-        error instanceof Error ? error.message : 'Library unavailable.',
-      );
+      if (request === listRequestRef.current) {
+        setNativeError(
+          error instanceof Error ? error.message : 'Library unavailable.',
+        );
+      }
     } finally {
-      setNativeLoading(false);
+      if (request === listRequestRef.current) {
+        setNativeLoading(false);
+      }
     }
-  }, [nativeLibrary, nativeQuery]);
+  }, [nativeLibrary, debouncedNativeQuery]);
 
   const loadMoreNative = async () => {
     if (!nativeLibrary || nativeLoading || nativeTracks.length >= nativeTotal) {
       return;
     }
+    const request = ++listRequestRef.current;
     setNativeLoading(true);
     setNativeError(null);
     try {
-      const page = await nativeLibrary.list(nativeQuery, nativeTracks.length);
+      const page = await nativeLibrary.list(
+        debouncedNativeQuery,
+        nativeTracks.length,
+      );
+      if (request !== listRequestRef.current) {
+        return;
+      }
       setNativeTracks((current) => [...current, ...page.tracks]);
       setNativeTotal(page.total);
     } catch (error) {
-      setNativeError(
-        error instanceof Error ? error.message : 'Library unavailable.',
-      );
+      if (request === listRequestRef.current) {
+        setNativeError(
+          error instanceof Error ? error.message : 'Library unavailable.',
+        );
+      }
     } finally {
-      setNativeLoading(false);
+      if (request === listRequestRef.current) {
+        setNativeLoading(false);
+      }
     }
   };
 
@@ -121,67 +187,92 @@ export function DesktopLibraryPanel() {
     void refreshNative();
   }, [refreshNative]);
 
-  const importNative = async () => {
-    if (!nativeLibrary) {
-      return;
+  const reportImportResult = (result: NativeLibraryImportResult) => {
+    lastFailedPathsRef.current = result.errors.map((failure) => failure.path);
+    if (result.imported > 0) {
+      toast.success(
+        result.imported === 1
+          ? 'Imported 1 track.'
+          : `Imported ${result.imported} tracks.`,
+      );
     }
-    setNativeLoading(true);
-    try {
-      const result = await nativeLibrary.import();
-      if (result.imported > 0) {
-        toast.success(
-          result.imported === 1
-            ? 'Imported 1 track.'
-            : `Imported ${result.imported} tracks.`,
-        );
-      }
-      if (result.errors.length) {
-        toast.error(
-          result.errors.length === 1
-            ? '1 file could not be imported.'
-            : `${result.errors.length} files could not be imported.`,
-          { description: describeImportFailures(result.errors) },
-        );
-      }
-      await refreshNative();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Import failed.');
-    } finally {
-      setNativeLoading(false);
+    if (result.errors.length) {
+      toast.error(
+        result.errors.length === 1
+          ? '1 file could not be imported.'
+          : `${result.errors.length} files could not be imported.`,
+        {
+          description: describeImportFailures(result.errors),
+          action: {
+            label: 'Retry',
+            onClick: () => void retryFailedImport(),
+          },
+        },
+      );
+    }
+    if (result.cancelled) {
+      toast.info('Import cancelled.');
+    }
+    if (
+      !result.imported &&
+      !result.errors.length &&
+      !result.cancelled &&
+      result.skipped
+    ) {
+      toast.info(
+        result.skipped === 1
+          ? '1 file was not a supported audio format.'
+          : `${result.skipped} files were not a supported audio format.`,
+      );
     }
   };
 
-  const importNativeFolder = async () => {
+  const runImport = useCallback(
+    async (
+      action: (
+        library: NonNullable<typeof nativeLibrary>,
+      ) => Promise<NativeLibraryImportResult>,
+    ) => {
+      if (!nativeLibrary) {
+        return;
+      }
+      setNativeLoading(true);
+      setNativeProgress(null);
+      try {
+        reportImportResult(await action(nativeLibrary));
+        await refreshNative();
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : 'Import failed.');
+      } finally {
+        setNativeLoading(false);
+        setNativeProgress(null);
+      }
+    },
+    [nativeLibrary, refreshNative],
+  );
+
+  const importNative = () => runImport((library) => library.import());
+  const importNativeFolder = () =>
+    runImport((library) => library.importFolder());
+  const retryFailedImport = () => {
+    const paths = lastFailedPathsRef.current;
+    if (!paths.length) {
+      return Promise.resolve();
+    }
+    return runImport((library) => library.importPaths(paths));
+  };
+  const cancelNativeImport = () => {
+    void nativeLibrary?.cancelImport();
+  };
+
+  useEffect(() => {
     if (!nativeLibrary) {
       return;
     }
-    setNativeLoading(true);
-    try {
-      const result = await nativeLibrary.importFolder();
-      if (result.imported > 0) {
-        toast.success(
-          result.imported === 1
-            ? 'Imported 1 track.'
-            : `Imported ${result.imported} tracks.`,
-        );
-      }
-      if (result.errors.length) {
-        toast.error(
-          result.errors.length === 1
-            ? '1 file could not be imported.'
-            : `${result.errors.length} files could not be imported.`,
-          { description: describeImportFailures(result.errors) },
-        );
-      }
-      await refreshNative();
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : 'Folder import failed.',
-      );
-    } finally {
-      setNativeLoading(false);
-    }
-  };
+    return nativeLibrary.onFilesDropped((paths) => {
+      void runImport((library) => library.importPaths(paths));
+    });
+  }, [nativeLibrary, runImport]);
 
   const rescanNative = async () => {
     if (!nativeLibrary) {
@@ -224,6 +315,110 @@ export function DesktopLibraryPanel() {
       toast.error(error instanceof Error ? error.message : 'Relink failed.');
     } finally {
       setNativeLoading(false);
+    }
+  };
+
+  const describeRootScan = (result: NativeRootScanResult) => {
+    const parts = [
+      result.imported ? `${result.imported} new` : null,
+      result.recovered ? `${result.recovered} recovered` : null,
+      result.missing ? `${result.missing} missing` : null,
+    ].filter(Boolean);
+    if (result.errors.length) {
+      toast.error(
+        result.errors.length === 1
+          ? '1 file could not be scanned.'
+          : `${result.errors.length} files could not be scanned.`,
+        { description: describeImportFailures(result.errors) },
+      );
+    }
+    if (result.cancelled) {
+      toast.info('Scan cancelled.');
+    } else if (parts.length) {
+      toast.success(`Scan complete: ${parts.join(', ')}.`);
+    } else if (!result.errors.length) {
+      toast.success('Scan complete: nothing changed.');
+    }
+  };
+
+  const runRootAction = async (
+    busy: string,
+    action: (library: NonNullable<typeof nativeLibrary>) => Promise<void>,
+    failure: string,
+  ) => {
+    if (!nativeLibrary) {
+      return;
+    }
+    setRootBusy(busy);
+    setNativeProgress(null);
+    try {
+      await action(nativeLibrary);
+      await refreshNative();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : failure);
+    } finally {
+      setRootBusy(null);
+      setNativeProgress(null);
+    }
+  };
+
+  const addRoot = () =>
+    runRootAction(
+      'add',
+      async (library) => {
+        const result = await library.addRoot();
+        if (result) {
+          describeRootScan(result);
+        }
+      },
+      'Could not add folder.',
+    );
+
+  const rescanRoots = () =>
+    runRootAction(
+      'rescan',
+      async (library) => describeRootScan(await library.rescanRoots()),
+      'Scan failed.',
+    );
+
+  const relinkRoot = (root: NativeLibraryRoot) =>
+    runRootAction(
+      root.id,
+      async (library) => {
+        const result = await library.relinkRoot(root.id);
+        if (result) {
+          toast.success(
+            result.unmatched
+              ? `Relinked ${result.relinked} tracks; ${result.unmatched} not found in the new folder.`
+              : `Relinked ${result.relinked} tracks.`,
+          );
+        }
+      },
+      'Relink failed.',
+    );
+
+  const removeRoot = (root: NativeLibraryRoot) =>
+    runRootAction(
+      root.id,
+      async (library) => {
+        await library.removeRoot(root.id);
+        toast.success(
+          `Stopped tracking “${basename(root.path)}”. Its tracks stay in your library.`,
+        );
+      },
+      'Could not remove folder.',
+    );
+
+  const revealNative = async (track: NativeLibraryTrack) => {
+    if (!nativeLibrary) {
+      return;
+    }
+    try {
+      await nativeLibrary.reveal(track.id);
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : 'Could not reveal file.',
+      );
     }
   };
 
@@ -289,6 +484,134 @@ export function DesktopLibraryPanel() {
                 Check missing files ({nativeUnavailable.length})
               </Button>
             ) : null}
+            {nativeProgress ? (
+              <Button
+                variant="text"
+                intent="danger"
+                onClick={cancelNativeImport}
+              >
+                <XIcon size={14} aria-hidden />
+                Cancel
+              </Button>
+            ) : null}
+          </div>
+          {nativeProgress ? (
+            <p className="text-foreground-secondary text-xs">
+              Importing {nativeProgress.done} of {nativeProgress.total} —{' '}
+              {nativeProgress.imported} imported
+              {nativeProgress.failed ? `, ${nativeProgress.failed} failed` : ''}
+              {nativeProgress.skipped
+                ? `, ${nativeProgress.skipped} skipped`
+                : ''}
+            </p>
+          ) : null}
+          <div
+            className="border-border flex flex-col gap-1.5 rounded-md border p-2"
+            data-testid="library-roots"
+          >
+            <div className="flex items-center gap-1">
+              <p className="flex-1 text-xs font-semibold">Watched folders</p>
+              <Button
+                size="sm"
+                variant="text"
+                onClick={() => void addRoot()}
+                disabled={nativeLoading || rootBusy !== null}
+              >
+                {rootBusy === 'add' ? (
+                  <LoaderCircleIcon
+                    size={14}
+                    className="animate-spin"
+                    aria-hidden
+                  />
+                ) : (
+                  <FolderPlusIcon size={14} aria-hidden />
+                )}
+                Add folder
+              </Button>
+              {roots.length > 0 ? (
+                <Button
+                  size="sm"
+                  variant="text"
+                  onClick={() => void rescanRoots()}
+                  disabled={nativeLoading || rootBusy !== null}
+                >
+                  {rootBusy === 'rescan' ? (
+                    <LoaderCircleIcon
+                      size={14}
+                      className="animate-spin"
+                      aria-hidden
+                    />
+                  ) : (
+                    <RefreshCwIcon size={14} aria-hidden />
+                  )}
+                  Rescan
+                </Button>
+              ) : null}
+            </div>
+            {roots.length === 0 ? (
+              <p className="text-foreground-secondary text-xs">
+                Add a folder to keep it in sync — new files are picked up on
+                rescan and moved drives can be relinked in one step.
+              </p>
+            ) : (
+              <ul className="flex flex-col gap-1">
+                {roots.map((root) => (
+                  <li key={root.id} className="flex items-center gap-2">
+                    <div className="min-w-0 flex-1" title={root.path}>
+                      <p className="truncate text-xs font-semibold">
+                        {basename(root.path)}
+                      </p>
+                      <p
+                        className={
+                          root.available
+                            ? 'text-foreground-secondary truncate text-[10px]'
+                            : 'text-destructive truncate text-[10px]'
+                        }
+                      >
+                        {root.available
+                          ? `${root.trackCount} tracks${
+                              root.missingCount
+                                ? ` · ${root.missingCount} missing`
+                                : ''
+                            }`
+                          : 'Folder not found — reconnect the drive or relink'}
+                      </p>
+                    </div>
+                    <Tooltip content="Relink to another folder" side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        aria-label={`Relink ${basename(root.path)}`}
+                        onClick={() => void relinkRoot(root)}
+                        disabled={nativeLoading || rootBusy !== null}
+                      >
+                        {rootBusy === root.id ? (
+                          <LoaderCircleIcon
+                            size={14}
+                            className="animate-spin"
+                            aria-hidden
+                          />
+                        ) : (
+                          <Link2Icon size={14} aria-hidden />
+                        )}
+                      </Button>
+                    </Tooltip>
+                    <Tooltip content="Stop watching" side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        intent="danger"
+                        aria-label={`Stop watching ${basename(root.path)}`}
+                        onClick={() => setRootToRemove(root)}
+                        disabled={rootBusy !== null}
+                      >
+                        <TrashIcon size={14} aria-hidden />
+                      </Button>
+                    </Tooltip>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           <Input
             type="search"
@@ -382,6 +705,16 @@ export function DesktopLibraryPanel() {
                             }}
                           >
                             Queue
+                          </Button>
+                        </Tooltip>
+                        <Tooltip content="Reveal in folder" side="top">
+                          <Button
+                            size="icon-sm"
+                            variant="text"
+                            aria-label={`Reveal ${track.title} in folder`}
+                            onClick={() => void revealNative(track)}
+                          >
+                            <FolderOpenIcon size={14} aria-hidden />
                           </Button>
                         </Tooltip>
                       </>
@@ -561,6 +894,20 @@ export function DesktopLibraryPanel() {
             )}
           </>
         ))}
+      <ConfirmDialog
+        isOpen={rootToRemove !== null}
+        title="Stop watching this folder?"
+        description={`“${rootToRemove ? basename(rootToRemove.path) : ''}” will no longer be scanned for new files. Its tracks stay in your library and no files on disk are touched.`}
+        confirmLabel="Stop watching"
+        onCancel={() => setRootToRemove(null)}
+        onConfirm={() => {
+          const root = rootToRemove;
+          setRootToRemove(null);
+          if (root) {
+            void removeRoot(root);
+          }
+        }}
+      />
     </div>
   );
 }

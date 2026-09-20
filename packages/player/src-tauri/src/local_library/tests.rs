@@ -3,8 +3,10 @@ use std::sync::atomic::{AtomicU32, Ordering};
 use sqlx::sqlite::{SqliteConnectOptions, SqlitePool};
 
 use super::{
-    collect_audio_paths, import_paths, list, list_unavailable, relink, remove, rescan_unavailable,
-    resolve_path,
+    add_root, collect_audio_paths, collect_audio_paths_with_skipped, discover_new_paths,
+    get_root, import_batch, import_paths, list, list_roots, list_unavailable,
+    refresh_root_availability, relink, relink_root, remove, remove_root, rescan_unavailable,
+    resolve_path, ImportResult,
 };
 
 static DB_COUNTER: AtomicU32 = AtomicU32::new(0);
@@ -98,6 +100,22 @@ fn collects_supported_audio_recursively_in_stable_order() {
     let paths = collect_audio_paths(dir.path()).unwrap();
 
     assert_eq!(paths, vec![first, second]);
+}
+
+#[test]
+fn counts_unsupported_files_seen_during_a_folder_walk_as_skipped() {
+    let dir = tempfile::tempdir().unwrap();
+    let nested = dir.path().join("Disc 2");
+    std::fs::create_dir_all(&nested).unwrap();
+    write_wav(&dir.path().join("01-first.wav"), "First", "Artist");
+    write_wav(&nested.join("02-second.FLAC"), "Second", "Artist");
+    std::fs::write(dir.path().join("cover.jpg"), b"not audio").unwrap();
+    std::fs::write(nested.join("liner-notes.pdf"), b"not audio").unwrap();
+
+    let (paths, skipped) = collect_audio_paths_with_skipped(dir.path()).unwrap();
+
+    assert_eq!(paths.len(), 2);
+    assert_eq!(skipped, 2, "cover.jpg and liner-notes.pdf should be skipped, not imported or errored");
 }
 
 #[test]
@@ -614,6 +632,228 @@ async fn paginates_100k_generated_rows() {
     let pool = pool().await;
     seed_generated_rows(&pool, 100_000).await;
 
+    let started = std::time::Instant::now();
     let page = list(&pool, "", 0).await.unwrap();
+    let browse = started.elapsed();
     assert_eq!(page.total, 100_000);
+
+    let started = std::time::Instant::now();
+    let found = list(&pool, "Track 099999", 0).await.unwrap();
+    let search = started.elapsed();
+    assert_eq!(found.total, 1);
+
+    eprintln!("100k rows: first page {browse:?}, indexed search {search:?}");
+    // Generous ceilings (debug build, shared CI); the point is "not a scan".
+    assert!(browse.as_millis() < 500, "browse took {browse:?}");
+    assert!(search.as_millis() < 250, "search took {search:?}");
+}
+
+// --- Indexed search (FTS5 trigram) ---
+
+#[tokio::test]
+async fn search_matches_substrings_case_insensitively_via_the_index() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("song.wav");
+    write_wav(&path, "Harbour Lights", "Vladislav Delay");
+    let pool = pool().await;
+    import_paths(&pool, vec![path]).await;
+
+    assert_eq!(list(&pool, "arbour", 0).await.unwrap().total, 1);
+    assert_eq!(list(&pool, "VLADIS", 0).await.unwrap().total, 1);
+    assert_eq!(list(&pool, "harbour delay", 0).await.unwrap().total, 1, "terms AND across columns");
+    assert_eq!(list(&pool, "harbour nothing", 0).await.unwrap().total, 0);
+    // Short terms fall back to the LIKE scan and still match.
+    assert_eq!(list(&pool, "Vl", 0).await.unwrap().total, 1);
+}
+
+#[tokio::test]
+async fn search_index_follows_updates_and_deletes() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("song.wav");
+    write_wav(&path, "Before Title", "Artist");
+    let pool = pool().await;
+    import_paths(&pool, vec![path.clone()]).await;
+    assert_eq!(list(&pool, "Before", 0).await.unwrap().total, 1);
+
+    // Re-import with new tags upserts the row; the index must follow.
+    write_wav(&path, "After Title", "Artist");
+    import_paths(&pool, vec![path]).await;
+    assert_eq!(list(&pool, "Before", 0).await.unwrap().total, 0);
+    assert_eq!(list(&pool, "After", 0).await.unwrap().total, 1);
+
+    let id = list(&pool, "", 0).await.unwrap().tracks[0].id.clone();
+    remove(&pool, &id).await.unwrap();
+    assert_eq!(list(&pool, "After", 0).await.unwrap().total, 0);
+}
+
+#[tokio::test]
+async fn search_survives_fts_syntax_in_user_input() {
+    let pool = pool().await;
+    seed_generated_rows(&pool, 10).await;
+    for query in ["\"quoted\"", "a OR b NOT c", "title:foo*", "(((", "\"\"\""] {
+        assert!(list(&pool, query, 0).await.is_ok(), "query {query:?} must not error");
+    }
+}
+
+// --- Library roots ---
+
+async fn import_into_root(pool: &SqlitePool, root_id: &str, paths: Vec<std::path::PathBuf>) -> ImportResult {
+    let mut result = ImportResult::default();
+    import_batch(pool, paths, Some(root_id), &mut result).await;
+    result
+}
+
+#[tokio::test]
+async fn add_root_is_idempotent_and_reports_counts() {
+    let dir = tempfile::tempdir().unwrap();
+    write_wav(&dir.path().join("a.wav"), "A", "Artist");
+    let pool = pool().await;
+
+    let first = add_root(&pool, dir.path()).await.unwrap();
+    let second = add_root(&pool, dir.path()).await.unwrap();
+    assert_eq!(first.id, second.id);
+    assert_eq!(list_roots(&pool).await.unwrap().len(), 1);
+    assert!(first.available);
+    assert_eq!(first.track_count, 0);
+
+    let (fresh, _) = discover_new_paths(&pool, &first).await.unwrap();
+    import_into_root(&pool, &first.id, fresh).await;
+    assert_eq!(get_root(&pool, &first.id).await.unwrap().track_count, 1);
+}
+
+#[tokio::test]
+async fn rescan_discovers_only_new_files() {
+    let dir = tempfile::tempdir().unwrap();
+    write_wav(&dir.path().join("a.wav"), "A", "Artist");
+    let pool = pool().await;
+    let root = add_root(&pool, dir.path()).await.unwrap();
+
+    let (fresh, _) = discover_new_paths(&pool, &root).await.unwrap();
+    assert_eq!(fresh.len(), 1);
+    import_into_root(&pool, &root.id, fresh).await;
+
+    let (fresh, _) = discover_new_paths(&pool, &root).await.unwrap();
+    assert!(fresh.is_empty(), "second scan with no changes finds nothing (idempotent)");
+
+    let nested = dir.path().join("New Album");
+    std::fs::create_dir_all(&nested).unwrap();
+    write_wav(&nested.join("b.wav"), "B", "Artist");
+    let (fresh, _) = discover_new_paths(&pool, &root).await.unwrap();
+    assert_eq!(fresh.len(), 1, "only the newly added file is discovered");
+}
+
+#[tokio::test]
+async fn ad_hoc_imports_under_a_root_are_adopted_on_scan() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("a.wav");
+    write_wav(&path, "A", "Artist");
+    let pool = pool().await;
+    import_paths(&pool, vec![path]).await; // root_id NULL
+
+    let root = add_root(&pool, dir.path()).await.unwrap();
+    let (fresh, _) = discover_new_paths(&pool, &root).await.unwrap();
+    assert_eq!(fresh.len(), 1, "not yet a member, so re-read once");
+    import_into_root(&pool, &root.id, fresh).await;
+
+    assert_eq!(list(&pool, "", 0).await.unwrap().total, 1, "adopted, not duplicated");
+    assert_eq!(get_root(&pool, &root.id).await.unwrap().track_count, 1);
+}
+
+#[tokio::test]
+async fn root_availability_tracks_missing_and_recovered_files() {
+    let dir = tempfile::tempdir().unwrap();
+    let a = dir.path().join("a.wav");
+    let b = dir.path().join("b.wav");
+    write_wav(&a, "A", "Artist");
+    write_wav(&b, "B", "Artist");
+    let pool = pool().await;
+    let root = add_root(&pool, dir.path()).await.unwrap();
+    let (fresh, _) = discover_new_paths(&pool, &root).await.unwrap();
+    import_into_root(&pool, &root.id, fresh).await;
+
+    assert_eq!(refresh_root_availability(&pool, &root.id).await.unwrap(), (0, 0));
+
+    let stash = dir.path().join("b.wav.bak");
+    std::fs::rename(&b, &stash).unwrap();
+    assert_eq!(refresh_root_availability(&pool, &root.id).await.unwrap(), (1, 0));
+    assert_eq!(get_root(&pool, &root.id).await.unwrap().missing_count, 1);
+    assert_eq!(list_unavailable(&pool).await.unwrap().len(), 1);
+    assert_eq!(refresh_root_availability(&pool, &root.id).await.unwrap(), (0, 0), "no repeat flapping");
+
+    std::fs::rename(&stash, &b).unwrap();
+    assert_eq!(refresh_root_availability(&pool, &root.id).await.unwrap(), (0, 1));
+    assert_eq!(get_root(&pool, &root.id).await.unwrap().missing_count, 0);
+}
+
+#[tokio::test]
+async fn removing_a_root_keeps_its_tracks() {
+    let dir = tempfile::tempdir().unwrap();
+    write_wav(&dir.path().join("a.wav"), "A", "Artist");
+    let pool = pool().await;
+    let root = add_root(&pool, dir.path()).await.unwrap();
+    let (fresh, _) = discover_new_paths(&pool, &root).await.unwrap();
+    import_into_root(&pool, &root.id, fresh).await;
+
+    remove_root(&pool, &root.id).await.unwrap();
+
+    assert!(list_roots(&pool).await.unwrap().is_empty());
+    assert_eq!(list(&pool, "", 0).await.unwrap().total, 1);
+    assert!(get_root(&pool, &root.id).await.is_err());
+}
+
+#[tokio::test]
+async fn relinking_a_root_moves_proven_tracks_and_keeps_ids() {
+    let old = tempfile::tempdir().unwrap();
+    std::fs::create_dir_all(old.path().join("Album")).unwrap();
+    write_wav(&old.path().join("Album/one.wav"), "One", "Artist");
+    write_wav(&old.path().join("two.wav"), "Two", "Artist");
+    let pool = pool().await;
+    let root = add_root(&pool, old.path()).await.unwrap();
+    let (fresh, _) = discover_new_paths(&pool, &root).await.unwrap();
+    import_into_root(&pool, &root.id, fresh).await;
+    let ids_before: Vec<String> = list(&pool, "", 0).await.unwrap().tracks.into_iter().map(|t| t.id).collect();
+
+    // The drive "moves": same layout at a new location; one file is missing there.
+    let new = tempfile::tempdir().unwrap();
+    std::fs::create_dir_all(new.path().join("Album")).unwrap();
+    std::fs::copy(old.path().join("Album/one.wav"), new.path().join("Album/one.wav")).unwrap();
+    std::fs::remove_dir_all(old.path().join("Album")).unwrap();
+    std::fs::remove_file(old.path().join("two.wav")).unwrap();
+
+    let result = relink_root(&pool, &root.id, new.path()).await.unwrap();
+
+    assert_eq!(result.relinked, 1);
+    assert_eq!(result.unmatched, 1);
+    assert!(result.root.path.starts_with(new.path().canonicalize().unwrap().to_str().unwrap()));
+    let after = list(&pool, "", 0).await.unwrap().tracks;
+    let ids_after: Vec<String> = after.iter().map(|t| t.id.clone()).collect();
+    assert_eq!(ids_before.len(), ids_after.len());
+    let one = after.iter().find(|t| t.title == "One").unwrap();
+    assert!(one.available);
+    assert!(one.path.starts_with(new.path().canonicalize().unwrap().to_str().unwrap()));
+}
+
+#[tokio::test]
+async fn relinking_to_a_folder_with_no_matching_files_is_rejected() {
+    let old = tempfile::tempdir().unwrap();
+    write_wav(&old.path().join("a.wav"), "A", "Artist");
+    let pool = pool().await;
+    let root = add_root(&pool, old.path()).await.unwrap();
+    let (fresh, _) = discover_new_paths(&pool, &root).await.unwrap();
+    import_into_root(&pool, &root.id, fresh).await;
+
+    let wrong = tempfile::tempdir().unwrap();
+    let error = relink_root(&pool, &root.id, wrong.path()).await.unwrap_err();
+    assert!(error.contains("None of this root"), "{error}");
+    assert_eq!(get_root(&pool, &root.id).await.unwrap().path, root.path, "root unchanged");
+}
+
+#[tokio::test]
+async fn relinking_onto_another_existing_root_is_rejected() {
+    let a = tempfile::tempdir().unwrap();
+    let b = tempfile::tempdir().unwrap();
+    let pool = pool().await;
+    let root_a = add_root(&pool, a.path()).await.unwrap();
+    add_root(&pool, b.path()).await.unwrap();
+    assert!(relink_root(&pool, &root_a.id, b.path()).await.is_err());
 }

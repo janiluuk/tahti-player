@@ -3588,3 +3588,17 @@ The ticket's last open item was "if a real BOARD-role account still can't edit r
 Every link in the chain (DB column → session → API response → frontend fetch → store → role check → edit-gate) is consistent and correct — **no code bug exists in this path**. If a specific real account still can't edit covers, the most likely explanation is that account's `isBoard` DB column genuinely isn't `true` (a data/admin question, checkable directly via `/admin/users`), not a frontend defect. The "scrape station artwork to production" item was already explicitly out of scope in this doc (a separate data/content task needing its own scoping) and remains so — not attempted, not this ticket's concern.
 
 Nothing left actionable within this ticket's own scope — folded and deleted.
+
+---
+
+## 2026-09-21 — Close `mobile-player-hide-nav-swipe-reveal.md`: residual questions resolved, in-app status bar hidden on mobile
+
+The auto-hide-nav-while-playing feature itself shipped and was live-verified in earlier passes (2026-09-17/18); only 3 confirmation questions remained. User answered all three:
+
+1. **"Status bar"** in the original ask referred to `ConnectedStatusBar` (`packages/tahti-web/src/components/ConnectedStatusBar.tsx`) — the in-app footer bar showing track count, unread messages/notifications, cloud storage used, and (desktop/Tauri only) local-library track count — not the OS/browser chrome. It was previously mounted unconditionally in `AppShell.tsx` regardless of viewport. Fixed: wrapped it with `!isMobile &&` (`AppShell.tsx:571`), mirroring the existing `!isMobile && <ConnectedPlayerBar />` split — it now only renders on desktop, matching "only show it in desktop app."
+2. **Reveal-and-stay** (no auto-hide timer) confirmed as the intended feel — matches what was already built, no code change needed.
+3. **Hide on every mobile route** while something plays (not narrowed to Listen/Channel/Radio) confirmed as intended — matches what was already built, no code change needed.
+
+Verified: `pnpm --filter @tahti-player/tahti-web type-check` and `lint` both clean after the `ConnectedStatusBar` change. No PWA/standalone-app work needed since "status bar" didn't mean OS chrome.
+
+Nothing left open — folded and deleted.

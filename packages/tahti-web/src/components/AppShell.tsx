@@ -568,7 +568,7 @@ export function AppShell() {
       )}
 
       {!isMobile && !fullScreenPlayerOpen && <ConnectedPlayerBar />}
-      <ConnectedStatusBar />
+      {!isMobile && <ConnectedStatusBar />}
       <FullScreenPlayer />
       <AuthDialog />
       <ChannelSetupDialog />
