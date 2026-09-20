@@ -1178,7 +1178,9 @@ async fn prepare_playback_keeps_requested_order_and_skips_missing_files() {
     assert_eq!(titles, ["C", "A"], "requested order, missing and unknown skipped");
     assert_eq!(batch.unavailable, 1);
     assert!(batch.items.iter().all(|i| std::path::Path::new(&i.path).is_file()));
-    assert!(!list(&pool, "B", 0).await.unwrap().tracks[0].available, "missing state persisted");
+    let all = list(&pool, "", 0).await.unwrap().tracks;
+    let missing = all.iter().find(|t| t.id == b).unwrap();
+    assert!(!missing.available, "missing state persisted");
 }
 
 #[tokio::test]
