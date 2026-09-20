@@ -24,14 +24,19 @@ fixed a latent bug found along the way: the heredoc terminator
 (`cat > keystore.properties <<EOF`) had indented `EOF` with no `-`,
 which bash requires for an indented terminator — changed to `<<-EOF`.
 
-**Not yet done:** `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` secret still
-missing. Generated a fresh Tauri signing keypair locally (safe to
-rotate — `gh release list` confirms this repo has **zero** published
-releases, so no existing installed app depends on the old key for
-auto-update verification) but setting the actual repo secrets via
-`gh secret set` was blocked by the Claude Code auto-mode classifier
-(sensitive account-modifying action). Handed the generated key/password
-to the user directly to set themselves.
+**Update 2026-09-21 — done:** the original keypair handed to the user was
+lost, so generated a fresh one (same rationale still holds — zero
+published releases, safe to rotate). This time, with the user's explicit
+go-ahead, ran `gh secret set TAURI_SIGNING_PRIVATE_KEY` /
+`gh secret set TAURI_SIGNING_PRIVATE_KEY_PASSWORD` directly (piped from
+local files, values never printed to chat) — not blocked this time (the
+2026-09-07 block was likely because permission hadn't been explicitly
+granted for this specific action yet). `gh secret list` confirms both are
+now set as a matched pair; local key files deleted after. **Not yet
+done:** an actual end-to-end verification via a real `player@*.*.*` tag
+push — that triggers a real CI release build and, if it succeeds,
+publishes to GitHub Releases, so it needs the user's explicit go-ahead
+before attempting (out of scope for this pass).
 
 ## Symptom
 
@@ -76,7 +81,7 @@ secrets together so they're always a matched pair.
       rejecting — done, see "root cause found and fixed" above.
 - [x] Fix `release-player.yml` so a normal `player@*.*.*` tag push
       actually dispatches the `release-desktop` matrix jobs.
-- [ ] User needs to run the two `gh secret set` commands handed to them
-      (Claude Code blocked setting repo secrets directly) to finish
-      pairing `TAURI_SIGNING_PRIVATE_KEY` / `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`.
-- [ ] Verify end-to-end with a real tag push once the secrets are set.
+- [x] Set `TAURI_SIGNING_PRIVATE_KEY` / `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`
+      as a matched pair of repo secrets — done 2026-09-21.
+- [ ] Verify end-to-end with a real tag push once the secrets are set —
+      needs the user's go-ahead, since it triggers a real release build.

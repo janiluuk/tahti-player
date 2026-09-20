@@ -250,6 +250,58 @@ other 10 are fixed code registries or private per-user connections where
 envisioned. This is a materially smaller remaining scope than the
 original ask assumed.
 
+**2026-09-21 — overridden by the user: full submission/moderation parity
+across all 13 categories is still wanted**, not just visibility/enable-
+toggles for the 10 fixed-registry categories. This is a genuinely large,
+multi-repo project, not a UI tweak — recording the real shape of it here
+before any implementation starts, so it can be picked up in phases:
+
+**What "full parity" requires per fixed-registry category** (themes,
+visualizers, export, import, multicast, fingerprinting, scrobbling,
+audio-plugins, tools, listen — 10 categories): today each is a hardcoded
+TypeScript array/registry (e.g. `EXPORT_TARGETS`, `SOURCE_DEFS`, the
+4-plugin audio-plugins list) with no per-item database row, no submission
+concept, and no moderation lifecycle. Reaching parity with
+`discovery`/`channel` means, for each one:
+1. **Backend (`../tahti-org`)**: either widen the existing `Addon`/
+   `AddonVersion`/`AddonInstall` model to cover non-widget-bundle plugin
+   shapes (a provider config, an export target, a theme JSON blob, etc.
+   aren't sandboxed JS bundles — the current model is bundle-shaped), or
+   add a second, more general "plugin registration" model that can
+   represent both. This is a real schema design question, not a
+   mechanical extension — the two content shapes are different enough
+   that forcing them into `Addon` as-is would misrepresent what a
+   "version" or a "bundle" even means for e.g. a Last.fm scrobbler config.
+2. **Submission flow**: today there is no user-facing "submit a plugin"
+   UI anywhere for these 10 categories (no theme upload form, no
+   multicast-provider request form, etc.) — that's 10 new or generalized
+   submission surfaces, not just an admin-side review queue for something
+   that already gets submitted.
+3. **Moderation**: approve/reject/disable actions already exist and are
+   reusable *if* the backend model is unified or made polymorphic;
+   otherwise this is 10 more sets of action endpoints.
+4. **Frontend registry integration**: each category's actual runtime
+   behavior currently reads its fixed TS array directly (e.g.
+   `StudioProEditorView.tsx` for audio-plugins, `EXPORT_TARGETS` consumers
+   for export) — making these admin-editable means each consumer needs to
+   read from the new dynamic source instead, without breaking existing
+   behavior for the 3 categories (`discovery`, `channel`, `radio`) that
+   already don't work this way.
+
+**Recommendation on sequencing** (not yet started, no code changed for
+this pass): treat this as its own multi-phase project, not a continuation
+of the existing `AdminAddonsView.tsx` page. Suggested order: (a) pick one
+fixed-registry category as a pilot (audio-plugins is the most contained —
+already flagged elsewhere in `PLUGIN-STORE-PLAN.md` as needing a "host UI"
+decision) to prove out the schema/submission/moderation pattern once, (b)
+decide then whether to generalize `Addon` or add a second model based on
+what the pilot actually needs, (c) roll out to the remaining 9 once the
+pattern is proven. Doing all 13 at once in one pass risks a schema design
+that's wrong for categories not yet considered in depth.
+
+Not attempted this pass — this update is scoping only, to make the size
+of the ask visible before committing calendar time to it.
+
 **Q2 — unified page vs. per-category (recommendation, not decided here):**
 given the audit above, there is no real unification work left to do —
 the only two categories that fit this pattern already share one page.

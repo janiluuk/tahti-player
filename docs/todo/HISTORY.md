@@ -2,6 +2,70 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-21 — Listen widget: hearthis.at config UX + broken set-embed add (all 3 asks shipped)
+
+Folded from `listen-widget-hearthis-config-and-set-embed-bug.md`. The
+first two asks (auto-fill hearthis.at username from the stored profile;
+fix the set-embed bug via resolving hearthis.at's set-page redirect before
+building the oembed URL) shipped earlier this pass — see the doc's own
+detail, carried into this entry: `listenerWidgets.test.ts` 24/24 pass, a
+regression test pins the redirect-then-oembed sequence.
+
+Third ask ("icon buttons + Storybook components" for the config dialog)
+had been left open pending the user pointing at specifics; instead they
+asked to audit the file against Storybook/`@tahti-player/ui` conventions
+and migrate anything that didn't. Audit: every control already came from
+`@tahti-player/ui` (no hand-rolled HTML), and `Toggle`'s paired visible
+`<span>` + `label=` (aria-only) pattern matched the same convention used
+in `AdminAddonsView.tsx` — one real gap found: the hearthis.at set-browser
+list's thumbnail was a raw `<img>` instead of the shared `MediaArtwork`
+component (the established `size="thumb"` pattern from
+`WidgetTrackRow.tsx`). Migrated it. "Uninstall" staying a text `Button`
+(not icon-only) is intentional — `PluginStoreItem` has no uninstall
+concept of its own, so a plain `Button variant="text"` in the expanded
+config body is the correct library-native way to render it, not a gap.
+
+Also added a standing instruction to this repo's `CLAUDE.md` (new "UI
+components" section): all `tahti-web` UI must use `@tahti-player/ui`
+where a component already covers the case, and migrate on touch if it
+doesn't — a repo-wide policy request, not scoped to this one file.
+
+`tsc --noEmit` / `eslint` clean. No existing unit test for
+`ListenAddonsPanel.tsx` to run (only its Storybook story, unaffected by
+the touched markup).
+
+Nothing left open against this ticket's 3-item ask — folded and deleted.
+
+## 2026-09-20 — Hide Local library / Soulseek from non-desktop: "desktop app only" placeholder shipped
+
+Folded from `hide-local-library-soulseek-non-desktop.md`. Soulseek was
+already fully hidden outside the desktop app (shipped 2026-09-18). Asked
+the user directly about the remaining open question (nav-entry removal vs.
+a "desktop app only" placeholder for Local library, since no existing
+precedent for either pattern was found in this repo) — decided:
+placeholder, keep the nav entry.
+
+`DesktopLibraryPanel.tsx`: added an early return, gated on the existing
+`hasNativePlayer()` check (before any of the component's own hooks that
+depend on runtime state, but after all `useState`/`useMemo`/`useCallback`
+calls so the rules of hooks stay satisfied), that renders a "Desktop app
+only" `EmptyState` instead of the File-API browser-fallback UI when
+`hasNativePlayer()` is false. Left the desktop-runtime-but-no-native-library
+case (`nativePlayer && !nativeLibrary`) untouched — that's still inside the
+desktop app, just with the native subsystem unavailable, so the existing
+"browser imports remain available" message and fallback UI still apply
+there; only a genuine plain-browser build now sees the placeholder.
+`LibraryView.tsx`'s "Local library" tab itself is unchanged (nav entry
+stays visible everywhere, per the decision).
+
+Added `DesktopLibraryPanel.browser-fallback.test.tsx` (2 tests, plain
+`react-dom` rendering — the existing `DesktopLibraryPanel.native.test.tsx`
+uses `@testing-library/react`, which is declared in `package.json` but not
+actually installed in `node_modules` in this environment, a pre-existing
+gap unrelated to this change, left alone). `tsc --noEmit` / `eslint` clean.
+
+Nothing left open against this ticket's ask — folded and deleted.
+
 ## 2026-09-20 — Studio front page: empty-discography CTAs
 
 Folded from `studio-empty-discography-ctas.md`.

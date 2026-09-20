@@ -1,4 +1,4 @@
-import { LibraryIcon, PlayIcon, TrashIcon } from 'lucide-react';
+import { LaptopIcon, LibraryIcon, PlayIcon, TrashIcon } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -239,6 +239,23 @@ export function DesktopLibraryPanel() {
         : `Ready ${added.length} files.`,
     );
   };
+
+  if (!nativePlayer) {
+    return (
+      <div
+        className="flex h-full min-h-0 flex-col gap-3 p-2"
+        data-testid="desktop-library-panel"
+      >
+        <EmptyState
+          size="sm"
+          icon={<LaptopIcon size={28} className="opacity-50" />}
+          title="Desktop app only"
+          description="Local library import needs the Tahti Player desktop app. Install it to import and play files stored on this device."
+          className="flex-1"
+        />
+      </div>
+    );
+  }
 
   return (
     <div
