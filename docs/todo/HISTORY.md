@@ -2,6 +2,37 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-20 — Studio front page: empty-discography CTAs
+
+Folded from `studio-empty-discography-ctas.md`.
+
+`StudioHomeView.tsx`: added a "Nothing in your discography yet" prompt with
+"Add an album" / "Add a track" CTA buttons, shown only once the discography
+fetch (`fetchStudioSounds` + `fetchStudioReleases`, tracked by a new
+`discographyLoaded` flag so the prompt can't flash during the loading state)
+resolves and both counts are confirmed zero — an existing track or release
+of either kind suppresses it.
+
+"Add a track" links straight to the existing `/library/upload` flow
+(`StudioUploadView`). "Add an album" needed a way to jump directly into
+release creation rather than just landing on the Releases list: added a
+`create?: boolean` `validateSearch` to `studioReleasesRoute`
+(`routes-studio.tsx`), and `StudioReleasesView` now reads it via
+`useSearch({ strict: false })` and opens its existing "New release" dialog
+on mount when `?create=true` is present — no new dialog/flow built, just
+wired the CTA into the one that already existed.
+
+Verified: `tsc --noEmit` / `eslint` clean, new
+`StudioHomeView.test.tsx` (3 tests: CTA shows once an empty discography has
+loaded, hidden once a track exists, hidden once a release exists) plus the
+full existing unit suite all pass. Could not do a live browser check (no
+Claude-in-Chrome extension connected in this session) — confirmed the
+`search={{ create: true }}` Link is well-typed against the route's
+`validateSearch` via a clean `tsc`, and traced `StudioReleasesView`'s mount
+effect by hand instead.
+
+Nothing left open against this ticket's 3-item ask — folded and deleted.
+
 ## 2026-09-20 — Rename Sound to Library (scope clarified: Sounds tab → Tracks)
 
 Folded from `rename-sound-to-library.md`.

@@ -22,7 +22,6 @@ Status values: `open` | `blocked` | `partial`.
 | partial | [performance-cleanup-bulk.md](performance-cleanup-bulk.md)                                               | Phases 1–3 + 5 done; Phase 4: PluginStorePanel + SettingsPanels + admin.ts + api/studio.ts + router.tsx + ArtistView.tsx + ChannelView.tsx all done; only ChannelDesigner's remaining body still open (now has smoke-test coverage, see codebase-refactor-hotspots.md item 21)                                                                                                                              |
 | partial | [radio-channel-page.md](radio-channel-page.md)                                                           | Root cause confirmed 2026-09-18 (`db push` skips migration data statements) and pipeline fix opened as `tahti-org#532`; still needs the user to run a one-time prod baseline (exact commands in the doc) before/after merging it                          |
 | open    | [listening-party.md](listening-party.md) | Scheduled album playback from start to finish, full tracklist and liner notes, artist/fan live chat, and direct pre-orders or purchases in all available formats |
-| open    | [studio-empty-discography-ctas.md](studio-empty-discography-ctas.md) | Show “Add an album” and “Add a track” CTA buttons on the Studio front page when the user has no uploaded discography |
 
 ## Fold rule (copy into CLAUDE / chat)
 

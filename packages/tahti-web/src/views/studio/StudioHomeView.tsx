@@ -8,6 +8,7 @@ import {
   LibraryBigIcon,
   MicIcon,
   NewspaperIcon,
+  PlusIcon,
   RadioIcon,
   RocketIcon,
   UploadCloudIcon,
@@ -255,6 +256,7 @@ export function StudioHomeView() {
   const [governanceRequests, setGovernanceRequests] = useState<
     FeatureRequest[]
   >([]);
+  const [discographyLoaded, setDiscographyLoaded] = useState(false);
   const autoPromptedChannelSetup = useRef(false);
 
   useEffect(() => {
@@ -294,6 +296,7 @@ export function StudioHomeView() {
             ),
         );
         setRecentBroadcasts(broadcasts.data);
+        setDiscographyLoaded(true);
       },
     );
     void Promise.all([
@@ -306,6 +309,8 @@ export function StudioHomeView() {
   }, [user?.channel]);
 
   const channel = user?.channel;
+  const hasEmptyDiscography =
+    discographyLoaded && counts.sounds === 0 && counts.releases === 0;
   const governanceVotes = governanceMotions.filter(
     (motion) => motion.state === 'OPEN' && !motion.youVoted,
   );
@@ -399,6 +404,33 @@ export function StudioHomeView() {
                   icon={UsersIcon}
                 />
               </section>
+
+              {hasEmptyDiscography ? (
+                <div className="border-border bg-background-secondary/30 flex flex-wrap items-center justify-between gap-4 rounded-xl border p-4">
+                  <div>
+                    <p className="text-sm font-bold">
+                      Nothing in your discography yet
+                    </p>
+                    <p className="text-foreground-secondary mt-1 text-xs">
+                      Add an album or a track to start building it out.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Link to="/studio/releases" search={{ create: true }}>
+                      <Button size="sm" variant="secondary">
+                        <PlusIcon size={14} aria-hidden className="mr-1.5" />
+                        Add an album
+                      </Button>
+                    </Link>
+                    <Link to="/library/upload">
+                      <Button size="sm">
+                        <PlusIcon size={14} aria-hidden className="mr-1.5" />
+                        Add a track
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              ) : null}
 
               <Group title="Broadcast">
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">

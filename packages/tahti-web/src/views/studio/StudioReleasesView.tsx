@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useSearch } from '@tanstack/react-router';
 import {
   Disc3Icon,
   DiscAlbumIcon,
@@ -67,6 +67,13 @@ export function StudioReleasesView({
   );
   const [msg, setMsg] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
+  const search = useSearch({ strict: false }) as { create?: boolean };
+
+  useEffect(() => {
+    if (search.create) {
+      setCreateOpen(true);
+    }
+  }, [search.create]);
 
   const reload = () => {
     void fetchStudioReleases().then((res) => {
