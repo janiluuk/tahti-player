@@ -7,6 +7,10 @@ function baseLibrary(overrides: Partial<TahtiNativeLibrary> = {}) {
     list: vi.fn().mockResolvedValue({ tracks: [], total: 0 }),
     listUnavailable: vi.fn().mockResolvedValue([]),
     listRoots: vi.fn().mockResolvedValue([]),
+    facets: vi.fn().mockResolvedValue([]),
+    totals: vi
+      .fn()
+      .mockResolvedValue({ trackCount: 0, durationSec: 0, sizeBytes: 0 }),
     import: vi.fn().mockResolvedValue({}),
     importFolder: vi.fn().mockResolvedValue({}),
     importPaths: vi.fn().mockResolvedValue({}),
@@ -85,5 +89,30 @@ describe('withReadCache', () => {
     expect(base.list).toHaveBeenCalledTimes(71);
     await cached.list('q69', 0);
     expect(base.list).toHaveBeenCalledTimes(71);
+  });
+
+  it('caches facets per kind and totals, and includes the filter in list keys', async () => {
+    const base = baseLibrary();
+    const cached = withReadCache(base);
+    await cached.facets('artists');
+    await cached.facets('artists');
+    await cached.facets('genres');
+    await cached.totals();
+    await cached.totals();
+    expect(base.facets).toHaveBeenCalledTimes(2);
+    expect(base.totals).toHaveBeenCalledTimes(1);
+
+    const filter = { kind: 'artists', value: 'A', secondary: null } as const;
+    await cached.list('', 0);
+    await cached.list('', 0, filter);
+    await cached.list('', 0, filter);
+    await cached.list('', 0, { ...filter, value: 'B' });
+    expect(base.list).toHaveBeenCalledTimes(3);
+
+    await cached.remove('id');
+    await cached.facets('artists');
+    await cached.totals();
+    expect(base.facets).toHaveBeenCalledTimes(3);
+    expect(base.totals).toHaveBeenCalledTimes(2);
   });
 });

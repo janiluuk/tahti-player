@@ -6,7 +6,7 @@ use super::{
     add_root, collect_audio_paths, collect_audio_paths_with_skipped, discover_new_paths,
     get_root, import_batch, import_paths, list, list_roots, list_unavailable,
     refresh_root_availability, relink, relink_root, remove, remove_root, rescan_unavailable,
-    resolve_path, ImportResult,
+    resolve_path, facets, folder_of, list_filtered, totals, FacetFilter, FacetKind, ImportResult,
 };
 
 static DB_COUNTER: AtomicU32 = AtomicU32::new(0);
@@ -647,7 +647,20 @@ async fn paginates_100k_generated_rows() {
     let search = started.elapsed();
     assert_eq!(found.total, 1);
 
-    eprintln!("100k rows: first page {browse:?}, indexed search {search:?}");
+    let mut facet_times = Vec::new();
+    for kind in [FacetKind::Artists, FacetKind::Albums, FacetKind::Genres, FacetKind::Folders] {
+        let started = std::time::Instant::now();
+        let groups = facets(&pool, kind).await.unwrap();
+        facet_times.push((kind, groups.len(), started.elapsed()));
+    }
+    let started = std::time::Instant::now();
+    let artist_filter = FacetFilter { kind: FacetKind::Artists, value: "Generated Artist 007".into(), secondary: None };
+    let filtered = list_filtered(&pool, "", Some(&artist_filter), 0).await.unwrap();
+    let filter_time = started.elapsed();
+    eprintln!("100k rows: first page {browse:?}, indexed search {search:?}, facets {facet_times:?}, filtered page ({} rows) {filter_time:?}", filtered.total);
+    for (kind, _, took) in &facet_times {
+        assert!(took.as_millis() < 1500, "{kind:?} facets took {took:?}");
+    }
     // Generous ceilings (debug build, shared CI); the point is "not a scan".
     assert!(browse.as_millis() < 500, "browse took {browse:?}");
     assert!(search.as_millis() < 250, "search took {search:?}");
@@ -908,4 +921,109 @@ async fn untagged_files_keep_unknown_values_empty_not_guessed() {
     assert_eq!(track.album_artist, "");
     assert_eq!(track.genre, "");
     assert_eq!((track.year, track.track_no, track.disc_no), (None, None, None));
+}
+
+// --- Browse facets ---
+
+async fn browse_fixture() -> (tempfile::TempDir, SqlitePool) {
+    let dir = tempfile::tempdir().unwrap();
+    let a = dir.path().join("Anima");
+    let b = dir.path().join("Loose");
+    std::fs::create_dir_all(&a).unwrap();
+    std::fs::create_dir_all(&b).unwrap();
+    // Two tracks of one album (artist differs by case), one compilation
+    // track whose album artist overrides its artist, one untagged-genre loose file.
+    write_wav_tagged(&a.join("1.wav"), &[("INAM", "One"), ("IART", "Vladislav Delay"), ("IPRD", "Anima"), ("IGNR", "Dub Techno"), ("ICRD", "2001")]);
+    write_wav_tagged(&a.join("2.wav"), &[("INAM", "Two"), ("IART", "VLADISLAV DELAY"), ("IPRD", "Anima"), ("IGNR", "dub techno"), ("ICRD", "2001")]);
+    write_wav_tagged(&b.join("3.wav"), &[("INAM", "Three"), ("IART", "Guest"), ("IPRD", "Anima"), ("IGNR", "Ambient")]);
+    write_wav_tagged(&b.join("4.wav"), &[("INAM", "Four"), ("IART", "Solo")]);
+    let pool = pool().await;
+    let paths = ["Anima/1.wav", "Anima/2.wav", "Loose/3.wav", "Loose/4.wav"]
+        .map(|p| dir.path().join(p))
+        .to_vec();
+    let result = import_paths(&pool, paths).await;
+    assert_eq!(result.imported, 4, "{:?}", result.errors);
+    (dir, pool)
+}
+
+#[test]
+fn folder_of_keeps_the_trailing_separator_in_either_style() {
+    assert_eq!(folder_of("/music/a/b.flac"), "/music/a/");
+    assert_eq!(folder_of("C:\\music\\a\\b.flac"), "C:\\music\\a\\");
+    assert_eq!(folder_of("bare.flac"), "");
+}
+
+#[tokio::test]
+async fn facets_group_artists_case_insensitively_with_totals() {
+    let (_dir, pool) = browse_fixture().await;
+    let artists = facets(&pool, FacetKind::Artists).await.unwrap();
+    let names: Vec<&str> = artists.iter().map(|g| g.name.as_str()).collect();
+    assert_eq!(names.len(), 3, "{names:?}");
+    let delay = artists.iter().find(|g| g.name.eq_ignore_ascii_case("vladislav delay")).unwrap();
+    assert_eq!(delay.track_count, 2);
+    assert!(delay.size_bytes > 0 && delay.duration_sec > 0.0);
+
+    let all = totals(&pool).await.unwrap();
+    assert_eq!(all.track_count, 4);
+    assert_eq!(all.size_bytes, artists.iter().map(|g| g.size_bytes).sum::<i64>());
+}
+
+#[tokio::test]
+async fn facets_cover_albums_genres_and_folders() {
+    let (_dir, pool) = browse_fixture().await;
+    let albums = facets(&pool, FacetKind::Albums).await.unwrap();
+    let anima: Vec<_> = albums.iter().filter(|g| g.name == "Anima").collect();
+    assert_eq!(anima.len(), 2, "same album name under different artists stays separate");
+    assert!(anima.iter().any(|g| g.track_count == 2 && g.year == Some(2001)));
+
+    let genres = facets(&pool, FacetKind::Genres).await.unwrap();
+    let dub = genres.iter().find(|g| g.name.eq_ignore_ascii_case("dub techno")).unwrap();
+    assert_eq!(dub.track_count, 2, "genre grouping ignores case");
+    assert!(genres.iter().any(|g| g.name.is_empty()), "untagged tracks form an unknown group");
+
+    let folders = facets(&pool, FacetKind::Folders).await.unwrap();
+    assert_eq!(folders.len(), 2);
+    assert!(folders.iter().all(|g| g.name.ends_with('/') || g.name.ends_with('\\')));
+}
+
+#[tokio::test]
+async fn list_filtered_narrows_by_each_facet_and_combines_with_search() {
+    let (_dir, pool) = browse_fixture().await;
+    let artist = FacetFilter { kind: FacetKind::Artists, value: "vladislav delay".into(), secondary: None };
+    assert_eq!(list_filtered(&pool, "", Some(&artist), 0).await.unwrap().total, 2);
+    assert_eq!(list_filtered(&pool, "Two", Some(&artist), 0).await.unwrap().total, 1);
+    assert_eq!(list_filtered(&pool, "Three", Some(&artist), 0).await.unwrap().total, 0);
+
+    let album = FacetFilter { kind: FacetKind::Albums, value: "Anima".into(), secondary: Some("Guest".into()) };
+    let page = list_filtered(&pool, "", Some(&album), 0).await.unwrap();
+    assert_eq!((page.total, page.tracks[0].title.as_str()), (1, "Three"));
+
+    let genre = FacetFilter { kind: FacetKind::Genres, value: "Ambient".into(), secondary: None };
+    assert_eq!(list_filtered(&pool, "", Some(&genre), 0).await.unwrap().total, 1);
+    let unknown = FacetFilter { kind: FacetKind::Genres, value: String::new(), secondary: None };
+    assert_eq!(list_filtered(&pool, "", Some(&unknown), 0).await.unwrap().total, 1);
+
+    let folder = facets(&pool, FacetKind::Folders).await.unwrap().remove(0).name;
+    let in_folder = FacetFilter { kind: FacetKind::Folders, value: folder, secondary: None };
+    assert_eq!(list_filtered(&pool, "", Some(&in_folder), 0).await.unwrap().total, 2);
+}
+
+#[tokio::test]
+async fn folder_follows_a_root_relink() {
+    let old = tempfile::tempdir().unwrap();
+    std::fs::create_dir_all(old.path().join("Album")).unwrap();
+    write_wav(&old.path().join("Album/one.wav"), "One", "Artist");
+    let pool = pool().await;
+    let root = add_root(&pool, old.path()).await.unwrap();
+    let (fresh, _) = discover_new_paths(&pool, &root).await.unwrap();
+    import_into_root(&pool, &root.id, fresh).await;
+
+    let new = tempfile::tempdir().unwrap();
+    std::fs::create_dir_all(new.path().join("Album")).unwrap();
+    std::fs::copy(old.path().join("Album/one.wav"), new.path().join("Album/one.wav")).unwrap();
+    relink_root(&pool, &root.id, new.path()).await.unwrap();
+
+    let folders = facets(&pool, FacetKind::Folders).await.unwrap();
+    assert_eq!(folders.len(), 1);
+    assert!(folders[0].name.starts_with(new.path().canonicalize().unwrap().to_str().unwrap()));
 }

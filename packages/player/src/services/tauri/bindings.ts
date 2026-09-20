@@ -5,7 +5,14 @@ import { invoke as __TAURI_INVOKE } from "@tauri-apps/api/core";
 
 /** Commands */
 export const commands = {
-	libraryList: (search: string, offset: number) => typedError<LibraryPage, string>(__TAURI_INVOKE("library_list", { search, offset })),
+	libraryList: (search: string, offset: number, filter: {
+	kind: FacetKind,
+	value: string,
+	/**  Album artist, for `Albums`. */
+	secondary: string | null,
+} | null) => typedError<LibraryPage, string>(__TAURI_INVOKE("library_list", { search, offset, filter })),
+	libraryFacets: (kind: FacetKind) => typedError<FacetGroup[], string>(__TAURI_INVOKE("library_facets", { kind })),
+	libraryTotals: () => typedError<LibraryTotals, string>(__TAURI_INVOKE("library_totals")),
 	libraryImport: () => typedError<ImportResult, string>(__TAURI_INVOKE("library_import")),
 	libraryImportFolder: () => typedError<ImportResult, string>(__TAURI_INVOKE("library_import_folder")),
 	/**
@@ -136,6 +143,27 @@ export type DailyListeningTime = {
 	value: number,
 };
 
+/**  Narrows the track list to one group from `library_facets`. */
+export type FacetFilter = {
+	kind: FacetKind,
+	value: string,
+	/**  Album artist, for `Albums`. */
+	secondary: string | null,
+};
+
+/**  One group in a browse tab. For albums `secondary` is the album artist. */
+export type FacetGroup = {
+	name: string,
+	secondary: string,
+	year: number | null,
+	trackCount: number,
+	durationSec: number | null,
+	sizeBytes: number,
+};
+
+/**  What a browse tab groups by. */
+export type FacetKind = "artists" | "albums" | "genres" | "folders";
+
 export type FirstPlay = {
 	at: number,
 };
@@ -217,6 +245,16 @@ export type LibraryRoot = {
 	trackCount: number,
 	missingCount: number,
 	available: boolean,
+};
+
+/**
+ *  Everything in the catalog, for the "on this device" totals line --
+ *  deliberately separate from cloud storage usage.
+ */
+export type LibraryTotals = {
+	trackCount: number,
+	durationSec: number | null,
+	sizeBytes: number,
 };
 
 export type LibraryTrack = {

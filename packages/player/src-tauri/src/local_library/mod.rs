@@ -98,6 +98,66 @@ pub struct ImportProgress {
     pub current_path: Option<String>,
 }
 
+/// What a browse tab groups by.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
+#[serde(rename_all = "camelCase")]
+pub enum FacetKind {
+    Artists,
+    Albums,
+    Genres,
+    Folders,
+}
+
+/// One group in a browse tab. For albums `secondary` is the album artist.
+#[derive(Debug, Clone, Serialize, specta::Type, FromRow)]
+#[serde(rename_all = "camelCase")]
+pub struct FacetGroup {
+    pub name: String,
+    pub secondary: String,
+    #[specta(type = Option<Number<i64>>)]
+    pub year: Option<i64>,
+    #[specta(type = Number<i64>)]
+    pub track_count: i64,
+    pub duration_sec: f64,
+    #[specta(type = Number<i64>)]
+    pub size_bytes: i64,
+}
+
+/// Narrows the track list to one group from `library_facets`.
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type)]
+#[serde(rename_all = "camelCase")]
+pub struct FacetFilter {
+    pub kind: FacetKind,
+    pub value: String,
+    /// Album artist, for `Albums`.
+    pub secondary: Option<String>,
+}
+
+/// Everything in the catalog, for the "on this device" totals line --
+/// deliberately separate from cloud storage usage.
+#[derive(Debug, Serialize, specta::Type, FromRow)]
+#[serde(rename_all = "camelCase")]
+pub struct LibraryTotals {
+    #[specta(type = Number<i64>)]
+    pub track_count: i64,
+    pub duration_sec: f64,
+    #[specta(type = Number<i64>)]
+    pub size_bytes: i64,
+}
+
+/// Grouping key shared by the artist facet, the album facet and their
+/// filters. Album artist wins over track artist so compilations stay
+/// together. Keep identical to `0005_browse_indexes.sql`.
+const ARTIST_KEY: &str = "COALESCE(NULLIF(album_artist, ''), NULLIF(artist, ''), '')";
+
+/// Directory part of `path`, trailing separator included (either style).
+fn folder_of(path: &str) -> String {
+    match path.rfind(['/', '\\']) {
+        Some(index) => path[..=index].to_owned(),
+        None => String::new(),
+    }
+}
+
 /// A folder the user asked the library to keep in sync. `track_count` /
 /// `missing_count` are aggregated on read; `available` is whether the folder
 /// itself currently exists on disk (false for a disconnected drive).
@@ -264,9 +324,9 @@ async fn insert_track(
     // same self-heal `resolve_path` does on a direct resolve. Re-importing
     // an ad hoc track under a root adopts it into that root; an existing
     // root membership is never stolen.
-    sqlx::query("INSERT INTO library_tracks (id,path,title,artist,album,format,duration,sample_rate,channels,bits_per_sample,size_bytes,root_id,album_artist,track_no,disc_no,year,genre,comment,bitrate_kbps) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(path) DO UPDATE SET title=excluded.title, artist=excluded.artist, album=excluded.album, album_artist=excluded.album_artist, track_no=excluded.track_no, disc_no=excluded.disc_no, year=excluded.year, genre=excluded.genre, comment=excluded.comment, bitrate_kbps=excluded.bitrate_kbps, format=excluded.format, duration=excluded.duration, sample_rate=excluded.sample_rate, channels=excluded.channels, bits_per_sample=excluded.bits_per_sample, size_bytes=excluded.size_bytes, available=1, unavailable_since=NULL, root_id=COALESCE(library_tracks.root_id, excluded.root_id)")
+    sqlx::query("INSERT INTO library_tracks (id,path,title,artist,album,format,duration,sample_rate,channels,bits_per_sample,size_bytes,root_id,album_artist,track_no,disc_no,year,genre,comment,bitrate_kbps,folder) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(path) DO UPDATE SET title=excluded.title, artist=excluded.artist, album=excluded.album, album_artist=excluded.album_artist, track_no=excluded.track_no, disc_no=excluded.disc_no, year=excluded.year, genre=excluded.genre, comment=excluded.comment, bitrate_kbps=excluded.bitrate_kbps, folder=excluded.folder, format=excluded.format, duration=excluded.duration, sample_rate=excluded.sample_rate, channels=excluded.channels, bits_per_sample=excluded.bits_per_sample, size_bytes=excluded.size_bytes, available=1, unavailable_since=NULL, root_id=COALESCE(library_tracks.root_id, excluded.root_id)")
         .bind(&track.id).bind(&track.path).bind(&track.title).bind(&track.artist).bind(&track.album).bind(&track.format).bind(track.duration).bind(track.sample_rate).bind(track.channels).bind(track.bits_per_sample).bind(track.size_bytes).bind(root_id)
-        .bind(&track.album_artist).bind(track.track_no).bind(track.disc_no).bind(track.year).bind(&track.genre).bind(&track.comment).bind(track.bitrate_kbps)
+        .bind(&track.album_artist).bind(track.track_no).bind(track.disc_no).bind(track.year).bind(&track.genre).bind(&track.comment).bind(track.bitrate_kbps).bind(folder_of(&track.path))
         .execute(conn).await?;
     Ok(())
 }
@@ -414,65 +474,111 @@ fn fts_match_query(search: &str) -> Option<String> {
 }
 
 pub async fn list(pool: &SqlitePool, search: &str, offset: i64) -> Result<LibraryPage, String> {
-    const PAGE: &str = "ORDER BY title COLLATE NOCASE,id LIMIT 100 OFFSET ?";
+    list_filtered(pool, search, None, offset).await
+}
+
+/// One page of tracks (100, by title) optionally narrowed to a browse group
+/// and/or a search. Every condition is a bound text parameter.
+pub async fn list_filtered(
+    pool: &SqlitePool,
+    search: &str,
+    filter: Option<&FacetFilter>,
+    offset: i64,
+) -> Result<LibraryPage, String> {
     let search = search.trim();
-    let offset = offset.max(0);
-    if search.is_empty() {
-        // No filter at all: answer straight from the title index instead of
-        // evaluating four LIKEs per row.
-        let total = sqlx::query_scalar::<_, i64>("SELECT COUNT(*) FROM library_tracks")
-            .fetch_one(pool)
-            .await
-            .map_err(|err| err.to_string())?;
-        let tracks = sqlx::query_as::<_, LibraryTrack>(&format!(
-            "SELECT * FROM library_tracks {PAGE}"
-        ))
-        .bind(offset)
-        .fetch_all(pool)
-        .await
-        .map_err(|err| err.to_string())?;
-        return Ok(LibraryPage { tracks, total });
+    let mut conditions: Vec<String> = Vec::new();
+    let mut binds: Vec<String> = Vec::new();
+    if let Some(filter) = filter {
+        match filter.kind {
+            FacetKind::Artists => {
+                conditions.push(format!("{ARTIST_KEY} COLLATE NOCASE = ?"));
+                binds.push(filter.value.clone());
+            }
+            FacetKind::Albums => {
+                conditions.push("album COLLATE NOCASE = ?".into());
+                binds.push(filter.value.clone());
+                conditions.push(format!("{ARTIST_KEY} COLLATE NOCASE = ?"));
+                binds.push(filter.secondary.clone().unwrap_or_default());
+            }
+            FacetKind::Genres => {
+                conditions.push("genre COLLATE NOCASE = ?".into());
+                binds.push(filter.value.clone());
+            }
+            FacetKind::Folders => {
+                conditions.push("folder = ?".into());
+                binds.push(filter.value.clone());
+            }
+        }
     }
-    if let Some(query) = fts_match_query(search) {
-        let filter = "rowid IN (SELECT rowid FROM library_tracks_fts WHERE library_tracks_fts MATCH ?)";
-        let total = sqlx::query_scalar::<_, i64>(&format!(
-            "SELECT COUNT(*) FROM library_tracks WHERE {filter}"
-        ))
-        .bind(&query)
-        .fetch_one(pool)
-        .await
-        .map_err(|err| err.to_string())?;
-        let tracks = sqlx::query_as::<_, LibraryTrack>(&format!(
-            "SELECT * FROM library_tracks WHERE {filter} {PAGE}"
-        ))
-        .bind(&query)
-        .bind(offset)
-        .fetch_all(pool)
-        .await
-        .map_err(|err| err.to_string())?;
-        return Ok(LibraryPage { tracks, total });
+    if !search.is_empty() {
+        if let Some(query) = fts_match_query(search) {
+            conditions.push(
+                "rowid IN (SELECT rowid FROM library_tracks_fts WHERE library_tracks_fts MATCH ?)"
+                    .into(),
+            );
+            binds.push(query);
+        } else {
+            let like = format!(
+                "%{}%",
+                search
+                    .replace('\\', "\\\\")
+                    .replace('%', "\\%")
+                    .replace('_', "\\_")
+            );
+            conditions.push("(title LIKE ? ESCAPE '\\' OR artist LIKE ? ESCAPE '\\' OR album LIKE ? ESCAPE '\\' OR path LIKE ? ESCAPE '\\')".into());
+            binds.extend(std::iter::repeat(like).take(4));
+        }
     }
-    let like = format!(
-        "%{}%",
-        search
-            .replace('\\', "\\\\")
-            .replace('%', "\\%")
-            .replace('_', "\\_")
+    // No conditions at all: answer straight from the title index.
+    let where_sql = if conditions.is_empty() {
+        String::new()
+    } else {
+        format!("WHERE {}", conditions.join(" AND "))
+    };
+    let count_sql = format!("SELECT COUNT(*) FROM library_tracks {where_sql}");
+    let mut count = sqlx::query_scalar::<_, i64>(&count_sql);
+    for value in &binds {
+        count = count.bind(value);
+    }
+    let total = count.fetch_one(pool).await.map_err(|err| err.to_string())?;
+    let page_sql = format!(
+        "SELECT * FROM library_tracks {where_sql} ORDER BY title COLLATE NOCASE,id LIMIT 100 OFFSET ?"
     );
-    let filter = "(title LIKE ? ESCAPE '\\' OR artist LIKE ? ESCAPE '\\' OR album LIKE ? ESCAPE '\\' OR path LIKE ? ESCAPE '\\')";
-    let total = sqlx::query_scalar::<_, i64>(&format!(
-        "SELECT COUNT(*) FROM library_tracks WHERE {filter}"
-    ))
-    .bind(&like)
-    .bind(&like)
-    .bind(&like)
-    .bind(&like)
+    let mut page = sqlx::query_as::<_, LibraryTrack>(&page_sql);
+    for value in &binds {
+        page = page.bind(value);
+    }
+    let tracks = page
+        .bind(offset.max(0))
+        .fetch_all(pool)
+        .await
+        .map_err(|err| err.to_string())?;
+    Ok(LibraryPage { tracks, total })
+}
+
+/// Groups the whole catalog for a browse tab, straight from the indexes in
+/// `0005_browse_indexes.sql`.
+pub async fn facets(pool: &SqlitePool, kind: FacetKind) -> Result<Vec<FacetGroup>, String> {
+    let totals = "COUNT(*) AS track_count, COALESCE(SUM(duration), 0.0) AS duration_sec, COALESCE(SUM(size_bytes), 0) AS size_bytes";
+    let sql = match kind {
+        FacetKind::Artists => format!("SELECT MIN({ARTIST_KEY}) AS name, '' AS secondary, NULL AS year, {totals} FROM library_tracks GROUP BY {ARTIST_KEY} COLLATE NOCASE ORDER BY name COLLATE NOCASE"),
+        FacetKind::Albums => format!("SELECT MIN(album) AS name, MIN({ARTIST_KEY}) AS secondary, MAX(year) AS year, {totals} FROM library_tracks GROUP BY album COLLATE NOCASE, {ARTIST_KEY} COLLATE NOCASE ORDER BY name COLLATE NOCASE, secondary COLLATE NOCASE"),
+        FacetKind::Genres => format!("SELECT MIN(genre) AS name, '' AS secondary, NULL AS year, {totals} FROM library_tracks GROUP BY genre COLLATE NOCASE ORDER BY name COLLATE NOCASE"),
+        FacetKind::Folders => format!("SELECT folder AS name, '' AS secondary, NULL AS year, {totals} FROM library_tracks GROUP BY folder ORDER BY name COLLATE NOCASE"),
+    };
+    sqlx::query_as::<_, FacetGroup>(&sql)
+        .fetch_all(pool)
+        .await
+        .map_err(|err| err.to_string())
+}
+
+pub async fn totals(pool: &SqlitePool) -> Result<LibraryTotals, String> {
+    sqlx::query_as::<_, LibraryTotals>(
+        "SELECT COUNT(*) AS track_count, COALESCE(SUM(duration), 0.0) AS duration_sec, COALESCE(SUM(size_bytes), 0) AS size_bytes FROM library_tracks",
+    )
     .fetch_one(pool)
     .await
-    .map_err(|err| err.to_string())?;
-    let tracks = sqlx::query_as::<_, LibraryTrack>(&format!("SELECT * FROM library_tracks WHERE {filter} {PAGE}"))
-        .bind(&like).bind(&like).bind(&like).bind(&like).bind(offset).fetch_all(pool).await.map_err(|err| err.to_string())?;
-    Ok(LibraryPage { tracks, total })
+    .map_err(|err| err.to_string())
 }
 
 #[tauri::command]
@@ -481,8 +587,24 @@ pub async fn library_list(
     app: tauri::AppHandle,
     search: String,
     offset: i32,
+    filter: Option<FacetFilter>,
 ) -> Result<LibraryPage, String> {
-    list(&pool(&app).await?, &search, offset.into()).await
+    list_filtered(&pool(&app).await?, &search, filter.as_ref(), offset.into()).await
+}
+
+#[tauri::command]
+#[specta::specta]
+pub async fn library_facets(
+    app: tauri::AppHandle,
+    kind: FacetKind,
+) -> Result<Vec<FacetGroup>, String> {
+    facets(&pool(&app).await?, kind).await
+}
+
+#[tauri::command]
+#[specta::specta]
+pub async fn library_totals(app: tauri::AppHandle) -> Result<LibraryTotals, String> {
+    totals(&pool(&app).await?).await
 }
 
 fn reset_cancel_import(app: &tauri::AppHandle) {
@@ -695,8 +817,8 @@ pub async fn relink(
     let extracted = tauri::async_runtime::spawn_blocking(move || metadata::read(&new_path))
         .await
         .map_err(|err| err.to_string())??;
-    let updated = sqlx::query("UPDATE library_tracks SET path=?, title=?, artist=?, album=?, album_artist=?, track_no=?, disc_no=?, year=?, genre=?, comment=?, bitrate_kbps=?, format=?, duration=?, sample_rate=?, channels=?, bits_per_sample=?, size_bytes=?, available=1, unavailable_since=NULL WHERE id=?")
-        .bind(&extracted.path).bind(&extracted.title).bind(&extracted.artist).bind(&extracted.album).bind(&extracted.album_artist).bind(extracted.track_no).bind(extracted.disc_no).bind(extracted.year).bind(&extracted.genre).bind(&extracted.comment).bind(extracted.bitrate_kbps).bind(&extracted.format).bind(extracted.duration).bind(extracted.sample_rate).bind(extracted.channels).bind(extracted.bits_per_sample).bind(extracted.size_bytes)
+    let updated = sqlx::query("UPDATE library_tracks SET path=?, title=?, artist=?, album=?, album_artist=?, track_no=?, disc_no=?, year=?, genre=?, comment=?, bitrate_kbps=?, folder=?, format=?, duration=?, sample_rate=?, channels=?, bits_per_sample=?, size_bytes=?, available=1, unavailable_since=NULL WHERE id=?")
+        .bind(&extracted.path).bind(&extracted.title).bind(&extracted.artist).bind(&extracted.album).bind(&extracted.album_artist).bind(extracted.track_no).bind(extracted.disc_no).bind(extracted.year).bind(&extracted.genre).bind(&extracted.comment).bind(extracted.bitrate_kbps).bind(folder_of(&extracted.path)).bind(&extracted.format).bind(extracted.duration).bind(extracted.sample_rate).bind(extracted.channels).bind(extracted.bits_per_sample).bind(extracted.size_bytes)
         .bind(id)
         .execute(pool).await;
     if let Err(error) = updated {
@@ -1029,9 +1151,10 @@ pub async fn relink_root(
     let mut relinked = 0usize;
     for (track_id, path) in matches {
         let updated = sqlx::query(
-            "UPDATE library_tracks SET path=?, available=1, unavailable_since=NULL WHERE id=?",
+            "UPDATE library_tracks SET path=?, folder=?, available=1, unavailable_since=NULL WHERE id=?",
         )
         .bind(&path)
+        .bind(folder_of(&path))
         .bind(&track_id)
         .execute(&mut *tx)
         .await;

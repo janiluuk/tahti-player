@@ -38,6 +38,8 @@ fn typescript_export_config() -> specta_typescript::Typescript {
 fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
     tauri_specta::Builder::<tauri::Wry>::new().commands(tauri_specta::collect_commands![
         local_library::library_list,
+        local_library::library_facets,
+        local_library::library_totals,
         local_library::library_import,
         local_library::library_import_folder,
         local_library::library_import_paths,

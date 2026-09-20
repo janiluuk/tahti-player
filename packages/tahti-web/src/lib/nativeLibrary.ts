@@ -19,6 +19,32 @@ export type NativeLibraryTrack = {
   bitrateKbps: number | null;
 };
 
+export type NativeFacetKind = 'artists' | 'albums' | 'genres' | 'folders';
+
+/** One group in a browse tab. For albums `secondary` is the album artist. */
+export type NativeFacetGroup = {
+  name: string;
+  secondary: string;
+  year: number | null;
+  trackCount: number;
+  durationSec: number | null;
+  sizeBytes: number;
+};
+
+/** Narrows the track list to one group from `facets`. */
+export type NativeFacetFilter = {
+  kind: NativeFacetKind;
+  value: string;
+  secondary: string | null;
+};
+
+/** Everything on this device — separate from cloud storage usage. */
+export type NativeLibraryTotals = {
+  trackCount: number;
+  durationSec: number | null;
+  sizeBytes: number;
+};
+
 export type NativeLibraryPage = {
   tracks: NativeLibraryTrack[];
   total: number;
@@ -72,7 +98,13 @@ export type NativeRelinkRootResult = {
 };
 
 export type TahtiNativeLibrary = {
-  list: (search: string, offset: number) => Promise<NativeLibraryPage>;
+  list: (
+    search: string,
+    offset: number,
+    filter?: NativeFacetFilter | null,
+  ) => Promise<NativeLibraryPage>;
+  facets: (kind: NativeFacetKind) => Promise<NativeFacetGroup[]>;
+  totals: () => Promise<NativeLibraryTotals>;
   import: () => Promise<NativeLibraryImportResult>;
   importFolder: () => Promise<NativeLibraryImportResult>;
   /** Imports an explicit list of file/folder paths — used for drag-drop. */
@@ -165,9 +197,13 @@ export function withReadCache(library: TahtiNativeLibrary): TahtiNativeLibrary {
   const pages = new Map<string, Promise<NativeLibraryPage>>();
   let unavailable: Promise<NativeLibraryTrack[]> | null = null;
   let roots: Promise<NativeLibraryRoot[]> | null = null;
+  let totals: Promise<NativeLibraryTotals> | null = null;
+  const facets = new Map<NativeFacetKind, Promise<NativeFacetGroup[]>>();
 
   const invalidate = () => {
     pages.clear();
+    facets.clear();
+    totals = null;
     unavailable = null;
     roots = null;
   };
@@ -185,15 +221,19 @@ export function withReadCache(library: TahtiNativeLibrary): TahtiNativeLibrary {
 
   return {
     ...library,
-    list(search, offset) {
-      const key = `${offset}\u0000${search}`;
+    list(search, offset, filter) {
+      const key = `${offset}\u0000${search}\u0000${
+        filter
+          ? `${filter.kind}\u0000${filter.value}\u0000${filter.secondary ?? ''}`
+          : ''
+      }`;
       const hit = pages.get(key);
       if (hit) {
         pages.delete(key);
         pages.set(key, hit);
         return hit;
       }
-      const request = library.list(search, offset);
+      const request = library.list(search, offset, filter);
       pages.set(key, request);
       if (pages.size > LIST_CACHE_LIMIT) {
         const oldest = pages.keys().next().value;
@@ -207,6 +247,32 @@ export function withReadCache(library: TahtiNativeLibrary): TahtiNativeLibrary {
         }
       });
       return request;
+    },
+    facets(kind) {
+      const hit = facets.get(kind);
+      if (hit) {
+        return hit;
+      }
+      const request = library.facets(kind);
+      facets.set(kind, request);
+      request.catch(() => {
+        if (facets.get(kind) === request) {
+          facets.delete(kind);
+        }
+      });
+      return request;
+    },
+    totals() {
+      if (!totals) {
+        const request = library.totals();
+        totals = request;
+        request.catch(() => {
+          if (totals === request) {
+            totals = null;
+          }
+        });
+      }
+      return totals;
     },
     listUnavailable() {
       if (!unavailable) {

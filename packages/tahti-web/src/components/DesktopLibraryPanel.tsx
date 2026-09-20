@@ -26,9 +26,12 @@ import { hasNativePlayer } from '../lib/nativeCapabilities';
 import {
   getNativeLibrary,
   playableFromNativeTrack,
+  type NativeFacetFilter,
+  type NativeFacetGroup,
   type NativeLibraryImportProgress,
   type NativeLibraryImportResult,
   type NativeLibraryRoot,
+  type NativeLibraryTotals,
   type NativeLibraryTrack,
   type NativeRootScanResult,
 } from '../lib/nativeLibrary';
@@ -40,6 +43,14 @@ import {
 } from '../stores/localLibraryStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { ConfirmDialog } from './ConfirmDialog';
+import {
+  BrowseTabs,
+  FACET_KIND_LABEL,
+  FacetGroupList,
+  facetTitle,
+  LibraryTotalsLine,
+  type BrowseKind,
+} from './LocalLibraryBrowse';
 import { PlayableTrackTable } from './PlayableTrackTable';
 
 const FILE_LABELS = {
@@ -95,6 +106,14 @@ export function DesktopLibraryPanel() {
     useState<NativeLibraryImportProgress | null>(null);
   const lastFailedPathsRef = useRef<string[]>([]);
   const listRequestRef = useRef(0);
+  const [browseKind, setBrowseKind] = useState<BrowseKind>('tracks');
+  const [facetFilter, setFacetFilter] = useState<NativeFacetFilter | null>(
+    null,
+  );
+  const [facetGroups, setFacetGroups] = useState<NativeFacetGroup[]>([]);
+  const [facetLoading, setFacetLoading] = useState(false);
+  const [totals, setTotals] = useState<NativeLibraryTotals | null>(null);
+  const [catalogVersion, setCatalogVersion] = useState(0);
   const [roots, setRoots] = useState<NativeLibraryRoot[]>([]);
   const [rootBusy, setRootBusy] = useState<string | 'add' | 'rescan' | null>(
     null,
@@ -128,10 +147,11 @@ export function DesktopLibraryPanel() {
     setNativeLoading(true);
     setNativeError(null);
     try {
-      const [page, unavailable, rootList] = await Promise.all([
-        nativeLibrary.list(debouncedNativeQuery, 0),
+      const [page, unavailable, rootList, libraryTotals] = await Promise.all([
+        nativeLibrary.list(debouncedNativeQuery, 0, facetFilter),
         nativeLibrary.listUnavailable(),
         nativeLibrary.listRoots(),
+        nativeLibrary.totals(),
       ]);
       if (request !== listRequestRef.current) {
         return;
@@ -140,6 +160,8 @@ export function DesktopLibraryPanel() {
       setNativeTotal(page.total);
       setNativeUnavailable(unavailable);
       setRoots(rootList);
+      setTotals(libraryTotals);
+      setCatalogVersion((version) => version + 1);
     } catch (error) {
       if (request === listRequestRef.current) {
         setNativeError(
@@ -151,7 +173,7 @@ export function DesktopLibraryPanel() {
         setNativeLoading(false);
       }
     }
-  }, [nativeLibrary, debouncedNativeQuery]);
+  }, [nativeLibrary, debouncedNativeQuery, facetFilter]);
 
   const loadMoreNative = async () => {
     if (!nativeLibrary || nativeLoading || nativeTracks.length >= nativeTotal) {
@@ -164,6 +186,7 @@ export function DesktopLibraryPanel() {
       const page = await nativeLibrary.list(
         debouncedNativeQuery,
         nativeTracks.length,
+        facetFilter,
       );
       if (request !== listRequestRef.current) {
         return;
@@ -186,6 +209,53 @@ export function DesktopLibraryPanel() {
   useEffect(() => {
     void refreshNative();
   }, [refreshNative]);
+
+  useEffect(() => {
+    if (!nativeLibrary || browseKind === 'tracks') {
+      return;
+    }
+    let stale = false;
+    setFacetLoading(true);
+    nativeLibrary
+      .facets(browseKind)
+      .then((groups) => {
+        if (!stale) {
+          setFacetGroups(groups);
+        }
+      })
+      .catch((error: unknown) => {
+        if (!stale) {
+          toast.error(
+            error instanceof Error ? error.message : 'Could not load groups.',
+          );
+        }
+      })
+      .finally(() => {
+        if (!stale) {
+          setFacetLoading(false);
+        }
+      });
+    return () => {
+      stale = true;
+    };
+  }, [nativeLibrary, browseKind, catalogVersion]);
+
+  const changeBrowseKind = (kind: BrowseKind) => {
+    setBrowseKind(kind);
+    setFacetFilter(null);
+    setFacetGroups([]);
+  };
+
+  const selectFacetGroup = (group: NativeFacetGroup) => {
+    if (browseKind === 'tracks') {
+      return;
+    }
+    setFacetFilter({
+      kind: browseKind,
+      value: group.name,
+      secondary: browseKind === 'albums' ? group.secondary : null,
+    });
+  };
 
   const reportImportResult = (result: NativeLibraryImportResult) => {
     lastFailedPathsRef.current = result.errors.map((failure) => failure.path);
@@ -613,177 +683,228 @@ export function DesktopLibraryPanel() {
               </ul>
             )}
           </div>
-          <Input
-            type="search"
-            label="Search desktop library"
-            placeholder="Title, artist, or album"
-            value={nativeQuery}
-            onChange={(event) => setNativeQuery(event.target.value)}
-          />
-          {nativeTracks.length ? (
+          <LibraryTotalsLine totals={totals} />
+          <BrowseTabs value={browseKind} onChange={changeBrowseKind} />
+          {browseKind !== 'tracks' && !facetFilter ? (
+            facetGroups.length ? (
+              <FacetGroupList
+                kind={browseKind}
+                groups={facetGroups}
+                onSelect={selectFacetGroup}
+              />
+            ) : (
+              <EmptyState
+                size="sm"
+                icon={<LibraryIcon size={28} className="opacity-50" />}
+                title={
+                  facetLoading
+                    ? 'Loading…'
+                    : `No ${FACET_KIND_LABEL[browseKind].toLowerCase()} groups yet`
+                }
+                description={
+                  facetLoading ? undefined : 'Import files to fill this view.'
+                }
+                className="flex-1"
+              />
+            )
+          ) : (
             <>
-              <ul className="tahti-hide-scrollbar flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto">
-                {nativeTracks.map((track) => (
-                  <li
-                    key={track.id}
-                    className="border-border flex items-center gap-2 rounded-md border px-2 py-1.5"
+              {facetFilter ? (
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    aria-label={`Clear ${FACET_KIND_LABEL[facetFilter.kind]} filter`}
+                    onClick={() => setFacetFilter(null)}
                   >
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-semibold">
-                        {track.title}
-                      </p>
-                      <p className="text-foreground-secondary truncate text-xs">
-                        {track.artist || 'Unknown artist'}
-                      </p>
-                      <p className="text-foreground-secondary truncate text-[10px] opacity-70">
-                        {describeTrackDetails(track)}
-                      </p>
-                      {!track.available ? (
-                        <p className="text-destructive truncate text-xs">
-                          Original file is missing
-                        </p>
-                      ) : null}
-                    </div>
-                    {!track.available ? (
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        onClick={() => void relinkNative(track)}
-                        disabled={nativeLoading}
+                    <XIcon size={12} aria-hidden />
+                    {FACET_KIND_LABEL[facetFilter.kind]}:{' '}
+                    {facetTitle(facetFilter.kind, {
+                      name: facetFilter.value,
+                      secondary: facetFilter.secondary ?? '',
+                      year: null,
+                      trackCount: 0,
+                      durationSec: 0,
+                      sizeBytes: 0,
+                    })}
+                  </Button>
+                </div>
+              ) : null}
+              <Input
+                type="search"
+                label="Search desktop library"
+                placeholder="Title, artist, or album"
+                value={nativeQuery}
+                onChange={(event) => setNativeQuery(event.target.value)}
+              />
+              {nativeTracks.length ? (
+                <>
+                  <ul className="tahti-hide-scrollbar flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto">
+                    {nativeTracks.map((track) => (
+                      <li
+                        key={track.id}
+                        className="border-border flex items-center gap-2 rounded-md border px-2 py-1.5"
                       >
-                        Locate
-                      </Button>
-                    ) : (
-                      <>
-                        <Tooltip content="Play" side="top">
-                          <Button
-                            size="icon-sm"
-                            variant="text"
-                            aria-label={`Play ${track.title}`}
-                            onClick={async () => {
-                              try {
-                                play(
-                                  playableFromNativeTrack(
-                                    track,
-                                    await nativeLibrary.resolve(track.id),
-                                  ),
-                                );
-                              } catch (error) {
-                                toast.error(
-                                  error instanceof Error
-                                    ? error.message
-                                    : 'Track unavailable.',
-                                );
-                              }
-                            }}
-                          >
-                            <PlayIcon size={14} aria-hidden />
-                          </Button>
-                        </Tooltip>
-                        <Tooltip content="Add to queue" side="top">
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-sm font-semibold">
+                            {track.title}
+                          </p>
+                          <p className="text-foreground-secondary truncate text-xs">
+                            {track.artist || 'Unknown artist'}
+                          </p>
+                          <p className="text-foreground-secondary truncate text-[10px] opacity-70">
+                            {describeTrackDetails(track)}
+                          </p>
+                          {!track.available ? (
+                            <p className="text-destructive truncate text-xs">
+                              Original file is missing
+                            </p>
+                          ) : null}
+                        </div>
+                        {!track.available ? (
                           <Button
                             size="sm"
+                            variant="secondary"
+                            onClick={() => void relinkNative(track)}
+                            disabled={nativeLoading}
+                          >
+                            Locate
+                          </Button>
+                        ) : (
+                          <>
+                            <Tooltip content="Play" side="top">
+                              <Button
+                                size="icon-sm"
+                                variant="text"
+                                aria-label={`Play ${track.title}`}
+                                onClick={async () => {
+                                  try {
+                                    play(
+                                      playableFromNativeTrack(
+                                        track,
+                                        await nativeLibrary.resolve(track.id),
+                                      ),
+                                    );
+                                  } catch (error) {
+                                    toast.error(
+                                      error instanceof Error
+                                        ? error.message
+                                        : 'Track unavailable.',
+                                    );
+                                  }
+                                }}
+                              >
+                                <PlayIcon size={14} aria-hidden />
+                              </Button>
+                            </Tooltip>
+                            <Tooltip content="Add to queue" side="top">
+                              <Button
+                                size="sm"
+                                variant="text"
+                                aria-label={`Queue ${track.title}`}
+                                onClick={async () => {
+                                  try {
+                                    enqueue(
+                                      playableFromNativeTrack(
+                                        track,
+                                        await nativeLibrary.resolve(track.id),
+                                      ),
+                                    );
+                                  } catch (error) {
+                                    toast.error(
+                                      error instanceof Error
+                                        ? error.message
+                                        : 'Track unavailable.',
+                                    );
+                                  }
+                                }}
+                              >
+                                Queue
+                              </Button>
+                            </Tooltip>
+                            <Tooltip content="Reveal in folder" side="top">
+                              <Button
+                                size="icon-sm"
+                                variant="text"
+                                aria-label={`Reveal ${track.title} in folder`}
+                                onClick={() => void revealNative(track)}
+                              >
+                                <FolderOpenIcon size={14} aria-hidden />
+                              </Button>
+                            </Tooltip>
+                          </>
+                        )}
+                        <Tooltip content="Remove" side="top">
+                          <Button
+                            size="icon-sm"
                             variant="text"
-                            aria-label={`Queue ${track.title}`}
+                            intent="danger"
+                            aria-label={`Remove ${track.title}`}
                             onClick={async () => {
                               try {
-                                enqueue(
-                                  playableFromNativeTrack(
-                                    track,
-                                    await nativeLibrary.resolve(track.id),
+                                await nativeLibrary.remove(track.id);
+                                setNativeTracks((current) =>
+                                  current.filter(
+                                    (item) => item.id !== track.id,
                                   ),
                                 );
+                                toast.success(`Removed “${track.title}”.`);
                               } catch (error) {
                                 toast.error(
                                   error instanceof Error
                                     ? error.message
-                                    : 'Track unavailable.',
+                                    : 'Could not remove track.',
                                 );
                               }
                             }}
                           >
-                            Queue
+                            <TrashIcon size={14} aria-hidden />
                           </Button>
                         </Tooltip>
-                        <Tooltip content="Reveal in folder" side="top">
-                          <Button
-                            size="icon-sm"
-                            variant="text"
-                            aria-label={`Reveal ${track.title} in folder`}
-                            onClick={() => void revealNative(track)}
-                          >
-                            <FolderOpenIcon size={14} aria-hidden />
-                          </Button>
-                        </Tooltip>
-                      </>
-                    )}
-                    <Tooltip content="Remove" side="top">
-                      <Button
-                        size="icon-sm"
-                        variant="text"
-                        intent="danger"
-                        aria-label={`Remove ${track.title}`}
-                        onClick={async () => {
-                          try {
-                            await nativeLibrary.remove(track.id);
-                            setNativeTracks((current) =>
-                              current.filter((item) => item.id !== track.id),
-                            );
-                            toast.success(`Removed “${track.title}”.`);
-                          } catch (error) {
-                            toast.error(
-                              error instanceof Error
-                                ? error.message
-                                : 'Could not remove track.',
-                            );
-                          }
-                        }}
-                      >
-                        <TrashIcon size={14} aria-hidden />
-                      </Button>
-                    </Tooltip>
-                  </li>
-                ))}
-              </ul>
-              {nativeTracks.length < nativeTotal ? (
-                <Button
-                  variant="text"
-                  onClick={() => void loadMoreNative()}
-                  disabled={nativeLoading}
-                >
-                  {nativeLoading
-                    ? 'Loading…'
-                    : `Load more (${nativeTotal - nativeTracks.length})`}
-                </Button>
-              ) : null}
+                      </li>
+                    ))}
+                  </ul>
+                  {nativeTracks.length < nativeTotal ? (
+                    <Button
+                      variant="text"
+                      onClick={() => void loadMoreNative()}
+                      disabled={nativeLoading}
+                    >
+                      {nativeLoading
+                        ? 'Loading…'
+                        : `Load more (${nativeTotal - nativeTracks.length})`}
+                    </Button>
+                  ) : null}
+                </>
+              ) : nativeError ? (
+                <EmptyState
+                  size="sm"
+                  title="Desktop library unavailable"
+                  description={nativeError}
+                  action={
+                    <Button
+                      variant="secondary"
+                      onClick={() => void refreshNative()}
+                    >
+                      Retry
+                    </Button>
+                  }
+                  className="flex-1"
+                />
+              ) : (
+                <EmptyState
+                  size="sm"
+                  icon={<LibraryIcon size={28} className="opacity-50" />}
+                  title="Desktop library"
+                  description={
+                    nativeLoading
+                      ? 'Loading library…'
+                      : 'Import files to build your offline library.'
+                  }
+                  className="flex-1"
+                />
+              )}
             </>
-          ) : nativeError ? (
-            <EmptyState
-              size="sm"
-              title="Desktop library unavailable"
-              description={nativeError}
-              action={
-                <Button
-                  variant="secondary"
-                  onClick={() => void refreshNative()}
-                >
-                  Retry
-                </Button>
-              }
-              className="flex-1"
-            />
-          ) : (
-            <EmptyState
-              size="sm"
-              icon={<LibraryIcon size={28} className="opacity-50" />}
-              title="Desktop library"
-              description={
-                nativeLoading
-                  ? 'Loading library…'
-                  : 'Import files to build your offline library.'
-              }
-              className="flex-1"
-            />
           )}
         </>
       ) : (

@@ -120,6 +120,12 @@ export const MissingNativeFile: Story = {
         resolve: async () => '',
         remove: async () => undefined,
         reveal: async () => undefined,
+        facets: async () => [],
+        totals: async () => ({
+          trackCount: 1,
+          durationSec: 240,
+          sizeBytes: 42_000_000,
+        }),
         listRoots: async () => [
           {
             id: 'root-archive',

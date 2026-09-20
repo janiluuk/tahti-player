@@ -90,6 +90,12 @@ function createNativeLibrary(
     resolve: vi.fn(),
     remove: vi.fn(),
     reveal: vi.fn(),
+    facets: vi.fn().mockResolvedValue([]),
+    totals: vi.fn().mockResolvedValue({
+      trackCount: 0,
+      durationSec: 0,
+      sizeBytes: 0,
+    }),
     listUnavailable: vi.fn().mockResolvedValue([]),
     rescan: vi.fn().mockResolvedValue([]),
     relink: vi.fn(),
@@ -295,7 +301,106 @@ describe('DesktopLibraryPanel native import', () => {
     for (const value of ['h', 'ha', 'har', 'harb']) {
       fireEvent.change(input, { target: { value } });
     }
-    await waitFor(() => expect(list).toHaveBeenCalledWith('harb', 0));
+    await waitFor(() => expect(list).toHaveBeenCalledWith('harb', 0, null));
     expect(list).toHaveBeenCalledTimes(2);
+  });
+
+  it('shows on-device totals separately from cloud storage', async () => {
+    globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
+    globalThis.__TAHTI_NATIVE_LIBRARY__ = createNativeLibrary({
+      totals: vi.fn().mockResolvedValue({
+        trackCount: 1234,
+        durationSec: 3 * 3600 + 20 * 60,
+        sizeBytes: 3.5 * 1024 * 1024 * 1024,
+      }),
+    });
+
+    render(<DesktopLibraryPanel />);
+
+    expect((await screen.findByTestId('library-totals')).textContent).toBe(
+      '1,234 tracks · 3 h 20 m · 3.5 GB on this device',
+    );
+  });
+
+  it('browses by artist, filters the track list to a group and clears it', async () => {
+    globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
+    const facets = vi.fn().mockResolvedValue([
+      {
+        name: 'Vladislav Delay',
+        secondary: '',
+        year: null,
+        trackCount: 2,
+        durationSec: 600,
+        sizeBytes: 40_000_000,
+      },
+      {
+        name: '',
+        secondary: '',
+        year: null,
+        trackCount: 1,
+        durationSec: 60,
+        sizeBytes: 1_000_000,
+      },
+    ]);
+    const list = vi
+      .fn()
+      .mockResolvedValue({ tracks: [availableTrack], total: 1 });
+    globalThis.__TAHTI_NATIVE_LIBRARY__ = createNativeLibrary({ facets, list });
+
+    render(<DesktopLibraryPanel />);
+    await waitFor(() => expect(list).toHaveBeenCalled());
+
+    fireEvent.click(screen.getByRole('tab', { name: 'Artists' }));
+    expect(await screen.findByText('Vladislav Delay')).toBeTruthy();
+    expect(screen.getByText('Unknown artist')).toBeTruthy();
+    expect(screen.getByText('2 tracks · 10 min · 38 MB')).toBeTruthy();
+    expect(facets).toHaveBeenCalledWith('artists');
+
+    fireEvent.click(screen.getByText('Vladislav Delay'));
+    await waitFor(() =>
+      expect(list).toHaveBeenCalledWith('', 0, {
+        kind: 'artists',
+        value: 'Vladislav Delay',
+        secondary: null,
+      }),
+    );
+    expect(await screen.findByText('Available track')).toBeTruthy();
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Clear Artist filter' }),
+    );
+    expect(await screen.findByText('Unknown artist')).toBeTruthy();
+  });
+
+  it('filters albums by name and album artist together', async () => {
+    globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
+    const list = vi.fn().mockResolvedValue({ tracks: [], total: 0 });
+    globalThis.__TAHTI_NATIVE_LIBRARY__ = createNativeLibrary({
+      list,
+      facets: vi.fn().mockResolvedValue([
+        {
+          name: 'Anima',
+          secondary: 'Vladislav Delay',
+          year: 2001,
+          trackCount: 9,
+          durationSec: 3000,
+          sizeBytes: 300_000_000,
+        },
+      ]),
+    });
+
+    render(<DesktopLibraryPanel />);
+    fireEvent.click(await screen.findByRole('tab', { name: 'Albums' }));
+    expect(
+      await screen.findByText(/Vladislav Delay · 2001 · 9 tracks/),
+    ).toBeTruthy();
+    fireEvent.click(screen.getByText('Anima'));
+    await waitFor(() =>
+      expect(list).toHaveBeenCalledWith('', 0, {
+        kind: 'albums',
+        value: 'Anima',
+        secondary: 'Vladislav Delay',
+      }),
+    );
   });
 });

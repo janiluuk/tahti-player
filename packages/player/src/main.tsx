@@ -21,8 +21,16 @@ import '../../tahti-web/src/styles.css';
 const nativeCapabilities: TahtiNativeCapabilities = { localLibrary: true };
 globalThis.__TAHTI_NATIVE_CAPABILITIES__ = nativeCapabilities;
 const baseNativeLibrary: TahtiNativeLibrary = {
-  async list(search, offset) {
-    return unwrapResult(await commands.libraryList(search, offset));
+  async list(search, offset, filter) {
+    return unwrapResult(
+      await commands.libraryList(search, offset, filter ?? null),
+    );
+  },
+  async facets(kind) {
+    return unwrapResult(await commands.libraryFacets(kind));
+  },
+  async totals() {
+    return unwrapResult(await commands.libraryTotals());
   },
   async import() {
     return unwrapResult(await commands.libraryImport());
