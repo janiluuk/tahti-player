@@ -1,9 +1,11 @@
 import {
   act,
+  cleanup,
   fireEvent,
   render,
   screen,
   waitFor,
+  within,
 } from '@testing-library/react';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
@@ -13,6 +15,7 @@ import type {
   NativeLibraryTrack,
   TahtiNativeLibrary,
 } from '../lib/nativeLibrary';
+import { usePlayerStore } from '../stores/playerStore';
 import { DesktopLibraryPanel } from './DesktopLibraryPanel';
 
 const missingTrack: NativeLibraryTrack = {
@@ -91,6 +94,9 @@ function createNativeLibrary(
     cancelImport: vi.fn(),
     resolve: vi.fn(),
     remove: vi.fn(),
+    removeMany: vi.fn().mockResolvedValue(0),
+    matchingIds: vi.fn().mockResolvedValue([]),
+    prepareBatch: vi.fn().mockResolvedValue({ items: [], unavailable: 0 }),
     reveal: vi.fn(),
     facets: vi.fn().mockResolvedValue([]),
     totals: vi.fn().mockResolvedValue({
@@ -132,6 +138,8 @@ beforeAll(() => {
 });
 
 afterEach(() => {
+  cleanup();
+  usePlayerStore.getState().clearQueue();
   globalThis.__TAHTI_NATIVE_LIBRARY__ = undefined;
   globalThis.__TAHTI_NATIVE_CAPABILITIES__ = undefined;
 });
@@ -420,5 +428,137 @@ describe('DesktopLibraryPanel native import', () => {
         null,
       ),
     );
+  });
+
+  describe('selection across pages', () => {
+    const tracks = ['a', 'b', 'c'].map((id) => ({
+      ...availableTrack,
+      id,
+      title: `Song ${id}`,
+    }));
+    const setup = (overrides: Partial<TahtiNativeLibrary> = {}) => {
+      globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
+      const library = createNativeLibrary({
+        // Later pages (requested while scrolling) stay pending, so the
+        // table keeps reporting more rows than it has loaded.
+        list: vi.fn((_search: string, offset: number) =>
+          offset === 0
+            ? Promise.resolve({ tracks, total: 1234 })
+            : new Promise<never>(() => undefined),
+        ),
+        ...overrides,
+      });
+      globalThis.__TAHTI_NATIVE_LIBRARY__ = library;
+      return library;
+    };
+    const everyId = Array.from({ length: 1234 }, (_, i) => `id-${i}`);
+
+    it('selects every matching track, not just the loaded page', async () => {
+      const matchingIds = vi.fn().mockResolvedValue(everyId);
+      setup({ matchingIds });
+      render(<DesktopLibraryPanel />);
+
+      fireEvent.click(await screen.findByLabelText('Select all loaded tracks'));
+      expect(screen.getByText(/3 selected/)).toBeTruthy();
+      fireEvent.click(screen.getByRole('button', { name: 'Select all 1,234' }));
+
+      expect(await screen.findByText(/All 1,234 selected/)).toBeTruthy();
+      expect(matchingIds).toHaveBeenCalledWith('', null, null);
+    });
+
+    it('queues the selection in the order the table shows, not click order', async () => {
+      const matchingIds = vi.fn().mockResolvedValue(['c', 'x', 'a', 'b']);
+      const prepareBatch = vi.fn(async (ids: string[]) => ({
+        unavailable: 0,
+        items: ids.map((id) => ({
+          track: { ...availableTrack, id, title: `Song ${id}` },
+          streamUrl: `asset://${id}`,
+        })),
+      }));
+      setup({ matchingIds, prepareBatch });
+      render(<DesktopLibraryPanel />);
+
+      fireEvent.click(await screen.findByLabelText('Select Song a'));
+      fireEvent.click(screen.getByLabelText('Select Song c'));
+      fireEvent.click(screen.getByRole('button', { name: 'Add to queue' }));
+
+      await waitFor(() => expect(prepareBatch).toHaveBeenCalled());
+      expect(prepareBatch).toHaveBeenCalledWith(['c', 'a']);
+      await waitFor(() =>
+        expect(
+          usePlayerStore.getState().queue.map((q) => q.track.title),
+        ).toEqual(['Song c', 'Song a']),
+      );
+    });
+
+    it('plays the selection starting from its first track', async () => {
+      const prepareBatch = vi.fn(async (ids: string[]) => ({
+        unavailable: 0,
+        items: ids.map((id) => ({
+          track: { ...availableTrack, id, title: `Song ${id}` },
+          streamUrl: `asset://${id}`,
+        })),
+      }));
+      setup({
+        matchingIds: vi.fn().mockResolvedValue(['a', 'b', 'c']),
+        prepareBatch,
+      });
+      render(<DesktopLibraryPanel />);
+
+      fireEvent.click(await screen.findByLabelText('Select all loaded tracks'));
+      fireEvent.click(screen.getByRole('button', { name: 'Play' }));
+
+      await waitFor(() =>
+        expect(
+          usePlayerStore.getState().queue.map((q) => q.track.title),
+        ).toEqual(['Song a', 'Song b', 'Song c']),
+      );
+    });
+
+    it('removes the whole selection in one call, after confirming', async () => {
+      const removeMany = vi.fn().mockResolvedValue(1234);
+      setup({ matchingIds: vi.fn().mockResolvedValue(everyId), removeMany });
+      render(<DesktopLibraryPanel />);
+
+      fireEvent.click(await screen.findByLabelText('Select all loaded tracks'));
+      fireEvent.click(screen.getByRole('button', { name: 'Select all 1,234' }));
+      await screen.findByText(/All 1,234 selected/);
+      fireEvent.click(screen.getByRole('button', { name: 'Remove' }));
+      expect(removeMany).not.toHaveBeenCalled();
+      const dialog = await screen.findByRole('dialog');
+      fireEvent.click(within(dialog).getByRole('button', { name: 'Remove' }));
+
+      await waitFor(() => expect(removeMany).toHaveBeenCalledOnce());
+      expect(removeMany.mock.calls[0]?.[0]).toHaveLength(1234);
+    });
+
+    it('drops the selection when the search changes', async () => {
+      setup();
+      render(<DesktopLibraryPanel />);
+
+      fireEvent.click(await screen.findByLabelText('Select Song a'));
+      expect(screen.getByText(/1 selected/)).toBeTruthy();
+      fireEvent.change(screen.getByLabelText('Search desktop library'), {
+        target: { value: 'harbour' },
+      });
+      await waitFor(() => expect(screen.queryByText(/1 selected/)).toBeNull());
+    });
+  });
+
+  it('stops asking for more rows when a later page comes back empty', async () => {
+    globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
+    const list = vi.fn((_search: string, offset: number) =>
+      Promise.resolve({
+        tracks: offset === 0 ? [availableTrack] : [],
+        total: 500,
+      }),
+    );
+    globalThis.__TAHTI_NATIVE_LIBRARY__ = createNativeLibrary({ list });
+
+    render(<DesktopLibraryPanel />);
+    expect(await screen.findByText('Available track')).toBeTruthy();
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    expect(list.mock.calls.filter(([, offset]) => offset > 0).length).toBe(1);
   });
 });

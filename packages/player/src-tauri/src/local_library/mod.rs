@@ -532,15 +532,10 @@ pub async fn list(pool: &SqlitePool, search: &str, offset: i64) -> Result<Librar
     list_filtered(pool, search, None, None, offset).await
 }
 
-/// One page of tracks (100, by title) optionally narrowed to a browse group
-/// and/or a search. Every condition is a bound text parameter.
-pub async fn list_filtered(
-    pool: &SqlitePool,
-    search: &str,
-    filter: Option<&FacetFilter>,
-    sort: Option<&TrackSort>,
-    offset: i64,
-) -> Result<LibraryPage, String> {
+/// WHERE clause (with its bound text parameters) for a search and/or browse
+/// group. Shared by paging and by select-all so both always agree on what
+/// "matching" means.
+fn where_clause(search: &str, filter: Option<&FacetFilter>) -> (String, Vec<String>) {
     let search = search.trim();
     let mut conditions: Vec<String> = Vec::new();
     let mut binds: Vec<String> = Vec::new();
@@ -585,12 +580,24 @@ pub async fn list_filtered(
             binds.extend(std::iter::repeat(like).take(4));
         }
     }
-    // No conditions at all: answer straight from the title index.
     let where_sql = if conditions.is_empty() {
         String::new()
     } else {
         format!("WHERE {}", conditions.join(" AND "))
     };
+    (where_sql, binds)
+}
+
+/// One page of tracks (100) optionally narrowed to a browse group and/or a
+/// search, in the requested sort. Every condition is a bound text parameter.
+pub async fn list_filtered(
+    pool: &SqlitePool,
+    search: &str,
+    filter: Option<&FacetFilter>,
+    sort: Option<&TrackSort>,
+    offset: i64,
+) -> Result<LibraryPage, String> {
+    let (where_sql, binds) = where_clause(search, filter);
     let count_sql = format!("SELECT COUNT(*) FROM library_tracks {where_sql}");
     let mut count = sqlx::query_scalar::<_, i64>(&count_sql);
     for value in &binds {
@@ -611,6 +618,95 @@ pub async fn list_filtered(
         .await
         .map_err(|err| err.to_string())?;
     Ok(LibraryPage { tracks, total })
+}
+
+/// Every id matching a search/group, in exactly the order paging shows them
+/// -- the basis of "select all N" across pages.
+pub async fn matching_ids(
+    pool: &SqlitePool,
+    search: &str,
+    filter: Option<&FacetFilter>,
+    sort: Option<&TrackSort>,
+) -> Result<Vec<String>, String> {
+    let (where_sql, binds) = where_clause(search, filter);
+    let sql = format!(
+        "SELECT id FROM library_tracks {where_sql} {}",
+        order_clause(sort)
+    );
+    let mut query = sqlx::query_scalar::<_, String>(&sql);
+    for value in &binds {
+        query = query.bind(value);
+    }
+    query.fetch_all(pool).await.map_err(|err| err.to_string())
+}
+
+/// A track ready to hand to the player: its row plus the verified file path.
+#[derive(Debug, Serialize, specta::Type)]
+#[serde(rename_all = "camelCase")]
+pub struct PlaybackItem {
+    pub track: LibraryTrack,
+    pub path: String,
+}
+
+#[derive(Debug, Serialize, specta::Type)]
+#[serde(rename_all = "camelCase")]
+pub struct PlaybackBatch {
+    /// Playable tracks, in the order the ids were given.
+    pub items: Vec<PlaybackItem>,
+    /// Requested tracks whose file is missing (now persisted as unavailable).
+    #[specta(type = Number<usize>)]
+    pub unavailable: usize,
+}
+
+/// Loads rows for `ids` (chunked under SQLite's variable limit), keeps the
+/// requested order, checks each file exists in one blocking pass and persists
+/// any availability change. Unknown ids are ignored.
+pub async fn prepare_playback(pool: &SqlitePool, ids: &[String]) -> Result<PlaybackBatch, String> {
+    let mut rows: std::collections::HashMap<String, LibraryTrack> =
+        std::collections::HashMap::with_capacity(ids.len());
+    for chunk in ids.chunks(500) {
+        let marks = vec!["?"; chunk.len()].join(",");
+        let sql = format!("SELECT * FROM library_tracks WHERE id IN ({marks})");
+        let mut query = sqlx::query_as::<_, LibraryTrack>(&sql);
+        for id in chunk {
+            query = query.bind(id);
+        }
+        for track in query.fetch_all(pool).await.map_err(|err| err.to_string())? {
+            rows.insert(track.id.clone(), track);
+        }
+    }
+    let ordered: Vec<LibraryTrack> = ids.iter().filter_map(|id| rows.remove(id)).collect();
+    let checked = tauri::async_runtime::spawn_blocking(move || {
+        ordered
+            .into_iter()
+            .map(|track| {
+                let exists = std::fs::metadata(&track.path)
+                    .map(|meta| meta.is_file())
+                    .unwrap_or(false);
+                (track, exists)
+            })
+            .collect::<Vec<_>>()
+    })
+    .await
+    .map_err(|err| err.to_string())?;
+    let mut batch = PlaybackBatch {
+        items: Vec::with_capacity(checked.len()),
+        unavailable: 0,
+    };
+    for (track, exists) in checked {
+        if exists != track.available {
+            mark_availability(pool, &track.id, exists).await?;
+        }
+        if exists {
+            batch.items.push(PlaybackItem {
+                path: track.path.clone(),
+                track,
+            });
+        } else {
+            batch.unavailable += 1;
+        }
+    }
+    Ok(batch)
 }
 
 /// Groups the whole catalog for a browse tab, straight from the indexes in
@@ -655,6 +751,33 @@ pub async fn library_list(
         offset.into(),
     )
     .await
+}
+
+#[tauri::command]
+#[specta::specta]
+pub async fn library_matching_ids(
+    app: tauri::AppHandle,
+    search: String,
+    filter: Option<FacetFilter>,
+    sort: Option<TrackSort>,
+) -> Result<Vec<String>, String> {
+    matching_ids(&pool(&app).await?, &search, filter.as_ref(), sort.as_ref()).await
+}
+
+/// Verifies and orders a batch of tracks for the player and grants the
+/// asset protocol access to each file (same as `library_resolve`, in bulk).
+#[tauri::command]
+#[specta::specta]
+pub async fn library_prepare_playback(
+    app: tauri::AppHandle,
+    ids: Vec<String>,
+) -> Result<PlaybackBatch, String> {
+    let batch = prepare_playback(&pool(&app).await?, &ids).await?;
+    let scope = app.asset_protocol_scope();
+    for item in &batch.items {
+        scope.allow_file(&item.path).map_err(|err| err.to_string())?;
+    }
+    Ok(batch)
 }
 
 #[tauri::command]
@@ -866,6 +989,28 @@ pub async fn remove(pool: &SqlitePool, id: &str) -> Result<(), String> {
     Ok(())
 }
 
+/// Removes many catalog rows in one transaction and returns how many
+/// existed. Files on disk are never touched.
+pub async fn remove_many(pool: &SqlitePool, ids: &[String]) -> Result<usize, String> {
+    let mut tx = pool.begin().await.map_err(|err| err.to_string())?;
+    let mut removed = 0usize;
+    for chunk in ids.chunks(500) {
+        let marks = vec!["?"; chunk.len()].join(",");
+        let sql = format!("DELETE FROM library_tracks WHERE id IN ({marks})");
+        let mut query = sqlx::query(&sql);
+        for id in chunk {
+            query = query.bind(id);
+        }
+        removed += query
+            .execute(&mut *tx)
+            .await
+            .map_err(|err| err.to_string())?
+            .rows_affected() as usize;
+    }
+    tx.commit().await.map_err(|err| err.to_string())?;
+    Ok(removed)
+}
+
 pub async fn relink(
     pool: &SqlitePool,
     id: &str,
@@ -929,6 +1074,17 @@ pub async fn library_reveal(app: tauri::AppHandle, id: String) -> Result<(), Str
     app.opener()
         .reveal_item_in_dir(path)
         .map_err(|err| err.to_string())
+}
+
+#[tauri::command]
+#[specta::specta]
+pub async fn library_remove_many(
+    app: tauri::AppHandle,
+    ids: Vec<String>,
+) -> Result<u32, String> {
+    remove_many(&pool(&app).await?, &ids)
+        .await
+        .map(|removed| removed as u32)
 }
 
 #[tauri::command]

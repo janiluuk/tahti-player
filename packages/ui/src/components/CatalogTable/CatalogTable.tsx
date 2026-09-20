@@ -43,6 +43,12 @@ export type CatalogTableProps<T> = {
   loading?: boolean;
   selectedIds?: ReadonlySet<string>;
   onSelectedIdsChange?: (ids: Set<string>) => void;
+  /**
+   * Offered once every loaded row is selected but more match: selects all
+   * `total` matching rows (the owner fetches their ids). Omit to hide it.
+   */
+  onSelectAllMatching?: () => void;
+  selectingAll?: boolean;
   /** Trailing per-row action buttons. */
   renderActions?: (row: T) => ReactNode;
   /** Dims the row (e.g. its file is missing). */
@@ -76,6 +82,8 @@ export function CatalogTable<T>({
   loading = false,
   selectedIds,
   onSelectedIdsChange,
+  onSelectAllMatching,
+  selectingAll = false,
   renderActions,
   isRowMuted,
   rowHeight = 48,
@@ -189,7 +197,28 @@ export function CatalogTable<T>({
         <div className="text-foreground-secondary min-w-0 flex-1 truncate text-xs">
           {selectable && selected.size > 0 ? (
             <span>
-              {selected.size} selected
+              {selected.size >= total
+                ? `All ${total.toLocaleString('en-US')} selected`
+                : `${selected.size.toLocaleString('en-US')} selected`}
+              {onSelectAllMatching &&
+              allLoadedSelected &&
+              selected.size < total ? (
+                <Button
+                  size="sm"
+                  variant="text"
+                  disabled={selectingAll}
+                  onClick={onSelectAllMatching}
+                >
+                  {selectingAll ? (
+                    <LoaderCircleIcon
+                      size={12}
+                      className="animate-spin"
+                      aria-hidden
+                    />
+                  ) : null}
+                  Select all {total.toLocaleString('en-US')}
+                </Button>
+              ) : null}
               <Button
                 size="sm"
                 variant="text"

@@ -39,6 +39,8 @@ fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
     tauri_specta::Builder::<tauri::Wry>::new().commands(tauri_specta::collect_commands![
         local_library::library_list,
         local_library::library_facets,
+        local_library::library_matching_ids,
+        local_library::library_prepare_playback,
         local_library::library_totals,
         local_library::library_import,
         local_library::library_import_folder,
@@ -46,6 +48,7 @@ fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
         local_library::library_import_cancel,
         local_library::library_resolve,
         local_library::library_remove,
+        local_library::library_remove_many,
         local_library::library_reveal,
         local_library::library_list_unavailable,
         local_library::library_rescan,

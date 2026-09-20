@@ -15,6 +15,20 @@ export const commands = {
 	descending: boolean,
 } | null) => typedError<LibraryPage, string>(__TAURI_INVOKE("library_list", { search, offset, filter, sort })),
 	libraryFacets: (kind: FacetKind) => typedError<FacetGroup[], string>(__TAURI_INVOKE("library_facets", { kind })),
+	libraryMatchingIds: (search: string, filter: {
+	kind: FacetKind,
+	value: string,
+	/**  Album artist, for `Albums`. */
+	secondary: string | null,
+} | null, sort: {
+	column: SortColumn,
+	descending: boolean,
+} | null) => typedError<string[], string>(__TAURI_INVOKE("library_matching_ids", { search, filter, sort })),
+	/**
+	 *  Verifies and orders a batch of tracks for the player and grants the
+	 *  asset protocol access to each file (same as `library_resolve`, in bulk).
+	 */
+	libraryPreparePlayback: (ids: string[]) => typedError<PlaybackBatch, string>(__TAURI_INVOKE("library_prepare_playback", { ids })),
 	libraryTotals: () => typedError<LibraryTotals, string>(__TAURI_INVOKE("library_totals")),
 	libraryImport: () => typedError<ImportResult, string>(__TAURI_INVOKE("library_import")),
 	libraryImportFolder: () => typedError<ImportResult, string>(__TAURI_INVOKE("library_import_folder")),
@@ -32,6 +46,7 @@ export const commands = {
 	libraryImportCancel: () => typedError<null, string>(__TAURI_INVOKE("library_import_cancel")),
 	libraryResolve: (id: string) => typedError<string, string>(__TAURI_INVOKE("library_resolve", { id })),
 	libraryRemove: (id: string) => typedError<null, string>(__TAURI_INVOKE("library_remove", { id })),
+	libraryRemoveMany: (ids: string[]) => typedError<number, string>(__TAURI_INVOKE("library_remove_many", { ids })),
 	/**
 	 *  Reveals a track's original file in the OS file manager. Calls the
 	 *  opener plugin's Rust API directly (`app.opener()`, bypassing the
@@ -315,6 +330,19 @@ export type PlayEvent = {
 };
 
 export type PlayEventKind = "started" | "paused" | "resumed" | "seeked" | "finished" | "skipped" | "stopped";
+
+export type PlaybackBatch = {
+	/**  Playable tracks, in the order the ids were given. */
+	items: PlaybackItem[],
+	/**  Requested tracks whose file is missing (now persisted as unavailable). */
+	unavailable: number,
+};
+
+/**  A track ready to hand to the player: its row plus the verified file path. */
+export type PlaybackItem = {
+	track: LibraryTrack,
+	path: string,
+};
 
 export type RelinkRootResult = {
 	root: LibraryRoot,

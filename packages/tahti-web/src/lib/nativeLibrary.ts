@@ -66,6 +66,19 @@ export type NativeLibraryTotals = {
   sizeBytes: number;
 };
 
+/** A track verified on disk and ready for the player. */
+export type NativePlaybackItem = {
+  track: NativeLibraryTrack;
+  streamUrl: string;
+};
+
+export type NativePlaybackBatch = {
+  /** In the order the ids were requested. */
+  items: NativePlaybackItem[];
+  /** Requested tracks whose file is missing. */
+  unavailable: number;
+};
+
 export type NativeLibraryPage = {
   tracks: NativeLibraryTrack[];
   total: number;
@@ -125,6 +138,14 @@ export type TahtiNativeLibrary = {
     filter?: NativeFacetFilter | null,
     sort?: NativeTrackSort | null,
   ) => Promise<NativeLibraryPage>;
+  /** Every id matching a search/group, in exactly the order the table shows them. */
+  matchingIds: (
+    search: string,
+    filter?: NativeFacetFilter | null,
+    sort?: NativeTrackSort | null,
+  ) => Promise<string[]>;
+  /** Verifies and orders tracks for playback (call in modest chunks). */
+  prepareBatch: (ids: string[]) => Promise<NativePlaybackBatch>;
   facets: (kind: NativeFacetKind) => Promise<NativeFacetGroup[]>;
   totals: () => Promise<NativeLibraryTotals>;
   import: () => Promise<NativeLibraryImportResult>;
@@ -134,6 +155,8 @@ export type TahtiNativeLibrary = {
   cancelImport: () => Promise<void>;
   resolve: (id: string) => Promise<string>;
   remove: (id: string) => Promise<void>;
+  /** Removes many catalog rows at once (files on disk untouched); returns how many existed. */
+  removeMany: (ids: string[]) => Promise<number>;
   /** Reveals a track's original file in the OS file manager. */
   reveal: (id: string) => Promise<void>;
   listUnavailable: () => Promise<NativeLibraryTrack[]>;
@@ -324,6 +347,7 @@ export function withReadCache(library: TahtiNativeLibrary): TahtiNativeLibrary {
     importFolder: mutating(library.importFolder),
     importPaths: mutating(library.importPaths),
     remove: mutating(library.remove),
+    removeMany: mutating(library.removeMany),
     rescan: mutating(library.rescan),
     relink: mutating(library.relink),
     addRoot: mutating(library.addRoot),

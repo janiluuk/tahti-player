@@ -26,6 +26,21 @@ const baseNativeLibrary: TahtiNativeLibrary = {
       await commands.libraryList(search, offset, filter ?? null, sort ?? null),
     );
   },
+  async matchingIds(search, filter, sort) {
+    return unwrapResult(
+      await commands.libraryMatchingIds(search, filter ?? null, sort ?? null),
+    );
+  },
+  async prepareBatch(ids) {
+    const batch = unwrapResult(await commands.libraryPreparePlayback(ids));
+    return {
+      unavailable: batch.unavailable,
+      items: batch.items.map((item) => ({
+        track: item.track,
+        streamUrl: convertFileSrc(item.path, 'asset'),
+      })),
+    };
+  },
   async facets(kind) {
     return unwrapResult(await commands.libraryFacets(kind));
   },
@@ -52,6 +67,9 @@ const baseNativeLibrary: TahtiNativeLibrary = {
   },
   async remove(id) {
     unwrapResult(await commands.libraryRemove(id));
+  },
+  async removeMany(ids) {
+    return unwrapResult(await commands.libraryRemoveMany(ids));
   },
   async reveal(id) {
     unwrapResult(await commands.libraryReveal(id));

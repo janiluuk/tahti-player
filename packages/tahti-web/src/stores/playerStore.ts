@@ -52,8 +52,12 @@ type PlayerState = {
   cachePeaks: (id: string, peaks: number[]) => void;
   play: (item: TahtiPlayable, opts?: { enqueueRest?: TahtiPlayable[] }) => void;
   enqueue: (item: TahtiPlayable) => void;
+  /** Appends many at once (one update, one toast); skips ones already queued. */
+  enqueueMany: (items: TahtiPlayable[]) => number;
   /** Insert right after the current track, replacing any earlier occurrence. */
   playNext: (item: TahtiPlayable) => void;
+  /** Inserts many right after the current track, keeping their order. */
+  playNextMany: (items: TahtiPlayable[]) => number;
   playQueueIndex: (id: string) => void;
   removeFromQueue: (id: string) => void;
   clearQueue: () => void;
@@ -212,6 +216,48 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     if (!wasBarVisible || !useLayoutStore.getState().bottomQueueOpen) {
       toast(`Added "${item.title}" to queue`);
     }
+  },
+
+  enqueueMany: (items) => {
+    const queued = new Set(get().queue.map((q) => q.id));
+    const fresh = items.map(toQueueItem).filter((qi) => {
+      if (queued.has(qi.id)) {
+        return false;
+      }
+      queued.add(qi.id);
+      return true;
+    });
+    if (!fresh.length) {
+      return 0;
+    }
+    set((s) => ({ queue: [...s.queue, ...fresh], playerBarVisible: true }));
+    toast(
+      fresh.length === 1
+        ? 'Added 1 track to queue'
+        : `Added ${fresh.length} tracks to queue`,
+    );
+    return fresh.length;
+  },
+
+  playNextMany: (items) => {
+    const incoming = items.map(toQueueItem);
+    const ids = new Set(incoming.map((qi) => qi.id));
+    set((s) => {
+      const rest = s.queue.filter((q) => !ids.has(q.id));
+      const currentIdx = s.currentId
+        ? rest.findIndex((q) => q.id === s.currentId)
+        : -1;
+      const insertAt = currentIdx + 1;
+      return {
+        queue: [
+          ...rest.slice(0, insertAt),
+          ...incoming,
+          ...rest.slice(insertAt),
+        ],
+        playerBarVisible: true,
+      };
+    });
+    return incoming.length;
   },
 
   playNext: (item) => {

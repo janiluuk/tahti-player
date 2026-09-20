@@ -45,10 +45,12 @@ function Harness({
   onSort = vi.fn(),
   onLoadMore,
   total = rows.length,
+  onSelectAllMatching,
 }: {
   onSort?: (sort: CatalogSort | null) => void;
   onLoadMore?: () => void;
   total?: number;
+  onSelectAllMatching?: () => void;
 }) {
   const [view, setView] = useState(defaultCatalogView(columns));
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -68,6 +70,7 @@ function Harness({
         onSort(next);
       }}
       onLoadMore={onLoadMore}
+      onSelectAllMatching={onSelectAllMatching}
       selectedIds={selected}
       onSelectedIdsChange={setSelected}
       itemNoun="tracks"
@@ -162,5 +165,27 @@ describe('CatalogTable', () => {
     const onLoadMore = vi.fn();
     render(<Harness onLoadMore={onLoadMore} />);
     expect(onLoadMore).not.toHaveBeenCalled();
+  });
+
+  it('offers to select every matching row once all loaded rows are selected', () => {
+    const onSelectAllMatching = vi.fn();
+    render(<Harness total={1234} onSelectAllMatching={onSelectAllMatching} />);
+    expect(
+      screen.queryByRole('button', { name: /Select all 1,234/ }),
+    ).toBeNull();
+    fireEvent.click(screen.getByLabelText('Select Alpha'));
+    expect(
+      screen.queryByRole('button', { name: /Select all 1,234/ }),
+    ).toBeNull();
+    fireEvent.click(screen.getByLabelText('Select all loaded tracks'));
+    fireEvent.click(screen.getByRole('button', { name: /Select all 1,234/ }));
+    expect(onSelectAllMatching).toHaveBeenCalledOnce();
+  });
+
+  it('says all are selected when the selection covers the whole result', () => {
+    render(<Harness />);
+    fireEvent.click(screen.getByLabelText('Select all loaded tracks'));
+    expect(screen.getByText(/All 3 selected/)).toBeTruthy();
+    expect(screen.queryByRole('button', { name: /Select all 3/ })).toBeNull();
   });
 });

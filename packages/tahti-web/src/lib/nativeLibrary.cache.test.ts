@@ -15,6 +15,7 @@ function baseLibrary(overrides: Partial<TahtiNativeLibrary> = {}) {
     importFolder: vi.fn().mockResolvedValue({}),
     importPaths: vi.fn().mockResolvedValue({}),
     remove: vi.fn().mockResolvedValue(undefined),
+    removeMany: vi.fn().mockResolvedValue(0),
     rescan: vi.fn().mockResolvedValue([]),
     relink: vi.fn().mockResolvedValue(null),
     addRoot: vi.fn().mockResolvedValue(null),

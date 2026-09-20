@@ -35,6 +35,7 @@ import {
   type NativeLibraryRoot,
   type NativeLibraryTotals,
   type NativeLibraryTrack,
+  type NativePlaybackBatch,
   type NativeRootScanResult,
 } from '../lib/nativeLibrary';
 import {
@@ -56,6 +57,9 @@ import {
 import { NATIVE_TRACK_COLUMNS, toNativeSort } from './nativeTrackColumns';
 import { PlayableTrackTable } from './PlayableTrackTable';
 
+/** Most tracks one bulk play / queue action will take. */
+const SELECTION_PLAYBACK_LIMIT = 5000;
+
 const FILE_LABELS = {
   title: 'Add audio files',
   description:
@@ -70,6 +74,8 @@ export function DesktopLibraryPanel() {
   const remove = useLocalLibraryStore((s) => s.remove);
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
+  const enqueueMany = usePlayerStore((s) => s.enqueueMany);
+  const playNextMany = usePlayerStore((s) => s.playNextMany);
   const filteredTracks = useMemo(
     () => filterLocalLibraryTracks(tracks, query),
     [query, tracks],
@@ -115,9 +121,12 @@ export function DesktopLibraryPanel() {
   );
   const nativeSort = useMemo(() => toNativeSort(table.sort), [table.sort]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [pendingRemoval, setPendingRemoval] = useState<
-    NativeLibraryTrack[] | null
-  >(null);
+  const [pendingRemoval, setPendingRemoval] = useState<{
+    ids: string[];
+    title: string | null;
+  } | null>(null);
+  const [selectingAll, setSelectingAll] = useState(false);
+  const [selectionBusy, setSelectionBusy] = useState(false);
   const [browseKind, setBrowseKind] = useState<BrowseKind>('tracks');
   const [facetFilter, setFacetFilter] = useState<NativeFacetFilter | null>(
     null,
@@ -150,6 +159,11 @@ export function DesktopLibraryPanel() {
       setNativeProgress(progress.currentPath === null ? null : progress);
     });
   }, [nativeLibrary]);
+
+  // A selection belongs to the search/group it was made in.
+  useEffect(() => {
+    setSelectedIds(new Set());
+  }, [debouncedNativeQuery, facetFilter]);
 
   const refreshNative = useCallback(async () => {
     if (!nativeLibrary) {
@@ -205,7 +219,11 @@ export function DesktopLibraryPanel() {
         return;
       }
       setNativeTracks((current) => [...current, ...page.tracks]);
-      setNativeTotal(page.total);
+      // An empty page means the library shrank underneath us: settle on what
+      // we have instead of asking for the same missing rows again.
+      setNativeTotal(
+        page.tracks.length === 0 ? nativeTracks.length : page.total,
+      );
     } catch (error) {
       if (request === listRequestRef.current) {
         setNativeError(
@@ -533,35 +551,134 @@ export function DesktopLibraryPanel() {
     }
   };
 
-  const removeNative = async (tracks: NativeLibraryTrack[]) => {
+  const removeNative = async (ids: string[], title: string | null) => {
     if (!nativeLibrary) {
       return;
     }
-    let removed = 0;
-    for (const track of tracks) {
-      try {
-        await nativeLibrary.remove(track.id);
-        removed += 1;
-      } catch (error) {
-        toast.error(
-          error instanceof Error ? error.message : 'Could not remove track.',
-        );
-      }
-    }
-    if (removed) {
+    try {
+      const removed = await nativeLibrary.removeMany(ids);
       toast.success(
-        removed === 1
-          ? `Removed “${tracks[0]?.title}” from the library.`
-          : `Removed ${removed} tracks from the library.`,
+        removed === 1 && title
+          ? `Removed “${title}” from the library.`
+          : removed === 1
+            ? 'Removed 1 track from the library.'
+            : `Removed ${removed.toLocaleString('en-US')} tracks from the library.`,
+      );
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : 'Could not remove tracks.',
       );
     }
     setSelectedIds(new Set());
     await refreshNative();
   };
 
-  const selectedTracks = nativeTracks.filter((track) =>
-    selectedIds.has(track.id),
-  );
+  const selectAllMatching = async () => {
+    if (!nativeLibrary) {
+      return;
+    }
+    setSelectingAll(true);
+    try {
+      setSelectedIds(
+        new Set(
+          await nativeLibrary.matchingIds(
+            debouncedNativeQuery,
+            facetFilter,
+            nativeSort,
+          ),
+        ),
+      );
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : 'Could not select all tracks.',
+      );
+    } finally {
+      setSelectingAll(false);
+    }
+  };
+
+  /**
+   * The selection as playable tracks, in the order the table currently shows
+   * them (not the order the user clicked), so what plays or queues is
+   * predictable. Capped so a whole-library selection can't flood the queue.
+   */
+  const playablesForSelection = async () => {
+    if (!nativeLibrary) {
+      return null;
+    }
+    const shown = await nativeLibrary.matchingIds(
+      debouncedNativeQuery,
+      facetFilter,
+      nativeSort,
+    );
+    const inOrder = shown.filter((id) => selectedIds.has(id));
+    const ids = inOrder.slice(0, SELECTION_PLAYBACK_LIMIT);
+    const playables: TahtiPlayable[] = [];
+    let unavailable = 0;
+    for (let start = 0; start < ids.length; start += 500) {
+      const batch: NativePlaybackBatch = await nativeLibrary.prepareBatch(
+        ids.slice(start, start + 500),
+      );
+      unavailable += batch.unavailable;
+      for (const item of batch.items) {
+        playables.push(playableFromNativeTrack(item.track, item.streamUrl));
+      }
+    }
+    if (unavailable) {
+      toast.info(
+        unavailable === 1
+          ? '1 selected file is missing and was skipped.'
+          : `${unavailable} selected files are missing and were skipped.`,
+      );
+    }
+    if (inOrder.length > ids.length) {
+      toast.info(
+        `Only the first ${SELECTION_PLAYBACK_LIMIT.toLocaleString('en-US')} of ${inOrder.length.toLocaleString('en-US')} selected tracks were used.`,
+      );
+    }
+    return playables;
+  };
+
+  const runSelectionAction = async (
+    action: (playables: TahtiPlayable[]) => void,
+  ) => {
+    setSelectionBusy(true);
+    try {
+      const playables = await playablesForSelection();
+      if (playables?.length) {
+        action(playables);
+      } else if (playables) {
+        toast.error('None of the selected tracks can be played.');
+      }
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : 'Could not use the selection.',
+      );
+    } finally {
+      setSelectionBusy(false);
+    }
+  };
+
+  const playSelection = () =>
+    runSelectionAction((playables) => {
+      const [head, ...rest] = playables;
+      if (head) {
+        play(head, { enqueueRest: rest });
+      }
+    });
+  const playNextSelection = () =>
+    runSelectionAction((playables) => {
+      playNextMany(playables);
+      toast.success(
+        playables.length === 1
+          ? 'Playing 1 track next.'
+          : `Playing ${playables.length.toLocaleString('en-US')} tracks next.`,
+      );
+    });
+  const queueSelection = () =>
+    runSelectionAction((playables) => {
+      enqueueMany(playables);
+    });
 
   const revealNative = async (track: NativeLibraryTrack) => {
     if (!nativeLibrary) {
@@ -838,17 +955,41 @@ export function DesktopLibraryPanel() {
                   selectedIds={selectedIds}
                   onSelectedIdsChange={setSelectedIds}
                   isRowMuted={(track) => !track.available}
+                  onSelectAllMatching={() => void selectAllMatching()}
+                  selectingAll={selectingAll}
                   toolbar={
-                    selectedTracks.length ? (
+                    selectedIds.size ? (
                       <>
                         <Button
                           size="sm"
                           variant="text"
-                          onClick={() =>
-                            void queueNative(
-                              selectedTracks.filter((track) => track.available),
-                            )
-                          }
+                          disabled={selectionBusy}
+                          onClick={() => void playSelection()}
+                        >
+                          {selectionBusy ? (
+                            <LoaderCircleIcon
+                              size={14}
+                              className="animate-spin"
+                              aria-hidden
+                            />
+                          ) : (
+                            <PlayIcon size={14} aria-hidden />
+                          )}
+                          Play
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="text"
+                          disabled={selectionBusy}
+                          onClick={() => void playNextSelection()}
+                        >
+                          Play next
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="text"
+                          disabled={selectionBusy}
+                          onClick={() => void queueSelection()}
                         >
                           Add to queue
                         </Button>
@@ -856,7 +997,13 @@ export function DesktopLibraryPanel() {
                           size="sm"
                           variant="text"
                           intent="danger"
-                          onClick={() => setPendingRemoval(selectedTracks)}
+                          disabled={selectionBusy}
+                          onClick={() =>
+                            setPendingRemoval({
+                              ids: [...selectedIds],
+                              title: null,
+                            })
+                          }
                         >
                           <TrashIcon size={14} aria-hidden />
                           Remove
@@ -915,7 +1062,12 @@ export function DesktopLibraryPanel() {
                           variant="text"
                           intent="danger"
                           aria-label={`Remove ${track.title}`}
-                          onClick={() => setPendingRemoval([track])}
+                          onClick={() =>
+                            setPendingRemoval({
+                              ids: [track.id],
+                              title: track.title,
+                            })
+                          }
                         >
                           <TrashIcon size={14} aria-hidden />
                         </Button>
@@ -1063,18 +1215,18 @@ export function DesktopLibraryPanel() {
       <ConfirmDialog
         isOpen={pendingRemoval !== null}
         title={
-          pendingRemoval && pendingRemoval.length > 1
-            ? `Remove ${pendingRemoval.length} tracks from the library?`
+          pendingRemoval && pendingRemoval.ids.length > 1
+            ? `Remove ${pendingRemoval.ids.length.toLocaleString('en-US')} tracks from the library?`
             : 'Remove this track from the library?'
         }
         description="They are only removed from your Tahti library. The audio files on disk are not touched."
         confirmLabel="Remove"
         onCancel={() => setPendingRemoval(null)}
         onConfirm={() => {
-          const tracks = pendingRemoval;
+          const pending = pendingRemoval;
           setPendingRemoval(null);
-          if (tracks) {
-            void removeNative(tracks);
+          if (pending) {
+            void removeNative(pending.ids, pending.title);
           }
         }}
       />

@@ -6,7 +6,7 @@ use super::{
     add_root, collect_audio_paths, collect_audio_paths_with_skipped, discover_new_paths,
     get_root, import_batch, import_paths, list, list_roots, list_unavailable,
     refresh_root_availability, relink, relink_root, remove, remove_root, rescan_unavailable,
-    resolve_path, facets, folder_of, list_filtered, SortColumn, TrackSort, totals, FacetFilter, FacetKind, ImportResult,
+    resolve_path, facets, folder_of, remove_many, list_filtered, matching_ids, prepare_playback, SortColumn, TrackSort, totals, FacetFilter, FacetKind, ImportResult,
 };
 
 static DB_COUNTER: AtomicU32 = AtomicU32::new(0);
@@ -1120,4 +1120,91 @@ async fn paging_a_sort_with_many_ties_neither_repeats_nor_skips_rows() {
             assert_eq!(seen.len(), 450, "{column:?} desc={descending} skipped rows");
         }
     }
+}
+
+// --- Select all across pages / playback batches ---
+
+#[tokio::test]
+async fn matching_ids_follow_the_exact_paging_order_for_any_sort_search_and_filter() {
+    let pool = pool().await;
+    seed_generated_rows(&pool, 450).await;
+    let artist = FacetFilter { kind: FacetKind::Artists, value: "Generated Artist 007".into(), secondary: None };
+    let cases: [(&str, Option<&FacetFilter>, Option<TrackSort>); 4] = [
+        ("", None, None),
+        ("Track 00", None, Some(TrackSort { column: SortColumn::Artist, descending: true })),
+        ("", Some(&artist), Some(TrackSort { column: SortColumn::Album, descending: false })),
+        ("Generated", None, Some(TrackSort { column: SortColumn::Size, descending: true })),
+    ];
+    for (search, filter, sort) in cases {
+        let ids = matching_ids(&pool, search, filter, sort.as_ref()).await.unwrap();
+        let mut paged = Vec::new();
+        let mut offset = 0;
+        loop {
+            let page = list_filtered(&pool, search, filter, sort.as_ref(), offset).await.unwrap();
+            if page.tracks.is_empty() {
+                break;
+            }
+            offset += page.tracks.len() as i64;
+            paged.extend(page.tracks.into_iter().map(|t| t.id));
+        }
+        assert_eq!(ids, paged, "search={search:?} sort={sort:?}");
+        assert_eq!(
+            ids.len() as i64,
+            list_filtered(&pool, search, filter, sort.as_ref(), 0).await.unwrap().total
+        );
+    }
+}
+
+#[tokio::test]
+async fn prepare_playback_keeps_requested_order_and_skips_missing_files() {
+    let dir = tempfile::tempdir().unwrap();
+    let paths: Vec<_> = ["a", "b", "c"].iter().map(|n| dir.path().join(format!("{n}.wav"))).collect();
+    for (path, title) in paths.iter().zip(["A", "B", "C"]) {
+        write_wav(path, title, "Artist");
+    }
+    let pool = pool().await;
+    import_paths(&pool, paths.clone()).await;
+    let mut id_of = std::collections::HashMap::new();
+    for track in list(&pool, "", 0).await.unwrap().tracks {
+        id_of.insert(track.title.clone(), track.id);
+    }
+    let (a, b, c) = (id_of["A"].clone(), id_of["B"].clone(), id_of["C"].clone());
+    std::fs::remove_file(&paths[1]).unwrap();
+
+    let ids = vec![c.clone(), b.clone(), "no-such-id".to_string(), a.clone()];
+    let batch = prepare_playback(&pool, &ids).await.unwrap();
+
+    let titles: Vec<&str> = batch.items.iter().map(|i| i.track.title.as_str()).collect();
+    assert_eq!(titles, ["C", "A"], "requested order, missing and unknown skipped");
+    assert_eq!(batch.unavailable, 1);
+    assert!(batch.items.iter().all(|i| std::path::Path::new(&i.path).is_file()));
+    assert!(!list(&pool, "B", 0).await.unwrap().tracks[0].available, "missing state persisted");
+}
+
+#[tokio::test]
+async fn prepare_playback_handles_more_ids_than_one_sql_chunk() {
+    let pool = pool().await;
+    seed_generated_rows(&pool, 1_200).await;
+    let ids = matching_ids(&pool, "", None, None).await.unwrap();
+    let batch = prepare_playback(&pool, &ids).await.unwrap();
+    // Generated rows point at files that do not exist, so all are unavailable --
+    // the point is that every chunk was read and accounted for.
+    assert_eq!(batch.items.len() + batch.unavailable, 1_200);
+}
+
+#[tokio::test]
+async fn remove_many_deletes_in_one_go_and_keeps_search_in_sync() {
+    let pool = pool().await;
+    seed_generated_rows(&pool, 1_200).await;
+    let ids = matching_ids(&pool, "", None, None).await.unwrap();
+    let doomed: Vec<String> = ids.iter().take(1_100).cloned().collect();
+
+    let removed = remove_many(&pool, &doomed).await.unwrap();
+
+    assert_eq!(removed, 1_100);
+    assert_eq!(list(&pool, "", 0).await.unwrap().total, 100);
+    assert_eq!(remove_many(&pool, &doomed).await.unwrap(), 0, "already gone");
+    assert_eq!(remove_many(&pool, &[]).await.unwrap(), 0);
+    let kept = list(&pool, "Generated Track", 0).await.unwrap();
+    assert_eq!(kept.total, 100, "search index followed the deletes");
 }
