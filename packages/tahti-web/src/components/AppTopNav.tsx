@@ -39,6 +39,7 @@ import { useNotificationInboxStore } from '../stores/notificationInboxStore';
 import { useProcessingJobsStore } from '../stores/processingJobsStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 import { GlobalSearch } from './GlobalSearch';
+import { RadioBookingCalendar } from './RadioBookingCalendar';
 import { StreamManagerPanel } from './StreamManagerPanel';
 import { TahtiLogoLink } from './TahtiLogo';
 import { UploadTrackDialog } from './UploadTrackDialog';
@@ -70,6 +71,7 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
   const [uploadOpen, setUploadOpen] = useState(false);
   const [broadcastOpen, setBroadcastOpen] = useState(false);
   const [streamManagerOpen, setStreamManagerOpen] = useState(false);
+  const [bookingCalendarOpen, setBookingCalendarOpen] = useState(false);
   const [messagesOpen, setMessagesOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [processingOpen, setProcessingOpen] = useState(false);
@@ -367,15 +369,6 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
                     />
                     {broadcast.label}
                   </div>
-                  <Link
-                    to="/studio/go-live"
-                    role="menuitem"
-                    onClick={() => setBroadcastOpen(false)}
-                    className="hover:bg-background-secondary flex items-center gap-2 rounded-md px-2 py-2 text-xs"
-                  >
-                    <RadioIcon size={14} aria-hidden />
-                    Open broadcast studio
-                  </Link>
                   {user?.username ? (
                     <Link
                       to="/u/$username/green-room"
@@ -388,15 +381,18 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
                       Open Green Room chat
                     </Link>
                   ) : null}
-                  <Link
-                    to="/studio/schedule"
+                  <button
+                    type="button"
                     role="menuitem"
-                    onClick={() => setBroadcastOpen(false)}
-                    className="hover:bg-background-secondary flex items-center gap-2 rounded-md px-2 py-2 text-xs"
+                    onClick={() => {
+                      setBroadcastOpen(false);
+                      setBookingCalendarOpen(true);
+                    }}
+                    className="hover:bg-background-secondary flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-xs"
                   >
                     <CalendarIcon size={14} aria-hidden />
                     Booking calendar
-                  </Link>
+                  </button>
                   <button
                     type="button"
                     role="menuitem"
@@ -407,7 +403,7 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
                     className="hover:bg-background-secondary flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-xs"
                   >
                     <ListMusicIcon size={14} aria-hidden />
-                    Stream manager
+                    24/7 rotation
                   </button>
                 </div>
               ) : null}
@@ -855,6 +851,10 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
       <UploadTrackDialog
         isOpen={uploadOpen}
         onClose={() => setUploadOpen(false)}
+      />
+      <RadioBookingCalendar
+        isOpen={bookingCalendarOpen}
+        onClose={() => setBookingCalendarOpen(false)}
       />
       {user && hasChannel && user.channel ? (
         <Dialog.Root

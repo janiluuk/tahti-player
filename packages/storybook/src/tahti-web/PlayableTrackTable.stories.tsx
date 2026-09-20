@@ -73,3 +73,20 @@ export const Empty: Story = {
     emptyMessage: 'No tracks match this filter.',
   },
 };
+
+export const Removable: Story = {
+  args: {
+    items,
+    artistUsername: 'northern-lights',
+    onRemove: fn(),
+  },
+};
+
+export const Selectable: Story = {
+  args: {
+    items,
+    artistUsername: 'northern-lights',
+    selectable: true,
+    onBulkRemove: fn(),
+  },
+};

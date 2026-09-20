@@ -23,6 +23,18 @@ type Props = {
    * edit these tracks (e.g. their own catalog) -- omit entirely to keep
    * the edit icon off tables of other people's/aggregated tracks. */
   onEdit?: (item: TahtiPlayable) => void;
+  /** Present only when the caller owns these items outright and deletion
+   * needs no confirmation dialog of its own (e.g. the local library panel,
+   * where "remove" just forgets a file reference) -- omit to keep the
+   * delete icon off tables where removal isn't a thing (most callers). */
+  onRemove?: (item: TahtiPlayable) => void;
+  /** Turns on checkbox multi-select + a bulk-action toolbar (select-all,
+   * "N selected", bulk queue/remove). "Add selected to queue" needs no
+   * caller callback -- queueing is generic, handled here directly, same
+   * as the existing addAllToQueue confirm flow -- but bulk remove only
+   * appears when `onBulkRemove` is provided, same convention as `onRemove`. */
+  selectable?: boolean;
+  onBulkRemove?: (items: TahtiPlayable[]) => void;
 };
 
 export function PlayableTrackTable({
@@ -31,6 +43,9 @@ export function PlayableTrackTable({
   playAll = true,
   compactActions = false,
   onEdit,
+  onRemove,
+  selectable = false,
+  onBulkRemove,
 }: Props) {
   const navigate = useNavigate();
   const play = usePlayerStore((s) => s.play);
@@ -53,6 +68,17 @@ export function PlayableTrackTable({
 
   const resolve = (track: Track): TahtiPlayable | null =>
     byId.get(track.source.id) ?? null;
+
+  // Bulk actions get raw `Track.source.id` strings back from TrackTable, not
+  // `Track` objects -- a second lookup keyed the same way `resolve` reads,
+  // since an embed item's source.id can differ from its own `item.id`.
+  const bySourceId = new Map(
+    tracks.map((track) => [track.source.id, resolve(track)] as const),
+  );
+  const resolveSelection = (ids: string[]): TahtiPlayable[] =>
+    ids
+      .map((id) => bySourceId.get(id))
+      .filter((item): item is TahtiPlayable => item !== null);
 
   // The listener-facing track page (waveform, artwork, comments — see
   // TrackDetailView) is the default destination for both the title text
@@ -113,6 +139,7 @@ export function PlayableTrackTable({
             addAllToQueue: true,
             reorderable: false,
             contextMenu: true,
+            selectable,
           }}
           display={{
             displayThumbnail: true,
@@ -125,6 +152,7 @@ export function PlayableTrackTable({
             displayReleaseDate: items.some((i) => Boolean(i.releaseDate)),
             displayQueueControls: !compactActions,
             displayPosition: false,
+            displayDeleteButton: Boolean(onRemove),
           }}
           actions={{
             onPlayNow: (track) => {
@@ -169,6 +197,14 @@ export function PlayableTrackTable({
                 toggleFavoriteTrack(item);
               }
             },
+            onRemove: onRemove
+              ? (track) => {
+                  const item = resolve(track);
+                  if (item) {
+                    onRemove(item);
+                  }
+                }
+              : undefined,
             onEdit: onEdit
               ? (track) => {
                   const item = resolve(track);
@@ -176,6 +212,24 @@ export function PlayableTrackTable({
                     onEdit(item);
                   }
                 }
+              : undefined,
+            onAddSelectedToQueue: (ids) => {
+              const selected = resolveSelection(ids);
+              const queuedIds = new Set(queue.map((q) => q.id));
+              const newItems = selected.filter(
+                (item) => !queuedIds.has(item.id),
+              );
+              for (const item of newItems) {
+                enqueue(item);
+              }
+              if (newItems.length > 0) {
+                toast.success(
+                  `Added ${newItems.length} track${newItems.length === 1 ? '' : 's'} to the queue.`,
+                );
+              }
+            },
+            onRemoveSelected: onBulkRemove
+              ? (ids) => onBulkRemove(resolveSelection(ids))
               : undefined,
           }}
           meta={{

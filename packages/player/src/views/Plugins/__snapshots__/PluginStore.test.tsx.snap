@@ -203,7 +203,7 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                   />
                 </svg>
               </span>
-              Plugins
+              Add-ons
             </button>
             <button
               class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-10 px-4 py-2 shrink-0 justify-start gap-2"
@@ -436,7 +436,7 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
             <span
               class="min-w-0 truncate text-sm font-semibold"
             >
-              Plugins
+              Add-ons
             </span>
           </div>
           <div
@@ -450,7 +450,7 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                 class="mb-6 flex w-full flex-0 flex-row text-center text-3xl font-bold"
                 data-testid="title"
               >
-                Plugins
+                Add-ons
               </h1>
               <div
                 class="relative h-full flex min-h-0 w-full flex-1 flex-col"
@@ -608,7 +608,7 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                                       class="border-border text-foreground placeholder:text-foreground-secondary w-full px-3 transition-colors focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:outline-none bg-background-input h-10 rounded-md border-(length:--border-width)"
                                       data-headlessui-state=""
                                       id="input-:rk:"
-                                      placeholder="Search plugins..."
+                                      placeholder="Search add-ons..."
                                       type="text"
                                       value=""
                                     />

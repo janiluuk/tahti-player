@@ -1,6 +1,7 @@
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
-import { HistoryIcon, ListMusicIcon, NewspaperIcon } from 'lucide-react';
+import { HistoryIcon, ListMusicIcon, NewspaperIcon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   Button,
@@ -9,6 +10,7 @@ import {
   SectionShell,
   TabLabel,
   Tabs,
+  Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -25,17 +27,25 @@ import {
   fetchHomepageDiscoWidgets,
   type DiscoWidgetRenderItem,
 } from '../api/disco-widgets';
+import { readIcyStreamTitle } from '../api/radio-sources';
 import type { OnAirChannel, PublicChannel } from '../api/types';
 import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
 import { ListenerWidgetsSection } from '../components/ListenerWidgetsSection';
 import { ListenWidgetStoreDialog } from '../components/ListenWidgetStoreDialog';
 import { RadioListItem } from '../components/RadioListItem';
 import { RadioStationCoverEditButton } from '../components/RadioStationCover';
-import { RADIO_STATIONS } from '../content/radioStations';
+import { RemoveWidgetDialog } from '../components/RemoveWidgetDialog';
+import {
+  RADIO_STATIONS,
+  radioStation,
+  radioStationPlayable,
+} from '../content/radioStations';
+import { resolveLocalPlayableForReplay } from '../lib/nativeLibrary';
 import { activeListenTab } from '../lib/navigationActive';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
+import { useListenerWidgetsStore } from '../stores/listenerWidgetsStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { FeedView } from './FeedView';
 import { HistoryView } from './HistoryView';
@@ -58,6 +68,8 @@ const LISTEN_SECTION_TABS = [
   },
 ];
 
+const NOW_PLAYING_POLL_MS = 45_000;
+
 export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
   const navigate = useNavigate();
   const pathname = useRouterState({
@@ -70,6 +82,9 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
   const [radioPresets, setRadioPresets] = useState<
     EnabledInternetRadioPreset[]
   >([]);
+  const [presetNowPlaying, setPresetNowPlaying] = useState<
+    Record<string, string>
+  >({});
   const play = usePlayerStore((s) => s.play);
   const currentId = usePlayerStore((s) => s.currentId);
   const playbackStatus = usePlayerStore((s) => s.status);
@@ -77,6 +92,13 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
   const lastPlayed = useLibraryStore((s) => s.history[0] ?? null);
   const user = useAuthStore((s) => s.user);
   const signedIn = Boolean(user);
+  const enabledStationIds = useListenerWidgetsStore((s) => s.enabledStationIds);
+  const stationOverrides = useListenerWidgetsStore((s) => s.stationOverrides);
+  const toggleStation = useListenerWidgetsStore((s) => s.toggleStation);
+  const [pendingStationRemoval, setPendingStationRemoval] = useState<{
+    id: string;
+    label: string;
+  } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -106,6 +128,41 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    if (radioPresets.length === 0) {
+      return;
+    }
+    let cancelled = false;
+    const refresh = () => {
+      void Promise.all(
+        radioPresets.map(async (preset) => {
+          if (!preset.streamUrl) {
+            return [preset.id, null] as const;
+          }
+          const title = await readIcyStreamTitle(preset.streamUrl);
+          return [preset.id, title] as const;
+        }),
+      ).then((entries) => {
+        if (cancelled) {
+          return;
+        }
+        const next: Record<string, string> = {};
+        for (const [id, title] of entries) {
+          if (title) {
+            next[id] = title;
+          }
+        }
+        setPresetNowPlaying(next);
+      });
+    };
+    refresh();
+    const timer = window.setInterval(refresh, NOW_PLAYING_POLL_MS);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
+  }, [radioPresets]);
 
   useEffect(() => {
     let cancelled = false;
@@ -169,6 +226,19 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     });
   };
 
+  // Catalog stations (packages/tahti-web/src/content/radioStations.ts) fill
+  // in any station that doesn't already have a board-curated preset enabled
+  // for it (matched by name, same link used above for cover editing) — the
+  // preset's admin-uploaded artwork wins when both exist for the same station.
+  const presetNames = new Set(radioPresets.map((preset) => preset.name));
+  const enabledCatalogStations = enabledStationIds
+    .map((id) => {
+      const station = radioStation(id);
+      return station ? { ...station, ...stationOverrides[id] } : undefined;
+    })
+    .filter((station) => station != null)
+    .filter((station) => !presetNames.has(station.name));
+
   return (
     <div className="flex max-w-5xl flex-col gap-6">
       <Tabs.Root
@@ -196,20 +266,10 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
           tab === 'feed' ? 'Feed' : tab === 'history' ? 'History' : 'Listen'
         }
         classes={{ root: 'px-0 pt-0' }}
+        actions={
+          tab === 'listen' && signedIn ? <ListenWidgetStoreDialog /> : undefined
+        }
       >
-        {tab === 'listen' ? (
-          <div className="mb-4 flex flex-wrap items-center gap-2">
-            {signedIn ? <ListenWidgetStoreDialog /> : null}
-            {!signedIn ? (
-              <Link to="/what-is-it">
-                <Button size="sm" variant="secondary">
-                  What is tahti.live?
-                </Button>
-              </Link>
-            ) : null}
-          </div>
-        ) : null}
-
         {tab === 'feed' ? <FeedView embedded /> : null}
         {tab === 'history' ? <HistoryView embedded /> : null}
 
@@ -235,7 +295,23 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                             );
                             return;
                           }
-                          play(lastPlayed.playable);
+                          resolveLocalPlayableForReplay(lastPlayed.playable)
+                            .then((resolved) => {
+                              if (resolved) {
+                                play(resolved);
+                              } else {
+                                toast.error(
+                                  'Re-import this file from your library to play it again.',
+                                );
+                              }
+                            })
+                            .catch((error: unknown) => {
+                              toast.error(
+                                error instanceof Error
+                                  ? error.message
+                                  : 'Track unavailable.',
+                              );
+                            });
                         }}
                       />
                     </CardGrid>
@@ -272,7 +348,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
               />
             ) : null}
 
-            {radioPresets.length > 0 ? (
+            {radioPresets.length > 0 || enabledCatalogStations.length > 0 ? (
               <SectionShell title="Radio">
                 <CardGrid>
                   {radioPresets.map((preset) => {
@@ -306,7 +382,11 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                         />
                         <Card
                           title={preset.name}
-                          subtitle={preset.genre ?? 'Internet radio'}
+                          subtitle={
+                            presetNowPlaying[preset.id] ??
+                            preset.genre ??
+                            'Internet radio'
+                          }
                           src={
                             preset.iconUrl ?? placeholderArtworkUrl(playableId)
                           }
@@ -325,8 +405,8 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                             play({
                               id: playableId,
                               kind: 'radio',
-                              title: preset.name,
-                              artist: preset.genre ?? 'Internet radio',
+                              title: presetNowPlaying[preset.id] ?? preset.name,
+                              artist: preset.name,
                               coverUrl: preset.iconUrl ?? undefined,
                               streamUrl: preset.streamUrl,
                               protocol: 'https',
@@ -337,9 +417,83 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                       </div>
                     );
                   })}
+                  {enabledCatalogStations.map((station) => {
+                    const playableId = `radio-widget:${station.id}`;
+                    const isCurrent = currentId === playableId;
+                    const isPlaying =
+                      isCurrent &&
+                      (playbackStatus === 'playing' ||
+                        playbackStatus === 'loading');
+                    return (
+                      <div key={station.id} className="group relative w-fit">
+                        <RadioStationCoverEditButton
+                          label={station.name}
+                          stationName={station.name}
+                          catalogStationId={station.id}
+                          className="absolute top-3 left-3 z-10 rounded-full"
+                        />
+                        <Tooltip content={`Remove ${station.name}`} side="top">
+                          <Button
+                            size="icon-sm"
+                            variant="text"
+                            aria-label={`Remove ${station.name}`}
+                            onClick={() =>
+                              setPendingStationRemoval({
+                                id: station.id,
+                                label: station.name,
+                              })
+                            }
+                            className="bg-background/80 hover:bg-background absolute top-1 right-1 z-10 rounded-full opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
+                          >
+                            <XIcon size={14} aria-hidden />
+                          </Button>
+                        </Tooltip>
+                        <Card
+                          title={station.name}
+                          subtitle={`${station.language} · ${station.bitrateKbps}kbps`}
+                          src={station.logoUrl}
+                          isPlaying={isPlaying}
+                          playLabel={
+                            station.streamUrl ? 'Play' : 'Stream pending'
+                          }
+                          playDisabled={!station.streamUrl}
+                          onPlay={
+                            station.streamUrl
+                              ? () => {
+                                  if (isCurrent) {
+                                    setPlaybackStatus(
+                                      isPlaying ? 'paused' : 'playing',
+                                    );
+                                    return;
+                                  }
+                                  play(
+                                    radioStationPlayable({
+                                      ...station,
+                                      streamUrl: station.streamUrl!,
+                                    }),
+                                  );
+                                }
+                              : undefined
+                          }
+                        />
+                      </div>
+                    );
+                  })}
                 </CardGrid>
               </SectionShell>
             ) : null}
+
+            <RemoveWidgetDialog
+              isOpen={pendingStationRemoval != null}
+              label={pendingStationRemoval?.label ?? ''}
+              onCancel={() => setPendingStationRemoval(null)}
+              onConfirm={() => {
+                if (pendingStationRemoval) {
+                  toggleStation(pendingStationRemoval.id);
+                }
+                setPendingStationRemoval(null);
+              }}
+            />
 
             {onAir.length > 0 ? (
               <SectionShell title="On air">

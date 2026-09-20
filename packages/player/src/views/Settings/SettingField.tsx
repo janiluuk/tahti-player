@@ -6,13 +6,13 @@ import type {
   SettingDefinition,
   SettingValue,
 } from '@tahti-player/plugin-sdk';
+import { Input } from '@tahti-player/ui';
 
 import { CustomWidgetField } from './CustomWidgetField';
 import { InfoField } from './InfoField';
 import { NumberInputField } from './NumberInputField';
 import { SelectField } from './SelectField';
 import { SliderField } from './SliderField';
-import { TextField } from './TextField';
 import { ToggleField } from './ToggleField';
 import { useSettingTranslation } from './useSettingTranslation';
 
@@ -115,30 +115,30 @@ export const SettingField: FC<SettingFieldProps> = ({
       />
     ),
     password: () => (
-      <TextField
+      <Input
+        variant="password"
         label={label}
         description={description}
         value={String(value ?? '')}
-        setValue={(v) => setValue(v)}
-        variant="password"
+        onChange={(e) => setValue(e.target.value)}
       />
     ),
     text: () => (
-      <TextField
+      <Input
+        variant="text"
         label={label}
         description={description}
         value={String(value ?? '')}
-        setValue={(v) => setValue(v)}
-        variant="text"
+        onChange={(e) => setValue(e.target.value)}
       />
     ),
     textarea: () => (
-      <TextField
+      <Input
+        variant="text"
         label={label}
         description={description}
         value={String(value ?? '')}
-        setValue={(v) => setValue(v)}
-        variant="text"
+        onChange={(e) => setValue(e.target.value)}
       />
     ),
     info: () => (

@@ -23,6 +23,12 @@ export type TrackTableLabels = {
   trackOptions: string;
   remove: string;
   filterPlaceholder: string;
+  /** Bulk-selection toolbar strings -- optional, only rendered when
+   * `features.selectable` is on. Fall back to sensible English defaults
+   * so existing label sets that predate bulk selection still type-check. */
+  clearSelection?: string;
+  removeSelected?: string;
+  addSelectedToQueue?: string;
 };
 
 export type TrackTableClasses = {
@@ -47,6 +53,13 @@ export type TrackTableActions<T extends Track = Track> = {
    * which gates whether the icon renders at all per-row (e.g. hidden for
    * tracks with no detail page to open, such as embed-only sources). */
   onOpenDetail?: (track: T) => void;
+  /** Bulk actions over the current checkbox selection -- paired with
+   * `features.selectable`. The selection-toolbar button for each only
+   * renders when the matching callback is provided, same convention as
+   * onEdit/onOpenDetail being absent hiding their icons. Selection state
+   * itself lives inside TrackTable (like sorting/filtering), not here. */
+  onRemoveSelected?: (ids: string[]) => void;
+  onAddSelectedToQueue?: (ids: string[]) => void;
 };
 
 export type ContextMenuWrapperProps<T extends Track = Track> = {

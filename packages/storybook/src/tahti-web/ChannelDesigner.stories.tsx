@@ -20,7 +20,7 @@ const meta: Meta<typeof ChannelDesigner> = {
   parameters: { layout: 'padded' },
   tags: ['autodocs'],
   decorators: [
-    withTahtiRouter('/studio/branding'),
+    withTahtiRouter('/settings/artist?tab=channel-designer'),
     withMockAuth(MOCK_USERS.artist),
   ],
   args: {

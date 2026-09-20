@@ -4,7 +4,6 @@ import {
   CalendarDays,
   Disc3Icon,
   DownloadIcon,
-  HeartIcon,
   ImagesIcon,
   LibraryIcon,
   ListMusicIcon,
@@ -12,9 +11,7 @@ import {
   Mic,
   MusicIcon,
   PaintbrushIcon,
-  PlayIcon,
   RadioTowerIcon,
-  Repeat2Icon,
   UserPlusIcon,
   UsersIcon,
   UsersRound,
@@ -23,8 +20,6 @@ import { useEffect, useMemo, useState } from 'react';
 
 import {
   Button,
-  Card,
-  CardGrid,
   Dialog,
   SaveButton,
   TabLabel,
@@ -70,11 +65,15 @@ import type {
   TahtiPlayable,
 } from '../api/types';
 import {
+  ArtistCollectionsTab,
+  ArtistMusicTab,
+  ArtistReleasesTab,
+} from '../components/artist-view';
+import {
   ArtistGalleryAddIcon,
   ArtistGalleryPanel,
 } from '../components/ArtistGalleryPanel';
 import { ChannelDesigner } from '../components/ChannelDesigner';
-import { ChannelTextOverlayView } from '../components/ChannelTextOverlayView';
 import { ChannelVisualizer } from '../components/ChannelVisualizer';
 import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
 import { EmbedButton } from '../components/EmbedButton';
@@ -82,12 +81,9 @@ import {
   EntitySocialHeader,
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
-import { GlowMediaTile } from '../components/GlowMediaTile';
 import { ImageLightbox } from '../components/ImageLightbox';
 import { NewsletterSubscribeToggle } from '../components/NewsletterSubscribeToggle';
-import { NowPlayingOverlay } from '../components/NowPlayingOverlay';
 import { PageEmpty, PageLoading } from '../components/PageStates';
-import { PlayableTrackTable } from '../components/PlayableTrackTable';
 import { QueueConfirmDialog } from '../components/QueueConfirmDialog';
 import {
   releasePlayables,
@@ -97,10 +93,6 @@ import { ShowEpisodeList } from '../components/ShowEpisodeList';
 import { StreamManagerPanel } from '../components/StreamManagerPanel';
 import { Eyebrow } from '../components/tahti/Eyebrow';
 import { TrackEditDialog } from '../components/TrackEditDialog';
-import {
-  parseNowPlayingOverlaySettings,
-  resolveNowPlayingOverlayPreset,
-} from '../content/nowPlayingOverlayPresets';
 import { hasAccountRole } from '../lib/accountRoles';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
 import {
@@ -110,9 +102,7 @@ import {
 import { colorSchemeCssVars, normalizeColorScheme } from '../lib/colorScheme';
 import { isPinned } from '../lib/pinnedTracks';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
-import { formatDuration } from '../lib/playableToTrack';
 import { syncDocumentMetadata } from '../lib/seo';
-import { soundIdFromPlayableId } from '../lib/soundId';
 import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
@@ -120,15 +110,6 @@ import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 const publicPressKitUrl = (username: string): string => {
   return `${apiBase()}/api/v1/u/${encodeURIComponent(username)}/press-kit.zip`;
 };
-
-const GLOW_COLORS = [
-  'var(--color-accent-purple)',
-  'var(--color-accent-cyan)',
-  'var(--color-accent-red)',
-  'var(--color-accent-green)',
-  'var(--color-accent-yellow)',
-  'var(--color-accent-blue)',
-];
 
 function releaseToPlayable(
   release: PublicProfile['releases'][number],
@@ -1167,388 +1148,61 @@ export function ArtistView({ username }: { username: string }) {
       </div>
 
       {tab === 'music' && (
-        <section className="flex flex-col gap-8">
-          {lookVisibility.player ? (
-            <div
-              className="relative min-h-[20rem] w-full overflow-hidden rounded-lg border sm:min-h-[28rem]"
-              style={{
-                borderColor: `${pageScheme.muted}66`,
-                backgroundColor: playerScheme.bg,
-                ...colorSchemeCssVars(playerScheme),
-              }}
-            >
-              {resolvedVisualizerPreset ? (
-                <ChannelVisualizer
-                  className="absolute inset-0 size-full opacity-60"
-                  artworkUrl={
-                    nowPlayingHere?.coverUrl ?? artist.avatarUrl ?? undefined
-                  }
-                  colorScheme={playerScheme}
-                  visualSettingsJson={channelVisual?.visualSettingsJson}
-                  preset={resolvedVisualizerPreset}
-                />
-              ) : nowPlayingHere?.coverUrl ? (
-                <img
-                  src={nowPlayingHere.coverUrl}
-                  alt=""
-                  className="absolute inset-0 size-full object-cover opacity-35"
-                />
-              ) : null}
-              <div
-                className="absolute inset-0"
-                style={{ background: playerStageGradient }}
-                aria-hidden
-              />
-              {showPlayerOverlay ? (
-                <div className="absolute inset-x-0 top-10 z-[2] px-4 sm:top-12">
-                  <ChannelTextOverlayView
-                    mode={playerOverlayMode}
-                    text={playerOverlayText}
-                    align={playerOverlayAlign}
-                    accent={playerScheme.accent}
-                    highlight={playerScheme.highlight}
-                    size="sm"
-                  />
-                </div>
-              ) : null}
-
-              {channel && (isOwner || isAdministrator) ? (
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="secondary"
-                  className="absolute top-3 right-3 z-[2]"
-                  onClick={() => setManagerOpen(true)}
-                  aria-label="Manage stream playlist"
-                  title="Manage stream playlist"
-                >
-                  <ListMusicIcon size={16} aria-hidden />
-                  <span>Manage</span>
-                </Button>
-              ) : null}
-
-              {featuredPlayable ? (
-                <div className="absolute top-1/2 left-1/2 z-[2] -translate-x-1/2 -translate-y-1/2">
-                  <Tooltip
-                    content={
-                      featuredIsPlaying
-                        ? 'Pause featured track'
-                        : 'Play featured track'
-                    }
-                    side="top"
-                  >
-                    <Button
-                      type="button"
-                      size="icon"
-                      className="bg-primary text-primary-foreground size-16 rounded-full shadow-xl sm:size-20"
-                      onClick={playFeatured}
-                      aria-label={
-                        featuredIsPlaying
-                          ? 'Pause featured track'
-                          : 'Play featured track'
-                      }
-                      aria-pressed={featuredIsPlaying}
-                    >
-                      {featuredIsPlaying ? (
-                        <span className="text-xl font-bold" aria-hidden>
-                          ||
-                        </span>
-                      ) : (
-                        <PlayIcon
-                          size={28}
-                          className="fill-current"
-                          aria-hidden
-                        />
-                      )}
-                    </Button>
-                  </Tooltip>
-                </div>
-              ) : null}
-
-              <div
-                className="absolute inset-x-0 bottom-0 z-[1] flex items-end gap-3 p-3 sm:gap-4 sm:p-4"
-                style={{ background: playerBottomGradient }}
-              >
-                {nowPlayingHere ? (
-                  <NowPlayingOverlay
-                    presetId={resolveNowPlayingOverlayPreset(
-                      nowPlayingOverlayStyle,
-                    )}
-                    title={nowPlayingHere.title}
-                    artist={artist.displayName}
-                    artworkUrl={nowPlayingHere.coverUrl}
-                    settings={parseNowPlayingOverlaySettings(
-                      nowPlayingOverlaySettingsJson,
-                    )}
-                  />
-                ) : (
-                  <div
-                    className="truncate text-base leading-tight font-bold sm:text-lg"
-                    style={{ color: playerScheme.text }}
-                  >
-                    {artist.displayName}
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : null}
-
-          {lookVisibility.player && featuredPlayable ? (
-            <div
-              className="flex items-center justify-center gap-5"
-              aria-label="Track engagement"
-            >
-              <Button
-                type="button"
-                variant="text"
-                size="xs"
-                className="text-foreground-secondary hover:text-foreground gap-1.5 px-1.5 text-sm"
-                aria-label={`Like ${featuredPlayable.title}`}
-              >
-                <HeartIcon size={18} aria-hidden />
-                <span className="tabular-nums">
-                  {featuredTrack?.likeCount ?? 0}
-                </span>
-              </Button>
-              <Link
-                to="/t/$id"
-                params={{ id: featuredPlayable.id.replace(/^sound:/, '') }}
-                className="text-foreground-secondary hover:text-foreground inline-flex items-center gap-1.5 text-sm transition-colors"
-                aria-label={`Comments on ${featuredPlayable.title}`}
-              >
-                <MessageCircle size={18} aria-hidden />
-                <span className="tabular-nums">
-                  {featuredTrack?.commentCount ?? 0}
-                </span>
-              </Link>
-              <Button
-                type="button"
-                variant="text"
-                size="xs"
-                className="text-foreground-secondary hover:text-foreground gap-1.5 px-1.5 text-sm"
-                aria-label={`Repost ${featuredPlayable.title}`}
-              >
-                <Repeat2Icon size={18} aria-hidden />
-                <span className="tabular-nums">
-                  {featuredTrack?.repostCount ?? 0}
-                </span>
-              </Button>
-            </div>
-          ) : null}
-
-          {pinnedTiles.length > 0 && (
-            <div className="flex flex-col gap-3">
-              <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <Eyebrow>Pinned</Eyebrow>
-                {isOwner && (
-                  <Link
-                    to="/studio/sounds"
-                    className="text-foreground-secondary text-xs underline-offset-2 hover:underline"
-                  >
-                    Manage pins in Studio
-                  </Link>
-                )}
-              </div>
-              <CardGrid className="grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] gap-6">
-                {pinnedTiles.map(({ track, playable }, i) => (
-                  <GlowMediaTile
-                    key={track.id}
-                    title={track.title}
-                    subtitle={track.artistName ?? artist.displayName}
-                    src={track.bannerUrl ?? placeholderArtworkUrl(track.id)}
-                    glowColor={GLOW_COLORS[i % GLOW_COLORS.length]}
-                    onPlay={() => play(playable)}
-                    onFavorite={() => toggleFavoriteTrack(playable)}
-                    favorited={favoriteTracks.some((t) => t.id === playable.id)}
-                  />
-                ))}
-              </CardGrid>
-            </div>
-          )}
-
-          {lookVisibility.latest && releaseTiles.length > 0 && (
-            <div className="flex flex-col gap-3">
-              <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <Eyebrow>Latest releases</Eyebrow>
-                {releases.length > releaseTiles.length && (
-                  <button
-                    type="button"
-                    onClick={() => setTab('releases')}
-                    className="text-foreground-secondary text-xs underline-offset-2 hover:underline"
-                  >
-                    View all {releases.length}
-                  </button>
-                )}
-              </div>
-              <CardGrid className="grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-8">
-                {releaseTiles.map(({ release, playable }, i) => {
-                  const releasePlayablesList = releasePlayables(
-                    release,
-                    artist.displayName,
-                    channel?.slug,
-                  );
-                  const totalDurationSec = (release.tracks ?? []).reduce(
-                    (total, track) => total + (track.durationSec ?? 0),
-                    0,
-                  );
-                  const releaseSubtitle = [
-                    release.type ?? 'Release',
-                    `${release.tracks?.length ?? 0} tracks`,
-                    totalDurationSec > 0
-                      ? formatDuration(totalDurationSec)
-                      : null,
-                  ]
-                    .filter(Boolean)
-                    .join(' · ');
-
-                  return (
-                    <GlowMediaTile
-                      key={release.id}
-                      title={release.title}
-                      subtitle={releaseSubtitle}
-                      src={
-                        release.artworkUrl ?? placeholderArtworkUrl(release.id)
-                      }
-                      glowColor={GLOW_COLORS[(i + 2) % GLOW_COLORS.length]}
-                      className="w-full"
-                      onClick={
-                        release.smartLinkSlug
-                          ? () => {
-                              void navigate({
-                                to: '/r/$slug',
-                                params: { slug: release.smartLinkSlug! },
-                              });
-                            }
-                          : undefined
-                      }
-                      onTitleClick={() => setTracklistRelease(release)}
-                      onPlay={
-                        playable
-                          ? () =>
-                              playOrPromptAlbum(
-                                release,
-                                artist.displayName,
-                                channel?.slug,
-                              )
-                          : undefined
-                      }
-                      onQueue={
-                        releasePlayablesList.length > 0
-                          ? () =>
-                              releasePlayablesList.length > 1
-                                ? setQueueConfirm({
-                                    title: release.title,
-                                    playables: releasePlayablesList,
-                                  })
-                                : queueAlbum(releasePlayablesList)
-                          : undefined
-                      }
-                      onFavorite={
-                        playable
-                          ? () => toggleFavoriteTrack(playable)
-                          : undefined
-                      }
-                      favorited={
-                        playable
-                          ? favoriteTracks.some((t) => t.id === playable.id)
-                          : false
-                      }
-                    />
-                  );
-                })}
-              </CardGrid>
-            </div>
-          )}
-
-          {lookVisibility.tracks ? (
-            <div className="flex flex-col gap-3">
-              <Eyebrow>Catalog</Eyebrow>
-              <PlayableTrackTable
-                items={catalogPlayables}
-                compactActions
-                emptyMessage={
-                  pinnedPlayables.length > 0
-                    ? 'No other tracks on this profile.'
-                    : 'No playable tracks on this profile.'
-                }
-                onEdit={
-                  isOwner
-                    ? (item) =>
-                        setEditingSoundId(soundIdFromPlayableId(item.id))
-                    : undefined
-                }
-              />
-            </div>
-          ) : null}
-        </section>
+        <ArtistMusicTab
+          channel={channel}
+          visualSettingsJson={channelVisual?.visualSettingsJson}
+          artist={artist}
+          isOwner={isOwner}
+          isAdministrator={isAdministrator}
+          visibility={lookVisibility}
+          scheme={playerScheme}
+          borderMuted={pageScheme.muted}
+          stageGradient={playerStageGradient}
+          bottomGradient={playerBottomGradient}
+          visualizerPreset={resolvedVisualizerPreset}
+          overlay={{
+            show: showPlayerOverlay,
+            mode: playerOverlayMode,
+            text: playerOverlayText,
+            align: playerOverlayAlign,
+            styleId: nowPlayingOverlayStyle,
+            settingsJson: nowPlayingOverlaySettingsJson,
+          }}
+          nowPlayingHere={nowPlayingHere}
+          featured={{
+            playable: featuredPlayable,
+            isPlaying: featuredIsPlaying,
+            track: featuredTrack,
+            onPlay: playFeatured,
+          }}
+          pinnedTiles={pinnedTiles}
+          releaseTiles={releaseTiles}
+          releaseCount={releases.length}
+          onViewAllReleases={() => setTab('releases')}
+          catalogPlayables={catalogPlayables}
+          hasPinnedPlayables={pinnedPlayables.length > 0}
+          onPlay={play}
+          onToggleFavorite={toggleFavoriteTrack}
+          favoriteTracks={favoriteTracks}
+          onNavigateSmartLink={(slug) => {
+            void navigate({ to: '/r/$slug', params: { slug } });
+          }}
+          onTitleClick={setTracklistRelease}
+          onPlayRelease={playOrPromptAlbum}
+          onQueueConfirm={setQueueConfirm}
+          onQueueAlbum={queueAlbum}
+          onEditTrack={setEditingSoundId}
+          onOpenManager={() => setManagerOpen(true)}
+        />
       )}
 
-      {tab === 'releases' && (
-        <section className="flex flex-col gap-3">
-          {releases.length === 0 ? (
-            <p className="text-foreground-secondary text-sm">
-              No published releases.
-            </p>
-          ) : (
-            <CardGrid>
-              {releases.map((rel) => (
-                <div key={rel.id} className="flex flex-col gap-2">
-                  {rel.smartLinkSlug ? (
-                    <Link to="/r/$slug" params={{ slug: rel.smartLinkSlug }}>
-                      <Card
-                        title={rel.title}
-                        subtitle={rel.type ?? 'Release'}
-                        src={rel.artworkUrl ?? placeholderArtworkUrl(rel.id)}
-                      />
-                    </Link>
-                  ) : (
-                    <Card
-                      title={rel.title}
-                      subtitle={rel.type ?? 'Release'}
-                      src={rel.artworkUrl ?? placeholderArtworkUrl(rel.id)}
-                    />
-                  )}
-                </div>
-              ))}
-            </CardGrid>
-          )}
-        </section>
-      )}
+      {tab === 'releases' && <ArtistReleasesTab releases={releases} />}
 
       {tab === 'collections' && (
-        <section className="flex flex-col gap-3">
-          {collections.length === 0 ? (
-            <p className="text-foreground-secondary text-sm">
-              No public collections.
-            </p>
-          ) : (
-            <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
-              {collections.map((col) => (
-                <li
-                  key={col.slug}
-                  className="flex items-center justify-between gap-3 px-4 py-3"
-                >
-                  <div>
-                    <Link
-                      to="/u/$username/c/$slug"
-                      params={{ username: artist.username, slug: col.slug }}
-                      className="font-medium underline-offset-2 hover:underline"
-                    >
-                      {col.name}
-                    </Link>
-                    <div className="text-foreground-secondary text-xs">
-                      {col.itemCount} items
-                      {col.isFeatured ? ', featured' : ''}
-                    </div>
-                  </div>
-                  <span className="text-foreground-secondary font-mono text-xs uppercase">
-                    {col.type}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
+        <ArtistCollectionsTab
+          collections={collections}
+          username={artist.username}
+        />
       )}
 
       {tab === 'gallery' && hasGallery && (

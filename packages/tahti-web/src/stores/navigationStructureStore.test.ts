@@ -31,4 +31,36 @@ describe('navigationStructureStore', () => {
     useNavigationStructureStore.getState().addItem('Missing path', ' ');
     expect(useNavigationStructureStore.getState().items).toHaveLength(before);
   });
+
+  it('adds, reorders, and removes nested submenu items', () => {
+    useNavigationStructureStore.setState({
+      items: [
+        {
+          id: 'parent',
+          label: 'Parent',
+          path: '/parent',
+          children: [
+            { id: 'child-one', label: 'Child one', path: '/parent/one' },
+          ],
+        },
+      ],
+    });
+    const store = useNavigationStructureStore.getState();
+
+    store.addItem('Child two', '/parent/two', 'parent');
+    let items = useNavigationStructureStore.getState().items;
+    expect(items[0]!.children).toHaveLength(2);
+    const childTwoId = items[0]!.children![1]!.id;
+
+    store.moveItem(childTwoId, -1);
+    items = useNavigationStructureStore.getState().items;
+    expect(items[0]!.children!.map((child) => child.id)).toEqual([
+      childTwoId,
+      'child-one',
+    ]);
+
+    store.removeItem(childTwoId);
+    items = useNavigationStructureStore.getState().items;
+    expect(items[0]!.children!.map((child) => child.id)).toEqual(['child-one']);
+  });
 });

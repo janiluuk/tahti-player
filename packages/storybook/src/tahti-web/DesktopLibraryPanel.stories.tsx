@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { DesktopLibraryPanel } from '@tahti-web/components/DesktopLibraryPanel';
+import type { TahtiNativeLibrary } from '@tahti-web/lib/nativeLibrary';
 import { useLocalLibraryStore } from '@tahti-web/stores/localLibraryStore';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 const meta: Meta<typeof DesktopLibraryPanel> = {
   title: 'Tahti/Misc/DesktopLibraryPanel',
@@ -62,6 +63,63 @@ export const SearchableLibrary: Story = {
       }, []);
       return (
         <div className="border-border h-[34rem] w-96 border">
+          <Story />
+        </div>
+      );
+    },
+  ],
+};
+
+export const MissingNativeFile: Story = {
+  decorators: [
+    (Story) => {
+      const previousLibrary = useRef(globalThis.__TAHTI_NATIVE_LIBRARY__);
+      const nativeLibrary = useRef<TahtiNativeLibrary>({
+        list: async () => ({
+          tracks: [
+            {
+              id: 'missing-native-track',
+              title: 'Archive recording',
+              artist: 'Local artist',
+              album: 'Disconnected drive',
+              format: 'flac',
+              duration: 240,
+              sizeBytes: 42_000_000,
+              available: false,
+              unavailableSince: '2026-09-18T12:00:00Z',
+            },
+          ],
+          total: 1,
+        }),
+        import: async () => ({ imported: 0, errors: [] }),
+        importFolder: async () => ({ imported: 0, errors: [] }),
+        resolve: async () => '',
+        remove: async () => undefined,
+        listUnavailable: async () => [
+          {
+            id: 'missing-native-track',
+            title: 'Archive recording',
+            artist: 'Local artist',
+            album: 'Disconnected drive',
+            format: 'flac',
+            duration: 240,
+            sizeBytes: 42_000_000,
+            available: false,
+            unavailableSince: '2026-09-18T12:00:00Z',
+          },
+        ],
+        rescan: async () => [],
+        relink: async () => null,
+      });
+      globalThis.__TAHTI_NATIVE_LIBRARY__ = nativeLibrary.current;
+      useEffect(
+        () => () => {
+          globalThis.__TAHTI_NATIVE_LIBRARY__ = previousLibrary.current;
+        },
+        [],
+      );
+      return (
+        <div className="border-border h-[28rem] w-96 border">
           <Story />
         </div>
       );

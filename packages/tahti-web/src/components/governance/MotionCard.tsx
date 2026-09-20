@@ -55,6 +55,15 @@ function isExpiredMotion(motion: GovernanceMotion): boolean {
   );
 }
 
+/** ISO string -> `datetime-local` input value, in the viewer's own
+ * timezone (the input has no timezone concept of its own — using
+ * toISOString() directly would silently relabel UTC as local). */
+function toDatetimeLocalValue(iso: string): string {
+  const d = new Date(iso);
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
 export function MotionCard({
   motion,
   isBoard,
@@ -62,6 +71,7 @@ export function MotionCard({
   description,
   linkTitle = false,
   defaultExpanded = false,
+  preloadedComments,
   onChanged,
 }: {
   motion: GovernanceMotion;
@@ -72,11 +82,21 @@ export function MotionCard({
   /** List view links each title to its detail route; the detail page itself does not. */
   linkTitle?: boolean;
   defaultExpanded?: boolean;
+  /** List pages bulk-fetch every visible motion's comments up front
+   * (fetchMotionCommentsBulk) and pass the result here so expanding a
+   * card doesn't fire its own request. Undefined (not just empty) means
+   * "not preloaded" — the card falls back to fetching on expand itself,
+   * which is what the standalone detail page still does. */
+  preloadedComments?: MotionComment[];
   onChanged: () => void;
 }) {
   const [expanded, setExpanded] = useState(defaultExpanded);
-  const [comments, setComments] = useState<MotionComment[]>([]);
-  const [commentsLoaded, setCommentsLoaded] = useState(false);
+  const [comments, setComments] = useState<MotionComment[]>(
+    preloadedComments ?? [],
+  );
+  const [commentsLoaded, setCommentsLoaded] = useState(
+    preloadedComments !== undefined,
+  );
   const [commentBody, setCommentBody] = useState('');
   const [actionMsg, setActionMsg] = useState<string | null>(null);
   const [voting, setVoting] = useState(false);
@@ -84,6 +104,9 @@ export function MotionCard({
   const [editing, setEditing] = useState(false);
   const [editTitle, setEditTitle] = useState(motion.title);
   const [editDescription, setEditDescription] = useState(description ?? '');
+  const [editCloseAt, setEditCloseAt] = useState(
+    motion.closeAt ? toDatetimeLocalValue(motion.closeAt) : '',
+  );
   const [savingEdit, setSavingEdit] = useState(false);
 
   const openThread = () => {
@@ -146,17 +169,31 @@ export function MotionCard({
             maxLength={10000}
             className="border-border bg-background rounded-md border px-3 py-2 text-sm"
           />
+          <label className="flex flex-col gap-1 text-sm">
+            <span className="text-foreground-secondary text-xs uppercase">
+              Voting closes
+            </span>
+            <Input
+              type="datetime-local"
+              value={editCloseAt}
+              onChange={(e) => setEditCloseAt(e.target.value)}
+            />
+          </label>
           <div className="flex gap-2">
             <Button
               size="sm"
               disabled={
-                savingEdit || !editTitle.trim() || !editDescription.trim()
+                savingEdit ||
+                !editTitle.trim() ||
+                !editDescription.trim() ||
+                !editCloseAt
               }
               onClick={() => {
                 setSavingEdit(true);
                 void patchGovernanceMotion(m.id, {
                   title: editTitle.trim(),
                   description: editDescription.trim(),
+                  closeAt: new Date(editCloseAt).toISOString(),
                 }).then((r) => {
                   setSavingEdit(false);
                   setActionMsg(r.ok ? 'Motion updated.' : r.error);
@@ -193,6 +230,9 @@ export function MotionCard({
               onClick={() => {
                 setEditTitle(m.title);
                 setEditDescription(description ?? '');
+                setEditCloseAt(
+                  m.closeAt ? toDatetimeLocalValue(m.closeAt) : '',
+                );
                 setEditing(true);
               }}
             >

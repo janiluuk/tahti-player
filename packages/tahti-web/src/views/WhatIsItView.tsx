@@ -416,7 +416,7 @@ export function WhatIsItView() {
           ))}
         </div>
         <p className="text-foreground-secondary mt-3 text-center font-mono text-xs">
-          Most of these are plugins — turn on only what fits how you work.
+          Most of these are add-ons — turn on only what fits how you work.
         </p>
       </section>
 

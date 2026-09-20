@@ -1,4 +1,7 @@
+import { Link } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
+
+import { Button } from '@tahti-player/ui';
 
 import {
   isHeaderImageUrl,
@@ -27,6 +30,14 @@ export type ChannelBackdropCardProps = {
   channelSlug?: string;
   avatarUrl?: string | null;
   bio?: string | null;
+  /** Backdrop toggles (Channel Designer → Backdrop settings) — bio/CTA
+   * folded into the backdrop instead of being separate draggable page
+   * blocks; avatar was always shown before this toggle existed, so it
+   * defaults true. */
+  avatarVisible?: boolean;
+  bioVisible?: boolean;
+  subscribeVisible?: boolean;
+  subscribeLabel?: string;
 
   headerStyle: string;
   videoBackgroundUrl?: string | null;
@@ -99,6 +110,10 @@ export function ChannelBackdropCard({
   channelSlug,
   avatarUrl,
   bio,
+  avatarVisible = true,
+  bioVisible = true,
+  subscribeVisible = false,
+  subscribeLabel = 'Subscribe',
   headerStyle,
   videoBackgroundUrl,
   muted = true,
@@ -259,16 +274,22 @@ export function ChannelBackdropCard({
         style={{ color: fg }}
       >
         <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-          <div
-            className="flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 text-3xl font-bold sm:size-32 sm:text-4xl"
-            style={{ borderColor: accent, background: bg }}
-          >
-            {avatarUrl ? (
-              <img src={avatarUrl} alt="" className="size-full object-cover" />
-            ) : (
-              displayName.slice(0, 1).toUpperCase()
-            )}
-          </div>
+          {avatarVisible ? (
+            <div
+              className="flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 text-3xl font-bold sm:size-32 sm:text-4xl"
+              style={{ borderColor: accent, background: bg }}
+            >
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt=""
+                  className="size-full object-cover"
+                />
+              ) : (
+                displayName.slice(0, 1).toUpperCase()
+              )}
+            </div>
+          ) : null}
           <div className="min-w-0 flex-1">
             <div
               data-testid="channel-backdrop-card-name"
@@ -283,10 +304,27 @@ export function ChannelBackdropCard({
               @{username}
               {channelSlug ? ` · /${channelSlug}` : ''}
             </div>
-            {bio ? (
+            {bioVisible && bio ? (
               <p className="mt-1 line-clamp-2 text-sm opacity-90">{bio}</p>
             ) : null}
           </div>
+          {subscribeVisible ? (
+            <Link
+              to="/subscribe/$username"
+              params={{ username }}
+              className="shrink-0"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                data-testid="channel-backdrop-subscribe-cta"
+              >
+                {subscribeLabel}
+              </Button>
+            </Link>
+          ) : null}
           {badge}
         </div>
         {navItems.length > 0 ? (
@@ -319,9 +357,11 @@ export function ChannelBackdropCard({
               ),
             )}
             {quickAdd?.map((chip) => (
-              <button
+              <Button
                 key={chip.id}
                 type="button"
+                variant="text"
+                size="flexible"
                 onClick={(event) => {
                   event.stopPropagation();
                   chip.onClick();
@@ -329,7 +369,7 @@ export function ChannelBackdropCard({
                 className="ml-auto rounded-full border border-white/30 px-2.5 py-1 text-[10px] normal-case opacity-90 hover:bg-white/10 hover:opacity-100"
               >
                 + {chip.label}
-              </button>
+              </Button>
             ))}
           </nav>
         ) : null}

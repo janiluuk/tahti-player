@@ -32,7 +32,7 @@ describe('Plugins view', () => {
 
     expect(PluginsWrapper.installedEmptyState).toBeInTheDocument();
     expect(PluginsWrapper.installedEmptyState).toHaveTextContent(
-      'No plugins installed',
+      'No add-ons installed',
     );
   });
 
@@ -53,7 +53,7 @@ describe('Plugins view', () => {
     PluginFsMock.setExistsFor('plugins', AppData, true);
 
     await PluginsWrapper.mount();
-    await userEvent.click(screen.getByText('Add Plugin'));
+    await userEvent.click(screen.getByText('Add add-on'));
 
     // Manifest has been read
     await waitFor(() => {
@@ -108,7 +108,7 @@ describe('Plugins view', () => {
     const { usePluginStore } = await import('../../stores/pluginStore');
 
     await PluginsWrapper.mount();
-    await userEvent.click(screen.getByText('Add Plugin'));
+    await userEvent.click(screen.getByText('Add add-on'));
 
     await waitFor(() => {
       expect(readTextFileMock).toHaveBeenCalled();

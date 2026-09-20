@@ -5,17 +5,19 @@ import { CardsRowItem } from './CardsRow';
 
 const SCROLL_INCREMENT = 176;
 
-type UseCardsRowResult = {
+type UseCardsRowResult<T extends CardsRowItem> = {
   filterText: string;
   setFilterText: (text: string) => void;
   clearFilter: () => void;
-  filteredItems: CardsRowItem[];
+  filteredItems: T[];
   scrollContainerRef: RefObject<HTMLDivElement>;
   scrollLeft: () => void;
   scrollRight: () => void;
 };
 
-export function useCardsRow(items: CardsRowItem[]): UseCardsRowResult {
+export function useCardsRow<T extends CardsRowItem>(
+  items: T[],
+): UseCardsRowResult<T> {
   const [filterText, setFilterText] = useState('');
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 

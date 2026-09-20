@@ -1,4 +1,9 @@
-import { RadioIcon } from 'lucide-react';
+import {
+  CheckCircle2Icon,
+  LoaderCircleIcon,
+  RadioIcon,
+  XCircleIcon,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { Badge, Button, ImageReveal, Textarea } from '@tahti-player/ui';
@@ -148,6 +153,19 @@ export function RadioStationSuggestionsTab() {
                           );
                         }}
                       >
+                        {busyId === row.id ? (
+                          <LoaderCircleIcon
+                            size={14}
+                            aria-hidden
+                            className="mr-1.5 animate-spin"
+                          />
+                        ) : (
+                          <CheckCircle2Icon
+                            size={14}
+                            aria-hidden
+                            className="mr-1.5"
+                          />
+                        )}
                         Approve
                       </Button>
                       <Button
@@ -170,6 +188,19 @@ export function RadioStationSuggestionsTab() {
                           });
                         }}
                       >
+                        {busyId === row.id ? (
+                          <LoaderCircleIcon
+                            size={14}
+                            aria-hidden
+                            className="mr-1.5 animate-spin"
+                          />
+                        ) : (
+                          <XCircleIcon
+                            size={14}
+                            aria-hidden
+                            className="mr-1.5"
+                          />
+                        )}
                         Reject
                       </Button>
                     </div>

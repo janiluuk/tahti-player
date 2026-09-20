@@ -13,6 +13,7 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   Button,
   Dialog,
+  FilterChips,
   ImageReveal,
   Input,
   SaveButton,
@@ -49,7 +50,6 @@ import {
 import { ChannelRadioPlaylistPanel } from '../../components/ChannelRadioPlaylistPanel';
 import { ImageUploadField } from '../../components/ImageUploadField';
 import { StudioGate } from '../../components/StudioGate';
-import { BroadcastSubNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 
 const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
@@ -501,14 +501,6 @@ export function StudioScheduleView() {
     );
   };
 
-  const toggleFrequencyDay = (day: number) => {
-    setFrequencyDays((current) =>
-      current.includes(day)
-        ? current.filter((value) => value !== day)
-        : [...current, day],
-    );
-  };
-
   const saveRecurringSchedule = async () => {
     const selectedShow = shows.find((show) => show.id === selectedShowId);
     if (!selectedShow || !date || !time || frequencyDays.length === 0) {
@@ -758,7 +750,6 @@ export function StudioScheduleView() {
   return (
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
-        <BroadcastSubNav current="/studio/schedule" />
         <ViewShell
           title="Schedule"
           classes={{ root: 'px-0 pt-0' }}
@@ -991,20 +982,16 @@ export function StudioScheduleView() {
                 <span className="text-foreground-secondary text-xs font-semibold tracking-wide uppercase">
                   Weekly recurrence
                 </span>
-                <div className="flex flex-wrap gap-1">
-                  {FREQUENCY_DAY_ORDER.map((day) => (
-                    <Button
-                      key={day}
-                      type="button"
-                      size="sm"
-                      variant={frequencyDays.includes(day) ? undefined : 'text'}
-                      aria-pressed={frequencyDays.includes(day)}
-                      onClick={() => toggleFrequencyDay(day)}
-                    >
-                      Every {WEEKDAY_LABELS[day]}
-                    </Button>
-                  ))}
-                </div>
+                <FilterChips
+                  multiple
+                  items={FREQUENCY_DAY_ORDER.map((day) => ({
+                    id: String(day),
+                    label: `Every ${WEEKDAY_LABELS[day]}`,
+                  }))}
+                  selected={frequencyDays.map(String)}
+                  onChange={(ids) => setFrequencyDays(ids.map(Number))}
+                  aria-label="Weekly recurrence"
+                />
                 <p className="text-foreground-secondary text-xs">
                   Select days to generate episodes automatically; leave empty
                   for a one-off show.
@@ -1017,23 +1004,21 @@ export function StudioScheduleView() {
                     disabled={busy}
                     onClick={() => void stopRecurringSchedule()}
                   >
+                    <XIcon size={14} aria-hidden className="mr-1.5" />
                     Stop recurring schedule
                   </Button>
                 ) : null}
-                <Button
-                  size="sm"
-                  variant="text"
+                <SaveButton
                   disabled={
-                    busy ||
                     !selectedShowId ||
                     !date ||
                     !time ||
                     frequencyDays.length === 0
                   }
+                  saving={busy}
+                  label="Save weekly schedule"
                   onClick={() => void saveRecurringSchedule()}
-                >
-                  Save weekly schedule
-                </Button>
+                />
               </div>
 
               <div className="grid gap-3 sm:grid-cols-2">

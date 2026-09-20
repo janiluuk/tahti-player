@@ -1,8 +1,3 @@
-/** Shared mock state for internet radio presets — used by both the admin
- * management API (admin.ts) and the public Listen-page feed (client.ts) so
- * toggling a preset "enabled" in the admin mock UI is actually reflected on
- * the Listen page while testing in VITE_FORCE_MOCK mode. */
-
 export type MockInternetRadioPreset = {
   id: string;
   name: string;
@@ -18,14 +13,68 @@ const STORAGE_KEY = 'tahti-web-internet-radio-presets';
 
 const INITIAL_PRESETS: MockInternetRadioPreset[] = [
   {
+    id: 'preset-ylex',
+    name: 'YleX',
+    genre: 'Pop / Hits',
+    description: 'Finnish youth-focused pop and hits station.',
+    iconUrl: '/radio-logos/ylex.png',
+    programmingUrl: 'https://areena.yle.fi/audio/ohjelmat/yle-x',
+    streamUrl: 'https://icecast.live.yle.fi/radio/YleX/icecast.audio',
+    enabled: true,
+  },
+  {
     id: 'preset-radio-helsinki',
     name: 'Radio Helsinki',
-    genre: 'World',
-    description: null,
+    genre: 'Talk / Variety',
+    description: 'Helsinki-area talk and variety station.',
     iconUrl: '/radio-logos/radio-helsinki.png',
-    programmingUrl: null,
-    streamUrl: null,
-    enabled: false,
+    programmingUrl: 'https://www.radiohelsinki.fi/ohjelmakartta/',
+    streamUrl: 'https://stream.radiohelsinki.fi/stream',
+    enabled: true,
+  },
+  {
+    id: 'preset-radio-rock',
+    name: 'Radio Rock',
+    genre: 'Rock',
+    description: 'Finnish rock radio station.',
+    iconUrl: '/radio-logos/radio-rock.jpg',
+    programmingUrl: 'https://www.radiorock.fi/',
+    streamUrl:
+      'https://aud-stream-radiorock.nm-elemental.nelonenmedia.fi/playlist.m3u8',
+    enabled: true,
+  },
+  {
+    id: 'preset-suomipop',
+    name: 'Suomipop',
+    genre: 'Pop',
+    description: 'Finnish contemporary pop station.',
+    iconUrl: '/radio-logos/suomipop.jpg',
+    programmingUrl: 'https://www.supla.fi/suomipop',
+    streamUrl:
+      'https://aud-stream-suomipop.nm-elemental.nelonenmedia.fi/playlist.m3u8',
+    enabled: true,
+  },
+  {
+    id: 'preset-nrj',
+    name: 'NRJ',
+    genre: 'Pop / Hits',
+    description: 'Hit music radio for Finland.',
+    iconUrl: '/radio-logos/nrj.jpg',
+    programmingUrl: 'https://www.radioplay.fi/nrj',
+    streamUrl:
+      'https://stream-redirect.bauermedia.fi/nrj/nrj_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein',
+    enabled: true,
+  },
+  {
+    id: 'preset-radio-nova',
+    name: 'Radio Nova',
+    genre: 'Pop',
+    description: 'Mainstream Finnish pop radio.',
+    iconUrl: '/radio-logos/radio-nova.jpg',
+    programmingUrl: 'https://www.radioplay.fi/radio-nova',
+    streamUrl:
+      'https://stream-redirect.bauermedia.fi/radionova/radionova_64.aac?aw_0_1st.bauer_loggedin=false&aw_0_1st.playerid=BMUK_tunein',
+    enabled: true,
   },
 ];
 

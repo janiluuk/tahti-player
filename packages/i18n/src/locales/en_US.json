@@ -154,7 +154,7 @@
     "importUrl": "Import from URL",
     "importUrlTitle": "Import playlist from URL",
     "importUrlPlaceholder": "Paste a playlist URL...",
-    "importUrlNoProvider": "No plugin can handle this URL. Install a plugin that supports this service.",
+    "importUrlNoProvider": "No add-on can handle this URL. Install an add-on that supports this service.",
     "importUrlImporting": "Importing...",
     "descriptionPlaceholder": "Add a description..."
   },
@@ -180,9 +180,9 @@
       "artists": "Artists",
       "playlists": "Playlists"
     },
-    "empty-state": "No metadata plugin installed",
-    "empty-state-description": "Install a metadata plugin to search for music.",
-    "empty-state-action": "Browse plugins"
+    "empty-state": "No metadata add-on installed",
+    "empty-state-description": "Install a metadata add-on to search for music.",
+    "empty-state-action": "Browse add-ons"
   },
   "artist": {
     "title": "Artist",
@@ -247,8 +247,8 @@
   "dashboard": {
     "title": "Dashboard",
     "empty-state": "Welcome to Tahti Player",
-    "empty-state-description": "Install a plugin to see top tracks, new releases, and recommendations here.",
-    "empty-state-action": "Browse plugins",
+    "empty-state-description": "Install an add-on to see top tracks, new releases, and recommendations here.",
+    "empty-state-action": "Browse add-ons",
     "top-tracks": "Top Tracks",
     "top-artists": "Top Artists",
     "top-albums": "Top Albums",
@@ -262,21 +262,21 @@
     "nothing-found": "Nothing found"
   },
   "plugins": {
-    "title": "Plugins",
-    "addPlugin": "Add Plugin",
+    "title": "Add-ons",
+    "addPlugin": "Add add-on",
     "tabs": {
       "installed": "Installed",
       "store": "Store"
     },
     "installed": {
-      "empty-state": "No plugins installed",
-      "empty-state-description": "Browse the plugin store to find streaming, metadata, and other plugins.",
+      "empty-state": "No add-ons installed",
+      "empty-state-description": "Browse the add-on store to find streaming, metadata, and other add-ons.",
       "empty-state-action": "Go to store",
       "update-available": "Update available",
       "by": "by"
     },
     "store": {
-      "searchPlaceholder": "Search plugins...",
+      "searchPlaceholder": "Search add-ons...",
       "install": "Install",
       "installing": "Installing",
       "installed": "Installed",
@@ -293,14 +293,14 @@
         "other": "Other"
       },
       "error": {
-        "title": "Failed to load plugins",
-        "description": "Could not fetch the plugin registry. Please check your internet connection.",
+        "title": "Failed to load add-ons",
+        "description": "Could not fetch the add-on registry. Please check your internet connection.",
         "retry": "Retry"
       },
       "noResults": {
-        "title": "No plugins found",
+        "title": "No add-ons found",
         "filtered": "Try adjusting your search or filters.",
-        "empty": "No plugins available yet."
+        "empty": "No add-ons available yet."
       },
       "installError": {
         "title": "Failed to install {{name}}"
@@ -327,10 +327,10 @@
       }
     },
     "plugins": {
-      "title": "Plugins",
+      "title": "Add-ons",
       "auto-update": {
-        "title": "Auto-update plugins",
-        "description": "Automatically download and install new versions of store plugins on startup"
+        "title": "Auto-update add-ons",
+        "description": "Automatically download and install new versions of store add-ons on startup"
       }
     },
     "themes": {
@@ -528,7 +528,7 @@
     "errors": {
       "noCandidatesFound": "Failed to find stream candidates",
       "allCandidatesFailed": "All stream candidates failed",
-      "noProviderAvailable": "No streaming provider is available. Install a streaming plugin to play music.",
+      "noProviderAvailable": "No streaming provider is available. Install a streaming add-on to play music.",
       "streamRecoveryFailed": "The stream became unavailable and could not be restored",
       "hifi": {
         "loadFailed": "Could not load the audio stream: {{details}}",
@@ -609,7 +609,7 @@
       "fix": "Fix",
       "improvement": "Improvement",
       "chore": "Chore",
-      "plugin": "Plugin",
+      "plugin": "Add-on",
       "docs": "Docs"
     }
   },

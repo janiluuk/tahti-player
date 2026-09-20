@@ -1,29 +1,26 @@
 import { Link } from '@tanstack/react-router';
 import {
-  BookmarkPlusIcon,
   GripVerticalIcon,
   ImageIcon,
   PlusIcon,
-  RotateCcwIcon,
   Trash2Icon,
-  Undo2Icon,
 } from 'lucide-react';
 import {
   forwardRef,
   useEffect,
   useImperativeHandle,
+  useLayoutEffect,
   useMemo,
+  useRef,
   useState,
+  type ReactNode,
 } from 'react';
 import { toast } from 'sonner';
 
 import {
-  Badge,
   Button,
   Dialog,
-  DropdownButton,
   FilePicker,
-  Input,
   SaveButton,
   Select,
   Slider,
@@ -71,6 +68,7 @@ import {
   parseNowPlayingOverlaySettings,
   type NowPlayingOverlaySettings,
 } from '../content/nowPlayingOverlayPresets';
+import { useIsMobile } from '../hooks/useIsMobile';
 import {
   CHANNEL_LOOK_ELEMENTS,
   isArtistLookBlockId,
@@ -87,26 +85,34 @@ import {
   type ChannelPageItem,
   type ChannelPageItemType,
 } from '../lib/channelPageLayout';
+import { useLayoutStore } from '../stores/layoutStore';
+import { useRightRailOverrideStore } from '../stores/rightRailOverrideStore';
 import {
-  visualizerMetadata,
-  visualizerSupportsAudioReactive,
-} from '../plugins/visualizers';
-import {
+  AppliedPresetBanner,
   BackdropPanel,
+  DeletePresetDialog,
+  DesignerToolbar,
+  IdentityToggles,
   LAYOUT_ONLY_LOOK_IDS,
   LayoutOnlyLookHint,
+  OverlayConfigDialog,
   PlayerOverlayControls,
   PlayerPanel,
   PlayerVisualizerControls,
+  PreviewTracksPlaceholder,
+  ResetConfirmDialog,
   resolveHeaderDesignMode,
+  SavedLooksRow,
+  SavePresetDialog,
+  TuningSliders,
   VideoOrImageField,
+  VisualizerPickerDialog,
   type HeaderDesignMode,
   type PlayerDesignTab,
 } from './channel-designer';
 import { ChannelBackdropCard } from './ChannelBackdropCard';
 import { ChannelElementEditor } from './ChannelElementEditor';
 import { ChannelTextOverlayEditor } from './ChannelTextOverlayEditor';
-import { ChannelVisualizer } from './ChannelVisualizer';
 import { PageLoading } from './PageStates';
 import { Eyebrow } from './tahti/Eyebrow';
 
@@ -193,6 +199,18 @@ type Props = {
   onLookVisibilityChange?: (
     visibility: Record<ArtistLookBlockId, boolean>,
   ) => void;
+  /** The channel page's own layout array + updater — only ever passed by
+   * `ChannelView`'s editing mode, which owns the real `ChannelPageItem[]`.
+   * Backs the Backdrop panel's avatar/bio/subscribe toggles (see
+   * BACKDROP_FOLDED_ITEM_TYPES); those toggles simply don't render for
+   * any other caller of this component (ArtistView, StudioBrandingView,
+   * ChannelSetupDialog), which have no page layout to toggle. */
+  layout?: ChannelPageItem[];
+  onLayoutChange?: (
+    updater:
+      | ChannelPageItem[]
+      | ((prev: ChannelPageItem[]) => ChannelPageItem[]),
+  ) => void;
 };
 
 export type ChannelDesignerHandle = {
@@ -215,9 +233,41 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       lookOpenSection,
       onDirtyChange,
       onLookVisibilityChange,
+      layout,
+      onLayoutChange,
     }: Props,
     ref,
   ) {
+    const isMobile = useIsMobile();
+    const setRightCollapsed = useLayoutStore((s) => s.setRightCollapsed);
+    const setRightWidth = useLayoutStore((s) => s.setRightWidth);
+    const rightWidth = useLayoutStore((s) => s.rightWidth);
+    const setRailOverride = useRightRailOverrideStore((s) => s.setOverride);
+    const dockControlsInRail = !lookOnly && !isMobile;
+    const controlsForRailRef = useRef<ReactNode>(null);
+
+    useLayoutEffect(() => {
+      if (!dockControlsInRail) {
+        setRailOverride(null);
+        return;
+      }
+      const content = controlsForRailRef.current;
+      if (!content) {
+        return;
+      }
+      setRailOverride({ title: 'Channel designer', content });
+      setRightCollapsed(false);
+    });
+
+    useEffect(() => {
+      if (!dockControlsInRail || rightWidth >= 360) {
+        return;
+      }
+      setRightWidth(360);
+    }, [dockControlsInRail, rightWidth, setRightWidth]);
+
+    useEffect(() => () => setRailOverride(null), [setRailOverride]);
+
     const [visual, setVisual] = useState<ChannelVisual | null>(null);
     const [scheme, setScheme] = useState<ColorScheme>({});
     const [playerScheme, setPlayerScheme] = useState<ColorScheme>({});
@@ -259,8 +309,6 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
     const [activeTab, setActiveTab] = useState<TabId>('visualizer');
     const [playerDesignTab, setPlayerDesignTab] =
       useState<PlayerDesignTab>('gradient');
-    const [backdropFocusTab, setBackdropFocusTab] =
-      useState<HeaderDesignMode | null>(null);
     const [highlightSection, setHighlightSection] = useState<
       'header' | 'visualizer' | null
     >(null);
@@ -996,41 +1044,6 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       applyLocal({ visualPreset: nextPreset });
     };
 
-    const tuningSliders = (preset: string) => (
-      <>
-        {(['speed', 'intensity'] as const).map((key) => {
-          const current = resolveVisualPresetSettings(visualSettings, preset);
-          return (
-            <Slider
-              key={key}
-              label={key === 'speed' ? 'Speed' : 'Intensity'}
-              min={0.25}
-              max={2}
-              step={0.05}
-              unit="×"
-              value={current[key]}
-              onValueChange={(value) => setPresetSetting(preset, key, value)}
-            />
-          );
-        })}
-        {visualizerSupportsAudioReactive(preset) ? (
-          <div className="flex items-center justify-between gap-3 text-sm">
-            <span>Audio reactive</span>
-            <Toggle
-              label="Audio reactive"
-              checked={
-                resolveVisualPresetSettings(visualSettings, preset)
-                  .audioReactive
-              }
-              onChange={(checked) =>
-                setPresetSetting(preset, 'audioReactive', checked)
-              }
-            />
-          </div>
-        ) : null}
-      </>
-    );
-
     // Only the full (non-lookOnly) chrome, with a live preview allowed, ever
     // gets a real preview to dock tuning into.
     const hasLivePreview = !lookOnly && livePreview;
@@ -1044,19 +1057,12 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       showVisualizerSettings &&
       !visualizerPickerOpen;
 
-    const resolvedHeaderDesignMode = resolveHeaderDesignMode(
+    const headerDesignMode: HeaderDesignMode = resolveHeaderDesignMode(
       visual.headerStyle,
       slideshowHeaderSelected,
     );
-    const headerDesignMode: HeaderDesignMode =
-      backdropFocusTab ?? resolvedHeaderDesignMode;
 
     const setHeaderDesignMode = (mode: HeaderDesignMode) => {
-      if (mode === 'VISUALIZATION') {
-        setBackdropFocusTab('VISUALIZATION');
-        return;
-      }
-      setBackdropFocusTab(null);
       if (mode === 'SLIDESHOW') {
         setGalleryMode((modeValue) =>
           modeValue === 'NONE' ? 'STATIC_SLIDESHOW' : modeValue,
@@ -1272,52 +1278,67 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       />
     );
 
+    // Bio/CTA/avatar folded into the backdrop instead of being separate
+    // draggable page blocks (see BACKDROP_FOLDED_ITEM_TYPES in
+    // channelPageLayout.ts) -- only rendered when this ChannelDesigner
+    // instance is nested inside ChannelView's editing mode, which is the
+    // only caller that owns a real page `layout` to toggle.
+    const identityTogglesSlot =
+      layout && onLayoutChange ? (
+        <IdentityToggles layout={layout} onLayoutChange={onLayoutChange} />
+      ) : null;
+
     const backdropPanel = (
-      <BackdropPanel
-        scheme={scheme}
-        backgroundScheme={backgroundScheme}
-        useBackgroundGradient={visual.useBackgroundGradient ?? false}
-        brandAccentPreset={visual.brandAccentPreset}
-        headerMode={headerDesignMode}
-        hasBackdrop={hasBackdrop}
-        backgroundVisualPreset={visual.backgroundVisualPreset}
-        onPageBackgroundChange={(bg) => {
-          if (visual.useBackgroundGradient) {
-            setBackgroundScheme({ ...backgroundScheme, bg });
+      <>
+        {identityTogglesSlot}
+        <BackdropPanel
+          scheme={scheme}
+          backgroundScheme={backgroundScheme}
+          useBackgroundGradient={visual.useBackgroundGradient ?? false}
+          brandAccentPreset={visual.brandAccentPreset}
+          headerMode={headerDesignMode}
+          hasBackdrop={hasBackdrop}
+          backgroundVisualPreset={visual.backgroundVisualPreset}
+          onPageBackgroundChange={(bg) => {
+            if (visual.useBackgroundGradient) {
+              setBackgroundScheme({ ...backgroundScheme, bg });
+              setDirty(true);
+              return;
+            }
+            applyLocal({ brandAccentPreset: null }, { ...scheme, bg });
+          }}
+          onHeaderModeChange={setHeaderDesignMode}
+          onRemoveBackdrop={removeBackdrop}
+          onSchemeChange={(next) =>
+            applyLocal({ brandAccentPreset: null }, next)
+          }
+          onBrandAccent={(brand) =>
+            applyLocal(
+              { brandAccentPreset: brand.id },
+              {
+                ...scheme,
+                accent: brand.accent,
+                highlight: brand.highlight,
+              },
+            )
+          }
+          onUseBackgroundGradient={(useBackgroundGradient) => {
+            if (useBackgroundGradient && !visual.backgroundColorSchemeJson) {
+              setBackgroundScheme(scheme);
+            }
+            applyLocal({ useBackgroundGradient });
+          }}
+          onBackgroundSchemeChange={(next) => {
+            setBackgroundScheme(next);
             setDirty(true);
-            return;
+          }}
+          onBackgroundVisualPreset={(preset) =>
+            applyLocal({ backgroundVisualPreset: preset })
           }
-          applyLocal({ brandAccentPreset: null }, { ...scheme, bg });
-        }}
-        onHeaderModeChange={setHeaderDesignMode}
-        onRemoveBackdrop={removeBackdrop}
-        onSchemeChange={(next) => applyLocal({ brandAccentPreset: null }, next)}
-        onBrandAccent={(brand) =>
-          applyLocal(
-            { brandAccentPreset: brand.id },
-            {
-              ...scheme,
-              accent: brand.accent,
-              highlight: brand.highlight,
-            },
-          )
-        }
-        onUseBackgroundGradient={(useBackgroundGradient) => {
-          if (useBackgroundGradient && !visual.backgroundColorSchemeJson) {
-            setBackgroundScheme(scheme);
-          }
-          applyLocal({ useBackgroundGradient });
-        }}
-        onBackgroundSchemeChange={(next) => {
-          setBackgroundScheme(next);
-          setDirty(true);
-        }}
-        onBackgroundVisualPreset={(preset) =>
-          applyLocal({ backgroundVisualPreset: preset })
-        }
-        videoSlot={videoBackdropSlot}
-        slideshowSlot={slideshowControls}
-      />
+          videoSlot={videoBackdropSlot}
+          slideshowSlot={slideshowControls}
+        />
+      </>
     );
 
     const visualizerSlot = (
@@ -1325,7 +1346,15 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
         activeVisualizer={activeVisualizer}
         visualizerEnabled={visualizerEnabled}
         showSettings={showVisualizerSettings}
-        tuningSlot={dockTuning ? tuningSliders(visual.visualPreset) : undefined}
+        tuningSlot={
+          dockTuning ? (
+            <TuningSliders
+              preset={visual.visualPreset}
+              visualSettings={visualSettings}
+              onSettingChange={setPresetSetting}
+            />
+          ) : undefined
+        }
         onOpenPicker={() => {
           setVisualizerPickerPreset(activeVisualizer);
           setVisualizerPickerOpen(true);
@@ -1523,9 +1552,11 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
         onSelect={selectLookElement}
         onToggleDisabled={toggleSelectedLook}
         items={lookEditorItems}
-        className={`${lookOnly ? 'h-full' : ''} ${highlightSection ? 'ring-primary ring-2' : ''}`}
+        className={`${lookOnly || dockControlsInRail ? 'h-full' : ''} ${highlightSection ? 'ring-primary ring-2' : ''}`}
       />
     );
+    controlsForRailRef.current = dockControlsInRail ? controls : null;
+
     if (lookOnly) {
       return <div className="flex h-full min-h-0 flex-col">{controls}</div>;
     }
@@ -1533,97 +1564,36 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
     return (
       <>
         <div className={`flex flex-col gap-4 ${compact ? '' : 'w-full'}`}>
-          <div className="flex flex-wrap items-center justify-end gap-3">
-            <DropdownButton
-              label="More"
-              items={[
-                {
-                  id: 'save-preset',
-                  label: 'Save preset',
-                  icon: <BookmarkPlusIcon size={16} />,
-                  onClick: openSavePresetModal,
-                },
-                {
-                  id: 'reset',
-                  label: 'Reset',
-                  icon: <RotateCcwIcon size={16} />,
-                  disabled: !dirty,
-                  onClick: () => setResetConfirmOpen(true),
-                },
-              ]}
-            />
-            {previousSave ? (
-              <Tooltip content="Restore previous save" side="top">
-                <Button
-                  size="icon-sm"
-                  variant="secondary"
-                  aria-label="Restore previous save"
-                  onClick={restorePreviousSave}
-                >
-                  <Undo2Icon size={15} aria-hidden />
-                </Button>
-              </Tooltip>
-            ) : null}
-            {saveButton}
-            {openChannelLink}
-          </div>
+          <DesignerToolbar
+            dirty={dirty}
+            hasPreviousSave={previousSave != null}
+            onOpenSavePresetModal={openSavePresetModal}
+            onRequestReset={() => setResetConfirmOpen(true)}
+            onRestorePreviousSave={restorePreviousSave}
+            saveButton={saveButton}
+            openChannelLink={openChannelLink}
+          />
 
-          {presets.length > 0 && (
-            <div className="border-border bg-background-secondary/30 flex flex-wrap items-center gap-2 rounded-lg border p-3">
-              <span className="text-foreground-secondary text-xs font-semibold tracking-wide uppercase">
-                Saved looks
-              </span>
-              {presets.map((preset) => (
-                <div
-                  key={preset.id}
-                  className="border-border bg-background flex items-center gap-1 rounded-full border py-1 pr-1 pl-3 text-sm"
-                >
-                  <button
-                    type="button"
-                    className="hover:text-primary font-semibold"
-                    disabled={presetBusy}
-                    onClick={() => applyPreset(preset)}
-                  >
-                    {preset.name}
-                  </button>
-                  <Tooltip content="Delete preset">
-                    <button
-                      type="button"
-                      aria-label={`Delete "${preset.name}"`}
-                      className="text-foreground-secondary hover:text-accent-red rounded-full p-1.5"
-                      disabled={presetBusy}
-                      onClick={() => setDeletePresetTarget(preset)}
-                    >
-                      <Trash2Icon size={14} />
-                    </button>
-                  </Tooltip>
-                </div>
-              ))}
-            </div>
-          )}
+          <SavedLooksRow
+            presets={presets}
+            presetBusy={presetBusy}
+            onApply={applyPreset}
+            onRequestDelete={setDeletePresetTarget}
+          />
 
           {appliedPresetName && (
-            <div className="border-primary/40 bg-primary/10 flex flex-wrap items-center justify-between gap-3 rounded-lg border px-4 py-3 text-sm">
-              <span>
-                Applied <strong>&ldquo;{appliedPresetName}&rdquo;</strong>. Keep
-                this look, or revert to what was last saved?
-              </span>
-              <div className="flex items-center gap-2">
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  onClick={revertAppliedPreset}
-                >
-                  Revert
-                </Button>
-                <Button size="sm" onClick={keepAppliedPreset}>
-                  Keep
-                </Button>
-              </div>
-            </div>
+            <AppliedPresetBanner
+              presetName={appliedPresetName}
+              onRevert={revertAppliedPreset}
+              onKeep={keepAppliedPreset}
+            />
           )}
 
-          <div className="grid min-h-0 grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-start">
+          <div
+            className={`grid min-h-0 grid-cols-1 gap-4 lg:items-start ${
+              dockControlsInRail ? '' : 'lg:grid-cols-[minmax(0,1fr)_24rem]'
+            }`}
+          >
             <main
               aria-label="Channel page preview"
               className="border-border bg-background min-w-0 overflow-x-hidden overflow-y-auto rounded-xl border shadow-lg lg:max-h-[calc(100vh-7rem)]"
@@ -1663,6 +1633,15 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
                 channelSlug={channelSlug}
                 avatarUrl={avatarUrl}
                 bio={bio}
+                avatarVisible={
+                  layout?.find((i) => i.type === 'avatar')?.visible ?? true
+                }
+                bioVisible={
+                  layout?.find((i) => i.type === 'about')?.visible ?? true
+                }
+                subscribeVisible={
+                  layout?.find((i) => i.type === 'subscribe')?.visible ?? false
+                }
                 headerStyle={visual.headerStyle}
                 videoBackgroundUrl={previewVideoUrl}
                 showVideoOverride={showHeaderVideo}
@@ -1755,300 +1734,66 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
                 <span className="text-foreground-secondary pb-2">About</span>
               </nav>
 
-              <div className="flex flex-col gap-5 p-4 sm:p-6">
-                <section>
-                  <div className="mb-3 flex items-center justify-between">
-                    <h3 className="text-lg font-bold">Tracks</h3>
-                  </div>
-                  <div className="border-border divide-border divide-y overflow-hidden rounded-lg border">
-                    {['Latest release', 'Live session', 'Featured track'].map(
-                      (title, index) => (
-                        <div
-                          key={title}
-                          className="flex items-center gap-3 px-3 py-3"
-                        >
-                          <span className="bg-primary/15 text-primary flex size-8 shrink-0 items-center justify-center rounded-md text-xs font-bold">
-                            {index + 1}
-                          </span>
-                          <div className="min-w-0 flex-1">
-                            <div className="truncate text-sm font-semibold">
-                              {title}
-                            </div>
-                            <div className="text-foreground-secondary text-xs">
-                              {displayName}
-                            </div>
-                          </div>
-                          <span className="text-foreground-secondary text-xs">
-                            Preview
-                          </span>
-                        </div>
-                      ),
-                    )}
-                  </div>
-                </section>
-                <section className="border-border rounded-lg border p-4">
-                  <h3 className="text-sm font-bold">About {displayName}</h3>
-                  <p className="text-foreground-secondary mt-1 line-clamp-2 text-sm">
-                    {bio || 'Your artist bio will appear here for visitors.'}
-                  </p>
-                </section>
-              </div>
+              <PreviewTracksPlaceholder displayName={displayName} bio={bio} />
             </main>
 
-            <section
-              aria-label="Channel appearance controls"
-              className="min-w-0 lg:sticky lg:top-4"
-            >
-              {controls}
-            </section>
+            {!dockControlsInRail ? (
+              <section
+                aria-label="Channel appearance controls"
+                className="min-w-0 lg:sticky lg:top-4"
+              >
+                {controls}
+              </section>
+            ) : null}
           </div>
 
-          {overlayConfigOpen ? (
-            <Dialog.Root
-              isOpen
-              onClose={() => setOverlayConfigOpen(false)}
-              className="max-w-lg"
-            >
-              <Dialog.Title>Configure text overlay</Dialog.Title>
-              <Dialog.Description>
-                Fine-tune the now-playing title and artist overlay used on your
-                channel.
-              </Dialog.Description>
-              <div className="flex flex-col gap-4">
-                <Slider
-                  label={`Text size: ${Math.round(overlaySettings.textScale * 100)}%`}
-                  min={0.6}
-                  max={1.6}
-                  step={0.05}
-                  value={overlaySettings.textScale}
-                  onValueChange={(value) =>
-                    setOverlaySetting('textScale', value)
-                  }
-                />
-                <Slider
-                  label={`Horizontal position: ${overlaySettings.offsetX}px`}
-                  min={-120}
-                  max={120}
-                  step={4}
-                  value={overlaySettings.offsetX}
-                  onValueChange={(value) => setOverlaySetting('offsetX', value)}
-                />
-                <Slider
-                  label={`Vertical position: ${overlaySettings.offsetY}px`}
-                  min={-120}
-                  max={120}
-                  step={4}
-                  value={overlaySettings.offsetY}
-                  onValueChange={(value) => setOverlaySetting('offsetY', value)}
-                />
-                <Slider
-                  label={`Opacity: ${Math.round(overlaySettings.opacity * 100)}%`}
-                  min={0.2}
-                  max={1}
-                  step={0.05}
-                  value={overlaySettings.opacity}
-                  onValueChange={(value) => setOverlaySetting('opacity', value)}
-                />
-              </div>
-            </Dialog.Root>
-          ) : null}
+          <OverlayConfigDialog
+            isOpen={overlayConfigOpen}
+            overlaySettings={overlaySettings}
+            onClose={() => setOverlayConfigOpen(false)}
+            onSettingChange={setOverlaySetting}
+          />
 
-          {visualizerPickerOpen ? (
-            <Dialog.Root
-              isOpen
-              onClose={() => setVisualizerPickerOpen(false)}
-              className="max-w-3xl"
-            >
-              <Dialog.Title>Choose visualizer</Dialog.Title>
-              <Dialog.Description>
-                Preview each animated stage and choose the one that fits your
-                channel.
-              </Dialog.Description>
-              <div className="mt-2 grid gap-4 lg:grid-cols-[minmax(14rem,18rem)_minmax(0,1fr)]">
-                <div className="grid content-start gap-2 sm:grid-cols-2 lg:grid-cols-1">
-                  {availableVisualizers.map((preset) => {
-                    const meta = visualizerMetadata(preset);
-                    const selected = visualizerPickerPreset === preset;
-                    return (
-                      <button
-                        key={preset}
-                        type="button"
-                        aria-pressed={selected}
-                        onClick={() => setVisualizerPickerPreset(preset)}
-                        className={`border-border flex items-center gap-3 rounded-lg border p-3 text-left transition-colors ${
-                          selected
-                            ? 'border-primary bg-primary/10'
-                            : 'hover:border-primary/50'
-                        }`}
-                      >
-                        <span className="bg-background-secondary relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-md">
-                          {livePreview ? (
-                            <span className="absolute inset-0" aria-hidden>
-                              <ChannelVisualizer
-                                preset={preset}
-                                colorScheme={scheme}
-                                visualSettingsJson={visualSettingsJson}
-                                className="size-full"
-                                audioReactive={false}
-                              />
-                            </span>
-                          ) : (
-                            <span
-                              className="absolute inset-0 animate-pulse"
-                              style={{
-                                background: `linear-gradient(135deg, ${scheme.highlight ?? '#A78BFA'}, ${scheme.accent ?? '#22D3EE'}, ${scheme.bg ?? '#0B1220'})`,
-                              }}
-                            />
-                          )}
-                          <meta.Icon
-                            size={16}
-                            className="relative z-[1] text-white drop-shadow"
-                            aria-hidden
-                          />
-                        </span>
-                        <span className="min-w-0">
-                          <span className="flex flex-wrap items-center gap-1.5">
-                            <span className="truncate text-sm font-semibold">
-                              {preset.replace(/_/g, ' ')}
-                            </span>
-                            {meta.audioReactive ? (
-                              <Badge variant="pill" color="blue">
-                                Audio reactive
-                              </Badge>
-                            ) : null}
-                          </span>
-                          <span className="text-foreground-secondary block truncate text-xs">
-                            {meta.description}
-                          </span>
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-                <div
-                  className="border-border bg-background relative min-h-56 overflow-hidden rounded-xl border"
-                  aria-label={`${visualizerPickerPreset.replace(/_/g, ' ')} preview`}
-                >
-                  {livePreview ? (
-                    <ChannelVisualizer
-                      className="absolute inset-0 size-full"
-                      preset={visualizerPickerPreset}
-                      colorScheme={scheme}
-                      visualSettingsJson={visualSettingsJson}
-                      artworkUrl={avatarUrl}
-                    />
-                  ) : (
-                    <div
-                      className="absolute inset-0"
-                      style={{ background: previewStyle.gradient }}
-                    />
-                  )}
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent p-4 pt-16 text-white">
-                    <div className="text-xs font-semibold tracking-wide uppercase">
-                      Live preview
-                    </div>
-                    <div className="mt-1 flex flex-wrap items-center gap-2 text-lg font-bold">
-                      {visualizerPickerPreset.replace(/_/g, ' ')}
-                      {visualizerMetadata(visualizerPickerPreset)
-                        .audioReactive ? (
-                        <Badge variant="pill" color="blue">
-                          Audio reactive
-                        </Badge>
-                      ) : null}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <Dialog.Actions>
-                <Dialog.Close>Cancel</Dialog.Close>
-                <Button
-                  onClick={() => {
-                    setPreviewPreset(visualizerPickerPreset);
-                    applyLocal({ visualPreset: visualizerPickerPreset });
-                    setVisualizerPickerOpen(false);
-                  }}
-                >
-                  Use visualizer
-                </Button>
-              </Dialog.Actions>
-            </Dialog.Root>
-          ) : null}
+          <VisualizerPickerDialog
+            isOpen={visualizerPickerOpen}
+            onClose={() => setVisualizerPickerOpen(false)}
+            availableVisualizers={availableVisualizers}
+            selectedPreset={visualizerPickerPreset}
+            onSelectPreset={setVisualizerPickerPreset}
+            onConfirm={() => {
+              setPreviewPreset(visualizerPickerPreset);
+              applyLocal({ visualPreset: visualizerPickerPreset });
+              setVisualizerPickerOpen(false);
+            }}
+            livePreview={livePreview}
+            scheme={scheme}
+            visualSettingsJson={visualSettingsJson}
+            avatarUrl={avatarUrl}
+            previewGradient={previewStyle.gradient}
+          />
         </div>
 
-        <Dialog.Root
+        <SavePresetDialog
           isOpen={savePresetOpen}
-          onClose={() => {
-            if (!presetBusy) {
-              setSavePresetOpen(false);
-            }
-          }}
-        >
-          <Dialog.Title>Save preset</Dialog.Title>
-          <Dialog.Description>
-            Save the current look under a name so you can switch back to it
-            later.
-          </Dialog.Description>
-          <Input
-            label="Preset name"
-            value={presetNameInput}
-            onChange={(event) => setPresetNameInput(event.target.value)}
-            placeholder="e.g. Neon night"
-            autoFocus
-          />
-          <Dialog.Actions>
-            <Dialog.Close>Cancel</Dialog.Close>
-            <Button
-              disabled={presetBusy}
-              onClick={() => void confirmSavePreset()}
-            >
-              Save preset
-            </Button>
-          </Dialog.Actions>
-        </Dialog.Root>
+          presetBusy={presetBusy}
+          presetNameInput={presetNameInput}
+          onNameChange={setPresetNameInput}
+          onClose={() => setSavePresetOpen(false)}
+          onConfirm={() => void confirmSavePreset()}
+        />
 
-        <Dialog.Root
-          isOpen={deletePresetTarget !== null}
-          onClose={() => {
-            if (!presetBusy) {
-              setDeletePresetTarget(null);
-            }
-          }}
-        >
-          <Dialog.Title>
-            Delete &ldquo;{deletePresetTarget?.name}&rdquo;?
-          </Dialog.Title>
-          <Dialog.Description>
-            This preset will be gone for good. Your current, live look is not
-            affected.
-          </Dialog.Description>
-          <Dialog.Actions>
-            <Dialog.Close>Cancel</Dialog.Close>
-            <Button
-              disabled={presetBusy}
-              variant="secondary"
-              onClick={() => void confirmDeletePreset()}
-            >
-              Delete preset
-            </Button>
-          </Dialog.Actions>
-        </Dialog.Root>
+        <DeletePresetDialog
+          target={deletePresetTarget}
+          presetBusy={presetBusy}
+          onClose={() => setDeletePresetTarget(null)}
+          onConfirm={() => void confirmDeletePreset()}
+        />
 
-        <Dialog.Root
+        <ResetConfirmDialog
           isOpen={resetConfirmOpen}
           onClose={() => setResetConfirmOpen(false)}
-        >
-          <Dialog.Title>Reset unsaved changes?</Dialog.Title>
-          <Dialog.Description>
-            This discards everything you&apos;ve changed since the last save and
-            restores your live look. This can&apos;t be undone.
-          </Dialog.Description>
-          <Dialog.Actions>
-            <Dialog.Close>Cancel</Dialog.Close>
-            <Button onClick={confirmReset} variant="secondary">
-              Reset
-            </Button>
-          </Dialog.Actions>
-        </Dialog.Root>
+          onConfirm={confirmReset}
+        />
       </>
     );
   },

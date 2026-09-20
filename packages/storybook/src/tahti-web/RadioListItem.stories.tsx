@@ -1,11 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { RadioListItem } from '@tahti-web/components/RadioListItem';
 
+import { withTahtiRouter } from './_lib/decorators';
+
 const meta: Meta<typeof RadioListItem> = {
   title: 'Tahti/Radio/RadioListItem',
   component: RadioListItem,
   parameters: { layout: 'padded' },
   tags: ['autodocs'],
+  // RadioListItem renders a <Link> internally, which needs a router context.
+  decorators: [withTahtiRouter('/radio')],
   args: {
     name: 'Tahti Radio',
     coverUrl: 'https://picsum.photos/seed/tahti-radio/200',

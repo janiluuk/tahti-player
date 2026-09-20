@@ -9,7 +9,6 @@ import { fetchVenues } from '../../api/client';
 import { createEvent } from '../../api/events';
 import type { VenueDirectoryItem } from '../../api/types';
 import { StudioGate } from '../../components/StudioGate';
-import { BroadcastSubNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 
 export function StudioEventCreateView() {
@@ -34,7 +33,6 @@ export function StudioEventCreateView() {
   return (
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-6">
-        <BroadcastSubNav current="/studio/events" />
         <ViewShell title="Add event" classes={{ root: 'px-0 pt-0' }}>
           <StudioPanel title="Event details">
             <div className="flex flex-col gap-4">

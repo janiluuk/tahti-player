@@ -1,7 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-import type { RadioStation } from '../content/radioStations';
+import {
+  DEFAULT_ENABLED_STATION_IDS,
+  type RadioStation,
+} from '../content/radioStations';
 
 export const NEWS_WIDGET_TYPE_ID = 'news';
 
@@ -14,6 +17,10 @@ export type SavedBrowserStation = {
   streamUrl: string;
   favicon?: string;
   country?: string;
+  homepage?: string;
+  countryCode?: string;
+  description?: string;
+  programmingUrl?: string;
 };
 
 /** One user-added external embed — see src/content/listenerWidgets.ts.
@@ -68,6 +75,7 @@ type ListenerWidgetsState = {
   toggleStation: (stationId: string) => void;
   updateStation: (stationId: string, patch: Partial<RadioStation>) => void;
   toggleSavedBrowserStation: (station: SavedBrowserStation) => void;
+  addSavedBrowserStation: (station: SavedBrowserStation) => void;
   removeSavedBrowserStation: (id: string) => void;
 };
 
@@ -76,7 +84,7 @@ export const useListenerWidgetsStore = create<ListenerWidgetsState>()(
     (set) => ({
       installedTypeIds: [],
       instances: [],
-      enabledStationIds: [],
+      enabledStationIds: [...DEFAULT_ENABLED_STATION_IDS],
       stationOverrides: {},
       savedBrowserStations: [],
       installType: (typeId) =>
@@ -131,6 +139,21 @@ export const useListenerWidgetsStore = create<ListenerWidgetsState>()(
               : [...s.savedBrowserStations, station],
           };
         }),
+      addSavedBrowserStation: (station) =>
+        set((s) => {
+          const existingIndex = s.savedBrowserStations.findIndex(
+            (item) =>
+              item.id === station.id || item.streamUrl === station.streamUrl,
+          );
+          if (existingIndex === -1) {
+            return {
+              savedBrowserStations: [...s.savedBrowserStations, station],
+            };
+          }
+          const next = [...s.savedBrowserStations];
+          next[existingIndex] = { ...next[existingIndex], ...station };
+          return { savedBrowserStations: next };
+        }),
       removeSavedBrowserStation: (id) =>
         set((s) => ({
           savedBrowserStations: s.savedBrowserStations.filter(
@@ -138,6 +161,20 @@ export const useListenerWidgetsStore = create<ListenerWidgetsState>()(
           ),
         })),
     }),
-    { name: 'tahti-web-listener-widgets' },
+    {
+      name: 'tahti-web-listener-widgets',
+      version: 2,
+      migrate: (persisted, version) => {
+        const state = (persisted ?? {}) as Partial<ListenerWidgetsState>;
+        if (
+          version < 2 &&
+          (!Array.isArray(state.enabledStationIds) ||
+            state.enabledStationIds.length === 0)
+        ) {
+          state.enabledStationIds = [...DEFAULT_ENABLED_STATION_IDS];
+        }
+        return state as ListenerWidgetsState;
+      },
+    },
   ),
 );

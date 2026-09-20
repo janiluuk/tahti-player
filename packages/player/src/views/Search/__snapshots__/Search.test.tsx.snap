@@ -41,11 +41,6 @@ exports[`Search view > (Snapshot) renders the search view 1`] = `
                   />
                 </svg>
               </span>
-              <span
-                class="leading-none uppercase"
-              >
-                TAHTI
-              </span>
             </span>
           </div>
           <div
@@ -732,12 +727,12 @@ exports[`Search view > (Snapshot) renders the search view 1`] = `
                       <h3
                         class="text-foreground text-lg font-bold"
                       >
-                        No metadata plugin installed
+                        No metadata add-on installed
                       </h3>
                       <p
                         class="text-foreground text-sm opacity-60"
                       >
-                        Install a metadata plugin to search for music.
+                        Install a metadata add-on to search for music.
                       </p>
                     </div>
                     <div>
@@ -747,7 +742,7 @@ exports[`Search view > (Snapshot) renders the search view 1`] = `
                         data-testid="search-empty-state-action"
                         type="button"
                       >
-                        Browse plugins
+                        Browse add-ons
                       </button>
                     </div>
                   </div>

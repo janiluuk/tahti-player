@@ -22,6 +22,22 @@ export type HistoryEntry = {
   playedAt: string;
 };
 
+/**
+ * Local-sourced tracks carry an ephemeral `streamUrl` (a `blob:` object URL
+ * from the browser File-API fallback, or a Tauri `asset://` URL scoped to
+ * the current app session) that stops resolving once the tab reloads or the
+ * app restarts. Persisting it anyway would let "Play now" from history
+ * silently fail against a dead URL, so it's dropped before it reaches
+ * storage; playing a local entry again re-resolves via its id instead (see
+ * `HistoryListSection`).
+ */
+function redactEphemeralStreamUrl(playable: TahtiPlayable): TahtiPlayable {
+  if (playable.sourceProvider !== 'local' || !playable.streamUrl) {
+    return playable;
+  }
+  return { ...playable, streamUrl: '' };
+}
+
 export type LibraryState = {
   /** Current storage scope: `anon` or user id. */
   scopeKey: string;
@@ -242,7 +258,10 @@ export const useLibraryStore = create<LibraryState>()(
         favoritePlaylistDates: s.favoritePlaylistDates,
         heardFavoritePlaylists: s.heardFavoritePlaylists,
         heardFavoriteArtists: s.heardFavoriteArtists,
-        history: s.history,
+        history: s.history.map((entry) => ({
+          ...entry,
+          playable: redactEphemeralStreamUrl(entry.playable),
+        })),
         scopeKey: s.scopeKey,
       }),
     },

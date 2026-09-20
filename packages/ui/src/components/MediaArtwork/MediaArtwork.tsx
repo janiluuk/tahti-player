@@ -212,9 +212,16 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
       {(hasPlay || hasSecondary) && (
         <div
           className={cn(
-            'pointer-events-none absolute inset-0 bg-black/0 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:bg-black/45 [@media(hover:hover)_and_(pointer:fine)]:group-hover:bg-black/45',
-            // Always dim slightly on touch so controls read clearly
-            '[@media(hover:none)]:bg-black/35',
+            'pointer-events-none absolute inset-0',
+            isPlaying
+              ? // Keep the dim visible while playing so the persistent
+                // pause control reads clearly without needing hover.
+                'bg-black/35'
+              : [
+                  'bg-black/0 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:bg-black/45 [@media(hover:hover)_and_(pointer:fine)]:group-hover:bg-black/45',
+                  // Always dim slightly on touch so controls read clearly
+                  '[@media(hover:none)]:bg-black/35',
+                ],
           )}
           aria-hidden
         />
@@ -225,12 +232,7 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
           pinned to a far corner like on the larger grid-card sizes below. */}
       {size === 'sm' ? (
         (hasPlay || hasSecondary) && (
-          <div
-            className={cn(
-              'pointer-events-none absolute inset-0 flex items-center justify-center gap-0.5',
-              overlayReveal,
-            )}
-          >
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center gap-0.5">
             {hasPlay && (
               <Tooltip content={isPlaying ? pauseLabel : playLabel} side="top">
                 <Button
@@ -241,7 +243,10 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
                   aria-label={isPlaying ? pauseLabel : playLabel}
                   aria-pressed={isPlaying || undefined}
                   data-testid="media-artwork-play"
-                  className="pointer-events-auto size-6 rounded-full shadow-md"
+                  className={cn(
+                    'pointer-events-auto size-6 rounded-full shadow-md',
+                    isPlaying ? 'opacity-100' : overlayReveal,
+                  )}
                   onClick={(e) => {
                     stop(e);
                     onPlay?.();
@@ -270,6 +275,7 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
                   data-testid={`media-artwork-${action.id}`}
                   className={cn(
                     'pointer-events-auto size-4 rounded-full bg-black/55 text-white shadow-sm backdrop-blur-sm',
+                    overlayReveal,
                     action.active && 'bg-primary text-primary-foreground',
                   )}
                   onClick={(e) => {
@@ -286,12 +292,7 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
       ) : (
         <>
           {hasPlay && (
-            <div
-              className={cn(
-                'pointer-events-none absolute inset-0 flex items-center justify-center',
-                overlayReveal,
-              )}
-            >
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
               <Tooltip content={isPlaying ? pauseLabel : playLabel} side="top">
                 <Button
                   type="button"
@@ -303,6 +304,7 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
                   data-testid="media-artwork-play"
                   className={cn(
                     'pointer-events-auto rounded-full',
+                    isPlaying ? 'opacity-100' : overlayReveal,
                     size === 'thumb'
                       ? 'text-white'
                       : ['shadow-md', size === 'md' ? 'size-9' : 'size-11'],

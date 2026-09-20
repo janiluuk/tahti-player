@@ -1,11 +1,13 @@
 import { Link } from '@tanstack/react-router';
+import { CalendarCheckIcon, ScrollTextIcon, UsersIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Badge, SectionShell, ViewShell } from '@tahti-player/ui';
+import { Badge, ViewShell } from '@tahti-player/ui';
 
 import { fetchGovernanceMeetings } from '../api/client';
 import { parseMeetingAgenda } from '../api/governanceMocks';
 import type { GovernanceMeeting } from '../api/types';
+import { GovernancePanel } from '../components/governance/GovernancePanel';
 import { PageLoading } from '../components/PageStates';
 import { useAuthStore } from '../stores/authStore';
 
@@ -66,7 +68,7 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
 
       {user && !loading && meeting && (
         <>
-          <SectionShell title="Overview">
+          <GovernancePanel title="Overview" icon={UsersIcon}>
             <div className="flex flex-wrap items-center gap-2">
               <Badge variant="pill" color="secondary">
                 {TYPE_LABEL[meeting.type]}
@@ -127,9 +129,9 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
                 )}
               </dd>
             </dl>
-          </SectionShell>
+          </GovernancePanel>
 
-          <SectionShell title="Quorum & attendance">
+          <GovernancePanel title="Quorum & attendance" icon={CalendarCheckIcon}>
             <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
               <dt className="text-foreground-secondary">Quorum</dt>
               <dd>
@@ -150,9 +152,9 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
               <dt className="text-foreground-secondary">Attendance recorded</dt>
               <dd>{meeting.attendanceCount}</dd>
             </dl>
-          </SectionShell>
+          </GovernancePanel>
 
-          <SectionShell title="Agenda">
+          <GovernancePanel title="Agenda" icon={ScrollTextIcon}>
             {agenda.length === 0 ? (
               <p className="text-foreground-secondary text-sm">
                 No agenda published yet.
@@ -171,7 +173,7 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
                 ))}
               </ul>
             )}
-          </SectionShell>
+          </GovernancePanel>
         </>
       )}
     </ViewShell>

@@ -45,11 +45,29 @@ listing still lives in `tahti-registry`.
 
 ### Runtime registry separation guardrail
 
-Start separating the plugin registry conceptually, but do not break or migrate
-the current runtime registry yet. First inventory all callers, the persisted
-`plugins.json` format, bootstrap ordering, and enable/update/removal semantics.
-Then define a compatibility interface and contract tests around the existing
-implementation. Keep the current registry as the runtime source of truth until
-the adapter, rollback plan, and ownership split between player core, plugin SDK,
-and import-provider plugins are accepted. Do not change registry keys, storage
-location, discovery semantics, or bootstrap order during preparation.
+Separating the plugin registry conceptually is **in progress, not done** — do
+not break or migrate the current runtime registry. Shipped so far, in this
+repo: `pluginRegistryContract.ts` (types + `PluginRegistryStore` /
+`PluginRegistryHost` interfaces), `pluginRegistryAdapter.ts` (LazyStore
+adapter, `pluginRegistryStore` singleton), `pluginRegistryHost.ts` (façade
+composing `pluginBootstrap`/`pluginStore`/`pluginAutoUpdate` behind the
+interface), and caller migration off direct `pluginRegistry.ts` imports (PR
+#46). Contract tests (`pluginRegistryAdapter.test.ts`,
+`pluginRegistryHost.test.ts`, plus existing store/hydration/auto-update
+suites) were verified line-by-line 2026-09-11 against the 22-scenario
+checklist in `../tahti-org/docs/todo/plugin-registry-extraction.md` §6:
+20/22 covered. **2 gaps still open:**
+
+1. Enable/disable persistence across restart — `it.todo` in
+   `packages/player/src/App.hydration.test.tsx` (`toggling enable/disable
+   persists to registry and is respected on next startup`).
+2. Refusing to delete outside the managed plugins dir —
+   `removeManagedPluginInstall` in
+   `packages/player/src/services/plugins/pluginDir.ts` has the guard
+   implemented but **no test file exists** for `pluginDir.ts` at all.
+
+Close both gaps and get a migration/rollback plan + the ownership split
+(player core / plugin SDK / import-provider plugins / tahti-registry / Tahti
+API — drafted in the sibling doc's §7, not yet accepted) signed off before
+changing registry keys, storage location, discovery semantics, or bootstrap
+order.

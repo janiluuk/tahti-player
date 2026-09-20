@@ -4,6 +4,7 @@
 > Updated when views change — regenerate by auditing `packages/*/src/views/` against `packages/storybook/src/`.
 
 Legend:
+
 - **Has Story** — view or its key components have Storybook stories
 - **Candidate** — components used in this view could be unified into Storybook for shared UI
 - **No Story** — no Storybook coverage yet
@@ -14,51 +15,51 @@ Legend:
 
 ### Routed Views
 
-| View | Route | File | Storybook | Candidate For |
-| --- | --- | --- | --- | --- |
-| [Dashboard](#dashboard) | `/dashboard` | `src/views/Dashboard/Dashboard.tsx` | No Story | CardsRow, TopList, CardGrid — all have shared UI stories but not wired for player |
-| [Search](#search) | `/search?q=` | `src/views/Search/Search.tsx` | No Story | Tabs, CardGrid, EmptyState |
-| [Album Detail](#album-detail) | `/album/$providerId/$albumId` | `src/views/Album/Album.tsx` | No Story | ViewShell, MediaArtwork, TrackTable |
-| [Artist Detail](#artist-detail) | `/artist/$providerId/$artistId` | `src/views/Artist/Artist.tsx` | No Story | CardsRow, TopList, MediaArtwork |
-| [Favorite Albums](#favorite-albums) | `/favorites/albums` | `src/views/Favorites/FavoriteAlbums.tsx` | No Story | CardGrid, EmptyState |
-| [Favorite Artists](#favorite-artists) | `/favorites/artists` | `src/views/Favorites/FavoriteArtists.tsx` | No Story | CardGrid, EmptyState |
-| [Favorite Tracks](#favorite-tracks) | `/favorites/tracks` | `src/views/Favorites/FavoriteTracks.tsx` | No Story | TrackTable, EmptyState |
-| [Playlists](#playlists) | `/playlists/` | `src/views/Playlists/Playlists.tsx` | No Story | CardGrid, FilterChips, EmptyState |
-| [Playlist Detail](#playlist-detail) | `/playlists/$playlistId` | `src/views/PlaylistDetail/PlaylistDetail.tsx` | No Story | TrackTable, ViewShell |
-| [Playlist Import](#playlist-import) | `/playlists/import/$providerId` | `src/views/PlaylistImport/PlaylistImport.tsx` | No Story | Input, Button |
-| [History](#history) | `/history` | `src/views/History/History.tsx` | No Story | Tabs, CalendarHeatmap, DayOfWeekChart, ListeningClock, TopList |
-| [Sources](#sources) | `/sources` | `src/views/Sources/Sources.tsx` | No Story | SettingsPanel, Toggle, Select |
+| View                                  | Route                           | File                                          | Storybook | Candidate For                                                                                                                                                         |
+| ------------------------------------- | ------------------------------- | --------------------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Dashboard](#dashboard)               | `/dashboard`                    | `src/views/Dashboard/Dashboard.tsx`           | No Story  | CardsRow, TopList, CardGrid — all have shared UI stories but not wired for player                                                                                     |
+| [Search](#search)                     | `/search?q=`                    | `src/views/Search/Search.tsx`                 | No Story  | Tabs, CardGrid, EmptyState                                                                                                                                            |
+| [Album Detail](#album-detail)         | `/album/$providerId/$albumId`   | `src/views/Album/Album.tsx`                   | No Story  | ViewShell, MediaArtwork, TrackTable                                                                                                                                   |
+| [Artist Detail](#artist-detail)       | `/artist/$providerId/$artistId` | `src/views/Artist/Artist.tsx`                 | No Story  | CardsRow, TopList, MediaArtwork — 3 confirmed Badge-pill duplicates in child widgets (ArtistSocialHeader.tsx:135, ArtistBioHeader.tsx:88,97), see sweep section below |
+| [Favorite Albums](#favorite-albums)   | `/favorites/albums`             | `src/views/Favorites/FavoriteAlbums.tsx`      | No Story  | CardGrid, EmptyState                                                                                                                                                  |
+| [Favorite Artists](#favorite-artists) | `/favorites/artists`            | `src/views/Favorites/FavoriteArtists.tsx`     | No Story  | CardGrid, EmptyState                                                                                                                                                  |
+| [Favorite Tracks](#favorite-tracks)   | `/favorites/tracks`             | `src/views/Favorites/FavoriteTracks.tsx`      | No Story  | TrackTable, EmptyState                                                                                                                                                |
+| [Playlists](#playlists)               | `/playlists/`                   | `src/views/Playlists/Playlists.tsx`           | No Story  | CardGrid, FilterChips, EmptyState                                                                                                                                     |
+| [Playlist Detail](#playlist-detail)   | `/playlists/$playlistId`        | `src/views/PlaylistDetail/PlaylistDetail.tsx` | No Story  | TrackTable, ViewShell                                                                                                                                                 |
+| [Playlist Import](#playlist-import)   | `/playlists/import/$providerId` | `src/views/PlaylistImport/PlaylistImport.tsx` | No Story  | Input, Button                                                                                                                                                         |
+| [History](#history)                   | `/history`                      | `src/views/History/History.tsx`               | No Story  | Tabs, CalendarHeatmap, DayOfWeekChart, ListeningClock, TopList                                                                                                        |
+| [Sources](#sources)                   | `/sources`                      | `src/views/Sources/Sources.tsx`               | No Story  | SettingsPanel, Toggle, Select                                                                                                                                         |
 
 ### Settings Modal Views
 
-| View | Modal Tab | File | Storybook | Candidate For |
-| --- | --- | --- | --- | --- |
-| [Settings](#settings) | General | `src/views/Settings/Settings.tsx` | Has Story | — (covered by SettingsPanel story) |
-| [Keyboard Shortcuts](#keyboard-shortcuts) | Shortcuts | `src/views/KeyboardShortcuts/KeyboardShortcuts.tsx` | No Story | KeyCombo |
-| [Plugins](#plugins) | Plugins | `src/views/Plugins/Plugins.tsx` | Has Story | PluginItem, PluginStoreItem |
-| [Themes](#themes) | Themes | `src/views/Themes/Themes.tsx` | Has Story | ThemeStoreItem |
-| [Logs](#logs) | Logs | `src/views/Logs/Logs.tsx` | Has Story | LogViewer |
-| [What's New](#whats-new) | What's New | `src/views/WhatsNew/WhatsNew.tsx` | No Story | Timeline components |
+| View                                      | Modal Tab  | File                                                | Storybook | Candidate For                      |
+| ----------------------------------------- | ---------- | --------------------------------------------------- | --------- | ---------------------------------- |
+| [Settings](#settings)                     | General    | `src/views/Settings/Settings.tsx`                   | Has Story | — (covered by SettingsPanel story) |
+| [Keyboard Shortcuts](#keyboard-shortcuts) | Shortcuts  | `src/views/KeyboardShortcuts/KeyboardShortcuts.tsx` | No Story  | KeyCombo                           |
+| [Plugins](#plugins)                       | Plugins    | `src/views/Plugins/Plugins.tsx`                     | Has Story | PluginItem, PluginStoreItem        |
+| [Themes](#themes)                         | Themes     | `src/views/Themes/Themes.tsx`                       | Has Story | ThemeStoreItem                     |
+| [Logs](#logs)                             | Logs       | `src/views/Logs/Logs.tsx`                           | Has Story | LogViewer                          |
+| [What's New](#whats-new)                  | What's New | `src/views/WhatsNew/WhatsNew.tsx`                   | No Story  | Timeline components                |
 
 ### Player Sub-Components (no stories, candidates)
 
-| Component | File | Potential Story |
-| --- | --- | --- |
-| AlbumHeader | `src/views/Album/components/AlbumHeader.tsx` | MediaArtwork + metadata layout |
-| AlbumTrackList | `src/views/Album/components/AlbumTrackList.tsx` | TrackTable wrapper |
-| ArtistAlbumsGrid | `src/views/Artist/components/ArtistAlbumsGrid.tsx` | CardGrid wrapper |
-| ArtistBioHeader | `src/views/Artist/components/ArtistBioHeader.tsx` | Artist header |
-| ArtistPopularTracks | `src/views/Artist/components/ArtistPopularTracks.tsx` | TrackTable subset |
-| ArtistSimilarArtists | `src/views/Artist/components/ArtistSimilarArtists.tsx` | CardGrid wrapper |
-| DashboardCardsWidget | `src/views/Dashboard/components/DashboardCardsWidget.tsx` | CardsRow wrapper |
-| DashboardEmptyState | `src/views/Dashboard/components/DashboardEmptyState.tsx` | EmptyState variant |
-| HistoryBody | `src/views/History/components/HistoryBody.tsx` | Tabs + Charts composition |
-| HistoryList | `src/views/History/components/HistoryList.tsx` | HistoryDayGroup list |
-| HistoryStats | `src/views/History/components/HistoryStats.tsx` | Charts composition |
-| PlaylistCardGrid | `src/views/Playlists/components/PlaylistCardGrid.tsx` | CardGrid wrapper |
-| PlaylistDetailHeader | `src/views/Playlists/components/PlaylistDetailHeader.tsx` | PageHeader variant |
-| SearchEmptyState | `src/views/Search/SearchEmptyState.tsx` | EmptyState variant |
-| TimelineEntry | `src/views/WhatsNew/TimelineEntry.tsx` | Changelog timeline |
+| Component            | File                                                      | Potential Story                                                   |
+| -------------------- | --------------------------------------------------------- | ----------------------------------------------------------------- |
+| AlbumHeader          | `src/views/Album/components/AlbumHeader.tsx`              | MediaArtwork + metadata layout                                    |
+| AlbumTrackList       | `src/views/Album/components/AlbumTrackList.tsx`           | TrackTable wrapper                                                |
+| ArtistAlbumsGrid     | `src/views/Artist/components/ArtistAlbumsGrid.tsx`        | CardGrid wrapper                                                  |
+| ArtistBioHeader      | `src/views/Artist/components/ArtistBioHeader.tsx`         | Artist header — 2 confirmed Badge-pill duplicates at lines 88, 97 |
+| ArtistPopularTracks  | `src/views/Artist/components/ArtistPopularTracks.tsx`     | TrackTable subset                                                 |
+| ArtistSimilarArtists | `src/views/Artist/components/ArtistSimilarArtists.tsx`    | CardGrid wrapper                                                  |
+| DashboardCardsWidget | `src/views/Dashboard/components/DashboardCardsWidget.tsx` | CardsRow wrapper                                                  |
+| DashboardEmptyState  | `src/views/Dashboard/components/DashboardEmptyState.tsx`  | EmptyState variant                                                |
+| HistoryBody          | `src/views/History/components/HistoryBody.tsx`            | Tabs + Charts composition                                         |
+| HistoryList          | `src/views/History/components/HistoryList.tsx`            | HistoryDayGroup list                                              |
+| HistoryStats         | `src/views/History/components/HistoryStats.tsx`           | Charts composition                                                |
+| PlaylistCardGrid     | `src/views/Playlists/components/PlaylistCardGrid.tsx`     | CardGrid wrapper                                                  |
+| PlaylistDetailHeader | `src/views/Playlists/components/PlaylistDetailHeader.tsx` | PageHeader variant                                                |
+| SearchEmptyState     | `src/views/Search/SearchEmptyState.tsx`                   | EmptyState variant                                                |
+| TimelineEntry        | `src/views/WhatsNew/TimelineEntry.tsx`                    | Changelog timeline                                                |
 
 ---
 
@@ -66,211 +67,282 @@ Legend:
 
 ### Core Listen / Discovery Views
 
-| View | Route | File | Storybook | Candidate For |
-| --- | --- | --- | --- | --- |
-| [Listen](#listen) | `/` | `src/views/ListenView.tsx` | No Story | AppShell, CardsRow, GlowMediaTile, SectionTabs |
-| [Discover](#discover) | `/discover` | `src/views/DiscoverView.tsx` | Has Story | WidgetCard, WidgetTrackRow, FilterChips |
-| [Feed](#feed) | `/feed` | `src/views/FeedView.tsx` | No Story | PageHeader, TrackTable |
-| [Favorites](#favorites-web) | `/favorites` | `src/views/FavoritesView.tsx` | Has Story | — |
-| [History](#history-web) | (embedded) | `src/views/HistoryView.tsx` | No Story | Tabs, CalendarHeatmap, TopList |
-| [Radio](#radio) | `/radio` | `src/views/RadioView.tsx` | No Story | GlowMediaTile, PageHeader |
-| [Radio Show](#radio-show) | `/radio/show/$channelSlug` | `src/views/RadioShowView.tsx` | No Story | PageHeader, TrackTable |
-| [Schedule](#schedule) | `/schedule` | `src/views/RadioScheduleView.tsx` | No Story | Calendar grid |
+| View                        | Route                      | File                              | Storybook | Candidate For                                                                                                                                                                                                         |
+| --------------------------- | -------------------------- | --------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Listen](#listen)           | `/`                        | `src/views/ListenView.tsx`        | No Story  | AppShell, CardsRow, GlowMediaTile, SectionTabs                                                                                                                                                                        |
+| [Discover](#discover)       | `/discover`                | `src/views/DiscoverView.tsx`      | Has Story | — (WidgetCard, WidgetTrackRow, DiscoverGatewayBackground, DirectoryArtistCardGrid all have dedicated stories; the view assembly itself — tabs/filters — has no story of its own)                                      |
+| [Feed](#feed)               | `/feed`                    | `src/views/FeedView.tsx`          | No Story  | PageHeader, TrackTable                                                                                                                                                                                                |
+| [Favorites](#favorites-web) | `/favorites`               | `src/views/FavoritesView.tsx`     | Has Story | —                                                                                                                                                                                                                     |
+| [History](#history-web)     | (embedded)                 | `src/views/HistoryView.tsx`       | No Story  | Tabs, CalendarHeatmap, TopList                                                                                                                                                                                        |
+| [Radio](#radio)             | `/radio`                   | `src/views/RadioView.tsx`         | No Story  | Box, Button, ImageReveal, MediaArtwork, Tabs, Tooltip — uses `OnAirBadge` (confirmed `Badge` duplicate), see sweep section below                                                                                      |
+| [Radio Show](#radio-show)   | `/radio/show/$channelSlug` | `src/views/RadioShowView.tsx`     | No Story  | Button, SectionShell, Tabs, Tooltip                                                                                                                                                                                   |
+| [Schedule](#schedule)       | `/schedule`                | `src/views/RadioScheduleView.tsx` | No Story  | Button, Dialog, FilterChips, Input, SaveButton, TabLabel, Tabs, Tooltip — hand-rolled show-type toggle at ~line 700 duplicates `FilterChips` (already used correctly elsewhere in this file), see sweep section below |
 
 ### Artist / Channel / Collection Views
 
-| View | Route | File | Storybook | Candidate For |
-| --- | --- | --- | --- | --- |
-| [Artist Profile](#artist-profile) | `/u/$username` | `src/views/ArtistView.tsx` | No Story | EntitySocialHeader, Tabs, CardGrid, GlowMediaTile |
-| [Channel](#channel) | `/channel/$slug` | `src/views/ChannelView.tsx` | Has Story | ChannelBackdropCard, ChannelVisualizer, Tabs |
-| [Collection](#collection) | `/u/$username/c/$slug` | `src/views/CollectionView.tsx` | No Story | PlayableTrackTable, PageHeader |
-| [Track Detail](#track-detail) | `/t/$id` | `src/views/TrackDetailView.tsx` | No Story | PlayableTrackTable, TimelineReactionBar |
-| [Smart Link](#smart-link) | `/r/$slug` | `src/views/SmartLinkView.tsx` | No Story | PlayableTrackTable, PageHeader |
-| [Subscribe](#subscribe) | `/subscribe/$username` | `src/views/SubscribeView.tsx` | No Story | Card layout |
-| [Green Room](#green-room) | `/u/$username/green-room` | `src/views/GreenRoomView.tsx` | No Story | ConnectedPlayerBar, StemPlayer |
-| [Jam](#jam) | `/jam/$code` | `src/views/JamView.tsx` | No Story | TahtiJam components |
-| [Chat](#chat) | `/chat` | `src/views/ChatView.tsx` | No Story | ChannelChatPanel |
+| View                              | Route                     | File                            | Storybook | Candidate For                                                                                                                                |
+| --------------------------------- | ------------------------- | ------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Artist Profile](#artist-profile) | `/u/$username`            | `src/views/ArtistView.tsx`      | No Story  | EntitySocialHeader, Tabs, CardGrid, GlowMediaTile                                                                                            |
+| [Channel](#channel)               | `/channel/$slug`          | `src/views/ChannelView.tsx`     | Has Story | ChannelBackdropCard, ChannelVisualizer, Tabs, FilterChips, StatChip — 2 confirmed pill duplicates (lines 885, 1027), see sweep section below |
+| [Collection](#collection)         | `/u/$username/c/$slug`    | `src/views/CollectionView.tsx`  | No Story  | PlayableTrackTable, PageHeader                                                                                                               |
+| [Track Detail](#track-detail)     | `/t/$id`                  | `src/views/TrackDetailView.tsx` | Has Story | —                                                                                                                                            |
+| [Smart Link](#smart-link)         | `/r/$slug`                | `src/views/SmartLinkView.tsx`   | No Story  | PlayableTrackTable, PageHeader                                                                                                               |
+| [Subscribe](#subscribe)           | `/subscribe/$username`    | `src/views/SubscribeView.tsx`   | No Story  | Card layout                                                                                                                                  |
+| [Green Room](#green-room)         | `/u/$username/green-room` | `src/views/GreenRoomView.tsx`   | No Story  | ConnectedPlayerBar, StemPlayer                                                                                                               |
+| [Jam](#jam)                       | `/jam/$code`              | `src/views/JamView.tsx`         | No Story  | TahtiJam components                                                                                                                          |
+| [Chat](#chat)                     | `/chat`                   | `src/views/ChatView.tsx`        | No Story  | ChannelChatPanel                                                                                                                             |
 
 ### Auth / Account Views
 
-| View | Route | File | Storybook | Candidate For |
-| --- | --- | --- | --- | --- |
-| [Login](#login) | `/login` | `src/views/LoginView.tsx` | No Story | AuthDialog |
-| [Join](#join) | `/join` | `src/views/JoinView.tsx` | No Story | AuthDialog |
-| [Forgot Password](#forgot-password) | `/forgot-password` | `src/views/ForgotPasswordView.tsx` | No Story | Input, Button |
-| [Reset Password](#reset-password) | `/reset-password` | `src/views/ResetPasswordView.tsx` | No Story | Input, Button |
-| [Setup Password](#setup-password) | `/setup-password` | `src/views/SetupPasswordView.tsx` | No Story | Input, Button |
-| [Verify](#verify) | `/verify` | `src/views/VerifyView.tsx` | No Story | Loader |
-| [Signup Payment](#signup-payment) | `/signup/payment` | `src/views/SignupPaymentView.tsx` | No Story | Dialog, Button |
-| [Account](#account) | (settings) | `src/views/AccountView.tsx` | No Story | SettingsPanel |
-| [Onboarding](#onboarding) | `/onboarding` | `src/views/OnboardingView.tsx` | No Story | Stepper, Input, GenrePicker |
+| View                                | Route                             | File                                  | Storybook | Candidate For                                                                                                                                                                                    |
+| ----------------------------------- | --------------------------------- | ------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [Login](#login)                     | `/login`                          | `src/views/LoginView.tsx`             | No Story  | — redirect shim only (opens `useAuthModalStore`); no view-level UI to catalog                                                                                                                    |
+| [Join](#join)                       | `/join`                           | `src/views/JoinView.tsx`              | No Story  | — redirect shim only (opens `useAuthModalStore`); no view-level UI to catalog                                                                                                                    |
+| [Forgot Password](#forgot-password) | `/forgot-password`                | `src/views/ForgotPasswordView.tsx`    | No Story  | Input, Button                                                                                                                                                                                    |
+| [Reset Password](#reset-password)   | `/reset-password`                 | `src/views/ResetPasswordView.tsx`     | No Story  | Input, Button                                                                                                                                                                                    |
+| [Setup Password](#setup-password)   | `/setup-password`                 | `src/views/SetupPasswordView.tsx`     | No Story  | Input, Button                                                                                                                                                                                    |
+| [Verify](#verify)                   | `/verify`                         | `src/views/VerifyView.tsx`            | No Story  | Loader                                                                                                                                                                                           |
+| [Signup Payment](#signup-payment)   | `/signup/payment`                 | `src/views/SignupPaymentView.tsx`     | No Story  | Dialog, Button                                                                                                                                                                                   |
+| [Account / Settings](#account)      | `/settings`, `/settings/$section` | `src/views/settings/SettingsView.tsx` | Has Story | SettingsPanels (component story covers the panels; `src/views/AccountView.tsx` is an orphan file — not imported by `router.tsx`, superseded by `SettingsView`)                                   |
+| [Onboarding](#onboarding)           | `/onboarding`                     | `src/views/OnboardingView.tsx`        | No Story  | GenrePicker, Input, Select, Tabs, Textarea, Toggle — 2 hand-rolled selectable-tile groups (artist-kind, appearance) need a new tile primitive, not a `FilterChips` swap, see sweep section below |
 
 ### Library Views
 
-| View | Route | File | Storybook | Candidate For |
-| --- | --- | --- | --- | --- |
-| [Library](#library) | `/library` | `src/views/LibraryView.tsx` | No Story | Tabs, SectionTabs, CardGrid |
-| [My Discography](#my-discography) | (library) | `src/views/MyDiscographyView.tsx` | No Story | PlayableTrackTable, FilterChips |
-| [My Collections](#my-collections) | (library) | `src/views/MyCollectionsView.tsx` | No Story | CardGrid, Tabs |
-| [Library Embeds](#library-embeds) | (library) | `src/views/LibraryEmbedsView.tsx` | No Story | EmbedTrackRow list |
-| [Library Media](#library-media) | (library) | `src/views/LibraryMediaView.tsx` | No Story | ImageLightbox, CardGrid |
-| [Library Smart Links](#library-smart-links) | `/library/smartlinks` | `src/views/LibrarySmartLinksView.tsx` | No Story | CardGrid |
+| View                                        | Route                 | File                                  | Storybook | Candidate For                                                                                                                    |
+| ------------------------------------------- | --------------------- | ------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| [Library](#library)                         | `/library`            | `src/views/LibraryView.tsx`           | No Story  | Tabs, SectionTabs, CardGrid                                                                                                      |
+| [My Discography](#my-discography)           | (library)             | `src/views/MyDiscographyView.tsx`     | No Story  | FilterChips, Input (search), DropdownButton, ImageReveal — 1 confirmed Badge-pill duplicate at line 338, see sweep section below |
+| [My Collections](#my-collections)           | (library)             | `src/views/MyCollectionsView.tsx`     | No Story  | CardGrid, Tabs                                                                                                                   |
+| [Library Embeds](#library-embeds)           | (library)             | `src/views/LibraryEmbedsView.tsx`     | No Story  | EmbedTrackRow list                                                                                                               |
+| [Library Media](#library-media)             | (library)             | `src/views/LibraryMediaView.tsx`      | No Story  | ImageLightbox, CardGrid                                                                                                          |
+| [Library Smart Links](#library-smart-links) | `/library/smartlinks` | `src/views/LibrarySmartLinksView.tsx` | No Story  | CardGrid                                                                                                                         |
 
 ### Studio Views (Artist Dashboard)
 
-| View | Route | File | Storybook | Candidate For |
-| --- | --- | --- | --- | --- |
-| [Studio Home](#studio-home) | `/studio` | `src/views/studio/StudioHomeView.tsx` | No Story | StudioPanel, StatChip |
-| [Go Live](#go-live) | `/studio/go-live` | `src/views/studio/StudioGoLiveView.tsx` | Has Story | BroadcastPreflightPanel, StreamManagerPanel |
-| [Sounds](#sounds) | `/studio/sounds` | `src/views/studio/StudioSoundsView.tsx` | Has Story | PlayableTrackTable, StashFilesPanel |
-| [Sound Detail](#sound-detail) | `/studio/sounds/$id` | `src/views/studio/StudioSoundView.tsx` | No Story | AudioRevisionList, TrackEditDialog |
-| [Recordings](#recordings) | `/studio/recordings` | `src/views/studio/StudioRecordingsView.tsx` | No Story | PlayableTrackTable |
-| [Releases](#releases) | `/studio/releases` | `src/views/studio/StudioReleasesView.tsx` | No Story | ReleasesPanel, CardGrid |
-| [Release Detail](#release-detail) | `/studio/releases/$id` | `src/views/studio/StudioReleaseDetailView.tsx` | No Story | TrackTable, ImageUploadField |
-| [Collections](#collections-studio) | `/studio/collections` | `src/views/studio/StudioCollectionsView.tsx` | No Story | CardGrid |
-| [Collection Edit](#collection-edit) | `/studio/collections/$slug` | `src/views/studio/StudioCollectionEditView.tsx` | No Story | TrackTable, DragReorder |
-| [Upload](#upload) | `/library/upload` | `src/views/studio/StudioUploadView.tsx` | No Story | FilePicker, Progress |
-| [Editor List](#editor-list) | `/studio/editor` | `src/views/studio/StudioEditorListView.tsx` | No Story | CardGrid |
-| [Editor Project](#editor-project) | `/studio/editor/$id` | `src/views/studio/StudioEditorProjectView.tsx` | No Story | WaveformCanvas |
-| [Pro Editor](#pro-editor) | `/studio/sounds/$id/editor` | `src/views/studio/StudioProEditorView.tsx` | No Story | WaveformCanvas |
-| [Mastering](#mastering) | `/studio/mastering/$id` | `src/views/studio/StudioMasteringView.tsx` | No Story | WaveformCanvas |
-| [Schedule](#schedule-studio) | `/studio/schedule` | `src/views/studio/StudioScheduleView.tsx` | No Story | RadioBookingCalendar |
-| [Stats](#stats) | `/studio/stats` | `src/views/studio/StudioStatsView.tsx` | No Story | StatChip, CardsRow |
-| [Stats Detail](#stats-detail) | `/studio/stats/detail` | `src/views/studio/StudioStatsDetailView.tsx` | No Story | Charts |
-| [Track Insights](#track-insights) | `/studio/insights/$kind/$id` | `src/views/studio/StudioTrackInsightsView.tsx` | Has Story | TrackInsightsPanel |
-| [Channel Settings](#channel-settings) | `/studio/channel` | `src/views/studio/StudioChannelView.tsx` | No Story | ChannelDesigner, Input, ImageUploadField |
-| [Branding](#branding) | `/studio/branding` | `src/views/studio/StudioBrandingView.tsx` | No Story | ArtistGalleryPanel, ChannelDesigner |
-| [Shows](#shows) | `/studio/shows` | `src/views/studio/StudioShowsView.tsx` | No Story | CardGrid |
-| [Show Detail](#show-detail) | `/studio/shows/$id` | `src/views/studio/StudioShowDetailView.tsx` | No Story | ShowEpisodeList, Form |
-| [Playlists](#playlists-studio) | `/studio/playlists/$slug` | `src/views/studio/StudioPlaylistsView.tsx` | No Story | TrackTable, DragReorder |
-| [Updates](#updates) | `/studio/updates` | `src/views/studio/StudioUpdatesView.tsx` | No Story | MentionTextarea |
-| [Audience](#audience) | `/studio/audience` | `src/views/studio/StudioRevenueView.tsx` | No Story | FanSubscriptionStats |
-| [Stripe](#stripe) | `/studio/stripe` | `src/views/studio/StudioStripeView.tsx` | Has Story | — |
-| [Distribution](#distribution) | `/studio/distribution` | `src/views/studio/StudioDistributionView.tsx` | No Story | Form |
-| [Governance](#governance-studio) | `/studio/governance` | `src/views/studio/StudioGovernanceView.tsx` | No Story | Tabs, Card layout |
-| [Events](#events) | `/studio/events` | `src/views/studio/StudioEventsView.tsx` | No Story | CardGrid |
-| [Create Event](#create-event) | `/studio/events/new` | `src/views/studio/StudioEventCreateView.tsx` | No Story | Form, ImageUploadField |
-| [Stash](#stash) | `/studio/stash` | `src/views/studio/StudioStashView.tsx` | No Story | StashFilesPanel |
+| View                                  | Route                                                           | File                                                              | Storybook                        | Candidate For                                                                                                                                                                                                                                  |
+| ------------------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Studio Home](#studio-home)           | `/studio`                                                       | `src/views/studio/StudioHomeView.tsx`                             | No Story                         | StudioPanel, StatChip                                                                                                                                                                                                                          |
+| [Go Live](#go-live)                   | `/studio/go-live`                                               | `src/views/studio/StudioGoLiveView.tsx`                           | Has Story                        | BroadcastPreflightPanel, StreamManagerPanel                                                                                                                                                                                                    |
+| [Sounds](#sounds)                     | `/studio/sounds`                                                | `src/views/studio/StudioSoundsView.tsx`                           | Has Story                        | PlayableTrackTable, StashFilesPanel                                                                                                                                                                                                            |
+| [Sound Detail](#sound-detail)         | `/studio/sounds/$id`                                            | `src/views/studio/StudioSoundView.tsx`                            | No Story                         | AudioRevisionList, TrackEditDialog                                                                                                                                                                                                             |
+| [Recordings](#recordings)             | `/library/recordings` (old `/studio/recordings` redirects here) | `src/views/studio/StudioRecordingsView.tsx`                       | No Story                         | PlayableTrackTable                                                                                                                                                                                                                             |
+| [Releases](#releases)                 | `/studio/releases`                                              | `src/views/studio/StudioReleasesView.tsx`                         | No Story                         | CopyButton, Dialog, FilterChips, Input, Tooltip — release-type picker now uses `FilterChips` directly (`StudioToggleChip` deleted 2026-09-14)                                                                                                  |
+| [Release Detail](#release-detail)     | `/studio/releases/$id`                                          | `src/views/studio/StudioReleaseDetailView.tsx`                    | No Story                         | TrackTable, ImageUploadField                                                                                                                                                                                                                   |
+| [Collections](#collections-studio)    | `/studio/collections`                                           | `src/views/studio/StudioCollectionsView.tsx`                      | No Story                         | FilterChips, Input, Select, Tabs, ImageReveal — style picker now uses `FilterChips` directly (`StudioToggleChip` deleted 2026-09-14)                                                                                                           |
+| [Collection Edit](#collection-edit)   | `/studio/collections/$slug`                                     | `src/views/studio/StudioCollectionEditView.tsx`                   | No Story                         | Badge, Input, Textarea, Select, TrackTable, Dialog, FilePicker — raw `<input type="date">` (~line 629) and inline chip buttons (~line 647) duplicate `Input`/`FilterChips`, see sweep section below                                            |
+| [Upload](#upload)                     | `/library/upload`                                               | `src/views/studio/StudioUploadView.tsx`                           | No Story                         | FilePicker, Progress                                                                                                                                                                                                                           |
+| [Editor List](#editor-list)           | `/studio/editor`                                                | `src/views/studio/StudioEditorListView.tsx`                       | No Story                         | CardGrid                                                                                                                                                                                                                                       |
+| [Editor Project](#editor-project)     | `/studio/editor/$id`                                            | `src/views/studio/StudioEditorProjectView.tsx`                    | No Story                         | WaveformCanvas                                                                                                                                                                                                                                 |
+| [Pro Editor](#pro-editor)             | `/studio/sounds/$id/editor`                                     | `src/views/studio/StudioProEditorView.tsx`                        | No Story                         | WaveformCanvas, Input, FilterChips, Slider, Toggle — "Slope" chip buttons (~line 1380) duplicate the `FilterChips` used earlier in the same file, see sweep section below                                                                      |
+| [Mastering](#mastering)               | `/studio/mastering/$id`                                         | `src/views/studio/StudioMasteringView.tsx`                        | No Story                         | WaveformCanvas                                                                                                                                                                                                                                 |
+| [Schedule](#schedule-studio)          | `/studio/schedule`                                              | `src/views/studio/StudioScheduleView.tsx`                         | No Story                         | Input, Select, Toggle, SaveButton, ImageReveal, Dialog — weekday-recurrence picker and card/list toggle are `Button`-built segmented controls that could consolidate onto `FilterChips` (soft candidate, not raw JSX), see sweep section below |
+| [Stats](#stats)                       | `/studio/stats`                                                 | `src/views/studio/StudioStatsView.tsx`                            | No Story                         | StatChip, CardsRow                                                                                                                                                                                                                             |
+| [Stats Detail](#stats-detail)         | `/studio/stats/detail`                                          | `src/views/studio/StudioStatsDetailView.tsx`                      | No Story                         | Charts                                                                                                                                                                                                                                         |
+| [Track Insights](#track-insights)     | `/studio/insights/$kind/$id`                                    | `src/views/studio/StudioTrackInsightsView.tsx`                    | Has Story                        | TrackInsightsPanel                                                                                                                                                                                                                             |
+| [Channel Settings](#channel-settings) | `/studio/channel`                                               | `src/views/studio/StudioChannelView.tsx`                          | No Story                         | ChannelDesigner, Input, ImageUploadField                                                                                                                                                                                                       |
+| [Branding](#branding)                 | Settings → Artist (modal); `/studio/branding` redirects         | `src/views/studio/StudioBrandingView.tsx` (`StudioBrandingPanel`) | Has Story (`LatestViewSurfaces`) | ArtistGalleryPanel, ChannelDesigner                                                                                                                                                                                                            |
+| [Shows](#shows)                       | `/studio/shows`                                                 | `src/views/studio/StudioShowsView.tsx`                            | No Story                         | CardGrid                                                                                                                                                                                                                                       |
+| [Show Detail](#show-detail)           | `/studio/shows/$id`                                             | `src/views/studio/StudioShowDetailView.tsx`                       | No Story                         | Button, Dialog, FilePicker, Input, SaveButton, Tabs, Textarea, Toggle, Tooltip — episode-source pill pair at ~line 736-761 duplicates `FilterChips`, see sweep section below                                                                   |
+| [Playlists](#playlists-studio)        | `/studio/playlists/$slug`                                       | `src/views/studio/StudioPlaylistsView.tsx`                        | No Story                         | TrackTable, DragReorder                                                                                                                                                                                                                        |
+| [Updates](#updates)                   | `/studio/updates`                                               | `src/views/studio/StudioUpdatesView.tsx`                          | No Story                         | MentionTextarea                                                                                                                                                                                                                                |
+| [Audience](#audience)                 | `/studio/audience`                                              | `src/views/studio/StudioRevenueView.tsx`                          | No Story                         | FanSubscriptionStats                                                                                                                                                                                                                           |
+| [Stripe](#stripe)                     | `/studio/stripe`                                                | `src/views/studio/StudioStripeView.tsx`                           | Has Story                        | —                                                                                                                                                                                                                                              |
+| [Distribution](#distribution)         | `/studio/distribution`                                          | `src/views/studio/StudioDistributionView.tsx`                     | No Story                         | Badge, Input, Select, Tabs, Tooltip — 2 confirmed hand-rolled chip grids duplicate `FilterChips` (~lines 412-438, 795-805), see sweep section below                                                                                            |
+| [Governance](#governance-studio)      | `/studio/governance`                                            | `src/views/studio/StudioGovernanceView.tsx`                       | No Story                         | Tabs, Card layout                                                                                                                                                                                                                              |
+| [Events](#events)                     | `/studio/events`                                                | `src/views/studio/StudioEventsView.tsx`                           | No Story                         | CardGrid                                                                                                                                                                                                                                       |
+| [Create Event](#create-event)         | `/studio/events/new`                                            | `src/views/studio/StudioEventCreateView.tsx`                      | No Story                         | Form, ImageUploadField                                                                                                                                                                                                                         |
+| [Stash](#stash)                       | `/library/stash` (old `/studio/stash` redirects here)           | `src/views/studio/StudioStashView.tsx`                            | No Story                         | StashFilesPanel                                                                                                                                                                                                                                |
 
 ### Governance / Transparency Views
 
-| View | Route | File | Storybook | Candidate For |
-| --- | --- | --- | --- | --- |
-| [Governance](#governance) | `/governance` | `src/views/GovernanceView.tsx` | No Story | Tabs, Card layout |
-| [Feature Requests](#feature-requests) | `/governance/feature-requests` | `src/views/FeatureRequestsView.tsx` | No Story | Card layout, Badge |
-| [Governance History](#governance-history) | `/governance/history` | `src/views/PublicGovernanceHistoryView.tsx` | No Story | Card layout |
-| [Transparency](#transparency) | `/transparency` | `src/views/TransparencyView.tsx` | No Story | StatChip, CardsRow |
-| [Grant Year](#grant-year) | `/transparency/grants/$year` | `src/views/TransparencyGrantYearView.tsx` | No Story | Table |
-| [Methodology](#methodology) | `/transparency/methodology` | `src/views/TransparencyMethodologyView.tsx` | No Story | LegalDocShell |
+| View                                                    | Route                          | File                                        | Storybook | Candidate For                                                                                                                                                                 |
+| ------------------------------------------------------- | ------------------------------ | ------------------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Governance](#governance)                               | `/governance`                  | `src/views/GovernanceView.tsx`              | No Story  | Button, Input, SectionShell, Tooltip, MotionCard (local) — raw `<textarea>` at ~line 475 should use `Textarea` (already used in `FeatureRequestsView.tsx`)                    |
+| [Governance Members](#governance-members)               | `/governance/members`          | `src/views/GovernanceMembersView.tsx`       | No Story  | Table, Card layout                                                                                                                                                            |
+| [Governance Meeting Detail](#governance-meeting-detail) | `/governance/meetings/$id`     | `src/views/GovernanceMeetingDetailView.tsx` | No Story  | Card layout                                                                                                                                                                   |
+| [Governance Motion Detail](#governance-motion-detail)   | `/governance/motions/$id`      | `src/views/GovernanceMotionDetailView.tsx`  | No Story  | Card layout                                                                                                                                                                   |
+| [Feature Requests](#feature-requests)                   | `/governance/feature-requests` | `src/views/FeatureRequestsView.tsx`         | No Story  | Card layout, Badge                                                                                                                                                            |
+| [Governance History](#governance-history)               | `/governance/history`          | `src/views/PublicGovernanceHistoryView.tsx` | No Story  | Card layout                                                                                                                                                                   |
+| [Transparency](#transparency)                           | `/transparency`                | `src/views/TransparencyView.tsx`            | No Story  | StatChip, CardsRow                                                                                                                                                            |
+| [Transparency Resolutions](#transparency-resolutions)   | `/transparency/resolutions`    | `src/views/TransparencyResolutionsView.tsx` | No Story  | Badge, SectionShell — 2 confirmed duplicates: year-toggle buttons should be `FilterChips` (~line 62), vote-count pills should be `Badge` (~line 106), see sweep section below |
+| [Grant Year](#grant-year)                               | `/transparency/grants/$year`   | `src/views/TransparencyGrantYearView.tsx`   | No Story  | Table                                                                                                                                                                         |
+| [Methodology](#methodology)                             | `/transparency/methodology`    | `src/views/TransparencyMethodologyView.tsx` | No Story  | LegalDocShell                                                                                                                                                                 |
 
 ### Help / Legal / Info Views
 
-| View | Route | File | Storybook | Candidate For |
-| --- | --- | --- | --- | --- |
-| [Help Hub](#help-hub) | `/help` | `src/views/HelpView.tsx` | Has Story | LegalDocShell, Card layout |
-| [Legal / About](#legal-about) | `/about`, `/how-it-works`, `/for-artists` | `src/views/LegalView.tsx` | No Story | LegalDocShell |
-| [Terms](#terms) | `/terms` | `src/views/TermsView.tsx` | No Story | LegalDocShell |
-| [Privacy](#privacy) | `/privacy` | `src/views/PrivacyView.tsx` | No Story | LegalDocShell |
-| [AGPL](#agpl) | `/agpl` | `src/views/AgplView.tsx` | No Story | LegalDocShell |
-| [Status](#status) | `/status` | `src/views/StatusView.tsx` | No Story | StatChip, Table |
-| [News](#news) | `/news` | `src/views/NewsView.tsx` | No Story | NewsWidget |
-| [What's New](#whats-new-web) | `/whats-new` | `src/views/WhatsNewView.tsx` | No Story | Timeline components |
-| [What Is It](#what-is-it) | `/what-is-it` | `src/views/WhatIsItView.tsx` | No Story | Marketing layout |
+| View                          | Route                                     | File                         | Storybook | Candidate For              |
+| ----------------------------- | ----------------------------------------- | ---------------------------- | --------- | -------------------------- |
+| [Help Hub](#help-hub)         | `/help`                                   | `src/views/HelpView.tsx`     | Has Story | LegalDocShell, Card layout |
+| [Legal / About](#legal-about) | `/about`, `/how-it-works`, `/for-artists` | `src/views/LegalView.tsx`    | No Story  | LegalDocShell              |
+| [Terms](#terms)               | `/terms`                                  | `src/views/TermsView.tsx`    | No Story  | LegalDocShell              |
+| [Privacy](#privacy)           | `/privacy`                                | `src/views/PrivacyView.tsx`  | No Story  | LegalDocShell              |
+| [AGPL](#agpl)                 | `/agpl`                                   | `src/views/AgplView.tsx`     | No Story  | LegalDocShell              |
+| [Status](#status)             | `/status`                                 | `src/views/StatusView.tsx`   | No Story  | StatChip, Table            |
+| [News](#news)                 | `/news`                                   | `src/views/NewsView.tsx`     | No Story  | NewsWidget                 |
+| [What's New](#whats-new-web)  | `/whats-new`                              | `src/views/WhatsNewView.tsx` | No Story  | Timeline components        |
+| [What Is It](#what-is-it)     | `/what-is-it`                             | `src/views/WhatIsItView.tsx` | No Story  | Marketing layout           |
+
+### Utility / Alias Views
+
+| View                          | Route                                                                  | File                                              | Storybook | Candidate For                        |
+| ----------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------- | --------- | ------------------------------------ |
+| [Messages](#messages)         | `/messages`, `/messages/$id` (also `/library/messages` redirects here) | `src/views/MessagesView.tsx`                      | No Story  | Card layout, InPageNav               |
+| [More](#more)                 | `/more` (diagnostics-gated; redirects to `/` otherwise)                | `src/views/MoreView.tsx`                          | No Story  | Card layout                          |
+| Dashboard alias               | `/dashboard`                                                           | `src/views/DashboardAliasView.tsx`                | No Story  | — (thin redirect/alias to Listen)    |
+| Studio Setup Channel redirect | `/studio/setup-channel`                                                | `src/views/studio/StudioSetupChannelRedirect.tsx` | No Story  | — (redirect-only helper, no real UI) |
 
 ### Venues
 
-| View | Route | File | Storybook | Candidate For |
-| --- | --- | --- | --- | --- |
-| [Venue Register](#venue-register) | `/venues/register` | `src/views/VenueRegisterView.tsx` | No Story | Form, Input |
-| [Venue Detail](#venue-detail) | `/v/$slug` | `src/views/VenueDetailView.tsx` | No Story | PageHeader, ImageLightbox |
+| View                              | Route              | File                              | Storybook | Candidate For             |
+| --------------------------------- | ------------------ | --------------------------------- | --------- | ------------------------- |
+| [Venue Register](#venue-register) | `/venues/register` | `src/views/VenueRegisterView.tsx` | No Story  | Form, Input               |
+| [Venue Detail](#venue-detail)     | `/v/$slug`         | `src/views/VenueDetailView.tsx`   | No Story  | PageHeader, ImageLightbox |
 
 ### Embed Views (no app chrome)
 
-| View | Route | File | Storybook | Candidate For |
-| --- | --- | --- | --- | --- |
-| [Embed Channel](#embed-channel) | `/embed/c/$slug` | `src/views/EmbedViews.tsx` | No Story | ChannelBackdropCard, ConnectedPlayerBar |
-| [Embed Release](#embed-release) | `/embed/r/$id` | `src/views/EmbedViews.tsx` | No Story | GlowMediaTile, PlayableTrackTable |
-| [Embed Collection](#embed-collection) | `/embed/col/$slug` | `src/views/EmbedViews.tsx` | No Story | PlayableTrackTable |
+| View                                  | Route              | File                       | Storybook | Candidate For                           |
+| ------------------------------------- | ------------------ | -------------------------- | --------- | --------------------------------------- |
+| [Embed Channel](#embed-channel)       | `/embed/c/$slug`   | `src/views/EmbedViews.tsx` | No Story  | ChannelBackdropCard, ConnectedPlayerBar |
+| [Embed Release](#embed-release)       | `/embed/r/$id`     | `src/views/EmbedViews.tsx` | No Story  | GlowMediaTile, PlayableTrackTable       |
+| [Embed Collection](#embed-collection) | `/embed/col/$slug` | `src/views/EmbedViews.tsx` | No Story  | PlayableTrackTable                      |
 
 ### Admin Views (board-only)
 
-| View | Route | File | Storybook | Candidate For |
-| --- | --- | --- | --- | --- |
-| [Admin Dashboard](#admin-dashboard) | `/admin` | `src/views/admin/AdminDashboardView.tsx` | Has Story | StatChip, CardsRow |
-| [Admin Logs](#admin-logs) | `/admin/logs` | `src/views/admin/AdminLogsView.tsx` | Has Story | LogViewer |
-| [Admin Users](#admin-users) | `/admin/users` | `src/views/admin/AdminUsersView.tsx` | Has Story | Table, Input |
-| [Admin Radio](#admin-radio) | `/admin/radio` | `src/views/admin/AdminRadioView.tsx` | Has Story | RadioStationCover |
-| [Admin News](#admin-news) | `/admin/news` | `src/views/admin/AdminNewsView.tsx` | Has Story | Form |
-| [Admin Selects](#admin-selects) | `/admin/tahti-selects` | `src/views/admin/AdminSelectsView.tsx` | No Story | CardGrid |
-| [Admin Streams](#admin-streams) | `/admin/streams` | `src/views/admin/AdminStreamsView.tsx` | Has Story | StreamManagerPanel |
-| [Admin Top Lists](#admin-top-lists) | `/admin/top-lists` | `src/views/admin/AdminTopListsView.tsx` | Has Story | Table |
-| [Admin Content](#admin-content) | `/admin/content` | `src/views/admin/AdminContentView.tsx` | No Story | Tabs, Table |
-| [Admin Announcements](#admin-announcements) | `/admin/announcements` | `src/views/admin/AdminAnnouncementsView.tsx` | Has Story | Form |
-| [Admin Storage](#admin-storage) | `/admin/storage` | `src/views/admin/AdminStorageView.tsx` | Has Story | Table, StatChip |
-| [Admin Storage User](#admin-storage-user) | `/admin/storage/$userId` | `src/views/admin/AdminStorageUserView.tsx` | Has Story | Table |
-| [Admin Artwork Presets](#admin-artwork-presets) | `/admin/artwork-presets` | `src/views/admin/AdminArtworkPresetsView.tsx` | No Story | ImageUploadField, CardGrid |
-| [Admin Financial](#admin-financial) | `/admin/financial` | `src/views/admin/AdminFinancialView.tsx` | Has Story | StatChip, Table |
-| [Admin Governance](#admin-governance) | `/admin/governance` | `src/views/admin/AdminGovernanceView.tsx` | Has Story | Tabs, Card layout |
-| [Admin Reports](#admin-reports) | `/admin/reports` | `src/views/admin/AdminReportsView.tsx` | No Story | Table, Charts |
-| [Admin Grants](#admin-grants) | `/admin/grants` | `src/views/admin/AdminGrantsView.tsx` | Has Story | Table |
-| [Admin Grant Cycle](#admin-grant-cycle) | `/admin/grants/$year` | `src/views/admin/AdminGrantCycleView.tsx` | No Story | Table |
-| [Admin AGM](#admin-agm) | `/admin/agm` | `src/views/admin/AdminAgmView.tsx` | Has Story | Tabs, Card layout |
-| [Admin Vendors](#admin-vendors) | `/admin/vendors` | `src/views/admin/AdminVendorsView.tsx` | Has Story | Table |
-| [Admin Map](#admin-map) | `/admin/map` | `src/views/admin/AdminMapView.tsx` | No Story | ListenerWorldMap |
-| [Admin Venues](#admin-venues) | `/admin/venues` | `src/views/admin/AdminVenuesView.tsx` | No Story | Table |
-| [Admin Add-ons](#admin-addons) | `/admin/addons` | `src/views/admin/AdminAddonsView.tsx` | No Story | DiscoWidgetManagerPanel |
-| [Admin Status](#admin-status) | `/admin/status` | `src/views/admin/AdminStatusView.tsx` | Has Story | StatChip, Table |
-| [Admin I18n](#admin-i18n) | `/admin/i18n` | `src/views/admin/AdminI18nView.tsx` | Has Story | Table |
-| [Admin Moderation](#admin-moderation) | `/admin/moderation` | `src/views/admin/moderation/AdminModerationView.tsx` | Has Story | Tabs |
-| [Admin Orphan Pages](#admin-orphan-pages) | `/admin/orphan-pages` | `src/views/admin/orphanPages/AdminOrphanPagesView.tsx` | No Story | Table, Tabs |
-| [Admin Missed Shows](#admin-missed-shows) | — | — | Has Story | AdminMissedShowsView |
+| View                                            | Route                                                                 | File                                                                                                                       | Storybook                                                           | Candidate For                                                                                                                                         |
+| ----------------------------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Admin Dashboard](#admin-dashboard)             | `/admin`                                                              | `src/views/admin/AdminDashboardView.tsx`                                                                                   | Has Story                                                           | StatChip, CardsRow                                                                                                                                    |
+| [Admin Activity](#admin-activity)               | `/admin/activity` → redirects to `/admin/logs`                        | `src/views/admin/AdminActivityView.tsx`                                                                                    | Has Story                                                           | LogViewer, FilterChips, Pagination                                                                                                                    |
+| [Admin Logs](#admin-logs)                       | `/admin/logs`                                                         | `src/views/admin/AdminLogsView.tsx`                                                                                        | Has Story                                                           | LogViewer                                                                                                                                             |
+| [Admin Users](#admin-users)                     | `/admin/users`                                                        | `src/views/admin/AdminUsersView.tsx`                                                                                       | Has Story                                                           | Input, Select — hand-rolled selectable list rows (no shared list-row primitive exists yet; legit gap, not a duplicate)                                |
+| [Admin Radio](#admin-radio)                     | `/admin/radio`                                                        | `src/views/admin/AdminRadioView.tsx`                                                                                       | Has Story                                                           | RadioStationCover                                                                                                                                     |
+| [Admin News](#admin-news)                       | `/admin/news`                                                         | `src/views/admin/AdminNewsView.tsx`                                                                                        | Has Story                                                           | Form                                                                                                                                                  |
+| [Admin Selects](#admin-selects)                 | `/admin/tahti-selects`                                                | `src/views/admin/AdminSelectsView.tsx`                                                                                     | Has Story                                                           | CardGrid                                                                                                                                              |
+| [Admin Streams](#admin-streams)                 | `/admin/streams`                                                      | `src/views/admin/AdminStreamsView.tsx`                                                                                     | Has Story                                                           | StreamManagerPanel                                                                                                                                    |
+| [Admin Top Lists](#admin-top-lists)             | `/admin/top-lists`                                                    | `src/views/admin/AdminTopListsView.tsx`                                                                                    | Has Story                                                           | Table                                                                                                                                                 |
+| [Admin Content](#admin-content)                 | `/admin/content`                                                      | `src/views/admin/AdminContentView.tsx`                                                                                     | Has Story                                                           | Tabs, Table                                                                                                                                           |
+| [Admin Announcements](#admin-announcements)     | `/admin/announcements`                                                | `src/views/admin/AdminAnnouncementsView.tsx`                                                                               | Has Story                                                           | Form                                                                                                                                                  |
+| [Admin Storage](#admin-storage)                 | `/admin/storage`                                                      | `src/views/admin/AdminStorageView.tsx`                                                                                     | Has Story                                                           | Badge, Dialog, Input, Select, Tabs, Tooltip — hand-rolled progress bar / donut chart (no `Meter`/`DonutChart` primitive exists yet; future candidate) |
+| [Admin Storage User](#admin-storage-user)       | `/admin/storage/$userId`                                              | `src/views/admin/AdminStorageUserView.tsx`                                                                                 | Has Story                                                           | Table                                                                                                                                                 |
+| [Admin Artwork Presets](#admin-artwork-presets) | `/admin/artwork-presets`                                              | `src/views/admin/AdminArtworkPresetsView.tsx`                                                                              | No Story                                                            | ImageUploadField, CardGrid                                                                                                                            |
+| [Admin Financial](#admin-financial)             | `/admin/financial`                                                    | `src/views/admin/AdminFinancialView.tsx`                                                                                   | Has Story                                                           | StatChip, Table                                                                                                                                       |
+| [Admin Governance](#admin-governance)           | `/admin/governance`                                                   | `src/views/admin/AdminGovernanceView.tsx`                                                                                  | Has Story                                                           | Tabs, Card layout                                                                                                                                     |
+| [Admin Reports](#admin-reports)                 | `/admin/reports`                                                      | `src/views/admin/AdminReportsView.tsx`                                                                                     | No Story                                                            | Table, Charts                                                                                                                                         |
+| [Admin Grants](#admin-grants)                   | `/admin/grants`                                                       | `src/views/admin/AdminGrantsView.tsx`                                                                                      | No Story _(stale — `AdminGrantsView.stories.tsx` no longer exists)_ | Table                                                                                                                                                 |
+| [Admin Grant Cycle](#admin-grant-cycle)         | `/admin/grants/$year`                                                 | `src/views/admin/AdminGrantCycleView.tsx`                                                                                  | No Story                                                            | Table                                                                                                                                                 |
+| [Admin AGM](#admin-agm)                         | `/admin/agm`                                                          | `src/views/admin/AdminAgmView.tsx`                                                                                         | No Story _(stale — `AdminAgmView.stories.tsx` no longer exists)_    | Tabs, Card layout                                                                                                                                     |
+| [Admin Vendors](#admin-vendors)                 | `/admin/vendors`                                                      | `src/views/admin/AdminVendorsView.tsx`                                                                                     | Has Story                                                           | Table                                                                                                                                                 |
+| [Admin Map](#admin-map)                         | `/admin/map`                                                          | `src/views/admin/AdminMapView.tsx`                                                                                         | No Story                                                            | ListenerWorldMap                                                                                                                                      |
+| [Admin Venues](#admin-venues)                   | `/admin/venues`                                                       | `src/views/admin/AdminVenuesView.tsx`                                                                                      | No Story                                                            | Table                                                                                                                                                 |
+| [Admin Add-ons](#admin-addons)                  | `/admin/addons`                                                       | `src/views/admin/AdminAddonsView.tsx`                                                                                      | Has Story                                                           | DiscoWidgetManagerPanel                                                                                                                               |
+| [Admin Status](#admin-status)                   | `/admin/status`                                                       | `src/views/admin/AdminStatusView.tsx`                                                                                      | Has Story                                                           | StatChip, Table                                                                                                                                       |
+| [Admin I18n](#admin-i18n)                       | `/admin/i18n`                                                         | `src/views/admin/AdminI18nView.tsx`                                                                                        | Has Story                                                           | Table                                                                                                                                                 |
+| [Admin Moderation](#admin-moderation)           | `/admin/moderation`                                                   | `src/views/admin/moderation/AdminModerationView.tsx`                                                                       | Has Story                                                           | Tabs                                                                                                                                                  |
+| [Admin Orphan Pages](#admin-orphan-pages)       | `/admin/orphan-pages`                                                 | `src/views/admin/orphanPages/AdminOrphanPagesView.tsx`                                                                     | Has Story                                                           | Table, Tabs — its RadioStationSuggestionsTab sub-tab has a dedicated story                                                                            |
+| [Admin Missed Shows](#admin-missed-shows)       | `/admin/missed-shows` → redirects to `/admin/moderation/missed-shows` | `src/views/admin/AdminMissedShowsView.tsx` (exports `AdminMissedShowsPanel`, rendered as a tab inside AdminModerationView) | Has Story                                                           | —                                                                                                                                                     |
 
 ---
 
 ## Summary
 
-| Package | Total Views | Has Story | No Story | Candidates |
-| --- | --- | --- | --- | --- |
-| `packages/player` | 18 routed + 6 settings + ~30 sub-components | 3 | 21 | 15+ (CardGrid, TrackTable, EmptyState reuse) |
-| `packages/tahti-web` core | 17 | 2 | 15 | 8+ (AppShell, PageHeader, GlowMediaTile) |
-| `packages/tahti-web` auth | 9 | 0 | 9 | 3 (AuthDialog, Input, Button) |
-| `packages/tahti-web` library | 7 | 0 | 7 | 4 (CardGrid, Tabs, TrackTable) |
-| `packages/tahti-web` studio | 32 | 4 | 28 | 12+ (StudioPanel, Form, ImageUploadField) |
-| `packages/tahti-web` governance | 6 | 0 | 6 | 2 (Tabs, Card layout) |
-| `packages/tahti-web` help/legal | 9 | 1 | 8 | 2 (LegalDocShell) |
-| `packages/tahti-web` venues | 2 | 0 | 2 | 1 (Form) |
-| `packages/tahti-web` embeds | 3 | 0 | 3 | 2 (ConnectedPlayerBar, PlayableTrackTable) |
-| `packages/tahti-web` admin | 27 | 18 | 9 | 5 (Table, StatChip) |
+| Package                                                                  | Total Views                                 | Has Story | No Story | Candidates                                                                            |
+| ------------------------------------------------------------------------ | ------------------------------------------- | --------- | -------- | ------------------------------------------------------------------------------------- |
+| `packages/player`                                                        | 18 routed + 6 settings + ~30 sub-components | 3         | 21       | 15+ (CardGrid, TrackTable, EmptyState reuse)                                          |
+| `packages/tahti-web` core (Listen/Discovery + Artist/Channel/Collection) | 17                                          | 4         | 13       | 8+ (AppShell, PageHeader, GlowMediaTile)                                              |
+| `packages/tahti-web` auth                                                | 9                                           | 1         | 8        | 3 (AuthDialog, Input, Button) — Account/Settings now has a story via `SettingsPanels` |
+| `packages/tahti-web` library                                             | 7                                           | 0         | 7        | 4 (CardGrid, Tabs, TrackTable)                                                        |
+| `packages/tahti-web` studio                                              | 32                                          | 4         | 28       | 12+ (StudioPanel, Form, ImageUploadField)                                             |
+| `packages/tahti-web` governance                                          | 10                                          | 0         | 10       | 2 (Tabs, Card layout)                                                                 |
+| `packages/tahti-web` help/legal                                          | 9                                           | 1         | 8        | 2 (LegalDocShell)                                                                     |
+| `packages/tahti-web` utility/alias                                       | 4                                           | 0         | 4        | — (redirects and thin aliases, not real pages)                                        |
+| `packages/tahti-web` venues                                              | 2                                           | 0         | 2        | 1 (Form)                                                                              |
+| `packages/tahti-web` embeds                                              | 3                                           | 0         | 3        | 2 (ConnectedPlayerBar, PlayableTrackTable)                                            |
+| `packages/tahti-web` admin                                               | 29                                          | 22        | 7        | 5 (Table, StatChip)                                                                   |
 
 ### High-Value Unification Candidates
 
 These shared components are used across many views but lack dedicated Storybook stories in the player or web app contexts:
 
-| Component | Used In | Story Status |
-| --- | --- | --- |
-| **AppShell** | All tahti-web routes | Has story (tahti-web) but not tested with real route content |
-| **PageHeader** | Studio, Library, Help, Feed, Collection views | Has story |
-| **ConfirmDialog** | Delete actions across Studio, Admin, Settings | No dedicated story |
-| **PageStates** (Loading/Empty) | All views | Has story but needs real-view composition tests |
-| **StudioPanel** | All Studio sub-views | Has story |
-| **SectionTabs** | Studio, Admin navigation | Has story |
-| **GlowMediaTile** | Discover, Library, Collection views | Has story |
-| **EntitySocialHeader** | Artist, Channel, Collection pages | Has story |
-| **CardGrid** (desktop) | Dashboard, Favorites, Playlists, Library | Shared UI story only |
-| **TrackTable** (desktop) | Favorites, Playlist, Album, History | Shared UI story only |
-| **FilterChips** | Discover, Library, Studio | Shared UI story only |
-| **LegalDocShell** | Terms, Privacy, AGPL, About | Has story |
-| **InPageNav** | Long-form pages | Has story |
-| **EmbedButton** | Channel, Collection, Release | Has story |
-| **AudioEngine** | Player playback | Has story (non-visual) |
-| **StemPlayer** | Green Room, Pro Editor | Has story |
-| **WaveformCanvas** | Editor, Mastering views | Has story |
+| Component                      | Used In                                       | Story Status                                                 |
+| ------------------------------ | --------------------------------------------- | ------------------------------------------------------------ |
+| **AppShell**                   | All tahti-web routes                          | Has story (tahti-web) but not tested with real route content |
+| **PageHeader**                 | Studio, Library, Help, Feed, Collection views | Has story                                                    |
+| **ConfirmDialog**              | Delete actions across Studio, Admin, Settings | No dedicated story                                           |
+| **PageStates** (Loading/Empty) | All views                                     | Has story but needs real-view composition tests              |
+| **StudioPanel**                | All Studio sub-views                          | Has story                                                    |
+| **SectionTabs**                | Studio, Admin navigation                      | Has story                                                    |
+| **GlowMediaTile**              | Discover, Library, Collection views           | Has story                                                    |
+| **EntitySocialHeader**         | Artist, Channel, Collection pages             | Has story                                                    |
+| **CardGrid** (desktop)         | Dashboard, Favorites, Playlists, Library      | Shared UI story only                                         |
+| **TrackTable** (desktop)       | Favorites, Playlist, Album, History           | Shared UI story only                                         |
+| **FilterChips**                | Discover, Library, Studio                     | Shared UI story only                                         |
+| **LegalDocShell**              | Terms, Privacy, AGPL, About                   | Has story                                                    |
+| **InPageNav**                  | Long-form pages                               | Has story                                                    |
+| **EmbedButton**                | Channel, Collection, Release                  | Has story                                                    |
+| **AudioEngine**                | Player playback                               | Has story (non-visual)                                       |
+| **StemPlayer**                 | Green Room, Pro Editor                        | Has story                                                    |
+| **WaveformCanvas**             | Editor, Mastering views                       | Has story                                                    |
+
+### Confirmed Duplicates / No-Ops (2026-09-12/14 sweep — full app, ~140/140 views)
+
+Verified by reading actual imports (not guessed) for input/pill/badge/filter-chip patterns across `packages/tahti-web` and `packages/player`. Live punch list: `docs/todo/storybook-theme-unification-sweep.md`.
+
+**Duplicates of `Badge`** (`packages/ui/src/components/Badge`, has story) — hand-rolled pill markup instead of importing it:
+
+| Location                                                                                                     | Notes                                                                                                                                                                        |
+| ------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tahti-web/src/components/tahti/OnAirBadge.tsx`                                                              | No ui import; re-implements pill shape/typography. Used by `RadioView.tsx:47,225` — supports `variant="pill" color="red" animated`, the exact combo `OnAirBadge` hand-builds |
+| `tahti-web/src/components/PlayerSeekBar.tsx` (`PlayerLiveIndicator`/`PlayerLiveBadge`)                       | Same pattern                                                                                                                                                                 |
+| `tahti-web/src/views/TrackDetailView.tsx:~509` ("Private" pill)                                              | View already imports `Input`/`Button`/`Dialog` from ui but not `Badge`                                                                                                       |
+| `tahti-web/src/components/HelpLayer.tsx`, `ChannelBackdropCard.tsx`                                          | Same pill-button pattern                                                                                                                                                     |
+| `tahti-web/src/views/ChannelView.tsx:885` (quick-add stage chip)                                             | Closer to `FilterChips`/`StudioToggleChip` shape than plain `Badge`                                                                                                          |
+| `tahti-web/src/views/MyDiscographyView.tsx:338` (embed-provider tag)                                         | Size mismatch vs `Badge` (px-1.5/text-[10px] vs px-2/text-xs) — needs a size tweak, not a pure swap                                                                          |
+| `player/src/views/Artist/components/ArtistSocialHeader.tsx:135-138` (location pill)                          | Raw `<span>`, icon+text                                                                                                                                                      |
+| `player/src/views/Artist/components/ArtistBioHeader.tsx:88-94` (genre/mood tags), `:97-101` ("on tour" flag) | Both already sit in a file that imports `Box`/`Loader`/`StatChip` — looks like an oversight, not a deliberate departure                                                      |
+| `tahti-web/src/views/TransparencyResolutionsView.tsx:106-114` (3 vote-count pills)                           | Raw `<span className="border-border rounded border px-2 py-1">` per YES/NO/ABSTAIN count                                                                                     |
+
+**Duplicates of `FilterChips`** (`packages/ui/src/components/FilterChips`, has story) — reimplemented toggle-chip selection:
+
+| Location                                                                                                                                   | Notes                                                                                                                                                                                                                                                                                                 |
+| ------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tahti-web/src/components/StudioPanel.tsx` → `StudioToggleChip`                                                                            | Already de-duped locally (consolidated from `StudioCollectionsView`/`StudioReleasesView`'s prior copies per its own code comment) — candidate to **promote to `@tahti-player/ui`** rather than fix again. Confirmed still used by `StudioCollectionsView.tsx:37,225-232` and `StudioReleasesView.tsx` |
+| `tahti-web/src/components/FanTiersEditor.tsx` → `PerkChip`                                                                                 | Near-identical copy of `StudioToggleChip` — 4th reimplementation of the same pattern                                                                                                                                                                                                                  |
+| `tahti-web/src/views/settings/SettingsPanels.tsx:~1041` (role pills)                                                                       | Same selected/unselected pill logic                                                                                                                                                                                                                                                                   |
+| `tahti-web/src/views/RadioScheduleView.tsx:697-726` (booking-edit dialog show-type toggle)                                                 | Same file already uses `FilterChips` correctly at `:553-561` for the booking-creation flow — an in-file inconsistency                                                                                                                                                                                 |
+| `tahti-web/src/views/TransparencyResolutionsView.tsx:62-75` (year-toggle buttons)                                                          | Active/inactive rounded-full button group                                                                                                                                                                                                                                                             |
+| `tahti-web/src/views/studio/StudioShowDetailView.tsx:736-761` (episode source: Upload vs Record)                                           | `aria-pressed` pill pair with manual `border-primary bg-primary/15` active state                                                                                                                                                                                                                      |
+| `tahti-web/src/views/studio/StudioDistributionView.tsx:412-438` ("Catalog methods", multi-select) and `:795-805` ("Guides", single-select) | Two separate hand-rolled chip grids in the same view; `Input` is used correctly elsewhere in the file                                                                                                                                                                                                 |
+| `tahti-web/src/views/studio/StudioCollectionEditView.tsx:647-663` ("Style" picker)                                                         | `Button variant="text"` + manual active-state classes, same file also has the raw date-input duplicate below                                                                                                                                                                                          |
+| `tahti-web/src/views/studio/StudioProEditorView.tsx:1380-1401` ("Slope" selector)                                                          | Duplicates the `FilterChips` already used two sections above in the same file/panel (`:1320`)                                                                                                                                                                                                         |
+| `tahti-web/src/views/studio/StudioScheduleView.tsx:993-1004` (weekday recurrence, multi-select) and `:160-194` (card/list view toggle)     | Soft candidates — built from the shared `Button` (not raw `<span>`), just not `FilterChips`                                                                                                                                                                                                           |
+
+**Duplicates of `Input`:**
+
+| Location                                                          | Notes                                                                                                                                                                 |
+| ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tahti-web/src/views/studio/StudioCollectionEditView.tsx:629-634` | Raw `<input type="date">` with manual `border-border bg-background h-10 rounded-md border px-3 text-sm` — same file correctly uses `Input` elsewhere (lines 622, 886) |
+
+**Thin no-op wrappers** (delete, use the primitive directly):
+
+| Location                                                         | Wraps                  | Notes                                                             |
+| ---------------------------------------------------------------- | ---------------------- | ----------------------------------------------------------------- |
+| `packages/player/src/views/Settings/TextField.tsx`               | `Input`                | Pure pass-through rename of `value`/`setValue`, no added behavior |
+| `tahti-web/src/views/studio/StudioStripeView.tsx` → `StatusPill` | `Badge variant="pill"` | Adds only a ✓/○ glyph prefix                                      |
+| `packages/player/src/views/Sources/components/ProviderPill.tsx`  | `Badge variant="pill"` | Adds only an icon + `gap-1`                                       |
+
+**Also found (not a chip/badge, but same easy-fix shape):** `GovernanceView.tsx:~475` uses a raw `<textarea>` with manual classes instead of `Textarea` (already used elsewhere, e.g. `FeatureRequestsView.tsx`).
+
+**New-primitive candidates** (nothing to reuse yet — not swaps): selectable tile w/ label+hint (`OnboardingView.tsx` artist-kind + appearance toggle groups); `Meter`/`DonutChart` (`AdminStorageView.tsx` progress bar + conic-gradient donut, and `AdminI18nView.tsx:142` translation-progress bar); shared list-row selection style (`AdminUsersView.tsx` user picker); shared image-thumbnail-grid picker (`AdminArtworkPresetsView.tsx`, `StudioReleaseDetailView.tsx` library-picker rows — low priority, has a "Added" `<span>` at line 1077 that's a soft `Badge` candidate).
+
+**Checked and NOT candidates** (legitimately distinct use cases): `SearchBox.tsx` (player, already composes `Input`); `SubgenreTagInput.tsx` (removable free-text tags — different interaction than `Badge`/`FilterChips`, worth a future look but not a swap); `ChannelView.tsx:1027` social-link pill (interactive icon+link); `AdminUsersView.tsx` selectable list rows (no shared list-row primitive exists yet — legit gap); `StudioPanel.tsx` outer shell (structurally close to `Box` but adds header layout `Box` lacks — low-risk future unification, not a pure duplicate); `JamView.tsx` participant chips (avatar+name, richer than plain `Badge`); `AgmTab.tsx:436` raw `<input type="file">` (a hidden-input upload trigger, not a text-input duplicate — `FilePicker` may not fit this exact label-wrapped pattern without changes); ~65 Admin/Auth/Library/Help/Legal/Utility/Embed views already fully on shared primitives with zero hand-rolled duplicates found (see prior-pass note below for the input/pill/chip inventory that established this).
+
+**Coverage note:** full app now swept for input/pill/filter-chip patterns — all ~140 views across `packages/player` and `packages/tahti-web` (2026-09-12 pass covered ~25 views + the `Input`/`Badge`/`FilterChips` primitive inventory; 2026-09-14 pass covered the remaining ~115). **Fix pass done 2026-09-14** — most of the findings above have been swapped to `Badge`/`FilterChips`/`Input`/`Textarea` (`StudioToggleChip` and `PerkChip` deleted entirely in favor of `FilterChips`, which gained `disabled` and per-item `icon` support to make that possible); a handful turned out not to be real duplicates on closer inspection (action buttons, a curve-preview picker, tile grids with descriptions) and were corrected or fixed differently (e.g. `Button` instead of `Badge`). See `docs/todo/storybook-theme-unification-sweep.md` for the full fixed/corrected/remaining breakdown. Other primitive categories (`Table`, `Card`, `Dialog`, `Select`) were not in scope for this sweep.
 
 ---
 
 ## Regeneration
 
 To update this catalog:
+
 1. Scan `packages/*/src/views/` for new/removed view files
 2. Cross-reference with `packages/storybook/src/**/*.stories.tsx`
 3. Update Storybook status and candidate flags

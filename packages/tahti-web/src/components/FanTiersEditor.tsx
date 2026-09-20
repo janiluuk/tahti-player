@@ -5,9 +5,9 @@ import {
   PlusIcon,
   SparklesIcon,
 } from 'lucide-react';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 
-import { Button, Dialog, Input, Textarea } from '@tahti-player/ui';
+import { Button, Dialog, FilterChips, Input, Textarea } from '@tahti-player/ui';
 
 import {
   createFanTier,
@@ -57,12 +57,6 @@ export function FanTiersEditor() {
   useEffect(() => {
     reload();
   }, []);
-
-  const togglePerk = (key: string) => {
-    setPerks((prev) =>
-      prev.includes(key) ? prev.filter((p) => p !== key) : [...prev, key],
-    );
-  };
 
   const closeCreate = () => {
     setCreateOpen(false);
@@ -210,17 +204,17 @@ export function FanTiersEditor() {
                 rows={2}
               />
             </label>
-            <div className="flex flex-wrap gap-2">
-              {PERK_OPTIONS.map((p) => (
-                <PerkChip
-                  key={p.key}
-                  selected={perks.includes(p.key)}
-                  icon={p.icon}
-                  label={p.label}
-                  onClick={() => togglePerk(p.key)}
-                />
-              ))}
-            </div>
+            <FilterChips
+              multiple
+              items={PERK_OPTIONS.map((p) => ({
+                id: p.key,
+                label: p.label,
+                icon: p.icon,
+              }))}
+              selected={perks}
+              onChange={setPerks}
+              aria-label="Perks"
+            />
           </div>
           <Dialog.Actions>
             <Dialog.Close>Cancel</Dialog.Close>
@@ -232,35 +226,5 @@ export function FanTiersEditor() {
         </form>
       </Dialog.Root>
     </div>
-  );
-}
-
-function PerkChip({
-  selected,
-  icon,
-  label,
-  onClick,
-}: {
-  selected: boolean;
-  icon: ReactNode;
-  label: string;
-  onClick: () => void;
-}) {
-  return (
-    <Button
-      type="button"
-      variant="text"
-      className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs ${
-        selected
-          ? 'border-primary bg-primary/15 text-primary'
-          : 'border-border text-foreground-secondary'
-      }`}
-      onClick={onClick}
-      aria-pressed={selected}
-      title={label}
-    >
-      {icon}
-      <span>{label}</span>
-    </Button>
   );
 }

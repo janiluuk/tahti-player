@@ -142,7 +142,7 @@ describe('import from URL', () => {
 
     await vi.waitFor(() => {
       expect(toastError).toHaveBeenCalledWith(
-        'No plugin can handle this URL. Install a plugin that supports this service.',
+        'No add-on can handle this URL. Install an add-on that supports this service.',
       );
     });
     expect(PlaylistsWrapper.importView).not.toBeInTheDocument();
@@ -161,7 +161,7 @@ describe('import from URL', () => {
 
     await vi.waitFor(() => {
       expect(toastError).toHaveBeenCalledWith(
-        'No plugin can handle this URL. Install a plugin that supports this service.',
+        'No add-on can handle this URL. Install an add-on that supports this service.',
       );
     });
     expect(PlaylistsWrapper.importView).not.toBeInTheDocument();

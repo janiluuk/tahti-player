@@ -1,0 +1,41 @@
+# syntax=docker/dockerfile:1
+# Run tahti-web's vitest suite in Docker, matching CI's Node 24 + pnpm env
+# (see .github/workflows/ci.yml).
+#
+# Build from repo root:
+#   docker build -f Dockerfile.player.test -t tahti-player/tahti-web-test .
+# Run:
+#   docker run --rm tahti-player/tahti-web-test
+
+FROM node:24-slim
+RUN corepack enable && corepack prepare pnpm@10.33.4 --activate
+WORKDIR /app
+ENV NODE_ENV=test DO_NOT_TRACK=1
+
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json tsconfig.json ./
+COPY packages/docs/package.json            ./packages/docs/
+COPY packages/eslint-config/package.json   ./packages/eslint-config/
+COPY packages/hifi/package.json            ./packages/hifi/
+COPY packages/i18n/package.json            ./packages/i18n/
+COPY packages/model/package.json           ./packages/model/
+COPY packages/player/package.json          ./packages/player/
+COPY packages/plugin-sdk/package.json      ./packages/plugin-sdk/
+COPY packages/storybook/package.json       ./packages/storybook/
+COPY packages/tahti-web/package.json       ./packages/tahti-web/
+COPY packages/tailwind-config/package.json ./packages/tailwind-config/
+COPY packages/themes/package.json          ./packages/themes/
+COPY packages/tools/package.json           ./packages/tools/
+COPY packages/ui/package.json              ./packages/ui/
+COPY packages/website/package.json         ./packages/website/
+
+RUN pnpm install --frozen-lockfile
+
+COPY packages/i18n            ./packages/i18n
+COPY packages/model           ./packages/model
+COPY packages/tailwind-config ./packages/tailwind-config
+COPY packages/themes          ./packages/themes
+COPY packages/ui              ./packages/ui
+COPY packages/tahti-web       ./packages/tahti-web
+
+WORKDIR /app/packages/tahti-web
+CMD ["pnpm", "test"]

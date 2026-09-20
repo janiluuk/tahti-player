@@ -172,27 +172,6 @@ const DOCUMENT_GROUPS = [
     ],
   },
   {
-    id: 'governance',
-    label: 'Governance',
-    items: [
-      {
-        title: 'Governance history',
-        description: 'Public results from closed advisory motions.',
-        to: '/governance/history',
-      },
-      {
-        title: 'Member governance',
-        description: 'Member motions, voting, discussion, and proposals.',
-        to: '/governance',
-      },
-      {
-        title: 'Governance guide',
-        description: 'How cooperative decisions and advisory votes work.',
-        to: '/studio/governance?tab=guide',
-      },
-    ],
-  },
-  {
     id: 'legal',
     label: 'Legal & policies',
     items: [

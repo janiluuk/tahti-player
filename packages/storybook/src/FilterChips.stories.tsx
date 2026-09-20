@@ -54,6 +54,16 @@ export const Interactive: Story = {
             Selected: {multi.length > 0 ? multi.join(', ') : 'none'}
           </p>
         </div>
+
+        <div className="flex flex-col gap-2">
+          <h3 className="text-foreground text-sm font-semibold">Disabled</h3>
+          <FilterChips
+            items={categories}
+            selected={single}
+            onChange={setSingle}
+            disabled
+          />
+        </div>
       </div>
     );
   },

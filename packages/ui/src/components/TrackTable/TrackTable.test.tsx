@@ -310,4 +310,71 @@ describe('TrackTable', () => {
       expect(cell.textContent?.trim()).toBe('');
     }
   });
+
+  it('selects rows via checkboxes and runs a bulk action on the selection', async () => {
+    const tracks = makeTracks(2);
+    const onRemoveSelected = vi.fn();
+    const onAddSelectedToQueue = vi.fn();
+
+    render(
+      <TrackTable
+        tracks={tracks}
+        labels={labels}
+        features={{ selectable: true }}
+        display={{ displayThumbnail: false }}
+        actions={{ onRemoveSelected, onAddSelectedToQueue }}
+      />,
+    );
+
+    await screen.findByText('Track 1');
+    await userEvent.click(
+      screen.getByRole('checkbox', { name: 'Select Track 1' }),
+    );
+    expect(screen.getByText('1 selected')).toBeInTheDocument();
+
+    await userEvent.click(screen.getByTestId('add-selected-to-queue-button'));
+    expect(onAddSelectedToQueue).toHaveBeenCalledWith(['t-1']);
+    expect(onRemoveSelected).not.toHaveBeenCalled();
+    // A bulk action clears the selection afterward.
+    expect(screen.queryByText('1 selected')).not.toBeInTheDocument();
+  });
+
+  it('select-all header toggles every visible row', async () => {
+    const tracks = makeTracks(3);
+    const onRemoveSelected = vi.fn();
+
+    render(
+      <TrackTable
+        tracks={tracks}
+        labels={labels}
+        features={{ selectable: true }}
+        display={{ displayThumbnail: false }}
+        actions={{ onRemoveSelected }}
+      />,
+    );
+
+    await screen.findByText('Track 1');
+    await userEvent.click(
+      screen.getByRole('checkbox', { name: 'Select all rows' }),
+    );
+    expect(screen.getByText('3 selected')).toBeInTheDocument();
+
+    await userEvent.click(screen.getByTestId('remove-selected-button'));
+    expect(onRemoveSelected).toHaveBeenCalledWith(['t-1', 't-2', 't-3']);
+  });
+
+  it('does not render the selection column or toolbar when selectable is off', async () => {
+    render(
+      <TrackTable
+        tracks={makeTracks(1)}
+        labels={labels}
+        display={{ displayThumbnail: false }}
+      />,
+    );
+
+    await screen.findByText('Track 1');
+    expect(
+      screen.queryByRole('checkbox', { name: 'Select Track 1' }),
+    ).not.toBeInTheDocument();
+  });
 });

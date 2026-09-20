@@ -3,7 +3,6 @@ import { useState } from 'react';
 
 import { Button, Card, CardGrid, Tooltip } from '@tahti-player/ui';
 
-import { radioStation, radioStationPlayable } from '../content/radioStations';
 import {
   NEWS_WIDGET_TYPE_ID,
   newsWidgetsOn,
@@ -14,26 +13,24 @@ import { useSettingsModalStore } from '../stores/settingsModalStore';
 import { FavoritesView } from '../views/FavoritesView';
 import { ListenerWidgetEmbed } from './ListenerWidgetEmbed';
 import { NewsFeedWidget } from './NewsFeedWidget';
-import { RadioStationCoverEditButton } from './RadioStationCover';
 import { RemoveWidgetDialog } from './RemoveWidgetDialog';
 
 type PendingRemoval =
   | { kind: 'instance'; id: string; label: string }
-  | { kind: 'station'; id: string; label: string }
   | { kind: 'browser'; id: string; label: string };
 
-/** Listen-page add-ons (Settings → Add-ons). Stations = CardGrid+Card;
- * embeds stay a non-Card iframe grid. Renders nothing when empty. */
+/** Listen-page add-ons (Settings → Add-ons): saved Radio Browser stations,
+ * news feeds, embeds, favorites. Renders nothing when empty. Curated-catalog
+ * radio channels (packages/tahti-web/src/content/radioStations.ts) render in
+ * ListenView's own "Radio" section instead, alongside board-curated presets —
+ * having one working, reactive play-button list beats two. */
 export function ListenerWidgetsSection() {
   const instances = useListenerWidgetsStore((s) => s.instances);
   const installedTypeIds = useListenerWidgetsStore((s) => s.installedTypeIds);
-  const enabledStationIds = useListenerWidgetsStore((s) => s.enabledStationIds);
-  const stationOverrides = useListenerWidgetsStore((s) => s.stationOverrides);
   const savedBrowserStations = useListenerWidgetsStore(
     (s) => s.savedBrowserStations,
   );
   const removeInstance = useListenerWidgetsStore((s) => s.removeInstance);
-  const toggleStation = useListenerWidgetsStore((s) => s.toggleStation);
   const removeSavedBrowserStation = useListenerWidgetsStore(
     (s) => s.removeSavedBrowserStation,
   );
@@ -43,24 +40,14 @@ export function ListenerWidgetsSection() {
     null,
   );
 
-  const enabledStations = enabledStationIds
-    .map((id) => {
-      const station = radioStation(id);
-      return station ? { ...station, ...stationOverrides[id] } : undefined;
-    })
-    .filter((s) => s != null);
-
   const embedInstances = instances.filter(
     (instance) => instance.typeId !== NEWS_WIDGET_TYPE_ID,
   );
   const newsFeeds = newsWidgetsOn(instances, 'listen');
   const favoritesEnabled = installedTypeIds.includes('favorites');
-  const hasListenAddons =
-    embedInstances.length > 0 || favoritesEnabled || newsFeeds.length > 0;
 
   if (
     embedInstances.length === 0 &&
-    enabledStations.length === 0 &&
     savedBrowserStations.length === 0 &&
     !favoritesEnabled &&
     newsFeeds.length === 0
@@ -74,10 +61,8 @@ export function ListenerWidgetsSection() {
     }
     if (pendingRemoval.kind === 'instance') {
       removeInstance(pendingRemoval.id);
-    } else if (pendingRemoval.kind === 'browser') {
-      removeSavedBrowserStation(pendingRemoval.id);
     } else {
-      toggleStation(pendingRemoval.id);
+      removeSavedBrowserStation(pendingRemoval.id);
     }
     setPendingRemoval(null);
   };
@@ -88,9 +73,7 @@ export function ListenerWidgetsSection() {
       data-testid="listener-widgets-section"
     >
       <div className="flex w-full flex-wrap items-center justify-between gap-2">
-        <h2 className="text-2xl font-bold">
-          {hasListenAddons ? 'Listen add-ons' : 'Radio channels'}
-        </h2>
+        <h2 className="text-2xl font-bold">Listen add-ons</h2>
         <button
           type="button"
           onClick={() => openSettings('plugin-store', 'listen')}
@@ -99,56 +82,6 @@ export function ListenerWidgetsSection() {
           Manage widgets
         </button>
       </div>
-
-      {enabledStations.length > 0 && (
-        <CardGrid>
-          {enabledStations.map((station) => (
-            <div key={station.id} className="group relative w-fit">
-              <RadioStationCoverEditButton
-                label={station.name}
-                stationName={station.name}
-                catalogStationId={station.id}
-                className="absolute top-3 left-3 z-10 rounded-full"
-              />
-              <Tooltip content={`Remove ${station.name}`} side="top">
-                <Button
-                  size="icon-sm"
-                  variant="text"
-                  aria-label={`Remove ${station.name}`}
-                  onClick={() =>
-                    setPendingRemoval({
-                      kind: 'station',
-                      id: station.id,
-                      label: station.name,
-                    })
-                  }
-                  className="bg-background/80 hover:bg-background absolute top-1 right-1 z-10 rounded-full opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
-                >
-                  <XIcon size={14} aria-hidden />
-                </Button>
-              </Tooltip>
-              <Card
-                src={station.logoUrl}
-                title={station.name}
-                subtitle={`${station.language} · ${station.bitrateKbps}kbps`}
-                playLabel={station.streamUrl ? 'Play' : 'Stream pending'}
-                playDisabled={!station.streamUrl}
-                onPlay={
-                  station.streamUrl
-                    ? () =>
-                        play(
-                          radioStationPlayable({
-                            ...station,
-                            streamUrl: station.streamUrl!,
-                          }),
-                        )
-                    : undefined
-                }
-              />
-            </div>
-          ))}
-        </CardGrid>
-      )}
 
       {savedBrowserStations.length > 0 && (
         <CardGrid>

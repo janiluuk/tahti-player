@@ -114,12 +114,36 @@ jobs:
       - name: Sync dist + deploy config locally
         run: |
           set -euo pipefail
-          mkdir -p "${DEPLOY_PATH}/dist" "${DEPLOY_PATH}/deploy"
-          rsync -a --delete packages/tahti-web/dist/ "${DEPLOY_PATH}/dist/"
+          mkdir -p "${DEPLOY_PATH}/deploy"
           rsync -a --delete \
             --exclude 'deploy-vimage.sh' \
             --exclude 'README.md' \
             packages/tahti-web/deploy/ "${DEPLOY_PATH}/deploy/"
+
+          # Swap the whole dist/ tree in by rename instead of rsync'ing into
+          # the live one in place. Some subdirectories under the live dist/
+          # (map/, mock/, radio-logos/ — static public/ assets copied
+          # verbatim by every build) have host-side permissions rsync's
+          # mkstemp can't write into, so every deploy hit "Permission
+          # denied" re-copying them (a fresh `pnpm build` stamps every
+          # public/ asset with a new mtime, so rsync always retries them).
+          # Renaming the tree only needs write access on DEPLOY_PATH itself,
+          # not on the old tree's contents, so it succeeds regardless of
+          # that drift. See docs/todo/beta-deploy-dist-permission-fix.md for
+          # the one-time host-side chown this doesn't replace.
+          new_dist="${DEPLOY_PATH}/dist.new"
+          rm -rf "$new_dist"
+          cp -a packages/tahti-web/dist "$new_dist"
+          if [ -d "${DEPLOY_PATH}/dist" ]; then
+            old_dist="${DEPLOY_PATH}/dist.old.$(date +%s)"
+            mv -T "${DEPLOY_PATH}/dist" "$old_dist"
+            rm -rf "$old_dist" 2>/dev/null || true
+          fi
+          mv -T "$new_dist" "${DEPLOY_PATH}/dist"
+
+          # Best-effort cleanup of any earlier backup that failed to remove
+          # above — harmless disk usage, never a deploy blocker.
+          find "${DEPLOY_PATH}" -maxdepth 1 -name 'dist.old.*' -mtime +1 -exec rm -rf {} + 2>/dev/null || true
 
       - name: Build image and restart container
         run: |

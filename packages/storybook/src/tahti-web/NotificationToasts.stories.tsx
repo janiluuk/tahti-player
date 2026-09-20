@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { NotificationToasts } from '@tahti-web/components/NotificationToasts';
 
 import {
   Button,
@@ -7,15 +8,24 @@ import {
   Toaster,
 } from '@tahti-player/ui';
 
+import { withMockAuth } from './_lib/decorators';
+
 /**
- * Inbox toasts live on the shared `Toaster`. Sticky notices use
- * `showNotificationToast({ sticky: true })` so they stay until Acknowledge.
- * Closing the toast only hides it; the notifications list keeps the item.
+ * `NotificationToasts` itself renders nothing — while a user is signed in
+ * it starts `notificationInboxStore`'s 20s poll of `/api/me/notifications`
+ * and surfaces new/unread entries via the shared `Toaster` using
+ * `showNotificationToast` (sticky ones stay until Acknowledge; dismissing
+ * only hides the toast, the notifications list keeps the item). It's
+ * mounted below alongside `Toaster` and buttons that fire the same
+ * `showNotificationToast` helper the real inbox poll uses, since polling
+ * itself can't be driven from a story.
  */
-const meta: Meta = {
+const meta: Meta<typeof NotificationToasts> = {
   title: 'Tahti/Misc/NotificationToasts',
+  component: NotificationToasts,
   parameters: { layout: 'centered' },
   tags: ['autodocs'],
+  decorators: [withMockAuth()],
 };
 
 export default meta;
@@ -24,6 +34,7 @@ type Story = StoryObj<typeof meta>;
 export const StickyAndOrdinary: Story = {
   render: () => (
     <div className="flex flex-col items-start gap-3">
+      <NotificationToasts />
       <Toaster richColors />
       <p className="text-foreground-secondary max-w-sm text-sm">
         Ordinary toasts fade. Sticky toasts stay until you acknowledge them,

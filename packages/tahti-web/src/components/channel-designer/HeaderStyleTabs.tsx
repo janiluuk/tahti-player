@@ -7,12 +7,6 @@ export const HEADER_DESIGN_OPTIONS = [
 ] as const;
 export type HeaderDesignMode = (typeof HEADER_DESIGN_OPTIONS)[number];
 
-/** Exclusive header chrome modes — Visualization is a focus tab only. */
-export const HEADER_STYLE_MUTATING_MODES = [
-  ...HEADER_STYLES,
-  'SLIDESHOW',
-] as const satisfies readonly HeaderDesignMode[];
-
 type Props = {
   value: HeaderDesignMode;
   onChange: (mode: HeaderDesignMode) => void;
@@ -65,9 +59,12 @@ export function HeaderStyleTabs({ value, onChange }: Props) {
 export function resolveHeaderDesignMode(
   headerStyle: string,
   slideshowSelected: boolean,
-): Exclude<HeaderDesignMode, 'VISUALIZATION'> {
+): HeaderDesignMode {
   if (slideshowSelected) {
     return 'SLIDESHOW';
+  }
+  if (headerStyle === 'VISUALIZATION') {
+    return 'VISUALIZATION';
   }
   if ((HEADER_STYLES as readonly string[]).includes(headerStyle)) {
     return headerStyle as HeaderStyle;

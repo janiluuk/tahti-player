@@ -10,6 +10,7 @@ import {
   Tooltip,
 } from '@tahti-player/ui';
 
+import type { TahtiPlayable } from '../api/types';
 import { hasNativePlayer } from '../lib/nativeCapabilities';
 import {
   getNativeLibrary,
@@ -23,6 +24,7 @@ import {
   useLocalLibraryStore,
 } from '../stores/localLibraryStore';
 import { usePlayerStore } from '../stores/playerStore';
+import { PlayableTrackTable } from './PlayableTrackTable';
 
 const FILE_LABELS = {
   title: 'Add audio files',
@@ -38,10 +40,29 @@ export function DesktopLibraryPanel() {
   const remove = useLocalLibraryStore((s) => s.remove);
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
-  const needsReimport = tracks.some((track) => !isLocalTrackPlayable(track));
   const filteredTracks = useMemo(
     () => filterLocalLibraryTracks(tracks, query),
     [query, tracks],
+  );
+  const unresolvedTracks = useMemo(
+    () => filteredTracks.filter((track) => !isLocalTrackPlayable(track)),
+    [filteredTracks],
+  );
+  const playableLocalTracks = useMemo(
+    () => filteredTracks.filter((track) => isLocalTrackPlayable(track)),
+    [filteredTracks],
+  );
+  const playableItems = useMemo(
+    () =>
+      playableLocalTracks
+        .map(playableFromLocalTrack)
+        .filter((item): item is TahtiPlayable => item !== null),
+    [playableLocalTracks],
+  );
+  const playableById = useMemo(
+    () =>
+      new Map(playableLocalTracks.map((track) => [`local:${track.id}`, track])),
+    [playableLocalTracks],
   );
   const nativePlayer = hasNativePlayer();
   const nativeLibrary = getNativeLibrary();
@@ -50,6 +71,9 @@ export function DesktopLibraryPanel() {
   const [nativeQuery, setNativeQuery] = useState('');
   const [nativeLoading, setNativeLoading] = useState(false);
   const [nativeError, setNativeError] = useState<string | null>(null);
+  const [nativeUnavailable, setNativeUnavailable] = useState<
+    NativeLibraryTrack[]
+  >([]);
 
   const refreshNative = useCallback(async () => {
     if (!nativeLibrary) {
@@ -58,9 +82,13 @@ export function DesktopLibraryPanel() {
     setNativeLoading(true);
     setNativeError(null);
     try {
-      const page = await nativeLibrary.list(nativeQuery, 0);
+      const [page, unavailable] = await Promise.all([
+        nativeLibrary.list(nativeQuery, 0),
+        nativeLibrary.listUnavailable(),
+      ]);
       setNativeTracks(page.tracks);
       setNativeTotal(page.total);
+      setNativeUnavailable(unavailable);
     } catch (error) {
       setNativeError(
         error instanceof Error ? error.message : 'Library unavailable.',
@@ -100,17 +128,100 @@ export function DesktopLibraryPanel() {
     setNativeLoading(true);
     try {
       const result = await nativeLibrary.import();
-      toast.success(
-        result.imported === 1
-          ? 'Imported 1 track.'
-          : `Imported ${result.imported} tracks.`,
-      );
+      if (result.imported > 0) {
+        toast.success(
+          result.imported === 1
+            ? 'Imported 1 track.'
+            : `Imported ${result.imported} tracks.`,
+        );
+      }
       if (result.errors.length) {
-        toast.error(`${result.errors.length} files could not be imported.`);
+        toast.error(
+          result.errors.length === 1
+            ? '1 file could not be imported.'
+            : `${result.errors.length} files could not be imported.`,
+          { description: describeImportFailures(result.errors) },
+        );
       }
       await refreshNative();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Import failed.');
+    } finally {
+      setNativeLoading(false);
+    }
+  };
+
+  const importNativeFolder = async () => {
+    if (!nativeLibrary) {
+      return;
+    }
+    setNativeLoading(true);
+    try {
+      const result = await nativeLibrary.importFolder();
+      if (result.imported > 0) {
+        toast.success(
+          result.imported === 1
+            ? 'Imported 1 track.'
+            : `Imported ${result.imported} tracks.`,
+        );
+      }
+      if (result.errors.length) {
+        toast.error(
+          result.errors.length === 1
+            ? '1 file could not be imported.'
+            : `${result.errors.length} files could not be imported.`,
+          { description: describeImportFailures(result.errors) },
+        );
+      }
+      await refreshNative();
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : 'Folder import failed.',
+      );
+    } finally {
+      setNativeLoading(false);
+    }
+  };
+
+  const rescanNative = async () => {
+    if (!nativeLibrary) {
+      return;
+    }
+    setNativeLoading(true);
+    try {
+      const unavailable = await nativeLibrary.rescan();
+      setNativeUnavailable(unavailable);
+      await refreshNative();
+      if (unavailable.length === 0) {
+        toast.success('All library files are available.');
+      } else {
+        toast.info(
+          unavailable.length === 1
+            ? '1 library file is still missing.'
+            : `${unavailable.length} library files are still missing.`,
+        );
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Re-scan failed.');
+    } finally {
+      setNativeLoading(false);
+    }
+  };
+
+  const relinkNative = async (track: NativeLibraryTrack) => {
+    if (!nativeLibrary) {
+      return;
+    }
+    setNativeLoading(true);
+    try {
+      const replacement = await nativeLibrary.relink(track.id);
+      if (!replacement) {
+        return;
+      }
+      await refreshNative();
+      toast.success(`Located “${replacement.title}”.`);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Relink failed.');
     } finally {
       setNativeLoading(false);
     }
@@ -136,14 +247,32 @@ export function DesktopLibraryPanel() {
     >
       {nativeLibrary ? (
         <>
-          <Button
-            variant="secondary"
-            onClick={() => void importNative()}
-            disabled={nativeLoading}
-          >
-            <LibraryIcon size={15} aria-hidden />
-            {nativeLoading ? 'Importing…' : 'Import files'}
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button
+              variant="secondary"
+              onClick={() => void importNative()}
+              disabled={nativeLoading}
+            >
+              <LibraryIcon size={15} aria-hidden />
+              {nativeLoading ? 'Working…' : 'Import files'}
+            </Button>
+            <Button
+              variant="text"
+              onClick={() => void importNativeFolder()}
+              disabled={nativeLoading}
+            >
+              Import folder
+            </Button>
+            {nativeUnavailable.length > 0 ? (
+              <Button
+                variant="text"
+                onClick={() => void rescanNative()}
+                disabled={nativeLoading}
+              >
+                Check missing files ({nativeUnavailable.length})
+              </Button>
+            ) : null}
+          </div>
           <Input
             type="search"
             label="Search desktop library"
@@ -171,32 +300,75 @@ export function DesktopLibraryPanel() {
                         {track.format.toUpperCase()} ·{' '}
                         {formatFileSize(track.sizeBytes)}
                       </p>
+                      {!track.available ? (
+                        <p className="text-destructive truncate text-xs">
+                          Original file is missing
+                        </p>
+                      ) : null}
                     </div>
-                    <Tooltip content="Play" side="top">
+                    {!track.available ? (
                       <Button
-                        size="icon-sm"
-                        variant="text"
-                        aria-label={`Play ${track.title}`}
-                        onClick={async () => {
-                          try {
-                            play(
-                              playableFromNativeTrack(
-                                track,
-                                await nativeLibrary.resolve(track.id),
-                              ),
-                            );
-                          } catch (error) {
-                            toast.error(
-                              error instanceof Error
-                                ? error.message
-                                : 'Track unavailable.',
-                            );
-                          }
-                        }}
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => void relinkNative(track)}
+                        disabled={nativeLoading}
                       >
-                        <PlayIcon size={14} aria-hidden />
+                        Locate
                       </Button>
-                    </Tooltip>
+                    ) : (
+                      <>
+                        <Tooltip content="Play" side="top">
+                          <Button
+                            size="icon-sm"
+                            variant="text"
+                            aria-label={`Play ${track.title}`}
+                            onClick={async () => {
+                              try {
+                                play(
+                                  playableFromNativeTrack(
+                                    track,
+                                    await nativeLibrary.resolve(track.id),
+                                  ),
+                                );
+                              } catch (error) {
+                                toast.error(
+                                  error instanceof Error
+                                    ? error.message
+                                    : 'Track unavailable.',
+                                );
+                              }
+                            }}
+                          >
+                            <PlayIcon size={14} aria-hidden />
+                          </Button>
+                        </Tooltip>
+                        <Tooltip content="Add to queue" side="top">
+                          <Button
+                            size="sm"
+                            variant="text"
+                            aria-label={`Queue ${track.title}`}
+                            onClick={async () => {
+                              try {
+                                enqueue(
+                                  playableFromNativeTrack(
+                                    track,
+                                    await nativeLibrary.resolve(track.id),
+                                  ),
+                                );
+                              } catch (error) {
+                                toast.error(
+                                  error instanceof Error
+                                    ? error.message
+                                    : 'Track unavailable.',
+                                );
+                              }
+                            }}
+                          >
+                            Queue
+                          </Button>
+                        </Tooltip>
+                      </>
+                    )}
                     <Tooltip content="Remove" side="top">
                       <Button
                         size="icon-sm"
@@ -298,100 +470,103 @@ export function DesktopLibraryPanel() {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
             />
-            {needsReimport ? (
-              <p className="text-foreground-secondary text-xs">
-                Some tracks need the original file again before they can play.
-              </p>
-            ) : null}
-            {filteredTracks.length === 0 ? (
-              <EmptyState
-                size="sm"
-                title="No local files found"
-                description={`Nothing matches “${query.trim()}”.`}
-                className="flex-1"
-              />
-            ) : (
-              <ul className="tahti-hide-scrollbar flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto">
-                {filteredTracks.map((track) => {
-                  const playable = isLocalTrackPlayable(track);
-                  return (
-                    <li
-                      key={track.id}
-                      className="border-border flex items-center gap-2 rounded-md border px-2 py-1.5"
-                    >
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-semibold">
-                          {track.title}
-                        </p>
-                        <p className="text-foreground-secondary truncate text-xs">
-                          {playable
-                            ? track.artist
-                            : `Re-import ${track.fileName} to play`}
-                        </p>
-                        {track.fileSize ? (
-                          <p className="text-foreground-secondary truncate text-[10px] opacity-70">
-                            {formatFileSize(track.fileSize)}
-                            {track.mimeType ? ` · ${track.mimeType}` : ''}
-                          </p>
-                        ) : null}
-                      </div>
-                      <Tooltip content="Play" side="top">
-                        <Button
-                          size="icon-sm"
-                          variant="text"
-                          disabled={!playable}
-                          aria-label={`Play ${track.title}`}
-                          onClick={() => {
-                            const next = playableFromLocalTrack(track);
-                            if (next) {
-                              play(next);
-                            }
-                          }}
-                        >
-                          <PlayIcon size={14} aria-hidden />
-                        </Button>
-                      </Tooltip>
-                      <Tooltip content="Add to queue" side="top">
-                        <Button
-                          size="sm"
-                          variant="text"
-                          disabled={!playable}
-                          aria-label={`Queue ${track.title}`}
-                          onClick={() => {
-                            const next = playableFromLocalTrack(track);
-                            if (!next) {
-                              return;
-                            }
-                            enqueue(next);
-                            toast.success(`Queued “${track.title}”.`);
-                          }}
-                        >
-                          Queue
-                        </Button>
-                      </Tooltip>
-                      <Tooltip content="Remove" side="top">
-                        <Button
-                          size="icon-sm"
-                          variant="text"
-                          intent="danger"
-                          aria-label={`Remove ${track.title}`}
-                          onClick={() => {
-                            remove(track.id);
-                            toast.success(`Removed “${track.title}”.`);
-                          }}
-                        >
-                          <TrashIcon size={14} aria-hidden />
-                        </Button>
-                      </Tooltip>
-                    </li>
-                  );
-                })}
+            {unresolvedTracks.length > 0 ? (
+              <ul className="tahti-hide-scrollbar flex max-h-32 flex-col gap-1 overflow-y-auto">
+                {unresolvedTracks.map((track) => (
+                  <li
+                    key={track.id}
+                    className="border-border flex items-center gap-2 rounded-md border px-2 py-1.5"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold">
+                        {track.title}
+                      </p>
+                      <p className="text-foreground-secondary truncate text-xs">
+                        Re-import {track.fileName} to play
+                      </p>
+                    </div>
+                    <Tooltip content="Remove" side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="text"
+                        intent="danger"
+                        aria-label={`Remove ${track.title}`}
+                        onClick={() => {
+                          remove(track.id);
+                          toast.success(`Removed “${track.title}”.`);
+                        }}
+                      >
+                        <TrashIcon size={14} aria-hidden />
+                      </Button>
+                    </Tooltip>
+                  </li>
+                ))}
               </ul>
+            ) : null}
+            {playableItems.length === 0 ? (
+              unresolvedTracks.length === 0 ? (
+                <EmptyState
+                  size="sm"
+                  title="No local files found"
+                  description={`Nothing matches “${query.trim()}”.`}
+                  className="flex-1"
+                />
+              ) : null
+            ) : (
+              <div className="min-h-0 flex-1 overflow-y-auto">
+                <PlayableTrackTable
+                  items={playableItems}
+                  selectable
+                  onRemove={(item) => {
+                    const track = playableById.get(item.id);
+                    if (!track) {
+                      return;
+                    }
+                    remove(track.id);
+                    toast.success(`Removed “${item.title}”.`);
+                  }}
+                  onBulkRemove={(items) => {
+                    for (const item of items) {
+                      const track = playableById.get(item.id);
+                      if (track) {
+                        remove(track.id);
+                      }
+                    }
+                    toast.success(
+                      items.length === 1
+                        ? 'Removed 1 track.'
+                        : `Removed ${items.length} tracks.`,
+                    );
+                  }}
+                  compactActions
+                />
+              </div>
             )}
           </>
         ))}
     </div>
   );
+}
+
+const MAX_LISTED_IMPORT_FAILURES = 5;
+
+export function describeImportFailures(
+  errors: ReadonlyArray<{ path: string; error: string }>,
+): string {
+  const lines = errors
+    .slice(0, MAX_LISTED_IMPORT_FAILURES)
+    .map((failure) => `${basename(failure.path)}: ${failure.error}`);
+  const remaining = errors.length - lines.length;
+  if (remaining > 0) {
+    lines.push(`…and ${remaining} more.`);
+  }
+  return lines.join('\n');
+}
+
+function basename(path: string): string {
+  const normalized = path.replace(/\\/g, '/');
+  const segments = normalized.split('/');
+  return segments[segments.length - 1] || path;
 }
 
 function formatFileSize(bytes: number): string {

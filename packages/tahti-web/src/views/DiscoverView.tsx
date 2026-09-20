@@ -332,22 +332,28 @@ export function DiscoverView() {
           ))}
         </Tabs.List>
       </Tabs.Root>
-      <ViewShell title="Discover" classes={{ root: 'px-0 pt-0' }}>
-        <header className="mb-4 flex flex-wrap items-center gap-2">
-          {activeTab === 'venues' ? (
+      <ViewShell
+        title="Discover"
+        classes={{ root: 'px-0 pt-0' }}
+        actions={
+          activeTab === 'discover' ? (
+            <DiscoverAddWidgetButton
+              availableToAdd={availableToAdd}
+              onAdd={addWidget}
+            />
+          ) : undefined
+        }
+      >
+        {activeTab === 'venues' ? (
+          <header className="mb-4 flex flex-wrap items-center gap-2">
             <Link
               to="/venues/register"
               className="text-sm font-medium underline-offset-2 hover:underline"
             >
               Register a venue
             </Link>
-          ) : activeTab === 'discover' ? (
-            <DiscoverAddWidgetButton
-              availableToAdd={availableToAdd}
-              onAdd={addWidget}
-            />
-          ) : null}
-        </header>
+          </header>
+        ) : null}
 
         {activeTab === 'discover' ? (
           <div className="flex flex-col gap-3">

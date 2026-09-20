@@ -1,7 +1,9 @@
 import {
+  InfoIcon,
   ListPlus,
   PauseIcon,
   PlayIcon,
+  PlusIcon,
   PowerIcon,
   Radio as RadioIcon,
   SearchIcon,
@@ -50,7 +52,10 @@ import {
 } from '../../content/radioStations';
 import { flagEmoji } from '../../lib/countries';
 import { useLibraryStore } from '../../stores/libraryStore';
-import { useListenerWidgetsStore } from '../../stores/listenerWidgetsStore';
+import {
+  useListenerWidgetsStore,
+  type SavedBrowserStation,
+} from '../../stores/listenerWidgetsStore';
 import { usePlayerStore } from '../../stores/playerStore';
 import { useRadioBrowserStore } from '../../stores/radioBrowserStore';
 import { RadioStationCover } from '../RadioStationCover';
@@ -295,13 +300,17 @@ function PersonalRadioStreamCard() {
 function RadioBrowserStationRow({
   station,
   onPlay,
+  isPlaying,
   isSaved,
   onToggleSave,
+  onInfo,
 }: {
   station: PublicRadioStation;
   onPlay: () => void;
+  isPlaying: boolean;
   isSaved: boolean;
   onToggleSave: () => void;
+  onInfo?: () => void;
 }) {
   return (
     <li className="border-border hover:bg-background-secondary flex items-center gap-2 rounded-md border p-1.5 pr-1">
@@ -330,16 +339,38 @@ function RadioBrowserStationRow({
           {station.country ?? station.tags?.[0] ?? 'Unknown'}
         </span>
       </button>
-      <Tooltip content={`Play ${station.name}`} side="top">
+      <Tooltip
+        content={isPlaying ? 'Pause' : `Play ${station.name}`}
+        side="top"
+      >
         <Button
           size="icon-sm"
-          variant="secondary"
-          aria-label={`Play ${station.name}`}
+          variant={isPlaying ? undefined : 'secondary'}
+          aria-label={
+            isPlaying ? `Pause ${station.name}` : `Play ${station.name}`
+          }
+          aria-pressed={isPlaying}
           onClick={onPlay}
         >
-          <PlayIcon size={14} aria-hidden />
+          {isPlaying ? (
+            <PauseIcon size={14} aria-hidden />
+          ) : (
+            <PlayIcon size={14} aria-hidden />
+          )}
         </Button>
       </Tooltip>
+      {onInfo && (
+        <Tooltip content={`View ${station.name} details`} side="top">
+          <Button
+            size="icon-sm"
+            variant="secondary"
+            aria-label={`View ${station.name} details`}
+            onClick={onInfo}
+          >
+            <InfoIcon size={14} aria-hidden />
+          </Button>
+        </Tooltip>
+      )}
       <SaveButton
         size="sm"
         label={isSaved ? 'Saved' : 'Save'}
@@ -451,6 +482,9 @@ function RadioBrowserDirectoryCard() {
   const toggleSavedBrowserStation = useListenerWidgetsStore(
     (s) => s.toggleSavedBrowserStation,
   );
+  const addSavedBrowserStation = useListenerWidgetsStore(
+    (s) => s.addSavedBrowserStation,
+  );
   const enabledStationIds = useListenerWidgetsStore((s) => s.enabledStationIds);
   const toggleStation = useListenerWidgetsStore((s) => s.toggleStation);
   const stationOverrides = useListenerWidgetsStore((s) => s.stationOverrides);
@@ -475,6 +509,19 @@ function RadioBrowserDirectoryCard() {
   const [streamTestBusy, setStreamTestBusy] = useState(false);
   const [streamTestResult, setStreamTestResult] =
     useState<RadioStreamTestResult | null>(null);
+  const [viewingStation, setViewingStation] =
+    useState<SavedBrowserStation | null>(null);
+  const [addUrlOpen, setAddUrlOpen] = useState(false);
+  const [addUrlDraft, setAddUrlDraft] = useState('');
+  const [addUrlDescription, setAddUrlDescription] = useState('');
+  const [addUrlProgrammingUrl, setAddUrlProgrammingUrl] = useState('');
+  const [addUrlBusy, setAddUrlBusy] = useState(false);
+  const [addUrlResolution, setAddUrlResolution] = useState<{
+    streamUrl: string;
+    title?: string;
+    found: PublicRadioStation | null;
+    test: RadioStreamTestResult;
+  } | null>(null);
 
   useEffect(() => {
     if (!enabled || loaded) {
@@ -508,8 +555,23 @@ function RadioBrowserDirectoryCard() {
     });
   };
 
-  const playStation = (station: PublicRadioStation) =>
+  const browserStationIsPlaying = (station: PublicRadioStation) => {
+    const isCurrent = currentId === `radio:${station.id}`;
+    return (
+      isCurrent &&
+      (playbackStatus === 'playing' || playbackStatus === 'loading')
+    );
+  };
+  const playStation = (station: PublicRadioStation) => {
+    const isCurrent = currentId === `radio:${station.id}`;
+    if (isCurrent) {
+      setPlaybackStatus(
+        browserStationIsPlaying(station) ? 'paused' : 'playing',
+      );
+      return;
+    }
     play(playableFromRadioStation(station));
+  };
   const saveProps = (station: PublicRadioStation) => ({
     isSaved: savedBrowserStations.some((item) => item.id === station.id),
     onToggleSave: () =>
@@ -519,12 +581,60 @@ function RadioBrowserDirectoryCard() {
         streamUrl: station.streamUrl,
         favicon: station.favicon,
         country: station.country,
+        homepage: station.homepage,
+        countryCode: station.countryCode,
       }),
   });
 
   const savedStations = savedBrowserStations.filter((station) =>
     Boolean(station.streamUrl),
   );
+
+  const closeAddUrl = () => {
+    setAddUrlOpen(false);
+    setAddUrlDraft('');
+    setAddUrlDescription('');
+    setAddUrlProgrammingUrl('');
+    setAddUrlBusy(false);
+    setAddUrlResolution(null);
+  };
+
+  const resolveAddUrl = () => {
+    const input = addUrlDraft.trim();
+    if (!input) {
+      return;
+    }
+    setAddUrlBusy(true);
+    setAddUrlResolution(null);
+    void (async () => {
+      const { streamUrl, title } = await resolveStreamUrl(input);
+      const [found, test] = await Promise.all([
+        lookupStationByUrl(streamUrl),
+        testRadioStream(streamUrl),
+      ]);
+      setAddUrlBusy(false);
+      setAddUrlResolution({ streamUrl, title, found, test });
+    })();
+  };
+
+  const saveAddUrl = () => {
+    if (!addUrlResolution) {
+      return;
+    }
+    const { streamUrl, title, found } = addUrlResolution;
+    addSavedBrowserStation({
+      id: found?.id ?? streamUrl,
+      name: found?.name ?? title ?? streamUrl,
+      streamUrl,
+      favicon: found?.favicon,
+      country: found?.country,
+      homepage: found?.homepage,
+      countryCode: found?.countryCode,
+      description: addUrlDescription.trim() || undefined,
+      programmingUrl: addUrlProgrammingUrl.trim() || undefined,
+    });
+    closeAddUrl();
+  };
 
   const curatedStations = RADIO_STATIONS.map((baseStation) => ({
     ...baseStation,
@@ -569,9 +679,19 @@ function RadioBrowserDirectoryCard() {
                 content: (
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-2">
-                      <h3 className="font-display text-sm font-bold tracking-wide uppercase">
-                        Your stations
-                      </h3>
+                      <div className="flex items-center justify-between gap-2">
+                        <h3 className="font-display text-sm font-bold tracking-wide uppercase">
+                          Your stations
+                        </h3>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => setAddUrlOpen(true)}
+                        >
+                          <PlusIcon size={14} aria-hidden className="mr-1.5" />
+                          Add URL
+                        </Button>
+                      </div>
                       {savedStations.length === 0 ? (
                         <EmptyState
                           size="sm"
@@ -587,6 +707,8 @@ function RadioBrowserDirectoryCard() {
                               streamUrl: station.streamUrl,
                               favicon: station.favicon,
                               country: station.country,
+                              homepage: station.homepage,
+                              countryCode: station.countryCode,
                               source: 'unknown',
                             };
                             return (
@@ -594,6 +716,8 @@ function RadioBrowserDirectoryCard() {
                                 key={station.id}
                                 station={row}
                                 onPlay={() => playStation(row)}
+                                isPlaying={browserStationIsPlaying(row)}
+                                onInfo={() => setViewingStation(station)}
                                 {...saveProps(row)}
                               />
                             );
@@ -748,6 +872,7 @@ function RadioBrowserDirectoryCard() {
                               key={station.id}
                               station={station}
                               onPlay={() => playStation(station)}
+                              isPlaying={browserStationIsPlaying(station)}
                               {...saveProps(station)}
                             />
                           ))}
@@ -879,6 +1004,149 @@ function RadioBrowserDirectoryCard() {
               <SaveButton type="submit" label="Save station" />
             </Dialog.Actions>
           </form>
+        )}
+      </Dialog.Root>
+
+      <Dialog.Root
+        isOpen={addUrlOpen}
+        onClose={closeAddUrl}
+        className="max-w-lg"
+      >
+        <Dialog.Title>Add a station by URL</Dialog.Title>
+        <Dialog.Description>
+          Paste an M3U/M3U8 playlist or a direct stream URL. We'll validate it
+          plays and look up its details in the public Radio Browser directory
+          when it's listed there.
+        </Dialog.Description>
+        <div className="mt-4 flex flex-col gap-3">
+          <div className="flex flex-wrap gap-2">
+            <Input
+              className="min-w-0 flex-1 basis-48"
+              size="sm"
+              value={addUrlDraft}
+              onChange={(e) => {
+                setAddUrlDraft(e.target.value);
+                setAddUrlResolution(null);
+              }}
+              placeholder="https://example.com/stream.m3u8"
+            />
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              disabled={!addUrlDraft.trim() || addUrlBusy}
+              onClick={resolveAddUrl}
+            >
+              {addUrlBusy ? 'Testing…' : 'Resolve & test'}
+            </Button>
+          </div>
+          {addUrlResolution && (
+            <div className="border-border flex flex-col gap-1 rounded-lg border px-3 py-2 text-sm">
+              <span className="font-medium">
+                {addUrlResolution.found?.name ??
+                  addUrlResolution.title ??
+                  addUrlResolution.streamUrl}
+              </span>
+              {addUrlResolution.found?.country && (
+                <span className="text-foreground-secondary text-xs">
+                  {flagEmoji(addUrlResolution.found.countryCode)}{' '}
+                  {addUrlResolution.found.country}
+                </span>
+              )}
+              <span
+                className={`text-xs ${addUrlResolution.test.ok ? 'text-accent-green' : 'text-foreground-secondary'}`}
+              >
+                {addUrlResolution.test.ok ? '✓ ' : ''}
+                {addUrlResolution.test.message}
+              </span>
+              {!addUrlResolution.found && (
+                <span className="text-foreground-secondary text-xs">
+                  Not in the public station directory — saving with the name
+                  from the playlist, if any.
+                </span>
+              )}
+            </div>
+          )}
+          <Input
+            size="sm"
+            label="Description (optional)"
+            value={addUrlDescription}
+            onChange={(e) => setAddUrlDescription(e.target.value)}
+            placeholder="What makes this station worth keeping"
+          />
+          <Input
+            size="sm"
+            label="Programme schedule link (optional)"
+            value={addUrlProgrammingUrl}
+            onChange={(e) => setAddUrlProgrammingUrl(e.target.value)}
+            placeholder="https://station.example/schedule"
+          />
+        </div>
+        <Dialog.Actions>
+          <Dialog.Close>Cancel</Dialog.Close>
+          <Button
+            type="button"
+            disabled={!addUrlResolution}
+            onClick={saveAddUrl}
+          >
+            <PlusIcon size={14} aria-hidden className="mr-1.5" />
+            Add to my stations
+          </Button>
+        </Dialog.Actions>
+      </Dialog.Root>
+
+      <Dialog.Root
+        isOpen={viewingStation !== null}
+        onClose={() => setViewingStation(null)}
+        className="max-w-md"
+      >
+        {viewingStation && (
+          <>
+            <Dialog.Title>
+              {flagEmoji(viewingStation.countryCode)} {viewingStation.name}
+            </Dialog.Title>
+            <Dialog.Description>
+              {viewingStation.country ?? 'Internet radio'}
+            </Dialog.Description>
+            <div className="mt-4 flex flex-col gap-3 text-sm">
+              {viewingStation.description && (
+                <p className="text-foreground-secondary">
+                  {viewingStation.description}
+                </p>
+              )}
+              {viewingStation.homepage ? (
+                <a
+                  href={viewingStation.homepage}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-accent-blue underline underline-offset-2"
+                >
+                  Visit website
+                </a>
+              ) : (
+                <span className="text-foreground-secondary text-xs">
+                  No website on file for this station.
+                </span>
+              )}
+              {viewingStation.programmingUrl ? (
+                <a
+                  href={viewingStation.programmingUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-accent-blue underline underline-offset-2"
+                >
+                  View current programme
+                </a>
+              ) : (
+                <span className="text-foreground-secondary text-xs">
+                  No programming link configured for this station.
+                </span>
+              )}
+            </div>
+            <Dialog.Actions>
+              <Dialog.Close>Close</Dialog.Close>
+            </Dialog.Actions>
+          </>
         )}
       </Dialog.Root>
     </>

@@ -121,6 +121,7 @@ export function ThemesCategory() {
           onThemeChange={(nextDark) =>
             setColorMode(nextDark ? 'dark' : 'light')
           }
+          showLabels
         />
         <div className="flex items-center gap-2">
           <Toggle
@@ -455,12 +456,12 @@ export function VisualizersCategory() {
       <p className="text-foreground-secondary text-xs">
         Header style, color scheme, and enable/disable live in{' '}
         <Link
-          to="/studio/branding"
-          search={{ tab: 'channel-designer' }}
+          to="/settings/$section"
+          params={{ section: 'channel' }}
           className="underline underline-offset-2"
           onClick={() => useSettingsModalStore.getState().close()}
         >
-          Studio → Branding → Channel Designer
+          Settings → Channel & design → Channel Designer
         </Link>
         .
       </p>

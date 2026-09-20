@@ -1,7 +1,13 @@
 import { SearchIcon, UserRoundIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Input, Select, ViewShell } from '@tahti-player/ui';
+import {
+  Input,
+  Select,
+  SelectableList,
+  SelectableListItem,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import { fetchAdminUsers, type AdminUserRow } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
@@ -89,36 +95,20 @@ export const AdminUsersView = () => {
                   ) : users.length === 0 ? (
                     <PageEmpty title="No users match these filters" />
                   ) : (
-                    <ul className="flex flex-col gap-1">
-                      {users.map((user) => (
-                        <li key={user.id}>
-                          <button
-                            type="button"
-                            onClick={() => setSelectedId(user.id)}
-                            aria-pressed={selectedId === user.id}
-                            className={`w-full rounded-lg border px-3 py-2.5 text-left transition-colors ${
-                              selectedId === user.id
-                                ? 'border-primary bg-primary/10'
-                                : 'hover:border-border hover:bg-background-secondary border-transparent'
-                            }`}
-                          >
-                            <span className="flex items-center justify-between gap-2">
-                              <span className="truncate text-sm font-medium">
-                                {user.displayName}
-                              </span>
-                              <span className="text-foreground-secondary shrink-0 text-[10px] font-semibold tracking-wide uppercase">
-                                {user.role.charAt(0) +
-                                  user.role.slice(1).toLowerCase()}
-                              </span>
-                            </span>
-                            <span className="text-foreground-secondary block truncate text-xs">
-                              @{user.username}
-                              {user.suspendedAt ? ' · suspended' : ''}
-                            </span>
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
+                    <SelectableList
+                      items={users.map(
+                        (user): SelectableListItem => ({
+                          id: user.id,
+                          title: user.displayName,
+                          subtitle: `@${user.username}${user.suspendedAt ? ' · suspended' : ''}`,
+                          meta:
+                            user.role.charAt(0) +
+                            user.role.slice(1).toLowerCase(),
+                        }),
+                      )}
+                      selected={selectedId}
+                      onChange={setSelectedId}
+                    />
                   )}
                 </div>
               </StudioPanel>

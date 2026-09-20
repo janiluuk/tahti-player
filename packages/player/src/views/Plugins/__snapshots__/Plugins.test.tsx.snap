@@ -204,7 +204,7 @@ exports[`Plugins view > (Snapshot) renders the plugins view 1`] = `
                   />
                 </svg>
               </span>
-              Plugins
+              Add-ons
             </button>
             <button
               class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-10 px-4 py-2 shrink-0 justify-start gap-2"
@@ -437,7 +437,7 @@ exports[`Plugins view > (Snapshot) renders the plugins view 1`] = `
             <span
               class="min-w-0 truncate text-sm font-semibold"
             >
-              Plugins
+              Add-ons
             </span>
           </div>
           <div
@@ -451,7 +451,7 @@ exports[`Plugins view > (Snapshot) renders the plugins view 1`] = `
                 class="mb-6 flex w-full flex-0 flex-row text-center text-3xl font-bold"
                 data-testid="title"
               >
-                Plugins
+                Add-ons
               </h1>
               <div
                 class="relative h-full flex min-h-0 w-full flex-1 flex-col"
@@ -598,7 +598,7 @@ exports[`Plugins view > (Snapshot) renders the plugins view 1`] = `
                                     data-headlessui-state=""
                                     type="button"
                                   >
-                                    Add Plugin
+                                    Add add-on
                                   </button>
                                 </div>
                                 <div
@@ -641,12 +641,12 @@ exports[`Plugins view > (Snapshot) renders the plugins view 1`] = `
                                     <h3
                                       class="text-foreground text-lg font-bold"
                                     >
-                                      No plugins installed
+                                      No add-ons installed
                                     </h3>
                                     <p
                                       class="text-foreground text-sm opacity-60"
                                     >
-                                      Browse the plugin store to find streaming, metadata, and other plugins.
+                                      Browse the add-on store to find streaming, metadata, and other add-ons.
                                     </p>
                                   </div>
                                   <div>

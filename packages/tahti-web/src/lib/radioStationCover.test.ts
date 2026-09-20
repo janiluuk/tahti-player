@@ -66,7 +66,10 @@ describe('radio station cover', () => {
       useListenerWidgetsStore.getState().stationOverrides['radio-helsinki']
         ?.logoUrl,
     ).toBe(logoUrl);
-    expect(listMockInternetRadioPresets()[0]?.iconUrl).toBe(logoUrl);
+    expect(
+      listMockInternetRadioPresets().find((p) => p.name === 'Radio Helsinki')
+        ?.iconUrl,
+    ).toBe(logoUrl);
   });
 
   it('updates a matching catalog station when only the preset is named', async () => {
@@ -83,7 +86,10 @@ describe('radio station cover', () => {
       useListenerWidgetsStore.getState().stationOverrides['radio-helsinki']
         ?.logoUrl,
     ).toBe(logoUrl);
-    expect(listMockInternetRadioPresets()[0]?.iconUrl).toBe(logoUrl);
+    expect(
+      listMockInternetRadioPresets().find((p) => p.name === 'Radio Helsinki')
+        ?.iconUrl,
+    ).toBe(logoUrl);
   });
 
   it('absolutizes same-origin catalog logo paths before patching the preset', async () => {
@@ -94,9 +100,10 @@ describe('radio station cover', () => {
     });
 
     expect(result).toEqual({ ok: true });
-    expect(listMockInternetRadioPresets()[0]?.iconUrl).toMatch(
-      /^https?:\/\/.+\/radio-logos\/radio-helsinki\.png$/,
-    );
+    expect(
+      listMockInternetRadioPresets().find((p) => p.name === 'Radio Helsinki')
+        ?.iconUrl,
+    ).toMatch(/^https?:\/\/.+\/radio-logos\/radio-helsinki\.png$/);
   });
 
   it('reads an uploaded file as a persistable data URL in mock mode', async () => {

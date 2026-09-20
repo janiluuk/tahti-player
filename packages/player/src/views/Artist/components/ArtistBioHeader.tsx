@@ -3,7 +3,7 @@ import { FC } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import { pickArtwork } from '@tahti-player/model';
-import { Box, Loader } from '@tahti-player/ui';
+import { Badge, Box, Loader } from '@tahti-player/ui';
 
 import { ConnectedFavoriteButton } from '../../../components/ConnectedFavoriteButton';
 import { useArtistBio } from '../hooks/useArtistBio';
@@ -85,19 +85,25 @@ export const ArtistBioHeader: FC<ArtistBioHeaderProps> = ({
           {!isEmpty(artist.tags) && (
             <div className="flex flex-wrap gap-2">
               {artist.tags?.map((tag) => (
-                <span
+                <Badge
                   key={tag}
-                  className="border-border bg-background rounded-md border px-2 py-0.5 text-sm font-bold"
+                  variant="pill"
+                  color="secondary"
+                  className="py-0.5 text-sm font-bold"
                 >
                   {tag}
-                </span>
+                </Badge>
               ))}
             </div>
           )}
           {artist.onTour && (
-            <span className="bg-accent-green border-border inline-flex w-fit rounded-md border px-2 py-0.5 text-sm font-bold">
+            <Badge
+              variant="pill"
+              color="green"
+              className="w-fit py-0.5 text-sm font-bold"
+            >
               {t('onTour')}
-            </span>
+            </Badge>
           )}
           {artist.bio && (
             <p className="text-foreground-secondary line-clamp-5 text-sm leading-relaxed">

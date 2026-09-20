@@ -287,10 +287,10 @@ export const PORT_GAP_HIGHLIGHTS: PortInventoryItem[] = [
   {
     id: 'gap-press-kit-gallery',
     surface: 'Press-kit gallery',
-    route: '/studio/branding',
+    route: '/settings/artist?tab=gallery',
     status: 'done',
     detail:
-      '/api/me/press-kit/images/* upload/delete; ArtistGalleryPanel wired into the gallery tab.',
+      '/api/me/press-kit/images/* upload/delete; ArtistGalleryPanel wired into Settings → Artist → Gallery.',
     section: 'gap',
   },
 ];

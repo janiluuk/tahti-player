@@ -1,7 +1,14 @@
 import { PlusIcon, RotateCcwIcon, UploadIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Button, Dialog, Input, Tooltip, ViewShell } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  ImageThumbnailPicker,
+  Input,
+  Tooltip,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
@@ -176,27 +183,16 @@ export function AdminArtworkPresetsView() {
               </div>
             }
           >
-            <div className="grid gap-3 sm:grid-cols-4 lg:grid-cols-8">
-              {DEFAULT_ARTWORKS.map((_, index) => (
-                <button
-                  key={DEFAULT_NAMES[index]}
-                  type="button"
-                  onClick={() => openSlotEditor(index)}
-                  className={`border-border overflow-hidden rounded-lg border text-left ${selected === index && editorOpen ? 'ring-primary ring-2' : ''}`}
-                  aria-label={`Edit ${DEFAULT_NAMES[index]}`}
-                >
-                  <img
-                    src={activeUrls[index]}
-                    alt=""
-                    className="aspect-square w-full"
-                  />
-                  <span className="block px-2 py-1 text-xs">
-                    {DEFAULT_NAMES[index]}
-                    {assignments[index] != null ? ' · custom' : ''}
-                  </span>
-                </button>
-              ))}
-            </div>
+            <ImageThumbnailPicker
+              items={DEFAULT_ARTWORKS.map((_, index) => ({
+                id: String(index),
+                imageUrl: activeUrls[index] ?? '',
+                label: `${DEFAULT_NAMES[index]}${assignments[index] != null ? ' · custom' : ''}`,
+                ariaLabel: `Edit ${DEFAULT_NAMES[index]}`,
+              }))}
+              selected={editorOpen ? String(selected) : null}
+              onSelect={(id) => openSlotEditor(Number(id))}
+            />
           </ViewShell>
         </div>
       </AdminPageLayout>
@@ -241,35 +237,30 @@ export function AdminArtworkPresetsView() {
               <span className="text-foreground text-sm font-semibold">
                 Assign from your artwork
               </span>
-              <div className="flex flex-wrap gap-2">
-                {customPool.map((url) => (
+              <ImageThumbnailPicker
+                layout="inline"
+                items={customPool.map((url) => ({
+                  id: url,
+                  imageUrl: url,
+                  ariaLabel: 'Assign this artwork to the selected slot',
+                }))}
+                selected={assignments[selected] ?? null}
+                onSelect={assignToSelected}
+                trailingAction={
                   <button
-                    key={url}
                     type="button"
-                    onClick={() => assignToSelected(url)}
-                    aria-label="Assign this artwork to the selected slot"
-                    className={`size-12 overflow-hidden rounded-md border ${assignments[selected] === url ? 'border-primary ring-primary ring-2' : 'border-border'}`}
+                    onClick={() => {
+                      setUploadTarget('slot');
+                      setUploadOpen(true);
+                    }}
+                    aria-label="Upload a new artwork"
+                    title="Upload a new artwork"
+                    className="border-border text-foreground-secondary flex size-12 items-center justify-center rounded-md border border-dashed"
                   >
-                    <img
-                      src={url}
-                      alt=""
-                      className="h-full w-full object-cover"
-                    />
+                    <PlusIcon size={16} aria-hidden />
                   </button>
-                ))}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setUploadTarget('slot');
-                    setUploadOpen(true);
-                  }}
-                  aria-label="Upload a new artwork"
-                  title="Upload a new artwork"
-                  className="border-border text-foreground-secondary flex size-12 items-center justify-center rounded-md border border-dashed"
-                >
-                  <PlusIcon size={16} aria-hidden />
-                </button>
-              </div>
+                }
+              />
             </div>
           ) : null}
         </div>

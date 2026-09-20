@@ -77,15 +77,15 @@ on `document.visibilitychange`.
 
 | File | Lines | Split plan |
 |---|---|---|
-| `api/admin.ts` | ~3579 | **Partial 2026-09-11:** radio / storage(+files) / addons → `api/admin/admin-*.ts` + re-export. Still: users, streams, content, logs, governance, … |
-| `PluginStorePanel.tsx` | ~488 | **Partial 2026-09-11:** Radio + Service + Themes/Visualizers extracted under `plugin-store/`. Shell left: Multicast / Audio / Tools / Discovery / Channel |
-| `api/client.ts` | 2863 | Fetch helpers, auth, error handling, mock fallback |
-| `SettingsPanels.tsx` | 2523 | Extract each tab to its own file |
-| `ChannelDesigner.tsx` | 2048 | Colors, layout, overlay, page blocks sub-panels |
-| `api/studio.ts` | 1845 | Tracks, releases, collections, schedule |
-| `router.tsx` | 1817 | Route definitions by section |
-| `ArtistView.tsx` | 1754 | Extract tab bodies |
-| `ChannelView.tsx` | 1677 | Chat rail, visualizer, layout blocks |
+| `api/admin.ts` | ~436 | **Done 2026-09-15** — all domains peeled to `api/admin/admin-*.ts` except activity-feed/audit-topic and container logs, deliberately left (flagged as in-flight elsewhere) |
+| `PluginStorePanel.tsx` | ~166 | **Done** as thin shell; categories under `plugin-store/` |
+| `api/client.ts` | ~1419 | **Done** (named-module split): `client-request.ts` + `client-auth.ts` + `governance-member.ts` + `embeds.ts` + `radio-public.ts` + `membership.ts` + `listen.ts` |
+| `SettingsPanels.tsx` | ~110 | **Done 2026-09-12** — one panel per file under `views/settings/panels/` |
+| `ChannelDesigner.tsx` | ~1800 | **Partial 2026-09-15, second slice 2026-09-17** — 4 low-coupling JSX chunks extracted 2026-09-15 (toolbar, saved-looks row, applied-preset banner, static preview section), then 5 dialogs + 2 small controls extracted 2026-09-17 (overlay config, visualizer picker, save/delete/reset preset dialogs, identity toggles, tuning sliders); remaining body (state, effects, save/preset logic, ~180-line slideshow section) still tightly closure-coupled, see `codebase-refactor-hotspots.md` items 12 and 20 |
+| `api/studio.ts` | ~5 (barrel) | **Done 2026-09-15** — peeled into `api/studio/studio-{sounds,releases,collections,upload,editor}.ts` + shared `studio-request.ts`/`studio-mock.ts`, matching the source file's own section boundaries (not literally "tracks, releases, collections, schedule" as originally guessed here — see `codebase-refactor-hotspots.md` item 15) |
+| `router.tsx` | 382 (assembly only) | **Done 2026-09-15** — peeled into `router/routes-*.tsx` by nav section (listen/settings/admin/library/transparency/help/auth/governance/info/studio/embed) + `router/router-core.tsx` + `router/router-lazy-views.ts`; see `codebase-refactor-hotspots.md` item 16 |
+| `ArtistView.tsx` | ~1500 | **Done 2026-09-15** — Releases/Collections tab bodies extracted, then the "Music" tab body too (turned out to be a pure JSX+props extraction, not closure-coupled state — see `codebase-refactor-hotspots.md` item 13); all three tab components moved into `components/artist-view/` |
+| `ChannelView.tsx` | ~1450 | **Done 2026-09-16** — hooks-order bug fixed (PR #94), the 11 small `renderBlock` cases extracted to `ChannelViewBlocks.tsx`, then `hero`/`stagePlayer` to `ChannelHeroBlock.tsx`, then the layout-editing state (layout array, selection/drag, dirty/preset bookkeeping) to `hooks/useChannelLayoutEditing.ts` — see `codebase-refactor-hotspots.md` items 14, 17, 18, 19 |
 
 ---
 
@@ -99,12 +99,64 @@ on `document.visibilitychange`.
 
 ## Shipped this pass (2026-09-11)
 
-Phases **1A–1C**, **2A–2B**, **3A–3C**, and **5** are done (ApiConnection
-health probe also pauses when the tab is hidden). Phase **4** partial:
-PluginStore Service/Themes extracts + admin radio/storage/addons peels
-(see `codebase-refactor-hotspots.md`). Still open in Phase 4: client,
-SettingsPanels, ChannelDesigner, studio, router, Artist/Channel views,
-remaining admin domains.
+Phases **1A–1C**, **2A–2B**, **3A–3C**, and **5** are done. Phase **4**
+partial: PluginStore fully category-split; admin radio/storage/addons/
+users/support/governance peels; `client.ts` full named-module split done
+(2026-09-12: `listen`/`radio-public`/`governance-member`/`membership`/
+`embeds` on top of the existing `requestJson`/auth extract);
+SettingsPanels file-per-panel split (2026-09-12).
+Still open in Phase 4: ChannelDesigner, studio, router, Artist/Channel
+views. `admin.ts` domain peel completed 2026-09-15 (see `codebase-refactor-
+hotspots.md`). **2026-09-15:** first slices of `ChannelDesigner.tsx` and
+`ArtistView.tsx` also done (low-coupling chunks only — see
+`codebase-refactor-hotspots.md` items 12-13); both still open for their
+remaining, more tightly closure-coupled bodies. **2026-09-15 (later same
+day):** `api/studio.ts` and `router.tsx` both fully split (mechanical,
+no behavior change — see `codebase-refactor-hotspots.md` items 15-16);
+off this backlog. `ChannelView.tsx` investigated and left untouched —
+see item 14 (no low-coupling chunk left to extract, no test coverage).
+**2026-09-15 (later same day):** `ArtistView.tsx`'s "Music" tab body
+extracted too — a design investigation found it was pure JSX+props (no
+internal state/effects), unlike `ChannelDesigner.tsx`'s/`ChannelView.tsx`'s
+remaining bodies. `ArtistView.tsx` is now off this backlog; also moved
+all three Artist tab components into `components/artist-view/`.
+**2026-09-15 (later same day):** a follow-up design investigation into
+`ChannelDesigner.tsx`/`ArtistView.tsx`'s (then-open) remaining bodies plus
+`ChannelView.tsx` found `ChannelView.tsx`'s `renderBlock` coupling was
+uneven — `hero` alone is the 50+-variable closure, the other 11 cases are
+small (2-6 vars each). Extracted those 11 to
+`components/channel-view/ChannelViewBlocks.tsx` (+ barrel), matching the
+`components/channel-designer/`/`components/artist-view/` subfolder
+convention; also fixed a real rules-of-hooks bug found during the
+investigation (3 hooks called after a conditional early return — PR #94,
+landed before this extraction). See `codebase-refactor-hotspots.md`
+item 17.
+**2026-09-16:** `ChannelHeroBlock` (the `hero` case + `stagePlayer`)
+extracted to `components/channel-view/ChannelHeroBlock.tsx` (+ barrel) —
+pure JSX+props, `stagePlayer` passed in ready-built rather than rebuilt,
+matching the pattern from item 17's other 11 blocks. See
+`codebase-refactor-hotspots.md` item 18.
+**2026-09-16 (2):** `useChannelLayoutEditing` extracted — `ChannelView.tsx`'s
+page-layout editing state (layout array, selection/drag state, dirty/preset
+bookkeeping, the `updateLayout`/`removeLayoutItem`/`saveLayout` helpers)
+moved verbatim into `hooks/useChannelLayoutEditing.ts`, pure relocation, no
+behavior change. `ChannelView.tsx` off this backlog entirely now. See
+`codebase-refactor-hotspots.md` item 19.
+**2026-09-17:** `ChannelDesigner.tsx` second slice — 5 modal dialogs
+(`OverlayConfigDialog`, `VisualizerPickerDialog`, `SavePresetDialog`,
+`DeletePresetDialog`, `ResetConfirmDialog`) + 2 small controls
+(`IdentityToggles`, `TuningSliders`) extracted, all pure props-in/JSX-out
+with no internal state — same low-coupling shape as the first slice.
+~2069 → ~1800 lines. Deliberately left the ~180-line slideshow/gallery
+section (~20 closure variables) with the rest of the tightly-coupled
+core. See `codebase-refactor-hotspots.md` item 20.
+**2026-09-18:** added `ChannelDesigner.test.tsx` (mount + 3 render-branch
+smoke tests, the component's first automated test ever) so a future slice
+of the remaining body has a regression floor. See
+`codebase-refactor-hotspots.md` item 21.
+Still open in Phase 4: `ChannelDesigner.tsx`'s remaining body (state,
+effects, save/preset logic, slideshow section) — the only thing left on
+this list.
 
 ## Execution order
 

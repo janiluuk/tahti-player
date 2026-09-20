@@ -25,12 +25,20 @@ export const HELP_ARTICLES: HelpArticle[] = [
       'A simple map of Listen, Library, Studio, Settings, and the player controls.',
     sections: [
       {
+        heading: 'What is tahti.live?',
+        body: [
+          'tahti.live is a nonprofit broadcasting platform for independent artists — built to support artists, not algorithms. Listening is free and lossless on member channels; artist membership is €40/year and funds your own channel, releases, and live shows.',
+          'One member, one vote: proposals and the AGM govern the platform, not a company board. Nearly all fan-support money goes to the artist, and the code is open source under AGPL.',
+          'See the full pitch — plans, funding, and governance — at /what-is-it.',
+        ],
+      },
+      {
         heading: 'The main areas',
         body: [
           'Listen is the starting point for finding music, channels, radio, and public pages. It is available without an account.',
           'Radio and Discover sit next to Listen in the sidebar. Favorites is its own sidebar item for saved channels and tracks.',
           'Library (signed in) holds sounds, collections, recordings, uploads, and related catalogue work under Studio.',
-          'Studio is for artists: overview, branding, stats, posts, audience, go live, broadcast schedule, and channel controls.',
+          'Studio is for artists: overview, stats, posts, audience, go live, broadcast schedule, and channel controls.',
           'Help center and Settings live at the bottom of the sidebar. Settings covers account, themes, add-ons, and preferences.',
           'The right rail is queue, chat, and notifications. Local audio import lives under Library → Local files. The player appears only after a track is loaded.',
         ],
@@ -40,7 +48,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         body: [
           'Listen is home for continue-listening, community radio, and who’s on air. Feed shows posts from artists you follow; History is what you played recently.',
           'Discover has widgets, an artists directory (search and filters), and venues. Favorites holds saved channels, radio, and tracks.',
-          'Studio section tabs (Overview, Branding, Stats, …) stay under the Studio nav. On pages with their own subtabs — Stats, Sounds, Branding, Updates, Channel, and similar — those subtabs sit directly under Studio’s nav row, above the page title.',
+          'Studio section tabs (Overview, Stats, …) stay under the Studio nav. On pages with their own subtabs — Stats, Sounds, Updates, Channel, and similar — those subtabs sit directly under Studio’s nav row, above the page title. Branding, gallery, and press kit live under Settings → Artist; Channel Designer lives under Settings → Channel & design.',
           'Press H for a guided tour of the controls on the current page. Longer how-tos live in this Help center.',
         ],
       },
@@ -171,7 +179,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Artist gallery',
         body: [
-          'Open Studio → Branding → Gallery to add photos to your public artist page. Use the plus icon in the gallery header to upload — there is no separate Add images button.',
+          'Open Settings → Artist → Gallery to add photos to your public artist page. Use the plus icon in the gallery header to upload — there is no separate Add images button.',
           'Turn Public on so the gallery appears on your profile, or leave it off while you arrange photos.',
           'Drag a photo to reorder it, or use the arrows on hover. Check photos to select them, then remove the ones you do not want.',
           'Photos you include can also appear in your press kit. Channel backdrops and slideshows are covered in Design your channel.',
@@ -181,7 +189,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         heading: 'Studio pages',
         body: [
           'Subtabs for a Studio page sit under the Studio navigation row and above the page title — the same layout as Stats (Overview / Plays / Top lists).',
-          'Sounds holds your archive and files. Branding covers profile picture, gallery, press kit, and Channel Designer. Updates is posts and newsletter. Channel covers stream keys, radio settings, and multicast.',
+          'Sounds holds your archive and files. Branding covers profile picture, gallery, and press kit under Settings → Artist (Channel Designer lives under Settings → Channel & design). Updates is posts and newsletter. Channel covers stream keys, radio settings, and multicast.',
           'Admin Moderation queues (support, beta, radio, reports) use the same pattern under Admin nav.',
         ],
       },
@@ -203,7 +211,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Choose a look',
         body: [
-          'Open Studio → Branding → Channel Designer. The preview shows what listeners see on your public channel and artist page.',
+          'Open Settings → Channel & design → Channel Designer. The preview shows what listeners see on your public channel and artist page.',
           'Pick a block from the element menu: releases, tracks, latest, feed, news, player, or backdrop. Hide a block with the eye button.',
           'Player controls the stage, visualizer, gradient, and overlay. Backdrop controls header style, slideshow, and page colors.',
         ],
@@ -468,19 +476,19 @@ export const HELP_ARTICLES: HelpArticle[] = [
   },
   {
     slug: 'add-ons',
-    title: 'Add-ons and plugins',
+    title: 'Add-ons',
     description:
       'What is ready today in Settings → Add-ons, and how to turn each one on.',
     sections: [
       {
         heading: 'Where add-ons live',
         body: [
-          'Open Settings → Add-ons. Categories match the table below: Themes, Visualizers, Import, Multicast, Fingerprinting, Audio plugins, Radio, Embed, Discovery, Channel, Playback, and Scrobbling.',
+          'Open Settings → Add-ons. Categories match the table below: Themes, Visualizers, Import, Multicast, Fingerprinting, Audio tools, Radio, Embed, Discovery, Channel, Playback, and Scrobbling.',
           'Only integrations you can use now are listed. ListenBrainz and Last.fm scrobbling are ready (submit-listens / track.scrobble only). Planned Nuclear registry items such as ListenBrainz charts, OmniSource, KHInsider, and NetEase stay out of this guide until they have a Tahti contract.',
         ],
       },
       {
-        heading: 'Ready plugins',
+        heading: 'Ready add-ons',
         body: [
           'State Ready means the path works end to end, including in-app playback where the row says so. Importer ready or Search ready means the connect/search half works, but the remaining piece — usually a server-side import contract — is still pending; check the “How to use it” column for the exact limit.',
           'hearthis.at, Mixcloud, Spotify, and Bandcamp tracks are referenced rather than hosted: Tahti keeps only a link, and that provider’s own widget supplies the audio when you press play on one of their tracks, including on a track’s own page.',
@@ -490,7 +498,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'If something is missing',
         body: [
-          'Export destinations such as Spotify or Apple Music are release-delivery links in Studio → Distribution, not installable plugins yet.',
+          'Export destinations such as Spotify or Apple Music are release-delivery links in Studio → Distribution, not installable add-ons yet.',
           'Import sources are managed from Add-ons → Import. Only sources with a working Tahti runtime are shown there.',
         ],
       },

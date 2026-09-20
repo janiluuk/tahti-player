@@ -212,13 +212,13 @@ test('listener subscribes, sees it in Your subs, cancels it', async ({
     process.env.TAHTI_E2E_FAN_SUB_EMAIL ?? `e2e-lpf-sub-${stamp}@example.com`;
 
   await signIn(page, artistEmail, artistPassword);
-  await page.goto('/studio/branding');
-  const profileHref = await page
-    .getByRole('link', { name: 'View public profile' })
-    .getAttribute('href');
-  const username = /\/u\/([^/?#]+)/.exec(profileHref ?? '')?.[1];
+  const username = await page.evaluate(async () => {
+    const mod = await import('/src/api/studio-extras.ts');
+    const { data } = await mod.fetchMeProfile();
+    return data.username;
+  });
   if (!username) {
-    throw new Error(`Could not read artist username from ${profileHref}`);
+    throw new Error('Could not read artist username from fetchMeProfile()');
   }
 
   await signOut(page);

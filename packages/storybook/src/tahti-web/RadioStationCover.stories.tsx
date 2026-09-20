@@ -8,7 +8,7 @@ const meta: Meta<typeof RadioStationCover> = {
   component: RadioStationCover,
   parameters: { layout: 'centered' },
   args: {
-    src: 'https://www.streamurl.link/logos/JoiOnv3Q9An.webp',
+    src: 'https://picsum.photos/seed/radio-helsinki/200',
     label: 'Radio Helsinki',
     stationName: 'Radio Helsinki',
     catalogStationId: 'radio-helsinki',

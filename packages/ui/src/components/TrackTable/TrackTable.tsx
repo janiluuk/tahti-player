@@ -17,6 +17,7 @@ import { defaultDisplay, defaultFeatures } from './defaults';
 import { useColumns } from './hooks/useColumns';
 import { useGlobalFilter } from './hooks/useGlobalFilter';
 import { useReorder } from './hooks/useReorder';
+import { useRowSelection } from './hooks/useRowSelection';
 import { useSorting } from './hooks/useSorting';
 import { useVirtualRows } from './hooks/useVirtualRows';
 import { ReorderLayer } from './ReorderLayer';
@@ -62,11 +63,13 @@ export function TrackTable<T extends Track = Track>({
   });
   const { globalFilter, setGlobalFilter, globalFilterFn, hasFilter } =
     useGlobalFilter<T>();
+  const rowSelection = useRowSelection(itemIds);
 
   const columns: ColumnDef<T>[] = useColumns<T>({
     display: resolvedDisplay,
     labels,
     actions,
+    features: resolvedFeatures,
   });
 
   const table = useReactTable({
@@ -95,6 +98,9 @@ export function TrackTable<T extends Track = Track>({
       canEditTrack: meta?.canEditTrack,
       canOpenDetail: meta?.canOpenDetail,
       ContextMenuWrapper: meta?.ContextMenuWrapper,
+      isRowSelected: rowSelection.isSelected,
+      onToggleRowSelected: rowSelection.toggle,
+      onToggleAllRows: rowSelection.toggleAll,
     },
   });
 
@@ -124,12 +130,15 @@ export function TrackTable<T extends Track = Track>({
         features: resolvedFeatures,
         actions,
         labels,
+        getItemId,
       }}
     >
       <div className="flex h-full flex-col">
         <Toolbar
           filterValue={globalFilter}
           onFilterChange={setGlobalFilter}
+          selectedIds={rowSelection.selectedIds}
+          onClearSelection={rowSelection.clear}
           className="mb-2 shrink-0"
         />
         <ScrollableArea

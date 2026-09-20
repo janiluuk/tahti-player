@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import {
   AudioLinesIcon,
+  ChevronDownIcon,
   ImageIcon,
   PauseIcon,
   PencilIcon,
@@ -13,11 +14,12 @@ import {
 import { useEffect, useMemo, useState, type FC } from 'react';
 
 import {
+  Badge,
   Button,
-  DropdownButton,
   FilterChips,
   ImageReveal,
   Input,
+  Popover,
   Tooltip,
 } from '@tahti-player/ui';
 
@@ -241,16 +243,30 @@ export const MyDiscographyView: FC = () => {
                   onChange={(id) => setFilter(id as VisibilityFilter)}
                   aria-label="Filter sounds"
                 />
-                <DropdownButton
-                  label={sortLabel}
-                  variant="secondary"
-                  className="shrink-0"
-                  items={SORT_OPTIONS.map((option) => ({
-                    id: option.id,
-                    label: option.label,
-                    onClick: () => setSort(option.id),
-                  }))}
-                />
+                <Popover
+                  anchor="bottom end"
+                  trigger={
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      className="shrink-0 gap-1.5"
+                    >
+                      {sortLabel}
+                      <ChevronDownIcon size={16} className="opacity-70" />
+                    </Button>
+                  }
+                >
+                  <Popover.Menu>
+                    {SORT_OPTIONS.map((option) => (
+                      <Popover.Item
+                        key={option.id}
+                        onClick={() => setSort(option.id)}
+                      >
+                        {option.label}
+                      </Popover.Item>
+                    ))}
+                  </Popover.Menu>
+                </Popover>
               </div>
               <Input
                 type="search"
@@ -335,9 +351,13 @@ export const MyDiscographyView: FC = () => {
                           </span>
                         ) : null}
                         {item.embedProvider ? (
-                          <span className="border-border text-foreground-secondary inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[10px] font-semibold tracking-wide uppercase">
+                          <Badge
+                            variant="pill"
+                            color="secondary"
+                            className="gap-1 px-1.5 py-0.5 text-[10px] tracking-wide"
+                          >
                             Embed · {EMBED_PROVIDER_LABEL[item.embedProvider]}
-                          </span>
+                          </Badge>
                         ) : null}
                       </div>
                       {item.peaks && item.peaks.length > 0 ? (

@@ -2,11 +2,13 @@ import { Link, useNavigate } from '@tanstack/react-router';
 import {
   ArrowLeftIcon,
   BarChart3Icon,
+  CalendarPlusIcon,
   CheckIcon,
   CircleDotIcon,
   InfoIcon,
   ListMusicIcon,
   MicIcon,
+  PlayIcon,
   PlusIcon,
   RadioIcon,
   UploadIcon,
@@ -17,6 +19,7 @@ import {
   Button,
   Dialog,
   FilePicker,
+  FilterChips,
   Input,
   SaveButton,
   TabLabel,
@@ -44,7 +47,6 @@ import { EntitySocialHeader } from '../../components/EntitySocialHeader';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { ShowImagePicker } from '../../components/ShowImagePicker';
 import { StudioGate } from '../../components/StudioGate';
-import { BroadcastSubNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { Eyebrow } from '../../components/tahti/Eyebrow';
 import { EpisodeSourceIcon, episodeStatusLabel } from './StudioShowsView';
@@ -373,7 +375,6 @@ export function StudioShowDetailView({ id }: { id: string }) {
   return (
     <StudioGate>
       <div className="studio-page-layout flex w-full flex-col gap-6 px-1 py-2">
-        <BroadcastSubNav current="/studio/shows" />
         <Tooltip content="Back to Shows" side="right">
           <Link
             to="/studio/shows"
@@ -532,6 +533,11 @@ export function StudioShowDetailView({ id }: { id: string }) {
                       disabled={busy}
                       onClick={() => void bookNextInterval()}
                     >
+                      <CalendarPlusIcon
+                        size={14}
+                        aria-hidden
+                        className="mr-1.5"
+                      />
                       Book next {show.intervalHours}h slot
                     </Button>
                   }
@@ -678,6 +684,11 @@ export function StudioShowDetailView({ id }: { id: string }) {
                               params={{ id: episode.soundId }}
                             >
                               <Button size="sm" variant="secondary">
+                                <PlayIcon
+                                  size={14}
+                                  aria-hidden
+                                  className="mr-1.5"
+                                />
                                 Play recording
                               </Button>
                             </Link>
@@ -734,34 +745,23 @@ export function StudioShowDetailView({ id }: { id: string }) {
                     )}
                   </div>
 
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-2 text-xs ${
-                        source === 'upload'
-                          ? 'border-primary bg-primary/15 text-primary'
-                          : 'border-border text-foreground-secondary'
-                      }`}
-                      onClick={() => setSource('upload')}
-                      aria-pressed={source === 'upload'}
-                    >
-                      <UploadIcon size={14} aria-hidden />
-                      Upload audio
-                    </button>
-                    <button
-                      type="button"
-                      className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-2 text-xs ${
-                        source === 'broadcast'
-                          ? 'border-primary bg-primary/15 text-primary'
-                          : 'border-border text-foreground-secondary'
-                      }`}
-                      onClick={() => setSource('broadcast')}
-                      aria-pressed={source === 'broadcast'}
-                    >
-                      <MicIcon size={14} aria-hidden />
-                      Record from broadcast
-                    </button>
-                  </div>
+                  <FilterChips
+                    items={[
+                      {
+                        id: 'upload',
+                        label: 'Upload audio',
+                        icon: <UploadIcon size={14} aria-hidden />,
+                      },
+                      {
+                        id: 'broadcast',
+                        label: 'Record from broadcast',
+                        icon: <MicIcon size={14} aria-hidden />,
+                      },
+                    ]}
+                    selected={source}
+                    onChange={(id) => setSource(id as 'upload' | 'broadcast')}
+                    aria-label="Episode source"
+                  />
 
                   {source === 'upload' ? (
                     <FilePicker
@@ -839,7 +839,6 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
     return (
       <StudioGate>
         <div className="studio-page-layout flex w-full flex-col">
-          <BroadcastSubNav current="/studio/shows" />
           <PageLoading label="Loading…" />
         </div>
       </StudioGate>
@@ -870,7 +869,6 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
   return (
     <StudioGate>
       <div className="studio-page-layout flex w-full flex-col gap-6">
-        <BroadcastSubNav current="/studio/shows" />
         <Tooltip content={`Back to ${show?.title ?? 'Show'}`} side="right">
           <Link
             to="/studio/shows/$id"

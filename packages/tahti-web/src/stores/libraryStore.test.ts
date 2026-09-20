@@ -5,6 +5,7 @@ import {
   playableFromRadioStation,
   type RadioStation,
 } from '../api/radio-sources';
+import type { TahtiPlayable } from '../api/types';
 import { rehydrateLibraryForUser, useLibraryStore } from './libraryStore';
 
 const STATION: RadioStation = {
@@ -83,5 +84,42 @@ describe('libraryStore + internet radio stations', () => {
 
     await rehydrateLibraryForUser('user-radio-fan');
     expect(useLibraryStore.getState().isFavoriteTrack(playable.id)).toBe(true);
+  });
+
+  it("keeps a local track's streamUrl in memory but strips it before persisting history", () => {
+    const local: TahtiPlayable = {
+      id: 'local:abc123',
+      kind: 'sound',
+      title: 'Local Track',
+      artist: 'Local Artist',
+      streamUrl: 'blob:tahti-web/dead-after-reload',
+      protocol: 'https',
+      sourceProvider: 'local',
+    };
+    useLibraryStore.getState().pushHistory(local);
+
+    // In-memory state keeps the live URL for this session's own replay.
+    expect(useLibraryStore.getState().history[0]?.playable.streamUrl).toBe(
+      local.streamUrl,
+    );
+
+    // The persisted copy must not carry the ephemeral URL — it would be
+    // dead (revoked blob:, or an asset:// scope reset) by the time a future
+    // session reads it back.
+    const stored = JSON.parse(
+      localStorage.getItem('tahti-web:library:anon') ?? '{}',
+    );
+    expect(stored.state.history[0].playable.streamUrl).toBe('');
+    expect(stored.state.history[0].playable.id).toBe(local.id);
+  });
+
+  it('does not redact streamUrl for non-local history entries', () => {
+    const playable = playableFromRadioStation(STATION);
+    useLibraryStore.getState().pushHistory(playable);
+
+    const stored = JSON.parse(
+      localStorage.getItem('tahti-web:library:anon') ?? '{}',
+    );
+    expect(stored.state.history[0].playable.streamUrl).toBe(playable.streamUrl);
   });
 });

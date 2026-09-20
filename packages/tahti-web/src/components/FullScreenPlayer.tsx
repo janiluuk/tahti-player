@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { formatArtistNames } from '@tahti-player/model';
 import { Button, cn, PlayerBar, Tooltip } from '@tahti-player/ui';
 
+import { useIsMobile } from '../hooks/useIsMobile';
 import { soundIdFromPlayableId } from '../lib/soundId';
 import { useDominantColor } from '../lib/useDominantColor';
 import { useLayoutStore } from '../stores/layoutStore';
@@ -22,6 +23,7 @@ const ANIMATION_MS = 280;
  * arbitrary queue items yet — see the commit note for why that's
  * deliberately out of scope here. */
 export function FullScreenPlayer() {
+  const isMobile = useIsMobile();
   const open = useLayoutStore((s) => s.fullScreenPlayerOpen);
   const setOpen = useLayoutStore((s) => s.setFullScreenPlayerOpen);
   const queue = usePlayerStore((s) => s.queue);
@@ -186,6 +188,7 @@ export function FullScreenPlayer() {
             />
           ) : null}
           <PlayerBar.Controls
+            size="large"
             isPlaying={isPlaying}
             isShuffleActive={!isLive && shuffle}
             repeatMode={isLive ? 'off' : repeatMode}
@@ -219,10 +222,16 @@ export function FullScreenPlayer() {
               <ConnectedSeekBar />
             </div>
           )}
-          <PlayerBar.Volume
-            value={muted ? 0 : Math.round(volume * 100)}
-            onValueChange={(v) => setVolume(v / 100)}
-          />
+          {/* Mobile has no software volume control (iOS Safari ignores
+           * HTMLMediaElement.volume entirely) — the device's hardware
+           * buttons are the only real control there, so the slider is
+           * just dead UI on mobile. */}
+          {!isMobile && (
+            <PlayerBar.Volume
+              value={muted ? 0 : Math.round(volume * 100)}
+              onValueChange={(v) => setVolume(v / 100)}
+            />
+          )}
         </div>
       </div>
     </div>

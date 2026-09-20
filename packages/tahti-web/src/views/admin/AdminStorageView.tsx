@@ -17,7 +17,9 @@ import {
   Badge,
   Button,
   Dialog,
+  DonutChart,
   Input,
+  Meter,
   SaveButton,
   Select,
   Tabs,
@@ -300,14 +302,7 @@ function DiskSpaceCard({
           <dd className="font-semibold">{formatBytes(space.totalBytes)}</dd>
         </div>
       </dl>
-      {pctUsed != null ? (
-        <div className="bg-background-secondary mt-3 h-1.5 overflow-hidden rounded-full">
-          <div
-            className="bg-primary h-full rounded-full"
-            style={{ width: `${Math.min(100, pctUsed)}%` }}
-          />
-        </div>
-      ) : null}
+      {pctUsed != null ? <Meter value={pctUsed} className="mt-3" /> : null}
       {space.note ? (
         <p className="text-foreground-secondary mt-3 text-xs">{space.note}</p>
       ) : null}
@@ -342,12 +337,7 @@ function TopUsersChart({ users }: { users: AdminStorageUserRow[] }) {
               {u.unlimited ? ' · unlimited quota' : ''}
             </span>
           </div>
-          <div className="bg-background-secondary mt-1 h-1.5 overflow-hidden rounded-full">
-            <div
-              className="bg-primary h-full rounded-full"
-              style={{ width: `${(u.usedBytes / max) * 100}%` }}
-            />
-          </div>
+          <Meter value={u.usedBytes} max={max} className="mt-1" />
         </div>
       ))}
     </div>
@@ -367,12 +357,6 @@ function StorageTypeBreakdown({ files }: { files: AdminFileRow[] }) {
   }, [files]);
 
   const totalBytes = breakdown.reduce((total, item) => total + item.bytes, 0);
-  let accumulatedPercent = 0;
-  const gradientStops = breakdown.map((item, index) => {
-    const start = accumulatedPercent;
-    accumulatedPercent += totalBytes > 0 ? (item.bytes / totalBytes) * 100 : 0;
-    return `${STORAGE_TYPE_COLORS[index % STORAGE_TYPE_COLORS.length]} ${start}% ${accumulatedPercent}%`;
-  });
 
   return (
     <StudioPanel
@@ -383,23 +367,16 @@ function StorageTypeBreakdown({ files }: { files: AdminFileRow[] }) {
         <PageEmpty title="No file usage recorded yet" />
       ) : (
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
-          <div
-            className="relative size-44 shrink-0 rounded-full"
-            style={{
-              background: `conic-gradient(${gradientStops.join(', ')})`,
-            }}
-            role="img"
+          <DonutChart
+            segments={breakdown.map((item, index) => ({
+              id: item.type,
+              value: item.bytes,
+              color: STORAGE_TYPE_COLORS[index % STORAGE_TYPE_COLORS.length],
+            }))}
+            centerLabel="Total usage"
+            centerValue={formatBytes(totalBytes)}
             aria-label={`File type storage breakdown totaling ${formatBytes(totalBytes)}`}
-          >
-            <div className="bg-background absolute inset-7 flex flex-col items-center justify-center rounded-full text-center">
-              <span className="text-foreground-secondary text-[10px] uppercase">
-                Total usage
-              </span>
-              <span className="text-lg font-bold">
-                {formatBytes(totalBytes)}
-              </span>
-            </div>
-          </div>
+          />
           <ul className="flex w-full flex-col gap-3 text-sm">
             {breakdown.map((item, index) => (
               <li key={item.type} className="flex items-center gap-2">

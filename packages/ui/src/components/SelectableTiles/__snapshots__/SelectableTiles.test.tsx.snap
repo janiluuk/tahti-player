@@ -1,0 +1,127 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`SelectableTiles > (Snapshot) renders centered layout with an icon 1`] = `
+<div
+  aria-label="Selectable options"
+  class="grid gap-2"
+  data-testid="selectable-tiles"
+  role="radiogroup"
+>
+  <button
+    aria-checked="true"
+    class="rounded-lg border-(length:--border-width) p-3 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-primary bg-primary/10 text-primary flex min-h-24 flex-col items-center justify-center gap-2 text-center"
+    role="radio"
+    type="button"
+  >
+    <span
+      aria-hidden="true"
+      class="shrink-0"
+    >
+      <svg
+        data-testid="icon"
+      />
+    </span>
+    <span>
+      <span
+        class="block"
+      >
+        A
+      </span>
+    </span>
+  </button>
+</div>
+`;
+
+exports[`SelectableTiles > (Snapshot) renders multi-select mode 1`] = `
+<div
+  aria-label="Selectable options"
+  class="grid gap-2"
+  data-testid="selectable-tiles"
+  role="group"
+>
+  <button
+    aria-checked="true"
+    class="rounded-lg border-(length:--border-width) p-3 text-left text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-primary bg-primary/10 text-primary flex items-start gap-2"
+    role="checkbox"
+    type="button"
+  >
+    <span
+      class="min-w-0 flex-1"
+    >
+      <span
+        class="block"
+      >
+        Solo artist
+      </span>
+    </span>
+  </button>
+  <button
+    aria-checked="false"
+    class="rounded-lg border-(length:--border-width) p-3 text-left text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground-secondary hover:text-foreground flex items-start gap-2"
+    role="checkbox"
+    type="button"
+  >
+    <span
+      class="min-w-0 flex-1"
+    >
+      <span
+        class="block"
+      >
+        Band / collective
+      </span>
+      <span
+        class="text-foreground-secondary block text-xs font-normal"
+      >
+        Invite members later.
+      </span>
+    </span>
+  </button>
+</div>
+`;
+
+exports[`SelectableTiles > (Snapshot) renders single-select mode 1`] = `
+<div
+  aria-label="Selectable options"
+  class="grid gap-2"
+  data-testid="selectable-tiles"
+  role="radiogroup"
+>
+  <button
+    aria-checked="true"
+    class="rounded-lg border-(length:--border-width) p-3 text-left text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-primary bg-primary/10 text-primary flex items-start gap-2"
+    role="radio"
+    type="button"
+  >
+    <span
+      class="min-w-0 flex-1"
+    >
+      <span
+        class="block"
+      >
+        Solo artist
+      </span>
+    </span>
+  </button>
+  <button
+    aria-checked="false"
+    class="rounded-lg border-(length:--border-width) p-3 text-left text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground-secondary hover:text-foreground flex items-start gap-2"
+    role="radio"
+    type="button"
+  >
+    <span
+      class="min-w-0 flex-1"
+    >
+      <span
+        class="block"
+      >
+        Band / collective
+      </span>
+      <span
+        class="text-foreground-secondary block text-xs font-normal"
+      >
+        Invite members later.
+      </span>
+    </span>
+  </button>
+</div>
+`;

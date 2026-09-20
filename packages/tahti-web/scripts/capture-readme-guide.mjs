@@ -618,15 +618,19 @@ async function seedSession() {
       localStorage.setItem('tahti-web-auth', JSON.stringify(authState));
       localStorage.setItem('tahti-web-layout', JSON.stringify(layoutState));
       localStorage.setItem('tahti-web-onboarded:mock-board-1', '1');
-      localStorage.setItem('tahti-nuclear-theme-id', 'nuclear:default');
-      localStorage.setItem('tahti-nuclear-dark', '0');
+      // Dark + amber ("nuclear:tahti-dark" -- the tahti.live pitch palette,
+      // see packages/themes/src/basic/tahti-dark.css), matching the root
+      // README's redesign-shots and the Tahti map's refreshed hero shots
+      // instead of Nuclear's own default light theme.
+      localStorage.setItem('tahti-nuclear-theme-id', 'nuclear:tahti-dark');
+      localStorage.setItem('tahti-nuclear-dark', '1');
       localStorage.setItem(
         'tahti-web-theme',
         JSON.stringify({
           state: {
-            themeId: 'nuclear:default',
-            dark: false,
-            colorMode: 'light',
+            themeId: 'nuclear:tahti-dark',
+            dark: true,
+            colorMode: 'dark',
             customThemes: {},
           },
           version: 0,

@@ -5,6 +5,7 @@ import {
   filterLocalLibraryTracks,
   isAudioFile,
   isLocalTrackPlayable,
+  isSameUnresolvedFile,
   mergeLocalLibraryPersisted,
   metadataFromFile,
   partializeLocalLibrary,
@@ -150,12 +151,13 @@ describe('localLibraryStore metadata persistence helpers', () => {
     expect(isLocalTrackPlayable(merged.tracks[0]!)).toBe(false);
   });
 
-  it('restores a blob URL when re-importing the same file name', () => {
+  it('restores a blob URL when re-importing the same file name and size', () => {
     const stale: LocalLibraryTrack = {
       id: 'keep-me',
       title: 'Riff',
       artist: 'Local file',
       fileName: 'riff.wav',
+      fileSize: 3,
       objectUrl: '',
       addedAt: '2026-09-04T00:00:00.000Z',
     };
@@ -168,5 +170,97 @@ describe('localLibraryStore metadata persistence helpers', () => {
     expect(isLocalTrackPlayable(restored!)).toBe(true);
     expect(useLocalLibraryStore.getState().tracks).toHaveLength(1);
     useLocalLibraryStore.getState().clear();
+  });
+
+  it('does not silently bind an unresolved reference to a same-named file of a different size', () => {
+    const stale: LocalLibraryTrack = {
+      id: 'keep-me',
+      title: 'Riff',
+      artist: 'Local file',
+      fileName: 'riff.wav',
+      fileSize: 999,
+      objectUrl: '',
+      addedAt: '2026-09-04T00:00:00.000Z',
+    };
+    useLocalLibraryStore.setState({ tracks: [stale] });
+    const file = new File([new Uint8Array([1, 2, 3])], 'riff.wav', {
+      type: 'audio/wav',
+    });
+    const [added] = useLocalLibraryStore.getState().addFiles([file]);
+    expect(added?.id).not.toBe('keep-me');
+    const tracks = useLocalLibraryStore.getState().tracks;
+    expect(tracks).toHaveLength(2);
+    const untouched = tracks.find((track) => track.id === 'keep-me');
+    expect(untouched).toEqual(stale);
+    expect(isLocalTrackPlayable(untouched!)).toBe(false);
+    useLocalLibraryStore.getState().clear();
+  });
+
+  it('does not silently bind a legacy filename-only reference (no recorded size) to a newly chosen file', () => {
+    const legacy: LocalLibraryTrack = {
+      id: 'legacy-row',
+      title: 'Riff',
+      artist: 'Local file',
+      fileName: 'riff.wav',
+      objectUrl: '',
+      addedAt: '2026-01-01T00:00:00.000Z',
+    };
+    useLocalLibraryStore.setState({ tracks: [legacy] });
+    const file = new File([new Uint8Array([1, 2, 3])], 'riff.wav', {
+      type: 'audio/wav',
+    });
+    const [added] = useLocalLibraryStore.getState().addFiles([file]);
+    expect(added?.id).not.toBe('legacy-row');
+    const tracks = useLocalLibraryStore.getState().tracks;
+    expect(tracks).toHaveLength(2);
+    expect(
+      isLocalTrackPlayable(tracks.find((t) => t.id === 'legacy-row')!),
+    ).toBe(false);
+    useLocalLibraryStore.getState().clear();
+  });
+});
+
+describe('isSameUnresolvedFile', () => {
+  const base: LocalLibraryTrack = {
+    id: '1',
+    title: 'Riff',
+    artist: 'Local file',
+    fileName: 'riff.wav',
+    fileSize: 3,
+    objectUrl: '',
+    addedAt: '2026-09-04T00:00:00.000Z',
+  };
+
+  it('matches when name and size agree', () => {
+    const file = new File([new Uint8Array([1, 2, 3])], 'riff.wav');
+    expect(isSameUnresolvedFile(base, file)).toBe(true);
+  });
+
+  it('rejects a different size with the same name', () => {
+    const file = new File([new Uint8Array([1, 2, 3, 4])], 'riff.wav');
+    expect(isSameUnresolvedFile(base, file)).toBe(false);
+  });
+
+  it('rejects when the track has no recorded size', () => {
+    const file = new File([new Uint8Array([1, 2, 3])], 'riff.wav');
+    expect(isSameUnresolvedFile({ ...base, fileSize: undefined }, file)).toBe(
+      false,
+    );
+  });
+
+  it('rejects an already-playable track', () => {
+    const file = new File([new Uint8Array([1, 2, 3])], 'riff.wav');
+    expect(isSameUnresolvedFile({ ...base, objectUrl: 'blob:1' }, file)).toBe(
+      false,
+    );
+  });
+
+  it('rejects a mismatched lastModified when both sides record one', () => {
+    const file = new File([new Uint8Array([1, 2, 3])], 'riff.wav', {
+      lastModified: 222,
+    });
+    expect(isSameUnresolvedFile({ ...base, lastModified: 111 }, file)).toBe(
+      false,
+    );
   });
 });
