@@ -1,21 +1,8 @@
-import {
-  LaptopIcon,
-  LibraryIcon,
-  ListFilterIcon,
-  TrashIcon,
-  XIcon,
-} from 'lucide-react';
+import { LaptopIcon, LibraryIcon, ListFilterIcon, XIcon } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import {
-  Button,
-  CatalogTable,
-  EmptyState,
-  FilePicker,
-  Input,
-  Tooltip,
-} from '@tahti-player/ui';
+import { Button, CatalogTable, EmptyState, Input } from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../api/types';
 import { usePersistedCatalogTable } from '../hooks/usePersistedCatalogTable';
@@ -44,19 +31,15 @@ import {
   type NativeTrackFilters,
 } from '../lib/nativeLibrary';
 import { preparePlayables } from '../lib/nativePlayback';
-import {
-  filterLocalLibraryTracks,
-  isLocalTrackPlayable,
-  playableFromLocalTrack,
-  useLocalLibraryStore,
-} from '../stores/localLibraryStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { AddToPlaylistDialog } from './AddToPlaylistDialog';
 import { ConfirmDialog } from './ConfirmDialog';
+import { BrowserLocalFiles } from './desktop-library/BrowserLocalFiles';
 import { LibraryRootsBlock } from './desktop-library/LibraryRootsBlock';
 import { basename } from './desktop-library/pathLabels';
 import { SelectionToolbar } from './desktop-library/SelectionToolbar';
 import { TrackRowActions } from './desktop-library/TrackRowActions';
+import { useNativeLibraryList } from './desktop-library/useNativeLibraryList';
 import { runAnalysis } from './LocalLibraryAnalysis';
 import {
   BrowseTabs,
@@ -71,18 +54,10 @@ import { LocalLibraryTools } from './LocalLibraryTools';
 import { LocalPlaylists } from './LocalPlaylists';
 import { NATIVE_TRACK_COLUMNS, toNativeSort } from './nativeTrackColumns';
 import { OrganizeFilesDialog } from './OrganizeFilesDialog';
-import { PlayableTrackTable } from './PlayableTrackTable';
 import { TrackEditorDialog } from './TrackEditorDialog';
 import { TrackInspectorDialog } from './TrackInspectorDialog';
 import { TrackOrganizeDialog } from './TrackOrganizeDialog';
 import { WriteTagsDialog } from './WriteTagsDialog';
-
-const FILE_LABELS = {
-  title: 'Add audio files',
-  description:
-    'File names are remembered on this device. Audio blobs clear on reload — choose the same files again to play. Uploading to your Tahti archive is Studio → Upload.',
-  browse: 'Choose files',
-};
 
 // Stable identities so the table doesn't see new callbacks on every render.
 const trackRowId = (track: NativeLibraryTrack) => track.id;
@@ -90,57 +65,23 @@ const trackRowLabel = (track: NativeLibraryTrack) => track.title;
 const trackRowMuted = (track: NativeLibraryTrack) => !track.available;
 
 export function DesktopLibraryPanel() {
-  const [query, setQuery] = useState('');
-  const tracks = useLocalLibraryStore((s) => s.tracks);
-  const addFiles = useLocalLibraryStore((s) => s.addFiles);
-  const remove = useLocalLibraryStore((s) => s.remove);
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
   const enqueueMany = usePlayerStore((s) => s.enqueueMany);
   const playNextMany = usePlayerStore((s) => s.playNextMany);
-  const filteredTracks = useMemo(
-    () => filterLocalLibraryTracks(tracks, query),
-    [query, tracks],
-  );
-  const unresolvedTracks = useMemo(
-    () => filteredTracks.filter((track) => !isLocalTrackPlayable(track)),
-    [filteredTracks],
-  );
-  const playableLocalTracks = useMemo(
-    () => filteredTracks.filter((track) => isLocalTrackPlayable(track)),
-    [filteredTracks],
-  );
-  const playableItems = useMemo(
-    () =>
-      playableLocalTracks
-        .map(playableFromLocalTrack)
-        .filter((item): item is TahtiPlayable => item !== null),
-    [playableLocalTracks],
-  );
-  const playableById = useMemo(
-    () =>
-      new Map(playableLocalTracks.map((track) => [`local:${track.id}`, track])),
-    [playableLocalTracks],
-  );
   const nativePlayer = hasNativePlayer();
   const nativeLibrary = getNativeLibrary();
-  const [nativeTracks, setNativeTracks] = useState<NativeLibraryTrack[]>([]);
-  const [nativeTotal, setNativeTotal] = useState(0);
   const initialView = useRef(loadViewState()).current;
   const [nativeQuery, setNativeQuery] = useState(initialView.query);
   const [debouncedNativeQuery, setDebouncedNativeQuery] = useState(
     initialView.query,
   );
-  const [nativeLoading, setNativeLoading] = useState(false);
-  const [nativeError, setNativeError] = useState<string | null>(null);
   const [nativeUnavailable, setNativeUnavailable] = useState<
     NativeLibraryTrack[]
   >([]);
   const [nativeProgress, setNativeProgress] =
     useState<NativeLibraryImportProgress | null>(null);
   const lastFailedPathsRef = useRef<string[]>([]);
-  const listRequestRef = useRef(0);
-  const loadingMoreRef = useRef(false);
   const table = usePersistedCatalogTable(
     'tahti-local-library-table',
     NATIVE_TRACK_COLUMNS,
@@ -185,6 +126,23 @@ export function DesktopLibraryPanel() {
   const [inspected, setInspected] = useState<NativeLibraryTrack | null>(null);
   // Rows to preload and the scroll offset to return to, used once on mount.
   const restoreRef = useRef(rowsToRestore(initialView));
+  const {
+    tracks: nativeTracks,
+    total: nativeTotal,
+    loading: nativeLoading,
+    error: nativeError,
+    setLoading: setNativeLoading,
+    setError: setNativeError,
+    loadList,
+    loadMore: loadMoreNative,
+  } = useNativeLibraryList({
+    library: nativeLibrary,
+    query: debouncedNativeQuery,
+    facetFilter,
+    sort: nativeSort,
+    filters,
+    restoreRef,
+  });
   const initialScrollRef = useRef(initialView.scrollOffset);
   const loadedCountRef = useRef(0);
   const scopeChangedRef = useRef(false);
@@ -373,64 +331,6 @@ export function DesktopLibraryPanel() {
     }
   }, [nativeLibrary]);
 
-  // The first page for the current search/group/filters/sort (plus the rows
-  // needed to restore a saved scroll position).
-  const loadList = useCallback(async () => {
-    if (!nativeLibrary) {
-      return;
-    }
-    const request = ++listRequestRef.current;
-    setNativeLoading(true);
-    setNativeError(null);
-    try {
-      const page = await nativeLibrary.list(
-        debouncedNativeQuery,
-        0,
-        facetFilter,
-        nativeSort,
-        filters,
-      );
-      if (request !== listRequestRef.current) {
-        return;
-      }
-      let loaded = page.tracks;
-      const restoreTarget = restoreRef.current;
-      restoreRef.current = 0;
-      for (
-        let offset = loaded.length;
-        offset < Math.min(restoreTarget, page.total);
-        offset += page.tracks.length || 100
-      ) {
-        const more = await nativeLibrary.list(
-          debouncedNativeQuery,
-          offset,
-          facetFilter,
-          nativeSort,
-          filters,
-        );
-        if (request !== listRequestRef.current) {
-          return;
-        }
-        if (!more.tracks.length) {
-          break;
-        }
-        loaded = [...loaded, ...more.tracks];
-      }
-      setNativeTracks(loaded);
-      setNativeTotal(page.total);
-    } catch (error) {
-      if (request === listRequestRef.current) {
-        setNativeError(
-          error instanceof Error ? error.message : 'Library unavailable.',
-        );
-      }
-    } finally {
-      if (request === listRequestRef.current) {
-        setNativeLoading(false);
-      }
-    }
-  }, [nativeLibrary, debouncedNativeQuery, facetFilter, nativeSort, filters]);
-
   // Something changed the catalog (import, edit, watcher, …): reload
   // everything, and let tags, filter options and groups refetch too.
   const refreshNative = useCallback(async () => {
@@ -439,52 +339,6 @@ export function DesktopLibraryPanel() {
   }, [loadList, loadMeta]);
   const refreshNativeRef = useRef(refreshNative);
   refreshNativeRef.current = refreshNative;
-
-  const loadMoreNative = async () => {
-    // A second call before the first has settled (the table asks again on
-    // every render) would fetch the same page twice.
-    if (
-      !nativeLibrary ||
-      nativeLoading ||
-      loadingMoreRef.current ||
-      nativeTracks.length >= nativeTotal
-    ) {
-      return;
-    }
-    loadingMoreRef.current = true;
-    const request = ++listRequestRef.current;
-    setNativeLoading(true);
-    setNativeError(null);
-    try {
-      const page = await nativeLibrary.list(
-        debouncedNativeQuery,
-        nativeTracks.length,
-        facetFilter,
-        nativeSort,
-        filters,
-      );
-      if (request !== listRequestRef.current) {
-        return;
-      }
-      setNativeTracks((current) => [...current, ...page.tracks]);
-      // An empty page means the library shrank underneath us: settle on what
-      // we have instead of asking for the same missing rows again.
-      setNativeTotal(
-        page.tracks.length === 0 ? nativeTracks.length : page.total,
-      );
-    } catch (error) {
-      if (request === listRequestRef.current) {
-        setNativeError(
-          error instanceof Error ? error.message : 'Library unavailable.',
-        );
-      }
-    } finally {
-      loadingMoreRef.current = false;
-      if (request === listRequestRef.current) {
-        setNativeLoading(false);
-      }
-    }
-  };
 
   useEffect(() => {
     void loadList();
@@ -1012,19 +866,6 @@ export function DesktopLibraryPanel() {
     }
   };
 
-  const onFiles = (files: readonly File[]) => {
-    const added = addFiles(files);
-    if (added.length === 0) {
-      toast.error('Choose an audio file.');
-      return;
-    }
-    toast.success(
-      added.length === 1
-        ? `Ready “${added[0]?.title}”.`
-        : `Ready ${added.length} files.`,
-    );
-  };
-
   if (!nativePlayer) {
     return (
       <div
@@ -1327,111 +1168,8 @@ export function DesktopLibraryPanel() {
           )}
         </>
       ) : (
-        <FilePicker
-          accept="audio/*"
-          multiple
-          labels={FILE_LABELS}
-          onFiles={onFiles}
-        />
+        <BrowserLocalFiles />
       )}
-      {nativePlayer && !nativeLibrary ? (
-        <p className="border-primary/30 bg-primary/5 text-foreground-secondary rounded-md border px-2 py-1.5 text-xs">
-          Tahti Player desktop runtime detected. Native library is unavailable;
-          browser imports remain available.
-        </p>
-      ) : null}
-      {!nativeLibrary &&
-        (tracks.length === 0 ? (
-          <EmptyState
-            size="sm"
-            icon={<LibraryIcon size={28} className="opacity-50" />}
-            title="Local library"
-            description="Import files to play them in the Tahti player. Soulseek search lands here after the desktop add-on is connected."
-            className="flex-1"
-          />
-        ) : (
-          <>
-            <Input
-              type="search"
-              label="Search local files"
-              placeholder="Title, artist, or file name"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-            />
-            {unresolvedTracks.length > 0 ? (
-              <ul className="tahti-hide-scrollbar flex max-h-32 flex-col gap-1 overflow-y-auto">
-                {unresolvedTracks.map((track) => (
-                  <li
-                    key={track.id}
-                    className="border-border flex items-center gap-2 rounded-md border px-2 py-1.5"
-                  >
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-semibold">
-                        {track.title}
-                      </p>
-                      <p className="text-foreground-secondary truncate text-xs">
-                        Re-import {track.fileName} to play
-                      </p>
-                    </div>
-                    <Tooltip content="Remove" side="top">
-                      <Button
-                        size="icon-sm"
-                        variant="text"
-                        intent="danger"
-                        aria-label={`Remove ${track.title}`}
-                        onClick={() => {
-                          remove(track.id);
-                          toast.success(`Removed “${track.title}”.`);
-                        }}
-                      >
-                        <TrashIcon size={14} aria-hidden />
-                      </Button>
-                    </Tooltip>
-                  </li>
-                ))}
-              </ul>
-            ) : null}
-            {playableItems.length === 0 ? (
-              unresolvedTracks.length === 0 ? (
-                <EmptyState
-                  size="sm"
-                  title="No local files found"
-                  description={`Nothing matches “${query.trim()}”.`}
-                  className="flex-1"
-                />
-              ) : null
-            ) : (
-              <div className="min-h-0 flex-1 overflow-y-auto">
-                <PlayableTrackTable
-                  items={playableItems}
-                  selectable
-                  onRemove={(item) => {
-                    const track = playableById.get(item.id);
-                    if (!track) {
-                      return;
-                    }
-                    remove(track.id);
-                    toast.success(`Removed “${item.title}”.`);
-                  }}
-                  onBulkRemove={(items) => {
-                    for (const item of items) {
-                      const track = playableById.get(item.id);
-                      if (track) {
-                        remove(track.id);
-                      }
-                    }
-                    toast.success(
-                      items.length === 1
-                        ? 'Removed 1 track.'
-                        : `Removed ${items.length} tracks.`,
-                    );
-                  }}
-                  compactActions
-                />
-              </div>
-            )}
-          </>
-        ))}
       {nativeLibrary ? (
         <AddToPlaylistDialog
           isOpen={addToPlaylist !== null}
