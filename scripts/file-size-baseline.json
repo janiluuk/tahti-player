@@ -1,10 +1,5 @@
 {
-  "packages/tahti-web/src/api/artist-settings.ts": 1052,
-  "packages/tahti-web/src/api/channel-design.ts": 1318,
   "packages/tahti-web/src/api/client.ts": 1417,
-  "packages/tahti-web/src/api/shows.ts": 1331,
-  "packages/tahti-web/src/api/sources.ts": 1194,
-  "packages/tahti-web/src/api/studio-extras.ts": 1233,
   "packages/tahti-web/src/api/types.ts": 969,
   "packages/tahti-web/src/components/AppTopNav.tsx": 878,
   "packages/tahti-web/src/components/LocalPlaylists.tsx": 953,

@@ -17,7 +17,7 @@ Behavior stays identical: mechanical splits along existing seams, tests move wit
 | P1 | `packages/tahti-web/src/views/ChannelView.tsx` / `ArtistView.tsx` | 1576 / 1408 | tracked there; re-check |
 | P1 | `packages/tahti-web/src/views/studio/StudioProEditorView.tsx` | 1497 | not yet assessed |
 | P1 | `packages/tahti-web/src/components/plugin-store/ServiceCategory.tsx`, `RadioCategory.tsx` | 1400 / 1264 | one file per service/tab |
-| P1 | `packages/tahti-web/src/api/{shows,channel-design,studio-extras,sources,artist-settings}.ts` | 1000-1330 | by domain, like the admin.ts peel |
+| ~~P1~~ done | `packages/tahti-web/src/api/{shows,channel-design,studio-extras,sources,artist-settings}.ts` | 1000-1330 → 47-140 each (2026-09-22): barrels re-exporting `api/<name>/<domain>.ts`, imports unchanged | |
 | P1 | `packages/tahti-web/src/components/TrackEditDialog.tsx`, `LocalPlaylists.tsx`, `StreamManagerPanel.tsx` | 1174 / 950 / 1012 | section components + hooks |
 | P1 | `packages/tahti-web/src/views/studio/{StudioReleaseDetail,StudioShowDetail,StudioSchedule,StudioCollectionEdit,StudioDistribution}View.tsx`, `TrackDetailView.tsx`, `admin/AdminAddonsView.tsx`, `admin/AdminStorageView.tsx` | 900-1150 | not yet assessed |
 | P2 | `packages/player/src-tauri/src/mcp/metadata.rs` | 1004 | not yet assessed |
@@ -59,7 +59,7 @@ Behavior stays identical: mechanical splits along existing seams, tests move wit
 - [x] `DesktopLibraryPanel.tsx` under the limit (out of the baseline).
 - [ ] `ChannelDesigner.tsx` 1801 → 1713 (2026-09-22): `SlideshowControls` (+ story, migrated to `Button`/`MediaArtwork`) and `slideshowOptions.ts` extracted; bug audit below. Still open: `loadFromServer` / `save` / preset actions (a `useChannelLook` state hook, snapshot helpers, `buildVisualPatch` as a pure function), the ~230-line final render, and the panel slot builders.
 - [x] `RadioCategory.tsx` split + audit (2026-09-22, 1264 → 15): see below.
-- [ ] Next offenders to split (baselined): see the sweep table (`api/{shows,channel-design,studio-extras,sources,artist-settings}.ts`, `TrackEditDialog`, `LocalPlaylists`, `StreamManagerPanel`, unassessed studio/admin views).
+- [ ] Next offenders to split (baselined): see the sweep table (`TrackEditDialog`, `LocalPlaylists`, `StreamManagerPanel`, unassessed studio/admin views).
 - Fixed in passing: failed load-more toasts an error; the drop-import subscription no longer resubscribes per keystroke (`useNativeImport` goes through a ref).
 
 ## ChannelDesigner bug audit (2026-09-22, fixed)
@@ -165,3 +165,10 @@ Split into `plugin-store/radio-category/`: `PersonalRadioStreamCard`, `RadioBrow
 - **Station edit:** a non-numeric bitrate saved `NaN`; it keeps the old value now. Save toasts.
 - **Home-baked elements replaced with `Button`/`MediaArtwork`:** station-name row buttons, the search-icon button in the input, the "All genres" toggle, the station favicon box (`ImageReveal` + hand-built frame).
 - Not changed: the `<a target=_blank>` links in the details dialog (no ui link component); covered by `radio-category/Radio{Dialogs,Cards}.test.tsx`.
+
+## api/* splits (2026-09-22)
+
+- `api/request-json.ts` is now the one `requestJson` (16 byte-identical private copies removed; `studio/studio-request.ts` re-exports it). Still 11 near-copies that differ (`client-request.ts` also returns headers; announcements, api-tokens, channel-gallery, distribution, integrations, mentions, sound-versions, track-insights, user-media, revelator) — audit before merging them.
+- Split by domain into barrels: `shows/` (types, mock, wire, series, episodes, bookings, public-show), `channel-design/` (presets, header, colors, visual, mock, visual-api, look-extras, patch, saved-presets, domain), `studio-extras/` (schedule, stats, stats-plays, profile, posts), `sources/` (catalog, soundcloud, spotify, bandcamp, hearthis, export-status, stash, connections), `artist-settings/` (prefs, green-room, social, moderation, press-kit, press-kit-images, avatar, mock).
+- Module-level mock state that was reassigned in place (`let mockBookings`, `mockVisual`, `mockNotifications` …) can't be assigned across modules; it now has `setMockX` setters in the owning `mock.ts`.
+- Behavior unchanged; existing api/views/components tests pass.
