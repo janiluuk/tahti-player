@@ -28,6 +28,9 @@ const SORTABLE = new Set<string>([
   'rating',
   'plays',
   'lastPlayed',
+  'bpm',
+  'key',
+  'loudness',
 ]);
 
 export const NATIVE_TRACK_COLUMNS: CatalogColumn<NativeLibraryTrack>[] = [
@@ -164,6 +167,40 @@ export const NATIVE_TRACK_COLUMNS: CatalogColumn<NativeLibraryTrack>[] = [
       ) : (
         '—'
       ),
+  },
+  {
+    id: 'bpm',
+    header: 'BPM',
+    width: 70,
+    sortable: true,
+    align: 'right',
+    render: (track) =>
+      track.bpm ? (
+        <span title="Your correction, else the file's tag, else an estimate">
+          {Math.round(track.bpm * 10) / 10}
+        </span>
+      ) : (
+        '—'
+      ),
+  },
+  {
+    id: 'key',
+    header: 'Key',
+    width: 70,
+    sortable: true,
+    render: (track) => dash(track.musicalKey),
+  },
+  {
+    id: 'loudness',
+    header: 'Loudness',
+    width: 100,
+    sortable: true,
+    align: 'right',
+    hiddenByDefault: true,
+    render: (track) =>
+      track.loudnessLufs === null
+        ? '—'
+        : `${track.loudnessLufs.toFixed(1)} LUFS`,
   },
   {
     id: 'plays',

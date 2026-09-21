@@ -1,4 +1,5 @@
 import {
+  ActivityIcon,
   FolderOpenIcon,
   FolderPlusIcon,
   InfoIcon,
@@ -62,6 +63,7 @@ import {
 import { usePlayerStore } from '../stores/playerStore';
 import { AddToPlaylistDialog } from './AddToPlaylistDialog';
 import { ConfirmDialog } from './ConfirmDialog';
+import { runAnalysis } from './LocalLibraryAnalysis';
 import {
   BrowseTabs,
   FACET_KIND_LABEL,
@@ -166,6 +168,7 @@ export function DesktopLibraryPanel() {
   const [editingIds, setEditingIds] = useState<string[] | null>(null);
   const [writingIds, setWritingIds] = useState<string[] | null>(null);
   const [organizingIds, setOrganizingIds] = useState<string[] | null>(null);
+  const [analyzingSelection, setAnalyzingSelection] = useState(false);
   const [openPlaylistId, setOpenPlaylistId] = useState<string | null>(
     initialView.openPlaylistId,
   );
@@ -270,6 +273,19 @@ export function DesktopLibraryPanel() {
       stale = true;
     };
   }, [nativeLibrary, catalogVersion]);
+
+  const analyzeSelection = async () => {
+    if (!nativeLibrary || analyzingSelection) {
+      return;
+    }
+    setAnalyzingSelection(true);
+    try {
+      await runAnalysis(nativeLibrary, [...selectedIds]);
+    } finally {
+      setAnalyzingSelection(false);
+      void refreshNative();
+    }
+  };
 
   const refreshNative = useCallback(async () => {
     if (!nativeLibrary) {
@@ -1286,6 +1302,23 @@ export function DesktopLibraryPanel() {
                         <Button
                           size="sm"
                           variant="text"
+                          disabled={selectionBusy || analyzingSelection}
+                          onClick={() => void analyzeSelection()}
+                        >
+                          {analyzingSelection ? (
+                            <LoaderCircleIcon
+                              size={14}
+                              className="animate-spin"
+                              aria-hidden
+                            />
+                          ) : (
+                            <ActivityIcon size={14} aria-hidden />
+                          )}
+                          Analyze
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="text"
                           disabled={selectionBusy}
                           onClick={() => setOrganizingIds([...selectedIds])}
                         >
@@ -1608,6 +1641,7 @@ export function DesktopLibraryPanel() {
       <TrackInspectorDialog
         library={nativeLibrary}
         track={inspected}
+        onChanged={() => void refreshNative()}
         onClose={() => setInspected(null)}
         onPlay={(track) => {
           setInspected(null);

@@ -135,6 +135,16 @@ export const MissingNativeFile: Story = {
           duplicates: async () => [],
           onHashProgress: () => () => undefined,
         } as unknown as TahtiNativeLibrary['catalog'],
+        analysis: {
+          summary: async () => ({
+            analyzed: 0,
+            total: 0,
+            running: false,
+            paused: false,
+          }),
+          onProgress: () => () => undefined,
+          smart: { list: async () => [] },
+        } as unknown as TahtiNativeLibrary['analysis'],
         playlists: {
           list: async () => [],
           create: async (name: string) => ({

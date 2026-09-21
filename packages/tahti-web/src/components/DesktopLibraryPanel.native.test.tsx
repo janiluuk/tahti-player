@@ -116,6 +116,29 @@ function createNativeLibrary(
       duplicates: vi.fn().mockResolvedValue([]),
       onHashProgress: vi.fn(() => () => undefined),
     } as unknown as TahtiNativeLibrary['catalog'],
+    analysis: {
+      summary: vi.fn().mockResolvedValue({
+        analyzed: 0,
+        total: 0,
+        running: false,
+        paused: false,
+      }),
+      onProgress: vi.fn(() => () => undefined),
+      analyze: vi.fn(),
+      cancel: vi.fn(),
+      pause: vi.fn(),
+      detail: vi.fn().mockResolvedValue({
+        analyzed: false,
+        stale: false,
+        peaks: [],
+        userBpm: null,
+        userKey: null,
+      }),
+      smart: {
+        list: vi.fn().mockResolvedValue([]),
+        evaluate: vi.fn().mockResolvedValue({ tracks: [], total: 0 }),
+      },
+    } as unknown as TahtiNativeLibrary['analysis'],
     matchingIds: vi.fn().mockResolvedValue([]),
     filterOptions: vi.fn().mockResolvedValue({
       formats: ['flac', 'wav'],

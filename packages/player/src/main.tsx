@@ -233,6 +233,72 @@ const baseNativeLibrary: TahtiNativeLibrary = {
       return unwrapResult(await commands.playlistPickRelinkFolder());
     },
   },
+  analysis: {
+    async analyze(ids, force) {
+      return unwrapResult(await commands.libraryAnalyzeTracks(ids, force));
+    },
+    async cancel() {
+      unwrapResult(await commands.libraryAnalysisCancel());
+    },
+    async pause(paused) {
+      unwrapResult(await commands.libraryAnalysisPause(paused));
+    },
+    async summary() {
+      return unwrapResult(await commands.libraryAnalysisSummary());
+    },
+    onProgress(listener) {
+      let unlisten: (() => void) | undefined;
+      let disposed = false;
+      void listen<{ done: number; total: number; currentTitle: string | null }>(
+        'library://analysis-progress',
+        (event) => listener(event.payload),
+      ).then((dispose) => {
+        if (disposed) {
+          dispose();
+        } else {
+          unlisten = dispose;
+        }
+      });
+      return () => {
+        disposed = true;
+        unlisten?.();
+      };
+    },
+    async detail(id) {
+      return unwrapResult(await commands.libraryAnalysisDetail(id));
+    },
+    async setCorrections(ids, bpm, key) {
+      return unwrapResult(await commands.librarySetCorrections(ids, bpm, key));
+    },
+    async restoreCorrections(snapshots) {
+      return unwrapResult(await commands.libraryRestoreCorrections(snapshots));
+    },
+    async clear(ids) {
+      unwrapResult(await commands.libraryClearAnalysis(ids));
+    },
+    smart: {
+      async list() {
+        return unwrapResult(await commands.smartList());
+      },
+      async save(id, definition) {
+        return unwrapResult(await commands.smartSave(id, definition));
+      },
+      async remove(id) {
+        unwrapResult(await commands.smartDelete(id));
+      },
+      async evaluate(id, definition, offset) {
+        return unwrapResult(
+          await commands.smartEvaluate(id, definition, offset),
+        );
+      },
+      async trackIds(id) {
+        return unwrapResult(await commands.smartTrackIds(id));
+      },
+      async snapshot(id, name) {
+        return unwrapResult(await commands.smartSnapshot(id, name));
+      },
+    },
+  },
   async facets(kind) {
     return unwrapResult(await commands.libraryFacets(kind));
   },

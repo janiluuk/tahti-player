@@ -1,9 +1,14 @@
 mod metadata;
+pub mod analysis;
+pub mod analysis_dsp;
 pub mod backup;
 pub mod catalog;
 pub mod m3u;
 pub mod playlists;
+pub mod smart_playlists;
 pub mod tag_writer;
+#[cfg(test)]
+mod analysis_tests;
 #[cfg(test)]
 mod catalog_tests;
 #[cfg(test)]
@@ -76,6 +81,16 @@ pub struct LibraryTrack {
     pub play_count: i64,
     #[sqlx(default)]
     pub last_played_at: Option<String>,
+    /// Effective BPM and key (user correction > file tag > estimate); see
+    /// `analysis.rs`. Empty until known.
+    #[sqlx(default)]
+    pub bpm: Option<f64>,
+    #[sqlx(default)]
+    pub musical_key: Option<String>,
+    #[sqlx(default)]
+    pub loudness_lufs: Option<f64>,
+    #[sqlx(default)]
+    pub analyzed: bool,
 }
 
 /// Sortable track-table columns. A closed enum, never user text, so the
@@ -97,6 +112,9 @@ pub enum SortColumn {
     Rating,
     Plays,
     LastPlayed,
+    Bpm,
+    Key,
+    Loudness,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, specta::Type)]
@@ -124,6 +142,9 @@ fn order_clause(sort: Option<&TrackSort>) -> String {
             text("album")
         ),
         SortColumn::Genre => text("genre"),
+        SortColumn::Bpm => nullable("bpm"),
+        SortColumn::Key => nullable("musical_key"),
+        SortColumn::Loudness => nullable("loudness_lufs"),
         SortColumn::Year => nullable("year"),
         SortColumn::TrackNo => nullable("track_no"),
         SortColumn::Bitrate => nullable("bitrate_kbps"),
@@ -239,6 +260,13 @@ pub enum Availability {
     Missing,
 }
 
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, specta::Type)]
+#[serde(rename_all = "camelCase")]
+pub enum AnalysisState {
+    Analyzed,
+    Unanalyzed,
+}
+
 /// Range and attribute filters that combine with search and a browse group.
 /// Every field is optional; an unset field never restricts anything.
 #[derive(Debug, Clone, Default, Serialize, Deserialize, specta::Type)]
@@ -262,6 +290,15 @@ pub struct TrackFilters {
     pub color: Option<String>,
     /// Tracks carrying this tag (case-insensitive).
     pub tag: Option<String>,
+    /// Effective BPM (user correction, else tag, else estimate).
+    pub bpm_min: Option<f64>,
+    pub bpm_max: Option<f64>,
+    /// Effective key in `analysis_dsp::key_name` form, e.g. `Am`.
+    pub key: Option<String>,
+    /// Integrated loudness in LUFS.
+    pub loudness_min: Option<f64>,
+    pub loudness_max: Option<f64>,
+    pub analysis: Option<AnalysisState>,
 }
 
 /// Values available to build filter controls from the current catalog.
@@ -419,6 +456,8 @@ pub struct LibraryState {
     cancel_import: AtomicBool,
     /// Same for the on-demand duplicate hashing job.
     cancel_hash: AtomicBool,
+    /// Background analysis job (cancel/pause flags, one job at a time).
+    analysis: std::sync::Arc<analysis::AnalysisControl>,
 }
 
 /// Migration and backup policy (desktop-pro-library.md Phase 0):
@@ -736,6 +775,32 @@ fn where_clause(query: &ListQuery) -> (String, Vec<Bind>) {
         if let Some(v) = f.tag.as_ref().filter(|v| !v.trim().is_empty()) {
             conditions.push("id IN (SELECT tt.track_id FROM library_track_tags tt JOIN library_tags t ON t.id = tt.tag_id WHERE t.name = ?)".into());
             binds.push(Bind::Text(v.trim().to_owned()));
+        }
+        if let Some(v) = f.bpm_min {
+            conditions.push("bpm >= ?".into());
+            binds.push(Bind::Real(v));
+        }
+        if let Some(v) = f.bpm_max {
+            conditions.push("bpm <= ?".into());
+            binds.push(Bind::Real(v));
+        }
+        if let Some(v) = f.key.as_ref().filter(|v| !v.trim().is_empty()) {
+            conditions.push("musical_key = ?".into());
+            // Accept any spelling ("A minor", "8A", "Bbm"); an unknown one matches nothing.
+            binds.push(Bind::Text(analysis_dsp::normalize_key(v).unwrap_or_else(|| v.trim().to_owned())));
+        }
+        if let Some(v) = f.loudness_min {
+            conditions.push("loudness_lufs >= ?".into());
+            binds.push(Bind::Real(v));
+        }
+        if let Some(v) = f.loudness_max {
+            conditions.push("loudness_lufs <= ?".into());
+            binds.push(Bind::Real(v));
+        }
+        match f.analysis {
+            Some(AnalysisState::Analyzed) => conditions.push("analyzed = 1".into()),
+            Some(AnalysisState::Unanalyzed) => conditions.push("analyzed = 0".into()),
+            None => {}
         }
     }
     let where_sql = if conditions.is_empty() {

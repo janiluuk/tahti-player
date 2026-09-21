@@ -149,3 +149,43 @@ fn path_mapping_respects_folder_boundaries_and_unicode() {
     let m = maps("C:\\Music", "/mnt/new");
     assert_eq!(mapped("C:\\Music\\Album\\a.wav", &m), std::path::PathBuf::from("/mnt/new/Album/a.wav").to_string_lossy());
 }
+
+#[tokio::test]
+async fn backup_carries_bpm_key_corrections_and_smart_playlist_rules() {
+    use super::analysis::{detail, set_corrections};
+    use super::smart_playlists::{list_smart, save_smart, RuleField, RuleOp, SmartDefinition, SmartRule};
+    use super::SortColumn;
+
+    let dir = tempfile::tempdir().unwrap();
+    make_music(dir.path());
+    let source = pool().await;
+    import_paths(&source, (0..3).map(|i| dir.path().join(format!("{i}.wav"))).collect()).await;
+    let ids: Vec<String> = tracks(&source).await.into_iter().map(|t| t.id).collect();
+    set_corrections(&source, &ids[..1], Some(126.5), Some("Bbm")).await.unwrap();
+    let definition = SmartDefinition {
+        name: "Fast".into(),
+        match_all: true,
+        rules: vec![SmartRule { field: RuleField::Bpm, op: RuleOp::AtLeast, value: "120".into(), value2: String::new() }],
+        sort: SortColumn::Bpm,
+        descending: true,
+        limit: Some(50),
+    };
+    save_smart(&source, None, &definition).await.unwrap();
+
+    let backup = tempfile::tempdir().unwrap().keep().join("lib.tahti-backup");
+    export_backup(&source, &backup).await.unwrap();
+
+    let target = pool().await;
+    import_paths(&target, (0..3).map(|i| dir.path().join(format!("{i}.wav"))).collect()).await;
+    restore_backup(&target, &backup, &[]).await.unwrap();
+    // Restoring twice never overwrites the rule set that is already there.
+    restore_backup(&target, &backup, &[]).await.unwrap();
+
+    let restored = tracks(&target).await.into_iter().find(|t| t.path.ends_with("0.wav")).unwrap();
+    let d = detail(&target, &restored.id).await.unwrap();
+    assert_eq!((d.user_bpm, d.user_key.as_deref(), d.bpm), (Some(126.5), Some("A#m"), Some(126.5)));
+    let names: Vec<String> = list_smart(&target).await.unwrap().into_iter().map(|s| s.definition.name).collect();
+    assert_eq!(names, vec!["Fast", "Fast (restored)"]);
+    let rules = &list_smart(&target).await.unwrap()[0].definition;
+    assert_eq!((rules.limit, rules.descending, rules.rules.len()), (Some(50), true, 1));
+}

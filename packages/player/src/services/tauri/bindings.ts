@@ -28,6 +28,15 @@ export const commands = {
 	color: string | null,
 	/**  Tracks carrying this tag (case-insensitive). */
 	tag: string | null,
+	/**  Effective BPM (user correction, else tag, else estimate). */
+	bpmMin: number | null,
+	bpmMax: number | null,
+	/**  Effective key in `analysis_dsp::key_name` form, e.g. `Am`. */
+	key: string | null,
+	/**  Integrated loudness in LUFS. */
+	loudnessMin: number | null,
+	loudnessMax: number | null,
+	analysis: AnalysisState | null,
 } | null, sort: {
 	column: SortColumn,
 	descending: boolean,
@@ -96,6 +105,15 @@ export const commands = {
 	color: string | null,
 	/**  Tracks carrying this tag (case-insensitive). */
 	tag: string | null,
+	/**  Effective BPM (user correction, else tag, else estimate). */
+	bpmMin: number | null,
+	bpmMax: number | null,
+	/**  Effective key in `analysis_dsp::key_name` form, e.g. `Am`. */
+	key: string | null,
+	/**  Integrated loudness in LUFS. */
+	loudnessMin: number | null,
+	loudnessMax: number | null,
+	analysis: AnalysisState | null,
 } | null, sort: {
 	column: SortColumn,
 	descending: boolean,
@@ -167,6 +185,14 @@ export const commands = {
 	color: string,
 	playCount: number,
 	lastPlayedAt: string | null,
+	/**
+	 *  Effective BPM and key (user correction > file tag > estimate); see
+	 *  `analysis.rs`. Empty until known.
+	 */
+	bpm: number | null,
+	musicalKey: string | null,
+	loudnessLufs: number | null,
+	analyzed: boolean,
 } | null, string>(__TAURI_INVOKE("library_relink", { id })),
 	libraryListRoots: () => typedError<LibraryRoot[], string>(__TAURI_INVOKE("library_list_roots")),
 	/**
@@ -197,6 +223,33 @@ export const commands = {
 	/**  Tracks with no proven match in the new folder; left untouched. */
 	unmatched: number,
 } | null, string>(__TAURI_INVOKE("library_relink_root", { id })),
+	smartList: () => typedError<SmartPlaylist[], string>(__TAURI_INVOKE("smart_list")),
+	smartSave: (id: string | null, definition: SmartDefinition) => typedError<SmartPlaylist, string>(__TAURI_INVOKE("smart_save", { id, definition })),
+	smartDelete: (id: string) => typedError<null, string>(__TAURI_INVOKE("smart_delete", { id })),
+	/**
+	 *  Evaluates a saved smart playlist, or an unsaved draft when `definition`
+	 *  is given (live preview while editing rules).
+	 */
+	smartEvaluate: (id: string | null, definition: {
+	name: string,
+	/**  All rules must match (true) or any of them (false). */
+	matchAll: boolean,
+	rules: SmartRule[],
+	sort: SortColumn,
+	descending: boolean,
+	/**  Keep only the first N tracks in that sort. */
+	limit: number | null,
+} | null, offset: number) => typedError<LibraryPage, string>(__TAURI_INVOKE("smart_evaluate", { id, definition, offset })),
+	smartTrackIds: (id: string) => typedError<string[], string>(__TAURI_INVOKE("smart_track_ids", { id })),
+	smartSnapshot: (id: string, name: string) => typedError<PlaylistSummary, string>(__TAURI_INVOKE("smart_snapshot", { id, name })),
+	libraryAnalyzeTracks: (ids: string[], force: boolean) => typedError<AnalysisResult, string>(__TAURI_INVOKE("library_analyze_tracks", { ids, force })),
+	libraryAnalysisCancel: () => typedError<null, string>(__TAURI_INVOKE("library_analysis_cancel")),
+	libraryAnalysisPause: (paused: boolean) => typedError<null, string>(__TAURI_INVOKE("library_analysis_pause", { paused })),
+	libraryAnalysisSummary: () => typedError<AnalysisSummary, string>(__TAURI_INVOKE("library_analysis_summary")),
+	libraryAnalysisDetail: (id: string) => typedError<AnalysisDetail, string>(__TAURI_INVOKE("library_analysis_detail", { id })),
+	librarySetCorrections: (ids: string[], bpm: number | null, key: string | null) => typedError<CorrectionSnapshot[], string>(__TAURI_INVOKE("library_set_corrections", { ids, bpm, key })),
+	libraryRestoreCorrections: (snapshots: CorrectionSnapshot[]) => typedError<number, string>(__TAURI_INVOKE("library_restore_corrections", { snapshots })),
+	libraryClearAnalysis: (ids: string[]) => typedError<null, string>(__TAURI_INVOKE("library_clear_analysis", { ids })),
 	libraryEditPreview: (ids: string[], edits: FieldEdit[]) => typedError<EditPreview, string>(__TAURI_INVOKE("library_edit_preview", { ids, edits })),
 	libraryEditTracks: (ids: string[], edits: FieldEdit[]) => typedError<EditOutcome, string>(__TAURI_INVOKE("library_edit_tracks", { ids, edits })),
 	libraryRestoreEdits: (snapshots: FieldSnapshot[]) => typedError<number, string>(__TAURI_INVOKE("library_restore_edits", { snapshots })),
@@ -270,6 +323,45 @@ export const commands = {
 };
 
 /* Types */
+export type AnalysisDetail = {
+	analyzed: boolean,
+	/**  Analysis was made by an older algorithm or the file changed since. */
+	stale: boolean,
+	/**  `PEAK_BUCKETS` values 0-255 (empty until analyzed). */
+	peaks: number[],
+	loudnessLufs: number | null,
+	truePeakDbtp: number | null,
+	tagBpm: number | null,
+	tagKey: string | null,
+	bpmEstimate: number | null,
+	bpmConfidence: number | null,
+	keyEstimate: string | null,
+	keyConfidence: number | null,
+	userBpm: number | null,
+	userKey: string | null,
+	/**  What filters and sorting use: user > tag > estimate. */
+	bpm: number | null,
+	key: string | null,
+	analyzedAt: string | null,
+};
+
+export type AnalysisResult = {
+	analyzed: number,
+	/**  Already analyzed by this algorithm version and unchanged since. */
+	reused: number,
+	failed: number,
+	cancelled: boolean,
+};
+
+export type AnalysisState = "analyzed" | "unanalyzed";
+
+export type AnalysisSummary = {
+	analyzed: number,
+	total: number,
+	running: boolean,
+	paused: boolean,
+};
+
 export type Availability = "available" | "missing";
 
 export type BackupSummary = {
@@ -290,6 +382,13 @@ export type BridgeResponse = {
 } & BridgeResponseBody;
 
 export type BridgeResponseBody = { status: "success"; data: unknown } | { status: "error"; error: string };
+
+/**  What one track's correction looked like, for undo. */
+export type CorrectionSnapshot = {
+	id: string,
+	bpm: number | null,
+	key: string | null,
+};
 
 export type DailyListeningTime = {
 	date: string,
@@ -595,6 +694,14 @@ export type LibraryTrack = {
 	color: string,
 	playCount: number,
 	lastPlayedAt: string | null,
+	/**
+	 *  Effective BPM and key (user correction > file tag > estimate); see
+	 *  `analysis.rs`. Empty until known.
+	 */
+	bpm: number | null,
+	musicalKey: string | null,
+	loudnessLufs: number | null,
+	analyzed: boolean,
 };
 
 export type MergeResult = {
@@ -764,11 +871,49 @@ export type RootScanResult = {
 	cancelled: boolean,
 };
 
+export type RuleField = "title" | "artist" | "album" | "genre" | "format" | "tag" | "year" | "rating" | "playCount" | "duration" | "bpm" | "key" | "loudness" | 
+/**  Days since last played; a track never played counts as "not played". */
+"lastPlayed" | 
+/**  Days since the track was added. */
+"added" | 
+/**  Whether analysis has run (`isSet` / `isNotSet`). */
+"analyzed";
+
+export type RuleOp = "is" | "isNot" | "contains" | "notContains" | "atLeast" | "atMost" | "between" | 
+/**  Dates: within the last `value` days. */
+"inLastDays" | 
+/**  Dates: not within the last `value` days (never-played included). */
+"notInLastDays" | "isSet" | "isNotSet";
+
+export type SmartDefinition = {
+	name: string,
+	/**  All rules must match (true) or any of them (false). */
+	matchAll: boolean,
+	rules: SmartRule[],
+	sort: SortColumn,
+	descending: boolean,
+	/**  Keep only the first N tracks in that sort. */
+	limit: number | null,
+};
+
+export type SmartPlaylist = {
+	id: string,
+	createdAt: string,
+} & SmartDefinition;
+
+export type SmartRule = {
+	field: RuleField,
+	op: RuleOp,
+	value?: string,
+	/**  Upper bound for `between`. */
+	value2?: string,
+};
+
 /**
  *  Sortable track-table columns. A closed enum, never user text, so the
  *  ORDER BY below is assembled from fixed SQL only.
  */
-export type SortColumn = "title" | "artist" | "album" | "genre" | "year" | "trackNo" | "duration" | "format" | "size" | "bitrate" | "added" | "rating" | "plays" | "lastPlayed";
+export type SortColumn = "title" | "artist" | "album" | "genre" | "year" | "trackNo" | "duration" | "format" | "size" | "bitrate" | "added" | "rating" | "plays" | "lastPlayed" | "bpm" | "key" | "loudness";
 
 export type StartupLogEntry = {
 	timestamp: string,
@@ -831,6 +976,15 @@ export type TrackFilters = {
 	color: string | null,
 	/**  Tracks carrying this tag (case-insensitive). */
 	tag: string | null,
+	/**  Effective BPM (user correction, else tag, else estimate). */
+	bpmMin: number | null,
+	bpmMax: number | null,
+	/**  Effective key in `analysis_dsp::key_name` form, e.g. `Am`. */
+	key: string | null,
+	/**  Integrated loudness in LUFS. */
+	loudnessMin: number | null,
+	loudnessMax: number | null,
+	analysis: AnalysisState | null,
 };
 
 export type TrackPresence = {

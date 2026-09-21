@@ -5763,3 +5763,11 @@ Local files now lists persisted missing entries, checks whether their original f
 ## 2026-09-18 — Recursive desktop library folder import
 
 Local files now offers a native folder picker that recursively imports regular FLAC/WAV files in stable order while ignoring unsupported files and directory symlinks. It reuses the existing per-file error reporting and catalog upsert behavior. Progress, cancellation, drag-drop, watched roots, and background indexing remain open. Bumped `packages/tahti-web/package.json` to `0.0.124`.
+
+## 2026-09-21 — Bloat sweep flagged (no code changed)
+
+Swept the repo for oversized non-test modules. Worst offenders: `local_library/mod.rs` (1693 LOC, mixes types, query builder, import pipeline, roots, facets, commands and state) and `catalog.rs` (1222), `DesktopLibraryPanel.tsx` (1702), `ChannelDesigner.tsx` (1800), `ChannelView.tsx` (1576), `StudioProEditorView.tsx` (1497), `ArtistView.tsx` (1408), `ServiceCategory.tsx` (1400), `RadioCategory.tsx` (1264), plus several 1000-1300 LOC `api/*.ts` files and studio views. Full table and plan in `docs/todo/god-module-restructure.md`; `mod.rs` is first.
+
+## 2026-09-21 — Desktop library Phase 5: analysis and smart playlists
+
+Local files can now analyze audio in the background (waveform, BS.1770 loudness and true peak, BPM, musical key), one file at a time with pause/stop and per-track saved results, from a selection or the whole library. The track details show the waveform and each value's origin (your correction, the file's tag, or an estimate with its confidence); BPM and key can be corrected and undone, and re-analysis never overwrites a correction. BPM, Key and Loudness are sortable columns with matching filters. Smart playlists (all/any rules, sort, limit) are re-evaluated on every use, show a live match count while editing, and can be saved as a fixed playlist; rules and corrections are in the catalog backup. Real-music accuracy and normalization playback remain open; see `docs/todo/desktop-pro-library.md`.
