@@ -24,6 +24,9 @@ export function SaveQueueAsPlaylistDialog({ isOpen, onClose }: Props) {
     .map((item) => soundIdFromPlayableId(item.track.source.id))
     .filter((id): id is string => Boolean(id));
   const skipped = queue.length - soundIds.length;
+  const localCount = queue.filter((item) =>
+    item.track.source.id.startsWith('local:'),
+  ).length;
 
   const handleClose = () => {
     if (busy) {
@@ -62,8 +65,10 @@ export function SaveQueueAsPlaylistDialog({ isOpen, onClose }: Props) {
         Creates a new playlist from the {soundIds.length}{' '}
         {soundIds.length === 1 ? 'track' : 'tracks'} in your queue that are part
         of the Tahti catalog.
-        {skipped > 0 &&
-          ` ${skipped} external ${skipped === 1 ? 'track isn’t' : 'tracks aren’t'} included.`}
+        {skipped - localCount > 0 &&
+          ` ${skipped - localCount} other ${skipped - localCount === 1 ? 'track isn’t' : 'tracks aren’t'} included.`}
+        {localCount > 0 &&
+          ` ${localCount} local ${localCount === 1 ? 'file lives' : 'files live'} on this device and can’t be added to a cloud playlist — use “Save queue as local playlist” to keep ${localCount === 1 ? 'it' : 'them'}.`}
       </Dialog.Description>
       <Input
         label="Playlist name"

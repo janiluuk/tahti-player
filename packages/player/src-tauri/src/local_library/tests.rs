@@ -1340,3 +1340,483 @@ async fn exit_demo_filter_sort_select_all_in_displayed_order() {
     let batch = super::prepare_playback(&pool, &ids[..50]).await.unwrap();
     assert_eq!(batch.items.len() + batch.unavailable, 50);
 }
+
+// --- Local playlists (Phase 3) ---
+
+use super::playlists::{
+    add_tracks, create_playlist, delete_playlist, duplicate_playlist, entries_page, entry_ids,
+    get_playlist, list_playlists, move_entries, playable_track_ids, remove_entries,
+    rename_playlist, restore_entries, set_order,
+};
+
+async fn entry_titles(pool: &SqlitePool, playlist: &str) -> Vec<String> {
+    let mut titles = Vec::new();
+    let mut offset = 0;
+    loop {
+        let page = entries_page(pool, playlist, offset).await.unwrap();
+        if page.entries.is_empty() {
+            return titles;
+        }
+        offset += page.entries.len() as i64;
+        titles.extend(page.entries.into_iter().map(|e| e.title));
+    }
+}
+
+/// `n` seeded tracks with ids gen-0..gen-n and titles "Generated Track 00000i".
+async fn playlist_pool(n: usize) -> SqlitePool {
+    let pool = pool().await;
+    seed_generated_rows(&pool, n).await;
+    pool
+}
+fn gen_ids(range: std::ops::Range<usize>) -> Vec<String> {
+    range.map(|i| format!("gen-{i}")).collect()
+}
+fn short(title: &str) -> usize {
+    title.rsplit(' ').next().unwrap().parse().unwrap()
+}
+
+#[tokio::test]
+async fn playlists_are_created_renamed_and_kept_unique_ignoring_case() {
+    let pool = pool().await;
+    let a = create_playlist(&pool, "  Night drive  ").await.unwrap();
+    assert_eq!(a.name, "Night drive");
+    assert!(create_playlist(&pool, "night DRIVE").await.unwrap_err().contains("already exists"));
+    assert!(create_playlist(&pool, "   ").await.unwrap_err().contains("name"));
+    let b = create_playlist(&pool, "Focus").await.unwrap();
+    assert!(rename_playlist(&pool, &b.id, "NIGHT drive").await.unwrap_err().contains("already exists"));
+    assert_eq!(rename_playlist(&pool, &b.id, "Deep focus").await.unwrap().name, "Deep focus");
+    assert!(rename_playlist(&pool, "nope", "x").await.is_err());
+    let names: Vec<String> = list_playlists(&pool).await.unwrap().into_iter().map(|p| p.name).collect();
+    assert_eq!(names, ["Deep focus", "Night drive"]);
+}
+
+#[tokio::test]
+async fn adding_keeps_order_allows_repeats_and_can_insert_at_an_index() {
+    let pool = playlist_pool(10).await;
+    let p = create_playlist(&pool, "P").await.unwrap();
+    let added = add_tracks(&pool, &p.id, &["gen-3".into(), "gen-1".into(), "gen-3".into(), "missing".into()], None).await.unwrap();
+    assert_eq!(added, 3, "unknown ids skipped, repeats kept");
+    assert_eq!(entry_titles(&pool, &p.id).await.iter().map(|t| short(t)).collect::<Vec<_>>(), [3, 1, 3]);
+
+    add_tracks(&pool, &p.id, &["gen-8".into(), "gen-9".into()], Some(1)).await.unwrap();
+    assert_eq!(entry_titles(&pool, &p.id).await.iter().map(|t| short(t)).collect::<Vec<_>>(), [3, 8, 9, 1, 3]);
+
+    let ids = entry_ids(&pool, &p.id).await.unwrap();
+    assert_eq!(ids.len(), 5);
+    assert_eq!(ids.iter().collect::<std::collections::HashSet<_>>().len(), 5, "each entry has its own id");
+    let summary = get_playlist(&pool, &p.id).await.unwrap();
+    assert_eq!(summary.track_count, 5);
+    assert!((summary.duration_sec - 900.0).abs() < 0.001);
+}
+
+#[tokio::test]
+async fn moving_entries_keeps_the_block_order_and_counts_among_unmoved() {
+    let pool = playlist_pool(8).await;
+    let p = create_playlist(&pool, "P").await.unwrap();
+    add_tracks(&pool, &p.id, &gen_ids(0..8), None).await.unwrap();
+    let ids = entry_ids(&pool, &p.id).await.unwrap();
+    let order = |pool: &SqlitePool| {
+        let id = p.id.clone();
+        let pool = pool.clone();
+        async move { entry_titles(&pool, &id).await.iter().map(|t| short(t)).collect::<Vec<_>>() }
+    };
+
+    // Move 1 and 2 (given out of order) to sit before the entry that is 4th among the rest.
+    move_entries(&pool, &p.id, &[ids[2].clone(), ids[1].clone()], 4).await.unwrap();
+    assert_eq!(order(&pool).await, [0, 3, 4, 5, 1, 2, 6, 7]);
+    move_entries(&pool, &p.id, &[ids[7].clone()], 0).await.unwrap();
+    assert_eq!(order(&pool).await, [7, 0, 3, 4, 5, 1, 2, 6]);
+    move_entries(&pool, &p.id, &[ids[7].clone()], 99).await.unwrap();
+    assert_eq!(order(&pool).await, [0, 3, 4, 5, 1, 2, 6, 7], "past the end clamps");
+    move_entries(&pool, &p.id, &[], 0).await.unwrap();
+    move_entries(&pool, &p.id, &["nope".into()], 0).await.unwrap();
+    assert_eq!(order(&pool).await, [0, 3, 4, 5, 1, 2, 6, 7]);
+}
+
+#[tokio::test]
+async fn removing_returns_the_entries_and_restoring_undoes_it_exactly() {
+    let pool = playlist_pool(6).await;
+    let p = create_playlist(&pool, "P").await.unwrap();
+    add_tracks(&pool, &p.id, &["gen-0".into(), "gen-1".into(), "gen-1".into(), "gen-2".into(), "gen-3".into()], None).await.unwrap();
+    let before = entry_ids(&pool, &p.id).await.unwrap();
+
+    let removed = remove_entries(&pool, &p.id, &[before[1].clone(), before[3].clone()]).await.unwrap();
+    assert_eq!(removed.iter().map(|r| r.entry_id.clone()).collect::<Vec<_>>(), [before[1].clone(), before[3].clone()]);
+    assert_eq!(entry_titles(&pool, &p.id).await.iter().map(|t| short(t)).collect::<Vec<_>>(), [0, 1, 3]);
+
+    restore_entries(&pool, &p.id, &removed, &before).await.unwrap();
+    assert_eq!(entry_ids(&pool, &p.id).await.unwrap(), before, "same ids, same order");
+    restore_entries(&pool, &p.id, &removed, &before).await.unwrap();
+    assert_eq!(entry_ids(&pool, &p.id).await.unwrap(), before, "idempotent");
+}
+
+#[tokio::test]
+async fn set_order_undoes_a_move() {
+    let pool = playlist_pool(5).await;
+    let p = create_playlist(&pool, "P").await.unwrap();
+    add_tracks(&pool, &p.id, &gen_ids(0..5), None).await.unwrap();
+    let before = entry_ids(&pool, &p.id).await.unwrap();
+    move_entries(&pool, &p.id, &[before[4].clone()], 0).await.unwrap();
+    assert_ne!(entry_ids(&pool, &p.id).await.unwrap(), before);
+    set_order(&pool, &p.id, &before).await.unwrap();
+    assert_eq!(entry_ids(&pool, &p.id).await.unwrap(), before);
+}
+
+#[tokio::test]
+async fn duplicating_copies_order_and_repeats_with_new_ids_and_unique_names() {
+    let pool = playlist_pool(4).await;
+    let p = create_playlist(&pool, "Mix").await.unwrap();
+    add_tracks(&pool, &p.id, &["gen-2".into(), "gen-0".into(), "gen-2".into()], None).await.unwrap();
+
+    let copy = duplicate_playlist(&pool, &p.id).await.unwrap();
+    let copy2 = duplicate_playlist(&pool, &p.id).await.unwrap();
+    assert_eq!((copy.name.as_str(), copy2.name.as_str()), ("Mix copy", "Mix copy 2"));
+    assert_eq!(entry_titles(&pool, &copy.id).await, entry_titles(&pool, &p.id).await);
+    let originals = entry_ids(&pool, &p.id).await.unwrap();
+    assert!(entry_ids(&pool, &copy.id).await.unwrap().iter().all(|id| !originals.contains(id)));
+    delete_playlist(&pool, &copy.id).await.unwrap();
+    assert_eq!(entry_titles(&pool, &p.id).await.len(), 3, "deleting the copy leaves the original");
+}
+
+#[tokio::test]
+async fn deleting_a_track_keeps_its_entries_visibly_unavailable_and_reimport_relinks_them() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("keep.wav");
+    write_wav(&path, "Keep me", "Artist");
+    let pool = pool().await;
+    import_paths(&pool, vec![path.clone()]).await;
+    let id = list(&pool, "", 0).await.unwrap().tracks[0].id.clone();
+    let p = create_playlist(&pool, "P").await.unwrap();
+    add_tracks(&pool, &p.id, &[id.clone(), id.clone()], None).await.unwrap();
+
+    remove(&pool, &id).await.unwrap();
+    let page = entries_page(&pool, &p.id, 1).await.unwrap(); // offset > 0: no relink pass
+    assert_eq!(page.total, 2, "entries survive the track");
+    assert!(page.entries.iter().all(|e| e.unavailable && e.track.is_none() && e.title == "Keep me"));
+    assert_eq!(get_playlist(&pool, &p.id).await.unwrap().unavailable_count, 2);
+    assert!(playable_track_ids(&pool, &p.id).await.unwrap().is_empty());
+
+    import_paths(&pool, vec![path]).await; // same file comes back with a new track id
+    let page = entries_page(&pool, &p.id, 0).await.unwrap();
+    assert!(page.entries.iter().all(|e| !e.unavailable && e.track.is_some()), "relinked by path");
+    assert_eq!(playable_track_ids(&pool, &p.id).await.unwrap().len(), 2);
+}
+
+#[tokio::test]
+async fn missing_files_count_as_unavailable_but_keep_their_place() {
+    let pool = playlist_pool(3).await;
+    let p = create_playlist(&pool, "P").await.unwrap();
+    add_tracks(&pool, &p.id, &gen_ids(0..3), None).await.unwrap();
+    sqlx::query("UPDATE library_tracks SET available = 0 WHERE id = 'gen-1'").execute(&pool).await.unwrap();
+
+    let page = entries_page(&pool, &p.id, 0).await.unwrap();
+    assert_eq!(page.entries.iter().map(|e| e.unavailable).collect::<Vec<_>>(), [false, true, false]);
+    assert_eq!(get_playlist(&pool, &p.id).await.unwrap().unavailable_count, 1);
+    assert_eq!(playable_track_ids(&pool, &p.id).await.unwrap().len(), 3, "playback prep decides, entries stay");
+}
+
+#[tokio::test]
+async fn relinking_a_track_keeps_playlist_membership() {
+    let old = tempfile::tempdir().unwrap();
+    let new = tempfile::tempdir().unwrap();
+    let from = old.path().join("a.wav");
+    let to = new.path().join("a.wav");
+    write_wav(&from, "Moved", "Artist");
+    std::fs::copy(&from, &to).unwrap();
+    let pool = pool().await;
+    import_paths(&pool, vec![from.clone()]).await;
+    let id = list(&pool, "", 0).await.unwrap().tracks[0].id.clone();
+    let p = create_playlist(&pool, "P").await.unwrap();
+    add_tracks(&pool, &p.id, &[id.clone()], None).await.unwrap();
+    std::fs::remove_file(&from).unwrap();
+
+    relink(&pool, &id, to.clone()).await.unwrap();
+
+    let page = entries_page(&pool, &p.id, 0).await.unwrap();
+    assert_eq!(page.entries[0].track.as_ref().unwrap().id, id);
+    assert!(page.entries[0].path.ends_with("a.wav") && !page.entries[0].unavailable);
+}
+
+#[tokio::test]
+async fn deleting_a_playlist_removes_its_entries_but_never_tracks() {
+    let pool = playlist_pool(3).await;
+    let p = create_playlist(&pool, "P").await.unwrap();
+    add_tracks(&pool, &p.id, &gen_ids(0..3), None).await.unwrap();
+    delete_playlist(&pool, &p.id).await.unwrap();
+    assert_eq!(sqlx::query_scalar::<_, i64>("SELECT COUNT(*) FROM library_playlist_entries").fetch_one(&pool).await.unwrap(), 0);
+    assert_eq!(list(&pool, "", 0).await.unwrap().total, 3);
+    assert!(get_playlist(&pool, &p.id).await.is_err());
+}
+
+#[tokio::test]
+async fn long_playlists_page_in_order_without_gaps() {
+    let pool = playlist_pool(450).await;
+    let p = create_playlist(&pool, "Big").await.unwrap();
+    add_tracks(&pool, &p.id, &gen_ids(0..450), None).await.unwrap();
+    let ids = entry_ids(&pool, &p.id).await.unwrap();
+    move_entries(&pool, &p.id, &[ids[449].clone()], 0).await.unwrap();
+    let titles = entry_titles(&pool, &p.id).await;
+    assert_eq!(titles.len(), 450);
+    assert_eq!(short(&titles[0]), 449);
+    assert_eq!(short(&titles[1]), 0);
+    let first = entries_page(&pool, &p.id, 0).await.unwrap();
+    assert_eq!((first.entries.len(), first.total, first.entries[0].position), (200, 450, 0));
+}
+
+/// Phase 3 exit demo, first half: a 50-track playlist from filtered results,
+/// reordered, order and repeats intact.
+#[tokio::test]
+async fn exit_demo_fifty_tracks_from_filtered_results_reordered() {
+    let pool = pool().await;
+    seed_varied_rows(&pool, 2_000).await;
+    let filters = TrackFilters { formats: vec!["flac".into()], year_min: Some(2000), year_max: Some(2005), ..Default::default() };
+    let query = ListQuery { filters: Some(&filters), sort: Some(&TrackSort { column: SortColumn::Album, descending: false }), ..Default::default() };
+    let ids: Vec<String> = matching_ids_query(&pool, &query).await.unwrap().into_iter().take(50).collect();
+    assert_eq!(ids.len(), 50);
+
+    let p = create_playlist(&pool, "From filters").await.unwrap();
+    assert_eq!(add_tracks(&pool, &p.id, &ids, None).await.unwrap(), 50);
+    let entries = entry_ids(&pool, &p.id).await.unwrap();
+    move_entries(&pool, &p.id, &entries[40..45].to_vec(), 0).await.unwrap();
+    move_entries(&pool, &p.id, &[entries[0].clone()], 49).await.unwrap();
+
+    let page = entries_page(&pool, &p.id, 0).await.unwrap();
+    assert_eq!(page.total, 50);
+    let tracks: Vec<String> = page.entries.iter().map(|e| e.track.as_ref().unwrap().id.clone()).collect();
+    assert_eq!(tracks[..5], ids[40..45]);
+    assert_eq!(tracks[49], ids[0]);
+    assert_eq!(playable_track_ids(&pool, &p.id).await.unwrap(), tracks);
+}
+
+// --- M3U / M3U8 (Phase 3) ---
+
+use super::m3u::{
+    commit_import, export_playlist, format_m3u, parse_m3u, preview_import, relative_path,
+    relink_entry, EntryStatus, ExportEntry, ExportStyle,
+};
+use std::path::{Path, PathBuf};
+
+#[test]
+fn parses_extinf_names_comments_and_blank_lines() {
+    let text = "\u{feff}#EXTM3U\r\n#PLAYLIST:Night drive\r\n\r\n#EXTINF:215,Vladislav Delay - Huone\r\n/music/a.flac\r\n# just a comment\r\n#EXTINF:-1,No artist here\r\n/music/b.flac\r\n/music/c.flac\r\n";
+    let parsed = parse_m3u(text.as_bytes(), Path::new("/lists"));
+    assert_eq!(parsed.name.as_deref(), Some("Night drive"));
+    assert_eq!(parsed.entries.len(), 3);
+    let first = &parsed.entries[0];
+    assert_eq!((first.artist.as_deref(), first.title.as_deref(), first.duration), (Some("Vladislav Delay"), Some("Huone"), Some(215.0)));
+    assert_eq!(first.path, PathBuf::from("/music/a.flac"));
+    let second = &parsed.entries[1];
+    assert_eq!((second.artist.as_deref(), second.title.as_deref(), second.duration), (None, Some("No artist here"), None), "negative length ignored");
+    assert_eq!(parsed.entries[2].title, None, "EXTINF applies to one line only");
+    assert_eq!(parsed.entries[2].line, 9);
+}
+
+#[test]
+fn resolves_relative_file_url_windows_and_remote_lines() {
+    let text = "songs/a.flac\n../other/b.flac\n./c.flac\nfile:///music/My%20Songs/d.flac\nC:\\Music\\e.flac\nhttps://radio.example/stream\n";
+    let parsed = parse_m3u(text.as_bytes(), Path::new("/lists/mine"));
+    let paths: Vec<String> = parsed.entries.iter().map(|e| e.path.to_string_lossy().replace('\\', "/")).collect();
+    assert_eq!(paths[0], "/lists/mine/songs/a.flac");
+    assert_eq!(paths[1], "/lists/other/b.flac");
+    assert_eq!(paths[2], "/lists/mine/c.flac");
+    assert_eq!(paths[3], "/music/My Songs/d.flac");
+    assert!(paths[4].ends_with("C:/Music/e.flac"), "{}", paths[4]);
+    assert!(parsed.entries[5].remote && !parsed.entries[0].remote);
+}
+
+#[test]
+fn falls_back_to_latin1_for_old_m3u_files() {
+    let bytes = b"#EXTM3U\n#EXTINF:10,Caf\xe9\n/music/caf\xe9.flac\n";
+    let parsed = parse_m3u(bytes, Path::new("/"));
+    assert_eq!(parsed.entries[0].title.as_deref(), Some("Caf\u{e9}"));
+    assert_eq!(parsed.entries[0].path, PathBuf::from("/music/caf\u{e9}.flac"));
+}
+
+#[test]
+fn relative_paths_use_dotdot_and_report_when_no_common_root() {
+    let base = Path::new("/music/lists");
+    assert_eq!(relative_path(Path::new("/music/lists/a.flac"), base), Some(PathBuf::from("a.flac")));
+    assert_eq!(relative_path(Path::new("/music/lists/sub/a.flac"), base), Some(PathBuf::from("sub/a.flac")));
+    assert_eq!(relative_path(Path::new("/music/albums/a.flac"), base), Some(PathBuf::from("../albums/a.flac")));
+    assert_eq!(relative_path(Path::new("/data/a.flac"), base), Some(PathBuf::from("../../data/a.flac")));
+}
+
+#[test]
+fn formats_absolute_and_relative_lists_with_portability_counts() {
+    let entries = vec![
+        ExportEntry { path: "/music/lists/in/a.flac".into(), title: "A".into(), artist: "Ann".into(), duration: 60.4 },
+        ExportEntry { path: "/music/other/b.flac".into(), title: "B".into(), artist: String::new(), duration: 0.0 },
+        ExportEntry { path: "/music/lists/in/a.flac".into(), title: "A".into(), artist: "Ann".into(), duration: 60.4 },
+    ];
+    let (relative, stats) = format_m3u("Mix", &entries, Path::new("/music/lists"), ExportStyle::Relative);
+    assert_eq!(
+        relative,
+        "#EXTM3U\n#PLAYLIST:Mix\n#EXTINF:60,Ann - A\nin/a.flac\n#EXTINF:0,B\n../other/b.flac\n#EXTINF:60,Ann - A\nin/a.flac\n"
+    );
+    assert_eq!((stats.written, stats.outside_root, stats.absolute_fallback), (3, 1, 0));
+    let (absolute, stats) = format_m3u("Mix", &entries, Path::new("/music/lists"), ExportStyle::Absolute);
+    assert!(absolute.contains("\n/music/other/b.flac\n"));
+    assert_eq!((stats.outside_root, stats.absolute_fallback), (0, 0));
+}
+
+/// Three real WAVs (a, b, c) in `root`, imported.
+async fn m3u_library() -> (tempfile::TempDir, SqlitePool, Vec<String>, Vec<PathBuf>) {
+    let dir = tempfile::tempdir().unwrap();
+    let mut paths = Vec::new();
+    for (name, title) in [("a", "Alpha"), ("b", "Beta"), ("c", "Gamma")] {
+        let path = dir.path().join(format!("{name}.wav"));
+        write_wav(&path, title, "Artist");
+        paths.push(path);
+    }
+    let pool = pool().await;
+    import_paths(&pool, paths.clone()).await;
+    let mut ids = Vec::new();
+    for title in ["Alpha", "Beta", "Gamma"] {
+        ids.push(list(&pool, title, 0).await.unwrap().tracks.into_iter().find(|t| t.title == title).unwrap().id);
+    }
+    (dir, pool, ids, paths)
+}
+
+#[tokio::test]
+async fn export_then_import_round_trips_order_and_repeats() {
+    let (dir, pool, ids, _) = m3u_library().await;
+    let original = create_playlist(&pool, "Round trip").await.unwrap();
+    add_tracks(&pool, &original.id, &[ids[0].clone(), ids[1].clone(), ids[0].clone(), ids[2].clone()], None).await.unwrap();
+
+    let file = dir.path().join("round trip.m3u8");
+    let stats = export_playlist(&pool, &original.id, &file, ExportStyle::Relative).await.unwrap();
+    assert_eq!((stats.written, stats.outside_root, stats.absolute_fallback), (4, 0, 0));
+    let text = std::fs::read_to_string(&file).unwrap();
+    assert!(text.starts_with("#EXTM3U\n#PLAYLIST:Round trip\n"), "{text}");
+    assert!(text.contains("\na.wav\n"), "relative names: {text}");
+
+    let preview = preview_import(&pool, &file, None).await.unwrap();
+    assert_eq!((preview.total, preview.linked, preview.unresolved.len()), (4, 4, 0));
+    assert_eq!(preview.suggested_name, "Round trip");
+
+    let outcome = commit_import(&pool, &file, "Imported copy", true, None).await.unwrap();
+    assert_eq!((outcome.linked, outcome.unresolved, outcome.imported), (4, 0, 0));
+    assert_eq!(entry_titles(&pool, &outcome.playlist.id).await, entry_titles(&pool, &original.id).await);
+    assert_eq!(playable_track_ids(&pool, &outcome.playlist.id).await.unwrap(), playable_track_ids(&pool, &original.id).await.unwrap());
+}
+
+#[tokio::test]
+async fn import_keeps_unresolved_entries_and_relinks_them_when_the_file_arrives() {
+    let (dir, pool, ids, _) = m3u_library().await;
+    let _ = ids;
+    let outside = dir.path().join("new");
+    std::fs::create_dir_all(&outside).unwrap();
+    let fresh = outside.join("fresh.wav");
+    write_wav(&fresh, "Fresh", "Artist");
+    let unsupported = outside.join("song.mp3");
+    std::fs::write(&unsupported, b"not really mp3").unwrap();
+    let missing = dir.path().join("gone.wav");
+    let list_file = dir.path().join("mixed.m3u");
+    std::fs::write(
+        &list_file,
+        format!(
+            "#EXTM3U\n#EXTINF:5,Ann - Known\n{}\n{}\n{}\n{}\nhttps://radio.example/live\n",
+            dir.path().join("a.wav").display(),
+            fresh.display(),
+            unsupported.display(),
+            missing.display(),
+        ),
+    )
+    .unwrap();
+
+    let preview = preview_import(&pool, &list_file, None).await.unwrap();
+    assert_eq!(
+        (preview.total, preview.linked, preview.needs_import, preview.missing, preview.unsupported, preview.remote),
+        (5, 1, 1, 1, 1, 1)
+    );
+    let statuses: Vec<EntryStatus> = preview.unresolved.iter().map(|u| u.status).collect();
+    assert_eq!(statuses, [EntryStatus::NeedsImport, EntryStatus::Unsupported, EntryStatus::Missing, EntryStatus::Remote]);
+    assert_eq!(list(&pool, "", 0).await.unwrap().total, 3, "preview imports nothing");
+
+    // Without importing files, the fresh one stays an unavailable entry.
+    let kept = commit_import(&pool, &list_file, "No import", false, None).await.unwrap();
+    assert_eq!((kept.linked, kept.unresolved, kept.imported), (1, 4, 0));
+    assert_eq!(list(&pool, "", 0).await.unwrap().total, 3);
+
+    let outcome = commit_import(&pool, &list_file, "With import", true, None).await.unwrap();
+    assert_eq!((outcome.linked, outcome.unresolved, outcome.imported), (2, 3, 1));
+    assert_eq!(list(&pool, "", 0).await.unwrap().total, 4, "fresh.wav joined the library");
+    let page = entries_page(&pool, &outcome.playlist.id, 0).await.unwrap();
+    assert_eq!(page.total, 5, "nothing dropped");
+    assert_eq!(page.entries.iter().map(|e| e.unavailable).collect::<Vec<_>>(), [false, false, true, true, true]);
+    assert_eq!(page.entries[0].title, "Alpha", "catalog metadata wins for linked entries");
+    assert_eq!(page.entries[2].title, "song");
+
+    // The missing file turns up later: the entry re-links by path on open.
+    write_wav(&missing, "Gone", "Artist");
+    import_paths(&pool, vec![missing.clone()]).await;
+    let page = entries_page(&pool, &outcome.playlist.id, 0).await.unwrap();
+    assert!(!page.entries[3].unavailable, "relinked by path");
+}
+
+#[tokio::test]
+async fn import_rejects_a_taken_name_before_importing_anything() {
+    let (dir, pool, _, _) = m3u_library().await;
+    create_playlist(&pool, "Taken").await.unwrap();
+    let fresh = dir.path().join("fresh.wav");
+    write_wav(&fresh, "Fresh", "Artist");
+    let file = dir.path().join("x.m3u8");
+    std::fs::write(&file, format!("{}\n", fresh.display())).unwrap();
+
+    let error = commit_import(&pool, &file, "taken", true, None).await.unwrap_err();
+    assert!(error.contains("already exists"));
+    assert_eq!(list(&pool, "", 0).await.unwrap().total, 3, "no files imported on failure");
+}
+
+#[tokio::test]
+async fn relinking_by_folder_finds_moved_files_by_path_suffix_and_unique_name() {
+    let (dir, pool, _, _) = m3u_library().await;
+    // The list was made on another machine: /old/drive/Music/Album/x.wav and /old/drive/Music/y.wav
+    let moved = dir.path().join("moved");
+    std::fs::create_dir_all(moved.join("Album")).unwrap();
+    std::fs::create_dir_all(moved.join("Elsewhere")).unwrap();
+    write_wav(&moved.join("Album/x.wav"), "X", "Artist");
+    write_wav(&moved.join("Elsewhere/y.wav"), "Y", "Artist");
+    let list_file = dir.path().join("moved.m3u8");
+    std::fs::write(&list_file, "/old/drive/Music/Album/x.wav\n/old/drive/Music/y.wav\n/old/drive/Music/none.wav\n").unwrap();
+
+    let without = preview_import(&pool, &list_file, None).await.unwrap();
+    assert_eq!((without.missing, without.needs_import), (3, 0));
+    let with = preview_import(&pool, &list_file, Some(&moved)).await.unwrap();
+    assert_eq!((with.needs_import, with.missing), (2, 1), "suffix match and unique-name match");
+
+    let outcome = commit_import(&pool, &list_file, "Moved", true, Some(&moved)).await.unwrap();
+    assert_eq!((outcome.linked, outcome.imported, outcome.unresolved), (2, 2, 1));
+}
+
+#[tokio::test]
+async fn relinking_an_entry_to_a_chosen_file_imports_it_when_needed() {
+    let (dir, pool, ids, _) = m3u_library().await;
+    let p = create_playlist(&pool, "P").await.unwrap();
+    add_tracks(&pool, &p.id, &[ids[0].clone()], None).await.unwrap();
+    remove(&pool, &ids[0]).await.unwrap();
+    let entry = entry_ids(&pool, &p.id).await.unwrap().remove(0);
+    let replacement = dir.path().join("replacement.wav");
+    write_wav(&replacement, "Replacement", "Artist");
+
+    relink_entry(&pool, &p.id, &entry, &replacement).await.unwrap();
+
+    let page = entries_page(&pool, &p.id, 0).await.unwrap();
+    assert!(!page.entries[0].unavailable);
+    assert_eq!(page.entries[0].title, "Replacement");
+    assert!(relink_entry(&pool, &p.id, "nope", &replacement).await.is_err());
+}
+
+#[tokio::test]
+async fn export_keeps_unavailable_entries_with_their_saved_path_and_name() {
+    let (dir, pool, ids, _) = m3u_library().await;
+    let p = create_playlist(&pool, "P").await.unwrap();
+    add_tracks(&pool, &p.id, &[ids[1].clone()], None).await.unwrap();
+    remove(&pool, &ids[1]).await.unwrap();
+    let file = dir.path().join("p.m3u8");
+    let stats = export_playlist(&pool, &p.id, &file, ExportStyle::Absolute).await.unwrap();
+    assert_eq!(stats.written, 1);
+    let text = std::fs::read_to_string(&file).unwrap();
+    assert!(text.contains("Artist - Beta"), "{text}");
+    assert!(text.contains("b.wav"), "{text}");
+}

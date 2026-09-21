@@ -11,6 +11,7 @@ function baseLibrary(overrides: Partial<TahtiNativeLibrary> = {}) {
     list: vi.fn().mockResolvedValue({ tracks: [], total: 0 }),
     listUnavailable: vi.fn().mockResolvedValue([]),
     listRoots: vi.fn().mockResolvedValue([]),
+    playlists: {},
     facets: vi.fn().mockResolvedValue([]),
     filterOptions: vi
       .fn()

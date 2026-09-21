@@ -26,6 +26,46 @@ export const commands = {
 	column: SortColumn,
 	descending: boolean,
 } | null) => typedError<LibraryPage, string>(__TAURI_INVOKE("library_list", { search, offset, filter, filters, sort })),
+	playlistList: () => typedError<PlaylistSummary[], string>(__TAURI_INVOKE("playlist_list")),
+	playlistCreate: (name: string) => typedError<PlaylistSummary, string>(__TAURI_INVOKE("playlist_create", { name })),
+	playlistRename: (id: string, name: string) => typedError<PlaylistSummary, string>(__TAURI_INVOKE("playlist_rename", { id, name })),
+	playlistDuplicate: (id: string) => typedError<PlaylistSummary, string>(__TAURI_INVOKE("playlist_duplicate", { id })),
+	playlistDelete: (id: string) => typedError<null, string>(__TAURI_INVOKE("playlist_delete", { id })),
+	playlistAddTracks: (id: string, trackIds: string[], at: number | null) => typedError<number, string>(__TAURI_INVOKE("playlist_add_tracks", { id, trackIds, at })),
+	playlistEntries: (id: string, offset: number) => typedError<PlaylistPage, string>(__TAURI_INVOKE("playlist_entries", { id, offset })),
+	playlistEntryIds: (id: string) => typedError<string[], string>(__TAURI_INVOKE("playlist_entry_ids", { id })),
+	playlistMoveEntries: (id: string, entryIds: string[], toIndex: number) => typedError<null, string>(__TAURI_INVOKE("playlist_move_entries", { id, entryIds, toIndex })),
+	playlistRemoveEntries: (id: string, entryIds: string[]) => typedError<RawEntry[], string>(__TAURI_INVOKE("playlist_remove_entries", { id, entryIds })),
+	playlistRestoreEntries: (id: string, entries: RawEntry[], order: string[]) => typedError<null, string>(__TAURI_INVOKE("playlist_restore_entries", { id, entries, order })),
+	playlistSetOrder: (id: string, order: string[]) => typedError<null, string>(__TAURI_INVOKE("playlist_set_order", { id, order })),
+	playlistTrackIds: (id: string) => typedError<string[], string>(__TAURI_INVOKE("playlist_track_ids", { id })),
+	playlistExport: (id: string, style: ExportStyle) => typedError<{
+	path: string,
+	written: number,
+	/**  Relative mode: files outside the export folder, written with `../`. */
+	outsideRoot: number,
+	/**
+	 *  Relative mode: files that share no root with the export folder
+	 *  (another drive), written as absolute paths.
+	 */
+	absoluteFallback: number,
+} | null, string>(__TAURI_INVOKE("playlist_export", { id, style })),
+	playlistImportPreview: (sourcePath: string | null, relinkRoot: string | null) => typedError<{
+	sourcePath: string,
+	suggestedName: string,
+	total: number,
+	linked: number,
+	needsImport: number,
+	missing: number,
+	unsupported: number,
+	remote: number,
+	/**  The first entries that are not already in the library. */
+	unresolved: UnresolvedEntry[],
+} | null, string>(__TAURI_INVOKE("playlist_import_preview", { sourcePath, relinkRoot })),
+	playlistPickRelinkFolder: () => typedError<string | null, string>(__TAURI_INVOKE("playlist_pick_relink_folder")),
+	playlistImportCommit: (sourcePath: string, name: string, importMissingFiles: boolean, relinkRoot: string | null) => typedError<ImportOutcome, string>(__TAURI_INVOKE("playlist_import_commit", { sourcePath, name, importMissingFiles, relinkRoot })),
+	/**  Lets the user pick the file an unavailable entry should point at. */
+	playlistRelinkEntry: (id: string, entryId: string) => typedError<boolean, string>(__TAURI_INVOKE("playlist_relink_entry", { id, entryId })),
 	libraryFacets: (kind: FacetKind) => typedError<FacetGroup[], string>(__TAURI_INVOKE("library_facets", { kind })),
 	libraryMatchingIds: (search: string, filter: {
 	kind: FacetKind,
@@ -193,6 +233,32 @@ export type DailyListeningTime = {
 	value: number,
 };
 
+export type EntryStatus = 
+/**  Already a track in the library. */
+"linked" | 
+/**  A supported file that exists but is not in the library yet. */
+"needsImport" | 
+/**  The file is not where the list says (and was not found by relinking). */
+"missing" | 
+/**  Exists, but not a format the library can import (FLAC and WAV for now). */
+"unsupported" | 
+/**  A URL (stream), which local playlists cannot hold. */
+"remote";
+
+export type ExportResult = {
+	path: string,
+	written: number,
+	/**  Relative mode: files outside the export folder, written with `../`. */
+	outsideRoot: number,
+	/**
+	 *  Relative mode: files that share no root with the export folder
+	 *  (another drive), written as absolute paths.
+	 */
+	absoluteFallback: number,
+};
+
+export type ExportStyle = "absolute" | "relative";
+
 /**  Narrows the track list to one group from `library_facets`. */
 export type FacetFilter = {
 	kind: FacetKind,
@@ -265,6 +331,29 @@ export type HttpResponse = {
 export type ImportFailure = {
 	path: string,
 	error: string,
+};
+
+export type ImportOutcome = {
+	playlist: PlaylistSummary,
+	/**  Entries now pointing at a library track. */
+	linked: number,
+	/**  Files added to the library because the list referenced them. */
+	imported: number,
+	/**  Entries kept as unavailable (missing, unsupported, or streams). */
+	unresolved: number,
+};
+
+export type ImportPreview = {
+	sourcePath: string,
+	suggestedName: string,
+	total: number,
+	linked: number,
+	needsImport: number,
+	missing: number,
+	unsupported: number,
+	remote: number,
+	/**  The first entries that are not already in the library. */
+	unresolved: UnresolvedEntry[],
 };
 
 export type ImportResult = {
@@ -378,6 +467,49 @@ export type PlaybackItem = {
 	path: string,
 };
 
+export type PlaylistEntry = {
+	entryId: string,
+	position: number,
+	/**  The catalog row, when the entry still points at one. */
+	track: LibraryTrack | null,
+	/**  From the track when linked, otherwise the snapshot taken when added. */
+	title: string,
+	artist: string,
+	path: string,
+	duration: number | null,
+	/**  No linked track, or its file is missing. Never a reason to drop the entry. */
+	unavailable: boolean,
+};
+
+export type PlaylistPage = {
+	entries: PlaylistEntry[],
+	total: number,
+};
+
+export type PlaylistSummary = {
+	id: string,
+	name: string,
+	trackCount: number,
+	durationSec: number | null,
+	/**  Entries whose file is missing or whose track left the catalog. */
+	unavailableCount: number,
+	createdAt: string,
+	updatedAt: string,
+};
+
+/**
+ *  Enough to recreate an entry exactly: used for undo and for M3U import of
+ *  files that are not in the catalog yet.
+ */
+export type RawEntry = {
+	entryId: string,
+	trackId: string | null,
+	path: string,
+	title: string,
+	artist: string,
+	duration: number | null,
+};
+
 export type RelinkRootResult = {
 	root: LibraryRoot,
 	/**  Tracks re-pointed at the new folder (same relative path and size). */
@@ -481,6 +613,13 @@ export type TrackSnapshot = {
 export type TrackSort = {
 	column: SortColumn,
 	descending: boolean,
+};
+
+export type UnresolvedEntry = {
+	line: number,
+	path: string,
+	title: string,
+	status: EntryStatus,
 };
 
 export type YtdlpPlaylistEntry = {

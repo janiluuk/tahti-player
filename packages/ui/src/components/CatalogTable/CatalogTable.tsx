@@ -62,6 +62,13 @@ export type CatalogTableProps<T> = {
   onActivateRow?: (row: T) => void;
   /** Keys the table does not handle itself, for the row that has focus. */
   onRowKeyDown?: (event: ReactKeyboardEvent, row: T) => void;
+  /**
+   * Makes rows reorderable by drag and by Alt+ArrowUp/Down. Called with the
+   * ids to move (the selection when the moved row is selected, otherwise just
+   * that row) and the index they should start at *among the rows that stay* —
+   * the same convention as a "move block" operation on the owner's data.
+   */
+  onMoveRows?: (rowIds: string[], toIndex: number) => void;
   /** Restores the scroll position when the table mounts with its rows loaded. */
   initialScrollOffset?: number;
   onScrollOffsetChange?: (offset: number) => void;
@@ -104,6 +111,7 @@ export function CatalogTable<T>({
   selectingAll = false,
   onActivateRow,
   onRowKeyDown,
+  onMoveRows,
   initialScrollOffset,
   onScrollOffsetChange,
   layouts,
@@ -204,6 +212,43 @@ export function CatalogTable<T>({
     }
     onSelectedIdsChange(next);
   };
+  const [dragIds, setDragIds] = useState<string[] | null>(null);
+  const [dropIndex, setDropIndex] = useState<number | null>(null);
+  const idsToMove = (index: number) => {
+    const row = rows[index];
+    if (row === undefined) {
+      return [];
+    }
+    const id = getRowId(row);
+    return selected.has(id)
+      ? rows.map(getRowId).filter((rowId) => selected.has(rowId))
+      : [id];
+  };
+  /** Index among the rows that stay for a block dropped before `gap` (0..rows.length). */
+  const toIndexForGap = (moving: string[], gap: number) => {
+    const set = new Set(moving);
+    return rows.slice(0, gap).filter((row) => !set.has(getRowId(row))).length;
+  };
+  const moveByKey = (delta: -1 | 1, index: number) => {
+    const moving = idsToMove(index);
+    if (!onMoveRows || moving.length === 0) {
+      return;
+    }
+    const set = new Set(moving);
+    const indexes = rows
+      .map((row, position) => (set.has(getRowId(row)) ? position : -1))
+      .filter((position) => position >= 0);
+    const staying = rows.length - moving.length;
+    const before = toIndexForGap(moving, indexes[0] ?? 0);
+    const target = Math.max(0, Math.min(staying, before + delta));
+    if (target === before) {
+      return;
+    }
+    onMoveRows(moving, target);
+    const nextActive = Math.max(0, Math.min(rows.length - 1, index + delta));
+    setActiveIndex(nextActive);
+    virtualizer.scrollToIndex(nextActive);
+  };
   const handleKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
     if (!rows.length || event.target !== event.currentTarget) {
       return;
@@ -224,6 +269,15 @@ export function CatalogTable<T>({
       virtualizer.scrollToIndex(next);
     };
     const row = rows[current];
+    if (
+      event.altKey &&
+      onMoveRows &&
+      (event.key === 'ArrowUp' || event.key === 'ArrowDown')
+    ) {
+      event.preventDefault();
+      moveByKey(event.key === 'ArrowUp' ? -1 : 1, current);
+      return;
+    }
     switch (event.key) {
       case 'ArrowDown':
         return moveTo(activeIndex === null ? 0 : current + 1);
@@ -478,6 +532,44 @@ export function CatalogTable<T>({
                     id={`${gridId}-r${item.index}`}
                     role="row"
                     aria-rowindex={item.index + 1}
+                    draggable={onMoveRows ? true : undefined}
+                    onDragStart={(event) => {
+                      if (!onMoveRows) {
+                        return;
+                      }
+                      const moving = idsToMove(item.index);
+                      setDragIds(moving);
+                      event.dataTransfer.effectAllowed = 'move';
+                      event.dataTransfer.setData(
+                        'text/plain',
+                        moving.join(','),
+                      );
+                    }}
+                    onDragOver={(event) => {
+                      if (!dragIds) {
+                        return;
+                      }
+                      event.preventDefault();
+                      const box = event.currentTarget.getBoundingClientRect();
+                      setDropIndex(
+                        event.clientY < box.top + box.height / 2
+                          ? item.index
+                          : item.index + 1,
+                      );
+                    }}
+                    onDrop={(event) => {
+                      if (!dragIds || dropIndex === null) {
+                        return;
+                      }
+                      event.preventDefault();
+                      onMoveRows?.(dragIds, toIndexForGap(dragIds, dropIndex));
+                      setDragIds(null);
+                      setDropIndex(null);
+                    }}
+                    onDragEnd={() => {
+                      setDragIds(null);
+                      setDropIndex(null);
+                    }}
                     onClick={(event) => {
                       if (
                         !(event.target as HTMLElement).closest('button,input')
@@ -537,6 +629,20 @@ export function CatalogTable<T>({
                         {column.render(row)}
                       </div>
                     ))}
+                    {dragIds && dropIndex === item.index ? (
+                      <span
+                        aria-hidden
+                        data-testid="drop-indicator"
+                        className="bg-primary pointer-events-none absolute inset-x-0 top-0 h-0.5"
+                      />
+                    ) : null}
+                    {dragIds && dropIndex === item.index + 1 ? (
+                      <span
+                        aria-hidden
+                        data-testid="drop-indicator"
+                        className="bg-primary pointer-events-none absolute inset-x-0 bottom-0 h-0.5"
+                      />
+                    ) : null}
                     {renderActions ? (
                       <div
                         role="cell"

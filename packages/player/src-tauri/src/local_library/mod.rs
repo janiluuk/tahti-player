@@ -1,4 +1,6 @@
 mod metadata;
+pub mod m3u;
+pub mod playlists;
 #[cfg(test)]
 mod tests;
 
@@ -331,7 +333,7 @@ pub struct RelinkRootResult {
     pub unmatched: usize,
 }
 
-fn is_supported_audio_file(path: &Path) -> bool {
+pub(crate) fn is_supported_audio_file(path: &Path) -> bool {
     matches!(
         path.extension()
             .and_then(|value| value.to_str())
@@ -455,7 +457,7 @@ async fn insert_track(
     Ok(())
 }
 
-async fn import_batch(
+pub(crate) async fn import_batch(
     pool: &SqlitePool,
     paths: Vec<PathBuf>,
     root_id: Option<&str>,

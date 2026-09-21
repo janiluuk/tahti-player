@@ -1,4 +1,10 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import {
+  createEvent,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from '@testing-library/react';
 import { useState } from 'react';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 
@@ -50,6 +56,7 @@ function Harness({
   onActivateRow,
   onRowKeyDown,
   layouts,
+  onMoveRows,
 }: {
   onSort?: (sort: CatalogSort | null) => void;
   onLoadMore?: () => void;
@@ -58,6 +65,7 @@ function Harness({
   onActivateRow?: (row: Row) => void;
   onRowKeyDown?: (event: React.KeyboardEvent, row: Row) => void;
   layouts?: CatalogLayoutsApi;
+  onMoveRows?: (ids: string[], toIndex: number) => void;
 }) {
   const [view, setView] = useState(defaultCatalogView(columns));
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -81,6 +89,7 @@ function Harness({
       onActivateRow={onActivateRow}
       onRowKeyDown={onRowKeyDown}
       layouts={layouts}
+      onMoveRows={onMoveRows}
       selectedIds={selected}
       onSelectedIdsChange={setSelected}
       itemNoun="tracks"
@@ -318,6 +327,91 @@ describe('CatalogTable', () => {
       render(<Harness layouts={layouts({ names: [] })} />);
       fireEvent.click(screen.getByRole('button', { name: 'Table settings' }));
       expect(await screen.findByText('No saved layouts yet.')).toBeTruthy();
+    });
+  });
+
+  describe('reordering', () => {
+    const rowsEl = () => screen.getByLabelText('Rows');
+    const press = (key: string, init: KeyboardEventInit = {}) =>
+      fireEvent.keyDown(rowsEl(), { key, ...init });
+    const row = (title: string) =>
+      screen.getByText(title).closest('[role="row"]') as HTMLElement;
+    /** jsdom has no layout or pointer coordinates: report the pointer as above or below a row's middle. */
+    const dragOver = (title: string, half: 'upper' | 'lower') => {
+      const element = row(title);
+      vi.spyOn(element, 'getBoundingClientRect').mockReturnValue({
+        top: 100,
+        height: 40,
+      } as DOMRect);
+      const event = createEvent.dragOver(element);
+      Object.defineProperty(event, 'clientY', {
+        value: half === 'upper' ? 110 : 130,
+      });
+      fireEvent(element, event);
+    };
+
+    it('moves the active row with Alt+arrows, counting among the rows that stay', () => {
+      const onMoveRows = vi.fn();
+      render(<Harness onMoveRows={onMoveRows} />);
+      press('ArrowDown');
+      press('ArrowDown', { altKey: true });
+      expect(onMoveRows).toHaveBeenLastCalledWith(['a'], 1);
+      // The active row follows the moved row, so Alt+Up now moves the next one.
+      press('ArrowUp', { altKey: true });
+      expect(onMoveRows).toHaveBeenLastCalledWith(['b'], 0);
+      press('End');
+      press('ArrowUp', { altKey: true });
+      expect(onMoveRows).toHaveBeenLastCalledWith(['c'], 1);
+    });
+
+    it('moves the whole selection as a block when the active row is selected', () => {
+      const onMoveRows = vi.fn();
+      render(<Harness onMoveRows={onMoveRows} />);
+      fireEvent.click(screen.getByLabelText('Select Alpha'));
+      fireEvent.click(screen.getByLabelText('Select Beta'));
+      press('ArrowDown');
+      press('ArrowDown', { altKey: true });
+      expect(onMoveRows).toHaveBeenLastCalledWith(['a', 'b'], 1);
+    });
+
+    it('does nothing when reordering is not enabled', () => {
+      render(<Harness />);
+      press('ArrowDown');
+      press('ArrowDown', { altKey: true });
+      expect(row('Alpha').getAttribute('draggable')).toBeNull();
+    });
+
+    it('reorders by dragging a row onto another and shows where it will land', () => {
+      const onMoveRows = vi.fn();
+      render(<Harness onMoveRows={onMoveRows} />);
+      expect(row('Alpha').getAttribute('draggable')).toBe('true');
+      const data = { setData: vi.fn(), effectAllowed: '' };
+      fireEvent.dragStart(row('Alpha'), { dataTransfer: data });
+      dragOver('Gamma', 'lower');
+      expect(screen.getAllByTestId('drop-indicator')).toHaveLength(1);
+      fireEvent.drop(row('Gamma'));
+      expect(onMoveRows).toHaveBeenCalledWith(['a'], 2);
+      expect(screen.queryByTestId('drop-indicator')).toBeNull();
+    });
+
+    it('drags the whole selection when a selected row is dragged', () => {
+      const onMoveRows = vi.fn();
+      render(<Harness onMoveRows={onMoveRows} />);
+      fireEvent.click(screen.getByLabelText('Select Alpha'));
+      fireEvent.click(screen.getByLabelText('Select Gamma'));
+      const data = { setData: vi.fn(), effectAllowed: '' };
+      fireEvent.dragStart(row('Gamma'), { dataTransfer: data });
+      dragOver('Beta', 'upper');
+      fireEvent.drop(row('Beta'));
+      expect(onMoveRows).toHaveBeenCalledWith(['a', 'c'], 0);
+    });
+
+    it('ignores drops that were not started from a row', () => {
+      const onMoveRows = vi.fn();
+      render(<Harness onMoveRows={onMoveRows} />);
+      fireEvent.dragOver(row('Beta'));
+      fireEvent.drop(row('Beta'));
+      expect(onMoveRows).not.toHaveBeenCalled();
     });
   });
 });

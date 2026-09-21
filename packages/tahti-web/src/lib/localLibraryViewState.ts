@@ -3,7 +3,15 @@ import { EMPTY_TRACK_FILTERS } from './nativeLibrary';
 
 export type LocalLibraryViewState = {
   query: string;
-  browseKind: 'tracks' | 'artists' | 'albums' | 'genres' | 'folders';
+  browseKind:
+    | 'tracks'
+    | 'playlists'
+    | 'artists'
+    | 'albums'
+    | 'genres'
+    | 'folders';
+  /** The playlist open in the Playlists tab, if any. */
+  openPlaylistId: string | null;
   facetFilter: NativeFacetFilter | null;
   filters: NativeTrackFilters;
   /** Table scroll offset in px and how many rows had been loaded. */
@@ -17,6 +25,7 @@ const MAX_RESTORED_ROWS = 2000;
 export const DEFAULT_VIEW_STATE: LocalLibraryViewState = {
   query: '',
   browseKind: 'tracks',
+  openPlaylistId: null,
   facetFilter: null,
   filters: EMPTY_TRACK_FILTERS,
   scrollOffset: 0,
