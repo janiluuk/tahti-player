@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState, type MutableRefObject } from 'react';
+import { toast } from 'sonner';
 
 import type {
   NativeFacetFilter,
@@ -121,7 +122,8 @@ export function useNativeLibraryList({
       setTotal(page.tracks.length === 0 ? tracks.length : page.total);
     } catch (caught) {
       if (request === requestRef.current) {
-        setError(messageOf(caught));
+        // The rows already shown hide the error state, so say it out loud.
+        toast.error(messageOf(caught));
       }
     } finally {
       loadingMoreRef.current = false;
