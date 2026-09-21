@@ -86,15 +86,21 @@ export function useSelectionActions({
    * predictable. `pick` narrows the shown order (to the selection, or not at
    * all for "play all"). Capped so a whole-library action can't flood the queue.
    */
-  const playablesFor = async (
-    pick: (shownIds: string[]) => string[],
-    noun: string,
-  ) => {
+  const orderedIds = async (scope: 'selected' | 'all') => {
     if (!library) {
       return null;
     }
+    // Ordering one track needs no round trip over the whole matching set.
+    if (scope === 'selected' && selectedIds.size <= 1) {
+      return [...selectedIds];
+    }
     const shown = await library.matchingIds(query, facetFilter, sort, filters);
-    return preparePlayables(library, pick(shown), noun);
+    return scope === 'all' ? shown : shown.filter((id) => selectedIds.has(id));
+  };
+
+  const playablesFor = async (scope: 'selected' | 'all', noun: string) => {
+    const ids = await orderedIds(scope);
+    return ids && library ? preparePlayables(library, ids, noun) : null;
   };
 
   const runSelectionAction = async (
@@ -103,13 +109,10 @@ export function useSelectionActions({
   ) => {
     setSelectionBusy(true);
     try {
-      const playables =
-        scope === 'all'
-          ? await playablesFor((shown) => shown, 'matching')
-          : await playablesFor(
-              (shown) => shown.filter((id) => selectedIds.has(id)),
-              'selected',
-            );
+      const playables = await playablesFor(
+        scope,
+        scope === 'all' ? 'matching' : 'selected',
+      );
       if (playables?.length) {
         action(playables);
       } else if (playables) {
@@ -124,20 +127,14 @@ export function useSelectionActions({
     }
   };
 
-  const playSelection = () =>
-    runSelectionAction((playables) => {
-      const [head, ...rest] = playables;
-      if (head) {
-        play(head, { enqueueRest: rest });
-      }
-    });
-  const playAllMatching = () =>
-    runSelectionAction((playables) => {
-      const [head, ...rest] = playables;
-      if (head) {
-        play(head, { enqueueRest: rest });
-      }
-    }, 'all');
+  const playFirstQueueRest = (playables: TahtiPlayable[]) => {
+    const [head, ...rest] = playables;
+    if (head) {
+      play(head, { enqueueRest: rest });
+    }
+  };
+  const playSelection = () => runSelectionAction(playFirstQueueRest);
+  const playAllMatching = () => runSelectionAction(playFirstQueueRest, 'all');
   const playNextSelection = () =>
     runSelectionAction((playables) => {
       playNextMany(playables);
@@ -152,26 +149,20 @@ export function useSelectionActions({
       enqueueMany(playables);
     });
 
-  const idsInShownOrder = (pick: (shown: string[]) => string[]) => async () => {
-    if (!library) {
-      return [];
-    }
-    return pick(await library.matchingIds(query, facetFilter, sort, filters));
-  };
+  const idsFor = (scope: 'selected' | 'all') => async () =>
+    (await orderedIds(scope)) ?? [];
   const addSelectionToPlaylist = () =>
     setAddToPlaylist({
       summary:
         selectedIds.size === 1
           ? '1 selected track'
           : `${selectedIds.size.toLocaleString('en-US')} selected tracks`,
-      resolve: idsInShownOrder((shown) =>
-        shown.filter((id) => selectedIds.has(id)),
-      ),
+      resolve: idsFor('selected'),
     });
   const addAllToPlaylist = () =>
     setAddToPlaylist({
       summary: `All ${total.toLocaleString('en-US')} tracks matching the current view`,
-      resolve: idsInShownOrder((shown) => shown),
+      resolve: idsFor('all'),
     });
   const addGroupToPlaylist = (group: NativeFacetGroup) => {
     if (!library || browseKind === 'tracks' || browseKind === 'playlists') {

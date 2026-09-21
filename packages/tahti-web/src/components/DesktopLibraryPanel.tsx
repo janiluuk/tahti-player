@@ -529,19 +529,23 @@ export function DesktopLibraryPanel() {
       tracks.map((track) => nativeLibrary.resolve(track.id)),
     );
     let queued = 0;
+    let failure: string | null = null;
     resolved.forEach((result, index) => {
       const track = tracks[index];
       if (result.status === 'fulfilled' && track) {
         enqueue(playableFromNativeTrack(track, result.value));
         queued += 1;
       } else if (result.status === 'rejected') {
-        toast.error(
+        failure ??=
           result.reason instanceof Error
             ? result.reason.message
-            : 'Track unavailable.',
-        );
+            : 'Track unavailable.';
       }
     });
+    // One toast, not one per failed track.
+    if (failure) {
+      toast.error(failure);
+    }
     if (queued) {
       toast.success(
         queued === 1
@@ -564,12 +568,12 @@ export function DesktopLibraryPanel() {
             ? 'Removed 1 track from the library.'
             : `Removed ${removed.toLocaleString('en-US')} tracks from the library.`,
       );
+      setSelectedIds(new Set());
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : 'Could not remove tracks.',
       );
     }
-    setSelectedIds(new Set());
     await refreshNative();
   };
 
