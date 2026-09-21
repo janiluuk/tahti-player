@@ -124,6 +124,8 @@ export default defineConfig(({ mode }) => {
     },
     test: {
       globals: true,
+      // Shared CI runners are ~5x slower than a dev box; 5s default flakes.
+      testTimeout: process.env.CI ? 20_000 : 5_000,
       clearMocks: true,
       environment: 'jsdom',
       setupFiles: ['./src/test/setup.ts'],
