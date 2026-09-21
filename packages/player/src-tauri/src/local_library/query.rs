@@ -445,6 +445,27 @@ pub async fn matching_ids(
     matching_ids_query(pool, &query).await
 }
 
+/// `ids` re-ordered the way paging shows them for `sort`, ignoring any id that
+/// is not in the library. Lets the UI order a small selection without
+/// fetching every matching id. The ids travel as one JSON array so a big
+/// selection can't hit SQLite's bound-variable limit.
+pub async fn order_ids(
+    pool: &SqlitePool,
+    ids: &[String],
+    sort: Option<&TrackSort>,
+) -> Result<Vec<String>, String> {
+    let json = serde_json::to_string(ids).map_err(|err| err.to_string())?;
+    let sql = format!(
+        "SELECT id FROM library_tracks WHERE id IN (SELECT value FROM json_each(?)) {}",
+        order_clause(sort)
+    );
+    sqlx::query_scalar::<_, String>(&sql)
+        .bind(json)
+        .fetch_all(pool)
+        .await
+        .map_err(|err| err.to_string())
+}
+
 pub async fn filter_options(pool: &SqlitePool) -> Result<FilterOptions, String> {
     let formats = sqlx::query_scalar::<_, String>(
         "SELECT DISTINCT format FROM library_tracks ORDER BY format",
@@ -600,6 +621,16 @@ pub async fn library_matching_ids(
         sort: sort.as_ref(),
     };
     matching_ids_query(&pool(&app).await?, &query).await
+}
+
+#[tauri::command]
+#[specta::specta]
+pub async fn library_order_ids(
+    app: tauri::AppHandle,
+    ids: Vec<String>,
+    sort: Option<TrackSort>,
+) -> Result<Vec<String>, String> {
+    order_ids(&pool(&app).await?, &ids, sort.as_ref()).await
 }
 
 /// Verifies and orders a batch of tracks for the player and grants the

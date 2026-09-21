@@ -21,6 +21,8 @@ type Props = {
   rows: NativeLibraryTrack[];
   total: number;
   loading: boolean;
+  /** An import / rescan / relink is running. */
+  busy: boolean;
   selection: ReturnType<typeof useSelectionActions>;
   initialScrollOffset: number;
   loadedCountRef: MutableRefObject<number>;
@@ -40,6 +42,7 @@ export function NativeTrackTable({
   rows,
   total,
   loading,
+  busy,
   selection,
   initialScrollOffset,
   loadedCountRef,
@@ -122,7 +125,7 @@ export function NativeTrackTable({
       renderActions={(track) => (
         <TrackRowActions
           track={track}
-          loading={loading}
+          loading={busy}
           onRelink={onRelink}
           onPlay={onPlay}
           onQueue={onQueue}

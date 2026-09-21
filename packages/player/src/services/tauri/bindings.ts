@@ -118,6 +118,10 @@ export const commands = {
 	column: SortColumn,
 	descending: boolean,
 } | null) => typedError<string[], string>(__TAURI_INVOKE("library_matching_ids", { search, filter, filters, sort })),
+	libraryOrderIds: (ids: string[], sort: {
+	column: SortColumn,
+	descending: boolean,
+} | null) => typedError<string[], string>(__TAURI_INVOKE("library_order_ids", { ids, sort })),
 	libraryFilterOptions: () => typedError<FilterOptions, string>(__TAURI_INVOKE("library_filter_options")),
 	/**
 	 *  Verifies and orders a batch of tracks for the player and grants the

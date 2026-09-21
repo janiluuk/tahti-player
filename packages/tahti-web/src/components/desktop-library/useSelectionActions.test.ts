@@ -45,6 +45,14 @@ describe('useSelectionActions', () => {
     expect(library.matchingIds).toHaveBeenCalledTimes(1);
   });
 
+  it('orders a multi-track selection in the backend when it can', async () => {
+    const { library, hook } = setup(['d', 'b']);
+    library.orderIds = vi.fn().mockResolvedValue(['b', 'd']);
+    expect(await resolvedIds(hook)).toEqual(['b', 'd']);
+    expect(library.orderIds).toHaveBeenCalledWith(['d', 'b'], null);
+    expect(library.matchingIds).not.toHaveBeenCalled();
+  });
+
   it('resolves "all" to every matching id in shown order', async () => {
     const { hook } = setup([]);
     act(() => hook.result.current.addAllToPlaylist());

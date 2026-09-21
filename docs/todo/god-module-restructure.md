@@ -49,14 +49,13 @@ Behavior stays identical: mechanical splits along existing seams, tests move wit
 - **Cleanup:** `playSelection`/`playAllMatching` duplicated the play-head logic; shared.
 - **Still open:** multi-track selections still fetch all matching ids to preserve table order (needs a backend `order_ids(ids, sort)` command); no unit test yet for the single-selection shortcut.
 
-## Noticed, not yet fixed (2026-09-22)
+## Noticed follow-ups (2026-09-22) — all closed
 
-- [ ] Track table unmounts when a search returns zero rows and remounts on clear (loses table mount state); keep it mounted and show the empty state inside it.
-- [ ] `renderActions` mounts 6 Tooltip+Button pairs per visible row: use one shared row-actions menu or lazy tooltips.
-- [ ] Multi-track selections (and `selectAllMatching`/play-all) fetch every matching id (100k on a big library) to keep table order: add a backend `order_ids(ids, sort)` command, and stream/cap `selectAllMatching`.
-- [x] Unit tests for `useSelectionActions`, `useNativeLibraryList`, `useNativePlayback` (done 2026-09-22; a failed-remove test would need the panel, still open).
-- [ ] `DesktopLibraryPanel.tsx` is 754 lines, under the limit and out of the baseline (optional further split): `useNativePlayback` and `useNativeImport` done; only the browse/facet JSX and rescan/relink handlers remain, optional.
-- [ ] Shared `nativeLoading` covers both list paging and import/rescan/relink, so a load-more can disable import buttons and vice versa; give import its own busy flag.
+- [x] Track table remount on zero rows: not a real problem. The list keeps the old rows until a new page arrives, and column/sort state is persisted outside the table (`usePersistedCatalogTable`), so a remount only resets scroll, which a scope change resets anyway. Left as is.
+- [x] Per-row tooltips: fixed at the source in `@tahti-player/ui` `Tooltip` — the floating-ui positioning now mounts only while a tooltip is open, and all tooltips share one `matchMedia` subscription (`useSyncExternalStore`) instead of one each. Benefits every table/toolbar in the app.
+- [x] Multi-track selections fetching every matching id: new backend `library_order_ids(ids, sort)` (ids passed as one JSON array through `json_each`, so no bound-variable limit; Rust test added, bindings regenerated); `useSelectionActions` uses `library.orderIds` when present. "Select all N" / "Play all" still fetch every id by design (they need them all).
+- [x] Hook tests (`useSelectionActions`, `useNativeLibraryList`, `useNativePlayback`, `useNativeImport`).
+- [x] Shared `nativeLoading`: import/rescan/relink now use their own `busy` flag; list paging keeps `loading`. Rescan/relink moved to `useMissingTracks`.
+- [x] `DesktopLibraryPanel.tsx` under the limit (out of the baseline).
 - [ ] Next offenders to split (baselined): `ChannelDesigner.tsx` 1801, `ChannelView.tsx` 1577, `StudioProEditorView.tsx` 1498, `ArtistView.tsx` 1409, `ServiceCategory.tsx` 1401.
-- Fixed in passing: a failed load-more page now toasts an error instead of failing silently while rows are shown.
-- Fixed in passing (2026-09-22): the drag-drop import subscription and the toast's Retry button were rebuilt on every search keystroke/sort change because `runImport` depended on `refreshNative`; `useNativeImport` goes through a ref so the subscription only depends on the library (test added).
+- Fixed in passing: failed load-more toasts an error; the drop-import subscription no longer resubscribes per keystroke (`useNativeImport` goes through a ref).

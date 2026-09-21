@@ -58,6 +58,7 @@ fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
         local_library::m3u::playlist_relink_entry,
         local_library::query::library_facets,
         local_library::query::library_matching_ids,
+        local_library::query::library_order_ids,
         local_library::query::library_filter_options,
         local_library::query::library_prepare_playback,
         local_library::query::library_totals,

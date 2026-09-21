@@ -794,6 +794,11 @@ export type TahtiNativeLibrary = {
     sort?: NativeTrackSort | null,
     filters?: NativeTrackFilters | null,
   ) => Promise<string[]>;
+  /** `ids` in the order the table shows them for `sort` (unknown ids dropped), without fetching every matching id. */
+  orderIds?: (
+    ids: string[],
+    sort?: NativeTrackSort | null,
+  ) => Promise<string[]>;
   filterOptions: () => Promise<NativeFilterOptions>;
   /** Verifies and orders tracks for playback (call in modest chunks). */
   prepareBatch: (ids: string[]) => Promise<NativePlaybackBatch>;

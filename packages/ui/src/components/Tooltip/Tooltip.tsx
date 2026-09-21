@@ -5,7 +5,13 @@ import {
   shift,
   useFloating,
 } from '@floating-ui/react-dom';
-import { FC, PropsWithChildren, ReactNode, useEffect, useState } from 'react';
+import {
+  FC,
+  PropsWithChildren,
+  ReactNode,
+  useState,
+  useSyncExternalStore,
+} from 'react';
 import { createPortal } from 'react-dom';
 
 import { cn } from '../../utils';
@@ -42,24 +48,28 @@ function safeMatchMedia(query: string): MediaQueryList | null {
  * focus) with no matching mouseleave, so tooltips get stuck open after a
  * tap on coarse-pointer devices. Suppress hover-tooltips there entirely
  * rather than trying to fake a close event.
+ *
+ * One shared media-query subscription for every tooltip on the page (a
+ * table row can mount several), read through useSyncExternalStore.
  */
+function subscribeCoarsePointer(onChange: () => void): () => void {
+  const mql = safeMatchMedia(COARSE_POINTER_QUERY);
+  if (!mql) {
+    return () => undefined;
+  }
+  mql.addEventListener('change', onChange);
+  return () => mql.removeEventListener('change', onChange);
+}
+
+const isCoarsePointer = () =>
+  safeMatchMedia(COARSE_POINTER_QUERY)?.matches ?? false;
+
 function useCoarsePointer(): boolean {
-  const [coarse, setCoarse] = useState(
-    () => safeMatchMedia(COARSE_POINTER_QUERY)?.matches ?? false,
+  return useSyncExternalStore(
+    subscribeCoarsePointer,
+    isCoarsePointer,
+    () => false,
   );
-
-  useEffect(() => {
-    const mql = safeMatchMedia(COARSE_POINTER_QUERY);
-    if (!mql) {
-      return;
-    }
-    const onChange = () => setCoarse(mql.matches);
-    onChange();
-    mql.addEventListener('change', onChange);
-    return () => mql.removeEventListener('change', onChange);
-  }, []);
-
-  return coarse;
 }
 
 type TooltipProps = PropsWithChildren<{
@@ -70,6 +80,40 @@ type TooltipProps = PropsWithChildren<{
   wrapperClassName?: string;
 }>;
 
+/** The floating bubble; positioning only runs while a tooltip is actually open. */
+const TooltipBubble: FC<{
+  anchor: HTMLElement | null;
+  side: TooltipSide;
+  className?: string;
+  children: ReactNode;
+}> = ({ anchor, side, className, children }) => {
+  const { refs, floatingStyles } = useFloating({
+    placement: side,
+    open: true,
+    elements: { reference: anchor },
+    middleware: [
+      offset(TOOLTIP_OFFSET_PX),
+      flip(),
+      shift({ padding: VIEWPORT_PADDING_PX }),
+    ],
+    whileElementsMounted: autoUpdate,
+  });
+  return createPortal(
+    <div
+      ref={refs.setFloating}
+      role="tooltip"
+      style={floatingStyles}
+      className={cn(
+        'border-border bg-background text-foreground shadow-shadow pointer-events-none z-50 rounded-md border-(length:--border-width) px-2 py-1 text-sm whitespace-nowrap',
+        className,
+      )}
+    >
+      {children}
+    </div>,
+    document.body,
+  );
+};
+
 export const Tooltip: FC<TooltipProps> = ({
   children,
   content,
@@ -79,22 +123,13 @@ export const Tooltip: FC<TooltipProps> = ({
   wrapperClassName,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   const coarsePointer = useCoarsePointer();
   const suppressed = disabled || coarsePointer;
-  const { refs, floatingStyles } = useFloating({
-    placement: side,
-    open: isOpen,
-    middleware: [
-      offset(TOOLTIP_OFFSET_PX),
-      flip(),
-      shift({ padding: VIEWPORT_PADDING_PX }),
-    ],
-    whileElementsMounted: autoUpdate,
-  });
 
   return (
     <div
-      ref={refs.setReference}
+      ref={setAnchor}
       className={wrapperClassName}
       onMouseEnter={suppressed ? undefined : () => setIsOpen(true)}
       onMouseLeave={suppressed ? undefined : () => setIsOpen(false)}
@@ -102,22 +137,11 @@ export const Tooltip: FC<TooltipProps> = ({
       onBlur={suppressed ? undefined : () => setIsOpen(false)}
     >
       {children}
-      {isOpen &&
-        !suppressed &&
-        createPortal(
-          <div
-            ref={refs.setFloating}
-            role="tooltip"
-            style={floatingStyles}
-            className={cn(
-              'border-border bg-background text-foreground shadow-shadow pointer-events-none z-50 rounded-md border-(length:--border-width) px-2 py-1 text-sm whitespace-nowrap',
-              className,
-            )}
-          >
-            {content}
-          </div>,
-          document.body,
-        )}
+      {isOpen && !suppressed && (
+        <TooltipBubble anchor={anchor} side={side} className={className}>
+          {content}
+        </TooltipBubble>
+      )}
     </div>
   );
 };

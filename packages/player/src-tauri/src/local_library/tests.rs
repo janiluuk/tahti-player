@@ -6,7 +6,7 @@ use super::{
     add_root, collect_audio_paths, collect_audio_paths_with_skipped, discover_new_paths,
     get_root, import_batch, import_paths, list, list_roots, list_unavailable,
     refresh_root_availability, relink, relink_root, remove, remove_root, rescan_unavailable,
-    resolve_path, facets, filter_options, list_query, matching_ids_query, folder_of, Availability, ListQuery, TrackFilters, remove_many, list_filtered, matching_ids, prepare_playback, SortColumn, TrackSort, totals, FacetFilter, FacetKind, ImportResult,
+    resolve_path, facets, filter_options, list_query, matching_ids_query, folder_of, Availability, ListQuery, TrackFilters, remove_many, list_filtered, matching_ids, order_ids, prepare_playback, SortColumn, TrackSort, totals, FacetFilter, FacetKind, ImportResult,
 };
 
 static DB_COUNTER: AtomicU32 = AtomicU32::new(0);
@@ -1131,6 +1131,20 @@ async fn paging_a_sort_with_many_ties_neither_repeats_nor_skips_rows() {
 }
 
 // --- Select all across pages / playback batches ---
+
+#[tokio::test]
+async fn order_ids_matches_the_paging_order_and_skips_unknown_ids() {
+    let pool = pool().await;
+    seed_generated_rows(&pool, 60).await;
+    let sort = TrackSort { column: SortColumn::Artist, descending: true };
+    let all = matching_ids(&pool, "", None, Some(&sort)).await.unwrap();
+    // Pick a few scattered ids in a scrambled order, plus one that doesn't exist.
+    let mut picked = vec![all[40].clone(), all[3].clone(), "no-such-id".to_owned(), all[17].clone()];
+    let ordered = order_ids(&pool, &picked, Some(&sort)).await.unwrap();
+    assert_eq!(ordered, vec![all[3].clone(), all[17].clone(), all[40].clone()]);
+    picked.clear();
+    assert!(order_ids(&pool, &picked, None).await.unwrap().is_empty());
+}
 
 #[tokio::test]
 async fn matching_ids_follow_the_exact_paging_order_for_any_sort_search_and_filter() {

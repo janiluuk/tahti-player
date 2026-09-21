@@ -34,6 +34,7 @@ import {
   type TrackBatchDialog,
 } from './desktop-library/TrackBatchDialogs';
 import { useLibraryRoots } from './desktop-library/useLibraryRoots';
+import { useMissingTracks } from './desktop-library/useMissingTracks';
 import { useNativeImport } from './desktop-library/useNativeImport';
 import { useNativeLibraryList } from './desktop-library/useNativeLibraryList';
 import { useNativePlayback } from './desktop-library/useNativePlayback';
@@ -60,9 +61,7 @@ export function DesktopLibraryPanel() {
   const [debouncedNativeQuery, setDebouncedNativeQuery] = useState(
     initialView.query,
   );
-  const [nativeUnavailable, setNativeUnavailable] = useState<
-    NativeLibraryTrack[]
-  >([]);
+  const [busy, setBusy] = useState(false);
   const table = usePersistedCatalogTable(
     'tahti-local-library-table',
     NATIVE_TRACK_COLUMNS,
@@ -99,7 +98,6 @@ export function DesktopLibraryPanel() {
     total: nativeTotal,
     loading: nativeLoading,
     error: nativeError,
-    setLoading: setNativeLoading,
     setError: setNativeError,
     loadList,
     loadMore: loadMoreNative,
@@ -118,7 +116,13 @@ export function DesktopLibraryPanel() {
     importFiles: importNative,
     importFolder: importNativeFolder,
     cancel: cancelNativeImport,
-  } = useNativeImport(nativeLibrary, setNativeLoading, () =>
+  } = useNativeImport(nativeLibrary, setBusy, () => refreshNativeRef.current());
+  const {
+    unavailable: nativeUnavailable,
+    setUnavailable: setNativeUnavailable,
+    rescan: rescanNative,
+    relink: relinkNative,
+  } = useMissingTracks(nativeLibrary, setBusy, () =>
     refreshNativeRef.current(),
   );
   const {
@@ -344,50 +348,6 @@ export function DesktopLibraryPanel() {
     });
   };
 
-  const rescanNative = async () => {
-    if (!nativeLibrary) {
-      return;
-    }
-    setNativeLoading(true);
-    try {
-      const unavailable = await nativeLibrary.rescan();
-      setNativeUnavailable(unavailable);
-      await refreshNative();
-      if (unavailable.length === 0) {
-        toast.success('All library files are available.');
-      } else {
-        toast.info(
-          unavailable.length === 1
-            ? '1 library file is still missing.'
-            : `${unavailable.length} library files are still missing.`,
-        );
-      }
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Re-scan failed.');
-    } finally {
-      setNativeLoading(false);
-    }
-  };
-
-  const relinkNative = async (track: NativeLibraryTrack) => {
-    if (!nativeLibrary) {
-      return;
-    }
-    setNativeLoading(true);
-    try {
-      const replacement = await nativeLibrary.relink(track.id);
-      if (!replacement) {
-        return;
-      }
-      await refreshNative();
-      toast.success(`Located “${replacement.title}”.`);
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Relink failed.');
-    } finally {
-      setNativeLoading(false);
-    }
-  };
-
   const removeNative = async (ids: string[], title: string | null) => {
     if (!nativeLibrary) {
       return;
@@ -442,15 +402,15 @@ export function DesktopLibraryPanel() {
             <Button
               variant="secondary"
               onClick={() => void importNative()}
-              disabled={nativeLoading}
+              disabled={busy}
             >
               <LibraryIcon size={15} aria-hidden />
-              {nativeLoading ? 'Working…' : 'Import files'}
+              {busy ? 'Working…' : 'Import files'}
             </Button>
             <Button
               variant="text"
               onClick={() => void importNativeFolder()}
-              disabled={nativeLoading}
+              disabled={busy}
             >
               Import folder
             </Button>
@@ -458,7 +418,7 @@ export function DesktopLibraryPanel() {
               <Button
                 variant="text"
                 onClick={() => void rescanNative()}
-                disabled={nativeLoading}
+                disabled={busy}
               >
                 Check missing files ({nativeUnavailable.length})
               </Button>
@@ -489,7 +449,7 @@ export function DesktopLibraryPanel() {
             canToggleWatching={Boolean(nativeLibrary.setWatching)}
             watching={watching}
             rootBusy={rootBusy}
-            loading={nativeLoading}
+            loading={busy}
             onAdd={() => void addRoot()}
             onRescan={() => void rescanRoots()}
             onRelink={(root) => void relinkRoot(root)}
@@ -583,6 +543,7 @@ export function DesktopLibraryPanel() {
                   rows={nativeTracks}
                   total={nativeTotal}
                   loading={nativeLoading}
+                  busy={busy}
                   selection={selection}
                   initialScrollOffset={initialScrollRef.current}
                   loadedCountRef={loadedCountRef}
@@ -610,7 +571,7 @@ export function DesktopLibraryPanel() {
                   }
                   className="flex-1"
                 />
-              ) : hasActiveScope && !nativeLoading ? (
+              ) : hasActiveScope && !nativeLoading && !busy ? (
                 <EmptyState
                   size="sm"
                   icon={<ListFilterIcon size={28} className="opacity-50" />}
@@ -636,7 +597,7 @@ export function DesktopLibraryPanel() {
                   icon={<LibraryIcon size={28} className="opacity-50" />}
                   title="Desktop library"
                   description={
-                    nativeLoading
+                    nativeLoading || busy
                       ? 'Loading library…'
                       : 'Import files to build your offline library.'
                   }

@@ -90,9 +90,15 @@ export function useSelectionActions({
     if (!library) {
       return null;
     }
-    // Ordering one track needs no round trip over the whole matching set.
-    if (scope === 'selected' && selectedIds.size <= 1) {
-      return [...selectedIds];
+    // Ordering one track needs no round trip over the whole matching set, and
+    // a selection is ordered by the backend instead of fetching every id.
+    if (scope === 'selected') {
+      if (selectedIds.size <= 1) {
+        return [...selectedIds];
+      }
+      if (library.orderIds) {
+        return library.orderIds([...selectedIds], sort);
+      }
     }
     const shown = await library.matchingIds(query, facetFilter, sort, filters);
     return scope === 'all' ? shown : shown.filter((id) => selectedIds.has(id));

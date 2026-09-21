@@ -43,6 +43,9 @@ const baseNativeLibrary: TahtiNativeLibrary = {
       ),
     );
   },
+  async orderIds(ids, sort) {
+    return unwrapResult(await commands.libraryOrderIds(ids, sort ?? null));
+  },
   async filterOptions() {
     return unwrapResult(await commands.libraryFilterOptions());
   },

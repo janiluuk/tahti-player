@@ -13,7 +13,7 @@
   "packages/tahti-web/src/components/TrackEditDialog.tsx": 1175,
   "packages/tahti-web/src/components/plugin-store/RadioCategory.tsx": 1265,
   "packages/tahti-web/src/components/plugin-store/ServiceCategory.tsx": 1401,
-  "packages/tahti-web/src/lib/nativeLibrary.types.ts": 851,
+  "packages/tahti-web/src/lib/nativeLibrary.types.ts": 856,
   "packages/tahti-web/src/plugins/themes/presets.ts": 1539,
   "packages/tahti-web/src/views/ArtistView.tsx": 1409,
   "packages/tahti-web/src/views/ChannelView.tsx": 1577,
