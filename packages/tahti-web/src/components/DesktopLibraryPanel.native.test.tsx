@@ -260,8 +260,7 @@ describe('DesktopLibraryPanel native import', () => {
   it('shows live progress and lets the user cancel an in-flight import', async () => {
     globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
     let progressListener:
-      | ((progress: NativeLibraryImportProgress) => void)
-      | undefined;
+      ((progress: NativeLibraryImportProgress) => void) | undefined;
     const cancelImport = vi.fn();
     const nativeLibrary = createNativeLibrary({
       cancelImport,

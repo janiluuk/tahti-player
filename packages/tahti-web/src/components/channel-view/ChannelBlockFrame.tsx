@@ -28,8 +28,7 @@ type Props = {
   onSelect: (id: string) => void;
   updateLayout: (
     updater:
-      | ChannelPageItem[]
-      | ((prev: ChannelPageItem[]) => ChannelPageItem[]),
+      ChannelPageItem[] | ((prev: ChannelPageItem[]) => ChannelPageItem[]),
   ) => void;
   onRemove: (id: string) => void;
   children: ReactNode;

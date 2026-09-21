@@ -1050,10 +1050,7 @@ export * from './membership';
 export * from './governance-member';
 
 export type SupportTicketCategory =
-  | 'ENGAGEMENT_DISPUTE'
-  | 'TECHNICAL'
-  | 'FINANCIAL'
-  | 'OTHER';
+  'ENGAGEMENT_DISPUTE' | 'TECHNICAL' | 'FINANCIAL' | 'OTHER';
 
 export type SupportTicketInput = {
   subject: string;

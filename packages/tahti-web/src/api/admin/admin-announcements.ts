@@ -5,9 +5,7 @@ import { failMeta, isForceMock } from '../mode';
 // ── Announcements ───────────────────────────────────────────────────────────
 
 export type AdminAnnouncementScheduleMode =
-  | 'AFTER_EVERY'
-  | 'EVERY_NTH'
-  | 'RANDOM';
+  'AFTER_EVERY' | 'EVERY_NTH' | 'RANDOM';
 
 export type AdminAnnouncementClip = {
   id: string;

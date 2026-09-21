@@ -115,6 +115,4 @@ export type ToolSourceAdapter = ImportSourcePlugin & {
 };
 
 export type SourceAdapter =
-  | OAuthSourceAdapter
-  | SearchSourceAdapter
-  | ToolSourceAdapter;
+  OAuthSourceAdapter | SearchSourceAdapter | ToolSourceAdapter;

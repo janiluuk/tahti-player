@@ -52,10 +52,7 @@ export function defaultMasteringConfig(sampleRate: number): MasteringConfig {
 }
 
 export type MasteringStage =
-  | 'matching-levels'
-  | 'matching-frequencies'
-  | 'correcting-levels'
-  | 'limiting';
+  'matching-levels' | 'matching-frequencies' | 'correcting-levels' | 'limiting';
 
 export type MasteringInput = { stereo: StereoSignal; sampleRate: number };
 

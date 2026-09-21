@@ -3,7 +3,7 @@
   "version": "0.0.10",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.33.4",
+  "packageManager": "pnpm@12.5.1+sha512.e3f305bc784a2bc89f5ad3b6138889470fae8d2af5f36b61216ec91c2c3d64089775f9de38aac331044ea40f245cb0d5666392dfdf65824e1907ef6a2c62de5f",
   "engines": {
     "node": ">=24"
   },
@@ -62,9 +62,7 @@
   },
   "license": "AGPL-3.0-only",
   "dependencies": {
-    "format": "^0.2.2",
-    "prettier": "^3.9.8",
-    "prettierr": "1.15.3-dev"
+    "prettier": "3.9.8"
   },
   "pnpm": {
     "peerDependencyRules": {

@@ -6,10 +6,7 @@ import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { usePolling } from './usePolling';
 
 export type JamConnectionStatus =
-  | 'connecting'
-  | 'connected'
-  | 'reconnecting'
-  | 'failed';
+  'connecting' | 'connected' | 'reconnecting' | 'failed';
 
 /** Guest (and host, for its own mirror) side: loads the session, then keeps
  * it live over SSE. `ended` flips once the host closes the jam — the caller

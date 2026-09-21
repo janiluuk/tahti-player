@@ -27,9 +27,7 @@ export default class SnapshotDigestReporter {
         }
         const errors = result.errors ?? [];
         for (const error of errors) {
-          const message = String(
-            error?.message ?? error?.stack ?? error ?? '',
-          );
+          const message = String(error?.message ?? error?.stack ?? error ?? '');
           if (!isSnapshotMismatch(message)) {
             continue;
           }
@@ -43,10 +41,7 @@ export default class SnapshotDigestReporter {
               testModule.filepath ??
               testCase.module?.moduleId ??
               'unknown',
-            testName:
-              testCase.fullName ??
-              testCase.name ??
-              'unknown',
+            testName: testCase.fullName ?? testCase.name ?? 'unknown',
             message: stripAnsi(message).slice(0, 20_000),
             expectedHtml: expected,
             receivedHtml: received,
@@ -84,7 +79,10 @@ function isSnapshotMismatch(message) {
 }
 
 function extractExpectedReceived(error, message) {
-  if (typeof error?.expected === 'string' || typeof error?.actual === 'string') {
+  if (
+    typeof error?.expected === 'string' ||
+    typeof error?.actual === 'string'
+  ) {
     return {
       expected: normalizeHtmlCandidate(error.expected),
       received: normalizeHtmlCandidate(error.actual),

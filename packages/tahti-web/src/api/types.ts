@@ -96,6 +96,8 @@ export type PublicChannel = {
   /** Channel Designer brand accent id (aurora/ember/…) — drives GRADIENT
    * header wash when present on the public channel DTO. */
   brandAccentPreset?: string | null;
+  /** Short line shown in a strip across the top of the channel hero. */
+  topBarText?: string | null;
   /** Now-playing title/artist overlay layout — see
    * content/nowPlayingOverlayPresets.ts. Defaults to 'classic' when unset. */
   nowPlayingOverlayStyle?: string | null;
@@ -695,12 +697,7 @@ export type GovernanceMeeting = {
   title: string;
   type: 'GENERAL' | 'EXTRAORDINARY_GENERAL' | 'BOARD';
   state:
-    | 'DRAFT'
-    | 'SCHEDULED'
-    | 'HELD'
-    | 'MINUTES_DRAFT'
-    | 'APPROVED'
-    | 'CANCELLED';
+    'DRAFT' | 'SCHEDULED' | 'HELD' | 'MINUTES_DRAFT' | 'APPROVED' | 'CANCELLED';
   scheduledAt: string | null;
   location: string | null;
   remoteUrl: string | null;
@@ -796,12 +793,7 @@ export type BoardResolution = {
 };
 
 export type FeatureRequestStatus =
-  | 'OPEN'
-  | 'PLANNED'
-  | 'IN_PROGRESS'
-  | 'DONE'
-  | 'DECLINED'
-  | 'DUPLICATE';
+  'OPEN' | 'PLANNED' | 'IN_PROGRESS' | 'DONE' | 'DECLINED' | 'DUPLICATE';
 
 /** Member-suggested feature board — GET/POST /api/v1/governance/feature-requests. */
 export type FeatureRequest = {
@@ -973,5 +965,4 @@ export type JamSession = {
 };
 
 export type JamEvent =
-  | { type: 'state'; session: JamSession }
-  | { type: 'ended' };
+  { type: 'state'; session: JamSession } | { type: 'ended' };

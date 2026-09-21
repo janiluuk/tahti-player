@@ -36,6 +36,7 @@ export function buildVisualPatch(
     headerStyle: visual.headerStyle,
     videoBackgroundUrl: videoUrl,
     brandAccentPreset: visual.brandAccentPreset,
+    topBarText: visual.topBarText?.trim() || null,
     colorScheme: fillColorScheme(draft.scheme),
     visualSettings: draft.visualSettings,
     slideshowPreset: draft.slideshowPreset,

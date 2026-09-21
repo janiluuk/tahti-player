@@ -248,9 +248,7 @@ export function StudioCollectionsView() {
                   value={visibility}
                   onValueChange={(value) => {
                     const nextVisibility = value as
-                      | 'PUBLIC'
-                      | 'UNLISTED'
-                      | 'PRIVATE';
+                      'PUBLIC' | 'UNLISTED' | 'PRIVATE';
                     setVisibility(nextVisibility);
                     if (nextVisibility !== 'PUBLIC') {
                       setCollaborative(false);

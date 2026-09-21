@@ -35,12 +35,7 @@ type Group = {
 };
 
 type CollectionKind =
-  | 'album'
-  | 'ep'
-  | 'dj-set'
-  | 'podcast'
-  | 'series'
-  | 'playlist';
+  'album' | 'ep' | 'dj-set' | 'podcast' | 'series' | 'playlist';
 type CollectionFilter = 'all' | CollectionKind;
 
 const GROUPS: Group[] = [

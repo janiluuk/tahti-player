@@ -23,8 +23,7 @@ type Props = {
   channel: PublicChannel;
   pageScheme: NormalizedColorScheme;
   backgroundVisualPreset:
-    | Parameters<typeof resolvePublicVisualizerPreset>[0]
-    | null;
+    Parameters<typeof resolvePublicVisualizerPreset>[0] | null;
   heroVisible: boolean;
   live: boolean;
   channelVideoMuted: boolean;

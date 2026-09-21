@@ -11,8 +11,7 @@ import { ImageSlotPreviewDialog } from './imageSlot/ImageSlotPreviewDialog';
 import { useImageSlotChrome } from './imageSlot/useImageSlotChrome';
 
 type UploadResult =
-  | { ok: true; data: { url: string } }
-  | { ok: false; error: string };
+  { ok: true; data: { url: string } } | { ok: false; error: string };
 
 type Props = {
   value?: string | null;

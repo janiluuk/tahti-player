@@ -3,12 +3,7 @@ import { fetchMeProfile } from '../api/studio-extras';
 import { useListenerWidgetsStore } from '../stores/listenerWidgetsStore';
 
 export type DspServiceKey =
-  | 'spotify'
-  | 'apple'
-  | 'bandcamp'
-  | 'soundcloud'
-  | 'youtube'
-  | 'tidal';
+  'spotify' | 'apple' | 'bandcamp' | 'soundcloud' | 'youtube' | 'tidal';
 
 export type DspService = {
   key: DspServiceKey;

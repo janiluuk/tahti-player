@@ -67,12 +67,7 @@ export async function fetchAdminGovernanceOverview(): Promise<{
 // ── Feature requests ────────────────────────────────────────────────────────
 
 export type AdminFeatureRequestStatus =
-  | 'OPEN'
-  | 'PLANNED'
-  | 'IN_PROGRESS'
-  | 'DONE'
-  | 'DECLINED'
-  | 'DUPLICATE';
+  'OPEN' | 'PLANNED' | 'IN_PROGRESS' | 'DONE' | 'DECLINED' | 'DUPLICATE';
 
 export type AdminFeatureRequestRow = {
   id: string;

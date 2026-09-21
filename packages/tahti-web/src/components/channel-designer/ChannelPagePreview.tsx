@@ -115,6 +115,7 @@ export function ChannelPagePreview({
           layout?.find((i) => i.type === 'subscribe')?.visible ?? false
         }
         headerStyle={visual.headerStyle}
+        topBarText={visual.topBarText}
         videoBackgroundUrl={previewVideoUrl}
         showVideoOverride={showHeaderVideo}
         isImageOverride={headerBackdropIsImage}

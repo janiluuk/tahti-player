@@ -53,8 +53,7 @@ export function useChannelLayoutEditing(slug: string) {
   // and silently dropping one of the changes (or duplicating an item).
   const updateLayout = (
     updater:
-      | ChannelPageItem[]
-      | ((prev: ChannelPageItem[]) => ChannelPageItem[]),
+      ChannelPageItem[] | ((prev: ChannelPageItem[]) => ChannelPageItem[]),
     opts?: { clearPreset?: boolean },
   ) => {
     setLayout((prev) =>

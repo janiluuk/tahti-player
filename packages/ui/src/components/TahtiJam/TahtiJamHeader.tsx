@@ -5,10 +5,7 @@ import { PulsingText } from '../PulsingText';
 import { TahtiMark } from '../TahtiLogo';
 
 export type ConnectionStatus =
-  | 'connecting'
-  | 'connected'
-  | 'reconnecting'
-  | 'failed';
+  'connecting' | 'connected' | 'reconnecting' | 'failed';
 
 export type ConnectionStatusLabels = Record<ConnectionStatus, string>;
 

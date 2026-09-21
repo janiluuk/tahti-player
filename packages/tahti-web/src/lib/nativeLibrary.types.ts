@@ -238,11 +238,7 @@ export type NativeExportResult = {
 };
 
 export type NativeEntryStatus =
-  | 'linked'
-  | 'needsImport'
-  | 'missing'
-  | 'unsupported'
-  | 'remote';
+  'linked' | 'needsImport' | 'missing' | 'unsupported' | 'remote';
 
 export type NativeImportPreview = {
   sourcePath: string;

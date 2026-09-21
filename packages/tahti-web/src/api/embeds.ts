@@ -112,16 +112,14 @@ export async function fetchEmbedRelease(id: string): Promise<{
         },
       ],
     };
-    const playables = data.tracks.map(
-      (t): TahtiPlayable => ({
-        id: `sound:${t.id}`,
-        kind: 'sound',
-        title: t.title,
-        artist: data.artist.displayName,
-        streamUrl: DEMO_MP3,
-        protocol: 'https',
-      }),
-    );
+    const playables = data.tracks.map((t): TahtiPlayable => ({
+      id: `sound:${t.id}`,
+      kind: 'sound',
+      title: t.title,
+      artist: data.artist.displayName,
+      streamUrl: DEMO_MP3,
+      protocol: 'https',
+    }));
     return {
       data,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -215,17 +213,15 @@ export async function fetchEmbedCollection(slug: string): Promise<{
     };
     const playables = col.items
       .filter((i) => i.sound?.audioUrl)
-      .map(
-        (i): TahtiPlayable => ({
-          id: `sound:${i.sound!.id}`,
-          kind: 'sound',
-          title: i.sound!.title,
-          artist: col.user.displayName,
-          coverUrl: col.coverUrl ?? undefined,
-          streamUrl: i.sound!.audioUrl!,
-          protocol: i.sound!.audioUrl!.includes('.m3u8') ? 'hls' : 'https',
-        }),
-      );
+      .map((i): TahtiPlayable => ({
+        id: `sound:${i.sound!.id}`,
+        kind: 'sound',
+        title: i.sound!.title,
+        artist: col.user.displayName,
+        coverUrl: col.coverUrl ?? undefined,
+        streamUrl: i.sound!.audioUrl!,
+        protocol: i.sound!.audioUrl!.includes('.m3u8') ? 'hls' : 'https',
+      }));
     return {
       data,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -283,16 +279,14 @@ export async function fetchEmbedCollection(slug: string): Promise<{
       meta: failMeta(err),
       playables: col.items
         .filter((i) => i.sound?.audioUrl)
-        .map(
-          (i): TahtiPlayable => ({
-            id: `sound:${i.sound!.id}`,
-            kind: 'sound',
-            title: i.sound!.title,
-            artist: col.user.displayName,
-            streamUrl: i.sound!.audioUrl!,
-            protocol: 'https',
-          }),
-        ),
+        .map((i): TahtiPlayable => ({
+          id: `sound:${i.sound!.id}`,
+          kind: 'sound',
+          title: i.sound!.title,
+          artist: col.user.displayName,
+          streamUrl: i.sound!.audioUrl!,
+          protocol: 'https',
+        })),
     };
   }
 }

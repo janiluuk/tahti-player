@@ -6,11 +6,7 @@ import { failMeta, isForceMock } from '../mode';
 
 export type AdminAddonScope = 'LISTENER' | 'ARTIST' | 'ADMIN';
 export type AdminAddonStatus =
-  | 'DRAFT'
-  | 'PENDING'
-  | 'APPROVED'
-  | 'REJECTED'
-  | 'DISABLED';
+  'DRAFT' | 'PENDING' | 'APPROVED' | 'REJECTED' | 'DISABLED';
 
 // The real ../tahti-org backend (packages/db/prisma/schema.prisma's `Addon`
 // model + apps/api/src/routes/admin/addons.ts) is a full widget-bundle store

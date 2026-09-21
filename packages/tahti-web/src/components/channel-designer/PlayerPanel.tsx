@@ -6,10 +6,7 @@ import { BRAND_ACCENTS, type ColorScheme } from '../../api/channel-design';
 import { PlayerGradientControls } from './PlayerGradientControls';
 
 export type PlayerDesignTab =
-  | 'gradient'
-  | 'video-image'
-  | 'visualizer'
-  | 'overlay';
+  'gradient' | 'video-image' | 'visualizer' | 'overlay';
 
 const TAB_ORDER: PlayerDesignTab[] = [
   'gradient',

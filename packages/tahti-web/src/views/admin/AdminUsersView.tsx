@@ -96,16 +96,14 @@ export const AdminUsersView = () => {
                     <PageEmpty title="No users match these filters" />
                   ) : (
                     <SelectableList
-                      items={users.map(
-                        (user): SelectableListItem => ({
-                          id: user.id,
-                          title: user.displayName,
-                          subtitle: `@${user.username}${user.suspendedAt ? ' · suspended' : ''}`,
-                          meta:
-                            user.role.charAt(0) +
-                            user.role.slice(1).toLowerCase(),
-                        }),
-                      )}
+                      items={users.map((user): SelectableListItem => ({
+                        id: user.id,
+                        title: user.displayName,
+                        subtitle: `@${user.username}${user.suspendedAt ? ' · suspended' : ''}`,
+                        meta:
+                          user.role.charAt(0) +
+                          user.role.slice(1).toLowerCase(),
+                      }))}
                       selected={selectedId}
                       onChange={setSelectedId}
                     />

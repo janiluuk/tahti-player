@@ -69,10 +69,7 @@ export type GreenRoomPrefs = {
 };
 
 type WireGreenRoomInvitePool =
-  | 'EVERYONE'
-  | 'SUBS_ONLY'
-  | 'MODERATORS_AND_SUBS'
-  | 'MANUAL_ONLY';
+  'EVERYONE' | 'SUBS_ONLY' | 'MODERATORS_AND_SUBS' | 'MANUAL_ONLY';
 
 function accessFromPool(pool: WireGreenRoomInvitePool): GreenRoomAccessLevel {
   return pool === 'EVERYONE' ? 'everyone' : 'subscribers';

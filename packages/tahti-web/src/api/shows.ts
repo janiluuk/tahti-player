@@ -84,11 +84,7 @@ export type ScheduledShow = {
 
 export type EpisodeSource = 'upload' | 'broadcast';
 export type EpisodeStatus =
-  | 'DRAFT'
-  | 'PENDING_APPROVAL'
-  | 'APPROVED'
-  | 'SCHEDULED'
-  | 'LIVE';
+  'DRAFT' | 'PENDING_APPROVAL' | 'APPROVED' | 'SCHEDULED' | 'LIVE';
 
 export type StudioEpisode = {
   id: string;

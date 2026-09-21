@@ -171,7 +171,7 @@ export function AddToPlaylistPanel({
         ) : loadError && collections.length === 0 ? (
           <p className="text-foreground-secondary text-sm">{loadError}</p>
         ) : (
-          <div className="grid max-h-64 grid-cols-3 gap-2 overflow-y-auto [scrollbar-width:none] sm:grid-cols-4 [&::-webkit-scrollbar]:hidden">
+          <div className="grid max-h-64 [scrollbar-width:none] grid-cols-3 gap-2 overflow-y-auto sm:grid-cols-4 [&::-webkit-scrollbar]:hidden">
             {collections.map((c) => {
               const added = addedSlugs.has(c.slug);
               const busy = addingSlug === c.slug;

@@ -5,19 +5,12 @@ import { failMeta, isForceMock } from '../mode';
 // ── Content reports ─────────────────────────────────────────────────────────
 
 export type AdminContentReportStatus =
-  | 'OPEN'
-  | 'REVIEWING'
-  | 'ACTIONED'
-  | 'DISMISSED';
+  'OPEN' | 'REVIEWING' | 'ACTIONED' | 'DISMISSED';
 
 export type AdminContentReportRow = {
   id: string;
   targetType:
-    | 'SOUND_ITEM'
-    | 'RELEASE'
-    | 'CHANNEL'
-    | 'COLLECTION'
-    | 'MOTION_COMMENT';
+    'SOUND_ITEM' | 'RELEASE' | 'CHANNEL' | 'COLLECTION' | 'MOTION_COMMENT';
   targetId: string;
   reason: 'COPYRIGHT' | 'HARASSMENT' | 'SPAM' | 'ILLEGAL_CONTENT' | 'OTHER';
   details: string | null;

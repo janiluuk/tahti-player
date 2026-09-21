@@ -44,8 +44,7 @@ export type ChannelHeroBlockProps = {
   layout: ChannelPageItem[];
   updateLayout: (
     updater:
-      | ChannelPageItem[]
-      | ((prev: ChannelPageItem[]) => ChannelPageItem[]),
+      ChannelPageItem[] | ((prev: ChannelPageItem[]) => ChannelPageItem[]),
     opts?: { clearPreset?: boolean },
   ) => void;
   /** Bio/CTA/avatar folded into the backdrop -- see BACKDROP_FOLDED_ITEM_TYPES
@@ -152,6 +151,7 @@ export function ChannelHeroBlock({
         bioVisible={bioVisible}
         subscribeVisible={subscribeVisible}
         headerStyle={channel.headerStyle ?? 'GRADIENT'}
+        topBarText={channel.topBarText}
         videoBackgroundUrl={channel.videoBackgroundUrl}
         muted={channelVideoMuted}
         accent={headerAccent}

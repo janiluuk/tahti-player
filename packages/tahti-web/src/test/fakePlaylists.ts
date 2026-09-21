@@ -193,14 +193,12 @@ export function createFakePlaylists(
     trackIds: vi.fn(async (id: string) =>
       rowsOf(id).rows.flatMap((row) => (row.trackId ? [row.trackId] : [])),
     ),
-    exportM3u: vi.fn(
-      async (): Promise<NativeExportResult | null> => ({
-        path: '/exports/list.m3u8',
-        written: 0,
-        outsideRoot: 0,
-        absoluteFallback: 0,
-      }),
-    ),
+    exportM3u: vi.fn(async (): Promise<NativeExportResult | null> => ({
+      path: '/exports/list.m3u8',
+      written: 0,
+      outsideRoot: 0,
+      absoluteFallback: 0,
+    })),
     importPreview: vi.fn(async (): Promise<NativeImportPreview | null> => null),
     pickRelinkFolder: vi.fn(async (): Promise<string | null> => null),
     importCommit: vi.fn(

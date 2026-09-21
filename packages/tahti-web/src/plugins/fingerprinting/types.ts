@@ -1,8 +1,7 @@
 import type { FingerprintResult } from '../../api/studio';
 
 export type FingerprintOutcome =
-  | { ok: true; data: FingerprintResult }
-  | { ok: false; error: string };
+  { ok: true; data: FingerprintResult } | { ok: false; error: string };
 
 /**
  * A fingerprint provider owns everything about how it identifies a track —

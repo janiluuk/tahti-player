@@ -9,11 +9,7 @@ import { useLayoutStore } from './layoutStore';
 import { useLibraryStore } from './libraryStore';
 
 export type PlaybackStatus =
-  | 'idle'
-  | 'loading'
-  | 'playing'
-  | 'paused'
-  | 'error';
+  'idle' | 'loading' | 'playing' | 'paused' | 'error';
 
 type PlayerState = {
   queue: QueueItem[];

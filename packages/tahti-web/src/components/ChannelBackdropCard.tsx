@@ -40,6 +40,8 @@ export type ChannelBackdropCardProps = {
   subscribeLabel?: string;
 
   headerStyle: string;
+  /** Optional short line in a strip across the top of the hero. */
+  topBarText?: string | null;
   videoBackgroundUrl?: string | null;
   muted?: boolean;
   accent: string;
@@ -115,6 +117,7 @@ export function ChannelBackdropCard({
   subscribeVisible = false,
   subscribeLabel = 'Subscribe',
   headerStyle,
+  topBarText,
   videoBackgroundUrl,
   muted = true,
   accent,
@@ -156,13 +159,14 @@ export function ChannelBackdropCard({
   const backdropIsImage =
     isImageOverride ?? isHeaderImageUrl(videoBackgroundUrl);
   const showSolid = headerStyle === 'SOLID';
-  const showGradient = headerStyle === 'GRADIENT';
+  // The designer's "Slideshow" header mode saves headerStyle GRADIENT plus a
+  // gallery mode, so a gallery with images wins over the plain gradient.
   const showSlideshow =
     !showVideo &&
     !showSolid &&
-    !showGradient &&
     galleryMode === 'STATIC_SLIDESHOW' &&
     Boolean(slideshowImages?.[0]);
+  const showGradient = headerStyle === 'GRADIENT' && !showSlideshow;
 
   return (
     <div
@@ -237,6 +241,16 @@ export function ChannelBackdropCard({
       )}
 
       <div className="absolute inset-0 bg-black/25" aria-hidden />
+
+      {topBarText?.trim() ? (
+        <div
+          data-testid="channel-backdrop-top-bar"
+          className="relative z-[1] truncate bg-black/40 px-4 py-1.5 text-center text-xs font-semibold tracking-wide backdrop-blur-sm sm:text-sm"
+          style={{ color: fg }}
+        >
+          {topBarText.trim()}
+        </div>
+      ) : null}
 
       <div
         role={onEditIdentity ? 'button' : undefined}

@@ -7,9 +7,14 @@ import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
 const LIMIT = 800;
-const ROOTS = ['packages/tahti-web/src', 'packages/player/src', 'packages/player/src-tauri/src'];
+const ROOTS = [
+  'packages/tahti-web/src',
+  'packages/player/src',
+  'packages/player/src-tauri/src',
+];
 const EXT = /\.(tsx?|rs)$/;
-const SKIP = /(\.test\.|\.stories\.|\/tests\.rs$|\/tests\/|\/mock\.ts$|\/content\/|\/generated\/|bindings)/;
+const SKIP =
+  /(\.test\.|\.stories\.|\/tests\.rs$|\/tests\/|\/mock\.ts$|\/content\/|\/generated\/|bindings)/;
 const baselinePath = new URL('./file-size-baseline.json', import.meta.url);
 
 function* walk(dir) {
@@ -33,14 +38,22 @@ for (const root of ROOTS) {
 
 if (process.argv.includes('--update')) {
   writeFileSync(baselinePath, JSON.stringify(sizes, null, 2) + '\n');
-  console.log(`Baseline written: ${Object.keys(sizes).length} files over ${LIMIT} lines.`);
+  console.log(
+    `Baseline written: ${Object.keys(sizes).length} files over ${LIMIT} lines.`,
+  );
   process.exit(0);
 }
 
 let baseline = {};
-try { baseline = JSON.parse(readFileSync(baselinePath, 'utf8')); } catch {}
-const problems = Object.entries(sizes).filter(([f, n]) => n > (baseline[f] ?? LIMIT));
+try {
+  baseline = JSON.parse(readFileSync(baselinePath, 'utf8'));
+} catch {}
+const problems = Object.entries(sizes).filter(
+  ([f, n]) => n > (baseline[f] ?? LIMIT),
+);
 for (const [file, lines] of problems) {
-  console.error(`${file}: ${lines} lines (limit ${baseline[file] ?? LIMIT}). Split it, or see scripts/check-file-size.mjs.`);
+  console.error(
+    `${file}: ${lines} lines (limit ${baseline[file] ?? LIMIT}). Split it, or see scripts/check-file-size.mjs.`,
+  );
 }
 process.exit(problems.length ? 1 : 0);

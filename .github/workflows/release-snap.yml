@@ -2,12 +2,12 @@ name: Release Snap
 
 on:
   workflow_run:
-    workflows: ["Release Player"]
+    workflows: ['Release Player']
     types: [completed]
   workflow_dispatch:
     inputs:
       version:
-        description: "Version to publish (e.g., 1.23.2)"
+        description: 'Version to publish (e.g., 1.23.2)'
         required: true
 
 permissions:
