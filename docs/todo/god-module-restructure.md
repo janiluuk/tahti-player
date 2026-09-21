@@ -48,3 +48,14 @@ Behavior stays identical: mechanical splits along existing seams, tests move wit
 - **UX:** `queueNative` raised one error toast per failed track; now one.
 - **Cleanup:** `playSelection`/`playAllMatching` duplicated the play-head logic; shared.
 - **Still open:** multi-track selections still fetch all matching ids to preserve table order (needs a backend `order_ids(ids, sort)` command); no unit test yet for the single-selection shortcut.
+
+## Noticed, not yet fixed (2026-09-22)
+
+- [ ] Track table unmounts when a search returns zero rows and remounts on clear (loses table mount state); keep it mounted and show the empty state inside it.
+- [ ] `renderActions` mounts 6 Tooltip+Button pairs per visible row: use one shared row-actions menu or lazy tooltips.
+- [ ] Multi-track selections (and `selectAllMatching`/play-all) fetch every matching id (100k on a big library) to keep table order: add a backend `order_ids(ids, sort)` command, and stream/cap `selectAllMatching`.
+- [ ] Unit tests for `useSelectionActions` (single-selection shortcut skips `matchingIds`; failed remove keeps the selection) and `useNativeLibraryList` (stale-response guard, empty-page settle).
+- [ ] `DesktopLibraryPanel.tsx` is still 912 lines (over the 800 limit, pinned in the baseline): remaining bulk is the import handlers, `playNative`/`queueNative`/`relinkNative`/`revealNative`, and the browse/facet JSX; a `useNativePlayback` hook plus a `NativeLibraryToolbar` would finish it.
+- [ ] Shared `nativeLoading` covers both list paging and import/rescan/relink, so a load-more can disable import buttons and vice versa; give import its own busy flag.
+- [ ] Next offenders to split (baselined): `ChannelDesigner.tsx` 1801, `ChannelView.tsx` 1577, `StudioProEditorView.tsx` 1498, `ArtistView.tsx` 1409, `ServiceCategory.tsx` 1401.
+- Fixed in passing: a failed load-more page now toasts an error instead of failing silently while rows are shown.
