@@ -16,7 +16,6 @@ import {
   countActiveFilters,
   EMPTY_TRACK_FILTERS,
   getNativeLibrary,
-  playableFromNativeTrack,
   type NativeFacetFilter,
   type NativeFacetGroup,
   type NativeFilterOptions,
@@ -26,7 +25,6 @@ import {
   type NativeLibraryTrack,
   type NativeTrackFilters,
 } from '../lib/nativeLibrary';
-import { usePlayerStore } from '../stores/playerStore';
 import { AddToPlaylistDialog } from './AddToPlaylistDialog';
 import { ConfirmDialog } from './ConfirmDialog';
 import { BrowserLocalFiles } from './desktop-library/BrowserLocalFiles';
@@ -40,6 +38,7 @@ import {
 } from './desktop-library/TrackBatchDialogs';
 import { useLibraryRoots } from './desktop-library/useLibraryRoots';
 import { useNativeLibraryList } from './desktop-library/useNativeLibraryList';
+import { useNativePlayback } from './desktop-library/useNativePlayback';
 import { useSelectionActions } from './desktop-library/useSelectionActions';
 import {
   BrowseTabs,
@@ -56,8 +55,6 @@ import { NATIVE_TRACK_COLUMNS, toNativeSort } from './nativeTrackColumns';
 import { TrackInspectorDialog } from './TrackInspectorDialog';
 
 export function DesktopLibraryPanel() {
-  const play = usePlayerStore((s) => s.play);
-  const enqueue = usePlayerStore((s) => s.enqueue);
   const nativePlayer = hasNativePlayer();
   const nativeLibrary = getNativeLibrary();
   const initialView = useRef(loadViewState()).current;
@@ -153,6 +150,8 @@ export function DesktopLibraryPanel() {
     setAddToPlaylist,
     addGroupToPlaylist,
   } = selection;
+  const { playNative, queueNative, revealNative } =
+    useNativePlayback(nativeLibrary);
   const initialScrollRef = useRef(initialView.scrollOffset);
   const loadedCountRef = useRef(0);
   const scopeChangedRef = useRef(false);
@@ -481,57 +480,6 @@ export function DesktopLibraryPanel() {
     }
   };
 
-  const playNative = async (track: NativeLibraryTrack) => {
-    if (!nativeLibrary) {
-      return;
-    }
-    try {
-      play(
-        playableFromNativeTrack(track, await nativeLibrary.resolve(track.id)),
-      );
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : 'Track unavailable.',
-      );
-    }
-  };
-
-  const queueNative = async (tracks: NativeLibraryTrack[]) => {
-    if (!nativeLibrary) {
-      return;
-    }
-    // Resolve every path at once (one IPC round trip each, in parallel), then
-    // queue in the original order.
-    const resolved = await Promise.allSettled(
-      tracks.map((track) => nativeLibrary.resolve(track.id)),
-    );
-    let queued = 0;
-    let failure: string | null = null;
-    resolved.forEach((result, index) => {
-      const track = tracks[index];
-      if (result.status === 'fulfilled' && track) {
-        enqueue(playableFromNativeTrack(track, result.value));
-        queued += 1;
-      } else if (result.status === 'rejected') {
-        failure ??=
-          result.reason instanceof Error
-            ? result.reason.message
-            : 'Track unavailable.';
-      }
-    });
-    // One toast, not one per failed track.
-    if (failure) {
-      toast.error(failure);
-    }
-    if (queued) {
-      toast.success(
-        queued === 1
-          ? 'Added 1 track to the queue.'
-          : `Added ${queued} tracks to the queue.`,
-      );
-    }
-  };
-
   const removeNative = async (ids: string[], title: string | null) => {
     if (!nativeLibrary) {
       return;
@@ -557,19 +505,6 @@ export function DesktopLibraryPanel() {
   const activeFilterCount = countActiveFilters(filters);
   const hasActiveScope =
     nativeQuery.trim() !== '' || facetFilter !== null || activeFilterCount > 0;
-
-  const revealNative = async (track: NativeLibraryTrack) => {
-    if (!nativeLibrary) {
-      return;
-    }
-    try {
-      await nativeLibrary.reveal(track.id);
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : 'Could not reveal file.',
-      );
-    }
-  };
 
   if (!nativePlayer) {
     return (
