@@ -58,7 +58,7 @@ Behavior stays identical: mechanical splits along existing seams, tests move wit
 - [x] Shared `nativeLoading`: import/rescan/relink now use their own `busy` flag; list paging keeps `loading`. Rescan/relink moved to `useMissingTracks`.
 - [x] `DesktopLibraryPanel.tsx` under the limit (out of the baseline).
 - [ ] `ChannelDesigner.tsx` 1801 → 1713 (2026-09-22): `SlideshowControls` (+ story, migrated to `Button`/`MediaArtwork`) and `slideshowOptions.ts` extracted; bug audit below. Still open: `loadFromServer` / `save` / preset actions (a `useChannelLook` state hook, snapshot helpers, `buildVisualPatch` as a pure function), the ~230-line final render, and the panel slot builders.
-- [ ] Next offenders to split (baselined): ~~`ChannelDesigner.tsx`~~, `ChannelView.tsx` 1577, `StudioProEditorView.tsx` 1498, `ArtistView.tsx` 1409, `ServiceCategory.tsx` 1401.
+- [ ] Next offenders to split (baselined): `ArtistView.tsx` 1409, `ServiceCategory.tsx` 1401.
 - Fixed in passing: failed load-more toasts an error; the drop-import subscription no longer resubscribes per keystroke (`useNativeImport` goes through a ref).
 
 ## ChannelDesigner bug audit (2026-09-22, fixed)
@@ -72,12 +72,48 @@ Behavior stays identical: mechanical splits along existing seams, tests move wit
 - **Custom gradients wiped on toggle:** turning the player/page-background gradient off and on re-seeded from the header colors because it checked a server-side field that never updates locally. Now seeds only when the local scheme is empty.
 - **Right rail re-expanded on every render** while docked (users couldn't keep it collapsed); now opens once when docking starts.
 - **`onLookVisibilityChange`** in an effect dependency list re-ran the effect (and re-notified the parent) for any caller passing an inline callback; now via ref. `lookVisibility` initial state reads localStorage lazily instead of every render.
-- Not fixed: `dirty` is cleared after a successful save even if the user edited during the in-flight save (the Save button is disabled only while `busy`, so the window is small).
+- `dirty` in-flight-edit race: fixed later (edit revision counter).
+
+## Third pass on ChannelDesigner (2026-09-22, fixed with the hook extraction)
+
+- **Save overwrote edits made while it ran:** the server copy replaced the draft (while `dirty` stayed true), silently reverting them; now the draft is kept when edited mid-save. The baseline also recorded overlay/preview settings from after the save, not from the saved state.
+- **Reset/Revert on a failed reload** toasted success and cleared the banner although nothing was reloaded; now only on success.
+- **Layout toggle wrote localStorage behind ChannelView's back** (stale parent view, overwritten by its next save); inside ChannelView it now goes through `onLayoutChange`.
+- Preset save/delete left `presetBusy` stuck if a request threw; highlight timers could clear a newer highlight and fired after unmount (one timer now); dead `pageLayout` state removed; redundant `setPreviewPreset` calls removed; every edit now goes through `applyLocal`/`edit*` helpers so dirty can't be forgotten.
+- Not done: visual check in the running app (still open below).
+
+## ChannelView audit + split (2026-09-22, 1576 → 797, out of the size baseline)
+
+Split into `components/channel-view/`: `useChannelData`, `useChannelLinksDraft`, `useEditRail`, `ChannelLayersPanel`, `ChannelStagePlayer`, `ChannelPageBackdrop`, `ChannelBlockFrame`.
+
+- **Every look save or edit-mode toggle showed the full-page spinner:** the fetch effect depended on `editing` and `lookTick` and set `loading` each time, unmounting the page and the designer inside it. Now only a slug change shows loading; refreshes are silent and keep the follower count. Fetch failure no longer leaves the spinner forever.
+- **Done discarded look and link edits** while keeping the layout; it now saves all three first. `saveAll` is exception-safe (`savingLook` could stick).
+- **Rail re-expanded on every render** while editing (same as the designer); now once.
+- **Whole page re-rendered on every playback `timeupdate`** (currentTime/duration subscriptions in `ChannelView`); the player controls own those subscriptions now.
+- Edit mode now follows the URL (back button leaves it); play-stream and preset-look requests toast on failure.
+- Not changed: `applyPreset` persists the look to the server immediately though its note says "save layout to keep it"; the Feed block's controls have no live update source; the backdrop `<img>` is still hand-rolled (decorative full-bleed, `MediaArtwork` doesn't fit). No test drives the full `ChannelView` (new hook tests only).
+
+## StudioProEditorView audit + split (2026-09-22, 1497 → 333, out of the size baseline)
+
+Split into `views/studio/pro-editor/`: `WaveformEditor` (audio, toolbar, canvas, markers), `MasteringPanel`, `PluginControls`, `StemsPanel`, `useWaveformPeaks`, `pluginUi`, and pure `editCuts` (merge/kept/trim/silence/zoom, tested).
+
+- **Kept-duration double-counted overlapping cuts** (cuts were only sorted, never merged), so "Kept: 3:10" could be wrong and duplicate regions were sent to the render. Cuts are merged everywhere now.
+- **"Trim to selection" replaced all existing cuts**, dropping ones inside the kept range; it now keeps them.
+- **Load had no error handling:** a failed fetch left "Loading editor…" forever (now an error state); stem and version polling had unhandled rejections; save, render and stem-request threw past `busy`/state (try/finally, toasts).
+- **A failed draft save before render was silent**; it now warns.
+- **Navigating between tracks carried over** selection, markers, zoom, message and unsaved edits (no remount); the view is keyed by sound now.
+- **AudioContext leaked** when peak decoding failed (browsers cap live contexts); now closed in `finally`. The audio element is paused on unmount.
+- **Every `timeupdate` re-rendered the whole editor** (mastering, stems, export); playback state now lives in `WaveformEditor` only.
+- Duplicate marker at the same time crashed on a duplicate React key; markers dedupe. Editing feedback (cut, trim, normalize) goes through toasts as well as the status line; hand-rolled marker/slope `<button>`s use `Button`.
+- Not changed: markers aren't persisted (not part of the edit list); playback ignores cuts by design (removed on render); no unsaved-changes prompt on leaving; no test renders the whole view.
 
 ## Next up (2026-09-22)
 
-- [ ] Finish splitting `ChannelDesigner.tsx` (1713 lines): a `useChannelLook` state hook (load / save / preset actions), `buildVisualPatch` and the `LookSnapshot` helpers as pure functions with unit tests, the ~230-line final render, and the panel slot builders.
-- [ ] `ChannelDesigner`: `dirty` is cleared after a successful save even if the user edited while the save was in flight; track a revision counter and only clear when nothing changed since the save started.
-- [ ] Split `ChannelView.tsx` (1577), then `StudioProEditorView.tsx` (1498), `ArtistView.tsx` (1409), `ServiceCategory.tsx` (1401): audit each for bugs first, as with the designer.
+- [x] `ChannelDesigner.tsx` split (2026-09-22, 1697 → 757, out of the size baseline): `useChannelLook` (draft state, load/save/presets/gallery/backdrop), `useLookVisibility`, `useDockedControlsRail`, `ChannelPagePreview`, and pure `buildVisualPatch` / `buildLoadedLook` / `applyPresetToVisual` / `LookSnapshot`, with tests. Only the panel slot builders remain in the component.
+- [x] `ChannelDesigner`: `dirty` no longer cleared by a save when the user edited while it was in flight (edit revision counter; no dedicated test yet).
+- [ ] Split `ArtistView.tsx` (1409), `ServiceCategory.tsx` (1401): audit each for bugs first, as with the designer.
 - [ ] Visually verify the designer changes in the running app (slideshow reorder preview, Reset/Revert with a pending backdrop file, gradient toggles, right-rail collapse); only unit and smoke tests cover them so far.
+- [ ] Visually verify in the running app: channel edit mode (no spinner on save, Done saves look+links, rail stays collapsed, layout toggles reach the parent) and the Pro editor (cut/trim merge, kept duration, stems, mastering chain, switching tracks).
+- [ ] Pro editor follow-ups: persist markers (not in the edit list today), unsaved-changes prompt on leaving, a smoke test that renders the whole view.
+- [ ] `ChannelView`: `applyPreset` saves the preset's look to the server immediately though its note says "save layout to keep it"; decide whether the look should be draft-until-Save; add a smoke test for the full view.
 - [ ] `ui` `QueuePanel` test "skips offscreen layout only for long queues" failed once in a full `ui` run but passes alone; check whether it is flaky.

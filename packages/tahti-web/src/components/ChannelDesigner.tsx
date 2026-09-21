@@ -3,75 +3,26 @@ import {
   forwardRef,
   useEffect,
   useImperativeHandle,
-  useLayoutEffect,
-  useMemo,
   useRef,
   useState,
-  type ReactNode,
 } from 'react';
-import { toast } from 'sonner';
 
-import { SaveButton, Tooltip } from '@tahti-player/ui';
+import { SaveButton } from '@tahti-player/ui';
 
 import {
-  channelLookExtrasFromPatch,
-  channelLookExtrasFromVisual,
-  deleteChannelVisualPreset,
-  fetchChannelVisual,
-  fetchChannelVisualPresets,
-  fillColorScheme,
   isHeaderImageUrl,
   isValidHeaderBackdropUrl,
   isVisualPreset,
-  loadChannelLookExtras,
-  MAX_HEADER_VIDEO_BYTES,
-  mergeLookExtrasPreferApi,
-  parseColorScheme,
-  parseVisualSettingsMap,
-  patchChannelVisual,
-  resolveVisualPresetSettings,
-  saveChannelLookExtras,
-  saveChannelVisualPreset,
   shouldDockVisualizerTuning,
-  uploadChannelHeaderVideo,
   VISUAL_PRESETS,
-  type ChannelVisual,
-  type ChannelVisualPatch,
-  type ChannelVisualPreset,
-  type ColorScheme,
   type VisualPreset,
-  type VisualSettingsMap,
 } from '../api/channel-design';
 import {
-  fetchChannelGallery,
-  patchChannelGallery,
-  type ChannelGalleryMode,
-} from '../api/channel-gallery';
-import { uploadUserMediaFile } from '../api/user-media';
-import {
-  DEFAULT_NOW_PLAYING_OVERLAY_SETTINGS,
-  parseNowPlayingOverlaySettings,
-  type NowPlayingOverlaySettings,
-} from '../content/nowPlayingOverlayPresets';
-import { useIsMobile } from '../hooks/useIsMobile';
-import {
-  CHANNEL_LOOK_ELEMENTS,
-  isArtistLookBlockId,
   isChannelLookElementId,
-  loadArtistLookVisibility,
-  saveArtistLookVisibility,
   type ArtistLookBlockId,
   type ChannelLookElementId,
 } from '../lib/channelLookElements';
-import {
-  loadChannelPageLayout,
-  saveChannelPageLayout,
-  setItemVisible,
-  type ChannelPageItem,
-  type ChannelPageItemType,
-} from '../lib/channelPageLayout';
-import { useLayoutStore } from '../stores/layoutStore';
-import { useRightRailOverrideStore } from '../stores/rightRailOverrideStore';
+import { type ChannelPageItem } from '../lib/channelPageLayout';
 import {
   AppliedPresetBanner,
   BackdropPanel,
@@ -84,7 +35,6 @@ import {
   PlayerOverlayControls,
   PlayerPanel,
   PlayerVisualizerControls,
-  PreviewTracksPlaceholder,
   ResetConfirmDialog,
   resolveHeaderDesignMode,
   SavedLooksRow,
@@ -95,9 +45,11 @@ import {
   type HeaderDesignMode,
   type PlayerDesignTab,
 } from './channel-designer';
+import { ChannelPagePreview } from './channel-designer/ChannelPagePreview';
 import { SlideshowControls } from './channel-designer/SlideshowControls';
-import { HEADER_MEDIA_TYPES } from './channel-designer/slideshowOptions';
-import { ChannelBackdropCard } from './ChannelBackdropCard';
+import { useChannelLook } from './channel-designer/useChannelLook';
+import { useDockedControlsRail } from './channel-designer/useDockedControlsRail';
+import { useLookVisibility } from './channel-designer/useLookVisibility';
 import { ChannelElementEditor } from './ChannelElementEditor';
 import { ChannelTextOverlayEditor } from './ChannelTextOverlayEditor';
 import { PageLoading } from './PageStates';
@@ -109,26 +61,6 @@ type LookSection =
   | 'visual-style'
   | 'links'
   | 'text-overlay';
-
-/** Everything "Save layout" persists — captured before each save so a
- * "Restore" action can undo it. In-memory only (per the branch's own
- * design intent): lost on reload, not a durable version history. */
-type LookSnapshot = {
-  visual: ChannelVisual;
-  scheme: ColorScheme;
-  playerScheme: ColorScheme;
-  backgroundScheme: ColorScheme;
-  visualSettings: VisualSettingsMap;
-  galleryMode: ChannelGalleryMode;
-  galleryImages: string;
-  videoBackgroundUrl: string;
-  slideshowPreset: string;
-  slideshowInterval: number;
-  slideshowTransition: number;
-  slideshowAutoplay: boolean;
-  overlaySettings: NowPlayingOverlaySettings;
-  previewPreset: VisualPreset;
-};
 
 type Props = {
   displayName: string;
@@ -194,74 +126,75 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
     }: Props,
     ref,
   ) {
-    const isMobile = useIsMobile();
-    const setRightCollapsed = useLayoutStore((s) => s.setRightCollapsed);
-    const setRightWidth = useLayoutStore((s) => s.setRightWidth);
-    const rightWidth = useLayoutStore((s) => s.rightWidth);
-    const setRailOverride = useRightRailOverrideStore((s) => s.setOverride);
-    const dockControlsInRail = !lookOnly && !isMobile;
-    const controlsForRailRef = useRef<ReactNode>(null);
+    const { dockControlsInRail, controlsForRailRef } =
+      useDockedControlsRail(lookOnly);
 
-    useLayoutEffect(() => {
-      if (!dockControlsInRail) {
-        setRailOverride(null);
-        return;
-      }
-      const content = controlsForRailRef.current;
-      if (!content) {
-        return;
-      }
-      setRailOverride({ title: 'Channel designer', content });
-    });
+    const layoutSlug = channelSlug ?? username;
+    const {
+      appliedPresetName,
+      applyLocal,
+      applyPreset,
+      editBackgroundScheme,
+      editGalleryMode,
+      editPlayerScheme,
+      editSlideshow,
+      editVideoUrl,
+      backgroundScheme,
+      busy,
+      clearVideo,
+      confirmDeletePreset,
+      confirmReset,
+      confirmSavePreset,
+      deletePresetTarget,
+      dirty,
+      galleryFiles,
+      galleryImageList,
+      galleryMode,
+      galleryPreviewIndex,
+      keepAppliedPreset,
+      openSavePresetModal,
+      overlaySettings,
+      pendingVideoFile,
+      pendingVideoPreviewUrl,
+      playerScheme,
+      presetBusy,
+      presetNameInput,
+      presets,
+      previewPreset,
+      previewStyle,
+      previousSave,
+      removeBackdrop,
+      removeGalleryImage,
+      reorderGalleryImage,
+      resetConfirmOpen,
+      restorePreviousSave,
+      revertAppliedPreset,
+      save,
+      savePresetOpen,
+      scheme,
+      selectGalleryFiles,
+      selectVideoFile,
+      setDeletePresetTarget,
+      setGalleryPreviewIndex,
+      setOverlaySetting,
+      setPresetNameInput,
+      setPresetSetting,
+      setResetConfirmOpen,
+      setSavePresetOpen,
+      slideshowAutoplay,
+      slideshowInterval,
+      slideshowPreset,
+      slideshowTransition,
+      videoBackgroundUrl,
+      visual,
+      visualSettings,
+      visualSettingsJson,
+    } = useChannelLook({ layoutSlug, reloadToken, onSaved, onDirtyChange });
+    useImperativeHandle(ref, () => ({ save }), [save]);
 
-    // Open the rail once when the controls dock into it — not on every render,
-    // which would re-expand it right after the user collapsed it.
-    useEffect(() => {
-      if (dockControlsInRail) {
-        setRightCollapsed(false);
-      }
-    }, [dockControlsInRail, setRightCollapsed]);
-
-    useEffect(() => {
-      if (!dockControlsInRail || rightWidth >= 360) {
-        return;
-      }
-      setRightWidth(360);
-    }, [dockControlsInRail, rightWidth, setRightWidth]);
-
-    useEffect(() => () => setRailOverride(null), [setRailOverride]);
-
-    const [visual, setVisual] = useState<ChannelVisual | null>(null);
-    const [scheme, setScheme] = useState<ColorScheme>({});
-    const [playerScheme, setPlayerScheme] = useState<ColorScheme>({});
-    const [backgroundScheme, setBackgroundScheme] = useState<ColorScheme>({});
-    const [visualSettings, setVisualSettings] = useState<VisualSettingsMap>({});
-
-    const visualSettingsJson = useMemo(
-      () => JSON.stringify(visualSettings),
-      [visualSettings],
-    );
-    const [galleryMode, setGalleryMode] = useState<ChannelGalleryMode>('NONE');
-    const [galleryImages, setGalleryImages] = useState('');
-    const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
-    const [galleryPreviewIndex, setGalleryPreviewIndex] = useState(0);
     const [galleryPickerOpen, setGalleryPickerOpen] = useState(false);
-    const [videoBackgroundUrl, setVideoBackgroundUrl] = useState('');
-    const [pendingVideoFile, setPendingVideoFile] = useState<File | null>(null);
-    const [pendingVideoPreviewUrl, setPendingVideoPreviewUrl] = useState<
-      string | null
-    >(null);
     const [videoUrlOpen, setVideoUrlOpen] = useState(false);
-    const [slideshowPreset, setSlideshowPreset] = useState('FADE');
-    const [slideshowInterval, setSlideshowInterval] = useState(8);
-    const [slideshowTransition, setSlideshowTransition] = useState(600);
-    const [slideshowAutoplay, setSlideshowAutoplay] = useState(true);
-    const [busy, setBusy] = useState(false);
-    const [dirty, setDirty] = useState(false);
-    const [previewPreset, setPreviewPreset] = useState<VisualPreset>('AURORA');
     const [showVisualizerSettings, setShowVisualizerSettings] = useState(false);
-    const [overlaySettings, setOverlaySettings] =
-      useState<NowPlayingOverlaySettings>(DEFAULT_NOW_PLAYING_OVERLAY_SETTINGS);
     const [overlayConfigOpen, setOverlayConfigOpen] = useState(false);
     const [visualizerPickerOpen, setVisualizerPickerOpen] = useState(false);
     const [visualizerPickerPreset, setVisualizerPickerPreset] =
@@ -274,28 +207,13 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
     >(null);
     const [selectedLookId, setSelectedLookId] =
       useState<ChannelLookElementId>('backdrop');
-    const [, setPageLayout] = useState<ChannelPageItem[]>([]);
-    const [lookVisibility, setLookVisibility] = useState<
-      Record<ArtistLookBlockId, boolean>
-    >(() => loadArtistLookVisibility(channelSlug ?? username));
-
-    const [presets, setPresets] = useState<ChannelVisualPreset[]>([]);
-    const [savePresetOpen, setSavePresetOpen] = useState(false);
-    const [presetNameInput, setPresetNameInput] = useState('');
-    const [presetBusy, setPresetBusy] = useState(false);
-    const [deletePresetTarget, setDeletePresetTarget] =
-      useState<ChannelVisualPreset | null>(null);
-    const [resetConfirmOpen, setResetConfirmOpen] = useState(false);
-    const [appliedPresetName, setAppliedPresetName] = useState<string | null>(
-      null,
-    );
-    // What's currently live/saved — refreshed on load and after each
-    // successful save. `previousSave` is a one-level-back copy of this,
-    // captured right before it gets overwritten, so "Restore" can undo the
-    // most recent save.
-    const [baselineSnapshot, setBaselineSnapshot] =
-      useState<LookSnapshot | null>(null);
-    const [previousSave, setPreviousSave] = useState<LookSnapshot | null>(null);
+    const { lookBlockVisible, toggleSelectedLook } = useLookVisibility({
+      layoutSlug,
+      reloadToken,
+      layout,
+      onLayoutChange,
+      onLookVisibilityChange,
+    });
 
     useEffect(() => {
       if (!lookOpenSection) {
@@ -316,30 +234,19 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       }
     }, [lookOpenSection]);
 
-    const layoutSlug = channelSlug ?? username;
-
-    // Callers often pass an inline callback; going through a ref keeps this
-    // effect from re-running (and re-notifying the parent) on every render.
-    const onLookVisibilityChangeRef = useRef(onLookVisibilityChange);
-    onLookVisibilityChangeRef.current = onLookVisibilityChange;
-
-    useEffect(() => {
-      setPageLayout(loadChannelPageLayout(layoutSlug));
-      const visibility = loadArtistLookVisibility(layoutSlug);
-      setLookVisibility(visibility);
-      onLookVisibilityChangeRef.current?.(visibility);
-    }, [layoutSlug, reloadToken]);
-
-    const toggleLayoutType = (type: ChannelPageItemType) => {
-      setPageLayout((current) => {
-        const row = current.find((item) => item.type === type);
-        if (!row) {
-          return current;
-        }
-        const next = setItemVisible(current, row.id, !row.visible);
-        saveChannelPageLayout(layoutSlug, next);
-        return next;
-      });
+    // One timer for the transient highlight, so an earlier click's timeout
+    // cannot clear a newer highlight, and none fires after unmount.
+    const highlightTimerRef = useRef<number | undefined>(undefined);
+    useEffect(() => () => window.clearTimeout(highlightTimerRef.current), []);
+    const flashHighlight = (section: 'header' | 'visualizer' | null) => {
+      window.clearTimeout(highlightTimerRef.current);
+      setHighlightSection(section);
+      if (section) {
+        highlightTimerRef.current = window.setTimeout(
+          () => setHighlightSection(null),
+          1600,
+        );
+      }
     };
 
     const focusPreviewSection = (
@@ -347,704 +254,10 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       elementId: string,
     ) => {
       setActiveTab(tab);
-      setHighlightSection(tab);
+      flashHighlight(tab);
       document
         .getElementById(elementId)
         ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      window.setTimeout(() => {
-        setHighlightSection((current) => (current === tab ? null : current));
-      }, 1600);
-    };
-
-    /** (Re)loads the live saved look from the server, discarding any local
-     * draft — the mount/reload path, and also what "Revert" replays after a
-     * preset was applied but not saved (see `applyPreset` / the keep-or-revert
-     * banner below). */
-    const loadRequestRef = useRef(0);
-    const loadFromServer = () => {
-      const request = ++loadRequestRef.current;
-      void Promise.all([fetchChannelVisual(), fetchChannelGallery()])
-        .then(([visualResult, galleryResult]) => {
-          // A newer load (or unmount) superseded this one: drop the response
-          // instead of overwriting fresher state.
-          if (request !== loadRequestRef.current) {
-            return;
-          }
-          const fromApi = channelLookExtrasFromVisual(visualResult.data);
-          const extras = mergeLookExtrasPreferApi(
-            fromApi,
-            loadChannelLookExtras(layoutSlug),
-          );
-          const mergedVisual = { ...visualResult.data, ...extras };
-          const loadedScheme = parseColorScheme(mergedVisual.colorSchemeJson);
-          const loadedPlayerScheme = parseColorScheme(
-            mergedVisual.playerColorSchemeJson,
-          );
-          const loadedBackgroundScheme = parseColorScheme(
-            mergedVisual.backgroundColorSchemeJson,
-          );
-          const loadedVisualSettings = parseVisualSettingsMap(
-            visualResult.data.visualSettingsJson,
-          );
-          const loadedOverlaySettings = parseNowPlayingOverlaySettings(
-            mergedVisual.nowPlayingOverlaySettingsJson,
-          );
-          const loadedPreviewPreset =
-            isVisualPreset(mergedVisual.visualPreset) &&
-            mergedVisual.visualPreset !== 'MINIMAL'
-              ? mergedVisual.visualPreset
-              : 'AURORA';
-          const loadedSlideshowPreset =
-            visualResult.data.slideshowPreset ?? 'FADE';
-          const loadedSlideshowInterval =
-            visualResult.data.slideshowIntervalSeconds ?? 8;
-          const loadedSlideshowTransition =
-            visualResult.data.slideshowTransitionMs ?? 600;
-          const loadedSlideshowAutoplay =
-            visualResult.data.slideshowAutoplay ?? true;
-          const loadedGalleryImages =
-            galleryResult.data.slideshowImages.join('\n');
-          const loadedVideoBackgroundUrl =
-            galleryResult.data.videoBackgroundUrl ?? '';
-
-          const presetNeedsCorrection =
-            !isVisualPreset(mergedVisual.visualPreset) ||
-            mergedVisual.visualPreset === 'MINIMAL';
-          const shownVisual: ChannelVisual = presetNeedsCorrection
-            ? { ...mergedVisual, visualPreset: 'AURORA' }
-            : mergedVisual;
-          // A reload discards the local draft, including a picked-but-not-yet-
-          // uploaded backdrop file.
-          discardPendingVideo();
-          setVisual(shownVisual);
-          setOverlaySettings(loadedOverlaySettings);
-          setScheme(loadedScheme);
-          setPlayerScheme(loadedPlayerScheme);
-          setBackgroundScheme(loadedBackgroundScheme);
-          setVisualSettings(loadedVisualSettings);
-          setPreviewPreset(loadedPreviewPreset);
-          setGalleryMode(galleryResult.data.galleryMode);
-          setGalleryImages(loadedGalleryImages);
-          setVideoBackgroundUrl(loadedVideoBackgroundUrl);
-          setSlideshowPreset(loadedSlideshowPreset);
-          setSlideshowInterval(loadedSlideshowInterval);
-          setSlideshowTransition(loadedSlideshowTransition);
-          setSlideshowAutoplay(loadedSlideshowAutoplay);
-          // A corrected (invalid) preset is an unsaved change.
-          setDirty(presetNeedsCorrection);
-          setPreviousSave(null);
-          setBaselineSnapshot({
-            visual: mergedVisual,
-            scheme: loadedScheme,
-            playerScheme: loadedPlayerScheme,
-            backgroundScheme: loadedBackgroundScheme,
-            visualSettings: loadedVisualSettings,
-            galleryMode: galleryResult.data.galleryMode,
-            galleryImages: loadedGalleryImages,
-            videoBackgroundUrl: loadedVideoBackgroundUrl,
-            slideshowPreset: loadedSlideshowPreset,
-            slideshowInterval: loadedSlideshowInterval,
-            slideshowTransition: loadedSlideshowTransition,
-            slideshowAutoplay: loadedSlideshowAutoplay,
-            overlaySettings: loadedOverlaySettings,
-            previewPreset: loadedPreviewPreset,
-          });
-        })
-        .catch(() => {
-          if (request === loadRequestRef.current) {
-            toast.error('Could not load the channel designer. Try again.');
-          }
-        });
-    };
-
-    useEffect(() => {
-      loadFromServer();
-      return () => {
-        loadRequestRef.current += 1;
-      };
-    }, [reloadToken]);
-
-    useEffect(() => {
-      let stale = false;
-      void fetchChannelVisualPresets()
-        .then(({ data }) => {
-          if (!stale) {
-            setPresets(data);
-          }
-        })
-        .catch(() => undefined);
-      return () => {
-        stale = true;
-      };
-    }, [reloadToken]);
-
-    const galleryImageList = useMemo(
-      () =>
-        galleryImages
-          .split(/\r?\n/)
-          .map((image) => image.trim())
-          .filter(Boolean),
-      [galleryImages],
-    );
-
-    // Keep the preview on a real image after add/remove; reordering sets its
-    // own index, which a blanket reset to 0 here used to clobber.
-    useEffect(() => {
-      setGalleryPreviewIndex((index) =>
-        index >= galleryImageList.length ? 0 : index,
-      );
-    }, [galleryImageList.length]);
-
-    useEffect(() => {
-      if (galleryImageList.length < 2 || !slideshowAutoplay) {
-        return;
-      }
-      const timer = window.setInterval(() => {
-        setGalleryPreviewIndex(
-          (index) => (index + 1) % galleryImageList.length,
-        );
-      }, slideshowInterval * 1000);
-      return () => window.clearInterval(timer);
-    }, [galleryImageList.length, slideshowAutoplay, slideshowInterval]);
-
-    const previewStyle = useMemo(() => {
-      const accent = scheme.accent ?? '#22D3EE';
-      const highlight = scheme.highlight ?? '#A78BFA';
-      const bg = scheme.bg ?? '#0B1220';
-      const fg = scheme.text ?? '#F8FAFC';
-      // Always derive the preview from the live scheme pickers. Brand swatches
-      // only *seed* accent/highlight; they must not keep overriding custom
-      // colors after the user edits a picker (that looked "stuck on purple").
-      const gradient =
-        visual?.headerStyle === 'SOLID'
-          ? bg
-          : `linear-gradient(135deg, ${highlight}, ${accent}, ${bg})`;
-      return { accent, highlight, bg, fg, gradient };
-    }, [scheme, visual?.headerStyle]);
-
-    const applyLocal = (
-      next: Partial<ChannelVisual>,
-      nextScheme?: ColorScheme,
-    ) => {
-      setVisual((v) => (v ? { ...v, ...next } : v));
-      if (next.visualPreset && isVisualPreset(next.visualPreset)) {
-        setPreviewPreset(next.visualPreset);
-      }
-      if (nextScheme) {
-        setScheme(nextScheme);
-      }
-      setDirty(true);
-    };
-
-    const selectVideoFile = (files: readonly File[]) => {
-      const file = files[0];
-      if (!file) {
-        return;
-      }
-      if (file.size > MAX_HEADER_VIDEO_BYTES) {
-        toast.error('File must be 10 MB or smaller.');
-        return;
-      }
-      if (!HEADER_MEDIA_TYPES.includes(file.type)) {
-        toast.error('Use an MP4/WebM video or a JPEG/PNG/WebP/GIF image.');
-        return;
-      }
-      if (pendingVideoPreviewUrl) {
-        URL.revokeObjectURL(pendingVideoPreviewUrl);
-      }
-      setPendingVideoFile(file);
-      setPendingVideoPreviewUrl(URL.createObjectURL(file));
-      setDirty(true);
-    };
-
-    const pendingPreviewUrlRef = useRef<string | null>(null);
-    pendingPreviewUrlRef.current = pendingVideoPreviewUrl;
-    useEffect(
-      () => () => {
-        if (pendingPreviewUrlRef.current) {
-          URL.revokeObjectURL(pendingPreviewUrlRef.current);
-        }
-      },
-      [],
-    );
-
-    /** Drops a picked-but-not-uploaded backdrop file (and its blob URL). */
-    function discardPendingVideo() {
-      if (pendingPreviewUrlRef.current) {
-        URL.revokeObjectURL(pendingPreviewUrlRef.current);
-      }
-      setPendingVideoFile(null);
-      setPendingVideoPreviewUrl(null);
-    }
-
-    const clearVideo = () => {
-      discardPendingVideo();
-      setVideoBackgroundUrl('');
-      setDirty(true);
-    };
-
-    const removeBackdrop = () => {
-      clearVideo();
-      setGalleryImages('');
-      setGalleryMode('NONE');
-    };
-
-    const selectGalleryFiles = async (files: readonly File[]) => {
-      const imageFiles = files.filter((file) =>
-        ['image/jpeg', 'image/png', 'image/webp'].includes(file.type),
-      );
-      if (imageFiles.length === 0) {
-        toast.error('Choose JPEG, PNG, or WebP images.');
-        return;
-      }
-      if (galleryImageList.length + imageFiles.length > 10) {
-        toast.error('Use up to 10 background images.');
-        return;
-      }
-      setGalleryFiles(imageFiles);
-      setBusy(true);
-      let uploads: Awaited<ReturnType<typeof uploadUserMediaFile>>[];
-      try {
-        uploads = await Promise.all(
-          imageFiles.map((file) => uploadUserMediaFile(file)),
-        );
-      } catch {
-        toast.error('Image upload failed. Try again.');
-        return;
-      } finally {
-        setBusy(false);
-        setGalleryFiles([]);
-      }
-      const uploadedUrls = uploads.flatMap((result) =>
-        result.ok ? [result.data.url] : [],
-      );
-      if (uploadedUrls.length > 0) {
-        // Append to the *current* list — the user may have reordered or
-        // removed images while the upload ran.
-        setGalleryImages((current) =>
-          [
-            ...current
-              .split(/\r?\n/)
-              .map((image) => image.trim())
-              .filter(Boolean),
-            ...uploadedUrls,
-          ].join('\n'),
-        );
-        setGalleryMode('STATIC_SLIDESHOW');
-        setDirty(true);
-        toast.success(
-          `${uploadedUrls.length} image${uploadedUrls.length === 1 ? '' : 's'} added to the slideshow.`,
-        );
-      }
-      const errors = uploads.flatMap((result) =>
-        result.ok ? [] : [result.error],
-      );
-      if (errors.length > 0) {
-        toast.error(errors.join('; '));
-      }
-    };
-
-    const removeGalleryImage = (index: number) => {
-      const nextImages = galleryImageList.filter(
-        (_, imageIndex) => imageIndex !== index,
-      );
-      setGalleryImages(nextImages.join('\n'));
-      if (nextImages.length === 0) {
-        setGalleryMode('NONE');
-      }
-      setDirty(true);
-    };
-
-    const reorderGalleryImage = (fromIndex: number, toIndex: number) => {
-      if (fromIndex === toIndex) {
-        return;
-      }
-      const nextImages = [...galleryImageList];
-      const [movedImage] = nextImages.splice(fromIndex, 1);
-      nextImages.splice(toIndex, 0, movedImage);
-      setGalleryImages(nextImages.join('\n'));
-      setGalleryPreviewIndex(toIndex);
-      setDirty(true);
-    };
-
-    const setPresetSetting = (
-      preset: string,
-      key: 'speed' | 'intensity' | 'audioReactive',
-      value: number | boolean,
-    ) => {
-      const nextValue =
-        typeof value === 'number' ? Math.round(value * 100) / 100 : value;
-      setVisualSettings((current) => ({
-        ...current,
-        [preset]: {
-          ...resolveVisualPresetSettings(current, preset),
-          [key]: nextValue,
-        },
-      }));
-      setDirty(true);
-    };
-
-    const setOverlaySetting = <
-      SettingKey extends keyof NowPlayingOverlaySettings,
-    >(
-      key: SettingKey,
-      value: NowPlayingOverlaySettings[SettingKey],
-    ) => {
-      setOverlaySettings((current) => ({ ...current, [key]: value }));
-      setDirty(true);
-    };
-
-    /** Everything the "Look" currently holds, as one patch — sent to save,
-     * and (with the current, not-yet-uploaded backdrop URL) snapshotted
-     * as-is when saving a named preset. */
-    const buildVisualPatch = (
-      videoUrl: string | null,
-    ): ChannelVisualPatch | null => {
-      if (!visual) {
-        return null;
-      }
-      return {
-        visualPreset: visual.visualPreset,
-        headerStyle: visual.headerStyle,
-        videoBackgroundUrl: videoUrl,
-        brandAccentPreset: visual.brandAccentPreset,
-        colorScheme: fillColorScheme(scheme),
-        visualSettings,
-        slideshowPreset,
-        slideshowIntervalSeconds: slideshowInterval,
-        slideshowTransitionMs: slideshowTransition,
-        slideshowAutoplay,
-        nowPlayingOverlayStyle: visual.nowPlayingOverlayStyle ?? undefined,
-        nowPlayingOverlaySettingsJson: JSON.stringify(overlaySettings),
-        usePlayerGradient: visual.usePlayerGradient ?? false,
-        playerColorSchemeJson: visual.usePlayerGradient
-          ? JSON.stringify(fillColorScheme(playerScheme))
-          : null,
-        backgroundVisualPreset: visual.backgroundVisualPreset ?? undefined,
-        useBackgroundGradient: visual.useBackgroundGradient ?? false,
-        backgroundColorSchemeJson: visual.useBackgroundGradient
-          ? JSON.stringify(fillColorScheme(backgroundScheme))
-          : null,
-        channelLinks: visual.channelLinks ?? [],
-        textOverlayMode: visual.textOverlayMode ?? 'NONE',
-        textOverlayText: visual.textOverlayText ?? '',
-        textOverlayAlign: visual.textOverlayAlign ?? 'CENTER',
-        playerOverlayMode: visual.playerOverlayMode ?? 'NONE',
-        playerOverlayText: visual.playerOverlayText ?? '',
-        playerOverlayAlign: visual.playerOverlayAlign ?? 'CENTER',
-      };
-    };
-
-    const saveLook = async () => {
-      if (!visual) {
-        return;
-      }
-      const previousBaseline = baselineSnapshot;
-      const images = galleryImages
-        .split(/\r?\n/)
-        .map((image) => image.trim())
-        .filter(Boolean);
-      if (images.length > 10) {
-        toast.error('Use up to 10 gallery images.');
-        return;
-      }
-      if (galleryMode !== 'NONE' && images.length === 0) {
-        toast.error('Add at least one image for the selected gallery.');
-        return;
-      }
-      if (images.some((image) => !/^https:\/\/\S+$/i.test(image))) {
-        toast.error('Gallery images must use public HTTPS URLs.');
-        return;
-      }
-      setBusy(true);
-      let savedVideoUrl = videoBackgroundUrl.trim() || null;
-      if (pendingVideoFile) {
-        const upload = await uploadChannelHeaderVideo(pendingVideoFile);
-        if (!upload.ok) {
-          setBusy(false);
-          toast.error(upload.error);
-          return;
-        }
-        savedVideoUrl = upload.videoBackgroundUrl;
-        setVideoBackgroundUrl(upload.videoBackgroundUrl);
-        if (pendingVideoPreviewUrl) {
-          URL.revokeObjectURL(pendingVideoPreviewUrl);
-        }
-        setPendingVideoFile(null);
-        setPendingVideoPreviewUrl(null);
-      }
-      const patch = buildVisualPatch(savedVideoUrl);
-      if (!patch) {
-        setBusy(false);
-        return;
-      }
-      const result = await patchChannelVisual(patch);
-      if (!result.ok) {
-        setBusy(false);
-        toast.error(result.error);
-        return;
-      }
-      saveChannelLookExtras(layoutSlug, channelLookExtrasFromPatch(patch));
-
-      // The visual endpoint is the source of truth for the header and player
-      // design. Apply it immediately so a gallery endpoint failure cannot make
-      // an otherwise successful backdrop save look like it failed.
-      const newScheme = parseColorScheme(result.data.colorSchemeJson);
-      const newPlayerScheme = parseColorScheme(
-        result.data.playerColorSchemeJson,
-      );
-      const newBackgroundScheme = parseColorScheme(
-        result.data.backgroundColorSchemeJson,
-      );
-      const newVisualSettings = parseVisualSettingsMap(
-        result.data.visualSettingsJson,
-      );
-      const newSlideshowPreset = result.data.slideshowPreset ?? slideshowPreset;
-      const newSlideshowInterval =
-        result.data.slideshowIntervalSeconds ?? slideshowInterval;
-      const newSlideshowTransition =
-        result.data.slideshowTransitionMs ?? slideshowTransition;
-      const newSlideshowAutoplay =
-        result.data.slideshowAutoplay ?? slideshowAutoplay;
-      setVisual(result.data);
-      setScheme(newScheme);
-      setPlayerScheme(newPlayerScheme);
-      setBackgroundScheme(newBackgroundScheme);
-      setVisualSettings(newVisualSettings);
-      setSlideshowPreset(newSlideshowPreset);
-      setSlideshowInterval(newSlideshowInterval);
-      setSlideshowTransition(newSlideshowTransition);
-      setSlideshowAutoplay(newSlideshowAutoplay);
-      setDirty(false);
-      setAppliedPresetName(null);
-      onSaved?.();
-
-      const galleryResult = await patchChannelGallery({
-        galleryMode,
-        slideshowImages: images,
-        videoBackgroundUrl: savedVideoUrl,
-      });
-      setBusy(false);
-      if (!galleryResult.ok) {
-        toast.warning(
-          'Backdrop saved, but slideshow settings could not be updated.',
-        );
-      } else {
-        toast.success('Look saved — public channel will pick this up.');
-      }
-      if (previousBaseline) {
-        setPreviousSave(previousBaseline);
-      }
-      setBaselineSnapshot({
-        visual: result.data,
-        scheme: newScheme,
-        playerScheme: newPlayerScheme,
-        backgroundScheme: newBackgroundScheme,
-        visualSettings: newVisualSettings,
-        // If the gallery endpoint failed, the server still holds the old one.
-        galleryMode: galleryResult.ok
-          ? galleryMode
-          : (previousBaseline?.galleryMode ?? galleryMode),
-        galleryImages: galleryResult.ok
-          ? images.join('\n')
-          : (previousBaseline?.galleryImages ?? images.join('\n')),
-        videoBackgroundUrl: savedVideoUrl ?? '',
-        slideshowPreset: newSlideshowPreset,
-        slideshowInterval: newSlideshowInterval,
-        slideshowTransition: newSlideshowTransition,
-        slideshowAutoplay: newSlideshowAutoplay,
-        overlaySettings,
-        previewPreset,
-      });
-    };
-
-    // A thrown network error used to leave the designer stuck on `busy`.
-    const save = async () => {
-      try {
-        await saveLook();
-      } catch {
-        toast.error('Could not save your look. Try again.');
-      } finally {
-        setBusy(false);
-      }
-    };
-
-    useImperativeHandle(ref, () => ({ save }), [save]);
-
-    useEffect(() => {
-      onDirtyChange?.(dirty);
-    }, [dirty, onDirtyChange]);
-
-    const openSavePresetModal = () => {
-      if (pendingVideoFile) {
-        toast.error(
-          'Upload or clear the pending backdrop file before saving a preset.',
-        );
-        return;
-      }
-      setPresetNameInput('');
-      setSavePresetOpen(true);
-    };
-
-    const confirmSavePreset = async () => {
-      const name = presetNameInput.trim();
-      if (!name) {
-        toast.error('Give the preset a name.');
-        return;
-      }
-      const patch = buildVisualPatch(videoBackgroundUrl.trim() || null);
-      if (!patch) {
-        return;
-      }
-      setPresetBusy(true);
-      const result = await saveChannelVisualPreset(name, patch);
-      setPresetBusy(false);
-      if (!result.ok) {
-        toast.error(result.error);
-        return;
-      }
-      setPresets((prev) => [
-        result.data,
-        ...prev.filter((p) => p.id !== result.data.id),
-      ]);
-      toast.success(`Saved "${name}"`);
-      setSavePresetOpen(false);
-    };
-
-    /** Applies a saved preset's settings straight into the local draft — the
-     * same "dirty until Saved" flow as any other designer change — then
-     * surfaces the keep-or-revert banner so a preset switch never silently
-     * discards whatever the owner had before, and never silently commits it
-     * either. */
-    const applyPreset = (preset: ChannelVisualPreset) => {
-      const s = preset.settings;
-      setVisual((v) =>
-        v
-          ? {
-              ...v,
-              ...(s.visualPreset !== undefined
-                ? { visualPreset: s.visualPreset }
-                : {}),
-              ...(s.headerStyle !== undefined
-                ? { headerStyle: s.headerStyle }
-                : {}),
-              videoBackgroundUrl: s.videoBackgroundUrl ?? null,
-              brandAccentPreset: s.brandAccentPreset ?? null,
-              nowPlayingOverlayStyle:
-                s.nowPlayingOverlayStyle ?? v.nowPlayingOverlayStyle,
-              usePlayerGradient: s.usePlayerGradient ?? false,
-              backgroundVisualPreset:
-                s.backgroundVisualPreset ?? v.backgroundVisualPreset,
-              useBackgroundGradient: s.useBackgroundGradient ?? false,
-              channelLinks: s.channelLinks ?? [],
-              textOverlayMode: s.textOverlayMode ?? 'NONE',
-              textOverlayText: s.textOverlayText ?? '',
-              textOverlayAlign: s.textOverlayAlign ?? 'CENTER',
-              playerOverlayMode: s.playerOverlayMode ?? 'NONE',
-              playerOverlayText: s.playerOverlayText ?? '',
-              playerOverlayAlign: s.playerOverlayAlign ?? 'CENTER',
-            }
-          : v,
-      );
-      setScheme(s.colorScheme ?? {});
-      setPlayerScheme(
-        s.playerColorSchemeJson
-          ? (parseColorScheme(s.playerColorSchemeJson) ?? {})
-          : {},
-      );
-      setBackgroundScheme(
-        s.backgroundColorSchemeJson
-          ? (parseColorScheme(s.backgroundColorSchemeJson) ?? {})
-          : {},
-      );
-      setVisualSettings(s.visualSettings ?? {});
-      setSlideshowPreset(s.slideshowPreset ?? 'FADE');
-      setSlideshowInterval(s.slideshowIntervalSeconds ?? 8);
-      setSlideshowTransition(s.slideshowTransitionMs ?? 600);
-      setSlideshowAutoplay(s.slideshowAutoplay ?? true);
-      setOverlaySettings(
-        parseNowPlayingOverlaySettings(s.nowPlayingOverlaySettingsJson),
-      );
-      // The preset's backdrop replaces any file picked for upload.
-      discardPendingVideo();
-      setVideoBackgroundUrl(
-        typeof s.videoBackgroundUrl === 'string' ? s.videoBackgroundUrl : '',
-      );
-      if (
-        s.visualPreset &&
-        isVisualPreset(s.visualPreset) &&
-        s.visualPreset !== 'MINIMAL'
-      ) {
-        setPreviewPreset(s.visualPreset);
-      }
-      setDirty(true);
-      setAppliedPresetName(preset.name);
-    };
-
-    const keepAppliedPreset = () => {
-      setAppliedPresetName(null);
-    };
-
-    const revertAppliedPreset = () => {
-      loadFromServer();
-      setAppliedPresetName(null);
-    };
-
-    /** Undoes the most recent "Save layout" — reapplies the snapshot taken
-     * right before that save as a new local draft (same "dirty until Saved"
-     * flow as everything else here), so pressing Save again actually
-     * persists the revert. In-memory only; gone on reload. */
-    const restorePreviousSave = () => {
-      if (!previousSave) {
-        return;
-      }
-      setVisual(previousSave.visual);
-      setScheme(previousSave.scheme);
-      setPlayerScheme(previousSave.playerScheme);
-      setBackgroundScheme(previousSave.backgroundScheme);
-      setVisualSettings(previousSave.visualSettings);
-      setGalleryMode(previousSave.galleryMode);
-      setGalleryImages(previousSave.galleryImages);
-      discardPendingVideo();
-      setVideoBackgroundUrl(previousSave.videoBackgroundUrl);
-      setSlideshowPreset(previousSave.slideshowPreset);
-      setSlideshowInterval(previousSave.slideshowInterval);
-      setSlideshowTransition(previousSave.slideshowTransition);
-      setSlideshowAutoplay(previousSave.slideshowAutoplay);
-      setOverlaySettings(previousSave.overlaySettings);
-      setPreviewPreset(previousSave.previewPreset);
-      setDirty(true);
-      toast.success('Previous save restored — press Save to keep it.');
-    };
-
-    /** Discards unsaved edits, restoring the live saved look — same replay
-     * as `revertAppliedPreset` above, gated by an explicit confirm since
-     * this can throw away more than a single unsaved preset apply. */
-    const confirmReset = () => {
-      loadFromServer();
-      setAppliedPresetName(null);
-      setResetConfirmOpen(false);
-      toast.success('Reset to your last saved version.');
-    };
-
-    const confirmDeletePreset = async () => {
-      if (!deletePresetTarget) {
-        return;
-      }
-      const target = deletePresetTarget;
-      setPresetBusy(true);
-      const result = await deleteChannelVisualPreset(target.id);
-      setPresetBusy(false);
-      if (!result.ok) {
-        toast.error(result.error);
-        return;
-      }
-      setPresets((prev) => prev.filter((p) => p.id !== target.id));
-      if (appliedPresetName === target.name) {
-        setAppliedPresetName(null);
-      }
-      toast.success(`Deleted "${target.name}"`);
-      setDeletePresetTarget(null);
     };
 
     if (!visual) {
@@ -1089,7 +302,6 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       if (!nextPreset) {
         return;
       }
-      setPreviewPreset(nextPreset);
       applyLocal({ visualPreset: nextPreset });
     };
 
@@ -1113,13 +325,13 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
 
     const setHeaderDesignMode = (mode: HeaderDesignMode) => {
       if (mode === 'SLIDESHOW') {
-        setGalleryMode((modeValue) =>
+        editGalleryMode((modeValue) =>
           modeValue === 'NONE' ? 'STATIC_SLIDESHOW' : modeValue,
         );
         applyLocal({ headerStyle: 'GRADIENT' });
         return;
       }
-      setGalleryMode('NONE');
+      editGalleryMode('NONE');
       applyLocal({ headerStyle: mode });
     };
 
@@ -1136,38 +348,17 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
         pickedFiles={galleryFiles}
         onFilesPicked={selectGalleryFiles}
         galleryMode={galleryMode}
-        onGalleryModeChange={(mode) => {
-          setGalleryMode(mode);
-          setDirty(true);
-        }}
+        onGalleryModeChange={editGalleryMode}
         preset={slideshowPreset}
-        onPresetChange={(value) => {
-          setSlideshowPreset(value);
-          setDirty(true);
-        }}
+        onPresetChange={(preset) => editSlideshow({ preset })}
         interval={slideshowInterval}
-        onIntervalChange={(value) => {
-          setSlideshowInterval(value);
-          setDirty(true);
-        }}
+        onIntervalChange={(interval) => editSlideshow({ interval })}
         transition={slideshowTransition}
-        onTransitionChange={(value) => {
-          setSlideshowTransition(value);
-          setDirty(true);
-        }}
+        onTransitionChange={(transition) => editSlideshow({ transition })}
         autoplay={slideshowAutoplay}
-        onAutoplayChange={(checked) => {
-          setSlideshowAutoplay(checked);
-          setDirty(true);
-        }}
+        onAutoplayChange={(autoplay) => editSlideshow({ autoplay })}
       />
     );
-
-    const handleVideoUrlChange = (url: string) => {
-      setVideoBackgroundUrl(url);
-      discardPendingVideo();
-      setDirty(true);
-    };
 
     const videoBackdropSlot = (
       <VideoOrImageField
@@ -1177,7 +368,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
         url={videoBackgroundUrl}
         urlOpen={videoUrlOpen}
         onUrlOpenChange={setVideoUrlOpen}
-        onUrlChange={handleVideoUrlChange}
+        onUrlChange={editVideoUrl}
         onFiles={selectVideoFile}
         previewUrl={pendingVideoPreviewUrl}
         isImage={headerBackdropIsImage}
@@ -1208,8 +399,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
           backgroundVisualPreset={visual.backgroundVisualPreset}
           onPageBackgroundChange={(bg) => {
             if (visual.useBackgroundGradient) {
-              setBackgroundScheme({ ...backgroundScheme, bg });
-              setDirty(true);
+              editBackgroundScheme({ ...backgroundScheme, bg });
               return;
             }
             applyLocal({ brandAccentPreset: null }, { ...scheme, bg });
@@ -1237,14 +427,11 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
               useBackgroundGradient &&
               Object.keys(backgroundScheme).length === 0
             ) {
-              setBackgroundScheme(scheme);
+              editBackgroundScheme(scheme);
             }
             applyLocal({ useBackgroundGradient });
           }}
-          onBackgroundSchemeChange={(next) => {
-            setBackgroundScheme(next);
-            setDirty(true);
-          }}
+          onBackgroundSchemeChange={editBackgroundScheme}
           onBackgroundVisualPreset={(preset) =>
             applyLocal({ backgroundVisualPreset: preset })
           }
@@ -1279,10 +466,8 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
         }
         onToggleEnabled={() => {
           if (visualizerEnabled) {
-            setPreviewPreset('MINIMAL');
             applyLocal({ visualPreset: 'MINIMAL' });
           } else {
-            setPreviewPreset(activeVisualizer);
             applyLocal({ visualPreset: activeVisualizer });
           }
         }}
@@ -1340,7 +525,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
         url={videoBackgroundUrl}
         urlOpen={videoUrlOpen}
         onUrlOpenChange={setVideoUrlOpen}
-        onUrlChange={handleVideoUrlChange}
+        onUrlChange={editVideoUrl}
         onFiles={selectVideoFile}
       />
     );
@@ -1353,21 +538,17 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
         playerScheme={playerScheme}
         onUsePlayerGradient={(usePlayerGradient) => {
           if (usePlayerGradient && Object.keys(playerScheme).length === 0) {
-            setPlayerScheme(scheme);
+            editPlayerScheme(scheme);
           }
           applyLocal({ usePlayerGradient });
         }}
-        onPlayerSchemeChange={(next) => {
-          setPlayerScheme(next);
-          setDirty(true);
-        }}
+        onPlayerSchemeChange={editPlayerScheme}
         onPlayerBrandAccent={(brand) => {
-          setPlayerScheme({
+          editPlayerScheme({
             ...playerScheme,
             accent: brand.accent,
             highlight: brand.highlight,
           });
-          setDirty(true);
         }}
         videoSlot={playerVideoSlot}
         visualizerSlot={visualizerSlot}
@@ -1406,40 +587,9 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
 
     const selectLookElement = (id: ChannelLookElementId) => {
       setSelectedLookId(id);
-      if (id === 'backdrop') {
-        setHighlightSection('header');
-      } else if (id === 'player') {
-        setHighlightSection('visualizer');
-      } else {
-        setHighlightSection(null);
-      }
-      window.setTimeout(() => {
-        setHighlightSection(null);
-      }, 1600);
-    };
-
-    const lookBlockVisible = (id: ChannelLookElementId) => {
-      if (!isArtistLookBlockId(id)) {
-        return true;
-      }
-      return lookVisibility[id] !== false;
-    };
-
-    const toggleSelectedLook = (id: ChannelLookElementId) => {
-      const meta = CHANNEL_LOOK_ELEMENTS.find((element) => element.id === id);
-      if (meta?.layoutType) {
-        toggleLayoutType(meta.layoutType);
-      }
-      if (!isArtistLookBlockId(id)) {
-        return;
-      }
-      const next = {
-        ...lookVisibility,
-        [id]: !lookBlockVisible(id),
-      };
-      setLookVisibility(next);
-      saveArtistLookVisibility(layoutSlug, next);
-      onLookVisibilityChange?.(next);
+      flashHighlight(
+        id === 'backdrop' ? 'header' : id === 'player' ? 'visualizer' : null,
+      );
     };
 
     const lookEditorItems = [
@@ -1497,7 +647,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
           {appliedPresetName && (
             <AppliedPresetBanner
               presetName={appliedPresetName}
-              onRevert={revertAppliedPreset}
+              onRevert={() => void revertAppliedPreset()}
               onKeep={keepAppliedPreset}
             />
           )}
@@ -1507,148 +657,43 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
               dockControlsInRail ? '' : 'lg:grid-cols-[minmax(0,1fr)_24rem]'
             }`}
           >
-            <main
-              aria-label="Channel page preview"
-              className="border-border bg-background min-w-0 overflow-x-hidden overflow-y-auto rounded-xl border shadow-lg lg:max-h-[calc(100vh-7rem)]"
-            >
-              <div className="border-border bg-background-secondary/40 flex items-center gap-1.5 border-b px-4 py-2.5">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-foreground-secondary text-xs font-semibold tracking-wide uppercase">
-                    Live page preview
-                  </span>
-                  <Tooltip
-                    side="bottom"
-                    content={
-                      <p className="max-w-64 text-xs leading-relaxed">
-                        This mirrors the public channel structure. Visitors see
-                        your profile header, channel navigation, live stage,
-                        tracks, and artist information in this order. Layout
-                        blocks are edited from the channel page editor.
-                      </p>
-                    }
-                  >
-                    <span
-                      tabIndex={0}
-                      aria-label="About this preview"
-                      className="text-foreground-secondary hover:text-foreground inline-flex size-4 cursor-help items-center justify-center rounded-full border border-current"
-                    >
-                      <span className="text-[10px] leading-none font-bold">
-                        ?
-                      </span>
-                    </span>
-                  </Tooltip>
-                </div>
-              </div>
-              <ChannelBackdropCard
-                minHeightClassName="min-h-[14rem]"
-                displayName={displayName}
-                username={username}
-                channelSlug={channelSlug}
-                avatarUrl={avatarUrl}
-                bio={bio}
-                avatarVisible={
-                  layout?.find((i) => i.type === 'avatar')?.visible ?? true
-                }
-                bioVisible={
-                  layout?.find((i) => i.type === 'about')?.visible ?? true
-                }
-                subscribeVisible={
-                  layout?.find((i) => i.type === 'subscribe')?.visible ?? false
-                }
-                headerStyle={visual.headerStyle}
-                videoBackgroundUrl={previewVideoUrl}
-                showVideoOverride={showHeaderVideo}
-                isImageOverride={headerBackdropIsImage}
-                accent={previewStyle.accent}
-                highlight={previewStyle.highlight}
-                bg={previewStyle.bg}
-                fg={previewStyle.fg}
-                gradientOverride={previewStyle.gradient}
-                visualPreset={previewPreset}
-                colorScheme={scheme}
-                artworkUrl={avatarUrl}
-                galleryMode={galleryMode}
-                slideshowImages={galleryImageList}
-                slideshowPreset={slideshowPreset}
-                slideshowIntervalSeconds={slideshowInterval}
-                slideshowTransitionMs={slideshowTransition}
-                slideshowAutoplay={slideshowAutoplay}
-                mountVisualizer={hasLivePreview && visualizerEnabled}
-                editable
-                identitySelected={highlightSection === 'header'}
-                backgroundSelected={false}
-                navItems={[]}
-                onEditIdentity={() => {
-                  selectLookElement('backdrop');
-                  focusPreviewSection(
-                    'header',
-                    'channel-designer-section-header',
-                  );
-                }}
-                badge={
-                  <span
-                    className="rounded px-2 py-1 text-[10px] font-bold tracking-wide uppercase"
-                    style={{
-                      background: previewStyle.accent,
-                      color: '#0B1220',
-                    }}
-                  >
-                    Artist channel
-                  </span>
-                }
-              />
-              <div
-                role="button"
-                tabIndex={0}
-                data-testid="channel-designer-stage-player"
-                aria-label="Edit player design"
-                title="Edit player design"
-                onClick={() => {
-                  selectLookElement('player');
-                  focusPreviewSection(
-                    'visualizer',
-                    'channel-designer-section-player',
-                  );
-                }}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault();
-                    selectLookElement('player');
-                    focusPreviewSection(
-                      'visualizer',
-                      'channel-designer-section-player',
-                    );
-                  }
-                }}
-                className={`border-border cursor-pointer overflow-hidden border border-y-0 outline-none ${
-                  highlightSection === 'visualizer'
-                    ? 'ring-primary ring-2 ring-inset'
-                    : ''
-                }`}
-              >
-                <div className="bg-gradient-to-t from-black/85 via-black/45 to-black/10 p-4 pt-10">
-                  <div className="text-[10px] font-semibold tracking-wide text-white/70 uppercase">
-                    Now playing
-                  </div>
-                  <div className="mt-1 text-2xl font-extrabold text-white">
-                    Your live channel
-                  </div>
-                  <div className="text-sm text-white/80">
-                    A live preview of the artist stage
-                  </div>
-                </div>
-              </div>
-              <nav
-                aria-label="Channel navigation"
-                className="border-border relative flex flex-wrap items-center gap-x-5 gap-y-2 border border-t-0 px-4 py-3 text-xs font-semibold uppercase"
-              >
-                <span className="border-primary border-b-2 pb-2">Stage</span>
-                <span className="text-foreground-secondary pb-2">Tracks</span>
-                <span className="text-foreground-secondary pb-2">About</span>
-              </nav>
-
-              <PreviewTracksPlaceholder displayName={displayName} bio={bio} />
-            </main>
+            <ChannelPagePreview
+              displayName={displayName}
+              username={username}
+              channelSlug={channelSlug}
+              avatarUrl={avatarUrl}
+              bio={bio}
+              layout={layout}
+              visual={visual}
+              previewStyle={previewStyle}
+              previewVideoUrl={previewVideoUrl}
+              showHeaderVideo={showHeaderVideo}
+              headerBackdropIsImage={headerBackdropIsImage}
+              previewPreset={previewPreset}
+              scheme={scheme}
+              galleryMode={galleryMode}
+              galleryImageList={galleryImageList}
+              slideshowPreset={slideshowPreset}
+              slideshowInterval={slideshowInterval}
+              slideshowTransition={slideshowTransition}
+              slideshowAutoplay={slideshowAutoplay}
+              mountVisualizer={hasLivePreview && visualizerEnabled}
+              highlightSection={highlightSection}
+              onEditBackdrop={() => {
+                selectLookElement('backdrop');
+                focusPreviewSection(
+                  'header',
+                  'channel-designer-section-header',
+                );
+              }}
+              onEditPlayer={() => {
+                selectLookElement('player');
+                focusPreviewSection(
+                  'visualizer',
+                  'channel-designer-section-player',
+                );
+              }}
+            />
 
             {!dockControlsInRail ? (
               <section
@@ -1674,7 +719,6 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
             selectedPreset={visualizerPickerPreset}
             onSelectPreset={setVisualizerPickerPreset}
             onConfirm={() => {
-              setPreviewPreset(visualizerPickerPreset);
               applyLocal({ visualPreset: visualizerPickerPreset });
               setVisualizerPickerOpen(false);
             }}
@@ -1705,7 +749,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
         <ResetConfirmDialog
           isOpen={resetConfirmOpen}
           onClose={() => setResetConfirmOpen(false)}
-          onConfirm={confirmReset}
+          onConfirm={() => void confirmReset()}
         />
       </>
     );
