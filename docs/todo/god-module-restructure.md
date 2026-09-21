@@ -21,13 +21,13 @@ Behavior stays identical: mechanical splits along existing seams, tests move wit
 | P1 | `packages/tahti-web/src/components/TrackEditDialog.tsx`, `LocalPlaylists.tsx`, `StreamManagerPanel.tsx` | 1174 / 950 / 1012 | section components + hooks |
 | P1 | `packages/tahti-web/src/views/studio/{StudioReleaseDetail,StudioShowDetail,StudioSchedule,StudioCollectionEdit,StudioDistribution}View.tsx`, `TrackDetailView.tsx`, `admin/AdminAddonsView.tsx`, `admin/AdminStorageView.tsx` | 900-1150 | not yet assessed |
 | P2 | `packages/player/src-tauri/src/mcp/metadata.rs` | 1004 | not yet assessed |
-| P2 | `packages/tahti-web/src/lib/nativeLibrary.ts` | 808 | split by catalog/playlists/roots/analysis |
+| P2 partial | `packages/tahti-web/src/lib/nativeLibrary.ts` | 1047 → 213 runtime (`getNativeLibrary`, `playableFromNativeTrack`, read cache) + 850 lines of pure types/constants in `nativeLibrary.types.ts`, re-exported so imports are unchanged | types file could still split by catalog/playlists/roots/analysis |
 | Data, not logic | `content/mapScreens.ts` (2366), `plugins/themes/presets.ts`, `api/mock.ts`, `content/flowDiagrams.ts`, `api/types.ts` | 1000-2400 | large data/type files; split only if editing hurts |
 | Tests | `local_library/tests.rs` | 1822 | follow `mod.rs` split, one test file per module |
 
 ## Plan
 
 1. [x] (2026-09-21, done) `local_library/mod.rs` first: split into submodules per the seams above, no behavior change. Do it as its own commit, **between** feature phases (not mixed with Phase 5 work, since other sessions touch the same files).
-2. [ ] ~~`catalog.rs`~~ (done 2026-09-21), then `DesktopLibraryPanel.tsx` and `nativeLibrary.ts`.
+2. [ ] ~~`catalog.rs`~~ (done 2026-09-21), then `DesktopLibraryPanel.tsx` (`nativeLibrary.ts` types/runtime split done 2026-09-21).
 3. [ ] Assess the "not yet assessed" rows; fold confirmed ones into codebase-refactor-hotspots.md or split here.
 4. [ ] Add a size guard (e.g. lint/CI warning above ~800 LOC for non-data files) so this stops recurring.
