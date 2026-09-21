@@ -578,6 +578,10 @@ export type NativeRootScanResult = {
   missing: number;
   /** Previously-missing tracks whose file is back. */
   recovered: number;
+  /** Renamed/moved files re-pointed at their new path (ID kept). */
+  moved: number;
+  /** Known files changed on disk and re-read. */
+  updated: number;
   errors: Array<{ path: string; error: string }>;
   cancelled: boolean;
 };
@@ -775,11 +779,22 @@ export type TahtiNativeLibrary = {
   removeRoot: (id: string) => Promise<void>;
   /** Imports new files under every root and refreshes missing/recovered state. */
   rescanRoots: () => Promise<NativeRootScanResult>;
+  /** Whether folder watching is on (default). Manual rescan works either way. */
+  getWatching?: () => Promise<boolean>;
+  /** Turns folder watching on or off; persisted on this device. */
+  setWatching?: (enabled: boolean) => Promise<void>;
   /** Picks a replacement folder for a root. `null` if cancelled. */
   relinkRoot: (id: string) => Promise<NativeRelinkRootResult | null>;
   /** Subscribes to live import progress; returns an unsubscribe function. */
   onImportProgress: (
     listener: (progress: NativeLibraryImportProgress) => void,
+  ) => () => void;
+  /**
+   * Subscribes to catalog changes found by the folder watcher (files added,
+   * removed or returned outside the app); returns an unsubscribe function.
+   */
+  onRootsChanged?: (
+    listener: (result: NativeRootScanResult) => void,
   ) => () => void;
   /** Subscribes to files/folders dropped onto the app window; returns an unsubscribe function. */
   onFilesDropped: (listener: (paths: string[]) => void) => () => void;

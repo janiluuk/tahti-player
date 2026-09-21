@@ -100,4 +100,16 @@ describe('QueuePanel', () => {
     );
     expect(container.firstChild).toMatchSnapshot();
   });
+
+  it('skips offscreen layout only for long queues', () => {
+    const labels = { removeButton: 'Remove', playbackError: 'Error' };
+    const many = Array.from({ length: 150 }, (_, i) =>
+      createMockItem(`m${i}`, `Track ${i}`, 'Artist', 1000),
+    );
+    const long = render(<QueuePanel items={many} labels={labels} />);
+    expect(long.container.innerHTML).toContain('content-visibility:auto');
+    long.unmount();
+    const short = render(<QueuePanel items={mockItems} labels={labels} />);
+    expect(short.container.innerHTML).not.toContain('content-visibility');
+  });
 });

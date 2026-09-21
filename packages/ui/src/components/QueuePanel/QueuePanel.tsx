@@ -10,6 +10,14 @@ import { ScrollableArea } from '../ScrollableArea';
 import { QueueReorderLayer } from './QueueReorderLayer';
 import { ReorderableQueueItem } from './ReorderableQueueItem';
 
+/**
+ * Above this many items, rows outside the viewport skip layout and paint
+ * (`content-visibility: auto`). Unlike list virtualization this keeps every
+ * row mounted, so drag-reorder and auto-scroll keep working across the whole
+ * queue; it only removes the layout cost of very long queues.
+ */
+const LONG_QUEUE_THRESHOLD = 100;
+
 export type QueuePanelProps = {
   items: QueueItemType[];
   currentItemId?: string;
@@ -99,6 +107,7 @@ export const QueuePanel: FC<QueuePanelProps> = ({
     );
   }
 
+  const skipOffscreenWork = items.length > LONG_QUEUE_THRESHOLD;
   const itemIds = items.map((item) => item.id);
   const currentIndex = currentItemId
     ? items.findIndex((item) => item.id === currentItemId)
@@ -134,6 +143,8 @@ export const QueuePanel: FC<QueuePanelProps> = ({
                     pastOffset === 1 && 'opacity-55',
                     pastOffset === 2 && 'opacity-35',
                     pastOffset > 2 && 'opacity-20',
+                    skipOffscreenWork &&
+                      '[contain-intrinsic-size:auto_3.5rem] [content-visibility:auto]',
                   )}
                 >
                   <ReorderableQueueItem
