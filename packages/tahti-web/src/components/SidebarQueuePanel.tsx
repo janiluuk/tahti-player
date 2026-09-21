@@ -1,15 +1,22 @@
 import { useNavigate } from '@tanstack/react-router';
-import { ListMusicIcon, ShuffleIcon, Trash2Icon } from 'lucide-react';
+import {
+  HardDriveIcon,
+  ListMusicIcon,
+  ShuffleIcon,
+  Trash2Icon,
+} from 'lucide-react';
 import { useState } from 'react';
 
 import { Button, QueuePanel, Tooltip } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
+import { getNativeLibrary } from '../lib/nativeLibrary';
 import { soundIdFromPlayableId } from '../lib/soundId';
 import { useLibraryStore } from '../stores/libraryStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { ClearQueueConfirmDialog } from './ClearQueueConfirmDialog';
 import { SaveQueueAsPlaylistDialog } from './SaveQueueAsPlaylistDialog';
+import { SaveQueueLocalDialog } from './SaveQueueLocalDialog';
 
 const QUEUE_VIEWPORT_MAX = 'max-h-80';
 
@@ -27,6 +34,8 @@ export function SidebarQueuePanel({ compact = false }: { compact?: boolean }) {
 
   const [confirmingClear, setConfirmingClear] = useState(false);
   const [savingAsPlaylist, setSavingAsPlaylist] = useState(false);
+  const [savingLocal, setSavingLocal] = useState(false);
+  const nativeLibrary = getNativeLibrary();
 
   return (
     <div
@@ -95,18 +104,43 @@ export function SidebarQueuePanel({ compact = false }: { compact?: boolean }) {
             <Trash2Icon size={15} aria-hidden />
           </Button>
         </Tooltip>
-        <Tooltip content="Save queue as playlist" side="top">
+        <Tooltip
+          content={
+            nativeLibrary
+              ? 'Save queue to cloud playlist'
+              : 'Save queue as playlist'
+          }
+          side="top"
+        >
           <Button
             size="icon-sm"
             variant="text"
             disabled={queue.length === 0}
             onClick={() => setSavingAsPlaylist(true)}
             className="text-foreground-secondary hover:text-foreground"
-            aria-label="Save queue as playlist"
+            aria-label={
+              nativeLibrary
+                ? 'Save queue to cloud playlist'
+                : 'Save queue as playlist'
+            }
           >
             <ListMusicIcon size={15} aria-hidden />
           </Button>
         </Tooltip>
+        {nativeLibrary ? (
+          <Tooltip content="Save queue as local playlist" side="top">
+            <Button
+              size="icon-sm"
+              variant="text"
+              disabled={queue.length === 0}
+              onClick={() => setSavingLocal(true)}
+              className="text-foreground-secondary hover:text-foreground"
+              aria-label="Save queue as local playlist"
+            >
+              <HardDriveIcon size={15} aria-hidden />
+            </Button>
+          </Tooltip>
+        ) : null}
         <Tooltip content="Randomize queue order" side="top">
           <Button
             size="icon-sm"
@@ -130,6 +164,13 @@ export function SidebarQueuePanel({ compact = false }: { compact?: boolean }) {
           setConfirmingClear(false);
         }}
       />
+      {nativeLibrary ? (
+        <SaveQueueLocalDialog
+          isOpen={savingLocal}
+          onClose={() => setSavingLocal(false)}
+          library={nativeLibrary}
+        />
+      ) : null}
       <SaveQueueAsPlaylistDialog
         isOpen={savingAsPlaylist}
         onClose={() => setSavingAsPlaylist(false)}

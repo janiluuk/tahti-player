@@ -55,6 +55,55 @@ const baseNativeLibrary: TahtiNativeLibrary = {
       })),
     };
   },
+  playlists: {
+    async list() {
+      return unwrapResult(await commands.playlistList());
+    },
+    async create(name) {
+      return unwrapResult(await commands.playlistCreate(name));
+    },
+    async rename(id, name) {
+      return unwrapResult(await commands.playlistRename(id, name));
+    },
+    async duplicate(id) {
+      return unwrapResult(await commands.playlistDuplicate(id));
+    },
+    async delete(id) {
+      unwrapResult(await commands.playlistDelete(id));
+    },
+    async addTracks(id, trackIds, at) {
+      return unwrapResult(
+        await commands.playlistAddTracks(id, trackIds, at ?? null),
+      );
+    },
+    async entries(id, offset) {
+      return unwrapResult(await commands.playlistEntries(id, offset));
+    },
+    async entryIds(id) {
+      return unwrapResult(await commands.playlistEntryIds(id));
+    },
+    async moveEntries(id, entryIds, toIndex) {
+      unwrapResult(await commands.playlistMoveEntries(id, entryIds, toIndex));
+    },
+    async removeEntries(id, entryIds) {
+      return unwrapResult(await commands.playlistRemoveEntries(id, entryIds));
+    },
+    async restoreEntries(id, entries, order) {
+      unwrapResult(
+        await commands.playlistRestoreEntries(
+          id,
+          entries.map((entry) => ({ ...entry, duration: entry.duration ?? 0 })),
+          order,
+        ),
+      );
+    },
+    async setOrder(id, order) {
+      unwrapResult(await commands.playlistSetOrder(id, order));
+    },
+    async trackIds(id) {
+      return unwrapResult(await commands.playlistTrackIds(id));
+    },
+  },
   async facets(kind) {
     return unwrapResult(await commands.libraryFacets(kind));
   },

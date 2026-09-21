@@ -132,6 +132,77 @@ export type NativePlaybackBatch = {
   unavailable: number;
 };
 
+export type NativePlaylistSummary = {
+  id: string;
+  name: string;
+  trackCount: number;
+  durationSec: number | null;
+  /** Entries whose file is missing or whose track left the library. */
+  unavailableCount: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type NativePlaylistEntry = {
+  entryId: string;
+  position: number;
+  /** The library row while the entry still points at one. */
+  track: NativeLibraryTrack | null;
+  title: string;
+  artist: string;
+  path: string;
+  duration: number | null;
+  unavailable: boolean;
+};
+
+/** Enough to recreate an entry exactly (undo, imports of unknown files). */
+export type NativeRawPlaylistEntry = {
+  entryId: string;
+  trackId: string | null;
+  path: string;
+  title: string;
+  artist: string;
+  duration: number | null;
+};
+
+/** Local playlists: ordered entries with their own ids, repeats allowed. */
+export type NativePlaylists = {
+  list: () => Promise<NativePlaylistSummary[]>;
+  create: (name: string) => Promise<NativePlaylistSummary>;
+  rename: (id: string, name: string) => Promise<NativePlaylistSummary>;
+  duplicate: (id: string) => Promise<NativePlaylistSummary>;
+  delete: (id: string) => Promise<void>;
+  /** Adds one entry per id in order (repeats kept); `at` inserts instead of appending. */
+  addTracks: (
+    id: string,
+    trackIds: string[],
+    at?: number | null,
+  ) => Promise<number>;
+  entries: (
+    id: string,
+    offset: number,
+  ) => Promise<{ entries: NativePlaylistEntry[]; total: number }>;
+  entryIds: (id: string) => Promise<string[]>;
+  /** Moves the entries (kept in their current order) to start at `toIndex`, counted among the entries that stay. */
+  moveEntries: (
+    id: string,
+    entryIds: string[],
+    toIndex: number,
+  ) => Promise<void>;
+  removeEntries: (
+    id: string,
+    entryIds: string[],
+  ) => Promise<NativeRawPlaylistEntry[]>;
+  restoreEntries: (
+    id: string,
+    entries: NativeRawPlaylistEntry[],
+    order: string[],
+  ) => Promise<void>;
+  setOrder: (id: string, order: string[]) => Promise<void>;
+  /** Linked track ids in playlist order, for playback preparation. */
+  trackIds: (id: string) => Promise<string[]>;
+};
+
 export type NativeLibraryPage = {
   tracks: NativeLibraryTrack[];
   total: number;
@@ -202,6 +273,7 @@ export type TahtiNativeLibrary = {
   filterOptions: () => Promise<NativeFilterOptions>;
   /** Verifies and orders tracks for playback (call in modest chunks). */
   prepareBatch: (ids: string[]) => Promise<NativePlaybackBatch>;
+  playlists: NativePlaylists;
   facets: (kind: NativeFacetKind) => Promise<NativeFacetGroup[]>;
   totals: () => Promise<NativeLibraryTotals>;
   import: () => Promise<NativeLibraryImportResult>;

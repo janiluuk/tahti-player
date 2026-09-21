@@ -6,6 +6,7 @@ import {
   LibraryIcon,
   Link2Icon,
   ListFilterIcon,
+  ListPlusIcon,
   LoaderCircleIcon,
   PlayIcon,
   RefreshCwIcon,
@@ -45,10 +46,10 @@ import {
   type NativeLibraryRoot,
   type NativeLibraryTotals,
   type NativeLibraryTrack,
-  type NativePlaybackBatch,
   type NativeRootScanResult,
   type NativeTrackFilters,
 } from '../lib/nativeLibrary';
+import { preparePlayables } from '../lib/nativePlayback';
 import {
   filterLocalLibraryTracks,
   isLocalTrackPlayable,
@@ -56,6 +57,7 @@ import {
   useLocalLibraryStore,
 } from '../stores/localLibraryStore';
 import { usePlayerStore } from '../stores/playerStore';
+import { AddToPlaylistDialog } from './AddToPlaylistDialog';
 import { ConfirmDialog } from './ConfirmDialog';
 import {
   BrowseTabs,
@@ -66,12 +68,10 @@ import {
   type BrowseKind,
 } from './LocalLibraryBrowse';
 import { LocalLibraryFilters } from './LocalLibraryFilters';
+import { LocalPlaylists } from './LocalPlaylists';
 import { NATIVE_TRACK_COLUMNS, toNativeSort } from './nativeTrackColumns';
 import { PlayableTrackTable } from './PlayableTrackTable';
 import { TrackInspectorDialog } from './TrackInspectorDialog';
-
-/** Most tracks one bulk play / queue action will take. */
-const SELECTION_PLAYBACK_LIMIT = 5000;
 
 const FILE_LABELS = {
   title: 'Add audio files',
@@ -153,6 +153,13 @@ export function DesktopLibraryPanel() {
     initialView.filters,
   );
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [openPlaylistId, setOpenPlaylistId] = useState<string | null>(
+    initialView.openPlaylistId,
+  );
+  const [addToPlaylist, setAddToPlaylist] = useState<{
+    summary: string;
+    resolve: () => Promise<string[]>;
+  } | null>(null);
   const [filterOptions, setFilterOptions] =
     useState<NativeFilterOptions | null>(null);
   const [inspected, setInspected] = useState<NativeLibraryTrack | null>(null);
@@ -207,8 +214,14 @@ export function DesktopLibraryPanel() {
   }, [debouncedNativeQuery, facetFilter, filters]);
 
   useEffect(() => {
-    saveViewState({ query: nativeQuery, browseKind, facetFilter, filters });
-  }, [nativeQuery, browseKind, facetFilter, filters]);
+    saveViewState({
+      query: nativeQuery,
+      browseKind,
+      facetFilter,
+      filters,
+      openPlaylistId,
+    });
+  }, [nativeQuery, browseKind, facetFilter, filters, openPlaylistId]);
 
   useEffect(() => {
     if (!nativeLibrary) {
@@ -335,7 +348,11 @@ export function DesktopLibraryPanel() {
   }, [refreshNative]);
 
   useEffect(() => {
-    if (!nativeLibrary || browseKind === 'tracks') {
+    if (
+      !nativeLibrary ||
+      browseKind === 'tracks' ||
+      browseKind === 'playlists'
+    ) {
       return;
     }
     let stale = false;
@@ -371,7 +388,7 @@ export function DesktopLibraryPanel() {
   };
 
   const selectFacetGroup = (group: NativeFacetGroup) => {
-    if (browseKind === 'tracks') {
+    if (browseKind === 'tracks' || browseKind === 'playlists') {
       return;
     }
     setFacetFilter({
@@ -710,32 +727,7 @@ export function DesktopLibraryPanel() {
       nativeSort,
       filters,
     );
-    const inOrder = pick(shown);
-    const ids = inOrder.slice(0, SELECTION_PLAYBACK_LIMIT);
-    const playables: TahtiPlayable[] = [];
-    let unavailable = 0;
-    for (let start = 0; start < ids.length; start += 500) {
-      const batch: NativePlaybackBatch = await nativeLibrary.prepareBatch(
-        ids.slice(start, start + 500),
-      );
-      unavailable += batch.unavailable;
-      for (const item of batch.items) {
-        playables.push(playableFromNativeTrack(item.track, item.streamUrl));
-      }
-    }
-    if (unavailable) {
-      toast.info(
-        unavailable === 1
-          ? `1 ${noun} file is missing and was skipped.`
-          : `${unavailable} ${noun} files are missing and were skipped.`,
-      );
-    }
-    if (inOrder.length > ids.length) {
-      toast.info(
-        `Only the first ${SELECTION_PLAYBACK_LIMIT.toLocaleString('en-US')} of ${inOrder.length.toLocaleString('en-US')} ${noun} tracks were used.`,
-      );
-    }
-    return playables;
+    return preparePlayables(nativeLibrary, pick(shown), noun);
   };
 
   const runSelectionAction = async (
@@ -792,6 +784,61 @@ export function DesktopLibraryPanel() {
     runSelectionAction((playables) => {
       enqueueMany(playables);
     });
+
+  const idsInShownOrder = (pick: (shown: string[]) => string[]) => async () => {
+    if (!nativeLibrary) {
+      return [];
+    }
+    return pick(
+      await nativeLibrary.matchingIds(
+        debouncedNativeQuery,
+        facetFilter,
+        nativeSort,
+        filters,
+      ),
+    );
+  };
+  const addSelectionToPlaylist = () =>
+    setAddToPlaylist({
+      summary:
+        selectedIds.size === 1
+          ? '1 selected track'
+          : `${selectedIds.size.toLocaleString('en-US')} selected tracks`,
+      resolve: idsInShownOrder((shown) =>
+        shown.filter((id) => selectedIds.has(id)),
+      ),
+    });
+  const addAllToPlaylist = () =>
+    setAddToPlaylist({
+      summary: `All ${nativeTotal.toLocaleString('en-US')} tracks matching the current view`,
+      resolve: idsInShownOrder((shown) => shown),
+    });
+  const addGroupToPlaylist = (group: NativeFacetGroup) => {
+    if (
+      !nativeLibrary ||
+      browseKind === 'tracks' ||
+      browseKind === 'playlists'
+    ) {
+      return;
+    }
+    const kind = browseKind;
+    setAddToPlaylist({
+      summary: `${group.trackCount.toLocaleString('en-US')} tracks from “${facetTitle(kind, group)}”`,
+      resolve: () =>
+        nativeLibrary.matchingIds(
+          '',
+          {
+            kind,
+            value: group.name,
+            secondary: kind === 'albums' ? group.secondary : null,
+          },
+          // Album order (disc, then track) for anything that is an album or a
+          // folder of albums; title order for genres.
+          kind === 'genres' ? null : { column: 'album', descending: false },
+          null,
+        ),
+    });
+  };
 
   const activeFilterCount = countActiveFilters(filters);
   const hasActiveScope =
@@ -1003,12 +1050,19 @@ export function DesktopLibraryPanel() {
           </div>
           <LibraryTotalsLine totals={totals} />
           <BrowseTabs value={browseKind} onChange={changeBrowseKind} />
-          {browseKind !== 'tracks' && !facetFilter ? (
+          {browseKind === 'playlists' ? (
+            <LocalPlaylists
+              library={nativeLibrary}
+              openId={openPlaylistId}
+              onOpenChange={setOpenPlaylistId}
+            />
+          ) : browseKind !== 'tracks' && !facetFilter ? (
             facetGroups.length ? (
               <FacetGroupList
                 kind={browseKind}
                 groups={facetGroups}
                 onSelect={selectFacetGroup}
+                onAddToPlaylist={addGroupToPlaylist}
               />
             ) : (
               <EmptyState
@@ -1111,23 +1165,34 @@ export function DesktopLibraryPanel() {
                   selectingAll={selectingAll}
                   toolbar={
                     !selectedIds.size ? (
-                      <Button
-                        size="sm"
-                        variant="text"
-                        disabled={selectionBusy}
-                        onClick={() => void playAllMatching()}
-                      >
-                        {selectionBusy ? (
-                          <LoaderCircleIcon
-                            size={14}
-                            className="animate-spin"
-                            aria-hidden
-                          />
-                        ) : (
-                          <PlayIcon size={14} aria-hidden />
-                        )}
-                        Play all
-                      </Button>
+                      <>
+                        <Button
+                          size="sm"
+                          variant="text"
+                          disabled={selectionBusy}
+                          onClick={() => void playAllMatching()}
+                        >
+                          {selectionBusy ? (
+                            <LoaderCircleIcon
+                              size={14}
+                              className="animate-spin"
+                              aria-hidden
+                            />
+                          ) : (
+                            <PlayIcon size={14} aria-hidden />
+                          )}
+                          Play all
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="text"
+                          disabled={selectionBusy || nativeTotal === 0}
+                          onClick={addAllToPlaylist}
+                        >
+                          <ListPlusIcon size={14} aria-hidden />
+                          Add all to playlist
+                        </Button>
+                      </>
                     ) : (
                       <>
                         <Button
@@ -1162,6 +1227,15 @@ export function DesktopLibraryPanel() {
                           onClick={() => void queueSelection()}
                         >
                           Add to queue
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="text"
+                          disabled={selectionBusy}
+                          onClick={addSelectionToPlaylist}
+                        >
+                          <ListPlusIcon size={14} aria-hidden />
+                          Add to playlist
                         </Button>
                         <Button
                           size="sm"
@@ -1412,6 +1486,17 @@ export function DesktopLibraryPanel() {
             )}
           </>
         ))}
+      {nativeLibrary ? (
+        <AddToPlaylistDialog
+          isOpen={addToPlaylist !== null}
+          onClose={() => setAddToPlaylist(null)}
+          library={nativeLibrary}
+          summary={addToPlaylist?.summary ?? ''}
+          resolveTrackIds={
+            addToPlaylist?.resolve ?? (() => Promise.resolve([]))
+          }
+        />
+      ) : null}
       <LocalLibraryFilters
         isOpen={filtersOpen}
         onClose={() => setFiltersOpen(false)}

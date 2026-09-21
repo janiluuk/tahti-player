@@ -1,4 +1,6 @@
-import { Button, TabLabel, Tabs } from '@tahti-player/ui';
+import { ListPlusIcon } from 'lucide-react';
+
+import { Button, TabLabel, Tabs, Tooltip } from '@tahti-player/ui';
 
 import {
   formatLibrarySize,
@@ -11,7 +13,7 @@ import type {
   NativeLibraryTotals,
 } from '../lib/nativeLibrary';
 
-export type BrowseKind = 'tracks' | NativeFacetKind;
+export type BrowseKind = 'tracks' | 'playlists' | NativeFacetKind;
 
 const BROWSE_TABS: Array<{ id: BrowseKind; label: string }> = [
   { id: 'tracks', label: 'Tracks' },
@@ -19,6 +21,7 @@ const BROWSE_TABS: Array<{ id: BrowseKind; label: string }> = [
   { id: 'albums', label: 'Albums' },
   { id: 'genres', label: 'Genres' },
   { id: 'folders', label: 'Folders' },
+  { id: 'playlists', label: 'Playlists' },
 ];
 
 export const FACET_KIND_LABEL: Record<NativeFacetKind, string> = {
@@ -117,10 +120,13 @@ export function FacetGroupList({
   kind,
   groups,
   onSelect,
+  onAddToPlaylist,
 }: {
   kind: NativeFacetKind;
   groups: NativeFacetGroup[];
   onSelect: (group: NativeFacetGroup) => void;
+  /** Adds every track in the group to a local playlist. */
+  onAddToPlaylist?: (group: NativeFacetGroup) => void;
 }) {
   return (
     <ul
@@ -128,10 +134,13 @@ export function FacetGroupList({
       aria-label={`${FACET_KIND_LABEL[kind]} groups`}
     >
       {groups.map((group) => (
-        <li key={`${group.name}\u0000${group.secondary}`}>
+        <li
+          key={`${group.name}\u0000${group.secondary}`}
+          className="flex items-center gap-1"
+        >
           <Button
             variant="text"
-            className="border-border h-auto w-full justify-start rounded-md border px-2 py-1.5 text-left"
+            className="border-border h-auto min-w-0 flex-1 justify-start rounded-md border px-2 py-1.5 text-left"
             title={kind === 'folders' ? group.name : undefined}
             onClick={() => onSelect(group)}
           >
@@ -144,6 +153,18 @@ export function FacetGroupList({
               </span>
             </span>
           </Button>
+          {onAddToPlaylist ? (
+            <Tooltip content="Add to playlist" side="top">
+              <Button
+                size="icon-sm"
+                variant="text"
+                aria-label={`Add ${facetTitle(kind, group)} to playlist`}
+                onClick={() => onAddToPlaylist(group)}
+              >
+                <ListPlusIcon size={14} aria-hidden />
+              </Button>
+            </Tooltip>
+          ) : null}
         </li>
       ))}
     </ul>

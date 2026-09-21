@@ -1,4 +1,5 @@
 mod metadata;
+pub mod playlists;
 #[cfg(test)]
 mod tests;
 

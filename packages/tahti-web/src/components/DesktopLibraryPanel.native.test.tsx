@@ -21,6 +21,7 @@ import type {
 } from '../lib/nativeLibrary';
 import { EMPTY_TRACK_FILTERS } from '../lib/nativeLibrary';
 import { usePlayerStore } from '../stores/playerStore';
+import { createFakePlaylists } from '../test/fakePlaylists';
 import { DesktopLibraryPanel } from './DesktopLibraryPanel';
 
 const missingTrack: NativeLibraryTrack = {
@@ -108,6 +109,7 @@ function createNativeLibrary(
     resolve: vi.fn(),
     remove: vi.fn(),
     removeMany: vi.fn().mockResolvedValue(0),
+    playlists: createFakePlaylists().api,
     matchingIds: vi.fn().mockResolvedValue([]),
     filterOptions: vi.fn().mockResolvedValue({
       formats: ['flac', 'wav'],
@@ -793,5 +795,134 @@ describe('DesktopLibraryPanel native import', () => {
     await new Promise((resolve) => setTimeout(resolve, 700));
     expect(screen.queryByText('Slow answer')).toBeNull();
     expect(screen.getByText('Fast answer')).toBeTruthy();
+  });
+
+  describe('playlists', () => {
+    const tracks = ['a', 'b', 'c'].map((id) => ({
+      ...availableTrack,
+      id,
+      title: `Song ${id}`,
+    }));
+    const catalog = Object.fromEntries(
+      ['a', 'b', 'c', 'x'].map((id) => [id, { title: `Song ${id}` }]),
+    );
+    const setup = (overrides: Partial<TahtiNativeLibrary> = {}) => {
+      globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
+      const fake = createFakePlaylists(catalog);
+      const library = createNativeLibrary({
+        list: vi.fn((_search: string, offset: number) =>
+          offset === 0
+            ? Promise.resolve({ tracks, total: 1234 })
+            : new Promise<never>(() => undefined),
+        ),
+        playlists: fake.api,
+        ...overrides,
+      });
+      globalThis.__TAHTI_NATIVE_LIBRARY__ = library;
+      return { fake, library };
+    };
+
+    it('adds the selection to a new playlist in the order the table shows', async () => {
+      const { fake } = setup({
+        matchingIds: vi.fn().mockResolvedValue(['c', 'x', 'a', 'b']),
+      });
+      render(<DesktopLibraryPanel />);
+
+      fireEvent.click(await screen.findByLabelText('Select Song a'));
+      fireEvent.click(screen.getByLabelText('Select Song c'));
+      fireEvent.click(screen.getByRole('button', { name: 'Add to playlist' }));
+      const dialog = await screen.findByRole('dialog');
+      fireEvent.change(within(dialog).getByLabelText('New playlist'), {
+        target: { value: 'Road trip' },
+      });
+      fireEvent.click(
+        within(dialog).getByRole('button', { name: 'Create and add' }),
+      );
+
+      await waitFor(() => expect(fake.api.addTracks).toHaveBeenCalled());
+      expect(fake.api.addTracks).toHaveBeenCalledWith('pl-1', ['c', 'a']);
+      const [created] = await fake.api.list();
+      expect(fake.titles(created?.id ?? '')).toEqual(['Song c', 'Song a']);
+    });
+
+    it('adds everything that matches to an existing playlist without selecting', async () => {
+      const { fake } = setup({
+        matchingIds: vi.fn().mockResolvedValue(['a', 'b', 'c']),
+      });
+      const existing = await fake.api.create('Keepers');
+      render(<DesktopLibraryPanel />);
+
+      fireEvent.click(
+        await screen.findByRole('button', { name: 'Add all to playlist' }),
+      );
+      const dialog = await screen.findByRole('dialog');
+      expect(
+        within(dialog).getByText(/All 1,234 tracks matching/),
+      ).toBeTruthy();
+      fireEvent.click(
+        await within(dialog).findByRole('button', { name: /Keepers/ }),
+      );
+
+      await waitFor(() =>
+        expect(fake.api.addTracks).toHaveBeenCalledWith(existing.id, [
+          'a',
+          'b',
+          'c',
+        ]),
+      );
+    });
+
+    it('adds a whole album from the Albums tab in disc/track order', async () => {
+      const matchingIds = vi.fn().mockResolvedValue(['a', 'b']);
+      const { fake } = setup({
+        matchingIds,
+        facets: vi.fn().mockResolvedValue([
+          {
+            name: 'Anima',
+            secondary: 'Delay',
+            year: 2001,
+            trackCount: 2,
+            durationSec: 300,
+            sizeBytes: 5_000_000,
+          },
+        ]),
+      });
+      await fake.api.create('Albums');
+      render(<DesktopLibraryPanel />);
+
+      fireEvent.click(await screen.findByRole('tab', { name: 'Albums' }));
+      fireEvent.click(
+        await screen.findByRole('button', { name: 'Add Anima to playlist' }),
+      );
+      fireEvent.click(await screen.findByRole('button', { name: /Albums/ }));
+
+      await waitFor(() =>
+        expect(matchingIds).toHaveBeenCalledWith(
+          '',
+          { kind: 'albums', value: 'Anima', secondary: 'Delay' },
+          { column: 'album', descending: false },
+          null,
+        ),
+      );
+      await waitFor(() =>
+        expect(fake.api.addTracks).toHaveBeenCalledWith('pl-1', ['a', 'b']),
+      );
+    });
+
+    it('shows the Playlists tab and remembers which playlist was open', async () => {
+      const { fake } = setup();
+      const playlist = await fake.api.create('Night drive');
+      await fake.api.addTracks(playlist.id, ['a', 'b']);
+      const first = render(<DesktopLibraryPanel />);
+
+      fireEvent.click(await screen.findByRole('tab', { name: 'Playlists' }));
+      fireEvent.click(await screen.findByText('Night drive'));
+      expect(await screen.findByTestId('playlist-view')).toBeTruthy();
+      first.unmount();
+
+      render(<DesktopLibraryPanel />);
+      expect(await screen.findByTestId('playlist-view')).toBeTruthy();
+      expect(await screen.findByText('Song a')).toBeTruthy();
+    });
   });
 });

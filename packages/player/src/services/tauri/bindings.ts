@@ -26,6 +26,19 @@ export const commands = {
 	column: SortColumn,
 	descending: boolean,
 } | null) => typedError<LibraryPage, string>(__TAURI_INVOKE("library_list", { search, offset, filter, filters, sort })),
+	playlistList: () => typedError<PlaylistSummary[], string>(__TAURI_INVOKE("playlist_list")),
+	playlistCreate: (name: string) => typedError<PlaylistSummary, string>(__TAURI_INVOKE("playlist_create", { name })),
+	playlistRename: (id: string, name: string) => typedError<PlaylistSummary, string>(__TAURI_INVOKE("playlist_rename", { id, name })),
+	playlistDuplicate: (id: string) => typedError<PlaylistSummary, string>(__TAURI_INVOKE("playlist_duplicate", { id })),
+	playlistDelete: (id: string) => typedError<null, string>(__TAURI_INVOKE("playlist_delete", { id })),
+	playlistAddTracks: (id: string, trackIds: string[], at: number | null) => typedError<number, string>(__TAURI_INVOKE("playlist_add_tracks", { id, trackIds, at })),
+	playlistEntries: (id: string, offset: number) => typedError<PlaylistPage, string>(__TAURI_INVOKE("playlist_entries", { id, offset })),
+	playlistEntryIds: (id: string) => typedError<string[], string>(__TAURI_INVOKE("playlist_entry_ids", { id })),
+	playlistMoveEntries: (id: string, entryIds: string[], toIndex: number) => typedError<null, string>(__TAURI_INVOKE("playlist_move_entries", { id, entryIds, toIndex })),
+	playlistRemoveEntries: (id: string, entryIds: string[]) => typedError<RawEntry[], string>(__TAURI_INVOKE("playlist_remove_entries", { id, entryIds })),
+	playlistRestoreEntries: (id: string, entries: RawEntry[], order: string[]) => typedError<null, string>(__TAURI_INVOKE("playlist_restore_entries", { id, entries, order })),
+	playlistSetOrder: (id: string, order: string[]) => typedError<null, string>(__TAURI_INVOKE("playlist_set_order", { id, order })),
+	playlistTrackIds: (id: string) => typedError<string[], string>(__TAURI_INVOKE("playlist_track_ids", { id })),
 	libraryFacets: (kind: FacetKind) => typedError<FacetGroup[], string>(__TAURI_INVOKE("library_facets", { kind })),
 	libraryMatchingIds: (search: string, filter: {
 	kind: FacetKind,
@@ -376,6 +389,49 @@ export type PlaybackBatch = {
 export type PlaybackItem = {
 	track: LibraryTrack,
 	path: string,
+};
+
+export type PlaylistEntry = {
+	entryId: string,
+	position: number,
+	/**  The catalog row, when the entry still points at one. */
+	track: LibraryTrack | null,
+	/**  From the track when linked, otherwise the snapshot taken when added. */
+	title: string,
+	artist: string,
+	path: string,
+	duration: number | null,
+	/**  No linked track, or its file is missing. Never a reason to drop the entry. */
+	unavailable: boolean,
+};
+
+export type PlaylistPage = {
+	entries: PlaylistEntry[],
+	total: number,
+};
+
+export type PlaylistSummary = {
+	id: string,
+	name: string,
+	trackCount: number,
+	durationSec: number | null,
+	/**  Entries whose file is missing or whose track left the catalog. */
+	unavailableCount: number,
+	createdAt: string,
+	updatedAt: string,
+};
+
+/**
+ *  Enough to recreate an entry exactly: used for undo and for M3U import of
+ *  files that are not in the catalog yet.
+ */
+export type RawEntry = {
+	entryId: string,
+	trackId: string | null,
+	path: string,
+	title: string,
+	artist: string,
+	duration: number | null,
 };
 
 export type RelinkRootResult = {
