@@ -4,7 +4,6 @@ import { toast } from 'sonner';
 
 import { Button, CatalogTable, EmptyState, Input } from '@tahti-player/ui';
 
-import type { TahtiPlayable } from '../api/types';
 import { usePersistedCatalogTable } from '../hooks/usePersistedCatalogTable';
 import {
   flushViewState,
@@ -28,7 +27,6 @@ import {
   type NativeLibraryTrack,
   type NativeTrackFilters,
 } from '../lib/nativeLibrary';
-import { preparePlayables } from '../lib/nativePlayback';
 import { usePlayerStore } from '../stores/playerStore';
 import { AddToPlaylistDialog } from './AddToPlaylistDialog';
 import { ConfirmDialog } from './ConfirmDialog';
@@ -40,7 +38,7 @@ import { SelectionToolbar } from './desktop-library/SelectionToolbar';
 import { TrackRowActions } from './desktop-library/TrackRowActions';
 import { useLibraryRoots } from './desktop-library/useLibraryRoots';
 import { useNativeLibraryList } from './desktop-library/useNativeLibraryList';
-import { runAnalysis } from './LocalLibraryAnalysis';
+import { useSelectionActions } from './desktop-library/useSelectionActions';
 import {
   BrowseTabs,
   FACET_KIND_LABEL,
@@ -67,8 +65,6 @@ const trackRowMuted = (track: NativeLibraryTrack) => !track.available;
 export function DesktopLibraryPanel() {
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
-  const enqueueMany = usePlayerStore((s) => s.enqueueMany);
-  const playNextMany = usePlayerStore((s) => s.playNextMany);
   const nativePlayer = hasNativePlayer();
   const nativeLibrary = getNativeLibrary();
   const initialView = useRef(loadViewState()).current;
@@ -87,13 +83,10 @@ export function DesktopLibraryPanel() {
     NATIVE_TRACK_COLUMNS,
   );
   const nativeSort = useMemo(() => toNativeSort(table.sort), [table.sort]);
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [pendingRemoval, setPendingRemoval] = useState<{
     ids: string[];
     title: string | null;
   } | null>(null);
-  const [selectingAll, setSelectingAll] = useState(false);
-  const [selectionBusy, setSelectionBusy] = useState(false);
   const [browseKind, setBrowseKind] = useState<BrowseKind>(
     initialView.browseKind,
   );
@@ -113,14 +106,9 @@ export function DesktopLibraryPanel() {
     null,
   );
   const [organizingIds, setOrganizingIds] = useState<string[] | null>(null);
-  const [analyzingSelection, setAnalyzingSelection] = useState(false);
   const [openPlaylistId, setOpenPlaylistId] = useState<string | null>(
     initialView.openPlaylistId,
   );
-  const [addToPlaylist, setAddToPlaylist] = useState<{
-    summary: string;
-    resolve: () => Promise<string[]>;
-  } | null>(null);
   const [filterOptions, setFilterOptions] =
     useState<NativeFilterOptions | null>(null);
   const [inspected, setInspected] = useState<NativeLibraryTrack | null>(null);
@@ -161,6 +149,33 @@ export function DesktopLibraryPanel() {
     () => refreshNativeRef.current(),
     () => setNativeProgress(null),
   );
+  const {
+    selectedIds,
+    setSelectedIds,
+    selectingAll,
+    selectionBusy,
+    analyzingSelection,
+    addToPlaylist,
+    setAddToPlaylist,
+    analyzeSelection,
+    selectAllMatching,
+    playSelection,
+    playAllMatching,
+    playNextSelection,
+    queueSelection,
+    addSelectionToPlaylist,
+    addAllToPlaylist,
+    addGroupToPlaylist,
+  } = useSelectionActions({
+    library: nativeLibrary,
+    query: debouncedNativeQuery,
+    facetFilter,
+    sort: nativeSort,
+    filters,
+    total: nativeTotal,
+    browseKind,
+    refresh: () => refreshNativeRef.current(),
+  });
   const initialScrollRef = useRef(initialView.scrollOffset);
   const loadedCountRef = useRef(0);
   const scopeChangedRef = useRef(false);
@@ -267,19 +282,6 @@ export function DesktopLibraryPanel() {
       stale = true;
     };
   }, [nativeLibrary, catalogVersion]);
-
-  const analyzeSelection = async () => {
-    if (!nativeLibrary || analyzingSelection) {
-      return;
-    }
-    setAnalyzingSelection(true);
-    try {
-      await runAnalysis(nativeLibrary, [...selectedIds]);
-    } finally {
-      setAnalyzingSelection(false);
-      void refreshNative();
-    }
-  };
 
   // Library-wide numbers (missing files, watched folders, totals) don't depend
   // on the search box, so they load on mount and after real changes only, not
@@ -569,163 +571,6 @@ export function DesktopLibraryPanel() {
     }
     setSelectedIds(new Set());
     await refreshNative();
-  };
-
-  const selectAllMatching = async () => {
-    if (!nativeLibrary) {
-      return;
-    }
-    setSelectingAll(true);
-    try {
-      setSelectedIds(
-        new Set(
-          await nativeLibrary.matchingIds(
-            debouncedNativeQuery,
-            facetFilter,
-            nativeSort,
-            filters,
-          ),
-        ),
-      );
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : 'Could not select all tracks.',
-      );
-    } finally {
-      setSelectingAll(false);
-    }
-  };
-
-  /**
-   * Turns tracks into playables, in the order the table currently shows them
-   * (not the order they were clicked), so what plays or queues is
-   * predictable. `pick` narrows the shown order (to the selection, or not at
-   * all for "play all"). Capped so a whole-library action can't flood the queue.
-   */
-  const playablesFor = async (
-    pick: (shownIds: string[]) => string[],
-    noun: string,
-  ) => {
-    if (!nativeLibrary) {
-      return null;
-    }
-    const shown = await nativeLibrary.matchingIds(
-      debouncedNativeQuery,
-      facetFilter,
-      nativeSort,
-      filters,
-    );
-    return preparePlayables(nativeLibrary, pick(shown), noun);
-  };
-
-  const runSelectionAction = async (
-    action: (playables: TahtiPlayable[]) => void,
-    scope: 'selected' | 'all' = 'selected',
-  ) => {
-    setSelectionBusy(true);
-    try {
-      const playables =
-        scope === 'all'
-          ? await playablesFor((shown) => shown, 'matching')
-          : await playablesFor(
-              (shown) => shown.filter((id) => selectedIds.has(id)),
-              'selected',
-            );
-      if (playables?.length) {
-        action(playables);
-      } else if (playables) {
-        toast.error('None of these tracks can be played.');
-      }
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : 'Could not use the selection.',
-      );
-    } finally {
-      setSelectionBusy(false);
-    }
-  };
-
-  const playSelection = () =>
-    runSelectionAction((playables) => {
-      const [head, ...rest] = playables;
-      if (head) {
-        play(head, { enqueueRest: rest });
-      }
-    });
-  const playAllMatching = () =>
-    runSelectionAction((playables) => {
-      const [head, ...rest] = playables;
-      if (head) {
-        play(head, { enqueueRest: rest });
-      }
-    }, 'all');
-  const playNextSelection = () =>
-    runSelectionAction((playables) => {
-      playNextMany(playables);
-      toast.success(
-        playables.length === 1
-          ? 'Playing 1 track next.'
-          : `Playing ${playables.length.toLocaleString('en-US')} tracks next.`,
-      );
-    });
-  const queueSelection = () =>
-    runSelectionAction((playables) => {
-      enqueueMany(playables);
-    });
-
-  const idsInShownOrder = (pick: (shown: string[]) => string[]) => async () => {
-    if (!nativeLibrary) {
-      return [];
-    }
-    return pick(
-      await nativeLibrary.matchingIds(
-        debouncedNativeQuery,
-        facetFilter,
-        nativeSort,
-        filters,
-      ),
-    );
-  };
-  const addSelectionToPlaylist = () =>
-    setAddToPlaylist({
-      summary:
-        selectedIds.size === 1
-          ? '1 selected track'
-          : `${selectedIds.size.toLocaleString('en-US')} selected tracks`,
-      resolve: idsInShownOrder((shown) =>
-        shown.filter((id) => selectedIds.has(id)),
-      ),
-    });
-  const addAllToPlaylist = () =>
-    setAddToPlaylist({
-      summary: `All ${nativeTotal.toLocaleString('en-US')} tracks matching the current view`,
-      resolve: idsInShownOrder((shown) => shown),
-    });
-  const addGroupToPlaylist = (group: NativeFacetGroup) => {
-    if (
-      !nativeLibrary ||
-      browseKind === 'tracks' ||
-      browseKind === 'playlists'
-    ) {
-      return;
-    }
-    const kind = browseKind;
-    setAddToPlaylist({
-      summary: `${group.trackCount.toLocaleString('en-US')} tracks from “${facetTitle(kind, group)}”`,
-      resolve: () =>
-        nativeLibrary.matchingIds(
-          '',
-          {
-            kind,
-            value: group.name,
-            secondary: kind === 'albums' ? group.secondary : null,
-          },
-          // Album order (disc, then track) for anything that is an album or a
-          // folder of albums; title order for genres.
-          kind === 'genres' ? null : { column: 'album', descending: false },
-          null,
-        ),
-    });
   };
 
   const activeFilterCount = countActiveFilters(filters);
