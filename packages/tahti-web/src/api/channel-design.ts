@@ -311,6 +311,8 @@ export type ChannelVisual = {
    * the VIDEO_LOOP header style. Supports direct .mp4/.webm and YouTube links. */
   videoBackgroundUrl?: string | null;
   brandAccentPreset: string | null;
+  /** Short line shown in a strip across the top of the channel hero. */
+  topBarText?: string | null;
   slideshowPreset?: string | null;
   slideshowIntervalSeconds?: number;
   slideshowTransitionMs?: number;
@@ -550,9 +552,7 @@ export function getMockNowPlayingOverlayStyle(): string | null | undefined {
 }
 
 export function getMockNowPlayingOverlaySettingsJson():
-  | string
-  | null
-  | undefined {
+  string | null | undefined {
   return mockVisual.nowPlayingOverlaySettingsJson;
 }
 
@@ -995,6 +995,9 @@ export async function patchChannelVisual(
         : {}),
       ...(patch.brandAccentPreset !== undefined
         ? { brandAccentPreset: patch.brandAccentPreset }
+        : {}),
+      ...(patch.topBarText !== undefined
+        ? { topBarText: patch.topBarText }
         : {}),
       ...(patch.slideshowPreset !== undefined
         ? { slideshowPreset: patch.slideshowPreset }

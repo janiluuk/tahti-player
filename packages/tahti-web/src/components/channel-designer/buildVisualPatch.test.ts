@@ -36,6 +36,7 @@ describe('buildVisualPatch', () => {
     expect(patch?.playerColorSchemeJson).toBeNull();
     expect(patch?.backgroundColorSchemeJson).toBeNull();
     expect(patch?.channelLinks).toEqual([]);
+    expect(patch?.topBarText).toBeNull();
     expect(patch?.textOverlayMode).toBe('NONE');
     expect(patch?.playerOverlayAlign).toBe('CENTER');
   });

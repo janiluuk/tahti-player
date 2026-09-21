@@ -39,6 +39,7 @@ import {
   resolveHeaderDesignMode,
   SavedLooksRow,
   SavePresetDialog,
+  TopBarTextField,
   TuningSliders,
   VideoOrImageField,
   VisualizerPickerDialog,
@@ -96,8 +97,7 @@ type Props = {
   layout?: ChannelPageItem[];
   onLayoutChange?: (
     updater:
-      | ChannelPageItem[]
-      | ((prev: ChannelPageItem[]) => ChannelPageItem[]),
+      ChannelPageItem[] | ((prev: ChannelPageItem[]) => ChannelPageItem[]),
   ) => void;
 };
 
@@ -389,6 +389,10 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
     const backdropPanel = (
       <>
         {identityTogglesSlot}
+        <TopBarTextField
+          value={visual.topBarText ?? ''}
+          onChange={(topBarText) => applyLocal({ topBarText })}
+        />
         <BackdropPanel
           scheme={scheme}
           backgroundScheme={backgroundScheme}

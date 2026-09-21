@@ -15,7 +15,6 @@
   "packages/tahti-web/src/components/plugin-store/ServiceCategory.tsx": 1401,
   "packages/tahti-web/src/lib/nativeLibrary.types.ts": 856,
   "packages/tahti-web/src/plugins/themes/presets.ts": 1539,
-  "packages/tahti-web/src/views/ArtistView.tsx": 1409,
   "packages/tahti-web/src/views/MoreView.tsx": 805,
   "packages/tahti-web/src/views/TrackDetailView.tsx": 1048,
   "packages/tahti-web/src/views/admin/AdminAddonsView.tsx": 1076,

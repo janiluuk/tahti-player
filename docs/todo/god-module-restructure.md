@@ -111,9 +111,32 @@ Split into `views/studio/pro-editor/`: `WaveformEditor` (audio, toolbar, canvas,
 
 - [x] `ChannelDesigner.tsx` split (2026-09-22, 1697 → 757, out of the size baseline): `useChannelLook` (draft state, load/save/presets/gallery/backdrop), `useLookVisibility`, `useDockedControlsRail`, `ChannelPagePreview`, and pure `buildVisualPatch` / `buildLoadedLook` / `applyPresetToVisual` / `LookSnapshot`, with tests. Only the panel slot builders remain in the component.
 - [x] `ChannelDesigner`: `dirty` no longer cleared by a save when the user edited while it was in flight (edit revision counter; no dedicated test yet).
-- [ ] Split `ArtistView.tsx` (1409), `ServiceCategory.tsx` (1401): audit each for bugs first, as with the designer.
+- [x] `ArtistView.tsx` split + audit (2026-09-22, 1409 → 787, out of the baseline): see below.
+- [ ] Split `ServiceCategory.tsx` (1401): audit for bugs first, as with the designer.
 - [ ] Visually verify the designer changes in the running app (slideshow reorder preview, Reset/Revert with a pending backdrop file, gradient toggles, right-rail collapse); only unit and smoke tests cover them so far.
 - [ ] Visually verify in the running app: channel edit mode (no spinner on save, Done saves look+links, rail stays collapsed, layout toggles reach the parent) and the Pro editor (cut/trim merge, kept duration, stems, mastering chain, switching tracks).
 - [ ] Pro editor follow-ups: persist markers (not in the edit list today), unsaved-changes prompt on leaving, a smoke test that renders the whole view.
 - [ ] `ChannelView`: `applyPreset` saves the preset's look to the server immediately though its note says "save layout to keep it"; decide whether the look should be draft-until-Save; add a smoke test for the full view.
 - [ ] `ui` `QueuePanel` test "skips offscreen layout only for long queues" failed once in a full `ui` run but passes alone; check whether it is flaky.
+
+## ArtistView audit + split (2026-09-22, 1409 → 787)
+
+Split into `lib/artistProfile.ts` (embed/playable helpers, tested), `components/artist-view/{useArtistChannelLook,ArtistProfileSections}` (bio, live shows, tagged-in, feed, news, embeds, header actions).
+
+- **Failed profile fetch left the spinner forever** (no catch); now falls through to "Artist not found". Channel look, disco widgets, posts, news, live shows, mentions, gallery and post-save refetches all had unhandled rejections, and one failing endpoint (Promise.all) blanked the whole look; each block now loads independently.
+- **Featured play/pause button never updated** (read `getState().status` during render, no subscription); now subscribed.
+- **Full-bio save failed silently** and could stick on "Saving" if the request threw; now toasts success/error, try/finally.
+- **State leaked between artists** (tab, bio draft, tagged-in, gallery); the view is keyed by username. Previous artist's look no longer flashes while the next loads.
+- Tab list was computed twice (effect + render) and could drift; one memo. The 19-field look mapping was duplicated (`pickChannelVisual`).
+- Not changed: no smoke test renders the whole `ArtistView`; visual check in the running app still open.
+
+## Designer option audit + tests (2026-09-22)
+
+New tests: `channel-designer/designerOptions.test.tsx` (every offered option has a renderer/scene/label; what a save sends), `channel-designer/useChannelLook.options.test.ts` (each preset/header style/brand accent/overlay style/background visualizer/overlay effect/slideshow transition survives apply → save → reload), `ChannelBackdropCard.test.tsx`, `views/ArtistView.test.tsx`.
+
+- **Fixed: the designer's "Slideshow" header mode never showed a slideshow.** It saves `headerStyle: GRADIENT` plus a gallery mode, but `ChannelBackdropCard` only drew the slideshow when the style was *not* GRADIENT (preview and published page). The gallery now wins over the plain gradient.
+- **Flagged, not fixed: 5 of 6 "Gallery style" options render nothing.** TWISTED_WAVE, ZOOM_BLUR, RGB_SHIFT, POSTER_WALL and SHATTER_CAROUSEL (`*_GLSL`) are selectable but no renderer exists; only STATIC_SLIDESHOW draws (pinned with `it.fails.each`, flips when implemented). Either build them or drop them from `GALLERY_MODES`.
+- Correction: the channel-page Text overlay does reach the server, through the separate `/api/me/channel/text-layer` route (best-effort: a failure there is swallowed silently).
+- Noted: `MINIMAL` is in `VISUAL_PRESETS` but treated as invalid (corrected to AURORA on load, "visualizer off" elsewhere).
+- **Added: Top bar text** in the designer's Backdrop panel (`TopBarTextField`), saved via `topBarText`, shown as a strip across the top of the channel hero (`ChannelBackdropCard`, preview and published page). Assumes the backend already accepts `topBarText` (it was already in the API patch keys) — unverified against a real server.
+- **Open: pnpm 12 / router bump broke `packages/ui/src/components/RouteTransition.tsx`** (`router.__store` no longer exists in @tanstack/react-router 1.170); `tsc` fails and the page transition will throw at runtime.
