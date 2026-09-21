@@ -39,6 +39,34 @@ pub fn pair_moves(
         .collect()
 }
 
+/// Second pass for renames that also change the file name: pairs the
+/// remaining vanished tracks with new files by identical byte size *and*
+/// modification time (a rename keeps both), again only one-to-one. Tracks
+/// with no stored mtime never match.
+pub fn pair_renames(
+    vanished: &[(String, i64, Option<i64>)],
+    fresh: &[(PathBuf, i64, Option<i64>)],
+) -> Vec<(String, PathBuf)> {
+    let mut old: HashMap<(i64, i64), Vec<&String>> = HashMap::new();
+    for (id, size, mtime) in vanished {
+        if let Some(mtime) = mtime {
+            old.entry((*size, *mtime)).or_default().push(id);
+        }
+    }
+    let mut new: HashMap<(i64, i64), Vec<&PathBuf>> = HashMap::new();
+    for (path, size, mtime) in fresh {
+        if let Some(mtime) = mtime {
+            new.entry((*size, *mtime)).or_default().push(path);
+        }
+    }
+    old.into_iter()
+        .filter_map(|(k, ids)| {
+            let paths = new.get(&k)?;
+            (ids.len() == 1 && paths.len() == 1).then(|| (ids[0].clone(), paths[0].clone()))
+        })
+        .collect()
+}
+
 /// Re-points root tracks whose file vanished at a new file that appeared in
 /// the same scan (a rename or move). Returns the moved count and the fresh
 /// paths that were *not* consumed as moves.
@@ -50,24 +78,42 @@ pub async fn relink_moved(
     if fresh.is_empty() {
         return Ok((0, fresh));
     }
-    let rows = sqlx::query_as::<_, (String, String, i64)>(
-        "SELECT id, path, size_bytes FROM library_tracks WHERE root_id = ?",
+    let rows = sqlx::query_as::<_, (String, String, i64, Option<i64>)>(
+        "SELECT id, path, size_bytes, mtime FROM library_tracks WHERE root_id = ?",
     )
     .bind(&root.id)
     .fetch_all(pool)
     .await
     .map_err(|err| err.to_string())?;
     let (pairs, fresh) = tauri::async_runtime::spawn_blocking(move || {
-        let vanished: Vec<(String, PathBuf, i64)> = rows
+        let vanished: Vec<(String, PathBuf, i64, Option<i64>)> = rows
             .into_iter()
-            .map(|(id, path, size)| (id, PathBuf::from(path), size))
-            .filter(|(_, path, _)| !path.is_file())
+            .map(|(id, path, size, mtime)| (id, PathBuf::from(path), size, mtime))
+            .filter(|(_, path, _, _)| !path.is_file())
             .collect();
         let sized: Vec<(PathBuf, i64)> = fresh
             .iter()
             .filter_map(|path| Some((path.clone(), std::fs::metadata(path).ok()?.len() as i64)))
             .collect();
-        let pairs = pair_moves(&vanished, &sized);
+        let named: Vec<(String, PathBuf, i64)> = vanished
+            .iter()
+            .map(|(id, path, size, _)| (id.clone(), path.clone(), *size))
+            .collect();
+        let mut pairs = pair_moves(&named, &sized);
+        let claimed: std::collections::HashSet<&String> = pairs.iter().map(|(id, _)| id).collect();
+        let taken: std::collections::HashSet<&PathBuf> = pairs.iter().map(|(_, p)| p).collect();
+        let left_old: Vec<(String, i64, Option<i64>)> = vanished
+            .iter()
+            .filter(|(id, ..)| !claimed.contains(id))
+            .map(|(id, _, size, mtime)| (id.clone(), *size, *mtime))
+            .collect();
+        let left_new: Vec<(PathBuf, i64, Option<i64>)> = sized
+            .iter()
+            .filter(|(p, _)| !taken.contains(p))
+            .map(|(p, size)| (p.clone(), *size, mtime_secs(p)))
+            .collect();
+        let renamed = pair_renames(&left_old, &left_new);
+        pairs.extend(renamed);
         (pairs, fresh)
     })
     .await
@@ -178,6 +224,27 @@ mod tests {
             &[(PathBuf::from("/m/b/song.flac"), 100)],
         );
         assert_eq!(pairs, vec![("t1".to_string(), PathBuf::from("/m/b/song.flac"))]);
+    }
+
+    #[test]
+    fn a_rename_with_the_same_size_and_mtime_is_a_move() {
+        let pairs = pair_renames(
+            &[("t1".to_string(), 100, Some(5))],
+            &[(PathBuf::from("/m/new name.flac"), 100, Some(5))],
+        );
+        assert_eq!(pairs, vec![("t1".to_string(), PathBuf::from("/m/new name.flac"))]);
+    }
+
+    #[test]
+    fn renames_need_a_stored_mtime_and_a_unique_match() {
+        let fresh = [(PathBuf::from("/m/x.flac"), 100, Some(5))];
+        assert!(pair_renames(&[("t1".to_string(), 100, None)], &fresh).is_empty());
+        assert!(pair_renames(&[("t1".to_string(), 100, Some(6))], &fresh).is_empty());
+        assert!(pair_renames(
+            &[("t1".to_string(), 100, Some(5)), ("t2".to_string(), 100, Some(5))],
+            &fresh
+        )
+        .is_empty());
     }
 
     #[test]

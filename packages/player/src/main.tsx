@@ -43,6 +43,9 @@ const baseNativeLibrary: TahtiNativeLibrary = {
       ),
     );
   },
+  async orderIds(ids, sort) {
+    return unwrapResult(await commands.libraryOrderIds(ids, sort ?? null));
+  },
   async filterOptions() {
     return unwrapResult(await commands.libraryFilterOptions());
   },
@@ -214,6 +217,35 @@ const baseNativeLibrary: TahtiNativeLibrary = {
     async writeTags(ids, keepBackup) {
       return unwrapResult(await commands.libraryWriteTags(ids, keepBackup));
     },
+    async organizePickDestination() {
+      return unwrapResult(await commands.libraryOrganizePickDestination());
+    },
+    async organizePreview({ ids, destination, template, collision, mode }) {
+      return unwrapResult(
+        await commands.libraryOrganizePreview(
+          ids,
+          destination,
+          template,
+          collision,
+          mode,
+        ),
+      );
+    },
+    async organizeApply(
+      { ids, destination, template, collision, mode },
+      confirmed,
+    ) {
+      return unwrapResult(
+        await commands.libraryOrganizeApply(
+          ids,
+          destination,
+          template,
+          collision,
+          mode,
+          confirmed,
+        ),
+      );
+    },
     async exportBackup() {
       return unwrapResult(await commands.libraryBackupExport());
     },
@@ -353,6 +385,9 @@ const baseNativeLibrary: TahtiNativeLibrary = {
   },
   async rescanRoots() {
     return unwrapResult(await commands.libraryRescanRoots());
+  },
+  async takeRecoveryNotice() {
+    return unwrapResult(await commands.libraryTakeRecoveryNotice());
   },
   async relinkRoot(id) {
     return unwrapResult(await commands.libraryRelinkRoot(id));

@@ -61,12 +61,50 @@ export function loadViewState(): LocalLibraryViewState {
   return read();
 }
 
-export function saveViewState(patch: Partial<LocalLibraryViewState>) {
-  current = { ...read(), ...patch };
+function persist() {
   try {
     window.sessionStorage.setItem(KEY, JSON.stringify(current));
   } catch {
     // Storage blocked: in-memory retention still works within the session.
+  }
+}
+
+let pendingWrite: ReturnType<typeof setTimeout> | null = null;
+
+/** Merges `patch` and mirrors it to sessionStorage right away. */
+export function saveViewState(patch: Partial<LocalLibraryViewState>) {
+  current = { ...read(), ...patch };
+  if (pendingWrite !== null) {
+    clearTimeout(pendingWrite);
+    pendingWrite = null;
+  }
+  persist();
+}
+
+const DEFERRED_WRITE_MS = 250;
+
+/**
+ * For values that change every frame (the scroll offset): the in-memory state
+ * updates immediately, but the JSON + sessionStorage write is coalesced so
+ * scrolling doesn't serialize the whole view state on every tick. Call
+ * `flushViewState` when the view goes away.
+ */
+export function saveViewStateDeferred(patch: Partial<LocalLibraryViewState>) {
+  current = { ...read(), ...patch };
+  if (pendingWrite === null) {
+    pendingWrite = setTimeout(() => {
+      pendingWrite = null;
+      persist();
+    }, DEFERRED_WRITE_MS);
+  }
+}
+
+/** Writes any deferred state now (unmount, page hide). */
+export function flushViewState() {
+  if (pendingWrite !== null) {
+    clearTimeout(pendingWrite);
+    pendingWrite = null;
+    persist();
   }
 }
 
@@ -78,5 +116,9 @@ export function rowsToRestore(state: LocalLibraryViewState): number {
 }
 
 export function resetViewStateForTests() {
+  if (pendingWrite !== null) {
+    clearTimeout(pendingWrite);
+    pendingWrite = null;
+  }
   current = null;
 }

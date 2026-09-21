@@ -1,6 +1,6 @@
 # Snapshot digest: show what this PR changed, not standing failures
 
-**Status:** open
+**Status:** partial
 **Logged:** 2026-09-21 (user request)
 
 ## Problem
@@ -35,3 +35,13 @@ cannot tell which differences are new.
   the base commit, or cache the base result per commit.
 - Decide how to identify "the same" mismatch across runs (test id plus a hash
   of the received output is enough).
+
+## Progress (2026-09-21)
+
+- [x] Stale `HistoryRow` snapshot updated (the hover-reveal classes moved from the wrapper div onto the play button; same behavior).
+- [x] `scripts/ci/build-snapshot-digest.mjs`: every mismatch gets a fingerprint (package + file + test + hash of the received output, paths/ANSI normalized). With a baseline (`snapshot-baseline/digest.json`, or `SNAPSHOT_BASELINE_JSON`) it lists only new mismatches in the table/details, screenshots only those, and puts the rest in one collapsed "N mismatch(es) already failing on master" block. No new mismatches gives one line ("No new snapshot differences in this PR."). No baseline lists everything and says so. `digest.json` `count` still means every mismatch (CI uses it to tell snapshot-only failures from other failures); new fields `newCount`, `standingCount`, `baselineAvailable`, `standing[]`. Old baselines without fingerprints match on package + file + test name. Tested locally with synthetic failures for all three cases.
+- [x] `.github/workflows/ci.yml`: "Fetch master snapshot baseline" step (pull_request only, `continue-on-error`) takes the latest finished master run's `snapshot-digest` artifact; none means master had no mismatches, so the baseline is empty; `actions: read` added to the workflow permissions for it.
+- [ ] **Verify on a real PR** (needs CI): first PR run after merge should show only its own mismatches. Watch that `gh run list/download` works with the default token and that master's run uploads the artifact when it has mismatches.
+- [x] `coverage.yml` now has the same baseline step. Both workflows call `scripts/ci/fetch-snapshot-baseline.sh <workflow> <artifact>` (checked against the real repo: it found master's latest `ci.yml`/`coverage.yml` run and its digest artifact, which is in the old format without fingerprints and matched by package + file + test name).
+- [x] Stale comment fix: when a PR's tests pass, a new "Clear stale snapshot digest comment" step (both workflows) rewrites an existing digest comment to "No snapshot mismatches in the latest run" (`SNAPSHOT_DIGEST_CLEAR=1` in `comment-snapshot-digest.mjs`; never creates one). Before, fixing a PR's mismatches left the old digest on it forever.
+- Known limits: the comment is shared by both workflows (same marker; they compute the same content); the baseline is master's *latest* run, not the PR's merge base, so a PR branched from an older master can see a few differences either way; only DOM snapshots are diffed — a UI change with no snapshot test produces no digest.

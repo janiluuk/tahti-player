@@ -6,7 +6,7 @@ use super::{
     add_root, collect_audio_paths, collect_audio_paths_with_skipped, discover_new_paths,
     get_root, import_batch, import_paths, list, list_roots, list_unavailable,
     refresh_root_availability, relink, relink_root, remove, remove_root, rescan_unavailable,
-    resolve_path, facets, filter_options, list_query, matching_ids_query, folder_of, Availability, ListQuery, TrackFilters, remove_many, list_filtered, matching_ids, prepare_playback, SortColumn, TrackSort, totals, FacetFilter, FacetKind, ImportResult,
+    resolve_path, facets, filter_options, list_query, matching_ids_query, folder_of, Availability, ListQuery, TrackFilters, remove_many, list_filtered, matching_ids, order_ids, prepare_playback, SortColumn, TrackSort, totals, FacetFilter, FacetKind, ImportResult,
 };
 
 static DB_COUNTER: AtomicU32 = AtomicU32::new(0);
@@ -27,7 +27,7 @@ pub(super) async fn pool() -> SqlitePool {
 }
 
 /// Writes a minimal PCM16 mono WAV file symphonia can decode and tag.
-fn write_wav(path: &std::path::Path, title: &str, artist: &str) {
+pub(super) fn write_wav(path: &std::path::Path, title: &str, artist: &str) {
     write_wav_tagged(path, &[("INAM", title), ("IART", artist)]);
 }
 
@@ -1133,6 +1133,20 @@ async fn paging_a_sort_with_many_ties_neither_repeats_nor_skips_rows() {
 // --- Select all across pages / playback batches ---
 
 #[tokio::test]
+async fn order_ids_matches_the_paging_order_and_skips_unknown_ids() {
+    let pool = pool().await;
+    seed_generated_rows(&pool, 60).await;
+    let sort = TrackSort { column: SortColumn::Artist, descending: true };
+    let all = matching_ids(&pool, "", None, Some(&sort)).await.unwrap();
+    // Pick a few scattered ids in a scrambled order, plus one that doesn't exist.
+    let mut picked = vec![all[40].clone(), all[3].clone(), "no-such-id".to_owned(), all[17].clone()];
+    let ordered = order_ids(&pool, &picked, Some(&sort)).await.unwrap();
+    assert_eq!(ordered, vec![all[3].clone(), all[17].clone(), all[40].clone()]);
+    picked.clear();
+    assert!(order_ids(&pool, &picked, None).await.unwrap().is_empty());
+}
+
+#[tokio::test]
 async fn matching_ids_follow_the_exact_paging_order_for_any_sort_search_and_filter() {
     let pool = pool().await;
     seed_generated_rows(&pool, 450).await;
@@ -1853,6 +1867,29 @@ async fn a_renamed_file_keeps_its_catalog_id() {
 }
 
 #[tokio::test]
+async fn a_file_renamed_to_a_new_name_keeps_its_catalog_id() {
+    let dir = tempfile::tempdir().unwrap();
+    let old = dir.path().join("a.wav");
+    write_wav(&old, "A", "Artist");
+    let pool = pool().await;
+    let root = add_root(&pool, dir.path()).await.unwrap();
+    let (fresh, _) = discover_new_paths(&pool, &root).await.unwrap();
+    import_into_root(&pool, &root.id, fresh).await;
+    super::reconcile::refresh_changed(&pool, &root).await.unwrap(); // records mtime
+    let id = list(&pool, "", 0).await.unwrap().tracks[0].id.clone();
+
+    std::fs::rename(&old, dir.path().join("renamed.wav")).unwrap();
+    let (fresh, _) = discover_new_paths(&pool, &root).await.unwrap();
+    let (moved, rest) = super::reconcile::relink_moved(&pool, &root, fresh).await.unwrap();
+    assert_eq!(moved, 1);
+    assert!(rest.is_empty());
+    let page = list(&pool, "", 0).await.unwrap();
+    assert_eq!(page.total, 1);
+    assert_eq!(page.tracks[0].id, id);
+    assert!(page.tracks[0].path.ends_with("renamed.wav"));
+}
+
+#[tokio::test]
 async fn a_changed_file_is_re_read_once() {
     let dir = tempfile::tempdir().unwrap();
     let path = dir.path().join("a.wav");
@@ -1873,4 +1910,81 @@ async fn a_changed_file_is_re_read_once() {
     assert_eq!(super::reconcile::refresh_changed(&pool, &root).await.unwrap(), 1);
     assert_eq!(list(&pool, "", 0).await.unwrap().tracks[0].title, "A much longer new title");
     assert_eq!(super::reconcile::refresh_changed(&pool, &root).await.unwrap(), 0, "not re-read again");
+}
+
+#[tokio::test]
+async fn a_root_on_an_unplugged_drive_goes_missing_and_recovers_with_ids_intact() {
+    let dir = tempfile::tempdir().unwrap();
+    let root_dir = dir.path().join("Külmä levy 🎧");
+    std::fs::create_dir_all(&root_dir).unwrap();
+    write_wav(&root_dir.join("楽曲.wav"), "A", "Artist");
+    let pool = pool().await;
+    let root = add_root(&pool, &root_dir).await.unwrap();
+    let (fresh, _) = discover_new_paths(&pool, &root).await.unwrap();
+    import_into_root(&pool, &root.id, fresh).await;
+    let id = list(&pool, "", 0).await.unwrap().tracks[0].id.clone();
+
+    let away = dir.path().join("unplugged");
+    std::fs::rename(&root_dir, &away).unwrap();
+    refresh_root_availability(&pool, &root.id).await.unwrap();
+    let page = list(&pool, "", 0).await.unwrap();
+    assert_eq!((page.total, page.tracks[0].available), (1, false), "kept, marked missing");
+
+    std::fs::rename(&away, &root_dir).unwrap();
+    refresh_root_availability(&pool, &root.id).await.unwrap();
+    let page = list(&pool, "", 0).await.unwrap();
+    assert_eq!((page.tracks[0].id.clone(), page.tracks[0].available), (id, true));
+}
+
+#[tokio::test]
+async fn reopening_the_catalog_file_keeps_its_data_and_migrations_are_idempotent() {
+    let dir = tempfile::tempdir().unwrap();
+    let db = dir.path().join("nested").join("library.db");
+    let music = dir.path().join("a.wav");
+    write_wav(&music, "A", "Artist");
+    let first = super::open(&db).await.unwrap();
+    assert_eq!(import_paths(&first, vec![music]).await.imported, 1);
+    first.close().await;
+
+    // Offline startup: no network or other file is needed to open the catalog.
+    let second = super::open(&db).await.unwrap();
+    let page = list(&second, "", 0).await.unwrap();
+    assert_eq!((page.total, page.tracks[0].title.as_str()), (1, "A"));
+}
+
+#[tokio::test]
+async fn a_corrupt_catalog_is_set_aside_and_the_library_starts_fresh() {
+    let dir = tempfile::tempdir().unwrap();
+    let db = dir.path().join("library.db");
+    std::fs::write(&db, b"this is not a sqlite database, just noise").unwrap();
+
+    let (pool, moved) = super::open_recovering(&db).await.unwrap();
+    let moved = moved.expect("the damaged file is reported");
+    assert_eq!(std::fs::read(&moved).unwrap(), b"this is not a sqlite database, just noise");
+    assert_eq!(list(&pool, "", 0).await.unwrap().total, 0);
+    pool.close().await;
+
+    // A healthy catalog is never touched.
+    let (pool, moved) = super::open_recovering(&db).await.unwrap();
+    assert!(moved.is_none());
+    pool.close().await;
+}
+
+#[tokio::test]
+async fn a_healthy_catalog_with_an_unknown_migration_is_not_treated_as_corrupt() {
+    let dir = tempfile::tempdir().unwrap();
+    let db = dir.path().join("library.db");
+    let first = super::open(&db).await.unwrap();
+    // As if a newer app version had migrated it further.
+    sqlx::query("INSERT INTO _sqlx_migrations (version, description, success, checksum, execution_time) VALUES (99999, 'future', 1, x'00', 0)")
+        .execute(&first)
+        .await
+        .unwrap();
+    first.close().await;
+
+    assert!(super::open_recovering(&db).await.is_err(), "left as an error, not wiped");
+    assert!(db.exists(), "the newer catalog stays where it is");
+    let leftovers = std::fs::read_dir(dir.path()).unwrap().filter_map(Result::ok)
+        .filter(|e| e.file_name().to_string_lossy().contains("corrupt")).count();
+    assert_eq!(leftovers, 0);
 }

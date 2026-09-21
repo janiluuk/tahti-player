@@ -13,6 +13,7 @@ concurrency:
 permissions:
   contents: write
   pull-requests: write
+  actions: read # snapshot baseline: list/download master's digest artifact
 
 env:
   DO_NOT_TRACK: 1
@@ -89,10 +90,13 @@ jobs:
       - name: Lint
         run: pnpm turbo lint
 
+      - name: File size guard
+        run: pnpm check:file-size
+
       - name: Test
         id: test
         continue-on-error: true
-        run: pnpm turbo test
+        run: pnpm turbo test --continue
 
       - name: Build player (frontend-only)
         if: steps.rust-changes.outputs.rust != 'true'
@@ -126,8 +130,18 @@ jobs:
         if: steps.test.outcome == 'failure' && steps.playwright-cache.outputs.cache-hit == 'true'
         run: pnpm --filter @tahti-player/tahti-web exec playwright install-deps chromium
 
+      # The digest should list only what this PR changed: take the latest
+      # finished master run's digest as the baseline (see the script header).
+      - name: Fetch master snapshot baseline
+        if: steps.test.outcome == 'failure' && github.event_name == 'pull_request'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: scripts/ci/fetch-snapshot-baseline.sh ci.yml snapshot-digest
+
       - name: Build snapshot digest
         if: steps.test.outcome == 'failure'
+        continue-on-error: true
         run: node scripts/ci/build-snapshot-digest.mjs
         env:
           # Where this run's PNGs will live once published below, so the
@@ -140,6 +154,7 @@ jobs:
 
       - name: Write snapshot digest to job summary
         if: steps.test.outcome == 'failure'
+        continue-on-error: true
         run: |
           if [ -f snapshot-digest/digest.md ]; then
             cat snapshot-digest/digest.md >> "$GITHUB_STEP_SUMMARY"
@@ -147,6 +162,7 @@ jobs:
 
       - name: Upload snapshot digest artifact
         if: steps.test.outcome == 'failure'
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: snapshot-digest
@@ -156,6 +172,7 @@ jobs:
 
       - name: Publish visual snapshot diffs
         if: steps.test.outcome == 'failure' && github.event_name == 'pull_request'
+        continue-on-error: true
         run: node scripts/ci/publish-visual-snapshot-diffs.mjs
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -163,9 +180,24 @@ jobs:
 
       - name: Comment snapshot digest on PR
         if: steps.test.outcome == 'failure' && github.event_name == 'pull_request'
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           SNAPSHOT_DIGEST_MD: snapshot-digest/digest.md
+        with:
+          script: |
+            const { pathToFileURL } = require('node:url');
+            const mod = await import(
+              pathToFileURL(`${process.env.GITHUB_WORKSPACE}/scripts/ci/comment-snapshot-digest.mjs`).href
+            );
+            await mod.default({ github, context, core });
+
+      - name: Clear stale snapshot digest comment
+        if: steps.test.outcome == 'success' && github.event_name == 'pull_request'
+        continue-on-error: true
+        uses: actions/github-script@v7
+        env:
+          SNAPSHOT_DIGEST_CLEAR: '1'
         with:
           script: |
             const { pathToFileURL } = require('node:url');

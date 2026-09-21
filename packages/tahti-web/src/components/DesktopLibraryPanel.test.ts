@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { describeImportFailures } from './DesktopLibraryPanel';
+import { describeImportFailures } from './desktop-library/importFailures';
 
 describe('describeImportFailures', () => {
   it('lists each failing file by its base name with its error', () => {

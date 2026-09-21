@@ -32,6 +32,9 @@ const CAMERA_DISTANCE = 8;
 const CAMERA_FOV = 55;
 const MAX_PIXEL_RATIO = 2;
 const FREQUENCY_SAMPLE_COUNT = 96;
+// The scene is a backdrop: 30 fps looks the same and halves the GPU (or, on
+// software-rendered WebKit, CPU) cost of a full-window canvas.
+const FRAME_INTERVAL_MS = 1000 / 30;
 
 function readLevel(analyser: AnalyserNode | null, frequencyData: Uint8Array) {
   if (!analyser) {
@@ -81,6 +84,10 @@ export const ThreeVisualizer: FC<ThreeVisualizerProps> = ({
   const analyser = usePlayerStore((state) => state.analyser);
   const status = usePlayerStore((state) => state.status);
   const playing = status === 'playing' || status === 'loading';
+  // Read inside the frame loop so play/pause and the analyser arriving don't
+  // tear down and rebuild the whole WebGL context.
+  const live = useRef({ analyser, playing, audioReactive });
+  live.current = { analyser, playing, audioReactive };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -117,18 +124,34 @@ export const ThreeVisualizer: FC<ThreeVisualizerProps> = ({
     // this never clips or misaligns), rather than a per-preset "scale"
     // parameter each preset's build() would need to implement itself.
     scene.scale.setScalar(settings.scale);
-    const frequencyData = new Uint8Array(
-      new ArrayBuffer(analyser?.frequencyBinCount ?? 128),
-    );
+    let frequencyData = new Uint8Array(new ArrayBuffer(128));
     const clock = new THREE.Clock();
     let animationFrame = 0;
+    let lastFrame = 0;
+    let width = 0;
+    let height = 0;
 
-    const draw = () => {
-      const width = canvas.clientWidth || 1;
-      const height = canvas.clientHeight || 1;
-      renderer.setSize(width, height, false);
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
+    const draw = (now: number) => {
+      animationFrame = requestAnimationFrame(draw);
+      if (document.hidden || now - lastFrame < FRAME_INTERVAL_MS) {
+        return;
+      }
+      lastFrame = now;
+      const nextWidth = canvas.clientWidth || 1;
+      const nextHeight = canvas.clientHeight || 1;
+      if (nextWidth !== width || nextHeight !== height) {
+        width = nextWidth;
+        height = nextHeight;
+        renderer.setSize(width, height, false);
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+      }
+      const { analyser, playing, audioReactive } = live.current;
+      if (analyser && frequencyData.length !== analyser.frequencyBinCount) {
+        frequencyData = new Uint8Array(
+          new ArrayBuffer(analyser.frequencyBinCount),
+        );
+      }
       const elapsed = clock.getElapsedTime() * settings.speed;
       const level =
         audioReactive && playing
@@ -136,7 +159,6 @@ export const ThreeVisualizer: FC<ThreeVisualizerProps> = ({
           : 0.2 + Math.sin(elapsed * 2.2) * 0.14;
       presetScene.update(elapsed, level * settings.intensity);
       renderer.render(scene, camera);
-      animationFrame = requestAnimationFrame(draw);
     };
 
     animationFrame = requestAnimationFrame(draw);
@@ -146,7 +168,7 @@ export const ThreeVisualizer: FC<ThreeVisualizerProps> = ({
       disposeScene(scene);
       renderer.dispose();
     };
-  }, [analyser, artworkUrl, audioReactive, playing, preset, scheme, settings]);
+  }, [artworkUrl, preset, scheme, settings]);
 
   return (
     <div

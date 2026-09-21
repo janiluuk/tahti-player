@@ -22,3 +22,5 @@ flatpak/.flatpak-cargo-generator.py
 
 # Local signing key material — never commit
 .keys/
+
+snapshot-baseline/

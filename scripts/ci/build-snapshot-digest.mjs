@@ -26,17 +26,30 @@ const PUBLIC_BASE_URL = process.env.SNAPSHOT_DIFF_PUBLIC_BASE_URL?.replace(
   '',
 );
 
-let cachedAppCss;
+const cssCache = new Map();
+const APP_BUNDLES = ['player', 'tahti-web'];
 
-const failures = collectFailures(ROOT);
+const allFailures = collectFailures(ROOT);
+const baseline = loadBaseline();
+const failures = [];
+const standing = [];
+for (const failure of allFailures) {
+  failure.fingerprint = fingerprintOf(failure);
+  (baseline && isInBaseline(baseline, failure) ? standing : failures).push(
+    failure,
+  );
+}
 
 mkdirSync(OUT_DIR, { recursive: true });
 
-if (failures.length === 0) {
+if (allFailures.length === 0) {
   const empty = {
     generatedAt: new Date().toISOString(),
     count: 0,
+    newCount: 0,
+    standingCount: 0,
     items: [],
+    standing: [],
   };
   writeFileSync(
     path.join(OUT_DIR, 'digest.json'),
@@ -68,14 +81,21 @@ for (const [index, failure] of failures.entries()) {
   const receivedPath = path.join(OUT_DIR, `${slug}.received.html`);
 
   if (expectedHtml) {
-    writeFileSync(expectedPath, wrapHtmlDocument(expectedHtml, 'Expected'));
+    writeFileSync(
+      expectedPath,
+      wrapHtmlDocument(expectedHtml, 'Expected', failure.packageName),
+    );
   }
   if (receivedHtml) {
-    writeFileSync(receivedPath, wrapHtmlDocument(receivedHtml, 'Received'));
+    writeFileSync(
+      receivedPath,
+      wrapHtmlDocument(receivedHtml, 'Received', failure.packageName),
+    );
   }
 
   items.push({
     id: slug,
+    fingerprint: failure.fingerprint,
     packageName: failure.packageName,
     file: relativize(failure.file),
     testName: failure.testName,
@@ -95,8 +115,20 @@ maybeDiffImages(items);
 
 const digest = {
   generatedAt: new Date().toISOString(),
-  count: items.length,
+  // `count` is every mismatch in the run (CI uses it to tell snapshot-only
+  // failures from other test failures); `items` and the markdown cover only
+  // the ones this PR introduced or changed.
+  count: allFailures.length,
+  newCount: items.length,
+  standingCount: standing.length,
+  baselineAvailable: baseline !== null,
   items,
+  standing: standing.map((failure) => ({
+    fingerprint: failure.fingerprint,
+    packageName: failure.packageName,
+    file: relativize(failure.file),
+    testName: failure.testName,
+  })),
 };
 
 writeFileSync(
@@ -104,7 +136,72 @@ writeFileSync(
   JSON.stringify(digest, null, 2),
 );
 writeFileSync(path.join(OUT_DIR, 'digest.md'), renderMarkdown(digest));
-console.log(`snapshot-digest: wrote ${items.length} item(s) to ${OUT_DIR}`);
+console.log(
+  `snapshot-digest: wrote ${items.length} new and ${standing.length} standing item(s) to ${OUT_DIR}`,
+);
+
+/** Identifies a mismatch across runs: package, file, test and a hash of what
+ * was received (so the same test failing in a *different* way still counts
+ * as new). Absolute checkout paths and ANSI codes are normalized away. */
+function fingerprintOf(failure) {
+  const received = stripAnsi(failure.receivedHtml ?? failure.message ?? '')
+    .replaceAll(ROOT, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return createHash('sha1')
+    .update(
+      [
+        failure.packageName,
+        relativize(failure.file),
+        failure.testName,
+        received,
+      ].join('\0'),
+    )
+    .digest('hex');
+}
+
+/** The base branch's mismatches, from its own `digest.json` (downloaded by
+ * CI into `snapshot-baseline/`). `null` when there is none, in which case
+ * every mismatch is treated as new. Entries from before fingerprints existed
+ * match on package + file + test name only. */
+function loadBaseline() {
+  const file =
+    process.env.SNAPSHOT_BASELINE_JSON ||
+    path.join(ROOT, 'snapshot-baseline', 'digest.json');
+  if (!existsSync(file)) {
+    return null;
+  }
+  try {
+    const payload = JSON.parse(readFileSync(file, 'utf8'));
+    const entries = [...(payload.items ?? []), ...(payload.standing ?? [])];
+    const strong = new Set();
+    const loose = new Set();
+    for (const entry of entries) {
+      if (entry.fingerprint) {
+        strong.add(entry.fingerprint);
+      } else {
+        loose.add(looseKey(entry));
+      }
+    }
+    return { strong, loose };
+  } catch (error) {
+    console.warn(
+      `snapshot-digest: ignoring baseline ${file}: ${error.message}`,
+    );
+    return null;
+  }
+}
+
+function looseKey(entry) {
+  return [entry.packageName, relativize(entry.file), entry.testName].join('\0');
+}
+
+function isInBaseline(baseline, failure) {
+  return (
+    baseline.strong.has(failure.fingerprint) ||
+    baseline.loose.has(looseKey(failure))
+  );
+}
 
 async function loadChromium() {
   const candidates = [
@@ -166,40 +263,63 @@ function collectFailures(root) {
   return collected;
 }
 
-/** Concatenated real app CSS (Tailwind utilities + @tahti-player/ui + theme
- * tokens) from the built tahti-web bundle, so a snapshot's rendered PNG
- * actually looks like the app instead of unstyled HTML. `pnpm turbo build`
- * runs before tests in CI, so `dist/assets/*.css` exists by the time this
- * script runs; falls back to a plain dark stub (old behavior) if it
- * doesn't — e.g. a local ad-hoc run with no prior build. */
-function loadAppCss() {
-  if (cachedAppCss !== undefined) {
-    return cachedAppCss;
-  }
-  const assetsDir = path.join(ROOT, 'packages/tahti-web/dist/assets');
+/** Real app CSS (Tailwind utilities + @tahti-player/ui + theme tokens) from
+ * a built bundle, so a snapshot's rendered PNG looks like the app instead of
+ * unstyled HTML. Each package's snapshots render with the bundle of the app
+ * that owns them (`packages/<name>/dist/assets`, e.g. the player's own
+ * Tailwind build — not tahti-web's, which has a different class/theme set);
+ * falls back to any other built app bundle, then to a plain dark stub. Both
+ * app builds run before the digest step in CI. */
+
+function readBundleCss(name) {
+  const assetsDir = path.join(ROOT, 'packages', name, 'dist/assets');
   if (!existsSync(assetsDir)) {
-    cachedAppCss = null;
-    return cachedAppCss;
+    return null;
   }
-  const cssFiles = readdirSync(assetsDir).filter((f) => f.endsWith('.css'));
+  const cssFiles = readdirSync(assetsDir)
+    .filter((f) => f.endsWith('.css'))
+    .sort();
   if (cssFiles.length === 0) {
-    cachedAppCss = null;
-    return cachedAppCss;
+    return null;
   }
-  cachedAppCss = cssFiles
+  return cssFiles
     .map((f) => readFileSync(path.join(assetsDir, f), 'utf8'))
     .join('\n');
-  return cachedAppCss;
 }
 
-function wrapHtmlDocument(fragment, title) {
-  const appCss = loadAppCss();
+function loadAppCss(packageName) {
+  const order = [packageName, ...APP_BUNDLES].filter(
+    (name, i, all) => name && all.indexOf(name) === i,
+  );
+  for (const name of order) {
+    if (!cssCache.has(name)) {
+      cssCache.set(name, readBundleCss(name));
+    }
+    const css = cssCache.get(name);
+    if (css) {
+      return css;
+    }
+  }
+  console.warn(
+    `snapshot-digest: no built app CSS found for ${packageName} (looked in ${order
+      .map((n) => `packages/${n}/dist/assets`)
+      .join(', ')}); rendering unstyled`,
+  );
+  return null;
+}
+
+function wrapHtmlDocument(fragment, title, packageName) {
+  const appCss = loadAppCss(packageName);
+  // Full-window app roots use h-screen/w-screen: pin them to the capture
+  // viewport (900x700, minus the ~32px label row) so they can't overflow it.
   const baseStyle = appCss
-    ? 'body { margin: 0; padding: 24px 24px 48px; }'
+    ? `body { margin: 0; padding: 0; }
+    .h-screen { height: 668px; }
+    .w-screen { width: 100%; }`
     : `:root { color-scheme: dark; }
     body { margin: 0; padding: 24px 24px 48px; font-family: ui-sans-serif, system-ui, sans-serif; background: #0b1220; color: #f8fafc; }`;
   const labelStyle =
-    '.tahti-snapshot-label { font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.6; margin-bottom: 12px; }';
+    '.tahti-snapshot-label { font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.6; padding: 8px 12px; }';
 
   return `<!doctype html>
 <html lang="en" data-theme="dark">
@@ -373,10 +493,22 @@ function renderMarkdown(digest) {
     ? 'Expected/received/diff screenshots are rendered with the real app CSS and embedded inline below.'
     : 'PNG screenshots (and full HTML) are in this run’s **snapshot-digest** artifact — no public image host configured for this run, so they aren’t inlined.';
 
+  const standingNote = renderStanding(digest);
+
+  if (digest.items.length === 0) {
+    return [
+      '## Snapshot digest',
+      '',
+      '_No new snapshot differences in this PR._',
+      '',
+      standingNote,
+    ].join('\n');
+  }
+
   return [
     '## Snapshot digest',
     '',
-    `${digest.count} Vitest snapshot mismatch(es). Review the list, then update with:`,
+    `${digest.items.length} new Vitest snapshot mismatch(es) in this PR. Review the list, then update with:`,
     '',
     '```bash',
     'pnpm --filter <package> test -- -u -- <test-file>',
@@ -389,6 +521,27 @@ function renderMarkdown(digest) {
     ...rows,
     '',
     details,
+    standingNote,
+  ].join('\n');
+}
+
+/** One collapsed block for mismatches that already fail on the base branch. */
+function renderStanding(digest) {
+  if (!digest.standing?.length) {
+    return digest.baselineAvailable
+      ? ''
+      : '_No master baseline was available, so every mismatch is listed as new._\n';
+  }
+  return [
+    '<details>',
+    `<summary>${digest.standing.length} mismatch(es) already failing on master (not from this PR)</summary>`,
+    '',
+    ...digest.standing.map(
+      (entry) => `- \`${entry.packageName}\` — ${escapeMd(entry.testName)}`,
+    ),
+    '',
+    '</details>',
+    '',
   ].join('\n');
 }
 

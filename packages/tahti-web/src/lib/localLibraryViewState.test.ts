@@ -1,17 +1,42 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
   DEFAULT_VIEW_STATE,
+  flushViewState,
   loadViewState,
   resetViewStateForTests,
   rowsToRestore,
   saveViewState,
+  saveViewStateDeferred,
 } from './localLibraryViewState';
 import { countActiveFilters, EMPTY_TRACK_FILTERS } from './nativeLibrary';
 
 beforeEach(() => {
   resetViewStateForTests();
   window.sessionStorage.clear();
+});
+
+afterEach(() => vi.useRealTimers());
+
+describe('deferred scroll saving', () => {
+  it('keeps memory current, writes storage once per burst, and flushes on demand', () => {
+    vi.useFakeTimers();
+    for (let offset = 1; offset <= 50; offset += 1) {
+      saveViewStateDeferred({ scrollOffset: offset * 10 });
+    }
+    expect(loadViewState().scrollOffset).toBe(500);
+    expect(window.sessionStorage.length).toBe(0);
+    vi.advanceTimersByTime(300);
+    expect(window.sessionStorage.length).toBe(1);
+
+    saveViewStateDeferred({ scrollOffset: 900 });
+    resetViewStateForTests();
+    expect(loadViewState().scrollOffset).toBe(500); // not written yet
+    saveViewStateDeferred({ scrollOffset: 900 });
+    flushViewState();
+    resetViewStateForTests();
+    expect(loadViewState().scrollOffset).toBe(900);
+  });
 });
 
 describe('localLibraryViewState', () => {

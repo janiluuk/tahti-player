@@ -133,12 +133,12 @@ exports[`HistoryRow > (Snapshot) renders with artwork and all actions 1`] = `
           class="pointer-events-none absolute inset-0 bg-black/0 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:bg-black/45 [@media(hover:hover)_and_(pointer:fine)]:group-hover:bg-black/45 [@media(hover:none)]:bg-black/35"
         />
         <div
-          class="pointer-events-none absolute inset-0 flex items-center justify-center opacity-100 transition-opacity [@media(hover:hover)_and_(pointer:fine)]:invisible [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:visible [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:visible [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:opacity-100"
+          class="pointer-events-none absolute inset-0 flex items-center justify-center"
         >
           <div>
             <button
               aria-label="Play"
-              class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center pointer-events-auto rounded-full text-white"
+              class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center pointer-events-auto rounded-full opacity-100 transition-opacity [@media(hover:hover)_and_(pointer:fine)]:invisible [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:visible [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:visible [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:opacity-100 text-white"
               data-headlessui-state=""
               data-testid="media-artwork-play"
               type="button"
