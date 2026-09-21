@@ -44,27 +44,79 @@ const fadeVariants = {
   exit: { opacity: 0 },
 };
 
+type Router = ReturnType<typeof useRouter>;
+
+/** A read-only store that never changes: the shape react-store's
+ * `useSelector` needs (`get` + `subscribe`). */
+function frozenStore<T>(value: T) {
+  return {
+    get: () => value,
+    subscribe: () => ({ unsubscribe: () => undefined }),
+  };
+}
+
+/** Copies the router's current state out of its stores. The router clears a
+ * route's match store the moment the route leaves, so the exiting page needs
+ * its own copy to keep rendering while it animates out. */
+function snapshotRouterStores(router: Router) {
+  const { stores } = router;
+  const matchesByRoute = new Map(
+    [...stores.byRoute].map(([id, store]) => [id, store.get()]),
+  );
+  return {
+    state: stores.__store.get(),
+    status: stores.status.get(),
+    location: stores.location.get(),
+    resolvedLocation: stores.resolvedLocation.get(),
+    ids: stores.ids.get(),
+    matches: stores.matches.get(),
+    matchesByRoute,
+  };
+}
+
+type RouterSnapshot = ReturnType<typeof snapshotRouterStores>;
+
+/** A router whose stores all return `snapshot` forever. */
+function frozenRouter(router: Router, snapshot: RouterSnapshot): Router {
+  const stores = {
+    ...router.stores,
+    __store: frozenStore(snapshot.state),
+    status: frozenStore(snapshot.status),
+    location: frozenStore(snapshot.location),
+    resolvedLocation: frozenStore(snapshot.resolvedLocation),
+    ids: frozenStore(snapshot.ids),
+    matches: frozenStore(snapshot.matches),
+    byRoute: new Map(
+      [...snapshot.matchesByRoute].map(([id, match]) => [
+        id,
+        frozenStore(match),
+      ]),
+    ),
+    getMatchStore: (routeId: string) =>
+      frozenStore(snapshot.matchesByRoute.get(routeId)),
+  };
+  const proxy = Object.create(router) as Router;
+  Object.defineProperty(proxy, 'stores', { value: stores });
+  return proxy;
+}
+
 const AnimatedOutlet = forwardRef<HTMLDivElement, { fast?: boolean }>(
   ({ fast = false }, ref) => {
     const router = useRouter();
     const isPresent = useIsPresent();
     const reducedMotion = useReducedMotion();
-    const frozenState = useRef(router.__store.state);
-    const frozenRouter = useRef(router);
+    const frozenSnapshot = useRef<RouterSnapshot | null>(null);
+    const frozen = useRef<Router | null>(null);
 
     if (isPresent) {
-      frozenState.current = router.__store.state;
-      frozenRouter.current = router;
-    } else if (frozenRouter.current === router) {
-      const snapshot = frozenState.current;
-      const storeProxy = Object.create(router.__store) as typeof router.__store;
-      Object.defineProperty(storeProxy, 'state', { get: () => snapshot });
-      Object.defineProperty(storeProxy, 'get', { value: () => snapshot });
-
-      const routerProxy = Object.create(router) as typeof router;
-      Object.defineProperty(routerProxy, '__store', { value: storeProxy });
-      frozenRouter.current = routerProxy;
+      // Cheap enough to redo per render, and it keeps the copy current up to
+      // the moment the route starts leaving.
+      frozenSnapshot.current = snapshotRouterStores(router);
+      frozen.current = null;
+    } else if (!frozen.current && frozenSnapshot.current) {
+      frozen.current = frozenRouter(router, frozenSnapshot.current);
     }
+    const outletRouter = frozen.current ?? router;
 
     return (
       <motion.div
@@ -83,7 +135,7 @@ const AnimatedOutlet = forwardRef<HTMLDivElement, { fast?: boolean }>(
           ease: 'easeOut',
         }}
       >
-        <RouterContextProvider router={frozenRouter.current}>
+        <RouterContextProvider router={outletRouter}>
           <Outlet />
         </RouterContextProvider>
       </motion.div>
