@@ -26,6 +26,9 @@ const PUBLIC_BASE_URL = process.env.SNAPSHOT_DIFF_PUBLIC_BASE_URL?.replace(
   '',
 );
 
+const cssCache = new Map();
+const APP_BUNDLES = ['player', 'tahti-web'];
+
 const allFailures = collectFailures(ROOT);
 const baseline = loadBaseline();
 const failures = [];
@@ -267,8 +270,6 @@ function collectFailures(root) {
  * Tailwind build — not tahti-web's, which has a different class/theme set);
  * falls back to any other built app bundle, then to a plain dark stub. Both
  * app builds run before the digest step in CI. */
-const cssCache = new Map();
-const APP_BUNDLES = ['player', 'tahti-web'];
 
 function readBundleCss(name) {
   const assetsDir = path.join(ROOT, 'packages', name, 'dist/assets');
