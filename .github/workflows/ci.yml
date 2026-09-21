@@ -90,6 +90,9 @@ jobs:
       - name: Lint
         run: pnpm turbo lint
 
+      - name: File size guard
+        run: pnpm check:file-size
+
       - name: Test
         id: test
         continue-on-error: true
