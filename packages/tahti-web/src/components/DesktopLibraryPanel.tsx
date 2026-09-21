@@ -2,6 +2,7 @@ import {
   ActivityIcon,
   FolderOpenIcon,
   FolderPlusIcon,
+  FolderTreeIcon,
   InfoIcon,
   LaptopIcon,
   LibraryIcon,
@@ -77,6 +78,7 @@ import { LocalLibraryFilters } from './LocalLibraryFilters';
 import { LocalLibraryTools } from './LocalLibraryTools';
 import { LocalPlaylists } from './LocalPlaylists';
 import { NATIVE_TRACK_COLUMNS, toNativeSort } from './nativeTrackColumns';
+import { OrganizeFilesDialog } from './OrganizeFilesDialog';
 import { PlayableTrackTable } from './PlayableTrackTable';
 import { TrackEditorDialog } from './TrackEditorDialog';
 import { TrackInspectorDialog } from './TrackInspectorDialog';
@@ -168,6 +170,9 @@ export function DesktopLibraryPanel() {
   >([]);
   const [editingIds, setEditingIds] = useState<string[] | null>(null);
   const [writingIds, setWritingIds] = useState<string[] | null>(null);
+  const [organizingFilesIds, setOrganizingFilesIds] = useState<string[] | null>(
+    null,
+  );
   const [organizingIds, setOrganizingIds] = useState<string[] | null>(null);
   const [analyzingSelection, setAnalyzingSelection] = useState(false);
   const [openPlaylistId, setOpenPlaylistId] = useState<string | null>(
@@ -1349,6 +1354,17 @@ export function DesktopLibraryPanel() {
                         <Button
                           size="sm"
                           variant="text"
+                          disabled={selectionBusy}
+                          onClick={() =>
+                            setOrganizingFilesIds([...selectedIds])
+                          }
+                        >
+                          <FolderTreeIcon size={14} aria-hidden />
+                          Organize files
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="text"
                           disabled={selectionBusy || analyzingSelection}
                           onClick={() => void analyzeSelection()}
                         >
@@ -1674,6 +1690,13 @@ export function DesktopLibraryPanel() {
             onClose={() => setWritingIds(null)}
             library={nativeLibrary}
             ids={writingIds ?? []}
+            onChanged={() => void refreshNative()}
+          />
+          <OrganizeFilesDialog
+            isOpen={organizingFilesIds !== null}
+            onClose={() => setOrganizingFilesIds(null)}
+            library={nativeLibrary}
+            ids={organizingFilesIds ?? []}
             onChanged={() => void refreshNative()}
           />
           <TrackOrganizeDialog

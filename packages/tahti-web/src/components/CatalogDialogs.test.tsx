@@ -15,6 +15,7 @@ import type {
 } from '../lib/nativeLibrary';
 import { BackupRestoreDialog } from './BackupRestoreDialog';
 import { DuplicatesDialog } from './DuplicatesDialog';
+import { OrganizeFilesDialog } from './OrganizeFilesDialog';
 import { PlayHistoryDialog } from './PlayHistoryDialog';
 import { TrackEditorDialog } from './TrackEditorDialog';
 import { TrackOrganizeDialog } from './TrackOrganizeDialog';
@@ -561,5 +562,80 @@ describe('Inspector provenance', () => {
       await screen.findByText(/Edited · file says Typo/),
     ).toBeInTheDocument();
     expect(screen.getAllByText(/Edited ·/)).toHaveLength(1);
+  });
+});
+
+describe('OrganizeFilesDialog', () => {
+  const plan = {
+    items: [
+      { id: 'a', from: '/in/a.flac', to: '/out/A/B/a.flac', status: 'ready' },
+    ],
+    ready: 1,
+    unchanged: 0,
+    collisions: 0,
+    missing: 0,
+    originalsInWatchedFolders: 0,
+  } as const;
+
+  const setup = (
+    organizeApply = vi.fn(async () => ({
+      done: 1,
+      skipped: 0,
+      errors: [],
+    })),
+  ) => {
+    render(
+      <OrganizeFilesDialog
+        isOpen
+        onClose={() => undefined}
+        ids={['a']}
+        onChanged={() => undefined}
+        library={withCatalog({
+          organizePickDestination: vi.fn(async () => '/out'),
+          organizePreview: vi.fn(async () => ({
+            ...plan,
+            items: [...plan.items],
+          })),
+          organizeApply,
+        })}
+      />,
+    );
+    return organizeApply;
+  };
+
+  it('needs a destination, previews, then copies without a second prompt', async () => {
+    const organizeApply = setup();
+    expect(screen.getByRole('button', { name: 'Copy files' })).toBeDisabled();
+    fireEvent.click(screen.getByRole('button', { name: /Choose/ }));
+    expect(
+      await screen.findByText(/1 file will be copied/),
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Copy files' }));
+    await waitFor(() =>
+      expect(organizeApply).toHaveBeenCalledWith(
+        expect.objectContaining({ destination: '/out', mode: 'copy' }),
+        false,
+      ),
+    );
+  });
+
+  it('asks again before moving the originals', async () => {
+    const organizeApply = setup();
+    fireEvent.click(screen.getByRole('button', { name: /Choose/ }));
+    await screen.findByText(/will be copied/);
+    fireEvent.click(screen.getByRole('switch', { name: /Move files instead/ }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Move files' }));
+    expect(await screen.findByText('Move these files?')).toBeInTheDocument();
+    expect(organizeApply).not.toHaveBeenCalled();
+    const confirm = screen
+      .getAllByRole('button', { name: 'Move files', hidden: true })
+      .at(-1)!;
+    fireEvent.click(confirm);
+    await waitFor(() =>
+      expect(organizeApply).toHaveBeenCalledWith(
+        expect.objectContaining({ mode: 'move' }),
+        true,
+      ),
+    );
   });
 });

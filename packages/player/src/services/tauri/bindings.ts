@@ -278,6 +278,10 @@ export const commands = {
 	libraryClearPlayHistory: () => typedError<null, string>(__TAURI_INVOKE("library_clear_play_history")),
 	libraryWriteTagsPreview: (ids: string[]) => typedError<WriteTagsPreview, string>(__TAURI_INVOKE("library_write_tags_preview", { ids })),
 	libraryWriteTags: (ids: string[], keepBackup: boolean) => typedError<WriteTagsResult, string>(__TAURI_INVOKE("library_write_tags", { ids, keepBackup })),
+	/**  Asks for the destination folder; `None` if cancelled. */
+	libraryOrganizePickDestination: () => typedError<string | null, string>(__TAURI_INVOKE("library_organize_pick_destination")),
+	libraryOrganizePreview: (ids: string[], destination: string, template: string, collision: Collision, mode: OrganizeMode) => typedError<OrganizePlan, string>(__TAURI_INVOKE("library_organize_preview", { ids, destination, template, collision, mode })),
+	libraryOrganizeApply: (ids: string[], destination: string, template: string, collision: Collision, mode: OrganizeMode, confirmed: boolean) => typedError<OrganizeResult, string>(__TAURI_INVOKE("library_organize_apply", { ids, destination, template, collision, mode, confirmed })),
 	libraryBackupExport: () => typedError<{
 	path: string,
 	tracks: number,
@@ -389,6 +393,12 @@ export type BridgeResponse = {
 } & BridgeResponseBody;
 
 export type BridgeResponseBody = { status: "success"; data: unknown } | { status: "error"; error: string };
+
+export type Collision = 
+/**  Leave a track alone when its target already exists. */
+"skip" | 
+/**  Keep both: append " (2)", " (3)"… to the new file name. */
+"suffix";
 
 /**  What one track's correction looked like, for undo. */
 export type CorrectionSnapshot = {
@@ -715,6 +725,46 @@ export type MergeResult = {
 	removed: number,
 	playlistEntriesMoved: number,
 };
+
+export type OrganizeItem = {
+	id: string,
+	from: string,
+	to: string,
+	status: OrganizeStatus,
+};
+
+export type OrganizeMode = 
+/**  Copy the file into the destination; the catalog then points at the copy. */
+"copy" | 
+/**  Move the file (changes the original location). */
+"move";
+
+export type OrganizePlan = {
+	items: OrganizeItem[],
+	ready: number,
+	unchanged: number,
+	collisions: number,
+	missing: number,
+	/**
+	 *  Copy only: originals inside a watched folder would be picked up again
+	 *  by the next scan as new tracks.
+	 */
+	originalsInWatchedFolders: number,
+};
+
+export type OrganizeResult = {
+	done: number,
+	skipped: number,
+	errors: string[],
+};
+
+export type OrganizeStatus = "ready" | 
+/**  Already at its target path. */
+"unchanged" | 
+/**  Target exists (on disk or planned for another track). */
+"collision" | 
+/**  The source file is not there. */
+"missing";
 
 export type Page<T> = {
 	items: T[],

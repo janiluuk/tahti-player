@@ -460,6 +460,35 @@ export type NativeWriteTagsPreview = {
   formats: string[];
 };
 
+export type NativeOrganizeMode = 'copy' | 'move';
+export type NativeOrganizeCollision = 'skip' | 'suffix';
+export type NativeOrganizeItem = {
+  id: string;
+  from: string;
+  to: string;
+  status: 'ready' | 'unchanged' | 'collision' | 'missing';
+};
+export type NativeOrganizePlan = {
+  items: NativeOrganizeItem[];
+  ready: number;
+  unchanged: number;
+  collisions: number;
+  missing: number;
+  originalsInWatchedFolders: number;
+};
+export type NativeOrganizeResult = {
+  done: number;
+  skipped: number;
+  errors: string[];
+};
+export type NativeOrganizeOptions = {
+  ids: string[];
+  destination: string;
+  template: string;
+  collision: NativeOrganizeCollision;
+  mode: NativeOrganizeMode;
+};
+
 export type NativeWriteTagsResult = {
   written: number;
   skipped: NativeWriteSkip[];
@@ -520,6 +549,17 @@ export type NativeCatalog = {
     ids: string[],
     keepBackup: boolean,
   ) => Promise<NativeWriteTagsResult>;
+  /** Asks for the destination folder of an organize; `null` if cancelled. */
+  organizePickDestination: () => Promise<string | null>;
+  /** What organizing would copy/move where; nothing is touched. */
+  organizePreview: (
+    options: NativeOrganizeOptions,
+  ) => Promise<NativeOrganizePlan>;
+  /** Copies or moves files into the layout. A move needs `confirmed`. */
+  organizeApply: (
+    options: NativeOrganizeOptions,
+    confirmed: boolean,
+  ) => Promise<NativeOrganizeResult>;
   /** Asks where to save, writes the backup. `null` if cancelled. */
   exportBackup: () => Promise<NativeBackupSummary | null>;
   /** Asks for a backup file; `null` if cancelled. */
@@ -995,6 +1035,7 @@ export function withReadCache(library: TahtiNativeLibrary): TahtiNativeLibrary {
       mergeTracks: mutating(library.catalog.mergeTracks),
       clearPlayHistory: mutating(library.catalog.clearPlayHistory),
       writeTags: mutating(library.catalog.writeTags),
+      organizeApply: mutating(library.catalog.organizeApply),
       restoreBackup: mutating(library.catalog.restoreBackup),
     },
   };

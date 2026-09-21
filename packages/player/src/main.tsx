@@ -214,6 +214,35 @@ const baseNativeLibrary: TahtiNativeLibrary = {
     async writeTags(ids, keepBackup) {
       return unwrapResult(await commands.libraryWriteTags(ids, keepBackup));
     },
+    async organizePickDestination() {
+      return unwrapResult(await commands.libraryOrganizePickDestination());
+    },
+    async organizePreview({ ids, destination, template, collision, mode }) {
+      return unwrapResult(
+        await commands.libraryOrganizePreview(
+          ids,
+          destination,
+          template,
+          collision,
+          mode,
+        ),
+      );
+    },
+    async organizeApply(
+      { ids, destination, template, collision, mode },
+      confirmed,
+    ) {
+      return unwrapResult(
+        await commands.libraryOrganizeApply(
+          ids,
+          destination,
+          template,
+          collision,
+          mode,
+          confirmed,
+        ),
+      );
+    },
     async exportBackup() {
       return unwrapResult(await commands.libraryBackupExport());
     },

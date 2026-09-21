@@ -27,7 +27,7 @@ pub(super) async fn pool() -> SqlitePool {
 }
 
 /// Writes a minimal PCM16 mono WAV file symphonia can decode and tag.
-fn write_wav(path: &std::path::Path, title: &str, artist: &str) {
+pub(super) fn write_wav(path: &std::path::Path, title: &str, artist: &str) {
     write_wav_tagged(path, &[("INAM", title), ("IART", artist)]);
 }
 

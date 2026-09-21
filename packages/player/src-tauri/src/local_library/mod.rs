@@ -4,6 +4,7 @@ pub mod analysis_dsp;
 pub mod backup;
 pub mod catalog;
 pub mod m3u;
+pub mod organize;
 pub mod playlists;
 pub mod reconcile;
 pub mod smart_playlists;
