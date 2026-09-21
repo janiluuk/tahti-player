@@ -73,3 +73,11 @@ Behavior stays identical: mechanical splits along existing seams, tests move wit
 - **Right rail re-expanded on every render** while docked (users couldn't keep it collapsed); now opens once when docking starts.
 - **`onLookVisibilityChange`** in an effect dependency list re-ran the effect (and re-notified the parent) for any caller passing an inline callback; now via ref. `lookVisibility` initial state reads localStorage lazily instead of every render.
 - Not fixed: `dirty` is cleared after a successful save even if the user edited during the in-flight save (the Save button is disabled only while `busy`, so the window is small).
+
+## Next up (2026-09-22)
+
+- [ ] Finish splitting `ChannelDesigner.tsx` (1713 lines): a `useChannelLook` state hook (load / save / preset actions), `buildVisualPatch` and the `LookSnapshot` helpers as pure functions with unit tests, the ~230-line final render, and the panel slot builders.
+- [ ] `ChannelDesigner`: `dirty` is cleared after a successful save even if the user edited while the save was in flight; track a revision counter and only clear when nothing changed since the save started.
+- [ ] Split `ChannelView.tsx` (1577), then `StudioProEditorView.tsx` (1498), `ArtistView.tsx` (1409), `ServiceCategory.tsx` (1401): audit each for bugs first, as with the designer.
+- [ ] Visually verify the designer changes in the running app (slideshow reorder preview, Reset/Revert with a pending backdrop file, gradient toggles, right-rail collapse); only unit and smoke tests cover them so far.
+- [ ] `ui` `QueuePanel` test "skips offscreen layout only for long queues" failed once in a full `ui` run but passes alone; check whether it is flaky.
