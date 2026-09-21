@@ -24,10 +24,8 @@ import {
   type NativeFilterOptions,
   type NativeLibraryImportProgress,
   type NativeLibraryImportResult,
-  type NativeLibraryRoot,
   type NativeLibraryTotals,
   type NativeLibraryTrack,
-  type NativeRootScanResult,
   type NativeTrackFilters,
 } from '../lib/nativeLibrary';
 import { preparePlayables } from '../lib/nativePlayback';
@@ -35,10 +33,12 @@ import { usePlayerStore } from '../stores/playerStore';
 import { AddToPlaylistDialog } from './AddToPlaylistDialog';
 import { ConfirmDialog } from './ConfirmDialog';
 import { BrowserLocalFiles } from './desktop-library/BrowserLocalFiles';
+import { describeImportFailures } from './desktop-library/importFailures';
 import { LibraryRootsBlock } from './desktop-library/LibraryRootsBlock';
 import { basename } from './desktop-library/pathLabels';
 import { SelectionToolbar } from './desktop-library/SelectionToolbar';
 import { TrackRowActions } from './desktop-library/TrackRowActions';
+import { useLibraryRoots } from './desktop-library/useLibraryRoots';
 import { useNativeLibraryList } from './desktop-library/useNativeLibraryList';
 import { runAnalysis } from './LocalLibraryAnalysis';
 import {
@@ -143,6 +143,24 @@ export function DesktopLibraryPanel() {
     filters,
     restoreRef,
   });
+  const refreshNativeRef = useRef<() => Promise<void>>(() => Promise.resolve());
+  const {
+    roots,
+    setRoots,
+    watching,
+    rootBusy,
+    rootToRemove,
+    setRootToRemove,
+    changeWatching,
+    addRoot,
+    rescanRoots,
+    relinkRoot,
+    removeRoot,
+  } = useLibraryRoots(
+    nativeLibrary,
+    () => refreshNativeRef.current(),
+    () => setNativeProgress(null),
+  );
   const initialScrollRef = useRef(initialView.scrollOffset);
   const loadedCountRef = useRef(0);
   const scopeChangedRef = useRef(false);
@@ -150,15 +168,6 @@ export function DesktopLibraryPanel() {
   const [facetLoading, setFacetLoading] = useState(false);
   const [totals, setTotals] = useState<NativeLibraryTotals | null>(null);
   const [catalogVersion, setCatalogVersion] = useState(0);
-  const [roots, setRoots] = useState<NativeLibraryRoot[]>([]);
-  const [watching, setWatching] = useState(true);
-  const [rootBusy, setRootBusy] = useState<string | 'add' | 'rescan' | null>(
-    null,
-  );
-  const [rootToRemove, setRootToRemove] = useState<NativeLibraryRoot | null>(
-    null,
-  );
-
   useEffect(() => {
     const timer = window.setTimeout(
       () => setDebouncedNativeQuery(nativeQuery),
@@ -177,10 +186,6 @@ export function DesktopLibraryPanel() {
   }, [nativeLibrary]);
 
   useEffect(() => {
-    void nativeLibrary?.getWatching?.().then(setWatching, () => {});
-  }, [nativeLibrary]);
-
-  useEffect(() => {
     void nativeLibrary?.takeRecoveryNotice?.().then(
       (movedTo) => {
         if (movedTo) {
@@ -192,38 +197,6 @@ export function DesktopLibraryPanel() {
       },
       () => {},
     );
-  }, [nativeLibrary]);
-
-  const changeWatching = async (enabled: boolean) => {
-    if (!nativeLibrary?.setWatching) {
-      return;
-    }
-    setWatching(enabled);
-    try {
-      await nativeLibrary.setWatching(enabled);
-      toast.success(
-        enabled
-          ? 'Watching folders for changes.'
-          : 'Folder watching paused — use Rescan to pick up changes.',
-      );
-    } catch (error) {
-      setWatching(!enabled);
-      toast.error(
-        error instanceof Error ? error.message : 'Could not change watching.',
-      );
-    }
-  };
-
-  // The folder watcher reconciles roots on its own; refresh when it changed
-  // something so the list never shows stale rows.
-  useEffect(() => {
-    if (!nativeLibrary?.onRootsChanged) {
-      return;
-    }
-    return nativeLibrary.onRootsChanged((result) => {
-      void refreshNativeRef.current();
-      describeRootScan(result);
-    });
   }, [nativeLibrary]);
 
   useEffect(() => {
@@ -337,7 +310,6 @@ export function DesktopLibraryPanel() {
     await Promise.all([loadList(), loadMeta()]);
     setCatalogVersion((version) => version + 1);
   }, [loadList, loadMeta]);
-  const refreshNativeRef = useRef(refreshNative);
   refreshNativeRef.current = refreshNative;
 
   useEffect(() => {
@@ -529,99 +501,6 @@ export function DesktopLibraryPanel() {
       setNativeLoading(false);
     }
   };
-
-  const describeRootScan = (result: NativeRootScanResult) => {
-    const parts = [
-      result.imported ? `${result.imported} new` : null,
-      result.recovered ? `${result.recovered} recovered` : null,
-      result.moved ? `${result.moved} moved` : null,
-      result.updated ? `${result.updated} updated` : null,
-      result.missing ? `${result.missing} missing` : null,
-    ].filter(Boolean);
-    if (result.errors.length) {
-      toast.error(
-        result.errors.length === 1
-          ? '1 file could not be scanned.'
-          : `${result.errors.length} files could not be scanned.`,
-        { description: describeImportFailures(result.errors) },
-      );
-    }
-    if (result.cancelled) {
-      toast.info('Scan cancelled.');
-    } else if (parts.length) {
-      toast.success(`Scan complete: ${parts.join(', ')}.`);
-    } else if (!result.errors.length) {
-      toast.success('Scan complete: nothing changed.');
-    }
-  };
-
-  const runRootAction = async (
-    busy: string,
-    action: (library: NonNullable<typeof nativeLibrary>) => Promise<void>,
-    failure: string,
-  ) => {
-    if (!nativeLibrary) {
-      return;
-    }
-    setRootBusy(busy);
-    setNativeProgress(null);
-    try {
-      await action(nativeLibrary);
-      await refreshNative();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : failure);
-    } finally {
-      setRootBusy(null);
-      setNativeProgress(null);
-    }
-  };
-
-  const addRoot = () =>
-    runRootAction(
-      'add',
-      async (library) => {
-        const result = await library.addRoot();
-        if (result) {
-          describeRootScan(result);
-        }
-      },
-      'Could not add folder.',
-    );
-
-  const rescanRoots = () =>
-    runRootAction(
-      'rescan',
-      async (library) => describeRootScan(await library.rescanRoots()),
-      'Scan failed.',
-    );
-
-  const relinkRoot = (root: NativeLibraryRoot) =>
-    runRootAction(
-      root.id,
-      async (library) => {
-        const result = await library.relinkRoot(root.id);
-        if (result) {
-          toast.success(
-            result.unmatched
-              ? `Relinked ${result.relinked} tracks; ${result.unmatched} not found in the new folder.`
-              : `Relinked ${result.relinked} tracks.`,
-          );
-        }
-      },
-      'Relink failed.',
-    );
-
-  const removeRoot = (root: NativeLibraryRoot) =>
-    runRootAction(
-      root.id,
-      async (library) => {
-        await library.removeRoot(root.id);
-        toast.success(
-          `Stopped tracking “${basename(root.path)}”. Its tracks stay in your library.`,
-        );
-      },
-      'Could not remove folder.',
-    );
 
   const playNative = async (track: NativeLibraryTrack) => {
     if (!nativeLibrary) {
@@ -1276,21 +1155,6 @@ export function DesktopLibraryPanel() {
       />
     </div>
   );
-}
-
-const MAX_LISTED_IMPORT_FAILURES = 5;
-
-export function describeImportFailures(
-  errors: ReadonlyArray<{ path: string; error: string }>,
-): string {
-  const lines = errors
-    .slice(0, MAX_LISTED_IMPORT_FAILURES)
-    .map((failure) => `${basename(failure.path)}: ${failure.error}`);
-  const remaining = errors.length - lines.length;
-  if (remaining > 0) {
-    lines.push(`…and ${remaining} more.`);
-  }
-  return lines.join('\n');
 }
 
 function formatFileSize(bytes: number): string {
