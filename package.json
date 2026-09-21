@@ -19,6 +19,7 @@
     "player:run": "./scripts/run-linux.sh",
     "build:android:run": "./scripts/build-and-run-android.sh",
     "lint": "turbo lint",
+    "check:file-size": "node scripts/check-file-size.mjs",
     "lint:fix": "turbo lint:fix",
     "test": "turbo test",
     "test:coverage": "turbo test:coverage",
@@ -59,5 +60,8 @@
   "author": {
     "name": "Tahti <noreply@tahti.live>"
   },
-  "license": "AGPL-3.0-only"
+  "license": "AGPL-3.0-only",
+  "dependencies": {
+    "format": "^0.2.2"
+  }
 }
