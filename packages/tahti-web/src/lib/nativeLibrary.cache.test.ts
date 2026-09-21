@@ -12,6 +12,7 @@ function baseLibrary(overrides: Partial<TahtiNativeLibrary> = {}) {
     listUnavailable: vi.fn().mockResolvedValue([]),
     listRoots: vi.fn().mockResolvedValue([]),
     playlists: {},
+    catalog: {},
     facets: vi.fn().mockResolvedValue([]),
     filterOptions: vi
       .fn()

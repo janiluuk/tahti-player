@@ -8,8 +8,11 @@ import {
   ListFilterIcon,
   ListPlusIcon,
   LoaderCircleIcon,
+  PencilIcon,
   PlayIcon,
   RefreshCwIcon,
+  SaveIcon,
+  StarIcon,
   TrashIcon,
   XIcon,
 } from 'lucide-react';
@@ -68,10 +71,14 @@ import {
   type BrowseKind,
 } from './LocalLibraryBrowse';
 import { LocalLibraryFilters } from './LocalLibraryFilters';
+import { LocalLibraryTools } from './LocalLibraryTools';
 import { LocalPlaylists } from './LocalPlaylists';
 import { NATIVE_TRACK_COLUMNS, toNativeSort } from './nativeTrackColumns';
 import { PlayableTrackTable } from './PlayableTrackTable';
+import { TrackEditorDialog } from './TrackEditorDialog';
 import { TrackInspectorDialog } from './TrackInspectorDialog';
+import { TrackOrganizeDialog } from './TrackOrganizeDialog';
+import { WriteTagsDialog } from './WriteTagsDialog';
 
 const FILE_LABELS = {
   title: 'Add audio files',
@@ -153,6 +160,12 @@ export function DesktopLibraryPanel() {
     initialView.filters,
   );
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [tagList, setTagList] = useState<
+    Array<{ name: string; tracks: number }>
+  >([]);
+  const [editingIds, setEditingIds] = useState<string[] | null>(null);
+  const [writingIds, setWritingIds] = useState<string[] | null>(null);
+  const [organizingIds, setOrganizingIds] = useState<string[] | null>(null);
   const [openPlaylistId, setOpenPlaylistId] = useState<string | null>(
     initialView.openPlaylistId,
   );
@@ -223,6 +236,23 @@ export function DesktopLibraryPanel() {
     });
   }, [nativeQuery, browseKind, facetFilter, filters, openPlaylistId]);
 
+  useEffect(() => {
+    if (!nativeLibrary) {
+      return;
+    }
+    let stale = false;
+    nativeLibrary.catalog
+      .listTags()
+      .then((tags) => {
+        if (!stale) {
+          setTagList(tags);
+        }
+      })
+      .catch(() => undefined);
+    return () => {
+      stale = true;
+    };
+  }, [nativeLibrary, catalogVersion]);
   useEffect(() => {
     if (!nativeLibrary) {
       return;
@@ -1048,6 +1078,10 @@ export function DesktopLibraryPanel() {
               </ul>
             )}
           </div>
+          <LocalLibraryTools
+            library={nativeLibrary}
+            onChanged={() => void refreshNative()}
+          />
           <LibraryTotalsLine totals={totals} />
           <BrowseTabs value={browseKind} onChange={changeBrowseKind} />
           {browseKind === 'playlists' ? (
@@ -1159,6 +1193,9 @@ export function DesktopLibraryPanel() {
                     if (event.key.toLowerCase() === 'i') {
                       event.preventDefault();
                       setInspected(track);
+                    } else if (event.key.toLowerCase() === 'e') {
+                      event.preventDefault();
+                      setEditingIds([track.id]);
                     }
                   }}
                   onSelectAllMatching={() => void selectAllMatching()}
@@ -1232,6 +1269,33 @@ export function DesktopLibraryPanel() {
                           size="sm"
                           variant="text"
                           disabled={selectionBusy}
+                          onClick={() => setEditingIds([...selectedIds])}
+                        >
+                          <PencilIcon size={14} aria-hidden />
+                          Edit tags
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="text"
+                          disabled={selectionBusy}
+                          onClick={() => setWritingIds([...selectedIds])}
+                        >
+                          <SaveIcon size={14} aria-hidden />
+                          Write tags to files
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="text"
+                          disabled={selectionBusy}
+                          onClick={() => setOrganizingIds([...selectedIds])}
+                        >
+                          <StarIcon size={14} aria-hidden />
+                          Rate and label
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="text"
+                          disabled={selectionBusy}
                           onClick={addSelectionToPlaylist}
                         >
                           <ListPlusIcon size={14} aria-hidden />
@@ -1300,6 +1364,16 @@ export function DesktopLibraryPanel() {
                           </Tooltip>
                         </>
                       )}
+                      <Tooltip content="Edit tags (E)" side="top">
+                        <Button
+                          size="icon-sm"
+                          variant="text"
+                          aria-label={`Edit tags for ${track.title}`}
+                          onClick={() => setEditingIds([track.id])}
+                        >
+                          <PencilIcon size={14} aria-hidden />
+                        </Button>
+                      </Tooltip>
                       <Tooltip content="Details (I)" side="top">
                         <Button
                           size="icon-sm"
@@ -1503,9 +1577,36 @@ export function DesktopLibraryPanel() {
         filters={filters}
         onApply={setFilters}
         options={filterOptions}
+        tags={tagList}
         roots={roots}
       />
+      {nativeLibrary ? (
+        <>
+          <TrackEditorDialog
+            isOpen={editingIds !== null}
+            onClose={() => setEditingIds(null)}
+            library={nativeLibrary}
+            ids={editingIds ?? []}
+            onChanged={() => void refreshNative()}
+          />
+          <WriteTagsDialog
+            isOpen={writingIds !== null}
+            onClose={() => setWritingIds(null)}
+            library={nativeLibrary}
+            ids={writingIds ?? []}
+            onChanged={() => void refreshNative()}
+          />
+          <TrackOrganizeDialog
+            isOpen={organizingIds !== null}
+            onClose={() => setOrganizingIds(null)}
+            library={nativeLibrary}
+            ids={organizingIds ?? []}
+            onChanged={() => void refreshNative()}
+          />
+        </>
+      ) : null}
       <TrackInspectorDialog
+        library={nativeLibrary}
         track={inspected}
         onClose={() => setInspected(null)}
         onPlay={(track) => {

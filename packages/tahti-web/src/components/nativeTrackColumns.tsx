@@ -7,6 +7,7 @@ import type {
   NativeTrackSort,
 } from '../lib/nativeLibrary';
 import { formatDuration } from '../lib/playableToTrack';
+import { TRACK_COLOR_CSS } from '../lib/trackColors';
 
 const dash = (value: string | number | null | undefined) =>
   value === null || value === undefined || value === '' ? '—' : String(value);
@@ -24,6 +25,9 @@ const SORTABLE = new Set<string>([
   'size',
   'bitrate',
   'added',
+  'rating',
+  'plays',
+  'lastPlayed',
 ]);
 
 export const NATIVE_TRACK_COLUMNS: CatalogColumn<NativeLibraryTrack>[] = [
@@ -123,6 +127,60 @@ export const NATIVE_TRACK_COLUMNS: CatalogColumn<NativeLibraryTrack>[] = [
     sortable: true,
     align: 'right',
     render: (track) => formatLibrarySize(track.sizeBytes),
+  },
+  {
+    id: 'rating',
+    header: 'Rating',
+    width: 100,
+    sortable: true,
+    render: (track) =>
+      track.rating > 0 ? (
+        <span
+          title={`${track.rating} of 5 stars`}
+          aria-label={`${track.rating} of 5 stars`}
+        >
+          {'★'.repeat(track.rating)}
+          <span className="opacity-30">{'★'.repeat(5 - track.rating)}</span>
+        </span>
+      ) : (
+        '—'
+      ),
+  },
+  {
+    id: 'color',
+    header: 'Label',
+    width: 90,
+    hiddenByDefault: true,
+    render: (track) =>
+      track.color ? (
+        <span className="inline-flex items-center gap-1.5">
+          <span
+            className="size-2.5 rounded-full"
+            style={{ background: TRACK_COLOR_CSS[track.color] }}
+            aria-hidden
+          />
+          {track.color}
+        </span>
+      ) : (
+        '—'
+      ),
+  },
+  {
+    id: 'plays',
+    header: 'Plays',
+    width: 70,
+    sortable: true,
+    align: 'right',
+    hiddenByDefault: true,
+    render: (track) => track.playCount || '—',
+  },
+  {
+    id: 'lastPlayed',
+    header: 'Last played',
+    width: 120,
+    sortable: true,
+    hiddenByDefault: true,
+    render: (track) => dash(track.lastPlayedAt?.slice(0, 10)),
   },
   {
     id: 'added',

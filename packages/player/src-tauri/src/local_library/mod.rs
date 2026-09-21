@@ -1,6 +1,15 @@
 mod metadata;
+pub mod backup;
+pub mod catalog;
 pub mod m3u;
 pub mod playlists;
+pub mod tag_writer;
+#[cfg(test)]
+mod catalog_tests;
+#[cfg(test)]
+mod backup_tests;
+#[cfg(test)]
+mod tag_writer_tests;
 #[cfg(test)]
 mod tests;
 
@@ -55,6 +64,18 @@ pub struct LibraryTrack {
     /// Filled by the database, so extraction leaves it empty.
     #[sqlx(default)]
     pub added_at: String,
+    /// 0 = unrated, 1-5 stars. User data, never read from files.
+    #[sqlx(default)]
+    #[specta(type = Number<i64>)]
+    pub rating: i64,
+    /// One of `catalog::COLORS`, or empty.
+    #[sqlx(default)]
+    pub color: String,
+    #[sqlx(default)]
+    #[specta(type = Number<i64>)]
+    pub play_count: i64,
+    #[sqlx(default)]
+    pub last_played_at: Option<String>,
 }
 
 /// Sortable track-table columns. A closed enum, never user text, so the
@@ -73,6 +94,9 @@ pub enum SortColumn {
     Size,
     Bitrate,
     Added,
+    Rating,
+    Plays,
+    LastPlayed,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, specta::Type)]
@@ -107,6 +131,9 @@ fn order_clause(sort: Option<&TrackSort>) -> String {
         SortColumn::Format => format!("format {dir}"),
         SortColumn::Size => format!("size_bytes {dir}"),
         SortColumn::Added => format!("added_at {dir}"),
+        SortColumn::Rating => format!("rating {dir}"),
+        SortColumn::Plays => format!("play_count {dir}"),
+        SortColumn::LastPlayed => nullable("last_played_at"),
     };
     format!("ORDER BY {primary}, {TIE_BREAK}")
 }
@@ -229,6 +256,12 @@ pub struct TrackFilters {
     /// `YYYY-MM-DD`; tracks added on or after this day.
     pub added_since: Option<String>,
     pub availability: Option<Availability>,
+    /// At least this many stars (1-5).
+    pub rating_min: Option<i32>,
+    /// One of `catalog::COLORS`.
+    pub color: Option<String>,
+    /// Tracks carrying this tag (case-insensitive).
+    pub tag: Option<String>,
 }
 
 /// Values available to build filter controls from the current catalog.
@@ -384,6 +417,8 @@ pub struct LibraryState {
     /// Checked once per batch inside `import_paths_with_progress`; set by
     /// `library_import_cancel`, reset at the start of every new import.
     cancel_import: AtomicBool,
+    /// Same for the on-demand duplicate hashing job.
+    cancel_hash: AtomicBool,
 }
 
 /// Migration and backup policy (desktop-pro-library.md Phase 0):
@@ -399,15 +434,13 @@ pub struct LibraryState {
 ///   keep working; there is no down-migration story, matching sqlx's own
 ///   forward-only model -- rolling back means restoring a file backup below,
 ///   not running a generated inverse SQL file.
-/// - **Backup** is deliberately out of this crate for now: `library.db` is
-///   one file (WAL mode, so a live copy also needs the `-wal`/`-shm`
-///   sidecars, or a `VACUUM INTO` snapshot instead) under the OS app-data
-///   dir this module already resolves in `pool()` below. No automatic
-///   scheduled backup, export, or restore command exists yet -- Phase 4
-///   ("Add catalog backup/restore including playlists, overrides, roots and
-///   analysis references") owns building that UI/command; this note exists
-///   so a migration author knows *why* there's no rollback path today and
-///   isn't tempted to invent an ad hoc one for a single migration.
+/// - **Backup** of the *catalog* is `backup.rs` (a portable JSON export of
+///   roots, edits, ratings, tags and playlists, restorable with a root
+///   mapping); it does not contain audio. The database file itself is one
+///   file (WAL mode, so a live copy also needs the `-wal`/`-shm` sidecars, or
+///   a `VACUUM INTO` snapshot) under the OS app-data dir resolved in `pool()`
+///   below. There is still no down-migration: rolling back means restoring a
+///   backup, not running a generated inverse SQL file.
 pub async fn open(path: &Path) -> Result<SqlitePool, String> {
     let pool = crate::db::open(path).await?;
     sqlx::migrate!("./migrations/library")
@@ -453,7 +486,8 @@ async fn insert_track(
     sqlx::query("INSERT INTO library_tracks (id,path,title,artist,album,format,duration,sample_rate,channels,bits_per_sample,size_bytes,root_id,album_artist,track_no,disc_no,year,genre,comment,bitrate_kbps,folder) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(path) DO UPDATE SET title=excluded.title, artist=excluded.artist, album=excluded.album, album_artist=excluded.album_artist, track_no=excluded.track_no, disc_no=excluded.disc_no, year=excluded.year, genre=excluded.genre, comment=excluded.comment, bitrate_kbps=excluded.bitrate_kbps, folder=excluded.folder, format=excluded.format, duration=excluded.duration, sample_rate=excluded.sample_rate, channels=excluded.channels, bits_per_sample=excluded.bits_per_sample, size_bytes=excluded.size_bytes, available=1, unavailable_since=NULL, root_id=COALESCE(library_tracks.root_id, excluded.root_id)")
         .bind(&track.id).bind(&track.path).bind(&track.title).bind(&track.artist).bind(&track.album).bind(&track.format).bind(track.duration).bind(track.sample_rate).bind(track.channels).bind(track.bits_per_sample).bind(track.size_bytes).bind(root_id)
         .bind(&track.album_artist).bind(track.track_no).bind(track.disc_no).bind(track.year).bind(&track.genre).bind(&track.comment).bind(track.bitrate_kbps).bind(folder_of(&track.path))
-        .execute(conn).await?;
+        .execute(&mut *conn).await?;
+    catalog::reapply_overrides(conn, track).await?;
     Ok(())
 }
 
@@ -690,6 +724,18 @@ fn where_clause(query: &ListQuery) -> (String, Vec<Bind>) {
             Some(Availability::Available) => conditions.push("available = 1".into()),
             Some(Availability::Missing) => conditions.push("available = 0".into()),
             None => {}
+        }
+        if let Some(v) = f.rating_min.filter(|v| *v > 0) {
+            conditions.push("rating >= ?".into());
+            binds.push(Bind::Int(v.into()));
+        }
+        if let Some(v) = f.color.as_ref().filter(|v| !v.is_empty()) {
+            conditions.push("color = ?".into());
+            binds.push(Bind::Text(v.clone()));
+        }
+        if let Some(v) = f.tag.as_ref().filter(|v| !v.trim().is_empty()) {
+            conditions.push("id IN (SELECT tt.track_id FROM library_track_tags tt JOIN library_tags t ON t.id = tt.tag_id WHERE t.name = ?)".into());
+            binds.push(Bind::Text(v.trim().to_owned()));
         }
     }
     let where_sql = if conditions.is_empty() {
@@ -1196,6 +1242,10 @@ pub async fn relink(
         .bind(&extracted.path).bind(&extracted.title).bind(&extracted.artist).bind(&extracted.album).bind(&extracted.album_artist).bind(extracted.track_no).bind(extracted.disc_no).bind(extracted.year).bind(&extracted.genre).bind(&extracted.comment).bind(extracted.bitrate_kbps).bind(folder_of(&extracted.path)).bind(&extracted.format).bind(extracted.duration).bind(extracted.sample_rate).bind(extracted.channels).bind(extracted.bits_per_sample).bind(extracted.size_bytes)
         .bind(id)
         .execute(pool).await;
+    if updated.is_ok() {
+        let mut conn = pool.acquire().await.map_err(|err| err.to_string())?;
+        catalog::reapply_overrides(&mut conn, &extracted).await.map_err(|err| err.to_string())?;
+    }
     if let Err(error) = updated {
         let message = match error.as_database_error().map(|db| db.is_unique_violation()) {
             Some(true) => "This file is already in your library as a different track.".to_owned(),

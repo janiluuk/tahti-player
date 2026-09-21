@@ -110,6 +110,12 @@ function createNativeLibrary(
     remove: vi.fn(),
     removeMany: vi.fn().mockResolvedValue(0),
     playlists: createFakePlaylists().api,
+    catalog: {
+      listTags: vi.fn().mockResolvedValue([]),
+      provenance: vi.fn().mockResolvedValue([]),
+      duplicates: vi.fn().mockResolvedValue([]),
+      onHashProgress: vi.fn(() => () => undefined),
+    } as unknown as TahtiNativeLibrary['catalog'],
     matchingIds: vi.fn().mockResolvedValue([]),
     filterOptions: vi.fn().mockResolvedValue({
       formats: ['flac', 'wav'],

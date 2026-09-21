@@ -5,6 +5,7 @@ import { Button, Dialog, FilterChips, Input, Select } from '@tahti-player/ui';
 import {
   countActiveFilters,
   EMPTY_TRACK_FILTERS,
+  TRACK_COLORS,
   type NativeAvailability,
   type NativeFilterOptions,
   type NativeLibraryRoot,
@@ -12,6 +13,7 @@ import {
 } from '../lib/nativeLibrary';
 
 const ANY_FOLDER = '__any__';
+const ANY_TAG = '__any__';
 
 function toNumber(value: string): number | null {
   if (value.trim() === '') {
@@ -41,6 +43,8 @@ type Props = {
   onApply: (filters: NativeTrackFilters) => void;
   options: NativeFilterOptions | null;
   roots: NativeLibraryRoot[];
+  /** Tags in use, to offer as a filter. */
+  tags?: Array<{ name: string; tracks: number }>;
 };
 
 /**
@@ -55,6 +59,7 @@ export function LocalLibraryFilters({
   onApply,
   options,
   roots,
+  tags = [],
 }: Props) {
   const [draft, setDraft] = useState(filters);
   useEffect(() => {
@@ -153,6 +158,50 @@ export function LocalLibraryFilters({
             }
           />
         </div>
+        <div className="flex flex-col gap-1">
+          <span className="text-sm font-medium">Rating</span>
+          <FilterChips
+            items={[
+              { id: '0', label: 'Any' },
+              { id: '1', label: '★ 1+' },
+              { id: '2', label: '★ 2+' },
+              { id: '3', label: '★ 3+' },
+              { id: '4', label: '★ 4+' },
+              { id: '5', label: '★ 5' },
+            ]}
+            selected={String(draft.ratingMin ?? 0)}
+            onChange={(id) =>
+              set({ ratingMin: id === '0' ? null : Number(id) })
+            }
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <span className="text-sm font-medium">Color label</span>
+          <FilterChips
+            items={[
+              { id: 'any', label: 'Any' },
+              ...TRACK_COLORS.map((color) => ({ id: color, label: color })),
+            ]}
+            selected={draft.color ?? 'any'}
+            onChange={(id) => set({ color: id === 'any' ? null : id })}
+          />
+        </div>
+        {tags.length > 0 || draft.tag ? (
+          <Select
+            label="Tag"
+            value={draft.tag ?? ANY_TAG}
+            onValueChange={(name) =>
+              set({ tag: name === ANY_TAG ? null : name })
+            }
+            options={[
+              { id: ANY_TAG, label: 'Any tag' },
+              ...tags.map((tag) => ({
+                id: tag.name,
+                label: `${tag.name} (${tag.tracks})`,
+              })),
+            ]}
+          />
+        ) : null}
         {roots.length > 0 ? (
           <Select
             label="Watched folder"
