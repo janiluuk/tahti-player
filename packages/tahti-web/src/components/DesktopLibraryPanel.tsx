@@ -19,8 +19,6 @@ import {
   type NativeFacetFilter,
   type NativeFacetGroup,
   type NativeFilterOptions,
-  type NativeLibraryImportProgress,
-  type NativeLibraryImportResult,
   type NativeLibraryTotals,
   type NativeLibraryTrack,
   type NativeTrackFilters,
@@ -28,7 +26,6 @@ import {
 import { AddToPlaylistDialog } from './AddToPlaylistDialog';
 import { ConfirmDialog } from './ConfirmDialog';
 import { BrowserLocalFiles } from './desktop-library/BrowserLocalFiles';
-import { describeImportFailures } from './desktop-library/importFailures';
 import { LibraryRootsBlock } from './desktop-library/LibraryRootsBlock';
 import { NativeTrackTable } from './desktop-library/NativeTrackTable';
 import { basename } from './desktop-library/pathLabels';
@@ -37,6 +34,7 @@ import {
   type TrackBatchDialog,
 } from './desktop-library/TrackBatchDialogs';
 import { useLibraryRoots } from './desktop-library/useLibraryRoots';
+import { useNativeImport } from './desktop-library/useNativeImport';
 import { useNativeLibraryList } from './desktop-library/useNativeLibraryList';
 import { useNativePlayback } from './desktop-library/useNativePlayback';
 import { useSelectionActions } from './desktop-library/useSelectionActions';
@@ -65,9 +63,6 @@ export function DesktopLibraryPanel() {
   const [nativeUnavailable, setNativeUnavailable] = useState<
     NativeLibraryTrack[]
   >([]);
-  const [nativeProgress, setNativeProgress] =
-    useState<NativeLibraryImportProgress | null>(null);
-  const lastFailedPathsRef = useRef<string[]>([]);
   const table = usePersistedCatalogTable(
     'tahti-local-library-table',
     NATIVE_TRACK_COLUMNS,
@@ -118,6 +113,15 @@ export function DesktopLibraryPanel() {
   });
   const refreshNativeRef = useRef<() => Promise<void>>(() => Promise.resolve());
   const {
+    progress: nativeProgress,
+    clearProgress,
+    importFiles: importNative,
+    importFolder: importNativeFolder,
+    cancel: cancelNativeImport,
+  } = useNativeImport(nativeLibrary, setNativeLoading, () =>
+    refreshNativeRef.current(),
+  );
+  const {
     roots,
     setRoots,
     watching,
@@ -132,7 +136,7 @@ export function DesktopLibraryPanel() {
   } = useLibraryRoots(
     nativeLibrary,
     () => refreshNativeRef.current(),
-    () => setNativeProgress(null),
+    clearProgress,
   );
   const selection = useSelectionActions({
     library: nativeLibrary,
@@ -166,15 +170,6 @@ export function DesktopLibraryPanel() {
     );
     return () => window.clearTimeout(timer);
   }, [nativeQuery]);
-
-  useEffect(() => {
-    if (!nativeLibrary) {
-      return;
-    }
-    return nativeLibrary.onImportProgress((progress) => {
-      setNativeProgress(progress.currentPath === null ? null : progress);
-    });
-  }, [nativeLibrary]);
 
   useEffect(() => {
     void nativeLibrary?.takeRecoveryNotice?.().then(
@@ -348,93 +343,6 @@ export function DesktopLibraryPanel() {
       secondary: browseKind === 'albums' ? group.secondary : null,
     });
   };
-
-  const reportImportResult = (result: NativeLibraryImportResult) => {
-    lastFailedPathsRef.current = result.errors.map((failure) => failure.path);
-    if (result.imported > 0) {
-      toast.success(
-        result.imported === 1
-          ? 'Imported 1 track.'
-          : `Imported ${result.imported} tracks.`,
-      );
-    }
-    if (result.errors.length) {
-      toast.error(
-        result.errors.length === 1
-          ? '1 file could not be imported.'
-          : `${result.errors.length} files could not be imported.`,
-        {
-          description: describeImportFailures(result.errors),
-          action: {
-            label: 'Retry',
-            onClick: () => void retryFailedImport(),
-          },
-        },
-      );
-    }
-    if (result.cancelled) {
-      toast.info('Import cancelled.');
-    }
-    if (
-      !result.imported &&
-      !result.errors.length &&
-      !result.cancelled &&
-      result.skipped
-    ) {
-      toast.info(
-        result.skipped === 1
-          ? '1 file was not a supported audio format.'
-          : `${result.skipped} files were not a supported audio format.`,
-      );
-    }
-  };
-
-  const runImport = useCallback(
-    async (
-      action: (
-        library: NonNullable<typeof nativeLibrary>,
-      ) => Promise<NativeLibraryImportResult>,
-    ) => {
-      if (!nativeLibrary) {
-        return;
-      }
-      setNativeLoading(true);
-      setNativeProgress(null);
-      try {
-        reportImportResult(await action(nativeLibrary));
-        await refreshNative();
-      } catch (error) {
-        toast.error(error instanceof Error ? error.message : 'Import failed.');
-      } finally {
-        setNativeLoading(false);
-        setNativeProgress(null);
-      }
-    },
-    [nativeLibrary, refreshNative],
-  );
-
-  const importNative = () => runImport((library) => library.import());
-  const importNativeFolder = () =>
-    runImport((library) => library.importFolder());
-  const retryFailedImport = () => {
-    const paths = lastFailedPathsRef.current;
-    if (!paths.length) {
-      return Promise.resolve();
-    }
-    return runImport((library) => library.importPaths(paths));
-  };
-  const cancelNativeImport = () => {
-    void nativeLibrary?.cancelImport();
-  };
-
-  useEffect(() => {
-    if (!nativeLibrary) {
-      return;
-    }
-    return nativeLibrary.onFilesDropped((paths) => {
-      void runImport((library) => library.importPaths(paths));
-    });
-  }, [nativeLibrary, runImport]);
 
   const rescanNative = async () => {
     if (!nativeLibrary) {
