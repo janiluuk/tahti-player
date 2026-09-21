@@ -1,21 +1,21 @@
 # CUTOVER — Nuclear `@tahti-player/tahti-web` → production `apps/web`
 
-**Goal:** Replace the production Next.js client (`tahti` monorepo `apps/web`, served on `tahti.live` / `app.tahti.live`) with the Vite + Nuclear UI client (`@tahti-player/tahti-web`, currently `beta.tahti.live`).
+**Goal:** Replace the production Next.js client (`tahti-org` monorepo `apps/web`, served on `tahti.live` / `app.tahti.live`) with the Vite + Nuclear UI client (`@tahti-player/tahti-web`, currently `beta.tahti.live`).
 
 **Repos**
 
 | Tree | Role |
 |------|------|
-| `/home/jani/workspace/tahti-nuclear/packages/tahti-web` | Beta POC (this package) |
-| `/home/jani/workspace/tahti` | Production monorepo (API, worker, `apps/web`, Swarm, CI) |
+| `/home/jani/workspace/tahti-player/packages/tahti-web` | Beta POC (this package) |
+| `/home/jani/workspace/tahti-org` | Production monorepo (API, worker, `apps/web`, Swarm, CI) |
 | [`FEATURES.md`](FEATURES.md) | Prod → POC feature parity tracker |
 | [`WORKPLAN.md`](WORKPLAN.md) | POC remaining checklist |
 | [`SEO-OG-NOTES.md`](SEO-OG-NOTES.md) | SEO/OG current-state audit + plan |
 | [`deploy/README.md`](deploy/README.md) | Beta deploy (vimage `:15180`) |
-| `tahti/ops/beta-tahti-live.md` | Live beta routing / auth notes |
-| `tahti/ops/ARCHITECTURE.md`, `DEPLOY.md`, `RUNBOOK.md` | Prod topology & rollouts |
-| `tahti/docs/flows/site-map.md` | Canonical route map |
-| `tahti/docs/e2e-screenshots/` | Screenshot atlas (apps/web) |
+| `tahti-org/ops/beta-tahti-live.md` | Live beta routing / auth notes |
+| `tahti-org/ops/ARCHITECTURE.md`, `DEPLOY.md`, `RUNBOOK.md` | Prod topology & rollouts |
+| `tahti-org/docs/flows/site-map.md` | Canonical route map |
+| `tahti-org/docs/e2e-screenshots/` | Screenshot atlas (apps/web) |
 
 **Non-goals for this doc:** implementing features, deploying production, touching `website/` (static marketing site — separate stack).
 
@@ -32,9 +32,9 @@ Beta already talks to **live** `api.tahti.live` / `chat.tahti.live` / `cdn.tahti
 3. **Admin & marketing split** — **Decided 2026-08-17:** the Nuclear admin port (22/22 pages, see [`UI-REDESIGN-WORKLOG.md`](UI-REDESIGN-WORKLOG.md) admin table) stays a completed side project, **not** on the cutover critical path. Production board admin keeps running the existing Next `/admin/*` on its current host (subdomain) after cutover; the listen/studio SPA does not need to serve `/admin/*` for go-live. Revisit switching admin over to Nuclear in a later, separate decision. `(marketing)` / apply / some info pages still live in `apps/web` while `website/` is a separate static site — host split for those still needs deciding.
 4. **SSR/SEO regression** — Next `sitemap.ts`, `generateMetadata`, OG cards become SPA problems unless rebuilt (prerender, edge meta, or keep a thin SSR shell).
 5. **Cookie / same-origin model** — today beta proxies `/tahti-api` → API so `tahti_session` is host-only on `beta.tahti.live`. Production must keep a **same-origin API proxy** (or deliberately set `Domain=.tahti.live`) and update `APP_URL` return paths.
-6. **Repo / AGPL / UI stack** — both trees are AGPL. **Decided 2026-08-17:** vend `@tahti-player/tahti-web` + minimal Nuclear UI packages into `tahti` (Option A, §3.1) rather than a submodule/subtree or published-package split — single deploy train. **Decided 2026-08-17:** ship the current Nuclear look as-is; no Tahti-brand token remap before cutover.
+6. **Repo / AGPL / UI stack** — both trees are AGPL. **Decided 2026-08-17:** vend `@tahti-player/tahti-web` + minimal Nuclear UI packages into `tahti-org` (Option A, §3.1) rather than a submodule/subtree or published-package split — single deploy train. **Decided 2026-08-17:** ship the current Nuclear look as-is; no Tahti-brand token remap before cutover.
 
-**Recommended sequence:** freeze feature inventory → route alias layer → parity P0 → move package into `tahti` → replace `tahti/web` image with nginx SPA → dual-run behind canary host → cutover → soak → deprecate beta.
+**Recommended sequence:** freeze feature inventory → route alias layer → parity P0 → move package into `tahti-org` → replace `tahti/web` image with nginx SPA → dual-run behind canary host → cutover → soak → deprecate beta.
 
 ---
 
@@ -42,7 +42,7 @@ Beta already talks to **live** `api.tahti.live` / `chat.tahti.live` / `cdn.tahti
 
 ### P0 — must have before production DNS/NPM switch
 
-- [x] **Decision:** monorepo placement — **Option A**, vend into `tahti` (`apps/web` or new `apps/listen`). See §4. Migration itself not yet started.
+- [x] **Decision:** monorepo placement — **Option A**, vend into `tahti-org` (`apps/web` or new `apps/listen`). See §4. Migration itself not yet started.
 - [x] **Decision:** admin host after cutover — **Next `/admin/*` stays canonical** on its current host; Nuclear's 22-page admin port stays built but unused for now, revisit later.
 - [x] **Decision:** marketing stays on the apex `website/`; the product SPA is canonical at `app.tahti.live`, with `/listen` linking to its listen home. The SPA keeps compatibility pages for `/for-artists`, `/how-it-works`, and `/about`, while `/apply` and `/signup` lead into its join flow.
 - [x] **Route compatibility layer** — permanent redirects or dual routes for `/c/*` ↔ `/channel/*`, `/dashboard/*` ↔ `/studio/*`, subscribe paths, `/listen` → `/`.
@@ -53,19 +53,19 @@ Beta already talks to **live** `api.tahti.live` / `chat.tahti.live` / `cdn.tahti
 - [x] **SEO minimum:** `robots.txt`, a static + API-fed sitemap index, canonical tags, and route-aware browser metadata for `/c`, `/u`, `/r` are implemented. Server-rendered dynamic OG values for non-JS bots now come from `GET /api/og/{channel,profile,release}/:slug` in `tahti/apps/api` (new `apps/api/src/routes/og.ts`), proxied to by a bot-user-agent `map` in `deploy/nginx.conf` — see [`SEO-OG-NOTES.md`](SEO-OG-NOTES.md) for the audit and design. Real browsers/JS-executing crawlers are unaffected and still get the client-side sync.
 - [x] **Playwright / vital journey** covers callback compatibility, mock login, go-live, upload, subscription offers, keyboard navigation, and the beta review map.
 - [ ] **Cutover runbook rehearsed** on staging/canary (rollback = previous `tahti/web` image + NPM/Caddy upstream).
-- [x] **Legal pages** bind to real terms/privacy/AGPL (not “POC summary + link-out”). `TermsView`/`PrivacyView`/`AgplView` port prod's actual `(info)/terms`, `/privacy`, `/agpl` page copy verbatim (`/home/jani/workspace/tahti/apps/web/src/app/(info)/...`) instead of a short summary linking out to `tahti.live`.
+- [x] **Legal pages** bind to real terms/privacy/AGPL (not “POC summary + link-out”). `TermsView`/`PrivacyView`/`AgplView` port prod's actual `(info)/terms`, `/privacy`, `/agpl` page copy verbatim (`/home/jani/workspace/tahti-org/apps/web/src/app/(info)/...`) instead of a short summary linking out to `tahti.live`.
 
 ### P1 — should ship in the same release train or immediately after
 
 - [ ] Distribution, radio slots, moderate, press-kit / invites polish, listener-only dashboard.
 - [x] Full visualizer preset parity — ten distinct Three.js scenes, lazy-loaded outside the initial listen bundle.
 - [ ] Multitrack / pro editor depth vs prod ffmpeg/waveform stack (port or keep “good enough”).
-- [x] Nuclear screenshot atlas refreshed across all 38 referenced beta screens; each comparison now explains what the user can do, and the Mermaid site map reflects the current route and workspace structure. Production `tahti/docs/e2e-screenshots/` remains a post-vendoring follow-up.
+- [x] Nuclear screenshot atlas refreshed across all 38 referenced beta screens; each comparison now explains what the user can do, and the Mermaid site map reflects the current route and workspace structure. Production `tahti-org/docs/e2e-screenshots/` remains a post-vendoring follow-up.
 - [ ] Accessibility pass (keyboard, focus, live regions, contrast) on listen + studio critical paths. Covered so far: player bar seek/volume/controls keyboard + ARIA, chat `role="log"` live region and reaction labels (earlier pass); global search now a real combobox (arrow-key roving through results, `aria-activedescendant`, `role="listbox"`/`option`) instead of Tab-only; `MobileDrawer` (mobile nav/chat/queue slide-over) gained a focus trap + Escape-to-close (it was hand-rolled without either); nav links (`SidebarNavigationItem` in `@tahti-player/ui`, mobile bottom nav) now set `aria-current="page"`. Studio upload path: `StudioUploadView` and `UploadTrackDialog` had a validation/error message `<p>` with no live-region role at all (screen readers got zero announcement on a failed upload) — added `role="alert"` for errors, `role="status"` for the dialog's success note, matching the `role="alert"`/`role="status"` split already used elsewhere (`TrackEditDialog`, `StudioChannelView`). `StudioGoLiveView`'s status banner already has `role="status"`, but always at that priority (never `role="alert"`) and detects "is this an error" via a fragile message-text regex rather than real state — noted, not fixed this pass. Still open: contrast audit, and the go-live/editor half of the Studio critical-path pass.
 - [x] Bundle budget: mermaid is lazy (own `mermaid.core-*`/`cytoscape.esm-*`/`katex-*` chunks, confirmed in build output); Three.js is lazy too (`ChannelVisualizer.tsx` already `lazy()`-imports `ThreeVisualizer`, its own 528 kB chunk, not in `index-*.js`). CSS audit: one 152 kB CSS file for the whole app (`dist/assets/index-*.css`) — expected given Tailwind's JIT scans all sources into one stylesheet regardless of route; genuine per-route CSS splitting isn't a quick config flip without restructuring how Tailwind is wired into the build, so leaving as a known limitation rather than a bug. `LibraryView` (History's charts, `react-activity-calendar`) was pulled out of the main bundle this session (own 326 kB chunk) after it briefly regressed the main `index-*.js` by +367 kB.
 - [ ] CI: replace `apps/web` Docker build with SPA build; keep lint/format/typecheck gates.
 - [ ] Preview/PR envs serve the new client (or document that previews stay Next until cutover).
-- [ ] CDN CORS + embed parents verified for SPA origin. **Embed parents: verified clean** — `deploy/nginx.conf` sets no `X-Frame-Options`/`frame-ancestors` on the SPA's own routes (the one `frame-ancestors 'none'` in that file is scoped to the unrelated disco-widget sandbox iframe document), so `/embed/*` isn't blocked from being framed by third-party sites. **CDN CORS: real gap found, not yet fixed** — `tahti/infra/Caddyfile`'s `cdn.tahti.live` block (archive items/covers/waveforms — what `StudioProEditorView`'s audio source resolves to) sets `Cross-Origin-Resource-Policy: cross-origin` but no `Access-Control-Allow-Origin`, unlike the sibling `stream.tahti.live` (live HLS) block which has `Access-Control-Allow-Origin "*"`. CORP alone doesn't satisfy a CORS check, so the Pro Editor's `crossOrigin="anonymous"` load of cdn-hosted audio (see the comment above the `audio.crossOrigin = 'anonymous'` line in `StudioProEditorView.tsx`) fails and silently falls back to non-CORS playback — the live Web Audio preview graph (EQ/Compressor/Limiter/Filter, `src/plugins/audio-fx/`) goes inaudible with no user-facing indication for any archive item served from `cdn.tahti.live`. Fix is a one-line addition mirroring the `stream.tahti.live` block (`header Access-Control-Allow-Origin "*"` in the `cdn.tahti.live` block); left unmade here — production Caddy edge config in the `tahti` repo, not something to push through without the person who owns that deploy signing off.
+- [ ] CDN CORS + embed parents verified for SPA origin. **Embed parents: verified clean** — `deploy/nginx.conf` sets no `X-Frame-Options`/`frame-ancestors` on the SPA's own routes (the one `frame-ancestors 'none'` in that file is scoped to the unrelated disco-widget sandbox iframe document), so `/embed/*` isn't blocked from being framed by third-party sites. **CDN CORS: real gap found, not yet fixed** — `tahti-org/infra/Caddyfile`'s `cdn.tahti.live` block (archive items/covers/waveforms — what `StudioProEditorView`'s audio source resolves to) sets `Cross-Origin-Resource-Policy: cross-origin` but no `Access-Control-Allow-Origin`, unlike the sibling `stream.tahti.live` (live HLS) block which has `Access-Control-Allow-Origin "*"`. CORP alone doesn't satisfy a CORS check, so the Pro Editor's `crossOrigin="anonymous"` load of cdn-hosted audio (see the comment above the `audio.crossOrigin = 'anonymous'` line in `StudioProEditorView.tsx`) fails and silently falls back to non-CORS playback — the live Web Audio preview graph (EQ/Compressor/Limiter/Filter, `src/plugins/audio-fx/`) goes inaudible with no user-facing indication for any archive item served from `cdn.tahti.live`. Fix is a one-line addition mirroring the `stream.tahti.live` block (`header Access-Control-Allow-Origin "*"` in the `cdn.tahti.live` block); left unmade here — production Caddy edge config in the `tahti-org` repo, not something to push through without the person who owns that deploy signing off.
 - [x] Help/support form live (not link-out only) — `SupportContactForm` posts to the real `POST /api/support/contact` (see FEATURES.md).
 
 ### P2 — follow-ups / nice-to-have
@@ -83,7 +83,7 @@ Beta already talks to **live** `api.tahti.live` / `chat.tahti.live` / `cdn.tahti
 
 ## Phase 0 — Decisions & freeze
 
-- [ ] **0.1** Freeze FEATURES.md statuses; tag a “cutover baseline” commit on `tahti-nuclear` and note matching `tahti` API SHA.
+- [ ] **0.1** Freeze FEATURES.md statuses; tag a “cutover baseline” commit on `tahti-player` and note matching `tahti-org` API SHA.
 - [x] **0.2** Choose **placement** (see §4) and **admin strategy** (see §1.1) — **decided 2026-08-17:** Option A monorepo placement; Next `/admin/*` stays canonical, Nuclear admin port shelved for now.
 - [x] **0.3** Choose **URL policy** — preserve prod paths as canonical (already implemented via `prodPathRedirects`, P0 route-compatibility box above is checked).
 - [x] **0.4** Choose **brand policy** — **decided 2026-08-17:** ship Nuclear look as-is, no Tahti-skin token remap.
@@ -95,7 +95,7 @@ Beta already talks to **live** `api.tahti.live` / `chat.tahti.live` / `cdn.tahti
 
 ## Phase 1 — Gap inventory
 
-Track against [`FEATURES.md`](FEATURES.md) and `tahti/docs/flows/site-map.md`. Update checkboxes here as inventory closes.
+Track against [`FEATURES.md`](FEATURES.md) and `tahti-org/docs/flows/site-map.md`. Update checkboxes here as inventory closes.
 
 ### 1.1 Scope boundaries
 
@@ -224,7 +224,7 @@ Work from FEATURES.md; mark done there and here.
 
 ### 3.1 Monorepo placement (pick one)
 
-**Option A — Move into `tahti` — DECIDED 2026-08-17, this is the path**
+**Option A — Move into `tahti-org` — DECIDED 2026-08-17, this is the path**
 
 Per the admin-host decision (§0.2 / §1.1), Next `apps/web` is **not** fully retired — it keeps serving `/admin/*` on its current host. The new SPA takes over listen/studio/everything-else as a new app.
 
@@ -235,13 +235,13 @@ Per the admin-host decision (§0.2 / §1.1), Next `apps/web` is **not** fully re
 
 **Option B — Keep fork, ship image only**
 
-- [ ] CI in `tahti-nuclear` builds `registry.tahti.live/tahti/web:<tag>`
-- [ ] `tahti` deploy.yml consumes that image (or dual registry)
+- [ ] CI in `tahti-player` builds `registry.tahti.live/tahti/web:<tag>`
+- [ ] `tahti-org` deploy.yml consumes that image (or dual registry)
 - [ ] Clear ownership: who bumps UI packages / AGPL source offer
 
 **Option C — Hybrid**
 
-- [ ] `tahti` git subtree/submodule of `packages/tahti-web` + Nuclear UI packages
+- [ ] `tahti-org` git subtree/submodule of `packages/tahti-web` + Nuclear UI packages
 - [ ] Document sync cadence with `nukeop/nuclear` upstream
 
 ### 3.2 UI libraries
@@ -367,7 +367,7 @@ Per the admin-host decision (§0.2 / §1.1), Next `apps/web` is **not** fully re
 
 ### 7.3 Screenshot atlas
 
-- [ ] Refresh `tahti/docs/e2e-screenshots/` against new UI (not `website/screenshots/`)
+- [ ] Refresh `tahti-org/docs/e2e-screenshots/` against new UI (not `website/screenshots/`)
 - [ ] Update `manifest.json` route map (`/studio` vs `/dashboard`, etc.)
 - [ ] Optionally keep Nuclear `/map/nuclear/` captures for historical compare; strip from prod build
 
@@ -431,7 +431,7 @@ Per the admin-host decision (§0.2 / §1.1), Next `apps/web` is **not** fully re
 - [ ] After soak (suggested ≥1–2 weeks): decide beta fate
 - [ ] If sunset: remove NPM #61, stop `tahti-beta-web`, delete or archive `/srv/tahti-beta`
 - [ ] Update `ops/beta-tahti-live.md` → “retired, see cutover”
-- [ ] Archive `tahti-nuclear` deploy scripts or retarget them to prod image builds
+- [ ] Archive `tahti-player` deploy scripts or retarget them to prod image builds
 - [ ] Upstream Nuclear: document whether fork tracks `nukeop/nuclear` for UI-only updates
 - [ ] Remove link-outs and “POC” copy from UI
 - [ ] License offer page `/agpl` serves full text + source link (AGPL compliance for network use)
@@ -466,12 +466,12 @@ Nuclear’s **MCP server** is Tauri-only (`packages/player` + `plugin-sdk/mcp`),
 
 | Workstream | Primary repo | Notes |
 |------------|--------------|-------|
-| Parity features / UI | `tahti-nuclear` until move | FEATURES.md source of truth |
-| API return URL / APP_URL | `tahti` | Small config/PR |
-| Docker/Swarm/CI | `tahti` | Image contract |
-| Beta host | `tahti-nuclear` deploy + `tahti/ops` | Until deprecated |
-| E2E screenshots | `tahti/docs/e2e-screenshots` | After UI freeze |
-| Marketing site | `tahti/website` | **Out of scope** unless asked |
+| Parity features / UI | `tahti-player` until move | FEATURES.md source of truth |
+| API return URL / APP_URL | `tahti-org` | Small config/PR |
+| Docker/Swarm/CI | `tahti-org` | Image contract |
+| Beta host | `tahti-player` deploy + `tahti-org/ops` | Until deprecated |
+| E2E screenshots | `tahti-org/docs/e2e-screenshots` | After UI freeze |
+| Marketing site | `tahti-org/website` | **Out of scope** unless asked |
 
 ---
 
@@ -479,18 +479,18 @@ Nuclear’s **MCP server** is Tauri-only (`packages/player` + `plugin-sdk/mcp`),
 
 ```bash
 # Beta (POC) — live API, no mocks
-cd /home/jani/workspace/tahti-nuclear
+cd /home/jani/workspace/tahti-player
 unset VITE_FORCE_MOCK VITE_ALLOW_MOCK_FALLBACK
 pnpm deploy:tahti-beta
 # → https://beta.tahti.live
 
 # Prod stack (today)
-cd /home/jani/workspace/tahti
+cd /home/jani/workspace/tahti-org
 make build-web TAG=<sha>
 # deploy per ops/DEPLOY.md
 
 # Feature tracker
-# tahti-nuclear/packages/tahti-web/FEATURES.md
+# tahti-player/packages/tahti-web/FEATURES.md
 ```
 
 ---
@@ -508,4 +508,4 @@ make build-web TAG=<sha>
 
 ---
 
-*Living doc — update alongside FEATURES.md as parity closes. Mirror or link from `tahti/ops/nuclear-web-cutover.md`.*
+*Living doc — update alongside FEATURES.md as parity closes. Mirror or link from `tahti-org/ops/nuclear-web-cutover.md`.*
