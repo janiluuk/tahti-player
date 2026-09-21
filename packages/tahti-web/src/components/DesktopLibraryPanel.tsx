@@ -224,6 +224,20 @@ export function DesktopLibraryPanel() {
     void nativeLibrary?.getWatching?.().then(setWatching, () => {});
   }, [nativeLibrary]);
 
+  useEffect(() => {
+    void nativeLibrary?.takeRecoveryNotice?.().then(
+      (movedTo) => {
+        if (movedTo) {
+          toast.warning('Your library file was damaged and has been reset.', {
+            description: `The damaged file was kept at ${movedTo}. Restore a catalog backup to get your ratings, tags and playlists back, then rescan your folders.`,
+            duration: Infinity,
+          });
+        }
+      },
+      () => {},
+    );
+  }, [nativeLibrary]);
+
   const changeWatching = async (enabled: boolean) => {
     if (!nativeLibrary?.setWatching) {
       return;

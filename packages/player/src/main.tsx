@@ -383,6 +383,9 @@ const baseNativeLibrary: TahtiNativeLibrary = {
   async rescanRoots() {
     return unwrapResult(await commands.libraryRescanRoots());
   },
+  async takeRecoveryNotice() {
+    return unwrapResult(await commands.libraryTakeRecoveryNotice());
+  },
   async relinkRoot(id) {
     return unwrapResult(await commands.libraryRelinkRoot(id));
   },

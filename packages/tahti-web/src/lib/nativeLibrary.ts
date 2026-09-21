@@ -823,6 +823,11 @@ export type TahtiNativeLibrary = {
   getWatching?: () => Promise<boolean>;
   /** Turns folder watching on or off; persisted on this device. */
   setWatching?: (enabled: boolean) => Promise<void>;
+  /**
+   * Where a damaged catalog file was set aside when the library started
+   * empty because of it; returned once, then `null`.
+   */
+  takeRecoveryNotice?: () => Promise<string | null>;
   /** Picks a replacement folder for a root. `null` if cancelled. */
   relinkRoot: (id: string) => Promise<NativeRelinkRootResult | null>;
   /** Subscribes to live import progress; returns an unsubscribe function. */

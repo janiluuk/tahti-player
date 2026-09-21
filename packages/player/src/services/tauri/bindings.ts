@@ -227,6 +227,11 @@ export const commands = {
 	/**  Tracks with no proven match in the new folder; left untouched. */
 	unmatched: number,
 } | null, string>(__TAURI_INVOKE("library_relink_root", { id })),
+	/**
+	 *  Set when the catalog file was damaged and replaced at startup; the value
+	 *  is where the damaged file was kept. Returned once, then cleared.
+	 */
+	libraryTakeRecoveryNotice: () => typedError<string | null, string>(__TAURI_INVOKE("library_take_recovery_notice")),
 	libraryWatching: () => typedError<boolean, string>(__TAURI_INVOKE("library_watching")),
 	/**  Turns folder watching on or off (persisted); manual rescan always works. */
 	librarySetWatching: (enabled: boolean) => typedError<null, string>(__TAURI_INVOKE("library_set_watching", { enabled })),

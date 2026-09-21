@@ -471,6 +471,8 @@ pub struct LibraryState {
     analysis: std::sync::Arc<analysis::AnalysisControl>,
     /// Filesystem watcher over the registered roots.
     watch: watcher::WatchControl,
+    /// Where an unreadable catalog file was set aside at startup, if it was.
+    recovered_from: std::sync::Mutex<Option<String>>,
 }
 
 /// Migration and backup policy (desktop-pro-library.md Phase 0):
@@ -502,6 +504,53 @@ pub async fn open(path: &Path) -> Result<SqlitePool, String> {
     Ok(pool)
 }
 
+/// True when the file can't be used as a database at all (garbage, truncated,
+/// failing an integrity check). A migration error is *not* corruption: it
+/// usually means the file is from a newer app version, so it is left alone.
+async fn is_corrupt(path: &Path) -> bool {
+    let Ok(pool) = crate::db::open(path).await else {
+        return true;
+    };
+    let ok = sqlx::query_scalar::<_, String>("PRAGMA quick_check")
+        .fetch_all(&pool)
+        .await
+        .map(|rows| rows == ["ok"])
+        .unwrap_or(false);
+    pool.close().await;
+    !ok
+}
+
+/// Sets an unreadable catalog aside (with its WAL/SHM files) as
+/// `<name>.corrupt-<unix seconds>` so nothing is deleted and the library can
+/// start empty; returns the new location.
+fn quarantine(path: &Path) -> Result<PathBuf, String> {
+    let stamp = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_secs())
+        .unwrap_or(0);
+    let name = path.file_name().map(|n| n.to_string_lossy().into_owned()).unwrap_or_default();
+    let target = path.with_file_name(format!("{name}.corrupt-{stamp}"));
+    std::fs::rename(path, &target).map_err(|err| format!("Could not set the damaged library aside: {err}"))?;
+    for suffix in ["-wal", "-shm"] {
+        let side = path.with_file_name(format!("{name}{suffix}"));
+        if side.exists() {
+            let _ = std::fs::rename(&side, target.with_file_name(format!("{}{suffix}", target.file_name().unwrap().to_string_lossy())));
+        }
+    }
+    Ok(target)
+}
+
+/// Like `open`, but a catalog file that is corrupt is set aside and replaced
+/// by a fresh one instead of leaving the library unusable. Returns where the
+/// damaged file went. A catalog backup (Phase 4) restores the user data.
+pub async fn open_recovering(path: &Path) -> Result<(SqlitePool, Option<PathBuf>), String> {
+    let mut moved = None;
+    if path.exists() && is_corrupt(path).await {
+        moved = Some(quarantine(path)?);
+    }
+    Ok((open(path).await?, moved))
+}
+
 async fn pool(app: &tauri::AppHandle) -> Result<SqlitePool, String> {
     let state = app.state::<LibraryState>();
     let pool = state
@@ -512,10 +561,23 @@ async fn pool(app: &tauri::AppHandle) -> Result<SqlitePool, String> {
                 .app_data_dir()
                 .map_err(|err| err.to_string())?
                 .join("databases/library.db");
-            open(&path).await
+            let (pool, moved) = open_recovering(&path).await?;
+            if let Some(moved) = moved {
+                *state.recovered_from.lock().unwrap() = Some(moved.to_string_lossy().into_owned());
+            }
+            Ok::<_, String>(pool)
         })
         .await?;
     Ok(pool.clone())
+}
+
+/// Set when the catalog file was damaged and replaced at startup; the value
+/// is where the damaged file was kept. Returned once, then cleared.
+#[tauri::command]
+#[specta::specta]
+pub async fn library_take_recovery_notice(app: tauri::AppHandle) -> Result<Option<String>, String> {
+    pool(&app).await?;
+    Ok(app.state::<LibraryState>().recovered_from.lock().unwrap().take())
 }
 
 /// Files read + written per batch. Tag extraction runs concurrently across a
