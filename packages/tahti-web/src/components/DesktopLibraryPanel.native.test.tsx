@@ -609,6 +609,56 @@ describe('DesktopLibraryPanel native import', () => {
     });
   });
 
+  it('searching reloads only the list, not library-wide totals, roots or missing files', async () => {
+    globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
+    const list = vi.fn().mockResolvedValue({ tracks: [], total: 0 });
+    const library = createNativeLibrary({ list });
+    globalThis.__TAHTI_NATIVE_LIBRARY__ = library;
+
+    render(<DesktopLibraryPanel />);
+    await waitFor(() => expect(list).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(library.totals).toHaveBeenCalledTimes(1));
+
+    fireEvent.change(screen.getByLabelText('Search desktop library'), {
+      target: { value: 'harbour' },
+    });
+    await waitFor(() => expect(list).toHaveBeenCalledTimes(2));
+
+    expect(library.totals).toHaveBeenCalledTimes(1);
+    expect(library.listRoots).toHaveBeenCalledTimes(1);
+    expect(library.listUnavailable).toHaveBeenCalledTimes(1);
+  });
+
+  it('reloads the list when the folder watcher reports a change', async () => {
+    globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
+    const list = vi.fn().mockResolvedValue({ tracks: [], total: 0 });
+    let notify: (result: unknown) => void = () => {};
+    const library = createNativeLibrary({
+      list,
+      onRootsChanged: vi.fn((listener: (result: unknown) => void) => {
+        notify = listener;
+        return () => {};
+      }) as unknown as TahtiNativeLibrary['onRootsChanged'],
+    });
+    globalThis.__TAHTI_NATIVE_LIBRARY__ = library;
+
+    render(<DesktopLibraryPanel />);
+    await waitFor(() => expect(list).toHaveBeenCalledTimes(1));
+
+    notify({
+      imported: 2,
+      skipped: 0,
+      missing: 0,
+      recovered: 0,
+      moved: 0,
+      updated: 0,
+      errors: [],
+      cancelled: false,
+    });
+    await waitFor(() => expect(list).toHaveBeenCalledTimes(2));
+    expect(library.totals).toHaveBeenCalledTimes(2);
+  });
+
   it('stops asking for more rows when a later page comes back empty', async () => {
     globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
     const list = vi.fn((_search: string, offset: number) =>

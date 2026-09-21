@@ -1,20 +1,7 @@
 import {
-  ActivityIcon,
-  FolderOpenIcon,
-  FolderPlusIcon,
-  FolderTreeIcon,
-  InfoIcon,
   LaptopIcon,
   LibraryIcon,
-  Link2Icon,
   ListFilterIcon,
-  ListPlusIcon,
-  LoaderCircleIcon,
-  PencilIcon,
-  PlayIcon,
-  RefreshCwIcon,
-  SaveIcon,
-  StarIcon,
   TrashIcon,
   XIcon,
 } from 'lucide-react';
@@ -27,16 +14,17 @@ import {
   EmptyState,
   FilePicker,
   Input,
-  Toggle,
   Tooltip,
 } from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../api/types';
 import { usePersistedCatalogTable } from '../hooks/usePersistedCatalogTable';
 import {
+  flushViewState,
   loadViewState,
   rowsToRestore,
   saveViewState,
+  saveViewStateDeferred,
 } from '../lib/localLibraryViewState';
 import { hasNativePlayer } from '../lib/nativeCapabilities';
 import {
@@ -65,6 +53,10 @@ import {
 import { usePlayerStore } from '../stores/playerStore';
 import { AddToPlaylistDialog } from './AddToPlaylistDialog';
 import { ConfirmDialog } from './ConfirmDialog';
+import { LibraryRootsBlock } from './desktop-library/LibraryRootsBlock';
+import { basename } from './desktop-library/pathLabels';
+import { SelectionToolbar } from './desktop-library/SelectionToolbar';
+import { TrackRowActions } from './desktop-library/TrackRowActions';
 import { runAnalysis } from './LocalLibraryAnalysis';
 import {
   BrowseTabs,
@@ -91,6 +83,11 @@ const FILE_LABELS = {
     'File names are remembered on this device. Audio blobs clear on reload — choose the same files again to play. Uploading to your Tahti archive is Studio → Upload.',
   browse: 'Choose files',
 };
+
+// Stable identities so the table doesn't see new callbacks on every render.
+const trackRowId = (track: NativeLibraryTrack) => track.id;
+const trackRowLabel = (track: NativeLibraryTrack) => track.title;
+const trackRowMuted = (track: NativeLibraryTrack) => !track.available;
 
 export function DesktopLibraryPanel() {
   const [query, setQuery] = useState('');
@@ -143,6 +140,7 @@ export function DesktopLibraryPanel() {
     useState<NativeLibraryImportProgress | null>(null);
   const lastFailedPathsRef = useRef<string[]>([]);
   const listRequestRef = useRef(0);
+  const loadingMoreRef = useRef(false);
   const table = usePersistedCatalogTable(
     'tahti-local-library-table',
     NATIVE_TRACK_COLUMNS,
@@ -265,10 +263,18 @@ export function DesktopLibraryPanel() {
       return;
     }
     return nativeLibrary.onRootsChanged((result) => {
-      setCatalogVersion((version) => version + 1);
+      void refreshNativeRef.current();
       describeRootScan(result);
     });
   }, [nativeLibrary]);
+
+  useEffect(() => {
+    window.addEventListener('pagehide', flushViewState);
+    return () => {
+      window.removeEventListener('pagehide', flushViewState);
+      flushViewState();
+    };
+  }, []);
 
   useEffect(() => {
     loadedCountRef.current = nativeTracks.length;
@@ -344,7 +350,32 @@ export function DesktopLibraryPanel() {
     }
   };
 
-  const refreshNative = useCallback(async () => {
+  // Library-wide numbers (missing files, watched folders, totals) don't depend
+  // on the search box, so they load on mount and after real changes only, not
+  // on every keystroke, sort or filter change.
+  const loadMeta = useCallback(async () => {
+    if (!nativeLibrary) {
+      return;
+    }
+    try {
+      const [unavailable, rootList, libraryTotals] = await Promise.all([
+        nativeLibrary.listUnavailable(),
+        nativeLibrary.listRoots(),
+        nativeLibrary.totals(),
+      ]);
+      setNativeUnavailable(unavailable);
+      setRoots(rootList);
+      setTotals(libraryTotals);
+    } catch (error) {
+      setNativeError(
+        error instanceof Error ? error.message : 'Library unavailable.',
+      );
+    }
+  }, [nativeLibrary]);
+
+  // The first page for the current search/group/filters/sort (plus the rows
+  // needed to restore a saved scroll position).
+  const loadList = useCallback(async () => {
     if (!nativeLibrary) {
       return;
     }
@@ -352,18 +383,13 @@ export function DesktopLibraryPanel() {
     setNativeLoading(true);
     setNativeError(null);
     try {
-      const [page, unavailable, rootList, libraryTotals] = await Promise.all([
-        nativeLibrary.list(
-          debouncedNativeQuery,
-          0,
-          facetFilter,
-          nativeSort,
-          filters,
-        ),
-        nativeLibrary.listUnavailable(),
-        nativeLibrary.listRoots(),
-        nativeLibrary.totals(),
-      ]);
+      const page = await nativeLibrary.list(
+        debouncedNativeQuery,
+        0,
+        facetFilter,
+        nativeSort,
+        filters,
+      );
       if (request !== listRequestRef.current) {
         return;
       }
@@ -392,10 +418,6 @@ export function DesktopLibraryPanel() {
       }
       setNativeTracks(loaded);
       setNativeTotal(page.total);
-      setNativeUnavailable(unavailable);
-      setRoots(rootList);
-      setTotals(libraryTotals);
-      setCatalogVersion((version) => version + 1);
     } catch (error) {
       if (request === listRequestRef.current) {
         setNativeError(
@@ -409,10 +431,27 @@ export function DesktopLibraryPanel() {
     }
   }, [nativeLibrary, debouncedNativeQuery, facetFilter, nativeSort, filters]);
 
+  // Something changed the catalog (import, edit, watcher, …): reload
+  // everything, and let tags, filter options and groups refetch too.
+  const refreshNative = useCallback(async () => {
+    await Promise.all([loadList(), loadMeta()]);
+    setCatalogVersion((version) => version + 1);
+  }, [loadList, loadMeta]);
+  const refreshNativeRef = useRef(refreshNative);
+  refreshNativeRef.current = refreshNative;
+
   const loadMoreNative = async () => {
-    if (!nativeLibrary || nativeLoading || nativeTracks.length >= nativeTotal) {
+    // A second call before the first has settled (the table asks again on
+    // every render) would fetch the same page twice.
+    if (
+      !nativeLibrary ||
+      nativeLoading ||
+      loadingMoreRef.current ||
+      nativeTracks.length >= nativeTotal
+    ) {
       return;
     }
+    loadingMoreRef.current = true;
     const request = ++listRequestRef.current;
     setNativeLoading(true);
     setNativeError(null);
@@ -440,6 +479,7 @@ export function DesktopLibraryPanel() {
         );
       }
     } finally {
+      loadingMoreRef.current = false;
       if (request === listRequestRef.current) {
         setNativeLoading(false);
       }
@@ -447,8 +487,12 @@ export function DesktopLibraryPanel() {
   };
 
   useEffect(() => {
-    void refreshNative();
-  }, [refreshNative]);
+    void loadList();
+  }, [loadList]);
+
+  useEffect(() => {
+    void loadMeta();
+  }, [loadMeta]);
 
   useEffect(() => {
     if (
@@ -744,19 +788,25 @@ export function DesktopLibraryPanel() {
     if (!nativeLibrary) {
       return;
     }
+    // Resolve every path at once (one IPC round trip each, in parallel), then
+    // queue in the original order.
+    const resolved = await Promise.allSettled(
+      tracks.map((track) => nativeLibrary.resolve(track.id)),
+    );
     let queued = 0;
-    for (const track of tracks) {
-      try {
-        enqueue(
-          playableFromNativeTrack(track, await nativeLibrary.resolve(track.id)),
-        );
+    resolved.forEach((result, index) => {
+      const track = tracks[index];
+      if (result.status === 'fulfilled' && track) {
+        enqueue(playableFromNativeTrack(track, result.value));
         queued += 1;
-      } catch (error) {
+      } else if (result.status === 'rejected') {
         toast.error(
-          error instanceof Error ? error.message : 'Track unavailable.',
+          result.reason instanceof Error
+            ? result.reason.message
+            : 'Track unavailable.',
         );
       }
-    }
+    });
     if (queued) {
       toast.success(
         queued === 1
@@ -1045,121 +1095,18 @@ export function DesktopLibraryPanel() {
                 : ''}
             </p>
           ) : null}
-          <div
-            className="border-border flex flex-col gap-1.5 rounded-md border p-2"
-            data-testid="library-roots"
-          >
-            <div className="flex items-center gap-1">
-              <p className="flex-1 text-xs font-semibold">Watched folders</p>
-              <Button
-                size="sm"
-                variant="text"
-                onClick={() => void addRoot()}
-                disabled={nativeLoading || rootBusy !== null}
-              >
-                {rootBusy === 'add' ? (
-                  <LoaderCircleIcon
-                    size={14}
-                    className="animate-spin"
-                    aria-hidden
-                  />
-                ) : (
-                  <FolderPlusIcon size={14} aria-hidden />
-                )}
-                Add folder
-              </Button>
-              {roots.length > 0 && nativeLibrary?.setWatching ? (
-                <Toggle
-                  label="Watch folders for changes"
-                  checked={watching}
-                  onChange={(enabled) => void changeWatching(enabled)}
-                />
-              ) : null}
-              {roots.length > 0 ? (
-                <Button
-                  size="sm"
-                  variant="text"
-                  onClick={() => void rescanRoots()}
-                  disabled={nativeLoading || rootBusy !== null}
-                >
-                  {rootBusy === 'rescan' ? (
-                    <LoaderCircleIcon
-                      size={14}
-                      className="animate-spin"
-                      aria-hidden
-                    />
-                  ) : (
-                    <RefreshCwIcon size={14} aria-hidden />
-                  )}
-                  Rescan
-                </Button>
-              ) : null}
-            </div>
-            {roots.length === 0 ? (
-              <p className="text-foreground-secondary text-xs">
-                Add a folder to keep it in sync — new files are picked up on
-                rescan and moved drives can be relinked in one step.
-              </p>
-            ) : (
-              <ul className="flex flex-col gap-1">
-                {roots.map((root) => (
-                  <li key={root.id} className="flex items-center gap-2">
-                    <div className="min-w-0 flex-1" title={root.path}>
-                      <p className="truncate text-xs font-semibold">
-                        {basename(root.path)}
-                      </p>
-                      <p
-                        className={
-                          root.available
-                            ? 'text-foreground-secondary truncate text-[10px]'
-                            : 'text-destructive truncate text-[10px]'
-                        }
-                      >
-                        {root.available
-                          ? `${root.trackCount} tracks${
-                              root.missingCount
-                                ? ` · ${root.missingCount} missing`
-                                : ''
-                            }`
-                          : 'Folder not found — reconnect the drive or relink'}
-                      </p>
-                    </div>
-                    <Tooltip content="Relink to another folder" side="top">
-                      <Button
-                        size="icon-sm"
-                        variant="text"
-                        aria-label={`Relink ${basename(root.path)}`}
-                        onClick={() => void relinkRoot(root)}
-                        disabled={nativeLoading || rootBusy !== null}
-                      >
-                        {rootBusy === root.id ? (
-                          <LoaderCircleIcon
-                            size={14}
-                            className="animate-spin"
-                            aria-hidden
-                          />
-                        ) : (
-                          <Link2Icon size={14} aria-hidden />
-                        )}
-                      </Button>
-                    </Tooltip>
-                    <Tooltip content="Stop watching" side="top">
-                      <Button
-                        size="icon-sm"
-                        variant="text"
-                        intent="danger"
-                        aria-label={`Stop watching ${basename(root.path)}`}
-                        onClick={() => setRootToRemove(root)}
-                        disabled={rootBusy !== null}
-                      >
-                        <TrashIcon size={14} aria-hidden />
-                      </Button>
-                    </Tooltip>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+          <LibraryRootsBlock
+            roots={roots}
+            canToggleWatching={Boolean(nativeLibrary.setWatching)}
+            watching={watching}
+            rootBusy={rootBusy}
+            loading={nativeLoading}
+            onAdd={() => void addRoot()}
+            onRescan={() => void rescanRoots()}
+            onRelink={(root) => void relinkRoot(root)}
+            onStopWatching={setRootToRemove}
+            onChangeWatching={(enabled) => void changeWatching(enabled)}
+          />
           <LocalLibraryTools
             library={nativeLibrary}
             onChanged={() => void refreshNative()}
@@ -1249,18 +1196,18 @@ export function DesktopLibraryPanel() {
                   rows={nativeTracks}
                   total={nativeTotal}
                   itemNoun="tracks"
-                  getRowId={(track) => track.id}
-                  getRowLabel={(track) => track.title}
+                  getRowId={trackRowId}
+                  getRowLabel={trackRowLabel}
                   sort={table.sort}
                   onSortChange={table.setSort}
                   onLoadMore={() => void loadMoreNative()}
                   loading={nativeLoading}
                   selectedIds={selectedIds}
                   onSelectedIdsChange={setSelectedIds}
-                  isRowMuted={(track) => !track.available}
+                  isRowMuted={trackRowMuted}
                   initialScrollOffset={initialScrollRef.current}
                   onScrollOffsetChange={(offset) => {
-                    saveViewState({
+                    saveViewStateDeferred({
                       scrollOffset: offset,
                       loadedCount: loadedCountRef.current,
                     });
@@ -1283,234 +1230,49 @@ export function DesktopLibraryPanel() {
                   onSelectAllMatching={() => void selectAllMatching()}
                   selectingAll={selectingAll}
                   toolbar={
-                    !selectedIds.size ? (
-                      <>
-                        <Button
-                          size="sm"
-                          variant="text"
-                          disabled={selectionBusy}
-                          onClick={() => void playAllMatching()}
-                        >
-                          {selectionBusy ? (
-                            <LoaderCircleIcon
-                              size={14}
-                              className="animate-spin"
-                              aria-hidden
-                            />
-                          ) : (
-                            <PlayIcon size={14} aria-hidden />
-                          )}
-                          Play all
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="text"
-                          disabled={selectionBusy || nativeTotal === 0}
-                          onClick={addAllToPlaylist}
-                        >
-                          <ListPlusIcon size={14} aria-hidden />
-                          Add all to playlist
-                        </Button>
-                      </>
-                    ) : (
-                      <>
-                        <Button
-                          size="sm"
-                          variant="text"
-                          disabled={selectionBusy}
-                          onClick={() => void playSelection()}
-                        >
-                          {selectionBusy ? (
-                            <LoaderCircleIcon
-                              size={14}
-                              className="animate-spin"
-                              aria-hidden
-                            />
-                          ) : (
-                            <PlayIcon size={14} aria-hidden />
-                          )}
-                          Play
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="text"
-                          disabled={selectionBusy}
-                          onClick={() => void playNextSelection()}
-                        >
-                          Play next
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="text"
-                          disabled={selectionBusy}
-                          onClick={() => void queueSelection()}
-                        >
-                          Add to queue
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="text"
-                          disabled={selectionBusy}
-                          onClick={() => setEditingIds([...selectedIds])}
-                        >
-                          <PencilIcon size={14} aria-hidden />
-                          Edit tags
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="text"
-                          disabled={selectionBusy}
-                          onClick={() => setWritingIds([...selectedIds])}
-                        >
-                          <SaveIcon size={14} aria-hidden />
-                          Write tags to files
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="text"
-                          disabled={selectionBusy}
-                          onClick={() =>
-                            setOrganizingFilesIds([...selectedIds])
-                          }
-                        >
-                          <FolderTreeIcon size={14} aria-hidden />
-                          Organize files
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="text"
-                          disabled={selectionBusy || analyzingSelection}
-                          onClick={() => void analyzeSelection()}
-                        >
-                          {analyzingSelection ? (
-                            <LoaderCircleIcon
-                              size={14}
-                              className="animate-spin"
-                              aria-hidden
-                            />
-                          ) : (
-                            <ActivityIcon size={14} aria-hidden />
-                          )}
-                          Analyze
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="text"
-                          disabled={selectionBusy}
-                          onClick={() => setOrganizingIds([...selectedIds])}
-                        >
-                          <StarIcon size={14} aria-hidden />
-                          Rate and label
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="text"
-                          disabled={selectionBusy}
-                          onClick={addSelectionToPlaylist}
-                        >
-                          <ListPlusIcon size={14} aria-hidden />
-                          Add to playlist
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="text"
-                          intent="danger"
-                          disabled={selectionBusy}
-                          onClick={() =>
-                            setPendingRemoval({
-                              ids: [...selectedIds],
-                              title: null,
-                            })
-                          }
-                        >
-                          <TrashIcon size={14} aria-hidden />
-                          Remove
-                        </Button>
-                      </>
-                    )
+                    <SelectionToolbar
+                      selectedCount={selectedIds.size}
+                      nativeTotal={nativeTotal}
+                      selectionBusy={selectionBusy}
+                      analyzing={analyzingSelection}
+                      onPlayAll={() => void playAllMatching()}
+                      onAddAllToPlaylist={addAllToPlaylist}
+                      onPlay={() => void playSelection()}
+                      onPlayNext={() => void playNextSelection()}
+                      onQueue={() => void queueSelection()}
+                      onEditTags={() => setEditingIds([...selectedIds])}
+                      onWriteTags={() => setWritingIds([...selectedIds])}
+                      onOrganizeFiles={() =>
+                        setOrganizingFilesIds([...selectedIds])
+                      }
+                      onAnalyze={() => void analyzeSelection()}
+                      onRateAndLabel={() => setOrganizingIds([...selectedIds])}
+                      onAddToPlaylist={addSelectionToPlaylist}
+                      onRemove={() =>
+                        setPendingRemoval({
+                          ids: [...selectedIds],
+                          title: null,
+                        })
+                      }
+                    />
                   }
                   renderActions={(track) => (
-                    <>
-                      {!track.available ? (
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          onClick={() => void relinkNative(track)}
-                          disabled={nativeLoading}
-                        >
-                          Locate
-                        </Button>
-                      ) : (
-                        <>
-                          <Tooltip content="Play" side="top">
-                            <Button
-                              size="icon-sm"
-                              variant="text"
-                              aria-label={`Play ${track.title}`}
-                              onClick={() => void playNative(track)}
-                            >
-                              <PlayIcon size={14} aria-hidden />
-                            </Button>
-                          </Tooltip>
-                          <Tooltip content="Add to queue" side="top">
-                            <Button
-                              size="sm"
-                              variant="text"
-                              aria-label={`Queue ${track.title}`}
-                              onClick={() => void queueNative([track])}
-                            >
-                              Queue
-                            </Button>
-                          </Tooltip>
-                          <Tooltip content="Reveal in folder" side="top">
-                            <Button
-                              size="icon-sm"
-                              variant="text"
-                              aria-label={`Reveal ${track.title} in folder`}
-                              onClick={() => void revealNative(track)}
-                            >
-                              <FolderOpenIcon size={14} aria-hidden />
-                            </Button>
-                          </Tooltip>
-                        </>
-                      )}
-                      <Tooltip content="Edit tags (E)" side="top">
-                        <Button
-                          size="icon-sm"
-                          variant="text"
-                          aria-label={`Edit tags for ${track.title}`}
-                          onClick={() => setEditingIds([track.id])}
-                        >
-                          <PencilIcon size={14} aria-hidden />
-                        </Button>
-                      </Tooltip>
-                      <Tooltip content="Details (I)" side="top">
-                        <Button
-                          size="icon-sm"
-                          variant="text"
-                          aria-label={`Details for ${track.title}`}
-                          onClick={() => setInspected(track)}
-                        >
-                          <InfoIcon size={14} aria-hidden />
-                        </Button>
-                      </Tooltip>
-                      <Tooltip content="Remove from library" side="top">
-                        <Button
-                          size="icon-sm"
-                          variant="text"
-                          intent="danger"
-                          aria-label={`Remove ${track.title}`}
-                          onClick={() =>
-                            setPendingRemoval({
-                              ids: [track.id],
-                              title: track.title,
-                            })
-                          }
-                        >
-                          <TrashIcon size={14} aria-hidden />
-                        </Button>
-                      </Tooltip>
-                    </>
+                    <TrackRowActions
+                      track={track}
+                      loading={nativeLoading}
+                      onRelink={(target) => void relinkNative(target)}
+                      onPlay={(target) => void playNative(target)}
+                      onQueue={(target) => void queueNative([target])}
+                      onReveal={(target) => void revealNative(target)}
+                      onEdit={(target) => setEditingIds([target.id])}
+                      onInspect={setInspected}
+                      onRemove={(target) =>
+                        setPendingRemoval({
+                          ids: [target.id],
+                          title: target.title,
+                        })
+                      }
+                    />
                   )}
                 />
               ) : nativeError ? (
@@ -1791,12 +1553,6 @@ export function describeImportFailures(
     lines.push(`…and ${remaining} more.`);
   }
   return lines.join('\n');
-}
-
-function basename(path: string): string {
-  const normalized = path.replace(/\\/g, '/');
-  const segments = normalized.split('/');
-  return segments[segments.length - 1] || path;
 }
 
 function formatFileSize(bytes: number): string {
