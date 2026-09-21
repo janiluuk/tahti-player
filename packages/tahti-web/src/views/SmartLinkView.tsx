@@ -71,18 +71,16 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
         const fromRelease =
           matched?.tracks
             ?.filter((track) => track.playUrl)
-            .map(
-              (track): TahtiPlayable => ({
-                id: `sound:${track.soundId ?? `${matched.id}-${track.position}`}`,
-                kind: 'sound',
-                title: track.title,
-                artist: result.data.artist.displayName,
-                coverUrl: matched.artworkUrl ?? undefined,
-                streamUrl: track.playUrl!,
-                protocol: track.playUrl!.includes('.m3u8') ? 'hls' : 'https',
-                channelSlug: profile.data.channel?.slug,
-              }),
-            ) ?? [];
+            .map((track): TahtiPlayable => ({
+              id: `sound:${track.soundId ?? `${matched.id}-${track.position}`}`,
+              kind: 'sound',
+              title: track.title,
+              artist: result.data.artist.displayName,
+              coverUrl: matched.artworkUrl ?? undefined,
+              streamUrl: track.playUrl!,
+              protocol: track.playUrl!.includes('.m3u8') ? 'hls' : 'https',
+              channelSlug: profile.data.channel?.slug,
+            })) ?? [];
         let soundGenre = matched?.genre ?? null;
         if (!soundGenre && profile.data.channel?.slug && matched?.tracks) {
           const sound = await fetchChannelSound(profile.data.channel.slug);

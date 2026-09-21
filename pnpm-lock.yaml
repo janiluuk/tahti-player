@@ -166,15 +166,9 @@ importers:
 
   .:
     dependencies:
-      format:
-        specifier: ^0.2.2
-        version: 0.2.2
       prettier:
-        specifier: ^3.9.8
+        specifier: 3.9.8
         version: 3.9.8
-      prettierr:
-        specifier: 1.15.3-dev
-        version: 1.15.3-dev
     devDependencies:
       '@ianvs/prettier-plugin-sort-imports':
         specifier: ^4.7.1
@@ -6550,11 +6544,6 @@ packages:
   prettier@3.9.8:
     resolution: {integrity: sha512-WRFq3Wn3WId7LLROfMLdH7xaFr2jR62wU8nLO6rQUOLOxNZUviyJQs1M0iIhLexSFy+L+w0ch66wtoO2jRjG0A==}
     engines: {node: '>=14'}
-    hasBin: true
-
-  prettierr@1.15.3-dev:
-    resolution: {integrity: sha512-ezeRDKwuf/biKFdQSOZ+mIKd9WzPGm+GhwO0KdUh5U+IzA4mxesU89OJRTHkCBMpFycYkL0QMPHbSdI1IwAgUw==}
-    engines: {node: '>=4'}
     hasBin: true
 
   pretty-format@27.5.1:
@@ -13969,8 +13958,6 @@ snapshots:
       prettier-plugin-astro: 0.14.1
 
   prettier@3.9.8: {}
-
-  prettierr@1.15.3-dev: {}
 
   pretty-format@27.5.1:
     dependencies:

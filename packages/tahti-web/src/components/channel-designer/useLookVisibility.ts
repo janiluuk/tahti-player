@@ -22,8 +22,7 @@ type Options = {
   layout?: ChannelPageItem[];
   onLayoutChange?: (
     updater:
-      | ChannelPageItem[]
-      | ((prev: ChannelPageItem[]) => ChannelPageItem[]),
+      ChannelPageItem[] | ((prev: ChannelPageItem[]) => ChannelPageItem[]),
   ) => void;
   onLookVisibilityChange?: (
     visibility: Record<ArtistLookBlockId, boolean>,

@@ -62,9 +62,7 @@
   },
   "license": "AGPL-3.0-only",
   "dependencies": {
-    "format": "^0.2.2",
-    "prettier": "^3.9.8",
-    "prettierr": "1.15.3-dev"
+    "prettier": "3.9.8"
   },
   "pnpm": {
     "peerDependencyRules": {

@@ -26,7 +26,7 @@ parsers:
     enable_partials: yes
 
 comment:
-  layout: "condensed_header, diff, flags, components, condensed_files"
+  layout: 'condensed_header, diff, flags, components, condensed_files'
   require_changes: true
   behavior: default
 
@@ -53,47 +53,47 @@ component_management:
     - component_id: player_app
       name: Player (App)
       paths:
-        - "packages/player/src/**"
+        - 'packages/player/src/**'
     - component_id: ui
       name: UI Library
       paths:
-        - "packages/ui/src/**"
+        - 'packages/ui/src/**'
     - component_id: hifi
       name: Hifi
       paths:
-        - "packages/hifi/src/**"
+        - 'packages/hifi/src/**'
     - component_id: model
       name: Data Model
       paths:
-        - "packages/model/src/**"
+        - 'packages/model/src/**'
     - component_id: plugin_sdk
       name: Plugin SDK
       paths:
-        - "packages/plugin-sdk/src/**"
+        - 'packages/plugin-sdk/src/**'
     - component_id: themes
       name: Themes
       paths:
-        - "packages/themes/src/**"
+        - 'packages/themes/src/**'
 
 ignore:
-  - "packages/docs/**"
-  - "packages/storybook/**"
-  - "packages/website/**"
-  - "packages/tailwind-config/**"
-  - "packages/eslint-config/**"
-  - "packages/i18n/**"
-  - "packages/app/**"
-  - "packages/core/**"
-  - "packages/main/**"
-  - "packages/scanner/**"
-  - "**/__snapshots__/**"
-  - "**/*.snap"
-  - "packages/**/dist/**"
-  - "**/*.d.ts"
-  - "packages/tools/**"
-  - "packages/player/src-tauri/**"
-  - "**/routeTree.gen.ts"
-  - "**/*.test-wrapper.tsx"
-  - "packages/player/src/test/**"
-  - "packages/player/src/services/tauri/bindings.ts"
-  - "packages/plugin-sdk/src/**"
+  - 'packages/docs/**'
+  - 'packages/storybook/**'
+  - 'packages/website/**'
+  - 'packages/tailwind-config/**'
+  - 'packages/eslint-config/**'
+  - 'packages/i18n/**'
+  - 'packages/app/**'
+  - 'packages/core/**'
+  - 'packages/main/**'
+  - 'packages/scanner/**'
+  - '**/__snapshots__/**'
+  - '**/*.snap'
+  - 'packages/**/dist/**'
+  - '**/*.d.ts'
+  - 'packages/tools/**'
+  - 'packages/player/src-tauri/**'
+  - '**/routeTree.gen.ts'
+  - '**/*.test-wrapper.tsx'
+  - 'packages/player/src/test/**'
+  - 'packages/player/src/services/tauri/bindings.ts'
+  - 'packages/plugin-sdk/src/**'

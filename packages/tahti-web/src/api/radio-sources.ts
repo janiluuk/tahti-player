@@ -180,8 +180,7 @@ export async function lookupStationByUrl(
       return null;
     }
     const data = (await res.json()) as
-      | RadioBrowserStation[]
-      | RadioBrowserStation;
+      RadioBrowserStation[] | RadioBrowserStation;
     const first = Array.isArray(data) ? data[0] : data;
     return first ? fromRadioBrowser(first) : null;
   } catch {

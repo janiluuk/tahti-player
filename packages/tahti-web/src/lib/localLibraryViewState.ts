@@ -4,12 +4,7 @@ import { EMPTY_TRACK_FILTERS } from './nativeLibrary';
 export type LocalLibraryViewState = {
   query: string;
   browseKind:
-    | 'tracks'
-    | 'playlists'
-    | 'artists'
-    | 'albums'
-    | 'genres'
-    | 'folders';
+    'tracks' | 'playlists' | 'artists' | 'albums' | 'genres' | 'folders';
   /** The playlist open in the Playlists tab, if any. */
   openPlaylistId: string | null;
   facetFilter: NativeFacetFilter | null;

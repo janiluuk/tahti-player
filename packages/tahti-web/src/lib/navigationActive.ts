@@ -13,11 +13,7 @@ export type SidebarItemId =
   | 'settings';
 
 export type MobileItemId =
-  | 'listen'
-  | 'radio'
-  | 'discover'
-  | 'library'
-  | 'studio';
+  'listen' | 'radio' | 'discover' | 'library' | 'studio';
 
 export type ListenTabId = 'listen' | 'feed' | 'history';
 

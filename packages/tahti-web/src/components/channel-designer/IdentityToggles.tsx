@@ -10,8 +10,7 @@ type Props = {
   layout: ChannelPageItem[];
   onLayoutChange: (
     updater:
-      | ChannelPageItem[]
-      | ((prev: ChannelPageItem[]) => ChannelPageItem[]),
+      ChannelPageItem[] | ((prev: ChannelPageItem[]) => ChannelPageItem[]),
   ) => void;
 };
 

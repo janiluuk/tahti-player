@@ -3,10 +3,7 @@
  * channel) — see NowPlayingOverlay.tsx for the actual rendering of each. */
 
 export type NowPlayingOverlayPresetId =
-  | 'classic'
-  | 'centered'
-  | 'minimal'
-  | 'edge';
+  'classic' | 'centered' | 'minimal' | 'edge';
 
 export type NowPlayingOverlayPreset = {
   id: NowPlayingOverlayPresetId;

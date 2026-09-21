@@ -12,11 +12,7 @@
  */
 
 export type ListenerWidgetTypeId =
-  | 'soundcloud'
-  | 'spotify'
-  | 'youtube'
-  | 'hearthis'
-  | 'bandcamp';
+  'soundcloud' | 'spotify' | 'youtube' | 'hearthis' | 'bandcamp';
 
 export type ListenerWidgetType = {
   id: ListenerWidgetTypeId;

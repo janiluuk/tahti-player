@@ -508,9 +508,7 @@ export function rejectRadioSubmission(id: string, note?: string) {
 // tracks submitted for Tahti's own co-op radio rotation.
 
 export type AdminRadioStationSuggestionStatus =
-  | 'PENDING'
-  | 'APPROVED'
-  | 'REJECTED';
+  'PENDING' | 'APPROVED' | 'REJECTED';
 
 export type AdminRadioStationSuggestion = {
   id: string;

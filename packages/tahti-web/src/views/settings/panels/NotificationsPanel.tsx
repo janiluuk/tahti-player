@@ -125,10 +125,7 @@ export function NotificationsVisibilityPanel() {
 
   const updateVisibility = (
     key:
-      | 'showJoinDate'
-      | 'showFollowers'
-      | 'showFollowing'
-      | 'showDailyListeners',
+      'showJoinDate' | 'showFollowers' | 'showFollowing' | 'showDailyListeners',
     value: boolean,
   ) => {
     if (!profile) {

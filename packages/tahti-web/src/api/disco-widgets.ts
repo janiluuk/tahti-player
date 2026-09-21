@@ -73,8 +73,7 @@ export type DiscoWidgetRenderItem = {
 };
 
 type ActionResult<T = void> =
-  | { error: null; data: T }
-  | { error: string; data?: undefined };
+  { error: null; data: T } | { error: string; data?: undefined };
 
 function emptyMeta(err: unknown): FetchMeta {
   return allowMockFallback() ? failMeta(err) : apiErrorMeta(err);

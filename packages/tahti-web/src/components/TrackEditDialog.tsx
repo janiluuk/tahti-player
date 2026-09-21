@@ -615,8 +615,7 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
                           }
                           overlay={
                             (form.tracklistOverlay as
-                              | TracklistOverlaySettings
-                              | undefined) ?? {
+                              TracklistOverlaySettings | undefined) ?? {
                               enabled: false,
                               preset: 'cards',
                             }

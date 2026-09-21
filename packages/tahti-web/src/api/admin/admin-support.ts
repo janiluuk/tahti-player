@@ -268,10 +268,7 @@ export async function postAdminSupportTicketMessage(
 // ── Missed live shows ──────────────────────────────────────────────────────
 
 export type AdminMissedShowStatus =
-  | 'OPEN'
-  | 'REVIEWING'
-  | 'ACTIONED'
-  | 'DISMISSED';
+  'OPEN' | 'REVIEWING' | 'ACTIONED' | 'DISMISSED';
 
 export type AdminMissedShow = {
   id: string;
