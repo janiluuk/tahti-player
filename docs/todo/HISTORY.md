@@ -2,6 +2,144 @@
 
 Completed task notes folded here so `docs/todo/` stays current.
 
+## 2026-09-21 — Listen widget: hearthis.at config UX + broken set-embed add (all 3 asks shipped)
+
+Folded from `listen-widget-hearthis-config-and-set-embed-bug.md`. The
+first two asks (auto-fill hearthis.at username from the stored profile;
+fix the set-embed bug via resolving hearthis.at's set-page redirect before
+building the oembed URL) shipped earlier this pass — see the doc's own
+detail, carried into this entry: `listenerWidgets.test.ts` 24/24 pass, a
+regression test pins the redirect-then-oembed sequence.
+
+Third ask ("icon buttons + Storybook components" for the config dialog)
+had been left open pending the user pointing at specifics; instead they
+asked to audit the file against Storybook/`@tahti-player/ui` conventions
+and migrate anything that didn't. Audit: every control already came from
+`@tahti-player/ui` (no hand-rolled HTML), and `Toggle`'s paired visible
+`<span>` + `label=` (aria-only) pattern matched the same convention used
+in `AdminAddonsView.tsx` — one real gap found: the hearthis.at set-browser
+list's thumbnail was a raw `<img>` instead of the shared `MediaArtwork`
+component (the established `size="thumb"` pattern from
+`WidgetTrackRow.tsx`). Migrated it. "Uninstall" staying a text `Button`
+(not icon-only) is intentional — `PluginStoreItem` has no uninstall
+concept of its own, so a plain `Button variant="text"` in the expanded
+config body is the correct library-native way to render it, not a gap.
+
+Also added a standing instruction to this repo's `CLAUDE.md` (new "UI
+components" section): all `tahti-web` UI must use `@tahti-player/ui`
+where a component already covers the case, and migrate on touch if it
+doesn't — a repo-wide policy request, not scoped to this one file.
+
+`tsc --noEmit` / `eslint` clean. No existing unit test for
+`ListenAddonsPanel.tsx` to run (only its Storybook story, unaffected by
+the touched markup).
+
+Nothing left open against this ticket's 3-item ask — folded and deleted.
+
+## 2026-09-20 — Hide Local library / Soulseek from non-desktop: "desktop app only" placeholder shipped
+
+Folded from `hide-local-library-soulseek-non-desktop.md`. Soulseek was
+already fully hidden outside the desktop app (shipped 2026-09-18). Asked
+the user directly about the remaining open question (nav-entry removal vs.
+a "desktop app only" placeholder for Local library, since no existing
+precedent for either pattern was found in this repo) — decided:
+placeholder, keep the nav entry.
+
+`DesktopLibraryPanel.tsx`: added an early return, gated on the existing
+`hasNativePlayer()` check (before any of the component's own hooks that
+depend on runtime state, but after all `useState`/`useMemo`/`useCallback`
+calls so the rules of hooks stay satisfied), that renders a "Desktop app
+only" `EmptyState` instead of the File-API browser-fallback UI when
+`hasNativePlayer()` is false. Left the desktop-runtime-but-no-native-library
+case (`nativePlayer && !nativeLibrary`) untouched — that's still inside the
+desktop app, just with the native subsystem unavailable, so the existing
+"browser imports remain available" message and fallback UI still apply
+there; only a genuine plain-browser build now sees the placeholder.
+`LibraryView.tsx`'s "Local library" tab itself is unchanged (nav entry
+stays visible everywhere, per the decision).
+
+Added `DesktopLibraryPanel.browser-fallback.test.tsx` (2 tests, plain
+`react-dom` rendering — the existing `DesktopLibraryPanel.native.test.tsx`
+uses `@testing-library/react`, which is declared in `package.json` but not
+actually installed in `node_modules` in this environment, a pre-existing
+gap unrelated to this change, left alone). `tsc --noEmit` / `eslint` clean.
+
+Nothing left open against this ticket's ask — folded and deleted.
+
+## 2026-09-20 — Studio front page: empty-discography CTAs
+
+Folded from `studio-empty-discography-ctas.md`.
+
+`StudioHomeView.tsx`: added a "Nothing in your discography yet" prompt with
+"Add an album" / "Add a track" CTA buttons, shown only once the discography
+fetch (`fetchStudioSounds` + `fetchStudioReleases`, tracked by a new
+`discographyLoaded` flag so the prompt can't flash during the loading state)
+resolves and both counts are confirmed zero — an existing track or release
+of either kind suppresses it.
+
+"Add a track" links straight to the existing `/library/upload` flow
+(`StudioUploadView`). "Add an album" needed a way to jump directly into
+release creation rather than just landing on the Releases list: added a
+`create?: boolean` `validateSearch` to `studioReleasesRoute`
+(`routes-studio.tsx`), and `StudioReleasesView` now reads it via
+`useSearch({ strict: false })` and opens its existing "New release" dialog
+on mount when `?create=true` is present — no new dialog/flow built, just
+wired the CTA into the one that already existed.
+
+Verified: `tsc --noEmit` / `eslint` clean, new
+`StudioHomeView.test.tsx` (3 tests: CTA shows once an empty discography has
+loaded, hidden once a track exists, hidden once a release exists) plus the
+full existing unit suite all pass. Could not do a live browser check (no
+Claude-in-Chrome extension connected in this session) — confirmed the
+`search={{ create: true }}` Link is well-typed against the route's
+`validateSearch` via a clean `tsc`, and traced `StudioReleasesView`'s mount
+effect by hand instead.
+
+Nothing left open against this ticket's 3-item ask — folded and deleted.
+
+## 2026-09-20 — Rename Sound to Library (scope clarified: Sounds tab → Tracks)
+
+Folded from `rename-sound-to-library.md`.
+
+Investigated before editing: the top-level nav section is already called
+"Library" (`stores/navigationStructureStore.ts`, route `/library`,
+`LibraryView.tsx`) — that rename had already happened in an earlier
+session. What was still labeled "Sound(s)" was a narrower, different
+concept: the Library sub-tab (and its Studio counterpart at
+`/studio/sounds`, `StudioSoundsView.tsx`) showing the user's own uploaded
+audio items, rendered by `MyDiscographyView`. Confirmed the actual scope
+with the user — rename that "Sounds" sub-tab to "Tracks" (not "Library",
+since that's the parent section).
+
+Renamed all user-facing copy referring to this entity/tab from
+"Sound(s)" to "Track(s)": `LibraryView.tsx` tab label + page title,
+`StudioSoundsView.tsx` folder-tab label/page title/search
+aria-label/stats-dialog copy/delete-confirm title, `MyDiscographyView.tsx`
+loading/error/empty-state/filter/search copy, `ConnectedStatusBar.tsx`'s
+sound-count pill text, `AdminStorageUserView.tsx`'s file-kind label,
+`StudioHomeView.tsx`'s Music tile subtitle, `FavoritesView.tsx`'s empty
+message, `RemainingCategories.tsx`'s mastering plugin description,
+`StudioReleaseDetailView.tsx`'s content-type fallback badge, and a
+`studio-sounds.ts` error message. Updated the in-app page tour
+(`pageTour.ts`) and Help Hub copy (`help.ts`), the `/more` diagnostics map
+content (`mapScreens.ts`) and Mermaid flow diagrams (`flowDiagrams.ts`),
+the Storybook story for `StudioSoundsView` (renamed the `Sounds` export to
+`Tracks`, updated its description), and `docs/VIEW-CATALOG.md`'s two rows.
+Updated the e2e test and unit test assertions that checked the old label
+text (`real-user-journeys.spec.ts`, `MyDiscographyView.test.tsx`).
+
+Deliberately left unchanged: internal identifiers (`soundId`, `StudioSound`
+type, `/api/me/sound*` routes, `sound-versions.ts`/`studio-sounds.ts`
+filenames, the `/library/sounds` and `/studio/sounds` route paths) — those
+are a distinct, much larger and riskier refactor of the domain/API layer
+that wasn't asked for. Also left `SoundCloud`, genre/vendor names
+containing "Sound", and generic English uses of the word alone.
+
+Verified: `tsc --noEmit` / `eslint` clean on `tahti-web`, `git diff --check`
+clean, the two directly affected unit test files pass. Bumped
+`tahti-web` to `0.0.125`; skipped a release-notes entry per that file's own
+"not every bump" rule (small copy-only rename).
+
 ## 2026-09-18 — Fixed and shipped the orphaned `canvas-designer` cover-art generator
 
 User asked to "continue on the canvas designer" — an untracked, undocumented
@@ -3450,3 +3588,17 @@ The ticket's last open item was "if a real BOARD-role account still can't edit r
 Every link in the chain (DB column → session → API response → frontend fetch → store → role check → edit-gate) is consistent and correct — **no code bug exists in this path**. If a specific real account still can't edit covers, the most likely explanation is that account's `isBoard` DB column genuinely isn't `true` (a data/admin question, checkable directly via `/admin/users`), not a frontend defect. The "scrape station artwork to production" item was already explicitly out of scope in this doc (a separate data/content task needing its own scoping) and remains so — not attempted, not this ticket's concern.
 
 Nothing left actionable within this ticket's own scope — folded and deleted.
+
+---
+
+## 2026-09-21 — Close `mobile-player-hide-nav-swipe-reveal.md`: residual questions resolved, in-app status bar hidden on mobile
+
+The auto-hide-nav-while-playing feature itself shipped and was live-verified in earlier passes (2026-09-17/18); only 3 confirmation questions remained. User answered all three:
+
+1. **"Status bar"** in the original ask referred to `ConnectedStatusBar` (`packages/tahti-web/src/components/ConnectedStatusBar.tsx`) — the in-app footer bar showing track count, unread messages/notifications, cloud storage used, and (desktop/Tauri only) local-library track count — not the OS/browser chrome. It was previously mounted unconditionally in `AppShell.tsx` regardless of viewport. Fixed: wrapped it with `!isMobile &&` (`AppShell.tsx:571`), mirroring the existing `!isMobile && <ConnectedPlayerBar />` split — it now only renders on desktop, matching "only show it in desktop app."
+2. **Reveal-and-stay** (no auto-hide timer) confirmed as the intended feel — matches what was already built, no code change needed.
+3. **Hide on every mobile route** while something plays (not narrowed to Listen/Channel/Radio) confirmed as intended — matches what was already built, no code change needed.
+
+Verified: `pnpm --filter @tahti-player/tahti-web type-check` and `lint` both clean after the `ConnectedStatusBar` change. No PWA/standalone-app work needed since "status bar" didn't mean OS chrome.
+
+Nothing left open — folded and deleted.

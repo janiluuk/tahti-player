@@ -14,6 +14,7 @@ export * from './FavoriteButton';
 export * from './FilePicker';
 export * from './MediaArtwork';
 export * from './CardGrid';
+export * from './CatalogTable';
 export * from './EmptyState';
 export * from './FilterChips';
 export * from './HistoryDayGroup';

@@ -11,7 +11,7 @@ const meta: Meta<typeof StudioSoundsView> = {
     docs: {
       description: {
         component:
-          'Artist sound-library surface for sounds, clips, and stash files. Lives on Studio → Music → Sounds, Clips, and Files.',
+          'Artist sound-library surface for tracks, clips, and stash files. Lives on Studio → Music → Tracks, Clips, and Files.',
       },
     },
   },
@@ -21,7 +21,7 @@ const meta: Meta<typeof StudioSoundsView> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Sounds: Story = {};
+export const Tracks: Story = {};
 
 export const Clips: Story = {
   parameters: { query: { folder: 'clips' } },

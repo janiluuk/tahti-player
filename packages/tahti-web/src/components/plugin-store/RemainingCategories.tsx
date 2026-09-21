@@ -165,7 +165,7 @@ export function AudioPluginsCategory() {
       <AudioPluginToggleRow
         name="Reference Match"
         author="Pro Editor"
-        description="Match a track's loudness and tonal balance toward a reference track — the 'Master' / 'Match to a reference track' entry points on Sounds and the track editor."
+        description="Match a track's loudness and tonal balance toward a reference track — the 'Master' / 'Match to a reference track' entry points on Tracks and the track editor."
         enabled={masteringEnabled}
         onToggle={() => setMasteringEnabled(!masteringEnabled)}
       />

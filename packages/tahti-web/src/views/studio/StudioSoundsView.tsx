@@ -59,7 +59,7 @@ import {
 import { usePlayerStore } from '../../stores/playerStore';
 
 const FOLDERS = [
-  { id: 'sound' as const, label: 'Sounds', icon: AudioLinesIcon },
+  { id: 'sound' as const, label: 'Tracks', icon: AudioLinesIcon },
   { id: 'clips' as const, label: 'Clips', icon: AudioLinesIcon },
   { id: 'files' as const, label: 'Move to stash', icon: FolderIcon },
 ];
@@ -286,7 +286,7 @@ export function StudioSoundsView() {
             ))}
           </Tabs.List>
         </Tabs.Root>
-        <ViewShell title="Sounds" classes={{ root: 'px-0 pt-0' }}>
+        <ViewShell title="Tracks" classes={{ root: 'px-0 pt-0' }}>
           {folder === 'sound' ? (
             <div className="mb-4">
               <AddToMusicActions onUploaded={reload} />
@@ -300,7 +300,7 @@ export function StudioSoundsView() {
               <div className="mb-4 flex flex-wrap items-center gap-3">
                 <Input
                   type="search"
-                  aria-label="Search sounds"
+                  aria-label="Search tracks"
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder="Search…"
@@ -535,7 +535,7 @@ export function StudioSoundsView() {
       >
         <Dialog.Title>{statsItem?.title ?? 'Track stats'}</Dialog.Title>
         <Dialog.Description>
-          Plays, downloads, and listener geography for this sound.
+          Plays, downloads, and listener geography for this track.
         </Dialog.Description>
         {statsItem ? (
           <TrackInsightsPanel kind="sound" id={statsItem.id} />
@@ -549,7 +549,7 @@ export function StudioSoundsView() {
         title={
           pendingDeleteItem
             ? `Delete “${pendingDeleteItem.title}”?`
-            : 'Delete sound?'
+            : 'Delete track?'
         }
         description="This cannot be undone."
         confirmLabel="Delete"

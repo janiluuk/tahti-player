@@ -36,7 +36,7 @@ const SIDEBAR_STEPS: TourStep[] = [
   {
     id: 'nav-library',
     label: 'My Library',
-    description: 'Your sounds, collections, playlists, and listening history.',
+    description: 'Your tracks, collections, playlists, and listening history.',
   },
   {
     id: 'nav-messages',
@@ -185,7 +185,7 @@ const PAGE_PURPOSE_BY_PREFIX: Array<{
   {
     prefix: '/studio/upload',
     label: 'Upload',
-    description: 'Add new sounds and releases to your library.',
+    description: 'Add new tracks and releases to your library.',
   },
   {
     prefix: '/studio',
@@ -195,14 +195,14 @@ const PAGE_PURPOSE_BY_PREFIX: Array<{
   },
   {
     prefix: '/library/sounds',
-    label: 'Sounds',
+    label: 'Tracks',
     description: 'Your uploaded tracks and encoding status.',
   },
   {
     prefix: '/library',
     label: 'Library',
     description:
-      'Your sounds, releases, collections, recordings, and listening history.',
+      'Your tracks, releases, collections, recordings, and listening history.',
   },
   {
     prefix: '/admin',

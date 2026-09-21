@@ -10,6 +10,126 @@ export type NativeLibraryTrack = {
   sizeBytes: number;
   available: boolean;
   unavailableSince: string | null;
+  path: string;
+  sampleRate: number;
+  channels: number;
+  bitsPerSample: number | null;
+  albumArtist: string;
+  trackNo: number | null;
+  discNo: number | null;
+  year: number | null;
+  genre: string;
+  comment: string;
+  bitrateKbps: number | null;
+  /** UTC `YYYY-MM-DD HH:MM:SS`; empty when unknown. */
+  addedAt: string;
+};
+
+export type NativeSortColumn =
+  | 'title'
+  | 'artist'
+  | 'album'
+  | 'genre'
+  | 'year'
+  | 'trackNo'
+  | 'duration'
+  | 'format'
+  | 'size'
+  | 'bitrate'
+  | 'added';
+
+/** Sorted in the database with a stable tie-break; blanks always last. */
+export type NativeTrackSort = {
+  column: NativeSortColumn;
+  descending: boolean;
+};
+
+export type NativeAvailability = 'available' | 'missing';
+
+/** Range and attribute filters; an empty (null / no formats) field restricts nothing. */
+export type NativeTrackFilters = {
+  yearMin: number | null;
+  yearMax: number | null;
+  /** Seconds. */
+  durationMin: number | null;
+  durationMax: number | null;
+  bitrateMin: number | null;
+  formats: string[];
+  rootId: string | null;
+  /** `YYYY-MM-DD`. */
+  addedSince: string | null;
+  availability: NativeAvailability | null;
+};
+
+export const EMPTY_TRACK_FILTERS: NativeTrackFilters = {
+  yearMin: null,
+  yearMax: null,
+  durationMin: null,
+  durationMax: null,
+  bitrateMin: null,
+  formats: [],
+  rootId: null,
+  addedSince: null,
+  availability: null,
+};
+
+/** How many separate restrictions are active (a year range counts once). */
+export function countActiveFilters(filters: NativeTrackFilters): number {
+  return [
+    filters.yearMin !== null || filters.yearMax !== null,
+    filters.durationMin !== null || filters.durationMax !== null,
+    filters.bitrateMin !== null,
+    filters.formats.length > 0,
+    filters.rootId !== null,
+    filters.addedSince !== null,
+    filters.availability !== null,
+  ].filter(Boolean).length;
+}
+
+/** Values to build filter controls from the current catalog. */
+export type NativeFilterOptions = {
+  formats: string[];
+  yearMin: number | null;
+  yearMax: number | null;
+};
+
+export type NativeFacetKind = 'artists' | 'albums' | 'genres' | 'folders';
+
+/** One group in a browse tab. For albums `secondary` is the album artist. */
+export type NativeFacetGroup = {
+  name: string;
+  secondary: string;
+  year: number | null;
+  trackCount: number;
+  durationSec: number | null;
+  sizeBytes: number;
+};
+
+/** Narrows the track list to one group from `facets`. */
+export type NativeFacetFilter = {
+  kind: NativeFacetKind;
+  value: string;
+  secondary: string | null;
+};
+
+/** Everything on this device — separate from cloud storage usage. */
+export type NativeLibraryTotals = {
+  trackCount: number;
+  durationSec: number | null;
+  sizeBytes: number;
+};
+
+/** A track verified on disk and ready for the player. */
+export type NativePlaybackItem = {
+  track: NativeLibraryTrack;
+  streamUrl: string;
+};
+
+export type NativePlaybackBatch = {
+  /** In the order the ids were requested. */
+  items: NativePlaybackItem[];
+  /** Requested tracks whose file is missing. */
+  unavailable: number;
 };
 
 export type NativeLibraryPage = {
@@ -19,18 +139,100 @@ export type NativeLibraryPage = {
 
 export type NativeLibraryImportResult = {
   imported: number;
+  /** Files walked (folder import / drag-drop) that had an unsupported extension. */
+  skipped: number;
   errors: Array<{ path: string; error: string }>;
+  /** True when `cancelImport` interrupted the loop before every path was processed. */
+  cancelled: boolean;
+};
+
+export type NativeLibraryImportProgress = {
+  done: number;
+  total: number;
+  imported: number;
+  failed: number;
+  skipped: number;
+  /** `null` on the final (100%) event. */
+  currentPath: string | null;
+};
+
+export type NativeLibraryRoot = {
+  id: string;
+  path: string;
+  createdAt: string;
+  lastScannedAt: string | null;
+  trackCount: number;
+  missingCount: number;
+  /** Whether the folder itself currently exists (false for a disconnected drive). */
+  available: boolean;
+};
+
+export type NativeRootScanResult = {
+  imported: number;
+  skipped: number;
+  /** Known tracks whose file is no longer there. */
+  missing: number;
+  /** Previously-missing tracks whose file is back. */
+  recovered: number;
+  errors: Array<{ path: string; error: string }>;
+  cancelled: boolean;
+};
+
+export type NativeRelinkRootResult = {
+  root: NativeLibraryRoot;
+  relinked: number;
+  unmatched: number;
 };
 
 export type TahtiNativeLibrary = {
-  list: (search: string, offset: number) => Promise<NativeLibraryPage>;
+  list: (
+    search: string,
+    offset: number,
+    filter?: NativeFacetFilter | null,
+    sort?: NativeTrackSort | null,
+    filters?: NativeTrackFilters | null,
+  ) => Promise<NativeLibraryPage>;
+  /** Every id matching a search/group, in exactly the order the table shows them. */
+  matchingIds: (
+    search: string,
+    filter?: NativeFacetFilter | null,
+    sort?: NativeTrackSort | null,
+    filters?: NativeTrackFilters | null,
+  ) => Promise<string[]>;
+  filterOptions: () => Promise<NativeFilterOptions>;
+  /** Verifies and orders tracks for playback (call in modest chunks). */
+  prepareBatch: (ids: string[]) => Promise<NativePlaybackBatch>;
+  facets: (kind: NativeFacetKind) => Promise<NativeFacetGroup[]>;
+  totals: () => Promise<NativeLibraryTotals>;
   import: () => Promise<NativeLibraryImportResult>;
   importFolder: () => Promise<NativeLibraryImportResult>;
+  /** Imports an explicit list of file/folder paths — used for drag-drop. */
+  importPaths: (paths: string[]) => Promise<NativeLibraryImportResult>;
+  cancelImport: () => Promise<void>;
   resolve: (id: string) => Promise<string>;
   remove: (id: string) => Promise<void>;
+  /** Removes many catalog rows at once (files on disk untouched); returns how many existed. */
+  removeMany: (ids: string[]) => Promise<number>;
+  /** Reveals a track's original file in the OS file manager. */
+  reveal: (id: string) => Promise<void>;
   listUnavailable: () => Promise<NativeLibraryTrack[]>;
   rescan: () => Promise<NativeLibraryTrack[]>;
   relink: (id: string) => Promise<NativeLibraryTrack | null>;
+  listRoots: () => Promise<NativeLibraryRoot[]>;
+  /** Picks a folder, registers it as a root and scans it. `null` if cancelled. */
+  addRoot: () => Promise<NativeRootScanResult | null>;
+  /** Stops tracking a root; its tracks stay in the catalog. */
+  removeRoot: (id: string) => Promise<void>;
+  /** Imports new files under every root and refreshes missing/recovered state. */
+  rescanRoots: () => Promise<NativeRootScanResult>;
+  /** Picks a replacement folder for a root. `null` if cancelled. */
+  relinkRoot: (id: string) => Promise<NativeRelinkRootResult | null>;
+  /** Subscribes to live import progress; returns an unsubscribe function. */
+  onImportProgress: (
+    listener: (progress: NativeLibraryImportProgress) => void,
+  ) => () => void;
+  /** Subscribes to files/folders dropped onto the app window; returns an unsubscribe function. */
+  onFilesDropped: (listener: (paths: string[]) => void) => () => void;
 };
 
 declare global {
@@ -79,4 +281,134 @@ export async function resolveLocalPlayableForReplay(
   const rawId = playable.id.replace(/^local:/, '');
   const streamUrl = await nativeLibrary.resolve(rawId);
   return { ...playable, streamUrl };
+}
+
+const LIST_CACHE_LIMIT = 60;
+
+/**
+ * Wraps a native library with an in-memory cache for the read paths the
+ * Local files view hammers while typing/paging (`list`, `listUnavailable`,
+ * `listRoots`). Identical (search, offset) requests — backspacing, returning
+ * to a page, two components asking at once — resolve instantly and share one
+ * in-flight IPC call. Any call that can change the catalog clears the cache,
+ * and a result that was requested before a clear is never stored after it.
+ * `resolve` is deliberately not cached: it doubles as a live existence check.
+ */
+export function withReadCache(library: TahtiNativeLibrary): TahtiNativeLibrary {
+  const pages = new Map<string, Promise<NativeLibraryPage>>();
+  let unavailable: Promise<NativeLibraryTrack[]> | null = null;
+  let roots: Promise<NativeLibraryRoot[]> | null = null;
+  let totals: Promise<NativeLibraryTotals> | null = null;
+  const facets = new Map<NativeFacetKind, Promise<NativeFacetGroup[]>>();
+
+  const invalidate = () => {
+    pages.clear();
+    facets.clear();
+    totals = null;
+    unavailable = null;
+    roots = null;
+  };
+  const mutating =
+    <Args extends unknown[], Result>(
+      call: (...args: Args) => Promise<Result>,
+    ) =>
+    async (...args: Args): Promise<Result> => {
+      try {
+        return await call(...args);
+      } finally {
+        invalidate();
+      }
+    };
+
+  return {
+    ...library,
+    list(search, offset, filter, sort, filters) {
+      const key = `${offset}\u0000${search}\u0000${
+        filter
+          ? `${filter.kind}\u0000${filter.value}\u0000${filter.secondary ?? ''}`
+          : ''
+      }\u0000${sort ? `${sort.column}:${sort.descending}` : ''}\u0000${filters ? JSON.stringify(filters) : ''}`;
+      const hit = pages.get(key);
+      if (hit) {
+        pages.delete(key);
+        pages.set(key, hit);
+        return hit;
+      }
+      const request = library.list(search, offset, filter, sort, filters);
+      pages.set(key, request);
+      if (pages.size > LIST_CACHE_LIMIT) {
+        const oldest = pages.keys().next().value;
+        if (oldest !== undefined) {
+          pages.delete(oldest);
+        }
+      }
+      request.catch(() => {
+        if (pages.get(key) === request) {
+          pages.delete(key);
+        }
+      });
+      return request;
+    },
+    facets(kind) {
+      const hit = facets.get(kind);
+      if (hit) {
+        return hit;
+      }
+      const request = library.facets(kind);
+      facets.set(kind, request);
+      request.catch(() => {
+        if (facets.get(kind) === request) {
+          facets.delete(kind);
+        }
+      });
+      return request;
+    },
+    totals() {
+      if (!totals) {
+        const request = library.totals();
+        totals = request;
+        request.catch(() => {
+          if (totals === request) {
+            totals = null;
+          }
+        });
+      }
+      return totals;
+    },
+    listUnavailable() {
+      if (!unavailable) {
+        const request = library.listUnavailable();
+        unavailable = request;
+        request.catch(() => {
+          if (unavailable === request) {
+            unavailable = null;
+          }
+        });
+      }
+      return unavailable;
+    },
+    listRoots() {
+      if (!roots) {
+        const request = library.listRoots();
+        roots = request;
+        request.catch(() => {
+          if (roots === request) {
+            roots = null;
+          }
+        });
+      }
+      return roots;
+    },
+    import: mutating(library.import),
+    importFolder: mutating(library.importFolder),
+    importPaths: mutating(library.importPaths),
+    remove: mutating(library.remove),
+    removeMany: mutating(library.removeMany),
+    rescan: mutating(library.rescan),
+    relink: mutating(library.relink),
+    addRoot: mutating(library.addRoot),
+    removeRoot: mutating(library.removeRoot),
+    rescanRoots: mutating(library.rescanRoots),
+    relinkRoot: mutating(library.relinkRoot),
+  };
 }

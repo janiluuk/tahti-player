@@ -126,6 +126,10 @@ export const studioMasteringRoute = createRoute({
 export const studioReleasesRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/releases',
+  validateSearch: (search: Record<string, unknown>): { create?: boolean } => ({
+    create:
+      search.create === true || search.create === 'true' ? true : undefined,
+  }),
   component: StudioReleasesView,
 });
 

@@ -35,7 +35,7 @@ import { expect, test } from '@playwright/test';
 // AdminActivityView.tsx says so directly ("plays) so individual listens
 // aren't shown here — see Stats for aggregate play counts"). The only real
 // "statistics" surface for an individual track is its Insights panel
-// (Studio → Sounds → per-track stats button), which this test opens and
+// (Studio → Tracks → per-track stats button), which this test opens and
 // asserts renders — not a live-incremented number, since nothing in this
 // codebase's existing e2e suite asserts a stat updating synchronously
 // within a single test run (aggregation is plausibly async/server-side).

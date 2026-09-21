@@ -6,6 +6,7 @@ import {
   Button,
   Dialog,
   Input,
+  MediaArtwork,
   PluginStoreItem,
   TabLabel,
   Tabs,
@@ -623,13 +624,13 @@ export function ListenAddonsPanel({
                               key={set.id}
                               className="border-border bg-background-secondary flex items-center gap-2 rounded-md border p-2"
                             >
-                              {set.thumbUrl ? (
-                                <img
-                                  src={set.thumbUrl}
-                                  alt=""
-                                  className="size-8 shrink-0 rounded object-cover"
-                                />
-                              ) : null}
+                              <MediaArtwork
+                                size="thumb"
+                                src={set.thumbUrl}
+                                alt=""
+                                className="shrink-0 rounded"
+                                imageReveal={Boolean(set.thumbUrl)}
+                              />
                               <div className="min-w-0 flex-1">
                                 <p className="truncate text-sm font-medium">
                                   {set.title}

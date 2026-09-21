@@ -5,11 +5,82 @@ import { invoke as __TAURI_INVOKE } from "@tauri-apps/api/core";
 
 /** Commands */
 export const commands = {
-	libraryList: (search: string, offset: number) => typedError<LibraryPage, string>(__TAURI_INVOKE("library_list", { search, offset })),
+	libraryList: (search: string, offset: number, filter: {
+	kind: FacetKind,
+	value: string,
+	/**  Album artist, for `Albums`. */
+	secondary: string | null,
+} | null, filters: {
+	yearMin: number | null,
+	yearMax: number | null,
+	/**  Seconds. */
+	durationMin: number | null,
+	durationMax: number | null,
+	bitrateMin: number | null,
+	formats?: string[],
+	rootId: string | null,
+	/**  `YYYY-MM-DD`; tracks added on or after this day. */
+	addedSince: string | null,
+	availability: Availability | null,
+} | null, sort: {
+	column: SortColumn,
+	descending: boolean,
+} | null) => typedError<LibraryPage, string>(__TAURI_INVOKE("library_list", { search, offset, filter, filters, sort })),
+	libraryFacets: (kind: FacetKind) => typedError<FacetGroup[], string>(__TAURI_INVOKE("library_facets", { kind })),
+	libraryMatchingIds: (search: string, filter: {
+	kind: FacetKind,
+	value: string,
+	/**  Album artist, for `Albums`. */
+	secondary: string | null,
+} | null, filters: {
+	yearMin: number | null,
+	yearMax: number | null,
+	/**  Seconds. */
+	durationMin: number | null,
+	durationMax: number | null,
+	bitrateMin: number | null,
+	formats?: string[],
+	rootId: string | null,
+	/**  `YYYY-MM-DD`; tracks added on or after this day. */
+	addedSince: string | null,
+	availability: Availability | null,
+} | null, sort: {
+	column: SortColumn,
+	descending: boolean,
+} | null) => typedError<string[], string>(__TAURI_INVOKE("library_matching_ids", { search, filter, filters, sort })),
+	libraryFilterOptions: () => typedError<FilterOptions, string>(__TAURI_INVOKE("library_filter_options")),
+	/**
+	 *  Verifies and orders a batch of tracks for the player and grants the
+	 *  asset protocol access to each file (same as `library_resolve`, in bulk).
+	 */
+	libraryPreparePlayback: (ids: string[]) => typedError<PlaybackBatch, string>(__TAURI_INVOKE("library_prepare_playback", { ids })),
+	libraryTotals: () => typedError<LibraryTotals, string>(__TAURI_INVOKE("library_totals")),
 	libraryImport: () => typedError<ImportResult, string>(__TAURI_INVOKE("library_import")),
 	libraryImportFolder: () => typedError<ImportResult, string>(__TAURI_INVOKE("library_import_folder")),
+	/**
+	 *  Imports an explicit list of files/folders -- the entry point for native
+	 *  drag-drop, which hands over absolute paths directly rather than going
+	 *  through a picker dialog. Directories are walked the same way folder
+	 *  import does; unsupported files are counted as skipped, not errored.
+	 */
+	libraryImportPaths: (paths: string[]) => typedError<ImportResult, string>(__TAURI_INVOKE("library_import_paths", { paths })),
+	/**
+	 *  Interrupts the in-flight import loop before its next file. Checked
+	 *  cooperatively, so a file already being read/inserted still completes.
+	 */
+	libraryImportCancel: () => typedError<null, string>(__TAURI_INVOKE("library_import_cancel")),
 	libraryResolve: (id: string) => typedError<string, string>(__TAURI_INVOKE("library_resolve", { id })),
 	libraryRemove: (id: string) => typedError<null, string>(__TAURI_INVOKE("library_remove", { id })),
+	libraryRemoveMany: (ids: string[]) => typedError<number, string>(__TAURI_INVOKE("library_remove_many", { ids })),
+	/**
+	 *  Reveals a track's original file in the OS file manager. Calls the
+	 *  opener plugin's Rust API directly (`app.opener()`, bypassing the
+	 *  IPC-scoped `reveal-item-in-dir` permission the same way `library_resolve`
+	 *  bypasses the asset-protocol scope with a per-path `allow_file`) since the
+	 *  user already granted access to this exact file by importing it -- a
+	 *  static allow-list can't cover arbitrary import locations.
+	 */
+	libraryReveal: (id: string) => typedError<null, string>(__TAURI_INVOKE("library_reveal", { id })),
 	libraryListUnavailable: () => typedError<LibraryTrack[], string>(__TAURI_INVOKE("library_list_unavailable")),
 	libraryRescan: () => typedError<LibraryTrack[], string>(__TAURI_INVOKE("library_rescan")),
 	libraryRelink: (id: string) => typedError<{
@@ -26,7 +97,48 @@ export const commands = {
 	sizeBytes: number,
 	available: boolean,
 	unavailableSince: string | null,
+	albumArtist: string,
+	trackNo: number | null,
+	discNo: number | null,
+	year: number | null,
+	genre: string,
+	comment: string,
+	bitrateKbps: number | null,
+	/**
+	 *  When the track first entered the catalog (UTC, `YYYY-MM-DD HH:MM:SS`).
+	 *  Filled by the database, so extraction leaves it empty.
+	 */
+	addedAt: string,
 } | null, string>(__TAURI_INVOKE("library_relink", { id })),
+	libraryListRoots: () => typedError<LibraryRoot[], string>(__TAURI_INVOKE("library_list_roots")),
+	/**
+	 *  Folder picker -> register as root -> initial scan (imports everything
+	 *  under it, tagged to the root).
+	 */
+	libraryAddRoot: () => typedError<{
+	imported: number,
+	skipped: number,
+	/**  Known tracks whose file is no longer there. */
+	missing: number,
+	/**  Previously-missing tracks whose file is back. */
+	recovered: number,
+	errors: ImportFailure[],
+	cancelled: boolean,
+} | null, string>(__TAURI_INVOKE("library_add_root")),
+	libraryRemoveRoot: (id: string) => typedError<null, string>(__TAURI_INVOKE("library_remove_root", { id })),
+	/**
+	 *  Re-scans every root: imports files that appeared since the last scan and
+	 *  refreshes missing/recovered state. Idempotent -- a second run with no
+	 *  filesystem changes imports and changes nothing.
+	 */
+	libraryRescanRoots: () => typedError<RootScanResult, string>(__TAURI_INVOKE("library_rescan_roots")),
+	libraryRelinkRoot: (id: string) => typedError<{
+	root: LibraryRoot,
+	/**  Tracks re-pointed at the new folder (same relative path and size). */
+	relinked: number,
+	/**  Tracks with no proven match in the new folder; left untouched. */
+	unmatched: number,
+} | null, string>(__TAURI_INVOKE("library_relink_root", { id })),
 	isFlatpak: () => __TAURI_INVOKE<boolean>("is_flatpak"),
 	copyDirRecursive: (from: string, to: string) => typedError<null, string>(__TAURI_INVOKE("copy_dir_recursive", { from, to })),
 	extractZip: (zipPath: string, destPath: string) => typedError<null, string>(__TAURI_INVOKE("extract_zip", { zipPath, destPath })),
@@ -64,6 +176,8 @@ export const commands = {
 };
 
 /* Types */
+export type Availability = "available" | "missing";
+
 export type BridgeNotification = {
 	subsystem: string,
 };
@@ -77,6 +191,34 @@ export type BridgeResponseBody = { status: "success"; data: unknown } | { status
 export type DailyListeningTime = {
 	date: string,
 	value: number,
+};
+
+/**  Narrows the track list to one group from `library_facets`. */
+export type FacetFilter = {
+	kind: FacetKind,
+	value: string,
+	/**  Album artist, for `Albums`. */
+	secondary: string | null,
+};
+
+/**  One group in a browse tab. For albums `secondary` is the album artist. */
+export type FacetGroup = {
+	name: string,
+	secondary: string,
+	year: number | null,
+	trackCount: number,
+	durationSec: number | null,
+	sizeBytes: number,
+};
+
+/**  What a browse tab groups by. */
+export type FacetKind = "artists" | "albums" | "genres" | "folders";
+
+/**  Values available to build filter controls from the current catalog. */
+export type FilterOptions = {
+	formats: string[],
+	yearMin: number | null,
+	yearMax: number | null,
 };
 
 export type FirstPlay = {
@@ -127,12 +269,49 @@ export type ImportFailure = {
 
 export type ImportResult = {
 	imported: number,
+	/**
+	 *  Files walked (folder import / drag-drop) that were neither imported
+	 *  nor errored -- unsupported extensions, silently ignored before this
+	 *  counter existed.
+	 */
+	skipped: number,
 	errors: ImportFailure[],
+	/**
+	 *  True when `library_import_cancel` interrupted the loop before every
+	 *  path was processed. Paths not yet reached are neither imported,
+	 *  skipped nor counted as errors.
+	 */
+	cancelled: boolean,
 };
 
 export type LibraryPage = {
 	tracks: LibraryTrack[],
 	total: number,
+};
+
+/**
+ *  A folder the user asked the library to keep in sync. `track_count` /
+ *  `missing_count` are aggregated on read; `available` is whether the folder
+ *  itself currently exists on disk (false for a disconnected drive).
+ */
+export type LibraryRoot = {
+	id: string,
+	path: string,
+	createdAt: string,
+	lastScannedAt: string | null,
+	trackCount: number,
+	missingCount: number,
+	available: boolean,
+};
+
+/**
+ *  Everything in the catalog, for the "on this device" totals line --
+ *  deliberately separate from cloud storage usage.
+ */
+export type LibraryTotals = {
+	trackCount: number,
+	durationSec: number | null,
+	sizeBytes: number,
 };
 
 export type LibraryTrack = {
@@ -149,6 +328,18 @@ export type LibraryTrack = {
 	sizeBytes: number,
 	available: boolean,
 	unavailableSince: string | null,
+	albumArtist: string,
+	trackNo: number | null,
+	discNo: number | null,
+	year: number | null,
+	genre: string,
+	comment: string,
+	bitrateKbps: number | null,
+	/**
+	 *  When the track first entered the catalog (UTC, `YYYY-MM-DD HH:MM:SS`).
+	 *  Filled by the database, so extraction leaves it empty.
+	 */
+	addedAt: string,
 };
 
 export type Page<T> = {
@@ -173,6 +364,48 @@ export type PlayEvent = {
 };
 
 export type PlayEventKind = "started" | "paused" | "resumed" | "seeked" | "finished" | "skipped" | "stopped";
+
+export type PlaybackBatch = {
+	/**  Playable tracks, in the order the ids were given. */
+	items: PlaybackItem[],
+	/**  Requested tracks whose file is missing (now persisted as unavailable). */
+	unavailable: number,
+};
+
+/**  A track ready to hand to the player: its row plus the verified file path. */
+export type PlaybackItem = {
+	track: LibraryTrack,
+	path: string,
+};
+
+export type RelinkRootResult = {
+	root: LibraryRoot,
+	/**  Tracks re-pointed at the new folder (same relative path and size). */
+	relinked: number,
+	/**  Tracks with no proven match in the new folder; left untouched. */
+	unmatched: number,
+};
+
+/**
+ *  Outcome of scanning one or more roots: new files imported, plus how many
+ *  already-known tracks changed availability.
+ */
+export type RootScanResult = {
+	imported: number,
+	skipped: number,
+	/**  Known tracks whose file is no longer there. */
+	missing: number,
+	/**  Previously-missing tracks whose file is back. */
+	recovered: number,
+	errors: ImportFailure[],
+	cancelled: boolean,
+};
+
+/**
+ *  Sortable track-table columns. A closed enum, never user text, so the
+ *  ORDER BY below is assembled from fixed SQL only.
+ */
+export type SortColumn = "title" | "artist" | "album" | "genre" | "year" | "trackNo" | "duration" | "format" | "size" | "bitrate" | "added";
 
 export type StartupLogEntry = {
 	timestamp: string,
@@ -208,6 +441,24 @@ export type TopTrack = {
 	plays: number,
 };
 
+/**
+ *  Range and attribute filters that combine with search and a browse group.
+ *  Every field is optional; an unset field never restricts anything.
+ */
+export type TrackFilters = {
+	yearMin: number | null,
+	yearMax: number | null,
+	/**  Seconds. */
+	durationMin: number | null,
+	durationMax: number | null,
+	bitrateMin: number | null,
+	formats?: string[],
+	rootId: string | null,
+	/**  `YYYY-MM-DD`; tracks added on or after this day. */
+	addedSince: string | null,
+	availability: Availability | null,
+};
+
 export type TrackPresence = {
 	title: string,
 	artist: string,
@@ -225,6 +476,11 @@ export type TrackSnapshot = {
 	artworkUrl: string | null,
 	provider: string,
 	providerId: string,
+};
+
+export type TrackSort = {
+	column: SortColumn,
+	descending: boolean,
 };
 
 export type YtdlpPlaylistEntry = {

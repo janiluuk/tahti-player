@@ -111,7 +111,7 @@ function groupByShow(
   });
 }
 
-/** Same row treatment as the Sounds tab (MyDiscographyView) — thumbnail
+/** Same row treatment as the Tracks tab (MyDiscographyView) — thumbnail
  * box, title, subtitle, status badge, and an edit action — reused here
  * rather than a new listing widget. Recordings carry no artwork/waveform
  * data, so the thumbnail is always the placeholder icon. */

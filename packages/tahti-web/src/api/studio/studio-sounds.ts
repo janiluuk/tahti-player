@@ -61,7 +61,7 @@ export async function fetchStudioSound(id: string): Promise<{
         mockSoundStore.find((a) => a.id === id) ?? mockSoundStore[0]!;
       return { data: { ...item, id }, meta: failMeta(err) };
     }
-    throw err instanceof Error ? err : new Error('Sound fetch failed');
+    throw err instanceof Error ? err : new Error('Track fetch failed');
   }
 }
 

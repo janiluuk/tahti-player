@@ -14,12 +14,45 @@ fn tag_string(tag: &Tag) -> String {
     tag.value.to_string().trim_end_matches('\0').to_owned()
 }
 
+/// First run of digits in `"3/12"`, `"03"`, `"CD 2"`.
+fn leading_number(value: &str) -> Option<i64> {
+    value
+        .split(|c: char| !c.is_ascii_digit())
+        .find(|part| !part.is_empty())?
+        .parse()
+        .ok()
+}
+
+/// First plausible 4-digit year in `"2019"`, `"2019-05-01"`, `"May 2019"`.
+fn parse_year(value: &str) -> Option<i64> {
+    value
+        .split(|c: char| !c.is_ascii_digit())
+        .find(|part| part.len() == 4)?
+        .parse::<i64>()
+        .ok()
+        .filter(|year| (1000..=2999).contains(year))
+}
+
+const MAX_COMMENT_CHARS: usize = 500;
+
 fn apply_tags(track: &mut LibraryTrack, tags: &[Tag]) {
     for tag in tags {
         match tag.std_key {
             Some(StandardTagKey::TrackTitle) => track.title = tag_string(tag),
             Some(StandardTagKey::Artist) => track.artist = tag_string(tag),
+            Some(StandardTagKey::AlbumArtist) => track.album_artist = tag_string(tag),
             Some(StandardTagKey::Album) => track.album = tag_string(tag),
+            Some(StandardTagKey::Genre) => track.genre = tag_string(tag),
+            Some(StandardTagKey::Comment) => {
+                track.comment = tag_string(tag).chars().take(MAX_COMMENT_CHARS).collect();
+            }
+            Some(StandardTagKey::TrackNumber) => track.track_no = leading_number(&tag_string(tag)),
+            Some(StandardTagKey::DiscNumber) => track.disc_no = leading_number(&tag_string(tag)),
+            Some(StandardTagKey::Date) => track.year = parse_year(&tag_string(tag)),
+            // A release date only stands in when there is no plain date tag.
+            Some(StandardTagKey::OriginalDate) if track.year.is_none() => {
+                track.year = parse_year(&tag_string(tag));
+            }
             _ => {}
         }
     }
@@ -60,6 +93,14 @@ pub fn read(path: &Path) -> Result<LibraryTrack, String> {
         size_bytes: size as i64,
         available: true,
         unavailable_since: None,
+        album_artist: String::new(),
+        track_no: None,
+        disc_no: None,
+        year: None,
+        genre: String::new(),
+        comment: String::new(),
+        added_at: String::new(),
+        bitrate_kbps: (duration > 0.0).then(|| (size as f64 * 8.0 / duration / 1000.0).round() as i64),
     };
     if let Some(metadata) = probed.metadata.get().and_then(|metadata| metadata.current().cloned()) {
         apply_tags(&mut track, metadata.tags());
@@ -75,4 +116,26 @@ pub fn read(path: &Path) -> Result<LibraryTrack, String> {
         }
     }
     Ok(track)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{leading_number, parse_year};
+
+    #[test]
+    fn parses_track_and_disc_numbers() {
+        assert_eq!(leading_number("3/12"), Some(3));
+        assert_eq!(leading_number("07"), Some(7));
+        assert_eq!(leading_number("CD 2"), Some(2));
+        assert_eq!(leading_number("n/a"), None);
+    }
+
+    #[test]
+    fn parses_years_from_common_date_shapes() {
+        assert_eq!(parse_year("2019"), Some(2019));
+        assert_eq!(parse_year("2019-05-01"), Some(2019));
+        assert_eq!(parse_year("May 2019"), Some(2019));
+        assert_eq!(parse_year("19"), None);
+        assert_eq!(parse_year("0000"), None);
+    }
 }

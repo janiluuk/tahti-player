@@ -26,7 +26,7 @@ const isEmbedItem = (item: StudioSound): item is EmbedItem =>
 /** Imported tracks Tahti only references (hearthis.at/Mixcloud/Spotify/
  * Bandcamp), grouped by provider so each section plays through that
  * provider's own embedded widget (EmbedTrackRow) — never mixed in with
- * Tahti-hosted audio in the regular Sounds list. */
+ * Tahti-hosted audio in the regular Tracks list. */
 export function LibraryEmbedsView() {
   const [items, setItems] = useState<StudioSound[] | null>(null);
 

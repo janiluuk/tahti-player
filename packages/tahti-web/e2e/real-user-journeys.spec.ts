@@ -186,7 +186,7 @@ test('library is a Studio tab and keeps /library routes selected on Studio', asy
   await expect(
     studioPages.getByRole('link', { name: 'Library' }),
   ).toHaveAttribute('aria-current', 'page');
-  await expect(studioPages.getByRole('link', { name: 'Sounds' })).toBeVisible();
+  await expect(studioPages.getByRole('link', { name: 'Tracks' })).toBeVisible();
   await expect(
     studioPages.getByRole('link', { name: 'Collections' }),
   ).toBeVisible();
@@ -199,10 +199,10 @@ test('library is a Studio tab and keeps /library routes selected on Studio', asy
       .filter({ hasText: /^Library$/ }),
   ).toHaveCount(0);
 
-  await studioPages.getByRole('link', { name: 'Sounds' }).click();
+  await studioPages.getByRole('link', { name: 'Tracks' }).click();
   await expect(page).toHaveURL(/\/library\/sounds$/);
   await expect(
-    studioPages.getByRole('link', { name: 'Sounds' }),
+    studioPages.getByRole('link', { name: 'Tracks' }),
   ).toHaveAttribute('aria-current', 'page');
   await expect(
     studioPages.getByRole('link', { name: 'Library' }),

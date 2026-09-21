@@ -205,20 +205,20 @@ export const MyDiscographyView: FC = () => {
   return (
     <div className="flex flex-col gap-8">
       {loading ? (
-        <PageLoading label="Loading sounds…" />
+        <PageLoading label="Loading tracks…" />
       ) : loadError ? (
         <PageError
-          title="Could not load sounds"
+          title="Could not load tracks"
           description={loadError}
           onRetry={reload}
         />
       ) : !hasChannel && items.length === 0 ? (
         // Only show the "go live" nudge when there's genuinely nothing to
-        // show — a channel-less state must never hide sounds the fetch
+        // show — a channel-less state must never hide tracks the fetch
         // actually returned (e.g. a stale/late channel field on an
         // account that already has archive items).
         <PageEmpty
-          title="No sounds yet"
+          title="No tracks yet"
           description="Go live or upload music to start your complete audio archive."
           action={
             <Link to="/studio/go-live">
@@ -241,7 +241,7 @@ export const MyDiscographyView: FC = () => {
                   }))}
                   selected={filter}
                   onChange={(id) => setFilter(id as VisibilityFilter)}
-                  aria-label="Filter sounds"
+                  aria-label="Filter tracks"
                 />
                 <Popover
                   anchor="bottom end"
@@ -272,8 +272,8 @@ export const MyDiscographyView: FC = () => {
                 type="search"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search all sounds…"
-                aria-label="Search all sounds"
+                placeholder="Search all tracks…"
+                aria-label="Search all tracks"
                 className="w-full min-w-0"
                 startAddon={
                   <SearchIcon size={14} aria-hidden className="opacity-70" />
@@ -293,7 +293,7 @@ export const MyDiscographyView: FC = () => {
 
             {visible.length === 0 ? (
               <PageEmpty
-                title={items.length === 0 ? 'No sounds yet' : 'No sounds match'}
+                title={items.length === 0 ? 'No tracks yet' : 'No tracks match'}
                 description={
                   items.length === 0
                     ? 'Upload or import audio to start your archive.'
