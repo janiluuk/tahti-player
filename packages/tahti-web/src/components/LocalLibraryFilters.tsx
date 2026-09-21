@@ -128,6 +128,52 @@ export function LocalLibraryFilters({
             }
           />
         </div>
+        <div className="grid grid-cols-2 gap-2">
+          <Input
+            type="number"
+            label="BPM from"
+            value={text(draft.bpmMin)}
+            onChange={(event) => set({ bpmMin: toNumber(event.target.value) })}
+          />
+          <Input
+            type="number"
+            label="BPM to"
+            value={text(draft.bpmMax)}
+            onChange={(event) => set({ bpmMax: toNumber(event.target.value) })}
+          />
+          <Input
+            label="Key (e.g. Am, F#, 8A)"
+            value={draft.key ?? ''}
+            onChange={(event) =>
+              set({ key: event.target.value.trim() || null })
+            }
+          />
+          <Input
+            type="number"
+            label="Louder than (LUFS)"
+            value={text(draft.loudnessMin)}
+            onChange={(event) =>
+              set({ loudnessMin: toNumber(event.target.value) })
+            }
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <span className="text-sm font-medium">Analysis</span>
+          <FilterChips
+            items={[
+              { id: 'any', label: 'All' },
+              { id: 'analyzed', label: 'Analyzed' },
+              { id: 'unanalyzed', label: 'Not analyzed' },
+            ]}
+            selected={draft.analysis ?? 'any'}
+            onChange={(id) =>
+              set({
+                analysis:
+                  id === 'any' ? null : (id as 'analyzed' | 'unanalyzed'),
+              })
+            }
+          />
+        </div>
         {options && options.formats.length > 0 ? (
           <div className="flex flex-col gap-1">
             <span className="text-sm font-medium">Format</span>

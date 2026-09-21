@@ -34,6 +34,9 @@ struct BackupFile {
     roots: Vec<String>,
     tracks: Vec<BackupTrack>,
     playlists: Vec<BackupPlaylist>,
+    /// Rule sets only (results are always re-evaluated).
+    #[serde(default)]
+    smart_playlists: Vec<super::smart_playlists::SmartDefinition>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -53,6 +56,12 @@ struct BackupTrack {
     /// Hand-edited fields: (column name, value).
     #[serde(default)]
     edits: Vec<(String, String)>,
+    /// User BPM/key corrections. Tag values and analysis estimates are not
+    /// stored: a restore re-reads tags and analysis runs again.
+    #[serde(default)]
+    bpm: Option<f64>,
+    #[serde(default)]
+    key: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -159,6 +168,15 @@ pub async fn export_backup(pool: &SqlitePool, dest: &Path) -> Result<BackupSumma
     {
         tags.entry(row.get(0)).or_default().push(row.get(1));
     }
+    let mut corrections: HashMap<String, (Option<f64>, Option<String>)> = HashMap::new();
+    for row in sqlx::query("SELECT track_id, bpm, key FROM library_analysis_user")
+        .fetch_all(pool)
+        .await
+        .map_err(|e| e.to_string())?
+    {
+        corrections.insert(row.get(0), (row.get(1), row.get(2)));
+    }
+    let smart_playlists: Vec<_> = super::smart_playlists::list_smart(pool).await?.into_iter().map(|s| s.definition).collect();
     let mut edit_count = 0usize;
     let tracks: Vec<BackupTrack> = rows
         .into_iter()
@@ -166,7 +184,10 @@ pub async fn export_backup(pool: &SqlitePool, dest: &Path) -> Result<BackupSumma
             let id: String = row.get(0);
             let track_edits = edits.remove(&id).unwrap_or_default();
             edit_count += track_edits.len();
+            let (bpm, key) = corrections.remove(&id).unwrap_or((None, None));
             BackupTrack {
+                bpm,
+                key,
                 path: row.get(1),
                 rating: row.get(2),
                 color: row.get(3),
@@ -212,6 +233,7 @@ pub async fn export_backup(pool: &SqlitePool, dest: &Path) -> Result<BackupSumma
         roots,
         tracks,
         playlists,
+        smart_playlists,
     };
     let json = serde_json::to_vec(&file).map_err(|e| e.to_string())?;
     // Write beside the target and rename, so a failure never leaves a
@@ -437,6 +459,15 @@ pub async fn restore_backup(pool: &SqlitePool, path: &Path, mappings: &[RootMapp
             .execute(&mut *tx)
             .await
             .map_err(|e| e.to_string())?;
+        if track.bpm.is_some() || track.key.is_some() {
+            sqlx::query("INSERT OR REPLACE INTO library_analysis_user (track_id, bpm, key) VALUES (?,?,?)")
+                .bind(&id)
+                .bind(track.bpm.filter(|v| (30.0..=300.0).contains(v)))
+                .bind(track.key.as_deref().and_then(super::analysis_dsp::normalize_key))
+                .execute(&mut *tx)
+                .await
+                .map_err(|e| e.to_string())?;
+        }
         for name in &track.tags {
             let name = name.split_whitespace().collect::<Vec<_>>().join(" ");
             if name.is_empty() {
@@ -485,6 +516,28 @@ pub async fn restore_backup(pool: &SqlitePool, path: &Path, mappings: &[RootMapp
         }
     }
     tx.commit().await.map_err(|e| e.to_string())?;
+    let restored_ids: Vec<String> = sqlx::query_scalar("SELECT track_id FROM library_analysis_user")
+        .fetch_all(pool)
+        .await
+        .map_err(|e| e.to_string())?;
+    super::analysis::refresh_effective(pool, &restored_ids).await?;
+
+    // Smart playlists: rules only; a taken name becomes "<name> (restored)".
+    for smart in &file.smart_playlists {
+        for attempt in 0..20 {
+            let mut definition = smart.clone();
+            match attempt {
+                0 => {}
+                1 => definition.name = format!("{} (restored)", smart.name),
+                n => definition.name = format!("{} (restored {n})", smart.name),
+            }
+            match super::smart_playlists::save_smart(pool, None, &definition).await {
+                Ok(_) => break,
+                Err(message) if message.contains("already exists") => continue,
+                Err(_) => break,
+            }
+        }
+    }
 
     // Playlists: every entry is kept; ones whose file is not in the catalog
     // are stored unlinked and link up when the file joins it.

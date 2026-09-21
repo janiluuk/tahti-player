@@ -10,6 +10,7 @@ import type {
   TahtiNativeLibrary,
 } from '../lib/nativeLibrary';
 import { formatDuration } from '../lib/playableToTrack';
+import { TrackAnalysisSection } from './TrackAnalysisSection';
 
 const blank = (value: string | number | null | undefined) =>
   value === null || value === undefined || value === '' ? '—' : String(value);
@@ -81,6 +82,8 @@ type Props = {
   onReveal: (track: NativeLibraryTrack) => void;
   onLocate: (track: NativeLibraryTrack) => void;
   onRemove: (track: NativeLibraryTrack) => void;
+  /** Called after analysis or a correction changed the catalog. */
+  onChanged?: () => void;
 };
 
 /** Everything known about one track, with the actions that apply to it. */
@@ -93,6 +96,7 @@ export function TrackInspectorDialog({
   onReveal,
   onLocate,
   onRemove,
+  onChanged,
 }: Props) {
   const rows = track ? inspectorRows(track) : [];
   const [provenance, setProvenance] = useState<NativeFieldProvenance[]>([]);
@@ -149,6 +153,13 @@ export function TrackInspectorDialog({
             </dl>
           </section>
         ))}
+        {track && library ? (
+          <TrackAnalysisSection
+            library={library}
+            track={track}
+            onChanged={onChanged}
+          />
+        ) : null}
       </div>
       {track ? (
         <Dialog.Actions>

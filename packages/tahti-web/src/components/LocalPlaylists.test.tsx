@@ -44,6 +44,9 @@ function setup() {
   const library = {
     playlists: fake.api,
     prepareBatch,
+    analysis: {
+      smart: { list: vi.fn().mockResolvedValue([]) },
+    },
   } as unknown as TahtiNativeLibrary;
   function Harness({ initialOpen = null }: { initialOpen?: string | null }) {
     const [openId, setOpenId] = useState<string | null>(initialOpen);

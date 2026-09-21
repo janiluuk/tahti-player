@@ -104,6 +104,10 @@ pub fn read(path: &Path) -> Result<LibraryTrack, String> {
         color: String::new(),
         play_count: 0,
         last_played_at: None,
+        bpm: None,
+        musical_key: None,
+        loudness_lufs: None,
+        analyzed: false,
         bitrate_kbps: (duration > 0.0).then(|| (size as f64 * 8.0 / duration / 1000.0).round() as i64),
     };
     if let Some(metadata) = probed.metadata.get().and_then(|metadata| metadata.current().cloned()) {

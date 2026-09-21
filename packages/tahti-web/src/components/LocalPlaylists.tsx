@@ -47,6 +47,7 @@ import { ConfirmDialog } from './ConfirmDialog';
 import { PlaylistExportDialog } from './PlaylistExportDialog';
 import { PlaylistImportDialog } from './PlaylistImportDialog';
 import { PlaylistNameDialog } from './PlaylistNameDialog';
+import { SmartPlaylists } from './SmartPlaylists';
 
 const MAX_UNDO = 20;
 
@@ -400,6 +401,7 @@ function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
           onOpen(playlist.id);
         }}
       />
+      <SmartPlaylists library={library} onPlaylistCreated={() => void load()} />
       <PlaylistNameDialog
         isOpen={creating}
         title="New playlist"
