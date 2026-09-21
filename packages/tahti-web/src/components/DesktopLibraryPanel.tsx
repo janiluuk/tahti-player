@@ -2,7 +2,7 @@ import { LaptopIcon, LibraryIcon, ListFilterIcon, XIcon } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, CatalogTable, EmptyState, Input } from '@tahti-player/ui';
+import { Button, EmptyState, Input } from '@tahti-player/ui';
 
 import { usePersistedCatalogTable } from '../hooks/usePersistedCatalogTable';
 import {
@@ -10,7 +10,6 @@ import {
   loadViewState,
   rowsToRestore,
   saveViewState,
-  saveViewStateDeferred,
 } from '../lib/localLibraryViewState';
 import { hasNativePlayer } from '../lib/nativeCapabilities';
 import {
@@ -33,9 +32,12 @@ import { ConfirmDialog } from './ConfirmDialog';
 import { BrowserLocalFiles } from './desktop-library/BrowserLocalFiles';
 import { describeImportFailures } from './desktop-library/importFailures';
 import { LibraryRootsBlock } from './desktop-library/LibraryRootsBlock';
+import { NativeTrackTable } from './desktop-library/NativeTrackTable';
 import { basename } from './desktop-library/pathLabels';
-import { SelectionToolbar } from './desktop-library/SelectionToolbar';
-import { TrackRowActions } from './desktop-library/TrackRowActions';
+import {
+  TrackBatchDialogs,
+  type TrackBatchDialog,
+} from './desktop-library/TrackBatchDialogs';
 import { useLibraryRoots } from './desktop-library/useLibraryRoots';
 import { useNativeLibraryList } from './desktop-library/useNativeLibraryList';
 import { useSelectionActions } from './desktop-library/useSelectionActions';
@@ -51,16 +53,7 @@ import { LocalLibraryFilters } from './LocalLibraryFilters';
 import { LocalLibraryTools } from './LocalLibraryTools';
 import { LocalPlaylists } from './LocalPlaylists';
 import { NATIVE_TRACK_COLUMNS, toNativeSort } from './nativeTrackColumns';
-import { OrganizeFilesDialog } from './OrganizeFilesDialog';
-import { TrackEditorDialog } from './TrackEditorDialog';
 import { TrackInspectorDialog } from './TrackInspectorDialog';
-import { TrackOrganizeDialog } from './TrackOrganizeDialog';
-import { WriteTagsDialog } from './WriteTagsDialog';
-
-// Stable identities so the table doesn't see new callbacks on every render.
-const trackRowId = (track: NativeLibraryTrack) => track.id;
-const trackRowLabel = (track: NativeLibraryTrack) => track.title;
-const trackRowMuted = (track: NativeLibraryTrack) => !track.available;
 
 export function DesktopLibraryPanel() {
   const play = usePlayerStore((s) => s.play);
@@ -100,12 +93,7 @@ export function DesktopLibraryPanel() {
   const [tagList, setTagList] = useState<
     Array<{ name: string; tracks: number }>
   >([]);
-  const [editingIds, setEditingIds] = useState<string[] | null>(null);
-  const [writingIds, setWritingIds] = useState<string[] | null>(null);
-  const [organizingFilesIds, setOrganizingFilesIds] = useState<string[] | null>(
-    null,
-  );
-  const [organizingIds, setOrganizingIds] = useState<string[] | null>(null);
+  const [batchDialog, setBatchDialog] = useState<TrackBatchDialog | null>(null);
   const [openPlaylistId, setOpenPlaylistId] = useState<string | null>(
     initialView.openPlaylistId,
   );
@@ -149,24 +137,7 @@ export function DesktopLibraryPanel() {
     () => refreshNativeRef.current(),
     () => setNativeProgress(null),
   );
-  const {
-    selectedIds,
-    setSelectedIds,
-    selectingAll,
-    selectionBusy,
-    analyzingSelection,
-    addToPlaylist,
-    setAddToPlaylist,
-    analyzeSelection,
-    selectAllMatching,
-    playSelection,
-    playAllMatching,
-    playNextSelection,
-    queueSelection,
-    addSelectionToPlaylist,
-    addAllToPlaylist,
-    addGroupToPlaylist,
-  } = useSelectionActions({
+  const selection = useSelectionActions({
     library: nativeLibrary,
     query: debouncedNativeQuery,
     facetFilter,
@@ -176,6 +147,12 @@ export function DesktopLibraryPanel() {
     browseKind,
     refresh: () => refreshNativeRef.current(),
   });
+  const {
+    setSelectedIds,
+    addToPlaylist,
+    setAddToPlaylist,
+    addGroupToPlaylist,
+  } = selection;
   const initialScrollRef = useRef(initialView.scrollOffset);
   const loadedCountRef = useRef(0);
   const scopeChangedRef = useRef(false);
@@ -758,91 +735,22 @@ export function DesktopLibraryPanel() {
                 </Button>
               </div>
               {nativeTracks.length ? (
-                <CatalogTable
-                  columns={NATIVE_TRACK_COLUMNS}
-                  view={table.view}
-                  onViewChange={table.setView}
+                <NativeTrackTable
+                  table={table}
                   rows={nativeTracks}
                   total={nativeTotal}
-                  itemNoun="tracks"
-                  getRowId={trackRowId}
-                  getRowLabel={trackRowLabel}
-                  sort={table.sort}
-                  onSortChange={table.setSort}
-                  onLoadMore={() => void loadMoreNative()}
                   loading={nativeLoading}
-                  selectedIds={selectedIds}
-                  onSelectedIdsChange={setSelectedIds}
-                  isRowMuted={trackRowMuted}
+                  selection={selection}
                   initialScrollOffset={initialScrollRef.current}
-                  onScrollOffsetChange={(offset) => {
-                    saveViewStateDeferred({
-                      scrollOffset: offset,
-                      loadedCount: loadedCountRef.current,
-                    });
-                  }}
-                  layouts={table.layouts}
-                  onActivateRow={(track) => {
-                    if (track.available) {
-                      void playNative(track);
-                    }
-                  }}
-                  onRowKeyDown={(event, track) => {
-                    if (event.key.toLowerCase() === 'i') {
-                      event.preventDefault();
-                      setInspected(track);
-                    } else if (event.key.toLowerCase() === 'e') {
-                      event.preventDefault();
-                      setEditingIds([track.id]);
-                    }
-                  }}
-                  onSelectAllMatching={() => void selectAllMatching()}
-                  selectingAll={selectingAll}
-                  toolbar={
-                    <SelectionToolbar
-                      selectedCount={selectedIds.size}
-                      nativeTotal={nativeTotal}
-                      selectionBusy={selectionBusy}
-                      analyzing={analyzingSelection}
-                      onPlayAll={() => void playAllMatching()}
-                      onAddAllToPlaylist={addAllToPlaylist}
-                      onPlay={() => void playSelection()}
-                      onPlayNext={() => void playNextSelection()}
-                      onQueue={() => void queueSelection()}
-                      onEditTags={() => setEditingIds([...selectedIds])}
-                      onWriteTags={() => setWritingIds([...selectedIds])}
-                      onOrganizeFiles={() =>
-                        setOrganizingFilesIds([...selectedIds])
-                      }
-                      onAnalyze={() => void analyzeSelection()}
-                      onRateAndLabel={() => setOrganizingIds([...selectedIds])}
-                      onAddToPlaylist={addSelectionToPlaylist}
-                      onRemove={() =>
-                        setPendingRemoval({
-                          ids: [...selectedIds],
-                          title: null,
-                        })
-                      }
-                    />
-                  }
-                  renderActions={(track) => (
-                    <TrackRowActions
-                      track={track}
-                      loading={nativeLoading}
-                      onRelink={(target) => void relinkNative(target)}
-                      onPlay={(target) => void playNative(target)}
-                      onQueue={(target) => void queueNative([target])}
-                      onReveal={(target) => void revealNative(target)}
-                      onEdit={(target) => setEditingIds([target.id])}
-                      onInspect={setInspected}
-                      onRemove={(target) =>
-                        setPendingRemoval({
-                          ids: [target.id],
-                          title: target.title,
-                        })
-                      }
-                    />
-                  )}
+                  loadedCountRef={loadedCountRef}
+                  onLoadMore={() => void loadMoreNative()}
+                  onPlay={(track) => void playNative(track)}
+                  onQueue={(track) => void queueNative([track])}
+                  onReveal={(track) => void revealNative(track)}
+                  onRelink={(track) => void relinkNative(track)}
+                  onInspect={setInspected}
+                  onBatchDialog={(kind, ids) => setBatchDialog({ kind, ids })}
+                  onRemove={(ids, title) => setPendingRemoval({ ids, title })}
                 />
               ) : nativeError ? (
                 <EmptyState
@@ -919,36 +827,12 @@ export function DesktopLibraryPanel() {
         roots={roots}
       />
       {nativeLibrary ? (
-        <>
-          <TrackEditorDialog
-            isOpen={editingIds !== null}
-            onClose={() => setEditingIds(null)}
-            library={nativeLibrary}
-            ids={editingIds ?? []}
-            onChanged={() => void refreshNative()}
-          />
-          <WriteTagsDialog
-            isOpen={writingIds !== null}
-            onClose={() => setWritingIds(null)}
-            library={nativeLibrary}
-            ids={writingIds ?? []}
-            onChanged={() => void refreshNative()}
-          />
-          <OrganizeFilesDialog
-            isOpen={organizingFilesIds !== null}
-            onClose={() => setOrganizingFilesIds(null)}
-            library={nativeLibrary}
-            ids={organizingFilesIds ?? []}
-            onChanged={() => void refreshNative()}
-          />
-          <TrackOrganizeDialog
-            isOpen={organizingIds !== null}
-            onClose={() => setOrganizingIds(null)}
-            library={nativeLibrary}
-            ids={organizingIds ?? []}
-            onChanged={() => void refreshNative()}
-          />
-        </>
+        <TrackBatchDialogs
+          library={nativeLibrary}
+          dialog={batchDialog}
+          onClose={() => setBatchDialog(null)}
+          onChanged={() => void refreshNative()}
+        />
       ) : null}
       <TrackInspectorDialog
         library={nativeLibrary}
