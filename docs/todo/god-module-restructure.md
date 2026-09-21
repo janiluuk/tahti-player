@@ -58,7 +58,8 @@ Behavior stays identical: mechanical splits along existing seams, tests move wit
 - [x] Shared `nativeLoading`: import/rescan/relink now use their own `busy` flag; list paging keeps `loading`. Rescan/relink moved to `useMissingTracks`.
 - [x] `DesktopLibraryPanel.tsx` under the limit (out of the baseline).
 - [ ] `ChannelDesigner.tsx` 1801 → 1713 (2026-09-22): `SlideshowControls` (+ story, migrated to `Button`/`MediaArtwork`) and `slideshowOptions.ts` extracted; bug audit below. Still open: `loadFromServer` / `save` / preset actions (a `useChannelLook` state hook, snapshot helpers, `buildVisualPatch` as a pure function), the ~230-line final render, and the panel slot builders.
-- [ ] Next offenders to split (baselined): `ArtistView.tsx` 1409, `ServiceCategory.tsx` 1401.
+- [x] `RadioCategory.tsx` split + audit (2026-09-22, 1264 → 15): see below.
+- [ ] Next offenders to split (baselined): see the sweep table (`api/{shows,channel-design,studio-extras,sources,artist-settings}.ts`, `TrackEditDialog`, `LocalPlaylists`, `StreamManagerPanel`, unassessed studio/admin views).
 - Fixed in passing: failed load-more toasts an error; the drop-import subscription no longer resubscribes per keystroke (`useNativeImport` goes through a ref).
 
 ## ChannelDesigner bug audit (2026-09-22, fixed)
@@ -112,7 +113,7 @@ Split into `views/studio/pro-editor/`: `WaveformEditor` (audio, toolbar, canvas,
 - [x] `ChannelDesigner.tsx` split (2026-09-22, 1697 → 757, out of the size baseline): `useChannelLook` (draft state, load/save/presets/gallery/backdrop), `useLookVisibility`, `useDockedControlsRail`, `ChannelPagePreview`, and pure `buildVisualPatch` / `buildLoadedLook` / `applyPresetToVisual` / `LookSnapshot`, with tests. Only the panel slot builders remain in the component.
 - [x] `ChannelDesigner`: `dirty` no longer cleared by a save when the user edited while it was in flight (edit revision counter; no dedicated test yet).
 - [x] `ArtistView.tsx` split + audit (2026-09-22, 1409 → 787, out of the baseline): see below.
-- [ ] Split `ServiceCategory.tsx` (1401): audit for bugs first, as with the designer.
+- [x] `ServiceCategory.tsx` split + audit (2026-09-22, 1401 → 93, out of the baseline): see below.
 - [ ] Visually verify the designer changes in the running app (slideshow reorder preview, Reset/Revert with a pending backdrop file, gradient toggles, right-rail collapse); only unit and smoke tests cover them so far.
 - [ ] Visually verify in the running app: channel edit mode (no spinner on save, Done saves look+links, rail stays collapsed, layout toggles reach the parent) and the Pro editor (cut/trim merge, kept duration, stems, mastering chain, switching tracks).
 - [ ] Pro editor follow-ups: persist markers (not in the edit list today), unsaved-changes prompt on leaving, a smoke test that renders the whole view.
@@ -140,3 +141,27 @@ New tests: `channel-designer/designerOptions.test.tsx` (every offered option has
 - Noted: `MINIMAL` is in `VISUAL_PRESETS` but treated as invalid (corrected to AURORA on load, "visualizer off" elsewhere).
 - **Added: Top bar text** in the designer's Backdrop panel (`TopBarTextField`), saved via `topBarText`, shown as a strip across the top of the channel hero (`ChannelBackdropCard`, preview and published page). Assumes the backend already accepts `topBarText` (it was already in the API patch keys) — unverified against a real server.
 - **Open: pnpm 12 / router bump broke `packages/ui/src/components/RouteTransition.tsx`** (`router.__store` no longer exists in @tanstack/react-router 1.170); `tsc` fails and the page transition will throw at runtime.
+
+## ServiceCategory audit + split (2026-09-22, 1401 → 93)
+
+Split into `plugin-store/service-category/{SpotifyCard,OAuthServiceCard,HearthisCard,DspUrlPasteCard}`.
+
+- **hearthis multi-collection import lost imported marks:** each collection wrote `new Set(importedIds)` from a stale render snapshot, so the second overwrote the first (items could be re-imported). Now one `markImported` over a ref; localStorage writes are try/catch.
+- **hearthis collection import stuck "busy" forever** when every track was already imported (early return after `setBusy(true)`); an import that threw also left the loading toast and `busy` stuck. All try/finally with error toasts; a failed cover patch no longer hides a successful import.
+- **hearthis library load** had no catch (spinner forever), no stale guard, and shared its busy flag with Search; separate `searching` flag, request counter, toasts. Saving the username reports through a toast.
+- **Spotify:** "Configure" opened the import dialog even when no profile was linked (now opens the config panel); a link error was set but never displayed while unlinked (toast now); search/import/unlink/link had no try/finally or catch.
+- **OAuth (Bandcamp/SoundCloud):** Bandcamp album import had no busy state (double-click imported twice) and no toast; every fetch lacked a catch/stale guard; disconnect could leave `busy` stuck; the `adapter.id === 'soundcloud' ? … : Promise.resolve({error:'Unavailable'})` dead branches are gone.
+- **Home-baked elements:** `<Link><Button/></Link>` and `<Link><PluginStoreItem/></Link>` (button inside an anchor) now navigate via `Button`/`onInstall`; Bandcamp covers use `MediaArtwork` instead of `ImageReveal`; a fake `cursor-pointer` on non-clickable Spotify rows removed.
+- Not changed: `@tahti-player/ui` has no external-link component, so the remaining `<a target=_blank>` (hearthis.at ↗, OAuth instructions) stay hand-rolled; hearthis collections import as public while track imports go to private playlists (inconsistent, product call); covered by tests in `service-category/*.test.tsx`.
+
+## RadioCategory audit + split (2026-09-22, 1264 → 15)
+
+Split into `plugin-store/radio-category/`: `PersonalRadioStreamCard`, `RadioBrowserDirectoryCard`, `StationRows`, `StationEditDialog`, `AddStationUrlDialog`, `StationDetailsDialog`, `SuggestStationForm`. The three dialogs own their drafts and mount only while open, so 13 pieces of state left the card.
+
+- **"Now playing" never showed a loading state:** the `'…'` branch was unreachable (`null` meant both loading and unavailable); now `undefined` = reading. A slow ICY read for a previous station could also overwrite the current one; request-guarded.
+- **Resolve/search/suggest had no try/finally:** a throw left "Resolving…"/"Sending…" stuck (suggestion form, personal stream, add-by-URL). Personal-stream search had no busy state or disabled empty query.
+- **Directory search:** stale responses could overwrite newer ones, and the "Results" heading flipped before the results arrived; newest-only now. Initial loads had unhandled rejections.
+- **Add-by-URL:** closing or editing the URL while resolving let the old result land afterwards (stale guard); saving gave no feedback (toast).
+- **Station edit:** a non-numeric bitrate saved `NaN`; it keeps the old value now. Save toasts.
+- **Home-baked elements replaced with `Button`/`MediaArtwork`:** station-name row buttons, the search-icon button in the input, the "All genres" toggle, the station favicon box (`ImageReveal` + hand-built frame).
+- Not changed: the `<a target=_blank>` links in the details dialog (no ui link component); covered by `radio-category/Radio{Dialogs,Cards}.test.tsx`.
