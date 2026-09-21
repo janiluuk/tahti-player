@@ -57,5 +57,19 @@ Behavior stays identical: mechanical splits along existing seams, tests move wit
 - [x] Hook tests (`useSelectionActions`, `useNativeLibraryList`, `useNativePlayback`, `useNativeImport`).
 - [x] Shared `nativeLoading`: import/rescan/relink now use their own `busy` flag; list paging keeps `loading`. Rescan/relink moved to `useMissingTracks`.
 - [x] `DesktopLibraryPanel.tsx` under the limit (out of the baseline).
-- [ ] Next offenders to split (baselined): `ChannelDesigner.tsx` 1801, `ChannelView.tsx` 1577, `StudioProEditorView.tsx` 1498, `ArtistView.tsx` 1409, `ServiceCategory.tsx` 1401.
+- [ ] `ChannelDesigner.tsx` 1801 → ~1600 (2026-09-22): `SlideshowControls` (+ story, migrated to `Button`/`MediaArtwork`) and `slideshowOptions.ts` extracted; bug audit below. Still open: `loadFromServer` / `save` / preset actions (a `useChannelLook` state hook, snapshot helpers, `buildVisualPatch` as a pure function), the ~230-line final render, and the panel slot builders.
+- [ ] Next offenders to split (baselined): ~~`ChannelDesigner.tsx`~~, `ChannelView.tsx` 1577, `StudioProEditorView.tsx` 1498, `ArtistView.tsx` 1409, `ServiceCategory.tsx` 1401.
 - Fixed in passing: failed load-more toasts an error; the drop-import subscription no longer resubscribes per keystroke (`useNativeImport` goes through a ref).
+
+## ChannelDesigner bug audit (2026-09-22, fixed)
+
+- **Reorder lost its preview index:** a `[galleryImages]` effect reset the preview to 0 after every reorder/add/remove, clobbering the reorder's own `setGalleryPreviewIndex(toIndex)`. Now only clamps when the index falls off the end.
+- **Load had no error handling or stale guard:** a failed fetch left "Loading designer…" forever with no message; a slow older response could overwrite a newer load. Now request-counted, cancelled on unmount/reload, toasts on failure (test added); presets fetch is cancelled too.
+- **Invalid-preset correction lost its dirty flag:** `loadFromServer` set dirty, then unconditionally reset it to false at the end. It now sets `dirty` iff it corrected the preset, and only calls `setVisual` once.
+- **Reset/revert kept a picked backdrop file:** "Reset", "Revert" of an applied preset, applying a preset, and "Restore previous save" left a pending upload that would silently override the restored look on the next Save. All discard it now (and revoke its blob URL, which also leaked on unmount and on switching to a URL).
+- **Save could stick on "Saving…" forever** if a request threw; now try/finally with an error toast. If the gallery endpoint fails, the baseline (used by "Restore previous save") keeps the old gallery instead of recording unsaved gallery state as saved.
+- **Gallery upload clobbered concurrent edits:** appended to a stale image list after `await`; now appends to the current list, and a thrown upload no longer leaves the designer busy.
+- **Custom gradients wiped on toggle:** turning the player/page-background gradient off and on re-seeded from the header colors because it checked a server-side field that never updates locally. Now seeds only when the local scheme is empty.
+- **Right rail re-expanded on every render** while docked (users couldn't keep it collapsed); now opens once when docking starts.
+- **`onLookVisibilityChange`** in an effect dependency list re-ran the effect (and re-notified the parent) for any caller passing an inline callback; now via ref. `lookVisibility` initial state reads localStorage lazily instead of every render.
+- Not fixed: `dirty` is cleared after a successful save even if the user edited during the in-flight save (the Save button is disabled only while `busy`, so the window is small).

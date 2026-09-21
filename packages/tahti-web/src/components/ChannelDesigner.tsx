@@ -1,11 +1,5 @@
 import { Link } from '@tanstack/react-router';
 import {
-  GripVerticalIcon,
-  ImageIcon,
-  PlusIcon,
-  Trash2Icon,
-} from 'lucide-react';
-import {
   forwardRef,
   useEffect,
   useImperativeHandle,
@@ -17,16 +11,7 @@ import {
 } from 'react';
 import { toast } from 'sonner';
 
-import {
-  Button,
-  Dialog,
-  FilePicker,
-  SaveButton,
-  Select,
-  Slider,
-  Toggle,
-  Tooltip,
-} from '@tahti-player/ui';
+import { SaveButton, Tooltip } from '@tahti-player/ui';
 
 import {
   channelLookExtrasFromPatch,
@@ -110,11 +95,12 @@ import {
   type HeaderDesignMode,
   type PlayerDesignTab,
 } from './channel-designer';
+import { SlideshowControls } from './channel-designer/SlideshowControls';
+import { HEADER_MEDIA_TYPES } from './channel-designer/slideshowOptions';
 import { ChannelBackdropCard } from './ChannelBackdropCard';
 import { ChannelElementEditor } from './ChannelElementEditor';
 import { ChannelTextOverlayEditor } from './ChannelTextOverlayEditor';
 import { PageLoading } from './PageStates';
-import { Eyebrow } from './tahti/Eyebrow';
 
 type TabId = 'visualizer' | 'color-scheme' | 'header';
 type LookSection =
@@ -123,36 +109,6 @@ type LookSection =
   | 'visual-style'
   | 'links'
   | 'text-overlay';
-
-const HEADER_MEDIA_TYPES = [
-  'video/mp4',
-  'video/webm',
-  'image/jpeg',
-  'image/png',
-  'image/webp',
-  'image/gif',
-];
-
-const GALLERY_MODES: Array<{ id: ChannelGalleryMode; label: string }> = [
-  { id: 'NONE', label: 'None' },
-  { id: 'STATIC_SLIDESHOW', label: 'Static slideshow' },
-  { id: 'TWISTED_WAVE_GLSL', label: 'Twisted wave (WebGL)' },
-  { id: 'ZOOM_BLUR_GLSL', label: 'Cinematic zoom blur (WebGL)' },
-  { id: 'RGB_SHIFT_GLSL', label: 'RGB shift strip (WebGL)' },
-  { id: 'POSTER_WALL_GLSL', label: 'Poster scroll wall (WebGL)' },
-  { id: 'SHATTER_CAROUSEL_GLSL', label: 'Shatter carousel (WebGL)' },
-];
-
-const SLIDESHOW_PRESETS = [
-  ['FADE', 'Fade'],
-  ['ZOOM', 'Zoom'],
-  ['PAN', 'Pan'],
-  ['BLUR_CROSS', 'Blur crossfade'],
-  ['PARTICLE_DISSOLVE', 'Particle dissolve'],
-  ['GLITCH_WIPE', 'Glitch wipe'],
-  ['CUBE_FLIP', 'Cube flip'],
-  ['LIQUID_DISTORTION', 'Liquid distortion'],
-] as const;
 
 /** Everything "Save layout" persists — captured before each save so a
  * "Restore" action can undo it. In-memory only (per the branch's own
@@ -256,8 +212,15 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
         return;
       }
       setRailOverride({ title: 'Channel designer', content });
-      setRightCollapsed(false);
     });
+
+    // Open the rail once when the controls dock into it — not on every render,
+    // which would re-expand it right after the user collapsed it.
+    useEffect(() => {
+      if (dockControlsInRail) {
+        setRightCollapsed(false);
+      }
+    }, [dockControlsInRail, setRightCollapsed]);
 
     useEffect(() => {
       if (!dockControlsInRail || rightWidth >= 360) {
@@ -281,9 +244,6 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
     const [galleryMode, setGalleryMode] = useState<ChannelGalleryMode>('NONE');
     const [galleryImages, setGalleryImages] = useState('');
     const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
-    const [draggedGalleryIndex, setDraggedGalleryIndex] = useState<
-      number | null
-    >(null);
     const [galleryPreviewIndex, setGalleryPreviewIndex] = useState(0);
     const [galleryPickerOpen, setGalleryPickerOpen] = useState(false);
     const [videoBackgroundUrl, setVideoBackgroundUrl] = useState('');
@@ -317,7 +277,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
     const [, setPageLayout] = useState<ChannelPageItem[]>([]);
     const [lookVisibility, setLookVisibility] = useState<
       Record<ArtistLookBlockId, boolean>
-    >(loadArtistLookVisibility(channelSlug ?? username));
+    >(() => loadArtistLookVisibility(channelSlug ?? username));
 
     const [presets, setPresets] = useState<ChannelVisualPreset[]>([]);
     const [savePresetOpen, setSavePresetOpen] = useState(false);
@@ -358,12 +318,17 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
 
     const layoutSlug = channelSlug ?? username;
 
+    // Callers often pass an inline callback; going through a ref keeps this
+    // effect from re-running (and re-notifying the parent) on every render.
+    const onLookVisibilityChangeRef = useRef(onLookVisibilityChange);
+    onLookVisibilityChangeRef.current = onLookVisibilityChange;
+
     useEffect(() => {
       setPageLayout(loadChannelPageLayout(layoutSlug));
       const visibility = loadArtistLookVisibility(layoutSlug);
       setLookVisibility(visibility);
-      onLookVisibilityChange?.(visibility);
-    }, [layoutSlug, reloadToken, onLookVisibilityChange]);
+      onLookVisibilityChangeRef.current?.(visibility);
+    }, [layoutSlug, reloadToken]);
 
     const toggleLayoutType = (type: ChannelPageItemType) => {
       setPageLayout((current) => {
@@ -395,9 +360,16 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
      * draft — the mount/reload path, and also what "Revert" replays after a
      * preset was applied but not saved (see `applyPreset` / the keep-or-revert
      * banner below). */
+    const loadRequestRef = useRef(0);
     const loadFromServer = () => {
-      void Promise.all([fetchChannelVisual(), fetchChannelGallery()]).then(
-        ([visualResult, galleryResult]) => {
+      const request = ++loadRequestRef.current;
+      void Promise.all([fetchChannelVisual(), fetchChannelGallery()])
+        .then(([visualResult, galleryResult]) => {
+          // A newer load (or unmount) superseded this one: drop the response
+          // instead of overwriting fresher state.
+          if (request !== loadRequestRef.current) {
+            return;
+          }
           const fromApi = channelLookExtrasFromVisual(visualResult.data);
           const extras = mergeLookExtrasPreferApi(
             fromApi,
@@ -435,20 +407,22 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
           const loadedVideoBackgroundUrl =
             galleryResult.data.videoBackgroundUrl ?? '';
 
-          setVisual(mergedVisual);
+          const presetNeedsCorrection =
+            !isVisualPreset(mergedVisual.visualPreset) ||
+            mergedVisual.visualPreset === 'MINIMAL';
+          const shownVisual: ChannelVisual = presetNeedsCorrection
+            ? { ...mergedVisual, visualPreset: 'AURORA' }
+            : mergedVisual;
+          // A reload discards the local draft, including a picked-but-not-yet-
+          // uploaded backdrop file.
+          discardPendingVideo();
+          setVisual(shownVisual);
           setOverlaySettings(loadedOverlaySettings);
           setScheme(loadedScheme);
           setPlayerScheme(loadedPlayerScheme);
           setBackgroundScheme(loadedBackgroundScheme);
           setVisualSettings(loadedVisualSettings);
           setPreviewPreset(loadedPreviewPreset);
-          const presetNeedsCorrection =
-            !isVisualPreset(mergedVisual.visualPreset) ||
-            mergedVisual.visualPreset === 'MINIMAL';
-          if (presetNeedsCorrection) {
-            setVisual({ ...mergedVisual, visualPreset: 'AURORA' });
-            setDirty(true);
-          }
           setGalleryMode(galleryResult.data.galleryMode);
           setGalleryImages(loadedGalleryImages);
           setVideoBackgroundUrl(loadedVideoBackgroundUrl);
@@ -456,7 +430,8 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
           setSlideshowInterval(loadedSlideshowInterval);
           setSlideshowTransition(loadedSlideshowTransition);
           setSlideshowAutoplay(loadedSlideshowAutoplay);
-          setDirty(false);
+          // A corrected (invalid) preset is an unsaved change.
+          setDirty(presetNeedsCorrection);
           setPreviousSave(null);
           setBaselineSnapshot({
             visual: mergedVisual,
@@ -474,14 +449,33 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
             overlaySettings: loadedOverlaySettings,
             previewPreset: loadedPreviewPreset,
           });
-        },
-      );
+        })
+        .catch(() => {
+          if (request === loadRequestRef.current) {
+            toast.error('Could not load the channel designer. Try again.');
+          }
+        });
     };
 
-    useEffect(loadFromServer, [reloadToken]);
+    useEffect(() => {
+      loadFromServer();
+      return () => {
+        loadRequestRef.current += 1;
+      };
+    }, [reloadToken]);
 
     useEffect(() => {
-      void fetchChannelVisualPresets().then(({ data }) => setPresets(data));
+      let stale = false;
+      void fetchChannelVisualPresets()
+        .then(({ data }) => {
+          if (!stale) {
+            setPresets(data);
+          }
+        })
+        .catch(() => undefined);
+      return () => {
+        stale = true;
+      };
     }, [reloadToken]);
 
     const galleryImageList = useMemo(
@@ -493,9 +487,13 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       [galleryImages],
     );
 
+    // Keep the preview on a real image after add/remove; reordering sets its
+    // own index, which a blanket reset to 0 here used to clobber.
     useEffect(() => {
-      setGalleryPreviewIndex(0);
-    }, [galleryImages]);
+      setGalleryPreviewIndex((index) =>
+        index >= galleryImageList.length ? 0 : index,
+      );
+    }, [galleryImageList.length]);
 
     useEffect(() => {
       if (galleryImageList.length < 2 || !slideshowAutoplay) {
@@ -559,12 +557,28 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       setDirty(true);
     };
 
-    const clearVideo = () => {
-      if (pendingVideoPreviewUrl) {
-        URL.revokeObjectURL(pendingVideoPreviewUrl);
+    const pendingPreviewUrlRef = useRef<string | null>(null);
+    pendingPreviewUrlRef.current = pendingVideoPreviewUrl;
+    useEffect(
+      () => () => {
+        if (pendingPreviewUrlRef.current) {
+          URL.revokeObjectURL(pendingPreviewUrlRef.current);
+        }
+      },
+      [],
+    );
+
+    /** Drops a picked-but-not-uploaded backdrop file (and its blob URL). */
+    function discardPendingVideo() {
+      if (pendingPreviewUrlRef.current) {
+        URL.revokeObjectURL(pendingPreviewUrlRef.current);
       }
       setPendingVideoFile(null);
       setPendingVideoPreviewUrl(null);
+    }
+
+    const clearVideo = () => {
+      discardPendingVideo();
       setVideoBackgroundUrl('');
       setDirty(true);
     };
@@ -589,17 +603,33 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       }
       setGalleryFiles(imageFiles);
       setBusy(true);
-      const uploads = await Promise.all(
-        imageFiles.map((file) => uploadUserMediaFile(file)),
-      );
-      setBusy(false);
-      setGalleryFiles([]);
+      let uploads: Awaited<ReturnType<typeof uploadUserMediaFile>>[];
+      try {
+        uploads = await Promise.all(
+          imageFiles.map((file) => uploadUserMediaFile(file)),
+        );
+      } catch {
+        toast.error('Image upload failed. Try again.');
+        return;
+      } finally {
+        setBusy(false);
+        setGalleryFiles([]);
+      }
       const uploadedUrls = uploads.flatMap((result) =>
         result.ok ? [result.data.url] : [],
       );
       if (uploadedUrls.length > 0) {
-        const nextImages = [...galleryImageList, ...uploadedUrls];
-        setGalleryImages(nextImages.join('\n'));
+        // Append to the *current* list — the user may have reordered or
+        // removed images while the upload ran.
+        setGalleryImages((current) =>
+          [
+            ...current
+              .split(/\r?\n/)
+              .map((image) => image.trim())
+              .filter(Boolean),
+            ...uploadedUrls,
+          ].join('\n'),
+        );
         setGalleryMode('STATIC_SLIDESHOW');
         setDirty(true);
         toast.success(
@@ -705,7 +735,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       };
     };
 
-    const save = async () => {
+    const saveLook = async () => {
       if (!visual) {
         return;
       }
@@ -811,8 +841,13 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
         playerScheme: newPlayerScheme,
         backgroundScheme: newBackgroundScheme,
         visualSettings: newVisualSettings,
-        galleryMode,
-        galleryImages: images.join('\n'),
+        // If the gallery endpoint failed, the server still holds the old one.
+        galleryMode: galleryResult.ok
+          ? galleryMode
+          : (previousBaseline?.galleryMode ?? galleryMode),
+        galleryImages: galleryResult.ok
+          ? images.join('\n')
+          : (previousBaseline?.galleryImages ?? images.join('\n')),
         videoBackgroundUrl: savedVideoUrl ?? '',
         slideshowPreset: newSlideshowPreset,
         slideshowInterval: newSlideshowInterval,
@@ -821,6 +856,17 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
         overlaySettings,
         previewPreset,
       });
+    };
+
+    // A thrown network error used to leave the designer stuck on `busy`.
+    const save = async () => {
+      try {
+        await saveLook();
+      } catch {
+        toast.error('Could not save your look. Try again.');
+      } finally {
+        setBusy(false);
+      }
     };
 
     useImperativeHandle(ref, () => ({ save }), [save]);
@@ -919,6 +965,8 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       setOverlaySettings(
         parseNowPlayingOverlaySettings(s.nowPlayingOverlaySettingsJson),
       );
+      // The preset's backdrop replaces any file picked for upload.
+      discardPendingVideo();
       setVideoBackgroundUrl(
         typeof s.videoBackgroundUrl === 'string' ? s.videoBackgroundUrl : '',
       );
@@ -957,6 +1005,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       setVisualSettings(previousSave.visualSettings);
       setGalleryMode(previousSave.galleryMode);
       setGalleryImages(previousSave.galleryImages);
+      discardPendingVideo();
       setVideoBackgroundUrl(previousSave.videoBackgroundUrl);
       setSlideshowPreset(previousSave.slideshowPreset);
       setSlideshowInterval(previousSave.slideshowInterval);
@@ -1075,190 +1124,48 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
     };
 
     const slideshowControls = (
-      <section className="flex flex-col gap-4">
-        <div className="flex flex-col gap-2">
-          {galleryImageList.length > 0 && (
-            <>
-              <div className="flex items-center justify-between gap-2">
-                <Eyebrow>
-                  {galleryImageList.length === 1
-                    ? 'Single image preview'
-                    : `Slideshow · ${galleryImageList.length} images`}
-                </Eyebrow>
-                <span className="text-foreground-secondary text-xs">
-                  {galleryPreviewIndex + 1} / {galleryImageList.length}
-                </span>
-              </div>
-              <div className="border-border bg-background relative h-36 overflow-hidden rounded-lg border">
-                <img
-                  src={galleryImageList[galleryPreviewIndex]}
-                  alt=""
-                  className="size-full object-cover"
-                />
-              </div>
-            </>
-          )}
-          <div className="grid grid-cols-4 gap-2 sm:grid-cols-5">
-            {galleryImageList.map((image, index) => (
-              <div
-                key={`${image}-${index}`}
-                className="group relative"
-                draggable
-                onDragStart={() => setDraggedGalleryIndex(index)}
-                onDragOver={(event) => event.preventDefault()}
-                onDrop={() => {
-                  if (draggedGalleryIndex !== null) {
-                    reorderGalleryImage(draggedGalleryIndex, index);
-                  }
-                  setDraggedGalleryIndex(null);
-                }}
-                onDragEnd={() => setDraggedGalleryIndex(null)}
-              >
-                <button
-                  type="button"
-                  className={`border-border h-16 w-full overflow-hidden rounded-md border ${index === galleryPreviewIndex ? 'border-primary ring-primary ring-2' : ''}`}
-                  aria-label={`Preview slideshow image ${index + 1}`}
-                  aria-pressed={index === galleryPreviewIndex}
-                  onClick={() => setGalleryPreviewIndex(index)}
-                >
-                  <img
-                    src={image}
-                    alt=""
-                    loading="lazy"
-                    className="size-full object-cover"
-                  />
-                </button>
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute top-1 left-1 flex size-5 items-center justify-center rounded bg-black/50 text-white opacity-0 transition-opacity group-hover:opacity-100"
-                >
-                  <GripVerticalIcon size={12} />
-                </div>
-                <Tooltip
-                  content={`Remove slideshow image ${index + 1}`}
-                  side="top"
-                >
-                  <Button
-                    size="icon-sm"
-                    variant="secondary"
-                    className="absolute top-1 right-1 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
-                    aria-label={`Remove slideshow image ${index + 1}`}
-                    onClick={() => removeGalleryImage(index)}
-                  >
-                    <Trash2Icon size={14} aria-hidden />
-                  </Button>
-                </Tooltip>
-              </div>
-            ))}
-            <Tooltip content="Add gallery images" side="top">
-              <button
-                type="button"
-                className="border-border text-foreground-secondary hover:border-primary hover:text-primary flex h-16 w-full items-center justify-center rounded-md border border-dashed transition-colors"
-                aria-label="Add gallery images"
-                disabled={busy}
-                onClick={() => setGalleryPickerOpen(true)}
-              >
-                <PlusIcon size={18} aria-hidden />
-              </button>
-            </Tooltip>
-          </div>
-          {galleryImageList.length === 0 && (
-            <p className="text-foreground-secondary text-xs">
-              Upload images to build the slideshow behind your channel.
-            </p>
-          )}
-        </div>
-        <Dialog.Root
-          isOpen={galleryPickerOpen}
-          onClose={() => setGalleryPickerOpen(false)}
-          className="max-w-md"
-        >
-          <Dialog.Title>Add gallery images</Dialog.Title>
-          <div className="mt-4">
-            <FilePicker
-              accept="image/jpeg,image/png,image/webp"
-              multiple
-              disabled={busy}
-              selectedFiles={galleryFiles}
-              icon={<ImageIcon size={20} aria-hidden />}
-              labels={{
-                title: 'Drop slideshow images here',
-                description: 'JPEG, PNG, or WebP · up to 10 images',
-                browse: 'Browse images',
-              }}
-              onFiles={(files) => {
-                void selectGalleryFiles(files).then(() =>
-                  setGalleryPickerOpen(false),
-                );
-              }}
-            />
-          </div>
-        </Dialog.Root>
-        <Select
-          label="Gallery style"
-          value={galleryMode}
-          onValueChange={(value) => {
-            setGalleryMode(value as ChannelGalleryMode);
-            setDirty(true);
-          }}
-          options={GALLERY_MODES.map((mode) => ({
-            id: mode.id,
-            label: mode.label,
-          }))}
-        />
-        {galleryImageList.length > 1 ? (
-          <>
-            <Select
-              label="Transition"
-              value={slideshowPreset}
-              onValueChange={(value) => {
-                setSlideshowPreset(value);
-                setDirty(true);
-              }}
-              options={SLIDESHOW_PRESETS.map(([id, label]) => ({ id, label }))}
-            />
-            <Slider
-              label={`Interval: ${slideshowInterval}s`}
-              min={5}
-              max={30}
-              step={1}
-              value={slideshowInterval}
-              onValueChange={(value) => {
-                setSlideshowInterval(value);
-                setDirty(true);
-              }}
-            />
-            <Slider
-              label={`Transition speed: ${slideshowTransition}ms`}
-              min={300}
-              max={1500}
-              step={100}
-              value={slideshowTransition}
-              onValueChange={(value) => {
-                setSlideshowTransition(value);
-                setDirty(true);
-              }}
-            />
-            <div className="flex items-center justify-between gap-3 text-sm">
-              <span>Automatically advance slides</span>
-              <Toggle
-                label="Automatically advance slides"
-                checked={slideshowAutoplay}
-                onChange={(checked) => {
-                  setSlideshowAutoplay(checked);
-                  setDirty(true);
-                }}
-              />
-            </div>
-          </>
-        ) : null}
-      </section>
+      <SlideshowControls
+        images={galleryImageList}
+        previewIndex={galleryPreviewIndex}
+        onPreviewIndexChange={setGalleryPreviewIndex}
+        busy={busy}
+        onReorder={reorderGalleryImage}
+        onRemove={removeGalleryImage}
+        pickerOpen={galleryPickerOpen}
+        onPickerOpenChange={setGalleryPickerOpen}
+        pickedFiles={galleryFiles}
+        onFilesPicked={selectGalleryFiles}
+        galleryMode={galleryMode}
+        onGalleryModeChange={(mode) => {
+          setGalleryMode(mode);
+          setDirty(true);
+        }}
+        preset={slideshowPreset}
+        onPresetChange={(value) => {
+          setSlideshowPreset(value);
+          setDirty(true);
+        }}
+        interval={slideshowInterval}
+        onIntervalChange={(value) => {
+          setSlideshowInterval(value);
+          setDirty(true);
+        }}
+        transition={slideshowTransition}
+        onTransitionChange={(value) => {
+          setSlideshowTransition(value);
+          setDirty(true);
+        }}
+        autoplay={slideshowAutoplay}
+        onAutoplayChange={(checked) => {
+          setSlideshowAutoplay(checked);
+          setDirty(true);
+        }}
+      />
     );
 
     const handleVideoUrlChange = (url: string) => {
       setVideoBackgroundUrl(url);
-      setPendingVideoFile(null);
-      setPendingVideoPreviewUrl(null);
+      discardPendingVideo();
       setDirty(true);
     };
 
@@ -1323,7 +1230,13 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
             )
           }
           onUseBackgroundGradient={(useBackgroundGradient) => {
-            if (useBackgroundGradient && !visual.backgroundColorSchemeJson) {
+            // Seed from the header colors only when there is nothing custom
+            // yet — `visual.backgroundColorSchemeJson` is never updated
+            // locally, so checking it re-seeded (wiping edits) on every toggle.
+            if (
+              useBackgroundGradient &&
+              Object.keys(backgroundScheme).length === 0
+            ) {
               setBackgroundScheme(scheme);
             }
             applyLocal({ useBackgroundGradient });
@@ -1439,7 +1352,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
         usePlayerGradient={visual.usePlayerGradient ?? false}
         playerScheme={playerScheme}
         onUsePlayerGradient={(usePlayerGradient) => {
-          if (usePlayerGradient && !visual.playerColorSchemeJson) {
+          if (usePlayerGradient && Object.keys(playerScheme).length === 0) {
             setPlayerScheme(scheme);
           }
           applyLocal({ usePlayerGradient });

@@ -7,7 +7,7 @@
   "packages/tahti-web/src/api/studio-extras.ts": 1233,
   "packages/tahti-web/src/api/types.ts": 978,
   "packages/tahti-web/src/components/AppTopNav.tsx": 878,
-  "packages/tahti-web/src/components/ChannelDesigner.tsx": 1801,
+  "packages/tahti-web/src/components/ChannelDesigner.tsx": 1714,
   "packages/tahti-web/src/components/LocalPlaylists.tsx": 953,
   "packages/tahti-web/src/components/StreamManagerPanel.tsx": 1013,
   "packages/tahti-web/src/components/TrackEditDialog.tsx": 1175,
