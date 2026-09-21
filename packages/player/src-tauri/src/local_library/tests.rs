@@ -11,7 +11,7 @@ use super::{
 
 static DB_COUNTER: AtomicU32 = AtomicU32::new(0);
 
-async fn pool() -> SqlitePool {
+pub(super) async fn pool() -> SqlitePool {
     let id = DB_COUNTER.fetch_add(1, Ordering::Relaxed);
     let options: SqliteConnectOptions =
         format!("sqlite:file:testlib_{id}?mode=memory&cache=shared")
@@ -32,7 +32,7 @@ fn write_wav(path: &std::path::Path, title: &str, artist: &str) {
 }
 
 /// Same WAV with an arbitrary set of RIFF INFO tags.
-fn write_wav_tagged(path: &std::path::Path, tags: &[(&str, &str)]) {
+pub(super) fn write_wav_tagged(path: &std::path::Path, tags: &[(&str, &str)]) {
     let samples: Vec<i16> = (0..4410).map(|i| ((i % 100) * 300) as i16).collect();
     let data_len = (samples.len() * 2) as u32;
     let mut bytes = Vec::new();

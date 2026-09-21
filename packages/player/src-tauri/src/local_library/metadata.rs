@@ -100,6 +100,10 @@ pub fn read(path: &Path) -> Result<LibraryTrack, String> {
         genre: String::new(),
         comment: String::new(),
         added_at: String::new(),
+        rating: 0,
+        color: String::new(),
+        play_count: 0,
+        last_played_at: None,
         bitrate_kbps: (duration > 0.0).then(|| (size as f64 * 8.0 / duration / 1000.0).round() as i64),
     };
     if let Some(metadata) = probed.metadata.get().and_then(|metadata| metadata.current().cloned()) {
@@ -108,6 +112,7 @@ pub fn read(path: &Path) -> Result<LibraryTrack, String> {
     if let Some(metadata) = probed.format.metadata().current() {
         apply_tags(&mut track, metadata.tags());
     }
+    fill_from_tag_reader(&mut track, &path);
     loop {
         let packet = probed.format.next_packet().map_err(|err| format!("No decodable audio: {err}"))?;
         if packet.track_id() == source_id {
@@ -116,6 +121,47 @@ pub fn read(path: &Path) -> Result<LibraryTrack, String> {
         }
     }
     Ok(track)
+}
+
+/// Fills values symphonia did not surface. Its WAV reader stops at the audio
+/// data, so INFO/ID3 tags stored after it (where tag writers put them, this
+/// app's own write-back included) are invisible to it. Only empty values are
+/// filled, so anything symphonia found wins.
+fn fill_from_tag_reader(track: &mut LibraryTrack, path: &Path) {
+    use lofty::file::TaggedFileExt;
+    use lofty::prelude::*;
+    use lofty::tag::ItemKey;
+    let Some(tagged) = lofty::probe::Probe::open(path).ok().and_then(|p| p.read().ok()) else {
+        return;
+    };
+    let Some(tag) = tagged.primary_tag().or_else(|| tagged.first_tag()) else {
+        return;
+    };
+    let text = |v: Option<std::borrow::Cow<'_, str>>| v.map(|v| v.trim().to_owned()).filter(|v| !v.is_empty());
+    let stem = path.file_stem().unwrap_or_default().to_string_lossy();
+    if track.title == stem {
+        if let Some(title) = text(tag.title()) {
+            track.title = title;
+        }
+    }
+    if track.artist.is_empty() {
+        track.artist = text(tag.artist()).unwrap_or_default();
+    }
+    if track.album.is_empty() {
+        track.album = text(tag.album()).unwrap_or_default();
+    }
+    if track.album_artist.is_empty() {
+        track.album_artist = tag.get_string(&ItemKey::AlbumArtist).map(|v| v.trim().to_owned()).unwrap_or_default();
+    }
+    if track.genre.is_empty() {
+        track.genre = text(tag.genre()).unwrap_or_default();
+    }
+    if track.comment.is_empty() {
+        track.comment = text(tag.comment()).unwrap_or_default().chars().take(500).collect();
+    }
+    track.year = track.year.or(tag.year().map(i64::from));
+    track.track_no = track.track_no.or(tag.track().map(i64::from));
+    track.disc_no = track.disc_no.or(tag.disk().map(i64::from));
 }
 
 #[cfg(test)]

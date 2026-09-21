@@ -22,6 +22,12 @@ export const commands = {
 	/**  `YYYY-MM-DD`; tracks added on or after this day. */
 	addedSince: string | null,
 	availability: Availability | null,
+	/**  At least this many stars (1-5). */
+	ratingMin: number | null,
+	/**  One of `catalog::COLORS`. */
+	color: string | null,
+	/**  Tracks carrying this tag (case-insensitive). */
+	tag: string | null,
 } | null, sort: {
 	column: SortColumn,
 	descending: boolean,
@@ -84,6 +90,12 @@ export const commands = {
 	/**  `YYYY-MM-DD`; tracks added on or after this day. */
 	addedSince: string | null,
 	availability: Availability | null,
+	/**  At least this many stars (1-5). */
+	ratingMin: number | null,
+	/**  One of `catalog::COLORS`. */
+	color: string | null,
+	/**  Tracks carrying this tag (case-insensitive). */
+	tag: string | null,
 } | null, sort: {
 	column: SortColumn,
 	descending: boolean,
@@ -149,6 +161,12 @@ export const commands = {
 	 *  Filled by the database, so extraction leaves it empty.
 	 */
 	addedAt: string,
+	/**  0 = unrated, 1-5 stars. User data, never read from files. */
+	rating: number,
+	/**  One of `catalog::COLORS`, or empty. */
+	color: string,
+	playCount: number,
+	lastPlayedAt: string | null,
 } | null, string>(__TAURI_INVOKE("library_relink", { id })),
 	libraryListRoots: () => typedError<LibraryRoot[], string>(__TAURI_INVOKE("library_list_roots")),
 	/**
@@ -179,6 +197,42 @@ export const commands = {
 	/**  Tracks with no proven match in the new folder; left untouched. */
 	unmatched: number,
 } | null, string>(__TAURI_INVOKE("library_relink_root", { id })),
+	libraryEditPreview: (ids: string[], edits: FieldEdit[]) => typedError<EditPreview, string>(__TAURI_INVOKE("library_edit_preview", { ids, edits })),
+	libraryEditTracks: (ids: string[], edits: FieldEdit[]) => typedError<EditOutcome, string>(__TAURI_INVOKE("library_edit_tracks", { ids, edits })),
+	libraryRestoreEdits: (snapshots: FieldSnapshot[]) => typedError<number, string>(__TAURI_INVOKE("library_restore_edits", { snapshots })),
+	libraryFieldSummary: (ids: string[]) => typedError<FieldSummary[], string>(__TAURI_INVOKE("library_field_summary", { ids })),
+	libraryProvenance: (id: string) => typedError<FieldProvenance[], string>(__TAURI_INVOKE("library_provenance", { id })),
+	libraryUserData: (ids: string[]) => typedError<UserDataSnapshot[], string>(__TAURI_INVOKE("library_user_data", { ids })),
+	librarySetRating: (ids: string[], rating: number) => typedError<UserDataSnapshot[], string>(__TAURI_INVOKE("library_set_rating", { ids, rating })),
+	librarySetColor: (ids: string[], color: string) => typedError<UserDataSnapshot[], string>(__TAURI_INVOKE("library_set_color", { ids, color })),
+	libraryAddTag: (ids: string[], name: string) => typedError<UserDataSnapshot[], string>(__TAURI_INVOKE("library_add_tag", { ids, name })),
+	libraryRemoveTag: (ids: string[], name: string) => typedError<UserDataSnapshot[], string>(__TAURI_INVOKE("library_remove_tag", { ids, name })),
+	libraryRestoreUserData: (snapshots: UserDataSnapshot[]) => typedError<number, string>(__TAURI_INVOKE("library_restore_user_data", { snapshots })),
+	libraryListTags: () => typedError<TagCount[], string>(__TAURI_INVOKE("library_list_tags")),
+	libraryRecordPlay: (id: string) => typedError<null, string>(__TAURI_INVOKE("library_record_play", { id })),
+	libraryHashTracks: (ids: string[]) => typedError<HashResult, string>(__TAURI_INVOKE("library_hash_tracks", { ids })),
+	libraryHashCancel: () => typedError<null, string>(__TAURI_INVOKE("library_hash_cancel")),
+	libraryDuplicates: () => typedError<DuplicateGroup[], string>(__TAURI_INVOKE("library_duplicates")),
+	libraryMergeTracks: (keepId: string, removeIds: string[]) => typedError<MergeResult, string>(__TAURI_INVOKE("library_merge_tracks", { keepId, removeIds })),
+	libraryPlayHistory: (offset: number) => typedError<PlayLogPage, string>(__TAURI_INVOKE("library_play_history", { offset })),
+	libraryClearPlayHistory: () => typedError<null, string>(__TAURI_INVOKE("library_clear_play_history")),
+	libraryWriteTagsPreview: (ids: string[]) => typedError<WriteTagsPreview, string>(__TAURI_INVOKE("library_write_tags_preview", { ids })),
+	libraryWriteTags: (ids: string[], keepBackup: boolean) => typedError<WriteTagsResult, string>(__TAURI_INVOKE("library_write_tags", { ids, keepBackup })),
+	libraryBackupExport: () => typedError<{
+	path: string,
+	tracks: number,
+	roots: number,
+	playlists: number,
+	/**  Hand-edited tag values included. */
+	edits: number,
+} | null, string>(__TAURI_INVOKE("library_backup_export")),
+	/**
+	 *  Lets the user choose a backup file; the path comes back so the following
+	 *  preview/restore calls (which re-read it) can refer to the same file.
+	 */
+	libraryBackupPick: () => typedError<string | null, string>(__TAURI_INVOKE("library_backup_pick")),
+	libraryBackupPreview: (sourcePath: string, mappings: RootMapping[]) => typedError<RestorePreview, string>(__TAURI_INVOKE("library_backup_preview", { sourcePath, mappings })),
+	libraryBackupRestore: (sourcePath: string, mappings: RootMapping[]) => typedError<RestoreResult, string>(__TAURI_INVOKE("library_backup_restore", { sourcePath, mappings })),
 	isFlatpak: () => __TAURI_INVOKE<boolean>("is_flatpak"),
 	copyDirRecursive: (from: string, to: string) => typedError<null, string>(__TAURI_INVOKE("copy_dir_recursive", { from, to })),
 	extractZip: (zipPath: string, destPath: string) => typedError<null, string>(__TAURI_INVOKE("extract_zip", { zipPath, destPath })),
@@ -218,6 +272,15 @@ export const commands = {
 /* Types */
 export type Availability = "available" | "missing";
 
+export type BackupSummary = {
+	path: string,
+	tracks: number,
+	roots: number,
+	playlists: number,
+	/**  Hand-edited tag values included. */
+	edits: number,
+};
+
 export type BridgeNotification = {
 	subsystem: string,
 };
@@ -231,6 +294,54 @@ export type BridgeResponseBody = { status: "success"; data: unknown } | { status
 export type DailyListeningTime = {
 	date: string,
 	value: number,
+};
+
+export type DuplicateGroup = {
+	kind: DuplicateKind,
+	tracks: LibraryTrack[],
+	/**
+	 *  Similar groups only: every file has been hashed and the contents
+	 *  differ, so these are confirmed *different* files with the same name.
+	 */
+	confirmedDifferent: boolean,
+};
+
+export type DuplicateKind = 
+/**  Byte-identical files (same SHA-256). */
+"exact" | 
+/**
+ *  Same title and artist and nearly the same length; the files differ or
+ *  have not been compared. A suggestion, never a conclusion.
+ */
+"similar";
+
+export type EditExample = {
+	trackId: string,
+	title: string,
+	field: EditField,
+	before: string,
+	after: string,
+};
+
+/**
+ *  Tag fields the user can edit. A closed enum: the column name is chosen
+ *  from fixed SQL, never from user text.
+ */
+export type EditField = "title" | "artist" | "album" | "albumArtist" | "genre" | "comment" | "year" | "trackNo" | "discNo";
+
+export type EditOutcome = {
+	tracksChanged: number,
+	undo: FieldSnapshot[],
+};
+
+export type EditPreview = {
+	/**  Tracks that would actually change. */
+	tracksChanged: number,
+	/**  Tracks the edit would leave as they are. */
+	tracksUnchanged: number,
+	fieldsChanged: number,
+	/**  First few changes, for the "affected tracks" preview. */
+	examples: EditExample[],
 };
 
 export type EntryStatus = 
@@ -280,6 +391,47 @@ export type FacetGroup = {
 /**  What a browse tab groups by. */
 export type FacetKind = "artists" | "albums" | "genres" | "folders";
 
+/**  One requested change. `value: None` puts the file's own tag back. */
+export type FieldEdit = {
+	field: EditField,
+	value: string | null,
+};
+
+/**  Where one field's current value came from. */
+export type FieldProvenance = {
+	field: EditField,
+	value: string,
+	/**  True when the user set it by hand. */
+	edited: boolean,
+	/**  What the file's own tag says (equals `value` when not edited). */
+	fileValue: string,
+	editedAt: string | null,
+};
+
+/**
+ *  What one field of one track looked like before an edit; enough to undo it
+ *  exactly, including whether it was an override and what the file's tag said.
+ */
+export type FieldSnapshot = {
+	trackId: string,
+	field: EditField,
+	value: string,
+	extracted: string | null,
+};
+
+/**  A field across a selection, for mixed-value indicators in the editor. */
+export type FieldSummary = {
+	field: EditField,
+	/**
+	 *  The shared value when every selected track agrees ('' when they all
+	 *  agree on empty); meaningless when `distinct > 1`.
+	 */
+	value: string,
+	distinct: number,
+	/**  How many of the selected tracks hold a hand-edited value here. */
+	edited: number,
+};
+
 /**  Values available to build filter controls from the current catalog. */
 export type FilterOptions = {
 	formats: string[],
@@ -289,6 +441,14 @@ export type FilterOptions = {
 
 export type FirstPlay = {
 	at: number,
+};
+
+export type HashResult = {
+	hashed: number,
+	/**  Already hashed and unchanged since. */
+	alreadyCurrent: number,
+	failed: number,
+	cancelled: boolean,
 };
 
 export type HistoryEntry = {
@@ -429,6 +589,17 @@ export type LibraryTrack = {
 	 *  Filled by the database, so extraction leaves it empty.
 	 */
 	addedAt: string,
+	/**  0 = unrated, 1-5 stars. User data, never read from files. */
+	rating: number,
+	/**  One of `catalog::COLORS`, or empty. */
+	color: string,
+	playCount: number,
+	lastPlayedAt: string | null,
+};
+
+export type MergeResult = {
+	removed: number,
+	playlistEntriesMoved: number,
 };
 
 export type Page<T> = {
@@ -453,6 +624,20 @@ export type PlayEvent = {
 };
 
 export type PlayEventKind = "started" | "paused" | "resumed" | "seeked" | "finished" | "skipped" | "stopped";
+
+export type PlayLogEntry = {
+	id: number,
+	trackId: string | null,
+	title: string,
+	artist: string,
+	/**  UTC `YYYY-MM-DD HH:MM:SS`. */
+	playedAt: string,
+};
+
+export type PlayLogPage = {
+	entries: PlayLogEntry[],
+	total: number,
+};
 
 export type PlaybackBatch = {
 	/**  Playable tracks, in the order the ids were given. */
@@ -518,6 +703,52 @@ export type RelinkRootResult = {
 	unmatched: number,
 };
 
+export type RestorePreview = {
+	createdAt: string,
+	roots: RootPreview[],
+	tracks: number,
+	filesFound: number,
+	filesMissing: number,
+	edits: number,
+	playlists: number,
+	playlistEntries: number,
+	/**  A few files that could not be found at their mapped location. */
+	missingExamples: string[],
+};
+
+export type RestoreResult = {
+	tracksRestored: number,
+	/**
+	 *  Backed-up tracks whose file was not at the mapped location: not
+	 *  restored, and their ratings/edits are not either.
+	 */
+	tracksMissing: number,
+	tracksFailed: number,
+	rootsAdded: number,
+	playlistsCreated: number,
+	/**  Playlists whose name was already taken and were restored under a new name. */
+	playlistsRenamed: number,
+	editsApplied: number,
+};
+
+/**
+ *  Old folder -> new folder. Applied to a path when it starts with `from`
+ *  (on a folder boundary); the longest matching `from` wins.
+ */
+export type RootMapping = {
+	from: string,
+	to: string,
+};
+
+export type RootPreview = {
+	/**  The folder as recorded in the backup. */
+	from: string,
+	/**  Where it maps to now (equal to `from` when unmapped). */
+	to: string,
+	exists: boolean,
+	tracks: number,
+};
+
 /**
  *  Outcome of scanning one or more roots: new files imported, plus how many
  *  already-known tracks changed availability.
@@ -537,12 +768,17 @@ export type RootScanResult = {
  *  Sortable track-table columns. A closed enum, never user text, so the
  *  ORDER BY below is assembled from fixed SQL only.
  */
-export type SortColumn = "title" | "artist" | "album" | "genre" | "year" | "trackNo" | "duration" | "format" | "size" | "bitrate" | "added";
+export type SortColumn = "title" | "artist" | "album" | "genre" | "year" | "trackNo" | "duration" | "format" | "size" | "bitrate" | "added" | "rating" | "plays" | "lastPlayed";
 
 export type StartupLogEntry = {
 	timestamp: string,
 	level: string,
 	message: string,
+};
+
+export type TagCount = {
+	name: string,
+	tracks: number,
 };
 
 export type TimeRange = {
@@ -589,6 +825,12 @@ export type TrackFilters = {
 	/**  `YYYY-MM-DD`; tracks added on or after this day. */
 	addedSince: string | null,
 	availability: Availability | null,
+	/**  At least this many stars (1-5). */
+	ratingMin: number | null,
+	/**  One of `catalog::COLORS`. */
+	color: string | null,
+	/**  Tracks carrying this tag (case-insensitive). */
+	tag: string | null,
 };
 
 export type TrackPresence = {
@@ -620,6 +862,48 @@ export type UnresolvedEntry = {
 	path: string,
 	title: string,
 	status: EntryStatus,
+};
+
+/**  Enough to put a track's user data back exactly (undo). */
+export type UserDataSnapshot = {
+	trackId: string,
+	rating: number,
+	color: string,
+	tags: string[],
+};
+
+export type WriteSkip = {
+	path: string,
+	reason: string,
+};
+
+export type WriteTagsPreview = {
+	/**  Files that would be written. */
+	writable: number,
+	/**  Selected tracks with no hand-edited fields. */
+	noEdits: number,
+	skipped: WriteSkip[],
+	/**  Formats this can write, for the "supported formats" note. */
+	formats: string[],
+};
+
+export type WriteTagsResult = {
+	written: number,
+	skipped: WriteSkip[],
+	failed: WriteSkip[],
+	/**
+	 *  Edits the app's own reader now sees in the file, so they no longer
+	 *  need to be kept as overrides.
+	 */
+	editsSettled: number,
+	/**
+	 *  Edits written to the file but not visible to the app's reader (for
+	 *  example WAV INFO stored after the audio); kept as overrides so the
+	 *  library still shows them.
+	 */
+	editsKept: number,
+	/**  Edited fields the file format has no place for (kept in the library only). */
+	fieldsUnsupported: number,
 };
 
 export type YtdlpPlaylistEntry = {

@@ -131,6 +131,108 @@ const baseNativeLibrary: TahtiNativeLibrary = {
       return unwrapResult(await commands.playlistRelinkEntry(id, entryId));
     },
   },
+  catalog: {
+    async editPreview(ids, edits) {
+      return unwrapResult(await commands.libraryEditPreview(ids, edits));
+    },
+    async editTracks(ids, edits) {
+      return unwrapResult(await commands.libraryEditTracks(ids, edits));
+    },
+    async restoreEdits(snapshots) {
+      return unwrapResult(await commands.libraryRestoreEdits(snapshots));
+    },
+    async fieldSummary(ids) {
+      return unwrapResult(await commands.libraryFieldSummary(ids));
+    },
+    async provenance(id) {
+      return unwrapResult(await commands.libraryProvenance(id));
+    },
+    async userData(ids) {
+      return unwrapResult(await commands.libraryUserData(ids));
+    },
+    async setRating(ids, rating) {
+      return unwrapResult(await commands.librarySetRating(ids, rating));
+    },
+    async setColor(ids, color) {
+      return unwrapResult(await commands.librarySetColor(ids, color));
+    },
+    async addTag(ids, name) {
+      return unwrapResult(await commands.libraryAddTag(ids, name));
+    },
+    async removeTag(ids, name) {
+      return unwrapResult(await commands.libraryRemoveTag(ids, name));
+    },
+    async restoreUserData(snapshots) {
+      return unwrapResult(await commands.libraryRestoreUserData(snapshots));
+    },
+    async listTags() {
+      return unwrapResult(await commands.libraryListTags());
+    },
+    async recordPlay(id) {
+      unwrapResult(await commands.libraryRecordPlay(id));
+    },
+    async hashTracks(ids) {
+      return unwrapResult(await commands.libraryHashTracks(ids));
+    },
+    async cancelHash() {
+      unwrapResult(await commands.libraryHashCancel());
+    },
+    onHashProgress(listener) {
+      let unlisten: (() => void) | undefined;
+      let disposed = false;
+      void listen<{ done: number; total: number }>(
+        'library://hash-progress',
+        (event) => listener(event.payload),
+      ).then((dispose) => {
+        if (disposed) {
+          dispose();
+        } else {
+          unlisten = dispose;
+        }
+      });
+      return () => {
+        disposed = true;
+        unlisten?.();
+      };
+    },
+    async duplicates() {
+      return unwrapResult(await commands.libraryDuplicates());
+    },
+    async mergeTracks(keepId, removeIds) {
+      return unwrapResult(await commands.libraryMergeTracks(keepId, removeIds));
+    },
+    async playHistory(offset) {
+      return unwrapResult(await commands.libraryPlayHistory(offset));
+    },
+    async clearPlayHistory() {
+      unwrapResult(await commands.libraryClearPlayHistory());
+    },
+    async writeTagsPreview(ids) {
+      return unwrapResult(await commands.libraryWriteTagsPreview(ids));
+    },
+    async writeTags(ids, keepBackup) {
+      return unwrapResult(await commands.libraryWriteTags(ids, keepBackup));
+    },
+    async exportBackup() {
+      return unwrapResult(await commands.libraryBackupExport());
+    },
+    async pickBackup() {
+      return unwrapResult(await commands.libraryBackupPick());
+    },
+    async previewBackup(sourcePath, mappings) {
+      return unwrapResult(
+        await commands.libraryBackupPreview(sourcePath, mappings),
+      );
+    },
+    async restoreBackup(sourcePath, mappings) {
+      return unwrapResult(
+        await commands.libraryBackupRestore(sourcePath, mappings),
+      );
+    },
+    async pickFolder() {
+      return unwrapResult(await commands.playlistPickRelinkFolder());
+    },
+  },
   async facets(kind) {
     return unwrapResult(await commands.libraryFacets(kind));
   },

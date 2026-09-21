@@ -1,7 +1,14 @@
+import { useEffect, useState } from 'react';
+
 import { Button, Dialog } from '@tahti-player/ui';
 
 import { formatLibrarySize } from '../lib/libraryFormat';
-import type { NativeLibraryTrack } from '../lib/nativeLibrary';
+import type {
+  NativeEditField,
+  NativeFieldProvenance,
+  NativeLibraryTrack,
+  TahtiNativeLibrary,
+} from '../lib/nativeLibrary';
 import { formatDuration } from '../lib/playableToTrack';
 
 const blank = (value: string | number | null | undefined) =>
@@ -52,7 +59,21 @@ export function inspectorRows(
   ];
 }
 
+const ROW_FIELD: Record<string, NativeEditField> = {
+  Title: 'title',
+  Artist: 'artist',
+  'Album artist': 'albumArtist',
+  Album: 'album',
+  Track: 'trackNo',
+  Disc: 'discNo',
+  Year: 'year',
+  Genre: 'genre',
+  Comment: 'comment',
+};
+
 type Props = {
+  /** When given, edited tags show what the file itself says. */
+  library?: TahtiNativeLibrary | null;
   track: NativeLibraryTrack | null;
   onClose: () => void;
   onPlay: (track: NativeLibraryTrack) => void;
@@ -64,6 +85,7 @@ type Props = {
 
 /** Everything known about one track, with the actions that apply to it. */
 export function TrackInspectorDialog({
+  library,
   track,
   onClose,
   onPlay,
@@ -73,6 +95,25 @@ export function TrackInspectorDialog({
   onRemove,
 }: Props) {
   const rows = track ? inspectorRows(track) : [];
+  const [provenance, setProvenance] = useState<NativeFieldProvenance[]>([]);
+  const trackId = track?.id;
+  useEffect(() => {
+    setProvenance([]);
+    if (!trackId || !library) {
+      return;
+    }
+    let cancelled = false;
+    library.catalog
+      .provenance(trackId)
+      .then((value) => !cancelled && setProvenance(value))
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [trackId, library]);
+  const edited = new Map(
+    provenance.filter((item) => item.edited).map((item) => [item.field, item]),
+  );
   const sections = ['Tags', 'File'] as const;
   return (
     <Dialog.Root isOpen={track !== null} onClose={onClose}>
@@ -90,7 +131,19 @@ export function TrackInspectorDialog({
                 .map((row) => (
                   <div key={row.label} className="contents">
                     <dt className="text-foreground-secondary">{row.label}</dt>
-                    <dd className="min-w-0 break-words">{row.value}</dd>
+                    <dd className="min-w-0 break-words">
+                      {row.value}
+                      {row.section === 'Tags' && ROW_FIELD[row.label]
+                        ? (() => {
+                            const item = edited.get(ROW_FIELD[row.label]!);
+                            return item ? (
+                              <span className="text-foreground-secondary ml-2 text-xs">
+                                Edited · file says {item.fileValue || '(empty)'}
+                              </span>
+                            ) : null;
+                          })()
+                        : null}
+                    </dd>
                   </div>
                 ))}
             </dl>

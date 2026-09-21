@@ -2,6 +2,7 @@ import { RouterProvider } from '@tanstack/react-router';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
+import { startLocalPlayCounting } from './lib/playCounting';
 import {
   restorePersistedQueue,
   startQueuePersistence,
@@ -18,6 +19,7 @@ export async function mountTahtiApp(rootElement: HTMLElement) {
   useThemeStore.getState().init();
   restorePersistedQueue();
   startQueuePersistence();
+  startLocalPlayCounting();
   createRoot(rootElement).render(
     <StrictMode>
       <TahtiApp />
