@@ -28,15 +28,27 @@ const PUBLIC_BASE_URL = process.env.SNAPSHOT_DIFF_PUBLIC_BASE_URL?.replace(
 
 let cachedAppCss;
 
-const failures = collectFailures(ROOT);
+const allFailures = collectFailures(ROOT);
+const baseline = loadBaseline();
+const failures = [];
+const standing = [];
+for (const failure of allFailures) {
+  failure.fingerprint = fingerprintOf(failure);
+  (baseline && isInBaseline(baseline, failure) ? standing : failures).push(
+    failure,
+  );
+}
 
 mkdirSync(OUT_DIR, { recursive: true });
 
-if (failures.length === 0) {
+if (allFailures.length === 0) {
   const empty = {
     generatedAt: new Date().toISOString(),
     count: 0,
+    newCount: 0,
+    standingCount: 0,
     items: [],
+    standing: [],
   };
   writeFileSync(
     path.join(OUT_DIR, 'digest.json'),
@@ -76,6 +88,7 @@ for (const [index, failure] of failures.entries()) {
 
   items.push({
     id: slug,
+    fingerprint: failure.fingerprint,
     packageName: failure.packageName,
     file: relativize(failure.file),
     testName: failure.testName,
@@ -95,8 +108,20 @@ maybeDiffImages(items);
 
 const digest = {
   generatedAt: new Date().toISOString(),
-  count: items.length,
+  // `count` is every mismatch in the run (CI uses it to tell snapshot-only
+  // failures from other test failures); `items` and the markdown cover only
+  // the ones this PR introduced or changed.
+  count: allFailures.length,
+  newCount: items.length,
+  standingCount: standing.length,
+  baselineAvailable: baseline !== null,
   items,
+  standing: standing.map((failure) => ({
+    fingerprint: failure.fingerprint,
+    packageName: failure.packageName,
+    file: relativize(failure.file),
+    testName: failure.testName,
+  })),
 };
 
 writeFileSync(
@@ -104,7 +129,72 @@ writeFileSync(
   JSON.stringify(digest, null, 2),
 );
 writeFileSync(path.join(OUT_DIR, 'digest.md'), renderMarkdown(digest));
-console.log(`snapshot-digest: wrote ${items.length} item(s) to ${OUT_DIR}`);
+console.log(
+  `snapshot-digest: wrote ${items.length} new and ${standing.length} standing item(s) to ${OUT_DIR}`,
+);
+
+/** Identifies a mismatch across runs: package, file, test and a hash of what
+ * was received (so the same test failing in a *different* way still counts
+ * as new). Absolute checkout paths and ANSI codes are normalized away. */
+function fingerprintOf(failure) {
+  const received = stripAnsi(failure.receivedHtml ?? failure.message ?? '')
+    .replaceAll(ROOT, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return createHash('sha1')
+    .update(
+      [
+        failure.packageName,
+        relativize(failure.file),
+        failure.testName,
+        received,
+      ].join('\0'),
+    )
+    .digest('hex');
+}
+
+/** The base branch's mismatches, from its own `digest.json` (downloaded by
+ * CI into `snapshot-baseline/`). `null` when there is none, in which case
+ * every mismatch is treated as new. Entries from before fingerprints existed
+ * match on package + file + test name only. */
+function loadBaseline() {
+  const file =
+    process.env.SNAPSHOT_BASELINE_JSON ||
+    path.join(ROOT, 'snapshot-baseline', 'digest.json');
+  if (!existsSync(file)) {
+    return null;
+  }
+  try {
+    const payload = JSON.parse(readFileSync(file, 'utf8'));
+    const entries = [...(payload.items ?? []), ...(payload.standing ?? [])];
+    const strong = new Set();
+    const loose = new Set();
+    for (const entry of entries) {
+      if (entry.fingerprint) {
+        strong.add(entry.fingerprint);
+      } else {
+        loose.add(looseKey(entry));
+      }
+    }
+    return { strong, loose };
+  } catch (error) {
+    console.warn(
+      `snapshot-digest: ignoring baseline ${file}: ${error.message}`,
+    );
+    return null;
+  }
+}
+
+function looseKey(entry) {
+  return [entry.packageName, relativize(entry.file), entry.testName].join('\0');
+}
+
+function isInBaseline(baseline, failure) {
+  return (
+    baseline.strong.has(failure.fingerprint) ||
+    baseline.loose.has(looseKey(failure))
+  );
+}
 
 async function loadChromium() {
   const candidates = [
@@ -373,10 +463,22 @@ function renderMarkdown(digest) {
     ? 'Expected/received/diff screenshots are rendered with the real app CSS and embedded inline below.'
     : 'PNG screenshots (and full HTML) are in this run’s **snapshot-digest** artifact — no public image host configured for this run, so they aren’t inlined.';
 
+  const standingNote = renderStanding(digest);
+
+  if (digest.items.length === 0) {
+    return [
+      '## Snapshot digest',
+      '',
+      '_No new snapshot differences in this PR._',
+      '',
+      standingNote,
+    ].join('\n');
+  }
+
   return [
     '## Snapshot digest',
     '',
-    `${digest.count} Vitest snapshot mismatch(es). Review the list, then update with:`,
+    `${digest.items.length} new Vitest snapshot mismatch(es) in this PR. Review the list, then update with:`,
     '',
     '```bash',
     'pnpm --filter <package> test -- -u -- <test-file>',
@@ -389,6 +491,27 @@ function renderMarkdown(digest) {
     ...rows,
     '',
     details,
+    standingNote,
+  ].join('\n');
+}
+
+/** One collapsed block for mismatches that already fail on the base branch. */
+function renderStanding(digest) {
+  if (!digest.standing?.length) {
+    return digest.baselineAvailable
+      ? ''
+      : '_No master baseline was available, so every mismatch is listed as new._\n';
+  }
+  return [
+    '<details>',
+    `<summary>${digest.standing.length} mismatch(es) already failing on master (not from this PR)</summary>`,
+    '',
+    ...digest.standing.map(
+      (entry) => `- \`${entry.packageName}\` — ${escapeMd(entry.testName)}`,
+    ),
+    '',
+    '</details>',
+    '',
   ].join('\n');
 }
 

@@ -13,6 +13,7 @@ concurrency:
 permissions:
   contents: write
   pull-requests: write
+  actions: read # snapshot baseline: list/download master's digest artifact
 
 env:
   DO_NOT_TRACK: 1
@@ -125,6 +126,32 @@ jobs:
       - name: Install Playwright OS dependencies only
         if: steps.test.outcome == 'failure' && steps.playwright-cache.outputs.cache-hit == 'true'
         run: pnpm --filter @tahti-player/tahti-web exec playwright install-deps chromium
+
+      # The digest should list only what this PR changed. Master's own run
+      # uploads its digest (only when it had mismatches); take the latest
+      # finished master run's, if any, as the baseline. No artifact there means
+      # master had no mismatches, so an empty baseline is correct too. Failing
+      # to fetch just falls back to listing everything.
+      - name: Fetch master snapshot baseline
+        if: steps.test.outcome == 'failure' && github.event_name == 'pull_request'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          run_id=$(gh run list --workflow ci.yml --branch master --limit 20 \
+            --json databaseId,status,conclusion \
+            --jq '[.[] | select(.status == "completed" and (.conclusion == "success" or .conclusion == "failure"))][0].databaseId')
+          if [ -z "$run_id" ] || [ "$run_id" = "null" ]; then
+            echo "No finished master run found; listing every mismatch as new."
+            exit 0
+          fi
+          if gh run download "$run_id" -n snapshot-digest -D snapshot-baseline; then
+            echo "Using master run $run_id as the snapshot baseline."
+          else
+            echo "Master run $run_id has no snapshot-digest artifact (it had no mismatches)."
+            mkdir -p snapshot-baseline
+            echo '{"items":[],"standing":[]}' > snapshot-baseline/digest.json
+          fi
 
       - name: Build snapshot digest
         if: steps.test.outcome == 'failure'

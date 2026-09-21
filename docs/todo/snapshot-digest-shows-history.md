@@ -1,6 +1,6 @@
 # Snapshot digest: show what this PR changed, not standing failures
 
-**Status:** open
+**Status:** partial
 **Logged:** 2026-09-21 (user request)
 
 ## Problem
@@ -35,3 +35,11 @@ cannot tell which differences are new.
   the base commit, or cache the base result per commit.
 - Decide how to identify "the same" mismatch across runs (test id plus a hash
   of the received output is enough).
+
+## Progress (2026-09-21)
+
+- [x] Stale `HistoryRow` snapshot updated (the hover-reveal classes moved from the wrapper div onto the play button; same behavior).
+- [x] `scripts/ci/build-snapshot-digest.mjs`: every mismatch gets a fingerprint (package + file + test + hash of the received output, paths/ANSI normalized). With a baseline (`snapshot-baseline/digest.json`, or `SNAPSHOT_BASELINE_JSON`) it lists only new mismatches in the table/details, screenshots only those, and puts the rest in one collapsed "N mismatch(es) already failing on master" block. No new mismatches gives one line ("No new snapshot differences in this PR."). No baseline lists everything and says so. `digest.json` `count` still means every mismatch (CI uses it to tell snapshot-only failures from other failures); new fields `newCount`, `standingCount`, `baselineAvailable`, `standing[]`. Old baselines without fingerprints match on package + file + test name. Tested locally with synthetic failures for all three cases.
+- [x] `.github/workflows/ci.yml`: "Fetch master snapshot baseline" step (pull_request only, `continue-on-error`) takes the latest finished master run's `snapshot-digest` artifact; none means master had no mismatches, so the baseline is empty; `actions: read` added to the workflow permissions for it.
+- [ ] **Verify on a real PR** (needs CI): first PR run after merge should show only its own mismatches. Watch that `gh run list/download` works with the default token and that master's run uploads the artifact when it has mismatches.
+- [ ] `coverage.yml` has the same digest steps (artifact `snapshot-digest-coverage`) and was not changed; add the same baseline step there if its comment is also wanted.
