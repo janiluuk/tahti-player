@@ -77,6 +77,8 @@ fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
         local_library::library_remove_root,
         local_library::library_rescan_roots,
         local_library::library_relink_root,
+        local_library::watcher::library_watching,
+        local_library::watcher::library_set_watching,
         local_library::smart_playlists::smart_list,
         local_library::smart_playlists::smart_save,
         local_library::smart_playlists::smart_delete,
@@ -200,6 +202,10 @@ pub fn run() {
             stream_server::init_stream_server(app.handle().clone());
             discord::init_discord(app.handle().clone());
             history::init_history(app.handle().clone());
+            let library_app = app.handle().clone();
+            tauri::async_runtime::spawn(async move {
+                local_library::watcher::restart(&library_app).await;
+            });
 
             #[cfg(target_os = "linux")]
             maximize_for_gamescope(app);

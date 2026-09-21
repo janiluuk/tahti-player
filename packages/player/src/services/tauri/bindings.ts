@@ -206,6 +206,10 @@ export const commands = {
 	missing: number,
 	/**  Previously-missing tracks whose file is back. */
 	recovered: number,
+	/**  Renamed/moved files re-pointed at their new path (ID kept). */
+	moved: number,
+	/**  Known files changed on disk and re-read (external tag edits). */
+	updated: number,
 	errors: ImportFailure[],
 	cancelled: boolean,
 } | null, string>(__TAURI_INVOKE("library_add_root")),
@@ -223,6 +227,9 @@ export const commands = {
 	/**  Tracks with no proven match in the new folder; left untouched. */
 	unmatched: number,
 } | null, string>(__TAURI_INVOKE("library_relink_root", { id })),
+	libraryWatching: () => typedError<boolean, string>(__TAURI_INVOKE("library_watching")),
+	/**  Turns folder watching on or off (persisted); manual rescan always works. */
+	librarySetWatching: (enabled: boolean) => typedError<null, string>(__TAURI_INVOKE("library_set_watching", { enabled })),
 	smartList: () => typedError<SmartPlaylist[], string>(__TAURI_INVOKE("smart_list")),
 	smartSave: (id: string | null, definition: SmartDefinition) => typedError<SmartPlaylist, string>(__TAURI_INVOKE("smart_save", { id, definition })),
 	smartDelete: (id: string) => typedError<null, string>(__TAURI_INVOKE("smart_delete", { id })),
@@ -867,6 +874,10 @@ export type RootScanResult = {
 	missing: number,
 	/**  Previously-missing tracks whose file is back. */
 	recovered: number,
+	/**  Renamed/moved files re-pointed at their new path (ID kept). */
+	moved: number,
+	/**  Known files changed on disk and re-read (external tag edits). */
+	updated: number,
 	errors: ImportFailure[],
 	cancelled: boolean,
 };

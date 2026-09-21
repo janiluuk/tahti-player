@@ -26,6 +26,7 @@ import {
   EmptyState,
   FilePicker,
   Input,
+  Toggle,
   Tooltip,
 } from '@tahti-player/ui';
 
@@ -189,6 +190,7 @@ export function DesktopLibraryPanel() {
   const [totals, setTotals] = useState<NativeLibraryTotals | null>(null);
   const [catalogVersion, setCatalogVersion] = useState(0);
   const [roots, setRoots] = useState<NativeLibraryRoot[]>([]);
+  const [watching, setWatching] = useState(true);
   const [rootBusy, setRootBusy] = useState<string | 'add' | 'rescan' | null>(
     null,
   );
@@ -210,6 +212,42 @@ export function DesktopLibraryPanel() {
     }
     return nativeLibrary.onImportProgress((progress) => {
       setNativeProgress(progress.currentPath === null ? null : progress);
+    });
+  }, [nativeLibrary]);
+
+  useEffect(() => {
+    void nativeLibrary?.getWatching?.().then(setWatching, () => {});
+  }, [nativeLibrary]);
+
+  const changeWatching = async (enabled: boolean) => {
+    if (!nativeLibrary?.setWatching) {
+      return;
+    }
+    setWatching(enabled);
+    try {
+      await nativeLibrary.setWatching(enabled);
+      toast.success(
+        enabled
+          ? 'Watching folders for changes.'
+          : 'Folder watching paused — use Rescan to pick up changes.',
+      );
+    } catch (error) {
+      setWatching(!enabled);
+      toast.error(
+        error instanceof Error ? error.message : 'Could not change watching.',
+      );
+    }
+  };
+
+  // The folder watcher reconciles roots on its own; refresh when it changed
+  // something so the list never shows stale rows.
+  useEffect(() => {
+    if (!nativeLibrary?.onRootsChanged) {
+      return;
+    }
+    return nativeLibrary.onRootsChanged((result) => {
+      setCatalogVersion((version) => version + 1);
+      describeRootScan(result);
     });
   }, [nativeLibrary]);
 
@@ -579,6 +617,8 @@ export function DesktopLibraryPanel() {
     const parts = [
       result.imported ? `${result.imported} new` : null,
       result.recovered ? `${result.recovered} recovered` : null,
+      result.moved ? `${result.moved} moved` : null,
+      result.updated ? `${result.updated} updated` : null,
       result.missing ? `${result.missing} missing` : null,
     ].filter(Boolean);
     if (result.errors.length) {
@@ -1009,6 +1049,13 @@ export function DesktopLibraryPanel() {
                 )}
                 Add folder
               </Button>
+              {roots.length > 0 && nativeLibrary?.setWatching ? (
+                <Toggle
+                  label="Watch folders for changes"
+                  checked={watching}
+                  onChange={(enabled) => void changeWatching(enabled)}
+                />
+              ) : null}
               {roots.length > 0 ? (
                 <Button
                   size="sm"

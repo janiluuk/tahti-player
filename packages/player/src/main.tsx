@@ -10,6 +10,7 @@ import type { TahtiNativeCapabilities } from '../../tahti-web/src/lib/nativeCapa
 import {
   withReadCache,
   type NativeLibraryImportProgress,
+  type NativeRootScanResult,
   type TahtiNativeLibrary,
 } from '../../tahti-web/src/lib/nativeLibrary';
 import { mountTahtiApp } from '../../tahti-web/src/TahtiApp';
@@ -362,6 +363,29 @@ const baseNativeLibrary: TahtiNativeLibrary = {
     void listen<NativeLibraryImportProgress>(
       'library://import-progress',
       (event) => listener(event.payload),
+    ).then((dispose) => {
+      if (disposed) {
+        dispose();
+      } else {
+        unlisten = dispose;
+      }
+    });
+    return () => {
+      disposed = true;
+      unlisten?.();
+    };
+  },
+  async getWatching() {
+    return unwrapResult(await commands.libraryWatching());
+  },
+  async setWatching(enabled) {
+    unwrapResult(await commands.librarySetWatching(enabled));
+  },
+  onRootsChanged(listener) {
+    let unlisten: (() => void) | undefined;
+    let disposed = false;
+    void listen<NativeRootScanResult>('library://roots-changed', (event) =>
+      listener(event.payload),
     ).then((dispose) => {
       if (disposed) {
         dispose();

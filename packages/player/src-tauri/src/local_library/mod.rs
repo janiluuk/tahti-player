@@ -5,8 +5,10 @@ pub mod backup;
 pub mod catalog;
 pub mod m3u;
 pub mod playlists;
+pub mod reconcile;
 pub mod smart_playlists;
 pub mod tag_writer;
+pub mod watcher;
 #[cfg(test)]
 mod analysis_tests;
 #[cfg(test)]
@@ -166,7 +168,7 @@ pub struct LibraryPage {
     pub total: i64,
 }
 
-#[derive(Debug, Serialize, specta::Type)]
+#[derive(Clone, Debug, Serialize, specta::Type)]
 pub struct ImportFailure {
     pub path: String,
     pub error: String,
@@ -374,7 +376,7 @@ pub struct LibraryRoot {
 
 /// Outcome of scanning one or more roots: new files imported, plus how many
 /// already-known tracks changed availability.
-#[derive(Serialize, specta::Type, Default)]
+#[derive(Clone, Serialize, specta::Type, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct RootScanResult {
     #[specta(type = Number<usize>)]
@@ -387,6 +389,12 @@ pub struct RootScanResult {
     /// Previously-missing tracks whose file is back.
     #[specta(type = Number<usize>)]
     pub recovered: usize,
+    /// Renamed/moved files re-pointed at their new path (ID kept).
+    #[specta(type = Number<usize>)]
+    pub moved: usize,
+    /// Known files changed on disk and re-read (external tag edits).
+    #[specta(type = Number<usize>)]
+    pub updated: usize,
     pub errors: Vec<ImportFailure>,
     pub cancelled: bool,
 }
@@ -458,6 +466,8 @@ pub struct LibraryState {
     cancel_hash: AtomicBool,
     /// Background analysis job (cancel/pause flags, one job at a time).
     analysis: std::sync::Arc<analysis::AnalysisControl>,
+    /// Filesystem watcher over the registered roots.
+    watch: watcher::WatchControl,
 }
 
 /// Migration and backup policy (desktop-pro-library.md Phase 0):
@@ -1567,6 +1577,13 @@ async fn scan_root(
     let mut result = RootScanResult::default();
     match discover_new_paths(pool, root).await {
         Ok((fresh, skipped)) => {
+            let fresh = match reconcile::relink_moved(pool, root, fresh.clone()).await {
+                Ok((moved, rest)) => {
+                    result.moved = moved;
+                    rest
+                }
+                Err(_) => fresh,
+            };
             let imported = import_paths_with_progress(app, pool, fresh, skipped, Some(&root.id)).await;
             result.imported = imported.imported;
             result.skipped = imported.skipped;
@@ -1584,6 +1601,13 @@ async fn scan_root(
                 result.missing = missing;
                 result.recovered = recovered;
             }
+            Err(error) => result.errors.push(ImportFailure {
+                path: root.path.clone(),
+                error,
+            }),
+        }
+        match reconcile::refresh_changed(pool, root).await {
+            Ok(updated) => result.updated = updated,
             Err(error) => result.errors.push(ImportFailure {
                 path: root.path.clone(),
                 error,
@@ -1703,13 +1727,17 @@ pub async fn library_add_root(app: tauri::AppHandle) -> Result<Option<RootScanRe
     let pool = pool(&app).await?;
     let root = add_root(&pool, &folder).await?;
     reset_cancel_import(&app);
-    Ok(Some(scan_root(&app, &pool, &root).await))
+    let scanned = scan_root(&app, &pool, &root).await;
+    watcher::restart(&app).await;
+    Ok(Some(scanned))
 }
 
 #[tauri::command]
 #[specta::specta]
 pub async fn library_remove_root(app: tauri::AppHandle, id: String) -> Result<(), String> {
-    remove_root(&pool(&app).await?, &id).await
+    remove_root(&pool(&app).await?, &id).await?;
+    watcher::restart(&app).await;
+    Ok(())
 }
 
 /// Re-scans every root: imports files that appeared since the last scan and
@@ -1727,6 +1755,8 @@ pub async fn library_rescan_roots(app: tauri::AppHandle) -> Result<RootScanResul
         total.skipped += scanned.skipped;
         total.missing += scanned.missing;
         total.recovered += scanned.recovered;
+        total.moved += scanned.moved;
+        total.updated += scanned.updated;
         total.errors.extend(scanned.errors);
         if scanned.cancelled {
             total.cancelled = true;
@@ -1752,7 +1782,7 @@ pub async fn library_relink_root(
         return Ok(None);
     };
     let folder = folder.into_path().map_err(|err| err.to_string())?;
-    relink_root(&pool(&app).await?, &id, &folder)
-        .await
-        .map(Some)
+    let relinked = relink_root(&pool(&app).await?, &id, &folder).await?;
+    watcher::restart(&app).await;
+    Ok(Some(relinked))
 }

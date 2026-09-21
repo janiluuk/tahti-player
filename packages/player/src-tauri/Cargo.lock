@@ -3736,6 +3736,7 @@ dependencies = [
  "lofty",
  "log",
  "mime_guess",
+ "notify",
  "percent-encoding",
  "reqwest 0.13.1",
  "rmcp",
