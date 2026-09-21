@@ -103,6 +103,33 @@ const baseNativeLibrary: TahtiNativeLibrary = {
     async trackIds(id) {
       return unwrapResult(await commands.playlistTrackIds(id));
     },
+    async exportM3u(id, style) {
+      return unwrapResult(await commands.playlistExport(id, style));
+    },
+    async importPreview(sourcePath, relinkRoot) {
+      return unwrapResult(
+        await commands.playlistImportPreview(
+          sourcePath ?? null,
+          relinkRoot ?? null,
+        ),
+      );
+    },
+    async pickRelinkFolder() {
+      return unwrapResult(await commands.playlistPickRelinkFolder());
+    },
+    async importCommit(sourcePath, name, importMissingFiles, relinkRoot) {
+      return unwrapResult(
+        await commands.playlistImportCommit(
+          sourcePath,
+          name,
+          importMissingFiles,
+          relinkRoot ?? null,
+        ),
+      );
+    },
+    async relinkEntry(id, entryId) {
+      return unwrapResult(await commands.playlistRelinkEntry(id, entryId));
+    },
   },
   async facets(kind) {
     return unwrapResult(await commands.libraryFacets(kind));

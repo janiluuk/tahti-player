@@ -19,6 +19,7 @@ export function AudioEngine() {
   const analyserRef = useRef<AnalyserNode | null>(null);
 
   const currentId = usePlayerStore((s) => s.currentId);
+  const restoredPending = usePlayerStore((s) => s.restoredPending);
   const queue = usePlayerStore((s) => s.queue);
   const status = usePlayerStore((s) => s.status);
   const volume = usePlayerStore((s) => s.volume);
@@ -152,6 +153,15 @@ export function AudioEngine() {
       return;
     }
 
+    // A track restored from the last session stays unloaded until the user
+    // presses play (which clears restoredPending) -- no audio on launch.
+    if (
+      restoredPending === playable.id &&
+      usePlayerStore.getState().status === 'paused'
+    ) {
+      return;
+    }
+
     const url = playable.streamUrl;
     const isHls = playable.protocol === 'hls' || url.includes('.m3u8');
 
@@ -250,7 +260,7 @@ export function AudioEngine() {
       audio.removeEventListener('error', onError);
       cleanup();
     };
-  }, [playable?.id, playable?.streamUrl]);
+  }, [playable?.id, playable?.streamUrl, restoredPending]);
 
   useEffect(() => {
     const audio = audioRef.current;

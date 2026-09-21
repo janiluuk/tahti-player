@@ -188,7 +188,7 @@ async fn raw_entries_in_order(pool: &SqlitePool, id: &str) -> Result<Vec<RawEntr
     .map_err(|err| err.to_string())
 }
 
-async fn insert_entry(
+pub(super) async fn insert_entry(
     conn: &mut sqlx::SqliteConnection,
     playlist_id: &str,
     position: i64,

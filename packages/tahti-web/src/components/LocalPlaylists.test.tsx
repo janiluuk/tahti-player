@@ -10,12 +10,15 @@ import { useState } from 'react';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
 import type {
+  NativeImportPreview,
   NativeLibraryTrack,
   TahtiNativeLibrary,
 } from '../lib/nativeLibrary';
 import { usePlayerStore } from '../stores/playerStore';
 import { createFakePlaylists } from '../test/fakePlaylists';
 import { LocalPlaylists } from './LocalPlaylists';
+import { describeExport } from './PlaylistExportDialog';
+import { describePreview } from './PlaylistImportDialog';
 
 const TRACKS = {
   a: { title: 'Alpha', artist: 'Ann' },
@@ -287,5 +290,235 @@ describe('opened playlist', () => {
       expect(fake.api.delete).toHaveBeenCalledWith(playlist.id),
     );
     expect(await screen.findByText('No playlists yet')).toBeTruthy();
+  });
+});
+
+const preview = (
+  over: Partial<NativeImportPreview> = {},
+): NativeImportPreview => ({
+  sourcePath: '/lists/mix.m3u8',
+  suggestedName: 'Mix',
+  total: 5,
+  linked: 2,
+  needsImport: 1,
+  missing: 1,
+  unsupported: 1,
+  remote: 0,
+  unresolved: [
+    { line: 3, path: '/new/fresh.wav', title: 'Fresh', status: 'needsImport' },
+    { line: 4, path: '/gone/x.wav', title: 'Gone', status: 'missing' },
+    { line: 5, path: '/new/song.mp3', title: 'Song', status: 'unsupported' },
+  ],
+  ...over,
+});
+
+describe('export and import', () => {
+  it('describes what an export means for moving the file', () => {
+    const base = {
+      path: '/out/a.m3u8',
+      written: 3,
+      outsideRoot: 0,
+      absoluteFallback: 0,
+    };
+    expect(describeExport(base, 'relative').description).toMatch(
+      /keeps working if you move it together/,
+    );
+    expect(
+      describeExport(
+        { ...base, outsideRoot: 2, absoluteFallback: 1 },
+        'relative',
+      ).description,
+    ).toMatch(
+      /2 files are outside the folder .* written with \.\.\/.*1 file is on another drive/,
+    );
+    expect(describeExport(base, 'absolute').description).toMatch(
+      /different folder layout/,
+    );
+    expect(describeExport({ ...base, written: 1 }, 'absolute').title).toBe(
+      'Exported 1 track to /out/a.m3u8',
+    );
+  });
+
+  it('summarises an import preview', () => {
+    expect(describePreview(preview())).toBe(
+      '2 of 5 already in your library · 1 not imported yet · 1 not found · 1 unsupported',
+    );
+    expect(
+      describePreview(
+        preview({
+          needsImport: 0,
+          missing: 0,
+          unsupported: 0,
+          remote: 2,
+          linked: 3,
+          total: 5,
+        }),
+      ),
+    ).toBe('3 of 5 already in your library · 2 stream URLs');
+  });
+
+  it('exports with relative or full paths as chosen', async () => {
+    const { fake, Harness, playlist } = await seededPlaylist();
+    render(<Harness />);
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Export Night drive' }),
+    );
+    const dialog = await screen.findByRole('dialog');
+    expect(
+      within(dialog).getByText(
+        /keeps working if the file and the music move together/,
+      ),
+    ).toBeTruthy();
+    fireEvent.click(
+      within(dialog).getByRole('button', { name: 'Choose where to save…' }),
+    );
+    await waitFor(() =>
+      expect(fake.api.exportM3u).toHaveBeenCalledWith(playlist.id, 'relative'),
+    );
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+    fireEvent.click(screen.getByRole('button', { name: 'Export Night drive' }));
+    const again = await screen.findByRole('dialog');
+    fireEvent.click(within(again).getByText('Full paths'));
+    fireEvent.click(
+      within(again).getByRole('button', { name: 'Choose where to save…' }),
+    );
+    await waitFor(() =>
+      expect(fake.api.exportM3u).toHaveBeenLastCalledWith(
+        playlist.id,
+        'absolute',
+      ),
+    );
+  });
+
+  it('does nothing when the file picker is cancelled', async () => {
+    const { fake, Harness } = setup();
+    render(<Harness />);
+    fireEvent.click(await screen.findByRole('button', { name: 'Import…' }));
+    await waitFor(() => expect(fake.api.importPreview).toHaveBeenCalled());
+    expect(screen.queryByRole('dialog')).toBeNull();
+  });
+
+  it('previews an import, keeps unresolved entries visible, and imports with the chosen options', async () => {
+    const { fake, Harness } = setup();
+    fake.api.importPreview.mockResolvedValueOnce(preview());
+    render(<Harness />);
+    fireEvent.click(await screen.findByRole('button', { name: 'Import…' }));
+
+    const dialog = await screen.findByRole('dialog');
+    expect(
+      within(dialog).getByText(/2 of 5 already in your library/),
+    ).toBeTruthy();
+    expect(
+      (within(dialog).getByLabelText('Playlist name') as HTMLInputElement)
+        .value,
+    ).toBe('Mix');
+    const list = within(dialog).getByRole('list', {
+      name: 'Unresolved entries',
+    });
+    expect(
+      within(list).getByText('Fresh').parentElement?.textContent,
+    ).toContain('Not in library yet');
+    expect(within(list).getByText('Gone').parentElement?.textContent).toContain(
+      'File not found',
+    );
+    expect(within(list).getByText('Song').parentElement?.textContent).toContain(
+      'Unsupported format',
+    );
+
+    fireEvent.change(within(dialog).getByLabelText('Playlist name'), {
+      target: { value: 'My mix' },
+    });
+    fireEvent.click(
+      within(dialog).getByRole('switch', { name: 'Add files to the library' }),
+    );
+    fireEvent.click(
+      within(dialog).getByRole('button', { name: 'Import playlist' }),
+    );
+
+    await waitFor(() =>
+      expect(fake.api.importCommit).toHaveBeenCalledWith(
+        '/lists/mix.m3u8',
+        'My mix',
+        false,
+        null,
+      ),
+    );
+    expect(await screen.findByTestId('playlist-view')).toBeTruthy();
+  });
+
+  it('searches a folder for missing files and passes it to the import', async () => {
+    const { fake, Harness } = setup();
+    fake.api.importPreview
+      .mockResolvedValueOnce(preview())
+      .mockResolvedValueOnce(
+        preview({ missing: 0, needsImport: 2, unresolved: [] }),
+      );
+    fake.api.pickRelinkFolder.mockResolvedValueOnce('/backup/Music');
+    render(<Harness />);
+    fireEvent.click(await screen.findByRole('button', { name: 'Import…' }));
+    const dialog = await screen.findByRole('dialog');
+
+    fireEvent.click(
+      within(dialog).getByRole('button', {
+        name: 'Find missing files in a folder…',
+      }),
+    );
+    await waitFor(() =>
+      expect(fake.api.importPreview).toHaveBeenLastCalledWith(
+        '/lists/mix.m3u8',
+        '/backup/Music',
+      ),
+    );
+    expect(
+      await within(dialog).findByText('Searching /backup/Music'),
+    ).toBeTruthy();
+
+    fireEvent.click(
+      within(dialog).getByRole('button', { name: 'Import playlist' }),
+    );
+    await waitFor(() =>
+      expect(fake.api.importCommit).toHaveBeenCalledWith(
+        '/lists/mix.m3u8',
+        'Mix',
+        true,
+        '/backup/Music',
+      ),
+    );
+  });
+
+  it('shows a name clash in the dialog and stays open', async () => {
+    const { fake, Harness } = setup();
+    fake.api.importPreview.mockResolvedValueOnce(preview());
+    fake.api.importCommit.mockRejectedValueOnce(
+      new Error('A playlist with that name already exists.'),
+    );
+    render(<Harness />);
+    fireEvent.click(await screen.findByRole('button', { name: 'Import…' }));
+    const dialog = await screen.findByRole('dialog');
+    fireEvent.click(
+      within(dialog).getByRole('button', { name: 'Import playlist' }),
+    );
+    expect(
+      await within(dialog).findByText(
+        'A playlist with that name already exists.',
+      ),
+    ).toBeTruthy();
+    expect(screen.getByRole('dialog')).toBeTruthy();
+  });
+
+  it('links an unavailable entry to a file the user locates', async () => {
+    const { fake, Harness, playlist } = await seededPlaylist();
+    fake.markMissing('b');
+    fake.api.relinkEntry.mockResolvedValueOnce(true);
+    render(<Harness initialOpen={playlist.id} />);
+    fireEvent.click(await screen.findByRole('button', { name: 'Locate Beta' }));
+    await waitFor(() =>
+      expect(fake.api.relinkEntry).toHaveBeenCalledWith(
+        playlist.id,
+        expect.any(String),
+      ),
+    );
+    expect(screen.queryByRole('button', { name: 'Locate Alpha' })).toBeNull();
   });
 });

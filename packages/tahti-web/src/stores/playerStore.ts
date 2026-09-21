@@ -32,6 +32,13 @@ type PlayerState = {
   isRealLive: boolean;
   shuffle: boolean;
   repeatMode: RepeatMode;
+  /**
+   * Id of a current track restored from the last session that has not been
+   * loaded yet. While it is the current track and playback is paused, the
+   * audio engine leaves it unloaded, so launching the app never starts audio.
+   * Cleared as soon as the user plays (or navigates the queue).
+   */
+  restoredPending: string | null;
   /** True after the user has started playback at least once this session. */
   hasPlayed: boolean;
   /** Last radio/live station played — resumed automatically once a track detour finishes with nothing else queued. */
@@ -52,6 +59,10 @@ type PlayerState = {
   cachePeaks: (id: string, peaks: number[]) => void;
   play: (item: TahtiPlayable, opts?: { enqueueRest?: TahtiPlayable[] }) => void;
   enqueue: (item: TahtiPlayable) => void;
+  /** Installs a queue saved by an earlier session: paused, nothing loaded, no history entry. */
+  hydrateQueue: (items: TahtiPlayable[], currentId: string | null) => void;
+  /** Fills in stream URLs for queued items once they are resolved (id -> URL). */
+  setQueueSources: (sources: Record<string, string>) => void;
   /** Appends many at once (one update, one toast); skips ones already queued. */
   enqueueMany: (items: TahtiPlayable[]) => number;
   /** Insert right after the current track, replacing any earlier occurrence. */
@@ -97,7 +108,7 @@ function toQueueItem(item: TahtiPlayable): QueueItem {
   };
 }
 
-function streamUrlFromQueueItem(qi: QueueItem): string | null {
+export function streamUrlFromQueueItem(qi: QueueItem): string | null {
   return (
     qi.track.streamCandidates?.[0]?.stream?.url ?? qi.track.source.url ?? null
   );
@@ -140,6 +151,7 @@ const REPEAT_CYCLE: RepeatMode[] = ['off', 'all', 'one'];
 
 export const usePlayerStore = create<PlayerState>((set, get) => ({
   queue: [],
+  restoredPending: null,
   currentId: null,
   status: 'idle',
   error: null,
@@ -217,6 +229,35 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       toast(`Added "${item.title}" to queue`);
     }
   },
+
+  hydrateQueue: (items, currentId) => {
+    const queue = items.map(toQueueItem);
+    const current = queue.some((q) => q.id === currentId) ? currentId : null;
+    set({
+      queue,
+      currentId: current,
+      status: current ? 'paused' : 'idle',
+      restoredPending: current,
+      error: null,
+      currentTime: 0,
+      duration: 0,
+      seekTarget: null,
+      playerBarVisible: queue.length > 0,
+    });
+  },
+
+  setQueueSources: (sources) =>
+    set((s) => ({
+      queue: s.queue.map((qi) => {
+        const url = sources[qi.id];
+        return url
+          ? {
+              ...qi,
+              track: { ...qi.track, source: { ...qi.track.source, url } },
+            }
+          : qi;
+      }),
+    })),
 
   enqueueMany: (items) => {
     const queued = new Set(get().queue.map((q) => q.id));
@@ -318,6 +359,10 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
         queue,
         currentId,
         status: currentId ? s.status : 'idle',
+        // A restored current track that disappears hands its "not loaded yet"
+        // state to whatever becomes current, so nothing starts on its own.
+        restoredPending:
+          s.restoredPending === id ? currentId : s.restoredPending,
       };
     });
   },
@@ -370,7 +415,13 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 
   hidePlayerBar: () => set({ playerBarVisible: false }),
 
-  setStatus: (status, error = null) => set({ status, error }),
+  setStatus: (status, error = null) =>
+    set((s) => ({
+      status,
+      error,
+      restoredPending:
+        status === 'playing' || status === 'loading' ? null : s.restoredPending,
+    })),
 
   setProgress: (currentTime, duration) => set({ currentTime, duration }),
 

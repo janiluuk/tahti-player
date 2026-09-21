@@ -1,6 +1,8 @@
 import {
   ArrowLeftIcon,
   CopyIcon,
+  DownloadIcon,
+  LinkIcon,
   ListMusicIcon,
   LoaderCircleIcon,
   PencilIcon,
@@ -9,6 +11,7 @@ import {
   ShuffleIcon,
   TrashIcon,
   Undo2Icon,
+  UploadIcon,
 } from 'lucide-react';
 import {
   useCallback,
@@ -31,6 +34,7 @@ import {
 import { usePersistedCatalogTable } from '../hooks/usePersistedCatalogTable';
 import { formatTotalDuration, pluralTracks } from '../lib/libraryFormat';
 import type {
+  NativeImportPreview,
   NativePlaylistEntry,
   NativePlaylistSummary,
   NativeRawPlaylistEntry,
@@ -40,6 +44,8 @@ import { preparePlayables, shuffled } from '../lib/nativePlayback';
 import { formatDuration } from '../lib/playableToTrack';
 import { usePlayerStore } from '../stores/playerStore';
 import { ConfirmDialog } from './ConfirmDialog';
+import { PlaylistExportDialog } from './PlaylistExportDialog';
+import { PlaylistImportDialog } from './PlaylistImportDialog';
 import { PlaylistNameDialog } from './PlaylistNameDialog';
 
 const MAX_UNDO = 20;
@@ -146,6 +152,27 @@ function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
   const [renaming, setRenaming] = useState<NativePlaylistSummary | null>(null);
   const [deleting, setDeleting] = useState<NativePlaylistSummary | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [exporting, setExporting] = useState<NativePlaylistSummary | null>(
+    null,
+  );
+  const [importPreview, setImportPreview] =
+    useState<NativeImportPreview | null>(null);
+  const [choosing, setChoosing] = useState(false);
+
+  const startImport = async () => {
+    setChoosing(true);
+    try {
+      setImportPreview(await library.playlists.importPreview());
+    } catch (failure) {
+      toast.error(
+        failure instanceof Error
+          ? failure.message
+          : 'Could not read that file.',
+      );
+    } finally {
+      setChoosing(false);
+    }
+  };
 
   const load = useCallback(async () => {
     try {
@@ -187,6 +214,19 @@ function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
           Local playlists live on this device and work offline. They are
           separate from your Tahti cloud collections.
         </p>
+        <Button
+          size="sm"
+          variant="text"
+          disabled={choosing}
+          onClick={() => void startImport()}
+        >
+          {choosing ? (
+            <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
+          ) : (
+            <UploadIcon size={14} aria-hidden />
+          )}
+          Import…
+        </Button>
         <Button size="sm" variant="secondary" onClick={() => setCreating(true)}>
           <PlusIcon size={14} aria-hidden />
           New playlist
@@ -309,6 +349,16 @@ function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
                       <CopyIcon size={14} aria-hidden />
                     </Button>
                   </Tooltip>
+                  <Tooltip content="Export as M3U8" side="top">
+                    <Button
+                      size="icon-sm"
+                      variant="text"
+                      aria-label={`Export ${playlist.name}`}
+                      onClick={() => setExporting(playlist)}
+                    >
+                      <DownloadIcon size={14} aria-hidden />
+                    </Button>
+                  </Tooltip>
                   <Tooltip content="Rename" side="top">
                     <Button
                       size="icon-sm"
@@ -336,6 +386,20 @@ function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
           ))}
         </ul>
       )}
+      <PlaylistExportDialog
+        playlist={exporting}
+        library={library}
+        onClose={() => setExporting(null)}
+      />
+      <PlaylistImportDialog
+        initial={importPreview}
+        library={library}
+        onClose={() => setImportPreview(null)}
+        onImported={(playlist) => {
+          void load();
+          onOpen(playlist.id);
+        }}
+      />
       <PlaylistNameDialog
         isOpen={creating}
         title="New playlist"
@@ -411,6 +475,7 @@ function PlaylistView({ library, id, onBack }: ViewProps) {
   const [renaming, setRenaming] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const undoStack = useRef<UndoStep[]>([]);
   const requestRef = useRef(0);
 
@@ -585,6 +650,22 @@ function PlaylistView({ library, id, onBack }: ViewProps) {
     }
   };
 
+  const locateEntry = async (entry: NativePlaylistEntry) => {
+    setBusy(true);
+    try {
+      if (await library.playlists.relinkEntry(id, entry.entryId)) {
+        toast.success(`Linked “${entry.title}” to the file you chose.`);
+        await load();
+      }
+    } catch (failure) {
+      toast.error(
+        failure instanceof Error ? failure.message : 'Could not link the file.',
+      );
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const queueSelected = async () => {
     const wanted = entries
       .filter((entry) => selectedIds.has(entry.entryId) && entry.track)
@@ -676,6 +757,16 @@ function PlaylistView({ library, id, onBack }: ViewProps) {
             <Undo2Icon size={14} aria-hidden />
           </Button>
         </Tooltip>
+        <Tooltip content="Export as M3U8" side="top">
+          <Button
+            size="icon-sm"
+            variant="text"
+            aria-label="Export playlist"
+            onClick={() => setExporting(true)}
+          >
+            <DownloadIcon size={14} aria-hidden />
+          </Button>
+        </Tooltip>
         <Tooltip content="Rename" side="top">
           <Button
             size="icon-sm"
@@ -755,6 +846,18 @@ function PlaylistView({ library, id, onBack }: ViewProps) {
           }
           renderActions={(entry) => (
             <>
+              {entry.unavailable ? (
+                <Tooltip content="Locate the file" side="top">
+                  <Button
+                    size="icon-sm"
+                    variant="text"
+                    aria-label={`Locate ${entry.title}`}
+                    onClick={() => void locateEntry(entry)}
+                  >
+                    <LinkIcon size={14} aria-hidden />
+                  </Button>
+                </Tooltip>
+              ) : null}
               <Tooltip content="Play from here" side="top">
                 <Button
                   size="icon-sm"
@@ -783,6 +886,11 @@ function PlaylistView({ library, id, onBack }: ViewProps) {
           )}
         />
       )}
+      <PlaylistExportDialog
+        playlist={exporting ? summary : null}
+        library={library}
+        onClose={() => setExporting(false)}
+      />
       <PlaylistNameDialog
         isOpen={renaming}
         title="Rename playlist"

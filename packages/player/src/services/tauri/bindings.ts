@@ -39,6 +39,33 @@ export const commands = {
 	playlistRestoreEntries: (id: string, entries: RawEntry[], order: string[]) => typedError<null, string>(__TAURI_INVOKE("playlist_restore_entries", { id, entries, order })),
 	playlistSetOrder: (id: string, order: string[]) => typedError<null, string>(__TAURI_INVOKE("playlist_set_order", { id, order })),
 	playlistTrackIds: (id: string) => typedError<string[], string>(__TAURI_INVOKE("playlist_track_ids", { id })),
+	playlistExport: (id: string, style: ExportStyle) => typedError<{
+	path: string,
+	written: number,
+	/**  Relative mode: files outside the export folder, written with `../`. */
+	outsideRoot: number,
+	/**
+	 *  Relative mode: files that share no root with the export folder
+	 *  (another drive), written as absolute paths.
+	 */
+	absoluteFallback: number,
+} | null, string>(__TAURI_INVOKE("playlist_export", { id, style })),
+	playlistImportPreview: (sourcePath: string | null, relinkRoot: string | null) => typedError<{
+	sourcePath: string,
+	suggestedName: string,
+	total: number,
+	linked: number,
+	needsImport: number,
+	missing: number,
+	unsupported: number,
+	remote: number,
+	/**  The first entries that are not already in the library. */
+	unresolved: UnresolvedEntry[],
+} | null, string>(__TAURI_INVOKE("playlist_import_preview", { sourcePath, relinkRoot })),
+	playlistPickRelinkFolder: () => typedError<string | null, string>(__TAURI_INVOKE("playlist_pick_relink_folder")),
+	playlistImportCommit: (sourcePath: string, name: string, importMissingFiles: boolean, relinkRoot: string | null) => typedError<ImportOutcome, string>(__TAURI_INVOKE("playlist_import_commit", { sourcePath, name, importMissingFiles, relinkRoot })),
+	/**  Lets the user pick the file an unavailable entry should point at. */
+	playlistRelinkEntry: (id: string, entryId: string) => typedError<boolean, string>(__TAURI_INVOKE("playlist_relink_entry", { id, entryId })),
 	libraryFacets: (kind: FacetKind) => typedError<FacetGroup[], string>(__TAURI_INVOKE("library_facets", { kind })),
 	libraryMatchingIds: (search: string, filter: {
 	kind: FacetKind,
@@ -206,6 +233,32 @@ export type DailyListeningTime = {
 	value: number,
 };
 
+export type EntryStatus = 
+/**  Already a track in the library. */
+"linked" | 
+/**  A supported file that exists but is not in the library yet. */
+"needsImport" | 
+/**  The file is not where the list says (and was not found by relinking). */
+"missing" | 
+/**  Exists, but not a format the library can import (FLAC and WAV for now). */
+"unsupported" | 
+/**  A URL (stream), which local playlists cannot hold. */
+"remote";
+
+export type ExportResult = {
+	path: string,
+	written: number,
+	/**  Relative mode: files outside the export folder, written with `../`. */
+	outsideRoot: number,
+	/**
+	 *  Relative mode: files that share no root with the export folder
+	 *  (another drive), written as absolute paths.
+	 */
+	absoluteFallback: number,
+};
+
+export type ExportStyle = "absolute" | "relative";
+
 /**  Narrows the track list to one group from `library_facets`. */
 export type FacetFilter = {
 	kind: FacetKind,
@@ -278,6 +331,29 @@ export type HttpResponse = {
 export type ImportFailure = {
 	path: string,
 	error: string,
+};
+
+export type ImportOutcome = {
+	playlist: PlaylistSummary,
+	/**  Entries now pointing at a library track. */
+	linked: number,
+	/**  Files added to the library because the list referenced them. */
+	imported: number,
+	/**  Entries kept as unavailable (missing, unsupported, or streams). */
+	unresolved: number,
+};
+
+export type ImportPreview = {
+	sourcePath: string,
+	suggestedName: string,
+	total: number,
+	linked: number,
+	needsImport: number,
+	missing: number,
+	unsupported: number,
+	remote: number,
+	/**  The first entries that are not already in the library. */
+	unresolved: UnresolvedEntry[],
 };
 
 export type ImportResult = {
@@ -537,6 +613,13 @@ export type TrackSnapshot = {
 export type TrackSort = {
 	column: SortColumn,
 	descending: boolean,
+};
+
+export type UnresolvedEntry = {
+	line: number,
+	path: string,
+	title: string,
+	status: EntryStatus,
 };
 
 export type YtdlpPlaylistEntry = {
