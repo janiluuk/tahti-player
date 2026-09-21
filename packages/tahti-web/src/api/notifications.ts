@@ -1,7 +1,6 @@
 /** Mock-mode dismissals that survive reload within this browser session.
  * Without this, forceMock dismissNotification is a no-op and the sticky
  * "Theme is in review" fixture reappears every reload. */
-import { apiBase } from './http';
 import {
   allowMockFallback,
   apiErrorMeta,
@@ -9,6 +8,7 @@ import {
   isForceMock,
   type FetchMeta,
 } from './mode';
+import { requestJson } from './request-json';
 
 const MOCK_DISMISSED_KEY = 'tahti-web-mock-notifications-dismissed';
 
@@ -39,38 +39,6 @@ function dismissMockNotification(id: string) {
   const ids = readMockDismissedIds();
   ids.add(id);
   writeMockDismissedIds(ids);
-}
-
-async function requestJson<T>(
-  path: string,
-  init?: RequestInit,
-): Promise<{ data: T; status: number }> {
-  const { headers: initHeaders, ...rest } = init ?? {};
-  const res = await fetch(`${apiBase()}${path}`, {
-    credentials: 'include',
-    ...rest,
-    headers: {
-      Accept: 'application/json',
-      ...(rest.body ? { 'Content-Type': 'application/json' } : {}),
-      ...initHeaders,
-    },
-  });
-  if (!res.ok) {
-    let detail = `${path} → ${res.status}`;
-    try {
-      const body = (await res.json()) as { error?: string; message?: string };
-      if (body.error || body.message) {
-        detail = body.error ?? body.message ?? detail;
-      }
-    } catch {
-      // ignore
-    }
-    throw new Error(detail);
-  }
-  if (res.status === 204) {
-    return { data: undefined as T, status: res.status };
-  }
-  return { data: (await res.json()) as T, status: res.status };
 }
 
 export type TahtiNotification = {
