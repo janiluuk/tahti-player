@@ -4,7 +4,7 @@ Package-specific agent instructions. **Start:** [`AGENTS-START-HERE.md`](../../A
 
 ## Two-repo product
 
-`tahti-web` has **no backend**. Sibling checkout **`../tahti-org`** (same parent as this repo, e.g. `/home/jani/workspace/tahti-org` next to `tahti-nuclear`) owns Fastify API, Prisma, `@tahti/shared`, and the production Next.js `apps/web` client being replaced.
+`tahti-web` has **no backend**. Sibling checkout **`../tahti-org`** (same parent as this repo, e.g. `/home/jani/workspace/tahti-org` next to `tahti-player`) owns Fastify API, Prisma, `@tahti/shared`, and the production Next.js `apps/web` client being replaced.
 
 - HTTP contracts / schema / OG server pieces → `tahti-org/apps/api` + `tahti-org/packages/shared`.
 - Listen/studio UI, routing, client fetch, this SPA’s nginx → here.

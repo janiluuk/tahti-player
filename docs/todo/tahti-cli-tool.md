@@ -22,7 +22,7 @@ Not scoped or designed yet:
 
 ## v1 shipped (2026-09-18): package scaffold + `library list`
 
-**Where it lives:** `packages/tahti-cli` in this workspace (`tahti-nuclear`) —
+**Where it lives:** `packages/tahti-cli` in this workspace —
 picked over "its own repo" since it needs no build coordination with
 anything else here and a new pnpm workspace package costs nothing to split
 out later if that ever matters.

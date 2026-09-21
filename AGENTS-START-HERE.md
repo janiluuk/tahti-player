@@ -8,7 +8,7 @@ Read this first. Open one more file only if the table says so. Stop when you hav
 | --- | --- | --- |
 | API + legacy `apps/web` | **`../tahti-org`** | Fastify API, Prisma, `@tahti/shared`, production Next client |
 | Marketplace catalog | `../tahti-registry` | Store `plugins.json` / themes |
-| This player fork | `.` (`tahti-nuclear`) | Nuclear player + `packages/tahti-web` |
+| This player fork | `.` (`tahti-player`) | Player fork + `packages/tahti-web` |
 
 Do not invent sibling API shapes. Inspect `../tahti-org` routes/DTOs first. Do not commit/push/deploy the sibling unless the user asks. Before every push of this repo, rebase onto the latest PR base (usually `origin/master`).
 
