@@ -93,7 +93,10 @@ fn order_clause(sort: Option<&TrackSort>) -> String {
     let primary = match sort.column {
         SortColumn::Title => return format!("ORDER BY title COLLATE NOCASE {dir}, id"),
         SortColumn::Artist => text(ARTIST_KEY),
-        SortColumn::Album => text("album"),
+        SortColumn::Album => format!(
+            "{}, (disc_no IS NULL), disc_no, (track_no IS NULL), track_no",
+            text("album")
+        ),
         SortColumn::Genre => text("genre"),
         SortColumn::Year => nullable("year"),
         SortColumn::TrackNo => nullable("track_no"),
@@ -198,6 +201,72 @@ pub struct LibraryTotals {
     pub duration_sec: f64,
     #[specta(type = Number<i64>)]
     pub size_bytes: i64,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, specta::Type)]
+#[serde(rename_all = "camelCase")]
+pub enum Availability {
+    Available,
+    Missing,
+}
+
+/// Range and attribute filters that combine with search and a browse group.
+/// Every field is optional; an unset field never restricts anything.
+#[derive(Debug, Clone, Default, Serialize, Deserialize, specta::Type)]
+#[serde(rename_all = "camelCase")]
+pub struct TrackFilters {
+    pub year_min: Option<i32>,
+    pub year_max: Option<i32>,
+    /// Seconds.
+    pub duration_min: Option<f64>,
+    pub duration_max: Option<f64>,
+    pub bitrate_min: Option<i32>,
+    #[serde(default)]
+    pub formats: Vec<String>,
+    pub root_id: Option<String>,
+    /// `YYYY-MM-DD`; tracks added on or after this day.
+    pub added_since: Option<String>,
+    pub availability: Option<Availability>,
+}
+
+/// Values available to build filter controls from the current catalog.
+#[derive(Debug, Serialize, specta::Type)]
+#[serde(rename_all = "camelCase")]
+pub struct FilterOptions {
+    pub formats: Vec<String>,
+    pub year_min: Option<i32>,
+    pub year_max: Option<i32>,
+}
+
+/// A bound WHERE parameter (filters mix text, integers and reals).
+#[derive(Debug, Clone)]
+enum Bind {
+    Text(String),
+    Int(i64),
+    Real(f64),
+}
+
+macro_rules! bind_all {
+    ($query:expr, $binds:expr) => {{
+        let mut query = $query;
+        for value in $binds {
+            query = match value {
+                Bind::Text(v) => query.bind(v.clone()),
+                Bind::Int(v) => query.bind(*v),
+                Bind::Real(v) => query.bind(*v),
+            };
+        }
+        query
+    }};
+}
+
+/// Everything that decides which tracks match and in what order.
+#[derive(Debug, Clone, Copy, Default)]
+pub struct ListQuery<'a> {
+    pub search: &'a str,
+    pub filter: Option<&'a FacetFilter>,
+    pub filters: Option<&'a TrackFilters>,
+    pub sort: Option<&'a TrackSort>,
 }
 
 /// Grouping key shared by the artist facet, the album facet and their
@@ -535,29 +604,30 @@ pub async fn list(pool: &SqlitePool, search: &str, offset: i64) -> Result<Librar
 /// WHERE clause (with its bound text parameters) for a search and/or browse
 /// group. Shared by paging and by select-all so both always agree on what
 /// "matching" means.
-fn where_clause(search: &str, filter: Option<&FacetFilter>) -> (String, Vec<String>) {
-    let search = search.trim();
+fn where_clause(query: &ListQuery) -> (String, Vec<Bind>) {
+    let search = query.search.trim();
+    let filter = query.filter;
     let mut conditions: Vec<String> = Vec::new();
-    let mut binds: Vec<String> = Vec::new();
+    let mut binds: Vec<Bind> = Vec::new();
     if let Some(filter) = filter {
         match filter.kind {
             FacetKind::Artists => {
                 conditions.push(format!("{ARTIST_KEY} COLLATE NOCASE = ?"));
-                binds.push(filter.value.clone());
+                binds.push(Bind::Text(filter.value.clone()));
             }
             FacetKind::Albums => {
                 conditions.push("album COLLATE NOCASE = ?".into());
-                binds.push(filter.value.clone());
+                binds.push(Bind::Text(filter.value.clone()));
                 conditions.push(format!("{ARTIST_KEY} COLLATE NOCASE = ?"));
-                binds.push(filter.secondary.clone().unwrap_or_default());
+                binds.push(Bind::Text(filter.secondary.clone().unwrap_or_default()));
             }
             FacetKind::Genres => {
                 conditions.push("genre COLLATE NOCASE = ?".into());
-                binds.push(filter.value.clone());
+                binds.push(Bind::Text(filter.value.clone()));
             }
             FacetKind::Folders => {
                 conditions.push("folder = ?".into());
-                binds.push(filter.value.clone());
+                binds.push(Bind::Text(filter.value.clone()));
             }
         }
     }
@@ -567,7 +637,7 @@ fn where_clause(search: &str, filter: Option<&FacetFilter>) -> (String, Vec<Stri
                 "rowid IN (SELECT rowid FROM library_tracks_fts WHERE library_tracks_fts MATCH ?)"
                     .into(),
             );
-            binds.push(query);
+            binds.push(Bind::Text(query));
         } else {
             let like = format!(
                 "%{}%",
@@ -577,7 +647,47 @@ fn where_clause(search: &str, filter: Option<&FacetFilter>) -> (String, Vec<Stri
                     .replace('_', "\\_")
             );
             conditions.push("(title LIKE ? ESCAPE '\\' OR artist LIKE ? ESCAPE '\\' OR album LIKE ? ESCAPE '\\' OR path LIKE ? ESCAPE '\\')".into());
-            binds.extend(std::iter::repeat(like).take(4));
+            binds.extend(std::iter::repeat(Bind::Text(like)).take(4));
+        }
+    }
+    if let Some(f) = query.filters {
+        if let Some(v) = f.year_min {
+            conditions.push("year >= ?".into());
+            binds.push(Bind::Int(v.into()));
+        }
+        if let Some(v) = f.year_max {
+            conditions.push("year <= ?".into());
+            binds.push(Bind::Int(v.into()));
+        }
+        if let Some(v) = f.duration_min {
+            conditions.push("duration >= ?".into());
+            binds.push(Bind::Real(v));
+        }
+        if let Some(v) = f.duration_max {
+            conditions.push("duration <= ?".into());
+            binds.push(Bind::Real(v));
+        }
+        if let Some(v) = f.bitrate_min {
+            conditions.push("bitrate_kbps >= ?".into());
+            binds.push(Bind::Int(v.into()));
+        }
+        if !f.formats.is_empty() {
+            let marks = vec!["?"; f.formats.len()].join(",");
+            conditions.push(format!("format IN ({marks})"));
+            binds.extend(f.formats.iter().map(|v| Bind::Text(v.to_ascii_lowercase())));
+        }
+        if let Some(v) = &f.root_id {
+            conditions.push("root_id = ?".into());
+            binds.push(Bind::Text(v.clone()));
+        }
+        if let Some(v) = &f.added_since {
+            conditions.push("added_at >= ?".into());
+            binds.push(Bind::Text(v.clone()));
+        }
+        match f.availability {
+            Some(Availability::Available) => conditions.push("available = 1".into()),
+            Some(Availability::Missing) => conditions.push("available = 0".into()),
+            None => {}
         }
     }
     let where_sql = if conditions.is_empty() {
@@ -588,31 +698,23 @@ fn where_clause(search: &str, filter: Option<&FacetFilter>) -> (String, Vec<Stri
     (where_sql, binds)
 }
 
-/// One page of tracks (100) optionally narrowed to a browse group and/or a
-/// search, in the requested sort. Every condition is a bound text parameter.
-pub async fn list_filtered(
+/// One page of tracks (100) matching `query`, in its sort.
+pub async fn list_query(
     pool: &SqlitePool,
-    search: &str,
-    filter: Option<&FacetFilter>,
-    sort: Option<&TrackSort>,
+    query: &ListQuery<'_>,
     offset: i64,
 ) -> Result<LibraryPage, String> {
-    let (where_sql, binds) = where_clause(search, filter);
+    let (where_sql, binds) = where_clause(query);
     let count_sql = format!("SELECT COUNT(*) FROM library_tracks {where_sql}");
-    let mut count = sqlx::query_scalar::<_, i64>(&count_sql);
-    for value in &binds {
-        count = count.bind(value);
-    }
-    let total = count.fetch_one(pool).await.map_err(|err| err.to_string())?;
+    let total = bind_all!(sqlx::query_scalar::<_, i64>(&count_sql), &binds)
+        .fetch_one(pool)
+        .await
+        .map_err(|err| err.to_string())?;
     let page_sql = format!(
         "SELECT * FROM library_tracks {where_sql} {} LIMIT 100 OFFSET ?",
-        order_clause(sort)
+        order_clause(query.sort)
     );
-    let mut page = sqlx::query_as::<_, LibraryTrack>(&page_sql);
-    for value in &binds {
-        page = page.bind(value);
-    }
-    let tracks = page
+    let tracks = bind_all!(sqlx::query_as::<_, LibraryTrack>(&page_sql), &binds)
         .bind(offset.max(0))
         .fetch_all(pool)
         .await
@@ -620,24 +722,72 @@ pub async fn list_filtered(
     Ok(LibraryPage { tracks, total })
 }
 
-/// Every id matching a search/group, in exactly the order paging shows them
-/// -- the basis of "select all N" across pages.
+pub async fn list_filtered(
+    pool: &SqlitePool,
+    search: &str,
+    filter: Option<&FacetFilter>,
+    sort: Option<&TrackSort>,
+    offset: i64,
+) -> Result<LibraryPage, String> {
+    let query = ListQuery {
+        search,
+        filter,
+        filters: None,
+        sort,
+    };
+    list_query(pool, &query, offset).await
+}
+
+/// Every id matching `query`, in exactly the order paging shows them -- the
+/// basis of "select all N" and "play all" across pages.
+pub async fn matching_ids_query(
+    pool: &SqlitePool,
+    query: &ListQuery<'_>,
+) -> Result<Vec<String>, String> {
+    let (where_sql, binds) = where_clause(query);
+    let sql = format!(
+        "SELECT id FROM library_tracks {where_sql} {}",
+        order_clause(query.sort)
+    );
+    bind_all!(sqlx::query_scalar::<_, String>(&sql), &binds)
+        .fetch_all(pool)
+        .await
+        .map_err(|err| err.to_string())
+}
+
 pub async fn matching_ids(
     pool: &SqlitePool,
     search: &str,
     filter: Option<&FacetFilter>,
     sort: Option<&TrackSort>,
 ) -> Result<Vec<String>, String> {
-    let (where_sql, binds) = where_clause(search, filter);
-    let sql = format!(
-        "SELECT id FROM library_tracks {where_sql} {}",
-        order_clause(sort)
-    );
-    let mut query = sqlx::query_scalar::<_, String>(&sql);
-    for value in &binds {
-        query = query.bind(value);
-    }
-    query.fetch_all(pool).await.map_err(|err| err.to_string())
+    let query = ListQuery {
+        search,
+        filter,
+        filters: None,
+        sort,
+    };
+    matching_ids_query(pool, &query).await
+}
+
+pub async fn filter_options(pool: &SqlitePool) -> Result<FilterOptions, String> {
+    let formats = sqlx::query_scalar::<_, String>(
+        "SELECT DISTINCT format FROM library_tracks ORDER BY format",
+    )
+    .fetch_all(pool)
+    .await
+    .map_err(|err| err.to_string())?;
+    let (year_min, year_max) = sqlx::query_as::<_, (Option<i32>, Option<i32>)>(
+        "SELECT MIN(year), MAX(year) FROM library_tracks",
+    )
+    .fetch_one(pool)
+    .await
+    .map_err(|err| err.to_string())?;
+    Ok(FilterOptions {
+        formats,
+        year_min,
+        year_max,
+    })
 }
 
 /// A track ready to hand to the player: its row plus the verified file path.
@@ -741,16 +891,22 @@ pub async fn library_list(
     search: String,
     offset: i32,
     filter: Option<FacetFilter>,
+    filters: Option<TrackFilters>,
     sort: Option<TrackSort>,
 ) -> Result<LibraryPage, String> {
-    list_filtered(
-        &pool(&app).await?,
-        &search,
-        filter.as_ref(),
-        sort.as_ref(),
-        offset.into(),
-    )
-    .await
+    let query = ListQuery {
+        search: &search,
+        filter: filter.as_ref(),
+        filters: filters.as_ref(),
+        sort: sort.as_ref(),
+    };
+    list_query(&pool(&app).await?, &query, offset.into()).await
+}
+
+#[tauri::command]
+#[specta::specta]
+pub async fn library_filter_options(app: tauri::AppHandle) -> Result<FilterOptions, String> {
+    filter_options(&pool(&app).await?).await
 }
 
 #[tauri::command]
@@ -759,9 +915,16 @@ pub async fn library_matching_ids(
     app: tauri::AppHandle,
     search: String,
     filter: Option<FacetFilter>,
+    filters: Option<TrackFilters>,
     sort: Option<TrackSort>,
 ) -> Result<Vec<String>, String> {
-    matching_ids(&pool(&app).await?, &search, filter.as_ref(), sort.as_ref()).await
+    let query = ListQuery {
+        search: &search,
+        filter: filter.as_ref(),
+        filters: filters.as_ref(),
+        sort: sort.as_ref(),
+    };
+    matching_ids_query(&pool(&app).await?, &query).await
 }
 
 /// Verifies and orders a batch of tracks for the player and grants the

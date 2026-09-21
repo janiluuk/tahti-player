@@ -10,20 +10,45 @@ export const commands = {
 	value: string,
 	/**  Album artist, for `Albums`. */
 	secondary: string | null,
+} | null, filters: {
+	yearMin: number | null,
+	yearMax: number | null,
+	/**  Seconds. */
+	durationMin: number | null,
+	durationMax: number | null,
+	bitrateMin: number | null,
+	formats?: string[],
+	rootId: string | null,
+	/**  `YYYY-MM-DD`; tracks added on or after this day. */
+	addedSince: string | null,
+	availability: Availability | null,
 } | null, sort: {
 	column: SortColumn,
 	descending: boolean,
-} | null) => typedError<LibraryPage, string>(__TAURI_INVOKE("library_list", { search, offset, filter, sort })),
+} | null) => typedError<LibraryPage, string>(__TAURI_INVOKE("library_list", { search, offset, filter, filters, sort })),
 	libraryFacets: (kind: FacetKind) => typedError<FacetGroup[], string>(__TAURI_INVOKE("library_facets", { kind })),
 	libraryMatchingIds: (search: string, filter: {
 	kind: FacetKind,
 	value: string,
 	/**  Album artist, for `Albums`. */
 	secondary: string | null,
+} | null, filters: {
+	yearMin: number | null,
+	yearMax: number | null,
+	/**  Seconds. */
+	durationMin: number | null,
+	durationMax: number | null,
+	bitrateMin: number | null,
+	formats?: string[],
+	rootId: string | null,
+	/**  `YYYY-MM-DD`; tracks added on or after this day. */
+	addedSince: string | null,
+	availability: Availability | null,
 } | null, sort: {
 	column: SortColumn,
 	descending: boolean,
-} | null) => typedError<string[], string>(__TAURI_INVOKE("library_matching_ids", { search, filter, sort })),
+} | null) => typedError<string[], string>(__TAURI_INVOKE("library_matching_ids", { search, filter, filters, sort })),
+	libraryFilterOptions: () => typedError<FilterOptions, string>(__TAURI_INVOKE("library_filter_options")),
 	/**
 	 *  Verifies and orders a batch of tracks for the player and grants the
 	 *  asset protocol access to each file (same as `library_resolve`, in bulk).
@@ -151,6 +176,8 @@ export const commands = {
 };
 
 /* Types */
+export type Availability = "available" | "missing";
+
 export type BridgeNotification = {
 	subsystem: string,
 };
@@ -186,6 +213,13 @@ export type FacetGroup = {
 
 /**  What a browse tab groups by. */
 export type FacetKind = "artists" | "albums" | "genres" | "folders";
+
+/**  Values available to build filter controls from the current catalog. */
+export type FilterOptions = {
+	formats: string[],
+	yearMin: number | null,
+	yearMax: number | null,
+};
 
 export type FirstPlay = {
 	at: number,
@@ -405,6 +439,24 @@ export type TopTrack = {
 	artworkUrl: string | null,
 	msPlayed: number,
 	plays: number,
+};
+
+/**
+ *  Range and attribute filters that combine with search and a browse group.
+ *  Every field is optional; an unset field never restricts anything.
+ */
+export type TrackFilters = {
+	yearMin: number | null,
+	yearMax: number | null,
+	/**  Seconds. */
+	durationMin: number | null,
+	durationMax: number | null,
+	bitrateMin: number | null,
+	formats?: string[],
+	rootId: string | null,
+	/**  `YYYY-MM-DD`; tracks added on or after this day. */
+	addedSince: string | null,
+	availability: Availability | null,
 };
 
 export type TrackPresence = {

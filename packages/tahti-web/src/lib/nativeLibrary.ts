@@ -10,6 +10,10 @@ export type NativeLibraryTrack = {
   sizeBytes: number;
   available: boolean;
   unavailableSince: string | null;
+  path: string;
+  sampleRate: number;
+  channels: number;
+  bitsPerSample: number | null;
   albumArtist: string;
   trackNo: number | null;
   discNo: number | null;
@@ -38,6 +42,55 @@ export type NativeSortColumn =
 export type NativeTrackSort = {
   column: NativeSortColumn;
   descending: boolean;
+};
+
+export type NativeAvailability = 'available' | 'missing';
+
+/** Range and attribute filters; an empty (null / no formats) field restricts nothing. */
+export type NativeTrackFilters = {
+  yearMin: number | null;
+  yearMax: number | null;
+  /** Seconds. */
+  durationMin: number | null;
+  durationMax: number | null;
+  bitrateMin: number | null;
+  formats: string[];
+  rootId: string | null;
+  /** `YYYY-MM-DD`. */
+  addedSince: string | null;
+  availability: NativeAvailability | null;
+};
+
+export const EMPTY_TRACK_FILTERS: NativeTrackFilters = {
+  yearMin: null,
+  yearMax: null,
+  durationMin: null,
+  durationMax: null,
+  bitrateMin: null,
+  formats: [],
+  rootId: null,
+  addedSince: null,
+  availability: null,
+};
+
+/** How many separate restrictions are active (a year range counts once). */
+export function countActiveFilters(filters: NativeTrackFilters): number {
+  return [
+    filters.yearMin !== null || filters.yearMax !== null,
+    filters.durationMin !== null || filters.durationMax !== null,
+    filters.bitrateMin !== null,
+    filters.formats.length > 0,
+    filters.rootId !== null,
+    filters.addedSince !== null,
+    filters.availability !== null,
+  ].filter(Boolean).length;
+}
+
+/** Values to build filter controls from the current catalog. */
+export type NativeFilterOptions = {
+  formats: string[];
+  yearMin: number | null;
+  yearMax: number | null;
 };
 
 export type NativeFacetKind = 'artists' | 'albums' | 'genres' | 'folders';
@@ -137,13 +190,16 @@ export type TahtiNativeLibrary = {
     offset: number,
     filter?: NativeFacetFilter | null,
     sort?: NativeTrackSort | null,
+    filters?: NativeTrackFilters | null,
   ) => Promise<NativeLibraryPage>;
   /** Every id matching a search/group, in exactly the order the table shows them. */
   matchingIds: (
     search: string,
     filter?: NativeFacetFilter | null,
     sort?: NativeTrackSort | null,
+    filters?: NativeTrackFilters | null,
   ) => Promise<string[]>;
+  filterOptions: () => Promise<NativeFilterOptions>;
   /** Verifies and orders tracks for playback (call in modest chunks). */
   prepareBatch: (ids: string[]) => Promise<NativePlaybackBatch>;
   facets: (kind: NativeFacetKind) => Promise<NativeFacetGroup[]>;
@@ -266,19 +322,19 @@ export function withReadCache(library: TahtiNativeLibrary): TahtiNativeLibrary {
 
   return {
     ...library,
-    list(search, offset, filter, sort) {
+    list(search, offset, filter, sort, filters) {
       const key = `${offset}\u0000${search}\u0000${
         filter
           ? `${filter.kind}\u0000${filter.value}\u0000${filter.secondary ?? ''}`
           : ''
-      }\u0000${sort ? `${sort.column}:${sort.descending}` : ''}`;
+      }\u0000${sort ? `${sort.column}:${sort.descending}` : ''}\u0000${filters ? JSON.stringify(filters) : ''}`;
       const hit = pages.get(key);
       if (hit) {
         pages.delete(key);
         pages.set(key, hit);
         return hit;
       }
-      const request = library.list(search, offset, filter, sort);
+      const request = library.list(search, offset, filter, sort, filters);
       pages.set(key, request);
       if (pages.size > LIST_CACHE_LIMIT) {
         const oldest = pages.keys().next().value;

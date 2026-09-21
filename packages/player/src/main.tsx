@@ -21,15 +21,29 @@ import '../../tahti-web/src/styles.css';
 const nativeCapabilities: TahtiNativeCapabilities = { localLibrary: true };
 globalThis.__TAHTI_NATIVE_CAPABILITIES__ = nativeCapabilities;
 const baseNativeLibrary: TahtiNativeLibrary = {
-  async list(search, offset, filter, sort) {
+  async list(search, offset, filter, sort, filters) {
     return unwrapResult(
-      await commands.libraryList(search, offset, filter ?? null, sort ?? null),
+      await commands.libraryList(
+        search,
+        offset,
+        filter ?? null,
+        filters ?? null,
+        sort ?? null,
+      ),
     );
   },
-  async matchingIds(search, filter, sort) {
+  async matchingIds(search, filter, sort, filters) {
     return unwrapResult(
-      await commands.libraryMatchingIds(search, filter ?? null, sort ?? null),
+      await commands.libraryMatchingIds(
+        search,
+        filter ?? null,
+        filters ?? null,
+        sort ?? null,
+      ),
     );
+  },
+  async filterOptions() {
+    return unwrapResult(await commands.libraryFilterOptions());
   },
   async prepareBatch(ids) {
     const batch = unwrapResult(await commands.libraryPreparePlayback(ids));

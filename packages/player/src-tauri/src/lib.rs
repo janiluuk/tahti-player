@@ -40,6 +40,7 @@ fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
         local_library::library_list,
         local_library::library_facets,
         local_library::library_matching_ids,
+        local_library::library_filter_options,
         local_library::library_prepare_playback,
         local_library::library_totals,
         local_library::library_import,

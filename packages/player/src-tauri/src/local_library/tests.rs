@@ -6,7 +6,7 @@ use super::{
     add_root, collect_audio_paths, collect_audio_paths_with_skipped, discover_new_paths,
     get_root, import_batch, import_paths, list, list_roots, list_unavailable,
     refresh_root_availability, relink, relink_root, remove, remove_root, rescan_unavailable,
-    resolve_path, facets, folder_of, remove_many, list_filtered, matching_ids, prepare_playback, SortColumn, TrackSort, totals, FacetFilter, FacetKind, ImportResult,
+    resolve_path, facets, filter_options, list_query, matching_ids_query, folder_of, Availability, ListQuery, TrackFilters, remove_many, list_filtered, matching_ids, prepare_playback, SortColumn, TrackSort, totals, FacetFilter, FacetKind, ImportResult,
 };
 
 static DB_COUNTER: AtomicU32 = AtomicU32::new(0);
@@ -1209,4 +1209,134 @@ async fn remove_many_deletes_in_one_go_and_keeps_search_in_sync() {
     assert_eq!(remove_many(&pool, &[]).await.unwrap(), 0);
     let kept = list(&pool, "Generated Track", 0).await.unwrap();
     assert_eq!(kept.total, 100, "search index followed the deletes");
+}
+
+// --- Range filters and the Phase 2 exit demo ---
+
+/// Rows that vary in every filterable column: 3 formats, 35 years, 2 discs,
+/// 12 track numbers, bitrates and durations, 10 folders.
+async fn seed_varied_rows(pool: &SqlitePool, count: usize) {
+    let mut tx = pool.begin().await.unwrap();
+    for i in 0..count {
+        let format = ["flac", "wav", "mp3"][i % 3];
+        sqlx::query(
+            "INSERT INTO library_tracks (id,path,title,artist,album,format,duration,sample_rate,channels,bits_per_sample,size_bytes,year,disc_no,track_no,bitrate_kbps,folder,genre) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        )
+        .bind(format!("var-{i}"))
+        .bind(format!("/fixtures/{}/track-{i:06}.{format}", i % 10))
+        .bind(format!("Varied Track {i:06}"))
+        .bind(format!("Varied Artist {}", i % 50))
+        .bind(format!("Varied Album {}", i % 40))
+        .bind(format)
+        .bind(60.0_f64 + (i % 600) as f64)
+        .bind(44100_i64)
+        .bind(2_i64)
+        .bind(Some(16_i64))
+        .bind(1_000_000_i64 + i as i64)
+        .bind(1990_i64 + (i % 35) as i64)
+        .bind(1_i64 + (i % 2) as i64)
+        .bind(1_i64 + (i % 12) as i64)
+        .bind(128_i64 + (i % 20) as i64 * 64)
+        .bind(format!("/fixtures/{}/", i % 10))
+        .bind(["House", "Techno", "Ambient"][i % 3])
+        .execute(&mut *tx)
+        .await
+        .unwrap();
+    }
+    tx.commit().await.unwrap();
+}
+
+async fn count_with(pool: &SqlitePool, filters: TrackFilters) -> i64 {
+    let query = ListQuery { filters: Some(&filters), ..Default::default() };
+    list_query(pool, &query, 0).await.unwrap().total
+}
+
+#[tokio::test]
+async fn each_range_filter_restricts_and_unset_filters_do_not() {
+    let pool = pool().await;
+    seed_varied_rows(&pool, 700).await;
+    let all = count_with(&pool, TrackFilters::default()).await;
+    assert_eq!(all, 700);
+
+    let years = count_with(&pool, TrackFilters { year_min: Some(2000), year_max: Some(2004), ..Default::default() }).await;
+    assert_eq!(years, 700 / 35 * 5, "5 of 35 years");
+    assert_eq!(count_with(&pool, TrackFilters { year_min: Some(2100), ..Default::default() }).await, 0);
+
+    let long = count_with(&pool, TrackFilters { duration_min: Some(300.0), ..Default::default() }).await;
+    let short = count_with(&pool, TrackFilters { duration_max: Some(299.9), ..Default::default() }).await;
+    assert_eq!(long + short, 700);
+
+    assert_eq!(count_with(&pool, TrackFilters { formats: vec!["FLAC".into()], ..Default::default() }).await, 234, "case-insensitive format");
+    assert_eq!(count_with(&pool, TrackFilters { formats: vec!["flac".into(), "wav".into()], ..Default::default() }).await, 467);
+    assert!(count_with(&pool, TrackFilters { bitrate_min: Some(1000), ..Default::default() }).await < all);
+    assert_eq!(count_with(&pool, TrackFilters { added_since: Some("2000-01-01".into()), ..Default::default() }).await, all);
+    assert_eq!(count_with(&pool, TrackFilters { added_since: Some("2999-01-01".into()), ..Default::default() }).await, 0);
+    assert_eq!(count_with(&pool, TrackFilters { availability: Some(Availability::Available), ..Default::default() }).await, all);
+    assert_eq!(count_with(&pool, TrackFilters { availability: Some(Availability::Missing), ..Default::default() }).await, 0);
+    assert_eq!(count_with(&pool, TrackFilters { root_id: Some("nope".into()), ..Default::default() }).await, 0);
+}
+
+#[tokio::test]
+async fn filters_combine_with_search_and_a_browse_group() {
+    let pool = pool().await;
+    seed_varied_rows(&pool, 700).await;
+    let artist = FacetFilter { kind: FacetKind::Artists, value: "Varied Artist 7".into(), secondary: None };
+    let filters = TrackFilters { formats: vec!["wav".into()], ..Default::default() };
+    let query = ListQuery { search: "Varied Track", filter: Some(&artist), filters: Some(&filters), sort: None };
+    let page = list_query(&pool, &query, 0).await.unwrap();
+    assert!(page.total > 0);
+    assert!(page.tracks.iter().all(|t| t.artist == "Varied Artist 7" && t.format == "wav"));
+    let none = ListQuery { search: "no such text", ..query };
+    assert_eq!(list_query(&pool, &none, 0).await.unwrap().total, 0);
+}
+
+#[tokio::test]
+async fn filter_options_list_formats_and_year_span() {
+    let pool = pool().await;
+    assert_eq!(filter_options(&pool).await.unwrap().year_min, None);
+    seed_varied_rows(&pool, 100).await;
+    let options = filter_options(&pool).await.unwrap();
+    assert_eq!(options.formats, ["flac", "mp3", "wav"]);
+    assert_eq!((options.year_min, options.year_max), (Some(1990), Some(2024)));
+}
+
+/// Phase 2 exit demo on a 10k fixture: artist + format + year filters, sort by
+/// album/disc/track, select all matches across pages, queue in displayed order.
+#[tokio::test]
+async fn exit_demo_filter_sort_select_all_in_displayed_order() {
+    let pool = pool().await;
+    seed_varied_rows(&pool, 10_000).await;
+    let filter = FacetFilter { kind: FacetKind::Genres, value: "Techno".into(), secondary: None };
+    let filters = TrackFilters {
+        formats: vec!["wav".into(), "flac".into()],
+        year_min: Some(2000),
+        year_max: Some(2010),
+        ..Default::default()
+    };
+    let sort = TrackSort { column: SortColumn::Album, descending: false };
+    let query = ListQuery { search: "", filter: Some(&filter), filters: Some(&filters), sort: Some(&sort) };
+
+    let ids = matching_ids_query(&pool, &query).await.unwrap();
+    let first_page = list_query(&pool, &query, 0).await.unwrap();
+    assert_eq!(ids.len() as i64, first_page.total, "select-all covers every page");
+    assert!(ids.len() > 100, "spans several pages: {}", ids.len());
+
+    // Displayed order: album, then disc, then track.
+    let mut rows = Vec::new();
+    let mut offset = 0;
+    loop {
+        let page = list_query(&pool, &query, offset).await.unwrap();
+        if page.tracks.is_empty() {
+            break;
+        }
+        offset += page.tracks.len() as i64;
+        rows.extend(page.tracks);
+    }
+    assert_eq!(rows.iter().map(|t| t.id.clone()).collect::<Vec<_>>(), ids);
+    let key = |t: &super::LibraryTrack| (t.album.to_lowercase(), t.disc_no, t.track_no);
+    assert!(rows.windows(2).all(|w| key(&w[0]) <= key(&w[1])), "album/disc/track order");
+    assert!(rows.iter().all(|t| t.genre == "Techno" && (2000..=2010).contains(&t.year.unwrap())));
+
+    let batch = super::prepare_playback(&pool, &ids[..50]).await.unwrap();
+    assert_eq!(batch.items.len() + batch.unavailable, 50);
 }

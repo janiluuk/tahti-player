@@ -9,12 +9,17 @@ import {
 } from '@testing-library/react';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
+import {
+  resetViewStateForTests,
+  saveViewState,
+} from '../lib/localLibraryViewState';
 import type {
   NativeLibraryImportProgress,
   NativeLibraryRoot,
   NativeLibraryTrack,
   TahtiNativeLibrary,
 } from '../lib/nativeLibrary';
+import { EMPTY_TRACK_FILTERS } from '../lib/nativeLibrary';
 import { usePlayerStore } from '../stores/playerStore';
 import { DesktopLibraryPanel } from './DesktopLibraryPanel';
 
@@ -28,6 +33,10 @@ const missingTrack: NativeLibraryTrack = {
   sizeBytes: 10_000,
   available: false,
   unavailableSince: '2026-09-18T12:00:00Z',
+  path: '/music/missing.flac',
+  sampleRate: 44100,
+  channels: 2,
+  bitsPerSample: 16,
   albumArtist: '',
   trackNo: null,
   discNo: null,
@@ -48,6 +57,10 @@ const availableTrack: NativeLibraryTrack = {
   sizeBytes: 20_000,
   available: true,
   unavailableSince: null,
+  path: '/music/available.flac',
+  sampleRate: 48000,
+  channels: 2,
+  bitsPerSample: 24,
   albumArtist: '',
   trackNo: null,
   discNo: null,
@@ -96,6 +109,11 @@ function createNativeLibrary(
     remove: vi.fn(),
     removeMany: vi.fn().mockResolvedValue(0),
     matchingIds: vi.fn().mockResolvedValue([]),
+    filterOptions: vi.fn().mockResolvedValue({
+      formats: ['flac', 'wav'],
+      yearMin: 1990,
+      yearMax: 2024,
+    }),
     prepareBatch: vi.fn().mockResolvedValue({ items: [], unavailable: 0 }),
     reveal: vi.fn(),
     facets: vi.fn().mockResolvedValue([]),
@@ -139,6 +157,8 @@ beforeAll(() => {
 
 afterEach(() => {
   cleanup();
+  resetViewStateForTests();
+  window.sessionStorage.clear();
   usePlayerStore.getState().clearQueue();
   globalThis.__TAHTI_NATIVE_LIBRARY__ = undefined;
   globalThis.__TAHTI_NATIVE_CAPABILITIES__ = undefined;
@@ -324,7 +344,13 @@ describe('DesktopLibraryPanel native import', () => {
       fireEvent.change(input, { target: { value } });
     }
     await waitFor(() =>
-      expect(list).toHaveBeenCalledWith('harb', 0, null, null),
+      expect(list).toHaveBeenCalledWith(
+        'harb',
+        0,
+        null,
+        null,
+        EMPTY_TRACK_FILTERS,
+      ),
     );
     expect(list).toHaveBeenCalledTimes(2);
   });
@@ -387,6 +413,7 @@ describe('DesktopLibraryPanel native import', () => {
         0,
         { kind: 'artists', value: 'Vladislav Delay', secondary: null },
         null,
+        EMPTY_TRACK_FILTERS,
       ),
     );
     expect(await screen.findByText('Available track')).toBeTruthy();
@@ -426,6 +453,7 @@ describe('DesktopLibraryPanel native import', () => {
         0,
         { kind: 'albums', value: 'Anima', secondary: 'Vladislav Delay' },
         null,
+        EMPTY_TRACK_FILTERS,
       ),
     );
   });
@@ -463,7 +491,12 @@ describe('DesktopLibraryPanel native import', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Select all 1,234' }));
 
       expect(await screen.findByText(/All 1,234 selected/)).toBeTruthy();
-      expect(matchingIds).toHaveBeenCalledWith('', null, null);
+      expect(matchingIds).toHaveBeenCalledWith(
+        '',
+        null,
+        null,
+        EMPTY_TRACK_FILTERS,
+      );
     });
 
     it('queues the selection in the order the table shows, not click order', async () => {
@@ -560,5 +593,205 @@ describe('DesktopLibraryPanel native import', () => {
     await new Promise((resolve) => setTimeout(resolve, 300));
 
     expect(list.mock.calls.filter(([, offset]) => offset > 0).length).toBe(1);
+  });
+
+  describe('filters, details, retention', () => {
+    const setup = (overrides: Partial<TahtiNativeLibrary> = {}) => {
+      globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
+      const library = createNativeLibrary({
+        list: vi.fn().mockResolvedValue({ tracks: [availableTrack], total: 1 }),
+        ...overrides,
+      });
+      globalThis.__TAHTI_NATIVE_LIBRARY__ = library;
+      return library;
+    };
+
+    it('applies range and format filters and reports how many are active', async () => {
+      const library = setup();
+      render(<DesktopLibraryPanel />);
+      fireEvent.click(await screen.findByRole('button', { name: 'Filters' }));
+      const dialog = await screen.findByRole('dialog');
+      fireEvent.change(within(dialog).getByLabelText('Year from'), {
+        target: { value: '2000' },
+      });
+      fireEvent.change(within(dialog).getByLabelText('Longer than (minutes)'), {
+        target: { value: '2' },
+      });
+      fireEvent.click(within(dialog).getByText('FLAC'));
+      fireEvent.click(within(dialog).getByRole('button', { name: 'Apply' }));
+
+      await waitFor(() =>
+        expect(library.list).toHaveBeenCalledWith(
+          '',
+          0,
+          null,
+          null,
+          expect.objectContaining({
+            yearMin: 2000,
+            durationMin: 120,
+            formats: ['flac'],
+          }),
+        ),
+      );
+      expect(
+        await screen.findByRole('button', { name: 'Filters (3 active)' }),
+      ).toBeTruthy();
+    });
+
+    it('shows a no-match state with a way out when filters exclude everything', async () => {
+      setup({ list: vi.fn().mockResolvedValue({ tracks: [], total: 0 }) });
+      saveViewState({ query: 'nothing here' });
+      render(<DesktopLibraryPanel />);
+
+      expect(await screen.findByText('No tracks match')).toBeTruthy();
+      fireEvent.click(
+        screen.getByRole('button', { name: 'Clear search and filters' }),
+      );
+      await waitFor(() =>
+        expect(
+          (screen.getByLabelText('Search desktop library') as HTMLInputElement)
+            .value,
+        ).toBe(''),
+      );
+    });
+
+    it('shows the full details of a track and opens from the keyboard', async () => {
+      setup();
+      render(<DesktopLibraryPanel />);
+      await screen.findByText('Available track');
+
+      fireEvent.click(
+        screen.getByRole('button', { name: 'Details for Available track' }),
+      );
+      const dialog = await screen.findByRole('dialog');
+      expect(within(dialog).getByText('/music/available.flac')).toBeTruthy();
+      expect(within(dialog).getByText('48000 Hz')).toBeTruthy();
+      expect(within(dialog).getByText('24-bit')).toBeTruthy();
+      fireEvent.click(
+        within(dialog).getAllByRole('button', {
+          name: 'Close',
+        })[0] as HTMLElement,
+      );
+      await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+
+      const rows = screen.getByLabelText('Rows');
+      fireEvent.keyDown(rows, { key: 'ArrowDown' });
+      fireEvent.keyDown(rows, { key: 'i' });
+      expect(
+        await within(await screen.findByRole('dialog')).findByText(
+          '/music/available.flac',
+        ),
+      ).toBeTruthy();
+    });
+
+    it('plays the active row with Enter', async () => {
+      setup({
+        resolve: vi.fn().mockResolvedValue('asset://available'),
+      });
+      render(<DesktopLibraryPanel />);
+      await screen.findByText('Available track');
+      const rows = screen.getByLabelText('Rows');
+      fireEvent.keyDown(rows, { key: 'ArrowDown' });
+      fireEvent.keyDown(rows, { key: 'Enter' });
+      await waitFor(() =>
+        expect(usePlayerStore.getState().queue[0]?.track.title).toBe(
+          'Available track',
+        ),
+      );
+    });
+
+    it('plays everything that matches without selecting first', async () => {
+      const matchingIds = vi.fn().mockResolvedValue(['b', 'a']);
+      const prepareBatch = vi.fn(async (ids: string[]) => ({
+        unavailable: 0,
+        items: ids.map((id) => ({
+          track: { ...availableTrack, id, title: `Song ${id}` },
+          streamUrl: `asset://${id}`,
+        })),
+      }));
+      setup({ matchingIds, prepareBatch });
+      render(<DesktopLibraryPanel />);
+      fireEvent.click(await screen.findByRole('button', { name: 'Play all' }));
+
+      await waitFor(() =>
+        expect(
+          usePlayerStore.getState().queue.map((q) => q.track.title),
+        ).toEqual(['Song b', 'Song a']),
+      );
+      expect(matchingIds).toHaveBeenCalledWith(
+        '',
+        null,
+        null,
+        EMPTY_TRACK_FILTERS,
+      );
+    });
+
+    it('returns to the same search and browse tab after leaving the view', async () => {
+      setup();
+      const first = render(<DesktopLibraryPanel />);
+      fireEvent.change(await screen.findByLabelText('Search desktop library'), {
+        target: { value: 'harbour' },
+      });
+      fireEvent.click(screen.getByRole('tab', { name: 'Albums' }));
+      first.unmount();
+
+      render(<DesktopLibraryPanel />);
+      expect(
+        (await screen.findByRole('tab', { name: 'Albums' })).getAttribute(
+          'aria-selected',
+        ),
+      ).toBe('true');
+      fireEvent.click(screen.getByRole('tab', { name: 'Tracks' }));
+      expect(
+        (
+          (await screen.findByLabelText(
+            'Search desktop library',
+          )) as HTMLInputElement
+        ).value,
+      ).toBe('harbour');
+    });
+
+    it('preloads the rows you had scrolled past before restoring the position', async () => {
+      const page = (offset: number) =>
+        Array.from({ length: 100 }, (_, index) => ({
+          ...availableTrack,
+          id: `t-${offset + index}`,
+          title: `Song ${offset + index}`,
+        }));
+      const list = vi.fn(async (_search: string, offset: number) => ({
+        tracks: offset < 1000 ? page(offset) : [],
+        total: 1000,
+      }));
+      setup({ list });
+      saveViewState({ scrollOffset: 4800, loadedCount: 300 });
+      render(<DesktopLibraryPanel />);
+
+      await waitFor(() => expect(screen.getByLabelText('Rows')).toBeTruthy());
+      const offsets = list.mock.calls.map(([, offset]) => offset);
+      expect(offsets).toEqual(expect.arrayContaining([0, 100, 200]));
+    });
+  });
+
+  it('discards a slow, outdated response when a newer query has already answered', async () => {
+    globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
+    const slow = { ...availableTrack, id: 'slow', title: 'Slow answer' };
+    const fast = { ...availableTrack, id: 'fast', title: 'Fast answer' };
+    const list = vi.fn((search: string) =>
+      search === ''
+        ? new Promise((resolve) =>
+            setTimeout(() => resolve({ tracks: [slow], total: 1 }), 500),
+          )
+        : Promise.resolve({ tracks: [fast], total: 1 }),
+    );
+    globalThis.__TAHTI_NATIVE_LIBRARY__ = createNativeLibrary({ list });
+
+    render(<DesktopLibraryPanel />);
+    fireEvent.change(await screen.findByLabelText('Search desktop library'), {
+      target: { value: 'fast' },
+    });
+    expect(await screen.findByText('Fast answer')).toBeTruthy();
+    await new Promise((resolve) => setTimeout(resolve, 700));
+    expect(screen.queryByText('Slow answer')).toBeNull();
+    expect(screen.getByText('Fast answer')).toBeTruthy();
   });
 });

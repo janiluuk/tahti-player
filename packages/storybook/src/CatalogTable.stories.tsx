@@ -80,6 +80,9 @@ function Demo() {
   const [sort, setSort] = useState<CatalogSort | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [loaded, setLoaded] = useState(100);
+  const [layouts, setLayouts] = useState<
+    Record<string, { view: typeof view; sort: CatalogSort | null }>
+  >({});
   const sorted = useMemo(() => {
     if (!sort) {
       return ROWS;
@@ -109,6 +112,28 @@ function Demo() {
         onLoadMore={() => setLoaded((count) => count + 100)}
         selectedIds={selected}
         onSelectedIdsChange={setSelected}
+        onSelectAllMatching={() =>
+          setSelected(new Set(sorted.map((row) => row.id)))
+        }
+        onActivateRow={(row) => console.info(`Activated ${row.title}`)}
+        layouts={{
+          names: Object.keys(layouts),
+          onSave: (name) =>
+            setLayouts((current) => ({ ...current, [name]: { view, sort } })),
+          onApply: (name) => {
+            const layout = layouts[name];
+            if (layout) {
+              setView(layout.view);
+              setSort(layout.sort);
+            }
+          },
+          onDelete: (name) =>
+            setLayouts((current) => {
+              const rest = { ...current };
+              delete rest[name];
+              return rest;
+            }),
+        }}
       />
     </div>
   );
@@ -126,5 +151,6 @@ type Story = StoryObj<typeof meta>;
 
 /** 5,000 rows, paged 100 at a time on scroll; only visible rows are mounted.
  * Click a header to sort, drag a header edge to resize, and open the gear to
- * choose fields and their order. */
+ * choose fields, their order and saved layouts. Click into the rows and use
+ * arrows, Space, Shift+arrows, Ctrl+A, Escape and Enter. */
 export const Default: Story = {};

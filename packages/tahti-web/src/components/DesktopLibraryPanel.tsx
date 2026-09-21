@@ -1,9 +1,11 @@
 import {
   FolderOpenIcon,
   FolderPlusIcon,
+  InfoIcon,
   LaptopIcon,
   LibraryIcon,
   Link2Icon,
+  ListFilterIcon,
   LoaderCircleIcon,
   PlayIcon,
   RefreshCwIcon,
@@ -24,12 +26,20 @@ import {
 
 import type { TahtiPlayable } from '../api/types';
 import { usePersistedCatalogTable } from '../hooks/usePersistedCatalogTable';
+import {
+  loadViewState,
+  rowsToRestore,
+  saveViewState,
+} from '../lib/localLibraryViewState';
 import { hasNativePlayer } from '../lib/nativeCapabilities';
 import {
+  countActiveFilters,
+  EMPTY_TRACK_FILTERS,
   getNativeLibrary,
   playableFromNativeTrack,
   type NativeFacetFilter,
   type NativeFacetGroup,
+  type NativeFilterOptions,
   type NativeLibraryImportProgress,
   type NativeLibraryImportResult,
   type NativeLibraryRoot,
@@ -37,6 +47,7 @@ import {
   type NativeLibraryTrack,
   type NativePlaybackBatch,
   type NativeRootScanResult,
+  type NativeTrackFilters,
 } from '../lib/nativeLibrary';
 import {
   filterLocalLibraryTracks,
@@ -54,8 +65,10 @@ import {
   LibraryTotalsLine,
   type BrowseKind,
 } from './LocalLibraryBrowse';
+import { LocalLibraryFilters } from './LocalLibraryFilters';
 import { NATIVE_TRACK_COLUMNS, toNativeSort } from './nativeTrackColumns';
 import { PlayableTrackTable } from './PlayableTrackTable';
+import { TrackInspectorDialog } from './TrackInspectorDialog';
 
 /** Most tracks one bulk play / queue action will take. */
 const SELECTION_PLAYBACK_LIMIT = 5000;
@@ -104,8 +117,11 @@ export function DesktopLibraryPanel() {
   const nativeLibrary = getNativeLibrary();
   const [nativeTracks, setNativeTracks] = useState<NativeLibraryTrack[]>([]);
   const [nativeTotal, setNativeTotal] = useState(0);
-  const [nativeQuery, setNativeQuery] = useState('');
-  const [debouncedNativeQuery, setDebouncedNativeQuery] = useState('');
+  const initialView = useRef(loadViewState()).current;
+  const [nativeQuery, setNativeQuery] = useState(initialView.query);
+  const [debouncedNativeQuery, setDebouncedNativeQuery] = useState(
+    initialView.query,
+  );
   const [nativeLoading, setNativeLoading] = useState(false);
   const [nativeError, setNativeError] = useState<string | null>(null);
   const [nativeUnavailable, setNativeUnavailable] = useState<
@@ -127,10 +143,24 @@ export function DesktopLibraryPanel() {
   } | null>(null);
   const [selectingAll, setSelectingAll] = useState(false);
   const [selectionBusy, setSelectionBusy] = useState(false);
-  const [browseKind, setBrowseKind] = useState<BrowseKind>('tracks');
-  const [facetFilter, setFacetFilter] = useState<NativeFacetFilter | null>(
-    null,
+  const [browseKind, setBrowseKind] = useState<BrowseKind>(
+    initialView.browseKind,
   );
+  const [facetFilter, setFacetFilter] = useState<NativeFacetFilter | null>(
+    initialView.facetFilter,
+  );
+  const [filters, setFilters] = useState<NativeTrackFilters>(
+    initialView.filters,
+  );
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [filterOptions, setFilterOptions] =
+    useState<NativeFilterOptions | null>(null);
+  const [inspected, setInspected] = useState<NativeLibraryTrack | null>(null);
+  // Rows to preload and the scroll offset to return to, used once on mount.
+  const restoreRef = useRef(rowsToRestore(initialView));
+  const initialScrollRef = useRef(initialView.scrollOffset);
+  const loadedCountRef = useRef(0);
+  const scopeChangedRef = useRef(false);
   const [facetGroups, setFacetGroups] = useState<NativeFacetGroup[]>([]);
   const [facetLoading, setFacetLoading] = useState(false);
   const [totals, setTotals] = useState<NativeLibraryTotals | null>(null);
@@ -160,10 +190,43 @@ export function DesktopLibraryPanel() {
     });
   }, [nativeLibrary]);
 
-  // A selection belongs to the search/group it was made in.
+  useEffect(() => {
+    loadedCountRef.current = nativeTracks.length;
+  }, [nativeTracks.length]);
+
+  // A selection belongs to the search/group/filters it was made in, and a
+  // saved scroll position only makes sense for the scope it was saved in.
   useEffect(() => {
     setSelectedIds(new Set());
-  }, [debouncedNativeQuery, facetFilter]);
+    if (scopeChangedRef.current) {
+      restoreRef.current = 0;
+      initialScrollRef.current = 0;
+      saveViewState({ scrollOffset: 0, loadedCount: 0 });
+    }
+    scopeChangedRef.current = true;
+  }, [debouncedNativeQuery, facetFilter, filters]);
+
+  useEffect(() => {
+    saveViewState({ query: nativeQuery, browseKind, facetFilter, filters });
+  }, [nativeQuery, browseKind, facetFilter, filters]);
+
+  useEffect(() => {
+    if (!nativeLibrary) {
+      return;
+    }
+    let stale = false;
+    nativeLibrary
+      .filterOptions()
+      .then((options) => {
+        if (!stale) {
+          setFilterOptions(options);
+        }
+      })
+      .catch(() => undefined);
+    return () => {
+      stale = true;
+    };
+  }, [nativeLibrary, catalogVersion]);
 
   const refreshNative = useCallback(async () => {
     if (!nativeLibrary) {
@@ -174,7 +237,13 @@ export function DesktopLibraryPanel() {
     setNativeError(null);
     try {
       const [page, unavailable, rootList, libraryTotals] = await Promise.all([
-        nativeLibrary.list(debouncedNativeQuery, 0, facetFilter, nativeSort),
+        nativeLibrary.list(
+          debouncedNativeQuery,
+          0,
+          facetFilter,
+          nativeSort,
+          filters,
+        ),
         nativeLibrary.listUnavailable(),
         nativeLibrary.listRoots(),
         nativeLibrary.totals(),
@@ -182,7 +251,30 @@ export function DesktopLibraryPanel() {
       if (request !== listRequestRef.current) {
         return;
       }
-      setNativeTracks(page.tracks);
+      let loaded = page.tracks;
+      const restoreTarget = restoreRef.current;
+      restoreRef.current = 0;
+      for (
+        let offset = loaded.length;
+        offset < Math.min(restoreTarget, page.total);
+        offset += page.tracks.length || 100
+      ) {
+        const more = await nativeLibrary.list(
+          debouncedNativeQuery,
+          offset,
+          facetFilter,
+          nativeSort,
+          filters,
+        );
+        if (request !== listRequestRef.current) {
+          return;
+        }
+        if (!more.tracks.length) {
+          break;
+        }
+        loaded = [...loaded, ...more.tracks];
+      }
+      setNativeTracks(loaded);
       setNativeTotal(page.total);
       setNativeUnavailable(unavailable);
       setRoots(rootList);
@@ -199,7 +291,7 @@ export function DesktopLibraryPanel() {
         setNativeLoading(false);
       }
     }
-  }, [nativeLibrary, debouncedNativeQuery, facetFilter, nativeSort]);
+  }, [nativeLibrary, debouncedNativeQuery, facetFilter, nativeSort, filters]);
 
   const loadMoreNative = async () => {
     if (!nativeLibrary || nativeLoading || nativeTracks.length >= nativeTotal) {
@@ -214,6 +306,7 @@ export function DesktopLibraryPanel() {
         nativeTracks.length,
         facetFilter,
         nativeSort,
+        filters,
       );
       if (request !== listRequestRef.current) {
         return;
@@ -585,6 +678,7 @@ export function DesktopLibraryPanel() {
             debouncedNativeQuery,
             facetFilter,
             nativeSort,
+            filters,
           ),
         ),
       );
@@ -598,11 +692,15 @@ export function DesktopLibraryPanel() {
   };
 
   /**
-   * The selection as playable tracks, in the order the table currently shows
-   * them (not the order the user clicked), so what plays or queues is
-   * predictable. Capped so a whole-library selection can't flood the queue.
+   * Turns tracks into playables, in the order the table currently shows them
+   * (not the order they were clicked), so what plays or queues is
+   * predictable. `pick` narrows the shown order (to the selection, or not at
+   * all for "play all"). Capped so a whole-library action can't flood the queue.
    */
-  const playablesForSelection = async () => {
+  const playablesFor = async (
+    pick: (shownIds: string[]) => string[],
+    noun: string,
+  ) => {
     if (!nativeLibrary) {
       return null;
     }
@@ -610,8 +708,9 @@ export function DesktopLibraryPanel() {
       debouncedNativeQuery,
       facetFilter,
       nativeSort,
+      filters,
     );
-    const inOrder = shown.filter((id) => selectedIds.has(id));
+    const inOrder = pick(shown);
     const ids = inOrder.slice(0, SELECTION_PLAYBACK_LIMIT);
     const playables: TahtiPlayable[] = [];
     let unavailable = 0;
@@ -627,13 +726,13 @@ export function DesktopLibraryPanel() {
     if (unavailable) {
       toast.info(
         unavailable === 1
-          ? '1 selected file is missing and was skipped.'
-          : `${unavailable} selected files are missing and were skipped.`,
+          ? `1 ${noun} file is missing and was skipped.`
+          : `${unavailable} ${noun} files are missing and were skipped.`,
       );
     }
     if (inOrder.length > ids.length) {
       toast.info(
-        `Only the first ${SELECTION_PLAYBACK_LIMIT.toLocaleString('en-US')} of ${inOrder.length.toLocaleString('en-US')} selected tracks were used.`,
+        `Only the first ${SELECTION_PLAYBACK_LIMIT.toLocaleString('en-US')} of ${inOrder.length.toLocaleString('en-US')} ${noun} tracks were used.`,
       );
     }
     return playables;
@@ -641,14 +740,21 @@ export function DesktopLibraryPanel() {
 
   const runSelectionAction = async (
     action: (playables: TahtiPlayable[]) => void,
+    scope: 'selected' | 'all' = 'selected',
   ) => {
     setSelectionBusy(true);
     try {
-      const playables = await playablesForSelection();
+      const playables =
+        scope === 'all'
+          ? await playablesFor((shown) => shown, 'matching')
+          : await playablesFor(
+              (shown) => shown.filter((id) => selectedIds.has(id)),
+              'selected',
+            );
       if (playables?.length) {
         action(playables);
       } else if (playables) {
-        toast.error('None of the selected tracks can be played.');
+        toast.error('None of these tracks can be played.');
       }
     } catch (error) {
       toast.error(
@@ -666,6 +772,13 @@ export function DesktopLibraryPanel() {
         play(head, { enqueueRest: rest });
       }
     });
+  const playAllMatching = () =>
+    runSelectionAction((playables) => {
+      const [head, ...rest] = playables;
+      if (head) {
+        play(head, { enqueueRest: rest });
+      }
+    }, 'all');
   const playNextSelection = () =>
     runSelectionAction((playables) => {
       playNextMany(playables);
@@ -679,6 +792,10 @@ export function DesktopLibraryPanel() {
     runSelectionAction((playables) => {
       enqueueMany(playables);
     });
+
+  const activeFilterCount = countActiveFilters(filters);
+  const hasActiveScope =
+    nativeQuery.trim() !== '' || facetFilter !== null || activeFilterCount > 0;
 
   const revealNative = async (track: NativeLibraryTrack) => {
     if (!nativeLibrary) {
@@ -931,13 +1048,29 @@ export function DesktopLibraryPanel() {
                   </Button>
                 </div>
               ) : null}
-              <Input
-                type="search"
-                label="Search desktop library"
-                placeholder="Title, artist, or album"
-                value={nativeQuery}
-                onChange={(event) => setNativeQuery(event.target.value)}
-              />
+              <div className="flex items-end gap-2">
+                <div className="min-w-0 flex-1">
+                  <Input
+                    type="search"
+                    label="Search desktop library"
+                    placeholder="Title, artist, album, genre or path"
+                    value={nativeQuery}
+                    onChange={(event) => setNativeQuery(event.target.value)}
+                  />
+                </div>
+                <Button
+                  variant={activeFilterCount ? 'secondary' : 'text'}
+                  aria-label={
+                    activeFilterCount
+                      ? `Filters (${activeFilterCount} active)`
+                      : 'Filters'
+                  }
+                  onClick={() => setFiltersOpen(true)}
+                >
+                  <ListFilterIcon size={15} aria-hidden />
+                  Filters{activeFilterCount ? ` (${activeFilterCount})` : ''}
+                </Button>
+              </div>
               {nativeTracks.length ? (
                 <CatalogTable
                   columns={NATIVE_TRACK_COLUMNS}
@@ -955,10 +1088,47 @@ export function DesktopLibraryPanel() {
                   selectedIds={selectedIds}
                   onSelectedIdsChange={setSelectedIds}
                   isRowMuted={(track) => !track.available}
+                  initialScrollOffset={initialScrollRef.current}
+                  onScrollOffsetChange={(offset) => {
+                    saveViewState({
+                      scrollOffset: offset,
+                      loadedCount: loadedCountRef.current,
+                    });
+                  }}
+                  layouts={table.layouts}
+                  onActivateRow={(track) => {
+                    if (track.available) {
+                      void playNative(track);
+                    }
+                  }}
+                  onRowKeyDown={(event, track) => {
+                    if (event.key.toLowerCase() === 'i') {
+                      event.preventDefault();
+                      setInspected(track);
+                    }
+                  }}
                   onSelectAllMatching={() => void selectAllMatching()}
                   selectingAll={selectingAll}
                   toolbar={
-                    selectedIds.size ? (
+                    !selectedIds.size ? (
+                      <Button
+                        size="sm"
+                        variant="text"
+                        disabled={selectionBusy}
+                        onClick={() => void playAllMatching()}
+                      >
+                        {selectionBusy ? (
+                          <LoaderCircleIcon
+                            size={14}
+                            className="animate-spin"
+                            aria-hidden
+                          />
+                        ) : (
+                          <PlayIcon size={14} aria-hidden />
+                        )}
+                        Play all
+                      </Button>
+                    ) : (
                       <>
                         <Button
                           size="sm"
@@ -1009,7 +1179,7 @@ export function DesktopLibraryPanel() {
                           Remove
                         </Button>
                       </>
-                    ) : null
+                    )
                   }
                   renderActions={(track) => (
                     <>
@@ -1056,6 +1226,16 @@ export function DesktopLibraryPanel() {
                           </Tooltip>
                         </>
                       )}
+                      <Tooltip content="Details (I)" side="top">
+                        <Button
+                          size="icon-sm"
+                          variant="text"
+                          aria-label={`Details for ${track.title}`}
+                          onClick={() => setInspected(track)}
+                        >
+                          <InfoIcon size={14} aria-hidden />
+                        </Button>
+                      </Tooltip>
                       <Tooltip content="Remove from library" side="top">
                         <Button
                           size="icon-sm"
@@ -1086,6 +1266,26 @@ export function DesktopLibraryPanel() {
                       onClick={() => void refreshNative()}
                     >
                       Retry
+                    </Button>
+                  }
+                  className="flex-1"
+                />
+              ) : hasActiveScope && !nativeLoading ? (
+                <EmptyState
+                  size="sm"
+                  icon={<ListFilterIcon size={28} className="opacity-50" />}
+                  title="No tracks match"
+                  description="Nothing in your library fits the current search, group and filters."
+                  action={
+                    <Button
+                      variant="secondary"
+                      onClick={() => {
+                        setNativeQuery('');
+                        setFacetFilter(null);
+                        setFilters(EMPTY_TRACK_FILTERS);
+                      }}
+                    >
+                      Clear search and filters
                     </Button>
                   }
                   className="flex-1"
@@ -1212,6 +1412,32 @@ export function DesktopLibraryPanel() {
             )}
           </>
         ))}
+      <LocalLibraryFilters
+        isOpen={filtersOpen}
+        onClose={() => setFiltersOpen(false)}
+        filters={filters}
+        onApply={setFilters}
+        options={filterOptions}
+        roots={roots}
+      />
+      <TrackInspectorDialog
+        track={inspected}
+        onClose={() => setInspected(null)}
+        onPlay={(track) => {
+          setInspected(null);
+          void playNative(track);
+        }}
+        onQueue={(track) => void queueNative([track])}
+        onReveal={(track) => void revealNative(track)}
+        onLocate={(track) => {
+          setInspected(null);
+          void relinkNative(track);
+        }}
+        onRemove={(track) => {
+          setInspected(null);
+          setPendingRemoval({ ids: [track.id], title: track.title });
+        }}
+      />
       <ConfirmDialog
         isOpen={pendingRemoval !== null}
         title={

@@ -1,6 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { withReadCache, type TahtiNativeLibrary } from './nativeLibrary';
+import {
+  EMPTY_TRACK_FILTERS,
+  withReadCache,
+  type TahtiNativeLibrary,
+} from './nativeLibrary';
 
 function baseLibrary(overrides: Partial<TahtiNativeLibrary> = {}) {
   return {
@@ -8,6 +12,9 @@ function baseLibrary(overrides: Partial<TahtiNativeLibrary> = {}) {
     listUnavailable: vi.fn().mockResolvedValue([]),
     listRoots: vi.fn().mockResolvedValue([]),
     facets: vi.fn().mockResolvedValue([]),
+    filterOptions: vi
+      .fn()
+      .mockResolvedValue({ formats: [], yearMin: null, yearMax: null }),
     totals: vi
       .fn()
       .mockResolvedValue({ trackCount: 0, durationSec: 0, sizeBytes: 0 }),
@@ -124,6 +131,17 @@ describe('withReadCache', () => {
     await cached.list('', 0, null, { column: 'artist', descending: false });
     await cached.list('', 0, null, { column: 'artist', descending: true });
     await cached.list('', 0, null, null);
+    expect(base.list).toHaveBeenCalledTimes(3);
+  });
+
+  it('keys list pages by filters', async () => {
+    const base = baseLibrary();
+    const cached = withReadCache(base);
+    const a = { ...EMPTY_TRACK_FILTERS, formats: ['flac'] };
+    await cached.list('', 0, null, null, a);
+    await cached.list('', 0, null, null, a);
+    await cached.list('', 0, null, null, { ...a, yearMin: 2000 });
+    await cached.list('', 0, null, null, EMPTY_TRACK_FILTERS);
     expect(base.list).toHaveBeenCalledTimes(3);
   });
 });

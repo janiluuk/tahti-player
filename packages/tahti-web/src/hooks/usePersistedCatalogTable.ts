@@ -7,7 +7,8 @@ import {
   type CatalogTableView,
 } from '@tahti-player/ui';
 
-type Stored = { view?: Partial<CatalogTableView>; sort?: CatalogSort | null };
+type Layout = { view?: Partial<CatalogTableView>; sort?: CatalogSort | null };
+type Stored = Layout & { layouts?: Record<string, Layout> };
 
 function readStored(key: string): Stored | null {
   try {
@@ -43,8 +44,17 @@ export function usePersistedCatalogTable<T>(
     return {
       view: normalizeCatalogView(columns, stored?.view),
       sort: knownSort ? (stored?.sort ?? null) : null,
+      layouts: stored?.layouts ?? {},
     };
   });
+
+  const validSort = useCallback(
+    (sort: CatalogSort | null | undefined) =>
+      columns.some((c) => c.id === sort?.columnId && c.sortable)
+        ? (sort ?? null)
+        : null,
+    [columns],
+  );
 
   const setView = useCallback(
     (view: CatalogTableView) => {
@@ -67,8 +77,64 @@ export function usePersistedCatalogTable<T>(
     [storageKey],
   );
 
+  const saveLayout = useCallback(
+    (name: string) => {
+      setState((current) => {
+        const layouts = {
+          ...current.layouts,
+          [name]: { view: current.view, sort: current.sort },
+        };
+        const next = { ...current, layouts };
+        writeStored(storageKey, next);
+        return next;
+      });
+    },
+    [storageKey],
+  );
+  const applyLayout = useCallback(
+    (name: string) => {
+      setState((current) => {
+        const layout = current.layouts[name];
+        if (!layout) {
+          return current;
+        }
+        const next = {
+          ...current,
+          view: normalizeCatalogView(columns, layout.view),
+          sort: validSort(layout.sort),
+        };
+        writeStored(storageKey, next);
+        return next;
+      });
+    },
+    [columns, storageKey, validSort],
+  );
+  const deleteLayout = useCallback(
+    (name: string) => {
+      setState((current) => {
+        const rest = { ...current.layouts };
+        delete rest[name];
+        const next = { ...current, layouts: rest };
+        writeStored(storageKey, next);
+        return next;
+      });
+    },
+    [storageKey],
+  );
+
   return useMemo(
-    () => ({ view: state.view, sort: state.sort, setView, setSort }),
-    [state, setView, setSort],
+    () => ({
+      view: state.view,
+      sort: state.sort,
+      setView,
+      setSort,
+      layouts: {
+        names: Object.keys(state.layouts).sort((a, b) => a.localeCompare(b)),
+        onSave: saveLayout,
+        onApply: applyLayout,
+        onDelete: deleteLayout,
+      },
+    }),
+    [state, setView, setSort, saveLayout, applyLayout, deleteLayout],
   );
 }

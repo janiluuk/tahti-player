@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { beforeAll, describe, expect, it, vi } from 'vitest';
 
 import { CatalogTable } from './CatalogTable';
+import type { CatalogLayoutsApi } from './CatalogTableSettingsDialog';
 import {
   defaultCatalogView,
   type CatalogColumn,
@@ -46,11 +47,17 @@ function Harness({
   onLoadMore,
   total = rows.length,
   onSelectAllMatching,
+  onActivateRow,
+  onRowKeyDown,
+  layouts,
 }: {
   onSort?: (sort: CatalogSort | null) => void;
   onLoadMore?: () => void;
   total?: number;
   onSelectAllMatching?: () => void;
+  onActivateRow?: (row: Row) => void;
+  onRowKeyDown?: (event: React.KeyboardEvent, row: Row) => void;
+  layouts?: CatalogLayoutsApi;
 }) {
   const [view, setView] = useState(defaultCatalogView(columns));
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -71,6 +78,9 @@ function Harness({
       }}
       onLoadMore={onLoadMore}
       onSelectAllMatching={onSelectAllMatching}
+      onActivateRow={onActivateRow}
+      onRowKeyDown={onRowKeyDown}
+      layouts={layouts}
       selectedIds={selected}
       onSelectedIdsChange={setSelected}
       itemNoun="tracks"
@@ -187,5 +197,127 @@ describe('CatalogTable', () => {
     fireEvent.click(screen.getByLabelText('Select all loaded tracks'));
     expect(screen.getByText(/All 3 selected/)).toBeTruthy();
     expect(screen.queryByRole('button', { name: /Select all 3/ })).toBeNull();
+  });
+
+  describe('keyboard', () => {
+    const rowsEl = () => screen.getByLabelText('Rows');
+    const press = (key: string, init: KeyboardEventInit = {}) =>
+      fireEvent.keyDown(rowsEl(), { key, ...init });
+
+    it('moves the active row with arrows and toggles it with space', () => {
+      render(<Harness />);
+      press('ArrowDown');
+      press('ArrowDown');
+      expect(rowsEl().getAttribute('aria-activedescendant')).toMatch(/-r1$/);
+      press(' ');
+      expect(
+        (screen.getByLabelText('Select Beta') as HTMLInputElement).checked,
+      ).toBe(true);
+      expect(
+        (screen.getByLabelText('Select Alpha') as HTMLInputElement).checked,
+      ).toBe(false);
+      press(' ');
+      expect(
+        (screen.getByLabelText('Select Beta') as HTMLInputElement).checked,
+      ).toBe(false);
+    });
+
+    it('extends the selection with shift+arrows and clamps at the ends', () => {
+      render(<Harness />);
+      press('ArrowDown');
+      press('ArrowDown', { shiftKey: true });
+      press('ArrowDown', { shiftKey: true });
+      press('ArrowDown', { shiftKey: true });
+      expect(screen.getByText(/3 selected/)).toBeTruthy();
+      expect(rowsEl().getAttribute('aria-activedescendant')).toMatch(/-r2$/);
+      press('Home');
+      expect(rowsEl().getAttribute('aria-activedescendant')).toMatch(/-r0$/);
+      press('ArrowUp');
+      expect(rowsEl().getAttribute('aria-activedescendant')).toMatch(/-r0$/);
+    });
+
+    it('activates with Enter and double-click, selects all with ctrl+A, clears with Escape', () => {
+      const onActivateRow = vi.fn();
+      render(<Harness onActivateRow={onActivateRow} />);
+      press('ArrowDown');
+      press('Enter');
+      expect(onActivateRow).toHaveBeenLastCalledWith(rows[0]);
+      fireEvent.doubleClick(screen.getByText('Gamma'));
+      expect(onActivateRow).toHaveBeenLastCalledWith(rows[2]);
+      press('a', { ctrlKey: true });
+      expect(screen.getByText(/All 3 selected/)).toBeTruthy();
+      press('Escape');
+      expect(screen.queryByText(/selected/)).toBeNull();
+    });
+
+    it('ctrl+A selects every matching row when more than the loaded ones match', () => {
+      const onSelectAllMatching = vi.fn();
+      render(<Harness total={900} onSelectAllMatching={onSelectAllMatching} />);
+      press('a', { metaKey: true });
+      expect(onSelectAllMatching).toHaveBeenCalledOnce();
+    });
+
+    it('hands unhandled keys to the owner with the focused row', () => {
+      const onRowKeyDown = vi.fn();
+      render(<Harness onRowKeyDown={onRowKeyDown} />);
+      press('ArrowDown');
+      press('ArrowDown');
+      press('i');
+      expect(onRowKeyDown.mock.calls[0]?.[1]).toEqual(rows[1]);
+    });
+  });
+
+  describe('saved layouts', () => {
+    const layouts = (
+      extra: Partial<CatalogLayoutsApi> = {},
+    ): CatalogLayoutsApi => ({
+      names: ['Compact'],
+      onSave: vi.fn(),
+      onApply: vi.fn(),
+      onDelete: vi.fn(),
+      ...extra,
+    });
+
+    it('saves the current layout under a trimmed name and applies a saved one', async () => {
+      const api = layouts();
+      render(<Harness layouts={api} />);
+      fireEvent.click(screen.getByRole('button', { name: 'Table settings' }));
+      const dialog = await screen.findByRole('dialog');
+      const save = within(dialog).getByRole('button', {
+        name: 'Save current layout',
+      });
+      expect(save.hasAttribute('disabled')).toBe(true);
+      fireEvent.change(within(dialog).getByLabelText('Layout name'), {
+        target: { value: '  Wide  ' },
+      });
+      fireEvent.click(save);
+      expect(api.onSave).toHaveBeenCalledWith('Wide');
+      fireEvent.click(
+        within(dialog).getByRole('button', { name: 'Apply layout Compact' }),
+      );
+      expect(api.onApply).toHaveBeenCalledWith('Compact');
+    });
+
+    it('asks before deleting a saved layout', async () => {
+      const api = layouts();
+      render(<Harness layouts={api} />);
+      fireEvent.click(screen.getByRole('button', { name: 'Table settings' }));
+      const dialog = await screen.findByRole('dialog');
+      fireEvent.click(
+        within(dialog).getByRole('button', { name: 'Delete layout Compact' }),
+      );
+      expect(api.onDelete).not.toHaveBeenCalled();
+      const dialogs = await screen.findAllByRole('dialog');
+      const confirm = dialogs[dialogs.length - 1] as HTMLElement;
+      expect(within(confirm).getByText('Delete this layout?')).toBeTruthy();
+      fireEvent.click(within(confirm).getByRole('button', { name: 'Delete' }));
+      expect(api.onDelete).toHaveBeenCalledWith('Compact');
+    });
+
+    it('shows an empty state when nothing is saved', async () => {
+      render(<Harness layouts={layouts({ names: [] })} />);
+      fireEvent.click(screen.getByRole('button', { name: 'Table settings' }));
+      expect(await screen.findByText('No saved layouts yet.')).toBeTruthy();
+    });
   });
 });

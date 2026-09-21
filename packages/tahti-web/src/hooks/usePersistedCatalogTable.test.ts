@@ -88,4 +88,49 @@ describe('usePersistedCatalogTable', () => {
     const { result } = renderHook(() => usePersistedCatalogTable('k', columns));
     expect(result.current.view.order).toEqual(['title', 'artist', 'year']);
   });
+
+  it('saves, applies and deletes named layouts, and remembers them', () => {
+    const first = renderHook(() => usePersistedCatalogTable('k', columns));
+    act(() => {
+      first.result.current.setView({
+        order: ['artist', 'title', 'year'],
+        hidden: [],
+        widths: { artist: 250 },
+      });
+      first.result.current.setSort({ columnId: 'artist', descending: true });
+    });
+    act(() => first.result.current.layouts.onSave('Artist first'));
+    act(() => {
+      first.result.current.setView({
+        order: ['title', 'artist', 'year'],
+        hidden: ['year'],
+        widths: {},
+      });
+      first.result.current.setSort(null);
+    });
+    expect(first.result.current.layouts.names).toEqual(['Artist first']);
+
+    act(() => first.result.current.layouts.onApply('Artist first'));
+    expect(first.result.current.view.order).toEqual([
+      'artist',
+      'title',
+      'year',
+    ]);
+    expect(first.result.current.sort).toEqual({
+      columnId: 'artist',
+      descending: true,
+    });
+    first.unmount();
+
+    const second = renderHook(() => usePersistedCatalogTable('k', columns));
+    expect(second.result.current.layouts.names).toEqual(['Artist first']);
+    act(() => second.result.current.layouts.onDelete('Artist first'));
+    expect(second.result.current.layouts.names).toEqual([]);
+    act(() => second.result.current.layouts.onApply('missing'));
+    expect(second.result.current.view.order).toEqual([
+      'artist',
+      'title',
+      'year',
+    ]);
+  });
 });
