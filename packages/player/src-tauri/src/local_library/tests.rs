@@ -1897,3 +1897,43 @@ async fn a_changed_file_is_re_read_once() {
     assert_eq!(list(&pool, "", 0).await.unwrap().tracks[0].title, "A much longer new title");
     assert_eq!(super::reconcile::refresh_changed(&pool, &root).await.unwrap(), 0, "not re-read again");
 }
+
+#[tokio::test]
+async fn a_root_on_an_unplugged_drive_goes_missing_and_recovers_with_ids_intact() {
+    let dir = tempfile::tempdir().unwrap();
+    let root_dir = dir.path().join("Külmä levy 🎧");
+    std::fs::create_dir_all(&root_dir).unwrap();
+    write_wav(&root_dir.join("楽曲.wav"), "A", "Artist");
+    let pool = pool().await;
+    let root = add_root(&pool, &root_dir).await.unwrap();
+    let (fresh, _) = discover_new_paths(&pool, &root).await.unwrap();
+    import_into_root(&pool, &root.id, fresh).await;
+    let id = list(&pool, "", 0).await.unwrap().tracks[0].id.clone();
+
+    let away = dir.path().join("unplugged");
+    std::fs::rename(&root_dir, &away).unwrap();
+    refresh_root_availability(&pool, &root.id).await.unwrap();
+    let page = list(&pool, "", 0).await.unwrap();
+    assert_eq!((page.total, page.tracks[0].available), (1, false), "kept, marked missing");
+
+    std::fs::rename(&away, &root_dir).unwrap();
+    refresh_root_availability(&pool, &root.id).await.unwrap();
+    let page = list(&pool, "", 0).await.unwrap();
+    assert_eq!((page.tracks[0].id.clone(), page.tracks[0].available), (id, true));
+}
+
+#[tokio::test]
+async fn reopening_the_catalog_file_keeps_its_data_and_migrations_are_idempotent() {
+    let dir = tempfile::tempdir().unwrap();
+    let db = dir.path().join("nested").join("library.db");
+    let music = dir.path().join("a.wav");
+    write_wav(&music, "A", "Artist");
+    let first = super::open(&db).await.unwrap();
+    assert_eq!(import_paths(&first, vec![music]).await.imported, 1);
+    first.close().await;
+
+    // Offline startup: no network or other file is needed to open the catalog.
+    let second = super::open(&db).await.unwrap();
+    let page = list(&second, "", 0).await.unwrap();
+    assert_eq!((page.total, page.tracks[0].title.as_str()), (1, "A"));
+}

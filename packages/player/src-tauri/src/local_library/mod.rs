@@ -19,6 +19,8 @@ mod backup_tests;
 mod tag_writer_tests;
 #[cfg(test)]
 mod tests;
+#[cfg(test)]
+mod profile_tests;
 
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, Ordering};

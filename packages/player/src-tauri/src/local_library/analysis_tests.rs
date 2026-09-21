@@ -13,7 +13,7 @@ use super::{import_paths, list_query, AnalysisState, ListQuery, LibraryTrack, So
 const RATE: u32 = 44_100;
 
 /// Mono PCM16 WAV with a kick every beat at `bpm` (plus a `genre` INFO tag).
-fn write_kick_wav(path: &Path, bpm: f64, seconds: f64, genre: &str) {
+pub(super) fn write_kick_wav(path: &Path, bpm: f64, seconds: f64, genre: &str) {
     let total = (seconds * f64::from(RATE)) as usize;
     let mut samples = vec![0i16; total];
     let beat = 60.0 / bpm * f64::from(RATE);
