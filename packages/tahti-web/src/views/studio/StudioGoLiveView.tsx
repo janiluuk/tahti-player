@@ -45,6 +45,7 @@ import {
   ShowInfoConfirmed,
 } from '../../components/BroadcastPreflightPanel';
 import { ChannelShareButton } from '../../components/ChannelShareButton';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { HelpLayer } from '../../components/HelpLayer';
 import { ObsPresetButton } from '../../components/ObsPresetButton';
 import { SignalCheckWidget } from '../../components/SignalCheckWidget';
@@ -143,6 +144,7 @@ export function StudioGoLiveView() {
   const [credentialsExpanded, setCredentialsExpanded] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [confirmGoLive, setConfirmGoLive] = useState(false);
   const [recordEnabled, setRecordEnabled] = useState(true);
   const [recordBusy, setRecordBusy] = useState(false);
   const [preflight, setPreflight] = useState<BroadcastPreflight | null>(null);
@@ -254,14 +256,23 @@ export function StudioGoLiveView() {
   const onGoLive = async () => {
     setBusy(true);
     setMessage(null);
-    const result = await postGoLive();
-    setBusy(false);
+    let result: Awaited<ReturnType<typeof postGoLive>>;
+    try {
+      result = await postGoLive();
+    } catch {
+      toast.error('Could not go live.');
+      return;
+    } finally {
+      setBusy(false);
+    }
     if (!result.ok) {
       setMessage(result.error);
+      toast.error(result.error);
       return;
     }
     patchLocalChannel('LIVE');
     setMessage('You’re live. The rotation has handed over to your broadcast.');
+    toast.success('You’re live.');
     playStream();
     if (!isMock) {
       void refresh();
@@ -437,7 +448,7 @@ export function StudioGoLiveView() {
                       {!isBroadcastLive ? (
                         <Button
                           disabled={busy || !signalOk || usage?.blocked}
-                          onClick={() => void onGoLive()}
+                          onClick={() => setConfirmGoLive(true)}
                         >
                           <RadioIcon size={16} aria-hidden className="mr-1.5" />
                           {busy
@@ -616,6 +627,17 @@ export function StudioGoLiveView() {
               </div>
             </div>
           </>
+          <ConfirmDialog
+            isOpen={confirmGoLive}
+            title="Go live now?"
+            description="Your broadcast replaces the channel rotation and listeners start hearing it immediately."
+            confirmLabel="Go live"
+            onCancel={() => setConfirmGoLive(false)}
+            onConfirm={() => {
+              setConfirmGoLive(false);
+              void onGoLive();
+            }}
+          />
         </ViewShell>
       </div>
     </StudioGate>

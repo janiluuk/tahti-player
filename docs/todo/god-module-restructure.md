@@ -227,19 +227,21 @@ Replaced with `Button` this pass: the image-thumbnail buttons in `updates/PostPr
 
 Still open: `<img>` in `StudioBrandingView` (~594) and `branding/PressKitPreview` (two) → `MediaArtwork`; `<input>` in `components/channel-designer/ColorSchemeFields`; `<img>` in `components/channel-designer/VideoOrImageField`; `<a>` links (`ReleaseTrackRow`, four in `distribution/ReleaseOpsPanel`, `GuideDetail`, `StudioReleasesView`, `StudioMasteringView`, `StudioBrandingView` ZIP download) — blocked on a `@tahti-player/ui` external-link component, which is the actual gap; also `<Link><Button/></Link>` nesting in several views.
 
-### Fix queue for the audited views (2026-09-22, in progress)
+### Fix queue for the audited views (2026-09-22, done except where noted)
 
 Fix, in this order (tick when done; each finished item moves to HISTORY):
 
-- [ ] Playlists: table row remove goes through the confirm dialog and reports failure; add-track select hides tracks already in the playlist; add/save refresh only the tracklist (`reload()` resets the settings form).
-- [ ] Branding: press-kit "replace" uploads first, deletes the old images only after a successful upload; try/finally on `busy`; `<img>` → `MediaArtwork`.
-- [ ] Show detail: rename/fix the "Record broadcasts by default" toggle (bound to `autoPublish`); uploaded episodes don't grab the next booking; orphaned upload if `createEpisode` fails; drop the identical branches; revoke object URLs; loading state.
-- [ ] Schedule: existing-show selection disables/hides the create-only fields (tagline, visibility, auto-publish, numbering, start episode); move "Minutes" into the recurrence section; match upcoming items by id, not title; reset the form in `openEditor`; three forms.
-- [ ] Collection editor: one request/rollback for details+gallery (or report partial failure); warn when genres are truncated to 5; parallel `queueAllTracks`.
-- [ ] Release detail: pass the loaded sound to track rows (N+1); share `useSoundPlayable` with the collection editor; keyboard reorder.
-- [ ] Distribution: derive `activeMethods` once, not on every reload.
-- [ ] Stats: separate the top-list request from the other eight; label/honour the custom and 1-day ranges; one failure must not leave `loading`; document the 192 kbps assumption.
-- [ ] Home: catch failures (`discographyLoaded`), stop loading the whole library for three counts.
-- [ ] Sound view: `key` by id; auto-trim doesn't stack duplicate cuts; toasts; `playBusy` in finally.
-- [ ] Sounds view: catch, delete failure feedback.
-- [ ] Go live: confirm before going live; toasts; catches on destination toggle/delete.
+- [x] Playlists: table row remove goes through the confirm dialog and reports failure; add-track select hides tracks already in the playlist; add/save refresh only the tracklist (`reload()` resets the settings form).
+- [x] Branding: press-kit "replace" uploads first, deletes the old images only after a successful upload; try/finally on `busy`; `<img>` → `MediaArtwork`.
+- [x] Show detail: rename/fix the "Record broadcasts by default" toggle (bound to `autoPublish`); uploaded episodes don't grab the next booking; orphaned upload if `createEpisode` fails; drop the identical branches; revoke object URLs; loading state.
+- [x] Schedule: existing-show selection disables/hides the create-only fields (tagline, visibility, auto-publish, numbering, start episode); move "Minutes" into the recurrence section; match upcoming items by id, not title; reset the form in `openEditor`; three forms.
+- [x] Collection editor: one request/rollback for details+gallery (or report partial failure); warn when genres are truncated to 5; parallel `queueAllTracks`.
+- [x] Release detail: pass the loaded sound to track rows (N+1); share `useSoundPlayable` with the collection editor; keyboard reorder.
+- [x] Distribution: derive `activeMethods` once, not on every reload.
+- [x] Stats: separate the top-list request from the other eight; label/honour the custom and 1-day ranges; one failure must not leave `loading`; document the 192 kbps assumption.
+- [x] Home: catch failures (`discographyLoaded`), stop loading the whole library for three counts.
+- [x] Sound view: `key` by id; auto-trim doesn't stack duplicate cuts; toasts; `playBusy` in finally.
+- [x] Sounds view: catch, delete failure feedback.
+- [x] Go live: confirm before going live; toasts; catches on destination toggle/delete.
+
+Notes on the fix queue: Schedule — upcoming broadcasts still link to shows **by title** because the API returns no show id (needs `showId` on `UpcomingBroadcast`; the lookup is now one map instead of five scans), and the three-form split of the dialog is not done. Home — the three discography counts still fetch the whole library (needs a counts endpoint); a failed load no longer shows the "empty discography" call to action. Stats — "Custom" and "1 day" still use the last 30 days for top tracks/countries (the API has no such window) but the panel titles now say so. Sound view — the destructive/quick actions still lack tests; no fix in this pass added tests beyond `trimToCuts`.

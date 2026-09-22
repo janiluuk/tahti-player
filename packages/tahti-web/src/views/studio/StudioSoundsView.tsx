@@ -135,10 +135,10 @@ export function StudioSoundsView() {
 
   const reload = () => {
     setLoading(true);
-    void fetchStudioSounds().then((res) => {
-      setItems(res.data);
-      setLoading(false);
-    });
+    fetchStudioSounds()
+      .then((res) => setItems(res.data))
+      .catch(() => toast.error('Could not load your music.'))
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -560,7 +560,19 @@ export function StudioSoundsView() {
           if (!item) {
             return;
           }
-          void deleteStudioSound(item.id).then(() => reload());
+          void (async () => {
+            try {
+              const result = await deleteStudioSound(item.id);
+              if (result && 'ok' in result && !result.ok) {
+                toast.error(result.error);
+                return;
+              }
+              toast.success(`Deleted “${item.title}”.`);
+              reload();
+            } catch {
+              toast.error('Could not delete the track.');
+            }
+          })();
         }}
       />
     </StudioGate>

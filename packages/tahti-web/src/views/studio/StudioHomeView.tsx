@@ -16,6 +16,7 @@ import {
   WalletIcon,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   Badge,
@@ -88,41 +89,61 @@ export function StudioHomeView() {
     if (!user?.channel) {
       return;
     }
-    void Promise.all([
+    let cancelled = false;
+    Promise.all([
       fetchStudioSounds(),
       fetchStudioCollections(),
       fetchStudioReleases(),
       fetchStatsSummary(),
       fetchShowSchedule(),
       fetchRecentBroadcasts(5),
-    ]).then(
-      ([sounds, collections, releases, summary, showSchedule, broadcasts]) => {
-        setCounts({
-          sounds: sounds.data.length,
-          collections: collections.data.length,
-          releases: releases.data.releases.length,
-        });
-        setStats(summary.data);
-        setUpcomingShows(
-          showSchedule.data.scheduledShows
-            .filter((show) => new Date(show.startAt).getTime() > Date.now())
-            .sort(
-              (left, right) =>
-                new Date(left.startAt).getTime() -
-                new Date(right.startAt).getTime(),
-            ),
-        );
-        setRecentBroadcasts(broadcasts.data);
-        setDiscographyLoaded(true);
-      },
-    );
-    void Promise.all([
-      fetchGovernanceMotions({ limit: 10 }),
-      fetchFeatureRequests(),
-    ]).then(([motionsResult, requestsResult]) => {
-      setGovernanceMotions(motionsResult.data);
-      setGovernanceRequests(requestsResult.data);
-    });
+    ])
+      .then(
+        ([
+          sounds,
+          collections,
+          releases,
+          summary,
+          showSchedule,
+          broadcasts,
+        ]) => {
+          if (cancelled) {
+            return;
+          }
+          setCounts({
+            sounds: sounds.data.length,
+            collections: collections.data.length,
+            releases: releases.data.releases.length,
+          });
+          setStats(summary.data);
+          setUpcomingShows(
+            showSchedule.data.scheduledShows
+              .filter((show) => new Date(show.startAt).getTime() > Date.now())
+              .sort(
+                (left, right) =>
+                  new Date(left.startAt).getTime() -
+                  new Date(right.startAt).getTime(),
+              ),
+          );
+          setRecentBroadcasts(broadcasts.data);
+          // Only after a successful load: a failure must not look like an empty
+          // discography.
+          setDiscographyLoaded(true);
+        },
+      )
+      // The dashboard still renders its tiles if a summary request fails.
+      .catch(() => toast.error('Could not load your studio overview.'));
+    Promise.all([fetchGovernanceMotions({ limit: 10 }), fetchFeatureRequests()])
+      .then(([motionsResult, requestsResult]) => {
+        if (!cancelled) {
+          setGovernanceMotions(motionsResult.data);
+          setGovernanceRequests(requestsResult.data);
+        }
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
   }, [user?.channel]);
 
   const channel = user?.channel;

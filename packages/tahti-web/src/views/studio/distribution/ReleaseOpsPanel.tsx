@@ -9,7 +9,7 @@ import {
   SendIcon,
   Trash2Icon,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
@@ -79,6 +79,7 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
   const [activeMethods, setActiveMethods] = useState<Set<string>>(
     new Set(['upc', 'musicbrainz', 'discogs', 'rights']),
   );
+  const methodsInitialised = useRef(false);
   const [selectedGuide, setSelectedGuide] = useState('musicbrainz');
 
   const revelatorStatus =
@@ -102,18 +103,23 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
           setForm(catalogToForm(c.data));
           setCredits(parseCredits(c.data.credits));
           setChecklist(c.data.checklist);
-          setActiveMethods(
-            new Set([
-              ...(c.data.upc ? ['upc'] : []),
-              ...(c.data.musicbrainzReleaseId || c.data.musicbrainzArtistId
-                ? ['musicbrainz']
-                : []),
-              ...(c.data.discogsReleaseId ? ['discogs'] : []),
-              ...(c.data.pLine || c.data.cLine || c.data.labelImprint
-                ? ['rights']
-                : []),
-            ]),
-          );
+          // Derive the active tiles only on the first load; later reloads
+          // (after a save or submit) must not discard the user's toggles.
+          if (!methodsInitialised.current) {
+            methodsInitialised.current = true;
+            setActiveMethods(
+              new Set([
+                ...(c.data.upc ? ['upc'] : []),
+                ...(c.data.musicbrainzReleaseId || c.data.musicbrainzArtistId
+                  ? ['musicbrainz']
+                  : []),
+                ...(c.data.discogsReleaseId ? ['discogs'] : []),
+                ...(c.data.pLine || c.data.cLine || c.data.labelImprint
+                  ? ['rights']
+                  : []),
+              ]),
+            );
+          }
         }
         setBilling(b.data);
       })

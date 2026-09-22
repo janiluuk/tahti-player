@@ -12,6 +12,6 @@
   "packages/tahti-web/src/views/TrackDetailView.tsx": 1048,
   "packages/tahti-web/src/views/admin/AdminAddonsView.tsx": 1076,
   "packages/tahti-web/src/views/admin/AdminStorageView.tsx": 919,
-  "packages/tahti-web/src/views/studio/StudioCollectionEditView.tsx": 908,
+  "packages/tahti-web/src/views/studio/StudioCollectionEditView.tsx": 920,
   "packages/player/src-tauri/src/mcp/metadata.rs": 1005
 }

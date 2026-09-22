@@ -17,6 +17,7 @@ import {
   TagsIcon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   Alert,
@@ -92,7 +93,6 @@ export function StudioSoundView({ id }: { id: string }) {
     'details',
   );
   const [playlistOpen, setPlaylistOpen] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [pinBusy, setPinBusy] = useState(false);
   const [rotationBusy, setRotationBusy] = useState(false);
@@ -146,30 +146,51 @@ export function StudioSoundView({ id }: { id: string }) {
     Boolean(status && status !== 'READY' && status !== 'ERROR'),
   );
 
+  /** Runs a `patchStudioSound` and reports the outcome through a toast. */
+  const patchAndReport = async (
+    patch: Parameters<typeof patchStudioSound>[1],
+    success: string,
+    onOk?: () => void,
+  ): Promise<boolean> => {
+    try {
+      const result = await patchStudioSound(id, patch);
+      if (!result.ok) {
+        toast.error(result.error);
+        return false;
+      }
+      setItem(result.data);
+      onOk?.();
+      toast.success(success);
+      return true;
+    } catch {
+      toast.error('Could not update the track.');
+      return false;
+    }
+  };
+
   const save = async () => {
     setSaving(true);
-    setMessage(null);
-    const result = await patchStudioSound(id, {
-      title,
-      description,
-      ...(isAudioClip ? { genre: null } : { genre: genre || null }),
-      contentType,
-      isPublic: visibility === 'PUBLIC',
-      visibility,
-      fanTierIds,
-      ...(isAudioClip
-        ? { releaseDate: null }
-        : { releaseDate: releaseDate || null }),
-      downloadsEnabled,
-      commentsEnabled,
-    });
-    setSaving(false);
-    if (!result.ok) {
-      setMessage(result.error);
-      return;
+    try {
+      await patchAndReport(
+        {
+          title,
+          description,
+          ...(isAudioClip ? { genre: null } : { genre: genre || null }),
+          contentType,
+          isPublic: visibility === 'PUBLIC',
+          visibility,
+          fanTierIds,
+          ...(isAudioClip
+            ? { releaseDate: null }
+            : { releaseDate: releaseDate || null }),
+          downloadsEnabled,
+          commentsEnabled,
+        },
+        'Saved.',
+      );
+    } finally {
+      setSaving(false);
     }
-    setItem(result.data);
-    setMessage('Saved.');
   };
 
   const togglePin = async () => {
@@ -177,16 +198,15 @@ export function StudioSoundView({ id }: { id: string }) {
       return;
     }
     const next = !isPinned(item);
-    setMessage(null);
     setPinBusy(true);
-    const result = await patchStudioSound(id, { pinned: next });
-    setPinBusy(false);
-    if (!result.ok) {
-      setMessage(result.error);
-      return;
+    try {
+      await patchAndReport(
+        { pinned: next },
+        next ? 'Pinned to your public page.' : 'Unpinned.',
+      );
+    } finally {
+      setPinBusy(false);
     }
-    setItem(result.data);
-    setMessage(next ? 'Pinned to your public page.' : 'Unpinned.');
   };
 
   const toggleRotation = async () => {
@@ -195,33 +215,27 @@ export function StudioSoundView({ id }: { id: string }) {
     }
     const next = !item.isFallback;
     setRotationBusy(true);
-    setMessage(null);
-    const result = await patchStudioSound(id, { isFallback: next });
-    setRotationBusy(false);
-    if (!result.ok) {
-      setMessage(result.error);
-      return;
+    try {
+      await patchAndReport(
+        { isFallback: next },
+        next ? 'Added to your 24/7 rotation.' : 'Removed from rotation.',
+      );
+    } finally {
+      setRotationBusy(false);
     }
-    setItem(result.data);
-    setMessage(
-      next ? 'Added to your 24/7 rotation.' : 'Removed from rotation.',
-    );
   };
 
   const moveToStash = async () => {
     setSaving(true);
-    const result = await patchStudioSound(id, {
-      visibility: 'PRIVATE',
-      isPublic: false,
-    });
-    setSaving(false);
-    if (!result.ok) {
-      setMessage(result.error);
-      return;
+    try {
+      await patchAndReport(
+        { visibility: 'PRIVATE', isPublic: false },
+        'Moved to your private stash.',
+        () => setVisibility('PRIVATE'),
+      );
+    } finally {
+      setSaving(false);
     }
-    setItem(result.data);
-    setVisibility('PRIVATE');
-    setMessage('Moved to your private stash.');
   };
 
   const startPlayback = async (startAt?: number) => {
@@ -245,20 +259,25 @@ export function StudioSoundView({ id }: { id: string }) {
       return;
     }
     setPlayBusy(true);
-    const { data } = await fetchEditorSource(id);
-    play({
-      id: playableId,
-      kind: 'sound',
-      title: item.title,
-      artist: item.artistName || user?.displayName || 'You',
-      coverUrl: item.bannerUrl ?? undefined,
-      streamUrl: data.url,
-      protocol: data.url.includes('.m3u8') ? 'hls' : 'https',
-    });
-    if (startAt !== undefined) {
-      seekTo(startAt);
+    try {
+      const { data } = await fetchEditorSource(id);
+      play({
+        id: playableId,
+        kind: 'sound',
+        title: item.title,
+        artist: item.artistName || user?.displayName || 'You',
+        coverUrl: item.bannerUrl ?? undefined,
+        streamUrl: data.url,
+        protocol: data.url.includes('.m3u8') ? 'hls' : 'https',
+      });
+      if (startAt !== undefined) {
+        seekTo(startAt);
+      }
+    } catch {
+      toast.error('Could not load the audio.');
+    } finally {
+      setPlayBusy(false);
     }
-    setPlayBusy(false);
   };
 
   const runQuickRender = async (
@@ -292,9 +311,16 @@ export function StudioSoundView({ id }: { id: string }) {
 
   const onAutoTrim = () => {
     const base = editList ?? createDefaultEditList(item?.durationSec ?? 180);
-    const cuts = autoTrimCuts(peaks, base.sourceDuration);
+    const cuts = autoTrimCuts(peaks, base.sourceDuration).filter(
+      (cut) =>
+        !base.cuts.some(
+          (existing) =>
+            Math.abs(existing.start - cut.start) < 0.05 &&
+            Math.abs(existing.end - cut.end) < 0.05,
+        ),
+    );
     if (cuts.length === 0) {
-      setQuickMsg('No leading/trailing silence detected.');
+      setQuickMsg('No new leading/trailing silence to trim.');
       return;
     }
     void runQuickRender(
@@ -519,10 +545,6 @@ export function StudioSoundView({ id }: { id: string }) {
                 Processing failed for this file. Try uploading it again, or
                 contact support if it keeps happening.
               </Alert>
-            )}
-
-            {message && (
-              <p className="text-foreground-secondary text-sm">{message}</p>
             )}
 
             <Tabs

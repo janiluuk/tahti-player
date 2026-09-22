@@ -85,7 +85,7 @@ export const studioSoundItemRoute = createRoute({
   path: '/studio/sounds/$id',
   component: function StudioSoundItemRoute() {
     const { id } = studioSoundItemRoute.useParams();
-    return <StudioSoundView id={id} />;
+    return <StudioSoundView key={id} id={id} />;
   },
 });
 
