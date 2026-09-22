@@ -1,0 +1,42 @@
+[
+  {
+    "file": "01-login-filled.png",
+    "label": "Login form (artist credentials)"
+  },
+  {
+    "file": "02-studio-dashboard.png",
+    "label": "Studio dashboard"
+  },
+  {
+    "file": "03-upload-form.png",
+    "label": "Upload — file chosen"
+  },
+  {
+    "file": "04-track-view.png",
+    "label": "Uploaded track view (editor)"
+  },
+  {
+    "file": "05a-channel-designer-default.png",
+    "label": "05a-channel-designer-default"
+  },
+  {
+    "file": "05b-channel-designer-radio.png",
+    "label": "05b-channel-designer-radio"
+  },
+  {
+    "file": "05c-channel-designer-green-room.png",
+    "label": "05c-channel-designer-green-room"
+  },
+  {
+    "file": "05d-channel-designer-multicast.png",
+    "label": "05d-channel-designer-multicast"
+  },
+  {
+    "file": "05e-channel-designer-selects.png",
+    "label": "05e-channel-designer-selects"
+  },
+  {
+    "file": "06-addons-index.png",
+    "label": "Add-ons store index"
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "file": "01-home.png",
+    "label": "Home / listen"
+  },
+  {
+    "file": "02-radio.png",
+    "label": "Tahti Radio"
+  },
+  {
+    "file": "03-channel.png",
+    "label": "Public channel"
+  },
+  {
+    "file": "04-artist-profile.png",
+    "label": "Artist profile"
+  },
+  {
+    "file": "05-fan-tier-subscribe.png",
+    "label": "Fan tier subscribe (buy side)"
+  },
+  {
+    "file": "06-venues.png",
+    "label": "Venues"
+  },
+  {
+    "file": "07-help.png",
+    "label": "Help center"
+  },
+  {
+    "file": "08-transparency.png",
+    "label": "Transparency"
+  },
+  {
+    "file": "09-login.png",
+    "label": "Login"
+  },
+  {
+    "file": "10-join.png",
+    "label": "Join (signup)"
+  }
+]
