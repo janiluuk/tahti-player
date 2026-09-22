@@ -104,7 +104,7 @@ export async function signIn(page, email, password = 'demo-password') {
     .waitFor({ state: 'visible', timeout: 15_000 });
 }
 
-export async function shot(page, outDir, file, label) {
+export async function shot(page, outDir, file) {
   await page.screenshot({ path: join(outDir, file), fullPage: true });
   ok(`screenshot ${file}`);
 }
@@ -119,7 +119,7 @@ export async function sweepRoutes(page, outDir, routes) {
         timeout: 20_000,
       });
       await page.waitForTimeout(700);
-      await shot(page, outDir, `${id}.png`, id);
+      await shot(page, outDir, `${id}.png`);
     } catch (e) {
       fail(`route ${routePath}`, e.message);
     }
@@ -169,13 +169,18 @@ export async function runSingleThemeSweep(outRoot, colorMode, fn) {
 }
 
 export async function writeManifest(outDir, entries) {
-  await writeFile(join(outDir, 'manifest.json'), JSON.stringify(entries, null, 2) + '\n');
+  await writeFile(
+    join(outDir, 'manifest.json'),
+    JSON.stringify(entries, null, 2) + '\n',
+  );
 }
 
 export function summarize(name, outRoot) {
   console.log(`\n── ${name}: ${passed} passed, ${failed} failed ──`);
   console.log(`   Screenshots: ${outRoot}`);
-  if (failed > 0) process.exitCode = 1;
+  if (failed > 0) {
+    process.exitCode = 1;
+  }
 }
 
 /** Minimal valid WAV so the real upload flow has real bytes to send. */

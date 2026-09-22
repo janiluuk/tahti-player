@@ -9,9 +9,17 @@
  *   VITE_FORCE_MOCK=1 pnpm --filter @tahti-player/tahti-web dev -- --port 5195
  *   node scripts/journeys/listener-journey.mjs
  */
-import { join, dirname } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { BASE, injectState, runThemedJourney, shot, writeManifest, summarize } from './lib.mjs';
+
+import {
+  BASE,
+  injectState,
+  runThemedJourney,
+  shot,
+  summarize,
+  writeManifest,
+} from './lib.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT = join(__dirname, '../../docs/e2e-journeys/listener');
@@ -36,10 +44,22 @@ const steps = [
   { path: '/history', file: '02-history.png', label: 'Listening history' },
   { path: '/favorites', file: '03-favorites.png', label: 'Favorites' },
   { path: '/messages', file: '04-messages.png', label: 'Messages' },
-  { path: '/settings/account', file: '05-settings-account.png', label: 'Account settings' },
+  {
+    path: '/settings/account',
+    file: '05-settings-account.png',
+    label: 'Account settings',
+  },
   { path: '/sources', file: '06-sources.png', label: 'Connected sources' },
-  { path: `/channel/${ARTIST}`, file: '07-channel-as-listener.png', label: 'Channel, signed in' },
-  { path: `/subscribe/${ARTIST}`, file: '08-fan-tier-subscribe.png', label: 'Fan tier subscribe (buy side)' },
+  {
+    path: `/channel/${ARTIST}`,
+    file: '07-channel-as-listener.png',
+    label: 'Channel, signed in',
+  },
+  {
+    path: `/subscribe/${ARTIST}`,
+    file: '08-fan-tier-subscribe.png',
+    label: 'Fan tier subscribe (buy side)',
+  },
 ];
 
 const manifest = steps.map(({ file, label }) => ({ file, label }));
@@ -49,10 +69,13 @@ async function main() {
   await runThemedJourney(OUT, async (page, theme, outDir) => {
     await page.goto(`${BASE}/`, { waitUntil: 'load' });
     await injectState(page, { authUser: LISTENER_USER, colorMode: theme });
-    for (const { path, file, label } of steps) {
-      await page.goto(`${BASE}${path}`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+    for (const { path, file } of steps) {
+      await page.goto(`${BASE}${path}`, {
+        waitUntil: 'domcontentloaded',
+        timeout: 20_000,
+      });
       await page.waitForTimeout(700);
-      await shot(page, outDir, file, label);
+      await shot(page, outDir, file);
     }
   });
   await writeManifest(OUT, manifest);
