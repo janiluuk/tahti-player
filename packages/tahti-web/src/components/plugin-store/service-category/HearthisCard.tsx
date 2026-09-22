@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 
 import {
   Button,
+  ExternalLink,
   Input,
   MediaArtwork,
   PluginStoreItem,
@@ -739,14 +740,12 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                     <DownloadIcon size={15} className="mr-1.5" aria-hidden />
                     {importedIds.has(track.id) ? 'Imported' : 'Import'}
                   </Button>
-                  <a
+                  <ExternalLink
                     href={track.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-foreground-secondary shrink-0 text-xs underline-offset-2 hover:underline"
+                    className="text-foreground-secondary shrink-0 text-xs no-underline hover:underline"
                   >
                     hearthis.at ↗
-                  </a>
+                  </ExternalLink>
                 </li>
               ))}
             </ul>

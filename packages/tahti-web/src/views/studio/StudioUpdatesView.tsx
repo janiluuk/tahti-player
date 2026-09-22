@@ -60,12 +60,12 @@ export function StudioUpdatesView() {
   const isEmpty = posts.length === 0 && drafts.length === 0;
 
   const reload = () => {
-    void Promise.all([fetchArtistPosts(), fetchNewsletterDrafts()]).then(
-      ([p, n]) => {
+    void Promise.all([fetchArtistPosts(), fetchNewsletterDrafts()])
+      .then(([p, n]) => {
         setPosts(p.data);
         setDrafts(n.data);
-      },
-    );
+      })
+      .catch(() => toast.error('Could not load posts and newsletters.'));
   };
 
   useEffect(() => {
@@ -396,9 +396,7 @@ export function StudioUpdatesView() {
                 );
                 toast.success('Post deleted.');
               })
-              .catch(() => {
-                toast.error('Could not delete the post.');
-              });
+              .catch(() => toast.error('Could not delete the post.'));
           }}
         />
       </div>

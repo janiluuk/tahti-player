@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { PlayIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, Tooltip } from '@tahti-player/ui';
+import { Button, ExternalLink, Tooltip } from '@tahti-player/ui';
 
 import { fetchEditorSource, fetchStudioSound } from '../../../api/studio';
 import type { StudioRelease, StudioSound } from '../../../api/studio-types';
@@ -113,16 +113,14 @@ export function ReleaseTrackRow({
         </Link>
       ) : null}
       {shopUrl ? (
-        <a
+        <ExternalLink
           href={shopUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="border-border inline-flex size-7 items-center justify-center overflow-hidden rounded border"
+          className="border-border size-7 justify-center overflow-hidden rounded border no-underline"
           aria-label={`Open ${track.title} on Bandcamp`}
           title="Open on Bandcamp"
         >
           <SourceServiceIcon id="bandcamp" size="detail" />
-        </a>
+        </ExternalLink>
       ) : null}
     </li>
   );

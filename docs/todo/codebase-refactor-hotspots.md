@@ -1,9 +1,10 @@
 # Codebase refactor hotspots (god modules)
 
-**Status:** partial — every P0/P1 row is done; what's left (P2/P3) is
-deliberately deferred ("split only if pain appears") or tracked in
-[`god-module-restructure.md`](god-module-restructure.md) (`TrackEditDialog`,
-`LocalPlaylists`, `StreamManagerPanel`, unassessed studio/admin views).
+**Status:** partial — every P0/P1 row is done (including `TrackEditDialog`,
+`LocalPlaylists`, `StreamManagerPanel`, split 2026-09-23); what's left (P2/P3)
+is deliberately deferred ("split only if pain appears") or tracked in
+[`god-module-restructure.md`](god-module-restructure.md) (unassessed
+studio/admin views).
 
 ## Problem
 

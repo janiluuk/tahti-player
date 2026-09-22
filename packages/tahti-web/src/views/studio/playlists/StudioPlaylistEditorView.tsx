@@ -83,16 +83,18 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
       fetchStudioCollection(slug),
       fetchStudioSounds(),
       fetchStudioReleases(),
-    ]).then(([c, a, r]) => {
-      setCol(c.data);
-      setName(c.data.name);
-      setDescription(c.data.description ?? '');
-      setIsPublic(c.data.isPublic !== false);
-      setCollaborative(Boolean(c.data.collaborative));
-      setCoverUrl(c.data.coverUrl ?? null);
-      setSounds(a.data);
-      setReleases(r.data.releases);
-    });
+    ])
+      .then(([c, a, r]) => {
+        setCol(c.data);
+        setName(c.data.name);
+        setDescription(c.data.description ?? '');
+        setIsPublic(c.data.isPublic !== false);
+        setCollaborative(Boolean(c.data.collaborative));
+        setCoverUrl(c.data.coverUrl ?? null);
+        setSounds(a.data);
+        setReleases(r.data.releases);
+      })
+      .catch(() => toast.error(`Could not load the ${kindLabel}.`));
   };
 
   useEffect(() => {
@@ -272,12 +274,17 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
     void reorderStudioCollectionItems(
       slug,
       next.map((i) => i.id),
-    ).then((r) => {
-      if (!r.ok) {
-        toast.error(r.error);
+    )
+      .then((r) => {
+        if (!r.ok) {
+          toast.error(r.error);
+          void refreshItems();
+        }
+      })
+      .catch(() => {
+        toast.error('Could not save the new order.');
         void refreshItems();
-      }
-    });
+      });
   };
 
   return (

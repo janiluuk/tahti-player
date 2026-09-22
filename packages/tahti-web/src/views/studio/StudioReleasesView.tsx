@@ -17,6 +17,7 @@ import {
   CopyButton,
   Dialog,
   EmptyState,
+  ExternalLink,
   FilterChips,
   Input,
   Tooltip,
@@ -250,16 +251,14 @@ export function StudioReleasesView({
                       aria-label={`Copy smartlink for ${r.title}`}
                     />
                     {r.smartLinkTargets?.bandcamp ? (
-                      <a
+                      <ExternalLink
                         href={r.smartLinkTargets.bandcamp}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="border-border inline-flex size-8 items-center justify-center overflow-hidden rounded border"
+                        className="border-border size-8 justify-center overflow-hidden rounded border no-underline"
                         aria-label={`Open ${r.title} on Bandcamp`}
                         title="Open on Bandcamp"
                       >
                         <SourceServiceIcon id="bandcamp" size="detail" />
-                      </a>
+                      </ExternalLink>
                     ) : null}
                     <Tooltip
                       content={openMoreId === r.id ? 'Less' : 'More'}

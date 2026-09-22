@@ -83,6 +83,16 @@ export const studioRecordingsRoute = createRoute({
 export const studioSoundItemRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/sounds/$id',
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { tab?: 'details' | 'playlists' | 'insights' } => ({
+    tab:
+      search.tab === 'details' ||
+      search.tab === 'playlists' ||
+      search.tab === 'insights'
+        ? search.tab
+        : undefined,
+  }),
   component: function StudioSoundItemRoute() {
     const { id } = studioSoundItemRoute.useParams();
     return <StudioSoundView key={id} id={id} />;
@@ -272,6 +282,16 @@ export const studioShowsRoute = createRoute({
 export const studioShowDetailRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/shows/$id',
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { tab?: 'overview' | 'episodes' | 'recordings' } => ({
+    tab:
+      search.tab === 'overview' ||
+      search.tab === 'episodes' ||
+      search.tab === 'recordings'
+        ? search.tab
+        : undefined,
+  }),
   component: function StudioShowDetailRoute() {
     const { id } = studioShowDetailRoute.useParams();
     return <StudioShowDetailView id={id} />;
