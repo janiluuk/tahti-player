@@ -245,3 +245,29 @@ Fix, in this order (tick when done; each finished item moves to HISTORY):
 - [x] Go live: confirm before going live; toasts; catches on destination toggle/delete.
 
 Notes on the fix queue: Schedule — upcoming broadcasts still link to shows **by title** because the API returns no show id (needs `showId` on `UpcomingBroadcast`; the lookup is now one map instead of five scans), and the three-form split of the dialog is not done. Home — the three discography counts still fetch the whole library (needs a counts endpoint); a failed load no longer shows the "empty discography" call to action. Stats — "Custom" and "1 day" still use the last 30 days for top tracks/countries (the API has no such window) but the panel titles now say so. Sound view — the destructive/quick actions still lack tests; no fix in this pass added tests beyond `trimToCuts`.
+
+## Open items after the studio pass (2026-09-22) — everything not done yet
+
+Nothing above was dropped; this is the consolidated list of what is still open.
+
+**Backend / API needed**
+- [ ] `showId` on `UpcomingBroadcast` (Schedule links upcoming items to shows by title today).
+- [ ] A counts endpoint for Studio Home (sounds/collections/releases) instead of loading the whole library.
+- [ ] `fetchStudioRelease(id)` (Release detail loads every release to find one).
+- [ ] Top-list windows for "Custom" and "1 day" ranges (Stats falls back to 30 days).
+
+**UI library**
+- [ ] An external-link component in `@tahti-player/ui`; then replace the hand-rolled `<a target=_blank>` (release track row, four in `ReleaseOpsPanel`, `GuideDetail`, `StudioReleasesView`, `StudioMasteringView`, Branding ZIP, plugin-store cards) and the `<Link><Button/></Link>` nesting.
+- [ ] Remaining hand-rolled: `<input>` in `channel-designer/ColorSchemeFields`, `<img>` in `channel-designer/VideoOrImageField`.
+
+**Splits still to do** (baselined over 800 lines): `distribution/ReleaseOpsPanel` 770, `StudioBrandingView` (`usePressKit` hook + per-tab sections), `StudioCollectionEditView` (`useCollectionEditor` shared with `playlists/StudioPlaylistEditorView`, plus details form and tracklist components), `StudioReleaseDetailView` (`useSoundPlayable` shared with the collection editor), `StudioShowDetailView` (`ShowDefaultsForm`, `NewEpisodeDialog`, `useShowDetail`), `StudioScheduleView` (three-form dialog + `useScheduleForm`), `StudioGoLiveView`, `StudioHomeView`, `StudioSoundView`, `StudioStatsView`; also `ServiceCategory`-era leftovers in the sweep table (`TrackEditDialog`, `LocalPlaylists`, `StreamManagerPanel`, `mcp/metadata.rs`), and the 11 `requestJson` near-copies that differ (see api splits).
+
+**Not fixed from the studio audit**
+- [ ] Show detail: `bookNextInterval` has no conflict check and leaves an orphan booking if episode creation fails; the episode "Statistics" block is a placeholder; tab state is local, not in the URL.
+- [ ] Collection editor: the details save is still two requests (a partial failure is now reported, not rolled back).
+- [ ] Playlists list: create has no try/finally; Branding bio save and avatar upload `.then` chains have no catch; Updates and GoLive destination toggles use `.then` without catch.
+- [ ] Sound view: still six separate busy flags; tab state local.
+
+**Tests missing** (only `trimToCuts` plus the plugin-store and api tests exist): the studio fixes above — collection editor add-track keeps form edits, show detail uploads a picked image before saving, playlists confirm-before-remove, Branding replace-upload order, Updates confirm-before-send, Distribution confirm-before-submit, Stats top-list-only refetch, Schedule disabled create-only fields, Go live confirm.
+
+**Verification in the running app** (still nothing exercised visually): the plugin-store cards (Spotify, hearthis, Bandcamp/SoundCloud, Radio), channel edit mode, the designer, the Pro editor, and now the studio views changed in this pass. Blocked: the local API stack needs disk space (`stack-up.sh --seed` in `../tahti-org` failed when the disk filled; ~51 GB of reclaimable Docker volumes on this machine) — the dev login returns 500 until it is up.
