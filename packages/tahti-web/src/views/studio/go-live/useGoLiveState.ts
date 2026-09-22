@@ -194,8 +194,11 @@ export function useGoLiveState() {
     toast.success(next ? 'Recording enabled.' : 'Recording disabled.');
   };
 
+  const analyser = usePlayerStore((state) => state.analyser);
+
   return {
     user,
+    analyser,
     settings,
     signal,
     setSignal,
@@ -236,3 +239,5 @@ export function useGoLiveState() {
     toggleRecording,
   };
 }
+
+export type GoLiveState = ReturnType<typeof useGoLiveState>;
