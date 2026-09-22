@@ -102,7 +102,7 @@ carry the light/dark comparison as their point. So:
 
 ## Output
 
-```
+```text
 docs/e2e-journeys/
   anonymous/{light,dark}/*.png + manifest.json
   listener/{light,dark}/*.png + manifest.json
