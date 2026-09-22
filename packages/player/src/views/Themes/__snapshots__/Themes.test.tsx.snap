@@ -203,7 +203,7 @@ exports[`Themes view > (Snapshot) renders the themes view 1`] = `
                   />
                 </svg>
               </span>
-              Plugins
+              Add-ons
             </button>
             <button
               class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2 shrink-0 justify-start gap-2"

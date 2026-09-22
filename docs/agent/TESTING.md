@@ -24,6 +24,8 @@ the expected nav is still mounted before asserting `aria-current` /
 
 Tests use Vitest + React Testing Library. Globals enabled (`describe`, `it`, `expect`, `vi`). Coverage is V8-based across packages and reported in CI. Run tests with `pnpm test` (or a package filter), not a separate IDE test-runner tool.
 
+**"Visual diff" / "screenshot diff" = the CI snapshot digest**, not Storybook. When a PR comment or a report says something like "N mismatch(es) already failing on master" or "Snapshot digest", that's the Vitest DOM-snapshot mismatch system (`scripts/ci/build-snapshot-digest.mjs`, `vitest-snapshot-reporter.mjs`, `publish-visual-snapshot-diffs.mjs`, posted to the PR by `comment-snapshot-digest.mjs`; artifact `snapshot-digest`/`snapshot-digest-coverage`, see `.github/workflows/ci.yml` and `coverage.yml`). It fires from the `Test` step failing, and only lists genuinely new mismatches vs. the base branch — a standing "already failing on master" count is pre-existing breakage, not something this PR caused. A separate Storybook *build* failure (`storybook build` erroring during `pnpm turbo build`) is a different, unrelated CI step — don't conflate the two when triaging a red run.
+
 - Integration tests over unit tests for user-facing behavior. Render real components and assert on DOM content rather than verifying mock calls.
 - Unit tests for utilities - standalone data structures (RingBuffer, parsers) deserve isolated tests. Use them sparingly.
 - Test user behavior, not implementation details
