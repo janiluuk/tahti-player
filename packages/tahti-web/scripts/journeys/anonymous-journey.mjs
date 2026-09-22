@@ -10,7 +10,7 @@
  */
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { BASE, injectState, ok, runThemedJourney, shot, writeManifest, summarize } from './lib.mjs';
+import { BASE, injectState, runThemedJourney, visitAndShot, writeManifest, summarize } from './lib.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT = join(__dirname, '../../docs/e2e-journeys/anonymous');
@@ -36,10 +36,8 @@ async function main() {
   await runThemedJourney(OUT, async (page, theme, outDir) => {
     await page.goto(`${BASE}/`, { waitUntil: 'load' });
     await injectState(page, { authUser: null, colorMode: theme });
-    for (const { path, file, label } of steps) {
-      await page.goto(`${BASE}${path}`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
-      await page.waitForTimeout(700);
-      await shot(page, outDir, file, label);
+    for (const step of steps) {
+      await visitAndShot(page, outDir, step);
     }
   });
   await writeManifest(OUT, manifest);

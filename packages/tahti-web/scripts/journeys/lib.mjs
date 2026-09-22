@@ -109,20 +109,23 @@ export async function shot(page, outDir, file, label) {
   ok(`screenshot ${file}`);
 }
 
+/** goto + shot, wrapped so one flaky page (e.g. a WebGL background canvas
+ * crashing the screenshot protocol call) doesn't abort the whole journey. */
+export async function visitAndShot(page, outDir, { path: routePath, file, label }) {
+  try {
+    await page.goto(`${BASE}${routePath}`, { waitUntil: 'domcontentloaded', timeout: 20_000 });
+    await page.waitForTimeout(700);
+    await shot(page, outDir, file, label);
+  } catch (e) {
+    fail(`${label} (${routePath})`, e.message);
+  }
+}
+
 /** Visit a flat list of [path, id] pairs, one screenshot each. Used for the
  * exhaustive "every tab" sweeps (studio, admin). */
 export async function sweepRoutes(page, outDir, routes) {
   for (const [routePath, id] of routes) {
-    try {
-      await page.goto(`${BASE}${routePath}`, {
-        waitUntil: 'domcontentloaded',
-        timeout: 20_000,
-      });
-      await page.waitForTimeout(700);
-      await shot(page, outDir, `${id}.png`, id);
-    } catch (e) {
-      fail(`route ${routePath}`, e.message);
-    }
+    await visitAndShot(page, outDir, { path: routePath, file: `${id}.png`, label: id });
   }
 }
 
