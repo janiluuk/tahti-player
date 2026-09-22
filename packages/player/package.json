@@ -21,6 +21,7 @@
     "@tahti-player/hifi": "workspace:*",
     "@tahti-player/i18n": "workspace:*",
     "@tahti-player/model": "workspace:*",
+    "@tahti-player/plugin-registry": "workspace:*",
     "@tahti-player/plugin-sdk": "workspace:*",
     "@tahti-player/tailwind-config": "workspace:*",
     "@tahti-player/themes": "workspace:*",
