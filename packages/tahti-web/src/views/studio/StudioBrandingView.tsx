@@ -15,6 +15,7 @@ import {
   Dialog,
   FilePicker,
   FilterChips,
+  ImageReveal,
   Input,
   SaveButton,
   TabLabel,
@@ -47,6 +48,7 @@ import { RoundImageUploadButton } from '../../components/RoundImageUploadButton'
 import { StudioPanel } from '../../components/StudioPanel';
 import { useAuthStore } from '../../stores/authStore';
 import { useSettingsModalStore } from '../../stores/settingsModalStore';
+import { PressKitPreview } from './branding/PressKitPreview';
 
 const ACCEPTED_IMAGES = 'image/jpeg,image/png,image/webp';
 
@@ -165,37 +167,51 @@ export const StudioBrandingPanel: FC<{
     includeInZip: boolean,
   ) => {
     setBusy(true);
-    if (uploadMode === 'replace') {
-      await Promise.all(images.map((image) => deletePressKitImage(image.id)));
-    }
-    const uploaded = await uploadPressKitImages(Array.from(files));
-    let nextImages = [
-      ...(uploadMode === 'replace' ? [] : images),
-      ...uploaded.images,
-    ];
-    if (!includeInZip) {
-      await Promise.all(
-        uploaded.images.map((image) =>
-          updatePressKitImage(image.id, { includeInZip: false }),
-        ),
-      );
-      const uploadedIds = new Set(uploaded.images.map((image) => image.id));
-      nextImages = nextImages.map((image) =>
-        uploadedIds.has(image.id) ? { ...image, includeInZip: false } : image,
-      );
-    }
-    nextImages = await enforcePressKitLimit(nextImages);
-    await setPressKitGalleryPublic(galleryPublic);
-    setImages(nextImages);
-    setBusy(false);
-    setSelectedGalleryFiles([]);
-    setGalleryUploadOpen(false);
-    if (uploaded.errors.length > 0) {
-      toast.error(uploaded.errors.join('; '));
-    } else {
-      toast.success(
-        `${uploaded.images.length} image${uploaded.images.length === 1 ? '' : 's'} added.`,
-      );
+    try {
+      // Upload first and only remove the old images once the new ones are
+      // stored: a failed upload must never leave the gallery empty.
+      const uploaded = await uploadPressKitImages(Array.from(files));
+      if (uploaded.images.length === 0) {
+        toast.error(uploaded.errors.join('; ') || 'No images were uploaded.');
+        return;
+      }
+      const replaced = uploadMode === 'replace' ? images : [];
+      if (replaced.length > 0) {
+        await Promise.all(
+          replaced.map((image) => deletePressKitImage(image.id)),
+        );
+      }
+      let nextImages = [
+        ...(uploadMode === 'replace' ? [] : images),
+        ...uploaded.images,
+      ];
+      if (!includeInZip) {
+        await Promise.all(
+          uploaded.images.map((image) =>
+            updatePressKitImage(image.id, { includeInZip: false }),
+          ),
+        );
+        const uploadedIds = new Set(uploaded.images.map((image) => image.id));
+        nextImages = nextImages.map((image) =>
+          uploadedIds.has(image.id) ? { ...image, includeInZip: false } : image,
+        );
+      }
+      nextImages = await enforcePressKitLimit(nextImages);
+      await setPressKitGalleryPublic(galleryPublic);
+      setImages(nextImages);
+      setSelectedGalleryFiles([]);
+      setGalleryUploadOpen(false);
+      if (uploaded.errors.length > 0) {
+        toast.error(uploaded.errors.join('; '));
+      } else {
+        toast.success(
+          `${uploaded.images.length} image${uploaded.images.length === 1 ? '' : 's'} added.`,
+        );
+      }
+    } catch {
+      toast.error('Could not update the photo gallery.');
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -590,10 +606,11 @@ export const StudioBrandingPanel: FC<{
                     onDragEnd={() => setDraggedPressKitImageId(null)}
                     className="border-border bg-background-secondary overflow-hidden rounded-lg border"
                   >
-                    <img
+                    <ImageReveal
                       src={image.imageUrl}
                       alt=""
-                      className="aspect-[4/3] w-full object-cover"
+                      className="aspect-[4/3] w-full"
+                      imgClassName="object-cover"
                     />
                     <div className="flex flex-col gap-2 p-3">
                       <Input
@@ -689,58 +706,6 @@ export const StudioBrandingPanel: FC<{
     </div>
   );
 };
-
-function PressKitPreview({
-  displayName,
-  bio,
-  images,
-}: {
-  displayName: string;
-  bio: string | null;
-  images: PressKitImageItem[];
-}) {
-  return (
-    <div className="border-border bg-background overflow-hidden rounded-xl border shadow-lg">
-      <div className="via-primary/30 relative min-h-48 overflow-hidden bg-gradient-to-br from-black/80 to-black/80 p-5 text-white sm:min-h-56">
-        {images[0] ? (
-          <img
-            src={images[0].imageUrl}
-            alt=""
-            className="absolute inset-0 h-full w-full object-cover opacity-65"
-          />
-        ) : null}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
-        <h3 className="font-display relative mt-24 text-2xl font-extrabold tracking-tight sm:mt-32">
-          {displayName}
-        </h3>
-      </div>
-      <div className="flex flex-col gap-4 p-5">
-        <p
-          className={`text-sm leading-relaxed ${bio ? 'text-foreground' : 'text-foreground-secondary italic'}`}
-        >
-          {bio || 'No bio yet.'}
-        </p>
-        {images.length > 1 ? (
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-            {images.slice(1, 5).map((image) => (
-              <img
-                key={image.id}
-                src={image.imageUrl}
-                alt={image.title ?? ''}
-                className="aspect-square w-full rounded-md object-cover"
-              />
-            ))}
-          </div>
-        ) : null}
-        {images.length === 0 ? (
-          <p className="text-foreground-secondary text-xs">
-            Add at least one included image to complete the preview.
-          </p>
-        ) : null}
-      </div>
-    </div>
-  );
-}
 
 export const StudioBrandingView: FC = () => {
   const open = useSettingsModalStore((state) => state.open);

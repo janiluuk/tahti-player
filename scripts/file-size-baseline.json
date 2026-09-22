@@ -1,10 +1,5 @@
 {
-  "packages/tahti-web/src/api/artist-settings.ts": 1052,
-  "packages/tahti-web/src/api/channel-design.ts": 1318,
   "packages/tahti-web/src/api/client.ts": 1417,
-  "packages/tahti-web/src/api/shows.ts": 1331,
-  "packages/tahti-web/src/api/sources.ts": 1194,
-  "packages/tahti-web/src/api/studio-extras.ts": 1233,
   "packages/tahti-web/src/api/types.ts": 969,
   "packages/tahti-web/src/components/AppTopNav.tsx": 878,
   "packages/tahti-web/src/components/LocalPlaylists.tsx": 953,
@@ -17,11 +12,6 @@
   "packages/tahti-web/src/views/TrackDetailView.tsx": 1048,
   "packages/tahti-web/src/views/admin/AdminAddonsView.tsx": 1076,
   "packages/tahti-web/src/views/admin/AdminStorageView.tsx": 919,
-  "packages/tahti-web/src/views/studio/StudioCollectionEditView.tsx": 1065,
-  "packages/tahti-web/src/views/studio/StudioDistributionView.tsx": 1027,
-  "packages/tahti-web/src/views/studio/StudioPlaylistsView.tsx": 801,
-  "packages/tahti-web/src/views/studio/StudioReleaseDetailView.tsx": 1150,
-  "packages/tahti-web/src/views/studio/StudioScheduleView.tsx": 1090,
-  "packages/tahti-web/src/views/studio/StudioShowDetailView.tsx": 1093,
+  "packages/tahti-web/src/views/studio/StudioCollectionEditView.tsx": 920,
   "packages/player/src-tauri/src/mcp/metadata.rs": 1005
 }

@@ -1,19 +1,17 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import {
   ArrowLeftIcon,
-  BarChart3Icon,
   CalendarPlusIcon,
-  CheckIcon,
   CircleDotIcon,
   InfoIcon,
   ListMusicIcon,
   MicIcon,
   PlayIcon,
   PlusIcon,
-  RadioIcon,
   UploadIcon,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   Button,
@@ -27,7 +25,6 @@ import {
   Textarea,
   Toggle,
   Tooltip,
-  ViewShell,
 } from '@tahti-player/ui';
 
 import {
@@ -36,157 +33,26 @@ import {
   fetchEpisodesForShow,
   fetchShowBookings,
   fetchShowSeriesById,
-  patchEpisode,
   patchShowSeries,
   type StudioEpisode,
   type StudioShowBooking,
   type StudioShowSeries,
 } from '../../api/shows';
 import { uploadSoundFile } from '../../api/studio';
+import { uploadUserMediaFile } from '../../api/user-media';
 import { EntitySocialHeader } from '../../components/EntitySocialHeader';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { ShowImagePicker } from '../../components/ShowImagePicker';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
-import { Eyebrow } from '../../components/tahti/Eyebrow';
+import { EpisodeEditorRow } from './show-detail/EpisodeEditorRow';
 import { EpisodeSourceIcon, episodeStatusLabel } from './StudioShowsView';
 
-function EpisodeEditorRow({
-  episode,
-  onSaved,
-}: {
-  episode: StudioEpisode;
-  onSaved: (episode: StudioEpisode) => void;
-}) {
-  const [title, setTitle] = useState(episode.title);
-  const [description, setDescription] = useState(episode.description);
-  const [saving, setSaving] = useState(false);
-  const [statsOpen, setStatsOpen] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
-
-  const save = async () => {
-    setSaving(true);
-    setMessage(null);
-    const result = await patchEpisode(episode.id, {
-      title: title.trim() || episode.title,
-      description: description.trim(),
-    });
-    setSaving(false);
-    if (!result.ok) {
-      setMessage(result.error);
-      return;
-    }
-    onSaved(result.data);
-    setTitle(result.data.title);
-    setDescription(result.data.description);
-    setMessage('Saved');
-  };
-
-  return (
-    <li className="border-border rounded-xl border p-4">
-      <div className="flex flex-wrap items-start gap-3">
-        <Eyebrow>Episode #{episode.episodeNumber}</Eyebrow>
-        <div className="min-w-0 flex-1">
-          <p className="font-medium">{episode.title}</p>
-          <p className="text-foreground-secondary mt-1 text-xs">
-            {episodeStatusLabel(episode)} ·{' '}
-            {episode.source === 'broadcast' ? 'Recorded' : 'Uploaded'}
-          </p>
-        </div>
-        <Button
-          size="sm"
-          variant="text"
-          onClick={() => setStatsOpen((open) => !open)}
-          aria-expanded={statsOpen}
-        >
-          <BarChart3Icon size={14} aria-hidden />
-          Statistics
-        </Button>
-      </div>
-
-      <div className="mt-4 grid gap-3">
-        <Input
-          label="Episode title"
-          value={title}
-          onChange={(event) => setTitle(event.target.value)}
-        />
-        <label className="flex flex-col gap-1 text-sm">
-          <span className="text-foreground-secondary text-xs uppercase">
-            Description
-          </span>
-          <Textarea
-            tone="secondary"
-            value={description}
-            onChange={(event) => setDescription(event.target.value)}
-            rows={3}
-          />
-        </label>
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          {message ? (
-            <span className="text-foreground-secondary text-xs">{message}</span>
-          ) : (
-            <span />
-          )}
-          <SaveButton
-            saving={saving}
-            label="Save episode"
-            onClick={() => void save()}
-          />
-        </div>
-      </div>
-
-      {statsOpen ? (
-        <div className="border-border bg-background-secondary/40 mt-4 grid gap-3 rounded-lg border p-3 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <p className="text-foreground-secondary text-xs uppercase">
-              Status
-            </p>
-            <p className="mt-1 text-sm font-medium">
-              {episodeStatusLabel(episode)}
-            </p>
-          </div>
-          <div>
-            <p className="text-foreground-secondary text-xs uppercase">
-              Source
-            </p>
-            <p className="mt-1 text-sm font-medium">
-              {episode.source === 'broadcast'
-                ? 'Broadcast recording'
-                : 'Uploaded audio'}
-            </p>
-          </div>
-          <div>
-            <p className="text-foreground-secondary text-xs uppercase">Audio</p>
-            <p className="mt-1 text-sm font-medium">
-              {episode.soundId ? 'Attached' : 'Not attached'}
-            </p>
-          </div>
-          <div>
-            <p className="text-foreground-secondary text-xs uppercase">
-              Created
-            </p>
-            <p className="mt-1 text-sm font-medium">
-              {new Date(episode.createdAt).toLocaleDateString()}
-            </p>
-          </div>
-          {episode.slotStartAt ? (
-            <div className="sm:col-span-2 lg:col-span-4">
-              <p className="text-foreground-secondary text-xs uppercase">
-                Scheduled
-              </p>
-              <p className="mt-1 text-sm font-medium">
-                {new Date(episode.slotStartAt).toLocaleString()}
-              </p>
-            </div>
-          ) : null}
-          <p className="text-foreground-secondary text-xs sm:col-span-2 lg:col-span-4">
-            Listener play and download totals will appear here when
-            episode-level analytics are available.
-          </p>
-        </div>
-      ) : null}
-    </li>
-  );
+/** Picked images are previewed through blob: URLs; free them when replaced. */
+function revokeBlobUrl(url: string) {
+  if (url.startsWith('blob:')) {
+    URL.revokeObjectURL(url);
+  }
 }
 
 export function StudioShowDetailView({ id }: { id: string }) {
@@ -207,6 +73,7 @@ export function StudioShowDetailView({ id }: { id: string }) {
   const [backdropFile, setBackdropFile] = useState<File | null>(null);
   const [autoPublish, setAutoPublish] = useState(true);
   const [savingMeta, setSavingMeta] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const [showTab, setShowTab] = useState<
     'overview' | 'episodes' | 'recordings'
   >('overview');
@@ -215,22 +82,27 @@ export function StudioShowDetailView({ id }: { id: string }) {
   ).length;
 
   const reload = () => {
-    void fetchShowSeriesById(id).then((r) => {
-      setShow(r.data);
-      if (r.data) {
-        setTitle(r.data.title);
-        setDescription(r.data.description);
-        setThumbnailUrl(r.data.coverUrl ?? '');
-        setBackdropUrl(r.data.backdropUrl ?? '');
-        setAutoPublish(r.data.autoPublish ?? true);
-      }
-    });
-    void fetchEpisodesForShow(id).then((r) => setEpisodes(r.data));
+    fetchShowSeriesById(id)
+      .then((r) => {
+        setShow(r.data);
+        if (r.data) {
+          setTitle(r.data.title);
+          setDescription(r.data.description);
+          setThumbnailUrl(r.data.coverUrl ?? '');
+          setBackdropUrl(r.data.backdropUrl ?? '');
+          setAutoPublish(r.data.autoPublish ?? true);
+        }
+      })
+      .catch(() => toast.error('Could not load the show.'))
+      .finally(() => setLoaded(true));
+    fetchEpisodesForShow(id)
+      .then((r) => setEpisodes(r.data))
+      .catch(() => toast.error('Could not load the episodes.'));
     const from = new Date().toISOString();
     const to = new Date(Date.now() + 14 * 24 * 3600_000).toISOString();
-    void fetchShowBookings(from, to).then((r) =>
-      setBookings(r.data.filter((b) => b.isMine)),
-    );
+    fetchShowBookings(from, to)
+      .then((r) => setBookings(r.data.filter((b) => b.isMine)))
+      .catch(() => undefined);
   };
 
   useEffect(() => {
@@ -257,25 +129,54 @@ export function StudioShowDetailView({ id }: { id: string }) {
     return upcoming;
   }, [bookings]);
 
+  /** Uploads a picked image and returns its stored URL. A picked file is only
+   * a local blob: preview until this runs, so it must never be saved as the
+   * show's URL directly. */
+  const uploadPicked = async (file: File | null, current: string) => {
+    if (!file) {
+      return current;
+    }
+    const result = await uploadUserMediaFile(file);
+    if (!result.ok) {
+      throw new Error(result.error);
+    }
+    return result.data.url;
+  };
+
   const saveMeta = async () => {
     if (!show) {
       return;
     }
     setSavingMeta(true);
-    const r = await patchShowSeries(show.id, {
-      title: title.trim() || show.title,
-      description: description.trim(),
-      coverUrl: thumbnailUrl.trim() || null,
-      backdropUrl: backdropUrl.trim() || null,
-      autoPublish,
-    });
-    setSavingMeta(false);
-    if (!r.ok) {
-      setMsg(r.error);
-      return;
+    try {
+      const [coverUrl, backdrop] = await Promise.all([
+        uploadPicked(thumbnailFile, thumbnailUrl.trim()),
+        uploadPicked(backdropFile, backdropUrl.trim()),
+      ]);
+      const r = await patchShowSeries(show.id, {
+        title: title.trim() || show.title,
+        description: description.trim(),
+        coverUrl: coverUrl || null,
+        backdropUrl: backdrop || null,
+        autoPublish,
+      });
+      if (!r.ok) {
+        toast.error(r.error);
+        return;
+      }
+      setShow(r.data);
+      setThumbnailUrl(r.data.coverUrl ?? '');
+      setBackdropUrl(r.data.backdropUrl ?? '');
+      setThumbnailFile(null);
+      setBackdropFile(null);
+      toast.success('Show details saved — new episodes will inherit these.');
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : 'Could not save the show.',
+      );
+    } finally {
+      setSavingMeta(false);
     }
-    setShow(r.data);
-    setMsg('Show details saved — new episodes will inherit these.');
   };
 
   const bookNextInterval = async () => {
@@ -322,54 +223,53 @@ export function StudioShowDetailView({ id }: { id: string }) {
     if (!show) {
       return;
     }
-    setBusy(true);
-    setMsg(null);
-
-    let soundId: string | null = null;
-    if (source === 'upload') {
-      if (!file) {
-        setBusy(false);
-        setMsg('Choose an audio file to upload.');
-        return;
-      }
-      const up = await uploadSoundFile({
-        file,
-        title: defaultEpisodeTitle,
-      });
-      if (!up.ok) {
-        setBusy(false);
-        setMsg(up.error);
-        return;
-      }
-      soundId = up.itemId;
-    }
-
-    const ep = await createEpisode({
-      showId: show.id,
-      source,
-      soundId,
-      slotStartAt: nextSlotHint?.startAt ?? null,
-      slotEndAt: nextSlotHint?.endAt ?? null,
-      bookingId: nextSlotHint?.id ?? null,
-    });
-    setBusy(false);
-    if (!ep.ok) {
-      setMsg(ep.error);
+    if (source === 'upload' && !file) {
+      toast.error('Choose an audio file to upload.');
       return;
     }
-    setCreateOpen(false);
-    setFile(null);
-    if (source === 'broadcast') {
+    setBusy(true);
+    setMsg(null);
+    let soundId: string | null = null;
+    try {
+      if (source === 'upload' && file) {
+        const up = await uploadSoundFile({ file, title: defaultEpisodeTitle });
+        if (!up.ok) {
+          toast.error(up.error);
+          return;
+        }
+        soundId = up.itemId;
+      }
+
+      // Only a recorded episode takes the upcoming booking; an uploaded one
+      // is not tied to a broadcast slot.
+      const slot = source === 'broadcast' ? nextSlotHint : null;
+      const ep = await createEpisode({
+        showId: show.id,
+        source,
+        soundId,
+        slotStartAt: slot?.startAt ?? null,
+        slotEndAt: slot?.endAt ?? null,
+        bookingId: slot?.id ?? null,
+      });
+      if (!ep.ok) {
+        toast.error(
+          soundId
+            ? `${ep.error} The audio was uploaded to your library; add it to an episode later.`
+            : ep.error,
+        );
+        return;
+      }
+      setCreateOpen(false);
+      setFile(null);
       void navigate({
         to: '/studio/shows/episodes/$episodeId',
         params: { episodeId: ep.data.id },
       });
-      return;
+    } catch {
+      toast.error('Could not create the episode.');
+    } finally {
+      setBusy(false);
     }
-    void navigate({
-      to: '/studio/shows/episodes/$episodeId',
-      params: { episodeId: ep.data.id },
-    });
   };
 
   return (
@@ -387,7 +287,11 @@ export function StudioShowDetailView({ id }: { id: string }) {
 
         {!show ? (
           <StudioPanel>
-            <PageEmpty title="Show not found" />
+            {loaded ? (
+              <PageEmpty title="Show not found" />
+            ) : (
+              <PageLoading label="Loading…" />
+            )}
           </StudioPanel>
         ) : (
           <>
@@ -482,6 +386,7 @@ export function StudioShowDetailView({ id }: { id: string }) {
                       value={thumbnailUrl}
                       file={thumbnailFile}
                       onFile={(file) => {
+                        revokeBlobUrl(thumbnailUrl);
                         setThumbnailFile(file);
                         setThumbnailUrl(file ? URL.createObjectURL(file) : '');
                       }}
@@ -493,6 +398,7 @@ export function StudioShowDetailView({ id }: { id: string }) {
                       value={backdropUrl}
                       file={backdropFile}
                       onFile={(file) => {
+                        revokeBlobUrl(backdropUrl);
                         setBackdropFile(file);
                         setBackdropUrl(file ? URL.createObjectURL(file) : '');
                       }}
@@ -501,15 +407,15 @@ export function StudioShowDetailView({ id }: { id: string }) {
                     <div className="border-border bg-background-secondary/30 flex items-center justify-between gap-3 rounded-md border p-3 text-sm">
                       <span>
                         <span className="block font-medium">
-                          Record broadcasts by default
+                          Publish recordings automatically
                         </span>
                         <span className="text-foreground-secondary block text-xs">
-                          New broadcasts for this show start with recording
-                          enabled.
+                          Recorded broadcasts of this show are published without
+                          a manual approval step.
                         </span>
                       </span>
                       <Toggle
-                        label="Record broadcasts by default"
+                        label="Publish recordings automatically"
                         checked={autoPublish}
                         onChange={setAutoPublish}
                       />
@@ -800,292 +706,6 @@ export function StudioShowDetailView({ id }: { id: string }) {
             {msg && <p className="text-sm">{msg}</p>}
           </>
         )}
-      </div>
-    </StudioGate>
-  );
-}
-
-export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
-  const navigate = useNavigate();
-  const [episode, setEpisode] = useState<StudioEpisode | null>(null);
-  const [show, setShow] = useState<StudioShowSeries | null>(null);
-  const [msg, setMsg] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
-  const [trimStart, setTrimStart] = useState(0);
-  const [trimEnd, setTrimEnd] = useState(0);
-  const [normalize, setNormalize] = useState(true);
-  const [publicTitle, setPublicTitle] = useState('');
-  const [publicDescription, setPublicDescription] = useState('');
-  const [savingDetails, setSavingDetails] = useState(false);
-
-  useEffect(() => {
-    void import('../../api/shows').then(
-      ({ fetchEpisode, fetchShowSeriesById }) => {
-        void fetchEpisode(episodeId).then((r) => {
-          setEpisode(r.data);
-          if (r.data) {
-            setPublicTitle(r.data.title);
-            setPublicDescription(r.data.description);
-            void fetchShowSeriesById(r.data.showId).then((s) =>
-              setShow(s.data),
-            );
-          }
-        });
-      },
-    );
-  }, [episodeId]);
-
-  if (!episode) {
-    return (
-      <StudioGate>
-        <div className="studio-page-layout flex w-full flex-col">
-          <PageLoading label="Loading…" />
-        </div>
-      </StudioGate>
-    );
-  }
-
-  const needsApproval =
-    episode.source === 'broadcast' || episode.status === 'PENDING_APPROVAL';
-
-  const savePublicDetails = async () => {
-    setSavingDetails(true);
-    setMsg(null);
-    const result = await patchEpisode(episode.id, {
-      title: publicTitle.trim() || episode.title,
-      description: publicDescription.trim(),
-    });
-    setSavingDetails(false);
-    if (!result.ok) {
-      setMsg(result.error);
-      return;
-    }
-    setEpisode(result.data);
-    setPublicTitle(result.data.title);
-    setPublicDescription(result.data.description);
-    setMsg('Public show details saved.');
-  };
-
-  return (
-    <StudioGate>
-      <div className="studio-page-layout flex w-full flex-col gap-6">
-        <Tooltip content={`Back to ${show?.title ?? 'Show'}`} side="right">
-          <Link
-            to="/studio/shows/$id"
-            params={{ id: episode.showId }}
-            aria-label={`Back to ${show?.title ?? 'Show'}`}
-            className="text-foreground-secondary hover:bg-background-secondary inline-flex size-8 w-fit items-center justify-center rounded-full"
-          >
-            <ArrowLeftIcon size={16} aria-hidden />
-          </Link>
-        </Tooltip>
-
-        <ViewShell
-          title={episode.title}
-          classes={{ root: 'px-0 pt-0' }}
-          actions={<Eyebrow>Episode #{episode.episodeNumber}</Eyebrow>}
-        >
-          {episode.description ? (
-            <p className="text-sm">{episode.description}</p>
-          ) : null}
-
-          <StudioPanel
-            title="Public show details"
-            description="What listeners see when they open this show from the Tahti Radio schedule."
-          >
-            <div className="flex flex-col gap-3">
-              <Input
-                label="Episode title"
-                value={publicTitle}
-                onChange={(event) => setPublicTitle(event.target.value)}
-              />
-              <label className="flex flex-col gap-1 text-sm">
-                <span className="text-foreground-secondary text-xs uppercase">
-                  Description
-                </span>
-                <Textarea
-                  tone="secondary"
-                  value={publicDescription}
-                  onChange={(event) => setPublicDescription(event.target.value)}
-                  rows={4}
-                />
-              </label>
-              <div className="flex justify-end">
-                <SaveButton
-                  saving={savingDetails}
-                  label="Save public details"
-                  onClick={() => void savePublicDetails()}
-                />
-              </div>
-            </div>
-          </StudioPanel>
-
-          {needsApproval && (
-            <StudioPanel
-              title="Review before approve"
-              description="Recorded episodes must be approved before they can go live. Trim and normalize, then approve."
-              className="flex flex-col gap-3"
-            >
-              <div className="grid gap-3 sm:grid-cols-2">
-                <Input
-                  type="number"
-                  variant="number"
-                  label="Trim start (sec)"
-                  min={0}
-                  step={0.1}
-                  value={trimStart}
-                  onChange={(event) => setTrimStart(Number(event.target.value))}
-                />
-                <Input
-                  type="number"
-                  variant="number"
-                  label="Trim end (sec, 0 = full)"
-                  min={0}
-                  step={0.1}
-                  value={trimEnd}
-                  onChange={(event) => setTrimEnd(Number(event.target.value))}
-                />
-              </div>
-              <div className="flex items-center justify-between gap-3 text-sm">
-                <span>Peak normalize / loudness (stream target)</span>
-                <Toggle
-                  label="Peak normalize / loudness (stream target)"
-                  checked={normalize}
-                  onChange={setNormalize}
-                />
-              </div>
-              {episode.soundId ? (
-                <div className="flex flex-wrap gap-2">
-                  <Link
-                    to="/studio/sounds/$id/editor"
-                    params={{ id: episode.soundId }}
-                  >
-                    <Button size="sm" variant="secondary">
-                      Open full editor
-                    </Button>
-                  </Link>
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    disabled={busy}
-                    onClick={() => {
-                      setBusy(true);
-                      void Promise.all([
-                        import('../../api/studio'),
-                        import('../../api/studio-types'),
-                      ]).then(async ([studio, types]) => {
-                        const { data: draft } = await studio.fetchEditorDraft(
-                          episode.soundId!,
-                        );
-                        const base =
-                          draft.editList ?? types.createDefaultEditList(180);
-                        const cuts =
-                          trimEnd > trimStart
-                            ? [{ start: trimStart, end: trimEnd }]
-                            : trimStart > 0
-                              ? [
-                                  {
-                                    start: trimStart,
-                                    end: base.sourceDuration,
-                                  },
-                                ]
-                              : [];
-                        const editList = {
-                          ...base,
-                          cuts: cuts.length ? cuts : base.cuts,
-                          loudnorm: {
-                            enabled: normalize,
-                            targetLufs: -14,
-                            targetTp: -1.5,
-                          },
-                        };
-                        const r = await studio.renderEditorDraft(
-                          episode.soundId!,
-                          editList,
-                          `Episode ${episode.episodeNumber} review`,
-                        );
-                        setBusy(false);
-                        setMsg(
-                          r.ok
-                            ? 'Render queued — check the archive editor for progress.'
-                            : r.error,
-                        );
-                      });
-                    }}
-                  >
-                    {busy ? 'Rendering…' : 'Apply trim / normalize'}
-                  </Button>
-                </div>
-              ) : (
-                <div className="flex flex-wrap gap-2">
-                  <Link to="/studio/go-live">
-                    <Button size="sm">
-                      <RadioIcon size={14} aria-hidden className="mr-1" />
-                      Go Live to record
-                    </Button>
-                  </Link>
-                  <p className="text-foreground-secondary w-full text-xs">
-                    After the broadcast ends, open Studio → Recordings to edit
-                    and attach the saved capture, then return here to approve.
-                  </p>
-                </div>
-              )}
-              <Button
-                disabled={busy || episode.status === 'APPROVED'}
-                onClick={() => {
-                  setBusy(true);
-                  void import('../../api/shows').then(({ approveEpisode }) => {
-                    void approveEpisode(episode.id).then((r) => {
-                      setBusy(false);
-                      if (!r.ok) {
-                        setMsg(r.error);
-                        return;
-                      }
-                      setEpisode(r.data);
-                      setMsg(
-                        'Episode approved — ready to schedule or publish.',
-                      );
-                    });
-                  });
-                }}
-              >
-                <CheckIcon size={16} aria-hidden className="mr-1.5" />
-                {episode.status === 'APPROVED' ? 'Approved' : 'Approve episode'}
-              </Button>
-            </StudioPanel>
-          )}
-
-          {!needsApproval && (
-            <section className="border-border flex flex-col gap-2 rounded-xl border p-4">
-              <p className="text-sm">
-                Episode #{episode.episodeNumber} is{' '}
-                {episodeStatusLabel(episode)}.
-              </p>
-              {episode.soundId && (
-                <Link to="/studio/sounds/$id" params={{ id: episode.soundId }}>
-                  <Button size="sm" variant="secondary">
-                    Open in Library
-                  </Button>
-                </Link>
-              )}
-            </section>
-          )}
-
-          {msg && <p className="text-sm">{msg}</p>}
-
-          <Button
-            size="sm"
-            variant="text"
-            onClick={() =>
-              void navigate({
-                to: '/studio/shows/$id',
-                params: { id: episode.showId },
-              })
-            }
-          >
-            Back to show
-          </Button>
-        </ViewShell>
       </div>
     </StudioGate>
   );

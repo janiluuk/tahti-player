@@ -17,7 +17,7 @@ Behavior stays identical: mechanical splits along existing seams, tests move wit
 | P1 | `packages/tahti-web/src/views/ChannelView.tsx` / `ArtistView.tsx` | 1576 / 1408 | tracked there; re-check |
 | P1 | `packages/tahti-web/src/views/studio/StudioProEditorView.tsx` | 1497 | not yet assessed |
 | P1 | `packages/tahti-web/src/components/plugin-store/ServiceCategory.tsx`, `RadioCategory.tsx` | 1400 / 1264 | one file per service/tab |
-| P1 | `packages/tahti-web/src/api/{shows,channel-design,studio-extras,sources,artist-settings}.ts` | 1000-1330 | by domain, like the admin.ts peel |
+| ~~P1~~ done | `packages/tahti-web/src/api/{shows,channel-design,studio-extras,sources,artist-settings}.ts` | 1000-1330 → 47-140 each (2026-09-22): barrels re-exporting `api/<name>/<domain>.ts`, imports unchanged | |
 | P1 | `packages/tahti-web/src/components/TrackEditDialog.tsx`, `LocalPlaylists.tsx`, `StreamManagerPanel.tsx` | 1174 / 950 / 1012 | section components + hooks |
 | P1 | `packages/tahti-web/src/views/studio/{StudioReleaseDetail,StudioShowDetail,StudioSchedule,StudioCollectionEdit,StudioDistribution}View.tsx`, `TrackDetailView.tsx`, `admin/AdminAddonsView.tsx`, `admin/AdminStorageView.tsx` | 900-1150 | not yet assessed |
 | P2 | `packages/player/src-tauri/src/mcp/metadata.rs` | 1004 | not yet assessed |
@@ -59,7 +59,7 @@ Behavior stays identical: mechanical splits along existing seams, tests move wit
 - [x] `DesktopLibraryPanel.tsx` under the limit (out of the baseline).
 - [ ] `ChannelDesigner.tsx` 1801 → 1713 (2026-09-22): `SlideshowControls` (+ story, migrated to `Button`/`MediaArtwork`) and `slideshowOptions.ts` extracted; bug audit below. Still open: `loadFromServer` / `save` / preset actions (a `useChannelLook` state hook, snapshot helpers, `buildVisualPatch` as a pure function), the ~230-line final render, and the panel slot builders.
 - [x] `RadioCategory.tsx` split + audit (2026-09-22, 1264 → 15): see below.
-- [ ] Next offenders to split (baselined): see the sweep table (`api/{shows,channel-design,studio-extras,sources,artist-settings}.ts`, `TrackEditDialog`, `LocalPlaylists`, `StreamManagerPanel`, unassessed studio/admin views).
+- [ ] Next offenders to split (baselined): see the sweep table (`TrackEditDialog`, `LocalPlaylists`, `StreamManagerPanel`, unassessed studio/admin views).
 - Fixed in passing: failed load-more toasts an error; the drop-import subscription no longer resubscribes per keystroke (`useNativeImport` goes through a ref).
 
 ## ChannelDesigner bug audit (2026-09-22, fixed)
@@ -165,3 +165,109 @@ Split into `plugin-store/radio-category/`: `PersonalRadioStreamCard`, `RadioBrow
 - **Station edit:** a non-numeric bitrate saved `NaN`; it keeps the old value now. Save toasts.
 - **Home-baked elements replaced with `Button`/`MediaArtwork`:** station-name row buttons, the search-icon button in the input, the "All genres" toggle, the station favicon box (`ImageReveal` + hand-built frame).
 - Not changed: the `<a target=_blank>` links in the details dialog (no ui link component); covered by `radio-category/Radio{Dialogs,Cards}.test.tsx`.
+
+## api/* splits (2026-09-22)
+
+- `api/request-json.ts` is now the one `requestJson` (16 byte-identical private copies removed; `studio/studio-request.ts` re-exports it). Still 11 near-copies that differ (`client-request.ts` also returns headers; announcements, api-tokens, channel-gallery, distribution, integrations, mentions, sound-versions, track-insights, user-media, revelator) — audit before merging them.
+- Split by domain into barrels: `shows/` (types, mock, wire, series, episodes, bookings, public-show), `channel-design/` (presets, header, colors, visual, mock, visual-api, look-extras, patch, saved-presets, domain), `studio-extras/` (schedule, stats, stats-plays, profile, posts), `sources/` (catalog, soundcloud, spotify, bandcamp, hearthis, export-status, stash, connections), `artist-settings/` (prefs, green-room, social, moderation, press-kit, press-kit-images, avatar, mock).
+- Module-level mock state that was reassigned in place (`let mockBookings`, `mockVisual`, `mockNotifications` …) can't be assigned across modules; it now has `setMockX` setters in the owning `mock.ts`.
+- Behavior unchanged; existing api/views/components tests pass.
+
+## Studio views audit (2026-09-22)
+
+Scope: the five 1000+ line studio views (`StudioReleaseDetailView`, `StudioShowDetailView`/`StudioEpisodeReviewView`, `StudioScheduleView`, `StudioCollectionEditView`, `StudioDistributionView`) plus a mechanical scan of all of `views/studio/`. The first scan reported almost no hand-rolled elements, but it only matched single-line tags. **Correction (2026-09-22):** a multi-line scan found real ones — see "Hand-rolled elements" below.
+
+### Fixed in this pass
+- **Collection editor:** adding a track called `reload()`, which reset the details form and dropped unsaved edits (and refetched sounds and gallery). It now refreshes only the tracklist (also after a failed reorder); `saveMeta` is try/finally.
+- **Show detail:** a picked thumbnail/backdrop file was never uploaded — the show saved a `blob:` object URL as its cover. Files are uploaded first, then saved; toasts.
+- **Episode review:** "Trim start/end" *removed* the range instead of keeping it (trim start 10 s cut 10 s→end, i.e. deleted the rest). New pure `trimToCuts` keeps `[start, end]` (tested). Render/approve had no catch (stuck "Rendering…"); the effect used dynamic imports of a module already imported statically and left the spinner forever on a failed load (now "Episode not found").
+- **Release detail:** no loading state ("Release not found" flashed, and stayed on failure); header Save also wrote raw Spotify/Bandcamp text (bare slugs, half-typed targets) over the smart-link targets — it now saves the description only, the smart-links panel owns its targets (the lifted `spotify`/`bandcamp` state is gone); `<li>` nested in `<li>` and every track title shown twice in the playlist; Publish had no confirm/busy and stayed enabled when already published.
+- **Distribution:** "Pay & submit to Revelator" (charges money, sends to stores) had no confirmation and no error handling; loads/saves/exports had no catch so `busy`/`loading` could stick; a failed release load showed the empty state forever.
+- **Schedule:** cancelling a scheduled episode had no confirm; initial load had no catch (`loading` forever).
+
+### Found, not fixed
+- **Show detail:** the "Record broadcasts by default" toggle is bound to `autoPublish` (a different field); creating an *upload* episode attaches the next booking slot to it; `bookNextInterval` books tomorrow +24 h with no conflict check and leaves an orphan booking if episode creation fails; an uploaded sound is orphaned if `createEpisode` fails; identical branches in `createNewEpisode`; the statistics block is a placeholder ("will appear when analytics are available"); object URLs from `createObjectURL` are never revoked; tab state is local, not in the URL.
+- **Schedule:** the dialog carries three unrelated saves (weekly recurrence, schedule one episode, save next broadcast) sharing one `busy`; the tagline, visibility, auto-publish, episode-numbering and "Start episode" fields only apply when a *new* show is created (ignored for an existing show), and the "Minutes" select only feeds the weekly recurrence though it sits by "Schedule episode". Upcoming items are matched to shows by **title** (5 `find` scans per item per memo run), `openEditor` doesn't reset stale form state when there's no next broadcast, hand-rolled `<button>` for the title and an unescaped `url(${...})` background.
+- **Collection editor:** `currentTime`/`duration` subscribed at the root, so the whole 1000-line view re-renders on every `timeupdate` (same bug as ChannelView had) — extract the now-playing bar; the add-tracks dialog shows disabled "Releases/Collections/Playlists" tabs (unwired); the progress bar is a hand-rolled div with click-to-seek; `queueAllTracks` fetches sources serially; the details save is two requests (details, then gallery) with no rollback if the second fails; `genres` silently truncates to 5.
+- **Release detail:** `fetchStudioReleases()` loads every release to find one (needs a by-id fetch); `fetchStudioSounds()` runs twice (view + smart-links panel) and each track row makes 2 requests (N+1) though the sounds map is already loaded; playlist reorder is mouse-drag only (no keyboard), no in-flight guard; hand-rolled `<button>` rows in the library dialog; two decorative `SearchIcon`/`FilterIcon` beside inputs; `<Link><Button/></Link>` nesting; `buildPlayable` is duplicated in the collection editor.
+- **Distribution:** `activeMethods` is re-derived on every reload, discarding the user's tile toggles.
+
+### Splits still needed (crowded views)
+| View | Now | Split into |
+| --- | --- | --- |
+| `StudioScheduleView` | 1089 | `ScheduledTimes` (+ card/list, details dialog) and `ScheduleAnalytics` to their own files; the dialog into three forms (next broadcast / one-off episode / weekly recurrence) with a `useScheduleForm` hook (17 `useState`); pure date helpers to `lib/` |
+| `StudioCollectionEditView` | ~1070 (one 984-line component) | `NowPlayingBar`, `CollectionDetailsForm`, `CollectionTracklist`, `AddTracksDialog`, `useCollectionEditor` hook (load/save/upload/reorder) |
+| `StudioReleaseDetailView` | ~1150 | `ReleaseSmartLinksPanel` (431 lines: targets editor, playlist, library dialog), `ReleaseTrackRow`, `FingerprintTab`; shared `useSoundPlayable` with the collection editor |
+| `StudioShowDetailView` | ~1100 | `StudioEpisodeReviewView` (286 lines) and `EpisodeEditorRow` to their own files; `ShowDefaultsForm`, `NewEpisodeDialog`, `useShowDetail` |
+| `StudioDistributionView` | ~1030 | `ReleaseOpsPanel` (673 lines): catalog form, credits, checklist, submission/billing, royalties; `GuideDetail` and constants out |
+
+
+### Second audit pass: the remaining eight views (2026-09-22)
+
+Systemic: none of the eight has a single `try`/`finally`; busy flags (`setBusy(true)` … `setBusy(false)` after an `await`) and `loading` spinners stick if a request throws, and most `.then()` chains have no `.catch`. `StudioSoundView` reports every result through an inline `message`, not a toast.
+
+- **`StudioUpdatesView`:** **sending a newsletter draft mails every subscriber with no confirmation** (outward-facing, irreversible); create/send use `.then` chains without catch, so a throw sticks `busy`; uses inline `msg` instead of toasts.
+- **`StudioBrandingView`:** the press-kit gallery "replace" upload **deletes every existing image first**, then uploads — if the upload fails the gallery is gone (no confirm, deletes unchecked, `busy` stuck on a throw); hand-rolled `<label>`s and a `<a><Button/></a>` for the ZIP download.
+- **`StudioPlaylistsView`:** the tracklist's row remove button deletes with **no confirmation** (a `ConfirmDialog` exists for the other remove path but the table bypasses it) and ignores failure (`.then(() => reload())`); every add/save calls `reload()`, which resets the settings form (unsaved edits lost, same bug as the collection editor); the add-track select offers tracks already in the playlist; the editor (520 lines) is a near-copy of `StudioCollectionEditView` (cover upload, reorder, remove, add, `buildPlayable`, playback) — share a `useCollectionEditor` hook and components.
+- **`StudioGoLiveView`:** "Go live" hands the channel rotation over to the broadcast with no confirmation, and reports through `message`; the destination enable/disable and delete use `.then` with no catch; the whole 660-line component holds the preflight, credentials, recording, multistream and signal polling.
+- **`StudioStatsView`:** 9 requests in one `Promise.all` that re-run **in full** whenever the top-list dimension or sort changes (summary, egress, live, grant and geo don't depend on either — over-fetch, same shape as the DesktopLibraryPanel refresh bug); one failure leaves `loading` forever; for "Custom" and "1 day" the top tracks/countries silently use the last 30 days while the header says otherwise; `minutesListened` assumes a 192 kbps stream.
+- **`StudioHomeView`:** loads the whole library (all sounds, collections, releases) only to show three counts (needs a counts endpoint); no catch, so `discographyLoaded` never flips; governance motions and requests load for every studio visit.
+- **`StudioSoundView`:** six independent busy flags; no `key` per sound, so tab/message/form state carry over when navigating between sounds; "Quick auto-trim" appends the same silence cuts on every click (stacks duplicates) and falls back to a 180 s duration when the sound has none; `startPlayback` leaves `playBusy` stuck if the source fetch throws; polling calls have no catch.
+- **`StudioSoundsView`:** `loading` set without finally, delete `.then(reload)` ignores failure.
+
+### Splits done in the studio pass (2026-09-22)
+
+Ten views split into folders next to them (behavior unchanged, tests green): `schedule/` (`ScheduledTimes`, `ScheduleAnalytics`, `schedule-helpers`), `release-detail/` (`ReleaseSmartLinksPanel`, `ReleaseTrackRow`), `show-detail/` (`EpisodeEditorRow`, `StudioEpisodeReviewView`, lazy route updated), `distribution/` (`ReleaseOpsPanel`, `GuideDetail`, content + helpers), `playlists/` (`StudioPlaylistEditorView`, route updated), `branding/` (`PressKitPreview`), `collection-edit/` (`NowPlayingBar` — owns the playback-tick subscriptions, so the editor no longer re-renders every tick; `AddTracksDialog` — owns its search, drops the disabled placeholder tabs), `updates/` (`NewPostDialog`, `NewDraftDialog`, `PostPreview`; also confirm before sending a newsletter), `go-live/` (`MultistreamPanel` with its dialogs), `home/` (tiles, broadcast row, helpers).
+
+Still big: `distribution/ReleaseOpsPanel` 770, `StudioBrandingView` 708 (one 618-line `StudioBrandingPanel`: needs a `usePressKit` hook and per-tab sections), `StudioCollectionEditView` 917, `StudioReleaseDetailView` 644, `StudioShowDetailView` 694, `StudioScheduleView` 755 (its three-form dialog is still inline), `StudioGoLiveView` 629, `StudioHomeView` 539, `StudioSoundView` 752 (683-line component), `StudioStatsView` 697.
+
+### Hand-rolled elements (multi-line scan, 2026-09-22)
+
+Replaced with `Button` this pass: the image-thumbnail buttons in `updates/PostPreview` and `StudioUpdatesView`, the "Show info" chip in `StudioGoLiveView`, "Create your channel" in `StudioHomeView`, the library rows in `release-detail/ReleaseSmartLinksPanel`, the show-title button in `schedule/ScheduledTimes`.
+
+Still open: `<img>` in `StudioBrandingView` (~594) and `branding/PressKitPreview` (two) → `MediaArtwork`; `<input>` in `components/channel-designer/ColorSchemeFields`; `<img>` in `components/channel-designer/VideoOrImageField`; `<a>` links (`ReleaseTrackRow`, four in `distribution/ReleaseOpsPanel`, `GuideDetail`, `StudioReleasesView`, `StudioMasteringView`, `StudioBrandingView` ZIP download) — blocked on a `@tahti-player/ui` external-link component, which is the actual gap; also `<Link><Button/></Link>` nesting in several views.
+
+### Fix queue for the audited views (2026-09-22, done except where noted)
+
+Fix, in this order (tick when done; each finished item moves to HISTORY):
+
+- [x] Playlists: table row remove goes through the confirm dialog and reports failure; add-track select hides tracks already in the playlist; add/save refresh only the tracklist (`reload()` resets the settings form).
+- [x] Branding: press-kit "replace" uploads first, deletes the old images only after a successful upload; try/finally on `busy`; `<img>` → `MediaArtwork`.
+- [x] Show detail: rename/fix the "Record broadcasts by default" toggle (bound to `autoPublish`); uploaded episodes don't grab the next booking; orphaned upload if `createEpisode` fails; drop the identical branches; revoke object URLs; loading state.
+- [x] Schedule: existing-show selection disables/hides the create-only fields (tagline, visibility, auto-publish, numbering, start episode); move "Minutes" into the recurrence section; match upcoming items by id, not title; reset the form in `openEditor`; three forms.
+- [x] Collection editor: one request/rollback for details+gallery (or report partial failure); warn when genres are truncated to 5; parallel `queueAllTracks`.
+- [x] Release detail: pass the loaded sound to track rows (N+1); share `useSoundPlayable` with the collection editor; keyboard reorder.
+- [x] Distribution: derive `activeMethods` once, not on every reload.
+- [x] Stats: separate the top-list request from the other eight; label/honour the custom and 1-day ranges; one failure must not leave `loading`; document the 192 kbps assumption.
+- [x] Home: catch failures (`discographyLoaded`), stop loading the whole library for three counts.
+- [x] Sound view: `key` by id; auto-trim doesn't stack duplicate cuts; toasts; `playBusy` in finally.
+- [x] Sounds view: catch, delete failure feedback.
+- [x] Go live: confirm before going live; toasts; catches on destination toggle/delete.
+
+Notes on the fix queue: Schedule — upcoming broadcasts still link to shows **by title** because the API returns no show id (needs `showId` on `UpcomingBroadcast`; the lookup is now one map instead of five scans), and the three-form split of the dialog is not done. Home — the three discography counts still fetch the whole library (needs a counts endpoint); a failed load no longer shows the "empty discography" call to action. Stats — "Custom" and "1 day" still use the last 30 days for top tracks/countries (the API has no such window) but the panel titles now say so. Sound view — the destructive/quick actions still lack tests; no fix in this pass added tests beyond `trimToCuts`.
+
+## Open items after the studio pass (2026-09-22) — everything not done yet
+
+Nothing above was dropped; this is the consolidated list of what is still open.
+
+**Backend / API needed**
+- [ ] `showId` on `UpcomingBroadcast` (Schedule links upcoming items to shows by title today).
+- [ ] A counts endpoint for Studio Home (sounds/collections/releases) instead of loading the whole library.
+- [ ] `fetchStudioRelease(id)` (Release detail loads every release to find one).
+- [ ] Top-list windows for "Custom" and "1 day" ranges (Stats falls back to 30 days).
+
+**UI library**
+- [ ] An external-link component in `@tahti-player/ui`; then replace the hand-rolled `<a target=_blank>` (release track row, four in `ReleaseOpsPanel`, `GuideDetail`, `StudioReleasesView`, `StudioMasteringView`, Branding ZIP, plugin-store cards) and the `<Link><Button/></Link>` nesting.
+- [ ] Remaining hand-rolled: `<input>` in `channel-designer/ColorSchemeFields`, `<img>` in `channel-designer/VideoOrImageField`.
+
+**Splits still to do** (baselined over 800 lines): `distribution/ReleaseOpsPanel` 770, `StudioBrandingView` (`usePressKit` hook + per-tab sections), `StudioCollectionEditView` (`useCollectionEditor` shared with `playlists/StudioPlaylistEditorView`, plus details form and tracklist components), `StudioReleaseDetailView` (`useSoundPlayable` shared with the collection editor), `StudioShowDetailView` (`ShowDefaultsForm`, `NewEpisodeDialog`, `useShowDetail`), `StudioScheduleView` (three-form dialog + `useScheduleForm`), `StudioGoLiveView`, `StudioHomeView`, `StudioSoundView`, `StudioStatsView`; also `ServiceCategory`-era leftovers in the sweep table (`TrackEditDialog`, `LocalPlaylists`, `StreamManagerPanel`, `mcp/metadata.rs`), and the 11 `requestJson` near-copies that differ (see api splits).
+
+**Not fixed from the studio audit**
+- [ ] Show detail: `bookNextInterval` has no conflict check and leaves an orphan booking if episode creation fails; the episode "Statistics" block is a placeholder; tab state is local, not in the URL.
+- [ ] Collection editor: the details save is still two requests (a partial failure is now reported, not rolled back).
+- [ ] Playlists list: create has no try/finally; Branding bio save and avatar upload `.then` chains have no catch; Updates and GoLive destination toggles use `.then` without catch.
+- [ ] Sound view: still six separate busy flags; tab state local.
+
+**Tests missing** (only `trimToCuts` plus the plugin-store and api tests exist): the studio fixes above — collection editor add-track keeps form edits, show detail uploads a picked image before saving, playlists confirm-before-remove, Branding replace-upload order, Updates confirm-before-send, Distribution confirm-before-submit, Stats top-list-only refetch, Schedule disabled create-only fields, Go live confirm.
+
+**Verification in the running app** (still nothing exercised visually): the plugin-store cards (Spotify, hearthis, Bandcamp/SoundCloud, Radio), channel edit mode, the designer, the Pro editor, and now the studio views changed in this pass. Blocked: the local API stack needs disk space (`stack-up.sh --seed` in `../tahti-org` failed when the disk filled; ~51 GB of reclaimable Docker volumes on this machine) — the dev login returns 500 until it is up.

@@ -45,9 +45,3 @@ if (typeof globalThis.sessionStorage === 'undefined') {
 }
 
 setupDomMocks();
-
-// jsdom logs "Not implemented: window.scrollTo" on every router navigation
-// (TanStack Router scroll restoration). Stub it to keep test output clean.
-if (typeof window !== 'undefined') {
-  window.scrollTo = (() => {}) as typeof window.scrollTo;
-}

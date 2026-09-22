@@ -12,26 +12,18 @@ import {
   Button,
   Dialog,
   EmptyState,
-  FilePicker,
   ImageReveal,
-  Input,
-  SaveButton,
   TabLabel,
   Tabs,
-  Textarea,
-  Toggle,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
 import {
-  createArtistPost,
-  createNewsletterDraft,
   deleteArtistPost,
   fetchArtistPosts,
   fetchNewsletterDrafts,
   sendNewsletterDraft,
-  uploadArtistPostImage,
   type ArtistPost,
   type NewsletterDraft,
 } from '../../api/studio-extras';
@@ -40,51 +32,11 @@ import { ImageLightbox } from '../../components/ImageLightbox';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
+import { NewDraftDialog } from './updates/NewDraftDialog';
+import { NewPostDialog } from './updates/NewPostDialog';
+import { PostPreview } from './updates/PostPreview';
 
 type Tab = 'posts' | 'newsletter';
-
-function PostPreview({
-  title,
-  body,
-  publishAt,
-  images,
-  onImageClick,
-}: {
-  title: string | null;
-  body: string;
-  publishAt?: string;
-  images: string[];
-  onImageClick?: (index: number) => void;
-}) {
-  return (
-    <article className="flex flex-col gap-3">
-      <div>
-        <h3 className="text-lg font-semibold">{title || 'Untitled'}</h3>
-        {publishAt && (
-          <p className="text-foreground-secondary mt-1 text-xs">
-            {new Date(publishAt).toLocaleString()}
-          </p>
-        )}
-      </div>
-      <p className="text-sm whitespace-pre-wrap">{body}</p>
-      {images.length > 0 && (
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-          {images.map((image, index) => (
-            <button
-              key={`${image}-${index}`}
-              type="button"
-              className="bg-background-secondary aspect-video overflow-hidden rounded-lg"
-              onClick={() => onImageClick?.(index)}
-              aria-label={`View image ${index + 1} full size`}
-            >
-              <ImageReveal src={image} alt="" className="size-full" />
-            </button>
-          ))}
-        </div>
-      )}
-    </article>
-  );
-}
 
 export function StudioUpdatesView() {
   const [tab, setTab] = useState<Tab>('posts');
@@ -94,11 +46,6 @@ export function StudioUpdatesView() {
 
   const [postOpen, setPostOpen] = useState(false);
   const [draftOpen, setDraftOpen] = useState(false);
-  const [postTitle, setPostTitle] = useState('');
-  const [postBody, setPostBody] = useState('');
-  const [postImage, setPostImage] = useState<File | null>(null);
-  const [postImagePreview, setPostImagePreview] = useState<string | null>(null);
-  const [postPreviewOpen, setPostPreviewOpen] = useState(false);
   const [previewPost, setPreviewPost] = useState<ArtistPost | null>(null);
   const [lightbox, setLightbox] = useState<{
     images: string[];
@@ -107,10 +54,8 @@ export function StudioUpdatesView() {
   const [pendingDeletePost, setPendingDeletePost] = useState<ArtistPost | null>(
     null,
   );
-  const [nlSubject, setNlSubject] = useState('');
-  const [nlBody, setNlBody] = useState('');
-  const [nlFansOnly, setNlFansOnly] = useState(false);
-  const [busy, setBusy] = useState(false);
+  const [sendingId, setSendingId] = useState<string | null>(null);
+  const [pendingSend, setPendingSend] = useState<NewsletterDraft | null>(null);
 
   const isEmpty = posts.length === 0 && drafts.length === 0;
 
@@ -127,30 +72,28 @@ export function StudioUpdatesView() {
     reload();
   }, []);
 
-  useEffect(() => {
-    return () => {
-      if (postImagePreview) {
-        URL.revokeObjectURL(postImagePreview);
+  const sendDraft = async (draft: NewsletterDraft) => {
+    setSendingId(draft.id);
+    try {
+      const r = await sendNewsletterDraft(
+        draft.id,
+        draft.subscribersOnly ? 'fans' : 'all',
+      );
+      if (!r.ok) {
+        toast.error(r.error);
+        return;
       }
-    };
-  }, [postImagePreview]);
-
-  const closePost = () => {
-    setPostOpen(false);
-    setPostTitle('');
-    setPostBody('');
-    setPostImage(null);
-    setPostImagePreview(null);
-    setPostPreviewOpen(false);
-    setBusy(false);
-  };
-
-  const closeDraft = () => {
-    setDraftOpen(false);
-    setNlSubject('');
-    setNlBody('');
-    setNlFansOnly(false);
-    setBusy(false);
+      toast.success(
+        r.queued != null
+          ? `Queued send to ${r.queued} subscribers.`
+          : 'Send queued.',
+      );
+      reload();
+    } catch {
+      toast.error('Could not send the newsletter.');
+    } finally {
+      setSendingId(null);
+    }
   };
 
   return (
@@ -246,10 +189,11 @@ export function StudioUpdatesView() {
                         {p.images.length > 0 && (
                           <div className="mt-2 flex gap-2 overflow-hidden">
                             {p.images.map((image, index) => (
-                              <button
+                              <Button
                                 key={`${image}-${index}`}
                                 type="button"
-                                className="bg-background-secondary size-16 shrink-0 overflow-hidden rounded-md"
+                                variant="text"
+                                className="bg-background-secondary size-16 shrink-0 overflow-hidden rounded-md p-0"
                                 onClick={() =>
                                   setLightbox({ images: p.images, index })
                                 }
@@ -260,7 +204,7 @@ export function StudioUpdatesView() {
                                   alt=""
                                   className="size-full"
                                 />
-                              </button>
+                              </Button>
                             ))}
                           </div>
                         )}
@@ -340,23 +284,8 @@ export function StudioUpdatesView() {
                       {(!d.state || d.state === 'DRAFT') && !d.sentAt && (
                         <Button
                           size="sm"
-                          onClick={() => {
-                            void sendNewsletterDraft(
-                              d.id,
-                              d.subscribersOnly ? 'fans' : 'all',
-                            ).then((r) => {
-                              if (!r.ok) {
-                                setMsg(r.error);
-                              } else {
-                                setMsg(
-                                  r.queued != null
-                                    ? `Queued send to ${r.queued} subscribers.`
-                                    : 'Send queued.',
-                                );
-                                reload();
-                              }
-                            });
-                          }}
+                          disabled={sendingId !== null}
+                          onClick={() => setPendingSend(d)}
                         >
                           <SendIcon size={16} aria-hidden className="mr-1.5" />
                           Send
@@ -370,125 +299,15 @@ export function StudioUpdatesView() {
           )}
         </ViewShell>
 
-        <Dialog.Root isOpen={postOpen} onClose={closePost}>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (!postBody.trim() || busy) {
-                return;
-              }
-              setBusy(true);
-              void createArtistPost({
-                title: postTitle.trim() || undefined,
-                body: postBody.trim(),
-              }).then(async (r) => {
-                if (!r.ok) {
-                  setBusy(false);
-                  setMsg(r.error);
-                  return;
-                }
-                if (postImage) {
-                  const imageResult = await uploadArtistPostImage(
-                    r.data.id,
-                    postImage,
-                  );
-                  if (!imageResult.ok) {
-                    setBusy(false);
-                    setMsg(
-                      `Post published, but image upload failed: ${imageResult.error}`,
-                    );
-                    closePost();
-                    reload();
-                    return;
-                  }
-                }
-                setBusy(false);
-                setMsg('Post published.');
-                closePost();
-                reload();
-              });
-            }}
-          >
-            <Dialog.Title>
-              <span className="inline-flex items-center gap-2">
-                <NewspaperIcon size={18} aria-hidden />
-                New post
-              </span>
-            </Dialog.Title>
-            <div className="mt-4 flex flex-col gap-3">
-              <Input
-                label="Title (optional)"
-                value={postTitle}
-                onChange={(e) => setPostTitle(e.target.value)}
-                autoFocus
-              />
-              <label className="flex flex-col gap-1 text-sm">
-                <span className="text-foreground-secondary text-xs uppercase">
-                  Body
-                </span>
-                <Textarea
-                  tone="secondary"
-                  value={postBody}
-                  onChange={(e) => setPostBody(e.target.value)}
-                  rows={4}
-                  required
-                />
-              </label>
-              <FilePicker
-                accept="image/jpeg,image/png,image/webp"
-                labels={{
-                  title: 'Post image',
-                  description: 'JPEG, PNG, or WebP. One image per post.',
-                  browse: postImage ? 'Choose another image' : 'Choose image',
-                }}
-                selectedFiles={postImage ? [postImage] : []}
-                onFiles={(files) => {
-                  const file = files[0] ?? null;
-                  setPostImage(file);
-                  setPostImagePreview(file ? URL.createObjectURL(file) : null);
-                }}
-              />
-            </div>
-            <Dialog.Actions>
-              <Dialog.Close>Cancel</Dialog.Close>
-              <Button
-                type="button"
-                variant="secondary"
-                disabled={!postBody.trim()}
-                onClick={() => setPostPreviewOpen(true)}
-              >
-                <EyeIcon size={16} aria-hidden className="mr-1.5" />
-                Preview
-              </Button>
-              <Button type="submit" disabled={!postBody.trim() || busy}>
-                <PlusIcon size={16} aria-hidden className="mr-1.5" />
-                {busy ? 'Publishing…' : 'Publish'}
-              </Button>
-            </Dialog.Actions>
-          </form>
-        </Dialog.Root>
-
-        <Dialog.Root
-          isOpen={postPreviewOpen}
-          onClose={() => setPostPreviewOpen(false)}
-        >
-          <Dialog.Title>Post preview</Dialog.Title>
-          <div className="mt-4">
-            <PostPreview
-              title={postTitle.trim() || null}
-              body={postBody}
-              images={postImagePreview ? [postImagePreview] : []}
-              onImageClick={() => {
-                if (postImagePreview) {
-                  setLightbox({ images: [postImagePreview], index: 0 });
-                }
-              }}
-            />
-          </div>
-          <Dialog.Actions>
-            <Dialog.Close>Close</Dialog.Close>
-          </Dialog.Actions>
-        </Dialog.Root>
+        {postOpen && (
+          <NewPostDialog
+            onClose={() => setPostOpen(false)}
+            onPublished={reload}
+            onImageClick={(imageUrl) =>
+              setLightbox({ images: [imageUrl], index: 0 })
+            }
+          />
+        )}
 
         <Dialog.Root
           isOpen={previewPost !== null}
@@ -523,75 +342,31 @@ export function StudioUpdatesView() {
           />
         )}
 
-        <Dialog.Root isOpen={draftOpen} onClose={closeDraft}>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (!nlSubject.trim() || !nlBody.trim() || busy) {
-                return;
-              }
-              setBusy(true);
-              void createNewsletterDraft({
-                subject: nlSubject.trim(),
-                bodyMd: nlBody.trim(),
-                subscribersOnly: nlFansOnly,
-              }).then((r) => {
-                setBusy(false);
-                if (!r.ok) {
-                  setMsg(r.error);
-                  return;
-                }
-                setMsg('Draft saved.');
-                closeDraft();
-                reload();
-              });
-            }}
-          >
-            <Dialog.Title>
-              <span className="inline-flex items-center gap-2">
-                <SendIcon size={18} aria-hidden />
-                New draft
-              </span>
-            </Dialog.Title>
-            <div className="mt-4 flex flex-col gap-3">
-              <Input
-                label="Subject"
-                value={nlSubject}
-                onChange={(e) => setNlSubject(e.target.value)}
-                autoFocus
-              />
-              <label className="flex flex-col gap-1 text-sm">
-                <span className="text-foreground-secondary text-xs uppercase">
-                  Body (markdown)
-                </span>
-                <Textarea
-                  tone="secondary"
-                  value={nlBody}
-                  onChange={(e) => setNlBody(e.target.value)}
-                  rows={5}
-                  required
-                />
-              </label>
-              <div className="flex items-center justify-between gap-3 text-sm">
-                <span>Fans / subscribers only</span>
-                <Toggle
-                  label="Fans / subscribers only"
-                  checked={nlFansOnly}
-                  onChange={setNlFansOnly}
-                />
-              </div>
-            </div>
-            <Dialog.Actions>
-              <Dialog.Close>Cancel</Dialog.Close>
-              <SaveButton
-                type="submit"
-                disabled={!nlSubject.trim() || !nlBody.trim()}
-                saving={busy}
-                label="Save draft"
-              />
-            </Dialog.Actions>
-          </form>
-        </Dialog.Root>
+        {draftOpen && (
+          <NewDraftDialog
+            onClose={() => setDraftOpen(false)}
+            onSaved={reload}
+          />
+        )}
+
+        <ConfirmDialog
+          isOpen={pendingSend !== null}
+          title={`Send “${pendingSend?.subject ?? 'this newsletter'}”?`}
+          description={
+            pendingSend?.subscribersOnly
+              ? 'This emails all of your fan subscribers now. It cannot be undone.'
+              : 'This emails all of your subscribers now. It cannot be undone.'
+          }
+          confirmLabel="Send newsletter"
+          onCancel={() => setPendingSend(null)}
+          onConfirm={() => {
+            const draft = pendingSend;
+            setPendingSend(null);
+            if (draft) {
+              void sendDraft(draft);
+            }
+          }}
+        />
 
         <ConfirmDialog
           isOpen={pendingDeletePost !== null}

@@ -1,14 +1,6 @@
-import { Link } from '@tanstack/react-router';
-import {
-  CalendarDaysIcon,
-  Clock3Icon,
-  ListIcon,
-  MapPinIcon,
-  PencilIcon,
-  PlusIcon,
-  XIcon,
-} from 'lucide-react';
+import { PlusIcon, XIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   Button,
@@ -36,11 +28,9 @@ import {
 } from '../../api/shows';
 import {
   fetchChannelSchedule,
-  fetchStatsPlays,
   fetchUpcomingBroadcasts,
   patchChannelSchedule,
   type ChannelSchedule,
-  type StatsPlays,
   type UpcomingBroadcast,
 } from '../../api/studio-extras';
 import {
@@ -48,375 +38,27 @@ import {
   type BroadcastDetailsValues,
 } from '../../components/BroadcastDetailsFields';
 import { ChannelRadioPlaylistPanel } from '../../components/ChannelRadioPlaylistPanel';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { ImageUploadField } from '../../components/ImageUploadField';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
-
-const MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
-const DEFAULT_BROADCAST_HOUR = 20;
-const DAYS_PER_WEEK = 7;
-const FREQUENCY_DAY_ORDER = [1, 2, 3, 4, 5, 6, 0];
-const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-type LocalDateTime = {
-  date: string;
-  time: string;
-};
-
-type ScheduleCard = {
-  id: string;
-  startAt: string;
-  endAt?: string | null;
-  title: string;
-  location?: string | null;
-  visibility?: 'PUBLIC' | 'FAN_ONLY';
-  description?: string | null;
-  tagline?: string | null;
-  artworkUrl?: string | null;
-  backdropUrl?: string | null;
-  showId?: string;
-  episodeNumber?: number | null;
-};
-
-const pad = (value: number) => value.toString().padStart(2, '0');
-
-function toLocalParts(iso: string | null): LocalDateTime {
-  if (!iso) {
-    return { date: '', time: '' };
-  }
-  const value = new Date(iso);
-  if (Number.isNaN(value.getTime())) {
-    return { date: '', time: '' };
-  }
-  return {
-    date: `${value.getFullYear()}-${pad(value.getMonth() + 1)}-${pad(value.getDate())}`,
-    time: `${pad(value.getHours())}:${pad(value.getMinutes())}`,
-  };
-}
-
-function fromLocalParts(date: string, time: string): string | null {
-  if (!date || !time) {
-    return null;
-  }
-  const value = new Date(`${date}T${time}`);
-  return Number.isNaN(value.getTime()) ? null : value.toISOString();
-}
-
-function formatDate(iso: string): string {
-  return new Intl.DateTimeFormat(undefined, {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-  }).format(new Date(iso));
-}
-
-function formatTime(iso: string): string {
-  return new Intl.DateTimeFormat(undefined, {
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(new Date(iso));
-}
-
-function endAtFor(startAt: string, durationHours: number | null | undefined) {
-  const start = new Date(startAt);
-  if (Number.isNaN(start.getTime())) {
-    return null;
-  }
-  const duration = Math.max(1, durationHours ?? 1);
-  return new Date(start.getTime() + duration * 60 * 60 * 1000).toISOString();
-}
-
-function formatTimeRange(startAt: string, endAt?: string | null): string {
-  return `${formatTime(startAt)}${endAt ? `–${formatTime(endAt)}` : ''}`;
-}
-
-function nextFriday(): Date {
-  const value = new Date();
-  const friday = 5;
-  const daysUntilFriday =
-    (friday - value.getDay() + DAYS_PER_WEEK) % DAYS_PER_WEEK;
-  value.setDate(value.getDate() + (daysUntilFriday || DAYS_PER_WEEK));
-  value.setHours(DEFAULT_BROADCAST_HOUR, 0, 0, 0);
-  return value;
-}
-
-function ScheduledTimes({
-  items,
-  onEdit,
-}: {
-  items: ScheduleCard[];
-  onEdit: () => void;
-}) {
-  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const [selectedShow, setSelectedShow] = useState<ScheduleCard | null>(null);
-  const [viewMode, setViewMode] = useState<'cards' | 'list'>('cards');
-
-  return (
-    <section className="border-border bg-background-secondary/40 overflow-hidden rounded-xl border shadow-sm">
-      <header className="border-border flex flex-wrap items-center justify-between gap-3 border-b px-4 py-3">
-        <div className="flex items-center gap-2">
-          <CalendarDaysIcon size={18} className="text-primary" aria-hidden />
-          <h2 className="font-display font-bold">Your next broadcasts</h2>
-        </div>
-        <div className="flex items-center gap-2">
-          <div
-            className="border-border flex gap-1 rounded-md border p-0.5"
-            role="group"
-            aria-label="Schedule view"
-          >
-            <Tooltip content="Card view" side="top">
-              <Button
-                size="icon-sm"
-                variant="text"
-                aria-label="Card view"
-                aria-pressed={viewMode === 'cards'}
-                className={
-                  viewMode === 'cards' ? 'bg-primary/15 text-primary' : ''
-                }
-                onClick={() => setViewMode('cards')}
-              >
-                <CalendarDaysIcon size={14} aria-hidden />
-              </Button>
-            </Tooltip>
-            <Tooltip content="List view" side="top">
-              <Button
-                size="icon-sm"
-                variant="text"
-                aria-label="List view"
-                aria-pressed={viewMode === 'list'}
-                className={
-                  viewMode === 'list' ? 'bg-primary/15 text-primary' : ''
-                }
-                onClick={() => setViewMode('list')}
-              >
-                <ListIcon size={14} aria-hidden />
-              </Button>
-            </Tooltip>
-          </div>
-          <span className="text-foreground-secondary text-xs">{timezone}</span>
-        </div>
-      </header>
-      {items.length === 0 ? (
-        <div className="px-4 py-5">
-          <p className="text-sm font-medium">Nothing scheduled yet</p>
-          <p className="text-foreground-secondary mt-1 text-xs">
-            Pick a local date and time below to tell listeners when you return.
-          </p>
-        </div>
-      ) : (
-        <ol
-          className={
-            viewMode === 'list'
-              ? 'divide-border divide-y'
-              : 'bg-border grid gap-px sm:grid-cols-2 lg:grid-cols-3'
-          }
-        >
-          {items
-            .slice(0, viewMode === 'list' ? undefined : 3)
-            .map((item, index) => (
-              <li
-                key={item.id}
-                className={
-                  viewMode === 'list'
-                    ? 'bg-background overflow-hidden'
-                    : 'bg-background overflow-hidden'
-                }
-              >
-                <div
-                  className={
-                    item.artworkUrl || item.backdropUrl
-                      ? 'relative h-24 w-full bg-cover bg-center'
-                      : 'from-primary/40 via-accent-cyan/25 to-background-secondary relative h-24 w-full bg-gradient-to-br'
-                  }
-                  style={
-                    item.artworkUrl || item.backdropUrl
-                      ? {
-                          backgroundImage: `url(${item.backdropUrl ?? item.artworkUrl})`,
-                        }
-                      : undefined
-                  }
-                  aria-hidden
-                >
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                </div>
-                <div className={viewMode === 'list' ? 'p-3' : 'p-4'}>
-                  <div className="mb-1 flex items-center justify-between gap-2">
-                    <div className="flex min-w-0 items-center gap-2">
-                      <span className="text-primary shrink-0 text-xs font-bold tracking-wide uppercase">
-                        {index === 0 ? 'Next' : `Upcoming ${index + 1}`}
-                      </span>
-                      <button
-                        type="button"
-                        className="text-primary min-w-0 truncate text-left text-sm font-semibold hover:underline"
-                        onClick={() => setSelectedShow(item)}
-                      >
-                        {item.title}
-                      </button>
-                    </div>
-                    <div className="flex shrink-0 items-center gap-2">
-                      {item.visibility === 'FAN_ONLY' ? (
-                        <span className="text-foreground-secondary text-[10px] uppercase">
-                          Fans only
-                        </span>
-                      ) : null}
-                      {index === 0 ? (
-                        <Tooltip content="Edit next broadcast" side="top">
-                          <Button
-                            size="icon-sm"
-                            variant="text"
-                            aria-label="Edit next broadcast"
-                            onClick={onEdit}
-                          >
-                            <PencilIcon size={14} aria-hidden />
-                          </Button>
-                        </Tooltip>
-                      ) : null}
-                    </div>
-                  </div>
-                  <div className="text-foreground-secondary mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
-                    <span className="inline-flex items-center gap-1">
-                      <CalendarDaysIcon size={13} aria-hidden />
-                      {formatDate(item.startAt)}
-                    </span>
-                    <span className="text-foreground inline-flex items-center gap-1 font-medium">
-                      <Clock3Icon size={13} aria-hidden />
-                      {formatTimeRange(item.startAt, item.endAt)}
-                    </span>
-                  </div>
-                  {item.location ? (
-                    <p className="text-foreground-secondary mt-2 flex items-center gap-1 truncate text-xs">
-                      <MapPinIcon size={13} aria-hidden />
-                      {item.location}
-                    </p>
-                  ) : null}
-                </div>
-              </li>
-            ))}
-        </ol>
-      )}
-      <Dialog.Root
-        isOpen={selectedShow !== null}
-        onClose={() => setSelectedShow(null)}
-        className="max-w-xl"
-      >
-        {selectedShow ? (
-          <>
-            <div className="border-border bg-background-secondary relative -mx-6 -mt-6 mb-5 h-40 overflow-hidden border-b">
-              {selectedShow.backdropUrl || selectedShow.artworkUrl ? (
-                <ImageReveal
-                  src={
-                    selectedShow.backdropUrl ?? selectedShow.artworkUrl ?? ''
-                  }
-                  alt=""
-                  className="h-full w-full"
-                />
-              ) : null}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-            </div>
-            <Dialog.Title>{selectedShow.title}</Dialog.Title>
-            <Dialog.Description>
-              {selectedShow.tagline ?? 'Upcoming broadcast'}
-              {selectedShow.episodeNumber != null
-                ? ` · Episode ${selectedShow.episodeNumber}`
-                : ''}
-            </Dialog.Description>
-            <div className="mt-4 flex flex-col gap-4">
-              {selectedShow.artworkUrl ? (
-                <ImageReveal
-                  src={selectedShow.artworkUrl}
-                  alt=""
-                  className="size-24 rounded-lg"
-                />
-              ) : null}
-              <div className="grid gap-2 text-sm sm:grid-cols-2">
-                <div>
-                  <span className="text-foreground-secondary block text-xs uppercase">
-                    When
-                  </span>
-                  {formatDate(selectedShow.startAt)} at{' '}
-                  {formatTimeRange(selectedShow.startAt, selectedShow.endAt)}
-                </div>
-                {selectedShow.location ? (
-                  <div>
-                    <span className="text-foreground-secondary block text-xs uppercase">
-                      Location
-                    </span>
-                    {selectedShow.location}
-                  </div>
-                ) : null}
-              </div>
-              {selectedShow.description ? (
-                <p className="text-foreground-secondary text-sm leading-relaxed">
-                  {selectedShow.description}
-                </p>
-              ) : (
-                <p className="text-foreground-secondary text-sm">
-                  Show details will appear here once the show has a description.
-                </p>
-              )}
-            </div>
-            <Dialog.Actions>
-              {selectedShow.showId ? (
-                <Link
-                  to="/studio/shows/$id"
-                  params={{ id: selectedShow.showId }}
-                  onClick={() => setSelectedShow(null)}
-                >
-                  <Button variant="secondary">Open show</Button>
-                </Link>
-              ) : null}
-              <Dialog.Close>Close</Dialog.Close>
-            </Dialog.Actions>
-          </>
-        ) : null}
-      </Dialog.Root>
-    </section>
-  );
-}
-
-function ScheduleAnalytics() {
-  const [stats, setStats] = useState<
-    Partial<Record<'1' | '7' | '30', StatsPlays>>
-  >({});
-
-  useEffect(() => {
-    void Promise.all(
-      ['1', '7', '30'].map((range) =>
-        fetchStatsPlays(range as '1' | '7' | '30'),
-      ),
-    ).then((results) => {
-      setStats({
-        '1': results[0]?.data,
-        '7': results[1]?.data,
-        '30': results[2]?.data,
-      });
-    });
-  }, []);
-
-  return (
-    <StudioPanel
-      title="Broadcast analytics"
-      description="Recent listening activity around your scheduled broadcasts."
-    >
-      <div className="grid gap-3 sm:grid-cols-3">
-        {(['1', '7', '30'] as const).map((range) => (
-          <div
-            key={range}
-            className="border-border bg-background-secondary/40 rounded-lg border p-3"
-          >
-            <p className="text-foreground-secondary text-xs font-semibold tracking-wide uppercase">
-              Last {range} day{range === '1' ? '' : 's'}
-            </p>
-            <p className="mt-2 text-2xl font-bold tabular-nums">
-              {stats[range]?.totalPlays.toLocaleString() ?? '—'}
-            </p>
-            <p className="text-foreground-secondary text-xs">plays</p>
-          </div>
-        ))}
-      </div>
-    </StudioPanel>
-  );
-}
+import {
+  DEFAULT_BROADCAST_HOUR,
+  endAtFor,
+  formatDate,
+  formatTime,
+  formatTimeRange,
+  FREQUENCY_DAY_ORDER,
+  fromLocalParts,
+  MILLISECONDS_PER_DAY,
+  nextFriday,
+  pad,
+  ScheduleCard,
+  toLocalParts,
+  WEEKDAY_LABELS,
+} from './schedule/schedule-helpers';
+import { ScheduleAnalytics } from './schedule/ScheduleAnalytics';
+import { ScheduledTimes } from './schedule/ScheduledTimes';
 
 export function StudioScheduleView() {
   const [schedule, setSchedule] = useState<ChannelSchedule | null>(null);
@@ -446,30 +88,35 @@ export function StudioScheduleView() {
     'PUBLIC',
   );
   const [autoPublish, setAutoPublish] = useState(true);
+  const [pendingCancel, setPendingCancel] = useState<ScheduledShow | null>(
+    null,
+  );
   const [episodeNumberEnabled, setEpisodeNumberEnabled] = useState(true);
   const [nextEpisodeNumber, setNextEpisodeNumber] = useState(1);
 
   useEffect(() => {
-    void Promise.all([
+    Promise.all([
       fetchChannelSchedule(),
       fetchUpcomingBroadcasts(),
       fetchShowSchedule(),
-    ]).then(([scheduleResult, upcomingResult, showScheduleResult]) => {
-      const local = toLocalParts(scheduleResult.data.nextBroadcastAt);
-      setSchedule(scheduleResult.data);
-      setDate(local.date);
-      setTime(local.time);
-      setNote(scheduleResult.data.nextBroadcastNote ?? '');
-      setShowType(scheduleResult.data.nextBroadcastShowType ?? 'LIVE_SET');
-      setShowMode(scheduleResult.data.nextBroadcastMode ?? 'SERIES');
-      setShowDescription(scheduleResult.data.nextBroadcastDescription ?? '');
-      setShowCoverUrl(scheduleResult.data.nextBroadcastCoverUrl ?? '');
-      setDurationHours(scheduleResult.data.nextBroadcastDurationHours ?? 1);
-      setUpcoming(upcomingResult.data);
-      setShows(showScheduleResult.data.series);
-      setScheduledShows(showScheduleResult.data.scheduledShows);
-      setLoading(false);
-    });
+    ])
+      .then(([scheduleResult, upcomingResult, showScheduleResult]) => {
+        const local = toLocalParts(scheduleResult.data.nextBroadcastAt);
+        setSchedule(scheduleResult.data);
+        setDate(local.date);
+        setTime(local.time);
+        setNote(scheduleResult.data.nextBroadcastNote ?? '');
+        setShowType(scheduleResult.data.nextBroadcastShowType ?? 'LIVE_SET');
+        setShowMode(scheduleResult.data.nextBroadcastMode ?? 'SERIES');
+        setShowDescription(scheduleResult.data.nextBroadcastDescription ?? '');
+        setShowCoverUrl(scheduleResult.data.nextBroadcastCoverUrl ?? '');
+        setDurationHours(scheduleResult.data.nextBroadcastDurationHours ?? 1);
+        setUpcoming(upcomingResult.data);
+        setShows(showScheduleResult.data.series);
+        setScheduledShows(showScheduleResult.data.scheduledShows);
+      })
+      .catch(() => toast.error('Could not load your schedule.'))
+      .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
@@ -588,16 +235,23 @@ export function StudioScheduleView() {
   };
 
   const cancelEpisode = async (id: string) => {
-    const result = await cancelScheduledShow(id);
-    if (!result.ok) {
-      setMsg(result.error);
-      return;
+    try {
+      const result = await cancelScheduledShow(id);
+      if (!result.ok) {
+        toast.error(result.error);
+        return;
+      }
+      setScheduledShows((current) => current.filter((show) => show.id !== id));
+      toast.success('Scheduled show canceled.');
+    } catch {
+      toast.error('Could not cancel the scheduled show.');
     }
-    setScheduledShows((current) => current.filter((show) => show.id !== id));
-    setMsg('Scheduled show canceled.');
   };
 
   const scheduledTimes = useMemo<ScheduleCard[]>(() => {
+    // Upcoming broadcasts carry no show id from the API, so link them to a
+    // show by title (built once, not scanned per field per item).
+    const showByTitle = new Map(shows.map((show) => [show.title, show]));
     const rows: ScheduleCard[] = scheduledShows.map((item) => ({
       id: item.id,
       startAt: item.startAt,
@@ -621,17 +275,15 @@ export function StudioScheduleView() {
         startAt: item.startAt,
         endAt: endAtFor(
           item.startAt,
-          shows.find((show) => show.title === item.title)?.intervalHours,
+          showByTitle.get(item.title)?.intervalHours,
         ),
         title: item.title,
         location: item.venue ?? item.location,
         visibility: item.visibility,
-        description: shows.find((show) => show.title === item.title)
-          ?.description,
-        artworkUrl: shows.find((show) => show.title === item.title)?.coverUrl,
-        backdropUrl: shows.find((show) => show.title === item.title)
-          ?.backdropUrl,
-        showId: shows.find((show) => show.title === item.title)?.id,
+        description: showByTitle.get(item.title)?.description,
+        artworkUrl: showByTitle.get(item.title)?.coverUrl,
+        backdropUrl: showByTitle.get(item.title)?.backdropUrl,
+        showId: showByTitle.get(item.title)?.id,
         episodeNumber: item.episodeNumber,
       })),
     );
@@ -681,6 +333,14 @@ export function StudioScheduleView() {
           shows.find((show) => show.title === schedule.nextBroadcastNote)?.id ??
           '',
       );
+    }
+    if (!schedule?.nextBroadcastAt) {
+      setDate('');
+      setTime('');
+      setNote('');
+      setShowDescription('');
+      setShowCoverUrl('');
+      setSelectedShowId('');
     }
     setMsg(null);
     setEditorOpen(true);
@@ -810,7 +470,7 @@ export function StudioScheduleView() {
                       <Button
                         size="sm"
                         variant="text"
-                        onClick={() => void cancelEpisode(show.id)}
+                        onClick={() => setPendingCancel(show)}
                       >
                         Cancel
                       </Button>
@@ -820,6 +480,21 @@ export function StudioScheduleView() {
               </ul>
             </StudioPanel>
           ) : null}
+
+          <ConfirmDialog
+            isOpen={pendingCancel !== null}
+            title={`Cancel "${pendingCancel?.title ?? 'this show'}"?`}
+            description="The scheduled episode is removed from your schedule and the public channel."
+            confirmLabel="Cancel episode"
+            onCancel={() => setPendingCancel(null)}
+            onConfirm={() => {
+              const target = pendingCancel;
+              setPendingCancel(null);
+              if (target) {
+                void cancelEpisode(target.id);
+              }
+            }}
+          />
 
           <ScheduleAnalytics />
 
@@ -922,14 +597,23 @@ export function StudioScheduleView() {
               />
 
               <div className="grid gap-3 sm:grid-cols-2">
+                {selectedShowId ? (
+                  <p className="text-foreground-secondary text-xs sm:col-span-2">
+                    Tagline, visibility, recording and numbering are the
+                    show&apos;s own settings — change them on its show page.
+                    They apply here only when you create a new show.
+                  </p>
+                ) : null}
                 <Input
                   label="Show tagline"
+                  disabled={Boolean(selectedShowId)}
                   value={showTagline}
                   onChange={(event) => setShowTagline(event.target.value)}
                   placeholder="Optional subtitle"
                 />
                 <Select
                   label="Visibility"
+                  disabled={Boolean(selectedShowId)}
                   value={showVisibility}
                   onValueChange={(value) =>
                     setShowVisibility(value as 'PUBLIC' | 'FAN_ONLY')
@@ -945,6 +629,7 @@ export function StudioScheduleView() {
                   </span>
                   <Toggle
                     label="Publish recordings automatically"
+                    disabled={Boolean(selectedShowId)}
                     checked={autoPublish}
                     onChange={setAutoPublish}
                   />
@@ -956,6 +641,7 @@ export function StudioScheduleView() {
                     </span>
                     <Toggle
                       label="Number episodes automatically"
+                      disabled={Boolean(selectedShowId)}
                       checked={episodeNumberEnabled}
                       onChange={setEpisodeNumberEnabled}
                     />
@@ -966,6 +652,7 @@ export function StudioScheduleView() {
                     type="number"
                     variant="number"
                     label="Start episode"
+                    disabled={Boolean(selectedShowId)}
                     min={1}
                     value={nextEpisodeNumber}
                     onChange={(event) =>
@@ -1008,6 +695,16 @@ export function StudioScheduleView() {
                     Stop recurring schedule
                   </Button>
                 ) : null}
+                <Select
+                  id="episode-duration"
+                  label="Duration: extra minutes"
+                  value={String(durationMinutes)}
+                  options={[0, 15, 30, 45].map((minutes) => ({
+                    id: String(minutes),
+                    label: String(minutes),
+                  }))}
+                  onValueChange={(value) => setDurationMinutes(Number(value))}
+                />
                 <SaveButton
                   disabled={
                     !selectedShowId ||
@@ -1051,16 +748,6 @@ export function StudioScheduleView() {
                     : 'No next broadcast selected'}
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  <Select
-                    id="episode-duration"
-                    label="Minutes"
-                    value={String(durationMinutes)}
-                    options={[0, 15, 30, 45].map((minutes) => ({
-                      id: String(minutes),
-                      label: String(minutes),
-                    }))}
-                    onValueChange={(value) => setDurationMinutes(Number(value))}
-                  />
                   <Button
                     size="sm"
                     variant="secondary"

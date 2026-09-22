@@ -10,6 +10,7 @@ import {
   UsersIcon,
 } from 'lucide-react';
 import { useEffect, useMemo, useState, type FC } from 'react';
+import { toast } from 'sonner';
 
 import {
   Button,
@@ -167,66 +168,90 @@ export const StudioStatsView: FC = () => {
   const playsQueryReady =
     range !== 'custom' || Boolean(appliedCustom?.from && appliedCustom?.to);
 
+  // Top tracks/countries/lists only support 7/30/90-day windows; "Custom" and
+  // "1 day" fall back to the last 30 days (and the panel titles say so).
+  const topRange = range === 'custom' || range === '1' ? '30' : range;
+
+  // Everything except the top lists: re-fetched only when the range changes.
   useEffect(() => {
     if (!playsQueryReady) {
       return;
     }
     let cancelled = false;
     setLoading(true);
-    const apiRange = range === 'custom' ? 'custom' : range;
     const geoPeriod =
       range === '1' || range === '7' ? '7d' : range === '30' ? '30d' : 'all';
-    void Promise.all([
+    Promise.all([
       fetchStatsSummary(),
       fetchStatsPlays(
         range === 'custom' && appliedCustom
           ? { range: 'custom', from: appliedCustom.from, to: appliedCustom.to }
-          : apiRange,
+          : range,
       ),
-      fetchStatsTopTracks(range === 'custom' || range === '1' ? '30' : range),
-      fetchStatsTopCountries(
-        range === 'custom' || range === '1' ? '30' : range,
-      ),
-      fetchStatsTopLists(
-        range === 'custom' || range === '1' ? '30' : range,
-        topListDimension,
-        topListSort,
-      ),
+      fetchStatsTopTracks(topRange),
+      fetchStatsTopCountries(topRange),
       fetchListenerGeo(geoPeriod),
       fetchChannelEgressStats(),
       fetchChannelLiveStats(),
       fetchGrantEstimate(),
-    ]).then(
-      ([
-        summaryResult,
-        playsResult,
-        tracksResult,
-        countriesResult,
-        topListsResult,
-        listenerGeoResult,
-        egressResult,
-        liveResult,
-        grantResult,
-      ]) => {
-        if (cancelled) {
-          return;
+    ])
+      .then(
+        ([
+          summaryResult,
+          playsResult,
+          tracksResult,
+          countriesResult,
+          listenerGeoResult,
+          egressResult,
+          liveResult,
+          grantResult,
+        ]) => {
+          if (cancelled) {
+            return;
+          }
+          setSummary(summaryResult.data);
+          setPlays(playsResult.data);
+          setTracks(tracksResult.data);
+          setCountries(countriesResult.data);
+          setListenerGeo(listenerGeoResult.data);
+          setEgress(egressResult.data);
+          setLive(liveResult.data);
+          setGrant(grantResult.data);
+        },
+      )
+      .catch(() => {
+        if (!cancelled) {
+          toast.error('Could not load your stats.');
         }
-        setSummary(summaryResult.data);
-        setPlays(playsResult.data);
-        setTracks(tracksResult.data);
-        setCountries(countriesResult.data);
-        setTopLists(topListsResult.data);
-        setListenerGeo(listenerGeoResult.data);
-        setEgress(egressResult.data);
-        setLive(liveResult.data);
-        setGrant(grantResult.data);
-        setLoading(false);
-      },
-    );
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      });
     return () => {
       cancelled = true;
     };
-  }, [range, appliedCustom, topListDimension, topListSort, playsQueryReady]);
+  }, [range, appliedCustom, topRange, playsQueryReady]);
+
+  // The top lists alone re-fetch when their dimension or sort changes.
+  useEffect(() => {
+    let cancelled = false;
+    fetchStatsTopLists(topRange, topListDimension, topListSort)
+      .then((result) => {
+        if (!cancelled) {
+          setTopLists(result.data);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          toast.error('Could not load the top lists.');
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [topRange, topListDimension, topListSort]);
 
   useEffect(() => {
     if (!selectedDay) {
@@ -235,13 +260,22 @@ export const StudioStatsView: FC = () => {
     }
     let cancelled = false;
     setHourlyLoading(true);
-    void fetchStatsPlaysHourly(selectedDay).then((result) => {
-      if (cancelled) {
-        return;
-      }
-      setHourly(result.data);
-      setHourlyLoading(false);
-    });
+    fetchStatsPlaysHourly(selectedDay)
+      .then((result) => {
+        if (!cancelled) {
+          setHourly(result.data);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          toast.error('Could not load the hourly breakdown.');
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setHourlyLoading(false);
+        }
+      });
     return () => {
       cancelled = true;
     };
@@ -323,7 +357,7 @@ export const StudioStatsView: FC = () => {
     {
       label: 'Minutes listened',
       value: minutesListened,
-      note: `Estimated from ${egress.windowDays}d delivery`,
+      note: `Estimated from ${egress.windowDays}d delivery at 192 kbps`,
       icon: UsersIcon,
     },
     {
@@ -589,7 +623,7 @@ export const StudioStatsView: FC = () => {
                 <EmptyState size="sm" title="No track stats yet" />
               ) : (
                 <TopList
-                  title="Top tracks"
+                  title={`Top tracks · last ${topRange} days`}
                   formatValue={formatPlayCount}
                   entries={tracks.map((track) => ({
                     id: track.soundId,
@@ -611,7 +645,7 @@ export const StudioStatsView: FC = () => {
                 <EmptyState size="sm" title="No country data yet" />
               ) : (
                 <TopList
-                  title="Top countries"
+                  title={`Top countries · last ${topRange} days`}
                   formatValue={(value) => value.toLocaleString()}
                   entries={countries.map((country) => ({
                     id: country.country,
