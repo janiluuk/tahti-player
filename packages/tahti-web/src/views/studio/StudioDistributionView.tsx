@@ -51,6 +51,7 @@ import type {
   StudioRelease,
 } from '../../api/studio-types';
 import { RELEASE_CREDIT_ROLES } from '../../api/studio-types';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioNav } from '../../components/StudioNav';
@@ -275,6 +276,7 @@ function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
   const [royaltiesLoaded, setRoyaltiesLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [confirmSubmit, setConfirmSubmit] = useState(false);
   const [activeMethods, setActiveMethods] = useState<Set<string>>(
     new Set(['upc', 'musicbrainz', 'discogs', 'rights']),
   );
@@ -291,31 +293,33 @@ function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
 
   const loadOps = () => {
     setLoading(true);
-    void Promise.all([
+    Promise.all([
       fetchReleaseCatalog(release.id),
       fetchRevelatorBilling(release.id),
-    ]).then(([c, b]) => {
-      if (c.data) {
-        setCatalog(c.data);
-        setForm(catalogToForm(c.data));
-        setCredits(parseCredits(c.data.credits));
-        setChecklist(c.data.checklist);
-        setActiveMethods(
-          new Set([
-            ...(c.data.upc ? ['upc'] : []),
-            ...(c.data.musicbrainzReleaseId || c.data.musicbrainzArtistId
-              ? ['musicbrainz']
-              : []),
-            ...(c.data.discogsReleaseId ? ['discogs'] : []),
-            ...(c.data.pLine || c.data.cLine || c.data.labelImprint
-              ? ['rights']
-              : []),
-          ]),
-        );
-      }
-      setBilling(b.data);
-      setLoading(false);
-    });
+    ])
+      .then(([c, b]) => {
+        if (c.data) {
+          setCatalog(c.data);
+          setForm(catalogToForm(c.data));
+          setCredits(parseCredits(c.data.credits));
+          setChecklist(c.data.checklist);
+          setActiveMethods(
+            new Set([
+              ...(c.data.upc ? ['upc'] : []),
+              ...(c.data.musicbrainzReleaseId || c.data.musicbrainzArtistId
+                ? ['musicbrainz']
+                : []),
+              ...(c.data.discogsReleaseId ? ['discogs'] : []),
+              ...(c.data.pLine || c.data.cLine || c.data.labelImprint
+                ? ['rights']
+                : []),
+            ]),
+          );
+        }
+        setBilling(b.data);
+      })
+      .catch(() => toast.error('Could not load the distribution details.'))
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -364,26 +368,60 @@ function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
       cLine: form.cLine.trim() || null,
       labelImprint: form.labelImprint.trim() || null,
       credits: trimmedCredits,
-    }).then((r) => {
-      setBusy(false);
+    })
+      .then((r) => {
+        if (!r.ok) {
+          toast.error(r.error);
+          return;
+        }
+        setCatalog(r.data);
+        setForm(catalogToForm(r.data));
+        setCredits(parseCredits(r.data.credits));
+        setChecklist(r.data.checklist);
+        toast.success('Catalog saved.');
+      })
+      .catch(() => toast.error('Could not save the catalog.'))
+      .finally(() => setBusy(false));
+  };
+
+  const submitToRevelator = async () => {
+    setBusy(true);
+    try {
+      const r = await payAndSubmitToRevelator(release.id);
       if (!r.ok) {
         toast.error(r.error);
         return;
       }
-      setCatalog(r.data);
-      setForm(catalogToForm(r.data));
-      setCredits(parseCredits(r.data.credits));
-      setChecklist(r.data.checklist);
-      toast.success('Catalog saved.');
-    });
+      if ('checkoutUrl' in r) {
+        window.location.href = r.checkoutUrl;
+        return;
+      }
+      toast.success('Submitted to Revelator.');
+      setCatalog((prev) =>
+        prev ? { ...prev, revelatorStatus: r.data.revelatorStatus } : prev,
+      );
+      setBilling((prev) => (prev ? { ...prev, paid: true } : prev));
+      loadOps();
+    } catch {
+      toast.error('Could not submit to Revelator.');
+    } finally {
+      setBusy(false);
+    }
   };
 
   const runExport = async (
     mode: 'download' | 'musicbrainz' | 'discogs',
   ): Promise<void> => {
     setBusy(true);
-    const res = await fetchReleaseExportJson(release.id);
-    setBusy(false);
+    let res: Awaited<ReturnType<typeof fetchReleaseExportJson>>;
+    try {
+      res = await fetchReleaseExportJson(release.id);
+    } catch {
+      toast.error('Could not export the release.');
+      return;
+    } finally {
+      setBusy(false);
+    }
     if (!res.ok) {
       toast.error(res.error);
       return;
@@ -722,28 +760,7 @@ function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
         size="sm"
         className="self-start"
         disabled={busy || !canSubmit}
-        onClick={() => {
-          setBusy(true);
-          void payAndSubmitToRevelator(release.id).then((r) => {
-            setBusy(false);
-            if (!r.ok) {
-              toast.error(r.error);
-              return;
-            }
-            if ('checkoutUrl' in r) {
-              window.location.href = r.checkoutUrl;
-              return;
-            }
-            toast.success('Submitted to Revelator.');
-            setCatalog((prev) =>
-              prev
-                ? { ...prev, revelatorStatus: r.data.revelatorStatus }
-                : prev,
-            );
-            setBilling((prev) => (prev ? { ...prev, paid: true } : prev));
-            loadOps();
-          });
-        }}
+        onClick={() => setConfirmSubmit(true)}
       >
         {!busy && <SendIcon size={14} aria-hidden className="mr-1.5" />}
         {busy
@@ -752,6 +769,22 @@ function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
             ? `Pay ${euros(billing.feeCents)} & submit`
             : 'Submit to Revelator'}
       </Button>
+
+      <ConfirmDialog
+        isOpen={confirmSubmit}
+        title="Submit to Revelator?"
+        description={
+          billing && !billing.paid && billing.feeCents > 0
+            ? `You will be taken to checkout to pay ${euros(billing.feeCents)}. Submitting sends this release to stores.`
+            : 'This sends the release to Revelator for distribution to stores.'
+        }
+        confirmLabel="Submit"
+        onCancel={() => setConfirmSubmit(false)}
+        onConfirm={() => {
+          setConfirmSubmit(false);
+          void submitToRevelator();
+        }}
+      />
 
       {showRoyalties && (
         <div className="border-border border-t pt-3">
@@ -945,13 +978,13 @@ export function StudioDistributionView() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    void Promise.all([fetchStudioReleases(), fetchAllRoyalties()]).then(
-      ([rel, roy]) => {
+    Promise.all([fetchStudioReleases(), fetchAllRoyalties()])
+      .then(([rel, roy]) => {
         setReleases(rel.data.releases ?? []);
         setAllRoyalties(roy.data ?? []);
-        setLoading(false);
-      },
-    );
+      })
+      .catch(() => toast.error('Could not load your releases.'))
+      .finally(() => setLoading(false));
   }, []);
 
   return (

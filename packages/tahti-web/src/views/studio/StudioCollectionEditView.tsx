@@ -164,6 +164,17 @@ export function StudioCollectionEditView({
     reload();
   }, [slug]);
 
+  const refreshItems = async () => {
+    try {
+      const fresh = await fetchStudioCollection(slug);
+      setCol((current) =>
+        current ? { ...current, items: fresh.data.items } : fresh.data,
+      );
+    } catch {
+      toast.error('Could not refresh the tracklist.');
+    }
+  };
+
   const items = col?.items ?? [];
   const isAlbumLike = useMemo(
     () => ['ALBUM', 'EP', 'SINGLE'].includes(style),
@@ -308,7 +319,9 @@ export function StudioCollectionEditView({
       return;
     }
     toast.success(`${sound.title} added.`);
-    reload();
+    // Refresh only the tracklist: a full reload() would reset the details
+    // form and drop unsaved edits.
+    void refreshItems();
   };
 
   const onReorder = (from: number, to: number) => {
@@ -327,52 +340,56 @@ export function StudioCollectionEditView({
         toast.success('Tracklist reordered.');
       } else {
         toast.error(result.error);
-        reload();
+        void refreshItems();
       }
     });
   };
 
   const saveMeta = async () => {
     setSaving(true);
-    const result = await patchStudioCollection(slug, {
-      name: name.trim() || slug,
-      description: description.trim() || null,
-      style,
-      isPublic: visibility === 'PUBLIC',
-      visibility,
-      releaseDate: releaseDate || null,
-      genres: genres
-        .split(',')
-        .map((genre) => genre.trim())
-        .filter(Boolean)
-        .slice(0, 5),
-      backdropUrl: backdropUrl?.trim() || null,
-    });
-    if (!result.ok) {
+    try {
+      const result = await patchStudioCollection(slug, {
+        name: name.trim() || slug,
+        description: description.trim() || null,
+        style,
+        isPublic: visibility === 'PUBLIC',
+        visibility,
+        releaseDate: releaseDate || null,
+        genres: genres
+          .split(',')
+          .map((genre) => genre.trim())
+          .filter(Boolean)
+          .slice(0, 5),
+        backdropUrl: backdropUrl?.trim() || null,
+      });
+      if (!result.ok) {
+        toast.error(result.error);
+        return;
+      }
+      const galleryResult = await patchCollectionGallery(slug, {
+        slideshowImages,
+        galleryMode: slideshowImages.length > 1 ? 'STATIC_SLIDESHOW' : 'NONE',
+      });
+      if (!galleryResult.ok) {
+        toast.error(galleryResult.error);
+        return;
+      }
+      setCol((c) =>
+        c
+          ? {
+              ...c,
+              ...result.data,
+              items: c.items,
+              coverUrl: coverUrl ?? result.data.coverUrl,
+            }
+          : result.data,
+      );
+      toast.success('Collection details saved.');
+    } catch {
+      toast.error('Could not save the collection details.');
+    } finally {
       setSaving(false);
-      toast.error(result.error);
-      return;
     }
-    const galleryResult = await patchCollectionGallery(slug, {
-      slideshowImages,
-      galleryMode: slideshowImages.length > 1 ? 'STATIC_SLIDESHOW' : 'NONE',
-    });
-    setSaving(false);
-    if (!galleryResult.ok) {
-      toast.error(galleryResult.error);
-      return;
-    }
-    setCol((c) =>
-      c
-        ? {
-            ...c,
-            ...result.data,
-            items: c.items,
-            coverUrl: coverUrl ?? result.data.coverUrl,
-          }
-        : result.data,
-    );
-    toast.success('Collection details saved.');
   };
 
   const uploadImage = async (files: readonly File[]) => {

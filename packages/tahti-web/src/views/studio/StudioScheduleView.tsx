@@ -9,6 +9,7 @@ import {
   XIcon,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   Button,
@@ -48,6 +49,7 @@ import {
   type BroadcastDetailsValues,
 } from '../../components/BroadcastDetailsFields';
 import { ChannelRadioPlaylistPanel } from '../../components/ChannelRadioPlaylistPanel';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { ImageUploadField } from '../../components/ImageUploadField';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -446,30 +448,35 @@ export function StudioScheduleView() {
     'PUBLIC',
   );
   const [autoPublish, setAutoPublish] = useState(true);
+  const [pendingCancel, setPendingCancel] = useState<ScheduledShow | null>(
+    null,
+  );
   const [episodeNumberEnabled, setEpisodeNumberEnabled] = useState(true);
   const [nextEpisodeNumber, setNextEpisodeNumber] = useState(1);
 
   useEffect(() => {
-    void Promise.all([
+    Promise.all([
       fetchChannelSchedule(),
       fetchUpcomingBroadcasts(),
       fetchShowSchedule(),
-    ]).then(([scheduleResult, upcomingResult, showScheduleResult]) => {
-      const local = toLocalParts(scheduleResult.data.nextBroadcastAt);
-      setSchedule(scheduleResult.data);
-      setDate(local.date);
-      setTime(local.time);
-      setNote(scheduleResult.data.nextBroadcastNote ?? '');
-      setShowType(scheduleResult.data.nextBroadcastShowType ?? 'LIVE_SET');
-      setShowMode(scheduleResult.data.nextBroadcastMode ?? 'SERIES');
-      setShowDescription(scheduleResult.data.nextBroadcastDescription ?? '');
-      setShowCoverUrl(scheduleResult.data.nextBroadcastCoverUrl ?? '');
-      setDurationHours(scheduleResult.data.nextBroadcastDurationHours ?? 1);
-      setUpcoming(upcomingResult.data);
-      setShows(showScheduleResult.data.series);
-      setScheduledShows(showScheduleResult.data.scheduledShows);
-      setLoading(false);
-    });
+    ])
+      .then(([scheduleResult, upcomingResult, showScheduleResult]) => {
+        const local = toLocalParts(scheduleResult.data.nextBroadcastAt);
+        setSchedule(scheduleResult.data);
+        setDate(local.date);
+        setTime(local.time);
+        setNote(scheduleResult.data.nextBroadcastNote ?? '');
+        setShowType(scheduleResult.data.nextBroadcastShowType ?? 'LIVE_SET');
+        setShowMode(scheduleResult.data.nextBroadcastMode ?? 'SERIES');
+        setShowDescription(scheduleResult.data.nextBroadcastDescription ?? '');
+        setShowCoverUrl(scheduleResult.data.nextBroadcastCoverUrl ?? '');
+        setDurationHours(scheduleResult.data.nextBroadcastDurationHours ?? 1);
+        setUpcoming(upcomingResult.data);
+        setShows(showScheduleResult.data.series);
+        setScheduledShows(showScheduleResult.data.scheduledShows);
+      })
+      .catch(() => toast.error('Could not load your schedule.'))
+      .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
@@ -588,13 +595,17 @@ export function StudioScheduleView() {
   };
 
   const cancelEpisode = async (id: string) => {
-    const result = await cancelScheduledShow(id);
-    if (!result.ok) {
-      setMsg(result.error);
-      return;
+    try {
+      const result = await cancelScheduledShow(id);
+      if (!result.ok) {
+        toast.error(result.error);
+        return;
+      }
+      setScheduledShows((current) => current.filter((show) => show.id !== id));
+      toast.success('Scheduled show canceled.');
+    } catch {
+      toast.error('Could not cancel the scheduled show.');
     }
-    setScheduledShows((current) => current.filter((show) => show.id !== id));
-    setMsg('Scheduled show canceled.');
   };
 
   const scheduledTimes = useMemo<ScheduleCard[]>(() => {
@@ -810,7 +821,7 @@ export function StudioScheduleView() {
                       <Button
                         size="sm"
                         variant="text"
-                        onClick={() => void cancelEpisode(show.id)}
+                        onClick={() => setPendingCancel(show)}
                       >
                         Cancel
                       </Button>
@@ -820,6 +831,21 @@ export function StudioScheduleView() {
               </ul>
             </StudioPanel>
           ) : null}
+
+          <ConfirmDialog
+            isOpen={pendingCancel !== null}
+            title={`Cancel "${pendingCancel?.title ?? 'this show'}"?`}
+            description="The scheduled episode is removed from your schedule and the public channel."
+            confirmLabel="Cancel episode"
+            onCancel={() => setPendingCancel(null)}
+            onConfirm={() => {
+              const target = pendingCancel;
+              setPendingCancel(null);
+              if (target) {
+                void cancelEpisode(target.id);
+              }
+            }}
+          />
 
           <ScheduleAnalytics />
 

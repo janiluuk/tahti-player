@@ -172,3 +172,33 @@ Split into `plugin-store/radio-category/`: `PersonalRadioStreamCard`, `RadioBrow
 - Split by domain into barrels: `shows/` (types, mock, wire, series, episodes, bookings, public-show), `channel-design/` (presets, header, colors, visual, mock, visual-api, look-extras, patch, saved-presets, domain), `studio-extras/` (schedule, stats, stats-plays, profile, posts), `sources/` (catalog, soundcloud, spotify, bandcamp, hearthis, export-status, stash, connections), `artist-settings/` (prefs, green-room, social, moderation, press-kit, press-kit-images, avatar, mock).
 - Module-level mock state that was reassigned in place (`let mockBookings`, `mockVisual`, `mockNotifications` …) can't be assigned across modules; it now has `setMockX` setters in the owning `mock.ts`.
 - Behavior unchanged; existing api/views/components tests pass.
+
+## Studio views audit (2026-09-22)
+
+Scope: the five 1000+ line studio views (`StudioReleaseDetailView`, `StudioShowDetailView`/`StudioEpisodeReviewView`, `StudioScheduleView`, `StudioCollectionEditView`, `StudioDistributionView`) plus a mechanical scan of all of `views/studio/`. The scan found almost no hand-rolled elements (only two `<a>` for external/download links, no ui link component) and no `TODO`s; the problems are logic and structure.
+
+### Fixed in this pass
+- **Collection editor:** adding a track called `reload()`, which reset the details form and dropped unsaved edits (and refetched sounds and gallery). It now refreshes only the tracklist (also after a failed reorder); `saveMeta` is try/finally.
+- **Show detail:** a picked thumbnail/backdrop file was never uploaded — the show saved a `blob:` object URL as its cover. Files are uploaded first, then saved; toasts.
+- **Episode review:** "Trim start/end" *removed* the range instead of keeping it (trim start 10 s cut 10 s→end, i.e. deleted the rest). New pure `trimToCuts` keeps `[start, end]` (tested). Render/approve had no catch (stuck "Rendering…"); the effect used dynamic imports of a module already imported statically and left the spinner forever on a failed load (now "Episode not found").
+- **Release detail:** no loading state ("Release not found" flashed, and stayed on failure); header Save also wrote raw Spotify/Bandcamp text (bare slugs, half-typed targets) over the smart-link targets — it now saves the description only, the smart-links panel owns its targets (the lifted `spotify`/`bandcamp` state is gone); `<li>` nested in `<li>` and every track title shown twice in the playlist; Publish had no confirm/busy and stayed enabled when already published.
+- **Distribution:** "Pay & submit to Revelator" (charges money, sends to stores) had no confirmation and no error handling; loads/saves/exports had no catch so `busy`/`loading` could stick; a failed release load showed the empty state forever.
+- **Schedule:** cancelling a scheduled episode had no confirm; initial load had no catch (`loading` forever).
+
+### Found, not fixed
+- **Show detail:** the "Record broadcasts by default" toggle is bound to `autoPublish` (a different field); creating an *upload* episode attaches the next booking slot to it; `bookNextInterval` books tomorrow +24 h with no conflict check and leaves an orphan booking if episode creation fails; an uploaded sound is orphaned if `createEpisode` fails; identical branches in `createNewEpisode`; the statistics block is a placeholder ("will appear when analytics are available"); object URLs from `createObjectURL` are never revoked; tab state is local, not in the URL.
+- **Schedule:** the dialog carries three unrelated saves (weekly recurrence, schedule one episode, save next broadcast) sharing one `busy`; the tagline, visibility, auto-publish, episode-numbering and "Start episode" fields only apply when a *new* show is created (ignored for an existing show), and the "Minutes" select only feeds the weekly recurrence though it sits by "Schedule episode". Upcoming items are matched to shows by **title** (5 `find` scans per item per memo run), `openEditor` doesn't reset stale form state when there's no next broadcast, hand-rolled `<button>` for the title and an unescaped `url(${...})` background.
+- **Collection editor:** `currentTime`/`duration` subscribed at the root, so the whole 1000-line view re-renders on every `timeupdate` (same bug as ChannelView had) — extract the now-playing bar; the add-tracks dialog shows disabled "Releases/Collections/Playlists" tabs (unwired); the progress bar is a hand-rolled div with click-to-seek; `queueAllTracks` fetches sources serially; the details save is two requests (details, then gallery) with no rollback if the second fails; `genres` silently truncates to 5.
+- **Release detail:** `fetchStudioReleases()` loads every release to find one (needs a by-id fetch); `fetchStudioSounds()` runs twice (view + smart-links panel) and each track row makes 2 requests (N+1) though the sounds map is already loaded; playlist reorder is mouse-drag only (no keyboard), no in-flight guard; hand-rolled `<button>` rows in the library dialog; two decorative `SearchIcon`/`FilterIcon` beside inputs; `<Link><Button/></Link>` nesting; `buildPlayable` is duplicated in the collection editor.
+- **Distribution:** `activeMethods` is re-derived on every reload, discarding the user's tile toggles.
+
+### Splits still needed (crowded views)
+| View | Now | Split into |
+| --- | --- | --- |
+| `StudioScheduleView` | 1089 | `ScheduledTimes` (+ card/list, details dialog) and `ScheduleAnalytics` to their own files; the dialog into three forms (next broadcast / one-off episode / weekly recurrence) with a `useScheduleForm` hook (17 `useState`); pure date helpers to `lib/` |
+| `StudioCollectionEditView` | ~1070 (one 984-line component) | `NowPlayingBar`, `CollectionDetailsForm`, `CollectionTracklist`, `AddTracksDialog`, `useCollectionEditor` hook (load/save/upload/reorder) |
+| `StudioReleaseDetailView` | ~1150 | `ReleaseSmartLinksPanel` (431 lines: targets editor, playlist, library dialog), `ReleaseTrackRow`, `FingerprintTab`; shared `useSoundPlayable` with the collection editor |
+| `StudioShowDetailView` | ~1100 | `StudioEpisodeReviewView` (286 lines) and `EpisodeEditorRow` to their own files; `ShowDefaultsForm`, `NewEpisodeDialog`, `useShowDetail` |
+| `StudioDistributionView` | ~1030 | `ReleaseOpsPanel` (673 lines): catalog form, credits, checklist, submission/billing, royalties; `GuideDetail` and constants out |
+
+Not audited yet: `StudioPlaylistsView` (800), `StudioGoLiveView` (798), `StudioBrandingView` (759), `StudioSoundView` (751), `StudioHomeView` (722), `StudioStatsView` (696), `StudioUpdatesView`, `StudioSoundsView`.

@@ -14,6 +14,7 @@ import {
   UploadIcon,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   Button,
@@ -31,8 +32,10 @@ import {
 } from '@tahti-player/ui';
 
 import {
+  approveEpisode,
   createEpisode,
   createShowBooking,
+  fetchEpisode,
   fetchEpisodesForShow,
   fetchShowBookings,
   fetchShowSeriesById,
@@ -43,12 +46,14 @@ import {
   type StudioShowSeries,
 } from '../../api/shows';
 import { uploadSoundFile } from '../../api/studio';
+import { uploadUserMediaFile } from '../../api/user-media';
 import { EntitySocialHeader } from '../../components/EntitySocialHeader';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { ShowImagePicker } from '../../components/ShowImagePicker';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { Eyebrow } from '../../components/tahti/Eyebrow';
+import { trimToCuts } from './episodeTrim';
 import { EpisodeSourceIcon, episodeStatusLabel } from './StudioShowsView';
 
 function EpisodeEditorRow({
@@ -257,25 +262,54 @@ export function StudioShowDetailView({ id }: { id: string }) {
     return upcoming;
   }, [bookings]);
 
+  /** Uploads a picked image and returns its stored URL. A picked file is only
+   * a local blob: preview until this runs, so it must never be saved as the
+   * show's URL directly. */
+  const uploadPicked = async (file: File | null, current: string) => {
+    if (!file) {
+      return current;
+    }
+    const result = await uploadUserMediaFile(file);
+    if (!result.ok) {
+      throw new Error(result.error);
+    }
+    return result.data.url;
+  };
+
   const saveMeta = async () => {
     if (!show) {
       return;
     }
     setSavingMeta(true);
-    const r = await patchShowSeries(show.id, {
-      title: title.trim() || show.title,
-      description: description.trim(),
-      coverUrl: thumbnailUrl.trim() || null,
-      backdropUrl: backdropUrl.trim() || null,
-      autoPublish,
-    });
-    setSavingMeta(false);
-    if (!r.ok) {
-      setMsg(r.error);
-      return;
+    try {
+      const [coverUrl, backdrop] = await Promise.all([
+        uploadPicked(thumbnailFile, thumbnailUrl.trim()),
+        uploadPicked(backdropFile, backdropUrl.trim()),
+      ]);
+      const r = await patchShowSeries(show.id, {
+        title: title.trim() || show.title,
+        description: description.trim(),
+        coverUrl: coverUrl || null,
+        backdropUrl: backdrop || null,
+        autoPublish,
+      });
+      if (!r.ok) {
+        toast.error(r.error);
+        return;
+      }
+      setShow(r.data);
+      setThumbnailUrl(r.data.coverUrl ?? '');
+      setBackdropUrl(r.data.backdropUrl ?? '');
+      setThumbnailFile(null);
+      setBackdropFile(null);
+      toast.success('Show details saved — new episodes will inherit these.');
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : 'Could not save the show.',
+      );
+    } finally {
+      setSavingMeta(false);
     }
-    setShow(r.data);
-    setMsg('Show details saved — new episodes will inherit these.');
   };
 
   const bookNextInterval = async () => {
@@ -817,29 +851,47 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
   const [publicTitle, setPublicTitle] = useState('');
   const [publicDescription, setPublicDescription] = useState('');
   const [savingDetails, setSavingDetails] = useState(false);
+  const [loadError, setLoadError] = useState(false);
 
   useEffect(() => {
-    void import('../../api/shows').then(
-      ({ fetchEpisode, fetchShowSeriesById }) => {
-        void fetchEpisode(episodeId).then((r) => {
-          setEpisode(r.data);
-          if (r.data) {
-            setPublicTitle(r.data.title);
-            setPublicDescription(r.data.description);
-            void fetchShowSeriesById(r.data.showId).then((s) =>
-              setShow(s.data),
-            );
+    let cancelled = false;
+    void (async () => {
+      try {
+        const r = await fetchEpisode(episodeId);
+        if (cancelled) {
+          return;
+        }
+        setEpisode(r.data);
+        if (r.data) {
+          setPublicTitle(r.data.title);
+          setPublicDescription(r.data.description);
+          const s = await fetchShowSeriesById(r.data.showId);
+          if (!cancelled) {
+            setShow(s.data);
           }
-        });
-      },
-    );
+        } else {
+          setLoadError(true);
+        }
+      } catch {
+        if (!cancelled) {
+          setLoadError(true);
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [episodeId]);
 
   if (!episode) {
     return (
       <StudioGate>
         <div className="studio-page-layout flex w-full flex-col">
-          <PageLoading label="Loading…" />
+          {loadError ? (
+            <PageEmpty title="Episode not found" />
+          ) : (
+            <PageLoading label="Loading…" />
+          )}
         </div>
       </StudioGate>
     );
@@ -847,6 +899,63 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
 
   const needsApproval =
     episode.source === 'broadcast' || episode.status === 'PENDING_APPROVAL';
+
+  const approve = async () => {
+    setBusy(true);
+    try {
+      const r = await approveEpisode(episode.id);
+      if (!r.ok) {
+        setMsg(r.error);
+        toast.error(r.error);
+        return;
+      }
+      setEpisode(r.data);
+      const text = 'Episode approved — ready to schedule or publish.';
+      setMsg(text);
+      toast.success(text);
+    } catch {
+      toast.error('Could not approve the episode.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const applyTrim = async () => {
+    const soundId = episode.soundId;
+    if (!soundId) {
+      return;
+    }
+    setBusy(true);
+    setMsg(null);
+    try {
+      const [studio, types] = await Promise.all([
+        import('../../api/studio'),
+        import('../../api/studio-types'),
+      ]);
+      const { data: draft } = await studio.fetchEditorDraft(soundId);
+      const base = draft.editList ?? types.createDefaultEditList(180);
+      const cuts = trimToCuts(trimStart, trimEnd, base.sourceDuration);
+      const editList = {
+        ...base,
+        cuts: cuts.length ? cuts : base.cuts,
+        loudnorm: { enabled: normalize, targetLufs: -14, targetTp: -1.5 },
+      };
+      const r = await studio.renderEditorDraft(
+        soundId,
+        editList,
+        `Episode ${episode.episodeNumber} review`,
+      );
+      const text = r.ok
+        ? 'Render queued — check the archive editor for progress.'
+        : r.error;
+      setMsg(text);
+      (r.ok ? toast.success : toast.error)(text);
+    } catch {
+      toast.error('Could not queue the render.');
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const savePublicDetails = async () => {
     setSavingDetails(true);
@@ -968,50 +1077,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
                     size="sm"
                     variant="secondary"
                     disabled={busy}
-                    onClick={() => {
-                      setBusy(true);
-                      void Promise.all([
-                        import('../../api/studio'),
-                        import('../../api/studio-types'),
-                      ]).then(async ([studio, types]) => {
-                        const { data: draft } = await studio.fetchEditorDraft(
-                          episode.soundId!,
-                        );
-                        const base =
-                          draft.editList ?? types.createDefaultEditList(180);
-                        const cuts =
-                          trimEnd > trimStart
-                            ? [{ start: trimStart, end: trimEnd }]
-                            : trimStart > 0
-                              ? [
-                                  {
-                                    start: trimStart,
-                                    end: base.sourceDuration,
-                                  },
-                                ]
-                              : [];
-                        const editList = {
-                          ...base,
-                          cuts: cuts.length ? cuts : base.cuts,
-                          loudnorm: {
-                            enabled: normalize,
-                            targetLufs: -14,
-                            targetTp: -1.5,
-                          },
-                        };
-                        const r = await studio.renderEditorDraft(
-                          episode.soundId!,
-                          editList,
-                          `Episode ${episode.episodeNumber} review`,
-                        );
-                        setBusy(false);
-                        setMsg(
-                          r.ok
-                            ? 'Render queued — check the archive editor for progress.'
-                            : r.error,
-                        );
-                      });
-                    }}
+                    onClick={() => void applyTrim()}
                   >
                     {busy ? 'Rendering…' : 'Apply trim / normalize'}
                   </Button>
@@ -1032,22 +1098,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
               )}
               <Button
                 disabled={busy || episode.status === 'APPROVED'}
-                onClick={() => {
-                  setBusy(true);
-                  void import('../../api/shows').then(({ approveEpisode }) => {
-                    void approveEpisode(episode.id).then((r) => {
-                      setBusy(false);
-                      if (!r.ok) {
-                        setMsg(r.error);
-                        return;
-                      }
-                      setEpisode(r.data);
-                      setMsg(
-                        'Episode approved — ready to schedule or publish.',
-                      );
-                    });
-                  });
-                }}
+                onClick={() => void approve()}
               >
                 <CheckIcon size={16} aria-hidden className="mr-1.5" />
                 {episode.status === 'APPROVED' ? 'Approved' : 'Approve episode'}

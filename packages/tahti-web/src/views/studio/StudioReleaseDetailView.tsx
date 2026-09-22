@@ -65,7 +65,7 @@ import {
 } from '../../components/EntitySocialHeader';
 import { FingerprintTrackPanel } from '../../components/FingerprintTrackPanel';
 import { MusicBrainzSubmissionAssistant } from '../../components/MusicBrainzSubmissionAssistant';
-import { PageEmpty } from '../../components/PageStates';
+import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { SourceServiceIcon } from '../../components/SourceServiceIcon';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioNav } from '../../components/StudioNav';
@@ -93,8 +93,9 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
   const enqueue = usePlayerStore((state) => state.enqueue);
   const [release, setRelease] = useState<StudioRelease | null>(null);
   const [description, setDescription] = useState('');
-  const [spotify, setSpotify] = useState('');
-  const [bandcamp, setBandcamp] = useState('');
+  const [loaded, setLoaded] = useState(false);
+  const [publishing, setPublishing] = useState(false);
+  const [confirmPublish, setConfirmPublish] = useState(false);
   const [artworkPreview, setArtworkPreview] = useState<string | null>(null);
   const [artworkPickerOpen, setArtworkPickerOpen] = useState(false);
   const [applyingArtwork, setApplyingArtwork] = useState(false);
@@ -104,20 +105,46 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
   const [soundsById, setSoundsById] = useState<Record<string, StudioSound>>({});
 
   useEffect(() => {
-    void fetchStudioReleases().then((res) => {
-      const found = res.data.releases.find((r) => r.id === id) ?? null;
-      setRelease(found);
-      setDescription(found?.description ?? '');
-      setSpotify(found?.smartLinkTargets?.spotify ?? '');
-      setBandcamp(found?.smartLinkTargets?.bandcamp ?? '');
-      setArtworkPreview(found?.artworkUrl ?? null);
-    });
+    let cancelled = false;
+    setLoaded(false);
+    fetchStudioReleases()
+      .then((res) => {
+        if (cancelled) {
+          return;
+        }
+        const found = res.data.releases.find((r) => r.id === id) ?? null;
+        setRelease(found);
+        setDescription(found?.description ?? '');
+        setArtworkPreview(found?.artworkUrl ?? null);
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setRelease(null);
+          toast.error('Could not load the release.');
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoaded(true);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [id]);
 
   useEffect(() => {
-    void fetchStudioSounds().then((res) => {
-      setSoundsById(Object.fromEntries(res.data.map((s) => [s.id, s])));
-    });
+    let cancelled = false;
+    fetchStudioSounds()
+      .then((res) => {
+        if (!cancelled) {
+          setSoundsById(Object.fromEntries(res.data.map((s) => [s.id, s])));
+        }
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   /** Non-hearthis EMBED_ONLY sounds have no Tahti-hosted audio and no
@@ -165,23 +192,40 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
     [release?.tracks],
   );
 
+  // Smart-link targets are saved by their own panel ("Save destinations");
+  // this saves the description only, so half-typed destinations can't leak in.
   const save = async () => {
     setSaving(true);
-    const result = await patchStudioRelease(id, {
-      description,
-      smartLinkTargets: {
-        ...(release?.smartLinkTargets ?? {}),
-        spotify,
-        bandcamp,
-      },
-    });
-    setSaving(false);
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
+    try {
+      const result = await patchStudioRelease(id, { description });
+      if (!result.ok) {
+        toast.error(result.error);
+        return;
+      }
+      setRelease(result.data);
+      toast.success('Saved.');
+    } catch {
+      toast.error('Could not save the release.');
+    } finally {
+      setSaving(false);
     }
-    setRelease(result.data);
-    toast.success('Saved.');
+  };
+
+  const publish = async () => {
+    setPublishing(true);
+    try {
+      const r = await patchStudioRelease(id, { state: 'PUBLISHED' });
+      if (!r.ok) {
+        toast.error(r.error);
+        return;
+      }
+      setRelease(r.data);
+      toast.success('Published.');
+    } catch {
+      toast.error('Could not publish the release.');
+    } finally {
+      setPublishing(false);
+    }
   };
 
   const removeArtwork = async () => {
@@ -271,7 +315,11 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
         </Tooltip>
         {!release ? (
           <StudioPanel>
-            <PageEmpty title="Release not found in list" />
+            {loaded ? (
+              <PageEmpty title="Release not found in list" />
+            ) : (
+              <PageLoading label="Loading…" />
+            )}
           </StudioPanel>
         ) : (
           <>
@@ -359,6 +407,18 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                 ]}
               />
             </Dialog.Root>
+
+            <ConfirmDialog
+              isOpen={confirmPublish}
+              title="Publish this release?"
+              description="Publishing makes the release and its smart link visible to listeners."
+              confirmLabel="Publish"
+              onCancel={() => setConfirmPublish(false)}
+              onConfirm={() => {
+                setConfirmPublish(false);
+                void publish();
+              }}
+            />
 
             <ConfirmDialog
               isOpen={pendingArtworkDelete}
@@ -506,21 +566,13 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                       <div className="flex flex-wrap items-center gap-2">
                         <Button
                           variant="secondary"
-                          onClick={() => {
-                            void patchStudioRelease(id, {
-                              state: 'PUBLISHED',
-                            }).then((r) => {
-                              if (!r.ok) {
-                                toast.error(r.error);
-                              } else {
-                                setRelease(r.data);
-                                toast.success('Published.');
-                              }
-                            });
-                          }}
+                          disabled={publishing || release.state === 'PUBLISHED'}
+                          onClick={() => setConfirmPublish(true)}
                         >
                           <EyeIcon size={14} aria-hidden className="mr-1.5" />
-                          Publish
+                          {release.state === 'PUBLISHED'
+                            ? 'Published'
+                            : 'Publish'}
                         </Button>
                       </div>
                     </>
@@ -533,10 +585,6 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                   content: (
                     <ReleaseSmartLinksPanel
                       release={release}
-                      spotify={spotify}
-                      bandcamp={bandcamp}
-                      onSpotifyChange={setSpotify}
-                      onBandcampChange={setBandcamp}
                       onTargetsSaved={(targets) =>
                         setRelease((current) =>
                           current
@@ -640,18 +688,33 @@ function ReleaseTrackRow({
       return;
     }
     const soundId = track.soundId;
-    void fetchStudioSound(soundId).then((result) => {
-      if (result.data.embedProvider && result.data.embedUri) {
-        setEmbed({
-          provider: result.data.embedProvider,
-          uri: result.data.embedUri,
-        });
-        return;
+    let cancelled = false;
+    setEmbed(null);
+    setSourceUrl(null);
+    void (async () => {
+      try {
+        const result = await fetchStudioSound(soundId);
+        if (cancelled) {
+          return;
+        }
+        if (result.data.embedProvider && result.data.embedUri) {
+          setEmbed({
+            provider: result.data.embedProvider,
+            uri: result.data.embedUri,
+          });
+          return;
+        }
+        const source = await fetchEditorSource(soundId);
+        if (!cancelled) {
+          setSourceUrl(source.data.url);
+        }
+      } catch {
+        // No preview for this row; the title and editor link still render.
       }
-      void fetchEditorSource(soundId).then((source) =>
-        setSourceUrl(source.data.url),
-      );
-    });
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [track.soundId]);
 
   if (embed) {
@@ -719,18 +782,10 @@ function ReleaseTrackRow({
 
 function ReleaseSmartLinksPanel({
   release,
-  spotify,
-  bandcamp,
-  onSpotifyChange,
-  onBandcampChange,
   onTargetsSaved,
   onReleaseChange,
 }: {
   release: StudioRelease;
-  spotify: string;
-  bandcamp: string;
-  onSpotifyChange: (value: string) => void;
-  onBandcampChange: (value: string) => void;
   onTargetsSaved: (targets: Record<string, string>) => void;
   onReleaseChange: (release: StudioRelease) => void;
 }) {
@@ -874,21 +929,9 @@ function ReleaseSmartLinksPanel({
       isPluginStreamService(service.key) && !pluginPrefixes[service.key],
   );
 
-  const targetValue = (key: string) =>
-    key === 'spotify'
-      ? spotify
-      : key === 'bandcamp'
-        ? bandcamp
-        : (targets[key] ?? '');
-  const updateTarget = (key: string, value: string) => {
-    if (key === 'spotify') {
-      onSpotifyChange(value);
-    }
-    if (key === 'bandcamp') {
-      onBandcampChange(value);
-    }
+  const targetValue = (key: string) => targets[key] ?? '';
+  const updateTarget = (key: string, value: string) =>
     setTargets((current) => ({ ...current, [key]: value }));
-  };
 
   const fillAllFromPlugins = () => {
     const filled = fillAllDspUrls(dspPrefixes, fillSlug);
@@ -1023,10 +1066,9 @@ function ReleaseSmartLinksPanel({
                 <span className="text-foreground-secondary w-5 text-xs">
                   {index + 1}
                 </span>
-                <span className="min-w-0 flex-1 truncate text-sm">
-                  {track.title}
-                </span>
-                <ReleaseTrackRow track={track} shopUrl={targets.bandcamp} />
+                <ul className="min-w-0 flex-1">
+                  <ReleaseTrackRow track={track} shopUrl={targets.bandcamp} />
+                </ul>
                 <Tooltip content="Remove from release" side="top">
                   <Button
                     size="icon-sm"
