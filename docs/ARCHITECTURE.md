@@ -108,5 +108,6 @@ state and flip to `READY` (or `FAILED`) once the matching job finishes.
 
 - [`DATA-FLOW.md`](./DATA-FLOW.md) — the same system, traced through three
   concrete flows (listen, studio publish, go-live).
+- [`PLUGIN-REGISTRY.md`](./PLUGIN-REGISTRY.md) — installed-plugin registry vs marketplace catalog, storage format, bootstrap order.
 - [`../TAHTI.md`](../TAHTI.md) — product framing and repo relationship.
 - [`../AGENTS.md`](../AGENTS.md) / [`../AGENTS-START-HERE.md`](../AGENTS-START-HERE.md) — where to work in this repo.
