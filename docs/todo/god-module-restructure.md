@@ -246,6 +246,17 @@ Fix, in this order (tick when done; each finished item moves to HISTORY):
 
 Notes on the fix queue: Schedule — upcoming broadcasts still link to shows **by title** because the API returns no show id (needs `showId` on `UpcomingBroadcast`; the lookup is now one map instead of five scans), and the three-form split of the dialog is not done. Home — the three discography counts still fetch the whole library (needs a counts endpoint); a failed load no longer shows the "empty discography" call to action. Stats — "Custom" and "1 day" still use the last 30 days for top tracks/countries (the API has no such window) but the panel titles now say so. Sound view — the destructive/quick actions still lack tests; no fix in this pass added tests beyond `trimToCuts`.
 
+## Test coverage + a bug fix (2026-09-22, `docs/storybook-studio-extracted-stories`)
+
+Added the 8 of 9 "Tests missing" tests listed above (`usePressKit.test.ts`, `useStatsData.test.ts`, `ScheduleEditorDialog.test.tsx`, `StudioPlaylistEditorView.test.tsx`, `StudioUpdatesView.test.tsx`, `StudioGoLiveView.test.tsx`, `DeliveryTab.test.tsx`, `StudioCollectionEditView.test.tsx`), plus a UI-library follow-up: `@tahti-player/ui` `Input` gained a `color` variant (was listed under "UI library" below as a remaining hand-rolled `<input>`), and `ColorSchemeFields` now uses it.
+
+Also ran a bug/inconsistency scan while doing this pass and fixed one real bug found:
+
+- **`RoundImageUploadButton` (shared component — used by every avatar/backdrop/press-kit-avatar upload in the app) had no `try`/`catch`/`finally` around its upload call.** A thrown error (network failure, `uploadUserMediaFile`/`uploadProfileAvatar`/etc. rejecting instead of returning `{ok:false}`) left the button stuck showing "busy" forever with no error toast — the same "stuck on a throw" pattern flagged repeatedly elsewhere in this doc, just not previously caught here because this component predates the studio-view audit passes. Fixed with try/finally + an error toast; test added (`RoundImageUploadButton.test.tsx`).
+- Scanned for other hand-rolled/unwired elements while in these files; nothing else new found beyond what's already tracked in "Hand-rolled elements" and "Not fixed from the studio audit" below (`channel-designer/ColorSchemeFields`'s `<input type="color">` is now fixed by the `Input` `color` variant above; `channel-designer/VideoOrImageField`'s decorative full-bleed `<img>`/`<video>` backdrop preview is deliberately left hand-rolled, same reasoning as `ChannelView`'s backdrop image — `MediaArtwork` doesn't fit a non-square, non-interactive preview).
+
+Still open: **show detail uploads a picked image before saving** has no test yet (the only one of the 9 "Tests missing" items not covered this pass).
+
 ## Open items after the studio pass (2026-09-22) — everything not done yet
 
 Nothing above was dropped; this is the consolidated list of what is still open.
@@ -258,7 +269,8 @@ Nothing above was dropped; this is the consolidated list of what is still open.
 
 **UI library**
 - [x] 2026-09-22: added `ExternalLink` to `@tahti-player/ui` (Storybook story included) and used it in `ReleaseOpsPanel`, `GuideDetail`, `GuidesTab`, `PressKitSection`'s ZIP download. Remaining hand-rolled `<a target=_blank>` call sites not yet migrated: release track row, `StudioReleasesView`, `StudioMasteringView`, plugin-store cards; `<Link><Button/></Link>` nesting still elsewhere.
-- [ ] Remaining hand-rolled: `<input>` in `channel-designer/ColorSchemeFields`, `<img>` in `channel-designer/VideoOrImageField`.
+- [x] 2026-09-22: `<input>` in `channel-designer/ColorSchemeFields` → new `Input` `color` variant in `@tahti-player/ui`.
+- Left alone (deliberate exception, same reasoning as `ChannelView`'s backdrop `<img>`): `<img>`/`<video>` in `channel-designer/VideoOrImageField`'s decorative full-bleed backdrop preview — `MediaArtwork` doesn't fit a non-square, non-interactive preview.
 
 **Splits still to do** (baselined over 800 lines): `StudioHomeView` 562 and `StudioSoundView` 533/`StudioStatsView` 462/`StudioScheduleView` 137/`StudioGoLiveView` 798+238 hook — all now under or near baseline, see 2026-09-22 entry below. Still open: `ServiceCategory`-era leftovers in the sweep table (`TrackEditDialog`, `LocalPlaylists`, `StreamManagerPanel`, `mcp/metadata.rs`), and the 11 `requestJson` near-copies that differ (see api splits). `StudioGoLiveView` itself is still 798 lines (JSX-heavy; state/effects now live in `go-live/useGoLiveState.ts`) — a further split of its JSX into panels is still open if it grows more.
 
@@ -272,6 +284,6 @@ Nothing above was dropped; this is the consolidated list of what is still open.
 - [ ] Playlists list: create has no try/finally; Branding bio save and avatar upload `.then` chains have no catch; Updates and GoLive destination toggles use `.then` without catch.
 - [ ] Sound view: still six separate busy flags; tab state local.
 
-**Tests missing** (only `trimToCuts` plus the plugin-store and api tests exist): the studio fixes above — collection editor add-track keeps form edits, show detail uploads a picked image before saving, playlists confirm-before-remove, Branding replace-upload order, Updates confirm-before-send, Distribution confirm-before-submit, Stats top-list-only refetch, Schedule disabled create-only fields, Go live confirm.
+**Tests missing** — **2026-09-22: 8 of 9 added.** Collection editor add-track keeps form edits, playlists confirm-before-remove, Branding (`usePressKit`) replace-upload order, Updates confirm-before-send, Distribution confirm-before-submit, Stats top-list-only refetch, Schedule disabled create-only fields, and Go live confirm all now have tests (see "Test coverage + a bug fix (2026-09-22)" below). Still open: **show detail uploads a picked image before saving** has no test yet.
 
 **Verification in the running app** (still nothing exercised visually): the plugin-store cards (Spotify, hearthis, Bandcamp/SoundCloud, Radio), channel edit mode, the designer, the Pro editor, and now the studio views changed in this pass. Blocked: the local API stack needs disk space (`stack-up.sh --seed` in `../tahti-org` failed when the disk filled; ~51 GB of reclaimable Docker volumes on this machine) — the dev login returns 500 until it is up.
