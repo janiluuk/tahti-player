@@ -621,7 +621,7 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                                   >
                                     <button
                                       aria-checked="true"
-                                      class="inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors bg-primary text-primary-foreground border-primary"
+                                      class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 bg-primary text-primary-foreground border-primary"
                                       role="radio"
                                       type="button"
                                     >
@@ -629,7 +629,7 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                                     </button>
                                     <button
                                       aria-checked="false"
-                                      class="inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors border-border text-foreground hover:bg-background-secondary bg-transparent"
+                                      class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground hover:bg-background-secondary bg-transparent"
                                       role="radio"
                                       type="button"
                                     >
@@ -637,7 +637,7 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                                     </button>
                                     <button
                                       aria-checked="false"
-                                      class="inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors border-border text-foreground hover:bg-background-secondary bg-transparent"
+                                      class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground hover:bg-background-secondary bg-transparent"
                                       role="radio"
                                       type="button"
                                     >
@@ -645,7 +645,7 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                                     </button>
                                     <button
                                       aria-checked="false"
-                                      class="inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors border-border text-foreground hover:bg-background-secondary bg-transparent"
+                                      class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground hover:bg-background-secondary bg-transparent"
                                       role="radio"
                                       type="button"
                                     >
@@ -653,7 +653,7 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                                     </button>
                                     <button
                                       aria-checked="false"
-                                      class="inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors border-border text-foreground hover:bg-background-secondary bg-transparent"
+                                      class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground hover:bg-background-secondary bg-transparent"
                                       role="radio"
                                       type="button"
                                     >
@@ -661,7 +661,7 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                                     </button>
                                     <button
                                       aria-checked="false"
-                                      class="inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors border-border text-foreground hover:bg-background-secondary bg-transparent"
+                                      class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground hover:bg-background-secondary bg-transparent"
                                       role="radio"
                                       type="button"
                                     >
@@ -669,7 +669,7 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                                     </button>
                                     <button
                                       aria-checked="false"
-                                      class="inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors border-border text-foreground hover:bg-background-secondary bg-transparent"
+                                      class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground hover:bg-background-secondary bg-transparent"
                                       role="radio"
                                       type="button"
                                     >
@@ -677,7 +677,7 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                                     </button>
                                     <button
                                       aria-checked="false"
-                                      class="inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors border-border text-foreground hover:bg-background-secondary bg-transparent"
+                                      class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground hover:bg-background-secondary bg-transparent"
                                       role="radio"
                                       type="button"
                                     >
@@ -685,7 +685,7 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                                     </button>
                                     <button
                                       aria-checked="false"
-                                      class="inline-flex cursor-pointer items-center justify-center rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors border-border text-foreground hover:bg-background-secondary bg-transparent"
+                                      class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground hover:bg-background-secondary bg-transparent"
                                       role="radio"
                                       type="button"
                                     >

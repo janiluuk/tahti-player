@@ -3,7 +3,7 @@
 exports[`Artist view > with bio provider > (Snapshot) renders the artist view 1`] = `
 <DocumentFragment>
   <div
-    class="grid h-screen w-screen grid-rows-[auto_1fr_auto] overflow-hidden"
+    class="grid h-dvh w-screen grid-rows-[auto_1fr_auto] overflow-hidden"
   >
     <div>
       <header
@@ -40,11 +40,6 @@ exports[`Artist view > with bio provider > (Snapshot) renders the artist view 1`
                     d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"
                   />
                 </svg>
-              </span>
-              <span
-                class="leading-none uppercase"
-              >
-                TAHTI
               </span>
             </span>
           </div>
@@ -736,23 +731,23 @@ exports[`Artist view > with bio provider > (Snapshot) renders the artist view 1`
                         class="flex flex-wrap gap-2"
                       >
                         <span
-                          class="border-border bg-background rounded-md border px-2 py-0.5 text-sm font-bold"
+                          class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 bg-background text-foreground py-0.5 text-sm font-bold"
                         >
                           rock
                         </span>
                         <span
-                          class="border-border bg-background rounded-md border px-2 py-0.5 text-sm font-bold"
+                          class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 bg-background text-foreground py-0.5 text-sm font-bold"
                         >
                           indie
                         </span>
                         <span
-                          class="border-border bg-background rounded-md border px-2 py-0.5 text-sm font-bold"
+                          class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 bg-background text-foreground py-0.5 text-sm font-bold"
                         >
                           brit-pop
                         </span>
                       </div>
                       <span
-                        class="bg-accent-green border-border inline-flex w-fit rounded-md border px-2 py-0.5 text-sm font-bold"
+                        class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 bg-accent-green text-accent-foreground w-fit py-0.5 text-sm font-bold"
                       >
                         On Tour
                       </span>
@@ -1024,12 +1019,12 @@ exports[`Artist view > with bio provider > (Snapshot) renders the artist view 1`
                                           class="pointer-events-none absolute inset-0 bg-black/0 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:bg-black/45 [@media(hover:hover)_and_(pointer:fine)]:group-hover:bg-black/45 [@media(hover:none)]:bg-black/35"
                                         />
                                         <div
-                                          class="pointer-events-none absolute inset-0 flex items-center justify-center opacity-100 transition-opacity [@media(hover:hover)_and_(pointer:fine)]:invisible [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:visible [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:visible [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:opacity-100"
+                                          class="pointer-events-none absolute inset-0 flex items-center justify-center"
                                         >
                                           <div>
                                             <button
                                               aria-label="Play Smells Like Cheap Spirit"
-                                              class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center pointer-events-auto rounded-full text-white"
+                                              class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center pointer-events-auto rounded-full opacity-100 transition-opacity [@media(hover:hover)_and_(pointer:fine)]:invisible [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:visible [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:visible [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:opacity-100 text-white"
                                               data-headlessui-state=""
                                               data-testid="media-artwork-play"
                                               type="button"
@@ -1624,7 +1619,7 @@ exports[`Artist view > with bio provider > (Snapshot) renders the artist view 1`
               <button
                 aria-label="Play"
                 aria-pressed="false"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none justify-center active:bg-accent-green size-10 rounded-full shadow-md active:text-black"
+                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none justify-center active:bg-accent-green rounded-full shadow-md active:text-black size-10"
                 data-headlessui-state=""
                 data-testid="player-play-button"
                 type="button"
@@ -1823,6 +1818,7 @@ exports[`Artist view > with bio provider > (Snapshot) renders the artist view 1`
       aria-label="Notifications alt+T"
       aria-live="polite"
       aria-relevant="additions text"
+      data-react-aria-top-layer="true"
       tabindex="-1"
     />
   </div>
@@ -1861,7 +1857,7 @@ exports[`Artist view > with bio provider > adds artist to favorites when clickin
 exports[`Artist view > with social stats provider > (Snapshot) renders the artist view with social stats 1`] = `
 <DocumentFragment>
   <div
-    class="grid h-screen w-screen grid-rows-[auto_1fr_auto] overflow-hidden"
+    class="grid h-dvh w-screen grid-rows-[auto_1fr_auto] overflow-hidden"
   >
     <div>
       <header
@@ -1898,11 +1894,6 @@ exports[`Artist view > with social stats provider > (Snapshot) renders the artis
                     d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"
                   />
                 </svg>
-              </span>
-              <span
-                class="leading-none uppercase"
-              >
-                TAHTI
               </span>
             </span>
           </div>
@@ -2584,7 +2575,7 @@ exports[`Artist view > with social stats provider > (Snapshot) renders the artis
                         Deadmau5
                       </h2>
                       <span
-                        class="bg-accent-orange border-border inline-flex w-fit items-center gap-1 rounded-md border px-2 py-0.5 text-sm font-bold"
+                        class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 bg-accent-orange text-accent-foreground w-fit gap-1 py-0.5 text-sm font-bold"
                       >
                         <svg
                           aria-hidden="true"
@@ -3058,12 +3049,12 @@ exports[`Artist view > with social stats provider > (Snapshot) renders the artis
                                           class="pointer-events-none absolute inset-0 bg-black/0 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:bg-black/45 [@media(hover:hover)_and_(pointer:fine)]:group-hover:bg-black/45 [@media(hover:none)]:bg-black/35"
                                         />
                                         <div
-                                          class="pointer-events-none absolute inset-0 flex items-center justify-center opacity-100 transition-opacity [@media(hover:hover)_and_(pointer:fine)]:invisible [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:visible [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:visible [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:opacity-100"
+                                          class="pointer-events-none absolute inset-0 flex items-center justify-center"
                                         >
                                           <div>
                                             <button
                                               aria-label="Play Strobe"
-                                              class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center pointer-events-auto rounded-full text-white"
+                                              class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center pointer-events-auto rounded-full opacity-100 transition-opacity [@media(hover:hover)_and_(pointer:fine)]:invisible [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:visible [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:visible [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:opacity-100 text-white"
                                               data-headlessui-state=""
                                               data-testid="media-artwork-play"
                                               type="button"
@@ -3634,7 +3625,7 @@ exports[`Artist view > with social stats provider > (Snapshot) renders the artis
               <button
                 aria-label="Play"
                 aria-pressed="false"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none justify-center active:bg-accent-green size-10 rounded-full shadow-md active:text-black"
+                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none justify-center active:bg-accent-green rounded-full shadow-md active:text-black size-10"
                 data-headlessui-state=""
                 data-testid="player-play-button"
                 type="button"
@@ -3833,6 +3824,7 @@ exports[`Artist view > with social stats provider > (Snapshot) renders the artis
       aria-label="Notifications alt+T"
       aria-live="polite"
       aria-relevant="additions text"
+      data-react-aria-top-layer="true"
       tabindex="-1"
     />
   </div>

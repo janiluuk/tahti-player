@@ -3,7 +3,7 @@
 exports[`Search view > (Snapshot) renders the search view 1`] = `
 <DocumentFragment>
   <div
-    class="grid h-screen w-screen grid-rows-[auto_1fr_auto] overflow-hidden"
+    class="grid h-dvh w-screen grid-rows-[auto_1fr_auto] overflow-hidden"
   >
     <div>
       <header
@@ -1029,7 +1029,7 @@ exports[`Search view > (Snapshot) renders the search view 1`] = `
               <button
                 aria-label="Play"
                 aria-pressed="false"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none justify-center active:bg-accent-green size-10 rounded-full shadow-md active:text-black"
+                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none justify-center active:bg-accent-green rounded-full shadow-md active:text-black size-10"
                 data-headlessui-state=""
                 data-testid="player-play-button"
                 type="button"
@@ -1228,6 +1228,7 @@ exports[`Search view > (Snapshot) renders the search view 1`] = `
       aria-label="Notifications alt+T"
       aria-live="polite"
       aria-relevant="additions text"
+      data-react-aria-top-layer="true"
       tabindex="-1"
     />
   </div>
