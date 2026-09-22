@@ -46,10 +46,16 @@ export function StudioPlaylistsView() {
 
   const reload = () => {
     setLoading(true);
-    void fetchStudioCollections().then((res) => {
-      setRows(res.data.filter(isPlaylist));
-      setLoading(false);
-    });
+    void fetchStudioCollections()
+      .then((res) => {
+        setRows(res.data.filter(isPlaylist));
+      })
+      .catch(() => {
+        setMsg('Failed to load playlists.');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -61,20 +67,25 @@ export function StudioPlaylistsView() {
       return;
     }
     setBusy(true);
-    const r = await createStudioCollection({
-      name: name.trim(),
-      style: 'PLAYLIST',
-      isPublic,
-      collaborative: isPublic && collaborative,
-    });
-    setBusy(false);
-    if (!r.ok) {
-      setMsg(r.error);
-      return;
+    try {
+      const r = await createStudioCollection({
+        name: name.trim(),
+        style: 'PLAYLIST',
+        isPublic,
+        collaborative: isPublic && collaborative,
+      });
+      if (!r.ok) {
+        setMsg(r.error);
+        return;
+      }
+      setCreateOpen(false);
+      setName('');
+      reload();
+    } catch {
+      setMsg('Failed to create playlist.');
+    } finally {
+      setBusy(false);
     }
-    setCreateOpen(false);
-    setName('');
-    reload();
   };
 
   return (
