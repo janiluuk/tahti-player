@@ -5,6 +5,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { StudioShowSeries } from '../../../api/shows';
 import { useShowDetail } from './useShowDetail';
 
+vi.mock('@tanstack/react-router', () => ({
+  useNavigate: () => vi.fn(),
+  useSearch: () => ({}),
+}));
+
 const baseShow: StudioShowSeries = {
   id: 'show-1',
   title: 'My Show',

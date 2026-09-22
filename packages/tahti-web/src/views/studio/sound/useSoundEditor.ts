@@ -1,3 +1,4 @@
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -26,6 +27,10 @@ import { usePlayerStore } from '../../../stores/playerStore';
 
 /** Loading, editing, playback and quick-render actions for one sound. */
 export function useSoundEditor(id: string) {
+  const navigate = useNavigate();
+  const search = useSearch({ strict: false }) as {
+    tab?: 'details' | 'playlists' | 'insights';
+  };
   const user = useAuthStore((state) => state.user);
   const masteringEnabled = useMasteringFeatureStore((state) => state.enabled);
   const currentId = usePlayerStore((state) => state.currentId);
@@ -45,9 +50,14 @@ export function useSoundEditor(id: string) {
   const [releaseDate, setReleaseDate] = useState('');
   const [downloadsEnabled, setDownloadsEnabled] = useState(false);
   const [commentsEnabled, setCommentsEnabled] = useState(true);
-  const [tab, setTab] = useState<'details' | 'playlists' | 'insights'>(
-    'details',
-  );
+  const tab = search.tab ?? 'details';
+  const setTab = (next: 'details' | 'playlists' | 'insights') => {
+    void navigate({
+      to: '/studio/sounds/$id',
+      params: { id },
+      search: next === 'details' ? {} : { tab: next },
+    });
+  };
   const [playlistOpen, setPlaylistOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [pinBusy, setPinBusy] = useState(false);

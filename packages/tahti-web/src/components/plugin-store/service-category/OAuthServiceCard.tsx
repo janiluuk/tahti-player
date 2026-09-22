@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 
 import {
   Button,
+  ExternalLink,
   Input,
   MediaArtwork,
   PluginStoreItem,
@@ -383,14 +384,9 @@ export function OAuthServiceCard({
             Not connected yet.
           </p>
           {action.instructionsHref && action.instructionsLabel && (
-            <a
-              href={action.instructionsHref}
-              target="_blank"
-              rel="noreferrer"
-              className="text-sm underline underline-offset-2"
-            >
+            <ExternalLink href={action.instructionsHref} className="text-sm">
               {action.instructionsLabel} →
-            </a>
+            </ExternalLink>
           )}
         </>
       )}

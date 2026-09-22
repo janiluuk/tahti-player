@@ -8,6 +8,7 @@ import {
   UsersIcon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   Button,
@@ -50,12 +51,8 @@ export function StudioPlaylistsView() {
       .then((res) => {
         setRows(res.data.filter(isPlaylist));
       })
-      .catch(() => {
-        setMsg('Failed to load playlists.');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      .catch(() => toast.error('Could not load your playlists.'))
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -82,7 +79,7 @@ export function StudioPlaylistsView() {
       setName('');
       reload();
     } catch {
-      setMsg('Failed to create playlist.');
+      setMsg('Could not create the playlist.');
     } finally {
       setBusy(false);
     }
