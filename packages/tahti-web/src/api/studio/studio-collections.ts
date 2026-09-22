@@ -63,6 +63,27 @@ export async function fetchStudioCollections(): Promise<{
   }
 }
 
+export async function fetchStudioCollectionCount(): Promise<{
+  data: number;
+  meta: FetchMeta;
+}> {
+  if (isForceMock()) {
+    const { data } = await fetchStudioCollections();
+    return {
+      data: data.length,
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const { data } = await requestJson<{ count: number }>(
+      '/api/me/collections/count',
+    );
+    return { data: data.count, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: 0, meta: apiErrorMeta(err) };
+  }
+}
+
 export async function fetchStudioCollection(slug: string): Promise<{
   data: StudioCollection;
   meta: FetchMeta;

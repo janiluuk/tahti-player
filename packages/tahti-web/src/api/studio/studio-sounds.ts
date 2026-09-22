@@ -38,6 +38,29 @@ export async function fetchStudioSounds(): Promise<{
   }
 }
 
+export async function fetchStudioSoundCount(): Promise<{
+  data: number;
+  meta: FetchMeta;
+}> {
+  if (isForceMock()) {
+    return {
+      data: mockSoundStore.length,
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const { data } = await requestJson<{ count: number }>(
+      '/api/me/sound/count',
+    );
+    return { data: data.count, meta: { source: 'api' } };
+  } catch (err) {
+    if (allowMockFallback()) {
+      return { data: mockSoundStore.length, meta: failMeta(err) };
+    }
+    return { data: 0, meta: apiErrorMeta(err) };
+  }
+}
+
 export async function fetchStudioSound(id: string): Promise<{
   data: StudioSound;
   meta: FetchMeta;

@@ -21,14 +21,12 @@ vi.mock('../../api/studio', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../api/studio')>();
   return {
     ...actual,
-    fetchStudioSounds: async () => ({
-      data: Array.from({ length: mockSoundsCount }, (_, i) => ({
-        id: `sound-${i}`,
-      })),
+    fetchStudioSoundCount: async () => ({
+      data: mockSoundsCount,
       meta: { source: 'mock' as const },
     }),
-    fetchStudioCollections: async () => ({
-      data: [],
+    fetchStudioCollectionCount: async () => ({
+      data: 0,
       meta: { source: 'mock' as const },
     }),
     fetchStudioReleases: async () => ({
