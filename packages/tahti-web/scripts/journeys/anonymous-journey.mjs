@@ -15,8 +15,8 @@ import {
   BASE,
   injectState,
   runThemedJourney,
+  shot,
   summarize,
-  visitAndShot,
   writeManifest,
 } from './lib.mjs';
 
@@ -56,8 +56,13 @@ async function main() {
   await runThemedJourney(OUT, async (page, theme, outDir) => {
     await page.goto(`${BASE}/`, { waitUntil: 'load' });
     await injectState(page, { authUser: null, colorMode: theme });
-    for (const step of steps) {
-      await visitAndShot(page, outDir, step);
+    for (const { path, file } of steps) {
+      await page.goto(`${BASE}${path}`, {
+        waitUntil: 'domcontentloaded',
+        timeout: 20_000,
+      });
+      await page.waitForTimeout(700);
+      await shot(page, outDir, file);
     }
   });
   await writeManifest(OUT, manifest);

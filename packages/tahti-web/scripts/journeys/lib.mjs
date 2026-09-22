@@ -104,39 +104,25 @@ export async function signIn(page, email, password = 'demo-password') {
     .waitFor({ state: 'visible', timeout: 15_000 });
 }
 
-export async function shot(page, outDir, file, label) {
+export async function shot(page, outDir, file) {
   await page.screenshot({ path: join(outDir, file), fullPage: true });
   ok(`screenshot ${file}`);
-}
-
-/** goto + shot, wrapped so one flaky page (e.g. a WebGL background canvas
- * crashing the screenshot protocol call) doesn't abort the whole journey. */
-export async function visitAndShot(
-  page,
-  outDir,
-  { path: routePath, file, label },
-) {
-  try {
-    await page.goto(`${BASE}${routePath}`, {
-      waitUntil: 'domcontentloaded',
-      timeout: 20_000,
-    });
-    await page.waitForTimeout(700);
-    await shot(page, outDir, file, label);
-  } catch (e) {
-    fail(`${label} (${routePath})`, e.message);
-  }
 }
 
 /** Visit a flat list of [path, id] pairs, one screenshot each. Used for the
  * exhaustive "every tab" sweeps (studio, admin). */
 export async function sweepRoutes(page, outDir, routes) {
   for (const [routePath, id] of routes) {
-    await visitAndShot(page, outDir, {
-      path: routePath,
-      file: `${id}.png`,
-      label: id,
-    });
+    try {
+      await page.goto(`${BASE}${routePath}`, {
+        waitUntil: 'domcontentloaded',
+        timeout: 20_000,
+      });
+      await page.waitForTimeout(700);
+      await shot(page, outDir, `${id}.png`);
+    } catch (e) {
+      fail(`route ${routePath}`, e.message);
+    }
   }
 }
 
@@ -192,7 +178,9 @@ export async function writeManifest(outDir, entries) {
 export function summarize(name, outRoot) {
   console.log(`\n── ${name}: ${passed} passed, ${failed} failed ──`);
   console.log(`   Screenshots: ${outRoot}`);
-  if (failed > 0) process.exitCode = 1;
+  if (failed > 0) {
+    process.exitCode = 1;
+  }
 }
 
 /** Minimal valid WAV so the real upload flow has real bytes to send. */

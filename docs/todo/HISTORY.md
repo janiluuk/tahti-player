@@ -3602,3 +3602,19 @@ The auto-hide-nav-while-playing feature itself shipped and was live-verified in 
 Verified: `pnpm --filter @tahti-player/tahti-web type-check` and `lint` both clean after the `ConnectedStatusBar` change. No PWA/standalone-app work needed since "status bar" didn't mean OS chrome.
 
 Nothing left open — folded and deleted.
+
+---
+
+## 2026-09-22 — Close `performance-cleanup-bulk.md`: all five phases done, ChannelDesigner was the last item
+
+All five phases shipped over 2026-09-11 to 2026-09-22:
+
+- **Phase 1** (dead weight removal): unused deps, dead components/views, deprecated `MapScreen*` types — done 2026-09-11.
+- **Phase 2** (API layer dedup): shared `apiBase()` from `api/http.ts`, removed local `forceMock` aliases — done 2026-09-11.
+- **Phase 3** (polling migration): every listed poll site (`StreamManagerPanel`, `SelectsTab`, `AdminLogsView`, `AdminActivityView`, `StudioGoLiveView`, `StudioSoundView`, `StudioProEditorView`, `AudioRevisionList`, `useJam`, plus the `AppShell` title-scroll and `notificationInboxStore`) moved to `usePolling`/rAF/visibility-pause — done 2026-09-11.
+- **Phase 4** (split monolith files): PluginStorePanel, `admin.ts`, `client.ts`, `SettingsPanels.tsx`, `api/studio.ts`, `router.tsx`, `ArtistView.tsx`, `ChannelView.tsx` all split in earlier passes; `ChannelDesigner.tsx` was the last holdout (~1800 lines, tightly closure-coupled state/effects/save/preset logic). Closed 2026-09-22 (tracked in `god-module-restructure.md`'s "Next up" entries): the remaining body split into `useChannelLook` (draft state, load/save/presets/gallery/backdrop), `useLookVisibility`, `useDockedControlsRail`, `ChannelPagePreview`, plus pure `buildVisualPatch`/`buildLoadedLook`/`applyPresetToVisual`/`LookSnapshot` helpers, with tests. `ChannelDesigner.tsx` is now 757 lines (only the panel slot builders remain), under the 800-line size-guard baseline.
+- **Phase 5** (env var cleanup): `VITE_ENABLE_DIAGNOSTICS`/`VITE_MOCK_ADMIN` documented — done 2026-09-11.
+
+Cross-referenced `codebase-refactor-hotspots.md` (its own P1 `ChannelDesigner.tsx` row and closing "Next" note were stale, still describing the pre-2026-09-22 state — corrected in the same pass) so the two docs no longer disagree about what's open.
+
+Nothing left in this file's scope — folded and deleted.

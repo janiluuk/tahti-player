@@ -92,3 +92,11 @@ export const WithStartAddon: Story = {
     ),
   },
 };
+
+export const Color: Story = {
+  args: {
+    type: 'color',
+    'aria-label': 'Accent color',
+    defaultValue: '#ff9900',
+  },
+};

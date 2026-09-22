@@ -51,4 +51,18 @@ describe('Input', () => {
     );
     expect(container.firstChild).toMatchSnapshot();
   });
+
+  it('(Snapshot) renders a color swatch input', () => {
+    const { container } = render(
+      <Input
+        id="input-color"
+        type="color"
+        value="#ff9900"
+        aria-label="Accent"
+        onChange={() => {}}
+      />,
+    );
+    expect(container.querySelector('input')?.type).toBe('color');
+    expect(container.firstChild).toMatchSnapshot();
+  });
 });

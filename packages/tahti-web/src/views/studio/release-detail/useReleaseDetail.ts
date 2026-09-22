@@ -5,7 +5,7 @@ import type { Track } from '@tahti-player/model';
 
 import {
   fetchEditorSource,
-  fetchStudioReleases,
+  fetchStudioRelease,
   fetchStudioSounds,
   patchStudioRelease,
   removeReleaseArtwork,
@@ -46,15 +46,19 @@ export function useReleaseDetail(id: string) {
   useEffect(() => {
     let cancelled = false;
     setLoaded(false);
-    fetchStudioReleases()
-      .then((res) => {
+    fetchStudioRelease(id)
+      .then((result) => {
         if (cancelled) {
           return;
         }
-        const found = res.data.releases.find((r) => r.id === id) ?? null;
-        setRelease(found);
-        setDescription(found?.description ?? '');
-        setArtworkPreview(found?.artworkUrl ?? null);
+        if (!result.ok) {
+          setRelease(null);
+          toast.error(result.error);
+          return;
+        }
+        setRelease(result.data);
+        setDescription(result.data.description ?? '');
+        setArtworkPreview(result.data.artworkUrl ?? null);
       })
       .catch(() => {
         if (!cancelled) {

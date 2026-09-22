@@ -110,6 +110,29 @@ export async function fetchStudioReleases(): Promise<{
   }
 }
 
+export async function fetchStudioRelease(
+  id: string,
+): Promise<{ ok: true; data: StudioRelease } | { ok: false; error: string }> {
+  if (isForceMock()) {
+    const { data } = await fetchStudioReleases();
+    const release = data.releases.find((r) => r.id === id);
+    return release
+      ? { ok: true, data: release }
+      : { ok: false, error: 'Release not found' };
+  }
+  try {
+    const { data } = await requestJson<StudioRelease>(
+      `/api/me/releases/${encodeURIComponent(id)}`,
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not load the release.',
+    };
+  }
+}
+
 export async function patchStudioRelease(
   id: string,
   patch: {
