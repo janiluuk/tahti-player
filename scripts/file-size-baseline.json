@@ -12,11 +12,6 @@
   "packages/tahti-web/src/views/TrackDetailView.tsx": 1048,
   "packages/tahti-web/src/views/admin/AdminAddonsView.tsx": 1076,
   "packages/tahti-web/src/views/admin/AdminStorageView.tsx": 919,
-  "packages/tahti-web/src/views/studio/StudioCollectionEditView.tsx": 1065,
-  "packages/tahti-web/src/views/studio/StudioDistributionView.tsx": 1027,
-  "packages/tahti-web/src/views/studio/StudioPlaylistsView.tsx": 801,
-  "packages/tahti-web/src/views/studio/StudioReleaseDetailView.tsx": 1150,
-  "packages/tahti-web/src/views/studio/StudioScheduleView.tsx": 1090,
-  "packages/tahti-web/src/views/studio/StudioShowDetailView.tsx": 1093,
+  "packages/tahti-web/src/views/studio/StudioCollectionEditView.tsx": 908,
   "packages/player/src-tauri/src/mcp/metadata.rs": 1005
 }
