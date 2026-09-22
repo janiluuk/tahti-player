@@ -245,9 +245,12 @@ export function StudioCollectionEditView({
       (item): item is StudioCollectionItem & { sound: StudioSound } =>
         Boolean(item.sound),
     );
+    // Resolve all sources in parallel, then queue in the tracklist order.
+    const resolved = await Promise.all(
+      withSound.map((item) => buildPlayable(item.sound).catch(() => null)),
+    );
     let queued = 0;
-    for (const item of withSound) {
-      const playable = await buildPlayable(item.sound);
+    for (const playable of resolved) {
       if (playable) {
         enqueue(playable);
         queued += 1;
@@ -317,6 +320,13 @@ export function StudioCollectionEditView({
   const saveMeta = async () => {
     setSaving(true);
     try {
+      const genreList = genres
+        .split(',')
+        .map((genre) => genre.trim())
+        .filter(Boolean);
+      if (genreList.length > 5) {
+        toast.info('Only the first 5 genres are kept.');
+      }
       const result = await patchStudioCollection(slug, {
         name: name.trim() || slug,
         description: description.trim() || null,
@@ -324,11 +334,7 @@ export function StudioCollectionEditView({
         isPublic: visibility === 'PUBLIC',
         visibility,
         releaseDate: releaseDate || null,
-        genres: genres
-          .split(',')
-          .map((genre) => genre.trim())
-          .filter(Boolean)
-          .slice(0, 5),
+        genres: genreList.slice(0, 5),
         backdropUrl: backdropUrl?.trim() || null,
       });
       if (!result.ok) {
@@ -340,7 +346,13 @@ export function StudioCollectionEditView({
         galleryMode: slideshowImages.length > 1 ? 'STATIC_SLIDESHOW' : 'NONE',
       });
       if (!galleryResult.ok) {
-        toast.error(galleryResult.error);
+        // The details are already saved; say which half failed.
+        setCol((c) =>
+          c ? { ...c, ...result.data, items: c.items } : result.data,
+        );
+        toast.error(
+          `Details saved, but the backdrop could not be saved: ${galleryResult.error}`,
+        );
         return;
       }
       setCol((c) =>

@@ -249,6 +249,9 @@ export function StudioScheduleView() {
   };
 
   const scheduledTimes = useMemo<ScheduleCard[]>(() => {
+    // Upcoming broadcasts carry no show id from the API, so link them to a
+    // show by title (built once, not scanned per field per item).
+    const showByTitle = new Map(shows.map((show) => [show.title, show]));
     const rows: ScheduleCard[] = scheduledShows.map((item) => ({
       id: item.id,
       startAt: item.startAt,
@@ -272,17 +275,15 @@ export function StudioScheduleView() {
         startAt: item.startAt,
         endAt: endAtFor(
           item.startAt,
-          shows.find((show) => show.title === item.title)?.intervalHours,
+          showByTitle.get(item.title)?.intervalHours,
         ),
         title: item.title,
         location: item.venue ?? item.location,
         visibility: item.visibility,
-        description: shows.find((show) => show.title === item.title)
-          ?.description,
-        artworkUrl: shows.find((show) => show.title === item.title)?.coverUrl,
-        backdropUrl: shows.find((show) => show.title === item.title)
-          ?.backdropUrl,
-        showId: shows.find((show) => show.title === item.title)?.id,
+        description: showByTitle.get(item.title)?.description,
+        artworkUrl: showByTitle.get(item.title)?.coverUrl,
+        backdropUrl: showByTitle.get(item.title)?.backdropUrl,
+        showId: showByTitle.get(item.title)?.id,
         episodeNumber: item.episodeNumber,
       })),
     );
@@ -332,6 +333,14 @@ export function StudioScheduleView() {
           shows.find((show) => show.title === schedule.nextBroadcastNote)?.id ??
           '',
       );
+    }
+    if (!schedule?.nextBroadcastAt) {
+      setDate('');
+      setTime('');
+      setNote('');
+      setShowDescription('');
+      setShowCoverUrl('');
+      setSelectedShowId('');
     }
     setMsg(null);
     setEditorOpen(true);
@@ -588,14 +597,23 @@ export function StudioScheduleView() {
               />
 
               <div className="grid gap-3 sm:grid-cols-2">
+                {selectedShowId ? (
+                  <p className="text-foreground-secondary text-xs sm:col-span-2">
+                    Tagline, visibility, recording and numbering are the
+                    show&apos;s own settings — change them on its show page.
+                    They apply here only when you create a new show.
+                  </p>
+                ) : null}
                 <Input
                   label="Show tagline"
+                  disabled={Boolean(selectedShowId)}
                   value={showTagline}
                   onChange={(event) => setShowTagline(event.target.value)}
                   placeholder="Optional subtitle"
                 />
                 <Select
                   label="Visibility"
+                  disabled={Boolean(selectedShowId)}
                   value={showVisibility}
                   onValueChange={(value) =>
                     setShowVisibility(value as 'PUBLIC' | 'FAN_ONLY')
@@ -611,6 +629,7 @@ export function StudioScheduleView() {
                   </span>
                   <Toggle
                     label="Publish recordings automatically"
+                    disabled={Boolean(selectedShowId)}
                     checked={autoPublish}
                     onChange={setAutoPublish}
                   />
@@ -622,6 +641,7 @@ export function StudioScheduleView() {
                     </span>
                     <Toggle
                       label="Number episodes automatically"
+                      disabled={Boolean(selectedShowId)}
                       checked={episodeNumberEnabled}
                       onChange={setEpisodeNumberEnabled}
                     />
@@ -632,6 +652,7 @@ export function StudioScheduleView() {
                     type="number"
                     variant="number"
                     label="Start episode"
+                    disabled={Boolean(selectedShowId)}
                     min={1}
                     value={nextEpisodeNumber}
                     onChange={(event) =>
@@ -674,6 +695,16 @@ export function StudioScheduleView() {
                     Stop recurring schedule
                   </Button>
                 ) : null}
+                <Select
+                  id="episode-duration"
+                  label="Duration: extra minutes"
+                  value={String(durationMinutes)}
+                  options={[0, 15, 30, 45].map((minutes) => ({
+                    id: String(minutes),
+                    label: String(minutes),
+                  }))}
+                  onValueChange={(value) => setDurationMinutes(Number(value))}
+                />
                 <SaveButton
                   disabled={
                     !selectedShowId ||
@@ -717,16 +748,6 @@ export function StudioScheduleView() {
                     : 'No next broadcast selected'}
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  <Select
-                    id="episode-duration"
-                    label="Minutes"
-                    value={String(durationMinutes)}
-                    options={[0, 15, 30, 45].map((minutes) => ({
-                      id: String(minutes),
-                      label: String(minutes),
-                    }))}
-                    onValueChange={(value) => setDurationMinutes(Number(value))}
-                  />
                   <Button
                     size="sm"
                     variant="secondary"

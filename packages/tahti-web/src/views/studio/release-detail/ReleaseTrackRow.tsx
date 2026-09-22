@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { Button, Tooltip } from '@tahti-player/ui';
 
 import { fetchEditorSource, fetchStudioSound } from '../../../api/studio';
-import type { StudioRelease } from '../../../api/studio-types';
+import type { StudioRelease, StudioSound } from '../../../api/studio-types';
 import { EmbedTrackRow } from '../../../components/EmbedTrackRow';
 import { SourceServiceIcon } from '../../../components/SourceServiceIcon';
 import { usePlayerStore } from '../../../stores/playerStore';
@@ -16,10 +16,13 @@ export function ReleaseTrackRow({
   track,
   shopUrl,
   isPlaying = false,
+  sound,
 }: {
   track: NonNullable<StudioRelease['tracks']>[number];
   shopUrl?: string;
   isPlaying?: boolean;
+  /** The already-loaded library sound, so the row needn't fetch it again. */
+  sound?: StudioSound;
 }) {
   const play = usePlayerStore((state) => state.play);
   const [sourceUrl, setSourceUrl] = useState<string | null>(null);
@@ -38,14 +41,14 @@ export function ReleaseTrackRow({
     setSourceUrl(null);
     void (async () => {
       try {
-        const result = await fetchStudioSound(soundId);
+        const loaded = sound ?? (await fetchStudioSound(soundId)).data;
         if (cancelled) {
           return;
         }
-        if (result.data.embedProvider && result.data.embedUri) {
+        if (loaded.embedProvider && loaded.embedUri) {
           setEmbed({
-            provider: result.data.embedProvider,
-            uri: result.data.embedUri,
+            provider: loaded.embedProvider,
+            uri: loaded.embedUri,
           });
           return;
         }
@@ -60,7 +63,7 @@ export function ReleaseTrackRow({
     return () => {
       cancelled = true;
     };
-  }, [track.soundId]);
+  }, [track.soundId, sound]);
 
   if (embed) {
     return (

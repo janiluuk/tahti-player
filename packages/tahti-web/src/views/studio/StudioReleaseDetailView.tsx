@@ -563,6 +563,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                   content: (
                     <ReleaseSmartLinksPanel
                       release={release}
+                      sounds={Object.values(soundsById)}
                       onTargetsSaved={(targets) =>
                         setRelease((current) =>
                           current

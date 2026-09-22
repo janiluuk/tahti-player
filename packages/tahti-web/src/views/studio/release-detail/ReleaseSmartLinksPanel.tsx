@@ -1,5 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import {
+  ArrowDownIcon,
+  ArrowUpIcon,
   ExternalLinkIcon,
   FilterIcon,
   GripVerticalIcon,
@@ -23,7 +25,6 @@ import {
 
 import {
   addStudioReleaseTrack,
-  fetchStudioSounds,
   patchStudioRelease,
   removeStudioReleaseTrack,
   reorderStudioReleaseTracks,
@@ -44,10 +45,13 @@ import { ReleaseTrackRow } from './ReleaseTrackRow';
 
 export function ReleaseSmartLinksPanel({
   release,
+  sounds,
   onTargetsSaved,
   onReleaseChange,
 }: {
   release: StudioRelease;
+  /** The user's library, loaded once by the parent view. */
+  sounds: StudioSound[];
   onTargetsSaved: (targets: Record<string, string>) => void;
   onReleaseChange: (release: StudioRelease) => void;
 }) {
@@ -55,11 +59,11 @@ export function ReleaseSmartLinksPanel({
     release.smartLinkTargets ?? {},
   );
   const [tracks, setTracks] = useState(release.tracks ?? []);
-  const [sounds, setSounds] = useState<StudioSound[]>([]);
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [contentType, setContentType] = useState('ALL');
   const [draggedId, setDraggedId] = useState<string | null>(null);
+  const [reordering, setReordering] = useState(false);
   const [pluginPrefixes, setPluginPrefixes] = useState<Record<string, string>>(
     {},
   );
@@ -75,12 +79,13 @@ export function ReleaseSmartLinksPanel({
   }, [release]);
 
   useEffect(() => {
-    void fetchStudioSounds().then((result) => setSounds(result.data));
-  }, []);
-
-  useEffect(() => {
     void loadDspPluginPrefixes().then(setPluginPrefixes);
   }, []);
+
+  const soundById = useMemo(
+    () => new Map(sounds.map((sound) => [sound.id, sound])),
+    [sounds],
+  );
 
   const filteredSounds = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -122,7 +127,7 @@ export function ReleaseSmartLinksPanel({
   };
 
   const moveTrack = async (trackId: string, targetId: string) => {
-    if (trackId === targetId) {
+    if (trackId === targetId || reordering) {
       return;
     }
     const from = tracks.findIndex((track) => track.id === trackId);
@@ -136,10 +141,19 @@ export function ReleaseSmartLinksPanel({
       return;
     }
     next.splice(to, 0, moved);
-    const result = await reorderStudioReleaseTracks(
-      release.id,
-      next.map((track) => track.id),
-    );
+    setReordering(true);
+    let result;
+    try {
+      result = await reorderStudioReleaseTracks(
+        release.id,
+        next.map((track) => track.id),
+      );
+    } catch {
+      toast.error('Could not reorder the tracks.');
+      return;
+    } finally {
+      setReordering(false);
+    }
     if (!result.ok) {
       toast.error(result.error);
       return;
@@ -329,8 +343,44 @@ export function ReleaseSmartLinksPanel({
                   {index + 1}
                 </span>
                 <ul className="min-w-0 flex-1">
-                  <ReleaseTrackRow track={track} shopUrl={targets.bandcamp} />
+                  <ReleaseTrackRow
+                    track={track}
+                    shopUrl={targets.bandcamp}
+                    sound={soundById.get(track.soundId ?? '')}
+                  />
                 </ul>
+                <Tooltip content="Move up" side="top">
+                  <Button
+                    size="icon-sm"
+                    variant="text"
+                    aria-label={`Move ${track.title} up`}
+                    disabled={index === 0 || reordering}
+                    onClick={() => {
+                      const above = tracks[index - 1];
+                      if (above) {
+                        void moveTrack(track.id, above.id);
+                      }
+                    }}
+                  >
+                    <ArrowUpIcon size={15} aria-hidden />
+                  </Button>
+                </Tooltip>
+                <Tooltip content="Move down" side="top">
+                  <Button
+                    size="icon-sm"
+                    variant="text"
+                    aria-label={`Move ${track.title} down`}
+                    disabled={index === tracks.length - 1 || reordering}
+                    onClick={() => {
+                      const below = tracks[index + 1];
+                      if (below) {
+                        void moveTrack(track.id, below.id);
+                      }
+                    }}
+                  >
+                    <ArrowDownIcon size={15} aria-hidden />
+                  </Button>
+                </Tooltip>
                 <Tooltip content="Remove from release" side="top">
                   <Button
                     size="icon-sm"
