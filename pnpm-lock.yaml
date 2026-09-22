@@ -404,6 +404,9 @@ importers:
       '@tahti-player/model':
         specifier: workspace:*
         version: link:../model
+      '@tahti-player/plugin-registry':
+        specifier: workspace:*
+        version: link:../plugin-registry
       '@tahti-player/plugin-sdk':
         specifier: workspace:*
         version: link:../plugin-sdk
@@ -594,6 +597,19 @@ importers:
       vitest:
         specifier: ^4.0.0
         version: 4.1.11(@types/node@25.9.8)(@vitest/coverage-v8@4.1.11)(jsdom@26.1.0(supports-color@8.1.1))(vite@7.3.6(@types/node@25.9.8)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.1))
+
+  packages/plugin-registry:
+    dependencies:
+      '@tauri-apps/plugin-store':
+        specifier: ~2.4.0
+        version: 2.4.5
+    devDependencies:
+      '@tahti-player/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
 
   packages/plugin-sdk:
     dependencies:
