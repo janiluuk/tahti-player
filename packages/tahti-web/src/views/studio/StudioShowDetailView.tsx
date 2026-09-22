@@ -41,12 +41,19 @@ import {
 import { uploadSoundFile } from '../../api/studio';
 import { uploadUserMediaFile } from '../../api/user-media';
 import { EntitySocialHeader } from '../../components/EntitySocialHeader';
-import { PageEmpty } from '../../components/PageStates';
+import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { ShowImagePicker } from '../../components/ShowImagePicker';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { EpisodeEditorRow } from './show-detail/EpisodeEditorRow';
 import { EpisodeSourceIcon, episodeStatusLabel } from './StudioShowsView';
+
+/** Picked images are previewed through blob: URLs; free them when replaced. */
+function revokeBlobUrl(url: string) {
+  if (url.startsWith('blob:')) {
+    URL.revokeObjectURL(url);
+  }
+}
 
 export function StudioShowDetailView({ id }: { id: string }) {
   const navigate = useNavigate();
@@ -66,6 +73,7 @@ export function StudioShowDetailView({ id }: { id: string }) {
   const [backdropFile, setBackdropFile] = useState<File | null>(null);
   const [autoPublish, setAutoPublish] = useState(true);
   const [savingMeta, setSavingMeta] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const [showTab, setShowTab] = useState<
     'overview' | 'episodes' | 'recordings'
   >('overview');
@@ -74,22 +82,27 @@ export function StudioShowDetailView({ id }: { id: string }) {
   ).length;
 
   const reload = () => {
-    void fetchShowSeriesById(id).then((r) => {
-      setShow(r.data);
-      if (r.data) {
-        setTitle(r.data.title);
-        setDescription(r.data.description);
-        setThumbnailUrl(r.data.coverUrl ?? '');
-        setBackdropUrl(r.data.backdropUrl ?? '');
-        setAutoPublish(r.data.autoPublish ?? true);
-      }
-    });
-    void fetchEpisodesForShow(id).then((r) => setEpisodes(r.data));
+    fetchShowSeriesById(id)
+      .then((r) => {
+        setShow(r.data);
+        if (r.data) {
+          setTitle(r.data.title);
+          setDescription(r.data.description);
+          setThumbnailUrl(r.data.coverUrl ?? '');
+          setBackdropUrl(r.data.backdropUrl ?? '');
+          setAutoPublish(r.data.autoPublish ?? true);
+        }
+      })
+      .catch(() => toast.error('Could not load the show.'))
+      .finally(() => setLoaded(true));
+    fetchEpisodesForShow(id)
+      .then((r) => setEpisodes(r.data))
+      .catch(() => toast.error('Could not load the episodes.'));
     const from = new Date().toISOString();
     const to = new Date(Date.now() + 14 * 24 * 3600_000).toISOString();
-    void fetchShowBookings(from, to).then((r) =>
-      setBookings(r.data.filter((b) => b.isMine)),
-    );
+    fetchShowBookings(from, to)
+      .then((r) => setBookings(r.data.filter((b) => b.isMine)))
+      .catch(() => undefined);
   };
 
   useEffect(() => {
@@ -210,54 +223,53 @@ export function StudioShowDetailView({ id }: { id: string }) {
     if (!show) {
       return;
     }
-    setBusy(true);
-    setMsg(null);
-
-    let soundId: string | null = null;
-    if (source === 'upload') {
-      if (!file) {
-        setBusy(false);
-        setMsg('Choose an audio file to upload.');
-        return;
-      }
-      const up = await uploadSoundFile({
-        file,
-        title: defaultEpisodeTitle,
-      });
-      if (!up.ok) {
-        setBusy(false);
-        setMsg(up.error);
-        return;
-      }
-      soundId = up.itemId;
-    }
-
-    const ep = await createEpisode({
-      showId: show.id,
-      source,
-      soundId,
-      slotStartAt: nextSlotHint?.startAt ?? null,
-      slotEndAt: nextSlotHint?.endAt ?? null,
-      bookingId: nextSlotHint?.id ?? null,
-    });
-    setBusy(false);
-    if (!ep.ok) {
-      setMsg(ep.error);
+    if (source === 'upload' && !file) {
+      toast.error('Choose an audio file to upload.');
       return;
     }
-    setCreateOpen(false);
-    setFile(null);
-    if (source === 'broadcast') {
+    setBusy(true);
+    setMsg(null);
+    let soundId: string | null = null;
+    try {
+      if (source === 'upload' && file) {
+        const up = await uploadSoundFile({ file, title: defaultEpisodeTitle });
+        if (!up.ok) {
+          toast.error(up.error);
+          return;
+        }
+        soundId = up.itemId;
+      }
+
+      // Only a recorded episode takes the upcoming booking; an uploaded one
+      // is not tied to a broadcast slot.
+      const slot = source === 'broadcast' ? nextSlotHint : null;
+      const ep = await createEpisode({
+        showId: show.id,
+        source,
+        soundId,
+        slotStartAt: slot?.startAt ?? null,
+        slotEndAt: slot?.endAt ?? null,
+        bookingId: slot?.id ?? null,
+      });
+      if (!ep.ok) {
+        toast.error(
+          soundId
+            ? `${ep.error} The audio was uploaded to your library; add it to an episode later.`
+            : ep.error,
+        );
+        return;
+      }
+      setCreateOpen(false);
+      setFile(null);
       void navigate({
         to: '/studio/shows/episodes/$episodeId',
         params: { episodeId: ep.data.id },
       });
-      return;
+    } catch {
+      toast.error('Could not create the episode.');
+    } finally {
+      setBusy(false);
     }
-    void navigate({
-      to: '/studio/shows/episodes/$episodeId',
-      params: { episodeId: ep.data.id },
-    });
   };
 
   return (
@@ -275,7 +287,11 @@ export function StudioShowDetailView({ id }: { id: string }) {
 
         {!show ? (
           <StudioPanel>
-            <PageEmpty title="Show not found" />
+            {loaded ? (
+              <PageEmpty title="Show not found" />
+            ) : (
+              <PageLoading label="Loading…" />
+            )}
           </StudioPanel>
         ) : (
           <>
@@ -370,6 +386,7 @@ export function StudioShowDetailView({ id }: { id: string }) {
                       value={thumbnailUrl}
                       file={thumbnailFile}
                       onFile={(file) => {
+                        revokeBlobUrl(thumbnailUrl);
                         setThumbnailFile(file);
                         setThumbnailUrl(file ? URL.createObjectURL(file) : '');
                       }}
@@ -381,6 +398,7 @@ export function StudioShowDetailView({ id }: { id: string }) {
                       value={backdropUrl}
                       file={backdropFile}
                       onFile={(file) => {
+                        revokeBlobUrl(backdropUrl);
                         setBackdropFile(file);
                         setBackdropUrl(file ? URL.createObjectURL(file) : '');
                       }}
@@ -389,15 +407,15 @@ export function StudioShowDetailView({ id }: { id: string }) {
                     <div className="border-border bg-background-secondary/30 flex items-center justify-between gap-3 rounded-md border p-3 text-sm">
                       <span>
                         <span className="block font-medium">
-                          Record broadcasts by default
+                          Publish recordings automatically
                         </span>
                         <span className="text-foreground-secondary block text-xs">
-                          New broadcasts for this show start with recording
-                          enabled.
+                          Recorded broadcasts of this show are published without
+                          a manual approval step.
                         </span>
                       </span>
                       <Toggle
-                        label="Record broadcasts by default"
+                        label="Publish recordings automatically"
                         checked={autoPublish}
                         onChange={setAutoPublish}
                       />

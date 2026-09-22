@@ -15,6 +15,7 @@ import {
   Dialog,
   FilePicker,
   FilterChips,
+  ImageReveal,
   Input,
   SaveButton,
   TabLabel,
@@ -166,37 +167,51 @@ export const StudioBrandingPanel: FC<{
     includeInZip: boolean,
   ) => {
     setBusy(true);
-    if (uploadMode === 'replace') {
-      await Promise.all(images.map((image) => deletePressKitImage(image.id)));
-    }
-    const uploaded = await uploadPressKitImages(Array.from(files));
-    let nextImages = [
-      ...(uploadMode === 'replace' ? [] : images),
-      ...uploaded.images,
-    ];
-    if (!includeInZip) {
-      await Promise.all(
-        uploaded.images.map((image) =>
-          updatePressKitImage(image.id, { includeInZip: false }),
-        ),
-      );
-      const uploadedIds = new Set(uploaded.images.map((image) => image.id));
-      nextImages = nextImages.map((image) =>
-        uploadedIds.has(image.id) ? { ...image, includeInZip: false } : image,
-      );
-    }
-    nextImages = await enforcePressKitLimit(nextImages);
-    await setPressKitGalleryPublic(galleryPublic);
-    setImages(nextImages);
-    setBusy(false);
-    setSelectedGalleryFiles([]);
-    setGalleryUploadOpen(false);
-    if (uploaded.errors.length > 0) {
-      toast.error(uploaded.errors.join('; '));
-    } else {
-      toast.success(
-        `${uploaded.images.length} image${uploaded.images.length === 1 ? '' : 's'} added.`,
-      );
+    try {
+      // Upload first and only remove the old images once the new ones are
+      // stored: a failed upload must never leave the gallery empty.
+      const uploaded = await uploadPressKitImages(Array.from(files));
+      if (uploaded.images.length === 0) {
+        toast.error(uploaded.errors.join('; ') || 'No images were uploaded.');
+        return;
+      }
+      const replaced = uploadMode === 'replace' ? images : [];
+      if (replaced.length > 0) {
+        await Promise.all(
+          replaced.map((image) => deletePressKitImage(image.id)),
+        );
+      }
+      let nextImages = [
+        ...(uploadMode === 'replace' ? [] : images),
+        ...uploaded.images,
+      ];
+      if (!includeInZip) {
+        await Promise.all(
+          uploaded.images.map((image) =>
+            updatePressKitImage(image.id, { includeInZip: false }),
+          ),
+        );
+        const uploadedIds = new Set(uploaded.images.map((image) => image.id));
+        nextImages = nextImages.map((image) =>
+          uploadedIds.has(image.id) ? { ...image, includeInZip: false } : image,
+        );
+      }
+      nextImages = await enforcePressKitLimit(nextImages);
+      await setPressKitGalleryPublic(galleryPublic);
+      setImages(nextImages);
+      setSelectedGalleryFiles([]);
+      setGalleryUploadOpen(false);
+      if (uploaded.errors.length > 0) {
+        toast.error(uploaded.errors.join('; '));
+      } else {
+        toast.success(
+          `${uploaded.images.length} image${uploaded.images.length === 1 ? '' : 's'} added.`,
+        );
+      }
+    } catch {
+      toast.error('Could not update the photo gallery.');
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -591,10 +606,11 @@ export const StudioBrandingPanel: FC<{
                     onDragEnd={() => setDraggedPressKitImageId(null)}
                     className="border-border bg-background-secondary overflow-hidden rounded-lg border"
                   >
-                    <img
+                    <ImageReveal
                       src={image.imageUrl}
                       alt=""
-                      className="aspect-[4/3] w-full object-cover"
+                      className="aspect-[4/3] w-full"
+                      imgClassName="object-cover"
                     />
                     <div className="flex flex-col gap-2 p-3">
                       <Input

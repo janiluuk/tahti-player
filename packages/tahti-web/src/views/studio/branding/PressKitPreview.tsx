@@ -1,3 +1,5 @@
+import { ImageReveal } from '@tahti-player/ui';
+
 import { type PressKitImageItem } from '../../../api/artist-settings';
 
 export function PressKitPreview({
@@ -13,10 +15,11 @@ export function PressKitPreview({
     <div className="border-border bg-background overflow-hidden rounded-xl border shadow-lg">
       <div className="via-primary/30 relative min-h-48 overflow-hidden bg-gradient-to-br from-black/80 to-black/80 p-5 text-white sm:min-h-56">
         {images[0] ? (
-          <img
+          <ImageReveal
             src={images[0].imageUrl}
             alt=""
-            className="absolute inset-0 h-full w-full object-cover opacity-65"
+            className="absolute inset-0 h-full w-full opacity-65"
+            imgClassName="object-cover"
           />
         ) : null}
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
@@ -33,11 +36,12 @@ export function PressKitPreview({
         {images.length > 1 ? (
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {images.slice(1, 5).map((image) => (
-              <img
+              <ImageReveal
                 key={image.id}
                 src={image.imageUrl}
                 alt={image.title ?? ''}
-                className="aspect-square w-full rounded-md object-cover"
+                className="aspect-square w-full rounded-md"
+                imgClassName="object-cover"
               />
             ))}
           </div>

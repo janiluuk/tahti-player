@@ -61,7 +61,6 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
   const [coverUrl, setCoverUrl] = useState<string | null>(null);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
-  const [msg, setMsg] = useState<string | null>(null);
   const [addSoundId, setAddSoundId] = useState('');
   const [addReleaseId, setAddReleaseId] = useState('');
   const [saving, setSaving] = useState(false);
@@ -100,6 +99,19 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
     reload();
   }, [slug]);
 
+  // Refresh only the tracklist: a full reload() resets the settings form and
+  // drops unsaved edits.
+  const refreshItems = async () => {
+    try {
+      const fresh = await fetchStudioCollection(slug);
+      setCol((current) =>
+        current ? { ...current, items: fresh.data.items } : fresh.data,
+      );
+    } catch {
+      toast.error('Could not refresh the tracklist.');
+    }
+  };
+
   const items = col?.items ?? [];
   const tracks: Track[] = useMemo(
     () => items.map(collectionItemToTrack),
@@ -118,22 +130,48 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
         ]
       : [];
 
+  const addItem = async (
+    input: { soundId: string } | { releaseId: string },
+    success: string,
+    onDone: () => void,
+  ) => {
+    try {
+      const r = await addStudioCollectionItem(slug, input);
+      if (!r.ok) {
+        toast.error(r.error);
+        return;
+      }
+      toast.success(success);
+      onDone();
+      await refreshItems();
+    } catch {
+      toast.error('Could not add the item.');
+    }
+  };
+
   const saveMeta = async () => {
     setSaving(true);
-    const r = await patchStudioCollection(slug, {
-      name: name.trim() || slug,
-      description: description.trim() || null,
-      isPublic,
-      collaborative: !isDjSet && isPublic && collaborative,
-      style: isDjSet ? 'DJ_SET_SERIES' : 'PLAYLIST',
-    });
-    setSaving(false);
-    if (!r.ok) {
-      setMsg(r.error);
-      return;
+    try {
+      const r = await patchStudioCollection(slug, {
+        name: name.trim() || slug,
+        description: description.trim() || null,
+        isPublic,
+        collaborative: !isDjSet && isPublic && collaborative,
+        style: isDjSet ? 'DJ_SET_SERIES' : 'PLAYLIST',
+      });
+      if (!r.ok) {
+        toast.error(r.error);
+        return;
+      }
+      setCol((current) =>
+        current ? { ...current, ...r.data, items: current.items } : r.data,
+      );
+      toast.success(`${isDjSet ? 'DJ set' : 'Playlist'} settings saved.`);
+    } catch {
+      toast.error('Could not save the settings.');
+    } finally {
+      setSaving(false);
     }
-    setMsg(`${isDjSet ? 'DJ set' : 'Playlist'} settings saved.`);
-    reload();
   };
 
   const uploadCover = async (files: readonly File[]) => {
@@ -236,8 +274,8 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
       next.map((i) => i.id),
     ).then((r) => {
       if (!r.ok) {
-        setMsg(r.error);
-        reload();
+        toast.error(r.error);
+        void refreshItems();
       }
     });
   };
@@ -380,9 +418,13 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                         if (!item) {
                           return;
                         }
-                        void removeStudioCollectionItem(slug, item.id).then(
-                          () => reload(),
-                        );
+                        setPendingRemove({
+                          id: item.id,
+                          title:
+                            item.sound?.title ??
+                            item.release?.title ??
+                            'this item',
+                        });
                       },
                       onPlayNow: (t) => {
                         const item = items.find((i) => i.id === t.source.id);
@@ -451,22 +493,22 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                     onValueChange={setAddSoundId}
                     options={[
                       { id: '', label: 'Select track…' },
-                      ...sounds.map((a) => ({ id: a.id, label: a.title })),
+                      ...sounds
+                        .filter(
+                          (a) => !items.some((item) => item.sound?.id === a.id),
+                        )
+                        .map((a) => ({ id: a.id, label: a.title })),
                     ]}
                   />
                   <Button
                     size="sm"
                     disabled={!addSoundId}
                     onClick={() => {
-                      void addStudioCollectionItem(slug, {
-                        soundId: addSoundId,
-                      }).then((r) => {
-                        setMsg(r.ok ? 'Track added.' : r.error);
-                        if (r.ok) {
-                          setAddSoundId('');
-                          reload();
-                        }
-                      });
+                      void addItem(
+                        { soundId: addSoundId },
+                        'Track added.',
+                        () => setAddSoundId(''),
+                      );
                     }}
                   >
                     <PlusIcon size={14} aria-hidden className="mr-1.5" />
@@ -487,15 +529,11 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                     size="sm"
                     disabled={!addReleaseId}
                     onClick={() => {
-                      void addStudioCollectionItem(slug, {
-                        releaseId: addReleaseId,
-                      }).then((r) => {
-                        setMsg(r.ok ? 'Release added.' : r.error);
-                        if (r.ok) {
-                          setAddReleaseId('');
-                          reload();
-                        }
-                      });
+                      void addItem(
+                        { releaseId: addReleaseId },
+                        'Release added.',
+                        () => setAddReleaseId(''),
+                      );
                     }}
                   >
                     <PlusIcon size={14} aria-hidden className="mr-1.5" />
@@ -504,8 +542,6 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                 </div>
               </div>
             </StudioPanel>
-
-            {msg && <p className="text-sm">{msg}</p>}
           </>
         )}
 
@@ -550,7 +586,19 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
             }
             const id = pendingRemove.id;
             setPendingRemove(null);
-            void removeStudioCollectionItem(slug, id).then(() => reload());
+            void (async () => {
+              try {
+                const r = await removeStudioCollectionItem(slug, id);
+                if (!r.ok) {
+                  toast.error(r.error);
+                  return;
+                }
+                toast.success('Removed.');
+                await refreshItems();
+              } catch {
+                toast.error('Could not remove the item.');
+              }
+            })();
           }}
         />
 
