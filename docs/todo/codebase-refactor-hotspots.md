@@ -1,6 +1,9 @@
 # Codebase refactor hotspots (god modules)
 
-**Status:** partial
+**Status:** partial — every P0/P1 row is done; what's left (P2/P3) is
+deliberately deferred ("split only if pain appears") or tracked in
+[`god-module-restructure.md`](god-module-restructure.md) (`TrackEditDialog`,
+`LocalPlaylists`, `StreamManagerPanel`, unassessed studio/admin views).
 
 ## Problem
 
@@ -18,7 +21,7 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
 | ~~P0~~ | ~~`packages/tahti-web/src/components/PluginStorePanel.tsx`~~ | ~~~3560~~ **166** | Mega-panel: themes, visualizers, Spotify/OAuth/Hearthis, DSP, multicast, audio plugins, tools, radio browser, discovery, channel categories in one file. | **Stale row, corrected 2026-09-16:** already fully split per items 2/2b/2c below (2026-09-11) — `PluginStorePanel.tsx` is a 166-line thin shell + tab routing; this summary row just never got updated when that landed. Off the P0 hotspot list. |
 | ~~P0~~ | ~~`packages/tahti-web/src/api/client.ts`~~ | ~~~3000~~ **~1419** | Public/listener API kitchen sink: directory, channel, track, chat, support, feature requests, transparency, venues, collections, follow, newsletter (~54 functions left, no single dominant domain). | **Original named-module split done 2026-09-12:** `client-request.ts`/`client-auth.ts`, `listen.ts`, `radio-public.ts`, `governance-member.ts`, `membership.ts`, `embeds.ts` all peeled — the exact list this row originally suggested. Remaining domains are smaller/mixed with no obvious next seam; demote off the P0 hotspot list, revisit only if one grows or a merge-conflict pain point shows up. |
 | ~~P1~~ | ~~`packages/tahti-web/src/views/settings/SettingsPanels.tsx`~~ | ~~~2440~~ **done 2026-09-12, now ~110** | Many settings surfaces in one file (Account, Artist, Channel, Broadcast, Notifications, Themes, storage, privacy). | One panel per file under `views/settings/panels/`; `SettingsSectionBody` stays the switch/router. |
-| P1 | `packages/tahti-web/src/components/ChannelDesigner.tsx` | ~1800 (was ~2103, then ~2069 after later feature work re-grew it, then ~1988→~1800 with the 2026-09-17 slice) | Designer god component (visualizer / color / header / look sections) tightly coupled to Channel + Artist editors. **2026-09-15:** first slice done (4 low-coupling JSX chunks extracted, see item 12 below). **2026-09-17:** second slice done (5 dialogs + 2 small controls extracted, see item 19) — remaining body (state, effects, save/preset logic) still tightly closure-coupled. | Extract section editors + snapshot helpers; keep `forwardRef` façade. Coordinate with open designer todos (`channel-designer-*`) — split structure first, product fold later. |
+| ~~P1~~ | ~~`packages/tahti-web/src/components/ChannelDesigner.tsx`~~ | ~1800 → **757** | Designer god component (visualizer / color / header / look sections) tightly coupled to Channel + Artist editors. **2026-09-15/17:** first two slices extracted low-coupling JSX chunks and dialogs (items 12/19/20 below). **2026-09-22 (tracked in `god-module-restructure.md`):** the remaining state/effects/save/preset body split into `useChannelLook`/`useLookVisibility`/`useDockedControlsRail`/`ChannelPagePreview` + pure snapshot helpers, with tests. Only the panel slot builders remain — off the P1 hotspot list. | Done — see `god-module-restructure.md`'s "Next up (2026-09-22)" entry for the audit trail. |
 | ~~P1~~ | ~~`packages/tahti-web/src/views/ChannelView.tsx` + `ArtistView.tsx`~~ | ~1450 + ~1500 (was ~1754) | Parallel public entity pages sharing designer, visualizer, disco widgets, social header patterns; each still owns full layout/data orchestration. **2026-09-15:** `ArtistView.tsx`'s Releases/Collections tab bodies, then its Music tab body, all extracted (see item 13) — off this row's remaining scope. `ChannelView.tsx`: hooks-order bug fixed (PR #94), then its 11 small `renderBlock` cases extracted to `ChannelViewBlocks.tsx` (see items 14/17). **2026-09-16:** `ChannelHeroBlock` (item 18) and `useChannelLayoutEditing` (item 19) both extracted — `ChannelView.tsx` off this row entirely now. | **Done 2026-09-16:** both files' extractable pieces are peeled. Off the P1 hotspot list. |
 | ~~P2~~ | ~~`packages/tahti-web/src/api/studio.ts`~~ | ~~~1897~~ **barrel only** | Large but already partially split; still a frequent merge magnet. | **Done 2026-09-15:** peeled into `api/studio/studio-{sounds,releases,collections,upload,editor}.ts` + shared `studio-request.ts`/`studio-mock.ts`; `studio.ts` re-exports. Off the P2 list. |
 | ~~P2~~ | ~~`packages/tahti-web/src/router.tsx`~~ | ~~~1965~~ **382, assembly only** | Monolithic route tree (high fan-in). | **Done 2026-09-15:** peeled into `router/routes-*.tsx` by nav section (listen, settings, admin, library/misc, transparency, help, auth, governance, info, studio, embed) + `router/router-core.tsx` (shared parents) + `router/router-lazy-views.ts` (code-split registry); `router.tsx` now only imports every route const and does the `addChildren` tree assembly + `createRouter`. Off the P2 list. |
@@ -422,14 +425,12 @@ Survey date: 2026-09-10 (approx LOC via `wc -l`, excluding tests/stories).
     real state/effects test is practical. Verified: `tsc --noEmit` /
     `eslint` clean, all 4 new tests pass, no existing tests affected.
 
-Next: the remaining `ChannelDesigner.tsx` body (state, effects, save/
-preset logic, the ~180-line slideshow/gallery section — see item 20) —
-the only hotspot left on this list, needs either prop-threading 15-30+
-closure variables or a shared custom hook, a bigger/riskier slice than
-the mechanical `studio.ts`/`router.tsx`/`ChannelViewBlocks.tsx`/
-`ChannelHeroBlock.tsx`/`useChannelLayoutEditing` peels above. Item 21's
-smoke tests lower the risk of that slice regressing the 3 major render
-branches, but don't cover the state/effects logic itself. Admin
+Next: **2026-09-22 update — `ChannelDesigner.tsx`'s remaining body is
+done** (state, effects, save/preset logic, and the slideshow/gallery
+section split into `useChannelLook`/`useLookVisibility`/
+`useDockedControlsRail`/`ChannelPagePreview` + pure snapshot helpers,
+with tests — see `god-module-restructure.md`). This was the only
+hotspot left on this list; nothing else here is currently open. Admin
 activity-feed/audit-topic and container-logs sections remain in
 `admin.ts` intentionally — revisit once confirmed quiet.
 
