@@ -281,7 +281,7 @@ Nothing above was dropped; this is the consolidated list of what is still open.
 **Not fixed from the studio audit**
 - [ ] Show detail: `bookNextInterval` has no conflict check and leaves an orphan booking if episode creation fails; the episode "Statistics" block is a placeholder; tab state is local, not in the URL.
 - [ ] Collection editor: the details save is still two requests (a partial failure is now reported, not rolled back).
-- [ ] Playlists list: create has no try/finally; Branding bio save and avatar upload `.then` chains have no catch; Updates and GoLive destination toggles use `.then` without catch.
+- [x] 2026-09-22: Playlists list create is now try/finally (a throw no longer sticks `busy`, and `reload()` catches a failed refetch); Go Live's destination enable/disable toggle and delete (`MultistreamPanel`), and Updates' delete-post now `.catch` a throw with an error toast instead of leaving it an unhandled rejection. Branding bio save already had try/catch and avatar upload already goes through `RoundImageUploadButton`'s try/finally (fixed in the earlier 2026-09-22 bug-scan pass) — that part of this bullet was stale.
 - [ ] Sound view: still six separate busy flags; tab state local.
 
 **Tests missing** — **2026-09-22: 8 of 9 added.** Collection editor add-track keeps form edits, playlists confirm-before-remove, Branding (`usePressKit`) replace-upload order, Updates confirm-before-send, Distribution confirm-before-submit, Stats top-list-only refetch, Schedule disabled create-only fields, and Go live confirm all now have tests (see "Test coverage + a bug fix (2026-09-22)" below). Still open: **show detail uploads a picked image before saving** has no test yet.

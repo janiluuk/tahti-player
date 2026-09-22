@@ -384,17 +384,21 @@ export function StudioUpdatesView() {
             if (!post) {
               return;
             }
-            void deleteArtistPost(post.id).then((result) => {
-              if (!result.ok) {
-                setMsg(result.error);
-                toast.error(result.error);
-                return;
-              }
-              setPosts((current) =>
-                current.filter((entry) => entry.id !== post.id),
-              );
-              toast.success('Post deleted.');
-            });
+            void deleteArtistPost(post.id)
+              .then((result) => {
+                if (!result.ok) {
+                  setMsg(result.error);
+                  toast.error(result.error);
+                  return;
+                }
+                setPosts((current) =>
+                  current.filter((entry) => entry.id !== post.id),
+                );
+                toast.success('Post deleted.');
+              })
+              .catch(() => {
+                toast.error('Could not delete the post.');
+              });
           }}
         />
       </div>
