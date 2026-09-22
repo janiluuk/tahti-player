@@ -30,22 +30,14 @@ import {
 import {
   addStudioCollectionItem,
   fetchCollectionGallery,
-  fetchEditorSource,
   fetchStudioCollection,
   fetchStudioSounds,
   patchCollectionGallery,
   patchStudioCollection,
   removeStudioCollectionItem,
   reorderStudioCollectionItems,
-  uploadCollectionCover,
 } from '../../api/studio';
-import type {
-  StudioCollection,
-  StudioCollectionItem,
-  StudioSound,
-} from '../../api/studio-types';
-import type { TahtiPlayable } from '../../api/types';
-import { uploadUserMediaFile } from '../../api/user-media';
+import type { StudioCollection, StudioSound } from '../../api/studio-types';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import {
   EntitySocialHeader,
@@ -61,12 +53,12 @@ import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { COLLECTION_STYLES } from '../../content/collectionStyles';
 import { collectionItemToTrack } from '../../lib/collectionTrackMapping';
-import { playableFromStudioHearthis } from '../../lib/embedPlayback';
 import { trackTableLabels } from '../../lib/trackTableLabels';
-import { usePlayerStore } from '../../stores/playerStore';
 import { LibrarySectionTabs } from '../LibraryView';
 import { AddTracksDialog } from './collection-edit/AddTracksDialog';
 import { NowPlayingBar } from './collection-edit/NowPlayingBar';
+import { useCollectionImages } from './collection-edit/useCollectionImages';
+import { useCollectionPlayback } from './collection-edit/useCollectionPlayback';
 
 export function StudioCollectionEditView({
   slug,
@@ -88,34 +80,31 @@ export function StudioCollectionEditView({
   >('PUBLIC');
   const [releaseDate, setReleaseDate] = useState('');
   const [genres, setGenres] = useState('');
-  const [coverUrl, setCoverUrl] = useState<string | null>(null);
-  const [backdropUrl, setBackdropUrl] = useState<string | null>(null);
-  /** More than one entry here means the backdrop is a slideshow, not a
-   * single still — saved together with the rest of the form via the
-   * gallery endpoint (see saveMeta). */
-  const [slideshowImages, setSlideshowImages] = useState<string[]>([]);
-  const [uploadTarget, setUploadTarget] = useState<'cover' | 'backdrop' | null>(
-    null,
-  );
-  const [uploadingImage, setUploadingImage] = useState(false);
-  const [pendingCoverDelete, setPendingCoverDelete] = useState(false);
-  const [pendingFrameDelete, setPendingFrameDelete] = useState<string | null>(
-    null,
-  );
+  const {
+    coverUrl,
+    setCoverUrl,
+    backdropUrl,
+    setBackdropUrl,
+    slideshowImages,
+    setSlideshowImages,
+    uploadTarget,
+    setUploadTarget,
+    uploadingImage,
+    pendingCoverDelete,
+    setPendingCoverDelete,
+    pendingFrameDelete,
+    setPendingFrameDelete,
+    uploadImage,
+    removeCover,
+    removeBackdrop,
+    removeSlideshowFrame,
+  } = useCollectionImages(slug, setCol);
   const [saving, setSaving] = useState(false);
   const [detailsExpanded, setDetailsExpanded] = useState(false);
   const [pendingRemove, setPendingRemove] = useState<{
     id: string;
     title: string;
   } | null>(null);
-
-  const play = usePlayerStore((s) => s.play);
-  const enqueue = usePlayerStore((s) => s.enqueue);
-  const queue = usePlayerStore((s) => s.queue);
-  const currentId = usePlayerStore((s) => s.currentId);
-  const status = usePlayerStore((s) => s.status);
-  const setStatus = usePlayerStore((s) => s.setStatus);
-  const isPlaying = status === 'playing' || status === 'loading';
 
   const reload = () => {
     void Promise.all([
@@ -161,6 +150,18 @@ export function StudioCollectionEditView({
   };
 
   const items = col?.items ?? [];
+  const {
+    queue,
+    enqueue,
+    setStatus,
+    buildPlayable,
+    currentId,
+    isPlaying,
+    playSound,
+    playAllTracks,
+    queueAllTracks,
+    togglePlayItem,
+  } = useCollectionPlayback(items);
   const isAlbumLike = useMemo(
     () => ['ALBUM', 'EP', 'SINGLE'].includes(style),
     [style],
@@ -191,96 +192,6 @@ export function StudioCollectionEditView({
   const nowPlayingItem = items.find(
     (i) => i.sound && currentId === `sound:${i.sound.id}`,
   );
-
-  type PlayableSound = {
-    id: string;
-    title: string;
-    artistName?: string | null;
-    bannerUrl?: string | null;
-    embedProvider?: string | null;
-    embedUri?: string | null;
-    durationSec?: number | null;
-  };
-
-  /** Non-hearthis EMBED_ONLY sounds have no Tahti-hosted audio and no
-   * shared-player widget to build a playable from. */
-  const buildPlayable = async (
-    sound: PlayableSound,
-  ): Promise<TahtiPlayable | null> => {
-    const hearthis = playableFromStudioHearthis(sound);
-    if (hearthis) {
-      return hearthis;
-    }
-    if (sound.embedProvider && sound.embedProvider !== 'HEARTHIS') {
-      return null;
-    }
-    const { data } = await fetchEditorSource(sound.id);
-    return {
-      id: `sound:${sound.id}`,
-      kind: 'sound',
-      title: data.title || sound.title,
-      artist: 'You',
-      streamUrl: data.url,
-      protocol: data.url.includes('.m3u8') ? 'hls' : 'https',
-    };
-  };
-
-  const playSound = async (sound: PlayableSound) => {
-    const playable = await buildPlayable(sound);
-    if (playable) {
-      play(playable);
-    }
-  };
-
-  const playAllTracks = async () => {
-    const first = items.find((item) => item.sound);
-    if (!first?.sound) {
-      return;
-    }
-    await playSound(first.sound);
-  };
-
-  const queueAllTracks = async () => {
-    const withSound = items.filter(
-      (item): item is StudioCollectionItem & { sound: StudioSound } =>
-        Boolean(item.sound),
-    );
-    // Resolve all sources in parallel, then queue in the tracklist order.
-    const resolved = await Promise.all(
-      withSound.map((item) => buildPlayable(item.sound).catch(() => null)),
-    );
-    let queued = 0;
-    for (const playable of resolved) {
-      if (playable) {
-        enqueue(playable);
-        queued += 1;
-      }
-    }
-    if (queued === 0) {
-      toast.info('No playable tracks to queue.');
-    } else {
-      toast.success(
-        `Added ${queued} track${queued === 1 ? '' : 's'} to the queue.`,
-      );
-    }
-  };
-
-  const togglePlayItem = (item: StudioCollectionItem) => {
-    // Non-hearthis EMBED_ONLY items have no Tahti-hosted audio and no
-    // shared-player widget — only HEARTHIS plays via the bottom bar.
-    if (
-      !item.sound ||
-      (item.sound.embedProvider && item.sound.embedProvider !== 'HEARTHIS')
-    ) {
-      return;
-    }
-    const isThisCurrent = currentId === `sound:${item.sound.id}`;
-    if (isThisCurrent) {
-      setStatus(isPlaying ? 'paused' : 'playing');
-      return;
-    }
-    void playSound(item.sound);
-  };
 
   const addSound = async (sound: StudioSound) => {
     setAddBusyId(sound.id);
@@ -371,106 +282,6 @@ export function StudioCollectionEditView({
     } finally {
       setSaving(false);
     }
-  };
-
-  const uploadImage = async (files: readonly File[]) => {
-    if (files.length === 0 || !uploadTarget) {
-      return;
-    }
-    setUploadingImage(true);
-    if (uploadTarget === 'cover') {
-      const result = await uploadCollectionCover(slug, files[0]!);
-      setUploadingImage(false);
-      if (!result.ok) {
-        toast.error(result.error);
-        return;
-      }
-      setCoverUrl(result.coverUrl);
-      setCol((current) =>
-        current ? { ...current, coverUrl: result.coverUrl } : current,
-      );
-      setUploadTarget(null);
-      toast.success('Cover uploaded.');
-      return;
-    }
-
-    // Backdrop accepts one image (a still) or several (a slideshow) —
-    // upload them all, then stage the URLs locally; they're saved together
-    // with the rest of the form (see saveMeta).
-    const uploaded: string[] = [];
-    for (const file of files) {
-      const result = await uploadUserMediaFile(file);
-      if (!result.ok) {
-        setUploadingImage(false);
-        toast.error(result.error);
-        return;
-      }
-      uploaded.push(result.data.url);
-    }
-    setUploadingImage(false);
-    setBackdropUrl(uploaded[0]!);
-    setSlideshowImages(uploaded);
-    setUploadTarget(null);
-    toast.success(
-      uploaded.length > 1
-        ? `${uploaded.length} backdrop images uploaded. Save details to publish them.`
-        : 'Backdrop uploaded. Save details to publish it.',
-    );
-  };
-
-  const removeCover = async () => {
-    const result = await patchStudioCollection(slug, { coverUrl: null });
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
-    setCoverUrl(null);
-    setCol((current) => (current ? { ...current, coverUrl: null } : current));
-    toast.success('Cover removed.');
-  };
-
-  const removeBackdrop = async () => {
-    const galleryResult = await patchCollectionGallery(slug, {
-      slideshowImages: [],
-      galleryMode: 'NONE',
-    });
-    if (!galleryResult.ok) {
-      toast.error(galleryResult.error);
-      return;
-    }
-    const result = await patchStudioCollection(slug, { backdropUrl: null });
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
-    setBackdropUrl(null);
-    setSlideshowImages([]);
-    setCol((current) =>
-      current ? { ...current, backdropUrl: null } : current,
-    );
-    toast.success('Backdrop removed.');
-  };
-
-  /** Removing the last frame falls back to the empty placeholder (clears
-   * the whole backdrop); otherwise only that frame is dropped from the
-   * slideshow. */
-  const removeSlideshowFrame = async (url: string) => {
-    const next = slideshowImages.filter((image) => image !== url);
-    if (next.length === 0) {
-      await removeBackdrop();
-      return;
-    }
-    const galleryResult = await patchCollectionGallery(slug, {
-      slideshowImages: next,
-      galleryMode: next.length > 1 ? 'STATIC_SLIDESHOW' : 'NONE',
-    });
-    if (!galleryResult.ok) {
-      toast.error(galleryResult.error);
-      return;
-    }
-    setSlideshowImages(next);
-    setBackdropUrl(next[0] ?? null);
-    toast.success('Image removed from backdrop.');
   };
 
   const backdropChrome = useImageSlotChrome({ onClear: removeBackdrop });
