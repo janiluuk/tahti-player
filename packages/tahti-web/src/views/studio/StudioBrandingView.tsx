@@ -1,56 +1,22 @@
 import { useSearch } from '@tanstack/react-router';
 import {
   DownloadIcon,
-  ImagePlusIcon,
   ImagesIcon,
   PaintbrushIcon,
   PaletteIcon,
-  Trash2Icon,
 } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
-import { toast } from 'sonner';
 
-import {
-  Button,
-  Dialog,
-  FilePicker,
-  FilterChips,
-  ImageReveal,
-  Input,
-  SaveButton,
-  TabLabel,
-  Tabs,
-  Textarea,
-  Toggle,
-  Tooltip,
-} from '@tahti-player/ui';
+import { TabLabel, Tabs } from '@tahti-player/ui';
 
-import {
-  deletePressKitImage,
-  fetchMyPressKitImages,
-  fetchPressKitMeta,
-  fetchPublicPressKitImages,
-  MAX_PRESS_KIT_SELECTED_IMAGES,
-  patchPressKitBio,
-  removeProfileAvatar,
-  setPressKitGalleryPublic,
-  updatePressKitImage,
-  uploadPressKitImages,
-  uploadProfileAvatar,
-  type PressKitImageItem,
-  type PressKitMeta,
-} from '../../api/artist-settings';
-import { fetchMeProfile, type ProfileFields } from '../../api/studio-extras';
-import { ArtistGalleryPanel } from '../../components/ArtistGalleryPanel';
 import { ChannelDesigner } from '../../components/ChannelDesigner';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
-import { RoundImageUploadButton } from '../../components/RoundImageUploadButton';
 import { StudioPanel } from '../../components/StudioPanel';
-import { useAuthStore } from '../../stores/authStore';
 import { useSettingsModalStore } from '../../stores/settingsModalStore';
-import { PressKitPreview } from './branding/PressKitPreview';
-
-const ACCEPTED_IMAGES = 'image/jpeg,image/png,image/webp';
+import { GallerySection } from './branding/GallerySection';
+import { PressKitSection } from './branding/PressKitSection';
+import { ProfilePictureSection } from './branding/ProfilePictureSection';
+import { usePressKit } from './branding/usePressKit';
 
 export const STUDIO_BRANDING_SECTIONS = [
   'branding',
@@ -67,59 +33,25 @@ export function isStudioBrandingSection(
   return STUDIO_BRANDING_SECTIONS.some((section) => section === value);
 }
 
-type UploadMode = 'append' | 'replace';
-
-const selectedPressKitImages = (images: PressKitImageItem[]) =>
-  images
-    .filter((image) => image.includeInZip)
-    .sort((left, right) => left.position - right.position);
-
 export const StudioBrandingPanel: FC<{
   section?: StudioBrandingSection;
   hideSectionNav?: boolean;
   onSectionChange?: (section: StudioBrandingSection) => void;
 }> = ({ section, hideSectionNav = section != null, onSectionChange }) => {
-  const user = useAuthStore((state) => state.user);
-  const refreshAuth = useAuthStore((state) => state.refresh);
+  const kit = usePressKit();
+  const {
+    user,
+    profile,
+    images,
+    avatarUrl,
+    pendingReplaceUpload,
+    setPendingReplaceUpload,
+    applyGalleryUpload,
+    pendingImageDeleteId,
+    setPendingImageDeleteId,
+    removeImage,
+  } = kit;
   const [tab, setTab] = useState<StudioBrandingSection>(section ?? 'branding');
-  const [profile, setProfile] = useState<ProfileFields | null>(null);
-  const [images, setImages] = useState<PressKitImageItem[]>([]);
-  const [pressKit, setPressKit] = useState<PressKitMeta | null>(null);
-  const [galleryPublic, setGalleryPublic] = useState(false);
-  const [uploadMode, setUploadMode] = useState<UploadMode>('append');
-  const [includeUploads, setIncludeUploads] = useState(true);
-  const [galleryUploadOpen, setGalleryUploadOpen] = useState(false);
-  const [selectedGalleryFiles, setSelectedGalleryFiles] = useState<File[]>([]);
-  const [draggedPressKitImageId, setDraggedPressKitImageId] = useState<
-    string | null
-  >(null);
-  const [busy, setBusy] = useState(false);
-  const [pendingReplaceUpload, setPendingReplaceUpload] = useState<{
-    files: File[];
-    includeInZip: boolean;
-  } | null>(null);
-  const [pendingImageDeleteId, setPendingImageDeleteId] = useState<
-    string | null
-  >(null);
-
-  const reload = async () => {
-    const [profileResult, imageResult, pressResult] = await Promise.all([
-      fetchMeProfile(),
-      fetchMyPressKitImages(),
-      fetchPressKitMeta(),
-    ]);
-    setProfile(profileResult.data);
-    setImages(imageResult.data);
-    setPressKit(pressResult.data);
-    const publicResult = await fetchPublicPressKitImages(
-      profileResult.data.username,
-    );
-    setGalleryPublic(publicResult.data.length > 0);
-  };
-
-  useEffect(() => {
-    void reload();
-  }, []);
 
   useEffect(() => {
     if (section) {
@@ -131,184 +63,6 @@ export const StudioBrandingPanel: FC<{
     setTab(next);
     onSectionChange?.(next);
   };
-
-  const setVisibility = async (nextPublic: boolean) => {
-    const previous = galleryPublic;
-    setGalleryPublic(nextPublic);
-    const result = await setPressKitGalleryPublic(nextPublic);
-    if (!result.ok) {
-      setGalleryPublic(previous);
-      toast.error(result.error);
-    }
-  };
-
-  const enforcePressKitLimit = async (nextImages: PressKitImageItem[]) => {
-    const selected = selectedPressKitImages(nextImages);
-    const overflow = selected.slice(
-      0,
-      Math.max(0, selected.length - MAX_PRESS_KIT_SELECTED_IMAGES),
-    );
-    if (overflow.length === 0) {
-      return nextImages;
-    }
-    await Promise.all(
-      overflow.map((image) =>
-        updatePressKitImage(image.id, { includeInZip: false }),
-      ),
-    );
-    const dropped = new Set(overflow.map((image) => image.id));
-    return nextImages.map((image) =>
-      dropped.has(image.id) ? { ...image, includeInZip: false } : image,
-    );
-  };
-
-  const applyGalleryUpload = async (
-    files: readonly File[],
-    includeInZip: boolean,
-  ) => {
-    setBusy(true);
-    try {
-      // Upload first and only remove the old images once the new ones are
-      // stored: a failed upload must never leave the gallery empty.
-      const uploaded = await uploadPressKitImages(Array.from(files));
-      if (uploaded.images.length === 0) {
-        toast.error(uploaded.errors.join('; ') || 'No images were uploaded.');
-        return;
-      }
-      const replaced = uploadMode === 'replace' ? images : [];
-      if (replaced.length > 0) {
-        await Promise.all(
-          replaced.map((image) => deletePressKitImage(image.id)),
-        );
-      }
-      let nextImages = [
-        ...(uploadMode === 'replace' ? [] : images),
-        ...uploaded.images,
-      ];
-      if (!includeInZip) {
-        await Promise.all(
-          uploaded.images.map((image) =>
-            updatePressKitImage(image.id, { includeInZip: false }),
-          ),
-        );
-        const uploadedIds = new Set(uploaded.images.map((image) => image.id));
-        nextImages = nextImages.map((image) =>
-          uploadedIds.has(image.id) ? { ...image, includeInZip: false } : image,
-        );
-      }
-      nextImages = await enforcePressKitLimit(nextImages);
-      await setPressKitGalleryPublic(galleryPublic);
-      setImages(nextImages);
-      setSelectedGalleryFiles([]);
-      setGalleryUploadOpen(false);
-      if (uploaded.errors.length > 0) {
-        toast.error(uploaded.errors.join('; '));
-      } else {
-        toast.success(
-          `${uploaded.images.length} image${uploaded.images.length === 1 ? '' : 's'} added.`,
-        );
-      }
-    } catch {
-      toast.error('Could not update the photo gallery.');
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const uploadGallery = async (
-    files: readonly File[],
-    includeInZip = includeUploads,
-  ) => {
-    if (files.length === 0) {
-      return;
-    }
-    if (uploadMode === 'replace' && images.length > 0) {
-      setPendingReplaceUpload({
-        files: Array.from(files),
-        includeInZip,
-      });
-      return;
-    }
-    await applyGalleryUpload(files, includeInZip);
-  };
-
-  const reorderPressKitImages = async (fromId: string, toId: string) => {
-    if (fromId === toId) {
-      return;
-    }
-    const fromIndex = images.findIndex((image) => image.id === fromId);
-    const toIndex = images.findIndex((image) => image.id === toId);
-    if (fromIndex === -1 || toIndex === -1) {
-      return;
-    }
-    const nextImages = [...images];
-    const [movedImage] = nextImages.splice(fromIndex, 1);
-    nextImages.splice(toIndex, 0, movedImage);
-    setImages(nextImages);
-    await Promise.all(
-      nextImages.map((image, position) =>
-        updatePressKitImage(image.id, { position }),
-      ),
-    );
-  };
-
-  const togglePressKitImage = async (image: PressKitImageItem) => {
-    const nextIncluded = !image.includeInZip;
-    let nextImages = images.map((candidate) =>
-      candidate.id === image.id
-        ? { ...candidate, includeInZip: nextIncluded }
-        : candidate,
-    );
-    setImages(nextImages);
-    const result = await updatePressKitImage(image.id, {
-      includeInZip: nextIncluded,
-    });
-    if (!result.ok) {
-      setImages(images);
-      toast.error(result.error);
-      return;
-    }
-    nextImages = await enforcePressKitLimit(nextImages);
-    setImages(nextImages);
-  };
-
-  const removeImage = async (id: string) => {
-    const previous = images;
-    setImages((current) => current.filter((image) => image.id !== id));
-    const result = await deletePressKitImage(id);
-    if (!result.ok) {
-      setImages(previous);
-      toast.error(result.error);
-    }
-  };
-
-  const removeAvatar = async () => {
-    if (!profile) {
-      return;
-    }
-    const result = await removeProfileAvatar();
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
-    setProfile({ ...profile, avatarUrl: null });
-    await refreshAuth();
-    toast.success('Profile picture removed.');
-  };
-
-  const handleAvatarChange = (url: string) => {
-    if (!url) {
-      void removeAvatar();
-      return;
-    }
-    setProfile((current) =>
-      current ? { ...current, avatarUrl: url } : current,
-    );
-    void refreshAuth();
-  };
-
-  const pressImages = selectedPressKitImages(images);
-  const avatarUrl = profile?.avatarUrl ?? user?.avatarUrl ?? null;
 
   return (
     <div className="flex flex-col gap-6">
@@ -339,52 +93,7 @@ export const StudioBrandingPanel: FC<{
         </Tabs.Root>
       )}
 
-      {tab === 'branding' ? (
-        <>
-          <StudioPanel
-            title="Profile picture"
-            description="Use a clear square portrait or mark. Hover the picture to replace or remove it."
-          >
-            <div className="flex flex-wrap items-center gap-5">
-              <RoundImageUploadButton
-                label="Profile picture"
-                value={avatarUrl}
-                sizeClassName="size-32"
-                upload={(file) =>
-                  uploadProfileAvatar(file).then((r) =>
-                    r.ok
-                      ? { ok: true as const, data: { url: r.avatarUrl } }
-                      : r,
-                  )
-                }
-                onChange={handleAvatarChange}
-              />
-              <div className="flex flex-col gap-2">
-                <Tooltip
-                  side="bottom"
-                  content={
-                    <p className="max-w-64 text-xs leading-relaxed">
-                      JPEG, PNG, or WebP. The original is kept for full-size
-                      use.
-                    </p>
-                  }
-                >
-                  <span
-                    tabIndex={0}
-                    aria-label="Accepted image formats"
-                    className="text-foreground-secondary hover:text-foreground inline-flex size-4 cursor-help items-center justify-center rounded-full border border-current"
-                  >
-                    <span className="text-[10px] leading-none font-bold">
-                      ?
-                    </span>
-                  </span>
-                </Tooltip>
-              </div>
-            </div>
-          </StudioPanel>
-        </>
-      ) : null}
-
+      {tab === 'branding' ? <ProfilePictureSection kit={kit} /> : null}
       {tab === 'channel-designer' ? (
         profile ? (
           <ChannelDesigner
@@ -403,276 +112,9 @@ export const StudioBrandingPanel: FC<{
         )
       ) : null}
 
-      {tab === 'gallery' ? (
-        <>
-          <StudioPanel
-            title="Gallery"
-            action={
-              <div className="flex items-center gap-3">
-                <label className="flex items-center gap-2 text-sm">
-                  <span className="text-foreground-secondary text-xs">
-                    Public
-                  </span>
-                  <Toggle
-                    checked={galleryPublic}
-                    onChange={(checked) => void setVisibility(checked)}
-                    aria-label="Public gallery"
-                  />
-                </label>
-                <Tooltip content="Upload more gallery images" side="top">
-                  <Button
-                    size="icon-sm"
-                    variant="secondary"
-                    aria-label="Upload more gallery images"
-                    onClick={() => setGalleryUploadOpen(true)}
-                  >
-                    <ImagePlusIcon size={16} aria-hidden />
-                  </Button>
-                </Tooltip>
-              </div>
-            }
-          >
-            <ArtistGalleryPanel
-              images={images}
-              isOwner
-              showUpload={false}
-              onChange={(next) => setImages(next as PressKitImageItem[])}
-            />
-          </StudioPanel>
-          <Dialog.Root
-            isOpen={galleryUploadOpen}
-            onClose={() => {
-              if (!busy) {
-                setGalleryUploadOpen(false);
-                setSelectedGalleryFiles([]);
-              }
-            }}
-            className="max-w-lg"
-          >
-            <Dialog.Title>Upload gallery images</Dialog.Title>
-            <Dialog.Description>
-              Add images with drag and drop, or browse your device.
-            </Dialog.Description>
-            <div className="flex flex-col gap-4">
-              <FilterChips
-                items={[
-                  { id: 'append', label: 'Append' },
-                  { id: 'replace', label: 'Replace' },
-                ]}
-                selected={uploadMode}
-                onChange={(id) => setUploadMode(id as 'append' | 'replace')}
-                aria-label="Gallery upload mode"
-              />
-              <FilePicker
-                accept={ACCEPTED_IMAGES}
-                multiple
-                disabled={busy}
-                selectedFiles={selectedGalleryFiles}
-                labels={{
-                  title: 'Drop gallery images here',
-                  description: 'JPEG, PNG, or WebP',
-                  browse: 'Choose images',
-                  selected: 'Ready to upload',
-                }}
-                onFiles={(files) => {
-                  setSelectedGalleryFiles(Array.from(files));
-                  void uploadGallery(files);
-                }}
-              />
-              <div className="flex items-center justify-between gap-3 text-sm">
-                <span>Include uploaded images in press kit</span>
-                <Toggle
-                  label="Include uploaded images in press kit"
-                  checked={includeUploads}
-                  onChange={setIncludeUploads}
-                />
-              </div>
-            </div>
-            <Dialog.Actions>
-              <Button
-                disabled={busy}
-                onClick={() => setGalleryUploadOpen(false)}
-              >
-                Done
-              </Button>
-            </Dialog.Actions>
-          </Dialog.Root>
-        </>
-      ) : null}
+      {tab === 'gallery' ? <GallerySection kit={kit} /> : null}
 
-      {tab === 'press-kit' ? (
-        <>
-          <StudioPanel
-            title="Press kit story"
-            description="A concise introduction for promoters, venues, and journalists."
-          >
-            <label className="flex flex-col gap-1.5 text-sm">
-              <span className="text-foreground-secondary text-xs uppercase">
-                Short bio
-              </span>
-              <Textarea
-                tone="secondary"
-                rows={5}
-                value={pressKit?.bioShort ?? ''}
-                onChange={(event) =>
-                  setPressKit((current) =>
-                    current
-                      ? { ...current, bioShort: event.target.value }
-                      : current,
-                  )
-                }
-              />
-            </label>
-            <div className="mt-3 flex flex-wrap justify-end gap-2">
-              {pressKit?.downloadPath ? (
-                <a href={pressKit.downloadPath}>
-                  <Button size="sm" variant="secondary">
-                    <DownloadIcon size={14} aria-hidden className="mr-1.5" />
-                    Download ZIP
-                  </Button>
-                </a>
-              ) : null}
-              <SaveButton
-                disabled={!pressKit}
-                label="Save bio"
-                onClick={() => {
-                  if (!pressKit) {
-                    return;
-                  }
-                  void patchPressKitBio(pressKit.bioShort).then((result) => {
-                    if (result.ok) {
-                      setPressKit(result.data);
-                      toast.success('Press kit bio saved.');
-                    } else {
-                      toast.error(result.error);
-                    }
-                  });
-                }}
-              />
-            </div>
-          </StudioPanel>
-          <StudioPanel
-            title="Photos"
-            description="Drop in high-resolution promotional photos. Drag to reorder them; the first included photo leads the preview and download."
-          >
-            <FilePicker
-              accept={ACCEPTED_IMAGES}
-              multiple
-              disabled={busy}
-              labels={{
-                title: 'Drop press-kit photos here',
-                description: 'JPEG, PNG, or WebP · up to 30 photos',
-                browse: 'Choose photos',
-                selected: 'Ready to upload',
-              }}
-              onFiles={(files) => {
-                setSelectedGalleryFiles(Array.from(files));
-                void uploadGallery(files, true);
-              }}
-            />
-            {images.length === 0 ? (
-              <p className="text-foreground-secondary mt-3 text-sm">
-                Your press kit is empty. Add a bio and at least one photo to
-                enable the download.
-              </p>
-            ) : null}
-          </StudioPanel>
-          <StudioPanel
-            title="Press kit images"
-            description={`${pressImages.length} of ${MAX_PRESS_KIT_SELECTED_IMAGES} press kit images · selecting another automatically drops the oldest selection`}
-          >
-            {images.length === 0 ? (
-              <p className="text-foreground-secondary text-sm">
-                Add images in the Gallery tab first.
-              </p>
-            ) : (
-              <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {images.map((image) => (
-                  <li
-                    key={image.id}
-                    draggable
-                    onDragStart={() => setDraggedPressKitImageId(image.id)}
-                    onDragOver={(event) => event.preventDefault()}
-                    onDrop={(event) => {
-                      event.preventDefault();
-                      if (draggedPressKitImageId) {
-                        void reorderPressKitImages(
-                          draggedPressKitImageId,
-                          image.id,
-                        );
-                      }
-                      setDraggedPressKitImageId(null);
-                    }}
-                    onDragEnd={() => setDraggedPressKitImageId(null)}
-                    className="border-border bg-background-secondary overflow-hidden rounded-lg border"
-                  >
-                    <ImageReveal
-                      src={image.imageUrl}
-                      alt=""
-                      className="aspect-[4/3] w-full"
-                      imgClassName="object-cover"
-                    />
-                    <div className="flex flex-col gap-2 p-3">
-                      <Input
-                        aria-label={`Title for image ${image.position + 1}`}
-                        value={image.title ?? ''}
-                        placeholder="Photo title or credit"
-                        onChange={(event) => {
-                          const title = event.target.value;
-                          setImages((current) =>
-                            current.map((candidate) =>
-                              candidate.id === image.id
-                                ? { ...candidate, title }
-                                : candidate,
-                            ),
-                          );
-                        }}
-                        onBlur={(event) =>
-                          void updatePressKitImage(image.id, {
-                            title: event.target.value.trim() || null,
-                          })
-                        }
-                      />
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-xs">Include in press kit</span>
-                        <div className="flex items-center gap-2">
-                          <Toggle
-                            label={`Include ${image.title || `image ${image.position + 1}`} in press kit`}
-                            checked={image.includeInZip}
-                            onChange={() => void togglePressKitImage(image)}
-                          />
-                          <Tooltip content="Remove image" side="top">
-                            <Button
-                              size="icon-sm"
-                              variant="text"
-                              aria-label="Remove image from gallery"
-                              onClick={() => setPendingImageDeleteId(image.id)}
-                            >
-                              <Trash2Icon size={14} aria-hidden />
-                            </Button>
-                          </Tooltip>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </StudioPanel>
-          <StudioPanel
-            title="Press kit preview"
-            description="What a promoter sees when opening your press kit."
-          >
-            <PressKitPreview
-              displayName={
-                profile?.displayName ?? user?.displayName ?? 'Artist'
-              }
-              bio={pressKit?.bioShort ?? null}
-              images={pressImages}
-            />
-          </StudioPanel>
-        </>
-      ) : null}
+      {tab === 'press-kit' ? <PressKitSection kit={kit} /> : null}
       <ConfirmDialog
         isOpen={pendingReplaceUpload !== null}
         title={`Replace all ${images.length} existing gallery images?`}

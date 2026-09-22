@@ -1,4 +1,4 @@
-import { ExternalLinkIcon } from 'lucide-react';
+import { ExternalLink } from '@tahti-player/ui';
 
 import { StudioPanel } from '../../../components/StudioPanel';
 
@@ -21,15 +21,9 @@ export function GuideDetail({
         ))}
       </ol>
       {href && linkLabel ? (
-        <a
-          href={href}
-          target="_blank"
-          rel="noreferrer"
-          className="text-primary mt-3 inline-flex items-center gap-1 underline underline-offset-2"
-        >
+        <ExternalLink href={href} showIcon className="text-primary mt-3">
           {linkLabel}
-          <ExternalLinkIcon size={12} aria-hidden />
-        </a>
+        </ExternalLink>
       ) : null}
     </StudioPanel>
   );
