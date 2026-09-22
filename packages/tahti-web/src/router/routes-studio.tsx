@@ -1,5 +1,6 @@
 import { createRoute, redirect } from '@tanstack/react-router';
 
+import { StudioPlaylistEditorView } from '../views/studio/playlists/StudioPlaylistEditorView';
 import { StudioBrandingView } from '../views/studio/StudioBrandingView';
 import { StudioChannelView } from '../views/studio/StudioChannelView';
 import { StudioCollectionsView } from '../views/studio/StudioCollectionsView';
@@ -8,7 +9,6 @@ import { StudioEditorProjectView } from '../views/studio/StudioEditorProjectView
 import { StudioEventsView } from '../views/studio/StudioEventsView';
 import { StudioGoLiveView } from '../views/studio/StudioGoLiveView';
 import { StudioHomeView } from '../views/studio/StudioHomeView';
-import { StudioPlaylistEditorView } from '../views/studio/StudioPlaylistsView';
 import { StudioReleaseDetailView } from '../views/studio/StudioReleaseDetailView';
 import { StudioReleasesView } from '../views/studio/StudioReleasesView';
 import { StudioScheduleView } from '../views/studio/StudioScheduleView';
