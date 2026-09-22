@@ -33,9 +33,9 @@ import {
 import { fetchFeatureRequests, fetchGovernanceMotions } from '../../api/client';
 import { fetchShowSchedule, type ScheduledShow } from '../../api/shows';
 import {
-  fetchStudioCollections,
+  fetchStudioCollectionCount,
   fetchStudioReleases,
-  fetchStudioSounds,
+  fetchStudioSoundCount,
 } from '../../api/studio';
 import { fetchStatsSummary, type StatsSummary } from '../../api/studio-extras';
 import type { FeatureRequest, GovernanceMotion } from '../../api/types';
@@ -91,8 +91,8 @@ export function StudioHomeView() {
     }
     let cancelled = false;
     Promise.all([
-      fetchStudioSounds(),
-      fetchStudioCollections(),
+      fetchStudioSoundCount(),
+      fetchStudioCollectionCount(),
       fetchStudioReleases(),
       fetchStatsSummary(),
       fetchShowSchedule(),
@@ -100,8 +100,8 @@ export function StudioHomeView() {
     ])
       .then(
         ([
-          sounds,
-          collections,
+          soundCount,
+          collectionCount,
           releases,
           summary,
           showSchedule,
@@ -111,9 +111,9 @@ export function StudioHomeView() {
             return;
           }
           setCounts({
-            sounds: sounds.data.length,
-            collections: collections.data.length,
-            releases: releases.data.releases.length,
+            sounds: soundCount.data,
+            collections: collectionCount.data,
+            releases: releases.data.total,
           });
           setStats(summary.data);
           setUpcomingShows(
