@@ -8,6 +8,7 @@ export * from './CardsRow';
 export * from './NewsWidget';
 export * from './Combobox';
 export * from './CopyButton';
+export * from './ExternalLink';
 export * from './Dialog';
 export * from './DonutChart';
 export * from './FavoriteButton';

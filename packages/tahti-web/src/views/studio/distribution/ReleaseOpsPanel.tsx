@@ -1,27 +1,16 @@
 import { Link } from '@tanstack/react-router';
-import {
-  BookOpenIcon,
-  CopyIcon,
-  DownloadIcon,
-  ExternalLinkIcon,
-  LinkIcon,
-  PlusIcon,
-  SendIcon,
-  Trash2Icon,
-} from 'lucide-react';
+import { BookOpenIcon, CopyIcon, DownloadIcon, LinkIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
   Badge,
   Button,
-  EmptyState,
+  ExternalLink,
   Input,
   SaveButton,
-  Select,
   SelectableTiles,
   Tabs,
-  Tooltip,
 } from '@tahti-player/ui';
 
 import {
@@ -37,32 +26,25 @@ import type {
   ReleaseCatalog,
   ReleaseChecklistItem,
   ReleaseCredit,
-  ReleaseCreditRole,
   RevelatorBillingStatus,
   RevelatorRoyaltyReportRow,
   StudioRelease,
 } from '../../../api/studio-types';
-import { RELEASE_CREDIT_ROLES } from '../../../api/studio-types';
-import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { PageLoading } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
+import { CreditsEditor } from './CreditsEditor';
+import { DeliveryTab } from './DeliveryTab';
 import {
   CATALOG_METHOD_TILES,
-  COLLECTING_SOCIETY_POINTERS,
-  DISCOGS_GUIDE_STEPS,
   DISCOGS_SUBMIT_URL,
-  GUIDE_TILES,
-  MUSICBRAINZ_GUIDE_STEPS,
   MUSICBRAINZ_SUBMIT_URL,
-  POST_RELEASE_CLAIM_LINKS,
 } from './distribution-content';
 import {
   catalogToForm,
-  euros,
   statusColor,
   type CatalogForm,
 } from './distribution-helpers';
-import { GuideDetail } from './GuideDetail';
+import { GuidesTab } from './GuidesTab';
 
 export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
   const [open, setOpen] = useState(false);
@@ -80,7 +62,6 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
     new Set(['upc', 'musicbrainz', 'discogs', 'rights']),
   );
   const methodsInitialised = useRef(false);
-  const [selectedGuide, setSelectedGuide] = useState('musicbrainz');
 
   const revelatorStatus =
     catalog?.revelatorStatus ?? release.revelatorStatus ?? null;
@@ -386,94 +367,7 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
         )}
       </div>
 
-      <div>
-        <p className="mb-2 text-xs font-medium">Credits & roles</p>
-        {credits.length === 0 && (
-          <p className="text-foreground-secondary mb-2 text-xs">
-            No credits yet — add writers, performers, producers, etc.
-          </p>
-        )}
-        <ul className="flex flex-col gap-2">
-          {credits.map((credit, index) => (
-            <li
-              key={index}
-              className="grid gap-2 sm:grid-cols-[8rem_1fr_8rem_auto]"
-            >
-              <Select
-                className="text-xs"
-                options={RELEASE_CREDIT_ROLES.map((role) => ({
-                  id: role,
-                  label: role,
-                }))}
-                value={credit.role}
-                disabled={busy}
-                label="Credit role"
-                onValueChange={(role) => {
-                  const next = [...credits];
-                  next[index] = {
-                    ...credit,
-                    role: role as ReleaseCreditRole,
-                  };
-                  setCredits(next);
-                }}
-              />
-              <Input
-                value={credit.name}
-                placeholder="Name"
-                disabled={busy}
-                aria-label="Credit name"
-                onChange={(e) => {
-                  const next = [...credits];
-                  next[index] = { ...credit, name: e.target.value };
-                  setCredits(next);
-                }}
-              />
-              <Input
-                value={credit.artistUsername ? `@${credit.artistUsername}` : ''}
-                placeholder="@username"
-                disabled={busy}
-                maxLength={33}
-                aria-label="Tahti username"
-                onChange={(e) => {
-                  const raw = e.target.value
-                    .trim()
-                    .replace(/^@/, '')
-                    .toLowerCase();
-                  const next = [...credits];
-                  next[index] = {
-                    ...credit,
-                    artistUsername: raw.length > 0 ? raw : undefined,
-                  };
-                  setCredits(next);
-                }}
-              />
-              <Tooltip content="Remove credit" side="top">
-                <Button
-                  size="icon-sm"
-                  variant="text"
-                  disabled={busy}
-                  aria-label={`Remove credit ${credit.name || index + 1}`}
-                  onClick={() =>
-                    setCredits(credits.filter((_, i) => i !== index))
-                  }
-                >
-                  <Trash2Icon size={14} aria-hidden />
-                </Button>
-              </Tooltip>
-            </li>
-          ))}
-        </ul>
-        <Button
-          size="sm"
-          variant="secondary"
-          className="mt-2"
-          disabled={busy}
-          onClick={() => setCredits([...credits, { role: 'writer', name: '' }])}
-        >
-          <PlusIcon size={14} aria-hidden className="mr-1.5" />
-          Add credit
-        </Button>
-      </div>
+      <CreditsEditor credits={credits} setCredits={setCredits} busy={busy} />
 
       <div className="flex flex-wrap gap-2">
         <SaveButton saving={busy} label="Save catalog" onClick={saveCatalog} />
@@ -495,15 +389,13 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
           <CopyIcon size={14} aria-hidden className="mr-1.5" />
           Copy MusicBrainz prefill
         </Button>
-        <a
+        <ExternalLink
           href={MUSICBRAINZ_SUBMIT_URL}
-          target="_blank"
-          rel="noreferrer"
-          className="text-foreground-secondary hover:text-foreground inline-flex items-center gap-1 text-xs underline underline-offset-2"
+          showIcon
+          className="text-foreground-secondary text-xs"
         >
           Add on MusicBrainz
-          <ExternalLinkIcon size={12} aria-hidden />
-        </a>
+        </ExternalLink>
         <Button
           size="sm"
           variant="secondary"
@@ -513,203 +405,34 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
           <CopyIcon size={14} aria-hidden className="mr-1.5" />
           Copy Discogs prefill
         </Button>
-        <a
+        <ExternalLink
           href={DISCOGS_SUBMIT_URL}
-          target="_blank"
-          rel="noreferrer"
-          className="text-foreground-secondary hover:text-foreground inline-flex items-center gap-1 text-xs underline underline-offset-2"
+          showIcon
+          className="text-foreground-secondary text-xs"
         >
           Search on Discogs
-          <ExternalLinkIcon size={12} aria-hidden />
-        </a>
+        </ExternalLink>
       </div>
     </div>
   );
 
   const deliveryTab = (
-    <div className="flex flex-col gap-3">
-      <p className="text-foreground-secondary text-xs">
-        Submits catalog metadata to Revelator (Spotify, Apple, etc.). Requires
-        UPC or ISRC on every track.
-      </p>
-      {revelatorStatus && (
-        <p className="text-xs">
-          Status: <strong>{revelatorStatus}</strong>
-          {revelatorId && (
-            <span className="text-foreground-secondary">
-              {' '}
-              · id {revelatorId}
-            </span>
-          )}
-        </p>
-      )}
-      {billing && !billing.paid && (
-        <p className="text-foreground-secondary text-xs">
-          {billing.feeCents === 0 && billing.studioIncludedRemaining != null
-            ? `Studio included slot (${billing.studioIncludedRemaining} left this year)`
-            : `Distribution fee: ${euros(billing.feeCents)}`}
-        </p>
-      )}
-      {billing?.paid && (
-        <p className="text-foreground-secondary text-xs">
-          {billing.waived
-            ? 'Fee waived (Studio included)'
-            : `Distribution fee paid${
-                billing.distributionPaidAt
-                  ? ` on ${new Date(billing.distributionPaidAt).toLocaleDateString()}`
-                  : ''
-              }`}
-        </p>
-      )}
-      <Button
-        size="sm"
-        className="self-start"
-        disabled={busy || !canSubmit}
-        onClick={() => setConfirmSubmit(true)}
-      >
-        {!busy && <SendIcon size={14} aria-hidden className="mr-1.5" />}
-        {busy
-          ? 'Submitting…'
-          : billing && !billing.paid && billing.feeCents > 0
-            ? `Pay ${euros(billing.feeCents)} & submit`
-            : 'Submit to Revelator'}
-      </Button>
-
-      <ConfirmDialog
-        isOpen={confirmSubmit}
-        title="Submit to Revelator?"
-        description={
-          billing && !billing.paid && billing.feeCents > 0
-            ? `You will be taken to checkout to pay ${euros(billing.feeCents)}. Submitting sends this release to stores.`
-            : 'This sends the release to Revelator for distribution to stores.'
-        }
-        confirmLabel="Submit"
-        onCancel={() => setConfirmSubmit(false)}
-        onConfirm={() => {
-          setConfirmSubmit(false);
-          void submitToRevelator();
-        }}
-      />
-
-      {showRoyalties && (
-        <div className="border-border border-t pt-3">
-          <p className="mb-1 text-xs font-medium">Royalty reports</p>
-          {!royaltiesLoaded ? (
-            <PageLoading label="Loading…" />
-          ) : royalties.length === 0 ? (
-            <EmptyState
-              size="sm"
-              title="No reports yet"
-              description="Synced monthly after DSP delivery."
-            />
-          ) : (
-            <ul className="divide-border divide-y text-xs">
-              {royalties.map((row) => (
-                <li
-                  key={row.id}
-                  className="flex flex-wrap items-center justify-between gap-2 py-1.5"
-                >
-                  <span>{row.periodStart.slice(0, 7)}</span>
-                  <span className="text-foreground-secondary">
-                    {row.streams != null
-                      ? `${row.streams.toLocaleString()} streams · `
-                      : ''}
-                    {euros(row.amountCents)} {row.currency}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      )}
-    </div>
+    <DeliveryTab
+      revelatorStatus={revelatorStatus}
+      revelatorId={revelatorId}
+      billing={billing}
+      busy={busy}
+      canSubmit={canSubmit}
+      confirmSubmit={confirmSubmit}
+      setConfirmSubmit={setConfirmSubmit}
+      onSubmit={() => void submitToRevelator()}
+      showRoyalties={showRoyalties}
+      royaltiesLoaded={royaltiesLoaded}
+      royalties={royalties}
+    />
   );
 
-  const guidesTab = (
-    <div className="flex flex-col gap-4 text-xs">
-      <SelectableTiles
-        items={GUIDE_TILES}
-        selected={selectedGuide}
-        onChange={setSelectedGuide}
-        layout="centered"
-        className="sm:grid-cols-2 lg:grid-cols-4"
-      />
-      {selectedGuide === 'musicbrainz' && (
-        <GuideDetail
-          title="MusicBrainz"
-          steps={MUSICBRAINZ_GUIDE_STEPS}
-          href={MUSICBRAINZ_SUBMIT_URL}
-          linkLabel="Open MusicBrainz release editor"
-        />
-      )}
-      {selectedGuide === 'discogs' && (
-        <GuideDetail
-          title="Discogs"
-          steps={DISCOGS_GUIDE_STEPS}
-          href={DISCOGS_SUBMIT_URL}
-          linkLabel="Search Discogs"
-        />
-      )}
-      {selectedGuide === 'upc' && (
-        <GuideDetail
-          title="UPC / EAN"
-          steps={[
-            'Use the barcode assigned to this exact release, not an artist or catalog number.',
-            'Save it under Catalog & credits; it is included in the export JSON and distribution checklist.',
-            'If the release has no UPC/EAN, add ISRC values to every track before delivery.',
-          ]}
-        />
-      )}
-      {selectedGuide === 'automation' && (
-        <GuideDetail
-          title="Automation"
-          steps={[
-            'Export JSON creates a portable metadata package for MusicBrainz, Discogs, and future delivery tools.',
-            'Copy prefill prepares the relevant form with the release title, barcode, credits, and tracklist.',
-            'Delivery & royalties can submit eligible releases to Revelator and show status and royalty reports here.',
-          ]}
-        />
-      )}
-      <div>
-        <p className="mb-1 font-medium">Post-release claim links</p>
-        <ul className="list-inside list-disc">
-          {POST_RELEASE_CLAIM_LINKS.map((link) => (
-            <li key={link.id}>
-              <a
-                href={link.url}
-                target="_blank"
-                rel="noreferrer"
-                className="underline"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div>
-        <p className="mb-1 font-medium">Collecting societies</p>
-        <ul className="list-inside list-disc">
-          {COLLECTING_SOCIETY_POINTERS.map((society) => (
-            <li key={society.id}>
-              <a
-                href={society.url}
-                target="_blank"
-                rel="noreferrer"
-                className="underline"
-              >
-                {society.label}
-              </a>
-              <span className="text-foreground-secondary">
-                {' '}
-                ({society.region}) — {society.hint}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
-  );
+  const guidesTab = <GuidesTab />;
 
   return (
     <StudioPanel className="text-sm">
