@@ -179,13 +179,15 @@ export function StudioHomeView() {
           ) : null}
           {!channel ? (
             <p className="text-foreground-secondary text-sm">
-              <button
+              <Button
                 type="button"
+                size="sm"
+                variant="text"
                 onClick={openChannelSetup}
-                className="text-foreground underline-offset-2 hover:underline"
+                className="h-auto p-0 underline underline-offset-2"
               >
                 Create your channel
-              </button>{' '}
+              </Button>{' '}
               to unlock Music and Broadcast.
             </p>
           ) : null}

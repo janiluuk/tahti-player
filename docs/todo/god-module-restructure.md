@@ -175,7 +175,7 @@ Split into `plugin-store/radio-category/`: `PersonalRadioStreamCard`, `RadioBrow
 
 ## Studio views audit (2026-09-22)
 
-Scope: the five 1000+ line studio views (`StudioReleaseDetailView`, `StudioShowDetailView`/`StudioEpisodeReviewView`, `StudioScheduleView`, `StudioCollectionEditView`, `StudioDistributionView`) plus a mechanical scan of all of `views/studio/`. The scan found almost no hand-rolled elements (only two `<a>` for external/download links, no ui link component) and no `TODO`s; the problems are logic and structure.
+Scope: the five 1000+ line studio views (`StudioReleaseDetailView`, `StudioShowDetailView`/`StudioEpisodeReviewView`, `StudioScheduleView`, `StudioCollectionEditView`, `StudioDistributionView`) plus a mechanical scan of all of `views/studio/`. The first scan reported almost no hand-rolled elements, but it only matched single-line tags. **Correction (2026-09-22):** a multi-line scan found real ones — see "Hand-rolled elements" below.
 
 ### Fixed in this pass
 - **Collection editor:** adding a track called `reload()`, which reset the details form and dropped unsaved edits (and refetched sounds and gallery). It now refreshes only the tracklist (also after a failed reorder); `saveMeta` is try/finally.
@@ -214,3 +214,32 @@ Systemic: none of the eight has a single `try`/`finally`; busy flags (`setBusy(t
 - **`StudioHomeView`:** loads the whole library (all sounds, collections, releases) only to show three counts (needs a counts endpoint); no catch, so `discographyLoaded` never flips; governance motions and requests load for every studio visit.
 - **`StudioSoundView`:** six independent busy flags; no `key` per sound, so tab/message/form state carry over when navigating between sounds; "Quick auto-trim" appends the same silence cuts on every click (stacks duplicates) and falls back to a 180 s duration when the sound has none; `startPlayback` leaves `playBusy` stuck if the source fetch throws; polling calls have no catch.
 - **`StudioSoundsView`:** `loading` set without finally, delete `.then(reload)` ignores failure.
+
+### Splits done in the studio pass (2026-09-22)
+
+Ten views split into folders next to them (behavior unchanged, tests green): `schedule/` (`ScheduledTimes`, `ScheduleAnalytics`, `schedule-helpers`), `release-detail/` (`ReleaseSmartLinksPanel`, `ReleaseTrackRow`), `show-detail/` (`EpisodeEditorRow`, `StudioEpisodeReviewView`, lazy route updated), `distribution/` (`ReleaseOpsPanel`, `GuideDetail`, content + helpers), `playlists/` (`StudioPlaylistEditorView`, route updated), `branding/` (`PressKitPreview`), `collection-edit/` (`NowPlayingBar` — owns the playback-tick subscriptions, so the editor no longer re-renders every tick; `AddTracksDialog` — owns its search, drops the disabled placeholder tabs), `updates/` (`NewPostDialog`, `NewDraftDialog`, `PostPreview`; also confirm before sending a newsletter), `go-live/` (`MultistreamPanel` with its dialogs), `home/` (tiles, broadcast row, helpers).
+
+Still big: `distribution/ReleaseOpsPanel` 770, `StudioBrandingView` 708 (one 618-line `StudioBrandingPanel`: needs a `usePressKit` hook and per-tab sections), `StudioCollectionEditView` 917, `StudioReleaseDetailView` 644, `StudioShowDetailView` 694, `StudioScheduleView` 755 (its three-form dialog is still inline), `StudioGoLiveView` 629, `StudioHomeView` 539, `StudioSoundView` 752 (683-line component), `StudioStatsView` 697.
+
+### Hand-rolled elements (multi-line scan, 2026-09-22)
+
+Replaced with `Button` this pass: the image-thumbnail buttons in `updates/PostPreview` and `StudioUpdatesView`, the "Show info" chip in `StudioGoLiveView`, "Create your channel" in `StudioHomeView`, the library rows in `release-detail/ReleaseSmartLinksPanel`, the show-title button in `schedule/ScheduledTimes`.
+
+Still open: `<img>` in `StudioBrandingView` (~594) and `branding/PressKitPreview` (two) → `MediaArtwork`; `<input>` in `components/channel-designer/ColorSchemeFields`; `<img>` in `components/channel-designer/VideoOrImageField`; `<a>` links (`ReleaseTrackRow`, four in `distribution/ReleaseOpsPanel`, `GuideDetail`, `StudioReleasesView`, `StudioMasteringView`, `StudioBrandingView` ZIP download) — blocked on a `@tahti-player/ui` external-link component, which is the actual gap; also `<Link><Button/></Link>` nesting in several views.
+
+### Fix queue for the audited views (2026-09-22, in progress)
+
+Fix, in this order (tick when done; each finished item moves to HISTORY):
+
+- [ ] Playlists: table row remove goes through the confirm dialog and reports failure; add-track select hides tracks already in the playlist; add/save refresh only the tracklist (`reload()` resets the settings form).
+- [ ] Branding: press-kit "replace" uploads first, deletes the old images only after a successful upload; try/finally on `busy`; `<img>` → `MediaArtwork`.
+- [ ] Show detail: rename/fix the "Record broadcasts by default" toggle (bound to `autoPublish`); uploaded episodes don't grab the next booking; orphaned upload if `createEpisode` fails; drop the identical branches; revoke object URLs; loading state.
+- [ ] Schedule: existing-show selection disables/hides the create-only fields (tagline, visibility, auto-publish, numbering, start episode); move "Minutes" into the recurrence section; match upcoming items by id, not title; reset the form in `openEditor`; three forms.
+- [ ] Collection editor: one request/rollback for details+gallery (or report partial failure); warn when genres are truncated to 5; parallel `queueAllTracks`.
+- [ ] Release detail: pass the loaded sound to track rows (N+1); share `useSoundPlayable` with the collection editor; keyboard reorder.
+- [ ] Distribution: derive `activeMethods` once, not on every reload.
+- [ ] Stats: separate the top-list request from the other eight; label/honour the custom and 1-day ranges; one failure must not leave `loading`; document the 192 kbps assumption.
+- [ ] Home: catch failures (`discographyLoaded`), stop loading the whole library for three counts.
+- [ ] Sound view: `key` by id; auto-trim doesn't stack duplicate cuts; toasts; `playBusy` in finally.
+- [ ] Sounds view: catch, delete failure feedback.
+- [ ] Go live: confirm before going live; toasts; catches on destination toggle/delete.

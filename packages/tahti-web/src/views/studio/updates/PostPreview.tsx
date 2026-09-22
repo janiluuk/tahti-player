@@ -1,4 +1,4 @@
-import { ImageReveal } from '@tahti-player/ui';
+import { Button, ImageReveal } from '@tahti-player/ui';
 
 export function PostPreview({
   title,
@@ -27,15 +27,16 @@ export function PostPreview({
       {images.length > 0 && (
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {images.map((image, index) => (
-            <button
+            <Button
               key={`${image}-${index}`}
               type="button"
-              className="bg-background-secondary aspect-video overflow-hidden rounded-lg"
+              variant="text"
+              className="bg-background-secondary aspect-video h-auto overflow-hidden rounded-lg p-0"
               onClick={() => onImageClick?.(index)}
               aria-label={`View image ${index + 1} full size`}
             >
               <ImageReveal src={image} alt="" className="size-full" />
-            </button>
+            </Button>
           ))}
         </div>
       )}

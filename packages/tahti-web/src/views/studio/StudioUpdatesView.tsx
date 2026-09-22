@@ -189,10 +189,11 @@ export function StudioUpdatesView() {
                         {p.images.length > 0 && (
                           <div className="mt-2 flex gap-2 overflow-hidden">
                             {p.images.map((image, index) => (
-                              <button
+                              <Button
                                 key={`${image}-${index}`}
                                 type="button"
-                                className="bg-background-secondary size-16 shrink-0 overflow-hidden rounded-md"
+                                variant="text"
+                                className="bg-background-secondary size-16 shrink-0 overflow-hidden rounded-md p-0"
                                 onClick={() =>
                                   setLightbox({ images: p.images, index })
                                 }
@@ -203,7 +204,7 @@ export function StudioUpdatesView() {
                                   alt=""
                                   className="size-full"
                                 />
-                              </button>
+                              </Button>
                             ))}
                           </div>
                         )}

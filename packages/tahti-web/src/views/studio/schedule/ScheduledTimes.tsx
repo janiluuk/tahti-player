@@ -121,13 +121,14 @@ export function ScheduledTimes({
                       <span className="text-primary shrink-0 text-xs font-bold tracking-wide uppercase">
                         {index === 0 ? 'Next' : `Upcoming ${index + 1}`}
                       </span>
-                      <button
+                      <Button
                         type="button"
-                        className="text-primary min-w-0 truncate text-left text-sm font-semibold hover:underline"
+                        variant="text"
+                        className="text-primary h-auto min-w-0 justify-start truncate p-0 text-left text-sm font-semibold"
                         onClick={() => setSelectedShow(item)}
                       >
                         {item.title}
-                      </button>
+                      </Button>
                     </div>
                     <div className="flex shrink-0 items-center gap-2">
                       {item.visibility === 'FAN_ONLY' ? (

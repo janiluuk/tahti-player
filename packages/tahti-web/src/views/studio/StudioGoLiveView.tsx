@@ -421,17 +421,19 @@ export function StudioGoLiveView() {
                   }
                   action={
                     <div className="flex items-center gap-2">
-                      <button
+                      <Button
                         type="button"
+                        size="sm"
+                        variant="secondary"
                         onClick={() => setShowInfoModalOpen(true)}
-                        className="border-border hover:bg-background-secondary inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium transition-colors"
+                        className="rounded-full"
                       >
                         <Badge
                           variant="dot"
                           color={showInfoReady ? 'green' : 'yellow'}
                         />
                         Show info
-                      </button>
+                      </Button>
                       {!isBroadcastLive ? (
                         <Button
                           disabled={busy || !signalOk || usage?.blocked}

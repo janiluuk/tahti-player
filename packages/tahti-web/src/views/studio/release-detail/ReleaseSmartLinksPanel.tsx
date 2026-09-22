@@ -400,12 +400,13 @@ export function ReleaseSmartLinksPanel({
               (track) => track.soundId === item.id,
             );
             return (
-              <button
+              <Button
                 key={item.id}
                 type="button"
+                variant="secondary"
                 disabled={alreadyAdded}
                 onClick={() => void addSound(item)}
-                className="border-border hover:bg-background-secondary flex items-center gap-2 rounded border px-3 py-2 text-left text-sm disabled:opacity-50"
+                className="h-auto w-full justify-start gap-2 px-3 py-2 text-left text-sm"
               >
                 <span className="min-w-0 flex-1 truncate">{item.title}</span>
                 <span className="text-foreground-secondary text-xs">
@@ -416,7 +417,7 @@ export function ReleaseSmartLinksPanel({
                 ) : (
                   <PlusIcon size={15} aria-hidden />
                 )}
-              </button>
+              </Button>
             );
           })}
           {filteredSounds.length === 0 && (
