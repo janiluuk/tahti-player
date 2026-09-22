@@ -49,14 +49,19 @@ export function RoundImageUploadButton({
       return;
     }
     setBusy(true);
-    const result = await upload(file);
-    setBusy(false);
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
+    try {
+      const result = await upload(file);
+      if (!result.ok) {
+        toast.error(result.error);
+        return;
+      }
+      onChange(result.data.url);
+      toast.success(`${label} updated.`);
+    } catch {
+      toast.error(`Could not upload the ${label.toLowerCase()}.`);
+    } finally {
+      setBusy(false);
     }
-    onChange(result.data.url);
-    toast.success(`${label} updated.`);
   };
 
   return (
