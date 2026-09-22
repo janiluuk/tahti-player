@@ -63,9 +63,10 @@ async function renderDiscover(path: string): Promise<{
   await act(async () => {
     root.render(<RouterProvider router={router} />);
   });
+  // Drain the mock fetch chains (a macrotask outlasts any microtask chain) so
+  // no state update lands outside act() once the test body has run.
   await act(async () => {
-    await Promise.resolve();
-    await Promise.resolve();
+    await new Promise((resolve) => setTimeout(resolve, 0));
   });
   return { container, root };
 }
