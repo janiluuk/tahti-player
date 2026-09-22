@@ -81,16 +81,20 @@ export function MultistreamPanel({
                         const nextEnabled = !target.enabled;
                         void patchRtmpTarget(target.id, {
                           enabled: nextEnabled,
-                        }).then((result) => {
-                          if (!result.ok) {
-                            toast.error(result.error);
-                            return;
-                          }
-                          toast.success(
-                            `${target.label || multicastProviderLabel(target.provider)} ${nextEnabled ? 'enabled' : 'disabled'}.`,
-                          );
-                          void reload();
-                        });
+                        })
+                          .then((result) => {
+                            if (!result.ok) {
+                              toast.error(result.error);
+                              return;
+                            }
+                            toast.success(
+                              `${target.label || multicastProviderLabel(target.provider)} ${nextEnabled ? 'enabled' : 'disabled'}.`,
+                            );
+                            void reload();
+                          })
+                          .catch(() => {
+                            toast.error('Could not update the destination.');
+                          });
                       }}
                     >
                       <PowerIcon size={14} aria-hidden className="mr-1.5" />
@@ -178,14 +182,18 @@ export function MultistreamPanel({
           if (!target) {
             return;
           }
-          void deleteRtmpTarget(target.id).then((result) => {
-            if (!result.ok) {
-              toast.error(result.error);
-              return;
-            }
-            toast.success('Destination removed.');
-            reload();
-          });
+          void deleteRtmpTarget(target.id)
+            .then((result) => {
+              if (!result.ok) {
+                toast.error(result.error);
+                return;
+              }
+              toast.success('Destination removed.');
+              reload();
+            })
+            .catch(() => {
+              toast.error('Could not remove the destination.');
+            });
         }}
       />
     </>
