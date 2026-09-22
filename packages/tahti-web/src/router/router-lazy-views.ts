@@ -25,7 +25,7 @@ export const StudioShowDetailView = lazyRouteComponent(
   'StudioShowDetailView',
 );
 export const StudioEpisodeReviewView = lazyRouteComponent(
-  () => import('../views/studio/StudioShowDetailView'),
+  () => import('../views/studio/show-detail/StudioEpisodeReviewView'),
   'StudioEpisodeReviewView',
 );
 export const MoreView = lazyRouteComponent(
