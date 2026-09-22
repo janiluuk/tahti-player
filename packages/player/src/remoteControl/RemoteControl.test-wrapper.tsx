@@ -62,7 +62,15 @@ export const RemoteControlWrapper = {
       eventSource.simulateOpen();
     });
 
-    await screen.findByTestId('connection-status-badge', {}, { timeout: 5000 });
+    // The test file bumps its overall testTimeout to 15000ms for exactly
+    // this wait on slow coverage/CI runs (see RemoteControl.test.tsx) --
+    // this must not have a lower ceiling of its own, or it times out here
+    // before that headroom ever applies.
+    await screen.findByTestId(
+      'connection-status-badge',
+      {},
+      { timeout: 12000 },
+    );
   },
 
   simulateConnectionFailure() {
