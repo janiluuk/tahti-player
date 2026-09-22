@@ -22,6 +22,16 @@ export type UpcomingBroadcast = {
   visibility: 'PUBLIC' | 'FAN_ONLY';
   venue: string | null;
   location: string | null;
+  /** The show series this occurrence belongs to — already returned by the
+   * API as `seriesId`; link to the show by this instead of matching by
+   * title (titles aren't unique and the lookup used to be a per-item scan). */
+  showId: string;
+};
+
+/** Wire shape from GET /api/me/channel/show-series's `scheduledShows` —
+ * see ScheduledLiveShowViewSchema in @tahti/shared. */
+type WireScheduledLiveShow = Omit<UpcomingBroadcast, 'showId'> & {
+  seriesId: string;
 };
 
 export type ProgrammeItem = {
@@ -139,6 +149,7 @@ export async function fetchUpcomingBroadcasts(): Promise<{
               visibility: 'PUBLIC',
               venue: null,
               location: 'Helsinki',
+              showId: 'show-series-demo',
             },
             {
               id: 'scheduled-mock-2',
@@ -151,6 +162,7 @@ export async function fetchUpcomingBroadcasts(): Promise<{
               visibility: 'PUBLIC',
               venue: null,
               location: null,
+              showId: 'show-series-demo',
             },
           ]
         : [],
@@ -159,13 +171,16 @@ export async function fetchUpcomingBroadcasts(): Promise<{
   }
   try {
     const { data } = await requestJson<{
-      scheduledShows?: UpcomingBroadcast[];
+      scheduledShows?: WireScheduledLiveShow[];
     }>('/api/me/channel/show-series');
     return {
-      data: [...(data.scheduledShows ?? [])].sort(
-        (left, right) =>
-          new Date(left.startAt).getTime() - new Date(right.startAt).getTime(),
-      ),
+      data: [...(data.scheduledShows ?? [])]
+        .map(({ seriesId, ...show }) => ({ ...show, showId: seriesId }))
+        .sort(
+          (left, right) =>
+            new Date(left.startAt).getTime() -
+            new Date(right.startAt).getTime(),
+        ),
       meta: { source: 'api' },
     };
   } catch (err) {

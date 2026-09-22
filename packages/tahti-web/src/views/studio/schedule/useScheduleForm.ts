@@ -216,15 +216,14 @@ export function useScheduleForm() {
   };
 
   const scheduledTimes = useMemo<ScheduleCard[]>(() => {
-    // Upcoming broadcasts carry no show id from the API, so link them to a
-    // show by title (built once, not scanned per field per item).
-    const showByTitle = new Map(shows.map((show) => [show.title, show]));
+    // Built once, not scanned per field per item.
+    const showsById = new Map(shows.map((show) => [show.id, show]));
     const rows: ScheduleCard[] = scheduledShows.map((item) => ({
       id: item.id,
       startAt: item.startAt,
       endAt: endAtFor(
         item.startAt,
-        shows.find((show) => show.id === item.seriesId)?.intervalHours,
+        showsById.get(item.seriesId)?.intervalHours,
       ),
       title: item.title,
       location: item.venue ?? item.location,
@@ -232,7 +231,7 @@ export function useScheduleForm() {
       description: item.description,
       tagline: item.tagline,
       artworkUrl: item.artworkUrl,
-      backdropUrl: shows.find((show) => show.id === item.seriesId)?.backdropUrl,
+      backdropUrl: showsById.get(item.seriesId)?.backdropUrl,
       showId: item.seriesId,
       episodeNumber: item.episodeNumber,
     }));
@@ -242,15 +241,15 @@ export function useScheduleForm() {
         startAt: item.startAt,
         endAt: endAtFor(
           item.startAt,
-          showByTitle.get(item.title)?.intervalHours,
+          showsById.get(item.showId)?.intervalHours,
         ),
         title: item.title,
         location: item.venue ?? item.location,
         visibility: item.visibility,
-        description: showByTitle.get(item.title)?.description,
-        artworkUrl: showByTitle.get(item.title)?.coverUrl,
-        backdropUrl: showByTitle.get(item.title)?.backdropUrl,
-        showId: showByTitle.get(item.title)?.id,
+        description: showsById.get(item.showId)?.description,
+        artworkUrl: showsById.get(item.showId)?.coverUrl,
+        backdropUrl: showsById.get(item.showId)?.backdropUrl,
+        showId: showsById.get(item.showId)?.id ?? item.showId,
         episodeNumber: item.episodeNumber,
       })),
     );
