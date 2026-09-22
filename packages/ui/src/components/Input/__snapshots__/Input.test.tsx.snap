@@ -1,5 +1,20 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`Input > (Snapshot) renders a color swatch input 1`] = `
+<div
+  class="flex w-full flex-col gap-2"
+>
+  <input
+    aria-label="Accent"
+    class="border-border text-foreground placeholder:text-foreground-secondary transition-colors focus-visible:ring-2 focus-visible:ring-black focus-visible:outline-none w-11 cursor-pointer p-0 focus-visible:ring-offset-0 bg-background-input h-10 rounded-md border-(length:--border-width)"
+    data-headlessui-state=""
+    id="input-color"
+    type="color"
+    value="#ff9900"
+  />
+</div>
+`;
+
 exports[`Input > (Snapshot) renders text input with description 1`] = `
 <div
   class="flex w-full flex-col gap-2"

@@ -19,6 +19,8 @@ const inputVariants = cva(
         password: '',
         borderless:
           'border-b-border !rounded-none rounded-none !border-r-0 !border-l-0 border-t-transparent px-6 outline-none focus-visible:ring-0 focus-visible:ring-offset-0',
+        color:
+          'h-9 w-11 cursor-pointer rounded border-0 bg-transparent p-0 focus-visible:ring-offset-0',
       },
       tone: {
         primary: 'bg-background-input',
@@ -57,7 +59,8 @@ type InputProps = Omit<ComponentPropsWithoutRef<'input'>, 'type' | 'size'> &
       | 'password'
       | 'date'
       | 'time'
-      | 'datetime-local';
+      | 'datetime-local'
+      | 'color';
     label?: string;
     description?: string;
     error?: string;
@@ -71,7 +74,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     label,
     description,
     error,
-    variant = 'text',
+    variant,
     type,
     tone = 'primary',
     size,
@@ -96,7 +99,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     .join(' ');
 
   const state = error ? 'error' : 'normal';
-  const inputType = type ?? variant ?? 'text';
+  const resolvedVariant = variant ?? (type === 'color' ? 'color' : 'text');
+  const inputType = type ?? resolvedVariant;
   const hasAddon = Boolean(startAddon || endAddon);
 
   const field = (
@@ -109,11 +113,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
       aria-describedby={describedBy || undefined}
       aria-invalid={!!error || undefined}
       aria-errormessage={error ? errorId : undefined}
-      inputMode={variant === 'number' ? 'numeric' : undefined}
+      inputMode={resolvedVariant === 'number' ? 'numeric' : undefined}
       invalid={!!error}
       className={cn(
         inputVariants({
-          variant,
+          variant: resolvedVariant,
           size,
           tone,
           state,
