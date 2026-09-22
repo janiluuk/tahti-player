@@ -1,8 +1,9 @@
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
+  cancelShowBooking,
   createEpisode,
   createShowBooking,
   fetchEpisodesForShow,
@@ -19,6 +20,17 @@ import { uploadUserMediaFile } from '../../../api/user-media';
 /** Loading, editing, booking and episode creation for one show series. */
 export function useShowDetail(id: string) {
   const navigate = useNavigate();
+  const search = useSearch({ strict: false }) as {
+    tab?: 'overview' | 'episodes' | 'recordings';
+  };
+  const showTab = search.tab ?? 'overview';
+  const setShowTab = (tab: 'overview' | 'episodes' | 'recordings') => {
+    void navigate({
+      to: '/studio/shows/$id',
+      params: { id },
+      search: tab === 'overview' ? {} : { tab },
+    });
+  };
   const [show, setShow] = useState<StudioShowSeries | null>(null);
   const [episodes, setEpisodes] = useState<StudioEpisode[]>([]);
   const [bookings, setBookings] = useState<StudioShowBooking[]>([]);
@@ -36,9 +48,6 @@ export function useShowDetail(id: string) {
   const [autoPublish, setAutoPublish] = useState(true);
   const [savingMeta, setSavingMeta] = useState(false);
   const [loaded, setLoaded] = useState(false);
-  const [showTab, setShowTab] = useState<
-    'overview' | 'episodes' | 'recordings'
-  >('overview');
   const recordingCount = episodes.filter(
     (episode) => episode.source === 'broadcast',
   ).length;
@@ -171,7 +180,12 @@ export function useShowDetail(id: string) {
       bookingId: r.data.id,
     });
     if (!episode.ok) {
-      setMsg(`Slot booked, but episode setup failed: ${episode.error}`);
+      const cancel = await cancelShowBooking(r.data.id);
+      setMsg(
+        cancel.ok
+          ? `Episode setup failed, so the slot was released: ${episode.error}`
+          : `Episode setup failed: ${episode.error} The slot is booked but has no episode yet — try creating it again.`,
+      );
       reload();
       return;
     }

@@ -1,4 +1,4 @@
-import { Dialog } from '@tahti-player/ui';
+import { Dialog, ExternalLink } from '@tahti-player/ui';
 
 import { flagEmoji } from '../../../lib/countries';
 import type { SavedBrowserStation } from '../../../stores/listenerWidgetsStore';
@@ -29,28 +29,24 @@ export function StationDetailsDialog({
               <p className="text-foreground-secondary">{station.description}</p>
             )}
             {station.homepage ? (
-              <a
+              <ExternalLink
                 href={station.homepage}
-                target="_blank"
-                rel="noreferrer"
-                className="text-accent-blue underline underline-offset-2"
+                className="text-accent-blue"
               >
                 Visit website
-              </a>
+              </ExternalLink>
             ) : (
               <span className="text-foreground-secondary text-xs">
                 No website on file for this station.
               </span>
             )}
             {station.programmingUrl ? (
-              <a
+              <ExternalLink
                 href={station.programmingUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="text-accent-blue underline underline-offset-2"
+                className="text-accent-blue"
               >
                 View current programme
-              </a>
+              </ExternalLink>
             ) : (
               <span className="text-foreground-secondary text-xs">
                 No programming link configured for this station.
