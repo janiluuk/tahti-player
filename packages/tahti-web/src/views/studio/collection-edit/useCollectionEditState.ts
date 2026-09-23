@@ -8,7 +8,6 @@ import {
   fetchCollectionGallery,
   fetchStudioCollection,
   fetchStudioSounds,
-  patchCollectionGallery,
   patchStudioCollection,
   reorderStudioCollectionItems,
 } from '../../../api/studio';
@@ -187,23 +186,13 @@ export function useCollectionEditState(slug: string) {
         releaseDate: releaseDate || null,
         genres: genreList.slice(0, 5),
         backdropUrl: backdropUrl?.trim() || null,
+        gallery: {
+          slideshowImages,
+          galleryMode: slideshowImages.length > 1 ? 'STATIC_SLIDESHOW' : 'NONE',
+        },
       });
       if (!result.ok) {
         toast.error(result.error);
-        return;
-      }
-      const galleryResult = await patchCollectionGallery(slug, {
-        slideshowImages,
-        galleryMode: slideshowImages.length > 1 ? 'STATIC_SLIDESHOW' : 'NONE',
-      });
-      if (!galleryResult.ok) {
-        // The details are already saved; say which half failed.
-        setCol((c) =>
-          c ? { ...c, ...result.data, items: c.items } : result.data,
-        );
-        toast.error(
-          `Details saved, but the backdrop could not be saved: ${galleryResult.error}`,
-        );
         return;
       }
       setCol((c) =>

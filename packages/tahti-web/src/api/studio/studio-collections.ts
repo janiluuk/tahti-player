@@ -84,6 +84,21 @@ export async function fetchStudioCollectionCount(): Promise<{
   }
 }
 
+/** The editor says "Private" where the API stores `DRAFT`. */
+type ServerVisibility = 'PUBLIC' | 'UNLISTED' | 'DRAFT';
+
+function withEditorVisibility(collection: StudioCollection): StudioCollection {
+  const visibility = collection.visibility as
+    ServerVisibility | StudioCollection['visibility'];
+  return visibility === 'DRAFT'
+    ? { ...collection, visibility: 'PRIVATE' }
+    : collection;
+}
+
+const toServerVisibility = (
+  visibility: NonNullable<StudioCollection['visibility']>,
+): ServerVisibility => (visibility === 'PRIVATE' ? 'DRAFT' : visibility);
+
 export async function fetchStudioCollection(slug: string): Promise<{
   data: StudioCollection;
   meta: FetchMeta;
@@ -115,7 +130,7 @@ export async function fetchStudioCollection(slug: string): Promise<{
     const { data } = await requestJson<StudioCollection>(
       `/api/me/collections/${encodeURIComponent(slug)}`,
     );
-    return { data, meta: { source: 'api' } };
+    return { data: withEditorVisibility(data), meta: { source: 'api' } };
   } catch (err) {
     return {
       data: { slug, name: slug, items: [] },
@@ -299,6 +314,8 @@ export async function patchStudioCollection(
     collaborative?: boolean;
     coverUrl?: string | null;
     backdropUrl?: string | null;
+    /** Saved in the same request (and the same row update) as the details. */
+    gallery?: Partial<CollectionGallery>;
   },
 ): Promise<
   { ok: true; data: StudioCollection } | { ok: false; error: string }
@@ -324,11 +341,17 @@ export async function patchStudioCollection(
     };
   }
   try {
+    const body = {
+      ...patch,
+      ...(patch.visibility
+        ? { visibility: toServerVisibility(patch.visibility) }
+        : {}),
+    };
     const { data } = await requestJson<StudioCollection>(
       `/api/me/collections/${encodeURIComponent(slug)}`,
-      { method: 'PATCH', body: JSON.stringify(patch) },
+      { method: 'PATCH', body: JSON.stringify(body) },
     );
-    return { ok: true, data };
+    return { ok: true, data: withEditorVisibility(data) };
   } catch (err) {
     return {
       ok: false,

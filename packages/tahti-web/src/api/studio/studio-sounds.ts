@@ -38,6 +38,59 @@ export async function fetchStudioSounds(): Promise<{
   }
 }
 
+export type SoundProcessingStatus = {
+  processing: Array<{
+    id: string;
+    title: string;
+    status: 'PENDING' | 'PROCESSING';
+  }>;
+  /** Watched ids that have finished. */
+  settled: Array<{ id: string; status: 'READY' | 'ERROR' }>;
+};
+
+function mockProcessingStatus(ids: readonly string[]): SoundProcessingStatus {
+  return {
+    processing: mockSoundStore.flatMap((item) =>
+      item.status === 'PENDING' || item.status === 'PROCESSING'
+        ? [{ id: item.id, title: item.title, status: item.status }]
+        : [],
+    ),
+    settled: mockSoundStore.flatMap((item) =>
+      ids.includes(item.id) &&
+      (item.status === 'READY' || item.status === 'ERROR')
+        ? [{ id: item.id, status: item.status }]
+        : [],
+    ),
+  };
+}
+
+/** Sounds still processing, plus the final status of `ids` (uploads
+ * started here) once done — what the top bar's indicator needs, without
+ * fetching every sound. */
+export async function fetchSoundProcessingStatus(
+  ids: readonly string[],
+): Promise<{ data: SoundProcessingStatus; meta: FetchMeta }> {
+  if (isForceMock()) {
+    return {
+      data: mockProcessingStatus(ids),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  const query =
+    ids.length > 0 ? `?ids=${ids.map(encodeURIComponent).join(',')}` : '';
+  try {
+    const { data } = await requestJson<SoundProcessingStatus>(
+      `/api/me/sound/processing${query}`,
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    if (allowMockFallback()) {
+      return { data: mockProcessingStatus(ids), meta: failMeta(err) };
+    }
+    return { data: { processing: [], settled: [] }, meta: apiErrorMeta(err) };
+  }
+}
+
 export async function fetchStudioSoundCount(): Promise<{
   data: number;
   meta: FetchMeta;

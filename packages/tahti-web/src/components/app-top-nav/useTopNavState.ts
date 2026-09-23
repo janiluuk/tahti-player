@@ -9,8 +9,10 @@ import {
   fetchConversations,
   type ConversationSummary,
 } from '../../api/messages';
-import { fetchStudioSounds } from '../../api/studio';
-import { type StudioSound } from '../../api/studio-types';
+import {
+  fetchSoundProcessingStatus,
+  type SoundProcessingStatus,
+} from '../../api/studio';
 import { useCanGoForward } from '../../hooks/useCanGoForward';
 import { useIsMobile } from '../../hooks/useIsMobile';
 import { useOwnBroadcastPresence } from '../../hooks/useOwnBroadcastPresence';
@@ -47,7 +49,9 @@ export function useTopNavState() {
   const markNonStickyRead = useNotificationInboxStore(
     (s) => s.markNonStickyRead,
   );
-  const [soundItems, setSoundItems] = useState<StudioSound[]>([]);
+  const [serverProcessing, setServerProcessing] = useState<
+    SoundProcessingStatus['processing']
+  >([]);
   const localProcessingJobs = useProcessingJobsStore((state) => state.jobs);
   const settleProcessingJobs = useProcessingJobsStore((state) => state.settle);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -153,17 +157,17 @@ export function useTopNavState() {
     if (!user) {
       return;
     }
-    void fetchStudioSounds().then((result) => {
-      setSoundItems(result.data);
-      settleProcessingJobs(
-        result.data
-          .filter((item) => item.status === 'READY' || item.status === 'ERROR')
-          .map((item) => item.id),
-      );
+    const watched = useProcessingJobsStore.getState().jobs.map((job) => job.id);
+    void fetchSoundProcessingStatus(watched).then((result) => {
+      setServerProcessing(result.data.processing);
+      settleProcessingJobs(result.data.settled.map((item) => item.id));
     });
   };
 
-  usePolling(loadSoundStatus, 5000, Boolean(user));
+  // Fast while something is processing, otherwise just often enough to
+  // notice an upload started elsewhere (another tab or device).
+  const busy = serverProcessing.length > 0 || localProcessingJobs.length > 0;
+  usePolling(loadSoundStatus, busy ? 5000 : 30000, Boolean(user));
 
   const unreadNotifications = notifications.filter(
     (notification) => !notification.readAt,
@@ -172,18 +176,7 @@ export function useTopNavState() {
     (total, conversation) => total + conversation.unreadCount,
     0,
   );
-  const processingItems = [
-    ...localProcessingJobs,
-    ...soundItems
-      .filter(
-        (item) => item.status === 'PENDING' || item.status === 'PROCESSING',
-      )
-      .map((item) => ({
-        id: item.id,
-        title: item.title,
-        status: item.status as 'PENDING' | 'PROCESSING',
-      })),
-  ].filter(
+  const processingItems = [...localProcessingJobs, ...serverProcessing].filter(
     (job, index, jobs) =>
       jobs.findIndex((candidate) => candidate.id === job.id) === index,
   );
@@ -227,8 +220,6 @@ export function useTopNavState() {
     notifications,
     acknowledgeNotification,
     markNonStickyRead,
-    soundItems,
-    setSoundItems,
     localProcessingJobs,
     settleProcessingJobs,
     menuRef,
