@@ -59,7 +59,7 @@ Behavior stays identical: mechanical splits along existing seams, tests move wit
 - [x] Hook tests (`useSelectionActions`, `useNativeLibraryList`, `useNativePlayback`, `useNativeImport`).
 - [x] Shared `nativeLoading`: import/rescan/relink now use their own `busy` flag; list paging keeps `loading`. Rescan/relink moved to `useMissingTracks`.
 - [x] `DesktopLibraryPanel.tsx` under the limit (out of the baseline).
-- [ ] `ChannelDesigner.tsx` 1801 → 1713 (2026-09-22): `SlideshowControls` (+ story, migrated to `Button`/`MediaArtwork`) and `slideshowOptions.ts` extracted; bug audit below. Still open: `loadFromServer` / `save` / preset actions (a `useChannelLook` state hook, snapshot helpers, `buildVisualPatch` as a pure function), the ~230-line final render, and the panel slot builders.
+- [x] `ChannelDesigner.tsx` split: done 2026-09-22 (1697 → 757, see "Next up" below); this earlier partial note was stale.
 - [x] `RadioCategory.tsx` split + audit (2026-09-22, 1264 → 15): see below.
 - [x] 2026-09-23: `TrackEditDialog`, `LocalPlaylists`, `StreamManagerPanel` all split (see the sweep table rows above); unassessed studio/admin views tracked separately below.
 - Fixed in passing: failed load-more toasts an error; the drop-import subscription no longer resubscribes per keystroke (`useNativeImport` goes through a ref).
@@ -116,10 +116,10 @@ Split into `views/studio/pro-editor/`: `WaveformEditor` (audio, toolbar, canvas,
 - [x] `ChannelDesigner`: `dirty` no longer cleared by a save when the user edited while it was in flight (edit revision counter; no dedicated test yet).
 - [x] `ArtistView.tsx` split + audit (2026-09-22, 1409 → 787, out of the baseline): see below.
 - [x] `ServiceCategory.tsx` split + audit (2026-09-22, 1401 → 93, out of the baseline): see below.
-- [ ] Visually verify the designer changes in the running app (slideshow reorder preview, Reset/Revert with a pending backdrop file, gradient toggles, right-rail collapse); only unit and smoke tests cover them so far.
-- [ ] Visually verify in the running app: channel edit mode (no spinner on save, Done saves look+links, rail stays collapsed, layout toggles reach the parent) and the Pro editor (cut/trim merge, kept duration, stems, mastering chain, switching tracks).
+- [x] 2026-09-23: checked in the running app (offline mock mode, desktop and 400 px widths): right rail stays collapsed while editing, layout presets, Save/Done. Slideshow reorder preview, Reset/Revert with a pending backdrop file and the gradient toggles need file uploads, so they remain covered by unit tests only.
+- [x] 2026-09-23: checked in the running app: channel edit mode (no spinner on save, Save/Done save look + layout, rail stays collapsed) and the Pro editor (sample-level zoom, stereo lanes, clipping, cut + undo, ms readouts).
 - [x] Pro editor follow-ups: persist markers (now saved into the draft via `EditList.markers`, 2026-09-23 audit — render/export still needs a `../tahti-org` contract), unsaved-changes prompt (router `useBlocker` + `beforeunload`, `Dialog` confirm) and a whole-view test are done, see the twelfth pass below.
-- [ ] `ChannelView`: `applyPreset` saves the preset's look to the server immediately though its note says "save layout to keep it"; decide whether the look should be draft-until-Save (product decision, open). The full-view smoke test is done (2026-09-23, `ChannelView.test.tsx`).
+- [x] `ChannelView`: `applyPreset` (2026-09-23) now keeps the preset's look as an unsaved draft, like every other edit: it goes into the designer's draft (applied once its look has loaded), Save/Done write it (directly if the look panel is closed), and the note clears after saving. It used to save to the server immediately while saying "save layout to keep it". Test in `ChannelView.test.tsx`.
 - [x] `ui` `QueuePanel` test "skips offscreen layout only for long queues": failed in 3 of 3 full `ui` runs (about 7 s against vitest's 5 s default, rendering 150 rows under load) but passed alone. 2026-09-23: now renders 101 rows (the smallest count over the 100-row threshold) with an explicit 20 s timeout; the full `ui` suite passed twice in a row (353/353).
 
 ## ArtistView audit + split (2026-09-22, 1409 → 787)
@@ -322,3 +322,11 @@ Baseline now holds only `api/client.ts` (tracked in codebase-refactor-hotspots.m
 - `QueuePanel` test timeout fixed (see the item above).
 
 Web suite 871 passing, `ui` 353 passing; `tsc`/`eslint` clean.
+
+### Thirteenth pass (2026-09-23): close-out
+
+- `AppTopNav`: all 16 hand-rolled `<button>`s now use `Button` (`variant="text"`, `icon-sm` or `flexible`), keeping the existing classes through tailwind-merge; the press-scale is neutralized and icon buttons gained a visible focus ring. Checked in the running app at desktop and phone widths.
+- Pro editor: drafts saved before the server kept `pluginChain` come back without one while their plugins can still be enabled (and rendered). `withLegacyChain` rebuilds the chain from the enabled flags in the old render order on load; `chainForRender` sends only chained plugins whose add-on is installed, so preview and export agree. Tests in `plugins/audio-fx/chain.test.ts`.
+- `ChannelView` preset look as a draft (see the item above).
+
+Still open (backend, `../tahti-org`): a processing-status endpoint so the top bar stops polling the whole sounds list every 5 s (`useTopNavState`), and a combined details + gallery save for the collection editor.

@@ -1,5 +1,7 @@
 import { Link } from '@tanstack/react-router';
 
+import { Button } from '@tahti-player/ui';
+
 import { type TopNavState } from './useTopNavState';
 
 export function ProcessingIndicator({ nav }: { nav: TopNavState }) {
@@ -7,16 +9,17 @@ export function ProcessingIndicator({ nav }: { nav: TopNavState }) {
 
   return (
     <div className="relative">
-      <button
-        type="button"
-        className="border-accent-blue/50 bg-accent-blue/10 text-accent-blue inline-flex size-7 items-center justify-center rounded-full border"
+      <Button
+        variant="text"
+        size="icon-sm"
+        className="border-accent-blue/50 bg-accent-blue/10 text-accent-blue inline-flex size-7 items-center justify-center rounded-full border active:scale-100"
         aria-label={`${processingItems.length} track${processingItems.length === 1 ? '' : 's'} processing`}
         aria-expanded={processingOpen}
         title="Track processing status"
         onClick={() => setProcessingOpen((current) => !current)}
       >
         <span className="bg-accent-blue size-2 rounded-full motion-safe:animate-pulse" />
-      </button>
+      </Button>
       {processingOpen ? (
         <div className="border-border bg-background absolute top-[calc(100%+8px)] left-0 z-40 w-72 rounded-lg border p-2 shadow-lg">
           <p className="text-foreground-secondary px-2 py-1 text-[11px] font-semibold tracking-wide uppercase">

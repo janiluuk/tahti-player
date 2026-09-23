@@ -9,7 +9,7 @@ import {
   UserIcon,
 } from 'lucide-react';
 
-import { Badge } from '@tahti-player/ui';
+import { Badge, Button } from '@tahti-player/ui';
 
 import { cn } from '../../lib/cn';
 import { type TopNavState } from './useTopNavState';
@@ -39,11 +39,12 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
 
   return (
     <div className="relative" ref={menuRef}>
-      <button
-        type="button"
+      <Button
+        variant="text"
+        size="flexible"
         data-tour-id="topbar-account"
         className={cn(
-          'hover:bg-background-secondary inline-flex items-center gap-1.5 rounded-lg border px-1.5 py-1 transition-colors',
+          'hover:bg-background-secondary inline-flex items-center gap-1.5 rounded-lg border px-1.5 py-1 transition-colors active:scale-100',
           open ? 'border-border bg-background-secondary' : 'border-border/60',
         )}
         aria-label={`Signed in as ${displayName}`}
@@ -71,7 +72,7 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
         <span className="text-foreground-secondary text-[10px]" aria-hidden>
           {open ? '▴' : '▾'}
         </span>
-      </button>
+      </Button>
       {isMobile &&
       (unreadNotifications.length > 0 || unreadMessagesCount > 0) ? (
         <Badge
@@ -100,9 +101,10 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
 
           {isMobile ? (
             <>
-              <button
-                type="button"
-                className="hover:bg-background-secondary flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs"
+              <Button
+                variant="text"
+                size="flexible"
+                className="hover:bg-background-secondary flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs active:scale-100"
                 role="menuitem"
                 onClick={() => {
                   setOpen(false);
@@ -121,10 +123,11 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
                     {Math.min(9, unreadNotifications.length)}
                   </Badge>
                 ) : null}
-              </button>
-              <button
-                type="button"
-                className="hover:bg-background-secondary flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs"
+              </Button>
+              <Button
+                variant="text"
+                size="flexible"
+                className="hover:bg-background-secondary flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs active:scale-100"
                 role="menuitem"
                 onClick={() => {
                   setOpen(false);
@@ -143,7 +146,7 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
                     {Math.min(9, unreadMessagesCount)}
                   </Badge>
                 ) : null}
-              </button>
+              </Button>
               <div className="bg-border mx-1 my-0.5 h-px" role="separator" />
             </>
           ) : null}
@@ -172,9 +175,10 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
             </>
           ) : null}
 
-          <button
-            type="button"
-            className="hover:bg-background-secondary flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs"
+          <Button
+            variant="text"
+            size="flexible"
+            className="hover:bg-background-secondary flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs active:scale-100"
             role="menuitem"
             onClick={() => {
               setOpen(false);
@@ -183,7 +187,7 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
           >
             <SettingsIcon size={14} />
             Settings
-          </button>
+          </Button>
           <a
             href="https://tahti.live"
             className="hover:bg-background-secondary flex items-center gap-2 rounded-md px-2.5 py-2 text-xs"
@@ -197,9 +201,10 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
           </a>
 
           <div className="bg-border mx-1 my-0.5 h-px" role="separator" />
-          <button
-            type="button"
-            className="text-accent-red hover:bg-background-secondary flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs"
+          <Button
+            variant="text"
+            size="flexible"
+            className="text-accent-red hover:bg-background-secondary flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs active:scale-100"
             role="menuitem"
             onClick={() => {
               setOpen(false);
@@ -208,7 +213,7 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
           >
             <LogOutIcon size={14} />
             Log out
-          </button>
+          </Button>
         </div>
       ) : null}
     </div>

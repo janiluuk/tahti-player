@@ -10,6 +10,7 @@ import {
 import { SaveButton } from '@tahti-player/ui';
 
 import {
+  fillColorScheme,
   isHeaderImageUrl,
   isValidHeaderBackdropUrl,
   isVisualPreset,
@@ -22,7 +23,10 @@ import {
   type ArtistLookBlockId,
   type ChannelLookElementId,
 } from '../lib/channelLookElements';
-import { type ChannelPageItem } from '../lib/channelPageLayout';
+import {
+  type ChannelLookBundle,
+  type ChannelPageItem,
+} from '../lib/channelPageLayout';
 import {
   AppliedPresetBanner,
   BackdropPanel,
@@ -83,6 +87,9 @@ type Props = {
   onSaved?: () => void;
   /** Remount / reload trigger when an external preset applies a look. */
   reloadToken?: number;
+  /** A layout preset's look to apply to the draft (not saved until the
+   * owner saves); a new `token` applies it again. */
+  presetLook?: { token: number; look: ChannelLookBundle } | null;
   lookOpenSection?: LookSection | null;
   onDirtyChange?: (dirty: boolean) => void;
   onLookVisibilityChange?: (
@@ -118,6 +125,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       livePreview = true,
       onSaved,
       reloadToken = 0,
+      presetLook,
       lookOpenSection,
       onDirtyChange,
       onLookVisibilityChange,
@@ -191,6 +199,31 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       visualSettingsJson,
     } = useChannelLook({ layoutSlug, reloadToken, onSaved, onDirtyChange });
     useImperativeHandle(ref, () => ({ save }), [save]);
+
+    // Applied once the saved look has loaded, so the load cannot overwrite
+    // it; a remount (the panel switched section and back) applies it again
+    // on top of the reloaded look, since it is still unsaved.
+    const appliedPresetTokenRef = useRef<number | null>(null);
+    const lookLoaded = visual !== null;
+    useEffect(() => {
+      if (
+        !presetLook ||
+        !lookLoaded ||
+        appliedPresetTokenRef.current === presetLook.token
+      ) {
+        return;
+      }
+      appliedPresetTokenRef.current = presetLook.token;
+      const { look } = presetLook;
+      applyLocal(
+        {
+          visualPreset: look.visualPreset,
+          headerStyle: look.headerStyle,
+          brandAccentPreset: look.brandAccentPreset,
+        },
+        fillColorScheme(look.colorScheme),
+      );
+    }, [presetLook, lookLoaded]);
 
     const [galleryPickerOpen, setGalleryPickerOpen] = useState(false);
     const [videoUrlOpen, setVideoUrlOpen] = useState(false);

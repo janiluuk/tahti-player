@@ -20,6 +20,8 @@ import { StudioGate } from '../../components/StudioGate';
 import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { usePolling } from '../../hooks/usePolling';
+import { useAudioFxStore } from '../../plugins/audio-fx';
+import { chainForRender, withLegacyChain } from '../../plugins/audio-fx/chain';
 import { useMasteringFeatureStore } from '../../plugins/mastering/store';
 import {
   COALESCE_MS,
@@ -145,7 +147,9 @@ function ProEditor({ soundId }: { soundId: string }) {
         const fromDraft = draft.data.editList;
         const durationHint =
           src.data.durationSec ?? fromDraft?.sourceDuration ?? 180;
-        const list = fromDraft ?? createDefaultEditList(durationHint);
+        const list = withLegacyChain(
+          fromDraft ?? createDefaultEditList(durationHint),
+        );
         setEditList(
           src.data.durationSec && list.sourceDuration < 1
             ? { ...list, sourceDuration: src.data.durationSec }
@@ -255,7 +259,7 @@ function ProEditor({ soundId }: { soundId: string }) {
       }
       const result = await renderEditorDraft(
         soundId,
-        editList,
+        chainForRender(editList, useAudioFxStore.getState().enabledPluginIds),
         versionLabel.trim() || DEFAULT_VERSION_LABEL,
         activate,
       );

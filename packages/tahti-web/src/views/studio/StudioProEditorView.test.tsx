@@ -13,7 +13,9 @@ import {
   fireEvent,
   render,
   screen,
+  waitFor,
 } from '@testing-library/react';
+import { toast } from 'sonner';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useAuthStore } from '../../stores/authStore';
@@ -146,10 +148,10 @@ describe('StudioProEditorView', () => {
       { name: /save draft/i },
       { timeout: 15000 },
     );
-    await act(async () => {
-      fireEvent.click(saveButton);
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    });
+    fireEvent.click(saveButton);
+    await waitFor(() =>
+      expect(toast.success).toHaveBeenCalledWith('Draft saved.'),
+    );
     await leaveTo(router);
     expect(await screen.findByText('Sounds list')).toBeTruthy();
   });

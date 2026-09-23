@@ -13,7 +13,6 @@ import { Button, Dialog, SaveButton, Tooltip } from '@tahti-player/ui';
 import {
   BRAND_ACCENTS,
   channelLookExtrasFromVisual,
-  fillColorScheme,
   isHeaderImageUrl,
   parseColorScheme,
   patchChannelVisual,
@@ -33,6 +32,7 @@ import {
   useChannelData,
   useChannelLinksDraft,
   useEditRail,
+  usePresetLookDraft,
 } from '../components/channel-view';
 import type { ChannelDesignerHandle } from '../components/ChannelDesigner';
 import { ChannelShareButton } from '../components/ChannelShareButton';
@@ -106,7 +106,8 @@ export function ChannelView({ slug }: { slug: string }) {
   const linksDraft = useChannelLinksDraft(channel, artistSocialLinks);
   const channelLinksDraft = linksDraft.links;
   const linksDirty = linksDraft.dirty;
-  const [presetNote, setPresetNote] = useState<string | null>(null);
+  const presetDraft = usePresetLookDraft();
+  const presetNote = presetDraft.note;
   const [streamManagerOpen, setStreamManagerOpen] = useState(false);
   const listenerWidgetInstances = useListenerWidgetsStore((s) => s.instances);
 
@@ -249,6 +250,7 @@ export function ChannelView({ slug }: { slug: string }) {
         links={channelLinksDraft}
         onLinksChange={linksDraft.edit}
         designerRef={channelDesignerRef}
+        presetLook={presetDraft.pending}
         lookTick={lookTick}
         onLookDirtyChange={setLookDirty}
         onLookSaved={() => {
@@ -314,8 +316,12 @@ export function ChannelView({ slug }: { slug: string }) {
     }
     setSavingLook(true);
     try {
-      if (lookDirty) {
-        await channelDesignerRef.current?.save();
+      if (lookDirty && channelDesignerRef.current) {
+        await channelDesignerRef.current.save();
+        presetDraft.clearPending();
+      } else if (await presetDraft.saveDirectly()) {
+        setLookDirty(false);
+        setLookTick((n) => n + 1);
       }
       if (linksDirty) {
         const result = await patchChannelVisual({
@@ -330,6 +336,7 @@ export function ChannelView({ slug }: { slug: string }) {
           toast.error(result.error);
         }
       }
+      presetDraft.setNote(null);
     } catch {
       toast.error('Could not save your changes. Try again.');
     } finally {
@@ -343,7 +350,7 @@ export function ChannelView({ slug }: { slug: string }) {
     await saveAll();
     setEditing(false);
     setSelectedId(null);
-    setPresetNote(null);
+    presetDraft.setNote(null);
     void navigate({
       to: '/channel/$slug',
       params: { slug },
@@ -370,19 +377,8 @@ export function ChannelView({ slug }: { slug: string }) {
     setActivePresetId(id);
     setLayoutDirty(true);
     setSelectedId(null);
-    setPresetNote(`Applied "${preset.name}" — save layout to keep it.`);
-    void patchChannelVisual({
-      visualPreset: preset.look.visualPreset,
-      headerStyle: preset.look.headerStyle,
-      brandAccentPreset: preset.look.brandAccentPreset,
-      colorScheme: fillColorScheme(preset.look.colorScheme),
-    })
-      .then((result) => {
-        if (result.ok) {
-          setLookTick((n) => n + 1);
-        }
-      })
-      .catch(() => toast.error('Could not apply the preset look. Try again.'));
+    presetDraft.stage(preset.name, preset.look);
+    setLookDirty(true);
   };
 
   // The player stays reachable even when the "Live stage" (hero) block is

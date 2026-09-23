@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { MessageSquareIcon } from 'lucide-react';
 
-import { Badge } from '@tahti-player/ui';
+import { Badge, Button } from '@tahti-player/ui';
 
 import { cn } from '../../lib/cn';
 import { iconBtnClass } from './shared';
@@ -20,8 +20,9 @@ export function MessagesPopover({ nav }: { nav: TopNavState }) {
 
   return (
     <div className="relative">
-      <button
-        type="button"
+      <Button
+        variant="text"
+        size="icon-sm"
         className={cn(
           iconBtnClass,
           'relative',
@@ -59,7 +60,7 @@ export function MessagesPopover({ nav }: { nav: TopNavState }) {
             )}
           </Badge>
         ) : null}
-      </button>
+      </Button>
       {messagesOpen ? (
         <div
           className="border-border bg-background absolute top-[calc(100%+6px)] right-0 z-40 w-72 rounded-lg border p-2 shadow-lg"
