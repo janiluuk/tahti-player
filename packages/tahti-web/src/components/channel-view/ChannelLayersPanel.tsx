@@ -20,6 +20,7 @@ import {
   setPlaylistDisplay,
   setPlaylistSlug,
   type ChannelLayoutPresetId,
+  type ChannelLookBundle,
   type ChannelPageItem,
   type ChannelPageItemType,
 } from '../../lib/channelPageLayout';
@@ -55,6 +56,7 @@ type Props = {
   links: ChannelLink[];
   onLinksChange: (links: ChannelLink[]) => void;
   designerRef: RefObject<ChannelDesignerHandle>;
+  presetLook: { token: number; look: ChannelLookBundle } | null;
   lookTick: number;
   onLookDirtyChange: (dirty: boolean) => void;
   onLookSaved: () => void;
@@ -76,6 +78,7 @@ export function ChannelLayersPanel({
   links,
   onLinksChange,
   designerRef,
+  presetLook,
   lookTick,
   onLookDirtyChange,
   onLookSaved,
@@ -321,6 +324,7 @@ export function ChannelLayersPanel({
           <ChannelDesigner
             ref={designerRef}
             lookOnly
+            presetLook={presetLook}
             reloadToken={lookTick}
             displayName={channel.user.displayName}
             username={channel.user.username}

@@ -52,6 +52,7 @@ import {
   BACKDROP_FOLDED_ITEM_TYPES,
   getLayoutPreset,
   type ChannelLayoutPresetId,
+  type ChannelLookBundle,
   type ChannelPageItem,
   type ChannelPageItemType,
 } from '../lib/channelPageLayout';
@@ -107,6 +108,12 @@ export function ChannelView({ slug }: { slug: string }) {
   const channelLinksDraft = linksDraft.links;
   const linksDirty = linksDraft.dirty;
   const [presetNote, setPresetNote] = useState<string | null>(null);
+  // A layout preset's look, applied to the designer's draft and saved with
+  // Save/Done like any other look edit.
+  const [pendingPresetLook, setPendingPresetLook] = useState<{
+    token: number;
+    look: ChannelLookBundle;
+  } | null>(null);
   const [streamManagerOpen, setStreamManagerOpen] = useState(false);
   const listenerWidgetInstances = useListenerWidgetsStore((s) => s.instances);
 
@@ -249,6 +256,7 @@ export function ChannelView({ slug }: { slug: string }) {
         links={channelLinksDraft}
         onLinksChange={linksDraft.edit}
         designerRef={channelDesignerRef}
+        presetLook={pendingPresetLook}
         lookTick={lookTick}
         onLookDirtyChange={setLookDirty}
         onLookSaved={() => {
@@ -314,8 +322,26 @@ export function ChannelView({ slug }: { slug: string }) {
     }
     setSavingLook(true);
     try {
-      if (lookDirty) {
-        await channelDesignerRef.current?.save();
+      if (lookDirty && channelDesignerRef.current) {
+        await channelDesignerRef.current.save();
+        setPendingPresetLook(null);
+      } else if (pendingPresetLook) {
+        // The look panel is closed (designer unmounted): save the preset's
+        // look directly.
+        const { look } = pendingPresetLook;
+        const result = await patchChannelVisual({
+          visualPreset: look.visualPreset,
+          headerStyle: look.headerStyle,
+          brandAccentPreset: look.brandAccentPreset,
+          colorScheme: fillColorScheme(look.colorScheme),
+        });
+        if (result.ok) {
+          setPendingPresetLook(null);
+          setLookDirty(false);
+          setLookTick((n) => n + 1);
+        } else {
+          toast.error(result.error);
+        }
       }
       if (linksDirty) {
         const result = await patchChannelVisual({
@@ -330,6 +356,7 @@ export function ChannelView({ slug }: { slug: string }) {
           toast.error(result.error);
         }
       }
+      setPresetNote(null);
     } catch {
       toast.error('Could not save your changes. Try again.');
     } finally {
@@ -370,19 +397,9 @@ export function ChannelView({ slug }: { slug: string }) {
     setActivePresetId(id);
     setLayoutDirty(true);
     setSelectedId(null);
-    setPresetNote(`Applied "${preset.name}" — save layout to keep it.`);
-    void patchChannelVisual({
-      visualPreset: preset.look.visualPreset,
-      headerStyle: preset.look.headerStyle,
-      brandAccentPreset: preset.look.brandAccentPreset,
-      colorScheme: fillColorScheme(preset.look.colorScheme),
-    })
-      .then((result) => {
-        if (result.ok) {
-          setLookTick((n) => n + 1);
-        }
-      })
-      .catch(() => toast.error('Could not apply the preset look. Try again.'));
+    setPendingPresetLook({ token: Date.now(), look: preset.look });
+    setLookDirty(true);
+    setPresetNote(`Applied "${preset.name}" — save to keep it.`);
   };
 
   // The player stays reachable even when the "Live stage" (hero) block is

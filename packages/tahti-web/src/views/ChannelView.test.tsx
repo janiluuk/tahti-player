@@ -18,7 +18,22 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useAuthStore } from '../stores/authStore';
+import { useRightRailOverrideStore } from '../stores/rightRailOverrideStore';
 import { ChannelView } from './ChannelView';
+
+const { patchSpy } = vi.hoisted(() => ({ patchSpy: vi.fn() }));
+vi.mock('../api/channel-design', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../api/channel-design')>();
+  return {
+    ...actual,
+    patchChannelVisual: (
+      ...args: Parameters<typeof actual.patchChannelVisual>
+    ) => {
+      patchSpy(...args);
+      return actual.patchChannelVisual(...args);
+    },
+  };
+});
 
 vi.mock('sonner', () => ({
   toast: {
@@ -32,8 +47,21 @@ vi.mock('sonner', () => ({
 
 const SLUG = 'smoke-artist';
 
+/** What the app shell's right rail shows while the channel is in edit mode. */
+function RailOverride() {
+  const override = useRightRailOverrideStore((state) => state.override);
+  return <aside>{override?.content}</aside>;
+}
+
 function createRouterFor(initialEntry: string) {
-  const rootRoute = createRootRoute({ component: () => <Outlet /> });
+  const rootRoute = createRootRoute({
+    component: () => (
+      <>
+        <Outlet />
+        <RailOverride />
+      </>
+    ),
+  });
   const channelRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: '/channel/$slug',
@@ -126,5 +154,29 @@ describe('ChannelView', () => {
       expect(screen.queryByText('Channel design')).toBeNull(),
     );
     expect(router.state.location.search).toEqual({});
+  });
+
+  it('keeps a layout preset look as an unsaved draft until Save', async () => {
+    signInAs(SLUG);
+    await renderChannel(`/channel/${SLUG}?edit=true`);
+    expect(await screen.findByText('Channel design')).toBeTruthy();
+    patchSpy.mockClear();
+
+    fireEvent.click(await screen.findByText('Stage / Live'));
+    expect(await screen.findByText(/save to keep it/)).toBeTruthy();
+    expect(patchSpy).not.toHaveBeenCalled();
+    expect(screen.getByText(/unsaved changes/)).toBeTruthy();
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /save changes/i }));
+    });
+    await waitFor(() =>
+      expect(patchSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ visualPreset: expect.any(String) }),
+      ),
+    );
+    await waitFor(() =>
+      expect(screen.queryByText(/save to keep it/)).toBeNull(),
+    );
   });
 });

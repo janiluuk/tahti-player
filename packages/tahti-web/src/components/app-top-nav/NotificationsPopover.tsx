@@ -20,8 +20,9 @@ export function NotificationsPopover({ nav }: { nav: TopNavState }) {
 
   return (
     <div className="relative">
-      <button
-        type="button"
+      <Button
+        variant="text"
+        size="icon-sm"
         className={cn(
           iconBtnClass,
           'relative',
@@ -49,7 +50,7 @@ export function NotificationsPopover({ nav }: { nav: TopNavState }) {
             {Math.min(9, unreadNotifications.length)}
           </Badge>
         ) : null}
-      </button>
+      </Button>
       {notificationsOpen ? (
         <div
           className="border-border bg-background absolute top-[calc(100%+6px)] right-0 z-40 w-72 rounded-lg border p-2 shadow-lg"

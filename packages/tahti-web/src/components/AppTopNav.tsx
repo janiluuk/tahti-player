@@ -5,7 +5,7 @@ import {
   MenuIcon,
 } from 'lucide-react';
 
-import { Dialog } from '@tahti-player/ui';
+import { Button, Dialog } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
 import { BroadcastControls } from './app-top-nav/BroadcastControls';
@@ -54,22 +54,24 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
     <header className="border-border bg-background-secondary sticky top-0 z-30 flex h-14 shrink-0 items-center justify-between gap-2 border-b px-2 sm:px-3 md:px-6">
       <div className="flex min-w-0 items-center gap-2">
         {showMenuButton ? (
-          <button
-            type="button"
+          <Button
+            variant="text"
+            size="icon-sm"
             className={iconBtnClass}
             aria-label="Open menu"
             onClick={onOpenMenu}
           >
             <MenuIcon size={18} />
-          </button>
+          </Button>
         ) : null}
         <TahtiLogoLink markOnly />
         {user && processingItems.length > 0 ? (
           <ProcessingIndicator nav={nav} />
         ) : null}
         <div className="hidden items-center gap-0.5 sm:flex">
-          <button
-            type="button"
+          <Button
+            variant="text"
+            size="icon-sm"
             className={cn(
               iconBtnClass,
               'disabled:pointer-events-none disabled:opacity-30',
@@ -80,9 +82,10 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
             onClick={() => router.history.back()}
           >
             <ChevronLeftIcon size={16} />
-          </button>
-          <button
-            type="button"
+          </Button>
+          <Button
+            variant="text"
+            size="icon-sm"
             className={cn(
               iconBtnClass,
               'disabled:pointer-events-none disabled:opacity-30',
@@ -93,7 +96,7 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
             onClick={() => router.history.forward()}
           >
             <ChevronRightIcon size={16} />
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -111,8 +114,9 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
         {user ? (
           <UserMenu nav={nav} />
         ) : (
-          <button
-            type="button"
+          <Button
+            variant="text"
+            size="icon-sm"
             className={iconBtnClass}
             aria-label="Log in"
             title="Log in"
@@ -120,7 +124,7 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
             onClick={() => openAuth('login')}
           >
             <LogInIcon size={16} />
-          </button>
+          </Button>
         )}
       </div>
       <UploadTrackDialog
