@@ -369,16 +369,24 @@ export function StudioUploadView() {
     }
     setBusy(true);
     setMessage(null);
-    const result = await uploadSoundFile({ file });
-    setBusy(false);
-    if (!result.ok) {
-      setMessage(result.error);
-      return;
+    try {
+      const result = await uploadSoundFile({ file });
+      if (!result.ok) {
+        setMessage(result.error);
+        return;
+      }
+      // Land on the durable /studio/sounds/$id route rather than staying here —
+      // that page polls and shows processing state, so it survives a refresh or
+      // a share/bookmark of the URL in a way this ephemeral form state can't.
+      void navigate({
+        to: '/studio/sounds/$id',
+        params: { id: result.itemId },
+      });
+    } catch {
+      setMessage('Could not upload the file.');
+    } finally {
+      setBusy(false);
     }
-    // Land on the durable /studio/sounds/$id route rather than staying here —
-    // that page polls and shows processing state, so it survives a refresh or
-    // a share/bookmark of the URL in a way this ephemeral form state can't.
-    void navigate({ to: '/studio/sounds/$id', params: { id: result.itemId } });
   };
 
   return (
