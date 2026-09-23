@@ -1,0 +1,34 @@
+[
+  {
+    "file": "01-library.png",
+    "label": "Library"
+  },
+  {
+    "file": "02-history.png",
+    "label": "Listening history"
+  },
+  {
+    "file": "03-favorites.png",
+    "label": "Favorites"
+  },
+  {
+    "file": "04-messages.png",
+    "label": "Messages"
+  },
+  {
+    "file": "05-settings-account.png",
+    "label": "Account settings"
+  },
+  {
+    "file": "06-sources.png",
+    "label": "Connected sources"
+  },
+  {
+    "file": "07-channel-as-listener.png",
+    "label": "Channel, signed in"
+  },
+  {
+    "file": "08-fan-tier-subscribe.png",
+    "label": "Fan tier subscribe (buy side)"
+  }
+]
