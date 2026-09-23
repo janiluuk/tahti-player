@@ -93,19 +93,24 @@ export function StudioEditorListView() {
       return;
     }
     setBusy(true);
-    void createEditorProject({
+    createEditorProject({
       title: title || undefined,
       soundId: soundId || undefined,
-    }).then((r) => {
-      setBusy(false);
-      if (!r.ok) {
-        setMessage(r.error);
-        return;
-      }
-      setMessage(`Created ${r.data.title}`);
-      closeCreate();
-      reload();
-    });
+    })
+      .then((r) => {
+        setBusy(false);
+        if (!r.ok) {
+          setMessage(r.error);
+          return;
+        }
+        setMessage(`Created ${r.data.title}`);
+        closeCreate();
+        reload();
+      })
+      .catch(() => {
+        setBusy(false);
+        setMessage('Could not create the project.');
+      });
   };
 
   return (

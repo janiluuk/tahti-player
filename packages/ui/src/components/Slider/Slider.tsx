@@ -12,6 +12,9 @@ type SliderProps = {
   max?: number;
   step?: number;
   unit?: string;
+  /** Displays the value (header, footer, screen readers) — e.g. a
+   * log-scale slider whose position is not the value itself. */
+  formatValue?: (value: number) => string;
   onValueChange?: (value: number) => void;
   disabled?: boolean;
   className?: string;
@@ -27,6 +30,12 @@ const DEFAULT_MIN = 0;
 const DEFAULT_MAX = 100;
 const DEFAULT_STEP = 1;
 
+const display = (
+  value: number,
+  unit?: string,
+  formatValue?: (value: number) => string,
+) => (formatValue ? formatValue(value) : `${value}${unit ? ` ${unit}` : ''}`);
+
 const SliderRoot: FC<
   PropsWithChildren<Omit<SliderProps, 'label' | 'showValue' | 'showFooter'>>
 > = ({
@@ -36,6 +45,7 @@ const SliderRoot: FC<
   max = DEFAULT_MAX,
   step = DEFAULT_STEP,
   unit,
+  formatValue,
   onValueChange,
   disabled,
   className,
@@ -109,6 +119,7 @@ const SliderRoot: FC<
         step,
         value,
         unit,
+        formatValue,
         disabled,
         percentage,
         emit,
@@ -129,7 +140,7 @@ export const SliderHeader: FC<{ label?: string; showValue?: boolean }> = ({
   label,
   showValue = true,
 }) => {
-  const { inputId, labelId, unit, value } = useSliderContext();
+  const { inputId, labelId, unit, value, formatValue } = useSliderContext();
   return (
     <div className="flex w-full items-center justify-between text-sm">
       <label
@@ -141,8 +152,7 @@ export const SliderHeader: FC<{ label?: string; showValue?: boolean }> = ({
       </label>
       {showValue && (
         <span className="text-foreground-secondary">
-          {value}
-          {unit ? ` ${unit}` : ''}
+          {display(value, unit, formatValue)}
         </span>
       )}
     </div>
@@ -176,6 +186,7 @@ export const SliderRangeInput: FC = () => {
     step,
     value,
     unit,
+    formatValue,
     emit,
     onKeyDown,
     disabled,
@@ -195,7 +206,7 @@ export const SliderRangeInput: FC = () => {
       aria-valuemin={min}
       aria-valuemax={max}
       aria-valuenow={value}
-      aria-valuetext={unit ? `${value} ${unit}` : String(value)}
+      aria-valuetext={display(value, unit, formatValue)}
       className={cn(
         'absolute inset-0 z-[1] h-6 w-full appearance-none opacity-0',
         'cursor-pointer',
@@ -212,11 +223,11 @@ export const SliderFooter: FC<{
   startLabel?: string;
   endLabel?: string;
 }> = ({ startLabel, endLabel }) => {
-  const { min, max, unit } = useSliderContext();
+  const { min, max, unit, formatValue } = useSliderContext();
   return (
     <div className="text-foreground-secondary flex w-full justify-between text-xs">
-      <span>{startLabel ?? `${min}${unit ? ` ${unit}` : ''}`}</span>
-      <span>{endLabel ?? `${max}${unit ? ` ${unit}` : ''}`}</span>
+      <span>{startLabel ?? display(min, unit, formatValue)}</span>
+      <span>{endLabel ?? display(max, unit, formatValue)}</span>
     </div>
   );
 };

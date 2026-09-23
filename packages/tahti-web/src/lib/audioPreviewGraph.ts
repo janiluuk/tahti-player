@@ -1,9 +1,17 @@
 import { useEffect, useRef } from 'react';
 
-import type { EditList } from '../api/studio-types';
+import type { EditList, ProEditorPluginId } from '../api/studio-types';
 import { AUDIO_FX_PLUGINS, useAudioFxStore } from '../plugins/audio-fx';
+import { setParam } from '../plugins/audio-fx/params';
 
 type Graph = { ctx: AudioContext; source: MediaElementAudioSourceNode };
+
+type BuiltChain = {
+  /** Plugin ids and their `previewShape`s; a change means a rebuild. */
+  key: string;
+  segments: Array<{ id: ProEditorPluginId; nodes: AudioNode[] }>;
+  gain: GainNode;
+};
 
 function getAudioContextCtor() {
   return (
@@ -28,7 +36,7 @@ export function useAudioPreviewGraph(
   editList: EditList | null,
 ) {
   const graphRef = useRef<Graph | null>(null);
-  const chainNodesRef = useRef<AudioNode[]>([]);
+  const chainRef = useRef<BuiltChain | null>(null);
   const enabledPluginIds = useAudioFxStore((state) => state.enabledPluginIds);
 
   function ensureGraph(): Graph | null {
@@ -52,8 +60,8 @@ export function useAudioPreviewGraph(
   }
 
   // Resume the context on every play — browsers create AudioContext
-  // suspended until a user gesture, and the chain-rebuild effect below can
-  // run before any gesture has happened (e.g. editList loading on mount).
+  // suspended until a user gesture, and the chain effect below can run
+  // before any gesture has happened (e.g. editList loading on mount).
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) {
@@ -66,7 +74,17 @@ export function useAudioPreviewGraph(
       }
     };
     audio.addEventListener('play', onPlay);
-    return () => audio.removeEventListener('play', onPlay);
+    return () => {
+      audio.removeEventListener('play', onPlay);
+      // Browsers cap live AudioContexts. Close ours once the element is
+      // really gone; a StrictMode re-run keeps the element (and must keep
+      // the context, since an element can only be wired to one source).
+      if (!audio.isConnected && graphRef.current) {
+        void graphRef.current.ctx.close().catch(() => undefined);
+        graphRef.current = null;
+        chainRef.current = null;
+      }
+    };
   }, [audioRef]);
 
   useEffect(() => {
@@ -79,46 +97,60 @@ export function useAudioPreviewGraph(
     }
     const { ctx, source } = graph;
 
+    // Follows the user's own drag-ordered chain. loudnorm isn't
+    // representable as a real-time node (it needs a full-pass loudness
+    // analysis), so it stays render/export-only. Each plugin owns its node
+    // logic (src/plugins/audio-fx) -- no per-plugin branches here.
+    const active = (editList.pluginChain ?? []).filter(
+      (id) =>
+        enabledPluginIds.includes(id) &&
+        AUDIO_FX_PLUGINS[id]?.isEnabled(editList),
+    );
+    const key = active
+      .map(
+        (id) => `${id}:${AUDIO_FX_PLUGINS[id].previewShape?.(editList) ?? ''}`,
+      )
+      .join('|');
+    const gainValue = Math.pow(10, editList.gainDb / 20);
+
+    const built = chainRef.current;
+    if (built && built.key === key) {
+      // Same shape: update parameters in place. Rebuilding on every edit
+      // (each slider tick, even a cut) used to drop audio for a moment.
+      for (const segment of built.segments) {
+        AUDIO_FX_PLUGINS[segment.id].updatePreviewNodes(
+          segment.nodes,
+          editList,
+          ctx,
+        );
+      }
+      setParam(built.gain.gain, gainValue, ctx);
+      return;
+    }
+
     source.disconnect();
-    for (const node of chainNodesRef.current) {
-      node.disconnect();
-    }
-    chainNodesRef.current = [];
-
-    let last: AudioNode = source;
-    const connect = (node: AudioNode) => {
-      last.connect(node);
-      last = node;
-      chainNodesRef.current.push(node);
-    };
-
-    // Follows the user's own drag-ordered chain instead of a fixed
-    // sequence -- reordering plugins in the UI actually changes what you
-    // hear, not just their display order. loudnorm isn't representable
-    // as a single real-time node (it needs a full-pass loudness
-    // analysis), so it stays render/export-only, same as the doc note
-    // on this hook already says for the limiter approximation.
-    //
-    // Each plugin owns its own node-building logic (src/plugins/audio-fx)
-    // -- adding a plugin means adding it to that registry, not a branch
-    // here.
-    for (const id of editList.pluginChain ?? []) {
-      if (!enabledPluginIds.includes(id)) {
-        continue;
-      }
-      const plugin = AUDIO_FX_PLUGINS[id];
-      if (!plugin?.isEnabled(editList)) {
-        continue;
-      }
-      for (const node of plugin.buildPreviewNodes(ctx, editList)) {
-        connect(node);
+    for (const segment of built?.segments ?? []) {
+      for (const node of segment.nodes) {
+        node.disconnect();
       }
     }
+    built?.gain.disconnect();
 
+    // Gain before the plugins, like the render (`@tahti/audio-edit`
+    // chained stages), so a compressor or limiter reacts to the same level.
     const gain = ctx.createGain();
-    gain.gain.value = Math.pow(10, editList.gainDb / 20);
-    connect(gain);
-
+    gain.gain.value = gainValue;
+    source.connect(gain);
+    let last: AudioNode = gain;
+    const segments = active.map((id) => {
+      const nodes = AUDIO_FX_PLUGINS[id].buildPreviewNodes(ctx, editList);
+      for (const node of nodes) {
+        last.connect(node);
+        last = node;
+      }
+      return { id, nodes };
+    });
     last.connect(ctx.destination);
+    chainRef.current = { key, segments, gain };
   }, [editList, enabledPluginIds]);
 }

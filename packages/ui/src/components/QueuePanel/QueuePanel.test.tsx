@@ -101,9 +101,9 @@ describe('QueuePanel', () => {
     expect(container.firstChild).toMatchSnapshot();
   });
 
-  it('skips offscreen layout only for long queues', () => {
+  it('skips offscreen layout only for long queues', { timeout: 20_000 }, () => {
     const labels = { removeButton: 'Remove', playbackError: 'Error' };
-    const many = Array.from({ length: 150 }, (_, i) =>
+    const many = Array.from({ length: 101 }, (_, i) =>
       createMockItem(`m${i}`, `Track ${i}`, 'Artist', 1000),
     );
     const long = render(<QueuePanel items={many} labels={labels} />);

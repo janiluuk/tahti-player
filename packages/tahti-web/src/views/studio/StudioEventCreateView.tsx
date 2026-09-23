@@ -1,5 +1,9 @@
 import { Link, useNavigate } from '@tanstack/react-router';
-import { ArrowLeftIcon, CalendarPlusIcon } from 'lucide-react';
+import {
+  ArrowLeftIcon,
+  CalendarPlusIcon,
+  LoaderCircleIcon,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -120,24 +124,41 @@ export function StudioEventCreateView() {
                   disabled={!canSubmit || busy}
                   onClick={() => {
                     setBusy(true);
-                    void createEvent({
+                    createEvent({
                       title: title.trim(),
                       description: description.trim(),
                       place: place.trim(),
                       location: location.trim(),
                       eventUrl: eventUrl.trim() || undefined,
                       startAt: new Date(startAt).toISOString(),
-                    }).then((result) => {
-                      setBusy(false);
-                      if (!result.ok) {
-                        toast.error(result.error);
-                        return;
-                      }
-                      void navigate({ to: '/studio/events' });
-                    });
+                    })
+                      .then((result) => {
+                        setBusy(false);
+                        if (!result.ok) {
+                          toast.error(result.error);
+                          return;
+                        }
+                        void navigate({ to: '/studio/events' });
+                      })
+                      .catch(() => {
+                        setBusy(false);
+                        toast.error('Could not create the event.');
+                      });
                   }}
                 >
-                  <CalendarPlusIcon size={16} aria-hidden className="mr-1.5" />
+                  {busy ? (
+                    <LoaderCircleIcon
+                      size={16}
+                      aria-hidden
+                      className="mr-1.5 animate-spin"
+                    />
+                  ) : (
+                    <CalendarPlusIcon
+                      size={16}
+                      aria-hidden
+                      className="mr-1.5"
+                    />
+                  )}
                   {busy ? 'Adding…' : 'Add event'}
                 </Button>
               </div>

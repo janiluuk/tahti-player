@@ -65,11 +65,30 @@ export function FilterCurve({ path }: { path: string }) {
   );
 }
 
-export function formatTime(sec: number): string {
-  if (!Number.isFinite(sec)) {
-    return '0:00';
-  }
-  const m = Math.floor(sec / 60);
-  const s = Math.floor(sec % 60);
-  return `${m}:${s.toString().padStart(2, '0')}`;
+export const LOG_STEPS = 1000;
+const MIN_HZ = 20;
+const MAX_HZ = 20000;
+
+/** Slider position (0-LOG_STEPS) for a frequency on a log scale. */
+export function toLogPosition(hz: number): number {
+  const clamped = Math.min(MAX_HZ, Math.max(MIN_HZ, hz));
+  return Math.round(
+    (Math.log(clamped / MIN_HZ) / Math.log(MAX_HZ / MIN_HZ)) * LOG_STEPS,
+  );
 }
+
+/** Frequency for a log slider position, rounded to 3 significant digits. */
+export function fromLogPosition(position: number): number {
+  const hz =
+    MIN_HZ *
+    Math.pow(
+      MAX_HZ / MIN_HZ,
+      Math.min(LOG_STEPS, Math.max(0, position)) / LOG_STEPS,
+    );
+  return Math.min(MAX_HZ, Math.max(MIN_HZ, Number(hz.toPrecision(3))));
+}
+
+export const formatHz = (hz: number) =>
+  hz >= 1000
+    ? `${Number((hz / 1000).toPrecision(3))} kHz`
+    : `${Math.round(hz)} Hz`;

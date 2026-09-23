@@ -3,18 +3,14 @@ import { toast } from 'sonner';
 
 import {
   channelLookExtrasFromPatch,
-  deleteChannelVisualPreset,
   fetchChannelVisual,
-  fetchChannelVisualPresets,
   isVisualPreset,
   loadChannelLookExtras,
-  MAX_HEADER_VIDEO_BYTES,
   parseColorScheme,
   parseVisualSettingsMap,
   patchChannelVisual,
   resolveVisualPresetSettings,
   saveChannelLookExtras,
-  saveChannelVisualPreset,
   uploadChannelHeaderVideo,
   type ChannelVisual,
   type ChannelVisualPreset,
@@ -37,7 +33,9 @@ import { buildVisualPatch } from './buildVisualPatch';
 import { buildLoadedLook } from './lookLoad';
 import type { LookSnapshot } from './lookSnapshot';
 import { applyPresetToVisual } from './presetApply';
-import { HEADER_MEDIA_TYPES } from './slideshowOptions';
+import { splitGalleryImages } from './slideshowOptions';
+import { usePendingBackdropFile } from './usePendingBackdropFile';
+import { useSavedPresets } from './useSavedPresets';
 
 type Options = {
   layoutSlug: string;
@@ -70,10 +68,6 @@ export function useChannelLook({
   const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
   const [galleryPreviewIndex, setGalleryPreviewIndex] = useState(0);
   const [videoBackgroundUrl, setVideoBackgroundUrl] = useState('');
-  const [pendingVideoFile, setPendingVideoFile] = useState<File | null>(null);
-  const [pendingVideoPreviewUrl, setPendingVideoPreviewUrl] = useState<
-    string | null
-  >(null);
   const [slideshowPreset, setSlideshowPreset] = useState('FADE');
   const [slideshowInterval, setSlideshowInterval] = useState(8);
   const [slideshowTransition, setSlideshowTransition] = useState(600);
@@ -90,12 +84,6 @@ export function useChannelLook({
   const [previewPreset, setPreviewPreset] = useState<VisualPreset>('AURORA');
   const [overlaySettings, setOverlaySettings] =
     useState<NowPlayingOverlaySettings>(DEFAULT_NOW_PLAYING_OVERLAY_SETTINGS);
-  const [presets, setPresets] = useState<ChannelVisualPreset[]>([]);
-  const [savePresetOpen, setSavePresetOpen] = useState(false);
-  const [presetNameInput, setPresetNameInput] = useState('');
-  const [presetBusy, setPresetBusy] = useState(false);
-  const [deletePresetTarget, setDeletePresetTarget] =
-    useState<ChannelVisualPreset | null>(null);
   const [resetConfirmOpen, setResetConfirmOpen] = useState(false);
   const [appliedPresetName, setAppliedPresetName] = useState<string | null>(
     null,
@@ -108,6 +96,12 @@ export function useChannelLook({
     null,
   );
   const [previousSave, setPreviousSave] = useState<LookSnapshot | null>(null);
+  const {
+    pendingVideoFile,
+    pendingVideoPreviewUrl,
+    selectVideoFile,
+    discardPendingVideo,
+  } = usePendingBackdropFile(markDirty);
 
   /** Replaces the whole draft with a snapshot. Also drops a picked-but-not-
    * yet-uploaded backdrop file, which would otherwise silently override it. */
@@ -169,26 +163,8 @@ export function useChannelLook({
     };
   }, [reloadToken]);
 
-  useEffect(() => {
-    let stale = false;
-    void fetchChannelVisualPresets()
-      .then(({ data }) => {
-        if (!stale) {
-          setPresets(data);
-        }
-      })
-      .catch(() => undefined);
-    return () => {
-      stale = true;
-    };
-  }, [reloadToken]);
-
   const galleryImageList = useMemo(
-    () =>
-      galleryImages
-        .split(/\r?\n/)
-        .map((image) => image.trim())
-        .filter(Boolean),
+    () => splitGalleryImages(galleryImages),
     [galleryImages],
   );
 
@@ -286,47 +262,6 @@ export function useChannelLook({
     markDirty();
   };
 
-  const selectVideoFile = (files: readonly File[]) => {
-    const file = files[0];
-    if (!file) {
-      return;
-    }
-    if (file.size > MAX_HEADER_VIDEO_BYTES) {
-      toast.error('File must be 10 MB or smaller.');
-      return;
-    }
-    if (!HEADER_MEDIA_TYPES.includes(file.type)) {
-      toast.error('Use an MP4/WebM video or a JPEG/PNG/WebP/GIF image.');
-      return;
-    }
-    if (pendingVideoPreviewUrl) {
-      URL.revokeObjectURL(pendingVideoPreviewUrl);
-    }
-    setPendingVideoFile(file);
-    setPendingVideoPreviewUrl(URL.createObjectURL(file));
-    markDirty();
-  };
-
-  const pendingPreviewUrlRef = useRef<string | null>(null);
-  pendingPreviewUrlRef.current = pendingVideoPreviewUrl;
-  useEffect(
-    () => () => {
-      if (pendingPreviewUrlRef.current) {
-        URL.revokeObjectURL(pendingPreviewUrlRef.current);
-      }
-    },
-    [],
-  );
-
-  /** Drops a picked-but-not-uploaded backdrop file (and its blob URL). */
-  function discardPendingVideo() {
-    if (pendingPreviewUrlRef.current) {
-      URL.revokeObjectURL(pendingPreviewUrlRef.current);
-    }
-    setPendingVideoFile(null);
-    setPendingVideoPreviewUrl(null);
-  }
-
   const clearVideo = () => {
     discardPendingVideo();
     setVideoBackgroundUrl('');
@@ -372,13 +307,7 @@ export function useChannelLook({
       // Append to the *current* list — the user may have reordered or
       // removed images while the upload ran.
       setGalleryImages((current) =>
-        [
-          ...current
-            .split(/\r?\n/)
-            .map((image) => image.trim())
-            .filter(Boolean),
-          ...uploadedUrls,
-        ].join('\n'),
+        [...splitGalleryImages(current), ...uploadedUrls].join('\n'),
       );
       setGalleryMode('STATIC_SLIDESHOW');
       markDirty();
@@ -466,10 +395,7 @@ export function useChannelLook({
       return;
     }
     const previousBaseline = baselineSnapshot;
-    const images = galleryImages
-      .split(/\r?\n/)
-      .map((image) => image.trim())
-      .filter(Boolean);
+    const images = splitGalleryImages(galleryImages);
     if (images.length > 10) {
       toast.error('Use up to 10 gallery images.');
       return;
@@ -497,11 +423,7 @@ export function useChannelLook({
       }
       savedVideoUrl = upload.videoBackgroundUrl;
       setVideoBackgroundUrl(upload.videoBackgroundUrl);
-      if (pendingVideoPreviewUrl) {
-        URL.revokeObjectURL(pendingVideoPreviewUrl);
-      }
-      setPendingVideoFile(null);
-      setPendingVideoPreviewUrl(null);
+      discardPendingVideo();
     }
     const patch = buildPatch(savedVideoUrl);
     if (!patch) {
@@ -606,48 +528,25 @@ export function useChannelLook({
     onDirtyChange?.(dirty);
   }, [dirty, onDirtyChange]);
 
-  const openSavePresetModal = () => {
-    if (pendingVideoFile) {
-      toast.error(
-        'Upload or clear the pending backdrop file before saving a preset.',
-      );
-      return;
-    }
-    setPresetNameInput('');
-    setSavePresetOpen(true);
-  };
-
-  const confirmSavePreset = async () => {
-    const name = presetNameInput.trim();
-    if (!name) {
-      toast.error('Give the preset a name.');
-      return;
-    }
-    const patch = buildPatch(videoBackgroundUrl.trim() || null);
-    if (!patch) {
-      return;
-    }
-    setPresetBusy(true);
-    let result: Awaited<ReturnType<typeof saveChannelVisualPreset>>;
-    try {
-      result = await saveChannelVisualPreset(name, patch);
-    } catch {
-      toast.error('Could not save the preset. Try again.');
-      return;
-    } finally {
-      setPresetBusy(false);
-    }
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
-    setPresets((prev) => [
-      result.data,
-      ...prev.filter((p) => p.id !== result.data.id),
-    ]);
-    toast.success(`Saved "${name}"`);
-    setSavePresetOpen(false);
-  };
+  const {
+    presets,
+    savePresetOpen,
+    setSavePresetOpen,
+    presetNameInput,
+    setPresetNameInput,
+    presetBusy,
+    deletePresetTarget,
+    setDeletePresetTarget,
+    openSavePresetModal,
+    confirmSavePreset,
+    confirmDeletePreset,
+  } = useSavedPresets({
+    reloadToken,
+    buildDraftPatch: () => buildPatch(videoBackgroundUrl.trim() || null),
+    hasPendingBackdropFile: pendingVideoFile !== null,
+    appliedPresetName,
+    clearAppliedPresetName: () => setAppliedPresetName(null),
+  });
 
   /** Applies a saved preset's settings straight into the local draft — the
    * same "dirty until Saved" flow as any other designer change — then
@@ -726,33 +625,6 @@ export function useChannelLook({
       setAppliedPresetName(null);
       toast.success('Reset to your last saved version.');
     }
-  };
-
-  const confirmDeletePreset = async () => {
-    if (!deletePresetTarget) {
-      return;
-    }
-    const target = deletePresetTarget;
-    setPresetBusy(true);
-    let result: Awaited<ReturnType<typeof deleteChannelVisualPreset>>;
-    try {
-      result = await deleteChannelVisualPreset(target.id);
-    } catch {
-      toast.error('Could not delete the preset. Try again.');
-      return;
-    } finally {
-      setPresetBusy(false);
-    }
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
-    setPresets((prev) => prev.filter((p) => p.id !== target.id));
-    if (appliedPresetName === target.name) {
-      setAppliedPresetName(null);
-    }
-    toast.success(`Deleted "${target.name}"`);
-    setDeletePresetTarget(null);
   };
 
   return {

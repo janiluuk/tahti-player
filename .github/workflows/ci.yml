@@ -31,9 +31,52 @@ env:
   DO_NOT_TRACK: 1
 
 jobs:
-  build:
-    name: Build + size guard
+  build-upstream:
+    name: Build upstream packages
     runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v5
+
+      - name: Get PNPM store directory
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup PNPM cache
+        uses: actions/cache@v6
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Cache turbo build outputs
+        uses: actions/cache@v6
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build upstream packages
+        run: pnpm turbo build --filter='!@tahti-player/player'
+
+  build-player:
+    name: Build player + size guard
+    runs-on: ubuntu-latest
+    needs: build-upstream
 
     steps:
       - name: Checkout code
@@ -69,6 +112,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
+      # build-upstream just saved this exact key, so the player's upstream
+      # dependencies replay from turbo instead of rebuilding.
       - name: Cache turbo build outputs
         uses: actions/cache@v6
         with:
@@ -95,9 +140,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Build upstream packages
-        run: pnpm turbo build --filter='!@tahti-player/player'
 
       - name: Build player (frontend-only)
         if: steps.rust-changes.outputs.rust != 'true'
@@ -148,9 +190,9 @@ jobs:
         run: pnpm turbo lint
 
   test:
-    name: Test + snapshot digest
+    name: Test (tahti-web) + snapshot digest
     runs-on: ubuntu-latest
-    needs: build
+    needs: build-upstream
 
     steps:
       - name: Checkout code
@@ -176,8 +218,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      # The build job just saved this exact key, so the upstream builds the
-      # test task depends on replay from turbo instead of rebuilding.
+      # build-upstream just saved this exact key, so the upstream builds this
+      # shard depends on replay from turbo instead of rebuilding.
       - name: Cache turbo build outputs
         uses: actions/cache@v6
         with:
@@ -189,13 +231,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build upstream packages
-        run: pnpm turbo build --filter='!@tahti-player/player'
+      - name: Build tahti-web (w/ replayed upstream deps)
+        run: pnpm turbo build --filter=@tahti-player/tahti-web
 
       - name: Test
         id: test
         continue-on-error: true
-        run: pnpm turbo test --continue
+        run: pnpm turbo test --filter=@tahti-player/tahti-web --continue
 
       - name: Get installed Playwright version
         if: steps.test.outcome == 'failure'
@@ -304,6 +346,59 @@ jobs:
             exit 1
           fi
 
+  test-core:
+    name: Test (core packages)
+    runs-on: ubuntu-latest
+    needs: build-upstream
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v5
+
+      - name: Get PNPM store directory
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup PNPM cache
+        uses: actions/cache@v6
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      # build-upstream just saved this exact key, so the upstream builds this
+      # shard depends on replay from turbo instead of rebuilding.
+      - name: Cache turbo build outputs
+        uses: actions/cache@v6
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Test
+        id: test
+        continue-on-error: true
+        run: pnpm turbo test --filter='!@tahti-player/tahti-web' --continue
+
+      - name: Fail job if tests failed
+        if: steps.test.outcome == 'failure'
+        run: |
+          echo "Tests failed (core packages). See test logs above."
+          exit 1
+
   # Manual-only e2e run: dispatch the workflow with run_e2e=true. Runs the
   # Playwright suite against the deployed site (beta.tahti.live by default).
   e2e:
@@ -373,15 +468,15 @@ jobs:
   ci:
     name: CI
     runs-on: ubuntu-latest
-    needs: [build, lint, test]
+    needs: [build-upstream, build-player, lint, test, test-core]
     if: always()
     steps:
       - name: Check required jobs
-        if: needs.build.result != 'success' || needs.lint.result != 'success' || needs.test.result != 'success'
+        if: needs.build-upstream.result != 'success' || needs.build-player.result != 'success' || needs.lint.result != 'success' || needs.test.result != 'success' || needs.test-core.result != 'success'
         run: |
-          echo "::error::build=${{ needs.build.result }} lint=${{ needs.lint.result }} test=${{ needs.test.result }}"
+          echo "::error::build-upstream=${{ needs.build-upstream.result }} build-player=${{ needs.build-player.result }} lint=${{ needs.lint.result }} test=${{ needs.test.result }} test-core=${{ needs.test-core.result }}"
           exit 1
 
       - name: Required jobs passed
-        if: needs.build.result == 'success' && needs.lint.result == 'success' && needs.test.result == 'success'
-        run: echo "build, lint, test all succeeded"
+        if: needs.build-upstream.result == 'success' && needs.build-player.result == 'success' && needs.lint.result == 'success' && needs.test.result == 'success' && needs.test-core.result == 'success'
+        run: echo "build-upstream, build-player, lint, test, test-core all succeeded"

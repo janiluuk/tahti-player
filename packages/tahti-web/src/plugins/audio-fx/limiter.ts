@@ -1,5 +1,6 @@
 import { ShieldAlert } from 'lucide-react';
 
+import { setParam } from './params';
 import type { AudioFxPlugin } from './types';
 
 /**
@@ -16,11 +17,15 @@ export const limiterPlugin: AudioFxPlugin = {
   isEnabled: (editList) => editList.limiter.enabled,
   buildPreviewNodes: (ctx, editList) => {
     const limiter = ctx.createDynamicsCompressor();
-    limiter.threshold.value = editList.limiter.ceilingDb;
     limiter.knee.value = 0;
     limiter.ratio.value = 20;
     limiter.attack.value = 0.001;
-    limiter.release.value = editList.limiter.releaseMs / 1000;
+    limiterPlugin.updatePreviewNodes([limiter], editList);
     return [limiter];
+  },
+  updatePreviewNodes: (nodes, editList, ctx) => {
+    const limiter = nodes[0] as DynamicsCompressorNode;
+    setParam(limiter.threshold, editList.limiter.ceilingDb, ctx);
+    setParam(limiter.release, editList.limiter.releaseMs / 1000, ctx);
   },
 };

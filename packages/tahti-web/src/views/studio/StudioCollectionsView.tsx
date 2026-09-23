@@ -139,16 +139,21 @@ export function StudioCollectionsView() {
         .slice(0, 5),
       collaborative:
         style === 'PLAYLIST' && visibility === 'PUBLIC' && collaborative,
-    }).then((r) => {
-      setBusy(false);
-      if (!r.ok) {
-        setMsg(r.error);
-        return;
-      }
-      setMsg(`Created ${r.data.name} — open designer to add tracks.`);
-      closeCreate();
-      reload();
-    });
+    })
+      .then((r) => {
+        setBusy(false);
+        if (!r.ok) {
+          setMsg(r.error);
+          return;
+        }
+        setMsg(`Created ${r.data.name} — open designer to add tracks.`);
+        closeCreate();
+        reload();
+      })
+      .catch(() => {
+        setBusy(false);
+        setMsg('Could not create the collection.');
+      });
   };
 
   const filteredRows = useMemo(() => {

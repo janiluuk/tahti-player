@@ -3618,3 +3618,28 @@ All five phases shipped over 2026-09-11 to 2026-09-22:
 Cross-referenced `codebase-refactor-hotspots.md` (its own P1 `ChannelDesigner.tsx` row and closing "Next" note were stale, still describing the pre-2026-09-22 state — corrected in the same pass) so the two docs no longer disagree about what's open.
 
 Nothing left in this file's scope — folded and deleted.
+
+## 2026-09-23 — Close `pro-editor-audit.md`: sample-accurate waveform engine plus interaction, undo, fades, mastering parity and preview-graph fixes shipped
+
+Thorough audit + rebuild of the Pro editor (`views/studio/StudioProEditorView.tsx` + `views/studio/pro-editor/`). Every "Plan" item shipped; previously missing or half-wired behaviour is now real:
+
+- **Waveform engine** (`waveform/{peaks,sampleRate,useWaveformData}.ts`): the editor decodes the source in-browser at its native sample rate, all channels, and builds a min/max + RMS summary pyramid (256/4096/65536 samples per block); raw samples are kept (memory budget-capped) so zoom can go down to ~32 samples with a real polyline/dots. The server's overview peaks are shown as an instant placeholder and the new 10 ms min/max "fine peaks" cover files too long to decode (that path now skips the download entirely when no fine peaks exist). Peaks are bipolar, absolute-scaled, per-channel, with clipping detection.
+- **Waveform view**: layered canvases (waveform vs overlay, painted via refs every animation frame so playback never re-renders React), stereo lanes, adaptive time ruler, millisecond readouts, `rAF` playhead, minimap that pans the zoom window and shows playhead + cuts, follow-playhead paging, adaptive "skip cuts" playback.
+- **Interaction**: pointer capture for click-seek/drag-select, edge-drag and shift-extend to adjust a selection, snap to zero crossing (raw samples or the server's listed crossings), a real non-passive wheel listener (ctrl/⌘ scroll or trackpad pinch zooms at the cursor; shift/horizontal scroll pans), and — added this pass — two-finger touchscreen pinch zoom. Keyboard shortcuts for every action (space, arrows, +/-, Z zoom-to-selection, D cut, T trim, I/O fades, M marker, Escape clear, undo/redo).
+- **Edits**: per-cut, per-fade and per-marker removal, confirm dialogs for destructive clears, fades added from a selection and drawn on the waveform, markers saved into the draft (`EditList.markers`).
+- **Undo/redo**: `editHistory.ts` with coalescing (a slider drag is one step), a 100-step cap, toolbar buttons and Ctrl+Z / Ctrl+Shift+Z.
+- **Mastering**: loudnorm target LUFS / true-peak sliders, compressor attack/release/makeup, limiter release, EQ band frequency (log scale via the new `Slider` `formatValue` prop) and Q, keyboard/touch reorder buttons for the chain, remove with confirm ("you can undo this").
+- **Preview graph**: filter matches the render (slope 12/24 dB and brickwall; shelving modes applied as a -60 dB shelf cut), parameters update in place (rebuild only when the chain shape changes — no more audible dropouts on every slider tick), and the `AudioContext` is closed on unmount.
+- **Tests**: `peaks` (pyramid vs brute force, zero crossings, audible range), `draw`, `viewMath` (ruler/clock), `editHistory`, `sampleRate`, `useWaveformData`, `audioPreviewGraph` (in-place vs rebuild), the audio-fx parameter mapping, and the whole `StudioProEditorView` (render, leave guard, save, undo/redo via toolbar and keyboard).
+
+Still flagged (not in this repo's scope): a finer server-side pyramid for long files in `../tahti-org`, and marker persistence needs an `EditList` field there first. Folded and deleted.
+
+## 2026-09-23 — Close `theme-review-popup.md`: mock-only "Theme is in review" notice removed
+
+The recurring "Theme is in review" popup was mock-only: a hard-coded `THEME_UNDER_REVIEW` sticky fixture in `api/notifications.ts` (`mockNotifications`, id `notification-mock-sticky`) that the real API (`../tahti-org`) has no type for, so production never sends it. It re-toasted every session because mock dismissals lived in `sessionStorage` (per-tab) and sticky toasts are shown on first load by `notificationInboxStore`.
+
+- Dropped the sticky fixture from `mockNotifications()` — `fetchStickyNotifications` mock now returns `[]`; the non-sticky inbox examples stay. Storybook already carried its own sticky example copies (`NotificationToasts.stories.tsx`, `Toaster.stories.tsx`), unaffected.
+- Mock dismissals now persist in `localStorage` instead of `sessionStorage`, so acknowledged mock notifications stay dismissed across tabs.
+- Checked every e2e spec: none depend on the toast (the fullscreen-player-minimize spec clears toasts generically).
+
+`type-check` / `eslint` clean. Folded and deleted.
