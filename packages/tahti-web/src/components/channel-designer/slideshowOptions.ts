@@ -29,3 +29,10 @@ export const SLIDESHOW_PRESETS = [
   ['CUBE_FLIP', 'Cube flip'],
   ['LIQUID_DISTORTION', 'Liquid distortion'],
 ] as const;
+
+/** Gallery images are kept as newline-separated text; this is the list. */
+export const splitGalleryImages = (text: string) =>
+  text
+    .split(/\r?\n/)
+    .map((image) => image.trim())
+    .filter(Boolean);
