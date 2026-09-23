@@ -289,3 +289,5 @@ export function useShowDetail(id: string) {
     createNewEpisode,
   };
 }
+
+export type ShowDetailState = ReturnType<typeof useShowDetail>;
