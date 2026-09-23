@@ -1,17 +1,5 @@
 {
   "packages/tahti-web/src/api/client.ts": 1417,
   "packages/tahti-web/src/api/types.ts": 969,
-  "packages/tahti-web/src/components/AppTopNav.tsx": 878,
-  "packages/tahti-web/src/components/LocalPlaylists.tsx": 953,
-  "packages/tahti-web/src/components/StreamManagerPanel.tsx": 1013,
-  "packages/tahti-web/src/components/TrackEditDialog.tsx": 1174,
-  "packages/tahti-web/src/components/channel-designer/useChannelLook.ts": 829,
-  "packages/tahti-web/src/lib/nativeLibrary.types.ts": 852,
-  "packages/tahti-web/src/plugins/themes/presets.ts": 1539,
-  "packages/tahti-web/src/views/MoreView.tsx": 805,
-  "packages/tahti-web/src/views/TrackDetailView.tsx": 1048,
-  "packages/tahti-web/src/views/admin/AdminAddonsView.tsx": 1076,
-  "packages/tahti-web/src/views/admin/AdminStorageView.tsx": 919,
-  "packages/tahti-web/src/views/studio/StudioCollectionEditView.tsx": 920,
-  "packages/player/src-tauri/src/mcp/metadata.rs": 1005
+  "packages/tahti-web/src/plugins/themes/presets.ts": 1539
 }

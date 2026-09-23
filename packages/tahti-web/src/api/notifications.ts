@@ -1,6 +1,6 @@
-/** Mock-mode dismissals that survive reload within this browser session.
- * Without this, forceMock dismissNotification is a no-op and the sticky
- * "Theme is in review" fixture reappears every reload. */
+/** Mock-mode dismissals that survive reload within this browser (not just
+ * one tab). Without this, forceMock dismissNotification is a no-op and the
+ * other mock fixtures reappear on every reload. */
 import {
   allowMockFallback,
   apiErrorMeta,
@@ -14,7 +14,7 @@ const MOCK_DISMISSED_KEY = 'tahti-web-mock-notifications-dismissed';
 
 function readMockDismissedIds(): Set<string> {
   try {
-    const raw = sessionStorage.getItem(MOCK_DISMISSED_KEY);
+    const raw = localStorage.getItem(MOCK_DISMISSED_KEY);
     if (!raw) {
       return new Set();
     }
@@ -29,7 +29,7 @@ function readMockDismissedIds(): Set<string> {
 
 function writeMockDismissedIds(ids: Set<string>) {
   try {
-    sessionStorage.setItem(MOCK_DISMISSED_KEY, JSON.stringify([...ids]));
+    localStorage.setItem(MOCK_DISMISSED_KEY, JSON.stringify([...ids]));
   } catch {
     // ignore
   }
@@ -62,25 +62,14 @@ function emptyMeta(err: unknown): FetchMeta {
 }
 
 function mockNotifications(includeInboxExtras: boolean): TahtiNotification[] {
-  const sticky: TahtiNotification = {
-    id: 'notification-mock-sticky',
-    type: 'THEME_UNDER_REVIEW',
-    actor: null,
-    title: 'Theme is in review',
-    body: 'An admin will approve or reject it soon. This stays until you acknowledge it.',
-    url: '/settings/themes',
-    readAt: null,
-    sticky: true,
-    createdAt: new Date(Date.now() - 5 * 60_000).toISOString(),
-  };
+  // No sticky fixture: the real API type exists in ../tahti-org, but
+  // mock-only sticky toasts re-appeared every session and got confused
+  // with real notifications. (See Storybook for a sticky example.)
   const items: TahtiNotification[] = [];
-  const dismissed = readMockDismissedIds();
-  if (!dismissed.has(sticky.id)) {
-    items.push(sticky);
-  }
   if (!includeInboxExtras) {
     return items;
   }
+  const dismissed = readMockDismissedIds();
   const extras: TahtiNotification[] = [
     {
       id: 'notification-mock-1',
