@@ -106,7 +106,9 @@ describe('useStatsData top-list-only refetch', () => {
     await waitFor(() => expect(result.current.loading).toBe(false));
 
     act(() => result.current.setRange('1'));
-    await waitFor(() => expect(result.current.topRange).toBe('30'));
+    await waitFor(() =>
+      expect(fetchStatsTopTracks).toHaveBeenLastCalledWith('1'),
+    );
     expect(fetchStatsTopLists).toHaveBeenLastCalledWith('30', 'type', 'desc');
   });
 

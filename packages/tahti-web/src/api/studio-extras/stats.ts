@@ -1,7 +1,7 @@
 import type { FetchMeta } from '.././client';
 import { failMeta, isForceMock } from '.././mode';
 import { requestJson } from '.././request-json';
-import { type StatsPlaysRange } from './stats-plays';
+import { type StatsPlaysQuery, type StatsPlaysRange } from './stats-plays';
 
 export type StatsSummary = {
   playsToday: number;
@@ -97,7 +97,7 @@ export async function fetchStatsSummary(): Promise<{
 }
 
 export async function fetchStatsTopTracks(
-  range: StatsPlaysRange = '30',
+  rangeOrQuery: StatsPlaysRange | StatsPlaysQuery = '30',
 ): Promise<{
   data: StatsTopTrack[];
   meta: FetchMeta;
@@ -115,9 +115,22 @@ export async function fetchStatsTopTracks(
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
+  const query: StatsPlaysQuery =
+    typeof rangeOrQuery === 'string' ? { range: rangeOrQuery } : rangeOrQuery;
   try {
+    const params = new URLSearchParams();
+    if (query.range === 'custom' && query.from && query.to) {
+      params.set('range', 'all');
+      params.set('from', query.from);
+      params.set('to', query.to);
+    } else {
+      params.set(
+        'range',
+        query.range === 'custom' ? '30' : (query.range ?? '30'),
+      );
+    }
     const { data } = await requestJson<{ items: StatsTopTrack[] }>(
-      `/api/me/stats/top-tracks?range=${range}`,
+      `/api/me/stats/top-tracks?${params.toString()}`,
     );
     return { data: data.items ?? [], meta: { source: 'api' } };
   } catch (err) {
@@ -126,7 +139,7 @@ export async function fetchStatsTopTracks(
 }
 
 export async function fetchStatsTopCountries(
-  range: StatsPlaysRange = '30',
+  rangeOrQuery: StatsPlaysRange | StatsPlaysQuery = '30',
 ): Promise<{
   data: StatsTopCountry[];
   meta: FetchMeta;
@@ -140,9 +153,22 @@ export async function fetchStatsTopCountries(
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
+  const query: StatsPlaysQuery =
+    typeof rangeOrQuery === 'string' ? { range: rangeOrQuery } : rangeOrQuery;
   try {
+    const params = new URLSearchParams();
+    if (query.range === 'custom' && query.from && query.to) {
+      params.set('range', 'all');
+      params.set('from', query.from);
+      params.set('to', query.to);
+    } else {
+      params.set(
+        'range',
+        query.range === 'custom' ? '30' : (query.range ?? '30'),
+      );
+    }
     const { data } = await requestJson<{ items: StatsTopCountry[] }>(
-      `/api/me/stats/top-countries?range=${range}`,
+      `/api/me/stats/top-countries?${params.toString()}`,
     );
     return { data: data.items ?? [], meta: { source: 'api' } };
   } catch (err) {

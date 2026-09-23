@@ -105,9 +105,31 @@ export function useStatsData() {
   const playsQueryReady =
     range !== 'custom' || Boolean(appliedCustom?.from && appliedCustom?.to);
 
-  // Top tracks/countries/lists only support 7/30/90-day windows; "Custom" and
-  // "1 day" fall back to the last 30 days (and the panel titles say so).
-  const topRange = range === 'custom' || range === '1' ? '30' : range;
+  // Top tracks/countries support the same ranges (including custom from/to)
+  // as the plays chart. Top lists are a separate, coarser-grained system
+  // (week/month/half_year/all_time buckets) with no day-level or custom-range
+  // support — "Custom" and "1 day" fall back to a month bucket there (and the
+  // panel title says so).
+  const topTracksQuery =
+    range === 'custom' && appliedCustom
+      ? {
+          range: 'custom' as const,
+          from: appliedCustom.from,
+          to: appliedCustom.to,
+        }
+      : range;
+  const topListRange = range === 'custom' || range === '1' ? '30' : range;
+
+  const topRangeLabel =
+    range === 'custom' && appliedCustom
+      ? `${appliedCustom.from} to ${appliedCustom.to}`
+      : range === '1'
+        ? '1 day'
+        : range === '7'
+          ? '7 days'
+          : range === '30'
+            ? '30 days'
+            : 'all time';
 
   // Everything except the top lists: re-fetched only when the range changes.
   useEffect(() => {
@@ -125,8 +147,8 @@ export function useStatsData() {
           ? { range: 'custom', from: appliedCustom.from, to: appliedCustom.to }
           : range,
       ),
-      fetchStatsTopTracks(topRange),
-      fetchStatsTopCountries(topRange),
+      fetchStatsTopTracks(topTracksQuery),
+      fetchStatsTopCountries(topTracksQuery),
       fetchListenerGeo(geoPeriod),
       fetchChannelEgressStats(),
       fetchChannelLiveStats(),
@@ -169,12 +191,12 @@ export function useStatsData() {
     return () => {
       cancelled = true;
     };
-  }, [range, appliedCustom, topRange, playsQueryReady]);
+  }, [range, appliedCustom, playsQueryReady]);
 
   // The top lists alone re-fetch when their dimension or sort changes.
   useEffect(() => {
     let cancelled = false;
-    fetchStatsTopLists(topRange, topListDimension, topListSort)
+    fetchStatsTopLists(topListRange, topListDimension, topListSort)
       .then((result) => {
         if (!cancelled) {
           setTopLists(result.data);
@@ -188,7 +210,7 @@ export function useStatsData() {
     return () => {
       cancelled = true;
     };
-  }, [topRange, topListDimension, topListSort]);
+  }, [topListRange, topListDimension, topListSort]);
 
   useEffect(() => {
     if (!selectedDay) {
@@ -341,7 +363,7 @@ export function useStatsData() {
     setSelectedDay,
     hourly,
     hourlyLoading,
-    topRange,
+    topRangeLabel,
     busiestDay,
     minutesListened,
     minutesStreamed,

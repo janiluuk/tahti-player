@@ -5,6 +5,18 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
+  workflow_dispatch:
+    inputs:
+      run_e2e:
+        description: 'Run the Playwright e2e suite (against beta.tahti.live)'
+        required: false
+        default: false
+        type: boolean
+      web_base_url:
+        description: 'Base URL the e2e suite should run against'
+        required: false
+        default: https://beta.tahti.live
+        type: string
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -19,7 +31,8 @@ env:
   DO_NOT_TRACK: 1
 
 jobs:
-  ci:
+  build:
+    name: Build + size guard
     runs-on: ubuntu-latest
 
     steps:
@@ -46,8 +59,7 @@ jobs:
 
       - name: Get PNPM store directory
         shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
       - name: Setup PNPM cache
         uses: actions/cache@v6
@@ -60,7 +72,7 @@ jobs:
       - name: Cache turbo build outputs
         uses: actions/cache@v6
         with:
-          path: node_modules/.cache/turbo
+          path: .turbo
           key: ${{ runner.os }}-turbo-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-turbo-
@@ -87,17 +99,6 @@ jobs:
       - name: Build upstream packages
         run: pnpm turbo build --filter='!@tahti-player/player'
 
-      - name: Lint
-        run: pnpm turbo lint
-
-      - name: File size guard
-        run: pnpm check:file-size
-
-      - name: Test
-        id: test
-        continue-on-error: true
-        run: pnpm turbo test --continue
-
       - name: Build player (frontend-only)
         if: steps.rust-changes.outputs.rust != 'true'
         run: pnpm turbo build:frontend --filter=@tahti-player/player
@@ -108,6 +109,93 @@ jobs:
         env:
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+
+      - name: File size guard
+        run: pnpm check:file-size
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v5
+
+      - name: Get PNPM store directory
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup PNPM cache
+        uses: actions/cache@v6
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm turbo lint
+
+  test:
+    name: Test + snapshot digest
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v5
+
+      - name: Get PNPM store directory
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup PNPM cache
+        uses: actions/cache@v6
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      # The build job just saved this exact key, so the upstream builds the
+      # test task depends on replay from turbo instead of rebuilding.
+      - name: Cache turbo build outputs
+        uses: actions/cache@v6
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build upstream packages
+        run: pnpm turbo build --filter='!@tahti-player/player'
+
+      - name: Test
+        id: test
+        continue-on-error: true
+        run: pnpm turbo test --continue
 
       - name: Get installed Playwright version
         if: steps.test.outcome == 'failure'
@@ -215,3 +303,85 @@ jobs:
             echo "Tests failed (non-snapshot). See test logs above."
             exit 1
           fi
+
+  # Manual-only e2e run: dispatch the workflow with run_e2e=true. Runs the
+  # Playwright suite against the deployed site (beta.tahti.live by default).
+  e2e:
+    name: E2E (manual)
+    if: github.event_name == 'workflow_dispatch' && inputs.run_e2e == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v5
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Chromium
+        run: pnpm --filter @tahti-player/tahti-web exec playwright install chromium --with-deps
+
+      - name: Resolve Playwright Chromium path
+        run: |
+          CHROMIUM_PATH="$(find "$HOME/.cache/ms-playwright" -type f -path '*/chrome-linux/chrome' 2>/dev/null | head -1)"
+          echo "PLAYWRIGHT_CHROMIUM_PATH=${CHROMIUM_PATH}" >> "$GITHUB_ENV"
+          echo "Using Chromium at: ${CHROMIUM_PATH}"
+
+      - name: Playwright e2e suite (manual)
+        id: e2e
+        continue-on-error: true
+        run: pnpm --filter @tahti-player/tahti-web exec playwright test
+        env:
+          PLAYWRIGHT_BASE_URL: ${{ inputs.web_base_url }}
+          PLAYWRIGHT_CHROMIUM_PATH: ${{ env.PLAYWRIGHT_CHROMIUM_PATH }}
+          TAHTI_E2E_PASSWORD: ${{ secrets.TAHTI_E2E_PASSWORD }}
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: packages/tahti-web/playwright-report/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-test-results
+          path: packages/tahti-web/test-results/
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Fail job if e2e suite failed
+        if: steps.e2e.outcome == 'failure'
+        run: |
+          echo "E2E suite failed. See the playwright-report / playwright-test-results artifacts."
+          exit 1
+
+  # Aggregate gate (keeps the historical required `ci` check name working and
+  # gives a single pass/fail node). The e2e job is manual-only and excluded.
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    needs: [build, lint, test]
+    if: always()
+    steps:
+      - name: Check required jobs
+        if: needs.build.result != 'success' || needs.lint.result != 'success' || needs.test.result != 'success'
+        run: |
+          echo "::error::build=${{ needs.build.result }} lint=${{ needs.lint.result }} test=${{ needs.test.result }}"
+          exit 1
+
+      - name: Required jobs passed
+        if: needs.build.result == 'success' && needs.lint.result == 'success' && needs.test.result == 'success'
+        run: echo "build, lint, test all succeeded"

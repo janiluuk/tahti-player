@@ -98,7 +98,7 @@ export const StudioStatsView: FC = () => {
     setSelectedDay,
     hourly,
     hourlyLoading,
-    topRange,
+    topRangeLabel,
     busiestDay,
     useHeatmap,
     chartLabels,
@@ -355,7 +355,7 @@ export const StudioStatsView: FC = () => {
                 <EmptyState size="sm" title="No track stats yet" />
               ) : (
                 <TopList
-                  title={`Top tracks · last ${topRange} days`}
+                  title={`Top tracks · ${topRangeLabel}`}
                   formatValue={formatPlayCount}
                   entries={tracks.map((track) => ({
                     id: track.soundId,
@@ -377,7 +377,7 @@ export const StudioStatsView: FC = () => {
                 <EmptyState size="sm" title="No country data yet" />
               ) : (
                 <TopList
-                  title={`Top countries · last ${topRange} days`}
+                  title={`Top countries · ${topRangeLabel}`}
                   formatValue={(value) => value.toLocaleString()}
                   entries={countries.map((country) => ({
                     id: country.country,
