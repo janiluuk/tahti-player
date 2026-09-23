@@ -48,7 +48,38 @@ describe('useWaveformData', () => {
         () => undefined,
       ),
     );
-    expect(result.current.status).toBe('overview-only');
-    expect(fetchMock).not.toHaveBeenCalled();
+    return waitFor(() => {
+      expect(result.current.status).toBe('overview-only');
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
+  });
+
+  it('loads the server fine peaks for long sources', async () => {
+    fetchMock.mockResolvedValue(
+      new Response(new Int8Array([-64, 64, -128, 127]).buffer),
+    );
+    const { result } = renderHook(() =>
+      useWaveformData(
+        'https://cdn/set.mp3',
+        {
+          ...peaks,
+          fine: {
+            url: 'https://cdn/fine.bin',
+            bucketsPerSec: 100,
+            channels: 1,
+            bucketCount: 2,
+          },
+        },
+        MAX_DECODE_SEC + 1,
+        () => undefined,
+      ),
+    );
+    await waitFor(() => expect(result.current.status).toBe('fine'));
+    expect(fetchMock).toHaveBeenCalledWith('https://cdn/fine.bin');
+    const data = result.current.data!;
+    expect(data.sampleRate).toBe(100);
+    expect(data.length).toBe(2);
+    expect(data.channels[0]!.levels[0]!.max[1]).toBe(1);
+    expect(data.channels[0]!.levels[0]!.min[1]).toBe(-1);
   });
 });
