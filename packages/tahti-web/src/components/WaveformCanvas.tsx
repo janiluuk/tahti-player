@@ -171,6 +171,49 @@ export function WaveformCanvas({
     span,
   ]);
 
+  const wheelRef = useRef({ viewStart, span, durationSec, onViewChange });
+  wheelRef.current = { viewStart, span, durationSec, onViewChange };
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) {
+      return;
+    }
+    // A native listener: React's onWheel is passive, so preventDefault is
+    // ignored there and a trackpad's ctrl-wheel pinch zooms the whole page
+    // instead of the waveform.
+    const onWheel = (e: WheelEvent) => {
+      const {
+        viewStart: start,
+        span: currentSpan,
+        durationSec: duration,
+        onViewChange: change,
+      } = wheelRef.current;
+      if (!change || duration <= 0) {
+        return;
+      }
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const cursorFrac = (e.clientX - rect.left) / rect.width;
+      const zoom = e.deltaY > 0 ? 1.15 : 0.87;
+      const newSpan = Math.min(1, Math.max(MIN_SPAN, currentSpan * zoom));
+      const center = start + cursorFrac * currentSpan;
+      let ns = center - cursorFrac * newSpan;
+      let ne = ns + newSpan;
+      if (ns < 0) {
+        ne -= ns;
+        ns = 0;
+      }
+      if (ne > 1) {
+        ns -= ne - 1;
+        ne = 1;
+      }
+      change(Math.max(0, ns), Math.min(1, ne));
+    };
+    canvas.addEventListener('wheel', onWheel, { passive: false });
+    return () => canvas.removeEventListener('wheel', onWheel);
+  }, []);
+
   /** Maps a client-x pixel to a timeline second, accounting for the
    * current zoom window (not the full track). */
   const secFromEvent = (clientX: number) => {
@@ -216,35 +259,6 @@ export function WaveformCanvas({
       }}
       onMouseLeave={() => {
         dragRef.current = null;
-      }}
-      onWheel={(e) => {
-        if (!onViewChange || durationSec <= 0) {
-          return;
-        }
-        // Own the gesture entirely: without preventDefault a trackpad's
-        // ctrl-wheel pinch falls through to the browser's native page
-        // zoom instead of zooming the waveform.
-        e.preventDefault();
-        const canvas = canvasRef.current;
-        if (!canvas) {
-          return;
-        }
-        const rect = canvas.getBoundingClientRect();
-        const cursorFrac = (e.clientX - rect.left) / rect.width;
-        const zoom = e.deltaY > 0 ? 1.15 : 0.87;
-        const newSpan = Math.min(1, Math.max(MIN_SPAN, span * zoom));
-        const center = viewStart + cursorFrac * span;
-        let ns = center - cursorFrac * newSpan;
-        let ne = ns + newSpan;
-        if (ns < 0) {
-          ne -= ns;
-          ns = 0;
-        }
-        if (ne > 1) {
-          ns -= ne - 1;
-          ne = 1;
-        }
-        onViewChange(Math.max(0, ns), Math.min(1, ne));
       }}
     />
   );

@@ -268,6 +268,9 @@ export type EditList = {
   loudnorm: { enabled: boolean; targetLufs: number; targetTp: number };
   highPassHz: number;
   lowPassHz: number;
+  /** Editor markers; saved with the draft, not rendered. Absent on older
+   * drafts. */
+  markers?: Array<{ at: number; label?: string }>;
 };
 
 export type EditorDraft = {
@@ -278,6 +281,16 @@ export type EditorDraft = {
     sampleRate: number;
     durationSec: number;
     levels: number[][];
+    zeroCrossingsSec?: number[];
+    silenceRegionsSec?: Array<{ start: number; end: number }>;
+    /** Long sources: signed URL to min/max int8 pairs per channel, every
+     * 1/bucketsPerSec seconds. */
+    fine?: {
+      url: string;
+      bucketsPerSec: number;
+      channels: number;
+      bucketCount: number;
+    };
   } | null;
 };
 
@@ -434,5 +447,6 @@ export function createDefaultEditList(sourceDuration: number): EditList {
     loudnorm: { enabled: false, targetLufs: -14, targetTp: -1.5 },
     highPassHz: 0,
     lowPassHz: 0,
+    markers: [],
   };
 }

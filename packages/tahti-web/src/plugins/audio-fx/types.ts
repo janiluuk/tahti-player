@@ -24,4 +24,20 @@ export interface AudioFxPlugin {
    * drag-ordered chain.
    */
   buildPreviewNodes(ctx: AudioContext, editList: EditList): AudioNode[];
+  /**
+   * Writes the current parameters onto nodes this plugin built earlier,
+   * without rebuilding the graph. Only called while `previewShape` is
+   * unchanged, so the node list has the same shape as when it was built.
+   */
+  updatePreviewNodes(
+    nodes: AudioNode[],
+    editList: EditList,
+    ctx?: BaseAudioContext,
+  ): void;
+  /**
+   * What decides which nodes `buildPreviewNodes` returns (e.g. the filter's
+   * mode and slope). A change rebuilds the graph; anything else is a
+   * parameter update. Omit when the node list never changes.
+   */
+  previewShape?(editList: EditList): string;
 }

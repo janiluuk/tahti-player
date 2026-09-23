@@ -1,5 +1,6 @@
 import { SlidersHorizontal } from 'lucide-react';
 
+import { setParam } from './params';
 import type { AudioFxPlugin } from './types';
 
 export const eqPlugin: AudioFxPlugin = {
@@ -9,13 +10,25 @@ export const eqPlugin: AudioFxPlugin = {
   icon: SlidersHorizontal,
   bg: '#0ea5e9',
   isEnabled: (editList) => editList.eq.enabled,
-  buildPreviewNodes: (ctx, editList) =>
-    editList.eq.bands.map((band) => {
+  previewShape: (editList) => String(editList.eq.bands.length),
+  buildPreviewNodes: (ctx, editList) => {
+    const nodes = editList.eq.bands.map(() => {
       const filter = ctx.createBiquadFilter();
       filter.type = 'peaking';
-      filter.frequency.value = band.freq;
-      filter.Q.value = band.q;
-      filter.gain.value = band.gainDb;
       return filter;
-    }),
+    });
+    eqPlugin.updatePreviewNodes(nodes, editList);
+    return nodes;
+  },
+  updatePreviewNodes: (nodes, editList, ctx) => {
+    editList.eq.bands.forEach((band, i) => {
+      const filter = nodes[i] as BiquadFilterNode | undefined;
+      if (!filter) {
+        return;
+      }
+      setParam(filter.frequency, band.freq, ctx);
+      setParam(filter.Q, band.q, ctx);
+      setParam(filter.gain, band.gainDb, ctx);
+    });
+  },
 };

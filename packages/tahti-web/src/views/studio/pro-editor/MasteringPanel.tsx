@@ -1,5 +1,6 @@
 import {
   ChevronDownIcon,
+  ChevronLeftIcon,
   ChevronRightIcon,
   GripVerticalIcon,
   PlusIcon,
@@ -20,6 +21,7 @@ import {
 } from '@tahti-player/ui';
 
 import type { EditList, ProEditorPluginId } from '../../../api/studio-types';
+import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { AUDIO_FX_PLUGINS, useAudioFxStore } from '../../../plugins/audio-fx';
 import {
@@ -39,6 +41,9 @@ type Props = {
 export function MasteringPanel({ editList, onChange }: Props) {
   const [collapsed, setCollapsed] = useState(true);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [removeTarget, setRemoveTarget] = useState<ProEditorPluginId | null>(
+    null,
+  );
   const dragPluginRef = useRef<ProEditorPluginId | null>(null);
   const enabledPluginIds = useAudioFxStore((state) => state.enabledPluginIds);
 
@@ -64,6 +69,17 @@ export function MasteringPanel({ editList, onChange }: Props) {
       onChange({ ...editList, [id]: { ...editList[id], enabled } });
     }
   };
+
+  const moveBy = (id: ProEditorPluginId, offset: -1 | 1) => {
+    const index = visiblePluginChain.indexOf(id);
+    const neighbour = visiblePluginChain[index + offset];
+    if (neighbour) {
+      onChange(reorderPluginChain(editList, id, neighbour));
+    }
+  };
+
+  const setLoudnorm = (patch: Partial<EditList['loudnorm']>) =>
+    onChange({ ...editList, loudnorm: { ...editList.loudnorm, ...patch } });
 
   const normalize = () => {
     const enabled = !editList.loudnorm.enabled;
@@ -118,6 +134,31 @@ export function MasteringPanel({ editList, onChange }: Props) {
                   : 'Normalize'}
               </Button>
             </div>
+
+            {editList.loudnorm.enabled && (
+              <div className="grid max-w-xl gap-2 sm:grid-cols-2">
+                <Slider
+                  label="Target loudness"
+                  value={editList.loudnorm.targetLufs}
+                  min={-30}
+                  max={-5}
+                  step={0.5}
+                  unit="LUFS"
+                  showFooter={false}
+                  onValueChange={(targetLufs) => setLoudnorm({ targetLufs })}
+                />
+                <Slider
+                  label="True peak"
+                  value={editList.loudnorm.targetTp}
+                  min={-6}
+                  max={0}
+                  step={0.1}
+                  unit="dBTP"
+                  showFooter={false}
+                  onValueChange={(targetTp) => setLoudnorm({ targetTp })}
+                />
+              </div>
+            )}
 
             <Slider
               label="Master gain"
@@ -176,6 +217,31 @@ export function MasteringPanel({ editList, onChange }: Props) {
                         <span className="text-foreground-secondary flex-1 truncate text-xs">
                           {meta.description}
                         </span>
+                        <Tooltip content="Move earlier" side="top">
+                          <Button
+                            size="icon-sm"
+                            variant="text"
+                            aria-label={`Move ${meta.label} earlier in the chain`}
+                            disabled={visiblePluginChain.indexOf(id) === 0}
+                            onClick={() => moveBy(id, -1)}
+                          >
+                            <ChevronLeftIcon size={14} aria-hidden />
+                          </Button>
+                        </Tooltip>
+                        <Tooltip content="Move later" side="top">
+                          <Button
+                            size="icon-sm"
+                            variant="text"
+                            aria-label={`Move ${meta.label} later in the chain`}
+                            disabled={
+                              visiblePluginChain.indexOf(id) ===
+                              visiblePluginChain.length - 1
+                            }
+                            onClick={() => moveBy(id, 1)}
+                          >
+                            <ChevronRightIcon size={14} aria-hidden />
+                          </Button>
+                        </Tooltip>
                         <Toggle
                           checked={meta.isEnabled(editList)}
                           onChange={() => togglePluginEnabled(id)}
@@ -186,9 +252,7 @@ export function MasteringPanel({ editList, onChange }: Props) {
                             size="icon-sm"
                             variant="text"
                             aria-label={`Remove ${meta.label}`}
-                            onClick={() =>
-                              onChange(removePluginFromChain(editList, id))
-                            }
+                            onClick={() => setRemoveTarget(id)}
                           >
                             <XIcon size={14} aria-hidden />
                           </Button>
@@ -219,6 +283,20 @@ export function MasteringPanel({ editList, onChange }: Props) {
           </div>
         )}
       </StudioPanel>
+
+      <ConfirmDialog
+        isOpen={removeTarget !== null}
+        title={`Remove ${removeTarget ? AUDIO_FX_PLUGINS[removeTarget].label : 'add-on'}?`}
+        description="Takes it out of the mastering chain; its settings are kept if you add it again. You can undo this."
+        confirmLabel="Remove"
+        onCancel={() => setRemoveTarget(null)}
+        onConfirm={() => {
+          if (removeTarget) {
+            onChange(removePluginFromChain(editList, removeTarget));
+          }
+          setRemoveTarget(null);
+        }}
+      />
 
       <Dialog.Root isOpen={pickerOpen} onClose={() => setPickerOpen(false)}>
         <Dialog.Title>Add an audio add-on</Dialog.Title>
