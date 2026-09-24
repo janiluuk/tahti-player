@@ -1,8 +1,8 @@
-import { LaptopIcon, LibraryIcon, ListFilterIcon, XIcon } from 'lucide-react';
+import { LaptopIcon } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, EmptyState, Input } from '@tahti-player/ui';
+import { EmptyState } from '@tahti-player/ui';
 
 import { usePersistedCatalogTable } from '../hooks/usePersistedCatalogTable';
 import {
@@ -23,35 +23,17 @@ import {
   type NativeLibraryTrack,
   type NativeTrackFilters,
 } from '../lib/nativeLibrary';
-import { AddToPlaylistDialog } from './AddToPlaylistDialog';
-import { ConfirmDialog } from './ConfirmDialog';
-import { BrowserLocalFiles } from './desktop-library/BrowserLocalFiles';
-import { LibraryRootsBlock } from './desktop-library/LibraryRootsBlock';
-import { NativeTrackTable } from './desktop-library/NativeTrackTable';
-import { basename } from './desktop-library/pathLabels';
-import {
-  TrackBatchDialogs,
-  type TrackBatchDialog,
-} from './desktop-library/TrackBatchDialogs';
+import { DesktopLibraryContent } from './desktop-library/DesktopLibraryContent';
+import { DesktopLibraryDialogs } from './desktop-library/DesktopLibraryDialogs';
+import type { TrackBatchDialog } from './desktop-library/TrackBatchDialogs';
 import { useLibraryRoots } from './desktop-library/useLibraryRoots';
 import { useMissingTracks } from './desktop-library/useMissingTracks';
 import { useNativeImport } from './desktop-library/useNativeImport';
 import { useNativeLibraryList } from './desktop-library/useNativeLibraryList';
 import { useNativePlayback } from './desktop-library/useNativePlayback';
 import { useSelectionActions } from './desktop-library/useSelectionActions';
-import {
-  BrowseTabs,
-  FACET_KIND_LABEL,
-  FacetGroupList,
-  facetTitle,
-  LibraryTotalsLine,
-  type BrowseKind,
-} from './LocalLibraryBrowse';
-import { LocalLibraryFilters } from './LocalLibraryFilters';
-import { LocalLibraryTools } from './LocalLibraryTools';
-import { LocalPlaylists } from './LocalPlaylists';
+import type { BrowseKind } from './LocalLibraryBrowse';
 import { NATIVE_TRACK_COLUMNS, toNativeSort } from './nativeTrackColumns';
-import { TrackInspectorDialog } from './TrackInspectorDialog';
 
 export function DesktopLibraryPanel() {
   const nativePlayer = hasNativePlayer();
@@ -152,12 +134,7 @@ export function DesktopLibraryPanel() {
     browseKind,
     refresh: () => refreshNativeRef.current(),
   });
-  const {
-    setSelectedIds,
-    addToPlaylist,
-    setAddToPlaylist,
-    addGroupToPlaylist,
-  } = selection;
+  const { setSelectedIds } = selection;
   const { playNative, queueNative, revealNative } =
     useNativePlayback(nativeLibrary);
   const initialScrollRef = useRef(initialView.scrollOffset);
@@ -396,299 +373,86 @@ export function DesktopLibraryPanel() {
       className="flex h-full min-h-0 flex-col gap-3 p-2"
       data-testid="desktop-library-panel"
     >
-      {nativeLibrary ? (
-        <>
-          <div className="flex flex-wrap gap-2">
-            <Button
-              variant="secondary"
-              onClick={() => void importNative()}
-              disabled={busy}
-            >
-              <LibraryIcon size={15} aria-hidden />
-              {busy ? 'Working…' : 'Import files'}
-            </Button>
-            <Button
-              variant="text"
-              onClick={() => void importNativeFolder()}
-              disabled={busy}
-            >
-              Import folder
-            </Button>
-            {nativeUnavailable.length > 0 ? (
-              <Button
-                variant="text"
-                onClick={() => void rescanNative()}
-                disabled={busy}
-              >
-                Check missing files ({nativeUnavailable.length})
-              </Button>
-            ) : null}
-            {nativeProgress ? (
-              <Button
-                variant="text"
-                intent="danger"
-                onClick={cancelNativeImport}
-              >
-                <XIcon size={14} aria-hidden />
-                Cancel
-              </Button>
-            ) : null}
-          </div>
-          {nativeProgress ? (
-            <p className="text-foreground-secondary text-xs">
-              Importing {nativeProgress.done} of {nativeProgress.total} —{' '}
-              {nativeProgress.imported} imported
-              {nativeProgress.failed ? `, ${nativeProgress.failed} failed` : ''}
-              {nativeProgress.skipped
-                ? `, ${nativeProgress.skipped} skipped`
-                : ''}
-            </p>
-          ) : null}
-          <LibraryRootsBlock
-            roots={roots}
-            canToggleWatching={Boolean(nativeLibrary.setWatching)}
-            watching={watching}
-            rootBusy={rootBusy}
-            loading={busy}
-            onAdd={() => void addRoot()}
-            onRescan={() => void rescanRoots()}
-            onRelink={(root) => void relinkRoot(root)}
-            onStopWatching={setRootToRemove}
-            onChangeWatching={(enabled) => void changeWatching(enabled)}
-          />
-          <LocalLibraryTools
-            library={nativeLibrary}
-            onChanged={() => void refreshNative()}
-          />
-          <LibraryTotalsLine totals={totals} />
-          <BrowseTabs value={browseKind} onChange={changeBrowseKind} />
-          {browseKind === 'playlists' ? (
-            <LocalPlaylists
-              library={nativeLibrary}
-              openId={openPlaylistId}
-              onOpenChange={setOpenPlaylistId}
-            />
-          ) : browseKind !== 'tracks' && !facetFilter ? (
-            facetGroups.length ? (
-              <FacetGroupList
-                kind={browseKind}
-                groups={facetGroups}
-                onSelect={selectFacetGroup}
-                onAddToPlaylist={addGroupToPlaylist}
-              />
-            ) : (
-              <EmptyState
-                size="sm"
-                icon={<LibraryIcon size={28} className="opacity-50" />}
-                title={
-                  facetLoading
-                    ? 'Loading…'
-                    : `No ${FACET_KIND_LABEL[browseKind].toLowerCase()} groups yet`
-                }
-                description={
-                  facetLoading ? undefined : 'Import files to fill this view.'
-                }
-                className="flex-1"
-              />
-            )
-          ) : (
-            <>
-              {facetFilter ? (
-                <div className="flex items-center gap-2">
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    aria-label={`Clear ${FACET_KIND_LABEL[facetFilter.kind]} filter`}
-                    onClick={() => setFacetFilter(null)}
-                  >
-                    <XIcon size={12} aria-hidden />
-                    {FACET_KIND_LABEL[facetFilter.kind]}:{' '}
-                    {facetTitle(facetFilter.kind, {
-                      name: facetFilter.value,
-                      secondary: facetFilter.secondary ?? '',
-                      year: null,
-                      trackCount: 0,
-                      durationSec: 0,
-                      sizeBytes: 0,
-                    })}
-                  </Button>
-                </div>
-              ) : null}
-              <div className="flex items-end gap-2">
-                <div className="min-w-0 flex-1">
-                  <Input
-                    type="search"
-                    label="Search desktop library"
-                    placeholder="Title, artist, album, genre or path"
-                    value={nativeQuery}
-                    onChange={(event) => setNativeQuery(event.target.value)}
-                  />
-                </div>
-                <Button
-                  variant={activeFilterCount ? 'secondary' : 'text'}
-                  aria-label={
-                    activeFilterCount
-                      ? `Filters (${activeFilterCount} active)`
-                      : 'Filters'
-                  }
-                  onClick={() => setFiltersOpen(true)}
-                >
-                  <ListFilterIcon size={15} aria-hidden />
-                  Filters{activeFilterCount ? ` (${activeFilterCount})` : ''}
-                </Button>
-              </div>
-              {nativeTracks.length ? (
-                <NativeTrackTable
-                  table={table}
-                  rows={nativeTracks}
-                  total={nativeTotal}
-                  loading={nativeLoading}
-                  busy={busy}
-                  selection={selection}
-                  initialScrollOffset={initialScrollRef.current}
-                  loadedCountRef={loadedCountRef}
-                  onLoadMore={() => void loadMoreNative()}
-                  onPlay={(track) => void playNative(track)}
-                  onQueue={(track) => void queueNative([track])}
-                  onReveal={(track) => void revealNative(track)}
-                  onRelink={(track) => void relinkNative(track)}
-                  onInspect={setInspected}
-                  onBatchDialog={(kind, ids) => setBatchDialog({ kind, ids })}
-                  onRemove={(ids, title) => setPendingRemoval({ ids, title })}
-                />
-              ) : nativeError ? (
-                <EmptyState
-                  size="sm"
-                  title="Desktop library unavailable"
-                  description={nativeError}
-                  action={
-                    <Button
-                      variant="secondary"
-                      onClick={() => void refreshNative()}
-                    >
-                      Retry
-                    </Button>
-                  }
-                  className="flex-1"
-                />
-              ) : hasActiveScope && !nativeLoading && !busy ? (
-                <EmptyState
-                  size="sm"
-                  icon={<ListFilterIcon size={28} className="opacity-50" />}
-                  title="No tracks match"
-                  description="Nothing in your library fits the current search, group and filters."
-                  action={
-                    <Button
-                      variant="secondary"
-                      onClick={() => {
-                        setNativeQuery('');
-                        setFacetFilter(null);
-                        setFilters(EMPTY_TRACK_FILTERS);
-                      }}
-                    >
-                      Clear search and filters
-                    </Button>
-                  }
-                  className="flex-1"
-                />
-              ) : (
-                <EmptyState
-                  size="sm"
-                  icon={<LibraryIcon size={28} className="opacity-50" />}
-                  title="Desktop library"
-                  description={
-                    nativeLoading || busy
-                      ? 'Loading library…'
-                      : 'Import files to build your offline library.'
-                  }
-                  className="flex-1"
-                />
-              )}
-            </>
-          )}
-        </>
-      ) : (
-        <BrowserLocalFiles />
-      )}
-      {nativeLibrary ? (
-        <AddToPlaylistDialog
-          isOpen={addToPlaylist !== null}
-          onClose={() => setAddToPlaylist(null)}
-          library={nativeLibrary}
-          summary={addToPlaylist?.summary ?? ''}
-          resolveTrackIds={
-            addToPlaylist?.resolve ?? (() => Promise.resolve([]))
-          }
-        />
-      ) : null}
-      <LocalLibraryFilters
-        isOpen={filtersOpen}
-        onClose={() => setFiltersOpen(false)}
-        filters={filters}
-        onApply={setFilters}
-        options={filterOptions}
-        tags={tagList}
-        roots={roots}
-      />
-      {nativeLibrary ? (
-        <TrackBatchDialogs
-          library={nativeLibrary}
-          dialog={batchDialog}
-          onClose={() => setBatchDialog(null)}
-          onChanged={() => void refreshNative()}
-        />
-      ) : null}
-      <TrackInspectorDialog
+      <DesktopLibraryContent
         library={nativeLibrary}
-        track={inspected}
-        onChanged={() => void refreshNative()}
-        onClose={() => setInspected(null)}
-        onPlay={(track) => {
-          setInspected(null);
-          void playNative(track);
+        busy={busy}
+        progress={nativeProgress}
+        unavailableCount={nativeUnavailable.length}
+        roots={roots}
+        watching={watching}
+        rootBusy={rootBusy}
+        totals={totals}
+        browseKind={browseKind}
+        openPlaylistId={openPlaylistId}
+        facetFilter={facetFilter}
+        facetGroups={facetGroups}
+        facetLoading={facetLoading}
+        query={nativeQuery}
+        activeFilterCount={activeFilterCount}
+        tracks={nativeTracks}
+        total={nativeTotal}
+        loading={nativeLoading}
+        error={nativeError}
+        hasActiveScope={hasActiveScope}
+        table={table}
+        selection={selection}
+        initialScrollOffset={initialScrollRef.current}
+        loadedCountRef={loadedCountRef}
+        onImportFiles={() => void importNative()}
+        onImportFolder={() => void importNativeFolder()}
+        onRescanMissing={() => void rescanNative()}
+        onCancelImport={cancelNativeImport}
+        onAddRoot={() => void addRoot()}
+        onRescanRoots={() => void rescanRoots()}
+        onRelinkRoot={(root) => void relinkRoot(root)}
+        onStopWatchingRoot={setRootToRemove}
+        onChangeWatching={(enabled) => void changeWatching(enabled)}
+        onRefresh={() => void refreshNative()}
+        onBrowseKindChange={changeBrowseKind}
+        onOpenPlaylistChange={setOpenPlaylistId}
+        onFacetSelect={selectFacetGroup}
+        onFacetClear={() => setFacetFilter(null)}
+        onQueryChange={setNativeQuery}
+        onFiltersOpen={() => setFiltersOpen(true)}
+        onClearScope={() => {
+          setNativeQuery('');
+          setFacetFilter(null);
+          setFilters(EMPTY_TRACK_FILTERS);
         }}
+        onLoadMore={() => void loadMoreNative()}
+        onPlay={(track) => void playNative(track)}
         onQueue={(track) => void queueNative([track])}
         onReveal={(track) => void revealNative(track)}
-        onLocate={(track) => {
-          setInspected(null);
-          void relinkNative(track);
-        }}
-        onRemove={(track) => {
-          setInspected(null);
-          setPendingRemoval({ ids: [track.id], title: track.title });
-        }}
+        onRelink={(track) => void relinkNative(track)}
+        onInspect={setInspected}
+        onBatchDialog={(kind, ids) => setBatchDialog({ kind, ids })}
+        onRemove={(ids, title) => setPendingRemoval({ ids, title })}
       />
-      <ConfirmDialog
-        isOpen={pendingRemoval !== null}
-        title={
-          pendingRemoval && pendingRemoval.ids.length > 1
-            ? `Remove ${pendingRemoval.ids.length.toLocaleString('en-US')} tracks from the library?`
-            : 'Remove this track from the library?'
-        }
-        description="They are only removed from your Tahti library. The audio files on disk are not touched."
-        confirmLabel="Remove"
-        onCancel={() => setPendingRemoval(null)}
-        onConfirm={() => {
-          const pending = pendingRemoval;
-          setPendingRemoval(null);
-          if (pending) {
-            void removeNative(pending.ids, pending.title);
-          }
-        }}
-      />
-      <ConfirmDialog
-        isOpen={rootToRemove !== null}
-        title="Stop watching this folder?"
-        description={`“${rootToRemove ? basename(rootToRemove.path) : ''}” will no longer be scanned for new files. Its tracks stay in your library and no files on disk are touched.`}
-        confirmLabel="Stop watching"
-        onCancel={() => setRootToRemove(null)}
-        onConfirm={() => {
-          const root = rootToRemove;
-          setRootToRemove(null);
-          if (root) {
-            void removeRoot(root);
-          }
-        }}
+      <DesktopLibraryDialogs
+        library={nativeLibrary}
+        selection={selection}
+        filtersOpen={filtersOpen}
+        setFiltersOpen={setFiltersOpen}
+        filters={filters}
+        setFilters={setFilters}
+        filterOptions={filterOptions}
+        tags={tagList}
+        roots={roots}
+        batchDialog={batchDialog}
+        setBatchDialog={setBatchDialog}
+        inspected={inspected}
+        setInspected={setInspected}
+        pendingRemoval={pendingRemoval}
+        setPendingRemoval={setPendingRemoval}
+        rootToRemove={rootToRemove}
+        setRootToRemove={setRootToRemove}
+        onRefresh={() => void refreshNative()}
+        onPlay={(track) => void playNative(track)}
+        onQueue={(track) => void queueNative([track])}
+        onReveal={(track) => void revealNative(track)}
+        onRelink={(track) => void relinkNative(track)}
+        onRemove={(ids, title) => void removeNative(ids, title)}
+        onRemoveRoot={(root) => void removeRoot(root)}
       />
     </div>
   );
