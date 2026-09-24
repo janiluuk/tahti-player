@@ -1,6 +1,6 @@
 # Restructure god modules into structured components
 
-**Status:** open
+**Status:** partial
 
 Ask (2026-09-21): refactor god classes/modules into structured, professional components. `mod.rs` first; sweep everything bloated and flag it in the worklog. Complements [codebase-refactor-hotspots.md](codebase-refactor-hotspots.md) (tahti-web API/panel splits, already underway); this file covers the Rust desktop library and the wider sweep.
 
@@ -12,11 +12,11 @@ Behavior stays identical: mechanical splits along existing seams, tests move wit
 | --- | --- | --- | --- |
 | ~~P0~~ done | `packages/player/src-tauri/src/local_library/mod.rs` | 1693 → 240 (split into `import.rs`, `query.rs`, `roots.rs`, `tracks.rs`; commands now registered by their submodule path in `lib.rs`; behavior unchanged, 214 lib tests + generated bindings identical) | Types (`LibraryTrack`, filters, sort), query builder (`where_clause`/`order_clause`/`ListQuery`), import pipeline (batch, progress, walk), roots (scan/relink), facets/totals, Tauri command wrappers, `LibraryState`/pool/migrations. Target: `mod.rs` = re-exports + state only. |
 | ~~P0~~ done | `packages/player/src-tauri/src/local_library/catalog.rs` | 1222 → `catalog/{mod,edits,user_data,plays,duplicates}.rs` (43/494/282/84/352; 214 lib tests, bindings identical) | edits+undo, user data (rating/color/tags), play log, duplicates+hashing, merge, commands. |
-| P0 partial | `packages/tahti-web/src/components/DesktopLibraryPanel.tsx` | 1820 → 754 (`useNativePlayback`, `useNativeImport`; 2026-09-22: `NativeTrackTable`, `TrackBatchDialogs` (four dialog states → one), `useSelectionActions` hook, `useLibraryRoots` hook, `importFailures.ts`, `desktop-library/BrowserLocalFiles` (browser fallback) and `useNativeLibraryList` (paged list hook); 2026-09-21: `desktop-library/{LibraryRootsBlock,SelectionToolbar,TrackRowActions,pathLabels}`; no hand-rolled button/input/img left, so the ui audit is clean). Still open: the ~500-line JSX body and the dialog hosts, (all planned hooks done) | 1702 | Tracks table, group browser, roots block, import status, toolbars/dialog hosts, hooks for native state. Also owes the `@tahti-player/ui` audit. |
+| ~~P0~~ done | `packages/tahti-web/src/components/DesktopLibraryPanel.tsx` | 1820 → 479; hooks and table/root helpers were already extracted, then the remaining presentation body moved to `desktop-library/DesktopLibraryContent.tsx` and the modal orchestration to `DesktopLibraryDialogs.tsx` on 2026-09-24. No behavior change; full web suite 921 passing, type-check and lint clean. | Complete. |
 | ~~P1~~ done | `packages/tahti-web/src/components/ChannelDesigner.tsx` | 1800 → 757 (out of the size baseline) | Split via `useChannelLook`/`useLookVisibility`/`useDockedControlsRail`/`ChannelPagePreview` + pure snapshot helpers (see "Next up" below) — only the panel slot builders remain. Off both this list and `codebase-refactor-hotspots.md`. |
-| P1 | `packages/tahti-web/src/views/ChannelView.tsx` / `ArtistView.tsx` | 1576 / 1408 | tracked there; re-check |
-| P1 | `packages/tahti-web/src/views/studio/StudioProEditorView.tsx` | 1497 | not yet assessed |
-| P1 | `packages/tahti-web/src/components/plugin-store/ServiceCategory.tsx`, `RadioCategory.tsx` | 1400 / 1264 | one file per service/tab |
+| ~~P1~~ done | `packages/tahti-web/src/views/ChannelView.tsx` / `ArtistView.tsx` | 1576 / 1408 → 797 / 787 | Split and audited on 2026-09-22; see the dedicated entries below. |
+| ~~P1~~ done | `packages/tahti-web/src/views/studio/StudioProEditorView.tsx` | 1497 → 333 | Split and audited on 2026-09-22; later follow-ups added draft markers, cut-skipping preview, an unsaved-changes guard and a whole-view test. |
+| ~~P1~~ done | `packages/tahti-web/src/components/plugin-store/ServiceCategory.tsx`, `RadioCategory.tsx` | 1400 / 1264 → 93 / 15 | Split and audited on 2026-09-22; see the dedicated entries below. |
 | ~~P1~~ done | `packages/tahti-web/src/api/{shows,channel-design,studio-extras,sources,artist-settings}.ts` | 1000-1330 → 47-140 each (2026-09-22): barrels re-exporting `api/<name>/<domain>.ts`, imports unchanged | |
 | ~~P1~~ done | ~~`packages/tahti-web/src/components/TrackEditDialog.tsx`~~ | ~~1174~~ **2026-09-23: 172** | **Done:** `track-edit-dialog/useTrackEditDialog.ts` (state/effects/save/playback/quick-edit hook, 447 lines) + `BasicsTab`/`AudioTab`/`SharingTab`/`AdvancedTab` components (83-239 lines each); Export tab stayed inline (already tiny). Zero behavior change — mechanical split, each tab receives the whole hook state object (same pattern as `usePressKit`'s `kit` prop). `tsc`/`eslint`/full vitest suite (846/846) all pass; `TrackEditDialog.stories.tsx` only imports the top-level export, unaffected. |
 | ~~P1~~ done | ~~`packages/tahti-web/src/components/LocalPlaylists.tsx`~~ | ~~952~~ **2026-09-23: 24** | **Done:** `local-playlists/shared.tsx` (columns, `summaryLine`, `playPlaylist`, 101 lines), `PlaylistsBrowser.tsx` (342 lines), `PlaylistView.tsx` (517 lines) — one file per already-independent component, `LocalPlaylists.tsx` is now just the open/list router + a `PLAYLIST_COLUMNS` re-export for back-compat. Zero behavior change; `tsc`/`eslint`/full vitest (846/846, including the 18 existing `LocalPlaylists.test.tsx` cases) all pass. |
@@ -30,8 +30,8 @@ Behavior stays identical: mechanical splits along existing seams, tests move wit
 ## Plan
 
 1. [x] (2026-09-21, done) `local_library/mod.rs` first: split into submodules per the seams above, no behavior change. Do it as its own commit, **between** feature phases (not mixed with Phase 5 work, since other sessions touch the same files).
-2. [ ] ~~`catalog.rs`~~ (done 2026-09-21), then `DesktopLibraryPanel.tsx` (`nativeLibrary.ts` types/runtime split done 2026-09-21).
-3. [ ] Assess the "not yet assessed" rows; fold confirmed ones into codebase-refactor-hotspots.md or split here.
+2. [x] `catalog.rs`, `nativeLibrary.ts`, and `DesktopLibraryPanel.tsx` split and audited.
+3. [x] Assessed and split every non-data row that was over the size baseline.
 4. [x] Size guard: `pnpm check:file-size` (`scripts/check-file-size.mjs`, 800-line limit, existing offenders pinned in `scripts/file-size-baseline.json`, may only shrink; `--update` after a split). Runs in `ci.yml` after Lint.
 
 ## DesktopLibraryPanel review findings (2026-09-21, fixed with the split)
@@ -330,3 +330,9 @@ Web suite 871 passing, `ui` 353 passing; `tsc`/`eslint` clean.
 - `ChannelView` preset look as a draft (see the item above).
 
 Backend follow-ups done the same day (tahti-org #557): the top bar polls `GET /api/me/sound/processing` (processing items + watched upload ids) every 5 s only while something is processing, 30 s otherwise, instead of the full sounds list every 5 s; the collection editor's combined save is noted above.
+
+### Fourteenth pass (2026-09-24): Desktop library presentation split
+
+- `DesktopLibraryPanel.tsx` 715 → 479: the remaining library body moved to `desktop-library/DesktopLibraryContent.tsx`, while filters, playlist/batch dialogs, the inspector, and removal confirmations moved to `DesktopLibraryDialogs.tsx`.
+- State ownership, loading, catalog refreshes, selection, playback, and every user-visible branch stay in the same parent flow; this is a mechanical presentation split with no behavior or copy change.
+- Full tahti-web suite: 162 files, 921 passing and 5 expected failures. Type-check and lint clean.
