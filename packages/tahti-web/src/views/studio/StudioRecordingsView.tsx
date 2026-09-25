@@ -1,6 +1,4 @@
-import { Link } from '@tanstack/react-router';
-
-import { Button, ViewShell } from '@tahti-player/ui';
+import { ButtonLink, ViewShell } from '@tahti-player/ui';
 
 import { StudioGate } from '../../components/StudioGate';
 import { StudioNav } from '../../components/StudioNav';
@@ -15,11 +13,9 @@ export function StudioRecordingsView({
   const state = useRecordingsState();
 
   const browseShowsAction = (
-    <Link to="/studio/shows">
-      <Button size="sm" variant="secondary">
-        Browse shows
-      </Button>
-    </Link>
+    <ButtonLink to="/studio/shows" size="sm" variant="secondary">
+      Browse shows
+    </ButtonLink>
   );
 
   const content = (

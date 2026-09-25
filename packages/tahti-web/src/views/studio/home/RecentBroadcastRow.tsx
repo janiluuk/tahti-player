@@ -1,6 +1,4 @@
-import { Link } from '@tanstack/react-router';
-
-import { Button } from '@tahti-player/ui';
+import { ButtonLink } from '@tahti-player/ui';
 
 import { type RecentBroadcast } from '../../../api/broadcast';
 import { formatBroadcastDate, formatBroadcastDuration } from './home-helpers';
@@ -40,14 +38,14 @@ export function RecentBroadcastRow({
       >
         {published ? 'Published' : 'Recorded'}
       </span>
-      <Link
+      <ButtonLink
         to={broadcast.soundId ? '/studio/sounds/$id' : '/library/recordings'}
         params={broadcast.soundId ? { id: broadcast.soundId } : undefined}
+        size="sm"
+        variant="secondary"
       >
-        <Button size="sm" variant="secondary">
-          {broadcast.soundId ? 'Open' : 'Publish'}
-        </Button>
-      </Link>
+        {broadcast.soundId ? 'Open' : 'Publish'}
+      </ButtonLink>
     </li>
   );
 }

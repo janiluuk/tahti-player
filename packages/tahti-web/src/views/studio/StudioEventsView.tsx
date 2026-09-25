@@ -1,4 +1,3 @@
-import { Link } from '@tanstack/react-router';
 import {
   CalendarClockIcon,
   CalendarDaysIcon,
@@ -9,7 +8,14 @@ import {
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, EmptyState, Tabs, Tooltip, ViewShell } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonLink,
+  EmptyState,
+  Tabs,
+  Tooltip,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import { deleteEvent, fetchMyEvents, type ArtistEvent } from '../../api/events';
 import { PageLoading } from '../../components/PageStates';
@@ -106,11 +112,13 @@ export function StudioEventsView() {
           classes={{ root: 'px-0 pt-0' }}
           actions={
             <Tooltip content="Add event" side="top">
-              <Link to="/studio/events/new">
-                <Button size="icon-sm" aria-label="Add event">
-                  <PlusIcon size={16} aria-hidden />
-                </Button>
-              </Link>
+              <ButtonLink
+                to="/studio/events/new"
+                size="icon-sm"
+                aria-label="Add event"
+              >
+                <PlusIcon size={16} aria-hidden />
+              </ButtonLink>
             </Tooltip>
           }
         >

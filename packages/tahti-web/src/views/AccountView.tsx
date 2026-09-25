@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { BadgeCheckIcon, HeartHandshakeIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Box, Button, Tabs, ViewShell } from '@tahti-player/ui';
+import { Box, Button, ButtonLink, Tabs, ViewShell } from '@tahti-player/ui';
 
 import { fetchMembership, fetchMySubscriptions } from '../api/client';
 import type { FanSubscriptionRow, MembershipStatus } from '../api/types';
@@ -50,9 +50,9 @@ export function AccountView() {
         title="Account"
         classes={{ root: 'px-0 pt-0 mx-auto max-w-md' }}
       >
-        <Link to="/login">
-          <Button>Login</Button>
-        </Link>
+        <ButtonLink className="w-fit" to="/login">
+          Login
+        </ButtonLink>
       </ViewShell>
     );
   }
@@ -63,11 +63,14 @@ export function AccountView() {
       classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl' }}
     >
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        <Link to="/settings/$section" params={{ section: 'account' }}>
-          <Button size="sm" variant="secondary">
-            Account settings
-          </Button>
-        </Link>
+        <ButtonLink
+          to="/settings/$section"
+          params={{ section: 'account' }}
+          size="sm"
+          variant="secondary"
+        >
+          Account settings
+        </ButtonLink>
         <Button size="sm" variant="text" onClick={() => void logout()}>
           Log out
         </Button>
@@ -88,20 +91,21 @@ export function AccountView() {
         </div>
         <div className="flex flex-wrap gap-2">
           {!loading && !membership?.isMember ? (
-            <Link to="/signup/payment">
-              <Button size="sm">Become a member</Button>
-            </Link>
+            <ButtonLink to="/signup/payment" size="sm">
+              Become a member
+            </ButtonLink>
           ) : null}
-          <Link to="/forgot-password">
-            <Button size="sm" variant="secondary">
-              Reset password
-            </Button>
-          </Link>
-          <Link to="/settings/$section" params={{ section: 'account' }}>
-            <Button size="sm" variant="secondary">
-              Security
-            </Button>
-          </Link>
+          <ButtonLink to="/forgot-password" size="sm" variant="secondary">
+            Reset password
+          </ButtonLink>
+          <ButtonLink
+            to="/settings/$section"
+            params={{ section: 'account' }}
+            size="sm"
+            variant="secondary"
+          >
+            Security
+          </ButtonLink>
         </div>
       </Box>
 
@@ -162,14 +166,14 @@ export function AccountView() {
                             : ''}
                         </p>
                       </div>
-                      <Link
+                      <ButtonLink
                         to="/subscribe/$username"
                         params={{ username: subscription.artist.username }}
+                        size="sm"
+                        variant="text"
                       >
-                        <Button size="sm" variant="text">
-                          Tiers
-                        </Button>
-                      </Link>
+                        Tiers
+                      </ButtonLink>
                     </li>
                   ))}
                 </ul>

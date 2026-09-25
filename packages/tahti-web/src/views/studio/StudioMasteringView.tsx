@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { DownloadIcon, SlidersHorizontalIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, FilePicker, ViewShell } from '@tahti-player/ui';
+import { Button, ButtonAnchor, FilePicker, ViewShell } from '@tahti-player/ui';
 
 import { fetchEditorSource } from '../../api/studio';
 import type { EditorSource } from '../../api/studio-types';
@@ -176,20 +176,16 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
                 {status === 'done' && result ? (
                   <div className="mt-4 flex flex-col gap-3">
                     <audio controls src={result.url} className="w-full" />
-                    <a
+                    <ButtonAnchor
                       href={result.url}
                       download={`${source.title || 'mastered'}.wav`}
+                      size="sm"
+                      variant="secondary"
                       className="w-fit"
                     >
-                      <Button size="sm" variant="secondary">
-                        <DownloadIcon
-                          size={14}
-                          aria-hidden
-                          className="mr-1.5"
-                        />
-                        Download WAV
-                      </Button>
-                    </a>
+                      <DownloadIcon size={14} aria-hidden className="mr-1.5" />
+                      Download WAV
+                    </ButtonAnchor>
                   </div>
                 ) : null}
               </StudioPanel>

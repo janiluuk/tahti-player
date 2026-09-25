@@ -1,8 +1,7 @@
-import { Link } from '@tanstack/react-router';
 import { ScrollTextIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Badge, Box, Button, StatChip, ViewShell } from '@tahti-player/ui';
+import { Badge, Box, ButtonLink, StatChip, ViewShell } from '@tahti-player/ui';
 
 import { fetchPublicGovernanceMotions } from '../api/client';
 import type { PublicGovernanceMotion } from '../api/types';
@@ -24,12 +23,15 @@ export function PublicGovernanceHistoryView() {
       title="Governance history"
       classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl', scrollableArea: 'gap-6' }}
     >
-      <Link to="/transparency">
-        <Button size="sm" variant="secondary">
-          <ScrollTextIcon size={14} aria-hidden className="mr-1.5" />
-          Transparency overview
-        </Button>
-      </Link>
+      <ButtonLink
+        className="w-fit"
+        to="/transparency"
+        size="sm"
+        variant="secondary"
+      >
+        <ScrollTextIcon size={14} aria-hidden className="mr-1.5" />
+        Transparency overview
+      </ButtonLink>
 
       {!loading && motions.length > 0 && (
         <StatChip value={motions.length} label="Closed motions" />

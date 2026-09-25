@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { Button, Tooltip } from '@tahti-player/ui';
+import { Button, ButtonLink, Tooltip } from '@tahti-player/ui';
 
 import {
   fetchAdminGrants,
@@ -78,15 +78,15 @@ export function GrantsTab() {
             new Date().getUTCFullYear() - 2,
             new Date().getUTCFullYear() - 3,
           ].map((year) => (
-            <Link
+            <ButtonLink
               key={year}
               to="/admin/grants/$year"
               params={{ year: String(year) }}
+              size="sm"
+              variant="secondary"
             >
-              <Button size="sm" variant="secondary">
-                {year}
-              </Button>
-            </Link>
+              {year}
+            </ButtonLink>
           ))}
         </div>
       </StudioPanel>

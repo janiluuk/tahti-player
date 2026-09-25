@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 
 import {
   Button,
+  ButtonLink,
   Input,
   SaveButton,
   Textarea,
@@ -252,14 +253,14 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
               </div>
               {episode.soundId ? (
                 <div className="flex flex-wrap gap-2">
-                  <Link
+                  <ButtonLink
                     to="/studio/sounds/$id/editor"
                     params={{ id: episode.soundId }}
+                    size="sm"
+                    variant="secondary"
                   >
-                    <Button size="sm" variant="secondary">
-                      Open full editor
-                    </Button>
-                  </Link>
+                    Open full editor
+                  </ButtonLink>
                   <Button
                     size="sm"
                     variant="secondary"
@@ -271,12 +272,10 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
                 </div>
               ) : (
                 <div className="flex flex-wrap gap-2">
-                  <Link to="/studio/go-live">
-                    <Button size="sm">
-                      <RadioIcon size={14} aria-hidden className="mr-1" />
-                      Go Live to record
-                    </Button>
-                  </Link>
+                  <ButtonLink to="/studio/go-live" size="sm">
+                    <RadioIcon size={14} aria-hidden className="mr-1" />
+                    Go Live to record
+                  </ButtonLink>
                   <p className="text-foreground-secondary w-full text-xs">
                     After the broadcast ends, open Studio → Recordings to edit
                     and attach the saved capture, then return here to approve.
@@ -300,11 +299,15 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
                 {episodeStatusLabel(episode)}.
               </p>
               {episode.soundId && (
-                <Link to="/studio/sounds/$id" params={{ id: episode.soundId }}>
-                  <Button size="sm" variant="secondary">
-                    Open in Library
-                  </Button>
-                </Link>
+                <ButtonLink
+                  className="w-fit"
+                  to="/studio/sounds/$id"
+                  params={{ id: episode.soundId }}
+                  size="sm"
+                  variant="secondary"
+                >
+                  Open in Library
+                </ButtonLink>
               )}
             </section>
           )}

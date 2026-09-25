@@ -1,6 +1,12 @@
 import { useMemo, useState } from 'react';
 
-import { Box, Button, CopyButton, Dialog } from '@tahti-player/ui';
+import {
+  Box,
+  Button,
+  ButtonAnchor,
+  CopyButton,
+  Dialog,
+} from '@tahti-player/ui';
 
 type MusicBrainzTrack = {
   title: string;
@@ -135,11 +141,15 @@ export function MusicBrainzSubmissionAssistant({
               </Button>
             </form>
           ) : (
-            <a href={recordingUrl} target="_blank" rel="noreferrer">
-              <Button size="sm" onClick={() => setIsOpen(false)}>
-                Open prefilled track editor
-              </Button>
-            </a>
+            <ButtonAnchor
+              href={recordingUrl}
+              target="_blank"
+              rel="noreferrer"
+              size="sm"
+              onClick={() => setIsOpen(false)}
+            >
+              Open prefilled track editor
+            </ButtonAnchor>
           )}
         </Dialog.Actions>
       </Dialog.Root>

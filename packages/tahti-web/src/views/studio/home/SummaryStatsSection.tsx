@@ -1,4 +1,3 @@
-import { Link } from '@tanstack/react-router';
 import {
   BarChart3Icon,
   PlusIcon,
@@ -7,7 +6,7 @@ import {
   UsersIcon,
 } from 'lucide-react';
 
-import { Button } from '@tahti-player/ui';
+import { ButtonLink } from '@tahti-player/ui';
 
 import { SummaryStat } from './HomeTiles';
 import type { StudioHomeState } from './useStudioHome';
@@ -56,18 +55,19 @@ export function SummaryStatsSection({ state }: { state: StudioHomeState }) {
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Link to="/studio/releases" search={{ create: true }}>
-              <Button size="sm" variant="secondary">
-                <PlusIcon size={14} aria-hidden className="mr-1.5" />
-                Add an album
-              </Button>
-            </Link>
-            <Link to="/library/upload">
-              <Button size="sm">
-                <PlusIcon size={14} aria-hidden className="mr-1.5" />
-                Add a track
-              </Button>
-            </Link>
+            <ButtonLink
+              to="/studio/releases"
+              search={{ create: true }}
+              size="sm"
+              variant="secondary"
+            >
+              <PlusIcon size={14} aria-hidden className="mr-1.5" />
+              Add an album
+            </ButtonLink>
+            <ButtonLink to="/library/upload" size="sm">
+              <PlusIcon size={14} aria-hidden className="mr-1.5" />
+              Add a track
+            </ButtonLink>
           </div>
         </div>
       ) : null}

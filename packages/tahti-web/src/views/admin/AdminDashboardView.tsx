@@ -1,7 +1,13 @@
-import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { Alert, Badge, Button, Dialog, ViewShell } from '@tahti-player/ui';
+import {
+  Alert,
+  Badge,
+  Button,
+  ButtonLink,
+  Dialog,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import { fetchAdminDashboard, type AdminDashboard } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
@@ -91,18 +97,17 @@ export function AdminDashboardView() {
                             </div>
                           </div>
                           <div className="flex flex-wrap gap-2">
-                            <Link to={row.href}>
-                              <Button
-                                size="sm"
-                                variant={
-                                  row.actionTone === 'amber'
-                                    ? 'secondary'
-                                    : 'default'
-                                }
-                              >
-                                {row.actionLabel}
-                              </Button>
-                            </Link>
+                            <ButtonLink
+                              to={row.href}
+                              size="sm"
+                              variant={
+                                row.actionTone === 'amber'
+                                  ? 'secondary'
+                                  : 'default'
+                              }
+                            >
+                              {row.actionLabel}
+                            </ButtonLink>
                             <Button
                               size="sm"
                               variant="text"
@@ -135,9 +140,9 @@ export function AdminDashboardView() {
                       </Alert>
                       <Dialog.Actions>
                         <Dialog.Close>Close</Dialog.Close>
-                        <Link to={selectedAction.href}>
-                          <Button>{selectedAction.actionLabel}</Button>
-                        </Link>
+                        <ButtonLink to={selectedAction.href}>
+                          {selectedAction.actionLabel}
+                        </ButtonLink>
                       </Dialog.Actions>
                     </>
                   ) : null}

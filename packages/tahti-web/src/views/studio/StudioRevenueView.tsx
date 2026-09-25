@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   Button,
+  ButtonLink,
   EmptyState,
   Tooltip,
   ViewShell,
@@ -104,11 +105,14 @@ export function StudioRevenueView() {
         >
           {!showTiers ? (
             <div className="flex items-center gap-2">
-              <Link to="/help/$slug" params={{ slug: 'earnings' }}>
-                <Button size="sm" variant="secondary">
-                  Earnings guide
-                </Button>
-              </Link>
+              <ButtonLink
+                to="/help/$slug"
+                params={{ slug: 'earnings' }}
+                size="sm"
+                variant="secondary"
+              >
+                Earnings guide
+              </ButtonLink>
               <Tooltip content="Help" side="top">
                 <Button
                   size="icon-sm"
@@ -198,11 +202,13 @@ export function StudioRevenueView() {
                   description="Payout account and Express dashboard — only listed in Studio when Stripe is enabled."
                 >
                   <div data-tour-id="revenue-connect">
-                    <Link to="/studio/stripe">
-                      <Button size="sm" variant="secondary">
-                        Open Stripe dashboard
-                      </Button>
-                    </Link>
+                    <ButtonLink
+                      to="/studio/stripe"
+                      size="sm"
+                      variant="secondary"
+                    >
+                      Open Stripe dashboard
+                    </ButtonLink>
                   </div>
                 </StudioPanel>
               ) : null}

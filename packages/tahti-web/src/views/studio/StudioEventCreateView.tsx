@@ -7,7 +7,14 @@ import {
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Input, Select, Textarea, ViewShell } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonLink,
+  Input,
+  Select,
+  Textarea,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import { fetchVenues } from '../../api/client';
 import { createEvent } from '../../api/events';
@@ -113,12 +120,10 @@ export function StudioEventCreateView() {
                 onChange={(event) => setStartAt(event.target.value)}
               />
               <div className="flex flex-wrap gap-2">
-                <Link to="/studio/events">
-                  <Button size="sm" variant="secondary">
-                    <ArrowLeftIcon size={14} aria-hidden className="mr-1.5" />
-                    Cancel
-                  </Button>
-                </Link>
+                <ButtonLink to="/studio/events" size="sm" variant="secondary">
+                  <ArrowLeftIcon size={14} aria-hidden className="mr-1.5" />
+                  Cancel
+                </ButtonLink>
                 <Button
                   size="sm"
                   disabled={!canSubmit || busy}

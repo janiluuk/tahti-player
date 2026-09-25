@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { PlayIcon } from 'lucide-react';
 
-import { Button } from '@tahti-player/ui';
+import { ButtonLink } from '@tahti-player/ui';
 
 import { StudioPanel } from '../../../components/StudioPanel';
 import type { ShowDetailState } from './useShowDetail';
@@ -47,12 +47,15 @@ export function RecordingsTab({ state }: { state: ShowDetailState }) {
                 </p>
               </div>
               {episode.soundId ? (
-                <Link to="/studio/sounds/$id" params={{ id: episode.soundId }}>
-                  <Button size="sm" variant="secondary">
-                    <PlayIcon size={14} aria-hidden className="mr-1.5" />
-                    Play recording
-                  </Button>
-                </Link>
+                <ButtonLink
+                  to="/studio/sounds/$id"
+                  params={{ id: episode.soundId }}
+                  size="sm"
+                  variant="secondary"
+                >
+                  <PlayIcon size={14} aria-hidden className="mr-1.5" />
+                  Play recording
+                </ButtonLink>
               ) : null}
             </li>
           ))}

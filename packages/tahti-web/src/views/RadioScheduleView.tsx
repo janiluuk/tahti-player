@@ -11,6 +11,7 @@ import { Fragment, useEffect, useMemo, useState } from 'react';
 
 import {
   Button,
+  ButtonLink,
   Dialog,
   FilterChips,
   Input,
@@ -291,18 +292,15 @@ export function RadioScheduleView() {
                   : 'starting soon'}
               </span>
               <Tooltip content="Green room" side="top">
-                <Link
+                <ButtonLink
                   to="/u/$username/green-room"
                   params={{ username: b.username }}
+                  size="icon-sm"
+                  variant="secondary"
+                  aria-label={`Open ${b.displayName}'s green room`}
                 >
-                  <Button
-                    size="icon-sm"
-                    variant="secondary"
-                    aria-label={`Open ${b.displayName}'s green room`}
-                  >
-                    <MicIcon size={16} aria-hidden />
-                  </Button>
-                </Link>
+                  <MicIcon size={16} aria-hidden />
+                </ButtonLink>
               </Tooltip>
             </div>
           ))}

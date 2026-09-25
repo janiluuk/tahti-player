@@ -1,4 +1,3 @@
-import { Link } from '@tanstack/react-router';
 import {
   CalendarDaysIcon,
   Clock3Icon,
@@ -8,7 +7,13 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button, Dialog, ImageReveal, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonLink,
+  Dialog,
+  ImageReveal,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import {
   formatDate,
@@ -234,13 +239,14 @@ export function ScheduledTimes({
             </div>
             <Dialog.Actions>
               {selectedShow.showId ? (
-                <Link
+                <ButtonLink
                   to="/studio/shows/$id"
                   params={{ id: selectedShow.showId }}
                   onClick={() => setSelectedShow(null)}
+                  variant="secondary"
                 >
-                  <Button variant="secondary">Open show</Button>
-                </Link>
+                  Open show
+                </ButtonLink>
               ) : null}
               <Dialog.Close>Close</Dialog.Close>
             </Dialog.Actions>

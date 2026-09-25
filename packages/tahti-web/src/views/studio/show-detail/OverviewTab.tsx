@@ -1,7 +1,14 @@
 import { Link } from '@tanstack/react-router';
 import { CalendarPlusIcon, MicIcon } from 'lucide-react';
 
-import { Button, Input, SaveButton, Textarea, Toggle } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonLink,
+  Input,
+  SaveButton,
+  Textarea,
+  Toggle,
+} from '@tahti-player/ui';
 
 import type { StudioShowSeries } from '../../../api/shows';
 import { ShowImagePicker } from '../../../components/ShowImagePicker';
@@ -145,12 +152,10 @@ export function OverviewTab({
           </p>
         )}
         <div className="mt-3 flex flex-wrap gap-2">
-          <Link to="/studio/go-live">
-            <Button size="sm" variant="text">
-              <MicIcon size={14} aria-hidden className="mr-1" />
-              Stream live
-            </Button>
-          </Link>
+          <ButtonLink to="/studio/go-live" size="sm" variant="text">
+            <MicIcon size={14} aria-hidden className="mr-1" />
+            Stream live
+          </ButtonLink>
         </div>
       </StudioPanel>
 
@@ -185,14 +190,14 @@ export function OverviewTab({
                       {ep.source === 'broadcast' ? ', recorded' : ', upload'}
                     </p>
                   </div>
-                  <Link
+                  <ButtonLink
                     to="/studio/shows/episodes/$episodeId"
                     params={{ episodeId: ep.id }}
+                    size="sm"
+                    variant="secondary"
                   >
-                    <Button size="sm" variant="secondary">
-                      {ep.status === 'PENDING_APPROVAL' ? 'Review' : 'Open'}
-                    </Button>
-                  </Link>
+                    {ep.status === 'PENDING_APPROVAL' ? 'Review' : 'Open'}
+                  </ButtonLink>
                 </li>
               ))}
             </ul>

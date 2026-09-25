@@ -14,6 +14,7 @@ import { useEffect, useState } from 'react';
 import {
   Box,
   Button,
+  ButtonLink,
   Input,
   StatChip,
   Textarea,
@@ -185,17 +186,17 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
       {!embedded && (
         <div className="flex flex-wrap gap-2">
           {QUICK_LINKS.map((link) => (
-            <Link
+            <ButtonLink
               key={link.label}
               to={link.to}
               search={'search' in link ? link.search : undefined}
               onClick={closeSettings}
+              size="sm"
+              variant="secondary"
             >
-              <Button size="sm" variant="secondary">
-                <link.icon size={14} aria-hidden className="mr-1.5" />
-                {link.label}
-              </Button>
-            </Link>
+              <link.icon size={14} aria-hidden className="mr-1.5" />
+              {link.label}
+            </ButtonLink>
           ))}
         </div>
       )}
@@ -275,12 +276,16 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
               {openMotionsTotal === 1 ? '' : 's'} · {openTopicsCount} topics you
               have not voted on
             </p>
-            <Link to="/governance" onClick={closeSettings} className="w-fit">
-              <Button size="sm" variant="noShadow" className="mt-1">
-                View all motions
-                <ArrowRightIcon size={14} aria-hidden className="ml-1.5" />
-              </Button>
-            </Link>
+            <ButtonLink
+              to="/governance"
+              onClick={closeSettings}
+              size="sm"
+              variant="noShadow"
+              className="mt-1 w-fit"
+            >
+              View all motions
+              <ArrowRightIcon size={14} aria-hidden className="ml-1.5" />
+            </ButtonLink>
           </GovernancePanel>
           <GovernancePanel title="Top topics" icon={LandmarkIcon}>
             {requests.length === 0 ? (

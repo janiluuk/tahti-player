@@ -1,8 +1,13 @@
-import { Link } from '@tanstack/react-router';
 import { HeartIcon, ListMusicIcon, ListPlusIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button, Dialog, ImageReveal, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonLink,
+  Dialog,
+  ImageReveal,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../api/types';
 import { soundIdFromPlayableId } from '../lib/soundId';
@@ -152,13 +157,14 @@ export function TrackInfoDialog({
             <Dialog.Actions>
               <Dialog.Close>Close</Dialog.Close>
               {track.artistUsername ? (
-                <Link
+                <ButtonLink
                   to="/u/$username"
                   params={{ username: track.artistUsername }}
                   onClick={onClose}
+                  variant="secondary"
                 >
-                  <Button variant="secondary">Artist page</Button>
-                </Link>
+                  Artist page
+                </ButtonLink>
               ) : null}
             </Dialog.Actions>
           </>

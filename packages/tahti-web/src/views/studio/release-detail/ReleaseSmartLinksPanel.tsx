@@ -15,6 +15,7 @@ import { toast } from 'sonner';
 
 import {
   Button,
+  ButtonLink,
   Dialog,
   EmptyState,
   Input,
@@ -292,15 +293,15 @@ export function ReleaseSmartLinksPanel({
             label="Save destinations"
           />
           <Tooltip content="Open smart link" side="top">
-            <Link to="/r/$slug" params={{ slug: release.smartLinkSlug }}>
-              <Button
-                size="icon-sm"
-                variant="text"
-                aria-label="Open smart link"
-              >
-                <ExternalLinkIcon size={16} aria-hidden />
-              </Button>
-            </Link>
+            <ButtonLink
+              to="/r/$slug"
+              params={{ slug: release.smartLinkSlug }}
+              size="icon-sm"
+              variant="text"
+              aria-label="Open smart link"
+            >
+              <ExternalLinkIcon size={16} aria-hidden />
+            </ButtonLink>
           </Tooltip>
           <span className="text-foreground-secondary text-xs">
             {release.smartLinkViewCount ?? 0} views · /r/{release.smartLinkSlug}

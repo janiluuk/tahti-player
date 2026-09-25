@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 
 import {
   Button,
+  ButtonLink,
   Dialog,
   EmptyState,
   Input,
@@ -105,11 +106,9 @@ export function StudioPlaylistsView() {
           }
         >
           <nav className="flex flex-wrap gap-2" aria-label="Collection views">
-            <Link to="/studio/collections">
-              <Button size="sm" variant="secondary">
-                Collections
-              </Button>
-            </Link>
+            <ButtonLink to="/studio/collections" size="sm" variant="secondary">
+              Collections
+            </ButtonLink>
             <Button size="sm" variant="default" aria-current="page">
               Playlists
             </Button>
@@ -232,15 +231,14 @@ export function StudioPlaylistsView() {
                             : ''}
                       </p>
                     </div>
-                    <Link
+                    <ButtonLink
                       to="/studio/collections/$slug"
                       params={{ slug: c.slug }}
+                      size="sm"
                     >
-                      <Button size="sm">
-                        <PencilIcon size={14} aria-hidden className="mr-1.5" />
-                        Edit
-                      </Button>
-                    </Link>
+                      <PencilIcon size={14} aria-hidden className="mr-1.5" />
+                      Edit
+                    </ButtonLink>
                   </li>
                 ))}
               </ul>

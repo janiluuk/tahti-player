@@ -10,7 +10,14 @@ import {
 import { useState, type CSSProperties } from 'react';
 import { toast } from 'sonner';
 
-import { Button, SaveButton, Textarea, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonAnchor,
+  ButtonLink,
+  SaveButton,
+  Textarea,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import type { PinnedAnnouncement } from '../../api/announcements';
 import type { DiscoWidgetRenderItem } from '../../api/disco-widgets';
@@ -58,33 +65,30 @@ export function ArtistHeaderActions({
           content={`Subscribe to ${artist.displayName}'s fan tiers`}
           side="top"
         >
-          <Link
+          <ButtonLink
             to="/subscribe/$username"
             params={{ username: artist.username }}
+            size="icon-sm"
+            variant="secondary"
+            aria-label={`Subscribe to ${artist.displayName}'s fan tiers`}
+            className={headerButtonClass}
           >
-            <Button
-              size="icon-sm"
-              variant="secondary"
-              className={headerButtonClass}
-              aria-label={`Subscribe to ${artist.displayName}'s fan tiers`}
-            >
-              <UsersRound size={16} aria-hidden />
-            </Button>
-          </Link>
+            <UsersRound size={16} aria-hidden />
+          </ButtonLink>
         </Tooltip>
       ) : null}
       {!isOwner && profile.links.presskit ? (
         <Tooltip content="Download press kit" side="top">
-          <a href={publicPressKitUrl(artist.username)} download>
-            <Button
-              size="icon-sm"
-              variant="secondary"
-              className={headerButtonClass}
-              aria-label="Download press kit"
-            >
-              <DownloadIcon size={16} aria-hidden />
-            </Button>
-          </a>
+          <ButtonAnchor
+            href={publicPressKitUrl(artist.username)}
+            download
+            size="icon-sm"
+            variant="secondary"
+            aria-label="Download press kit"
+            className={headerButtonClass}
+          >
+            <DownloadIcon size={16} aria-hidden />
+          </ButtonAnchor>
         </Tooltip>
       ) : null}
       {channel?.slug && !isOwner ? (
@@ -95,28 +99,29 @@ export function ArtistHeaderActions({
       ) : null}
       {channel?.slug ? (
         <Tooltip content="Open channel" side="top">
-          <Link to="/channel/$slug" params={{ slug: channel.slug }}>
-            <Button
-              size="icon-sm"
-              variant="secondary"
-              className={headerButtonClass}
-              aria-label="Open channel"
-            >
-              <RadioTowerIcon size={16} aria-hidden />
-            </Button>
-          </Link>
+          <ButtonLink
+            to="/channel/$slug"
+            params={{ slug: channel.slug }}
+            size="icon-sm"
+            variant="secondary"
+            aria-label="Open channel"
+            className={headerButtonClass}
+          >
+            <RadioTowerIcon size={16} aria-hidden />
+          </ButtonLink>
         </Tooltip>
       ) : null}
       {isOwner && channel?.slug ? (
-        <Link
+        <ButtonLink
           to="/channel/$slug"
           params={{ slug: channel.slug }}
           search={{ edit: true }}
+          size="sm"
+          variant="secondary"
+          className={headerButtonClass}
         >
-          <Button size="sm" variant="secondary" className={headerButtonClass}>
-            Edit design
-          </Button>
-        </Link>
+          Edit design
+        </ButtonLink>
       ) : isOwner ? (
         <Button
           size="sm"

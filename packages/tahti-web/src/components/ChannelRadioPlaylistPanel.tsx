@@ -1,10 +1,10 @@
-import { Link } from '@tanstack/react-router';
 import { ListMusicIcon, PlusIcon, RadioIcon } from 'lucide-react';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
   Button,
+  ButtonLink,
   Dialog,
   FilterChips,
   Input,
@@ -405,15 +405,15 @@ export const ChannelRadioPlaylistPanel: FC = () => {
                 Use playlist
               </Button>
               {selectedPlaylist ? (
-                <Link
+                <ButtonLink
                   to="/studio/collections/$slug"
                   params={{ slug: selectedPlaylist.slug }}
+                  size="sm"
+                  variant="secondary"
                 >
-                  <Button size="sm" variant="secondary">
-                    <ListMusicIcon size={14} aria-hidden className="mr-1.5" />
-                    Edit tracks
-                  </Button>
-                </Link>
+                  <ListMusicIcon size={14} aria-hidden className="mr-1.5" />
+                  Edit tracks
+                </ButtonLink>
               ) : null}
               <Tooltip content="Create playlist" side="top">
                 <Button

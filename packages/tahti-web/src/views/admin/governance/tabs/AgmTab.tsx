@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import {
   Badge,
   Button,
+  ButtonAnchor,
   CopyButton,
   Input,
   Select,
@@ -577,16 +578,16 @@ export function AgmTab() {
           and member register.
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
-          <a href="/tahti-api/api/admin/members/export.csv">
-            <Button size="sm" variant="secondary">
-              Export member register
-            </Button>
-          </a>
-          <a href="/admin/logs">
-            <Button size="sm" variant="secondary">
-              Open audit log
-            </Button>
-          </a>
+          <ButtonAnchor
+            href="/tahti-api/api/admin/members/export.csv"
+            size="sm"
+            variant="secondary"
+          >
+            Export member register
+          </ButtonAnchor>
+          <ButtonAnchor href="/admin/logs" size="sm" variant="secondary">
+            Open audit log
+          </ButtonAnchor>
         </div>
         <div className="border-border mt-4 border-t pt-3">
           <h3 className="text-sm font-semibold">Published documents</h3>

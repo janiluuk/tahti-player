@@ -2,7 +2,12 @@ import { Link } from '@tanstack/react-router';
 import { ExternalLinkIcon, Link2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, EmptyState, ImageReveal, ViewShell } from '@tahti-player/ui';
+import {
+  ButtonLink,
+  EmptyState,
+  ImageReveal,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import { fetchStudioReleases } from '../api/studio';
 import type { StudioRelease } from '../api/studio-types';
@@ -50,9 +55,9 @@ export function LibrarySmartLinksView() {
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
         <StudioNav current="/library/smartlinks" />
         <ViewShell title="Smartlinks" classes={{ root: 'px-0 pt-0' }}>
-          <Link to="/studio/releases">
-            <Button size="sm">New release</Button>
-          </Link>
+          <ButtonLink className="w-fit" to="/studio/releases" size="sm">
+            New release
+          </ButtonLink>
           <StudioPanel>
             {loading ? (
               <PageLoading label="Loading smartlinks…" />
@@ -69,9 +74,9 @@ export function LibrarySmartLinksView() {
                 title="No releases yet"
                 description="Create a release to get its public smartlink page."
                 action={
-                  <Link to="/studio/releases">
-                    <Button size="sm">Create release</Button>
-                  </Link>
+                  <ButtonLink to="/studio/releases" size="sm">
+                    Create release
+                  </ButtonLink>
                 }
               />
             ) : (
@@ -121,27 +126,24 @@ export function LibrarySmartLinksView() {
                         </div>
                       </div>
                       <div className="flex flex-wrap gap-2">
-                        <Link
+                        <ButtonLink
                           to="/studio/releases/$id"
                           params={{ id: release.id }}
+                          size="sm"
+                          variant="secondary"
                         >
-                          <Button size="sm" variant="secondary">
-                            Manage
-                          </Button>
-                        </Link>
-                        <Link
+                          Manage
+                        </ButtonLink>
+                        <ButtonLink
                           to="/r/$slug"
                           params={{ slug: release.smartLinkSlug }}
+                          size="sm"
+                          variant="text"
+                          aria-label={`Open smartlink for ${release.title}`}
+                          title="Open smartlink"
                         >
-                          <Button
-                            size="sm"
-                            variant="text"
-                            aria-label={`Open smartlink for ${release.title}`}
-                            title="Open smartlink"
-                          >
-                            <ExternalLinkIcon size={15} aria-hidden />
-                          </Button>
-                        </Link>
+                          <ExternalLinkIcon size={15} aria-hidden />
+                        </ButtonLink>
                       </div>
                     </li>
                   );

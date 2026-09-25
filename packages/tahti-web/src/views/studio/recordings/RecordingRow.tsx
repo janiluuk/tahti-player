@@ -6,7 +6,7 @@ import {
   UploadCloudIcon,
 } from 'lucide-react';
 
-import { Button, Tooltip } from '@tahti-player/ui';
+import { Button, ButtonLink, Tooltip } from '@tahti-player/ui';
 
 import type { RecentBroadcast } from '../../../api/broadcast';
 import { formatDate, formatDuration, isPublished } from './helpers';
@@ -83,12 +83,10 @@ export function RecordingRow({
           </Button>
         </Tooltip>
       ) : (
-        <Link to="/studio/sounds">
-          <Button size="sm" variant="secondary">
-            <UploadCloudIcon size={14} aria-hidden className="mr-1.5" />
-            Publish
-          </Button>
-        </Link>
+        <ButtonLink to="/studio/sounds" size="sm" variant="secondary">
+          <UploadCloudIcon size={14} aria-hidden className="mr-1.5" />
+          Publish
+        </ButtonLink>
       )}
     </li>
   );

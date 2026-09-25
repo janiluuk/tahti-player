@@ -4,7 +4,7 @@ import { ComponentPropsWithoutRef, forwardRef } from 'react';
 
 import { cn } from '../../utils';
 
-const buttonVariants = cva(
+export const buttonVariants = cva(
   'inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none',
   {
     variants: {
@@ -41,8 +41,9 @@ const buttonVariants = cva(
   },
 );
 
-type ButtonProps = ComponentPropsWithoutRef<'button'> &
-  VariantProps<typeof buttonVariants>;
+export type ButtonVariantProps = VariantProps<typeof buttonVariants>;
+
+type ButtonProps = ComponentPropsWithoutRef<'button'> & ButtonVariantProps;
 
 export const Button = forwardRef<HTMLElement, ButtonProps>(function Button(
   { variant, size, intent, className, children, type, ...rest },

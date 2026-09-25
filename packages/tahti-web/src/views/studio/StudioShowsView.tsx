@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 
 import {
   Button,
+  ButtonLink,
   Dialog,
   EmptyState,
   FilterChips,
@@ -295,11 +296,14 @@ function ShowRow({
           {show.mode === 'SINGLE' ? ', single show' : ', continuing series'}
         </p>
       </div>
-      <Link to="/studio/shows/$id" params={{ id: show.id }}>
-        <Button size="sm" variant="secondary">
-          Manage
-        </Button>
-      </Link>
+      <ButtonLink
+        to="/studio/shows/$id"
+        params={{ id: show.id }}
+        size="sm"
+        variant="secondary"
+      >
+        Manage
+      </ButtonLink>
     </li>
   );
 }

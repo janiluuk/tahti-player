@@ -1,9 +1,8 @@
-import { Link } from '@tanstack/react-router';
 import { Cast, Mic, Radio as RadioIcon, Shield } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
-  Button,
+  ButtonLink,
   Input,
   SelectableTile,
   SelectableTiles,
@@ -93,11 +92,15 @@ export function BroadcastPanel({
               void patchProgramme({ fallbackAutoEnroll: v });
             }}
           />
-          <Link to="/studio/schedule" onClick={closeSettings}>
-            <Button size="sm" variant="secondary">
-              Open schedule / programme
-            </Button>
-          </Link>
+          <ButtonLink
+            className="w-fit"
+            to="/studio/schedule"
+            onClick={closeSettings}
+            size="sm"
+            variant="secondary"
+          >
+            Open schedule / programme
+          </ButtonLink>
         </div>
       ),
     },
@@ -166,11 +169,15 @@ export function BroadcastPanel({
               void patchGreenRoomPrefs({ holdMusicEnabled: v });
             }}
           />
-          <Link to="/studio/go-live" onClick={closeSettings}>
-            <Button size="sm" variant="secondary">
-              Broadcast
-            </Button>
-          </Link>
+          <ButtonLink
+            className="w-fit"
+            to="/studio/go-live"
+            onClick={closeSettings}
+            size="sm"
+            variant="secondary"
+          >
+            Broadcast
+          </ButtonLink>
         </div>
       ),
     },

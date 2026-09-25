@@ -14,6 +14,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import {
   Button,
+  ButtonLink,
   Dialog,
   EmptyState,
   FilterChips,
@@ -398,13 +399,15 @@ export function StudioCollectionsView() {
                         {`, ${(c.visibility ?? (c.isPublic === false ? 'PRIVATE' : 'PUBLIC')).toLowerCase()}`}
                       </p>
                     </div>
-                    <Link to={editorRouteFor(c)} params={{ slug: c.slug }}>
-                      <Button size="sm">
-                        {['ALBUM', 'EP'].includes(collectionStyle(c))
-                          ? 'Design'
-                          : 'Edit'}
-                      </Button>
-                    </Link>
+                    <ButtonLink
+                      to={editorRouteFor(c)}
+                      params={{ slug: c.slug }}
+                      size="sm"
+                    >
+                      {['ALBUM', 'EP'].includes(collectionStyle(c))
+                        ? 'Design'
+                        : 'Edit'}
+                    </ButtonLink>
                   </li>
                 ))}
               </ul>

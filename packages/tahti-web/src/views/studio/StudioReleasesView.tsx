@@ -14,6 +14,7 @@ import { toast } from 'sonner';
 
 import {
   Button,
+  ButtonLink,
   CopyButton,
   Dialog,
   EmptyState,
@@ -238,12 +239,15 @@ export function StudioReleasesView({
                         </code>
                       </p>
                     </div>
-                    <Link to="/studio/releases/$id" params={{ id: r.id }}>
-                      <Button size="sm" variant="secondary">
-                        <PencilIcon size={14} aria-hidden className="mr-1.5" />
-                        Edit
-                      </Button>
-                    </Link>
+                    <ButtonLink
+                      to="/studio/releases/$id"
+                      params={{ id: r.id }}
+                      size="sm"
+                      variant="secondary"
+                    >
+                      <PencilIcon size={14} aria-hidden className="mr-1.5" />
+                      Edit
+                    </ButtonLink>
                     <CopyButton
                       text={`${window.location.origin}/r/${r.smartLinkSlug}`}
                       size="icon-sm"
@@ -278,29 +282,25 @@ export function StudioReleasesView({
                     {openMoreId === r.id && (
                       <div className="flex w-full flex-wrap gap-2 pt-1">
                         <Tooltip content="Public link" side="top">
-                          <Link
+                          <ButtonLink
                             to="/r/$slug"
                             params={{ slug: r.smartLinkSlug }}
+                            size="icon-sm"
+                            variant="text"
+                            aria-label="Public link"
                           >
-                            <Button
-                              size="icon-sm"
-                              variant="text"
-                              aria-label="Public link"
-                            >
-                              <ExternalLinkIcon size={16} aria-hidden />
-                            </Button>
-                          </Link>
+                            <ExternalLinkIcon size={16} aria-hidden />
+                          </ButtonLink>
                         </Tooltip>
                         <Tooltip content="Distribution" side="top">
-                          <Link to="/studio/distribution">
-                            <Button
-                              size="icon-sm"
-                              variant="text"
-                              aria-label="Distribution"
-                            >
-                              <Share2Icon size={16} aria-hidden />
-                            </Button>
-                          </Link>
+                          <ButtonLink
+                            to="/studio/distribution"
+                            size="icon-sm"
+                            variant="text"
+                            aria-label="Distribution"
+                          >
+                            <Share2Icon size={16} aria-hidden />
+                          </ButtonLink>
                         </Tooltip>
                       </div>
                     )}

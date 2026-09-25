@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react';
 import {
   Box,
   Button,
+  ButtonLink,
   ImageReveal,
   MediaArtwork,
   Tabs,
@@ -238,15 +239,15 @@ export function RadioView() {
             </div>
             <div className="flex shrink-0 items-center gap-2">
               <Tooltip content="Open Tahti Radio channel" side="top">
-                <Link to="/channel/$slug" params={{ slug: TAHTI_RADIO_SLUG }}>
-                  <Button
-                    size="icon-sm"
-                    variant="secondary"
-                    aria-label="Open Tahti Radio channel"
-                  >
-                    <RadioTowerIcon size={16} aria-hidden />
-                  </Button>
-                </Link>
+                <ButtonLink
+                  to="/channel/$slug"
+                  params={{ slug: TAHTI_RADIO_SLUG }}
+                  size="icon-sm"
+                  variant="secondary"
+                  aria-label="Open Tahti Radio channel"
+                >
+                  <RadioTowerIcon size={16} aria-hidden />
+                </ButtonLink>
               </Tooltip>
               {user && (
                 <Tooltip content="Book a slot" side="top">
@@ -288,11 +289,9 @@ export function RadioView() {
               description="Browse live channels or check back soon."
               action={
                 <div className="flex flex-wrap gap-2">
-                  <Link to="/">
-                    <Button size="sm" variant="secondary">
-                      Browse listen
-                    </Button>
-                  </Link>
+                  <ButtonLink to="/" size="sm" variant="secondary">
+                    Browse listen
+                  </ButtonLink>
                   <Button size="sm" variant="secondary" onClick={reload}>
                     Refresh
                   </Button>
@@ -389,11 +388,14 @@ export function RadioView() {
                       },
                     ]}
                   />
-                  <Link to="/channel/$slug" params={{ slug: TAHTI_RADIO_SLUG }}>
-                    <Button size="sm" variant="secondary">
-                      Open channel
-                    </Button>
-                  </Link>
+                  <ButtonLink
+                    to="/channel/$slug"
+                    params={{ slug: TAHTI_RADIO_SLUG }}
+                    size="sm"
+                    variant="secondary"
+                  >
+                    Open channel
+                  </ButtonLink>
                 </div>
               </div>
             </Box>

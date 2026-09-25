@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { lazy, Suspense, useEffect, useState } from 'react';
 
-import { Button, Tabs, Textarea } from '@tahti-player/ui';
+import { Button, ButtonLink, Tabs, Textarea } from '@tahti-player/ui';
 
 import {
   cancelMySubscription,
@@ -119,16 +119,16 @@ export function AccountPanel() {
               <SettingsInfo label="Display name" value={user.displayName} />
               {user.email && <SettingsInfo label="Email" value={user.email} />}
               <div className="flex flex-wrap gap-2">
-                <Link
+                <ButtonLink
                   to="/help/$slug"
                   params={{ slug: 'keyboard-shortcuts' }}
                   onClick={closeSettings}
+                  size="sm"
+                  variant="secondary"
                 >
-                  <Button size="sm" variant="secondary">
-                    <Keyboard size={15} aria-hidden className="mr-1.5" />
-                    Keyboard shortcuts
-                  </Button>
-                </Link>
+                  <Keyboard size={15} aria-hidden className="mr-1.5" />
+                  Keyboard shortcuts
+                </ButtonLink>
                 <Button size="sm" variant="text" onClick={() => void logout()}>
                   <LogOutIcon size={15} aria-hidden className="mr-1.5" />
                   Log out
@@ -317,15 +317,15 @@ export function AccountPanel() {
                       </p>
                     </div>
                     {purchase.tracks[0] ? (
-                      <Link
+                      <ButtonLink
                         to="/t/$id"
                         params={{ id: purchase.tracks[0].id }}
                         onClick={closeSettings}
+                        variant="ghost"
+                        size="sm"
                       >
-                        <Button variant="ghost" size="sm">
-                          Listen
-                        </Button>
-                      </Link>
+                        Listen
+                      </ButtonLink>
                     ) : null}
                   </li>
                 ))}

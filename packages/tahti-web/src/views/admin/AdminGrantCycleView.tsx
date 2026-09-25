@@ -2,7 +2,13 @@ import { Link, useParams } from '@tanstack/react-router';
 import { CheckIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Button, SectionShell, ViewShell } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonAnchor,
+  ButtonLink,
+  SectionShell,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import {
   fetchAdminGrantHistory,
@@ -85,16 +91,21 @@ export function AdminGrantCycleView() {
               classes={{ root: 'px-0 pt-0' }}
             >
               <div className="flex flex-wrap gap-2">
-                <a href={`/tahti-api/api/admin/grants/export.csv?year=${year}`}>
-                  <Button size="sm" variant="secondary">
-                    Board CSV
-                  </Button>
-                </a>
-                <Link to="/admin/governance/$tab" params={{ tab: 'grants' }}>
-                  <Button size="sm" variant="secondary">
-                    All cycles
-                  </Button>
-                </Link>
+                <ButtonAnchor
+                  href={`/tahti-api/api/admin/grants/export.csv?year=${year}`}
+                  size="sm"
+                  variant="secondary"
+                >
+                  Board CSV
+                </ButtonAnchor>
+                <ButtonLink
+                  to="/admin/governance/$tab"
+                  params={{ tab: 'grants' }}
+                  size="sm"
+                  variant="secondary"
+                >
+                  All cycles
+                </ButtonLink>
               </div>
 
               {loading ? (

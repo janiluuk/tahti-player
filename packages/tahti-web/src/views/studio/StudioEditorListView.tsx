@@ -1,9 +1,9 @@
-import { Link } from '@tanstack/react-router';
 import { AudioLinesIcon, FolderOpenIcon, PlusIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 import {
   Button,
+  ButtonLink,
   Dialog,
   Input,
   Select,
@@ -220,30 +220,27 @@ export function StudioEditorListView() {
                       </p>
                     </div>
                     <Tooltip content="Open session" side="top">
-                      <Link to="/studio/editor/$id" params={{ id: p.id }}>
-                        <Button
-                          size="icon-sm"
-                          variant="secondary"
-                          aria-label={`Open ${p.title}`}
-                        >
-                          <FolderOpenIcon size={16} aria-hidden />
-                        </Button>
-                      </Link>
+                      <ButtonLink
+                        to="/studio/editor/$id"
+                        params={{ id: p.id }}
+                        size="icon-sm"
+                        variant="secondary"
+                        aria-label={`Open ${p.title}`}
+                      >
+                        <FolderOpenIcon size={16} aria-hidden />
+                      </ButtonLink>
                     </Tooltip>
                     {p.soundId && (
                       <Tooltip content="Pro editor" side="top">
-                        <Link
+                        <ButtonLink
                           to="/studio/sounds/$id/editor"
                           params={{ id: p.soundId }}
+                          size="icon-sm"
+                          variant="text"
+                          aria-label="Pro editor"
                         >
-                          <Button
-                            size="icon-sm"
-                            variant="text"
-                            aria-label="Pro editor"
-                          >
-                            <AudioLinesIcon size={16} aria-hidden />
-                          </Button>
-                        </Link>
+                          <AudioLinesIcon size={16} aria-hidden />
+                        </ButtonLink>
                       </Tooltip>
                     )}
                   </li>
@@ -332,20 +329,19 @@ export function StudioEditorListView() {
                             {item.genre ? ` · ${item.genre}` : ''}
                           </p>
                         </div>
-                        <Link
+                        <ButtonLink
                           to="/studio/sounds/$id/editor"
                           params={{ id: item.id }}
                           onClick={() => setLibraryOpen(false)}
+                          size="sm"
                         >
-                          <Button size="sm">
-                            <AudioLinesIcon
-                              size={14}
-                              aria-hidden
-                              className="mr-1.5"
-                            />
-                            Open
-                          </Button>
-                        </Link>
+                          <AudioLinesIcon
+                            size={14}
+                            aria-hidden
+                            className="mr-1.5"
+                          />
+                          Open
+                        </ButtonLink>
                       </li>
                     ))}
                   </ul>
