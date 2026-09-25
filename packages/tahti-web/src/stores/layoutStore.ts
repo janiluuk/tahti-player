@@ -66,7 +66,7 @@ export const useLayoutStore = create<LayoutState>()(
       leftWidth: 220,
       rightWidth: 340,
       bottomQueueOpen: false,
-      rightRailTab: 'chat',
+      rightRailTab: 'queue',
       rightRailTabBeforeQueue: null,
       fullScreenPlayerOpen: false,
       chatSlug: null,
@@ -156,13 +156,15 @@ export const useLayoutStore = create<LayoutState>()(
     }),
     {
       name: 'tahti-web-layout',
-      version: 5,
-      migrate: (persisted) => {
+      version: 6,
+      migrate: (persisted, version) => {
         const p = { ...((persisted ?? {}) as Record<string, unknown>) };
         delete p.rightRailMode;
-        const rightRailTab: RightRailTab = isRightRailTab(p.rightRailTab)
-          ? p.rightRailTab
-          : 'chat';
+        // v6 made the rail a queue bar; land everyone on Queue once.
+        const rightRailTab: RightRailTab =
+          version >= 6 && isRightRailTab(p.rightRailTab)
+            ? p.rightRailTab
+            : 'queue';
         return {
           leftCollapsed:
             typeof p.leftCollapsed === 'boolean' ? p.leftCollapsed : false,

@@ -3672,3 +3672,14 @@ Visual-parity port of six tahti-web surfaces from the original Nuclear screensho
 - **Settings:** Playback (volume, mute, shuffle, repeat, skip duration with Shift+Arrow and media-key seek; crossfade shown unsupported), Integrations (ListenBrainz/Last.fm toggles moved from Add-ons; Jam/MCP/MPD/Discord marked desktop-only), Logs (in-memory client log buffer, search, level/scope chips, clear, export). Sidebar split into Settings / App groups via a new optional `SettingsTab.group` in `packages/ui`.
 - **Follow-ups:** volume/mute/shuffle/repeat persisted, page tour ignores Shift+Arrow, `/admin/logs` date-range button no longer covers the search box, Storybook stories for the three new panels, dev proxy rewrites the production session cookie domain so local sign-in against `api.tahti.live` works.
 - **Checks:** tahti-web 946 passing (5 expected fails), ui 361 passing, `tsc`/`eslint` clean. Verified in mock mode, Storybook and signed in against the production API; History stats with real plays were only verified with seeded local history.
+
+## 2026-09-25 — Nuclear queue bar in tahti-web (tahti-web 0.0.141)
+
+The tahti-web right rail is now the Nuclear desktop queue bar. It was already mounted in the shared `PlayerWorkspace.RightSidebar`; the change is its contents.
+
+- **Shared header:** new `QueueHeaderActions` in `@tahti-player/ui` (view toggles with unread count, clear queue, "more" menu). The desktop player's `QueueHeaderActions` now renders it (test id `queue-menu-save-as-playlist`).
+- **Chat and notifications (user decision):** kept in the rail as header toggles next to clear/more instead of tabs. Queue is the default body; pressing the active toggle returns to the queue. `layoutStore` v6 defaults the rail to Queue and moves persisted users there once.
+- **Queue:** full-height list, clear/save/save-local/randomize moved to the header menu. `useQueueBarActions` shares those actions with the mobile drawer and signed-out popover, which keep their footer toolbar. Collapsed, the rail shows queue artwork plus chat/bell buttons.
+- **Storybook:** `Components/QueueHeaderActions` and a rebuilt `Tahti/Misc/RightRailPanel` (queue, empty, long, collapsed, notifications, chat states).
+- **Checks:** root `pnpm lint`, `pnpm type-check`, `pnpm test` green (tahti-web 946 + 5 expected fail, player 707, ui 361). Verified in Storybook and in the app in mock mode (Listen, Studio, Admin; clear confirm, save dialog, toggles, collapse, player-bar queue button, rail override). Not checked: a real channel-designer session and a real-API pass.
+- `packages/tahti-web/src/components/ConnectedQueuePanel.tsx` is not mounted anywhere (story only); left as is.
