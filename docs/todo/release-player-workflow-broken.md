@@ -29,10 +29,23 @@ Still open:
       desktop builds and `latest.json` land on the release.
 - [ ] Run Release Plugin SDK once; add `NPM_TOKEN` and own the `@tahti-player`
       npm scope if npm publishing is wanted.
-- [ ] `release-snap`, `update-aur`, `update-flathub`, `update-winget` trigger on
+- [ ] `update-aur`, `update-flathub`, `update-winget` trigger on
       `workflow_run` of "Release Player" and read the version from
       `head_branch`; that doesn't fire (and would be `master`) when called from
       Bump & Tag. Their store secrets are also not configured.
+
+Snap (same branch): `release-snap.yml` is now called by `release-player.yml`
+after `release-desktop` (`workflow_run` removed), checks out the `player@` tag,
+uploads the `.snap` to the GitHub Release, and publishes to the Snap Store
+`stable` channel only when `SNAPCRAFT_STORE_CREDENTIALS` is set. PRs touching
+`snap/**` run a build-only check. `snap/snapcraft.yaml`: dropped the
+interactive `pnpm approve-builds`, Node 22 → 24 (repo `engines`), pnpm pinned
+to `packageManager`.
+
+- [ ] Confirm the PR snap build passes.
+- [ ] User: `snapcraft register tahti-player`, then
+      `snapcraft export-login --snaps=tahti-player --channels=stable -` →
+      `gh secret set SNAPCRAFT_STORE_CREDENTIALS`.
 
 ## Update 2026-09-07 — root cause found and fixed
 

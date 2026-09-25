@@ -38,7 +38,7 @@ parts:
   build-app:
     plugin: dump
     build-snaps:
-      - node/22/stable
+      - node/24/stable
       - rustup/latest/stable
     build-packages:
       - libwebkit2gtk-4.1-dev
@@ -61,8 +61,8 @@ parts:
 
       rustup default stable
 
-      npm install -g pnpm
-      pnpm approve-builds
+      PNPM_VERSION=$(sed -n 's/.*"packageManager": "pnpm@\([0-9.]*\).*/\1/p' package.json)
+      npm install -g "pnpm@$PNPM_VERSION"
       pnpm install --frozen-lockfile
 
       cd packages/player
