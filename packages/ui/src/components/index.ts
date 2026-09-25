@@ -1,3 +1,4 @@
+export * from './ActionSheet';
 export * from './Alert';
 export * from './Badge';
 export * from './BottomBar';

@@ -5793,3 +5793,7 @@ README, redesign and atlas screenshots are recaptured in the Spotify theme, once
 ## 2026-09-25 — Nuclear queue bar replaces the tabbed right rail
 
 The right rail now follows the Nuclear desktop queue bar: collapse button, Chat and Notifications toggles, then clear queue and a "more" menu (save as playlist, save locally on desktop, randomize order) in the header, with the queue filling the rest. Chat and notifications open in the same rail from their toggles; pressing the active one goes back to the queue. Collapsed, the rail shows queue artwork plus chat and notification buttons. The header is the shared `QueueHeaderActions` from `@tahti-player/ui`, also used by the desktop player. Bumped `packages/tahti-web/package.json` to `0.0.141`.
+
+## 2026-09-25 — Full-screen player "More options" sheet
+
+The full-screen player has a "More options" button in the top-right. It opens an action sheet: a bottom sheet on mobile and a centered panel on desktop. The sheet lists Go to channel, Share, favorites, Add to playlist and Open in Pro Editor, each shown only when it applies to the current item. New `ActionSheet` component in `@tahti-player/ui`. The add-to-playlist dialog now opens above the full-screen player instead of behind it.
