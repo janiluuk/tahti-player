@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import type { PluginCategoryId } from '../content/pluginStoreCategories';
+import type { PluginCategoryTarget } from '../content/pluginStoreCategories';
 import type { SettingsSectionId } from '../views/settings/settingsNav';
 
 export type ArtistSettingsSection =
@@ -21,12 +21,12 @@ type SettingsModalState = {
    * "consume once and clear" value: React 18 StrictMode double-invokes
    * effects/initializers in dev, and a destructive read there is a race
    * (first invocation clears it before the second can see it). */
-  pluginCategory: PluginCategoryId | null;
+  pluginCategory: PluginCategoryTarget | null;
   /** Sub-tab when activeTab === 'artist' (branding / gallery / …). */
   artistSection: ArtistSettingsSection | null;
   open: (
     tab?: SettingsSectionId,
-    pluginCategory?: PluginCategoryId,
+    pluginCategory?: PluginCategoryTarget,
     artistSection?: ArtistSettingsSection,
   ) => void;
   close: () => void;

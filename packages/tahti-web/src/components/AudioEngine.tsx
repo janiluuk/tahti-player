@@ -1,7 +1,8 @@
 import Hls from 'hls.js';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
 import { postListenEvent } from '../api/client';
+import type { TahtiPlayable } from '../api/types';
 import { usePlaybackPrefsStore } from '../stores/playbackPrefsStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 
@@ -39,7 +40,6 @@ export function AudioEngine() {
   const volume = usePlayerStore((s) => s.volume);
   const muted = usePlayerStore((s) => s.muted);
   const seekTarget = usePlayerStore((s) => s.seekTarget);
-  const currentTime = usePlayerStore((s) => s.currentTime);
   const setStatus = usePlayerStore((s) => s.setStatus);
   const setProgress = usePlayerStore((s) => s.setProgress);
   const clearSeekTarget = usePlayerStore((s) => s.clearSeekTarget);
@@ -49,8 +49,14 @@ export function AudioEngine() {
   const skipSeconds = usePlaybackPrefsStore((s) => s.skipSeconds);
   const setAnalyser = usePlayerStore((s) => s.setAnalyser);
 
-  const current = queue.find((q) => q.id === currentId) ?? null;
-  const playable = current ? playableFromQueueItem(current) : null;
+  const current = useMemo(
+    () => queue.find((item) => item.id === currentId) ?? null,
+    [currentId, queue],
+  );
+  const playable = useMemo(
+    () => (current ? playableFromQueueItem(current) : null),
+    [current],
+  );
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -321,24 +327,39 @@ export function AudioEngine() {
     clearSeekTarget();
   }, [seekTarget, clearSeekTarget]);
 
-  // Best-effort listen analytics once an archive item has played long enough.
+  return (
+    <>
+      <audio ref={audioRef} preload="none" className="hidden" />
+      <ListenEventReporter playable={playable} reported={listenReportedRef} />
+    </>
+  );
+}
+
+function ListenEventReporter({
+  playable,
+  reported,
+}: {
+  playable: TahtiPlayable | null;
+  reported: { current: Set<string> };
+}) {
+  const currentTime = usePlayerStore((state) => state.currentTime);
+
   useEffect(() => {
-    if (!playable || playable.kind !== 'sound') {
-      return;
-    }
-    if (currentTime < LISTEN_EVENT_AFTER_SEC) {
-      return;
-    }
-    if (!playable.id.startsWith('sound:')) {
+    if (
+      !playable ||
+      playable.kind !== 'sound' ||
+      currentTime < LISTEN_EVENT_AFTER_SEC ||
+      !playable.id.startsWith('sound:')
+    ) {
       return;
     }
     const soundId = playable.id.slice('sound:'.length);
-    if (!soundId || listenReportedRef.current.has(soundId)) {
+    if (!soundId || reported.current.has(soundId)) {
       return;
     }
-    listenReportedRef.current.add(soundId);
+    reported.current.add(soundId);
     void postListenEvent(soundId);
-  }, [playable, currentTime]);
+  }, [currentTime, playable, reported]);
 
-  return <audio ref={audioRef} preload="none" className="hidden" />;
+  return null;
 }

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 
-import type { PluginCategoryId } from '../../content/pluginStoreCategories';
+import { pluginAudienceForTarget } from '../../content/pluginStoreCategories';
 import {
   useSettingsModalStore,
   type ArtistSettingsSection,
@@ -38,11 +38,11 @@ export function SettingsView({ sectionId }: { sectionId?: string }) {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const category = params.get('category') as PluginCategoryId | null;
+    const category = params.get('category');
     const artistTab = params.get('tab');
     open(
       section,
-      category ?? undefined,
+      category ? pluginAudienceForTarget(category) : undefined,
       section === 'artist' && isArtistSettingsSection(artistTab)
         ? artistTab
         : undefined,

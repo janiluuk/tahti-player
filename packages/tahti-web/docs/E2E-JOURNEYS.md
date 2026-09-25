@@ -78,10 +78,9 @@ node scripts/journeys/admin-journey.mjs
      "view the track" step.
   3. Channel designer, every tab (default, radio, green room, multicast,
      selects).
-  4. Add-ons store, every category tab (Themes, Visualizers, Export, Import,
-     Multicast, Fingerprinting, Scrobbling, Audio tools, Radio, Listen,
-     Discovery, Channel — Tools is skipped, board-only) — the **sell side**
-     of paid content lives in Export/Import here.
+  4. Add-ons store, the Listener and Artist tabs with every group expanded
+     (Admin is skipped, board-only) — the **sell side** of paid content lives
+     in the Artist tab's Import and Releasing groups.
   5. An **exhaustive sweep of every remaining studio/settings tab** (~28
      routes) at a single theme (dark) — see "Sweep vs. hero shots" below.
 - **Admin** (`admin-journey.mjs`) — 3 hero shots (dashboard, users,
