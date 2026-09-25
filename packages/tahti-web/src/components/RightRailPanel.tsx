@@ -1,117 +1,45 @@
-import { Bell, Check, ListMusicIcon, MessageCircle } from 'lucide-react';
-import { useMemo } from 'react';
+import { Bell, ListMusicIcon, MessageCircle } from 'lucide-react';
 
-import {
-  Badge,
-  Button,
-  EmptyState,
-  TabLabel,
-  Tabs,
-  Tooltip,
-} from '@tahti-player/ui';
+import { Badge, Button, QueuePanel, Tooltip } from '@tahti-player/ui';
 
-import type { TahtiNotification } from '../api/notifications';
-import { useIsMobile } from '../hooks/useIsMobile';
 import { useLayoutStore, type RightRailTab } from '../stores/layoutStore';
 import { useNotificationInboxStore } from '../stores/notificationInboxStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { useRightRailOverrideStore } from '../stores/rightRailOverrideStore';
 import { ChannelChatPanel } from './ChannelChatPanel';
+import {
+  RightRailNotificationList,
+  useUnreadNotifications,
+} from './RightRailNotificationList';
 import { SidebarQueuePanel } from './SidebarQueuePanel';
 
-const DESKTOP_TABS: RightRailTab[] = ['chat', 'notifications', 'queue'];
-const MOBILE_TABS: RightRailTab[] = ['chat', 'notifications', 'queue'];
-
-const COLLAPSED_TAB_CLASS =
-  'relative size-9 shrink-0 rounded-md p-0 data-[selected]:bg-primary/15 data-[selected]:text-primary';
+const COLLAPSED_LABELS = {
+  removeButton: 'Remove from queue',
+  playbackError: 'Could not play',
+};
 
 export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
-  const isMobile = useIsMobile();
   const railOverride = useRightRailOverrideStore((s) => s.override);
-  const chatSlug = useLayoutStore((s) => s.chatSlug);
-  const chatEnabled = useLayoutStore((s) => s.chatEnabled);
-  const chatDisabledReason = useLayoutStore((s) => s.chatDisabledReason);
   const tab = useLayoutStore((s) => s.rightRailTab);
-  const setRightRailTab = useLayoutStore((s) => s.setRightRailTab);
-  // Select the raw array (stable reference, only changes on store `set()`)
-  // and derive the filtered list with useMemo. An inline `.filter()` inside
-  // the selector itself returns a new array every call, which trips React's
-  // "getSnapshot should be cached" infinite-render-loop guard as soon as
-  // this component mounts (crashed every post-login render — see
-  // docs/todo/login-infinite-loop-crash.md).
-  const notificationItems = useNotificationInboxStore((s) => s.items);
-  const notifications = useMemo(
-    () => notificationItems.filter((item) => !item.readAt),
-    [notificationItems],
-  );
-  const acknowledgeNotification = useNotificationInboxStore(
-    (s) => s.acknowledge,
-  );
   const toggleRight = useLayoutStore((s) => s.toggleRight);
-  const queueCount = usePlayerStore((s) => s.queue.length);
-  const tabs = isMobile ? MOBILE_TABS : DESKTOP_TABS;
-
-  const openTab = (next: RightRailTab) => {
-    setRightRailTab(next);
-    toggleRight();
-  };
-
-  const selectedIndex = Math.max(0, tabs.indexOf(tab));
 
   if (isCollapsed) {
     if (railOverride) {
       return (
-        <button
-          type="button"
-          className={COLLAPSED_TAB_CLASS}
-          aria-label={`Open ${railOverride.title}`}
-          title={railOverride.title}
-          onClick={() => toggleRight()}
-        >
-          <ListMusicIcon size={18} aria-hidden />
-          <span className="sr-only">{railOverride.title}</span>
-        </button>
+        <Tooltip content={`Open ${railOverride.title}`} side="left">
+          <Button
+            size="icon-sm"
+            variant="text"
+            className="mx-auto"
+            aria-label={`Open ${railOverride.title}`}
+            onClick={() => toggleRight()}
+          >
+            <ListMusicIcon size={18} aria-hidden />
+          </Button>
+        </Tooltip>
       );
     }
-    return (
-      <Tabs.Root
-        vertical
-        selectedIndex={selectedIndex}
-        onChange={(index) => openTab(tabs[index] ?? 'chat')}
-        className="h-full"
-        listClassName="flex-col items-center gap-2 py-3"
-        tabClassName={COLLAPSED_TAB_CLASS}
-      >
-        <Tabs.List
-          aria-label="Chat, notifications, and queue"
-          className="w-auto flex-col"
-        >
-          <Tabs.Tab aria-label="Open chat" title="Open chat">
-            <TabLabel icon={<MessageCircle size={18} />}>
-              <span className="sr-only">Chat</span>
-            </TabLabel>
-          </Tabs.Tab>
-          <Tabs.Tab aria-label="Open notifications" title="Open notifications">
-            <TabLabel
-              icon={<Bell size={18} />}
-              count={
-                notifications.length > 0 ? notifications.length : undefined
-              }
-            >
-              <span className="sr-only">Notifications</span>
-            </TabLabel>
-          </Tabs.Tab>
-          <Tabs.Tab aria-label="Open queue" title="Open queue">
-            <TabLabel
-              icon={<ListMusicIcon size={18} />}
-              count={queueCount > 0 ? queueCount : undefined}
-            >
-              <span className="sr-only">Queue</span>
-            </TabLabel>
-          </Tabs.Tab>
-        </Tabs.List>
-      </Tabs.Root>
-    );
+    return <CollapsedQueueBar />;
   }
 
   if (railOverride) {
@@ -134,129 +62,129 @@ export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col" data-testid="right-rail">
-      <Tabs.Root
-        selectedIndex={selectedIndex}
-        onChange={(index) => setRightRailTab(tabs[index] ?? 'chat')}
-      >
-        <Tabs.List
-          aria-label="Chat, notifications, and queue"
-          className="border-border shrink-0 border-b px-2 py-1"
-        >
-          <Tabs.Tab>
-            <TabLabel icon={<MessageCircle size={13} />}>Chat</TabLabel>
-          </Tabs.Tab>
-          <Tabs.Tab>
-            <TabLabel
-              icon={<Bell size={13} />}
-              count={
-                notifications.length > 0 ? notifications.length : undefined
-              }
-            >
-              Notifications
-            </TabLabel>
-          </Tabs.Tab>
-          <Tabs.Tab>
-            <TabLabel
-              icon={<ListMusicIcon size={13} />}
-              count={queueCount > 0 ? queueCount : undefined}
-            >
-              Queue
-            </TabLabel>
-          </Tabs.Tab>
-        </Tabs.List>
-      </Tabs.Root>
-
-      <div className="min-h-0 flex-1 overflow-hidden">
-        {tab === 'queue' ? (
-          <SidebarQueuePanel compact />
-        ) : tab === 'notifications' ? (
-          <NotificationList
-            notifications={notifications}
-            onRead={(id) => {
-              void acknowledgeNotification(id);
-            }}
-          />
-        ) : chatEnabled && chatSlug ? (
-          <div className="flex h-full min-h-0 flex-col p-2">
-            <ChannelChatPanel slug={chatSlug} rail />
-          </div>
-        ) : (
-          <div className="text-foreground-secondary flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-sm">
-            <MessageCircle size={40} className="opacity-40" />
-            <p className="text-foreground font-semibold">Chat unavailable</p>
-            <p className="text-xs opacity-70">
-              {chatDisabledReason ?? 'Open a channel with chat enabled.'}
-            </p>
-          </div>
-        )}
-      </div>
+    <div
+      className="flex h-full min-h-0 flex-col"
+      data-testid="right-rail"
+      data-right-rail-view={tab}
+    >
+      <RightRailBody tab={tab} />
     </div>
   );
 }
 
-function NotificationList({
-  notifications,
-  onRead,
-}: {
-  notifications: TahtiNotification[];
-  onRead: (id: string) => void;
-}) {
-  if (notifications.length === 0) {
+function RightRailBody({ tab }: { tab: RightRailTab }) {
+  const chatSlug = useLayoutStore((s) => s.chatSlug);
+  const chatEnabled = useLayoutStore((s) => s.chatEnabled);
+  const chatDisabledReason = useLayoutStore((s) => s.chatDisabledReason);
+  const acknowledge = useNotificationInboxStore((s) => s.acknowledge);
+  const notifications = useUnreadNotifications();
+
+  if (tab === 'notifications') {
     return (
-      <EmptyState
-        size="sm"
-        icon={<Check size={28} className="opacity-50" />}
-        title="All caught up"
-        className="h-full"
+      <RightRailNotificationList
+        notifications={notifications}
+        onRead={(id) => {
+          void acknowledge(id);
+        }}
       />
     );
   }
 
+  if (tab === 'chat') {
+    if (chatEnabled && chatSlug) {
+      return <ChannelChatPanel slug={chatSlug} rail />;
+    }
+    return (
+      <div className="text-foreground-secondary flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-sm">
+        <MessageCircle size={40} className="opacity-40" />
+        <p className="text-foreground font-semibold">Chat unavailable</p>
+        <p className="text-xs opacity-70">
+          {chatDisabledReason ?? 'Open a channel with chat enabled.'}
+        </p>
+      </div>
+    );
+  }
+
+  return <SidebarQueuePanel toolbar={false} />;
+}
+
+/** Nuclear's collapsed rail: queue artwork only, plus chat/notification entry points. */
+function CollapsedQueueBar() {
+  const queue = usePlayerStore((s) => s.queue);
+  const currentId = usePlayerStore((s) => s.currentId);
+  const playQueueIndex = usePlayerStore((s) => s.playQueueIndex);
+  const setRightRailTab = useLayoutStore((s) => s.setRightRailTab);
+  const toggleRight = useLayoutStore((s) => s.toggleRight);
+  const unreadCount = useUnreadNotifications().length;
+
+  const open = (view: RightRailTab) => {
+    setRightRailTab(view);
+    toggleRight();
+  };
+
   return (
-    <ul className="tahti-hide-scrollbar flex h-full flex-col gap-2 overflow-y-auto p-2">
-      {notifications.map((notification) => (
-        <li
-          key={notification.id}
-          className="border-accent-purple/40 bg-accent-purple/10 rounded-md border-l-2 p-2 text-xs"
-        >
-          <div className="flex items-start gap-2">
-            <div className="min-w-0 flex-1">
-              {notification.sticky ? (
-                <Badge variant="pill" color="yellow" className="mb-1">
-                  Needs acknowledgement
-                </Badge>
-              ) : null}
-              <p className="font-semibold">{notification.title}</p>
-              {notification.body ? (
-                <p className="text-foreground-secondary mt-0.5">
-                  {notification.body}
-                </p>
-              ) : null}
-              <p className="text-foreground-secondary mt-1 text-[10px] opacity-70">
-                {new Date(notification.createdAt).toLocaleString()}
-              </p>
-            </div>
-            <Tooltip
-              content={notification.sticky ? 'Acknowledge' : 'Mark as seen'}
-              side="top"
+    <div
+      className="flex h-full min-h-0 flex-col items-center"
+      data-testid="right-rail"
+      data-right-rail-collapsed
+    >
+      <div className="min-h-0 w-full flex-1">
+        {queue.length > 0 ? (
+          <QueuePanel
+            items={queue}
+            currentItemId={currentId ?? undefined}
+            isCollapsed
+            reorderable={false}
+            onSelectItem={(id) => playQueueIndex(id)}
+            labels={COLLAPSED_LABELS}
+          />
+        ) : (
+          <Tooltip content="Open queue" side="left">
+            <Button
+              size="icon-sm"
+              variant="text"
+              className="text-foreground-secondary mx-auto flex"
+              aria-label="Open queue"
+              onClick={() => open('queue')}
             >
-              <Button
-                size="icon-sm"
-                variant="text"
-                aria-label={
-                  notification.sticky
-                    ? `Acknowledge ${notification.title}`
-                    : `Mark ${notification.title} as seen`
-                }
-                onClick={() => onRead(notification.id)}
+              <ListMusicIcon size={18} aria-hidden />
+            </Button>
+          </Tooltip>
+        )}
+      </div>
+      <div className="border-border flex shrink-0 flex-col items-center gap-1 border-t py-2">
+        <Tooltip content="Open chat" side="left">
+          <Button
+            size="icon-sm"
+            variant="text"
+            className="text-foreground-secondary"
+            aria-label="Open chat"
+            onClick={() => open('chat')}
+          >
+            <MessageCircle size={18} aria-hidden />
+          </Button>
+        </Tooltip>
+        <Tooltip content="Open notifications" side="left">
+          <Button
+            size="icon-sm"
+            variant="text"
+            className="text-foreground-secondary relative"
+            aria-label="Open notifications"
+            onClick={() => open('notifications')}
+          >
+            <Bell size={18} aria-hidden />
+            {unreadCount > 0 ? (
+              <Badge
+                variant="pill"
+                color="purple"
+                className="absolute -top-1 -right-1 min-w-4 px-1 text-[10px] leading-4"
               >
-                <Check size={14} />
-              </Button>
-            </Tooltip>
-          </div>
-        </li>
-      ))}
-    </ul>
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </Badge>
+            ) : null}
+          </Button>
+        </Tooltip>
+      </div>
+    </div>
   );
 }

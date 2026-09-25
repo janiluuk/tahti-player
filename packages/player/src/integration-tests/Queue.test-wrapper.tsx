@@ -180,7 +180,7 @@ export const QueueWrapper = {
 
   moreMenu: {
     get saveAsPlaylistOption() {
-      return screen.getByTestId('save-queue-as-playlist');
+      return screen.getByTestId('queue-menu-save-as-playlist');
     },
     async clickSaveAsPlaylist() {
       await user.click(this.saveAsPlaylistOption);
