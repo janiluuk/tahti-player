@@ -1,7 +1,13 @@
 import { mkdirSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import { chromium } from 'playwright';
+import { chromium } from '@playwright/test';
+
+import {
+  CAPTURE_THEME_STATE,
+  prepareCapturePage,
+  withThemeSuffix,
+} from './lib/captureSetup.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const outDir = join(__dirname, '../docs/redesign-shots');
@@ -24,33 +30,24 @@ const layoutClosed = {
   version: 3,
 };
 
-// Dark + amber ("nuclear:tahti-dark" -- the tahti.live pitch palette, see
-// packages/themes/src/basic/tahti-dark.css), matching this script's own
-// name instead of each viewer's default light theme (same theme + legacy
-// bootstrap keys as capture-map-screens.mjs).
-const THEME_STATE = {
-  state: {
-    themeId: 'nuclear:tahti-dark',
-    dark: true,
-    colorMode: 'dark',
-    customThemes: {},
-  },
-  version: 0,
-};
+// Spotify theme in CAPTURE_THEME_MODE (see lib/captureSetup.mjs).
+const THEME_STATE = CAPTURE_THEME_STATE;
 
 async function setDarkTheme() {
   await page.evaluate((theme) => {
     localStorage.setItem('tahti-web-theme', JSON.stringify(theme));
     localStorage.setItem('tahti-nuclear-theme-id', theme.state.themeId);
-    localStorage.setItem('tahti-nuclear-dark', '1');
+    localStorage.setItem('tahti-nuclear-dark', theme.state.dark ? '1' : '0');
   }, THEME_STATE);
 }
 
 let browser = await chromium.launch({
   channel: 'chromium',
+  executablePath: process.env.CHROMIUM_PATH || undefined,
   args: ['--disable-dev-shm-usage', '--disable-gpu'],
 });
 let page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+await prepareCapturePage(page);
 let authed = false;
 
 async function ensureChatClosed() {
@@ -76,9 +73,11 @@ async function relaunch() {
   }
   browser = await chromium.launch({
     channel: 'chromium',
+    executablePath: process.env.CHROMIUM_PATH || undefined,
     args: ['--disable-dev-shm-usage', '--disable-gpu'],
   });
   page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  await prepareCapturePage(page);
   if (boardAuthed) {
     boardAuthed = false;
     authed = false;
@@ -105,6 +104,7 @@ async function authAs() {
             email: 'board@tahti.live',
             username: 'board',
             displayName: 'Board Member',
+            role: 'BOARD',
             isBoard: true,
             membershipStatus: 'ACTIVE',
             channel: { slug: 'demo', state: 'OFFLINE' },
@@ -135,6 +135,7 @@ async function boardAuthAs() {
             email: 'board@tahti.live',
             username: 'board',
             displayName: 'Board Member',
+            role: 'BOARD',
             isBoard: true,
             membershipStatus: 'ACTIVE',
             channel: { slug: 'demo', state: 'OFFLINE' },
@@ -245,7 +246,7 @@ async function captureOnce(path, out) {
   await page.waitForTimeout(1200);
   await ensureChatClosed();
   const text = await page.locator('body').innerText();
-  const outPath = join(outDir, out);
+  const outPath = join(outDir, withThemeSuffix(out));
   await page.screenshot({ path: outPath, fullPage: true });
   return text.slice(0, 120).replace(/\n/g, ' ');
 }

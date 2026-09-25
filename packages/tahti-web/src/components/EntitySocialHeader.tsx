@@ -248,12 +248,6 @@ export function EntitySocialHeader({
         style={scrimStyle}
       />
 
-      {actions ? (
-        <div className="absolute top-4 right-4 z-10 flex flex-wrap items-center justify-end gap-2">
-          {actions}
-        </div>
-      ) : null}
-
       <div className="flex flex-wrap items-center gap-5">
         {imageUrl ? (
           onImageClick ? (
@@ -319,7 +313,7 @@ export function EntitySocialHeader({
             aria-hidden
           />
         )}
-        <div className="flex min-w-0 flex-1 flex-col gap-1 pr-12">
+        <div className="flex min-w-0 flex-1 flex-col gap-1">
           <h1 className="font-heading text-3xl font-extrabold tracking-tight">
             {title}
           </h1>
@@ -360,6 +354,11 @@ export function EntitySocialHeader({
             </div>
           ) : null}
         </div>
+        {actions ? (
+          <div className="z-10 flex shrink-0 flex-wrap items-center justify-end gap-2 self-start">
+            {actions}
+          </div>
+        ) : null}
       </div>
 
       {activeStats.length > 0 ? (

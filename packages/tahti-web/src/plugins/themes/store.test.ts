@@ -16,3 +16,22 @@ describe('isDynamicDark', () => {
     expect(isDynamicDark(date)).toBe(expected);
   });
 });
+
+describe('first-run theme', () => {
+  it('defaults to Nuclear Green in dark mode when nothing is stored', async () => {
+    localStorage.clear();
+    const { useThemeStore } = await import('./store');
+    await useThemeStore.persist.rehydrate();
+    useThemeStore.getState().init();
+    const state = useThemeStore.getState();
+    expect(state.themeId).toBe('custom:nuclear-green');
+    expect(state.colorMode).toBe('dark');
+    expect(document.documentElement.getAttribute('data-theme-id')).toBe(
+      'nuclear:default',
+    );
+    expect(document.getElementById('advanced-theme')?.textContent).toContain(
+      '#0c1915',
+    );
+    expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
+  });
+});

@@ -1,4 +1,6 @@
-# E2E journey screenshots (4 categories) — status: open
+# E2E journey screenshots (4 categories)
+
+**Status:** partial
 
 Ports `tahti-org`'s `apps/web` 4-category e2e journey/screenshot setup
 (anonymous/listener/artist/admin, light+dark, 3440×1440) to
@@ -26,51 +28,18 @@ app's real `colorMode` theme setting instead of browser
   (Export/Import cover the "paid content sell side" + import/export ask).
 - Listener journey's fan-tier subscribe page is the matching "buy side".
 
-## Flagged while running (not yet triaged/fixed)
+## Flagged findings — triaged 2026-09-25
 
-1. **Bug — broken visual state on `/studio/sounds/$id` (track editor) after
-   a fresh upload.** Both light and dark captures
-   (`docs/e2e-journeys/artist/{light,dark}/04-track-view.png`) show every
-   form field (title, description, release date, genre, audience, toggles,
-   "Save"/"Private" pills, the revision drop zone) rendered with a solid
-   red/coral/pink fill instead of the app's normal surface color — not a
-   single stray element, the whole page. Reproduces in both themes.
-   **Caveat:** these journeys set `colorMode`/`themeId` by writing directly
-   to the `tahti-web-theme` localStorage key rather than through the real
-   Settings → Add-ons → Themes UI (see `scripts/journeys/lib.mjs`), so this
-   could be a theme-init race specific to that shortcut rather than
-   something a real user hits — needs one manual pass through the actual UI
-   (upload a track, open its editor page) to confirm before filing as a
-   genuine product bug.
-2. **UX — studio dashboard bottom row renders as unstyled solid-color
-   blocks.** `docs/e2e-journeys/artist/light/02-studio-dashboard.png`: the
-   "Shows / Music / Upload / Collections / Releases" quick-link row renders
-   as flat purple/green/olive/red rectangles with barely-legible text,
-   looking like a missing background-image/gradient or an unstyled
-   fallback state rather than the intended card design. Also visible: some
-   focus-ring-style borders (nav item, tab, "Open"/"Publish" buttons) that
-   look like a stuck `:focus-visible` outline rather than intentional
-   styling. Same caveat as above re: the localStorage theme-injection
-   shortcut — worth a manual check first.
-3. **Minor — `run-e2e-journeys.sh` port default (5195) is a convention
-   picked for this task, not an existing repo standard** (existing capture
-   scripts default to 5192 via `STUDIO_AUDIT_BASE_URL`, `vite dev`'s own
-   default is 5180). No conflict since `--strictPort` is used, but worth
-   aligning if these scripts get consolidated with the older
-   `capture-*.mjs` family later.
+Reproduced through the real Settings → Themes UI (not the localStorage shortcut), in mock mode:
+
+1. **Red/pink track editor — not a bug.** It is the stock Nuclear light palette (`nuclear:default`: pink input fills, coral primary on the cover header), same as Storybook. The capture did show a real bug: the header's action buttons (pin, quick edits, editor, Public, Save) overlapped the track title, because `EntitySocialHeader` pinned actions absolutely with only `pr-12` clearance. Fixed: actions now sit in the header row (top-right, title wraps beside them); affects every entity header, including the artist page.
+2. **Studio quick-link tiles — real bug, fixed.** `StudioActionTile` centred its icon over the whole tile, so the title band covered it; the icon now centres in the area below the band. The "stuck focus ring" borders are the Nuclear light theme's thick borders and offset shadows, not a focus state.
+3. **Minor, open — `run-e2e-journeys.sh` port default (5195)** is not an existing repo standard (other capture scripts use 5180/5190/5192). No conflict thanks to `--strictPort`; align if the capture scripts are consolidated.
 
 ## Remaining / follow-up
 
-- Confirm findings 1–2 by reproducing through the real Settings → Add-ons →
-  Themes UI (not the localStorage shortcut) before filing as product bugs.
-- Consider whether `capture-studio-audit.mjs` (the existing exhaustive
-  studio+admin sweep, single theme, no light/dark) should be retired in
-  favor of `artist-journey.mjs`'s / `admin-journey.mjs`'s sweep mode, which
-  covers the same ground plus real interactions — not done here to avoid
-  breaking whatever currently depends on `docs/redesign-shots/studio-audit/`.
-- `docs/e2e-journeys/` screenshots are not yet committed — review and commit
-  the ones worth keeping as a reference (same convention as
-  `docs/redesign-shots/`).
+- Consider retiring `capture-studio-audit.mjs` (exhaustive studio+admin sweep, single theme) in favor of `artist-journey.mjs` / `admin-journey.mjs` sweep mode; not done to avoid breaking whatever depends on `docs/redesign-shots/studio-audit/`.
+- Finding 3 above.
 
 ## Note on how this landed
 
