@@ -40,7 +40,7 @@ Capture: [`scripts/capture-readme-guide.mjs`](../scripts/capture-readme-guide.mj
 
 <a id="listen-home"></a>
 
-<img src="./readme-shots/listen-home.png" alt="Listener home" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/listen-home--light.png" /><img src="./readme-shots/listen-home.png" alt="Listener home" width="1680" /></picture>
 
 Browse stations, releases and the active player.
 
@@ -50,7 +50,7 @@ Browse stations, releases and the active player.
 
 <a id="listen-radio"></a>
 
-<img src="./readme-shots/listen-radio.png" alt="Radio directory" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/listen-radio--light.png" /><img src="./readme-shots/listen-radio.png" alt="Radio directory" width="1680" /></picture>
 
 Find live channels and open a station.
 
@@ -60,7 +60,7 @@ Find live channels and open a station.
 
 <a id="listen-discover"></a>
 
-<img src="./readme-shots/listen-discover.png" alt="Discover" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/listen-discover--light.png" /><img src="./readme-shots/listen-discover.png" alt="Discover" width="1680" /></picture>
 
 Explore tracks, artists and collections.
 
@@ -70,7 +70,7 @@ Explore tracks, artists and collections.
 
 <a id="listen-feed"></a>
 
-<img src="./readme-shots/listen-feed.png" alt="Your feed" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/listen-feed--light.png" /><img src="./readme-shots/listen-feed.png" alt="Your feed" width="1680" /></picture>
 
 Follow updates and play shared tracks.
 
@@ -80,7 +80,7 @@ Follow updates and play shared tracks.
 
 <a id="library-all-sounds"></a>
 
-<img src="./readme-shots/library-all-sounds.png" alt="Library / All sounds" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/library-all-sounds--light.png" /><img src="./readme-shots/library-all-sounds.png" alt="Library / All sounds" width="1680" /></picture>
 
 Manage uploaded audio with search, filters and playback.
 
@@ -90,7 +90,7 @@ Manage uploaded audio with search, filters and playback.
 
 <a id="library-collections"></a>
 
-<img src="./readme-shots/library-collections.png" alt="Library / Collections" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/library-collections--light.png" /><img src="./readme-shots/library-collections.png" alt="Library / Collections" width="1680" /></picture>
 
 Organize albums, EPs, playlists and podcasts.
 
@@ -100,7 +100,7 @@ Organize albums, EPs, playlists and podcasts.
 
 <a id="library-recordings"></a>
 
-<img src="./readme-shots/library-recordings.png" alt="Library / Recordings" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/library-recordings--light.png" /><img src="./readme-shots/library-recordings.png" alt="Library / Recordings" width="1680" /></picture>
 
 Review recordings from broadcasts and shows.
 
@@ -110,7 +110,7 @@ Review recordings from broadcasts and shows.
 
 <a id="library-history"></a>
 
-<img src="./readme-shots/library-history.png" alt="Library / History" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/library-history--light.png" /><img src="./readme-shots/library-history.png" alt="Library / History" width="1680" /></picture>
 
 Return to recently played items and listening history.
 
@@ -120,7 +120,7 @@ Return to recently played items and listening history.
 
 <a id="library-favorites"></a>
 
-<img src="./readme-shots/library-favorites.png" alt="Library / Favourites" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/library-favorites--light.png" /><img src="./readme-shots/library-favorites.png" alt="Library / Favourites" width="1680" /></picture>
 
 Keep loved tracks available from the main library.
 
@@ -130,7 +130,7 @@ Keep loved tracks available from the main library.
 
 <a id="library-smartlinks"></a>
 
-<img src="./readme-shots/library-smartlinks.png" alt="Library / Smartlinks" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/library-smartlinks--light.png" /><img src="./readme-shots/library-smartlinks.png" alt="Library / Smartlinks" width="1680" /></picture>
 
 Create and monitor shareable release links.
 
@@ -140,7 +140,7 @@ Create and monitor shareable release links.
 
 <a id="listener-messages"></a>
 
-<img src="./readme-shots/listener-messages.png" alt="Messages" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/listener-messages--light.png" /><img src="./readme-shots/listener-messages.png" alt="Messages" width="1680" /></picture>
 
 Open conversations and highlighted message threads.
 
@@ -150,7 +150,7 @@ Open conversations and highlighted message threads.
 
 <a id="settings-account"></a>
 
-<img src="./readme-shots/settings-account.png" alt="Settings / Account" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/settings-account--light.png" /><img src="./readme-shots/settings-account.png" alt="Settings / Account" width="1680" /></picture>
 
 Manage identity, security, privacy and notifications.
 
@@ -160,7 +160,7 @@ Manage identity, security, privacy and notifications.
 
 <a id="settings-artist"></a>
 
-<img src="./readme-shots/settings-artist.png" alt="Settings / Artist" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/settings-artist--light.png" /><img src="./readme-shots/settings-artist.png" alt="Settings / Artist" width="1680" /></picture>
 
 Edit artist identity, branding, gallery and connections.
 
@@ -170,7 +170,7 @@ Edit artist identity, branding, gallery and connections.
 
 <a id="settings-channel"></a>
 
-<img src="./readme-shots/settings-channel.png" alt="Settings / Channel" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/settings-channel--light.png" /><img src="./readme-shots/settings-channel.png" alt="Settings / Channel" width="1680" /></picture>
 
 Configure channel details and public discovery.
 
@@ -180,7 +180,7 @@ Configure channel details and public discovery.
 
 <a id="settings-broadcast"></a>
 
-<img src="./readme-shots/settings-broadcast.png" alt="Settings / Broadcast" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/settings-broadcast--light.png" /><img src="./readme-shots/settings-broadcast.png" alt="Settings / Broadcast" width="1680" /></picture>
 
 Configure radio, green room and multicast destinations.
 
@@ -190,7 +190,7 @@ Configure radio, green room and multicast destinations.
 
 <a id="settings-audience"></a>
 
-<img src="./readme-shots/settings-audience.png" alt="Settings / Audience" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/settings-audience--light.png" /><img src="./readme-shots/settings-audience.png" alt="Settings / Audience" width="1680" /></picture>
 
 Manage tiers, subscriptions and grants.
 
@@ -200,7 +200,7 @@ Manage tiers, subscriptions and grants.
 
 <a id="settings-themes"></a>
 
-<img src="./readme-shots/settings-themes.png" alt="Settings / Themes" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/settings-themes--light.png" /><img src="./readme-shots/settings-themes.png" alt="Settings / Themes" width="1680" /></picture>
 
 Choose the visual language and appearance.
 
@@ -210,7 +210,7 @@ Choose the visual language and appearance.
 
 <a id="settings-addons"></a>
 
-<img src="./readme-shots/settings-addons.png" alt="Settings / Add-ons" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/settings-addons--light.png" /><img src="./readme-shots/settings-addons.png" alt="Settings / Add-ons" width="1680" /></picture>
 
 Configure player, import, export and channel extensions.
 
@@ -220,7 +220,7 @@ Configure player, import, export and channel extensions.
 
 <a id="settings-whats-new"></a>
 
-<img src="./readme-shots/settings-whats-new.png" alt="Settings / What’s new" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/settings-whats-new--light.png" /><img src="./readme-shots/settings-whats-new.png" alt="Settings / What’s new" width="1680" /></picture>
 
 Read product changes and release notes.
 
@@ -230,7 +230,7 @@ Read product changes and release notes.
 
 <a id="public-artist"></a>
 
-<img src="./readme-shots/public-artist.png" alt="Artist profile" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/public-artist--light.png" /><img src="./readme-shots/public-artist.png" alt="Artist profile" width="1680" /></picture>
 
 See the artist identity, story, people and public catalogue.
 
@@ -250,7 +250,7 @@ See the artist identity, story, people and public catalogue.
 
 <a id="public-channel-aurora"></a>
 
-<img src="./readme-shots/public-channel-aurora.png" alt="Public channel / Aurora" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/public-channel-aurora--light.png" /><img src="./readme-shots/public-channel-aurora.png" alt="Public channel / Aurora" width="1680" /></picture>
 
 A public artist channel with the Aurora visualizer.
 
@@ -260,7 +260,7 @@ A public artist channel with the Aurora visualizer.
 
 <a id="public-radio-grid"></a>
 
-<img src="./readme-shots/public-radio-grid.png" alt="Public radio channel / Reactive Grid" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/public-radio-grid--light.png" /><img src="./readme-shots/public-radio-grid.png" alt="Public radio channel / Reactive Grid" width="1680" /></picture>
 
 Listen to a live channel with a different visualizer preset.
 
@@ -270,7 +270,7 @@ Listen to a live channel with a different visualizer preset.
 
 <a id="governance"></a>
 
-<img src="./readme-shots/governance.png" alt="Governance" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/governance--light.png" /><img src="./readme-shots/governance.png" alt="Governance" width="1680" /></picture>
 
 Review proposals, voting and community decisions.
 
@@ -280,7 +280,7 @@ Review proposals, voting and community decisions.
 
 <a id="help-center"></a>
 
-<img src="./readme-shots/help-center.png" alt="Help center" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/help-center--light.png" /><img src="./readme-shots/help-center.png" alt="Help center" width="1680" /></picture>
 
 Find guidance for listening, publishing and broadcasting.
 
@@ -290,7 +290,7 @@ Find guidance for listening, publishing and broadcasting.
 
 <a id="platform-status"></a>
 
-<img src="./readme-shots/platform-status.png" alt="Platform status" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/platform-status--light.png" /><img src="./readme-shots/platform-status.png" alt="Platform status" width="1680" /></picture>
 
 Check service health and operational status.
 
@@ -336,7 +336,7 @@ Check service health and operational status.
 
 <a id="studio-overview"></a>
 
-<img src="./readme-shots/studio-overview.png" alt="Studio / Overview" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-overview--light.png" /><img src="./readme-shots/studio-overview.png" alt="Studio / Overview" width="1680" /></picture>
 
 See channel health, upcoming shows and work that needs attention.
 
@@ -346,7 +346,7 @@ See channel health, upcoming shows and work that needs attention.
 
 <a id="studio-branding"></a>
 
-<img src="./readme-shots/studio-branding.png" alt="Studio / Branding" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-branding--light.png" /><img src="./readme-shots/studio-branding.png" alt="Studio / Branding" width="1680" /></picture>
 
 Design channel look, artwork and public presentation.
 
@@ -356,7 +356,7 @@ Design channel look, artwork and public presentation.
 
 <a id="studio-stats-overview"></a>
 
-<img src="./readme-shots/studio-stats-overview.png" alt="Studio / Stats / Overview" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-stats-overview--light.png" /><img src="./readme-shots/studio-stats-overview.png" alt="Studio / Stats / Overview" width="1680" /></picture>
 
 Review audience and catalogue performance at a glance.
 
@@ -366,7 +366,7 @@ Review audience and catalogue performance at a glance.
 
 <a id="studio-stats-plays"></a>
 
-<img src="./readme-shots/studio-stats-plays.png" alt="Studio / Stats / Plays & listeners" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-stats-plays--light.png" /><img src="./readme-shots/studio-stats-plays.png" alt="Studio / Stats / Plays & listeners" width="1680" /></picture>
 
 Compare plays, listeners and activity over time.
 
@@ -376,7 +376,7 @@ Compare plays, listeners and activity over time.
 
 <a id="studio-stats-top-lists"></a>
 
-<img src="./readme-shots/studio-stats-top-lists.png" alt="Studio / Stats / Top lists" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-stats-top-lists--light.png" /><img src="./readme-shots/studio-stats-top-lists.png" alt="Studio / Stats / Top lists" width="1680" /></picture>
 
 Inspect top tracks, countries and content types.
 
@@ -386,7 +386,7 @@ Inspect top tracks, countries and content types.
 
 <a id="studio-posts"></a>
 
-<img src="./readme-shots/studio-posts.png" alt="Studio / Posts" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-posts--light.png" /><img src="./readme-shots/studio-posts.png" alt="Studio / Posts" width="1680" /></picture>
 
 Publish updates and manage newsletter communication.
 
@@ -396,7 +396,7 @@ Publish updates and manage newsletter communication.
 
 <a id="studio-distribution"></a>
 
-<img src="./readme-shots/studio-distribution.png" alt="Studio / Distribution" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-distribution--light.png" /><img src="./readme-shots/studio-distribution.png" alt="Studio / Distribution" width="1680" /></picture>
 
 Prepare catalogue delivery to external services.
 
@@ -406,7 +406,7 @@ Prepare catalogue delivery to external services.
 
 <a id="studio-insights"></a>
 
-<img src="./readme-shots/studio-insights.png" alt="Studio / Insights" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-insights--light.png" /><img src="./readme-shots/studio-insights.png" alt="Studio / Insights" width="1680" /></picture>
 
 Review track and catalogue insights.
 
@@ -416,7 +416,7 @@ Review track and catalogue insights.
 
 <a id="studio-audience"></a>
 
-<img src="./readme-shots/studio-audience.png" alt="Studio / Audience" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-audience--light.png" /><img src="./readme-shots/studio-audience.png" alt="Studio / Audience" width="1680" /></picture>
 
 Manage audience relationships and fan revenue.
 
@@ -426,7 +426,7 @@ Manage audience relationships and fan revenue.
 
 <a id="studio-stripe"></a>
 
-<img src="./readme-shots/studio-stripe.png" alt="Studio / Stripe" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-stripe--light.png" /><img src="./readme-shots/studio-stripe.png" alt="Studio / Stripe" width="1680" /></picture>
 
 Connect payouts and review subscription billing setup.
 
@@ -436,7 +436,7 @@ Connect payouts and review subscription billing setup.
 
 <a id="studio-sounds"></a>
 
-<img src="./readme-shots/studio-sounds.png" alt="Studio / Library / Sounds" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-sounds--light.png" /><img src="./readme-shots/studio-sounds.png" alt="Studio / Library / Sounds" width="1680" /></picture>
 
 Filter, sort, play and edit sound content.
 
@@ -446,7 +446,7 @@ Filter, sort, play and edit sound content.
 
 <a id="studio-clips"></a>
 
-<img src="./readme-shots/studio-clips.png" alt="Studio / Library / Clips" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-clips--light.png" /><img src="./readme-shots/studio-clips.png" alt="Studio / Library / Clips" width="1680" /></picture>
 
 Manage short clips and radio announcements.
 
@@ -456,7 +456,7 @@ Manage short clips and radio announcements.
 
 <a id="studio-collections"></a>
 
-<img src="./readme-shots/studio-collections.png" alt="Studio / Library / Collections" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-collections--light.png" /><img src="./readme-shots/studio-collections.png" alt="Studio / Library / Collections" width="1680" /></picture>
 
 Create and browse organized collections.
 
@@ -466,7 +466,7 @@ Create and browse organized collections.
 
 <a id="studio-releases"></a>
 
-<img src="./readme-shots/studio-releases.png" alt="Studio / Library / Releases" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-releases--light.png" /><img src="./readme-shots/studio-releases.png" alt="Studio / Library / Releases" width="1680" /></picture>
 
 Manage singles, EPs and albums.
 
@@ -476,7 +476,7 @@ Manage singles, EPs and albums.
 
 <a id="studio-recordings"></a>
 
-<img src="./readme-shots/studio-recordings.png" alt="Studio / Library / Recordings" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-recordings--light.png" /><img src="./readme-shots/studio-recordings.png" alt="Studio / Library / Recordings" width="1680" /></picture>
 
 Polish and publish broadcast recordings.
 
@@ -486,7 +486,7 @@ Polish and publish broadcast recordings.
 
 <a id="studio-upload"></a>
 
-<img src="./readme-shots/studio-upload.png" alt="Studio / Library / Upload" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-upload--light.png" /><img src="./readme-shots/studio-upload.png" alt="Studio / Library / Upload" width="1680" /></picture>
 
 Add tracks, releases, clips and imports.
 
@@ -496,7 +496,7 @@ Add tracks, releases, clips and imports.
 
 <a id="studio-editor"></a>
 
-<img src="./readme-shots/studio-editor.png" alt="Studio / Library / Editor" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-editor--light.png" /><img src="./readme-shots/studio-editor.png" alt="Studio / Library / Editor" width="1680" /></picture>
 
 Open an audio session or import from the library.
 
@@ -506,7 +506,7 @@ Open an audio session or import from the library.
 
 <a id="studio-stash"></a>
 
-<img src="./readme-shots/studio-stash.png" alt="Studio / Library / Stash" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-stash--light.png" /><img src="./readme-shots/studio-stash.png" alt="Studio / Library / Stash" width="1680" /></picture>
 
 Keep private content out of the public catalogue.
 
@@ -516,7 +516,7 @@ Keep private content out of the public catalogue.
 
 <a id="studio-go-live"></a>
 
-<img src="./readme-shots/studio-go-live.png" alt="Studio / Perform / Go live" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-go-live--light.png" /><img src="./readme-shots/studio-go-live.png" alt="Studio / Perform / Go live" width="1680" /></picture>
 
 Run pre-flight, rotation and live broadcast controls.
 
@@ -526,7 +526,7 @@ Run pre-flight, rotation and live broadcast controls.
 
 <a id="studio-schedule"></a>
 
-<img src="./readme-shots/studio-schedule.png" alt="Studio / Perform / Schedule" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-schedule--light.png" /><img src="./readme-shots/studio-schedule.png" alt="Studio / Perform / Schedule" width="1680" /></picture>
 
 Plan broadcasts and inspect analytics.
 
@@ -536,7 +536,7 @@ Plan broadcasts and inspect analytics.
 
 <a id="studio-events"></a>
 
-<img src="./readme-shots/studio-events.png" alt="Studio / Perform / Events" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-events--light.png" /><img src="./readme-shots/studio-events.png" alt="Studio / Perform / Events" width="1680" /></picture>
 
 Manage upcoming and past events.
 
@@ -546,7 +546,7 @@ Manage upcoming and past events.
 
 <a id="studio-event-new"></a>
 
-<img src="./readme-shots/studio-event-new.png" alt="Studio / Perform / New event" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-event-new--light.png" /><img src="./readme-shots/studio-event-new.png" alt="Studio / Perform / New event" width="1680" /></picture>
 
 Create an event with venue, ticket and artwork details.
 
@@ -556,7 +556,7 @@ Create an event with venue, ticket and artwork details.
 
 <a id="studio-venues"></a>
 
-<img src="./readme-shots/studio-venues.png" alt="Studio / Perform / Venues" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-venues--light.png" /><img src="./readme-shots/studio-venues.png" alt="Studio / Perform / Venues" width="1680" /></picture>
 
 Browse and manage venue directory entries.
 
@@ -566,7 +566,7 @@ Browse and manage venue directory entries.
 
 <a id="studio-shows"></a>
 
-<img src="./readme-shots/studio-shows.png" alt="Studio / Perform / Shows" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-shows--light.png" /><img src="./readme-shots/studio-shows.png" alt="Studio / Perform / Shows" width="1680" /></picture>
 
 Manage single shows and continuing series.
 
@@ -576,7 +576,7 @@ Manage single shows and continuing series.
 
 <a id="studio-show-detail"></a>
 
-<img src="./readme-shots/studio-show-detail.png" alt="Studio / Perform / Show detail" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-show-detail--light.png" /><img src="./readme-shots/studio-show-detail.png" alt="Studio / Perform / Show detail" width="1680" /></picture>
 
 Review show metadata, episodes and recordings.
 
@@ -586,7 +586,7 @@ Review show metadata, episodes and recordings.
 
 <a id="studio-channel"></a>
 
-<img src="./readme-shots/studio-channel.png" alt="Studio / Manage / Channel" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-channel--light.png" /><img src="./readme-shots/studio-channel.png" alt="Studio / Manage / Channel" width="1680" /></picture>
 
 Edit channel information and channel wizard access.
 
@@ -596,7 +596,7 @@ Edit channel information and channel wizard access.
 
 <a id="studio-radio"></a>
 
-<img src="./readme-shots/studio-radio.png" alt="Studio / Manage / Radio" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-radio--light.png" /><img src="./readme-shots/studio-radio.png" alt="Studio / Manage / Radio" width="1680" /></picture>
 
 Control stream statistics and 24/7 rotation.
 
@@ -606,7 +606,7 @@ Control stream statistics and 24/7 rotation.
 
 <a id="studio-green-room"></a>
 
-<img src="./readme-shots/studio-green-room.png" alt="Studio / Manage / Green room" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-green-room--light.png" /><img src="./readme-shots/studio-green-room.png" alt="Studio / Manage / Green room" width="1680" /></picture>
 
 Configure the broadcast preparation space.
 
@@ -616,7 +616,7 @@ Configure the broadcast preparation space.
 
 <a id="studio-multicast"></a>
 
-<img src="./readme-shots/studio-multicast.png" alt="Studio / Manage / Multicast" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-multicast--light.png" /><img src="./readme-shots/studio-multicast.png" alt="Studio / Manage / Multicast" width="1680" /></picture>
 
 Activate configured stream destinations.
 
@@ -626,7 +626,7 @@ Activate configured stream destinations.
 
 <a id="studio-selects"></a>
 
-<img src="./readme-shots/studio-selects.png" alt="Studio / Manage / Tahti Selects" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-selects--light.png" /><img src="./readme-shots/studio-selects.png" alt="Studio / Manage / Tahti Selects" width="1680" /></picture>
 
 Curate the community rotation.
 
@@ -636,7 +636,7 @@ Curate the community rotation.
 
 <a id="studio-moderation"></a>
 
-<img src="./readme-shots/studio-moderation.png" alt="Studio / Manage / Moderation" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/studio-moderation--light.png" /><img src="./readme-shots/studio-moderation.png" alt="Studio / Manage / Moderation" width="1680" /></picture>
 
 Assign moderators and review channel queues.
 
@@ -678,7 +678,7 @@ Assign moderators and review channel queues.
 
 <a id="admin-overview"></a>
 
-<img src="./readme-shots/admin-overview.png" alt="Admin / Overview" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-overview--light.png" /><img src="./readme-shots/admin-overview.png" alt="Admin / Overview" width="1680" /></picture>
 
 Monitor platform needs action, streams and system status.
 
@@ -688,7 +688,7 @@ Monitor platform needs action, streams and system status.
 
 <a id="admin-status"></a>
 
-<img src="./readme-shots/admin-status.png" alt="Admin / Status" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-status--light.png" /><img src="./readme-shots/admin-status.png" alt="Admin / Status" width="1680" /></picture>
 
 View platform health alongside operational data.
 
@@ -698,7 +698,7 @@ View platform health alongside operational data.
 
 <a id="admin-logs"></a>
 
-<img src="./readme-shots/admin-logs.png" alt="Admin / Logs / Activity" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-logs--light.png" /><img src="./readme-shots/admin-logs.png" alt="Admin / Logs / Activity" width="1680" /></picture>
 
 Inspect operational activity.
 
@@ -708,7 +708,7 @@ Inspect operational activity.
 
 <a id="admin-logs-containers"></a>
 
-<img src="./readme-shots/admin-logs-containers.png" alt="Admin / Logs / Containers" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-logs-containers--light.png" /><img src="./readme-shots/admin-logs-containers.png" alt="Admin / Logs / Containers" width="1680" /></picture>
 
 Inspect container and service logs.
 
@@ -718,7 +718,7 @@ Inspect container and service logs.
 
 <a id="admin-logs-audit"></a>
 
-<img src="./readme-shots/admin-logs-audit.png" alt="Admin / Logs / Recent audit" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-logs-audit--light.png" /><img src="./readme-shots/admin-logs-audit.png" alt="Admin / Logs / Recent audit" width="1680" /></picture>
 
 Review recent privileged actions and context.
 
@@ -728,7 +728,7 @@ Review recent privileged actions and context.
 
 <a id="admin-moderation"></a>
 
-<img src="./readme-shots/admin-moderation.png" alt="Admin / Moderation / Support" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-moderation--light.png" /><img src="./readme-shots/admin-moderation.png" alt="Admin / Moderation / Support" width="1680" /></picture>
 
 Triage moderation queues.
 
@@ -738,7 +738,7 @@ Triage moderation queues.
 
 <a id="admin-moderation-beta"></a>
 
-<img src="./readme-shots/admin-moderation-beta.png" alt="Admin / Moderation / Beta applications" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-moderation-beta--light.png" /><img src="./readme-shots/admin-moderation-beta.png" alt="Admin / Moderation / Beta applications" width="1680" /></picture>
 
 Review beta applications.
 
@@ -748,7 +748,7 @@ Review beta applications.
 
 <a id="admin-moderation-radio"></a>
 
-<img src="./readme-shots/admin-moderation-radio.png" alt="Admin / Moderation / Radio submissions" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-moderation-radio--light.png" /><img src="./readme-shots/admin-moderation-radio.png" alt="Admin / Moderation / Radio submissions" width="1680" /></picture>
 
 Review Tahti Radio submissions.
 
@@ -758,7 +758,7 @@ Review Tahti Radio submissions.
 
 <a id="admin-moderation-reports"></a>
 
-<img src="./readme-shots/admin-moderation-reports.png" alt="Admin / Moderation / Content reports" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-moderation-reports--light.png" /><img src="./readme-shots/admin-moderation-reports.png" alt="Admin / Moderation / Content reports" width="1680" /></picture>
 
 Resolve content reports.
 
@@ -768,7 +768,7 @@ Resolve content reports.
 
 <a id="admin-moderation-features"></a>
 
-<img src="./readme-shots/admin-moderation-features.png" alt="Admin / Moderation / Feature requests" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-moderation-features--light.png" /><img src="./readme-shots/admin-moderation-features.png" alt="Admin / Moderation / Feature requests" width="1680" /></picture>
 
 Track product requests.
 
@@ -778,7 +778,7 @@ Track product requests.
 
 <a id="admin-moderation-missed"></a>
 
-<img src="./readme-shots/admin-moderation-missed.png" alt="Admin / Moderation / Missed shows" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-moderation-missed--light.png" /><img src="./readme-shots/admin-moderation-missed.png" alt="Admin / Moderation / Missed shows" width="1680" /></picture>
 
 Resolve missed broadcast follow-up.
 
@@ -788,7 +788,7 @@ Resolve missed broadcast follow-up.
 
 <a id="admin-users"></a>
 
-<img src="./readme-shots/admin-users.png" alt="Admin / Users" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-users--light.png" /><img src="./readme-shots/admin-users.png" alt="Admin / Users" width="1680" /></picture>
 
 Manage accounts and roles.
 
@@ -798,7 +798,7 @@ Manage accounts and roles.
 
 <a id="admin-radio"></a>
 
-<img src="./readme-shots/admin-radio.png" alt="Admin / Radio" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-radio--light.png" /><img src="./readme-shots/admin-radio.png" alt="Admin / Radio" width="1680" /></picture>
 
 Manage station configuration.
 
@@ -808,7 +808,7 @@ Manage station configuration.
 
 <a id="admin-news"></a>
 
-<img src="./readme-shots/admin-news.png" alt="Admin / Posts" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-news--light.png" /><img src="./readme-shots/admin-news.png" alt="Admin / Posts" width="1680" /></picture>
 
 Publish generic announcements.
 
@@ -818,7 +818,7 @@ Publish generic announcements.
 
 <a id="admin-streams"></a>
 
-<img src="./readme-shots/admin-streams.png" alt="Admin / Streams" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-streams--light.png" /><img src="./readme-shots/admin-streams.png" alt="Admin / Streams" width="1680" /></picture>
 
 Manage streams, listeners and controls.
 
@@ -828,7 +828,7 @@ Manage streams, listeners and controls.
 
 <a id="admin-top-lists"></a>
 
-<img src="./readme-shots/admin-top-lists.png" alt="Admin / Top lists" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-top-lists--light.png" /><img src="./readme-shots/admin-top-lists.png" alt="Admin / Top lists" width="1680" /></picture>
 
 Explore platform listening rankings.
 
@@ -838,7 +838,7 @@ Explore platform listening rankings.
 
 <a id="admin-announcements"></a>
 
-<img src="./readme-shots/admin-announcements.png" alt="Admin / Announcements" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-announcements--light.png" /><img src="./readme-shots/admin-announcements.png" alt="Admin / Announcements" width="1680" /></picture>
 
 Manage pinned and public announcements.
 
@@ -848,7 +848,7 @@ Manage pinned and public announcements.
 
 <a id="admin-storage"></a>
 
-<img src="./readme-shots/admin-storage.png" alt="Admin / Storage" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-storage--light.png" /><img src="./readme-shots/admin-storage.png" alt="Admin / Storage" width="1680" /></picture>
 
 Review storage usage.
 
@@ -858,7 +858,7 @@ Review storage usage.
 
 <a id="admin-storage-files"></a>
 
-<img src="./readme-shots/admin-storage-files.png" alt="Admin / Storage / Files" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-storage-files--light.png" /><img src="./readme-shots/admin-storage-files.png" alt="Admin / Storage / Files" width="1680" /></picture>
 
 Inspect stored files.
 
@@ -868,7 +868,7 @@ Inspect stored files.
 
 <a id="admin-financial"></a>
 
-<img src="./readme-shots/admin-financial.png" alt="Admin / Financial" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-financial--light.png" /><img src="./readme-shots/admin-financial.png" alt="Admin / Financial" width="1680" /></picture>
 
 Review platform financial summaries.
 
@@ -878,7 +878,7 @@ Review platform financial summaries.
 
 <a id="admin-governance"></a>
 
-<img src="./readme-shots/admin-governance.png" alt="Admin / Governance" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-governance--light.png" /><img src="./readme-shots/admin-governance.png" alt="Admin / Governance" width="1680" /></picture>
 
 Review proposals, votes and discussion activity.
 
@@ -888,7 +888,7 @@ Review proposals, votes and discussion activity.
 
 <a id="admin-grants"></a>
 
-<img src="./readme-shots/admin-grants.png" alt="Admin / Grants" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-grants--light.png" /><img src="./readme-shots/admin-grants.png" alt="Admin / Grants" width="1680" /></picture>
 
 Manage grant cycles and awards.
 
@@ -898,7 +898,7 @@ Manage grant cycles and awards.
 
 <a id="admin-agm"></a>
 
-<img src="./readme-shots/admin-agm.png" alt="Admin / AGM" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-agm--light.png" /><img src="./readme-shots/admin-agm.png" alt="Admin / AGM" width="1680" /></picture>
 
 Prepare and review annual meeting decisions.
 
@@ -908,7 +908,7 @@ Prepare and review annual meeting decisions.
 
 <a id="admin-vendors"></a>
 
-<img src="./readme-shots/admin-vendors.png" alt="Admin / Vendors" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-vendors--light.png" /><img src="./readme-shots/admin-vendors.png" alt="Admin / Vendors" width="1680" /></picture>
 
 Manage platform vendors and integrations.
 
@@ -918,7 +918,7 @@ Manage platform vendors and integrations.
 
 <a id="admin-widgets"></a>
 
-<img src="./readme-shots/admin-widgets.png" alt="Admin / Widgets" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-widgets--light.png" /><img src="./readme-shots/admin-widgets.png" alt="Admin / Widgets" width="1680" /></picture>
 
 Catalog and configure discovery widgets.
 
@@ -928,7 +928,7 @@ Catalog and configure discovery widgets.
 
 <a id="admin-i18n"></a>
 
-<img src="./readme-shots/admin-i18n.png" alt="Admin / Localization" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-i18n--light.png" /><img src="./readme-shots/admin-i18n.png" alt="Admin / Localization" width="1680" /></picture>
 
 Manage translated product content.
 
@@ -938,7 +938,7 @@ Manage translated product content.
 
 <a id="admin-selects"></a>
 
-<img src="./readme-shots/admin-selects.png" alt="Admin / Tahti Selects" width="1680" />
+<picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/admin-selects--light.png" /><img src="./readme-shots/admin-selects.png" alt="Admin / Tahti Selects" width="1680" /></picture>
 
 Curate the platform-wide selection.
 

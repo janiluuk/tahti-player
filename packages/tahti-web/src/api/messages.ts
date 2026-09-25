@@ -52,6 +52,29 @@ let mockConversations: ConversationSummary[] = [
   },
 ];
 
+/** Mock-mode conversation ids treated as read (unreadCount 0), e.g. seeded by
+ * the screenshot capture scripts so no unread badges appear. */
+const MOCK_READ_KEY = 'tahti-web-mock-messages-read';
+
+function mockConversationsWithReadState(): ConversationSummary[] {
+  let read: Set<string>;
+  try {
+    const parsed = JSON.parse(
+      localStorage.getItem(MOCK_READ_KEY) ?? '[]',
+    ) as unknown;
+    read = new Set(
+      Array.isArray(parsed)
+        ? parsed.filter((id): id is string => typeof id === 'string')
+        : [],
+    );
+  } catch {
+    read = new Set();
+  }
+  return mockConversations.map((c) =>
+    read.has(c.id) ? { ...c, unreadCount: 0 } : c,
+  );
+}
+
 const mockThreads = new Map<string, ChatDm[]>([
   [
     'conv-mock-1',
@@ -84,7 +107,7 @@ export async function fetchConversations(): Promise<{
 }> {
   if (isForceMock()) {
     return {
-      data: [...mockConversations],
+      data: mockConversationsWithReadState(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }

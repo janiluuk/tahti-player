@@ -3,6 +3,13 @@ import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { chromium } from '@playwright/test';
 
+import {
+  CAPTURE_THEME_MODE,
+  CAPTURE_THEME_STATE,
+  prepareCapturePage,
+  withThemeSuffix,
+} from './lib/captureSetup.mjs';
+
 const BASE = process.env.README_GUIDE_BASE_URL || 'http://127.0.0.1:5180';
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const packageRoot = join(scriptDirectory, '..');
@@ -75,6 +82,7 @@ const auth = {
       email: 'board@tahti.live',
       username: 'board',
       displayName: 'Board Member',
+      role: 'BOARD',
       isBoard: true,
       membershipStatus: 'ACTIVE',
       channel: { slug: 'demo', state: 'OFFLINE' },
@@ -606,6 +614,7 @@ let browser = await chromium.launch({
   args: ['--no-sandbox', '--disable-dev-shm-usage'],
 });
 let page = await browser.newPage({ viewport: VIEWPORT });
+await prepareCapturePage(page);
 await page.emulateMedia({ reducedMotion: 'reduce' });
 
 async function seedSession() {
@@ -614,30 +623,19 @@ async function seedSession() {
     timeout: 30000,
   });
   await page.evaluate(
-    ({ authState, layoutState }) => {
+    ({ authState, layoutState, themeState }) => {
       localStorage.setItem('tahti-web-auth', JSON.stringify(authState));
       localStorage.setItem('tahti-web-layout', JSON.stringify(layoutState));
       localStorage.setItem('tahti-web-onboarded:mock-board-1', '1');
-      // Dark + amber ("nuclear:tahti-dark" -- the tahti.live pitch palette,
-      // see packages/themes/src/basic/tahti-dark.css), matching the root
-      // README's redesign-shots and the Tahti map's refreshed hero shots
-      // instead of Nuclear's own default light theme.
-      localStorage.setItem('tahti-nuclear-theme-id', 'nuclear:tahti-dark');
-      localStorage.setItem('tahti-nuclear-dark', '1');
+      // Spotify theme in CAPTURE_THEME_MODE (see lib/captureSetup.mjs).
+      localStorage.setItem('tahti-web-theme', JSON.stringify(themeState));
+      localStorage.setItem('tahti-nuclear-theme-id', themeState.state.themeId);
       localStorage.setItem(
-        'tahti-web-theme',
-        JSON.stringify({
-          state: {
-            themeId: 'nuclear:tahti-dark',
-            dark: true,
-            colorMode: 'dark',
-            customThemes: {},
-          },
-          version: 0,
-        }),
+        'tahti-nuclear-dark',
+        themeState.state.dark ? '1' : '0',
       );
     },
-    { authState: auth, layoutState: layout },
+    { authState: auth, layoutState: layout, themeState: CAPTURE_THEME_STATE },
   );
 }
 
@@ -652,6 +650,7 @@ async function recreatePage() {
     await page.close().catch(() => {});
   }
   page = await browser.newPage({ viewport: VIEWPORT });
+  await prepareCapturePage(page);
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await seedSession();
 }
@@ -697,7 +696,7 @@ for (const [path, file, title, narration] of routes) {
     });
     await page.waitForTimeout(800);
     const bodyText = await page.locator('body').innerText();
-    const imagePath = join(outputDirectory, `${file}.png`);
+    const imagePath = join(outputDirectory, withThemeSuffix(`${file}.png`));
     const ok = await captureShot(imagePath);
     if (!ok) {
       await recreatePage();
@@ -733,6 +732,14 @@ for (const [path, file, title, narration] of routes) {
   } finally {
     page.off('console', onConsole);
   }
+}
+
+if (CAPTURE_THEME_MODE === 'light') {
+  // The light run only adds `--light` images; the dark run writes the docs,
+  // which reference both variants.
+  await browser.close();
+  console.log(`Captured ${results.length} light screenshots`);
+  process.exit(0);
 }
 
 writeFileSync(
@@ -772,8 +779,11 @@ for (const result of results) {
   gallerySections.get(sectionFor(result.title)).push(result);
 }
 
+/** Dark capture by default; GitHub swaps in the `--light` capture for
+ * viewers using a light theme. */
 function largeImage(alt, relativePath) {
-  return `<img src="${relativePath}" alt="${alt}" width="1680" />`;
+  const lightPath = relativePath.replace(/\.png$/, '--light.png');
+  return `<picture><source media="(prefers-color-scheme: light)" srcset="${lightPath}" /><img src="${relativePath}" alt="${alt}" width="1680" /></picture>`;
 }
 
 const viewGuideLines = [

@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 
-import { Badge, Button } from '@tahti-player/ui';
+import { Badge, Button, SegmentedControl } from '@tahti-player/ui';
 
 import {
   caseFlowchart,
@@ -15,6 +15,23 @@ import { useMapNotesStore, type MapComment } from '../stores/mapNotesStore';
 import { MapCommentForm } from './MapCommentForm';
 import { MermaidDiagram } from './MermaidDiagram';
 import { NavigationStructureWidget } from './NavigationStructureWidget';
+
+type ShotTheme = 'dark' | 'light';
+
+const SHOT_THEME_OPTIONS = [
+  { id: 'dark', label: 'Dark' },
+  { id: 'light', label: 'Light' },
+] as const;
+
+const ShotThemeContext = createContext<ShotTheme>('dark');
+
+/** beta.tahti.live captures (`/map/nuclear/`) exist in both themes; the light
+ * one carries a `--light` suffix. Other shots only have one variant. */
+function themedShotImage(image: string, theme: ShotTheme): string {
+  return theme === 'light' && image.startsWith('/map/nuclear/')
+    ? image.replace(/\.png$/, '--light.png')
+    : image;
+}
 
 /** route (first alternative, no query/hash) -> case id, for turning a
  * `goesTo` target into a jump-to-card link when it lands on a documented
@@ -364,11 +381,13 @@ function ShotPane({
    * pane only, Storybook doesn't cover the legacy `old` chrome. */
   storybookUrl?: string;
 }) {
-  const pending = !absent && !shot.image;
-  const screenshotUrl = shot.image
-    ? shot.image.startsWith('http')
-      ? shot.image
-      : `https://beta.tahti.live${shot.image}`
+  const shotTheme = useContext(ShotThemeContext);
+  const image = shot.image ? themedShotImage(shot.image, shotTheme) : undefined;
+  const pending = !absent && !image;
+  const screenshotUrl = image
+    ? image.startsWith('http')
+      ? image
+      : `https://beta.tahti.live${image}`
     : null;
   return (
     <div className="flex min-w-0 flex-1 flex-col">
@@ -419,7 +438,13 @@ function ShotPane({
           </div>
         ) : (
           <img
-            src={shot.image}
+            src={image}
+            onError={(event) => {
+              // Older shots may have no light capture yet: show the dark one.
+              if (shot.image && image !== shot.image) {
+                event.currentTarget.src = shot.image;
+              }
+            }}
             alt={`${label}: ${viewName}`}
             loading="lazy"
             className="h-full min-h-[14rem] w-full object-cover object-top sm:min-h-[18rem] lg:min-h-[22rem]"
@@ -571,6 +596,7 @@ function ReviewCaseCard({ c }: { c: MapCase }) {
 
 /** Dual Tahti | Nuclear atlas driven by concrete flow cases. */
 export function ScreenAtlas() {
+  const [shotTheme, setShotTheme] = useState<ShotTheme>('dark');
   const total = MAP_CASE_GROUPS.reduce((n, g) => n + g.cases.length, 0);
   const gaps = MAP_CASE_GROUPS.reduce(
     (n, g) => n + g.cases.filter((c) => resolveCaseParity(c) !== 'both').length,
@@ -599,6 +625,12 @@ export function ScreenAtlas() {
             Screen atlas
           </h2>
           <div className="flex flex-wrap items-center gap-2">
+            <SegmentedControl
+              aria-label="Screenshot theme"
+              options={SHOT_THEME_OPTIONS}
+              value={shotTheme}
+              onChange={setShotTheme}
+            />
             <ApplyReviewButton />
             <ExportNotesButton />
           </div>
@@ -626,25 +658,27 @@ export function ScreenAtlas() {
 
       <NavigationStructureWidget />
 
-      {MAP_CASE_GROUPS.map((group) => (
-        <div
-          key={group.id}
-          id={`cases-${group.id}`}
-          className="flex flex-col gap-4"
-        >
-          <div>
-            <h3 className="font-display text-xl font-bold">{group.title}</h3>
-            <p className="text-foreground-secondary mt-0.5 text-sm">
-              {group.description}
-            </p>
+      <ShotThemeContext.Provider value={shotTheme}>
+        {MAP_CASE_GROUPS.map((group) => (
+          <div
+            key={group.id}
+            id={`cases-${group.id}`}
+            className="flex flex-col gap-4"
+          >
+            <div>
+              <h3 className="font-display text-xl font-bold">{group.title}</h3>
+              <p className="text-foreground-secondary mt-0.5 text-sm">
+                {group.description}
+              </p>
+            </div>
+            <ul className="flex flex-col gap-6">
+              {group.cases.map((c) => (
+                <ReviewCaseCard key={c.id} c={c} />
+              ))}
+            </ul>
           </div>
-          <ul className="flex flex-col gap-6">
-            {group.cases.map((c) => (
-              <ReviewCaseCard key={c.id} c={c} />
-            ))}
-          </ul>
-        </div>
-      ))}
+        ))}
+      </ShotThemeContext.Provider>
     </section>
   );
 }

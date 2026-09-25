@@ -156,6 +156,34 @@ const SPOTIFY_DARK_THEME_DARK: Record<string, string> = {
   'shadow-y': '0px',
 };
 
+/** Not part of the registry theme, which only ships a dark palette: a
+ * Spotify-style light palette so Light mode is not identical to Dark. Keys it
+ * doesn't set (fonts, radii, accents) come from the published values. */
+const SPOTIFY_LIGHT_THEME_VARS: Record<string, string> = {
+  ...SPOTIFY_DARK_THEME_VARS,
+  background: '#ffffff',
+  'background-secondary': '#f6f6f6',
+  'background-input': '#eeeeee',
+  foreground: '#121212',
+  'foreground-secondary': '#6a6a6a',
+  'foreground-input': '#121212',
+  primary: '#1db954',
+  'primary-foreground': '#000000',
+  border: '#e2e2e2',
+  'border-input': '#d4d4d4',
+  ring: '#1db954',
+  'shadow-color': '#b3b3b3',
+  secondary: '#e8e8e8',
+  'secondary-foreground': '#121212',
+};
+
+/** The registry theme sets no `secondary`, so it would inherit the stock base
+ * theme's maroon; a neutral Spotify grey keeps secondary buttons on-palette. */
+const SPOTIFY_DARK_SECONDARY: Record<string, string> = {
+  secondary: '#2a2a2a',
+  'secondary-foreground': '#ffffff',
+};
+
 export const SPOTIFY_DARK_THEME: AdvancedTheme = {
   version: 1,
   name: 'Spotify Dark Theme',
@@ -168,8 +196,12 @@ export const SPOTIFY_DARK_THEME: AdvancedTheme = {
     string,
     string,
   ],
-  vars: SPOTIFY_DARK_THEME_VARS,
-  dark: SPOTIFY_DARK_THEME_DARK,
+  vars: SPOTIFY_LIGHT_THEME_VARS,
+  dark: {
+    ...SPOTIFY_DARK_THEME_VARS,
+    ...SPOTIFY_DARK_THEME_DARK,
+    ...SPOTIFY_DARK_SECONDARY,
+  },
 };
 
 export const CLAUDE_THEME_ID = 'custom:claude';

@@ -100,47 +100,47 @@ From `@tahti-player/tahti-web` (mock data for stable docs captures; beta uses th
 
 ### Listen home
 
-![Listen directory — favorites, Tahti Radio, and channel discovery](./packages/tahti-web/docs/redesign-shots/listen-home-v1.png)
+<picture><source media="(prefers-color-scheme: light)" srcset="./packages/tahti-web/docs/redesign-shots/listen-home-v1--light.png" /><img src="./packages/tahti-web/docs/redesign-shots/listen-home-v1.png" alt="Listen directory — favorites, Tahti Radio, and channel discovery" /></picture>
 
 *Listen hub: library favorites, Tahti Radio, and discover.*
 
 ### Channel (live + archive)
 
-![Channel page with live stage, archive, and chat](./packages/tahti-web/docs/redesign-shots/listen-channel-v1.png)
+<picture><source media="(prefers-color-scheme: light)" srcset="./packages/tahti-web/docs/redesign-shots/listen-channel-v1--light.png" /><img src="./packages/tahti-web/docs/redesign-shots/listen-channel-v1.png" alt="Channel page with live stage, archive, and chat" /></picture>
 
 *Public channel: live stage, pinned archive, chat rail.*
 
 ### Fan subscribe
 
-![Subscribe page with Supporter and Patron tiers](./packages/tahti-web/docs/redesign-shots/subscribe-v1.png)
+<picture><source media="(prefers-color-scheme: light)" srcset="./packages/tahti-web/docs/redesign-shots/subscribe-v1--light.png" /><img src="./packages/tahti-web/docs/redesign-shots/subscribe-v1.png" alt="Subscribe page with Supporter and Patron tiers" /></picture>
 
 *Fan membership tiers (Stripe Checkout on live API).*
 
 ### Studio home
 
-![Studio overview with broadcast and music pillars](./packages/tahti-web/docs/redesign-shots/studio-home-v1.png)
+<picture><source media="(prefers-color-scheme: light)" srcset="./packages/tahti-web/docs/redesign-shots/studio-home-v1--light.png" /><img src="./packages/tahti-web/docs/redesign-shots/studio-home-v1.png" alt="Studio overview with broadcast and music pillars" /></picture>
 
 *Studio overview — Go Live, schedule, music, upload, albums.*
 
 ### Go Live
 
-![Go Live wizard with OBS RTMP credentials](./packages/tahti-web/docs/redesign-shots/studio-go-live-v1.png)
+<picture><source media="(prefers-color-scheme: light)" srcset="./packages/tahti-web/docs/redesign-shots/studio-go-live-v1--light.png" /><img src="./packages/tahti-web/docs/redesign-shots/studio-go-live-v1.png" alt="Go Live wizard with OBS RTMP credentials" /></picture>
 
 *Broadcast wizard: Connect → Live → Multistream.*
 
 ### Playlists & channel design
 
-![Studio playlists list](./packages/tahti-web/docs/redesign-shots/studio-playlists-v1.png)
+<picture><source media="(prefers-color-scheme: light)" srcset="./packages/tahti-web/docs/redesign-shots/studio-playlists-v1--light.png" /><img src="./packages/tahti-web/docs/redesign-shots/studio-playlists-v1.png" alt="Studio playlists list" /></picture>
 
 *Playlists — organize archive tracks and releases.*
 
-![Channel designer with Aurora visualizer preset](./packages/tahti-web/docs/redesign-shots/studio-channel-v1.png)
+<picture><source media="(prefers-color-scheme: light)" srcset="./packages/tahti-web/docs/redesign-shots/studio-channel-v1--light.png" /><img src="./packages/tahti-web/docs/redesign-shots/studio-channel-v1.png" alt="Channel designer with Aurora visualizer preset" /></picture>
 
 *Channel designer — look, 24/7 radio, profile, domain.*
 
 ### Board admin
 
-![Admin dashboard overview](./packages/tahti-web/docs/redesign-shots/admin-dashboard-current-v1.png)
+<picture><source media="(prefers-color-scheme: light)" srcset="./packages/tahti-web/docs/redesign-shots/admin-dashboard-current-v1--light.png" /><img src="./packages/tahti-web/docs/redesign-shots/admin-dashboard-current-v1.png" alt="Admin dashboard overview" /></picture>
 
 *Admin dashboard — health, activity, and moderation at a glance.*
 

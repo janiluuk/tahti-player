@@ -64,7 +64,12 @@ const THEME_KEY = 'tahti-nuclear-theme-id';
 const DARK_KEY = 'tahti-nuclear-dark';
 const PERSIST_NAME = 'tahti-web-theme';
 
-const DEFAULT_THEME_ID = 'nuclear:tahti-dark';
+/** Basic theme under every custom theme: supplies the structural CSS vars a
+ * custom theme doesn't override. Must be the stock theme, whose plain `:root`
+ * rules the injected custom-theme CSS can override; other basic themes use
+ * `[data-theme-id=...]` selectors that outrank it. */
+const BASE_THEME_ID = 'nuclear:default';
+const DEFAULT_THEME_ID = NUCLEAR_GREEN_THEME_ID;
 
 export type ColorMode = 'light' | 'dark' | 'dynamic';
 
@@ -156,7 +161,11 @@ function resolveThemeId(
   if (id && knownBasicThemeIds().has(id)) {
     return id;
   }
-  if (id && id.startsWith(CUSTOM_THEME_PREFIX) && customThemes[id]) {
+  if (
+    id &&
+    id.startsWith(CUSTOM_THEME_PREFIX) &&
+    (customThemes[id] || PRESET_CUSTOM_THEMES[id])
+  ) {
     return id;
   }
   return DEFAULT_THEME_ID;
@@ -167,11 +176,11 @@ function applyToDocument(
   dark: boolean,
   customThemes: Record<string, AdvancedTheme>,
 ) {
-  const custom = customThemes[themeId];
+  const custom = customThemes[themeId] ?? PRESET_CUSTOM_THEMES[themeId];
   if (custom) {
     // Basic theme underneath supplies structural fallbacks; the advanced
     // theme's CSS vars layer on top as an override.
-    setBasicTheme(DEFAULT_THEME_ID);
+    setBasicTheme(BASE_THEME_ID);
     applyAdvancedTheme(custom);
   } else {
     clearAdvancedTheme();
@@ -383,17 +392,11 @@ export const useThemeStore = create<ThemeState>()(
           // ignore
         }
         if (colorMode == null) {
-          // Preserve an existing explicit dark/light choice as-is; a
-          // genuinely first-ever load has no preference yet, so match the
-          // OS instead of hardcoding dark.
-          colorMode =
-            dark == null
-              ? systemPrefersDark()
-                ? 'dark'
-                : 'light'
-              : dark
-                ? 'dark'
-                : 'light';
+          // Preserve an existing explicit dark/light choice as-is. A
+          // first-ever load starts dark: the default theme is dark-only, so
+          // following a light OS setting would pair its dark palette with
+          // light-mode styles.
+          colorMode = dark == null ? 'dark' : dark ? 'dark' : 'light';
         }
         const customThemes = p.customThemes ?? {};
         return {

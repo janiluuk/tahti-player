@@ -52,14 +52,15 @@
             var hour = new Date().getHours();
             dark = hour < 7 || hour >= 19;
           } else if (dark == null) {
-            // No preference stored anywhere yet — match the OS like the
-            // store's own first-run default (plugins/themes/store.ts merge()).
-            dark =
-              !!window.matchMedia &&
-              window.matchMedia('(prefers-color-scheme: dark)').matches;
+            // No preference stored anywhere yet: start dark, like the store's
+            // own first-run default (plugins/themes/store.ts merge()).
+            dark = true;
           }
-          if (themeId)
-            document.documentElement.setAttribute('data-theme-id', themeId);
+          // Custom themes (including the default, custom:nuclear-green) are
+          // applied by the store; paint their dark base theme until then.
+          if (!themeId || themeId.indexOf('custom:') === 0)
+            themeId = 'nuclear:tahti-dark';
+          document.documentElement.setAttribute('data-theme-id', themeId);
           if (dark) document.documentElement.setAttribute('data-theme', 'dark');
           else document.documentElement.removeAttribute('data-theme');
         } catch (e) {}

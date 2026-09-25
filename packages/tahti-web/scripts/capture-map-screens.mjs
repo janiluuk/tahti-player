@@ -1,7 +1,13 @@
 import { mkdirSync, readdirSync, writeFileSync } from 'fs';
-import { basename, dirname, join } from 'path';
+import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { chromium } from '@playwright/test';
+
+import {
+  CAPTURE_THEME_STATE,
+  prepareCapturePage,
+  withThemeSuffix,
+} from './lib/captureSetup.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const outRoot = join(__dirname, '../public/map/nuclear');
@@ -186,6 +192,21 @@ const shots = [
   },
 ];
 
+/** Auth-flow pages only make sense signed out; everything else is captured
+ * as the board (admin) user. */
+const SIGNED_OUT_SHOT_IDS = new Set([
+  'login',
+  'login-totp',
+  'join',
+  'apply',
+  'signup',
+  'signup-payment',
+  'forgot-password',
+  'reset-password',
+  'setup-password',
+  'verify',
+]);
+
 const requestedShotIds = new Set(
   (process.env.MAP_SHOT_IDS || '')
     .split(',')
@@ -227,6 +248,7 @@ let page = await browser.newPage({
   isMobile: MOBILE,
   hasTouch: MOBILE,
 });
+await prepareCapturePage(page);
 
 // Pitch-quality captures: a named, populated artist (not generic "Demo
 // Artist"), and LIVE so the go-live/studio shots show the real on-air
@@ -238,6 +260,7 @@ const AUTH_STATE = {
       email: 'demo@tahti.live',
       username: USER,
       displayName: 'Mart Saar',
+      role: 'BOARD',
       isBoard: true,
       membershipStatus: 'ACTIVE',
       channel: { slug: CHANNEL, state: 'LIVE' },
@@ -246,18 +269,8 @@ const AUTH_STATE = {
   version: 0,
 };
 
-// Dark + amber ("nuclear:tahti-dark" -- the tahti.live pitch palette, see
-// packages/themes/src/basic/tahti-dark.css) for every map capture, matching
-// this leaf's request instead of each viewer's default light theme.
-const THEME_STATE = {
-  state: {
-    themeId: 'nuclear:tahti-dark',
-    dark: true,
-    colorMode: 'dark',
-    customThemes: {},
-  },
-  version: 0,
-};
+// Spotify theme in CAPTURE_THEME_MODE (see lib/captureSetup.mjs).
+const THEME_STATE = CAPTURE_THEME_STATE;
 
 /** Keep the right rail closed in the map: these are page/surface references,
  * not chat screenshots. This also prevents a page mount from reopening chat
@@ -296,7 +309,10 @@ async function setLocalStorage(p, signedIn = true) {
           // Legacy keys the theme store's early index.html bootstrap reads
           // before zustand rehydrates -- see plugins/themes/store.ts.
           localStorage.setItem('tahti-nuclear-theme-id', theme.state.themeId);
-          localStorage.setItem('tahti-nuclear-dark', '1');
+          localStorage.setItem(
+            'tahti-nuclear-dark',
+            theme.state.dark ? '1' : '0',
+          );
         },
         {
           auth: AUTH_STATE,
@@ -334,6 +350,7 @@ async function ensurePage() {
       isMobile: MOBILE,
       hasTouch: MOBILE,
     });
+    await prepareCapturePage(page);
     try {
       await page.goto(BASE, { waitUntil: 'domcontentloaded', timeout: 45000 });
     } catch {
@@ -400,7 +417,7 @@ const IN_PAGE_TAB_SHOT_IDS = new Set([
   'archive-item',
 ]);
 
-async function captureInPageTabs(out, shotId) {
+async function captureInPageTabs(baseName, shotId) {
   if (!IN_PAGE_TAB_SHOT_IDS.has(shotId)) {
     return;
   }
@@ -423,7 +440,7 @@ async function captureInPageTabs(out, shotId) {
     await ensureChatClosed();
     await waitForContent();
     await page.screenshot({
-      path: join(outRoot, `${basename(out, '.png')}--${key}.png`),
+      path: join(outRoot, withThemeSuffix(`${baseName}--${key}.png`)),
       fullPage: false,
     });
   }
@@ -432,9 +449,10 @@ async function captureInPageTabs(out, shotId) {
 for (const s of shotsToCapture) {
   await ensurePage();
   const url = `${BASE}${s.path}`;
-  const out = join(outRoot, MOBILE ? `${s.id}--mobile.png` : `${s.id}.png`);
+  const baseName = MOBILE ? `${s.id}--mobile` : s.id;
+  const out = join(outRoot, withThemeSuffix(`${baseName}.png`));
   try {
-    await setLocalStorage(page, s.auth !== false);
+    await setLocalStorage(page, !SIGNED_OUT_SHOT_IDS.has(s.id));
     // Re-apply layout state per shot (some pages reset chatSlug/rightCollapsed
     // on mount) -- keep chat open only for the one demo shot.
     await page.evaluate((rightCollapsed) => {
@@ -474,13 +492,13 @@ for (const s of shotsToCapture) {
     await waitForContent();
     // Hide cookie/noise if any; capture main viewport
     await page.screenshot({ path: out, fullPage: false });
-    await captureInPageTabs(out, s.id);
+    await captureInPageTabs(baseName, s.id);
     console.log('ok', s.id, s.path);
   } catch (err) {
     console.error('fail', s.id, err.message);
     await ensurePage();
     try {
-      await setLocalStorage(page, s.auth !== false);
+      await setLocalStorage(page, !SIGNED_OUT_SHOT_IDS.has(s.id));
       await page.goto(url, { waitUntil: 'commit', timeout: 5000 });
       await page.waitForTimeout(500);
       await waitForContent();
@@ -502,7 +520,7 @@ writeFileSync(
   `${JSON.stringify(
     {
       surface: 'nuclear',
-      capturedAt: '2026-09-04',
+      capturedAt: new Date().toISOString().slice(0, 10),
       baseUrl: BASE,
       images: imageFiles.map((fileName) => ({
         file: fileName,

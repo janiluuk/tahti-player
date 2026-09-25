@@ -50,7 +50,7 @@ export function StudioActionTile({
           <div className="truncate text-[11px] text-white/75">{subtitle}</div>
         ) : null}
       </div>
-      <div className="absolute inset-0 flex items-center justify-center">
+      <div className="flex min-h-0 flex-1 items-center justify-center">
         <Icon
           size={40}
           absoluteStrokeWidth

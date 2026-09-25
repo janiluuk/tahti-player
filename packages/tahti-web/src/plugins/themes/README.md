@@ -13,7 +13,7 @@ registry or interface needed because there's only one implementation.
 | `themes` | Basic themes from `@tahti-player/themes` (`listBasicThemes()`) |
 | `customThemes` | User-imported JSON themes, keyed by a generated `custom:...` id |
 | `themeId` / `dark` / `colorMode` | Current selection — `colorMode` is `'light' \| 'dark' \| 'dynamic'`; `dynamic` re-resolves `dark` against the local clock (19:00–06:59 = dark) on a 5-minute interval |
-| `init()` | Call once at app boot (see `src/main.tsx`) — resolves and applies the persisted/OS-default theme |
+| `init()` | Call once at app boot (see `src/main.tsx`) — resolves and applies the persisted theme; first run defaults to Nuclear Green (`custom:nuclear-green`) in dark mode |
 | `setTheme(id)` / `setColorMode(mode)` | User-facing actions |
 | `importCustomTheme(json)` / `removeCustomTheme(id)` | Custom theme lifecycle — `importCustomTheme` validates against `@tahti-player/themes`' `AdvancedThemeSchema` and returns `{ ok, id }` or `{ ok: false, error }` |
 
