@@ -38,12 +38,12 @@ parts:
   build-app:
     plugin: dump
     build-snaps:
-      - node/24/stable
       - rustup/latest/stable
     build-packages:
       - libwebkit2gtk-4.1-dev
       - build-essential
       - curl
+      - xz-utils
       - wget
       - file
       - libxdo-dev
@@ -60,6 +60,18 @@ parts:
       set -eu
 
       rustup default stable
+
+      # The node/24 snap needs glibc 2.38; core22 has 2.35. The nodejs.org
+      # binaries only need glibc 2.28.
+      NODE_BASE=https://nodejs.org/dist/latest-v24.x
+      curl -fsSL "$NODE_BASE/SHASUMS256.txt" -o node-shasums.txt
+      NODE_FILE=$(awk '/linux-x64\.tar\.xz$/ {print $2}' node-shasums.txt)
+      curl -fsSLO "$NODE_BASE/$NODE_FILE"
+      grep " $NODE_FILE\$" node-shasums.txt | sha256sum -c -
+      mkdir -p "$SNAPCRAFT_PART_BUILD/.node"
+      tar -xJf "$NODE_FILE" -C "$SNAPCRAFT_PART_BUILD/.node" --strip-components=1
+      rm "$NODE_FILE" node-shasums.txt
+      export PATH="$SNAPCRAFT_PART_BUILD/.node/bin:$PATH"
 
       PNPM_VERSION=$(sed -n 's/.*"packageManager": "pnpm@\([0-9.]*\).*/\1/p' package.json)
       npm install -g "pnpm@$PNPM_VERSION"
