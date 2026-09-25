@@ -10,6 +10,19 @@ const LISTEN_EVENT_AFTER_SEC = 15;
  * Mounts a hidden <audio> element driven by the player store.
  * Live / radio: HLS via hls.js (or native Safari).
  */
+/**
+ * WebKit AirPlays a media element's own output. Once `createMediaElementSource`
+ * captures the element, its sound only leaves through the AudioContext, so the
+ * AirPlay receiver plays silence, and a capture can't be undone. Browsers that
+ * can AirPlay therefore play uncaptured (visualizers fall back to idle).
+ */
+function canAirPlay(): boolean {
+  return (
+    typeof window !== 'undefined' &&
+    'WebKitPlaybackTargetAvailabilityEvent' in window
+  );
+}
+
 export function AudioEngine() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const hlsRef = useRef<Hls | null>(null);
@@ -100,6 +113,9 @@ export function AudioEngine() {
       return;
     }
     const ensureGraph = () => {
+      if (canAirPlay()) {
+        return;
+      }
       try {
         if (!audioCtxRef.current) {
           const Ctx =
@@ -224,14 +240,23 @@ export function AudioEngine() {
       setStatus('error', 'Playback error');
     };
 
-    audio.crossOrigin = 'anonymous';
+    audio.crossOrigin = canAirPlay() ? null : 'anonymous';
     audio.addEventListener('playing', onPlaying);
     audio.addEventListener('pause', onPause);
     audio.addEventListener('ended', onEnded);
     audio.addEventListener('timeupdate', onTime);
     audio.addEventListener('error', onError);
 
-    if (isHls && Hls.isSupported()) {
+    // AirPlay can't cast a MediaSource-backed element, so prefer native HLS there.
+    const nativeHls =
+      isHls &&
+      (canAirPlay() || !Hls.isSupported()) &&
+      audio.canPlayType('application/vnd.apple.mpegurl') !== '';
+
+    if (nativeHls) {
+      audio.src = url;
+      void audio.play().catch(() => setStatus('paused'));
+    } else if (isHls && Hls.isSupported()) {
       const hls = new Hls({ liveDurationInfinity: true, enableWorker: true });
       hlsRef.current = hls;
       hls.on(Hls.Events.ERROR, (_e, data) => {
@@ -244,9 +269,6 @@ export function AudioEngine() {
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
         void audio.play().catch(() => setStatus('paused'));
       });
-    } else if (isHls && audio.canPlayType('application/vnd.apple.mpegurl')) {
-      audio.src = url;
-      void audio.play().catch(() => setStatus('paused'));
     } else {
       audio.src = url;
       void audio.play().catch(() => setStatus('paused'));
