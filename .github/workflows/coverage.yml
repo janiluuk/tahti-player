@@ -58,6 +58,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Snapshot digest PNGs render with the built app CSS (see
+      # build-snapshot-digest.mjs's loadAppCss) so a mismatch looks like the
+      # real page instead of unstyled HTML. Frontend-only build is enough -
+      # no Tauri/Rust toolchain needed just for dist/assets/*.css.
+      - name: Build app bundles for snapshot digest CSS
+        run: |
+          pnpm turbo build:frontend --filter=@tahti-player/player
+          pnpm turbo build --filter=@tahti-player/tahti-web
+
       - name: Run tests with coverage
         id: test
         continue-on-error: true
