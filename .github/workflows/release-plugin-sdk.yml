@@ -1,13 +1,20 @@
 name: Release Plugin SDK
 
+# Run by hand from the Actions tab: tags plugin-sdk@<package.json version> if the
+# tag does not exist yet, attaches the npm tarball to a GitHub Release, and
+# publishes to npm when the NPM_TOKEN secret is set.
 on:
   push:
     tags:
       - 'plugin-sdk@*.*.*'
+  workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: release-plugin-sdk-${{ github.ref }}
   cancel-in-progress: true
+
+permissions:
+  contents: write
 
 env:
   DO_NOT_TRACK: 1
@@ -20,13 +27,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v7
 
-      - name: Extract version from tag
+      - name: Resolve version and tag
         id: version
         run: |
-          TAG=${GITHUB_REF#refs/tags/}
-          VERSION=${TAG#plugin-sdk@}
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          VERSION=$(jq -r .version packages/plugin-sdk/package.json)
+          TAG="plugin-sdk@$VERSION"
+          if [ "$GITHUB_REF_TYPE" = "tag" ] && [ "$GITHUB_REF_NAME" != "$TAG" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match packages/plugin-sdk/package.json version $VERSION"
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
 
       - name: Setup Node.js
         uses: actions/setup-node@v7
@@ -56,31 +67,68 @@ jobs:
       - name: Build model package
         run: pnpm --filter @tahti-player/model build
 
-      - name: Build package for npm
-        run: pnpm --filter @tahti-player/plugin-sdk build:npm
-
-      - name: Prepare package.json for publishing
-        run: |
-          cd packages/plugin-sdk
-          node -e "
-            const pkg = require('./package.json');
-            
-            pkg.main = './dist/index.js';
-            pkg.module = './dist/index.js';
-            pkg.exports['.'].import = './dist/index.js';
-            
-            delete pkg.dependencies['@tahti-player/ui'];
-            delete pkg.dependencies['@tahti-player/model'];
-            
-            require('fs').writeFileSync('./package.json', JSON.stringify(pkg, null, 2));
-          "
-
       - name: Run tests
         run: pnpm --filter @tahti-player/plugin-sdk test
 
-      - name: Publish to npm
+      - name: Build package for npm
+        run: pnpm --filter @tahti-player/plugin-sdk build:npm
+
+      # The npm build bundles @tahti-player/ui and @tahti-player/model into
+      # dist, but the bundled .d.ts still imports zod from model. The ./mcp
+      # entry points at src/, which is not in the published files.
+      - name: Prepare package.json for publishing
+        working-directory: packages/plugin-sdk
         run: |
-          cd packages/plugin-sdk
-          pnpm publish --access public --no-git-checks
+          node -e "
+            const fs = require('fs');
+            const pkg = require('./package.json');
+            const model = require('../model/package.json');
+
+            pkg.main = './dist/index.js';
+            pkg.module = './dist/index.js';
+            pkg.exports['.'].import = './dist/index.js';
+            delete pkg.exports['./mcp'];
+
+            delete pkg.dependencies['@tahti-player/ui'];
+            delete pkg.dependencies['@tahti-player/model'];
+            pkg.dependencies.zod = model.dependencies.zod;
+
+            fs.writeFileSync('./package.json', JSON.stringify(pkg, null, 2));
+          "
+
+      - name: Pack tarball
+        id: pack
+        working-directory: packages/plugin-sdk
+        run: |
+          pnpm pack --pack-destination "$RUNNER_TEMP"
+          echo "file=$(ls "$RUNNER_TEMP"/*.tgz)" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.version.outputs.tag }}
+          VERSION: ${{ steps.version.outputs.version }}
+          TARBALL: ${{ steps.pack.outputs.file }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$TARBALL" --clobber
+          else
+            gh release create "$TAG" "$TARBALL" \
+              --target "$GITHUB_SHA" \
+              --title "Plugin SDK v$VERSION" \
+              --notes "@tahti-player/plugin-sdk $VERSION" \
+              --latest=false
+          fi
+
+      # The secret is checked in the shell because a step-level `if:` on
+      # secrets.* makes GitHub reject the whole workflow file.
+      - name: Publish to npm
+        working-directory: packages/plugin-sdk
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "::warning::NPM_TOKEN secret is not set, skipping npm publish."
+            exit 0
+          fi
+          pnpm publish --access public --no-git-checks

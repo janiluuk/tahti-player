@@ -1,10 +1,9 @@
 name: Bump & Tag Player Release
 
 # Auto-releases the desktop player on every master merge that touches it:
-# bumps the patch version, commits, and pushes a `player@X.Y.Z` tag. The tag
-# push is what actually triggers the build — see release-player.yml, which
-# generates the release notes from packages/player/changelog.json and
-# publishes the desktop builds to GitHub Releases.
+# bumps the patch version, commits, pushes a `player@X.Y.Z` tag, then calls
+# release-player.yml to build and publish the desktop binaries. The tag push
+# alone does not start release-player.yml because it is made with GITHUB_TOKEN.
 on:
   push:
     branches: [master]
@@ -33,6 +32,8 @@ jobs:
     # which matches this workflow's own path filter -- without this guard
     # every release would re-trigger itself.
     if: "${{ !startsWith(github.event.head_commit.message, 'chore(player): release v') }}"
+    outputs:
+      tag: player@${{ steps.bump.outputs.version }}
 
     steps:
       - name: Checkout code
@@ -70,3 +71,10 @@ jobs:
         run: |
           git tag "player@${{ steps.bump.outputs.version }}"
           git push origin "player@${{ steps.bump.outputs.version }}"
+
+  release:
+    needs: bump-and-tag
+    uses: ./.github/workflows/release-player.yml
+    with:
+      tag: ${{ needs.bump-and-tag.outputs.tag }}
+    secrets: inherit

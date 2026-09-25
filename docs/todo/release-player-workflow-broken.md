@@ -2,6 +2,38 @@
 
 **Status:** partial
 
+## Update 2026-09-25 — second root cause: tags from GITHUB_TOKEN never trigger
+
+The file parsed fine after 2026-09-07, yet no run ever started and there are
+zero GitHub Releases despite 100+ `player@*` tags. `bump-and-tag-player.yml`
+pushes the tag with `GITHUB_TOKEN`, and GitHub never starts other workflows
+from events that token creates.
+
+Fix (branch `fix/release-workflows`):
+- `release-player.yml` also accepts `workflow_call` / `workflow_dispatch` with a
+  `tag` input, checks out that tag, and uses it for version and release name.
+- `bump-and-tag-player.yml` has a `release` job calling it with the new tag.
+- Existing tags can be released by hand: Actions → Release Player → Run
+  workflow → `tag: player@1.47.112`.
+
+`release-plugin-sdk.yml` never ran either (nothing creates `plugin-sdk@*`
+tags, no `NPM_TOKEN` secret). It now has `workflow_dispatch`, tags the
+`package.json` version, attaches the `npm pack` tarball to a non-latest GitHub
+Release (so it can't replace the player's `releases/latest/download/latest.json`
+updater endpoint), and only publishes to npm when `NPM_TOKEN` is set. Publish
+prep adds `zod` (bundled types import it) and drops the `./mcp` export (points
+at unpublished `src/`). Local `build:npm` + `pnpm pack` verified.
+
+Still open:
+- [ ] Merge, then run Release Player for an existing tag and confirm all four
+      desktop builds and `latest.json` land on the release.
+- [ ] Run Release Plugin SDK once; add `NPM_TOKEN` and own the `@tahti-player`
+      npm scope if npm publishing is wanted.
+- [ ] `release-snap`, `update-aur`, `update-flathub`, `update-winget` trigger on
+      `workflow_run` of "Release Player" and read the version from
+      `head_branch`; that doesn't fire (and would be `master`) when called from
+      Bump & Tag. Their store secrets are also not configured.
+
 ## Update 2026-09-07 — root cause found and fixed
 
 Root cause: the `release-android` job's "Configure Android signing" step
