@@ -1,6 +1,6 @@
 # Import a provider playlist/set into the native library
 
-**Status:** open
+**Status:** partial
 **Added:** 2026-09-18
 **Goal:** Let a desktop user choose a playlist or set from an import provider such as hearthis.at or SoundCloud, download every eligible track, and add each completed download as a durable native-library track.
 
@@ -27,3 +27,17 @@
 ## Exit demo
 
 Choose a multi-track hearthis.at or SoundCloud set, review it, download the eligible entries with visible progress, survive one failed item, and see every completed item in Local files as a native track that still plays after an offline restart. Re-running the import skips unchanged tracks and retrying completes only the failures.
+
+## Progress (2026-09-25)
+
+**hearthis.at: done** (user chose hearthis.at only for this pass).
+
+- Native import now also reads MP3, AIFF, M4A and OGG (Symphonia `mp3`/`aiff`/`isomp4`/`aac`/`ogg`/`vorbis`; one `SUPPORTED_AUDIO_EXTENSIONS` list for the import check, metadata reader and pickers; MP3 length falls back to lofty when the header has no frame count). Tag write-back stays FLAC/WAV.
+- `local_library/provider_import.rs`: `library_provider_import` downloads the set's downloadable entries (3 at a time, hidden `.part` file renamed when complete, removed on failure or cancel), imports each file through `import_paths`, and records it in the new `library_track_sources` table (migration `0013`). A re-run skips `(provider, remote_id)` pairs whose file is still there; the named playlist is created or re-synced to set order. Catalog writes are serialised (parallel SQLite import transactions deadlocked). `library_provider_import_cancel`, `library_provider_import_destination` (`<Music>/Tahti/hearthis.at/<set>`). 8 Rust tests against a local axum server.
+- Web: `api/sources/hearthis.ts` maps `downloadable`/`download_url`/`download_filename` (verified against the live API: set listings carry them, links redirect to a public MP3) and parses pasted set links. Local files gets an "Import hearthis.at set" button (desktop builds with `providerImport`), opening `HearthisSetImportDialog`: paste a link or pick one of your sets, review (stream-only tracks marked, folder shown, playlist on/off), per-track progress, cancel, retry of failures. Tests and a Storybook story.
+
+## Still open
+
+- **SoundCloud.** Needs `../tahti-org` work first: an endpoint listing the user's playlists/sets with per-track `downloadable`, and one handing the desktop app an authorised download (the OAuth token stays on the server). Then add `soundcloud` to `PROVIDERS` in `provider_import.rs` and a second picker.
+- **Disk space** is not checked up front; the provider lists no file sizes. A full disk fails the affected tracks with the write error and removes their part files.
+- **Not yet run in the desktop app** against a real hearthis.at set (checked with Rust tests, web tests and Storybook).

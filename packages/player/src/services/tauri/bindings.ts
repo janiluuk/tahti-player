@@ -143,6 +143,14 @@ export const commands = {
 	 *  cooperatively, so a file already being read/inserted still completes.
 	 */
 	libraryImportCancel: () => typedError<null, string>(__TAURI_INVOKE("library_import_cancel")),
+	/**
+	 *  Downloads a provider set into the library, emitting
+	 *  `library://provider-import-progress` per entry.
+	 */
+	libraryProviderImport: (request: ProviderImportRequest) => typedError<ProviderImportResult, string>(__TAURI_INVOKE("library_provider_import", { request })),
+	libraryProviderImportCancel: () => typedError<null, string>(__TAURI_INVOKE("library_provider_import_cancel")),
+	/**  The folder a set is saved in unless the user picks another one. */
+	libraryProviderImportDestination: (provider: string, setTitle: string) => typedError<string, string>(__TAURI_INVOKE("library_provider_import_destination", { provider, setTitle })),
 	libraryResolve: (id: string) => typedError<string, string>(__TAURI_INVOKE("library_resolve", { id })),
 	libraryRemove: (id: string) => typedError<null, string>(__TAURI_INVOKE("library_remove", { id })),
 	libraryRemoveMany: (ids: string[]) => typedError<number, string>(__TAURI_INVOKE("library_remove_many", { ids })),
@@ -476,7 +484,7 @@ export type EntryStatus =
 "needsImport" | 
 /**  The file is not where the list says (and was not found by relinking). */
 "missing" | 
-/**  Exists, but not a format the library can import (FLAC and WAV for now). */
+/**  Exists, but not a format the library can import. */
 "unsupported" | 
 /**  A URL (stream), which local playlists cannot hold. */
 "remote";
@@ -853,6 +861,49 @@ export type PlaylistSummary = {
 	unavailableCount: number,
 	createdAt: string,
 	updatedAt: string,
+};
+
+export type ProviderImportEntry = {
+	remoteId: string,
+	title: string,
+	artist: string,
+	downloadUrl: string,
+	/**  The provider's suggested file name; only its extension is used. */
+	fileName: string | null,
+};
+
+export type ProviderImportFailure = {
+	remoteId: string,
+	title: string,
+	error: string,
+};
+
+export type ProviderImportRequest = {
+	provider: string,
+	setId: string,
+	setTitle: string,
+	/**
+	 *  Folder the files are saved in, usually from
+	 *  `library_provider_import_destination`.
+	 */
+	destination: string,
+	/**  Set order. Only entries the provider marks as downloadable belong here. */
+	entries: ProviderImportEntry[],
+	/**
+	 *  Native playlist to hold the set in order. Reused (and re-ordered to the
+	 *  set) when a playlist with this name already exists.
+	 */
+	playlistName: string | null,
+};
+
+export type ProviderImportResult = {
+	imported: number,
+	skipped: number,
+	failures: ProviderImportFailure[],
+	cancelled: boolean,
+	playlistId: string | null,
+	/**  Library ids of the imported and skipped tracks, in set order. */
+	trackIds: string[],
 };
 
 /**

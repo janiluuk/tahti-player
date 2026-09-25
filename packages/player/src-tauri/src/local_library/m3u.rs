@@ -299,7 +299,7 @@ pub enum EntryStatus {
     NeedsImport,
     /// The file is not where the list says (and was not found by relinking).
     Missing,
-    /// Exists, but not a format the library can import (FLAC and WAV for now).
+    /// Exists, but not a format the library can import.
     Unsupported,
     /// A URL (stream), which local playlists cannot hold.
     Remote,
@@ -780,7 +780,11 @@ pub async fn playlist_relink_entry(
 ) -> Result<bool, String> {
     let dialog_app = app.clone();
     let picked = tauri::async_runtime::spawn_blocking(move || {
-        pick_file(&dialog_app, "FLAC and WAV audio", &["flac", "wav"])
+        pick_file(
+            &dialog_app,
+            super::import::AUDIO_PICKER_LABEL,
+            &super::import::SUPPORTED_AUDIO_EXTENSIONS,
+        )
     })
     .await
     .map_err(|err| err.to_string())?;

@@ -7,6 +7,7 @@
 import type { NativeAnalysis } from './native-library/analysis';
 import type { NativeCatalog } from './native-library/catalog';
 import type { NativePlaylists } from './native-library/playlists';
+import type { NativeProviderImport } from './native-library/providerImport';
 import type {
   NativeFacetFilter,
   NativeFacetGroup,
@@ -29,6 +30,7 @@ export * from './native-library/tracks';
 export * from './native-library/playlists';
 export * from './native-library/catalog';
 export * from './native-library/analysis';
+export * from './native-library/providerImport';
 
 export type TahtiNativeLibrary = {
   list: (
@@ -103,4 +105,6 @@ export type TahtiNativeLibrary = {
   ) => () => void;
   /** Subscribes to files/folders dropped onto the app window; returns an unsubscribe function. */
   onFilesDropped: (listener: (paths: string[]) => void) => () => void;
+  /** Downloads a provider set into the library. Missing in older desktop builds. */
+  providerImport?: NativeProviderImport;
 };

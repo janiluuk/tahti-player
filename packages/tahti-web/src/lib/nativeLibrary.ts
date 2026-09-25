@@ -186,6 +186,10 @@ export function withReadCache(library: TahtiNativeLibrary): TahtiNativeLibrary {
     removeRoot: mutating(library.removeRoot),
     rescanRoots: mutating(library.rescanRoots),
     relinkRoot: mutating(library.relinkRoot),
+    providerImport: library.providerImport && {
+      ...library.providerImport,
+      start: mutating(library.providerImport.start),
+    },
     analysis: {
       ...library.analysis,
       analyze: mutating(library.analysis.analyze),

@@ -56,6 +56,8 @@ type Props = {
   loadedCountRef: MutableRefObject<number>;
   onImportFiles: () => void;
   onImportFolder: () => void;
+  /** Opens the hearthis.at set import; absent when the desktop build lacks it. */
+  onImportSet?: () => void;
   onRescanMissing: () => void;
   onCancelImport: () => void;
   onAddRoot: () => void;
@@ -108,6 +110,7 @@ export function DesktopLibraryContent({
   loadedCountRef,
   onImportFiles,
   onImportFolder,
+  onImportSet,
   onRescanMissing,
   onCancelImport,
   onAddRoot,
@@ -146,6 +149,11 @@ export function DesktopLibraryContent({
         <Button variant="text" onClick={onImportFolder} disabled={busy}>
           Import folder
         </Button>
+        {onImportSet ? (
+          <Button variant="text" onClick={onImportSet} disabled={busy}>
+            Import hearthis.at set
+          </Button>
+        ) : null}
         {unavailableCount > 0 ? (
           <Button variant="text" onClick={onRescanMissing} disabled={busy}>
             Check missing files ({unavailableCount})

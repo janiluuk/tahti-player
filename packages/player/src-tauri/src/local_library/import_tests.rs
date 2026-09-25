@@ -77,6 +77,33 @@ async fn rejects_unsupported_extension() {
 }
 
 #[tokio::test]
+async fn imports_mp3_with_tags_and_a_duration_from_the_tag_reader() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("tone.mp3");
+    std::fs::copy(concat!(env!("CARGO_MANIFEST_DIR"), "/src/local_library/fixtures/tone.mp3"), &path).unwrap();
+
+    let pool = pool().await;
+    let result = import_paths(&pool, vec![path]).await;
+
+    assert_eq!(result.imported, 1, "errors: {:?}", result.errors);
+    let track = &list(&pool, "", 0).await.unwrap().tracks[0];
+    assert_eq!(track.format, "mp3");
+    assert_eq!(track.title, "Tone MP3");
+    assert_eq!(track.artist, "Fixture Artist");
+    assert!((1.5..2.5).contains(&track.duration), "duration {}", track.duration);
+    assert!(track.bitrate_kbps.is_some());
+}
+
+#[test]
+fn accepts_every_supported_extension_case_insensitively() {
+    for name in ["a.mp3", "b.AIFF", "c.aif", "d.m4a", "e.ogg", "f.oga", "g.Flac", "h.wav"] {
+        assert!(super::import::is_supported_audio_file(std::path::Path::new(name)), "{name}");
+    }
+    assert!(!super::import::is_supported_audio_file(std::path::Path::new("notes.txt")));
+    assert!(!super::import::is_supported_audio_file(std::path::Path::new("no-extension")));
+}
+
+#[tokio::test]
 async fn reimporting_same_path_updates_instead_of_duplicating() {
     let dir = tempfile::tempdir().unwrap();
     let path = dir.path().join("song.wav");
