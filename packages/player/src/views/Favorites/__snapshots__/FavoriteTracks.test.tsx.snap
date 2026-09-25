@@ -121,7 +121,7 @@ exports[`FavoriteTracks view > (Snapshot) renders with tracks 1`] = `
             style="scrollbar-width: none;"
           >
             <div
-              class="flex h-full flex-col"
+              class="@container flex h-full flex-col"
             >
               <div
                 class="flex items-center gap-2 mb-2 shrink-0"
@@ -282,7 +282,7 @@ exports[`FavoriteTracks view > (Snapshot) renders with tracks 1`] = `
                           </span>
                         </th>
                         <th
-                          class="px-2 text-left cursor-pointer"
+                          class="px-2 text-left cursor-pointer @max-md:hidden"
                           role="columnheader"
                         >
                           <span
@@ -458,7 +458,7 @@ exports[`FavoriteTracks view > (Snapshot) renders with tracks 1`] = `
                           </div>
                         </td>
                         <td
-                          class="cursor-default truncate px-2"
+                          class="cursor-default truncate px-2 @max-md:hidden"
                         >
                           <div
                             class="truncate"
@@ -474,6 +474,11 @@ exports[`FavoriteTracks view > (Snapshot) renders with tracks 1`] = `
                           >
                             Track track-1
                           </button>
+                          <div
+                            class="text-foreground-secondary truncate text-xs @md:hidden"
+                          >
+                            Test Artist
+                          </div>
                         </td>
                         <td
                           class="w-10 text-center"
@@ -685,7 +690,7 @@ exports[`FavoriteTracks view > (Snapshot) renders with tracks 1`] = `
                           </div>
                         </td>
                         <td
-                          class="cursor-default truncate px-2"
+                          class="cursor-default truncate px-2 @max-md:hidden"
                         >
                           <div
                             class="truncate"
@@ -701,6 +706,11 @@ exports[`FavoriteTracks view > (Snapshot) renders with tracks 1`] = `
                           >
                             Track track-2
                           </button>
+                          <div
+                            class="text-foreground-secondary truncate text-xs @md:hidden"
+                          >
+                            Test Artist
+                          </div>
                         </td>
                         <td
                           class="w-10 text-center"
