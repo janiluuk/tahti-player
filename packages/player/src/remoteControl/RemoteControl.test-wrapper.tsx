@@ -24,6 +24,7 @@ import { useRemoteStore } from './remoteStore';
 
 const user = userEvent.setup();
 const MAX_RETRIES = 3;
+const RECONNECT_DELAY_MS = 3000;
 
 export const RemoteControlWrapper = {
   reset() {
@@ -74,10 +75,16 @@ export const RemoteControlWrapper = {
   },
 
   simulateConnectionFailure() {
-    for (let retry = 0; retry <= MAX_RETRIES; retry++) {
-      act(() => {
-        MockEventSource.lastInstance?.simulateError();
-      });
+    vi.useFakeTimers();
+    try {
+      for (let retry = 0; retry <= MAX_RETRIES; retry++) {
+        act(() => {
+          MockEventSource.lastInstance?.simulateError();
+          vi.advanceTimersByTime(RECONNECT_DELAY_MS);
+        });
+      }
+    } finally {
+      vi.useRealTimers();
     }
   },
   simulateConnectionDrop() {

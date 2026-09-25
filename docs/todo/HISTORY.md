@@ -3647,3 +3647,12 @@ The recurring "Theme is in review" popup was mock-only: a hard-coded `THEME_UNDE
 ## 2026-09-25 — Close `go-live-header-subtext-cleanup.md`: calendar restore dropped
 
 The Go Live panel subtexts were already removed and their copy moved into the `broadcast` Help Center article (OBS preset and Icecast paste flow). The last open item, "restore the calendar view to the top panel", was dropped at the user's call: `StudioGoLiveView.tsx` never had a calendar, so there was nothing to restore. Still undecided and not tracked as work: porting the inline `DesignerHelpLayer` disclosure from the `tahti` repo as an alternative to Help Center articles. Folded and deleted.
+
+## 2026-09-25 — Close `remote-control-test-flake.md`: leaked reconnect timers in `useEventSource`
+
+The player `RemoteControl` tests sometimes stayed on "connecting" in CI (PR #142; earlier "fixes" #38 and d7ebda29 only raised timeouts). Root cause: `useEventSource` scheduled a reconnect for every `error` a closed source reported, overwriting the stored timer, so cleanup cleared only the last one; `connect()` also ran after cleanup. `simulateConnectionFailure()` fires 4 errors on one source, which leaked 2 timers. About 3 s later they created new `MockEventSource`s during some later test, replacing `lastInstance`, so that test's `simulateOpen()` went to an orphan. The timing only lines up on slow runners.
+
+- Fix: errors from a source that is no longer current are ignored, and `connect()` does nothing after cleanup. In the app this also stops a flaky network from stacking parallel reconnects.
+- `simulateConnectionFailure()` now fails each new source after the reconnect delay (fake timers), as a real retry sequence does.
+- New `useEventSource.test.ts` (3 cases); two of them failed before the fix (4 sources instead of 2, and a reconnect after unmount).
+- Player suite 707 passing; 8 parallel runs of the remote control tests pass. Locally, Node 26's built-in `localStorage` breaks about 325 player tests (on master too); run with `NODE_OPTIONS=--no-experimental-webstorage`. CI uses Node 24 and is unaffected.
