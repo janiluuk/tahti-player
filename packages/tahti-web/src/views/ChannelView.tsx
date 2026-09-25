@@ -565,9 +565,9 @@ export function ChannelView({ slug }: { slug: string }) {
               <Link
                 to="/"
                 aria-label="Back to Listen"
-                className="text-foreground-secondary hover:bg-background-secondary inline-flex size-8 items-center justify-center rounded-full"
+                className="text-foreground-secondary hover:bg-background-secondary inline-flex size-12 items-center justify-center rounded-full"
               >
-                <ArrowLeftIcon size={16} aria-hidden />
+                <ArrowLeftIcon size={28} aria-hidden />
               </Link>
             </Tooltip>
           ) : (

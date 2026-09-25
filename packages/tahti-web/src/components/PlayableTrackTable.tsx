@@ -64,21 +64,19 @@ export function PlayableTrackTable({
   }
 
   const tracks: Track[] = items.map(playableToTrack);
-  const byId = new Map(items.map((i) => [i.id, i]));
+  // Keyed the same way `playableToTrack` sets `source.id` -- an embed
+  // item's source.id is its `embedUri`, not `item.id` -- so lookups from
+  // both a `Track` (via `resolve`) and a raw id string (bulk actions) hit
+  // the same map instead of silently missing for embed-only tracks.
+  const byId = new Map(items.map((i) => [i.embed?.embedUri ?? i.id, i]));
 
   const resolve = (track: Track): TahtiPlayable | null =>
     byId.get(track.source.id) ?? null;
 
-  // Bulk actions get raw `Track.source.id` strings back from TrackTable, not
-  // `Track` objects -- a second lookup keyed the same way `resolve` reads,
-  // since an embed item's source.id can differ from its own `item.id`.
-  const bySourceId = new Map(
-    tracks.map((track) => [track.source.id, resolve(track)] as const),
-  );
   const resolveSelection = (ids: string[]): TahtiPlayable[] =>
     ids
-      .map((id) => bySourceId.get(id))
-      .filter((item): item is TahtiPlayable => item !== null);
+      .map((id) => byId.get(id))
+      .filter((item): item is TahtiPlayable => item !== undefined);
 
   // The listener-facing track page (waveform, artwork, comments — see
   // TrackDetailView) is the default destination for both the title text
