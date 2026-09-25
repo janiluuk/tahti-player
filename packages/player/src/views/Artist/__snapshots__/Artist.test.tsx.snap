@@ -783,7 +783,7 @@ exports[`Artist view > with bio provider > (Snapshot) renders the artist view 1`
                         Popular tracks
                       </h2>
                       <div
-                        class="flex h-full flex-col"
+                        class="@container flex h-full flex-col"
                       >
                         <div
                           class="flex items-center gap-2 mb-2 shrink-0"
@@ -903,7 +903,7 @@ exports[`Artist view > with bio provider > (Snapshot) renders the artist view 1`
                                     </span>
                                   </th>
                                   <th
-                                    class="px-2 text-left cursor-pointer"
+                                    class="px-2 text-left cursor-pointer @max-md:hidden"
                                     role="columnheader"
                                   >
                                     <span
@@ -1053,7 +1053,7 @@ exports[`Artist view > with bio provider > (Snapshot) renders the artist view 1`
                                     </div>
                                   </td>
                                   <td
-                                    class="cursor-default truncate px-2"
+                                    class="cursor-default truncate px-2 @max-md:hidden"
                                   >
                                     <div
                                       class="truncate"
@@ -1069,6 +1069,11 @@ exports[`Artist view > with bio provider > (Snapshot) renders the artist view 1`
                                     >
                                       Smells Like Cheap Spirit
                                     </button>
+                                    <div
+                                      class="text-foreground-secondary truncate text-xs @md:hidden"
+                                    >
+                                      Test Artist
+                                    </div>
                                   </td>
                                   <td
                                     class="w-10 text-center"
@@ -2813,7 +2818,7 @@ exports[`Artist view > with social stats provider > (Snapshot) renders the artis
                         Popular tracks
                       </h2>
                       <div
-                        class="flex h-full flex-col"
+                        class="@container flex h-full flex-col"
                       >
                         <div
                           class="flex items-center gap-2 mb-2 shrink-0"
@@ -2933,7 +2938,7 @@ exports[`Artist view > with social stats provider > (Snapshot) renders the artis
                                     </span>
                                   </th>
                                   <th
-                                    class="px-2 text-left cursor-pointer"
+                                    class="px-2 text-left cursor-pointer @max-md:hidden"
                                     role="columnheader"
                                   >
                                     <span
@@ -3083,7 +3088,7 @@ exports[`Artist view > with social stats provider > (Snapshot) renders the artis
                                     </div>
                                   </td>
                                   <td
-                                    class="cursor-default truncate px-2"
+                                    class="cursor-default truncate px-2 @max-md:hidden"
                                   >
                                     <div
                                       class="truncate"
@@ -3099,6 +3104,11 @@ exports[`Artist view > with social stats provider > (Snapshot) renders the artis
                                     >
                                       Strobe
                                     </button>
+                                    <div
+                                      class="text-foreground-secondary truncate text-xs @md:hidden"
+                                    >
+                                      Deadmau5
+                                    </div>
                                   </td>
                                   <td
                                     class="w-10 text-center"

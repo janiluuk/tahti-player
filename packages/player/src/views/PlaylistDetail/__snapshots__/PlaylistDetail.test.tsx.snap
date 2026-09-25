@@ -193,7 +193,7 @@ exports[`PlaylistDetail view > (Snapshot) renders playlist detail with tracks 1`
             class="h-full p-6"
           >
             <div
-              class="flex h-full flex-col"
+              class="@container flex h-full flex-col"
             >
               <div
                 class="flex items-center gap-2 mb-2 shrink-0"
@@ -297,7 +297,7 @@ exports[`PlaylistDetail view > (Snapshot) renders playlist detail with tracks 1`
                           </span>
                         </th>
                         <th
-                          class="px-2 text-left cursor-pointer"
+                          class="px-2 text-left cursor-pointer @max-md:hidden"
                           role="columnheader"
                         >
                           <span
@@ -317,7 +317,7 @@ exports[`PlaylistDetail view > (Snapshot) renders playlist detail with tracks 1`
                           </span>
                         </th>
                         <th
-                          class="px-2 text-left cursor-pointer"
+                          class="px-2 text-left cursor-pointer @max-md:hidden"
                           role="columnheader"
                         >
                           <span
@@ -521,7 +521,7 @@ exports[`PlaylistDetail view > (Snapshot) renders playlist detail with tracks 1`
                           </div>
                         </td>
                         <td
-                          class="cursor-default truncate px-2"
+                          class="cursor-default truncate px-2 @max-md:hidden"
                         >
                           <div
                             class="truncate"
@@ -537,9 +537,14 @@ exports[`PlaylistDetail view > (Snapshot) renders playlist detail with tracks 1`
                           >
                             Giant Steps
                           </button>
+                          <div
+                            class="text-foreground-secondary truncate text-xs @md:hidden"
+                          >
+                            Test Artist
+                          </div>
                         </td>
                         <td
-                          class="cursor-default truncate px-2"
+                          class="cursor-default truncate px-2 @max-md:hidden"
                         >
                           <div
                             class="truncate"
@@ -799,7 +804,7 @@ exports[`PlaylistDetail view > (Snapshot) renders playlist detail with tracks 1`
                           </div>
                         </td>
                         <td
-                          class="cursor-default truncate px-2"
+                          class="cursor-default truncate px-2 @max-md:hidden"
                         >
                           <div
                             class="truncate"
@@ -815,9 +820,14 @@ exports[`PlaylistDetail view > (Snapshot) renders playlist detail with tracks 1`
                           >
                             So What
                           </button>
+                          <div
+                            class="text-foreground-secondary truncate text-xs @md:hidden"
+                          >
+                            Test Artist
+                          </div>
                         </td>
                         <td
-                          class="cursor-default truncate px-2"
+                          class="cursor-default truncate px-2 @max-md:hidden"
                         >
                           <div
                             class="truncate"

@@ -4,6 +4,7 @@ import { Track } from '@tahti-player/model';
 
 import { cn } from '../../../utils';
 import { useTrackTableContext } from '../TrackTableContext';
+import { narrowOnlyClass } from '../utils/columns';
 
 type TitleCellMeta = {
   isCurrentTrack?: (track: Track) => boolean;
@@ -37,6 +38,14 @@ export const TitleCell = <T extends Track>({
       >
         {getValue()}
       </button>
+      <div
+        className={cn(
+          'text-foreground-secondary truncate text-xs',
+          narrowOnlyClass,
+        )}
+      >
+        {track.artists[0]?.name}
+      </div>
     </td>
   );
 };

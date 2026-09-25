@@ -57,16 +57,18 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
 
   return (
     <div data-testid={testId} className={cn('flex flex-col gap-3', className)}>
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
         <div className="flex items-center gap-2">
-          <h2 className="text-foreground text-lg font-bold">{title}</h2>
+          <h2 className="text-foreground text-lg font-bold whitespace-nowrap">
+            {title}
+          </h2>
           {badge && (
             <Badge data-testid="cards-row-badge" variant="pill" color="purple">
               {badge}
             </Badge>
           )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
           <Input
             data-testid="cards-row-filter"
             size="sm"

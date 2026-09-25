@@ -133,7 +133,7 @@ export function TrackTable<T extends Track = Track>({
         getItemId,
       }}
     >
-      <div className="flex h-full flex-col">
+      <div className="@container flex h-full flex-col">
         <Toolbar
           filterValue={globalFilter}
           onFilterChange={setGlobalFilter}

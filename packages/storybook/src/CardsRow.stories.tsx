@@ -96,6 +96,20 @@ export const WithItems: Story = {
   },
 };
 
+/** Phone width (375px): the filter and scroll buttons wrap under the title. */
+export const MobileView: Story = {
+  args: {
+    title: 'Your feed',
+    items,
+    labels,
+  },
+  render: (args) => (
+    <div style={{ width: 375 }}>
+      <CardsRow {...args} />
+    </div>
+  ),
+};
+
 export const WithBadge: Story = {
   args: {
     title: 'Top Albums',
