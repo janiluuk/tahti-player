@@ -237,23 +237,34 @@ export const MyDiscographyView: FC = () => {
         <>
           <section className="flex flex-col gap-4">
             <div className="border-border bg-background-secondary/30 flex flex-col gap-3 rounded-xl border p-3">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                <FilterChips
-                  items={FILTERS.map((option) => ({
-                    id: option.id,
-                    label: `${option.label} (${counts[option.id]})`,
-                  }))}
-                  selected={filter}
-                  onChange={(id) => setFilter(id as VisibilityFilter)}
-                  aria-label="Filter tracks"
+              <FilterChips
+                items={FILTERS.map((option) => ({
+                  id: option.id,
+                  label: `${option.label} (${counts[option.id]})`,
+                }))}
+                selected={filter}
+                onChange={(id) => setFilter(id as VisibilityFilter)}
+                aria-label="Filter tracks"
+              />
+              <div className="flex items-center gap-2">
+                <Input
+                  type="search"
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="Search all tracks…"
+                  aria-label="Search all tracks"
+                  startAddon={
+                    <SearchIcon size={14} aria-hidden className="opacity-70" />
+                  }
                 />
                 <Popover
                   anchor="bottom end"
+                  className="shrink-0"
                   trigger={
                     <Button
                       type="button"
                       variant="secondary"
-                      className="shrink-0 gap-1.5"
+                      className="gap-1.5"
                     >
                       {sortLabel}
                       <ChevronDownIcon size={16} className="opacity-70" />
@@ -272,17 +283,6 @@ export const MyDiscographyView: FC = () => {
                   </Popover.Menu>
                 </Popover>
               </div>
-              <Input
-                type="search"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search all tracks…"
-                aria-label="Search all tracks"
-                className="w-full min-w-0"
-                startAddon={
-                  <SearchIcon size={14} aria-hidden className="opacity-70" />
-                }
-              />
               <p className="text-foreground-secondary text-xs">
                 Pinned {counts.pinned} · showing {visible.length} of{' '}
                 {items.length}

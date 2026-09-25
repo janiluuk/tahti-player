@@ -25,7 +25,6 @@ export const JamQrCodeButton: FC = () => {
       <Popover
         trigger={<QrCode size={20} />}
         anchor="bottom"
-        className="relative"
         panelClassName="flex max-w-80 w-80 flex-col items-center gap-2 p-4"
       >
         <QRCodeSVG

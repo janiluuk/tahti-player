@@ -544,7 +544,6 @@ function DiscoverAddWidgetButton({
 
   return (
     <Popover
-      className="relative"
       anchor="bottom end"
       trigger={
         <Tooltip content="Add a widget" side="top">

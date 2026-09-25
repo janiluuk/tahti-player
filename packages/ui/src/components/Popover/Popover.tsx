@@ -45,7 +45,7 @@ const PopoverImpl: FC<PopoverProps> = ({
     triggerOn === 'contextmenu' ? ContextMenuTrigger : ClickTrigger;
 
   return (
-    <HeadlessPopover className={cn('absolute', className)}>
+    <HeadlessPopover className={cn('relative', className)}>
       {({ open }) => (
         <>
           <Trigger>{trigger}</Trigger>

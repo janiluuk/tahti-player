@@ -69,7 +69,6 @@ export const ReorderableQueueItem: FC<ReorderableQueueItemProps> = ({
     >
       <QueueItemPopover
         track={item.track}
-        className="relative"
         labels={{
           noCandidates: labels.noCandidates,
           failed: labels.candidateFailed,

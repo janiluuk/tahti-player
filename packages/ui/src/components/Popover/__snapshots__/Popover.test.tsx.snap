@@ -4,7 +4,7 @@ exports[`Popover > (Snapshot) renders menu with a section and a footer 1`] = `
 <body>
   <div>
     <div
-      class="absolute"
+      class="relative"
       data-headlessui-state="open"
       data-open=""
     >
@@ -124,7 +124,7 @@ exports[`Popover > (Snapshot) renders menu with items 1`] = `
 <body>
   <div>
     <div
-      class="absolute"
+      class="relative"
       data-headlessui-state="open"
       data-open=""
     >
@@ -231,7 +231,7 @@ exports[`Popover > (Snapshot) renders with all props 1`] = `
 <body>
   <div>
     <div
-      class="absolute border-accent-red"
+      class="relative border-accent-red"
       data-headlessui-state="open"
       data-open=""
     >
@@ -305,7 +305,7 @@ exports[`Popover > (Snapshot) renders with backdrop 1`] = `
 <body>
   <div>
     <div
-      class="absolute"
+      class="relative"
       data-headlessui-state="open"
       data-open=""
     >
