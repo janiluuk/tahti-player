@@ -7,7 +7,7 @@ use sqlx::SqlitePool;
 use super::analysis::{analyze_tracks, clear_analysis, detail, restore_corrections, set_corrections, AnalysisControl};
 use super::catalog::{add_tag, record_play, set_rating};
 use super::smart_playlists::{evaluate_ids, snapshot, save_smart, RuleField, RuleOp, SmartDefinition, SmartRule};
-use super::tests::pool;
+use super::test_support::pool;
 use super::{import_paths, list_query, AnalysisState, ListQuery, LibraryTrack, SortColumn, TrackFilters, TrackSort};
 
 const RATE: u32 = 44_100;

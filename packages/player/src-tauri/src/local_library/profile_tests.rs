@@ -15,7 +15,7 @@ use std::time::{Duration, Instant};
 
 use super::analysis::{analyze_tracks, AnalysisControl};
 use super::analysis_tests::write_kick_wav;
-use super::tests::{pool, write_wav_tagged};
+use super::test_support::{pool, write_wav_tagged};
 use super::{add_root, discover_new_paths, list_query, ListQuery, LibraryRoot};
 
 fn smaps_kb(field: &str) -> u64 {
