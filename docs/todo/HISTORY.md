@@ -3726,3 +3726,12 @@ Recovered from an unpushed stash on `feat/plugin-store-native-library` (never pu
 - **Dropped from the stash:** debug logging in `RemoteControl.test-wrapper.tsx`.
 - **Artist journey** walks the Listener and Artist tabs with every group expanded; `E2E-JOURNEYS.md` updated. The committed `docs/e2e-journeys/artist/*/06-addons-*.png` shots still show the old tabs until the journey is re-run.
 - Checks: tahti-web 959 passing, player hooks/logs 16 passing, `tsc`/`eslint` clean. Checked in mock mode as listener, artist and board (tabs per role, groups expand, the old `import` link, the Integrations notice).
+
+## 2026-09-25 — Full-screen player: "More options" action sheet
+
+Shipped in one pass (no todo file). The full-screen player has a "More options" button in the top-right, next to Back. It opens a new `@tahti-player/ui` `ActionSheet`: a bottom sheet on phones and a centered panel from `sm` up, with a header (cover, title, artist) and a list of actions. The sheet has a story (`Components/ActionSheet`) and a unit test.
+
+- **Actions (each shown only when it works):** Go to channel and Share for Tahti live/radio items (a channel URL through `navigator.share`, falling back to copying the link). Add or remove from favorites for any item. Add to playlist for sound items. Open in Pro Editor for signed-in users on sound items. Internet-radio stations share the `radio:` id prefix but aren't channels, so they get favorites only. Sound items have no public share page yet, so they have no Share action.
+- **Fix:** `Dialog.Root` takes a new `layerClassName` prop. `AddToPlaylistPanel` uses `z-[70]` because it used to open *behind* the full-screen player (`z-[60]`). That also affected the existing inline "Add to playlist" button there.
+- Escape only closes the full-screen player when the key press starts inside it, so it now closes an open sheet or dialog first.
+- Checks: ui ActionSheet and Dialog tests (11) pass; tahti-web `tsc` and `eslint` are clean. Checked in mock mode at 400px width: radio actions, Go to channel navigating and closing the player, Escape, and sound actions with the playlist dialog on top.

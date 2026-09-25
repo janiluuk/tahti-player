@@ -147,7 +147,12 @@ export function AddToPlaylistPanel({
   };
 
   return (
-    <Dialog.Root isOpen={isOpen} onClose={handleClose} className="max-w-md">
+    <Dialog.Root
+      isOpen={isOpen}
+      onClose={handleClose}
+      className="max-w-md"
+      layerClassName="z-[70]"
+    >
       <Dialog.Title>
         <span className="inline-flex items-center gap-2">
           <ListMusicIcon size={18} aria-hidden />

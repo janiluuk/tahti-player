@@ -13,6 +13,9 @@ type DialogRootProps = PropsWithChildren<{
   initialFocus?: React.RefObject<HTMLElement | null>;
   className?: string;
   showCloseButton?: boolean;
+  /** Stacking class for the dialog layer. Raise it (e.g. `z-[70]`) for
+   * dialogs opened from the full-screen player, which sits at `z-[60]`. */
+  layerClassName?: string;
 }>;
 
 export const DialogRoot: FC<DialogRootProps> = ({
@@ -21,6 +24,7 @@ export const DialogRoot: FC<DialogRootProps> = ({
   initialFocus,
   className,
   showCloseButton = true,
+  layerClassName = 'z-50',
   children,
 }) => {
   return (
@@ -32,7 +36,7 @@ export const DialogRoot: FC<DialogRootProps> = ({
             open={isOpen}
             onClose={onClose}
             initialFocus={initialFocus}
-            className="relative z-50"
+            className={cn('relative', layerClassName)}
           >
             <DialogOverlayBackdrop />
             <div className="fixed inset-0 flex items-center justify-center p-4">

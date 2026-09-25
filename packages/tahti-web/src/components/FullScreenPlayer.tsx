@@ -1,5 +1,5 @@
-import { ArrowLeftIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { ArrowLeftIcon, MoreHorizontalIcon } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 import { formatArtistNames } from '@tahti-player/model';
 import { Button, cn, PlayerBar, Tooltip } from '@tahti-player/ui';
@@ -12,6 +12,7 @@ import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { AddToPlaylistButton } from './AddToPlaylistButton';
 import { ChannelVisualizer } from './ChannelVisualizer';
 import { HearthisEmbedSurface } from './HearthisEmbedSurface';
+import { NowPlayingActionSheet } from './NowPlayingActionSheet';
 import { ConnectedSeekBar, PlayerLiveIndicator } from './PlayerSeekBar';
 
 const ANIMATION_MS = 280;
@@ -44,6 +45,8 @@ export function FullScreenPlayer() {
 
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (open) {
@@ -52,6 +55,7 @@ export function FullScreenPlayer() {
       return () => cancelAnimationFrame(raf);
     }
     setVisible(false);
+    setMenuOpen(false);
     const t = setTimeout(() => setMounted(false), ANIMATION_MS);
     return () => clearTimeout(t);
   }, [open]);
@@ -65,7 +69,14 @@ export function FullScreenPlayer() {
       return;
     }
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key !== 'Escape') {
+        return;
+      }
+      // Dialogs opened from here (options sheet, add to playlist) portal
+      // outside this overlay and close themselves on Escape via a later
+      // window listener, so only react to presses that start in here.
+      const target = e.target as Node | null;
+      if (target === document.body || rootRef.current?.contains(target)) {
         setOpen(false);
       }
     };
@@ -109,6 +120,7 @@ export function FullScreenPlayer() {
 
   return (
     <div
+      ref={rootRef}
       className={cn(
         'bg-background fixed inset-0 z-[60] flex flex-col overflow-hidden transition-all',
         visible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0',
@@ -127,7 +139,7 @@ export function FullScreenPlayer() {
        * same top strip. Equal z-index would let DOM order hand it click
        * priority over this back button despite the button painting on
        * top visually. */}
-      <div className="absolute inset-x-0 top-0 z-20 flex items-start p-4">
+      <div className="absolute inset-x-0 top-0 z-20 flex items-start justify-between p-4">
         <Tooltip content="Back to player" side="right">
           <Button
             size="icon"
@@ -139,6 +151,20 @@ export function FullScreenPlayer() {
             <ArrowLeftIcon size={28} aria-hidden />
           </Button>
         </Tooltip>
+        {playable ? (
+          <Tooltip content="More options" side="left">
+            <Button
+              size="icon"
+              variant="text"
+              onClick={() => setMenuOpen(true)}
+              aria-label="More options"
+              aria-haspopup="dialog"
+              className="size-12 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50"
+            >
+              <MoreHorizontalIcon size={28} aria-hidden />
+            </Button>
+          </Tooltip>
+        ) : null}
       </div>
 
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center gap-8 overflow-y-auto px-6 pb-10">
@@ -234,6 +260,13 @@ export function FullScreenPlayer() {
           )}
         </div>
       </div>
+      {playable ? (
+        <NowPlayingActionSheet
+          isOpen={menuOpen}
+          onClose={() => setMenuOpen(false)}
+          playable={playable}
+        />
+      ) : null}
     </div>
   );
 }
