@@ -59,6 +59,7 @@ import { FullScreenPlayer } from './FullScreenPlayer';
 import { MobileBottomNav, MobileDrawer } from './MobileChrome';
 import { NotificationToasts } from './NotificationToasts';
 import { PageTourSpotlight } from './PageTourSpotlight';
+import { RightRailHeaderActions } from './RightRailHeaderActions';
 import { RightRailPanel } from './RightRailPanel';
 import { SidebarQueuePanel } from './SidebarQueuePanel';
 import {
@@ -577,6 +578,7 @@ export function AppShell() {
               isCollapsed={rightCollapsed}
               onWidthChange={setRightWidth}
               onToggle={toggleRight}
+              headerActions={<RightRailHeaderActions />}
             >
               <RightRailPanel isCollapsed={rightCollapsed} />
             </PlayerWorkspace.RightSidebar>

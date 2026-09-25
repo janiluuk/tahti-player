@@ -1,9 +1,14 @@
 import { useNavigate } from '@tanstack/react-router';
-import { EllipsisIcon, Trash2Icon } from 'lucide-react';
 import { FC, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Button, Dialog, Input, Popover, QueuePanel } from '@tahti-player/ui';
+import {
+  Button,
+  Dialog,
+  Input,
+  QueueHeaderActions as QueueHeaderActionsView,
+  QueuePanel,
+} from '@tahti-player/ui';
 
 import { useCurrentQueueItem } from '../hooks/useCurrentQueueItem';
 import { useQueue } from '../hooks/useQueue';
@@ -85,26 +90,16 @@ export const QueueHeaderActions: FC = () => {
 
   return (
     <>
-      <Button size="icon" data-testid="clear-queue-button" onClick={clearQueue}>
-        <Trash2Icon />
-      </Button>
-      <Popover
-        trigger={
-          <Button size="icon" data-testid="queue-more-button">
-            <EllipsisIcon />
-          </Button>
-        }
-        anchor="bottom end"
-      >
-        <Popover.Menu>
-          <Popover.Item
-            onClick={() => setSaveDialogOpen(true)}
-            data-testid="save-queue-as-playlist"
-          >
-            {t('actions.saveAsPlaylist')}
-          </Popover.Item>
-        </Popover.Menu>
-      </Popover>
+      <QueueHeaderActionsView
+        onClearQueue={clearQueue}
+        menuItems={[
+          {
+            id: 'save-as-playlist',
+            label: t('actions.saveAsPlaylist'),
+            onClick: () => setSaveDialogOpen(true),
+          },
+        ]}
+      />
       <Dialog.Root
         isOpen={saveDialogOpen}
         onClose={() => setSaveDialogOpen(false)}
