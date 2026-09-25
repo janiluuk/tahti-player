@@ -7,9 +7,9 @@
  *      the uploaded track's view/editor page — the "view the track" step)
  *   3. Channel designer, walked through every tab (default/radio/green-room
  *      /multicast/selects)
- *   4. Every Add-ons category (Themes, Visualizers, Export, Import,
- *      Multicast, Fingerprinting, Scrobbling, Audio tools, Radio, Listen,
- *      Discovery, Channel) — the import/export/addons tour
+ *   4. The Listener and Artist add-on lists with every group expanded
+ *      (import, releasing, broadcast, channel, production, radio, widgets)
+ *      — the import/export/addons tour
  *   5. An exhaustive sweep of every other studio tab/route (single theme —
  *      see lib.mjs runSingleThemeSweep; a full light+dark pass across ~30
  *      pages was judged excessive for what this run is trying to show)
@@ -47,22 +47,8 @@ const CHANNEL_TABS = [
   ['/studio/channel?tab=selects', '05e-channel-designer-selects'],
 ];
 
-// 'Tools' omitted — PluginStorePanel.tsx gates it behind isBoard, so it
-// never shows for a plain artist account (board-only ops tools).
-const ADDON_CATEGORIES = [
-  'Themes',
-  'Visualizers',
-  'Export',
-  'Import',
-  'Multicast',
-  'Fingerprinting',
-  'Scrobbling',
-  'Audio tools',
-  'Radio',
-  'Listen',
-  'Discovery',
-  'Channel',
-];
+// 'Admin' omitted: PluginStorePanel.tsx shows it to board users only.
+const ADDON_CATEGORIES = ['Listener', 'Artist'];
 
 // Exhaustive sweep of every remaining studio tab. The channel designer tabs
 // and upload/track view get their own dedicated steps above, so they're not
@@ -167,8 +153,8 @@ async function main() {
       waitUntil: 'domcontentloaded',
     });
     await page.waitForTimeout(700);
-    await shot(page, outDir, '06-addons-index.png', 'add-ons index (Themes)');
-    for (const category of ADDON_CATEGORIES.slice(1)) {
+    await shot(page, outDir, '06-addons-index.png', 'add-ons index');
+    for (const category of ADDON_CATEGORIES) {
       const button = page.getByRole('tab', { name: category, exact: true });
       if ((await button.count()) === 0) {
         fail(`add-ons category not found: ${category}`);
@@ -176,6 +162,11 @@ async function main() {
       }
       await button.first().click();
       await page.waitForTimeout(500);
+      const collapsed = page.locator('section > button[aria-expanded="false"]');
+      while ((await collapsed.count()) > 0) {
+        await collapsed.first().click();
+        await page.waitForTimeout(150);
+      }
       const slug = category.toLowerCase().replace(/\s+/g, '-');
       await shot(
         page,

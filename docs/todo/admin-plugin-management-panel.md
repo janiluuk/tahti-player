@@ -2,6 +2,28 @@
 
 **Status:** partial
 
+## Audience taxonomy decision (user, 2026-09-18)
+
+Simplify the user-facing Add-ons browser from implementation categories into
+three audience lists:
+
+- Listener add-ons/widgets stay together and remain available to listeners.
+- Artist add-ons (import, export/releasing, fingerprinting, multicast,
+  channel visuals/widgets and audio tools) are visible only to artists and
+  board users.
+- Admin add-ons/tools are visible only to board admins.
+
+Keep legacy category deep links working by mapping them to the appropriate
+audience list. Themes already have their own Settings section and should no
+longer duplicate an Add-ons category. This settles the earlier unified-page
+question for the user-facing browser; the admin moderation page remains the
+admin-only place for managing scoped runtime add-on submissions.
+
+Implemented 2026-09-25 (`pluginStoreCategories.ts`, `PluginStorePanel.tsx`):
+three tabs gated by `minimumRole`, each a set of collapsible groups; old
+category ids still open the right tab and group. Scrobbling shows the
+"moved to Settings → Integrations" notice in the Listener tab.
+
 ## Ask (user, 2026-09-08)
 
 Under `/admin` → Manage, there should be a management section covering

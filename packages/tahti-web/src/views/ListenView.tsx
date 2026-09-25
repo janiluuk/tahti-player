@@ -1,6 +1,6 @@
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
 import { HistoryIcon, ListMusicIcon, NewspaperIcon, XIcon } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
@@ -42,6 +42,7 @@ import {
   radioStationPlayable,
   type RadioStation,
 } from '../content/radioStations';
+import { usePolling } from '../hooks/usePolling';
 import { discoverTrackPlayable } from '../lib/discoverTrackPlayable';
 import { resolveLocalPlayableForReplay } from '../lib/nativeLibrary';
 import { activeListenTab } from '../lib/navigationActive';
@@ -124,6 +125,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     id: string;
     label: string;
   } | null>(null);
+  const nowPlayingRefreshInFlight = useRef(false);
 
   // The reference dashboard keeps the queue docked on the right. Only take
   // over the rail when it would otherwise show the empty "Chat unavailable"
@@ -140,28 +142,37 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
 
   useEffect(() => {
     let cancelled = false;
-    void Promise.all([
-      fetchOnAirChannels(),
-      fetchRadioStation().catch(() => null),
-      fetchEnabledInternetRadioPresets(),
-    ]).then(([channels, station, presets]) => {
-      if (cancelled) {
-        return;
-      }
-      const liveSlugs = new Set(
-        channels.data.live.map((channel) => channel.slug),
-      );
-      setOnAir(
-        [...channels.data.live, ...channels.data.replaying]
-          .filter((channel) => channel.slug !== TAHTI_RADIO_SLUG)
-          .map((channel) => ({
-            ...channel,
-            state: liveSlugs.has(channel.slug) ? 'LIVE' : 'REPLAY',
-          })),
-      );
-      setRadio(station?.data ?? null);
-      setRadioPresets(presets.data);
-    });
+    void fetchOnAirChannels()
+      .then((channels) => {
+        if (!cancelled) {
+          const liveSlugs = new Set(
+            channels.data.live.map((channel) => channel.slug),
+          );
+          setOnAir(
+            [...channels.data.live, ...channels.data.replaying]
+              .filter((channel) => channel.slug !== TAHTI_RADIO_SLUG)
+              .map((channel) => ({
+                ...channel,
+                state: liveSlugs.has(channel.slug) ? 'LIVE' : 'REPLAY',
+              })),
+          );
+        }
+      })
+      .catch(() => undefined);
+    void fetchRadioStation()
+      .then((station) => {
+        if (!cancelled) {
+          setRadio(station.data);
+        }
+      })
+      .catch(() => undefined);
+    void fetchEnabledInternetRadioPresets()
+      .then((presets) => {
+        if (!cancelled) {
+          setRadioPresets(presets.data);
+        }
+      })
+      .catch(() => undefined);
     void fetchLatestTracks({ genres: [], contentTypes: [] }).then(
       ({ data }) => {
         if (cancelled) {
@@ -180,13 +191,13 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     };
   }, []);
 
-  useEffect(() => {
-    if (radioPresets.length === 0) {
+  const refreshPresetNowPlaying = useCallback(async () => {
+    if (radioPresets.length === 0 || nowPlayingRefreshInFlight.current) {
       return;
     }
-    let cancelled = false;
-    const refresh = () => {
-      void Promise.all(
+    nowPlayingRefreshInFlight.current = true;
+    try {
+      const entries = await Promise.all(
         radioPresets.map(async (preset) => {
           if (!preset.streamUrl) {
             return [preset.id, null] as const;
@@ -194,26 +205,30 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
           const title = await readIcyStreamTitle(preset.streamUrl);
           return [preset.id, title] as const;
         }),
-      ).then((entries) => {
-        if (cancelled) {
-          return;
+      );
+      const next: Record<string, string> = {};
+      for (const [id, title] of entries) {
+        if (title) {
+          next[id] = title;
         }
-        const next: Record<string, string> = {};
-        for (const [id, title] of entries) {
-          if (title) {
-            next[id] = title;
-          }
-        }
-        setPresetNowPlaying(next);
-      });
-    };
-    refresh();
-    const timer = window.setInterval(refresh, NOW_PLAYING_POLL_MS);
-    return () => {
-      cancelled = true;
-      window.clearInterval(timer);
-    };
+      }
+      setPresetNowPlaying(next);
+    } catch {
+      return;
+    } finally {
+      nowPlayingRefreshInFlight.current = false;
+    }
   }, [radioPresets]);
+
+  useEffect(() => {
+    void refreshPresetNowPlaying();
+  }, [refreshPresetNowPlaying]);
+
+  usePolling(
+    () => void refreshPresetNowPlaying(),
+    NOW_PLAYING_POLL_MS,
+    radioPresets.length > 0,
+  );
 
   useEffect(() => {
     let cancelled = false;

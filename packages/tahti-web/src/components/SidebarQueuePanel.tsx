@@ -1,5 +1,6 @@
 import { useNavigate } from '@tanstack/react-router';
 import { Trash2Icon } from 'lucide-react';
+import { useMemo } from 'react';
 
 import { Button, QueuePanel, Tooltip } from '@tahti-player/ui';
 
@@ -26,7 +27,15 @@ export function SidebarQueuePanel({
   const removeFromQueue = usePlayerStore((s) => s.removeFromQueue);
   const reorderQueue = usePlayerStore((s) => s.reorderQueue);
   const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
-  const isFavoriteTrack = useLibraryStore((s) => s.isFavoriteTrack);
+  const favoriteTracks = useLibraryStore((s) => s.favoriteTracks);
+  const queueById = useMemo(
+    () => new Map(queue.map((item) => [item.id, item])),
+    [queue],
+  );
+  const favoriteIds = useMemo(
+    () => new Set(favoriteTracks.map((track) => track.id)),
+    [favoriteTracks],
+  );
   const { requestClear, menuItems, dialogs } = useQueueBarActions();
 
   return (
@@ -47,7 +56,7 @@ export function SidebarQueuePanel({
           onSelectItem={(id) => playQueueIndex(id)}
           onRemoveItem={(id) => removeFromQueue(id)}
           onTitleClick={(id) => {
-            const item = queue.find((q) => q.id === id);
+            const item = queueById.get(id);
             const soundId = item
               ? soundIdFromPlayableId(item.track.source.id)
               : null;
@@ -56,14 +65,14 @@ export function SidebarQueuePanel({
             }
           }}
           isLiked={(id) => {
-            const item = queue.find((q) => q.id === id);
+            const item = queueById.get(id);
             const soundId = item
               ? soundIdFromPlayableId(item.track.source.id)
               : null;
-            return soundId ? isFavoriteTrack(soundId) : false;
+            return soundId ? favoriteIds.has(soundId) : false;
           }}
           onToggleLike={(id) => {
-            const item = queue.find((q) => q.id === id);
+            const item = queueById.get(id);
             if (!item) {
               return;
             }

@@ -1,9 +1,8 @@
 import { InfoIcon } from 'lucide-react';
-import { useEffect, useState, type ReactNode } from 'react';
+import { lazy, Suspense, useEffect, useState, type ReactNode } from 'react';
 
-import { Box, Button, Tooltip } from '@tahti-player/ui';
+import { Box, Button, Loader, Tooltip } from '@tahti-player/ui';
 
-import { PluginStorePanel } from '../../components/PluginStorePanel';
 import { WhatsNewPanel } from '../WhatsNewView';
 import { AccountPanel } from './panels/AccountPanel';
 import { ArtistPanel, ReleaseVisualDefaultsPanel } from './panels/ArtistPanel';
@@ -14,6 +13,12 @@ import { LogsPanel } from './panels/LogsPanel';
 import { PlaybackPanel } from './panels/PlaybackPanel';
 import { ThemesPanel } from './panels/ThemesPanel';
 import { SETTINGS_NAV, type SettingsSectionId } from './settingsNav';
+
+const PluginStorePanel = lazy(() =>
+  import('../../components/PluginStorePanel').then((module) => ({
+    default: module.PluginStorePanel,
+  })),
+);
 
 export { BroadcastPanel, type BroadcastSection, ReleaseVisualDefaultsPanel };
 
@@ -51,7 +56,17 @@ export function SettingsSectionBody({
       content = <LogsPanel />;
       break;
     case 'plugin-store':
-      content = <PluginStorePanel />;
+      content = (
+        <Suspense
+          fallback={
+            <div className="flex min-h-48 items-center justify-center">
+              <Loader aria-label="Loading add-ons" />
+            </div>
+          }
+        >
+          <PluginStorePanel />
+        </Suspense>
+      );
       break;
     case 'whats-new':
       content = <WhatsNewPanel />;

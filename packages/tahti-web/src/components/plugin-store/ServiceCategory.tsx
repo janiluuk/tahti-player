@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 
 import { PluginStoreItem } from '@tahti-player/ui';
 
-import type { PluginCategoryId } from '../../content/pluginStoreCategories';
 import { usePluginInstallStore } from '../../stores/pluginInstallStore';
 import { useSettingsModalStore } from '../../stores/settingsModalStore';
 import { HearthisCard } from './service-category/HearthisCard';
@@ -11,6 +10,7 @@ import { OAuthServiceCard } from './service-category/OAuthServiceCard';
 import { SpotifyCard } from './service-category/SpotifyCard';
 import {
   servicePluginsForCategory,
+  type ServiceCategoryId,
   type ServicePlugin,
 } from './serviceCatalog';
 import { InstalledAvailableTabs } from './shared';
@@ -20,7 +20,7 @@ export { DspUrlPasteCard } from './service-category/DspUrlPasteCard';
 export function ServiceCategory({
   categoryId,
 }: {
-  categoryId: PluginCategoryId;
+  categoryId: ServiceCategoryId;
 }) {
   const plugins = servicePluginsForCategory(categoryId);
   return (
