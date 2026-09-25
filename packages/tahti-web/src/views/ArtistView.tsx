@@ -12,7 +12,6 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 
 import {
-  Button,
   Dialog,
   FavoriteButton,
   TabLabel,
@@ -25,12 +24,7 @@ import {
   fetchPublicPressKitImages,
   type PublicPressKitImage,
 } from '../api/artist-settings';
-import {
-  BRAND_ACCENTS,
-  isActiveTextOverlay,
-  parseColorScheme,
-  resolvePublicVisualizerPreset,
-} from '../api/channel-design';
+import { resolvePublicVisualizerPreset } from '../api/channel-design';
 import { fetchProfile } from '../api/client';
 import { fetchPublicMentions, type PublicMention } from '../api/mentions';
 import type {
@@ -39,11 +33,13 @@ import type {
   TahtiPlayable,
 } from '../api/types';
 import {
+  AlbumPlayPromptDialog,
   ArtistBioSection,
   ArtistEmbeds,
   ArtistFeed,
   ArtistHeaderActions,
   ArtistLiveShows,
+  artistLookSchemes,
   ArtistMusicTab,
   ArtistNews,
   ArtistPlaylistsGrid,
@@ -51,6 +47,7 @@ import {
   ArtistRelatedArtists,
   ArtistReleasesGrid,
   ArtistTaggedIn,
+  useArtistCatalog,
   useArtistChannelLook,
   type RelatedArtist,
 } from '../components/artist-view';
@@ -77,11 +74,10 @@ import { hasAccountRole } from '../lib/accountRoles';
 import {
   artistProfileEmbed,
   profileTrackToPlayable,
-  releaseToPlayable,
   type ArtistProfileEmbed,
 } from '../lib/artistProfile';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
-import { colorSchemeCssVars, normalizeColorScheme } from '../lib/colorScheme';
+import { colorSchemeCssVars } from '../lib/colorScheme';
 import { countryName } from '../lib/countries';
 import { isPinned } from '../lib/pinnedTracks';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
@@ -269,56 +265,7 @@ function ArtistProfilePage({ username }: { username: string }) {
   }, [profile, tab, tabs]);
 
   const { pinnedPlayables, pinnedTiles, catalogPlayables, releaseTiles } =
-    useMemo(() => {
-      if (!profile) {
-        return {
-          pinnedPlayables: [],
-          pinnedTiles: [],
-          catalogPlayables: [],
-          releaseTiles: [],
-        };
-      }
-      const artist = profile.artist.displayName;
-      const slug = profile.channel?.slug;
-      const pinnedTracks = [...profile.tracks]
-        .filter((t) => isPinned(t))
-        .sort((a, b) => (b.pinnedAt ?? '').localeCompare(a.pinnedAt ?? ''));
-      const pinnedIds = new Set(pinnedTracks.map((t) => t.id));
-      const toPlayable = (t: PublicProfile['tracks'][number]) =>
-        profileTrackToPlayable(t, artist, slug);
-
-      const pinnedTiles = pinnedTracks
-        .map((t) => ({ track: t, playable: toPlayable(t) }))
-        .filter(
-          (
-            x,
-          ): x is {
-            track: (typeof pinnedTracks)[number];
-            playable: TahtiPlayable;
-          } => Boolean(x.playable),
-        );
-
-      const releaseTiles = [...profile.releases]
-        .sort((a, b) =>
-          (b.releaseDate ?? '').localeCompare(a.releaseDate ?? ''),
-        )
-        .map((release) => ({
-          release,
-          playable: releaseToPlayable(release, artist, slug),
-        }));
-
-      return {
-        pinnedPlayables: pinnedTracks
-          .map(toPlayable)
-          .filter((p): p is TahtiPlayable => Boolean(p)),
-        pinnedTiles,
-        catalogPlayables: profile.tracks
-          .filter((t) => !pinnedIds.has(t.id))
-          .map(toPlayable)
-          .filter((p): p is TahtiPlayable => Boolean(p)),
-        releaseTiles,
-      };
-    }, [profile]);
+    useArtistCatalog(profile);
 
   if (loading) {
     return <PageLoading label="Loading artist…" />;
@@ -411,56 +358,19 @@ function ArtistProfilePage({ username }: { username: string }) {
     ...stat('collections', 'Playlists', collections.length, ListMusicIcon),
   ];
 
-  const artistBackdropUrl = channelVisual?.videoBackgroundUrl
-    ? null
-    : (channelVisual?.slideshowImages?.[0] ?? null);
-  const headerScheme = normalizeColorScheme(
-    channelVisual?.colorScheme ??
-      parseColorScheme(channelVisual?.colorSchemeJson),
-  );
-  const playerScheme = lookExtras.usePlayerGradient
-    ? normalizeColorScheme(parseColorScheme(lookExtras.playerColorSchemeJson))
-    : headerScheme;
-  const pageScheme = lookExtras.useBackgroundGradient
-    ? normalizeColorScheme(
-        parseColorScheme(lookExtras.backgroundColorSchemeJson),
-      )
-    : headerScheme;
-  const sectionSurfaceStyle = {
-    backgroundColor: `${pageScheme.bg}e6`,
-    borderColor: `${pageScheme.muted}66`,
-    color: pageScheme.text,
-  } as const;
-  const playerStageGradient = `linear-gradient(to top, ${playerScheme.bg}cc, ${playerScheme.bg}59, ${playerScheme.bg}1a)`;
-  const playerBottomGradient = `linear-gradient(to top, ${playerScheme.bg}cc, ${playerScheme.bg}73, transparent)`;
-  const resolvedVisualizerPreset = channelVisual?.visualPreset
-    ? resolvePublicVisualizerPreset(channelVisual.visualPreset)
-    : undefined;
-  const nowPlayingOverlayStyle =
-    lookExtras.nowPlayingOverlayStyle ??
-    channelVisual?.nowPlayingOverlayStyle ??
-    null;
-  const nowPlayingOverlaySettingsJson =
-    lookExtras.nowPlayingOverlaySettingsJson ??
-    channelVisual?.nowPlayingOverlaySettingsJson ??
-    null;
-  const playerOverlayMode =
-    lookExtras.playerOverlayMode ?? channelVisual?.playerOverlayMode ?? null;
-  const playerOverlayText =
-    lookExtras.playerOverlayText ?? channelVisual?.playerOverlayText ?? null;
-  const playerOverlayAlign =
-    lookExtras.playerOverlayAlign ?? channelVisual?.playerOverlayAlign ?? null;
-  const backgroundVisualPreset =
-    lookExtras.backgroundVisualPreset ??
-    channelVisual?.backgroundVisualPreset ??
-    null;
-  const brandGradient = BRAND_ACCENTS.find(
-    (brand) => brand.id === channelVisual?.brandAccentPreset,
-  )?.gradient;
-  const showPlayerOverlay = isActiveTextOverlay({
-    mode: playerOverlayMode,
-    text: playerOverlayText,
-  });
+  const {
+    headerScheme,
+    playerScheme,
+    pageScheme,
+    artistBackdropUrl,
+    sectionSurfaceStyle,
+    playerStageGradient,
+    playerBottomGradient,
+    resolvedVisualizerPreset,
+    backgroundVisualPreset,
+    brandGradient,
+    overlay,
+  } = artistLookSchemes(channelVisual, lookExtras);
 
   return (
     <div
@@ -700,14 +610,7 @@ function ArtistProfilePage({ username }: { username: string }) {
           stageGradient={playerStageGradient}
           bottomGradient={playerBottomGradient}
           visualizerPreset={resolvedVisualizerPreset}
-          overlay={{
-            show: showPlayerOverlay,
-            mode: playerOverlayMode,
-            text: playerOverlayText,
-            align: playerOverlayAlign,
-            styleId: nowPlayingOverlayStyle,
-            settingsJson: nowPlayingOverlaySettingsJson,
-          }}
+          overlay={overlay}
           nowPlayingHere={nowPlayingHere}
           featured={{
             playable: featuredPlayable,
@@ -797,40 +700,22 @@ function ArtistProfilePage({ username }: { username: string }) {
         />
       ) : null}
 
-      <Dialog.Root
-        isOpen={Boolean(albumPrompt)}
+      <AlbumPlayPromptDialog
+        title={albumPrompt?.release.title ?? null}
         onClose={() => setAlbumPrompt(null)}
-      >
-        {albumPrompt && (
-          <>
-            <Dialog.Title>Play {albumPrompt.release.title}?</Dialog.Title>
-            <Dialog.Description>
-              Something&apos;s already queued — add this album to the end, or
-              play it now instead?
-            </Dialog.Description>
-            <Dialog.Actions>
-              <Dialog.Close>Cancel</Dialog.Close>
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  queueAlbum(albumPrompt.playables);
-                  setAlbumPrompt(null);
-                }}
-              >
-                Queue album
-              </Button>
-              <Button
-                onClick={() => {
-                  playAlbum(albumPrompt.playables);
-                  setAlbumPrompt(null);
-                }}
-              >
-                Play now
-              </Button>
-            </Dialog.Actions>
-          </>
-        )}
-      </Dialog.Root>
+        onQueue={() => {
+          if (albumPrompt) {
+            queueAlbum(albumPrompt.playables);
+          }
+          setAlbumPrompt(null);
+        }}
+        onPlayNow={() => {
+          if (albumPrompt) {
+            playAlbum(albumPrompt.playables);
+          }
+          setAlbumPrompt(null);
+        }}
+      />
 
       <Dialog.Root
         isOpen={managerOpen}

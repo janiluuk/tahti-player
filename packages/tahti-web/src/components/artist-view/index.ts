@@ -16,3 +16,6 @@ export {
   type RelatedArtist,
 } from './ArtistReferenceSections';
 export { useArtistChannelLook } from './useArtistChannelLook';
+export { AlbumPlayPromptDialog } from './AlbumPlayPromptDialog';
+export { artistLookSchemes } from './artistLookSchemes';
+export { useArtistCatalog } from './useArtistCatalog';
