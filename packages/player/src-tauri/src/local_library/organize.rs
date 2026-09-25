@@ -101,7 +101,7 @@ struct Source {
 
 /// One path segment made safe on every platform: no separators or reserved
 /// characters, no leading/trailing dots or spaces, bounded length.
-fn clean(part: &str) -> String {
+pub(crate) fn clean(part: &str) -> String {
     let replaced: String = part
         .chars()
         .map(|c| if c.is_control() || "/\\:*?\"<>|".contains(c) { '_' } else { c })

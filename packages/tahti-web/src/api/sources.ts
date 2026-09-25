@@ -32,6 +32,7 @@ export type {
 export {
   fetchHearthisLibrary,
   fetchHearthisCollectionTracks,
+  parseHearthisSetPermalink,
   importHearthisTracks,
   searchHearthisTracks,
   fetchHearthisTrackById,

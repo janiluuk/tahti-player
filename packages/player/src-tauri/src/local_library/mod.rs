@@ -14,6 +14,7 @@ pub mod m3u;
 mod metadata;
 pub mod organize;
 pub mod playlists;
+pub mod provider_import;
 pub mod query;
 pub mod reconcile;
 pub mod roots;
@@ -37,6 +38,8 @@ mod backup_tests;
 mod tag_writer_tests;
 #[cfg(test)]
 mod import_tests;
+#[cfg(test)]
+mod provider_import_tests;
 #[cfg(test)]
 mod m3u_tests;
 #[cfg(test)]
@@ -141,6 +144,9 @@ pub struct LibraryState {
     cancel_import: AtomicBool,
     /// Same for the on-demand duplicate hashing job.
     cancel_hash: AtomicBool,
+    /// Checked per downloaded chunk by `provider_import`; set by
+    /// `library_provider_import_cancel`, reset when a set import starts.
+    cancel_provider_import: AtomicBool,
     /// Background analysis job (cancel/pause flags, one job at a time).
     analysis: std::sync::Arc<analysis::AnalysisControl>,
     /// Filesystem watcher over the registered roots.

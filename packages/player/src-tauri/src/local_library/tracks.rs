@@ -200,7 +200,10 @@ pub async fn library_relink(
         dialog_app
             .dialog()
             .file()
-            .add_filter("FLAC and WAV audio", &["flac", "wav"])
+            .add_filter(
+                super::import::AUDIO_PICKER_LABEL,
+                &super::import::SUPPORTED_AUDIO_EXTENSIONS,
+            )
             .blocking_pick_file()
     })
     .await

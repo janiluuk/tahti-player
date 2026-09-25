@@ -61,8 +61,11 @@ fn apply_tags(track: &mut LibraryTrack, tags: &[Tag]) {
 pub fn read(path: &Path) -> Result<LibraryTrack, String> {
     let path = path.canonicalize().map_err(|err| err.to_string())?;
     let extension = path.extension().and_then(|value| value.to_str()).unwrap_or_default().to_lowercase();
-    if !matches!(extension.as_str(), "flac" | "wav") {
-        return Err("Native import currently supports FLAC and WAV files".into());
+    if !super::import::is_supported_extension(&extension) {
+        return Err(format!(
+            "Native import supports {} files",
+            super::import::SUPPORTED_AUDIO_EXTENSIONS.join(", ").to_uppercase()
+        ));
     }
     let file = File::open(&path).map_err(|err| err.to_string())?;
     let size = file.metadata().map_err(|err| err.to_string())?.len();
@@ -117,6 +120,13 @@ pub fn read(path: &Path) -> Result<LibraryTrack, String> {
         apply_tags(&mut track, metadata.tags());
     }
     fill_from_tag_reader(&mut track, &path);
+    if track.duration <= 0.0 {
+        // MP3 and some M4A/OGG streams carry no frame count in their header,
+        // so symphonia cannot report a length without decoding everything.
+        track.duration = tag_reader_duration(&path).unwrap_or(0.0);
+        track.bitrate_kbps = (track.duration > 0.0)
+            .then(|| (size as f64 * 8.0 / track.duration / 1000.0).round() as i64);
+    }
     loop {
         let packet = probed.format.next_packet().map_err(|err| format!("No decodable audio: {err}"))?;
         if packet.track_id() == source_id {
@@ -125,6 +135,13 @@ pub fn read(path: &Path) -> Result<LibraryTrack, String> {
         }
     }
     Ok(track)
+}
+
+fn tag_reader_duration(path: &Path) -> Option<f64> {
+    use lofty::file::AudioFile;
+    let tagged = lofty::probe::Probe::open(path).ok()?.read().ok()?;
+    let seconds = tagged.properties().duration().as_secs_f64();
+    (seconds > 0.0).then_some(seconds)
 }
 
 /// Fills values symphonia did not surface. Its WAV reader stops at the audio
