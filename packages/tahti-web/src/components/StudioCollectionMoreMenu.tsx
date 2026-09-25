@@ -69,7 +69,6 @@ export function StudioCollectionMoreMenu({
   return (
     <>
       <Popover
-        className="relative"
         anchor="bottom end"
         trigger={
           <Tooltip content="More options" side="top">

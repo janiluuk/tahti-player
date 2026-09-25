@@ -89,7 +89,6 @@ export const QueueHeaderActions: FC = () => {
         <Trash2Icon />
       </Button>
       <Popover
-        className="relative"
         trigger={
           <Button size="icon" data-testid="queue-more-button">
             <EllipsisIcon />

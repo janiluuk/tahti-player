@@ -1,7 +1,12 @@
 import { Meta, StoryObj } from '@storybook/react-vite';
-import { PencilIcon, Trash2Icon } from 'lucide-react';
+import {
+  ChevronDownIcon,
+  PencilIcon,
+  SearchIcon,
+  Trash2Icon,
+} from 'lucide-react';
 
-import { Button, Popover } from '@tahti-player/ui';
+import { Button, Input, Popover } from '@tahti-player/ui';
 
 const meta: Meta<typeof Popover> = {
   title: 'Components/Popover',
@@ -31,27 +36,23 @@ export const Default: Story = {
 
 export const AllAnchors: Story = {
   render: () => (
-    <div className="h-full w-full">
+    <div className="flex flex-wrap gap-4">
       <Popover
-        className="relative"
-        trigger={<Button className="relative flex">Opens top</Button>}
+        trigger={<Button>Opens top</Button>}
         children="Popover content"
         anchor="top"
       />
       <Popover
-        className="relative"
         trigger={<Button>Opens below</Button>}
         children="Popover content"
         anchor="bottom"
       />
       <Popover
-        className="relative"
         trigger={<Button>Opens right</Button>}
         children="Popover content"
         anchor="right"
       />
       <Popover
-        className="relative"
         trigger={<Button>Opens left</Button>}
         children="Popover content"
         anchor="left"
@@ -63,7 +64,6 @@ export const AllAnchors: Story = {
 export const SectionedMenu: Story = {
   render: () => (
     <Popover
-      className="relative"
       panelClassName="bg-background px-0 py-0"
       trigger={<Button>Recent</Button>}
       anchor="bottom"
@@ -95,7 +95,6 @@ export const SectionedMenu: Story = {
 export const DropdownMenu: Story = {
   render: () => (
     <Popover
-      className="relative"
       panelClassName="bg-background px-0 py-0"
       trigger={<Button>Actions</Button>}
       anchor="bottom"
@@ -119,5 +118,37 @@ export const DropdownMenu: Story = {
         </Popover.Item>
       </Popover.Menu>
     </Popover>
+  ),
+};
+
+/** Popover sits in normal flow, so it can share a row with other controls without overlapping them. */
+export const InlineToolbar: Story = {
+  parameters: { layout: 'padded' },
+  render: () => (
+    <div className="flex w-full max-w-xl items-center gap-2">
+      <Input
+        type="search"
+        placeholder="Search all tracks…"
+        aria-label="Search all tracks"
+        startAddon={<SearchIcon size={14} aria-hidden />}
+      />
+      <Popover
+        anchor="bottom end"
+        className="shrink-0"
+        panelClassName="bg-background px-0 py-0"
+        trigger={
+          <Button variant="secondary" className="gap-1.5">
+            Newest first
+            <ChevronDownIcon size={16} className="opacity-70" />
+          </Button>
+        }
+      >
+        <Popover.Menu>
+          <Popover.Item>Newest first</Popover.Item>
+          <Popover.Item>Oldest first</Popover.Item>
+          <Popover.Item>Title A–Z</Popover.Item>
+        </Popover.Menu>
+      </Popover>
+    </div>
   ),
 };
