@@ -1,4 +1,3 @@
-import { Link } from '@tanstack/react-router';
 import {
   Clock3Icon,
   FileAudioIcon,
@@ -7,7 +6,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, ViewShell } from '@tahti-player/ui';
+import { ButtonLink, ViewShell } from '@tahti-player/ui';
 
 import {
   fetchAdminContentOverview,
@@ -47,11 +46,9 @@ export function AdminContentView() {
         <AdminPageLayout current="/admin/content">
           <ViewShell title="Content" classes={{ root: 'px-0 pt-0' }}>
             <div>
-              <Link to="/admin/top-lists">
-                <Button size="sm" variant="secondary">
-                  <ListMusicIcon size={15} aria-hidden /> Top lists
-                </Button>
-              </Link>
+              <ButtonLink to="/admin/top-lists" size="sm" variant="secondary">
+                <ListMusicIcon size={15} aria-hidden /> Top lists
+              </ButtonLink>
             </div>
             {!data ? (
               <StudioPanel>

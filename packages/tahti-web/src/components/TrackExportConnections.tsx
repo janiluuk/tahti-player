@@ -1,7 +1,7 @@
 import { SettingsIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, Dialog, PluginItem } from '@tahti-player/ui';
+import { Button, ButtonAnchor, Dialog, PluginItem } from '@tahti-player/ui';
 
 import {
   fetchConnectionStatus,
@@ -82,9 +82,9 @@ function ConnectionConfigureDialog({
             support for this provider ships.
           </p>
         ) : oauthStartPath ? (
-          <a href={oauthStartUrl(oauthStartPath)}>
-            <Button className="w-full">Connect {name} to enable</Button>
-          </a>
+          <ButtonAnchor href={oauthStartUrl(oauthStartPath)} className="w-full">
+            Connect {name} to enable
+          </ButtonAnchor>
         ) : (
           <p className="text-foreground-secondary text-xs">
             This provider doesn&apos;t support connecting yet.

@@ -467,7 +467,7 @@ pub async fn library_organize_apply(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::local_library::tests::{pool, write_wav};
+    use crate::local_library::test_support::{pool, write_wav};
     use crate::local_library::{add_root, discover_new_paths, import_paths, list};
 
     fn source(title: &str, artist: &str, album: &str, track: Option<i64>) -> Source {

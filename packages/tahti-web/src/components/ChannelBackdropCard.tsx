@@ -1,7 +1,6 @@
-import { Link } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
 
-import { Button } from '@tahti-player/ui';
+import { Button, ButtonLink } from '@tahti-player/ui';
 
 import {
   isHeaderImageUrl,
@@ -323,21 +322,17 @@ export function ChannelBackdropCard({
             ) : null}
           </div>
           {subscribeVisible ? (
-            <Link
+            <ButtonLink
               to="/subscribe/$username"
               params={{ username }}
-              className="shrink-0"
               onClick={(event) => event.stopPropagation()}
+              size="sm"
+              variant="secondary"
+              data-testid="channel-backdrop-subscribe-cta"
+              className="shrink-0"
             >
-              <Button
-                type="button"
-                size="sm"
-                variant="secondary"
-                data-testid="channel-backdrop-subscribe-cta"
-              >
-                {subscribeLabel}
-              </Button>
-            </Link>
+              {subscribeLabel}
+            </ButtonLink>
           ) : null}
           {badge}
         </div>

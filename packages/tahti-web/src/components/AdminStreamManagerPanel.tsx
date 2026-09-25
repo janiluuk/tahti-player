@@ -12,7 +12,14 @@ import {
 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
-import { Button, Dialog, ImageReveal, Loader, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonAnchor,
+  Dialog,
+  ImageReveal,
+  Loader,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import {
   fetchAdminStreams,
@@ -421,13 +428,14 @@ export function AdminStreamManagerPanel({
             </dl>
             <Dialog.Actions>
               <Dialog.Close>Close</Dialog.Close>
-              <a
+              <ButtonAnchor
                 href={`/c/${detailsStream.slug}`}
                 target="_blank"
                 rel="noreferrer"
+                variant="secondary"
               >
-                <Button variant="secondary">Open channel</Button>
-              </a>
+                Open channel
+              </ButtonAnchor>
             </Dialog.Actions>
           </>
         ) : null}

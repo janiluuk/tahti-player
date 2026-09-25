@@ -1,4 +1,4 @@
-import { Button, ViewShell } from '@tahti-player/ui';
+import { ButtonAnchor, ViewShell } from '@tahti-player/ui';
 
 import { FlowGallery } from '../components/FlowGallery';
 import { PortInventoryPanel } from '../components/PortInventoryPanel';
@@ -91,9 +91,14 @@ export function MoreView() {
         <StudioPanel
           title="Design system"
           action={
-            <a href={STORYBOOK_URL} target="_blank" rel="noreferrer">
-              <Button size="sm">Open Storybook →</Button>
-            </a>
+            <ButtonAnchor
+              href={STORYBOOK_URL}
+              target="_blank"
+              rel="noreferrer"
+              size="sm"
+            >
+              Open Storybook →
+            </ButtonAnchor>
           }
         >
           <p className="text-foreground-secondary text-sm">

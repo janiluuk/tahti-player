@@ -13,7 +13,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, EmptyState, Tooltip } from '@tahti-player/ui';
+import { Button, ButtonLink, EmptyState, Tooltip } from '@tahti-player/ui';
 
 import {
   fetchCollection,
@@ -271,16 +271,16 @@ export function CollectionView({ slug }: { slug: string }) {
         actions={
           isOwner ? (
             <Tooltip content="Edit in Studio" side="top">
-              <Link to="/studio/collections/$slug" params={{ slug }}>
-                <Button
-                  variant="secondary"
-                  size="icon-sm"
-                  className="bg-background border-border rounded-md border-(length:--border-width)"
-                  aria-label="Edit in Studio"
-                >
-                  <PencilIcon size={14} aria-hidden />
-                </Button>
-              </Link>
+              <ButtonLink
+                to="/studio/collections/$slug"
+                params={{ slug }}
+                variant="secondary"
+                size="icon-sm"
+                aria-label="Edit in Studio"
+                className="bg-background border-border rounded-md border-(length:--border-width)"
+              >
+                <PencilIcon size={14} aria-hidden />
+              </ButtonLink>
             </Tooltip>
           ) : (
             <Tooltip

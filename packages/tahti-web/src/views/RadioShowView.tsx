@@ -8,7 +8,7 @@ import {
 import { useEffect, useState } from 'react';
 
 import {
-  Button,
+  ButtonLink,
   MediaArtwork,
   SectionShell,
   Tabs,
@@ -279,19 +279,16 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
         actions={
           greenRoomLive ? (
             <Tooltip content="Green room" side="top">
-              <Link
+              <ButtonLink
                 to="/u/$username/green-room"
                 params={{ username: show.artist.username }}
+                size="icon-sm"
+                variant="secondary"
+                aria-label="Open green room"
+                className="bg-background border-border rounded-md border-(length:--border-width)"
               >
-                <Button
-                  size="icon-sm"
-                  variant="secondary"
-                  className="bg-background border-border rounded-md border-(length:--border-width)"
-                  aria-label="Open green room"
-                >
-                  <MicIcon size={16} aria-hidden />
-                </Button>
-              </Link>
+                <MicIcon size={16} aria-hidden />
+              </ButtonLink>
             </Tooltip>
           ) : null
         }

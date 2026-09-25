@@ -1,7 +1,6 @@
-import { Link } from '@tanstack/react-router';
 import { RadioTowerIcon } from 'lucide-react';
 
-import { Box, Button, MediaArtwork, Tooltip } from '@tahti-player/ui';
+import { Box, ButtonLink, MediaArtwork, Tooltip } from '@tahti-player/ui';
 
 import { resolvePublicVisualizerPreset } from '../api/channel-design';
 import { ChannelVisualizer, type VisualColorScheme } from './ChannelVisualizer';
@@ -81,11 +80,14 @@ export function RadioListItem({
       </div>
       <div className="relative z-10 flex flex-wrap items-center gap-2">
         <Tooltip content="Open radio" side="top">
-          <Link to={openHref}>
-            <Button size="icon-sm" variant="secondary" aria-label="Open radio">
-              <RadioTowerIcon size={16} aria-hidden />
-            </Button>
-          </Link>
+          <ButtonLink
+            to={openHref}
+            size="icon-sm"
+            variant="secondary"
+            aria-label="Open radio"
+          >
+            <RadioTowerIcon size={16} aria-hidden />
+          </ButtonLink>
         </Tooltip>
       </div>
     </Box>

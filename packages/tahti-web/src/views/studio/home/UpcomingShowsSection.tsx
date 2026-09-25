@@ -1,7 +1,6 @@
-import { Link } from '@tanstack/react-router';
 import { CalendarIcon } from 'lucide-react';
 
-import { Button } from '@tahti-player/ui';
+import { ButtonLink } from '@tahti-player/ui';
 
 import { Group } from './HomeTiles';
 import type { StudioHomeState } from './useStudioHome';
@@ -39,11 +38,14 @@ export function UpcomingShowsSection({ state }: { state: StudioHomeState }) {
                 {show.venue ? ` · ${show.venue}` : ''}
               </p>
             </div>
-            <Link to="/studio/shows/$id" params={{ id: show.seriesId }}>
-              <Button size="sm" variant="secondary">
-                View &amp; edit
-              </Button>
-            </Link>
+            <ButtonLink
+              to="/studio/shows/$id"
+              params={{ id: show.seriesId }}
+              size="sm"
+              variant="secondary"
+            >
+              View &amp; edit
+            </ButtonLink>
           </li>
         ))}
       </ul>

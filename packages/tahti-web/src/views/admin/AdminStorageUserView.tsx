@@ -1,8 +1,13 @@
-import { Link } from '@tanstack/react-router';
 import { ArrowLeftIcon, PlayIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Badge, Button, Tooltip, ViewShell } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  ButtonLink,
+  Tooltip,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import {
   fetchAdminStorageUserFiles,
@@ -39,12 +44,15 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
   return (
     <AdminGate>
       <div className="admin-page-layout mx-auto flex max-w-4xl flex-col gap-6 px-1 py-2">
-        <Link to="/admin/storage">
-          <Button size="sm" variant="text">
-            <ArrowLeftIcon size={14} aria-hidden className="mr-1.5" />
-            Back to Storage
-          </Button>
-        </Link>
+        <ButtonLink
+          className="w-fit"
+          to="/admin/storage"
+          size="sm"
+          variant="text"
+        >
+          <ArrowLeftIcon size={14} aria-hidden className="mr-1.5" />
+          Back to Storage
+        </ButtonLink>
 
         {loading ? (
           <StudioPanel>

@@ -3,6 +3,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 
 import {
   Button,
+  ButtonLink,
   CardsRow,
   ImageReveal,
   MediaArtwork,
@@ -222,11 +223,14 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
               : 'New posts, tracks, and releases from artists you follow will show up here.'
           }
           action={
-            <Link to="/discover" search={{ tab: 'artists' }}>
-              <Button size="sm" variant="secondary">
-                Discover artists
-              </Button>
-            </Link>
+            <ButtonLink
+              to="/discover"
+              search={{ tab: 'artists' }}
+              size="sm"
+              variant="secondary"
+            >
+              Discover artists
+            </ButtonLink>
           }
         />
       ) : (

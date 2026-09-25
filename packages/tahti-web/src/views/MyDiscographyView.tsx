@@ -16,6 +16,7 @@ import { useEffect, useMemo, useState, type FC } from 'react';
 import {
   Badge,
   Button,
+  ButtonLink,
   FilterChips,
   ImageReveal,
   Input,
@@ -221,12 +222,15 @@ export const MyDiscographyView: FC = () => {
           title="No tracks yet"
           description="Go live or upload music to start your complete audio archive."
           action={
-            <Link to="/studio/go-live">
-              <Button size="sm" variant="secondary">
-                <RadioTowerIcon size={16} aria-hidden className="mr-1.5" />
-                Open Studio
-              </Button>
-            </Link>
+            <ButtonLink
+              className="w-fit"
+              to="/studio/go-live"
+              size="sm"
+              variant="secondary"
+            >
+              <RadioTowerIcon size={16} aria-hidden className="mr-1.5" />
+              Open Studio
+            </ButtonLink>
           }
         />
       ) : (

@@ -5,7 +5,7 @@ use sqlx::SqlitePool;
 use super::backup::{export_backup, restore_backup, restore_preview, RootMapping};
 use super::catalog::{add_tag, apply_edits, set_color, set_rating, record_play, EditField, FieldEdit};
 use super::playlists::{add_tracks, create_playlist, entries_page};
-use super::tests::{pool, write_wav_tagged};
+use super::test_support::{pool, write_wav_tagged};
 use super::{add_root, import_paths, list_query, remove, LibraryTrack, ListQuery};
 
 async fn tracks(pool: &SqlitePool) -> Vec<LibraryTrack> {

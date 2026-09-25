@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { Button, ViewShell } from '@tahti-player/ui';
+import { Button, ButtonLink, ViewShell } from '@tahti-player/ui';
 
 import {
   fetchGreenRoomAccess,
@@ -187,9 +187,14 @@ export function GreenRoomView({ username }: { username: string }) {
           description={`${access.artistDisplayName} is now live — the show has moved to the public channel.`}
           action={
             channelSlug ? (
-              <Link to="/channel/$slug" params={{ slug: channelSlug }}>
-                <Button size="sm">Tune in</Button>
-              </Link>
+              <ButtonLink
+                className="w-fit"
+                to="/channel/$slug"
+                params={{ slug: channelSlug }}
+                size="sm"
+              >
+                Tune in
+              </ButtonLink>
             ) : undefined
           }
         />

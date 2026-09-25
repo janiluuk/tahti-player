@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 
 import {
-  Button,
+  ButtonLink,
   Card,
   CardGrid,
   SectionShell,
@@ -43,11 +43,15 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
             title="No favorite channels"
             description="Heart one from Discover → Artists or a channel page."
             action={
-              <Link to="/discover" search={{ tab: 'artists' }}>
-                <Button size="sm" variant="secondary">
-                  Browse artists
-                </Button>
-              </Link>
+              <ButtonLink
+                className="w-fit"
+                to="/discover"
+                search={{ tab: 'artists' }}
+                size="sm"
+                variant="secondary"
+              >
+                Browse artists
+              </ButtonLink>
             }
           />
         ) : (

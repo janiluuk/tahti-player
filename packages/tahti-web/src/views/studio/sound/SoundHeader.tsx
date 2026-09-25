@@ -1,4 +1,4 @@
-import { Link, useNavigate } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import {
   AudioLinesIcon,
   GaugeIcon,
@@ -14,6 +14,7 @@ import {
 import {
   Badge,
   Button,
+  ButtonLink,
   SaveButton,
   Tooltip,
   TrackContextMenu,
@@ -139,17 +140,17 @@ export function SoundHeader({
             </TrackContextMenu.Content>
           </TrackContextMenu>
           <Tooltip content="Open audio editor" side="top">
-            <Link to="/studio/sounds/$id/editor" params={{ id }}>
-              <Button
-                variant="secondary"
-                size="icon-sm"
-                className="bg-background border-border rounded-md border-(length:--border-width)"
-                disabled={notReady || hasError}
-                aria-label="Open audio editor"
-              >
-                <AudioLinesIcon size={16} aria-hidden />
-              </Button>
-            </Link>
+            <ButtonLink
+              to="/studio/sounds/$id/editor"
+              params={{ id }}
+              variant="secondary"
+              size="icon-sm"
+              disabled={notReady || hasError}
+              aria-label="Open audio editor"
+              className="bg-background border-border rounded-md border-(length:--border-width)"
+            >
+              <AudioLinesIcon size={16} aria-hidden />
+            </ButtonLink>
           </Tooltip>
           <Badge
             variant="pill"

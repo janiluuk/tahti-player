@@ -9,7 +9,14 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Button, Dialog, ImageReveal, Input, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonLink,
+  Dialog,
+  ImageReveal,
+  Input,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import {
   createEpisode,
@@ -260,15 +267,15 @@ export function RadioBookingCalendar({
             {scope === 'mine' ? 'My channel schedule' : 'Tahti Radio schedule'}
           </Dialog.Title>
           <Tooltip content="Open full calendar" side="top">
-            <Link to="/schedule" onClick={onClose}>
-              <Button
-                size="icon-sm"
-                variant="text"
-                aria-label="Open full calendar"
-              >
-                <CalendarDaysIcon size={16} aria-hidden />
-              </Button>
-            </Link>
+            <ButtonLink
+              to="/schedule"
+              onClick={onClose}
+              size="icon-sm"
+              variant="text"
+              aria-label="Open full calendar"
+            >
+              <CalendarDaysIcon size={16} aria-hidden />
+            </ButtonLink>
           </Tooltip>
         </div>
         <Dialog.Description>
@@ -511,27 +518,29 @@ export function RadioBookingCalendar({
             </div>
             <Dialog.Actions>
               {selectedBooking.isMine && selectedBooking.showId ? (
-                <Link
+                <ButtonLink
                   to="/studio/shows/$id"
                   params={{ id: selectedBooking.showId }}
                   onClick={() => {
                     setSelectedBooking(null);
                     onClose();
                   }}
+                  variant="secondary"
                 >
-                  <Button variant="secondary">Edit show</Button>
-                </Link>
+                  Edit show
+                </ButtonLink>
               ) : (
-                <Link
+                <ButtonLink
                   to="/radio/show/$channelSlug"
                   params={{ channelSlug: selectedBooking.channelSlug }}
                   onClick={() => {
                     setSelectedBooking(null);
                     onClose();
                   }}
+                  variant="secondary"
                 >
-                  <Button variant="secondary">Open show</Button>
-                </Link>
+                  Open show
+                </ButtonLink>
               )}
               <Dialog.Close>Close</Dialog.Close>
             </Dialog.Actions>

@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { RadioIcon, SearchIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-import { Button, EmptyState, Input, Select } from '@tahti-player/ui';
+import { ButtonLink, EmptyState, Input, Select } from '@tahti-player/ui';
 
 import { PageLoading } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
@@ -77,12 +77,10 @@ export function RecordingsPanel({
             }
             action={
               recordings.length === 0 ? (
-                <Link to="/studio/go-live">
-                  <Button size="sm" variant="secondary">
-                    <RadioIcon size={14} aria-hidden className="mr-1" />
-                    Open broadcast studio
-                  </Button>
-                </Link>
+                <ButtonLink to="/studio/go-live" size="sm" variant="secondary">
+                  <RadioIcon size={14} aria-hidden className="mr-1" />
+                  Open broadcast studio
+                </ButtonLink>
               ) : undefined
             }
           />

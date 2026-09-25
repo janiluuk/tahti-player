@@ -1,7 +1,6 @@
-import { Link } from '@tanstack/react-router';
 import { toast } from 'sonner';
 
-import { Button, Dialog, Input } from '@tahti-player/ui';
+import { Button, ButtonLink, Dialog, Input } from '@tahti-player/ui';
 
 import { AddToPlaylistPanel } from '../components/AddToPlaylistPanel';
 import { PageEmpty, PageLoading } from '../components/PageStates';
@@ -40,11 +39,9 @@ export function TrackDetailView({
           title="Track unavailable"
           description="This track doesn't exist, isn't public, or was removed."
           action={
-            <Link to="/">
-              <Button size="sm" variant="secondary">
-                Back to Listen
-              </Button>
-            </Link>
+            <ButtonLink className="w-fit" to="/" size="sm" variant="secondary">
+              Back to Listen
+            </ButtonLink>
           }
         />
       </div>

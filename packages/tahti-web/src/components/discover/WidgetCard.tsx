@@ -10,6 +10,7 @@ import { useState, type ReactNode } from 'react';
 
 import {
   Button,
+  ButtonLink,
   Dialog,
   EmptyState,
   ImageReveal,
@@ -145,13 +146,14 @@ export function WidgetCard({
           <p className="text-foreground-secondary mt-2 line-clamp-4 max-w-xl text-sm">
             {artist.bio ?? 'Discover this artist’s music on Tahti.'}
           </p>
-          <Link
+          <ButtonLink
             to="/channel/$slug"
             params={{ slug: artist.channelSlug }}
+            size="sm"
             className="mt-4"
           >
-            <Button size="sm">Listen to their music</Button>
-          </Link>
+            Listen to their music
+          </ButtonLink>
         </div>
       ) : collections.length > 0 ? (
         <div className="grid gap-2">

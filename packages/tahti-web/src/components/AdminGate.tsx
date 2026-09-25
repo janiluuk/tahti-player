@@ -1,8 +1,7 @@
-import { Link } from '@tanstack/react-router';
 import { ShieldAlertIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-import { Button, EmptyState } from '@tahti-player/ui';
+import { Button, ButtonLink, EmptyState } from '@tahti-player/ui';
 
 import { hasAccountRole } from '../lib/accountRoles';
 import { useAuthModalStore } from '../stores/authModalStore';
@@ -36,11 +35,9 @@ export function AdminGate({ children }: { children: ReactNode }) {
         title="Board access required"
         description={`Signed in as @${user.username}, but this account doesn't have the Board role.`}
         action={
-          <Link to="/">
-            <Button size="sm" variant="secondary">
-              Back to Listen
-            </Button>
-          </Link>
+          <ButtonLink to="/" size="sm" variant="secondary">
+            Back to Listen
+          </ButtonLink>
         }
       />
     );

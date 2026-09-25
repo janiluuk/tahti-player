@@ -20,6 +20,7 @@ import {
   Badge,
   Box,
   Button,
+  ButtonLink,
   EmptyState,
   Input,
   SectionShell,
@@ -532,11 +533,14 @@ export function HelpArticleView({ slug }: { slug: string }) {
           title="Article not found"
           description={`No help page for ${slug}.`}
           action={
-            <Link to="/help">
-              <Button size="sm" variant="secondary">
-                Back to help hub
-              </Button>
-            </Link>
+            <ButtonLink
+              className="w-fit"
+              to="/help"
+              size="sm"
+              variant="secondary"
+            >
+              Back to help hub
+            </ButtonLink>
           }
         />
       </PageFrame>
@@ -551,12 +555,10 @@ export function HelpArticleView({ slug }: { slug: string }) {
         title={article.title}
         subtitle={article.description}
         back={
-          <Link to="/help">
-            <Button size="xs" variant="text">
-              <ArrowLeftIcon size={14} aria-hidden className="mr-1" />
-              Help center
-            </Button>
-          </Link>
+          <ButtonLink className="w-fit" to="/help" size="xs" variant="text">
+            <ArrowLeftIcon size={14} aria-hidden className="mr-1" />
+            Help center
+          </ButtonLink>
         }
         meta={
           article.productionPath ? (

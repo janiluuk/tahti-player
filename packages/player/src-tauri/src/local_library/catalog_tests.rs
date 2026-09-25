@@ -7,7 +7,7 @@ use super::catalog::{
     provenance, record_play, remove_tag, restore_edits, restore_user_data, set_color, set_rating,
     DuplicateKind, EditField, FieldEdit,
 };
-use super::tests::{pool, write_wav_tagged};
+use super::test_support::{pool, write_wav_tagged};
 use super::{import_paths, list_query, ListQuery, LibraryTrack, SortColumn, TrackFilters, TrackSort};
 
 fn edit(field: EditField, value: &str) -> FieldEdit {

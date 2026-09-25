@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { PlugIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Badge, Button, ViewShell } from '@tahti-player/ui';
+import { Badge, Button, ButtonLink, ViewShell } from '@tahti-player/ui';
 
 import {
   fetchFanConnectPortal,
@@ -65,11 +65,14 @@ export function StudioStripeView() {
                 Fan-sub orders still appear under Audience. Turn Stripe on to
                 connect a payout account and open the Express dashboard.
               </p>
-              <Link to="/studio/audience" className="mt-3 inline-block">
-                <Button size="sm" variant="secondary">
-                  Back to Audience
-                </Button>
-              </Link>
+              <ButtonLink
+                to="/studio/audience"
+                size="sm"
+                variant="secondary"
+                className="mt-3"
+              >
+                Back to Audience
+              </ButtonLink>
             </StudioPanel>
           ) : (
             <>

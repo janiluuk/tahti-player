@@ -2,7 +2,7 @@ import { Link, useNavigate } from '@tanstack/react-router';
 import { AudioLinesIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, ViewShell } from '@tahti-player/ui';
+import { Button, ButtonLink, ViewShell } from '@tahti-player/ui';
 
 import {
   deleteEditorProject,
@@ -126,23 +126,16 @@ export function StudioEditorProjectView({ id }: { id: string }) {
                   Delete
                 </Button>
                 {project.soundId ? (
-                  <Link
+                  <ButtonLink
                     to="/studio/sounds/$id/editor"
                     params={{ id: project.soundId }}
+                    size="sm"
+                    aria-label="Open pro editor"
+                    title="Open pro editor"
                   >
-                    <Button
-                      size="sm"
-                      aria-label="Open pro editor"
-                      title="Open pro editor"
-                    >
-                      <AudioLinesIcon
-                        size={16}
-                        aria-hidden
-                        className="mr-1.5"
-                      />
-                      Pro editor
-                    </Button>
-                  </Link>
+                    <AudioLinesIcon size={16} aria-hidden className="mr-1.5" />
+                    Pro editor
+                  </ButtonLink>
                 ) : null}
               </div>
               {error && (

@@ -12,6 +12,8 @@ import { useEffect, useState } from 'react';
 import {
   Badge,
   Button,
+  ButtonAnchor,
+  ButtonLink,
   Card,
   CardGrid,
   Dialog,
@@ -193,12 +195,15 @@ function UploadSourceWidgets() {
                   {selectedStatus?.connected ? 'Reconnect' : 'Connect'}
                 </Button>
               ) : (
-                <a href={selected.oauthUrl}>
-                  <Button size="sm" disabled={!user}>
-                    <PlugIcon size={16} aria-hidden className="mr-1.5" />
-                    {selectedStatus?.connected ? 'Reconnect' : 'Connect'}
-                  </Button>
-                </a>
+                <ButtonAnchor
+                  className="w-fit"
+                  href={selected.oauthUrl}
+                  size="sm"
+                  disabled={!user}
+                >
+                  <PlugIcon size={16} aria-hidden className="mr-1.5" />
+                  {selectedStatus?.connected ? 'Reconnect' : 'Connect'}
+                </ButtonAnchor>
               )
             ) : (
               <p className="text-foreground-secondary text-sm">
@@ -289,15 +294,15 @@ function RecordedBroadcastCard({
         </div>
         {broadcast.soundId ? (
           <Tooltip content="Edit recording" side="top">
-            <Link to="/studio/sounds/$id" params={{ id: broadcast.soundId }}>
-              <Button
-                size="icon-sm"
-                variant="text"
-                aria-label={`Edit ${title}`}
-              >
-                <PencilIcon size={14} aria-hidden />
-              </Button>
-            </Link>
+            <ButtonLink
+              to="/studio/sounds/$id"
+              params={{ id: broadcast.soundId }}
+              size="icon-sm"
+              variant="text"
+              aria-label={`Edit ${title}`}
+            >
+              <PencilIcon size={14} aria-hidden />
+            </ButtonLink>
           </Tooltip>
         ) : null}
       </div>

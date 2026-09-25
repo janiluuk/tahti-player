@@ -1,8 +1,7 @@
-import { Link } from '@tanstack/react-router';
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
-import { Button, Input, MediaArtwork } from '@tahti-player/ui';
+import { ButtonLink, Input, MediaArtwork } from '@tahti-player/ui';
 
 import type { PublicProfileRelease } from '../api/types';
 import { usePlayerStore } from '../stores/playerStore';
@@ -123,11 +122,9 @@ export function ReleasesPanel({
         title="No releases yet"
         description="Publish a release in Studio to see it here."
         action={
-          <Link to="/studio/releases">
-            <Button size="sm" variant="secondary">
-              Studio → Releases
-            </Button>
-          </Link>
+          <ButtonLink to="/studio/releases" size="sm" variant="secondary">
+            Studio → Releases
+          </ButtonLink>
         }
       />
     );

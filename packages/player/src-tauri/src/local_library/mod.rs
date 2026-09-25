@@ -36,7 +36,23 @@ mod backup_tests;
 #[cfg(test)]
 mod tag_writer_tests;
 #[cfg(test)]
-mod tests;
+mod import_tests;
+#[cfg(test)]
+mod m3u_tests;
+#[cfg(test)]
+mod open_tests;
+#[cfg(test)]
+mod playlists_tests;
+#[cfg(test)]
+mod query_tests;
+#[cfg(test)]
+mod reconcile_tests;
+#[cfg(test)]
+mod roots_tests;
+#[cfg(test)]
+mod test_support;
+#[cfg(test)]
+mod tracks_tests;
 #[cfg(test)]
 mod profile_tests;
 
