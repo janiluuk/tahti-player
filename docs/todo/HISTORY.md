@@ -3683,3 +3683,12 @@ The tahti-web right rail is now the Nuclear desktop queue bar. It was already mo
 - **Storybook:** `Components/QueueHeaderActions` and a rebuilt `Tahti/Misc/RightRailPanel` (queue, empty, long, collapsed, notifications, chat states).
 - **Checks:** root `pnpm lint`, `pnpm type-check`, `pnpm test` green (tahti-web 946 + 5 expected fail, player 707, ui 361). Verified in Storybook and in the app in mock mode (Listen, Studio, Admin; clear confirm, save dialog, toggles, collapse, player-bar queue button, rail override). Not checked: a real channel-designer session and a real-API pass.
 - `packages/tahti-web/src/components/ConnectedQueuePanel.tsx` is not mounted anywhere (story only); left as is.
+
+## 2026-09-25 — E2E journey screenshots closed out
+
+Four Playwright journeys (anonymous, listener, artist, admin) in `packages/tahti-web/scripts/journeys/`, shipped in #130 with their 155 screenshots in `docs/e2e-journeys/`. See `docs/E2E-JOURNEYS.md`.
+
+- **Flagged visual bugs:** checked in mock mode with the theme set through the theme store. The pink track editor and the coloured Studio tiles are the Default (`nuclear:default`) light palette as designed; the tiles only looked broken because the screenshot cut them off. Not bugs.
+- **Retired `scripts/capture-studio-audit.mjs`** (user's call). The artist and admin sweeps already covered its routes except `/studio/shows/show-series-demo`, now in the artist `STUDIO_SWEEP`.
+- **Screenshots:** the user kept all 155 as committed.
+- **Left as is:** `run-e2e-journeys.sh` defaults to port 5195, while the older capture scripts use 5192. No conflict (`--strictPort`).

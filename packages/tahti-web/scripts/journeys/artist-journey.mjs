@@ -64,10 +64,9 @@ const ADDON_CATEGORIES = [
   'Channel',
 ];
 
-// Exhaustive sweep of every remaining studio tab (see docs/redesign-shots
-// via scripts/capture-studio-audit.mjs, which this list is drawn from) —
-// the channel designer tabs and upload/track view get their own dedicated
-// steps above, so they're not repeated here.
+// Exhaustive sweep of every remaining studio tab. The channel designer tabs
+// and upload/track view get their own dedicated steps above, so they're not
+// repeated here.
 const STUDIO_SWEEP = [
   ['/studio', 'studio-dashboard'],
   ['/studio/stats', 'studio-stats'],
@@ -89,6 +88,7 @@ const STUDIO_SWEEP = [
   ['/studio/events/new', 'perform-events-new'],
   ['/studio/venues', 'perform-venues'],
   ['/studio/shows', 'perform-shows'],
+  ['/studio/shows/show-series-demo', 'perform-show-detail'],
   ['/studio/moderation', 'manage-moderation'],
   ['/studio/setup-channel', 'manage-setup'],
   ['/settings/account', 'settings-account'],

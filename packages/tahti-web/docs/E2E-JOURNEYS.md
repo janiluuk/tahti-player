@@ -119,7 +119,7 @@ everything, so stale shots are fine to prune rather than precious to keep).
 ## Related tooling
 
 This complements, rather than replaces, the existing per-route capture
-scripts (`scripts/capture-studio-audit.mjs`, `capture-atlas-shots.mjs`,
+scripts (`capture-atlas-shots.mjs`,
 `capture-redesign-shots.mjs`, `capture-tahti-dark-refresh.mjs`) and the
 `e2e/*.spec.ts` Playwright test suite (real assertions, run against a real
 or mock backend via `playwright.config.ts`). The journeys here are
