@@ -334,3 +334,61 @@ export const ToolbarButtons: Story = {
   },
   render: (args) => <TrackTable {...(args as TrackTableProps)} />,
 };
+
+const ResponsiveTable = ({
+  width,
+  ...args
+}: TrackTableProps & { width: number }) => {
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  return (
+    <div style={{ width }} className="p-4">
+      <TrackTable
+        {...args}
+        actions={{
+          onPlayNow: fn(),
+          onAddToQueue: fn(),
+          onToggleFavorite: (track) =>
+            setFavorites((prev) => {
+              const next = new Set(prev);
+              if (!next.delete(track.source.id)) {
+                next.add(track.source.id);
+              }
+              return next;
+            }),
+        }}
+        meta={{ isTrackFavorite: (track) => favorites.has(track.source.id) }}
+      />
+    </div>
+  );
+};
+
+const responsiveArgs = {
+  tracks,
+  labels,
+  display: {
+    displayThumbnail: true,
+    displayFavorite: true,
+    displayArtist: true,
+    displayAlbum: true,
+    displayDuration: true,
+    displayQueueControls: true,
+  },
+};
+
+/** Phone width (375px): artist, album and duration fold away and the artist
+ * shows under the title. The table responds to its own width, so the same
+ * layout applies in narrow side panels. */
+export const MobileView: Story = {
+  args: responsiveArgs,
+  render: (args) => (
+    <ResponsiveTable {...(args as TrackTableProps)} width={375} />
+  ),
+};
+
+/** Desktop browser width (1280px): every column is shown. */
+export const BrowserView: Story = {
+  args: responsiveArgs,
+  render: (args) => (
+    <ResponsiveTable {...(args as TrackTableProps)} width={1280} />
+  ),
+};

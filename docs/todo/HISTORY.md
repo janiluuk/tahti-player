@@ -3692,3 +3692,13 @@ Four Playwright journeys (anonymous, listener, artist, admin) in `packages/tahti
 - **Retired `scripts/capture-studio-audit.mjs`** (user's call). The artist and admin sweeps already covered its routes except `/studio/shows/show-series-demo`, now in the artist `STUDIO_SWEEP`.
 - **Screenshots:** the user kept all 155 as committed.
 - **Left as is:** `run-e2e-journeys.sh` defaults to port 5195, while the older capture scripts use 5192. No conflict (`--strictPort`).
+
+## 2026-09-25 — Mobile Feed and track tables
+
+Reported on a phone (beta.tahti.live): the Feed cards overlapped and track tables were unreadable.
+
+- **Track tables (`TrackTable` in `@tahti-player/ui`):** the table is now a container. Below 28rem wide (`@max-md`) the artist, album, duration and release-date columns fold away and the artist shows under the title. This uses a container query rather than the viewport, so narrow side panels collapse too. `@max-md:hidden` instead of `hidden @md:table-cell`, because tahti-web's `.hidden` rule loads after the ui package's container rules and won.
+- **Feed:** cards are phone-width with the next one peeking in (a third of the screen from `sm` up, as before). The old inline width was narrower than the card's own `min-w-56`, so cards overlapped. The embedded Feed no longer adds a second "Your feed" heading, and release cards show the artist line once instead of above and below the artwork.
+- **`CardsRow`:** the filter and scroll buttons wrap under the title when there is no room.
+- **Storybook:** `TrackTable` Mobile view (375px) and Browser view (1280px), and a `CardsRow` Mobile view.
+- Checks: ui 361 passing, tahti-web 947 passing, `tsc`/`eslint` clean. Checked in mock mode at 390px (in a same-origin iframe, as Chrome would not go narrower) and at desktop width, and both TrackTable stories in Storybook. Not checked on a real phone.

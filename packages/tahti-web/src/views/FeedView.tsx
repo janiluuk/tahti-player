@@ -7,7 +7,6 @@ import {
   CardsRow,
   ImageReveal,
   MediaArtwork,
-  SectionShell,
   ViewShell,
   type CardsRowItem,
 } from '@tahti-player/ui';
@@ -246,16 +245,13 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
             feedItem: item,
           }))}
           renderItem={({ feedItem: item }) => (
-            <div
-              style={{ width: 'calc((100vw - 5rem) / 3)', maxWidth: '20rem' }}
-              className="group/glow relative"
-            >
+            <div className="group/glow relative w-[calc(100vw-5rem)] max-w-80 sm:w-[calc((100vw-5rem)/3)] sm:min-w-56">
               <div
                 className="bg-primary pointer-events-none absolute -inset-3 rounded-2xl opacity-20 blur-xl"
                 aria-hidden
               />
-              <div className="border-border bg-background-secondary relative flex h-full min-w-56 flex-col gap-3 rounded-lg border p-4">
-                {item.kind !== 'track' && <FeedItemHeader item={item} />}
+              <div className="border-border bg-background-secondary relative flex h-full flex-col gap-3 rounded-lg border p-4">
+                {item.kind === 'post' && <FeedItemHeader item={item} />}
 
                 <div className="min-w-0 flex-1">
                   {item.kind === 'post' && (
@@ -413,9 +409,5 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
     </>
   );
 
-  return embedded ? (
-    <SectionShell title="Your feed">{content}</SectionShell>
-  ) : (
-    wrapFeed(content)
-  );
+  return wrapFeed(content);
 }

@@ -5,6 +5,8 @@ import { PropsWithChildren, useCallback } from 'react';
 import { Track } from '@tahti-player/model';
 import { cn } from '@tahti-player/ui';
 
+import { collapsibleColumnClass } from '../utils/columns';
+
 type HeaderValue = string | undefined;
 
 export function TextHeader<T extends Track>({
@@ -25,7 +27,11 @@ export function TextHeader<T extends Track>({
   return (
     <th
       role="columnheader"
-      className={cn('px-2 text-left', { 'cursor-pointer': canSort })}
+      className={cn(
+        'px-2 text-left',
+        { 'cursor-pointer': canSort },
+        collapsibleColumnClass(context.column.id),
+      )}
       onClick={onClick}
     >
       <span className="flex items-center">
