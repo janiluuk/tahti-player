@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from 'react';
 import { formatArtistNames } from '@tahti-player/model';
 import { Badge, Button, cn, PlayerBar, Tooltip } from '@tahti-player/ui';
 
+import { TAHTI_RADIO_SLUG } from '../api/client';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { soundIdFromPlayableId } from '../lib/soundId';
 import { useAuthStore } from '../stores/authStore';
@@ -307,14 +308,23 @@ export function ConnectedPlayerBar() {
                   : () => setWaveformExpanded((expanded) => !expanded)
               }
               onArtistClick={
-                artistSlug
-                  ? () => {
-                      void navigate({
-                        to: '/u/$username',
-                        params: { username: artistSlug },
-                      });
-                    }
-                  : undefined
+                playable?.kind === 'radio'
+                  ? artistSlug === TAHTI_RADIO_SLUG
+                    ? () => {
+                        void navigate({
+                          to: '/channel/$slug',
+                          params: { slug: artistSlug },
+                        });
+                      }
+                    : undefined
+                  : artistSlug
+                    ? () => {
+                        void navigate({
+                          to: '/u/$username',
+                          params: { username: artistSlug },
+                        });
+                      }
+                    : undefined
               }
             />
             {soundId && playable && (
