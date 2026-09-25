@@ -3692,3 +3692,11 @@ Four Playwright journeys (anonymous, listener, artist, admin) in `packages/tahti
 - **Retired `scripts/capture-studio-audit.mjs`** (user's call). The artist and admin sweeps already covered its routes except `/studio/shows/show-series-demo`, now in the artist `STUDIO_SWEEP`.
 - **Screenshots:** the user kept all 155 as committed.
 - **Left as is:** `run-e2e-journeys.sh` defaults to port 5195, while the older capture scripts use 5192. No conflict (`--strictPort`).
+
+## 2026-09-25 — Fix radio station link routing to "Artist not found"; bigger back arrow on channel page
+
+Clicking a playing radio station's name in the desktop now-playing bar (`ConnectedPlayerBar.tsx`) always built an artist-profile link (`/u/$username`) from `playable.channelSlug`, regardless of `playable.kind`. For a radio playable that slug is a station/channel slug, not a username, so `ArtistView`'s `fetchProfile` 404s and renders "Artist not found". Fix: branch on `playable.kind === 'radio'` and, only for the one real radio channel that currently has a page (`tahti-radio`, matching the existing `/channel/$slug` `ChannelView` radio page from `radio-channel-page.md`), navigate there instead; other radio playables (the 6 external Finnish presets, RadioBrowser directory stations) have no page by product decision, so the click is now inert rather than broken.
+
+Investigating the user's screenshot of a garbled/cut-off channel page also surfaced a real local dev-environment issue (not a product bug): after rebasing onto 17 new `origin/master` commits, `node_modules` was stale against the updated `pnpm-lock.yaml` (`@tanstack/react-router` 1.167.3 installed vs. 1.170.38 required), which crashed `RouteTransition.tsx`'s `router.stores` access on every route render. `pnpm install` resolved it; a clean run showed the channel page filling the screen correctly with no crash. Also bumped the channel page's back button from `size-8`/16px to `size-12`/28px icon, matching `FullScreenPlayer.tsx`'s back-arrow size, per user request.
+
+Checks: `tsc --noEmit` clean for the touched file (pre-existing unrelated `RouteTransition.tsx` errors only, now moot since the reinstall fixed the runtime issue); `ChannelView`/`playerStore` vitest suites pass (12/12); verified live in mock mode via Playwright screenshots.
