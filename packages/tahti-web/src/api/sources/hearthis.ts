@@ -15,6 +15,8 @@ export type HearthisTrack = {
   kind?: string;
   coverUrl?: string | null;
   streamUrl?: string | null;
+  /** Set only when the uploader offers the file for download. */
+  download?: { url: string; fileName: string | null } | null;
 };
 
 export type HearthisCollection = {
@@ -41,6 +43,10 @@ export type HearthisApiTrack = {
   duration: string;
   artwork_url?: string | null;
   stream_url?: string | null;
+  /** `'1'` when the uploader allows downloads. */
+  downloadable?: string;
+  download_url?: string | null;
+  download_filename?: string | null;
   user: { username: string };
 };
 
@@ -63,7 +69,29 @@ export function hearthisApiTrack(track: HearthisApiTrack): HearthisTrack {
     kind: track.type,
     coverUrl: track.artwork_url ?? null,
     streamUrl: track.stream_url ?? null,
+    download:
+      track.downloadable === '1' && track.download_url
+        ? { url: track.download_url, fileName: track.download_filename ?? null }
+        : null,
   };
+}
+
+/**
+ * The set permalink from a pasted hearthis.at set link
+ * (`https://hearthis.at/set/380208-9827046/`) or a bare permalink.
+ */
+export function parseHearthisSetPermalink(input: string): string | null {
+  const value = input.trim();
+  if (!value) {
+    return null;
+  }
+  const link = value.match(
+    /^(?:https?:\/\/)?(?:www\.)?hearthis\.at\/set\/([^/?#\s]+)\/?(?:[?#].*)?$/i,
+  );
+  if (link) {
+    return decodeURIComponent(link[1]!);
+  }
+  return /^[\w-]+$/.test(value) ? value : null;
 }
 
 export async function fetchHearthisPublic<T>(path: string): Promise<T> {
@@ -166,7 +194,20 @@ export async function fetchHearthisCollectionTracks(
   permalink: string,
 ): Promise<HearthisTrack[]> {
   if (isForceMock()) {
-    return (await fetchHearthisLibrary()).data.sets;
+    const [set] = (await fetchHearthisLibrary()).data.sets;
+    return [1, 2, 3, 4].map((n) => ({
+      ...set!,
+      id: `ht-mock-set-${n}`,
+      title: `Live at Kaiku, part ${n}`,
+      durationSec: 1800 + n * 60,
+      download:
+        n === 3
+          ? null
+          : {
+              url: `https://hearthis.at/mockartist/live-at-kaiku-${n}/download/`,
+              fileName: `Live at Kaiku ${n}.mp3`,
+            },
+    }));
   }
   const tracks = await fetchHearthisPublic<HearthisApiTrack[]>(
     `/set/${encodeURIComponent(permalink)}/?type=tracks&count=500`,

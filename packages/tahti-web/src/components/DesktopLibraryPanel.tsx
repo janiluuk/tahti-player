@@ -25,6 +25,7 @@ import {
 } from '../lib/nativeLibrary';
 import { DesktopLibraryContent } from './desktop-library/DesktopLibraryContent';
 import { DesktopLibraryDialogs } from './desktop-library/DesktopLibraryDialogs';
+import { HearthisSetImportDialog } from './desktop-library/HearthisSetImportDialog';
 import type { TrackBatchDialog } from './desktop-library/TrackBatchDialogs';
 import { useLibraryRoots } from './desktop-library/useLibraryRoots';
 import { useMissingTracks } from './desktop-library/useMissingTracks';
@@ -67,6 +68,7 @@ export function DesktopLibraryPanel() {
     Array<{ name: string; tracks: number }>
   >([]);
   const [batchDialog, setBatchDialog] = useState<TrackBatchDialog | null>(null);
+  const [setImportOpen, setSetImportOpen] = useState(false);
   const [openPlaylistId, setOpenPlaylistId] = useState<string | null>(
     initialView.openPlaylistId,
   );
@@ -400,6 +402,11 @@ export function DesktopLibraryPanel() {
         loadedCountRef={loadedCountRef}
         onImportFiles={() => void importNative()}
         onImportFolder={() => void importNativeFolder()}
+        onImportSet={
+          nativeLibrary?.providerImport
+            ? () => setSetImportOpen(true)
+            : undefined
+        }
         onRescanMissing={() => void rescanNative()}
         onCancelImport={cancelNativeImport}
         onAddRoot={() => void addRoot()}
@@ -454,6 +461,14 @@ export function DesktopLibraryPanel() {
         onRemove={(ids, title) => void removeNative(ids, title)}
         onRemoveRoot={(root) => void removeRoot(root)}
       />
+      {nativeLibrary?.providerImport ? (
+        <HearthisSetImportDialog
+          isOpen={setImportOpen}
+          onClose={() => setSetImportOpen(false)}
+          providerImport={nativeLibrary.providerImport}
+          onImported={() => void refreshNative()}
+        />
+      ) : null}
     </div>
   );
 }

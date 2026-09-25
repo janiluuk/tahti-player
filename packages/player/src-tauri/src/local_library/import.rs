@@ -48,14 +48,21 @@ pub struct ImportProgress {
     pub current_path: Option<String>,
 }
 
+/// File extensions native import accepts. Symphonia's enabled features in
+/// Cargo.toml must be able to decode each of them.
+pub(crate) const SUPPORTED_AUDIO_EXTENSIONS: [&str; 8] =
+    ["flac", "wav", "mp3", "aif", "aiff", "m4a", "ogg", "oga"];
+
+pub(crate) const AUDIO_PICKER_LABEL: &str = "Audio files";
+
+pub(crate) fn is_supported_extension(extension: &str) -> bool {
+    SUPPORTED_AUDIO_EXTENSIONS.contains(&extension.to_ascii_lowercase().as_str())
+}
+
 pub(crate) fn is_supported_audio_file(path: &Path) -> bool {
-    matches!(
-        path.extension()
-            .and_then(|value| value.to_str())
-            .map(str::to_ascii_lowercase)
-            .as_deref(),
-        Some("flac") | Some("wav")
-    )
+    path.extension()
+        .and_then(|value| value.to_str())
+        .is_some_and(is_supported_extension)
 }
 
 /// Recursively walks `root`, returning supported audio files (stable path
@@ -256,7 +263,7 @@ pub async fn library_import(app: tauri::AppHandle) -> Result<ImportResult, Strin
         dialog_app
             .dialog()
             .file()
-            .add_filter("FLAC and WAV audio", &["flac", "wav"])
+            .add_filter(AUDIO_PICKER_LABEL, &SUPPORTED_AUDIO_EXTENSIONS)
             .blocking_pick_files()
     })
     .await
