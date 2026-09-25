@@ -1,6 +1,6 @@
 # Studio/Admin UX sweep — open punch list
 
-**Status:** re-verified and actioned 2026-09-15 (see `docs/todo/HISTORY.md`
+**Status:** all five themes closed 2026-09-25; re-verified and actioned 2026-09-15 (see `docs/todo/HISTORY.md`
 for the full breakdown). Full file-by-file table (archive):
 [`STUDIO-ADMIN-UX-SWEEP.md`](STUDIO-ADMIN-UX-SWEEP.md). Do not open the
 full table unless you need a specific `file:line`.
@@ -11,9 +11,10 @@ full table unless you need a specific `file:line`.
 2. **Inline help → Tooltip** — closed 2026-09-15, zero real remaining instances found.
 3. **Missing primitives** — `Alert` already existed. No `SegmentedControl`
    built; the 2 real hand-rolled toggle-group instances found were swapped
-   onto `FilterChips` instead (2026-09-15). `StudioScheduleView.tsx`'s
-   card/list icon-only view toggle is still hand-rolled (needs a per-item
-   tooltip slot `FilterChips` doesn't have) — small, not attempted.
+   onto `FilterChips` instead (2026-09-15). The Schedule view's icon-only
+   card/list toggle (`schedule/ScheduledTimes.tsx`) now uses a new
+   `SegmentedControl` (`packages/ui`, radio-group semantics, per-option
+   tooltip when `iconOnly`) - done 2026-09-25.
 4. **Hand-rolled panels** — `StudioPanel` gained an optional `icon` prop;
    `StudioDistributionView.tsx`'s `GuideDetail` swapped onto it (2026-09-15).
    Two candidates investigated and deliberately left as-is: `StudioScheduleView.tsx`'s
