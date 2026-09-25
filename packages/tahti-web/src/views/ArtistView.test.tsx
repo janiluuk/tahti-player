@@ -74,6 +74,23 @@ describe('ArtistView', () => {
     ).not.toBeNull();
   });
 
+  it('lays out popular tracks, related artists, releases and playlists in reference order', async () => {
+    const { container } = await renderArtist('northern-lights');
+    const order = [
+      ...container.querySelectorAll('[data-testid^="artist-"]'),
+    ].map((el) => el.getAttribute('data-testid'));
+    expect(order).toEqual([
+      'artist-social-header',
+      'artist-popular',
+      'artist-related',
+      'artist-releases',
+      'artist-playlists',
+    ]);
+    expect(
+      container.querySelector('[data-testid="artist-related"]')?.textContent,
+    ).toContain('Midnight Cartography');
+  });
+
   it('shows "Artist not found" instead of spinning forever when the profile fetch fails', async () => {
     vi.spyOn(client, 'fetchProfile').mockRejectedValue(new Error('offline'));
     const { container } = await renderArtist('northern-lights');

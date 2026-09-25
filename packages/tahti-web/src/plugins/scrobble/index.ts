@@ -1,2 +1,2 @@
-export { ListenBrainzAddonCard } from './ListenBrainzAddonCard';
-export { LastFmAddonCard } from './LastFmAddonCard';
+export { ListenBrainzIntegrationRow } from './ListenBrainzIntegrationRow';
+export { LastFmIntegrationRow } from './LastFmIntegrationRow';

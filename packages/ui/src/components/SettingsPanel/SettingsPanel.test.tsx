@@ -124,4 +124,22 @@ describe('SettingsPanel', () => {
     expect(navClass.split(/\s+/)).not.toContain('flex!');
     expect(navClass).toMatch(/sm:flex!/);
   });
+
+  it('renders a nav heading where the tab group changes', () => {
+    const grouped = TABS.map((tab, index) => ({
+      ...tab,
+      group: index < 2 ? 'Settings' : 'App',
+    }));
+    render(
+      <SettingsPanel
+        isOpen
+        onClose={() => {}}
+        tabs={grouped}
+        activeTab="general"
+        onTabChange={() => {}}
+      />,
+    );
+    const headings = screen.getAllByRole('heading', { level: 2 });
+    expect(headings.map((h) => h.textContent)).toEqual(['Settings', 'App']);
+  });
 });

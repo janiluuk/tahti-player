@@ -252,6 +252,8 @@ export type PublicProfileArtist = {
   tipJarUrl?: string | null;
   tier?: string;
   pronouns?: string | null;
+  /** ISO 3166-1 alpha-2; GET /api/v1/u/:username/profile */
+  countryCode?: string | null;
   followerCount?: number | null;
   followingCount?: number | null;
   freeSubscriptionsEnabled?: boolean;
@@ -265,6 +267,9 @@ export type PublicProfileTrack = {
   durationSec?: number | null;
   bannerUrl?: string | null;
   playUrl?: string | null;
+  /** Embed-only tracks have no `playUrl`; the provider widget plays them. */
+  embedProvider?: 'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | null;
+  embedUri?: string | null;
   releaseSlug?: string | null;
   /** Same field as ChannelSoundItem.createdAt -- carried onto the profile track
    * DTO so the catalog table can show a release date. */
@@ -927,42 +932,4 @@ export type SearchResponse = {
   collections: SearchCollectionResult[];
 };
 
-export type JamParticipant = {
-  userId: string;
-  username: string;
-  displayName: string;
-  avatarUrl: string | null;
-  role: 'HOST' | 'GUEST';
-  canControl: boolean;
-  joinedAt: string;
-};
-
-export type JamTrack = {
-  id: string;
-  title: string;
-  artistName: string;
-  coverUrl: string | null;
-  /** Null for embed-only tracks (Mixcloud/Hearthis/Spotify) — guests see
-   * "now playing" for those but can't auto-play them, same as elsewhere. */
-  streamUrl: string | null;
-  protocol: 'hls' | 'https' | null;
-  channelSlug: string | null;
-  durationSec: number | null;
-};
-
-export type JamSession = {
-  id: string;
-  code: string;
-  hostUserId: string;
-  collectionId: string | null;
-  isPlaying: boolean;
-  currentTrack: JamTrack | null;
-  positionSec: number;
-  positionUpdatedAt: string;
-  createdAt: string;
-  endedAt: string | null;
-  participants: JamParticipant[];
-};
-
-export type JamEvent =
-  { type: 'state'; session: JamSession } | { type: 'ended' };
+export * from './jam-types';

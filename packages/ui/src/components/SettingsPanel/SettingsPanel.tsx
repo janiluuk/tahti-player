@@ -9,6 +9,8 @@ export type SettingsTab = {
   label: string;
   icon: ReactNode;
   content: () => ReactNode;
+  /** Consecutive tabs sharing a group render under one nav heading. */
+  group?: string;
 };
 
 type SettingsPanelProps = {

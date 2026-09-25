@@ -158,7 +158,7 @@ Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
 |---------|------------------|-----------|--------|-------|
 | MCP server (Streamable HTTP) | Tauri `packages/player` MCP | same paths | **complete / as-is** | Byte-identical to sibling `nuclear` checkout; Settings → Integrations in **desktop player**; see [`docs/MCP.md`](docs/MCP.md) |
 | MCP tool meta | `@tahti-player/plugin-sdk/mcp` | same | **complete / as-is** | |
-| MPD / Nuclear Jam HTTP | Tauri player | present in player | desktop-only | Not ported to beta SPA (same as upstream) |
+| MPD / Nuclear Jam HTTP | Tauri player | present in player | desktop-only | Not ported to beta SPA (same as upstream); web Settings → Integrations lists Jam/MCP/MPD/Discord as "Desktop app only" |
 
 Web cutover (`beta.tahti.live`) does **not** host Nuclear MCP — localhost player control plane. Do not strip `packages/player/src-tauri/src/mcp/` when packaging desktop.
 
@@ -214,7 +214,7 @@ Compared `tahti-org` (apps/web + recent API) with this SPA. Ported in this pass:
 
 Still not ported (do not block cutover unless noted):
 
-- [x] Integrations marketplace credentials (`/api/me/integrations`) — ListenBrainz + Last.fm **SCROBBLE** are live (Add-ons → Scrobbling). Sources OAuth and fingerprint plugins remain separate. Chart dashboards / OmniSource are out of scope — see `src/plugins/scrobble/README.md`'s "Out of scope" note.
+- [x] Integrations marketplace credentials (`/api/me/integrations`) — ListenBrainz + Last.fm **SCROBBLE** are live (Settings → Integrations; Add-ons → Scrobbling links there). Sources OAuth and fingerprint plugins remain separate. Chart dashboards / OmniSource are out of scope — see `src/plugins/scrobble/README.md`'s "Out of scope" note.
 - [ ] Theme editor public-submit / GitHub PR pipeline — local Nuclear themes only.
 - [ ] Internet Radio personal library (`/api/me/internet-radio`) — this client has a local catalog + Radio Browser search, not the server-side station library.
 - [ ] Hearthis export push — import is live; export is still a manual cross-post note.

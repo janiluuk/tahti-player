@@ -1,10 +1,9 @@
-import { Link, useNavigate } from '@tanstack/react-router';
+import { Link } from '@tanstack/react-router';
 import {
   ArrowLeftIcon,
-  Disc3Icon,
   ImagesIcon,
-  LibraryIcon,
   ListMusicIcon,
+  MonitorPlayIcon,
   MusicIcon,
   PaintbrushIcon,
   UserPlusIcon,
@@ -12,19 +11,20 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Button, Dialog, TabLabel, Tabs, Tooltip } from '@tahti-player/ui';
+import {
+  Dialog,
+  FavoriteButton,
+  TabLabel,
+  Tabs,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import {
   fetchMyPressKitImages,
   fetchPublicPressKitImages,
   type PublicPressKitImage,
 } from '../api/artist-settings';
-import {
-  BRAND_ACCENTS,
-  isActiveTextOverlay,
-  parseColorScheme,
-  resolvePublicVisualizerPreset,
-} from '../api/channel-design';
+import { resolvePublicVisualizerPreset } from '../api/channel-design';
 import { fetchProfile } from '../api/client';
 import { fetchPublicMentions, type PublicMention } from '../api/mentions';
 import type {
@@ -33,17 +33,23 @@ import type {
   TahtiPlayable,
 } from '../api/types';
 import {
+  AlbumPlayPromptDialog,
   ArtistBioSection,
-  ArtistCollectionsTab,
   ArtistEmbeds,
   ArtistFeed,
   ArtistHeaderActions,
   ArtistLiveShows,
+  artistLookSchemes,
   ArtistMusicTab,
   ArtistNews,
-  ArtistReleasesTab,
+  ArtistPlaylistsGrid,
+  ArtistPopularTracks,
+  ArtistRelatedArtists,
+  ArtistReleasesGrid,
   ArtistTaggedIn,
+  useArtistCatalog,
   useArtistChannelLook,
+  type RelatedArtist,
 } from '../components/artist-view';
 import {
   ArtistGalleryAddIcon,
@@ -68,11 +74,11 @@ import { hasAccountRole } from '../lib/accountRoles';
 import {
   artistProfileEmbed,
   profileTrackToPlayable,
-  releaseToPlayable,
   type ArtistProfileEmbed,
 } from '../lib/artistProfile';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
-import { colorSchemeCssVars, normalizeColorScheme } from '../lib/colorScheme';
+import { colorSchemeCssVars } from '../lib/colorScheme';
+import { countryName } from '../lib/countries';
 import { isPinned } from '../lib/pinnedTracks';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { syncDocumentMetadata } from '../lib/seo';
@@ -82,7 +88,9 @@ import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 
 export { profileTrackToPlayable };
 
-type Tab = 'music' | 'releases' | 'collections' | 'gallery' | 'design';
+type Tab = 'stage' | 'gallery' | 'design';
+
+const RELATED_ARTIST_LIMIT = 5;
 
 /** Keyed by username so navigating between artists resets all local state. */
 export function ArtistView({ username }: { username: string }) {
@@ -93,7 +101,7 @@ function ArtistProfilePage({ username }: { username: string }) {
   const me = useAuthStore((s) => s.user);
   const [profile, setProfile] = useState<PublicProfile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<Tab>('music');
+  const [tab, setTab] = useState<Tab>('stage');
   const [galleryImages, setGalleryImages] = useState<PublicPressKitImage[]>([]);
   const [galleryLoaded, setGalleryLoaded] = useState(false);
   const [tracklistRelease, setTracklistRelease] =
@@ -123,7 +131,6 @@ function ArtistProfilePage({ username }: { username: string }) {
     reloadLook,
   } = useArtistChannelLook(profile?.channel?.slug, username);
 
-  const navigate = useNavigate();
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
   const currentId = usePlayerStore((s) => s.currentId);
@@ -131,6 +138,8 @@ function ArtistProfilePage({ username }: { username: string }) {
   const queue = usePlayerStore((s) => s.queue);
   const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
   const favoriteTracks = useLibraryStore((s) => s.favoriteTracks);
+  const toggleFavoriteChannel = useLibraryStore((s) => s.toggleFavoriteChannel);
+  const favoriteChannels = useLibraryStore((s) => s.favoriteChannels);
 
   const playAlbum = (playables: TahtiPlayable[]) => {
     const [head, ...rest] = playables;
@@ -234,19 +243,11 @@ function ArtistProfilePage({ username }: { username: string }) {
     if (!profile) {
       return list;
     }
-    const showMusic =
-      lookVisibility.player || lookVisibility.latest || lookVisibility.tracks;
     if (
-      showMusic &&
-      (profile.tracks.length > 0 || profile.releases.length > 0)
+      profile.tracks.length > 0 &&
+      (lookVisibility.player || profile.tracks.some((t) => isPinned(t)))
     ) {
-      list.push({ id: 'music', label: 'Music', icon: MusicIcon });
-    }
-    if (lookVisibility.releases && profile.releases.length > 0) {
-      list.push({ id: 'releases', label: 'Releases', icon: Disc3Icon });
-    }
-    if (profile.collections.some((collection) => collection.itemCount > 0)) {
-      list.push({ id: 'collections', label: 'Collections', icon: LibraryIcon });
+      list.push({ id: 'stage', label: 'Stage', icon: MonitorPlayIcon });
     }
     if (hasGallery) {
       list.push({ id: 'gallery', label: 'Gallery', icon: ImagesIcon });
@@ -259,62 +260,12 @@ function ArtistProfilePage({ username }: { username: string }) {
 
   useEffect(() => {
     if (profile && !tabs.some((item) => item.id === tab)) {
-      setTab(tabs[0]?.id ?? 'music');
+      setTab(tabs[0]?.id ?? 'stage');
     }
   }, [profile, tab, tabs]);
 
   const { pinnedPlayables, pinnedTiles, catalogPlayables, releaseTiles } =
-    useMemo(() => {
-      if (!profile) {
-        return {
-          pinnedPlayables: [],
-          pinnedTiles: [],
-          catalogPlayables: [],
-          releaseTiles: [],
-        };
-      }
-      const artist = profile.artist.displayName;
-      const slug = profile.channel?.slug;
-      const pinnedTracks = [...profile.tracks]
-        .filter((t) => isPinned(t))
-        .sort((a, b) => (b.pinnedAt ?? '').localeCompare(a.pinnedAt ?? ''));
-      const pinnedIds = new Set(pinnedTracks.map((t) => t.id));
-      const toPlayable = (t: PublicProfile['tracks'][number]) =>
-        profileTrackToPlayable(t, artist, slug);
-
-      const pinnedTiles = pinnedTracks
-        .map((t) => ({ track: t, playable: toPlayable(t) }))
-        .filter(
-          (
-            x,
-          ): x is {
-            track: (typeof pinnedTracks)[number];
-            playable: TahtiPlayable;
-          } => Boolean(x.playable),
-        );
-
-      const releaseTiles = [...profile.releases]
-        .sort((a, b) =>
-          (b.releaseDate ?? '').localeCompare(a.releaseDate ?? ''),
-        )
-        .slice(0, 6)
-        .map((release) => ({
-          release,
-          playable: releaseToPlayable(release, artist, slug),
-        }));
-
-      return {
-        pinnedPlayables: pinnedTracks
-          .map(toPlayable)
-          .filter((p): p is TahtiPlayable => Boolean(p)),
-        pinnedTiles,
-        catalogPlayables: profile.tracks
-          .filter((t) => !pinnedIds.has(t.id))
-          .map(toPlayable)
-          .filter((p): p is TahtiPlayable => Boolean(p)),
-        releaseTiles,
-      };
-    }, [profile]);
+    useArtistCatalog(profile);
 
   if (loading) {
     return <PageLoading label="Loading artist…" />;
@@ -329,7 +280,7 @@ function ArtistProfilePage({ username }: { username: string }) {
     );
   }
 
-  const { artist, channel, releases, collections, fanTiers } = profile;
+  const { artist, channel, collections, fanTiers } = profile;
   const profileEmbeds = Object.entries(artist.socialLinks ?? {})
     .filter(
       ([key, url]) =>
@@ -337,6 +288,34 @@ function ArtistProfilePage({ username }: { username: string }) {
     )
     .map(([, url]) => artistProfileEmbed(url))
     .filter((embed): embed is ArtistProfileEmbed => Boolean(embed));
+
+  const relatedArtists: RelatedArtist[] = [];
+  for (const { mentioner } of taggedIn) {
+    if (
+      mentioner.username !== artist.username &&
+      !relatedArtists.some((a) => a.username === mentioner.username)
+    ) {
+      relatedArtists.push(mentioner);
+    }
+  }
+  const popularPlayables = [...pinnedPlayables, ...catalogPlayables];
+  const showPopular = lookVisibility.tracks && popularPlayables.length > 0;
+  const showRelated = relatedArtists.length > 0;
+  const favoriteSlug = channel?.slug ?? null;
+  const isFavoriteArtist = Boolean(
+    favoriteSlug && favoriteChannels.some((c) => c.slug === favoriteSlug),
+  );
+
+  const queueRelease = (
+    release: PublicProfileRelease,
+    playables: TahtiPlayable[],
+  ) => {
+    if (playables.length > 1) {
+      setQueueConfirm({ title: release.title, playables });
+      return;
+    }
+    queueAlbum(playables);
+  };
 
   const currentQueueItem = queue.find((q) => q.id === currentId);
   const currentPlayable = currentQueueItem
@@ -379,60 +358,23 @@ function ArtistProfilePage({ username }: { username: string }) {
     ...stat('collections', 'Playlists', collections.length, ListMusicIcon),
   ];
 
-  const artistBackdropUrl = channelVisual?.videoBackgroundUrl
-    ? null
-    : (channelVisual?.slideshowImages?.[0] ?? null);
-  const headerScheme = normalizeColorScheme(
-    channelVisual?.colorScheme ??
-      parseColorScheme(channelVisual?.colorSchemeJson),
-  );
-  const playerScheme = lookExtras.usePlayerGradient
-    ? normalizeColorScheme(parseColorScheme(lookExtras.playerColorSchemeJson))
-    : headerScheme;
-  const pageScheme = lookExtras.useBackgroundGradient
-    ? normalizeColorScheme(
-        parseColorScheme(lookExtras.backgroundColorSchemeJson),
-      )
-    : headerScheme;
-  const sectionSurfaceStyle = {
-    backgroundColor: `${pageScheme.bg}e6`,
-    borderColor: `${pageScheme.muted}66`,
-    color: pageScheme.text,
-  } as const;
-  const playerStageGradient = `linear-gradient(to top, ${playerScheme.bg}cc, ${playerScheme.bg}59, ${playerScheme.bg}1a)`;
-  const playerBottomGradient = `linear-gradient(to top, ${playerScheme.bg}cc, ${playerScheme.bg}73, transparent)`;
-  const resolvedVisualizerPreset = channelVisual?.visualPreset
-    ? resolvePublicVisualizerPreset(channelVisual.visualPreset)
-    : undefined;
-  const nowPlayingOverlayStyle =
-    lookExtras.nowPlayingOverlayStyle ??
-    channelVisual?.nowPlayingOverlayStyle ??
-    null;
-  const nowPlayingOverlaySettingsJson =
-    lookExtras.nowPlayingOverlaySettingsJson ??
-    channelVisual?.nowPlayingOverlaySettingsJson ??
-    null;
-  const playerOverlayMode =
-    lookExtras.playerOverlayMode ?? channelVisual?.playerOverlayMode ?? null;
-  const playerOverlayText =
-    lookExtras.playerOverlayText ?? channelVisual?.playerOverlayText ?? null;
-  const playerOverlayAlign =
-    lookExtras.playerOverlayAlign ?? channelVisual?.playerOverlayAlign ?? null;
-  const backgroundVisualPreset =
-    lookExtras.backgroundVisualPreset ??
-    channelVisual?.backgroundVisualPreset ??
-    null;
-  const brandGradient = BRAND_ACCENTS.find(
-    (brand) => brand.id === channelVisual?.brandAccentPreset,
-  )?.gradient;
-  const showPlayerOverlay = isActiveTextOverlay({
-    mode: playerOverlayMode,
-    text: playerOverlayText,
-  });
+  const {
+    headerScheme,
+    playerScheme,
+    pageScheme,
+    artistBackdropUrl,
+    sectionSurfaceStyle,
+    playerStageGradient,
+    playerBottomGradient,
+    resolvedVisualizerPreset,
+    backgroundVisualPreset,
+    brandGradient,
+    overlay,
+  } = artistLookSchemes(channelVisual, lookExtras);
 
   return (
     <div
-      className="relative isolate flex w-full flex-col gap-6 overflow-hidden rounded-2xl p-4 sm:p-6"
+      className="relative isolate flex w-full flex-col gap-4 overflow-hidden rounded-2xl p-4 sm:p-6"
       style={{
         ...colorSchemeCssVars(pageScheme),
         color: pageScheme.text,
@@ -468,6 +410,7 @@ function ArtistProfilePage({ username }: { username: string }) {
         imageUrl={artist.avatarUrl ?? placeholderArtworkUrl(artist.username)}
         imageAlt=""
         roundImage
+        location={countryName(artist.countryCode) || null}
         colorScheme={headerScheme}
         headerStyle={channelVisual?.headerStyle}
         videoBackgroundUrl={channelVisual?.videoBackgroundUrl}
@@ -488,14 +431,83 @@ function ArtistProfilePage({ username }: { username: string }) {
         onImageClick={artist.avatarUrl ? () => setAvatarOpen(true) : undefined}
         stats={headerStats}
         actions={
-          <ArtistHeaderActions
-            profile={profile}
-            isOwner={isOwner}
-            onEditLook={() => setTab('design')}
-          />
+          <>
+            <ArtistHeaderActions
+              profile={profile}
+              isOwner={isOwner}
+              onEditLook={() => setTab('design')}
+            />
+            {me && !isOwner && favoriteSlug ? (
+              <FavoriteButton
+                size="sm"
+                isFavorite={isFavoriteArtist}
+                onToggle={() =>
+                  toggleFavoriteChannel({
+                    slug: favoriteSlug,
+                    displayName: artist.displayName,
+                    avatarUrl: artist.avatarUrl,
+                  })
+                }
+                ariaLabelAdd={`Add ${artist.displayName} to favorite artists`}
+                ariaLabelRemove={`Remove ${artist.displayName} from favorite artists`}
+                className="bg-background border-border rounded-md border-(length:--border-width)"
+                data-testid="artist-favorite-button"
+              />
+            ) : null}
+          </>
         }
         data-testid="artist-social-header"
       />
+
+      {showPopular || showRelated ? (
+        <div className="flex flex-col gap-4 md:flex-row">
+          {showPopular ? (
+            <div
+              className={showRelated ? 'min-w-0 md:w-2/3' : 'w-full min-w-0'}
+            >
+              <ArtistPopularTracks
+                items={popularPlayables}
+                isOwner={isOwner}
+                onEditTrack={setEditingSoundId}
+              />
+            </div>
+          ) : null}
+          {showRelated ? (
+            <div
+              className={showPopular ? 'min-w-0 md:w-1/3' : 'w-full min-w-0'}
+            >
+              <ArtistRelatedArtists
+                artists={relatedArtists.slice(0, RELATED_ARTIST_LIMIT)}
+              />
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+
+      {(lookVisibility.releases || lookVisibility.latest) &&
+      releaseTiles.length > 0 ? (
+        <ArtistReleasesGrid
+          releases={releaseTiles}
+          artistName={artist.displayName}
+          channelSlug={channel?.slug}
+          isFavorite={(playable) =>
+            favoriteTracks.some((t) => t.id === playable.id)
+          }
+          onPlayRelease={(release) =>
+            playOrPromptAlbum(release, artist.displayName, channel?.slug)
+          }
+          onQueueRelease={queueRelease}
+          onToggleFavorite={toggleFavoriteTrack}
+          onTitleClick={setTracklistRelease}
+        />
+      ) : null}
+
+      {collections.length > 0 ? (
+        <ArtistPlaylistsGrid
+          collections={collections}
+          username={artist.username}
+        />
+      ) : null}
 
       {lookVisibility.bio !== false && (
         <ArtistBioSection
@@ -585,7 +597,7 @@ function ArtistProfilePage({ username }: { username: string }) {
         ) : null}
       </div>
 
-      {tab === 'music' && (
+      {tab === 'stage' && (
         <ArtistMusicTab
           channel={channel}
           visualSettingsJson={channelVisual?.visualSettingsJson}
@@ -598,14 +610,7 @@ function ArtistProfilePage({ username }: { username: string }) {
           stageGradient={playerStageGradient}
           bottomGradient={playerBottomGradient}
           visualizerPreset={resolvedVisualizerPreset}
-          overlay={{
-            show: showPlayerOverlay,
-            mode: playerOverlayMode,
-            text: playerOverlayText,
-            align: playerOverlayAlign,
-            styleId: nowPlayingOverlayStyle,
-            settingsJson: nowPlayingOverlaySettingsJson,
-          }}
+          overlay={overlay}
           nowPlayingHere={nowPlayingHere}
           featured={{
             playable: featuredPlayable,
@@ -614,32 +619,10 @@ function ArtistProfilePage({ username }: { username: string }) {
             onPlay: playFeatured,
           }}
           pinnedTiles={pinnedTiles}
-          releaseTiles={releaseTiles}
-          releaseCount={releases.length}
-          onViewAllReleases={() => setTab('releases')}
-          catalogPlayables={catalogPlayables}
-          hasPinnedPlayables={pinnedPlayables.length > 0}
           onPlay={play}
           onToggleFavorite={toggleFavoriteTrack}
           favoriteTracks={favoriteTracks}
-          onNavigateSmartLink={(slug) => {
-            void navigate({ to: '/r/$slug', params: { slug } });
-          }}
-          onTitleClick={setTracklistRelease}
-          onPlayRelease={playOrPromptAlbum}
-          onQueueConfirm={setQueueConfirm}
-          onQueueAlbum={queueAlbum}
-          onEditTrack={setEditingSoundId}
           onOpenManager={() => setManagerOpen(true)}
-        />
-      )}
-
-      {tab === 'releases' && <ArtistReleasesTab releases={releases} />}
-
-      {tab === 'collections' && (
-        <ArtistCollectionsTab
-          collections={collections}
-          username={artist.username}
         />
       )}
 
@@ -650,7 +633,7 @@ function ArtistProfilePage({ username }: { username: string }) {
           onChange={(next) => {
             setGalleryImages(next);
             if (next.length === 0) {
-              setTab('music');
+              setTab('stage');
             }
           }}
         />
@@ -717,40 +700,22 @@ function ArtistProfilePage({ username }: { username: string }) {
         />
       ) : null}
 
-      <Dialog.Root
-        isOpen={Boolean(albumPrompt)}
+      <AlbumPlayPromptDialog
+        title={albumPrompt?.release.title ?? null}
         onClose={() => setAlbumPrompt(null)}
-      >
-        {albumPrompt && (
-          <>
-            <Dialog.Title>Play {albumPrompt.release.title}?</Dialog.Title>
-            <Dialog.Description>
-              Something&apos;s already queued — add this album to the end, or
-              play it now instead?
-            </Dialog.Description>
-            <Dialog.Actions>
-              <Dialog.Close>Cancel</Dialog.Close>
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  queueAlbum(albumPrompt.playables);
-                  setAlbumPrompt(null);
-                }}
-              >
-                Queue album
-              </Button>
-              <Button
-                onClick={() => {
-                  playAlbum(albumPrompt.playables);
-                  setAlbumPrompt(null);
-                }}
-              >
-                Play now
-              </Button>
-            </Dialog.Actions>
-          </>
-        )}
-      </Dialog.Root>
+        onQueue={() => {
+          if (albumPrompt) {
+            queueAlbum(albumPrompt.playables);
+          }
+          setAlbumPrompt(null);
+        }}
+        onPlayNow={() => {
+          if (albumPrompt) {
+            playAlbum(albumPrompt.playables);
+          }
+          setAlbumPrompt(null);
+        }}
+      />
 
       <Dialog.Root
         isOpen={managerOpen}

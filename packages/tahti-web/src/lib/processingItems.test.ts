@@ -88,6 +88,8 @@ describe('KEYBOARD_NAVIGATION_SECTIONS', () => {
         'alt+4',
         'alt+5',
         'v',
+        'shift+left',
+        'shift+right',
       ]),
     );
   });

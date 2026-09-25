@@ -37,6 +37,7 @@ import {
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { useLayoutStore } from '../stores/layoutStore';
+import { usePlaybackPrefsStore } from '../stores/playbackPrefsStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 import { useTourStore } from '../stores/tourStore';
@@ -433,6 +434,22 @@ export function AppShell() {
       ) {
         event.preventDefault();
         setFullScreenPlayerOpen(!fullScreenPlayerOpen);
+        return;
+      }
+
+      if (
+        (event.code === 'ArrowLeft' || event.code === 'ArrowRight') &&
+        event.shiftKey &&
+        !event.altKey &&
+        !event.ctrlKey &&
+        !event.metaKey &&
+        currentTrackId
+      ) {
+        event.preventDefault();
+        const { skipSeconds } = usePlaybackPrefsStore.getState();
+        usePlayerStore
+          .getState()
+          .seekBy(event.code === 'ArrowLeft' ? -skipSeconds : skipSeconds);
         return;
       }
 

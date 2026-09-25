@@ -34,4 +34,30 @@ describe('profileTrackToPlayable', () => {
     expect(hls?.protocol).toBe('hls');
     expect(hls?.artist).toBe('A');
   });
+
+  it('carries duration and plays hearthis embed-only tracks via the widget', () => {
+    const upload = profileTrackToPlayable(
+      { id: 't1', title: 'T', playUrl: 'https://x/y.mp3', durationSec: 90 },
+      'A',
+    );
+    expect(upload?.durationSec).toBe(90);
+    const embed = profileTrackToPlayable(
+      {
+        id: 't2',
+        title: 'E',
+        embedProvider: 'HEARTHIS',
+        embedUri: 'https://hearthis.at/a/b/',
+        durationSec: 365,
+      },
+      'A',
+      'chan',
+    );
+    expect(embed).toMatchObject({
+      id: 'sound:t2',
+      artist: 'A',
+      durationSec: 365,
+      channelSlug: 'chan',
+      embed: { provider: 'hearthis', embedUri: 'https://hearthis.at/a/b/' },
+    });
+  });
 });

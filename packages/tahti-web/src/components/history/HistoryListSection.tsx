@@ -1,13 +1,16 @@
-import { HistoryIcon } from 'lucide-react';
+import { FilterIcon, HistoryIcon, PlayIcon, PlusIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
+  Button,
   EmptyState,
   HistoryDayGroup,
   HistoryRow,
+  Input,
   Pagination,
   Select,
+  Tooltip,
 } from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../../api/types';
@@ -28,6 +31,33 @@ async function resolvePlayableForReplay(
     toast.error(error instanceof Error ? error.message : 'Track unavailable.');
     return null;
   }
+}
+
+/** Resolves every entry for a bulk play/queue, dropping local files that
+ * can no longer be reached and reporting the count once instead of one
+ * toast per missing file. */
+async function resolvePlayablesForReplay(
+  playables: TahtiPlayable[],
+): Promise<TahtiPlayable[]> {
+  const resolved = await Promise.all(
+    playables.map((p) => resolveLocalPlayableForReplay(p).catch(() => null)),
+  );
+  const available = resolved.filter((p): p is TahtiPlayable => p != null);
+  const skipped = playables.length - available.length;
+  if (skipped > 0) {
+    toast.error(
+      `${skipped} ${skipped === 1 ? 'track is' : 'tracks are'} unavailable — re-import from your library to play again.`,
+    );
+  }
+  return available;
+}
+
+function matchesFilter(entry: HistoryEntry, needle: string): boolean {
+  const { title, artist } = entry.playable;
+  return (
+    title.toLowerCase().includes(needle) ||
+    artist.toLowerCase().includes(needle)
+  );
 }
 
 const PAGE_SIZES = [10, 25, 50];
@@ -74,17 +104,27 @@ function groupByDay(
 export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
   const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
   const isFavoriteTrack = useLibraryStore((s) => s.isFavoriteTrack);
+  const clearHistory = useLibraryStore((s) => s.clearHistory);
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
+  const enqueueMany = usePlayerStore((s) => s.enqueueMany);
 
+  const [filter, setFilter] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(PAGE_SIZES[0]!);
 
-  const totalPages = Math.max(1, Math.ceil(history.length / pageSize));
+  const filtered = useMemo(() => {
+    const needle = filter.trim().toLowerCase();
+    return needle
+      ? history.filter((entry) => matchesFilter(entry, needle))
+      : history;
+  }, [history, filter]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const currentPage = Math.min(page, totalPages);
   const pageEntries = useMemo(
-    () => history.slice((currentPage - 1) * pageSize, currentPage * pageSize),
-    [history, currentPage, pageSize],
+    () => filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize),
+    [filtered, currentPage, pageSize],
   );
   const groups = useMemo(() => groupByDay(pageEntries), [pageEntries]);
 
@@ -100,8 +140,79 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
     );
   }
 
+  const playAll = async () => {
+    const [head, ...rest] = await resolvePlayablesForReplay(
+      filtered.map((entry) => entry.playable),
+    );
+    if (head) {
+      play(head, { enqueueRest: rest });
+    }
+  };
+
+  const addAllToQueue = async () => {
+    const added = enqueueMany(
+      await resolvePlayablesForReplay(filtered.map((entry) => entry.playable)),
+    );
+    toast.success(
+      added > 0
+        ? `Added ${added} ${added === 1 ? 'track' : 'tracks'} to the queue`
+        : 'Everything here is already queued',
+    );
+  };
+
   return (
-    <div className="flex w-full flex-1 flex-col gap-6 pb-6">
+    <div className="flex w-full flex-1 flex-col gap-6 py-4">
+      <div
+        data-testid="history-list-toolbar"
+        className="flex flex-wrap items-center gap-2"
+      >
+        <Tooltip content="Play all" side="bottom">
+          <Button
+            size="icon"
+            aria-label="Play all"
+            disabled={filtered.length === 0}
+            onClick={() => void playAll()}
+          >
+            <PlayIcon size={16} strokeWidth={3} />
+          </Button>
+        </Tooltip>
+        <Tooltip content="Add all to queue" side="bottom">
+          <Button
+            variant="secondary"
+            size="icon"
+            aria-label="Add all to queue"
+            disabled={filtered.length === 0}
+            onClick={() => void addAllToQueue()}
+          >
+            <PlusIcon size={16} strokeWidth={3} />
+          </Button>
+        </Tooltip>
+        <div className="ml-auto flex w-full max-w-sm items-center gap-2">
+          <Input
+            size="sm"
+            value={filter}
+            onChange={(event) => {
+              setFilter(event.target.value);
+              setPage(1);
+            }}
+            placeholder="Filter history"
+            aria-label="Filter history"
+            endAddon={
+              <FilterIcon className="h-4 w-4" aria-hidden strokeWidth={3} />
+            }
+          />
+          <Button variant="text" size="sm" onClick={clearHistory}>
+            Clear all
+          </Button>
+        </div>
+      </div>
+
+      {filtered.length === 0 ? (
+        <p className="text-foreground-secondary text-sm">
+          Nothing in your history matches “{filter.trim()}”.
+        </p>
+      ) : null}
+
       {groups.map((group) => (
         <HistoryDayGroup key={group.key} marker={dayMarker(group.key)}>
           {group.entries.map((entry) => {

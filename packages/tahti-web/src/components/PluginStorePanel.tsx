@@ -9,8 +9,6 @@ import {
 } from '../content/pluginStoreCategories';
 import { getAccountRole, hasAccountRole } from '../lib/accountRoles';
 import { hasNativePlayer } from '../lib/nativeCapabilities';
-import { LastFmAddonCard } from '../plugins/scrobble/LastFmAddonCard';
-import { ListenBrainzAddonCard } from '../plugins/scrobble/ListenBrainzAddonCard';
 import { SoulseekAddonCard } from '../plugins/soulseek/SoulseekAddonCard';
 import { useAuthStore } from '../stores/authStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
@@ -104,6 +102,28 @@ export function PluginStorePanel() {
   );
 }
 
+function ScrobblingMovedNotice() {
+  const setActiveTab = useSettingsModalStore((s) => s.setActiveTab);
+  return (
+    <Box
+      variant="tertiary"
+      className="items-start gap-3 py-3"
+      data-testid="scrobbling-moved-notice"
+    >
+      <p className="text-foreground text-sm">
+        ListenBrainz and Last.fm scrobbling now live in Settings → Integrations.
+      </p>
+      <Button
+        size="sm"
+        variant="secondary"
+        onClick={() => setActiveTab('integrations')}
+      >
+        Open Integrations
+      </Button>
+    </Box>
+  );
+}
+
 function CategoryBody({ categoryId }: { categoryId: PluginCategoryId }) {
   const category = PLUGIN_CATEGORIES.find((c) => c.id === categoryId)!;
   const [showInfo, setShowInfo] = useState(false);
@@ -149,12 +169,7 @@ function CategoryBody({ categoryId }: { categoryId: PluginCategoryId }) {
         <ServiceCategory categoryId={categoryId} />
       )}
       {categoryId === 'import' && hasNativePlayer() && <SoulseekAddonCard />}
-      {categoryId === 'scrobbling' && (
-        <>
-          <ListenBrainzAddonCard />
-          <LastFmAddonCard />
-        </>
-      )}
+      {categoryId === 'scrobbling' && <ScrobblingMovedNotice />}
       {categoryId === 'multicast' && <MulticastCategory />}
       {categoryId === 'audio-plugins' && <AudioPluginsCategory />}
       {categoryId === 'tools' && <ToolsCategory />}

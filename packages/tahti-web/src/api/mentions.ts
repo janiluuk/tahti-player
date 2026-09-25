@@ -63,12 +63,31 @@ export async function searchMentionUsers(query: string): Promise<{
   }
 }
 
+function mockPublicMentions(username: string): PublicMention[] {
+  const mentioners = [
+    { username: 'midnight-cartography', displayName: 'Midnight Cartography' },
+    { username: 'northern-lights', displayName: 'Northern Lights' },
+    { username: 'aurora-drift', displayName: 'Aurora Drift' },
+  ];
+  return mentioners
+    .filter((mentioner) => mentioner.username !== username)
+    .map((mentioner, i) => ({
+      id: `mock-mention-${i}`,
+      surface: i % 2 === 0 ? 'TRACKLIST' : 'DESCRIPTION',
+      createdAt: '2026-08-01T12:00:00.000Z',
+      mentioner,
+    }));
+}
+
 export async function fetchPublicMentions(username: string): Promise<{
   data: PublicMention[];
   meta: FetchMeta;
 }> {
   if (isForceMock()) {
-    return { data: [], meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
+    return {
+      data: mockPublicMentions(username),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
   }
   try {
     const data = await requestJson<PublicMention[]>(

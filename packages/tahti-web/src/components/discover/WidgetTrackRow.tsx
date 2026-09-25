@@ -7,25 +7,8 @@ import { MediaArtwork } from '@tahti-player/ui';
 import { fetchTrackDetail } from '../../api/client';
 import type { DiscoverTrackItem } from '../../api/types';
 import { cn } from '../../lib/cn';
+import { discoverTrackPlayable as toPlayable } from '../../lib/discoverTrackPlayable';
 import { usePlayerStore } from '../../stores/playerStore';
-
-function toPlayable(item: DiscoverTrackItem) {
-  if (!item.audioUrl) {
-    return null;
-  }
-  return {
-    id: item.id,
-    kind: 'sound' as const,
-    title: item.title,
-    artist: item.artist,
-    coverUrl: item.coverUrl ?? undefined,
-    streamUrl: item.audioUrl,
-    protocol: item.audioUrl.includes('.m3u8')
-      ? ('hls' as const)
-      : ('https' as const),
-    channelSlug: item.channelSlug,
-  };
-}
 
 function matchesCurrentTrack(
   currentId: string | null,

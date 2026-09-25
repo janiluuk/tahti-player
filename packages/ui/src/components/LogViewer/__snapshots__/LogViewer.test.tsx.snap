@@ -56,7 +56,7 @@ exports[`LogViewer > (Snapshot) renders empty state 1`] = `
       </div>
     </div>
     <div
-      class="absolute"
+      class="relative shrink-0"
       data-headlessui-state=""
     >
       <div
@@ -338,7 +338,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
       </div>
     </div>
     <div
-      class="absolute"
+      class="relative shrink-0"
       data-headlessui-state=""
     >
       <div

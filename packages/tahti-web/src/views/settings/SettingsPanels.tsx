@@ -9,6 +9,9 @@ import { AccountPanel } from './panels/AccountPanel';
 import { ArtistPanel, ReleaseVisualDefaultsPanel } from './panels/ArtistPanel';
 import { BroadcastPanel, type BroadcastSection } from './panels/BroadcastPanel';
 import { ChannelPanel } from './panels/ChannelPanel';
+import { IntegrationsPanel } from './panels/IntegrationsPanel';
+import { LogsPanel } from './panels/LogsPanel';
+import { PlaybackPanel } from './panels/PlaybackPanel';
 import { ThemesPanel } from './panels/ThemesPanel';
 import { SETTINGS_NAV, type SettingsSectionId } from './settingsNav';
 
@@ -35,8 +38,17 @@ export function SettingsSectionBody({
     case 'broadcast':
       content = <BroadcastPanel />;
       break;
+    case 'playback':
+      content = <PlaybackPanel />;
+      break;
+    case 'integrations':
+      content = <IntegrationsPanel />;
+      break;
     case 'themes':
       content = <ThemesPanel />;
+      break;
+    case 'logs':
+      content = <LogsPanel />;
       break;
     case 'plugin-store':
       content = <PluginStorePanel />;
