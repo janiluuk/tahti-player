@@ -1,6 +1,8 @@
 # Nuclear UI reference port (tahti-web)
 
-**Status:** open
+**Status:** blocked
+
+2026-09-25: the reference screenshots are not on the Mac checkout (`~/Pictures/Screenshots/` is missing). The user chose to skip the port for now; it needs the images copied over before any work starts.
 
 Logged 2026-09-23 from a user request. Visual-parity port of original Nuclear player screens into `packages/tahti-web`, driven by reference screenshots. Goal: layouts that look like the reference images — dense, full of content, matching structure — while keeping tahti-web's live data, features and persistent chrome.
 

@@ -7,6 +7,20 @@ use super::{
     FacetKind, ListQuery, SortColumn, TrackFilters, TrackSort,
 };
 
+const ALL_SORTS: [SortColumn; 11] = [
+    SortColumn::Title,
+    SortColumn::Artist,
+    SortColumn::Album,
+    SortColumn::Genre,
+    SortColumn::Year,
+    SortColumn::TrackNo,
+    SortColumn::Duration,
+    SortColumn::Format,
+    SortColumn::Size,
+    SortColumn::Bitrate,
+    SortColumn::Added,
+];
+
 #[tokio::test]
 async fn list_filters_by_search_across_fields() {
     let dir = tempfile::tempdir().unwrap();

@@ -3643,3 +3643,7 @@ The recurring "Theme is in review" popup was mock-only: a hard-coded `THEME_UNDE
 - Checked every e2e spec: none depend on the toast (the fullscreen-player-minimize spec clears toasts generically).
 
 `type-check` / `eslint` clean. Folded and deleted.
+
+## 2026-09-25 — Close `go-live-header-subtext-cleanup.md`: calendar restore dropped
+
+The Go Live panel subtexts were already removed and their copy moved into the `broadcast` Help Center article (OBS preset and Icecast paste flow). The last open item, "restore the calendar view to the top panel", was dropped at the user's call: `StudioGoLiveView.tsx` never had a calendar, so there was nothing to restore. Still undecided and not tracked as work: porting the inline `DesignerHelpLayer` disclosure from the `tahti` repo as an alternative to Help Center articles. Folded and deleted.
