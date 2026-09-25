@@ -903,6 +903,7 @@ export function mockProfile(username: string): PublicProfile {
       tipJarUrl: null,
       tier: 'FREE',
       pronouns: content.pronouns ?? null,
+      countryCode: 'FI',
       followerCount: content.followerCount,
       followingCount: 0,
       freeSubscriptionsEnabled: getMockFreeSubscriptionsEnabled(

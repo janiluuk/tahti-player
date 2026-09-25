@@ -1,6 +1,4 @@
-export { ArtistCollectionsTab } from './ArtistCollectionsTab';
 export { ArtistMusicTab } from './ArtistMusicTab';
-export { ArtistReleasesTab } from './ArtistReleasesTab';
 export {
   ArtistBioSection,
   ArtistEmbeds,
@@ -10,4 +8,11 @@ export {
   ArtistNews,
   ArtistTaggedIn,
 } from './ArtistProfileSections';
+export {
+  ArtistPlaylistsGrid,
+  ArtistPopularTracks,
+  ArtistRelatedArtists,
+  ArtistReleasesGrid,
+  type RelatedArtist,
+} from './ArtistReferenceSections';
 export { useArtistChannelLook } from './useArtistChannelLook';

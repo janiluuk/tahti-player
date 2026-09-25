@@ -103,6 +103,9 @@ export function PageTourSpotlight() {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         close();
+      } else if (event.shiftKey) {
+        // Shift+Arrow is the player seek shortcut (AppShell).
+        return;
       } else if (event.key === 'ArrowRight') {
         setStepIndex(Math.min(stepIndex + 1, steps.length - 1));
       } else if (event.key === 'ArrowLeft') {

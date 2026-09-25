@@ -939,7 +939,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         title: 'Listening history',
         viewName: 'History',
         caption:
-          'Recently played plus listening stats. Listen tab, not Library.',
+          'Listening stats plus day-by-day play history. Listen tab, not Library.',
         actions: [
           'Replay a recently played track',
           'Review listening stats',

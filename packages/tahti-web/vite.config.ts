@@ -155,6 +155,9 @@ export default defineConfig(({ command, mode }) => {
         '/tahti-api': {
           target: tahtiApi,
           changeOrigin: true,
+          // Production scopes the session cookie to `.tahti.live`; drop the
+          // domain so it attaches to the dev origin instead of being rejected.
+          cookieDomainRewrite: '',
           rewrite: (path) => path.replace(/^\/tahti-api/, ''),
         },
         '/widget-sandbox/bundle': {

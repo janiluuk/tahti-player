@@ -35,6 +35,7 @@ export const LogDateRangeFilter: FC = () => {
 
   return (
     <Popover
+      className="relative shrink-0"
       anchor="bottom start"
       trigger={
         <Tooltip content={labels.dateRangeButtonLabel} side="top">

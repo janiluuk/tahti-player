@@ -2,6 +2,7 @@ import Hls from 'hls.js';
 import { useEffect, useRef } from 'react';
 
 import { postListenEvent } from '../api/client';
+import { usePlaybackPrefsStore } from '../stores/playbackPrefsStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 
 const LISTEN_EVENT_AFTER_SEC = 15;
@@ -44,6 +45,8 @@ export function AudioEngine() {
   const clearSeekTarget = usePlayerStore((s) => s.clearSeekTarget);
   const next = usePlayerStore((s) => s.next);
   const previous = usePlayerStore((s) => s.previous);
+  const seekBy = usePlayerStore((s) => s.seekBy);
+  const skipSeconds = usePlaybackPrefsStore((s) => s.skipSeconds);
   const setAnalyser = usePlayerStore((s) => s.setAnalyser);
 
   const current = queue.find((q) => q.id === currentId) ?? null;
@@ -69,13 +72,21 @@ export function AudioEngine() {
     navigator.mediaSession.setActionHandler('pause', () => setStatus('paused'));
     navigator.mediaSession.setActionHandler('previoustrack', () => previous());
     navigator.mediaSession.setActionHandler('nexttrack', () => next());
+    navigator.mediaSession.setActionHandler('seekforward', (details) =>
+      seekBy(details.seekOffset ?? skipSeconds),
+    );
+    navigator.mediaSession.setActionHandler('seekbackward', (details) =>
+      seekBy(-(details.seekOffset ?? skipSeconds)),
+    );
     return () => {
       navigator.mediaSession.setActionHandler('play', null);
       navigator.mediaSession.setActionHandler('pause', null);
       navigator.mediaSession.setActionHandler('previoustrack', null);
       navigator.mediaSession.setActionHandler('nexttrack', null);
+      navigator.mediaSession.setActionHandler('seekforward', null);
+      navigator.mediaSession.setActionHandler('seekbackward', null);
     };
-  }, [setStatus, previous, next]);
+  }, [setStatus, previous, next, seekBy, skipSeconds]);
 
   useEffect(() => {
     if (!('mediaSession' in navigator)) {

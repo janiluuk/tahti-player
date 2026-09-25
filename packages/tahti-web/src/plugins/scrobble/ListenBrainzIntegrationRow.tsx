@@ -1,30 +1,17 @@
-import { RadioIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import {
-  Button,
-  Dialog,
-  Input,
-  PluginStoreItem,
-  SaveButton,
-} from '@tahti-player/ui';
+import { Button, Dialog, Input, SaveButton } from '@tahti-player/ui';
 
 import {
   fetchMeIntegrations,
   installMeIntegration,
   uninstallMeIntegration,
 } from '../../api/integrations';
+import { SettingsToggle } from '../../views/settings/SettingsFields';
 
-const ADDON = {
-  id: 'listenbrainz',
-  name: 'ListenBrainz',
-  author: 'Scrobble',
-  description:
-    'When a Tahti track counts as a listen, submit it to your ListenBrainz profile. Charts and dashboards are out of scope — this is submit-listens only.',
-};
-
-export function ListenBrainzAddonCard() {
+/** Settings → Integrations row: toggle on opens the token dialog, off disconnects. */
+export function ListenBrainzIntegrationRow() {
   const [open, setOpen] = useState(false);
   const [installed, setInstalled] = useState(false);
   const [token, setToken] = useState('');
@@ -81,32 +68,36 @@ export function ListenBrainzAddonCard() {
 
   return (
     <>
-      <PluginStoreItem
-        icon={<RadioIcon size={22} aria-hidden />}
-        name={ADDON.name}
-        author={ADDON.author}
-        description={ADDON.description}
-        categories={['Scrobbling']}
-        isInstalled={installed}
-        onInstall={() => setOpen(true)}
-        accessory={
-          installed ? (
-            <Button
-              size="sm"
-              variant="text"
-              intent="danger"
-              disabled={busy}
-              onClick={() => void remove()}
-            >
-              Disconnect
-            </Button>
-          ) : null
-        }
-        labels={{
-          install: 'Configure',
-          installed: 'Connected',
-        }}
-      />
+      <div
+        className="flex flex-col gap-2"
+        data-testid="integration-listenbrainz"
+      >
+        <SettingsToggle
+          label="ListenBrainz scrobbling"
+          description="When a Tahti track counts as a listen, submit it to your ListenBrainz profile. Submit-listens only, no charts."
+          value={installed}
+          onChange={(next) => {
+            if (busy) {
+              return;
+            }
+            if (next) {
+              setOpen(true);
+            } else {
+              void remove();
+            }
+          }}
+        />
+        {installed ? (
+          <Button
+            size="sm"
+            variant="text"
+            className="self-start"
+            onClick={() => setOpen(true)}
+          >
+            Update token
+          </Button>
+        ) : null}
+      </div>
       <Dialog.Root
         isOpen={open}
         onClose={() => setOpen(false)}

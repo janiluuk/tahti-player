@@ -252,6 +252,8 @@ export type PublicProfileArtist = {
   tipJarUrl?: string | null;
   tier?: string;
   pronouns?: string | null;
+  /** ISO 3166-1 alpha-2; GET /api/v1/u/:username/profile */
+  countryCode?: string | null;
   followerCount?: number | null;
   followingCount?: number | null;
   freeSubscriptionsEnabled?: boolean;
@@ -265,6 +267,9 @@ export type PublicProfileTrack = {
   durationSec?: number | null;
   bannerUrl?: string | null;
   playUrl?: string | null;
+  /** Embed-only tracks have no `playUrl`; the provider widget plays them. */
+  embedProvider?: 'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | null;
+  embedUri?: string | null;
   releaseSlug?: string | null;
   /** Same field as ChannelSoundItem.createdAt -- carried onto the profile track
    * DTO so the catalog table can show a release date. */

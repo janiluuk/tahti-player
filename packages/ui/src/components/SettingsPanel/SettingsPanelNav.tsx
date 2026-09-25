@@ -1,4 +1,4 @@
-import { FC, ReactNode } from 'react';
+import { FC, Fragment, ReactNode } from 'react';
 
 import { cn } from '../../utils';
 import { SettingsTab } from './SettingsPanel';
@@ -36,16 +36,32 @@ export const SettingsPanelNav: FC<SettingsPanelNavProps> = ({
     data-testid="settings-panel-nav"
   >
     <div className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto">
-      {tabs.map((tab) => (
-        <SettingsPanelNavItem
-          key={tab.id}
-          id={tab.id}
-          label={tab.label}
-          icon={tab.icon}
-          isActive={activeTab === tab.id}
-          onClick={() => onTabChange(tab.id)}
-        />
-      ))}
+      {tabs.map((tab, index) => {
+        const startsGroup =
+          tab.group !== undefined && tab.group !== tabs[index - 1]?.group;
+        return (
+          <Fragment key={tab.id}>
+            {startsGroup ? (
+              <h2
+                className={cn(
+                  'text-foreground-secondary px-3 pb-1 text-xs font-semibold tracking-wider uppercase',
+                  index > 0 ? 'pt-4' : 'pt-1',
+                )}
+                data-testid={`settings-nav-group-${tab.group}`}
+              >
+                {tab.group}
+              </h2>
+            ) : null}
+            <SettingsPanelNavItem
+              id={tab.id}
+              label={tab.label}
+              icon={tab.icon}
+              isActive={activeTab === tab.id}
+              onClick={() => onTabChange(tab.id)}
+            />
+          </Fragment>
+        );
+      })}
     </div>
     {footer ? <div className="mt-auto shrink-0 pt-2">{footer}</div> : null}
   </nav>

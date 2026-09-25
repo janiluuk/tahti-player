@@ -1,5 +1,6 @@
 import { apiBase } from '../api/client';
 import type { PublicProfile, TahtiPlayable } from '../api/types';
+import { playableFromStudioHearthis } from './embedPlayback';
 
 export const publicPressKitUrl = (username: string): string => {
   return `${apiBase()}/api/v1/u/${encodeURIComponent(username)}/press-kit.zip`;
@@ -24,6 +25,7 @@ export function releaseToPlayable(
     streamUrl: track.playUrl,
     protocol: isHls ? 'hls' : 'https',
     channelSlug,
+    durationSec: track.durationSec ?? undefined,
     releaseDate: release.releaseDate ?? null,
   };
 }
@@ -125,7 +127,13 @@ export function profileTrackToPlayable(
   channelSlug?: string,
 ): TahtiPlayable | null {
   if (!track.playUrl) {
-    return null;
+    const embed = playableFromStudioHearthis({
+      ...track,
+      artistName: track.artistName ?? artist,
+    });
+    return embed
+      ? { ...embed, channelSlug, releaseDate: track.createdAt ?? null }
+      : null;
   }
   const isHls = track.playUrl.includes('.m3u8');
   return {
@@ -137,6 +145,7 @@ export function profileTrackToPlayable(
     streamUrl: track.playUrl,
     protocol: isHls ? 'hls' : 'https',
     channelSlug,
+    durationSec: track.durationSec ?? undefined,
     releaseDate: track.createdAt ?? null,
   };
 }

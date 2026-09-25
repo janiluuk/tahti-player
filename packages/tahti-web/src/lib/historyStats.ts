@@ -65,17 +65,36 @@ export function rangeDisplayBounds(
   return { from: earliest, to };
 }
 
+/** Per-day listening over the last 12 months, padded with zero-value
+ * endpoints so the calendar always spans the full year (same window as
+ * Nuclear desktop's `useDailyListeningTime`), not just the days played. */
 export function dailyListeningMs(
   entries: HistoryEntry[],
+  now: Date = new Date(),
 ): { date: string; value: number }[] {
+  const to = now.toISOString().slice(0, 10);
+  const fromDate = new Date(now);
+  fromDate.setMonth(fromDate.getMonth() - 12);
+  const from = fromDate.toISOString().slice(0, 10);
+
   const byDate = new Map<string, number>();
   for (const e of entries) {
     const iso = e.playedAt.slice(0, 10);
+    if (iso < from || iso > to) {
+      continue;
+    }
     byDate.set(iso, (byDate.get(iso) ?? 0) + entryMs(e));
   }
-  return [...byDate.entries()]
+  const days = [...byDate.entries()]
     .map(([date, value]) => ({ date, value }))
     .sort((a, b) => a.date.localeCompare(b.date));
+  if (days.at(0)?.date !== from) {
+    days.unshift({ date: from, value: 0 });
+  }
+  if (days.at(-1)?.date !== to) {
+    days.push({ date: to, value: 0 });
+  }
+  return days;
 }
 
 export function hourlyListeningMs(entries: HistoryEntry[]): number[] {

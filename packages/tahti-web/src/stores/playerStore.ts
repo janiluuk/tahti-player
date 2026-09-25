@@ -80,8 +80,11 @@ type PlayerState = {
   toggleMute: () => void;
   toggleShuffle: () => void;
   cycleRepeat: () => void;
+  setRepeatMode: (mode: RepeatMode) => void;
   /** Seek VOD/archive to absolute seconds (no-op while live/radio). */
   seekTo: (seconds: number) => void;
+  /** Relative seek from the current position (no-op while live/radio). */
+  seekBy: (deltaSeconds: number) => void;
   clearSeekTarget: () => void;
   next: () => void;
   previous: () => void;
@@ -442,6 +445,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     set({ repeatMode: REPEAT_CYCLE[(idx + 1) % REPEAT_CYCLE.length]! });
   },
 
+  setRepeatMode: (repeatMode) => set({ repeatMode }),
+
   seekTo: (seconds) => {
     const { isLive, duration } = get();
     if (isLive) {
@@ -450,6 +455,10 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     const max = duration > 0 ? duration : seconds;
     const clamped = Math.max(0, Math.min(max, seconds));
     set({ seekTarget: clamped, currentTime: clamped });
+  },
+
+  seekBy: (deltaSeconds) => {
+    get().seekTo(get().currentTime + deltaSeconds);
   },
 
   clearSeekTarget: () => set({ seekTarget: null }),

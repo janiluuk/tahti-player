@@ -74,7 +74,16 @@ const meta: Meta<typeof SettingsPanel> = {
 export default meta;
 type Story = StoryObj<Meta<typeof SettingsPanel>>;
 
-const SettingsPanelDemo = () => {
+const GROUPED_TABS: SettingsTab[] = SAMPLE_TABS.map((tab) => ({
+  ...tab,
+  group: tab.id === 'general' || tab.id === 'plugins' ? 'Settings' : 'App',
+}));
+
+const SettingsPanelDemo = ({
+  tabs = SAMPLE_TABS,
+}: {
+  tabs?: SettingsTab[];
+}) => {
   const [isOpen, setIsOpen] = useState(true);
   const [activeTab, setActiveTab] = useState('general');
 
@@ -84,7 +93,7 @@ const SettingsPanelDemo = () => {
       <SettingsPanel
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        tabs={SAMPLE_TABS}
+        tabs={tabs}
         activeTab={activeTab}
         onTabChange={setActiveTab}
       />
@@ -94,6 +103,18 @@ const SettingsPanelDemo = () => {
 
 export const Default: Story = {
   render: () => <SettingsPanelDemo />,
+};
+
+export const GroupedNav: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Tabs with a `group` render under a nav heading each time the group changes (Nuclear-style SETTINGS / APP split).',
+      },
+    },
+  },
+  render: () => <SettingsPanelDemo tabs={GROUPED_TABS} />,
 };
 
 export const MobileViewport: Story = {

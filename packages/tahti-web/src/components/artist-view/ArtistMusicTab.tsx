@@ -11,7 +11,6 @@ import { Button, CardGrid, Tooltip } from '@tahti-player/ui';
 
 import type {
   PublicProfile,
-  PublicProfileRelease,
   PublicProfileTrack,
   TahtiPlayable,
 } from '../../api/types';
@@ -25,14 +24,10 @@ import {
   type NormalizedColorScheme,
 } from '../../lib/colorScheme';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
-import { formatDuration } from '../../lib/playableToTrack';
-import { soundIdFromPlayableId } from '../../lib/soundId';
 import { ChannelTextOverlayView } from '../ChannelTextOverlayView';
 import { ChannelVisualizer } from '../ChannelVisualizer';
 import { GlowMediaTile } from '../GlowMediaTile';
 import { NowPlayingOverlay } from '../NowPlayingOverlay';
-import { PlayableTrackTable } from '../PlayableTrackTable';
-import { releasePlayables } from '../ReleaseTracklistDialog';
 import { Eyebrow } from '../tahti/Eyebrow';
 
 const GLOW_COLORS = [
@@ -72,34 +67,13 @@ type Props = {
     onPlay: () => void;
   };
   pinnedTiles: Array<{ track: PublicProfileTrack; playable: TahtiPlayable }>;
-  releaseTiles: Array<{
-    release: PublicProfileRelease;
-    playable: TahtiPlayable | null;
-  }>;
-  releaseCount: number;
-  onViewAllReleases: () => void;
-  catalogPlayables: TahtiPlayable[];
-  hasPinnedPlayables: boolean;
   onPlay: (playable: TahtiPlayable) => void;
   onToggleFavorite: (playable: TahtiPlayable) => void;
   favoriteTracks: TahtiPlayable[];
-  onNavigateSmartLink: (slug: string) => void;
-  onTitleClick: (release: PublicProfileRelease) => void;
-  onPlayRelease: (
-    release: PublicProfileRelease,
-    artistName: string,
-    channelSlug: string | undefined,
-  ) => void;
-  onQueueConfirm: (value: {
-    title: string;
-    playables: TahtiPlayable[];
-  }) => void;
-  onQueueAlbum: (playables: TahtiPlayable[]) => void;
-  onEditTrack: (soundId: string | null) => void;
   onOpenManager: () => void;
 };
 
-/** ArtistView's "Music" tab body: stage/player, pinned tiles, latest releases, catalog table. */
+/** ArtistView's "Stage" tab body: channel player stage, engagement and pinned tiles. */
 export function ArtistMusicTab({
   channel,
   visualSettingsJson,
@@ -116,20 +90,9 @@ export function ArtistMusicTab({
   nowPlayingHere,
   featured,
   pinnedTiles,
-  releaseTiles,
-  releaseCount,
-  onViewAllReleases,
-  catalogPlayables,
-  hasPinnedPlayables,
   onPlay,
   onToggleFavorite,
   favoriteTracks,
-  onNavigateSmartLink,
-  onTitleClick,
-  onPlayRelease,
-  onQueueConfirm,
-  onQueueAlbum,
-  onEditTrack,
   onOpenManager,
 }: Props) {
   return (
@@ -323,109 +286,6 @@ export function ArtistMusicTab({
           </CardGrid>
         </div>
       )}
-
-      {visibility.latest && releaseTiles.length > 0 && (
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <Eyebrow>Latest releases</Eyebrow>
-            {releaseCount > releaseTiles.length && (
-              <button
-                type="button"
-                onClick={onViewAllReleases}
-                className="text-foreground-secondary text-xs underline-offset-2 hover:underline"
-              >
-                View all {releaseCount}
-              </button>
-            )}
-          </div>
-          <CardGrid className="grid-cols-[repeat(auto-fill,minmax(17rem,1fr))] gap-8">
-            {releaseTiles.map(({ release, playable }, i) => {
-              const releasePlayablesList = releasePlayables(
-                release,
-                artist.displayName,
-                channel?.slug,
-              );
-              const totalDurationSec = (release.tracks ?? []).reduce(
-                (total, track) => total + (track.durationSec ?? 0),
-                0,
-              );
-              const releaseSubtitle = [
-                release.type ?? 'Release',
-                `${release.tracks?.length ?? 0} tracks`,
-                totalDurationSec > 0 ? formatDuration(totalDurationSec) : null,
-              ]
-                .filter(Boolean)
-                .join(' · ');
-
-              return (
-                <GlowMediaTile
-                  key={release.id}
-                  title={release.title}
-                  subtitle={releaseSubtitle}
-                  src={release.artworkUrl ?? placeholderArtworkUrl(release.id)}
-                  glowColor={GLOW_COLORS[(i + 2) % GLOW_COLORS.length]}
-                  className="w-full"
-                  onClick={
-                    release.smartLinkSlug
-                      ? () => onNavigateSmartLink(release.smartLinkSlug!)
-                      : undefined
-                  }
-                  onTitleClick={() => onTitleClick(release)}
-                  onPlay={
-                    playable
-                      ? () =>
-                          onPlayRelease(
-                            release,
-                            artist.displayName,
-                            channel?.slug,
-                          )
-                      : undefined
-                  }
-                  onQueue={
-                    releasePlayablesList.length > 0
-                      ? () =>
-                          releasePlayablesList.length > 1
-                            ? onQueueConfirm({
-                                title: release.title,
-                                playables: releasePlayablesList,
-                              })
-                            : onQueueAlbum(releasePlayablesList)
-                      : undefined
-                  }
-                  onFavorite={
-                    playable ? () => onToggleFavorite(playable) : undefined
-                  }
-                  favorited={
-                    playable
-                      ? favoriteTracks.some((t) => t.id === playable.id)
-                      : false
-                  }
-                />
-              );
-            })}
-          </CardGrid>
-        </div>
-      )}
-
-      {visibility.tracks ? (
-        <div className="flex flex-col gap-3">
-          <Eyebrow>Catalog</Eyebrow>
-          <PlayableTrackTable
-            items={catalogPlayables}
-            compactActions
-            emptyMessage={
-              hasPinnedPlayables
-                ? 'No other tracks on this profile.'
-                : 'No playable tracks on this profile.'
-            }
-            onEdit={
-              isOwner
-                ? (item) => onEditTrack(soundIdFromPlayableId(item.id))
-                : undefined
-            }
-          />
-        </div>
-      ) : null}
     </section>
   );
 }

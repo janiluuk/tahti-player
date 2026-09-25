@@ -442,6 +442,8 @@ Per the admin-host decision (§0.2 / §1.1), Next `apps/web` is **not** fully re
 
 Nuclear’s **MCP server** is Tauri-only (`packages/player` + `plugin-sdk/mcp`), localhost Streamable HTTP on `:8800–8809`. It is **preserved as-is** in this fork (parity with upstream `nuclear`). It is **out of scope** for the SPA cutover / `beta.tahti.live` — do not expose `/mcp` on the public edge. See [`docs/MCP.md`](docs/MCP.md).
 
+Web Settings → Integrations shows Jam, MCP, MPD and Discord Rich Presence as "Desktop app only" rows (no toggles) next to the live ListenBrainz and Last.fm scrobble toggles.
+
 ## Phase 10 — Risks & open decisions
 
 | Risk / decision | Why it matters | Options |
