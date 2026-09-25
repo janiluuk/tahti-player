@@ -12,6 +12,7 @@ import {
   ButtonLink,
   Dialog,
   ImageReveal,
+  SegmentedControl,
   Tooltip,
 } from '@tahti-player/ui';
 
@@ -20,6 +21,15 @@ import {
   formatTimeRange,
   type ScheduleCard,
 } from './schedule-helpers';
+
+const VIEW_OPTIONS = [
+  {
+    id: 'cards',
+    label: 'Card view',
+    icon: <CalendarDaysIcon size={14} aria-hidden />,
+  },
+  { id: 'list', label: 'List view', icon: <ListIcon size={14} aria-hidden /> },
+] as const;
 
 export function ScheduledTimes({
   items,
@@ -40,40 +50,13 @@ export function ScheduledTimes({
           <h2 className="font-display font-bold">Your next broadcasts</h2>
         </div>
         <div className="flex items-center gap-2">
-          <div
-            className="border-border flex gap-1 rounded-md border p-0.5"
-            role="group"
+          <SegmentedControl
             aria-label="Schedule view"
-          >
-            <Tooltip content="Card view" side="top">
-              <Button
-                size="icon-sm"
-                variant="text"
-                aria-label="Card view"
-                aria-pressed={viewMode === 'cards'}
-                className={
-                  viewMode === 'cards' ? 'bg-primary/15 text-primary' : ''
-                }
-                onClick={() => setViewMode('cards')}
-              >
-                <CalendarDaysIcon size={14} aria-hidden />
-              </Button>
-            </Tooltip>
-            <Tooltip content="List view" side="top">
-              <Button
-                size="icon-sm"
-                variant="text"
-                aria-label="List view"
-                aria-pressed={viewMode === 'list'}
-                className={
-                  viewMode === 'list' ? 'bg-primary/15 text-primary' : ''
-                }
-                onClick={() => setViewMode('list')}
-              >
-                <ListIcon size={14} aria-hidden />
-              </Button>
-            </Tooltip>
-          </div>
+            iconOnly
+            options={VIEW_OPTIONS}
+            value={viewMode}
+            onChange={setViewMode}
+          />
           <span className="text-foreground-secondary text-xs">{timezone}</span>
         </div>
       </header>

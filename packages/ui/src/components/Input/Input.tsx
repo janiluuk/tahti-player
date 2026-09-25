@@ -130,7 +130,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   );
 
   return (
-    <div className="flex w-full flex-col gap-2">
+    <div
+      className={
+        resolvedVariant === 'color'
+          ? 'flex shrink-0 flex-col gap-2'
+          : 'flex w-full flex-col gap-2'
+      }
+    >
       {label && (
         <label
           htmlFor={inputId}

@@ -355,7 +355,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
             }
           />
           <label className="border-border bg-background-secondary/40 flex items-center gap-3 rounded-lg border p-2.5 text-sm">
-            <input
+            <Input
               type="color"
               value={overlay.streamOverlayTextColor || '#ffffff'}
               onChange={(event) =>
@@ -364,7 +364,6 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
                   streamOverlayTextColor: event.target.value,
                 }))
               }
-              className="h-9 w-11 cursor-pointer rounded border-0 bg-transparent"
               aria-label="Overlay text color"
             />
             <span className="min-w-0 flex-1">

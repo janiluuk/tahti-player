@@ -2,7 +2,7 @@
 
 exports[`Input > (Snapshot) renders a color swatch input 1`] = `
 <div
-  class="flex w-full flex-col gap-2"
+  class="flex shrink-0 flex-col gap-2"
 >
   <input
     aria-label="Accent"
