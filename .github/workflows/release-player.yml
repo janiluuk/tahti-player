@@ -145,6 +145,13 @@ jobs:
           prerelease: false
           args: ${{ matrix.args }}
 
+  release-snap:
+    needs: release-desktop
+    uses: ./.github/workflows/release-snap.yml
+    with:
+      version: ${{ inputs.tag || github.ref_name }}
+    secrets: inherit
+
   release-android:
     # Mobile releases are paused for now -- flip this to `true` to resume.
     if: false

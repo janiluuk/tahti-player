@@ -1,44 +1,59 @@
 name: Release Snap
 
+# Called by release-player.yml after the desktop builds, or run by hand for an
+# existing player@ tag. Pull requests that touch the snap build only build it.
 on:
-  workflow_run:
-    workflows: ['Release Player']
-    types: [completed]
+  workflow_call:
+    inputs:
+      version:
+        description: 'Version or tag to publish, e.g. 1.47.112 or player@1.47.112'
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to publish (e.g., 1.23.2)'
+        description: 'Version or tag to publish, e.g. 1.47.112 or player@1.47.112'
         required: true
+        type: string
+  pull_request:
+    paths:
+      - 'snap/**'
+      - '.github/workflows/release-snap.yml'
+
+concurrency:
+  group: release-snap-${{ inputs.version || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: write
 
 jobs:
   snap:
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
 
     steps:
+      - name: Resolve version
+        id: version
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          VERSION="${INPUT_VERSION#player@}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=player@$VERSION" >> "$GITHUB_OUTPUT"
+
       - name: Checkout code
         uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event_name != 'pull_request' && format('refs/tags/{0}', steps.version.outputs.tag) || '' }}
 
-      - name: Extract version
-        id: version
-        shell: bash
-        run: |
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            VERSION="${{ github.event.inputs.version }}"
-          else
-            TAG="${{ github.event.workflow_run.head_branch }}"
-            VERSION="${TAG#player@}"
-          fi
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+      - name: Use package version for pull request builds
+        if: github.event_name == 'pull_request'
+        id: pr_version
+        run: echo "version=$(jq -r .version packages/player/package.json)" >> "$GITHUB_OUTPUT"
 
       - name: Generate snapcraft.yaml from template
         env:
-          SNAP_VERSION: ${{ steps.version.outputs.version }}
+          SNAP_VERSION: ${{ steps.pr_version.outputs.version || steps.version.outputs.version }}
         run: |
           envsubst '$SNAP_VERSION' < snap/snapcraft.yaml > snap/snapcraft.resolved.yaml
           mv snap/snapcraft.resolved.yaml snap/snapcraft.yaml
@@ -48,14 +63,30 @@ jobs:
         id: snapcraft
 
       - name: Upload snap to GitHub Release
+        if: github.event_name != 'pull_request'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.version.outputs.tag }}
+          SNAP_FILE: ${{ steps.snapcraft.outputs.snap }}
+        run: gh release upload "$TAG" "$SNAP_FILE" --clobber
+
+      # The secret is checked in the shell because a step-level `if:` on
+      # secrets.* makes GitHub reject the whole workflow file.
+      - name: Check Snap Store credentials
+        if: github.event_name != 'pull_request'
+        id: store
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
         run: |
-          gh release upload "player@${{ steps.version.outputs.version }}" \
-            ${{ steps.snapcraft.outputs.snap }} \
-            --clobber
+          if [ -z "$SNAPCRAFT_STORE_CREDENTIALS" ]; then
+            echo "::warning::SNAPCRAFT_STORE_CREDENTIALS secret is not set, skipping Snap Store publish."
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Publish to Snap Store
+        if: steps.store.outputs.enabled == 'true'
         uses: snapcore/action-publish@v1
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
