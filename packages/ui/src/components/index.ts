@@ -29,6 +29,7 @@ export * from './LogViewer';
 export * from './Loader';
 export * from './Meter';
 export * from './Mosaic';
+export * from './SegmentedControl';
 export * from './TahtiJam';
 export * from './TahtiLogo';
 export * from './Pagination';

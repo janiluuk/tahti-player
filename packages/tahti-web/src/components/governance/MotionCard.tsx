@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 
-import { Badge, Button, Input } from '@tahti-player/ui';
+import { Badge, Button, Input, Textarea } from '@tahti-player/ui';
 
 import {
   fetchMotionComments,
@@ -162,12 +162,14 @@ export function MotionCard({
             placeholder="Motion title"
             maxLength={200}
           />
-          <textarea
+          <Textarea
+            tone="secondary"
             value={editDescription}
             onChange={(e) => setEditDescription(e.target.value)}
             rows={4}
             maxLength={10000}
-            className="border-border bg-background rounded-md border px-3 py-2 text-sm"
+            aria-label="Motion description"
+            className="text-sm"
           />
           <label className="flex flex-col gap-1 text-sm">
             <span className="text-foreground-secondary text-xs uppercase">

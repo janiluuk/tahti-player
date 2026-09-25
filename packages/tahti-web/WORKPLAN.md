@@ -8,9 +8,7 @@ Sibling API: **`../tahti-org`**. Product matrix: [`FEATURES.md`](FEATURES.md) Re
 
 - [ ] **Pro desktop music player** — phased delivery: native catalog → durable import/play → catalog search/sort/filter → local playlists → metadata editing → analysis/smart playlists → folder automation and profiling. Soulseek follows the core library. Leaf: [desktop-pro-library.md](../../docs/todo/desktop-pro-library.md).
 - [ ] **Production cutover** — GAP-MAPPING no-drop ledger before official client switch. See [GAP-MAPPING.md](GAP-MAPPING.md) / [CUTOVER.md](CUTOVER.md).
-- [ ] **Storybook / design-system sweeps** — Input sweep, Studio/Admin UX punch list (Studio primitive sweep finished 2026-09-07, see HISTORY). Open punch list: [`STUDIO-ADMIN-UX-SWEEP-OPEN.md`](STUDIO-ADMIN-UX-SWEEP-OPEN.md).
-- [ ] **Channel Designer leftovers** — see INDEX (`channel-designer-*`, …).
-- [ ] **Fix player release workflow (secrets pending)** — root cause fixed 2026-09-07 (step-level `if:` comparing a `secrets.*` value broke GitHub's whole-file parse; moved the check into the shell script instead). New signing keypair generated but the two `gh secret set` commands need the user to run them (Claude Code can't set repo secrets). Leaf: [release-player-workflow-broken.md](../../docs/todo/release-player-workflow-broken.md).
+- [ ] **Player release workflow: end-to-end check** — root cause fixed 2026-09-07; both signing secrets set 2026-09-21. Only a real tag-push release run remains, which needs the user's go-ahead because it builds a real release. Leaf: [release-player-workflow-broken.md](../../docs/todo/release-player-workflow-broken.md).
 
 ## Next (queued after today's cycles)
 

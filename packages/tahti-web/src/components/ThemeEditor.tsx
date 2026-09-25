@@ -226,11 +226,11 @@ function ColorTokenRow({
       {expanded ? (
         <div className="border-border flex flex-col gap-2 border-t px-2 py-2">
           <div className="flex items-center gap-2">
-            <input
+            <Input
               type="color"
               value={colorToHex(display)}
               onChange={(event) => onChange(event.target.value)}
-              className="border-border size-8 shrink-0 cursor-pointer rounded-md border bg-transparent p-0.5"
+              className="border-border size-8 rounded-md border p-0.5"
               aria-label={`Pick ${field.label}`}
             />
             <Input
