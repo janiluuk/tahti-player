@@ -1,40 +1,61 @@
 name: Update WinGet
 
+# Called by release-player.yml once the GitHub Release is published, or run by
+# hand for an existing player@ tag.
 on:
-  workflow_run:
-    workflows: ['Release Player']
-    types: [completed]
+  workflow_call:
+    inputs:
+      tag:
+        description: 'Tag or version to publish, e.g. player@1.47.112 or 1.47.112'
+        required: true
+        type: string
+    secrets:
+      WINGET_TOKEN:
+        required: false
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Version to publish (e.g., 1.23.2)'
+      tag:
+        description: 'Tag or version to publish, e.g. player@1.47.112 or 1.47.112'
         required: true
+        type: string
+
+permissions:
+  contents: read
 
 jobs:
   publish:
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
-      - name: Extract version
+      - name: Resolve version
         id: version
-        shell: bash
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
         run: |
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            VERSION="${{ github.event.inputs.version }}"
+          VERSION="${INPUT_TAG#player@}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=player@$VERSION" >> "$GITHUB_OUTPUT"
+
+      # The secret is checked in the shell because a step-level `if:` on
+      # secrets.* makes GitHub reject the whole workflow file.
+      - name: Check WinGet credentials
+        id: store
+        env:
+          WINGET_TOKEN: ${{ secrets.WINGET_TOKEN }}
+        run: |
+          if [ -z "$WINGET_TOKEN" ]; then
+            echo "::warning::WINGET_TOKEN secret is not set, skipping WinGet update."
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
           else
-            TAG="${{ github.event.workflow_run.head_branch }}"
-            VERSION="${TAG#player@}"
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
           fi
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Publish to WinGet
+        if: steps.store.outputs.enabled == 'true'
         uses: vedantmgoyal9/winget-releaser@v2
         with:
           identifier: Tahti.TahtiPlayer
           version: ${{ steps.version.outputs.version }}
           installers-regex: '\.(exe|msi)$'
-          release-tag: player@${{ steps.version.outputs.version }}
+          release-tag: ${{ steps.version.outputs.tag }}
           max-versions-to-keep: 5
           token: ${{ secrets.WINGET_TOKEN }}
