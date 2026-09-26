@@ -1,6 +1,6 @@
 /** Types for downloading a provider set (hearthis.at) into the native library. */
 
-export type NativeImportProvider = 'hearthis';
+export type NativeImportProvider = 'hearthis' | 'soundcloud';
 
 export type NativeProviderImportEntry = {
   remoteId: string;

@@ -69,8 +69,9 @@ pub fn read(path: &Path) -> Result<LibraryTrack, String> {
     }
     let file = File::open(&path).map_err(|err| err.to_string())?;
     let size = file.metadata().map_err(|err| err.to_string())?.len();
+    let format = detect_format(&path, &extension);
     let mut hint = Hint::new();
-    hint.with_extension(&extension);
+    hint.with_extension(&format);
     let mut probed = symphonia::default::get_probe()
         .format(&hint, MediaSourceStream::new(Box::new(file), Default::default()), &FormatOptions::default(), &MetadataOptions::default())
         .map_err(|err| format!("Not a playable {} file, its contents are not audio this app can read ({err})", extension.to_uppercase()))?;
@@ -88,7 +89,7 @@ pub fn read(path: &Path) -> Result<LibraryTrack, String> {
         title: path.file_stem().unwrap_or_default().to_string_lossy().into_owned(),
         artist: String::new(),
         album: String::new(),
-        format: extension,
+        format,
         duration,
         sample_rate: params.sample_rate.unwrap_or(0) as i64,
         channels: params.channels.map(|channels| channels.count()).unwrap_or(0) as i64,
@@ -111,6 +112,7 @@ pub fn read(path: &Path) -> Result<LibraryTrack, String> {
         musical_key: None,
         loudness_lufs: None,
         analyzed: false,
+        artwork_key: None,
         bitrate_kbps: (duration > 0.0).then(|| (size as f64 * 8.0 / duration / 1000.0).round() as i64),
     };
     if let Some(metadata) = probed.metadata.get().and_then(|metadata| metadata.current().cloned()) {
@@ -120,6 +122,7 @@ pub fn read(path: &Path) -> Result<LibraryTrack, String> {
         apply_tags(&mut track, metadata.tags());
     }
     fill_from_tag_reader(&mut track, &path);
+    track.artwork_key = super::artwork::extract(&path);
     if track.duration <= 0.0 {
         // MP3 and some M4A/OGG streams carry no frame count in their header,
         // so symphonia cannot report a length without decoding everything.
@@ -137,9 +140,39 @@ pub fn read(path: &Path) -> Result<LibraryTrack, String> {
     Ok(track)
 }
 
+/// Opens a file for tag reading with the parser its contents call for, so a
+/// WAV named `.flac` is not handed to the FLAC reader. The extension only
+/// decides when the contents are not recognised.
+pub(crate) fn open_tagged(path: &Path) -> Option<lofty::file::TaggedFile> {
+    lofty::probe::Probe::open(path).ok()?.guess_file_type().ok()?.read().ok()
+}
+
+/// The container `path` really holds, judged by its leading bytes. When the
+/// contents belong to the same family as `extension` (`aif`/`aiff`,
+/// `ogg`/`oga`) or cannot be recognised, `extension` is kept.
+pub(crate) fn detect_format(path: &Path, extension: &str) -> String {
+    use lofty::file::FileType;
+    let extension = extension.to_ascii_lowercase();
+    let sniffed = File::open(path)
+        .ok()
+        .and_then(|file| lofty::probe::Probe::new(std::io::BufReader::new(file)).guess_file_type().ok())
+        .and_then(|probe| probe.file_type());
+    let family: &[&str] = match sniffed {
+        Some(FileType::Flac) => &["flac"],
+        Some(FileType::Wav) => &["wav"],
+        Some(FileType::Mpeg) => &["mp3"],
+        Some(FileType::Aiff) => &["aiff", "aif"],
+        Some(FileType::Mp4) => &["m4a"],
+        Some(FileType::Vorbis | FileType::Opus | FileType::Speex) => &["ogg", "oga"],
+        Some(FileType::Aac) => &["aac"],
+        _ => return extension,
+    };
+    if family.contains(&extension.as_str()) { extension } else { family[0].to_owned() }
+}
+
 fn tag_reader_duration(path: &Path) -> Option<f64> {
     use lofty::file::AudioFile;
-    let tagged = lofty::probe::Probe::open(path).ok()?.read().ok()?;
+    let tagged = open_tagged(path)?;
     let seconds = tagged.properties().duration().as_secs_f64();
     (seconds > 0.0).then_some(seconds)
 }
@@ -152,7 +185,7 @@ fn fill_from_tag_reader(track: &mut LibraryTrack, path: &Path) {
     use lofty::file::TaggedFileExt;
     use lofty::prelude::*;
     use lofty::tag::ItemKey;
-    let Some(tagged) = lofty::probe::Probe::open(path).ok().and_then(|p| p.read().ok()) else {
+    let Some(tagged) = open_tagged(path) else {
         return;
     };
     let Some(tag) = tagged.primary_tag().or_else(|| tagged.first_tag()) else {

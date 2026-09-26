@@ -51,3 +51,7 @@ export const Installed: Story = {
 export const Empty: Story = {
   args: { widgets: [] },
 };
+
+export const LoadFailed: Story = {
+  args: { widgets: [], status: 'error', onRetry: () => undefined },
+};

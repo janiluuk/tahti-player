@@ -420,6 +420,21 @@ const baseNativeLibrary: TahtiNativeLibrary = {
       unlisten?.();
     };
   },
+  itunesImport: {
+    async pick() {
+      return unwrapResult(await commands.libraryItunesPick());
+    },
+    async preview(sourcePath, mappings) {
+      return unwrapResult(
+        await commands.libraryItunesPreview(sourcePath, mappings),
+      );
+    },
+    async commit(sourcePath, mappings) {
+      return unwrapResult(
+        await commands.libraryItunesCommit(sourcePath, mappings),
+      );
+    },
+  },
   providerImport: {
     async destination(provider, setTitle) {
       return unwrapResult(
@@ -499,6 +514,14 @@ const baseNativeLibrary: TahtiNativeLibrary = {
     };
   },
 };
+const artworkDir = await commands
+  .libraryArtworkDir()
+  .then((result) => (result.status === 'ok' ? result.data : null))
+  .catch(() => null);
+if (artworkDir) {
+  baseNativeLibrary.artworkUrl = (key) =>
+    convertFileSrc(`${artworkDir}${key}`, 'asset');
+}
 globalThis.__TAHTI_NATIVE_LIBRARY__ = withReadCache(baseNativeLibrary);
 
 const rootElement = document.getElementById('root');

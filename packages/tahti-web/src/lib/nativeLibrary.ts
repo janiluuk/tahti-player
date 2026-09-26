@@ -191,6 +191,10 @@ export function withReadCache(library: TahtiNativeLibrary): TahtiNativeLibrary {
       ...library.providerImport,
       start: mutating(library.providerImport.start),
     },
+    itunesImport: library.itunesImport && {
+      ...library.itunesImport,
+      commit: mutating(library.itunesImport.commit),
+    },
     analysis: {
       ...library.analysis,
       analyze: mutating(library.analysis.analyze),

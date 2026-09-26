@@ -13,10 +13,23 @@ import {
   prefetchHls,
   scheduleIdleHlsPrefetch,
 } from '../lib/hlsLoader';
+import { mediaSessionArtwork } from '../lib/mediaSessionArtwork';
 import { usePlaybackPrefsStore } from '../stores/playbackPrefsStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 
 const LISTEN_EVENT_AFTER_SEC = 15;
+
+let hlsModule: Promise<typeof import('hls.js')> | null = null;
+
+/** hls.js is most of a megabyte, so it loads on the first HLS stream
+ * instead of with the app shell. */
+function loadHls(): Promise<typeof import('hls.js')> {
+  hlsModule ??= import('hls.js').catch((error: unknown) => {
+    hlsModule = null;
+    throw error;
+  });
+  return hlsModule;
+}
 
 /**
  * Mounts a hidden <audio> element driven by the player store.
@@ -99,7 +112,11 @@ export function AudioEngine() {
   const hasPlayable = playable != null;
   const metaTitle = playable?.title;
   const metaArtist = playable?.artist;
-  const metaCoverUrl = playable?.coverUrl;
+  const metaArtworkJson = useMemo(
+    () =>
+      JSON.stringify(mediaSessionArtwork(current?.track.artwork?.items ?? [])),
+    [current],
+  );
   // Keyed on primitives, not the playable object: queue rebuilds (re-play,
   // resolved stream URLs) hand back a new object for the same track, and
   // each MediaMetadata assignment makes the OS refetch artwork.
@@ -114,11 +131,9 @@ export function AudioEngine() {
     navigator.mediaSession.metadata = new MediaMetadata({
       title: metaTitle,
       artist: metaArtist,
-      artwork: metaCoverUrl
-        ? [{ src: metaCoverUrl, sizes: '512x512', type: 'image/jpeg' }]
-        : [],
+      artwork: JSON.parse(metaArtworkJson) as MediaImage[],
     });
-  }, [hasPlayable, metaTitle, metaArtist, metaCoverUrl]);
+  }, [hasPlayable, metaTitle, metaArtist, metaArtworkJson]);
 
   useEffect(() => {
     if (!('mediaSession' in navigator)) {
@@ -283,7 +298,14 @@ export function AudioEngine() {
     };
     let disposed = false;
 
-    if (!isHls || prefersNativeHls(audio)) {
+
+    // AirPlay can't cast a MediaSource-backed element, so prefer native HLS there.
+    if (
+      !isHls || 
+      prefersNativeHls(audio) ||
+      (canAirPlay() &&
+        audio.canPlayType('application/vnd.apple.mpegurl') !== '')
+    ) {
       playDirect();
     } else {
       void loadHls()

@@ -16,12 +16,16 @@ import type {
   NativeProviderImportResult,
   NativeProviderImportSpace,
 } from '../../lib/nativeLibrary';
-import { HearthisSetImportDialog } from './HearthisSetImportDialog';
+import { ProviderSetImportDialog } from './ProviderSetImportDialog';
+import { hearthisSetSource, soundcloudSetSource } from './setImportSources';
 
 const { sources } = vi.hoisted(() => ({
   sources: {
     fetchHearthisCollectionTracks: vi.fn(),
     fetchHearthisLibrary: vi.fn(),
+    fetchSoundcloudPlaylists: vi.fn(),
+    fetchSoundcloudPlaylistTracks: vi.fn(),
+    resolveSoundcloudPlaylist: vi.fn(),
   },
 }));
 
@@ -111,7 +115,8 @@ const space = (
 
 async function openReview(api: NativeProviderImport, onImported = vi.fn()) {
   render(
-    <HearthisSetImportDialog
+    <ProviderSetImportDialog
+      source={hearthisSetSource}
       isOpen
       onClose={vi.fn()}
       providerImport={api}
@@ -129,7 +134,7 @@ async function openReview(api: NativeProviderImport, onImported = vi.fn()) {
   return onImported;
 }
 
-describe('HearthisSetImportDialog', () => {
+describe('ProviderSetImportDialog', () => {
   beforeEach(() => {
     sources.fetchHearthisLibrary.mockResolvedValue({
       data: { username: null, tracks: [], sets: [], collections: [] },
@@ -311,7 +316,8 @@ describe('HearthisSetImportDialog', () => {
   it('explains a link that is not a set link', async () => {
     const { api } = fakeImport([]);
     render(
-      <HearthisSetImportDialog
+      <ProviderSetImportDialog
+        source={hearthisSetSource}
         isOpen
         onClose={vi.fn()}
         providerImport={api}
@@ -350,7 +356,8 @@ describe('HearthisSetImportDialog', () => {
     });
     const { api } = fakeImport([]);
     render(
-      <HearthisSetImportDialog
+      <ProviderSetImportDialog
+        source={hearthisSetSource}
         isOpen
         onClose={vi.fn()}
         providerImport={api}
@@ -373,5 +380,149 @@ describe('HearthisSetImportDialog', () => {
       (screen.getByLabelText('Playlist and folder name') as HTMLInputElement)
         .value,
     ).toBe('My Summer Set');
+  });
+});
+
+describe('ProviderSetImportDialog with SoundCloud', () => {
+  const HOUR = 3600_000;
+  const scTrack = (id: string, expiresAt: string | null) => ({
+    id,
+    title: `Track ${id}`,
+    username: 'DJ Test',
+    durationSec: 300,
+    artworkUrl: null,
+    permalinkUrl: null,
+    download: expiresAt
+      ? {
+          url: `https://api.tahti.live/sc/${id}?ticket=${expiresAt}`,
+          expiresAt,
+        }
+      : null,
+  });
+
+  beforeEach(() => {
+    sources.fetchSoundcloudPlaylists.mockResolvedValue([
+      { id: '77', title: 'Night Set', trackCount: 3 },
+    ]);
+  });
+
+  afterEach(() => {
+    cleanup();
+    vi.clearAllMocks();
+  });
+
+  const renderSoundcloud = (api: NativeProviderImport) =>
+    render(
+      <ProviderSetImportDialog
+        source={soundcloudSetSource}
+        isOpen
+        onClose={vi.fn()}
+        providerImport={api}
+        onImported={vi.fn()}
+      />,
+    );
+
+  it('picks one of your sets and downloads it with the provider set to soundcloud', async () => {
+    const later = new Date(Date.now() + 12 * HOUR).toISOString();
+    sources.fetchSoundcloudPlaylistTracks.mockResolvedValue([
+      scTrack('1', later),
+      scTrack('2', null),
+      scTrack('3', later),
+    ]);
+    const { api, requests } = fakeImport([
+      done({ imported: 2, trackIds: ['t-1', 't-3'] }),
+    ]);
+    renderSoundcloud(api);
+
+    expect(
+      screen.getByRole('heading', { name: 'Import a SoundCloud set' }),
+    ).toBeTruthy();
+    fireEvent.click(await screen.findByRole('button', { name: /Night Set/ }));
+    await screen.findByText(/2 of 3 tracks can be downloaded/);
+    expect(sources.fetchSoundcloudPlaylistTracks).toHaveBeenCalledWith('77');
+    await waitFor(() =>
+      expect(api.destination).toHaveBeenLastCalledWith(
+        'soundcloud',
+        'Night Set',
+      ),
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Download 2 tracks' }));
+
+    await screen.findByText('2 tracks imported.');
+    expect(requests[0]).toMatchObject({
+      provider: 'soundcloud',
+      setId: '77',
+      playlistName: 'Night Set',
+    });
+    expect(requests[0]!.entries.map((entry) => entry.remoteId)).toEqual([
+      '1',
+      '3',
+    ]);
+    expect(requests[0]!.entries[0]!.fileName).toBeNull();
+    expect(sources.fetchSoundcloudPlaylistTracks).toHaveBeenCalledTimes(1);
+  });
+
+  it('reloads download links that are about to expire before downloading', async () => {
+    const soon = new Date(Date.now() + 60_000).toISOString();
+    const later = new Date(Date.now() + 12 * HOUR).toISOString();
+    sources.fetchSoundcloudPlaylistTracks
+      .mockResolvedValueOnce([scTrack('1', soon)])
+      .mockResolvedValueOnce([scTrack('1', later)]);
+    const { api, requests } = fakeImport([done({ imported: 1 })]);
+    renderSoundcloud(api);
+
+    fireEvent.click(await screen.findByRole('button', { name: /Night Set/ }));
+    await screen.findByText(/1 of 1 track can be downloaded/);
+    await waitFor(() => expect(api.destination).toHaveBeenCalled());
+    fireEvent.click(screen.getByRole('button', { name: 'Download 1 track' }));
+
+    await screen.findByText('1 track imported.');
+    expect(sources.fetchSoundcloudPlaylistTracks).toHaveBeenCalledTimes(2);
+    expect(requests[0]!.entries[0]!.downloadUrl).toContain(later);
+  });
+
+  it('resolves a pasted set link and rejects other links', async () => {
+    sources.resolveSoundcloudPlaylist.mockResolvedValue({
+      id: '9',
+      title: 'Summer',
+      trackCount: 1,
+    });
+    sources.fetchSoundcloudPlaylistTracks.mockResolvedValue([
+      scTrack('5', new Date(Date.now() + 12 * HOUR).toISOString()),
+    ]);
+    const { api } = fakeImport([]);
+    renderSoundcloud(api);
+
+    fireEvent.change(screen.getByLabelText('Set link'), {
+      target: { value: 'https://hearthis.at/set/x/' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Load set' }));
+    expect((await screen.findByRole('alert')).textContent).toContain(
+      'Paste a SoundCloud set link',
+    );
+    expect(sources.resolveSoundcloudPlaylist).not.toHaveBeenCalled();
+
+    fireEvent.change(screen.getByLabelText('Set link'), {
+      target: { value: 'https://soundcloud.com/dj/sets/summer' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Load set' }));
+    await screen.findByText(/1 of 1 track can be downloaded/);
+    expect(sources.resolveSoundcloudPlaylist).toHaveBeenCalledWith(
+      'https://soundcloud.com/dj/sets/summer',
+    );
+    expect(sources.fetchSoundcloudPlaylistTracks).toHaveBeenCalledWith('9');
+  });
+
+  it('explains how to connect when your sets cannot be listed', async () => {
+    sources.fetchSoundcloudPlaylists.mockRejectedValue(
+      new Error('SoundCloud account not connected'),
+    );
+    const { api } = fakeImport([]);
+    renderSoundcloud(api);
+    expect(
+      await screen.findByText(
+        /Could not list your SoundCloud sets: SoundCloud account not connected\. Connect SoundCloud in Settings/,
+      ),
+    ).toBeTruthy();
   });
 });

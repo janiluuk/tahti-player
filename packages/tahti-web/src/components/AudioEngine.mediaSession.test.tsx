@@ -192,6 +192,22 @@ describe('AudioEngine MediaSession integration', () => {
     expect(metadataWrites.at(-1)).toBeNull();
   });
 
+  it('types the cover from its extension', () => {
+    renderEngine();
+    act(() => usePlayerStore.getState().play(trackA));
+
+    expect(metadataWrites.at(-1)?.artwork).toEqual([
+      { src: 'https://cdn.example/a.jpg', type: 'image/jpeg' },
+    ]);
+  });
+
+  it('sends no artwork for a track that only has the SVG placeholder', () => {
+    renderEngine();
+    act(() => usePlayerStore.getState().play(trackB));
+
+    expect(metadataWrites.at(-1)).toMatchObject({ title: 'B', artwork: [] });
+  });
+
   it('updates position state on the existing progress throttle', () => {
     const audio = renderEngine();
     act(() => usePlayerStore.getState().play(trackA));

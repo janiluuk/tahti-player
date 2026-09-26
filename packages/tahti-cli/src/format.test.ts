@@ -5,6 +5,7 @@ import {
   formatDate,
   formatDetails,
   formatTable,
+  safeName,
 } from './format.mjs';
 
 describe('formatDate', () => {
@@ -45,5 +46,14 @@ describe('formatDetails', () => {
         ['TITLE', ''],
       ]),
     ).toBe('ID     a1\nTITLE  -');
+  });
+});
+
+describe('safeName', () => {
+  it('keeps a real name and falls back to the username for empty or email-like names', () => {
+    expect(safeName(' DJ Night ', 'djnight')).toBe('DJ Night');
+    expect(safeName('', 'djnight')).toBe('djnight');
+    expect(safeName(null, 'djnight')).toBe('djnight');
+    expect(safeName('dj@example.test', 'djnight')).toBe('djnight');
   });
 });

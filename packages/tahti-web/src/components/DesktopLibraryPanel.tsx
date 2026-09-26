@@ -19,13 +19,17 @@ import {
   type NativeFacetFilter,
   type NativeFacetGroup,
   type NativeFilterOptions,
+  type NativeImportProvider,
   type NativeLibraryTotals,
   type NativeLibraryTrack,
   type NativeTrackFilters,
 } from '../lib/nativeLibrary';
 import { DesktopLibraryContent } from './desktop-library/DesktopLibraryContent';
 import { DesktopLibraryDialogs } from './desktop-library/DesktopLibraryDialogs';
+import { ProviderSetImportDialog } from './desktop-library/ProviderSetImportDialog';
+import { SET_IMPORT_SOURCES } from './desktop-library/setImportSources';
 import { HearthisSetImportDialog } from './desktop-library/HearthisSetImportDialog';
+import { ItunesImportDialog } from './desktop-library/ItunesImportDialog';
 import type { TrackBatchDialog } from './desktop-library/TrackBatchDialogs';
 import { useLibraryRoots } from './desktop-library/useLibraryRoots';
 import { useMissingTracks } from './desktop-library/useMissingTracks';
@@ -68,7 +72,14 @@ export function DesktopLibraryPanel() {
     Array<{ name: string; tracks: number }>
   >([]);
   const [batchDialog, setBatchDialog] = useState<TrackBatchDialog | null>(null);
-  const [setImportOpen, setSetImportOpen] = useState(false);
+
+  // The provider outlives `open` so the dialog keeps its content while it
+  // animates closed.
+  const [setImport, setSetImport] = useState<{
+    provider: NativeImportProvider;
+    open: boolean;
+  }>({ provider: 'hearthis', open: false });
+  const [itunesImportOpen, setItunesImportOpen] = useState(false);
   const [openPlaylistId, setOpenPlaylistId] = useState<string | null>(
     initialView.openPlaylistId,
   );
@@ -404,7 +415,12 @@ export function DesktopLibraryPanel() {
         onImportFolder={() => void importNativeFolder()}
         onImportSet={
           nativeLibrary?.providerImport
-            ? () => setSetImportOpen(true)
+            ? (provider) => setSetImport({ provider, open: true })
+            : undefined
+        }
+        onImportItunes={
+          nativeLibrary?.itunesImport
+            ? () => setItunesImportOpen(true)
             : undefined
         }
         onRescanMissing={() => void rescanNative()}
@@ -462,10 +478,22 @@ export function DesktopLibraryPanel() {
         onRemoveRoot={(root) => void removeRoot(root)}
       />
       {nativeLibrary?.providerImport ? (
-        <HearthisSetImportDialog
-          isOpen={setImportOpen}
-          onClose={() => setSetImportOpen(false)}
+        <ProviderSetImportDialog
+          isOpen={setImport.open}
+          onClose={() =>
+            setSetImport((current) => ({ ...current, open: false }))
+          }
+          source={SET_IMPORT_SOURCES[setImport.provider]}
           providerImport={nativeLibrary.providerImport}
+          onImported={() => void refreshNative()}
+        />
+      ) : null}
+      {nativeLibrary?.itunesImport ? (
+        <ItunesImportDialog
+          isOpen={itunesImportOpen}
+          onClose={() => setItunesImportOpen(false)}
+          itunesImport={nativeLibrary.itunesImport}
+          pickFolder={nativeLibrary.catalog.pickFolder}
           onImported={() => void refreshNative()}
         />
       ) : null}

@@ -1,10 +1,16 @@
-import type { CatalogColumn, CatalogSort } from '@tahti-player/ui';
+import {
+  MediaArtwork,
+  type CatalogColumn,
+  type CatalogSort,
+} from '@tahti-player/ui';
 
 import { formatLibrarySize } from '../lib/libraryFormat';
-import type {
-  NativeLibraryTrack,
-  NativeSortColumn,
-  NativeTrackSort,
+import {
+  getNativeLibrary,
+  nativeArtworkSrc,
+  type NativeLibraryTrack,
+  type NativeSortColumn,
+  type NativeTrackSort,
 } from '../lib/nativeLibrary';
 import { formatDuration } from '../lib/playableToTrack';
 import { TRACK_COLOR_CSS } from '../lib/trackColors';
@@ -41,16 +47,24 @@ export const NATIVE_TRACK_COLUMNS: CatalogColumn<NativeLibraryTrack>[] = [
     sortable: true,
     required: true,
     render: (track) => (
-      <span title={track.title}>
-        {track.title}
-        {!track.available ? (
-          <span
-            className="text-destructive ml-2 text-xs"
-            title="Original file is missing"
-          >
-            Missing
-          </span>
-        ) : null}
+      <span className="flex min-w-0 items-center gap-2" title={track.title}>
+        <MediaArtwork
+          src={nativeArtworkSrc(getNativeLibrary(), track)}
+          alt=""
+          size="sm"
+          className="size-8 min-w-8 rounded-sm"
+        />
+        <span className="min-w-0 truncate">
+          {track.title}
+          {!track.available ? (
+            <span
+              className="text-destructive ml-2 text-xs"
+              title="Original file is missing"
+            >
+              Missing
+            </span>
+          ) : null}
+        </span>
       </span>
     ),
   },

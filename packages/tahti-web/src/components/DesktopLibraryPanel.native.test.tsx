@@ -316,6 +316,40 @@ describe('DesktopLibraryPanel native import', () => {
     await waitFor(() => expect(reveal).toHaveBeenCalledWith('available-track'));
   });
 
+  it('shows embedded artwork in the table and a placeholder without it', async () => {
+    globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
+    const artworkUrl = vi.fn((key: string) => `asset://art/${key}`);
+    globalThis.__TAHTI_NATIVE_LIBRARY__ = createNativeLibrary({
+      list: vi.fn().mockResolvedValue({
+        tracks: [
+          { ...availableTrack, artworkKey: 'abc.png' },
+          { ...missingTrack, artworkKey: null },
+        ],
+        total: 2,
+      }),
+      artworkUrl,
+    });
+
+    render(<DesktopLibraryPanel />);
+
+    const withArt = (await screen.findByText('Available track')).closest(
+      '[role="row"]',
+    ) as HTMLElement;
+    const art = within(withArt).getByTestId('media-artwork');
+    expect(art.querySelector('img')?.getAttribute('src')).toBe(
+      'asset://art/abc.png',
+    );
+    const withoutArt = screen
+      .getByText('Missing track')
+      .closest('[role="row"]') as HTMLElement;
+    expect(
+      within(withoutArt).getByTestId('media-artwork').querySelector('img'),
+    ).toBeNull();
+    expect(new Set(artworkUrl.mock.calls.map(([key]) => key))).toEqual(
+      new Set(['abc.png']),
+    );
+  });
+
   it('lists watched folders and rescans them', async () => {
     globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
     const rescanRoots = vi.fn().mockResolvedValue({
@@ -383,6 +417,31 @@ describe('DesktopLibraryPanel native import', () => {
       ),
     );
     expect(list).toHaveBeenCalledTimes(2);
+  });
+
+  it('offers the iTunes library import only when the desktop build has it', async () => {
+    globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
+    globalThis.__TAHTI_NATIVE_LIBRARY__ = createNativeLibrary();
+    render(<DesktopLibraryPanel />);
+    await screen.findByRole('button', { name: /Import files/ });
+    expect(
+      screen.queryByRole('button', { name: 'Import iTunes library' }),
+    ).toBeNull();
+    cleanup();
+
+    const pick = vi.fn().mockResolvedValue(null);
+    globalThis.__TAHTI_NATIVE_LIBRARY__ = createNativeLibrary({
+      itunesImport: { pick, preview: vi.fn(), commit: vi.fn() },
+    });
+    render(<DesktopLibraryPanel />);
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Import iTunes library' }),
+    );
+    const dialog = await screen.findByRole('dialog');
+    fireEvent.click(
+      within(dialog).getByRole('button', { name: /Choose library file/ }),
+    );
+    await waitFor(() => expect(pick).toHaveBeenCalled());
   });
 
   it('shows on-device totals separately from cloud storage', async () => {

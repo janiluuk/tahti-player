@@ -10,8 +10,16 @@ export {
   oauthStartUrl,
   fetchConnectionStatus,
 } from './sources/catalog';
-export type { SoundcloudTrack } from './sources/soundcloud';
+export type {
+  SoundcloudTrack,
+  SoundcloudPlaylist,
+  SoundcloudPlaylistTrack,
+} from './sources/soundcloud';
 export {
+  fetchSoundcloudPlaylists,
+  fetchSoundcloudPlaylistTracks,
+  isSoundcloudLink,
+  resolveSoundcloudPlaylist,
   fetchSoundcloudTracks,
   importSoundcloudTracks,
   playableFromSoundcloud,

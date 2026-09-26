@@ -69,6 +69,25 @@ describe('withReadCache', () => {
     expect(base.listUnavailable).toHaveBeenCalledTimes(2);
   });
 
+  it('clears the cache after an iTunes import commit but not a preview', async () => {
+    const base = baseLibrary({
+      itunesImport: {
+        pick: vi.fn().mockResolvedValue('/x.xml'),
+        preview: vi.fn().mockResolvedValue({}),
+        commit: vi.fn().mockResolvedValue({}),
+      },
+    });
+    const cached = withReadCache(base);
+    await cached.list('', 0);
+    await cached.itunesImport!.preview('/x.xml', []);
+    await cached.list('', 0);
+    expect(base.list).toHaveBeenCalledTimes(1);
+    await cached.itunesImport!.commit('/x.xml', []);
+    await cached.list('', 0);
+    expect(base.list).toHaveBeenCalledTimes(2);
+    expect(withReadCache(baseLibrary()).itunesImport).toBeUndefined();
+  });
+
   it('invalidates even when the mutation fails midway', async () => {
     const base = baseLibrary({
       importPaths: vi.fn().mockRejectedValue(new Error('boom')),
