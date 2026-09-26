@@ -64,7 +64,22 @@ function seedToIndex(seed: string): number {
 /** Deterministic placeholder cover URL for an item with no real artwork —
  * pass a stable id (track id, channel slug, username) as `seed`. */
 export function placeholderArtworkUrl(seed: string): string {
-  const index = seedToIndex(seed);
+  return cachedSvg(seedToIndex(seed));
+}
+
+export function isPlaceholderArtworkUrl(url: string): boolean {
+  if (!url.startsWith('data:image/svg+xml,')) {
+    return false;
+  }
+  for (let index = 0; index < PLACEHOLDER_ARTWORK_COUNT; index++) {
+    if (cachedSvg(index) === url) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function cachedSvg(index: number): string {
   let svg = cache.get(index);
   if (!svg) {
     svg = svgForIndex(index);
