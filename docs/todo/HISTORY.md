@@ -3752,3 +3752,20 @@ Shipped in one pass (no todo file). The full-screen player has a "More options" 
   - a per-station programming grid (the Programming block links to the global `/schedule`);
   - an admin/Designer control for `channelKind`;
   - pages for the 6 external Finnish presets.
+
+## 2026-09-26 — API slow requests: root cause was disk-stalled Redis
+
+`docs/todo/api-slow-requests.md`: ~1% of `tahti-stack-api` requests took 0.5s or more (maxima 47-69s). Loki and Prometheus showed the slowness wasn't the uncached health checks (the first theory). It came in two episodes (09-22 21:15-22:10, 09-23 ~03:00-12:30). In both, vimage's `/opt` disk (`sdd`, a Kingston A400 DRAM-less SATA SSD holding all of `/opt/docker`) was ~95% busy from MinIO writes. Redis (AOF) stalled on it, and each request waited up to the node-redis 5s timeout on several Redis calls in a row. Redis was also carrying 1.1M leaked BullMQ job records (stored cron ticks lose `removeOnComplete`) and taking RDB snapshots every few minutes on top of AOF.
+
+- **Fixes** are on `../tahti-org` branch `fix/api-redis-timeout`:
+  - 500ms Redis command timeout, plus a 5s bypass after a timeout on the cache and rate-limit paths.
+  - Cache writes are no longer awaited.
+  - Worker-level BullMQ job retention.
+  - Redis `--save ''` and `--no-appendfsync-on-rewrite yes`.
+  - 5s cache on dependency probes.
+  - Prisma `slow_query` warnings.
+  - Latency and disk-saturation alert rules.
+  - `scripts/trim-bullmq-backlog.sh`.
+- **Production backlog trim:** run 2026-09-26 in batches. Redis went from 1.15M keys / 1.77G to 1,318 keys / 25M. During the trim, Redis latency averaged 3.4ms (max 68ms) and there were no slow API requests.
+- **Follow-up** (deploy order, moving Docker's data root off the A400, MinIO to tahti.local) is tracked in `../tahti-org/docs/todo/api-redis-stall-resilience.md`.
+- **Unresolved:** which MinIO client caused the 09-22/23 write burst (not `hls-minio-sync`). If it recurs, run `mc admin trace` on vimage.
