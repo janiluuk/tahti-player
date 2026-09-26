@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 
 import { Blob as NodeBlob } from 'node:buffer';
 
-import { setupDomMocks } from '@tahti-player/ui';
+import { setupDomMocks } from '@tahti-player/ui/test';
 
 // jsdom's Blob polyfill has no arrayBuffer()/text()/stream() — use Node's.
 globalThis.Blob = NodeBlob as unknown as typeof Blob;

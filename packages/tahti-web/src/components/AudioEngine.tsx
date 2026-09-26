@@ -1,4 +1,4 @@
-import Hls from 'hls.js';
+import type Hls from 'hls.js';
 import { useEffect, useMemo, useRef } from 'react';
 
 import type { QueueItem } from '@tahti-player/model';
@@ -9,6 +9,18 @@ import { usePlaybackPrefsStore } from '../stores/playbackPrefsStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 
 const LISTEN_EVENT_AFTER_SEC = 15;
+
+let hlsModule: Promise<typeof import('hls.js')> | null = null;
+
+/** hls.js is most of a megabyte, so it loads on the first HLS stream
+ * instead of with the app shell. */
+function loadHls(): Promise<typeof import('hls.js')> {
+  hlsModule ??= import('hls.js').catch((error: unknown) => {
+    hlsModule = null;
+    throw error;
+  });
+  return hlsModule;
+}
 
 /**
  * Mounts a hidden <audio> element driven by the player store.
@@ -272,34 +284,54 @@ export function AudioEngine() {
     audio.addEventListener('seeked', onSeeked);
     audio.addEventListener('error', onError);
 
-    // AirPlay can't cast a MediaSource-backed element, so prefer native HLS there.
-    const nativeHls =
-      isHls &&
-      (canAirPlay() || !Hls.isSupported()) &&
-      audio.canPlayType('application/vnd.apple.mpegurl') !== '';
+    const playDirect = () => {
+      audio.src = url;
+      void audio.play().catch(() => setStatus('paused'));
+    };
+    let disposed = false;
 
-    if (nativeHls) {
-      audio.src = url;
-      void audio.play().catch(() => setStatus('paused'));
-    } else if (isHls && Hls.isSupported()) {
-      const hls = new Hls({ liveDurationInfinity: true, enableWorker: true });
-      hlsRef.current = hls;
-      hls.on(Hls.Events.ERROR, (_e, data) => {
-        if (data.fatal) {
-          setStatus('error', data.details);
-        }
-      });
-      hls.loadSource(url);
-      hls.attachMedia(audio);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        void audio.play().catch(() => setStatus('paused'));
-      });
+    // AirPlay can't cast a MediaSource-backed element, so prefer native HLS there.
+    if (
+      !isHls ||
+      (canAirPlay() &&
+        audio.canPlayType('application/vnd.apple.mpegurl') !== '')
+    ) {
+      playDirect();
     } else {
-      audio.src = url;
-      void audio.play().catch(() => setStatus('paused'));
+      void loadHls()
+        .then(({ default: HlsPlayer }) => {
+          if (disposed) {
+            return;
+          }
+          if (!HlsPlayer.isSupported()) {
+            playDirect();
+            return;
+          }
+          const hls = new HlsPlayer({
+            liveDurationInfinity: true,
+            enableWorker: true,
+          });
+          hlsRef.current = hls;
+          hls.on(HlsPlayer.Events.ERROR, (_e, data) => {
+            if (data.fatal) {
+              setStatus('error', data.details);
+            }
+          });
+          hls.loadSource(url);
+          hls.attachMedia(audio);
+          hls.on(HlsPlayer.Events.MANIFEST_PARSED, () => {
+            void audio.play().catch(() => setStatus('paused'));
+          });
+        })
+        .catch(() => {
+          if (!disposed) {
+            setStatus('error', 'Could not load the stream player');
+          }
+        });
     }
 
     return () => {
+      disposed = true;
       audio.removeEventListener('playing', onPlaying);
       audio.removeEventListener('pause', onPause);
       audio.removeEventListener('ended', onEnded);

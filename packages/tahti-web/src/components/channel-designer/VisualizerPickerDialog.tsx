@@ -1,7 +1,7 @@
 import { Badge, Button, Dialog } from '@tahti-player/ui';
 
 import type { ColorScheme, VisualPreset } from '../../api/channel-design';
-import { visualizerMetadata } from '../../plugins/visualizers';
+import { visualizerMetadata } from '../../plugins/visualizers/meta';
 import { ChannelVisualizer } from '../ChannelVisualizer';
 
 type Props = {

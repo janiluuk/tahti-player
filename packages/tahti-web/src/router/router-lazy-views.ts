@@ -216,3 +216,207 @@ export const StudioUpdatesView = lazyRouteComponent(
   () => import('../views/studio/StudioUpdatesView'),
   'StudioUpdatesView',
 );
+export const ForgotPasswordView = lazyRouteComponent(
+  () => import('../views/ForgotPasswordView'),
+  'ForgotPasswordView',
+);
+export const JoinView = lazyRouteComponent(
+  () => import('../views/JoinView'),
+  'JoinView',
+);
+export const LoginView = lazyRouteComponent(
+  () => import('../views/LoginView'),
+  'LoginView',
+);
+export const ResetPasswordView = lazyRouteComponent(
+  () => import('../views/ResetPasswordView'),
+  'ResetPasswordView',
+);
+export const SetupPasswordView = lazyRouteComponent(
+  () => import('../views/SetupPasswordView'),
+  'SetupPasswordView',
+);
+export const SignupPaymentView = lazyRouteComponent(
+  () => import('../views/SignupPaymentView'),
+  'SignupPaymentView',
+);
+export const VerifyView = lazyRouteComponent(
+  () => import('../views/VerifyView'),
+  'VerifyView',
+);
+export const AgplView = lazyRouteComponent(
+  () => import('../views/AgplView'),
+  'AgplView',
+);
+export const PrivacyView = lazyRouteComponent(
+  () => import('../views/PrivacyView'),
+  'PrivacyView',
+);
+export const TermsView = lazyRouteComponent(
+  () => import('../views/TermsView'),
+  'TermsView',
+);
+export const DiscoverView = lazyRouteComponent(
+  () => import('../views/DiscoverView'),
+  'DiscoverView',
+);
+export const RadioScheduleView = lazyRouteComponent(
+  () => import('../views/RadioScheduleView'),
+  'RadioScheduleView',
+);
+export const RadioShowView = lazyRouteComponent(
+  () => import('../views/RadioShowView'),
+  'RadioShowView',
+);
+export const RadioView = lazyRouteComponent(
+  () => import('../views/RadioView'),
+  'RadioView',
+);
+export const ArtistView = lazyRouteComponent(
+  () => import('../views/ArtistView'),
+  'ArtistView',
+);
+export const ChannelView = lazyRouteComponent(
+  () => import('../views/ChannelView'),
+  'ChannelView',
+);
+export const ChatView = lazyRouteComponent(
+  () => import('../views/ChatView'),
+  'ChatView',
+);
+export const CollectionView = lazyRouteComponent(
+  () => import('../views/CollectionView'),
+  'CollectionView',
+);
+export const FavoritesView = lazyRouteComponent(
+  () => import('../views/FavoritesView'),
+  'FavoritesView',
+);
+export const GreenRoomView = lazyRouteComponent(
+  () => import('../views/GreenRoomView'),
+  'GreenRoomView',
+);
+export const JamView = lazyRouteComponent(
+  () => import('../views/JamView'),
+  'JamView',
+);
+export const MessagesView = lazyRouteComponent(
+  () => import('../views/MessagesView'),
+  'MessagesView',
+);
+export const NewsView = lazyRouteComponent(
+  () => import('../views/NewsView'),
+  'NewsView',
+);
+export const SmartLinkView = lazyRouteComponent(
+  () => import('../views/SmartLinkView'),
+  'SmartLinkView',
+);
+export const SubscribeView = lazyRouteComponent(
+  () => import('../views/SubscribeView'),
+  'SubscribeView',
+);
+export const TrackDetailView = lazyRouteComponent(
+  () => import('../views/TrackDetailView'),
+  'TrackDetailView',
+);
+export const VenueDetailView = lazyRouteComponent(
+  () => import('../views/VenueDetailView'),
+  'VenueDetailView',
+);
+export const VenueRegisterView = lazyRouteComponent(
+  () => import('../views/VenueRegisterView'),
+  'VenueRegisterView',
+);
+export const WhatsNewView = lazyRouteComponent(
+  () => import('../views/WhatsNewView'),
+  'WhatsNewView',
+);
+export const FeedView = lazyRouteComponent(
+  () => import('../views/FeedView'),
+  'FeedView',
+);
+export const OnboardingView = lazyRouteComponent(
+  () => import('../views/OnboardingView'),
+  'OnboardingView',
+);
+export const StudioPlaylistEditorView = lazyRouteComponent(
+  () => import('../views/studio/playlists/StudioPlaylistEditorView'),
+  'StudioPlaylistEditorView',
+);
+export const StudioBrandingView = lazyRouteComponent(
+  () => import('../views/studio/StudioBrandingView'),
+  'StudioBrandingView',
+);
+export const StudioChannelView = lazyRouteComponent(
+  () => import('../views/studio/StudioChannelView'),
+  'StudioChannelView',
+);
+export const StudioCollectionsView = lazyRouteComponent(
+  () => import('../views/studio/StudioCollectionsView'),
+  'StudioCollectionsView',
+);
+export const StudioEditorListView = lazyRouteComponent(
+  () => import('../views/studio/StudioEditorListView'),
+  'StudioEditorListView',
+);
+export const StudioEditorProjectView = lazyRouteComponent(
+  () => import('../views/studio/StudioEditorProjectView'),
+  'StudioEditorProjectView',
+);
+export const StudioEventsView = lazyRouteComponent(
+  () => import('../views/studio/StudioEventsView'),
+  'StudioEventsView',
+);
+export const StudioGoLiveView = lazyRouteComponent(
+  () => import('../views/studio/StudioGoLiveView'),
+  'StudioGoLiveView',
+);
+export const StudioHomeView = lazyRouteComponent(
+  () => import('../views/studio/StudioHomeView'),
+  'StudioHomeView',
+);
+export const StudioReleaseDetailView = lazyRouteComponent(
+  () => import('../views/studio/StudioReleaseDetailView'),
+  'StudioReleaseDetailView',
+);
+export const StudioReleasesView = lazyRouteComponent(
+  () => import('../views/studio/StudioReleasesView'),
+  'StudioReleasesView',
+);
+export const StudioScheduleView = lazyRouteComponent(
+  () => import('../views/studio/StudioScheduleView'),
+  'StudioScheduleView',
+);
+export const StudioShowsView = lazyRouteComponent(
+  () => import('../views/studio/StudioShowsView'),
+  'StudioShowsView',
+);
+export const StudioSoundsView = lazyRouteComponent(
+  () => import('../views/studio/StudioSoundsView'),
+  'StudioSoundsView',
+);
+export const StudioStatsDetailView = lazyRouteComponent(
+  () => import('../views/studio/StudioStatsDetailView'),
+  'StudioStatsDetailView',
+);
+export const StudioStatsView = lazyRouteComponent(
+  () => import('../views/studio/StudioStatsView'),
+  'StudioStatsView',
+);
+export const StudioUploadView = lazyRouteComponent(
+  () => import('../views/studio/StudioUploadView'),
+  'StudioUploadView',
+);
+export const EmbedChannelView = lazyRouteComponent(
+  () => import('../views/EmbedViews'),
+  'EmbedChannelView',
+);
+export const EmbedCollectionView = lazyRouteComponent(
+  () => import('../views/EmbedViews'),
+  'EmbedCollectionView',
+);
+export const EmbedReleaseView = lazyRouteComponent(
+  () => import('../views/EmbedViews'),
+  'EmbedReleaseView',
+);

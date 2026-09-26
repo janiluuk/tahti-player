@@ -4,7 +4,7 @@ import {
   resolveVisualPresetSettings,
   type VisualSettingsMap,
 } from '../../api/channel-design';
-import { visualizerSupportsAudioReactive } from '../../plugins/visualizers';
+import { visualizerSupportsAudioReactive } from '../../plugins/visualizers/meta';
 
 type Props = {
   preset: string;

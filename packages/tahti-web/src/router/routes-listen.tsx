@@ -1,12 +1,14 @@
 import { createRoute, redirect } from '@tanstack/react-router';
 
 import { parseDiscoverSearch } from '../lib/discoverTabs';
-import { DiscoverView } from '../views/DiscoverView';
 import { ListenView } from '../views/ListenView';
-import { RadioScheduleView } from '../views/RadioScheduleView';
-import { RadioShowView } from '../views/RadioShowView';
-import { RadioView } from '../views/RadioView';
 import { appLayoutRoute } from './router-core';
+import {
+  DiscoverView,
+  RadioScheduleView,
+  RadioShowView,
+  RadioView,
+} from './router-lazy-views';
 
 export const listenRoute = createRoute({
   getParentRoute: () => appLayoutRoute,

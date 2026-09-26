@@ -116,9 +116,9 @@ describe('AudioEngine in an AirPlay-capable browser', () => {
 });
 
 describe('AudioEngine elsewhere', () => {
-  it('keeps using hls.js for HLS', () => {
+  it('keeps using hls.js for HLS', async () => {
     renderAndPlay(hlsRadio);
-    expect(hlsInstances).toHaveLength(1);
+    await vi.waitFor(() => expect(hlsInstances).toHaveLength(1));
   });
 
   it('still builds the analyser graph for visualizers', () => {

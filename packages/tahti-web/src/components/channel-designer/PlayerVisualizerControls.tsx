@@ -10,7 +10,7 @@ import type { ReactNode } from 'react';
 import { Badge, Button, PluginItem, Tooltip } from '@tahti-player/ui';
 
 import type { VisualPreset } from '../../api/channel-design';
-import { visualizerMetadata } from '../../plugins/visualizers';
+import { visualizerMetadata } from '../../plugins/visualizers/meta';
 import { Eyebrow } from '../tahti/Eyebrow';
 
 type Props = {

@@ -1,10 +1,13 @@
 import { createRoute } from '@tanstack/react-router';
 
-import { AgplView } from '../views/AgplView';
-import { PrivacyView } from '../views/PrivacyView';
-import { TermsView } from '../views/TermsView';
 import { appLayoutRoute } from './router-core';
-import { LegalView, WhatIsItView } from './router-lazy-views';
+import {
+  AgplView,
+  LegalView,
+  PrivacyView,
+  TermsView,
+  WhatIsItView,
+} from './router-lazy-views';
 
 export const aboutRoute = createRoute({
   getParentRoute: () => appLayoutRoute,

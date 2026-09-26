@@ -30,7 +30,7 @@ import { useThemeStore } from '../../plugins/themes';
 import {
   visualizerMetadata,
   visualizerSupportsAudioReactive,
-} from '../../plugins/visualizers';
+} from '../../plugins/visualizers/meta';
 import { useSettingsModalStore } from '../../stores/settingsModalStore';
 import { ChannelVisualizer } from '../ChannelVisualizer';
 import { ThemeEditor } from '../ThemeEditor';
