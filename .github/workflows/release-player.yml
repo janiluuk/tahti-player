@@ -152,6 +152,31 @@ jobs:
       version: ${{ inputs.tag || github.ref_name }}
     secrets: inherit
 
+  update-aur:
+    needs: release-desktop
+    uses: ./.github/workflows/update-aur.yml
+    with:
+      tag: ${{ inputs.tag || github.ref_name }}
+    secrets:
+      AUR_SSH_KEY: ${{ secrets.AUR_SSH_KEY }}
+      AUR_KNOWN_HOSTS: ${{ secrets.AUR_KNOWN_HOSTS }}
+
+  update-flathub:
+    needs: release-desktop
+    uses: ./.github/workflows/update-flathub.yml
+    with:
+      tag: ${{ inputs.tag || github.ref_name }}
+    secrets:
+      FLATHUB_TOKEN: ${{ secrets.FLATHUB_TOKEN }}
+
+  update-winget:
+    needs: release-desktop
+    uses: ./.github/workflows/update-winget.yml
+    with:
+      tag: ${{ inputs.tag || github.ref_name }}
+    secrets:
+      WINGET_TOKEN: ${{ secrets.WINGET_TOKEN }}
+
   release-android:
     # Mobile releases are paused for now -- flip this to `true` to resume.
     if: false
