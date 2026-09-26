@@ -35,6 +35,8 @@ export type NativeLibraryTrack = {
   /** Integrated loudness in LUFS. */
   loudnessLufs: number | null;
   analyzed: boolean;
+  /** File name of the embedded cover in the native artwork cache. */
+  artworkKey: string | null;
 };
 
 export const TRACK_COLORS = [

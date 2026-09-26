@@ -178,6 +178,11 @@ export const commands = {
 	 *  static allow-list can't cover arbitrary import locations.
 	 */
 	libraryReveal: (id: string) => typedError<null, string>(__TAURI_INVOKE("library_reveal", { id })),
+	/**
+	 *  The artwork cache folder with a trailing separator, so the frontend can
+	 *  append an `artworkKey` to build a file path.
+	 */
+	libraryArtworkDir: () => typedError<string, string>(__TAURI_INVOKE("library_artwork_dir")),
 	libraryListUnavailable: () => typedError<LibraryTrack[], string>(__TAURI_INVOKE("library_list_unavailable")),
 	libraryRescan: () => typedError<LibraryTrack[], string>(__TAURI_INVOKE("library_rescan")),
 	libraryRelink: (id: string) => typedError<{
@@ -220,6 +225,11 @@ export const commands = {
 	musicalKey: string | null,
 	loudnessLufs: number | null,
 	analyzed: boolean,
+	/**
+	 *  File name of the embedded cover in the artwork cache (see
+	 *  `artwork.rs`); `None` when the file has no usable picture.
+	 */
+	artworkKey: string | null,
 } | null, string>(__TAURI_INVOKE("library_relink", { id })),
 	libraryListRoots: () => typedError<LibraryRoot[], string>(__TAURI_INVOKE("library_list_roots")),
 	/**
@@ -824,6 +834,11 @@ export type LibraryTrack = {
 	musicalKey: string | null,
 	loudnessLufs: number | null,
 	analyzed: boolean,
+	/**
+	 *  File name of the embedded cover in the artwork cache (see
+	 *  `artwork.rs`); `None` when the file has no usable picture.
+	 */
+	artworkKey: string | null,
 };
 
 export type MergeResult = {
