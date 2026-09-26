@@ -1,11 +1,21 @@
 import type { DiscoWidgetRenderItem } from '../../api/disco-widgets';
+import { PageError } from '../PageStates';
 import { DiscoWidgetFrame } from './DiscoWidgetFrame';
 
+/** While loading this renders nothing rather than a spinner: most pages have
+ * no widgets, so a placeholder would only flash and shift the layout. */
 export function DiscoWidgetsSection({
   widgets,
+  status = 'ready',
+  onRetry,
 }: {
   widgets: DiscoWidgetRenderItem[];
+  status?: 'loading' | 'ready' | 'error';
+  onRetry?: () => void;
 }) {
+  if (status === 'error') {
+    return <PageError title="Widgets couldn't load" onRetry={onRetry} />;
+  }
   if (widgets.length === 0) {
     return null;
   }

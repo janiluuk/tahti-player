@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import {
   fetchChannel,
@@ -9,23 +9,89 @@ import {
   fetchChannelDiscoWidgets,
   type DiscoWidgetRenderItem,
 } from '../../api/disco-widgets';
+import type { FetchMeta } from '../../api/mode';
 import { fetchPublicRadioShow, type PublicRadioShow } from '../../api/shows';
 import type { ChannelSoundItem, PublicChannel } from '../../api/types';
 import { syncDocumentMetadata } from '../../lib/seo';
 
-/** Loads everything a channel page shows. `refreshKey` refetches in the
- * background: the page keeps rendering the previous data, so a look save
- * doesn't tear down the whole page (and the designer inside it) behind a
- * full-page spinner. Only a slug change shows the loading state. */
+export type ChannelSectionStatus = 'loading' | 'ready' | 'error';
+
+export type ChannelSection = 'sounds' | 'widgets' | 'shows';
+
+type SectionState<T> = { data: T; status: ChannelSectionStatus };
+
+/** The API clients swallow request errors and return empty data with a
+ * `reason`; mock-fallback data (`source: 'mock'`) is still usable. */
+function failed(meta: FetchMeta): boolean {
+  return meta.source === 'api' && Boolean(meta.reason);
+}
+
+/** Loads one secondary section of the channel page on its own, so a slow or
+ * failed request only affects that section. Refetches on `slug` or `reloadKey`
+ * change, clearing stale data only when the slug changes. */
+function useChannelSection<T>(
+  slug: string,
+  reloadKey: number,
+  empty: T,
+  load: (slug: string) => Promise<{ data: T; meta: FetchMeta }>,
+): SectionState<T> {
+  const [state, setState] = useState<SectionState<T> & { slug: string }>({
+    slug,
+    data: empty,
+    status: 'loading',
+  });
+
+  useEffect(() => {
+    let cancelled = false;
+    setState((prev) =>
+      prev.slug === slug
+        ? { ...prev, status: prev.status === 'error' ? 'loading' : prev.status }
+        : { slug, data: empty, status: 'loading' },
+    );
+    load(slug)
+      .then((result) => {
+        if (!cancelled) {
+          setState({
+            slug,
+            data: result.data,
+            status: failed(result.meta) ? 'error' : 'ready',
+          });
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setState({ slug, data: empty, status: 'error' });
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+    // `empty` and `load` are module-level constants at every call site.
+  }, [slug, reloadKey]);
+
+  return state.slug === slug ? state : { data: empty, status: 'loading' };
+}
+
+const NO_SOUNDS: ChannelSoundItem[] = [];
+const NO_WIDGETS: DiscoWidgetRenderItem[] = [];
+
+/** Loads everything a channel page shows. The channel itself is the primary
+ * content: `loading` covers only it, so the header and player render as soon
+ * as the channel resolves while tracks, widgets and shows report their own
+ * `sectionStatus`. `refreshKey` (bumped after look/link saves) refetches only
+ * the channel, in the background, so a save doesn't tear the page down
+ * behind a full-page spinner. */
 export function useChannelData(slug: string, refreshKey: number) {
   const [channel, setChannel] = useState<PublicChannel | null>(null);
-  const [sounds, setSounds] = useState<ChannelSoundItem[]>([]);
-  const [discoWidgets, setDiscoWidgets] = useState<DiscoWidgetRenderItem[]>([]);
-  const [liveShows, setLiveShows] = useState<PublicRadioShow | null>(null);
   const [artistSocialLinks, setArtistSocialLinks] = useState<
     Record<string, string>
   >({});
   const [loading, setLoading] = useState(true);
+  const [reloadKeys, setReloadKeys] = useState<Record<ChannelSection, number>>({
+    sounds: 0,
+    widgets: 0,
+    shows: 0,
+  });
 
   useEffect(() => {
     setLoading(true);
@@ -33,13 +99,8 @@ export function useChannelData(slug: string, refreshKey: number) {
 
   useEffect(() => {
     let cancelled = false;
-    void Promise.all([
-      fetchChannel(slug),
-      fetchChannelSound(slug),
-      fetchChannelDiscoWidgets(slug),
-      fetchPublicRadioShow(slug),
-    ])
-      .then(([ch, items, widgets, shows]) => {
+    void fetchChannel(slug)
+      .then((ch) => {
         if (cancelled) {
           return;
         }
@@ -50,9 +111,6 @@ export function useChannelData(slug: string, refreshKey: number) {
             ch.data.followerCount ??
             (prev?.slug === ch.data.slug ? prev.followerCount : undefined),
         }));
-        setSounds(items.data);
-        setDiscoWidgets(widgets.data);
-        setLiveShows(shows.data);
 
         const name = ch.data.user.displayName;
         syncDocumentMetadata(window.location.pathname, {
@@ -63,10 +121,8 @@ export function useChannelData(slug: string, refreshKey: number) {
           image: ch.data.user.avatarUrl ?? undefined,
         });
 
-        // The Stats block needs a real follower count, which lives on the
-        // artist profile rather than the channel itself — fetched
-        // separately so a slow/failed profile lookup never blocks the
-        // channel page from rendering.
+        // The follower count lives on the artist profile rather than the
+        // channel itself; a slow/failed lookup must never block the page.
         void fetchProfile(ch.data.user.username)
           .then((profile) => {
             if (cancelled) {
@@ -98,12 +154,41 @@ export function useChannelData(slug: string, refreshKey: number) {
     };
   }, [slug, refreshKey]);
 
+  const sounds = useChannelSection(
+    slug,
+    reloadKeys.sounds,
+    NO_SOUNDS,
+    fetchChannelSound,
+  );
+  const widgets = useChannelSection(
+    slug,
+    reloadKeys.widgets,
+    NO_WIDGETS,
+    fetchChannelDiscoWidgets,
+  );
+  const shows = useChannelSection<PublicRadioShow | null>(
+    slug,
+    reloadKeys.shows,
+    null,
+    fetchPublicRadioShow,
+  );
+
+  const retrySection = useCallback((section: ChannelSection) => {
+    setReloadKeys((keys) => ({ ...keys, [section]: keys[section] + 1 }));
+  }, []);
+
   return {
     channel,
-    sounds,
-    discoWidgets,
-    liveShows,
+    sounds: sounds.data,
+    discoWidgets: widgets.data,
+    liveShows: shows.data,
     artistSocialLinks,
     loading,
+    sectionStatus: {
+      sounds: sounds.status,
+      widgets: widgets.status,
+      shows: shows.status,
+    } satisfies Record<ChannelSection, ChannelSectionStatus>,
+    retrySection,
   };
 }

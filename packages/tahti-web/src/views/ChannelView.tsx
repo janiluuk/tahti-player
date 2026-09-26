@@ -102,6 +102,8 @@ export function ChannelView({ slug }: { slug: string }) {
     liveShows,
     artistSocialLinks,
     loading,
+    sectionStatus,
+    retrySection,
   } = useChannelData(slug, lookTick);
   const linksDraft = useChannelLinksDraft(channel, artistSocialLinks);
   const channelLinksDraft = linksDraft.links;
@@ -443,6 +445,8 @@ export function ChannelView({ slug }: { slug: string }) {
           catalogPlayables,
           channelLinksDraft,
           liveShows,
+          sectionStatus,
+          onRetrySection: retrySection,
           chatOn,
           onOpenChat: openChat,
           listenerWidgetInstances,
@@ -703,7 +707,13 @@ export function ChannelView({ slug }: { slug: string }) {
             );
           })}
         </div>
-        {!editing ? <DiscoWidgetsSection widgets={discoWidgets} /> : null}
+        {!editing ? (
+          <DiscoWidgetsSection
+            widgets={discoWidgets}
+            status={sectionStatus.widgets}
+            onRetry={() => retrySection('widgets')}
+          />
+        ) : null}
       </div>
     </div>
   );

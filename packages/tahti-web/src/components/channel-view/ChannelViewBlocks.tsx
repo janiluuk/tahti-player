@@ -19,10 +19,12 @@ import {
 import type { ListenerWidgetInstance } from '../../stores/listenerWidgetsStore';
 import { ChannelPlaylistBlock } from '../ChannelPlaylistBlock';
 import { ListenerWidgetEmbed } from '../ListenerWidgetEmbed';
+import { PageError, PageLoading } from '../PageStates';
 import { PlayableTrackTable } from '../PlayableTrackTable';
 import { ShowEpisodeList } from '../ShowEpisodeList';
 import { SocialLinkIcon } from '../SocialLinkIcon';
 import { Eyebrow } from '../tahti/Eyebrow';
+import type { ChannelSection, ChannelSectionStatus } from './useChannelData';
 
 /** Render-inputs for the small `ChannelPageItem` block types -- everything
  * `renderChannelBlock` below needs, and nothing more (no state, no effects,
@@ -38,6 +40,8 @@ export type ChannelBlockRenderContext = {
   catalogPlayables: TahtiPlayable[];
   channelLinksDraft: ChannelLink[];
   liveShows: PublicRadioShow | null;
+  sectionStatus: Record<ChannelSection, ChannelSectionStatus>;
+  onRetrySection: (section: ChannelSection) => void;
   chatOn: boolean;
   onOpenChat: () => void;
   listenerWidgetInstances: ListenerWidgetInstance[];
@@ -63,26 +67,38 @@ export function renderChannelBlock(
           {!editing && (
             <h2 className="text-xl font-bold tracking-tight">Tracks</h2>
           )}
-          {ctx.pinnedPlayables.length > 0 && (
+          {ctx.sectionStatus.sounds === 'loading' ? (
+            <PageLoading label="Loading tracks…" />
+          ) : ctx.sectionStatus.sounds === 'error' ? (
+            <PageError
+              title="Tracks couldn't load"
+              description="The rest of the channel still works."
+              onRetry={() => ctx.onRetrySection('sounds')}
+            />
+          ) : null}
+          {ctx.sectionStatus.sounds === 'ready' &&
+            ctx.pinnedPlayables.length > 0 && (
+              <div className="flex flex-col gap-3">
+                <Eyebrow>Pinned</Eyebrow>
+                <PlayableTrackTable
+                  items={ctx.pinnedPlayables}
+                  emptyMessage="No pinned tracks."
+                />
+              </div>
+            )}
+          {ctx.sectionStatus.sounds === 'ready' && (
             <div className="flex flex-col gap-3">
-              <Eyebrow>Pinned</Eyebrow>
+              {ctx.pinnedPlayables.length > 0 && <Eyebrow>Catalog</Eyebrow>}
               <PlayableTrackTable
-                items={ctx.pinnedPlayables}
-                emptyMessage="No pinned tracks."
+                items={ctx.catalogPlayables}
+                emptyMessage={
+                  ctx.pinnedPlayables.length > 0
+                    ? 'No other public tracks.'
+                    : 'No public tracks for this channel yet.'
+                }
               />
             </div>
           )}
-          <div className="flex flex-col gap-3">
-            {ctx.pinnedPlayables.length > 0 && <Eyebrow>Catalog</Eyebrow>}
-            <PlayableTrackTable
-              items={ctx.catalogPlayables}
-              emptyMessage={
-                ctx.pinnedPlayables.length > 0
-                  ? 'No other public tracks.'
-                  : 'No public tracks for this channel yet.'
-              }
-            />
-          </div>
         </section>
       );
     case 'chat':
@@ -242,6 +258,23 @@ export function renderChannelBlock(
         </section>
       );
     case 'events': {
+      if (ctx.sectionStatus.shows !== 'ready') {
+        return (
+          <section
+            className={`flex flex-col gap-2 px-4 py-3 ${editing ? '' : 'border-border rounded-lg border'}`}
+          >
+            <h2 className="text-sm font-bold tracking-tight">Live shows</h2>
+            {ctx.sectionStatus.shows === 'loading' ? (
+              <PageLoading label="Loading shows…" />
+            ) : (
+              <PageError
+                title="Shows couldn't load"
+                onRetry={() => ctx.onRetrySection('shows')}
+              />
+            )}
+          </section>
+        );
+      }
       if (
         !ctx.liveShows ||
         (ctx.liveShows.upcomingEpisodes.length === 0 &&
