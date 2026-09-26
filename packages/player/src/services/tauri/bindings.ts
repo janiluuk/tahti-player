@@ -183,6 +183,9 @@ export const commands = {
 	 *  append an `artworkKey` to build a file path.
 	 */
 	libraryArtworkDir: () => typedError<string, string>(__TAURI_INVOKE("library_artwork_dir")),
+	/**  Looks for embedded artwork in tracks that have none yet. */
+	libraryArtworkBackfill: () => typedError<ArtworkBackfillResult, string>(__TAURI_INVOKE("library_artwork_backfill")),
+	libraryArtworkBackfillCancel: () => typedError<null, string>(__TAURI_INVOKE("library_artwork_backfill_cancel")),
 	libraryListUnavailable: () => typedError<LibraryTrack[], string>(__TAURI_INVOKE("library_list_unavailable")),
 	libraryRescan: () => typedError<LibraryTrack[], string>(__TAURI_INVOKE("library_rescan")),
 	libraryRelink: (id: string) => typedError<{
@@ -419,6 +422,15 @@ export type AnalysisSummary = {
 	total: number,
 	running: boolean,
 	paused: boolean,
+};
+
+export type ArtworkBackfillResult = {
+	checked: number,
+	/**  Tracks that now have artwork. */
+	found: number,
+	/**  Tracks whose picture was not stored because the cache is full. */
+	cacheFull: number,
+	cancelled: boolean,
 };
 
 export type Availability = "available" | "missing";

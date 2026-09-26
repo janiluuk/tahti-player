@@ -8,6 +8,7 @@
 pub mod analysis;
 pub mod analysis_dsp;
 pub mod artwork;
+pub mod artwork_backfill;
 pub mod backup;
 pub mod catalog;
 pub mod import;
@@ -169,6 +170,8 @@ pub struct LibraryState {
     cancel_provider_import: AtomicBool,
     /// Background analysis job (cancel/pause flags, one job at a time).
     analysis: std::sync::Arc<analysis::AnalysisControl>,
+    /// On-demand search for embedded artwork in tracks that have none.
+    artwork_backfill: std::sync::Arc<artwork_backfill::BackfillControl>,
     /// Filesystem watcher over the registered roots.
     watch: watcher::WatchControl,
     /// Where an unreadable catalog file was set aside at startup, if it was.
