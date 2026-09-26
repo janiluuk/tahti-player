@@ -1,38 +1,38 @@
 import { createRoute, redirect } from '@tanstack/react-router';
 
-import { StudioPlaylistEditorView } from '../views/studio/playlists/StudioPlaylistEditorView';
-import { StudioBrandingView } from '../views/studio/StudioBrandingView';
-import { StudioChannelView } from '../views/studio/StudioChannelView';
-import { StudioCollectionsView } from '../views/studio/StudioCollectionsView';
-import { StudioEditorListView } from '../views/studio/StudioEditorListView';
-import { StudioEditorProjectView } from '../views/studio/StudioEditorProjectView';
-import { StudioEventsView } from '../views/studio/StudioEventsView';
-import { StudioGoLiveView } from '../views/studio/StudioGoLiveView';
-import { StudioHomeView } from '../views/studio/StudioHomeView';
-import { StudioReleaseDetailView } from '../views/studio/StudioReleaseDetailView';
-import { StudioReleasesView } from '../views/studio/StudioReleasesView';
-import { StudioScheduleView } from '../views/studio/StudioScheduleView';
 import { StudioSetupChannelRedirect } from '../views/studio/StudioSetupChannelRedirect';
-import { StudioShowsView } from '../views/studio/StudioShowsView';
-import { StudioSoundsView } from '../views/studio/StudioSoundsView';
-import { StudioStatsDetailView } from '../views/studio/StudioStatsDetailView';
-import { StudioStatsView } from '../views/studio/StudioStatsView';
-import { StudioUploadView } from '../views/studio/StudioUploadView';
 import { appLayoutRoute } from './router-core';
 import {
+  StudioBrandingView,
+  StudioChannelView,
   StudioCollectionEditView,
+  StudioCollectionsView,
   StudioDistributionView,
+  StudioEditorListView,
+  StudioEditorProjectView,
   StudioEpisodeReviewView,
   StudioEventCreateView,
+  StudioEventsView,
+  StudioGoLiveView,
   StudioGovernanceView,
+  StudioHomeView,
   StudioMasteringView,
+  StudioPlaylistEditorView,
   StudioProEditorView,
+  StudioReleaseDetailView,
+  StudioReleasesView,
   StudioRevenueView,
+  StudioScheduleView,
   StudioShowDetailView,
+  StudioShowsView,
+  StudioSoundsView,
   StudioSoundView,
+  StudioStatsDetailView,
+  StudioStatsView,
   StudioStripeView,
   StudioTrackInsightsView,
   StudioUpdatesView,
+  StudioUploadView,
 } from './router-lazy-views';
 
 export const studioRoute = createRoute({

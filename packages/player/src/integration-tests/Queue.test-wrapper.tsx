@@ -9,7 +9,7 @@ import {
 import userEvent from '@testing-library/user-event';
 
 import type { QueueItem } from '@tahti-player/model';
-import { DialogWrapper } from '@tahti-player/ui';
+import { DialogWrapper } from '@tahti-player/ui/test';
 
 import App from '../App';
 import { routeTree } from '../routeTree.gen';

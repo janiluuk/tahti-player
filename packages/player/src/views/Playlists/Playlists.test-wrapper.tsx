@@ -3,7 +3,7 @@ import { render, RenderResult, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import type { PlaylistProvider } from '@tahti-player/plugin-sdk';
-import { createSelectWrapper, DialogWrapper } from '@tahti-player/ui';
+import { createSelectWrapper, DialogWrapper } from '@tahti-player/ui/test';
 
 import App from '../../App';
 import { routeTree } from '../../routeTree.gen';

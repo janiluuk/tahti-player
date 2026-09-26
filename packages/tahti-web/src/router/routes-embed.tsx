@@ -7,12 +7,12 @@ import {
 import { resolveDashboardRedirect } from '../lib/prodPathRedirects';
 import { useAuthStore } from '../stores/authStore';
 import { DashboardAliasView } from '../views/DashboardAliasView';
+import { appLayoutRoute, rootRoute } from './router-core';
 import {
   EmbedChannelView,
   EmbedCollectionView,
   EmbedReleaseView,
-} from '../views/EmbedViews';
-import { appLayoutRoute, rootRoute } from './router-core';
+} from './router-lazy-views';
 
 export const embedChannelRoute = createRoute({
   getParentRoute: () => rootRoute,

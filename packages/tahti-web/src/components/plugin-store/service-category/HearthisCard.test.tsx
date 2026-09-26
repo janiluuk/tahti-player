@@ -33,7 +33,10 @@ const { toast, sources, studio, extras } = vi.hoisted(() => ({
 }));
 
 vi.mock('sonner', () => ({ toast, Toaster: () => null }));
-vi.mock('@tanstack/react-router', () => ({ useNavigate: () => vi.fn() }));
+vi.mock('@tanstack/react-router', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@tanstack/react-router')>()),
+  useNavigate: () => vi.fn(),
+}));
 vi.mock('../../../plugins/import-sources', () => ({
   hearthisSourceAdapter: sources,
 }));
