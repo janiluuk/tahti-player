@@ -170,9 +170,41 @@ agent) to add the rule.
 Full detail and rationale: `../tahti-org/ops/RUNBOOK.md#database-migrations`
 (added by tahti-org#532).
 
+## Migration history re-check (2026-09-26)
+
+Read-only checks against production:
+
+- `_prisma_migrations` is still stuck: `20260911000000_init` is marked failed ("A migration failed to apply"), so `migrate deploy` has applied nothing since 2026-09-18.
+- The repo was squashed since the runbook was written. The container now ships 8 migrations: `20260911000000_init`, `20260911210000_cron_run_results`, `20260915120000_branding_backdrop_nameplate`, `20260915150000_channel_kind`, `20260916040000_embed_source_url`, `20260916050000_background_visual_settings`, `20260916060000_internet_radio_now_playing`, `20260923170000_collection_details`.
+- `prisma migrate diff --from-url <prod> --to-schema-datamodel schema.prisma` shows exactly one gap: `media.Collection` lacks `backdropUrl`, `genres` and `releaseDate`. Those come from `20260923170000_collection_details`, which never ran. Everything else is live.
+- **Production is broken because of it:** `GET /api/me/collections` returns 500 ("The column `Collection.releaseDate` does not exist in the current database"). Loki has 3 such 500s in the last 3 days.
+- **The runbook's loop is now unsafe.** Marking *every* migration `--applied` would record `collection_details` as done without adding its columns. Only `init` and the six already-live migrations should be resolved; `collection_details` must actually run (three nullable `ADD COLUMN`s, instant).
+
+The agent's attempt to run the corrected sequence was blocked as a production deploy. The user needs to run it (connecting to Postgres directly, not through pgbouncer, like the stack's migration service):
+
+```bash
+ssh vimage
+docker exec tahti-stack-api-1 sh -c '
+  cd /app/packages/db &&
+  export DATABASE_URL=$(echo "$DATABASE_URL" | sed "s#@pgbouncer:5432#@postgres:5432#; s#?pgbouncer=true##") &&
+  P=node_modules/.bin/prisma &&
+  $P migrate resolve --applied 20260911000000_init &&
+  for m in 20260911210000_cron_run_results 20260915120000_branding_backdrop_nameplate \
+           20260915150000_channel_kind 20260916040000_embed_source_url \
+           20260916050000_background_visual_settings 20260916060000_internet_radio_now_playing; do
+    $P migrate resolve --applied "$m" || exit 1
+  done &&
+  $P migrate deploy &&
+  $P migrate diff --from-url "$DATABASE_URL" --to-schema-datamodel prisma/schema.prisma'
+```
+
+`migrate deploy` should apply only `20260923170000_collection_details`, and the final diff should print "No difference detected". `migrate status` will still list the ~136 pre-squash rows as "applied to the database but missing locally"; `migrate deploy` doesn't fail on those.
+
+- [ ] User runs the commands above. Then check that `/api/me/collections` works and `../tahti-org/ops/RUNBOOK.md#database-migrations` is updated so its loop no longer resolves every migration.
+
 ## Not done / left open
 
-- **Migration-history baseline** — see "Still needs the user" above.
+- **Migration-history baseline**: see "Migration history re-check (2026-09-26)" above. The older "Still needs the user" command is superseded.
 - The frontend work already shipped: `tahti-player` PR #89 (merged
   2026-09-15) — this doc's older "not committed/pushed yet" note was stale,
   left over from before the PR merged; corrected 2026-09-21.
