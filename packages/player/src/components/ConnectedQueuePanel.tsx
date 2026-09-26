@@ -1,5 +1,5 @@
 import { useNavigate } from '@tanstack/react-router';
-import { FC, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -25,19 +25,24 @@ export const ConnectedQueuePanel: FC<ConnectedQueuePanelProps> = ({
   const { t } = useTranslation('queue');
   const queue = useQueue();
   const currentItem = useCurrentQueueItem();
-  const actions = useQueueActions();
+  const { goToId, removeByIds, reorder, selectCandidate } = useQueueActions();
 
-  const handleReorder = (fromIndex: number, toIndex: number) => {
-    actions.reorder(fromIndex, toIndex);
-  };
+  const handleRemoveItem = useCallback(
+    (itemId: string) => removeByIds([itemId]),
+    [removeByIds],
+  );
 
-  const handleSelectItem = (itemId: string) => {
-    actions.goToId(itemId);
-  };
-
-  const handleRemoveItem = (itemId: string) => {
-    actions.removeByIds([itemId]);
-  };
+  const labels = useMemo(
+    () => ({
+      emptyTitle: t('empty.title'),
+      emptySubtitle: t('empty.subtitle'),
+      removeButton: t('actions.remove'),
+      playbackError: t('errors.playback'),
+      noCandidates: t('candidates.empty'),
+      candidateFailed: t('candidates.failed'),
+    }),
+    [t],
+  );
 
   return (
     <QueuePanel
@@ -45,18 +50,11 @@ export const ConnectedQueuePanel: FC<ConnectedQueuePanelProps> = ({
       currentItemId={currentItem?.id}
       isCollapsed={isCollapsed}
       reorderable={!isCollapsed}
-      onReorder={handleReorder}
-      onSelectItem={handleSelectItem}
+      onReorder={reorder}
+      onSelectItem={goToId}
       onRemoveItem={handleRemoveItem}
-      onSelectCandidate={actions.selectCandidate}
-      labels={{
-        emptyTitle: t('empty.title'),
-        emptySubtitle: t('empty.subtitle'),
-        removeButton: t('actions.remove'),
-        playbackError: t('errors.playback'),
-        noCandidates: t('candidates.empty'),
-        candidateFailed: t('candidates.failed'),
-      }}
+      onSelectCandidate={selectCandidate}
+      labels={labels}
     />
   );
 };

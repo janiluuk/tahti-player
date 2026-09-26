@@ -1,6 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { FC } from 'react';
+import { FC, memo } from 'react';
 
 import type { QueueItem as QueueItemType } from '@tahti-player/model';
 
@@ -18,7 +18,7 @@ export type ReorderableQueueItemProps = {
   onRemove?: (id: string) => void;
   onSelectCandidate?: (itemId: string, candidateId: string) => void;
   onTitleClick?: (id: string) => void;
-  isLiked?: (id: string) => boolean;
+  isLiked?: boolean;
   onToggleLike?: (id: string) => void;
   labels: QueueItemLabels & {
     noCandidates?: string;
@@ -26,7 +26,7 @@ export type ReorderableQueueItemProps = {
   };
 };
 
-export const ReorderableQueueItem: FC<ReorderableQueueItemProps> = ({
+const ReorderableQueueItemView: FC<ReorderableQueueItemProps> = ({
   item,
   isCurrent,
   isCollapsed = false,
@@ -86,7 +86,7 @@ export const ReorderableQueueItem: FC<ReorderableQueueItemProps> = ({
           onSelect={() => onSelect?.(item.id)}
           onRemove={() => onRemove?.(item.id)}
           onTitleClick={onTitleClick ? () => onTitleClick(item.id) : undefined}
-          isLiked={isLiked?.(item.id)}
+          isLiked={isLiked}
           onToggleLike={onToggleLike ? () => onToggleLike(item.id) : undefined}
           labels={labels}
         />
@@ -94,3 +94,5 @@ export const ReorderableQueueItem: FC<ReorderableQueueItemProps> = ({
     </div>
   );
 };
+
+export const ReorderableQueueItem = memo(ReorderableQueueItemView);

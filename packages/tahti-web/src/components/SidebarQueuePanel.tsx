@@ -1,6 +1,6 @@
 import { useNavigate } from '@tanstack/react-router';
 import { Trash2Icon } from 'lucide-react';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { Button, QueuePanel, Tooltip } from '@tahti-player/ui';
 
@@ -11,6 +11,15 @@ import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { useQueueBarActions } from './useQueueBarActions';
 
 const QUEUE_VIEWPORT_MAX = 'max-h-80';
+
+const QUEUE_LABELS = {
+  emptyTitle: 'Queue empty',
+  emptySubtitle: 'Play a channel or radio to start listening',
+  removeButton: 'Remove from queue',
+  playbackError: 'Could not play',
+  noCandidates: 'No stream',
+  candidateFailed: 'Stream failed',
+};
 
 export function SidebarQueuePanel({
   compact = false,
@@ -38,6 +47,40 @@ export function SidebarQueuePanel({
   );
   const { requestClear, menuItems, dialogs } = useQueueBarActions();
 
+  const soundIdFor = useCallback(
+    (id: string) => {
+      const item = queueById.get(id);
+      return item ? soundIdFromPlayableId(item.track.source.id) : null;
+    },
+    [queueById],
+  );
+  const handleTitleClick = useCallback(
+    (id: string) => {
+      const soundId = soundIdFor(id);
+      if (soundId) {
+        void navigate({ to: '/t/$id', params: { id: soundId } });
+      }
+    },
+    [navigate, soundIdFor],
+  );
+  const isLiked = useCallback(
+    (id: string) => {
+      const soundId = soundIdFor(id);
+      return soundId ? favoriteIds.has(soundId) : false;
+    },
+    [favoriteIds, soundIdFor],
+  );
+  const handleToggleLike = useCallback(
+    (id: string) => {
+      const item = queueById.get(id);
+      const playable = item ? playableFromQueueItem(item) : null;
+      if (playable) {
+        toggleFavoriteTrack(playable);
+      }
+    },
+    [queueById, toggleFavoriteTrack],
+  );
+
   return (
     <div
       className={cn(
@@ -53,42 +96,12 @@ export function SidebarQueuePanel({
           fadePastItems
           reorderable
           onReorder={reorderQueue}
-          onSelectItem={(id) => playQueueIndex(id)}
-          onRemoveItem={(id) => removeFromQueue(id)}
-          onTitleClick={(id) => {
-            const item = queueById.get(id);
-            const soundId = item
-              ? soundIdFromPlayableId(item.track.source.id)
-              : null;
-            if (soundId) {
-              void navigate({ to: '/t/$id', params: { id: soundId } });
-            }
-          }}
-          isLiked={(id) => {
-            const item = queueById.get(id);
-            const soundId = item
-              ? soundIdFromPlayableId(item.track.source.id)
-              : null;
-            return soundId ? favoriteIds.has(soundId) : false;
-          }}
-          onToggleLike={(id) => {
-            const item = queueById.get(id);
-            if (!item) {
-              return;
-            }
-            const playable = playableFromQueueItem(item);
-            if (playable) {
-              toggleFavoriteTrack(playable);
-            }
-          }}
-          labels={{
-            emptyTitle: 'Queue empty',
-            emptySubtitle: 'Play a channel or radio to start listening',
-            removeButton: 'Remove from queue',
-            playbackError: 'Could not play',
-            noCandidates: 'No stream',
-            candidateFailed: 'Stream failed',
-          }}
+          onSelectItem={playQueueIndex}
+          onRemoveItem={removeFromQueue}
+          onTitleClick={handleTitleClick}
+          isLiked={isLiked}
+          onToggleLike={handleToggleLike}
+          labels={QUEUE_LABELS}
         />
       </div>
 

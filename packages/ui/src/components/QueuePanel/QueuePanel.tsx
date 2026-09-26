@@ -1,6 +1,6 @@
 import { DragEndEvent } from '@dnd-kit/core';
 import { Music } from 'lucide-react';
-import { FC } from 'react';
+import { FC, memo, useCallback, useLayoutEffect, useMemo, useRef } from 'react';
 
 import type { QueueItem as QueueItemType } from '@tahti-player/model';
 
@@ -17,6 +17,39 @@ import { ReorderableQueueItem } from './ReorderableQueueItem';
  * queue; it only removes the layout cost of very long queues.
  */
 const LONG_QUEUE_THRESHOLD = 100;
+
+/**
+ * Returns a callback whose identity never changes while `handler` stays
+ * defined, so memoized rows skip re-rendering when a parent passes a fresh
+ * inline function every render. Returns `undefined` when `handler` is absent
+ * because rows render differently (no like button, inert title) without it.
+ */
+const useStableHandler = <Args extends unknown[]>(
+  handler: ((...args: Args) => void) | undefined,
+): ((...args: Args) => void) | undefined => {
+  const ref = useRef(handler);
+  useLayoutEffect(() => {
+    ref.current = handler;
+  });
+  const stable = useCallback((...args: Args) => ref.current?.(...args), []);
+  return handler ? stable : undefined;
+};
+
+export const resolveReorder = (
+  indexById: ReadonlyMap<string, number>,
+  activeId: string,
+  overId: string | undefined,
+): [fromIndex: number, toIndex: number] | null => {
+  if (overId === undefined || activeId === overId) {
+    return null;
+  }
+  const fromIndex = indexById.get(activeId);
+  const toIndex = indexById.get(overId);
+  if (fromIndex === undefined || toIndex === undefined) {
+    return null;
+  }
+  return [fromIndex, toIndex];
+};
 
 export type QueuePanelProps = {
   items: QueueItemType[];
@@ -44,7 +77,7 @@ export type QueuePanelProps = {
   };
 };
 
-export const QueuePanel: FC<QueuePanelProps> = ({
+const QueuePanelView: FC<QueuePanelProps> = ({
   items,
   currentItemId,
   isCollapsed = false,
@@ -60,20 +93,39 @@ export const QueuePanel: FC<QueuePanelProps> = ({
   labels,
   classes,
 }) => {
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (!over || active.id === over.id || !onReorder) {
-      return;
-    }
+  const itemIds = useMemo(() => items.map((item) => item.id), [items]);
+  const indexById = useMemo(
+    () => new Map(itemIds.map((id, index) => [id, index])),
+    [itemIds],
+  );
 
-    const fromIndex = items.findIndex((item) => item.id === active.id);
-    const toIndex = items.findIndex((item) => item.id === over.id);
-    if (fromIndex === -1 || toIndex === -1) {
-      return;
-    }
+  const handleReorder = useStableHandler(onReorder);
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const move = resolveReorder(
+        indexById,
+        String(event.active.id),
+        event.over ? String(event.over.id) : undefined,
+      );
+      if (move && handleReorder) {
+        handleReorder(...move);
+      }
+    },
+    [indexById, handleReorder],
+  );
 
-    onReorder(fromIndex, toIndex);
-  };
+  const handleSelect = useStableHandler(onSelectItem);
+  const handleRemove = useStableHandler(onRemoveItem);
+  const handleSelectCandidate = useStableHandler(onSelectCandidate);
+  const handleTitleClick = useStableHandler(onTitleClick);
+  const handleToggleLike = useStableHandler(onToggleLike);
+
+  const { removeButton, playbackError, noCandidates, candidateFailed } =
+    labels ?? {};
+  const rowLabels = useMemo(
+    () => ({ removeButton, playbackError, noCandidates, candidateFailed }),
+    [removeButton, playbackError, noCandidates, candidateFailed],
+  );
 
   if (items.length === 0) {
     return (
@@ -108,9 +160,8 @@ export const QueuePanel: FC<QueuePanelProps> = ({
   }
 
   const skipOffscreenWork = items.length > LONG_QUEUE_THRESHOLD;
-  const itemIds = items.map((item) => item.id);
   const currentIndex = currentItemId
-    ? items.findIndex((item) => item.id === currentItemId)
+    ? (indexById.get(currentItemId) ?? -1)
     : -1;
 
   return (
@@ -152,18 +203,13 @@ export const QueuePanel: FC<QueuePanelProps> = ({
                     isCurrent={item.id === currentItemId}
                     isCollapsed={isCollapsed}
                     isReorderable={reorderable}
-                    onSelect={onSelectItem}
-                    onRemove={onRemoveItem}
-                    onSelectCandidate={onSelectCandidate}
-                    onTitleClick={onTitleClick}
-                    isLiked={isLiked}
-                    onToggleLike={onToggleLike}
-                    labels={{
-                      removeButton: labels?.removeButton,
-                      playbackError: labels?.playbackError,
-                      noCandidates: labels?.noCandidates,
-                      candidateFailed: labels?.candidateFailed,
-                    }}
+                    onSelect={handleSelect}
+                    onRemove={handleRemove}
+                    onSelectCandidate={handleSelectCandidate}
+                    onTitleClick={handleTitleClick}
+                    isLiked={isLiked?.(item.id)}
+                    onToggleLike={handleToggleLike}
+                    labels={rowLabels}
                   />
                 </div>
               );
@@ -174,3 +220,10 @@ export const QueuePanel: FC<QueuePanelProps> = ({
     </div>
   );
 };
+
+/**
+ * Rows are memoized: re-rendering the panel only re-renders rows whose item,
+ * current/liked state or layout flags changed. `isLiked` is evaluated here
+ * per row, so it may be a fresh closure over a favorites Set each render.
+ */
+export const QueuePanel = memo(QueuePanelView);

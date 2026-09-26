@@ -13,6 +13,11 @@ import { FC, ReactNode } from 'react';
 
 const DRAG_ACTIVATION_DISTANCE_PX = 5;
 
+/** Module-level so `useSensors` keeps its identity and sortable rows skip re-rendering. */
+const POINTER_SENSOR_OPTIONS = {
+  activationConstraint: { distance: DRAG_ACTIVATION_DISTANCE_PX },
+};
+
 type QueueReorderLayerProps = {
   enabled: boolean;
   items: string[];
@@ -28,11 +33,7 @@ export const QueueReorderLayer: FC<QueueReorderLayerProps> = ({
   onDragEnd,
   children,
 }) => {
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: { distance: DRAG_ACTIVATION_DISTANCE_PX },
-    }),
-  );
+  const sensors = useSensors(useSensor(PointerSensor, POINTER_SENSOR_OPTIONS));
 
   if (!enabled) {
     return <>{children}</>;
