@@ -83,7 +83,7 @@ Screenshots are Nuclear UI only (mock or beta). Prod is the source of *what must
 | `/dashboard/broadcast` | `/studio/go-live` | `studio-go-live-v1.png` | shot |
 | `/dashboard/archive` | `/studio/archive` | `studio-archive-v1.png` | shot |
 | `/dashboard/archive/[id]` | `/studio/archive/$id` | `studio-archive-item-v1.png` | shot |
-| `/dashboard/archive/[id]/editor` | `/studio/archive/$id/editor` | — | ui-no-shot |
+| `/dashboard/archive/[id]/editor` | `/studio/sounds/$id/editor` (old `/studio/archive/$id/editor` still routes) | `studio-sound-editor-waveform.png`, `studio-sound-editor-waveform-zoomed.png` (+ `--light`; real decoded audio, `scripts/capture-editor-waveform.mjs`) | shot |
 | `/dashboard/upload` (+ imports, from-broadcast) | `/studio/upload` | `studio-upload-v1.png` | partial (imports thinner) |
 | `/dashboard/releases` | `/studio/releases` | `studio-releases-v1.png` | shot |
 | `/dashboard/releases/[id]` | `/studio/releases/$id` | `studio-release-detail-v1.png` | ui-no-shot → capture |
