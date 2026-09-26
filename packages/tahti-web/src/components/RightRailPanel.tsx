@@ -135,7 +135,7 @@ function CollapsedQueueBar() {
             currentItemId={currentId ?? undefined}
             isCollapsed
             reorderable={false}
-            onSelectItem={(id) => playQueueIndex(id)}
+            onSelectItem={playQueueIndex}
             labels={COLLAPSED_LABELS}
           />
         ) : (
