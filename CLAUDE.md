@@ -29,6 +29,14 @@ When touching a component, check whether it already follows this
 convention; if it doesn't, migrate it as part of the change rather than
 leaving it inconsistent.
 
+## Never show email addresses as names
+
+Email addresses must never appear as an artist, channel, user or credit name
+anywhere in tahti-web, the player or `@tahti-player/ui`. When a display name is
+missing, fall back to the username, never to an email. The API rejects email
+display names (`../tahti-org` `safeDisplayName` / `containsEmailAddress` in
+`@tahti/shared`); don't add a client-side fallback that reintroduces one.
+
 ## Do not
 
 - Skim all of `docs/todo/` or the full UI redesign worklog to find “what’s next”.
