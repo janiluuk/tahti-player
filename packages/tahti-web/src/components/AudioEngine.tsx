@@ -1,6 +1,8 @@
 import Hls from 'hls.js';
 import { useEffect, useMemo, useRef } from 'react';
 
+import type { QueueItem } from '@tahti-player/model';
+
 import { postListenEvent } from '../api/client';
 import type { TahtiPlayable } from '../api/types';
 import { usePlaybackPrefsStore } from '../stores/playbackPrefsStore';
@@ -33,9 +35,8 @@ export function AudioEngine() {
   const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
 
-  const currentId = usePlayerStore((s) => s.currentId);
+  const current = usePlayerStore(selectCurrentItem);
   const restoredPending = usePlayerStore((s) => s.restoredPending);
-  const queue = usePlayerStore((s) => s.queue);
   const status = usePlayerStore((s) => s.status);
   const volume = usePlayerStore((s) => s.volume);
   const muted = usePlayerStore((s) => s.muted);
@@ -49,10 +50,6 @@ export function AudioEngine() {
   const skipSeconds = usePlaybackPrefsStore((s) => s.skipSeconds);
   const setAnalyser = usePlayerStore((s) => s.setAnalyser);
 
-  const current = useMemo(
-    () => queue.find((item) => item.id === currentId) ?? null,
-    [currentId, queue],
-  );
   const playable = useMemo(
     () => (current ? playableFromQueueItem(current) : null),
     [current],
@@ -94,22 +91,29 @@ export function AudioEngine() {
     };
   }, [setStatus, previous, next, seekBy, skipSeconds]);
 
+  const hasPlayable = playable != null;
+  const metaTitle = playable?.title;
+  const metaArtist = playable?.artist;
+  const metaCoverUrl = playable?.coverUrl;
+  // Keyed on primitives, not the playable object: queue rebuilds (re-play,
+  // resolved stream URLs) hand back a new object for the same track, and
+  // each MediaMetadata assignment makes the OS refetch artwork.
   useEffect(() => {
     if (!('mediaSession' in navigator)) {
       return;
     }
-    if (!playable) {
+    if (!hasPlayable) {
       navigator.mediaSession.metadata = null;
       return;
     }
     navigator.mediaSession.metadata = new MediaMetadata({
-      title: playable.title,
-      artist: playable.artist,
-      artwork: playable.coverUrl
-        ? [{ src: playable.coverUrl, sizes: '512x512', type: 'image/jpeg' }]
+      title: metaTitle,
+      artist: metaArtist,
+      artwork: metaCoverUrl
+        ? [{ src: metaCoverUrl, sizes: '512x512', type: 'image/jpeg' }]
         : [],
     });
-  }, [playable]);
+  }, [hasPlayable, metaTitle, metaArtist, metaCoverUrl]);
 
   useEffect(() => {
     if (!('mediaSession' in navigator)) {
@@ -228,10 +232,13 @@ export function AudioEngine() {
         return;
       }
       lastProgressUpdate = now;
-      setProgress(
-        audio.currentTime,
-        Number.isFinite(audio.duration) ? audio.duration : 0,
-      );
+      const duration = Number.isFinite(audio.duration) ? audio.duration : 0;
+      setProgress(audio.currentTime, duration);
+      updatePositionState(audio.currentTime, duration, audio.playbackRate);
+    };
+    const onSeeked = () => {
+      const duration = Number.isFinite(audio.duration) ? audio.duration : 0;
+      updatePositionState(audio.currentTime, duration, audio.playbackRate);
     };
     // crossOrigin is required for the shared analyser (see the graph
     // effect above) -- without it, connecting a MediaElementAudioSourceNode
@@ -262,6 +269,7 @@ export function AudioEngine() {
     audio.addEventListener('pause', onPause);
     audio.addEventListener('ended', onEnded);
     audio.addEventListener('timeupdate', onTime);
+    audio.addEventListener('seeked', onSeeked);
     audio.addEventListener('error', onError);
 
     // AirPlay can't cast a MediaSource-backed element, so prefer native HLS there.
@@ -296,6 +304,7 @@ export function AudioEngine() {
       audio.removeEventListener('pause', onPause);
       audio.removeEventListener('ended', onEnded);
       audio.removeEventListener('timeupdate', onTime);
+      audio.removeEventListener('seeked', onSeeked);
       audio.removeEventListener('error', onError);
       cleanup();
     };
@@ -330,36 +339,79 @@ export function AudioEngine() {
   return (
     <>
       <audio ref={audioRef} preload="none" className="hidden" />
-      <ListenEventReporter playable={playable} reported={listenReportedRef} />
+      <ListenEventReporter
+        soundId={listenSoundId(playable)}
+        reported={listenReportedRef}
+      />
     </>
   );
 }
 
+function selectCurrentItem(
+  s: ReturnType<typeof usePlayerStore.getState>,
+): QueueItem | null {
+  return s.queue.find((item) => item.id === s.currentId) ?? null;
+}
+
+function listenSoundId(playable: TahtiPlayable | null): string | null {
+  if (!playable || playable.kind !== 'sound') {
+    return null;
+  }
+  if (!playable.id.startsWith('sound:')) {
+    return null;
+  }
+  return playable.id.slice('sound:'.length) || null;
+}
+
+function updatePositionState(
+  position: number,
+  duration: number,
+  playbackRate: number,
+) {
+  if (
+    !('mediaSession' in navigator) ||
+    typeof navigator.mediaSession.setPositionState !== 'function'
+  ) {
+    return;
+  }
+  // Live/radio streams report no finite duration; the API throws unless
+  // 0 <= position <= duration and duration > 0.
+  if (!(duration > 0) || position < 0 || position > duration) {
+    return;
+  }
+  try {
+    navigator.mediaSession.setPositionState({
+      duration,
+      position,
+      playbackRate: playbackRate > 0 ? playbackRate : 1,
+    });
+  } catch {
+    // Some browsers reject edge values despite the guard above.
+  }
+}
+
+/**
+ * Subscribes to elapsed time on its own so progress ticks re-render only
+ * this null component, never AudioEngine's metadata/playback effects.
+ */
 function ListenEventReporter({
-  playable,
+  soundId,
   reported,
 }: {
-  playable: TahtiPlayable | null;
+  soundId: string | null;
   reported: { current: Set<string> };
 }) {
-  const currentTime = usePlayerStore((state) => state.currentTime);
+  const pastThreshold = usePlayerStore(
+    (state) => state.currentTime >= LISTEN_EVENT_AFTER_SEC,
+  );
 
   useEffect(() => {
-    if (
-      !playable ||
-      playable.kind !== 'sound' ||
-      currentTime < LISTEN_EVENT_AFTER_SEC ||
-      !playable.id.startsWith('sound:')
-    ) {
-      return;
-    }
-    const soundId = playable.id.slice('sound:'.length);
-    if (!soundId || reported.current.has(soundId)) {
+    if (!soundId || !pastThreshold || reported.current.has(soundId)) {
       return;
     }
     reported.current.add(soundId);
     void postListenEvent(soundId);
-  }, [currentTime, playable, reported]);
+  }, [soundId, pastThreshold, reported]);
 
   return null;
 }
