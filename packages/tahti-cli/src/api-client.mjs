@@ -50,18 +50,34 @@ export function describeHttpError(status, path, apiMessage) {
     : `${path} → HTTP ${status}`;
 }
 
-export async function apiGet(path, config) {
-  if (!config.token) {
+export function parsePositiveInt(flag, value, max) {
+  if (value === undefined) {
+    return undefined;
+  }
+  const number = Number(value);
+  if (!Number.isInteger(number) || number < 1 || (max && number > max)) {
+    const range = max ? `1-${max}` : 'a positive integer';
+    throw new CliError(`Invalid ${flag} "${value}". Expected ${range}.`);
+  }
+  return number;
+}
+
+/**
+ * `auth: false` is for public routes: the token is neither required nor sent,
+ * because the API rejects any request carrying an invalid `tahti_` token with
+ * 401, even on routes that need no auth.
+ */
+export async function apiGet(path, config, { auth = true } = {}) {
+  if (auth && !config.token) {
     throw new CliError(`Missing API token. ${TOKEN_HELP}`);
+  }
+  const headers = { Accept: 'application/json' };
+  if (auth) {
+    headers.Authorization = `Bearer ${config.token}`;
   }
   let res;
   try {
-    res = await fetch(`${config.apiUrl}${path}`, {
-      headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${config.token}`,
-      },
-    });
+    res = await fetch(`${config.apiUrl}${path}`, { headers });
   } catch (error) {
     throw new CliError(
       `Could not reach the Tahti API at ${config.apiUrl}: ${error?.message ?? error}`,

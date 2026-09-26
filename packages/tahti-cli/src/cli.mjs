@@ -5,6 +5,8 @@ import { CliError, resolveConfig } from './api-client.mjs';
 import { LIBRARY_SORTS, runLibraryList } from './commands/library-list.mjs';
 import { runLibraryShow } from './commands/library-show.mjs';
 import { runReleasesList } from './commands/releases-list.mjs';
+import { runReleasesShow } from './commands/releases-show.mjs';
+import { runSearch, SEARCH_PAGE_SIZE } from './commands/search.mjs';
 import { runWhoami } from './commands/whoami.mjs';
 
 const JSON_OPTION = { json: { type: 'boolean', default: false } };
@@ -58,10 +60,43 @@ membership and channel. --json prints the full API response unchanged.`,
         limit: values.limit,
       }),
   },
+  {
+    path: ['releases', 'show'],
+    usage: 'tahti releases show <id> [--json]',
+    summary: 'Show one of your releases with its tracklist',
+    details: `Calls GET /api/me/releases/:id. Get ids from \`tahti releases list\`.`,
+    options: JSON_OPTION,
+    positionals: 1,
+    run: (config, { values, positionals }) =>
+      runReleasesShow(config, positionals[0], { json: values.json }),
+  },
+  {
+    path: ['search'],
+    usage: 'tahti search <query> [--page <n>] [--limit <n>] [--json]',
+    summary: 'Search public tracks by title',
+    details: `Calls GET /api/v1/search/tracks, newest first. Public: works without
+TAHTI_API_TOKEN and never sends it. Words after "search" form one query.
+  --page <n>    Page number (default: 1)
+  --limit <n>   Tracks per page, 1-${SEARCH_PAGE_SIZE} (default: ${SEARCH_PAGE_SIZE}); --json prints the
+                API's page of ${SEARCH_PAGE_SIZE} unchanged`,
+    options: {
+      ...JSON_OPTION,
+      page: { type: 'string' },
+      limit: { type: 'string' },
+    },
+    positionals: Infinity,
+    run: (config, { values, positionals }) =>
+      runSearch(config, positionals.join(' '), {
+        json: values.json,
+        page: values.page,
+        limit: values.limit,
+      }),
+  },
 ];
 
 const ENVIRONMENT_HELP = `Environment:
-  TAHTI_API_TOKEN   Personal API token (tahti.live → Settings → Account → API tokens). Required.
+  TAHTI_API_TOKEN   Personal API token (tahti.live → Settings → Account → API tokens).
+                    Required by every command except search.
   TAHTI_API_URL     API base URL (default: https://api.tahti.live)`;
 
 function commandList() {
