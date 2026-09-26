@@ -29,6 +29,8 @@ describe('main', () => {
     expect(help).toContain('tahti library list');
     expect(help).toContain('tahti library show <id>');
     expect(help).toContain('tahti releases list');
+    expect(help).toContain('tahti releases show <id>');
+    expect(help).toContain('tahti search <query>');
   });
 
   it('prints help and exits 0 with no arguments', async () => {
@@ -58,6 +60,11 @@ describe('main', () => {
     [['library', 'list', '-h'], '--sort <order>'],
     [['library', 'show', '--help'], 'Usage: tahti library show <id> [--json]'],
     [['releases', 'list', '--help'], '--limit <n>'],
+    [
+      ['releases', 'show', '--help'],
+      'Usage: tahti releases show <id> [--json]',
+    ],
+    [['search', '--help'], 'works without'],
   ])(
     'prints per-command help for %j without calling the API',
     async (argv, text) => {
@@ -161,6 +168,49 @@ describe('main', () => {
 
     expect(code).toBe(0);
     expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('First EP'));
+  });
+
+  it('runs releases show with the positional id', async () => {
+    vi.stubEnv('TAHTI_API_TOKEN', 'tahti_test');
+    const fetchMock = mockFetchJson({
+      id: 'rel_1',
+      title: 'First EP',
+      tracks: [{ id: 't1', position: 1, title: 'Opener', status: 'READY' }],
+    });
+
+    const code = await main(['releases', 'show', 'rel_1']);
+
+    expect(code).toBe(0);
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api.example.test/api/me/releases/rel_1',
+      expect.anything(),
+    );
+    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Opener'));
+  });
+
+  it('runs search without TAHTI_API_TOKEN and joins the query words', async () => {
+    vi.stubEnv('TAHTI_API_TOKEN', '');
+    const fetchMock = mockFetchJson({
+      tracks: [
+        {
+          id: 'snd_1',
+          title: 'Night Drive',
+          durationSec: 245,
+          artistName: 'DJ Night',
+          channelSlug: 'djnight',
+        },
+      ],
+      hasMore: false,
+    });
+
+    const code = await main(['search', 'night', 'drive', '--limit', '5']);
+
+    expect(code).toBe(0);
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api.example.test/api/v1/search/tracks?q=night+drive',
+      { headers: { Accept: 'application/json' } },
+    );
+    expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('Night Drive'));
   });
 
   it('surfaces a 401 as a token error', async () => {

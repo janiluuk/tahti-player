@@ -59,6 +59,8 @@ type Props = {
   onImportFolder: () => void;
   /** Opens a provider set import; absent when the desktop build lacks it. */
   onImportSet?: (provider: NativeImportProvider) => void;
+  /** Opens the hearthis.at set import; absent when the desktop build lacks it. */
+  onImportItunes?: () => void;
   onRescanMissing: () => void;
   onCancelImport: () => void;
   onAddRoot: () => void;
@@ -112,6 +114,7 @@ export function DesktopLibraryContent({
   onImportFiles,
   onImportFolder,
   onImportSet,
+  onImportItunes,
   onRescanMissing,
   onCancelImport,
   onAddRoot,
@@ -167,6 +170,11 @@ export function DesktopLibraryContent({
               Import SoundCloud set
             </Button>
           </>
+        ) : null}
+        {onImportItunes ? (
+          <Button variant="text" onClick={onImportItunes} disabled={busy}>
+            Import iTunes library
+          </Button>
         ) : null}
         {unavailableCount > 0 ? (
           <Button variant="text" onClick={onRescanMissing} disabled={busy}>

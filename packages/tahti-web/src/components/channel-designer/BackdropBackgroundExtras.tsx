@@ -4,7 +4,7 @@ import {
   BACKGROUND_VISUAL_PRESETS,
   type ColorScheme,
 } from '../../api/channel-design';
-import { visualizerMetadata } from '../../plugins/visualizers';
+import { visualizerMetadata } from '../../plugins/visualizers/meta';
 import { Eyebrow } from '../tahti/Eyebrow';
 import { ColorSchemeFields } from './ColorSchemeFields';
 

@@ -6,6 +6,7 @@
 
 import type { NativeAnalysis } from './native-library/analysis';
 import type { NativeCatalog } from './native-library/catalog';
+import type { NativeItunesImport } from './native-library/itunesImport';
 import type { NativePlaylists } from './native-library/playlists';
 import type { NativeProviderImport } from './native-library/providerImport';
 import type {
@@ -32,6 +33,7 @@ export * from './native-library/playlists';
 export * from './native-library/catalog';
 export * from './native-library/analysis';
 export * from './native-library/providerImport';
+export * from './native-library/itunesImport';
 
 export type TahtiNativeLibrary = {
   list: (
@@ -73,6 +75,8 @@ export type TahtiNativeLibrary = {
   /** Forgets unfinished imports; tracks already imported stay. */
   discardPendingImport?: () => Promise<void>;
   resolve: (id: string) => Promise<string>;
+  /** Displayable URL for a track's `artworkKey`; absent when there is no artwork cache. */
+  artworkUrl?: (key: string) => string;
   remove: (id: string) => Promise<void>;
   /** Removes many catalog rows at once (files on disk untouched); returns how many existed. */
   removeMany: (ids: string[]) => Promise<number>;
@@ -114,4 +118,16 @@ export type TahtiNativeLibrary = {
   onFilesDropped: (listener: (paths: string[]) => void) => () => void;
   /** Downloads a provider set into the library. Missing in older desktop builds. */
   providerImport?: NativeProviderImport;
+  /** Imports an iTunes / Music.app library XML. Missing in older desktop builds. */
+  itunesImport?: NativeItunesImport;
 };
+
+/** The track's embedded cover as an image URL, or `null` to show a placeholder. */
+export function nativeArtworkSrc(
+  library: Pick<TahtiNativeLibrary, 'artworkUrl'> | null | undefined,
+  track: Pick<NativeLibraryTrack, 'artworkKey'>,
+): string | null {
+  return track.artworkKey && library?.artworkUrl
+    ? library.artworkUrl(track.artworkKey)
+    : null;
+}

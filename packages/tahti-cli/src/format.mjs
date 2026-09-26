@@ -65,3 +65,16 @@ export function formatDetails(pairs) {
     .map(([label, value]) => `${label.padEnd(width)}  ${cellText(value)}`)
     .join('\n');
 }
+
+/**
+ * Email addresses must never be printed as a name. The API already rejects
+ * email-shaped display names, but free-text fields such as a sound's
+ * `artistName` are not guaranteed to be clean, so fall back to the username.
+ */
+export function safeName(name, username) {
+  const trimmed = typeof name === 'string' ? name.trim() : '';
+  if (!trimmed || trimmed.includes('@')) {
+    return username;
+  }
+  return trimmed;
+}

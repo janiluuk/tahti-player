@@ -10,7 +10,7 @@ import {
   SettingsIcon,
   ShieldIcon,
 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
@@ -24,11 +24,18 @@ import {
 
 import { useAutoHideNavWhilePlaying } from '../hooks/useAutoHideNavWhilePlaying';
 import { useIsCompactDesktop, useIsMobile } from '../hooks/useIsMobile';
+import { useOpenedOnce } from '../hooks/useOpenedOnce';
 import { MAIN_CONTENT_PADDING } from '../layout/contentPadding';
 import { hasAccountRole } from '../lib/accountRoles';
 import { diagnosticsEnabled } from '../lib/buildPolicy';
 import { cn } from '../lib/cn';
 import { activeSidebarItem } from '../lib/navigationActive';
+import {
+  deferOnboardingPrompt,
+  hasDeferredOnboardingPrompt,
+  hasSeenOnboarding,
+  markOnboardingSeen,
+} from '../lib/onboardingPrompt';
 import {
   reapplyLastMetadata,
   scrollingPlaybackTitle,
@@ -36,24 +43,17 @@ import {
 } from '../lib/seo';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
+import { useChannelSetupModalStore } from '../stores/channelSetupModalStore';
 import { useLayoutStore } from '../stores/layoutStore';
 import { usePlaybackPrefsStore } from '../stores/playbackPrefsStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 import { useTourStore } from '../stores/tourStore';
-import {
-  deferOnboardingPrompt,
-  hasDeferredOnboardingPrompt,
-  hasSeenOnboarding,
-  markOnboardingSeen,
-} from '../views/OnboardingView';
 import { AmbientBackground } from './AmbientBackground';
 import { AppTopNav } from './AppTopNav';
 import { AudioEngine } from './AudioEngine';
 import { AuthDialog } from './AuthDialog';
-import { ChannelSetupDialog } from './ChannelSetupDialog';
 import { ConnectedPlayerBar } from './ConnectedPlayerBar';
-import { ConnectedSettingsModal } from './ConnectedSettingsModal';
 import { ConnectedStatusBar } from './ConnectedStatusBar';
 import { FullScreenPlayer } from './FullScreenPlayer';
 import { MobileBottomNav, MobileDrawer } from './MobileChrome';
@@ -69,6 +69,42 @@ import {
 } from './StudioNav';
 
 const LOADING_BAR_DELAY_MS = 1000;
+
+const ChannelSetupDialog = lazy(() =>
+  import('./ChannelSetupDialog').then((m) => ({
+    default: m.ChannelSetupDialog,
+  })),
+);
+const ConnectedSettingsModal = lazy(() =>
+  import('./ConnectedSettingsModal').then((m) => ({
+    default: m.ConnectedSettingsModal,
+  })),
+);
+
+/** Both dialogs pull large editors (channel designer, every settings panel),
+ * so they load on first open rather than with the shell. */
+function DeferredDialogs() {
+  const settingsOpened = useOpenedOnce(
+    useSettingsModalStore((state) => state.isOpen),
+  );
+  const channelSetupOpened = useOpenedOnce(
+    useChannelSetupModalStore((state) => state.isOpen),
+  );
+  return (
+    <>
+      {channelSetupOpened && (
+        <Suspense fallback={null}>
+          <ChannelSetupDialog />
+        </Suspense>
+      )}
+      {settingsOpened && (
+        <Suspense fallback={null}>
+          <ConnectedSettingsModal />
+        </Suspense>
+      )}
+    </>
+  );
+}
 
 const ANONYMOUS_ALLOWED_ROUTES = [
   /^\/$/,
@@ -590,8 +626,7 @@ export function AppShell() {
       {!isMobile && <ConnectedStatusBar />}
       <FullScreenPlayer />
       <AuthDialog />
-      <ChannelSetupDialog />
-      <ConnectedSettingsModal />
+      <DeferredDialogs />
       <PageTourSpotlight />
       <Toaster position="bottom-right" richColors closeButton />
 

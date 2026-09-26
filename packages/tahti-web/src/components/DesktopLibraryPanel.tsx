@@ -28,6 +28,8 @@ import { DesktopLibraryContent } from './desktop-library/DesktopLibraryContent';
 import { DesktopLibraryDialogs } from './desktop-library/DesktopLibraryDialogs';
 import { ProviderSetImportDialog } from './desktop-library/ProviderSetImportDialog';
 import { SET_IMPORT_SOURCES } from './desktop-library/setImportSources';
+import { HearthisSetImportDialog } from './desktop-library/HearthisSetImportDialog';
+import { ItunesImportDialog } from './desktop-library/ItunesImportDialog';
 import type { TrackBatchDialog } from './desktop-library/TrackBatchDialogs';
 import { useLibraryRoots } from './desktop-library/useLibraryRoots';
 import { useMissingTracks } from './desktop-library/useMissingTracks';
@@ -70,12 +72,14 @@ export function DesktopLibraryPanel() {
     Array<{ name: string; tracks: number }>
   >([]);
   const [batchDialog, setBatchDialog] = useState<TrackBatchDialog | null>(null);
+
   // The provider outlives `open` so the dialog keeps its content while it
   // animates closed.
   const [setImport, setSetImport] = useState<{
     provider: NativeImportProvider;
     open: boolean;
   }>({ provider: 'hearthis', open: false });
+  const [itunesImportOpen, setItunesImportOpen] = useState(false);
   const [openPlaylistId, setOpenPlaylistId] = useState<string | null>(
     initialView.openPlaylistId,
   );
@@ -414,6 +418,11 @@ export function DesktopLibraryPanel() {
             ? (provider) => setSetImport({ provider, open: true })
             : undefined
         }
+        onImportItunes={
+          nativeLibrary?.itunesImport
+            ? () => setItunesImportOpen(true)
+            : undefined
+        }
         onRescanMissing={() => void rescanNative()}
         onCancelImport={cancelNativeImport}
         onAddRoot={() => void addRoot()}
@@ -476,6 +485,15 @@ export function DesktopLibraryPanel() {
           }
           source={SET_IMPORT_SOURCES[setImport.provider]}
           providerImport={nativeLibrary.providerImport}
+          onImported={() => void refreshNative()}
+        />
+      ) : null}
+      {nativeLibrary?.itunesImport ? (
+        <ItunesImportDialog
+          isOpen={itunesImportOpen}
+          onClose={() => setItunesImportOpen(false)}
+          itunesImport={nativeLibrary.itunesImport}
+          pickFolder={nativeLibrary.catalog.pickFolder}
           onImported={() => void refreshNative()}
         />
       ) : null}

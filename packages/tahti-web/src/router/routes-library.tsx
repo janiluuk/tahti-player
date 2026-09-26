@@ -5,23 +5,26 @@ import {
 } from '@tanstack/react-router';
 
 import { diagnosticsEnabled } from '../lib/buildPolicy';
-import { ArtistView } from '../views/ArtistView';
-import { ChannelView } from '../views/ChannelView';
-import { ChatView } from '../views/ChatView';
-import { CollectionView } from '../views/CollectionView';
-import { FavoritesView } from '../views/FavoritesView';
-import { GreenRoomView } from '../views/GreenRoomView';
-import { JamView } from '../views/JamView';
-import { MessagesView } from '../views/MessagesView';
-import { NewsView } from '../views/NewsView';
-import { SmartLinkView } from '../views/SmartLinkView';
-import { SubscribeView } from '../views/SubscribeView';
-import { TrackDetailView } from '../views/TrackDetailView';
-import { VenueDetailView } from '../views/VenueDetailView';
-import { VenueRegisterView } from '../views/VenueRegisterView';
-import { WhatsNewView } from '../views/WhatsNewView';
 import { appLayoutRoute } from './router-core';
-import { MoreView, StudioCollectionEditView } from './router-lazy-views';
+import {
+  ArtistView,
+  ChannelView,
+  ChatView,
+  CollectionView,
+  FavoritesView,
+  GreenRoomView,
+  JamView,
+  MessagesView,
+  MoreView,
+  NewsView,
+  SmartLinkView,
+  StudioCollectionEditView,
+  SubscribeView,
+  TrackDetailView,
+  VenueDetailView,
+  VenueRegisterView,
+  WhatsNewView,
+} from './router-lazy-views';
 
 // Its History tab pulls in react-activity-calendar plus the other
 // HistoryCharts components — keep that off the anonymous listen path's

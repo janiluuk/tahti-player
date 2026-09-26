@@ -1,9 +1,7 @@
 import { createRoute, redirect } from '@tanstack/react-router';
 
-import { FeedView } from '../views/FeedView';
-import { OnboardingView } from '../views/OnboardingView';
 import { appLayoutRoute } from './router-core';
-import { SettingsView } from './router-lazy-views';
+import { FeedView, OnboardingView, SettingsView } from './router-lazy-views';
 
 export const settingsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,

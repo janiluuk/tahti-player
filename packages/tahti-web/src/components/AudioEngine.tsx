@@ -1,14 +1,27 @@
-import Hls from 'hls.js';
+import type Hls from 'hls.js';
 import { useEffect, useMemo, useRef } from 'react';
 
 import type { QueueItem } from '@tahti-player/model';
 
 import { postListenEvent } from '../api/client';
 import type { TahtiPlayable } from '../api/types';
+import { mediaSessionArtwork } from '../lib/mediaSessionArtwork';
 import { usePlaybackPrefsStore } from '../stores/playbackPrefsStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 
 const LISTEN_EVENT_AFTER_SEC = 15;
+
+let hlsModule: Promise<typeof import('hls.js')> | null = null;
+
+/** hls.js is most of a megabyte, so it loads on the first HLS stream
+ * instead of with the app shell. */
+function loadHls(): Promise<typeof import('hls.js')> {
+  hlsModule ??= import('hls.js').catch((error: unknown) => {
+    hlsModule = null;
+    throw error;
+  });
+  return hlsModule;
+}
 
 /**
  * Mounts a hidden <audio> element driven by the player store.
@@ -94,7 +107,11 @@ export function AudioEngine() {
   const hasPlayable = playable != null;
   const metaTitle = playable?.title;
   const metaArtist = playable?.artist;
-  const metaCoverUrl = playable?.coverUrl;
+  const metaArtworkJson = useMemo(
+    () =>
+      JSON.stringify(mediaSessionArtwork(current?.track.artwork?.items ?? [])),
+    [current],
+  );
   // Keyed on primitives, not the playable object: queue rebuilds (re-play,
   // resolved stream URLs) hand back a new object for the same track, and
   // each MediaMetadata assignment makes the OS refetch artwork.
@@ -109,11 +126,9 @@ export function AudioEngine() {
     navigator.mediaSession.metadata = new MediaMetadata({
       title: metaTitle,
       artist: metaArtist,
-      artwork: metaCoverUrl
-        ? [{ src: metaCoverUrl, sizes: '512x512', type: 'image/jpeg' }]
-        : [],
+      artwork: JSON.parse(metaArtworkJson) as MediaImage[],
     });
-  }, [hasPlayable, metaTitle, metaArtist, metaCoverUrl]);
+  }, [hasPlayable, metaTitle, metaArtist, metaArtworkJson]);
 
   useEffect(() => {
     if (!('mediaSession' in navigator)) {
@@ -272,34 +287,54 @@ export function AudioEngine() {
     audio.addEventListener('seeked', onSeeked);
     audio.addEventListener('error', onError);
 
-    // AirPlay can't cast a MediaSource-backed element, so prefer native HLS there.
-    const nativeHls =
-      isHls &&
-      (canAirPlay() || !Hls.isSupported()) &&
-      audio.canPlayType('application/vnd.apple.mpegurl') !== '';
+    const playDirect = () => {
+      audio.src = url;
+      void audio.play().catch(() => setStatus('paused'));
+    };
+    let disposed = false;
 
-    if (nativeHls) {
-      audio.src = url;
-      void audio.play().catch(() => setStatus('paused'));
-    } else if (isHls && Hls.isSupported()) {
-      const hls = new Hls({ liveDurationInfinity: true, enableWorker: true });
-      hlsRef.current = hls;
-      hls.on(Hls.Events.ERROR, (_e, data) => {
-        if (data.fatal) {
-          setStatus('error', data.details);
-        }
-      });
-      hls.loadSource(url);
-      hls.attachMedia(audio);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        void audio.play().catch(() => setStatus('paused'));
-      });
+    // AirPlay can't cast a MediaSource-backed element, so prefer native HLS there.
+    if (
+      !isHls ||
+      (canAirPlay() &&
+        audio.canPlayType('application/vnd.apple.mpegurl') !== '')
+    ) {
+      playDirect();
     } else {
-      audio.src = url;
-      void audio.play().catch(() => setStatus('paused'));
+      void loadHls()
+        .then(({ default: HlsPlayer }) => {
+          if (disposed) {
+            return;
+          }
+          if (!HlsPlayer.isSupported()) {
+            playDirect();
+            return;
+          }
+          const hls = new HlsPlayer({
+            liveDurationInfinity: true,
+            enableWorker: true,
+          });
+          hlsRef.current = hls;
+          hls.on(HlsPlayer.Events.ERROR, (_e, data) => {
+            if (data.fatal) {
+              setStatus('error', data.details);
+            }
+          });
+          hls.loadSource(url);
+          hls.attachMedia(audio);
+          hls.on(HlsPlayer.Events.MANIFEST_PARSED, () => {
+            void audio.play().catch(() => setStatus('paused'));
+          });
+        })
+        .catch(() => {
+          if (!disposed) {
+            setStatus('error', 'Could not load the stream player');
+          }
+        });
     }
 
     return () => {
+      disposed = true;
       audio.removeEventListener('playing', onPlaying);
       audio.removeEventListener('pause', onPause);
       audio.removeEventListener('ended', onEnded);

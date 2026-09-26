@@ -1,21 +1,12 @@
 import { apiGet } from '../api-client.mjs';
-import { formatBytes, formatDetails } from '../format.mjs';
+import { formatBytes, formatDetails, safeName } from '../format.mjs';
 
 export async function fetchCurrentUser(config) {
   return apiGet('/api/auth/me', config);
 }
 
-/**
- * The API already rejects email-shaped display names, but a CLI must never
- * echo one as a name either way, so an email-looking value falls back to the
- * username instead of being printed.
- */
 export function safeDisplayName(user) {
-  const displayName = user.displayName?.trim();
-  if (!displayName || displayName.includes('@')) {
-    return user.username;
-  }
-  return displayName;
+  return safeName(user.displayName, user.username);
 }
 
 export function formatCurrentUser(user) {

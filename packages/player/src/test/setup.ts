@@ -4,7 +4,7 @@ import path from 'node:path';
 import { Settings } from 'luxon';
 import { vi } from 'vitest';
 
-import { setupDomMocks } from '@tahti-player/ui';
+import { setupDomMocks } from '@tahti-player/ui/test';
 
 process.env.NODE_ENV = 'test';
 process.env.TZ = 'UTC';

@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 
-import { Button, Dialog } from '@tahti-player/ui';
+import { Button, Dialog, MediaArtwork } from '@tahti-player/ui';
 
 import { formatLibrarySize } from '../lib/libraryFormat';
-import type {
-  NativeEditField,
-  NativeFieldProvenance,
-  NativeLibraryTrack,
-  TahtiNativeLibrary,
+import {
+  nativeArtworkSrc,
+  type NativeEditField,
+  type NativeFieldProvenance,
+  type NativeLibraryTrack,
+  type TahtiNativeLibrary,
 } from '../lib/nativeLibrary';
 import { formatDuration } from '../lib/playableToTrack';
 import { TrackAnalysisSection } from './TrackAnalysisSection';
@@ -126,6 +127,14 @@ export function TrackInspectorDialog({
         {track?.artist || 'Unknown artist'}
       </Dialog.Description>
       <div className="flex max-h-[55vh] flex-col gap-3 overflow-y-auto py-2">
+        {track ? (
+          <MediaArtwork
+            src={nativeArtworkSrc(library, track)}
+            alt={`Cover of ${track.album || track.title}`}
+            size="lg"
+            className="shrink-0 rounded-md"
+          />
+        ) : null}
         {sections.map((section) => (
           <section key={section}>
             <h3 className="mb-1 text-sm font-semibold">{section}</h3>

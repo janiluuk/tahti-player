@@ -10,6 +10,9 @@
     ".": {
       "import": "./src/index.ts",
       "types": "./dist/index.d.ts"
+    },
+    "./test": {
+      "import": "./src/test/index.ts"
     }
   },
   "files": [

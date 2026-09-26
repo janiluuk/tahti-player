@@ -201,3 +201,27 @@ async fn flac_reads_vorbis_comments_and_round_trips_written_tags() {
     let left: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM library_track_overrides").fetch_one(&pool).await.unwrap();
     assert_eq!(left, 0);
 }
+
+#[tokio::test]
+async fn a_wav_named_flac_gets_riff_info_not_flac_tags_even_from_an_old_row() {
+    let dir = tempfile::tempdir().unwrap();
+    let pool = pool().await;
+    let path = dir.path().join("mislabelled.flac");
+    write_wav_tagged(&path, &[("INAM", "Song"), ("IART", "Old Artist")]);
+    import_paths(&pool, vec![path.clone()]).await;
+    let t = tracks(&pool).await.remove(0);
+    assert_eq!(t.format, "wav");
+    // A row imported before content detection still says "flac".
+    sqlx::query("UPDATE library_tracks SET format='flac'").execute(&pool).await.unwrap();
+    apply_edits(&pool, std::slice::from_ref(&t.id), &[edit(EditField::Artist, "New Artist")]).await.unwrap();
+
+    let result = write_tags(&pool, std::slice::from_ref(&t.id), true).await.unwrap();
+
+    assert_eq!((result.written, result.failed.len()), (1, 0), "{:?}", result.failed);
+    let bytes = std::fs::read(&path).unwrap();
+    assert_eq!((&bytes[0..4], &bytes[8..12]), (&b"RIFF"[..], &b"WAVE"[..]), "still a WAV");
+    assert!(dir.path().join("mislabelled.flac.tahti-backup").exists());
+    assert!(!dir.path().join("mislabelled.tahti-tmp.flac").exists());
+    let fresh = pool_after(&path).await;
+    assert_eq!((fresh[0].format.as_str(), fresh[0].artist.as_str()), ("wav", "New Artist"));
+}

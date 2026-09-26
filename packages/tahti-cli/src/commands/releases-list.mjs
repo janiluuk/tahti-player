@@ -1,20 +1,8 @@
-import { apiGet, buildQuery, CliError } from '../api-client.mjs';
+import { apiGet, buildQuery, parsePositiveInt } from '../api-client.mjs';
 import { formatDate, formatTable } from '../format.mjs';
 
 /** Bounds from `MeReleaseListQuerySchema` in `@tahti/shared`. */
 export const MAX_RELEASES_LIMIT = 100;
-
-function parsePositiveInt(flag, value, max) {
-  if (value === undefined) {
-    return undefined;
-  }
-  const number = Number(value);
-  if (!Number.isInteger(number) || number < 1 || (max && number > max)) {
-    const range = max ? `1-${max}` : 'a positive integer';
-    throw new CliError(`Invalid ${flag} "${value}". Expected ${range}.`);
-  }
-  return number;
-}
 
 export async function fetchReleases(config, { page, limit } = {}) {
   const query = buildQuery({

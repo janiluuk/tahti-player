@@ -1,14 +1,16 @@
 import { createRoute, redirect } from '@tanstack/react-router';
 
-import { ForgotPasswordView } from '../views/ForgotPasswordView';
-import { JoinView } from '../views/JoinView';
-import { LoginView } from '../views/LoginView';
-import { ResetPasswordView } from '../views/ResetPasswordView';
-import { SetupPasswordView } from '../views/SetupPasswordView';
-import { SignupPaymentView } from '../views/SignupPaymentView';
-import { VerifyView } from '../views/VerifyView';
 import { appLayoutRoute } from './router-core';
-import { StatusView } from './router-lazy-views';
+import {
+  ForgotPasswordView,
+  JoinView,
+  LoginView,
+  ResetPasswordView,
+  SetupPasswordView,
+  SignupPaymentView,
+  StatusView,
+  VerifyView,
+} from './router-lazy-views';
 
 export const joinRoute = createRoute({
   getParentRoute: () => appLayoutRoute,

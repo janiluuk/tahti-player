@@ -1,6 +1,14 @@
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
 import { HistoryIcon, ListMusicIcon, NewspaperIcon, XIcon } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { toast } from 'sonner';
 
 import {
@@ -32,6 +40,7 @@ import type { OnAirChannel, PublicChannel, TahtiPlayable } from '../api/types';
 import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
 import { ListenerWidgetsSection } from '../components/ListenerWidgetsSection';
 import { ListenWidgetStoreDialog } from '../components/ListenWidgetStoreDialog';
+import { PageLoading } from '../components/PageStates';
 import { PlayableTrackTable } from '../components/PlayableTrackTable';
 import { RadioListItem } from '../components/RadioListItem';
 import { RadioStationCoverEditButton } from '../components/RadioStationCover';
@@ -52,8 +61,6 @@ import { useLayoutStore } from '../stores/layoutStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { useListenerWidgetsStore } from '../stores/listenerWidgetsStore';
 import { usePlayerStore } from '../stores/playerStore';
-import { FeedView } from './FeedView';
-import { HistoryView } from './HistoryView';
 
 export type ListenTab = 'listen' | 'feed' | 'history';
 
@@ -94,6 +101,13 @@ type RadioRowItem =
 type OnAirRowItem = { id: string; title: string; channel: OnAirChannel };
 
 type RecentRowItem = { id: string; title: string; playable: TahtiPlayable };
+
+const FeedView = lazy(() =>
+  import('./FeedView').then((m) => ({ default: m.FeedView })),
+);
+const HistoryView = lazy(() =>
+  import('./HistoryView').then((m) => ({ default: m.HistoryView })),
+);
 
 export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
   const navigate = useNavigate();
@@ -530,8 +544,16 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
           tab === 'listen' && signedIn ? <ListenWidgetStoreDialog /> : undefined
         }
       >
-        {tab === 'feed' ? <FeedView embedded /> : null}
-        {tab === 'history' ? <HistoryView embedded /> : null}
+        {tab === 'feed' ? (
+          <Suspense fallback={<PageLoading label="Loading feed…" />}>
+            <FeedView embedded />
+          </Suspense>
+        ) : null}
+        {tab === 'history' ? (
+          <Suspense fallback={<PageLoading label="Loading history…" />}>
+            <HistoryView embedded />
+          </Suspense>
+        ) : null}
 
         {tab === 'listen' ? (
           <div className="flex flex-col gap-4" data-testid="listen-dashboard">
