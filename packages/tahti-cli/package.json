@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "description": "Terminal-first CLI for Tahti — scriptable access to the Tahti API (v1: read-only library listing).",
+  "description": "Terminal-first CLI for Tahti — scriptable access to the Tahti API (read-only commands).",
   "bin": {
     "tahti": "./src/cli.mjs"
   },
