@@ -47,7 +47,7 @@ pub fn analyze_file(path: &Path, expected_frames: u64, hold: &dyn Fn() -> bool) 
     let file = std::fs::File::open(path).map_err(|e| fail(e.to_string()))?;
     let mut hint = Hint::new();
     if let Some(ext) = path.extension().and_then(|e| e.to_str()) {
-        hint.with_extension(ext);
+        hint.with_extension(&super::metadata::detect_format(path, ext));
     }
     let stream = MediaSourceStream::new(Box::new(file), Default::default());
     let mut probed = symphonia::default::get_probe()
@@ -105,7 +105,7 @@ pub fn analyze_file(path: &Path, expected_frames: u64, hold: &dyn Fn() -> bool) 
 pub fn read_tag_values(path: &Path) -> (Option<f64>, Option<String>) {
     use lofty::file::TaggedFileExt;
     use lofty::tag::ItemKey;
-    let Some(tagged) = lofty::probe::Probe::open(path).ok().and_then(|p| p.read().ok()) else {
+    let Some(tagged) = super::metadata::open_tagged(path) else {
         return (None, None);
     };
     let Some(tag) = tagged.primary_tag().or_else(|| tagged.first_tag()) else {

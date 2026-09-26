@@ -12,7 +12,7 @@
 use std::path::{Path, PathBuf};
 
 use lofty::config::WriteOptions;
-use lofty::file::TaggedFileExt;
+use lofty::file::{TaggedFile, TaggedFileExt};
 use lofty::prelude::*;
 use lofty::probe::Probe;
 use lofty::tag::{ItemKey, Tag, TagType};
@@ -95,7 +95,10 @@ async fn classify(
             continue;
         };
         let path: String = row.get(0);
-        let format: String = row.get(1);
+        let recorded: String = row.get(1);
+        // Older rows may carry the extension's format; writing FLAC tags into
+        // a WAV named `.flac` would corrupt it, so the file itself decides.
+        let format = metadata::detect_format(Path::new(&path), &recorded);
         let edits: Vec<(EditField, String)> = sqlx::query("SELECT field, value FROM library_track_overrides WHERE track_id=?")
             .bind(id)
             .fetch_all(pool)
@@ -172,15 +175,19 @@ fn set_or_clear(tag: &mut Tag, key: ItemKey, value: &str) {
     }
 }
 
+fn read_tagged(path: &Path) -> lofty::error::Result<TaggedFile> {
+    Probe::open(path)?.guess_file_type()?.read()
+}
+
 /// Copies `path` to a temp file, tags the copy, verifies it, and swaps it in.
 fn write_one(path: &Path, format: &str, edits: &[(EditField, String)], keep_backup: bool) -> Result<Vec<EditField>, String> {
     let dir = path.parent().ok_or("No folder")?;
     let stem = path.file_stem().and_then(|s| s.to_str()).ok_or("Bad file name")?;
-    let temp = dir.join(format!("{stem}.tahti-tmp.{format}"));
+    let extension = path.extension().and_then(|s| s.to_str()).unwrap_or(format);
+    let temp = dir.join(format!("{stem}.tahti-tmp.{extension}"));
     let result = (|| -> Result<Vec<EditField>, String> {
         std::fs::copy(path, &temp).map_err(|e| format!("Could not copy the file: {e}"))?;
-        let mut tagged = Probe::open(&temp)
-            .and_then(|p| p.read())
+        let mut tagged = read_tagged(&temp)
             .map_err(|e| format!("Could not read the tags: {e}"))?;
         // FLAC: its own tag. WAV: RIFF INFO (the tag the importer reads),
         // plus any ID3v2 chunk already in the file so the two never disagree.
@@ -199,8 +206,8 @@ fn write_one(path: &Path, format: &str, edits: &[(EditField, String)], keep_back
             .map_err(|e| format!("Could not write the tags: {e}"))?;
         // Verify: the tagged copy must parse, keep the same audio properties
         // and hold what we wrote.
-        let before = Probe::open(path).and_then(|p| p.read()).map_err(|e| e.to_string())?;
-        let after = Probe::open(&temp).and_then(|p| p.read()).map_err(|e| format!("The tagged copy did not verify: {e}"))?;
+        let before = read_tagged(path).map_err(|e| e.to_string())?;
+        let after = read_tagged(&temp).map_err(|e| format!("The tagged copy did not verify: {e}"))?;
         if before.properties().duration() != after.properties().duration()
             || before.properties().sample_rate() != after.properties().sample_rate()
         {
@@ -231,10 +238,10 @@ fn write_one(path: &Path, format: &str, edits: &[(EditField, String)], keep_back
             }
         }
         if keep_backup {
-            let mut backup = dir.join(format!("{stem}.{format}.tahti-backup"));
+            let mut backup = dir.join(format!("{stem}.{extension}.tahti-backup"));
             let mut n = 2;
             while backup.exists() {
-                backup = dir.join(format!("{stem}.{format}.tahti-backup{n}"));
+                backup = dir.join(format!("{stem}.{extension}.tahti-backup{n}"));
                 n += 1;
             }
             std::fs::copy(path, &backup).map_err(|e| format!("Could not keep a backup copy: {e}"))?;

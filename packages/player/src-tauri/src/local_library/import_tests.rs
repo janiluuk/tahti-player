@@ -281,3 +281,75 @@ async fn untagged_files_keep_unknown_values_empty_not_guessed() {
     assert_eq!(track.genre, "");
     assert_eq!((track.year, track.track_no, track.disc_no), (None, None, None));
 }
+
+const FIXTURES: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/src/local_library/fixtures");
+
+#[tokio::test]
+async fn a_wav_named_flac_is_recorded_as_wav_with_its_tags() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("mislabelled.flac");
+    write_wav(&path, "Hidden Wav", "Wav Artist");
+
+    let pool = pool().await;
+    let result = import_paths(&pool, vec![path]).await;
+
+    assert_eq!(result.imported, 1, "errors: {:?}", result.errors);
+    let track = &list(&pool, "", 0).await.unwrap().tracks[0];
+    assert_eq!(track.format, "wav");
+    assert_eq!((track.title.as_str(), track.artist.as_str()), ("Hidden Wav", "Wav Artist"));
+    assert!(track.path.ends_with("mislabelled.flac"), "the file keeps its name");
+}
+
+#[tokio::test]
+async fn an_mp3_named_m4a_is_recorded_as_mp3_with_its_tags_and_duration() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("tone.m4a");
+    std::fs::copy(format!("{FIXTURES}/tone.mp3"), &path).unwrap();
+
+    let pool = pool().await;
+    let result = import_paths(&pool, vec![path]).await;
+
+    assert_eq!(result.imported, 1, "errors: {:?}", result.errors);
+    let track = &list(&pool, "", 0).await.unwrap().tracks[0];
+    assert_eq!(track.format, "mp3");
+    assert_eq!((track.title.as_str(), track.artist.as_str()), ("Tone MP3", "Fixture Artist"));
+    assert!((1.5..2.5).contains(&track.duration), "duration {}", track.duration);
+}
+
+#[tokio::test]
+async fn correctly_named_files_keep_their_format() {
+    let dir = tempfile::tempdir().unwrap();
+    let wav = dir.path().join("song.wav");
+    write_wav(&wav, "Wav", "A");
+    let flac = dir.path().join("tone.flac");
+    std::fs::copy(format!("{FIXTURES}/tone.flac"), &flac).unwrap();
+    let mp3 = dir.path().join("tone.mp3");
+    std::fs::copy(format!("{FIXTURES}/tone.mp3"), &mp3).unwrap();
+
+    let pool = pool().await;
+    let result = import_paths(&pool, vec![wav, flac, mp3]).await;
+
+    assert_eq!(result.imported, 3, "errors: {:?}", result.errors);
+    let mut formats: Vec<String> = list(&pool, "", 0).await.unwrap().tracks.into_iter().map(|t| t.format).collect();
+    formats.sort();
+    assert_eq!(formats, ["flac", "mp3", "wav"]);
+}
+
+#[test]
+fn detected_format_keeps_the_extension_within_the_same_family_or_when_unrecognised() {
+    use super::metadata::detect_format;
+    let dir = tempfile::tempdir().unwrap();
+    let wav = dir.path().join("x.aif");
+    write_wav(&wav, "t", "a");
+    assert_eq!(detect_format(&wav, "aif"), "wav");
+    let aiff = dir.path().join("y.aif");
+    let mut form = b"FORM\0\0\0\x04AIFF".to_vec();
+    form.extend_from_slice(&[0; 24]);
+    std::fs::write(&aiff, form).unwrap();
+    assert_eq!(detect_format(&aiff, "aif"), "aif");
+    assert_eq!(detect_format(&aiff, "flac"), "aiff");
+    let unknown = dir.path().join("z.ogg");
+    std::fs::write(&unknown, [0x42u8; 64]).unwrap();
+    assert_eq!(detect_format(&unknown, "OGG"), "ogg");
+    assert_eq!(detect_format(&dir.path().join("missing.flac"), "flac"), "flac");
+}
