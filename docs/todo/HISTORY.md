@@ -3795,3 +3795,15 @@ Items finished here were removed from their todo files; partial progress stays n
 - **hearthis.at disk-space check (#176)**, `import-provider-set-to-native-library.md`: HEAD requests size each file still to download (unknown when there is no `Content-Length`). The total is compared with free space on the destination volume (`library_provider_import_space`). The review step shows "About X needed, Y free", warns inside a max(10%, 256 MB) margin and blocks Download when the known sizes don't fit. A full disk mid-download fails the track with "The disk is full…". Windows path not compiled here.
 - **Lazy routes and dialogs (#178)**, section 2: partial, see the todo. tahti-web initial JS went from 1277 to 517 KiB gzip.
 - **Checks:** each PR ran its package's type-check, lint and tests. Local notes: on this Mac, `cargo test --lib local_library` has the same 2 pre-existing failures as master (`/var` vs `/private/var`). Player vitest fails under Node 26 (`localStorage` global) unless run with `NODE_OPTIONS=--no-experimental-webstorage` (`.nvmrc` is 24). A fresh worktree needs an empty `packages/player/dist` before the Rust build.
+
+## 2026-09-26 - Ten todo slices, second batch (#181-#190)
+
+Six merged, four left as WIP draft PRs after the agents hit a spend limit (tracked in their todos). Details of what's still open are in each todo file.
+
+- **tahti-cli `releases show` and `search` (#181)**, `tahti-cli-tool.md`. The CLI is moving to its own repo (see the todo).
+- **MediaSession artwork type (#182)**, `player-performance-optimizations.md` section 4: `type` comes from the data URI or extension (omitted when unknown), `sizes` from real dimensions, and a placeholder-only track sends `artwork: []` because many OS media UIs don't render SVG.
+- **hls.js idle prefetch (#183)**, section 2: one memoized loader (`lib/hlsLoader.ts`); idle prefetch after startup plus hover/focus on radio rows and the channel stage play button, and when the current item is HLS. Skipped with `saveData` and in AirPlay browsers with native HLS.
+- **iTunes library import UI (#184)**, `desktop-pro-library.md` Phase 1: pick, preview, remap, commit dialog in Local files; 10 new tests and a Storybook story. Not tried in the desktop app with a real export.
+- **Audio format from file contents (#185)**: `detect_format` via lofty's content probe; tag write-back re-detects, so a WAV named `.flac` gets RIFF INFO. Existing wrong rows are fixed on re-import. Playback was already content-typed by Tauri's asset protocol.
+- **Lazy i18n locales (#186)**, section 2: en_US bundled, the other ten locales are per-locale chunks behind an i18next backend; `changeLanguage` resolves after the chunk loads. Initial JS -166 KiB raw / -32 KiB gzip (measured before #178).
+- **WIP drafts (compile, tests not run):** #187 artwork cache cap + backfill, #188 BPM/key/ReplayGain from tags, #189 ListenView section states, #190 skip count. Rebased onto master; #188's conflicts with #175/#185 resolved by keeping `artwork_key` and this branch's `FileTags`.
