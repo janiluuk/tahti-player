@@ -128,6 +128,9 @@ export default defineConfig(({ mode }) => {
       testTimeout: process.env.CI ? 20_000 : 5_000,
       clearMocks: true,
       environment: 'jsdom',
+      // Node 25+ ships a global localStorage without getItem unless given
+      // --localstorage-file; it shadows jsdom's Storage.
+      execArgv: ['--no-experimental-webstorage'],
       setupFiles: ['./src/test/setup.ts'],
       reporters: vitestCiReporters(import.meta.url),
       outputFile: { junit: './test-results/junit.xml' },
