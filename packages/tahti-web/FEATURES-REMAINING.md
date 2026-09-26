@@ -8,3 +8,4 @@ When an item ships: remove it here **and** from FEATURES Remaining; fold a one-l
 - [ ] Production cutover for `apps/web`
 - [ ] À la carte track purchase (public track page is Download, not Buy) — live Stripe path exists; Buy UX on public track still incomplete
 - [ ] Radio channels beyond `tahti-radio`: a per-station programming grid (the Programming block links to the global `/schedule`), an admin/Designer control to set `channelKind`, and pages for the 6 external Finnish radio presets (currently link-outs). Background: `docs/todo/HISTORY.md` 2026-09-26 radio channel page entry
+- [ ] Track visualization video editor: full-screen editor built on PulseForge for making audio-reactive videos of a track. See `docs/todo/track-visualizer-video-editor.md`
