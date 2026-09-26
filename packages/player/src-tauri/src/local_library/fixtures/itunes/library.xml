@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Major Version</key><integer>1</integer>
+	<key>Minor Version</key><integer>1</integer>
+	<key>Application Version</key><string>12.9.5.5</string>
+	<key>Features</key><integer>5</integer>
+	<key>Show Content Ratings</key><true/>
+	<key>Music Folder</key><string>file://localhost{ROOT}/</string>
+	<key>Library Persistent ID</key><string>ABCDEF0123456789</string>
+	<key>Tracks</key>
+	<dict>
+		<key>101</key>
+		<dict>
+			<key>Track ID</key><integer>101</integer>
+			<key>Name</key><string>Alpha</string>
+			<key>Artist</key><string>Band</string>
+			<key>Album</key><string>Another Album</string>
+			<key>Genre</key><string>Ambient</string>
+			<key>Kind</key><string>WAV audio file</string>
+			<key>Total Time</key><integer>100000</integer>
+			<key>Year</key><integer>1999</integer>
+			<key>BPM</key><integer>122</integer>
+			<key>Date Added</key><date>2010-05-01T10:00:00Z</date>
+			<key>Play Count</key><integer>5</integer>
+			<key>Play Date</key><integer>3600000000</integer>
+			<key>Play Date UTC</key><date>2021-03-04T05:06:07Z</date>
+			<key>Skip Count</key><integer>2</integer>
+			<key>Rating</key><integer>80</integer>
+			<key>Loved</key><true/>
+			<key>Persistent ID</key><string>AAAA000000000101</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost{ROOT}/Band/Alpha.wav</string>
+			<key>Artwork Count</key><integer>1</integer>
+		</dict>
+		<key>102</key>
+		<dict>
+			<key>Track ID</key><integer>102</integer>
+			<key>Name</key><string>Jóga</string>
+			<key>Artist</key><string>Björk</string>
+			<key>Album Artist</key><string>Björk</string>
+			<key>Album</key><string>Homogenic</string>
+			<key>Comments</key><string>Fish &amp; chips &#x2665;</string>
+			<key>Track Number</key><integer>3</integer>
+			<key>Disc Number</key><integer>1</integer>
+			<key>Total Time</key><integer>305000</integer>
+			<key>Play Count</key><integer>3</integer>
+			<key>Persistent ID</key><string>AAAA000000000102</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost{ROOT}/Bj%C3%B6rk/J%C3%B3ga.wav</string>
+		</dict>
+		<key>103</key>
+		<dict>
+			<key>Track ID</key><integer>103</integer>
+			<key>Name</key><string>Jóga (duplicate entry)</string>
+			<key>Artist</key><string>Björk</string>
+			<key>Play Count</key><integer>2</integer>
+			<key>Persistent ID</key><string>AAAA000000000103</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://{ROOT}/Bjo%CC%88rk/Jo%CC%81ga.wav</string>
+		</dict>
+		<key>104</key>
+		<dict>
+			<key>Track ID</key><integer>104</integer>
+			<key>Name</key><string>Gone</string>
+			<key>Artist</key><string>Band</string>
+			<key>Total Time</key><integer>200000</integer>
+			<key>Persistent ID</key><string>AAAA000000000104</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost{ROOT}/Band/Gone.flac</string>
+		</dict>
+		<key>105</key>
+		<dict>
+			<key>Track ID</key><integer>105</integer>
+			<key>Name</key><string>Tone</string>
+			<key>Artist</key><string>Tester</string>
+			<key>Kind</key><string>MPEG audio file</string>
+			<key>Play Count</key><integer>1</integer>
+			<key>Persistent ID</key><string>AAAA000000000105</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost{ROOT}/Band/tone.mp3</string>
+		</dict>
+		<key>106</key>
+		<dict>
+			<key>Track ID</key><integer>106</integer>
+			<key>Name</key><string>Protected</string>
+			<key>Kind</key><string>Protected AAC audio file</string>
+			<key>Persistent ID</key><string>AAAA000000000106</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost{ROOT}/Band/Protected.m4p</string>
+		</dict>
+		<key>107</key>
+		<dict>
+			<key>Track ID</key><integer>107</integer>
+			<key>Name</key><string>Missing AAC</string>
+			<key>Kind</key><string>AAC audio file</string>
+			<key>Persistent ID</key><string>AAAA000000000107</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost{ROOT}/Band/Missing%20AAC.m4a</string>
+		</dict>
+		<key>108</key>
+		<dict>
+			<key>Track ID</key><integer>108</integer>
+			<key>Name</key><string>Radio Stream</string>
+			<key>Kind</key><string>Internet audio stream</string>
+			<key>Persistent ID</key><string>AAAA000000000108</string>
+			<key>Track Type</key><string>URL</string>
+		</dict>
+		<key>109</key>
+		<dict>
+			<key>Track ID</key><integer>109</integer>
+			<key>Name</key><string>Beta</string>
+			<key>Artist</key><string>Band</string>
+			<key>Rating</key><integer>60</integer>
+			<key>Rating Computed</key><true/>
+			<key>Persistent ID</key><string>AAAA000000000109</string>
+			<key>Track Type</key><string>File</string>
+			<key>Location</key><string>file://localhost{ROOT}/Band/Beta.wav</string>
+		</dict>
+	</dict>
+	<key>Playlists</key>
+	<array>
+		<dict>
+			<key>Name</key><string>Library</string>
+			<key>Description</key><string></string>
+			<key>Master</key><true/>
+			<key>Playlist ID</key><integer>200</integer>
+			<key>Playlist Persistent ID</key><string>PPPP000000000200</string>
+			<key>Visible</key><false/>
+			<key>All Items</key><true/>
+			<key>Playlist Items</key>
+			<array>
+				<dict><key>Track ID</key><integer>101</integer></dict>
+				<dict><key>Track ID</key><integer>102</integer></dict>
+				<dict><key>Track ID</key><integer>105</integer></dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Name</key><string>Music</string>
+			<key>Playlist ID</key><integer>201</integer>
+			<key>Playlist Persistent ID</key><string>PPPP000000000201</string>
+			<key>Distinguished Kind</key><integer>4</integer>
+			<key>Music</key><true/>
+			<key>All Items</key><true/>
+			<key>Playlist Items</key>
+			<array>
+				<dict><key>Track ID</key><integer>101</integer></dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Name</key><string>Parties</string>
+			<key>Playlist ID</key><integer>202</integer>
+			<key>Playlist Persistent ID</key><string>PPPP000000000202</string>
+			<key>All Items</key><true/>
+			<key>Folder</key><true/>
+			<key>Playlist Items</key>
+			<array>
+				<dict><key>Track ID</key><integer>102</integer></dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Name</key><string>2019</string>
+			<key>Playlist ID</key><integer>203</integer>
+			<key>Playlist Persistent ID</key><string>PPPP000000000203</string>
+			<key>Parent Persistent ID</key><string>PPPP000000000202</string>
+			<key>All Items</key><true/>
+			<key>Folder</key><true/>
+		</dict>
+		<dict>
+			<key>Name</key><string>Night &amp; Day</string>
+			<key>Playlist ID</key><integer>204</integer>
+			<key>Playlist Persistent ID</key><string>PPPP000000000204</string>
+			<key>Parent Persistent ID</key><string>PPPP000000000203</string>
+			<key>All Items</key><true/>
+			<key>Playlist Items</key>
+			<array>
+				<dict><key>Track ID</key><integer>102</integer></dict>
+				<dict><key>Track ID</key><integer>101</integer></dict>
+				<dict><key>Track ID</key><integer>104</integer></dict>
+				<dict><key>Track ID</key><integer>108</integer></dict>
+				<dict><key>Track ID</key><integer>101</integer></dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Name</key><string>Top Rated</string>
+			<key>Playlist ID</key><integer>205</integer>
+			<key>Playlist Persistent ID</key><string>PPPP000000000205</string>
+			<key>All Items</key><true/>
+			<key>Smart Info</key><data>
+			AQEAAwAAAAIAAAAZAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+			</data>
+			<key>Playlist Items</key>
+			<array>
+				<dict><key>Track ID</key><integer>105</integer></dict>
+				<dict><key>Track ID</key><integer>109</integer></dict>
+			</array>
+		</dict>
+		<dict>
+			<key>Name</key><string>Empty</string>
+			<key>Playlist ID</key><integer>206</integer>
+			<key>Playlist Persistent ID</key><string>PPPP000000000206</string>
+			<key>All Items</key><true/>
+		</dict>
+	</array>
+	<key>Library Settings</key><dict/>
+</dict>
+</plist>

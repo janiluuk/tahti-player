@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Music Folder</key><string>file://localhost/C:/Users/Old/Music/iTunes/iTunes%20Media/</string>
+	<key>Tracks</key>
+	<dict>
+		<key>1</key>
+		<dict>
+			<key>Track ID</key><integer>1</integer>
+			<key>Name</key><string>Alpha</string>
+			<key>Artist</key><string>Band</string>
+			<key>Play Count</key><integer>4</integer>
+			<key>Persistent ID</key><string>WIN0000000000001</string>
+			<key>Location</key><string>file://localhost/C:/Users/Old/Music/iTunes/iTunes%20Media/Music/Band/Alpha.wav</string>
+		</dict>
+	</dict>
+	<key>Playlists</key>
+	<array/>
+</dict>
+</plist>

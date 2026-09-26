@@ -11,6 +11,8 @@ pub mod backup;
 pub mod catalog;
 pub mod import;
 pub mod import_jobs;
+pub mod itunes_import;
+pub mod itunes_xml;
 pub mod m3u;
 mod metadata;
 pub mod organize;
@@ -43,6 +45,8 @@ mod tag_writer_tests;
 mod import_tests;
 #[cfg(test)]
 mod import_jobs_tests;
+#[cfg(test)]
+mod itunes_tests;
 #[cfg(test)]
 mod provider_import_tests;
 #[cfg(test)]
