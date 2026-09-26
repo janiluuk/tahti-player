@@ -26,10 +26,9 @@ import {
 } from '../lib/nativeLibrary';
 import { DesktopLibraryContent } from './desktop-library/DesktopLibraryContent';
 import { DesktopLibraryDialogs } from './desktop-library/DesktopLibraryDialogs';
+import { ItunesImportDialog } from './desktop-library/ItunesImportDialog';
 import { ProviderSetImportDialog } from './desktop-library/ProviderSetImportDialog';
 import { SET_IMPORT_SOURCES } from './desktop-library/setImportSources';
-import { HearthisSetImportDialog } from './desktop-library/HearthisSetImportDialog';
-import { ItunesImportDialog } from './desktop-library/ItunesImportDialog';
 import type { TrackBatchDialog } from './desktop-library/TrackBatchDialogs';
 import { useLibraryRoots } from './desktop-library/useLibraryRoots';
 import { useMissingTracks } from './desktop-library/useMissingTracks';

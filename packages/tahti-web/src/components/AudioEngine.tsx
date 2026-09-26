@@ -5,41 +5,25 @@ import type { QueueItem } from '@tahti-player/model';
 
 import { postListenEvent } from '../api/client';
 import type { TahtiPlayable } from '../api/types';
+import {
+  canAirPlay,
+  canPlayNativeHls,
+  isHlsStream,
+  loadHls,
+  prefersNativeHls,
+  prefetchHls,
+  scheduleIdleHlsPrefetch,
+} from '../lib/hlsLoader';
 import { mediaSessionArtwork } from '../lib/mediaSessionArtwork';
 import { usePlaybackPrefsStore } from '../stores/playbackPrefsStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 
 const LISTEN_EVENT_AFTER_SEC = 15;
 
-let hlsModule: Promise<typeof import('hls.js')> | null = null;
-
-/** hls.js is most of a megabyte, so it loads on the first HLS stream
- * instead of with the app shell. */
-function loadHls(): Promise<typeof import('hls.js')> {
-  hlsModule ??= import('hls.js').catch((error: unknown) => {
-    hlsModule = null;
-    throw error;
-  });
-  return hlsModule;
-}
-
 /**
  * Mounts a hidden <audio> element driven by the player store.
  * Live / radio: HLS via hls.js (or native Safari).
  */
-/**
- * WebKit AirPlays a media element's own output. Once `createMediaElementSource`
- * captures the element, its sound only leaves through the AudioContext, so the
- * AirPlay receiver plays silence, and a capture can't be undone. Browsers that
- * can AirPlay therefore play uncaptured (visualizers fall back to idle).
- */
-function canAirPlay(): boolean {
-  return (
-    typeof window !== 'undefined' &&
-    'WebKitPlaybackTargetAvailabilityEvent' in window
-  );
-}
-
 export function AudioEngine() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const hlsRef = useRef<Hls | null>(null);
@@ -67,6 +51,16 @@ export function AudioEngine() {
     () => (current ? playableFromQueueItem(current) : null),
     [current],
   );
+
+  useEffect(() => scheduleIdleHlsPrefetch(), []);
+
+  const currentIsHls =
+    playable != null && !playable.embed && isHlsStream(playable);
+  useEffect(() => {
+    if (currentIsHls) {
+      prefetchHls();
+    }
+  }, [currentIsHls]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -215,7 +209,7 @@ export function AudioEngine() {
     }
 
     const url = playable.streamUrl;
-    const isHls = playable.protocol === 'hls' || url.includes('.m3u8');
+    const isHls = isHlsStream(playable);
 
     const cleanup = () => {
       hlsRef.current?.destroy();
@@ -293,12 +287,7 @@ export function AudioEngine() {
     };
     let disposed = false;
 
-    // AirPlay can't cast a MediaSource-backed element, so prefer native HLS there.
-    if (
-      !isHls ||
-      (canAirPlay() &&
-        audio.canPlayType('application/vnd.apple.mpegurl') !== '')
-    ) {
+    if (!isHls || prefersNativeHls(audio)) {
       playDirect();
     } else {
       void loadHls()
@@ -327,9 +316,16 @@ export function AudioEngine() {
           });
         })
         .catch(() => {
-          if (!disposed) {
-            setStatus('error', 'Could not load the stream player');
+          if (disposed) {
+            return;
           }
+          // The chunk can fail on a stale deploy or a flaky connection;
+          // native playback is then the only way left to make sound.
+          if (canPlayNativeHls(audio)) {
+            playDirect();
+            return;
+          }
+          setStatus('error', 'Playback error');
         });
     }
 

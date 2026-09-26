@@ -15,6 +15,7 @@ import {
   parseNowPlayingOverlaySettings,
   resolveNowPlayingOverlayPreset,
 } from '../../content/nowPlayingOverlayPresets';
+import { prefetchHls } from '../../lib/hlsLoader';
 import { useLayoutStore } from '../../stores/layoutStore';
 import { useLibraryStore } from '../../stores/libraryStore';
 import { usePlayerStore } from '../../stores/playerStore';
@@ -197,6 +198,8 @@ export function ChannelStagePlayer({
               size="icon"
               className="bg-primary text-primary-foreground h-16 w-16 rounded-full shadow-lg"
               onClick={handlePlayChannel}
+              onPointerEnter={prefetchHls}
+              onFocus={prefetchHls}
               aria-label={
                 channelIsLoading
                   ? 'Loading stream'
