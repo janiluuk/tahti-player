@@ -10,6 +10,7 @@ pub mod analysis_dsp;
 pub mod backup;
 pub mod catalog;
 pub mod import;
+pub mod import_jobs;
 pub mod m3u;
 mod metadata;
 pub mod organize;
@@ -24,6 +25,7 @@ pub mod tracks;
 pub mod watcher;
 
 pub use import::*;
+pub use import_jobs::{discard_pending_imports, pending_imports, PendingImport};
 pub use query::*;
 pub use roots::*;
 pub use tracks::*;
@@ -38,6 +40,8 @@ mod backup_tests;
 mod tag_writer_tests;
 #[cfg(test)]
 mod import_tests;
+#[cfg(test)]
+mod import_jobs_tests;
 #[cfg(test)]
 mod provider_import_tests;
 #[cfg(test)]

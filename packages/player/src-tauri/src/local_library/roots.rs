@@ -230,7 +230,7 @@ pub(super) async fn scan_root(
                 }
                 Err(_) => fresh,
             };
-            let imported = import_paths_with_progress(app, pool, fresh, skipped, Some(&root.id)).await;
+            let imported = import_paths_with_progress(app, pool, fresh, skipped, Some(&root.id), &root.path).await;
             result.imported = imported.imported;
             result.skipped = imported.skipped;
             result.errors = imported.errors;

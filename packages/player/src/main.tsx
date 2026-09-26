@@ -351,6 +351,15 @@ const baseNativeLibrary: TahtiNativeLibrary = {
   async cancelImport() {
     unwrapResult(await commands.libraryImportCancel());
   },
+  async pendingImport() {
+    return unwrapResult(await commands.libraryImportPending());
+  },
+  async resumeImport() {
+    return unwrapResult(await commands.libraryImportResume());
+  },
+  async discardPendingImport() {
+    unwrapResult(await commands.libraryImportDiscard());
+  },
   async resolve(id) {
     return convertFileSrc(
       unwrapResult(await commands.libraryResolve(id)),
