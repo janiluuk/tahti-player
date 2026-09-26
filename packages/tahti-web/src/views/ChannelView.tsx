@@ -8,7 +8,7 @@ import {
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Dialog, SaveButton, Tooltip } from '@tahti-player/ui';
+import { Button, Dialog, Tooltip } from '@tahti-player/ui';
 
 import {
   BRAND_ACCENTS,
@@ -23,6 +23,7 @@ import { soundItemToPlayable } from '../api/client';
 import type { ChannelSoundItem, TahtiPlayable } from '../api/types';
 import {
   ChannelBlockFrame,
+  ChannelEditToolbar,
   ChannelHeroBlock,
   ChannelLayersPanel,
   ChannelPageBackdrop,
@@ -102,6 +103,8 @@ export function ChannelView({ slug }: { slug: string }) {
     liveShows,
     artistSocialLinks,
     loading,
+    sectionStatus,
+    retrySection,
   } = useChannelData(slug, lookTick);
   const linksDraft = useChannelLinksDraft(channel, artistSocialLinks);
   const channelLinksDraft = linksDraft.links;
@@ -443,6 +446,8 @@ export function ChannelView({ slug }: { slug: string }) {
           catalogPlayables,
           channelLinksDraft,
           liveShows,
+          sectionStatus,
+          onRetrySection: retrySection,
           chatOn,
           onOpenChat: openChat,
           listenerWidgetInstances,
@@ -703,7 +708,13 @@ export function ChannelView({ slug }: { slug: string }) {
             );
           })}
         </div>
-        {!editing ? <DiscoWidgetsSection widgets={discoWidgets} /> : null}
+        {!editing ? (
+          <DiscoWidgetsSection
+            widgets={discoWidgets}
+            status={sectionStatus.widgets}
+            onRetry={() => retrySection('widgets')}
+          />
+        ) : null}
       </div>
     </div>
   );
@@ -736,45 +747,15 @@ export function ChannelView({ slug }: { slug: string }) {
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-3">
-      <div className="border-border flex flex-wrap items-center justify-between gap-2 border-b pb-3">
-        <div>
-          <div className="text-xs font-bold tracking-wide uppercase">
-            Channel design
-          </div>
-          <p className="text-foreground-secondary text-xs">
-            Pick a preset, then drag / hide / add. Layout saves in this browser
-            for now.
-            {layoutDirty || lookDirty || linksDirty
-              ? ' · unsaved changes'
-              : ' · saved locally'}
-          </p>
-          {presetNote && (
-            <p className="text-foreground-secondary mt-1 text-xs">
-              {presetNote}
-            </p>
-          )}
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Button
-            size="sm"
-            variant="secondary"
-            className="sm:hidden"
-            onClick={() => setMobileMenuOpen((v) => !v)}
-          >
-            {mobileMenuOpen ? 'Hide menu' : 'Layers menu'}
-          </Button>
-          <SaveButton
-            disabled={!layoutDirty && !lookDirty && !linksDirty}
-            saving={savingLook}
-            label="Save changes"
-            savingLabel="Saving…"
-            onClick={() => void saveAll()}
-          />
-          <Button size="sm" onClick={() => void exitEdit()}>
-            Done
-          </Button>
-        </div>
-      </div>
+      <ChannelEditToolbar
+        dirty={layoutDirty || lookDirty || linksDirty}
+        note={presetNote}
+        saving={savingLook}
+        mobileMenuOpen={mobileMenuOpen}
+        onToggleMobileMenu={() => setMobileMenuOpen((v) => !v)}
+        onSave={() => void saveAll()}
+        onDone={() => void exitEdit()}
+      />
 
       <div className="relative min-h-0 flex-1">
         <div className="h-full min-h-0 overflow-y-auto">{pageBody}</div>

@@ -17,7 +17,11 @@ import {
 } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import * as client from '../api/client';
+import * as discoWidgets from '../api/disco-widgets';
+import * as shows from '../api/shows';
 import { useAuthStore } from '../stores/authStore';
+import { usePlayerStore } from '../stores/playerStore';
 import { useRightRailOverrideStore } from '../stores/rightRailOverrideStore';
 import { ChannelView } from './ChannelView';
 
@@ -118,6 +122,7 @@ describe('ChannelView', () => {
     vi.unstubAllEnvs();
     vi.restoreAllMocks();
     useAuthStore.setState({ user: null, hydrated: true, loading: false });
+    usePlayerStore.setState(usePlayerStore.getInitialState(), true);
   });
 
   it('shows the page but not the editor to a visitor, even with ?edit', async () => {
@@ -177,6 +182,48 @@ describe('ChannelView', () => {
     );
     await waitFor(() =>
       expect(screen.queryByText(/save to keep it/)).toBeNull(),
+    );
+  });
+
+  it('keeps the channel playable while tracks are slow and widgets/shows fail', async () => {
+    signInAs('someone-else');
+    let resolveSounds: (() => void) | undefined;
+    const realFetchSound = client.fetchChannelSound;
+    vi.spyOn(client, 'fetchChannelSound').mockImplementation(
+      (slug) =>
+        new Promise((resolve) => {
+          resolveSounds = () => resolve(realFetchSound(slug));
+        }),
+    );
+    vi.spyOn(discoWidgets, 'fetchChannelDiscoWidgets').mockResolvedValue({
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 503' },
+    });
+    vi.spyOn(shows, 'fetchPublicRadioShow').mockRejectedValue(
+      new Error('network'),
+    );
+
+    await renderChannel('/channel/northern-lights');
+
+    const play = await screen.findByRole('button', { name: 'Play live' });
+    expect(screen.queryByText('Loading channel…')).toBeNull();
+    expect(screen.getByText('Loading tracks…')).toBeTruthy();
+    expect(await screen.findByText("Widgets couldn't load")).toBeTruthy();
+
+    await act(async () => {
+      fireEvent.click(play);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    await waitFor(() =>
+      expect(usePlayerStore.getState().currentId).not.toBeNull(),
+    );
+
+    await act(async () => {
+      resolveSounds?.();
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    await waitFor(() =>
+      expect(screen.queryByText('Loading tracks…')).toBeNull(),
     );
   });
 });
