@@ -61,6 +61,27 @@ function Group({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
+function LabeledToggle({
+  label,
+  hint,
+  checked,
+  onChange,
+}: {
+  label: string;
+  hint: string;
+  checked: boolean;
+  onChange: (on: boolean) => void;
+}) {
+  return (
+    <Tooltip content={hint} side="top">
+      <div className="flex items-center gap-2">
+        <span className="text-foreground-secondary">{label}</span>
+        <Toggle label={label} checked={checked} onChange={onChange} />
+      </div>
+    </Tooltip>
+  );
+}
+
 export type ToolbarProps = {
   playing: boolean;
   hasSelection: boolean;
@@ -239,13 +260,15 @@ export function WaveformToolbar(props: ToolbarProps) {
       <div className="flex-1" />
 
       <div className="flex flex-wrap items-center gap-4 text-xs">
-        <Toggle
+        <LabeledToggle
           label="Snap to zero"
+          hint="Move selection edges to the nearest zero crossing so cuts don't click"
           checked={props.snapToZero}
           onChange={props.onSnapChange}
         />
-        <Toggle
+        <LabeledToggle
           label="Skip cuts"
+          hint="Jump over cut regions during playback"
           checked={props.skipCuts}
           onChange={props.onSkipCutsChange}
         />

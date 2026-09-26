@@ -3753,6 +3753,17 @@ Shipped in one pass (no todo file). The full-screen player has a "More options" 
   - an admin/Designer control for `channelKind`;
   - pages for the 6 external Finnish presets.
 
+## 2026-09-26 — Audio editor screenshots with a real waveform
+
+`docs/todo/audio-editor-waveform-screenshot.md`: the Pro audio editor screenshots now show real decoded audio instead of mock placeholder peaks.
+
+- **New `packages/tahti-web/scripts/capture-editor-waveform.mjs`:**
+  - Answers the mock source URL (`DEMO_MP3`) with a local file (`EDITOR_AUDIO`), so the editor's real decode and render path runs.
+  - Opens `/studio/sounds/arch-mock-2/editor` and waits for the sample-accurate waveform.
+  - Captures the whole file, then drags a selection and uses Zoom to selection for a detail shot.
+  - Uses the capture theme, quiet storage and a collapsed right rail; set `CAPTURE_THEME_MODE=light` for light mode.
+- **Audio:** a 214 s excerpt (to match `arch-mock-2`'s length, since the editor keeps the draft's duration) of the user's own track "Yaniho - XPRMNT LP - 02 - ADHD 3D" (50 s to 264 s). The zoomed shot covers the breakdown into the drop at 1:17 to 1:47. The audio lives only in a temp file and isn't committed.
+- **Shots:** `packages/tahti-web/docs/redesign-shots/studio-sound-editor-waveform{,-zoomed}{,--light}.png`; `SCREEN-ATLAS.md`'s sound-editor row is now `shot`. The red marks in the overview are the editor's clipping indicators on genuinely clipped peaks in the master.
 ## 2026-09-26 — API slow requests: root cause was disk-stalled Redis
 
 `docs/todo/api-slow-requests.md`: ~1% of `tahti-stack-api` requests took 0.5s or more (maxima 47-69s). Loki and Prometheus showed the slowness wasn't the uncached health checks (the first theory). It came in two episodes (09-22 21:15-22:10, 09-23 ~03:00-12:30). In both, vimage's `/opt` disk (`sdd`, a Kingston A400 DRAM-less SATA SSD holding all of `/opt/docker`) was ~95% busy from MinIO writes. Redis (AOF) stalled on it, and each request waited up to the node-redis 5s timeout on several Redis calls in a row. Redis was also carrying 1.1M leaked BullMQ job records (stored cron ticks lose `removeOnComplete`) and taking RDB snapshots every few minutes on top of AOF.
