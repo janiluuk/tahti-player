@@ -1,7 +1,7 @@
 # Player performance profiling and optimizations
 
-**Status:** open
-**Scheduling:** Later; deferred work, not started.
+**Status:** partial
+**Scheduling:** Later; profiling not started. 2026-09-26: code-only slices shipped for sections 2, 3, 4 and 6 (see HISTORY).
 **Source:** [Performance audit](../PERFORMANCE-AUDIT.md), 2026-09-10.
 
 Scope: active Tauri desktop player, which mounts the shared tahti-web frontend, plus its native process tree. Reconfirm the entry point before implementation. The audit measured bundle size and inspected code; CPU and native memory still require profiling.
@@ -18,20 +18,17 @@ Scope: active Tauri desktop player, which mounts the shared tahti-web frontend, 
 
 ## 2. Reduce startup work
 
-- [ ] Lazy-load remaining noninitial routes and substantial dialogs; inspect eager shared imports that defeat splitting.
-- [ ] Compare initial JS/CSS bytes, parse/evaluation CPU, cold/warm startup time and peak native memory against baseline. Track desktop startup separately from web transfer time.
+- [ ] Lazy-load remaining noninitial routes and substantial dialogs; inspect eager shared imports that defeat splitting. **2026-09-26 done for tahti-web (#178):** every route view except the landing ListenView is lazy; settings modal and channel setup dialog load on first open (`useOpenedOnce`); Listen Feed/History tabs and hls.js (first HLS stream) are split out; visualizer metadata comes from `plugins/visualizers/meta`; `@tahti-player/ui` test helpers moved to `@tahti-player/ui/test`. Still in the initial set: ~305 KiB gzip vendor chunk, ~175 KiB raw eager i18n locales (`packages/i18n/src/locales.ts`), right-rail stream-manager/chat. Follow-ups: lazy i18n locales, idle-prefetch hls.js (first HLS play waits for a ~185 KiB gzip chunk).
+- [ ] Compare initial JS/CSS bytes, parse/evaluation CPU, cold/warm startup time and peak native memory against baseline. Track desktop startup separately from web transfer time. **2026-09-26 bytes only (#178):** initial JS (entry + TahtiApp + static imports) 4419.8 -> 1745.7 KiB raw, 1277.0 -> 517.1 KiB gzip; CSS unchanged (~219 / 34 KiB). Parse/eval CPU, startup time and native memory not measured.
 
 ## 3. Make queue work scale
 
 - [ ] Virtualize QueuePanel rows while preserving drag reorder, keyboard access and scroll-to-current.
-- [ ] Replace per-row queue.find/favorite scans with stable indexed lookups; stabilize row props and isolate playback progress rerenders.
-- [ ] Compare render/interaction time, mounted row count, CPU and native memory at each fixture size. Verify favorite updates, removal, reorder and current-item visibility.
+- [ ] Compare render/interaction time, mounted row count, CPU and native memory at each fixture size. Verify favorite updates, removal, reorder and current-item visibility. Known limit after #172: reorderable panels still re-render every row when the id list changes (dnd-kit `SortableContext`); only virtualization or a custom sortable fixes that.
 
 ## 4. Stabilize playback updates
 
-- [ ] Memoize/select the current item and playable metadata; update MediaSession metadata only when its fields change.
-- [ ] Separate elapsed-time/analytics updates from metadata work; retain the existing progress throttle.
-- [ ] Verify metadata assignment counts, seek/progress behavior, OS controls, analytics and CPU during sustained playback.
+- [ ] Verify metadata assignment counts, seek/progress behavior, OS controls, analytics and CPU during sustained playback. Metadata/position counts are covered by `AudioEngine.mediaSession.test.tsx` (#170); real lock-screen/media-key/scrubber behavior, analytics and CPU still unchecked. Noticed: the placeholder SVG cover is sent to MediaSession as `image/jpeg`.
 
 ## 5. Reduce visualizer work
 
@@ -41,9 +38,9 @@ Scope: active Tauri desktop player, which mounts the shared tahti-web frontend, 
 
 ## 6. Unblock primary listening content
 
-- [ ] Publish channel/on-air content independently of slower widgets, shows and presets, with section-specific loading/error states.
-- [ ] Cache/reuse reads and narrow invalidation on editing/look changes.
-- [ ] Verify primary content remains usable with delayed/failed secondary endpoints; compare request counts and time to usable content.
+- [ ] Publish channel/on-air content independently of slower widgets, shows and presets, with section-specific loading/error states. **2026-09-26 ChannelView done (#171):** `useChannelData` no longer uses `Promise.all`; the channel alone gates the page, and tracks, disco widgets and public shows each have `loading | ready | error` + retry. Still open: ListenView already fetches its sections independently but has no per-section loading/error states (empty looks like "nothing here"), and `fetchLatestTracks` there has no `.catch`.
+- [ ] Cache/reuse reads and narrow invalidation on editing/look changes. 2026-09-26 partial (#171): channel look/link saves refetch only the channel + profile (2 requests instead of 5); wider read caching not done.
+- [ ] Verify primary content remains usable with delayed/failed secondary endpoints; compare request counts and time to usable content. 2026-09-26 (#171): hook and view tests with delayed/failed secondaries (Play still works); first load 5 requests, no longer waiting on the slowest. Time to usable content not measured in a browser.
 
 ## Completion gate
 

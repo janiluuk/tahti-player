@@ -29,10 +29,11 @@ Still open:
       desktop builds and `latest.json` land on the release.
 - [ ] Run Release Plugin SDK once; add `NPM_TOKEN` and own the `@tahti-player`
       npm scope if npm publishing is wanted.
-- [ ] `update-aur`, `update-flathub`, `update-winget` trigger on
-      `workflow_run` of "Release Player" and read the version from
-      `head_branch`; that doesn't fire (and would be `master`) when called from
-      Bump & Tag. Their store secrets are also not configured.
+- [ ] User: set the store secrets if these channels are wanted (`AUR_SSH_KEY` +
+      `AUR_KNOWN_HOSTS`, `FLATHUB_TOKEN` with push to `flathub/live.tahti.player`,
+      `WINGET_TOKEN` with a `winget-pkgs` fork). Since #169 the three updaters are
+      called from Release Player after `release-desktop` and skip with a warning
+      while their secret is missing; the first real run should confirm that.
 
 Snap (same branch): `release-snap.yml` is now called by `release-player.yml`
 after `release-desktop` (`workflow_run` removed), checks out the `player@` tag,

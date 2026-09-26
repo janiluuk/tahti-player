@@ -67,3 +67,7 @@ error (all correct, see `packages/tahti-cli/README.md` for the exact
 commands). Not tested against the real live API (no token available in
 this environment) — the token-required path is covered by tests mocking
 `fetch`, not a live call.
+
+## Read-only commands (2026-09-26, #173)
+
+`tahti whoami` (`GET /api/auth/me`; table shows username and display name, never the email, username fallback when the display name is empty or email-like; `--json` is the raw response), `tahti library show <id>` (`GET /api/me/sound/:id`), `tahti releases list [--page] [--limit]` (`GET /api/me/releases`) and `library list --sort` (`SOUND_LIST_SORTS`). Every command has `--json` and `--help`; 401/403 -> "Token invalid or missing scope", 404 shows the API message, network errors name the API URL. All are GET routes behind `requireAuth`, so a read-only personal token works. 59 tests with mocked fetch; not run against the live API. Next candidates: `releases show <id>`, `search` via public `/api/v1/search/tracks`, write commands (need a `write` token), playback/TUI (stretch).
