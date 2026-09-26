@@ -7,6 +7,7 @@ import type { usePersistedCatalogTable } from '../../hooks/usePersistedCatalogTa
 import {
   type NativeFacetFilter,
   type NativeFacetGroup,
+  type NativeImportProvider,
   type NativeLibraryImportProgress,
   type NativeLibraryRoot,
   type NativeLibraryTotals,
@@ -56,8 +57,8 @@ type Props = {
   loadedCountRef: MutableRefObject<number>;
   onImportFiles: () => void;
   onImportFolder: () => void;
-  /** Opens the hearthis.at set import; absent when the desktop build lacks it. */
-  onImportSet?: () => void;
+  /** Opens a provider set import; absent when the desktop build lacks it. */
+  onImportSet?: (provider: NativeImportProvider) => void;
   onRescanMissing: () => void;
   onCancelImport: () => void;
   onAddRoot: () => void;
@@ -150,9 +151,22 @@ export function DesktopLibraryContent({
           Import folder
         </Button>
         {onImportSet ? (
-          <Button variant="text" onClick={onImportSet} disabled={busy}>
-            Import hearthis.at set
-          </Button>
+          <>
+            <Button
+              variant="text"
+              onClick={() => onImportSet('hearthis')}
+              disabled={busy}
+            >
+              Import hearthis.at set
+            </Button>
+            <Button
+              variant="text"
+              onClick={() => onImportSet('soundcloud')}
+              disabled={busy}
+            >
+              Import SoundCloud set
+            </Button>
+          </>
         ) : null}
         {unavailableCount > 0 ? (
           <Button variant="text" onClick={onRescanMissing} disabled={busy}>

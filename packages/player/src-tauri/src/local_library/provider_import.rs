@@ -24,7 +24,7 @@ const DOWNLOAD_CONCURRENCY: usize = 3;
 /// Progress is reported at most once per this many bytes per download.
 const PROGRESS_STEP_BYTES: u64 = 256 * 1024;
 
-const PROVIDERS: [(&str, &str); 1] = [("hearthis", "hearthis.at")];
+const PROVIDERS: [(&str, &str); 2] = [("hearthis", "hearthis.at"), ("soundcloud", "SoundCloud")];
 
 #[derive(Clone, Debug, Deserialize, specta::Type)]
 #[serde(rename_all = "camelCase")]

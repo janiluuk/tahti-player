@@ -1,5 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { HearthisSetImportDialog } from '@tahti-web/components/desktop-library/HearthisSetImportDialog';
+import { ProviderSetImportDialog } from '@tahti-web/components/desktop-library/ProviderSetImportDialog';
+import {
+  hearthisSetSource,
+  soundcloudSetSource,
+} from '@tahti-web/components/desktop-library/setImportSources';
 import type {
   NativeProviderImport,
   NativeProviderImportProgress,
@@ -108,13 +112,13 @@ function fakeProviderImport(
 }
 
 const meta = {
-  title: 'Tahti/Misc/HearthisSetImportDialog',
-  component: HearthisSetImportDialog,
+  title: 'Tahti/Misc/ProviderSetImportDialog',
+  component: ProviderSetImportDialog,
   parameters: {
     docs: {
       description: {
         component:
-          'Desktop Local files → "Import hearthis.at set". Paste a set link or pick one of your sets, review which tracks the uploader offers for download, see how much disk space the files need against what the destination has free (unknown sizes stay unknown; the download is blocked when the known sizes alone do not fit), then download them into the library with per-track progress, cancel, and retry of failures. In Storybook the mock set has four tracks, one stream-only, and the fake download fails the last track.',
+          'Desktop Local files → "Import hearthis.at set" / "Import SoundCloud set". Paste a set link or pick one of your sets, review which tracks the uploader offers for download, see how much disk space the files need against what the destination has free (unknown sizes stay unknown; the download is blocked when the known sizes alone do not fit), then download them into the library with per-track progress, cancel, and retry of failures. In Storybook the mock hearthis.at set has four tracks, one stream-only, and the fake download fails the last track; the mock SoundCloud set has three, one stream-only.',
       },
     },
   },
@@ -122,9 +126,10 @@ const meta = {
     isOpen: true,
     onClose: fn(),
     onImported: fn(),
+    source: hearthisSetSource,
     providerImport: fakeProviderImport(),
   },
-} satisfies Meta<typeof HearthisSetImportDialog>;
+} satisfies Meta<typeof ProviderSetImportDialog>;
 
 export default meta;
 
@@ -137,7 +142,7 @@ export const Default: Story = {
     return (
       <>
         <Button onClick={() => setOpen(true)}>Import hearthis.at set</Button>
-        <HearthisSetImportDialog
+        <ProviderSetImportDialog
           {...args}
           isOpen={open}
           providerImport={providerImport}
@@ -159,7 +164,27 @@ export const NotEnoughSpace: Story = {
     return (
       <>
         <Button onClick={() => setOpen(true)}>Import hearthis.at set</Button>
-        <HearthisSetImportDialog
+        <ProviderSetImportDialog
+          {...args}
+          isOpen={open}
+          providerImport={providerImport}
+          onClose={() => setOpen(false)}
+        />
+      </>
+    );
+  },
+};
+
+/** The same dialog for a SoundCloud set, with the mock SoundCloud set. */
+export const SoundCloud: Story = {
+  args: { source: soundcloudSetSource },
+  render: (args) => {
+    const [open, setOpen] = useState(true);
+    const providerImport = useMemo(() => fakeProviderImport(), []);
+    return (
+      <>
+        <Button onClick={() => setOpen(true)}>Import SoundCloud set</Button>
+        <ProviderSetImportDialog
           {...args}
           isOpen={open}
           providerImport={providerImport}

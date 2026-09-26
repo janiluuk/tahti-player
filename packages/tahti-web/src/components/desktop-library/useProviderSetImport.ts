@@ -1,12 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import {
-  fetchHearthisCollectionTracks,
-  fetchHearthisLibrary,
-  parseHearthisSetPermalink,
-  type HearthisCollection,
-  type HearthisTrack,
-} from '../../api/sources';
 import type {
   NativeProviderEntryState,
   NativeProviderImport,
@@ -15,6 +8,11 @@ import type {
   NativeProviderImportResult,
   NativeProviderImportSpace,
 } from '../../lib/nativeLibrary';
+import type {
+  SetImportSource,
+  SetImportSummary,
+  SetImportTrack,
+} from './setImportSources';
 
 export type SetImportPhase = 'pick' | 'loading' | 'review' | 'running' | 'done';
 
@@ -22,7 +20,7 @@ export type SetImportRowState =
   'ready' | 'unavailable' | 'waiting' | NativeProviderEntryState;
 
 export type SetImportRow = {
-  track: HearthisTrack;
+  track: SetImportTrack;
   state: SetImportRowState;
   /** 0-100 while downloading, when the size is known. */
   percent: number | null;
@@ -39,6 +37,31 @@ export type SetImportSpace =
 /** Title edits move the destination; size the set once typing settles. */
 const SPACE_DEBOUNCE_MS = 400;
 
+/** Links this close to expiring are fetched again before a download starts. */
+const LINK_EXPIRY_MARGIN_MS = 10 * 60 * 1000;
+
+const expiresSoon = (rows: SetImportRow[], now: number) =>
+  rows.some((row) => {
+    const expiresAt = row.track.download?.expiresAt;
+    return expiresAt
+      ? Date.parse(expiresAt) - now < LINK_EXPIRY_MARGIN_MS
+      : false;
+  });
+
+/** Takes the fresh download links, keeping each row's state. */
+function withFreshLinks(
+  rows: SetImportRow[],
+  fresh: SetImportTrack[],
+): SetImportRow[] {
+  const byId = new Map(fresh.map((track) => [track.id, track]));
+  return rows.map((row) => {
+    const track = byId.get(row.track.id);
+    return track
+      ? { ...row, track: { ...row.track, download: track.download } }
+      : row;
+  });
+}
+
 const toEntries = (rows: SetImportRow[]): NativeProviderImportEntry[] =>
   rows
     .filter((row) => row.track.download)
@@ -47,7 +70,7 @@ const toEntries = (rows: SetImportRow[]): NativeProviderImportEntry[] =>
       title: row.track.title,
       artist: row.track.username,
       downloadUrl: row.track.download!.url,
-      fileName: row.track.download!.fileName,
+      fileName: row.track.download!.fileName ?? null,
     }));
 
 const errorText = (failure: unknown) =>
@@ -73,23 +96,26 @@ function applyProgress(
 }
 
 /**
- * State for importing one hearthis.at set into the desktop library: pick a
- * set, review which tracks the uploader offers for download, run the native
+ * State for importing one provider set into the desktop library: pick a set,
+ * review which tracks the uploader offers for download, run the native
  * download with live per-track progress, then retry just the failures.
  */
-export function useHearthisSetImport({
+export function useProviderSetImport({
   isOpen,
+  source,
   providerImport,
   onImported,
 }: {
   isOpen: boolean;
+  source: SetImportSource;
   providerImport: NativeProviderImport;
   onImported: () => void;
 }) {
   const [phase, setPhase] = useState<SetImportPhase>('pick');
   const [link, setLink] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [yourSets, setYourSets] = useState<HearthisCollection[]>([]);
+  const [yourSets, setYourSets] = useState<SetImportSummary[]>([]);
+  const [yourSetsError, setYourSetsError] = useState<string | null>(null);
   const [setId, setSetId] = useState('');
   const [title, setTitle] = useState('');
   const [destination, setDestination] = useState('');
@@ -110,16 +136,17 @@ export function useHearthisSetImport({
     setError(null);
     setRows([]);
     setResult(null);
+    setYourSets([]);
+    setYourSetsError(null);
     let cancelled = false;
-    void fetchHearthisLibrary().then(({ data }) => {
-      if (!cancelled) {
-        setYourSets(data.collections);
-      }
-    });
+    source
+      .yourSets()
+      .then((sets) => !cancelled && setYourSets(sets))
+      .catch((failure) => !cancelled && setYourSetsError(errorText(failure)));
     return () => {
       cancelled = true;
     };
-  }, [isOpen]);
+  }, [isOpen, source]);
 
   useEffect(() => {
     if (phase !== 'review' || !title.trim()) {
@@ -127,13 +154,13 @@ export function useHearthisSetImport({
     }
     let cancelled = false;
     providerImport
-      .destination('hearthis', title)
+      .destination(source.provider, title)
       .then((value) => !cancelled && setDestination(value))
       .catch((failure) => !cancelled && setError(errorText(failure)));
     return () => {
       cancelled = true;
     };
-  }, [phase, title, providerImport]);
+  }, [phase, title, providerImport, source]);
 
   useEffect(() => {
     const estimate = providerImport.space;
@@ -146,7 +173,7 @@ export function useHearthisSetImport({
     setSpace({ status: 'checking' });
     const timer = setTimeout(() => {
       estimate({
-        provider: 'hearthis',
+        provider: source.provider,
         setId,
         setTitle: title.trim(),
         destination,
@@ -164,7 +191,16 @@ export function useHearthisSetImport({
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [phase, destination, rows, setId, title, providerImport, spaceCheck]);
+  }, [
+    phase,
+    destination,
+    rows,
+    setId,
+    title,
+    providerImport,
+    source,
+    spaceCheck,
+  ]);
 
   useEffect(
     () =>
@@ -174,44 +210,60 @@ export function useHearthisSetImport({
     [providerImport],
   );
 
-  const loadSet = useCallback(async (permalink: string, name?: string) => {
-    setError(null);
-    setPhase('loading');
-    try {
-      const tracks = await fetchHearthisCollectionTracks(permalink);
-      if (!openRef.current) {
-        return;
-      }
-      if (tracks.length === 0) {
-        setError('That set has no tracks.');
+  const loadSet = useCallback(
+    async (set: SetImportSummary) => {
+      setError(null);
+      setPhase('loading');
+      try {
+        const tracks = await source.tracks(set.id);
+        if (!openRef.current) {
+          return;
+        }
+        if (tracks.length === 0) {
+          setError('That set has no tracks.');
+          setPhase('pick');
+          return;
+        }
+        setSetId(set.id);
+        setTitle(set.title.trim() || `${source.label} set ${set.id}`);
+        setRows(
+          tracks.map((track) => ({
+            track,
+            state: track.download ? 'ready' : 'unavailable',
+            percent: null,
+            error: null,
+          })),
+        );
+        setPhase('review');
+      } catch (failure) {
+        setError(`Could not load the set: ${errorText(failure)}`);
         setPhase('pick');
-        return;
       }
-      setSetId(permalink);
-      setTitle(name?.trim() || `hearthis.at set ${permalink}`);
-      setRows(
-        tracks.map((track) => ({
-          track,
-          state: track.download ? 'ready' : 'unavailable',
-          percent: null,
-          error: null,
-        })),
-      );
-      setPhase('review');
+    },
+    [source],
+  );
+
+  const loadLink = useCallback(async () => {
+    setError(null);
+    let set: SetImportSummary | null;
+    try {
+      setPhase('loading');
+      set = await source.resolveLink(link);
     } catch (failure) {
       setError(`Could not load the set: ${errorText(failure)}`);
       setPhase('pick');
-    }
-  }, []);
-
-  const loadLink = useCallback(() => {
-    const permalink = parseHearthisSetPermalink(link);
-    if (!permalink) {
-      setError('Paste a hearthis.at set link, like hearthis.at/set/…');
       return;
     }
-    void loadSet(permalink);
-  }, [link, loadSet]);
+    if (!openRef.current) {
+      return;
+    }
+    if (!set) {
+      setError(source.badLinkMessage);
+      setPhase('pick');
+      return;
+    }
+    await loadSet(set);
+  }, [link, loadSet, source]);
 
   const run = useCallback(
     async (onlyIds?: Set<string>) => {
@@ -234,15 +286,21 @@ export function useHearthisSetImport({
       );
       setPhase('running');
       try {
+        let current = rows;
+        if (expiresSoon(current, Date.now())) {
+          const fresh = await source.tracks(setId);
+          current = withFreshLinks(current, fresh);
+          setRows((shown) => withFreshLinks(shown, fresh));
+        }
         const outcome = await providerImport.start({
-          provider: 'hearthis',
+          provider: source.provider,
           setId,
           setTitle: title.trim(),
           destination,
           // The whole downloadable set goes in each time, in order, so the
           // playlist keeps set order on a retry; finished tracks are skipped
           // natively without downloading again.
-          entries: toEntries(rows),
+          entries: toEntries(current),
           playlistName: makePlaylist ? title.trim() : null,
         });
         setResult(outcome);
@@ -255,7 +313,16 @@ export function useHearthisSetImport({
         setPhase('done');
       }
     },
-    [rows, destination, providerImport, setId, title, makePlaylist, onImported],
+    [
+      rows,
+      destination,
+      providerImport,
+      source,
+      setId,
+      title,
+      makePlaylist,
+      onImported,
+    ],
   );
 
   const retryFailed = useCallback(() => {
@@ -282,6 +349,7 @@ export function useHearthisSetImport({
     setLink,
     error,
     yourSets,
+    yourSetsError,
     title,
     setTitle,
     destination,
@@ -293,8 +361,8 @@ export function useHearthisSetImport({
     recheckSpace: () => setSpaceCheck((count) => count + 1),
     downloadable,
     failedCount,
-    loadLink,
-    loadSet,
+    loadLink: () => void loadLink(),
+    loadSet: (set: SetImportSummary) => void loadSet(set),
     start: () => void run(),
     retryFailed,
     cancel,
