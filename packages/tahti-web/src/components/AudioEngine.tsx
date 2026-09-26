@@ -5,6 +5,7 @@ import type { QueueItem } from '@tahti-player/model';
 
 import { postListenEvent } from '../api/client';
 import type { TahtiPlayable } from '../api/types';
+import { mediaSessionArtwork } from '../lib/mediaSessionArtwork';
 import { usePlaybackPrefsStore } from '../stores/playbackPrefsStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 
@@ -94,7 +95,11 @@ export function AudioEngine() {
   const hasPlayable = playable != null;
   const metaTitle = playable?.title;
   const metaArtist = playable?.artist;
-  const metaCoverUrl = playable?.coverUrl;
+  const metaArtworkJson = useMemo(
+    () =>
+      JSON.stringify(mediaSessionArtwork(current?.track.artwork?.items ?? [])),
+    [current],
+  );
   // Keyed on primitives, not the playable object: queue rebuilds (re-play,
   // resolved stream URLs) hand back a new object for the same track, and
   // each MediaMetadata assignment makes the OS refetch artwork.
@@ -109,11 +114,9 @@ export function AudioEngine() {
     navigator.mediaSession.metadata = new MediaMetadata({
       title: metaTitle,
       artist: metaArtist,
-      artwork: metaCoverUrl
-        ? [{ src: metaCoverUrl, sizes: '512x512', type: 'image/jpeg' }]
-        : [],
+      artwork: JSON.parse(metaArtworkJson) as MediaImage[],
     });
-  }, [hasPlayable, metaTitle, metaArtist, metaCoverUrl]);
+  }, [hasPlayable, metaTitle, metaArtist, metaArtworkJson]);
 
   useEffect(() => {
     if (!('mediaSession' in navigator)) {
