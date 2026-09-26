@@ -3,6 +3,7 @@ import { RadioTowerIcon } from 'lucide-react';
 import { Box, ButtonLink, MediaArtwork, Tooltip } from '@tahti-player/ui';
 
 import { resolvePublicVisualizerPreset } from '../api/channel-design';
+import { prefetchHls } from '../lib/hlsLoader';
 import { ChannelVisualizer, type VisualColorScheme } from './ChannelVisualizer';
 
 export type RadioListItemProps = {
@@ -56,7 +57,11 @@ export function RadioListItem({
           />
         </div>
       ) : null}
-      <div className="relative z-10 flex min-w-0 items-center gap-3">
+      <div
+        className="relative z-10 flex min-w-0 items-center gap-3"
+        onPointerEnter={disabled ? undefined : prefetchHls}
+        onFocus={disabled ? undefined : prefetchHls}
+      >
         <MediaArtwork
           src={coverUrl}
           alt=""
