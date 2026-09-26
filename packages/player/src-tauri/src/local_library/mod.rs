@@ -46,6 +46,8 @@ mod backup_tests;
 #[cfg(test)]
 mod tag_writer_tests;
 #[cfg(test)]
+mod file_tags_tests;
+#[cfg(test)]
 mod import_tests;
 #[cfg(test)]
 mod import_jobs_tests;
@@ -147,6 +149,11 @@ pub struct LibraryTrack {
     /// `artwork.rs`); `None` when the file has no usable picture.
     #[sqlx(default)]
     pub artwork_key: Option<String>,
+    /// Only filled by reading the file, for the import to store; the UI gets
+    /// the effective `bpm`/`musical_key` above instead.
+    #[sqlx(skip)]
+    #[serde(skip)]
+    pub file_tags: metadata::FileTags,
 }
 
 /// Directory part of `path`, trailing separator included (either style).

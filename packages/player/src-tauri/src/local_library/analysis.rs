@@ -2,8 +2,9 @@
 //! stored results, corrections, and the one-at-a-time job that fills them.
 //! The numbers come from `analysis_dsp`; see its header for accuracy limits.
 //!
-//! Three kinds of BPM/key values are kept apart (`0009_analysis.sql`): the
-//! file's own tag, the computed estimate, and the user's correction. The one
+//! Three kinds of BPM/key values are kept apart: the file's own tag
+//! (`library_tracks.tag_*`, read on every import and re-read, `0020`), the
+//! computed estimate and the user's correction (`0009_analysis.sql`). The one
 //! used for filtering, sorting and smart playlists is copied onto the
 //! `library_tracks` row (`bpm`, `musical_key`) with the precedence
 //! user > tag > estimate, so those queries stay plain indexed SQL.
@@ -26,6 +27,7 @@ use symphonia::core::probe::Hint;
 use tauri::{Emitter, Manager};
 
 use super::analysis_dsp::{normalize_key, Analysis, Analyzer, ALGORITHM_VERSION};
+use super::metadata::{read_file_tags, FileTags};
 use super::{pool, LibraryState};
 
 const PROGRESS_EVENT: &str = "library://analysis-progress";
@@ -101,24 +103,6 @@ pub fn analyze_file(path: &Path, expected_frames: u64, hold: &dyn Fn() -> bool) 
     Ok(analyzer.finish())
 }
 
-/// BPM/key written in the file's tags, if any.
-pub fn read_tag_values(path: &Path) -> (Option<f64>, Option<String>) {
-    use lofty::file::TaggedFileExt;
-    use lofty::tag::ItemKey;
-    let Some(tagged) = super::metadata::open_tagged(path) else {
-        return (None, None);
-    };
-    let Some(tag) = tagged.primary_tag().or_else(|| tagged.first_tag()) else {
-        return (None, None);
-    };
-    let bpm = tag
-        .get_string(&ItemKey::Bpm)
-        .and_then(|v| v.trim().parse::<f64>().ok())
-        .filter(|v| (30.0..=300.0).contains(v));
-    let key = tag.get_string(&ItemKey::InitialKey).and_then(normalize_key);
-    (bpm, key)
-}
-
 // ---------------------------------------------------------------- storage
 
 fn stamp(path: &str) -> Option<(i64, i64)> {
@@ -127,23 +111,25 @@ fn stamp(path: &str) -> Option<(i64, i64)> {
     Some((meta.len() as i64, mtime))
 }
 
-/// Copies the winning BPM/key (user > tag > estimate) and the loudness onto
-/// the track rows, so filters and sorts stay plain SQL.
+/// `SET` clause computing the winning BPM/key (user > tag > estimate) and the
+/// loudness for a `library_tracks` row. Tag values are the row's own
+/// `tag_bpm`/`tag_key`, refreshed on every read of the file.
+pub(super) const EFFECTIVE_SET: &str = "
+    bpm = COALESCE((SELECT u.bpm FROM library_analysis_user u WHERE u.track_id = library_tracks.id),
+                   library_tracks.tag_bpm,
+                   (SELECT a.bpm_estimate FROM library_analysis a WHERE a.track_id = library_tracks.id)),
+    musical_key = COALESCE((SELECT u.key FROM library_analysis_user u WHERE u.track_id = library_tracks.id),
+                   library_tracks.tag_key,
+                   (SELECT a.key_estimate FROM library_analysis a WHERE a.track_id = library_tracks.id)),
+    loudness_lufs = (SELECT a.loudness_lufs FROM library_analysis a WHERE a.track_id = library_tracks.id),
+    analyzed = EXISTS (SELECT 1 FROM library_analysis a WHERE a.track_id = library_tracks.id)";
+
+/// Copies the winning BPM/key and the loudness onto the track rows, so
+/// filters and sorts stay plain SQL.
 pub async fn refresh_effective(pool: &SqlitePool, ids: &[String]) -> Result<(), String> {
     for chunk in ids.chunks(CHUNK) {
         let marks = vec!["?"; chunk.len()].join(",");
-        let sql = format!(
-            "UPDATE library_tracks SET
-               bpm = COALESCE((SELECT u.bpm FROM library_analysis_user u WHERE u.track_id = library_tracks.id),
-                              (SELECT a.tag_bpm FROM library_analysis a WHERE a.track_id = library_tracks.id),
-                              (SELECT a.bpm_estimate FROM library_analysis a WHERE a.track_id = library_tracks.id)),
-               musical_key = COALESCE((SELECT u.key FROM library_analysis_user u WHERE u.track_id = library_tracks.id),
-                              (SELECT a.tag_key FROM library_analysis a WHERE a.track_id = library_tracks.id),
-                              (SELECT a.key_estimate FROM library_analysis a WHERE a.track_id = library_tracks.id)),
-               loudness_lufs = (SELECT a.loudness_lufs FROM library_analysis a WHERE a.track_id = library_tracks.id),
-               analyzed = EXISTS (SELECT 1 FROM library_analysis a WHERE a.track_id = library_tracks.id)
-             WHERE id IN ({marks})"
-        );
+        let sql = format!("UPDATE library_tracks SET {EFFECTIVE_SET} WHERE id IN ({marks})");
         let mut query = sqlx::query(&sql);
         for id in chunk {
             query = query.bind(id);
@@ -153,7 +139,8 @@ pub async fn refresh_effective(pool: &SqlitePool, ids: &[String]) -> Result<(), 
     Ok(())
 }
 
-async fn store(pool: &SqlitePool, id: &str, size: i64, mtime: i64, tags: (Option<f64>, Option<String>), a: &Analysis) -> Result<(), String> {
+async fn store(pool: &SqlitePool, id: &str, size: i64, mtime: i64, tags: &FileTags, a: &Analysis) -> Result<(), String> {
+    write_file_tags(pool, id, tags).await.map_err(|e| e.to_string())?;
     sqlx::query(
         "INSERT INTO library_analysis (track_id, algo_version, file_size, file_mtime, peaks, loudness_lufs, true_peak_dbtp,
                                        tag_bpm, tag_key, bpm_estimate, bpm_confidence, key_estimate, key_confidence)
@@ -171,8 +158,8 @@ async fn store(pool: &SqlitePool, id: &str, size: i64, mtime: i64, tags: (Option
     .bind(&a.peaks)
     .bind(a.loudness_lufs)
     .bind(a.true_peak_dbtp)
-    .bind(tags.0)
-    .bind(tags.1)
+    .bind(tags.bpm)
+    .bind(&tags.key)
     .bind(a.bpm.as_ref().map(|b| b.value))
     .bind(a.bpm.as_ref().map(|b| b.confidence))
     .bind(a.key.as_ref().map(|k| k.value.clone()))
@@ -181,6 +168,25 @@ async fn store(pool: &SqlitePool, id: &str, size: i64, mtime: i64, tags: (Option
     .await
     .map_err(|e| e.to_string())?;
     refresh_effective(pool, &[id.to_owned()]).await
+}
+
+/// Saves what the file's tags said onto its track row. The caller refreshes
+/// the effective values afterwards.
+pub(super) async fn write_file_tags<'e>(executor: impl sqlx::SqliteExecutor<'e>, id: &str, tags: &FileTags) -> Result<(), sqlx::Error> {
+    sqlx::query(
+        "UPDATE library_tracks SET tag_bpm = ?, tag_key = ?, replaygain_track_gain = ?, replaygain_track_peak = ?,
+           replaygain_album_gain = ?, replaygain_album_peak = ? WHERE id = ?",
+    )
+    .bind(tags.bpm)
+    .bind(&tags.key)
+    .bind(tags.replaygain_track_gain)
+    .bind(tags.replaygain_track_peak)
+    .bind(tags.replaygain_album_gain)
+    .bind(tags.replaygain_album_peak)
+    .bind(id)
+    .execute(executor)
+    .await?;
+    Ok(())
 }
 
 #[derive(Debug, Default, Serialize, specta::Type)]
@@ -282,14 +288,14 @@ pub async fn analyze_tracks(
         let (file, flags) = (path.clone(), Arc::clone(control));
         let (analysis, tags) = tauri::async_runtime::spawn_blocking(move || {
             let analysis = analyze_file(Path::new(&file), expected, &|| flags.hold());
-            let tags = read_tag_values(Path::new(&file));
+            let tags = read_file_tags(Path::new(&file));
             (analysis, tags)
         })
         .await
         .map_err(|e| e.to_string())?;
         match analysis {
             Ok(analysis) => {
-                store(pool, &id, size, mtime, tags, &analysis).await?;
+                store(pool, &id, size, mtime, &tags, &analysis).await?;
                 result.analyzed += 1;
             }
             Err(Stop::Cancelled) => {
@@ -330,7 +336,7 @@ pub struct AnalysisDetail {
 }
 
 pub async fn detail(pool: &SqlitePool, id: &str) -> Result<AnalysisDetail, String> {
-    let track = sqlx::query("SELECT path, bpm, musical_key FROM library_tracks WHERE id = ?")
+    let track = sqlx::query("SELECT path, bpm, musical_key, tag_bpm, tag_key FROM library_tracks WHERE id = ?")
         .bind(id)
         .fetch_optional(pool)
         .await
@@ -349,8 +355,8 @@ pub async fn detail(pool: &SqlitePool, id: &str) -> Result<AnalysisDetail, Strin
         peaks: Vec::new(),
         loudness_lufs: None,
         true_peak_dbtp: None,
-        tag_bpm: None,
-        tag_key: None,
+        tag_bpm: track.get(3),
+        tag_key: track.get(4),
         bpm_estimate: None,
         bpm_confidence: None,
         key_estimate: None,
@@ -362,7 +368,7 @@ pub async fn detail(pool: &SqlitePool, id: &str) -> Result<AnalysisDetail, Strin
         analyzed_at: None,
     };
     let Some(row) = sqlx::query(
-        "SELECT algo_version, file_size, file_mtime, peaks, loudness_lufs, true_peak_dbtp, tag_bpm, tag_key,
+        "SELECT algo_version, file_size, file_mtime, peaks, loudness_lufs, true_peak_dbtp,
                 bpm_estimate, bpm_confidence, key_estimate, key_confidence, analyzed_at
          FROM library_analysis WHERE track_id = ?",
     )
@@ -380,13 +386,11 @@ pub async fn detail(pool: &SqlitePool, id: &str) -> Result<AnalysisDetail, Strin
         peaks: row.get(3),
         loudness_lufs: row.get(4),
         true_peak_dbtp: row.get(5),
-        tag_bpm: row.get(6),
-        tag_key: row.get(7),
-        bpm_estimate: row.get(8),
-        bpm_confidence: row.get(9),
-        key_estimate: row.get(10),
-        key_confidence: row.get(11),
-        analyzed_at: row.get(12),
+        bpm_estimate: row.get(6),
+        bpm_confidence: row.get(7),
+        key_estimate: row.get(8),
+        key_confidence: row.get(9),
+        analyzed_at: row.get(10),
         ..base
     })
 }

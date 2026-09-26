@@ -7,6 +7,7 @@ use symphonia::core::io::MediaSourceStream;
 use symphonia::core::meta::{MetadataOptions, StandardTagKey, Tag};
 use symphonia::core::probe::Hint;
 
+use super::analysis_dsp::normalize_key;
 use super::LibraryTrack;
 
 /// RIFF INFO values (unlike Vorbis/ID3) retain their NUL terminator in `tag.value`.
@@ -114,6 +115,7 @@ pub fn read(path: &Path) -> Result<LibraryTrack, String> {
         loudness_lufs: None,
         analyzed: false,
         artwork_key: None,
+        file_tags: FileTags::default(),
         bitrate_kbps: (duration > 0.0).then(|| (size as f64 * 8.0 / duration / 1000.0).round() as i64),
     };
     if let Some(metadata) = probed.metadata.get().and_then(|metadata| metadata.current().cloned()) {
@@ -189,6 +191,7 @@ fn fill_from_tag_reader(track: &mut LibraryTrack, path: &Path) {
     let Some(tagged) = open_tagged(path) else {
         return;
     };
+    track.file_tags = file_tags_of(&tagged);
     let Some(tag) = tagged.primary_tag().or_else(|| tagged.first_tag()) else {
         return;
     };
@@ -219,9 +222,98 @@ fn fill_from_tag_reader(track: &mut LibraryTrack, path: &Path) {
     track.disc_no = track.disc_no.or(tag.disk().map(i64::from));
 }
 
+/// BPM, musical key and ReplayGain as the file's tags state them. These are
+/// file facts, refreshed on every (re)read; the user's BPM/key corrections
+/// live elsewhere (`library_analysis_user`) and always win over them (see
+/// `analysis::refresh_effective`). A missing or unusable value stays `None`.
+#[derive(Debug, Clone, Default, PartialEq)]
+pub struct FileTags {
+    pub bpm: Option<f64>,
+    /// Normalized like analysis keys (`"Am"`, `"F#"`).
+    pub key: Option<String>,
+    pub replaygain_track_gain: Option<f64>,
+    pub replaygain_track_peak: Option<f64>,
+    pub replaygain_album_gain: Option<f64>,
+    pub replaygain_album_peak: Option<f64>,
+}
+
+pub(super) fn read_file_tags(path: &Path) -> FileTags {
+    lofty::probe::Probe::open(path)
+        .ok()
+        .and_then(|p| p.read().ok())
+        .map(|tagged| file_tags_of(&tagged))
+        .unwrap_or_default()
+}
+
+/// Looks through every tag in the file, primary first: a WAV/AIFF often keeps
+/// RIFF INFO (which has no BPM/ReplayGain fields) next to an ID3 chunk.
+fn file_tags_of(tagged: &lofty::file::TaggedFile) -> FileTags {
+    use lofty::file::TaggedFileExt;
+    use lofty::tag::ItemKey;
+    let primary = tagged.primary_tag();
+    let tags: Vec<&lofty::tag::Tag> = primary
+        .into_iter()
+        .chain(tagged.tags().iter().filter(|t| Some(t.tag_type()) != primary.map(|p| p.tag_type())))
+        .collect();
+    let first = |keys: &[ItemKey], parse: &dyn Fn(&str) -> Option<f64>| {
+        tags.iter().find_map(|tag| keys.iter().find_map(|key| tag.get_string(key).and_then(parse)))
+    };
+    FileTags {
+        // ID3 TBPM and MP4 `tmpo` surface as IntegerBpm, Vorbis BPM and MP4 `----:BPM` as Bpm.
+        bpm: first(&[ItemKey::Bpm, ItemKey::IntegerBpm], &parse_bpm),
+        key: tags.iter().find_map(|tag| tag.get_string(&ItemKey::InitialKey).and_then(normalize_key)),
+        replaygain_track_gain: first(&[ItemKey::ReplayGainTrackGain], &parse_gain),
+        replaygain_track_peak: first(&[ItemKey::ReplayGainTrackPeak], &parse_peak),
+        replaygain_album_gain: first(&[ItemKey::ReplayGainAlbumGain], &parse_gain),
+        replaygain_album_peak: first(&[ItemKey::ReplayGainAlbumPeak], &parse_peak),
+    }
+}
+
+/// Leading number of `"-6.54 dB"`, `"128,5"`, `"0.98"`.
+fn parse_decimal(value: &str) -> Option<f64> {
+    let text = value.trim().replace(',', ".");
+    let end = text
+        .char_indices()
+        .find(|&(i, c)| !(c.is_ascii_digit() || c == '.' || (i == 0 && (c == '-' || c == '+'))))
+        .map_or(text.len(), |(i, _)| i);
+    text[..end].parse::<f64>().ok().filter(|v| v.is_finite())
+}
+
+/// Same accepted range as a user correction.
+pub(super) fn parse_bpm(value: &str) -> Option<f64> {
+    parse_decimal(value).filter(|v| (30.0..=300.0).contains(v))
+}
+
+fn parse_gain(value: &str) -> Option<f64> {
+    parse_decimal(value).filter(|v| (-60.0..=60.0).contains(v))
+}
+
+/// Linear sample peak; above 1.0 is legal (clipped or inter-sample overs).
+fn parse_peak(value: &str) -> Option<f64> {
+    parse_decimal(value).filter(|v| *v > 0.0 && *v <= 10.0)
+}
+
 #[cfg(test)]
 mod tests {
-    use super::{leading_number, parse_year};
+    use super::{leading_number, parse_bpm, parse_gain, parse_peak, parse_year};
+
+    #[test]
+    fn parses_tag_bpm_gain_and_peak_and_drops_unusable_values() {
+        assert_eq!(parse_bpm("128"), Some(128.0));
+        assert_eq!(parse_bpm(" 126.50 "), Some(126.5));
+        assert_eq!(parse_bpm("174,2"), Some(174.2));
+        assert_eq!(parse_bpm("0"), None);
+        assert_eq!(parse_bpm("999"), None);
+        assert_eq!(parse_bpm("fast"), None);
+        assert_eq!(parse_gain("-6.54 dB"), Some(-6.54));
+        assert_eq!(parse_gain("+2.10 dB"), Some(2.1));
+        assert_eq!(parse_gain("dB"), None);
+        assert_eq!(parse_gain("-600 dB"), None);
+        assert_eq!(parse_peak("0.988547"), Some(0.988547));
+        assert_eq!(parse_peak("1.05"), Some(1.05));
+        assert_eq!(parse_peak("0"), None);
+        assert_eq!(parse_peak("NaN"), None);
+    }
 
     #[test]
     fn parses_track_and_disc_numbers() {
