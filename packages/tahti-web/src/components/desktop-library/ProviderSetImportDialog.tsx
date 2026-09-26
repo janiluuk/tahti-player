@@ -4,15 +4,18 @@ import { Alert, Badge, Button, Dialog, Input, Toggle } from '@tahti-player/ui';
 
 import type { NativeProviderImport } from '../../lib/nativeLibrary';
 import { formatBytes } from '../../lib/storageFormat';
+import type { SetImportSource } from './setImportSources';
 import {
-  useHearthisSetImport,
+  useProviderSetImport,
   type SetImportRow,
   type SetImportSpace,
-} from './useHearthisSetImport';
+} from './useProviderSetImport';
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  /** Which provider the set comes from, e.g. `hearthisSetSource`. */
+  source: SetImportSource;
   providerImport: NativeProviderImport;
   /** Called after tracks were added, so the library list refreshes. */
   onImported: () => void;
@@ -159,18 +162,24 @@ function TrackRows({ rows }: { rows: SetImportRow[] }) {
 }
 
 /**
- * Downloads a hearthis.at set into the desktop library. Only tracks the
- * uploader offers for download are fetched; streams are never saved. Each
- * finished file becomes a normal library track, and the set can land in a
- * playlist in its original order.
+ * Downloads a provider set (hearthis.at, SoundCloud) into the desktop
+ * library. Only tracks the uploader offers for download are fetched; streams
+ * are never saved. Each finished file becomes a normal library track, and the
+ * set can land in a playlist in its original order.
  */
-export function HearthisSetImportDialog({
+export function ProviderSetImportDialog({
   isOpen,
   onClose,
+  source,
   providerImport,
   onImported,
 }: Props) {
-  const state = useHearthisSetImport({ isOpen, providerImport, onImported });
+  const state = useProviderSetImport({
+    isOpen,
+    source,
+    providerImport,
+    onImported,
+  });
   const running = state.phase === 'running';
   const notEnoughSpace =
     state.space.status === 'ready' && state.space.value.verdict === 'notEnough';
@@ -185,7 +194,7 @@ export function HearthisSetImportDialog({
       onClose={() => (running ? undefined : onClose())}
       className="max-w-xl"
     >
-      <Dialog.Title>Import a hearthis.at set</Dialog.Title>
+      <Dialog.Title>Import a {source.label} set</Dialog.Title>
       <Dialog.Description>
         Downloads the tracks the uploader offers for download and adds them to
         your library as local files. Tracks that are only streamable are left
@@ -210,7 +219,7 @@ export function HearthisSetImportDialog({
             <div className="min-w-0 flex-1">
               <Input
                 label="Set link"
-                placeholder="https://hearthis.at/set/…"
+                placeholder={source.linkPlaceholder}
                 value={state.link}
                 onChange={(event) => state.setLink(event.target.value)}
               />
@@ -230,7 +239,7 @@ export function HearthisSetImportDialog({
                   variant="text"
                   size="flexible"
                   className="justify-between px-2 py-1.5 text-left"
-                  onClick={() => void state.loadSet(set.permalink, set.title)}
+                  onClick={() => state.loadSet(set)}
                 >
                   <span className="truncate">{set.title}</span>
                   <span className="text-foreground-secondary shrink-0 text-xs">
@@ -239,6 +248,13 @@ export function HearthisSetImportDialog({
                 </Button>
               ))}
             </div>
+          ) : null}
+          {state.yourSetsError ? (
+            <p className="text-foreground-secondary text-xs">
+              Could not list your {source.label} sets: {state.yourSetsError}.
+              Connect {source.label} in Settings → Add-ons → Import, or paste a
+              set link.
+            </p>
           ) : null}
         </div>
       ) : null}

@@ -249,6 +249,10 @@ fn default_destination_is_a_clean_folder_per_provider_and_set() {
         Path::new("/Music/Tahti/hearthis.at/Live_ 10_10")
     );
     assert_eq!(default_destination(root, "hearthis", "...").unwrap(), Path::new("/Music/Tahti/hearthis.at/Untitled set"));
+    assert_eq!(
+        default_destination(root, "soundcloud", "Night Set").unwrap(),
+        Path::new("/Music/Tahti/SoundCloud/Night Set")
+    );
     assert!(default_destination(root, "nope", "x").is_err());
 }
 
