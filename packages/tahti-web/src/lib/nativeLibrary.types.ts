@@ -6,6 +6,7 @@
 
 import type { NativeAnalysis } from './native-library/analysis';
 import type { NativeCatalog } from './native-library/catalog';
+import type { NativeItunesImport } from './native-library/itunesImport';
 import type { NativePlaylists } from './native-library/playlists';
 import type { NativeProviderImport } from './native-library/providerImport';
 import type {
@@ -32,6 +33,7 @@ export * from './native-library/playlists';
 export * from './native-library/catalog';
 export * from './native-library/analysis';
 export * from './native-library/providerImport';
+export * from './native-library/itunesImport';
 
 export type TahtiNativeLibrary = {
   list: (
@@ -116,6 +118,8 @@ export type TahtiNativeLibrary = {
   onFilesDropped: (listener: (paths: string[]) => void) => () => void;
   /** Downloads a provider set into the library. Missing in older desktop builds. */
   providerImport?: NativeProviderImport;
+  /** Imports an iTunes / Music.app library XML. Missing in older desktop builds. */
+  itunesImport?: NativeItunesImport;
 };
 
 /** The track's embedded cover as an image URL, or `null` to show a placeholder. */

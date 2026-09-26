@@ -58,6 +58,8 @@ type Props = {
   onImportFolder: () => void;
   /** Opens the hearthis.at set import; absent when the desktop build lacks it. */
   onImportSet?: () => void;
+  /** Opens the iTunes / Music.app library import; absent when the desktop build lacks it. */
+  onImportItunes?: () => void;
   onRescanMissing: () => void;
   onCancelImport: () => void;
   onAddRoot: () => void;
@@ -111,6 +113,7 @@ export function DesktopLibraryContent({
   onImportFiles,
   onImportFolder,
   onImportSet,
+  onImportItunes,
   onRescanMissing,
   onCancelImport,
   onAddRoot,
@@ -152,6 +155,11 @@ export function DesktopLibraryContent({
         {onImportSet ? (
           <Button variant="text" onClick={onImportSet} disabled={busy}>
             Import hearthis.at set
+          </Button>
+        ) : null}
+        {onImportItunes ? (
+          <Button variant="text" onClick={onImportItunes} disabled={busy}>
+            Import iTunes library
           </Button>
         ) : null}
         {unavailableCount > 0 ? (
