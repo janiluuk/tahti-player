@@ -23,24 +23,18 @@ import {
 
 import {
   fetchChannel,
-  fetchEnabledInternetRadioPresets,
-  fetchOnAirChannels,
   fetchRadioStation,
   TAHTI_RADIO_SLUG,
   type EnabledInternetRadioPreset,
 } from '../api/client';
-import {
-  fetchDiscoverDiscoWidgets,
-  fetchHomepageDiscoWidgets,
-  type DiscoWidgetRenderItem,
-} from '../api/disco-widgets';
-import { fetchLatestTracks } from '../api/discover';
 import { readIcyStreamTitle } from '../api/radio-sources';
-import type { OnAirChannel, PublicChannel, TahtiPlayable } from '../api/types';
+import type { OnAirChannel, TahtiPlayable } from '../api/types';
 import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
+import { ListenSection } from '../components/listen-view/ListenSection';
+import { useListenSections } from '../components/listen-view/useListenSections';
 import { ListenerWidgetsSection } from '../components/ListenerWidgetsSection';
 import { ListenWidgetStoreDialog } from '../components/ListenWidgetStoreDialog';
-import { PageLoading } from '../components/PageStates';
+import { PageError, PageLoading } from '../components/PageStates';
 import { PlayableTrackTable } from '../components/PlayableTrackTable';
 import { RadioListItem } from '../components/RadioListItem';
 import { RadioStationCoverEditButton } from '../components/RadioStationCover';
@@ -52,7 +46,6 @@ import {
   type RadioStation,
 } from '../content/radioStations';
 import { usePolling } from '../hooks/usePolling';
-import { discoverTrackPlayable } from '../lib/discoverTrackPlayable';
 import { resolveLocalPlayableForReplay } from '../lib/nativeLibrary';
 import { activeListenTab } from '../lib/navigationActive';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
@@ -82,7 +75,6 @@ const LISTEN_SECTION_TABS = [
 
 const NOW_PLAYING_POLL_MS = 45_000;
 const RECENTLY_PLAYED_LIMIT = 20;
-const LATEST_TRACKS_LIMIT = 25;
 
 const ROW_LABELS = {
   filterPlaceholder: 'Filter…',
@@ -115,16 +107,9 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     select: (state) => state.location.pathname,
   });
   const tab = activeListenTab(pathname) ?? tabProp;
-  const [onAir, setOnAir] = useState<OnAirChannel[]>([]);
-  const [radio, setRadio] = useState<PublicChannel | null>(null);
-  const [discoWidgets, setDiscoWidgets] = useState<DiscoWidgetRenderItem[]>([]);
-  const [radioPresets, setRadioPresets] = useState<
-    EnabledInternetRadioPreset[]
-  >([]);
   const [presetNowPlaying, setPresetNowPlaying] = useState<
     Record<string, string>
   >({});
-  const [latestTracks, setLatestTracks] = useState<TahtiPlayable[]>([]);
   const play = usePlayerStore((s) => s.play);
   const currentId = usePlayerStore((s) => s.currentId);
   const playbackStatus = usePlayerStore((s) => s.status);
@@ -132,6 +117,10 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
   const history = useLibraryStore((s) => s.history);
   const user = useAuthStore((s) => s.user);
   const signedIn = Boolean(user);
+  const sections = useListenSections(signedIn);
+  const radio = sections.radio.data;
+  const radioPresets = sections.presets.data;
+  const setRadioPresets = sections.setPresets;
   const enabledStationIds = useListenerWidgetsStore((s) => s.enabledStationIds);
   const stationOverrides = useListenerWidgetsStore((s) => s.stationOverrides);
   const toggleStation = useListenerWidgetsStore((s) => s.toggleStation);
@@ -153,57 +142,6 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
       layout.setRightRailTab('queue');
     }
   }, [tab]);
-
-  useEffect(() => {
-    let cancelled = false;
-    void fetchOnAirChannels()
-      .then((channels) => {
-        if (!cancelled) {
-          const liveSlugs = new Set(
-            channels.data.live.map((channel) => channel.slug),
-          );
-          setOnAir(
-            [...channels.data.live, ...channels.data.replaying]
-              .filter((channel) => channel.slug !== TAHTI_RADIO_SLUG)
-              .map((channel) => ({
-                ...channel,
-                state: liveSlugs.has(channel.slug) ? 'LIVE' : 'REPLAY',
-              })),
-          );
-        }
-      })
-      .catch(() => undefined);
-    void fetchRadioStation()
-      .then((station) => {
-        if (!cancelled) {
-          setRadio(station.data);
-        }
-      })
-      .catch(() => undefined);
-    void fetchEnabledInternetRadioPresets()
-      .then((presets) => {
-        if (!cancelled) {
-          setRadioPresets(presets.data);
-        }
-      })
-      .catch(() => undefined);
-    void fetchLatestTracks({ genres: [], contentTypes: [] }).then(
-      ({ data }) => {
-        if (cancelled) {
-          return;
-        }
-        setLatestTracks(
-          data
-            .map(discoverTrackPlayable)
-            .filter((item): item is TahtiPlayable => item !== null)
-            .slice(0, LATEST_TRACKS_LIMIT),
-        );
-      },
-    );
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   const refreshPresetNowPlaying = useCallback(async () => {
     if (radioPresets.length === 0 || nowPlayingRefreshInFlight.current) {
@@ -243,32 +181,6 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     NOW_PLAYING_POLL_MS,
     radioPresets.length > 0,
   );
-
-  useEffect(() => {
-    let cancelled = false;
-    void fetchHomepageDiscoWidgets().then((home) => {
-      if (cancelled) {
-        return;
-      }
-      if (!signedIn) {
-        setDiscoWidgets(home.data);
-        return;
-      }
-      void fetchDiscoverDiscoWidgets().then((mine) => {
-        if (cancelled) {
-          return;
-        }
-        const seen = new Set(mine.data.map((w) => w.installId));
-        setDiscoWidgets([
-          ...mine.data,
-          ...home.data.filter((w) => !seen.has(w.installId)),
-        ]);
-      });
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [signedIn]);
 
   const playNow = async (slug: string) => {
     const { playable } = await fetchChannel(slug);
@@ -353,12 +265,12 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
 
   const onAirItems = useMemo<OnAirRowItem[]>(
     () =>
-      onAir.map((channel) => ({
+      sections.onAir.data.map((channel) => ({
         id: channel.slug,
         title: channel.user.displayName,
         channel,
       })),
-    [onAir],
+    [sections.onAir.data],
   );
 
   const recentItems = useMemo<RecentRowItem[]>(
@@ -557,28 +469,37 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
 
         {tab === 'listen' ? (
           <div className="flex flex-col gap-4" data-testid="listen-dashboard">
-            {radio ? (
-              <RadioListItem
-                name={radioName}
-                coverUrl={radioLogo}
-                subtitle={`${
-                  radio.hlsUrl
-                    ? (radio.nowPlaying?.title ?? '24/7 community stream')
-                    : 'Temporarily offline'
-                }${
-                  radio.nowPlaying?.artistName
-                    ? ` · ${radio.nowPlaying.artistName}`
-                    : ''
-                }`}
-                isPlaying={isActive(radioPlayableId)}
-                disabled={!radio.hlsUrl}
-                onTogglePlay={toggleRadioPlayback}
-                visualPreset={radio.visualPreset}
-                colorScheme={radio.colorScheme}
-                colorSchemeJson={radio.colorSchemeJson}
-                visualSettingsJson={radio.visualSettingsJson}
-              />
-            ) : null}
+            <ListenSection
+              data-testid="listen-tahti-radio"
+              title="Tahti Radio"
+              status={sections.radio.status}
+              empty={radio == null}
+              emptyTitle="Tahti Radio is unavailable"
+              onRetry={() => sections.retry('radio')}
+            >
+              {radio ? (
+                <RadioListItem
+                  name={radioName}
+                  coverUrl={radioLogo}
+                  subtitle={`${
+                    radio.hlsUrl
+                      ? (radio.nowPlaying?.title ?? '24/7 community stream')
+                      : 'Temporarily offline'
+                  }${
+                    radio.nowPlaying?.artistName
+                      ? ` · ${radio.nowPlaying.artistName}`
+                      : ''
+                  }`}
+                  isPlaying={isActive(radioPlayableId)}
+                  disabled={!radio.hlsUrl}
+                  onTogglePlay={toggleRadioPlayback}
+                  visualPreset={radio.visualPreset}
+                  colorScheme={radio.colorScheme}
+                  colorSchemeJson={radio.colorSchemeJson}
+                  visualSettingsJson={radio.visualSettingsJson}
+                />
+              ) : null}
+            </ListenSection>
 
             {recentItems.length > 0 ? (
               <CardsRow
@@ -591,7 +512,18 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
               />
             ) : null}
 
-            {radioItems.length > 0 ? (
+            <ListenSection
+              data-testid="listen-radio"
+              title="Radio"
+              badge="Internet radio"
+              status={radioItems.length > 0 ? 'ready' : sections.presets.status}
+              empty={radioItems.length === 0}
+              emptyTitle="No radio stations yet"
+              emptyDescription={
+                signedIn ? 'Add stations from the widget store.' : undefined
+              }
+              onRetry={() => sections.retry('presets')}
+            >
               <CardsRow
                 data-testid="listen-radio"
                 title="Radio"
@@ -603,9 +535,24 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                 }}
                 renderItem={renderRadioItem}
               />
-            ) : null}
+              {sections.presets.status === 'error' ? (
+                <PageError
+                  title="Curated stations couldn't load"
+                  onRetry={() => sections.retry('presets')}
+                />
+              ) : null}
+            </ListenSection>
 
-            {onAirItems.length > 0 ? (
+            <ListenSection
+              data-testid="listen-on-air"
+              title="On air"
+              badge="Live"
+              status={sections.onAir.status}
+              empty={onAirItems.length === 0}
+              emptyTitle="Nobody is on air right now"
+              emptyDescription="Live and replaying channels show up here."
+              onRetry={() => sections.retry('onAir')}
+            >
               <CardsRow
                 data-testid="listen-on-air"
                 title="On air"
@@ -617,9 +564,16 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                 }}
                 renderItem={renderOnAirItem}
               />
-            ) : null}
+            </ListenSection>
 
-            {latestTracks.length > 0 ? (
+            <ListenSection
+              data-testid="listen-new-tracks"
+              title="New tracks"
+              status={sections.latestTracks.status}
+              empty={sections.latestTracks.data.length === 0}
+              emptyTitle="No new tracks yet"
+              onRetry={() => sections.retry('latestTracks')}
+            >
               <section
                 className="flex flex-col gap-3"
                 data-testid="listen-new-tracks"
@@ -627,12 +581,16 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                 <h2 className="text-foreground text-lg font-bold">
                   New tracks
                 </h2>
-                <PlayableTrackTable items={latestTracks} />
+                <PlayableTrackTable items={sections.latestTracks.data} />
               </section>
-            ) : null}
+            </ListenSection>
 
             <ListenerWidgetsSection />
-            <DiscoWidgetsSection widgets={discoWidgets} />
+            <DiscoWidgetsSection
+              widgets={sections.discoWidgets.data}
+              status={sections.discoWidgets.status}
+              onRetry={() => sections.retry('discoWidgets')}
+            />
 
             <RemoveWidgetDialog
               isOpen={pendingStationRemoval != null}

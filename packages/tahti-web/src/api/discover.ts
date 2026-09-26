@@ -3,6 +3,7 @@ import { apiBase } from './http';
 import { mockLatestTracks, mockNewToYou, mockTopTracks } from './mock';
 import {
   allowMockFallback,
+  apiErrorMeta,
   failMeta,
   isForceMock,
   type FetchMeta,
@@ -323,7 +324,7 @@ export async function fetchLatestTracks(
     if (allowMockFallback()) {
       return { data: mockLatestTracks(), meta: failMeta(err) };
     }
-    return { data: [], meta: failMeta(err) };
+    return { data: [], meta: apiErrorMeta(err) };
   }
 }
 
