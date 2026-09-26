@@ -30,10 +30,17 @@ export function canAirPlay(): boolean {
   );
 }
 
+/** Whether the browser can play an HLS manifest on its own. */
+export function canPlayNativeHls(
+  audio: Pick<HTMLMediaElement, 'canPlayType'>,
+): boolean {
+  return audio.canPlayType(HLS_MIME) !== '';
+}
+
 /** AirPlay can't cast a MediaSource-backed element, so AirPlay-capable
  * browsers play HLS natively whenever they can. */
 export function prefersNativeHls(audio: Pick<HTMLMediaElement, 'canPlayType'>) {
-  return canAirPlay() && audio.canPlayType(HLS_MIME) !== '';
+  return canAirPlay() && canPlayNativeHls(audio);
 }
 
 export function isHlsStream(playable: {

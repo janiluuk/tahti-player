@@ -7,6 +7,7 @@ import { postListenEvent } from '../api/client';
 import type { TahtiPlayable } from '../api/types';
 import {
   canAirPlay,
+  canPlayNativeHls,
   isHlsStream,
   loadHls,
   prefersNativeHls,
@@ -18,18 +19,6 @@ import { usePlaybackPrefsStore } from '../stores/playbackPrefsStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 
 const LISTEN_EVENT_AFTER_SEC = 15;
-
-let hlsModule: Promise<typeof import('hls.js')> | null = null;
-
-/** hls.js is most of a megabyte, so it loads on the first HLS stream
- * instead of with the app shell. */
-function loadHls(): Promise<typeof import('hls.js')> {
-  hlsModule ??= import('hls.js').catch((error: unknown) => {
-    hlsModule = null;
-    throw error;
-  });
-  return hlsModule;
-}
 
 /**
  * Mounts a hidden <audio> element driven by the player store.
@@ -298,14 +287,7 @@ export function AudioEngine() {
     };
     let disposed = false;
 
-
-    // AirPlay can't cast a MediaSource-backed element, so prefer native HLS there.
-    if (
-      !isHls || 
-      prefersNativeHls(audio) ||
-      (canAirPlay() &&
-        audio.canPlayType('application/vnd.apple.mpegurl') !== '')
-    ) {
+    if (!isHls || prefersNativeHls(audio)) {
       playDirect();
     } else {
       void loadHls()
@@ -334,9 +316,16 @@ export function AudioEngine() {
           });
         })
         .catch(() => {
-          if (!disposed) {
-            setStatus('error', 'Could not load the stream player');
+          if (disposed) {
+            return;
           }
+          // The chunk can fail on a stale deploy or a flaky connection;
+          // native playback is then the only way left to make sound.
+          if (canPlayNativeHls(audio)) {
+            playDirect();
+            return;
+          }
+          setStatus('error', 'Playback error');
         });
     }
 

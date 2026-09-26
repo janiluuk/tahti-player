@@ -114,6 +114,28 @@ describe('scheduleIdleHlsPrefetch', () => {
   });
 });
 
+describe('prefersNativeHls', () => {
+  it('needs both AirPlay and native HLS support', async () => {
+    const { canPlayNativeHls, prefersNativeHls } = await freshLoader();
+    const audio = {
+      canPlayType: (type: string) =>
+        type === 'application/vnd.apple.mpegurl' ? 'maybe' : '',
+    };
+    expect(canPlayNativeHls(audio)).toBe(true);
+    expect(prefersNativeHls(audio)).toBe(false);
+
+    stubAirPlay(true);
+    expect(prefersNativeHls(audio)).toBe(true);
+  });
+
+  it('reports no native support when the browser rejects the mime type', async () => {
+    const { canPlayNativeHls, prefersNativeHls } = await freshLoader();
+    const audio = { canPlayType: () => '' };
+    expect(canPlayNativeHls(audio)).toBe(false);
+    expect(prefersNativeHls(audio)).toBe(false);
+  });
+});
+
 describe('prefetchHls', () => {
   it('skips when the user asked to save data', async () => {
     setSaveData(true);
