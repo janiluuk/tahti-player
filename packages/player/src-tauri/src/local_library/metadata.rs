@@ -73,7 +73,7 @@ pub fn read(path: &Path) -> Result<LibraryTrack, String> {
     hint.with_extension(&extension);
     let mut probed = symphonia::default::get_probe()
         .format(&hint, MediaSourceStream::new(Box::new(file), Default::default()), &FormatOptions::default(), &MetadataOptions::default())
-        .map_err(|err| format!("Cannot read audio: {err}"))?;
+        .map_err(|err| format!("Not a playable {} file, its contents are not audio this app can read ({err})", extension.to_uppercase()))?;
     let source = probed.format.default_track().ok_or("No audio track")?;
     let params = source.codec_params.clone();
     let source_id = source.id;
@@ -128,7 +128,7 @@ pub fn read(path: &Path) -> Result<LibraryTrack, String> {
             .then(|| (size as f64 * 8.0 / track.duration / 1000.0).round() as i64);
     }
     loop {
-        let packet = probed.format.next_packet().map_err(|err| format!("No decodable audio: {err}"))?;
+        let packet = probed.format.next_packet().map_err(|err| format!("No playable audio in this file, it may be truncated or damaged ({err})"))?;
         if packet.track_id() == source_id {
             decoder.decode(&packet).map_err(|err| format!("Cannot decode audio: {err}"))?;
             break;

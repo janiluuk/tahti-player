@@ -125,38 +125,59 @@ pub(super) async fn insert_track(
     Ok(())
 }
 
+/// Hard cap on tag reads in flight across every import at once (picker,
+/// folder, roots, watcher, backup restore), however many run in parallel.
+const MAX_CONCURRENT_READS: usize = IMPORT_BATCH;
+static READ_SLOTS: tokio::sync::Semaphore = tokio::sync::Semaphore::const_new(MAX_CONCURRENT_READS);
+
 pub(crate) async fn import_batch(
     pool: &SqlitePool,
     paths: Vec<PathBuf>,
     root_id: Option<&str>,
     result: &mut ImportResult,
 ) {
+    import_batch_in_job(pool, paths, root_id, None, result).await;
+}
+
+/// Reads and saves one batch. With a job, each path is ticked off as
+/// imported or failed in the same transaction that saves the tracks, so an
+/// interruption never leaves a saved file marked pending or the reverse.
+pub(super) async fn import_batch_in_job(
+    pool: &SqlitePool,
+    paths: Vec<PathBuf>,
+    root_id: Option<&str>,
+    job_id: Option<&str>,
+    result: &mut ImportResult,
+) {
     let reads = futures::future::join_all(paths.into_iter().map(|path| async move {
-        let display = path.to_string_lossy().into_owned();
-        tauri::async_runtime::spawn_blocking(move || metadata::read(&path))
-            .await
-            .map_err(|err| err.to_string())
-            .and_then(|track| track)
-            .map_err(|error| ImportFailure {
-                path: display,
-                error,
-            })
+        let key = path.to_string_lossy().into_owned();
+        let read = match READ_SLOTS.acquire().await {
+            Ok(_slot) => tauri::async_runtime::spawn_blocking(move || metadata::read(&path))
+                .await
+                .map_err(|err| err.to_string())
+                .and_then(|track| track),
+            Err(err) => Err(err.to_string()),
+        };
+        (key, read)
     }))
     .await;
     let mut tracks = Vec::with_capacity(reads.len());
-    for read in reads {
+    let mut failed = Vec::new();
+    for (key, read) in reads {
         match read {
-            Ok(track) => tracks.push(track),
-            Err(failure) => result.errors.push(failure),
+            Ok(track) => tracks.push((key, track)),
+            Err(error) => failed.push(ImportFailure { path: key, error }),
         }
     }
-    if tracks.is_empty() {
+    if tracks.is_empty() && job_id.is_none() {
+        result.errors.extend(failed);
         return;
     }
     let mut tx = match pool.begin().await {
         Ok(tx) => tx,
         Err(error) => {
-            for track in tracks {
+            result.errors.extend(failed);
+            for (_, track) in tracks {
                 result.errors.push(ImportFailure {
                     path: track.path,
                     error: error.to_string(),
@@ -165,20 +186,36 @@ pub(crate) async fn import_batch(
             return;
         }
     };
+    let mut marks: Vec<(String, i64)> = failed
+        .iter()
+        .map(|failure| (failure.path.clone(), import_jobs::PATH_FAILED))
+        .collect();
     let mut written = 0usize;
-    for track in &tracks {
+    for (key, track) in &tracks {
         match insert_track(&mut tx, track, root_id).await {
-            Ok(()) => written += 1,
-            Err(error) => result.errors.push(ImportFailure {
-                path: track.path.clone(),
-                error: error.to_string(),
-            }),
+            Ok(()) => {
+                written += 1;
+                marks.push((key.clone(), import_jobs::PATH_IMPORTED));
+            }
+            Err(error) => {
+                marks.push((key.clone(), import_jobs::PATH_FAILED));
+                failed.push(ImportFailure {
+                    path: track.path.clone(),
+                    error: error.to_string(),
+                });
+            }
         }
     }
+    if let Some(job_id) = job_id {
+        if let Err(error) = import_jobs::mark_paths(&mut tx, job_id, &marks).await {
+            log::warn!("Could not record import progress for job {job_id}: {error}");
+        }
+    }
+    result.errors.extend(failed);
     match tx.commit().await {
         Ok(()) => result.imported += written,
         Err(error) => result.errors.push(ImportFailure {
-            path: tracks.first().map(|t| t.path.clone()).unwrap_or_default(),
+            path: tracks.first().map(|(_, t)| t.path.clone()).unwrap_or_default(),
             error: format!("Could not save {written} tracks: {error}"),
         }),
     }
@@ -192,61 +229,66 @@ pub async fn import_paths(pool: &SqlitePool, paths: Vec<PathBuf>) -> ImportResul
     result
 }
 
-/// Same import as `import_paths`, plus a `skipped` starting count (files
-/// already excluded during folder walking), an optional root to tag/adopt
-/// tracks into and, for the Tauri command-driven paths, a live
+/// Same import as `import_paths`, recorded as a resumable job (see
+/// `import_jobs`), plus a `skipped` starting count (files already excluded
+/// during folder walking), an optional root to tag/adopt tracks into, a live
 /// `IMPORT_PROGRESS_EVENT` per batch and cooperative cancellation via
-/// `LibraryState::cancel_import` (checked between batches).
+/// `LibraryState::cancel_import` (checked between batches). `source` names
+/// what was imported (a folder path, or empty for loose files) so importing
+/// the same folder again continues an interrupted job.
 pub(super) async fn import_paths_with_progress(
     app: &tauri::AppHandle,
     pool: &SqlitePool,
     paths: Vec<PathBuf>,
     skipped: usize,
     root_id: Option<&str>,
+    source: &str,
 ) -> ImportResult {
-    let total = paths.len();
-    let mut result = ImportResult {
-        skipped,
-        ..Default::default()
+    let started = if paths.is_empty() {
+        Err("nothing to import".to_owned())
+    } else {
+        import_jobs::start_job(pool, source, root_id, paths.clone()).await
     };
-    let mut done = 0usize;
-    for batch in paths.chunks(IMPORT_BATCH) {
-        if app
-            .state::<LibraryState>()
-            .cancel_import
-            .load(Ordering::Relaxed)
-        {
-            result.cancelled = true;
-            break;
-        }
-        let _ = app.emit(
-            IMPORT_PROGRESS_EVENT,
-            ImportProgress {
-                done,
-                total,
-                imported: result.imported,
-                failed: result.errors.len(),
-                skipped: result.skipped,
-                current_path: batch
-                    .first()
-                    .map(|path| path.to_string_lossy().into_owned()),
-            },
-        );
-        import_batch(pool, batch.to_vec(), root_id, &mut result).await;
-        done += batch.len();
-    }
-    let _ = app.emit(
-        IMPORT_PROGRESS_EVENT,
-        ImportProgress {
-            done: total,
-            total,
-            imported: result.imported,
-            failed: result.errors.len(),
-            skipped: result.skipped,
-            current_path: None,
+    let run = match started {
+        Ok((job_id, paths)) => import_jobs::JobRun {
+            job_id: Some(job_id),
+            root_id: root_id.map(str::to_owned),
+            paths,
         },
-    );
-    result
+        Err(error) => {
+            if !paths.is_empty() {
+                log::warn!("Import runs without resume support: {error}");
+            }
+            import_jobs::JobRun {
+                job_id: None,
+                root_id: root_id.map(str::to_owned),
+                paths,
+            }
+        }
+    };
+    run_jobs_with_app(app, pool, vec![run], skipped).await
+}
+
+pub(super) async fn run_jobs_with_app(
+    app: &tauri::AppHandle,
+    pool: &SqlitePool,
+    runs: Vec<import_jobs::JobRun>,
+    skipped: usize,
+) -> ImportResult {
+    import_jobs::run_jobs(
+        pool,
+        runs,
+        skipped,
+        || {
+            app.state::<LibraryState>()
+                .cancel_import
+                .load(Ordering::Relaxed)
+        },
+        |progress| {
+            let _ = app.emit(IMPORT_PROGRESS_EVENT, progress);
+        },
+    )
+    .await
 }
 
 pub(super) fn reset_cancel_import(app: &tauri::AppHandle) {
@@ -277,7 +319,7 @@ pub async fn library_import(app: tauri::AppHandle) -> Result<ImportResult, Strin
         .collect::<Result<Vec<_>, _>>()?;
     reset_cancel_import(&app);
     let pool = pool(&app).await?;
-    Ok(import_paths_with_progress(&app, &pool, paths, 0, None).await)
+    Ok(import_paths_with_progress(&app, &pool, paths, 0, None, "").await)
 }
 
 #[tauri::command]
@@ -293,13 +335,15 @@ pub async fn library_import_folder(app: tauri::AppHandle) -> Result<ImportResult
         return Ok(ImportResult::default());
     };
     let root = folder.into_path().map_err(|err| err.to_string())?;
+    let source = canonical_folder(&root)?;
+    let walk_root = PathBuf::from(&source);
     let (paths, skipped) =
-        tauri::async_runtime::spawn_blocking(move || collect_audio_paths_with_skipped(&root))
+        tauri::async_runtime::spawn_blocking(move || collect_audio_paths_with_skipped(&walk_root))
             .await
             .map_err(|err| err.to_string())??;
     reset_cancel_import(&app);
     let pool = pool(&app).await?;
-    Ok(import_paths_with_progress(&app, &pool, paths, skipped, None).await)
+    Ok(import_paths_with_progress(&app, &pool, paths, skipped, None, &source).await)
 }
 
 /// Imports an explicit list of files/folders -- the entry point for native
@@ -352,7 +396,7 @@ pub async fn library_import_paths(
     }
     collected.sort();
     let pool = pool(&app).await?;
-    let imported = import_paths_with_progress(&app, &pool, collected, skipped, None).await;
+    let imported = import_paths_with_progress(&app, &pool, collected, skipped, None, "").await;
     result.imported += imported.imported;
     result.skipped += imported.skipped;
     result.errors.extend(imported.errors);

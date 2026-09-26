@@ -19,6 +19,7 @@ import type {
   NativeLibraryRoot,
   NativeLibraryTotals,
   NativeLibraryTrack,
+  NativePendingImport,
   NativePlaybackBatch,
   NativeRelinkRootResult,
   NativeRootScanResult,
@@ -65,6 +66,12 @@ export type TahtiNativeLibrary = {
   /** Imports an explicit list of file/folder paths — used for drag-drop. */
   importPaths: (paths: string[]) => Promise<NativeLibraryImportResult>;
   cancelImport: () => Promise<void>;
+  /** Unfinished imports waiting to be resumed, or `null`. Missing in older desktop builds. */
+  pendingImport?: () => Promise<NativePendingImport | null>;
+  /** Continues unfinished imports with the files they had not reached. */
+  resumeImport?: () => Promise<NativeLibraryImportResult>;
+  /** Forgets unfinished imports; tracks already imported stay. */
+  discardPendingImport?: () => Promise<void>;
   resolve: (id: string) => Promise<string>;
   remove: (id: string) => Promise<void>;
   /** Removes many catalog rows at once (files on disk untouched); returns how many existed. */

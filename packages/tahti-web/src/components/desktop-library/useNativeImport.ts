@@ -8,6 +8,14 @@ import type {
 } from '../../lib/nativeLibrary';
 import { describeImportFailures } from './importFailures';
 
+// The panel remounts on every visit to the library; offer an interrupted
+// import from an earlier session once per app run, not on each visit.
+let pendingImportOffered = false;
+
+export function resetPendingImportOfferForTests() {
+  pendingImportOffered = false;
+}
+
 /**
  * Importing files and folders (picker, drag-and-drop, retry of failures) with
  * live progress and cancellation. `refresh` reloads the library afterwards.
@@ -66,7 +74,15 @@ export function useNativeImport(
       );
     }
     if (result.cancelled) {
-      toast.info('Import cancelled.');
+      toast.info(
+        'Import cancelled.',
+        library?.resumeImport
+          ? {
+              description: 'Files already imported are kept.',
+              action: { label: 'Resume', onClick: () => void resume() },
+            }
+          : undefined,
+      );
     }
     if (
       !result.imported &&
@@ -104,6 +120,57 @@ export function useNativeImport(
     [library, setLoading],
   );
   runImportRef.current = runImport;
+
+  const resume = useCallback(
+    () =>
+      runImportRef.current((lib) =>
+        lib.resumeImport
+          ? lib.resumeImport()
+          : Promise.resolve({
+              imported: 0,
+              skipped: 0,
+              errors: [],
+              cancelled: false,
+            }),
+      ),
+    [],
+  );
+
+  useEffect(() => {
+    if (
+      !library?.pendingImport ||
+      !library.resumeImport ||
+      pendingImportOffered
+    ) {
+      return;
+    }
+    let active = true;
+    library
+      .pendingImport()
+      .then((pending) => {
+        if (!active || !pending || pendingImportOffered) {
+          return;
+        }
+        pendingImportOffered = true;
+        toast.info(
+          pending.files === 1
+            ? 'An import was interrupted with 1 file left.'
+            : `An import was interrupted with ${pending.files} files left.`,
+          {
+            duration: Infinity,
+            action: { label: 'Resume', onClick: () => void resume() },
+            cancel: {
+              label: 'Discard',
+              onClick: () => void library.discardPendingImport?.(),
+            },
+          },
+        );
+      })
+      .catch(() => undefined);
+    return () => {
+      active = false;
+    };
+  }, [library, resume]);
 
   const retry = () => {
     const paths = lastFailedPathsRef.current;

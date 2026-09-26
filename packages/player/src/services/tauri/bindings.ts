@@ -143,6 +143,19 @@ export const commands = {
 	 *  cooperatively, so a file already being read/inserted still completes.
 	 */
 	libraryImportCancel: () => typedError<null, string>(__TAURI_INVOKE("library_import_cancel")),
+	/**  How many unfinished imports are waiting (files and jobs), or `None`. */
+	libraryImportPending: () => typedError<{
+	/**  Files not yet reached. */
+	files: number,
+	jobs: number,
+} | null, string>(__TAURI_INVOKE("library_import_pending")),
+	/**
+	 *  Continues every unfinished import with the files it had not reached, with
+	 *  the usual progress events and cancellation.
+	 */
+	libraryImportResume: () => typedError<ImportResult, string>(__TAURI_INVOKE("library_import_resume")),
+	/**  Forgets unfinished imports. Tracks they already imported stay. */
+	libraryImportDiscard: () => typedError<null, string>(__TAURI_INVOKE("library_import_discard")),
 	/**
 	 *  Downloads a provider set into the library, emitting
 	 *  `library://provider-import-progress` per entry.
@@ -791,6 +804,13 @@ export type Page<T> = {
 export type PageRequest = {
 	limit: number,
 	offset: number,
+};
+
+/**  Unfinished imports waiting to be resumed. */
+export type PendingImport = {
+	/**  Files not yet reached. */
+	files: number,
+	jobs: number,
 };
 
 export type PlayEndReason = "finished" | "skipped" | "stopped";

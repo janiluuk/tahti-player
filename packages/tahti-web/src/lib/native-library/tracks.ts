@@ -201,6 +201,13 @@ export type NativeLibraryImportResult = {
   cancelled: boolean;
 };
 
+/** Unfinished imports (quit or cancelled mid-way) that can be resumed. */
+export type NativePendingImport = {
+  /** Files not yet reached. */
+  files: number;
+  jobs: number;
+};
+
 export type NativeLibraryImportProgress = {
   done: number;
   total: number;
