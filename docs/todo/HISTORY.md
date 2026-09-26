@@ -3735,3 +3735,20 @@ Shipped in one pass (no todo file). The full-screen player has a "More options" 
 - **Fix:** `Dialog.Root` takes a new `layerClassName` prop. `AddToPlaylistPanel` uses `z-[70]` because it used to open *behind* the full-screen player (`z-[60]`). That also affected the existing inline "Add to playlist" button there.
 - Escape only closes the full-screen player when the key press starts inside it, so it now closes an open sheet or dialog first.
 - Checks: ui ActionSheet and Dialog tests (11) pass; tahti-web `tsc` and `eslint` are clean. Checked in mock mode at 400px width: radio actions, Go to channel navigating and closing the player, Escape, and sound actions with the playlist dialog on top.
+
+## 2026-09-26 — AirPlay had no sound (tracks and radio): confirmed fixed
+
+`docs/todo/radio-casting-broken.md`: tahti-web played no sound over AirPlay, for tracks and every radio station. Cause: `AudioEngine` captured the `<audio>` element into Web Audio for the visualizers (that audio doesn't follow the AirPlay route), and Safari played Tahti HLS through hls.js/MediaSource (which can't be AirPlayed). Fix (2026-09-25): in AirPlay-capable browsers the element is never captured and HLS plays natively; other browsers are unchanged. `AudioEngine.airplay.test.tsx` covers it. The user confirmed on a real device on 2026-09-26 that AirPlay works.
+
+- Trade-off: channel visualizers show their idle level on Safari, and the Go Live signal check shows nothing there. If Safari visualizers ever matter, capture only while a visualizer is on screen and AirPlay is not in use (a capture can't be undone, so it would need a fresh `<audio>` element when AirPlay starts). Not tracked.
+
+## 2026-09-26 — Radio channel page: production migration history fixed
+
+`docs/todo/radio-channel-page.md`: the radio-channel page type (`Channel.channelKind` = `RADIO`, a Programming block instead of About/Links/Subscribe) shipped 2026-09-15 (tahti-org #524, tahti-player #89). `tahti-radio`'s data backfill was applied by hand on 2026-09-21. The migration pipeline was switched from `db push` to `migrate deploy` (tahti-org #532), but production's history stayed stuck on a failed squash `init`. On 2026-09-26 that had left `20260923170000_collection_details` unapplied, and `GET /api/me/collections` returned 500.
+
+- **Fix:** the user ran `~/workspace/fix-prod-migrations.sh` on 2026-09-26. It resolved `init` plus the six already-live migrations as applied, then `migrate deploy` applied only `collection_details`. `prisma migrate diff` now reports no difference; there have been no missing-column errors since and the endpoint is back (401 unauthenticated instead of 500).
+- **Runbook:** the resolve-everything loop is replaced by diff-first, resolve only what's live (tahti-org #559).
+- **Deliberately out of scope** (moved to `FEATURES-REMAINING.md`):
+  - a per-station programming grid (the Programming block links to the global `/schedule`);
+  - an admin/Designer control for `channelKind`;
+  - pages for the 6 external Finnish presets.
