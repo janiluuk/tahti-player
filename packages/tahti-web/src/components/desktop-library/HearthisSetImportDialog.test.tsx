@@ -14,6 +14,7 @@ import type {
   NativeProviderImportProgress,
   NativeProviderImportRequest,
   NativeProviderImportResult,
+  NativeProviderImportSpace,
 } from '../../lib/nativeLibrary';
 import { HearthisSetImportDialog } from './HearthisSetImportDialog';
 
@@ -91,6 +92,20 @@ const done = (
   cancelled: false,
   playlistId: 'pl-1',
   trackIds: [],
+  ...overrides,
+});
+
+const MB = 1024 ** 2;
+
+const space = (
+  overrides: Partial<NativeProviderImportSpace>,
+): NativeProviderImportSpace => ({
+  neededBytes: 150 * MB,
+  sized: 1,
+  unknownSize: 1,
+  alreadyImported: 0,
+  freeBytes: 40 * 1024 * MB,
+  verdict: 'fits',
   ...overrides,
 });
 
@@ -207,6 +222,90 @@ describe('HearthisSetImportDialog', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Download 2 tracks' }));
     await screen.findByText('2 tracks imported.');
     expect(requests[0]!.playlistName).toBeNull();
+  });
+
+  it('shows how much space the set needs, leaving unknown sizes unknown', async () => {
+    const { api } = fakeImport([]);
+    api.space = vi.fn(async () => space({ verdict: 'fits' }));
+    await openReview(api);
+
+    expect(
+      await screen.findByText(
+        'About 150 MB needed (1 track of unknown size), 40.0 GB free on that disk.',
+      ),
+    ).toBeTruthy();
+    expect(api.space).toHaveBeenCalledWith(
+      expect.objectContaining({
+        provider: 'hearthis',
+        destination: '/Music/Tahti/hearthis.at/hearthis.at set night-1',
+        entries: [
+          expect.objectContaining({ remoteId: 'a' }),
+          expect.objectContaining({ remoteId: 'c' }),
+        ],
+      }),
+    );
+    expect(screen.queryByRole('alert')).toBeNull();
+    expect(
+      screen.getByRole('button', { name: 'Download 2 tracks' }),
+    ).toHaveProperty('disabled', false);
+  });
+
+  it('warns when the set only just fits', async () => {
+    const { api } = fakeImport([]);
+    api.space = vi.fn(async () =>
+      space({ freeBytes: 200 * MB, verdict: 'tight' }),
+    );
+    await openReview(api);
+    expect(
+      await screen.findByText(/leaves little room on the disk/),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole('button', { name: 'Download 2 tracks' }),
+    ).toHaveProperty('disabled', false);
+  });
+
+  it('blocks the download when the set clearly does not fit, and checks again on request', async () => {
+    const { api } = fakeImport([]);
+    api.space = vi
+      .fn()
+      .mockResolvedValueOnce(
+        space({ freeBytes: 50 * MB, verdict: 'notEnough' }),
+      )
+      .mockResolvedValueOnce(space({ verdict: 'fits' }));
+    await openReview(api);
+
+    const alert = await screen.findByRole('alert');
+    expect(alert.textContent).toContain(
+      'Not enough space. Free up at least 100 MB and check again.',
+    );
+    expect(
+      screen.getByRole('button', { name: 'Download 2 tracks' }),
+    ).toHaveProperty('disabled', true);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Check again' }));
+    await waitFor(() => expect(api.space).toHaveBeenCalledTimes(2));
+    await screen.findByText(/40\.0 GB free on that disk/);
+    expect(screen.queryByRole('alert')).toBeNull();
+    expect(
+      screen.getByRole('button', { name: 'Download 2 tracks' }),
+    ).toHaveProperty('disabled', false);
+  });
+
+  it('says so when no file sizes are listed', async () => {
+    const { api } = fakeImport([]);
+    api.space = vi.fn(async () =>
+      space({
+        neededBytes: 0,
+        sized: 0,
+        unknownSize: 2,
+        freeBytes: null,
+        verdict: 'unknown',
+      }),
+    );
+    await openReview(api);
+    expect(
+      await screen.findByText('File sizes are not listed, free space unknown.'),
+    ).toBeTruthy();
   });
 
   it('explains a link that is not a set link', async () => {

@@ -429,6 +429,9 @@ const baseNativeLibrary: TahtiNativeLibrary = {
     async start(request) {
       return unwrapResult(await commands.libraryProviderImport(request));
     },
+    async space(request) {
+      return unwrapResult(await commands.libraryProviderImportSpace(request));
+    },
     async cancel() {
       unwrapResult(await commands.libraryProviderImportCancel());
     },

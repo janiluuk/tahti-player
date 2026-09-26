@@ -164,6 +164,8 @@ export const commands = {
 	libraryProviderImportCancel: () => typedError<null, string>(__TAURI_INVOKE("library_provider_import_cancel")),
 	/**  The folder a set is saved in unless the user picks another one. */
 	libraryProviderImportDestination: (provider: string, setTitle: string) => typedError<string, string>(__TAURI_INVOKE("library_provider_import_destination", { provider, setTitle })),
+	/**  How much space the set needs against what the destination has free. */
+	libraryProviderImportSpace: (request: ProviderImportRequest) => typedError<ProviderImportSpace, string>(__TAURI_INVOKE("library_provider_import_space", { request })),
 	libraryResolve: (id: string) => typedError<string, string>(__TAURI_INVOKE("library_resolve", { id })),
 	libraryRemove: (id: string) => typedError<null, string>(__TAURI_INVOKE("library_remove", { id })),
 	libraryRemoveMany: (ids: string[]) => typedError<number, string>(__TAURI_INVOKE("library_remove_many", { ids })),
@@ -926,6 +928,20 @@ export type ProviderImportResult = {
 	trackIds: string[],
 };
 
+export type ProviderImportSpace = {
+	/**  Sum of the sizes the provider reported for the entries still to download. */
+	neededBytes: number,
+	/**  Entries still to download whose size is known. */
+	sized: number,
+	/**  Entries still to download whose size the provider did not report. */
+	unknownSize: number,
+	/**  Entries already in the library, which will be skipped. */
+	alreadyImported: number,
+	/**  Space available to this user on the destination volume. */
+	freeBytes: number | null,
+	verdict: SpaceVerdict,
+};
+
 /**
  *  Enough to recreate an entry exactly: used for undo and for M3U import of
  *  files that are not in the catalog yet.
@@ -1055,6 +1071,16 @@ export type SmartRule = {
  *  ORDER BY below is assembled from fixed SQL only.
  */
 export type SortColumn = "title" | "artist" | "album" | "genre" | "year" | "trackNo" | "duration" | "format" | "size" | "bitrate" | "added" | "rating" | "plays" | "lastPlayed" | "bpm" | "key" | "loudness";
+
+export type SpaceVerdict = 
+/**  Known sizes plus the margin fit. */
+"fits" | 
+/**  Known sizes fit, but not with the margin. */
+"tight" | 
+/**  Known sizes alone need more than the free space. */
+"notEnough" | 
+/**  The free space could not be read. */
+"unknown";
 
 export type StartupLogEntry = {
 	timestamp: string,

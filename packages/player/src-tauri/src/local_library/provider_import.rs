@@ -13,7 +13,7 @@ use sqlx::SqlitePool;
 use tauri::{Emitter, Manager};
 use tokio::io::AsyncWriteExt;
 
-use super::{import, organize, playlists, LibraryState};
+use super::{import, organize, playlists, provider_space, LibraryState};
 
 pub(super) const PROVIDER_IMPORT_PROGRESS_EVENT: &str = "library://provider-import-progress";
 
@@ -175,7 +175,7 @@ fn free_file_name(folder: &Path, position: usize, entry: &ProviderImportEntry, e
     candidate
 }
 
-async fn already_imported(pool: &SqlitePool, provider: &str, remote_id: &str) -> Result<Option<String>, String> {
+pub(super) async fn already_imported(pool: &SqlitePool, provider: &str, remote_id: &str) -> Result<Option<String>, String> {
     let row: Option<(String, String)> = sqlx::query_as(
         "SELECT t.id, t.path FROM library_track_sources s \
          JOIN library_tracks t ON t.id = s.track_id \
@@ -205,6 +205,14 @@ async fn record_source(pool: &SqlitePool, track_id: &str, request: &ProviderImpo
     Ok(())
 }
 
+pub(super) fn write_error(folder: &Path, what: &str, err: &std::io::Error) -> String {
+    if provider_space::is_disk_full(err) {
+        format!("The disk is full. Free up space on the drive holding {} and retry", folder.display())
+    } else {
+        format!("{what}: {err}")
+    }
+}
+
 enum DownloadError {
     Cancelled,
     Failed(String),
@@ -222,6 +230,7 @@ async fn download(
     progress: &(dyn Fn(ProviderImportProgress) + Sync),
 ) -> Result<PathBuf, DownloadError> {
     let failed = |err: String| DownloadError::Failed(err);
+    let write_failed = |what: &str, err: std::io::Error| DownloadError::Failed(write_error(folder, what, &err));
     let url = reqwest::Url::parse(&entry.download_url).map_err(|err| failed(format!("Bad download link: {err}")))?;
     if !matches!(url.scheme(), "http" | "https") {
         return Err(failed("Only http and https download links are supported".into()));
@@ -246,7 +255,7 @@ async fn download(
     ));
 
     let result = async {
-        let mut file = tokio::fs::File::create(&part).await.map_err(|err| failed(format!("Cannot write {}: {err}", part.display())))?;
+        let mut file = tokio::fs::File::create(&part).await.map_err(|err| write_failed(&format!("Cannot write {}", part.display()), err))?;
         let mut received = 0u64;
         let mut reported = 0u64;
         let mut stream = response.bytes_stream();
@@ -255,7 +264,7 @@ async fn download(
                 return Err(DownloadError::Cancelled);
             }
             let chunk = chunk.map_err(|err| failed(format!("Download interrupted: {err}")))?;
-            file.write_all(&chunk).await.map_err(|err| failed(format!("Cannot write the file: {err}")))?;
+            file.write_all(&chunk).await.map_err(|err| write_failed("Cannot write the file", err))?;
             received += chunk.len() as u64;
             if received - reported >= PROGRESS_STEP_BYTES {
                 reported = received;
@@ -274,9 +283,9 @@ async fn download(
         if total.is_some_and(|total| received < total) {
             return Err(failed("Download ended early".into()));
         }
-        file.flush().await.map_err(|err| failed(err.to_string()))?;
+        file.flush().await.map_err(|err| write_failed("Cannot write the file", err))?;
         drop(file);
-        tokio::fs::rename(&part, &target).await.map_err(|err| failed(format!("Cannot finish the file: {err}")))?;
+        tokio::fs::rename(&part, &target).await.map_err(|err| write_failed("Cannot finish the file", err))?;
         Ok(target.clone())
     }
     .await;
@@ -448,7 +457,7 @@ pub(crate) async fn run(
     Ok(result)
 }
 
-fn http_client() -> Result<reqwest::Client, String> {
+pub(super) fn http_client() -> Result<reqwest::Client, String> {
     reqwest::Client::builder()
         .user_agent(concat!("TahtiPlayer/", env!("CARGO_PKG_VERSION")))
         .connect_timeout(std::time::Duration::from_secs(30))
