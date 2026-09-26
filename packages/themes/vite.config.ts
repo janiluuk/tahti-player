@@ -45,6 +45,9 @@ export default defineConfig(({ command }) => {
     test: {
       globals: true,
       environment: 'jsdom',
+      // Node 25+ ships a global localStorage without getItem unless given
+      // --localstorage-file; it shadows jsdom's Storage.
+      execArgv: ['--no-experimental-webstorage'],
       reporters: vitestCiReporters(import.meta.url),
       outputFile: { junit: './test-results/junit.xml' },
       coverage: {
