@@ -77,6 +77,7 @@ fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
         local_library::tracks::library_remove,
         local_library::tracks::library_remove_many,
         local_library::tracks::library_reveal,
+        local_library::artwork::library_artwork_dir,
         local_library::tracks::library_list_unavailable,
         local_library::tracks::library_rescan,
         local_library::tracks::library_relink,

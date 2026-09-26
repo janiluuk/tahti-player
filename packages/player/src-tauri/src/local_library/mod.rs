@@ -7,6 +7,7 @@
 
 pub mod analysis;
 pub mod analysis_dsp;
+pub mod artwork;
 pub mod backup;
 pub mod catalog;
 pub mod import;
@@ -35,6 +36,8 @@ pub use tracks::*;
 
 #[cfg(test)]
 mod analysis_tests;
+#[cfg(test)]
+mod artwork_tests;
 #[cfg(test)]
 mod catalog_tests;
 #[cfg(test)]
@@ -135,6 +138,10 @@ pub struct LibraryTrack {
     pub loudness_lufs: Option<f64>,
     #[sqlx(default)]
     pub analyzed: bool,
+    /// File name of the embedded cover in the artwork cache (see
+    /// `artwork.rs`); `None` when the file has no usable picture.
+    #[sqlx(default)]
+    pub artwork_key: Option<String>,
 }
 
 /// Directory part of `path`, trailing separator included (either style).
@@ -245,15 +252,13 @@ async fn pool(app: &tauri::AppHandle) -> Result<SqlitePool, String> {
     let pool = state
         .pool
         .get_or_try_init(|| async {
-            let path = app
-                .path()
-                .app_data_dir()
-                .map_err(|err| err.to_string())?
-                .join("databases/library.db");
-            let (pool, moved) = open_recovering(&path).await?;
+            let data_dir = app.path().app_data_dir().map_err(|err| err.to_string())?;
+            artwork::init_cache_dir(app)?;
+            let (pool, moved) = open_recovering(&data_dir.join("databases/library.db")).await?;
             if let Some(moved) = moved {
                 *state.recovered_from.lock().unwrap() = Some(moved.to_string_lossy().into_owned());
             }
+            artwork::prune_in_background(pool.clone());
             Ok::<_, String>(pool)
         })
         .await?;

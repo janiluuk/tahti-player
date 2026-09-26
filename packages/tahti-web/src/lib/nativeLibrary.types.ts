@@ -73,6 +73,8 @@ export type TahtiNativeLibrary = {
   /** Forgets unfinished imports; tracks already imported stay. */
   discardPendingImport?: () => Promise<void>;
   resolve: (id: string) => Promise<string>;
+  /** Displayable URL for a track's `artworkKey`; absent when there is no artwork cache. */
+  artworkUrl?: (key: string) => string;
   remove: (id: string) => Promise<void>;
   /** Removes many catalog rows at once (files on disk untouched); returns how many existed. */
   removeMany: (ids: string[]) => Promise<number>;
@@ -115,3 +117,13 @@ export type TahtiNativeLibrary = {
   /** Downloads a provider set into the library. Missing in older desktop builds. */
   providerImport?: NativeProviderImport;
 };
+
+/** The track's embedded cover as an image URL, or `null` to show a placeholder. */
+export function nativeArtworkSrc(
+  library: Pick<TahtiNativeLibrary, 'artworkUrl'> | null | undefined,
+  track: Pick<NativeLibraryTrack, 'artworkKey'>,
+): string | null {
+  return track.artworkKey && library?.artworkUrl
+    ? library.artworkUrl(track.artworkKey)
+    : null;
+}

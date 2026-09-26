@@ -316,6 +316,40 @@ describe('DesktopLibraryPanel native import', () => {
     await waitFor(() => expect(reveal).toHaveBeenCalledWith('available-track'));
   });
 
+  it('shows embedded artwork in the table and a placeholder without it', async () => {
+    globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
+    const artworkUrl = vi.fn((key: string) => `asset://art/${key}`);
+    globalThis.__TAHTI_NATIVE_LIBRARY__ = createNativeLibrary({
+      list: vi.fn().mockResolvedValue({
+        tracks: [
+          { ...availableTrack, artworkKey: 'abc.png' },
+          { ...missingTrack, artworkKey: null },
+        ],
+        total: 2,
+      }),
+      artworkUrl,
+    });
+
+    render(<DesktopLibraryPanel />);
+
+    const withArt = (await screen.findByText('Available track')).closest(
+      '[role="row"]',
+    ) as HTMLElement;
+    const art = within(withArt).getByTestId('media-artwork');
+    expect(art.querySelector('img')?.getAttribute('src')).toBe(
+      'asset://art/abc.png',
+    );
+    const withoutArt = screen
+      .getByText('Missing track')
+      .closest('[role="row"]') as HTMLElement;
+    expect(
+      within(withoutArt).getByTestId('media-artwork').querySelector('img'),
+    ).toBeNull();
+    expect(new Set(artworkUrl.mock.calls.map(([key]) => key))).toEqual(
+      new Set(['abc.png']),
+    );
+  });
+
   it('lists watched folders and rescans them', async () => {
     globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
     const rescanRoots = vi.fn().mockResolvedValue({

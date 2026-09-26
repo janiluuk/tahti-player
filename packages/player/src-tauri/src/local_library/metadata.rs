@@ -111,6 +111,7 @@ pub fn read(path: &Path) -> Result<LibraryTrack, String> {
         musical_key: None,
         loudness_lufs: None,
         analyzed: false,
+        artwork_key: None,
         bitrate_kbps: (duration > 0.0).then(|| (size as f64 * 8.0 / duration / 1000.0).round() as i64),
     };
     if let Some(metadata) = probed.metadata.get().and_then(|metadata| metadata.current().cloned()) {
@@ -120,6 +121,7 @@ pub fn read(path: &Path) -> Result<LibraryTrack, String> {
         apply_tags(&mut track, metadata.tags());
     }
     fill_from_tag_reader(&mut track, &path);
+    track.artwork_key = super::artwork::extract(&path);
     if track.duration <= 0.0 {
         // MP3 and some M4A/OGG streams carry no frame count in their header,
         // so symphonia cannot report a length without decoding everything.
