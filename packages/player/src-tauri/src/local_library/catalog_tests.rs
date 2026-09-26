@@ -4,7 +4,7 @@ use sqlx::SqlitePool;
 
 use super::catalog::{
     add_tag, apply_edits, duplicate_groups, edit_preview, field_summary, hash_tracks, list_tags,
-    provenance, record_play, remove_tag, restore_edits, restore_user_data, set_color, set_rating,
+    provenance, record_play, record_skip, remove_tag, restore_edits, restore_user_data, set_color, set_rating,
     DuplicateKind, EditField, FieldEdit,
 };
 use super::test_support::{pool, write_wav_tagged};
@@ -231,6 +231,27 @@ async fn recording_a_play_counts_it_and_stamps_the_time() {
     assert_eq!(t.play_count, 2);
     assert!(t.last_played_at.is_some());
     assert_eq!(track(&pool, &ids[1]).await.play_count, 0);
+}
+
+#[tokio::test]
+async fn recording_a_skip_counts_it_without_touching_plays_or_history() {
+    let dir = tempfile::tempdir().unwrap();
+    let pool = pool().await;
+    let ids = album(&pool, dir.path()).await;
+    record_skip(&pool, &ids[0]).await.unwrap();
+    record_skip(&pool, &ids[0]).await.unwrap();
+    let t = track(&pool, &ids[0]).await;
+    assert_eq!((t.skip_count, t.play_count), (2, 0));
+    assert!(t.last_played_at.is_none());
+    assert_eq!(track(&pool, &ids[1]).await.skip_count, 0);
+    let history = crate::local_library::catalog::play_history(&pool, 0).await.unwrap();
+    assert_eq!(history.total, 0);
+    record_skip(&pool, "no-such-track").await.unwrap();
+
+    let sort = TrackSort { column: SortColumn::Skips, descending: true };
+    let query = ListQuery { search: "", filter: None, filters: None, sort: Some(&sort) };
+    let first = list_query(&pool, &query, 0).await.unwrap().tracks[0].id.clone();
+    assert_eq!(first, ids[0]);
 }
 
 #[tokio::test]

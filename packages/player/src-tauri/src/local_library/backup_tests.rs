@@ -3,7 +3,7 @@ use std::path::Path;
 use sqlx::SqlitePool;
 
 use super::backup::{export_backup, restore_backup, restore_preview, RootMapping};
-use super::catalog::{add_tag, apply_edits, set_color, set_rating, record_play, EditField, FieldEdit};
+use super::catalog::{add_tag, apply_edits, set_color, set_rating, record_play, record_skip, EditField, FieldEdit};
 use super::playlists::{add_tracks, create_playlist, entries_page};
 use super::test_support::{pool, write_wav_tagged};
 use super::{add_root, import_paths, list_query, remove, LibraryTrack, ListQuery};
@@ -38,6 +38,8 @@ async fn backup_restores_into_a_fresh_profile_with_remapped_roots() {
     set_color(&source, &ids[..1], "green").await.unwrap();
     add_tag(&source, &ids, "keeper").await.unwrap();
     record_play(&source, &ids[0]).await.unwrap();
+    record_skip(&source, &ids[1]).await.unwrap();
+    record_skip(&source, &ids[1]).await.unwrap();
     let playlist = create_playlist(&source, "Set").await.unwrap();
     add_tracks(&source, &playlist.id, &ids, None).await.unwrap();
 
@@ -77,6 +79,7 @@ async fn backup_restores_into_a_fresh_profile_with_remapped_roots() {
     assert_eq!(by_title("Alpha").rating, 4);
     assert_eq!(by_title("Alpha").color, "green");
     assert_eq!(by_title("Alpha").play_count, 1);
+    assert_eq!((by_title("Beta").skip_count, by_title("Alpha").skip_count), (2, 0));
     assert_eq!(by_title("Beta").rating, 4);
     assert_eq!(by_title("Gamma").rating, 0);
     assert_eq!(by_title("Beta").album, "Record");
@@ -188,4 +191,30 @@ async fn backup_carries_bpm_key_corrections_and_smart_playlist_rules() {
     assert_eq!(names, vec!["Fast", "Fast (restored)"]);
     let rules = &list_smart(&target).await.unwrap()[0].definition;
     assert_eq!((rules.limit, rules.descending, rules.rules.len()), (Some(50), true, 1));
+}
+
+#[tokio::test]
+async fn backups_written_before_skip_counts_still_restore() {
+    let dir = tempfile::tempdir().unwrap();
+    make_music(dir.path());
+    let source = pool().await;
+    import_paths(&source, (0..3).map(|i| dir.path().join(format!("{i}.wav"))).collect()).await;
+    let ids: Vec<String> = tracks(&source).await.into_iter().map(|t| t.id).collect();
+    record_play(&source, &ids[0]).await.unwrap();
+    record_skip(&source, &ids[0]).await.unwrap();
+    let backup = dir.path().join("old.tahti-backup");
+    export_backup(&source, &backup).await.unwrap();
+
+    let mut json: serde_json::Value = serde_json::from_slice(&std::fs::read(&backup).unwrap()).unwrap();
+    for track in json["tracks"].as_array_mut().unwrap() {
+        assert!(track.as_object_mut().unwrap().remove("skipCount").is_some());
+    }
+    std::fs::write(&backup, serde_json::to_vec(&json).unwrap()).unwrap();
+
+    let fresh = pool().await;
+    let result = restore_backup(&fresh, &backup, &[]).await.unwrap();
+    assert_eq!(result.tracks_restored, 3);
+    let restored = tracks(&fresh).await;
+    let alpha = restored.iter().find(|t| t.title == "Alpha").unwrap();
+    assert_eq!((alpha.play_count, alpha.skip_count), (1, 0));
 }

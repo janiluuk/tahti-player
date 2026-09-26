@@ -21,6 +21,7 @@ pub enum SortColumn {
     Added,
     Rating,
     Plays,
+    Skips,
     LastPlayed,
     Bpm,
     Key,
@@ -64,6 +65,7 @@ pub(super) fn order_clause(sort: Option<&TrackSort>) -> String {
         SortColumn::Added => format!("added_at {dir}"),
         SortColumn::Rating => format!("rating {dir}"),
         SortColumn::Plays => format!("play_count {dir}"),
+        SortColumn::Skips => format!("skip_count {dir}"),
         SortColumn::LastPlayed => nullable("last_played_at"),
     };
     format!("ORDER BY {primary}, {TIE_BREAK}")

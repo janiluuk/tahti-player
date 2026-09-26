@@ -16,12 +16,14 @@ const track = (id: string, durationSec = 200): TahtiPlayable => ({
 });
 
 const recordPlay = vi.fn(async () => undefined);
+const recordSkip = vi.fn(async () => undefined);
 let stop: () => void;
 
 beforeEach(() => {
   recordPlay.mockClear();
+  recordSkip.mockClear();
   globalThis.__TAHTI_NATIVE_LIBRARY__ = {
-    catalog: { recordPlay },
+    catalog: { recordPlay, recordSkip },
   } as unknown as TahtiNativeLibrary;
   usePlayerStore.getState().clearQueue();
   stop = startLocalPlayCounting();
@@ -78,5 +80,41 @@ describe('local play counting', () => {
       duration: 200,
     });
     expect(recordPlay).not.toHaveBeenCalled();
+  });
+});
+
+describe('local skip counting', () => {
+  it('counts a skip when a local track is left before its listen counted', () => {
+    usePlayerStore.getState().play(track('local:a'));
+    progress(5);
+    usePlayerStore.getState().play(track('local:b'));
+    expect(recordSkip).toHaveBeenCalledTimes(1);
+    expect(recordSkip).toHaveBeenCalledWith('a');
+    expect(recordPlay).not.toHaveBeenCalled();
+  });
+
+  it('does not count a skip once the listen counted', () => {
+    usePlayerStore.getState().play(track('local:a'));
+    progress(40);
+    usePlayerStore.getState().play(track('local:b'));
+    expect(recordPlay).toHaveBeenCalledWith('a');
+    expect(recordSkip).not.toHaveBeenCalled();
+  });
+
+  it('does not count tracks that never started, cloud tracks or stopping', () => {
+    usePlayerStore.getState().play(track('local:a'));
+    usePlayerStore.getState().play(track('sound:9'));
+    progress(5);
+    usePlayerStore.getState().play(track('local:b'));
+    progress(5);
+    usePlayerStore.getState().clearQueue();
+    expect(recordSkip).not.toHaveBeenCalled();
+  });
+
+  it('does not count a skip while the length is unknown', () => {
+    usePlayerStore.getState().play(track('local:a'));
+    progress(5, 0);
+    usePlayerStore.getState().play(track('local:b'));
+    expect(recordSkip).not.toHaveBeenCalled();
   });
 });

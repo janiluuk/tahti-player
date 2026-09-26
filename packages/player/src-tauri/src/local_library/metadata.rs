@@ -107,6 +107,7 @@ pub fn read(path: &Path) -> Result<LibraryTrack, String> {
         rating: 0,
         color: String::new(),
         play_count: 0,
+        skip_count: 0,
         last_played_at: None,
         bpm: None,
         musical_key: None,

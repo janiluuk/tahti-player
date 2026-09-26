@@ -14,12 +14,12 @@ pub struct MergeResult {
 
 /// Folds the user data of `remove_ids` into `keep_id`, points their playlist
 /// entries and history at it, then removes them from the catalog (files on
-/// disk are never touched): best rating, first color, summed plays, latest
+/// disk are never touched): best rating, first color, summed plays and skips, latest
 /// last-played, union of tags.
 pub async fn merge_tracks(pool: &SqlitePool, keep_id: &str, remove_ids: &[String]) -> Result<MergeResult, String> {
     let remove: Vec<&String> = remove_ids.iter().filter(|id| id.as_str() != keep_id).collect();
     let mut tx = pool.begin().await.map_err(|e| e.to_string())?;
-    let keep = sqlx::query("SELECT rating, color, play_count, last_played_at, path, title, artist, duration FROM library_tracks WHERE id=?")
+    let keep = sqlx::query("SELECT rating, color, play_count, last_played_at, path, title, artist, duration, skip_count FROM library_tracks WHERE id=?")
         .bind(keep_id)
         .fetch_optional(&mut *tx)
         .await
@@ -29,11 +29,12 @@ pub async fn merge_tracks(pool: &SqlitePool, keep_id: &str, remove_ids: &[String
     let mut color: String = keep.get(1);
     let mut plays: i64 = keep.get(2);
     let mut last: Option<String> = keep.get(3);
+    let mut skips: i64 = keep.get(8);
     let (path, title, artist, duration): (String, String, String, f64) =
         (keep.get(4), keep.get(5), keep.get(6), keep.get(7));
     let mut result = MergeResult { removed: 0, playlist_entries_moved: 0 };
     for id in remove {
-        let Some(row) = sqlx::query("SELECT rating, color, play_count, last_played_at FROM library_tracks WHERE id=?")
+        let Some(row) = sqlx::query("SELECT rating, color, play_count, last_played_at, skip_count FROM library_tracks WHERE id=?")
             .bind(id)
             .fetch_optional(&mut *tx)
             .await
@@ -46,6 +47,7 @@ pub async fn merge_tracks(pool: &SqlitePool, keep_id: &str, remove_ids: &[String
             color = row.get(1);
         }
         plays += row.get::<i64, _>(2);
+        skips += row.get::<i64, _>(4);
         let other: Option<String> = row.get(3);
         if other > last {
             last = other;
@@ -65,8 +67,8 @@ pub async fn merge_tracks(pool: &SqlitePool, keep_id: &str, remove_ids: &[String
             .execute(&mut *tx).await.map_err(|e| e.to_string())?;
         result.removed += 1;
     }
-    sqlx::query("UPDATE library_tracks SET rating=?, color=?, play_count=?, last_played_at=? WHERE id=?")
-        .bind(rating).bind(&color).bind(plays).bind(&last).bind(keep_id)
+    sqlx::query("UPDATE library_tracks SET rating=?, color=?, play_count=?, skip_count=?, last_played_at=? WHERE id=?")
+        .bind(rating).bind(&color).bind(plays).bind(skips).bind(&last).bind(keep_id)
         .execute(&mut *tx).await.map_err(|e| e.to_string())?;
     tx.commit().await.map_err(|e| e.to_string())?;
     Ok(result)

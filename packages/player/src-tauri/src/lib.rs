@@ -116,6 +116,7 @@ fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
         local_library::catalog::user_data::library_restore_user_data,
         local_library::catalog::user_data::library_list_tags,
         local_library::catalog::plays::library_record_play,
+        local_library::catalog::plays::library_record_skip,
         local_library::catalog::duplicates::library_hash_tracks,
         local_library::catalog::duplicates::library_hash_cancel,
         local_library::catalog::duplicates::library_duplicates,

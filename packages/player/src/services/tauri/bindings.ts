@@ -216,6 +216,8 @@ export const commands = {
 	/**  One of `catalog::COLORS`, or empty. */
 	color: string,
 	playCount: number,
+	/**  Times a listen was abandoned early; see `catalog::plays::record_skip`. */
+	skipCount: number,
 	lastPlayedAt: string | null,
 	/**
 	 *  Effective BPM and key (user correction > file tag > estimate); see
@@ -312,6 +314,7 @@ export const commands = {
 	libraryRestoreUserData: (snapshots: UserDataSnapshot[]) => typedError<number, string>(__TAURI_INVOKE("library_restore_user_data", { snapshots })),
 	libraryListTags: () => typedError<TagCount[], string>(__TAURI_INVOKE("library_list_tags")),
 	libraryRecordPlay: (id: string) => typedError<null, string>(__TAURI_INVOKE("library_record_play", { id })),
+	libraryRecordSkip: (id: string) => typedError<null, string>(__TAURI_INVOKE("library_record_skip", { id })),
 	libraryHashTracks: (ids: string[]) => typedError<HashResult, string>(__TAURI_INVOKE("library_hash_tracks", { ids })),
 	libraryHashCancel: () => typedError<null, string>(__TAURI_INVOKE("library_hash_cancel")),
 	libraryDuplicates: () => typedError<DuplicateGroup[], string>(__TAURI_INVOKE("library_duplicates")),
@@ -825,6 +828,8 @@ export type LibraryTrack = {
 	/**  One of `catalog::COLORS`, or empty. */
 	color: string,
 	playCount: number,
+	/**  Times a listen was abandoned early; see `catalog::plays::record_skip`. */
+	skipCount: number,
 	lastPlayedAt: string | null,
 	/**
 	 *  Effective BPM and key (user correction > file tag > estimate); see
@@ -1158,7 +1163,7 @@ export type SmartRule = {
  *  Sortable track-table columns. A closed enum, never user text, so the
  *  ORDER BY below is assembled from fixed SQL only.
  */
-export type SortColumn = "title" | "artist" | "album" | "genre" | "year" | "trackNo" | "duration" | "format" | "size" | "bitrate" | "added" | "rating" | "plays" | "lastPlayed" | "bpm" | "key" | "loudness";
+export type SortColumn = "title" | "artist" | "album" | "genre" | "year" | "trackNo" | "duration" | "format" | "size" | "bitrate" | "added" | "rating" | "plays" | "skips" | "lastPlayed" | "bpm" | "key" | "loudness";
 
 export type SpaceVerdict = 
 /**  Known sizes plus the margin fit. */
