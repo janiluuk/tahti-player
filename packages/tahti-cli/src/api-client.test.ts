@@ -5,6 +5,7 @@ import {
   buildQuery,
   CliError,
   describeHttpError,
+  parsePositiveInt,
   resolveConfig,
 } from './api-client.mjs';
 import { mockFetchJson, TEST_CONFIG } from './test-helpers';
@@ -48,6 +49,19 @@ describe('describeHttpError', () => {
   });
 });
 
+describe('parsePositiveInt', () => {
+  it('passes undefined through and enforces the range', () => {
+    expect(parsePositiveInt('--page', undefined)).toBeUndefined();
+    expect(parsePositiveInt('--page', '7')).toBe(7);
+    expect(() => parsePositiveInt('--page', '1.5')).toThrow(
+      'Invalid --page "1.5". Expected a positive integer.',
+    );
+    expect(() => parsePositiveInt('--limit', '21', 20)).toThrow(
+      'Invalid --limit "21". Expected 1-20.',
+    );
+  });
+});
+
 describe('apiGet', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
@@ -59,6 +73,15 @@ describe('apiGet', () => {
       apiGet('/api/x', { ...TEST_CONFIG, token: null }),
     ).rejects.toThrow(/TAHTI_API_TOKEN/);
     expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('skips the token check and header for public routes', async () => {
+    const fetchMock = mockFetchJson({ ok: true });
+    await apiGet('/api/x', { ...TEST_CONFIG, token: null }, { auth: false });
+    await apiGet('/api/x', TEST_CONFIG, { auth: false });
+    for (const [, init] of fetchMock.mock.calls) {
+      expect(init).toEqual({ headers: { Accept: 'application/json' } });
+    }
   });
 
   it('turns a 401 into a token-invalid error', async () => {
