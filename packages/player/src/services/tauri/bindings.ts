@@ -327,6 +327,9 @@ export const commands = {
 	libraryBackupPick: () => typedError<string | null, string>(__TAURI_INVOKE("library_backup_pick")),
 	libraryBackupPreview: (sourcePath: string, mappings: RootMapping[]) => typedError<RestorePreview, string>(__TAURI_INVOKE("library_backup_preview", { sourcePath, mappings })),
 	libraryBackupRestore: (sourcePath: string, mappings: RootMapping[]) => typedError<RestoreResult, string>(__TAURI_INVOKE("library_backup_restore", { sourcePath, mappings })),
+	libraryItunesPick: () => typedError<string | null, string>(__TAURI_INVOKE("library_itunes_pick")),
+	libraryItunesPreview: (sourcePath: string, mappings: RootMapping[]) => typedError<ItunesPreview, string>(__TAURI_INVOKE("library_itunes_preview", { sourcePath, mappings })),
+	libraryItunesCommit: (sourcePath: string, mappings: RootMapping[]) => typedError<ItunesImportResult, string>(__TAURI_INVOKE("library_itunes_commit", { sourcePath, mappings })),
 	isFlatpak: () => __TAURI_INVOKE<boolean>("is_flatpak"),
 	copyDirRecursive: (from: string, to: string) => typedError<null, string>(__TAURI_INVOKE("copy_dir_recursive", { from, to })),
 	extractZip: (zipPath: string, destPath: string) => typedError<null, string>(__TAURI_INVOKE("extract_zip", { zipPath, destPath })),
@@ -677,6 +680,76 @@ export type ImportResult = {
 	 *  skipped nor counted as errors.
 	 */
 	cancelled: boolean,
+};
+
+export type ItunesImportResult = {
+	/**  XML tracks linked to a track that was already in the catalog. */
+	tracksLinked: number,
+	/**  Files imported into the catalog by this run. */
+	tracksImported: number,
+	tracksFailed: number,
+	tracksMissing: number,
+	tracksUnsupported: number,
+	tracksNotLocal: number,
+	duplicateTracks: number,
+	/**  Plays added to local play counts (growth since the last import only). */
+	playsAdded: number,
+	skipsAdded: number,
+	ratingsApplied: number,
+	lovedTagged: number,
+	/**  Empty tag fields filled from the XML. */
+	fieldsFilled: number,
+	/**  Fields where the file's own tag differs from the XML and was kept. */
+	fieldsKeptFromFile: number,
+	bpmApplied: number,
+	playlistsCreated: number,
+	/**  Created under a new name because the name was taken. */
+	playlistsRenamed: number,
+	playlistsAlreadyImported: number,
+	playlistEntries: number,
+	/**
+	 *  Entries kept but not linked to a catalog track (file missing or not
+	 *  importable); they link up by path when the file joins the catalog.
+	 */
+	playlistEntriesUnavailable: number,
+	/**  Entries with no local file at all, left out. */
+	playlistEntriesSkipped: number,
+	/**  First import failures (the rest are only counted). */
+	errors: ImportFailure[],
+};
+
+export type ItunesPreview = {
+	/**
+	 *  The library's `Music Folder`, as a local path: the prefix to remap
+	 *  when the music has moved since the export.
+	 */
+	musicFolder: string | null,
+	tracks: number,
+	/**
+	 *  Per file: an XML track pointing at a file an earlier one already
+	 *  points at is only counted in `duplicate_tracks`.
+	 *  Found in the catalog by path; will be linked, nothing imported.
+	 */
+	tracksInCatalog: number,
+	/**  On disk but not in the catalog yet; will be imported. */
+	tracksToImport: number,
+	tracksMissing: number,
+	/**  A file the importer cannot read (protected AAC, video, ...). */
+	tracksUnsupported: number,
+	/**  No local file at all (streams, cloud-only items). */
+	tracksNotLocal: number,
+	/**  XML tracks pointing at a file another XML track already points at. */
+	duplicateTracks: number,
+	/**  XML tracks a previous import already linked. */
+	previouslyImported: number,
+	playlists: number,
+	playlistEntries: number,
+	playlistFolders: number,
+	playlistsAlreadyImported: number,
+	/**  Library, Music, Podcasts and the other lists Music.app makes itself. */
+	builtinPlaylistsSkipped: number,
+	missingExamples: string[],
+	unsupportedExamples: string[],
 };
 
 export type LibraryPage = {

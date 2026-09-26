@@ -135,7 +135,7 @@ pub(super) async fn update_user_column(
     Ok(before)
 }
 
-pub(super) async fn tag_id_for(conn: &mut SqliteConnection, name: &str) -> Result<String, sqlx::Error> {
+pub(crate) async fn tag_id_for(conn: &mut SqliteConnection, name: &str) -> Result<String, sqlx::Error> {
     if let Some(id) = sqlx::query_scalar::<_, String>("SELECT id FROM library_tags WHERE name=?")
         .bind(name)
         .fetch_optional(&mut *conn)

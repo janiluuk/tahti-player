@@ -120,7 +120,7 @@ fn has_prefix(path: &str, prefix: &str) -> bool {
     }
 }
 
-fn map_path(path: &str, mappings: &[RootMapping]) -> String {
+pub(super) fn map_path(path: &str, mappings: &[RootMapping]) -> String {
     let best = mappings
         .iter()
         .filter(|m| !m.from.is_empty() && !m.to.is_empty())
@@ -293,7 +293,7 @@ pub struct RestorePreview {
     pub missing_examples: Vec<String>,
 }
 
-fn under(path: &str, root: &str) -> bool {
+pub(super) fn under(path: &str, root: &str) -> bool {
     let root = root.trim_end_matches(is_sep);
     has_prefix(path, root) && path.len() > root.len()
 }
@@ -357,7 +357,8 @@ pub struct RestoreResult {
     pub edits_applied: usize,
 }
 
-async fn free_playlist_name(pool: &SqlitePool, name: &str) -> Result<String, String> {
+/// `name`, or `<name> (<suffix>)`, `<name> (<suffix> 2)`, ... when it is taken.
+pub(super) async fn free_playlist_name(pool: &SqlitePool, name: &str, suffix: &str) -> Result<String, String> {
     let taken = |candidate: String| async move {
         sqlx::query_scalar::<_, i64>("SELECT COUNT(*) FROM library_playlists WHERE name = ?")
             .bind(candidate)
@@ -370,7 +371,7 @@ async fn free_playlist_name(pool: &SqlitePool, name: &str) -> Result<String, Str
     }
     let mut n = 1;
     loop {
-        let candidate = if n == 1 { format!("{name} (restored)") } else { format!("{name} (restored {n})") };
+        let candidate = if n == 1 { format!("{name} ({suffix})") } else { format!("{name} ({suffix} {n})") };
         if taken(candidate.clone()).await? == 0 {
             return Ok(candidate);
         }
@@ -542,7 +543,7 @@ pub async fn restore_backup(pool: &SqlitePool, path: &Path, mappings: &[RootMapp
     // Playlists: every entry is kept; ones whose file is not in the catalog
     // are stored unlinked and link up when the file joins it.
     for playlist in &file.playlists {
-        let name = free_playlist_name(pool, &playlist.name).await?;
+        let name = free_playlist_name(pool, &playlist.name, "restored").await?;
         if name != playlist.name {
             result.playlists_renamed += 1;
         }
