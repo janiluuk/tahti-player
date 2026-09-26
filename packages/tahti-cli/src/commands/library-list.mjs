@@ -1,21 +1,29 @@
-import { apiGet } from '../api-client.mjs';
+import { apiGet, buildQuery, CliError } from '../api-client.mjs';
+import { formatDuration, formatTable } from '../format.mjs';
 
-export async function fetchLibrarySounds(config) {
-  return apiGet('/api/me/sound', config);
+export { formatDuration } from '../format.mjs';
+
+/** Mirrors `SOUND_LIST_SORTS` in `@tahti/shared` (GET /api/me/sound `sort` query). */
+export const LIBRARY_SORTS = [
+  'newest',
+  'oldest',
+  'title',
+  'duration',
+  'bpm',
+  'genre',
+];
+
+export function assertLibrarySort(sort) {
+  if (sort !== undefined && !LIBRARY_SORTS.includes(sort)) {
+    throw new CliError(
+      `Invalid --sort "${sort}". Expected one of: ${LIBRARY_SORTS.join(', ')}.`,
+    );
+  }
 }
 
-export function formatDuration(durationSec) {
-  if (
-    durationSec === null ||
-    durationSec === undefined ||
-    Number.isNaN(durationSec)
-  ) {
-    return '--:--';
-  }
-  const totalSeconds = Math.floor(durationSec);
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  return `${minutes}:${String(seconds).padStart(2, '0')}`;
+export async function fetchLibrarySounds(config, { sort } = {}) {
+  assertLibrarySort(sort);
+  return apiGet(`/api/me/sound${buildQuery({ sort })}`, config);
 }
 
 export function formatSoundRow(sound) {
@@ -28,23 +36,14 @@ export function formatSoundRow(sound) {
 }
 
 export function formatLibraryTable(sounds) {
-  const header = ['ID', 'TITLE', 'STATUS', 'DURATION'];
-  const rows = sounds.map(formatSoundRow);
-  const widths = header.map((label, index) =>
-    Math.max(
-      label.length,
-      ...rows.map((row) => String(row[index] ?? '').length),
-    ),
+  return formatTable(
+    ['ID', 'TITLE', 'STATUS', 'DURATION'],
+    sounds.map(formatSoundRow),
   );
-  const formatRow = (row) =>
-    row
-      .map((cell, index) => String(cell ?? '').padEnd(widths[index]))
-      .join('  ');
-  return [formatRow(header), ...rows.map(formatRow)].join('\n');
 }
 
-export async function runLibraryList(config, { json = false } = {}) {
-  const sounds = await fetchLibrarySounds(config);
+export async function runLibraryList(config, { json = false, sort } = {}) {
+  const sounds = await fetchLibrarySounds(config, { sort });
   if (json) {
     return JSON.stringify(sounds, null, 2);
   }

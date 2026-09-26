@@ -70,6 +70,54 @@ describe('fetchLibrarySounds', () => {
     expect(sounds).toEqual([{ id: 'a1', title: 'Track', status: 'READY' }]);
   });
 
+  it('passes --sort through as the sort query', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue({ ok: true, json: async () => [] });
+    vi.stubGlobal('fetch', fetchMock);
+
+    await fetchLibrarySounds(
+      { apiUrl: 'https://api.example.test', token: 'tahti_test' },
+      { sort: 'bpm' },
+    );
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api.example.test/api/me/sound?sort=bpm',
+      expect.anything(),
+    );
+  });
+
+  it('rejects an unknown sort without calling the API', async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+
+    await expect(
+      fetchLibrarySounds(
+        { apiUrl: 'https://api.example.test', token: 'tahti_test' },
+        { sort: 'loudness' },
+      ),
+    ).rejects.toThrow(/Invalid --sort "loudness"/);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('reports an invalid token on 401', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: false,
+        status: 401,
+        json: async () => ({ error: 'Invalid or expired API token' }),
+      }),
+    );
+
+    await expect(
+      fetchLibrarySounds({
+        apiUrl: 'https://api.example.test',
+        token: 'tahti_bad',
+      }),
+    ).rejects.toThrow(/Token invalid or missing scope/);
+  });
+
   it('rejects with a clear error when no token is configured', async () => {
     await expect(
       fetchLibrarySounds({ apiUrl: 'https://api.example.test', token: null }),

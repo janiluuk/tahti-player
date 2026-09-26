@@ -5,10 +5,10 @@ API, in the spirit of [antiwork/gumroad-cli](https://github.com/antiwork/gumroad
 See [`docs/todo/tahti-cli-tool.md`](../../docs/todo/tahti-cli-tool.md) for
 the roadmap this v1 slice comes from.
 
-## v1 scope
+## Scope
 
-Read-only library listing only, per the original ask. No playback/TUI yet
-(that's an explicit stretch goal in the roadmap doc, not started here).
+Read-only commands only. No playback/TUI yet (that's an explicit stretch
+goal in the roadmap doc, not started here).
 
 ## Auth
 
@@ -32,19 +32,48 @@ that it did).
 ## Usage
 
 ```bash
-pnpm --filter @tahti-player/tahti-cli exec tahti library list
-pnpm --filter @tahti-player/tahti-cli exec tahti library list --json
 pnpm --filter @tahti-player/tahti-cli exec tahti --help
+pnpm --filter @tahti-player/tahti-cli exec tahti whoami
+pnpm --filter @tahti-player/tahti-cli exec tahti library list --sort title
+pnpm --filter @tahti-player/tahti-cli exec tahti library show <id> --json
+pnpm --filter @tahti-player/tahti-cli exec tahti releases list --limit 20
+pnpm --filter @tahti-player/tahti-cli exec tahti releases list --help
 ```
 
 ## Commands
 
-| Command | Description |
+Every command accepts `--json` (prints the API response unchanged) and
+`--help`. Tables use the same aligned layout, with `-` for empty values.
+
+| Command | API route | Output |
+| --- | --- | --- |
+| `tahti whoami [--json]` | `GET /api/auth/me` | Username, display name, tier, membership, channel slug, storage used |
+| `tahti library list [--sort <order>] [--json]` | `GET /api/me/sound` | Your library sounds (up to 100); `--sort` is one of `newest`, `oldest`, `title`, `duration`, `bpm`, `genre` |
+| `tahti library show <id> [--json]` | `GET /api/me/sound/:id` | One sound's metadata (status, duration, visibility, genre, BPM/key, source format, dates) |
+| `tahti releases list [--page <n>] [--limit <n>] [--json]` | `GET /api/me/releases` | Your releases (id, title, type, state, release date, track count); `--limit` is 1-100 |
+
+All four are `GET` routes behind `requireAuth`, so any personal API token
+works (the API only requires the `write` scope for non-GET requests).
+
+`whoami` never prints your email in table output, and shows the username if
+the display name is empty. `whoami --json` is the raw `/api/auth/me` response,
+which does include the `email` field.
+
+## Errors
+
+| Situation | Message |
 | --- | --- |
-| `tahti library list [--json]` | List your own library sounds (`GET /api/me/sound`) |
+| No `TAHTI_API_TOKEN` | `Missing API token. Create a personal API token ...` |
+| 401 (revoked, expired or wrong token) | `Token invalid or missing scope (<API message>) ...` |
+| 403 | `Token invalid or missing scope (<API message>): this token is not allowed to access <path>.` |
+| 404 | The API's message, e.g. `Sound item not found` |
+| Network failure | `Could not reach the Tahti API at <url>: <reason>` |
+| Unknown flag or bad value | The problem plus a pointer to `tahti <command> --help` |
+
+All errors exit with status 1.
 
 ## Not yet designed (see the roadmap doc)
 
 - Where this CLI ultimately ships from (this workspace vs. its own repo).
 - Playback / TUI.
-- Anything beyond read-only listing.
+- Write commands (upload, edit metadata), which need a `write`-scoped token.
