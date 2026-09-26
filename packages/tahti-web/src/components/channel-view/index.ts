@@ -7,6 +7,7 @@ export {
   type ChannelHeroBlockProps,
 } from './ChannelHeroBlock';
 export { ChannelBlockFrame } from './ChannelBlockFrame';
+export { ChannelEditToolbar } from './ChannelEditToolbar';
 export { ChannelLayersPanel } from './ChannelLayersPanel';
 export {
   ChannelPageBackdrop,
