@@ -419,6 +419,31 @@ describe('DesktopLibraryPanel native import', () => {
     expect(list).toHaveBeenCalledTimes(2);
   });
 
+  it('offers the iTunes library import only when the desktop build has it', async () => {
+    globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
+    globalThis.__TAHTI_NATIVE_LIBRARY__ = createNativeLibrary();
+    render(<DesktopLibraryPanel />);
+    await screen.findByRole('button', { name: /Import files/ });
+    expect(
+      screen.queryByRole('button', { name: 'Import iTunes library' }),
+    ).toBeNull();
+    cleanup();
+
+    const pick = vi.fn().mockResolvedValue(null);
+    globalThis.__TAHTI_NATIVE_LIBRARY__ = createNativeLibrary({
+      itunesImport: { pick, preview: vi.fn(), commit: vi.fn() },
+    });
+    render(<DesktopLibraryPanel />);
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Import iTunes library' }),
+    );
+    const dialog = await screen.findByRole('dialog');
+    fireEvent.click(
+      within(dialog).getByRole('button', { name: /Choose library file/ }),
+    );
+    await waitFor(() => expect(pick).toHaveBeenCalled());
+  });
+
   it('shows on-device totals separately from cloud storage', async () => {
     globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
     globalThis.__TAHTI_NATIVE_LIBRARY__ = createNativeLibrary({

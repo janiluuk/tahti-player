@@ -420,6 +420,21 @@ const baseNativeLibrary: TahtiNativeLibrary = {
       unlisten?.();
     };
   },
+  itunesImport: {
+    async pick() {
+      return unwrapResult(await commands.libraryItunesPick());
+    },
+    async preview(sourcePath, mappings) {
+      return unwrapResult(
+        await commands.libraryItunesPreview(sourcePath, mappings),
+      );
+    },
+    async commit(sourcePath, mappings) {
+      return unwrapResult(
+        await commands.libraryItunesCommit(sourcePath, mappings),
+      );
+    },
+  },
   providerImport: {
     async destination(provider, setTitle) {
       return unwrapResult(
