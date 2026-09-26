@@ -44,6 +44,27 @@ export type NativeProviderImportResult = {
   trackIds: string[];
 };
 
+/**
+ * `fits`: known sizes plus a safety margin fit. `tight`: they fit, but not
+ * with the margin. `notEnough`: known sizes alone exceed the free space.
+ * `unknown`: the free space could not be read.
+ */
+export type NativeProviderSpaceVerdict =
+  'fits' | 'tight' | 'notEnough' | 'unknown';
+
+export type NativeProviderImportSpace = {
+  /** Sum of the reported sizes of the entries still to download. */
+  neededBytes: number;
+  /** Entries still to download whose size is known. */
+  sized: number;
+  /** Entries still to download whose size the provider did not report. */
+  unknownSize: number;
+  /** Entries already in the library, which will be skipped. */
+  alreadyImported: number;
+  freeBytes: number | null;
+  verdict: NativeProviderSpaceVerdict;
+};
+
 export type NativeProviderImport = {
   /** The default folder for a set, e.g. `~/Music/Tahti/hearthis.at/<set>`. */
   destination: (
@@ -53,6 +74,13 @@ export type NativeProviderImport = {
   start: (
     request: NativeProviderImportRequest,
   ) => Promise<NativeProviderImportResult>;
+  /**
+   * Sizes the files still to download against the free space at the
+   * destination. Missing on desktop builds that predate the check.
+   */
+  space?: (
+    request: NativeProviderImportRequest,
+  ) => Promise<NativeProviderImportSpace>;
   cancel: () => Promise<void>;
   /** Subscribes to per-track progress; returns an unsubscribe function. */
   onProgress: (

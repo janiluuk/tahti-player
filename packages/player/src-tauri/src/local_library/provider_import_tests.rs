@@ -10,8 +10,10 @@ use axum::routing::get;
 
 use super::playlists;
 use super::provider_import::{
-    default_destination, run, ProviderEntryState, ProviderImportEntry, ProviderImportProgress, ProviderImportRequest,
+    default_destination, run, write_error, ProviderEntryState, ProviderImportEntry, ProviderImportProgress,
+    ProviderImportRequest,
 };
+use super::provider_space::{estimate, free_space, verdict, SpaceVerdict};
 use super::test_support::pool;
 
 const TONE: &[u8] = include_bytes!("fixtures/tone.mp3");
@@ -37,6 +39,13 @@ async fn serve_file(State(server): State<Server>, UrlPath(name): UrlPath<String>
         "missing" => StatusCode::NOT_FOUND.into_response(),
         "page" => ([(header::CONTENT_TYPE, "text/html")], "<html>log in</html>").into_response(),
         "notes" => ([(header::CONTENT_TYPE, "audio/mpeg")], "not really audio").into_response(),
+        // Streamed without a Content-Length, so its size is unknown up front.
+        "stream" => {
+            let body = axum::body::Body::from_stream(futures::stream::iter([Ok::<_, std::io::Error>(
+                axum::body::Bytes::from_static(TONE),
+            )]));
+            ([(header::CONTENT_TYPE, "audio/mpeg")], body).into_response()
+        }
         _ => ([(header::CONTENT_TYPE, "audio/mpeg")], TONE).into_response(),
     }
 }
@@ -241,4 +250,85 @@ fn default_destination_is_a_clean_folder_per_provider_and_set() {
     );
     assert_eq!(default_destination(root, "hearthis", "...").unwrap(), Path::new("/Music/Tahti/hearthis.at/Untitled set"));
     assert!(default_destination(root, "nope", "x").is_err());
+}
+
+#[tokio::test]
+async fn space_estimate_sums_reported_sizes_and_counts_the_rest_as_unknown() {
+    let base = start(Server::default()).await;
+    let dir = tempfile::tempdir().unwrap();
+    let pool = pool().await;
+    let req = request(
+        &dir.path().join("not yet created"),
+        vec![entry(&base, "a", "Sized"), entry(&base, "b", "Sized too"), entry(&base, "stream", "No length"), entry(&base, "missing", "Gone")],
+    );
+
+    let space = estimate(&pool, &client(), &req).await.unwrap();
+
+    assert_eq!(space.needed_bytes, 2 * TONE.len() as u64);
+    assert_eq!((space.sized, space.unknown_size, space.already_imported), (2, 2, 0));
+    assert!(space.free_bytes.is_some_and(|free| free > 0));
+    assert_eq!(space.verdict, verdict(space.needed_bytes, space.free_bytes));
+    assert!(!dir.path().join("not yet created").exists(), "estimating must not create the folder");
+}
+
+#[tokio::test]
+async fn space_estimate_leaves_out_tracks_already_in_the_library() {
+    let server = Server::default();
+    let base = start(server.clone()).await;
+    let dir = tempfile::tempdir().unwrap();
+    let pool = pool().await;
+    let first = request(dir.path(), vec![entry(&base, "a", "One")]);
+    run(&pool, &client(), &first, &AtomicBool::new(false), &silent).await.unwrap();
+    let req = request(dir.path(), vec![entry(&base, "a", "One"), entry(&base, "stream", "Two")]);
+
+    let space = estimate(&pool, &client(), &req).await.unwrap();
+
+    assert_eq!((space.sized, space.unknown_size, space.already_imported), (0, 1, 1));
+    assert_eq!(space.needed_bytes, 0);
+    assert_eq!(server.hits.lock().unwrap().get("a"), Some(&1), "imported track sized again");
+}
+
+#[tokio::test]
+async fn space_estimate_rejects_relative_folders() {
+    let pool = pool().await;
+    let mut req = request(Path::new("/tmp"), vec![]);
+    req.destination = "relative".into();
+    assert!(estimate(&pool, &client(), &req).await.is_err());
+}
+
+#[tokio::test]
+async fn a_track_without_a_content_length_still_downloads() {
+    let base = start(Server::default()).await;
+    let dir = tempfile::tempdir().unwrap();
+    let pool = pool().await;
+    let req = request(dir.path(), vec![entry(&base, "stream", "Streamed")]);
+    let result = run(&pool, &client(), &req, &AtomicBool::new(false), &silent).await.unwrap();
+    assert_eq!(result.imported, 1, "failures: {:?}", result.failures);
+}
+
+#[test]
+fn space_verdict_blocks_only_when_known_sizes_exceed_free_space() {
+    const MB: u64 = 1024 * 1024;
+    assert_eq!(verdict(100 * MB, None), SpaceVerdict::Unknown);
+    assert_eq!(verdict(100 * MB, Some(10_000 * MB)), SpaceVerdict::Fits);
+    assert_eq!(verdict(100 * MB, Some(300 * MB)), SpaceVerdict::Tight);
+    assert_eq!(verdict(100 * MB, Some(99 * MB)), SpaceVerdict::NotEnough);
+    assert_eq!(verdict(10_000 * MB, Some(10_500 * MB)), SpaceVerdict::Tight);
+    assert_eq!(verdict(10_000 * MB, Some(11_500 * MB)), SpaceVerdict::Fits);
+}
+
+#[test]
+fn free_space_measures_the_nearest_existing_folder() {
+    let dir = tempfile::tempdir().unwrap();
+    assert!(free_space(&dir.path().join("a/b/c")).is_some_and(|free| free > 0));
+}
+
+#[cfg(unix)]
+#[test]
+fn a_full_disk_says_so() {
+    let folder = Path::new("/Music/Tahti/hearthis.at/Night Set");
+    let full = write_error(folder, "Cannot write the file", &std::io::Error::from_raw_os_error(libc::ENOSPC));
+    assert_eq!(full, "The disk is full. Free up space on the drive holding /Music/Tahti/hearthis.at/Night Set and retry");
+    let other = write_error(folder, "Cannot write the file", &std::io::Error::from_raw_os_error(libc::EACCES));
+    assert!(other.starts_with("Cannot write the file: "), "{other}");
 }

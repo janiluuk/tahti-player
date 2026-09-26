@@ -1,11 +1,13 @@
 import { LoaderCircleIcon } from 'lucide-react';
 
-import { Badge, Button, Dialog, Input, Toggle } from '@tahti-player/ui';
+import { Alert, Badge, Button, Dialog, Input, Toggle } from '@tahti-player/ui';
 
 import type { NativeProviderImport } from '../../lib/nativeLibrary';
+import { formatBytes } from '../../lib/storageFormat';
 import {
   useHearthisSetImport,
   type SetImportRow,
+  type SetImportSpace,
 } from './useHearthisSetImport';
 
 type Props = {
@@ -46,6 +48,76 @@ function rowStatus(row: SetImportRow): string {
     case 'cancelled':
       return 'Cancelled';
   }
+}
+
+function spaceSummary(space: SetImportSpace & { status: 'ready' }): string {
+  const { neededBytes, sized, unknownSize, freeBytes } = space.value;
+  if (sized + unknownSize === 0) {
+    return 'Every track is already in your library.';
+  }
+  const needed =
+    sized === 0
+      ? 'File sizes are not listed'
+      : `About ${formatBytes(neededBytes)} needed` +
+        (unknownSize
+          ? ` (${plural(unknownSize, 'track')} of unknown size)`
+          : '');
+  const free =
+    freeBytes === null
+      ? 'free space unknown'
+      : `${formatBytes(freeBytes)} free on that disk`;
+  return `${needed}, ${free}.`;
+}
+
+function SpaceLine({
+  space,
+  onRecheck,
+}: {
+  space: SetImportSpace;
+  onRecheck: () => void;
+}) {
+  if (space.status === 'idle') {
+    return null;
+  }
+  if (space.status === 'checking') {
+    return (
+      <p className="text-foreground-secondary flex items-center gap-2 text-xs">
+        <LoaderCircleIcon size={12} className="animate-spin" aria-hidden />
+        Checking file sizes…
+      </p>
+    );
+  }
+  if (space.status === 'failed') {
+    return (
+      <p className="text-foreground-secondary text-xs">
+        Could not check the file sizes: {space.error}
+      </p>
+    );
+  }
+  const { verdict, neededBytes, freeBytes } = space.value;
+  return (
+    <div className="flex flex-col gap-1 text-xs">
+      <p className="text-foreground-secondary">{spaceSummary(space)}</p>
+      {verdict === 'tight' ? (
+        <Alert tone="warning" className="px-3 py-2 text-xs">
+          The set fits, but leaves little room on the disk.
+        </Alert>
+      ) : null}
+      {verdict === 'notEnough' ? (
+        <Alert tone="error" className="px-3 py-2 text-xs">
+          <span className="flex items-center justify-between gap-2">
+            <span>
+              Not enough space. Free up at least{' '}
+              {formatBytes(neededBytes - (freeBytes ?? 0))} and check again.
+            </span>
+            <Button variant="text" size="xs" onClick={onRecheck}>
+              Check again
+            </Button>
+          </span>
+        </Alert>
+      ) : null}
+    </div>
+  );
 }
 
 function TrackRows({ rows }: { rows: SetImportRow[] }) {
@@ -100,6 +172,8 @@ export function HearthisSetImportDialog({
 }: Props) {
   const state = useHearthisSetImport({ isOpen, providerImport, onImported });
   const running = state.phase === 'running';
+  const notEnoughSpace =
+    state.space.status === 'ready' && state.space.value.verdict === 'notEnough';
   const unavailable = state.rows.length - state.downloadable;
   const totalSec = state.rows
     .filter((row) => row.track.download)
@@ -191,6 +265,7 @@ export function HearthisSetImportDialog({
                 Saves to {state.destination || '…'}. A file that already exists
                 there under the same name is kept and the new one gets a number.
               </p>
+              <SpaceLine space={state.space} onRecheck={state.recheckSpace} />
             </>
           ) : null}
           <p role="status" className="text-sm">
@@ -244,7 +319,9 @@ export function HearthisSetImportDialog({
               Back
             </Button>
             <Button
-              disabled={state.downloadable === 0 || !state.destination}
+              disabled={
+                state.downloadable === 0 || !state.destination || notEnoughSpace
+              }
               onClick={state.start}
             >
               Download {plural(state.downloadable, 'track')}

@@ -72,6 +72,7 @@ fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
         local_library::provider_import::library_provider_import,
         local_library::provider_import::library_provider_import_cancel,
         local_library::provider_import::library_provider_import_destination,
+        local_library::provider_space::library_provider_import_space,
         local_library::tracks::library_resolve,
         local_library::tracks::library_remove,
         local_library::tracks::library_remove_many,

@@ -10,8 +10,10 @@ import {
 import type {
   NativeProviderEntryState,
   NativeProviderImport,
+  NativeProviderImportEntry,
   NativeProviderImportProgress,
   NativeProviderImportResult,
+  NativeProviderImportSpace,
 } from '../../lib/nativeLibrary';
 
 export type SetImportPhase = 'pick' | 'loading' | 'review' | 'running' | 'done';
@@ -26,6 +28,27 @@ export type SetImportRow = {
   percent: number | null;
   error: string | null;
 };
+
+/** The up-front size check shown on the review step. */
+export type SetImportSpace =
+  | { status: 'idle' }
+  | { status: 'checking' }
+  | { status: 'ready'; value: NativeProviderImportSpace }
+  | { status: 'failed'; error: string };
+
+/** Title edits move the destination; size the set once typing settles. */
+const SPACE_DEBOUNCE_MS = 400;
+
+const toEntries = (rows: SetImportRow[]): NativeProviderImportEntry[] =>
+  rows
+    .filter((row) => row.track.download)
+    .map((row) => ({
+      remoteId: row.track.id,
+      title: row.track.title,
+      artist: row.track.username,
+      downloadUrl: row.track.download!.url,
+      fileName: row.track.download!.fileName,
+    }));
 
 const errorText = (failure: unknown) =>
   failure instanceof Error ? failure.message : String(failure);
@@ -73,6 +96,8 @@ export function useHearthisSetImport({
   const [makePlaylist, setMakePlaylist] = useState(true);
   const [rows, setRows] = useState<SetImportRow[]>([]);
   const [result, setResult] = useState<NativeProviderImportResult | null>(null);
+  const [space, setSpace] = useState<SetImportSpace>({ status: 'idle' });
+  const [spaceCheck, setSpaceCheck] = useState(0);
   const openRef = useRef(isOpen);
   openRef.current = isOpen;
 
@@ -109,6 +134,37 @@ export function useHearthisSetImport({
       cancelled = true;
     };
   }, [phase, title, providerImport]);
+
+  useEffect(() => {
+    const estimate = providerImport.space;
+    const entries = toEntries(rows);
+    if (phase !== 'review' || !estimate || !destination || !entries.length) {
+      setSpace({ status: 'idle' });
+      return;
+    }
+    let cancelled = false;
+    setSpace({ status: 'checking' });
+    const timer = setTimeout(() => {
+      estimate({
+        provider: 'hearthis',
+        setId,
+        setTitle: title.trim(),
+        destination,
+        entries,
+        playlistName: null,
+      })
+        .then((value) => !cancelled && setSpace({ status: 'ready', value }))
+        .catch(
+          (failure) =>
+            !cancelled &&
+            setSpace({ status: 'failed', error: errorText(failure) }),
+        );
+    }, SPACE_DEBOUNCE_MS);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [phase, destination, rows, setId, title, providerImport, spaceCheck]);
 
   useEffect(
     () =>
@@ -186,15 +242,7 @@ export function useHearthisSetImport({
           // The whole downloadable set goes in each time, in order, so the
           // playlist keeps set order on a retry; finished tracks are skipped
           // natively without downloading again.
-          entries: rows
-            .filter((row) => row.track.download)
-            .map((row) => ({
-              remoteId: row.track.id,
-              title: row.track.title,
-              artist: row.track.username,
-              downloadUrl: row.track.download!.url,
-              fileName: row.track.download!.fileName,
-            })),
+          entries: toEntries(rows),
           playlistName: makePlaylist ? title.trim() : null,
         });
         setResult(outcome);
@@ -241,6 +289,8 @@ export function useHearthisSetImport({
     setMakePlaylist,
     rows,
     result,
+    space,
+    recheckSpace: () => setSpaceCheck((count) => count + 1),
     downloadable,
     failedCount,
     loadLink,

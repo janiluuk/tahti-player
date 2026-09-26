@@ -16,6 +16,7 @@ mod metadata;
 pub mod organize;
 pub mod playlists;
 pub mod provider_import;
+pub mod provider_space;
 pub mod query;
 pub mod reconcile;
 pub mod roots;
