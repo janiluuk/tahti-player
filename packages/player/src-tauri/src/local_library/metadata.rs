@@ -238,11 +238,7 @@ pub struct FileTags {
 }
 
 pub(super) fn read_file_tags(path: &Path) -> FileTags {
-    lofty::probe::Probe::open(path)
-        .ok()
-        .and_then(|p| p.read().ok())
-        .map(|tagged| file_tags_of(&tagged))
-        .unwrap_or_default()
+    open_tagged(path).map(|tagged| file_tags_of(&tagged)).unwrap_or_default()
 }
 
 /// Looks through every tag in the file, primary first: a WAV/AIFF often keeps

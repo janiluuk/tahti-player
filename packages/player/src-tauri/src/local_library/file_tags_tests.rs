@@ -226,3 +226,16 @@ async fn a_wav_reads_bpm_from_its_id3_chunk_next_to_riff_info() {
     let (_, got) = stored(&pool, &path).await;
     assert_eq!((got.tag_bpm, got.replaygain[0]), (Some(96.0), Some(-2.0)));
 }
+
+#[tokio::test]
+async fn tags_are_read_by_contents_when_the_extension_is_wrong() {
+    let dir = tempfile::tempdir().unwrap();
+    let flac = fixture(dir.path(), "tone.flac");
+    retag(&flac, &[(ItemKey::Bpm, Some("98")), (ItemKey::InitialKey, Some("Em"))]);
+    let path = dir.path().join("mislabelled.m4a");
+    std::fs::rename(&flac, &path).unwrap();
+    let pool = pool().await;
+    import(&pool, &path).await;
+    let (_, got) = stored(&pool, &path).await;
+    assert_eq!((got.tag_bpm, got.tag_key.as_deref()), (Some(98.0), Some("Em")));
+}
