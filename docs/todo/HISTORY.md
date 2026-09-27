@@ -3817,3 +3817,17 @@ Finished, verified and merged. Removed from their todo files.
 - **Artwork cache cap and backfill (#187)**: 1 GiB cap for `<app data>/artwork/` (a `Budget` reserves space before each write; referenced art is never evicted, new art is skipped as `cacheFull`). `library_artwork_backfill` (cancelable, keyset-paged batches of 100, progress events) behind a "Find missing artwork" button in Local files → Library tools.
 - **BPM, key and ReplayGain from file tags (#188)**: migration `0020_file_tag_values.sql` (`tag_bpm`, `tag_key`, `replaygain_*` on `library_tracks`), read on import, re-read and relink. Effective BPM/key stays user > tag > estimate. ReplayGain is stored only; playback does not use it. Tags are read with the content-sniffing `open_tagged`, in analysis too.
 - **Checks:** `cargo test --lib local_library` 202 passed / 5 ignored on the final master; tahti-web and player type-check clean; tahti-web unit suite green; CI green on each PR (one ui `Toaster.test.tsx` sonner timer flake on #188's coverage job, passed on re-run). None of it was tried in the desktop app.
+
+## 2026-09-27 - Ten todo slices, third batch (#194-#202)
+
+Items finished here were removed from their todo files; partial progress stays noted in each todo.
+
+- **iTunes import progress and full unresolved list (#194)**, `desktop-pro-library.md` Phase 1: commit reports `importing` / `metadata` / `playlists` with done/total over `library://itunes-import-progress`, shown with a meter. The preview lists every unresolved track (name, artist, path, reason; up to 10,000) with a Copy list button, replacing 8 example paths. Report types moved to `itunes_report.rs` for the file-size guard.
+- **Local files keyboard pass (#195)**, Phase 6: Q queue, R reveal, Delete remove (with confirmation), Enter locates a missing file; Q/E/Delete act on the selection when the focused row is in it; `CatalogTable` resize handles are focusable (←/→, Shift for 64 px); a Keyboard shortcuts popover.
+- **Recovery toast tests (#196)**, Phase 6: the damaged-catalog warning is covered (persistent, names the kept file; silent otherwise).
+- **Queue virtualization (#197)**, performance §3: `QueuePanel` mounts only nearby rows above 200 items, keeps the dragged row mounted and scrolls to the current item. Drag across a long queue not tried in a real browser.
+- **Visualizer offscreen suspension (#198)**, §5: `startVisibleRenderLoop` requests no frames while the canvas is offscreen, hidden or zero-sized, and sizes from a ResizeObserver; the scrolling tab title uses an interval, so it also scrolls in background tabs.
+- **Listen read cache (#199)**, §6 (with #171 this closes the read-caching item): each Listen section's last result is reused for 60 s, shown while refreshing after that and kept if the refresh fails; widgets are keyed per listener.
+- **ReplayGain in the inspector (#200)**: `AnalysisDetail` returns tag ReplayGain; the inspector shows track/album gain and peak. Playback still doesn't apply it.
+- **Listening party contract survey (#201)** and **track visualizer licence findings (#202)**: docs only, see the two todos. Both wait on the user (tahti-org work; PulseForge `LICENSE` file).
+- **Checks:** each PR ran its package's type-check, lint and tests; `cargo test --lib local_library` 204 passed on the final Rust PR. CI flakes seen and re-run: `ChannelDesigner.test.tsx` (render after jsdom teardown, "window is not defined") on a docs-only PR. None of the desktop features were tried in the app.
