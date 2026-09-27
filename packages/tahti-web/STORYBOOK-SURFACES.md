@@ -98,6 +98,7 @@ Generated from story `title` fields. Prefer matching title; keep live data when 
 | `Tahti/Reference/Latest view surfaces` | `tahti-web/LatestViewSurfaces.stories.tsx` |
 | `Tahti/Widgets/LegalDocShell` | `tahti-web/LegalDocShell.stories.tsx` |
 | `Tahti/Widgets/ListenAddonsPanel` | `tahti-web/ListenAddonsPanel.stories.tsx` |
+| `Tahti/Listen/ListenSection` | `tahti-web/ListenSection.stories.tsx` |
 | `Tahti/Widgets/ListenWidgetStoreDialog` | `tahti-web/ListenWidgetStoreDialog.stories.tsx` |
 | `Tahti/Widgets/ListenerWidgetEmbed` | `tahti-web/ListenerWidgetEmbed.stories.tsx` |
 | `Tahti/Widgets/ListenerWidgetsSection` | `tahti-web/ListenerWidgetsSection.stories.tsx` |
