@@ -9,33 +9,23 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as HistoryRouteImport } from './routes/history'
-import { Route as SearchRouteImport } from './routes/search'
 import { Route as SourcesRouteImport } from './routes/sources'
-import { Route as FavoritesAlbumsRouteImport } from './routes/favorites/albums'
-import { Route as FavoritesArtistsRouteImport } from './routes/favorites/artists'
-import { Route as FavoritesTracksRouteImport } from './routes/favorites/tracks'
+import { Route as SearchRouteImport } from './routes/search'
+import { Route as HistoryRouteImport } from './routes/history'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as PlaylistsIndexRouteImport } from './routes/playlists/index'
 import { Route as PlaylistsPlaylistIdRouteImport } from './routes/playlists/$playlistId'
-import { Route as AlbumProviderIdAlbumIdRouteImport } from './routes/album/$providerId/$albumId'
-import { Route as ArtistProviderIdArtistIdRouteImport } from './routes/artist/$providerId/$artistId'
+import { Route as FavoritesTracksRouteImport } from './routes/favorites/tracks'
+import { Route as FavoritesArtistsRouteImport } from './routes/favorites/artists'
+import { Route as FavoritesAlbumsRouteImport } from './routes/favorites/albums'
 import { Route as PlaylistsImportProviderIdRouteImport } from './routes/playlists/import.$providerId'
+import { Route as ArtistProviderIdArtistIdRouteImport } from './routes/artist/$providerId/$artistId'
+import { Route as AlbumProviderIdAlbumIdRouteImport } from './routes/album/$providerId/$albumId'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HistoryRoute = HistoryRouteImport.update({
-  id: '/history',
-  path: '/history',
+const SourcesRoute = SourcesRouteImport.update({
+  id: '/sources',
+  path: '/sources',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SearchRoute = SearchRouteImport.update({
@@ -43,24 +33,19 @@ const SearchRoute = SearchRouteImport.update({
   path: '/search',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SourcesRoute = SourcesRouteImport.update({
-  id: '/sources',
-  path: '/sources',
+const HistoryRoute = HistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
   getParentRoute: () => rootRouteImport,
 } as any)
-const FavoritesAlbumsRoute = FavoritesAlbumsRouteImport.update({
-  id: '/favorites/albums',
-  path: '/favorites/albums',
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const FavoritesArtistsRoute = FavoritesArtistsRouteImport.update({
-  id: '/favorites/artists',
-  path: '/favorites/artists',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FavoritesTracksRoute = FavoritesTracksRouteImport.update({
-  id: '/favorites/tracks',
-  path: '/favorites/tracks',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlaylistsIndexRoute = PlaylistsIndexRouteImport.update({
@@ -73,23 +58,38 @@ const PlaylistsPlaylistIdRoute = PlaylistsPlaylistIdRouteImport.update({
   path: '/playlists/$playlistId',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AlbumProviderIdAlbumIdRoute = AlbumProviderIdAlbumIdRouteImport.update({
-  id: '/album/$providerId/$albumId',
-  path: '/album/$providerId/$albumId',
+const FavoritesTracksRoute = FavoritesTracksRouteImport.update({
+  id: '/favorites/tracks',
+  path: '/favorites/tracks',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ArtistProviderIdArtistIdRoute =
-  ArtistProviderIdArtistIdRouteImport.update({
-    id: '/artist/$providerId/$artistId',
-    path: '/artist/$providerId/$artistId',
-    getParentRoute: () => rootRouteImport,
-  } as any)
+const FavoritesArtistsRoute = FavoritesArtistsRouteImport.update({
+  id: '/favorites/artists',
+  path: '/favorites/artists',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FavoritesAlbumsRoute = FavoritesAlbumsRouteImport.update({
+  id: '/favorites/albums',
+  path: '/favorites/albums',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlaylistsImportProviderIdRoute =
   PlaylistsImportProviderIdRouteImport.update({
     id: '/playlists/import/$providerId',
     path: '/playlists/import/$providerId',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ArtistProviderIdArtistIdRoute =
+  ArtistProviderIdArtistIdRouteImport.update({
+    id: '/artist/$providerId/$artistId',
+    path: '/artist/$providerId/$artistId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AlbumProviderIdAlbumIdRoute = AlbumProviderIdAlbumIdRouteImport.update({
+  id: '/album/$providerId/$albumId',
+  path: '/album/$providerId/$albumId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -203,25 +203,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/history': {
-      id: '/history'
-      path: '/history'
-      fullPath: '/history'
-      preLoaderRoute: typeof HistoryRouteImport
+    '/sources': {
+      id: '/sources'
+      path: '/sources'
+      fullPath: '/sources'
+      preLoaderRoute: typeof SourcesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/search': {
@@ -231,32 +217,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sources': {
-      id: '/sources'
-      path: '/sources'
-      fullPath: '/sources'
-      preLoaderRoute: typeof SourcesRouteImport
+    '/history': {
+      id: '/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/favorites/albums': {
-      id: '/favorites/albums'
-      path: '/favorites/albums'
-      fullPath: '/favorites/albums'
-      preLoaderRoute: typeof FavoritesAlbumsRouteImport
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/favorites/artists': {
-      id: '/favorites/artists'
-      path: '/favorites/artists'
-      fullPath: '/favorites/artists'
-      preLoaderRoute: typeof FavoritesArtistsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/favorites/tracks': {
-      id: '/favorites/tracks'
-      path: '/favorites/tracks'
-      fullPath: '/favorites/tracks'
-      preLoaderRoute: typeof FavoritesTracksRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/playlists/': {
@@ -273,11 +252,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlaylistsPlaylistIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/album/$providerId/$albumId': {
-      id: '/album/$providerId/$albumId'
-      path: '/album/$providerId/$albumId'
-      fullPath: '/album/$providerId/$albumId'
-      preLoaderRoute: typeof AlbumProviderIdAlbumIdRouteImport
+    '/favorites/tracks': {
+      id: '/favorites/tracks'
+      path: '/favorites/tracks'
+      fullPath: '/favorites/tracks'
+      preLoaderRoute: typeof FavoritesTracksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/favorites/artists': {
+      id: '/favorites/artists'
+      path: '/favorites/artists'
+      fullPath: '/favorites/artists'
+      preLoaderRoute: typeof FavoritesArtistsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/favorites/albums': {
+      id: '/favorites/albums'
+      path: '/favorites/albums'
+      fullPath: '/favorites/albums'
+      preLoaderRoute: typeof FavoritesAlbumsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/playlists/import/$providerId': {
+      id: '/playlists/import/$providerId'
+      path: '/playlists/import/$providerId'
+      fullPath: '/playlists/import/$providerId'
+      preLoaderRoute: typeof PlaylistsImportProviderIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/artist/$providerId/$artistId': {
@@ -287,11 +287,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ArtistProviderIdArtistIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/playlists/import/$providerId': {
-      id: '/playlists/import/$providerId'
-      path: '/playlists/import/$providerId'
-      fullPath: '/playlists/import/$providerId'
-      preLoaderRoute: typeof PlaylistsImportProviderIdRouteImport
+    '/album/$providerId/$albumId': {
+      id: '/album/$providerId/$albumId'
+      path: '/album/$providerId/$albumId'
+      fullPath: '/album/$providerId/$albumId'
+      preLoaderRoute: typeof AlbumProviderIdAlbumIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
