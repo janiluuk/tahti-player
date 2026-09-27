@@ -414,4 +414,20 @@ describe('CatalogTable', () => {
       expect(onMoveRows).not.toHaveBeenCalled();
     });
   });
+
+  it('resizes a column from the keyboard within the width limits', () => {
+    render(<Harness />);
+    const handle = screen.getByRole('separator', { name: 'Resize Title' });
+    expect(handle.tabIndex).toBe(0);
+    expect(handle.getAttribute('aria-valuenow')).toBe('200');
+    fireEvent.keyDown(handle, { key: 'ArrowRight' });
+    expect(handle.getAttribute('aria-valuenow')).toBe('216');
+    fireEvent.keyDown(handle, { key: 'ArrowLeft', shiftKey: true });
+    expect(handle.getAttribute('aria-valuenow')).toBe('152');
+    for (let i = 0; i < 5; i += 1) {
+      fireEvent.keyDown(handle, { key: 'ArrowLeft', shiftKey: true });
+    }
+    expect(handle.getAttribute('aria-valuenow')).toBe('60');
+    expect(handle.getAttribute('aria-valuemin')).toBe('60');
+  });
 });

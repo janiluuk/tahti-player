@@ -222,6 +222,22 @@ describe('DesktopLibraryPanel native missing files', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Locate' }));
     await waitFor(() => expect(relink).toHaveBeenCalledWith('missing-track'));
   });
+
+  it('locates a missing track with Enter', async () => {
+    globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
+    const relink = vi.fn().mockResolvedValue(null);
+    globalThis.__TAHTI_NATIVE_LIBRARY__ = createNativeLibrary({
+      list: vi.fn().mockResolvedValue({ tracks: [missingTrack], total: 1 }),
+      listUnavailable: vi.fn().mockResolvedValue([missingTrack]),
+      relink,
+    });
+    render(<DesktopLibraryPanel />);
+    expect(await screen.findByText('Missing')).toBeTruthy();
+    const rows = screen.getByLabelText('Rows');
+    fireEvent.keyDown(rows, { key: 'ArrowDown' });
+    fireEvent.keyDown(rows, { key: 'Enter' });
+    await waitFor(() => expect(relink).toHaveBeenCalledWith('missing-track'));
+  });
 });
 
 describe('DesktopLibraryPanel native import', () => {
@@ -837,6 +853,46 @@ describe('DesktopLibraryPanel native import', () => {
           'Available track',
         ),
       );
+    });
+
+    it('queues, reveals and asks to remove the active row from the keyboard', async () => {
+      const library = setup({
+        resolve: vi.fn().mockResolvedValue('asset://available'),
+        reveal: vi.fn().mockResolvedValue(undefined),
+      });
+      render(<DesktopLibraryPanel />);
+      await screen.findByText('Available track');
+      const rows = screen.getByLabelText('Rows');
+      fireEvent.keyDown(rows, { key: 'ArrowDown' });
+
+      fireEvent.keyDown(rows, { key: 'q' });
+      await waitFor(() =>
+        expect(
+          usePlayerStore.getState().queue.map((q) => q.track.title),
+        ).toContain('Available track'),
+      );
+      fireEvent.keyDown(rows, { key: 'r' });
+      await waitFor(() =>
+        expect(library.reveal).toHaveBeenCalledWith(availableTrack.id),
+      );
+      fireEvent.keyDown(rows, { key: 'Delete' });
+      const dialog = await screen.findByRole('dialog');
+      expect(
+        within(dialog).getByText('Remove this track from the library?'),
+      ).toBeTruthy();
+      expect(library.remove).not.toHaveBeenCalled();
+      expect(library.removeMany).not.toHaveBeenCalled();
+    });
+
+    it('lists the keyboard shortcuts', async () => {
+      setup();
+      render(<DesktopLibraryPanel />);
+      await screen.findByText('Available track');
+      fireEvent.click(
+        screen.getByRole('button', { name: 'Keyboard shortcuts' }),
+      );
+      expect(await screen.findByText('Remove from library')).toBeTruthy();
+      expect(screen.getByText('Add to queue')).toBeTruthy();
     });
 
     it('plays everything that matches without selecting first', async () => {
