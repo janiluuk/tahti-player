@@ -212,6 +212,7 @@ export function withReadCache(library: TahtiNativeLibrary): TahtiNativeLibrary {
       removeTag: mutating(library.catalog.removeTag),
       restoreUserData: mutating(library.catalog.restoreUserData),
       recordPlay: mutating(library.catalog.recordPlay),
+      recordSkip: mutating(library.catalog.recordSkip),
       mergeTracks: mutating(library.catalog.mergeTracks),
       clearPlayHistory: mutating(library.catalog.clearPlayHistory),
       writeTags: mutating(library.catalog.writeTags),

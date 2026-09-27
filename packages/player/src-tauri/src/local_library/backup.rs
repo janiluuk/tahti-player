@@ -2,7 +2,7 @@
 //!
 //! A backup is one portable JSON file holding everything the *user* made:
 //! watched folders, which files are in the catalog, hand edits, ratings,
-//! color labels, tags, play counts and playlists. It stores paths, never
+//! color labels, tags, play and skip counts and playlists. It stores paths, never
 //! audio: backing up the catalog is not backing up the music. Extracted tags
 //! are not stored either; a restore re-reads them from the files.
 //!
@@ -49,6 +49,8 @@ struct BackupTrack {
     color: String,
     #[serde(default)]
     play_count: i64,
+    #[serde(default)]
+    skip_count: i64,
     #[serde(default)]
     last_played_at: Option<String>,
     #[serde(default)]
@@ -148,7 +150,7 @@ pub async fn export_backup(pool: &SqlitePool, dest: &Path) -> Result<BackupSumma
         .fetch_all(pool)
         .await
         .map_err(|e| e.to_string())?;
-    let rows = sqlx::query("SELECT id, path, rating, color, play_count, last_played_at FROM library_tracks ORDER BY path")
+    let rows = sqlx::query("SELECT id, path, rating, color, play_count, last_played_at, skip_count FROM library_tracks ORDER BY path")
         .fetch_all(pool)
         .await
         .map_err(|e| e.to_string())?;
@@ -193,6 +195,7 @@ pub async fn export_backup(pool: &SqlitePool, dest: &Path) -> Result<BackupSumma
                 color: row.get(3),
                 play_count: row.get(4),
                 last_played_at: row.get(5),
+                skip_count: row.get(6),
                 tags: tags.remove(&id).unwrap_or_default(),
                 edits: track_edits,
             }
@@ -451,10 +454,11 @@ pub async fn restore_backup(pool: &SqlitePool, path: &Path, mappings: &[RootMapp
         };
         result.tracks_restored += 1;
         let color = if super::catalog::COLORS.contains(&track.color.as_str()) { track.color.as_str() } else { "" };
-        sqlx::query("UPDATE library_tracks SET rating=?, color=?, play_count=?, last_played_at=? WHERE id=?")
+        sqlx::query("UPDATE library_tracks SET rating=?, color=?, play_count=?, skip_count=?, last_played_at=? WHERE id=?")
             .bind(track.rating.clamp(0, 5))
             .bind(color)
             .bind(track.play_count.max(0))
+            .bind(track.skip_count.max(0))
             .bind(&track.last_played_at)
             .bind(&id)
             .execute(&mut *tx)

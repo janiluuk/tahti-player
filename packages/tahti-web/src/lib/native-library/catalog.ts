@@ -201,6 +201,8 @@ export type NativeCatalog = {
   listTags: () => Promise<Array<{ name: string; tracks: number }>>;
   /** Counts one listen locally (play count and last played). */
   recordPlay: (id: string) => Promise<void>;
+  /** Counts one skip locally (skip count only). */
+  recordSkip: (id: string) => Promise<void>;
   /** Hashes files for exact-duplicate detection (all tracks when `ids` is empty). */
   hashTracks: (ids: string[]) => Promise<NativeHashResult>;
   cancelHash: () => Promise<void>;

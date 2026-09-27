@@ -176,6 +176,9 @@ const baseNativeLibrary: TahtiNativeLibrary = {
     async recordPlay(id) {
       unwrapResult(await commands.libraryRecordPlay(id));
     },
+    async recordSkip(id) {
+      unwrapResult(await commands.libraryRecordSkip(id));
+    },
     async hashTracks(ids) {
       return unwrapResult(await commands.libraryHashTracks(ids));
     },

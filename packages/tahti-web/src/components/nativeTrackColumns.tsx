@@ -33,6 +33,7 @@ const SORTABLE = new Set<string>([
   'added',
   'rating',
   'plays',
+  'skips',
   'lastPlayed',
   'bpm',
   'key',
@@ -224,6 +225,15 @@ export const NATIVE_TRACK_COLUMNS: CatalogColumn<NativeLibraryTrack>[] = [
     align: 'right',
     hiddenByDefault: true,
     render: (track) => track.playCount || '—',
+  },
+  {
+    id: 'skips',
+    header: 'Skips',
+    width: 70,
+    sortable: true,
+    align: 'right',
+    hiddenByDefault: true,
+    render: (track) => track.skipCount || '—',
   },
   {
     id: 'lastPlayed',

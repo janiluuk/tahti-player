@@ -26,6 +26,8 @@ export type NativeLibraryTrack = {
   /** One of `TRACK_COLORS`, or empty. */
   color: string;
   playCount: number;
+  /** Listens abandoned before they counted (or imported from iTunes). */
+  skipCount: number;
   /** UTC `YYYY-MM-DD HH:MM:SS`. */
   lastPlayedAt: string | null;
   /** Effective BPM: your correction, else the file's tag, else the estimate. */
@@ -63,6 +65,7 @@ export type NativeSortColumn =
   | 'added'
   | 'rating'
   | 'plays'
+  | 'skips'
   | 'lastPlayed'
   | 'bpm'
   | 'key'

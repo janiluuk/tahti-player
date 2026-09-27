@@ -122,8 +122,8 @@ async fn import_keeps_unresolved_entries_and_relinks_them_when_the_file_arrives(
     std::fs::create_dir_all(&outside).unwrap();
     let fresh = outside.join("fresh.wav");
     write_wav(&fresh, "Fresh", "Artist");
-    let unsupported = outside.join("song.mp3");
-    std::fs::write(&unsupported, b"not really mp3").unwrap();
+    let unsupported = outside.join("song.wma");
+    std::fs::write(&unsupported, b"not really wma").unwrap();
     let missing = dir.path().join("gone.wav");
     let list_file = dir.path().join("mixed.m3u");
     std::fs::write(

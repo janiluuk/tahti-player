@@ -1,6 +1,6 @@
 use sqlx::SqlitePool;
 
-use super::catalog::{add_tag, apply_edits, merge_tracks, play_history, record_play, set_color, set_rating, EditField, FieldEdit};
+use super::catalog::{add_tag, apply_edits, merge_tracks, play_history, record_play, record_skip, set_color, set_rating, EditField, FieldEdit};
 use super::playlists::{add_tracks, create_playlist, entries_page};
 use super::tag_writer::{preview, write_tags};
 use super::test_support::{pool, write_wav_tagged};
@@ -133,6 +133,8 @@ async fn merging_duplicates_keeps_the_best_user_data_and_moves_playlist_entries(
     record_play(&pool, &keep).await.unwrap();
     record_play(&pool, &drop).await.unwrap();
     record_play(&pool, &drop).await.unwrap();
+    record_skip(&pool, &keep).await.unwrap();
+    record_skip(&pool, &drop).await.unwrap();
     let playlist = create_playlist(&pool, "Set").await.unwrap();
     add_tracks(&pool, &playlist.id, &[drop.clone(), keep.clone()], None).await.unwrap();
 
@@ -141,7 +143,7 @@ async fn merging_duplicates_keeps_the_best_user_data_and_moves_playlist_entries(
     let left = tracks(&pool).await;
     assert_eq!(left.len(), 1);
     let t = &left[0];
-    assert_eq!((t.rating, t.color.as_str(), t.play_count), (5, "red", 3));
+    assert_eq!((t.rating, t.color.as_str(), t.play_count, t.skip_count), (5, "red", 3, 2));
     let tags: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM library_track_tags WHERE track_id=?").bind(&keep).fetch_one(&pool).await.unwrap();
     assert_eq!(tags, 2);
     let page = entries_page(&pool, &playlist.id, 0).await.unwrap();

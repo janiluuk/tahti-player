@@ -126,6 +126,10 @@ pub struct LibraryTrack {
     #[sqlx(default)]
     #[specta(type = Number<i64>)]
     pub play_count: i64,
+    /// Times a listen was abandoned early; see `catalog::plays::record_skip`.
+    #[sqlx(default)]
+    #[specta(type = Number<i64>)]
+    pub skip_count: i64,
     #[sqlx(default)]
     pub last_played_at: Option<String>,
     /// Effective BPM and key (user correction > file tag > estimate); see

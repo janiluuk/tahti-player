@@ -23,6 +23,18 @@ pub async fn record_play(pool: &SqlitePool, id: &str) -> Result<(), String> {
     Ok(())
 }
 
+/// Counts one skip: the track started playing but the player moved on before
+/// the listen counted (the client owns the threshold, the same one it uses
+/// for `record_play`). Leaves play count, last played and history alone.
+pub async fn record_skip(pool: &SqlitePool, id: &str) -> Result<(), String> {
+    sqlx::query("UPDATE library_tracks SET skip_count = skip_count + 1 WHERE id=?")
+        .bind(id)
+        .execute(pool)
+        .await
+        .map_err(|e| e.to_string())?;
+    Ok(())
+}
+
 #[derive(Debug, Clone, Serialize, specta::Type, sqlx::FromRow)]
 #[serde(rename_all = "camelCase")]
 pub struct PlayLogEntry {
@@ -69,6 +81,12 @@ pub async fn clear_play_history(pool: &SqlitePool) -> Result<(), String> {
 #[specta::specta]
 pub async fn library_record_play(app: tauri::AppHandle, id: String) -> Result<(), String> {
     record_play(&pool(&app).await?, &id).await
+}
+
+#[tauri::command]
+#[specta::specta]
+pub async fn library_record_skip(app: tauri::AppHandle, id: String) -> Result<(), String> {
+    record_skip(&pool(&app).await?, &id).await
 }
 
 #[tauri::command]
