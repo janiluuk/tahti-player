@@ -777,7 +777,7 @@ export type ItunesPreview = {
 	builtinPlaylistsSkipped: number,
 	/**
 	 *  Every XML track that will not be linked or imported (duplicates
-	 *  excluded), in XML order, up to `UNRESOLVED_KEPT`.
+	 *  excluded), in XML order, up to `itunes_import::UNRESOLVED_KEPT`.
 	 */
 	unresolved: ItunesUnresolved[],
 };
