@@ -3,6 +3,7 @@ import {
   CopyIcon,
   DownloadIcon,
   HistoryIcon,
+  ImageIcon,
   LoaderCircleIcon,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -12,6 +13,7 @@ import { Button } from '@tahti-player/ui';
 
 import type { TahtiNativeLibrary } from '../lib/nativeLibrary';
 import { BackupRestoreDialog } from './BackupRestoreDialog';
+import { useArtworkBackfill } from './desktop-library/useArtworkBackfill';
 import { DuplicatesDialog } from './DuplicatesDialog';
 import { LocalLibraryAnalysis } from './LocalLibraryAnalysis';
 import { PlayHistoryDialog } from './PlayHistoryDialog';
@@ -22,12 +24,13 @@ type Props = {
   onChanged: () => void;
 };
 
-/** Library upkeep: duplicate review and catalog backup/restore. */
+/** Library upkeep: duplicate review, missing artwork and catalog backup/restore. */
 export function LocalLibraryTools({ library, onChanged }: Props) {
   const [duplicatesOpen, setDuplicatesOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [backingUp, setBackingUp] = useState(false);
   const [restoreFrom, setRestoreFrom] = useState<string | null>(null);
+  const artwork = useArtworkBackfill(library.artworkBackfill, onChanged);
 
   const backUp = async () => {
     setBackingUp(true);
@@ -80,6 +83,25 @@ export function LocalLibraryTools({ library, onChanged }: Props) {
           <HistoryIcon size={14} aria-hidden />
           History
         </Button>
+        {artwork.available ? (
+          <Button
+            size="sm"
+            variant="text"
+            disabled={artwork.running}
+            onClick={() => void artwork.start()}
+          >
+            {artwork.running ? (
+              <LoaderCircleIcon
+                size={14}
+                className="animate-spin"
+                aria-hidden
+              />
+            ) : (
+              <ImageIcon size={14} aria-hidden />
+            )}
+            Find missing artwork
+          </Button>
+        ) : null}
         <Button
           size="sm"
           variant="text"
