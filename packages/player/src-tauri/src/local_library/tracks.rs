@@ -120,6 +120,9 @@ pub async fn relink(
     if updated.is_ok() {
         let mut conn = pool.acquire().await.map_err(|err| err.to_string())?;
         catalog::reapply_overrides(&mut conn, &extracted).await.map_err(|err| err.to_string())?;
+        super::analysis::write_file_tags(&mut *conn, id, &extracted.file_tags).await.map_err(|err| err.to_string())?;
+        drop(conn);
+        super::analysis::refresh_effective(pool, &[id.to_owned()]).await?;
     }
     if let Err(error) = updated {
         let message = match error.as_database_error().map(|db| db.is_unique_violation()) {

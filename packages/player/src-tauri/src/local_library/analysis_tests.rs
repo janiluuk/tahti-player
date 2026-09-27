@@ -154,7 +154,7 @@ async fn corrections_beat_tags_beat_estimates_and_undo_restores() {
     let estimate = detail(&pool, &house).await.unwrap().bpm_estimate.unwrap();
 
     // A tag value outranks the estimate...
-    sqlx::query("UPDATE library_analysis SET tag_bpm = 126.0, tag_key = 'Am' WHERE track_id = ?").bind(&house).execute(&pool).await.unwrap();
+    sqlx::query("UPDATE library_tracks SET tag_bpm = 126.0, tag_key = 'Am' WHERE id = ?").bind(&house).execute(&pool).await.unwrap();
     super::analysis::refresh_effective(&pool, &ids).await.unwrap();
     let d = detail(&pool, &house).await.unwrap();
     assert_eq!((d.bpm, d.key.as_deref()), (Some(126.0), Some("Am")));
