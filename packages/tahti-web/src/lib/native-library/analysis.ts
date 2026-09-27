@@ -23,6 +23,11 @@ export type NativeAnalysisDetail = {
   bpm: number | null;
   key: string | null;
   analyzedAt: string | null;
+  /** ReplayGain from the file's tags (dB, linear peak); stored only. Missing in older desktop builds. */
+  replaygainTrackGain?: number | null;
+  replaygainTrackPeak?: number | null;
+  replaygainAlbumGain?: number | null;
+  replaygainAlbumPeak?: number | null;
 };
 
 export type NativeAnalysisResult = {

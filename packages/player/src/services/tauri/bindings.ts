@@ -405,6 +405,14 @@ export type AnalysisDetail = {
 	bpm: number | null,
 	key: string | null,
 	analyzedAt: string | null,
+	/**
+	 *  ReplayGain as the file's tags state it (dB and linear peak); stored
+	 *  only, playback does not apply it.
+	 */
+	replaygainTrackGain: number | null,
+	replaygainTrackPeak: number | null,
+	replaygainAlbumGain: number | null,
+	replaygainAlbumPeak: number | null,
 };
 
 export type AnalysisResult = {

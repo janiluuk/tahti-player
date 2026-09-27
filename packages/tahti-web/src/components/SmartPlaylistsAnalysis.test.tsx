@@ -71,6 +71,23 @@ describe('analysisRows', () => {
     );
     expect(labels).toEqual(['BPM', 'Key']);
   });
+
+  it('shows ReplayGain from the tags when the file has it, even before analysis', () => {
+    const rows = Object.fromEntries(
+      analysisRows(
+        detail({
+          analyzed: false,
+          replaygainTrackGain: -6.54,
+          replaygainTrackPeak: 0.988547,
+          replaygainAlbumGain: 1.2,
+        }),
+      ).map((r) => [r.label, r.value]),
+    );
+    expect(rows['ReplayGain (track)']).toBe('-6.54 dB, peak 0.989');
+    expect(rows['ReplayGain (album)']).toBe('+1.20 dB');
+    const without = analysisRows(detail()).map((r) => r.label);
+    expect(without.some((label) => label.startsWith('ReplayGain'))).toBe(false);
+  });
 });
 
 describe('smart playlist rules', () => {
