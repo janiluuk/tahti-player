@@ -9,6 +9,7 @@ import { getCurrentWebview } from '@tauri-apps/api/webview';
 import type { TahtiNativeCapabilities } from '../../tahti-web/src/lib/nativeCapabilities';
 import {
   withReadCache,
+  type NativeItunesImportProgress,
   type NativeLibraryImportProgress,
   type NativeProviderImportProgress,
   type NativeRootScanResult,
@@ -436,6 +437,24 @@ const baseNativeLibrary: TahtiNativeLibrary = {
       return unwrapResult(
         await commands.libraryItunesCommit(sourcePath, mappings),
       );
+    },
+    onProgress(listener) {
+      let unlisten: (() => void) | undefined;
+      let disposed = false;
+      void listen<NativeItunesImportProgress>(
+        'library://itunes-import-progress',
+        (event) => listener(event.payload),
+      ).then((dispose) => {
+        if (disposed) {
+          dispose();
+        } else {
+          unlisten = dispose;
+        }
+      });
+      return () => {
+        disposed = true;
+        unlisten?.();
+      };
     },
   },
   providerImport: {

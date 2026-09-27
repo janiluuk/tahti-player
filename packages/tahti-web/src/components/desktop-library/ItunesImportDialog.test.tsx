@@ -1,4 +1,5 @@
 import {
+  act,
   cleanup,
   fireEvent,
   render,
@@ -10,10 +11,11 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type {
   NativeItunesImport,
+  NativeItunesImportProgress,
   NativeItunesImportResult,
   NativeItunesPreview,
 } from '../../lib/nativeLibrary';
-import { ItunesImportDialog } from './ItunesImportDialog';
+import { ItunesImportDialog, unresolvedAsText } from './ItunesImportDialog';
 
 const XML = '/Users/me/Music/Library.xml';
 
@@ -34,8 +36,20 @@ const preview = (
   playlistFolders: 1,
   playlistsAlreadyImported: 0,
   builtinPlaylistsSkipped: 5,
-  missingExamples: ['/Volumes/Old/iTunes Media/Music/A/01 Gone.flac'],
-  unsupportedExamples: ['/Volumes/Old/iTunes Media/Music/B/Protected.m4p'],
+  unresolved: [
+    {
+      name: 'Gone',
+      artist: 'A',
+      path: '/Volumes/Old/iTunes Media/Music/A/01 Gone.flac',
+      reason: 'missing',
+    },
+    {
+      name: 'Protected',
+      artist: 'B',
+      path: '/Volumes/Old/iTunes Media/Music/B/Protected.m4p',
+      reason: 'unsupported',
+    },
+  ],
   ...overrides,
 });
 
@@ -275,5 +289,52 @@ describe('ItunesImportDialog', () => {
       (screen.getByRole('button', { name: 'Import' }) as HTMLButtonElement)
         .disabled,
     ).toBe(true);
+  });
+
+  it('lists every unresolved track by name, grouped by reason', async () => {
+    await openPreview(fakeImport([preview()]));
+    const list = screen.getByRole('region', {
+      name: 'Tracks that were not resolved',
+    });
+    expect(
+      within(list).getByText('Not resolved (5), first 2 listed'),
+    ).toBeTruthy();
+    expect(within(list).getByText('File not found (1)')).toBeTruthy();
+    expect(within(list).getByText('Gone — A')).toBeTruthy();
+    expect(within(list).getByText('Format not supported (1)')).toBeTruthy();
+    expect(within(list).getByText('Protected — B')).toBeTruthy();
+    expect(unresolvedAsText(preview().unresolved)).toBe(
+      'File not found\tGone\tA\t/Volumes/Old/iTunes Media/Music/A/01 Gone.flac\n' +
+        'Format not supported\tProtected\tB\t/Volumes/Old/iTunes Media/Music/B/Protected.m4p',
+    );
+  });
+
+  it('shows the commit stage and count while importing, then unsubscribes', async () => {
+    let report: (progress: NativeItunesImportProgress) => void = () => {};
+    let finish: (value: NativeItunesImportResult) => void = () => {};
+    const unsubscribe = vi.fn();
+    const api: NativeItunesImport = {
+      ...fakeImport([preview()]),
+      commit: vi.fn(
+        () =>
+          new Promise<NativeItunesImportResult>((resolve) => {
+            finish = resolve;
+          }),
+      ),
+      onProgress: vi.fn((listener) => {
+        report = listener;
+        return unsubscribe;
+      }),
+    };
+    await openPreview(api);
+    fireEvent.click(screen.getByRole('button', { name: 'Import' }));
+    await screen.findByText(/Importing… Large libraries/);
+    act(() => report({ stage: 'importing', done: 200, total: 1000 }));
+    expect(screen.getByText('Importing files… 200 of 1,000')).toBeTruthy();
+    act(() => report({ stage: 'playlists', done: 1, total: 2 }));
+    expect(screen.getByText('Creating playlists… 1 of 2')).toBeTruthy();
+    await act(async () => finish(result()));
+    expect(unsubscribe).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText(/Creating playlists/)).toBeNull();
   });
 });

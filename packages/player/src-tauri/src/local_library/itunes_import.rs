@@ -25,6 +25,7 @@ use std::path::{Component, Path, PathBuf};
 use serde::Serialize;
 use specta_typescript::Number;
 use sqlx::{Row, SqliteConnection, SqlitePool};
+use tauri::Emitter;
 use tauri_plugin_dialog::DialogExt;
 use unicode_normalization::UnicodeNormalization;
 
@@ -37,7 +38,9 @@ use super::{import_batch, is_supported_audio_file, pool, ImportFailure, ImportRe
 
 pub const LOVED_TAG: &str = "Loved";
 const FOLDER_SEPARATOR: &str = " / ";
-const EXAMPLES: usize = 8;
+/// Unresolved tracks listed by name; a larger remainder is only counted.
+const UNRESOLVED_KEPT: usize = 10_000;
+const PROGRESS_EVENT: &str = "library://itunes-import-progress";
 const ERRORS_KEPT: usize = 50;
 const OVERLAY_CHUNK: usize = 500;
 
@@ -239,8 +242,47 @@ pub struct ItunesPreview {
     /// Library, Music, Podcasts and the other lists Music.app makes itself.
     #[specta(type = Number<usize>)]
     pub builtin_playlists_skipped: usize,
-    pub missing_examples: Vec<String>,
-    pub unsupported_examples: Vec<String>,
+    /// Every XML track that will not be linked or imported (duplicates
+    /// excluded), in XML order, up to `UNRESOLVED_KEPT`.
+    pub unresolved: Vec<ItunesUnresolved>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, specta::Type)]
+#[serde(rename_all = "camelCase")]
+pub enum UnresolvedReason {
+    Missing,
+    Unsupported,
+    NotLocal,
+}
+
+#[derive(Debug, Clone, Serialize, specta::Type)]
+#[serde(rename_all = "camelCase")]
+pub struct ItunesUnresolved {
+    pub name: String,
+    pub artist: String,
+    /// The local path it points at after remapping; `None` when not local.
+    pub path: Option<String>,
+    pub reason: UnresolvedReason,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, specta::Type)]
+#[serde(rename_all = "camelCase")]
+pub enum ItunesImportStage {
+    /// Importing files that are on disk but not in the catalog.
+    Importing,
+    /// Ratings, play counts, tags and BPM from the XML.
+    Metadata,
+    Playlists,
+}
+
+#[derive(Debug, Clone, Serialize, specta::Type)]
+#[serde(rename_all = "camelCase")]
+pub struct ItunesImportProgress {
+    pub stage: ItunesImportStage,
+    #[specta(type = Number<usize>)]
+    pub done: usize,
+    #[specta(type = Number<usize>)]
+    pub total: usize,
 }
 
 pub async fn preview(pool: &SqlitePool, source: &Path, mappings: &[RootMapping]) -> Result<ItunesPreview, String> {
@@ -265,23 +307,35 @@ pub async fn preview(pool: &SqlitePool, source: &Path, mappings: &[RootMapping])
             out.duplicate_tracks += 1;
             continue;
         }
-        let path = plan.path.clone().unwrap_or_default();
-        match &plan.status {
-            Status::NotLocal => out.tracks_not_local += 1,
+        let reason = match &plan.status {
+            Status::NotLocal => {
+                out.tracks_not_local += 1;
+                UnresolvedReason::NotLocal
+            }
             Status::Unsupported => {
                 out.tracks_unsupported += 1;
-                if out.unsupported_examples.len() < EXAMPLES {
-                    out.unsupported_examples.push(path);
-                }
+                UnresolvedReason::Unsupported
             }
             Status::Missing => {
                 out.tracks_missing += 1;
-                if out.missing_examples.len() < EXAMPLES {
-                    out.missing_examples.push(path);
-                }
+                UnresolvedReason::Missing
             }
-            Status::InCatalog(_) => out.tracks_in_catalog += 1,
-            Status::ToImport => out.tracks_to_import += 1,
+            Status::InCatalog(_) => {
+                out.tracks_in_catalog += 1;
+                continue;
+            }
+            Status::ToImport => {
+                out.tracks_to_import += 1;
+                continue;
+            }
+        };
+        if out.unresolved.len() < UNRESOLVED_KEPT {
+            out.unresolved.push(ItunesUnresolved {
+                name: track.name.clone(),
+                artist: track.artist.clone(),
+                path: plan.path.clone().filter(|_| reason != UnresolvedReason::NotLocal),
+                reason,
+            });
         }
     }
     let local_ids: HashSet<i64> = library
@@ -362,7 +416,7 @@ pub struct ItunesImportResult {
     pub errors: Vec<ImportFailure>,
 }
 
-async fn import_missing(pool: &SqlitePool, plans: &[Planned], result: &mut ItunesImportResult) -> Result<(), String> {
+async fn import_missing(pool: &SqlitePool, plans: &[Planned], result: &mut ItunesImportResult, progress: &Progress<'_>) -> Result<(), String> {
     let roots: Vec<(String, String)> = sqlx::query("SELECT path, id FROM library_roots")
         .fetch_all(pool)
         .await
@@ -380,10 +434,15 @@ async fn import_missing(pool: &SqlitePool, plans: &[Planned], result: &mut Itune
             .map(|(_, id)| id.clone());
         by_root.entry(root_id).or_default().push(PathBuf::from(path));
     }
+    let total: usize = by_root.values().map(Vec::len).sum();
+    let mut done = 0;
+    progress(ItunesImportStage::Importing, done, total);
     let mut imported = ImportResult::default();
     for (root_id, paths) in by_root {
         for chunk in paths.chunks(IMPORT_BATCH) {
             import_batch(pool, chunk.to_vec(), root_id.as_deref(), &mut imported).await;
+            done += chunk.len();
+            progress(ItunesImportStage::Importing, done, total);
         }
     }
     result.tracks_imported = imported.imported;
@@ -597,10 +656,14 @@ async fn import_playlists(
     plans: &[Planned],
     ids: &[Option<String>],
     result: &mut ItunesImportResult,
+    progress: &Progress<'_>,
 ) -> Result<(), String> {
     let index: HashMap<i64, usize> = library.tracks.iter().enumerate().map(|(i, t)| (t.track_id, i)).collect();
     let already = imported_playlist_ids(pool).await?;
-    for playlist in library.playlists.iter().filter(|p| !p.builtin && !p.folder) {
+    let wanted: Vec<_> = library.playlists.iter().filter(|p| !p.builtin && !p.folder).collect();
+    progress(ItunesImportStage::Playlists, 0, wanted.len());
+    for (done, playlist) in wanted.iter().enumerate() {
+        progress(ItunesImportStage::Playlists, done, wanted.len());
         if already.contains(&playlist.persistent_id) {
             result.playlists_already_imported += 1;
             continue;
@@ -659,10 +722,23 @@ async fn import_playlists(
         result.playlists_created += 1;
         result.playlist_entries += position as usize;
     }
+    progress(ItunesImportStage::Playlists, wanted.len(), wanted.len());
     Ok(())
 }
 
+/// Reports `(stage, done, total)`; called after each batch.
+pub type Progress<'a> = dyn Fn(ItunesImportStage, usize, usize) + Sync + 'a;
+
 pub async fn commit(pool: &SqlitePool, source: &Path, mappings: &[RootMapping]) -> Result<ItunesImportResult, String> {
+    commit_with_progress(pool, source, mappings, &|_, _, _| {}).await
+}
+
+pub async fn commit_with_progress(
+    pool: &SqlitePool,
+    source: &Path,
+    mappings: &[RootMapping],
+    progress: &Progress<'_>,
+) -> Result<ItunesImportResult, String> {
     let (library, plans) = load_and_plan(pool, source, mappings).await?;
     let mut result = ItunesImportResult::default();
     for plan in &plans {
@@ -678,7 +754,7 @@ pub async fn commit(pool: &SqlitePool, source: &Path, mappings: &[RootMapping]) 
             Status::ToImport => {}
         }
     }
-    import_missing(pool, &plans, &mut result).await?;
+    import_missing(pool, &plans, &mut result, progress).await?;
 
     let catalog = catalog_paths(pool).await?;
     let ids: Vec<Option<String>> = plans
@@ -699,16 +775,18 @@ pub async fn commit(pool: &SqlitePool, source: &Path, mappings: &[RootMapping]) 
         .zip(&plans)
         .filter_map(|((track, id), plan)| id.as_ref().map(|id| (track, id, !plan.duplicate)))
         .collect();
-    for chunk in linked.chunks(OVERLAY_CHUNK) {
+    progress(ItunesImportStage::Metadata, 0, linked.len());
+    for (index, chunk) in linked.chunks(OVERLAY_CHUNK).enumerate() {
         let mut tx = pool.begin().await.map_err(|e| e.to_string())?;
         for (track, id, fill_tags) in chunk {
             apply_overlay(&mut tx, id, track, *fill_tags, &mut result, &mut bpm_ids).await?;
         }
         tx.commit().await.map_err(|e| e.to_string())?;
+        progress(ItunesImportStage::Metadata, (index * OVERLAY_CHUNK + chunk.len()).min(linked.len()), linked.len());
     }
     super::analysis::refresh_effective(pool, &bpm_ids).await?;
 
-    import_playlists(pool, &library, &plans, &ids, &mut result).await?;
+    import_playlists(pool, &library, &plans, &ids, &mut result, progress).await?;
     Ok(result)
 }
 
@@ -746,5 +824,9 @@ pub async fn library_itunes_commit(
     source_path: String,
     mappings: Vec<RootMapping>,
 ) -> Result<ItunesImportResult, String> {
-    commit(&pool(&app).await?, Path::new(&source_path), &mappings).await
+    let emitter = app.clone();
+    commit_with_progress(&pool(&app).await?, Path::new(&source_path), &mappings, &move |stage, done, total| {
+        let _ = emitter.emit(PROGRESS_EVENT, ItunesImportProgress { stage, done, total });
+    })
+    .await
 }

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type {
   NativeItunesImport,
+  NativeItunesImportProgress,
   NativeItunesImportResult,
   NativeItunesPreview,
   NativeRootMapping,
@@ -48,6 +49,9 @@ export function useItunesImport({
   const [applied, setApplied] = useState<NativeRootMapping[]>([]);
   const [preview, setPreview] = useState<NativeItunesPreview | null>(null);
   const [result, setResult] = useState<NativeItunesImportResult | null>(null);
+  const [progress, setProgress] = useState<NativeItunesImportProgress | null>(
+    null,
+  );
   const [error, setError] = useState<string | null>(null);
   // A slower, older preview must not overwrite a newer one.
   const request = useRef(0);
@@ -63,6 +67,7 @@ export function useItunesImport({
       setApplied([]);
       setPreview(null);
       setResult(null);
+      setProgress(null);
       setError(null);
     }
   }, [isOpen]);
@@ -157,7 +162,9 @@ export function useItunesImport({
       return;
     }
     setPhase('committing');
+    setProgress(null);
     setError(null);
+    const unsubscribe = itunesImport.onProgress?.(setProgress);
     try {
       const value = await itunesImport.commit(sourcePath, applied);
       setResult(value);
@@ -166,6 +173,9 @@ export function useItunesImport({
     } catch (failure) {
       setError(message(failure, 'Could not import the library.'));
       setPhase('review');
+    } finally {
+      unsubscribe?.();
+      setProgress(null);
     }
   }, [itunesImport, sourcePath, applied, onImported]);
 
@@ -176,6 +186,7 @@ export function useItunesImport({
     dirty,
     preview,
     result,
+    progress,
     error,
     pickFile,
     addMapping,

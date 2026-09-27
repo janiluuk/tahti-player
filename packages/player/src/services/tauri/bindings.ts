@@ -775,8 +775,19 @@ export type ItunesPreview = {
 	playlistsAlreadyImported: number,
 	/**  Library, Music, Podcasts and the other lists Music.app makes itself. */
 	builtinPlaylistsSkipped: number,
-	missingExamples: string[],
-	unsupportedExamples: string[],
+	/**
+	 *  Every XML track that will not be linked or imported (duplicates
+	 *  excluded), in XML order, up to `UNRESOLVED_KEPT`.
+	 */
+	unresolved: ItunesUnresolved[],
+};
+
+export type ItunesUnresolved = {
+	name: string,
+	artist: string,
+	/**  The local path it points at after remapping; `None` when not local. */
+	path: string | null,
+	reason: UnresolvedReason,
 };
 
 export type LibraryPage = {
@@ -1289,6 +1300,8 @@ export type UnresolvedEntry = {
 	title: string,
 	status: EntryStatus,
 };
+
+export type UnresolvedReason = "missing" | "unsupported" | "notLocal";
 
 /**  Enough to put a track's user data back exactly (undo). */
 export type UserDataSnapshot = {

@@ -5,12 +5,22 @@ import {
   XIcon,
 } from 'lucide-react';
 
-import { Alert, Button, Dialog, Input } from '@tahti-player/ui';
+import {
+  Alert,
+  Button,
+  CopyButton,
+  Dialog,
+  Input,
+  Meter,
+} from '@tahti-player/ui';
 
 import type {
   NativeItunesImport,
+  NativeItunesImportProgress,
   NativeItunesImportResult,
   NativeItunesPreview,
+  NativeItunesUnresolved,
+  NativeItunesUnresolvedReason,
 } from '../../lib/nativeLibrary';
 import { useItunesImport } from './useItunesImport';
 
@@ -46,20 +56,126 @@ function Counts({ rows }: { rows: Array<[string, number]> }) {
   );
 }
 
-function PathList({ title, paths }: { title: string; paths: string[] }) {
-  if (!paths.length) {
+const REASONS: Array<[NativeItunesUnresolvedReason, string]> = [
+  ['missing', 'File not found'],
+  ['unsupported', 'Format not supported'],
+  ['notLocal', 'Not a local file'],
+];
+
+const trackLabel = (track: NativeItunesUnresolved) =>
+  [track.name || 'Untitled', track.artist].filter(Boolean).join(' — ');
+
+/** Tab-separated, one track per line, for pasting into a spreadsheet. */
+export function unresolvedAsText(tracks: NativeItunesUnresolved[]): string {
+  const label = Object.fromEntries(REASONS);
+  return tracks
+    .map((track) =>
+      [label[track.reason], track.name, track.artist, track.path ?? ''].join(
+        '\t',
+      ),
+    )
+    .join('\n');
+}
+
+/** Every track the import leaves out, grouped by why, so the user can fix them. */
+function UnresolvedList({
+  tracks,
+  total,
+}: {
+  tracks: NativeItunesUnresolved[];
+  total: number;
+}) {
+  if (!tracks.length) {
     return null;
   }
   return (
-    <div className="text-foreground-secondary flex flex-col gap-0.5 text-xs">
-      <p>{title}</p>
-      <ul className="flex flex-col gap-0.5">
-        {paths.map((path) => (
-          <li key={path} className="truncate" title={path}>
-            {path}
-          </li>
-        ))}
-      </ul>
+    <section
+      className="flex flex-col gap-2"
+      aria-label="Tracks that were not resolved"
+    >
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-sm font-medium">
+          Not resolved ({n(total)})
+          {total > tracks.length ? `, first ${n(tracks.length)} listed` : ''}
+        </p>
+        <CopyButton
+          size="sm"
+          variant="text"
+          label="Copy list"
+          text={unresolvedAsText(tracks)}
+          toastMessage="List copied"
+        />
+      </div>
+      <div className="border-border flex max-h-60 flex-col gap-3 overflow-y-auto rounded-md border p-2">
+        {REASONS.map(([reason, title]) => {
+          const group = tracks.filter((track) => track.reason === reason);
+          if (!group.length) {
+            return null;
+          }
+          return (
+            <div key={reason} className="flex flex-col gap-1 text-xs">
+              <p className="text-foreground-secondary font-medium">
+                {title} ({n(group.length)})
+              </p>
+              <ul className="flex flex-col gap-1">
+                {group.map((track, index) => (
+                  <li key={`${track.path ?? ''}:${index}`} className="min-w-0">
+                    <p className="truncate">{trackLabel(track)}</p>
+                    {track.path ? (
+                      <p
+                        className="text-foreground-secondary truncate"
+                        title={track.path}
+                      >
+                        {track.path}
+                      </p>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+const STAGES: Record<NativeItunesImportProgress['stage'], string> = {
+  importing: 'Importing files',
+  metadata: 'Applying ratings, play counts and tags',
+  playlists: 'Creating playlists',
+};
+
+function CommitProgress({
+  progress,
+}: {
+  progress: NativeItunesImportProgress | null;
+}) {
+  if (!progress) {
+    return (
+      <p
+        className="text-foreground-secondary flex items-center gap-2 py-2 text-sm"
+        role="status"
+      >
+        <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
+        Importing… Large libraries can take a few minutes.
+      </p>
+    );
+  }
+  return (
+    <div className="flex flex-col gap-2 py-2">
+      <p
+        className="text-foreground-secondary flex items-center gap-2 text-sm"
+        role="status"
+      >
+        <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
+        {STAGES[progress.stage]}… {n(progress.done)} of {n(progress.total)}
+      </p>
+      <Meter
+        value={progress.done}
+        max={Math.max(progress.total, 1)}
+        aria-label={STAGES[progress.stage]}
+      />
     </div>
   );
 }
@@ -89,14 +205,7 @@ function PreviewSummary({ preview }: { preview: NativeItunesPreview }) {
           ['Playlists imported before', preview.playlistsAlreadyImported],
         ]}
       />
-      <PathList
-        title="Not found, for example:"
-        paths={preview.missingExamples}
-      />
-      <PathList
-        title="Not supported, for example:"
-        paths={preview.unsupportedExamples}
-      />
+      <UnresolvedList tracks={preview.unresolved} total={unresolved} />
     </div>
   );
 }
@@ -165,16 +274,21 @@ function ResultSummary({
         </div>
       ) : null}
       {preview ? (
-        <>
-          <PathList
-            title="Not found, for example:"
-            paths={result.tracksMissing ? preview.missingExamples : []}
-          />
-          <PathList
-            title="Not supported, for example:"
-            paths={result.tracksUnsupported ? preview.unsupportedExamples : []}
-          />
-        </>
+        <UnresolvedList
+          tracks={preview.unresolved.filter(
+            (track) =>
+              ({
+                missing: result.tracksMissing,
+                unsupported: result.tracksUnsupported,
+                notLocal: result.tracksNotLocal,
+              })[track.reason] > 0,
+          )}
+          total={
+            result.tracksMissing +
+            result.tracksUnsupported +
+            result.tracksNotLocal
+          }
+        />
       ) : null}
     </div>
   );
@@ -336,13 +450,7 @@ export function ItunesImportDialog({
       ) : null}
 
       {state.phase === 'committing' ? (
-        <p
-          className="text-foreground-secondary flex items-center gap-2 py-2 text-sm"
-          role="status"
-        >
-          <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
-          Importing… Large libraries can take a few minutes.
-        </p>
+        <CommitProgress progress={state.progress} />
       ) : null}
 
       {state.phase === 'done' && state.result ? (

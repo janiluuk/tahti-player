@@ -6,7 +6,7 @@ use sqlx::SqlitePool;
 
 use super::backup::RootMapping;
 use super::catalog::{apply_edits, record_play, set_rating, EditField, FieldEdit};
-use super::itunes_import::{commit, preview, LOVED_TAG};
+use super::itunes_import::{commit, commit_with_progress, preview, ItunesImportStage, ItunesUnresolved, UnresolvedReason, LOVED_TAG};
 use super::itunes_xml::{location_to_path, parse_library};
 use super::playlists::{create_playlist, list_playlists};
 use super::test_support::{entry_titles, pool, write_wav_tagged};
@@ -148,9 +148,17 @@ async fn preview_then_commit_links_imports_overlays_and_recreates_playlists() {
     assert_eq!((p.tracks_in_catalog, p.tracks_to_import, p.tracks_missing, p.tracks_unsupported, p.tracks_not_local, p.duplicate_tracks), (1, 3, 2, 1, 1, 1));
     assert_eq!((p.playlists, p.playlist_entries, p.playlist_folders, p.builtin_playlists_skipped, p.playlists_already_imported), (3, 6, 2, 2, 0));
     assert_eq!(p.previously_imported, 0);
-    assert!(p.missing_examples.iter().any(|m| m.ends_with("Gone.flac")));
-    assert!(p.missing_examples.iter().any(|m| m.ends_with("Missing AAC.m4a")), "AAC entry reported missing, not dropped");
-    assert!(p.unsupported_examples[0].ends_with("Protected.m4p"));
+    let unresolved = |reason: UnresolvedReason| -> Vec<&ItunesUnresolved> { p.unresolved.iter().filter(|u| u.reason == reason).collect() };
+    let missing = unresolved(UnresolvedReason::Missing);
+    assert_eq!(missing.len(), 2);
+    assert!(missing.iter().any(|u| u.path.as_deref().is_some_and(|m| m.ends_with("Gone.flac"))));
+    assert!(missing.iter().any(|u| u.path.as_deref().is_some_and(|m| m.ends_with("Missing AAC.m4a"))), "AAC entry reported missing, not dropped");
+    let unsupported = unresolved(UnresolvedReason::Unsupported);
+    assert!(unsupported[0].path.as_deref().unwrap().ends_with("Protected.m4p"));
+    let not_local = unresolved(UnresolvedReason::NotLocal);
+    assert_eq!((not_local.len(), not_local[0].path.as_deref()), (1, None));
+    assert!(p.unresolved.iter().all(|u| !u.name.is_empty()), "unresolved tracks are listed by name");
+    assert_eq!(p.unresolved.len(), 4, "duplicates and resolved tracks are not listed");
     assert_eq!(p.music_folder.as_deref().map(|f| f.trim_end_matches('/').to_owned()), Some(music.path().to_string_lossy().into_owned()));
     assert_eq!(tracks(&pool).await.len(), 1, "preview writes nothing");
 
@@ -269,4 +277,31 @@ async fn a_track_removed_and_imported_again_gets_its_plays_back() {
     let result = commit(&pool, &xml, &mappings).await.unwrap();
     assert_eq!((result.tracks_imported, result.plays_added), (1, 4));
     assert_eq!(tracks(&pool).await[0].play_count, 4);
+}
+
+#[tokio::test]
+async fn commit_reports_progress_for_every_stage_up_to_its_total() {
+    let music = tempfile::tempdir().unwrap();
+    make_music(music.path());
+    let xml_dir = tempfile::tempdir().unwrap();
+    let xml = write_library(xml_dir.path(), music.path(), LIBRARY);
+    let pool = pool().await;
+    let events = std::sync::Mutex::new(Vec::new());
+    commit_with_progress(&pool, &xml, &[], &|stage, done, total| events.lock().unwrap().push((stage, done, total))).await.unwrap();
+    let events = events.into_inner().unwrap();
+    let stages: Vec<ItunesImportStage> = events.iter().map(|e| e.0).fold(Vec::new(), |mut seen, stage| {
+        if seen.last() != Some(&stage) {
+            seen.push(stage);
+        }
+        seen
+    });
+    assert_eq!(stages, [ItunesImportStage::Importing, ItunesImportStage::Metadata, ItunesImportStage::Playlists]);
+    for stage in stages {
+        let of_stage: Vec<_> = events.iter().filter(|e| e.0 == stage).collect();
+        assert_eq!(of_stage[0].1, 0, "{stage:?} starts at zero");
+        let last = of_stage.last().unwrap();
+        assert_eq!(last.1, last.2, "{stage:?} ends complete");
+        assert!(of_stage.windows(2).all(|w| w[0].1 <= w[1].1 && w[0].2 == w[1].2), "{stage:?} only moves forward");
+    }
+    assert_eq!(events.iter().find(|e| e.0 == ItunesImportStage::Importing).unwrap().2, 4, "nothing is in the catalog yet, so all four local files import");
 }
