@@ -117,7 +117,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
   const history = useLibraryStore((s) => s.history);
   const user = useAuthStore((s) => s.user);
   const signedIn = Boolean(user);
-  const sections = useListenSections(signedIn);
+  const sections = useListenSections(signedIn, user?.id ?? '');
   const radio = sections.radio.data;
   const radioPresets = sections.presets.data;
   const setRadioPresets = sections.setPresets;

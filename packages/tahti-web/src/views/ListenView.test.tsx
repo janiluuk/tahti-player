@@ -18,6 +18,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as discover from '../api/discover';
 import * as listen from '../api/listen';
+import { clearListenSectionCache } from '../components/listen-view/useListenSections';
 import { ListenView } from './ListenView';
 
 vi.mock('sonner', () => ({
@@ -48,6 +49,7 @@ async function renderListen() {
 describe('ListenView sections', () => {
   beforeEach(() => {
     vi.stubEnv('VITE_FORCE_MOCK', '1');
+    clearListenSectionCache();
     vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null);
   });
 
