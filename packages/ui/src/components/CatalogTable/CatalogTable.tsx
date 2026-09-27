@@ -25,6 +25,8 @@ import {
 } from './CatalogTableSettingsDialog';
 import {
   defaultCatalogView,
+  MAX_COLUMN_WIDTH,
+  MIN_COLUMN_WIDTH,
   nextSort,
   resolveCatalogColumns,
   setColumnWidth,
@@ -355,6 +357,21 @@ export function CatalogTable<T>({
     window.addEventListener('pointerup', stop);
   };
 
+  const resizeByKey = (
+    event: ReactKeyboardEvent<HTMLSpanElement>,
+    column: { id: string; pxWidth: number },
+  ) => {
+    const step = event.shiftKey ? 64 : 16;
+    const delta =
+      event.key === 'ArrowRight' ? step : event.key === 'ArrowLeft' ? -step : 0;
+    if (!delta) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+    onViewChange(setColumnWidth(view, column.id, column.pxWidth + delta));
+  };
+
   return (
     <div
       className={cn('flex min-h-0 flex-1 flex-col gap-2', className)}
@@ -496,10 +513,15 @@ export function CatalogTable<T>({
                   )}
                   <span
                     role="separator"
+                    tabIndex={0}
                     aria-orientation="vertical"
                     aria-label={`Resize ${column.header}`}
-                    className="hover:bg-primary/40 absolute top-1 right-0 bottom-1 w-1.5 cursor-col-resize rounded"
+                    aria-valuenow={column.pxWidth}
+                    aria-valuemin={MIN_COLUMN_WIDTH}
+                    aria-valuemax={MAX_COLUMN_WIDTH}
+                    className="hover:bg-primary/40 focus-visible:bg-primary/60 absolute top-1 right-0 bottom-1 w-1.5 cursor-col-resize rounded focus-visible:outline-none"
                     onPointerDown={(event) => startResize(event, column)}
+                    onKeyDown={(event) => resizeByKey(event, column)}
                   />
                 </div>
               );

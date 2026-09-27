@@ -6,6 +6,7 @@ import type { usePersistedCatalogTable } from '../../hooks/usePersistedCatalogTa
 import { saveViewStateDeferred } from '../../lib/localLibraryViewState';
 import type { NativeLibraryTrack } from '../../lib/nativeLibrary';
 import { NATIVE_TRACK_COLUMNS } from '../nativeTrackColumns';
+import { LibraryShortcutsHelp } from './LibraryShortcutsHelp';
 import { SelectionToolbar } from './SelectionToolbar';
 import type { TrackBatchDialog } from './TrackBatchDialogs';
 import { TrackRowActions } from './TrackRowActions';
@@ -83,44 +84,77 @@ export function NativeTrackTable({
       onActivateRow={(track) => {
         if (track.available) {
           onPlay(track);
+        } else {
+          onRelink(track);
         }
       }}
       onRowKeyDown={(event, track) => {
-        if (event.key.toLowerCase() === 'i') {
-          event.preventDefault();
-          onInspect(track);
-        } else if (event.key.toLowerCase() === 'e') {
-          event.preventDefault();
-          onBatchDialog('edit', [track.id]);
+        if (event.ctrlKey || event.metaKey || event.altKey) {
+          return;
+        }
+        const inSelection =
+          selection.selectedIds.size > 1 && selection.selectedIds.has(track.id);
+        const targets = inSelection ? [...selection.selectedIds] : [track.id];
+        switch (event.key.toLowerCase()) {
+          case 'i':
+            event.preventDefault();
+            onInspect(track);
+            return;
+          case 'e':
+            event.preventDefault();
+            onBatchDialog('edit', targets);
+            return;
+          case 'q':
+            event.preventDefault();
+            if (inSelection) {
+              void selection.queueSelection();
+            } else if (track.available) {
+              onQueue(track);
+            }
+            return;
+          case 'r':
+            if (track.available) {
+              event.preventDefault();
+              onReveal(track);
+            }
+            return;
+          case 'delete':
+          case 'backspace':
+            event.preventDefault();
+            onRemove(targets, inSelection ? null : track.title);
+            return;
         }
       }}
       onSelectAllMatching={() => void selection.selectAllMatching()}
       selectingAll={selection.selectingAll}
       toolbar={
-        <SelectionToolbar
-          selectedCount={selection.selectedIds.size}
-          nativeTotal={total}
-          selectionBusy={selection.selectionBusy}
-          analyzing={selection.analyzingSelection}
-          onPlayAll={() => void selection.playAllMatching()}
-          onAddAllToPlaylist={selection.addAllToPlaylist}
-          onPlay={() => void selection.playSelection()}
-          onPlayNext={() => void selection.playNextSelection()}
-          onQueue={() => void selection.queueSelection()}
-          onEditTags={() => onBatchDialog('edit', [...selection.selectedIds])}
-          onWriteTags={() =>
-            onBatchDialog('writeTags', [...selection.selectedIds])
-          }
-          onOrganizeFiles={() =>
-            onBatchDialog('organizeFiles', [...selection.selectedIds])
-          }
-          onAnalyze={() => void selection.analyzeSelection()}
-          onRateAndLabel={() =>
-            onBatchDialog('rateAndLabel', [...selection.selectedIds])
-          }
-          onAddToPlaylist={selection.addSelectionToPlaylist}
-          onRemove={() => onRemove([...selection.selectedIds], null)}
-        />
+        <>
+          <SelectionToolbar
+            selectedCount={selection.selectedIds.size}
+            nativeTotal={total}
+            selectionBusy={selection.selectionBusy}
+            analyzing={selection.analyzingSelection}
+            onPlayAll={() => void selection.playAllMatching()}
+            onAddAllToPlaylist={selection.addAllToPlaylist}
+            onPlay={() => void selection.playSelection()}
+            onPlayNext={() => void selection.playNextSelection()}
+            onQueue={() => void selection.queueSelection()}
+            onEditTags={() => onBatchDialog('edit', [...selection.selectedIds])}
+            onWriteTags={() =>
+              onBatchDialog('writeTags', [...selection.selectedIds])
+            }
+            onOrganizeFiles={() =>
+              onBatchDialog('organizeFiles', [...selection.selectedIds])
+            }
+            onAnalyze={() => void selection.analyzeSelection()}
+            onRateAndLabel={() =>
+              onBatchDialog('rateAndLabel', [...selection.selectedIds])
+            }
+            onAddToPlaylist={selection.addSelectionToPlaylist}
+            onRemove={() => onRemove([...selection.selectedIds], null)}
+          />
+          <LibraryShortcutsHelp />
+        </>
       }
       renderActions={(track) => (
         <TrackRowActions
