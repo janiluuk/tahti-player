@@ -38,7 +38,6 @@ Scope: active Tauri desktop player, which mounts the shared tahti-web frontend, 
 
 ## 6. Unblock primary listening content
 
-- [ ] Publish channel/on-air content independently of slower widgets, shows and presets, with section-specific loading/error states. **2026-09-26 ChannelView done (#171):** `useChannelData` no longer uses `Promise.all`; the channel alone gates the page, and tracks, disco widgets and public shows each have `loading | ready | error` + retry. Still open: ListenView already fetches its sections independently but has no per-section loading/error states (empty looks like "nothing here"), and `fetchLatestTracks` there has no `.catch`. **ListenView: draft PR #189 (WIP, unverified)** adds per-section `loading | ready | error` + Retry and catches `fetchLatestTracks`; tests and lint not yet run.
 - [ ] Cache/reuse reads and narrow invalidation on editing/look changes. 2026-09-26 partial (#171): channel look/link saves refetch only the channel + profile (2 requests instead of 5); wider read caching not done.
 - [ ] Verify primary content remains usable with delayed/failed secondary endpoints; compare request counts and time to usable content. 2026-09-26 (#171): hook and view tests with delayed/failed secondaries (Play still works); first load 5 requests, no longer waiting on the slowest. Time to usable content not measured in a browser.
 
