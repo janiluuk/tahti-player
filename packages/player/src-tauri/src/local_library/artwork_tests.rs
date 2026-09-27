@@ -8,7 +8,7 @@ use lofty::picture::{MimeType, Picture, PictureType};
 use lofty::prelude::*;
 use lofty::tag::Tag;
 
-use super::artwork::{self, prune_unused, store, MAX_ARTWORK_BYTES};
+use super::artwork::{self, prune_unused, store, Budget, Pruned, Stored, MAX_ARTWORK_BYTES, MAX_CACHE_BYTES};
 use super::test_support::{pool, write_wav};
 use super::{import_paths, list, remove};
 
@@ -107,10 +107,11 @@ fn skips_oversized_and_unsupported_pictures() {
     let dir = tempfile::tempdir().unwrap();
     let mut huge = PNG.to_vec();
     huge.resize(MAX_ARTWORK_BYTES + 1, 0);
+    let budget = Budget::new(MAX_CACHE_BYTES, 0);
 
-    assert_eq!(store(dir.path(), &huge).unwrap(), None);
-    assert_eq!(store(dir.path(), b"II*\0 tiff").unwrap(), None);
-    assert_eq!(store(dir.path(), &[]).unwrap(), None);
+    assert_eq!(store(dir.path(), &huge, &budget).unwrap(), Stored::Unsupported);
+    assert_eq!(store(dir.path(), b"II*\0 tiff", &budget).unwrap(), Stored::Unsupported);
+    assert_eq!(store(dir.path(), &[], &budget).unwrap(), Stored::Unsupported);
     assert_eq!(std::fs::read_dir(dir.path()).unwrap().count(), 0);
 }
 
@@ -145,9 +146,224 @@ async fn prune_removes_only_unreferenced_cache_files() {
         .into_iter()
         .collect();
 
-    assert_eq!(prune_unused(private.path(), &used, Duration::from_secs(3600)).unwrap(), 0, "recent files are kept");
-    assert_eq!(prune_unused(private.path(), &used, Duration::ZERO).unwrap(), 1);
+    assert_eq!(prune_unused(private.path(), &used, Duration::from_secs(3600)).unwrap().files, 0, "recent files are kept");
+    assert_eq!(prune_unused(private.path(), &used, Duration::ZERO).unwrap().files, 1);
     assert!(private.path().join(&kept_key).exists());
     assert!(!private.path().join(&gone_key).exists());
     assert!(private.path().join("notes.txt").exists());
+}
+
+/// Backdates a cache file past the prune grace period.
+fn age(path: &Path) {
+    let file = std::fs::File::options().append(true).open(path).unwrap();
+    file.set_modified(std::time::SystemTime::now() - Duration::from_secs(2 * 3600)).unwrap();
+}
+
+fn stored_key(stored: Stored) -> String {
+    match stored {
+        Stored::Key(key) => key,
+        other => panic!("expected a key, got {other:?}"),
+    }
+}
+
+#[test]
+fn a_full_cache_skips_new_art_but_still_finds_cached_art() {
+    let dir = tempfile::tempdir().unwrap();
+    let budget = Budget::new(PNG.len() as u64, 0);
+
+    let png = stored_key(store(dir.path(), PNG, &budget).unwrap());
+    assert_eq!(store(dir.path(), JPEG, &budget).unwrap(), Stored::CacheFull);
+    assert_eq!(store(dir.path(), PNG, &budget).unwrap(), Stored::Key(png));
+    assert_eq!(std::fs::read_dir(dir.path()).unwrap().count(), 1);
+    assert_eq!(budget.used(), PNG.len() as u64);
+
+    budget.release(JPEG.len() as u64);
+    assert!(matches!(store(dir.path(), JPEG, &budget).unwrap(), Stored::Key(_)));
+}
+
+#[test]
+fn the_budget_starts_from_the_cache_files_already_on_disk() {
+    let dir = tempfile::tempdir().unwrap();
+    store(dir.path(), PNG, &Budget::new(MAX_CACHE_BYTES, 0)).unwrap();
+    std::fs::write(dir.path().join("notes.txt"), b"not ours").unwrap();
+
+    assert_eq!(Budget::for_dir(MAX_CACHE_BYTES, dir.path()).used(), PNG.len() as u64);
+    assert_eq!(artwork::dir_size(&dir.path().join("missing")), 0);
+}
+
+#[tokio::test]
+async fn prune_frees_orphan_space_and_never_evicts_referenced_art() {
+    cache_dir();
+    let dir = tempfile::tempdir().unwrap();
+    let flac = fixture(dir.path(), "tone.flac");
+    embed(&flac, &[(PictureType::CoverFront, PNG)]);
+    let pool = pool().await;
+    import_paths(&pool, vec![flac]).await;
+    let private = tempfile::tempdir().unwrap();
+    let unlimited = Budget::new(MAX_CACHE_BYTES, 0);
+    let referenced = stored_key(store(private.path(), PNG, &unlimited).unwrap());
+    let orphan = stored_key(store(private.path(), JPEG, &unlimited).unwrap());
+    age(&private.path().join(&referenced));
+    age(&private.path().join(&orphan));
+    let budget = Budget::for_dir((PNG.len() + JPEG.len()) as u64, private.path());
+
+    let pruned = artwork::prune(&pool, private.path(), &budget).await.unwrap();
+
+    assert_eq!(pruned, Pruned { files: 1, bytes: JPEG.len() as u64 });
+    assert_eq!(budget.used(), PNG.len() as u64);
+    assert!(private.path().join(&referenced).exists());
+    assert!(!private.path().join(&orphan).exists());
+
+    let tight = Budget::for_dir(PNG.len() as u64, private.path());
+    assert_eq!(artwork::prune(&pool, private.path(), &tight).await.unwrap(), Pruned::default());
+    assert_eq!(store(private.path(), JPEG, &tight).unwrap(), Stored::CacheFull);
+    assert!(private.path().join(&referenced).exists());
+}
+
+mod backfill {
+    use std::sync::atomic::Ordering;
+    use std::sync::{Arc, Mutex};
+
+    use super::*;
+    use crate::local_library::artwork_backfill::{
+        backfill, ArtworkBackfillProgress, ArtworkBackfillResult, BackfillControl, BATCH,
+    };
+
+    fn leak(budget: Budget) -> &'static Budget {
+        Box::leak(Box::new(budget))
+    }
+
+    /// A catalog as a pre-artwork build left it: a FLAC and an MP3 with
+    /// embedded art, a WAV without, and an unavailable FLAC with art, all
+    /// with no `artwork_key`.
+    async fn legacy_catalog(dir: &Path) -> sqlx::SqlitePool {
+        cache_dir();
+        let flac = fixture(dir, "tone.flac");
+        let mp3 = fixture(dir, "tone.mp3");
+        let wav = dir.join("plain.wav");
+        write_wav(&wav, "Plain", "Artist");
+        let gone = dir.join("gone.flac");
+        std::fs::copy(&flac, &gone).unwrap();
+        embed(&flac, &[(PictureType::CoverFront, PNG)]);
+        embed(&mp3, &[(PictureType::CoverFront, JPEG)]);
+        embed(&gone, &[(PictureType::CoverFront, PNG)]);
+        let pool = pool().await;
+        let result = import_paths(&pool, vec![flac, mp3, wav, gone]).await;
+        assert_eq!(result.imported, 4, "errors: {:?}", result.errors);
+        sqlx::query("UPDATE library_tracks SET artwork_key = NULL").execute(&pool).await.unwrap();
+        // The stored path is canonical (e.g. /private/var on macOS), so match its file name.
+        let marked = sqlx::query("UPDATE library_tracks SET available = 0 WHERE path LIKE '%gone.flac'")
+            .execute(&pool)
+            .await
+            .unwrap();
+        assert_eq!(marked.rows_affected(), 1);
+        pool
+    }
+
+    async fn run(
+        pool: &sqlx::SqlitePool,
+        dir: &Path,
+        budget: &'static Budget,
+        control: &Arc<BackfillControl>,
+    ) -> (ArtworkBackfillResult, Vec<(usize, usize)>) {
+        let events = Mutex::new(Vec::new());
+        let report = |p: ArtworkBackfillProgress| events.lock().unwrap().push((p.done, p.total));
+        let result = backfill(pool, dir, budget, control, &report).await.unwrap();
+        (result, events.into_inner().unwrap())
+    }
+
+    async fn keys(pool: &sqlx::SqlitePool) -> Vec<(String, Option<String>)> {
+        sqlx::query_as("SELECT format, artwork_key FROM library_tracks WHERE available = 1 ORDER BY format")
+            .fetch_all(pool)
+            .await
+            .unwrap()
+    }
+
+    #[tokio::test]
+    async fn fills_missing_art_for_available_tracks_and_is_idempotent() {
+        let dir = tempfile::tempdir().unwrap();
+        let pool = legacy_catalog(dir.path()).await;
+        let cache = tempfile::tempdir().unwrap();
+        let budget = leak(Budget::new(MAX_CACHE_BYTES, 0));
+        let control = Arc::new(BackfillControl::default());
+
+        let (first, events) = run(&pool, cache.path(), budget, &control).await;
+
+        assert_eq!((first.checked, first.found, first.cache_full, first.cancelled), (3, 2, 0, false));
+        assert_eq!(events.first(), Some(&(0, 3)));
+        assert_eq!(events.last(), Some(&(3, 3)));
+        let found = keys(&pool).await;
+        let flac = found[0].1.clone().expect("flac art");
+        let mp3 = found[1].1.clone().expect("mp3 art");
+        assert_eq!(found[2], ("wav".to_owned(), None));
+        assert_eq!(std::fs::read(cache.path().join(&flac)).unwrap(), PNG);
+        assert_eq!(std::fs::read(cache.path().join(&mp3)).unwrap(), JPEG);
+        let unavailable: Option<String> =
+            sqlx::query_scalar("SELECT artwork_key FROM library_tracks WHERE available = 0")
+                .fetch_one(&pool)
+                .await
+                .unwrap();
+        assert_eq!(unavailable, None);
+
+        let (second, _) = run(&pool, cache.path(), budget, &control).await;
+
+        assert_eq!((second.checked, second.found), (1, 0), "only the track without art is read again");
+        assert_eq!(keys(&pool).await, found);
+    }
+
+    #[tokio::test]
+    async fn stops_when_cancelled_and_resumes_on_the_next_run() {
+        let dir = tempfile::tempdir().unwrap();
+        let pool = legacy_catalog(dir.path()).await;
+        let cache = tempfile::tempdir().unwrap();
+        let budget = leak(Budget::new(MAX_CACHE_BYTES, 0));
+        let control = Arc::new(BackfillControl::default());
+        control.cancel.store(true, Ordering::SeqCst);
+
+        let (cancelled, _) = run(&pool, cache.path(), budget, &control).await;
+
+        assert!(cancelled.cancelled);
+        assert_eq!((cancelled.checked, cancelled.found), (0, 0));
+        assert!(keys(&pool).await.iter().all(|(_, key)| key.is_none()));
+
+        control.cancel.store(false, Ordering::SeqCst);
+        let (resumed, _) = run(&pool, cache.path(), budget, &control).await;
+        assert_eq!((resumed.found, resumed.cancelled), (2, false));
+    }
+
+    #[tokio::test]
+    async fn leaves_tracks_without_a_key_when_the_cache_is_full() {
+        let dir = tempfile::tempdir().unwrap();
+        let pool = legacy_catalog(dir.path()).await;
+        let cache = tempfile::tempdir().unwrap();
+        let control = Arc::new(BackfillControl::default());
+
+        let (result, _) = run(&pool, cache.path(), leak(Budget::new(0, 0)), &control).await;
+
+        assert_eq!((result.checked, result.found, result.cache_full), (3, 0, 2));
+        assert!(keys(&pool).await.iter().all(|(_, key)| key.is_none()));
+        assert_eq!(artwork::dir_size(cache.path()), 0);
+    }
+
+    #[tokio::test]
+    async fn pages_through_more_tracks_than_one_batch() {
+        let pool = pool().await;
+        let rows = BATCH as usize * 2 + 17;
+        for i in 0..rows {
+            sqlx::query("INSERT INTO library_tracks (id,path,title,artist,album,format,duration,sample_rate,channels,size_bytes) VALUES (?,?,'t','a','b','flac',1,44100,2,1)")
+                .bind(format!("track-{i:04}"))
+                .bind(format!("/missing/{i}.flac"))
+                .execute(&pool)
+                .await
+                .unwrap();
+        }
+        let cache = tempfile::tempdir().unwrap();
+        let control = Arc::new(BackfillControl::default());
+
+        let (result, events) = run(&pool, cache.path(), leak(Budget::new(MAX_CACHE_BYTES, 0)), &control).await;
+
+        assert_eq!((result.checked, result.found), (rows, 0));
+        assert_eq!(events.len(), 1 + 3, "one start event and one per batch");
+        assert_eq!(events.last(), Some(&(rows, rows)));
+    }
 }

@@ -120,6 +120,26 @@ export type TahtiNativeLibrary = {
   providerImport?: NativeProviderImport;
   /** Imports an iTunes / Music.app library XML. Missing in older desktop builds. */
   itunesImport?: NativeItunesImport;
+  /** Finds embedded artwork for tracks that have none. Missing in older desktop builds. */
+  artworkBackfill?: NativeArtworkBackfill;
+};
+
+export type NativeArtworkBackfillResult = {
+  checked: number;
+  /** Tracks that now have artwork. */
+  found: number;
+  /** Tracks whose picture was not stored because the artwork cache is full. */
+  cacheFull: number;
+  cancelled: boolean;
+};
+
+export type NativeArtworkBackfill = {
+  start: () => Promise<NativeArtworkBackfillResult>;
+  cancel: () => Promise<void>;
+  /** Subscribes to per-batch progress; returns an unsubscribe function. */
+  onProgress: (
+    listener: (progress: { done: number; total: number }) => void,
+  ) => () => void;
 };
 
 /** The track's embedded cover as an image URL, or `null` to show a placeholder. */

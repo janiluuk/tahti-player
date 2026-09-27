@@ -472,6 +472,32 @@ const baseNativeLibrary: TahtiNativeLibrary = {
       };
     },
   },
+  artworkBackfill: {
+    async start() {
+      return unwrapResult(await commands.libraryArtworkBackfill());
+    },
+    async cancel() {
+      unwrapResult(await commands.libraryArtworkBackfillCancel());
+    },
+    onProgress(listener) {
+      let unlisten: (() => void) | undefined;
+      let disposed = false;
+      void listen<{ done: number; total: number }>(
+        'library://artwork-backfill-progress',
+        (event) => listener(event.payload),
+      ).then((dispose) => {
+        if (disposed) {
+          dispose();
+        } else {
+          unlisten = dispose;
+        }
+      });
+      return () => {
+        disposed = true;
+        unlisten?.();
+      };
+    },
+  },
   async getWatching() {
     return unwrapResult(await commands.libraryWatching());
   },
