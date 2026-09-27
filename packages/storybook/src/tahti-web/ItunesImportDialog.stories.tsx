@@ -33,16 +33,54 @@ function previewFor(mappings: NativeRootMapping[]): NativeItunesPreview {
     playlistFolders: 4,
     playlistsAlreadyImported: 0,
     builtinPlaylistsSkipped: 9,
-    missingExamples: remapped
-      ? ['/Users/you/Music/iTunes Media/Music/Unknown Artist/Voice Memo.m4a']
-      : [
-          `${OLD_FOLDER}/Music/Aphex Twin/Selected Ambient Works/01 Xtal.flac`,
-          `${OLD_FOLDER}/Music/Björk/Homogenic/03 Jóga.mp3`,
-          `${OLD_FOLDER}/Music/Boards of Canada/Geogaddi/05 Julie and Candy.m4a`,
-        ],
-    unsupportedExamples: [
-      `${OLD_FOLDER}/Music/Radiohead/In Rainbows/01 15 Step.m4p`,
-      `${OLD_FOLDER}/Movies/Concert.m4v`,
+    unresolved: [
+      ...(remapped
+        ? [
+            {
+              name: 'Voice Memo',
+              artist: '',
+              path: '/Users/you/Music/iTunes Media/Music/Unknown Artist/Voice Memo.m4a',
+              reason: 'missing' as const,
+            },
+          ]
+        : [
+            {
+              name: 'Xtal',
+              artist: 'Aphex Twin',
+              path: `${OLD_FOLDER}/Music/Aphex Twin/Selected Ambient Works/01 Xtal.flac`,
+              reason: 'missing' as const,
+            },
+            {
+              name: 'Jóga',
+              artist: 'Björk',
+              path: `${OLD_FOLDER}/Music/Björk/Homogenic/03 Jóga.mp3`,
+              reason: 'missing' as const,
+            },
+            {
+              name: 'Julie and Candy',
+              artist: 'Boards of Canada',
+              path: `${OLD_FOLDER}/Music/Boards of Canada/Geogaddi/05 Julie and Candy.m4a`,
+              reason: 'missing' as const,
+            },
+          ]),
+      {
+        name: '15 Step',
+        artist: 'Radiohead',
+        path: `${OLD_FOLDER}/Music/Radiohead/In Rainbows/01 15 Step.m4p`,
+        reason: 'unsupported' as const,
+      },
+      {
+        name: 'Concert',
+        artist: 'Radiohead',
+        path: `${OLD_FOLDER}/Movies/Concert.m4v`,
+        reason: 'unsupported' as const,
+      },
+      {
+        name: 'Beats 1 Radio',
+        artist: '',
+        path: null,
+        reason: 'notLocal' as const,
+      },
     ],
   };
 }

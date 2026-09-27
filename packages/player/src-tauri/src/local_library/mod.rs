@@ -14,6 +14,7 @@ pub mod catalog;
 pub mod import;
 pub mod import_jobs;
 pub mod itunes_import;
+pub mod itunes_report;
 pub mod itunes_xml;
 pub mod m3u;
 mod metadata;

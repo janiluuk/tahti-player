@@ -25,8 +25,27 @@ export type NativeItunesPreview = {
   playlistsAlreadyImported: number;
   /** Library, Music, Podcasts and the other lists Music.app makes itself. */
   builtinPlaylistsSkipped: number;
-  missingExamples: string[];
-  unsupportedExamples: string[];
+  /** Every track that won't be linked or imported, in library order (capped at 10,000). */
+  unresolved: NativeItunesUnresolved[];
+};
+
+export type NativeItunesUnresolvedReason =
+  'missing' | 'unsupported' | 'notLocal';
+
+export type NativeItunesUnresolved = {
+  name: string;
+  artist: string;
+  /** Where the file was expected after remapping; `null` when not a local file. */
+  path: string | null;
+  reason: NativeItunesUnresolvedReason;
+};
+
+export type NativeItunesImportStage = 'importing' | 'metadata' | 'playlists';
+
+export type NativeItunesImportProgress = {
+  stage: NativeItunesImportStage;
+  done: number;
+  total: number;
 };
 
 export type NativeItunesImportResult = {
@@ -75,4 +94,8 @@ export type NativeItunesImport = {
     sourcePath: string,
     mappings: NativeRootMapping[],
   ) => Promise<NativeItunesImportResult>;
+  /** Progress while `commit` runs; returns an unsubscribe function. Missing in older desktop builds. */
+  onProgress?: (
+    listener: (progress: NativeItunesImportProgress) => void,
+  ) => () => void;
 };
