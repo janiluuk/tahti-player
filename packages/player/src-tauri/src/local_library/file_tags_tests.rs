@@ -239,3 +239,25 @@ async fn tags_are_read_by_contents_when_the_extension_is_wrong() {
     let (_, got) = stored(&pool, &path).await;
     assert_eq!((got.tag_bpm, got.tag_key.as_deref()), (Some(98.0), Some("Em")));
 }
+
+#[tokio::test]
+async fn analysis_detail_reports_replaygain_from_the_tags() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = fixture(dir.path(), "tone.flac");
+    retag(
+        &path,
+        &[
+            (ItemKey::ReplayGainTrackGain, Some("-6.54 dB")),
+            (ItemKey::ReplayGainTrackPeak, Some("0.988547")),
+            (ItemKey::ReplayGainAlbumGain, Some("-5.10 dB")),
+        ],
+    );
+    let pool = pool().await;
+    import(&pool, &path).await;
+    let (id, _) = stored(&pool, &path).await;
+    let got = detail(&pool, &id).await.unwrap();
+    assert_eq!(
+        (got.replaygain_track_gain, got.replaygain_track_peak, got.replaygain_album_gain, got.replaygain_album_peak),
+        (Some(-6.54), Some(0.988547), Some(-5.1), None)
+    );
+}

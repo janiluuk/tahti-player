@@ -69,6 +69,24 @@ export function analysisRows(
           ? `${detail.keyEstimate} (estimate${percent(detail.keyConfidence)})`
           : '—';
   rows.push({ label: 'BPM', value: bpm }, { label: 'Key', value: key });
+  const replayGain = (gain?: number | null, peak?: number | null) =>
+    gain == null
+      ? null
+      : `${gain > 0 ? '+' : ''}${gain.toFixed(2)} dB${peak == null ? '' : `, peak ${peak.toFixed(3)}`}`;
+  const trackGain = replayGain(
+    detail.replaygainTrackGain,
+    detail.replaygainTrackPeak,
+  );
+  const albumGain = replayGain(
+    detail.replaygainAlbumGain,
+    detail.replaygainAlbumPeak,
+  );
+  if (trackGain) {
+    rows.push({ label: 'ReplayGain (track)', value: trackGain });
+  }
+  if (albumGain) {
+    rows.push({ label: 'ReplayGain (album)', value: albumGain });
+  }
   if (detail.analyzed) {
     rows.push(
       {

@@ -333,10 +333,19 @@ pub struct AnalysisDetail {
     pub bpm: Option<f64>,
     pub key: Option<String>,
     pub analyzed_at: Option<String>,
+    /// ReplayGain as the file's tags state it (dB and linear peak); stored
+    /// only, playback does not apply it.
+    pub replaygain_track_gain: Option<f64>,
+    pub replaygain_track_peak: Option<f64>,
+    pub replaygain_album_gain: Option<f64>,
+    pub replaygain_album_peak: Option<f64>,
 }
 
 pub async fn detail(pool: &SqlitePool, id: &str) -> Result<AnalysisDetail, String> {
-    let track = sqlx::query("SELECT path, bpm, musical_key, tag_bpm, tag_key FROM library_tracks WHERE id = ?")
+    let track = sqlx::query(
+        "SELECT path, bpm, musical_key, tag_bpm, tag_key, replaygain_track_gain, replaygain_track_peak,
+                replaygain_album_gain, replaygain_album_peak FROM library_tracks WHERE id = ?",
+    )
         .bind(id)
         .fetch_optional(pool)
         .await
@@ -366,6 +375,10 @@ pub async fn detail(pool: &SqlitePool, id: &str) -> Result<AnalysisDetail, Strin
         bpm: track.get(1),
         key: track.get(2),
         analyzed_at: None,
+        replaygain_track_gain: track.get(5),
+        replaygain_track_peak: track.get(6),
+        replaygain_album_gain: track.get(7),
+        replaygain_album_peak: track.get(8),
     };
     let Some(row) = sqlx::query(
         "SELECT algo_version, file_size, file_mtime, peaks, loudness_lufs, true_peak_dbtp,
