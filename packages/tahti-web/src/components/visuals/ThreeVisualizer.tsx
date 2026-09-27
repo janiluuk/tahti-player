@@ -2,6 +2,7 @@ import { FC, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
 import { cn } from '../../lib/cn';
+import { startVisibleRenderLoop } from '../../lib/visibleRenderLoop';
 import { visualizerPreset } from '../../plugins/visualizers';
 import { usePlayerStore } from '../../stores/playerStore';
 
@@ -126,45 +127,32 @@ export const ThreeVisualizer: FC<ThreeVisualizerProps> = ({
     scene.scale.setScalar(settings.scale);
     let frequencyData = new Uint8Array(new ArrayBuffer(128));
     const clock = new THREE.Clock();
-    let animationFrame = 0;
-    let lastFrame = 0;
-    let width = 0;
-    let height = 0;
-
-    const draw = (now: number) => {
-      animationFrame = requestAnimationFrame(draw);
-      if (document.hidden || now - lastFrame < FRAME_INTERVAL_MS) {
-        return;
-      }
-      lastFrame = now;
-      const nextWidth = canvas.clientWidth || 1;
-      const nextHeight = canvas.clientHeight || 1;
-      if (nextWidth !== width || nextHeight !== height) {
-        width = nextWidth;
-        height = nextHeight;
+    const stop = startVisibleRenderLoop(canvas, {
+      minFrameMs: FRAME_INTERVAL_MS,
+      onResize: ({ width, height }) => {
         renderer.setSize(width, height, false);
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
-      }
-      const { analyser, playing, audioReactive } = live.current;
-      if (analyser && frequencyData.length !== analyser.frequencyBinCount) {
-        frequencyData = new Uint8Array(
-          new ArrayBuffer(analyser.frequencyBinCount),
-        );
-      }
-      const elapsed = clock.getElapsedTime() * settings.speed;
-      const level =
-        audioReactive && playing
-          ? readLevel(analyser, frequencyData)
-          : 0.2 + Math.sin(elapsed * 2.2) * 0.14;
-      presetScene.update(elapsed, level * settings.intensity);
-      renderer.render(scene, camera);
-    };
-
-    animationFrame = requestAnimationFrame(draw);
+      },
+      render: () => {
+        const { analyser, playing, audioReactive } = live.current;
+        if (analyser && frequencyData.length !== analyser.frequencyBinCount) {
+          frequencyData = new Uint8Array(
+            new ArrayBuffer(analyser.frequencyBinCount),
+          );
+        }
+        const elapsed = clock.getElapsedTime() * settings.speed;
+        const level =
+          audioReactive && playing
+            ? readLevel(analyser, frequencyData)
+            : 0.2 + Math.sin(elapsed * 2.2) * 0.14;
+        presetScene.update(elapsed, level * settings.intensity);
+        renderer.render(scene, camera);
+      },
+    });
 
     return () => {
-      cancelAnimationFrame(animationFrame);
+      stop();
       disposeScene(scene);
       renderer.dispose();
     };

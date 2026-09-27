@@ -69,6 +69,7 @@ import {
 } from './StudioNav';
 
 const LOADING_BAR_DELAY_MS = 1000;
+const TITLE_SCROLL_MS = 450;
 
 const ChannelSetupDialog = lazy(() =>
   import('./ChannelSetupDialog').then((m) => ({
@@ -362,19 +363,12 @@ export function AppShell() {
     const title = `▶ ${currentItem.track.title}${artist ? ` — ${artist}` : ''} · Tahti Radio`;
     let offset = 0;
     document.title = scrollingPlaybackTitle(title, offset);
-    let raf = 0;
-    let last = 0;
-    const step = (now: number) => {
-      if (now - last >= 450) {
-        last = now;
-        offset += 1;
-        document.title = scrollingPlaybackTitle(title, offset);
-      }
-      raf = window.requestAnimationFrame(step);
-    };
-    raf = window.requestAnimationFrame(step);
+    const timer = window.setInterval(() => {
+      offset += 1;
+      document.title = scrollingPlaybackTitle(title, offset);
+    }, TITLE_SCROLL_MS);
     return () => {
-      window.cancelAnimationFrame(raf);
+      window.clearInterval(timer);
       reapplyLastMetadata(pathname);
     };
   }, [currentTrackId, isLivePlayback, pathname, playerQueue, playerStatus]);
