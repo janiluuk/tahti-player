@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useRef,
   useState,
   type Dispatch,
   type SetStateAction,
@@ -101,50 +102,92 @@ async function loadDiscoWidgets(
   ];
 }
 
+/** How long a section's last result is reused without asking the API again. */
+export const LISTEN_CACHE_TTL_MS = 60_000;
+
+const sectionCache = new Map<string, { data: unknown; at: number }>();
+
+/** Forgets every cached section. */
+export function clearListenSectionCache() {
+  sectionCache.clear();
+}
+
 /** Loads one Listen section on its own, so a slow or failed request only
- * affects that section. A reload keeps showing the previous data; only a
- * retry after an error goes back to `loading`. */
+ * affects that section. The last result is cached per `cacheKey`: coming
+ * back within `LISTEN_CACHE_TTL_MS` shows it without a request; after that it
+ * is shown while a fresh copy loads, and kept if that refresh fails. A retry
+ * always asks the API; only a retry after an error goes back to `loading`. */
 function useListenSection<T>(
   load: () => Promise<T>,
   empty: T,
   reloadKey: number,
+  cacheKey: string,
 ): [ListenSectionState<T>, Dispatch<SetStateAction<T>>] {
-  const [state, setState] = useState<ListenSectionState<T>>({
-    data: empty,
-    status: 'loading',
+  const [state, setState] = useState<ListenSectionState<T>>(() => {
+    const hit = sectionCache.get(cacheKey);
+    return hit
+      ? { data: hit.data as T, status: 'ready' }
+      : { data: empty, status: 'loading' };
   });
+  const shownKey = useRef(cacheKey);
 
   useEffect(() => {
+    const hit = sectionCache.get(cacheKey) as
+      { data: T; at: number } | undefined;
+    const keyChanged = shownKey.current !== cacheKey;
+    shownKey.current = cacheKey;
+    if (hit && reloadKey === 0 && Date.now() - hit.at < LISTEN_CACHE_TTL_MS) {
+      setState({ data: hit.data, status: 'ready' });
+      return;
+    }
     let cancelled = false;
-    setState((prev) =>
-      prev.status === 'error' ? { ...prev, status: 'loading' } : prev,
-    );
+    setState((prev) => {
+      if (hit && reloadKey === 0) {
+        return { data: hit.data, status: 'ready' };
+      }
+      if (keyChanged) {
+        return { data: empty, status: 'loading' };
+      }
+      return prev.status === 'error' ? { ...prev, status: 'loading' } : prev;
+    });
     load()
       .then((data) => {
+        sectionCache.set(cacheKey, { data, at: Date.now() });
         if (!cancelled) {
           setState({ data, status: 'ready' });
         }
       })
       .catch(() => {
         if (!cancelled) {
-          setState({ data: empty, status: 'error' });
+          setState(
+            hit && reloadKey === 0
+              ? { data: hit.data, status: 'ready' }
+              : { data: empty, status: 'error' },
+          );
         }
       });
     return () => {
       cancelled = true;
     };
     // `empty` is a module-level constant at every call site.
-  }, [load, reloadKey]);
+  }, [load, reloadKey, cacheKey]);
 
-  const setData = useCallback<Dispatch<SetStateAction<T>>>((next) => {
-    setState((prev) => ({
-      ...prev,
-      data:
-        typeof next === 'function'
-          ? (next as (current: T) => T)(prev.data)
-          : next,
-    }));
-  }, []);
+  const setData = useCallback<Dispatch<SetStateAction<T>>>(
+    (next) => {
+      setState((prev) => {
+        const data =
+          typeof next === 'function'
+            ? (next as (current: T) => T)(prev.data)
+            : next;
+        const cached = sectionCache.get(cacheKey);
+        if (cached) {
+          sectionCache.set(cacheKey, { ...cached, data });
+        }
+        return { ...prev, data };
+      });
+    },
+    [cacheKey],
+  );
 
   return [state, setData];
 }
@@ -154,30 +197,39 @@ const NO_PRESETS: EnabledInternetRadioPreset[] = [];
 const NO_TRACKS: TahtiPlayable[] = [];
 const NO_WIDGETS: DiscoWidgetRenderItem[] = [];
 
-/** Everything the Listen dashboard fetches, one independent section each. */
-export function useListenSections(signedIn: boolean) {
+/** Everything the Listen dashboard fetches, one independent section each.
+ * `viewerId` keys the signed-in listener's own widgets in the cache. */
+export function useListenSections(signedIn: boolean, viewerId = '') {
   const [reloadKeys, setReloadKeys] = useState<
     Record<ListenSectionName, number>
   >({ radio: 0, onAir: 0, presets: 0, latestTracks: 0, discoWidgets: 0 });
 
   const loadWidgets = useCallback(() => loadDiscoWidgets(signedIn), [signedIn]);
 
-  const [radio] = useListenSection(loadRadio, null, reloadKeys.radio);
-  const [onAir] = useListenSection(loadOnAir, NO_CHANNELS, reloadKeys.onAir);
+  const [radio] = useListenSection(loadRadio, null, reloadKeys.radio, 'radio');
+  const [onAir] = useListenSection(
+    loadOnAir,
+    NO_CHANNELS,
+    reloadKeys.onAir,
+    'onAir',
+  );
   const [presets, setPresets] = useListenSection(
     loadPresets,
     NO_PRESETS,
     reloadKeys.presets,
+    'presets',
   );
   const [latestTracks] = useListenSection(
     loadLatestTracks,
     NO_TRACKS,
     reloadKeys.latestTracks,
+    'latestTracks',
   );
   const [discoWidgets] = useListenSection(
     loadWidgets,
     NO_WIDGETS,
     reloadKeys.discoWidgets,
+    signedIn ? `discoWidgets:${viewerId}` : 'discoWidgets',
   );
 
   const retry = useCallback((section: ListenSectionName) => {

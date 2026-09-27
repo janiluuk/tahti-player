@@ -6,7 +6,11 @@ import * as discoWidgets from '../../api/disco-widgets';
 import * as discover from '../../api/discover';
 import * as listen from '../../api/listen';
 import * as radioPublic from '../../api/radio-public';
-import { useListenSections } from './useListenSections';
+import {
+  clearListenSectionCache,
+  LISTEN_CACHE_TTL_MS,
+  useListenSections,
+} from './useListenSections';
 
 function never<T>(): Promise<T> {
   return new Promise<T>(() => undefined);
@@ -17,6 +21,7 @@ const apiFailure = { source: 'api' as const, reason: 'HTTP 503' };
 describe('useListenSections', () => {
   beforeEach(() => {
     vi.stubEnv('VITE_FORCE_MOCK', '1');
+    clearListenSectionCache();
   });
 
   afterEach(() => {
@@ -131,5 +136,95 @@ describe('useListenSections', () => {
     await waitFor(() =>
       expect(result.current.discoWidgets.status).toBe('error'),
     );
+  });
+
+  describe('read cache', () => {
+    const onAirOnce = (slug: string) => ({
+      data: {
+        live: [{ slug, user: { displayName: slug } }],
+        replaying: [],
+        recent: [],
+      },
+      meta: { source: 'api' as const },
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('shows the last result without a request when coming back soon', async () => {
+      const spy = vi
+        .spyOn(listen, 'fetchOnAirChannels')
+        .mockResolvedValue(onAirOnce('first') as never);
+      const first = renderHook(() => useListenSections(false));
+      await waitFor(() =>
+        expect(first.result.current.onAir.status).toBe('ready'),
+      );
+      first.unmount();
+
+      const second = renderHook(() => useListenSections(false));
+      expect(second.result.current.onAir.status).toBe('ready');
+      expect(second.result.current.onAir.data[0]?.slug).toBe('first');
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    it('shows stale data while refreshing, and keeps it if the refresh fails', async () => {
+      vi.useFakeTimers({ shouldAdvanceTime: true });
+      const spy = vi
+        .spyOn(listen, 'fetchOnAirChannels')
+        .mockResolvedValueOnce(onAirOnce('first') as never)
+        .mockResolvedValueOnce(onAirOnce('second') as never)
+        .mockRejectedValueOnce(new Error('offline'));
+      const first = renderHook(() => useListenSections(false));
+      await waitFor(() =>
+        expect(first.result.current.onAir.status).toBe('ready'),
+      );
+      first.unmount();
+
+      vi.advanceTimersByTime(LISTEN_CACHE_TTL_MS + 1);
+      const second = renderHook(() => useListenSections(false));
+      expect(second.result.current.onAir.data[0]?.slug).toBe('first');
+      await waitFor(() =>
+        expect(second.result.current.onAir.data[0]?.slug).toBe('second'),
+      );
+      second.unmount();
+
+      vi.advanceTimersByTime(LISTEN_CACHE_TTL_MS + 1);
+      const third = renderHook(() => useListenSections(false));
+      await waitFor(() => expect(spy).toHaveBeenCalledTimes(3));
+      expect(third.result.current.onAir.status).toBe('ready');
+      expect(third.result.current.onAir.data[0]?.slug).toBe('second');
+    });
+
+    it('asks the API again on retry even when the cache is fresh', async () => {
+      const spy = vi
+        .spyOn(listen, 'fetchOnAirChannels')
+        .mockResolvedValueOnce(onAirOnce('first') as never)
+        .mockResolvedValueOnce(onAirOnce('second') as never);
+      const { result } = renderHook(() => useListenSections(false));
+      await waitFor(() => expect(result.current.onAir.status).toBe('ready'));
+      act(() => result.current.retry('onAir'));
+      await waitFor(() =>
+        expect(result.current.onAir.data[0]?.slug).toBe('second'),
+      );
+      expect(spy).toHaveBeenCalledTimes(2);
+    });
+
+    it("keeps each listener's own widgets apart", async () => {
+      const mine = vi
+        .spyOn(discoWidgets, 'fetchDiscoverDiscoWidgets')
+        .mockResolvedValue({ data: [], meta: { source: 'api' } } as never);
+      const a = renderHook(() => useListenSections(true, 'user-a'));
+      await waitFor(() =>
+        expect(a.result.current.discoWidgets.status).toBe('ready'),
+      );
+      a.unmount();
+      const b = renderHook(() => useListenSections(true, 'user-b'));
+      expect(b.result.current.discoWidgets.status).toBe('loading');
+      await waitFor(() =>
+        expect(b.result.current.discoWidgets.status).toBe('ready'),
+      );
+      expect(mine).toHaveBeenCalledTimes(2);
+    });
   });
 });
