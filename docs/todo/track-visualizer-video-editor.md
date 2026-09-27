@@ -26,9 +26,22 @@ Added to the roadmap 2026-09-26 at the user's request. Nothing is built or desig
 - **Whisper:** is local Transformers.js Whisper acceptable (model download size, WebGPU availability)? The OpenAI API option needs a key and a privacy decision.
 - **Entry point:** likely an action on the Studio sound page next to the existing editor routes (`/studio/sounds/$id/editor`, `/studio/editor`). Needs a design call.
 
+## Licence and port/vendor findings (2026-09-27)
+
+Checked with the GitHub API; no code was copied.
+
+- **Licence:** the README ends with "## License — MIT", but the repo still has no `LICENSE` file and GitHub reports no licence. There are 11 commits: 10 by the Pinokio account and 1 by "gepeto" (an agent), so the copyright holder is the README's author (@TheAwakenOne619). MIT code can go into this AGPL-3.0-only repo if its copyright and permission notice is kept. **Before copying anything,** ask the author to add a `LICENSE` file (or confirm MIT in an issue we can link), and record the notice in a `THIRD_PARTY_NOTICES` entry plus a header on each ported file.
+- **What the code is:** `app/` is a Vite + React 18 + Zustand + PixiJS 8 app with a Tauri 2 shell (about 620 KB of TypeScript). The parts worth reusing are self-contained modules: `audio/` (RealtimeAnalyzer, OfflineAnalyzer, BeatDetector, log bins, smoothing), `layers/` (14 layer types, 16 GLSL shader presets), `effects/` (10 post effects + registry), `renderer/` (PixiApp, SceneManager, ResourceManager), `project/` (JSON schema and persistence, `PROJECT_FORMAT.md`), `utils/lrc.ts` and `lyricsAlignment.ts`, and a Whisper worker on Transformers.js. The UI (`ui/`, 26 KB `LayersPanel`, inline styles plus a 25 KB `global.css`) doesn't fit tahti-web's rule that UI comes from `@tahti-player/ui`.
+- **Export as built:** two paths. Desktop: the Tauri command `start_export` / `write_export_frame` pipes raw RGBA frames into a system `ffmpeg` process (`src-tauri/src/ffmpeg.rs`), which is deterministic and frame-perfect. Browser: `canvas.captureStream()` + `MediaRecorder` in real time (not deterministic), saved through the local dev server's `/api/save-export`. Neither uses WebCodecs.
+- **Dependencies it would add to tahti-web:** `pixi.js` 8 (tahti-web renders visuals with `three` today) and `@huggingface/transformers` (only for lyrics transcription).
+
+**Recommendation: port, don't vendor or fork.** Port `audio/`, `layers/`, `effects/`, `renderer/` and `project/` into a new `@tahti-player/visualizer-studio` package (logic only, MIT headers kept), and build the editor UI fresh from `@tahti-player/ui` with stories. A git fork or vendored copy would bring its UI, CSS and Pinokio launcher, and it would drift. Export: port the ffmpeg frame pipe into the player's Rust side for the desktop app (it already bundles Tauri; ffmpeg must be found or bundled). On the web, use WebCodecs + an MP4 muxer, keeping MediaRecorder as a fallback. Keep the PulseForge project JSON compatible so projects move between the two apps. Leave Whisper for a later phase (model download size).
+
+Still the user's call: whether to go ahead once the licence is confirmed, and whether PixiJS alongside three.js is acceptable in tahti-web's bundle (lazy-loaded with the editor route, so it doesn't touch initial JS).
+
 ## Plan (draft)
 
-- [ ] Resolve the licence and the port/vendor decision.
+- [ ] Resolve the licence and the port/vendor decision. **2026-09-27:** findings and a port recommendation above; waiting on a `LICENSE` file from the author and the user's go-ahead.
 - [ ] Spike: render one PulseForge-style layer stack with PixiJS from a Tahti track (stream URL through Web Audio), full screen, with play/pause.
 - [ ] Spike: deterministic export of a 30s clip at 1080p in the browser (WebCodecs), and measure time and memory.
 - [ ] Editor UI: full-screen shell, layer list, per-layer properties and presets, all from `@tahti-player/ui` with stories.
