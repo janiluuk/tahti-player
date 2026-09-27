@@ -7,6 +7,7 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
+import { toast } from 'sonner';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
 import {
@@ -237,6 +238,56 @@ describe('DesktopLibraryPanel native missing files', () => {
     fireEvent.keyDown(rows, { key: 'ArrowDown' });
     fireEvent.keyDown(rows, { key: 'Enter' });
     await waitFor(() => expect(relink).toHaveBeenCalledWith('missing-track'));
+  });
+});
+
+describe('DesktopLibraryPanel damaged catalog notice', () => {
+  const renderWith = (takeRecoveryNotice?: () => Promise<string | null>) => {
+    globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
+    globalThis.__TAHTI_NATIVE_LIBRARY__ = createNativeLibrary({
+      takeRecoveryNotice,
+    });
+    const warning = vi.spyOn(toast, 'warning');
+    render(<DesktopLibraryPanel />);
+    return warning;
+  };
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('warns once, persistently, where the damaged catalog was kept', async () => {
+    const take = vi
+      .fn()
+      .mockResolvedValue('/data/library.db.corrupt-1790000000');
+    const warning = renderWith(take);
+    await waitFor(() => expect(warning).toHaveBeenCalledOnce());
+    expect(take).toHaveBeenCalledOnce();
+    const [title, options] = warning.mock.calls[0]!;
+    expect(title).toBe('Your library file was damaged and has been reset.');
+    expect(options?.duration).toBe(Infinity);
+    expect(String(options?.description)).toContain(
+      '/data/library.db.corrupt-1790000000',
+    );
+    expect(String(options?.description)).toMatch(/Restore a catalog backup/);
+  });
+
+  it('stays quiet when the catalog opened normally or the call fails', async () => {
+    const quiet = vi.fn().mockResolvedValue(null);
+    const warning = renderWith(quiet);
+    await waitFor(() => expect(quiet).toHaveBeenCalledOnce());
+    cleanup();
+    const failing = vi.fn().mockRejectedValue(new Error('no state'));
+    renderWith(failing);
+    await waitFor(() => expect(failing).toHaveBeenCalledOnce());
+    await Promise.resolve();
+    expect(warning).not.toHaveBeenCalled();
+  });
+
+  it('works with desktop builds that have no recovery notice', async () => {
+    const warning = renderWith(undefined);
+    expect(await screen.findByLabelText('Search desktop library')).toBeTruthy();
+    expect(warning).not.toHaveBeenCalled();
   });
 });
 
