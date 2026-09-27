@@ -38,5 +38,5 @@ Choose a multi-track hearthis.at or SoundCloud set, review it, download the elig
 
 ## Still open
 
-- **SoundCloud.** Needs `../tahti-org` work first: an endpoint listing the user's playlists/sets with per-track `downloadable`, and one handing the desktop app an authorised download (the OAuth token stays on the server). Then add `soundcloud` to `PROVIDERS` in `provider_import.rs` and a second picker.
+- **SoundCloud: shipped (#180, 2026-09-26)** on tahti-org #563's playlist, resolve and signed-download endpoints; not yet tried against real SoundCloud data or the deployed API.
 - **Not yet run in the desktop app** against a real hearthis.at set (checked with Rust tests, web tests and Storybook). Also check then whether real hearthis.at download links answer HEAD with a `Content-Length`; if not, the disk-space line (#176) shows the sizes as unknown.

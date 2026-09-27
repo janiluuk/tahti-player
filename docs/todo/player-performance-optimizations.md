@@ -33,12 +33,10 @@ Scope: active Tauri desktop player, which mounts the shared tahti-web frontend, 
 ## 5. Reduce visualizer work
 
 - [ ] Keep renderer/scene lifetime independent of play/pause; update changing inputs without scene reconstruction. **2026-09-21 done in `ThreeVisualizer`:** play/pause and the analyser now flow through a ref, so the WebGL context is no longer rebuilt on them; frames are capped at 30 fps, skipped while the document is hidden, and the canvas is resized only when its size changes. Prompted by a report of slow scrolling/menus in the desktop app (software-rendered WebKit on NVIDIA plus the app-wide animated background). Not yet measured before/after.
-- [ ] Move resize/projection work to actual size changes; suspend offscreen work while preserving intended visible idle animation.
 - [ ] Compare frame-time, CPU and native/GPU memory where measurable; verify cleanup after repeated mount/unmount, preset changes and play/pause. Pick frame caps only after profiling.
 
 ## 6. Unblock primary listening content
 
-- [ ] Cache/reuse reads and narrow invalidation on editing/look changes. 2026-09-26 partial (#171): channel look/link saves refetch only the channel + profile (2 requests instead of 5); wider read caching not done.
 - [ ] Verify primary content remains usable with delayed/failed secondary endpoints; compare request counts and time to usable content. 2026-09-26 (#171): hook and view tests with delayed/failed secondaries (Play still works); first load 5 requests, no longer waiting on the slowest. Time to usable content not measured in a browser.
 
 ## Completion gate
