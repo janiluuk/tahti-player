@@ -1,4 +1,4 @@
-import type { DragEndEvent } from '@dnd-kit/core';
+import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import {
   DndContext,
   PointerSensor,
@@ -21,8 +21,9 @@ const POINTER_SENSOR_OPTIONS = {
 type QueueReorderLayerProps = {
   enabled: boolean;
   items: string[];
-  onDragStart?: () => void;
+  onDragStart?: (evt: DragStartEvent) => void;
   onDragEnd?: (evt: DragEndEvent) => void;
+  onDragCancel?: () => void;
   children: ReactNode;
 };
 
@@ -31,6 +32,7 @@ export const QueueReorderLayer: FC<QueueReorderLayerProps> = ({
   items,
   onDragStart,
   onDragEnd,
+  onDragCancel,
   children,
 }) => {
   const sensors = useSensors(useSensor(PointerSensor, POINTER_SENSOR_OPTIONS));
@@ -44,6 +46,7 @@ export const QueueReorderLayer: FC<QueueReorderLayerProps> = ({
       sensors={sensors}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
+      onDragCancel={onDragCancel}
     >
       <SortableContext items={items} strategy={verticalListSortingStrategy}>
         {children}

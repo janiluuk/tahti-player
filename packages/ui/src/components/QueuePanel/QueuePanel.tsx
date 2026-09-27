@@ -1,6 +1,20 @@
-import { DragEndEvent } from '@dnd-kit/core';
+import { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
+import {
+  defaultRangeExtractor,
+  useVirtualizer,
+  type Range,
+} from '@tanstack/react-virtual';
 import { Music } from 'lucide-react';
-import { FC, memo, useCallback, useLayoutEffect, useMemo, useRef } from 'react';
+import {
+  FC,
+  memo,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import type { QueueItem as QueueItemType } from '@tahti-player/model';
 
@@ -17,6 +31,18 @@ import { ReorderableQueueItem } from './ReorderableQueueItem';
  * queue; it only removes the layout cost of very long queues.
  */
 const LONG_QUEUE_THRESHOLD = 100;
+
+/**
+ * Above this many items only the rows in and near the viewport are mounted.
+ * The row being dragged always stays mounted, and dnd-kit's auto-scroll
+ * mounts rows as it scrolls, so drag-reorder still works across the queue.
+ */
+export const VIRTUALIZE_THRESHOLD = 200;
+
+const ROW_GAP_PX = 4;
+const ROW_ESTIMATE_PX = 56;
+const COLLAPSED_ROW_ESTIMATE_PX = 48;
+const OVERSCAN_ROWS = 12;
 
 /**
  * Returns a callback whose identity never changes while `handler` stays
@@ -99,9 +125,16 @@ const QueuePanelView: FC<QueuePanelProps> = ({
     [itemIds],
   );
 
+  const [draggingId, setDraggingId] = useState<string | null>(null);
+  const handleDragStart = useCallback((event: DragStartEvent) => {
+    setDraggingId(String(event.active.id));
+  }, []);
+  const handleDragCancel = useCallback(() => setDraggingId(null), []);
+
   const handleReorder = useStableHandler(onReorder);
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
+      setDraggingId(null);
       const move = resolveReorder(
         indexById,
         String(event.active.id),
@@ -126,6 +159,40 @@ const QueuePanelView: FC<QueuePanelProps> = ({
     () => ({ removeButton, playbackError, noCandidates, candidateFailed }),
     [removeButton, playbackError, noCandidates, candidateFailed],
   );
+
+  const virtualize = items.length > VIRTUALIZE_THRESHOLD;
+  const viewportRef = useRef<HTMLDivElement | null>(null);
+  const draggingIndex =
+    draggingId !== null ? indexById.get(draggingId) : undefined;
+  const rangeExtractor = useCallback(
+    (range: Range) => {
+      const indexes = defaultRangeExtractor(range);
+      if (draggingIndex === undefined || indexes.includes(draggingIndex)) {
+        return indexes;
+      }
+      return [...indexes, draggingIndex].sort((a, b) => a - b);
+    },
+    [draggingIndex],
+  );
+  const virtualizer = useVirtualizer({
+    count: virtualize ? items.length : 0,
+    getScrollElement: () => viewportRef.current,
+    estimateSize: () =>
+      isCollapsed ? COLLAPSED_ROW_ESTIMATE_PX : ROW_ESTIMATE_PX,
+    getItemKey: (index) => itemIds[index] ?? index,
+    gap: ROW_GAP_PX,
+    overscan: OVERSCAN_ROWS,
+    rangeExtractor,
+  });
+
+  const currentIndex = currentItemId
+    ? (indexById.get(currentItemId) ?? -1)
+    : -1;
+  useEffect(() => {
+    if (virtualize && currentIndex >= 0) {
+      virtualizer.scrollToIndex(currentIndex, { align: 'auto' });
+    }
+  }, [virtualize, currentIndex, virtualizer]);
 
   if (items.length === 0) {
     return (
@@ -159,62 +226,108 @@ const QueuePanelView: FC<QueuePanelProps> = ({
     );
   }
 
-  const skipOffscreenWork = items.length > LONG_QUEUE_THRESHOLD;
-  const currentIndex = currentItemId
-    ? (indexById.get(currentItemId) ?? -1)
-    : -1;
+  const skipOffscreenWork = !virtualize && items.length > LONG_QUEUE_THRESHOLD;
+
+  const renderRow = (item: QueueItemType, index: number) => {
+    const pastOffset =
+      fadePastItems && currentIndex >= 0 && index < currentIndex
+        ? currentIndex - index
+        : 0;
+    return {
+      className: cn(
+        pastOffset === 1 && 'opacity-55',
+        pastOffset === 2 && 'opacity-35',
+        pastOffset > 2 && 'opacity-20',
+      ),
+      row: (
+        <ReorderableQueueItem
+          item={item}
+          isCurrent={item.id === currentItemId}
+          isCollapsed={isCollapsed}
+          isReorderable={reorderable}
+          onSelect={handleSelect}
+          onRemove={handleRemove}
+          onSelectCandidate={handleSelectCandidate}
+          onTitleClick={handleTitleClick}
+          isLiked={isLiked?.(item.id)}
+          onToggleLike={handleToggleLike}
+          labels={rowLabels}
+        />
+      ),
+    };
+  };
 
   return (
     <div
       data-testid="queue-panel"
       className={cn('flex h-full min-h-0 flex-col', classes?.root)}
     >
-      <ScrollableArea className="min-h-0 flex-1" viewportClassName="min-h-0">
+      <ScrollableArea
+        className="min-h-0 flex-1"
+        viewportClassName="min-h-0"
+        viewportRef={viewportRef}
+      >
         <QueueReorderLayer
           enabled={reorderable}
           items={itemIds}
+          onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
+          onDragCancel={handleDragCancel}
         >
-          <div
-            className={cn(
-              'flex flex-col',
-              isCollapsed ? 'items-center gap-1 px-1' : 'gap-1',
-              classes?.list,
-            )}
-          >
-            {items.map((item, index) => {
-              const pastOffset =
-                fadePastItems && currentIndex >= 0 && index < currentIndex
-                  ? currentIndex - index
-                  : 0;
-              return (
-                <div
-                  key={item.id}
-                  className={cn(
-                    pastOffset === 1 && 'opacity-55',
-                    pastOffset === 2 && 'opacity-35',
-                    pastOffset > 2 && 'opacity-20',
-                    skipOffscreenWork &&
-                      '[contain-intrinsic-size:auto_3.5rem] [content-visibility:auto]',
-                  )}
-                >
-                  <ReorderableQueueItem
-                    item={item}
-                    isCurrent={item.id === currentItemId}
-                    isCollapsed={isCollapsed}
-                    isReorderable={reorderable}
-                    onSelect={handleSelect}
-                    onRemove={handleRemove}
-                    onSelectCandidate={handleSelectCandidate}
-                    onTitleClick={handleTitleClick}
-                    isLiked={isLiked?.(item.id)}
-                    onToggleLike={handleToggleLike}
-                    labels={rowLabels}
-                  />
-                </div>
-              );
-            })}
-          </div>
+          {virtualize ? (
+            <div
+              data-testid="queue-virtual-list"
+              className={cn('relative', isCollapsed && 'px-1', classes?.list)}
+              style={{ height: virtualizer.getTotalSize() }}
+            >
+              {virtualizer.getVirtualItems().map((virtualRow) => {
+                const item = items[virtualRow.index];
+                if (!item) {
+                  return null;
+                }
+                const { className, row } = renderRow(item, virtualRow.index);
+                return (
+                  <div
+                    key={item.id}
+                    data-index={virtualRow.index}
+                    ref={virtualizer.measureElement}
+                    className={cn(
+                      'absolute top-0 left-0 w-full',
+                      isCollapsed && 'flex justify-center',
+                      className,
+                    )}
+                    style={{ transform: `translateY(${virtualRow.start}px)` }}
+                  >
+                    {row}
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div
+              className={cn(
+                'flex flex-col',
+                isCollapsed ? 'items-center gap-1 px-1' : 'gap-1',
+                classes?.list,
+              )}
+            >
+              {items.map((item, index) => {
+                const { className, row } = renderRow(item, index);
+                return (
+                  <div
+                    key={item.id}
+                    className={cn(
+                      className,
+                      skipOffscreenWork &&
+                        '[contain-intrinsic-size:auto_3.5rem] [content-visibility:auto]',
+                    )}
+                  >
+                    {row}
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </QueueReorderLayer>
       </ScrollableArea>
     </div>
