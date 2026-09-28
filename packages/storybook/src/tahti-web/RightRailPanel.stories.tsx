@@ -1,18 +1,12 @@
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite';
-import type { TahtiNotification } from '@tahti-web/api/notifications';
 import { RightRailHeaderActions } from '@tahti-web/components/RightRailHeaderActions';
 import { RightRailPanel } from '@tahti-web/components/RightRailPanel';
-import {
-  useLayoutStore,
-  type RightRailTab,
-} from '@tahti-web/stores/layoutStore';
-import { useNotificationInboxStore } from '@tahti-web/stores/notificationInboxStore';
 import { usePlayerStore } from '@tahti-web/stores/playerStore';
 
 import type { QueueItem } from '@tahti-player/model';
 import { PlayerWorkspace } from '@tahti-player/ui';
 
-import { withMockAuth, withTahtiRouter } from './_lib/decorators';
+import { withTahtiRouter } from './_lib/decorators';
 
 function mockQueueItem(
   id: string,
@@ -54,39 +48,9 @@ const LONG_QUEUE: QueueItem[] = Array.from({ length: 60 }, (_, i) =>
   ),
 );
 
-const NOTIFICATIONS: TahtiNotification[] = [
-  {
-    id: 'n1',
-    type: 'system',
-    actor: null,
-    title: 'Terms updated',
-    body: 'Please review the updated membership terms.',
-    url: null,
-    readAt: null,
-    sticky: true,
-    createdAt: '2026-09-25T09:00:00.000Z',
-  },
-  {
-    id: 'n2',
-    type: 'follow',
-    actor: null,
-    title: 'Northern Lights went live',
-    body: null,
-    url: null,
-    readAt: null,
-    sticky: false,
-    createdAt: '2026-09-25T08:30:00.000Z',
-  },
-];
-
 type Seed = {
-  tab?: RightRailTab;
   queue?: QueueItem[];
   currentId?: string | null;
-  notifications?: TahtiNotification[];
-  chatSlug?: string | null;
-  chatEnabled?: boolean;
-  chatDisabledReason?: string | null;
 };
 
 /** RightRailPanel and its header read stores directly, not props. */
@@ -97,13 +61,6 @@ function withRailState(seed: Seed = {}): Decorator {
       queue,
       currentId:
         seed.currentId === undefined ? (queue[0]?.id ?? null) : seed.currentId,
-    });
-    useNotificationInboxStore.setState({ items: seed.notifications ?? [] });
-    useLayoutStore.setState({
-      rightRailTab: seed.tab ?? 'queue',
-      chatSlug: seed.chatSlug ?? null,
-      chatEnabled: seed.chatEnabled ?? false,
-      chatDisabledReason: seed.chatDisabledReason ?? null,
     });
     return <Story />;
   };
@@ -134,7 +91,7 @@ const meta: Meta<typeof QueueBar> = {
     docs: {
       description: {
         component:
-          'tahti-web right rail as a Nuclear-style queue bar. Queue is the default body; the header holds chat and notification toggles (press again to return to the queue), clear-queue and a "more" menu (save as playlist, save locally on desktop, randomize order). Collapsed it shows queue artwork plus chat/notification buttons. Missing states: queue item loading/error rows (covered in QueuePanel stories), channel-designer rail override.',
+          'tahti-web right rail as a Nuclear-style queue bar: the queue only. The header holds clear-queue and a "more" menu (save as playlist, save locally on desktop, randomize order). Collapsed it shows queue artwork. Chat and notifications are top-bar controls, never rail views (docs/DECISIONS.md, 2026-09-28). Missing states: queue item loading/error rows (covered in QueuePanel stories), channel-designer rail override.',
       },
     },
   },
@@ -147,7 +104,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Queue: Story = {
-  decorators: [withRailState({ notifications: NOTIFICATIONS })],
+  decorators: [withRailState()],
 };
 
 export const EmptyQueue: Story = {
@@ -163,7 +120,7 @@ export const LongQueue: Story = {
 };
 
 export const Collapsed: Story = {
-  decorators: [withRailState({ notifications: NOTIFICATIONS })],
+  decorators: [withRailState()],
   args: { isCollapsed: true },
 };
 
@@ -171,39 +128,4 @@ export const CollapsedEmpty: Story = {
   name: 'Collapsed, queue empty',
   decorators: [withRailState({ queue: [] })],
   args: { isCollapsed: true },
-};
-
-export const Notifications: Story = {
-  decorators: [
-    withRailState({ tab: 'notifications', notifications: NOTIFICATIONS }),
-  ],
-};
-
-export const NotificationsEmpty: Story = {
-  name: 'Notifications, all caught up',
-  decorators: [withRailState({ tab: 'notifications' })],
-};
-
-export const ChatUnavailable: Story = {
-  name: 'Chat unavailable',
-  decorators: [
-    withRailState({
-      tab: 'chat',
-      chatDisabledReason: 'Open a channel with chat enabled.',
-    }),
-  ],
-};
-
-/** Chat history/access fetch through the mocked API layer; there's no
- * Centrifugo server in Storybook, so the socket fails and the panel falls
- * back to local-echo ("mock") mode - see ChannelChatPanel.stories.tsx. */
-export const ChatOpen: Story = {
-  decorators: [
-    withMockAuth(),
-    withRailState({
-      tab: 'chat',
-      chatSlug: 'northern-lights',
-      chatEnabled: true,
-    }),
-  ],
 };

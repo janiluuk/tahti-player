@@ -1,12 +1,19 @@
-import { useNavigate } from '@tanstack/react-router';
-import { BookOpenIcon, LandmarkIcon, LightbulbIcon } from 'lucide-react';
+import { Link, useNavigate } from '@tanstack/react-router';
+import {
+  BookOpenIcon,
+  FileTextIcon,
+  LandmarkIcon,
+  LightbulbIcon,
+} from 'lucide-react';
 import { lazy, Suspense } from 'react';
 
 import { SectionShell, TabLabel, Tabs, ViewShell } from '@tahti-player/ui';
 
+import { HelpLinkCard } from '../../components/HelpLinkCard';
 import { PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioNav } from '../../components/StudioNav';
+import { GOVERNANCE_DOCUMENTS } from '../../content/documentLinks';
 
 const LazyGovernanceView = lazy(() =>
   import('../GovernanceView').then((module) => ({
@@ -20,16 +27,38 @@ const LazyFeatureRequestsView = lazy(() =>
   })),
 );
 
-const TAB_INDEX: Record<'motions' | 'topics' | 'guide', number> = {
+export type StudioGovernanceTab = 'motions' | 'topics' | 'documents' | 'guide';
+
+const TAB_INDEX: Record<StudioGovernanceTab, number> = {
   motions: 0,
   topics: 1,
-  guide: 2,
+  documents: 2,
+  guide: 3,
 };
 const TAB_SEARCH: Array<Record<string, string> | undefined> = [
   undefined,
   { tab: 'topics' },
+  { tab: 'documents' },
   { tab: 'guide' },
 ];
+
+/** The cooperative's records: transparency, grants, history, structure. */
+function GovernanceDocumentsTab() {
+  return (
+    <SectionShell
+      title="Governance documents"
+      data-testid="governance-documents"
+    >
+      <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {GOVERNANCE_DOCUMENTS.map((item) => (
+          <Link key={item.title} to={item.to as never} className="min-w-0">
+            <HelpLinkCard title={item.title} description={item.description} />
+          </Link>
+        ))}
+      </div>
+    </SectionShell>
+  );
+}
 
 function GovernanceGuideTab() {
   return (
@@ -62,7 +91,7 @@ function GovernanceGuideTab() {
 export function StudioGovernanceView({
   tab = 'motions',
 }: {
-  tab?: 'motions' | 'topics' | 'guide';
+  tab?: StudioGovernanceTab;
 }) {
   const navigate = useNavigate();
 
@@ -87,6 +116,9 @@ export function StudioGovernanceView({
               <TabLabel icon={<LightbulbIcon size={15} />}>Topics</TabLabel>
             </Tabs.Tab>
             <Tabs.Tab>
+              <TabLabel icon={<FileTextIcon size={15} />}>Documents</TabLabel>
+            </Tabs.Tab>
+            <Tabs.Tab>
               <TabLabel icon={<BookOpenIcon size={15} />}>Guide</TabLabel>
             </Tabs.Tab>
           </Tabs.List>
@@ -94,6 +126,8 @@ export function StudioGovernanceView({
         <ViewShell title="Governance" classes={{ root: 'px-0 pt-0' }}>
           {tab === 'guide' ? (
             <GovernanceGuideTab />
+          ) : tab === 'documents' ? (
+            <GovernanceDocumentsTab />
           ) : (
             <Suspense fallback={<PageLoading label="Loading governance…" />}>
               {tab === 'topics' ? (

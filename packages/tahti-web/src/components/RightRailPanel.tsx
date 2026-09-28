@@ -1,16 +1,10 @@
-import { Bell, ListMusicIcon, MessageCircle } from 'lucide-react';
+import { ListMusicIcon } from 'lucide-react';
 
-import { Badge, Button, QueuePanel, Tooltip } from '@tahti-player/ui';
+import { Button, QueuePanel, Tooltip } from '@tahti-player/ui';
 
-import { useLayoutStore, type RightRailTab } from '../stores/layoutStore';
-import { useNotificationInboxStore } from '../stores/notificationInboxStore';
+import { useLayoutStore } from '../stores/layoutStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { useRightRailOverrideStore } from '../stores/rightRailOverrideStore';
-import { ChannelChatPanel } from './ChannelChatPanel';
-import {
-  RightRailNotificationList,
-  useUnreadNotifications,
-} from './RightRailNotificationList';
 import { SidebarQueuePanel } from './SidebarQueuePanel';
 
 const COLLAPSED_LABELS = {
@@ -20,7 +14,6 @@ const COLLAPSED_LABELS = {
 
 export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
   const railOverride = useRightRailOverrideStore((s) => s.override);
-  const tab = useLayoutStore((s) => s.rightRailTab);
   const toggleRight = useLayoutStore((s) => s.toggleRight);
 
   if (isCollapsed) {
@@ -65,62 +58,22 @@ export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
     <div
       className="flex h-full min-h-0 flex-col"
       data-testid="right-rail"
-      data-right-rail-view={tab}
+      data-right-rail-view="queue"
     >
-      <RightRailBody tab={tab} />
+      <SidebarQueuePanel toolbar={false} />
     </div>
   );
 }
 
-function RightRailBody({ tab }: { tab: RightRailTab }) {
-  const chatSlug = useLayoutStore((s) => s.chatSlug);
-  const chatEnabled = useLayoutStore((s) => s.chatEnabled);
-  const chatDisabledReason = useLayoutStore((s) => s.chatDisabledReason);
-  const acknowledge = useNotificationInboxStore((s) => s.acknowledge);
-  const notifications = useUnreadNotifications();
-
-  if (tab === 'notifications') {
-    return (
-      <RightRailNotificationList
-        notifications={notifications}
-        onRead={(id) => {
-          void acknowledge(id);
-        }}
-      />
-    );
-  }
-
-  if (tab === 'chat') {
-    if (chatEnabled && chatSlug) {
-      return <ChannelChatPanel slug={chatSlug} rail />;
-    }
-    return (
-      <div className="text-foreground-secondary flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-sm">
-        <MessageCircle size={40} className="opacity-40" />
-        <p className="text-foreground font-semibold">Chat unavailable</p>
-        <p className="text-xs opacity-70">
-          {chatDisabledReason ?? 'Open a channel with chat enabled.'}
-        </p>
-      </div>
-    );
-  }
-
-  return <SidebarQueuePanel toolbar={false} />;
-}
-
-/** Nuclear's collapsed rail: queue artwork only, plus chat/notification entry points. */
+/**
+ * Nuclear's collapsed rail: queue artwork only. Chat and notifications live
+ * in the top bar, never in the rail (docs/DECISIONS.md, 2026-09-28).
+ */
 function CollapsedQueueBar() {
   const queue = usePlayerStore((s) => s.queue);
   const currentId = usePlayerStore((s) => s.currentId);
   const playQueueIndex = usePlayerStore((s) => s.playQueueIndex);
-  const setRightRailTab = useLayoutStore((s) => s.setRightRailTab);
   const toggleRight = useLayoutStore((s) => s.toggleRight);
-  const unreadCount = useUnreadNotifications().length;
-
-  const open = (view: RightRailTab) => {
-    setRightRailTab(view);
-    toggleRight();
-  };
 
   return (
     <div
@@ -145,45 +98,12 @@ function CollapsedQueueBar() {
               variant="text"
               className="text-foreground-secondary mx-auto flex"
               aria-label="Open queue"
-              onClick={() => open('queue')}
+              onClick={() => toggleRight()}
             >
               <ListMusicIcon size={18} aria-hidden />
             </Button>
           </Tooltip>
         )}
-      </div>
-      <div className="border-border flex shrink-0 flex-col items-center gap-1 border-t py-2">
-        <Tooltip content="Open chat" side="left">
-          <Button
-            size="icon-sm"
-            variant="text"
-            className="text-foreground-secondary"
-            aria-label="Open chat"
-            onClick={() => open('chat')}
-          >
-            <MessageCircle size={18} aria-hidden />
-          </Button>
-        </Tooltip>
-        <Tooltip content="Open notifications" side="left">
-          <Button
-            size="icon-sm"
-            variant="text"
-            className="text-foreground-secondary relative"
-            aria-label="Open notifications"
-            onClick={() => open('notifications')}
-          >
-            <Bell size={18} aria-hidden />
-            {unreadCount > 0 ? (
-              <Badge
-                variant="pill"
-                color="purple"
-                className="absolute -top-1 -right-1 min-w-4 px-1 text-[10px] leading-4"
-              >
-                {unreadCount > 99 ? '99+' : unreadCount}
-              </Badge>
-            ) : null}
-          </Button>
-        </Tooltip>
       </div>
     </div>
   );

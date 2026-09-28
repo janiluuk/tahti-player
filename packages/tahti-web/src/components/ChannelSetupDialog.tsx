@@ -14,6 +14,7 @@ export function ChannelSetupDialog() {
   const isOpen = useChannelSetupModalStore((state) => state.isOpen);
   const close = useChannelSetupModalStore((state) => state.close);
   const user = useAuthStore((state) => state.user);
+  const profileLoaded = useAuthStore((state) => state.profileLoaded);
   const refresh = useAuthStore((state) => state.refresh);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +35,7 @@ export function ChannelSetupDialog() {
     toast.success('Channel created.');
   };
 
-  if (user?.channel && !designStep) {
+  if ((user?.channel || !profileLoaded) && !designStep) {
     return null;
   }
 

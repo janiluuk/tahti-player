@@ -50,7 +50,6 @@ import { resolveLocalPlayableForReplay } from '../lib/nativeLibrary';
 import { activeListenTab } from '../lib/navigationActive';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { useAuthStore } from '../stores/authStore';
-import { useLayoutStore } from '../stores/layoutStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { useListenerWidgetsStore } from '../stores/listenerWidgetsStore';
 import { usePlayerStore } from '../stores/playerStore';
@@ -129,19 +128,6 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     label: string;
   } | null>(null);
   const nowPlayingRefreshInFlight = useRef(false);
-
-  // The reference dashboard keeps the queue docked on the right. Only take
-  // over the rail when it would otherwise show the empty "Chat unavailable"
-  // state, so an active channel chat or the notifications tab is never hidden.
-  useEffect(() => {
-    if (tab !== 'listen') {
-      return;
-    }
-    const layout = useLayoutStore.getState();
-    if (layout.rightRailTab === 'chat' && !layout.chatEnabled) {
-      layout.setRightRailTab('queue');
-    }
-  }, [tab]);
 
   const refreshPresetNowPlaying = useCallback(async () => {
     if (radioPresets.length === 0 || nowPlayingRefreshInFlight.current) {
