@@ -150,6 +150,7 @@ fn apply(tag: &mut Tag, edits: &[(EditField, String)]) {
             EditField::Album => set_or_clear(tag, ItemKey::AlbumTitle, text),
             EditField::AlbumArtist => set_or_clear(tag, ItemKey::AlbumArtist, text),
             EditField::Genre => set_or_clear(tag, ItemKey::Genre, text),
+            EditField::Composer => set_or_clear(tag, ItemKey::Composer, text),
             EditField::Comment => set_or_clear(tag, ItemKey::Comment, text),
             EditField::Year => match number(text) {
                 Some(n) => tag.set_year(n),
@@ -225,6 +226,7 @@ fn write_one(path: &Path, format: &str, edits: &[(EditField, String)], keep_back
                 EditField::Album => written.album().map(|v| v.to_string()),
                 EditField::AlbumArtist => written.get_string(&ItemKey::AlbumArtist).map(str::to_owned),
                 EditField::Genre => written.genre().map(|v| v.to_string()),
+                EditField::Composer => written.get_string(&ItemKey::Composer).map(str::to_owned),
                 EditField::Comment => written.comment().map(|v| v.to_string()),
                 EditField::Year => written.year().map(|v| v.to_string()),
                 EditField::TrackNo => written.track().map(|v| v.to_string()),

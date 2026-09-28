@@ -71,6 +71,7 @@ const ROW_FIELD: Record<string, NativeEditField> = {
   Disc: 'discNo',
   Year: 'year',
   Genre: 'genre',
+  Composer: 'composer',
   Comment: 'comment',
 };
 

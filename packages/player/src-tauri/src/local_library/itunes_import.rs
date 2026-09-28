@@ -369,7 +369,7 @@ async fn apply_overlay(
 
     let row = sqlx::query(
         "SELECT rating, last_played_at, added_at, path, title, artist, album_artist, album, genre, comment, \
-         COALESCE(CAST(year AS TEXT), ''), COALESCE(CAST(track_no AS TEXT), ''), COALESCE(CAST(disc_no AS TEXT), ''), bpm \
+         COALESCE(CAST(year AS TEXT), ''), COALESCE(CAST(track_no AS TEXT), ''), COALESCE(CAST(disc_no AS TEXT), ''), bpm, composer \
          FROM library_tracks WHERE id=?",
     )
     .bind(id)
@@ -434,6 +434,7 @@ async fn apply_overlay(
             EditField::Year => 10,
             EditField::TrackNo => 11,
             EditField::DiscNo => 12,
+            EditField::Composer => 14,
         };
         row.get(index)
     };

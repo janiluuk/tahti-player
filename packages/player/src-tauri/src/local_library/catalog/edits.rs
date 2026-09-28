@@ -13,6 +13,7 @@ pub enum EditField {
     Album,
     AlbumArtist,
     Genre,
+    Composer,
     Comment,
     Year,
     TrackNo,
@@ -20,12 +21,13 @@ pub enum EditField {
 }
 
 impl EditField {
-    pub const ALL: [EditField; 9] = [
+    pub const ALL: [EditField; 10] = [
         EditField::Title,
         EditField::Artist,
         EditField::Album,
         EditField::AlbumArtist,
         EditField::Genre,
+        EditField::Composer,
         EditField::Comment,
         EditField::Year,
         EditField::TrackNo,
@@ -39,6 +41,7 @@ impl EditField {
             EditField::Album => "album",
             EditField::AlbumArtist => "album_artist",
             EditField::Genre => "genre",
+            EditField::Composer => "composer",
             EditField::Comment => "comment",
             EditField::Year => "year",
             EditField::TrackNo => "track_no",
@@ -63,6 +66,7 @@ impl EditField {
             EditField::Album => track.album.clone(),
             EditField::AlbumArtist => track.album_artist.clone(),
             EditField::Genre => track.genre.clone(),
+            EditField::Composer => track.composer.clone(),
             EditField::Comment => track.comment.clone(),
             EditField::Year => number(track.year),
             EditField::TrackNo => number(track.track_no),
