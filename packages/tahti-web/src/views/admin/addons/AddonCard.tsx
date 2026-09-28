@@ -2,6 +2,7 @@ import {
   CheckIcon,
   PencilIcon,
   SettingsIcon,
+  Trash2Icon,
   UploadIcon,
   XIcon,
 } from 'lucide-react';
@@ -19,6 +20,7 @@ export function AddonCard({
   onManage,
   onPublish,
   onEdit,
+  onDelete,
 }: {
   addon: AdminAddon;
   pending: boolean;
@@ -27,6 +29,7 @@ export function AddonCard({
   onManage: (addon: AdminAddon) => void;
   onPublish: (addon: AdminAddon) => void;
   onEdit: (addon: AdminAddon) => void;
+  onDelete: (addon: AdminAddon) => void;
 }) {
   return (
     <article className="border-border bg-background-secondary/40 flex gap-4 rounded-xl border p-4">
@@ -143,6 +146,18 @@ export function AddonCard({
             </Button>
           </Tooltip>
         )}
+        <Tooltip content={`Delete ${addon.name}`} side="top">
+          <Button
+            type="button"
+            size="icon-sm"
+            variant="text"
+            aria-label={`Delete ${addon.name}`}
+            disabled={pending}
+            onClick={() => onDelete(addon)}
+          >
+            <Trash2Icon size={16} aria-hidden />
+          </Button>
+        </Tooltip>
       </div>
     </article>
   );
