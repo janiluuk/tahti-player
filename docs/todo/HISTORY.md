@@ -3841,3 +3841,17 @@ User report: signed in, the app offered to create `yaniho.tahti.live` though the
 - **Status bar desktop-only:** `shouldShowConnectedStatusBar` requires `desktopApp`; the web never renders it. Tests: `processingItems.test.ts`, `ConnectedStatusBar.web.test.tsx`.
 - **Governance documents:** new Studio → Governance → Documents tab (`?tab=documents`: About, governance history, transparency dashboard, grant reports, methodology); Help's top "Documents and public records" panel removed, policies moved to a "Policies and service" section at the bottom. Lists in `content/documentLinks.ts`. Test: `HelpGovernanceDocuments.test.tsx`.
 - **Checks:** tahti-web 1088 passed / 5 expected fail; tahti-web and player type-check, ESLint clean. Not tried against the production API with the affected account.
+
+## 2026-09-28 - Ten todo slices, fourth batch (#206-#215)
+
+Items finished here were removed from their todo files; partial progress stays noted in each todo.
+
+- **Add-on bundle publish (#206)**, `admin-plugin-management-panel.md`: Publish dialog on each `/admin/addons` card (version, `.js` bundle ≤ 2 MB, changelog) → `prepare-upload` → PUT → `publish-version`.
+- **Tahti Radio week of shows (#207)**, FEATURES-REMAINING radio: the tahti-radio Programming block lists the next 7 days of booked slots from public `/api/v1/radio/slots`, with the artist linked to the show page and an On air badge.
+- **Curated station pages (#208)**: `/radio/station/$stationId` for the 6 Finnish stations (stream details, ICY now-playing, play, add to Listen, station links); Listen cards link there.
+- **Volume normalization (#209)**, `desktop-pro-library.md` Phase 5: opt-in Off/Track/Album, ReplayGain tags or analysis loudness, peak-capped, through a GainNode.
+- **Queue keyboard navigation (#210)**, performance §3: ↑/↓/Page/Home/End/Enter on queue rows, including rows not yet mounted by the virtualizer.
+- **Composer (#211)**, Phase 1: `0021_composer.sql`, read on import/relink, inspector row and a sortable column.
+- **Go-live a11y (#212)**, **contrast audit (#213)**, **Pro Editor keyboard selection (#214)**: see CUTOVER accessibility item. #213 is a visible change on light themes (darker error/status text).
+- **iTunes XML at 120 MB (#215)**: ignored release harness; parse 0.74 s / 67 MB, preview 0.93 s / 118 MB peak.
+- **Checks:** each PR ran its package's type-check, lint and tests (tahti-web full suite 1088 passed on #213; `cargo test --lib local_library` 205 passed on #211). CI flake re-run: ui `Toaster.test.tsx` sonner timer ("window is not defined") on #209's coverage job. None of it was tried in the desktop app or with a screen reader.

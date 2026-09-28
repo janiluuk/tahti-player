@@ -395,3 +395,9 @@ this pass only closes the specific "not attempted" install-CRUD gap.
 - `/admin/addons` sits under the `operations` ("Manage") nav group in
   `packages/tahti-web/src/components/AdminNav.tsx` — a new unified plugins
   page belongs in the same group.
+
+**2026-09-28 bundle upload/publish UI (#206):** every card in `/admin/addons`
+has a Publish action: semver version (next patch prefilled), `.js`/`.mjs`
+bundle up to 2 MB, optional changelog → `prepare-upload` → PUT to storage →
+`publish-version` (moves the add-on to PENDING). Not tried against real
+storage. Still open: the multi-category submission/moderation project.
