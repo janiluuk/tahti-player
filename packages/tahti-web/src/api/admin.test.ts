@@ -6,6 +6,7 @@ import {
   fetchAdminAddons,
   fetchAdminDashboard,
   fetchAdminNews,
+  publishAdminAddonVersion,
 } from './admin';
 
 describe('fetchAdminNews', () => {
@@ -223,5 +224,95 @@ describe('approveAdminAddon', () => {
     const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
     expect(url).toContain('/api/admin/addons/addon-1/approve');
     expect(init.method).toBe('POST');
+  });
+});
+
+describe('publishAdminAddonVersion', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  const json = (body: unknown) =>
+    new Response(JSON.stringify(body), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+  it('prepares the upload, PUTs the bundle to storage, then publishes the version', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        json({
+          uploadUrl: 'https://storage.example/put?sig=1',
+          bundleKey: 'widgets/ticker/1.0.1.js',
+          expiresAt: '2026-09-28T00:00:00.000Z',
+        }),
+      )
+      .mockResolvedValueOnce(new Response(null, { status: 200 }))
+      .mockResolvedValueOnce(
+        json({ id: 'addon-1', status: 'PENDING', currentVersion: '1.0.1' }),
+      );
+    vi.stubGlobal('fetch', fetchMock);
+    const file = new File(['export default {}'], 'ticker.js', {
+      type: 'text/javascript',
+    });
+
+    const result = await publishAdminAddonVersion('addon-1', {
+      version: ' 1.0.1 ',
+      changelog: '  Fixes  ',
+      file,
+    });
+
+    expect(result.ok).toBe(true);
+    const calls = fetchMock.mock.calls as Array<[string, RequestInit]>;
+    expect(calls[0]![0]).toContain('/api/admin/addons/addon-1/prepare-upload');
+    expect(JSON.parse(String(calls[0]![1].body))).toEqual({
+      version: '1.0.1',
+      fileSizeBytes: file.size,
+    });
+    expect(calls[1]![0]).toBe('https://storage.example/put?sig=1');
+    expect(calls[1]![1].method).toBe('PUT');
+    expect(calls[1]![1].body).toBe(file);
+    expect(calls[2]![0]).toContain('/api/admin/addons/addon-1/publish-version');
+    expect(JSON.parse(String(calls[2]![1].body))).toEqual({
+      version: '1.0.1',
+      changelog: 'Fixes',
+    });
+  });
+
+  it('stops before publishing when the storage upload fails', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(
+        json({ uploadUrl: 'https://s/put', bundleKey: 'k' }),
+      )
+      .mockResolvedValueOnce(new Response(null, { status: 403 }));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const result = await publishAdminAddonVersion('addon-1', {
+      version: '1.0.1',
+      file: new File(['x'], 'a.js'),
+    });
+
+    expect(result).toEqual({ ok: false, error: 'Upload failed (403)' });
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('rejects a bad version or an oversized bundle without any request', async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+
+    const badVersion = await publishAdminAddonVersion('addon-1', {
+      version: 'v2',
+      file: new File(['x'], 'a.js'),
+    });
+    const tooBig = await publishAdminAddonVersion('addon-1', {
+      version: '2.0.0',
+      file: new File([new Uint8Array(2 * 1024 * 1024 + 1)], 'a.js'),
+    });
+
+    expect(badVersion.ok).toBe(false);
+    expect(tooBig).toEqual({ ok: false, error: 'Bundles can be at most 2 MB' });
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });

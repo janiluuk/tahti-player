@@ -12,6 +12,7 @@ const api = vi.hoisted(() => ({
   fetchAdminAddonInstalls: vi.fn(),
   fetchAdminAddons: vi.fn(),
   patchAdminAddonInstall: vi.fn(),
+  publishAdminAddonVersion: vi.fn(),
   registerAdminAddon: vi.fn(),
   rejectAdminAddon: vi.fn(),
   setAdminAddonDefaultConfig: vi.fn(),
@@ -136,5 +137,53 @@ describe('useAdminAddons', () => {
 
     await waitFor(() => expect(result.current.installsError).toBe('nope'));
     expect(api.fetchAdminAddonInstalls).toHaveBeenCalledTimes(2);
+  });
+
+  it('publishes a version, replaces the card and closes the dialog', async () => {
+    const file = new File(['export default {}'], 'w.js');
+    api.publishAdminAddonVersion.mockResolvedValue({
+      ok: true,
+      data: { ...approved, status: 'PENDING', currentVersion: '1.0.1' },
+    });
+    const { result } = renderHook(() => useAdminAddons());
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    act(() => result.current.openPublish(approved));
+    await act(async () =>
+      result.current.publish(approved, { version: '1.0.1', file }),
+    );
+
+    expect(api.publishAdminAddonVersion).toHaveBeenCalledWith('w1', {
+      version: '1.0.1',
+      file,
+    });
+    await waitFor(() => expect(result.current.publishTarget).toBeNull());
+    expect(
+      result.current.visibleAddons.find((item) => item.id === 'w1')?.status,
+    ).toBe('PENDING');
+  });
+
+  it('keeps the publish dialog open with the error when publishing fails', async () => {
+    api.publishAdminAddonVersion.mockResolvedValue({
+      ok: false,
+      error: 'That version is already published — bump it',
+    });
+    const { result } = renderHook(() => useAdminAddons());
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    act(() => result.current.openPublish(approved));
+    await act(async () =>
+      result.current.publish(approved, {
+        version: '1.0.0',
+        file: new File(['x'], 'w.js'),
+      }),
+    );
+
+    await waitFor(() =>
+      expect(result.current.error).toBe(
+        'That version is already published — bump it',
+      ),
+    );
+    expect(result.current.publishTarget?.id).toBe('w1');
   });
 });
