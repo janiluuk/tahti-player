@@ -1,4 +1,6 @@
 import {
+  ArrowLeftToLineIcon,
+  ArrowRightToLineIcon,
   CropIcon,
   MapPinIcon,
   Maximize2Icon,
@@ -102,6 +104,8 @@ export type ToolbarProps = {
   onFadeOut: () => void;
   onClearCuts: () => void;
   onClearSelection: () => void;
+  onSelectionStart: () => void;
+  onSelectionEnd: () => void;
   onAddMarker: () => void;
   onZoomIn: () => void;
   onZoomOut: () => void;
@@ -158,6 +162,23 @@ export function WaveformToolbar(props: ToolbarProps) {
           icon={Redo2Icon}
           disabled={!props.canRedo}
           onClick={props.onRedo}
+        />
+      </Group>
+
+      <Divider />
+
+      <Group label="Selection">
+        <ToolButton
+          label="Start selection at playhead"
+          shortcut="["
+          icon={ArrowLeftToLineIcon}
+          onClick={props.onSelectionStart}
+        />
+        <ToolButton
+          label="End selection at playhead"
+          shortcut="]"
+          icon={ArrowRightToLineIcon}
+          onClick={props.onSelectionEnd}
         />
       </Group>
 

@@ -209,4 +209,21 @@ describe('StudioProEditorView', () => {
     fireEvent.keyDown(waveform, { key: 'Escape' });
     expect(announcement.textContent).toBe('No selection');
   });
+
+  it('sets the selection edges from the toolbar too', async () => {
+    await renderEditor();
+    const waveform = screen.getByRole('application');
+    const announcement = screen.getByTestId('selection-announcement');
+
+    fireEvent.keyDown(waveform, { key: 'End' });
+    fireEvent.click(
+      screen.getByRole('button', { name: 'End selection at playhead' }),
+    );
+    expect(announcement.textContent).toMatch(/^Selection 0:00\.000 to /);
+    expect(
+      screen
+        .getByRole('button', { name: 'Start selection at playhead' })
+        .getAttribute('aria-keyshortcuts'),
+    ).toBe('[');
+  });
 });
