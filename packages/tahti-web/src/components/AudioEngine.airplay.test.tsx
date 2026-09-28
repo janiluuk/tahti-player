@@ -47,6 +47,7 @@ class FakeAudioContext {
   state = 'running';
   destination = {};
   createMediaElementSource = createMediaElementSource;
+  createGain = () => ({ connect: vi.fn(), gain: { value: 1 } });
   createAnalyser = () => ({
     connect: vi.fn(),
     fftSize: 0,

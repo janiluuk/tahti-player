@@ -8,6 +8,8 @@ import {
   Slider,
 } from '@tahti-player/ui';
 
+import { getNativeLibrary } from '../../../lib/nativeLibrary';
+import type { NormalizationMode } from '../../../lib/replayGain';
 import {
   clampSkipSeconds,
   SKIP_SECONDS_MAX,
@@ -22,6 +24,37 @@ const REPEAT_OPTIONS = [
   { id: 'all', label: 'Repeat queue' },
   { id: 'one', label: 'Repeat track' },
 ] as const satisfies readonly { id: RepeatMode; label: string }[];
+
+const NORMALIZATION_OPTIONS = [
+  { id: 'off', label: 'Off' },
+  { id: 'track', label: 'Track' },
+  { id: 'album', label: 'Album' },
+] as const satisfies readonly { id: NormalizationMode; label: string }[];
+
+function NormalizationField() {
+  const normalization = usePlaybackPrefsStore((s) => s.normalization);
+  const setNormalization = usePlaybackPrefsStore((s) => s.setNormalization);
+  return (
+    <div className="flex flex-col gap-2">
+      <span className="text-foreground text-sm font-semibold">
+        Volume normalization
+      </span>
+      <SegmentedControl
+        aria-label="Volume normalization"
+        options={NORMALIZATION_OPTIONS}
+        value={normalization}
+        onChange={setNormalization}
+        className="self-start"
+      />
+      <p className="text-foreground-secondary text-sm select-none">
+        Evens out loudness between local library files using their ReplayGain
+        tags, or the loudness measured by Audio analysis. Album keeps the level
+        differences within an album. Never raises a track past its peak. Streams
+        and radio are not changed.
+      </p>
+    </div>
+  );
+}
 
 const SECTION_DIVIDER = 'border-border border-t pt-6';
 
@@ -68,6 +101,7 @@ export function PlaybackPanel() {
   const toggleMute = usePlayerStore((s) => s.toggleMute);
   const toggleShuffle = usePlayerStore((s) => s.toggleShuffle);
   const setRepeatMode = usePlayerStore((s) => s.setRepeatMode);
+  const hasLocalAnalysis = Boolean(getNativeLibrary()?.analysis);
 
   return (
     <div className="flex w-full max-w-xl flex-col" data-testid="playback-panel">
@@ -94,6 +128,7 @@ export function PlaybackPanel() {
             value={muted}
             onChange={() => toggleMute()}
           />
+          {hasLocalAnalysis ? <NormalizationField /> : null}
         </div>
       </SectionShell>
       <SectionShell title="Queue" className={SECTION_DIVIDER}>

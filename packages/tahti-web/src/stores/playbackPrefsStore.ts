@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+import type { NormalizationMode } from '../lib/replayGain';
+
 export const SKIP_SECONDS_MIN = 1;
 export const SKIP_SECONDS_MAX = 60;
 export const DEFAULT_SKIP_SECONDS = 5;
@@ -19,6 +21,9 @@ type PlaybackPrefsState = {
   /** Seconds moved by seek forward/backward (Shift+Arrow, OS media keys). */
   skipSeconds: number;
   setSkipSeconds: (value: number) => void;
+  /** Loudness normalization for local library files; off by default. */
+  normalization: NormalizationMode;
+  setNormalization: (mode: NormalizationMode) => void;
 };
 
 export const usePlaybackPrefsStore = create<PlaybackPrefsState>()(
@@ -26,6 +31,8 @@ export const usePlaybackPrefsStore = create<PlaybackPrefsState>()(
     (set) => ({
       skipSeconds: DEFAULT_SKIP_SECONDS,
       setSkipSeconds: (value) => set({ skipSeconds: clampSkipSeconds(value) }),
+      normalization: 'off',
+      setNormalization: (normalization) => set({ normalization }),
     }),
     { name: 'tahti-playback-prefs' },
   ),

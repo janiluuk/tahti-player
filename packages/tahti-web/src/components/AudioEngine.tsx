@@ -1,5 +1,5 @@
 import type Hls from 'hls.js';
-import { useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import type { QueueItem } from '@tahti-player/model';
 
@@ -15,6 +15,8 @@ import {
   scheduleIdleHlsPrefetch,
 } from '../lib/hlsLoader';
 import { mediaSessionArtwork } from '../lib/mediaSessionArtwork';
+import { getNativeLibrary } from '../lib/nativeLibrary';
+import { normalizationFor } from '../lib/replayGain';
 import { usePlaybackPrefsStore } from '../stores/playbackPrefsStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 
@@ -31,6 +33,8 @@ export function AudioEngine() {
   const audioCtxRef = useRef<AudioContext | null>(null);
   const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
+  const gainRef = useRef<GainNode | null>(null);
+  const normalizationRef = useRef(1);
 
   const current = usePlayerStore(selectCurrentItem);
   const restoredPending = usePlayerStore((s) => s.restoredPending);
@@ -46,6 +50,7 @@ export function AudioEngine() {
   const seekBy = usePlayerStore((s) => s.seekBy);
   const skipSeconds = usePlaybackPrefsStore((s) => s.skipSeconds);
   const setAnalyser = usePlayerStore((s) => s.setAnalyser);
+  const normalizationMode = usePlaybackPrefsStore((s) => s.normalization);
 
   const playable = useMemo(
     () => (current ? playableFromQueueItem(current) : null),
@@ -62,14 +67,58 @@ export function AudioEngine() {
     }
   }, [currentIsHls]);
 
+  // Without a Web Audio graph (AirPlay) normalization can only turn down.
+  const applyNormalization = useCallback(() => {
+    const factor = normalizationRef.current;
+    if (gainRef.current) {
+      gainRef.current.gain.value = factor;
+    }
+    const audio = audioRef.current;
+    if (audio) {
+      audio.volume = gainRef.current ? volume : volume * Math.min(factor, 1);
+    }
+  }, [volume]);
+
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) {
       return;
     }
-    audio.volume = volume;
+    applyNormalization();
     audio.muted = muted;
-  }, [volume, muted]);
+  }, [applyNormalization, muted]);
+
+  const applyNormalizationRef = useRef(applyNormalization);
+  applyNormalizationRef.current = applyNormalization;
+
+  const localTrackId =
+    playable?.sourceProvider === 'local' && playable.id.startsWith('local:')
+      ? playable.id.slice('local:'.length)
+      : null;
+  useEffect(() => {
+    normalizationRef.current = 1;
+    applyNormalization();
+    const analysis = getNativeLibrary()?.analysis;
+    if (normalizationMode === 'off' || !localTrackId || !analysis) {
+      return;
+    }
+    let cancelled = false;
+    analysis
+      .detail(localTrackId)
+      .then((detail) => {
+        if (!cancelled) {
+          normalizationRef.current = normalizationFor(
+            normalizationMode,
+            detail,
+          ).factor;
+          applyNormalization();
+        }
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [localTrackId, normalizationMode, applyNormalization]);
 
   // OS-level media controls (lock screen, notification, headset/keyboard
   // media keys) — matches Nuclear desktop's official MediaSession plugin,
@@ -165,13 +214,17 @@ export function AudioEngine() {
           sourceRef.current = ctx.createMediaElementSource(audio);
         }
         if (!analyserRef.current) {
+          const gain = ctx.createGain();
           const analyser = ctx.createAnalyser();
           analyser.fftSize = 256;
           analyser.smoothingTimeConstant = 0.75;
-          sourceRef.current.connect(analyser);
+          sourceRef.current.connect(gain);
+          gain.connect(analyser);
           analyser.connect(ctx.destination);
+          gainRef.current = gain;
           analyserRef.current = analyser;
           setAnalyser(analyser);
+          applyNormalizationRef.current();
         }
       } catch {
         // createMediaElementSource can only run once per element — ignore races.
