@@ -79,3 +79,27 @@ export function followPlayhead(
   const span = view.end - view.start;
   return clampView({ start: time, end: time + span }, duration, minSpan);
 }
+
+/** `[` / `]` put the selection's start or end at the playhead, keeping the
+ * other edge (or the track start/end when there is no selection). An edge
+ * that would cross the other one starts a fresh selection to the track
+ * boundary instead; a zero-length result is ignored. */
+export function selectionWithEdge(
+  selection: TimeView | null,
+  edge: 'start' | 'end',
+  at: number,
+  duration: number,
+): TimeView | null {
+  const t = Math.min(Math.max(at, 0), duration);
+  const next =
+    edge === 'start'
+      ? {
+          start: t,
+          end: selection && selection.end > t ? selection.end : duration,
+        }
+      : {
+          start: selection && selection.start < t ? selection.start : 0,
+          end: t,
+        };
+  return next.end > next.start ? next : null;
+}

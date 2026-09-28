@@ -276,7 +276,7 @@ export const ProWaveform = forwardRef<ProWaveformHandle, Props>(
         ref={wrapperRef}
         tabIndex={0}
         role="application"
-        aria-label={`${label}. Space plays or pauses, arrow keys move the playhead, plus and minus zoom, Z zooms to the selection, Delete cuts it, Escape clears it.`}
+        aria-label={`${label}. Space plays or pauses, arrow keys move the playhead, left and right bracket start and end a selection at the playhead, plus and minus zoom, Z zooms to the selection, Delete cuts it, Escape clears it.`}
         onKeyDown={onKeyDown}
         onPointerDown={(event) => {
           if (event.button !== 0) {

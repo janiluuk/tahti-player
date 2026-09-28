@@ -6,6 +6,7 @@ import {
   followPlayhead,
   minSpanSec,
   panBy,
+  selectionWithEdge,
   viewForRange,
   zoomAt,
 } from './viewMath';
@@ -88,5 +89,43 @@ describe('ruler', () => {
     expect(formatClock(1.2345, 0.001)).toBe('0:01.235');
     expect(formatClock(59.9996, 0.001)).toBe('1:00.000');
     expect(formatClock(-3)).toBe('0:00');
+  });
+});
+
+describe('selectionWithEdge', () => {
+  it('starts a selection at the playhead running to the track end, or ends one from the start', () => {
+    expect(selectionWithEdge(null, 'start', 10, 60)).toEqual({
+      start: 10,
+      end: 60,
+    });
+    expect(selectionWithEdge(null, 'end', 10, 60)).toEqual({
+      start: 0,
+      end: 10,
+    });
+  });
+
+  it('moves one edge and keeps the other', () => {
+    const selection = { start: 10, end: 30 };
+    expect(selectionWithEdge(selection, 'start', 20, 60)).toEqual({
+      start: 20,
+      end: 30,
+    });
+    expect(selectionWithEdge(selection, 'end', 45, 60)).toEqual({
+      start: 10,
+      end: 45,
+    });
+  });
+
+  it('starts fresh when an edge would cross the other, and ignores empty ranges', () => {
+    expect(selectionWithEdge({ start: 10, end: 30 }, 'start', 40, 60)).toEqual({
+      start: 40,
+      end: 60,
+    });
+    expect(selectionWithEdge({ start: 10, end: 30 }, 'end', 5, 60)).toEqual({
+      start: 0,
+      end: 5,
+    });
+    expect(selectionWithEdge(null, 'start', 60, 60)).toBeNull();
+    expect(selectionWithEdge(null, 'end', -3, 60)).toBeNull();
   });
 });
