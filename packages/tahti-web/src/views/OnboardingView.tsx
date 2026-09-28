@@ -175,7 +175,15 @@ export function OnboardingView() {
     }
     setSaving(true);
     try {
-      if (!user.channel) {
+      if (!useAuthStore.getState().profileLoaded) {
+        await useAuthStore.getState().refresh();
+      }
+      const known = useAuthStore.getState();
+      if (!known.profileLoaded) {
+        toast.error('Could not load your account. Try again in a moment.');
+        return;
+      }
+      if (!known.user?.channel) {
         const provisioned = await provisionChannel();
         if (!provisioned.ok) {
           toast.error(provisioned.error || 'Could not create your channel.');

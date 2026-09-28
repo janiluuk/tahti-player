@@ -9,9 +9,22 @@ import {
 } from '../lib/processingItems';
 
 describe('shouldShowConnectedStatusBar', () => {
+  it('never shows in the web app', () => {
+    expect(
+      shouldShowConnectedStatusBar({
+        desktopApp: false,
+        signedIn: true,
+        playerBarVisible: false,
+        hasPlayable: false,
+        fullScreenPlayerOpen: false,
+      }),
+    ).toBe(false);
+  });
+
   it('shows for signed-in users when the compact player is absent', () => {
     expect(
       shouldShowConnectedStatusBar({
+        desktopApp: true,
         signedIn: true,
         playerBarVisible: true,
         hasPlayable: false,
@@ -23,6 +36,7 @@ describe('shouldShowConnectedStatusBar', () => {
   it('hides when the compact player is showing', () => {
     expect(
       shouldShowConnectedStatusBar({
+        desktopApp: true,
         signedIn: true,
         playerBarVisible: true,
         hasPlayable: true,
@@ -34,6 +48,7 @@ describe('shouldShowConnectedStatusBar', () => {
   it('hides even while playing (compact bar stays visible on mobile too)', () => {
     expect(
       shouldShowConnectedStatusBar({
+        desktopApp: true,
         signedIn: true,
         playerBarVisible: true,
         hasPlayable: true,
@@ -45,6 +60,7 @@ describe('shouldShowConnectedStatusBar', () => {
   it('hides while the full-screen player is open', () => {
     expect(
       shouldShowConnectedStatusBar({
+        desktopApp: true,
         signedIn: true,
         playerBarVisible: false,
         hasPlayable: false,

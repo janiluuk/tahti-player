@@ -16,6 +16,7 @@ import { fetchStudioSounds } from '../api/studio';
 import { fetchStorageUsage } from '../api/studio-extras';
 import type { StudioSound } from '../api/studio-types';
 import { usePolling } from '../hooks/usePolling';
+import { hasNativePlayer } from '../lib/nativeCapabilities';
 import { getNativeLibrary } from '../lib/nativeLibrary';
 import {
   encodingStatusLabel,
@@ -186,7 +187,7 @@ export function StatusBarContent({
   );
 }
 
-/** Bottom Status Bar when the compact player is not showing (signed-in). */
+/** Desktop app only: bottom Status Bar when the compact player is not showing (signed-in). */
 export function ConnectedStatusBar() {
   const user = useAuthStore((state) => state.user);
   const queue = usePlayerStore((state) => state.queue);
@@ -208,6 +209,7 @@ export function ConnectedStatusBar() {
   const playable = current ? playableFromQueueItem(current) : null;
 
   const visible = shouldShowConnectedStatusBar({
+    desktopApp: hasNativePlayer(),
     signedIn: Boolean(user),
     playerBarVisible,
     hasPlayable: Boolean(playable),

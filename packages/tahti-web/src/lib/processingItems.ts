@@ -25,13 +25,19 @@ export function mergeProcessingItems(
 }
 
 /** Status Bar fills the bottom slot only when the compact player would not. */
+/**
+ * The status bar (tracks, notifications, storage, encoding) belongs to the
+ * desktop app only; the web app never shows it (user decision 2026-09-28,
+ * docs/DECISIONS.md).
+ */
 export function shouldShowConnectedStatusBar(opts: {
+  desktopApp: boolean;
   signedIn: boolean;
   playerBarVisible: boolean;
   hasPlayable: boolean;
   fullScreenPlayerOpen: boolean;
 }): boolean {
-  if (!opts.signedIn || opts.fullScreenPlayerOpen) {
+  if (!opts.desktopApp || !opts.signedIn || opts.fullScreenPlayerOpen) {
     return false;
   }
   const compactPlayerShowing = opts.playerBarVisible && opts.hasPlayable;

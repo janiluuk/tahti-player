@@ -61,7 +61,6 @@ import { colorSchemeCssVars, normalizeColorScheme } from '../lib/colorScheme';
 import { isPinned } from '../lib/pinnedTracks';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { useAuthStore } from '../stores/authStore';
-import { useLayoutStore } from '../stores/layoutStore';
 import { useListenerWidgetsStore } from '../stores/listenerWidgetsStore';
 import { usePlayerStore } from '../stores/playerStore';
 
@@ -117,10 +116,6 @@ export function ChannelView({ slug }: { slug: string }) {
   const currentId = usePlayerStore((s) => s.currentId);
   const playbackStatus = usePlayerStore((s) => s.status);
   const isMobile = useIsMobile();
-  const setChatContext = useLayoutStore((s) => s.setChatContext);
-  const clearChatContext = useLayoutStore((s) => s.clearChatContext);
-  const openChatRail = useLayoutStore((s) => s.openChatRail);
-  useEffect(() => clearChatContext, [clearChatContext]);
 
   const isOwner = Boolean(
     me && channel && me.username === channel.user.username,
@@ -151,23 +146,6 @@ export function ChannelView({ slug }: { slug: string }) {
   useEffect(() => {
     setEditing(Boolean(search.edit && isOwner));
   }, [search.edit, isOwner]);
-
-  // Chat follows the page: on while the channel loads, then per the
-  // channel's own setting. Kept out of the data fetch so toggling edit mode
-  // doesn't refetch the page.
-  useEffect(() => {
-    if (loading || !channel) {
-      setChatContext({ slug, enabled: true, autoOpen: !editing });
-      return;
-    }
-    const enabled = channel.chatEnabled !== false;
-    setChatContext({
-      slug,
-      enabled,
-      reason: enabled ? null : 'Chat is disabled for this channel',
-      autoOpen: enabled && !editing,
-    });
-  }, [slug, setChatContext, editing, loading, channel?.chatEnabled]);
 
   const { pinnedPlayables, catalogPlayables } = useMemo(() => {
     const pinnedItems = [...sounds]
@@ -306,7 +284,7 @@ export function ChannelView({ slug }: { slug: string }) {
     if (!chatOn) {
       return;
     }
-    openChatRail(slug);
+    void navigate({ to: '/chat/$slug', params: { slug } });
   };
 
   // Combined save for the single toolbar button: the layers menu embeds

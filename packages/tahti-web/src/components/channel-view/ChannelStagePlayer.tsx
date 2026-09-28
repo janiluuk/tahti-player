@@ -1,3 +1,4 @@
+import { useNavigate } from '@tanstack/react-router';
 import {
   HeartIcon,
   MessageCircle,
@@ -16,7 +17,6 @@ import {
   resolveNowPlayingOverlayPreset,
 } from '../../content/nowPlayingOverlayPresets';
 import { prefetchHls } from '../../lib/hlsLoader';
-import { useLayoutStore } from '../../stores/layoutStore';
 import { useLibraryStore } from '../../stores/libraryStore';
 import { usePlayerStore } from '../../stores/playerStore';
 import { NowPlayingOverlay } from '../NowPlayingOverlay';
@@ -51,9 +51,7 @@ export function ChannelStagePlayer({
   const favorited = useLibraryStore((s) =>
     s.favoriteChannels.some((c) => c.slug === slug),
   );
-  const openChatRail = useLayoutStore((s) => s.openChatRail);
-  const rightCollapsed = useLayoutStore((s) => s.rightCollapsed);
-  const toggleRight = useLayoutStore((s) => s.toggleRight);
+  const navigate = useNavigate();
 
   const channelIsCurrent =
     currentId === `live:${slug}` || currentId === `radio:${slug}`;
@@ -66,11 +64,7 @@ export function ChannelStagePlayer({
     if (!chatOn) {
       return;
     }
-    if (rightCollapsed) {
-      openChatRail(slug);
-    } else {
-      toggleRight();
-    }
+    void navigate({ to: '/chat/$slug', params: { slug } });
   };
 
   const handlePlayChannel = () => {
@@ -148,17 +142,13 @@ export function ChannelStagePlayer({
       {(live || channel.hlsUrl) && (
         <div className="absolute right-4 bottom-4 z-[2] flex items-center gap-3">
           {chatOn && (
-            <Tooltip
-              content={rightCollapsed ? 'Expand chat' : 'Collapse chat'}
-              side="top"
-            >
+            <Tooltip content="Open chat" side="top">
               <Button
                 size="icon"
                 variant="text"
                 className="size-11 bg-black/45 text-white backdrop-blur-sm hover:bg-black/65"
                 onClick={handleToggleChat}
-                aria-pressed={!rightCollapsed}
-                aria-label={rightCollapsed ? 'Expand chat' : 'Collapse chat'}
+                aria-label="Open chat"
               >
                 <MessageCircle size={20} aria-hidden />
               </Button>

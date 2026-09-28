@@ -5,21 +5,11 @@ import { Button, Input, ViewShell } from '@tahti-player/ui';
 
 import { fetchDirectory } from '../api/client';
 import { ChannelChatPanel } from '../components/ChannelChatPanel';
-import { useLayoutStore } from '../stores/layoutStore';
 
 export function ChatView({ slug }: { slug?: string }) {
   const navigate = useNavigate();
   const [draft, setDraft] = useState(slug ?? 'northern-lights');
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  const setChatContext = useLayoutStore((s) => s.setChatContext);
-  const openChatRail = useLayoutStore((s) => s.openChatRail);
-
-  useEffect(() => {
-    if (!slug) {
-      return;
-    }
-    setChatContext({ slug, enabled: true, autoOpen: true });
-  }, [slug, setChatContext]);
 
   useEffect(() => {
     if (slug) {
@@ -94,13 +84,6 @@ export function ChatView({ slug }: { slug?: string }) {
           >
             Open channel
           </Link>
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={() => openChatRail(slug)}
-          >
-            Open chat rail
-          </Button>
         </div>
       </div>
       <ChannelChatPanel slug={slug} />

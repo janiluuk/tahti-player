@@ -222,12 +222,12 @@ export const studioGovernanceRoute = createRoute({
   path: '/studio/governance',
   validateSearch: (
     search: Record<string, unknown>,
-  ): { tab?: 'topics' | 'guide' } => ({
+  ): { tab?: 'topics' | 'documents' | 'guide' } => ({
     tab:
       search.tab === 'topics' || search.tab === 'feature-requests'
         ? 'topics'
-        : search.tab === 'guide'
-          ? 'guide'
+        : search.tab === 'documents' || search.tab === 'guide'
+          ? search.tab
           : undefined,
   }),
   component: function StudioGovernanceRoute() {

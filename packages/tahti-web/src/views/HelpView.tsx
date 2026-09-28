@@ -1,7 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import {
   ArrowLeftIcon,
-  ArrowRightIcon,
   BookOpenIcon,
   CompassIcon,
   HeadphonesIcon,
@@ -14,7 +13,7 @@ import {
   ShieldCheckIcon,
   SparklesIcon,
 } from 'lucide-react';
-import { useMemo, useState, type ReactNode } from 'react';
+import { useMemo, useState } from 'react';
 
 import {
   Badge,
@@ -30,9 +29,10 @@ import {
 } from '@tahti-player/ui';
 
 import { HelpKeyboardShortcuts } from '../components/HelpKeyboardShortcuts';
+import { HelpLinkCard } from '../components/HelpLinkCard';
 import { PageFrame, PageHeader } from '../components/PageHeader';
-import { StudioPanel } from '../components/StudioPanel';
 import { SupportContactForm } from '../components/SupportContactForm';
+import { SERVICE_DOCUMENTS } from '../content/documentLinks';
 import {
   getHelpArticle,
   HELP_ARTICLES,
@@ -150,82 +150,6 @@ const QUICK_STARTS = [
   },
 ] as const;
 
-const DOCUMENT_GROUPS = [
-  {
-    id: 'transparency',
-    label: 'Transparency',
-    items: [
-      {
-        title: 'Transparency dashboard',
-        description: 'Current ledger, grants, and public financial totals.',
-        to: '/transparency',
-      },
-      {
-        title: 'Grant reports',
-        description: 'Browse annual grant distribution reports by year.',
-        to: '/transparency',
-      },
-      {
-        title: 'Transparency methodology',
-        description: 'How figures are recorded, reviewed, and published.',
-        to: '/transparency/methodology',
-      },
-    ],
-  },
-  {
-    id: 'legal',
-    label: 'Legal & policies',
-    items: [
-      {
-        title: 'About Tahti',
-        description: 'Mission, cooperative structure, and commitments.',
-        to: '/about',
-      },
-      {
-        title: 'Terms of service',
-        description: 'The rules for using Tahti services.',
-        to: '/terms',
-      },
-      {
-        title: 'Privacy policy',
-        description: 'What data is collected and how it is handled.',
-        to: '/privacy',
-      },
-      {
-        title: 'AGPL source licence',
-        description: 'The licence and source-code obligations for Tahti.',
-        to: '/agpl',
-      },
-    ],
-  },
-  {
-    id: 'operations',
-    label: 'Operations',
-    items: [
-      {
-        title: 'Platform status',
-        description: 'Current service health and incident information.',
-        to: '/status',
-      },
-      {
-        title: 'Platform news',
-        description: 'News, service updates, and posts from the Tahti team.',
-        to: '/news',
-      },
-      {
-        title: 'Support',
-        description: 'Contact support about an account or platform problem.',
-        to: '/help/support',
-      },
-      {
-        title: 'Admin guide',
-        description: 'Operational guidance for board and platform admins.',
-        to: '/help/admin-guide',
-      },
-    ],
-  },
-] as const;
-
 function articleMatches(article: HelpArticle, query: string): boolean {
   const keyboardExtra =
     article.slug === 'keyboard-shortcuts'
@@ -258,50 +182,6 @@ function sectionId(heading: string, index: number): string {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '');
   return `${slug || 'section'}-${index}`;
-}
-
-function HelpLinkCard({
-  title,
-  description,
-  meta,
-  icon,
-}: {
-  title: string;
-  description: string;
-  meta?: ReactNode;
-  icon?: ReactNode;
-}) {
-  return (
-    <Box
-      variant="tertiary"
-      shadow="default"
-      className="group hover:border-primary flex min-h-32 min-w-0 flex-col justify-between gap-3 transition-colors"
-    >
-      <div className="flex min-w-0 items-start gap-3">
-        {icon ? (
-          <span className="bg-primary text-primary-foreground flex size-9 shrink-0 items-center justify-center rounded-md">
-            {icon}
-          </span>
-        ) : null}
-        <div className="min-w-0 flex-1">
-          <div className="flex items-start justify-between gap-3">
-            <h3 className="font-display min-w-0 text-base font-bold tracking-tight">
-              {title}
-            </h3>
-            <ArrowRightIcon
-              size={17}
-              aria-hidden
-              className="text-foreground-secondary mt-0.5 shrink-0 transition-transform group-hover:translate-x-0.5"
-            />
-          </div>
-          <p className="text-foreground-secondary mt-2 text-sm leading-relaxed">
-            {description}
-          </p>
-        </div>
-      </div>
-      {meta ? <div className="mt-auto">{meta}</div> : null}
-    </Box>
-  );
 }
 
 function HelpGuideCard({ article }: { article: HelpArticle }) {
@@ -355,41 +235,6 @@ export function HelpHubView() {
           </Button>
         </Tooltip>
       </div>
-
-      <StudioPanel
-        title="Documents and public records"
-        description="Find transparency, governance, legal, and service documents from one place."
-        className="min-w-0"
-      >
-        <div data-help-documents>
-          <p className="text-foreground-secondary mb-3 text-xs font-bold tracking-[0.16em] uppercase">
-            Reference library
-          </p>
-          <Tabs
-            items={DOCUMENT_GROUPS.map((group) => ({
-              id: group.id,
-              label: group.label,
-              content: (
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                  {group.items.map((item) => (
-                    <Link
-                      key={item.title}
-                      to={item.to as never}
-                      className="min-w-0"
-                    >
-                      <HelpLinkCard
-                        title={item.title}
-                        description={item.description}
-                      />
-                    </Link>
-                  ))}
-                </div>
-              ),
-            }))}
-            listClassName="overflow-x-auto"
-          />
-        </div>
-      </StudioPanel>
 
       <SectionShell title="Pick a path" data-testid="help-quick-start">
         <div
@@ -495,6 +340,16 @@ export function HelpHubView() {
             listClassName="overflow-x-auto"
           />
         )}
+      </SectionShell>
+
+      <SectionShell title="Policies and service" data-testid="help-policies">
+        <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {SERVICE_DOCUMENTS.map((item) => (
+            <Link key={item.title} to={item.to as never} className="min-w-0">
+              <HelpLinkCard title={item.title} description={item.description} />
+            </Link>
+          ))}
+        </div>
       </SectionShell>
 
       <p className="text-foreground-secondary border-border border-t pt-5 text-xs">

@@ -18,6 +18,7 @@ type Props = {
 export function StudioGate({ children, requireChannel = true }: Props) {
   const user = useAuthStore((s) => s.user);
   const hydrated = useAuthStore((s) => s.hydrated);
+  const profileLoaded = useAuthStore((s) => s.profileLoaded);
   const openAuth = useAuthModalStore((s) => s.open);
   const openChannelSetup = useChannelSetupModalStore((s) => s.open);
 
@@ -53,6 +54,10 @@ export function StudioGate({ children, requireChannel = true }: Props) {
         }
       />
     );
+  }
+
+  if (requireChannel && !user.channel && !profileLoaded) {
+    return <PageLoading label="Loading your channel…" />;
   }
 
   if (requireChannel && !user.channel) {

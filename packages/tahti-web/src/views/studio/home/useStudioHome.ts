@@ -27,6 +27,7 @@ import { Counts, EMPTY_STATS } from './home-helpers';
 /** Loads and derives every number/list shown on the Studio home dashboard. */
 export function useStudioHome() {
   const user = useAuthStore((s) => s.user);
+  const profileLoaded = useAuthStore((s) => s.profileLoaded);
   const openChannelSetup = useChannelSetupModalStore((s) => s.open);
   const [counts, setCounts] = useState<Counts>({
     sounds: 0,
@@ -48,12 +49,17 @@ export function useStudioHome() {
   const autoPromptedChannelSetup = useRef(false);
 
   useEffect(() => {
-    if (!user || user.channel || autoPromptedChannelSetup.current) {
+    if (
+      !user ||
+      !profileLoaded ||
+      user.channel ||
+      autoPromptedChannelSetup.current
+    ) {
       return;
     }
     autoPromptedChannelSetup.current = true;
     openChannelSetup();
-  }, [openChannelSetup, user]);
+  }, [openChannelSetup, profileLoaded, user]);
 
   useEffect(() => {
     if (!user?.channel) {
