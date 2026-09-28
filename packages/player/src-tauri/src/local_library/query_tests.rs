@@ -101,7 +101,7 @@ async fn paginates_100k_generated_rows() {
     assert_eq!(found.total, 1);
 
     let mut facet_times = Vec::new();
-    for kind in [FacetKind::Artists, FacetKind::Albums, FacetKind::Genres, FacetKind::Folders] {
+    for kind in [FacetKind::Artists, FacetKind::Albums, FacetKind::Genres, FacetKind::Composers, FacetKind::Folders] {
         let started = std::time::Instant::now();
         let groups = facets(&pool, kind).await.unwrap();
         facet_times.push((kind, groups.len(), started.elapsed()));
@@ -528,4 +528,23 @@ async fn search_finds_composer_and_genre_by_long_and_short_terms() {
     sqlx::query("UPDATE library_tracks SET composer = 'Debussy'").execute(&pool).await.unwrap();
     assert_eq!(list(&pool, "satie", 0).await.unwrap().total, 0, "the index follows composer edits");
     assert_eq!(list(&pool, "debussy", 0).await.unwrap().total, 1);
+}
+
+#[tokio::test]
+async fn composers_group_ignoring_case_and_filter_the_track_list() {
+    let (_dir, pool) = browse_fixture().await;
+    let ids: Vec<String> = sqlx::query_scalar("SELECT id FROM library_tracks ORDER BY title").fetch_all(&pool).await.unwrap();
+    for (id, composer) in ids.iter().zip(["Erik Satie", "erik satie", "Debussy"]) {
+        sqlx::query("UPDATE library_tracks SET composer = ? WHERE id = ?").bind(composer).bind(id).execute(&pool).await.unwrap();
+    }
+
+    let composers = facets(&pool, FacetKind::Composers).await.unwrap();
+    let satie = composers.iter().find(|g| g.name.eq_ignore_ascii_case("erik satie")).unwrap();
+    assert_eq!(satie.track_count, 2);
+    assert!(composers.iter().any(|g| g.name.is_empty() && g.track_count == 1), "tracks without a composer form one group");
+
+    let filter = FacetFilter { kind: FacetKind::Composers, value: "ERIK SATIE".into(), secondary: None };
+    assert_eq!(list_filtered(&pool, "", Some(&filter), None, 0).await.unwrap().total, 2);
+    let none = FacetFilter { kind: FacetKind::Composers, value: String::new(), secondary: None };
+    assert_eq!(list_filtered(&pool, "", Some(&none), None, 0).await.unwrap().total, 1);
 }

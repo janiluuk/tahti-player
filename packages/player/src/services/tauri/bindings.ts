@@ -575,7 +575,7 @@ export type FacetGroup = {
 };
 
 /**  What a browse tab groups by. */
-export type FacetKind = "artists" | "albums" | "genres" | "folders";
+export type FacetKind = "artists" | "albums" | "genres" | "composers" | "folders";
 
 /**  One requested change. `value: None` puts the file's own tag back. */
 export type FieldEdit = {
