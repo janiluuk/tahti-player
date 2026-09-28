@@ -401,3 +401,8 @@ has a Publish action: semver version (next patch prefilled), `.js`/`.mjs`
 bundle up to 2 MB, optional changelog → `prepare-upload` → PUT to storage →
 `publish-version` (moves the add-on to PENDING). Not tried against real
 storage. Still open: the multi-category submission/moderation project.
+
+**2026-09-28 edit and delete (#217, #218 stacked):** cards have Edit
+(`PATCH /api/admin/addons/:id`: name, description, author, cover,
+categories; slug and type locked) and Delete (`DELETE`, with a confirmation
+that points at Disable as the reversible option).

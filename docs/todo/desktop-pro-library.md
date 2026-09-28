@@ -118,7 +118,7 @@ Depends on: phase 0. First usable personal music library.
 
 **Exit demo:** import a 1,000-file nested folder, restart offline, search a basic title list and play/seek tracks without re-import. Re-scan adds no duplicates; corrupt files do not abort the batch; disconnected files remain visible and can be relinked.
 
-- **2026-09-28 composer (#211):** migration `0021_composer.sql`; read on import/re-read/relink, shown in the inspector and as a hidden-by-default sortable Composer column. Not searchable (FTS columns unchanged), not editable, not taken from iTunes XML.
+- **2026-09-28 composer (#211):** migration `0021_composer.sql`; read on import/re-read/relink, shown in the inspector and as a hidden-by-default sortable Composer column. Not searchable (FTS columns unchanged), not editable, not taken from iTunes XML. **Follow-ups:** searchable via migration `0022` (#219, the short-term LIKE scan now covers the same 8 columns), editable with tag write-back (#220), taken from iTunes XML (#221, stacked on #220), Composers browse tab with index `0023` (#222), smart-playlist rule and sort (#223).
 
 ## Phase 2 — Catalog, sorting, filtering and search
 
