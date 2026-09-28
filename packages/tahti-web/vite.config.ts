@@ -164,10 +164,7 @@ export default defineConfig(({ command, mode }) => {
           target: tahtiApi,
           changeOrigin: true,
           rewrite: (path) =>
-            path.replace(
-              /^\/widget-sandbox\/bundle/,
-              '/api/v1/disco-widgets/bundle',
-            ),
+            path.replace(/^\/widget-sandbox\/bundle/, '/api/v1/addons/bundle'),
         },
       },
     },
