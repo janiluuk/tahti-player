@@ -11,6 +11,7 @@ import { AddonCard } from './addons/AddonCard';
 import { InstallPickerDialog } from './addons/InstallPickerDialog';
 import { InstallsPanel } from './addons/InstallsPanel';
 import { ManageDialog } from './addons/ManageDialog';
+import { PublishDialog } from './addons/PublishDialog';
 import { RegisterDialog } from './addons/RegisterDialog';
 import { RejectDialog } from './addons/RejectDialog';
 import { SCOPES } from './addons/shared';
@@ -33,6 +34,10 @@ export function AdminAddonsView() {
     setRejectTarget,
     manageTarget,
     setManageTarget,
+    publishTarget,
+    setPublishTarget,
+    openPublish,
+    publish,
     surface,
     setSurface,
     installs,
@@ -114,7 +119,11 @@ export function AdminAddonsView() {
                 onChange={(id) => setNeedsReviewOnly(id === 'PENDING')}
               />
 
-              {error && !registerOpen && !rejectTarget && !manageTarget ? (
+              {error &&
+              !registerOpen &&
+              !rejectTarget &&
+              !manageTarget &&
+              !publishTarget ? (
                 <p className="text-accent-red text-sm" role="alert">
                   {error}
                 </p>
@@ -137,6 +146,7 @@ export function AdminAddonsView() {
                       onApprove={approve}
                       onReject={setRejectTarget}
                       onManage={setManageTarget}
+                      onPublish={openPublish}
                     />
                   ))}
                 </div>
@@ -167,6 +177,14 @@ export function AdminAddonsView() {
                 onSetEnabledByDefault={setEnabledByDefault}
                 onSetDefaultConfig={setDefaultConfig}
                 onDisable={disable}
+              />
+
+              <PublishDialog
+                addon={publishTarget}
+                pending={pending}
+                error={error}
+                onCancel={() => setPublishTarget(null)}
+                onPublish={publish}
               />
 
               <InstallsPanel

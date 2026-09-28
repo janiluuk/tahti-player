@@ -8,12 +8,14 @@ import {
   fetchAdminAddonInstalls,
   fetchAdminAddons,
   patchAdminAddonInstall,
+  publishAdminAddonVersion,
   registerAdminAddon,
   rejectAdminAddon,
   setAdminAddonDefaultConfig,
   setAdminAddonEnabledByDefault,
   type AdminAddon,
   type AdminAddonInstall,
+  type AdminAddonPublishInput,
   type AdminAddonRegisterInput,
   type AdminAddonScope,
 } from '../../../api/admin';
@@ -30,6 +32,7 @@ export function useAdminAddons() {
   const [error, setError] = useState<string | null>(null);
   const [rejectTarget, setRejectTarget] = useState<AdminAddon | null>(null);
   const [manageTarget, setManageTarget] = useState<AdminAddon | null>(null);
+  const [publishTarget, setPublishTarget] = useState<AdminAddon | null>(null);
 
   const [surface, setSurface] = useState('homepage');
   const [installs, setInstalls] = useState<AdminAddonInstall[]>([]);
@@ -131,6 +134,22 @@ export function useAdminAddons() {
       applyUpdate(result);
       if (result.ok) {
         setManageTarget(null);
+      }
+    });
+  };
+
+  const openPublish = (addon: AdminAddon) => {
+    setError(null);
+    setPublishTarget(addon);
+  };
+
+  const publish = (addon: AdminAddon, input: AdminAddonPublishInput) => {
+    setPending(true);
+    setError(null);
+    void publishAdminAddonVersion(addon.id, input).then((result) => {
+      applyUpdate(result);
+      if (result.ok) {
+        setPublishTarget(null);
       }
     });
   };
@@ -281,6 +300,10 @@ export function useAdminAddons() {
     setRejectTarget,
     manageTarget,
     setManageTarget,
+    publishTarget,
+    setPublishTarget,
+    openPublish,
+    publish,
     surface,
     setSurface,
     installs,

@@ -1,4 +1,4 @@
-import { CheckIcon, SettingsIcon, XIcon } from 'lucide-react';
+import { CheckIcon, SettingsIcon, UploadIcon, XIcon } from 'lucide-react';
 
 import { Badge, Button, ImageReveal, Tooltip } from '@tahti-player/ui';
 
@@ -11,12 +11,14 @@ export function AddonCard({
   onApprove,
   onReject,
   onManage,
+  onPublish,
 }: {
   addon: AdminAddon;
   pending: boolean;
   onApprove: (addon: AdminAddon) => void;
   onReject: (addon: AdminAddon) => void;
   onManage: (addon: AdminAddon) => void;
+  onPublish: (addon: AdminAddon) => void;
 }) {
   return (
     <article className="border-border bg-background-secondary/40 flex gap-4 rounded-xl border p-4">
@@ -66,6 +68,18 @@ export function AddonCard({
         </div>
       </div>
       <div className="flex shrink-0 items-start gap-1">
+        <Tooltip content={`Publish a version of ${addon.name}`} side="top">
+          <Button
+            type="button"
+            size="icon-sm"
+            variant="text"
+            aria-label={`Publish a version of ${addon.name}`}
+            disabled={pending}
+            onClick={() => onPublish(addon)}
+          >
+            <UploadIcon size={16} aria-hidden />
+          </Button>
+        </Tooltip>
         {addon.status === 'PENDING' && (
           <>
             <Tooltip content={`Approve ${addon.name}`} side="top">

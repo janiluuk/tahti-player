@@ -13,9 +13,8 @@ export type AdminAddonStatus =
 // with versioning, sandboxed rendering, and a moderation lifecycle — not a
 // plain metadata CRUD resource. There is no generic PATCH/DELETE for an
 // addon's own record: only `register` (create, status DRAFT), `prepare-
-// upload`/`publish-version` (JS bundle, not modeled here — no UI for
-// authoring/uploading a widget bundle exists yet), and the specific actions
-// below (approve/reject/disable, default-config, enabled-by-default).
+// upload`/`publish-version` (JS bundle, see `publishAdminAddonVersion`),
+// and the specific actions below (approve/reject/disable, default-config, enabled-by-default).
 export type AdminAddon = {
   id: string;
   slug: string;
@@ -278,6 +277,84 @@ export async function disableAdminAddon(
     return {
       ok: false,
       error: err instanceof Error ? err.message : 'Disable failed',
+    };
+  }
+}
+
+export const ADDON_BUNDLE_MAX_BYTES = 2 * 1024 * 1024;
+export const ADDON_VERSION_PATTERN = /^\d+\.\d+\.\d+$/;
+
+export type AdminAddonPublishInput = {
+  version: string;
+  changelog?: string;
+  file: File;
+};
+
+/** Three steps against `../tahti-org` apps/api/src/routes/admin/addons.ts:
+ * `prepare-upload` presigns a PUT for `<slug>/<version>`, the bundle goes
+ * straight to storage, then `publish-version` validates it as an ES module,
+ * records the hash and moves the add-on to PENDING for review. */
+export async function publishAdminAddonVersion(
+  id: string,
+  input: AdminAddonPublishInput,
+): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
+  const version = input.version.trim();
+  if (!ADDON_VERSION_PATTERN.test(version)) {
+    return { ok: false, error: 'Version must look like 1.0.0' };
+  }
+  if (input.file.size === 0) {
+    return { ok: false, error: 'The bundle file is empty' };
+  }
+  if (input.file.size > ADDON_BUNDLE_MAX_BYTES) {
+    return { ok: false, error: 'Bundles can be at most 2 MB' };
+  }
+  const changelog = input.changelog?.trim() || undefined;
+  if (isForceMock()) {
+    const existing = mockAddons.find((addon) => addon.id === id);
+    if (!existing) {
+      return { ok: false, error: 'Add-on not found' };
+    }
+    if (existing.currentVersion === version) {
+      return {
+        ok: false,
+        error: 'That version is already published — bump it',
+      };
+    }
+    const updated: AdminAddon = {
+      ...existing,
+      currentVersion: version,
+      bundleSizeBytes: input.file.size,
+      status: 'PENDING',
+      moderationNote: null,
+      updatedAt: new Date().toISOString(),
+    };
+    mockAddons = mockAddons.map((addon) => (addon.id === id ? updated : addon));
+    return { ok: true, data: updated };
+  }
+  try {
+    const path = `/api/admin/addons/${encodeURIComponent(id)}`;
+    const prep = await sendJson<{ uploadUrl: string; bundleKey: string }>(
+      `${path}/prepare-upload`,
+      'POST',
+      { version, fileSizeBytes: input.file.size },
+    );
+    const put = await fetch(prep.uploadUrl, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/javascript' },
+      body: input.file,
+    });
+    if (!put.ok) {
+      return { ok: false, error: `Upload failed (${put.status})` };
+    }
+    const data = await sendJson<AdminAddon>(`${path}/publish-version`, 'POST', {
+      version,
+      ...(changelog ? { changelog } : {}),
+    });
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Publish failed',
     };
   }
 }

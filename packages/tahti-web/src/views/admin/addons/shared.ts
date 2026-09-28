@@ -42,3 +42,12 @@ export function statusColor(status: AdminAddon['status']) {
       return 'blue';
   }
 }
+
+/** `1.2.3` → `1.2.4`; anything else (a fresh `0.0.0` draft included) → `1.0.0`. */
+export function nextPatchVersion(current: string): string {
+  const match = /^(\d+)\.(\d+)\.(\d+)$/.exec(current.trim());
+  if (!match || current.trim() === '0.0.0') {
+    return '1.0.0';
+  }
+  return `${match[1]}.${match[2]}.${Number(match[3]) + 1}`;
+}
