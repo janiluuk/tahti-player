@@ -24,6 +24,7 @@ const SORTABLE = new Set<string>([
   'artist',
   'album',
   'genre',
+  'composer',
   'year',
   'trackNo',
   'duration',
@@ -104,6 +105,14 @@ export const NATIVE_TRACK_COLUMNS: CatalogColumn<NativeLibraryTrack>[] = [
     width: 130,
     sortable: true,
     render: (track) => dash(track.genre),
+  },
+  {
+    id: 'composer',
+    header: 'Composer',
+    width: 150,
+    sortable: true,
+    hiddenByDefault: true,
+    render: (track) => dash(track.composer),
   },
   {
     id: 'trackNo',

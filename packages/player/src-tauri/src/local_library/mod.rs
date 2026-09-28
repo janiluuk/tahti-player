@@ -113,6 +113,9 @@ pub struct LibraryTrack {
     #[specta(type = Option<Number<i64>>)]
     pub year: Option<i64>,
     pub genre: String,
+    /// Empty when the file has no composer tag.
+    #[sqlx(default)]
+    pub composer: String,
     pub comment: String,
     #[specta(type = Option<Number<i64>>)]
     pub bitrate_kbps: Option<i64>,

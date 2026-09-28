@@ -113,8 +113,8 @@ pub async fn relink(
     let extracted = tauri::async_runtime::spawn_blocking(move || metadata::read(&new_path))
         .await
         .map_err(|err| err.to_string())??;
-    let updated = sqlx::query("UPDATE library_tracks SET path=?, title=?, artist=?, album=?, album_artist=?, track_no=?, disc_no=?, year=?, genre=?, comment=?, bitrate_kbps=?, folder=?, format=?, duration=?, sample_rate=?, channels=?, bits_per_sample=?, size_bytes=?, artwork_key=?, available=1, unavailable_since=NULL WHERE id=?")
-        .bind(&extracted.path).bind(&extracted.title).bind(&extracted.artist).bind(&extracted.album).bind(&extracted.album_artist).bind(extracted.track_no).bind(extracted.disc_no).bind(extracted.year).bind(&extracted.genre).bind(&extracted.comment).bind(extracted.bitrate_kbps).bind(folder_of(&extracted.path)).bind(&extracted.format).bind(extracted.duration).bind(extracted.sample_rate).bind(extracted.channels).bind(extracted.bits_per_sample).bind(extracted.size_bytes).bind(&extracted.artwork_key)
+    let updated = sqlx::query("UPDATE library_tracks SET path=?, title=?, artist=?, album=?, album_artist=?, track_no=?, disc_no=?, year=?, genre=?, comment=?, bitrate_kbps=?, folder=?, format=?, duration=?, sample_rate=?, channels=?, bits_per_sample=?, size_bytes=?, artwork_key=?, composer=?, available=1, unavailable_since=NULL WHERE id=?")
+        .bind(&extracted.path).bind(&extracted.title).bind(&extracted.artist).bind(&extracted.album).bind(&extracted.album_artist).bind(extracted.track_no).bind(extracted.disc_no).bind(extracted.year).bind(&extracted.genre).bind(&extracted.comment).bind(extracted.bitrate_kbps).bind(folder_of(&extracted.path)).bind(&extracted.format).bind(extracted.duration).bind(extracted.sample_rate).bind(extracted.channels).bind(extracted.bits_per_sample).bind(extracted.size_bytes).bind(&extracted.artwork_key).bind(&extracted.composer)
         .bind(id)
         .execute(pool).await;
     if updated.is_ok() {

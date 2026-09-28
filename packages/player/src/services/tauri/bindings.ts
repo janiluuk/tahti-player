@@ -207,6 +207,8 @@ export const commands = {
 	discNo: number | null,
 	year: number | null,
 	genre: string,
+	/**  Empty when the file has no composer tag. */
+	composer: string,
 	comment: string,
 	bitrateKbps: number | null,
 	/**
@@ -847,6 +849,8 @@ export type LibraryTrack = {
 	discNo: number | null,
 	year: number | null,
 	genre: string,
+	/**  Empty when the file has no composer tag. */
+	composer: string,
 	comment: string,
 	bitrateKbps: number | null,
 	/**
@@ -1194,7 +1198,7 @@ export type SmartRule = {
  *  Sortable track-table columns. A closed enum, never user text, so the
  *  ORDER BY below is assembled from fixed SQL only.
  */
-export type SortColumn = "title" | "artist" | "album" | "genre" | "year" | "trackNo" | "duration" | "format" | "size" | "bitrate" | "added" | "rating" | "plays" | "skips" | "lastPlayed" | "bpm" | "key" | "loudness";
+export type SortColumn = "title" | "artist" | "album" | "genre" | "composer" | "year" | "trackNo" | "duration" | "format" | "size" | "bitrate" | "added" | "rating" | "plays" | "skips" | "lastPlayed" | "bpm" | "key" | "loudness";
 
 export type SpaceVerdict = 
 /**  Known sizes plus the margin fit. */

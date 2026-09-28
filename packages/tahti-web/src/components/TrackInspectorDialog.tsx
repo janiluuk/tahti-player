@@ -39,6 +39,7 @@ export function inspectorRows(
     tag('Disc', track.discNo),
     tag('Year', track.year),
     tag('Genre', track.genre),
+    tag('Composer', track.composer),
     tag('Comment', track.comment),
     file('Path', track.path),
     file('Format', track.format.toUpperCase()),
