@@ -10,9 +10,8 @@ export type AdminAddonStatus =
 
 // The real ../tahti-org backend (packages/db/prisma/schema.prisma's `Addon`
 // model + apps/api/src/routes/admin/addons.ts) is a full widget-bundle store
-// with versioning, sandboxed rendering, and a moderation lifecycle — not a
-// plain metadata CRUD resource. There is no generic PATCH/DELETE for an
-// addon's own record: only `register` (create, status DRAFT), `prepare-
+// with versioning, sandboxed rendering, and a moderation lifecycle. Besides
+// `register` (create, status DRAFT) and a metadata-only PATCH, there are `prepare-
 // upload`/`publish-version` (JS bundle, see `publishAdminAddonVersion`),
 // and the specific actions below (approve/reject/disable, default-config, enabled-by-default).
 export type AdminAddon = {
@@ -192,6 +191,53 @@ export async function registerAdminAddon(
     return {
       ok: false,
       error: err instanceof Error ? err.message : 'Registration failed',
+    };
+  }
+}
+
+export type AdminAddonPatchInput = Pick<
+  AdminAddonRegisterInput,
+  'name' | 'description' | 'authorName' | 'categories' | 'iconUrl'
+>;
+
+/** `PATCH /api/admin/addons/:id` (tahti-org `PatchAddonSchema`): every
+ * field is sent; slug and scope can't change after registering. */
+export async function updateAdminAddon(
+  id: string,
+  input: AdminAddonPatchInput,
+): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
+  const body = {
+    name: input.name.trim(),
+    description: input.description.trim(),
+    authorName: input.authorName.trim(),
+    categories: input.categories,
+    ...(input.iconUrl?.trim() ? { iconUrl: input.iconUrl.trim() } : {}),
+  };
+  if (isForceMock()) {
+    const existing = mockAddons.find((addon) => addon.id === id);
+    if (!existing) {
+      return { ok: false, error: 'Add-on not found' };
+    }
+    const updated: AdminAddon = {
+      ...existing,
+      ...body,
+      iconUrl: body.iconUrl ?? existing.iconUrl,
+      updatedAt: new Date().toISOString(),
+    };
+    mockAddons = mockAddons.map((addon) => (addon.id === id ? updated : addon));
+    return { ok: true, data: updated };
+  }
+  try {
+    const data = await sendJson<AdminAddon>(
+      `/api/admin/addons/${encodeURIComponent(id)}`,
+      'PATCH',
+      body,
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Update failed',
     };
   }
 }

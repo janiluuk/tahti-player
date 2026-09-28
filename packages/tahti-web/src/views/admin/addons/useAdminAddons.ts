@@ -13,6 +13,7 @@ import {
   rejectAdminAddon,
   setAdminAddonDefaultConfig,
   setAdminAddonEnabledByDefault,
+  updateAdminAddon,
   type AdminAddon,
   type AdminAddonInstall,
   type AdminAddonPublishInput,
@@ -33,6 +34,7 @@ export function useAdminAddons() {
   const [rejectTarget, setRejectTarget] = useState<AdminAddon | null>(null);
   const [manageTarget, setManageTarget] = useState<AdminAddon | null>(null);
   const [publishTarget, setPublishTarget] = useState<AdminAddon | null>(null);
+  const [editTarget, setEditTarget] = useState<AdminAddon | null>(null);
 
   const [surface, setSurface] = useState('homepage');
   const [installs, setInstalls] = useState<AdminAddonInstall[]>([]);
@@ -134,6 +136,34 @@ export function useAdminAddons() {
       applyUpdate(result);
       if (result.ok) {
         setManageTarget(null);
+      }
+    });
+  };
+
+  const openEdit = (addon: AdminAddon) => {
+    setDraft({
+      slug: addon.slug,
+      scope: addon.scope,
+      name: addon.name,
+      description: addon.description,
+      authorName: addon.authorName,
+      categories: addon.categories,
+      iconUrl: addon.iconUrl ?? '',
+    });
+    setError(null);
+    setEditTarget(addon);
+  };
+
+  const saveEdit = () => {
+    if (!editTarget) {
+      return;
+    }
+    setPending(true);
+    setError(null);
+    void updateAdminAddon(editTarget.id, draft).then((result) => {
+      applyUpdate(result);
+      if (result.ok) {
+        setEditTarget(null);
       }
     });
   };
@@ -302,6 +332,10 @@ export function useAdminAddons() {
     setManageTarget,
     publishTarget,
     setPublishTarget,
+    editTarget,
+    setEditTarget,
+    openEdit,
+    saveEdit,
     openPublish,
     publish,
     surface,
