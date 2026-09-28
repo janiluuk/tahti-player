@@ -26,6 +26,7 @@ import {
   clampView,
   followPlayhead,
   minSpanSec,
+  selectionWithEdge,
   viewForRange,
   zoomAt,
 } from './waveform/viewMath';
@@ -394,6 +395,13 @@ export function WaveformEditor({
 
   const ask = (next: Confirm) => setConfirm(next);
 
+  const markSelectionEdge = (edge: 'start' | 'end') => {
+    const next = selectionWithEdge(selection, edge, currentTime(), duration);
+    if (next) {
+      setSelection(next);
+    }
+  };
+
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.ctrlKey || event.metaKey || event.altKey) {
       return;
@@ -419,6 +427,8 @@ export function WaveformEditor({
       o: () => addFade('out'),
       m: addMarker,
       Escape: () => setSelection(null),
+      '[': () => markSelectionEdge('start'),
+      ']': () => markSelectionEdge('end'),
     };
     const action = actions[event.key] ?? actions[event.key.toLowerCase()];
     if (action) {
@@ -528,6 +538,15 @@ export function WaveformEditor({
               </span>
             )}
           </div>
+          <p
+            className="sr-only"
+            role="status"
+            data-testid="selection-announcement"
+          >
+            {selection
+              ? `Selection ${formatClock(selection.start, MS)} to ${formatClock(selection.end, MS)}`
+              : 'No selection'}
+          </p>
           <p className="text-foreground-secondary mt-1 text-xs">
             {note ? `${note} ` : ''}Ctrl/⌘ + scroll or pinch to zoom, Shift +
             scroll to pan. Focus the waveform for keyboard shortcuts.

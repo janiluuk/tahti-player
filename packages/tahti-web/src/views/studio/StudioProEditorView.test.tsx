@@ -195,4 +195,18 @@ describe('StudioProEditorView', () => {
     });
     expect(normalizeLabel()).toBe(after);
   });
+
+  it('marks a selection from the keyboard and announces it', async () => {
+    await renderEditor();
+    const waveform = screen.getByRole('application');
+    const announcement = screen.getByTestId('selection-announcement');
+    expect(announcement.textContent).toBe('No selection');
+
+    fireEvent.keyDown(waveform, { key: 'End' });
+    fireEvent.keyDown(waveform, { key: ']' });
+    expect(announcement.textContent).toMatch(/^Selection 0:00\.000 to /);
+
+    fireEvent.keyDown(waveform, { key: 'Escape' });
+    expect(announcement.textContent).toBe('No selection');
+  });
 });

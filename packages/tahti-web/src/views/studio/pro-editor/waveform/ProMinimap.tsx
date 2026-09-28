@@ -147,7 +147,8 @@ export const ProMinimap = forwardRef<ProMinimapHandle, Props>(
       <div className="relative h-8 w-full">
         <canvas
           ref={canvasRef}
-          aria-label="Track overview — click or drag to move the zoomed view"
+          role="img"
+          aria-label="Track overview. Click or drag to move the zoomed view; from the keyboard, use the waveform's zoom and arrow keys"
           className="border-border bg-background h-full w-full cursor-pointer touch-none rounded-md border"
           onPointerDown={(event) => {
             draggingRef.current = true;
