@@ -12,6 +12,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useAuthStore } from '../../stores/authStore';
+import { signalAnnouncement } from './go-live/SignalPanel';
 import { StudioGoLiveView } from './StudioGoLiveView';
 
 const postGoLive = vi.fn();
@@ -141,5 +142,62 @@ describe('StudioGoLiveView go-live confirmation', () => {
     );
 
     expect(postGoLive).not.toHaveBeenCalled();
+  });
+});
+
+describe('StudioGoLiveView status banner', () => {
+  async function goLive() {
+    await renderView();
+    await act(async () =>
+      fireEvent.click(screen.getByRole('button', { name: /Go Live/ })),
+    );
+    await act(async () =>
+      fireEvent.click(screen.getByRole('button', { name: 'Go live' })),
+    );
+  }
+
+  it('announces a failed go-live as an alert', async () => {
+    postGoLive.mockResolvedValue({
+      ok: false,
+      error: 'No signal from your encoder yet',
+    });
+    await goLive();
+
+    const banner = screen
+      .getAllByText('No signal from your encoder yet')
+      .find((node) => node.getAttribute('role') === 'alert');
+    expect(banner).toBeDefined();
+  });
+
+  it('reports going live as a status, even though the text has no error words', async () => {
+    await goLive();
+
+    const banner = screen.getByText(
+      'You’re live. The rotation has handed over to your broadcast.',
+    );
+    expect(banner.getAttribute('role')).toBe('status');
+  });
+});
+
+describe('StudioGoLiveView signal announcement', () => {
+  it('tells screen readers the encoder signal is in and Go Live is available', async () => {
+    await renderView();
+
+    expect(screen.getByTestId('signal-announcement').textContent).toBe(
+      'Signal received. You can go live.',
+    );
+    expect(
+      screen.getByRole('button', { name: /Show info/ }).textContent,
+    ).toMatch(/not confirmed yet/);
+  });
+
+  it('words each signal state', () => {
+    expect(signalAnnouncement(true, true, false)).toBe(
+      'Your broadcast is on air.',
+    );
+    expect(signalAnnouncement(false, false, false)).toBe(
+      'No signal from your encoder.',
+    );
+    expect(signalAnnouncement(false, true, true)).toMatch(/used up/);
   });
 });

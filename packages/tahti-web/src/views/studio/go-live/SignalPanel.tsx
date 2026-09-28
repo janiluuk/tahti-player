@@ -7,6 +7,24 @@ import { SignalCheckWidget } from '../../../components/SignalCheckWidget';
 import { StudioPanel } from '../../../components/StudioPanel';
 import type { GoLiveState } from './useGoLiveState';
 
+/** Screen readers hear when the encoder connects or drops; sighted users
+ * see it in the panel title and the enabled Go Live button. */
+export function signalAnnouncement(
+  isBroadcastLive: boolean,
+  signalOk: boolean,
+  blocked: boolean | undefined,
+): string {
+  if (isBroadcastLive) {
+    return 'Your broadcast is on air.';
+  }
+  if (!signalOk) {
+    return 'No signal from your encoder.';
+  }
+  return blocked
+    ? 'Signal received, but your broadcast time for this week is used up.'
+    : 'Signal received. You can go live.';
+}
+
 export function SignalPanel({ state }: { state: GoLiveState }) {
   const {
     signal,
@@ -54,6 +72,9 @@ export function SignalPanel({ state }: { state: GoLiveState }) {
           >
             <Badge variant="dot" color={showInfoReady ? 'green' : 'yellow'} />
             Show info
+            <span className="sr-only">
+              {showInfoReady ? ' (confirmed)' : ' (not confirmed yet)'}
+            </span>
           </Button>
           {!isBroadcastLive ? (
             <Button
@@ -71,6 +92,9 @@ export function SignalPanel({ state }: { state: GoLiveState }) {
         </div>
       }
     >
+      <p className="sr-only" role="status" data-testid="signal-announcement">
+        {signalAnnouncement(isBroadcastLive, signalOk, usage?.blocked)}
+      </p>
       {rotationPlaying && !isBroadcastLive && !preflight?.title ? (
         <div className="border-border bg-background-secondary flex flex-wrap items-center gap-2 rounded-lg border px-3 py-2 text-sm">
           <span className="text-foreground-secondary">

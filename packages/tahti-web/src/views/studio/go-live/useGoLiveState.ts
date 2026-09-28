@@ -25,6 +25,9 @@ import { usePlayerStore } from '../../../stores/playerStore';
 export type Ingest = 'obs' | 'icecast' | 'traktor';
 
 /** Broadcast settings, live signal polling, go-live and recording actions. */
+/** A failure is announced right away (`role="alert"`); success waits its turn. */
+export type GoLiveMessage = { tone: 'error' | 'success'; text: string };
+
 export function useGoLiveState() {
   const user = useAuthStore((state) => state.user);
   const refresh = useAuthStore((state) => state.refresh);
@@ -43,7 +46,7 @@ export function useGoLiveState() {
   const [ingest, setIngest] = useState<Ingest>('obs');
   const [credentialsExpanded, setCredentialsExpanded] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState<string | null>(null);
+  const [message, setMessage] = useState<GoLiveMessage | null>(null);
   const [confirmGoLive, setConfirmGoLive] = useState(false);
   const [recordEnabled, setRecordEnabled] = useState(true);
   const [recordBusy, setRecordBusy] = useState(false);
@@ -99,9 +102,10 @@ export function useGoLiveState() {
       settingsResult.meta.source === 'api' &&
       settingsResult.meta.reason
     ) {
-      setMessage(
-        `Stream settings: ${settingsResult.meta.reason} — log in as an artist with a channel.`,
-      );
+      setMessage({
+        tone: 'error',
+        text: `Stream settings: ${settingsResult.meta.reason} — log in as an artist with a channel.`,
+      });
     }
     if (isMock) {
       setChannelState(getMockChannelState());
@@ -166,12 +170,15 @@ export function useGoLiveState() {
       setBusy(false);
     }
     if (!result.ok) {
-      setMessage(result.error);
+      setMessage({ tone: 'error', text: result.error });
       toast.error(result.error);
       return;
     }
     patchLocalChannel('LIVE');
-    setMessage('You’re live. The rotation has handed over to your broadcast.');
+    setMessage({
+      tone: 'success',
+      text: 'You’re live. The rotation has handed over to your broadcast.',
+    });
     toast.success('You’re live.');
     playStream();
     if (!isMock) {

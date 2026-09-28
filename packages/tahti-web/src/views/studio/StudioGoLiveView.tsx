@@ -94,13 +94,13 @@ export function StudioGoLiveView() {
           {message && (
             <p
               className={`rounded-lg border px-3 py-2 text-sm ${
-                /fail|error|could not|503|401|403/i.test(message)
+                message.tone === 'error'
                   ? 'border-accent-red/40 bg-accent-red/10 text-foreground'
                   : 'border-border bg-background-secondary'
               }`}
-              role="status"
+              role={message.tone === 'error' ? 'alert' : 'status'}
             >
-              {message}
+              {message.text}
             </p>
           )}
 
