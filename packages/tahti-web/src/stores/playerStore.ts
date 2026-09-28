@@ -7,6 +7,7 @@ import type { TahtiPlayable } from '../api/types';
 import { playableToTrack } from '../lib/playableToTrack';
 import { useLayoutStore } from './layoutStore';
 import { useLibraryStore } from './libraryStore';
+import { peaksFor, rememberPeaks, type PeaksCache } from './peaksCache';
 
 export type PlaybackStatus =
   'idle' | 'loading' | 'playing' | 'paused' | 'error';
@@ -47,7 +48,7 @@ type PlayerState = {
    * Nuclear Track). Cleared when switching to a track without known peaks. */
   currentPeaks: number[] | null;
   /** Peaks remembered by playable id so queue skips keep real waveforms. */
-  peaksById: Record<string, number[]>;
+  peaksById: PeaksCache;
   /** Shared Web Audio analyser for channel visualizers (set by AudioEngine). */
   analyser: AnalyserNode | null;
   setAnalyser: (analyser: AnalyserNode | null) => void;
@@ -177,7 +178,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       return;
     }
     set((s) => ({
-      peaksById: { ...s.peaksById, [id]: peaks },
+      peaksById: rememberPeaks(s.peaksById, id, peaks),
       currentPeaks: s.currentId === id ? peaks : s.currentPeaks,
     }));
   },
@@ -198,7 +199,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       duration: 0,
       seekTarget: null,
       currentPeaks: peaks,
-      peaksById: peaks ? { ...s.peaksById, [head.id]: peaks } : s.peaksById,
+      peaksById: rememberPeaks(s.peaksById, head.id, peaks),
       isLive: isRadioOrLive,
       isRealLive: isRadioOrLive && Boolean(item.isRealLive),
       hasPlayed: true,
@@ -334,7 +335,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       error: null,
       currentTime: 0,
       seekTarget: null,
-      currentPeaks: get().peaksById[id] ?? null,
+      currentPeaks: peaksFor(get().peaksById, id),
       isLive: isRadioOrLive,
       // playableFromQueueItem rebuilds a TahtiPlayable from the queued
       // Track, which never carried isRealLive through -- conservatively
