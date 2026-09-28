@@ -294,6 +294,24 @@ async fn smart_rules_any_tags_limit_sort_and_snapshot() {
 }
 
 #[tokio::test]
+async fn smart_rules_match_composer_and_sort_by_it() {
+    let (pool, _dir) = library().await;
+    let house = id_of(&pool, "house.wav").await;
+    let slow = id_of(&pool, "slow.wav").await;
+    sqlx::query("UPDATE library_tracks SET composer = 'Erik Satie' WHERE id = ?").bind(&slow).execute(&pool).await.unwrap();
+
+    let by = |op, value: &str| definition(vec![rule(RuleField::Composer, op, value, "")], true);
+    assert_eq!(evaluate_ids(&pool, &by(RuleOp::Is, "erik satie")).await.unwrap(), vec![slow.clone()]);
+    assert_eq!(evaluate_ids(&pool, &by(RuleOp::Contains, "sat")).await.unwrap(), vec![slow.clone()]);
+    assert!(evaluate_ids(&pool, &by(RuleOp::IsNotSet, "")).await.unwrap().contains(&house));
+    assert!(!evaluate_ids(&pool, &by(RuleOp::IsNotSet, "")).await.unwrap().contains(&slow));
+
+    let mut sorted = definition(vec![], true);
+    sorted.sort = SortColumn::Composer;
+    assert_eq!(evaluate_ids(&pool, &sorted).await.unwrap()[0], slow, "blank composers sort last");
+}
+
+#[tokio::test]
 async fn invalid_smart_rules_are_rejected_when_saved() {
     let (pool, _dir) = library().await;
     for bad in [
