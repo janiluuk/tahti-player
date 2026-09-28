@@ -369,10 +369,10 @@ export function OnboardingView() {
                         <p
                           className={`text-xs ${
                             slugStatus === 'available'
-                              ? 'text-accent-green'
+                              ? 'text-accent-green-strong'
                               : slugStatus === 'taken' ||
                                   slugStatus === 'invalid'
-                                ? 'text-accent-red'
+                                ? 'text-accent-red-strong'
                                 : 'text-foreground-secondary'
                           }`}
                         >

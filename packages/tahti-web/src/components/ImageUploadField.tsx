@@ -79,7 +79,9 @@ export function ImageUploadField({
           <ImageSlotDeleteBadge label={label} onClick={chrome.requestDelete} />
         </div>
       ) : null}
-      {error ? <p className="text-accent-red mt-1 text-xs">{error}</p> : null}
+      {error ? (
+        <p className="text-accent-red-strong mt-1 text-xs">{error}</p>
+      ) : null}
       <ImageSlotPreviewDialog
         isOpen={chrome.previewOpen}
         onClose={chrome.closePreview}

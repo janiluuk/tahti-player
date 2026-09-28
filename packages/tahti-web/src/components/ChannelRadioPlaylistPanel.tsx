@@ -332,7 +332,7 @@ export const ChannelRadioPlaylistPanel: FC = () => {
           <span
             className={`font-mono text-xs font-semibold uppercase ${
               fallbackEnabled
-                ? 'text-accent-green'
+                ? 'text-accent-green-strong'
                 : 'text-foreground-secondary'
             }`}
           >

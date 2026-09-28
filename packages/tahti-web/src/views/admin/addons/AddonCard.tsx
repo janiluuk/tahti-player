@@ -54,7 +54,9 @@ export function AddonCard({
         </p>
         {addon.moderationNote &&
         (addon.status === 'REJECTED' || addon.status === 'DISABLED') ? (
-          <p className="text-accent-red mt-2 text-xs">{addon.moderationNote}</p>
+          <p className="text-accent-red-strong mt-2 text-xs">
+            {addon.moderationNote}
+          </p>
         ) : null}
         <div className="mt-3 flex flex-wrap items-center gap-2">
           {addon.categories.map((category) => (

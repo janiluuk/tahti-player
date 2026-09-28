@@ -318,7 +318,9 @@ export function ThemesPanel() {
                     Import & apply
                   </Button>
                   {importMsg && (
-                    <span className="text-accent-red text-xs">{importMsg}</span>
+                    <span className="text-accent-red-strong text-xs">
+                      {importMsg}
+                    </span>
                   )}
                 </div>
               </div>

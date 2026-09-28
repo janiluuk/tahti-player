@@ -463,7 +463,7 @@ export function ThemeEditor() {
           aria-label="Theme JSON"
         />
         {importMsg ? (
-          <p className="text-accent-red text-xs">{importMsg}</p>
+          <p className="text-accent-red-strong text-xs">{importMsg}</p>
         ) : null}
         <Dialog.Actions>
           <Dialog.Close>Cancel</Dialog.Close>

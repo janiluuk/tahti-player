@@ -44,7 +44,7 @@ export function SavedLooksRow({
             <button
               type="button"
               aria-label={`Delete "${preset.name}"`}
-              className="text-foreground-secondary hover:text-accent-red rounded-full p-1.5"
+              className="text-foreground-secondary hover:text-accent-red-strong rounded-full p-1.5"
               disabled={presetBusy}
               onClick={() => onRequestDelete(preset)}
             >

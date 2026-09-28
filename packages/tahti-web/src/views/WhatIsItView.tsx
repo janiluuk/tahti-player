@@ -369,7 +369,7 @@ export function WhatIsItView() {
             className="text-foreground-secondary"
           />
           <div className="border-accent-red/40 bg-accent-red/10 rounded-lg border px-3 py-2 text-center">
-            <div className="font-display text-accent-red text-sm font-bold">
+            <div className="font-display text-accent-red-strong text-sm font-bold">
               Tahti Radio
             </div>
           </div>
@@ -538,7 +538,7 @@ export function WhatIsItView() {
               key={g.when}
               className="border-border bg-background-secondary/50 rounded-xl border p-4"
             >
-              <div className="text-accent-red font-mono text-xs tracking-widest uppercase">
+              <div className="text-accent-red-strong font-mono text-xs tracking-widest uppercase">
                 {g.when}
               </div>
               <div className="font-display mt-1 text-sm font-bold">
@@ -712,7 +712,7 @@ export function WhatIsItView() {
               <div
                 className={
                   step.now
-                    ? 'text-accent-red font-display mt-1 text-sm font-bold'
+                    ? 'text-accent-red-strong font-display mt-1 text-sm font-bold'
                     : 'font-display mt-1 text-sm font-bold'
                 }
               >

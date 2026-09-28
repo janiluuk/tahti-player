@@ -143,7 +143,9 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
                   onFiles={handleReferenceFiles}
                 />
                 {decodeError ? (
-                  <p className="text-accent-red mt-2 text-sm">{decodeError}</p>
+                  <p className="text-accent-red-strong mt-2 text-sm">
+                    {decodeError}
+                  </p>
                 ) : null}
               </StudioPanel>
 
@@ -170,7 +172,7 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
                 </div>
 
                 {status === 'error' && error ? (
-                  <p className="text-accent-red mt-3 text-sm">{error}</p>
+                  <p className="text-accent-red-strong mt-3 text-sm">{error}</p>
                 ) : null}
 
                 {status === 'done' && result ? (

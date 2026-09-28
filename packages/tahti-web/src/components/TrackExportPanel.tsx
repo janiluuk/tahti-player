@@ -104,7 +104,7 @@ export function TrackExportPanel({ soundId }: { soundId: string }) {
           </Button>
         )}
       </div>
-      {error && <p className="text-accent-red mt-2 text-xs">{error}</p>}
+      {error && <p className="text-accent-red-strong mt-2 text-xs">{error}</p>}
     </section>
   );
 }

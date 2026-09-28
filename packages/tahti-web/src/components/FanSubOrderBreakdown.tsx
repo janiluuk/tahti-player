@@ -23,17 +23,17 @@ const LINES: Array<{
   {
     label: 'Stripe fees',
     amount: `−${eurosFromCents(split.stripeFeeCents)}`,
-    className: 'text-accent-orange',
+    className: 'text-accent-orange-strong',
   },
   {
     label: 'Tahti ops fee (2%)',
     amount: `−${eurosFromCents(split.orgFeeCents)}`,
-    className: 'text-accent-cyan',
+    className: 'text-accent-cyan-strong',
   },
   {
     label: 'You receive',
     amount: eurosFromCents(split.netToArtistCents),
-    className: 'text-accent-green font-semibold',
+    className: 'text-accent-green-strong font-semibold',
     total: true,
   },
 ];

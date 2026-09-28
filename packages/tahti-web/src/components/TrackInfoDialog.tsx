@@ -101,7 +101,7 @@ export function TrackInfoDialog({
                           size={16}
                           className={
                             favorited
-                              ? 'text-accent-red fill-current'
+                              ? 'text-accent-red-strong fill-current'
                               : undefined
                           }
                         />

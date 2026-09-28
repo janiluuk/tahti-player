@@ -307,7 +307,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
           </div>
         </div>
         {commentError ? (
-          <p className="text-accent-red text-xs">{commentError}</p>
+          <p className="text-accent-red-strong text-xs">{commentError}</p>
         ) : null}
 
         <div className="flex flex-wrap items-center justify-between gap-3">

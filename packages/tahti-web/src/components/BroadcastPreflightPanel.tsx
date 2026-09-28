@@ -261,7 +261,7 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
 
 export function ShowInfoConfirmed() {
   return (
-    <span className="text-accent-green inline-flex items-center gap-1 text-xs font-semibold">
+    <span className="text-accent-green-strong inline-flex items-center gap-1 text-xs font-semibold">
       <CheckCircle2Icon size={15} aria-hidden />
       Confirmed
     </span>

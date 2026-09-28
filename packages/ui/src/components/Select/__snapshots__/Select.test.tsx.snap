@@ -104,7 +104,7 @@ exports[`Select > (Snapshot) renders error without description 1`] = `
     </span>
   </button>
   <p
-    class="text-accent-red text-xs select-none"
+    class="text-accent-red-strong text-xs select-none"
     id="select-quality-error-error"
   >
     Please make a selection

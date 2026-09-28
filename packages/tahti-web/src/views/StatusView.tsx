@@ -12,7 +12,7 @@ function stateClass(state: string): string {
   if (state === 'degraded') {
     return 'text-foreground';
   }
-  return 'text-accent-red';
+  return 'text-accent-red-strong';
 }
 
 export function StatusView() {

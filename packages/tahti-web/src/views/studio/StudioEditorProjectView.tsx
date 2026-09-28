@@ -139,7 +139,7 @@ export function StudioEditorProjectView({ id }: { id: string }) {
                 ) : null}
               </div>
               {error && (
-                <p className="text-accent-red text-sm" role="alert">
+                <p className="text-accent-red-strong text-sm" role="alert">
                   {error}
                 </p>
               )}

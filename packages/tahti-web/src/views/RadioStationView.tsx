@@ -145,14 +145,17 @@ export function RadioStationView({ stationId }: { stationId: string }) {
             </Button>
           </div>
           <div className="flex flex-col gap-1 text-sm">
-            <ExternalLink href={station.detailUrl} className="text-accent-blue">
+            <ExternalLink
+              href={station.detailUrl}
+              className="text-accent-blue-strong"
+            >
               Station website
             </ExternalLink>
             {station.programmingUrl &&
             station.programmingUrl !== station.detailUrl ? (
               <ExternalLink
                 href={station.programmingUrl}
-                className="text-accent-blue"
+                className="text-accent-blue-strong"
               >
                 Programme guide
               </ExternalLink>

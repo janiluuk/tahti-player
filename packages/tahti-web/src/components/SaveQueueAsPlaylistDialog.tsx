@@ -77,7 +77,7 @@ export function SaveQueueAsPlaylistDialog({ isOpen, onClose }: Props) {
         autoFocus
       />
       {error && (
-        <p className="text-accent-red mt-2 text-sm" role="alert">
+        <p className="text-accent-red-strong mt-2 text-sm" role="alert">
           {error}
         </p>
       )}

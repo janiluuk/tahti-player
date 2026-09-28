@@ -53,7 +53,7 @@ export const CandidateRow: FC<CandidateRowProps> = ({
       <div className="text-foreground/50 text-xs">
         {formatTimeMillis(candidate.durationMs)}
         {candidate.failed && (
-          <span className="text-accent-red ml-2">{labels?.failed}</span>
+          <span className="text-accent-red-strong ml-2">{labels?.failed}</span>
         )}
       </div>
     </div>

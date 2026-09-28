@@ -91,7 +91,7 @@ exports[`Input > (Snapshot) renders with error and no description 1`] = `
     type="text"
   />
   <p
-    class="text-accent-red text-xs select-none"
+    class="text-accent-red-strong text-xs select-none"
     id="input-username-error-error"
   >
     Username is already taken

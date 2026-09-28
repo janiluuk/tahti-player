@@ -141,7 +141,7 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
         ) : null}
 
         {loadError && (
-          <p className="text-accent-red mt-3 text-sm" role="alert">
+          <p className="text-accent-red-strong mt-3 text-sm" role="alert">
             {loadError}
           </p>
         )}

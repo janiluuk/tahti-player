@@ -80,7 +80,7 @@ export const ImageLightbox: FC<ImageLightboxProps> = ({
               <Button
                 size="icon-sm"
                 variant="secondary"
-                className="text-accent-red"
+                className="text-accent-red-strong"
                 aria-label="Remove photo"
                 onClick={onDeleteCurrent}
               >

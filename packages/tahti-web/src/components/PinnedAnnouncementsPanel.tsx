@@ -96,7 +96,7 @@ export function PinnedAnnouncementsPanel({ slug }: { slug: string }) {
               <li key={item.id} className="flex items-start gap-3 p-3">
                 <PinIcon
                   size={16}
-                  className="text-accent-orange mt-0.5 shrink-0"
+                  className="text-accent-orange-strong mt-0.5 shrink-0"
                   aria-hidden
                 />
                 <p className="min-w-0 flex-1 text-sm">{item.body}</p>

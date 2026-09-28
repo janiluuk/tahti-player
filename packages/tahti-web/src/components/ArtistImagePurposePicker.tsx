@@ -271,7 +271,9 @@ export const ArtistImagePurposePicker: FC<Props> = ({
             </article>
           ))}
         </div>
-        {error ? <p className="text-accent-red mt-3 text-sm">{error}</p> : null}
+        {error ? (
+          <p className="text-accent-red-strong mt-3 text-sm">{error}</p>
+        ) : null}
         <Dialog.Actions>
           <Button
             variant="secondary"

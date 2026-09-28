@@ -113,7 +113,7 @@ export function SidebarQueuePanel({
               variant="text"
               disabled={queue.length === 0}
               onClick={requestClear}
-              className="text-foreground-secondary hover:text-accent-red"
+              className="text-foreground-secondary hover:text-accent-red-strong"
               aria-label="Clear queue"
             >
               <Trash2Icon size={15} aria-hidden />

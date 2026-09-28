@@ -54,7 +54,9 @@ export function PageError({
   return (
     <EmptyState
       size="sm"
-      icon={<AlertCircle size={40} className="text-accent-red opacity-80" />}
+      icon={
+        <AlertCircle size={40} className="text-accent-red-strong opacity-80" />
+      }
       title={title}
       description={description}
       action={

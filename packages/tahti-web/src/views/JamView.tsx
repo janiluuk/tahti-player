@@ -205,7 +205,7 @@ export function JamView({ code }: { code: string }) {
           {isHost ? (
             <Button
               variant="secondary"
-              className="text-accent-red border-accent-red/40 hover:bg-accent-red/10"
+              className="text-accent-red-strong border-accent-red/40 hover:bg-accent-red/10"
               onClick={() => void endForEveryone()}
             >
               <XIcon size={16} /> End Jam for everyone

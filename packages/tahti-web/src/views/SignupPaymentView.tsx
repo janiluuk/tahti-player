@@ -111,7 +111,7 @@ export function SignupPaymentView() {
         </div>
       )}
 
-      {error && <p className="text-accent-red text-sm">{error}</p>}
+      {error && <p className="text-accent-red-strong text-sm">{error}</p>}
       {msg && <p className="text-sm">{msg}</p>}
 
       <Link

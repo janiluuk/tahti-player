@@ -117,7 +117,7 @@ export function WidgetCard({
               variant="text"
               onClick={() => onRemove(id)}
               aria-label="Remove widget"
-              className="text-foreground-secondary hover:text-accent-red"
+              className="text-foreground-secondary hover:text-accent-red-strong"
             >
               <XIcon size={14} />
             </Button>

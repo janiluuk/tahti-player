@@ -75,7 +75,7 @@ function QuarterlyReportsPanel() {
             : `Generate ${currentQuarterLabel()} report`}
         </Button>
       </div>
-      {error && <p className="text-accent-red mt-2 text-xs">{error}</p>}
+      {error && <p className="text-accent-red-strong mt-2 text-xs">{error}</p>}
       {loading ? (
         <PageLoading label="Loading reports…" />
       ) : reports.length === 0 ? (

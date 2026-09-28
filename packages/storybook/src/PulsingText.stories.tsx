@@ -26,6 +26,6 @@ export const FastCycle: Story = {
     text: 'On air',
     staggerOffset: 0.06,
     cyclePause: 1.5,
-    className: 'font-display text-2xl font-bold text-accent-red',
+    className: 'font-display text-2xl font-bold text-accent-red-strong',
   },
 };

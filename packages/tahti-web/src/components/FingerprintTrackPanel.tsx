@@ -61,7 +61,7 @@ export function FingerprintTrackPanel({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="text-sm font-semibold">{track.title}</span>
         {track.fingerprintMatch ? (
-          <span className="text-accent-yellow flex items-center gap-1.5 text-xs">
+          <span className="text-accent-yellow-strong flex items-center gap-1.5 text-xs">
             <FingerprintIcon size={14} aria-hidden />
             Match on file
           </span>
@@ -112,7 +112,7 @@ export function FingerprintTrackPanel({
         </div>
       )}
       {error && (
-        <p className="text-accent-red text-sm" role="alert">
+        <p className="text-accent-red-strong text-sm" role="alert">
           {error}
         </p>
       )}

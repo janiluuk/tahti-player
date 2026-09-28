@@ -45,7 +45,7 @@ const SearchContent: FC<{
   if (isError) {
     return (
       <div className="space-y-3">
-        <div className="text-accent-red">{t('search:failedToLoad')}</div>
+        <div className="text-accent-red-strong">{t('search:failedToLoad')}</div>
         <Button
           onClick={() => {
             void refetch();

@@ -224,9 +224,9 @@ export function SelectsTab() {
           <div
             className={`flex size-10 shrink-0 items-center justify-center rounded-full ${
               stream.state === 'LIVE'
-                ? 'bg-accent-green/20 text-accent-green'
+                ? 'bg-accent-green/20 text-accent-green-strong'
                 : stream.state === 'STARTING'
-                  ? 'bg-accent-yellow/20 text-accent-yellow'
+                  ? 'bg-accent-yellow/20 text-accent-yellow-strong'
                   : 'bg-background-secondary text-foreground-secondary'
             }`}
           >

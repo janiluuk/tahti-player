@@ -225,7 +225,7 @@ export function RadioView() {
                   {online ? (
                     <OnAirBadge />
                   ) : (
-                    <span className="text-accent-red font-mono text-xs font-semibold tracking-wide uppercase">
+                    <span className="text-accent-red-strong font-mono text-xs font-semibold tracking-wide uppercase">
                       Offline
                     </span>
                   )}
@@ -372,7 +372,7 @@ export function RadioView() {
                             size={16}
                             className={
                               favorited
-                                ? 'text-accent-red fill-current'
+                                ? 'text-accent-red-strong fill-current'
                                 : undefined
                             }
                           />
@@ -546,7 +546,7 @@ export function RadioView() {
                                   to="/t/$id"
                                   params={{ id: item.id }}
                                   className={`block truncate text-sm font-medium underline-offset-2 hover:underline ${
-                                    isPlaying ? 'text-accent-green' : ''
+                                    isPlaying ? 'text-accent-green-strong' : ''
                                   }`}
                                 >
                                   {item.title}

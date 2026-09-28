@@ -97,7 +97,7 @@ export const FanSubscriptionStats: FC<FanSubscriptionStatsProps> = ({
       <p>
         Paid in the last 30 days: {stats.paidLast30Days.toLocaleString()}
         {stats.failed > 0 ? (
-          <span className="text-accent-red">
+          <span className="text-accent-red-strong">
             {' '}
             · Failed payouts: {stats.failed.toLocaleString()}
           </span>

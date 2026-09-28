@@ -449,7 +449,7 @@ export function AdminUserEditPanel({
             className={
               detail.suspendedAt
                 ? 'mt-3'
-                : 'text-accent-red hover:text-accent-red mt-3'
+                : 'text-accent-red-strong hover:text-accent-red-strong mt-3'
             }
             onClick={() => void toggleSuspension()}
           >

@@ -133,7 +133,7 @@ export function LibraryMediaView() {
                     >
                       <Trash2Icon
                         size={16}
-                        className="text-accent-red"
+                        className="text-accent-red-strong"
                         aria-hidden
                       />
                     </Button>

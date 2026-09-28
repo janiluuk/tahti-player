@@ -115,7 +115,9 @@ export const AuthDialog: FC = () => {
             autoComplete="one-time-code"
             inputMode="numeric"
           />
-          {error ? <p className="text-accent-red text-sm">{error}</p> : null}
+          {error ? (
+            <p className="text-accent-red-strong text-sm">{error}</p>
+          ) : null}
           <Dialog.Actions>
             <Button variant="text" size="sm" onClick={() => cancelTotp()}>
               Back
@@ -162,7 +164,9 @@ export const AuthDialog: FC = () => {
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="current-password"
           />
-          {error ? <p className="text-accent-red text-sm">{error}</p> : null}
+          {error ? (
+            <p className="text-accent-red-strong text-sm">{error}</p>
+          ) : null}
           <Link
             to="/forgot-password"
             onClick={handleClose}
@@ -239,9 +243,13 @@ export const AuthDialog: FC = () => {
             />
           </div>
           {passwordsDoNotMatch ? (
-            <p className="text-accent-red text-sm">Passwords do not match.</p>
+            <p className="text-accent-red-strong text-sm">
+              Passwords do not match.
+            </p>
           ) : null}
-          {error ? <p className="text-accent-red text-sm">{error}</p> : null}
+          {error ? (
+            <p className="text-accent-red-strong text-sm">{error}</p>
+          ) : null}
           {message ? (
             <p className="text-foreground-secondary text-sm">{message}</p>
           ) : null}

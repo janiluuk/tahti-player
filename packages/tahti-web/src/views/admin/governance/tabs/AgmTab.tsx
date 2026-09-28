@@ -503,7 +503,7 @@ export function AgmTab() {
                   )}
                 </div>
                 {minutesError?.meetingId === meeting.id && (
-                  <p className="text-accent-red mt-1 text-xs">
+                  <p className="text-accent-red-strong mt-1 text-xs">
                     {minutesError.message}
                   </p>
                 )}

@@ -381,7 +381,9 @@ export const MultitrackTimeline = ({
                 </button>
                 <button
                   aria-label={`${track.solo ? 'Unsolo' : 'Solo'} ${track.name}`}
-                  className={track.solo ? 'text-accent-yellow font-bold' : ''}
+                  className={
+                    track.solo ? 'text-accent-yellow-strong font-bold' : ''
+                  }
                   onClick={() =>
                     onChange(toggleTimelineTrack(value, track.id, 'solo'))
                   }

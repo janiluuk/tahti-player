@@ -80,9 +80,11 @@ export function useTopNavState() {
         : 'idle';
   const broadcastToneClass = {
     healthy:
-      'border-accent-green/70 bg-accent-green/15 text-accent-green motion-safe:animate-[pulse_1.4s_ease-in-out_infinite]',
-    rotation: 'border-accent-yellow/70 bg-accent-yellow/15 text-accent-yellow',
-    warning: 'border-accent-yellow/70 bg-accent-yellow/15 text-accent-yellow',
+      'border-accent-green/70 bg-accent-green/15 text-accent-green-strong motion-safe:animate-[pulse_1.4s_ease-in-out_infinite]',
+    rotation:
+      'border-accent-yellow/70 bg-accent-yellow/15 text-accent-yellow-strong',
+    warning:
+      'border-accent-yellow/70 bg-accent-yellow/15 text-accent-yellow-strong',
     idle: '',
   }[broadcastTone];
   const displayName = user?.displayName?.trim() || user?.username || '';

@@ -85,7 +85,7 @@ export function StreamManagerPanel({
 
       {canControl ? <ManagerDialogs state={state} /> : null}
 
-      {error && <p className="text-accent-red text-xs">{error}</p>}
+      {error && <p className="text-accent-red-strong text-xs">{error}</p>}
 
       {canControl ? <PlaylistDialog state={state} /> : null}
     </section>

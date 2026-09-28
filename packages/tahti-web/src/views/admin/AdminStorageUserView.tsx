@@ -92,7 +92,7 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
                         Used of quota
                       </div>
                       <div
-                        className={`text-lg font-semibold ${pct > 100 ? 'text-accent-red' : ''}`}
+                        className={`text-lg font-semibold ${pct > 100 ? 'text-accent-red-strong' : ''}`}
                       >
                         {Math.round(pct)}%
                       </div>

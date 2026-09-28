@@ -89,7 +89,7 @@ export function UploadTrackDialog({ isOpen, onClose, onUploaded }: Props) {
             onFiles={(files) => setFile(files[0] ?? null)}
           />
           {error && (
-            <p className="text-accent-red text-sm" role="alert">
+            <p className="text-accent-red-strong text-sm" role="alert">
               {error}
             </p>
           )}

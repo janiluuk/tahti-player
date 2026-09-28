@@ -165,7 +165,7 @@ export function StemsPanel({ soundId }: { soundId: string }) {
                 </span>
               </div>
               {job.status === 'ERROR' && job.errorMessage && (
-                <p className="text-accent-red mt-1 text-xs">
+                <p className="text-accent-red-strong mt-1 text-xs">
                   {job.errorMessage}
                 </p>
               )}

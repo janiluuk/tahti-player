@@ -131,7 +131,7 @@ export function playQueueFavoriteActions(opts: {
         <HeartIcon
           size={16}
           className={
-            opts.favorited ? 'text-accent-red fill-current' : undefined
+            opts.favorited ? 'text-accent-red-strong fill-current' : undefined
           }
         />
       ),

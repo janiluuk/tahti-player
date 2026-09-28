@@ -134,7 +134,7 @@ export function AddStationUrlDialog({
               </span>
             )}
             <span
-              className={`text-xs ${resolution.test.ok ? 'text-accent-green' : 'text-foreground-secondary'}`}
+              className={`text-xs ${resolution.test.ok ? 'text-accent-green-strong' : 'text-foreground-secondary'}`}
             >
               {resolution.test.ok ? '✓ ' : ''}
               {resolution.test.message}

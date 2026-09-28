@@ -45,7 +45,7 @@ export function PlayerLiveIndicator({ className }: { className?: string }) {
       <Badge
         variant="pill"
         color="red"
-        className="border-accent-red/40 bg-accent-red/10 text-accent-red absolute top-1/2 left-0 -translate-y-1/2 gap-1.5 px-2 py-0.5 text-[10px] tracking-wide"
+        className="border-accent-red/40 bg-accent-red/10 text-accent-red-strong absolute top-1/2 left-0 -translate-y-1/2 gap-1.5 px-2 py-0.5 text-[10px] tracking-wide"
       >
         <span
           className="bg-accent-red size-1.5 rounded-full motion-safe:animate-pulse"
@@ -67,7 +67,7 @@ export function PlayerLiveBadge({ className }: { className?: string }) {
       variant="pill"
       color="red"
       className={cn(
-        'border-accent-red/40 bg-accent-red/10 text-accent-red shrink-0 gap-1.5 px-2 py-0.5 text-[10px] tracking-wide',
+        'border-accent-red/40 bg-accent-red/10 text-accent-red-strong shrink-0 gap-1.5 px-2 py-0.5 text-[10px] tracking-wide',
         className,
       )}
     >
