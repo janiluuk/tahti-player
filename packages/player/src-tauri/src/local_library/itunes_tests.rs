@@ -75,6 +75,7 @@ fn parses_tracks_playlists_and_folders_from_the_fixture() {
     assert_eq!(library.tracks.len(), 9);
     let alpha = &library.tracks[0];
     assert_eq!((alpha.track_id, alpha.name.as_str(), alpha.album.as_str(), alpha.genre.as_str()), (101, "Alpha", "Another Album", "Ambient"));
+    assert_eq!(alpha.composer, "Harold Budd");
     assert_eq!((alpha.year, alpha.bpm, alpha.play_count, alpha.skip_count), (Some(1999), Some(122), 5, 2));
     assert_eq!(alpha.stars(), Some(4));
     assert!(alpha.loved);
@@ -175,6 +176,7 @@ async fn preview_then_commit_links_imports_overlays_and_recreates_playlists() {
     assert_eq!((alpha.play_count, alpha.rating), (6, 4));
     assert_eq!(alpha.album, "Record", "the file's own album tag is kept");
     assert_eq!((alpha.genre.as_str(), alpha.year), ("Ambient", Some(1999)), "gaps filled from the XML");
+    assert_eq!(alpha.composer, "Harold Budd", "composer fills its gap too");
     assert_eq!(alpha.comment, "mine", "a hand edit is never replaced");
     assert_eq!(alpha.added_at, "2010-05-01 10:00:00");
     assert_eq!(alpha.bpm, Some(122.0));
