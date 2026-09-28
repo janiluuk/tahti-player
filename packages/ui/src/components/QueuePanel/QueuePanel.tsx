@@ -7,6 +7,7 @@ import {
 import { Music } from 'lucide-react';
 import {
   FC,
+  KeyboardEvent,
   memo,
   useCallback,
   useEffect,
@@ -43,6 +44,32 @@ const ROW_GAP_PX = 4;
 const ROW_ESTIMATE_PX = 56;
 const COLLAPSED_ROW_ESTIMATE_PX = 48;
 const OVERSCAN_ROWS = 12;
+const PAGE_ROWS = 10;
+
+/** Index a navigation key moves focus to, or null for any other key. */
+export const keyboardTargetIndex = (
+  key: string,
+  index: number,
+  count: number,
+): number | null => {
+  const last = count - 1;
+  switch (key) {
+    case 'ArrowDown':
+      return Math.min(last, index + 1);
+    case 'ArrowUp':
+      return Math.max(0, index - 1);
+    case 'PageDown':
+      return Math.min(last, index + PAGE_ROWS);
+    case 'PageUp':
+      return Math.max(0, index - PAGE_ROWS);
+    case 'Home':
+      return 0;
+    case 'End':
+      return last;
+    default:
+      return null;
+  }
+};
 
 /**
  * Returns a callback whose identity never changes while `handler` stays
@@ -194,6 +221,54 @@ const QueuePanelView: FC<QueuePanelProps> = ({
     }
   }, [virtualize, currentIndex, virtualizer]);
 
+  const [focusTargetId, setFocusTargetId] = useState<string | null>(null);
+  const focusRow = useCallback((id: string) => {
+    const row = Array.from(
+      viewportRef.current?.querySelectorAll<HTMLElement>(
+        '[data-queue-item-id]',
+      ) ?? [],
+    ).find((element) => element.getAttribute('data-queue-item-id') === id);
+    row?.focus();
+    return Boolean(row);
+  }, []);
+  useEffect(() => {
+    if (focusTargetId !== null && focusRow(focusTargetId)) {
+      setFocusTargetId(null);
+    }
+  });
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (draggingId !== null || event.altKey || event.ctrlKey || event.metaKey) {
+      return;
+    }
+    const target = event.target as HTMLElement;
+    const id = target.getAttribute('data-queue-item-id');
+    const index = id === null ? undefined : indexById.get(id);
+    if (id === null || index === undefined) {
+      return;
+    }
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      handleSelect?.(id);
+      return;
+    }
+    const nextIndex = keyboardTargetIndex(event.key, index, items.length);
+    const nextId = nextIndex === null ? undefined : itemIds[nextIndex];
+    if (nextIndex === null || nextId === undefined) {
+      return;
+    }
+    event.preventDefault();
+    if (nextId === id) {
+      return;
+    }
+    if (virtualize) {
+      virtualizer.scrollToIndex(nextIndex, { align: 'auto' });
+    }
+    if (!focusRow(nextId)) {
+      setFocusTargetId(nextId);
+    }
+  };
+
   if (items.length === 0) {
     return (
       <div
@@ -276,6 +351,7 @@ const QueuePanelView: FC<QueuePanelProps> = ({
         >
           {virtualize ? (
             <div
+              onKeyDown={handleKeyDown}
               data-testid="queue-virtual-list"
               className={cn('relative', isCollapsed && 'px-1', classes?.list)}
               style={{ height: virtualizer.getTotalSize() }}
@@ -305,6 +381,7 @@ const QueuePanelView: FC<QueuePanelProps> = ({
             </div>
           ) : (
             <div
+              onKeyDown={handleKeyDown}
               className={cn(
                 'flex flex-col',
                 isCollapsed ? 'items-center gap-1 px-1' : 'gap-1',

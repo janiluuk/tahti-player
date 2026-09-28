@@ -59,6 +59,7 @@ const ReorderableQueueItemView: FC<ReorderableQueueItemProps> = ({
   return (
     <div
       ref={setNodeRef}
+      data-queue-item-id={item.id}
       style={style}
       className={cn({
         'z-50': isDragging,
