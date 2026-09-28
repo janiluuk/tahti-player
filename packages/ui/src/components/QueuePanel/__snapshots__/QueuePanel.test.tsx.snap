@@ -70,6 +70,7 @@ exports[`QueuePanel > (Snapshot) renders collapsed state 1`] = `
             aria-disabled="false"
             aria-roledescription="sortable"
             class="cursor-grab"
+            data-queue-item-id="1"
             role="button"
             tabindex="0"
           >
@@ -115,6 +116,7 @@ exports[`QueuePanel > (Snapshot) renders collapsed state 1`] = `
             aria-disabled="false"
             aria-roledescription="sortable"
             class="cursor-grab"
+            data-queue-item-id="2"
             role="button"
             tabindex="0"
           >
@@ -160,6 +162,7 @@ exports[`QueuePanel > (Snapshot) renders collapsed state 1`] = `
             aria-disabled="false"
             aria-roledescription="sortable"
             class="cursor-grab"
+            data-queue-item-id="3"
             role="button"
             tabindex="0"
           >
@@ -246,6 +249,7 @@ exports[`QueuePanel > (Snapshot) renders default state 1`] = `
             aria-disabled="false"
             aria-roledescription="sortable"
             class="cursor-grab"
+            data-queue-item-id="1"
             role="button"
             tabindex="0"
           >
@@ -346,6 +350,7 @@ exports[`QueuePanel > (Snapshot) renders default state 1`] = `
             aria-disabled="false"
             aria-roledescription="sortable"
             class="cursor-grab"
+            data-queue-item-id="2"
             role="button"
             tabindex="0"
           >
@@ -446,6 +451,7 @@ exports[`QueuePanel > (Snapshot) renders default state 1`] = `
             aria-disabled="false"
             aria-roledescription="sortable"
             class="cursor-grab"
+            data-queue-item-id="3"
             role="button"
             tabindex="0"
           >
