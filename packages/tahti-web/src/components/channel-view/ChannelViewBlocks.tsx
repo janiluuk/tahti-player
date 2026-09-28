@@ -24,7 +24,11 @@ import { PlayableTrackTable } from '../PlayableTrackTable';
 import { ShowEpisodeList } from '../ShowEpisodeList';
 import { SocialLinkIcon } from '../SocialLinkIcon';
 import { Eyebrow } from '../tahti/Eyebrow';
+import { RadioProgrammingGrid } from './RadioProgrammingGrid';
 import type { ChannelSection, ChannelSectionStatus } from './useChannelData';
+
+/** Booked live slots (`/api/v1/radio/slots`) all air on this station. */
+const TAHTI_RADIO_SLUG = 'tahti-radio';
 
 /** Render-inputs for the small `ChannelPageItem` block types -- everything
  * `renderChannelBlock` below needs, and nothing more (no state, no effects,
@@ -240,6 +244,7 @@ export function renderChannelBlock(
               No broadcast currently scheduled.
             </p>
           )}
+          {slug === TAHTI_RADIO_SLUG ? <RadioProgrammingGrid /> : null}
           <Link
             to="/schedule"
             className="text-sm underline-offset-2 hover:underline"

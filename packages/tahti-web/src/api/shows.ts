@@ -37,11 +37,13 @@ export {
   cancelShowBooking,
 } from './shows/bookings';
 export type {
+  PublicRadioSlot,
   RadioShowNowPlayingTrack,
   RadioShowUpcomingTrack,
 } from './shows/public-show';
 export {
   fetchPublicRadioShow,
+  fetchPublicRadioSlots,
   fetchRadioShowNowPlaying,
   fetchRadioShowUpcoming,
 } from './shows/public-show';

@@ -130,3 +130,62 @@ export async function fetchRadioShowUpcoming(
     return { data: [], meta: apiErrorMeta(err) };
   }
 }
+
+export type PublicRadioSlot = {
+  id: string;
+  startAt: string;
+  endAt: string;
+  note: string | null;
+  showType: 'LIVE_SET' | 'TALK';
+  coverUrl: string | null;
+  artist: {
+    displayName: string;
+    username: string;
+    avatarUrl: string | null;
+    channelSlug: string | null;
+  };
+};
+
+/** Public (no auth) calendar of booked live slots on Tahti Radio,
+ * `GET /api/v1/radio/slots` in tahti-org. */
+export async function fetchPublicRadioSlots(
+  from: string,
+  to: string,
+): Promise<{ data: PublicRadioSlot[]; meta: FetchMeta }> {
+  if (isForceMock()) {
+    const start = new Date(from).getTime();
+    const end = new Date(to).getTime();
+    return {
+      data: mockBookings
+        .filter(
+          (booking) =>
+            new Date(booking.startAt).getTime() < end &&
+            new Date(booking.endAt).getTime() > start,
+        )
+        .sort((a, b) => a.startAt.localeCompare(b.startAt))
+        .map((booking) => ({
+          id: booking.id,
+          startAt: booking.startAt,
+          endAt: booking.endAt,
+          note: booking.note,
+          showType: booking.showType,
+          coverUrl: booking.coverUrl ?? null,
+          artist: {
+            displayName: booking.displayName,
+            username: booking.username,
+            avatarUrl: null,
+            channelSlug: booking.channelSlug,
+          },
+        })),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const { data } = await requestJson<PublicRadioSlot[]>(
+      `/api/v1/radio/slots?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`,
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: [], meta: apiErrorMeta(err) };
+  }
+}
