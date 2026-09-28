@@ -261,3 +261,32 @@ async fn analysis_detail_reports_replaygain_from_the_tags() {
         (Some(-6.54), Some(0.988547), Some(-5.1), None)
     );
 }
+
+#[tokio::test]
+async fn composer_is_read_on_import_and_on_relink_and_sorts_with_blanks_last() {
+    use super::{list_query, ListQuery, SortColumn, TrackSort};
+    let dir = tempfile::tempdir().unwrap();
+    let flac = fixture(dir.path(), "tone.flac");
+    let mp3 = fixture(dir.path(), "tone.mp3");
+    let m4a = fixture(dir.path(), "tone.m4a");
+    retag(&flac, &[(ItemKey::TrackTitle, Some("By Satie")), (ItemKey::Composer, Some(" Erik Satie "))]);
+    retag(&mp3, &[(ItemKey::TrackTitle, Some("By Bach")), (ItemKey::Composer, Some("J. S. Bach"))]);
+    retag(&m4a, &[(ItemKey::TrackTitle, Some("Nobody's"))]);
+    let pool = pool().await;
+    for path in [&flac, &mp3, &m4a] {
+        import(&pool, path).await;
+    }
+
+    let sort = TrackSort { column: SortColumn::Composer, descending: false };
+    let page = list_query(&pool, &ListQuery { search: "", filter: None, filters: None, sort: Some(&sort) }, 0).await.unwrap();
+    let rows: Vec<_> = page.tracks.iter().map(|t| (t.title.as_str(), t.composer.as_str())).collect();
+    assert_eq!(rows, [("By Satie", "Erik Satie"), ("By Bach", "J. S. Bach"), ("Nobody's", "")]);
+
+    let (id, _) = stored(&pool, &flac).await;
+    let moved = dir.path().join("moved.flac");
+    std::fs::rename(&flac, &moved).unwrap();
+    retag(&moved, &[(ItemKey::Composer, Some("Claude Debussy"))]);
+    relink(&pool, &id, moved.clone()).await.unwrap();
+    let composer: String = sqlx::query_scalar("SELECT composer FROM library_tracks WHERE id = ?").bind(&id).fetch_one(&pool).await.unwrap();
+    assert_eq!(composer, "Claude Debussy");
+}

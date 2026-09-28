@@ -29,3 +29,29 @@ describe('Skips column', () => {
     });
   });
 });
+
+describe('Composer column', () => {
+  const composer = NATIVE_TRACK_COLUMNS.find(
+    (column) => column.id === 'composer',
+  );
+
+  it('is sortable and hidden until chosen, with a dash when blank', () => {
+    expect(composer).toMatchObject({
+      header: 'Composer',
+      sortable: true,
+      hiddenByDefault: true,
+    });
+    expect(
+      composer?.render({ composer: 'Erik Satie' } as NativeLibraryTrack),
+    ).toBe('Erik Satie');
+    expect(composer?.render({ composer: '' } as NativeLibraryTrack)).toBe('—');
+    expect(composer?.render({} as NativeLibraryTrack)).toBe('—');
+  });
+
+  it('sorts natively by composer', () => {
+    expect(toNativeSort({ columnId: 'composer', descending: false })).toEqual({
+      column: 'composer',
+      descending: false,
+    });
+  });
+});

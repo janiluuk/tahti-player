@@ -17,6 +17,8 @@ export type NativeLibraryTrack = {
   discNo: number | null;
   year: number | null;
   genre: string;
+  /** Empty when the file has no composer tag. Missing in older desktop builds. */
+  composer?: string;
   comment: string;
   bitrateKbps: number | null;
   /** UTC `YYYY-MM-DD HH:MM:SS`; empty when unknown. */
@@ -56,6 +58,7 @@ export type NativeSortColumn =
   | 'artist'
   | 'album'
   | 'genre'
+  | 'composer'
   | 'year'
   | 'trackNo'
   | 'duration'

@@ -22,6 +22,7 @@ const track: NativeLibraryTrack = {
   discNo: null,
   year: 2001,
   genre: 'Dub Techno',
+  composer: 'Tomi Kaukonen',
   comment: '',
   bitrateKbps: 1411,
   addedAt: '2026-09-18 12:00:00',
@@ -42,7 +43,8 @@ describe('inspectorRows', () => {
     expect(value(rows, 'Duration')).toBe('4:05');
     expect(value(rows, 'Size')).toBe('30 MB');
     expect(value(rows, 'Status')).toBe('Available');
-    expect(rows.filter((r) => r.section === 'Tags')).toHaveLength(9);
+    expect(value(rows, 'Composer')).toBe('Tomi Kaukonen');
+    expect(rows.filter((r) => r.section === 'Tags')).toHaveLength(10);
   });
 
   it('explains a missing file', () => {

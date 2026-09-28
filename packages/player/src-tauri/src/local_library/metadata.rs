@@ -44,6 +44,7 @@ fn apply_tags(track: &mut LibraryTrack, tags: &[Tag]) {
             Some(StandardTagKey::AlbumArtist) => track.album_artist = tag_string(tag),
             Some(StandardTagKey::Album) => track.album = tag_string(tag),
             Some(StandardTagKey::Genre) => track.genre = tag_string(tag),
+            Some(StandardTagKey::Composer) => track.composer = tag_string(tag).trim().to_owned(),
             Some(StandardTagKey::Comment) => {
                 track.comment = tag_string(tag).chars().take(MAX_COMMENT_CHARS).collect();
             }
@@ -103,6 +104,7 @@ pub fn read(path: &Path) -> Result<LibraryTrack, String> {
         disc_no: None,
         year: None,
         genre: String::new(),
+        composer: String::new(),
         comment: String::new(),
         added_at: String::new(),
         rating: 0,
@@ -213,6 +215,9 @@ fn fill_from_tag_reader(track: &mut LibraryTrack, path: &Path) {
     }
     if track.genre.is_empty() {
         track.genre = text(tag.genre()).unwrap_or_default();
+    }
+    if track.composer.is_empty() {
+        track.composer = tag.get_string(&ItemKey::Composer).map(|v| v.trim().to_owned()).unwrap_or_default();
     }
     if track.comment.is_empty() {
         track.comment = text(tag.comment()).unwrap_or_default().chars().take(500).collect();

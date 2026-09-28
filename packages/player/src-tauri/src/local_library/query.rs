@@ -12,6 +12,7 @@ pub enum SortColumn {
     Artist,
     Album,
     Genre,
+    Composer,
     Year,
     TrackNo,
     Duration,
@@ -53,6 +54,7 @@ pub(super) fn order_clause(sort: Option<&TrackSort>) -> String {
             text("album")
         ),
         SortColumn::Genre => text("genre"),
+        SortColumn::Composer => text("composer"),
         SortColumn::Bpm => nullable("bpm"),
         SortColumn::Key => nullable("musical_key"),
         SortColumn::Loudness => nullable("loudness_lufs"),
