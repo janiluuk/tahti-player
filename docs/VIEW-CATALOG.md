@@ -76,6 +76,7 @@ Legend:
 | [History](#history-web)     | (embedded)                 | `src/views/HistoryView.tsx`       | No Story  | Tabs (Stats / Listening history), CalendarHeatmap, ListeningClock, DayOfWeekChart, TopList                                                                                                                             |
 | [Radio](#radio)             | `/radio`                   | `src/views/RadioView.tsx`         | No Story  | Box, Button, ImageReveal, MediaArtwork, Tabs, Tooltip — uses `OnAirBadge` (confirmed `Badge` duplicate), see sweep section below                                                                                      |
 | [Radio Show](#radio-show)   | `/radio/show/$channelSlug` | `src/views/RadioShowView.tsx`     | No Story  | Button, SectionShell, Tabs, Tooltip                                                                                                                                                                                   |
+| Radio Station | `/radio/station/$stationId` | `src/views/RadioStationView.tsx` | Has Story | — (curated external stations from `content/radioStations.ts`; Listen station cards link here) |
 | [Schedule](#schedule)       | `/schedule`                | `src/views/RadioScheduleView.tsx` | No Story  | Button, Dialog, FilterChips, Input, SaveButton, TabLabel, Tabs, Tooltip — hand-rolled show-type toggle at ~line 700 duplicates `FilterChips` (already used correctly elsewhere in this file), see sweep section below |
 
 ### Artist / Channel / Collection Views

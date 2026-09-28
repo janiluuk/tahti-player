@@ -268,6 +268,10 @@ export const RadioShowView = lazyRouteComponent(
   () => import('../views/RadioShowView'),
   'RadioShowView',
 );
+export const RadioStationView = lazyRouteComponent(
+  () => import('../views/RadioStationView'),
+  'RadioStationView',
+);
 export const RadioView = lazyRouteComponent(
   () => import('../views/RadioView'),
   'RadioView',

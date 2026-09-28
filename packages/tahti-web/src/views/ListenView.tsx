@@ -272,14 +272,15 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
   const renderRadioItem = (item: RadioRowItem) => {
     if (item.kind === 'preset') {
       const { preset } = item;
+      const catalogId = RADIO_STATIONS.find(
+        (station) => station.name === preset.name,
+      )?.id;
       return (
         <div className="group relative w-fit">
           <RadioStationCoverEditButton
             label={preset.name}
             stationName={preset.name}
-            catalogStationId={
-              RADIO_STATIONS.find((station) => station.name === preset.name)?.id
-            }
+            catalogStationId={catalogId}
             presetId={preset.id}
             className="absolute top-3 left-3 z-10 rounded-full"
             onCoverChange={(iconUrl) =>
@@ -291,7 +292,19 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
             }
           />
           <Card
-            title={preset.name}
+            title={
+              catalogId ? (
+                <Link
+                  to="/radio/station/$stationId"
+                  params={{ stationId: catalogId }}
+                  className="hover:underline"
+                >
+                  {preset.name}
+                </Link>
+              ) : (
+                preset.name
+              )
+            }
             subtitle={
               presetNowPlaying[preset.id] ?? preset.genre ?? 'Internet radio'
             }
@@ -344,7 +357,15 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
           </Button>
         </Tooltip>
         <Card
-          title={station.name}
+          title={
+            <Link
+              to="/radio/station/$stationId"
+              params={{ stationId: station.id }}
+              className="hover:underline"
+            >
+              {station.name}
+            </Link>
+          }
           subtitle={`${station.language} · ${station.bitrateKbps}kbps`}
           src={station.logoUrl}
           isPlaying={isActive(item.id)}

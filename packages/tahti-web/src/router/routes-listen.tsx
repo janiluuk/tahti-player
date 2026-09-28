@@ -7,6 +7,7 @@ import {
   DiscoverView,
   RadioScheduleView,
   RadioShowView,
+  RadioStationView,
   RadioView,
 } from './router-lazy-views';
 
@@ -71,6 +72,15 @@ export const radioShowRoute = createRoute({
   component: () => {
     const { channelSlug } = radioShowRoute.useParams();
     return <RadioShowView channelSlug={channelSlug} />;
+  },
+});
+
+export const radioStationRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/radio/station/$stationId',
+  component: () => {
+    const { stationId } = radioStationRoute.useParams();
+    return <RadioStationView stationId={stationId} />;
   },
 });
 

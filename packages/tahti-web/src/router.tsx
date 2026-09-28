@@ -135,6 +135,7 @@ import {
   listenRoute,
   radioRoute,
   radioShowRoute,
+  radioStationRoute,
   scheduleRoute,
   themesRoute,
 } from './router/routes-listen';
@@ -205,6 +206,7 @@ const routeTree = rootRoute.addChildren([
     listenAliasRoute,
     radioRoute,
     radioShowRoute,
+    radioStationRoute,
     scheduleRoute,
     discoverRoute,
     themesRoute,
