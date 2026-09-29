@@ -1,19 +1,9 @@
-import { PlusIcon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import {
-  Button,
-  Input,
-  SaveButton,
-  Select,
-  Tooltip,
-  ViewShell,
-} from '@tahti-player/ui';
+import { ViewShell } from '@tahti-player/ui';
 
 import {
-  createLedgerEntry,
   fetchAdminFinancial,
-  LEDGER_CATEGORIES,
   type AdminFinancialOverview,
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
@@ -21,23 +11,11 @@ import { AdminPageLayout } from '../../components/AdminNav';
 import { PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { FanSubPayoutQueue } from './financial/FanSubPayoutQueue';
-
-function formatEur(cents: number): string {
-  return `€${(cents / 100).toLocaleString('fi-FI', { minimumFractionDigits: 2 })}`;
-}
-
-function categoryLabel(category: string): string {
-  return category.replace(/_/g, ' ').toLowerCase();
-}
+import { formatEur, LedgerPanel } from './financial/LedgerPanel';
 
 export function AdminFinancialView() {
   const [overview, setOverview] = useState<AdminFinancialOverview | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showForm, setShowForm] = useState(false);
-  const [category, setCategory] = useState<string>(LEDGER_CATEGORIES[0]);
-  const [amount, setAmount] = useState('');
-  const [description, setDescription] = useState('');
-  const [saving, setSaving] = useState(false);
 
   const reload = () => {
     void fetchAdminFinancial().then((res) => {
@@ -105,113 +83,7 @@ export function AdminFinancialView() {
 
                   <FanSubPayoutQueue onChanged={reload} />
 
-                  <StudioPanel
-                    title="Ledger entries"
-                    action={
-                      <Tooltip
-                        content={showForm ? 'Cancel entry' : 'Add entry'}
-                        side="top"
-                      >
-                        <Button
-                          size="icon-sm"
-                          onClick={() => setShowForm((v) => !v)}
-                          aria-label={showForm ? 'Cancel entry' : 'Add entry'}
-                        >
-                          {showForm ? (
-                            <XIcon size={16} aria-hidden />
-                          ) : (
-                            <PlusIcon size={16} aria-hidden />
-                          )}
-                        </Button>
-                      </Tooltip>
-                    }
-                  >
-                    {showForm && (
-                      <div className="border-border mb-4 flex flex-col gap-2 border-b pb-4">
-                        <div className="flex flex-wrap gap-2">
-                          <Select
-                            label="Category"
-                            value={category}
-                            onValueChange={setCategory}
-                            options={LEDGER_CATEGORIES.map(
-                              (ledgerCategory) => ({
-                                id: ledgerCategory,
-                                label: categoryLabel(ledgerCategory),
-                              }),
-                            )}
-                            className="min-w-52"
-                          />
-                          <Input
-                            placeholder="Amount (€, negative for cost)"
-                            value={amount}
-                            onChange={(e) => setAmount(e.target.value)}
-                            className="h-8 w-52 text-xs"
-                          />
-                        </div>
-                        <Input
-                          placeholder="Description"
-                          value={description}
-                          onChange={(e) => setDescription(e.target.value)}
-                          className="h-8 text-xs"
-                        />
-                        <div>
-                          <SaveButton
-                            size="sm"
-                            disabled={!amount.trim() || !description.trim()}
-                            saving={saving}
-                            label="Save entry"
-                            onClick={() => {
-                              const eur = Number(amount);
-                              if (!Number.isFinite(eur)) {
-                                return;
-                              }
-                              setSaving(true);
-                              void createLedgerEntry({
-                                category,
-                                amountCents: Math.round(eur * 100),
-                                description: description.trim(),
-                              }).then(() => {
-                                setSaving(false);
-                                setShowForm(false);
-                                setAmount('');
-                                setDescription('');
-                                reload();
-                              });
-                            }}
-                          />
-                        </div>
-                      </div>
-                    )}
-
-                    {overview.entries.length === 0 ? (
-                      <p className="text-foreground-secondary py-4 text-center text-sm">
-                        No ledger entries yet.
-                      </p>
-                    ) : (
-                      <ul className="divide-border divide-y">
-                        {overview.entries.map((e) => (
-                          <li
-                            key={e.id}
-                            className="flex flex-wrap items-center justify-between gap-2 py-3 text-sm first:pt-0 last:pb-0"
-                          >
-                            <div className="min-w-0 flex-1">
-                              <div className="font-medium">{e.description}</div>
-                              <div className="text-foreground-secondary text-xs">
-                                {categoryLabel(e.category)} ·{' '}
-                                {new Date(e.createdAt).toLocaleDateString()}
-                              </div>
-                            </div>
-                            <div
-                              className={`text-sm font-medium ${e.amountCents < 0 ? 'text-accent-red-strong' : 'text-accent-green-strong'}`}
-                            >
-                              {e.amountCents < 0 ? '−' : '+'}
-                              {formatEur(Math.abs(e.amountCents))}
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </StudioPanel>
+                  <LedgerPanel entries={overview.entries} onChanged={reload} />
                 </>
               )}
             </ViewShell>
