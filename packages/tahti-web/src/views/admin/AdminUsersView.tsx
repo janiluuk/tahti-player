@@ -146,6 +146,12 @@ export const AdminUsersView = () => {
                   <AdminUserEditPanel
                     key={selectedId}
                     userId={selectedId}
+                    onUserDeleted={(id) => {
+                      setUsers((current) =>
+                        current.filter((row) => row.id !== id),
+                      );
+                      setTotal((current) => Math.max(0, current - 1));
+                    }}
                     onUserUpdated={(user) =>
                       setUsers((current) =>
                         current.map((row) =>
