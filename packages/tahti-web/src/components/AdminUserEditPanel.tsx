@@ -12,6 +12,7 @@ import {
   Badge,
   Button,
   Input,
+  MediaArtwork,
   SaveButton,
   Select,
   Textarea,
@@ -34,6 +35,7 @@ import {
   type ChatDm,
 } from '../api/messages';
 import type { AccountRole, PublicProfile } from '../api/types';
+import { AdminUserEngagementPanel } from './admin-user/AdminUserEngagementPanel';
 import { ImageLightbox } from './ImageLightbox';
 import { PageLoading } from './PageStates';
 import { StudioPanel } from './StudioPanel';
@@ -219,18 +221,15 @@ export function AdminUserEditPanel({
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="flex min-w-0 items-start gap-4">
             {publicProfile?.artist.avatarUrl ? (
-              <button
-                type="button"
-                className="border-border size-20 shrink-0 overflow-hidden rounded-xl border shadow-md"
+              <Button
+                variant="text"
+                size="flexible"
+                className="border-border relative size-20 shrink-0 overflow-hidden rounded-xl border p-0 shadow-md"
                 aria-label={`View ${detail.displayName} profile picture`}
                 onClick={() => setAvatarOpen(true)}
               >
-                <img
-                  src={publicProfile.artist.avatarUrl}
-                  alt=""
-                  className="size-full object-cover"
-                />
-              </button>
+                <MediaArtwork src={publicProfile.artist.avatarUrl} alt="" />
+              </Button>
             ) : (
               <span className="bg-primary/15 text-primary flex size-20 shrink-0 items-center justify-center rounded-xl text-2xl font-bold">
                 {detail.displayName.slice(0, 1).toUpperCase()}
@@ -458,6 +457,8 @@ export function AdminUserEditPanel({
           </Button>
         </StudioPanel>
       </div>
+
+      <AdminUserEngagementPanel userId={detail.id} />
 
       {messageOpen ? (
         <StudioPanel
