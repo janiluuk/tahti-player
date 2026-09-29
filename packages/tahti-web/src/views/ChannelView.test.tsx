@@ -19,8 +19,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as client from '../api/client';
 import * as discoWidgets from '../api/disco-widgets';
+import * as follows from '../api/follows';
 import * as shows from '../api/shows';
 import { useAuthStore } from '../stores/authStore';
+import { rehydrateLibraryForUser } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { useRightRailOverrideStore } from '../stores/rightRailOverrideStore';
 import { ChannelView } from './ChannelView';
@@ -123,6 +125,38 @@ describe('ChannelView', () => {
     vi.restoreAllMocks();
     useAuthStore.setState({ user: null, hydrated: true, loading: false });
     usePlayerStore.setState(usePlayerStore.getInitialState(), true);
+  });
+
+  it('shows a visitor the follow state from the server and follows the channel owner', async () => {
+    signInAs('someone-else');
+    localStorage.clear();
+    await rehydrateLibraryForUser('user-someone-else');
+    vi.spyOn(follows, 'fetchFollowStatus').mockResolvedValue({
+      following: false,
+      followerCount: 10,
+    });
+    const followSpy = vi
+      .spyOn(follows, 'followArtist')
+      .mockResolvedValue({ ok: true, followerCount: 11 });
+    await renderChannel('/channel/northern-lights');
+
+    const button = await screen.findByRole('button', { name: /^Follow / });
+    expect(button.getAttribute('aria-pressed')).toBe('false');
+    await act(async () => {
+      fireEvent.click(button);
+    });
+    expect(followSpy).toHaveBeenCalledWith('northern-lights');
+    expect(button.getAttribute('aria-pressed')).toBe('true');
+    await rehydrateLibraryForUser(null);
+  });
+
+  it('does not offer the owner a follow button on their own channel', async () => {
+    signInAs('northern-lights');
+    await renderChannel('/channel/northern-lights');
+    await waitFor(() =>
+      expect(screen.queryByText('Loading channel…')).toBeNull(),
+    );
+    expect(screen.queryByRole('button', { name: /^Follow / })).toBeNull();
   });
 
   it('shows the page but not the editor to a visitor, even with ?edit', async () => {

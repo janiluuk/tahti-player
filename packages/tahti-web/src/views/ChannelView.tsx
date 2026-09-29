@@ -60,6 +60,7 @@ import { cn } from '../lib/cn';
 import { colorSchemeCssVars, normalizeColorScheme } from '../lib/colorScheme';
 import { isPinned } from '../lib/pinnedTracks';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
+import { useArtistFollow } from '../lib/useArtistFollow';
 import { useAuthStore } from '../stores/authStore';
 import { useListenerWidgetsStore } from '../stores/listenerWidgetsStore';
 import { usePlayerStore } from '../stores/playerStore';
@@ -121,6 +122,17 @@ export function ChannelView({ slug }: { slug: string }) {
     me && channel && me.username === channel.user.username,
   );
   const isAdministrator = hasAccountRole(me, 'BOARD');
+  const follow = useArtistFollow(
+    channel
+      ? {
+          slug,
+          username: channel.user.username,
+          displayName: channel.user.displayName,
+          avatarUrl: channel.user.avatarUrl,
+        }
+      : null,
+    Boolean(me && !isOwner),
+  );
   const subtle = activePresetId === 'subtle';
   const configuredEmbedItems = useMemo(
     () =>
@@ -372,6 +384,8 @@ export function ChannelView({ slug }: { slug: string }) {
       live={live}
       subtle={subtle}
       chatOn={chatOn}
+      follow={isOwner ? null : follow}
+      signedIn={Boolean(me)}
     />
   );
 
@@ -506,7 +520,7 @@ export function ChannelView({ slug }: { slug: string }) {
           {
             key: 'followers',
             label: 'Followers',
-            value: channel.followerCount,
+            value: follow.followerCount ?? channel.followerCount,
             icon: UsersIcon,
           },
         ]
