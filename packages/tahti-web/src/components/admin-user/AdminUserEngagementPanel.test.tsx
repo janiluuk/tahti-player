@@ -1,5 +1,11 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen } from '@testing-library/react';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+} from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as admin from '../../api/admin';
@@ -59,5 +65,49 @@ describe('AdminUserEngagementPanel', () => {
     expect(await screen.findByText("Couldn't load engagement")).toBeTruthy();
     screen.getByRole('button', { name: /try again|retry/i }).click();
     await vi.waitFor(() => expect(fetch).toHaveBeenCalledTimes(2));
+  });
+
+  it('adds a board adjustment for the current year and reloads the total', async () => {
+    const year = new Date().getUTCFullYear();
+    const fetch = vi
+      .spyOn(admin, 'fetchAdminUserEngagement')
+      .mockResolvedValue({
+        data: { userId: 'u1', year, totalUnits: 100, adjustments: [] },
+        meta: { source: 'api' },
+      });
+    const create = vi
+      .spyOn(admin, 'createEngagementAdjustment')
+      .mockResolvedValue({ ok: true });
+    render(<AdminUserEngagementPanel userId="u1" />);
+    await screen.findByText('100');
+
+    const add = screen.getByRole('button', { name: 'Add adjustment' });
+    expect((add as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.change(screen.getByLabelText('Units'), {
+      target: { value: '-10' },
+    });
+    fireEvent.change(screen.getByPlaceholderText('Shown in the audit log'), {
+      target: { value: 'Bot plays' },
+    });
+    await act(async () => {
+      fireEvent.click(add);
+    });
+    expect(create).toHaveBeenCalledWith({
+      userId: 'u1',
+      units: -10,
+      reason: 'Bot plays',
+    });
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it('shows past years read-only', async () => {
+    const year = new Date().getUTCFullYear() - 1;
+    vi.spyOn(admin, 'fetchAdminUserEngagement').mockResolvedValue({
+      data: { userId: 'u1', year, totalUnits: 5, adjustments: [] },
+      meta: { source: 'api' },
+    });
+    render(<AdminUserEngagementPanel userId="u1" />);
+    await screen.findByText('5');
+    expect(screen.queryByRole('button', { name: 'Add adjustment' })).toBeNull();
   });
 });
