@@ -14,7 +14,25 @@ export type AdminAnnouncementClip = {
   isEnabled: boolean;
   scheduleMode: AdminAnnouncementScheduleMode;
   everyNth: number | null;
+  renderStatus?: AdminAnnouncementRenderStatus;
   audioUrl?: string | null;
+};
+
+export type AdminAnnouncementRenderStatus = 'READY' | 'PROCESSING' | 'ERROR';
+
+export type AdminAnnouncementSource = {
+  url: string;
+  originalUrl: string;
+  durationSec: number | null;
+  title: string;
+  renderStatus: AdminAnnouncementRenderStatus;
+};
+
+export type AdminAnnouncementTrim = {
+  startSec: number;
+  endSec: number;
+  fadeInSec: number;
+  fadeOutSec: number;
 };
 
 let mockAnnouncementClips: AdminAnnouncementClip[] | null = null;
@@ -157,5 +175,89 @@ export async function uploadAnnouncementClip(
     return { ok: true, clip };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : 'Failed' };
+  }
+}
+
+export async function fetchAdminAnnouncementSource(
+  id: string,
+): Promise<
+  { ok: true; source: AdminAnnouncementSource } | { ok: false; error: string }
+> {
+  if (isForceMock()) {
+    const clip = announcementState().find((c) => c.id === id);
+    if (!clip?.audioUrl) {
+      return { ok: false, error: 'Announcement not found' };
+    }
+    return {
+      ok: true,
+      source: {
+        url: clip.audioUrl,
+        originalUrl: clip.audioUrl,
+        durationSec: clip.durationSec,
+        title: clip.title,
+        renderStatus: clip.renderStatus ?? 'READY',
+      },
+    };
+  }
+  try {
+    const source = await getJson<AdminAnnouncementSource>(
+      `/api/admin/announcements/${encodeURIComponent(id)}/editor/source`,
+    );
+    return { ok: true, source };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not load the clip',
+    };
+  }
+}
+
+export function validateAnnouncementTrim(
+  trim: AdminAnnouncementTrim,
+  durationSec: number | null,
+): string | null {
+  const values = [trim.startSec, trim.endSec, trim.fadeInSec, trim.fadeOutSec];
+  if (values.some((value) => !Number.isFinite(value) || value < 0)) {
+    return 'Times must be zero or more seconds.';
+  }
+  if (trim.endSec <= trim.startSec) {
+    return 'End must be after start.';
+  }
+  if (durationSec != null && trim.endSec > durationSec) {
+    return `End can't be past the clip's length (${durationSec} s).`;
+  }
+  if (trim.fadeInSec > 30 || trim.fadeOutSec > 30) {
+    return 'Fades can be at most 30 seconds.';
+  }
+  if (trim.fadeInSec + trim.fadeOutSec > trim.endSec - trim.startSec) {
+    return 'The fades are longer than the trimmed clip.';
+  }
+  return null;
+}
+
+export async function renderAdminAnnouncement(
+  id: string,
+  trim: AdminAnnouncementTrim,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (isForceMock()) {
+    const clip = announcementState().find((c) => c.id === id);
+    if (clip) {
+      clip.durationSec = Math.round(trim.endSec - trim.startSec);
+      clip.renderStatus = 'READY';
+    }
+    return { ok: true };
+  }
+  try {
+    await sendJson<{ ok: true }>(
+      `/api/admin/announcements/${encodeURIComponent(id)}/editor/render`,
+      'POST',
+      trim,
+    );
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not render the clip',
+    };
   }
 }
