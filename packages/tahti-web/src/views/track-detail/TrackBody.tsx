@@ -1,5 +1,8 @@
 import { Link } from '@tanstack/react-router';
 
+import { Button } from '@tahti-player/ui';
+
+import { CommentItem } from '../../components/CommentItem';
 import { cn } from '../../lib/cn';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { formatDuration } from '../../lib/playableToTrack';
@@ -17,6 +20,9 @@ export function TrackBody({ page }: { page: TrackPage }) {
     relatedTracks,
     relatedCollections,
     jumpTo,
+    canDeleteComment,
+    removeComment,
+    deletingCommentId,
   } = page;
 
   return (
@@ -84,39 +90,29 @@ export function TrackBody({ page }: { page: TrackPage }) {
                   const parsed = parseTimedComment(comment.body);
                   const cueSeconds = parsed.seconds;
                   return (
-                    <li key={comment.id} className="flex gap-3">
-                      <img
-                        src={
-                          comment.authorAvatarUrl ??
-                          placeholderArtworkUrl(comment.authorUsername)
-                        }
-                        alt=""
-                        className="size-8 shrink-0 rounded-full object-cover"
-                      />
-                      <div className="min-w-0">
-                        <div className="flex flex-wrap items-baseline gap-2">
-                          <span className="text-sm font-semibold">
-                            {comment.authorDisplayName}
-                          </span>
-                          {parsed.timestamp && cueSeconds != null ? (
-                            <button
-                              type="button"
-                              className="text-primary text-xs tabular-nums"
-                              onClick={() => jumpTo(cueSeconds)}
-                            >
-                              {parsed.timestamp}
-                            </button>
-                          ) : null}
-                          <time
-                            className="text-foreground-secondary text-xs"
-                            dateTime={comment.createdAt}
+                    <CommentItem
+                      key={comment.id}
+                      comment={comment}
+                      text={parsed.text}
+                      meta={
+                        parsed.timestamp && cueSeconds != null ? (
+                          <Button
+                            variant="text"
+                            size="sm"
+                            className="text-primary tabular-nums"
+                            onClick={() => jumpTo(cueSeconds)}
                           >
-                            {new Date(comment.createdAt).toLocaleDateString()}
-                          </time>
-                        </div>
-                        <p className="mt-1 text-sm">{parsed.text}</p>
-                      </div>
-                    </li>
+                            {parsed.timestamp}
+                          </Button>
+                        ) : null
+                      }
+                      onDelete={
+                        canDeleteComment(comment)
+                          ? () => void removeComment(comment.id)
+                          : undefined
+                      }
+                      deleting={deletingCommentId === comment.id}
+                    />
                   );
                 })}
               </ul>

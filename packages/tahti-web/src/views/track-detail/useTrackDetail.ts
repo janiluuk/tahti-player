@@ -48,6 +48,9 @@ export function useTrackDetail(id: string, shareKey?: string) {
   const [commentBusy, setCommentBusy] = useState(false);
   const [commentError, setCommentError] = useState<string | null>(null);
   const [commentComposerOpen, setCommentComposerOpen] = useState(false);
+  const [deletingCommentId, setDeletingCommentId] = useState<string | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
   const [playlistOpen, setPlaylistOpen] = useState(false);
   const [downloadBusy, setDownloadBusy] = useState(false);
@@ -168,6 +171,8 @@ export function useTrackDetail(id: string, shareKey?: string) {
     setCommentError,
     commentComposerOpen,
     setCommentComposerOpen,
+    deletingCommentId,
+    setDeletingCommentId,
     loading,
     setLoading,
     playlistOpen,

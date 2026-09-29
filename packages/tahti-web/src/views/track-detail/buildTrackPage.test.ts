@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 
+import * as comments from '../../api/comments';
 import type { TahtiPlayable } from '../../api/types';
 import { buildTrackPage } from './buildTrackPage';
 import type { TrackDetailState } from './useTrackDetail';
@@ -106,5 +107,58 @@ describe('buildTrackPage', () => {
       buildTrackPage(state({ detail, purchaseEntitled: true }), playable)
         .showBuyTrack,
     ).toBe(false);
+  });
+  it('lets the author and the track owner delete a comment', async () => {
+    const setComments = vi.fn();
+    const comment = {
+      id: 'c1',
+      body: 'Nice',
+      authorUsername: 'fan',
+      authorDisplayName: 'Fan',
+      authorAvatarUrl: null,
+      createdAt: '2026-09-01T12:00:00.000Z',
+    };
+    const asFan = buildTrackPage(
+      state({
+        user: { username: 'fan' } as TrackDetailState['user'],
+        detail: {
+          channel: { username: 'artist' },
+        } as TrackDetailState['detail'],
+        setComments,
+        setDeletingCommentId: vi.fn(),
+      }),
+      playable,
+    );
+    expect(asFan.canDeleteComment(comment)).toBe(true);
+    expect(
+      asFan.canDeleteComment({ ...comment, authorUsername: 'someone' }),
+    ).toBe(false);
+    const asOwner = buildTrackPage(
+      state({
+        user: { username: 'artist' } as TrackDetailState['user'],
+        detail: {
+          channel: { username: 'artist' },
+        } as TrackDetailState['detail'],
+      }),
+      playable,
+    );
+    expect(
+      asOwner.canDeleteComment({ ...comment, authorUsername: 'someone' }),
+    ).toBe(true);
+    expect(buildTrackPage(state(), playable).canDeleteComment(comment)).toBe(
+      false,
+    );
+
+    const spy = vi.spyOn(comments, 'deleteComment').mockResolvedValue({
+      ok: true,
+    });
+    await asFan.removeComment('c1');
+    expect(spy).toHaveBeenCalledWith('c1');
+    const update = setComments.mock.calls[0]![0] as (
+      current: (typeof comment)[],
+    ) => (typeof comment)[];
+    expect(update([comment, { ...comment, id: 'c2' }])).toEqual([
+      { ...comment, id: 'c2' },
+    ]);
   });
 });
