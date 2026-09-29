@@ -252,6 +252,15 @@ const QueuePanelView: FC<QueuePanelProps> = ({
       handleSelect?.(id);
       return;
     }
+    if ((event.key === 'Delete' || event.key === 'Backspace') && handleRemove) {
+      event.preventDefault();
+      const neighbour = itemIds[index + 1] ?? itemIds[index - 1];
+      handleRemove(id);
+      if (neighbour !== undefined) {
+        setFocusTargetId(neighbour);
+      }
+      return;
+    }
     const nextIndex = keyboardTargetIndex(event.key, index, items.length);
     const nextId = nextIndex === null ? undefined : itemIds[nextIndex];
     if (nextIndex === null || nextId === undefined) {

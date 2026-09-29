@@ -146,4 +146,54 @@ describe('QueuePanel keyboard', () => {
     expect(document.activeElement).toBe(remove);
     expect(onSelectItem).not.toHaveBeenCalled();
   });
+
+  it('removes the focused row with Delete and moves focus to the next one', async () => {
+    const onRemoveItem = vi.fn();
+    const items = Array.from({ length: 3 }, (_, i) => item(i));
+    const { rerender } = render(
+      <QueuePanel items={items} labels={labels} onRemoveItem={onRemoveItem} />,
+    );
+    row(1)!.focus();
+
+    fireEvent.keyDown(row(1)!, { key: 'Delete' });
+    expect(onRemoveItem).toHaveBeenCalledWith('item-1');
+    rerender(
+      <QueuePanel
+        items={[items[0]!, items[2]!]}
+        labels={labels}
+        onRemoveItem={onRemoveItem}
+      />,
+    );
+    await nextFrame();
+    expect(document.activeElement).toBe(row(2));
+
+    fireEvent.keyDown(row(2)!, { key: 'Backspace' });
+    expect(onRemoveItem).toHaveBeenLastCalledWith('item-2');
+    rerender(
+      <QueuePanel
+        items={[items[0]!]}
+        labels={labels}
+        onRemoveItem={onRemoveItem}
+      />,
+    );
+    await nextFrame();
+    expect(document.activeElement).toBe(row(0));
+  });
+
+  it('leaves Delete alone when rows cannot be removed', () => {
+    render(
+      <QueuePanel
+        items={Array.from({ length: 2 }, (_, i) => item(i))}
+        labels={labels}
+      />,
+    );
+    row(0)!.focus();
+    const event = new KeyboardEvent('keydown', {
+      key: 'Delete',
+      bubbles: true,
+      cancelable: true,
+    });
+    row(0)!.dispatchEvent(event);
+    expect(event.defaultPrevented).toBe(false);
+  });
 });
