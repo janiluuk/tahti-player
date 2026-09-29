@@ -1,9 +1,12 @@
 // @vitest-environment jsdom
-import { renderHook } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createDefaultEditList, type EditList } from '../api/studio-types';
-import { useAudioPreviewGraph } from './audioPreviewGraph';
+import {
+  canRouteThroughGraph,
+  useAudioPreviewGraph,
+} from './audioPreviewGraph';
 
 const param = () => {
   const p = {
@@ -59,6 +62,19 @@ class FakeContext {
   }
 }
 
+function loaded(
+  element: HTMLAudioElement,
+  src = 'blob:http://localhost:3000/abc',
+  crossOrigin: string | null = null,
+) {
+  element.crossOrigin = crossOrigin;
+  element.src = src;
+  Object.defineProperty(element, 'readyState', {
+    configurable: true,
+    value: 1,
+  });
+}
+
 function withEq(): EditList {
   const editList = createDefaultEditList(180);
   editList.pluginChain = ['eq'];
@@ -73,6 +89,7 @@ describe('useAudioPreviewGraph', () => {
     contexts = [];
     vi.stubGlobal('AudioContext', FakeContext);
     audio = document.createElement('audio');
+    loaded(audio);
     document.body.appendChild(audio);
   });
 
@@ -120,5 +137,55 @@ describe('useAudioPreviewGraph', () => {
     const { unmount } = renderHook(() => useAudioPreviewGraph(ref, withEq()));
     unmount();
     expect(contexts[0]!.close).not.toHaveBeenCalled();
+  });
+
+  it('waits for the source to load before routing it', () => {
+    const fresh = document.createElement('audio');
+    document.body.appendChild(fresh);
+    const ref = { current: fresh };
+    const { result } = renderHook(() => useAudioPreviewGraph(ref, withEq()));
+    expect(contexts).toHaveLength(0);
+    expect(result.current.effectsBlocked).toBe(false);
+
+    loaded(fresh);
+    act(() => {
+      fresh.dispatchEvent(new Event('loadedmetadata'));
+    });
+    expect(contexts).toHaveLength(1);
+    expect(result.current.effectsBlocked).toBe(false);
+    fresh.remove();
+  });
+
+  it('plays a cross-origin source without CORS unprocessed instead of silent', () => {
+    const fallback = document.createElement('audio');
+    loaded(fallback, 'https://cdn.tahti.live/a.mp3', null);
+    document.body.appendChild(fallback);
+    const ref = { current: fallback };
+    const { result } = renderHook(() => useAudioPreviewGraph(ref, withEq()));
+    expect(contexts).toHaveLength(0);
+    expect(result.current.effectsBlocked).toBe(true);
+
+    loaded(fallback);
+    act(() => {
+      fallback.dispatchEvent(new Event('loadedmetadata'));
+    });
+    expect(contexts).toHaveLength(1);
+    expect(result.current.effectsBlocked).toBe(false);
+    fallback.remove();
+  });
+});
+
+describe('canRouteThroughGraph', () => {
+  it('routes local copies, same-origin and CORS-loaded sources only', () => {
+    const el = document.createElement('audio');
+    expect(canRouteThroughGraph(el)).toBe(false);
+    loaded(el, 'blob:http://localhost:3000/x');
+    expect(canRouteThroughGraph(el)).toBe(true);
+    loaded(el, '/tahti-api/media/a.mp3');
+    expect(canRouteThroughGraph(el)).toBe(true);
+    loaded(el, 'https://cdn.tahti.live/a.mp3', 'anonymous');
+    expect(canRouteThroughGraph(el)).toBe(true);
+    loaded(el, 'https://cdn.tahti.live/a.mp3', null);
+    expect(canRouteThroughGraph(el)).toBe(false);
   });
 });
