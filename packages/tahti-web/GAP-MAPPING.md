@@ -68,8 +68,8 @@ This maps the public Tahti product described at [tahti.live](https://tahti.live/
 | Top lists, storage, financial, governance | Corresponding `/admin/*` routes | Partial | Core pages exist, but some production actions are intentionally trimmed. |
 | Grants | `/admin/grants` | Partial | Listing/review exists; grant run/preview depth is missing. |
 | Storage/files operations | `/admin/storage` | Partial | Storage visibility exists; production bulk file operations are not ported. |
-| Financial operations | `/admin/financial` | Partial | Main records exist; payout retry and legacy-member migration workflows are missing. |
-| User/support detail pages | — | Missing | Production has deeper detail pages than the beta board surface. |
+| Financial operations | `/admin/financial` | Partial | Main records exist; fan-sub payout queue with retry for failed payouts (#237). Legacy-member migration workflow still missing. |
+| User/support detail pages | `/admin/users` | Partial | User panel now has CSV export (#231), engagement by year with board adjustments (#232, #233), account restrictions (#234) and GDPR deletion (#235). Support ticket detail depth not re-checked. |
 | Announcement clip/detail workflows | — | Missing | Not included in the beta admin port. |
 | Widget catalog administration | Production admin/catalog | Missing from beta | Listener widgets work, but catalog management remains in the production/Next admin surface. |
 | Full production admin surface | Production has roughly 35 admin pages; beta has 22 | Partial | Beta covers the main board workflows but is not a complete admin replacement. |

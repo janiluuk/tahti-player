@@ -3865,3 +3865,14 @@ Items finished here were removed from their todo files; partial progress stays n
 - **Peaks cache (#226)**, refactor P3: `stores/peaksCache.ts`, bounded to 200 ids (was unbounded).
 - **#213 (accent text contrast)** was rebuilt on master after #206-#216 merged, and gained a source guard against new plain `text-accent-*` text.
 - **Checks:** each PR ran its package's type-check, lint and tests; `cargo test --lib local_library` 206 passed on each Rust PR; the ignored 100k search test ran 4.1 ms after the FTS change. Nothing was tried in the desktop app.
+
+## 2026-09-29 - Ten todo slices, sixth batch (#228-#237)
+
+Slices came from the CUTOVER and GAP-MAPPING ledgers (no `docs/todo/` file covered them).
+
+- **Follows**, CUTOVER Follows / library: the favorite-artist button is a real follow by username with server state, follower count and error toast (#228); Followers/Following list dialog from the artist header, paged (#229, stacked); follow on the channel stage, hidden for the owner (#230, stacked). Follow calls moved to `api/follows.ts`.
+- **Admin users**, GAP-MAPPING user detail: CSV export with the list filters (#231); engagement by year with board adjustments (#232) and an Add adjustment form, current year only because the API files adjustments by creation date (#233, stacked); sign-in/upload/live-booking restrictions (#234, stacked); GDPR deletion behind a typed-username confirmation (#235, stacked). #232 also moved the panel's avatar to `Button` + `MediaArtwork`.
+- **Pro Editor CORS (#236)**: preview no longer goes silent on `cdn.tahti.live` (no CORS header); plays unprocessed with a warning until a routable copy loads. The Caddy header fix in tahti-org is still open.
+- **Payout queue (#237)**, GAP-MAPPING financial: pending/failed fan-sub payouts with Retry.
+- **Checks:** each PR ran tahti-web type-check, lint and the touched tests (e.g. `src/views src/components src/stores` 531 passed on #230). Nothing was tried against the live API or in a browser.
+
