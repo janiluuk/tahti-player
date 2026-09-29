@@ -20,6 +20,7 @@ import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
+import { FanSubPayoutQueue } from './financial/FanSubPayoutQueue';
 
 function formatEur(cents: number): string {
   return `€${(cents / 100).toLocaleString('fi-FI', { minimumFractionDigits: 2 })}`;
@@ -101,6 +102,8 @@ export function AdminFinancialView() {
                       )}
                     </div>
                   </StudioPanel>
+
+                  <FanSubPayoutQueue onChanged={reload} />
 
                   <StudioPanel
                     title="Ledger entries"
