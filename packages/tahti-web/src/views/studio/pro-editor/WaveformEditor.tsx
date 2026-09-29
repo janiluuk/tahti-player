@@ -473,6 +473,8 @@ export function WaveformEditor({
             })
           }
           onClearSelection={() => setSelection(null)}
+          onSelectionStart={() => markSelectionEdge('start')}
+          onSelectionEnd={() => markSelectionEdge('end')}
           onAddMarker={addMarker}
           onZoomIn={() => zoomBy(0.5)}
           onZoomOut={() => zoomBy(2)}
