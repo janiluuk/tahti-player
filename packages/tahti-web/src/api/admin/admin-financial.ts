@@ -9,8 +9,42 @@ export type AdminLedgerEntry = {
   category: string;
   amountCents: number;
   description: string;
+  externalRef?: string | null;
+  periodStart?: string;
+  periodEnd?: string;
   createdAt: string;
 };
+
+export type NewLedgerEntry = {
+  category: string;
+  amountCents: number;
+  description: string;
+  externalRef?: string;
+  periodStart: string;
+  periodEnd: string;
+};
+
+const OUTFLOW_CATEGORIES = new Set(['GRANT_DISBURSEMENT']);
+
+export function isLedgerOutflow(category: string): boolean {
+  return category.startsWith('COST_') || OUTFLOW_CATEGORIES.has(category);
+}
+
+export function validateLedgerEntry(entry: NewLedgerEntry): string | null {
+  if (!Number.isInteger(entry.amountCents) || entry.amountCents <= 0) {
+    return 'Enter the amount as a positive number of euros; the category says whether it is income or a cost.';
+  }
+  if (!entry.description.trim()) {
+    return 'Add a description.';
+  }
+  if (!entry.periodStart || !entry.periodEnd) {
+    return 'Set the period the entry covers.';
+  }
+  if (entry.periodEnd < entry.periodStart) {
+    return 'The period must end on or after its start.';
+  }
+  return null;
+}
 
 export type AdminFinancialOverview = {
   entries: AdminLedgerEntry[];
@@ -48,14 +82,14 @@ function mockFinancialOverview(): AdminFinancialOverview {
       {
         id: 'ledg-2',
         category: 'COST_INFRASTRUCTURE',
-        amountCents: -21500,
+        amountCents: 21500,
         description: 'UpCloud + fiber — August',
         createdAt: '2026-08-01T09:00:00.000Z',
       },
       {
         id: 'ledg-3',
         category: 'COST_SALARY',
-        amountCents: -180000,
+        amountCents: 180000,
         description: 'Ops contractor — August',
         createdAt: '2026-08-01T09:00:00.000Z',
       },
@@ -91,9 +125,11 @@ export async function fetchAdminFinancial(): Promise<{
   }
   try {
     const [ledgerRes, fansubsRes] = await Promise.all([
-      getJson<AdminLedgerEntry[]>(
-        `/api/admin/ledger?year=${new Date().getUTCFullYear()}`,
-      ),
+      getJson<
+        (Omit<AdminLedgerEntry, 'amountCents'> & {
+          amountCents: number | string;
+        })[]
+      >(`/api/admin/ledger?year=${new Date().getUTCFullYear()}`),
       getJson<{
         activeFanSubCount: number;
         mrrCents: number;
@@ -102,7 +138,13 @@ export async function fetchAdminFinancial(): Promise<{
       }>('/api/admin/fansubs/overview'),
     ]);
     return {
-      data: { entries: ledgerRes, ...fansubsRes },
+      data: {
+        entries: ledgerRes.map((entry) => ({
+          ...entry,
+          amountCents: Number(entry.amountCents),
+        })),
+        ...fansubsRes,
+      },
       meta: { source: 'api' },
     };
   } catch (err) {
@@ -110,11 +152,13 @@ export async function fetchAdminFinancial(): Promise<{
   }
 }
 
-export function createLedgerEntry(entry: {
-  category: string;
-  amountCents: number;
-  description: string;
-}) {
+export async function createLedgerEntry(
+  entry: NewLedgerEntry,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const invalid = validateLedgerEntry(entry);
+  if (invalid) {
+    return { ok: false, error: invalid };
+  }
   if (isForceMock()) {
     const row: AdminLedgerEntry = {
       id: `ledg-${Date.now()}`,
@@ -122,9 +166,13 @@ export function createLedgerEntry(entry: {
       createdAt: new Date().toISOString(),
     };
     (mockFinancialState ?? mockFinancialOverview()).entries.unshift(row);
-    return Promise.resolve({ ok: true } as const);
+    return { ok: true };
   }
-  return mutate('/api/admin/ledger', 'POST', entry);
+  return mutate('/api/admin/ledger', 'POST', {
+    ...entry,
+    description: entry.description.trim(),
+    externalRef: entry.externalRef?.trim() || undefined,
+  });
 }
 
 export type AdminFanSubPayoutState = 'PENDING' | 'FAILED';
