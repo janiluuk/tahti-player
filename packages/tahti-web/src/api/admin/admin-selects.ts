@@ -1,5 +1,5 @@
 import type { FetchMeta } from '../client';
-import { getJson, mutate } from '../http';
+import { getJson, mutate, sendJson } from '../http';
 import { failMeta, isForceMock } from '../mode';
 
 // ── Tahti Selects ───────────────────────────────────────────────────────────
@@ -241,4 +241,27 @@ export function stopSelectsStream() {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate('/api/admin/tahti-selects/stream/stop', 'POST');
+}
+
+export type SelectsGenerateMode = 'add' | 'replace';
+
+export async function generateSelectsRotation(
+  mode: SelectsGenerateMode,
+): Promise<{ ok: true; added: number } | { ok: false; error: string }> {
+  if (isForceMock()) {
+    return { ok: true, added: 10 };
+  }
+  try {
+    const result = await sendJson<{ ok: true; added: number }>(
+      '/api/admin/tahti-selects/generate',
+      'POST',
+      { mode },
+    );
+    return { ok: true, added: result.added };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not fill the rotation',
+    };
+  }
 }
