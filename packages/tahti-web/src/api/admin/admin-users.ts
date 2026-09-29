@@ -341,3 +341,50 @@ export async function unsuspendAdminUser(
     };
   }
 }
+
+export type AdminAccountDeletionResult = {
+  userId: string;
+  fanSubscriptionsCanceled: number;
+  newsletterSubscribersRemoved: number;
+};
+
+export async function deleteAdminUserAccount(
+  id: string,
+): Promise<
+  { ok: true; data: AdminAccountDeletionResult } | { ok: false; error: string }
+> {
+  if (isForceMock()) {
+    const users = mockUsers();
+    const index = users.findIndex((candidate) => candidate.id === id);
+    if (index < 0) {
+      return { ok: false, error: 'User not found' };
+    }
+    if (users[index]!.isBoard) {
+      return {
+        ok: false,
+        error: 'Remove board role before deleting a board member',
+      };
+    }
+    users.splice(index, 1);
+    return {
+      ok: true,
+      data: {
+        userId: id,
+        fanSubscriptionsCanceled: 0,
+        newsletterSubscribersRemoved: 0,
+      },
+    };
+  }
+  try {
+    const data = await sendJson<AdminAccountDeletionResult>(
+      `/api/admin/users/${encodeURIComponent(id)}/delete-account`,
+      'POST',
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Deletion failed',
+    };
+  }
+}

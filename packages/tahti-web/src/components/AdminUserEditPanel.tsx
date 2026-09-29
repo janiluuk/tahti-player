@@ -35,6 +35,8 @@ import {
   type ChatDm,
 } from '../api/messages';
 import type { AccountRole, PublicProfile } from '../api/types';
+import { useAuthStore } from '../stores/authStore';
+import { AdminUserDeletePanel } from './admin-user/AdminUserDeletePanel';
 import { AdminUserEngagementPanel } from './admin-user/AdminUserEngagementPanel';
 import { AdminUserRestrictionsPanel } from './admin-user/AdminUserRestrictionsPanel';
 import { ImageLightbox } from './ImageLightbox';
@@ -50,10 +52,13 @@ const ROLES = ['BOARD', 'ARTIST', 'LISTENER'] as const;
 export function AdminUserEditPanel({
   userId,
   onUserUpdated,
+  onUserDeleted,
 }: {
   userId: string;
   onUserUpdated?: (user: AdminUserDetail) => void;
+  onUserDeleted?: (userId: string) => void;
 }) {
+  const me = useAuthStore((s) => s.user);
   const [detail, setDetail] = useState<AdminUserDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [editRole, setEditRole] = useState<AccountRole>('LISTENER');
@@ -463,6 +468,12 @@ export function AdminUserEditPanel({
         <AdminUserEngagementPanel userId={detail.id} />
         <AdminUserRestrictionsPanel userId={detail.id} />
       </div>
+
+      <AdminUserDeletePanel
+        user={detail}
+        isSelf={me?.id === detail.id}
+        onDeleted={() => onUserDeleted?.(detail.id)}
+      />
 
       {messageOpen ? (
         <StudioPanel
