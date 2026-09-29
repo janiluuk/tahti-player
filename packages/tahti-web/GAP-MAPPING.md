@@ -19,9 +19,9 @@ This maps the public Tahti product described at [tahti.live](https://tahti.live/
 | Listen directory / on-air discovery | `/` (production `/listen`) | Present | Route intentionally differs; directory uses the live channel API. |
 | Artist live channel and archive | `/channel/$slug` (production `/c/:slug`) | Present | HLS, archive playback, now-playing state, chat, and visualizer are present. |
 | Anonymous listening | Public listener routes | Present | Matches the product principle that listening does not require an account. |
-| Channel chat | Channel rail and `/chat/$slug` | Present | REST/WS chat, anonymous hCaptcha join, reactions, and subscriber-only gating are wired. |
+| Channel chat | Channel rail and `/chat/$slug` | Present | REST/WS chat, anonymous hCaptcha join, reactions, and subscriber-only gating are wired. The header shows today's listener count unless the artist turned it off (#275). |
 | Tahti Radio | `/radio` | Present | Radio playback and current-track presentation are implemented. |
-| Artist profiles | `/u/$username` | Present | Includes pinned tracks, catalog, gallery, and profile actions. |
+| Artist profiles | `/u/$username` | Present | Includes pinned tracks, catalog, gallery, and profile actions, plus the artist's SoundCloud tracks (#282; managed from Library → Embeds, #276). |
 | Collections and smart links | `/u/$username/c/$slug`, `/r/$slug` | Present | Both public surfaces are implemented. |
 | Favorites and history | `/library/*` | Partial | Beta uses local persistence/follows; it is not a full production account-backed equivalent. |
 | Playlists | Player bar, Music/library tables | Present | Create and add-to-playlist flows are live-API backed. |
@@ -43,14 +43,14 @@ This maps the public Tahti product described at [tahti.live](https://tahti.live/
 | Archive, upload, releases, collections | `/studio/archive`, `/studio/upload`, `/studio/releases`, `/studio/collections` | Present | Upload prepare/complete and album-based collection design are implemented. |
 | Pro editor | `/studio/editor` | Partial | Core editor exists, but production-grade multitrack timeline depth is still missing. |
 | Schedule / 24/7 rotation / radio shows | `/studio/schedule` (Broadcast), `/studio/channel`, `/studio/shows` | Present | Nav and page title are Broadcast. Programme, rotation, bookings, series, and episodes are on that page and Channel → Radio. |
-| Stats and detail reporting | `/studio/stats`, `/studio/stats/detail` | Present | Summary and range-detail views exist. |
+| Stats and detail reporting | `/studio/stats`, `/studio/stats/detail` | Present | Summary and range-detail views exist; Overview has the follow/repost download-gate funnel (#273), per-track gates are in the track edit dialog (#274), and a release's smart-link clicks are on its Smart links tab (#278). |
 | Channel design / profile / branding | `/studio/channel`, `/channel/$slug?edit=1` | Partial | Presets, layers, layout, gallery, and press-kit workflows exist; parity with the production designer is not complete. |
 | Updates/newsletter | `/studio/updates` | Present | Newsletter/update flow is live-API backed; the Newsletter tab shows subscriber counts (#265). |
 | Revenue and Stripe Connect | `/studio/audience` | Present | Merged fan-sub + Revelator payout history, Connect onboarding, empty tier state, order-flow breakdown, and help tour match production `/dashboard/revenue`. |
 | Distribution | `/studio/distribution` | Present | Catalog, Revelator submission/payment, Spotify profile, and royalty surfaces exist. |
 | Stash | `/studio/stash` | Present | Upload/delete and share access are implemented. |
 | Channel moderators | `/studio/moderation` | Present | API-backed assignment/removal; exposed from Studio navigation |
-| Settings | `/settings` | Partial | Nuclear settings shell exists, but parity/depth across artist, discovery, notification, and account sections is thinner. |
+| Settings | `/settings` | Partial | Nuclear settings shell exists, but parity/depth across artist, discovery, notification, and account sections is thinner. Added since: own internet radio stations in Playback (#277), broadcast record/publish defaults in Broadcast (#279), channel and new-upload comment switches in Account (#280). |
 | Source connections / OAuth | `/sources` | Partial | Source hub exists; several providers still have simplified OAuth UX and need production callback verification. |
 | Email invites for people without accounts | — | Missing/deferred | Current moderator flow assigns an existing username; there is no invite-token flow for a new user. |
 
