@@ -5,6 +5,7 @@ import { failMeta, isForceMock } from './mode';
 
 export * from './admin/admin-announcements';
 export * from './admin/admin-beta';
+export * from './admin/admin-community-stats';
 export * from './admin/admin-content-reports';
 export * from './admin/admin-dashboard';
 export * from './admin/admin-financial';
