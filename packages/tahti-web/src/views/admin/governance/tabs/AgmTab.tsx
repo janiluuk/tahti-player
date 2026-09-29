@@ -31,6 +31,11 @@ import type {
   GovernanceMeeting,
 } from '../../../../api/types';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import {
+  CollapsibleRecord,
+  ConflictsPanel,
+  NoticeDeliveriesPanel,
+} from './MeetingRecordPanels';
 
 const DEFAULT_AGENDA = [
   'Call to order',
@@ -183,84 +188,76 @@ function AttendancePanel({ meeting }: { meeting: GovernanceMeeting }) {
   }, [open, meeting.id]);
 
   return (
-    <div className="border-border mt-2 rounded-md border">
-      <button
-        type="button"
-        className="text-foreground-secondary hover:text-foreground flex w-full items-center justify-between px-3 py-2 text-xs"
-        onClick={() => setOpen((prev) => !prev)}
-      >
-        <span>Attendance ({meeting.attendanceCount} recorded)</span>
-        <span>{open ? '▲' : '▼'}</span>
-      </button>
-      {open && (
-        <div className="border-border border-t p-3">
-          {loading ? (
-            <p className="text-foreground-secondary text-xs">Loading…</p>
-          ) : records.length === 0 ? (
-            <p className="text-foreground-secondary text-xs">
-              No attendance recorded yet.
-            </p>
-          ) : (
-            <ul className="divide-border mb-3 divide-y text-sm">
-              {records.map((record) => (
-                <li
-                  key={record.id}
-                  className="flex items-center justify-between gap-2 py-1.5"
-                >
-                  <span>{record.displayName}</span>
-                  <Badge
-                    variant="pill"
-                    color={ATTENDANCE_BADGE_COLOR[record.status]}
-                  >
-                    {record.status}
-                  </Badge>
-                </li>
-              ))}
-            </ul>
-          )}
-          <div className="flex flex-wrap items-end gap-2">
-            <Input
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              placeholder="Member name"
-              aria-label="Member name"
-              className="min-w-[160px] flex-1"
-            />
-            <Select
-              label="Status"
-              value={status}
-              onValueChange={(value) =>
-                setStatus(value as GovernanceAttendanceStatus)
-              }
-              options={[
-                { id: 'PRESENT', label: 'Present' },
-                { id: 'ABSENT', label: 'Absent' },
-                { id: 'EXCUSED', label: 'Excused' },
-              ]}
-            />
-            <Button
-              size="sm"
-              disabled={saving || !name.trim()}
-              onClick={() => {
-                setSaving(true);
-                void upsertAdminGovernanceAttendance(meeting.id, {
-                  displayName: name.trim(),
-                  status,
-                }).then((result) => {
-                  setSaving(false);
-                  if (result.data) {
-                    setRecords((current) => [...current, result.data!]);
-                    setName('');
-                  }
-                });
-              }}
+    <CollapsibleRecord
+      label={`Attendance (${meeting.attendanceCount} recorded)`}
+      open={open}
+      onToggle={() => setOpen((prev) => !prev)}
+    >
+      {loading ? (
+        <p className="text-foreground-secondary text-xs">Loading…</p>
+      ) : records.length === 0 ? (
+        <p className="text-foreground-secondary text-xs">
+          No attendance recorded yet.
+        </p>
+      ) : (
+        <ul className="divide-border mb-3 divide-y text-sm">
+          {records.map((record) => (
+            <li
+              key={record.id}
+              className="flex items-center justify-between gap-2 py-1.5"
             >
-              {saving ? 'Recording…' : 'Record'}
-            </Button>
-          </div>
-        </div>
+              <span>{record.displayName}</span>
+              <Badge
+                variant="pill"
+                color={ATTENDANCE_BADGE_COLOR[record.status]}
+              >
+                {record.status}
+              </Badge>
+            </li>
+          ))}
+        </ul>
       )}
-    </div>
+      <div className="flex flex-wrap items-end gap-2">
+        <Input
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          placeholder="Member name"
+          aria-label="Member name"
+          className="min-w-[160px] flex-1"
+        />
+        <Select
+          label="Status"
+          value={status}
+          onValueChange={(value) =>
+            setStatus(value as GovernanceAttendanceStatus)
+          }
+          options={[
+            { id: 'PRESENT', label: 'Present' },
+            { id: 'ABSENT', label: 'Absent' },
+            { id: 'EXCUSED', label: 'Excused' },
+          ]}
+        />
+        <Button
+          size="sm"
+          disabled={saving || !name.trim()}
+          onClick={() => {
+            setSaving(true);
+            void upsertAdminGovernanceAttendance(meeting.id, {
+              displayName: name.trim(),
+              status,
+            }).then((result) => {
+              setSaving(false);
+              if (result.data) {
+                setRecords((current) => [...current, result.data!]);
+                setName('');
+              }
+            });
+          }}
+        >
+          {saving ? 'Recording…' : 'Record'}
+        </Button>
+      </div>
+    </CollapsibleRecord>
   );
 }
 
@@ -508,6 +505,8 @@ export function AgmTab() {
                   </p>
                 )}
                 <AttendancePanel meeting={meeting} />
+                <ConflictsPanel meetingId={meeting.id} />
+                <NoticeDeliveriesPanel meetingId={meeting.id} />
               </li>
             ))}
           </ul>

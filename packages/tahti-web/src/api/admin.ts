@@ -27,6 +27,7 @@ export * from './admin/admin-support';
 export * from './admin/admin-storage';
 
 export * from './admin/admin-governance';
+export * from './admin/admin-governance-meeting-records';
 
 export * from './admin/admin-addons';
 
