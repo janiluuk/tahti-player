@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   adminUsersExportCsvUrl,
   approveAdminAddon,
+  createEngagementAdjustment,
   deleteAdminAddon,
   fetchAdminActivity,
   fetchAdminAddons,
@@ -443,5 +444,46 @@ describe('fan subscription payouts', () => {
       '/tahti-api/api/admin/fansubs/payouts/p1/retry',
     );
     expect(fetchSpy.mock.calls[0]![1]?.method).toBe('POST');
+  });
+});
+
+describe('createEngagementAdjustment', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('refuses zero, fractional units and an empty reason before sending', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch');
+    await expect(
+      createEngagementAdjustment({ userId: 'u1', units: 0, reason: 'x' }),
+    ).resolves.toMatchObject({ ok: false });
+    await expect(
+      createEngagementAdjustment({ userId: 'u1', units: 1.5, reason: 'x' }),
+    ).resolves.toMatchObject({ ok: false });
+    await expect(
+      createEngagementAdjustment({ userId: 'u1', units: 3, reason: '  ' }),
+    ).resolves.toMatchObject({ ok: false });
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it('posts the adjustment with a trimmed reason', async () => {
+    const fetchSpy = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue(
+        new Response(
+          JSON.stringify({ ok: true, userId: 'u1', units: 3, year: 2026 }),
+          { status: 200 },
+        ),
+      );
+    await expect(
+      createEngagementAdjustment({ userId: 'u1', units: 3, reason: ' Fix ' }),
+    ).resolves.toEqual({ ok: true });
+    const [url, init] = fetchSpy.mock.calls[0]!;
+    expect(url).toBe('/tahti-api/api/admin/engagement/adjustment');
+    expect(JSON.parse(String(init?.body))).toEqual({
+      userId: 'u1',
+      units: 3,
+      reason: 'Fix',
+    });
   });
 });
