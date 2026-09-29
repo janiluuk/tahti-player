@@ -15,6 +15,7 @@ import { AdminPageLayout } from '../../components/AdminNav';
 import { PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { humanizePastDate } from '../../lib/humanizeDate';
+import { WorkersPanel } from './status/WorkersPanel';
 
 export function AdminStatusView() {
   const [data, setData] = useState<AdminStatusData | null>(null);
@@ -179,6 +180,7 @@ export function AdminStatusView() {
                 </StudioPanel>
               </div>
             )}
+            <WorkersPanel />
           </ViewShell>
         </AdminPageLayout>
       </div>
