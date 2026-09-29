@@ -26,7 +26,7 @@ This maps the public Tahti product described at [tahti.live](https://tahti.live/
 | Favorites and history | `/library/*` | Partial | Beta uses local persistence/follows; it is not a full production account-backed equivalent. |
 | Playlists | Player bar, Music/library tables | Present | Create and add-to-playlist flows are live-API backed. |
 | Fan subscriptions | `/subscribe/$username` | Present | Stripe checkout is wired; offline activation is mock-only. |
-| Venues | `/venues` | Partial | Listing exists, but the production venue experience has more depth than the beta list. Registration exists at `/venues/register`. |
+| Venues | `/venues` | Partial | Listing exists; registration at `/venues/register`. Venue pages load the venue's own profile with address, upcoming shows and an iCalendar feed (#257). |
 | Governance and direct messages | `/governance`, `/messages` | Present | Voting/comments and inbox paths are live-API backed. |
 | Widgets | Settings → Widgets, listener/channel surfaces | Present | Sandboxed widgets exist; the admin widget catalog remains outside this beta SPA. |
 | Help, legal, about, status | `/help`, legal routes, `/status` | Partial | Core pages exist, but legal/about coverage and content depth are not fully equivalent. |
@@ -72,7 +72,7 @@ This maps the public Tahti product described at [tahti.live](https://tahti.live/
 | User/support detail pages | `/admin/users` | Partial | User panel now has CSV export (#231), engagement by year with board adjustments (#232, #233), account restrictions (#234) and GDPR deletion (#235). Support ticket detail depth not re-checked. |
 | Announcement clip/detail workflows | `/admin/announcements` | Present | Switch and upload fixed to the real routes (#239); trim editor for system clips (#240); uploads send the clip length (#248). |
 | Widget catalog administration | Production admin/catalog | Missing from beta | Listener widgets work, but catalog management remains in the production/Next admin surface. |
-| Full production admin surface | Production has roughly 35 admin pages; beta has 22 | Partial | Beta covers the main board workflows but is not a complete admin replacement. |
+| Full production admin surface | Production has roughly 35 admin pages; beta has 22 | Partial | Beta covers the main board workflows but is not a complete admin replacement. Added since: workers and cron run history on `/admin/status` (#250, #251), chat and mailbox stats on `/admin` (#252). |
 
 ## Recommended implementation order
 
@@ -117,9 +117,9 @@ The current cutover decision keeps production Next `/admin/*` canonical and swit
 
 - channel-specific archive and programme management (`/admin/channels/[slug]/archive`, `/admin/channels/[slug]/programme`); the 24/7 rotation editor is in `/admin/streams` (#247), archive management is not
 - announcement editor/detail (`/admin/announcements/editor/[id]`)
-- widget catalog administration (`/admin/disco-widgets`), themes (moderation tab at `/admin/moderation/themes`, #246), internet radio, and missed shows
+- widget catalog administration (`/admin/disco-widgets`), themes (moderation tab at `/admin/moderation/themes`, #246; listeners submit from Settings → Themes, #258), internet radio, and missed shows
 - financial fan-subscriptions, ledger, and legacy-member workflows
-- governance audit, reports, resolutions, and publishing
+- governance audit, reports, resolutions, and publishing (per-meeting conflict declarations and notice deliveries are in the AGM tab, #253)
 - grant year/run/preview detail (`/admin/grants/[year]`)
 - support ticket detail (`/admin/support/[id]`) and user detail/restrictions (`/admin/users/[id]`)
 
