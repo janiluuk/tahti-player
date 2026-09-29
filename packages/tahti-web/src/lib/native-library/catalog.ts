@@ -7,6 +7,7 @@ export type NativeEditField =
   | 'album'
   | 'albumArtist'
   | 'genre'
+  | 'composer'
   | 'comment'
   | 'year'
   | 'trackNo'

@@ -513,7 +513,7 @@ export type EditExample = {
  *  Tag fields the user can edit. A closed enum: the column name is chosen
  *  from fixed SQL, never from user text.
  */
-export type EditField = "title" | "artist" | "album" | "albumArtist" | "genre" | "comment" | "year" | "trackNo" | "discNo";
+export type EditField = "title" | "artist" | "album" | "albumArtist" | "genre" | "composer" | "comment" | "year" | "trackNo" | "discNo";
 
 export type EditOutcome = {
 	tracksChanged: number,

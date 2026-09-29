@@ -227,3 +227,22 @@ async fn a_wav_named_flac_gets_riff_info_not_flac_tags_even_from_an_old_row() {
     let fresh = pool_after(&path).await;
     assert_eq!((fresh[0].format.as_str(), fresh[0].artist.as_str()), ("wav", "New Artist"));
 }
+
+#[tokio::test]
+async fn a_composer_edit_is_an_override_that_survives_a_rescan_and_writes_to_flac() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("tone.flac");
+    std::fs::copy(concat!(env!("CARGO_MANIFEST_DIR"), "/src/local_library/fixtures/tone.flac"), &path).unwrap();
+    let pool = pool().await;
+    import_paths(&pool, vec![path.clone()]).await;
+    let id = tracks(&pool).await.remove(0).id;
+
+    apply_edits(&pool, std::slice::from_ref(&id), &[edit(EditField::Composer, "  Erik Satie ")]).await.unwrap();
+    assert_eq!(tracks(&pool).await[0].composer, "Erik Satie");
+    import_paths(&pool, vec![path.clone()]).await;
+    assert_eq!(tracks(&pool).await[0].composer, "Erik Satie", "a re-read keeps the override");
+
+    let result = write_tags(&pool, std::slice::from_ref(&id), true).await.unwrap();
+    assert_eq!((result.written, result.fields_unsupported, result.edits_settled), (1, 0, 1), "{:?}", result.failed);
+    assert_eq!(pool_after(&path).await[0].composer, "Erik Satie");
+}

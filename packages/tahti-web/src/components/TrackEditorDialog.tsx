@@ -18,6 +18,7 @@ const FIELDS: Array<{ field: NativeEditField; label: string }> = [
   { field: 'albumArtist', label: 'Album artist' },
   { field: 'album', label: 'Album' },
   { field: 'genre', label: 'Genre' },
+  { field: 'composer', label: 'Composer' },
   { field: 'year', label: 'Year' },
   { field: 'trackNo', label: 'Track #' },
   { field: 'discNo', label: 'Disc #' },
