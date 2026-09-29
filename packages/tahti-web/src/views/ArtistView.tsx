@@ -26,6 +26,7 @@ import {
 } from '../api/artist-settings';
 import { resolvePublicVisualizerPreset } from '../api/channel-design';
 import { fetchProfile } from '../api/client';
+import type { FollowListDirection } from '../api/follows';
 import { fetchPublicMentions, type PublicMention } from '../api/mentions';
 import type {
   PublicProfile,
@@ -61,6 +62,7 @@ import {
   EntitySocialHeader,
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
+import { FollowListDialog } from '../components/FollowListDialog';
 import { ImageLightbox } from '../components/ImageLightbox';
 import { PageEmpty, PageLoading } from '../components/PageStates';
 import { QueueConfirmDialog } from '../components/QueueConfirmDialog';
@@ -83,6 +85,7 @@ import { isPinned } from '../lib/pinnedTracks';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { syncDocumentMetadata } from '../lib/seo';
 import { useArtistFollow } from '../lib/useArtistFollow';
+import { useFollowList } from '../lib/useFollowList';
 import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
@@ -276,6 +279,10 @@ function ArtistProfilePage({ username }: { username: string }) {
         }
       : null;
   const follow = useArtistFollow(followChannel, Boolean(me && !isOwner));
+  const [followList, setFollowList] = useState<FollowListDirection | null>(
+    null,
+  );
+  const followListState = useFollowList(username, followList);
 
   if (loading) {
     return <PageLoading label="Loading artist…" />;
@@ -355,8 +362,9 @@ function ArtistProfilePage({ username }: { username: string }) {
     label: string,
     value: number | null | undefined,
     icon: EntitySocialStat['icon'],
+    onClick?: () => void,
   ): EntitySocialStat[] =>
-    value != null && value > 0 ? [{ key, label, value, icon }] : [];
+    value != null && value > 0 ? [{ key, label, value, icon, onClick }] : [];
   const headerStats: EntitySocialStat[] = [
     ...stat(
       'followers',
@@ -365,8 +373,11 @@ function ArtistProfilePage({ username }: { username: string }) {
         ? (follow.followerCount ?? artist.followerCount)
         : null,
       UsersIcon,
+      () => setFollowList('followers'),
     ),
-    ...stat('following', 'Following', artist.followingCount, UserPlusIcon),
+    ...stat('following', 'Following', artist.followingCount, UserPlusIcon, () =>
+      setFollowList('following'),
+    ),
     ...stat('tracks', 'Tracks', profile.tracks.length, MusicIcon),
     ...stat('collections', 'Playlists', collections.length, ListMusicIcon),
   ];
@@ -742,6 +753,22 @@ function ArtistProfilePage({ username }: { username: string }) {
           </>
         ) : null}
       </Dialog.Root>
+
+      <FollowListDialog
+        isOpen={followList !== null}
+        title={followList === 'following' ? 'Following' : 'Followers'}
+        emptyMessage={
+          followList === 'following'
+            ? `${artist.displayName} doesn't follow anyone yet`
+            : `No one follows ${artist.displayName} yet`
+        }
+        users={followListState.users}
+        loading={followListState.loading}
+        error={followListState.error}
+        hasMore={followListState.hasMore}
+        onLoadMore={followListState.loadMore}
+        onClose={() => setFollowList(null)}
+      />
 
       <QueueConfirmDialog
         isOpen={Boolean(queueConfirm)}
