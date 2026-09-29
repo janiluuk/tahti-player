@@ -3899,3 +3899,13 @@ Slices came from tahti-org routes that tahti-web never called (a route-by-route 
 - **Venues (#257)**: the venue page loads its own profile instead of the whole directory, and shows the address, upcoming shows and an `.ics` feed.
 - **Themes (#258)**: submit an imported theme to the community catalog and follow its review; pairs with the board's Themes tab (#246).
 - **Checks:** each PR ran tahti-web type-check, lint and the touched tests. Nothing was tried against the live API, Stripe, Prometheus or the registry PR worker.
+
+## 2026-09-29 - Ten todo slices, ninth batch (#262-#271)
+
+Slices came from tahti-org routes tahti-web never called (the batch 8 leftovers plus a few more from the route diff), each checked against its contract. No `docs/todo/` file covered them.
+
+- **Admin**: per-artist fan-sub revenue with Stripe Connect status on Financial (#262); Tahti Radio multicast destinations on Radio, reusing the artist grid through a `scope` on the RTMP target API, with its tiles moved to library `Button`s (#263); edit any channel's track title, credit, genre, description and visibility from Streams (#264).
+- **Studio**: newsletter subscriber counts on Updates → Newsletter (#265); paid track sales under the purchase tiers (#266); subscribers-only channel chat on Moderation (#267; the API also blocks the owner and moderators then, which the copy doesn't hide); replace the stream key or Icecast password from Go Live, with the API's 24-hour overlap when live (#271).
+- **Radio (#268)**: a Featured tab on /radio lists the member sets Tahti Radio relayed, linked to their channels.
+- **Social auto-post**: connect Mastodon and Bluesky for release and go-live posts in Settings → Artist → Connections (#269); post by hand and see the post log with failures (#270, stacked). X and Instagram are left out because their OAuth callbacks land on the legacy `/dashboard`.
+- **Checks:** each PR ran tahti-web type-check, lint and the touched tests. Nothing was tried against the live API, Stripe, Centrifugo, a real RTMP destination or real Mastodon/Bluesky accounts.
