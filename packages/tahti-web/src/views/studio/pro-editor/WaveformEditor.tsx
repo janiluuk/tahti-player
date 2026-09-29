@@ -7,6 +7,8 @@ import {
 } from 'react';
 import { toast } from 'sonner';
 
+import { Alert } from '@tahti-player/ui';
+
 import type { EditList } from '../../../api/studio-types';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { StudioPanel } from '../../../components/StudioPanel';
@@ -96,7 +98,7 @@ export function WaveformEditor({
   const [skipCuts, setSkipCuts] = useState(true);
   const [confirm, setConfirm] = useState<Confirm | null>(null);
 
-  useAudioPreviewGraph(audioRef, editList);
+  const { effectsBlocked } = useAudioPreviewGraph(audioRef, editList);
   const duration = editList.sourceDuration;
   const { data, status, localUrl, zeroCrossings } = useWaveformData(
     sourceUrl,
@@ -549,6 +551,18 @@ export function WaveformEditor({
               ? `Selection ${formatClock(selection.start, MS)} to ${formatClock(selection.end, MS)}`
               : 'No selection'}
           </p>
+          {effectsBlocked ? (
+            <Alert
+              tone="warning"
+              className="mt-2"
+              data-testid="effects-preview-blocked"
+            >
+              Effects aren’t heard in this preview yet: the file’s host doesn’t
+              allow the browser to process it. You’re hearing it unprocessed
+              until the editor has its own copy; renders still apply every
+              effect.
+            </Alert>
+          ) : null}
           <p className="text-foreground-secondary mt-1 text-xs">
             {note ? `${note} ` : ''}Ctrl/⌘ + scroll or pinch to zoom, Shift +
             scroll to pan. Focus the waveform for keyboard shortcuts.

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import type { EditList, ProEditorPluginId } from '../api/studio-types';
 import { AUDIO_FX_PLUGINS, useAudioFxStore } from '../plugins/audio-fx';
@@ -21,6 +21,27 @@ function getAudioContextCtor() {
   );
 }
 
+export function canRouteThroughGraph(audio: HTMLAudioElement): boolean {
+  if (audio.readyState < 1) {
+    return false;
+  }
+  const src = audio.currentSrc || audio.src;
+  if (!src) {
+    return false;
+  }
+  if (src.startsWith('blob:') || src.startsWith('data:')) {
+    return true;
+  }
+  try {
+    if (new URL(src, window.location.href).origin === window.location.origin) {
+      return true;
+    }
+  } catch {
+    return false;
+  }
+  return audio.crossOrigin !== null;
+}
+
 /**
  * Wires the pro editor's <audio> element through a live Web Audio graph
  * matching the current EditList's EQ/Compressor/Limiter/gain settings, so
@@ -38,11 +59,16 @@ export function useAudioPreviewGraph(
   const graphRef = useRef<Graph | null>(null);
   const chainRef = useRef<BuiltChain | null>(null);
   const enabledPluginIds = useAudioFxStore((state) => state.enabledPluginIds);
+  const [loads, setLoads] = useState(0);
+  const [blocked, setBlocked] = useState(false);
 
   function ensureGraph(): Graph | null {
     const audio = audioRef.current;
     if (graphRef.current || !audio) {
       return graphRef.current;
+    }
+    if (!canRouteThroughGraph(audio)) {
+      return null;
     }
     const Ctx = getAudioContextCtor();
     if (!Ctx) {
@@ -73,9 +99,12 @@ export function useAudioPreviewGraph(
         void graph.ctx.resume().catch(() => undefined);
       }
     };
+    const onLoaded = () => setLoads((count) => count + 1);
     audio.addEventListener('play', onPlay);
+    audio.addEventListener('loadedmetadata', onLoaded);
     return () => {
       audio.removeEventListener('play', onPlay);
+      audio.removeEventListener('loadedmetadata', onLoaded);
       // Browsers cap live AudioContexts. Close ours once the element is
       // really gone; a StrictMode re-run keeps the element (and must keep
       // the context, since an element can only be wired to one source).
@@ -92,6 +121,8 @@ export function useAudioPreviewGraph(
       return;
     }
     const graph = ensureGraph();
+    const audio = audioRef.current;
+    setBlocked(!graph && Boolean(audio && audio.readyState >= 1));
     if (!graph) {
       return;
     }
@@ -152,5 +183,7 @@ export function useAudioPreviewGraph(
     });
     last.connect(ctx.destination);
     chainRef.current = { key, segments, gain };
-  }, [editList, enabledPluginIds]);
+  }, [editList, enabledPluginIds, loads]);
+
+  return { effectsBlocked: blocked };
 }
