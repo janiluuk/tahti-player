@@ -39,13 +39,13 @@ This maps the public Tahti product described at [tahti.live](https://tahti.live/
 | Artist dashboard | `/studio` | Present | Studio shell and section navigation are implemented. |
 | Channel setup | `/studio/channel?tab=setup` | Present | Channel provisioning uses the live API. |
 | Go Live / browser broadcast | `/studio/go-live` | Present | Broadcast wizard is present; simulator behavior is restricted to mock mode. |
-| Multistream RTMP | Go Live → multistream | Present | RTMP target management is included in the live flow. |
+| Multistream RTMP | Go Live → multistream | Present | RTMP target management is included in the live flow. Stream key and Icecast password can be replaced from Go Live (#271); Tahti Radio's own destinations are in `/admin/radio` (#263). |
 | Archive, upload, releases, collections | `/studio/archive`, `/studio/upload`, `/studio/releases`, `/studio/collections` | Present | Upload prepare/complete and album-based collection design are implemented. |
 | Pro editor | `/studio/editor` | Partial | Core editor exists, but production-grade multitrack timeline depth is still missing. |
 | Schedule / 24/7 rotation / radio shows | `/studio/schedule` (Broadcast), `/studio/channel`, `/studio/shows` | Present | Nav and page title are Broadcast. Programme, rotation, bookings, series, and episodes are on that page and Channel → Radio. |
 | Stats and detail reporting | `/studio/stats`, `/studio/stats/detail` | Present | Summary and range-detail views exist. |
 | Channel design / profile / branding | `/studio/channel`, `/channel/$slug?edit=1` | Partial | Presets, layers, layout, gallery, and press-kit workflows exist; parity with the production designer is not complete. |
-| Updates/newsletter | `/studio/updates` | Present | Newsletter/update flow is live-API backed. |
+| Updates/newsletter | `/studio/updates` | Present | Newsletter/update flow is live-API backed; the Newsletter tab shows subscriber counts (#265). |
 | Revenue and Stripe Connect | `/studio/audience` | Present | Merged fan-sub + Revelator payout history, Connect onboarding, empty tier state, order-flow breakdown, and help tour match production `/dashboard/revenue`. |
 | Distribution | `/studio/distribution` | Present | Catalog, Revelator submission/payment, Spotify profile, and royalty surfaces exist. |
 | Stash | `/studio/stash` | Present | Upload/delete and share access are implemented. |
@@ -115,10 +115,10 @@ The production app has dedicated surfaces that the beta currently folds together
 
 The current cutover decision keeps production Next `/admin/*` canonical and switches only the public listener/artist client. That decision prevents accidental loss of admin capabilities. If Admin is moved to the Nuclear client later, the following production routes need to be ported or explicitly retained on Next before changing the host:
 
-- channel-specific archive and programme management (`/admin/channels/[slug]/archive`, `/admin/channels/[slug]/programme`); the 24/7 rotation editor is in `/admin/streams` (#247), archive management is not
+- channel-specific archive and programme management (`/admin/channels/[slug]/archive`, `/admin/channels/[slug]/programme`); the 24/7 rotation editor (#247) and track title/credit/genre/visibility edits (#264) are in `/admin/streams`, the rest of archive management is not
 - announcement editor/detail (`/admin/announcements/editor/[id]`)
 - widget catalog administration (`/admin/disco-widgets`), themes (moderation tab at `/admin/moderation/themes`, #246; listeners submit from Settings → Themes, #258), internet radio, and missed shows
-- financial fan-subscriptions, ledger, and legacy-member workflows
+- financial fan-subscriptions, ledger, and legacy-member workflows (per-artist fan-sub revenue and Connect status on `/admin/financial`, #262)
 - governance audit, reports, resolutions, and publishing (per-meeting conflict declarations and notice deliveries are in the AGM tab, #253)
 - grant year/run/preview detail (`/admin/grants/[year]`)
 - support ticket detail (`/admin/support/[id]`) and user detail/restrictions (`/admin/users/[id]`)
