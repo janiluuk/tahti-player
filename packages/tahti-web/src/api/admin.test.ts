@@ -3,12 +3,15 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   adminUsersExportCsvUrl,
   approveAdminAddon,
+  createAccountRestriction,
+  createEngagementAdjustment,
   deleteAdminAddon,
   fetchAdminActivity,
   fetchAdminAddons,
   fetchAdminDashboard,
   fetchAdminNews,
   fetchFanSubPayouts,
+  isRestrictionActive,
   publishAdminAddonVersion,
   retryFanSubPayout,
   updateAdminAddon,
@@ -443,5 +446,131 @@ describe('fan subscription payouts', () => {
       '/tahti-api/api/admin/fansubs/payouts/p1/retry',
     );
     expect(fetchSpy.mock.calls[0]![1]?.method).toBe('POST');
+  });
+});
+
+describe('createEngagementAdjustment', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('refuses zero, fractional units and an empty reason before sending', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch');
+    await expect(
+      createEngagementAdjustment({ userId: 'u1', units: 0, reason: 'x' }),
+    ).resolves.toMatchObject({ ok: false });
+    await expect(
+      createEngagementAdjustment({ userId: 'u1', units: 1.5, reason: 'x' }),
+    ).resolves.toMatchObject({ ok: false });
+    await expect(
+      createEngagementAdjustment({ userId: 'u1', units: 3, reason: '  ' }),
+    ).resolves.toMatchObject({ ok: false });
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it('posts the adjustment with a trimmed reason', async () => {
+    const fetchSpy = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue(
+        new Response(
+          JSON.stringify({ ok: true, userId: 'u1', units: 3, year: 2026 }),
+          { status: 200 },
+        ),
+      );
+    await expect(
+      createEngagementAdjustment({ userId: 'u1', units: 3, reason: ' Fix ' }),
+    ).resolves.toEqual({ ok: true });
+    const [url, init] = fetchSpy.mock.calls[0]!;
+    expect(url).toBe('/tahti-api/api/admin/engagement/adjustment');
+    expect(JSON.parse(String(init?.body))).toEqual({
+      userId: 'u1',
+      units: 3,
+      reason: 'Fix',
+    });
+  });
+});
+
+describe('account restrictions', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('treats lifted and expired restrictions as inactive', () => {
+    const base = {
+      id: 'r',
+      type: 'UPLOAD' as const,
+      reason: 'x',
+      bannedAt: '2026-01-01T00:00:00.000Z',
+      bannedByUsername: null,
+    };
+    const now = Date.parse('2026-06-01T00:00:00.000Z');
+    expect(
+      isRestrictionActive({ ...base, expiresAt: null, liftedAt: null }, now),
+    ).toBe(true);
+    expect(
+      isRestrictionActive(
+        { ...base, expiresAt: '2026-07-01T00:00:00.000Z', liftedAt: null },
+        now,
+      ),
+    ).toBe(true);
+    expect(
+      isRestrictionActive(
+        { ...base, expiresAt: '2026-05-01T00:00:00.000Z', liftedAt: null },
+        now,
+      ),
+    ).toBe(false);
+    expect(
+      isRestrictionActive(
+        { ...base, expiresAt: null, liftedAt: '2026-02-01T00:00:00.000Z' },
+        now,
+      ),
+    ).toBe(false);
+  });
+
+  it('posts type, trimmed reason and duration, and refuses bad input first', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          id: 'r1',
+          type: 'LOGIN',
+          reason: 'Takeover',
+          bannedAt: '2026-06-01T00:00:00.000Z',
+          expiresAt: null,
+          liftedAt: null,
+          bannedByUsername: null,
+        }),
+        { status: 201 },
+      ),
+    );
+    await expect(
+      createAccountRestriction('u1', {
+        type: 'LOGIN',
+        reason: ' ',
+        durationDays: null,
+      }),
+    ).resolves.toMatchObject({ ok: false });
+    await expect(
+      createAccountRestriction('u1', {
+        type: 'LOGIN',
+        reason: 'x',
+        durationDays: 0,
+      }),
+    ).resolves.toMatchObject({ ok: false });
+    expect(fetchSpy).not.toHaveBeenCalled();
+
+    await expect(
+      createAccountRestriction('u1', {
+        type: 'LOGIN',
+        reason: ' Takeover ',
+        durationDays: 7,
+      }),
+    ).resolves.toMatchObject({ ok: true, data: { id: 'r1' } });
+    const [url, init] = fetchSpy.mock.calls[0]!;
+    expect(url).toBe('/tahti-api/api/admin/users/u1/restrictions');
+    expect(JSON.parse(String(init?.body))).toEqual({
+      type: 'LOGIN',
+      reason: 'Takeover',
+      durationDays: 7,
+    });
   });
 });

@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { Select } from '@tahti-player/ui';
+import { Button, Input, Select, Textarea } from '@tahti-player/ui';
 
 import {
+  createEngagementAdjustment,
   fetchAdminUserEngagement,
   type AdminUserEngagement,
 } from '../../api/admin';
@@ -13,6 +14,87 @@ const FIRST_YEAR = 2020;
 
 function formatUnits(units: number): string {
   return units > 0 ? `+${units}` : String(units);
+}
+
+function AdjustmentForm({
+  userId,
+  onSaved,
+}: {
+  userId: string;
+  onSaved: () => void;
+}) {
+  const [units, setUnits] = useState('');
+  const [reason, setReason] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const parsed = Number(units);
+  const valid =
+    units.trim() !== '' &&
+    Number.isInteger(parsed) &&
+    parsed !== 0 &&
+    reason.trim().length > 0;
+
+  const submit = async () => {
+    setBusy(true);
+    setError(null);
+    const result = await createEngagementAdjustment({
+      userId,
+      units: parsed,
+      reason,
+    });
+    setBusy(false);
+    if (!result.ok) {
+      setError(result.error);
+      return;
+    }
+    setUnits('');
+    setReason('');
+    onSaved();
+  };
+
+  return (
+    <form
+      className="border-border flex flex-col gap-3 border-t pt-4"
+      aria-label="Add an adjustment"
+      onSubmit={(event) => {
+        event.preventDefault();
+        if (valid && !busy) {
+          void submit();
+        }
+      }}
+    >
+      <Input
+        label="Units"
+        inputMode="numeric"
+        value={units}
+        onChange={(event) => setUnits(event.target.value)}
+        placeholder="e.g. 25 or -10"
+      />
+      <label className="flex flex-col gap-1 text-sm">
+        <span className="text-foreground-secondary text-xs uppercase">
+          Reason
+        </span>
+        <Textarea
+          tone="secondary"
+          value={reason}
+          onChange={(event) => setReason(event.target.value)}
+          rows={2}
+          maxLength={500}
+          placeholder="Shown in the audit log"
+        />
+      </label>
+      {error ? (
+        <p className="text-accent-red-strong text-sm" role="alert">
+          {error}
+        </p>
+      ) : null}
+      <div className="flex justify-end">
+        <Button type="submit" size="sm" disabled={!valid || busy}>
+          {busy ? 'Adding…' : 'Add adjustment'}
+        </Button>
+      </div>
+    </form>
+  );
 }
 
 export function AdminUserEngagementPanel({
@@ -107,6 +189,9 @@ export function AdminUserEngagementPanel({
               ))}
             </ul>
           )}
+          {data.year === currentYear ? (
+            <AdjustmentForm userId={userId} onSaved={() => void load()} />
+          ) : null}
         </div>
       )}
     </StudioPanel>
