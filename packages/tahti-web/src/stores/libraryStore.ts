@@ -1,13 +1,19 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import { fetchFollowing, followArtist, unfollowArtist } from '../api/client';
+import {
+  fetchFollowing,
+  followArtist,
+  unfollowArtist,
+  type FollowResult,
+} from '../api/follows';
 import type { TahtiPlayable } from '../api/types';
 
 export type FavoriteChannel = {
   slug: string;
   displayName: string;
   avatarUrl?: string | null;
+  username?: string;
 };
 
 export type FavoritePlaylist = {
@@ -51,7 +57,10 @@ export type LibraryState = {
   heardFavoritePlaylists: string[];
   heardFavoriteArtists: string[];
   history: HistoryEntry[];
-  toggleFavoriteChannel: (channel: FavoriteChannel) => void;
+  toggleFavoriteChannel: (
+    channel: FavoriteChannel,
+  ) => Promise<FollowResult | null>;
+  setFavoriteChannel: (channel: FavoriteChannel, favorite: boolean) => void;
   isFavoriteChannel: (slug: string) => boolean;
   toggleFavoriteTrack: (track: TahtiPlayable) => void;
   toggleFavoritePlaylist: (playlist: FavoritePlaylist) => void;
@@ -115,30 +124,45 @@ export const useLibraryStore = create<LibraryState>()(
 
       setScopeKey: (key) => set({ scopeKey: key }),
 
-      toggleFavoriteChannel: (channel) => {
+      toggleFavoriteChannel: async (channel) => {
         const exists = get().favoriteChannels.some(
           (c) => c.slug === channel.slug,
         );
+        get().setFavoriteChannel(channel, !exists);
+        if (activeScope === 'anon') {
+          return null;
+        }
+        const username = channel.username ?? channel.slug;
+        const result = await (exists
+          ? unfollowArtist(username)
+          : followArtist(username));
+        if (!result.ok && channel.username) {
+          get().setFavoriteChannel(channel, exists);
+        }
+        return result;
+      },
+
+      setFavoriteChannel: (channel, favorite) => {
         set((s) => {
+          const exists = s.favoriteChannels.some(
+            (c) => c.slug === channel.slug,
+          );
+          if (exists === favorite) {
+            return s;
+          }
           const favoriteChannelDates = { ...s.favoriteChannelDates };
-          if (exists) {
-            delete favoriteChannelDates[channel.slug];
-          } else {
+          if (favorite) {
             favoriteChannelDates[channel.slug] = new Date().toISOString();
+          } else {
+            delete favoriteChannelDates[channel.slug];
           }
           return {
-            favoriteChannels: exists
-              ? s.favoriteChannels.filter((c) => c.slug !== channel.slug)
-              : [channel, ...s.favoriteChannels],
+            favoriteChannels: favorite
+              ? [channel, ...s.favoriteChannels]
+              : s.favoriteChannels.filter((c) => c.slug !== channel.slug),
             favoriteChannelDates,
           };
         });
-        // Best-effort server sync via artist follows (username ≈ channel slug).
-        if (activeScope !== 'anon') {
-          void (exists
-            ? unfollowArtist(channel.slug)
-            : followArtist(channel.slug));
-        }
       },
 
       isFavoriteChannel: (slug) =>
@@ -231,6 +255,7 @@ export const useLibraryStore = create<LibraryState>()(
           for (const u of data) {
             bySlug.set(u.username, {
               slug: u.username,
+              username: u.username,
               displayName: u.displayName,
               avatarUrl: u.avatarUrl,
             });

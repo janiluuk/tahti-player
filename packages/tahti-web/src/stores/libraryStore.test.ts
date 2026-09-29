@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import * as follows from '../api/follows';
 import {
   playableFromRadioStation,
   type RadioStation,
@@ -121,5 +122,55 @@ describe('libraryStore + internet radio stations', () => {
       localStorage.getItem('tahti-web:library:anon') ?? '{}',
     );
     expect(stored.state.history[0].playable.streamUrl).toBe(playable.streamUrl);
+  });
+});
+
+describe('libraryStore favorite artists follow on the server', () => {
+  beforeEach(async () => {
+    localStorage.clear();
+    vi.restoreAllMocks();
+    await rehydrateLibraryForUser('library-store-test-reset');
+    await rehydrateLibraryForUser('library-store-follow-user');
+  });
+
+  it('follows by the artist username, not the channel slug', async () => {
+    const follow = vi
+      .spyOn(follows, 'followArtist')
+      .mockResolvedValue({ ok: true, followerCount: 5 });
+    const result = await useLibraryStore.getState().toggleFavoriteChannel({
+      slug: 'nl-live',
+      username: 'northern-lights',
+      displayName: 'Northern Lights',
+    });
+    expect(follow).toHaveBeenCalledWith('northern-lights');
+    expect(result).toEqual({ ok: true, followerCount: 5 });
+    expect(useLibraryStore.getState().isFavoriteChannel('nl-live')).toBe(true);
+  });
+
+  it('undoes the favorite when the server refuses the follow', async () => {
+    vi.spyOn(follows, 'followArtist').mockResolvedValue({
+      ok: false,
+      error: 'Artist not found',
+    });
+    await useLibraryStore.getState().toggleFavoriteChannel({
+      slug: 'nl-live',
+      username: 'northern-lights',
+      displayName: 'Northern Lights',
+    });
+    expect(useLibraryStore.getState().isFavoriteChannel('nl-live')).toBe(false);
+  });
+
+  it('keeps a favorite without a known artist when the follow fails', async () => {
+    vi.spyOn(follows, 'followArtist').mockResolvedValue({
+      ok: false,
+      error: 'Artist not found',
+    });
+    await useLibraryStore.getState().toggleFavoriteChannel({
+      slug: 'tahti-radio',
+      displayName: 'Tahti Radio',
+    });
+    expect(useLibraryStore.getState().isFavoriteChannel('tahti-radio')).toBe(
+      true,
+    );
   });
 });

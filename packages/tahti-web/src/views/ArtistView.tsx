@@ -82,6 +82,7 @@ import { countryName } from '../lib/countries';
 import { isPinned } from '../lib/pinnedTracks';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { syncDocumentMetadata } from '../lib/seo';
+import { useArtistFollow } from '../lib/useArtistFollow';
 import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
@@ -138,8 +139,6 @@ function ArtistProfilePage({ username }: { username: string }) {
   const queue = usePlayerStore((s) => s.queue);
   const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
   const favoriteTracks = useLibraryStore((s) => s.favoriteTracks);
-  const toggleFavoriteChannel = useLibraryStore((s) => s.toggleFavoriteChannel);
-  const favoriteChannels = useLibraryStore((s) => s.favoriteChannels);
 
   const playAlbum = (playables: TahtiPlayable[]) => {
     const [head, ...rest] = playables;
@@ -267,6 +266,17 @@ function ArtistProfilePage({ username }: { username: string }) {
   const { pinnedPlayables, pinnedTiles, catalogPlayables, releaseTiles } =
     useArtistCatalog(profile);
 
+  const followChannel =
+    profile?.channel?.slug != null
+      ? {
+          slug: profile.channel.slug,
+          username: profile.artist.username,
+          displayName: profile.artist.displayName,
+          avatarUrl: profile.artist.avatarUrl,
+        }
+      : null;
+  const follow = useArtistFollow(followChannel, Boolean(me && !isOwner));
+
   if (loading) {
     return <PageLoading label="Loading artist…" />;
   }
@@ -301,10 +311,6 @@ function ArtistProfilePage({ username }: { username: string }) {
   const popularPlayables = [...pinnedPlayables, ...catalogPlayables];
   const showPopular = lookVisibility.tracks && popularPlayables.length > 0;
   const showRelated = relatedArtists.length > 0;
-  const favoriteSlug = channel?.slug ?? null;
-  const isFavoriteArtist = Boolean(
-    favoriteSlug && favoriteChannels.some((c) => c.slug === favoriteSlug),
-  );
 
   const queueRelease = (
     release: PublicProfileRelease,
@@ -352,7 +358,14 @@ function ArtistProfilePage({ username }: { username: string }) {
   ): EntitySocialStat[] =>
     value != null && value > 0 ? [{ key, label, value, icon }] : [];
   const headerStats: EntitySocialStat[] = [
-    ...stat('followers', 'Followers', artist.followerCount, UsersIcon),
+    ...stat(
+      'followers',
+      'Followers',
+      artist.followerCount != null
+        ? (follow.followerCount ?? artist.followerCount)
+        : null,
+      UsersIcon,
+    ),
     ...stat('following', 'Following', artist.followingCount, UserPlusIcon),
     ...stat('tracks', 'Tracks', profile.tracks.length, MusicIcon),
     ...stat('collections', 'Playlists', collections.length, ListMusicIcon),
@@ -437,19 +450,14 @@ function ArtistProfilePage({ username }: { username: string }) {
               isOwner={isOwner}
               onEditLook={() => setTab('design')}
             />
-            {me && !isOwner && favoriteSlug ? (
+            {me && !isOwner && followChannel ? (
               <FavoriteButton
                 size="sm"
-                isFavorite={isFavoriteArtist}
-                onToggle={() =>
-                  toggleFavoriteChannel({
-                    slug: favoriteSlug,
-                    displayName: artist.displayName,
-                    avatarUrl: artist.avatarUrl,
-                  })
-                }
-                ariaLabelAdd={`Add ${artist.displayName} to favorite artists`}
-                ariaLabelRemove={`Remove ${artist.displayName} from favorite artists`}
+                isFavorite={follow.following}
+                disabled={follow.busy}
+                onToggle={() => void follow.toggle()}
+                ariaLabelAdd={`Follow ${artist.displayName}`}
+                ariaLabelRemove={`Unfollow ${artist.displayName}`}
                 className="bg-background border-border rounded-md border-(length:--border-width)"
                 data-testid="artist-favorite-button"
               />
