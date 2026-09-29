@@ -15,6 +15,7 @@ import {
   type ProfileFields,
 } from '../../../api/studio-extras';
 import { SettingsHint, SettingsToggle } from '../SettingsFields';
+import { CommentSettingsToggles } from './CommentSettingsToggles';
 import { TopListsToggle } from './TopListsToggle';
 
 export function NotificationsPanel() {
@@ -238,6 +239,7 @@ export function NotificationsVisibilityPanel() {
             onChange={(value) => updateDiscovery('showFavorites', value)}
           />
           <TopListsToggle />
+          <CommentSettingsToggles />
         </div>
       )}
       <div className="border-border border-t pt-5">
