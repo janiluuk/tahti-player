@@ -1,6 +1,6 @@
 import { getAccountRole } from '../../lib/accountRoles';
 import type { FetchMeta } from '../client';
-import { getJson, sendJson } from '../http';
+import { apiBase, getJson, sendJson } from '../http';
 import { failMeta, isForceMock } from '../mode';
 import type { AccountRole } from '../types';
 
@@ -130,6 +130,30 @@ function mockUserDetail(user: AdminUserRow): AdminUserDetail {
         }
       : null,
   };
+}
+
+export function adminUsersExportCsvUrl(filters: {
+  q?: string;
+  role?: string;
+  isMember?: string;
+}): string {
+  const qs = new URLSearchParams();
+  if (filters.q?.trim()) {
+    qs.set('search', filters.q.trim());
+  }
+  if (filters.role === 'BOARD') {
+    qs.set('isBoard', 'true');
+  } else if (filters.role === 'ARTIST') {
+    qs.set('tier', 'ARTIST');
+    qs.set('isBoard', 'false');
+  } else if (filters.role === 'LISTENER') {
+    qs.set('tier', 'FREE');
+  }
+  if (filters.isMember === 'true' || filters.isMember === 'false') {
+    qs.set('isMember', filters.isMember);
+  }
+  const query = qs.toString();
+  return `${apiBase()}/api/admin/users/export.csv${query ? `?${query}` : ''}`;
 }
 
 export async function fetchAdminUsers(filters: {

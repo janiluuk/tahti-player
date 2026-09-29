@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
+  adminUsersExportCsvUrl,
   approveAdminAddon,
   fetchAdminActivity,
   fetchAdminAddons,
@@ -314,5 +315,37 @@ describe('publishAdminAddonVersion', () => {
     expect(badVersion.ok).toBe(false);
     expect(tooBig).toEqual({ ok: false, error: 'Bundles can be at most 2 MB' });
     expect(fetchMock).not.toHaveBeenCalled();
+  });
+});
+
+describe('adminUsersExportCsvUrl', () => {
+  it('exports everything without filters', () => {
+    expect(adminUsersExportCsvUrl({})).toBe(
+      '/tahti-api/api/admin/users/export.csv',
+    );
+  });
+
+  it('carries the search, role and membership filters shown in the list', () => {
+    const url = new URL(
+      adminUsersExportCsvUrl({
+        q: ' moon ',
+        role: 'ARTIST',
+        isMember: 'true',
+      }),
+      'https://beta.tahti.live',
+    );
+    expect(url.pathname).toBe('/tahti-api/api/admin/users/export.csv');
+    expect(Object.fromEntries(url.searchParams)).toEqual({
+      search: 'moon',
+      tier: 'ARTIST',
+      isBoard: 'false',
+      isMember: 'true',
+    });
+  });
+
+  it('exports only board members for the Board role', () => {
+    expect(adminUsersExportCsvUrl({ role: 'BOARD' })).toBe(
+      '/tahti-api/api/admin/users/export.csv?isBoard=true',
+    );
   });
 });
