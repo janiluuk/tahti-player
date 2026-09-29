@@ -404,34 +404,61 @@ export const pauseChannelRotation = (slug: string) =>
 export const resumeChannelRotation = (slug: string) =>
   postChannelTransport(slug, 'resume');
 
-export async function fetchRtmpTargets(): Promise<{
+export type RtmpTargetScope = 'me' | 'radio';
+
+let mockRadioTargets: RtmpTarget[] = [];
+
+function rtmpTargetsPath(scope: RtmpTargetScope, id?: string): string {
+  const base =
+    scope === 'radio'
+      ? '/api/admin/radio/rtmp-targets'
+      : '/api/me/rtmp-targets';
+  return id ? `${base}/${encodeURIComponent(id)}` : base;
+}
+
+function readMockTargets(scope: RtmpTargetScope): RtmpTarget[] {
+  return scope === 'radio' ? mockRadioTargets : mockTargets;
+}
+
+function writeMockTargets(scope: RtmpTargetScope, next: RtmpTarget[]): void {
+  if (scope === 'radio') {
+    mockRadioTargets = next;
+  } else {
+    mockTargets = next;
+  }
+}
+
+export async function fetchRtmpTargets(scope: RtmpTargetScope = 'me'): Promise<{
   data: RtmpTarget[];
   meta: FetchMeta;
 }> {
   if (isForceMock()) {
     return {
-      data: [...mockTargets],
+      data: [...readMockTargets(scope)],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
   try {
-    const { data } = await requestJson<RtmpTarget[]>('/api/me/rtmp-targets');
+    const { data } = await requestJson<RtmpTarget[]>(rtmpTargetsPath(scope));
     return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: [...mockTargets], meta: failMeta(err) };
+      return { data: [...readMockTargets(scope)], meta: failMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };
   }
 }
 
-export async function createRtmpTarget(input: {
-  provider: MulticastProviderId;
-  streamKey: string;
-  label?: string;
-  rtmpUrl?: string;
-  enabled?: boolean;
-}): Promise<{ ok: true; target: RtmpTarget } | { ok: false; error: string }> {
+export async function createRtmpTarget(
+  input: {
+    provider: MulticastProviderId;
+    streamKey: string;
+    label?: string;
+    rtmpUrl?: string;
+    enabled?: boolean;
+  },
+  scope: RtmpTargetScope = 'me',
+): Promise<{ ok: true; target: RtmpTarget } | { ok: false; error: string }> {
   if (isForceMock()) {
     const target: RtmpTarget = {
       id: `rtmp-mock-${Date.now()}`,
@@ -446,11 +473,11 @@ export async function createRtmpTarget(input: {
       enabled: input.enabled ?? true,
       keyLast4: input.streamKey.slice(-4),
     };
-    mockTargets = [...mockTargets, target];
+    writeMockTargets(scope, [...readMockTargets(scope), target]);
     return { ok: true, target };
   }
   try {
-    const { data } = await requestJson<RtmpTarget>('/api/me/rtmp-targets', {
+    const { data } = await requestJson<RtmpTarget>(rtmpTargetsPath(scope), {
       method: 'POST',
       body: JSON.stringify(input),
     });
@@ -466,15 +493,17 @@ export async function createRtmpTarget(input: {
 export async function patchRtmpTarget(
   id: string,
   patch: { enabled?: boolean; alwaysMirror?: boolean; label?: string },
+  scope: RtmpTargetScope = 'me',
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   if (isForceMock()) {
-    mockTargets = mockTargets.map((t) =>
-      t.id === id ? { ...t, ...patch } : t,
+    writeMockTargets(
+      scope,
+      readMockTargets(scope).map((t) => (t.id === id ? { ...t, ...patch } : t)),
     );
     return { ok: true };
   }
   try {
-    await requestJson(`/api/me/rtmp-targets/${encodeURIComponent(id)}`, {
+    await requestJson(rtmpTargetsPath(scope, id), {
       method: 'PATCH',
       body: JSON.stringify(patch),
     });
@@ -489,13 +518,17 @@ export async function patchRtmpTarget(
 
 export async function deleteRtmpTarget(
   id: string,
+  scope: RtmpTargetScope = 'me',
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   if (isForceMock()) {
-    mockTargets = mockTargets.filter((t) => t.id !== id);
+    writeMockTargets(
+      scope,
+      readMockTargets(scope).filter((t) => t.id !== id),
+    );
     return { ok: true };
   }
   try {
-    await requestJson(`/api/me/rtmp-targets/${encodeURIComponent(id)}`, {
+    await requestJson(rtmpTargetsPath(scope, id), {
       method: 'DELETE',
     });
     return { ok: true };
@@ -509,6 +542,7 @@ export async function deleteRtmpTarget(
 
 export async function testRtmpTarget(
   id: string,
+  scope: RtmpTargetScope = 'me',
 ): Promise<
   | { ok: true; reachable: boolean; error?: string }
   | { ok: false; error: string }
@@ -518,7 +552,7 @@ export async function testRtmpTarget(
   }
   try {
     const { data } = await requestJson<{ ok: boolean; error?: string }>(
-      `/api/me/rtmp-targets/${encodeURIComponent(id)}/test`,
+      `${rtmpTargetsPath(scope, id)}/test`,
       { method: 'POST' },
     );
     return { ok: true, reachable: data.ok, error: data.error };

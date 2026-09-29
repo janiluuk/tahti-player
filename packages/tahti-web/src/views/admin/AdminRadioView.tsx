@@ -41,6 +41,7 @@ import {
 import { fetchRadioStation } from '../../api/client';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
+import { MulticastSection } from '../../components/MulticastSection';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { RadioStationCover } from '../../components/RadioStationCover';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -717,6 +718,16 @@ export function AdminRadioView() {
                   </StudioPanel>
                 </>
               )}
+
+              <StudioPanel
+                title="Multicast"
+                description="Mirror Tahti Radio to YouTube, Twitch and other RTMP destinations."
+              >
+                <MulticastSection
+                  scope="radio"
+                  description="Destinations that receive the Tahti Radio stream."
+                />
+              </StudioPanel>
 
               <InternetRadioPresetsPanel />
             </ViewShell>
