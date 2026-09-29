@@ -14,6 +14,7 @@ import {
 } from '../../api/social-autopost';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { SettingsHint } from './SettingsFields';
+import { SocialPostNow } from './SocialPostNow';
 
 const PLATFORMS: Record<
   SocialAutoPostPlatform,
@@ -249,6 +250,7 @@ export function SocialAutoPost() {
           }}
         />
       ))}
+      <SocialPostNow settings={settings} />
     </div>
   );
 }

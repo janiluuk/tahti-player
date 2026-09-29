@@ -37,6 +37,10 @@ function settings(
 }
 
 async function renderSection() {
+  vi.spyOn(api, 'fetchSocialPosts').mockResolvedValue({
+    data: [],
+    meta: { source: 'api' },
+  });
   await act(async () => {
     render(<SocialAutoPost />);
   });

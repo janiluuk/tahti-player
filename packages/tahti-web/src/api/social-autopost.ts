@@ -163,3 +163,68 @@ export async function disconnectSocial(
     return { ok: false, error: errorMessage(err, 'Could not disconnect') };
   }
 }
+
+export type SocialPostPlatform =
+  'MASTODON' | 'BLUESKY' | 'TWITTER' | 'INSTAGRAM';
+
+export type SocialPostLog = {
+  id: string;
+  platform: SocialPostPlatform;
+  trigger: string;
+  state: 'PENDING' | 'SENT' | 'FAILED';
+  message: string;
+  externalId: string | null;
+  error: string | null;
+  createdAt: string;
+  sentAt: string | null;
+};
+
+let mockPosts: SocialPostLog[] = [];
+
+export async function fetchSocialPosts(): Promise<{
+  data: SocialPostLog[] | null;
+  meta: FetchMeta;
+}> {
+  if (isForceMock()) {
+    return {
+      data: mockPosts.map((post) => ({ ...post })),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const { data } = await requestJson<SocialPostLog[]>('/api/me/social/posts');
+    return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
+  } catch (err) {
+    return { data: null, meta: failMeta(err) };
+  }
+}
+
+export async function postToSocial(
+  platform: SocialPostPlatform,
+  message: string,
+): Promise<{ ok: true; post: SocialPostLog } | { ok: false; error: string }> {
+  if (isForceMock()) {
+    const post: SocialPostLog = {
+      id: `mock-social-post-${Date.now()}`,
+      platform,
+      trigger: 'manual',
+      state: 'PENDING',
+      message,
+      externalId: null,
+      error: null,
+      createdAt: new Date().toISOString(),
+      sentAt: null,
+    };
+    mockPosts = [post, ...mockPosts].slice(0, 20);
+    return { ok: true, post };
+  }
+  try {
+    const { data } = await requestJson<SocialPostLog>('/api/me/social/post', {
+      method: 'POST',
+      body: JSON.stringify({ platform, message }),
+    });
+    return { ok: true, post: data };
+  } catch (err) {
+    return { ok: false, error: errorMessage(err, 'Could not queue the post') };
+  }
+}
