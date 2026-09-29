@@ -3,6 +3,7 @@ import {
   FileWarningIcon,
   FlagIcon,
   LightbulbIcon,
+  PaletteIcon,
   RadioIcon,
   TicketIcon,
   UsersIcon,
@@ -27,6 +28,7 @@ import { ContentReportsTab } from './tabs/ContentReportsTab';
 import { FeatureRequestsTab } from './tabs/FeatureRequestsTab';
 import { RadioSubmissionsTab } from './tabs/RadioSubmissionsTab';
 import { SupportTab } from './tabs/SupportTab';
+import { ThemesTab } from './tabs/ThemesTab';
 
 function tabContent(id: AdminModerationTabId) {
   switch (id) {
@@ -42,6 +44,8 @@ function tabContent(id: AdminModerationTabId) {
       return <FeatureRequestsTab />;
     case 'missed-shows':
       return <AdminMissedShowsPanel />;
+    case 'themes':
+      return <ThemesTab />;
   }
 }
 
@@ -52,6 +56,7 @@ const MODERATION_TAB_ICONS: Record<AdminModerationTabId, typeof UsersIcon> = {
   'content-reports': FlagIcon,
   'feature-requests': LightbulbIcon,
   'missed-shows': FileWarningIcon,
+  themes: PaletteIcon,
 };
 
 const MODERATION_TAB_ITEMS: ModerationTabItem[] = ADMIN_MODERATION_TABS.map(

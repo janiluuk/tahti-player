@@ -28,6 +28,8 @@ export * from './admin/admin-governance';
 
 export * from './admin/admin-addons';
 
+export * from './admin/admin-themes';
+
 // ── Admin activity feed ──────────────────────────────────────────────────
 // Thin client over the real GET /api/admin/audit endpoint (board-gated,
 // already paginated/filterable/CSV-exportable server-side — see
