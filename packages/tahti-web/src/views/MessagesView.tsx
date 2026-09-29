@@ -12,6 +12,7 @@ import {
   type ChatDm,
   type ConversationSummary,
 } from '../api/messages';
+import { MessageContacts } from '../components/MessageContacts';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 
@@ -25,6 +26,7 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
   const [body, setBody] = useState('');
   const [composeUser, setComposeUser] = useState('');
   const [msg, setMsg] = useState<string | null>(null);
+  const [starting, setStarting] = useState(false);
 
   const reloadInbox = () => {
     void fetchConversations().then((r) => {
@@ -65,6 +67,21 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
     void navigate({ to: '/messages/$id', params: { id } });
   };
 
+  const start = (username: string) => {
+    setStarting(true);
+    setMsg(null);
+    void startConversation(username).then((r) => {
+      setStarting(false);
+      if (!r.ok) {
+        setMsg(r.error);
+      } else {
+        setComposeUser('');
+        reloadInbox();
+        openThread(r.conversationId);
+      }
+    });
+  };
+
   if (!user) {
     return (
       <ViewShell
@@ -98,18 +115,8 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
         />
         <Button
           size="sm"
-          disabled={!composeUser.trim()}
-          onClick={() => {
-            void startConversation(composeUser.trim()).then((r) => {
-              if (!r.ok) {
-                setMsg(r.error);
-              } else {
-                setComposeUser('');
-                reloadInbox();
-                openThread(r.conversationId);
-              }
-            });
-          }}
+          disabled={starting || !composeUser.trim()}
+          onClick={() => start(composeUser.trim())}
         >
           Start
         </Button>
@@ -127,6 +134,8 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
           Search
         </Button>
       </div>
+
+      <MessageContacts onPick={start} disabled={starting} />
 
       {msg && <p className="text-sm">{msg}</p>}
 
