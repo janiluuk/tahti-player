@@ -25,13 +25,7 @@ import {
   soundItemToPlayable,
   TAHTI_RADIO_SLUG,
 } from './mock';
-import {
-  getMockSessionUser,
-  listMockFollowing,
-  mockActivateSubscription,
-  mockFollow,
-  mockUnfollow,
-} from './mock-session';
+import { getMockSessionUser, mockActivateSubscription } from './mock-session';
 import { ensureMockUploadedSound, getMockUploadedSound } from './mock-uploads';
 import {
   allowMockFallback,
@@ -51,7 +45,6 @@ import type {
   ChatTokenResponse,
   FanTiersResponse,
   FeatureRequest,
-  FollowListUser,
   PlatformStatus,
   PublicChannel,
   PublicCollection,
@@ -901,74 +894,7 @@ export async function fetchTransparencyResolutions(year?: number): Promise<{
   }
 }
 
-/** Artists the user follows — closest server analogue to “favorite channels”. */
-export async function fetchFollowing(username: string): Promise<{
-  data: FollowListUser[];
-  meta: FetchMeta;
-}> {
-  if (isForceMock()) {
-    void username;
-    return {
-      data: listMockFollowing(),
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const data = await getJson<{ users: FollowListUser[] }>(
-      `/api/v1/artists/${encodeURIComponent(username)}/following`,
-    );
-    return { data: data.users ?? [], meta: { source: 'api' } };
-  } catch (err) {
-    return { data: [], meta: apiErrorMeta(err) };
-  }
-}
-
-export async function followArtist(
-  username: string,
-): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
-    mockFollow(username);
-    return { ok: true };
-  }
-  try {
-    await requestJson(
-      `/api/v1/artists/${encodeURIComponent(username)}/follow`,
-      {
-        method: 'POST',
-      },
-    );
-    return { ok: true };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Follow failed',
-    };
-  }
-}
-
-export async function unfollowArtist(
-  username: string,
-): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
-    mockUnfollow(username);
-    return { ok: true };
-  }
-  try {
-    await requestJson(
-      `/api/v1/artists/${encodeURIComponent(username)}/follow`,
-      {
-        method: 'DELETE',
-      },
-    );
-    return { ok: true };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Unfollow failed',
-    };
-  }
-}
-
+export * from './follows';
 export * from './embeds';
 
 export async function postListenEvent(

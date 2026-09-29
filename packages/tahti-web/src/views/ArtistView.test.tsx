@@ -7,9 +7,16 @@ import {
 } from '@tanstack/react-router';
 import { act } from 'react';
 import { createRoot } from 'react-dom/client';
+import { toast } from 'sonner';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as client from '../api/client';
+import * as follows from '../api/follows';
+import { useAuthStore } from '../stores/authStore';
+import {
+  rehydrateLibraryForUser,
+  useLibraryStore,
+} from '../stores/libraryStore';
 import { ArtistView } from './ArtistView';
 
 vi.mock('sonner', () => ({
@@ -104,5 +111,90 @@ describe('ArtistView', () => {
     expect(
       container.querySelector('[data-testid="artist-social-header"]'),
     ).not.toBeNull();
+  });
+
+  describe('follow', () => {
+    beforeEach(async () => {
+      localStorage.clear();
+      await rehydrateLibraryForUser('user-listener');
+      useAuthStore.setState({
+        user: {
+          id: 'user-listener',
+          email: 'listener@tahti.live',
+          username: 'listener',
+          displayName: 'Listener',
+          role: 'LISTENER',
+          isBoard: false,
+          isMember: false,
+        },
+        hydrated: true,
+        loading: false,
+      });
+    });
+    afterEach(async () => {
+      useAuthStore.setState({ user: null, hydrated: true, loading: false });
+      await rehydrateLibraryForUser(null);
+    });
+
+    const button = (container: HTMLElement) =>
+      container.querySelector<HTMLButtonElement>(
+        '[data-testid="artist-favorite-button"]',
+      );
+
+    it('shows a follow made elsewhere, from the server', async () => {
+      vi.spyOn(follows, 'fetchFollowStatus').mockResolvedValue({
+        following: true,
+        followerCount: 42,
+      });
+      const { container } = await renderArtist('northern-lights');
+      expect(button(container)?.getAttribute('aria-label')).toBe(
+        'Unfollow Northern Lights',
+      );
+      expect(useLibraryStore.getState().favoriteChannels).toHaveLength(1);
+    });
+
+    it('unfollows and puts the follow back when the server refuses', async () => {
+      vi.spyOn(follows, 'fetchFollowStatus').mockResolvedValue({
+        following: true,
+        followerCount: 42,
+      });
+      vi.spyOn(follows, 'unfollowArtist').mockResolvedValue({
+        ok: false,
+        error: 'offline',
+      });
+      const { container } = await renderArtist('northern-lights');
+      await act(async () => {
+        button(container)?.click();
+      });
+      expect(follows.unfollowArtist).toHaveBeenCalledWith('northern-lights');
+      expect(toast.error).toHaveBeenCalledWith(
+        "Couldn't unfollow Northern Lights: offline",
+      );
+      expect(button(container)?.getAttribute('aria-label')).toBe(
+        'Unfollow Northern Lights',
+      );
+    });
+
+    it('follows and shows the new follower count', async () => {
+      vi.spyOn(follows, 'fetchFollowStatus').mockResolvedValue({
+        following: false,
+        followerCount: 41,
+      });
+      vi.spyOn(follows, 'followArtist').mockResolvedValue({
+        ok: true,
+        followerCount: 42,
+      });
+      const { container } = await renderArtist('northern-lights');
+      await act(async () => {
+        button(container)?.click();
+      });
+      expect(button(container)?.getAttribute('aria-label')).toBe(
+        'Unfollow Northern Lights',
+      );
+      expect(
+        container.querySelector('[data-testid="artist-social-header"]')
+          ?.textContent,
+      ).toContain('42');
+    });
   });
 });
