@@ -15,6 +15,7 @@ import { AdminPageLayout } from '../../components/AdminNav';
 import { PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { StatNumber } from '../../components/tahti/StatNumber';
+import { CommunityStatsPanel } from './dashboard/CommunityStatsPanel';
 
 function euros(cents: number): string {
   return `€${(cents / 100).toLocaleString('fi-FI', { minimumFractionDigits: 0 })}`;
@@ -180,6 +181,8 @@ export function AdminDashboardView() {
                     })}
                   </div>
                 </StudioPanel>
+
+                <CommunityStatsPanel />
 
                 <div>
                   <Button
