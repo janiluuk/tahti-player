@@ -34,6 +34,7 @@ import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { NewDraftDialog } from './updates/NewDraftDialog';
 import { NewPostDialog } from './updates/NewPostDialog';
+import { NewsletterSubscriberStats } from './updates/NewsletterSubscriberStats';
 import { PostPreview } from './updates/PostPreview';
 
 type Tab = 'posts' | 'newsletter';
@@ -238,6 +239,8 @@ export function StudioUpdatesView() {
               )}
             </StudioPanel>
           )}
+
+          {tab === 'newsletter' && <NewsletterSubscriberStats />}
 
           {tab === 'newsletter' && (
             <StudioPanel>
