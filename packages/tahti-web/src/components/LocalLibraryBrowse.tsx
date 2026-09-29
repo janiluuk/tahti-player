@@ -20,6 +20,7 @@ const BROWSE_TABS: Array<{ id: BrowseKind; label: string }> = [
   { id: 'artists', label: 'Artists' },
   { id: 'albums', label: 'Albums' },
   { id: 'genres', label: 'Genres' },
+  { id: 'composers', label: 'Composers' },
   { id: 'folders', label: 'Folders' },
   { id: 'playlists', label: 'Playlists' },
 ];
@@ -28,6 +29,7 @@ export const FACET_KIND_LABEL: Record<NativeFacetKind, string> = {
   artists: 'Artist',
   albums: 'Album',
   genres: 'Genre',
+  composers: 'Composer',
   folders: 'Folder',
 };
 
@@ -35,6 +37,7 @@ const UNKNOWN_LABEL: Record<NativeFacetKind, string> = {
   artists: 'Unknown artist',
   albums: 'Unknown album',
   genres: 'No genre',
+  composers: 'No composer',
   folders: 'Loose files',
 };
 

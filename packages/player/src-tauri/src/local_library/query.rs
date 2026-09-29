@@ -87,6 +87,7 @@ pub enum FacetKind {
     Artists,
     Albums,
     Genres,
+    Composers,
     Folders,
 }
 
@@ -268,6 +269,10 @@ pub(super) fn where_clause(query: &ListQuery) -> (String, Vec<Bind>) {
             }
             FacetKind::Genres => {
                 conditions.push("genre COLLATE NOCASE = ?".into());
+                binds.push(Bind::Text(filter.value.clone()));
+            }
+            FacetKind::Composers => {
+                conditions.push("composer COLLATE NOCASE = ?".into());
                 binds.push(Bind::Text(filter.value.clone()));
             }
             FacetKind::Folders => {
@@ -566,13 +571,14 @@ pub async fn prepare_playback(pool: &SqlitePool, ids: &[String]) -> Result<Playb
 }
 
 /// Groups the whole catalog for a browse tab, straight from the indexes in
-/// `0005_browse_indexes.sql`.
+/// `0005_browse_indexes.sql` (composer: `0023_composer_facet.sql`).
 pub async fn facets(pool: &SqlitePool, kind: FacetKind) -> Result<Vec<FacetGroup>, String> {
     let totals = "COUNT(*) AS track_count, COALESCE(SUM(duration), 0.0) AS duration_sec, COALESCE(SUM(size_bytes), 0) AS size_bytes";
     let sql = match kind {
         FacetKind::Artists => format!("SELECT MIN({ARTIST_KEY}) AS name, '' AS secondary, NULL AS year, {totals} FROM library_tracks GROUP BY {ARTIST_KEY} COLLATE NOCASE ORDER BY name COLLATE NOCASE"),
         FacetKind::Albums => format!("SELECT MIN(album) AS name, MIN({ARTIST_KEY}) AS secondary, MAX(year) AS year, {totals} FROM library_tracks GROUP BY album COLLATE NOCASE, {ARTIST_KEY} COLLATE NOCASE ORDER BY name COLLATE NOCASE, secondary COLLATE NOCASE"),
         FacetKind::Genres => format!("SELECT MIN(genre) AS name, '' AS secondary, NULL AS year, {totals} FROM library_tracks GROUP BY genre COLLATE NOCASE ORDER BY name COLLATE NOCASE"),
+        FacetKind::Composers => format!("SELECT MIN(composer) AS name, '' AS secondary, NULL AS year, {totals} FROM library_tracks GROUP BY composer COLLATE NOCASE ORDER BY name COLLATE NOCASE"),
         FacetKind::Folders => format!("SELECT folder AS name, '' AS secondary, NULL AS year, {totals} FROM library_tracks GROUP BY folder ORDER BY name COLLATE NOCASE"),
     };
     sqlx::query_as::<_, FacetGroup>(&sql)

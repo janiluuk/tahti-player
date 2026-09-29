@@ -1,10 +1,13 @@
-import type { NativeFacetFilter, NativeTrackFilters } from './nativeLibrary';
+import type {
+  NativeFacetFilter,
+  NativeFacetKind,
+  NativeTrackFilters,
+} from './nativeLibrary';
 import { EMPTY_TRACK_FILTERS } from './nativeLibrary';
 
 export type LocalLibraryViewState = {
   query: string;
-  browseKind:
-    'tracks' | 'playlists' | 'artists' | 'albums' | 'genres' | 'folders';
+  browseKind: 'tracks' | 'playlists' | NativeFacetKind;
   /** The playlist open in the Playlists tab, if any. */
   openPlaylistId: string | null;
   facetFilter: NativeFacetFilter | null;

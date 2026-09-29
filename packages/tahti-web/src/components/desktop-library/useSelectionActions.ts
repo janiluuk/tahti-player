@@ -186,8 +186,10 @@ export function useSelectionActions({
             secondary: kind === 'albums' ? group.secondary : null,
           },
           // Album order (disc, then track) for anything that is an album or a
-          // folder of albums; title order for genres.
-          kind === 'genres' ? null : { column: 'album', descending: false },
+          // folder of albums; title order for genres and composers.
+          kind === 'genres' || kind === 'composers'
+            ? null
+            : { column: 'album', descending: false },
           null,
         ),
     });

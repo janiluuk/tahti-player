@@ -156,7 +156,8 @@ export type NativeFilterOptions = {
   yearMax: number | null;
 };
 
-export type NativeFacetKind = 'artists' | 'albums' | 'genres' | 'folders';
+export type NativeFacetKind =
+  'artists' | 'albums' | 'genres' | 'composers' | 'folders';
 
 /** One group in a browse tab. For albums `secondary` is the album artist. */
 export type NativeFacetGroup = {

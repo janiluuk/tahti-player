@@ -580,6 +580,54 @@ describe('DesktopLibraryPanel native import', () => {
     expect(await screen.findByText('Unknown artist')).toBeTruthy();
   });
 
+  it('browses by composer and filters the track list to one', async () => {
+    globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
+    const facets = vi.fn().mockResolvedValue([
+      {
+        name: 'Erik Satie',
+        secondary: '',
+        year: null,
+        trackCount: 3,
+        durationSec: 540,
+        sizeBytes: 30_000_000,
+      },
+      {
+        name: '',
+        secondary: '',
+        year: null,
+        trackCount: 1,
+        durationSec: 60,
+        sizeBytes: 1_000_000,
+      },
+    ]);
+    const list = vi
+      .fn()
+      .mockResolvedValue({ tracks: [availableTrack], total: 1 });
+    globalThis.__TAHTI_NATIVE_LIBRARY__ = createNativeLibrary({ facets, list });
+
+    render(<DesktopLibraryPanel />);
+    await waitFor(() => expect(list).toHaveBeenCalled());
+
+    fireEvent.click(screen.getByRole('tab', { name: 'Composers' }));
+    expect(await screen.findByText('Erik Satie')).toBeTruthy();
+    expect(screen.getByText('No composer')).toBeTruthy();
+    expect(facets).toHaveBeenCalledWith('composers');
+
+    fireEvent.click(screen.getByText('Erik Satie'));
+    await waitFor(() =>
+      expect(list).toHaveBeenCalledWith(
+        '',
+        0,
+        { kind: 'composers', value: 'Erik Satie', secondary: null },
+        null,
+        EMPTY_TRACK_FILTERS,
+      ),
+    );
+    expect(
+      screen.getByRole('button', { name: 'Clear Composer filter' }),
+    ).toBeTruthy();
+  });
+
   it('filters albums by name and album artist together', async () => {
     globalThis.__TAHTI_NATIVE_CAPABILITIES__ = { localLibrary: true };
     const list = vi.fn().mockResolvedValue({ tracks: [], total: 0 });
