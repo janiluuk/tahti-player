@@ -181,6 +181,55 @@ export async function fetchStreamSettings(): Promise<{
   }
 }
 
+let mockRotation = 0;
+
+export async function rotateRtmpStreamKey(): Promise<
+  { ok: true; streamKey: string } | { ok: false; error: string }
+> {
+  if (isForceMock()) {
+    mockRotation += 1;
+    return {
+      ok: true,
+      streamKey: `demo-slug__mock-rotated-key-${mockRotation}`,
+    };
+  }
+  try {
+    const { data } = await requestJson<{ rtmpStreamKey: string }>(
+      '/api/me/stream-settings/rtmp/rotate',
+      { method: 'POST' },
+    );
+    return { ok: true, streamKey: data.rtmpStreamKey };
+  } catch (err) {
+    return {
+      ok: false,
+      error:
+        err instanceof Error ? err.message : 'Could not make a new stream key',
+    };
+  }
+}
+
+export async function rotateIcecastPassword(): Promise<
+  { ok: true; password: string } | { ok: false; error: string }
+> {
+  if (isForceMock()) {
+    mockRotation += 1;
+    return { ok: true, password: `mock-icecast-pass-${mockRotation}` };
+  }
+  try {
+    const { data } = await requestJson<{ liveSourcePass: string }>(
+      '/api/me/stream-settings/icecast/rotate',
+      { method: 'POST' },
+    );
+    return { ok: true, password: data.liveSourcePass };
+  } catch (err) {
+    return {
+      ok: false,
+      error:
+        err instanceof Error ? err.message : 'Could not make a new password',
+    };
+  }
+}
+
 export async function fetchSignalStatus(): Promise<{
   data: SignalStatus;
   meta: FetchMeta;
