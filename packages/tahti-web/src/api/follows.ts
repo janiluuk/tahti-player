@@ -92,3 +92,31 @@ export function followArtist(username: string): Promise<FollowResult> {
 export function unfollowArtist(username: string): Promise<FollowResult> {
   return sendFollow(username, 'DELETE', 'Unfollow failed');
 }
+
+export type FollowListDirection = 'followers' | 'following';
+
+export type FollowListPage = {
+  users: FollowListUser[];
+  hasMore: boolean;
+};
+
+export async function fetchFollowList(
+  username: string,
+  direction: FollowListDirection,
+  offset = 0,
+): Promise<FollowListPage | null> {
+  if (isForceMock()) {
+    return {
+      users: direction === 'following' ? listMockFollowing() : [],
+      hasMore: false,
+    };
+  }
+  try {
+    const { data } = await requestJson<Partial<FollowListPage>>(
+      `/api/v1/artists/${encodeURIComponent(username)}/${direction}?offset=${offset}`,
+    );
+    return { users: data.users ?? [], hasMore: Boolean(data.hasMore) };
+  } catch {
+    return null;
+  }
+}

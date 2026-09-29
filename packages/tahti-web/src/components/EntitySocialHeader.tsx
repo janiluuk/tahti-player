@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import type { CSSProperties, ReactNode } from 'react';
 
-import { StatChip } from '@tahti-player/ui';
+import { Button, StatChip } from '@tahti-player/ui';
 
 import {
   isHeaderImageUrl,
@@ -44,6 +44,7 @@ export type EntitySocialStat = {
   label: string;
   value: number;
   icon: LucideIcon;
+  onClick?: () => void;
 };
 
 export type EntitySocialHeaderProps = {
@@ -363,14 +364,31 @@ export function EntitySocialHeader({
 
       {activeStats.length > 0 ? (
         <div className="flex flex-wrap gap-3">
-          {activeStats.map((stat) => (
-            <StatChip
-              key={stat.key}
-              icon={<stat.icon size={14} aria-hidden />}
-              label={stat.label}
-              value={formatCompactStat(stat.value)}
-            />
-          ))}
+          {activeStats.map((stat) => {
+            const chip = (
+              <StatChip
+                key={stat.key}
+                icon={<stat.icon size={14} aria-hidden />}
+                label={stat.label}
+                value={formatCompactStat(stat.value)}
+              />
+            );
+            return stat.onClick ? (
+              <Button
+                key={stat.key}
+                variant="text"
+                size="flexible"
+                className="p-0"
+                aria-haspopup="dialog"
+                onClick={stat.onClick}
+                data-testid={`stat-${stat.key}`}
+              >
+                {chip}
+              </Button>
+            ) : (
+              chip
+            );
+          })}
         </div>
       ) : null}
 

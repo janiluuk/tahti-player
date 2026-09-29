@@ -197,4 +197,46 @@ describe('ArtistView', () => {
       ).toContain('42');
     });
   });
+
+  describe('follower lists', () => {
+    it('opens the followers list from the header and pages through it', async () => {
+      const list = vi
+        .spyOn(follows, 'fetchFollowList')
+        .mockResolvedValueOnce({
+          users: [
+            { username: 'fan-one', displayName: 'Fan One', avatarUrl: null },
+          ],
+          hasMore: true,
+        })
+        .mockResolvedValueOnce({
+          users: [
+            { username: 'fan-two', displayName: 'Fan Two', avatarUrl: null },
+          ],
+          hasMore: false,
+        });
+      const { container } = await renderArtist('northern-lights');
+      await act(async () => {
+        container
+          .querySelector<HTMLButtonElement>('[data-testid="stat-followers"]')
+          ?.click();
+      });
+      expect(list).toHaveBeenCalledWith('northern-lights', 'followers', 0);
+      const dialog = () =>
+        document.querySelector('[data-testid="follow-list"]');
+      expect(dialog()?.textContent).toContain('Fan One');
+      const more = [...document.querySelectorAll('button')].find(
+        (b) => b.textContent === 'Show more',
+      );
+      await act(async () => {
+        more?.click();
+      });
+      expect(list).toHaveBeenLastCalledWith('northern-lights', 'followers', 1);
+      expect(dialog()?.textContent).toContain('Fan Two');
+      expect(
+        [...document.querySelectorAll('button')].some(
+          (b) => b.textContent === 'Show more',
+        ),
+      ).toBe(false);
+    });
+  });
 });
