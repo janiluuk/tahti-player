@@ -22,6 +22,7 @@ import {
 } from '../../api/studio-extras';
 import { ChannelAnnouncementsPanel } from '../../components/ChannelAnnouncementsPanel';
 import { ChannelRadioPlaylistPanel } from '../../components/ChannelRadioPlaylistPanel';
+import { MultistreamStatusPanel } from '../../components/MultistreamStatusPanel';
 import { PageLoading } from '../../components/PageStates';
 import { PinnedAnnouncementsPanel } from '../../components/PinnedAnnouncementsPanel';
 import { StreamManagerPanel } from '../../components/StreamManagerPanel';
@@ -256,6 +257,7 @@ export function StudioChannelView() {
                       slug={channel.slug}
                       channelState={channel.state}
                     />
+                    <MultistreamStatusPanel slug={channel.slug} />
                     <ChannelOverallStats />
                   </>
                 ) : (
