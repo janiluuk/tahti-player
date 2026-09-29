@@ -142,3 +142,49 @@ export async function fetchRadioRecentlyPlayed(): Promise<{
     return withMockFallback(err, mockRadioRecentlyPlayed, () => []);
   }
 }
+
+/** GET /api/v1/radio/history — member channels Tahti Radio relayed, newest first. */
+export type RadioFeatureHistoryItem = {
+  channelId: string;
+  slug: string;
+  artistName: string;
+  featuredAt: string;
+};
+
+function mockRadioFeatureHistory(): RadioFeatureHistoryItem[] {
+  const now = Date.now();
+  return [
+    {
+      channelId: 'mock-channel-1',
+      slug: 'dj-moonlight',
+      artistName: 'DJ Moonlight',
+      featuredAt: new Date(now - 2 * 3600_000).toISOString(),
+    },
+    {
+      channelId: 'mock-channel-2',
+      slug: 'northern-lights',
+      artistName: 'Northern Lights',
+      featuredAt: new Date(now - 26 * 3600_000).toISOString(),
+    },
+  ];
+}
+
+export async function fetchRadioFeatureHistory(): Promise<{
+  data: RadioFeatureHistoryItem[];
+  meta: FetchMeta;
+}> {
+  if (isForceMock()) {
+    return {
+      data: mockRadioFeatureHistory(),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const data = await getJson<RadioFeatureHistoryItem[]>(
+      '/api/v1/radio/history',
+    );
+    return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
+  } catch (err) {
+    return withMockFallback(err, mockRadioFeatureHistory, () => []);
+  }
+}

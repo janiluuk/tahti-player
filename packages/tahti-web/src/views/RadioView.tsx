@@ -26,10 +26,12 @@ import {
 import { resolvePublicVisualizerPreset } from '../api/channel-design';
 import {
   fetchRadio,
+  fetchRadioFeatureHistory,
   fetchRadioRecentlyPlayed,
   fetchRadioStation,
   TAHTI_RADIO_SLUG,
 } from '../api/client';
+import type { RadioFeatureHistoryItem } from '../api/radio-public';
 import { fetchShowBookings, type StudioShowBooking } from '../api/shows';
 import type {
   PublicChannel,
@@ -92,6 +94,7 @@ export function RadioView() {
   const [station, setStation] = useState<PublicChannel | null>(null);
   const [relay, setRelay] = useState<RadioNowPlaying | null>(null);
   const [recent, setRecent] = useState<RadioRecentlyPlayedItem[]>([]);
+  const [featured, setFeatured] = useState<RadioFeatureHistoryItem[]>([]);
   const [upcoming, setUpcoming] = useState<StudioShowBooking[]>([]);
   const [loading, setLoading] = useState(true);
   const [infoTrack, setInfoTrack] = useState<TrackInfo | null>(null);
@@ -130,10 +133,12 @@ export function RadioView() {
       fetchRadioStation().catch(() => null),
       fetchRadio(),
       fetchRadioRecentlyPlayed(),
-    ]).then(([ch, memberRelay, recentRes]) => {
+      fetchRadioFeatureHistory(),
+    ]).then(([ch, memberRelay, recentRes, featuredRes]) => {
       setStation(ch?.data ?? null);
       setRelay(memberRelay.data);
       setRecent(recentRes.data);
+      setFeatured(featuredRes.data);
       setLoading(false);
     });
     reloadUpcoming();
@@ -586,6 +591,41 @@ export function RadioView() {
                             </li>
                           );
                         })}
+                      </ul>
+                    ),
+                },
+                {
+                  id: 'featured',
+                  label: 'Featured',
+                  icon: <MicIcon size={14} />,
+                  count: featured.length > 0 ? featured.length : undefined,
+                  content:
+                    featured.length === 0 ? (
+                      <p className="text-foreground-secondary text-sm">
+                        No member sets relayed yet.
+                      </p>
+                    ) : (
+                      <ul
+                        className="border-border divide-border divide-y overflow-hidden rounded-lg border"
+                        data-testid="radio-featured"
+                      >
+                        {featured.map((item) => (
+                          <li
+                            key={`${item.channelId}-${item.featuredAt}`}
+                            className="flex items-center gap-3 px-3 py-2"
+                          >
+                            <Link
+                              to="/channel/$slug"
+                              params={{ slug: item.slug }}
+                              className="min-w-0 flex-1 truncate text-sm font-medium underline-offset-2 hover:underline"
+                            >
+                              {item.artistName || item.slug}
+                            </Link>
+                            <span className="text-foreground-secondary shrink-0 text-xs">
+                              {formatAgo(item.featuredAt)}
+                            </span>
+                          </li>
+                        ))}
                       </ul>
                     ),
                 },
