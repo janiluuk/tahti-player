@@ -337,3 +337,59 @@ export async function fetchLegacyMembers(): Promise<
     };
   }
 }
+
+export type AdminFanSubArtist = {
+  artistUserId: string;
+  displayName: string;
+  username: string;
+  activeSubscriberCount: number;
+  mrrCents: number;
+  totalPaidCents: number;
+  stripeConnectChargesEnabled: boolean;
+  stripeConnectAccountId: string | null;
+};
+
+function mockFanSubArtists(): AdminFanSubArtist[] {
+  return [
+    {
+      artistUserId: 'u1',
+      displayName: 'DJ Moonlight',
+      username: 'dj-moonlight',
+      activeSubscriberCount: 12,
+      mrrCents: 6000,
+      totalPaidCents: 42600,
+      stripeConnectChargesEnabled: true,
+      stripeConnectAccountId: 'acct_mock_1',
+    },
+    {
+      artistUserId: 'u2',
+      displayName: 'Northern Lights',
+      username: 'northern-lights',
+      activeSubscriberCount: 3,
+      mrrCents: 1500,
+      totalPaidCents: 0,
+      stripeConnectChargesEnabled: false,
+      stripeConnectAccountId: null,
+    },
+  ];
+}
+
+export async function fetchFanSubArtists(): Promise<{
+  data: AdminFanSubArtist[] | null;
+  meta: FetchMeta;
+}> {
+  if (isForceMock()) {
+    return {
+      data: mockFanSubArtists(),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const data = await getJson<AdminFanSubArtist[]>(
+      '/api/admin/fansubs/by-artist',
+    );
+    return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
+  } catch (err) {
+    return { data: null, meta: failMeta(err) };
+  }
+}
