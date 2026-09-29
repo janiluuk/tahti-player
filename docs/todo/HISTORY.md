@@ -3887,3 +3887,15 @@ Slices came from the GAP-MAPPING admin rows, each checked against an existing ta
 - **Themes moderation (#246)**: `/admin/moderation/themes`, approve (opens the registry PR) or reject with a note to the author.
 - **Channel rotation (#247)**: board editor for any channel's 24/7 rotation in `/admin/streams` (settings, in-rotation toggles, order).
 - **Checks:** each PR ran tahti-web type-check, lint and the touched tests (`src/views/admin src/api` 80-90 tests each). Nothing was tried against the live API, the render worker or the registry PR worker.
+
+## 2026-09-29 - Ten todo slices, eighth batch (#250-#259)
+
+Slices came from tahti-org routes that tahti-web never called (a route-by-route diff), each checked against its contract. No `docs/todo/` file covered them.
+
+- **Admin status and dashboard**: background workers with online/offline, lanes and job history (#250); each cron job's run history (#251, stacked); chat activity and hello@/support@ unread counts, with the mail tiles degrading on their own when Prometheus is down (#252).
+- **Governance (#253)**: per-meeting conflict-of-interest declarations and the notice delivery log in the AGM tab; Attendance's hand-rolled toggle became a library `Button`.
+- **Tahti Selects (#254)**: fill the rotation from the top list (add or replace).
+- **Settings**: see who mentioned you, mention preferences and mutes (#255, new `api/me-mentions.ts`; the existing `api/mentions.ts` is unchanged); membership invoices with PDF and pay links (#256); keep new uploads out of the top lists, which the API only applies to future uploads (#259).
+- **Venues (#257)**: the venue page loads its own profile instead of the whole directory, and shows the address, upcoming shows and an `.ics` feed.
+- **Themes (#258)**: submit an imported theme to the community catalog and follow its review; pairs with the board's Themes tab (#246).
+- **Checks:** each PR ran tahti-web type-check, lint and the touched tests. Nothing was tried against the live API, Stripe, Prometheus or the registry PR worker.
