@@ -8,6 +8,7 @@ import {
   fetchAdminDashboard,
   fetchAdminNews,
   publishAdminAddonVersion,
+  updateAdminAddon,
 } from './admin';
 
 describe('fetchAdminNews', () => {
@@ -347,5 +348,40 @@ describe('adminUsersExportCsvUrl', () => {
     expect(adminUsersExportCsvUrl({ role: 'BOARD' })).toBe(
       '/tahti-api/api/admin/users/export.csv?isBoard=true',
     );
+  });
+});
+
+describe('updateAdminAddon', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('PATCHes every editable field, trimmed, and leaves out an empty cover', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ id: 'addon-1', name: 'Ticker' }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      }),
+    );
+    vi.stubGlobal('fetch', fetchMock);
+
+    const result = await updateAdminAddon('addon-1', {
+      name: ' Ticker ',
+      description: 'Scrolls. ',
+      authorName: 'Tahti',
+      categories: ['other'],
+      iconUrl: '  ',
+    });
+
+    expect(result.ok).toBe(true);
+    const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(url).toContain('/api/admin/addons/addon-1');
+    expect(init.method).toBe('PATCH');
+    expect(JSON.parse(String(init.body))).toEqual({
+      name: 'Ticker',
+      description: 'Scrolls.',
+      authorName: 'Tahti',
+      categories: ['other'],
+    });
   });
 });

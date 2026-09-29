@@ -1,4 +1,4 @@
-import { PlusIcon } from 'lucide-react';
+import { PlusIcon, SaveIcon } from 'lucide-react';
 
 import { Button, Dialog, Input, Select, Textarea } from '@tahti-player/ui';
 
@@ -9,7 +9,10 @@ import {
 import { ImageUploadField } from '../../../components/ImageUploadField';
 import { SCOPES } from './shared';
 
+/** Registers a new add-on, or with `editing` edits one's metadata (slug and
+ * type are fixed once registered). */
 export function RegisterDialog({
+  editing = null,
   isOpen,
   draft,
   pending,
@@ -18,6 +21,7 @@ export function RegisterDialog({
   onClose,
   onSave,
 }: {
+  editing?: string | null;
   isOpen: boolean;
   draft: AdminAddonRegisterInput;
   pending: boolean;
@@ -28,11 +32,13 @@ export function RegisterDialog({
 }) {
   return (
     <Dialog.Root isOpen={isOpen} onClose={onClose} className="max-w-2xl">
-      <Dialog.Title>Register a new add-on</Dialog.Title>
+      <Dialog.Title>
+        {editing ? `Edit ${editing}` : 'Register a new add-on'}
+      </Dialog.Title>
       <Dialog.Description>
-        Creates a draft add-on. It stays invisible everywhere until a bundle
-        version is published and approved (not built in this UI yet — ask an
-        engineer to publish the first version).
+        {editing
+          ? 'Changes the name, description, author, cover and categories. The slug and type stay as registered.'
+          : 'Creates a draft add-on. It stays invisible everywhere until a bundle version is published (the upload button on its card) and approved.'}
       </Dialog.Description>
       <div className="flex flex-col gap-4">
         <div className="grid gap-4 sm:grid-cols-2">
@@ -40,6 +46,7 @@ export function RegisterDialog({
             label="Slug"
             value={draft.slug}
             placeholder="live-status"
+            disabled={editing !== null}
             onChange={(event) =>
               onChange({ ...draft, slug: event.target.value })
             }
@@ -48,6 +55,7 @@ export function RegisterDialog({
           <Select
             label="Add-on type"
             value={draft.scope}
+            disabled={editing !== null}
             onValueChange={(value) =>
               onChange({ ...draft, scope: value as AdminAddonScope })
             }
@@ -125,8 +133,17 @@ export function RegisterDialog({
           }
           onClick={onSave}
         >
-          <PlusIcon size={15} aria-hidden className="mr-1.5" />
-          Register add-on
+          {editing ? (
+            <>
+              <SaveIcon size={15} aria-hidden className="mr-1.5" />
+              Save changes
+            </>
+          ) : (
+            <>
+              <PlusIcon size={15} aria-hidden className="mr-1.5" />
+              Register add-on
+            </>
+          )}
         </Button>
       </Dialog.Actions>
     </Dialog.Root>

@@ -38,6 +38,10 @@ export function AdminAddonsView() {
     setPublishTarget,
     openPublish,
     publish,
+    editTarget,
+    setEditTarget,
+    openEdit,
+    saveEdit,
     surface,
     setSurface,
     installs,
@@ -123,7 +127,8 @@ export function AdminAddonsView() {
               !registerOpen &&
               !rejectTarget &&
               !manageTarget &&
-              !publishTarget ? (
+              !publishTarget &&
+              !editTarget ? (
                 <p className="text-accent-red-strong text-sm" role="alert">
                   {error}
                 </p>
@@ -147,6 +152,7 @@ export function AdminAddonsView() {
                       onReject={setRejectTarget}
                       onManage={setManageTarget}
                       onPublish={openPublish}
+                      onEdit={openEdit}
                     />
                   ))}
                 </div>
@@ -177,6 +183,17 @@ export function AdminAddonsView() {
                 onSetEnabledByDefault={setEnabledByDefault}
                 onSetDefaultConfig={setDefaultConfig}
                 onDisable={disable}
+              />
+
+              <RegisterDialog
+                editing={editTarget?.name ?? null}
+                isOpen={editTarget !== null}
+                draft={draft}
+                pending={pending}
+                error={error}
+                onChange={setDraft}
+                onClose={() => setEditTarget(null)}
+                onSave={saveEdit}
               />
 
               <PublishDialog

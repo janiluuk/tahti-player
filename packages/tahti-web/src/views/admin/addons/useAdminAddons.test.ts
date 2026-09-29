@@ -17,6 +17,7 @@ const api = vi.hoisted(() => ({
   rejectAdminAddon: vi.fn(),
   setAdminAddonDefaultConfig: vi.fn(),
   setAdminAddonEnabledByDefault: vi.fn(),
+  updateAdminAddon: vi.fn(),
 }));
 vi.mock('../../../api/admin', () => api);
 
@@ -185,5 +186,41 @@ describe('useAdminAddons', () => {
       ),
     );
     expect(result.current.publishTarget?.id).toBe('w1');
+  });
+
+  it('prefills the edit dialog from the add-on and saves the metadata', async () => {
+    const withIcon = addon({
+      id: 'w9',
+      slug: 'w9',
+      name: 'Old',
+      description: 'd',
+      categories: ['stats'],
+      iconUrl: 'https://cdn/i.png',
+    });
+    api.fetchAdminAddons.mockResolvedValue({ data: [withIcon] });
+    api.updateAdminAddon.mockResolvedValue({
+      ok: true,
+      data: { ...withIcon, name: 'New' },
+    });
+    const { result } = renderHook(() => useAdminAddons());
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    act(() => result.current.openEdit(withIcon));
+    expect(result.current.draft).toMatchObject({
+      slug: 'w9',
+      name: 'Old',
+      iconUrl: 'https://cdn/i.png',
+    });
+    act(() =>
+      result.current.setDraft({ ...result.current.draft, name: 'New' }),
+    );
+    await act(async () => result.current.saveEdit());
+
+    expect(api.updateAdminAddon).toHaveBeenCalledWith(
+      'w9',
+      expect.objectContaining({ name: 'New', categories: ['stats'] }),
+    );
+    await waitFor(() => expect(result.current.editTarget).toBeNull());
+    expect(result.current.visibleAddons[0]?.name).toBe('New');
   });
 });
