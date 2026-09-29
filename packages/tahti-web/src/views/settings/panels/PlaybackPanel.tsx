@@ -10,6 +10,7 @@ import {
 
 import { getNativeLibrary } from '../../../lib/nativeLibrary';
 import type { NormalizationMode } from '../../../lib/replayGain';
+import { useAuthStore } from '../../../stores/authStore';
 import {
   clampSkipSeconds,
   SKIP_SECONDS_MAX,
@@ -17,6 +18,7 @@ import {
   usePlaybackPrefsStore,
 } from '../../../stores/playbackPrefsStore';
 import { usePlayerStore } from '../../../stores/playerStore';
+import { MyRadioStations } from '../MyRadioStations';
 import { SettingsToggle } from '../SettingsFields';
 
 const REPEAT_OPTIONS = [
@@ -102,6 +104,7 @@ export function PlaybackPanel() {
   const toggleShuffle = usePlayerStore((s) => s.toggleShuffle);
   const setRepeatMode = usePlayerStore((s) => s.setRepeatMode);
   const hasLocalAnalysis = Boolean(getNativeLibrary()?.analysis);
+  const signedIn = useAuthStore((s) => Boolean(s.user));
 
   return (
     <div className="flex w-full max-w-xl flex-col" data-testid="playback-panel">
@@ -174,6 +177,11 @@ export function PlaybackPanel() {
           />
         </div>
       </SectionShell>
+      {signedIn ? (
+        <SectionShell title="My radio stations" className={SECTION_DIVIDER}>
+          <MyRadioStations />
+        </SectionShell>
+      ) : null}
     </div>
   );
 }
