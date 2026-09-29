@@ -61,11 +61,14 @@ export async function fetchAdminAnnouncements(): Promise<{
     };
   }
   try {
-    const data = await getJson<{
-      clips: AdminAnnouncementClip[];
-      systemEnabled: boolean;
-    }>('/api/admin/announcements');
-    return { data, meta: { source: 'api' } };
+    const [list, settings] = await Promise.all([
+      getJson<{ clips: AdminAnnouncementClip[] }>('/api/admin/announcements'),
+      getJson<{ systemEnabled: boolean }>('/api/admin/announcements/settings'),
+    ]);
+    return {
+      data: { clips: list.clips, systemEnabled: settings.systemEnabled },
+      meta: { source: 'api' },
+    };
   } catch (err) {
     return {
       data: { clips: [], systemEnabled: false },
@@ -79,8 +82,8 @@ export function setAnnouncementsSystemEnabled(enabled: boolean) {
     mockAnnouncementsSystemEnabled = enabled;
     return Promise.resolve({ ok: true } as const);
   }
-  return mutate('/api/admin/announcements/system-enabled', 'PATCH', {
-    enabled,
+  return mutate('/api/admin/announcements/settings', 'PATCH', {
+    systemEnabled: enabled,
   });
 }
 
@@ -117,7 +120,8 @@ export async function uploadAnnouncementClip(
 ): Promise<
   { ok: true; clip: AdminAnnouncementClip } | { ok: false; error: string }
 > {
-  const title = file.name.replace(/\.[^.]+$/, '');
+  const title = file.name.replace(/\.[^.]+$/, '').trim() || 'Announcement';
+  const contentType = file.type || 'audio/mpeg';
   if (isForceMock()) {
     const clip: AdminAnnouncementClip = {
       id: `ann-${Date.now()}`,
@@ -132,23 +136,23 @@ export async function uploadAnnouncementClip(
     return { ok: true, clip };
   }
   try {
-    const prep = await sendJson<{ objectKey: string; uploadUrl: string }>(
+    const prep = await sendJson<{ uploadId: string; uploadUrl: string }>(
       '/api/admin/announcements/prepare',
       'POST',
-      { filename: file.name, contentType: file.type, sizeBytes: file.size },
+      { filename: file.name, contentType, fileSizeBytes: file.size, title },
     );
     const put = await fetch(prep.uploadUrl, {
       method: 'PUT',
-      headers: { 'Content-Type': file.type || 'application/octet-stream' },
+      headers: { 'Content-Type': contentType },
       body: file,
     });
     if (!put.ok) {
       return { ok: false, error: `Upload failed (${put.status})` };
     }
     const clip = await sendJson<AdminAnnouncementClip>(
-      '/api/admin/announcements',
+      '/api/admin/announcements/complete',
       'POST',
-      { objectKey: prep.objectKey, title },
+      { uploadId: prep.uploadId, title },
     );
     return { ok: true, clip };
   } catch (err) {
