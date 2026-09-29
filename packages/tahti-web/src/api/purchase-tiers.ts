@@ -4,6 +4,7 @@
 
 import type { FetchMeta } from './client';
 import {
+  listMockCommerceTrackOrders,
   mockUserOwnsPurchaseTier,
   recordMockTrackPurchase,
 } from './mock-commerce-ledger';
@@ -291,4 +292,46 @@ export function findMockPurchaseTier(
       .find((e) => e.artistUsername === artistUsername)
       ?.tiers.find((tier) => tier.id === tierId) ?? null
   );
+}
+
+export type PurchaseOrderRow = {
+  id: string;
+  amountCents: number;
+  createdAt: string;
+  tier: { id: string; name: string };
+  buyer: { username: string; displayName: string; avatarUrl: string | null };
+};
+
+export async function fetchMyPurchaseOrders(): Promise<{
+  data: PurchaseOrderRow[] | null;
+  meta: FetchMeta;
+}> {
+  if (isForceMock()) {
+    const artist = artistKey();
+    return {
+      data: listMockCommerceTrackOrders()
+        .filter((order) => order.artistUsername === artist)
+        .map((order) => ({
+          id: order.id,
+          amountCents: order.amountCents,
+          createdAt: order.createdAt,
+          tier: { id: order.id, name: order.title },
+          buyer: {
+            username: order.fanUsername,
+            displayName: order.fanDisplayName,
+            avatarUrl: null,
+          },
+        }))
+        .reverse(),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const { data } = await requestJson<PurchaseOrderRow[]>(
+      '/api/me/purchase-tiers/orders',
+    );
+    return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
+  } catch (err) {
+    return { data: null, meta: apiErrorMeta(err) };
+  }
 }
