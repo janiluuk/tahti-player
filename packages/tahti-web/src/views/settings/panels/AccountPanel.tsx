@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import {
+  AtSign,
   Bell,
   CreditCardIcon,
   Database,
@@ -44,6 +45,7 @@ import { useAuthModalStore } from '../../../stores/authModalStore';
 import { useAuthStore } from '../../../stores/authStore';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import { SettingsHint, SettingsInfo } from '../SettingsFields';
+import { MentionsPanel } from './MentionsPanel';
 import { NotificationsVisibilityPanel } from './NotificationsPanel';
 
 const GovernanceView = lazy(() =>
@@ -200,6 +202,12 @@ export function AccountPanel() {
           label: 'Notifications & visibility',
           icon: <Bell size={14} />,
           content: <NotificationsVisibilityPanel />,
+        },
+        {
+          id: 'mentions',
+          label: 'Mentions',
+          icon: <AtSign size={14} />,
+          content: <MentionsPanel />,
         },
         {
           id: 'subscriptions',
