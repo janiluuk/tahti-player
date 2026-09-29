@@ -6,6 +6,7 @@ import {
   PowerIcon,
   RadioTowerIcon,
   SearchIcon,
+  SparklesIcon,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -28,6 +29,7 @@ import { StudioPanel } from '../../../../components/StudioPanel';
 import { TahtiRotationPlaylistEditor } from '../../../../components/TahtiRotationPlaylistEditor';
 import { usePolling } from '../../../../hooks/usePolling';
 import { usePlayerStore } from '../../../../stores/playerStore';
+import { SelectsGenerateDialog } from './SelectsGenerateDialog';
 
 function fmtDuration(sec: number | null): string {
   if (!sec) {
@@ -56,6 +58,7 @@ export function SelectsTab() {
   const [query, setQuery] = useState('');
   const [browse, setBrowse] = useState<AdminSelectsBrowseItem[]>([]);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [generateOpen, setGenerateOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [adding, setAdding] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
@@ -254,15 +257,25 @@ export function SelectsTab() {
       <StudioPanel
         title={`Current rotation (${items.length})`}
         action={
-          <Tooltip content="Add content to rotation" side="top">
+          <div className="flex items-center gap-2">
             <Button
-              size="icon-sm"
-              aria-label="Add content to rotation"
-              onClick={() => setPickerOpen(true)}
+              size="sm"
+              variant="secondary"
+              onClick={() => setGenerateOpen(true)}
             >
-              <PlusIcon size={16} aria-hidden />
+              <SparklesIcon size={14} aria-hidden className="mr-1.5" />
+              Fill from top list
             </Button>
-          </Tooltip>
+            <Tooltip content="Add content to rotation" side="top">
+              <Button
+                size="icon-sm"
+                aria-label="Add content to rotation"
+                onClick={() => setPickerOpen(true)}
+              >
+                <PlusIcon size={16} aria-hidden />
+              </Button>
+            </Tooltip>
+          </div>
         }
       >
         {loading ? (
@@ -313,6 +326,16 @@ export function SelectsTab() {
         )}
       </StudioPanel>
 
+      <SelectsGenerateDialog
+        isOpen={generateOpen}
+        rotationSize={items.length}
+        onClose={() => setGenerateOpen(false)}
+        onGenerated={(message) => {
+          setGenerateOpen(false);
+          setMsg(message);
+          reload();
+        }}
+      />
       <Dialog.Root
         isOpen={pickerOpen}
         onClose={() => {
