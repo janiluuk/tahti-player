@@ -12,6 +12,7 @@ import {
   EmptyState,
   Input,
   Tabs,
+  Toggle,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
@@ -20,8 +21,10 @@ import {
   addModerator,
   banChatFingerprint,
   fetchChatBans,
+  fetchChatSettings,
   fetchModerators,
   removeModerator,
+  setChatSubscribersOnly,
   unbanChatFingerprint,
   type ChatBan,
   type ModeratorRow,
@@ -50,6 +53,38 @@ export function StudioModerationView({
     null,
   );
 
+  const [subscribersOnly, setSubscribersOnly] = useState<boolean | null>(null);
+  const [savingChatAccess, setSavingChatAccess] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    void fetchChatSettings().then((result) => {
+      if (!cancelled) {
+        setSubscribersOnly(result.data?.subscribersOnly ?? null);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [slug]);
+
+  const changeChatAccess = (next: boolean) => {
+    setSavingChatAccess(true);
+    void setChatSubscribersOnly(next).then((result) => {
+      setSavingChatAccess(false);
+      if (!result.ok) {
+        toast.error(result.error);
+        return;
+      }
+      setSubscribersOnly(result.subscribersOnly);
+      toast.success(
+        result.subscribersOnly
+          ? 'Only fan subscribers can post in chat now.'
+          : 'Everyone signed in can post in chat now.',
+      );
+    });
+  };
+
   const reload = () => {
     void Promise.all([fetchModerators(), fetchChatBans(slug)]).then(
       ([m, b]) => {
@@ -66,6 +101,19 @@ export function StudioModerationView({
 
   const content = (
     <>
+      {subscribersOnly !== null ? (
+        <StudioPanel
+          title="Chat access"
+          description="Turn this on to let only your active fan subscribers post in your channel chat."
+        >
+          <Toggle
+            label="Only fan subscribers can post"
+            checked={subscribersOnly}
+            disabled={savingChatAccess}
+            onChange={changeChatAccess}
+          />
+        </StudioPanel>
+      ) : null}
       <Tabs
         listClassName="border-border border-b pb-3"
         panelClassName="pt-2"
