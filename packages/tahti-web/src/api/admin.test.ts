@@ -8,7 +8,9 @@ import {
   fetchAdminAddons,
   fetchAdminDashboard,
   fetchAdminNews,
+  fetchFanSubPayouts,
   publishAdminAddonVersion,
+  retryFanSubPayout,
   updateAdminAddon,
 } from './admin';
 
@@ -404,5 +406,42 @@ describe('deleteAdminAddon', () => {
     const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
     expect(url).toContain('/api/admin/addons/addon-1');
     expect(init.method).toBe('DELETE');
+  });
+});
+
+describe('fan subscription payouts', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('asks for up to 100 payouts, filtered by state when given', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockImplementation(
+      async () =>
+        new Response(JSON.stringify({ total: 0, payouts: [] }), {
+          status: 200,
+        }),
+    );
+    await fetchFanSubPayouts();
+    await fetchFanSubPayouts('FAILED');
+    expect(fetchSpy.mock.calls.map(([url]) => url)).toEqual([
+      '/tahti-api/api/admin/fansubs/payouts?limit=100',
+      '/tahti-api/api/admin/fansubs/payouts?limit=100&state=FAILED',
+    ]);
+  });
+
+  it('posts a retry for the payout', async () => {
+    const fetchSpy = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue(
+        new Response(
+          JSON.stringify({ ok: true, payoutId: 'p1', state: 'PENDING' }),
+          { status: 200 },
+        ),
+      );
+    await expect(retryFanSubPayout('p1')).resolves.toEqual({ ok: true });
+    expect(fetchSpy.mock.calls[0]![0]).toBe(
+      '/tahti-api/api/admin/fansubs/payouts/p1/retry',
+    );
+    expect(fetchSpy.mock.calls[0]![1]?.method).toBe('POST');
   });
 });
