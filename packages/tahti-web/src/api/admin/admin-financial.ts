@@ -297,3 +297,43 @@ export function retryFanSubPayout(
     'POST',
   );
 }
+
+export type AdminLegacyMember = {
+  id: string;
+  memberNumber: number | null;
+  displayName: string;
+  email: string;
+  username: string;
+  memberSince: string | null;
+};
+
+export async function fetchLegacyMembers(): Promise<
+  { ok: true; data: AdminLegacyMember[] } | { ok: false; error: string }
+> {
+  if (isForceMock()) {
+    return {
+      ok: true,
+      data: [
+        {
+          id: 'lm-1',
+          memberNumber: 7,
+          displayName: 'Aino Virtanen',
+          email: 'aino@example.fi',
+          username: 'aino',
+          memberSince: '2024-03-01T00:00:00.000Z',
+        },
+      ],
+    };
+  }
+  try {
+    const data = await getJson<AdminLegacyMember[]>(
+      '/api/admin/members/legacy-subscriptions',
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not load members',
+    };
+  }
+}

@@ -12,6 +12,7 @@ import { PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { FanSubPayoutQueue } from './financial/FanSubPayoutQueue';
 import { formatEur, LedgerPanel } from './financial/LedgerPanel';
+import { LegacyMembersPanel } from './financial/LegacyMembersPanel';
 
 export function AdminFinancialView() {
   const [overview, setOverview] = useState<AdminFinancialOverview | null>(null);
@@ -83,6 +84,8 @@ export function AdminFinancialView() {
                   </StudioPanel>
 
                   <FanSubPayoutQueue onChanged={reload} />
+
+                  <LegacyMembersPanel />
 
                   <LedgerPanel
                     entries={overview.entries}
