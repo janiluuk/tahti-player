@@ -49,6 +49,7 @@ import { useAuthStore } from '../../../stores/authStore';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import { StudioBrandingPanel } from '../../studio/StudioBrandingView';
 import { SettingsHint } from '../SettingsFields';
+import { SocialAutoPost } from '../SocialAutoPost';
 
 const PRONOUN_OPTIONS: SelectOption[] = [
   { id: 'she/her', label: 'she/her' },
@@ -539,6 +540,7 @@ export function ArtistPanel() {
                 />
               </div>
               {socialMsg && <SettingsHint>{socialMsg}</SettingsHint>}
+              <SocialAutoPost />
             </div>
           ),
         },
