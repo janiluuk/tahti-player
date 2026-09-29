@@ -3855,3 +3855,13 @@ Items finished here were removed from their todo files; partial progress stays n
 - **Go-live a11y (#212)**, **contrast audit (#213)**, **Pro Editor keyboard selection (#214)**: see CUTOVER accessibility item. #213 is a visible change on light themes (darker error/status text).
 - **iTunes XML at 120 MB (#215)**: ignored release harness; parse 0.74 s / 67 MB, preview 0.93 s / 118 MB peak.
 - **Checks:** each PR ran its package's type-check, lint and tests (tahti-web full suite 1088 passed on #213; `cargo test --lib local_library` 205 passed on #211). CI flake re-run: ui `Toaster.test.tsx` sonner timer ("window is not defined") on #209's coverage job. None of it was tried in the desktop app or with a screen reader.
+
+## 2026-09-28 - Ten todo slices, fifth batch (#217-#226)
+
+- **Add-on edit (#217) and delete (#218, stacked on #217)**, `admin-plugin-management-panel.md`: `PATCH` metadata through the register dialog in edit mode; `DELETE` behind a confirmation.
+- **Composer follow-ups to #211**, `desktop-pro-library.md`: search (#219, migration `0022` rebuilds FTS; short-term LIKE covers the same 8 columns), edit with tag write-back (#220), iTunes XML composer (#221, stacked on #220), Composers browse tab (#222, index `0023`), smart-playlist rule and sort (#223).
+- **Queue Delete key (#224)**, performance §3: removes the focused row, focus moves to the next one.
+- **Pro Editor selection buttons (#225)**: toolbar Start/End selection at playhead, same as `[`/`]`.
+- **Peaks cache (#226)**, refactor P3: `stores/peaksCache.ts`, bounded to 200 ids (was unbounded).
+- **#213 (accent text contrast)** was rebuilt on master after #206-#216 merged, and gained a source guard against new plain `text-accent-*` text.
+- **Checks:** each PR ran its package's type-check, lint and tests; `cargo test --lib local_library` 206 passed on each Rust PR; the ignored 100k search test ran 4.1 ms after the FTS change. Nothing was tried in the desktop app.
