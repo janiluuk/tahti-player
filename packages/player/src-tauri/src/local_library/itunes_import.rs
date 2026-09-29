@@ -325,6 +325,7 @@ fn xml_fields(track: &XmlTrack) -> Vec<(EditField, String)> {
         (EditField::AlbumArtist, Some(track.album_artist.clone())),
         (EditField::Album, Some(track.album.clone())),
         (EditField::Genre, Some(track.genre.clone())),
+        (EditField::Composer, Some(track.composer.clone())),
         (EditField::Comment, Some(track.comments.clone())),
         (EditField::Year, number(track.year, 1000)),
         (EditField::TrackNo, number(track.track_number, 1)),

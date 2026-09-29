@@ -18,6 +18,7 @@
 			<key>Artist</key><string>Band</string>
 			<key>Album</key><string>Another Album</string>
 			<key>Genre</key><string>Ambient</string>
+			<key>Composer</key><string>Harold Budd</string>
 			<key>Kind</key><string>WAV audio file</string>
 			<key>Total Time</key><integer>100000</integer>
 			<key>Year</key><integer>1999</integer>
