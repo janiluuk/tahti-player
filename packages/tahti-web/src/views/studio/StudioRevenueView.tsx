@@ -27,6 +27,7 @@ import {
 import { FanSubOrderBreakdown } from '../../components/FanSubOrderBreakdown';
 import { FanSubscriptionStats } from '../../components/FanSubscriptionStats';
 import { FanTiersEditor } from '../../components/FanTiersEditor';
+import { PurchaseOrdersList } from '../../components/PurchaseOrdersList';
 import { PurchaseTiersEditor } from '../../components/PurchaseTiersEditor';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -139,6 +140,12 @@ export function StudioRevenueView() {
                 description="Sell individual tracks. Assign a tier to a track from its edit dialog."
               >
                 <PurchaseTiersEditor />
+              </StudioPanel>
+              <StudioPanel
+                title="Track sales"
+                description="Paid one-time purchases, newest first."
+              >
+                <PurchaseOrdersList />
               </StudioPanel>
             </div>
           ) : hasFanTiers === false ? (
