@@ -12,6 +12,7 @@ import { postChatReaction } from '../api/studio-extras';
 import type { ChatMessage } from '../api/types';
 import { useHcaptcha } from '../lib/useHcaptcha';
 import { useAuthStore } from '../stores/authStore';
+import { ChatDailyListeners } from './ChatDailyListeners';
 import { Eyebrow } from './tahti/Eyebrow';
 
 // Must match the backend's CHAT_REACTION_EMOJIS whitelist exactly
@@ -491,7 +492,10 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
       }`}
     >
       <div className="border-border flex items-center justify-between gap-2 border-b px-3 py-2">
-        <div className="font-display text-sm font-bold">Chat</div>
+        <div className="flex min-w-0 items-center gap-2">
+          <div className="font-display text-sm font-bold">Chat</div>
+          <ChatDailyListeners slug={slug} />
+        </div>
         {liveDisplay && (
           <div className="text-foreground-secondary flex items-center gap-1.5 font-mono text-[10px] tracking-wide uppercase">
             <span
