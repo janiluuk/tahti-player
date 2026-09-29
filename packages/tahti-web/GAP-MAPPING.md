@@ -67,10 +67,10 @@ This maps the public Tahti product described at [tahti.live](https://tahti.live/
 | News, announcements, streams, status | Corresponding `/admin/*` routes | Present | Core operational pages are ported. |
 | Top lists, storage, financial, governance | Corresponding `/admin/*` routes | Partial | Core pages exist, but some production actions are intentionally trimmed. |
 | Grants | `/admin/grants` | Partial | Listing/review exists; grant run/preview depth is missing. |
-| Storage/files operations | `/admin/storage` | Partial | Storage visibility exists; production bulk file operations are not ported. |
-| Financial operations | `/admin/financial` | Partial | Main records exist; fan-sub payout queue with retry for failed payouts (#237). Legacy-member migration workflow still missing. |
+| Storage/files operations | `/admin/storage` | Partial | Files browser filters by uploader/genre/type (#244) and bulk-edits genre, type, visibility and license (#245). No bulk delete (the API has none). |
+| Financial operations | `/admin/financial` | Partial | Fan-sub payout queue with retry (#237); ledger entries can be added again (#241), by year with CSV export (#242); legacy-member migration queue, read-only because the API has no action for it (#243). |
 | User/support detail pages | `/admin/users` | Partial | User panel now has CSV export (#231), engagement by year with board adjustments (#232, #233), account restrictions (#234) and GDPR deletion (#235). Support ticket detail depth not re-checked. |
-| Announcement clip/detail workflows | — | Missing | Not included in the beta admin port. |
+| Announcement clip/detail workflows | `/admin/announcements` | Present | Switch and upload fixed to the real routes (#239); trim editor for system clips (#240); uploads send the clip length (#248). |
 | Widget catalog administration | Production admin/catalog | Missing from beta | Listener widgets work, but catalog management remains in the production/Next admin surface. |
 | Full production admin surface | Production has roughly 35 admin pages; beta has 22 | Partial | Beta covers the main board workflows but is not a complete admin replacement. |
 
@@ -115,9 +115,9 @@ The production app has dedicated surfaces that the beta currently folds together
 
 The current cutover decision keeps production Next `/admin/*` canonical and switches only the public listener/artist client. That decision prevents accidental loss of admin capabilities. If Admin is moved to the Nuclear client later, the following production routes need to be ported or explicitly retained on Next before changing the host:
 
-- channel-specific archive and programme management (`/admin/channels/[slug]/archive`, `/admin/channels/[slug]/programme`)
+- channel-specific archive and programme management (`/admin/channels/[slug]/archive`, `/admin/channels/[slug]/programme`); the 24/7 rotation editor is in `/admin/streams` (#247), archive management is not
 - announcement editor/detail (`/admin/announcements/editor/[id]`)
-- widget catalog administration (`/admin/disco-widgets`), themes, internet radio, and missed shows
+- widget catalog administration (`/admin/disco-widgets`), themes (moderation tab at `/admin/moderation/themes`, #246), internet radio, and missed shows
 - financial fan-subscriptions, ledger, and legacy-member workflows
 - governance audit, reports, resolutions, and publishing
 - grant year/run/preview detail (`/admin/grants/[year]`)

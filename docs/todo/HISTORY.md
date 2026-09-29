@@ -3876,3 +3876,14 @@ Slices came from the CUTOVER and GAP-MAPPING ledgers (no `docs/todo/` file cover
 - **Payout queue (#237)**, GAP-MAPPING financial: pending/failed fan-sub payouts with Retry.
 - **Checks:** each PR ran tahti-web type-check, lint and the touched tests (e.g. `src/views src/components src/stores` 531 passed on #230). Nothing was tried against the live API or in a browser.
 
+
+## 2026-09-29 - Ten todo slices, seventh batch (#239-#248)
+
+Slices came from the GAP-MAPPING admin rows, each checked against an existing tahti-org route (no `docs/todo/` file covered them).
+
+- **Announcements**, GAP-MAPPING announcement clip/detail: the on/off switch and upload called routes tahti-org doesn't have (`/system-enabled`, `POST /api/admin/announcements`, `objectKey`); they now use `/settings` and `prepare` → `complete` (#239). Trim editor for system clips from the original upload, start/end/fades checked before sending, render status badges (#240, stacked). Admin and Studio uploads send the clip length read in the browser (#248, stacked on #240).
+- **Financial**: adding a ledger entry could never succeed (no period, "negative for cost" amounts, refusals ignored); the form now sends the period and a positive amount, rows are signed by category, and the entry form moved to `financial/LedgerPanel.tsx` (#241). Year picker and auditor CSV export (#242, stacked). Legacy-member migration queue, read-only, name falls back to the username (#243, stacked).
+- **Storage files**: uploader/genre/type filters from the facets and "newest 100 of N" (#244); row selection and bulk edit of genre, type, visibility and license, up to 200 files (#245, stacked).
+- **Themes moderation (#246)**: `/admin/moderation/themes`, approve (opens the registry PR) or reject with a note to the author.
+- **Channel rotation (#247)**: board editor for any channel's 24/7 rotation in `/admin/streams` (settings, in-rotation toggles, order).
+- **Checks:** each PR ran tahti-web type-check, lint and the touched tests (`src/views/admin src/api` 80-90 tests each). Nothing was tried against the live API, the render worker or the registry PR worker.
