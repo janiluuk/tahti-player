@@ -276,7 +276,7 @@ export function EntitySocialHeader({
                   }}
                   aria-label={`Remove ${title} artwork`}
                   title="Remove artwork"
-                  className="border-border bg-background text-accent-red shadow-shadow hover:bg-background-secondary absolute -top-1.5 -right-1.5 flex size-6 items-center justify-center rounded-full border-(length:--border-width) opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100"
+                  className="border-border bg-background text-accent-red-strong shadow-shadow hover:bg-background-secondary absolute -top-1.5 -right-1.5 flex size-6 items-center justify-center rounded-full border-(length:--border-width) opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100"
                 >
                   <XIcon size={12} aria-hidden />
                 </button>

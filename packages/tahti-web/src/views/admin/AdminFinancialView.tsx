@@ -93,7 +93,7 @@ export function AdminFinancialView() {
                           <div className="text-foreground-secondary text-xs">
                             Failed payouts
                           </div>
-                          <div className="text-accent-red text-lg font-semibold">
+                          <div className="text-accent-red-strong text-lg font-semibold">
                             {overview.failedPayouts.count} (
                             {formatEur(overview.failedPayouts.totalNetCents)})
                           </div>
@@ -199,7 +199,7 @@ export function AdminFinancialView() {
                               </div>
                             </div>
                             <div
-                              className={`text-sm font-medium ${e.amountCents < 0 ? 'text-accent-red' : 'text-accent-green'}`}
+                              className={`text-sm font-medium ${e.amountCents < 0 ? 'text-accent-red-strong' : 'text-accent-green-strong'}`}
                             >
                               {e.amountCents < 0 ? '−' : '+'}
                               {formatEur(Math.abs(e.amountCents))}

@@ -124,7 +124,7 @@ export function AdminAddonsView() {
               !rejectTarget &&
               !manageTarget &&
               !publishTarget ? (
-                <p className="text-accent-red text-sm" role="alert">
+                <p className="text-accent-red-strong text-sm" role="alert">
                   {error}
                 </p>
               ) : null}

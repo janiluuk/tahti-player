@@ -38,6 +38,13 @@
   --color-accent-cyan: var(--accent-cyan);
   --color-accent-red: var(--accent-red);
   --color-accent-foreground: var(--accent-foreground);
+  --color-accent-green-strong: var(--accent-green-strong);
+  --color-accent-yellow-strong: var(--accent-yellow-strong);
+  --color-accent-purple-strong: var(--accent-purple-strong);
+  --color-accent-blue-strong: var(--accent-blue-strong);
+  --color-accent-orange-strong: var(--accent-orange-strong);
+  --color-accent-cyan-strong: var(--accent-cyan-strong);
+  --color-accent-red-strong: var(--accent-red-strong);
 
   --color-shadow: var(--shadow-color);
 
@@ -109,6 +116,17 @@
   --accent-red: oklch(0.7327 0.2428 18);
   /* Ink on light accent fills (pills, toasts, level chips). */
   --accent-foreground: oklch(0 0 0);
+  /* Accents used as text (errors, links, status words): the fills above
+     are pastel and fall to ~1.4-2.7:1 on light backgrounds, so text uses
+     these darker versions, 4.8:1 or better on every light theme. Dark
+     modes point them back at the accent itself. */
+  --accent-green-strong: oklch(0.51 0.13 145);
+  --accent-yellow-strong: oklch(0.52 0.107 95);
+  --accent-purple-strong: oklch(0.535 0.12 300);
+  --accent-blue-strong: oklch(0.52 0.12 250);
+  --accent-orange-strong: oklch(0.53 0.119 65);
+  --accent-cyan-strong: oklch(0.515 0.088 200);
+  --accent-red-strong: oklch(0.55 0.22 18);
 
   /* Borders */
   --border-width: 2px;
@@ -196,4 +214,11 @@
   --accent-cyan: oklch(0.75 0.11 200);
   --accent-red: oklch(0.68 0.14 18);
   --accent-foreground: oklch(0 0 0);
+  --accent-green-strong: var(--accent-green);
+  --accent-yellow-strong: var(--accent-yellow);
+  --accent-purple-strong: var(--accent-purple);
+  --accent-blue-strong: var(--accent-blue);
+  --accent-orange-strong: var(--accent-orange);
+  --accent-cyan-strong: var(--accent-cyan);
+  --accent-red-strong: var(--accent-red);
 }

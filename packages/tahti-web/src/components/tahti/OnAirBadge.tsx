@@ -16,7 +16,7 @@ export function OnAirBadge({
       variant="pill"
       color="red"
       className={cn(
-        'bg-background-input text-accent-red border-accent-red gap-2 border px-3 py-1 font-mono tracking-wide',
+        'bg-background-input text-accent-red-strong border-accent-red gap-2 border px-3 py-1 font-mono tracking-wide',
         className,
       )}
     >

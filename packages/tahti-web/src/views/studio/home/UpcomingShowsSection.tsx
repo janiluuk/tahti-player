@@ -20,7 +20,7 @@ export function UpcomingShowsSection({ state }: { state: StudioHomeState }) {
             key={show.id}
             className="flex flex-wrap items-center gap-3 px-4 py-3"
           >
-            <span className="bg-accent-blue/15 text-accent-blue flex size-10 shrink-0 items-center justify-center rounded-lg">
+            <span className="bg-accent-blue/15 text-accent-blue-strong flex size-10 shrink-0 items-center justify-center rounded-lg">
               <CalendarIcon size={20} aria-hidden />
             </span>
             <div className="min-w-0 flex-1">

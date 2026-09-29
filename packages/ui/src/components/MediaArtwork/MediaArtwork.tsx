@@ -130,7 +130,9 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
                   <Heart
                     size={overlayPx}
                     className={
-                      favorited ? 'text-accent-red fill-current' : undefined
+                      favorited
+                        ? 'text-accent-red-strong fill-current'
+                        : undefined
                     }
                   />
                 ),

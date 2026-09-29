@@ -121,7 +121,7 @@ function FileRow({
           <Button
             size="icon-sm"
             variant="text"
-            className="text-accent-red hover:text-accent-red"
+            className="text-accent-red-strong hover:text-accent-red-strong"
             aria-label={`Delete ${f.title}`}
             onClick={() => onDelete(f)}
           >

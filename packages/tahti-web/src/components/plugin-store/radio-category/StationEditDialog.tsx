@@ -117,7 +117,7 @@ export function StationEditDialog({
               </Button>
               {testResult && (
                 <p
-                  className={`text-xs ${testResult.ok ? 'text-accent-green' : 'text-foreground-secondary'}`}
+                  className={`text-xs ${testResult.ok ? 'text-accent-green-strong' : 'text-foreground-secondary'}`}
                 >
                   {testResult.ok ? '✓ ' : ''}
                   {testResult.message}

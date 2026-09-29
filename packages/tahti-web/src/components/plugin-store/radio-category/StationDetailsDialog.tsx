@@ -31,7 +31,7 @@ export function StationDetailsDialog({
             {station.homepage ? (
               <ExternalLink
                 href={station.homepage}
-                className="text-accent-blue"
+                className="text-accent-blue-strong"
               >
                 Visit website
               </ExternalLink>
@@ -43,7 +43,7 @@ export function StationDetailsDialog({
             {station.programmingUrl ? (
               <ExternalLink
                 href={station.programmingUrl}
-                className="text-accent-blue"
+                className="text-accent-blue-strong"
               >
                 View current programme
               </ExternalLink>

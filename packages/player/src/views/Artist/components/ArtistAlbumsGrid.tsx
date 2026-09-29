@@ -48,7 +48,9 @@ export const ArtistAlbumsGrid: FC<ArtistAlbumsGridProps> = ({
         className="flex flex-col items-start gap-3 p-8"
         data-testid={dataTestId}
       >
-        <div className="text-accent-red">{t('errors.failedToLoadAlbums')}</div>
+        <div className="text-accent-red-strong">
+          {t('errors.failedToLoadAlbums')}
+        </div>
       </div>
     );
   }

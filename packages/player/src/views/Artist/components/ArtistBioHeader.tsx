@@ -40,7 +40,9 @@ export const ArtistBioHeader: FC<ArtistBioHeaderProps> = ({
   if (isError) {
     return (
       <Box variant="primary" className="m-4 h-auto w-auto p-6">
-        <div className="text-accent-red">{t('errors.failedToLoadDetails')}</div>
+        <div className="text-accent-red-strong">
+          {t('errors.failedToLoadDetails')}
+        </div>
       </Box>
     );
   }

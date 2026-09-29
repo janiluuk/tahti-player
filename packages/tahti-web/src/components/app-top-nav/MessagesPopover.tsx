@@ -72,7 +72,7 @@ export function MessagesPopover({ nav }: { nav: TopNavState }) {
               to="/messages"
               role="menuitem"
               onClick={() => setMessagesOpen(false)}
-              className="text-accent-cyan text-xs hover:underline"
+              className="text-accent-cyan-strong text-xs hover:underline"
             >
               Open all
             </Link>

@@ -480,7 +480,7 @@ function PrivacyDataPanel({ username }: { username: string }) {
       </div>
       <div className="border-accent-red/40 bg-accent-red/5 flex flex-col gap-3 rounded-lg border p-4">
         <div className="flex items-center gap-2">
-          <Trash2 size={17} className="text-accent-red" aria-hidden />
+          <Trash2 size={17} className="text-accent-red-strong" aria-hidden />
           <h2 className="font-semibold">Request account deletion</h2>
         </div>
         <p className="text-foreground-secondary text-sm">
@@ -499,7 +499,7 @@ function PrivacyDataPanel({ username }: { username: string }) {
           <Button
             size="sm"
             variant="secondary"
-            className="text-accent-red"
+            className="text-accent-red-strong"
             disabled={pending || !reason.trim()}
             onClick={submitDeletionRequest}
           >

@@ -12,7 +12,7 @@ export function ProcessingIndicator({ nav }: { nav: TopNavState }) {
       <Button
         variant="text"
         size="icon-sm"
-        className="border-accent-blue/50 bg-accent-blue/10 text-accent-blue inline-flex size-7 items-center justify-center rounded-full border active:scale-100"
+        className="border-accent-blue/50 bg-accent-blue/10 text-accent-blue-strong inline-flex size-7 items-center justify-center rounded-full border active:scale-100"
         aria-label={`${processingItems.length} track${processingItems.length === 1 ? '' : 's'} processing`}
         aria-expanded={processingOpen}
         title="Track processing status"
@@ -35,7 +35,7 @@ export function ProcessingIndicator({ nav }: { nav: TopNavState }) {
                   onClick={() => setProcessingOpen(false)}
                 >
                   <span className="min-w-0 truncate">{item.title}</span>
-                  <span className="text-accent-blue shrink-0">
+                  <span className="text-accent-blue-strong shrink-0">
                     {item.status === 'PENDING' ? 'Queued' : 'Processing'}
                   </span>
                 </Link>

@@ -166,7 +166,7 @@ export function ChannelStagePlayer({
               <HeartIcon
                 size={20}
                 className={
-                  favorited ? 'text-accent-red fill-current' : undefined
+                  favorited ? 'text-accent-red-strong fill-current' : undefined
                 }
                 aria-hidden
               />

@@ -49,7 +49,7 @@ export function ForgotPasswordView() {
           autoFocus
         />
         {message ? (
-          <p className="text-accent-green text-sm">{message}</p>
+          <p className="text-accent-green-strong text-sm">{message}</p>
         ) : null}
         <Button disabled={!canSubmit} onClick={onSubmit}>
           {loading ? 'Sending…' : 'Send reset link'}

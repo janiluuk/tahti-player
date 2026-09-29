@@ -318,7 +318,7 @@ export function DiscoWidgetManagerPanel({
           </div>
         </>
       )}
-      {error ? <p className="text-accent-red text-sm">{error}</p> : null}
+      {error ? <p className="text-accent-red-strong text-sm">{error}</p> : null}
       <Dialog.Root
         isOpen={configuringId !== null}
         onClose={() => setConfiguringId(null)}

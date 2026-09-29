@@ -123,7 +123,9 @@ export function ReleaseTracklistDialog({
                   >
                     <span
                       className={`min-w-0 flex-1 truncate text-sm ${
-                        isPlaying ? 'text-accent-green font-semibold' : ''
+                        isPlaying
+                          ? 'text-accent-green-strong font-semibold'
+                          : ''
                       }`}
                     >
                       {track.title}

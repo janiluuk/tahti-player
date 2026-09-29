@@ -71,7 +71,7 @@ export function ArtworkPresetUploadDialog({
           onFiles={(files) => setFile(files[0] ?? null)}
         />
         {error && (
-          <p className="text-accent-red mt-2 text-sm" role="alert">
+          <p className="text-accent-red-strong mt-2 text-sm" role="alert">
             {error}
           </p>
         )}

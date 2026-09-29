@@ -54,7 +54,7 @@ export function InstallsPanel({
         description="Freeform surface id, e.g. homepage."
       />
       {error ? (
-        <p className="text-accent-red text-sm" role="alert">
+        <p className="text-accent-red-strong text-sm" role="alert">
           {error}
         </p>
       ) : null}

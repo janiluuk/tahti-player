@@ -191,7 +191,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
         </p>
       </HelpLayer>
       {error && (
-        <p className="text-accent-red text-sm" role="alert">
+        <p className="text-accent-red-strong text-sm" role="alert">
           {error}
         </p>
       )}

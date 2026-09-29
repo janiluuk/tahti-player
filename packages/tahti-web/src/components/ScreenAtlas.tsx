@@ -61,7 +61,7 @@ function ScreenNavigation({ c }: { c: MapCase }) {
         className="border-border bg-background border-t px-5 py-3 text-sm"
         role="note"
       >
-        <span className="text-accent-orange font-semibold">
+        <span className="text-accent-orange-strong font-semibold">
           Navigation gap:{' '}
         </span>
         no verified in-page actions or outbound links were found for this screen

@@ -232,7 +232,7 @@ function DestinationDialog({
               </Button>
             )}
             {error && (
-              <p className="text-accent-red text-sm" role="alert">
+              <p className="text-accent-red-strong text-sm" role="alert">
                 {error}
               </p>
             )}
@@ -299,8 +299,8 @@ function DestinationDialog({
                   <p
                     className={
                       testResult.ok && testResult.reachable
-                        ? 'text-accent-green w-full text-xs'
-                        : 'text-accent-red w-full text-xs'
+                        ? 'text-accent-green-strong w-full text-xs'
+                        : 'text-accent-red-strong w-full text-xs'
                     }
                     role="status"
                   >

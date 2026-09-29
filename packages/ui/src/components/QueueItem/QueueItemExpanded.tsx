@@ -148,7 +148,9 @@ export const QueueItemExpanded: FC<QueueItemProps> = ({
             >
               <Heart
                 size={16}
-                className={isLiked ? 'text-accent-red fill-current' : undefined}
+                className={
+                  isLiked ? 'text-accent-red-strong fill-current' : undefined
+                }
               />
             </Button>
           </Tooltip>

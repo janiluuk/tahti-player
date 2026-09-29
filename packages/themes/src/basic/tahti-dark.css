@@ -40,6 +40,14 @@
   --accent-red: oklch(0.7088 0.1839 29.06);
   /* Ink on teal / amber / coral fills — --foreground is near-white and fails 4.5:1. */
   --accent-foreground: oklch(0.1663 0.0262 269.37);
+  /* Always dark, whatever [data-theme] says: accents are readable as text. */
+  --accent-green-strong: var(--accent-green);
+  --accent-yellow-strong: var(--accent-yellow);
+  --accent-purple-strong: var(--accent-purple);
+  --accent-blue-strong: var(--accent-blue);
+  --accent-orange-strong: var(--accent-orange);
+  --accent-cyan-strong: var(--accent-cyan);
+  --accent-red-strong: var(--accent-red);
 
   /* Discover banners use the same cyan/violet energy as Tahti Live's
      artist surfaces. */

@@ -95,7 +95,7 @@ export function ChannelSetupDialog() {
         broadcasting, uploads, and your public channel designer.
       </Dialog.Description>
       {error ? (
-        <p className="text-accent-red mt-4 text-sm" role="alert">
+        <p className="text-accent-red-strong mt-4 text-sm" role="alert">
           {error}
         </p>
       ) : null}

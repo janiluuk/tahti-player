@@ -43,7 +43,7 @@ export const ArtistPlaylistsGrid: FC<ArtistPlaylistsGridProps> = ({
         className="flex flex-col items-start gap-3 p-8"
         data-testid={dataTestId}
       >
-        <div className="text-accent-red">
+        <div className="text-accent-red-strong">
           {t('errors.failedToLoadPlaylists')}
         </div>
       </div>

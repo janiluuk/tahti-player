@@ -176,7 +176,7 @@ export function ArtistGalleryPanel({
             <Button
               size="sm"
               variant="secondary"
-              className="text-accent-red"
+              className="text-accent-red-strong"
               onClick={() => void removeSelected()}
             >
               <Trash2Icon size={14} aria-hidden className="mr-1.5" />
@@ -223,7 +223,7 @@ export function ArtistGalleryPanel({
         </div>
       ) : null}
 
-      {error ? <p className="text-accent-red text-sm">{error}</p> : null}
+      {error ? <p className="text-accent-red-strong text-sm">{error}</p> : null}
 
       {images.length > 0 ? (
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
@@ -448,7 +448,7 @@ export function ArtistGalleryAddIcon({
         className="hidden"
         onChange={(e) => void onFiles(e.target.files)}
       />
-      {error ? <p className="text-accent-red text-xs">{error}</p> : null}
+      {error ? <p className="text-accent-red-strong text-xs">{error}</p> : null}
     </div>
   );
 }

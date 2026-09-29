@@ -9,7 +9,7 @@ const popoverItemVariants = cva(
     variants: {
       intent: {
         default: '',
-        danger: 'text-accent-red',
+        danger: 'text-accent-red-strong',
       },
       align: {
         left: '',

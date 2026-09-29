@@ -199,9 +199,13 @@ const statusLabel = (status: RadioSubmission['status']) =>
       : 'Pending review';
 const StatusIcon = ({ status }: { status: RadioSubmission['status'] }) =>
   status === 'APPROVED' ? (
-    <CheckCircle2Icon className="text-accent-green" size={18} aria-hidden />
+    <CheckCircle2Icon
+      className="text-accent-green-strong"
+      size={18}
+      aria-hidden
+    />
   ) : status === 'REJECTED' ? (
-    <XCircleIcon className="text-accent-red" size={18} aria-hidden />
+    <XCircleIcon className="text-accent-red-strong" size={18} aria-hidden />
   ) : (
-    <Clock3Icon className="text-accent-yellow" size={18} aria-hidden />
+    <Clock3Icon className="text-accent-yellow-strong" size={18} aria-hidden />
   );

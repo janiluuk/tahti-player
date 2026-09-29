@@ -229,7 +229,11 @@ export function StorageOverviewTab() {
                       {pct != null ? (
                         <>
                           {' · '}
-                          <span className={pct > 100 ? 'text-accent-red' : ''}>
+                          <span
+                            className={
+                              pct > 100 ? 'text-accent-red-strong' : ''
+                            }
+                          >
                             {Math.round(pct)}%
                           </span>
                         </>

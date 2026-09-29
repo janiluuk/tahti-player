@@ -16,7 +16,7 @@ export function RecentBroadcastRow({
 
   return (
     <li className="border-border flex flex-wrap items-center gap-3 border-b px-4 py-3 last:border-b-0">
-      <span className="bg-accent-red/15 text-accent-red flex size-9 shrink-0 items-center justify-center rounded-lg text-sm">
+      <span className="bg-accent-red/15 text-accent-red-strong flex size-9 shrink-0 items-center justify-center rounded-lg text-sm">
         ●
       </span>
       <div className="min-w-0 flex-1">
@@ -33,7 +33,7 @@ export function RecentBroadcastRow({
       </div>
       <span
         className={`text-xs font-medium ${
-          published ? 'text-accent-green' : 'text-foreground-secondary'
+          published ? 'text-accent-green-strong' : 'text-foreground-secondary'
         }`}
       >
         {published ? 'Published' : 'Recorded'}

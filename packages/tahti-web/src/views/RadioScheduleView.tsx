@@ -615,7 +615,7 @@ export function RadioScheduleView() {
         </p>
       ) : null}
       {error ? (
-        <p className="text-accent-red text-sm" role="alert">
+        <p className="text-accent-red-strong text-sm" role="alert">
           {error}
         </p>
       ) : null}

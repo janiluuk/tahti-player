@@ -21,7 +21,7 @@ exports[`Alert > (Snapshot) renders every tone 1`] = `
     </div>
   </div>
   <div
-    class="rounded-lg border px-4 py-3 text-sm border-accent-blue/40 bg-accent-blue/10 text-accent-blue"
+    class="rounded-lg border px-4 py-3 text-sm border-accent-blue/40 bg-accent-blue/10 text-accent-blue-strong"
     role="status"
   >
     <div
@@ -37,7 +37,7 @@ exports[`Alert > (Snapshot) renders every tone 1`] = `
     </div>
   </div>
   <div
-    class="rounded-lg border px-4 py-3 text-sm border-accent-yellow/40 bg-accent-yellow/10 text-accent-yellow"
+    class="rounded-lg border px-4 py-3 text-sm border-accent-yellow/40 bg-accent-yellow/10 text-accent-yellow-strong"
     role="status"
   >
     <div
@@ -53,7 +53,7 @@ exports[`Alert > (Snapshot) renders every tone 1`] = `
     </div>
   </div>
   <div
-    class="rounded-lg border px-4 py-3 text-sm border-accent-green/40 bg-accent-green/10 text-accent-green"
+    class="rounded-lg border px-4 py-3 text-sm border-accent-green/40 bg-accent-green/10 text-accent-green-strong"
     role="status"
   >
     <div
@@ -69,7 +69,7 @@ exports[`Alert > (Snapshot) renders every tone 1`] = `
     </div>
   </div>
   <div
-    class="rounded-lg border px-4 py-3 text-sm border-accent-red/40 bg-accent-red/10 text-accent-red"
+    class="rounded-lg border px-4 py-3 text-sm border-accent-red/40 bg-accent-red/10 text-accent-red-strong"
     role="alert"
   >
     <div
@@ -108,7 +108,7 @@ exports[`Alert > (Snapshot) renders neutral by default 1`] = `
 
 exports[`Alert > (Snapshot) renders with a title and icon 1`] = `
 <div
-  class="rounded-lg border px-4 py-3 text-sm border-accent-yellow/40 bg-accent-yellow/10 text-accent-yellow"
+  class="rounded-lg border px-4 py-3 text-sm border-accent-yellow/40 bg-accent-yellow/10 text-accent-yellow-strong"
   role="status"
 >
   <div

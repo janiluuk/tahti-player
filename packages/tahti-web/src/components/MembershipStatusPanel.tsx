@@ -124,7 +124,7 @@ export function MembershipStatusPanel({
             Next renewal around {dueLabel} (Stripe subscription).
           </p>
         )}
-        {error && <p className="text-accent-red text-sm">{error}</p>}
+        {error && <p className="text-accent-red-strong text-sm">{error}</p>}
         {membership.hasStripeSubscription ? (
           <Button
             size="sm"
@@ -165,14 +165,14 @@ export function MembershipStatusPanel({
         {membershipStatusLabel(membership)}
       </p>
       {lapsed && (
-        <p className="text-accent-red text-sm">
+        <p className="text-accent-red-strong text-sm">
           Your membership lapsed — renew to restore lossless streaming and
           unlimited live time.
         </p>
       )}
       {pendingEmail && (
         <div className="flex flex-col gap-2">
-          <p className="text-accent-red text-sm">
+          <p className="text-accent-red-strong text-sm">
             Verify your email before completing membership checkout.
           </p>
           {resendMessage && <p className="text-sm">{resendMessage}</p>}
@@ -186,7 +186,7 @@ export function MembershipStatusPanel({
           </Button>
         </div>
       )}
-      {error && <p className="text-accent-red text-sm">{error}</p>}
+      {error && <p className="text-accent-red-strong text-sm">{error}</p>}
       {message && <p className="text-sm">{message}</p>}
       <Button
         disabled={busy || !membership.emailVerified || pendingEmail}

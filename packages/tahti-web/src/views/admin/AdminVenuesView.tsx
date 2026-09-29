@@ -83,7 +83,7 @@ export function AdminVenuesView() {
                     placeholder="Name, city, slug, or submitter"
                   />
                   {error ? (
-                    <p className="text-accent-red text-sm">{error}</p>
+                    <p className="text-accent-red-strong text-sm">{error}</p>
                   ) : null}
                   {loading ? (
                     <PageLoading label="Loading venues…" />

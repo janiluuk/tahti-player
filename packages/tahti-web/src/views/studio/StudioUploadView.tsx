@@ -417,7 +417,7 @@ export function StudioUploadView() {
                 name it in the editor afterwards.
               </p>
               {message && (
-                <p className="text-accent-red text-sm" role="alert">
+                <p className="text-accent-red-strong text-sm" role="alert">
                   {message}
                 </p>
               )}
@@ -453,7 +453,7 @@ export function StudioUploadView() {
                   action={
                     <Link
                       to="/studio/go-live"
-                      className="text-accent-cyan text-sm underline-offset-2 hover:underline"
+                      className="text-accent-cyan-strong text-sm underline-offset-2 hover:underline"
                     >
                       Go live to record one.
                     </Link>
@@ -487,7 +487,7 @@ export function StudioUploadView() {
 
           <Link
             to="/studio/collections"
-            className="text-accent-cyan text-sm underline-offset-2 hover:underline"
+            className="text-accent-cyan-strong text-sm underline-offset-2 hover:underline"
           >
             Organise into collections →
           </Link>

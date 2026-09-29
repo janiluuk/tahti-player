@@ -32,7 +32,7 @@ export const ArtistPopularTracks: FC<ArtistPopularTracksProps> = ({
 
   if (isError) {
     return (
-      <div className="text-accent-red p-4">
+      <div className="text-accent-red-strong p-4">
         {t('errors.failedToLoadPopularTracks')}
       </div>
     );

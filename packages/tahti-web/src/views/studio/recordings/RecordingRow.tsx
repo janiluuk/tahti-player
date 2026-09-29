@@ -64,7 +64,7 @@ export function RecordingRow({
         </p>
         <span
           className={`mt-1 inline-flex items-center gap-1 text-[10px] font-semibold tracking-wide uppercase ${
-            published ? 'text-accent-green' : 'text-primary'
+            published ? 'text-accent-green-strong' : 'text-primary'
           }`}
         >
           {published && <CheckIcon size={11} aria-hidden />}

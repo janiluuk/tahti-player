@@ -186,7 +186,7 @@ export function VenueRegisterView() {
         >
           {pending ? 'Submitting…' : 'Submit for review'}
         </Button>
-        {error && <p className="text-accent-red text-sm">{error}</p>}
+        {error && <p className="text-accent-red-strong text-sm">{error}</p>}
       </form>
     </ViewShell>
   );

@@ -204,7 +204,7 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
           <Button
             variant="text"
             size="flexible"
-            className="text-accent-red hover:bg-background-secondary flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs active:scale-100"
+            className="text-accent-red-strong hover:bg-background-secondary flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left text-xs active:scale-100"
             role="menuitem"
             onClick={() => {
               setOpen(false);

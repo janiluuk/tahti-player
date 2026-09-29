@@ -402,7 +402,7 @@ export function statusClass(status: Status): string {
     case 'partial':
       return 'bg-accent-yellow/20 text-foreground';
     case 'missing':
-      return 'bg-accent-red/15 text-accent-red';
+      return 'bg-accent-red/15 text-accent-red-strong';
     case 'studio':
     case 'admin':
       return 'bg-background-secondary text-foreground-secondary';

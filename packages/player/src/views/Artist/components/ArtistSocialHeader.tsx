@@ -63,7 +63,7 @@ export const ArtistSocialHeader: FC<ArtistSocialHeaderProps> = ({
         className="m-4 flex flex-col items-start gap-3"
         data-testid="artist-social-header"
       >
-        <div className="text-accent-red">
+        <div className="text-accent-red-strong">
           {t('errors.failedToLoadSocialStats')}
         </div>
       </div>

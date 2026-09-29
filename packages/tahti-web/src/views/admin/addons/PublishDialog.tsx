@@ -82,7 +82,7 @@ export function PublishDialog({
           onFiles={(files) => setFile(files[0] ?? null)}
         />
         {tooBig ? (
-          <p className="text-accent-red text-sm" role="alert">
+          <p className="text-accent-red-strong text-sm" role="alert">
             This file is {formatSize(file.size)}; bundles can be at most 2 MB.
           </p>
         ) : null}
@@ -99,7 +99,7 @@ export function PublishDialog({
           />
         </label>
         {error ? (
-          <p className="text-accent-red text-sm" role="alert">
+          <p className="text-accent-red-strong text-sm" role="alert">
             {error}
           </p>
         ) : null}

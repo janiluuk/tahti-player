@@ -111,7 +111,7 @@ export function AdminGrantCycleView() {
               {loading ? (
                 <PageLoading label="Loading grant preview…" />
               ) : !preview ? (
-                <p className="text-accent-red text-sm">
+                <p className="text-accent-red-strong text-sm">
                   Could not load the grant preview.
                 </p>
               ) : (
@@ -196,7 +196,9 @@ export function AdminGrantCycleView() {
                         eligible artists.
                       </p>
                       {error ? (
-                        <p className="text-accent-red mt-2 text-sm">{error}</p>
+                        <p className="text-accent-red-strong mt-2 text-sm">
+                          {error}
+                        </p>
                       ) : null}
                       <Button
                         className="mt-3"
