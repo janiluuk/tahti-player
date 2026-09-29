@@ -220,6 +220,10 @@ pub struct ListQuery<'a> {
 /// together. Keep identical to `0005_browse_indexes.sql`.
 pub(super) const ARTIST_KEY: &str = "COALESCE(NULLIF(album_artist, ''), NULLIF(artist, ''), '')";
 
+/// Columns of `library_tracks_fts` (migration 0022); the short-term LIKE
+/// fallback searches the same ones.
+const SEARCH_COLUMNS: [&str; 8] = ["title", "artist", "album_artist", "album", "genre", "composer", "comment", "path"];
+
 /// Builds the FTS5 trigram MATCH expression for a search box value: every
 /// whitespace-separated term becomes a quoted substring that must appear in
 /// some column (AND across terms). Trigram indexes can't answer terms under
@@ -287,8 +291,10 @@ pub(super) fn where_clause(query: &ListQuery) -> (String, Vec<Bind>) {
                     .replace('%', "\\%")
                     .replace('_', "\\_")
             );
-            conditions.push("(title LIKE ? ESCAPE '\\' OR artist LIKE ? ESCAPE '\\' OR album LIKE ? ESCAPE '\\' OR path LIKE ? ESCAPE '\\')".into());
-            binds.extend(std::iter::repeat(Bind::Text(like)).take(4));
+            // Same columns as the FTS index, so a short term finds what a longer one would.
+            let columns = SEARCH_COLUMNS.map(|column| format!("{column} LIKE ? ESCAPE '\\'"));
+            conditions.push(format!("({})", columns.join(" OR ")));
+            binds.extend(std::iter::repeat(Bind::Text(like)).take(SEARCH_COLUMNS.len()));
         }
     }
     if let Some(f) = query.filters {

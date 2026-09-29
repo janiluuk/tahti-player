@@ -511,3 +511,21 @@ async fn exit_demo_filter_sort_select_all_in_displayed_order() {
     let batch = super::prepare_playback(&pool, &ids[..50]).await.unwrap();
     assert_eq!(batch.items.len() + batch.unavailable, 50);
 }
+
+#[tokio::test]
+async fn search_finds_composer_and_genre_by_long_and_short_terms() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("song.wav");
+    write_wav(&path, "Gnossienne", "Pianist");
+    let pool = pool().await;
+    import_paths(&pool, vec![path]).await;
+    sqlx::query("UPDATE library_tracks SET composer = 'Erik Satie', genre = 'Ob'").execute(&pool).await.unwrap();
+
+    assert_eq!(list(&pool, "satie", 0).await.unwrap().total, 1, "indexed search covers composer");
+    assert_eq!(list(&pool, "Satie Pianist", 0).await.unwrap().total, 1);
+    assert_eq!(list(&pool, "Ob", 0).await.unwrap().total, 1, "the short-term LIKE scan covers the same columns");
+
+    sqlx::query("UPDATE library_tracks SET composer = 'Debussy'").execute(&pool).await.unwrap();
+    assert_eq!(list(&pool, "satie", 0).await.unwrap().total, 0, "the index follows composer edits");
+    assert_eq!(list(&pool, "debussy", 0).await.unwrap().total, 1);
+}
