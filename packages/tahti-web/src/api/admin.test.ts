@@ -11,6 +11,7 @@ import {
   fetchAdminChannelSounds,
   fetchAdminDashboard,
   fetchAdminNews,
+  fetchFanSubArtists,
   fetchFanSubPayouts,
   isRestrictionActive,
   patchAdminChannelSound,
@@ -596,5 +597,21 @@ describe('admin channel sounds', () => {
       ['/tahti-api/api/admin/channels/moon/sound', 'GET'],
       ['/tahti-api/api/admin/channels/moon/sound/s1', 'PATCH'],
     ]);
+  });
+});
+
+describe('fetchFanSubArtists', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('reads the per-artist fan subscription list', async () => {
+    const fetchSpy = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue(new Response(JSON.stringify([]), { status: 200 }));
+    await expect(fetchFanSubArtists()).resolves.toMatchObject({ data: [] });
+    expect(fetchSpy.mock.calls[0]![0]).toBe(
+      '/tahti-api/api/admin/fansubs/by-artist',
+    );
   });
 });

@@ -10,6 +10,7 @@ import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
+import { FanSubArtistsPanel } from './financial/FanSubArtistsPanel';
 import { FanSubPayoutQueue } from './financial/FanSubPayoutQueue';
 import { formatEur, LedgerPanel } from './financial/LedgerPanel';
 import { LegacyMembersPanel } from './financial/LegacyMembersPanel';
@@ -82,6 +83,8 @@ export function AdminFinancialView() {
                       )}
                     </div>
                   </StudioPanel>
+
+                  <FanSubArtistsPanel />
 
                   <FanSubPayoutQueue onChanged={reload} />
 
