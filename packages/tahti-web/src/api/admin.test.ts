@@ -8,10 +8,12 @@ import {
   deleteAdminAddon,
   fetchAdminActivity,
   fetchAdminAddons,
+  fetchAdminChannelSounds,
   fetchAdminDashboard,
   fetchAdminNews,
   fetchFanSubPayouts,
   isRestrictionActive,
+  patchAdminChannelSound,
   publishAdminAddonVersion,
   retryFanSubPayout,
   updateAdminAddon,
@@ -572,5 +574,27 @@ describe('account restrictions', () => {
       reason: 'Takeover',
       durationDays: 7,
     });
+  });
+});
+
+describe('admin channel sounds', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("lists a channel's tracks and patches one by slug and id", async () => {
+    const fetchSpy = vi
+      .spyOn(globalThis, 'fetch')
+      .mockImplementation(
+        async () => new Response(JSON.stringify([]), { status: 200 }),
+      );
+    await fetchAdminChannelSounds(' Moon ');
+    await patchAdminChannelSound('moon', 's1', { title: 'Aamu' });
+    expect(
+      fetchSpy.mock.calls.map(([url, init]) => [url, init?.method ?? 'GET']),
+    ).toEqual([
+      ['/tahti-api/api/admin/channels/moon/sound', 'GET'],
+      ['/tahti-api/api/admin/channels/moon/sound/s1', 'PATCH'],
+    ]);
   });
 });

@@ -4,6 +4,7 @@ import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { AdminStreamManagerPanel } from '../../components/AdminStreamManagerPanel';
 import { ChannelRotationPanel } from './streams/ChannelRotationPanel';
+import { ChannelTracksPanel } from './streams/ChannelTracksPanel';
 
 export function AdminStreamsView() {
   return (
@@ -14,6 +15,7 @@ export function AdminStreamsView() {
             <div className="flex flex-col gap-6">
               <AdminStreamManagerPanel />
               <ChannelRotationPanel />
+              <ChannelTracksPanel />
             </div>
           </ViewShell>
         </AdminPageLayout>
