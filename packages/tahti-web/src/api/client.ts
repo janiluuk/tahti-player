@@ -562,6 +562,14 @@ export async function fetchVenueProfile(slug: string): Promise<{
   }
 }
 
+export function venueCalendarFeedUrl(
+  slug: string,
+  origin = typeof window === 'undefined' ? '' : window.location.origin,
+): string {
+  const path = `${apiBase()}/api/v1/venues/${encodeURIComponent(slug)}/calendar.ics`;
+  return /^https?:\/\//.test(path) || !origin ? path : `${origin}${path}`;
+}
+
 export type RegisterVenueInput = {
   slug: string;
   name: string;
