@@ -217,3 +217,116 @@ export async function saveAdminChannelProgramme(
     };
   }
 }
+
+export type AdminChannelSound = {
+  id: string;
+  title: string;
+  artistName: string | null;
+  description: string | null;
+  genre: string | null;
+  isPublic: boolean;
+  releasedAt: string | null;
+};
+
+export type AdminChannelSoundPatch = {
+  title?: string;
+  artistName?: string | null;
+  description?: string;
+  genre?: string | null;
+  isPublic?: boolean;
+};
+
+const mockChannelSounds = new Map<string, AdminChannelSound[]>();
+
+function mockSoundsFor(key: string): AdminChannelSound[] {
+  let rows = mockChannelSounds.get(key);
+  if (!rows) {
+    rows = [
+      {
+        id: `${key}-sound-1`,
+        title: 'Aamu',
+        artistName: null,
+        description: 'Morning set',
+        genre: 'Ambient',
+        isPublic: true,
+        releasedAt: '2026-09-01T00:00:00.000Z',
+      },
+      {
+        id: `${key}-sound-2`,
+        title: 'Ilta',
+        artistName: null,
+        description: null,
+        genre: null,
+        isPublic: false,
+        releasedAt: '2026-09-10T00:00:00.000Z',
+      },
+    ];
+    mockChannelSounds.set(key, rows);
+  }
+  return rows;
+}
+
+export async function fetchAdminChannelSounds(
+  slug: string,
+): Promise<
+  { ok: true; data: AdminChannelSound[] } | { ok: false; error: string }
+> {
+  const key = slug.trim().toLowerCase();
+  if (!key) {
+    return { ok: false, error: 'Enter a channel slug.' };
+  }
+  if (isForceMock()) {
+    return { ok: true, data: mockSoundsFor(key).map((row) => ({ ...row })) };
+  }
+  try {
+    const data = await getJson<AdminChannelSound[]>(
+      `/api/admin/channels/${encodeURIComponent(key)}/sound`,
+    );
+    return { ok: true, data: Array.isArray(data) ? data : [] };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not load the tracks',
+    };
+  }
+}
+
+export async function patchAdminChannelSound(
+  slug: string,
+  soundId: string,
+  patch: AdminChannelSoundPatch,
+): Promise<
+  { ok: true; data: AdminChannelSound } | { ok: false; error: string }
+> {
+  const key = slug.trim().toLowerCase();
+  if (isForceMock()) {
+    const rows = mockSoundsFor(key);
+    const index = rows.findIndex((row) => row.id === soundId);
+    if (index < 0) {
+      return { ok: false, error: 'Sound item not found' };
+    }
+    const updated: AdminChannelSound = {
+      ...rows[index]!,
+      ...patch,
+      description:
+        patch.description !== undefined
+          ? patch.description || null
+          : rows[index]!.description,
+    };
+    rows[index] = updated;
+    return { ok: true, data: { ...updated } };
+  }
+  try {
+    const data = await sendJson<AdminChannelSound>(
+      `/api/admin/channels/${encodeURIComponent(key)}/sound/${encodeURIComponent(soundId)}`,
+      'PATCH',
+      patch,
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not save the track',
+    };
+  }
+}
