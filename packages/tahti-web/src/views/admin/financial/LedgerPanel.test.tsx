@@ -55,6 +55,20 @@ describe('validateLedgerEntry', () => {
   });
 });
 
+describe('ledger years and export', () => {
+  it('offers this year and the five before it, newest first', () => {
+    expect(admin.ledgerYears(new Date('2026-09-29T00:00:00Z'))).toEqual([
+      2026, 2025, 2024, 2023, 2022, 2021,
+    ]);
+  });
+
+  it('points the export at the chosen year', () => {
+    expect(admin.adminLedgerExportCsvUrl(2025)).toBe(
+      '/tahti-api/api/admin/ledger/export.csv?year=2025',
+    );
+  });
+});
+
 describe('LedgerPanel', () => {
   afterEach(() => {
     cleanup();
@@ -62,11 +76,21 @@ describe('LedgerPanel', () => {
   });
 
   it('signs entries by category: costs out, income in', () => {
-    render(<LedgerPanel entries={ENTRIES} onChanged={vi.fn()} />);
+    render(
+      <LedgerPanel
+        entries={ENTRIES}
+        year={2026}
+        onYearChange={vi.fn()}
+        onChanged={vi.fn()}
+      />,
+    );
     const rows = screen.getAllByRole('listitem');
     expect(rows[0]!.textContent).toContain('+€120,00');
     expect(rows[1]!.textContent).toContain('−€215,00');
     expect(rows[1]!.textContent).toContain('INV-42');
+    expect(
+      screen.getByRole('link', { name: 'Export CSV' }).getAttribute('href'),
+    ).toBe('/tahti-api/api/admin/ledger/export.csv?year=2026');
   });
 
   it('sends the period and a positive amount, and shows a refusal', async () => {
@@ -75,7 +99,14 @@ describe('LedgerPanel', () => {
       .mockResolvedValueOnce({ ok: false, error: 'Nope' })
       .mockResolvedValueOnce({ ok: true });
     const onChanged = vi.fn();
-    render(<LedgerPanel entries={[]} onChanged={onChanged} />);
+    render(
+      <LedgerPanel
+        entries={[]}
+        year={2026}
+        onYearChange={vi.fn()}
+        onChanged={onChanged}
+      />,
+    );
 
     fireEvent.click(screen.getByRole('button', { name: 'Add entry' }));
     fireEvent.change(screen.getByLabelText('Amount (€)'), {

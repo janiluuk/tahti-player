@@ -1,12 +1,21 @@
-import { PlusIcon, XIcon } from 'lucide-react';
+import { DownloadIcon, PlusIcon, XIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button, Input, SaveButton, Select, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonAnchor,
+  Input,
+  SaveButton,
+  Select,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import {
+  adminLedgerExportCsvUrl,
   createLedgerEntry,
   isLedgerOutflow,
   LEDGER_CATEGORIES,
+  ledgerYears,
   type AdminLedgerEntry,
 } from '../../../api/admin';
 import { StudioPanel } from '../../../components/StudioPanel';
@@ -129,9 +138,13 @@ function LedgerEntryForm({ onSaved }: { onSaved: () => void }) {
 
 export function LedgerPanel({
   entries,
+  year,
+  onYearChange,
   onChanged,
 }: {
   entries: AdminLedgerEntry[];
+  year: number;
+  onYearChange: (year: number) => void;
   onChanged: () => void;
 }) {
   const [showForm, setShowForm] = useState(false);
@@ -140,19 +153,40 @@ export function LedgerPanel({
     <StudioPanel
       title="Ledger entries"
       action={
-        <Tooltip content={showForm ? 'Cancel entry' : 'Add entry'} side="top">
-          <Button
-            size="icon-sm"
-            onClick={() => setShowForm((v) => !v)}
-            aria-label={showForm ? 'Cancel entry' : 'Add entry'}
+        <div className="flex items-center gap-2">
+          <Select
+            label="Year"
+            value={String(year)}
+            onValueChange={(value) => onYearChange(Number(value))}
+            options={ledgerYears().map((option) => ({
+              id: String(option),
+              label: String(option),
+            }))}
+            className="w-28"
+          />
+          <ButtonAnchor
+            href={adminLedgerExportCsvUrl(year)}
+            download
+            size="sm"
+            variant="secondary"
           >
-            {showForm ? (
-              <XIcon size={16} aria-hidden />
-            ) : (
-              <PlusIcon size={16} aria-hidden />
-            )}
-          </Button>
-        </Tooltip>
+            <DownloadIcon size={14} aria-hidden className="mr-1.5" />
+            Export CSV
+          </ButtonAnchor>
+          <Tooltip content={showForm ? 'Cancel entry' : 'Add entry'} side="top">
+            <Button
+              size="icon-sm"
+              onClick={() => setShowForm((v) => !v)}
+              aria-label={showForm ? 'Cancel entry' : 'Add entry'}
+            >
+              {showForm ? (
+                <XIcon size={16} aria-hidden />
+              ) : (
+                <PlusIcon size={16} aria-hidden />
+              )}
+            </Button>
+          </Tooltip>
+        </div>
       }
     >
       {showForm && (
@@ -166,7 +200,7 @@ export function LedgerPanel({
 
       {entries.length === 0 ? (
         <p className="text-foreground-secondary py-4 text-center text-sm">
-          No ledger entries yet.
+          No ledger entries for {year}.
         </p>
       ) : (
         <ul className="divide-border divide-y">
