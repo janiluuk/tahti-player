@@ -31,10 +31,10 @@ import {
   fetchRadioStation,
   TAHTI_RADIO_SLUG,
 } from '../api/client';
+import type { RadioFeatureHistoryItem } from '../api/radio-public';
 import { fetchShowBookings, type StudioShowBooking } from '../api/shows';
 import type {
   PublicChannel,
-  RadioFeatureHistoryItem,
   RadioNowPlaying,
   RadioRecentlyPlayedItem,
   TahtiPlayable,

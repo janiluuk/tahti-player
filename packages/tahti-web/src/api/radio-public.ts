@@ -17,7 +17,6 @@ import {
 } from './mode';
 import type {
   PublicChannel,
-  RadioFeatureHistoryItem,
   RadioNowPlaying,
   RadioRecentlyPlayedItem,
   TahtiPlayable,
@@ -143,6 +142,14 @@ export async function fetchRadioRecentlyPlayed(): Promise<{
     return withMockFallback(err, mockRadioRecentlyPlayed, () => []);
   }
 }
+
+/** GET /api/v1/radio/history — member channels Tahti Radio relayed, newest first. */
+export type RadioFeatureHistoryItem = {
+  channelId: string;
+  slug: string;
+  artistName: string;
+  featuredAt: string;
+};
 
 function mockRadioFeatureHistory(): RadioFeatureHistoryItem[] {
   const now = Date.now();
