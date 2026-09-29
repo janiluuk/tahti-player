@@ -21,7 +21,10 @@ import {
 import {
   deleteAdminFile,
   fetchAdminFileAudio,
+  fetchAdminFileFacets,
   fetchAdminFiles,
+  type AdminFileFacets,
+  type AdminFileFilters,
   type AdminFileRow,
 } from '../../../api/admin';
 import { AdminUserEditPanel } from '../../../components/AdminUserEditPanel';
@@ -67,13 +70,14 @@ function FileRow({
           </span>
         </div>
         <div className="text-foreground-secondary text-xs">
-          <button
-            type="button"
-            className="hover:text-foreground underline-offset-2 hover:underline"
+          <Button
+            variant="text"
+            size="flexible"
+            className="hover:text-foreground p-0 text-xs underline-offset-2 hover:underline"
             onClick={() => onEditUploader(f.userId)}
           >
             @{f.username}
-          </button>{' '}
+          </Button>{' '}
           · {formatFileDate(f.createdAt)}
           {f.genre ? ` · ${f.genre}` : ''}
         </div>
@@ -145,19 +149,35 @@ export function FilesBrowserTab() {
   const [userEditId, setUserEditId] = useState<string | null>(null);
   const [pendingDeleteFile, setPendingDeleteFile] =
     useState<AdminFileRow | null>(null);
+  const [facets, setFacets] = useState<AdminFileFacets | null>(null);
+  const [userId, setUserId] = useState('');
+  const [genre, setGenre] = useState('');
+  const [contentType, setContentType] = useState('');
+  const [total, setTotal] = useState(0);
 
-  const reload = (q?: string) => {
+  const filters: AdminFileFilters = { q: query, userId, genre, contentType };
+  const filtered = Boolean(query.trim() || userId || genre || contentType);
+
+  const reload = (next: AdminFileFilters = filters) => {
     setLoading(true);
-    void fetchAdminFiles(q).then((res) => {
+    void fetchAdminFiles(next).then((res) => {
       setFiles(res.data);
+      setTotal(res.total);
       setLoading(false);
     });
   };
 
   useEffect(() => {
-    const handle = setTimeout(() => reload(query), 250);
+    void fetchAdminFileFacets().then(setFacets);
+  }, []);
+
+  useEffect(() => {
+    const handle = setTimeout(
+      () => reload({ q: query, userId, genre, contentType }),
+      250,
+    );
     return () => clearTimeout(handle);
-  }, [query]);
+  }, [query, userId, genre, contentType]);
 
   const sortedFiles = useMemo(() => sortFiles(files, sortBy), [files, sortBy]);
   // Groups are built from the already-sorted list so each user's files keep
@@ -218,6 +238,59 @@ export function FilesBrowserTab() {
             <SearchIcon size={15} aria-hidden className="opacity-70" />
           }
         />
+        <Select
+          label="Uploader"
+          value={userId}
+          onValueChange={setUserId}
+          options={[
+            { id: '', label: 'Everyone' },
+            ...(facets?.users ?? []).map((user) => ({
+              id: user.id,
+              label: `${user.displayName && !user.displayName.includes('@') ? user.displayName : user.username} (@${user.username})`,
+            })),
+          ]}
+          className="min-w-44"
+        />
+        <Select
+          label="Genre"
+          value={genre}
+          onValueChange={setGenre}
+          options={[
+            { id: '', label: 'Any genre' },
+            ...(facets?.genres ?? []).map((name) => ({
+              id: name,
+              label: name,
+            })),
+          ]}
+          className="min-w-36"
+        />
+        <Select
+          label="Type"
+          value={contentType}
+          onValueChange={setContentType}
+          options={[
+            { id: '', label: 'Any type' },
+            ...(facets?.contentTypes ?? []).map((type) => ({
+              id: type,
+              label: contentTypeLabel(type),
+            })),
+          ]}
+          className="min-w-36"
+        />
+        {filtered ? (
+          <Button
+            size="sm"
+            variant="text"
+            onClick={() => {
+              setQuery('');
+              setUserId('');
+              setGenre('');
+              setContentType('');
+            }}
+          >
+            Clear filters
+          </Button>
+        ) : null}
         <Button
           size="sm"
           variant={groupByUser ? 'secondary' : 'text'}
@@ -249,6 +322,9 @@ export function FilesBrowserTab() {
           </span>{' '}
           across {sortedFiles.length}{' '}
           {sortedFiles.length === 1 ? 'file' : 'files'}
+          {total > sortedFiles.length
+            ? ` (the newest ${sortedFiles.length} of ${total} matching; narrow the filters to see the rest)`
+            : ''}
         </div>
       ) : null}
 
@@ -260,7 +336,9 @@ export function FilesBrowserTab() {
           {loading ? (
             <PageLoading label="Loading storage users…" />
           ) : groupedRows.length === 0 ? (
-            <PageEmpty title="No files match this search" />
+            <PageEmpty
+              title={filtered ? 'No files match these filters' : 'No files yet'}
+            />
           ) : (
             <div className="flex flex-col gap-5">
               {groupedRows.map((g) => (
@@ -304,7 +382,9 @@ export function FilesBrowserTab() {
           {loading ? (
             <PageLoading label="Loading files…" />
           ) : files.length === 0 ? (
-            <PageEmpty title="No files match this search" />
+            <PageEmpty
+              title={filtered ? 'No files match these filters' : 'No files yet'}
+            />
           ) : (
             <ul className="divide-border [&>li:nth-child(even)]:bg-background-secondary/40 divide-y">
               {sortedFiles.map((f) => (
@@ -359,7 +439,7 @@ export function FilesBrowserTab() {
           if (!file) {
             return;
           }
-          void deleteAdminFile(file.id).then(() => reload(query));
+          void deleteAdminFile(file.id).then(() => reload());
         }}
       />
     </div>
