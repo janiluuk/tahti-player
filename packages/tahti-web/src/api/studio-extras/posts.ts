@@ -304,3 +304,35 @@ export async function postChatReaction(
     };
   }
 }
+
+export type NewsletterSubscriberStats = {
+  total: number;
+  confirmed: number;
+  newLast30Days: number;
+  fanSubscriberCount: number;
+};
+
+export async function fetchNewsletterSubscriberStats(): Promise<{
+  data: NewsletterSubscriberStats | null;
+  meta: FetchMeta;
+}> {
+  if (isForceMock()) {
+    return {
+      data: {
+        total: 48,
+        confirmed: 41,
+        newLast30Days: 6,
+        fanSubscriberCount: 9,
+      },
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const { data } = await requestJson<NewsletterSubscriberStats>(
+      '/api/me/newsletter/subscribers',
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: null, meta: failMeta(err) };
+  }
+}

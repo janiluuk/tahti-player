@@ -38,6 +38,15 @@ vi.mock('../../api/studio-extras', async (importOriginal) => {
       ],
       meta: { source: 'mock' as const },
     }),
+    fetchNewsletterSubscriberStats: async () => ({
+      data: {
+        total: 50,
+        confirmed: 44,
+        newLast30Days: 7,
+        fanSubscriberCount: 5,
+      },
+      meta: { source: 'mock' as const },
+    }),
     sendNewsletterDraft: (...args: unknown[]) => sendNewsletterDraft(...args),
   };
 });
@@ -131,5 +140,23 @@ describe('StudioUpdatesView newsletter send confirmation', () => {
     );
 
     expect(sendNewsletterDraft).not.toHaveBeenCalled();
+  });
+});
+
+describe('StudioUpdatesView newsletter subscribers', () => {
+  it('shows confirmed, new and fan-only subscriber counts on the Newsletter tab', async () => {
+    await renderView();
+    expect(screen.queryByTestId('newsletter-subscriber-stats')).toBeNull();
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole('tab', { name: 'Newsletter' }));
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    const stats = screen.getByTestId('newsletter-subscriber-stats');
+    expect(stats.textContent).toContain('44');
+    expect(stats.textContent).toContain('6 unconfirmed or unsubscribed');
+    expect(stats.textContent).toContain('7');
+    expect(stats.textContent).toContain('5');
   });
 });

@@ -50,7 +50,11 @@ export {
 } from './studio-extras/stats-plays';
 export type { ProfileFields } from './studio-extras/profile';
 export { fetchMeProfile, patchMeProfile } from './studio-extras/profile';
-export type { ArtistPost, NewsletterDraft } from './studio-extras/posts';
+export type {
+  ArtistPost,
+  NewsletterDraft,
+  NewsletterSubscriberStats,
+} from './studio-extras/posts';
 export {
   fetchArtistPosts,
   fetchChannelPosts,
@@ -58,6 +62,7 @@ export {
   uploadArtistPostImage,
   deleteArtistPost,
   fetchNewsletterDrafts,
+  fetchNewsletterSubscriberStats,
   sendNewsletterDraft,
   createNewsletterDraft,
   postChatReaction,
