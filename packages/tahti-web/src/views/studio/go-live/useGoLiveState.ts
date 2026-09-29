@@ -207,6 +207,7 @@ export function useGoLiveState() {
     user,
     analyser,
     settings,
+    setSettings,
     signal,
     setSignal,
     usage,

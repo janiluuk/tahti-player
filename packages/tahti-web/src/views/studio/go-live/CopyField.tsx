@@ -1,5 +1,5 @@
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 
 import { Button, CopyButton, Tooltip } from '@tahti-player/ui';
 
@@ -12,9 +12,11 @@ export function CopyField({
   label,
   value,
   maskable = false,
+  action,
 }: {
   label: string;
   value: string;
+  action?: ReactNode;
   /** Starts hidden behind dots with a reveal toggle — for secrets
    * (stream keys, passwords) rather than public-facing values (server
    * host, mount point). */
@@ -52,6 +54,7 @@ export function CopyField({
           toastMessage={`${label} copied.`}
           aria-label={`Copy ${label}`}
         />
+        {action}
       </div>
     </div>
   );
