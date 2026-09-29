@@ -210,3 +210,49 @@ export async function unbanChatFingerprint(
     };
   }
 }
+
+let mockChatSubscribersOnly = false;
+
+export async function fetchChatSettings(): Promise<{
+  data: { subscribersOnly: boolean } | null;
+  meta: FetchMeta;
+}> {
+  if (isForceMock()) {
+    return {
+      data: { subscribersOnly: mockChatSubscribersOnly },
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const { data } = await requestJson<{ subscribersOnly: boolean }>(
+      '/api/me/chat/settings',
+    );
+    return { data, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: null, meta: failMeta(err) };
+  }
+}
+
+export async function setChatSubscribersOnly(
+  subscribersOnly: boolean,
+): Promise<
+  { ok: true; subscribersOnly: boolean } | { ok: false; error: string }
+> {
+  if (isForceMock()) {
+    mockChatSubscribersOnly = subscribersOnly;
+    return { ok: true, subscribersOnly };
+  }
+  try {
+    const { data } = await requestJson<{ subscribersOnly: boolean }>(
+      '/api/me/chat/settings',
+      { method: 'PATCH', body: JSON.stringify({ subscribersOnly }) },
+    );
+    return { ok: true, subscribersOnly: data.subscribersOnly };
+  } catch (err) {
+    return {
+      ok: false,
+      error:
+        err instanceof Error ? err.message : 'Could not save chat settings',
+    };
+  }
+}

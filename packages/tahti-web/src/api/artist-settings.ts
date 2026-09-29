@@ -35,6 +35,8 @@ export {
   addModerator,
   removeModerator,
   fetchChatBans,
+  fetchChatSettings,
+  setChatSubscribersOnly,
   banChatFingerprint,
   unbanChatFingerprint,
 } from './artist-settings/moderation';
