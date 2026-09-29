@@ -3,6 +3,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   disconnectSocial,
   fetchSocialAutoPost,
+  fetchSocialPosts,
+  postToSocial,
   saveBluesky,
   saveMastodon,
 } from './social-autopost';
@@ -53,6 +55,26 @@ describe('social auto-post API', () => {
     ).resolves.toEqual({
       ok: false,
       error: 'Could not verify Mastodon credentials',
+    });
+  });
+
+  it('reads the post log and queues a manual post', async () => {
+    const fetchSpy = vi
+      .spyOn(globalThis, 'fetch')
+      .mockImplementation(
+        async () => new Response(JSON.stringify([]), { status: 200 }),
+      );
+    await fetchSocialPosts();
+    await postToSocial('MASTODON', 'Hello');
+    expect(
+      fetchSpy.mock.calls.map(([url, init]) => [url, init?.method ?? 'GET']),
+    ).toEqual([
+      ['/tahti-api/api/me/social/posts', 'GET'],
+      ['/tahti-api/api/me/social/post', 'POST'],
+    ]);
+    expect(JSON.parse(String(fetchSpy.mock.calls[1]![1]?.body))).toEqual({
+      platform: 'MASTODON',
+      message: 'Hello',
     });
   });
 });
