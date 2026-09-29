@@ -36,6 +36,7 @@ import {
 } from '../api/messages';
 import type { AccountRole, PublicProfile } from '../api/types';
 import { AdminUserEngagementPanel } from './admin-user/AdminUserEngagementPanel';
+import { AdminUserRestrictionsPanel } from './admin-user/AdminUserRestrictionsPanel';
 import { ImageLightbox } from './ImageLightbox';
 import { PageLoading } from './PageStates';
 import { StudioPanel } from './StudioPanel';
@@ -458,7 +459,10 @@ export function AdminUserEditPanel({
         </StudioPanel>
       </div>
 
-      <AdminUserEngagementPanel userId={detail.id} />
+      <div className="grid gap-4 xl:grid-cols-2">
+        <AdminUserEngagementPanel userId={detail.id} />
+        <AdminUserRestrictionsPanel userId={detail.id} />
+      </div>
 
       {messageOpen ? (
         <StudioPanel
