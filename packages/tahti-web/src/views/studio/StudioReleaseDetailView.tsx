@@ -6,6 +6,7 @@ import {
   FingerprintIcon,
   LayoutDashboardIcon,
   Link2Icon,
+  LinkIcon,
   MusicIcon,
   PencilIcon,
   PlayIcon,
@@ -33,6 +34,7 @@ import {
   type EntitySocialStat,
 } from '../../components/EntitySocialHeader';
 import { FingerprintTrackPanel } from '../../components/FingerprintTrackPanel';
+import { ImageUrlForm } from '../../components/ImageUrlForm';
 import { MusicBrainzSubmissionAssistant } from '../../components/MusicBrainzSubmissionAssistant';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
@@ -74,6 +76,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
     publish,
     removeArtwork,
     applyArtwork,
+    applyArtworkFromUrl,
     playFirstTrack,
     updateTrackFingerprint,
   } = useReleaseDetail(id);
@@ -180,6 +183,17 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                           }
                           void applyArtwork(file);
                         }}
+                      />
+                    ),
+                  },
+                  {
+                    id: 'url',
+                    label: 'From URL',
+                    icon: <LinkIcon size={14} />,
+                    content: (
+                      <ImageUrlForm
+                        busy={applyingArtwork}
+                        onSubmit={applyArtworkFromUrl}
                       />
                     ),
                   },
