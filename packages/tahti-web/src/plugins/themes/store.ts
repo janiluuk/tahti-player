@@ -142,6 +142,10 @@ const PRESET_CUSTOM_THEMES: Record<string, AdvancedTheme> = {
   [YORHA_THEME_ID]: YORHA_THEME,
 };
 
+export function isPresetCustomThemeId(id: string): boolean {
+  return id in PRESET_CUSTOM_THEMES;
+}
+
 function withPresetCustomThemes(
   customThemes: Record<string, AdvancedTheme>,
 ): Record<string, AdvancedTheme> {
