@@ -37,6 +37,7 @@ import type {
 } from '../../../api/types';
 import { ApiTokensPanel } from '../../../components/ApiTokensPanel';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
+import { MembershipInvoices } from '../../../components/MembershipInvoices';
 import { MembershipStatusPanel } from '../../../components/MembershipStatusPanel';
 import { PageLoading } from '../../../components/PageStates';
 import { SecurityTotpPanel } from '../../../components/SecurityTotpPanel';
@@ -170,13 +171,16 @@ export function AccountPanel() {
           content: !membership ? (
             <SettingsHint>Could not load membership.</SettingsHint>
           ) : (
-            <MembershipStatusPanel
-              membership={membership}
-              userEmail={user.email}
-              onChange={() => {
-                void fetchMembership().then((r) => setMembership(r.data));
-              }}
-            />
+            <div className="flex flex-col gap-6">
+              <MembershipStatusPanel
+                membership={membership}
+                userEmail={user.email}
+                onChange={() => {
+                  void fetchMembership().then((r) => setMembership(r.data));
+                }}
+              />
+              <MembershipInvoices />
+            </div>
           ),
         },
         {
