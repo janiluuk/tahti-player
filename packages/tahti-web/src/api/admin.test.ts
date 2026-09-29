@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   adminUsersExportCsvUrl,
   approveAdminAddon,
+  deleteAdminAddon,
   fetchAdminActivity,
   fetchAdminAddons,
   fetchAdminDashboard,
@@ -383,5 +384,25 @@ describe('updateAdminAddon', () => {
       authorName: 'Tahti',
       categories: ['other'],
     });
+  });
+});
+
+describe('deleteAdminAddon', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('sends DELETE for the add-on and accepts the empty 204', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(new Response(null, { status: 204 }));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const result = await deleteAdminAddon('addon-1');
+
+    expect(result).toEqual({ ok: true });
+    const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(url).toContain('/api/admin/addons/addon-1');
+    expect(init.method).toBe('DELETE');
   });
 });

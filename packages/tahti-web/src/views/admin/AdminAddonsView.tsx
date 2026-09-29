@@ -42,6 +42,9 @@ export function AdminAddonsView() {
     setEditTarget,
     openEdit,
     saveEdit,
+    deleteTarget,
+    setDeleteTarget,
+    removeAddon,
     surface,
     setSurface,
     installs,
@@ -153,6 +156,7 @@ export function AdminAddonsView() {
                       onManage={setManageTarget}
                       onPublish={openPublish}
                       onEdit={openEdit}
+                      onDelete={setDeleteTarget}
                     />
                   ))}
                 </div>
@@ -194,6 +198,19 @@ export function AdminAddonsView() {
                 onChange={setDraft}
                 onClose={() => setEditTarget(null)}
                 onSave={saveEdit}
+              />
+
+              <ConfirmDialog
+                isOpen={deleteTarget !== null}
+                title={
+                  deleteTarget
+                    ? `Delete "${deleteTarget.name}" permanently?`
+                    : 'Delete add-on?'
+                }
+                description="Removes the add-on, every published version and every install, everywhere. This can't be undone; Disable is the reversible option."
+                confirmLabel="Delete"
+                onCancel={() => setDeleteTarget(null)}
+                onConfirm={() => deleteTarget && removeAddon(deleteTarget)}
               />
 
               <PublishDialog

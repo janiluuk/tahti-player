@@ -242,6 +242,27 @@ export async function updateAdminAddon(
   }
 }
 
+/** Permanent: tahti-org removes the add-on with its versions and installs
+ * (FK cascade). Disable is the reversible option. */
+export async function deleteAdminAddon(
+  id: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (isForceMock()) {
+    if (!mockAddons.some((addon) => addon.id === id)) {
+      return { ok: false, error: 'Add-on not found' };
+    }
+    mockAddons = mockAddons.filter((addon) => addon.id !== id);
+    mockInstallsBySurface = Object.fromEntries(
+      Object.entries(mockInstallsBySurface).map(([surface, list]) => [
+        surface,
+        list.filter((install) => install.widget.id !== id),
+      ]),
+    );
+    return { ok: true };
+  }
+  return mutate(`/api/admin/addons/${encodeURIComponent(id)}`, 'DELETE');
+}
+
 function mockModerate(
   id: string,
   status: AdminAddonStatus,

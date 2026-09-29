@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import {
   approveAdminAddon,
   createAdminAddonInstall,
+  deleteAdminAddon,
   deleteAdminAddonInstall,
   disableAdminAddon,
   fetchAdminAddonInstalls,
@@ -35,6 +36,7 @@ export function useAdminAddons() {
   const [manageTarget, setManageTarget] = useState<AdminAddon | null>(null);
   const [publishTarget, setPublishTarget] = useState<AdminAddon | null>(null);
   const [editTarget, setEditTarget] = useState<AdminAddon | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<AdminAddon | null>(null);
 
   const [surface, setSurface] = useState('homepage');
   const [installs, setInstalls] = useState<AdminAddonInstall[]>([]);
@@ -165,6 +167,23 @@ export function useAdminAddons() {
       if (result.ok) {
         setEditTarget(null);
       }
+    });
+  };
+
+  const removeAddon = (addon: AdminAddon) => {
+    setPending(true);
+    setError(null);
+    void deleteAdminAddon(addon.id).then((result) => {
+      setPending(false);
+      setDeleteTarget(null);
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+      setAddons((current) => current.filter((item) => item.id !== addon.id));
+      setInstalls((current) =>
+        current.filter((install) => install.widget.id !== addon.id),
+      );
     });
   };
 
@@ -334,6 +353,9 @@ export function useAdminAddons() {
     setPublishTarget,
     editTarget,
     setEditTarget,
+    deleteTarget,
+    setDeleteTarget,
+    removeAddon,
     openEdit,
     saveEdit,
     openPublish,

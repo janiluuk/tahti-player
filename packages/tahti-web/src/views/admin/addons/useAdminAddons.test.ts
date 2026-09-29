@@ -7,6 +7,7 @@ import { useAdminAddons } from './useAdminAddons';
 const api = vi.hoisted(() => ({
   approveAdminAddon: vi.fn(),
   createAdminAddonInstall: vi.fn(),
+  deleteAdminAddon: vi.fn(),
   deleteAdminAddonInstall: vi.fn(),
   disableAdminAddon: vi.fn(),
   fetchAdminAddonInstalls: vi.fn(),
@@ -222,5 +223,32 @@ describe('useAdminAddons', () => {
     );
     await waitFor(() => expect(result.current.editTarget).toBeNull());
     expect(result.current.visibleAddons[0]?.name).toBe('New');
+  });
+
+  it('deletes an add-on and drops it and its installs from the page', async () => {
+    api.deleteAdminAddon.mockResolvedValue({ ok: true });
+    const { result } = renderHook(() => useAdminAddons());
+    await waitFor(() => expect(result.current.installs).toHaveLength(1));
+
+    act(() => result.current.setDeleteTarget(approved));
+    await act(async () => result.current.removeAddon(approved));
+
+    expect(api.deleteAdminAddon).toHaveBeenCalledWith('w1');
+    await waitFor(() => expect(result.current.deleteTarget).toBeNull());
+    expect(result.current.visibleAddons.map((item) => item.id)).not.toContain(
+      'w1',
+    );
+    expect(result.current.installs).toHaveLength(0);
+  });
+
+  it('keeps the add-on and shows the error when the delete fails', async () => {
+    api.deleteAdminAddon.mockResolvedValue({ ok: false, error: 'Forbidden' });
+    const { result } = renderHook(() => useAdminAddons());
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    await act(async () => result.current.removeAddon(approved));
+
+    await waitFor(() => expect(result.current.error).toBe('Forbidden'));
+    expect(result.current.visibleAddons.map((item) => item.id)).toContain('w1');
   });
 });
