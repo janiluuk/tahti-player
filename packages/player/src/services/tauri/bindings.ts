@@ -1156,7 +1156,7 @@ export type RootScanResult = {
 	cancelled: boolean,
 };
 
-export type RuleField = "title" | "artist" | "album" | "genre" | "format" | "tag" | "year" | "rating" | "playCount" | "duration" | "bpm" | "key" | "loudness" | 
+export type RuleField = "title" | "artist" | "album" | "genre" | "composer" | "format" | "tag" | "year" | "rating" | "playCount" | "duration" | "bpm" | "key" | "loudness" | 
 /**  Days since last played; a track never played counts as "not played". */
 "lastPlayed" | 
 /**  Days since the track was added. */

@@ -62,6 +62,7 @@ export type NativeRuleField =
   | 'artist'
   | 'album'
   | 'genre'
+  | 'composer'
   | 'format'
   | 'tag'
   | 'year'
