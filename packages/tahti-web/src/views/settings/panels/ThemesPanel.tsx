@@ -4,9 +4,11 @@ import {
   LayoutGrid,
   Pencil,
   Settings2 as Settings2Icon,
+  Share2Icon,
   Upload,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   Button,
@@ -20,15 +22,22 @@ import {
   Tooltip,
 } from '@tahti-player/ui';
 
+import {
+  fetchMyThemes,
+  submitThemeToCommunity,
+  type MyTheme,
+} from '../../../api/me-themes';
 import { AMBIENT_SCHEME } from '../../../components/AmbientBackground';
 import { ChannelVisualizer } from '../../../components/ChannelVisualizer';
 import { ThemeEditor } from '../../../components/ThemeEditor';
+import { ThemeSubmissions } from '../../../components/ThemeSubmissions';
 import {
   isThemeVisualizationEnabled,
   ThemeVisualizationSettings,
 } from '../../../components/ThemeVisualizationSettings';
-import { useThemeStore } from '../../../plugins/themes';
+import { isPresetCustomThemeId, useThemeStore } from '../../../plugins/themes';
 import { useAmbientStore } from '../../../stores/ambientStore';
+import { useAuthStore } from '../../../stores/authStore';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import { SettingsHint } from '../SettingsFields';
 
@@ -45,6 +54,21 @@ export function ThemesPanel() {
     renameCustomTheme,
     removeCustomTheme,
   } = useThemeStore();
+  const signedIn = useAuthStore((s) => Boolean(s.user));
+  const [submissions, setSubmissions] = useState<MyTheme[]>([]);
+  const [submittingId, setSubmittingId] = useState<string | null>(null);
+  const loadSubmissions = useCallback(() => {
+    if (!signedIn) {
+      setSubmissions([]);
+      return;
+    }
+    void fetchMyThemes().then((result) => {
+      if (result.ok) {
+        setSubmissions(result.data);
+      }
+    });
+  }, [signedIn]);
+  useEffect(loadSubmissions, [loadSubmissions]);
   const [themeJson, setThemeJson] = useState('');
   const [importMsg, setImportMsg] = useState<string | null>(null);
   const [configuringThemeId, setConfiguringThemeId] = useState<string | null>(
@@ -245,6 +269,45 @@ export function ThemesPanel() {
                                     <Pencil size={14} aria-hidden />
                                   </Button>
                                 </Tooltip>
+                                {signedIn && !isPresetCustomThemeId(id) ? (
+                                  <Tooltip
+                                    content="Submit to the community catalog"
+                                    side="top"
+                                  >
+                                    <Button
+                                      size="icon-sm"
+                                      variant="secondary"
+                                      aria-label={`Submit ${theme.name} to the community`}
+                                      disabled={
+                                        submittingId === id ||
+                                        submissions.some(
+                                          (item) =>
+                                            item.name === theme.name &&
+                                            item.visibility ===
+                                              'PENDING_REVIEW',
+                                        )
+                                      }
+                                      onClick={() => {
+                                        setSubmittingId(id);
+                                        void submitThemeToCommunity(theme).then(
+                                          (result) => {
+                                            setSubmittingId(null);
+                                            if (!result.ok) {
+                                              toast.error(result.error);
+                                              return;
+                                            }
+                                            toast.success(
+                                              `${theme.name} was sent for review. The board approves themes before they appear in the catalog.`,
+                                            );
+                                            loadSubmissions();
+                                          },
+                                        );
+                                      }}
+                                    >
+                                      <Share2Icon size={14} aria-hidden />
+                                    </Button>
+                                  </Tooltip>
+                                ) : null}
                                 <Tooltip content="Export theme JSON" side="top">
                                   <Button
                                     size="icon-sm"
@@ -263,6 +326,11 @@ export function ThemesPanel() {
                     </div>
                   </div>
                 )}
+                <ThemeSubmissions
+                  themes={submissions}
+                  onChanged={loadSubmissions}
+                  onError={(message) => toast.error(message)}
+                />
               </div>
             ),
           },
