@@ -5,6 +5,7 @@ import { fetchStudioSounds } from '../api/studio';
 import type { StudioSound } from '../api/studio-types';
 import { EmbedTrackRow } from '../components/EmbedTrackRow';
 import { PageEmpty, PageLoading } from '../components/PageStates';
+import { SoundCloudEmbedsPanel } from '../components/SoundCloudEmbedsPanel';
 import { SourceServiceIcon } from '../components/SourceServiceIcon';
 import { EMBED_PROVIDER_LABEL, type EmbedProvider } from '../lib/embedSrc';
 
@@ -61,17 +62,15 @@ export function LibraryEmbedsView() {
     return <PageLoading label="Loading embeds…" />;
   }
 
-  if (groups.length === 0) {
-    return (
-      <PageEmpty
-        title="No imported embeds yet"
-        description="Tracks imported from hearthis.at, Mixcloud, Spotify, or Bandcamp show up here, grouped by provider, once you import some from Settings → Add-ons → Import."
-      />
-    );
-  }
-
   return (
     <div className="flex flex-col gap-8">
+      <SoundCloudEmbedsPanel />
+      {groups.length === 0 ? (
+        <PageEmpty
+          title="No imported embeds yet"
+          description="Tracks imported from hearthis.at, Mixcloud, Spotify, or Bandcamp show up here, grouped by provider, once you import some from Settings → Add-ons → Import."
+        />
+      ) : null}
       {groups.map(([provider, providerItems]) => (
         <section key={provider} className="flex flex-col gap-3">
           <div className="flex items-center gap-2">
