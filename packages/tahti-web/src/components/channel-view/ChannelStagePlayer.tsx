@@ -17,7 +17,6 @@ import {
   resolveNowPlayingOverlayPreset,
 } from '../../content/nowPlayingOverlayPresets';
 import { prefetchHls } from '../../lib/hlsLoader';
-import { useLibraryStore } from '../../stores/libraryStore';
 import { usePlayerStore } from '../../stores/playerStore';
 import { NowPlayingOverlay } from '../NowPlayingOverlay';
 import { WaveformSeekbar } from '../tahti/WaveformSeekbar';
@@ -28,9 +27,15 @@ type Props = {
   live: boolean;
   subtle: boolean;
   chatOn: boolean;
+  follow: {
+    following: boolean;
+    busy: boolean;
+    toggle: () => Promise<void>;
+  } | null;
+  signedIn: boolean;
 };
 
-/** The channel's player: now-playing overlay plus chat / favorite / play
+/** The channel's player: now-playing overlay plus chat / follow / play
  * controls. Rendered by the hero block, or as a fixed Stage section when
  * the hero block is hidden, so the player stays reachable either way. */
 export function ChannelStagePlayer({
@@ -39,6 +44,8 @@ export function ChannelStagePlayer({
   live,
   subtle,
   chatOn,
+  follow,
+  signedIn,
 }: Props) {
   const play = usePlayerStore((s) => s.play);
   const currentId = usePlayerStore((s) => s.currentId);
@@ -47,10 +54,15 @@ export function ChannelStagePlayer({
   const duration = usePlayerStore((s) => s.duration);
   const seekTo = usePlayerStore((s) => s.seekTo);
   const setPlaybackStatus = usePlayerStore((s) => s.setStatus);
-  const toggleFavoriteChannel = useLibraryStore((s) => s.toggleFavoriteChannel);
-  const favorited = useLibraryStore((s) =>
-    s.favoriteChannels.some((c) => c.slug === slug),
-  );
+  const favorited = follow?.following ?? false;
+  const favoriteLabel = signedIn
+    ? `Follow ${channel.user.displayName}`
+    : 'Favorite';
+  const favoriteTooltip = favorited
+    ? signedIn
+      ? 'Following'
+      : 'Favorited'
+    : favoriteLabel;
   const navigate = useNavigate();
 
   const channelIsCurrent =
@@ -80,13 +92,6 @@ export function ChannelStagePlayer({
       })
       .catch(() => toast.error('Could not start the stream. Try again.'));
   };
-
-  const handleToggleFavoriteChannel = () =>
-    toggleFavoriteChannel({
-      slug,
-      displayName: channel.user.displayName,
-      avatarUrl: channel.user.avatarUrl,
-    });
 
   return !live && !channel.nowPlaying ? (
     <div className="bg-background-secondary flex items-center justify-center py-12">
@@ -154,24 +159,29 @@ export function ChannelStagePlayer({
               </Button>
             </Tooltip>
           )}
-          <Tooltip content={favorited ? 'Favorited' : 'Favorite'} side="top">
-            <Button
-              size="icon"
-              variant="text"
-              className="size-11 bg-black/45 text-white backdrop-blur-sm hover:bg-black/65"
-              onClick={handleToggleFavoriteChannel}
-              aria-pressed={favorited}
-              aria-label={favorited ? 'Favorited' : 'Favorite'}
-            >
-              <HeartIcon
-                size={20}
-                className={
-                  favorited ? 'text-accent-red-strong fill-current' : undefined
-                }
-                aria-hidden
-              />
-            </Button>
-          </Tooltip>
+          {follow ? (
+            <Tooltip content={favoriteTooltip} side="top">
+              <Button
+                size="icon"
+                variant="text"
+                className="size-11 bg-black/45 text-white backdrop-blur-sm hover:bg-black/65"
+                onClick={() => void follow.toggle()}
+                disabled={follow.busy}
+                aria-pressed={favorited}
+                aria-label={favoriteLabel}
+              >
+                <HeartIcon
+                  size={20}
+                  className={
+                    favorited
+                      ? 'text-accent-red-strong fill-current'
+                      : undefined
+                  }
+                  aria-hidden
+                />
+              </Button>
+            </Tooltip>
+          ) : null}
           <Tooltip
             content={
               channelIsLoading
