@@ -1,7 +1,8 @@
-import { SearchIcon, UserRoundIcon } from 'lucide-react';
+import { DownloadIcon, SearchIcon, UserRoundIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
+  ButtonAnchor,
   Input,
   Select,
   SelectableList,
@@ -9,7 +10,11 @@ import {
   ViewShell,
 } from '@tahti-player/ui';
 
-import { fetchAdminUsers, type AdminUserRow } from '../../api/admin';
+import {
+  adminUsersExportCsvUrl,
+  fetchAdminUsers,
+  type AdminUserRow,
+} from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { AdminUserEditPanel } from '../../components/AdminUserEditPanel';
@@ -50,9 +55,21 @@ export const AdminUsersView = () => {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/users">
           <ViewShell title="Users" classes={{ root: 'px-0 pt-0' }}>
-            <p className="text-foreground-secondary text-sm">
-              {total} accounts
-            </p>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-foreground-secondary text-sm">
+                {total} accounts
+              </p>
+              <ButtonAnchor
+                href={adminUsersExportCsvUrl({ q: query, role, isMember })}
+                download
+                size="sm"
+                variant="secondary"
+                data-testid="admin-users-export"
+              >
+                <DownloadIcon size={14} aria-hidden className="mr-1.5" />
+                Export CSV
+              </ButtonAnchor>
+            </div>
 
             <div className="grid min-h-[36rem] gap-4 lg:grid-cols-[20rem_minmax(0,1fr)]">
               <StudioPanel className="flex min-h-0 flex-col gap-3">
