@@ -340,36 +340,95 @@ function mockAdminFiles(): AdminFileRow[] {
 
 let mockAdminFilesState: AdminFileRow[] | null = null;
 
-export async function fetchAdminFiles(query?: string): Promise<{
+export type AdminFileFilters = {
+  q?: string;
+  userId?: string;
+  genre?: string;
+  contentType?: string;
+};
+
+export type AdminFileFacets = {
+  users: { id: string; username: string; displayName: string }[];
+  genres: string[];
+  contentTypes: string[];
+};
+
+export function adminFilesQuery(filters: AdminFileFilters = {}): string {
+  const qs = new URLSearchParams({ limit: '100' });
+  if (filters.q?.trim()) {
+    qs.set('q', filters.q.trim());
+  }
+  if (filters.userId) {
+    qs.set('userIds', filters.userId);
+  }
+  if (filters.genre) {
+    qs.set('genres', filters.genre);
+  }
+  if (filters.contentType) {
+    qs.set('contentTypes', filters.contentType);
+  }
+  return qs.toString();
+}
+
+export async function fetchAdminFiles(f: AdminFileFilters = {}): Promise<{
   data: AdminFileRow[];
+  total: number;
   meta: FetchMeta;
 }> {
   if (isForceMock()) {
     if (!mockAdminFilesState) {
       mockAdminFilesState = mockAdminFiles();
     }
-    const q = query?.trim().toLowerCase();
-    const data = q
-      ? mockAdminFilesState.filter(
-          (f) =>
-            f.title.toLowerCase().includes(q) ||
-            f.artistName.toLowerCase().includes(q) ||
-            f.username.toLowerCase().includes(q),
-        )
-      : mockAdminFilesState;
-    return { data, meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
+    const q = f.q?.trim().toLowerCase();
+    const data = mockAdminFilesState.filter(
+      (file) =>
+        (!q ||
+          file.title.toLowerCase().includes(q) ||
+          file.artistName.toLowerCase().includes(q) ||
+          file.username.toLowerCase().includes(q)) &&
+        (!f.userId || file.userId === f.userId) &&
+        (!f.genre || file.genre === f.genre) &&
+        (!f.contentType || file.contentType === f.contentType),
+    );
+    return {
+      data,
+      total: data.length,
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
   }
   try {
-    const qs = new URLSearchParams({ limit: '100' });
-    if (query?.trim()) {
-      qs.set('q', query.trim());
-    }
-    const data = await getJson<{ items: AdminFileRow[] }>(
-      `/api/admin/files?${qs.toString()}`,
+    const data = await getJson<{ items: AdminFileRow[]; total?: number }>(
+      `/api/admin/files?${adminFilesQuery(f)}`,
     );
-    return { data: data.items, meta: { source: 'api' } };
+    return {
+      data: data.items,
+      total: data.total ?? data.items.length,
+      meta: { source: 'api' },
+    };
   } catch (err) {
-    return { data: [], meta: failMeta(err) };
+    return { data: [], total: 0, meta: failMeta(err) };
+  }
+}
+
+export async function fetchAdminFileFacets(): Promise<AdminFileFacets> {
+  if (isForceMock()) {
+    const files = mockAdminFilesState ?? mockAdminFiles();
+    return {
+      users: files.map((file) => ({
+        id: file.userId,
+        username: file.username,
+        displayName: file.displayName,
+      })),
+      genres: [
+        ...new Set(files.map((file) => file.genre).filter(Boolean)),
+      ] as string[],
+      contentTypes: ['TRACK', 'DJ_SET', 'CLIP'],
+    };
+  }
+  try {
+    return await getJson<AdminFileFacets>('/api/admin/files/facets');
+  } catch {
+    return { users: [], genres: [], contentTypes: [] };
   }
 }
 
