@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Badge, ViewShell } from '@tahti-player/ui';
+import { Badge, Button, ViewShell } from '@tahti-player/ui';
 
 import {
   fetchAdminDashboard,
@@ -15,6 +15,7 @@ import { AdminPageLayout } from '../../components/AdminNav';
 import { PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { humanizePastDate } from '../../lib/humanizeDate';
+import { CronHistoryDialog } from './status/CronHistoryDialog';
 import { WorkersPanel } from './status/WorkersPanel';
 
 export function AdminStatusView() {
@@ -22,6 +23,7 @@ export function AdminStatusView() {
   const [dashboard, setDashboard] = useState<AdminDashboard | null>(null);
   const [platform, setPlatform] = useState<PlatformStatus | null>(null);
   const [loading, setLoading] = useState(true);
+  const [cronJob, setCronJob] = useState<string | null>(null);
 
   useEffect(() => {
     void Promise.all([
@@ -155,7 +157,16 @@ export function AdminStatusView() {
                         key={job.jobName}
                         className="flex items-center justify-between py-2 text-sm first:pt-0 last:pb-0"
                       >
-                        <span title={job.description}>{job.jobName}</span>
+                        <Button
+                          size="flexible"
+                          variant="text"
+                          className="p-0 text-sm underline-offset-2 hover:underline"
+                          title={job.description}
+                          aria-label={`${job.jobName} run history`}
+                          onClick={() => setCronJob(job.jobName)}
+                        >
+                          {job.jobName}
+                        </Button>
                         <span className="text-foreground-secondary text-xs">
                           {job.lastRun ? (
                             <>
@@ -181,6 +192,10 @@ export function AdminStatusView() {
               </div>
             )}
             <WorkersPanel />
+            <CronHistoryDialog
+              jobName={cronJob}
+              onClose={() => setCronJob(null)}
+            />
           </ViewShell>
         </AdminPageLayout>
       </div>

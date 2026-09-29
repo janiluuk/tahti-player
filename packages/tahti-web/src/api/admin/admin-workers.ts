@@ -114,3 +114,60 @@ export async function fetchAdminWorkerHistory(
     };
   }
 }
+
+export type AdminCronRun = {
+  id: string;
+  jobName: string;
+  startedAt: string;
+  finishedAt: string | null;
+  outcome: string | null;
+  errorMessage: string | null;
+  durationMs: number | null;
+};
+
+export async function fetchAdminCronHistory(
+  jobName: string,
+  limit = 50,
+): Promise<
+  | { ok: true; runs: AdminCronRun[]; total: number }
+  | { ok: false; error: string }
+> {
+  if (isForceMock()) {
+    const now = Date.now();
+    const runs: AdminCronRun[] = [0, 1, 2].map((index) => ({
+      id: String(100 - index),
+      jobName,
+      startedAt: new Date(now - (index + 1) * 3600_000).toISOString(),
+      finishedAt: new Date(now - (index + 1) * 3600_000 + 1200).toISOString(),
+      outcome: index === 1 ? 'ERROR' : 'SUCCESS',
+      errorMessage: index === 1 ? 'Timed out after 30 s' : null,
+      durationMs: 1200,
+    }));
+    return { ok: true, runs, total: runs.length };
+  }
+  try {
+    const qs = new URLSearchParams({ jobName, limit: String(limit) });
+    const data = await getJson<{ items: AdminCronRun[]; total: number }>(
+      `/api/admin/stats/cron-runs/history?${qs.toString()}`,
+    );
+    return { ok: true, runs: data.items, total: data.total };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not load the runs',
+    };
+  }
+}
+
+export function formatRunDuration(ms: number | null): string {
+  if (ms == null) {
+    return 'still running';
+  }
+  if (ms < 1000) {
+    return `${ms} ms`;
+  }
+  if (ms < 60_000) {
+    return `${(ms / 1000).toFixed(1)} s`;
+  }
+  return `${Math.round(ms / 60_000)} min`;
+}
