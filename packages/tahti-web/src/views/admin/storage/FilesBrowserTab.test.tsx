@@ -5,7 +5,13 @@ import {
   createRouter,
   RouterProvider,
 } from '@tanstack/react-router';
-import { act, cleanup, render, screen } from '@testing-library/react';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+} from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as admin from '../../../api/admin';
@@ -94,5 +100,34 @@ describe('FilesBrowserTab', () => {
     expect(screen.getByText(/Genre/)).toBeTruthy();
     expect(screen.getByText(/the newest 1 of 250 matching/)).toBeTruthy();
     expect(screen.getByRole('button', { name: '@dj-moonlight' })).toBeTruthy();
+  });
+
+  it('selecting rows opens the bulk edit bar', async () => {
+    vi.spyOn(admin, 'fetchAdminFileFacets').mockResolvedValue({
+      users: [],
+      genres: [],
+      contentTypes: [],
+    });
+    vi.spyOn(admin, 'fetchAdminFiles').mockResolvedValue({
+      data: [FILE],
+      total: 1,
+      meta: { source: 'api' },
+    });
+    await renderTab();
+
+    expect(
+      screen.queryByRole('region', { name: 'Edit selected files' }),
+    ).toBeNull();
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Select Moonlight Drive' }),
+    );
+    expect(
+      screen.getByRole('region', { name: 'Edit selected files' }),
+    ).toBeTruthy();
+    expect(screen.getByText('1 file selected')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Select none' }));
+    expect(
+      screen.queryByRole('region', { name: 'Edit selected files' }),
+    ).toBeNull();
   });
 });

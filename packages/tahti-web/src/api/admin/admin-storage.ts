@@ -1,5 +1,5 @@
 import type { FetchMeta } from '../client';
-import { getJson, mutate } from '../http';
+import { getJson, mutate, sendJson } from '../http';
 import { failMeta, isForceMock } from '../mode';
 
 // ── Storage ─────────────────────────────────────────────────────────────────
@@ -484,5 +484,67 @@ export async function fetchAdminFileAudio(id: string): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     return { data: null, meta: failMeta(err) };
+  }
+}
+
+export const FILE_LICENSES = [
+  { id: 'ALL_RIGHTS_RESERVED', label: 'All rights reserved' },
+  { id: 'CC_BY', label: 'CC BY' },
+  { id: 'CC_BY_SA', label: 'CC BY-SA' },
+  { id: 'CC_BY_NC', label: 'CC BY-NC' },
+  { id: 'CC_BY_NC_SA', label: 'CC BY-NC-SA' },
+  { id: 'CC_BY_NC_ND', label: 'CC BY-NC-ND' },
+  { id: 'CC0', label: 'CC0 (public domain)' },
+] as const;
+
+export type AdminFilesBulkPatch = {
+  genre?: string | null;
+  contentType?: string;
+  isPublic?: boolean;
+  license?: string;
+};
+
+export async function bulkPatchAdminFiles(
+  ids: string[],
+  patch: AdminFilesBulkPatch,
+): Promise<{ ok: true; updated: number } | { ok: false; error: string }> {
+  if (ids.length === 0 || Object.keys(patch).length === 0) {
+    return { ok: false, error: 'Choose files and at least one change.' };
+  }
+  if (ids.length > 200) {
+    return { ok: false, error: 'Edit at most 200 files at a time.' };
+  }
+  if (isForceMock()) {
+    const files = mockAdminFilesState ?? mockAdminFiles();
+    let updated = 0;
+    for (const file of files) {
+      if (ids.includes(file.id)) {
+        updated += 1;
+        if (patch.genre !== undefined) {
+          file.genre = patch.genre;
+        }
+        if (patch.contentType !== undefined) {
+          file.contentType = patch.contentType;
+        }
+        if (patch.isPublic !== undefined) {
+          file.isPublic = patch.isPublic;
+        }
+      }
+    }
+    mockAdminFilesState = files;
+    return { ok: true, updated };
+  }
+  try {
+    const result = await sendJson<{ updated: number }>(
+      '/api/admin/files/bulk',
+      'PATCH',
+      { ids, ...patch },
+    );
+    return { ok: true, updated: result.updated };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not update the files',
+    };
   }
 }

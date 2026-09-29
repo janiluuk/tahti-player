@@ -1,9 +1,11 @@
 import { Link } from '@tanstack/react-router';
 import {
   ArrowDownAZIcon,
+  CheckSquareIcon,
   ExternalLinkIcon,
   PlayIcon,
   SearchIcon,
+  SquareIcon,
   Trash2Icon,
   UsersIcon,
 } from 'lucide-react';
@@ -38,6 +40,7 @@ import {
   groupFileRowsByUser,
 } from '../../../lib/storageFormat';
 import { usePlayerStore } from '../../../stores/playerStore';
+import { BulkEditBar } from './BulkEditBar';
 import {
   FileDetailDialog,
   SORT_OPTIONS,
@@ -47,6 +50,8 @@ import {
 
 function FileRow({
   f,
+  selected,
+  onToggleSelect,
   pendingPlayId,
   onPlay,
   onViewDetail,
@@ -54,6 +59,8 @@ function FileRow({
   onDelete,
 }: {
   f: AdminFileRow;
+  selected: boolean;
+  onToggleSelect: (id: string) => void;
   pendingPlayId: string | null;
   onPlay: (f: AdminFileRow) => void;
   onViewDetail: (f: AdminFileRow) => void;
@@ -62,6 +69,19 @@ function FileRow({
 }) {
   return (
     <li className="flex flex-wrap items-center justify-between gap-3 px-2 py-3 text-sm">
+      <Button
+        size="icon-sm"
+        variant="text"
+        aria-pressed={selected}
+        aria-label={`Select ${f.title}`}
+        onClick={() => onToggleSelect(f.id)}
+      >
+        {selected ? (
+          <CheckSquareIcon size={16} aria-hidden />
+        ) : (
+          <SquareIcon size={16} aria-hidden />
+        )}
+      </Button>
       <div className="min-w-0 flex-1">
         <div className="font-medium">
           {f.title}{' '}
@@ -154,6 +174,19 @@ export function FilesBrowserTab() {
   const [genre, setGenre] = useState('');
   const [contentType, setContentType] = useState('');
   const [total, setTotal] = useState(0);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [notice, setNotice] = useState<string | null>(null);
+
+  const toggleSelect = (id: string) =>
+    setSelectedIds((current) => {
+      const next = new Set(current);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
 
   const filters: AdminFileFilters = { q: query, userId, genre, contentType };
   const filtered = Boolean(query.trim() || userId || genre || contentType);
@@ -162,6 +195,10 @@ export function FilesBrowserTab() {
     setLoading(true);
     void fetchAdminFiles(next).then((res) => {
       setFiles(res.data);
+      setSelectedIds((current) => {
+        const loaded = new Set(res.data.map((file) => file.id));
+        return new Set([...current].filter((id) => loaded.has(id)));
+      });
       setTotal(res.total);
       setLoading(false);
     });
@@ -293,6 +330,22 @@ export function FilesBrowserTab() {
         ) : null}
         <Button
           size="sm"
+          variant="text"
+          disabled={files.length === 0}
+          onClick={() =>
+            setSelectedIds(
+              selectedIds.size === files.length
+                ? new Set()
+                : new Set(files.map((file) => file.id)),
+            )
+          }
+        >
+          {selectedIds.size === files.length && files.length > 0
+            ? 'Select none'
+            : 'Select all shown'}
+        </Button>
+        <Button
+          size="sm"
           variant={groupByUser ? 'secondary' : 'text'}
           aria-pressed={groupByUser}
           onClick={() => setGroupByUser((v) => !v)}
@@ -313,6 +366,27 @@ export function FilesBrowserTab() {
           />
         </div>
       </div>
+
+      {selectedIds.size > 0 ? (
+        <BulkEditBar
+          selectedIds={[...selectedIds]}
+          facets={facets}
+          onClear={() => setSelectedIds(new Set())}
+          onApplied={(updated) => {
+            setSelectedIds(new Set());
+            setNotice(
+              `Updated ${updated} ${updated === 1 ? 'file' : 'files'}.`,
+            );
+            reload();
+          }}
+        />
+      ) : null}
+
+      {notice ? (
+        <p className="text-foreground-secondary text-sm" role="status">
+          {notice}
+        </p>
+      ) : null}
 
       {!loading && sortedFiles.length > 0 ? (
         <div className="text-foreground-secondary text-xs">
@@ -364,6 +438,8 @@ export function FilesBrowserTab() {
                       <FileRow
                         key={f.id}
                         f={f}
+                        selected={selectedIds.has(f.id)}
+                        onToggleSelect={toggleSelect}
                         pendingPlayId={pendingPlayId}
                         onPlay={(file) => void handlePlay(file)}
                         onViewDetail={setDetailFile}
@@ -391,6 +467,8 @@ export function FilesBrowserTab() {
                 <FileRow
                   key={f.id}
                   f={f}
+                  selected={selectedIds.has(f.id)}
+                  onToggleSelect={toggleSelect}
                   pendingPlayId={pendingPlayId}
                   onPlay={(file) => void handlePlay(file)}
                   onViewDetail={setDetailFile}
