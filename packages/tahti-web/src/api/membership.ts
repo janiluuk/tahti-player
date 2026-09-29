@@ -228,3 +228,58 @@ export async function cancelMySubscription(
     };
   }
 }
+
+export type MembershipInvoice = {
+  id: string;
+  number: string | null;
+  status: string | null;
+  amountPaidCents: number;
+  currency: string;
+  created: string;
+  hostedInvoiceUrl: string | null;
+  invoicePdf: string | null;
+};
+
+export function formatInvoiceAmount(cents: number, currency: string): string {
+  try {
+    return new Intl.NumberFormat('fi-FI', {
+      style: 'currency',
+      currency: currency.toUpperCase(),
+    }).format(cents / 100);
+  } catch {
+    return `${(cents / 100).toFixed(2)} ${currency.toUpperCase()}`;
+  }
+}
+
+export async function fetchMembershipInvoices(): Promise<
+  { ok: true; invoices: MembershipInvoice[] } | { ok: false; error: string }
+> {
+  if (isForceMock()) {
+    return {
+      ok: true,
+      invoices: [
+        {
+          id: 'in_mock_1',
+          number: 'TAHTI-0042',
+          status: 'paid',
+          amountPaidCents: 4000,
+          currency: 'eur',
+          created: '2026-01-02T10:00:00.000Z',
+          hostedInvoiceUrl: null,
+          invoicePdf: null,
+        },
+      ],
+    };
+  }
+  try {
+    const data = await getJson<{ invoices: MembershipInvoice[] }>(
+      '/api/me/invoices',
+    );
+    return { ok: true, invoices: data.invoices };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not load invoices',
+    };
+  }
+}
