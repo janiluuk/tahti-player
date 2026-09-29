@@ -40,6 +40,7 @@ import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { trackTableLabels } from '../../lib/trackTableLabels';
 import { ReleaseSmartLinksPanel } from './release-detail/ReleaseSmartLinksPanel';
+import { ReleaseSmartLinkStats } from './release-detail/ReleaseSmartLinkStats';
 import { useReleaseDetail } from './release-detail/useReleaseDetail';
 
 export function StudioReleaseDetailView({ id }: { id: string }) {
@@ -373,18 +374,21 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                   label: 'Smart links',
                   icon: <Link2Icon size={14} />,
                   content: (
-                    <ReleaseSmartLinksPanel
-                      release={release}
-                      sounds={Object.values(soundsById)}
-                      onTargetsSaved={(targets) =>
-                        setRelease((current) =>
-                          current
-                            ? { ...current, smartLinkTargets: targets }
-                            : current,
-                        )
-                      }
-                      onReleaseChange={setRelease}
-                    />
+                    <div className="flex flex-col gap-4">
+                      <ReleaseSmartLinkStats releaseId={release.id} />
+                      <ReleaseSmartLinksPanel
+                        release={release}
+                        sounds={Object.values(soundsById)}
+                        onTargetsSaved={(targets) =>
+                          setRelease((current) =>
+                            current
+                              ? { ...current, smartLinkTargets: targets }
+                              : current,
+                          )
+                        }
+                        onReleaseChange={setRelease}
+                      />
+                    </div>
                   ),
                 },
                 {
