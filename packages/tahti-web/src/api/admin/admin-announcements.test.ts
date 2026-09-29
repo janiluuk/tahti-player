@@ -6,6 +6,11 @@ import {
   uploadAnnouncementClip,
 } from './admin-announcements';
 
+vi.mock('../../lib/audioFileDuration', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../../lib/audioFileDuration')>()),
+  readAudioFileDuration: vi.fn().mockResolvedValue(12.4),
+}));
+
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
@@ -93,6 +98,7 @@ describe('admin announcements API', () => {
     expect(JSON.parse(String(calls[2]!.body))).toEqual({
       uploadId: 'announcements/system/abc.mp3',
       title: 'Station ID',
+      durationSec: 12,
     });
   });
 });

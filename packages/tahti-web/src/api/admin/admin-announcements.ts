@@ -1,3 +1,7 @@
+import {
+  announcementDurationSec,
+  readAudioFileDuration,
+} from '../../lib/audioFileDuration';
 import type { FetchMeta } from '../client';
 import { getJson, mutate, sendJson } from '../http';
 import { failMeta, isForceMock } from '../mode';
@@ -154,6 +158,9 @@ export async function uploadAnnouncementClip(
     return { ok: true, clip };
   }
   try {
+    const durationSec = announcementDurationSec(
+      await readAudioFileDuration(file),
+    );
     const prep = await sendJson<{ uploadId: string; uploadUrl: string }>(
       '/api/admin/announcements/prepare',
       'POST',
@@ -170,7 +177,7 @@ export async function uploadAnnouncementClip(
     const clip = await sendJson<AdminAnnouncementClip>(
       '/api/admin/announcements/complete',
       'POST',
-      { uploadId: prep.uploadId, title },
+      { uploadId: prep.uploadId, title, durationSec },
     );
     return { ok: true, clip };
   } catch (err) {

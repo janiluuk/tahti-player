@@ -1,3 +1,7 @@
+import {
+  announcementDurationSec,
+  readAudioFileDuration,
+} from '../lib/audioFileDuration';
 import type { FetchMeta } from './client';
 import { apiBase } from './http';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
@@ -172,6 +176,9 @@ export async function uploadAnnouncementClip(file: File): Promise<
     return { ok: true, clip };
   }
   try {
+    const durationSec = announcementDurationSec(
+      await readAudioFileDuration(file),
+    );
     const prepared = await requestJson<{ uploadId: string; uploadUrl: string }>(
       '/api/me/announcements/prepare',
       {
@@ -200,6 +207,7 @@ export async function uploadAnnouncementClip(file: File): Promise<
           uploadId: prepared.uploadId,
           title,
           contentType: 'CLIP',
+          durationSec,
         }),
       },
     );
