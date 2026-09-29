@@ -158,6 +158,14 @@ export type RadioRecentlyPlayedItem = {
   audioUrl?: string | null;
 };
 
+/** GET /api/v1/radio/history — member channels Tahti Radio relayed, newest first. */
+export type RadioFeatureHistoryItem = {
+  channelId: string;
+  slug: string;
+  artistName: string;
+  featuredAt: string;
+};
+
 /** Public archive row from GET /api/channels/:slug/items */
 export type ChannelSoundItem = {
   id: string;
