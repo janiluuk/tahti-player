@@ -3920,3 +3920,13 @@ Slices came from tahti-org routes tahti-web never called (the batch 9 leftovers 
 - **Studio**: smart-link views, clicks and clicks per service on a release's Smart links tab (#278); Record my broadcasts and Publish recordings automatically in Settings → Broadcast → Radio (#279; the record switch's fetchers existed but were unused).
 - **Settings / join**: channel comments and the comments default for new uploads (#280); the join dialog shows the handle and whether it's free, with the API's suggestions, and its Artist/Band switch is now `SegmentedControl` (#281).
 - **Checks:** each PR ran tahti-web type-check, lint, the size guard and the touched tests. Nothing was tried against the live API, SoundCloud's oEmbed or widget, or a real stream.
+
+## 2026-09-29 - Ten todo slices, eleventh batch (#284-#293)
+
+Slices came from tahti-org routes tahti-web never called, found with a route diff that now treats `${...}` path segments as parameters and then checked by hand (it still over-reports, e.g. green room and members are wired through other helpers). No `docs/todo/` file covered them.
+
+- **Comments**: delete a track comment as its author or the track owner, with a shared `CommentItem` on library components (#284); comments on a channel's own page, with post, delete and the artist's on/off switch respected (#285, stacked).
+- **Listening**: top-list rank badges on an artist's popular tracks (#286); a renamed channel's old address sends visitors to the new one during the 30-day redirect (#290).
+- **Messages (#288)**: start a DM from your contacts (people you follow or who follow you).
+- **Studio**: push a track to your own hearthis.at account from the track edit dialog (#287); live multistream destination status on Channel → Radio → Stream (#289); play the 24/7 rotation from one of your collections (#291); set release artwork (#292) and collection covers (#293, stacked) from an image link.
+- **Checks:** each PR ran tahti-web type-check, lint, the size guard and the touched tests. Nothing was tried against the live API, hearthis.at, a real RTMP destination or Liquidsoap.
