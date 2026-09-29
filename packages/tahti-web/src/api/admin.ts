@@ -15,6 +15,7 @@ export * from './admin/admin-status';
 export * from './admin/admin-top-lists';
 export * from './admin/admin-vendors';
 export * from './admin/admin-users';
+export * from './admin/admin-user-engagement';
 export * from './admin/admin-selects';
 export * from './admin/admin-streams';
 
