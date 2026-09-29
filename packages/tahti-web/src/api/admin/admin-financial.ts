@@ -1,5 +1,5 @@
 import type { FetchMeta } from '../client';
-import { getJson, mutate } from '../http';
+import { apiBase, getJson, mutate } from '../http';
 import { failMeta, isForceMock } from '../mode';
 
 // ── Financial ───────────────────────────────────────────────────────────────
@@ -110,7 +110,18 @@ function mockFinancialOverview(): AdminFinancialOverview {
 
 let mockFinancialState: AdminFinancialOverview | null = null;
 
-export async function fetchAdminFinancial(): Promise<{
+export function ledgerYears(now = new Date(), count = 6): number[] {
+  const current = now.getUTCFullYear();
+  return Array.from({ length: count }, (_, index) => current - index);
+}
+
+export function adminLedgerExportCsvUrl(year: number): string {
+  return `${apiBase()}/api/admin/ledger/export.csv?year=${year}`;
+}
+
+export async function fetchAdminFinancial(
+  year = new Date().getUTCFullYear(),
+): Promise<{
   data: AdminFinancialOverview | null;
   meta: FetchMeta;
 }> {
@@ -129,7 +140,7 @@ export async function fetchAdminFinancial(): Promise<{
         (Omit<AdminLedgerEntry, 'amountCents'> & {
           amountCents: number | string;
         })[]
-      >(`/api/admin/ledger?year=${new Date().getUTCFullYear()}`),
+      >(`/api/admin/ledger?year=${year}`),
       getJson<{
         activeFanSubCount: number;
         mrrCents: number;

@@ -16,15 +16,16 @@ import { formatEur, LedgerPanel } from './financial/LedgerPanel';
 export function AdminFinancialView() {
   const [overview, setOverview] = useState<AdminFinancialOverview | null>(null);
   const [loading, setLoading] = useState(true);
+  const [year, setYear] = useState(() => new Date().getUTCFullYear());
 
   const reload = () => {
-    void fetchAdminFinancial().then((res) => {
+    void fetchAdminFinancial(year).then((res) => {
       setOverview(res.data);
       setLoading(false);
     });
   };
 
-  useEffect(reload, []);
+  useEffect(reload, [year]);
 
   return (
     <AdminGate>
@@ -83,7 +84,12 @@ export function AdminFinancialView() {
 
                   <FanSubPayoutQueue onChanged={reload} />
 
-                  <LedgerPanel entries={overview.entries} onChanged={reload} />
+                  <LedgerPanel
+                    entries={overview.entries}
+                    year={year}
+                    onYearChange={setYear}
+                    onChanged={reload}
+                  />
                 </>
               )}
             </ViewShell>
