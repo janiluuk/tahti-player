@@ -12,6 +12,7 @@ import { formatDuration } from '../../lib/playableToTrack';
 import { soundIdFromPlayableId } from '../../lib/soundId';
 import { PlayableTrackTable } from '../PlayableTrackTable';
 import { releasePlayables } from '../ReleaseTracklistDialog';
+import { TopListRankBadges } from './TopListRankBadges';
 
 export type RelatedArtist = {
   username: string;
@@ -34,6 +35,7 @@ export function ArtistPopularTracks({
   return (
     <section className="flex min-w-0 flex-col" data-testid="artist-popular">
       <SectionHeading>Popular tracks</SectionHeading>
+      <TopListRankBadges items={items} />
       <PlayableTrackTable
         items={items}
         emptyMessage="No playable tracks on this profile."
