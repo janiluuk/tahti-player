@@ -161,32 +161,53 @@ export function WidgetCard({
       ) : releases.length > 0 ? (
         <div className="grid gap-2" data-testid="latest-releases">
           {releases.slice(0, MAX_ROWS).map((release) => (
-            <Link
+            <div
               key={release.id}
-              to="/r/$slug"
-              params={{ slug: release.smartLinkSlug }}
               className="border-border bg-background hover:bg-background-tertiary flex items-center gap-3 rounded-md border p-2 transition-colors"
             >
-              <ImageReveal
-                src={release.artworkUrl ?? undefined}
-                alt=""
-                className="bg-primary size-12 shrink-0 rounded"
-                placeholder={
-                  <span className="text-primary-foreground text-xs font-bold">
-                    {release.title.charAt(0).toUpperCase()}
-                  </span>
-                }
-              />
+              <Link
+                to="/r/$slug"
+                params={{ slug: release.smartLinkSlug }}
+                tabIndex={-1}
+                aria-hidden
+                className="shrink-0"
+              >
+                <ImageReveal
+                  src={release.artworkUrl ?? undefined}
+                  alt=""
+                  className="bg-primary size-12 rounded"
+                  placeholder={
+                    <span className="text-primary-foreground text-xs font-bold">
+                      {release.title.charAt(0).toUpperCase()}
+                    </span>
+                  }
+                />
+              </Link>
               <div className="min-w-0">
-                <h4 className="truncate text-sm font-semibold">
+                <Link
+                  to="/r/$slug"
+                  params={{ slug: release.smartLinkSlug }}
+                  className="block truncate text-sm font-semibold hover:underline"
+                >
                   {release.title}
-                </h4>
+                </Link>
                 <p className="text-foreground-secondary truncate text-xs">
-                  {release.artistDisplayName} · {release.type.toLowerCase()} ·{' '}
+                  {release.artistUsername ? (
+                    <Link
+                      to="/u/$username"
+                      params={{ username: release.artistUsername }}
+                      className="hover:underline"
+                    >
+                      {release.artistDisplayName}
+                    </Link>
+                  ) : (
+                    release.artistDisplayName
+                  )}{' '}
+                  · {release.type.toLowerCase()} ·{' '}
                   {new Date(release.releaseDate).toLocaleDateString()}
                 </p>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       ) : collections.length > 0 ? (
