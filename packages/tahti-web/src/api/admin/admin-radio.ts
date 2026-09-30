@@ -214,7 +214,7 @@ export function radioMoveToFront(channelId: string) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
-    `/api/admin/radio/${encodeURIComponent(channelId)}/reset-rotation`,
+    `/api/admin/radio/reset-rotation/${encodeURIComponent(channelId)}`,
     'POST',
   );
 }
@@ -224,7 +224,7 @@ export function radioOptOut(channelId: string) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
-    `/api/admin/radio/${encodeURIComponent(channelId)}/opt-out`,
+    `/api/admin/radio/opt-out/${encodeURIComponent(channelId)}`,
     'POST',
   );
 }
@@ -234,7 +234,7 @@ export function radioRemoveOptOut(channelId: string) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
-    `/api/admin/radio/${encodeURIComponent(channelId)}/opt-out`,
+    `/api/admin/radio/opt-out/${encodeURIComponent(channelId)}`,
     'DELETE',
   );
 }
