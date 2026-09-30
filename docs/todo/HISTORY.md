@@ -3960,3 +3960,14 @@ Slices came from the same route diff (template-literal paths as parameters), eac
 - **Studio media**: profile picture from an image link (#317); a Versions tab on releases to switch a track's active audio version (#318) and upload a new one (#319, stacked); live render progress for a sound's new version over the API's SSE stream (#320).
 - **Members and credits (#321)**: the roster type matched Tahti accounts instead of the API's free name/role/picture rows, so Settings → Artist showed `undefined (@undefined)`; fixed, and the list is now editable (add, rename/re-role, remove).
 - **Checks:** each PR ran tahti-web type-check, lint, the size guard and the touched tests. Nothing was tried against the live API, a real broadcast, storage uploads or newsletter emails.
+
+## 2026-09-30 - Ten cross-repo slices, fifteenth batch (tahti-player #324-#330, tahti-org #574-#577)
+
+Slices came from diffing the paths tahti-web calls against the routes on tahti-org `origin/main`, in both directions (reading contracts with `git show origin/main:…`, since that checkout sat on a feature branch). Several tahti-web screens called routes tahti-org never had and 404'd in production. Where the data already existed under another route, tahti-web was fixed; where it didn't, the route was added. No `docs/todo/` file covered these slices. tahti-org catalogs (`remaining-work`, `features`, its HISTORY) are left for those PRs' merge commits, per that repo's stacking rule. Left out after checking: `/api/me/discovery` (none of its fields exist in the schema), admin i18n languages and radio station suggestions (no models), and the artist following list (already served through a route helper).
+
+- **Admin routes the web already called (API)**: board governance overview counters (tahti-org#574); content counts plus the latest uploads and broadcasts for `/admin/content` (tahti-org#575, stacked). No tahti-player change needed.
+- **Web fixes for routes that don't exist**: social links load and save through `/api/me/profile` `socialLinks`, merged so genre tags survive (#325); the press kit bio saves as the profile bio and Download ZIP opens the public `press-kit.zip` (#326).
+- **Latest releases**: `artistUsername` on the cards (tahti-org#576) and artist links in the Discover widget (#324).
+- **Members and credits**: upload or remove each person's picture (#327, with tahti-org#577 letting PATCH clear it), set it from an image link (#328, stacked), reorder the roster (#329, stacked).
+- **Profile backdrop (#330)**: upload/remove it in Branding, and the artist page falls back to it when the channel has no slideshow.
+- **Checks:** tahti-web type-check, lint, the size guard and the touched tests per PR; tahti-org Vitest for each touched route against a throwaway Postgres, eslint and Prettier on the changed files, `apps/api` and `packages/shared` typecheck, `@tahti/api-client generate`. Nothing was tried against the live API or real storage.

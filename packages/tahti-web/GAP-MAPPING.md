@@ -50,7 +50,7 @@ This maps the public Tahti product described at [tahti.live](https://tahti.live/
 | Distribution | `/studio/distribution` | Present | Catalog, Revelator submission/payment, Spotify profile, and royalty surfaces exist. |
 | Stash | `/studio/stash` | Present | Upload/delete and share access are implemented. |
 | Channel moderators | `/studio/moderation` | Present | API-backed assignment/removal; exposed from Studio navigation |
-| Settings | `/settings` | Partial | Nuclear settings shell exists, but parity/depth across artist, discovery, notification, and account sections is thinner. Added since: own internet radio stations in Playback (#277), broadcast record/publish defaults in Broadcast (#279), channel and new-upload comment switches in Account (#280). Members and credits are editable and show the API's roster (#321). |
+| Settings | `/settings` | Partial | Nuclear settings shell exists, but parity/depth across artist, discovery, notification, and account sections is thinner. Added since: own internet radio stations in Playback (#277), broadcast record/publish defaults in Broadcast (#279), channel and new-upload comment switches in Account (#280). Members and credits are editable and show the API's roster (#321). Social links and the press kit bio now use the routes the API serves (#325, #326); members get pictures and ordering (#327-#329). |
 | Source connections / OAuth | `/sources` | Partial | Source hub exists; several providers still have simplified OAuth UX and need production callback verification. |
 | Email invites for people without accounts | — | Missing/deferred | Current moderator flow assigns an existing username; there is no invite-token flow for a new user. |
 
@@ -72,7 +72,7 @@ This maps the public Tahti product described at [tahti.live](https://tahti.live/
 | User/support detail pages | `/admin/users` | Partial | User panel now has CSV export (#231), engagement by year with board adjustments (#232, #233), account restrictions (#234) and GDPR deletion (#235). Support ticket detail depth not re-checked. |
 | Announcement clip/detail workflows | `/admin/announcements` | Present | Switch and upload fixed to the real routes (#239); trim editor for system clips (#240); uploads send the clip length (#248). |
 | Widget catalog administration | Production admin/catalog | Missing from beta | Listener widgets work, but catalog management remains in the production/Next admin surface. |
-| Full production admin surface | Production has roughly 35 admin pages; beta has 22 | Partial | Beta covers the main board workflows but is not a complete admin replacement. Added since: workers and cron run history on `/admin/status` (#250, #251), chat and mailbox stats on `/admin` (#252). |
+| Full production admin surface | Production has roughly 35 admin pages; beta has 22 | Partial | Beta covers the main board workflows but is not a complete admin replacement. Added since: workers and cron run history on `/admin/status` (#250, #251), chat and mailbox stats on `/admin` (#252). The governance overview and content views now have their API routes (tahti-org#574, #575). |
 
 ## Recommended implementation order
 
