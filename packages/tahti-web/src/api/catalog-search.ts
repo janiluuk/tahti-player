@@ -1,4 +1,4 @@
-import { getJson } from './http';
+import { getJson, mutate } from './http';
 import { isForceMock } from './mode';
 
 export type CatalogTrack = {
@@ -70,4 +70,20 @@ export async function searchCatalogTracks(
       error: err instanceof Error ? err.message : 'Search failed',
     };
   }
+}
+
+export async function addTrackToCollaborativePlaylist(
+  slug: string,
+  soundId: string,
+  note?: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (isForceMock()) {
+    return { ok: true };
+  }
+  const trimmed = note?.trim();
+  return mutate(
+    `/api/v1/collections/${encodeURIComponent(slug)}/items`,
+    'POST',
+    { soundId, ...(trimmed ? { note: trimmed } : {}) },
+  );
 }
