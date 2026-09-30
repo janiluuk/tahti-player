@@ -131,7 +131,7 @@ export function setUserStorageQuota(userId: string, quotaBytes: number) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
-    `/api/admin/storage/${encodeURIComponent(userId)}/quota`,
+    `/api/admin/storage/users/${encodeURIComponent(userId)}/quota`,
     'PATCH',
     {
       quotaBytes,
