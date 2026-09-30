@@ -297,6 +297,20 @@ export function ArtistLiveShows({
   );
 }
 
+const MENTION_SURFACE_LABELS: Record<string, string> = {
+  TRACKLIST: 'Tracklist credit',
+  BIO: 'Artist description',
+  ANNOUNCEMENT: 'Channel announcement',
+  CHAT: 'Channel chat',
+};
+
+function mentionSourcePath(mention: PublicMention): string {
+  const url = mention.sourceUrl;
+  return url && url.startsWith('/') && !url.startsWith('//')
+    ? url
+    : `/u/${mention.mentioner.username}`;
+}
+
 export function ArtistTaggedIn({
   mentions,
   surfaceStyle,
@@ -321,16 +335,14 @@ export function ArtistTaggedIn({
             className="flex items-center justify-between gap-3 p-3"
           >
             <div className="min-w-0">
-              <a
-                href={mention.sourceUrl ?? `/u/${mention.mentioner.username}`}
+              <Link
+                to={mentionSourcePath(mention) as never}
                 className="text-primary truncate text-sm font-semibold hover:underline"
               >
                 {mention.sourceTitle ?? mention.mentioner.displayName}
-              </a>
+              </Link>
               <p className="text-foreground-secondary text-xs">
-                {mention.surface === 'TRACKLIST'
-                  ? 'Tracklist credit'
-                  : 'Artist description'}
+                {MENTION_SURFACE_LABELS[mention.surface] ?? 'Mention'}
                 {` · by ${mention.mentioner.displayName}`}
               </p>
             </div>
