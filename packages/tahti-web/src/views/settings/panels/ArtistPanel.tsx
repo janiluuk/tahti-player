@@ -494,30 +494,14 @@ export function ArtistPanel() {
                     if (!social) {
                       return;
                     }
-                    const { showConnections, ...connectionValues } = social;
-                    void Promise.all([
-                      patchSocialConnections(connectionValues),
-                      patchMeProfile({
-                        socialLinks: {
-                          ...(profile?.socialLinks ?? {}),
-                          ...connectionValues,
-                          showConnections: String(showConnections),
-                        },
-                      }),
-                    ]).then(([connectionsResult, profileResult]) => {
-                      const error = !connectionsResult.ok
-                        ? connectionsResult.error
-                        : !profileResult.ok
-                          ? profileResult.error
-                          : null;
-                      setSocialMsg(error ?? 'Connections saved.');
-                      if (!error && connectionsResult.ok) {
-                        setSocial({
-                          ...connectionsResult.data,
-                          showConnections,
-                        });
-                        toast.success('Connections saved.');
+                    void patchSocialConnections(social).then((result) => {
+                      if (!result.ok) {
+                        setSocialMsg(result.error);
+                        return;
                       }
+                      setSocialMsg('Connections saved.');
+                      setSocial(result.data);
+                      toast.success('Connections saved.');
                     });
                   }}
                 />
