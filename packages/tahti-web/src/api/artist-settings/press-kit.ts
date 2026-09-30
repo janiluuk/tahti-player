@@ -1,4 +1,5 @@
 import type { FetchMeta } from '.././client';
+import { apiBase } from '.././http';
 import {
   allowMockFallback,
   apiErrorMeta,
@@ -15,6 +16,20 @@ export type PressKitMeta = {
   photoCount: number;
 };
 
+type ProfileBio = { username: string; bio?: string | null };
+
+/** The press kit's short bio is the profile bio (`buildPressKit` in
+ * tahti-org reads `User.bio`), and the ZIP is the public
+ * `/api/v1/u/:username/press-kit.zip` (bio.txt plus the marked images). */
+function pressKitFromProfile(profile: ProfileBio): PressKitMeta {
+  return {
+    hasZip: true,
+    bioShort: profile.bio ?? '',
+    downloadPath: `${apiBase()}/api/v1/u/${encodeURIComponent(profile.username)}/press-kit.zip`,
+    photoCount: 0,
+  };
+}
+
 export async function fetchPressKitMeta(): Promise<{
   data: PressKitMeta;
   meta: FetchMeta;
@@ -26,8 +41,8 @@ export async function fetchPressKitMeta(): Promise<{
     };
   }
   try {
-    const { data } = await requestJson<PressKitMeta>('/api/me/press-kit');
-    return { data, meta: { source: 'api' } };
+    const { data } = await requestJson<ProfileBio>('/api/me/profile');
+    return { data: pressKitFromProfile(data), meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
       return {
@@ -50,11 +65,11 @@ export async function patchPressKitBio(
     return { ok: true, data: { ...mockPress } };
   }
   try {
-    const { data } = await requestJson<PressKitMeta>('/api/me/press-kit', {
+    const { data } = await requestJson<ProfileBio>('/api/me/profile', {
       method: 'PATCH',
-      body: JSON.stringify({ bioShort }),
+      body: JSON.stringify({ bio: bioShort }),
     });
-    return { ok: true, data };
+    return { ok: true, data: pressKitFromProfile(data) };
   } catch (err) {
     return {
       ok: false,
