@@ -121,3 +121,38 @@ export async function saveDiscordBotSettings(input: {
     };
   }
 }
+
+/** Restart the radio-discord-bot container through the orchestrator (board
+ * only; audited). A 409 means the bot isn't running at all. */
+export async function restartDiscordBot(): Promise<
+  { ok: true } | { ok: false; error: string }
+> {
+  if (isForceMock()) {
+    return { ok: true };
+  }
+  try {
+    const res = await fetch(`${apiBase()}/api/admin/discord-bot/restart`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { Accept: 'application/json' },
+    });
+    if (!res.ok) {
+      let detail = `Restart failed (${res.status})`;
+      try {
+        const body = (await res.json()) as { error?: string };
+        if (body.error) {
+          detail = body.error;
+        }
+      } catch {
+        // ignore
+      }
+      return { ok: false, error: detail };
+    }
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Restart failed',
+    };
+  }
+}
