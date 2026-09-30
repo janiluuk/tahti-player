@@ -45,6 +45,7 @@ import {
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
 import { PageLoading } from '../components/PageStates';
+import { ReportButton } from '../components/ReportButton';
 import { StreamManagerPanel } from '../components/StreamManagerPanel';
 import { OnAirBadge } from '../components/tahti/OnAirBadge';
 import { listenerWidgetType } from '../content/listenerWidgets';
@@ -600,6 +601,13 @@ export function ChannelView({ slug }: { slug: string }) {
                 channelSlug={slug}
                 displayName={channel.user.displayName}
                 iconOnly={false}
+              />
+            )}
+            {!editing && !isOwner && (
+              <ReportButton
+                targetType="CHANNEL"
+                targetId={slug}
+                label={channel.user.displayName}
               />
             )}
           </div>

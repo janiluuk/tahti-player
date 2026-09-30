@@ -17,6 +17,7 @@ import {
 import { Badge, Button, Tooltip } from '@tahti-player/ui';
 
 import { ChannelVisualizer } from '../../components/ChannelVisualizer';
+import { ReportButton } from '../../components/ReportButton';
 import { WaveformSeekbar } from '../../components/tahti/WaveformSeekbar';
 import { TimelineReactionBar } from '../../components/TimelineReactionBar';
 import { resolveArtworkVisualizerPreset } from '../../lib/artworkVisualizer';
@@ -34,6 +35,7 @@ import {
 export function TrackHero({ page }: { page: TrackPage }) {
   const {
     id,
+    isOwner,
     shareKey,
     router,
     user,
@@ -341,6 +343,13 @@ export function TrackHero({ page }: { page: TrackPage }) {
               <PlusIcon size={14} aria-hidden className="mr-1.5" />
               Add
             </Button>
+            {!isOwner ? (
+              <ReportButton
+                targetType="SOUND_ITEM"
+                targetId={id}
+                label={playable.title}
+              />
+            ) : null}
             {showBuyTrack ? (
               <Button
                 size="sm"
