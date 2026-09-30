@@ -3,11 +3,14 @@ import { failMeta, isForceMock } from '.././mode';
 import { requestJson } from '.././request-json';
 import { mockChatBans, mockMembers, mockMods } from './mock';
 
+/** A person on the artist's public lineup/credits roster (M36) — a free
+ * name and role, not a Tahti account. */
 export type ChannelMember = {
   id: string;
-  username: string;
-  displayName: string;
-  role: 'OWNER' | 'MEMBER' | 'MODERATOR';
+  name: string;
+  role: string;
+  pictureUrl: string | null;
+  position: number;
 };
 
 export type ModeratorRow = {
