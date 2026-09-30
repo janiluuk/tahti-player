@@ -3939,3 +3939,14 @@ Slices came from tahti-org routes tahti-web never called (same route diff as bat
 - **Listening**: a Store section with the artist's purchase tiers on their page (#297); a Tahti Selects widget on Discover (#299); add a track to a collaborative playlist from its page (#303, stacked on #302); "Live · N listening" in the chat header (#304, stacked on #275).
 - **Public / admin**: platform numbers on What is tahti.live (#300); send a test notification to one member from `/admin/news` (#298).
 - **Checks:** each PR ran tahti-web type-check, lint, the size guard and the touched tests. Nothing was tried against the live API, Stripe checkout or Centrifugo.
+
+## 2026-09-30 - Ten cross-repo slices, thirteenth batch (tahti-player #306-#310, tahti-org #565-#571)
+
+Slices came from diffing the paths tahti-web calls against the routes tahti-org registers, in both directions. The diff misses routes registered through helpers (`registerAdminTransport` in `admin/channels.ts`), so #308 first dropped skip/pause/resume by mistake and then restored them. No `docs/todo/` file covered these slices. tahti-org catalogs (`remaining-work`, `features`, its HISTORY) are left for those PRs' merge commits, per that repo's stacking rule.
+
+- **Admin paths that 404'd (web)**: radio opt-out and move-to-front (#306), storage quota (#307), all five stream manager controls, now under `/api/admin/channels/:slug/*` (#308).
+- **Release tracks (API)**: `soundId` on release tracks, which fills the 24/7 rotation's release groups (tahti-org#565); delete a track (#566) and reorder tracks (#567, stacked), both refused with 409 once the release is sent for distribution.
+- **Sound share links (API)**: `SoundShare` table and list/create/revoke routes for the existing web UI (tahti-org#568); `?key=` opens a private track and its comments, with grantee-only links (#569, stacked).
+- **Mentions**: the public mentions API no longer names private tracks (tahti-org#570); the artist page labels announcement and chat mentions and opens sources in-app (#309).
+- **Channel kind**: board write route + audit action (tahti-org#571) and an Artist / Radio station switch in the admin user panel (#310).
+- **Checks:** tahti-web type-check, lint, the size guard and the touched tests per PR; tahti-org Vitest for each touched route against a throwaway Postgres, eslint and Prettier on the changed files, and `apps/api` typecheck. Nothing was tried against the live API or a running Liquidsoap.
