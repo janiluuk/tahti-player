@@ -10,6 +10,8 @@ export type LatestRelease = {
   artworkUrl: string | null;
   smartLinkSlug: string;
   artistDisplayName: string;
+  /** Sent by tahti-org since #576; older APIs leave it out. */
+  artistUsername?: string;
 };
 
 /** Newest published releases, by release date (the API has no listen
@@ -29,6 +31,7 @@ export async function fetchLatestReleases(limit = 10): Promise<{
           artworkUrl: null,
           smartLinkSlug: 'night-drive',
           artistDisplayName: 'Tahti',
+          artistUsername: 'tahti',
         },
       ],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
