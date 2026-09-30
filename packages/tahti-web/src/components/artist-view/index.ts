@@ -2,6 +2,7 @@ export { ArtistMusicTab } from './ArtistMusicTab';
 export {
   ArtistBioSection,
   ArtistEmbeds,
+  ArtistFanTiersNote,
   ArtistFeed,
   ArtistHeaderActions,
   ArtistLiveShows,

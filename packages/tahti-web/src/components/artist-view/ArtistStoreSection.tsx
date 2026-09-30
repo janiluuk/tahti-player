@@ -112,6 +112,9 @@ export function ArtistStoreSection({
   paymentsReady: boolean;
   isOwner: boolean;
 }) {
+  if (tiers.length === 0) {
+    return null;
+  }
   return (
     <section className="flex flex-col gap-3" aria-label="Store">
       <Eyebrow>Store</Eyebrow>
