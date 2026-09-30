@@ -3972,6 +3972,15 @@ Slices came from diffing the paths tahti-web calls against the routes on tahti-o
 - **Profile backdrop (#330)**: upload/remove it in Branding, and the artist page falls back to it when the channel has no slideshow.
 - **Checks:** tahti-web type-check, lint, the size guard and the touched tests per PR; tahti-org Vitest for each touched route against a throwaway Postgres, eslint and Prettier on the changed files, `apps/api` and `packages/shared` typecheck, `@tahti/api-client generate`. Nothing was tried against the live API or real storage.
 
+## 2026-09-30 - Ten todo slices, sixteenth batch (#332-#341)
+
+Slices came from the route diff against tahti-org `origin/main`, this time including the `/api/v1` routes the earlier diffs skipped, with each hit checked by hand. No `docs/todo/` file covered them. Left out after checking: `editor/bounce` (410 on the API), the export-plugin release routes (only a Revelator alias, which tahti-web already calls), the themes gallery (tahti-web's store reads tahti-registry by design), the profile logo (tahti-web shows it nowhere, and `ArtistView.tsx` / `api/types.ts` are at their size limits) and the collection text layer (the public collection routes don't return it; a cross-repo job).
+
+- **Listening and reporting**: listen-time heartbeats every 3 minutes while something plays, so minutes listened are counted for the new app (#334); report a track or channel to the board's moderation queue (#335). The RSS copy button (#336) wasn't merged: #348 in the next batch links the same feeds.
+- **Studio audio**: bring a hearthis.at embed's audio into Tahti (#333); trim and fade an announcement clip (#337); cut a ≤60 s station ID clip from a track (#338); add a library track, or a ready version of it, to a release (#339).
+- **Integrations**: restart the Tahti Radio Discord bot from its add-on card (#332); list a collaborator's hearthis.at tracks from a profile link or `@handle` in the Search tab (#340); connect Last.fm with your own API key when the server has none (#341).
+- **Checks:** each PR ran tahti-web type-check, lint, the size guard and the touched tests (#334 also the full unit suite, since it's mounted in the app shell). Nothing was tried against the live API, hearthis.at, Last.fm, the orchestrator or the render worker.
+
 ## 2026-09-30 - Ten cross-repo slices, seventeenth batch (tahti-player #343-#348, tahti-org #578-#583)
 
 Slices came from the same two-way route diff against tahti-org `origin/main`, each hit checked by hand. No `docs/todo/` file covered them. tahti-org catalogs (`remaining-work`, `features`, its HISTORY) are left for those PRs' merge commits, per that repo's stacking rule. Left out after checking: `/api/me/discovery` (still no fields in the schema) and admin i18n languages (no model).
