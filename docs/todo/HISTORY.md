@@ -3909,3 +3909,14 @@ Slices came from tahti-org routes tahti-web never called (the batch 8 leftovers 
 - **Radio (#268)**: a Featured tab on /radio lists the member sets Tahti Radio relayed, linked to their channels.
 - **Social auto-post**: connect Mastodon and Bluesky for release and go-live posts in Settings → Artist → Connections (#269); post by hand and see the post log with failures (#270, stacked). X and Instagram are left out because their OAuth callbacks land on the legacy `/dashboard`.
 - **Checks:** each PR ran tahti-web type-check, lint and the touched tests. Nothing was tried against the live API, Stripe, Centrifugo, a real RTMP destination or real Mastodon/Bluesky accounts.
+
+## 2026-09-29 - Ten todo slices, tenth batch (#273-#282)
+
+Slices came from tahti-org routes tahti-web never called (the batch 9 leftovers plus more from the route diff), each checked against its contract. No `docs/todo/` file covered them. The admin force-offline/restart, venue verify and fan-sub cancel leftovers turned out to be covered already (through `/api/admin/streams/*`, `admin-dashboard.ts` and `membership.ts`), and `/api/me/channel/blocks` is Channel Designer-sized, so it was left out.
+
+- **Download gates**: 14-day follow/repost gate funnel with a per-track table on Studio → Stats (#273); Require a follow / Require a repost toggles and the track's own funnel in the track edit dialog's Sharing tab (#274).
+- **Listening**: today's distinct listeners in the channel chat header, respecting the artist's switch (#275); listeners keep their own internet radio stations in Settings → Playback (#277).
+- **SoundCloud**: artists add and remove the SoundCloud tracks on their channel from Library → Embeds (#276); listeners see and play them, widget loaded only on play, on the artist page (#282).
+- **Studio**: smart-link views, clicks and clicks per service on a release's Smart links tab (#278); Record my broadcasts and Publish recordings automatically in Settings → Broadcast → Radio (#279; the record switch's fetchers existed but were unused).
+- **Settings / join**: channel comments and the comments default for new uploads (#280); the join dialog shows the handle and whether it's free, with the API's suggestions, and its Artist/Band switch is now `SegmentedControl` (#281).
+- **Checks:** each PR ran tahti-web type-check, lint, the size guard and the touched tests. Nothing was tried against the live API, SoundCloud's oEmbed or widget, or a real stream.
