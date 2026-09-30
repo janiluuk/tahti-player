@@ -36,6 +36,7 @@ import {
   useEditRail,
   usePresetLookDraft,
 } from '../components/channel-view';
+import { ChannelComments } from '../components/ChannelComments';
 import type { ChannelDesignerHandle } from '../components/ChannelDesigner';
 import { ChannelShareButton } from '../components/ChannelShareButton';
 import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
@@ -703,6 +704,7 @@ export function ChannelView({ slug }: { slug: string }) {
             onRetry={() => retrySection('widgets')}
           />
         ) : null}
+        {!editing ? <ChannelComments slug={slug} isOwner={isOwner} /> : null}
       </div>
     </div>
   );
