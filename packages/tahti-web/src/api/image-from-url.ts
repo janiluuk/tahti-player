@@ -51,3 +51,20 @@ export async function setCollectionCoverFromUrl(
     return failed(err);
   }
 }
+
+export async function setProfileAvatarFromUrl(
+  sourceUrl: string,
+): Promise<ImageResult> {
+  if (isForceMock()) {
+    return { ok: true, url: sourceUrl };
+  }
+  try {
+    const { data } = await requestJson<{ avatarUrl: string }>(
+      '/api/me/profile/avatar/from-url',
+      { method: 'POST', body: JSON.stringify({ sourceUrl }) },
+    );
+    return { ok: true, url: data.avatarUrl };
+  } catch (err) {
+    return failed(err);
+  }
+}
