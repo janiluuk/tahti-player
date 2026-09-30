@@ -48,6 +48,7 @@ import { useAuthModalStore } from '../../../stores/authModalStore';
 import { useAuthStore } from '../../../stores/authStore';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import { StudioBrandingPanel } from '../../studio/StudioBrandingView';
+import { ChannelMembersEditor } from '../ChannelMembersEditor';
 import { SettingsHint } from '../SettingsFields';
 import { SocialAutoPost } from '../SocialAutoPost';
 
@@ -426,25 +427,7 @@ export function ArtistPanel() {
                     page.
                   </p>
                 </div>
-                {members.length === 0 ? (
-                  <SettingsHint>No members listed.</SettingsHint>
-                ) : (
-                  <ul className="flex flex-col gap-2">
-                    {members.map((member) => (
-                      <li
-                        key={member.id}
-                        className="border-border flex items-center justify-between rounded-md border px-3 py-2 text-sm"
-                      >
-                        <span>
-                          {member.displayName} (@{member.username})
-                        </span>
-                        <span className="text-foreground-secondary text-xs uppercase">
-                          {member.role}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                <ChannelMembersEditor members={members} onChange={setMembers} />
               </div>
               <div className="flex justify-end">
                 <SaveButton

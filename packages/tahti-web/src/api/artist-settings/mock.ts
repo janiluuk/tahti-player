@@ -55,15 +55,17 @@ export let mockSocial: SocialConnections = {
 export const mockMembers: ChannelMember[] = [
   {
     id: 'm1',
-    username: 'demo',
-    displayName: 'Demo Artist',
-    role: 'OWNER',
+    name: 'Demo Artist',
+    role: 'Vocals, synths',
+    pictureUrl: null,
+    position: 0,
   },
   {
     id: 'm2',
-    username: 'co-host',
-    displayName: 'Co Host',
-    role: 'MEMBER',
+    name: 'Co Host',
+    role: 'Drums',
+    pictureUrl: null,
+    position: 1,
   },
 ];
 
