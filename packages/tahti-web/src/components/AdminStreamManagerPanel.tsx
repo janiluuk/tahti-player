@@ -3,9 +3,12 @@ import {
   ChevronUpIcon,
   ExternalLinkIcon,
   EyeIcon,
+  PauseIcon,
+  PlayIcon,
   PowerIcon,
   RefreshCw,
   RotateCwIcon,
+  SkipForwardIcon,
 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -21,7 +24,10 @@ import {
 import {
   fetchAdminStreams,
   forceStreamOffline,
+  pauseStream,
   restartStream,
+  resumeStream,
+  skipStreamTrack,
   type AdminLiveStreamRow,
 } from '../api/admin';
 import {
@@ -228,6 +234,39 @@ export function AdminStreamManagerPanel({
                         }
                       >
                         <RotateCwIcon size={14} aria-hidden />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip content="Skip current item" side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="secondary"
+                        aria-label={`Skip ${stream.artistName}`}
+                        disabled={busySlug === stream.slug}
+                        onClick={() => run(stream.slug, skipStreamTrack)}
+                      >
+                        <SkipForwardIcon size={14} aria-hidden />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip content="Pause stream" side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="secondary"
+                        aria-label={`Pause ${stream.artistName}`}
+                        disabled={busySlug === stream.slug}
+                        onClick={() => run(stream.slug, pauseStream)}
+                      >
+                        <PauseIcon size={14} aria-hidden />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip content="Resume stream" side="top">
+                      <Button
+                        size="icon-sm"
+                        variant="secondary"
+                        aria-label={`Resume ${stream.artistName}`}
+                        disabled={busySlug === stream.slug}
+                        onClick={() => run(stream.slug, resumeStream)}
+                      >
+                        <PlayIcon size={14} aria-hidden />
                       </Button>
                     </Tooltip>
                     <Tooltip content="Force offline" side="top">

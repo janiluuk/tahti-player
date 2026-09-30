@@ -1,6 +1,12 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { forceStreamOffline, restartStream } from './admin-streams';
+import {
+  forceStreamOffline,
+  pauseStream,
+  restartStream,
+  resumeStream,
+  skipStreamTrack,
+} from './admin-streams';
 
 describe('admin stream controls', () => {
   afterEach(() => {
@@ -9,6 +15,9 @@ describe('admin stream controls', () => {
 
   it.each([
     ['restart', restartStream],
+    ['skip', skipStreamTrack],
+    ['pause', pauseStream],
+    ['resume', resumeStream],
     ['force-offline', forceStreamOffline],
   ] as const)('posts %s to /api/admin/channels/:slug', async (action, call) => {
     const fetchSpy = vi

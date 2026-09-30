@@ -74,6 +74,33 @@ export function restartStream(slug: string) {
   );
 }
 
+export function skipStreamTrack(slug: string) {
+  if (isForceMock()) {
+    return Promise.resolve({ ok: true } as const);
+  }
+  return mutate(`/api/admin/channels/${encodeURIComponent(slug)}/skip`, 'POST');
+}
+
+export function pauseStream(slug: string) {
+  if (isForceMock()) {
+    return Promise.resolve({ ok: true } as const);
+  }
+  return mutate(
+    `/api/admin/channels/${encodeURIComponent(slug)}/pause`,
+    'POST',
+  );
+}
+
+export function resumeStream(slug: string) {
+  if (isForceMock()) {
+    return Promise.resolve({ ok: true } as const);
+  }
+  return mutate(
+    `/api/admin/channels/${encodeURIComponent(slug)}/resume`,
+    'POST',
+  );
+}
+
 export function forceStreamOffline(slug: string) {
   if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
