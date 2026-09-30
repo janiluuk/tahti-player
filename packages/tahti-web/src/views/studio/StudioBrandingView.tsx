@@ -16,6 +16,7 @@ import { useSettingsModalStore } from '../../stores/settingsModalStore';
 import { GallerySection } from './branding/GallerySection';
 import { PressKitSection } from './branding/PressKitSection';
 import { ProfileBackdropSection } from './branding/ProfileBackdropSection';
+import { ProfileLogoSection } from './branding/ProfileLogoSection';
 import { ProfilePictureSection } from './branding/ProfilePictureSection';
 import { usePressKit } from './branding/usePressKit';
 
@@ -102,6 +103,15 @@ export const StudioBrandingPanel: FC<{
             onChange={(backdropUrl) =>
               kit.setProfile((current) =>
                 current ? { ...current, backdropUrl } : current,
+              )
+            }
+          />
+          <ProfileLogoSection
+            logoUrl={profile?.logoUrl ?? null}
+            logoPlacement={profile?.logoPlacement ?? null}
+            onChange={(logo) =>
+              kit.setProfile((current) =>
+                current ? { ...current, ...logo } : current,
               )
             }
           />
