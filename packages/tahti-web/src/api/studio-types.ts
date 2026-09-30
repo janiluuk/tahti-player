@@ -33,6 +33,8 @@ export type StudioSound = {
   topListsEligible?: boolean;
   commentsEnabled?: boolean;
   downloadsEnabled?: boolean;
+  followToDownload?: boolean;
+  repostToDownload?: boolean;
   visibility?: 'PUBLIC' | 'UNLISTED' | 'PRIVATE' | 'STASH';
   fanTierIds?: string[];
   /** One-time-purchase gate — set via `setSoundPurchaseAccess`, not part
@@ -93,6 +95,8 @@ export type StudioSoundPatch = {
   topListsEligible?: boolean;
   commentsEnabled?: boolean;
   downloadsEnabled?: boolean;
+  followToDownload?: boolean;
+  repostToDownload?: boolean;
   visibility?: 'PUBLIC' | 'UNLISTED' | 'PRIVATE' | 'STASH';
   fanTierIds?: string[];
   releaseDate?: string | null;

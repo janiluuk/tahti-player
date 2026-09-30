@@ -9,6 +9,7 @@ import {
 } from '../AudienceVisibilitySection';
 import { PurchaseAccessSection } from '../PurchaseAccessSection';
 import { SoundShareLinksSection } from '../SoundShareLinksSection';
+import { DownloadGateSection } from './DownloadGateSection';
 import type { TrackEditDialogState } from './useTrackEditDialog';
 
 export function SharingTab({
@@ -64,6 +65,14 @@ export function SharingTab({
           }
         />
       </div>
+      {form.downloadsEnabled && !item.embedProvider ? (
+        <DownloadGateSection
+          soundId={soundId}
+          followToDownload={form.followToDownload ?? false}
+          repostToDownload={form.repostToDownload ?? false}
+          onChange={(patch) => setForm({ ...form, ...patch })}
+        />
+      ) : null}
       {item.embedProvider === 'HEARTHIS' && form.downloadsEnabled ? (
         <Button
           size="sm"
