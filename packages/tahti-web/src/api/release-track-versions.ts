@@ -87,3 +87,86 @@ export async function activateReleaseTrackVersion(
     };
   }
 }
+
+export const RELEASE_TRACK_VERSION_TYPES = [
+  'audio/wav',
+  'audio/flac',
+  'audio/mpeg',
+  'audio/aac',
+  'audio/x-aiff',
+];
+
+/** Upload a replacement master; it arrives as a new, inactive version that
+ * is transcoded before it can be made active. */
+export async function uploadReleaseTrackVersion(
+  releaseId: string,
+  trackId: string,
+  file: File,
+  versionLabel: string,
+): Promise<
+  { ok: true; data: ReleaseTrackVersion } | { ok: false; error: string }
+> {
+  const label = versionLabel.trim() || file.name || 'New version';
+  const contentType = file.type || 'audio/mpeg';
+  if (!RELEASE_TRACK_VERSION_TYPES.includes(contentType)) {
+    return { ok: false, error: 'Use WAV, FLAC, MP3, AAC or AIFF' };
+  }
+  if (isForceMock()) {
+    const current = mockFor(trackId);
+    const created: ReleaseTrackVersion = {
+      id: `${trackId}-v${current.length + 1}`,
+      versionNumber: current.length + 1,
+      versionLabel: label,
+      status: 'PENDING',
+      isActive: false,
+      durationSec: null,
+      createdAt: new Date().toISOString(),
+    };
+    mockVersions.set(trackId, [...current, created]);
+    return { ok: true, data: created };
+  }
+  try {
+    const { data: prep } = await requestJson<{
+      uploadId: string;
+      uploadUrl: string;
+    }>(`${base(releaseId, trackId)}/prepare`, {
+      method: 'POST',
+      body: JSON.stringify({ filename: file.name, contentType }),
+    });
+    const put = await fetch(prep.uploadUrl, {
+      method: 'PUT',
+      body: file,
+      headers: { 'Content-Type': contentType },
+    });
+    if (!put.ok) {
+      throw new Error(`Upload failed (${put.status})`);
+    }
+    const { data: done } = await requestJson<{
+      versionId: string;
+      versionNumber: number;
+      versionLabel: string;
+      status: string;
+    }>(`${base(releaseId, trackId)}/complete`, {
+      method: 'POST',
+      body: JSON.stringify({ uploadId: prep.uploadId, versionLabel: label }),
+    });
+    return {
+      ok: true,
+      data: {
+        id: done.versionId,
+        versionNumber: done.versionNumber,
+        versionLabel: done.versionLabel,
+        status: done.status,
+        isActive: false,
+        durationSec: null,
+        createdAt: new Date().toISOString(),
+      },
+    };
+  } catch (err) {
+    return {
+      ok: false,
+      error:
+        err instanceof Error ? err.message : 'Could not upload the version',
+    };
+  }
+}

@@ -82,4 +82,34 @@ describe('ReleaseTrackVersionsPanel', () => {
     });
     expect(screen.getByText('No tracks on this release yet')).toBeTruthy();
   });
+  it('uploads a new version with a label', async () => {
+    vi.spyOn(api, 'fetchReleaseTrackVersions').mockResolvedValue({
+      data: [version(1)],
+      meta: { source: 'api' },
+    });
+    const upload = vi
+      .spyOn(api, 'uploadReleaseTrackVersion')
+      .mockResolvedValue({
+        ok: true,
+        data: version(2, { status: 'PENDING', isActive: false }),
+      });
+    const { container } = await act(async () =>
+      render(<ReleaseTrackVersionsPanel releaseId="r1" tracks={TRACKS} />),
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Add a version' }));
+    fireEvent.change(screen.getByLabelText('Version label'), {
+      target: { value: 'Remaster' },
+    });
+    const file = new File(['x'], 'master.wav', { type: 'audio/wav' });
+    const input = container.querySelector('input[type="file"]')!;
+    await act(async () => {
+      fireEvent.change(input, { target: { files: [file] } });
+    });
+    expect(upload).toHaveBeenCalledWith('r1', 't1', file, 'Remaster');
+    const list = screen.getByRole('list', { name: 'Night Drive versions' });
+    expect(within(list).getAllByRole('listitem')[1]!.textContent).toContain(
+      'Processing',
+    );
+    expect(screen.getByRole('button', { name: 'Add a version' })).toBeTruthy();
+  });
 });
