@@ -5,6 +5,7 @@ import {
   ForgotPasswordView,
   JoinView,
   LoginView,
+  NewsletterStatusView,
   ResetPasswordView,
   SetupPasswordView,
   SignupPaymentView,
@@ -87,4 +88,25 @@ export const statusRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/status',
   component: StatusView,
+});
+
+export const newsletterConfirmedRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/newsletter/confirmed',
+  component: () => <NewsletterStatusView status={{ kind: 'confirmed' }} />,
+});
+
+export const newsletterUnsubscribedRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/newsletter/unsubscribed',
+  component: () => <NewsletterStatusView status={{ kind: 'unsubscribed' }} />,
+});
+
+export const newsletterUnsubscribeRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/newsletter/unsubscribe/$token',
+  component: function NewsletterUnsubscribe() {
+    const { token } = newsletterUnsubscribeRoute.useParams();
+    return <NewsletterStatusView status={{ kind: 'unsubscribe', token }} />;
+  },
 });

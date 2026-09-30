@@ -240,6 +240,10 @@ export const SignupPaymentView = lazyRouteComponent(
   () => import('../views/SignupPaymentView'),
   'SignupPaymentView',
 );
+export const NewsletterStatusView = lazyRouteComponent(
+  () => import('../views/NewsletterStatusView'),
+  'NewsletterStatusView',
+);
 export const VerifyView = lazyRouteComponent(
   () => import('../views/VerifyView'),
   'VerifyView',
