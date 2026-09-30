@@ -69,7 +69,7 @@ export function restartStream(slug: string) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
-    `/api/admin/streams/${encodeURIComponent(slug)}/restart`,
+    `/api/admin/channels/${encodeURIComponent(slug)}/restart`,
     'POST',
   );
 }
@@ -78,14 +78,17 @@ export function skipStreamTrack(slug: string) {
   if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
-  return mutate(`/api/admin/streams/${encodeURIComponent(slug)}/skip`, 'POST');
+  return mutate(`/api/admin/channels/${encodeURIComponent(slug)}/skip`, 'POST');
 }
 
 export function pauseStream(slug: string) {
   if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
-  return mutate(`/api/admin/streams/${encodeURIComponent(slug)}/pause`, 'POST');
+  return mutate(
+    `/api/admin/channels/${encodeURIComponent(slug)}/pause`,
+    'POST',
+  );
 }
 
 export function resumeStream(slug: string) {
@@ -93,7 +96,7 @@ export function resumeStream(slug: string) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
-    `/api/admin/streams/${encodeURIComponent(slug)}/resume`,
+    `/api/admin/channels/${encodeURIComponent(slug)}/resume`,
     'POST',
   );
 }
@@ -103,7 +106,7 @@ export function forceStreamOffline(slug: string) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
-    `/api/admin/streams/${encodeURIComponent(slug)}/force-offline`,
+    `/api/admin/channels/${encodeURIComponent(slug)}/force-offline`,
     'POST',
   );
 }
