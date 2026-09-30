@@ -29,6 +29,7 @@ import type { ReactNode } from 'react';
 
 import { LegalHubLinks } from '../components/LegalHubLinks';
 import { PageFrame, PageHeader } from '../components/PageHeader';
+import { PlatformStatsStrip } from '../components/PlatformStatsStrip';
 import { getLegalPage } from '../content/legal';
 
 const detail = getLegalPage('what-is-it');
@@ -305,6 +306,8 @@ export function WhatIsItView() {
           </Link>
         </div>
       </section>
+
+      <PlatformStatsStrip />
 
       {/* Thesis */}
       <section>
