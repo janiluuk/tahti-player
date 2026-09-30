@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
+  setChannelMemberPictureFromUrl,
   setCollectionCoverFromUrl,
   setProfileAvatarFromUrl,
   setReleaseArtworkFromUrl,
@@ -96,5 +97,25 @@ describe('setProfileAvatarFromUrl', () => {
     expect(JSON.parse(fetchSpy.mock.calls[0]![1]!.body as string)).toEqual({
       sourceUrl: 'https://example.com/me.jpg',
     });
+  });
+});
+
+describe('setChannelMemberPictureFromUrl', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("asks the API to fetch the image as a member's picture", async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ url: 'https://cdn/ada.jpg' }), {
+        status: 200,
+      }),
+    );
+    await expect(
+      setChannelMemberPictureFromUrl('m1', 'https://example.com/ada.jpg'),
+    ).resolves.toEqual({ ok: true, url: 'https://cdn/ada.jpg' });
+    expect(fetchSpy.mock.calls[0]![0]).toBe(
+      '/tahti-api/api/me/channel/members/m1/picture/from-url',
+    );
   });
 });

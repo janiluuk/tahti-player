@@ -12,6 +12,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { ChannelMember } from '../../api/artist-settings';
 import * as api from '../../api/channel-members';
+import * as images from '../../api/image-from-url';
 import { ChannelMembersEditor } from './ChannelMembersEditor';
 
 const ADA: ChannelMember = {
@@ -95,6 +96,24 @@ describe('ChannelMembersEditor', () => {
       fireEvent.change(input, { target: { files: [file] } });
     });
     expect(upload).toHaveBeenCalledWith('m1', file);
+    expect(container.querySelector('img')?.getAttribute('src')).toBe(
+      'https://cdn/ada.jpg',
+    );
+  });
+  it("sets a member's picture from an image link while editing", async () => {
+    const fromUrl = vi
+      .spyOn(images, 'setChannelMemberPictureFromUrl')
+      .mockResolvedValue({ ok: true, url: 'https://cdn/ada.jpg' });
+    const { container } = render(<Harness initial={[ADA]} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Edit Ada' }));
+    fireEvent.change(screen.getByLabelText('Image URL'), {
+      target: { value: 'https://example.com/ada.jpg' },
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Use this image' }));
+    });
+    expect(fromUrl).toHaveBeenCalledWith('m1', 'https://example.com/ada.jpg');
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
     expect(container.querySelector('img')?.getAttribute('src')).toBe(
       'https://cdn/ada.jpg',
     );

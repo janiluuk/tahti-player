@@ -12,6 +12,8 @@ import {
   updateChannelMember,
   uploadChannelMemberPicture,
 } from '../../api/channel-members';
+import { setChannelMemberPictureFromUrl } from '../../api/image-from-url';
+import { ImageUrlForm } from '../../components/ImageUrlForm';
 import { RoundImageUploadButton } from '../../components/RoundImageUploadButton';
 import { SettingsHint } from './SettingsFields';
 
@@ -95,6 +97,9 @@ export function ChannelMembersEditor({
 }) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [removingId, setRemovingId] = useState<string | null>(null);
+  const [fetchingPictureId, setFetchingPictureId] = useState<string | null>(
+    null,
+  );
 
   const add = async (value: { name: string; role: string }) => {
     const result = await addChannelMember(value);
@@ -116,6 +121,22 @@ export function ChannelMembersEditor({
       members.map((member) => (member.id === id ? result.data : member)),
     );
     setEditingId(null);
+    return true;
+  };
+
+  const pictureFromUrl = async (id: string, sourceUrl: string) => {
+    setFetchingPictureId(id);
+    const result = await setChannelMemberPictureFromUrl(id, sourceUrl);
+    setFetchingPictureId(null);
+    if (!result.ok) {
+      toast.error(result.error);
+      return false;
+    }
+    onChange(
+      members.map((member) =>
+        member.id === id ? { ...member, pictureUrl: result.url } : member,
+      ),
+    );
     return true;
   };
 
@@ -161,12 +182,18 @@ export function ChannelMembersEditor({
               className="border-border rounded-md border px-3 py-2 text-sm"
             >
               {editingId === member.id ? (
-                <MemberForm
-                  initial={member}
-                  submitLabel="Save"
-                  onSubmit={(value) => save(member.id, value)}
-                  onCancel={() => setEditingId(null)}
-                />
+                <div className="flex flex-col gap-3">
+                  <MemberForm
+                    initial={member}
+                    submitLabel="Save"
+                    onSubmit={(value) => save(member.id, value)}
+                    onCancel={() => setEditingId(null)}
+                  />
+                  <ImageUrlForm
+                    busy={fetchingPictureId === member.id}
+                    onSubmit={(url) => pictureFromUrl(member.id, url)}
+                  />
+                </div>
               ) : (
                 <div className="flex items-center gap-3">
                   <RoundImageUploadButton
