@@ -19,9 +19,9 @@ This maps the public Tahti product described at [tahti.live](https://tahti.live/
 | Listen directory / on-air discovery | `/` (production `/listen`) | Present | Route intentionally differs; directory uses the live channel API. |
 | Artist live channel and archive | `/channel/$slug` (production `/c/:slug`) | Present | HLS, archive playback, now-playing state, chat, and visualizer are present. |
 | Anonymous listening | Public listener routes | Present | Matches the product principle that listening does not require an account. |
-| Channel chat | Channel rail and `/chat/$slug` | Present | REST/WS chat, anonymous hCaptcha join, reactions, and subscriber-only gating are wired. The header shows today's listener count unless the artist turned it off (#275). |
+| Channel chat | Channel rail and `/chat/$slug` | Present | REST/WS chat, anonymous hCaptcha join, reactions, and subscriber-only gating are wired. The header shows today's listener count unless the artist turned it off (#275). Channel pages also take comments (#285), and an old address after a rename redirects (#290). |
 | Tahti Radio | `/radio` | Present | Radio playback and current-track presentation are implemented. |
-| Artist profiles | `/u/$username` | Present | Includes pinned tracks, catalog, gallery, and profile actions, plus the artist's SoundCloud tracks (#282; managed from Library → Embeds, #276). |
+| Artist profiles | `/u/$username` | Present | Includes pinned tracks, catalog, gallery, and profile actions, plus the artist's SoundCloud tracks (#282; managed from Library → Embeds, #276) and top-list rank badges on popular tracks (#286). |
 | Collections and smart links | `/u/$username/c/$slug`, `/r/$slug` | Present | Both public surfaces are implemented. |
 | Favorites and history | `/library/*` | Partial | Beta uses local persistence/follows; it is not a full production account-backed equivalent. |
 | Playlists | Player bar, Music/library tables | Present | Create and add-to-playlist flows are live-API backed. |
@@ -39,7 +39,7 @@ This maps the public Tahti product described at [tahti.live](https://tahti.live/
 | Artist dashboard | `/studio` | Present | Studio shell and section navigation are implemented. |
 | Channel setup | `/studio/channel?tab=setup` | Present | Channel provisioning uses the live API. |
 | Go Live / browser broadcast | `/studio/go-live` | Present | Broadcast wizard is present; simulator behavior is restricted to mock mode. |
-| Multistream RTMP | Go Live → multistream | Present | RTMP target management is included in the live flow. Stream key and Icecast password can be replaced from Go Live (#271); Tahti Radio's own destinations are in `/admin/radio` (#263). |
+| Multistream RTMP | Go Live → multistream | Present | RTMP target management is included in the live flow; live status per destination is on Channel → Radio → Stream (#289). Stream key and Icecast password can be replaced from Go Live (#271); Tahti Radio's own destinations are in `/admin/radio` (#263). |
 | Archive, upload, releases, collections | `/studio/archive`, `/studio/upload`, `/studio/releases`, `/studio/collections` | Present | Upload prepare/complete and album-based collection design are implemented. |
 | Pro editor | `/studio/editor` | Partial | Core editor exists, but production-grade multitrack timeline depth is still missing. |
 | Schedule / 24/7 rotation / radio shows | `/studio/schedule` (Broadcast), `/studio/channel`, `/studio/shows` | Present | Nav and page title are Broadcast. Programme, rotation, bookings, series, and episodes are on that page and Channel → Radio. |
