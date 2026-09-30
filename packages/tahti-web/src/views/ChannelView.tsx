@@ -26,6 +26,7 @@ import {
   ChannelEditToolbar,
   ChannelHeroBlock,
   ChannelLayersPanel,
+  ChannelNotFound,
   ChannelPageBackdrop,
   ChannelStagePlayer,
   heroVisualizerSettingsFor,
@@ -42,7 +43,7 @@ import {
   EntitySocialHeader,
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
-import { PageEmpty, PageLoading } from '../components/PageStates';
+import { PageLoading } from '../components/PageStates';
 import { StreamManagerPanel } from '../components/StreamManagerPanel';
 import { OnAirBadge } from '../components/tahti/OnAirBadge';
 import { listenerWidgetType } from '../content/listenerWidgets';
@@ -260,12 +261,7 @@ export function ChannelView({ slug }: { slug: string }) {
   }
 
   if (!channel) {
-    return (
-      <PageEmpty
-        title="Channel not found"
-        description="This channel may have been removed or is not available."
-      />
-    );
+    return <ChannelNotFound slug={slug} />;
   }
 
   const live = channel.state === 'LIVE' && Boolean(channel.hlsUrl);
