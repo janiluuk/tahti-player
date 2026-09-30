@@ -1,18 +1,23 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Badge, Button, EmptyState } from '@tahti-player/ui';
+import { Badge, Button, EmptyState, FilePicker, Input } from '@tahti-player/ui';
 
 import {
   activateReleaseTrackVersion,
   fetchReleaseTrackVersions,
+  RELEASE_TRACK_VERSION_TYPES,
+  uploadReleaseTrackVersion,
   type ReleaseTrackVersion,
 } from '../../../api/release-track-versions';
 import type { StudioRelease } from '../../../api/studio-types';
 import { StudioPanel } from '../../../components/StudioPanel';
+import { usePolling } from '../../../hooks/usePolling';
 import { formatDuration } from '../../../lib/playableToTrack';
 
 type ReleaseTrack = NonNullable<StudioRelease['tracks']>[number];
+
+const PROCESSING_POLL_MS = 10_000;
 
 function TrackVersions({
   releaseId,
@@ -23,18 +28,52 @@ function TrackVersions({
 }) {
   const [versions, setVersions] = useState<ReleaseTrackVersion[] | null>(null);
   const [switchingId, setSwitchingId] = useState<string | null>(null);
+  const [adding, setAdding] = useState(false);
+  const [label, setLabel] = useState('');
+  const [uploading, setUploading] = useState(false);
 
-  useEffect(() => {
-    let cancelled = false;
+  const load = useCallback(() => {
     void fetchReleaseTrackVersions(releaseId, track.id).then((result) => {
-      if (!cancelled) {
-        setVersions(result.data ?? []);
-      }
+      setVersions((current) => result.data ?? current ?? []);
     });
-    return () => {
-      cancelled = true;
-    };
   }, [releaseId, track.id]);
+
+  useEffect(load, [load]);
+  usePolling(
+    load,
+    PROCESSING_POLL_MS,
+    Boolean(
+      versions?.some(
+        (version) =>
+          version.status === 'PENDING' || version.status === 'PROCESSING',
+      ),
+    ),
+  );
+
+  const upload = async (files: readonly File[]) => {
+    const file = files[0];
+    if (!file) {
+      return;
+    }
+    setUploading(true);
+    const result = await uploadReleaseTrackVersion(
+      releaseId,
+      track.id,
+      file,
+      label,
+    );
+    setUploading(false);
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    setVersions((current) => [...(current ?? []), result.data]);
+    setLabel('');
+    setAdding(false);
+    toast.success(
+      'Version uploaded. It can be made active once it is processed.',
+    );
+  };
 
   const activate = async (versionId: string) => {
     setSwitchingId(versionId);
@@ -97,6 +136,44 @@ function TrackVersions({
             </li>
           ))}
         </ul>
+      )}
+      {adding ? (
+        <div className="flex flex-col gap-2">
+          <Input
+            label="Version label"
+            placeholder="Remaster 2026"
+            value={label}
+            onChange={(event) => setLabel(event.target.value)}
+          />
+          <FilePicker
+            labels={{
+              title: `New version of ${track.title}`,
+              description: 'WAV, FLAC, MP3, AAC or AIFF',
+              browse: uploading ? 'Uploading…' : 'Choose audio file',
+            }}
+            accept={RELEASE_TRACK_VERSION_TYPES.join(',')}
+            disabled={uploading}
+            onFiles={(files) => void upload(files)}
+          />
+          <Button
+            variant="text"
+            size="sm"
+            className="self-start"
+            disabled={uploading}
+            onClick={() => setAdding(false)}
+          >
+            Cancel
+          </Button>
+        </div>
+      ) : (
+        <Button
+          variant="secondary"
+          size="sm"
+          className="self-start"
+          onClick={() => setAdding(true)}
+        >
+          Add a version
+        </Button>
       )}
     </li>
   );
