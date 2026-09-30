@@ -2,9 +2,10 @@ import { Link } from '@tanstack/react-router';
 import { ExternalLinkIcon, MusicIcon, PlayIcon } from 'lucide-react';
 import { useEffect, useState, type FC } from 'react';
 
-import { Button } from '@tahti-player/ui';
+import { Button, ExternalLink } from '@tahti-player/ui';
 
 import { fetchChannelSound, fetchProfile, fetchSmartLink } from '../api/client';
+import { recordSmartLinkClick } from '../api/smart-link-clicks';
 import type {
   SmartLinkView as SmartLinkData,
   TahtiPlayable,
@@ -230,19 +231,20 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
           </a>
         ) : (
           targets.map(([name, url]) => (
-            <a
+            <ExternalLink
               key={name}
               href={url}
-              target="_blank"
-              rel="noreferrer"
-              className="border-border hover:bg-background-secondary flex items-center justify-between rounded-lg border px-4 py-3 font-semibold transition-colors"
+              onClick={() =>
+                recordSmartLinkClick(data.release.smartLinkSlug ?? slug, name)
+              }
+              className="border-border hover:bg-background-secondary flex items-center justify-between rounded-lg border px-4 py-3 font-semibold no-underline transition-colors"
             >
               <span>{DSP_LABELS[name.toLowerCase()] ?? name}</span>
               <span className="text-foreground-secondary flex items-center gap-2 text-xs font-normal">
                 Listen
                 <ExternalLinkIcon size={15} aria-hidden />
               </span>
-            </a>
+            </ExternalLink>
           ))
         )}
       </section>
