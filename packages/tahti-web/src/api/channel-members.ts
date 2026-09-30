@@ -145,3 +145,25 @@ export async function clearChannelMemberPicture(
     return { ok: false, error: message(err, 'Could not remove the picture') };
   }
 }
+
+/** Save the roster's display order (every member id, first to last). */
+export async function reorderChannelMembers(
+  ids: string[],
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (isForceMock()) {
+    mockMembers.sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
+    mockMembers.forEach((member, position) => {
+      member.position = position;
+    });
+    return { ok: true };
+  }
+  try {
+    await requestJson('/api/me/channel/members/reorder', {
+      method: 'PUT',
+      body: JSON.stringify({ ids }),
+    });
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: message(err, 'Could not save the order') };
+  }
+}

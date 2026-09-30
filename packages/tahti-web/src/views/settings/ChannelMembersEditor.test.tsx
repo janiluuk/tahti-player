@@ -118,4 +118,29 @@ describe('ChannelMembersEditor', () => {
       'https://cdn/ada.jpg',
     );
   });
+  it('moves a person and puts them back when saving the order fails', async () => {
+    const BO = { ...ADA, id: 'm2', name: 'Bo', role: 'Drums', position: 1 };
+    const reorder = vi
+      .spyOn(api, 'reorderChannelMembers')
+      .mockResolvedValueOnce({ ok: true })
+      .mockResolvedValueOnce({ ok: false, error: 'Could not save the order' });
+    render(<Harness initial={[ADA, BO]} />);
+    const names = () =>
+      within(screen.getByTestId('channel-members'))
+        .getAllByRole('listitem')
+        .map((row) => row.textContent);
+    expect(
+      (screen.getByRole('button', { name: 'Move Ada up' }) as HTMLButtonElement)
+        .disabled,
+    ).toBe(true);
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Move Bo up' }));
+    });
+    expect(reorder).toHaveBeenCalledWith(['m2', 'm1']);
+    expect(names()[0]).toContain('Bo');
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Move Bo down' }));
+    });
+    expect(names()[0]).toContain('Bo');
+  });
 });
