@@ -4,6 +4,7 @@ import {
   Code2Icon,
   EyeIcon,
   FingerprintIcon,
+  LayersIcon,
   LayoutDashboardIcon,
   Link2Icon,
   LinkIcon,
@@ -45,6 +46,7 @@ import { trackTableLabels } from '../../lib/trackTableLabels';
 import { ReleaseSmartLinksPanel } from './release-detail/ReleaseSmartLinksPanel';
 import { ReleaseSmartLinkStats } from './release-detail/ReleaseSmartLinkStats';
 import { ReleaseTrackCreditsPanel } from './release-detail/ReleaseTrackCreditsPanel';
+import { ReleaseTrackVersionsPanel } from './release-detail/ReleaseTrackVersionsPanel';
 import { useReleaseDetail } from './release-detail/useReleaseDetail';
 
 export function StudioReleaseDetailView({ id }: { id: string }) {
@@ -441,6 +443,17 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                         />
                       )}
                     </StudioPanel>
+                  ),
+                },
+                {
+                  id: 'versions',
+                  label: 'Versions',
+                  icon: <LayersIcon size={14} />,
+                  content: (
+                    <ReleaseTrackVersionsPanel
+                      releaseId={id}
+                      tracks={release.tracks ?? []}
+                    />
                   ),
                 },
                 {
