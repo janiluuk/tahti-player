@@ -13,6 +13,7 @@ import { Button, Tooltip } from '@tahti-player/ui';
 import type { StudioSound } from '../../api/studio-types';
 import { AudioRevisionList } from '../AudioRevisionList';
 import { WaveformSeekbar } from '../tahti/WaveformSeekbar';
+import { StationIdClipForm } from './StationIdClipForm';
 import type { TrackEditDialogState } from './useTrackEditDialog';
 
 function formatTime(sec: number): string {
@@ -230,6 +231,13 @@ export function AudioTab({
               artistName={form.artistName || item.artistName || ''}
               coverUrl={form.bannerUrl || item.bannerUrl}
               reloadToken={revisionTick}
+            />
+          ) : null}
+          {soundId && item ? (
+            <StationIdClipForm
+              soundId={soundId}
+              durationSec={editList?.sourceDuration ?? item.durationSec ?? null}
+              playheadSec={isCurrentPlayable ? currentTime : null}
             />
           ) : null}
         </>
