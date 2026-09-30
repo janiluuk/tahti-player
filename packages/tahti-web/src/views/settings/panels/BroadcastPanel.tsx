@@ -25,6 +25,7 @@ import {
 import { MulticastSection } from '../../../components/MulticastSection';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import { SettingsHint, SettingsToggle } from '../SettingsFields';
+import { BroadcastRecordingToggles } from './BroadcastRecordingToggles';
 
 export type BroadcastSection = 'radio' | 'green-room' | 'multistream';
 
@@ -92,6 +93,7 @@ export function BroadcastPanel({
               void patchProgramme({ fallbackAutoEnroll: v });
             }}
           />
+          <BroadcastRecordingToggles />
           <ButtonLink
             className="w-fit"
             to="/studio/schedule"
