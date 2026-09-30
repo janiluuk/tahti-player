@@ -47,6 +47,7 @@ import {
   ArtistPopularTracks,
   ArtistRelatedArtists,
   ArtistReleasesGrid,
+  ArtistStoreSection,
   ArtistTaggedIn,
   useArtistCatalog,
   useArtistChannelLook,
@@ -570,6 +571,15 @@ function ArtistProfilePage({ username }: { username: string }) {
             .join(', ')}
         </p>
       )}
+
+      {profile.purchaseTiers && profile.purchaseTiers.length > 0 ? (
+        <ArtistStoreSection
+          username={artist.username}
+          tiers={profile.purchaseTiers}
+          paymentsReady={profile.storePaymentsReady !== false}
+          isOwner={isOwner}
+        />
+      ) : null}
 
       {lookVisibility.feed && taggedIn.length > 0 ? (
         <ArtistTaggedIn
