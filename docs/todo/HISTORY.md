@@ -3930,3 +3930,12 @@ Slices came from tahti-org routes tahti-web never called, found with a route dif
 - **Messages (#288)**: start a DM from your contacts (people you follow or who follow you).
 - **Studio**: push a track to your own hearthis.at account from the track edit dialog (#287); live multistream destination status on Channel → Radio → Stream (#289); play the 24/7 rotation from one of your collections (#291); set release artwork (#292) and collection covers (#293, stacked) from an image link.
 - **Checks:** each PR ran tahti-web type-check, lint, the size guard and the touched tests. Nothing was tried against the live API, hearthis.at, a real RTMP destination or Liquidsoap.
+
+## 2026-09-30 - Ten todo slices, twelfth batch (#295-#304)
+
+Slices came from tahti-org routes tahti-web never called (same route diff as batch 11, each hit checked by hand). No `docs/todo/` file covered them.
+
+- **Studio**: credits per release track on a new Credits tab (#295); Store section on/off in the purchase tiers editor (#296); add a released track to the 24/7 rotation (#301; release tracks carry no `soundId` in the API, so the rotation's release groups were empty); add any public track to a playlist from a catalog search (#302).
+- **Listening**: a Store section with the artist's purchase tiers on their page (#297); a Tahti Selects widget on Discover (#299); add a track to a collaborative playlist from its page (#303, stacked on #302); "Live · N listening" in the chat header (#304, stacked on #275).
+- **Public / admin**: platform numbers on What is tahti.live (#300); send a test notification to one member from `/admin/news` (#298).
+- **Checks:** each PR ran tahti-web type-check, lint, the size guard and the touched tests. Nothing was tried against the live API, Stripe checkout or Centrifugo.
