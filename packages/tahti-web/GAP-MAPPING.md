@@ -22,7 +22,7 @@ This maps the public Tahti product described at [tahti.live](https://tahti.live/
 | Channel chat | Channel rail and `/chat/$slug` | Present | REST/WS chat, anonymous hCaptcha join, reactions, and subscriber-only gating are wired. The header shows today's listener count unless the artist turned it off (#275). Channel pages also take comments (#285), and an old address after a rename redirects (#290). While live, the header also shows how many people are listening (#304). |
 | Tahti Radio | `/radio` | Present | Radio playback and current-track presentation are implemented. |
 | Artist profiles | `/u/$username` | Present | Includes pinned tracks, catalog, gallery, and profile actions, plus the artist's SoundCloud tracks (#282; managed from Library → Embeds, #276) and top-list rank badges on popular tracks (#286), plus a Store section for one-time purchase tiers when the artist turns it on (#297, toggle #296). |
-| Collections and smart links | `/u/$username/c/$slug`, `/r/$slug` | Present | Both public surfaces are implemented. Signed-in listeners can add public tracks to a collaborative playlist from its page (#303). |
+| Collections and smart links | `/u/$username/c/$slug`, `/r/$slug` | Present | Both public surfaces are implemented. Signed-in listeners can add public tracks to a collaborative playlist from its page (#303). Collection pages show the text layer set in the editor (#345) and link their RSS feed; artist pages link theirs (#348). |
 | Favorites and history | `/library/*` | Partial | Beta uses local persistence/follows; it is not a full production account-backed equivalent. |
 | Playlists | Player bar, Music/library tables | Present | Create and add-to-playlist flows are live-API backed. |
 | Fan subscriptions | `/subscribe/$username` | Present | Stripe checkout is wired; offline activation is mock-only. |
@@ -44,7 +44,7 @@ This maps the public Tahti product described at [tahti.live](https://tahti.live/
 | Pro editor | `/studio/editor` | Partial | Core editor exists, but production-grade multitrack timeline depth is still missing. |
 | Schedule / 24/7 rotation / radio shows | `/studio/schedule` (Broadcast), `/studio/channel`, `/studio/shows` | Present | Nav and page title are Broadcast. Programme, rotation, bookings, series, and episodes are on that page and Channel → Radio. Released tracks can be added to the rotation directly (#301). |
 | Stats and detail reporting | `/studio/stats`, `/studio/stats/detail` | Present | Summary and range-detail views exist; Overview has the follow/repost download-gate funnel (#273), per-track gates are in the track edit dialog (#274), and a release's smart-link clicks are on its Smart links tab (#278). |
-| Channel design / profile / branding | `/studio/channel`, `/channel/$slug?edit=1` | Partial | Presets, layers, layout, gallery, and press-kit workflows exist; parity with the production designer is not complete. |
+| Channel design / profile / branding | `/studio/channel`, `/channel/$slug?edit=1` | Partial | Presets, layers, layout, gallery, and press-kit workflows exist; parity with the production designer is not complete. Branding has a transparent logo with avatar/cover/both placement (#346); the public artist page doesn't draw it yet. |
 | Updates/newsletter | `/studio/updates` | Present | Newsletter/update flow is live-API backed; the Newsletter tab shows subscriber counts (#265). |
 | Revenue and Stripe Connect | `/studio/audience` | Present | Merged fan-sub + Revelator payout history, Connect onboarding, empty tier state, order-flow breakdown, and help tour match production `/dashboard/revenue`. |
 | Distribution | `/studio/distribution` | Present | Catalog, Revelator submission/payment, Spotify profile, and royalty surfaces exist. |
@@ -63,7 +63,7 @@ This maps the public Tahti product described at [tahti.live](https://tahti.live/
 | Activity and container logs | `/admin/logs` | Present | Combined Logs page has separate Activity and Container logs tabs; `/admin/activity` remains a compatibility route. |
 | Moderation queues | `/admin/moderation/$tab` | Present | Support, beta, radio submissions, Selects, content reports, and feature requests are consolidated into tabs. |
 | Users | `/admin/users` | Partial | User administration exists, but production has more detailed user/support workflows. |
-| Radio and station suggestions | `/admin/radio`, `/admin/radio-station-suggestions` | Present | Separate destinations; active-route matching is boundary-safe so they cannot highlight together. |
+| Radio and station suggestions | `/admin/radio`, `/admin/radio-station-suggestions` | Present | Separate destinations; active-route matching is boundary-safe so they cannot highlight together. Suggestions now have their API: submit (tahti-org#581), approve into a disabled preset or reject with a note (tahti-org#582); refusal reasons shown (#344). |
 | News, announcements, streams, status | Corresponding `/admin/*` routes | Present | Core operational pages are ported. |
 | Top lists, storage, financial, governance | Corresponding `/admin/*` routes | Partial | Core pages exist, but some production actions are intentionally trimmed. |
 | Grants | `/admin/grants` | Partial | Listing/review exists; grant run/preview depth is missing. |
