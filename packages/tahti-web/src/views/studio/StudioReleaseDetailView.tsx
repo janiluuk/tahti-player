@@ -12,6 +12,7 @@ import {
   PlayIcon,
   Share2Icon,
   UploadIcon,
+  UsersIcon,
   Wand2Icon,
 } from 'lucide-react';
 
@@ -43,6 +44,7 @@ import { StudioPanel } from '../../components/StudioPanel';
 import { trackTableLabels } from '../../lib/trackTableLabels';
 import { ReleaseSmartLinksPanel } from './release-detail/ReleaseSmartLinksPanel';
 import { ReleaseSmartLinkStats } from './release-detail/ReleaseSmartLinkStats';
+import { ReleaseTrackCreditsPanel } from './release-detail/ReleaseTrackCreditsPanel';
 import { useReleaseDetail } from './release-detail/useReleaseDetail';
 
 export function StudioReleaseDetailView({ id }: { id: string }) {
@@ -403,6 +405,42 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                         onReleaseChange={setRelease}
                       />
                     </div>
+                  ),
+                },
+                {
+                  id: 'credits',
+                  label: 'Credits',
+                  icon: <UsersIcon size={14} />,
+                  content: (
+                    <StudioPanel
+                      title="Track credits"
+                      description="Who played, sang, wrote or produced each track."
+                    >
+                      {release.tracks && release.tracks.length > 0 ? (
+                        <ReleaseTrackCreditsPanel
+                          releaseId={id}
+                          tracks={release.tracks}
+                          onTrackCreditsSaved={(trackId, credits) =>
+                            setRelease((current) =>
+                              current
+                                ? {
+                                    ...current,
+                                    tracks: current.tracks?.map((t) =>
+                                      t.id === trackId ? { ...t, credits } : t,
+                                    ),
+                                  }
+                                : current,
+                            )
+                          }
+                        />
+                      ) : (
+                        <EmptyState
+                          size="sm"
+                          title="No tracks on this release yet"
+                          description="Add tracks first, then credit the people on each one."
+                        />
+                      )}
+                    </StudioPanel>
                   ),
                 },
                 {
