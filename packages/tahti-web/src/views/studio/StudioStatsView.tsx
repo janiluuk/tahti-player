@@ -9,6 +9,7 @@ import { TabLabel, Tabs, ViewShell } from '@tahti-player/ui';
 
 import { StudioGate } from '../../components/StudioGate';
 import { StudioNav } from '../../components/StudioNav';
+import { DownloadGatesPanel } from './stats/DownloadGatesPanel';
 import { HourlyDialog } from './stats/HourlyDialog';
 import { EngagementSection, KeyMetrics } from './stats/OverviewTab';
 import { PlaysTab } from './stats/PlaysTab';
@@ -62,6 +63,7 @@ export const StudioStatsView: FC = () => {
           <PlaysTab state={state} active={activeTab === 'plays'} />
           <TopListsTab state={state} active={activeTab === 'top-lists'} />
           <EngagementSection state={state} active={activeTab === 'overview'} />
+          <DownloadGatesPanel active={activeTab === 'overview'} />
         </ViewShell>
       </div>
 
