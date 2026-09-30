@@ -13,6 +13,7 @@ import type { ChatMessage } from '../api/types';
 import { useHcaptcha } from '../lib/useHcaptcha';
 import { useAuthStore } from '../stores/authStore';
 import { ChatDailyListeners } from './ChatDailyListeners';
+import { ChatListeningNow } from './ChatListeningNow';
 import { Eyebrow } from './tahti/Eyebrow';
 
 // Must match the backend's CHAT_REACTION_EMOJIS whitelist exactly
@@ -503,6 +504,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
               aria-hidden
             />
             Live
+            <ChatListeningNow slug={slug} />
           </div>
         )}
       </div>
