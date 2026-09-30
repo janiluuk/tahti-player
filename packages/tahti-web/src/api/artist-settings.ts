@@ -9,9 +9,9 @@ export {
   patchDiscoveryPrefs,
 } from './artist-settings/prefs';
 export type {
-  GreenRoomAccessLevel,
   GreenRoomPrefs,
   GreenRoomAccess,
+  WireGreenRoomInvitePool,
 } from './artist-settings/green-room';
 export {
   fetchGreenRoomAccess,

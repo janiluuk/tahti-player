@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 
 import {
   ButtonLink,
-  Input,
   SelectableTile,
   SelectableTiles,
   Tabs,
@@ -13,9 +12,9 @@ import {
   fetchGreenRoomPrefs,
   fetchModerators,
   patchGreenRoomPrefs,
-  type GreenRoomAccessLevel,
   type GreenRoomPrefs,
   type ModeratorRow,
+  type WireGreenRoomInvitePool,
 } from '../../../api/artist-settings';
 import {
   fetchProgramme,
@@ -29,9 +28,11 @@ import { BroadcastRecordingToggles } from './BroadcastRecordingToggles';
 
 export type BroadcastSection = 'radio' | 'green-room' | 'multistream';
 
-const GREEN_ROOM_ACCESS_OPTIONS: SelectableTile[] = [
-  { id: 'everyone', label: 'Everyone' },
-  { id: 'subscribers', label: 'Subscribers only' },
+const GREEN_ROOM_POOL_OPTIONS: SelectableTile[] = [
+  { id: 'MODERATORS_AND_SUBS', label: 'Moderators and fan subscribers' },
+  { id: 'SUBS_ONLY', label: 'Fan subscribers only' },
+  { id: 'EVERYONE', label: 'Everyone signed in' },
+  { id: 'MANUAL_ONLY', label: 'Only people I invite' },
 ];
 
 export function BroadcastPanel({
@@ -114,63 +115,34 @@ export function BroadcastPanel({
         <SettingsHint>Loading…</SettingsHint>
       ) : (
         <div className="flex flex-col gap-6">
+          <SettingsToggle
+            label="Open the green room when I go live"
+            description="Each new broadcast starts with its green room open, and invites the people below. You can still open or close it from Go Live."
+            value={green.defaultEnabled}
+            onChange={(defaultEnabled) => {
+              setGreen({ ...green, defaultEnabled });
+              void patchGreenRoomPrefs({ defaultEnabled });
+            }}
+          />
           <label className="flex flex-col gap-1.5 text-sm">
             <span className="text-foreground text-sm font-semibold">
-              Who can join
+              Who gets invited
             </span>
             <SelectableTiles
-              items={GREEN_ROOM_ACCESS_OPTIONS}
-              selected={green.access}
+              items={GREEN_ROOM_POOL_OPTIONS}
+              selected={green.invitePool}
               onChange={(value) => {
-                const access = value as GreenRoomAccessLevel;
-                setGreen({ ...green, access });
-                void patchGreenRoomPrefs({ access });
+                const invitePool = value as WireGreenRoomInvitePool;
+                setGreen({ ...green, invitePool });
+                void patchGreenRoomPrefs({ invitePool });
               }}
               className="grid-cols-2"
             />
             <span className="text-foreground-secondary text-xs">
-              Anyone signed in, or only listeners with an active fan
-              subscription to you.
+              Invited guests can listen before the stream goes public. You can
+              invite anyone else by handle from Go Live.
             </span>
           </label>
-          <Input
-            label="Default show title"
-            value={green.defaultTitle}
-            onChange={(e) =>
-              setGreen({ ...green, defaultTitle: e.target.value })
-            }
-            onBlur={() =>
-              void patchGreenRoomPrefs({
-                defaultTitle: green.defaultTitle,
-              })
-            }
-          />
-          <Input
-            label="Default note"
-            value={green.defaultNote}
-            onChange={(e) =>
-              setGreen({ ...green, defaultNote: e.target.value })
-            }
-            onBlur={() =>
-              void patchGreenRoomPrefs({ defaultNote: green.defaultNote })
-            }
-          />
-          <SettingsToggle
-            label="Auto-announce when going live"
-            value={green.autoAnnounce}
-            onChange={(v) => {
-              setGreen({ ...green, autoAnnounce: v });
-              void patchGreenRoomPrefs({ autoAnnounce: v });
-            }}
-          />
-          <SettingsToggle
-            label="Hold music while waiting for signal"
-            value={green.holdMusicEnabled}
-            onChange={(v) => {
-              setGreen({ ...green, holdMusicEnabled: v });
-              void patchGreenRoomPrefs({ holdMusicEnabled: v });
-            }}
-          />
           <ButtonLink
             className="w-fit"
             to="/studio/go-live"
