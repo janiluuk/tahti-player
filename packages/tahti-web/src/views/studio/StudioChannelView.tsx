@@ -25,6 +25,7 @@ import { ChannelRadioPlaylistPanel } from '../../components/ChannelRadioPlaylist
 import { MultistreamStatusPanel } from '../../components/MultistreamStatusPanel';
 import { PageLoading } from '../../components/PageStates';
 import { PinnedAnnouncementsPanel } from '../../components/PinnedAnnouncementsPanel';
+import { RotationSourcePicker } from '../../components/RotationSourcePicker';
 import { StreamManagerPanel } from '../../components/StreamManagerPanel';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -268,7 +269,12 @@ export function StudioChannelView() {
                   </StudioPanel>
                 )
               ) : radioTab === 'rotation' ? (
-                <ChannelRadioPlaylistPanel />
+                <>
+                  {channel?.slug ? (
+                    <RotationSourcePicker slug={channel.slug} />
+                  ) : null}
+                  <ChannelRadioPlaylistPanel />
+                </>
               ) : radioTab === 'announcements' ? (
                 <ChannelAnnouncementsPanel />
               ) : radioTab === 'pinned' ? (
