@@ -1,0 +1,38 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
+import { setReleaseArtworkFromUrl } from './image-from-url';
+
+describe('setReleaseArtworkFromUrl', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('asks the API to fetch the image for the release', async () => {
+    const fetchSpy = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue(
+        new Response(
+          JSON.stringify({ artworkUrl: 'https://cdn/a.jpg', artworkKey: 'k' }),
+          { status: 200 },
+        ),
+      );
+    await expect(
+      setReleaseArtworkFromUrl('r1', 'https://example.com/cover.jpg'),
+    ).resolves.toEqual({ ok: true, url: 'https://cdn/a.jpg' });
+    expect(fetchSpy.mock.calls[0]![0]).toBe(
+      '/tahti-api/api/me/releases/r1/artwork/from-url',
+    );
+    expect(JSON.parse(fetchSpy.mock.calls[0]![1]!.body as string)).toEqual({
+      sourceUrl: 'https://example.com/cover.jpg',
+    });
+  });
+
+  it('passes on why the image was refused', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ error: 'Not an image' }), { status: 422 }),
+    );
+    await expect(
+      setReleaseArtworkFromUrl('r1', 'https://example.com/page'),
+    ).resolves.toEqual({ ok: false, error: 'Not an image' });
+  });
+});

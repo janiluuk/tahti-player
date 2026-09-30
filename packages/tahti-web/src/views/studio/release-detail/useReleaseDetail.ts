@@ -3,6 +3,7 @@ import { toast } from 'sonner';
 
 import type { Track } from '@tahti-player/model';
 
+import { setReleaseArtworkFromUrl } from '../../../api/image-from-url';
 import {
   fetchEditorSource,
   fetchStudioRelease,
@@ -194,6 +195,20 @@ export function useReleaseDetail(id: string) {
     setArtworkPickerOpen(false);
   };
 
+  const applyArtworkFromUrl = async (sourceUrl: string) => {
+    setApplyingArtwork(true);
+    const result = await setReleaseArtworkFromUrl(id, sourceUrl);
+    setApplyingArtwork(false);
+    if (!result.ok) {
+      toast.error(result.error);
+      return false;
+    }
+    setArtworkPreview(result.url);
+    toast.success('Artwork saved.');
+    setArtworkPickerOpen(false);
+    return true;
+  };
+
   const playFirstTrack = async () => {
     const firstTrack = release?.tracks?.[0];
     if (!firstTrack?.soundId) {
@@ -262,6 +277,7 @@ export function useReleaseDetail(id: string) {
     publish,
     removeArtwork,
     applyArtwork,
+    applyArtworkFromUrl,
     playFirstTrack,
     updateTrackFingerprint,
   };
