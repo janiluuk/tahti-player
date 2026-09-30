@@ -10,6 +10,7 @@ import { HelpLayer } from '../../components/HelpLayer';
 import { StudioGate } from '../../components/StudioGate';
 import { OnAirBadge } from '../../components/tahti/OnAirBadge';
 import { BroadcastCredentialsPanel } from './go-live/BroadcastCredentialsPanel';
+import { GreenRoomSessionPanel } from './go-live/GreenRoomSessionPanel';
 import { MultistreamPanel } from './go-live/MultistreamPanel';
 import { RecordingPanel } from './go-live/RecordingPanel';
 import { SignalPanel } from './go-live/SignalPanel';
@@ -147,6 +148,7 @@ export function StudioGoLiveView() {
 
               <div className="flex min-w-0 flex-col gap-5">
                 <RecordingPanel state={state} />
+                <GreenRoomSessionPanel />
                 <MultistreamPanel targets={targets} reload={reload} />
               </div>
             </div>
