@@ -610,19 +610,12 @@ export async function submitRadioStationSuggestion(
   if (isForceMock()) {
     return { ok: true };
   }
-  try {
-    await mutate('/api/me/radio-station-suggestions', 'POST', {
-      name: input.name,
-      logoUrl: input.logoUrl || null,
-      language: input.language,
-      bitrateKbps: input.bitrateKbps ? Number(input.bitrateKbps) : null,
-      streamUrl: input.streamUrl,
-    });
-    return { ok: true };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Could not submit suggestion',
-    };
-  }
+  const result = await mutate('/api/me/radio-station-suggestions', 'POST', {
+    name: input.name,
+    logoUrl: input.logoUrl || null,
+    language: input.language,
+    bitrateKbps: input.bitrateKbps ? Number(input.bitrateKbps) : null,
+    streamUrl: input.streamUrl,
+  });
+  return result.ok ? { ok: true } : { ok: false, error: result.error };
 }

@@ -146,7 +146,9 @@ export function RadioStationSuggestionsTab() {
                               if (!r.ok) {
                                 setMsg(r.error);
                               } else {
-                                setMsg(`Approved ${row.name}.`);
+                                setMsg(
+                                  `Approved ${row.name}. It's added to the internet radio presets switched off — turn it on from Admin → Radio.`,
+                                );
                                 reload();
                               }
                             },
