@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
   setCollectionCoverFromUrl,
+  setProfileAvatarFromUrl,
   setReleaseArtworkFromUrl,
 } from './image-from-url';
 
@@ -68,5 +69,32 @@ describe('setCollectionCoverFromUrl', () => {
     await expect(
       setCollectionCoverFromUrl('late-night', 'https://example.com/big.jpg'),
     ).resolves.toEqual({ ok: false, error: 'Image too large' });
+  });
+});
+
+describe('setProfileAvatarFromUrl', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('asks the API to fetch the image as the profile picture', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          avatarUrl: 'https://cdn/a.jpg',
+          avatarPosterUrl: null,
+        }),
+        { status: 200 },
+      ),
+    );
+    await expect(
+      setProfileAvatarFromUrl('https://example.com/me.jpg'),
+    ).resolves.toEqual({ ok: true, url: 'https://cdn/a.jpg' });
+    expect(fetchSpy.mock.calls[0]![0]).toBe(
+      '/tahti-api/api/me/profile/avatar/from-url',
+    );
+    expect(JSON.parse(fetchSpy.mock.calls[0]![1]!.body as string)).toEqual({
+      sourceUrl: 'https://example.com/me.jpg',
+    });
   });
 });

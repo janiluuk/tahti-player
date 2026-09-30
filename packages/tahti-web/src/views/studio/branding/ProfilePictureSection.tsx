@@ -1,12 +1,31 @@
+import { useState } from 'react';
+import { toast } from 'sonner';
+
 import { Tooltip } from '@tahti-player/ui';
 
 import { uploadProfileAvatar } from '../../../api/artist-settings';
+import { setProfileAvatarFromUrl } from '../../../api/image-from-url';
+import { ImageUrlForm } from '../../../components/ImageUrlForm';
 import { RoundImageUploadButton } from '../../../components/RoundImageUploadButton';
 import { StudioPanel } from '../../../components/StudioPanel';
 import type { PressKitState } from './usePressKit';
 
 export function ProfilePictureSection({ kit }: { kit: PressKitState }) {
   const { avatarUrl, handleAvatarChange } = kit;
+  const [fetching, setFetching] = useState(false);
+
+  const saveImageUrl = async (sourceUrl: string) => {
+    setFetching(true);
+    const result = await setProfileAvatarFromUrl(sourceUrl);
+    setFetching(false);
+    if (!result.ok) {
+      toast.error(result.error);
+      return false;
+    }
+    handleAvatarChange(result.url);
+    toast.success('Profile picture saved.');
+    return true;
+  };
   return (
     <StudioPanel
       title="Profile picture"
@@ -42,6 +61,9 @@ export function ProfilePictureSection({ kit }: { kit: PressKitState }) {
             </span>
           </Tooltip>
         </div>
+      </div>
+      <div className="mt-5 max-w-md">
+        <ImageUrlForm busy={fetching} onSubmit={saveImageUrl} />
       </div>
     </StudioPanel>
   );
