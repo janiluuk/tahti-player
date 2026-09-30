@@ -372,3 +372,33 @@ export function playableFromHearthis(t: HearthisTrack): TahtiPlayable {
     durationSec: t.durationSec,
   });
 }
+
+/** A hearthis.at profile link, or `@handle`, rather than search text. */
+export function hearthisProfileFromQuery(query: string): string | null {
+  const trimmed = query.trim();
+  if (/^@[A-Za-z0-9_-]+$/.test(trimmed)) {
+    return trimmed.slice(1);
+  }
+  return /^https?:\/\/(www\.)?hearthis\.at\/[^/?#]+\/?$/i.test(trimmed)
+    ? trimmed
+    : null;
+}
+
+/** Every track on one hearthis.at profile — for adding a collaborator's
+ * tracks, not just your own. */
+export async function fetchHearthisArtistTracks(profile: string): Promise<{
+  data: HearthisTrack[];
+  meta: FetchMeta;
+}> {
+  if (isForceMock()) {
+    return searchHearthisTracks(profile);
+  }
+  try {
+    const { data } = await requestJson<{ tracks: HearthisTrack[] }>(
+      `/api/v1/imports/hearthis/by-username?profileUrl=${encodeURIComponent(profile)}`,
+    );
+    return { data: data.tracks ?? [], meta: { source: 'api' } };
+  } catch (err) {
+    return { data: [], meta: failMeta(err) };
+  }
+}

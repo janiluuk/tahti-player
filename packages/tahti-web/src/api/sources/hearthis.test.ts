@@ -1,7 +1,9 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
+  fetchHearthisArtistTracks,
   hearthisApiTrack,
+  hearthisProfileFromQuery,
   parseHearthisSetPermalink,
   type HearthisApiTrack,
 } from './hearthis';
@@ -62,5 +64,37 @@ describe('hearthisApiTrack download', () => {
       hearthisApiTrack(apiTrack({ downloadable: '1', download_url: '' }))
         .download,
     ).toBe(null);
+  });
+});
+
+describe('hearthis profile lookup', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('recognises a profile link or @handle, not plain search text', () => {
+    expect(hearthisProfileFromQuery('@dj-aurora')).toBe('dj-aurora');
+    expect(hearthisProfileFromQuery(' https://hearthis.at/dj-aurora/ ')).toBe(
+      'https://hearthis.at/dj-aurora/',
+    );
+    expect(
+      hearthisProfileFromQuery('https://hearthis.at/dj-aurora/some-track/'),
+    ).toBeNull();
+    expect(hearthisProfileFromQuery('deep house')).toBeNull();
+  });
+
+  it("lists a profile's tracks", async () => {
+    const tracks = [{ id: 't1', title: 'A' }];
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ username: 'dj-aurora', tracks }), {
+        status: 200,
+      }),
+    );
+    await expect(fetchHearthisArtistTracks('dj-aurora')).resolves.toMatchObject(
+      { data: tracks },
+    );
+    expect(fetchSpy.mock.calls[0]![0]).toBe(
+      '/tahti-api/api/v1/imports/hearthis/by-username?profileUrl=dj-aurora',
+    );
   });
 });
