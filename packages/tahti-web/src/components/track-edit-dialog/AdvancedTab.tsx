@@ -5,6 +5,7 @@ import { Button, Select } from '@tahti-player/ui';
 import type { StudioSound } from '../../api/studio-types';
 import { MusicBrainzSubmissionAssistant } from '../MusicBrainzSubmissionAssistant';
 import { TrackCreditsEditor } from '../TrackCreditsEditor';
+import { HearthisExportSection } from './HearthisExportSection';
 import type { TrackEditDialogState } from './useTrackEditDialog';
 
 const LICENSES = [
@@ -65,6 +66,12 @@ export function AdvancedTab({
             Choose playlists
           </Button>
         </div>
+      ) : null}
+      {!isAudioClip && !item.embedProvider ? (
+        <HearthisExportSection
+          soundId={item.id}
+          initialStatus={item.hearthisExportStatus ?? null}
+        />
       ) : null}
       {!isAudioClip ? (
         <MusicBrainzSubmissionAssistant

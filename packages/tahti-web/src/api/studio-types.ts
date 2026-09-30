@@ -55,6 +55,9 @@ export type StudioSound = {
    * through the provider's own widget, not the normal editor-source stream. */
   embedProvider?: 'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | null;
   embedUri?: string | null;
+  /** Copy pushed to the artist's own hearthis.at account, if any. */
+  hearthisExportStatus?:
+    'pending' | 'submitted' | 'delivered' | 'failed' | null;
   /** [0..255] amplitude buckets for the real waveform — null/absent when not yet decoded. */
   peaks?: number[] | null;
   tracklist?: TracklistEntry[] | null;
