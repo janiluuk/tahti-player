@@ -19,6 +19,7 @@ import {
 } from '@tahti-player/ui';
 
 import type { DiscoverArtistOfWeek } from '../../api/discover';
+import type { LatestRelease } from '../../api/latest-releases';
 import type { DiscoverCollection, DiscoverTrackItem } from '../../api/types';
 import type { DiscoverWidgetId } from '../../stores/discoverStore';
 import { WidgetTrackRow } from './WidgetTrackRow';
@@ -32,6 +33,7 @@ export function WidgetCard({
   loading,
   items,
   collections = [],
+  releases = [],
   artist,
   showRank,
   emptyMessage,
@@ -49,6 +51,7 @@ export function WidgetCard({
   loading: boolean;
   items: DiscoverTrackItem[];
   collections?: DiscoverCollection[];
+  releases?: LatestRelease[];
   artist?: DiscoverArtistOfWeek;
   showRank?: boolean;
   emptyMessage: string;
@@ -154,6 +157,37 @@ export function WidgetCard({
           >
             Listen to their music
           </ButtonLink>
+        </div>
+      ) : releases.length > 0 ? (
+        <div className="grid gap-2" data-testid="latest-releases">
+          {releases.slice(0, MAX_ROWS).map((release) => (
+            <Link
+              key={release.id}
+              to="/r/$slug"
+              params={{ slug: release.smartLinkSlug }}
+              className="border-border bg-background hover:bg-background-tertiary flex items-center gap-3 rounded-md border p-2 transition-colors"
+            >
+              <ImageReveal
+                src={release.artworkUrl ?? undefined}
+                alt=""
+                className="bg-primary size-12 shrink-0 rounded"
+                placeholder={
+                  <span className="text-primary-foreground text-xs font-bold">
+                    {release.title.charAt(0).toUpperCase()}
+                  </span>
+                }
+              />
+              <div className="min-w-0">
+                <h4 className="truncate text-sm font-semibold">
+                  {release.title}
+                </h4>
+                <p className="text-foreground-secondary truncate text-xs">
+                  {release.artistDisplayName} · {release.type.toLowerCase()} ·{' '}
+                  {new Date(release.releaseDate).toLocaleDateString()}
+                </p>
+              </div>
+            </Link>
+          ))}
         </div>
       ) : collections.length > 0 ? (
         <div className="grid gap-2">

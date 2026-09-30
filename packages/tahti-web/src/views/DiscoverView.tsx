@@ -36,6 +36,10 @@ import {
   fetchTopTracks,
 } from '../api/discover';
 import type { DiscoverArtistOfWeek } from '../api/discover';
+import {
+  fetchLatestReleases,
+  type LatestRelease,
+} from '../api/latest-releases';
 import type {
   ChannelDirectoryItem,
   DiscoverCollection,
@@ -77,6 +81,7 @@ const WIDGET_LABELS: Record<DiscoverWidgetId, string> = {
   'random-artist': 'Random artist pick',
   'public-playlists': 'Public playlists',
   'tahti-selects': 'Tahti Selects',
+  'latest-releases': 'Latest releases',
 };
 
 const TOP_LIST_WIDGET_IDS = new Set<DiscoverWidgetId>([
@@ -89,6 +94,7 @@ type WidgetData = {
   loading: boolean;
   items: DiscoverTrackItem[];
   collections?: DiscoverCollection[];
+  releases?: LatestRelease[];
   subtitle?: string;
   artist?: DiscoverArtistOfWeek;
 };
@@ -250,6 +256,10 @@ export function DiscoverView() {
           case 'public-playlists': {
             const { data: collections } = await fetchPublicCollections(filters);
             return { loading: false, items: [], collections };
+          }
+          case 'latest-releases': {
+            const { data: releases } = await fetchLatestReleases();
+            return { loading: false, items: [], releases };
           }
           case 'tahti-selects': {
             const { data: items } = await fetchTahtiSelects();
@@ -481,6 +491,7 @@ export function DiscoverView() {
                   loading={widgetData?.loading ?? true}
                   items={widgetData?.items ?? []}
                   collections={widgetData?.collections}
+                  releases={widgetData?.releases}
                   artist={widgetData?.artist}
                   showRank={TOP_LIST_WIDGET_IDS.has(id)}
                   emptyMessage={
@@ -490,7 +501,9 @@ export function DiscoverView() {
                         ? 'No public playlists match these filters yet.'
                         : id === 'tahti-selects'
                           ? 'No tracks in the Tahti Selects rotation right now.'
-                          : 'Nothing here yet.'
+                          : id === 'latest-releases'
+                            ? 'No releases published yet.'
+                            : 'Nothing here yet.'
                   }
                   canMoveUp={index > 0}
                   canMoveDown={index < enabledWidgets.length - 1}
