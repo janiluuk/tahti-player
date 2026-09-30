@@ -3950,3 +3950,13 @@ Slices came from diffing the paths tahti-web calls against the routes tahti-org 
 - **Mentions**: the public mentions API no longer names private tracks (tahti-org#570); the artist page labels announcement and chat mentions and opens sources in-app (#309).
 - **Channel kind**: board write route + audit action (tahti-org#571) and an Artist / Radio station switch in the admin user panel (#310).
 - **Checks:** tahti-web type-check, lint, the size guard and the touched tests per PR; tahti-org Vitest for each touched route against a throwaway Postgres, eslint and Prettier on the changed files, and `apps/api` typecheck. Nothing was tried against the live API or a running Liquidsoap.
+
+## 2026-09-30 - Ten todo slices, fourteenth batch (#312-#321)
+
+Slices came from the same route diff (template-literal paths as parameters), each hit checked by hand against tahti-org `origin/main`. No `docs/todo/` file covered them. Left out after checking: `PATCH /api/me/channel/slideshow` (same handler as the gallery route tahti-web already uses), `/api/me/musicbrainz/default` (stored but read by nothing server-side), Google Drive import and its cloud-import jobs (needs the Google Picker), and `/api/beta/apply` (sign-up isn't beta-gated).
+
+- **Email and public pages**: `/newsletter/confirmed`, `/newsletter/unsubscribed` and `/newsletter/unsubscribe/$token`, which the API and the newsletter emails already point at (#312); smart-link pages record clicks through to each service, so the stats from #278 fill in (#313); a Latest releases widget on Discover (#314).
+- **Go Live green room**: open the green room for the running broadcast, see who joined and remove guests (#315); invite by handle, from suggested moderators and fan subscribers, or everyone new in the invite pool (#316, stacked).
+- **Studio media**: profile picture from an image link (#317); a Versions tab on releases to switch a track's active audio version (#318) and upload a new one (#319, stacked); live render progress for a sound's new version over the API's SSE stream (#320).
+- **Members and credits (#321)**: the roster type matched Tahti accounts instead of the API's free name/role/picture rows, so Settings → Artist showed `undefined (@undefined)`; fixed, and the list is now editable (add, rename/re-role, remove).
+- **Checks:** each PR ran tahti-web type-check, lint, the size guard and the touched tests. Nothing was tried against the live API, a real broadcast, storage uploads or newsletter emails.
