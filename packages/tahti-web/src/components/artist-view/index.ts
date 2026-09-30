@@ -2,6 +2,7 @@ export { ArtistMusicTab } from './ArtistMusicTab';
 export {
   ArtistBioSection,
   ArtistEmbeds,
+  ArtistFanTiersNote,
   ArtistFeed,
   ArtistHeaderActions,
   ArtistLiveShows,
@@ -19,3 +20,4 @@ export { useArtistChannelLook } from './useArtistChannelLook';
 export { AlbumPlayPromptDialog } from './AlbumPlayPromptDialog';
 export { artistLookSchemes } from './artistLookSchemes';
 export { useArtistCatalog } from './useArtistCatalog';
+export { ArtistStoreSection } from './ArtistStoreSection';

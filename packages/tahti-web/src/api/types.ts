@@ -316,7 +316,7 @@ export type PublicProfileCollection = {
   rssUrl: string;
 };
 
-export type PublicProfile = {
+export type PublicProfile = import('./purchase-tiers').ProfileStore & {
   artist: PublicProfileArtist;
   channel: { slug: string; state: string; artistKind?: string } | null;
   releases: PublicProfileRelease[];

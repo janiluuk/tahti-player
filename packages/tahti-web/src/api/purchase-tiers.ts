@@ -377,3 +377,16 @@ export async function setStoreEnabled(
     };
   }
 }
+
+export type PublicStoreTier = {
+  id: string;
+  name: string;
+  description: string | null;
+  priceCents: number;
+  priceOptional: boolean;
+};
+
+export type ProfileStore = {
+  purchaseTiers?: PublicStoreTier[];
+  storePaymentsReady?: boolean;
+};

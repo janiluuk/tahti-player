@@ -37,6 +37,7 @@ import {
   AlbumPlayPromptDialog,
   ArtistBioSection,
   ArtistEmbeds,
+  ArtistFanTiersNote,
   ArtistFeed,
   ArtistHeaderActions,
   ArtistLiveShows,
@@ -47,6 +48,7 @@ import {
   ArtistPopularTracks,
   ArtistRelatedArtists,
   ArtistReleasesGrid,
+  ArtistStoreSection,
   ArtistTaggedIn,
   useArtistCatalog,
   useArtistChannelLook,
@@ -562,14 +564,14 @@ function ArtistProfilePage({ username }: { username: string }) {
         />
       ) : null}
 
-      {fanTiers.length > 0 && (
-        <p className="text-foreground-secondary text-xs">
-          Fan tiers:{' '}
-          {fanTiers
-            .map((t) => `${t.name} (€${(t.amountCents / 100).toFixed(0)})`)
-            .join(', ')}
-        </p>
-      )}
+      <ArtistFanTiersNote tiers={fanTiers} />
+
+      <ArtistStoreSection
+        username={artist.username}
+        tiers={profile.purchaseTiers ?? []}
+        paymentsReady={profile.storePaymentsReady !== false}
+        isOwner={isOwner}
+      />
 
       {lookVisibility.feed && taggedIn.length > 0 ? (
         <ArtistTaggedIn
