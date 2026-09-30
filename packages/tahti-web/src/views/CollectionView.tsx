@@ -26,6 +26,7 @@ import type {
   PublicCollection,
   TahtiPlayable,
 } from '../api/types';
+import { CollaborativePlaylistAdd } from '../components/CollaborativePlaylistAdd';
 import { EmbedButton } from '../components/EmbedButton';
 import { EmbedTrackRow } from '../components/EmbedTrackRow';
 import {
@@ -433,6 +434,22 @@ export function CollectionView({ slug }: { slug: string }) {
           </ul>
         </section>
       )}
+
+      {collection.collaborative && collection.isPublic ? (
+        <CollaborativePlaylistAdd
+          slug={collection.slug}
+          existingSoundIds={collection.items.flatMap((item) =>
+            item.sound ? [item.sound.id] : [],
+          )}
+          onAdded={() =>
+            void fetchCollection(slug).then((res) => {
+              if (res.data) {
+                setCollection(res.data);
+              }
+            })
+          }
+        />
+      ) : null}
     </PageFrame>
   );
 }
