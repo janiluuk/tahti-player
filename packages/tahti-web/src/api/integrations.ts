@@ -138,3 +138,33 @@ export async function uninstallMeIntegration(
     };
   }
 }
+
+/** Start Last.fm auth with the artist's own API key and shared secret, for
+ * servers without LASTFM_API_KEY. Returns the Last.fm authorisation URL to
+ * send the browser to; the callback returns to `returnTo`. */
+export async function prepareLastFmWithOwnKey(input: {
+  apiKey: string;
+  apiSecret: string;
+  returnTo: string;
+}): Promise<{ ok: true; authUrl: string } | { ok: false; error: string }> {
+  try {
+    const { data } = await requestJson<{ authUrl: string }>(
+      '/api/me/integrations/lastfm/prepare',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          apiKey: input.apiKey.trim(),
+          apiSecret: input.apiSecret.trim(),
+          returnTo: input.returnTo,
+        }),
+      },
+    );
+    return { ok: true, authUrl: data.authUrl };
+  } catch (err) {
+    return {
+      ok: false,
+      error:
+        err instanceof Error ? err.message : 'Could not start Last.fm sign-in',
+    };
+  }
+}
