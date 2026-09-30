@@ -38,9 +38,9 @@ This maps the public Tahti product described at [tahti.live](https://tahti.live/
 | --- | --- | --- | --- |
 | Artist dashboard | `/studio` | Present | Studio shell and section navigation are implemented. |
 | Channel setup | `/studio/channel?tab=setup` | Present | Channel provisioning uses the live API. |
-| Go Live / browser broadcast | `/studio/go-live` | Present | Broadcast wizard is present; simulator behavior is restricted to mock mode. |
+| Go Live / browser broadcast | `/studio/go-live` | Present | Broadcast wizard is present; simulator behavior is restricted to mock mode. The green room for the running broadcast is managed there too: open it, invite and remove guests (#315, #316). |
 | Multistream RTMP | Go Live → multistream | Present | RTMP target management is included in the live flow; live status per destination is on Channel → Radio → Stream (#289). Stream key and Icecast password can be replaced from Go Live (#271); Tahti Radio's own destinations are in `/admin/radio` (#263). |
-| Archive, upload, releases, collections | `/studio/archive`, `/studio/upload`, `/studio/releases`, `/studio/collections` | Present | Upload prepare/complete and album-based collection design are implemented. Releases have per-track credits (#295); playlists can take any public track from a catalog search (#302). |
+| Archive, upload, releases, collections | `/studio/archive`, `/studio/upload`, `/studio/releases`, `/studio/collections` | Present | Upload prepare/complete and album-based collection design are implemented. Releases have per-track credits (#295); playlists can take any public track from a catalog search (#302). Release tracks have a Versions tab to switch and upload audio versions (#318, #319). |
 | Pro editor | `/studio/editor` | Partial | Core editor exists, but production-grade multitrack timeline depth is still missing. |
 | Schedule / 24/7 rotation / radio shows | `/studio/schedule` (Broadcast), `/studio/channel`, `/studio/shows` | Present | Nav and page title are Broadcast. Programme, rotation, bookings, series, and episodes are on that page and Channel → Radio. Released tracks can be added to the rotation directly (#301). |
 | Stats and detail reporting | `/studio/stats`, `/studio/stats/detail` | Present | Summary and range-detail views exist; Overview has the follow/repost download-gate funnel (#273), per-track gates are in the track edit dialog (#274), and a release's smart-link clicks are on its Smart links tab (#278). |
@@ -50,7 +50,7 @@ This maps the public Tahti product described at [tahti.live](https://tahti.live/
 | Distribution | `/studio/distribution` | Present | Catalog, Revelator submission/payment, Spotify profile, and royalty surfaces exist. |
 | Stash | `/studio/stash` | Present | Upload/delete and share access are implemented. |
 | Channel moderators | `/studio/moderation` | Present | API-backed assignment/removal; exposed from Studio navigation |
-| Settings | `/settings` | Partial | Nuclear settings shell exists, but parity/depth across artist, discovery, notification, and account sections is thinner. Added since: own internet radio stations in Playback (#277), broadcast record/publish defaults in Broadcast (#279), channel and new-upload comment switches in Account (#280). |
+| Settings | `/settings` | Partial | Nuclear settings shell exists, but parity/depth across artist, discovery, notification, and account sections is thinner. Added since: own internet radio stations in Playback (#277), broadcast record/publish defaults in Broadcast (#279), channel and new-upload comment switches in Account (#280). Members and credits are editable and show the API's roster (#321). |
 | Source connections / OAuth | `/sources` | Partial | Source hub exists; several providers still have simplified OAuth UX and need production callback verification. |
 | Email invites for people without accounts | — | Missing/deferred | Current moderator flow assigns an existing username; there is no invite-token flow for a new user. |
 
