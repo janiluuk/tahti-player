@@ -245,6 +245,8 @@ const DISCOVER_WIDGET_DETAILS: Record<DiscoverWidgetId, string> = {
     'Get a fresh artist pick on a schedule you choose on Discover.',
   'public-playlists':
     'Find public playlists to follow, play, and embed from the Discover page.',
+  'tahti-selects':
+    'Play the tracks currently in the curated Tahti Selects rotation.',
 };
 
 const DISCOVER_WIDGET_LABELS: Record<DiscoverWidgetId, string> = {
@@ -257,6 +259,7 @@ const DISCOVER_WIDGET_LABELS: Record<DiscoverWidgetId, string> = {
   'artist-of-the-week': 'Artist of the week',
   'random-artist': 'Random artist',
   'public-playlists': 'Public playlists',
+  'tahti-selects': 'Tahti Selects',
 };
 
 function DiscoverWidgetPlugins() {

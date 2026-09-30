@@ -430,3 +430,23 @@ export async function fetchLovedTracks(
     return { data: [], meta: failMeta(err) };
   }
 }
+
+export async function fetchTahtiSelects(): Promise<{
+  data: DiscoverTrackItem[];
+  meta: FetchMeta;
+}> {
+  if (isForceMock()) {
+    return {
+      data: mockLatestTracks().slice(0, 6),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const { items } = await getJson<{ items: WireGalleryItem[] }>(
+      '/api/v1/tahti-selects/gallery',
+    );
+    return { data: items.map(galleryItemToTrack), meta: { source: 'api' } };
+  } catch (err) {
+    return { data: [], meta: failMeta(err) };
+  }
+}
