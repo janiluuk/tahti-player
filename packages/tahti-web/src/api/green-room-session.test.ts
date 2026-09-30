@@ -2,8 +2,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
   fetchGreenRoomSession,
+  inviteToGreenRoom,
   removeGreenRoomInvite,
   setGreenRoomSessionEnabled,
+  syncGreenRoomInvites,
 } from './green-room-session';
 
 const SESSION = {
@@ -66,5 +68,38 @@ describe('green room session', () => {
       '/tahti-api/api/me/channel/green-room/invites/u1',
     );
     expect(fetchSpy.mock.calls[0]![1]!.method).toBe('DELETE');
+  });
+});
+
+describe('green room invites', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('invites by handle and syncs the pool', async () => {
+    const fetchSpy = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ userId: 'u2', username: 'fan' }), {
+          status: 201,
+        }),
+      )
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify(SESSION), { status: 200 }),
+      );
+    await expect(inviteToGreenRoom('fan')).resolves.toMatchObject({
+      ok: true,
+      data: { userId: 'u2' },
+    });
+    expect(fetchSpy.mock.calls[0]![0]).toBe(
+      '/tahti-api/api/me/channel/green-room/invites',
+    );
+    expect(JSON.parse(fetchSpy.mock.calls[0]![1]!.body as string)).toEqual({
+      username: 'fan',
+    });
+    await expect(syncGreenRoomInvites()).resolves.toMatchObject({ ok: true });
+    expect(fetchSpy.mock.calls[1]![0]).toBe(
+      '/tahti-api/api/me/channel/green-room/sync',
+    );
   });
 });

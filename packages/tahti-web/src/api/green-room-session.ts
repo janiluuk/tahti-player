@@ -122,3 +122,51 @@ export async function removeGreenRoomInvite(
     return { ok: false, error: message(err, 'Could not remove the guest') };
   }
 }
+
+export async function inviteToGreenRoom(
+  username: string,
+): Promise<Result<GreenRoomInvite>> {
+  if (isForceMock()) {
+    const invite: GreenRoomInvite = {
+      userId: `mock-${username}`,
+      username,
+      displayName: username,
+      source: 'MANUAL',
+      invitedAt: new Date().toISOString(),
+      joinedAt: null,
+    };
+    mockSession = { ...mockSession, invites: [...mockSession.invites, invite] };
+    return { ok: true, data: invite };
+  }
+  try {
+    const { data } = await requestJson<GreenRoomInvite>(
+      '/api/me/channel/green-room/invites',
+      { method: 'POST', body: JSON.stringify({ username }) },
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return { ok: false, error: message(err, 'Could not invite that person') };
+  }
+}
+
+/** Invite everyone the invite pool covers who isn't on the list yet (new
+ * fan subscribers or moderators since the room opened). */
+export async function syncGreenRoomInvites(): Promise<
+  Result<GreenRoomSession>
+> {
+  if (isForceMock()) {
+    return { ok: true, data: mockSession };
+  }
+  try {
+    const { data } = await requestJson<GreenRoomSession>(
+      '/api/me/channel/green-room/sync',
+      { method: 'POST' },
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: message(err, 'Could not update the guest list'),
+    };
+  }
+}
