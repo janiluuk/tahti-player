@@ -20,12 +20,14 @@ import {
   fetchCollectionSubscription,
   setCollectionSubscription,
 } from '../api/client';
+import type { CollectionTextLayer } from '../api/collection-text-layer';
 import { createJam } from '../api/jam';
 import type {
   CollectionSound,
   PublicCollection,
   TahtiPlayable,
 } from '../api/types';
+import { ChannelTextOverlayView } from '../components/ChannelTextOverlayView';
 import { CollaborativePlaylistAdd } from '../components/CollaborativePlaylistAdd';
 import { EmbedButton } from '../components/EmbedButton';
 import { EmbedTrackRow } from '../components/EmbedTrackRow';
@@ -71,7 +73,9 @@ function collectionToPlayables(col: PublicCollection): TahtiPlayable[] {
 }
 
 export function CollectionView({ slug }: { slug: string }) {
-  const [collection, setCollection] = useState<PublicCollection | null>(null);
+  const [collection, setCollection] = useState<
+    (PublicCollection & Partial<CollectionTextLayer>) | null
+  >(null);
   const [loading, setLoading] = useState(true);
   const me = useAuthStore((s) => s.user);
   const play = usePlayerStore((s) => s.play);
@@ -369,6 +373,12 @@ export function CollectionView({ slug }: { slug: string }) {
           ) : null}
         </div>
       </EntitySocialHeader>
+
+      <ChannelTextOverlayView
+        mode={collection.textLayerMode}
+        text={collection.textLayerText}
+        align={collection.textLayerAlign}
+      />
 
       {playables.length > 0 && (
         <PlayableTrackTable
