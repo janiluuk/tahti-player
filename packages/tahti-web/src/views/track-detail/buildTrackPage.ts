@@ -2,8 +2,9 @@ import { toast } from 'sonner';
 
 import { isHeaderImageUrl } from '../../api/channel-design';
 import { fetchPublicSoundDownload, postTrackComment } from '../../api/client';
+import { deleteComment } from '../../api/comments';
 import { checkoutPurchaseTier } from '../../api/purchase-tiers';
-import { type TahtiPlayable } from '../../api/types';
+import { type TahtiPlayable, type TrackComment } from '../../api/types';
 import { hasAccountRole } from '../../lib/accountRoles';
 import { normalizeColorScheme } from '../../lib/colorScheme';
 import { EMBED_PROVIDER_LABEL, embedSrcFor } from '../../lib/embedSrc';
@@ -31,6 +32,8 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
     setCommentBody,
     setCommentBusy,
     setCommentError,
+    deletingCommentId,
+    setDeletingCommentId,
     setDownloadBusy,
     setBuyBusy,
     setPurchaseBump,
@@ -163,6 +166,22 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
     setCommentBody('');
   };
 
+  const canDeleteComment = (comment: TrackComment) =>
+    Boolean(user && (isOwner || comment.authorUsername === user.username));
+
+  const removeComment = async (commentId: string) => {
+    setDeletingCommentId(commentId);
+    const result = await deleteComment(commentId);
+    setDeletingCommentId(null);
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    setComments((current) =>
+      current.filter((comment) => comment.id !== commentId),
+    );
+  };
+
   const shareTrack = async () => {
     const url = `${window.location.origin}/t/${id}`;
     try {
@@ -265,6 +284,9 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
     seekFraction,
     jumpTo,
     submitComment,
+    canDeleteComment,
+    removeComment,
+    deletingCommentId,
     shareTrack,
     downloadTrack,
     showBuyTrack,
