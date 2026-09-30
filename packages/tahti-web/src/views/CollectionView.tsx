@@ -36,6 +36,7 @@ import {
 import { PageFrame } from '../components/PageHeader';
 import { PageEmpty, PageLoading } from '../components/PageStates';
 import { PlayableTrackTable } from '../components/PlayableTrackTable';
+import { RssFeedButton } from '../components/RssFeedButton';
 import { Eyebrow } from '../components/tahti/Eyebrow';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
 import type { EmbedProvider } from '../lib/embedSrc';
@@ -331,6 +332,12 @@ export function CollectionView({ slug }: { slug: string }) {
             </Button>
           </Tooltip>
           <EmbedButton target={{ kind: 'collection', slug }} />
+          {collection.isPublic && collection.links?.rss ? (
+            <RssFeedButton
+              href={collection.links.rss}
+              label={`RSS feed of ${collection.name}`}
+            />
+          ) : null}
           <Button variant="secondary" onClick={() => void startJam()}>
             <RadioIcon size={15} aria-hidden className="mr-1.5" />
             Start a Jam

@@ -32,6 +32,7 @@ import {
 import { DiscoWidgetsSection } from '../disco-widgets/DiscoWidgetsSection';
 import { EmbedButton } from '../EmbedButton';
 import { NewsletterSubscribeToggle } from '../NewsletterSubscribeToggle';
+import { RssFeedButton } from '../RssFeedButton';
 import { ShowEpisodeList } from '../ShowEpisodeList';
 import { Eyebrow } from '../tahti/Eyebrow';
 
@@ -90,6 +91,13 @@ export function ArtistHeaderActions({
             <DownloadIcon size={16} aria-hidden />
           </ButtonAnchor>
         </Tooltip>
+      ) : null}
+      {profile.links.feeds?.sound ? (
+        <RssFeedButton
+          href={profile.links.feeds.sound}
+          label={`RSS feed of ${artist.displayName}'s sounds`}
+          className={headerButtonClass}
+        />
       ) : null}
       {channel?.slug && !isOwner ? (
         <EmbedButton
