@@ -271,6 +271,7 @@ export function usePressKit() {
   return {
     user,
     profile,
+    setProfile,
     images,
     setImages,
     pressKit,

@@ -15,6 +15,7 @@ import { StudioPanel } from '../../components/StudioPanel';
 import { useSettingsModalStore } from '../../stores/settingsModalStore';
 import { GallerySection } from './branding/GallerySection';
 import { PressKitSection } from './branding/PressKitSection';
+import { ProfileBackdropSection } from './branding/ProfileBackdropSection';
 import { ProfilePictureSection } from './branding/ProfilePictureSection';
 import { usePressKit } from './branding/usePressKit';
 
@@ -93,7 +94,19 @@ export const StudioBrandingPanel: FC<{
         </Tabs.Root>
       )}
 
-      {tab === 'branding' ? <ProfilePictureSection kit={kit} /> : null}
+      {tab === 'branding' ? (
+        <>
+          <ProfilePictureSection kit={kit} />
+          <ProfileBackdropSection
+            backdropUrl={profile?.backdropUrl ?? null}
+            onChange={(backdropUrl) =>
+              kit.setProfile((current) =>
+                current ? { ...current, backdropUrl } : current,
+              )
+            }
+          />
+        </>
+      ) : null}
       {tab === 'channel-designer' ? (
         profile ? (
           <ChannelDesigner
