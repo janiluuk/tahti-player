@@ -84,4 +84,19 @@ describe('ChannelMembersEditor', () => {
     expect(remove).toHaveBeenCalledWith('m1');
     expect(screen.getByText('No members listed.')).toBeTruthy();
   });
+  it("uploads a member's picture from their row", async () => {
+    const upload = vi
+      .spyOn(api, 'uploadChannelMemberPicture')
+      .mockResolvedValue({ ok: true, data: { url: 'https://cdn/ada.jpg' } });
+    const { container } = render(<Harness initial={[ADA]} />);
+    const input = container.querySelector('input[type="file"]')!;
+    const file = new File(['x'], 'ada.png', { type: 'image/png' });
+    await act(async () => {
+      fireEvent.change(input, { target: { files: [file] } });
+    });
+    expect(upload).toHaveBeenCalledWith('m1', file);
+    expect(container.querySelector('img')?.getAttribute('src')).toBe(
+      'https://cdn/ada.jpg',
+    );
+  });
 });
