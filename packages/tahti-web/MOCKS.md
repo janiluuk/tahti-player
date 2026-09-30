@@ -40,7 +40,7 @@ Production / beta builds (`import.meta.env.PROD`) **do not** fall back to fixtur
 - [x] TOTP setup/confirm/disable mock path
 - [ ] Visualizer: no mock needed — needs real WebGL runtime
 - [ ] Stash share mock
-- [x] Sound share links (PRIVATE/STASH sound → keyed `/t/:id?key=...` link) — mock create/list/revoke in `api/studio.ts`; real backend route doesn't exist (see FEATURES.md, API-REFERENCE.md)
+- [x] Sound share links (PRIVATE/STASH sound → keyed `/t/:id?key=...` link) — mock create/list/revoke in `api/studio.ts`; backend routes in review in tahti-org#568/#569 (see FEATURES.md)
 - [x] Mock archive upload visibility — `arch-mock-*` ids resolve on `/t/:id` and return the uploaded bytes when public (`src/api/mock-uploads.ts`)
 
 ## Run
