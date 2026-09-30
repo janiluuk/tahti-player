@@ -1,4 +1,9 @@
-import { PencilIcon, Trash2Icon } from 'lucide-react';
+import {
+  ArrowDownIcon,
+  ArrowUpIcon,
+  PencilIcon,
+  Trash2Icon,
+} from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
@@ -9,6 +14,7 @@ import {
   addChannelMember,
   clearChannelMemberPicture,
   removeChannelMember,
+  reorderChannelMembers,
   updateChannelMember,
   uploadChannelMemberPicture,
 } from '../../api/channel-members';
@@ -159,6 +165,22 @@ export function ChannelMembersEditor({
     );
   };
 
+  const move = async (index: number, delta: -1 | 1) => {
+    const target = index + delta;
+    if (target < 0 || target >= members.length) {
+      return;
+    }
+    const previous = members;
+    const next = [...members];
+    [next[index], next[target]] = [next[target]!, next[index]!];
+    onChange(next.map((member, position) => ({ ...member, position })));
+    const result = await reorderChannelMembers(next.map((member) => member.id));
+    if (!result.ok) {
+      onChange(previous);
+      toast.error(result.error);
+    }
+  };
+
   const remove = async (id: string) => {
     setRemovingId(id);
     const result = await removeChannelMember(id);
@@ -176,7 +198,7 @@ export function ChannelMembersEditor({
         <SettingsHint>No members listed.</SettingsHint>
       ) : (
         <ul className="flex flex-col gap-2" data-testid="channel-members">
-          {members.map((member) => (
+          {members.map((member, index) => (
             <li
               key={member.id}
               className="border-border rounded-md border px-3 py-2 text-sm"
@@ -211,6 +233,24 @@ export function ChannelMembersEditor({
                   <span className="text-foreground-secondary truncate text-xs">
                     {member.role}
                   </span>
+                  <Button
+                    variant="text"
+                    size="sm"
+                    aria-label={`Move ${member.name} up`}
+                    disabled={index === 0}
+                    onClick={() => void move(index, -1)}
+                  >
+                    <ArrowUpIcon size={14} aria-hidden />
+                  </Button>
+                  <Button
+                    variant="text"
+                    size="sm"
+                    aria-label={`Move ${member.name} down`}
+                    disabled={index === members.length - 1}
+                    onClick={() => void move(index, 1)}
+                  >
+                    <ArrowDownIcon size={14} aria-hidden />
+                  </Button>
                   <Button
                     variant="text"
                     size="sm"
