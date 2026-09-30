@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { KeyRoundIcon, LogInIcon, UserPlusIcon } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
 
-import { Button, Dialog, Input } from '@tahti-player/ui';
+import { Button, Dialog, Input, SegmentedControl } from '@tahti-player/ui';
 
 import {
   persistPendingArtistKind,
@@ -10,8 +10,14 @@ import {
 } from '../lib/pendingArtistKind';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
+import { UsernameAvailabilityHint } from './UsernameAvailabilityHint';
 
 const MINIMUM_PASSWORD_LENGTH = 8;
+
+const ARTIST_KIND_OPTIONS = [
+  { id: 'SINGLE' as const, label: 'Artist' },
+  { id: 'COLLECTIVE' as const, label: 'Band / Collective' },
+];
 
 const slugifyUsername = (value: string) =>
   value
@@ -194,36 +200,29 @@ export const AuthDialog: FC = () => {
                 autoComplete="email"
               />
             </div>
-            <div className="flex gap-2">
-              {(
-                [
-                  ['SINGLE', 'Artist'],
-                  ['COLLECTIVE', 'Band / Collective'],
-                ] as const
-              ).map(([kind, label]) => (
-                <button
-                  key={kind}
-                  type="button"
-                  aria-pressed={artistKind === kind}
-                  onClick={() => setArtistKind(kind)}
-                  className={`flex-1 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
-                    artistKind === kind
-                      ? 'border-primary bg-primary/10 text-primary'
-                      : 'border-border text-foreground-secondary hover:text-foreground'
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-            <Input
-              label={
-                artistKind === 'COLLECTIVE' ? 'Collective name' : 'Artist name'
-              }
-              value={artistName}
-              onChange={(e) => setArtistName(e.target.value)}
-              autoComplete="name"
+            <SegmentedControl
+              aria-label="Account type"
+              options={ARTIST_KIND_OPTIONS}
+              value={artistKind}
+              onChange={setArtistKind}
+              className="self-start"
             />
+            <div className="flex flex-col gap-1">
+              <Input
+                label={
+                  artistKind === 'COLLECTIVE'
+                    ? 'Collective name'
+                    : 'Artist name'
+                }
+                value={artistName}
+                onChange={(e) => setArtistName(e.target.value)}
+                autoComplete="name"
+              />
+              <UsernameAvailabilityHint
+                username={username}
+                onPick={setUsername}
+              />
+            </div>
             <Input
               label="Password"
               variant="password"
