@@ -34,6 +34,7 @@ import type {
   StudioRelease,
   StudioSound,
 } from '../../../api/studio-types';
+import { CatalogTrackSearch } from '../../../components/CatalogTrackSearch';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import {
   EntitySocialHeader,
@@ -135,19 +136,21 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
   const addItem = async (
     input: { soundId: string } | { releaseId: string },
     success: string,
-    onDone: () => void,
-  ) => {
+    onDone?: () => void,
+  ): Promise<boolean> => {
     try {
       const r = await addStudioCollectionItem(slug, input);
       if (!r.ok) {
         toast.error(r.error);
-        return;
+        return false;
       }
       toast.success(success);
-      onDone();
+      onDone?.();
       await refreshItems();
+      return true;
     } catch {
       toast.error('Could not add the item.');
+      return false;
     }
   };
 
@@ -546,6 +549,17 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                     <PlusIcon size={14} aria-hidden className="mr-1.5" />
                     Add release
                   </Button>
+                </div>
+                <div className="sm:col-span-2">
+                  <CatalogTrackSearch
+                    label="Add any public track"
+                    excludeIds={items.flatMap((item) =>
+                      item.sound ? [item.sound.id] : [],
+                    )}
+                    onAdd={(track) =>
+                      addItem({ soundId: track.id }, `Added ${track.title}.`)
+                    }
+                  />
                 </div>
               </div>
             </StudioPanel>
