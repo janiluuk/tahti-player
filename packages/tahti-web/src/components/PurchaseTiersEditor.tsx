@@ -6,7 +6,9 @@ import { Button, Dialog, Input, Textarea, Toggle } from '@tahti-player/ui';
 import {
   createPurchaseTier,
   fetchMyPurchaseTiers,
+  fetchStoreSettings,
   setPurchaseTierActive,
+  setStoreEnabled,
   type PurchaseTierRow,
 } from '../api/purchase-tiers';
 
@@ -23,6 +25,8 @@ export function PurchaseTiersEditor() {
   const [priceOptional, setPriceOptional] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [storeEnabled, setStoreEnabledState] = useState<boolean | null>(null);
+  const [savingStore, setSavingStore] = useState(false);
 
   const reload = () => {
     void fetchMyPurchaseTiers().then((r) => {
@@ -32,7 +36,24 @@ export function PurchaseTiersEditor() {
 
   useEffect(() => {
     reload();
+    void fetchStoreSettings().then((r) => {
+      if (r.ok) {
+        setStoreEnabledState(r.storeEnabled);
+      }
+    });
   }, []);
+
+  const toggleStore = async (next: boolean) => {
+    setSavingStore(true);
+    setMsg(null);
+    const r = await setStoreEnabled(next);
+    setSavingStore(false);
+    if (!r.ok) {
+      setMsg(r.error);
+      return;
+    }
+    setStoreEnabledState(r.storeEnabled);
+  };
 
   const closeCreate = () => {
     setCreateOpen(false);
@@ -45,6 +66,22 @@ export function PurchaseTiersEditor() {
 
   return (
     <div className="flex flex-col gap-4">
+      {storeEnabled !== null && (
+        <div className="border-border flex items-center justify-between gap-3 rounded-lg border px-3 py-2">
+          <div>
+            <p className="text-sm font-medium">Store section</p>
+            <p className="text-foreground-secondary text-xs">
+              Show your active tiers in a Store section on your artist page.
+            </p>
+          </div>
+          <Toggle
+            label="Show a Store section on your artist page"
+            checked={storeEnabled}
+            disabled={savingStore}
+            onChange={(next) => void toggleStore(next)}
+          />
+        </div>
+      )}
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-foreground-secondary text-xs">
           One-time purchase tiers for individual tracks — assign one from a

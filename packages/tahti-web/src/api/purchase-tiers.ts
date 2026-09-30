@@ -335,3 +335,45 @@ export async function fetchMyPurchaseOrders(): Promise<{
     return { data: null, meta: apiErrorMeta(err) };
   }
 }
+
+let mockStoreEnabled = false;
+
+export async function fetchStoreSettings(): Promise<
+  { ok: true; storeEnabled: boolean } | { ok: false; error: string }
+> {
+  if (isForceMock()) {
+    return { ok: true, storeEnabled: mockStoreEnabled };
+  }
+  try {
+    const { data } = await requestJson<{ storeEnabled: boolean }>(
+      '/api/me/store-settings',
+    );
+    return { ok: true, storeEnabled: data.storeEnabled === true };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not load the store',
+    };
+  }
+}
+
+export async function setStoreEnabled(
+  storeEnabled: boolean,
+): Promise<{ ok: true; storeEnabled: boolean } | { ok: false; error: string }> {
+  if (isForceMock()) {
+    mockStoreEnabled = storeEnabled;
+    return { ok: true, storeEnabled };
+  }
+  try {
+    const { data } = await requestJson<{ storeEnabled: boolean }>(
+      '/api/me/store-settings',
+      { method: 'PATCH', body: JSON.stringify({ storeEnabled }) },
+    );
+    return { ok: true, storeEnabled: data.storeEnabled === true };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not update the store',
+    };
+  }
+}
