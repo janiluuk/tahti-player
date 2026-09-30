@@ -5,6 +5,7 @@ import type {
   FingerprintMatch,
   StudioRelease,
   StudioReleaseList,
+  TrackCredit,
 } from '../studio-types';
 import { requestJson } from './studio-request';
 
@@ -509,6 +510,44 @@ export async function requestSoundStems(
     return {
       ok: false,
       error: err instanceof Error ? err.message : 'Stem request failed',
+    };
+  }
+}
+
+export async function patchReleaseTrackCredits(
+  releaseId: string,
+  trackId: string,
+  credits: TrackCredit[],
+): Promise<
+  { ok: true; credits: TrackCredit[] | null } | { ok: false; error: string }
+> {
+  const cleaned = credits
+    .map((credit) => ({
+      role: credit.role.trim(),
+      name: credit.name.trim(),
+      ...(credit.artistUsername
+        ? { artistUsername: credit.artistUsername }
+        : {}),
+    }))
+    .filter((credit) => credit.role && credit.name);
+  if (isForceMock()) {
+    return { ok: true, credits: cleaned.length > 0 ? cleaned : null };
+  }
+  try {
+    const { data } = await requestJson<{ credits: TrackCredit[] | null }>(
+      `/api/me/releases/${encodeURIComponent(releaseId)}/tracks/${encodeURIComponent(trackId)}/credits`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify({
+          credits: cleaned.length > 0 ? cleaned : null,
+        }),
+      },
+    );
+    return { ok: true, credits: data.credits ?? null };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not save the credits',
     };
   }
 }

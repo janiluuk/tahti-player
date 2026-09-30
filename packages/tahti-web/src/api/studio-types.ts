@@ -125,6 +125,32 @@ export type StudioReleaseTrack = {
   soundId?: string | null;
   sourceKey?: string | null;
   fingerprintMatch?: FingerprintMatch | null;
+  credits?: TrackCredit[] | null;
+};
+
+export const TRACK_CREDIT_ROLES = [
+  'vocals',
+  'guitars',
+  'bass',
+  'drums',
+  'keys',
+  'synths',
+  'strings',
+  'brass',
+  'programming',
+  'writer',
+  'composer',
+  'producer',
+  'mixing',
+  'mastering',
+  'engineer',
+  'featuring',
+] as const;
+
+export type TrackCredit = {
+  role: string;
+  name: string;
+  artistUsername?: string;
 };
 
 export type StudioRelease = {
