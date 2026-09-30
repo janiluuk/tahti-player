@@ -5,6 +5,7 @@ import {
   resolvePublicVisualizerPreset,
   type ChannelLookExtras,
 } from '../../api/channel-design';
+import type { PublicProfileArtist } from '../../api/types';
 import { normalizeColorScheme } from '../../lib/colorScheme';
 import type { ArtistChannelVisual } from './useArtistChannelLook';
 
@@ -12,6 +13,8 @@ import type { ArtistChannelVisual } from './useArtistChannelLook';
 export function artistLookSchemes(
   channelVisual: ArtistChannelVisual | null,
   lookExtras: ChannelLookExtras,
+  /** The public profile also sends `backdropUrl` (not in `PublicProfileArtist`). */
+  artist?: PublicProfileArtist & { backdropUrl?: string | null },
 ) {
   const headerScheme = normalizeColorScheme(
     channelVisual?.colorScheme ??
@@ -36,7 +39,7 @@ export function artistLookSchemes(
     pageScheme,
     artistBackdropUrl: channelVisual?.videoBackgroundUrl
       ? null
-      : (channelVisual?.slideshowImages?.[0] ?? null),
+      : (channelVisual?.slideshowImages?.[0] ?? artist?.backdropUrl ?? null),
     sectionSurfaceStyle: {
       backgroundColor: `${pageScheme.bg}e6`,
       borderColor: `${pageScheme.muted}66`,

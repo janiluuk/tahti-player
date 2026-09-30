@@ -397,7 +397,7 @@ function ArtistProfilePage({ username }: { username: string }) {
     backgroundVisualPreset,
     brandGradient,
     overlay,
-  } = artistLookSchemes(channelVisual, lookExtras);
+  } = artistLookSchemes(channelVisual, lookExtras, artist);
 
   return (
     <div

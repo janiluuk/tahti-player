@@ -30,6 +30,8 @@ export type ProfileFields = {
   showDailyListeners?: boolean;
   /** Handles for cross-posting/import sources — e.g. { hearthisAt: 'myhandle' }. */
   socialLinks?: Record<string, string> | null;
+  /** Wide banner behind the artist page header. */
+  backdropUrl?: string | null;
 };
 
 export let mockProfile: ProfileFields = {
