@@ -2,15 +2,17 @@ import { PencilIcon, Trash2Icon } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Input, MediaArtwork } from '@tahti-player/ui';
+import { Button, Input } from '@tahti-player/ui';
 
 import type { ChannelMember } from '../../api/artist-settings';
 import {
   addChannelMember,
+  clearChannelMemberPicture,
   removeChannelMember,
   updateChannelMember,
+  uploadChannelMemberPicture,
 } from '../../api/channel-members';
-import { placeholderArtworkUrl } from '../../lib/placeholderArt';
+import { RoundImageUploadButton } from '../../components/RoundImageUploadButton';
 import { SettingsHint } from './SettingsFields';
 
 function MemberForm({
@@ -117,6 +119,25 @@ export function ChannelMembersEditor({
     return true;
   };
 
+  const changePicture = async (id: string, url: string) => {
+    if (url) {
+      onChange(
+        members.map((member) =>
+          member.id === id ? { ...member, pictureUrl: url } : member,
+        ),
+      );
+      return;
+    }
+    const result = await clearChannelMemberPicture(id);
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    onChange(
+      members.map((member) => (member.id === id ? result.data : member)),
+    );
+  };
+
   const remove = async (id: string) => {
     setRemovingId(id);
     const result = await removeChannelMember(id);
@@ -148,13 +169,14 @@ export function ChannelMembersEditor({
                 />
               ) : (
                 <div className="flex items-center gap-3">
-                  <MediaArtwork
-                    src={
-                      member.pictureUrl ?? placeholderArtworkUrl(member.name)
+                  <RoundImageUploadButton
+                    label={`Picture of ${member.name}`}
+                    value={member.pictureUrl}
+                    sizeClassName="size-10"
+                    upload={(file) =>
+                      uploadChannelMemberPicture(member.id, file)
                     }
-                    alt=""
-                    size="sm"
-                    className="size-8 min-w-8 rounded-full"
+                    onChange={(url) => void changePicture(member.id, url)}
                   />
                   <span className="min-w-0 flex-1 truncate font-medium">
                     {member.name}

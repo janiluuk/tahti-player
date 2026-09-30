@@ -77,3 +77,71 @@ export async function removeChannelMember(
     return { ok: false, error: message(err, 'Could not remove the person') };
   }
 }
+
+const MEMBER_PICTURE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
+export async function uploadChannelMemberPicture(
+  id: string,
+  file: File,
+): Promise<{ ok: true; data: { url: string } } | { ok: false; error: string }> {
+  const contentType = file.type || 'image/jpeg';
+  if (!MEMBER_PICTURE_TYPES.includes(contentType)) {
+    return { ok: false, error: 'Use JPEG, PNG, or WebP' };
+  }
+  if (isForceMock()) {
+    const url = URL.createObjectURL(file);
+    const member = mockMembers.find((item) => item.id === id);
+    if (member) {
+      member.pictureUrl = url;
+    }
+    return { ok: true, data: { url } };
+  }
+  const base = `/api/me/channel/members/${encodeURIComponent(id)}/picture`;
+  try {
+    const { data: prep } = await requestJson<{
+      uploadKey: string;
+      uploadUrl: string;
+    }>(`${base}/prepare`, {
+      method: 'POST',
+      body: JSON.stringify({ filename: file.name, contentType }),
+    });
+    const put = await fetch(prep.uploadUrl, {
+      method: 'PUT',
+      body: file,
+      headers: { 'Content-Type': contentType },
+    });
+    if (!put.ok) {
+      throw new Error(`Upload failed (${put.status})`);
+    }
+    const { data } = await requestJson<{ url: string }>(`${base}/complete`, {
+      method: 'POST',
+      body: JSON.stringify({ uploadKey: prep.uploadKey }),
+    });
+    return { ok: true, data: { url: data.url } };
+  } catch (err) {
+    return { ok: false, error: message(err, 'Could not upload the picture') };
+  }
+}
+
+/** Needs tahti-org#577 (PATCH accepts `pictureUrl: null`). */
+export async function clearChannelMemberPicture(
+  id: string,
+): Promise<MemberResult> {
+  if (isForceMock()) {
+    const member = mockMembers.find((item) => item.id === id);
+    if (!member) {
+      return { ok: false, error: 'Member not found' };
+    }
+    member.pictureUrl = null;
+    return { ok: true, data: { ...member } };
+  }
+  try {
+    const { data } = await requestJson<ChannelMember>(
+      `/api/me/channel/members/${encodeURIComponent(id)}`,
+      { method: 'PATCH', body: JSON.stringify({ pictureUrl: null }) },
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return { ok: false, error: message(err, 'Could not remove the picture') };
+  }
+}
