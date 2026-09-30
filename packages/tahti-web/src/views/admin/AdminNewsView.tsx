@@ -32,6 +32,7 @@ import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { ImageUploadField } from '../../components/ImageUploadField';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
+import { AdminTestNotificationPanel } from './AdminTestNotificationPanel';
 
 export function AdminNewsView() {
   const [posts, setPosts] = useState<AdminNewsPost[]>([]);
@@ -293,6 +294,7 @@ export function AdminNewsView() {
                 </ul>
               )}
             </StudioPanel>
+            <AdminTestNotificationPanel />
           </ViewShell>
 
           <Dialog.Root isOpen={composeOpen} onClose={closeCompose}>

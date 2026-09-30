@@ -174,3 +174,15 @@ export async function deleteNewsPost(
   }
   return mutate(`/api/admin/news/${encodeURIComponent(id)}`, 'DELETE');
 }
+
+export async function sendAdminTestNotification(input: {
+  targetUsername: string;
+  title: string;
+  body?: string;
+  url?: string;
+}): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (isForceMock()) {
+    return { ok: true };
+  }
+  return mutate('/api/admin/notifications/test', 'POST', input);
+}
