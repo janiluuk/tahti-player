@@ -124,7 +124,7 @@ Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
 | Updates / newsletter | posts | `/studio/updates` | `live-api` | |
 | Revenue / Connect | revenue | `/studio/audience` | `live-api` | demock wave 4; onboard/portal redirect to Stripe |
 | Stash | `/dashboard/stash` | `/studio/stash` | `live-api` | upload/delete + mock |
-| Sound share links | none (no prod equivalent) | `TrackEditDialog` → Sharing tab (PRIVATE/STASH only) | `partial` | Client + mock complete (`SoundShareLinksSection.tsx`, `api/studio.ts`); backend route and the audit-log-only interaction guarantee don't exist yet — see `docs/API-REFERENCE.md`'s Proposed contract section |
+| Sound share links | none (no prod equivalent) | `TrackEditDialog` → Sharing tab (PRIVATE/STASH only) | `partial` | Client + mock complete (`SoundShareLinksSection.tsx`, `api/studio.ts`); backend routes in review (tahti-org#568 manage links, #569 `?key=` on track + comments); key access creates no listen events, but there is no per-share audit log yet |
 | Distribution | `/dashboard/distribution` | `/studio/distribution` | `live-api` | catalog, Revelator pay+submit, Spotify profile, royalties |
 | Radio slots / Shows | `/dashboard/tahti-radio-slots` | `/studio/shows` | `live-api` | bookings, series, and episodes all live-API |
 | Channel moderators | `/dashboard/moderate/:slug` | `/studio/moderation` | `live-api` | |

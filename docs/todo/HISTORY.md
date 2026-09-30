@@ -3930,3 +3930,23 @@ Slices came from tahti-org routes tahti-web never called, found with a route dif
 - **Messages (#288)**: start a DM from your contacts (people you follow or who follow you).
 - **Studio**: push a track to your own hearthis.at account from the track edit dialog (#287); live multistream destination status on Channel → Radio → Stream (#289); play the 24/7 rotation from one of your collections (#291); set release artwork (#292) and collection covers (#293, stacked) from an image link.
 - **Checks:** each PR ran tahti-web type-check, lint, the size guard and the touched tests. Nothing was tried against the live API, hearthis.at, a real RTMP destination or Liquidsoap.
+
+## 2026-09-30 - Ten todo slices, twelfth batch (#295-#304)
+
+Slices came from tahti-org routes tahti-web never called (same route diff as batch 11, each hit checked by hand). No `docs/todo/` file covered them.
+
+- **Studio**: credits per release track on a new Credits tab (#295); Store section on/off in the purchase tiers editor (#296); add a released track to the 24/7 rotation (#301; release tracks carry no `soundId` in the API, so the rotation's release groups were empty); add any public track to a playlist from a catalog search (#302).
+- **Listening**: a Store section with the artist's purchase tiers on their page (#297); a Tahti Selects widget on Discover (#299); add a track to a collaborative playlist from its page (#303, stacked on #302); "Live · N listening" in the chat header (#304, stacked on #275).
+- **Public / admin**: platform numbers on What is tahti.live (#300); send a test notification to one member from `/admin/news` (#298).
+- **Checks:** each PR ran tahti-web type-check, lint, the size guard and the touched tests. Nothing was tried against the live API, Stripe checkout or Centrifugo.
+
+## 2026-09-30 - Ten cross-repo slices, thirteenth batch (tahti-player #306-#310, tahti-org #565-#571)
+
+Slices came from diffing the paths tahti-web calls against the routes tahti-org registers, in both directions. The diff misses routes registered through helpers (`registerAdminTransport` in `admin/channels.ts`), so #308 first dropped skip/pause/resume by mistake and then restored them. No `docs/todo/` file covered these slices. tahti-org catalogs (`remaining-work`, `features`, its HISTORY) are left for those PRs' merge commits, per that repo's stacking rule.
+
+- **Admin paths that 404'd (web)**: radio opt-out and move-to-front (#306), storage quota (#307), all five stream manager controls, now under `/api/admin/channels/:slug/*` (#308).
+- **Release tracks (API)**: `soundId` on release tracks, which fills the 24/7 rotation's release groups (tahti-org#565); delete a track (#566) and reorder tracks (#567, stacked), both refused with 409 once the release is sent for distribution.
+- **Sound share links (API)**: `SoundShare` table and list/create/revoke routes for the existing web UI (tahti-org#568); `?key=` opens a private track and its comments, with grantee-only links (#569, stacked).
+- **Mentions**: the public mentions API no longer names private tracks (tahti-org#570); the artist page labels announcement and chat mentions and opens sources in-app (#309).
+- **Channel kind**: board write route + audit action (tahti-org#571) and an Artist / Radio station switch in the admin user panel (#310).
+- **Checks:** tahti-web type-check, lint, the size guard and the touched tests per PR; tahti-org Vitest for each touched route against a throwaway Postgres, eslint and Prettier on the changed files, and `apps/api` typecheck. Nothing was tried against the live API or a running Liquidsoap.
