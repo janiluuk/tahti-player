@@ -52,6 +52,7 @@ import {
   useArtistChannelLook,
   type RelatedArtist,
 } from '../components/artist-view';
+import { ArtistSoundCloudTracks } from '../components/artist-view/ArtistSoundCloudTracks';
 import {
   ArtistGalleryAddIcon,
   ArtistGalleryPanel,
@@ -550,6 +551,13 @@ function ArtistProfilePage({ username }: { username: string }) {
           shows={liveShows}
           channelSlug={channel?.slug}
           username={artist.username}
+          surfaceStyle={sectionSurfaceStyle}
+        />
+      ) : null}
+
+      {channel?.slug ? (
+        <ArtistSoundCloudTracks
+          channelSlug={channel.slug}
           surfaceStyle={sectionSurfaceStyle}
         />
       ) : null}
