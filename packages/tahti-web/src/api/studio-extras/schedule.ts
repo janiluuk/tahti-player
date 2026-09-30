@@ -271,6 +271,50 @@ export async function patchProgramme(
   }
 }
 
+export async function addReleaseTrackToProgramme(input: {
+  releaseTrackId: string;
+  title: string;
+  durationSec?: number | null;
+}): Promise<{ ok: true; data: ProgrammeView } | { ok: false; error: string }> {
+  if (isForceMock()) {
+    const order = mockProgramme.items.filter((item) => item.isFallback).length;
+    mockProgramme = {
+      ...mockProgramme,
+      items: [
+        ...mockProgramme.items,
+        {
+          id: `release-track-${input.releaseTrackId}`,
+          title: input.title,
+          status: 'READY',
+          durationSec: input.durationSec ?? null,
+          isFallback: true,
+          fallbackOrder: order,
+        },
+      ],
+    };
+    return {
+      ok: true,
+      data: { ...mockProgramme, items: [...mockProgramme.items] },
+    };
+  }
+  try {
+    const { data } = await requestJson<ProgrammeView>(
+      '/api/me/channel/programme/library',
+      {
+        method: 'POST',
+        body: JSON.stringify({ releaseTrackId: input.releaseTrackId }),
+      },
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error:
+        err instanceof Error ? err.message : 'Could not add to the rotation',
+    };
+  }
+}
+
 /** Apply a playlist's archive tracks as the channel 24/7 rotation. */
 export async function applyPlaylistToProgramme(
   soundIds: string[],
