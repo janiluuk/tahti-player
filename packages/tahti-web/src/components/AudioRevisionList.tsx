@@ -20,6 +20,7 @@ import {
 import { usePolling } from '../hooks/usePolling';
 import { usePlayerStore } from '../stores/playerStore';
 import { Eyebrow } from './tahti/Eyebrow';
+import { VersionRenderProgress } from './VersionRenderProgress';
 
 const REVISION_POLL_MS = 4000;
 
@@ -360,6 +361,14 @@ export function AudioRevisionList({
                   <div className="text-foreground-secondary text-xs">
                     {formatRevisionMeta(version)}
                   </div>
+                  {version.status === 'PENDING' ||
+                  version.status === 'PROCESSING' ? (
+                    <VersionRenderProgress
+                      soundId={soundId}
+                      versionId={version.id}
+                      onDone={load}
+                    />
+                  ) : null}
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {version.status === 'READY' ? (
