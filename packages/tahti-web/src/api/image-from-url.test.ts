@@ -1,6 +1,9 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { setReleaseArtworkFromUrl } from './image-from-url';
+import {
+  setCollectionCoverFromUrl,
+  setReleaseArtworkFromUrl,
+} from './image-from-url';
 
 describe('setReleaseArtworkFromUrl', () => {
   afterEach(() => {
@@ -34,5 +37,36 @@ describe('setReleaseArtworkFromUrl', () => {
     await expect(
       setReleaseArtworkFromUrl('r1', 'https://example.com/page'),
     ).resolves.toEqual({ ok: false, error: 'Not an image' });
+  });
+});
+
+describe('setCollectionCoverFromUrl', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('asks the API to fetch the image for the collection', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ url: 'https://cdn/c.jpg' }), {
+        status: 200,
+      }),
+    );
+    await expect(
+      setCollectionCoverFromUrl('late-night', 'https://example.com/c.jpg'),
+    ).resolves.toEqual({ ok: true, url: 'https://cdn/c.jpg' });
+    expect(fetchSpy.mock.calls[0]![0]).toBe(
+      '/tahti-api/api/me/collections/late-night/cover/from-url',
+    );
+  });
+
+  it('passes on why the image was refused', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ error: 'Image too large' }), {
+        status: 422,
+      }),
+    );
+    await expect(
+      setCollectionCoverFromUrl('late-night', 'https://example.com/big.jpg'),
+    ).resolves.toEqual({ ok: false, error: 'Image too large' });
   });
 });

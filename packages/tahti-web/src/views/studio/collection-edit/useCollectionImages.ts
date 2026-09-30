@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { setCollectionCoverFromUrl } from '../../../api/image-from-url';
 import {
   patchCollectionGallery,
   patchStudioCollection,
@@ -74,6 +75,23 @@ export function useCollectionImages(
     );
   };
 
+  const coverFromUrl = async (sourceUrl: string) => {
+    setUploadingImage(true);
+    const result = await setCollectionCoverFromUrl(slug, sourceUrl);
+    setUploadingImage(false);
+    if (!result.ok) {
+      toast.error(result.error);
+      return false;
+    }
+    setCoverUrl(result.url);
+    setCol((current) =>
+      current ? { ...current, coverUrl: result.url } : current,
+    );
+    setUploadTarget(null);
+    toast.success('Cover saved.');
+    return true;
+  };
+
   const removeCover = async () => {
     const result = await patchStudioCollection(slug, { coverUrl: null });
     if (!result.ok) {
@@ -144,6 +162,7 @@ export function useCollectionImages(
     pendingFrameDelete,
     setPendingFrameDelete,
     uploadImage,
+    coverFromUrl,
     removeCover,
     removeBackdrop,
     removeSlideshowFrame,

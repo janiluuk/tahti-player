@@ -5,6 +5,7 @@ import { Dialog, FilePicker } from '@tahti-player/ui';
 import { removeStudioCollectionItem } from '../../../api/studio';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { ImageSlotPreviewDialog } from '../../../components/imageSlot/ImageSlotPreviewDialog';
+import { ImageUrlForm } from '../../../components/ImageUrlForm';
 import { AddTracksDialog } from './AddTracksDialog';
 import type { CollectionEditState } from './useCollectionEditState';
 
@@ -32,6 +33,7 @@ export function CollectionDialogs({
     setUploadTarget,
     uploadingImage,
     uploadImage,
+    coverFromUrl,
     pendingRemove,
     setPendingRemove,
     refreshItems,
@@ -94,6 +96,11 @@ export function CollectionDialogs({
             onFiles={(files) => void uploadImage(files)}
           />
         </div>
+        {uploadTarget === 'cover' ? (
+          <div className="border-border mt-4 border-t pt-4">
+            <ImageUrlForm busy={uploadingImage} onSubmit={coverFromUrl} />
+          </div>
+        ) : null}
         <Dialog.Actions>
           <Dialog.Close>Cancel</Dialog.Close>
         </Dialog.Actions>

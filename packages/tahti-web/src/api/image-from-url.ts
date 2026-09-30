@@ -30,3 +30,24 @@ export async function setReleaseArtworkFromUrl(
     return failed(err);
   }
 }
+
+export async function setCollectionCoverFromUrl(
+  slug: string,
+  sourceUrl: string,
+): Promise<ImageResult> {
+  if (isForceMock()) {
+    return { ok: true, url: sourceUrl };
+  }
+  try {
+    const { data } = await requestJson<{ url: string | null }>(
+      `/api/me/collections/${encodeURIComponent(slug)}/cover/from-url`,
+      { method: 'POST', body: JSON.stringify({ sourceUrl }) },
+    );
+    if (!data.url) {
+      throw new Error('The cover was saved but has no URL yet');
+    }
+    return { ok: true, url: data.url };
+  } catch (err) {
+    return failed(err);
+  }
+}
