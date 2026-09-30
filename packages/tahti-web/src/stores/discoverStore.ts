@@ -10,7 +10,8 @@ export type DiscoverWidgetId =
   | 'loved'
   | 'artist-of-the-week'
   | 'random-artist'
-  | 'public-playlists';
+  | 'public-playlists'
+  | 'tahti-selects';
 
 export const ALL_WIDGET_IDS: DiscoverWidgetId[] = [
   'this-week-most-played',
@@ -22,6 +23,7 @@ export const ALL_WIDGET_IDS: DiscoverWidgetId[] = [
   'artist-of-the-week',
   'random-artist',
   'public-playlists',
+  'tahti-selects',
 ];
 
 export const DEFAULT_WIDGETS: DiscoverWidgetId[] = [

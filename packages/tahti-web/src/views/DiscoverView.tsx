@@ -32,6 +32,7 @@ import {
   fetchNewToYou,
   fetchPublicCollections,
   fetchRandomArtist,
+  fetchTahtiSelects,
   fetchTopTracks,
 } from '../api/discover';
 import type { DiscoverArtistOfWeek } from '../api/discover';
@@ -75,6 +76,7 @@ const WIDGET_LABELS: Record<DiscoverWidgetId, string> = {
   'artist-of-the-week': 'Random artist of the week',
   'random-artist': 'Random artist pick',
   'public-playlists': 'Public playlists',
+  'tahti-selects': 'Tahti Selects',
 };
 
 const TOP_LIST_WIDGET_IDS = new Set<DiscoverWidgetId>([
@@ -248,6 +250,14 @@ export function DiscoverView() {
           case 'public-playlists': {
             const { data: collections } = await fetchPublicCollections(filters);
             return { loading: false, items: [], collections };
+          }
+          case 'tahti-selects': {
+            const { data: items } = await fetchTahtiSelects();
+            return {
+              loading: false,
+              items,
+              subtitle: 'Picked for the Tahti Selects rotation',
+            };
           }
         }
       };
@@ -478,7 +488,9 @@ export function DiscoverView() {
                       ? 'No community-loved tracks yet.'
                       : id === 'public-playlists'
                         ? 'No public playlists match these filters yet.'
-                        : 'Nothing here yet.'
+                        : id === 'tahti-selects'
+                          ? 'No tracks in the Tahti Selects rotation right now.'
+                          : 'Nothing here yet.'
                   }
                   canMoveUp={index > 0}
                   canMoveDown={index < enabledWidgets.length - 1}
