@@ -12,6 +12,7 @@ export {
   fetchProgramme,
   patchProgramme,
   applyPlaylistToProgramme,
+  addReleaseTrackToProgramme,
 } from './studio-extras/schedule';
 export type {
   StatsSummary,

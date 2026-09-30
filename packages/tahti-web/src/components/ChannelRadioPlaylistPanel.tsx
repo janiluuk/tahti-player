@@ -34,6 +34,7 @@ import {
 import type { StudioCollection, StudioRelease } from '../api/studio-types';
 import { usePlayerStore } from '../stores/playerStore';
 import { ChannelRotationEditor } from './ChannelRotationEditor';
+import { ReleaseTracksToRotation } from './ReleaseTracksToRotation';
 
 const isPlaylist = (collection: StudioCollection) =>
   !collection.style ||
@@ -526,6 +527,16 @@ export const ChannelRadioPlaylistPanel: FC = () => {
           onPlay={(item) => void playRotationItem(item)}
           libraryGroups={libraryGroups}
           onAddGroup={(group) => setPendingAdd(group)}
+        />
+      ) : null}
+      {activeTab === 'rotation' ? (
+        <ReleaseTracksToRotation
+          releases={releases}
+          disabled={busy}
+          onAdded={(next) => {
+            applyProgramme(next);
+            reload();
+          }}
         />
       ) : null}
 
