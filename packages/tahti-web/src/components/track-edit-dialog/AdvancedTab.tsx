@@ -6,6 +6,7 @@ import type { StudioSound } from '../../api/studio-types';
 import { MusicBrainzSubmissionAssistant } from '../MusicBrainzSubmissionAssistant';
 import { TrackCreditsEditor } from '../TrackCreditsEditor';
 import { HearthisExportSection } from './HearthisExportSection';
+import { PublishToReleaseSection } from './PublishToReleaseSection';
 import type { TrackEditDialogState } from './useTrackEditDialog';
 
 const LICENSES = [
@@ -72,6 +73,9 @@ export function AdvancedTab({
           soundId={item.id}
           initialStatus={item.hearthisExportStatus ?? null}
         />
+      ) : null}
+      {!isAudioClip && !item.embedProvider ? (
+        <PublishToReleaseSection soundId={item.id} title={item.title} />
       ) : null}
       {!isAudioClip ? (
         <MusicBrainzSubmissionAssistant
