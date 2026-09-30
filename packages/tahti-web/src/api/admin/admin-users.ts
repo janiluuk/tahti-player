@@ -33,8 +33,11 @@ export type AdminUserDetail = AdminUserRow & {
     goneLiveAt: string | null;
     totalLiveHours: number;
     metaStreamOptOut?: boolean;
+    channelKind?: ChannelKind;
   } | null;
 };
+
+export type ChannelKind = 'ARTIST' | 'RADIO';
 
 export type AdminUserPatch = {
   role?: AccountRole;
@@ -385,6 +388,33 @@ export async function deleteAdminUserAccount(
     return {
       ok: false,
       error: err instanceof Error ? err.message : 'Deletion failed',
+    };
+  }
+}
+
+export async function setAdminChannelKind(
+  slug: string,
+  channelKind: ChannelKind,
+): Promise<
+  { ok: true; channelKind: ChannelKind } | { ok: false; error: string }
+> {
+  if (isForceMock()) {
+    return { ok: true, channelKind };
+  }
+  try {
+    const data = await sendJson<{ channelKind: ChannelKind }>(
+      `/api/admin/channels/${encodeURIComponent(slug)}/kind`,
+      'PATCH',
+      { channelKind },
+    );
+    return { ok: true, channelKind: data.channelKind };
+  } catch (err) {
+    return {
+      ok: false,
+      error:
+        err instanceof Error
+          ? err.message
+          : 'Could not change the channel type',
     };
   }
 }

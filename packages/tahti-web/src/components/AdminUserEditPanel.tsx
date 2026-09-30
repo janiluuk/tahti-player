@@ -36,6 +36,7 @@ import {
 } from '../api/messages';
 import type { AccountRole, PublicProfile } from '../api/types';
 import { useAuthStore } from '../stores/authStore';
+import { AdminChannelKindControl } from './admin-user/AdminChannelKindControl';
 import { AdminUserDeletePanel } from './admin-user/AdminUserDeletePanel';
 import { AdminUserEngagementPanel } from './admin-user/AdminUserEngagementPanel';
 import { AdminUserRestrictionsPanel } from './admin-user/AdminUserRestrictionsPanel';
@@ -368,6 +369,15 @@ export function AdminUserEditPanel({
                 ? `${detail.channel.totalLiveHours.toFixed(1)} live hours`
                 : 'Listener account'}
             </dd>
+            {detail.channel ? (
+              <dd className="mt-2">
+                <AdminChannelKindControl
+                  key={detail.channel.slug}
+                  slug={detail.channel.slug}
+                  initialKind={detail.channel.channelKind ?? 'ARTIST'}
+                />
+              </dd>
+            ) : null}
           </div>
           <div className="bg-background-secondary rounded-lg p-3">
             <dt className="text-foreground-secondary text-xs uppercase">
