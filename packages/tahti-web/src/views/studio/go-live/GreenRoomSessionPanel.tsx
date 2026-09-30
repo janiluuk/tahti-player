@@ -14,6 +14,7 @@ import {
 import { StudioPanel } from '../../../components/StudioPanel';
 import { usePolling } from '../../../hooks/usePolling';
 import { useAuthStore } from '../../../stores/authStore';
+import { GreenRoomInviteForm } from './GreenRoomInviteForm';
 
 const REFRESH_MS = 20_000;
 
@@ -153,6 +154,27 @@ export function GreenRoomSessionPanel() {
                 ))}
               </ul>
             )
+          ) : null}
+          {session.enabled ? (
+            <GreenRoomInviteForm
+              session={session}
+              onInvited={(invite) =>
+                setSession((current) =>
+                  current
+                    ? {
+                        ...current,
+                        invites: [
+                          ...current.invites.filter(
+                            (item) => item.userId !== invite.userId,
+                          ),
+                          invite,
+                        ],
+                      }
+                    : current,
+                )
+              }
+              onSynced={setSession}
+            />
           ) : null}
         </div>
       )}
