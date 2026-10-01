@@ -19,7 +19,6 @@ import {
   Tooltip,
 } from '@tahti-player/ui';
 
-import type { PinnedAnnouncement } from '../../api/announcements';
 import type { DiscoWidgetRenderItem } from '../../api/disco-widgets';
 import type { PublicMention } from '../../api/mentions';
 import type { PublicRadioShow } from '../../api/shows';
@@ -375,21 +374,6 @@ export function ArtistFeed({ posts }: { posts: ArtistPost[] }) {
               <p className="text-sm font-semibold">{post.title}</p>
             ) : null}
             <p className="text-foreground-secondary text-sm">{post.body}</p>
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
-}
-
-export function ArtistNews({ news }: { news: PinnedAnnouncement[] }) {
-  return (
-    <section className="flex flex-col gap-3">
-      <Eyebrow>News</Eyebrow>
-      <ul className="border-border divide-border divide-y overflow-hidden rounded-xl border">
-        {news.map((item) => (
-          <li key={item.id} className="p-3 text-sm">
-            {item.body}
           </li>
         ))}
       </ul>
