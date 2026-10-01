@@ -52,42 +52,45 @@ export function VenuesDirectory() {
       data-testid="venues-directory"
       className="border-border divide-border divide-y overflow-hidden rounded-lg border"
     >
-      {venues.map((venue) => (
-        <li key={venue.id} className="flex gap-4 px-4 py-3">
-          {venue.photos?.[1] ? (
-            <ImageReveal
-              src={venue.photos[1]}
-              alt=""
-              className="h-16 w-24 shrink-0 rounded-md"
-            />
-          ) : null}
-          <div className="flex min-w-0 flex-col gap-1">
-            <Link
-              to="/v/$slug"
-              params={{ slug: venue.slug }}
-              className="font-medium hover:underline"
-            >
-              {venue.name}
-            </Link>
-            <div className="text-foreground-secondary text-xs">
-              {[venue.city, countryFlagAndName(venue.countryCode) || null]
-                .filter(Boolean)
-                .join(', ')}
-              {venue.capacity != null ? ` — cap. ${venue.capacity}` : ''}
+      {venues.map((venue) => {
+        const photo = venue.photos?.[1] ?? venue.photos?.[0];
+        return (
+          <li key={venue.id} className="flex gap-4 px-4 py-3">
+            {photo ? (
+              <ImageReveal
+                src={photo}
+                alt=""
+                className="h-16 w-24 shrink-0 rounded-md"
+              />
+            ) : null}
+            <div className="flex min-w-0 flex-col gap-1">
+              <Link
+                to="/v/$slug"
+                params={{ slug: venue.slug }}
+                className="font-medium hover:underline"
+              >
+                {venue.name}
+              </Link>
+              <div className="text-foreground-secondary text-xs">
+                {[venue.city, countryFlagAndName(venue.countryCode) || null]
+                  .filter(Boolean)
+                  .join(', ')}
+                {venue.capacity != null ? ` — cap. ${venue.capacity}` : ''}
+              </div>
+              {venue.description && (
+                <p className="text-foreground text-sm">{venue.description}</p>
+              )}
+              <Link
+                to="/v/$slug"
+                params={{ slug: venue.slug }}
+                className="text-foreground-secondary text-xs underline-offset-2 hover:underline"
+              >
+                View venue →
+              </Link>
             </div>
-            {venue.description && (
-              <p className="text-foreground text-sm">{venue.description}</p>
-            )}
-            <Link
-              to="/v/$slug"
-              params={{ slug: venue.slug }}
-              className="text-foreground-secondary text-xs underline-offset-2 hover:underline"
-            >
-              View venue →
-            </Link>
-          </div>
-        </li>
-      ))}
+          </li>
+        );
+      })}
     </ul>
   );
 }
