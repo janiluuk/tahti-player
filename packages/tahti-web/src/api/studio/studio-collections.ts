@@ -272,6 +272,9 @@ export async function createStudioCollection(input: {
     };
   }
   try {
+    const visibility = toServerVisibility(
+      input.visibility ?? (input.isPublic === false ? 'PRIVATE' : 'PUBLIC'),
+    );
     const { data } = await requestJson<StudioCollection>(
       '/api/me/collections',
       {
@@ -280,10 +283,8 @@ export async function createStudioCollection(input: {
           name: input.name,
           style: input.style ?? 'PLAYLIST',
           description: input.description,
-          isPublic: input.isPublic ?? true,
-          visibility:
-            input.visibility ??
-            (input.isPublic === false ? 'PRIVATE' : 'PUBLIC'),
+          isPublic: visibility === 'PUBLIC',
+          visibility,
           releaseDate: input.releaseDate,
           genres: input.genres,
           collaborative: Boolean(
@@ -292,7 +293,7 @@ export async function createStudioCollection(input: {
         }),
       },
     );
-    return { ok: true, data };
+    return { ok: true, data: withEditorVisibility(data) };
   } catch (err) {
     return {
       ok: false,
