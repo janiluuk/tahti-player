@@ -41,6 +41,7 @@ import {
   collectionStyleLabel,
   normalizeCollectionStyle,
 } from '../../content/collectionStyles';
+import { CollectionOrderButton } from './CollectionOrderButton';
 
 /** Styles this quick-create dialog and the filter tabs offer — a subset of
  * CollectionStyleId (no SINGLE; those come from linking a release, not from
@@ -188,18 +189,21 @@ export function StudioCollectionsView() {
           title="Collections"
           classes={{ root: 'px-0 pt-0' }}
           actions={
-            <Tooltip content="New collection" side="top">
-              <Button
-                size="icon-sm"
-                onClick={() => {
-                  setMsg(null);
-                  setCreateOpen(true);
-                }}
-                aria-label="New collection"
-              >
-                <PlusIcon size={16} aria-hidden />
-              </Button>
-            </Tooltip>
+            <div className="flex items-center gap-2">
+              <CollectionOrderButton />
+              <Tooltip content="New collection" side="top">
+                <Button
+                  size="icon-sm"
+                  onClick={() => {
+                    setMsg(null);
+                    setCreateOpen(true);
+                  }}
+                  aria-label="New collection"
+                >
+                  <PlusIcon size={16} aria-hidden />
+                </Button>
+              </Tooltip>
+            </div>
           }
         >
           {msg && <p className="mb-4 text-sm">{msg}</p>}

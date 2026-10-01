@@ -219,6 +219,9 @@ export type StudioCollection = {
   backdropUrl?: string | null;
   items?: StudioCollectionItem[];
   itemCount?: number;
+  isFeatured?: boolean;
+  publicProfileOrder?: number;
+  createdAt?: string;
 };
 
 export type EditorProjectRow = {
