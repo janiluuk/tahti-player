@@ -172,3 +172,25 @@ export async function deleteEvent(
     };
   }
 }
+
+/** Upcoming events on an artist's channel (`GET /api/channels/:slug/events`). */
+export async function fetchChannelEvents(slug: string): Promise<{
+  data: ArtistEvent[];
+  meta: FetchMeta;
+}> {
+  if (isForceMock()) {
+    const now = new Date().toISOString();
+    return {
+      data: mockEvents.filter((e) => e.startAt >= now),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const { data } = await requestJson<ArtistEvent[]>(
+      `/api/channels/${encodeURIComponent(slug)}/events`,
+    );
+    return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
+  } catch (err) {
+    return { data: [], meta: failMeta(err) };
+  }
+}
