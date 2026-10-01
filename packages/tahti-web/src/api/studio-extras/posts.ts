@@ -21,6 +21,15 @@ export type NewsletterDraft = {
   subscribersOnly?: boolean;
   createdAt?: string;
   sentAt?: string | null;
+  /** How the emails ended up — sent by tahti-org since #628. */
+  delivery?: NewsletterDelivery;
+};
+
+export type NewsletterDelivery = {
+  queued: number;
+  sent: number;
+  failed: number;
+  bounced: number;
 };
 
 export let mockPosts: ArtistPost[] = [

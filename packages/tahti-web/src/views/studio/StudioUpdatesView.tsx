@@ -32,6 +32,7 @@ import { ImageLightbox } from '../../components/ImageLightbox';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
+import { newsletterDeliverySummary } from '../../lib/newsletterDelivery';
 import { NewDraftDialog } from './updates/NewDraftDialog';
 import { NewPostDialog } from './updates/NewPostDialog';
 import { NewsletterSubscriberStats } from './updates/NewsletterSubscriberStats';
@@ -283,6 +284,11 @@ export function StudioUpdatesView() {
                             ? `, sent ${new Date(d.sentAt).toLocaleString()}`
                             : ', draft'}
                         </p>
+                        {newsletterDeliverySummary(d.delivery) ? (
+                          <p className="text-foreground-secondary mt-0.5 text-xs">
+                            {newsletterDeliverySummary(d.delivery)}
+                          </p>
+                        ) : null}
                       </div>
                       {(!d.state || d.state === 'DRAFT') && !d.sentAt && (
                         <Button
