@@ -1,11 +1,13 @@
 import { Link } from '@tanstack/react-router';
-import { PlayIcon } from 'lucide-react';
+import { DownloadIcon, PlayIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import { Button, ExternalLink, Tooltip } from '@tahti-player/ui';
 
 import { fetchEditorSource, fetchStudioSound } from '../../../api/studio';
 import type { StudioRelease, StudioSound } from '../../../api/studio-types';
+import { downloadStudioReleaseTrack } from '../../../api/studio/release-track-download';
 import { EmbedTrackRow } from '../../../components/EmbedTrackRow';
 import { SourceServiceIcon } from '../../../components/SourceServiceIcon';
 import { usePlayerStore } from '../../../stores/playerStore';
@@ -14,17 +16,21 @@ import { usePlayerStore } from '../../../stores/playerStore';
  * own reorderable tracklist (untouched by the Overview TrackTable swap). */
 export function ReleaseTrackRow({
   track,
+  releaseId,
   shopUrl,
   isPlaying = false,
   sound,
 }: {
   track: NonNullable<StudioRelease['tracks']>[number];
+  /** Set to offer a download of the track's own file. */
+  releaseId?: string;
   shopUrl?: string;
   isPlaying?: boolean;
   /** The already-loaded library sound, so the row needn't fetch it again. */
   sound?: StudioSound;
 }) {
   const play = usePlayerStore((state) => state.play);
+  const [downloading, setDownloading] = useState(false);
   const [sourceUrl, setSourceUrl] = useState<string | null>(null);
   const [embed, setEmbed] = useState<{
     provider: 'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP';
@@ -100,6 +106,31 @@ export function ReleaseTrackRow({
             }
           >
             <PlayIcon size={15} aria-hidden />
+          </Button>
+        </Tooltip>
+      ) : null}
+      {releaseId && track.status === 'READY' ? (
+        <Tooltip content={`Download ${track.title}`} side="top">
+          <Button
+            size="icon-sm"
+            variant="secondary"
+            aria-label={`Download ${track.title}`}
+            disabled={downloading}
+            onClick={() => {
+              setDownloading(true);
+              void downloadStudioReleaseTrack(releaseId, track.id).then(
+                (result) => {
+                  setDownloading(false);
+                  if (result.ok) {
+                    window.location.assign(result.url);
+                  } else {
+                    toast.error(result.error);
+                  }
+                },
+              );
+            }}
+          >
+            <DownloadIcon size={15} aria-hidden />
           </Button>
         </Tooltip>
       ) : null}
