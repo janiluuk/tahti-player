@@ -10,6 +10,7 @@ import {
 import { PurchaseAccessSection } from '../PurchaseAccessSection';
 import { SoundShareLinksSection } from '../SoundShareLinksSection';
 import { DownloadGateSection } from './DownloadGateSection';
+import { HearthisEmbedImport } from './HearthisEmbedImport';
 import type { TrackEditDialogState } from './useTrackEditDialog';
 
 export function SharingTab({
@@ -83,6 +84,9 @@ export function SharingTab({
           <DownloadIcon size={15} aria-hidden className="mr-1.5" />
           {downloadingEmbed ? 'Preparing download…' : 'Download from HearThis'}
         </Button>
+      ) : null}
+      {item.embedProvider === 'HEARTHIS' ? (
+        <HearthisEmbedImport soundId={soundId} />
       ) : null}
       <div className="border-border bg-background-secondary/30 flex items-center justify-between gap-2 rounded-lg border p-2.5 text-sm">
         <span className="font-medium">Allow comments</span>
