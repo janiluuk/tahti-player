@@ -28,6 +28,7 @@ import { resolvePublicVisualizerPreset } from '../api/channel-design';
 import { fetchProfile } from '../api/client';
 import type { FollowListDirection } from '../api/follows';
 import { fetchPublicMentions, type PublicMention } from '../api/mentions';
+import { artistLogo } from '../api/profile-logo';
 import type {
   PublicProfile,
   PublicProfileRelease,
@@ -449,6 +450,7 @@ function ArtistProfilePage({ username }: { username: string }) {
           ) : null
         }
         backdropUrl={artistBackdropUrl}
+        logo={artistLogo(artist)}
         visualizerPreset={
           resolvedVisualizerPreset ??
           resolveArtworkVisualizerPreset(artist.username)

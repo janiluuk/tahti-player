@@ -4,6 +4,12 @@ import type { LogoPlacement } from './studio-extras/profile';
 
 const LOGO_TYPES = ['image/png', 'image/webp'];
 
+/** Logo fields on the public artist object (`GET /api/v1/u/:username/profile`). */
+export type ArtistLogoFields = {
+  logoUrl?: string | null;
+  logoPlacement?: LogoPlacement | null;
+};
+
 type Result<T> = { ok: true; data: T } | { ok: false; error: string };
 
 const message = (err: unknown, fallback: string) =>
@@ -84,4 +90,14 @@ export async function removeProfileLogo(): Promise<
   } catch (err) {
     return { ok: false, error: message(err, 'Could not remove the logo') };
   }
+}
+
+/** The header logo, or null when none is set. Placement defaults to the
+ * avatar, as in the Branding editor. */
+export function artistLogo(
+  artist: ArtistLogoFields,
+): { url: string; placement: LogoPlacement } | null {
+  return artist.logoUrl
+    ? { url: artist.logoUrl, placement: artist.logoPlacement ?? 'AVATAR' }
+    : null;
 }

@@ -242,7 +242,7 @@ export type TrackComment = {
   createdAt: string;
 };
 
-export type PublicProfileArtist = {
+export type PublicProfileArtist = import('./profile-logo').ArtistLogoFields & {
   username: string;
   displayName: string;
   bio: string | null;
