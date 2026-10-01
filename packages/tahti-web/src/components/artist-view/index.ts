@@ -1,4 +1,5 @@
 export { ArtistMusicTab } from './ArtistMusicTab';
+export { ArtistNews } from './ArtistNews';
 export {
   ArtistBioSection,
   ArtistEmbeds,
@@ -6,7 +7,6 @@ export {
   ArtistFeed,
   ArtistHeaderActions,
   ArtistLiveShows,
-  ArtistNews,
   ArtistTaggedIn,
 } from './ArtistProfileSections';
 export {

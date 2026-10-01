@@ -584,8 +584,8 @@ function ArtistProfilePage({ username }: { username: string }) {
         <ArtistFeed posts={channelPosts} />
       ) : null}
 
-      {lookVisibility.news && channelNews.length > 0 ? (
-        <ArtistNews news={channelNews} />
+      {lookVisibility.news ? (
+        <ArtistNews news={channelNews} username={artist.username} />
       ) : null}
 
       <div className="border-border flex flex-wrap items-center gap-2 border-b pb-3">
