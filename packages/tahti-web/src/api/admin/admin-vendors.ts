@@ -15,6 +15,14 @@ export type AdminIntegrationStatus = {
   detail: string;
 };
 
+type WireIntegrationStatus = {
+  id: string;
+  label: string;
+  configured: boolean;
+  mode: 'live' | 'stub';
+  detail?: string;
+};
+
 function mockIntegrationStatus(): AdminIntegrationStatus[] {
   return [
     { name: 'Mixcloud', live: true, detail: 'Sound uploads connected' },
@@ -33,10 +41,17 @@ export async function fetchAdminIntegrationStatus(): Promise<{
     };
   }
   try {
-    const data = await getJson<{ integrations: AdminIntegrationStatus[] }>(
+    const data = await getJson<{ integrations: WireIntegrationStatus[] }>(
       '/api/admin/integrations',
     );
-    return { data: data.integrations, meta: { source: 'api' } };
+    return {
+      data: data.integrations.map((row) => ({
+        name: row.label,
+        live: row.configured && row.mode === 'live',
+        detail: row.detail ?? '',
+      })),
+      meta: { source: 'api' },
+    };
   } catch (err) {
     if (allowMockFallback()) {
       return { data: mockIntegrationStatus(), meta: failMeta(err) };
