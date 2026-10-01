@@ -3,4 +3,6 @@
   <sitemap><loc>https://beta.tahti.live/sitemap-static.xml</loc></sitemap>
   <sitemap><loc>https://beta.tahti.live/sitemap-profiles.xml</loc></sitemap>
   <sitemap><loc>https://beta.tahti.live/sitemap-releases.xml</loc></sitemap>
+  <sitemap><loc>https://beta.tahti.live/sitemap-tracks.xml</loc></sitemap>
+  <sitemap><loc>https://beta.tahti.live/sitemap-collections.xml</loc></sitemap>
 </sitemapindex>
