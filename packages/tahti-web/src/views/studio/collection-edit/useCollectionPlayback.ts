@@ -60,7 +60,7 @@ export function useCollectionPlayback(items: StudioCollectionItem[]) {
   };
 
   const playAllTracks = async () => {
-    const first = items.find((item) => item.sound);
+    const first = items.find((item) => item.sound && !item.unavailable);
     if (!first?.sound) {
       return;
     }
@@ -70,7 +70,7 @@ export function useCollectionPlayback(items: StudioCollectionItem[]) {
   const queueAllTracks = async () => {
     const withSound = items.filter(
       (item): item is StudioCollectionItem & { sound: StudioSound } =>
-        Boolean(item.sound),
+        Boolean(item.sound) && !item.unavailable,
     );
     // Resolve all sources in parallel, then queue in the tracklist order.
     const resolved = await Promise.all(
@@ -97,6 +97,7 @@ export function useCollectionPlayback(items: StudioCollectionItem[]) {
     // shared-player widget — only HEARTHIS plays via the bottom bar.
     if (
       !item.sound ||
+      item.unavailable ||
       (item.sound.embedProvider && item.sound.embedProvider !== 'HEARTHIS')
     ) {
       return;

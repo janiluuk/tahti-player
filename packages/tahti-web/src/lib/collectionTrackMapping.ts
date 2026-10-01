@@ -7,7 +7,9 @@ import type { StudioCollectionItem } from '../api/studio-types';
  * both edit the same `StudioCollection` entity. */
 export function collectionItemToTrack(item: StudioCollectionItem): Track {
   return {
-    title: item.sound?.title ?? item.release?.title ?? item.id,
+    title: item.unavailable
+      ? `${item.sound?.title ?? item.id} (no longer available)`
+      : (item.sound?.title ?? item.release?.title ?? item.id),
     artists: [{ name: 'You', roles: ['performer'] }],
     durationMs:
       item.sound?.durationSec != null

@@ -200,6 +200,8 @@ export type StudioCollectionItem = {
     title: string;
     smartLinkSlug?: string;
   } | null;
+  /** Another artist's track that has since gone private. */
+  unavailable?: boolean;
 };
 
 export type StudioCollection = {
