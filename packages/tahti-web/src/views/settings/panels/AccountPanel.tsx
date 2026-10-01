@@ -38,6 +38,7 @@ import type {
 } from '../../../api/types';
 import { ApiTokensPanel } from '../../../components/ApiTokensPanel';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
+import { FanSubscriptionsBillingButton } from '../../../components/FanSubscriptionsBillingButton';
 import { MembershipInvoices } from '../../../components/MembershipInvoices';
 import { MembershipStatusPanel } from '../../../components/MembershipStatusPanel';
 import { PageLoading } from '../../../components/PageStates';
@@ -263,6 +264,9 @@ export function AccountPanel() {
                   ))}
                 </ul>
               )}
+              {subscriptions.some((sub) => sub.state === 'ACTIVE') ? (
+                <FanSubscriptionsBillingButton />
+              ) : null}
               <ConfirmDialog
                 isOpen={pendingCancel !== null}
                 title={
