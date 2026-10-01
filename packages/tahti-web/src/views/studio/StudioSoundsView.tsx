@@ -11,6 +11,7 @@ import { StudioPanel } from '../../components/StudioPanel';
 import { SoundFilters } from './sounds/SoundFilters';
 import { SoundRow } from './sounds/SoundRow';
 import { SoundsDialogs } from './sounds/SoundsDialogs';
+import { TrackOrderButton } from './sounds/TrackOrderButton';
 import { FOLDERS, useStudioSoundsState } from './sounds/useStudioSoundsState';
 
 const FOLDER_TABS = [
@@ -43,8 +44,9 @@ export function StudioSoundsView() {
         </Tabs.Root>
         <ViewShell title="Tracks" classes={{ root: 'px-0 pt-0' }}>
           {folder === 'sound' ? (
-            <div className="mb-4">
+            <div className="mb-4 flex flex-wrap items-start justify-between gap-2">
               <AddToMusicActions onUploaded={reload} />
+              <TrackOrderButton />
             </div>
           ) : null}
 
