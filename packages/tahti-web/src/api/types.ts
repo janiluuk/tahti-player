@@ -146,17 +146,7 @@ export type RadioNowPlaying = {
   };
 };
 
-/** GET /api/v1/radio/recently-played — track history on Tahti Radio. */
-export type RadioRecentlyPlayedItem = {
-  id: string;
-  title: string;
-  artistName: string;
-  artistUsername: string | null;
-  artworkUrl: string | null;
-  playedAt: string;
-  /** Present when the track is independently replayable from the archive. */
-  audioUrl?: string | null;
-};
+export type { RadioRecentlyPlayedItem } from './radio-public';
 
 /** Public archive row from GET /api/channels/:slug/items */
 export type ChannelSoundItem = {

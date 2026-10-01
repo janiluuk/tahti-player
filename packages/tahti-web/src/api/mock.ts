@@ -579,6 +579,7 @@ export function mockRadioRecentlyPlayed(): RadioRecentlyPlayedItem[] {
   return [
     {
       id: 'mock-rp-1',
+      soundId: 'mock-rp-1',
       title: 'Aurora Drift',
       artistName: 'Northern Lights',
       artistUsername: 'northern-lights',
@@ -588,6 +589,7 @@ export function mockRadioRecentlyPlayed(): RadioRecentlyPlayedItem[] {
     },
     {
       id: 'mock-rp-2',
+      soundId: 'mock-rp-2',
       title: 'Route 550',
       artistName: 'Midnight Cartography',
       artistUsername: 'midnight-cartography',
@@ -597,6 +599,7 @@ export function mockRadioRecentlyPlayed(): RadioRecentlyPlayedItem[] {
     },
     {
       id: 'mock-rp-3',
+      soundId: 'mock-rp-3',
       title: 'Boathouse Session — Set 1',
       artistName: 'Saimaa Sessions',
       artistUsername: 'saimaa-sessions',
@@ -606,6 +609,7 @@ export function mockRadioRecentlyPlayed(): RadioRecentlyPlayedItem[] {
     },
     {
       id: 'mock-rp-4',
+      soundId: 'mock-rp-4',
       title: 'Echo Chamber Cypher',
       artistName: 'Kaiku Collective',
       artistUsername: 'kaiku-collective',
@@ -615,6 +619,7 @@ export function mockRadioRecentlyPlayed(): RadioRecentlyPlayedItem[] {
     },
     {
       id: 'mock-rp-5',
+      soundId: 'mock-rp-5',
       title: 'CC0 Selects Cut',
       artistName: 'Tahti Selects',
       artistUsername: null,

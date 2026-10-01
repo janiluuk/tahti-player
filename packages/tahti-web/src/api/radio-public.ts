@@ -15,12 +15,7 @@ import {
   withMockFallback,
   type FetchMeta,
 } from './mode';
-import type {
-  PublicChannel,
-  RadioNowPlaying,
-  RadioRecentlyPlayedItem,
-  TahtiPlayable,
-} from './types';
+import type { PublicChannel, RadioNowPlaying, TahtiPlayable } from './types';
 
 async function getJson<T>(path: string): Promise<T> {
   const { data } = await requestJson<T>(path);
@@ -122,6 +117,20 @@ export async function fetchRadioStation(): Promise<{
 }> {
   return fetchChannel(TAHTI_RADIO_SLUG);
 }
+
+/** GET /api/v1/radio/recently-played — track history on Tahti Radio. */
+export type RadioRecentlyPlayedItem = {
+  id: string;
+  title: string;
+  artistName: string;
+  artistUsername: string | null;
+  artworkUrl: string | null;
+  playedAt: string;
+  /** The track while it is still public; null once it went private. */
+  soundId?: string | null;
+  /** Present when the listener may replay the track (access gates apply). */
+  audioUrl?: string | null;
+};
 
 export async function fetchRadioRecentlyPlayed(): Promise<{
   data: RadioRecentlyPlayedItem[];
