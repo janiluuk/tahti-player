@@ -3971,3 +3971,17 @@ Slices came from diffing the paths tahti-web calls against the routes on tahti-o
 - **Members and credits**: upload or remove each person's picture (#327, with tahti-org#577 letting PATCH clear it), set it from an image link (#328, stacked), reorder the roster (#329, stacked).
 - **Profile backdrop (#330)**: upload/remove it in Branding, and the artist page falls back to it when the channel has no slideshow.
 - **Checks:** tahti-web type-check, lint, the size guard and the touched tests per PR; tahti-org Vitest for each touched route against a throwaway Postgres, eslint and Prettier on the changed files, `apps/api` and `packages/shared` typecheck, `@tahti/api-client generate`. Nothing was tried against the live API or real storage.
+
+## 2026-09-30 - Ten cross-repo slices, seventeenth batch (tahti-player #343-#348, tahti-org #578-#583)
+
+Slices came from the same two-way route diff against tahti-org `origin/main`, each hit checked by hand. No `docs/todo/` file covered them. tahti-org catalogs (`remaining-work`, `features`, its HISTORY) are left for those PRs' merge commits, per that repo's stacking rule. Left out after checking: `/api/me/discovery` (still no fields in the schema) and admin i18n languages (no model).
+
+- **Admin content counts (API)**: tahti-org#575 had been merged into its already-merged stacked base, so it never reached `main`; re-landed as tahti-org#578.
+- **Library → Media (API)**: the tab called `GET /api/me/media` and `DELETE /api/me/media/:id`, which didn't exist, so it was always empty. List (tahti-org#579) and delete, limited to the caller's own `media/<username>/` keys (tahti-org#580, stacked).
+- **Green room defaults (#343)**: Broadcast settings saved to `/api/me/green-room`, which doesn't exist. They now save to `/api/me/channel/green-room-defaults` (open on go-live + invite pool).
+- **Radio station suggestions**: `RadioStationSuggestion` model, listener submit (409 on a duplicate stream, cap of 5 pending) and board list (tahti-org#581). Approve creates a disabled preset; reject takes a note (tahti-org#582, stacked). The web shows why a suggestion was refused (#344).
+- **Collection text layer (#345)**: a Text layer panel in the collection editor through `/api/me/collections/:slug/text-layer`, and the headline on the public page. No API change was needed: the public payload already passes `textLayer*` through.
+- **Profile logo (#346)**: PNG/WebP upload, avatar/cover/both placement, and removal in Branding. Drawing it on the public artist page is still open.
+- **Mixcloud into collections**: an "Add from Mixcloud" panel in the collection editor (search, your mixes, by profile URL), which upserts the fieldless `mixcloud-import` credential before adding (#347). "Your mixes" read `User.mixcloudUsername`, which nothing wrote; the profile PATCH now fills it from `socialLinks.mixcloud` (tahti-org#583).
+- **RSS (#348)**: artist and public collection pages link the feeds the API already served.
+- **Checks:** tahti-web type-check, lint, the size guard and the touched tests per PR; tahti-org Vitest for each touched route against a throwaway Postgres, eslint and Prettier on the changed files, `apps/api` and `packages/shared` typecheck, `@tahti/api-client generate`. Nothing was tried against the live API, real storage or Mixcloud.
