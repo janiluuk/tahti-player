@@ -3994,3 +3994,14 @@ Slices came from the same two-way route diff against tahti-org `origin/main`, ea
 - **Mixcloud into collections**: an "Add from Mixcloud" panel in the collection editor (search, your mixes, by profile URL), which upserts the fieldless `mixcloud-import` credential before adding (#347). "Your mixes" read `User.mixcloudUsername`, which nothing wrote; the profile PATCH now fills it from `socialLinks.mixcloud` (tahti-org#583).
 - **RSS (#348)**: artist and public collection pages link the feeds the API already served.
 - **Checks:** tahti-web type-check, lint, the size guard and the touched tests per PR; tahti-org Vitest for each touched route against a throwaway Postgres, eslint and Prettier on the changed files, `apps/api` and `packages/shared` typecheck, `@tahti/api-client generate`. Nothing was tried against the live API, real storage or Mixcloud.
+
+## 2026-10-01 - Ten todo slices, eighteenth batch (#350-#359)
+
+Slices came from the route diff against tahti-org `origin/main` (paths normalised to `:p`, template-literal segments included), each hit grepped in tahti-web by its last static segment. No `docs/todo/` file covered them. Left out after checking: reordering public tracks (`PUT /api/me/sound/reorder`) and the profile collection grid (`PUT /api/me/collections/reorder`) — the API stores `trackOrder` / `publicProfileOrder` but no public route sorts by them, so they need tahti-org work first; the Mixcloud per-track upload looked unused but was already wired through a templated path (fixed instead, #359).
+
+- **Artist news**: set a news feed (RSS/Atom) in Settings → Artist → Connections (`newsFeedUrl`, #350); the artist page's News section lists its items after the pinned announcements (`/api/v1/u/:username/news`, #351).
+- **Feeds and billing**: copy a channel's RSS feed from its page (#352); open the Stripe portal for fan subscriptions (`/api/v1/fansubs/portal`) from both subscription lists (#353).
+- **Engagement**: favoriting a track while signed in also likes it through the API, and the heart shows the real like count (#354); repost a track from its page, with the repost count where the download count used to sit (#355, stacked).
+- **Spotify**: an "Add from Spotify" panel in the collection editor (search, your tracks via `me-tracks`, a collaborator's catalogue via `by-artist-url`) using the API's track shape (#356). The Add-ons Spotify card read the wrong fields and posted a body `/add` rejects; its dialog is gone and it points to the collection editor (#357, stacked).
+- **Studio**: import draft releases from a CSV (`/api/me/releases/import`, #358); the Mixcloud export shows failed uploads and their reason, and offers Connect Mixcloud when the API asks for it (#359).
+- **Checks:** each PR ran tahti-web type-check, lint, the size guard and the touched tests. Nothing was tried against the live API, Stripe, Spotify, Mixcloud or a real feed.
