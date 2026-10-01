@@ -5,6 +5,7 @@ import {
 import type { FetchMeta } from './client';
 import { apiBase } from './http';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
+import { requestJson as requestApiJson } from './request-json';
 
 export type AnnouncementClip = {
   id: string;
@@ -317,6 +318,42 @@ export async function fetchAnnouncementPreview(id: string): Promise<
     return {
       ok: false,
       error: error instanceof Error ? error.message : 'Could not load preview',
+    };
+  }
+}
+
+export type AnnouncementTrim = {
+  startSec: number;
+  endSec: number;
+  fadeInSec: number;
+  fadeOutSec: number;
+};
+
+/** Re-render a clip as a trim of its original upload (never of an earlier
+ * trim), with optional fades. The clip is PROCESSING until the worker
+ * writes the new audio. */
+export async function renderAnnouncementTrim(
+  id: string,
+  trim: AnnouncementTrim,
+): Promise<
+  | { ok: true; renderStatus: AnnouncementClip['renderStatus'] }
+  | { ok: false; error: string }
+> {
+  if (isForceMock()) {
+    return { ok: true, renderStatus: 'PROCESSING' };
+  }
+  try {
+    const { data } = await requestApiJson<{
+      renderStatus: AnnouncementClip['renderStatus'];
+    }>(`/api/me/announcements/${encodeURIComponent(id)}/editor/render`, {
+      method: 'POST',
+      body: JSON.stringify(trim),
+    });
+    return { ok: true, renderStatus: data.renderStatus };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not trim the clip',
     };
   }
 }
