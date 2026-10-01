@@ -1,7 +1,12 @@
-import { CheckCircle2Icon, ExternalLinkIcon, UploadIcon } from 'lucide-react';
+import {
+  AlertCircleIcon,
+  CheckCircle2Icon,
+  ExternalLinkIcon,
+  UploadIcon,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, Tooltip } from '@tahti-player/ui';
+import { Button, ButtonAnchor, Tooltip } from '@tahti-player/ui';
 
 import {
   exportTrack,
@@ -14,11 +19,25 @@ const MIXCLOUD_TARGET = EXPORT_TARGETS.find(
   (target) => target.id === 'mixcloud' && target.supportsTracks,
 );
 
+function describe(status: TrackExportStatus): string {
+  switch (status.status) {
+    case 'DONE':
+      return 'Uploaded to Mixcloud.';
+    case 'FAILED':
+      return status.error ? `Upload failed: ${status.error}` : 'Upload failed.';
+    case 'UPLOADING':
+      return 'Uploading to Mixcloud…';
+    default:
+      return 'Queued for upload.';
+  }
+}
+
 export function TrackExportPanel({ soundId }: { soundId: string }) {
   const [status, setStatus] = useState<TrackExportStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [exporting, setExporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [connectUrl, setConnectUrl] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -38,7 +57,7 @@ export function TrackExportPanel({ soundId }: { soundId: string }) {
     return null;
   }
 
-  const alreadyExported = status != null;
+  const failed = status?.status === 'FAILED';
 
   return (
     <section>
@@ -55,27 +74,40 @@ export function TrackExportPanel({ soundId }: { soundId: string }) {
         </span>
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium">{MIXCLOUD_TARGET.label}</p>
-          <p className="text-foreground-secondary text-xs">
+          <p
+            className={
+              failed
+                ? 'text-accent-red-strong text-xs'
+                : 'text-foreground-secondary text-xs'
+            }
+          >
             {loading
               ? 'Checking export status…'
               : status
-                ? `Already added · ${status.status.toLowerCase()}`
+                ? describe(status)
                 : 'Send this item to your connected account.'}
           </p>
         </div>
         {status?.url ? (
-          <a href={status.url} target="_blank" rel="noreferrer">
-            <Tooltip content="Open Mixcloud export" side="top">
-              <Button
-                size="icon-sm"
-                variant="secondary"
-                aria-label="Open Mixcloud export"
-              >
-                <ExternalLinkIcon size={15} />
-              </Button>
-            </Tooltip>
-          </a>
-        ) : alreadyExported ? (
+          <Tooltip content="Open on Mixcloud" side="top">
+            <ButtonAnchor
+              href={status.url}
+              target="_blank"
+              rel="noreferrer noopener"
+              size="icon-sm"
+              variant="secondary"
+              aria-label="Open on Mixcloud"
+            >
+              <ExternalLinkIcon size={15} aria-hidden />
+            </ButtonAnchor>
+          </Tooltip>
+        ) : failed ? (
+          <AlertCircleIcon
+            size={18}
+            className="text-accent-red-strong"
+            aria-hidden
+          />
+        ) : status ? (
           <CheckCircle2Icon
             size={18}
             className="text-primary"
@@ -89,12 +121,14 @@ export function TrackExportPanel({ soundId }: { soundId: string }) {
             onClick={() => {
               setExporting(true);
               setError(null);
+              setConnectUrl(null);
               void exportTrack(soundId, 'mixcloud').then((result) => {
                 setExporting(false);
                 if (result.ok) {
                   setStatus(result.status);
                 } else {
                   setError(result.error);
+                  setConnectUrl(result.connectUrl ?? null);
                 }
               });
             }}
@@ -104,7 +138,16 @@ export function TrackExportPanel({ soundId }: { soundId: string }) {
           </Button>
         )}
       </div>
-      {error && <p className="text-accent-red-strong mt-2 text-xs">{error}</p>}
+      {error && (
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          <p className="text-accent-red-strong text-xs">{error}</p>
+          {connectUrl ? (
+            <ButtonAnchor href={connectUrl} size="sm" variant="secondary">
+              Connect Mixcloud
+            </ButtonAnchor>
+          ) : null}
+        </div>
+      )}
     </section>
   );
 }

@@ -1,5 +1,6 @@
 import { isForceMock } from '.././mode';
 import { requestJson } from '.././request-json';
+import { oauthStartUrl } from './catalog';
 
 export type TrackExportStatus = {
   status: string;
@@ -36,7 +37,8 @@ export async function exportTrack(
   soundId: string,
   target: 'mixcloud',
 ): Promise<
-  { ok: true; status: TrackExportStatus } | { ok: false; error: string }
+  | { ok: true; status: TrackExportStatus }
+  | { ok: false; error: string; connectUrl?: string }
 > {
   if (isForceMock()) {
     return {
@@ -51,16 +53,24 @@ export async function exportTrack(
     );
     return {
       ok: true,
-      status: { status: data.status, url: null, error: null },
+      status: { status: data.status.toUpperCase(), url: null, error: null },
     };
   } catch (err) {
     const existing = await fetchTrackExportStatus(soundId, target);
     if (existing) {
       return { ok: true, status: existing };
     }
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Export failed',
-    };
+    const error = err instanceof Error ? err.message : 'Export failed';
+    const connection = await requestJson<{
+      connected: boolean;
+      configured: boolean;
+    }>('/api/me/mixcloud').catch(() => null);
+    return connection?.data.configured && !connection.data.connected
+      ? {
+          ok: false,
+          error,
+          connectUrl: oauthStartUrl('/api/me/mixcloud/oauth/start'),
+        }
+      : { ok: false, error };
   }
 }
