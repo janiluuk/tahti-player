@@ -137,4 +137,79 @@ describe('ChannelRotationPanel', () => {
     });
     expect(screen.getByRole('alert').textContent).toBe('Channel not found');
   });
+
+  it("adds one of the artist's release tracks to the rotation", async () => {
+    const base = {
+      fallbackMode: 'ordered' as const,
+      fallbackEnabled: true,
+      fallbackAutoEnroll: false,
+      announcementsEnabled: true,
+    };
+    const track = {
+      releaseTrackId: 'rt1',
+      releaseId: 'r1',
+      releaseTitle: 'Revontulet',
+      trackTitle: 'Pohjoinen',
+      durationSec: 280,
+    };
+    vi.spyOn(admin, 'fetchAdminChannelProgramme').mockResolvedValue({
+      ok: true,
+      data: {
+        ...base,
+        items: ITEMS,
+        library: [
+          { ...track, soundId: null },
+          {
+            ...track,
+            releaseTrackId: 'rt2',
+            trackTitle: 'Jo mukana',
+            soundId: 's1',
+          },
+        ],
+      },
+    });
+    const add = vi
+      .spyOn(admin, 'addAdminReleaseTrackToRotation')
+      .mockResolvedValue({
+        ok: true,
+        data: {
+          ...base,
+          items: [
+            ...ITEMS,
+            {
+              id: 's9',
+              title: 'Pohjoinen',
+              status: 'READY',
+              durationSec: 280,
+              isFallback: true,
+              fallbackOrder: 2,
+            },
+          ],
+          library: [{ ...track, soundId: 's9' }],
+        },
+      });
+
+    render(<ChannelRotationPanel />);
+    fireEvent.change(screen.getByLabelText('Channel slug'), {
+      target: { value: 'yaniho' },
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Open rotation' }));
+    });
+    expect(
+      screen.queryByRole('button', { name: 'Add Jo mukana to the rotation' }),
+    ).toBeNull();
+    await act(async () => {
+      fireEvent.click(
+        screen.getByRole('button', { name: 'Add Pohjoinen to the rotation' }),
+      );
+    });
+    expect(add).toHaveBeenCalledWith('yaniho', 'rt1');
+    expect(
+      screen.getByText('3 of 4 ready tracks in the rotation.'),
+    ).toBeTruthy();
+    expect(
+      screen.queryByRole('region', { name: 'From their releases' }),
+    ).toBeNull();
+  });
 });

@@ -4,12 +4,18 @@ import { useState } from 'react';
 import { Button, Input, SaveButton, Select, Toggle } from '@tahti-player/ui';
 
 import {
+  addAdminReleaseTrackToRotation,
   fetchAdminChannelProgramme,
   saveAdminChannelProgramme,
   type AdminProgrammeSettings,
 } from '../../../api/admin';
-import type { ProgrammeItem } from '../../../api/studio-extras/schedule';
+import type {
+  ProgrammeItem,
+  ProgrammeLibraryTrack,
+  ProgrammeView,
+} from '../../../api/studio-extras/schedule';
 import { StudioPanel } from '../../../components/StudioPanel';
+import { RotationReleaseLibrary } from './RotationReleaseLibrary';
 
 function formatDuration(sec: number | null): string {
   if (sec == null) {
@@ -50,10 +56,40 @@ export function ChannelRotationPanel() {
   const [slug, setSlug] = useState<string | null>(null);
   const [settings, setSettings] = useState<AdminProgrammeSettings | null>(null);
   const [items, setItems] = useState<ProgrammeItem[]>([]);
+  const [library, setLibrary] = useState<ProgrammeLibraryTrack[]>([]);
+  const [addingId, setAddingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+
+  const apply = ({
+    items: next,
+    library: nextLibrary,
+    ...rest
+  }: ProgrammeView) => {
+    setSettings(rest);
+    setItems(sortedForEditing(next));
+    setLibrary(nextLibrary ?? []);
+  };
+
+  const addFromRelease = (releaseTrackId: string) => {
+    if (!slug) {
+      return;
+    }
+    setAddingId(releaseTrackId);
+    setError(null);
+    setNotice(null);
+    void addAdminReleaseTrackToRotation(slug, releaseTrackId).then((result) => {
+      setAddingId(null);
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+      apply(result.data);
+      setNotice(`Added to ${slug}'s rotation.`);
+    });
+  };
 
   const load = () => {
     const nextSlug = slugInput.trim().toLowerCase();
@@ -68,10 +104,8 @@ export function ChannelRotationPanel() {
         setError(result.error);
         return;
       }
-      const { items: loaded, ...rest } = result.data;
       setSlug(nextSlug);
-      setSettings(rest);
-      setItems(sortedForEditing(loaded));
+      apply(result.data);
     });
   };
 
@@ -222,6 +256,12 @@ export function ChannelRotationPanel() {
             </ol>
           )}
 
+          <RotationReleaseLibrary
+            tracks={library}
+            busyId={addingId}
+            onAdd={addFromRelease}
+          />
+
           <div>
             <SaveButton
               size="sm"
@@ -238,9 +278,7 @@ export function ChannelRotationPanel() {
                       setError(result.error);
                       return;
                     }
-                    const { items: saved, ...rest } = result.data;
-                    setSettings(rest);
-                    setItems(sortedForEditing(saved));
+                    apply(result.data);
                     setNotice(`Saved ${slug}'s rotation.`);
                   },
                 );
