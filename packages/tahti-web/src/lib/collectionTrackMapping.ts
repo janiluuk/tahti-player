@@ -10,7 +10,9 @@ export function collectionItemToTrack(item: StudioCollectionItem): Track {
     title: item.unavailable
       ? `${item.sound?.title ?? item.id} (no longer available)`
       : (item.sound?.title ?? item.release?.title ?? item.id),
-    artists: [{ name: 'You', roles: ['performer'] }],
+    artists: [
+      { name: item.sound?.artist?.displayName ?? 'You', roles: ['performer'] },
+    ],
     durationMs:
       item.sound?.durationSec != null
         ? Math.round(item.sound.durationSec * 1000)
