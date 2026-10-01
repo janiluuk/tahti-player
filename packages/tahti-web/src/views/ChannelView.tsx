@@ -26,6 +26,7 @@ import {
   ChannelEditToolbar,
   ChannelHeroBlock,
   ChannelLayersPanel,
+  ChannelLiveTracklist,
   ChannelNotFound,
   ChannelPageBackdrop,
   ChannelStagePlayer,
@@ -378,15 +379,18 @@ export function ChannelView({ slug }: { slug: string }) {
   // hidden from the layout, so it is also rendered as a fixed Stage section
   // below, independent of hero's own visibility.
   const stagePlayer = (
-    <ChannelStagePlayer
-      channel={channel}
-      slug={slug}
-      live={live}
-      subtle={subtle}
-      chatOn={chatOn}
-      follow={isOwner ? null : follow}
-      signedIn={Boolean(me)}
-    />
+    <>
+      <ChannelStagePlayer
+        channel={channel}
+        slug={slug}
+        live={live}
+        subtle={subtle}
+        chatOn={chatOn}
+        follow={isOwner ? null : follow}
+        signedIn={Boolean(me)}
+      />
+      {live ? <ChannelLiveTracklist slug={slug} /> : null}
+    </>
   );
 
   const renderBlock = (item: ChannelPageItem) => {
