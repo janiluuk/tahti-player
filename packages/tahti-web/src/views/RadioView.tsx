@@ -492,17 +492,18 @@ export function RadioView() {
                     ) : (
                       <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
                         {recent.map((item) => {
-                          const playable: TahtiPlayable | null = item.audioUrl
-                            ? {
-                                id: `sound:${item.id}`,
-                                kind: 'sound',
-                                title: item.title,
-                                artist: item.artistName,
-                                coverUrl: item.artworkUrl ?? undefined,
-                                streamUrl: item.audioUrl,
-                                protocol: 'https',
-                              }
-                            : null;
+                          const playable: TahtiPlayable | null =
+                            item.audioUrl && item.soundId
+                              ? {
+                                  id: `sound:${item.soundId}`,
+                                  kind: 'sound',
+                                  title: item.title,
+                                  artist: item.artistName,
+                                  coverUrl: item.artworkUrl ?? undefined,
+                                  streamUrl: item.audioUrl,
+                                  protocol: 'https',
+                                }
+                              : null;
                           const isPlaying = Boolean(
                             playable && playable.id === currentId,
                           );
