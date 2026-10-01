@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router';
+import { useEffect, useState } from 'react';
 
 import {
   ButtonLink,
@@ -9,6 +10,8 @@ import {
 } from '@tahti-player/ui';
 
 import { fetchChannel } from '../api/client';
+import { fetchMyLikes, likedTrackToPlayable } from '../api/likes';
+import type { TahtiPlayable } from '../api/types';
 import {
   MediaIconActions,
   playQueueFavoriteActions,
@@ -34,6 +37,24 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
   const audioFavorites = favoriteTracks.filter(
     (track) => track.kind === 'sound' || Boolean(track.embed),
   );
+  const [likedTracks, setLikedTracks] = useState<TahtiPlayable[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    void fetchMyLikes().then(({ data }) => {
+      if (!cancelled) {
+        setLikedTracks(
+          data.flatMap((track) => {
+            const playable = likedTrackToPlayable(track);
+            return playable ? [playable] : [];
+          }),
+        );
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const body = (
     <div className="flex flex-col gap-6">
@@ -144,6 +165,16 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
           playAll={false}
         />
       </SectionShell>
+
+      {likedTracks.length > 0 ? (
+        <SectionShell title="Liked on Tahti">
+          <PlayableTrackTable
+            items={likedTracks}
+            emptyMessage="No liked tracks yet."
+            playAll={false}
+          />
+        </SectionShell>
+      ) : null}
     </div>
   );
 
