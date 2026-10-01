@@ -37,6 +37,7 @@ import { StudioGate } from '../../components/StudioGate';
 import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { resolveNewReleaseVisualizer } from '../../lib/releaseVisualizer';
+import { ReleaseCsvImportButton } from './ReleaseCsvImportButton';
 
 const RELEASE_TYPES = [
   {
@@ -129,18 +130,21 @@ export function StudioReleasesView({
           title="Releases"
           classes={{ root: 'px-0 pt-0' }}
           actions={
-            <Tooltip content="New release" side="top">
-              <Button
-                size="icon-sm"
-                onClick={() => {
-                  setMsg(null);
-                  setCreateOpen(true);
-                }}
-                aria-label="New release"
-              >
-                <PlusIcon size={16} aria-hidden />
-              </Button>
-            </Tooltip>
+            <div className="flex items-center gap-2">
+              <ReleaseCsvImportButton onImported={reload} />
+              <Tooltip content="New release" side="top">
+                <Button
+                  size="icon-sm"
+                  onClick={() => {
+                    setMsg(null);
+                    setCreateOpen(true);
+                  }}
+                  aria-label="New release"
+                >
+                  <PlusIcon size={16} aria-hidden />
+                </Button>
+              </Tooltip>
+            </div>
           }
         >
           {msg && (
