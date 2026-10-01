@@ -68,3 +68,21 @@ export async function setProfileAvatarFromUrl(
     return failed(err);
   }
 }
+
+export async function setChannelMemberPictureFromUrl(
+  memberId: string,
+  sourceUrl: string,
+): Promise<ImageResult> {
+  if (isForceMock()) {
+    return { ok: true, url: sourceUrl };
+  }
+  try {
+    const { data } = await requestJson<{ url: string }>(
+      `/api/me/channel/members/${encodeURIComponent(memberId)}/picture/from-url`,
+      { method: 'POST', body: JSON.stringify({ sourceUrl }) },
+    );
+    return { ok: true, url: data.url };
+  } catch (err) {
+    return failed(err);
+  }
+}

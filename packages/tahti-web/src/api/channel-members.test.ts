@@ -4,6 +4,7 @@ import {
   addChannelMember,
   clearChannelMemberPicture,
   removeChannelMember,
+  reorderChannelMembers,
   updateChannelMember,
   uploadChannelMemberPicture,
 } from './channel-members';
@@ -118,5 +119,24 @@ describe('channel member pictures', () => {
     expect(JSON.parse(fetchSpy.mock.calls[0]![1]!.body as string)).toEqual({
       pictureUrl: null,
     });
+  });
+});
+
+describe('reorderChannelMembers', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('saves the order', async () => {
+    const fetchSpy = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue(new Response(null, { status: 204 }));
+    await expect(reorderChannelMembers(['m2', 'm1'])).resolves.toEqual({
+      ok: true,
+    });
+    const [url, init] = fetchSpy.mock.calls[0]!;
+    expect(url).toBe('/tahti-api/api/me/channel/members/reorder');
+    expect(init!.method).toBe('PUT');
+    expect(JSON.parse(init!.body as string)).toEqual({ ids: ['m2', 'm1'] });
   });
 });
