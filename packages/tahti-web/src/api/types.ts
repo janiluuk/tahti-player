@@ -389,7 +389,7 @@ export type SmartLinkView = {
     genre?: string | null;
     description?: string | null;
     smartLinkSlug?: string;
-    tracks?: Array<{ title: string; position: number; isrc?: string | null }>;
+    tracks?: import('./release-download').SmartLinkTrack[];
   };
   artist: {
     username: string;

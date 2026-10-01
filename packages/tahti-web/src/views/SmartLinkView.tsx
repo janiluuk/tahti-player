@@ -17,6 +17,7 @@ import {
 } from '../components/EntitySocialHeader';
 import { PageEmpty, PageLoading } from '../components/PageStates';
 import { PlayableTrackTable } from '../components/PlayableTrackTable';
+import { ReleaseTrackDownloads } from '../components/ReleaseTrackDownloads';
 import { Eyebrow } from '../components/tahti/Eyebrow';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
 import { syncDocumentMetadata } from '../lib/seo';
@@ -218,6 +219,11 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
           <PlayableTrackTable items={playables} />
         </section>
       ) : null}
+
+      <ReleaseTrackDownloads
+        smartLinkSlug={slug}
+        tracks={data.release.tracks ?? []}
+      />
 
       <section className="flex flex-col gap-2" aria-label="Listen on">
         <Eyebrow>Listen on</Eyebrow>
