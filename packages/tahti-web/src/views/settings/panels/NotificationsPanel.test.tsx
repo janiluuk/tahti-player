@@ -29,11 +29,11 @@ describe('NotificationsPanel', () => {
     render(<NotificationsPanel />);
     expect(await screen.findByText('Money moves')).toBeTruthy();
     const notes = screen.getAllByRole('note');
-    expect(notes).toHaveLength(2);
+    expect(notes).toHaveLength(1);
     for (const note of notes) {
       expect(note.textContent).toContain('Coming soon');
       expect(note.textContent).toContain("Tahti doesn't send this email yet");
     }
-    expect(screen.queryByText(/1,247 plays/)).toBeNull();
+    expect(screen.getByText(/1,247 plays/)).toBeTruthy();
   });
 });

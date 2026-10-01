@@ -104,10 +104,9 @@ export function NotificationsPanel() {
             onChange={(value) => toggle('notifyWeeklyRecapEmail', value)}
           />
         </div>
-        <ClientCapabilityNotice kind="coming-soon" className="mt-4">
-          Tahti doesn&apos;t send this email yet. Your choice is saved and
-          applies once it does.
-        </ClientCapabilityNotice>
+        <p className="border-border bg-background mt-4 rounded-lg border px-3 py-2 text-xs">
+          Your week on Tahti · 1,247 plays · 89 downloads · €115.00 from fans
+        </p>
       </div>
     </div>
   );
