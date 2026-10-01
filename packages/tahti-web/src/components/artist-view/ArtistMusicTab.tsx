@@ -30,6 +30,7 @@ import { GlowMediaTile } from '../GlowMediaTile';
 import { NowPlayingOverlay } from '../NowPlayingOverlay';
 import { Eyebrow } from '../tahti/Eyebrow';
 import { ArtistReposts } from './ArtistReposts';
+import { ArtistUpcomingEvents } from './ArtistUpcomingEvents';
 
 const GLOW_COLORS = [
   'var(--color-accent-purple)',
@@ -287,6 +288,9 @@ export function ArtistMusicTab({
           </CardGrid>
         </div>
       )}
+      {channel?.slug ? (
+        <ArtistUpcomingEvents channelSlug={channel.slug} />
+      ) : null}
       {visibility.feed !== false ? (
         <ArtistReposts username={artist.username} />
       ) : null}
