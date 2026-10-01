@@ -8,6 +8,8 @@ import {
 } from '.././mode';
 import { requestJson } from '.././request-json';
 
+export type LogoPlacement = 'AVATAR' | 'COVER' | 'BOTH';
+
 export type ProfileFields = {
   id: string;
   username: string;
@@ -32,6 +34,8 @@ export type ProfileFields = {
   socialLinks?: Record<string, string> | null;
   /** Wide banner behind the artist page header. */
   backdropUrl?: string | null;
+  logoUrl?: string | null;
+  logoPlacement?: LogoPlacement | null;
 };
 
 export let mockProfile: ProfileFields = {
