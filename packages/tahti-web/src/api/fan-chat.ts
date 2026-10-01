@@ -1,3 +1,4 @@
+import { getJson } from './http';
 import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
@@ -21,5 +22,22 @@ export async function requestFanChatToken(
       ok: false,
       error: err instanceof Error ? err.message : 'Could not open the fan room',
     };
+  }
+}
+
+/** Recent fan-room messages, oldest first (`GET /api/chat/:slug/fan-history`). */
+export async function fetchFanChatHistory(
+  slug: string,
+): Promise<Array<{ handle: string; text: string; ts: number }>> {
+  if (isForceMock()) {
+    return [];
+  }
+  try {
+    const data = await getJson<{
+      messages?: Array<{ handle: string; text: string; ts: number }>;
+    }>(`/api/chat/${encodeURIComponent(slug)}/fan-history`);
+    return Array.isArray(data.messages) ? data.messages : [];
+  } catch {
+    return [];
   }
 }
