@@ -53,7 +53,7 @@ export function TracklistPanel({
             }}
             display={{
               displayPosition: false,
-              displayArtist: false,
+              displayArtist: !isAlbumLike,
               displayDuration: true,
               displayDeleteButton: true,
               displayThumbnail: true,

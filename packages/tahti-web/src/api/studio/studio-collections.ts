@@ -90,9 +90,16 @@ type ServerVisibility = 'PUBLIC' | 'UNLISTED' | 'DRAFT';
 function withEditorVisibility(collection: StudioCollection): StudioCollection {
   const visibility = collection.visibility as
     ServerVisibility | StudioCollection['visibility'];
-  return visibility === 'DRAFT'
-    ? { ...collection, visibility: 'PRIVATE' }
-    : collection;
+  const items = collection.items?.map((item) =>
+    item.sound
+      ? { ...item, sound: { ...item.sound, audioUrl: item.audioUrl ?? null } }
+      : item,
+  );
+  return {
+    ...collection,
+    ...(items ? { items } : {}),
+    ...(visibility === 'DRAFT' ? { visibility: 'PRIVATE' as const } : {}),
+  };
 }
 
 const toServerVisibility = (

@@ -23,4 +23,23 @@ describe('collectionItemToTrack', () => {
       }).title,
     ).toBe('Their track (no longer available)');
   });
+
+  it("credits the track's artist, falling back to You", () => {
+    const theirs = collectionItemToTrack({
+      id: 'i3',
+      position: 3,
+      sound: {
+        id: 's3',
+        title: 'Borrowed',
+        artist: { username: 'selector', displayName: 'Selector' },
+      },
+    });
+    expect(theirs.artists[0]?.name).toBe('Selector');
+    const mine = collectionItemToTrack({
+      id: 'i4',
+      position: 4,
+      sound: { id: 's4', title: 'Mine' },
+    });
+    expect(mine.artists[0]?.name).toBe('You');
+  });
 });

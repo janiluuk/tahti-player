@@ -194,7 +194,12 @@ export type StudioCollectionItem = {
      * provider's widget is the only way to play them. */
     embedProvider?: 'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | null;
     embedUri?: string | null;
+    artist?: { username: string; displayName: string } | null;
+    /** Gated playback link from the collection route; the editor's own
+     * source route only serves the owner's tracks. */
+    audioUrl?: string | null;
   } | null;
+  audioUrl?: string | null;
   release?: {
     id: string;
     title: string;

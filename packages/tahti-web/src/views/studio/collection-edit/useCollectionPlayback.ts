@@ -27,6 +27,8 @@ export function useCollectionPlayback(items: StudioCollectionItem[]) {
     embedProvider?: string | null;
     embedUri?: string | null;
     durationSec?: number | null;
+    artist?: { displayName: string } | null;
+    audioUrl?: string | null;
   };
 
   /** Non-hearthis EMBED_ONLY sounds have no Tahti-hosted audio and no
@@ -41,14 +43,16 @@ export function useCollectionPlayback(items: StudioCollectionItem[]) {
     if (sound.embedProvider && sound.embedProvider !== 'HEARTHIS') {
       return null;
     }
-    const { data } = await fetchEditorSource(sound.id);
+    const artist = sound.artist?.displayName ?? 'You';
+    const streamUrl =
+      sound.audioUrl ?? (await fetchEditorSource(sound.id)).data.url;
     return {
       id: `sound:${sound.id}`,
       kind: 'sound',
-      title: data.title || sound.title,
-      artist: 'You',
-      streamUrl: data.url,
-      protocol: data.url.includes('.m3u8') ? 'hls' : 'https',
+      title: sound.title,
+      artist,
+      streamUrl,
+      protocol: streamUrl.includes('.m3u8') ? 'hls' : 'https',
     };
   };
 
