@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
+  artistLogo,
   removeProfileLogo,
   setProfileLogoPlacement,
   uploadProfileLogo,
@@ -65,5 +66,18 @@ describe('profile logo', () => {
       { logoUrl: null },
     ]);
     expect(spy.mock.calls.every((c) => c[1]?.method === 'PATCH')).toBe(true);
+  });
+});
+
+describe('artistLogo', () => {
+  it('defaults the placement to the avatar', () => {
+    expect(artistLogo({ logoUrl: 'https://x/logo.png' })).toEqual({
+      url: 'https://x/logo.png',
+      placement: 'AVATAR',
+    });
+    expect(
+      artistLogo({ logoUrl: 'https://x/logo.png', logoPlacement: 'COVER' }),
+    ).toEqual({ url: 'https://x/logo.png', placement: 'COVER' });
+    expect(artistLogo({ logoUrl: null, logoPlacement: 'BOTH' })).toBeNull();
   });
 });

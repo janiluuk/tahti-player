@@ -65,6 +65,8 @@ export type EntitySocialHeaderProps = {
   stats?: EntitySocialStat[];
   /** Backdrop image / video poster under the primary scrim. */
   backdropUrl?: string | null;
+  /** Transparent artist logo over the avatar, the cover, or both. */
+  logo?: { url: string; placement: 'AVATAR' | 'COVER' | 'BOTH' } | null;
   /**
    * Channel Designer header treatment — GRADIENT / SOLID / VIDEO_LOOP.
    * When unset, falls back to image blur or visualizer.
@@ -109,6 +111,7 @@ export function EntitySocialHeader({
   actions,
   stats = [],
   backdropUrl,
+  logo,
   headerStyle,
   videoBackgroundUrl,
   gradientOverride,
@@ -249,71 +252,89 @@ export function EntitySocialHeader({
         style={scrimStyle}
       />
 
+      {logo && logo.placement !== 'AVATAR' ? (
+        <img
+          src={logo.url}
+          alt=""
+          data-testid="header-logo-cover"
+          className="pointer-events-none absolute top-4 right-4 max-h-16 max-w-40 object-contain drop-shadow"
+        />
+      ) : null}
       <div className="flex flex-wrap items-center gap-5">
-        {imageUrl ? (
-          onImageClick ? (
-            <div className="group relative size-24 shrink-0">
-              <button
-                type="button"
-                onClick={onImageClick}
-                className={cn(
-                  'border-border shadow-shadow size-24 overflow-hidden border-(length:--border-width) p-0',
-                  roundImage ? 'rounded-full' : 'rounded-md',
-                )}
-                aria-label={`Change ${title} artwork`}
-              >
-                <img
-                  src={imageUrl}
-                  alt={imageAlt}
-                  className="size-full object-cover"
-                />
-              </button>
-              {onImageDelete ? (
+        <div className="relative shrink-0">
+          {imageUrl ? (
+            onImageClick ? (
+              <div className="group relative size-24 shrink-0">
                 <button
                   type="button"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    onImageDelete();
-                  }}
-                  aria-label={`Remove ${title} artwork`}
-                  title="Remove artwork"
-                  className="border-border bg-background text-accent-red-strong shadow-shadow hover:bg-background-secondary absolute -top-1.5 -right-1.5 flex size-6 items-center justify-center rounded-full border-(length:--border-width) opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100"
+                  onClick={onImageClick}
+                  className={cn(
+                    'border-border shadow-shadow size-24 overflow-hidden border-(length:--border-width) p-0',
+                    roundImage ? 'rounded-full' : 'rounded-md',
+                  )}
+                  aria-label={`Change ${title} artwork`}
                 >
-                  <XIcon size={12} aria-hidden />
+                  <img
+                    src={imageUrl}
+                    alt={imageAlt}
+                    className="size-full object-cover"
+                  />
                 </button>
-              ) : null}
-            </div>
-          ) : (
-            <img
-              src={imageUrl}
-              alt={imageAlt}
+                {onImageDelete ? (
+                  <button
+                    type="button"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onImageDelete();
+                    }}
+                    aria-label={`Remove ${title} artwork`}
+                    title="Remove artwork"
+                    className="border-border bg-background text-accent-red-strong shadow-shadow hover:bg-background-secondary absolute -top-1.5 -right-1.5 flex size-6 items-center justify-center rounded-full border-(length:--border-width) opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100"
+                  >
+                    <XIcon size={12} aria-hidden />
+                  </button>
+                ) : null}
+              </div>
+            ) : (
+              <img
+                src={imageUrl}
+                alt={imageAlt}
+                className={cn(
+                  'border-border shadow-shadow size-24 shrink-0 border-(length:--border-width) object-cover',
+                  roundImage ? 'rounded-full' : 'rounded-md',
+                )}
+              />
+            )
+          ) : onImageClick ? (
+            <button
+              type="button"
+              onClick={onImageClick}
               className={cn(
-                'border-border shadow-shadow size-24 shrink-0 border-(length:--border-width) object-cover',
+                'border-border bg-background-secondary/40 text-foreground-secondary shadow-shadow flex size-24 shrink-0 items-center justify-center border-(length:--border-width)',
                 roundImage ? 'rounded-full' : 'rounded-md',
               )}
+              aria-label={`Upload ${title} artwork`}
+            >
+              <UploadCloudIcon size={22} aria-hidden />
+            </button>
+          ) : (
+            <div
+              className={cn(
+                'border-border bg-background-secondary/40 shadow-shadow size-24 shrink-0 border-(length:--border-width)',
+                roundImage ? 'rounded-full' : 'rounded-md',
+              )}
+              aria-hidden
             />
-          )
-        ) : onImageClick ? (
-          <button
-            type="button"
-            onClick={onImageClick}
-            className={cn(
-              'border-border bg-background-secondary/40 text-foreground-secondary shadow-shadow flex size-24 shrink-0 items-center justify-center border-(length:--border-width)',
-              roundImage ? 'rounded-full' : 'rounded-md',
-            )}
-            aria-label={`Upload ${title} artwork`}
-          >
-            <UploadCloudIcon size={22} aria-hidden />
-          </button>
-        ) : (
-          <div
-            className={cn(
-              'border-border bg-background-secondary/40 shadow-shadow size-24 shrink-0 border-(length:--border-width)',
-              roundImage ? 'rounded-full' : 'rounded-md',
-            )}
-            aria-hidden
-          />
-        )}
+          )}
+          {logo && logo.placement !== 'COVER' ? (
+            <img
+              src={logo.url}
+              alt=""
+              data-testid="header-logo-avatar"
+              className="pointer-events-none absolute -right-2 -bottom-2 size-10 object-contain drop-shadow"
+            />
+          ) : null}
+        </div>
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <h1 className="font-heading text-3xl font-extrabold tracking-tight">
             {title}
