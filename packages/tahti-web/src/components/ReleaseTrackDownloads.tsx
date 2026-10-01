@@ -32,7 +32,17 @@ export function ReleaseTrackDownloads({
     const result = await downloadReleaseTrack(smartLinkSlug, trackId);
     setBusyId(null);
     if (!result.ok) {
-      toast.error(result.error);
+      const { unlockSoundId } = result;
+      if (unlockSoundId) {
+        toast.error(result.error, {
+          action: {
+            label: 'Unlock on the track page',
+            onClick: () => window.location.assign(`/t/${unlockSoundId}`),
+          },
+        });
+      } else {
+        toast.error(result.error);
+      }
       return;
     }
     window.location.assign(result.url);
