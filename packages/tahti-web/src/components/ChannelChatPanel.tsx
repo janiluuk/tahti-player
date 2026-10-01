@@ -8,28 +8,13 @@ import {
   requestChatToken,
   requestChatViewerToken,
 } from '../api/client';
-import { postChatReaction } from '../api/studio-extras';
 import type { ChatMessage } from '../api/types';
+import { centrifugoWsUrl } from '../lib/centrifugoWsUrl';
 import { useHcaptcha } from '../lib/useHcaptcha';
 import { useAuthStore } from '../stores/authStore';
 import { ChatDailyListeners } from './ChatDailyListeners';
 import { ChatListeningNow } from './ChatListeningNow';
-import { Eyebrow } from './tahti/Eyebrow';
-
-// Must match the backend's CHAT_REACTION_EMOJIS whitelist exactly
-// (packages/shared/src/dto/chat.ts in the main tahti repo) -- anything
-// outside this set gets rejected server-side with "Invalid emoji".
-const REACTION_EMOJIS = ['💜', '🔥', '🎶', '🎵', '🌟', '👏', '✨'] as const;
-const REACTION_EMOJI_LABELS: Record<(typeof REACTION_EMOJIS)[number], string> =
-  {
-    '💜': 'purple heart',
-    '🔥': 'fire',
-    '🎶': 'musical notes',
-    '🎵': 'musical note',
-    '🌟': 'glowing star',
-    '👏': 'clapping hands',
-    '✨': 'sparkles',
-  };
+import { ChatReactionBar } from './ChatReactionBar';
 
 const HANDLE_KEY = 'tahti-web-chat-handle';
 const forceMock = () => import.meta.env.VITE_FORCE_MOCK === '1';
@@ -78,18 +63,6 @@ function ChatAvatar({ handle }: { handle: string }) {
 
 type LiveMode = 'live' | 'rest' | 'mock';
 
-function centrifugoWsUrl(): string | null {
-  const fromEnv = import.meta.env.VITE_CENTRIFUGO_WS;
-  if (fromEnv) {
-    return fromEnv;
-  }
-  // Dev: local Centrifugo. Prod/beta builds: public chat host.
-  if (import.meta.env.DEV) {
-    return 'ws://localhost:8000/connection/websocket';
-  }
-  return 'wss://chat.tahti.live/connection/websocket';
-}
-
 type Props = {
   slug: string;
   compact?: boolean;
@@ -116,10 +89,6 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
     null,
   );
   const [countryCode, setCountryCode] = useState<string | null>(null);
-  const [floatingReact, setFloatingReact] = useState<
-    (typeof REACTION_EMOJIS)[number] | null
-  >(null);
-  const [reactBusy, setReactBusy] = useState(false);
 
   // Anonymous join needs hCaptcha when site key is set (signed-in skips captcha server-side).
   const captchaNeeded = !user && !forceMock();
@@ -509,41 +478,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
         )}
       </div>
 
-      <div className="border-border flex flex-wrap items-center gap-1 border-b px-3 py-2">
-        <Eyebrow className="mr-1">React</Eyebrow>
-        {REACTION_EMOJIS.map((emoji) => (
-          <button
-            key={emoji}
-            type="button"
-            disabled={reactBusy}
-            aria-label={`React with ${REACTION_EMOJI_LABELS[emoji]}`}
-            className="hover:bg-background-secondary rounded px-1.5 py-0.5 text-sm"
-            onClick={() => {
-              setReactBusy(true);
-              void postChatReaction(slug, emoji).then((r) => {
-                setReactBusy(false);
-                if (r.ok) {
-                  setFloatingReact(emoji);
-                  window.setTimeout(() => setFloatingReact(null), 1200);
-                } else {
-                  setError(r.error);
-                }
-              });
-            }}
-          >
-            {emoji}
-          </button>
-        ))}
-        {floatingReact && (
-          <span className="text-foreground-secondary text-xs" role="status">
-            Sent {floatingReact}
-            <span className="sr-only">
-              {' '}
-              ({REACTION_EMOJI_LABELS[floatingReact]})
-            </span>
-          </span>
-        )}
-      </div>
+      <ChatReactionBar slug={slug} onError={setError} />
 
       {(error || accessNote) && (
         <div className="text-foreground-secondary border-border border-b px-3 py-2 text-xs">
