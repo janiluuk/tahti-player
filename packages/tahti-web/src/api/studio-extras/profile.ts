@@ -36,6 +36,7 @@ export type ProfileFields = {
   backdropUrl?: string | null;
   logoUrl?: string | null;
   logoPlacement?: LogoPlacement | null;
+  newsFeedUrl?: string | null;
 };
 
 export let mockProfile: ProfileFields = {
@@ -124,6 +125,7 @@ export async function patchMeProfile(
       | 'showFollowing'
       | 'showDailyListeners'
       | 'socialLinks'
+      | 'newsFeedUrl'
     >
   >,
 ): Promise<{ ok: true; data: ProfileFields } | { ok: false; error: string }> {
