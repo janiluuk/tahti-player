@@ -25,15 +25,11 @@ vi.mock('../../../api/studio-extras', () => ({
 describe('NotificationsPanel', () => {
   afterEach(() => cleanup());
 
-  it('says plainly which emails Tahti does not send yet', async () => {
+  it('shows what each email looks like now that Tahti sends them', async () => {
     render(<NotificationsPanel />);
     expect(await screen.findByText('Money moves')).toBeTruthy();
-    const notes = screen.getAllByRole('note');
-    expect(notes).toHaveLength(1);
-    for (const note of notes) {
-      expect(note.textContent).toContain('Coming soon');
-      expect(note.textContent).toContain("Tahti doesn't send this email yet");
-    }
+    expect(screen.queryAllByRole('note')).toHaveLength(0);
+    expect(screen.getByText(/3 new chat messages/)).toBeTruthy();
     expect(screen.getByText(/1,247 plays/)).toBeTruthy();
   });
 });
