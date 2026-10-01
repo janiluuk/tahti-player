@@ -1,4 +1,4 @@
-import { BotIcon, SettingsIcon } from 'lucide-react';
+import { BotIcon, RotateCwIcon, SettingsIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -6,6 +6,7 @@ import {
   Badge,
   Button,
   Dialog,
+  ExternalLink,
   Input,
   PluginStoreItem,
   Tooltip,
@@ -13,9 +14,11 @@ import {
 
 import {
   fetchDiscordBotSettings,
+  restartDiscordBot,
   saveDiscordBotSettings,
   type DiscordBotSettings,
 } from '../../api/discord-bot';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { hasAccountRole } from '../../lib/accountRoles';
 import { useAuthStore } from '../../stores/authStore';
 import { usePluginInstallStore } from '../../stores/pluginInstallStore';
@@ -37,6 +40,8 @@ export function DiscordBotAddonCard() {
   const [token, setToken] = useState('');
   const [busy, setBusy] = useState(false);
   const [forbidden, setForbidden] = useState(false);
+  const [confirmRestart, setConfirmRestart] = useState(false);
+  const [restarting, setRestarting] = useState(false);
 
   useEffect(() => {
     if (!isBoard) {
@@ -72,6 +77,19 @@ export function DiscordBotAddonCard() {
     Boolean(settings?.tokenConfigured),
   );
   const canSave = !clientIdError && !tokenError && !busy;
+
+  const onRestart = () => {
+    setConfirmRestart(false);
+    setRestarting(true);
+    void restartDiscordBot().then((result) => {
+      setRestarting(false);
+      if (!result.ok) {
+        toast.error(result.error);
+        return;
+      }
+      toast.success('Discord bot restarting');
+    });
+  };
 
   const onSave = () => {
     if (!canSave) {
@@ -122,6 +140,19 @@ export function DiscordBotAddonCard() {
             Not configured
           </Badge>
         )}
+        {settings?.tokenConfigured ? (
+          <Tooltip content="Restart" side="top">
+            <Button
+              size="icon-sm"
+              variant="secondary"
+              disabled={restarting}
+              onClick={() => setConfirmRestart(true)}
+              aria-label="Restart Tahti Radio Discord bot"
+            >
+              <RotateCwIcon size={15} aria-hidden />
+            </Button>
+          </Tooltip>
+        ) : null}
         <Tooltip content="Configure" side="top">
           <Button
             size="icon-sm"
@@ -170,23 +201,13 @@ export function DiscordBotAddonCard() {
           />
           <p className="text-foreground-secondary text-xs">
             Privacy policy and terms for the Discord app:{' '}
-            <a
-              className="underline"
-              href="https://tahti.live/privacy"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <ExternalLink href="https://tahti.live/privacy">
               tahti.live/privacy
-            </a>
+            </ExternalLink>
             {' · '}
-            <a
-              className="underline"
-              href="https://tahti.live/terms"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <ExternalLink href="https://tahti.live/terms">
               tahti.live/terms
-            </a>
+            </ExternalLink>
           </p>
         </div>
         <Dialog.Actions>
@@ -196,6 +217,14 @@ export function DiscordBotAddonCard() {
           </Button>
         </Dialog.Actions>
       </Dialog.Root>
+      <ConfirmDialog
+        isOpen={confirmRestart}
+        title="Restart the Discord bot?"
+        description="The bot drops out of Discord for a few seconds and reconnects. Listeners on Tahti Radio aren't affected."
+        confirmLabel="Restart"
+        onCancel={() => setConfirmRestart(false)}
+        onConfirm={onRestart}
+      />
     </div>
   );
 }
