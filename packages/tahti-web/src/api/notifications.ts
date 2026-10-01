@@ -126,23 +126,45 @@ export async function fetchStickyNotifications(): Promise<{
   }
 }
 
-export async function fetchNotifications(): Promise<{
+export const NOTIFICATION_PAGE_SIZE = 20;
+
+/** One page of the inbox, newest first. `before` is the id of the oldest
+ * notification already shown, to read the page after it. */
+export async function fetchNotifications(before?: string): Promise<{
   data: TahtiNotification[];
+  unreadCount: number;
+  hasMore: boolean;
   meta: FetchMeta;
 }> {
   if (isForceMock()) {
+    const data = before ? [] : mockNotifications(true);
     return {
-      data: mockNotifications(true),
+      data,
+      unreadCount: data.filter((item) => !item.readAt).length,
+      hasMore: false,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
   try {
+    const params = new URLSearchParams({
+      limit: String(NOTIFICATION_PAGE_SIZE),
+    });
+    if (before) {
+      params.set('before', before);
+    }
     const { data } = await requestJson<{
       notifications: TahtiNotification[];
-    }>('/api/me/notifications?limit=20');
-    return { data: data.notifications, meta: { source: 'api' } };
+      unreadCount: number;
+      hasMore?: boolean;
+    }>(`/api/me/notifications?${params.toString()}`);
+    return {
+      data: data.notifications,
+      unreadCount: data.unreadCount,
+      hasMore: data.hasMore ?? false,
+      meta: { source: 'api' },
+    };
   } catch (err) {
-    return { data: [], meta: emptyMeta(err) };
+    return { data: [], unreadCount: 0, hasMore: false, meta: emptyMeta(err) };
   }
 }
 

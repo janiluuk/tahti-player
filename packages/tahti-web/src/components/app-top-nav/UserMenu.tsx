@@ -29,7 +29,7 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
     isLive,
     displayName,
     initial,
-    unreadNotifications,
+    unreadNotificationCount,
     unreadMessagesCount,
   } = nav;
 
@@ -73,14 +73,13 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
           {open ? '▴' : '▾'}
         </span>
       </Button>
-      {isMobile &&
-      (unreadNotifications.length > 0 || unreadMessagesCount > 0) ? (
+      {isMobile && (unreadNotificationCount > 0 || unreadMessagesCount > 0) ? (
         <Badge
           variant="pill"
           color="red"
           className="absolute -top-1 -right-1 min-w-4 px-1 text-center text-[9px] font-bold"
         >
-          {Math.min(9, unreadNotifications.length + unreadMessagesCount)}
+          {Math.min(9, unreadNotificationCount + unreadMessagesCount)}
         </Badge>
       ) : null}
 
@@ -114,13 +113,13 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
               >
                 <BellIcon size={14} />
                 Notifications
-                {unreadNotifications.length > 0 ? (
+                {unreadNotificationCount > 0 ? (
                   <Badge
                     variant="pill"
                     color="red"
                     className="ml-auto min-w-4 px-1 text-center text-[9px] font-bold"
                   >
-                    {Math.min(9, unreadNotifications.length)}
+                    {Math.min(9, unreadNotificationCount)}
                   </Badge>
                 ) : null}
               </Button>

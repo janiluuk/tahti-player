@@ -15,7 +15,10 @@ export function NotificationsPopover({ nav }: { nav: TopNavState }) {
     setNotificationsOpen,
     notifications,
     acknowledgeNotification,
-    unreadNotifications,
+    unreadNotificationCount,
+    hasOlderNotifications,
+    loadingOlderNotifications,
+    loadOlderNotifications,
   } = nav;
 
   return (
@@ -41,13 +44,13 @@ export function NotificationsPopover({ nav }: { nav: TopNavState }) {
         }}
       >
         <BellIcon size={16} />
-        {unreadNotifications.length > 0 ? (
+        {unreadNotificationCount > 0 ? (
           <Badge
             variant="pill"
             color="red"
             className="absolute -top-1 -right-1 min-w-4 px-1 text-center text-[9px] font-bold"
           >
-            {Math.min(9, unreadNotifications.length)}
+            {Math.min(9, unreadNotificationCount)}
           </Badge>
         ) : null}
       </Button>
@@ -130,6 +133,19 @@ export function NotificationsPopover({ nav }: { nav: TopNavState }) {
                   </div>
                 </li>
               ))}
+              {hasOlderNotifications ? (
+                <li>
+                  <Button
+                    size="xs"
+                    variant="text"
+                    className="w-full"
+                    disabled={loadingOlderNotifications}
+                    onClick={() => void loadOlderNotifications()}
+                  >
+                    {loadingOlderNotifications ? 'Loading…' : 'Show older'}
+                  </Button>
+                </li>
+              ) : null}
             </ul>
           )}
         </div>
