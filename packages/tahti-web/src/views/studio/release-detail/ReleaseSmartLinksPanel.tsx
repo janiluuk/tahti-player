@@ -346,6 +346,7 @@ export function ReleaseSmartLinksPanel({
                 <ul className="min-w-0 flex-1">
                   <ReleaseTrackRow
                     track={track}
+                    releaseId={release.id}
                     shopUrl={targets.bandcamp}
                     sound={soundById.get(track.soundId ?? '')}
                   />
