@@ -20,6 +20,7 @@ import { ChannelVisualizer } from '../../components/ChannelVisualizer';
 import { ReportButton } from '../../components/ReportButton';
 import { WaveformSeekbar } from '../../components/tahti/WaveformSeekbar';
 import { TimelineReactionBar } from '../../components/TimelineReactionBar';
+import { useSoundEngagement } from '../../hooks/useSoundEngagement';
 import { resolveArtworkVisualizerPreset } from '../../lib/artworkVisualizer';
 import { EMBED_PROVIDER_HEIGHT } from '../../lib/embedSrc';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
@@ -83,6 +84,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
     showBuyTrack,
     buyTrack,
   } = page;
+  const like = useSoundEngagement('like', detail?.channelSlug, id);
 
   return (
     <section className="relative overflow-hidden px-6 pt-8 pb-6 md:px-10">
@@ -303,7 +305,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
             </span>
             <span className="inline-flex items-center gap-1">
               <HeartIcon size={13} aria-hidden />
-              {favorited ? 1 : 0}
+              {like.state?.count ?? (favorited ? 1 : 0)}
             </span>
             <ActivityIcon size={13} aria-hidden className="opacity-70" />
           </div>
@@ -402,7 +404,12 @@ export function TrackHero({ page }: { page: TrackPage }) {
                       ? `Favoriting isn't supported yet for ${embedLabel} tracks`
                       : 'Favorite'
                 }
-                onClick={() => toggleFavoriteTrack(playable)}
+                onClick={() => {
+                  toggleFavoriteTrack(playable);
+                  if (user) {
+                    void like.set(!favorited);
+                  }
+                }}
               >
                 <HeartIcon
                   size={15}
