@@ -29,6 +29,7 @@ import { ChannelVisualizer } from '../ChannelVisualizer';
 import { GlowMediaTile } from '../GlowMediaTile';
 import { NowPlayingOverlay } from '../NowPlayingOverlay';
 import { Eyebrow } from '../tahti/Eyebrow';
+import { ArtistReposts } from './ArtistReposts';
 
 const GLOW_COLORS = [
   'var(--color-accent-purple)',
@@ -286,6 +287,9 @@ export function ArtistMusicTab({
           </CardGrid>
         </div>
       )}
+      {visibility.feed !== false ? (
+        <ArtistReposts username={artist.username} />
+      ) : null}
     </section>
   );
 }
