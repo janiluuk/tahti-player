@@ -3,36 +3,16 @@ import { failMeta, isForceMock } from '.././mode';
 import { requestJson } from '.././request-json';
 import { mockGreenRoom, setMockGreenRoom } from './mock';
 
-/** Who can join the green room once it's open: any signed-in listener, or
- * only the artist's active fan subscribers. Backed by the channel's real
- * green-room invite pool in tahti-org (`GreenRoomInvitePool` — see
- * apps/api/src/routes/me/green-room-defaults.ts); this simplified two-value
- * surface collapses the backend's finer MODERATORS_AND_SUBS/SUBS_ONLY/
- * MANUAL_ONLY split into "subscribers" and only distinguishes EVERYONE. */
-export type GreenRoomAccessLevel = 'everyone' | 'subscribers';
-
-export type GreenRoomPrefs = {
-  defaultTitle: string;
-  defaultNote: string;
-  autoAnnounce: boolean;
-  holdMusicEnabled: boolean;
-  access: GreenRoomAccessLevel;
-};
-
 export type WireGreenRoomInvitePool =
   'EVERYONE' | 'SUBS_ONLY' | 'MODERATORS_AND_SUBS' | 'MANUAL_ONLY';
 
-export function accessFromPool(
-  pool: WireGreenRoomInvitePool,
-): GreenRoomAccessLevel {
-  return pool === 'EVERYONE' ? 'everyone' : 'subscribers';
-}
-
-export function poolFromAccess(
-  access: GreenRoomAccessLevel,
-): WireGreenRoomInvitePool {
-  return access === 'everyone' ? 'EVERYONE' : 'SUBS_ONLY';
-}
+/** The channel's green-room defaults for new broadcasts
+ * (tahti-org `/api/me/channel/green-room-defaults`): whether a broadcast
+ * opens its green room on its own, and who gets invited when it does. */
+export type GreenRoomPrefs = {
+  defaultEnabled: boolean;
+  invitePool: WireGreenRoomInvitePool;
+};
 
 /** Guest-side view of an artist's green room — the invite-only preview
  * stream that runs before a broadcast goes public. */
@@ -101,6 +81,16 @@ export async function joinGreenRoom(
   }
 }
 
+type WireGreenRoomDefaults = {
+  defaultEnabled: boolean;
+  defaultInvitePool: WireGreenRoomInvitePool;
+};
+
+const fromWire = (data: WireGreenRoomDefaults): GreenRoomPrefs => ({
+  defaultEnabled: data.defaultEnabled,
+  invitePool: data.defaultInvitePool,
+});
+
 export async function fetchGreenRoomPrefs(): Promise<{
   data: GreenRoomPrefs;
   meta: FetchMeta;
@@ -111,38 +101,14 @@ export async function fetchGreenRoomPrefs(): Promise<{
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
-  // `access` is backed by the channel's real green-room invite pool
-  // (tahti-org's /api/me/channel/green-room-defaults) — fetched alongside
-  // the title/note/announce/hold-music prefs so either endpoint can degrade
-  // to its mock value independently of the other.
-  const [base, defaults] = await Promise.all([
-    requestJson<Omit<GreenRoomPrefs, 'access'>>('/api/me/green-room')
-      .then((r) => ({ ok: true as const, data: r.data }))
-      .catch((err: unknown) => ({ ok: false as const, err })),
-    requestJson<{ defaultInvitePool: WireGreenRoomInvitePool }>(
+  try {
+    const { data } = await requestJson<WireGreenRoomDefaults>(
       '/api/me/channel/green-room-defaults',
-    )
-      .then((r) => ({ ok: true as const, data: r.data }))
-      .catch((err: unknown) => ({ ok: false as const, err })),
-  ]);
-
-  if (!base.ok && !defaults.ok) {
-    return { data: { ...mockGreenRoom }, meta: failMeta(base.err) };
+    );
+    return { data: fromWire(data), meta: { source: 'api' } };
+  } catch (err) {
+    return { data: { ...mockGreenRoom }, meta: failMeta(err) };
   }
-  return {
-    data: {
-      ...(base.ok ? base.data : mockGreenRoom),
-      access: defaults.ok
-        ? accessFromPool(defaults.data.defaultInvitePool)
-        : mockGreenRoom.access,
-    },
-    meta:
-      base.ok && defaults.ok
-        ? { source: 'api' }
-        : failMeta(
-            !base.ok ? base.err : !defaults.ok ? defaults.err : undefined,
-          ),
-  };
 }
 
 export async function patchGreenRoomPrefs(
@@ -152,26 +118,22 @@ export async function patchGreenRoomPrefs(
     setMockGreenRoom({ ...mockGreenRoom, ...patch });
     return { ok: true, data: { ...mockGreenRoom } };
   }
-  const { access, ...rest } = patch;
   try {
-    let merged: GreenRoomPrefs = { ...mockGreenRoom };
-    if (Object.keys(rest).length > 0) {
-      const { data } = await requestJson<Omit<GreenRoomPrefs, 'access'>>(
-        '/api/me/green-room',
-        { method: 'PATCH', body: JSON.stringify(rest) },
-      );
-      merged = { ...merged, ...data };
-    }
-    if (access !== undefined) {
-      const { data } = await requestJson<{
-        defaultInvitePool: WireGreenRoomInvitePool;
-      }>('/api/me/channel/green-room-defaults', {
+    const { data } = await requestJson<WireGreenRoomDefaults>(
+      '/api/me/channel/green-room-defaults',
+      {
         method: 'PATCH',
-        body: JSON.stringify({ defaultInvitePool: poolFromAccess(access) }),
-      });
-      merged = { ...merged, access: accessFromPool(data.defaultInvitePool) };
-    }
-    return { ok: true, data: merged };
+        body: JSON.stringify({
+          ...(patch.defaultEnabled === undefined
+            ? {}
+            : { defaultEnabled: patch.defaultEnabled }),
+          ...(patch.invitePool === undefined
+            ? {}
+            : { defaultInvitePool: patch.invitePool }),
+        }),
+      },
+    );
+    return { ok: true, data: fromWire(data) };
   } catch (err) {
     return {
       ok: false,

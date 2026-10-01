@@ -25,13 +25,8 @@ export let mockDiscovery: DiscoveryPrefs = {
 };
 
 export let mockGreenRoom: GreenRoomPrefs = {
-  defaultTitle: 'Live session',
-  defaultNote: '',
-  autoAnnounce: true,
-  holdMusicEnabled: false,
-  // Subscribers-only is the safer default — matches the invite-only framing
-  // guests see in GreenRoomView before an artist opts into "everyone".
-  access: 'subscribers',
+  defaultEnabled: false,
+  invitePool: 'MODERATORS_AND_SUBS',
 };
 
 export let mockSocial: SocialConnections = {
