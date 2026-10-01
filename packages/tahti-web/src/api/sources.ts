@@ -44,6 +44,8 @@ export {
   importHearthisTracks,
   searchHearthisTracks,
   fetchHearthisTrackById,
+  fetchHearthisArtistTracks,
+  hearthisProfileFromQuery,
   playableFromHearthis,
 } from './sources/hearthis';
 export type { TrackExportStatus } from './sources/export-status';

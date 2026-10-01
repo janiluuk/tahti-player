@@ -24,6 +24,8 @@ import {
 
 import { installMeIntegration } from '../../../api/integrations';
 import {
+  fetchHearthisArtistTracks,
+  hearthisProfileFromQuery,
   playableFromHearthis,
   type HearthisLibrary,
   type HearthisTrack,
@@ -541,15 +543,18 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                 size="sm"
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                placeholder="Search hearthis.at"
+                placeholder="Search, or paste a profile link or @handle"
               />
               <Button
                 size="sm"
                 disabled={!q.trim() || searching}
                 onClick={() => {
                   setSearching(true);
-                  hearthisSourceAdapter
-                    .search(q.trim())
+                  const profile = hearthisProfileFromQuery(q);
+                  (profile
+                    ? fetchHearthisArtistTracks(profile)
+                    : hearthisSourceAdapter.search(q.trim())
+                  )
                     .then((result) => setHits(result.data))
                     .catch(() => toast.error('hearthis.at search failed.'))
                     .finally(() => setSearching(false));
