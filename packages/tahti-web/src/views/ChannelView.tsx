@@ -46,6 +46,7 @@ import {
 } from '../components/EntitySocialHeader';
 import { PageLoading } from '../components/PageStates';
 import { ReportButton } from '../components/ReportButton';
+import { RssFeedButton } from '../components/RssFeedButton';
 import { StreamManagerPanel } from '../components/StreamManagerPanel';
 import { OnAirBadge } from '../components/tahti/OnAirBadge';
 import { listenerWidgetType } from '../content/listenerWidgets';
@@ -59,6 +60,7 @@ import {
   type ChannelPageItem,
   type ChannelPageItemType,
 } from '../lib/channelPageLayout';
+import { channelRssFeedUrl } from '../lib/channelRssFeed';
 import { cn } from '../lib/cn';
 import { colorSchemeCssVars, normalizeColorScheme } from '../lib/colorScheme';
 import { isPinned } from '../lib/pinnedTracks';
@@ -601,6 +603,12 @@ export function ChannelView({ slug }: { slug: string }) {
                 channelSlug={slug}
                 displayName={channel.user.displayName}
                 iconOnly={false}
+              />
+            )}
+            {!editing && (
+              <RssFeedButton
+                href={channelRssFeedUrl(slug)}
+                label={`RSS feed of ${channel.user.displayName}'s channel`}
               />
             )}
             {!editing && !isOwner && (
