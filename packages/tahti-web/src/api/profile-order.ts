@@ -22,3 +22,12 @@ async function put(
 /** Order of the public Tracks tab (`Sound.trackOrder`). */
 export const reorderPublicTracks = (ids: string[]) =>
   put('/api/me/sound/reorder', { ids }, 'Could not save the track order');
+
+/** Order of the artist page's collection grid
+ * (`Collection.publicProfileOrder`, by slug). */
+export const reorderProfileCollections = (slugs: string[]) =>
+  put(
+    '/api/me/collections/reorder',
+    { slugs },
+    'Could not save the collection order',
+  );

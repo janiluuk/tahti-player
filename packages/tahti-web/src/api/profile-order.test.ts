@@ -1,6 +1,9 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { reorderPublicTracks } from './profile-order';
+import {
+  reorderProfileCollections,
+  reorderPublicTracks,
+} from './profile-order';
 
 describe('reorderPublicTracks', () => {
   afterEach(() => {
@@ -19,6 +22,29 @@ describe('reorderPublicTracks', () => {
     expect(fetchMock.mock.calls[0]?.[1]).toMatchObject({
       method: 'PUT',
       body: JSON.stringify({ ids: ['b', 'a'] }),
+    });
+  });
+});
+
+describe('reorderProfileCollections', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('PUTs the slugs in order', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(new Response(JSON.stringify({ ok: true })));
+    vi.stubGlobal('fetch', fetchMock);
+    expect(await reorderProfileCollections(['mix', 'ep'])).toEqual({
+      ok: true,
+    });
+    expect(fetchMock.mock.calls[0]?.[0]).toBe(
+      '/tahti-api/api/me/collections/reorder',
+    );
+    expect(fetchMock.mock.calls[0]?.[1]).toMatchObject({
+      method: 'PUT',
+      body: JSON.stringify({ slugs: ['mix', 'ep'] }),
     });
   });
 });
