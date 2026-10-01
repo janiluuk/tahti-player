@@ -56,6 +56,7 @@ import { AuthDialog } from './AuthDialog';
 import { ConnectedPlayerBar } from './ConnectedPlayerBar';
 import { ConnectedStatusBar } from './ConnectedStatusBar';
 import { FullScreenPlayer } from './FullScreenPlayer';
+import { ListenHeartbeat } from './ListenHeartbeat';
 import { MobileBottomNav, MobileDrawer } from './MobileChrome';
 import { NotificationToasts } from './NotificationToasts';
 import { PageTourSpotlight } from './PageTourSpotlight';
@@ -522,6 +523,7 @@ export function AppShell() {
       <NotificationToasts />
 
       <AudioEngine />
+      <ListenHeartbeat />
 
       {isMobile ? (
         <div className="tahti-ambient-surface bg-background relative flex min-h-0 flex-1 flex-col overflow-hidden">
