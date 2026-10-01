@@ -29,6 +29,7 @@ import { ChannelVisualizer } from '../ChannelVisualizer';
 import { GlowMediaTile } from '../GlowMediaTile';
 import { NowPlayingOverlay } from '../NowPlayingOverlay';
 import { Eyebrow } from '../tahti/Eyebrow';
+import { ArtistCredits } from './ArtistCredits';
 import { ArtistReposts } from './ArtistReposts';
 import { ArtistUpcomingEvents } from './ArtistUpcomingEvents';
 
@@ -289,7 +290,10 @@ export function ArtistMusicTab({
         </div>
       )}
       {channel?.slug ? (
-        <ArtistUpcomingEvents channelSlug={channel.slug} />
+        <>
+          <ArtistUpcomingEvents channelSlug={channel.slug} />
+          <ArtistCredits channelSlug={channel.slug} />
+        </>
       ) : null}
       {visibility.feed !== false ? (
         <ArtistReposts username={artist.username} />

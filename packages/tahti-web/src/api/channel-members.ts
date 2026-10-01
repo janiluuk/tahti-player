@@ -167,3 +167,20 @@ export async function reorderChannelMembers(
     return { ok: false, error: message(err, 'Could not save the order') };
   }
 }
+
+/** A channel's public credits roster (`GET /api/channels/:slug/members`). */
+export async function fetchPublicChannelMembers(
+  slug: string,
+): Promise<ChannelMember[]> {
+  if (isForceMock()) {
+    return [...mockMembers];
+  }
+  try {
+    const { data } = await requestJson<ChannelMember[]>(
+      `/api/channels/${encodeURIComponent(slug)}/members`,
+    );
+    return Array.isArray(data) ? data : [];
+  } catch {
+    return [];
+  }
+}
