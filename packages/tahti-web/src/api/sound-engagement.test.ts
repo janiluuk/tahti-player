@@ -58,4 +58,23 @@ describe('sound likes', () => {
     });
     expect(await fetchSoundEngagement('like', 'night', 'x')).toBeNull();
   });
+
+  it('reads and toggles reposts through the same module', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(json({ reposted: false, repostCount: 2 }))
+      .mockResolvedValueOnce(json({ reposted: true, repostCount: 3 }));
+    vi.stubGlobal('fetch', fetchMock);
+    expect(await fetchSoundEngagement('repost', 'night', 's1')).toEqual({
+      active: false,
+      count: 2,
+    });
+    expect(await setSoundEngagement('repost', 'night', 's1', true)).toEqual({
+      ok: true,
+      data: { active: true, count: 3 },
+    });
+    expect(fetchMock.mock.calls[1]?.[0]).toBe(
+      '/tahti-api/api/v1/c/night/sounds/s1/repost',
+    );
+  });
 });
