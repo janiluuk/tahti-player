@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { act, fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 
 import type { PublicProfile } from '../../api/types';
 import { ArtistHeaderActions } from './ArtistProfileSections';
@@ -18,7 +18,9 @@ const profile = (sound: string | null) =>
   }) as unknown as PublicProfile;
 
 describe('ArtistHeaderActions RSS feed', () => {
-  it("links the artist's sound feed", () => {
+  it("copies the artist's sound feed", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.assign(navigator, { clipboard: { writeText } });
     render(
       <ArtistHeaderActions
         profile={profile('https://api.tahti.live/api/v1/u/selector/rss.xml')}
@@ -26,13 +28,16 @@ describe('ArtistHeaderActions RSS feed', () => {
         onEditLook={() => undefined}
       />,
     );
-    const link = screen.getByRole('link', {
-      name: "RSS feed of Selector's sounds",
+    await act(async () => {
+      fireEvent.click(
+        screen.getByRole('button', {
+          name: "Copy the RSS feed of Selector's sounds",
+        }),
+      );
     });
-    expect(link.getAttribute('href')).toBe(
+    expect(writeText).toHaveBeenCalledWith(
       'https://api.tahti.live/api/v1/u/selector/rss.xml',
     );
-    expect(link.getAttribute('type')).toBe('application/rss+xml');
   });
 
   it('hides the button without a channel feed', () => {
@@ -43,6 +48,6 @@ describe('ArtistHeaderActions RSS feed', () => {
         onEditLook={() => undefined}
       />,
     );
-    expect(screen.queryByRole('link', { name: /RSS feed/ })).toBeNull();
+    expect(screen.queryByRole('button', { name: /RSS feed/ })).toBeNull();
   });
 });

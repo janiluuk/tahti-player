@@ -1,6 +1,7 @@
 import { RssIcon } from 'lucide-react';
+import { toast } from 'sonner';
 
-import { ButtonAnchor, Tooltip } from '@tahti-player/ui';
+import { Button, Tooltip } from '@tahti-player/ui';
 
 export function RssFeedButton({
   href,
@@ -11,20 +12,26 @@ export function RssFeedButton({
   label: string;
   className?: string;
 }) {
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(href);
+      toast.success('Feed link copied. Paste it into your podcast app.');
+    } catch {
+      toast.error('Could not copy the feed link.');
+    }
+  };
+
   return (
-    <Tooltip content={label} side="top">
-      <ButtonAnchor
-        href={href}
-        target="_blank"
-        rel="noreferrer noopener"
-        type="application/rss+xml"
+    <Tooltip content="Copy RSS feed link" side="top">
+      <Button
         size="icon-sm"
         variant="secondary"
-        aria-label={label}
+        aria-label={`Copy the ${label}`}
         className={className}
+        onClick={() => void copy()}
       >
         <RssIcon size={16} aria-hidden />
-      </ButtonAnchor>
+      </Button>
     </Tooltip>
   );
 }
