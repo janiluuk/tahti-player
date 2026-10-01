@@ -49,6 +49,7 @@ import { useAuthStore } from '../../../stores/authStore';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import { StudioBrandingPanel } from '../../studio/StudioBrandingView';
 import { ChannelMembersEditor } from '../ChannelMembersEditor';
+import { NewsFeedUrlField } from '../NewsFeedUrlField';
 import { SettingsHint } from '../SettingsFields';
 import { SocialAutoPost } from '../SocialAutoPost';
 
@@ -507,6 +508,7 @@ export function ArtistPanel() {
                 />
               </div>
               {socialMsg && <SettingsHint>{socialMsg}</SettingsHint>}
+              <NewsFeedUrlField />
               <SocialAutoPost />
             </div>
           ),
