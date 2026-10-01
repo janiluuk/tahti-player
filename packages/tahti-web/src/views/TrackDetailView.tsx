@@ -6,6 +6,7 @@ import { AddToPlaylistPanel } from '../components/AddToPlaylistPanel';
 import { PageEmpty, PageLoading } from '../components/PageStates';
 import { TrackEditDialog } from '../components/TrackEditDialog';
 import { buildTrackPage } from './track-detail/buildTrackPage';
+import { DownloadGateDialog } from './track-detail/DownloadGateDialog';
 import { TrackBody } from './track-detail/TrackBody';
 import { TrackHero } from './track-detail/TrackHero';
 import { useTrackDetail } from './track-detail/useTrackDetail';
@@ -63,6 +64,10 @@ export function TrackDetailView({
     reloadDetail,
     canEdit,
     buyTrack,
+    downloadGates,
+    setDownloadGates,
+    downloadTrack,
+    user,
   } = page;
 
   return (
@@ -116,6 +121,18 @@ export function TrackDetailView({
           </Dialog.Actions>
         </form>
       </Dialog.Root>
+
+      {downloadGates && detail ? (
+        <DownloadGateDialog
+          gates={downloadGates}
+          channelSlug={detail.channelSlug}
+          soundId={id}
+          artist={detail.channel}
+          signedIn={Boolean(user)}
+          onClose={() => setDownloadGates(null)}
+          onDownload={() => void downloadTrack(true)}
+        />
+      ) : null}
 
       {canEdit ? (
         <TrackEditDialog
