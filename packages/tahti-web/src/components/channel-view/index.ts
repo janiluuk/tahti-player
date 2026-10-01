@@ -14,6 +14,7 @@ export {
   heroVisualizerSettingsFor,
 } from './ChannelPageBackdrop';
 export { ChannelNotFound } from './ChannelNotFound';
+export { ChannelLiveTracklist } from './ChannelLiveTracklist';
 export { ChannelStagePlayer } from './ChannelStagePlayer';
 export { useChannelData } from './useChannelData';
 export { useChannelLinksDraft } from './useChannelLinksDraft';
