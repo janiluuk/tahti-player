@@ -34,7 +34,11 @@ function Step({
     <li className="border-border flex items-center justify-between gap-3 rounded-lg border px-3 py-2 text-sm">
       <span className="inline-flex items-center gap-2">
         {done ? (
-          <CheckIcon size={16} className="text-accent-green" aria-hidden />
+          <CheckIcon
+            size={16}
+            className="text-accent-green-strong"
+            aria-hidden
+          />
         ) : null}
         {label}
         {done ? <span className="sr-only">(done)</span> : null}
