@@ -118,6 +118,34 @@ export async function startMembershipPortal(): Promise<
   }
 }
 
+/** GET /api/v1/fansubs/portal — Stripe Customer Portal for the listener's
+ * fan subscriptions (payment method, receipts). 400 without an active one. */
+export async function startFanSubscriptionsPortal(): Promise<
+  { ok: true; portalUrl: string } | { ok: false; error: string }
+> {
+  if (isForceMock()) {
+    return { ok: true, portalUrl: 'https://billing.stripe.com/mock-session' };
+  }
+  try {
+    const { data } = await requestJson<{ portalUrl?: string; error?: string }>(
+      '/api/v1/fansubs/portal',
+    );
+    if (data.portalUrl) {
+      return { ok: true, portalUrl: data.portalUrl };
+    }
+    return {
+      ok: false,
+      error: data.error ?? 'Billing portal did not return a URL',
+    };
+  } catch (err) {
+    return {
+      ok: false,
+      error:
+        err instanceof Error ? err.message : 'Could not open billing portal',
+    };
+  }
+}
+
 /** POST /api/auth/resend-verification — re-sends the email confirmation link.
  * Requires an hCaptcha token when the API has hCaptcha enforced (production);
  * tahti-web has no hCaptcha widget yet, so this surfaces that as a normal

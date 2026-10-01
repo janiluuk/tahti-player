@@ -6,6 +6,7 @@ import { Box, Button, ButtonLink, Tabs, ViewShell } from '@tahti-player/ui';
 
 import { fetchMembership, fetchMySubscriptions } from '../api/client';
 import type { FanSubscriptionRow, MembershipStatus } from '../api/types';
+import { FanSubscriptionsBillingButton } from '../components/FanSubscriptionsBillingButton';
 import { MembershipStatusPanel } from '../components/MembershipStatusPanel';
 import { PageLoading } from '../components/PageStates';
 import { useAuthStore } from '../stores/authStore';
@@ -143,40 +144,45 @@ export function AccountView() {
                   their profile.
                 </p>
               ) : (
-                <ul className="flex flex-col gap-2">
-                  {subs.map((subscription) => (
-                    <li
-                      key={subscription.id}
-                      className="border-border bg-background-secondary/40 flex flex-wrap items-center justify-between gap-2 rounded-xl border px-4 py-3 text-sm"
-                    >
-                      <div>
-                        <Link
-                          to="/u/$username"
-                          params={{ username: subscription.artist.username }}
-                          className="font-medium hover:underline"
-                        >
-                          {subscription.artist.displayName}
-                        </Link>
-                        <p className="text-foreground-secondary text-xs">
-                          {subscription.tierName},{' '}
-                          {euros(subscription.amountCents)}/mo,{' '}
-                          {subscription.state}
-                          {subscription.currentPeriodEnd
-                            ? `, until ${new Date(subscription.currentPeriodEnd).toLocaleDateString()}`
-                            : ''}
-                        </p>
-                      </div>
-                      <ButtonLink
-                        to="/subscribe/$username"
-                        params={{ username: subscription.artist.username }}
-                        size="sm"
-                        variant="text"
+                <div className="flex flex-col gap-3">
+                  <ul className="flex flex-col gap-2">
+                    {subs.map((subscription) => (
+                      <li
+                        key={subscription.id}
+                        className="border-border bg-background-secondary/40 flex flex-wrap items-center justify-between gap-2 rounded-xl border px-4 py-3 text-sm"
                       >
-                        Tiers
-                      </ButtonLink>
-                    </li>
-                  ))}
-                </ul>
+                        <div>
+                          <Link
+                            to="/u/$username"
+                            params={{ username: subscription.artist.username }}
+                            className="font-medium hover:underline"
+                          >
+                            {subscription.artist.displayName}
+                          </Link>
+                          <p className="text-foreground-secondary text-xs">
+                            {subscription.tierName},{' '}
+                            {euros(subscription.amountCents)}/mo,{' '}
+                            {subscription.state}
+                            {subscription.currentPeriodEnd
+                              ? `, until ${new Date(subscription.currentPeriodEnd).toLocaleDateString()}`
+                              : ''}
+                          </p>
+                        </div>
+                        <ButtonLink
+                          to="/subscribe/$username"
+                          params={{ username: subscription.artist.username }}
+                          size="sm"
+                          variant="text"
+                        >
+                          Tiers
+                        </ButtonLink>
+                      </li>
+                    ))}
+                  </ul>
+                  {subs.some((sub) => sub.state === 'ACTIVE') ? (
+                    <FanSubscriptionsBillingButton />
+                  ) : null}
+                </div>
               ),
           },
         ]}
