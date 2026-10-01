@@ -1,10 +1,13 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { requestFanChatToken } from '../api/fan-chat';
+import { fetchFanChatHistory, requestFanChatToken } from '../api/fan-chat';
 import { FanChatRoom } from './FanChatRoom';
 
-vi.mock('../api/fan-chat', () => ({ requestFanChatToken: vi.fn() }));
+vi.mock('../api/fan-chat', () => ({
+  fetchFanChatHistory: vi.fn(),
+  requestFanChatToken: vi.fn(),
+}));
 
 class FakeSocket {
   static last: FakeSocket | null = null;
@@ -38,6 +41,7 @@ async function openRoom() {
 describe('FanChatRoom', () => {
   beforeEach(() => {
     vi.stubGlobal('WebSocket', FakeSocket);
+    vi.mocked(fetchFanChatHistory).mockResolvedValue([]);
     vi.mocked(requestFanChatToken).mockResolvedValue({
       ok: true,
       data: { token: 'fan-token', handle: 'Aino', channel: room },
@@ -69,6 +73,15 @@ describe('FanChatRoom', () => {
       });
     });
     expect(screen.getByText('hei')).toBeInTheDocument();
+  });
+
+  it('starts with the recent fan-room messages', async () => {
+    vi.mocked(fetchFanChatHistory).mockResolvedValue([
+      { handle: 'Ville', text: 'earlier tonight', ts: 1 },
+    ]);
+    await openRoom();
+    expect(fetchFanChatHistory).toHaveBeenCalledWith('night-drive');
+    expect(screen.getByText('earlier tonight')).toBeInTheDocument();
   });
 
   it('publishes to the fan channel under the handle the API gave', async () => {

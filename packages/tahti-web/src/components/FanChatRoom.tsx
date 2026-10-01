@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { Button, EmptyState, Input } from '@tahti-player/ui';
 
-import { requestFanChatToken } from '../api/fan-chat';
+import { fetchFanChatHistory, requestFanChatToken } from '../api/fan-chat';
 import { centrifugoWsUrl } from '../lib/centrifugoWsUrl';
 import { ChatAvatar } from './ChatAvatar';
 
@@ -28,6 +28,18 @@ export function FanChatRoom({
 
   useEffect(() => {
     let cancelled = false;
+    void fetchFanChatHistory(slug).then((history) => {
+      if (!cancelled && history.length > 0) {
+        setMessages((live) => [
+          ...history.map((m, i) => ({
+            id: `history-${m.ts}-${i}`,
+            handle: m.handle,
+            text: m.text,
+          })),
+          ...live,
+        ]);
+      }
+    });
     void requestFanChatToken(slug).then((result) => {
       const url = centrifugoWsUrl();
       if (cancelled) {
