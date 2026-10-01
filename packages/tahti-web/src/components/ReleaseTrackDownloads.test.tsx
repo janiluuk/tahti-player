@@ -64,6 +64,25 @@ describe('ReleaseTrackDownloads', () => {
     );
   });
 
+  it('sends the listener to the track page to clear a follow or share gate', async () => {
+    const assign = vi.fn();
+    vi.stubGlobal('location', { ...window.location, assign });
+    vi.mocked(downloadReleaseTrack).mockResolvedValue({
+      ok: false,
+      error: 'Follow this artist to download',
+      unlockSoundId: 'sound-9',
+    });
+    render(<ReleaseTrackDownloads smartLinkSlug="nights" tracks={TRACKS} />);
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Download Intro' }));
+    });
+    const [message, options] = vi.mocked(toast.error).mock.calls[0]!;
+    expect(message).toBe('Follow this artist to download');
+    const action = (options as { action: { onClick: () => void } }).action;
+    action.onClick();
+    expect(assign).toHaveBeenCalledWith('/t/sound-9');
+  });
+
   it('renders nothing when no track can be downloaded', () => {
     const { container } = render(
       <ReleaseTrackDownloads smartLinkSlug="nights" tracks={[TRACKS[1]!]} />,
