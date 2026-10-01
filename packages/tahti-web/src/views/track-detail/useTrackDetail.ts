@@ -11,6 +11,7 @@ import { listMockCommerceFanSubs } from '../../api/mock-commerce-ledger';
 import { listMockSubscriptions } from '../../api/mock-session';
 import { isForceMock } from '../../api/mode';
 import { mockOwnsPurchaseTier } from '../../api/purchase-tiers';
+import type { DownloadGateStatus } from '../../api/sound-download-gates';
 import {
   type PublicChannel,
   type PublicProfile,
@@ -54,6 +55,9 @@ export function useTrackDetail(id: string, shareKey?: string) {
   const [loading, setLoading] = useState(true);
   const [playlistOpen, setPlaylistOpen] = useState(false);
   const [downloadBusy, setDownloadBusy] = useState(false);
+  const [downloadGates, setDownloadGates] = useState<DownloadGateStatus | null>(
+    null,
+  );
   const [buyBusy, setBuyBusy] = useState(false);
   const [pwywOpen, setPwywOpen] = useState(false);
   const [pwywAmt, setPwywAmt] = useState('');
@@ -179,6 +183,8 @@ export function useTrackDetail(id: string, shareKey?: string) {
     setPlaylistOpen,
     downloadBusy,
     setDownloadBusy,
+    downloadGates,
+    setDownloadGates,
     buyBusy,
     setBuyBusy,
     pwywOpen,
