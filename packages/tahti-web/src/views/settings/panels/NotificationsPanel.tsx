@@ -14,6 +14,7 @@ import {
   patchMeProfile,
   type ProfileFields,
 } from '../../../api/studio-extras';
+import { ClientCapabilityNotice } from '../../../components/ClientCapabilityNotice';
 import { SettingsHint, SettingsToggle } from '../SettingsFields';
 import { CommentSettingsToggles } from './CommentSettingsToggles';
 import { TopListsToggle } from './TopListsToggle';
@@ -86,9 +87,10 @@ export function NotificationsPanel() {
             onChange={(value) => toggle('notifyListenerActivityEmail', value)}
           />
         </div>
-        <p className="border-border bg-background mt-4 rounded-lg border px-3 py-2 text-xs">
-          Tahti · 3 new chat messages, 1 new comment on Drift EP
-        </p>
+        <ClientCapabilityNotice kind="coming-soon" className="mt-4">
+          Tahti doesn&apos;t send this email yet. Your choice is saved and
+          applies once it does.
+        </ClientCapabilityNotice>
       </div>
       <div className="border-border bg-background-secondary/30 rounded-xl border p-4">
         <h3 className="font-display text-base font-bold">Weekly recap</h3>
@@ -102,9 +104,10 @@ export function NotificationsPanel() {
             onChange={(value) => toggle('notifyWeeklyRecapEmail', value)}
           />
         </div>
-        <p className="border-border bg-background mt-4 rounded-lg border px-3 py-2 text-xs">
-          Tahti · 1,247 plays · 89 downloads · €115 this week
-        </p>
+        <ClientCapabilityNotice kind="coming-soon" className="mt-4">
+          Tahti doesn&apos;t send this email yet. Your choice is saved and
+          applies once it does.
+        </ClientCapabilityNotice>
       </div>
     </div>
   );
