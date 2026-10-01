@@ -7,7 +7,7 @@ import type {
   IntegrationId,
   SoundcloudTrack,
   SourceDef,
-  SpotifySearchTrack,
+  SpotifyTrack,
 } from '../../api/sources';
 
 /**
@@ -81,13 +81,15 @@ type SearchAdapterBase = ImportSourcePlugin & {
 
 export type SpotifySourceAdapter = SearchAdapterBase & {
   id: 'spotify';
-  search(query: string): Promise<{
-    data: SpotifySearchTrack[];
-    meta: FetchMeta;
-  }>;
-  importTracks(
-    tracks: Array<{ trackId: string; title: string; externalUrl?: string }>,
-  ): Promise<{ ok: true; count: number } | { ok: false; error: string }>;
+  search(
+    query: string,
+  ): Promise<{ ok: true; data: SpotifyTrack[] } | { ok: false; error: string }>;
+  addToCollection(
+    collectionId: string,
+    spotifyUri: string,
+  ): Promise<
+    { ok: true; data: { soundId: string } } | { ok: false; error: string }
+  >;
 };
 
 export type HearthisImportResult = {

@@ -103,7 +103,7 @@ describe('importSourcePlugins', () => {
 
   it('search adapters keep provider-specific search and import methods', () => {
     expect(spotifySourceAdapter.search).toEqual(expect.any(Function));
-    expect(spotifySourceAdapter.importTracks).toEqual(expect.any(Function));
+    expect(spotifySourceAdapter.addToCollection).toEqual(expect.any(Function));
     expect(hearthisSourceAdapter.search).toEqual(expect.any(Function));
     expect(hearthisSourceAdapter.importTracks).toEqual(expect.any(Function));
     expect(hearthisSourceAdapter.library).toEqual(expect.any(Function));

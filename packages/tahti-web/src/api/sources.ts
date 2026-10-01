@@ -24,12 +24,14 @@ export {
   importSoundcloudTracks,
   playableFromSoundcloud,
 } from './sources/soundcloud';
-export type { SpotifySearchTrack } from './sources/spotify';
+export type { SpotifyTrack } from './sources/spotify-collection';
 export {
-  searchSpotifyTracks,
-  importSpotifyTracks,
-  playableFromSpotify,
-} from './sources/spotify';
+  addSpotifyTrack,
+  fetchMySpotifyTracks,
+  fetchSpotifyArtistTracks,
+  searchSpotify,
+  spotifyCoverUrl,
+} from './sources/spotify-collection';
 export type { BandcampAlbum } from './sources/bandcamp';
 export { fetchBandcampAlbums, importBandcampAlbum } from './sources/bandcamp';
 export type {

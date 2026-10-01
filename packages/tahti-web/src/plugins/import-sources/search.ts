@@ -1,10 +1,10 @@
 import {
+  addSpotifyTrack,
   fetchHearthisCollectionTracks,
   fetchHearthisLibrary,
   importHearthisTracks,
-  importSpotifyTracks,
   searchHearthisTracks,
-  searchSpotifyTracks,
+  searchSpotify,
   SOURCE_DEFS,
   type IntegrationId,
 } from '../../api/sources';
@@ -27,8 +27,8 @@ export const spotifySourceAdapter: SpotifySourceAdapter = {
   ...importSourceBase(searchDef('spotify')),
   kind: 'search',
   id: 'spotify',
-  search: searchSpotifyTracks,
-  importTracks: importSpotifyTracks,
+  search: searchSpotify,
+  addToCollection: addSpotifyTrack,
 };
 
 export const hearthisSourceAdapter: HearthisSourceAdapter = {

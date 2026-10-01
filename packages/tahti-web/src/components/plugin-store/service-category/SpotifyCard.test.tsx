@@ -1,4 +1,10 @@
 import {
+  createMemoryHistory,
+  createRootRoute,
+  createRouter,
+  RouterProvider,
+} from '@tanstack/react-router';
+import {
   cleanup,
   fireEvent,
   render,
@@ -10,21 +16,17 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ServicePlugin } from '../serviceCatalog';
 import { SpotifyCard } from './SpotifyCard';
 
-const { toast, api, adapter } = vi.hoisted(() => ({
+const { toast, api } = vi.hoisted(() => ({
   toast: { error: vi.fn(), success: vi.fn() },
   api: {
     fetchSpotifyArtistProfile: vi.fn(),
     linkSpotifyArtistProfile: vi.fn(),
     unlinkSpotifyArtistProfile: vi.fn(),
   },
-  adapter: { search: vi.fn(), importTracks: vi.fn() },
 }));
 
 vi.mock('sonner', () => ({ toast, Toaster: () => null }));
 vi.mock('../../../api/distribution', () => api);
-vi.mock('../../../plugins/import-sources', () => ({
-  spotifySourceAdapter: adapter,
-}));
 
 const plugin = {
   id: 'spotify',
@@ -33,6 +35,18 @@ const plugin = {
   description: '',
   action: { kind: 'info' },
 } as unknown as ServicePlugin;
+
+const renderCard = () =>
+  render(
+    <RouterProvider
+      router={createRouter({
+        routeTree: createRootRoute({
+          component: () => <SpotifyCard plugin={plugin} />,
+        }),
+        history: createMemoryHistory({ initialEntries: ['/'] }),
+      })}
+    />,
+  );
 
 const openPanel = async () => {
   const buttons = await screen.findAllByRole('button', { name: 'Configure' });
@@ -50,9 +64,11 @@ beforeEach(() => vi.clearAllMocks());
 describe('SpotifyCard', () => {
   it('opens the config panel, not the import dialog, when no profile is linked', async () => {
     load(null);
-    render(<SpotifyCard plugin={plugin} />);
+    renderCard();
     // The card's own primary button (not the gear) is "Configure" here.
-    fireEvent.click(screen.getAllByRole('button', { name: 'Configure' })[0]!);
+    fireEvent.click(
+      (await screen.findAllByRole('button', { name: 'Configure' }))[0]!,
+    );
     expect(await screen.findByText('Configure Spotify')).toBeTruthy();
     expect(screen.queryByText('Choose Spotify content')).toBeNull();
   });
@@ -63,7 +79,7 @@ describe('SpotifyCard', () => {
       ok: false,
       error: 'Not a Spotify artist URL',
     });
-    render(<SpotifyCard plugin={plugin} />);
+    renderCard();
     await openPanel();
     fireEvent.change(await screen.findByLabelText('Spotify artist URL'), {
       target: { value: 'nope' },
@@ -82,29 +98,20 @@ describe('SpotifyCard', () => {
     ).toBe(false);
   });
 
-  it('a throwing search toasts and does not leave the dialog busy', async () => {
+  it('sends a linked artist to the collection editor to add tracks', async () => {
     load({ name: 'Artist' });
-    adapter.search.mockRejectedValue(new Error('boom'));
-    render(<SpotifyCard plugin={plugin} />);
+    renderCard();
     await openPanel();
-    fireEvent.click(
-      await screen.findByRole('button', { name: /Choose content/ }),
-    );
-    const search = await screen.findByRole('button', { name: /Search$/ });
-    await waitFor(() =>
-      expect((search as HTMLButtonElement).disabled).toBe(false),
-    );
-    fireEvent.click(search);
-    await waitFor(() =>
-      expect(toast.error).toHaveBeenCalledWith('Spotify search failed.'),
-    );
-    expect((search as HTMLButtonElement).disabled).toBe(false);
+    const link = await screen.findByRole('link', {
+      name: /Add to a collection/,
+    });
+    expect(link.getAttribute('href')).toBe('/studio/collections');
   });
 
   it('unlink failure toasts and keeps the profile', async () => {
     load({ name: 'Artist' });
     api.unlinkSpotifyArtistProfile.mockRejectedValue(new Error('x'));
-    render(<SpotifyCard plugin={plugin} />);
+    renderCard();
     await openPanel();
     fireEvent.click(await screen.findByRole('button', { name: 'Unlink' }));
     await waitFor(() =>
