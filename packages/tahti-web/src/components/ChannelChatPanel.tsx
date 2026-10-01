@@ -12,9 +12,11 @@ import type { ChatMessage } from '../api/types';
 import { centrifugoWsUrl } from '../lib/centrifugoWsUrl';
 import { useHcaptcha } from '../lib/useHcaptcha';
 import { useAuthStore } from '../stores/authStore';
+import { ChatAvatar } from './ChatAvatar';
 import { ChatDailyListeners } from './ChatDailyListeners';
 import { ChatListeningNow } from './ChatListeningNow';
 import { ChatReactionBar } from './ChatReactionBar';
+import { FanChatRoom } from './FanChatRoom';
 
 const HANDLE_KEY = 'tahti-web-chat-handle';
 const forceMock = () => import.meta.env.VITE_FORCE_MOCK === '1';
@@ -25,41 +27,6 @@ const forceMock = () => import.meta.env.VITE_FORCE_MOCK === '1';
 const DISCONNECT_GRACE_MS = 8000;
 const RECONNECT_DELAY_MS = 2000;
 const MAX_RECONNECT_ATTEMPTS = 5;
-
-// Chat is anonymous/handle-based -- there's no avatarUrl to show, so each
-// handle gets a deterministic initial-letter avatar instead. Cycling through
-// theme accent tokens (not arbitrary hex) keeps it consistent with the rest
-// of the app's palette.
-const AVATAR_COLORS = [
-  'var(--accent-red)',
-  'var(--accent-green)',
-  'var(--accent-blue)',
-  'var(--accent-purple)',
-  'var(--accent-cyan)',
-  'var(--accent-yellow)',
-  'var(--accent-orange)',
-  'var(--primary)',
-] as const;
-
-function avatarColorFor(handle: string): string {
-  let hash = 0;
-  for (let i = 0; i < handle.length; i++) {
-    hash = (hash * 31 + handle.charCodeAt(i)) >>> 0;
-  }
-  return AVATAR_COLORS[hash % AVATAR_COLORS.length]!;
-}
-
-function ChatAvatar({ handle }: { handle: string }) {
-  return (
-    <span
-      className="mt-0.5 inline-flex size-5 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-black/80"
-      style={{ background: avatarColorFor(handle) }}
-      aria-hidden
-    >
-      {handle.trim().charAt(0).toUpperCase() || '?'}
-    </span>
-  );
-}
 
 type LiveMode = 'live' | 'rest' | 'mock';
 
@@ -74,6 +41,8 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
   const user = useAuthStore((s) => s.user);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [accessNote, setAccessNote] = useState<string | null>(null);
+  const [canJoinFanChat, setCanJoinFanChat] = useState(false);
+  const [inFanRoom, setInFanRoom] = useState(false);
   const [handle, setHandle] = useState('');
   const [pendingHandle, setPendingHandle] = useState('');
   const [input, setInput] = useState('');
@@ -145,6 +114,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
         } else {
           setMode('rest');
         }
+        setCanJoinFanChat(access.data.canJoinFanChat);
         if (access.data.subscribersOnly && !access.data.canPostInChat) {
           setAccessNote(
             'Subscribers-only chat — you can read; posting needs a fan sub + login.',
@@ -455,6 +425,16 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
     setInput('');
   }
 
+  if (inFanRoom) {
+    return (
+      <FanChatRoom
+        slug={slug}
+        rail={rail}
+        onLeave={() => setInFanRoom(false)}
+      />
+    );
+  }
+
   return (
     <div
       className={`border-border bg-background flex flex-col rounded-lg border ${
@@ -465,6 +445,15 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
         <div className="flex min-w-0 items-center gap-2">
           <div className="font-display text-sm font-bold">Chat</div>
           <ChatDailyListeners slug={slug} />
+          {canJoinFanChat && (
+            <Button
+              size="xs"
+              variant="ghost"
+              onClick={() => setInFanRoom(true)}
+            >
+              Fan room
+            </Button>
+          )}
         </div>
         {liveDisplay && (
           <div className="text-foreground-secondary flex items-center gap-1.5 font-mono text-[10px] tracking-wide uppercase">
