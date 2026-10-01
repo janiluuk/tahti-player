@@ -198,7 +198,9 @@ export function ConnectedStatusBar() {
   );
   const localProcessingJobs = useProcessingJobsStore((state) => state.jobs);
   const settleProcessingJobs = useProcessingJobsStore((state) => state.settle);
-  const notifications = useNotificationInboxStore((state) => state.items);
+  const unreadNotifications = useNotificationInboxStore(
+    (state) => state.unreadCount,
+  );
 
   const [archiveItems, setArchiveItems] = useState<StudioSound[]>([]);
   const [unreadMessages, setUnreadMessages] = useState(0);
@@ -257,9 +259,6 @@ export function ConnectedStatusBar() {
     localProcessingJobs,
     archiveItems,
   );
-  const unreadNotifications = notifications.filter(
-    (notification) => !notification.readAt,
-  ).length;
 
   return (
     <BottomBar className="px-5">

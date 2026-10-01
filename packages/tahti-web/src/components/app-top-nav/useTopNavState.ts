@@ -43,6 +43,14 @@ export function useTopNavState() {
   const [processingOpen, setProcessingOpen] = useState(false);
   const [conversations, setConversations] = useState<ConversationSummary[]>([]);
   const notifications = useNotificationInboxStore((s) => s.items);
+  const unreadNotificationCount = useNotificationInboxStore(
+    (s) => s.unreadCount,
+  );
+  const hasOlderNotifications = useNotificationInboxStore((s) => s.hasMore);
+  const loadingOlderNotifications = useNotificationInboxStore(
+    (s) => s.loadingOlder,
+  );
+  const loadOlderNotifications = useNotificationInboxStore((s) => s.loadOlder);
   const acknowledgeNotification = useNotificationInboxStore(
     (s) => s.acknowledge,
   );
@@ -171,9 +179,6 @@ export function useTopNavState() {
   const busy = serverProcessing.length > 0 || localProcessingJobs.length > 0;
   usePolling(loadSoundStatus, busy ? 5000 : 30000, Boolean(user));
 
-  const unreadNotifications = notifications.filter(
-    (notification) => !notification.readAt,
-  );
   const unreadMessagesCount = conversations.reduce(
     (total, conversation) => total + conversation.unreadCount,
     0,
@@ -236,7 +241,10 @@ export function useTopNavState() {
     displayName,
     initial,
     loadSoundStatus,
-    unreadNotifications,
+    unreadNotificationCount,
+    hasOlderNotifications,
+    loadingOlderNotifications,
+    loadOlderNotifications,
     unreadMessagesCount,
     processingItems,
   };
