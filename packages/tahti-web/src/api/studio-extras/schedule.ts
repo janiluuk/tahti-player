@@ -55,6 +55,17 @@ export type ProgrammeView = {
   fallbackAutoEnroll: boolean;
   announcementsEnabled: boolean;
   items: ProgrammeItem[];
+  /** The channel owner's release tracks, `soundId` set once in rotation. */
+  library?: ProgrammeLibraryTrack[];
+};
+
+export type ProgrammeLibraryTrack = {
+  releaseTrackId: string;
+  releaseId: string;
+  releaseTitle: string;
+  trackTitle: string;
+  durationSec: number | null;
+  soundId: string | null;
 };
 
 export let mockSchedule: ChannelSchedule = {

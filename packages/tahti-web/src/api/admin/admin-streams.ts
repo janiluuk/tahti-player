@@ -171,6 +171,16 @@ export async function fetchAdminChannelProgramme(
           fallbackOrder: null,
         },
       ],
+      library: [
+        {
+          releaseTrackId: `${key}-rt-1`,
+          releaseId: `${key}-release`,
+          releaseTitle: 'Revontulet',
+          trackTitle: 'Pohjoinen',
+          durationSec: 280,
+          soundId: null,
+        },
+      ],
     };
     mockChannelProgrammes.set(key, existing);
     return { ok: true, data: { ...existing, items: [...existing.items] } };
@@ -198,6 +208,7 @@ export async function saveAdminChannelProgramme(
   if (isForceMock()) {
     const saved: ProgrammeView = {
       ...settings,
+      library: mockChannelProgrammes.get(key)?.library,
       items: items.map((item, index) => ({
         ...item,
         fallbackOrder: item.isFallback ? index : null,
@@ -217,6 +228,57 @@ export async function saveAdminChannelProgramme(
     return {
       ok: false,
       error: err instanceof Error ? err.message : 'Could not save the rotation',
+    };
+  }
+}
+
+/** Board: add one of the channel owner's release tracks to its rotation. */
+export async function addAdminReleaseTrackToRotation(
+  slug: string,
+  releaseTrackId: string,
+): Promise<{ ok: true; data: ProgrammeView } | { ok: false; error: string }> {
+  const key = slug.trim().toLowerCase();
+  if (isForceMock()) {
+    const existing = mockChannelProgrammes.get(key);
+    if (!existing) {
+      return { ok: false, error: 'Open the rotation first.' };
+    }
+    const track = existing.library?.find(
+      (row) => row.releaseTrackId === releaseTrackId,
+    );
+    const soundId = `${key}-release-${releaseTrackId}`;
+    const saved: ProgrammeView = {
+      ...existing,
+      items: [
+        ...existing.items,
+        {
+          id: soundId,
+          title: track?.trackTitle ?? 'Release track',
+          status: 'READY',
+          durationSec: track?.durationSec ?? null,
+          isFallback: true,
+          fallbackOrder: existing.items.length,
+        },
+      ],
+      library: existing.library?.map((row) =>
+        row.releaseTrackId === releaseTrackId ? { ...row, soundId } : row,
+      ),
+    };
+    mockChannelProgrammes.set(key, saved);
+    return { ok: true, data: saved };
+  }
+  try {
+    const data = await sendJson<ProgrammeView>(
+      `/api/admin/channels/${encodeURIComponent(key)}/programme/library`,
+      'POST',
+      { releaseTrackId },
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error:
+        err instanceof Error ? err.message : 'Could not add to the rotation',
     };
   }
 }
