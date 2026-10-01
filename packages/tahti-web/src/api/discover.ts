@@ -377,19 +377,21 @@ export async function fetchNewToYou(): Promise<{
   }
 }
 
-type TrackReactionResponse = {
-  reactions: Array<{ type: string }>;
-};
+type WireLovedEntry = Omit<WireTopListEntry, 'listens'> & { loves: number };
 
-async function countTrackLoves(trackId: string): Promise<number> {
-  const response = await getJson<TrackReactionResponse>(
-    `/api/reactions/track/${encodeURIComponent(trackId)}`,
-  );
-  return response.reactions.filter((reaction) => reaction.type === 'LOVE')
-    .length;
+function lovedEntryToTrack(entry: WireLovedEntry): DiscoverTrackItem {
+  return {
+    id: `sound:${entry.soundId}`,
+    title: entry.title,
+    artist: entry.artistName,
+    channelSlug: entry.channelSlug,
+    coverUrl: entry.bannerUrl,
+    genre: entry.genre,
+    loves: entry.loves,
+  };
 }
 
-/** Community-wide Loved list, ranked from the public LOVE reactions on tracks. */
+/** Community-wide Loved list: tracks ranked by how many people loved them. */
 export async function fetchLovedTracks(
   filters: DiscoverFilters,
 ): Promise<{ data: DiscoverTrackItem[]; meta: FetchMeta }> {
@@ -403,18 +405,30 @@ export async function fetchLovedTracks(
     };
   }
   try {
-    const candidates = await fetchTopTracks('all_time', 'desc', filters);
-    const ranked = await Promise.all(
-      candidates.data.slice(0, 24).map(async (track) => ({
-        track,
-        loves: await countTrackLoves(track.id.replace(/^sound:/, '')),
-      })),
+    const qs = filterQuery(filters);
+    const genres = filters.genres.length > 0 ? filters.genres : [undefined];
+    const lists = await Promise.all(
+      genres.map(async (genre) => {
+        const params = [
+          genre ? `genre=${encodeURIComponent(genre)}` : '',
+          qs,
+        ].filter(Boolean);
+        const { entries } = await getJson<{ entries: WireLovedEntry[] }>(
+          `/api/top-lists/loved${params.length > 0 ? `?${params.join('&')}` : ''}`,
+        );
+        return entries;
+      }),
     );
+    const byId = new Map<string, WireLovedEntry>();
+    for (const entry of lists.flat()) {
+      if (!byId.has(entry.soundId)) {
+        byId.set(entry.soundId, entry);
+      }
+    }
     return {
-      data: ranked
-        .filter(({ loves }) => loves > 0)
+      data: [...byId.values()]
         .sort((left, right) => right.loves - left.loves)
-        .map(({ track, loves }) => ({ ...track, loves })),
+        .map(lovedEntryToTrack),
       meta: { source: 'api' },
     };
   } catch (err) {
