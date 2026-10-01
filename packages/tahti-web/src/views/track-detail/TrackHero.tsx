@@ -13,6 +13,7 @@ import {
   Share2Icon,
   ShoppingBagIcon,
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { Badge, Button, Tooltip } from '@tahti-player/ui';
 
@@ -85,6 +86,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
     buyTrack,
   } = page;
   const like = useSoundEngagement('like', detail?.channelSlug, id);
+  const repost = useSoundEngagement('repost', detail?.channelSlug, id);
 
   return (
     <section className="relative overflow-hidden px-6 pt-8 pb-6 md:px-10">
@@ -301,8 +303,14 @@ export function TrackHero({ page }: { page: TrackPage }) {
             </span>
             <span className="inline-flex items-center gap-1">
               <Repeat2Icon size={13} aria-hidden />
-              {detail?.downloadCount ?? 0}
+              {repost.state?.count ?? 0}
             </span>
+            {detail?.downloadCount ? (
+              <span className="inline-flex items-center gap-1">
+                <DownloadIcon size={13} aria-hidden />
+                {detail.downloadCount}
+              </span>
+            ) : null}
             <span className="inline-flex items-center gap-1">
               <HeartIcon size={13} aria-hidden />
               {like.state?.count ?? (favorited ? 1 : 0)}
@@ -345,6 +353,25 @@ export function TrackHero({ page }: { page: TrackPage }) {
               <PlusIcon size={14} aria-hidden className="mr-1.5" />
               Add
             </Button>
+            {user && !isOwner && repost.state ? (
+              <Button
+                size="sm"
+                variant="secondary"
+                aria-pressed={repost.state.active}
+                onClick={() => {
+                  void repost.set(!repost.state?.active).then((result) => {
+                    if (!result.ok) {
+                      toast.error(result.error);
+                    } else if (result.data.active) {
+                      toast.success('Reposted.');
+                    }
+                  });
+                }}
+              >
+                <Repeat2Icon size={14} aria-hidden className="mr-1.5" />
+                {repost.state.active ? 'Reposted' : 'Repost'}
+              </Button>
+            ) : null}
             {!isOwner ? (
               <ReportButton
                 targetType="SOUND_ITEM"

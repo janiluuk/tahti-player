@@ -1,12 +1,13 @@
 import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
-export type SoundEngagementKind = 'like';
+export type SoundEngagementKind = 'like' | 'repost';
 
 export type SoundEngagement = { active: boolean; count: number };
 
 const KEYS: Record<SoundEngagementKind, { active: string; count: string }> = {
   like: { active: 'liked', count: 'likeCount' },
+  repost: { active: 'reposted', count: 'repostCount' },
 };
 
 const mockState = new Map<string, SoundEngagement>();
