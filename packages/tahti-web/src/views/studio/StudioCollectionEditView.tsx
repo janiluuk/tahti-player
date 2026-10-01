@@ -12,6 +12,7 @@ import { CollectionDialogs } from './collection-edit/CollectionDialogs';
 import { CollectionHeader } from './collection-edit/CollectionHeader';
 import { DetailsPanel } from './collection-edit/DetailsPanel';
 import { MixcloudImportPanel } from './collection-edit/MixcloudImportPanel';
+import { SpotifyImportPanel } from './collection-edit/SpotifyImportPanel';
 import { TextLayerPanel } from './collection-edit/TextLayerPanel';
 import { TracklistPanel } from './collection-edit/TracklistPanel';
 import { useCollectionEditState } from './collection-edit/useCollectionEditState';
@@ -58,6 +59,12 @@ export function StudioCollectionEditView({
             <TracklistPanel state={state} isAlbumLike={isAlbumLike} />
             {col.id ? (
               <MixcloudImportPanel
+                collectionId={col.id}
+                onAdded={() => void state.refreshItems()}
+              />
+            ) : null}
+            {col.id ? (
+              <SpotifyImportPanel
                 collectionId={col.id}
                 onAdded={() => void state.refreshItems()}
               />
