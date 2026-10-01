@@ -23,6 +23,7 @@ import {
   type StorageUsage,
 } from '../api/studio-extras';
 import { DesktopLibraryPanel } from '../components/DesktopLibraryPanel';
+import { SubscribedCollections } from '../components/library/SubscribedCollections';
 import { StudioPanel } from '../components/StudioPanel';
 import { formatPlayCount } from '../lib/topListEntries';
 import { LibraryEmbedsView } from './LibraryEmbedsView';
@@ -172,6 +173,7 @@ export function LibraryView({ tab = 'library' }: { tab?: Tab }) {
         {tab === 'collections' ? (
           <div className="mt-2">
             <MyCollectionsView embedded />
+            <SubscribedCollections />
           </div>
         ) : null}
         {tab === 'recordings' ? (
