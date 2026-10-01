@@ -11,6 +11,7 @@ import { LibrarySectionTabs } from '../LibraryView';
 import { CollectionDialogs } from './collection-edit/CollectionDialogs';
 import { CollectionHeader } from './collection-edit/CollectionHeader';
 import { DetailsPanel } from './collection-edit/DetailsPanel';
+import { TextLayerPanel } from './collection-edit/TextLayerPanel';
 import { TracklistPanel } from './collection-edit/TracklistPanel';
 import { useCollectionEditState } from './collection-edit/useCollectionEditState';
 
@@ -52,6 +53,7 @@ export function StudioCollectionEditView({
           <>
             <CollectionHeader col={col} state={state} />
             <DetailsPanel state={state} />
+            <TextLayerPanel slug={slug} />
             <TracklistPanel state={state} isAlbumLike={isAlbumLike} />
           </>
         )}
