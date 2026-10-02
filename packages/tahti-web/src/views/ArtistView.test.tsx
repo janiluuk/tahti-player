@@ -105,6 +105,29 @@ describe('ArtistView', () => {
     expect(pill?.style.backgroundColor).toBe('rgb(255, 0, 85)');
   });
 
+  it('hides the hero when the artist turned it off, keeping the actions', async () => {
+    const original = client.fetchProfile;
+    vi.spyOn(client, 'fetchProfile').mockImplementation(async (name) => {
+      const result = await original(name);
+      return {
+        ...result,
+        data: {
+          ...result.data,
+          artist: { ...result.data.artist, showPageHero: false },
+        },
+      };
+    });
+    const { container } = await renderArtist('northern-lights');
+    expect(
+      container.querySelector('[data-testid="artist-social-header"]'),
+    ).toBeNull();
+    const actions = container.querySelector(
+      '[data-testid="artist-header-actions"]',
+    );
+    expect(actions?.querySelector('h1')?.textContent).toBe('Northern Lights');
+    expect(actions?.querySelector('button, a')).not.toBeNull();
+  });
+
   it('lays out popular tracks, related artists, releases and playlists in reference order', async () => {
     const { container } = await renderArtist('northern-lights');
     const order = [

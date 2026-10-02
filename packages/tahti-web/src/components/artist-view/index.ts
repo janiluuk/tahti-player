@@ -1,5 +1,6 @@
 export { ArtistMusicTab } from './ArtistMusicTab';
 export { ArtistNews } from './ArtistNews';
+export { ArtistPageHero } from './ArtistPageHero';
 export {
   ArtistBioSection,
   ArtistEmbeds,

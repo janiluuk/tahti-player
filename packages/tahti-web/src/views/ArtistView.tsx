@@ -45,6 +45,7 @@ import {
   artistLookSchemes,
   ArtistMusicTab,
   ArtistNews,
+  ArtistPageHero,
   ArtistPlaylistsGrid,
   ArtistPopularTracks,
   ArtistRelatedArtists,
@@ -62,10 +63,7 @@ import {
 } from '../components/ArtistGalleryPanel';
 import { ChannelDesigner } from '../components/ChannelDesigner';
 import { ChannelVisualizer } from '../components/ChannelVisualizer';
-import {
-  EntitySocialHeader,
-  type EntitySocialStat,
-} from '../components/EntitySocialHeader';
+import { type EntitySocialStat } from '../components/EntitySocialHeader';
 import { FollowListDialog } from '../components/FollowListDialog';
 import { ImageLightbox } from '../components/ImageLightbox';
 import { PageEmpty, PageLoading } from '../components/PageStates';
@@ -433,7 +431,8 @@ function ArtistProfilePage({ username }: { username: string }) {
         </Link>
       </Tooltip>
 
-      <EntitySocialHeader
+      <ArtistPageHero
+        hidden={artist.showPageHero === false}
         title={artist.displayName}
         nameplate={artist}
         imageUrl={artist.avatarUrl ?? placeholderArtworkUrl(artist.username)}
