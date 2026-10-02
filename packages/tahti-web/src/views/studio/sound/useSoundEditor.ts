@@ -21,6 +21,10 @@ import { autoTrimCuts } from '../../../lib/autoTrimCuts';
 import { playableFromStudioHearthis } from '../../../lib/embedPlayback';
 import { capitalizeGenre } from '../../../lib/genres';
 import { isPinned } from '../../../lib/pinnedTracks';
+import {
+  releaseDateFromReleasedAt,
+  releasedAtFromReleaseDate,
+} from '../../../lib/releasedAt';
 import { useMasteringFeatureStore } from '../../../plugins/mastering/store';
 import { useAuthStore } from '../../../stores/authStore';
 import { usePlayerStore } from '../../../stores/playerStore';
@@ -82,7 +86,7 @@ export function useSoundEditor(id: string) {
           (res.data.isPublic === false ? 'PRIVATE' : 'PUBLIC'),
       );
       setFanTierIds(res.data.fanTierIds ?? []);
-      setReleaseDate(res.data.releaseDate ?? '');
+      setReleaseDate(releaseDateFromReleasedAt(res.data.releasedAt));
       setDownloadsEnabled(res.data.downloadsEnabled ?? false);
       setCommentsEnabled(res.data.commentsEnabled ?? true);
     });
@@ -146,9 +150,7 @@ export function useSoundEditor(id: string) {
           isPublic: visibility === 'PUBLIC',
           visibility,
           fanTierIds,
-          ...(isAudioClip
-            ? { releaseDate: null }
-            : { releaseDate: releaseDate || null }),
+          ...(isAudioClip ? {} : releasedAtFromReleaseDate(releaseDate)),
           downloadsEnabled,
           commentsEnabled,
         },
