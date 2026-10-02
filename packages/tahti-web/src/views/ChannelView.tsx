@@ -30,6 +30,7 @@ import {
   ChannelNotFound,
   ChannelPageBackdrop,
   ChannelStagePlayer,
+  ChannelTopBar,
   heroVisualizerSettingsFor,
   renderChannelBlock,
   useChannelData,
@@ -560,6 +561,7 @@ export function ChannelView({ slug }: { slug: string }) {
       )}
 
       <div className="relative z-10 flex w-full flex-col gap-3 px-4 py-6 sm:px-6">
+        {!heroVisible && <ChannelTopBar text={channel.topBarText} />}
         <div className="flex flex-wrap items-center justify-between gap-2">
           {!editing ? (
             <Tooltip content="Back to Listen" side="right">

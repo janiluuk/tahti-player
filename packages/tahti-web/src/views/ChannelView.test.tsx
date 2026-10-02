@@ -159,6 +159,21 @@ describe('ChannelView', () => {
     expect(screen.queryByRole('button', { name: /^Follow / })).toBeNull();
   });
 
+  it("shows the artist's top bar text to a visitor", async () => {
+    const realFetchChannel = client.fetchChannel;
+    vi.spyOn(client, 'fetchChannel').mockImplementation(async (slug) => {
+      const result = await realFetchChannel(slug);
+      return {
+        ...result,
+        data: { ...result.data, topBarText: 'New album out Friday' },
+      };
+    });
+    await renderChannel('/channel/northern-lights');
+    expect(
+      (await screen.findByTestId('channel-backdrop-top-bar')).textContent,
+    ).toBe('New album out Friday');
+  });
+
   it('shows the page but not the editor to a visitor, even with ?edit', async () => {
     signInAs('someone-else');
     await renderChannel(`/channel/${SLUG}?edit=true`);
