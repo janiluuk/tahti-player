@@ -26,6 +26,7 @@ import { resolveArtworkVisualizerPreset } from '../../lib/artworkVisualizer';
 import { EMBED_PROVIDER_HEIGHT } from '../../lib/embedSrc';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { formatDuration } from '../../lib/playableToTrack';
+import { AiGeneratedBadge } from './AiGeneratedBadge';
 import { type TrackPage } from './buildTrackPage';
 import {
   formatReleasedOn,
@@ -192,6 +193,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
                   lossless
                 </span>
               ) : null}
+              <AiGeneratedBadge show={detail?.isAiGenerated} />
             </div>
 
             <div className="mt-6">
