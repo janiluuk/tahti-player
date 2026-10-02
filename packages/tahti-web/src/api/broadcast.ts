@@ -93,14 +93,41 @@ export type ChannelManageStats = {
   liveDurationSec: number | null;
 };
 
+export type BroadcastWarningLevel =
+  'none' | '45m' | '55m' | 'grace' | 'blocked';
+
 export type BroadcastUsage = {
+  tier?: string;
   unlimited: boolean;
   secondsUsed: number;
+  /** Null on unlimited tiers. */
   secondsRemaining: number | null;
+  /** The free-tier cap; still sent on unlimited tiers, so check `unlimited` first. */
   weeklyCapSeconds: number;
-  warningLevel?: string;
+  /** Extra seconds a live set may run past the cap before it is cut. */
+  graceSeconds?: number;
+  /** Crossed warning thresholds in seconds (e.g. 2700), not display text. */
+  warnings?: (number | string)[];
+  warningLevel?: BroadcastWarningLevel;
+  inGrace?: boolean;
   atCap?: boolean;
   blocked?: boolean;
+  showUpgradeCta?: boolean;
+};
+
+const MOCK_USAGE: BroadcastUsage = {
+  tier: 'FREE',
+  unlimited: false,
+  secondsUsed: 12 * 60,
+  secondsRemaining: 48 * 60,
+  weeklyCapSeconds: 60 * 60,
+  graceSeconds: 60,
+  warnings: [],
+  warningLevel: 'none',
+  inGrace: false,
+  atCap: false,
+  blocked: false,
+  showUpgradeCta: false,
 };
 
 export type RtmpTarget = {
@@ -294,15 +321,7 @@ export async function fetchBroadcastUsage(): Promise<{
 }> {
   if (isForceMock()) {
     return {
-      data: {
-        unlimited: false,
-        secondsUsed: 12 * 60,
-        secondsRemaining: 48 * 60,
-        weeklyCapSeconds: 60 * 60,
-        warningLevel: 'none',
-        atCap: false,
-        blocked: false,
-      },
+      data: MOCK_USAGE,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
@@ -313,18 +332,7 @@ export async function fetchBroadcastUsage(): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return {
-        data: {
-          unlimited: false,
-          secondsUsed: 12 * 60,
-          secondsRemaining: 48 * 60,
-          weeklyCapSeconds: 60 * 60,
-          warningLevel: 'none',
-          atCap: false,
-          blocked: false,
-        },
-        meta: failMeta(err),
-      };
+      return { data: MOCK_USAGE, meta: failMeta(err) };
     }
     return { data: null, meta: apiErrorMeta(err) };
   }
