@@ -625,7 +625,7 @@ export function ChannelView({ slug }: { slug: string }) {
           </div>
         </div>
 
-        {!heroVisible && (
+        {!heroVisible && (editing || channel.user.showPageHero !== false) && (
           <div
             onClick={() => {
               if (editing) {

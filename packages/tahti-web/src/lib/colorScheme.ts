@@ -55,7 +55,7 @@ function luminance(hex: string): number | null {
  * producing invisible text on a light background — pick based on the
  * actual bg's luminance instead.
  */
-function contrastingText(bg: string): string {
+export function contrastingText(bg: string): string {
   const l = luminance(bg);
   if (l === null) {
     return FALLBACK.text;

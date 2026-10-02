@@ -81,6 +81,30 @@ describe('ArtistView', () => {
     ).not.toBeNull();
   });
 
+  it('shows the nameplate pill next to the display name', async () => {
+    const original = client.fetchProfile;
+    vi.spyOn(client, 'fetchProfile').mockImplementation(async (name) => {
+      const result = await original(name);
+      return {
+        ...result,
+        data: {
+          ...result.data,
+          artist: {
+            ...result.data.artist,
+            nameplateText: 'Resident DJ',
+            nameplateColor: '#ff0055',
+          },
+        },
+      };
+    });
+    const { container } = await renderArtist('northern-lights');
+    const pill = container.querySelector<HTMLElement>(
+      '[data-testid="artist-social-header"] [data-testid="nameplate"]',
+    );
+    expect(pill?.textContent).toBe('Resident DJ');
+    expect(pill?.style.backgroundColor).toBe('rgb(255, 0, 85)');
+  });
+
   it('lays out popular tracks, related artists, releases and playlists in reference order', async () => {
     const { container } = await renderArtist('northern-lights');
     const order = [
