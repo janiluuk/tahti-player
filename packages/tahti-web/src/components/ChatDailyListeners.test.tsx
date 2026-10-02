@@ -30,7 +30,7 @@ describe('ChatDailyListeners', () => {
   });
 
   it('stays hidden when the artist turned the count off', async () => {
-    await renderCount({ count: 27, enabled: false });
+    await renderCount({ count: null, enabled: false });
     expect(screen.queryByTestId('chat-daily-listeners')).toBeNull();
   });
 

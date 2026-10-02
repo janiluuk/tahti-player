@@ -3,7 +3,8 @@ import { getJson } from './http';
 import { failMeta, isForceMock } from './mode';
 
 export type ChatDailyListeners = {
-  count: number;
+  /** Null when the artist hides the count. */
+  count: number | null;
   enabled: boolean;
 };
 
