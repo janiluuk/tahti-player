@@ -31,6 +31,7 @@ describe('CommentSettingsToggles', () => {
     await renderToggles({
       channelCommentsEnabled: true,
       newUploadCommentsEnabled: true,
+      newChannelCommentsEnabled: true,
     });
     const channel = vi
       .spyOn(api, 'setChannelCommentsEnabled')
@@ -55,12 +56,18 @@ describe('CommentSettingsToggles', () => {
     });
     expect(uploads).toHaveBeenCalledWith(false);
     expect(uploadSwitch.getAttribute('aria-checked')).toBe('true');
+    expect(
+      screen.queryByRole('switch', {
+        name: 'Allow comments on my channel when it is created',
+      }),
+    ).toBeNull();
   });
 
-  it('hides the channel switch without a channel', async () => {
+  it('offers the new-channel default without a channel', async () => {
     await renderToggles({
       channelCommentsEnabled: null,
       newUploadCommentsEnabled: true,
+      newChannelCommentsEnabled: true,
     });
     expect(
       screen.queryByRole('switch', { name: 'Allow comments on my channel' }),
@@ -68,5 +75,16 @@ describe('CommentSettingsToggles', () => {
     expect(
       screen.getByRole('switch', { name: 'Allow comments on my new uploads' }),
     ).toBeTruthy();
+    const save = vi
+      .spyOn(api, 'setNewChannelCommentsEnabled')
+      .mockResolvedValue({ ok: true, enabled: false });
+    const channelDefault = screen.getByRole('switch', {
+      name: 'Allow comments on my channel when it is created',
+    });
+    await act(async () => {
+      fireEvent.click(channelDefault);
+    });
+    expect(save).toHaveBeenCalledWith(false);
+    expect(channelDefault.getAttribute('aria-checked')).toBe('false');
   });
 });
