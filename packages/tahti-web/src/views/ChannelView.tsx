@@ -31,6 +31,7 @@ import {
   ChannelPageBackdrop,
   ChannelStagePlayer,
   ChannelTopBar,
+  ChannelUpcomingShows,
   heroVisualizerSettingsFor,
   renderChannelBlock,
   useChannelData,
@@ -719,6 +720,7 @@ export function ChannelView({ slug }: { slug: string }) {
             );
           })}
         </div>
+        {!editing ? <ChannelUpcomingShows slug={slug} /> : null}
         {!editing ? (
           <DiscoWidgetsSection
             widgets={discoWidgets}
