@@ -256,6 +256,8 @@ export type PublicProfileArtist = import('./profile-logo').ArtistLogoFields & {
   nameplateText?: string | null;
   /** `#RRGGBB`; null uses the page accent. */
   nameplateColor?: string | null;
+  /** False when the artist turned the profile hero off in Settings. */
+  showPageHero?: boolean;
 };
 
 export type PublicProfileTrack = {
