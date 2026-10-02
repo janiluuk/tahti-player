@@ -1,12 +1,7 @@
-export type {
-  NotificationPrefs,
-  DiscoveryPrefs,
-} from './artist-settings/prefs';
+export type { NotificationPrefs } from './artist-settings/prefs';
 export {
   fetchNotificationPrefs,
   patchNotificationPrefs,
-  fetchDiscoveryPrefs,
-  patchDiscoveryPrefs,
 } from './artist-settings/prefs';
 export type {
   GreenRoomPrefs,

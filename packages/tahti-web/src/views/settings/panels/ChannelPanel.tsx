@@ -5,21 +5,18 @@ import { toast } from 'sonner';
 import { Button, Input, Tabs } from '@tahti-player/ui';
 
 import {
-  fetchDiscoveryPrefs,
-  patchDiscoveryPrefs,
-  type DiscoveryPrefs,
-} from '../../../api/artist-settings';
-import {
   checkSlugAvailable,
   setCustomDomain,
   updateChannelSlug,
   verifyCustomDomain,
 } from '../../../api/channel-design';
+import { isForceMock } from '../../../api/mode';
 import {
   fetchMeProfile,
   patchMeProfile,
   type ProfileFields,
 } from '../../../api/studio-extras';
+import { ClientCapabilityNotice } from '../../../components/ClientCapabilityNotice';
 import { GenrePicker } from '../../../components/GenrePicker';
 import {
   formatGenreTags,
@@ -37,10 +34,10 @@ import { channelRenameNote } from './channelRenameNote';
 export function ChannelPanel() {
   const user = useAuthStore((s) => s.user);
   const channel = user?.channel;
-  const [discovery, setDiscovery] = useState<DiscoveryPrefs | null>(null);
   const [channelProfile, setChannelProfile] = useState<ProfileFields | null>(
     null,
   );
+  const [profileLoaded, setProfileLoaded] = useState(false);
   const [slug, setSlug] = useState(channel?.slug ?? '');
   const [domain, setDomain] = useState('');
   const [note, setNote] = useState<string | null>(null);
@@ -50,8 +47,10 @@ export function ChannelPanel() {
   const setShareEnabled = useChannelShareStore((state) => state.setEnabled);
 
   useEffect(() => {
-    void fetchDiscoveryPrefs().then((r) => setDiscovery(r.data));
-    void fetchMeProfile().then((r) => setChannelProfile(r.data));
+    void fetchMeProfile().then((r) => {
+      setChannelProfile(r.data);
+      setProfileLoaded(!r.meta.reason || isForceMock());
+    });
     setSlug(channel?.slug ?? user?.username ?? '');
   }, [channel?.slug, user?.username]);
 
@@ -79,7 +78,7 @@ export function ChannelPanel() {
           id: 'discovery',
           label: 'Discovery',
           icon: <Compass size={14} />,
-          content: !discovery ? (
+          content: !channelProfile ? (
             <SettingsHint>Loading…</SettingsHint>
           ) : (
             <div className="flex flex-col gap-6">
@@ -93,34 +92,6 @@ export function ChannelPanel() {
                   }
                 }}
               />
-              <SettingsToggle
-                label="List in Listen directory"
-                value={discovery.listedInDirectory}
-                onChange={(v) => {
-                  const next = { ...discovery, listedInDirectory: v };
-                  setDiscovery(next);
-                  void patchDiscoveryPrefs({ listedInDirectory: v });
-                }}
-              />
-              <SettingsToggle
-                label="Allow Tahti Radio pickup"
-                value={discovery.allowRadioPickup}
-                onChange={(v) => {
-                  const next = { ...discovery, allowRadioPickup: v };
-                  setDiscovery(next);
-                  void patchDiscoveryPrefs({ allowRadioPickup: v });
-                }}
-              />
-              <SettingsToggle
-                label="Featured on Listen home"
-                description="Subject to editorial / algorithmic placement."
-                value={discovery.showOnListenHome}
-                onChange={(v) => {
-                  const next = { ...discovery, showOnListenHome: v };
-                  setDiscovery(next);
-                  void patchDiscoveryPrefs({ showOnListenHome: v });
-                }}
-              />
               <label className="flex flex-col gap-2">
                 <span className="text-foreground text-sm font-semibold">
                   Genres
@@ -130,43 +101,81 @@ export function ChannelPanel() {
                 </span>
                 <GenrePicker
                   value={normalizeGenresForPicker(
-                    parseGenreTags(discovery.genreTags),
+                    parseGenreTags(channelProfile.socialLinks?.genres),
                   )}
                   onChange={(genres) => {
-                    const genreTags = formatGenreTags(genres);
-                    setDiscovery({ ...discovery, genreTags });
-                    void patchDiscoveryPrefs({ genreTags });
+                    // socialLinks is replaced wholesale on save, so a profile
+                    // that failed to load must not be written back.
+                    if (!profileLoaded) {
+                      toast.error('Could not load your profile. Try again.');
+                      return;
+                    }
+                    const previous = channelProfile;
+                    const socialLinks = {
+                      ...(previous.socialLinks ?? {}),
+                      genres: formatGenreTags(genres),
+                    };
+                    setChannelProfile({ ...previous, socialLinks });
+                    void patchMeProfile({ socialLinks }).then((result) => {
+                      if (!result.ok) {
+                        setChannelProfile(previous);
+                        toast.error(result.error);
+                        return;
+                      }
+                      setChannelProfile(result.data);
+                    });
                   }}
                 />
               </label>
-              {channelProfile && (
+              <div className="flex flex-col gap-4">
                 <SettingsToggle
-                  label="Enable live chat on my channel"
-                  description="Allow listeners to chat while you are broadcasting."
-                  value={channelProfile.chatEnabled}
-                  onChange={(value) => {
-                    const previous = channelProfile.chatEnabled;
-                    setChannelProfile({
-                      ...channelProfile,
-                      chatEnabled: value,
-                    });
-                    void patchMeProfile({ chatEnabled: value }).then(
-                      (result) => {
-                        if (!result.ok) {
-                          setChannelProfile({
-                            ...channelProfile,
-                            chatEnabled: previous,
-                          });
-                          toast.error(result.error);
-                          return;
-                        }
-                        setChannelProfile(result.data);
-                        toast.success('Channel chat setting saved.');
-                      },
-                    );
-                  }}
+                  label="List in Listen directory"
+                  description="Channels with public tracks are listed."
+                  value
+                  onChange={() => undefined}
+                  disabled
                 />
-              )}
+                <SettingsToggle
+                  label="Allow Tahti Radio pickup"
+                  value={false}
+                  onChange={() => undefined}
+                  disabled
+                />
+                <SettingsToggle
+                  label="Featured on Listen home"
+                  description="Subject to editorial / algorithmic placement."
+                  value={false}
+                  onChange={() => undefined}
+                  disabled
+                />
+                <ClientCapabilityNotice kind="coming-soon">
+                  You can&apos;t change these discovery settings yet.
+                </ClientCapabilityNotice>
+              </div>
+              <SettingsToggle
+                label="Enable live chat on my channel"
+                description="Allow listeners to chat while you are broadcasting."
+                value={channelProfile.chatEnabled}
+                onChange={(value) => {
+                  const previous = channelProfile.chatEnabled;
+                  setChannelProfile({
+                    ...channelProfile,
+                    chatEnabled: value,
+                  });
+                  void patchMeProfile({ chatEnabled: value }).then((result) => {
+                    if (!result.ok) {
+                      setChannelProfile({
+                        ...channelProfile,
+                        chatEnabled: previous,
+                      });
+                      toast.error(result.error);
+                      return;
+                    }
+                    setChannelProfile(result.data);
+                    toast.success('Channel chat setting saved.');
+                  });
+                }}
+              />
             </div>
           ),
         },

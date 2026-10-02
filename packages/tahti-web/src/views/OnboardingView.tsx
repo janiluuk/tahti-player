@@ -25,14 +25,12 @@ import {
   type SelectableTile,
 } from '@tahti-player/ui';
 
-import {
-  fetchDiscoveryPrefs,
-  patchDiscoveryPrefs,
-  uploadProfileAvatar,
-} from '../api/artist-settings';
+import { uploadProfileAvatar } from '../api/artist-settings';
 import { checkSlugAvailable, updateChannelSlug } from '../api/channel-design';
 import { provisionChannel } from '../api/channel-provision';
+import { isForceMock } from '../api/mode';
 import { fetchMeProfile, patchMeProfile } from '../api/studio-extras';
+import { ClientCapabilityNotice } from '../components/ClientCapabilityNotice';
 import { GenrePicker } from '../components/GenrePicker';
 import { PageLoading } from '../components/PageStates';
 import { RoundImageUploadButton } from '../components/RoundImageUploadButton';
@@ -107,37 +105,40 @@ export function OnboardingView() {
   const [slugStatus, setSlugStatus] = useState<SlugStatus>('idle');
 
   const [genres, setGenres] = useState<string[]>([]);
+  const [socialLinks, setSocialLinks] = useState<Record<string, string> | null>(
+    null,
+  );
 
   const [showFollowers, setShowFollowers] = useState(true);
   const [showFollowing, setShowFollowing] = useState(true);
-  const [showFavorites, setShowFavorites] = useState(true);
-  const [announceReleases, setAnnounceReleases] = useState(true);
 
   useEffect(() => {
     if (!user) {
       return;
     }
-    void Promise.all([fetchMeProfile(), fetchDiscoveryPrefs()]).then(
-      ([profile, discovery]) => {
-        setDisplayName(profile.data.displayName || user.displayName || '');
-        setBio(profile.data.bio ?? '');
-        setAvatarUrl(profile.data.avatarUrl ?? user.avatarUrl ?? null);
-        setArtistKind(
-          takePendingArtistKind() ?? profile.data.artistKind ?? 'SINGLE',
-        );
-        setCountryCode(profile.data.countryCode ?? '');
-        setDefaultLocation(profile.data.defaultLocation ?? '');
-        setShowFollowers(profile.data.showFollowers ?? true);
-        setShowFollowing(profile.data.showFollowing ?? true);
-        setSlug(user.channel?.slug ?? user.username);
-        setGenres(
-          normalizeGenresForPicker(parseGenreTags(discovery.data.genreTags)),
-        );
-        setShowFavorites(discovery.data.showFavorites ?? true);
-        setAnnounceReleases(discovery.data.announceReleases ?? true);
-        setLoading(false);
-      },
-    );
+    void fetchMeProfile().then((profile) => {
+      setDisplayName(profile.data.displayName || user.displayName || '');
+      setBio(profile.data.bio ?? '');
+      setAvatarUrl(profile.data.avatarUrl ?? user.avatarUrl ?? null);
+      setArtistKind(
+        takePendingArtistKind() ?? profile.data.artistKind ?? 'SINGLE',
+      );
+      setCountryCode(profile.data.countryCode ?? '');
+      setDefaultLocation(profile.data.defaultLocation ?? '');
+      setShowFollowers(profile.data.showFollowers ?? true);
+      setShowFollowing(profile.data.showFollowing ?? true);
+      setSlug(user.channel?.slug ?? user.username);
+      // socialLinks is replaced wholesale on save, so a profile that failed
+      // to load must not be written back over the stored links.
+      const loaded = !profile.meta.reason || isForceMock();
+      setSocialLinks(loaded ? (profile.data.socialLinks ?? {}) : null);
+      setGenres(
+        normalizeGenresForPicker(
+          parseGenreTags(profile.data.socialLinks?.genres),
+        ),
+      );
+      setLoading(false);
+    });
   }, [user]);
 
   const slugChanged = slug.trim() !== (user?.channel?.slug ?? user?.username);
@@ -204,19 +205,12 @@ export function OnboardingView() {
         defaultLocation: defaultLocation.trim() || null,
         showFollowers,
         showFollowing,
+        ...(socialLinks
+          ? { socialLinks: { ...socialLinks, genres: formatGenreTags(genres) } }
+          : {}),
       });
       if (!profileResult.ok) {
         toast.error(profileResult.error || 'Could not save your profile.');
-      }
-      const discoveryResult = await patchDiscoveryPrefs({
-        genreTags: formatGenreTags(genres),
-        showFavorites,
-        announceReleases,
-      });
-      if (!discoveryResult.ok) {
-        toast.error(
-          discoveryResult.error || 'Could not save your preferences.',
-        );
       }
       await refresh();
       markOnboardingSeen(user.id);
@@ -454,21 +448,22 @@ export function OnboardingView() {
                         [
                           'Show favourites',
                           'Your favourited tracks and channels are visible on your public profile.',
-                          showFavorites,
-                          setShowFavorites,
+                          false,
+                          undefined,
                         ],
                         [
                           'Announce releases',
                           'Followers get a notification (and optional email) when you publish a release.',
-                          announceReleases,
-                          setAnnounceReleases,
+                          false,
+                          undefined,
                         ],
                       ] as const
                     ).map(([label, hint, checked, setter]) => (
                       <div key={label} className="flex items-start gap-3">
                         <Toggle
                           checked={checked}
-                          onChange={setter}
+                          onChange={setter ?? (() => undefined)}
+                          disabled={!setter}
                           aria-label={label}
                         />
                         <div>
@@ -479,6 +474,10 @@ export function OnboardingView() {
                         </div>
                       </div>
                     ))}
+                    <ClientCapabilityNotice kind="coming-soon">
+                      Showing favourites and announcing releases aren&apos;t
+                      available yet.
+                    </ClientCapabilityNotice>
                   </div>
                 ),
               },

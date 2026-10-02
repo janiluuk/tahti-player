@@ -4,7 +4,7 @@ import {
   type ChatBan,
   type ModeratorRow,
 } from './moderation';
-import { type DiscoveryPrefs, type NotificationPrefs } from './prefs';
+import { type NotificationPrefs } from './prefs';
 import { type PressKitMeta } from './press-kit';
 import { type SocialConnections } from './social';
 
@@ -13,15 +13,6 @@ export let mockNotifications: NotificationPrefs = {
   notifyMoneyMovesInApp: true,
   notifyListenerActivityEmail: true,
   notifyWeeklyRecapEmail: true,
-};
-
-export let mockDiscovery: DiscoveryPrefs = {
-  listedInDirectory: true,
-  allowRadioPickup: true,
-  showOnListenHome: true,
-  genreTags: 'ambient, live',
-  showFavorites: true,
-  announceReleases: true,
 };
 
 export let mockGreenRoom: GreenRoomPrefs = {
@@ -90,10 +81,6 @@ export let mockPress: PressKitMeta = {
 
 export function setMockNotifications(next: typeof mockNotifications): void {
   mockNotifications = next;
-}
-
-export function setMockDiscovery(next: typeof mockDiscovery): void {
-  mockDiscovery = next;
 }
 
 export function setMockGreenRoom(next: typeof mockGreenRoom): void {
