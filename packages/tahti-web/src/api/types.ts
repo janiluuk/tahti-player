@@ -126,6 +126,8 @@ export type PublicChannel = {
     displayName: string;
     bio: string | null;
     avatarUrl: string | null;
+    /** False hides the header card (avatar, name, stats) on the channel page. */
+    showPageHero?: boolean;
   };
   nowPlaying: ChannelNowPlaying | null;
   /** Public follower count for the channel's Stats block — sourced from the
@@ -250,6 +252,10 @@ export type PublicProfileArtist = import('./profile-logo').ArtistLogoFields & {
   followingCount?: number | null;
   freeSubscriptionsEnabled?: boolean;
   socialLinks?: Record<string, string> | null;
+  /** Short label shown as a coloured pill beside the display name. */
+  nameplateText?: string | null;
+  /** `#RRGGBB`; null uses the page accent. */
+  nameplateColor?: string | null;
 };
 
 export type PublicProfileTrack = {

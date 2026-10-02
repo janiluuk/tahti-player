@@ -49,6 +49,7 @@ import { useAuthStore } from '../../../stores/authStore';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import { StudioBrandingPanel } from '../../studio/StudioBrandingView';
 import { ChannelMembersEditor } from '../ChannelMembersEditor';
+import { NameplateFields, nameplatePatch } from '../NameplateFields';
 import { NewsFeedUrlField } from '../NewsFeedUrlField';
 import { SettingsHint } from '../SettingsFields';
 import { SocialAutoPost } from '../SocialAutoPost';
@@ -185,19 +186,20 @@ export function ArtistPanel() {
       return;
     }
     setBusy(true);
-    void patchMeProfile(buildArtistInfoPatch(profile, artistRoles)).then(
-      (result) => {
-        setBusy(false);
-        setMsg(result.ok ? 'Artist info saved.' : result.error);
-        if (result.ok) {
-          setProfile(result.data);
-          void refreshAuth();
-          toast.success('Artist info saved.');
-        } else {
-          toast.error(result.error);
-        }
-      },
-    );
+    void patchMeProfile({
+      ...buildArtistInfoPatch(profile, artistRoles),
+      ...nameplatePatch(profile),
+    }).then((result) => {
+      setBusy(false);
+      setMsg(result.ok ? 'Artist info saved.' : result.error);
+      if (result.ok) {
+        setProfile(result.data);
+        void refreshAuth();
+        toast.success('Artist info saved.');
+      } else {
+        toast.error(result.error);
+      }
+    });
   };
 
   if (!user) {
@@ -253,6 +255,7 @@ export function ArtistPanel() {
                   setProfile({ ...profile, displayName: e.target.value })
                 }
               />
+              <NameplateFields profile={profile} setProfile={setProfile} />
               <div className="flex flex-col gap-2">
                 <div>
                   <p className="text-foreground text-sm font-semibold">

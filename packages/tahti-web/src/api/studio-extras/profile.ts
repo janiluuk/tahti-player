@@ -37,6 +37,10 @@ export type ProfileFields = {
   logoUrl?: string | null;
   logoPlacement?: LogoPlacement | null;
   newsFeedUrl?: string | null;
+  nameplateText?: string | null;
+  nameplateColor?: string | null;
+  /** Shows the header card (avatar, name, stats) on the channel page. */
+  showPageHero?: boolean;
 };
 
 export let mockProfile: ProfileFields = {
@@ -125,6 +129,9 @@ export type ProfilePatch = Partial<
     | 'showFollowing'
     | 'showDailyListeners'
     | 'socialLinks'
+    | 'nameplateText'
+    | 'nameplateColor'
+    | 'showPageHero'
   > &
     Record<NonNullableProfileField, string>
 >;

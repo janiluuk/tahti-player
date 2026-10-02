@@ -20,6 +20,7 @@ import {
   type LooseColorScheme,
 } from '../lib/colorScheme';
 import { ChannelVisualizer } from './ChannelVisualizer';
+import { Nameplate } from './Nameplate';
 
 const VIDEO_BACKDROP_PATTERN = /\.(mp4|webm)(\?|$)/i;
 
@@ -49,6 +50,11 @@ export type EntitySocialStat = {
 
 export type EntitySocialHeaderProps = {
   title: string;
+  /** Coloured pill beside the title (artist profile nameplate). */
+  nameplate?: {
+    nameplateText?: string | null;
+    nameplateColor?: string | null;
+  } | null;
   /** Square cover / avatar shown beside the title. */
   imageUrl?: string | null;
   imageAlt?: string;
@@ -102,6 +108,7 @@ export type EntitySocialHeaderProps = {
  */
 export function EntitySocialHeader({
   title,
+  nameplate,
   imageUrl,
   imageAlt = '',
   roundImage = false,
@@ -336,9 +343,16 @@ export function EntitySocialHeader({
           ) : null}
         </div>
         <div className="flex min-w-0 flex-1 flex-col gap-1">
-          <h1 className="font-heading text-3xl font-extrabold tracking-tight">
-            {title}
-          </h1>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <h1 className="font-heading text-3xl font-extrabold tracking-tight">
+              {title}
+            </h1>
+            <Nameplate
+              text={nameplate?.nameplateText}
+              color={nameplate?.nameplateColor}
+              fallbackColor={scheme?.accent}
+            />
+          </div>
           {location ? (
             <span
               className={cn(

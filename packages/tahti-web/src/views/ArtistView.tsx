@@ -435,8 +435,8 @@ function ArtistProfilePage({ username }: { username: string }) {
 
       <EntitySocialHeader
         title={artist.displayName}
+        nameplate={artist}
         imageUrl={artist.avatarUrl ?? placeholderArtworkUrl(artist.username)}
-        imageAlt=""
         roundImage
         location={countryName(artist.countryCode) || null}
         colorScheme={headerScheme}
