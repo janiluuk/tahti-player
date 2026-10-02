@@ -343,6 +343,7 @@ const SOUND_DOWNLOAD_SOURCE_FORMAT = 'source';
 export async function fetchPublicSoundDownload(
   channelSlug: string,
   itemId: string,
+  shareKey?: string,
 ): Promise<
   { ok: true; url: string; filename?: string } | { ok: false; error: string }
 > {
@@ -365,7 +366,7 @@ export async function fetchPublicSoundDownload(
       try {
         const query = format ? `?fp=${fp}&format=${format}` : `?fp=${fp}`;
         const { data } = await requestJson<{ url?: string; filename?: string }>(
-          `${path}${query}`,
+          withShareKey(`${path}${query}`, shareKey),
         );
         if (data.url) {
           return { ok: true, url: data.url, filename: data.filename };
