@@ -23,9 +23,18 @@ import { createDefaultEditList } from '../../api/studio-types';
 import { autoTrimCuts } from '../../lib/autoTrimCuts';
 import { playableFromStudioHearthis } from '../../lib/embedPlayback';
 import { capitalizeGenre } from '../../lib/genres';
+import {
+  releaseDateFromReleasedAt,
+  releasedAtFromReleaseDate,
+} from '../../lib/releasedAt';
 import { useMasteringFeatureStore } from '../../plugins/mastering/store';
 import { useAuthStore } from '../../stores/authStore';
 import { usePlayerStore } from '../../stores/playerStore';
+
+/** The date input edits a `YYYY-MM-DD` string; `releasedAt` is derived on save. */
+type TrackEditForm = Omit<StudioSoundPatch, 'releasedAt'> & {
+  releaseDate?: string;
+};
 
 export type Tab =
   'basics' | 'tracklist' | 'audio' | 'sharing' | 'export' | 'advanced';
@@ -57,7 +66,7 @@ export function useTrackEditDialog(
   const isOpen = Boolean(soundId);
   const [tab, setTab] = useState<Tab>('basics');
   const [item, setItem] = useState<StudioSound | null>(null);
-  const [form, setForm] = useState<StudioSoundPatch>({});
+  const [form, setForm] = useState<TrackEditForm>({});
   const [purchaseTierId, setPurchaseTierId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -127,7 +136,7 @@ export function useTrackEditDialog(
           visibility:
             res.data.visibility ??
             (res.data.isPublic === false ? 'PRIVATE' : 'PUBLIC'),
-          releaseDate: res.data.releaseDate ?? '',
+          releaseDate: releaseDateFromReleasedAt(res.data.releasedAt),
           downloadsEnabled: res.data.downloadsEnabled ?? false,
           followToDownload: res.data.followToDownload ?? false,
           repostToDownload: res.data.repostToDownload ?? false,
@@ -329,7 +338,7 @@ export function useTrackEditDialog(
       return;
     }
     setSaving(true);
-    const { license, ...metadata } = form;
+    const { license, releaseDate, ...metadata } = form;
     const trimmedCredits = (form.credits ?? [])
       .map((credit) => {
         const handle = credit.artistUsername
@@ -353,7 +362,7 @@ export function useTrackEditDialog(
       credits: trimmedCredits,
       genre: form.genre?.trim() || null,
       isPublic: form.visibility === 'PUBLIC',
-      releaseDate: form.releaseDate || null,
+      ...releasedAtFromReleaseDate(releaseDate),
     });
     setSaving(false);
     if (!result.ok) {
@@ -387,7 +396,7 @@ export function useTrackEditDialog(
       visibility:
         result.data.visibility ??
         (result.data.isPublic === false ? 'PRIVATE' : 'PUBLIC'),
-      releaseDate: result.data.releaseDate ?? '',
+      releaseDate: releaseDateFromReleasedAt(result.data.releasedAt),
       downloadsEnabled: result.data.downloadsEnabled ?? false,
       followToDownload: result.data.followToDownload ?? false,
       repostToDownload: result.data.repostToDownload ?? false,

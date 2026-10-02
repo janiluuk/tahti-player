@@ -3,6 +3,7 @@ import { ListMusicIcon } from 'lucide-react';
 import { Button, Select } from '@tahti-player/ui';
 
 import type { StudioSound } from '../../api/studio-types';
+import { releaseDateFromReleasedAt } from '../../lib/releasedAt';
 import { MusicBrainzSubmissionAssistant } from '../MusicBrainzSubmissionAssistant';
 import { TrackCreditsEditor } from '../TrackCreditsEditor';
 import { HearthisExportSection } from './HearthisExportSection';
@@ -82,7 +83,7 @@ export function AdvancedTab({
           mode="track"
           title={item.title}
           artistName={item.artistName ?? ''}
-          releaseDate={item.releaseDate}
+          releaseDate={releaseDateFromReleasedAt(item.releasedAt) || null}
         />
       ) : null}
       <TrackCreditsEditor

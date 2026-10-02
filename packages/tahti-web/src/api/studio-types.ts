@@ -41,7 +41,7 @@ export type StudioSound = {
    * of the general `patchStudioSound` body. */
   accessMode?: 'FREE' | 'SUBSCRIBERS_ONLY' | 'PURCHASE';
   purchaseTierId?: string | null;
-  releaseDate?: string | null;
+  releasedAt?: string | null;
   pinnedAt?: string | null;
   effectiveBpm?: number | null;
   effectiveKey?: string | null;
@@ -99,7 +99,8 @@ export type StudioSoundPatch = {
   repostToDownload?: boolean;
   visibility?: 'PUBLIC' | 'UNLISTED' | 'PRIVATE' | 'STASH';
   fanTierIds?: string[];
-  releaseDate?: string | null;
+  /** ISO datetime; the API rejects null, so omit it to keep the stored date. */
+  releasedAt?: string;
   pinned?: boolean;
   bannerUrl?: string | null;
   backgroundUrl?: string | null;
