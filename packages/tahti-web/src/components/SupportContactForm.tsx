@@ -12,7 +12,11 @@ const CATEGORIES: Array<{ value: SupportTicketCategory; label: string }> = [
   { value: 'OTHER', label: 'Other' },
 ];
 
-export function SupportContactForm() {
+export function SupportContactForm({
+  onSubmitted,
+}: {
+  onSubmitted?: () => void;
+} = {}) {
   const email = useAuthStore((s) => s.user?.email);
   const [contactEmail, setContactEmail] = useState('');
   const [category, setCategory] = useState<SupportTicketCategory>('OTHER');
@@ -29,6 +33,7 @@ export function SupportContactForm() {
         <p className="text-foreground-secondary mt-1">
           Expect a reply within two business days for engagement and billing
           questions.
+          {email ? ' Replies show up under Your requests.' : null}
         </p>
       </div>
     );
@@ -53,6 +58,7 @@ export function SupportContactForm() {
             return;
           }
           setTicketId(result.ticketId);
+          onSubmitted?.();
         });
       }}
     >

@@ -31,7 +31,7 @@ import {
 import { HelpKeyboardShortcuts } from '../components/HelpKeyboardShortcuts';
 import { HelpLinkCard } from '../components/HelpLinkCard';
 import { PageFrame, PageHeader } from '../components/PageHeader';
-import { SupportContactForm } from '../components/SupportContactForm';
+import { SupportCenter } from '../components/SupportCenter';
 import { SERVICE_DOCUMENTS } from '../content/documentLinks';
 import {
   getHelpArticle,
@@ -547,7 +547,7 @@ export function HelpArticleView({ slug }: { slug: string }) {
 
           {slug === 'support' && (
             <div className="mt-6">
-              <SupportContactForm />
+              <SupportCenter />
             </div>
           )}
 
