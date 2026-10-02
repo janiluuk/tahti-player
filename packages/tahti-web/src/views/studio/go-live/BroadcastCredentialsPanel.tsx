@@ -48,7 +48,6 @@ export function BroadcastCredentialsPanel({ state }: { state: GoLiveState }) {
     setCredentialsExpanded,
     ingest,
     setIngest,
-    displayName,
     slug,
   } = state;
 
@@ -200,12 +199,7 @@ export function BroadcastCredentialsPanel({ state }: { state: GoLiveState }) {
           {ingest === 'obs' && settings && slug ? (
             <div className="border-border bg-background-secondary/40 mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border p-3">
               <p className="text-sm font-semibold">Ready-made OBS setup</p>
-              <ObsPresetButton
-                channelName={displayName}
-                channelSlug={slug}
-                server={settings.rtmp.server}
-                streamKey={settings.rtmp.streamKey}
-              />
+              <ObsPresetButton />
             </div>
           ) : null}
         </>
