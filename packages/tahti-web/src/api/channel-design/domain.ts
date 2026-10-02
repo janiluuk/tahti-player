@@ -22,21 +22,48 @@ export async function checkSlugAvailable(
   }
 }
 
+/** Mirrors `ChannelSlugUpdateResponseSchema` in `@tahti/shared`. */
+type ChannelSlugUpdateResponse = {
+  slug: string;
+  rtmpStreamKey: string;
+  previousSlugRedirectExpiresAt: string | null;
+};
+
+export type ChannelSlugRenamed = {
+  ok: true;
+  slug: string;
+  /** The API mints a new RTMP stream key on every rename. */
+  rtmpStreamKey: string | null;
+  previousSlugRedirectExpiresAt: string | null;
+};
+
 export async function updateChannelSlug(
   slug: string,
-): Promise<{ ok: true; slug: string } | { ok: false; error: string }> {
+): Promise<ChannelSlugRenamed | { ok: false; error: string }> {
   if (isForceMock()) {
     if (slug.length < 3) {
       return { ok: false, error: 'Slug too short' };
     }
-    return { ok: true, slug };
+    return {
+      ok: true,
+      slug,
+      rtmpStreamKey: `${slug}__mock`,
+      previousSlugRedirectExpiresAt: new Date(
+        Date.now() + 90 * 24 * 60 * 60 * 1000,
+      ).toISOString(),
+    };
   }
   try {
-    const { data } = await requestJson<{ slug?: string; username?: string }>(
+    const { data } = await requestJson<Partial<ChannelSlugUpdateResponse>>(
       '/api/me/channel/slug',
       { method: 'PATCH', body: JSON.stringify({ slug }) },
     );
-    return { ok: true, slug: data.slug ?? slug };
+    return {
+      ok: true,
+      slug: data.slug ?? slug,
+      rtmpStreamKey: data.rtmpStreamKey ?? null,
+      previousSlugRedirectExpiresAt: data.previousSlugRedirectExpiresAt ?? null,
+    };
   } catch (err) {
     return {
       ok: false,
