@@ -983,36 +983,7 @@ export * from './membership';
 
 export * from './governance-member';
 
-export type SupportTicketCategory =
-  'ENGAGEMENT_DISPUTE' | 'TECHNICAL' | 'FINANCIAL' | 'OTHER';
-
-export type SupportTicketInput = {
-  subject: string;
-  message: string;
-  category: SupportTicketCategory;
-  /** Required when not signed in. */
-  contactEmail?: string;
-};
-
-export async function submitSupportTicket(
-  input: SupportTicketInput,
-): Promise<{ ok: true; ticketId: string } | { ok: false; error: string }> {
-  if (isForceMock()) {
-    return { ok: true, ticketId: `mock-ticket-${Date.now()}` };
-  }
-  try {
-    const { data } = await requestJson<{ ok: true; ticketId: string }>(
-      '/api/support/contact',
-      { method: 'POST', body: JSON.stringify(input) },
-    );
-    return data;
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Could not send your message',
-    };
-  }
-}
+export * from './support';
 
 let mockFeatureRequests: FeatureRequest[] = [
   {
