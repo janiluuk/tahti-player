@@ -106,28 +106,31 @@ export async function fetchMeProfile(): Promise<{
   }
 }
 
+/** Only fields with a nullable API schema accept `null`; send '' to clear the others. */
+type NonNullableProfileField = 'bio' | 'tipJarUrl' | 'newsFeedUrl';
+
+export type ProfilePatch = Partial<
+  Pick<
+    ProfileFields,
+    | 'displayName'
+    | 'fullBio'
+    | 'pronouns'
+    | 'chatEnabled'
+    | 'freeSubscriptionsEnabled'
+    | 'artistKind'
+    | 'countryCode'
+    | 'defaultLocation'
+    | 'showJoinDate'
+    | 'showFollowers'
+    | 'showFollowing'
+    | 'showDailyListeners'
+    | 'socialLinks'
+  > &
+    Record<NonNullableProfileField, string>
+>;
+
 export async function patchMeProfile(
-  patch: Partial<
-    Pick<
-      ProfileFields,
-      | 'displayName'
-      | 'bio'
-      | 'fullBio'
-      | 'tipJarUrl'
-      | 'pronouns'
-      | 'chatEnabled'
-      | 'freeSubscriptionsEnabled'
-      | 'artistKind'
-      | 'countryCode'
-      | 'defaultLocation'
-      | 'showJoinDate'
-      | 'showFollowers'
-      | 'showFollowing'
-      | 'showDailyListeners'
-      | 'socialLinks'
-      | 'newsFeedUrl'
-    >
-  >,
+  patch: ProfilePatch,
 ): Promise<{ ok: true; data: ProfileFields } | { ok: false; error: string }> {
   if (isForceMock()) {
     mockProfile = { ...mockProfile, ...patch };
