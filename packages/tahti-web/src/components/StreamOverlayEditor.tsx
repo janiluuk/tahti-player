@@ -8,6 +8,7 @@ import {
   FilePicker,
   Input,
   SaveButton,
+  Select,
   Toggle,
   Tooltip,
 } from '@tahti-player/ui';
@@ -17,14 +18,25 @@ import {
   fetchStreamOverlay,
   patchStreamOverlay,
 } from '../api/broadcast';
+import {
+  STORED_VISUAL_PRESET_LABELS,
+  STORED_VISUAL_PRESETS,
+  type StoredVisualPreset,
+} from '../api/channel-design/presets';
 import { fetchChannel } from '../api/client';
 import { fetchMeProfile } from '../api/studio-extras';
 import { uploadUserMediaFile } from '../api/user-media';
 import { useAuthStore } from '../stores/authStore';
+import { BackdropUploadButton } from './BackdropUploadButton';
 import { HelpLayer } from './HelpLayer';
 import { ImageSlotDeleteBadge } from './imageSlot/ImageSlotDeleteBadge';
 import { ImageSlotPreviewDialog } from './imageSlot/ImageSlotPreviewDialog';
 import { useImageSlotChrome } from './imageSlot/useImageSlotChrome';
+
+const VISUAL_PRESET_OPTIONS = STORED_VISUAL_PRESETS.map((id) => ({
+  id,
+  label: STORED_VISUAL_PRESET_LABELS[id],
+}));
 
 /** The composited 1280×720 video frame's text placement (see
  * buildRtmpMirrorOutput in the sibling orchestrator) — title near the
@@ -84,6 +96,8 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
     streamOverlayTextColor: '',
     streamOverlayScrimEnabled: false,
     streamOverlayCoverUrl: '',
+    streamOverlayBackdropUrl: '',
+    streamOverlayVisualPreset: 'MINIMAL' as StoredVisualPreset,
   });
   const [saving, setSaving] = useState(false);
   const [coverUploadOpen, setCoverUploadOpen] = useState(false);
@@ -123,6 +137,10 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
           streamOverlayScrimEnabled:
             overlayResult.data.streamOverlayScrimEnabled,
           streamOverlayCoverUrl: overlayResult.data.streamOverlayCoverUrl ?? '',
+          streamOverlayBackdropUrl:
+            overlayResult.data.streamOverlayBackdropUrl ?? '',
+          streamOverlayVisualPreset:
+            overlayResult.data.streamOverlayVisualPreset ?? 'MINIMAL',
         });
         setAvatarUrl(profileResult.data.avatarUrl ?? null);
         setNowPlayingArtworkUrl(
@@ -142,6 +160,8 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
       streamOverlayTextColor: overlay.streamOverlayTextColor.trim(),
       streamOverlayScrimEnabled: overlay.streamOverlayScrimEnabled,
       streamOverlayCoverUrl: overlay.streamOverlayCoverUrl.trim(),
+      streamOverlayBackdropUrl: overlay.streamOverlayBackdropUrl.trim(),
+      streamOverlayVisualPreset: overlay.streamOverlayVisualPreset,
     }).then((result) => {
       setSaving(false);
       if (!result.ok) {
@@ -308,6 +328,33 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
           />
         </div>
       </Dialog.Root>
+
+      <div className="flex flex-col gap-1.5">
+        <p className="text-sm font-medium">Overlay backdrop</p>
+        <BackdropUploadButton
+          label="Overlay backdrop"
+          value={overlay.streamOverlayBackdropUrl}
+          onChange={(url) =>
+            setOverlay((current) => ({
+              ...current,
+              streamOverlayBackdropUrl: url,
+            }))
+          }
+          className="max-w-xs"
+        />
+      </div>
+
+      <Select
+        label="Overlay visualizer"
+        value={overlay.streamOverlayVisualPreset}
+        onValueChange={(value) =>
+          setOverlay((current) => ({
+            ...current,
+            streamOverlayVisualPreset: value as StoredVisualPreset,
+          }))
+        }
+        options={VISUAL_PRESET_OPTIONS}
+      />
 
       <div className="flex items-center justify-between gap-3">
         <div>

@@ -22,6 +22,40 @@ export type VisualPreset = (typeof VISUAL_PRESETS)[number];
 export const isVisualPreset = (value: string): value is VisualPreset =>
   (VISUAL_PRESETS as readonly string[]).includes(value);
 
+/** The Prisma `VisualPreset` enum (shared `VISUAL_PRESETS`) — the only
+ * values columns like `Channel.streamOverlayVisualPreset` accept. The
+ * client list above also carries background-widget ids the API stores as
+ * free strings elsewhere, which this enum rejects. */
+export const STORED_VISUAL_PRESETS = [
+  'MINIMAL',
+  'WATER_RIPPLE',
+  'WAVEFORM_BARS',
+  'PARTICLE_FIELD',
+  'AURORA',
+  'REACTIVE_GRID',
+  'CLOUDSCAPE',
+  'LINE_TANGLE',
+  'BACKDROP_BOX',
+  'LENS_FLARES',
+  'IES_SPOTLIGHT',
+] as const satisfies readonly VisualPreset[];
+
+export type StoredVisualPreset = (typeof STORED_VISUAL_PRESETS)[number];
+
+export const STORED_VISUAL_PRESET_LABELS: Record<StoredVisualPreset, string> = {
+  MINIMAL: 'None',
+  WATER_RIPPLE: 'Water ripple',
+  WAVEFORM_BARS: 'Waveform bars',
+  PARTICLE_FIELD: 'Particle field',
+  AURORA: 'Aurora',
+  REACTIVE_GRID: 'Reactive grid',
+  CLOUDSCAPE: 'Cloudscape',
+  LINE_TANGLE: 'Line tangle',
+  BACKDROP_BOX: 'Backdrop box',
+  LENS_FLARES: 'Lens flares',
+  IES_SPOTLIGHT: 'Spotlight',
+};
+
 export const PUBLIC_FALLBACK_VISUAL_PRESET: VisualPreset = 'AURORA';
 
 export function resolvePublicVisualizerPreset(
