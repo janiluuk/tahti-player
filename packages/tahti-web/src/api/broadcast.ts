@@ -1,4 +1,5 @@
 import type { MulticastProviderId } from '../plugins/multicast';
+import type { StoredVisualPreset } from './channel-design/presets';
 import type { FetchMeta } from './client';
 import { DEMO_MP3 } from './mock';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
@@ -634,16 +635,22 @@ export type StreamOverlay = {
    * (video.add_rectangle) — improves legibility over busy cover art. */
   streamOverlayScrimEnabled: boolean;
   streamOverlayCoverUrl: string | null;
+  streamOverlayBackdropUrl: string | null;
+  streamOverlayVisualPreset: StoredVisualPreset;
 };
 
-let mockStreamOverlay: StreamOverlay = {
+const EMPTY_STREAM_OVERLAY: StreamOverlay = {
   streamOverlayTitle: null,
   streamOverlaySubtitle: null,
   streamOverlayShowTitle: false,
   streamOverlayTextColor: null,
   streamOverlayScrimEnabled: false,
   streamOverlayCoverUrl: null,
+  streamOverlayBackdropUrl: null,
+  streamOverlayVisualPreset: 'MINIMAL',
 };
+
+let mockStreamOverlay: StreamOverlay = { ...EMPTY_STREAM_OVERLAY };
 
 export async function fetchStreamOverlay(): Promise<{
   data: StreamOverlay;
@@ -664,17 +671,7 @@ export async function fetchStreamOverlay(): Promise<{
     if (allowMockFallback()) {
       return { data: { ...mockStreamOverlay }, meta: failMeta(err) };
     }
-    return {
-      data: {
-        streamOverlayTitle: null,
-        streamOverlaySubtitle: null,
-        streamOverlayShowTitle: false,
-        streamOverlayTextColor: null,
-        streamOverlayScrimEnabled: false,
-        streamOverlayCoverUrl: null,
-      },
-      meta: apiErrorMeta(err),
-    };
+    return { data: { ...EMPTY_STREAM_OVERLAY }, meta: apiErrorMeta(err) };
   }
 }
 

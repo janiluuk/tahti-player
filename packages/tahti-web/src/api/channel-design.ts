@@ -1,6 +1,7 @@
 export type {
   VisualPreset,
   BackgroundVisualPreset,
+  StoredVisualPreset,
   TextOverlayMode,
   TextOverlayAlign,
   VisualPresetSettings,
@@ -8,6 +9,8 @@ export type {
 } from './channel-design/presets';
 export {
   VISUAL_PRESETS,
+  STORED_VISUAL_PRESETS,
+  STORED_VISUAL_PRESET_LABELS,
   isVisualPreset,
   PUBLIC_FALLBACK_VISUAL_PRESET,
   resolvePublicVisualizerPreset,
