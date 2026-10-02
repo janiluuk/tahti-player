@@ -30,6 +30,39 @@ export function releaseToPlayable(
   };
 }
 
+/** "Joined March 2024", or null when the artist hides their join date. */
+export function artistJoinedLabel(
+  joinDate: string | null | undefined,
+  locale?: string,
+): string | null {
+  if (!joinDate) {
+    return null;
+  }
+  const joined = new Date(joinDate);
+  if (Number.isNaN(joined.getTime())) {
+    return null;
+  }
+  return `Joined ${joined.toLocaleDateString(locale, {
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  })}`;
+}
+
+/** Header subtitle: handle, then pronouns and join date when present. */
+export function artistHeaderSubtitle(
+  artist: Pick<PublicProfile['artist'], 'username' | 'pronouns' | 'joinDate'>,
+  locale?: string,
+): string {
+  return [
+    `@${artist.username}`,
+    artist.pronouns || null,
+    artistJoinedLabel(artist.joinDate, locale),
+  ]
+    .filter(Boolean)
+    .join(' · ');
+}
+
 export type ArtistProfileEmbed = {
   label: string;
   url: string;

@@ -78,8 +78,8 @@ import { StreamManagerPanel } from '../components/StreamManagerPanel';
 import { TrackEditDialog } from '../components/TrackEditDialog';
 import { hasAccountRole } from '../lib/accountRoles';
 import {
+  artistHeaderSubtitle,
   artistProfileEmbed,
-  profileTrackToPlayable,
   type ArtistProfileEmbed,
 } from '../lib/artistProfile';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
@@ -94,7 +94,7 @@ import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 
-export { profileTrackToPlayable };
+export { profileTrackToPlayable } from '../lib/artistProfile';
 
 type Tab = 'stage' | 'gallery' | 'design';
 
@@ -443,7 +443,7 @@ function ArtistProfilePage({ username }: { username: string }) {
         headerStyle={channelVisual?.headerStyle}
         videoBackgroundUrl={channelVisual?.videoBackgroundUrl}
         gradientOverride={brandGradient}
-        subtitle={`@${artist.username}${artist.pronouns ? ` · ${artist.pronouns}` : ''}`}
+        subtitle={artistHeaderSubtitle(artist)}
         description={
           artist.bio ? (
             <p className="line-clamp-2 whitespace-pre-wrap">{artist.bio}</p>

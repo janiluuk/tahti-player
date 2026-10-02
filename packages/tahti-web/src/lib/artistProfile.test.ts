@@ -1,6 +1,43 @@
 import { describe, expect, it } from 'vitest';
 
-import { artistProfileEmbed, profileTrackToPlayable } from './artistProfile';
+import {
+  artistHeaderSubtitle,
+  artistJoinedLabel,
+  artistProfileEmbed,
+  profileTrackToPlayable,
+} from './artistProfile';
+
+describe('artistHeaderSubtitle', () => {
+  it('appends the join month after handle and pronouns', () => {
+    expect(
+      artistHeaderSubtitle(
+        {
+          username: 'aino',
+          pronouns: 'she/her',
+          joinDate: '2024-03-15T10:00:00.000Z',
+        },
+        'en-US',
+      ),
+    ).toBe('@aino · she/her · Joined March 2024');
+  });
+
+  it('leaves out the join date when the artist hides it', () => {
+    expect(
+      artistHeaderSubtitle({
+        username: 'aino',
+        pronouns: null,
+        joinDate: null,
+      }),
+    ).toBe('@aino');
+  });
+
+  it('reads the month in UTC so a first-of-month join does not slip back', () => {
+    expect(artistJoinedLabel('2024-03-01T00:30:00.000Z', 'en-US')).toBe(
+      'Joined March 2024',
+    );
+    expect(artistJoinedLabel('not a date')).toBeNull();
+  });
+});
 
 describe('artistProfileEmbed', () => {
   it('embeds a SoundCloud profile', () => {
