@@ -32,6 +32,7 @@ import { useChannelShareStore } from '../../../stores/channelShareStore';
 import { StudioBrandingPanel } from '../../studio/StudioBrandingView';
 import { StudioModerationView } from '../../studio/StudioModerationView';
 import { SettingsHint, SettingsToggle } from '../SettingsFields';
+import { channelRenameNote } from './channelRenameNote';
 
 export function ChannelPanel() {
   const user = useAuthStore((s) => s.user);
@@ -200,7 +201,7 @@ export function ChannelPanel() {
                   size="sm"
                   onClick={() => {
                     void updateChannelSlug(slug.trim()).then((r) => {
-                      setNote(r.ok ? `Renamed to ${r.slug}` : r.error);
+                      setNote(r.ok ? channelRenameNote(r) : r.error);
                     });
                   }}
                 >
