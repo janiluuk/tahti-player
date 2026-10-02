@@ -207,7 +207,11 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
         return;
       }
     }
-    const result = await fetchPublicSoundDownload(detail.channelSlug, id);
+    const result = await fetchPublicSoundDownload(
+      detail.channelSlug,
+      id,
+      shareKey,
+    );
     setDownloadBusy(false);
     if (!result.ok) {
       toast.error(result.error);
