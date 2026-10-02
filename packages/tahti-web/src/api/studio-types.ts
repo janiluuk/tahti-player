@@ -210,6 +210,9 @@ export type StudioCollectionItem = {
   unavailable?: boolean;
 };
 
+/** MANUAL = drag order; TIME = oldest first (track upload or release date); NAME = A-Z by title. */
+export type CollectionTrackSortMode = 'MANUAL' | 'TIME' | 'NAME';
+
 export type StudioCollection = {
   id?: string;
   slug: string;
@@ -223,6 +226,8 @@ export type StudioCollection = {
   genres?: string[];
   /** Public playlists only — logged-in listeners can add catalog tracks. */
   collaborative?: boolean;
+  /** How the public page orders tracks; the owner GET always returns drag order. */
+  trackSortMode?: CollectionTrackSortMode;
   coverUrl?: string | null;
   backdropUrl?: string | null;
   items?: StudioCollectionItem[];

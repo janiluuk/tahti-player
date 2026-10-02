@@ -11,7 +11,11 @@ import {
   patchStudioCollection,
   reorderStudioCollectionItems,
 } from '../../../api/studio';
-import type { StudioCollection, StudioSound } from '../../../api/studio-types';
+import type {
+  CollectionTrackSortMode,
+  StudioCollection,
+  StudioSound,
+} from '../../../api/studio-types';
 import { useImageSlotChrome } from '../../../components/imageSlot/useImageSlotChrome';
 import { collectionItemToTrack } from '../../../lib/collectionTrackMapping';
 import { useCollectionImages } from './useCollectionImages';
@@ -31,6 +35,8 @@ export function useCollectionEditState(slug: string) {
   >('PUBLIC');
   const [releaseDate, setReleaseDate] = useState('');
   const [genres, setGenres] = useState('');
+  const [trackSortMode, setTrackSortMode] =
+    useState<CollectionTrackSortMode>('MANUAL');
   const {
     coverUrl,
     setCoverUrl,
@@ -74,6 +80,7 @@ export function useCollectionEditState(slug: string) {
       );
       setReleaseDate(c.data.releaseDate ?? '');
       setGenres((c.data.genres ?? []).join(', '));
+      setTrackSortMode(c.data.trackSortMode ?? 'MANUAL');
       setCoverUrl(c.data.coverUrl ?? null);
       setBackdropUrl(g.data.slideshowImages[0] ?? c.data.backdropUrl ?? null);
       setSlideshowImages(
@@ -186,6 +193,7 @@ export function useCollectionEditState(slug: string) {
         visibility,
         releaseDate: releaseDate || null,
         genres: genreList.slice(0, 5),
+        trackSortMode,
         backdropUrl: backdropUrl?.trim() || null,
         gallery: {
           slideshowImages,
@@ -234,6 +242,8 @@ export function useCollectionEditState(slug: string) {
     setReleaseDate,
     genres,
     setGenres,
+    trackSortMode,
+    setTrackSortMode,
     coverUrl,
     backdropUrl,
     slideshowImages,

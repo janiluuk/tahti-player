@@ -1,6 +1,9 @@
 import type { FetchMeta } from '../client';
 import { apiErrorMeta, isForceMock } from '../mode';
-import type { StudioCollection } from '../studio-types';
+import type {
+  CollectionTrackSortMode,
+  StudioCollection,
+} from '../studio-types';
 import { mockSoundStore } from './studio-mock';
 import { requestJson } from './studio-request';
 
@@ -320,6 +323,7 @@ export async function patchStudioCollection(
     releaseDate?: string | null;
     genres?: string[];
     collaborative?: boolean;
+    trackSortMode?: CollectionTrackSortMode;
     coverUrl?: string | null;
     backdropUrl?: string | null;
     /** Saved in the same request (and the same row update) as the details. */
@@ -342,6 +346,7 @@ export async function patchStudioCollection(
         releaseDate: patch.releaseDate ?? null,
         genres: patch.genres ?? [],
         collaborative: Boolean(patch.collaborative && (patch.isPublic ?? true)),
+        trackSortMode: patch.trackSortMode ?? 'MANUAL',
         coverUrl: patch.coverUrl ?? null,
         backdropUrl: patch.backdropUrl ?? null,
         items: [],
