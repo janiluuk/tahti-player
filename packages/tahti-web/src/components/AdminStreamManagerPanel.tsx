@@ -191,6 +191,11 @@ export function AdminStreamManagerPanel({
                           {stats.listeners.toLocaleString()} listeners
                         </span>
                         <span>{stats.listenerPeak.toLocaleString()} peak</span>
+                        {stats.rotationTrackCount === 0 ? (
+                          <span className="text-accent-yellow-strong">
+                            24/7 rotation empty
+                          </span>
+                        ) : null}
                       </div>
                     ) : null}
                   </div>

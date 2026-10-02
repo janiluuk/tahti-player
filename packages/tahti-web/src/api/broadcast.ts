@@ -91,6 +91,8 @@ export type ChannelManageStats = {
   /** All-time highest concurrent-listener count observed. */
   listenerPeak: number;
   liveDurationSec: number | null;
+  /** Tracks flagged for the 24/7 fallback rotation; 0 means nothing plays while offline. */
+  rotationTrackCount: number;
 };
 
 export type BroadcastWarningLevel =
@@ -301,6 +303,7 @@ export async function fetchChannelManageStats(
         listeners: mockSignalConnected ? 1 : 0,
         listenerPeak: 37,
         liveDurationSec: mockChannelState === 'LIVE' ? 12 * 60 : null,
+        rotationTrackCount: 3,
       },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };

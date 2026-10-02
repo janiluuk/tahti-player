@@ -6,6 +6,7 @@ import { ManagerDialogs } from './stream-manager/ManagerDialogs';
 import { PanelHeader } from './stream-manager/PanelHeader';
 import { PlaylistDialog } from './stream-manager/PlaylistDialog';
 import { RotationBody } from './stream-manager/RotationBody';
+import { RotationEmptyWarning } from './stream-manager/RotationEmptyWarning';
 import { StatsGrid } from './stream-manager/StatsGrid';
 import { useStreamManagerState } from './stream-manager/useStreamManagerState';
 
@@ -45,11 +46,14 @@ export function StreamManagerPanel({
     setActiveTab,
     rotationMsg,
     error,
+    stats,
   } = state;
 
   return (
     <section className="border-border bg-background-secondary/40 flex flex-col gap-4 rounded-xl border p-5 shadow-sm sm:p-6">
       <PanelHeader state={state} onPlaybackToggle={onPlaybackToggle} />
+
+      {stats?.rotationTrackCount === 0 && <RotationEmptyWarning slug={slug} />}
 
       {rotationMsg && (
         <p className="text-foreground-secondary text-xs" role="status">

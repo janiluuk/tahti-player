@@ -64,6 +64,13 @@ const RADIO_SETTING_TABS = [
 const isTab = (value: string | undefined): value is Tab =>
   ['setup', 'radio', 'green-room', 'selects'].includes(value ?? '');
 
+const DEEP_LINKED_RADIO_TABS = ['rotation', 'multicast'] as const;
+
+const isDeepLinkedRadioTab = (
+  value: string | undefined,
+): value is (typeof DEEP_LINKED_RADIO_TABS)[number] =>
+  (DEEP_LINKED_RADIO_TABS as readonly string[]).includes(value ?? '');
+
 const DESIGNER_TABS = new Set(['design', 'profile']);
 
 function ChannelOverallStats() {
@@ -135,9 +142,9 @@ export function StudioChannelView() {
   const [radioTab, setRadioTab] = useState<RadioTab>('stream');
 
   useEffect(() => {
-    if (search.tab === 'multicast') {
+    if (isDeepLinkedRadioTab(search.tab)) {
       setTab('radio');
-      setRadioTab('multicast');
+      setRadioTab(search.tab);
       return;
     }
     if (isTab(search.tab) && (search.tab !== 'setup' || !channel)) {
@@ -209,11 +216,17 @@ export function StudioChannelView() {
                 return;
               }
               setRadioTab(next.id);
-              if (next.id === 'multicast' || search.tab === 'multicast') {
+              // Keep the URL in step with a deep-linked radio tab so following
+              // the same link again (e.g. the empty-rotation warning) still
+              // changes the search and switches back to it.
+              if (
+                isDeepLinkedRadioTab(next.id) ||
+                isDeepLinkedRadioTab(search.tab)
+              ) {
                 void navigate({
                   to: '/studio/channel',
                   search: {
-                    tab: next.id === 'multicast' ? 'multicast' : 'radio',
+                    tab: isDeepLinkedRadioTab(next.id) ? next.id : 'radio',
                   },
                 });
               }
