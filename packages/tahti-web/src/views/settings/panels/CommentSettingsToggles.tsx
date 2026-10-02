@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import {
   fetchCommentSettings,
   setChannelCommentsEnabled,
+  setNewChannelCommentsEnabled,
   setNewUploadCommentsEnabled,
   type CommentSettings,
 } from '../../../api/comment-settings';
@@ -61,7 +62,22 @@ export function CommentSettingsToggles() {
             save('channelCommentsEnabled', value, setChannelCommentsEnabled)
           }
         />
-      ) : null}
+      ) : (
+        // The channel default only applies when the channel is created, so
+        // once a channel exists the live switch above replaces it.
+        <SettingsToggle
+          label="Allow comments on my channel when it is created"
+          description="Your channel starts with comments on or off when you set it up. You can change it afterwards."
+          value={settings.newChannelCommentsEnabled}
+          onChange={(value) =>
+            save(
+              'newChannelCommentsEnabled',
+              value,
+              setNewChannelCommentsEnabled,
+            )
+          }
+        />
+      )}
       <SettingsToggle
         label="Allow comments on my new uploads"
         description="Tracks you upload from now on start with comments on. Each track keeps its own setting afterwards."
