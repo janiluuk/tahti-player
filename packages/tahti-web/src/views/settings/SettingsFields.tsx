@@ -8,16 +8,23 @@ export function SettingsToggle({
   description,
   value,
   onChange,
+  disabled,
 }: {
   label: string;
   description?: string;
   value: boolean;
   onChange: (v: boolean) => void;
+  disabled?: boolean;
 }) {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-3">
-        <Toggle aria-label={label} checked={value} onChange={onChange} />
+        <Toggle
+          aria-label={label}
+          checked={value}
+          onChange={onChange}
+          disabled={disabled}
+        />
         <span className="text-foreground text-sm font-semibold">{label}</span>
       </div>
       {description && (

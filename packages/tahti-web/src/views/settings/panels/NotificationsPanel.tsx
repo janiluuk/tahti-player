@@ -2,11 +2,8 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
-  fetchDiscoveryPrefs,
   fetchNotificationPrefs,
-  patchDiscoveryPrefs,
   patchNotificationPrefs,
-  type DiscoveryPrefs,
   type NotificationPrefs,
 } from '../../../api/artist-settings';
 import {
@@ -14,6 +11,7 @@ import {
   patchMeProfile,
   type ProfileFields,
 } from '../../../api/studio-extras';
+import { ClientCapabilityNotice } from '../../../components/ClientCapabilityNotice';
 import { SettingsHint, SettingsToggle } from '../SettingsFields';
 import { CommentSettingsToggles } from './CommentSettingsToggles';
 import { TopListsToggle } from './TopListsToggle';
@@ -112,17 +110,10 @@ export function NotificationsPanel() {
 
 export function NotificationsVisibilityPanel() {
   const [profile, setProfile] = useState<ProfileFields | null>(null);
-  const [discovery, setDiscovery] = useState<DiscoveryPrefs | null>(null);
   const [savingKey, setSavingKey] = useState<keyof ProfileFields | null>(null);
-  const [savingDiscovery, setSavingDiscovery] = useState(false);
 
   useEffect(() => {
-    void Promise.all([fetchMeProfile(), fetchDiscoveryPrefs()]).then(
-      ([profileResult, discoveryResult]) => {
-        setProfile(profileResult.data);
-        setDiscovery(discoveryResult.data);
-      },
-    );
+    void fetchMeProfile().then((result) => setProfile(result.data));
   }, []);
 
   const updateVisibility = (
@@ -172,27 +163,6 @@ export function NotificationsVisibilityPanel() {
     });
   };
 
-  const updateDiscovery = (
-    key: keyof Pick<DiscoveryPrefs, 'showFavorites' | 'announceReleases'>,
-    value: boolean,
-  ) => {
-    if (!discovery) {
-      return;
-    }
-    setDiscovery({ ...discovery, [key]: value });
-    setSavingDiscovery(true);
-    void patchDiscoveryPrefs({ [key]: value }).then((result) => {
-      setSavingDiscovery(false);
-      if (!result.ok) {
-        setDiscovery(discovery);
-        toast.error(result.error);
-        return;
-      }
-      setDiscovery(result.data);
-      toast.success('Notification setting saved.');
-    });
-  };
-
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -203,7 +173,7 @@ export function NotificationsVisibilityPanel() {
           Choose what appears publicly on your profile and channel.
         </p>
       </div>
-      {!profile || !discovery ? (
+      {!profile ? (
         <SettingsHint>Loading…</SettingsHint>
       ) : (
         <div className="flex flex-col gap-5">
@@ -232,12 +202,18 @@ export function NotificationsVisibilityPanel() {
             value={profile.socialLinks?.showConnections !== 'false'}
             onChange={updateConnectionsVisibility}
           />
-          <SettingsToggle
-            label="Show favourites"
-            description="Your favourited tracks and channels are visible on your public profile."
-            value={discovery.showFavorites}
-            onChange={(value) => updateDiscovery('showFavorites', value)}
-          />
+          <div className="flex flex-col gap-3">
+            <SettingsToggle
+              label="Show favourites"
+              description="Your favourited tracks and channels are visible on your public profile."
+              value={false}
+              onChange={() => undefined}
+              disabled
+            />
+            <ClientCapabilityNotice kind="coming-soon">
+              Tahti doesn&apos;t show favourites on profiles yet.
+            </ClientCapabilityNotice>
+          </div>
           <TopListsToggle />
           <CommentSettingsToggles />
         </div>
@@ -250,16 +226,20 @@ export function NotificationsVisibilityPanel() {
           Choose which activity reaches you by email or in the app.
         </p>
         <NotificationsPanel />
-        {discovery ? (
+        <div className="mt-5 flex flex-col gap-3">
           <SettingsToggle
             label="Announce releases"
             description="Followers get a notification (and optional email) when you publish a release."
-            value={discovery.announceReleases}
-            onChange={(value) => updateDiscovery('announceReleases', value)}
+            value={false}
+            onChange={() => undefined}
+            disabled
           />
-        ) : null}
+          <ClientCapabilityNotice kind="coming-soon">
+            Tahti doesn&apos;t announce releases to followers yet.
+          </ClientCapabilityNotice>
+        </div>
       </div>
-      {savingKey || savingDiscovery ? (
+      {savingKey ? (
         <p className="text-foreground-secondary text-xs" role="status">
           Saving visibility…
         </p>
