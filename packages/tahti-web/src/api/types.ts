@@ -211,6 +211,7 @@ export type PublicTrackDetail = {
   releasedAt: string;
   effectiveBpm: number | null;
   effectiveKey: string | null;
+  isAiGenerated?: boolean;
   /** [0..255] amplitude buckets for the real waveform — null when not yet decoded. */
   peaks: number[] | null;
   commentCount: number;
