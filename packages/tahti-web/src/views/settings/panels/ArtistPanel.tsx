@@ -52,6 +52,7 @@ import { ChannelMembersEditor } from '../ChannelMembersEditor';
 import { NewsFeedUrlField } from '../NewsFeedUrlField';
 import { SettingsHint } from '../SettingsFields';
 import { SocialAutoPost } from '../SocialAutoPost';
+import { buildArtistInfoPatch } from './artist-info-patch';
 
 const PRONOUN_OPTIONS: SelectOption[] = [
   { id: 'she/her', label: 'she/her' },
@@ -184,33 +185,19 @@ export function ArtistPanel() {
       return;
     }
     setBusy(true);
-    void patchMeProfile({
-      displayName: profile.displayName.trim(),
-      bio: profile.bio?.trim() || null,
-      fullBio: profile.fullBio?.trim() || null,
-      tipJarUrl: profile.tipJarUrl?.trim() || null,
-      pronouns: profile.pronouns?.trim() || null,
-      chatEnabled: profile.chatEnabled,
-      showFollowers: profile.showFollowers,
-      showFollowing: profile.showFollowing,
-      artistKind: profile.artistKind ?? 'SINGLE',
-      countryCode: profile.countryCode,
-      defaultLocation: profile.defaultLocation?.trim() || null,
-      socialLinks: {
-        ...(profile.socialLinks ?? {}),
-        artistRoles: artistRoles.join(', '),
+    void patchMeProfile(buildArtistInfoPatch(profile, artistRoles)).then(
+      (result) => {
+        setBusy(false);
+        setMsg(result.ok ? 'Artist info saved.' : result.error);
+        if (result.ok) {
+          setProfile(result.data);
+          void refreshAuth();
+          toast.success('Artist info saved.');
+        } else {
+          toast.error(result.error);
+        }
       },
-    }).then((result) => {
-      setBusy(false);
-      setMsg(result.ok ? 'Artist info saved.' : result.error);
-      if (result.ok) {
-        setProfile(result.data);
-        void refreshAuth();
-        toast.success('Artist info saved.');
-      } else {
-        toast.error(result.error);
-      }
-    });
+    );
   };
 
   if (!user) {

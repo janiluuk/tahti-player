@@ -49,7 +49,7 @@ export {
   fetchChannelEgressStats,
   fetchChannelLiveStats,
 } from './studio-extras/stats-plays';
-export type { ProfileFields } from './studio-extras/profile';
+export type { ProfileFields, ProfilePatch } from './studio-extras/profile';
 export { fetchMeProfile, patchMeProfile } from './studio-extras/profile';
 export type {
   ArtistPost,
