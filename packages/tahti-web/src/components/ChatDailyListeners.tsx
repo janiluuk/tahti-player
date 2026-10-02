@@ -15,7 +15,7 @@ export function ChatDailyListeners({ slug }: { slug: string }) {
       void fetchChatDailyListeners(slug).then((result) => {
         if (!cancelled) {
           setCount(
-            result.data?.enabled && result.data.count > 0
+            result.data?.enabled && (result.data.count ?? 0) > 0
               ? result.data.count
               : null,
           );
