@@ -244,6 +244,8 @@ export type PublicProfileArtist = import('./profile-logo').ArtistLogoFields & {
   pronouns?: string | null;
   /** ISO 3166-1 alpha-2; GET /api/v1/u/:username/profile */
   countryCode?: string | null;
+  /** ISO datetime of account creation; null when the artist hides it. */
+  joinDate?: string | null;
   followerCount?: number | null;
   followingCount?: number | null;
   freeSubscriptionsEnabled?: boolean;
