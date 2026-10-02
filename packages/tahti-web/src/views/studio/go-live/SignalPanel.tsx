@@ -5,6 +5,7 @@ import { Badge, Button } from '@tahti-player/ui';
 import { fetchSignalStatus, mockSimulateSignal } from '../../../api/broadcast';
 import { SignalCheckWidget } from '../../../components/SignalCheckWidget';
 import { StudioPanel } from '../../../components/StudioPanel';
+import { BroadcastUsageMeter } from './BroadcastUsageMeter';
 import type { GoLiveState } from './useGoLiveState';
 
 /** Screen readers hear when the encoder connects or drops; sighted users
@@ -95,6 +96,7 @@ export function SignalPanel({ state }: { state: GoLiveState }) {
       <p className="sr-only" role="status" data-testid="signal-announcement">
         {signalAnnouncement(isBroadcastLive, signalOk, usage?.blocked)}
       </p>
+      {usage ? <BroadcastUsageMeter usage={usage} /> : null}
       {rotationPlaying && !isBroadcastLive && !preflight?.title ? (
         <div className="border-border bg-background-secondary flex flex-wrap items-center gap-2 rounded-lg border px-3 py-2 text-sm">
           <span className="text-foreground-secondary">
