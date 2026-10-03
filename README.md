@@ -15,7 +15,7 @@
 | Piece | Status |
 | --- | --- |
 | **`@tahti-player/tahti-web`** | Beta listen + studio SPA against **live** `api.tahti.live` (most paths `live-api`) |
-| **Desktop Tauri player** | Ships for Windows / macOS / Linux — local library, plugins, themes, MCP, MPD/Jam |
+| **Desktop Tauri player** | Installers/builds for Win / macOS / Linux when CI artifacts are published — local library, plugins, themes, MCP, MPD/Jam (verify latest release assets before assuming every OS build is current) |
 | **Mobile** | **Responsive web only** (bottom nav, safe-area player). `scripts/build-and-run-android.sh` is an experimental Tauri Android init — **not** a store app |
 | **Cutover** | Production remains Next.js until P0s land — [`CUTOVER.md`](./packages/tahti-web/CUTOVER.md) |
 | **Parity matrix** | [`FEATURES.md`](./packages/tahti-web/FEATURES.md) |
@@ -189,14 +189,14 @@ same screenshots inline, see [`packages/tahti-web/README.md`](./packages/tahti-w
 | Plugin SDK / registry host | `@tahti-player/plugin-sdk`, `plugin-registry` | Nuclear plugins; public index at [tahti-registry](https://github.com/janiluuk/tahti-registry) |
 | CLI | `@tahti-player/tahti-cli` | Read-only API client (whoami, library, releases, search) |
 
-pnpm + Turborepo. Package manager: `pnpm@10.33.4` (see root `package.json`).
+pnpm + Turborepo. Package manager: `pnpm@12.5.1` (see root `package.json` `packageManager` field).
 
 Feature checklist: [`packages/tahti-web/FEATURES.md`](./packages/tahti-web/FEATURES.md). Cutover: [`packages/tahti-web/CUTOVER.md`](./packages/tahti-web/CUTOVER.md). Package README: [`packages/tahti-web/README.md`](./packages/tahti-web/README.md).
 
 ## Prerequisites
 
 - **Node.js** — `.node-version` pins **24** (`engines.node` `>=24`)
-- **pnpm** 10.x (`corepack enable` or install via npm)
+- **pnpm** 12.x via `corepack enable` (matches `packageManager` in root `package.json`)
 - For the **desktop player only**: [Tauri 2](https://v2.tauri.app/start/prerequisites/) system deps + **Rust** ≥ 1.77.2
 
 Tahti web (`pnpm dev:tahti`) does **not** require Rust/Tauri.

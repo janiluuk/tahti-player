@@ -2,25 +2,28 @@
 
 Cross-check of root README + `packages/tahti-web` docs against [`FEATURES.md`](../packages/tahti-web/FEATURES.md), [`FEATURES-REMAINING.md`](../packages/tahti-web/FEATURES-REMAINING.md), mobile reality, and sibling repos.
 
+Follow-up pass: pnpm pin, desktop installer honesty, package README run instructions.
+
 ## Gaps found
 
 | Severity | Claim / issue | Reality | Action |
 | --- | --- | --- | --- |
-| **High** | README implies polished “native clients” without mobile caveat | Desktop Tauri yes; mobile = responsive web + Android **stub** script | README platform matrix |
-| **High** | “democked against the live API” wording | Most listen/studio paths are `live-api`; remaining listed in FEATURES-REMAINING | Clarified |
-| **Medium** | Production monorepo called `` `tahti` `` | Canonical public name is **tahti-org** | Fixed |
-| **Medium** | No platform feature matrix in README | Web / desktop / mobile maturity differs a lot | Added |
-| **Medium** | CLI / registry / Discord bot invisible from root README | Real sibling packages/repos | Linked |
-| **Medium** | Admin “22 surfaces” without saying production Next admin is denser | FEATURES.md: board admin partial vs Next | Noted |
-| **Low** | Screenshot set uses `*-v1` redesign shots | Files exist; newer `*-current-v1` admin shots exist but listen/studio v1 still valid | Kept v1 listen/studio; admin uses current |
-| **Low** | `packages/website` still Nuclear marketing copy | Separate marketing surface; not Tahti product README | Out of scope this pass |
+| **High** | README implies polished “native clients” without mobile caveat | Desktop Tauri yes; mobile = responsive web + Android **stub** | Platform matrix |
+| **High** | Docs said `pnpm@10.33.4` | `packageManager` is **`pnpm@12.5.1`** | README + AGENTS.md fixed |
+| **Medium** | “Ships for Windows / macOS / Linux” absolute | Depends on published CI release assets | Softened |
+| **Medium** | `packages/tahti-web/README` `pnpm dev` | Root `pnpm dev` is desktop filters; web is `pnpm dev:tahti` | Fixed |
+| **Medium** | Production monorepo called `` `tahti` `` | Canonical name **tahti-org** | Fixed |
+| **Medium** | No platform feature matrix | Web / desktop / mobile maturity differs | Added |
+| **Medium** | Admin “22 surfaces” without Next denser note | Board admin partial vs Next | Noted |
+| **Low** | Pro editor marketed as full DAW | Trim/EQ/dynamics/revisions; multitrack remaining | Clarified in feature list |
+| **Low** | `packages/website` Nuclear marketing copy | Out of scope | Left |
 
 ## Screenshot inventory
 
 | Set | Count | Used by |
 | --- | --- | --- |
 | `packages/tahti-web/docs/redesign-shots/` | ~217 | Root README highlights |
-| `packages/tahti-web/docs/readme-shots/` | present | `packages/tahti-web/README.md` + VIEW-GUIDE |
+| `packages/tahti-web/docs/readme-shots/` | present | Package README + VIEW-GUIDE |
 | `packages/tahti-web/docs/VIEW-GUIDE.md` | generated gallery | Full screen index |
 
 All root README `<picture>` paths resolve.
@@ -36,5 +39,7 @@ All root README `<picture>` paths resolve.
 
 ## Rewrite done in this pass
 
-- Root `README.md` — current-state table, platform matrix, honest mobile/desktop split, satellite repos, clearer feature list tied to FEATURES.md
+- Root `README.md` — current-state table, platform matrix, honest mobile/desktop split, pnpm 12.5.1, satellite repos
+- `AGENTS.md` — pnpm pin
+- `packages/tahti-web/README.md` — `dev:tahti` / filter instructions
 - `docs/DOC-AUDIT.md` (this file)

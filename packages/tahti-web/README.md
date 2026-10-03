@@ -204,8 +204,18 @@ More in this area: see the [full view guide](./docs/VIEW-GUIDE.md).
 
 ## Running locally
 
+From the **repo root** (not this package directory). Root `pnpm dev` starts the desktop player filters — use `dev:tahti` for this SPA:
+
 ```bash
-pnpm dev
+# From monorepo root → http://localhost:5180
+pnpm dev:tahti
+
+# Offline demo (no API); login: demo@tahti.live / any password
+VITE_FORCE_MOCK=1 pnpm dev:tahti
+
+# Or filter this package only
+pnpm --filter @tahti-player/tahti-web dev
+
 pnpm storybook
 pnpm --filter @tahti-player/tahti-web type-check
 pnpm --filter @tahti-player/tahti-web lint

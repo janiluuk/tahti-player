@@ -35,7 +35,7 @@ This repository is the Tahti fork of Nuclear (`janiluuk/tahti-player`). Upstream
 ## Environment
 
 - **Node:** `.node-version` = 24; `engines.node >= 24`. Node 20/22 will fail.
-- **pnpm:** `pnpm@10.33.4` pinned in `packageManager`; `corepack enable` or install via npm.
+- **pnpm:** `pnpm@12.5.1` pinned in `packageManager`; `corepack enable` or install via npm.
 - **Rust:** ≥ 1.77.2 + Tauri 2 system deps — only for `@tahti-player/player` (`pnpm dev`, `pnpm tauri build`). `pnpm dev:tahti` (web) needs none of this.
 - **Offline web dev:** `VITE_FORCE_MOCK=1 pnpm dev:tahti` — no API needed; login `demo@tahti.live` / any password.
 
