@@ -9,6 +9,7 @@ import { BackdropUploadButton } from '../BackdropUploadButton';
 import { MentionTextarea } from '../MentionTextarea';
 import { RoundImageUploadButton } from '../RoundImageUploadButton';
 import { SubgenreTagInput } from '../SubgenreTagInput';
+import { TrackTagInput } from '../TrackTagInput';
 import type { TrackEditDialogState } from './useTrackEditDialog';
 
 export function BasicsTab({
@@ -122,6 +123,10 @@ export function BasicsTab({
           onChange={(subGenres) => setForm({ ...form, subGenres })}
         />
       ) : null}
+      <TrackTagInput
+        value={form.tags ?? []}
+        onChange={(tags) => setForm({ ...form, tags })}
+      />
     </div>
   );
 }

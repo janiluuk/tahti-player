@@ -29,7 +29,7 @@ export function TrackDetailsBlock({
   if (!hasTrackDetailFacts(facts)) {
     return null;
   }
-  const { genres, bpm, musicalKey, license, credits, commentary, venue } =
+  const { genres, tags, bpm, musicalKey, license, credits, commentary, venue } =
     facts;
 
   return (
@@ -41,6 +41,23 @@ export function TrackDetailsBlock({
         {genres.length > 0 ? (
           <Row label={genres.length > 1 ? 'Genres' : 'Genre'}>
             {genres.join(' · ')}
+          </Row>
+        ) : null}
+        {tags.length > 0 ? (
+          <Row label={tags.length > 1 ? 'Tags' : 'Tag'}>
+            <ul className="flex flex-wrap gap-1.5" aria-label="Tags">
+              {tags.map((tag) => (
+                <li key={tag}>
+                  <Link
+                    to="/search"
+                    search={{ tag }}
+                    className="bg-background-secondary hover:text-primary inline-flex rounded-full px-2.5 py-0.5 text-xs"
+                  >
+                    #{tag}
+                  </Link>
+                </li>
+              ))}
+            </ul>
           </Row>
         ) : null}
         {bpm !== null ? (

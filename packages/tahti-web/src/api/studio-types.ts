@@ -24,6 +24,8 @@ export type StudioSound = {
   artistName?: string | null;
   genre?: string | null;
   subGenres?: string[];
+  /** Free-form artist labels (mood, series...), case kept as typed. */
+  tags?: string[];
   /** Structured "recorded at" venue; `venue` is its summary. */
   venueId?: string | null;
   venue?: {
@@ -101,6 +103,7 @@ export type StudioSoundPatch = {
   artistName?: string | null;
   genre?: string | null;
   subGenres?: string[];
+  tags?: string[];
   credits?: ReleaseCredit[] | null;
   venueId?: string | null;
   contentType?: string;

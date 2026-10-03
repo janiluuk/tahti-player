@@ -11,12 +11,20 @@ vi.mock('@tanstack/react-router', async (importOriginal) => ({
     children,
     to,
     params,
+    search,
   }: {
     children: ReactNode;
     to: string;
-    params: Record<string, string>;
+    params?: Record<string, string>;
+    search?: { tag: string };
   }) => (
-    <a href={to.replace(/\$(\w+)/g, (_, key: string) => params[key] ?? '')}>
+    <a
+      href={
+        search
+          ? `/search?tag=${encodeURIComponent(search.tag)}`
+          : to.replace(/\$(\w+)/g, (_, key: string) => params?.[key] ?? '')
+      }
+    >
       {children}
     </a>
   ),
@@ -72,6 +80,21 @@ describe('TrackDetailsBlock', () => {
     expect(screen.getByRole('link', { name: 'Kaiku' })).toHaveAttribute(
       'href',
       '/v/kaiku',
+    );
+  });
+
+  it('links each tag to tag search', () => {
+    render(
+      <TrackDetailsBlock detail={detail({ tags: ['Late night', 'drone'] })} />,
+    );
+    expect(screen.getByText('Tags')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: '#Late night' })).toHaveAttribute(
+      'href',
+      '/search?tag=Late%20night',
+    );
+    expect(screen.getByRole('link', { name: '#drone' })).toHaveAttribute(
+      'href',
+      '/search?tag=drone',
     );
   });
 

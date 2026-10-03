@@ -64,3 +64,15 @@ export const NoArtwork: Story = {
     className: 'rounded-lg',
   },
 };
+
+export const ThemedFallback: Story = {
+  args: {
+    src: null,
+    size: 'lg',
+    className: 'rounded-full',
+    fallbackBackground: 'linear-gradient(135deg, #A78BFA, #22D3EE)',
+    placeholder: (
+      <span className="text-5xl font-extrabold text-white/90">S</span>
+    ),
+  },
+};
