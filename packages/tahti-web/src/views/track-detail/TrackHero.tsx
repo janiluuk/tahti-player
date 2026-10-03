@@ -34,6 +34,7 @@ import {
   UNPLAYED_WAVE_COLOR,
   WAVEFORM_BARS,
 } from './helpers';
+import { mixVersionLabel } from './trackDetails';
 
 export function TrackHero({ page }: { page: TrackPage }) {
   const {
@@ -86,6 +87,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
     showBuyTrack,
     buyTrack,
   } = page;
+  const mixVersion = mixVersionLabel(playable.title, detail?.mixVersion);
   const like = useSoundEngagement('like', detail?.channelSlug, id);
   const repost = useSoundEngagement('repost', detail?.channelSlug, id);
 
@@ -183,6 +185,12 @@ export function TrackHero({ page }: { page: TrackPage }) {
               )}
               <h1 className="font-display min-w-0 text-2xl font-semibold tracking-tight sm:text-3xl">
                 {playable.title}
+                {mixVersion ? (
+                  <span className="font-normal text-white/60">
+                    {' '}
+                    ({mixVersion})
+                  </span>
+                ) : null}
               </h1>
               {embedSrc ? (
                 <span className="shrink-0 text-xs tracking-wide text-white/55">
