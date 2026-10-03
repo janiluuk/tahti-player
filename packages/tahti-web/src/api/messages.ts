@@ -67,7 +67,10 @@ export type ChatDm = {
 export type ConversationDetail = {
   id: string;
   otherUser: ConversationSummary['otherUser'];
+  /** Oldest first. */
   messages: ChatDm[];
+  /** Older messages exist before `messages[0]`; missing on older APIs. */
+  hasMore?: boolean;
 };
 
 let mockConversations: ConversationSummary[] = [
@@ -191,6 +194,28 @@ export async function fetchConversation(
       return { data: mockConversationDetail(id), meta: failMeta(err) };
     }
     return { data: null, meta: apiErrorMeta(err) };
+  }
+}
+
+/** The page of messages before `beforeId`, oldest first. Null when the
+ * request fails, so callers can keep what they already show. */
+export async function fetchOlderMessages(
+  conversationId: string,
+  beforeId: string,
+): Promise<{ messages: ChatDm[]; hasMore: boolean } | null> {
+  if (isForceMock()) {
+    return { messages: [], hasMore: false };
+  }
+  try {
+    const { data } = await requestJson<ConversationDetail>(
+      `/api/me/messages/conversations/${encodeURIComponent(conversationId)}?before=${encodeURIComponent(beforeId)}`,
+    );
+    return {
+      messages: Array.isArray(data.messages) ? data.messages : [],
+      hasMore: data.hasMore === true,
+    };
+  } catch {
+    return null;
   }
 }
 

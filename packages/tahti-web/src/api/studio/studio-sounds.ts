@@ -49,7 +49,11 @@ export type SoundProcessingStatus = {
     status: 'PENDING' | 'PROCESSING';
   }>;
   /** Watched ids that have finished. */
-  settled: Array<{ id: string; status: 'READY' | 'ERROR' }>;
+  settled: Array<{
+    id: string;
+    status: 'READY' | 'ERROR';
+    processingError?: string | null;
+  }>;
 };
 
 function mockProcessingStatus(ids: readonly string[]): SoundProcessingStatus {
@@ -62,7 +66,13 @@ function mockProcessingStatus(ids: readonly string[]): SoundProcessingStatus {
     settled: mockSoundStore.flatMap((item) =>
       ids.includes(item.id) &&
       (item.status === 'READY' || item.status === 'ERROR')
-        ? [{ id: item.id, status: item.status }]
+        ? [
+            {
+              id: item.id,
+              status: item.status,
+              processingError: item.processingError,
+            },
+          ]
         : [],
     ),
   };

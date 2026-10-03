@@ -229,9 +229,8 @@ export async function fetchMyPurchases(): Promise<{
   }
 }
 
-/** Cancels at the end of the current billing period — the row stays
- * ACTIVE with `canceledAt` set, not removed or flipped immediately,
- * matching the real POST /api/me/subscriptions/:id/cancel response. */
+/** Cancels at the end of the current billing period: the row turns
+ * CANCELED with `canceledAt` set and access runs until `currentPeriodEnd`. */
 export async function cancelMySubscription(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
