@@ -415,21 +415,3 @@ export function ArtistEmbeds({ embeds }: { embeds: ArtistProfileEmbed[] }) {
     </section>
   );
 }
-
-export function ArtistFanTiersNote({
-  tiers,
-}: {
-  tiers: PublicProfile['fanTiers'];
-}) {
-  if (tiers.length === 0) {
-    return null;
-  }
-  return (
-    <p className="text-foreground-secondary text-xs">
-      Fan tiers:{' '}
-      {tiers
-        .map((t) => `${t.name} (€${(t.amountCents / 100).toFixed(0)})`)
-        .join(', ')}
-    </p>
-  );
-}
