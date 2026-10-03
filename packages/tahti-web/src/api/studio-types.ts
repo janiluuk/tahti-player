@@ -172,6 +172,8 @@ export type StudioRelease = {
   upc?: string | null;
   revelatorId?: string | null;
   revelatorStatus?: string | null;
+  /** Set while the release is pinned to the top of the artist's public profile. */
+  pinnedAt?: string | null;
 };
 
 export type StudioReleaseList = {

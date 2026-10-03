@@ -7,6 +7,7 @@ import type {
   PublicProfileRelease,
   TahtiPlayable,
 } from '../../api/types';
+import { isPinned } from '../../lib/pinnedTracks';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { formatDuration } from '../../lib/playableToTrack';
 import { soundIdFromPlayableId } from '../../lib/soundId';
@@ -116,6 +117,7 @@ export function ArtistReleasesGrid({
             0,
           );
           const subtitle = [
+            isPinned(release) ? 'Pinned' : null,
             release.type ?? 'Release',
             release.tracks?.length ? `${release.tracks.length} tracks` : null,
             totalSec > 0 ? formatDuration(totalSec) : null,
