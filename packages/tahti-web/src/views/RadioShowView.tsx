@@ -1,10 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import {
-  CalendarIcon,
-  MessageCircleIcon,
-  MicIcon,
-  RadioIcon,
-} from 'lucide-react';
+import { CalendarIcon, MicIcon, RadioIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
@@ -20,7 +15,6 @@ import {
   fetchRadioShowNowPlaying,
   fetchRadioShowUpcoming,
   type PublicRadioShow,
-  type PublicRadioShowEpisode,
   type RadioShowNowPlayingTrack,
   type RadioShowUpcomingTrack,
 } from '../api/shows';
@@ -30,73 +24,13 @@ import {
 } from '../components/EntitySocialHeader';
 import { PageFrame } from '../components/PageHeader';
 import { PageEmpty, PageLoading } from '../components/PageStates';
+import { RadioShowEpisodeList } from '../components/RadioShowEpisodeList';
 import { Eyebrow } from '../components/tahti/Eyebrow';
 import { usePolling } from '../hooks/usePolling';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { isGreenRoomWindow } from '../lib/radioSchedule';
 
 const NOW_PLAYING_POLL_MS = 30_000;
-
-function formatDate(startAt: string, endAt: string) {
-  const start = new Date(startAt);
-  const end = new Date(endAt);
-  return `${start.toLocaleDateString([], {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-  })} · ${start.toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit',
-  })}–${end.toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit',
-  })}`;
-}
-
-function EpisodeList({
-  episodes,
-  emptyMessage,
-}: {
-  episodes: PublicRadioShowEpisode[];
-  emptyMessage: string;
-}) {
-  if (episodes.length === 0) {
-    return <p className="text-foreground-secondary text-sm">{emptyMessage}</p>;
-  }
-
-  return (
-    <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
-      {episodes.map((episode) => (
-        <li key={episode.id} className="flex items-start gap-3 p-3">
-          {episode.showType === 'TALK' ? (
-            <MessageCircleIcon
-              size={16}
-              className="text-foreground-secondary mt-0.5 shrink-0"
-              aria-hidden
-            />
-          ) : (
-            <MicIcon
-              size={16}
-              className="text-foreground-secondary mt-0.5 shrink-0"
-              aria-hidden
-            />
-          )}
-          <div className="min-w-0 flex-1">
-            <div className="font-medium">
-              {episode.title ?? episode.note ?? 'Tahti Radio show'}
-            </div>
-            <div className="text-foreground-secondary text-xs">
-              {formatDate(episode.startAt, episode.endAt)}
-            </div>
-            {episode.description ? (
-              <p className="mt-2 text-sm">{episode.description}</p>
-            ) : null}
-          </div>
-        </li>
-      ))}
-    </ul>
-  );
-}
 
 function NowPlayingSection({
   track,
@@ -304,7 +238,7 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
               id: 'upcoming',
               label: 'Upcoming',
               content: (
-                <EpisodeList
+                <RadioShowEpisodeList
                   episodes={show.upcomingEpisodes}
                   emptyMessage="No upcoming slots booked right now."
                 />
@@ -314,7 +248,7 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
               id: 'past',
               label: 'Past episodes',
               content: (
-                <EpisodeList
+                <RadioShowEpisodeList
                   episodes={show.pastEpisodes}
                   emptyMessage="Nothing has aired yet."
                 />
