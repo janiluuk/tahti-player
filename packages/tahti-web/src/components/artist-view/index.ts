@@ -4,7 +4,6 @@ export { ArtistPageHero } from './ArtistPageHero';
 export {
   ArtistBioSection,
   ArtistEmbeds,
-  ArtistFanTiersNote,
   ArtistFeed,
   ArtistHeaderActions,
   ArtistLiveShows,
@@ -22,3 +21,4 @@ export { AlbumPlayPromptDialog } from './AlbumPlayPromptDialog';
 export { artistLookSchemes } from './artistLookSchemes';
 export { useArtistCatalog } from './useArtistCatalog';
 export { ArtistStoreSection } from './ArtistStoreSection';
+export { ArtistSupportNote } from './ArtistSupportNote';
