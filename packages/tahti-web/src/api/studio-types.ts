@@ -14,6 +14,8 @@ export type StudioSound = {
   id: string;
   title: string;
   status: string;
+  /** Why processing failed, in plain words. Absent from APIs that predate it. */
+  processingError?: string | null;
   durationSec?: number | null;
   sourceFormat?: string | null;
   sourceBitrateKbps?: number | null;
