@@ -1,80 +1,91 @@
 # Tahti Player
 
-**Tahti Player** is the next listen + artist studio client for [Tahti](https://tahti.live) — a Finnish nonprofit, channel-first broadcasting platform for independent artists. It is built based on [Nuclear](https://github.com/nukeop/nuclear)’s free, ad-free and player UI (React + shared design system), and ships today as a Vite SPA on **[beta.tahti.live](https://beta.tahti.live)** against the live production API at  **[api.tahti.live](https://api.tahti.live)** 
+**Tahti Player** is the next listen + artist studio client for [Tahti](https://tahti.live) — a Finnish nonprofit, channel-first broadcasting platform for independent artists. Built on [Nuclear](https://github.com/nukeop/nuclear)’s player UI (React + shared design system).
 
+| Live surface | URL |
+| --- | --- |
+| **Beta web (this repo)** | **[beta.tahti.live](https://beta.tahti.live)** |
+| **Production API** | [api.tahti.live](https://api.tahti.live) |
+| **Production web (Next.js)** | [tahti.live](https://tahti.live) — still `apps/web` in [tahti-org](https://github.com/janiluuk/tahti-org) |
 
-> **API repository and full docs live under [janiluuk/tahti-org](https://github.com/janiluuk/tahti-org). See [TAHTI.md](./TAHTI.md).
+> Platform API, constitution, and production stack: **[janiluuk/tahti-org](https://github.com/janiluuk/tahti-org)**. Remotes/sync: [TAHTI.md](./TAHTI.md). Doc accuracy notes: [`docs/DOC-AUDIT.md`](./docs/DOC-AUDIT.md).
 
-## What it is
+## Current state
 
-Tahti is channel-first radio and archive listening: artists broadcast live, publish music and albums, prepare audio files and earn directly from fan subscriptions, content downloads and other material. Production today still serves the Next.js app in the separate `tahti` monorepo (`apps/web` on `app.tahti.live`).
+| Piece | Status |
+| --- | --- |
+| **`@tahti-player/tahti-web`** | Beta listen + studio SPA against **live** `api.tahti.live` (most paths `live-api`) |
+| **Desktop Tauri player** | Ships for Windows / macOS / Linux — local library, plugins, themes, MCP, MPD/Jam |
+| **Mobile** | **Responsive web only** (bottom nav, safe-area player). `scripts/build-and-run-android.sh` is an experimental Tauri Android init — **not** a store app |
+| **Cutover** | Production remains Next.js until P0s land — [`CUTOVER.md`](./packages/tahti-web/CUTOVER.md) |
+| **Parity matrix** | [`FEATURES.md`](./packages/tahti-web/FEATURES.md) |
+| **Open gaps only** | [`FEATURES-REMAINING.md`](./packages/tahti-web/FEATURES-REMAINING.md) — multitrack timeline, Buy UX, cutover, … |
 
-This repository holds:
-
-1. **`@tahti-player/tahti-web`** — the Nuclear-based **listen + studio** web client (the cutover candidate for `apps/web`)
-2. **Tahti Player** — the desktop app (Tauri), add-ons, and shared UI packages the web client reuses
-
-The web client is not a separate product backend. It talks to the same public Tahti API (`api.tahti.live`), chat (`chat.tahti.live`), and media CDN that production uses. Cutover planning lives in [`packages/tahti-web/CUTOVER.md`](./packages/tahti-web/CUTOVER.md).
+This repo is **not** a separate backend. Web + desktop talk to the same public API, chat (`chat.tahti.live`), and media stack as production.
 
 ## Why it exists
 
-Production `apps/web` grew as a full Next stack (listen, studio, admin, marketing islands). Separate player gives Tahti a **player-native** shell: queue, themes, keyboard-friendly chrome, and a studio that feels like a desk for going live — not a generic SaaS dashboard. Also the native clients are available for Windows, Mac, and linux. These support loading your own tracks for management, enriching metadata and generic music management.
+Production `apps/web` in tahti-org grew as a full Next stack. This player gives Tahti a **player-native** shell: queue, themes, keyboard-friendly chrome, and a studio that feels like a desk for going live — plus desktop crate tools Nuclear already had.
 
-Goals:
+## Platform matrix (honest)
 
-- Modern listen UX (directory, channel HLS/archive, radio, chat, fan subscribe) on Nuclear UI
-- Artist studio pillars (Go Live, library, releases, playlists/albums, channel design, schedule, stats, revenue) democked against the live API
-- A clear path to replace `app.tahti.live` once route compatibility and remaining parity items land (see CUTOVER)
-- Keep Nuclear’s agent/desktop heritage: shared `@tahti-player/ui` themes, plugin-oriented architecture, AGPL
+| Capability | Web (beta) | Desktop | Mobile web |
+| --- | --- | --- | --- |
+| Channel live / archive / radio / chat | Shipped | Via shared SPA when embedded | Responsive |
+| Artist studio (Go Live, upload, releases, …) | Mostly live-api | Same SPA chrome | Usable but desk-oriented |
+| Fan-subs / DMs / governance | Shipped | Same SPA | Responsive |
+| Board admin | Partial (~22 surfaces; Next admin denser) | Same SPA | Partial |
+| Local library / SQLite crate | Session File API only | Shipped | Absent |
+| Plugin marketplace (Nuclear) | In-app add-ons subset | Full registry | Absent |
+| MCP / MPD / Discord RPC | Desktop-only | Shipped | Absent |
+| Chromecast / AirPlay | Absent | Absent | Absent |
+| Native store packaging | — | Desktop installers | Android stub only |
 
-Honest status: beta already covers the core listener and studio loops on live data. A few production surfaces remain partial or out of scope for Nuclear UI (board admin, full SEO/SSR, some settings depth). Tracked in [`FEATURES.md`](./packages/tahti-web/FEATURES.md).
+## Features (reader summary)
 
-## Features
+Full prod-parity rows: [`FEATURES.md`](./packages/tahti-web/FEATURES.md).
 
-Full prod-parity status per item lives in [`packages/tahti-web/FEATURES.md`](./packages/tahti-web/FEATURES.md); this is the reader-friendly summary.
+### Listen (public)
 
-### Listen (public, no account)
-
-- Channel directory, live channel (HLS) + archive replay, Tahti Radio 24/7 stream
-- Channel chat (Centrifugo WS, reactions, subscriber-only gating, hCaptcha on anonymous join)
-- Artist profiles, collections/albums, smart links, embeds (channel / release / collection)
-- Venue directory + venue registration, governance (public motions), transparency reports, platform status
-- Help center, disco-widgets on listen/profile/channel
+- Channel directory, live HLS + archive replay, Tahti Radio + curated stations
+- Channel chat (Centrifugo, reactions, fan gates, hCaptcha on anonymous join)
+- Profiles, collections/albums, smart links, embeds
+- Venues, governance (public motions), transparency, help, disco-widgets
+- Tahti Jam (synced group listening) on web
 
 ### Listener account
 
-- Follows, favorites, listening history, add-to-playlist from anywhere (player bar, tables)
-- Fan subscribe (Stripe Checkout) + manage subscriptions
+- Follows, favorites, history, add-to-playlist from the player bar
+- Fan subscribe (Stripe Checkout) + manage subs
 - DMs, member governance voting
-- Library: sounds, collections, recordings, smart links, history, favorites
+- Library hub (sounds, collections, recordings, smart links)
 
-### Artist studio — publish & broadcast
+### Artist studio
 
-- Studio home, Go Live wizard (OBS/RTMP + multistream)
-- Music library, upload, releases & album designer, playlists/collections
-- Pro audio editor (trim/master), stash
-- Schedule / 24/7 programme, radio slots & shows (series + episodes)
-- Channel designer (visual presets, layers, backdrop, gallery, press kit)
-- Stats (summary + detail), Updates/newsletter posts
-- Revenue: fan tiers, Stripe Connect payouts
-- Distribution (Revelator: catalog, pay + submit, Spotify profile, royalties)
-- Channel moderators, sound share links
+- Studio home, Go Live (OBS/RTMP + multistream + green room)
+- Upload, library, releases & album designer, playlists/collections, stash
+- Pro audio editor (trim/EQ/dynamics/revisions — **not** full multitrack yet)
+- Schedule / 24/7 programme, shows & radio slots
+- Channel designer (visualizers, looks, press kit)
+- Stats, updates/newsletter, fan tiers, Stripe Connect
+- Distribution UI (Revelator) — ops credentials may still be partial on the API side
+- Channel moderators, sound share links (partial backend)
 
-### Operate (board admin)
+### Board admin
 
-- 22 admin surfaces gated on `isBoard`: dashboard, moderation queues, stream oversight, financial, governance, grants, AGM, i18n, files/storage, announcements, feature requests, support, radio submissions, and more
+- `isBoard`-gated surfaces (moderation, streams, financial, governance, grants, AGM, radio, …). Intentionally thinner than production Next `/admin`.
 
-### Desktop player (Tauri)
+### Desktop-only power tools
 
-- Full Nuclear-based desktop app: search, local library, add-ons, themes, remote control
-- Built-in MCP server for AI-agent control (playback, queue, favorites, playlists, providers) — see [MCP](#mcp-desktop-player) below
+- Local library + metadata enrichment, Nuclear search providers
+- Plugins & themes from [tahti-registry](https://github.com/janiluuk/tahti-registry)
+- MCP server for AI agents — [MCP](#mcp-desktop-player)
 
 ### Developers
 
-- Same-origin `/tahti-api` proxy to the live API on beta; public OpenAPI/Scalar at [`https://api.tahti.live/api`](https://api.tahti.live/api)
-- Offline mock mode (`VITE_FORCE_MOCK=1`) — every fetcher short-circuits to realistic fixture data, zero network calls
-
-Open gaps only (not the full matrix): [`packages/tahti-web/FEATURES-REMAINING.md`](./packages/tahti-web/FEATURES-REMAINING.md).
+- Same-origin `/tahti-api` proxy; OpenAPI/Scalar at [api.tahti.live/api](https://api.tahti.live/api)
+- Offline mock mode: `VITE_FORCE_MOCK=1`
+- Read-only CLI package: [`packages/tahti-cli`](./packages/tahti-cli) (also [janiluuk/tahti-cli](https://github.com/janiluuk/tahti-cli))
 
 Live beta: **https://beta.tahti.live**
 
@@ -142,9 +153,9 @@ From `@tahti-player/tahti-web` (mock data for stable docs captures; beta uses th
 
 <picture><source media="(prefers-color-scheme: light)" srcset="./packages/tahti-web/docs/redesign-shots/admin-dashboard-current-v1--light.png" /><img src="./packages/tahti-web/docs/redesign-shots/admin-dashboard-current-v1.png" alt="Admin dashboard overview" /></picture>
 
-*Admin dashboard — health, activity, and moderation at a glance.*
+*Admin dashboard — health, activity, and moderation at a glance (current capture).*
 
-More studio captures: [`packages/tahti-web/docs/redesign-shots/`](./packages/tahti-web/docs/redesign-shots/).
+More captures: [`packages/tahti-web/docs/redesign-shots/`](./packages/tahti-web/docs/redesign-shots/) · full indexed gallery: [`VIEW-GUIDE.md`](./packages/tahti-web/docs/VIEW-GUIDE.md). Regenerate after UI changes (see Guide below). Mock captures are for docs stability; beta uses the live API.
 
 ## Guide
 
@@ -173,9 +184,10 @@ same screenshots inline, see [`packages/tahti-web/README.md`](./packages/tahti-w
 | Area | Package / path | Role |
 |------|----------------|------|
 | **Tahti web (beta)** | `@tahti-player/tahti-web` | Listen + studio UI → public Tahti API (or mocks) |
-| **Desktop player** | `@tahti-player/player` | Tahti Player Tauri app (React + Rust) |
-| Shared UI / themes | `@tahti-player/ui`, `themes`, … | Design system used by player and Tahti web |
-| Plugin SDK | `@tahti-player/plugin-sdk` | Plugin API (published upstream to npm) |
+| **Desktop player** | `@tahti-player/player` | Tauri app (React + Rust) |
+| Shared UI / themes | `@tahti-player/ui`, `themes`, … | Design system |
+| Plugin SDK / registry host | `@tahti-player/plugin-sdk`, `plugin-registry` | Nuclear plugins; public index at [tahti-registry](https://github.com/janiluuk/tahti-registry) |
+| CLI | `@tahti-player/tahti-cli` | Read-only API client (whoami, library, releases, search) |
 
 pnpm + Turborepo. Package manager: `pnpm@10.33.4` (see root `package.json`).
 

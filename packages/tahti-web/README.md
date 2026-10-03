@@ -1,16 +1,26 @@
 # @tahti-player/tahti-web
 
-Tahti’s listen, artist studio and administration client. It combines the Nuclear Player experience with publishing, broadcasting, community and platform-management tools.
+Beta listen + artist studio + board admin client for Tahti. Nuclear player chrome + studio workflows against the **live** production API (`api.tahti.live`). Live site: **[beta.tahti.live](https://beta.tahti.live)**.
 
-The [View guide](#view-guide) below shows large highlights for each main product job. The complete indexed gallery lives in [`docs/VIEW-GUIDE.md`](./docs/VIEW-GUIDE.md). Shots come from the populated mock environment with the board account ([`scripts/capture-readme-guide.mjs`](./scripts/capture-readme-guide.mjs), [`docs/readme-shots/manifest.json`](./docs/readme-shots/manifest.json)).
+| Doc | Purpose |
+| --- | --- |
+| [`FEATURES.md`](./FEATURES.md) | Prod → beta parity matrix (`live-api` / `partial` / …) |
+| [`FEATURES-REMAINING.md`](./FEATURES-REMAINING.md) | Open gaps only |
+| [`CUTOVER.md`](./CUTOVER.md) | Path to replace production `apps/web` |
+| [`NAVIGATION-SITEMAP.md`](./NAVIGATION-SITEMAP.md) | Routes + nav chrome |
+| Root [README](../../README.md) | Repo-wide platform matrix |
+
+Production Next.js studio still uses `/dashboard/*` in [tahti-org](https://github.com/janiluuk/tahti-org); this package uses `/studio/*`. Same API. Mobile = responsive web (no store app).
+
+The [View guide](#view-guide) below shows large highlights for each main product job. Full indexed gallery: [`docs/VIEW-GUIDE.md`](./docs/VIEW-GUIDE.md) (mock board account captures via [`scripts/capture-readme-guide.mjs`](./scripts/capture-readme-guide.mjs)).
 
 ## What Tahti is for
 
-- **Listen:** discover channels, releases, collections and community posts; play live radio and on-demand audio.
-- **Publish:** upload sounds and clips, build releases and collections, edit metadata, create smartlinks and prepare distribution.
-- **Broadcast:** schedule shows, run pre-flight and live controls, manage 24/7 rotations, recordings and stream destinations.
-- **Connect:** maintain an artist profile, audience tiers, subscriptions, announcements, chat and governance participation.
-- **Operate:** give administrators moderation queues, stream controls, audit logs, platform status, localization and widget management.
+- **Listen:** channels, releases, collections; live radio and on-demand audio (no algorithmic “For you”).
+- **Publish:** upload, releases/collections, metadata, smart links, distribution UI.
+- **Broadcast:** Go Live, schedule, 24/7 rotation, recordings, multistream.
+- **Connect:** profile, fan tiers, chat, DMs, governance.
+- **Operate:** board admin (moderation, streams, ledger, grants, …) — thinner than production Next admin.
 
 ## View guide
 
