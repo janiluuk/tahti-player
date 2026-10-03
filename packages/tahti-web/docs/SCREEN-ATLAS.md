@@ -5,6 +5,13 @@
 This inventory table below is historical (2026-08); the `/more` atlas and
 `src/content/mapScreens.ts` are the current source of truth.
 
+**2026-10-03:** Several rows below that say **missing** now have Nuclear
+routes: `/v/$slug` (venue page with "Recorded here"),
+`/u/$username/green-room`, `/radio/show/$channelSlug`, `/setup-password`,
+`/apply` (redirects to `/join`), `/for-artists`, `/how-it-works`, `/feed`,
+`/studio/insights/$kind/$id`, and the whole in-app `/admin/*`. Current
+routes and menus: [`../NAVIGATION-SITEMAP.md`](../NAVIGATION-SITEMAP.md).
+
 Inventory of production (`apps/web` / app.tahti.live) surfaces vs Nuclear (`@tahti-player/tahti-web` / beta.tahti.live), with screenshot status.
 
 **Legend**
