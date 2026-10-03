@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { parseCredits } from '../../api/distribution';
-import { setSoundPurchaseAccess } from '../../api/purchase-tiers';
+import { setSoundAccess, type SoundAccess } from '../../api/purchase-tiers';
 import { fetchHearthisTrackById } from '../../api/sources';
 import {
   fetchEditorDraft,
@@ -36,6 +36,15 @@ type TrackEditForm = Omit<StudioSoundPatch, 'releasedAt'> & {
   releaseDate?: string;
 };
 
+function accessFromSound(sound: StudioSound): SoundAccess {
+  const accessMode = sound.accessMode ?? 'FREE';
+  return {
+    accessMode,
+    purchaseTierId:
+      accessMode === 'PURCHASE' ? (sound.purchaseTierId ?? null) : null,
+  };
+}
+
 export type Tab =
   'basics' | 'tracklist' | 'audio' | 'sharing' | 'export' | 'advanced';
 
@@ -67,7 +76,10 @@ export function useTrackEditDialog(
   const [tab, setTab] = useState<Tab>('basics');
   const [item, setItem] = useState<StudioSound | null>(null);
   const [form, setForm] = useState<TrackEditForm>({});
-  const [purchaseTierId, setPurchaseTierId] = useState<string | null>(null);
+  const [access, setAccess] = useState<SoundAccess>({
+    accessMode: 'FREE',
+    purchaseTierId: null,
+  });
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [playlistOpen, setPlaylistOpen] = useState(false);
@@ -133,11 +145,7 @@ export function useTrackEditDialog(
           contentType: res.data.contentType ?? 'TRACK',
           license: res.data.license ?? '',
           isPublic: res.data.isPublic ?? true,
-          visibility:
-            res.data.visibility ??
-            (res.data.isPublic === false ? 'PRIVATE' : 'PUBLIC'),
           releaseDate: releaseDateFromReleasedAt(res.data.releasedAt),
-          downloadsEnabled: res.data.downloadsEnabled ?? false,
           followToDownload: res.data.followToDownload ?? false,
           repostToDownload: res.data.repostToDownload ?? false,
           isFallback: res.data.isFallback ?? false,
@@ -147,13 +155,8 @@ export function useTrackEditDialog(
           bannerUrl: res.data.bannerUrl ?? '',
           backgroundUrl: res.data.backgroundUrl ?? '',
           tracklist: res.data.tracklist ?? [],
-          fanTierIds: res.data.fanTierIds ?? [],
-          tracklistOverlay: res.data.tracklistOverlay ?? {
-            enabled: false,
-            preset: 'cards',
-          },
         });
-        setPurchaseTierId(res.data.purchaseTierId ?? null);
+        setAccess(accessFromSound(res.data));
       })
       .catch((err: unknown) => {
         if (!cancelled) {
@@ -201,12 +204,7 @@ export function useTrackEditDialog(
   };
 
   const downloadHearthisEmbed = async () => {
-    if (
-      !item ||
-      item.embedProvider !== 'HEARTHIS' ||
-      !item.embedUri ||
-      !form.downloadsEnabled
-    ) {
+    if (!item || item.embedProvider !== 'HEARTHIS' || !item.embedUri) {
       return;
     }
     setDownloadingEmbed(true);
@@ -361,7 +359,6 @@ export function useTrackEditDialog(
       artistName: form.artistName?.trim() || null,
       credits: trimmedCredits,
       genre: form.genre?.trim() || null,
-      isPublic: form.visibility === 'PUBLIC',
       ...releasedAtFromReleaseDate(releaseDate),
     });
     setSaving(false);
@@ -369,16 +366,20 @@ export function useTrackEditDialog(
       toast.error(result.error);
       return;
     }
-    if (purchaseTierId !== (item.purchaseTierId ?? null)) {
-      const accessResult = await setSoundPurchaseAccess(
-        soundId,
-        purchaseTierId,
-      );
+    const savedAccess = accessFromSound(item);
+    if (
+      access.accessMode !== savedAccess.accessMode ||
+      access.purchaseTierId !== savedAccess.purchaseTierId
+    ) {
+      const accessResult = await setSoundAccess(soundId, access);
       if (!accessResult.ok) {
         toast.error(accessResult.error);
+        result.data.accessMode = savedAccess.accessMode;
+        result.data.purchaseTierId = savedAccess.purchaseTierId;
+        setAccess(savedAccess);
       } else {
-        result.data.purchaseTierId = purchaseTierId;
-        result.data.accessMode = purchaseTierId ? 'PURCHASE' : 'FREE';
+        result.data.accessMode = access.accessMode;
+        result.data.purchaseTierId = access.purchaseTierId;
       }
     }
     setItem(result.data);
@@ -393,11 +394,7 @@ export function useTrackEditDialog(
       contentType: result.data.contentType ?? current.contentType,
       license: result.data.license ?? '',
       isPublic: result.data.isPublic ?? true,
-      visibility:
-        result.data.visibility ??
-        (result.data.isPublic === false ? 'PRIVATE' : 'PUBLIC'),
       releaseDate: releaseDateFromReleasedAt(result.data.releasedAt),
-      downloadsEnabled: result.data.downloadsEnabled ?? false,
       followToDownload: result.data.followToDownload ?? false,
       repostToDownload: result.data.repostToDownload ?? false,
       isFallback: result.data.isFallback ?? false,
@@ -405,11 +402,6 @@ export function useTrackEditDialog(
       bannerUrl: result.data.bannerUrl ?? '',
       backgroundUrl: result.data.backgroundUrl ?? '',
       tracklist: result.data.tracklist ?? [],
-      fanTierIds: result.data.fanTierIds ?? current.fanTierIds ?? [],
-      tracklistOverlay: result.data.tracklistOverlay ?? {
-        enabled: false,
-        preset: 'cards',
-      },
     }));
     toast.success('Track details saved.');
     onSaved?.(result.data);
@@ -424,8 +416,8 @@ export function useTrackEditDialog(
     item,
     form,
     setForm,
-    purchaseTierId,
-    setPurchaseTierId,
+    access,
+    setAccess,
     loading,
     saving,
     playlistOpen,
