@@ -1,5 +1,6 @@
 import type { FetchMeta } from '../client';
 import { DEMO_MP3 } from '../mock';
+import { mockFixture } from '../mock-overrides';
 import { getMockUploadedSound, patchMockUploadedSound } from '../mock-uploads';
 import {
   allowMockFallback,
@@ -23,7 +24,7 @@ export async function fetchStudioSounds(): Promise<{
 }> {
   if (isForceMock()) {
     return {
-      data: [...mockSoundStore],
+      data: mockFixture('studioSounds', [...mockSoundStore]),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
@@ -32,7 +33,10 @@ export async function fetchStudioSounds(): Promise<{
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: [...mockSoundStore], meta: failMeta(err) };
+      return {
+        data: mockFixture('studioSounds', [...mockSoundStore]),
+        meta: failMeta(err),
+      };
     }
     return { data: [], meta: apiErrorMeta(err) };
   }

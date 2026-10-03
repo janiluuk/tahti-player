@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { TrackDetailView } from '@tahti-web/views/TrackDetailView';
+import { expect, within } from 'storybook/test';
 
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
+import { mockData } from './_lib/mock-data';
 
 const meta: Meta<typeof TrackDetailView> = {
   title: 'Tahti/Track/TrackDetailView',
@@ -44,4 +46,19 @@ export const Admin: Story = {
 // sign-in-gated comment composer.
 export const SignedOut: Story = {
   decorators: [withMockAuth(null)],
+};
+
+// Per-story fixture override (see _lib/README.md): the same view with a
+// track whose title differs from the shared mock.
+export const OverriddenTrack: Story = {
+  decorators: [withMockAuth(MOCK_USERS.listener)],
+  parameters: {
+    mockData: mockData({ trackDetail: { title: 'Midsummer Overdrive' } }),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByRole('heading', { name: 'Midsummer Overdrive' }),
+    ).toBeVisible();
+  },
 };

@@ -20,6 +20,7 @@
     "build:android:run": "./scripts/build-and-run-android.sh",
     "lint": "turbo lint",
     "check:file-size": "node scripts/check-file-size.mjs",
+    "storybook:surfaces": "node scripts/generate-storybook-surfaces.mjs",
     "lint:fix": "turbo lint:fix",
     "test": "turbo test",
     "test:coverage": "turbo test:coverage --continue",

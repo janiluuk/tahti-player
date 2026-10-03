@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { GlobalSearch } from '@tahti-web/components/GlobalSearch';
-import { userEvent, within } from 'storybook/test';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { withTahtiRouter } from './_lib/decorators';
 
@@ -28,5 +28,10 @@ export const WithResults: Story = {
     const input = canvas.getByRole('combobox');
     await userEvent.click(input);
     await userEvent.type(input, 'Northern', { delay: 30 });
+    const listbox = await canvas.findByRole('listbox');
+    await expect(input).toHaveAttribute('aria-expanded', 'true');
+    await expect(
+      await within(listbox).findByRole('option', { name: /Northern Lights/ }),
+    ).toBeVisible();
   },
 };

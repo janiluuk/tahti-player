@@ -1,4 +1,4 @@
-import type { Preview } from '@storybook/react-vite';
+import type { Decorator, Preview } from '@storybook/react-vite';
 import { createElement } from 'react';
 
 import '@fontsource/dm-sans/400.css';
@@ -8,6 +8,12 @@ import '@fontsource/space-mono/400.css';
 import '@tahti-player/tailwind-config';
 import '@tahti-player/themes';
 import './dark-docs.css';
+
+import {
+  resetMockOverrides,
+  setMockOverrides,
+  type MockOverrides,
+} from '@tahti-web/api/mock-overrides';
 
 import { listBasicThemes } from '@tahti-player/themes';
 
@@ -32,10 +38,7 @@ const THEME_ID_ITEMS = listBasicThemes().map((theme) => ({
   title: theme.name,
 }));
 
-const withTahtiTheme: NonNullable<Preview['decorators']>[number] = (
-  Story,
-  context,
-) => {
+const withTahtiTheme: Decorator = (Story, context) => {
   const root = document.documentElement;
   root.setAttribute(
     'data-theme-id',
@@ -51,6 +54,13 @@ const withTahtiTheme: NonNullable<Preview['decorators']>[number] = (
 
 const preview: Preview = {
   decorators: [withTahtiTheme],
+  // Seeds tahti-web's mock fixture overrides from `parameters.mockData`
+  // before each story renders, and clears them afterwards so one story's
+  // data never leaks into the next. See src/tahti-web/_lib/README.md.
+  beforeEach: ({ parameters }) => {
+    setMockOverrides((parameters.mockData as MockOverrides | undefined) ?? {});
+    return () => resetMockOverrides();
+  },
   globalTypes: {
     themeId: {
       name: 'Theme',
