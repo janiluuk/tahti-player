@@ -9,7 +9,7 @@ import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
  * in isolation. Prefer `livePreview: false` here to avoid dual WebGL with
  * other stories. Full interactive preview: use the **Full** story.
  *
- * Correction tracker: `docs/todo/channel-designer-storybook-elements.md`.
+ * Correction tracker: `docs/todo/storybook-parity-and-atlas-refresh.md`.
  *
  * Missing states: empty/error visual load, slideshow with many frames,
  * video-loop upload progress, player tab with every visualizer preset.

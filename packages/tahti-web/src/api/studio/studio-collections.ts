@@ -1,4 +1,5 @@
 import type { FetchMeta } from '../client';
+import { mockFixture } from '../mock-overrides';
 import { apiErrorMeta, isForceMock } from '../mode';
 import type {
   CollectionTrackSortMode,
@@ -15,7 +16,7 @@ export async function fetchStudioCollections(): Promise<{
 }> {
   if (isForceMock()) {
     return {
-      data: [
+      data: mockFixture('studioCollections', [
         {
           id: 'mock-collection-favorites-mix',
           slug: 'favorites-mix',
@@ -52,7 +53,7 @@ export async function fetchStudioCollections(): Promise<{
           isPublic: false,
           itemCount: 2,
         },
-      ],
+      ]),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }

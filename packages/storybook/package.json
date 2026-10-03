@@ -9,6 +9,7 @@
     "build": "storybook build",
     "preview": "storybook preview",
     "type-check": "tsc -p tsconfig.tahti.json --noEmit",
+    "test": "vitest run --project storybook",
     "clean": "rm -rf storybook-static .turbo node_modules/.cache",
     "deploy:vimage": "./deploy/deploy-vimage.sh"
   },
@@ -36,15 +37,19 @@
     "@storybook/addon-docs": "^10.0.0",
     "@storybook/addon-links": "^10.0.0",
     "@storybook/addon-themes": "^10.4.6",
+    "@storybook/addon-vitest": "^10.6.0",
     "@storybook/react-vite": "^10.0.0",
     "@tailwindcss/vite": "^4.1.11",
     "@types/react": "^18.3.23",
     "@types/three": "^0.184.1",
     "@vitejs/plugin-react": "^5.0.1",
+    "@vitest/browser-playwright": "^4.1.11",
     "eslint-plugin-storybook": "10.4.6",
+    "playwright": "^1.55.0",
     "tailwindcss": "^4.1.11",
     "typescript": "^5.9.2",
     "vite": "^7.1.3",
-    "vite-plugin-svgr": "^4.3.0"
+    "vite-plugin-svgr": "^4.3.0",
+    "vitest": "^4.1.11"
   }
 }

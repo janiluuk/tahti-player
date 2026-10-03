@@ -16,6 +16,7 @@ import {
   getMockVisualPreset,
   getMockVisualSettingsJson,
 } from './channel-design';
+import { mockFixture } from './mock-overrides';
 import { getMockFreeSubscriptionsEnabled } from './mock-profile-preferences';
 import type {
   Announcement,
@@ -380,14 +381,14 @@ const MOCK_DIRECTORY: ChannelDirectoryResponse = {
   // tahti-radio is featured via fetchRadioStation on Listen — not listed here.
 };
 
-export function mockDirectory(): ChannelDirectoryResponse {
+function buildMockDirectory(): ChannelDirectoryResponse {
   return MOCK_DIRECTORY;
 }
 
 /** Offline stand-in for GET /api/v1/search — matches artists from the mock
  * directory and tracks from each of their mock archives. No mock collection
  * fixture list exists yet, so collections always come back empty offline. */
-export function mockSearch(
+function buildMockSearch(
   q: string,
   type: 'all' | 'tracks' | 'artists' | 'collections' = 'all',
 ): SearchResponse {
@@ -454,7 +455,7 @@ function stationContent(slug: string): StationContent {
 const isCuratedStation = (key: string) =>
   Object.prototype.hasOwnProperty.call(STATION_CONTENT, key);
 
-export function mockChannel(slug: string): PublicChannel {
+function buildMockChannel(slug: string): PublicChannel {
   const isRadio = slug === TAHTI_RADIO_SLUG;
   const contentKey = isRadio ? 'northern-lights' : slug;
   const content = stationContent(contentKey);
@@ -561,7 +562,7 @@ export function mockChannel(slug: string): PublicChannel {
 }
 
 /** Member-relay snapshot (GET /api/v1/radio) — distinct from the always-on station. */
-export function mockRadio(): RadioNowPlaying {
+function buildMockRadio(): RadioNowPlaying {
   return {
     live: true,
     channel: {
@@ -648,7 +649,7 @@ const GENRE_TAGS: Record<string, string> = {
   acoustic: 'folk',
 };
 
-export function mockSoundItems(slug: string): ChannelSoundItem[] {
+function buildMockSoundItems(slug: string): ChannelSoundItem[] {
   const channel = mockChannel(slug);
   const content = stationContent(slug);
   const artist = channel.user.displayName;
@@ -718,7 +719,7 @@ const MOCK_SET_TRACKLIST = [
   },
 ];
 
-export function mockTrackComments(id: string): TrackComment[] {
+function buildMockTrackComments(id: string): TrackComment[] {
   if (!id.endsWith('-archive-1')) {
     return [];
   }
@@ -744,7 +745,7 @@ export function mockTrackComments(id: string): TrackComment[] {
 
 /** GET /api/tracks/:id mock — reconstructs the item from its channel's
  * archive list, since mock ids encode the owning slug (`${slug}-archive-N`). */
-export function mockTrackDetail(id: string): PublicTrackDetail | null {
+function buildMockTrackDetail(id: string): PublicTrackDetail | null {
   const slug = id.replace(/-archive-\d+$/, '');
   if (!slug || slug === id) {
     return null;
@@ -835,7 +836,7 @@ function discoverTrackPool(): DiscoverTrackItem[] {
   );
 }
 
-export function mockTopTracks(sort: 'asc' | 'desc'): DiscoverTrackItem[] {
+function buildMockTopTracks(sort: 'asc' | 'desc'): DiscoverTrackItem[] {
   const pool = discoverTrackPool().map((track, i) => ({
     ...track,
     listens: 340 - i * 37,
@@ -846,7 +847,7 @@ export function mockTopTracks(sort: 'asc' | 'desc'): DiscoverTrackItem[] {
   return pool;
 }
 
-export function mockLatestTracks(): DiscoverTrackItem[] {
+function buildMockLatestTracks(): DiscoverTrackItem[] {
   const slugs = ['northern-lights', 'demo'];
   return slugs
     .flatMap((slug) =>
@@ -870,7 +871,7 @@ export function mockNewToYou(): {
   };
 }
 
-export function mockProfile(username: string): PublicProfile {
+function buildMockProfile(username: string): PublicProfile {
   const channel = mockChannel(username);
   const content = stationContent(username);
   const archive = mockSoundItems(username);
@@ -977,7 +978,7 @@ export function mockProfile(username: string): PublicProfile {
   };
 }
 
-export function mockCollection(
+function buildMockCollection(
   slug: string,
   username = 'northern-lights',
 ): PublicCollection {
@@ -1032,7 +1033,7 @@ export function mockCollection(
   };
 }
 
-export function mockSmartLink(smartLinkSlug: string): SmartLinkView {
+function buildMockSmartLink(smartLinkSlug: string): SmartLinkView {
   const username =
     smartLinkSlug.match(/^(.*)-release-\d+$/)?.[1] ?? 'northern-lights';
   const profile = mockProfile(username);
@@ -1096,7 +1097,7 @@ export function mockVenues(): VenueDirectoryItem[] {
   ];
 }
 
-export function mockVenueProfile(slug: string): VenueProfile | null {
+function buildMockVenueProfile(slug: string): VenueProfile | null {
   const base = mockVenues().find((v) => v.slug === slug);
   if (!base) {
     return null;
@@ -1216,7 +1217,7 @@ export function mockChatAccess(): ChatAccess {
   };
 }
 
-export function mockChatHistory(slug: string): ChatMessage[] {
+function buildMockChatHistory(slug: string): ChatMessage[] {
   const now = Date.now();
   return [
     {
@@ -1255,7 +1256,7 @@ export function mockAuthUser(overrides?: Partial<AuthUser>): AuthUser {
   };
 }
 
-export function mockFanTiers(username: string): FanTiersResponse {
+function buildMockFanTiers(username: string): FanTiersResponse {
   const channel = mockChannel(username);
   return {
     artist: {
@@ -1373,7 +1374,7 @@ export function mockTransparencyResolutions(
   ];
 }
 
-export function mockAnnouncements(): Announcement[] {
+function buildMockAnnouncements(): Announcement[] {
   return [
     {
       id: '3',
@@ -1414,7 +1415,7 @@ function feedArtist(slug: string) {
 /** GET /api/me/feed — recent posts/tracks/releases from artists the member
  * follows. Mixes a few of the richer mock stations so it reads like a real
  * timeline instead of one repeated fixture. */
-export function mockFeed(): FeedResponse {
+function buildMockFeed(): FeedResponse {
   const moonlight = stationContent('dj-moonlight');
   const cartography = stationContent('midnight-cartography');
   return {
@@ -1483,4 +1484,87 @@ export function mockFeed(): FeedResponse {
       },
     ],
   };
+}
+
+export function mockDirectory(): ChannelDirectoryResponse {
+  return mockFixture('directory', buildMockDirectory());
+}
+
+export function mockSearch(
+  q: string,
+  type: 'all' | 'tracks' | 'artists' | 'collections' = 'all',
+): SearchResponse {
+  return mockFixture('search', buildMockSearch(q, type), q, type);
+}
+
+export function mockChannel(slug: string): PublicChannel {
+  return mockFixture('channel', buildMockChannel(slug), slug);
+}
+
+export function mockRadio(): RadioNowPlaying {
+  return mockFixture('radio', buildMockRadio());
+}
+
+export function mockSoundItems(slug: string): ChannelSoundItem[] {
+  return mockFixture('soundItems', buildMockSoundItems(slug), slug);
+}
+
+export function mockTrackComments(id: string): TrackComment[] {
+  return mockFixture('trackComments', buildMockTrackComments(id), id);
+}
+
+export function mockTrackDetail(id: string): PublicTrackDetail | null {
+  return mockFixture('trackDetail', buildMockTrackDetail(id), id);
+}
+
+export function mockProfile(username: string): PublicProfile {
+  return mockFixture('profile', buildMockProfile(username), username);
+}
+
+export function mockCollection(
+  slug: string,
+  username = 'northern-lights',
+): PublicCollection {
+  return mockFixture(
+    'collection',
+    buildMockCollection(slug, username),
+    slug,
+    username,
+  );
+}
+
+export function mockSmartLink(smartLinkSlug: string): SmartLinkView {
+  return mockFixture(
+    'smartLink',
+    buildMockSmartLink(smartLinkSlug),
+    smartLinkSlug,
+  );
+}
+
+export function mockVenueProfile(slug: string): VenueProfile | null {
+  return mockFixture('venueProfile', buildMockVenueProfile(slug), slug);
+}
+
+export function mockChatHistory(slug: string): ChatMessage[] {
+  return mockFixture('chatHistory', buildMockChatHistory(slug), slug);
+}
+
+export function mockFanTiers(username: string): FanTiersResponse {
+  return mockFixture('fanTiers', buildMockFanTiers(username), username);
+}
+
+export function mockAnnouncements(): Announcement[] {
+  return mockFixture('announcements', buildMockAnnouncements());
+}
+
+export function mockFeed(): FeedResponse {
+  return mockFixture('feed', buildMockFeed());
+}
+
+export function mockTopTracks(sort: 'asc' | 'desc'): DiscoverTrackItem[] {
+  return mockFixture('topTracks', buildMockTopTracks(sort), sort);
+}
+
+export function mockLatestTracks(): DiscoverTrackItem[] {
+  return mockFixture('latestTracks', buildMockLatestTracks());
 }

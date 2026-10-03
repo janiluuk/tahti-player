@@ -5,6 +5,14 @@
   },
   "include": [
     "src/tahti-web/SectionNavigation.stories.tsx",
+    "src/tahti-web/_lib/**/*",
+    "src/tahti-web/BackdropUploadButton.stories.tsx",
+    "src/tahti-web/GlobalSearch.stories.tsx",
+    "src/tahti-web/ImageUploadField.stories.tsx",
+    "src/tahti-web/RoundImageUploadButton.stories.tsx",
+    "src/tahti-web/TrackDetailView.stories.tsx",
+    ".storybook/preview.ts",
+    "vitest.config.ts",
     "../tahti-web/src/vite-env.d.ts"
   ]
 }

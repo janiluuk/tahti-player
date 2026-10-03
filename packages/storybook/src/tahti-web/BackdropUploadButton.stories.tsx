@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { BackdropUploadButton } from '@tahti-web/components/BackdropUploadButton';
-import { userEvent, within } from 'storybook/test';
+import { expect, userEvent } from 'storybook/test';
+
+import { findDialog, openDialog } from './_lib/play';
 
 const meta: Meta<typeof BackdropUploadButton> = {
   title: 'Tahti/Media/BackdropUploadButton',
@@ -28,17 +30,20 @@ export const Set: Story = {
 export const PreviewModalOpen: Story = {
   args: { value: 'https://picsum.photos/seed/backdrop-wide/900/300' },
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole('button', { name: /preview/i }));
+    const preview = await openDialog(canvasElement, /preview/i, 'Backdrop');
+    await expect(preview.getByRole('img', { name: 'Backdrop' })).toBeVisible();
+    await expect(preview.getByRole('button', { name: 'Delete' })).toBeVisible();
+    await expect(preview.getByRole('button', { name: 'Change' })).toBeVisible();
   },
 };
 
 export const ConfirmDelete: Story = {
   args: { value: 'https://picsum.photos/seed/backdrop-wide/900/300' },
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole('button', { name: /preview/i }));
-    const body = within(canvasElement.ownerDocument.body);
-    await userEvent.click(body.getByRole('button', { name: 'Delete' }));
+    const preview = await openDialog(canvasElement, /preview/i, 'Backdrop');
+    await userEvent.click(preview.getByRole('button', { name: 'Delete' }));
+    const confirm = await findDialog(canvasElement, 'Remove backdrop?');
+    await expect(confirm.getByRole('button', { name: 'Remove' })).toBeVisible();
+    await expect(confirm.getByRole('button', { name: 'Cancel' })).toBeVisible();
   },
 };
