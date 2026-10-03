@@ -15,21 +15,22 @@ import {
   setFanTierActive,
   type FanTierRow,
 } from '../api/fan-tiers';
+import { FAN_TIER_PERK_LABELS, humanizeFanTierPerk } from '../lib/fanTierPerks';
 
 const PERK_OPTIONS = [
   {
     key: 'FAN_CHAT',
-    label: 'Fan chat',
+    label: FAN_TIER_PERK_LABELS.FAN_CHAT,
     icon: <MessageCircleIcon size={14} aria-hidden />,
   },
   {
     key: 'FAN_NEWSLETTER',
-    label: 'Fan newsletter',
+    label: FAN_TIER_PERK_LABELS.FAN_NEWSLETTER,
     icon: <NewspaperIcon size={14} aria-hidden />,
   },
   {
     key: 'EARLY_ACCESS',
-    label: 'Early access',
+    label: FAN_TIER_PERK_LABELS.EARLY_ACCESS,
     icon: <SparklesIcon size={14} aria-hidden />,
   },
 ] as const;
@@ -118,7 +119,7 @@ export function FanTiersEditor() {
                 )}
                 {t.perks && t.perks.length > 0 && (
                   <p className="text-foreground-secondary text-[10px]">
-                    {t.perks.join(', ')}
+                    {t.perks.map(humanizeFanTierPerk).join(', ')}
                   </p>
                 )}
               </div>

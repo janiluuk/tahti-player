@@ -11,6 +11,10 @@ export type FanTierRow = {
   active?: boolean;
 };
 
+/** Active tier as listed on an artist's public profile; `description` and
+ * `perks` are absent from older API builds. */
+export type PublicFanTier = Omit<FanTierRow, 'active'>;
+
 let mockTiers: FanTierRow[] = [
   {
     id: 'tier-mock-1',

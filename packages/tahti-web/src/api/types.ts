@@ -253,7 +253,7 @@ export type PublicProfile = import('./purchase-tiers').ProfileStore & {
   channel: { slug: string; state: string; artistKind?: string } | null;
   releases: PublicProfileRelease[];
   tracks: PublicProfileTrack[];
-  fanTiers: Array<{ id: string; name: string; amountCents: number }>;
+  fanTiers: import('./fan-tiers').PublicFanTier[];
   collections: PublicProfileCollection[];
   links: {
     channel: string | null;
