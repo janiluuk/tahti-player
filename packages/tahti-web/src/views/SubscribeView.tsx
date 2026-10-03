@@ -1,17 +1,20 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { Button } from '@tahti-player/ui';
+import { Alert, Button } from '@tahti-player/ui';
 
 import {
   fetchFanTiers,
+  fetchMySubscriptions,
   startFanSubscribe,
   type FetchMeta,
 } from '../api/client';
-import type { FanTiersResponse } from '../api/types';
+import type { FanSubscriptionRow, FanTiersResponse } from '../api/types';
+import { CurrentFanSubscriptionCard } from '../components/CurrentFanSubscriptionCard';
 import { EntitySocialHeader } from '../components/EntitySocialHeader';
 import { PageEmpty, PageLoading } from '../components/PageStates';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
+import type { FanCheckoutReturn } from '../lib/fanCheckoutReturn';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
@@ -20,12 +23,32 @@ function formatEur(cents: number) {
   return `€${(cents / 100).toFixed(cents % 100 === 0 ? 0 : 2)}/mo`;
 }
 
-export function SubscribeView({ username }: { username: string }) {
+function activeSubscriptionTo(
+  rows: FanSubscriptionRow[],
+  username: string,
+): FanSubscriptionRow | null {
+  const target = username.toLowerCase();
+  return (
+    rows.find(
+      (row) =>
+        row.state === 'ACTIVE' && row.artist.username.toLowerCase() === target,
+    ) ?? null
+  );
+}
+
+export function SubscribeView({
+  username,
+  checkoutReturn = null,
+}: {
+  username: string;
+  checkoutReturn?: FanCheckoutReturn;
+}) {
   const [data, setData] = useState<FanTiersResponse | null>(null);
   const [meta, setMeta] = useState<FetchMeta | null>(null);
   const [loading, setLoading] = useState(true);
   const [busyTier, setBusyTier] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
+  const [current, setCurrent] = useState<FanSubscriptionRow | null>(null);
   const user = useAuthStore((s) => s.user);
 
   useEffect(() => {
@@ -43,6 +66,27 @@ export function SubscribeView({ username }: { username: string }) {
       cancelled = true;
     };
   }, [username]);
+
+  const reloadCurrent = () =>
+    fetchMySubscriptions().then((res) =>
+      setCurrent(activeSubscriptionTo(res.data, username)),
+    );
+
+  useEffect(() => {
+    if (!user) {
+      setCurrent(null);
+      return;
+    }
+    let cancelled = false;
+    void fetchMySubscriptions().then((res) => {
+      if (!cancelled) {
+        setCurrent(activeSubscriptionTo(res.data, username));
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [user, username]);
 
   if (loading) {
     return <PageLoading label="Loading tiers…" />;
@@ -88,104 +132,115 @@ export function SubscribeView({ username }: { username: string }) {
         data-testid="subscribe-social-header"
       />
 
-      {!data.paymentsReady && (
-        <p className="text-foreground-secondary text-xs">
-          Payments not ready on this artist yet.
-        </p>
+      {checkoutReturn === 'subscribed' && (
+        <Alert tone="success" title="Thanks for subscribing!">
+          Your support goes straight to {data.artist.displayName}. It can take a
+          moment for the subscription to show up here.
+        </Alert>
+      )}
+      {checkoutReturn === 'canceled' && (
+        <Alert tone="neutral" title="Checkout cancelled">
+          You haven't been charged. Pick a tier whenever you're ready.
+        </Alert>
       )}
 
-      {!user && (
-        <p className="border-border bg-background-secondary rounded-lg border px-3 py-2 text-sm">
-          Sign in to start Stripe Checkout.{' '}
-          <button
-            type="button"
-            className="underline-offset-2 hover:underline"
-            onClick={() => useAuthModalStore.getState().open('login')}
-          >
-            Login
-          </button>{' '}
-          or{' '}
-          <button
-            type="button"
-            className="underline-offset-2 hover:underline"
-            onClick={() => useAuthModalStore.getState().open('join')}
-          >
-            Join
-          </button>
-          . Tier cards still load anonymously.
-        </p>
-      )}
-
-      {note && <p className="text-foreground-secondary text-sm">{note}</p>}
-
-      {data.tiers.length === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          No active fan tiers yet.
-        </p>
+      {current ? (
+        <CurrentFanSubscriptionCard subscription={current} />
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2">
-          {data.tiers.map((tier) => (
-            <div
-              key={tier.id}
-              className="border-border bg-background flex flex-col gap-3 rounded-lg border p-4"
-            >
-              <div>
-                <div className="font-display text-lg font-bold">
-                  {tier.name}
-                </div>
-                <div className="text-primary text-sm font-semibold">
-                  {formatEur(tier.amountCents)}
-                </div>
-              </div>
-              {tier.description && (
-                <p className="text-foreground-secondary text-sm">
-                  {tier.description}
-                </p>
-              )}
-              {tier.perks && tier.perks.length > 0 && (
-                <ul className="text-foreground-secondary list-inside list-disc text-xs">
-                  {tier.perks.map((perk) => (
-                    <li key={perk}>{perk}</li>
-                  ))}
-                </ul>
-              )}
+        <>
+          {!data.paymentsReady && meta?.source !== 'mock' && (
+            <p className="text-foreground-secondary text-sm">
+              This artist isn't set up to take payments yet, so subscribing
+              might not work right now.
+            </p>
+          )}
+
+          {!user && (
+            <p className="border-border bg-background-secondary flex flex-wrap items-center gap-1 rounded-lg border px-3 py-2 text-sm">
+              Log in or join Tahti to subscribe.
               <Button
-                size="sm"
-                disabled={busyTier === tier.id}
-                onClick={() => {
-                  if (!user) {
-                    setNote(
-                      'Log in first, then Subscribe opens Stripe Checkout (or redirects).',
-                    );
-                    return;
-                  }
-                  setBusyTier(tier.id);
-                  setNote(null);
-                  void startFanSubscribe(username, tier.id).then((res) => {
-                    setBusyTier(null);
-                    if (!res.ok) {
-                      setNote(res.error);
-                      return;
-                    }
-                    if ('checkoutUrl' in res) {
-                      setNote('Redirecting to Stripe Checkout…');
-                      window.location.assign(res.checkoutUrl);
-                      return;
-                    }
-                    setNote(res.message);
-                  });
-                }}
+                size="xs"
+                variant="text"
+                onClick={() => useAuthModalStore.getState().open('login')}
               >
-                {busyTier === tier.id ? 'Starting…' : 'Subscribe'}
+                Log in
               </Button>
-              {!data.paymentsReady && meta?.source !== 'mock' && (
-                <p className="text-foreground-secondary text-[10px]">
-                  Artist Connect may not accept charges yet — checkout can 503.
-                </p>
-              )}
+              <Button
+                size="xs"
+                variant="text"
+                onClick={() => useAuthModalStore.getState().open('join')}
+              >
+                Join
+              </Button>
+            </p>
+          )}
+
+          {note && <p className="text-foreground-secondary text-sm">{note}</p>}
+
+          {data.tiers.length === 0 ? (
+            <p className="text-foreground-secondary text-sm">
+              No active fan tiers yet.
+            </p>
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2">
+              {data.tiers.map((tier) => (
+                <div
+                  key={tier.id}
+                  className="border-border bg-background flex flex-col gap-3 rounded-lg border p-4"
+                >
+                  <div>
+                    <div className="font-display text-lg font-bold">
+                      {tier.name}
+                    </div>
+                    <div className="text-primary text-sm font-semibold">
+                      {formatEur(tier.amountCents)}
+                    </div>
+                  </div>
+                  {tier.description && (
+                    <p className="text-foreground-secondary text-sm">
+                      {tier.description}
+                    </p>
+                  )}
+                  {tier.perks && tier.perks.length > 0 && (
+                    <ul className="text-foreground-secondary list-inside list-disc text-xs">
+                      {tier.perks.map((perk) => (
+                        <li key={perk}>{perk}</li>
+                      ))}
+                    </ul>
+                  )}
+                  <Button
+                    size="sm"
+                    disabled={busyTier === tier.id}
+                    onClick={() => {
+                      if (!user) {
+                        useAuthModalStore.getState().open('login');
+                        return;
+                      }
+                      setBusyTier(tier.id);
+                      setNote(null);
+                      void startFanSubscribe(username, tier.id).then((res) => {
+                        setBusyTier(null);
+                        if (!res.ok) {
+                          setNote(res.error);
+                          return;
+                        }
+                        if ('checkoutUrl' in res) {
+                          setNote('Taking you to checkout…');
+                          window.location.assign(res.checkoutUrl);
+                          return;
+                        }
+                        setNote(res.message);
+                        void reloadCurrent();
+                      });
+                    }}
+                  >
+                    {busyTier === tier.id ? 'Starting…' : 'Subscribe'}
+                  </Button>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
     </div>
   );
