@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
 
-import { Button } from '@tahti-player/ui';
+import { Button, MediaArtwork } from '@tahti-player/ui';
 
 import { CommentItem } from '../../components/CommentItem';
 import { cn } from '../../lib/cn';
@@ -9,6 +9,7 @@ import { formatDuration } from '../../lib/playableToTrack';
 import { parseTimedComment } from '../../lib/timedComment';
 import { type TrackPage } from './buildTrackPage';
 import { cueLabel } from './helpers';
+import { TrackDetailsBlock } from './TrackDetailsBlock';
 
 export function TrackBody({ page }: { page: TrackPage }) {
   const {
@@ -38,15 +39,15 @@ export function TrackBody({ page }: { page: TrackPage }) {
             <ol className="flex flex-col gap-1.5 text-sm">
               {tracklist.map((cue) => (
                 <li key={cue.id} className="flex flex-wrap items-baseline">
-                  <button
-                    type="button"
+                  <Button
+                    variant="text"
                     onClick={() => {
                       if (cue.startSec != null) {
                         jumpTo(cue.startSec);
                       }
                     }}
                     className={cn(
-                      'hover:text-primary text-left',
+                      'hover:text-primary h-auto rounded-none p-0 text-left whitespace-normal hover:bg-transparent active:scale-100 active:bg-transparent',
                       cue.id === activeCueId && 'text-primary font-medium',
                     )}
                   >
@@ -58,7 +59,7 @@ export function TrackBody({ page }: { page: TrackPage }) {
                     {cue.artist && cue.artistUsername
                       ? cue.title
                       : cueLabel(cue.artist, cue.title)}
-                  </button>
+                  </Button>
                   {cue.artist && cue.artistUsername ? (
                     <>
                       <span className="mx-1">–</span>
@@ -75,6 +76,11 @@ export function TrackBody({ page }: { page: TrackPage }) {
               ))}
             </ol>
           ) : null}
+
+          <TrackDetailsBlock
+            detail={detail}
+            className={tracklist.length > 0 ? 'mt-10' : undefined}
+          />
 
           <div className="mt-10">
             <h2 className="mb-4 text-sm font-semibold tracking-wide uppercase">
@@ -137,13 +143,14 @@ export function TrackBody({ page }: { page: TrackPage }) {
                       }}
                       className="hover:bg-background-secondary flex items-center gap-3 rounded-lg p-1"
                     >
-                      <img
+                      <MediaArtwork
                         src={
                           collection.coverUrl ??
                           placeholderArtworkUrl(collection.slug)
                         }
                         alt=""
-                        className="size-14 shrink-0 rounded object-cover"
+                        size="md"
+                        className="size-14 min-w-14 shrink-0 rounded"
                       />
                       <span className="min-w-0">
                         <span className="block truncate text-sm font-medium">
@@ -173,10 +180,11 @@ export function TrackBody({ page }: { page: TrackPage }) {
                       params={{ id: track.id }}
                       className="hover:bg-background-secondary flex items-center gap-3 rounded-lg p-1"
                     >
-                      <img
+                      <MediaArtwork
                         src={track.bannerUrl ?? placeholderArtworkUrl(track.id)}
                         alt=""
-                        className="size-14 shrink-0 rounded object-cover"
+                        size="md"
+                        className="size-14 min-w-14 shrink-0 rounded"
                       />
                       <span className="min-w-0">
                         <span className="block truncate text-sm font-medium">

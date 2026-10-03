@@ -188,10 +188,6 @@ test('subscriber and track purchase both get the original WAV; artist sees both 
 
   await page.getByLabel('Audience').click();
   await page.getByRole('option', { name: 'Public' }).click();
-  const downloads = page.getByLabel('Allow downloads');
-  if (!(await downloads.isChecked())) {
-    await downloads.check();
-  }
   await page.getByRole('button', { name: 'Save changes' }).click();
   await expect(page.getByText(/saved/i)).toBeVisible();
 
@@ -210,7 +206,10 @@ test('subscriber and track purchase both get the original WAV; artist sees both 
     if (!created.ok) {
       return { ok: false as const, error: created.error };
     }
-    const access = await mod.setSoundPurchaseAccess(id, created.data.id);
+    const access = await mod.setSoundAccess(id, {
+      accessMode: 'PURCHASE',
+      purchaseTierId: created.data.id,
+    });
     if (!access.ok) {
       return { ok: false as const, error: access.error };
     }

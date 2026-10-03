@@ -1,3 +1,8 @@
+import type {
+  ChannelNowPlaying,
+  ChannelNowPlayingNext,
+} from './channel-now-playing-types';
+
 export type ChannelDirectoryItem = {
   slug: string;
   username: string;
@@ -22,13 +27,6 @@ export function isDirectoryArtistActive(item: ChannelDirectoryItem): boolean {
 
 export type ChannelDirectoryResponse = {
   items: ChannelDirectoryItem[];
-};
-
-export type ChannelNowPlaying = {
-  title: string;
-  artistName: string;
-  artistUsername: string | null;
-  artworkUrl: string | null;
 };
 
 export type PublicChannel = {
@@ -115,6 +113,7 @@ export type PublicChannel = {
     isMember?: boolean;
   };
   nowPlaying: ChannelNowPlaying | null;
+  nowPlayingNext?: ChannelNowPlayingNext | null;
   /** Public follower count for the channel's Stats block — sourced from the
    * artist profile (GET /api/v1/u/:username/profile), fetched alongside the
    * channel so the backdrop's Stats element has something real to show. */
@@ -192,6 +191,9 @@ export type PublicTrackDetail = {
   description: string | null;
   commentary: string | null;
   tracklist?: unknown;
+  /** `[{ role, name, artistUsername? }]` as stored on the sound; parse with
+   * `trackDetailFacts` before rendering. */
+  credits?: unknown;
   license: string;
   releasedAt: string;
   effectiveBpm: number | null;
@@ -364,39 +366,6 @@ export type PublicCollection = {
   links: { page: string; rss: string };
 };
 
-export type SmartLinkView = {
-  release: {
-    id: string;
-    title: string;
-    type?: string;
-    artworkUrl?: string | null;
-    visualPreset?: string | null;
-    slideshowImages?: string[];
-    galleryMode?: string | null;
-    releaseDate?: string | null;
-    genre?: string | null;
-    description?: string | null;
-    smartLinkSlug?: string;
-    tracks?: import('./release-download').SmartLinkTrack[];
-  };
-  artist: {
-    username: string;
-    displayName: string;
-    avatarUrl: string | null;
-  };
-  featuredCollections: Array<{
-    slug: string;
-    name: string;
-    coverUrl?: string | null;
-    itemCount?: number;
-    url?: string;
-  }>;
-  profileUrl: string;
-  releaseUrl: string;
-  targets: Record<string, string>;
-  embedUrl: string;
-};
-
 export type VenueDirectoryItem = {
   id: string;
   slug: string;
@@ -555,21 +524,6 @@ export type FollowListUser = {
   username: string;
   displayName: string;
   avatarUrl: string | null;
-};
-
-export type PlatformStatusCheck = {
-  state: 'ok' | 'degraded' | 'down' | string;
-  critical?: boolean;
-  latencyMs?: number;
-  detail?: string;
-};
-
-export type PlatformStatus = {
-  status: 'ok' | 'degraded' | 'down' | string;
-  version?: string;
-  uptimeSec?: number;
-  checks: Record<string, PlatformStatusCheck>;
-  ts?: string;
 };
 
 export type MembershipStatus = {
@@ -874,5 +828,8 @@ export type SearchResponse = {
   collections: SearchCollectionResult[];
 };
 
+export * from './channel-now-playing-types';
 export * from './embed-types';
+export * from './status-types';
+export * from './smart-link-types';
 export * from './jam-types';

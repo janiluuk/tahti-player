@@ -38,7 +38,6 @@ import {
   AlbumPlayPromptDialog,
   ArtistBioSection,
   ArtistEmbeds,
-  ArtistFanTiersNote,
   ArtistFeed,
   ArtistHeaderActions,
   ArtistLiveShows,
@@ -51,6 +50,7 @@ import {
   ArtistRelatedArtists,
   ArtistReleasesGrid,
   ArtistStoreSection,
+  ArtistSupportNote,
   ArtistTaggedIn,
   useArtistCatalog,
   useArtistChannelLook,
@@ -566,7 +566,7 @@ function ArtistProfilePage({ username }: { username: string }) {
         />
       ) : null}
 
-      <ArtistFanTiersNote tiers={fanTiers} />
+      <ArtistSupportNote tiers={fanTiers} tipJarUrl={artist.tipJarUrl} />
 
       <ArtistStoreSection
         username={artist.username}

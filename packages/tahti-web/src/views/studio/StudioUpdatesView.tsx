@@ -1,6 +1,8 @@
 import {
+  CalendarClockIcon,
   EyeIcon,
   NewspaperIcon,
+  PencilIcon,
   PlusIcon,
   SendIcon,
   Trash2Icon,
@@ -23,6 +25,7 @@ import {
   deleteArtistPost,
   fetchArtistPosts,
   fetchNewsletterDrafts,
+  isScheduledPost,
   sendNewsletterDraft,
   type ArtistPost,
   type NewsletterDraft,
@@ -34,8 +37,8 @@ import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { newsletterDeliverySummary } from '../../lib/newsletterDelivery';
 import { NewDraftDialog } from './updates/NewDraftDialog';
-import { NewPostDialog } from './updates/NewPostDialog';
 import { NewsletterSubscriberStats } from './updates/NewsletterSubscriberStats';
+import { PostDialog } from './updates/PostDialog';
 import { PostPreview } from './updates/PostPreview';
 
 type Tab = 'posts' | 'newsletter';
@@ -46,7 +49,9 @@ export function StudioUpdatesView() {
   const [drafts, setDrafts] = useState<NewsletterDraft[]>([]);
   const [msg, setMsg] = useState<string | null>(null);
 
-  const [postOpen, setPostOpen] = useState(false);
+  const [postEditor, setPostEditor] = useState<{ post?: ArtistPost } | null>(
+    null,
+  );
   const [draftOpen, setDraftOpen] = useState(false);
   const [previewPost, setPreviewPost] = useState<ArtistPost | null>(null);
   const [lightbox, setLightbox] = useState<{
@@ -125,7 +130,7 @@ export function StudioUpdatesView() {
                   size="icon-sm"
                   onClick={() => {
                     setMsg(null);
-                    setPostOpen(true);
+                    setPostEditor({});
                   }}
                   aria-label="New post"
                 >
@@ -165,7 +170,7 @@ export function StudioUpdatesView() {
                       <Tooltip content="New post" side="top">
                         <Button
                           size="icon-sm"
-                          onClick={() => setPostOpen(true)}
+                          onClick={() => setPostEditor({})}
                           aria-label="New post"
                         >
                           <PlusIcon size={16} aria-hidden />
@@ -210,9 +215,17 @@ export function StudioUpdatesView() {
                             ))}
                           </div>
                         )}
-                        <p className="text-foreground-secondary mt-1 text-xs">
-                          {new Date(p.publishAt).toLocaleString()}
-                        </p>
+                        {isScheduledPost(p) ? (
+                          <p className="text-foreground-secondary mt-1 flex items-center gap-1 text-xs">
+                            <CalendarClockIcon size={13} aria-hidden />
+                            Scheduled for{' '}
+                            {new Date(p.publishAt).toLocaleString()}
+                          </p>
+                        ) : (
+                          <p className="text-foreground-secondary mt-1 text-xs">
+                            {new Date(p.publishAt).toLocaleString()}
+                          </p>
+                        )}
                       </div>
                       <div className="flex shrink-0 gap-1">
                         <Button
@@ -223,6 +236,16 @@ export function StudioUpdatesView() {
                           <EyeIcon size={15} aria-hidden className="mr-1.5" />
                           Preview
                         </Button>
+                        <Tooltip content="Edit" side="top">
+                          <Button
+                            size="icon-sm"
+                            variant="text"
+                            aria-label="Edit post"
+                            onClick={() => setPostEditor({ post: p })}
+                          >
+                            <PencilIcon size={16} aria-hidden />
+                          </Button>
+                        </Tooltip>
                         <Tooltip content="Delete" side="top">
                           <Button
                             size="icon-sm"
@@ -308,10 +331,11 @@ export function StudioUpdatesView() {
           )}
         </ViewShell>
 
-        {postOpen && (
-          <NewPostDialog
-            onClose={() => setPostOpen(false)}
-            onPublished={reload}
+        {postEditor && (
+          <PostDialog
+            post={postEditor.post}
+            onClose={() => setPostEditor(null)}
+            onSaved={reload}
             onImageClick={(imageUrl) =>
               setLightbox({ images: [imageUrl], index: 0 })
             }
@@ -329,6 +353,8 @@ export function StudioUpdatesView() {
                 title={previewPost.title}
                 body={previewPost.body}
                 publishAt={previewPost.publishAt}
+                linkUrl={previewPost.linkUrl}
+                linkLabel={previewPost.linkLabel}
                 images={previewPost.images}
                 onImageClick={(index) =>
                   setLightbox({ images: previewPost.images, index })

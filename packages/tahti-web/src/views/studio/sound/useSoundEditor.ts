@@ -14,7 +14,10 @@ import {
   type EditList,
   type StudioSound,
 } from '../../../api/studio-types';
-import type { TrackVisibility } from '../../../components/AudienceVisibilitySection';
+import {
+  visibilityFromIsPublic,
+  type TrackVisibility,
+} from '../../../components/AudienceVisibilitySection';
 import { SELECTABLE_CONTENT_TYPES } from '../../../content/contentTypes';
 import { usePolling } from '../../../hooks/usePolling';
 import { autoTrimCuts } from '../../../lib/autoTrimCuts';
@@ -50,9 +53,7 @@ export function useSoundEditor(id: string) {
   const [genre, setGenre] = useState('');
   const [contentType, setContentType] = useState('TRACK');
   const [visibility, setVisibility] = useState<TrackVisibility>('PUBLIC');
-  const [fanTierIds, setFanTierIds] = useState<string[]>([]);
   const [releaseDate, setReleaseDate] = useState('');
-  const [downloadsEnabled, setDownloadsEnabled] = useState(false);
   const [commentsEnabled, setCommentsEnabled] = useState(true);
   const tab = search.tab ?? 'details';
   const setTab = (next: 'details' | 'playlists' | 'insights') => {
@@ -81,13 +82,8 @@ export function useSoundEditor(id: string) {
       setDescription(res.data.description ?? '');
       setGenre(res.data.genre ? capitalizeGenre(res.data.genre) : '');
       setContentType(res.data.contentType ?? 'TRACK');
-      setVisibility(
-        res.data.visibility ??
-          (res.data.isPublic === false ? 'PRIVATE' : 'PUBLIC'),
-      );
-      setFanTierIds(res.data.fanTierIds ?? []);
+      setVisibility(visibilityFromIsPublic(res.data.isPublic));
       setReleaseDate(releaseDateFromReleasedAt(res.data.releasedAt));
-      setDownloadsEnabled(res.data.downloadsEnabled ?? false);
       setCommentsEnabled(res.data.commentsEnabled ?? true);
     });
     void fetchEditorDraft(id).then((res) => {
@@ -148,10 +144,7 @@ export function useSoundEditor(id: string) {
           ...(isAudioClip ? { genre: null } : { genre: genre || null }),
           contentType,
           isPublic: visibility === 'PUBLIC',
-          visibility,
-          fanTierIds,
           ...(isAudioClip ? {} : releasedAtFromReleaseDate(releaseDate)),
-          downloadsEnabled,
           commentsEnabled,
         },
         'Saved.',
@@ -197,7 +190,7 @@ export function useSoundEditor(id: string) {
     setSaving(true);
     try {
       await patchAndReport(
-        { visibility: 'PRIVATE', isPublic: false },
+        { isPublic: false },
         'Moved to your private stash.',
         () => setVisibility('PRIVATE'),
       );
@@ -329,12 +322,8 @@ export function useSoundEditor(id: string) {
     setContentType,
     visibility,
     setVisibility,
-    fanTierIds,
-    setFanTierIds,
     releaseDate,
     setReleaseDate,
-    downloadsEnabled,
-    setDownloadsEnabled,
     commentsEnabled,
     setCommentsEnabled,
     tab,

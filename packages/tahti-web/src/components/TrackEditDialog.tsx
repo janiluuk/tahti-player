@@ -9,11 +9,7 @@ import {
 
 import { Dialog, SaveButton, Tabs } from '@tahti-player/ui';
 
-import type {
-  StudioSound,
-  TracklistEntry,
-  TracklistOverlaySettings,
-} from '../api/studio-types';
+import type { StudioSound, TracklistEntry } from '../api/studio-types';
 import { AddToPlaylistPanel } from './AddToPlaylistPanel';
 import { PageLoading } from './PageStates';
 import { AdvancedTab } from './track-edit-dialog/AdvancedTab';
@@ -85,18 +81,8 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
                             (form.tracklist as TracklistEntry[] | undefined) ??
                             []
                           }
-                          overlay={
-                            (form.tracklistOverlay as
-                              TracklistOverlaySettings | undefined) ?? {
-                              enabled: false,
-                              preset: 'cards',
-                            }
-                          }
                           onChange={(tracklist) =>
                             setForm({ ...form, tracklist })
-                          }
-                          onOverlayChange={(tracklistOverlay) =>
-                            setForm({ ...form, tracklistOverlay })
                           }
                         />
                       ),

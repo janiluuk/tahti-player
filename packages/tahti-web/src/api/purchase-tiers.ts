@@ -141,15 +141,27 @@ export async function createPurchaseTier(input: {
   }
 }
 
-/** Pass a tier id to gate the track behind that purchase tier, or `null`
- * to clear the gate back to FREE. Matches the real `PATCH
- * /api/me/sound/:id/access` contract (accessMode + optional purchaseTierId). */
-export async function setSoundPurchaseAccess(
+export type SoundAccessMode = 'FREE' | 'SUBSCRIBERS_ONLY' | 'PURCHASE';
+
+/** Who can play a track: anyone, any active fan subscriber, or buyers of
+ * one purchase tier. Matches the real `PATCH /api/me/sound/:id/access`
+ * contract, where `purchaseTierId` only counts for PURCHASE. */
+export type SoundAccess = {
+  accessMode: SoundAccessMode;
+  purchaseTierId: string | null;
+};
+
+export async function setSoundAccess(
   soundId: string,
-  purchaseTierId: string | null,
+  access: SoundAccess,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  const accessMode =
+    access.accessMode === 'PURCHASE' && !access.purchaseTierId
+      ? 'FREE'
+      : access.accessMode;
+  const purchaseTierId =
+    accessMode === 'PURCHASE' ? access.purchaseTierId : null;
   if (isForceMock()) {
-    const accessMode = purchaseTierId ? 'PURCHASE' : 'FREE';
     // Two disconnected mock stores back this one sound: mockSoundStore
     // (studio.ts, read by the Studio editor) and the mock-uploads.ts store
     // (read by the public track-detail page) — keep both in sync, same as
@@ -162,17 +174,14 @@ export async function setSoundPurchaseAccess(
     await requestJson(`/api/me/sound/${encodeURIComponent(soundId)}/access`, {
       method: 'PATCH',
       body: JSON.stringify(
-        purchaseTierId
-          ? { accessMode: 'PURCHASE', purchaseTierId }
-          : { accessMode: 'FREE' },
+        purchaseTierId ? { accessMode, purchaseTierId } : { accessMode },
       ),
     });
     return { ok: true };
   } catch (err) {
     return {
       ok: false,
-      error:
-        err instanceof Error ? err.message : 'Could not set purchase access',
+      error: err instanceof Error ? err.message : 'Could not set track access',
     };
   }
 }

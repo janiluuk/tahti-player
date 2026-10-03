@@ -179,11 +179,9 @@ export async function patchStudioSound(
     const { pinned, ...rest } = patch;
     patchMockUploadedSound(id, {
       ...(patch.title ? { title: patch.title } : {}),
-      ...(patch.downloadsEnabled !== undefined
-        ? { downloadsEnabled: patch.downloadsEnabled }
+      ...(patch.isPublic !== undefined
+        ? { visibility: patch.isPublic ? 'PUBLIC' : 'PRIVATE' }
         : {}),
-      ...(patch.visibility ? { visibility: patch.visibility } : {}),
-      ...(patch.isPublic === true ? { visibility: 'PUBLIC' as const } : {}),
     });
     if (idx >= 0) {
       const next: StudioSound = {
@@ -235,11 +233,11 @@ export async function patchStudioSound(
  * behavior. */
 /** Mock-mode mirror of the real `PATCH /api/me/sound/:id/access` effect
  * on `mockSoundStore`, so `fetchStudioSound`/`TrackEditDialog` see the
- * change immediately — `setSoundPurchaseAccess` (purchase-tiers.ts) calls
+ * change immediately — `setSoundAccess` (purchase-tiers.ts) calls
  * this in mock mode instead of duplicating the store lookup. */
 export function setMockSoundPurchaseAccess(
   id: string,
-  accessMode: 'FREE' | 'PURCHASE',
+  accessMode: 'FREE' | 'SUBSCRIBERS_ONLY' | 'PURCHASE',
   purchaseTierId: string | null,
 ): void {
   const idx = mockSoundStore.findIndex((a) => a.id === id);
