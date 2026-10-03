@@ -4150,3 +4150,17 @@ Slices came from a new sweep of notifications, DMs, chat, smart links, events an
 - **Events**: `PATCH /api/me/events/:id` edits an event without notifying followers again, and Studio has an Edit action (tahti-org#669, #452).
 - **Radio shows**: past episodes carry the broadcast's title, description and cover (tahti-org#667), and the show page lists them with a "Listen to the recording" link (#451). "Show tagline" now saves the series tagline, and the air-time note has its own "When it airs" field (#455).
 - **Checks:** as above. Nothing was tried in a browser, against the live API or against Centrifugo.
+
+## 2026-10-03 - Ten cross-repo slices, thirty-second batch (tahti-player #457-#462, tahti-org #672-#676)
+
+Follow-ups from batches 29-31 and the notifications/DM sweep.
+
+- **Smart links**: the release genre is back. `GET /api/v1/r/:slug` sends it (custom, then preset, then the first track's), after #450 had removed the profile lookup it came from (tahti-org#672, #462).
+- **Chat**: refused messages now answer the Centrifugo publish proxy with HTTP 200 `{ error: { code, message } }`, so the browser gets the reason that #454 turns into a sentence (tahti-org#673).
+- **Reporting and DMs**: releases, collections and artist pages have a Report button, hidden for the owner (#458). DMs show "Artist" and "Moderator" badges from `channelRole` (#461).
+- **Auto-post**: Settings connects X/Twitter and Instagram when the server has them configured. The OAuth return link now opens Connections instead of falling back to Account (#460).
+- **Studio shows**: the show page edits visibility, automatic episode numbering and the next episode number, as the schedule dialog already promised (#457).
+- **Deleted and suspended accounts (tahti-org#674)**: deleting an account removes its future radio bookings and events. Deleted or suspended artists drop out of public radio slots, now-playing, events and the booking calendar, and their slots can be booked again. A suspended artist's booking no longer holds its slot.
+- **Display names**: the remaining public responses go through `safeDisplayName` (tahti-org#675). tahti-web has one shared email-in-name helper (#459). Notification titles stored in `packages/db` still use raw names.
+- **Venues**: saving an unknown, or another artist's unverified, venue returns `400 unknown_venue` instead of a 500 (tahti-org#676).
+- **Checks:** for each PR, tahti-web type-check, eslint on the changed files, the size guard and the touched tests. tahti-org ran Vitest for each touched route against a throwaway Postgres, each new test failing on `main`. #674 and #675 also ran the full `apps/api` suite. #457's coverage job failed once on an unrelated lastfm plugin error and passed on re-run. Nothing was tried in a browser, against the live API or against Centrifugo.
