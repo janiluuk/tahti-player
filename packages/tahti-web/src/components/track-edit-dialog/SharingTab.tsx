@@ -5,8 +5,9 @@ import { Button, Toggle } from '@tahti-player/ui';
 import type { StudioSound } from '../../api/studio-types';
 import {
   AudienceVisibilitySection,
-  type TrackVisibility,
+  visibilityFromIsPublic,
 } from '../AudienceVisibilitySection';
+import { DownloadsSwitchNotice } from '../DownloadsSwitchNotice';
 import { PurchaseAccessSection } from '../PurchaseAccessSection';
 import { SoundShareLinksSection } from '../SoundShareLinksSection';
 import { DownloadGateSection } from './DownloadGateSection';
@@ -25,8 +26,8 @@ export function SharingTab({
   const {
     form,
     setForm,
-    purchaseTierId,
-    setPurchaseTierId,
+    access,
+    setAccess,
     isAudioClip,
     downloadingEmbed,
     downloadHearthisEmbed,
@@ -42,39 +43,27 @@ export function SharingTab({
         shared programming.
       </p>
       <AudienceVisibilitySection
-        visibility={(form.visibility ?? 'PUBLIC') as TrackVisibility}
+        visibility={visibilityFromIsPublic(form.isPublic)}
         onVisibilityChange={(visibility) =>
-          setForm({ ...form, visibility, isPublic: visibility === 'PUBLIC' })
+          setForm({ ...form, isPublic: visibility === 'PUBLIC' })
         }
-        tierIds={form.fanTierIds ?? []}
-        onTierIdsChange={(fanTierIds) => setForm({ ...form, fanTierIds })}
       />
-      <PurchaseAccessSection
-        purchaseTierId={purchaseTierId}
-        onPurchaseTierIdChange={setPurchaseTierId}
-      />
-      {form.visibility === 'PRIVATE' || form.visibility === 'STASH' ? (
+      <PurchaseAccessSection access={access} onAccessChange={setAccess} />
+      {form.isPublic === false ? (
         <SoundShareLinksSection soundId={soundId} />
       ) : null}
-      <div className="border-border bg-background-secondary/30 flex items-center justify-between gap-2 rounded-lg border p-2.5 text-sm">
-        <span className="font-medium">Allow downloads</span>
-        <Toggle
-          label="Allow downloads"
-          checked={form.downloadsEnabled ?? false}
-          onChange={(downloadsEnabled) =>
-            setForm({ ...form, downloadsEnabled })
-          }
-        />
-      </div>
-      {form.downloadsEnabled && !item.embedProvider ? (
-        <DownloadGateSection
-          soundId={soundId}
-          followToDownload={form.followToDownload ?? false}
-          repostToDownload={form.repostToDownload ?? false}
-          onChange={(patch) => setForm({ ...form, ...patch })}
-        />
+      {!item.embedProvider ? (
+        <>
+          <DownloadsSwitchNotice />
+          <DownloadGateSection
+            soundId={soundId}
+            followToDownload={form.followToDownload ?? false}
+            repostToDownload={form.repostToDownload ?? false}
+            onChange={(patch) => setForm({ ...form, ...patch })}
+          />
+        </>
       ) : null}
-      {item.embedProvider === 'HEARTHIS' && form.downloadsEnabled ? (
+      {item.embedProvider === 'HEARTHIS' ? (
         <Button
           size="sm"
           variant="secondary"

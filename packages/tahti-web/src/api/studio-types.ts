@@ -35,9 +35,9 @@ export type StudioSound = {
   downloadsEnabled?: boolean;
   followToDownload?: boolean;
   repostToDownload?: boolean;
+  /** Mock-only; the API stores just `isPublic`. */
   visibility?: 'PUBLIC' | 'UNLISTED' | 'PRIVATE' | 'STASH';
-  fanTierIds?: string[];
-  /** One-time-purchase gate — set via `setSoundPurchaseAccess`, not part
+  /** Playback gate — set via `setSoundAccess`, not part
    * of the general `patchStudioSound` body. */
   accessMode?: 'FREE' | 'SUBSCRIBERS_ONLY' | 'PURCHASE';
   purchaseTierId?: string | null;
@@ -72,7 +72,6 @@ export type StudioSound = {
   /** [0..255] amplitude buckets for the real waveform — null/absent when not yet decoded. */
   peaks?: number[] | null;
   tracklist?: TracklistEntry[] | null;
-  tracklistOverlay?: TracklistOverlaySettings | null;
 };
 
 export type TracklistEntry = {
@@ -82,11 +81,6 @@ export type TracklistEntry = {
   /** Tahti member handle; saving this creates a tracklist mention. */
   artistUsername?: string | null;
   startSec?: number | null;
-};
-
-export type TracklistOverlaySettings = {
-  enabled: boolean;
-  preset: 'minimal' | 'cards' | 'ticker';
 };
 
 export type StudioSoundPatch = {
@@ -103,11 +97,8 @@ export type StudioSoundPatch = {
   selectsOptIn?: boolean;
   topListsEligible?: boolean;
   commentsEnabled?: boolean;
-  downloadsEnabled?: boolean;
   followToDownload?: boolean;
   repostToDownload?: boolean;
-  visibility?: 'PUBLIC' | 'UNLISTED' | 'PRIVATE' | 'STASH';
-  fanTierIds?: string[];
   bpm?: number | null;
   musicalKey?: string | null;
   useDetectedBpmKey?: boolean;
@@ -120,7 +111,6 @@ export type StudioSoundPatch = {
   backgroundUrl?: string | null;
   replaceFallbackItemId?: string;
   tracklist?: TracklistEntry[] | null;
-  tracklistOverlay?: TracklistOverlaySettings | null;
 };
 
 export type FingerprintMatch = {
