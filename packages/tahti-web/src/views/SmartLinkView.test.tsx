@@ -11,6 +11,7 @@ import {
   fireEvent,
   render,
   screen,
+  within,
 } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -57,6 +58,15 @@ describe('SmartLinkView', () => {
     await renderSmartLink({ showPoweredByFooter: true });
     const link = screen.getByRole('link', { name: 'Powered by Tahti' });
     expect(link.getAttribute('href')).toBe('/');
+  });
+
+  it('falls back to the Tahti release link when there are no services', async () => {
+    await renderSmartLink({});
+    const link = within(
+      screen.getByRole('region', { name: 'Listen on' }),
+    ).getByRole('link', { name: 'Tahti' });
+    expect(link.getAttribute('href')).toBe('/r/night-drive');
+    expect(link.getAttribute('target')).toBeNull();
   });
 
   it('hides the footer when it is off or missing', async () => {
