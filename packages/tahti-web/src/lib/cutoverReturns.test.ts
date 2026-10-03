@@ -20,7 +20,7 @@ describe('resolveDashboardCallbackRedirect', () => {
     ],
     [
       { social: 'instagram_connected' },
-      '/settings/connections?social=instagram_connected',
+      '/settings/artist?tab=connections&social=instagram_connected',
     ],
   ])('maps %o to %s', (search, expected) => {
     expect(resolveDashboardCallbackRedirect(search)).toBe(expected);

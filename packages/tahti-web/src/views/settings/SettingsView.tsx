@@ -7,6 +7,7 @@ import {
   type ArtistSettingsSection,
 } from '../../stores/settingsModalStore';
 import { isSettingsSectionId, type SettingsSectionId } from './settingsNav';
+import { socialCallbackToast } from './socialCallback';
 
 const ARTIST_SECTIONS: readonly ArtistSettingsSection[] = [
   'identity',
@@ -28,8 +29,8 @@ function isArtistSettingsSection(
 }
 
 /** Deep link `/settings` → Nuclear SettingsPanel modal. Also the landing
- * pad for OAuth connect callbacks (see cutoverReturns.ts) — `?status=` is
- * surfaced as a toast, then dropped, same as the retired Sources page did. */
+ * pad for OAuth connect callbacks (see cutoverReturns.ts) - `?status=` and
+ * `?social=` are surfaced as a toast, same as the retired Sources page did. */
 export function SettingsView({ sectionId }: { sectionId?: string }) {
   const open = useSettingsModalStore((s) => s.open);
   const section: SettingsSectionId = isSettingsSectionId(sectionId)
@@ -54,6 +55,10 @@ export function SettingsView({ sectionId }: { sectionId?: string }) {
       toast.info('Sign in to Tahti first, then connect.');
     } else if (status) {
       toast.error('Could not connect. Try again.');
+    }
+    const social = socialCallbackToast(params.get('social'));
+    if (social) {
+      toast[social.kind](social.message);
     }
   }, [open, section]);
 

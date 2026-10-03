@@ -1,4 +1,5 @@
 import type { FetchMeta } from './client';
+import { apiBase } from './http';
 import { failMeta, isForceMock } from './mode';
 import { requestJson } from './request-json';
 
@@ -21,6 +22,8 @@ export type SocialAutoPostSettings = {
 };
 
 export type SocialAutoPostPlatform = 'mastodon' | 'bluesky';
+
+export type SocialOAuthPlatform = 'twitter' | 'instagram';
 
 export type SocialTriggerSettings = {
   onReleasePublished?: boolean;
@@ -149,11 +152,53 @@ export async function saveBluesky(input: BlueskyConnectInput): Promise<Result> {
   }
 }
 
+export function socialOAuthStartUrl(platform: SocialOAuthPlatform): string {
+  return `${apiBase()}/api/me/social/${platform}/oauth/start`;
+}
+
+export async function patchSocialOAuth(
+  platform: SocialOAuthPlatform,
+  input: SocialTriggerSettings,
+): Promise<Result> {
+  if (isForceMock()) {
+    const current = mockSettings[platform];
+    if (!current.connected) {
+      return { ok: false, error: 'Connect first' };
+    }
+    mockSettings = {
+      ...mockSettings,
+      [platform]: {
+        ...current,
+        onReleasePublished:
+          input.onReleasePublished ?? current.onReleasePublished,
+        onChannelLive: input.onChannelLive ?? current.onChannelLive,
+        postTemplate: input.postTemplate ?? current.postTemplate,
+      },
+    };
+    return { ok: true, data: cloneMock() };
+  }
+  try {
+    const { data } = await requestJson<SocialAutoPostSettings>(
+      `/api/me/social/${platform}`,
+      { method: 'PATCH', body: JSON.stringify(input) },
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return { ok: false, error: errorMessage(err, 'Could not save settings') };
+  }
+}
+
 export async function disconnectSocial(
-  platform: SocialAutoPostPlatform,
+  platform: SocialAutoPostPlatform | SocialOAuthPlatform,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   if (isForceMock()) {
-    mockSettings = { ...mockSettings, [platform]: disconnected() };
+    mockSettings = {
+      ...mockSettings,
+      [platform]:
+        platform === 'twitter' || platform === 'instagram'
+          ? { ...disconnected(), configured: mockSettings[platform].configured }
+          : disconnected(),
+    };
     return { ok: true };
   }
   try {

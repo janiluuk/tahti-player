@@ -57,7 +57,10 @@ export function resolveDashboardCallbackRedirect(
 
   const social = stringValue(search, 'social');
   if (social) {
-    return appendSearchParams('/settings/connections', { social });
+    return appendSearchParams('/settings/artist', {
+      tab: 'connections',
+      social,
+    });
   }
 
   return null;
