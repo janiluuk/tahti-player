@@ -517,6 +517,7 @@ export async function createRtmpTarget(
     label?: string;
     rtmpUrl?: string;
     enabled?: boolean;
+    alwaysMirror?: boolean;
   },
   scope: RtmpTargetScope = 'me',
 ): Promise<{ ok: true; target: RtmpTarget } | { ok: false; error: string }> {
@@ -530,7 +531,7 @@ export async function createRtmpTarget(
       // fill that in, in mock mode and prod alike.
       label: input.label ?? null,
       rtmpUrl: input.rtmpUrl ?? 'rtmp://custom.example/live',
-      alwaysMirror: false,
+      alwaysMirror: input.alwaysMirror ?? false,
       enabled: input.enabled ?? true,
       keyLast4: input.streamKey.slice(-4),
     };
