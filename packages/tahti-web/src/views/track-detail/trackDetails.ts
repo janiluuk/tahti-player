@@ -1,6 +1,6 @@
 import type { PublicTrackDetail } from '../../api/types';
+import { containsEmailAddress, safeCreditName } from '../../lib/displayName';
 
-const EMAIL_PATTERN = /[^\s@<>()[\],;:"]+@[^\s@<>()[\],;:"]+\.[a-z]{2,}/i;
 const USERNAME_PATTERN = /^[a-z0-9_-]{2,32}$/i;
 
 // ALL_RIGHTS_RESERVED is the column default, so it says nothing the artist
@@ -59,10 +59,9 @@ function parseCredit(row: unknown): TrackDetailCredit | null {
     typeof artistUsername === 'string' && USERNAME_PATTERN.test(artistUsername)
       ? artistUsername
       : null;
-  const rawName = text(name);
-  const safeName = rawName && !EMAIL_PATTERN.test(rawName) ? rawName : username;
+  const safeName = safeCreditName(text(name), username);
   const roleText = text(role);
-  if (!safeName || !roleText || EMAIL_PATTERN.test(roleText)) {
+  if (!safeName || !roleText || containsEmailAddress(roleText)) {
     return null;
   }
   return {
