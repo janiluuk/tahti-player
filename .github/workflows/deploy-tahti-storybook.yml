@@ -170,8 +170,27 @@ jobs:
         run: |
           set -euo pipefail
           ssh deploy-prod "mkdir -p '${DEPLOY_PATH}/storybook-static' '${DEPLOY_PATH}/deploy'"
-          rsync -az --delete packages/storybook/storybook-static/ "deploy-prod:${DEPLOY_PATH}/storybook-static/"
-          rsync -az --delete \
+
+          # Jump-host rsync occasionally drops mid-transfer; retry before failing the job.
+          rsync_with_retry() {
+            local attempt=1
+            local max=4
+            local delay=5
+            until "$@"; do
+              if [ "${attempt}" -ge "${max}" ]; then
+                echo "::error::rsync failed after ${max} attempts: $*"
+                return 1
+              fi
+              echo "::warning::rsync attempt ${attempt}/${max} failed; retrying in ${delay}s"
+              sleep "${delay}"
+              attempt=$((attempt + 1))
+              delay=$((delay * 2))
+            done
+          }
+
+          rsync_with_retry rsync -az --delete --timeout=120 \
+            packages/storybook/storybook-static/ "deploy-prod:${DEPLOY_PATH}/storybook-static/"
+          rsync_with_retry rsync -az --delete --timeout=120 \
             --exclude 'deploy-vimage.sh' \
             packages/storybook/deploy/ "deploy-prod:${DEPLOY_PATH}/deploy/"
           if [ "${DEPLOY_HOST_PORT}" != "15181" ]; then
