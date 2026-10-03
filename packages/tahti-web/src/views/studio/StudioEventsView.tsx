@@ -2,6 +2,7 @@ import {
   CalendarClockIcon,
   CalendarDaysIcon,
   HistoryIcon,
+  PencilIcon,
   PlusIcon,
   Trash2Icon,
 } from 'lucide-react';
@@ -12,6 +13,7 @@ import {
   Button,
   ButtonLink,
   EmptyState,
+  ExternalLink,
   Tabs,
   Tooltip,
   ViewShell,
@@ -72,33 +74,42 @@ export function StudioEventsView() {
                   </p>
                 )}
                 {event.eventUrl && (
-                  <a
+                  <ExternalLink
                     href={event.eventUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-primary text-xs hover:underline"
+                    className="text-primary text-xs"
                   >
                     Tickets / event link
-                  </a>
+                  </ExternalLink>
                 )}
               </div>
             </div>
-            <Button
-              size="sm"
-              variant="text"
-              onClick={() => {
-                void deleteEvent(event.id).then((result) => {
-                  if (!result.ok) {
-                    toast.error(result.error);
-                  } else {
-                    reload();
-                  }
-                });
-              }}
-            >
-              <Trash2Icon size={14} aria-hidden className="mr-1.5" />
-              Remove
-            </Button>
+            <div className="flex flex-wrap gap-1">
+              <ButtonLink
+                to="/studio/events/$eventId/edit"
+                params={{ eventId: event.id }}
+                size="sm"
+                variant="text"
+              >
+                <PencilIcon size={14} aria-hidden className="mr-1.5" />
+                Edit
+              </ButtonLink>
+              <Button
+                size="sm"
+                variant="text"
+                onClick={() => {
+                  void deleteEvent(event.id).then((result) => {
+                    if (!result.ok) {
+                      toast.error(result.error);
+                    } else {
+                      reload();
+                    }
+                  });
+                }}
+              >
+                <Trash2Icon size={14} aria-hidden className="mr-1.5" />
+                Remove
+              </Button>
+            </div>
           </li>
         ))}
       </ul>
