@@ -29,6 +29,8 @@ export type ProfileFields = {
   showJoinDate?: boolean;
   showFollowers?: boolean;
   showFollowing?: boolean;
+  /** Lists the tracks this user liked on their public profile. */
+  showLikes?: boolean;
   showDailyListeners?: boolean;
   /** Handles for cross-posting/import sources — e.g. { hearthisAt: 'myhandle' }. */
   socialLinks?: Record<string, string> | null;
@@ -60,6 +62,7 @@ export let mockProfile: ProfileFields = {
   showJoinDate: true,
   showFollowers: true,
   showFollowing: true,
+  showLikes: true,
   showDailyListeners: true,
   socialLinks: {},
 };
@@ -102,6 +105,7 @@ export async function fetchMeProfile(): Promise<{
         showJoinDate: false,
         showFollowers: false,
         showFollowing: false,
+        showLikes: false,
         showDailyListeners: false,
         socialLinks: {},
       },
@@ -127,6 +131,7 @@ export type ProfilePatch = Partial<
     | 'showJoinDate'
     | 'showFollowers'
     | 'showFollowing'
+    | 'showLikes'
     | 'showDailyListeners'
     | 'socialLinks'
     | 'nameplateText'

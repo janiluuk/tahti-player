@@ -1,6 +1,11 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { fetchMyLikes, likedTrackToPlayable, type LikedTrack } from './likes';
+import {
+  fetchMyLikes,
+  fetchUserLikes,
+  likedTrackToPlayable,
+  type LikedTrack,
+} from './likes';
 
 const liked = (overrides: Partial<LikedTrack> = {}): LikedTrack => ({
   id: 's1',
@@ -49,5 +54,52 @@ describe('likes', () => {
       channelSlug: 'aino',
     });
     expect(likedTrackToPlayable(liked({ audioUrl: null }))).toBeNull();
+  });
+
+  it("reads a user's public likes", async () => {
+    const fetchSpy = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue(
+        new Response(
+          JSON.stringify({ showLikes: true, itemCount: 1, items: [liked()] }),
+          { status: 200 },
+        ),
+      );
+    const result = await fetchUserLikes('ai no');
+    expect(String(fetchSpy.mock.calls[0]![0])).toContain(
+      '/api/v1/u/ai%20no/likes?limit=20',
+    );
+    expect(result.showLikes).toBe(true);
+    expect(result.data.map((track) => track.id)).toEqual(['s1']);
+  });
+
+  it('hides likes the user keeps private', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(
+        JSON.stringify({ showLikes: false, itemCount: 0, items: [liked()] }),
+        { status: 200 },
+      ),
+    );
+    await expect(fetchUserLikes('aino')).resolves.toMatchObject({
+      showLikes: false,
+      data: [],
+    });
+  });
+
+  it('hides likes when the request fails or the field is missing', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+      new Response(JSON.stringify({ error: 'Not Found' }), { status: 404 }),
+    );
+    await expect(fetchUserLikes('aino')).resolves.toMatchObject({
+      showLikes: false,
+      data: [],
+    });
+    vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+      new Response(JSON.stringify({ items: [liked()] }), { status: 200 }),
+    );
+    await expect(fetchUserLikes('aino')).resolves.toMatchObject({
+      showLikes: false,
+      data: [],
+    });
   });
 });
