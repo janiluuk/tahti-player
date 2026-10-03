@@ -140,6 +140,7 @@ export function mockCancelSubscription(id: string): FanSubscriptionRow | null {
     return null;
   }
   row.canceledAt = new Date().toISOString();
+  row.state = 'CANCELED';
   return { ...row, artist: { ...row.artist } };
 }
 

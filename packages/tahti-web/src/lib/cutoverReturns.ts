@@ -35,9 +35,12 @@ export function resolveDashboardCallbackRedirect(
     return appendSearchParams('/studio/stripe', { fanConnect });
   }
 
+  // The fan-subscription billing portal is the listener's, so it returns to
+  // their own subscriptions rather than the artist's audience revenue.
   const fanSubscriptions = stringValue(search, 'fansubs');
   if (fanSubscriptions) {
-    return appendSearchParams('/studio/audience', {
+    return appendSearchParams('/settings/account', {
+      tab: 'subscriptions',
       fansubs: fanSubscriptions,
     });
   }

@@ -4,6 +4,7 @@ import {
   DownloadIcon,
   PencilIcon,
   PlayIcon,
+  RotateCcwIcon,
 } from 'lucide-react';
 
 import { Button, Tooltip } from '@tahti-player/ui';
@@ -11,6 +12,10 @@ import { Button, Tooltip } from '@tahti-player/ui';
 import type { StudioSound } from '../../../api/studio-types';
 import { AddToPlaylistButton } from '../../../components/AddToPlaylistButton';
 import { StudioSoundRowMenu } from '../../../components/StudioSoundRowMenu';
+import {
+  canRetrySoundProcessing,
+  useRetrySoundProcessing,
+} from '../../../hooks/useRetrySoundProcessing';
 import {
   EMBED_PROVIDER_HEIGHT,
   EMBED_PROVIDER_LABEL,
@@ -51,7 +56,18 @@ export function SoundRow({
     setEditingId,
     setStatsItem,
     setPendingDeleteItem,
+    setItems,
   } = state;
+  const { retry, retryingId } = useRetrySoundProcessing((id) =>
+    setItems((prev) =>
+      prev.map((sound) =>
+        sound.id === id
+          ? { ...sound, status: 'PENDING', processingError: null }
+          : sound,
+      ),
+    ),
+  );
+  const failed = item.status === 'ERROR';
 
   const embedSrc =
     item.embedProvider && item.embedUri
@@ -69,7 +85,7 @@ export function SoundRow({
           {item.title}
         </Link>
         <p className="text-foreground-secondary text-xs">
-          {item.status}
+          {failed ? 'Processing failed' : item.status}
           {formatUploadDate(item.createdAt)
             ? `, uploaded ${formatUploadDate(item.createdAt)}`
             : ''}
@@ -82,7 +98,24 @@ export function SoundRow({
           {item.downloadsEnabled === false ? ', downloads off' : ''}
           {embedSrc ? `, via ${EMBED_PROVIDER_LABEL[item.embedProvider!]}` : ''}
         </p>
+        {failed && item.processingError ? (
+          <p className="text-accent-red-strong text-xs">
+            {item.processingError}
+          </p>
+        ) : null}
       </div>
+      {canRetrySoundProcessing(item) ? (
+        <Button
+          size="xs"
+          variant="secondary"
+          disabled={retryingId === item.id}
+          onClick={() => void retry(item)}
+          aria-label={`Retry processing ${item.title}`}
+        >
+          <RotateCcwIcon size={14} aria-hidden className="mr-1" />
+          Retry
+        </Button>
+      ) : null}
       <Tooltip
         content={
           embedSrc

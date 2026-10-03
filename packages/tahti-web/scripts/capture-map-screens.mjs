@@ -18,6 +18,13 @@ const CHANNEL = process.env.MAP_CHANNEL || 'liis-kask-ee';
 // username often equals slug prefix before -ee/-fi
 const USER =
   process.env.MAP_USER || CHANNEL.replace(/-(ee|fi|vn|lv|se|no|dk)$/, '');
+// Defaults are the mock fixtures (VITE_FORCE_MOCK=1): the `demo` channel has
+// radio show bookings, `kuudes-linja` is the mock venue and `evt-mock-1` the
+// first mock event.
+const RADIO_SHOW = process.env.MAP_RADIO_SHOW || 'demo';
+const VENUE = process.env.MAP_VENUE || 'kuudes-linja';
+const EVENT_ID = process.env.MAP_EVENT_ID || 'evt-mock-1';
+const TAG = process.env.MAP_TAG || 'ambient';
 
 /** @type {{ id: string; path: string; wait?: number; auth?: boolean }[]} */
 const shots = [
@@ -74,8 +81,10 @@ const shots = [
   { id: 'status', path: '/status', auth: false },
   { id: 'transparency', path: '/transparency', auth: false },
   { id: 'transparency-methodology', path: '/transparency/methodology' },
-  { id: 't-shortlink', path: `/t/${CHANNEL}-archive-1`, auth: false },
-  { id: 'v-shortlink', path: '/v/demo-release', auth: false },
+  { id: 'track-page', path: `/t/${CHANNEL}-archive-1`, auth: false },
+  { id: 'tag-search', path: `/search?tag=${TAG}`, auth: false },
+  { id: 'venue-detail', path: `/v/${VENUE}`, auth: false },
+  { id: 'studio-signed-out', path: '/studio', auth: false },
   { id: 'c-shortlink', path: `/c/${CHANNEL}`, auth: false },
 
   // ── Listener / member ────────────────────────────────────────────────────
@@ -97,7 +106,7 @@ const shots = [
   { id: 'listener-dashboard', path: '/dashboard' },
   { id: 'account', path: '/account' },
   { id: 'messages', path: '/messages' },
-  { id: 'messages-thread', path: '/messages/demo-thread' },
+  { id: 'messages-thread', path: '/messages/conv-mock-1' },
   { id: 'schedule-page', path: '/schedule' },
   // The Tahti map itself (this script's own output) -- referenced by
   // mapScreens.ts as its own node, previously never in this shot list.
@@ -111,11 +120,15 @@ const shots = [
   { id: 'money-fan-subs', path: '/settings/audience' },
   { id: 'settings-account', path: '/settings/account' },
   {
+    id: 'settings-artist-connections',
+    path: '/settings/artist?tab=connections',
+  },
+  {
     id: 'settings-notifications',
     path: '/settings/account?tab=notifications',
   },
   { id: 'sources', path: '/settings/plugin-store?category=import' },
-  { id: 'radio-show', path: `/radio/show/${CHANNEL}` },
+  { id: 'radio-show', path: `/radio/show/${RADIO_SHOW}` },
 
   // ── Artist / Studio ──────────────────────────────────────────────────────
   { id: 'studio', path: '/studio' },
@@ -130,12 +143,12 @@ const shots = [
   { id: 'editor', path: '/studio/editor' },
   { id: 'editor-track', path: '/studio/editor/arch-mock-1' },
   { id: 'mastering', path: '/studio/mastering/arch-mock-1' },
-  { id: 'upload', path: '/studio/upload' },
+  { id: 'upload', path: '/library/upload' },
   { id: 'stash', path: '/studio/stash' },
   { id: 'schedule', path: '/studio/schedule' },
   { id: 'shows', path: '/studio/shows' },
-  { id: 'show-detail', path: '/studio/shows/show-mock-1' },
-  { id: 'show-episode', path: '/studio/shows/episodes/ep-mock-1' },
+  { id: 'show-detail', path: '/studio/shows/show-series-demo' },
+  { id: 'show-episode', path: '/studio/shows/episodes/ep-demo-1' },
   { id: 'stats', path: '/studio/stats' },
   { id: 'stats-detail-alias', path: '/studio/stats/detail' },
   { id: 'stats-detail', path: '/studio/insights/archive/arch-mock-1' },
@@ -149,6 +162,7 @@ const shots = [
   { id: 'studio-governance', path: '/studio/governance' },
   { id: 'studio-events', path: '/studio/events' },
   { id: 'studio-event-new', path: '/studio/events/new' },
+  { id: 'studio-event-edit', path: `/studio/events/${EVENT_ID}/edit` },
   { id: 'studio-branding', path: '/studio/branding' },
   { id: 'studio-recordings', path: '/studio/recordings' },
   { id: 'studio-moderation', path: '/studio/moderation' },
@@ -170,7 +184,7 @@ const shots = [
   { id: 'admin-streams', path: '/admin/streams' },
   { id: 'admin-vendors', path: '/admin/vendors' },
   { id: 'admin-venues', path: '/admin/venues' },
-  { id: 'admin-disco-widgets', path: '/admin/disco-widgets' },
+  { id: 'admin-disco-widgets', path: '/admin/addons' },
   { id: 'admin-status', path: '/admin/status' },
   { id: 'admin-users', path: '/admin/users' },
   { id: 'admin-radio', path: '/admin/radio' },
@@ -182,7 +196,7 @@ const shots = [
   { id: 'admin-artwork-presets', path: '/admin/artwork-presets' },
   { id: 'admin-grants', path: '/admin/grants' },
   { id: 'admin-grants-year', path: '/admin/grants/2026' },
-  { id: 'admin-agm', path: '/admin/agm' },
+  { id: 'admin-agm', path: '/admin/governance/agm' },
   { id: 'admin-i18n', path: '/admin/i18n' },
   { id: 'admin-map', path: '/admin/map' },
   { id: 'admin-tahti-selects', path: '/admin/tahti-selects' },
@@ -195,6 +209,7 @@ const shots = [
 /** Auth-flow pages only make sense signed out; everything else is captured
  * as the board (admin) user. */
 const SIGNED_OUT_SHOT_IDS = new Set([
+  'studio-signed-out',
   'login',
   'login-totp',
   'join',
@@ -415,6 +430,10 @@ const IN_PAGE_TAB_SHOT_IDS = new Set([
   'admin-moderation',
   'admin-moderation-tab',
   'archive-item',
+  'release-detail',
+  'show-detail',
+  'studio-branding',
+  'settings-artist-connections',
 ]);
 
 async function captureInPageTabs(baseName, shotId) {

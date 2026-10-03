@@ -4,6 +4,7 @@ import {
   appendSearchParams,
   resolveDashboardCallbackRedirect,
 } from '../lib/cutoverReturns';
+import { parseFanCheckoutReturnSearch } from '../lib/fanCheckoutReturn';
 import { resolveDashboardRedirect } from '../lib/prodPathRedirects';
 import { useAuthStore } from '../stores/authStore';
 import { DashboardAliasView } from '../views/DashboardAliasView';
@@ -75,10 +76,12 @@ export const prodChannelAliasRoute = createRoute({
 export const prodSubscribeAliasRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/u/$username/subscribe',
-  beforeLoad: ({ params }) => {
+  validateSearch: parseFanCheckoutReturnSearch,
+  beforeLoad: ({ params, search }) => {
     throw redirect({
       to: '/subscribe/$username',
       params: { username: params.username },
+      search,
     });
   },
 });

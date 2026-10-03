@@ -11,6 +11,44 @@ Building those per-screen diagrams required grep-verifying every real
 out of scope here). Findings below are real, source-grounded gaps in the
 **Nuclear (this client)** navigation graph, not documentation drift.
 
+## 2026-10-03 - Atlas refresh: redirect targets and resolved orphans
+
+Re-checked the route tree (`src/router/routes-*.tsx`), chrome, and the
+`/dashboard/*` redirect table (`lib/prodPathRedirects.ts`) while refreshing
+the `/more` atlas graphs. [NAVIGATION-SITEMAP.md](NAVIGATION-SITEMAP.md) has
+the current menus.
+
+### Resolved since 2026-09-03
+
+- `/venues` is no longer an orphan: it redirects to `/discover?tab=venues`,
+  and venue pages (`/v/$slug`) are linked from the directory and from
+  "Recorded at" on track pages.
+- `/library/smartlinks` is a Library tab.
+- `/jam/$code` is opened by "Start a Jam" on a collection page.
+- `/schedule` is also linked from the channel page programme block, not
+  only the booking calendar. Radio still does not link it.
+
+### Redirects that land somewhere unexpected
+
+| Old path | Goes to | What actually happens |
+| --- | --- | --- |
+| `/dashboard/settings/connections`, `/dashboard/settings/api` | `/settings/connections` | `connections` is not a Settings section, so the modal opens Account. Social links live in Settings → Artist → Connections (`/settings/artist?tab=connections`); API tokens in Account → Security. |
+| `/dashboard/settings/discovery`, `/dashboard/settings/internet-radio` | `/settings/widgets` | `widgets` is not a section either - opens Account. Discovery is Settings → Channel & design → Discovery. |
+| `/studio/channel?tab=design` / `?tab=profile` | `/settings/artist?tab=channel-designer` | `channel-designer` is not an Artist tab (`ARTIST_SECTIONS` in `SettingsView.tsx`), so Artist opens on its default tab. The Channel Designer is Settings → Channel & design, or `/studio/branding?tab=channel-designer` (which `/dashboard/channel/edit` already uses). |
+| `/studio/venues`, `/dashboard/venues` | `/admin/venues` | Board-only page. Artists hit the AdminGate "Board admin" message. |
+| `/dashboard/upload`, `/dashboard/settings/moderators` | `/studio/upload`, `/studio/moderation` | Two redirect hops (`/library/upload`, `/settings/channel`). Works, but the table could point at the final route. |
+
+### Not route-addressable (atlas and capture limits)
+
+- The track editor (`TrackEditDialog`) opens in place from Tracks, the
+  track page and the artist page; there is no URL for it, so the atlas card
+  has no screenshot and capture needs a click step.
+- Gated track pages (fan subscribers only, purchase, download gate) have no
+  mock fixture, so mock-mode capture cannot show them yet.
+- `/search?tag=` returns no tracks in mock mode (`fetchTracksByTag`), so a
+  mock capture shows the empty state.
+- `/jam/$code` has no mock session.
+
 ## 2026-09-03 — Chrome vs sitemap vs inbound links
 
 Re-audited persistent chrome (`AppShell`, `StudioNav`, `AdminNav`,
@@ -42,13 +80,15 @@ now lists chrome separately from routes it does not actually own.
 
 ### Still open (production orphans)
 
+Rows marked resolved were re-checked 2026-10-03 (see above).
+
 | Gap | Why it matters |
 | --- | --- |
-| `/venues` not in Listen/mobile chrome | Public directory is easy to miss; sitemap and Listen flow diagrams still imply it is a discovery sibling of Radio. |
-| `/schedule` buried in booking UI | Listeners on Radio cannot see the programme without opening the calendar dialog. |
-| `/library/smartlinks` unlinked | Smart-link manager exists but cannot be chosen from Library Overview / Sounds / Collections. |
+| ~~`/venues` not in Listen/mobile chrome~~ | Resolved: redirects to the Discover Venues tab. |
+| `/schedule` not linked from Radio | Listeners on Radio cannot see the programme; it is linked from the channel page programme block and the booking calendar. |
+| ~~`/library/smartlinks` unlinked~~ | Resolved: Library tab. |
 | `/studio/distribution` Releases-only | Artists who are not on the releases list have no StudioNav path to delivery status. |
-| `/jam/$code` unlinked | Join-by-code route has no in-app entry besides the atlas. |
+| ~~`/jam/$code` unlinked~~ | Resolved: "Start a Jam" on a collection page. |
 
 ### Checked this pass, not orphans
 

@@ -13,6 +13,8 @@ export type ArtistSettingsSection =
   | 'press-kit'
   | 'release-visuals';
 
+export type AccountSettingsSection = 'subscriptions';
+
 type SettingsModalState = {
   isOpen: boolean;
   activeTab: SettingsSectionId;
@@ -24,10 +26,13 @@ type SettingsModalState = {
   pluginCategory: PluginCategoryTarget | null;
   /** Sub-tab when activeTab === 'artist' (branding / gallery / …). */
   artistSection: ArtistSettingsSection | null;
+  /** Sub-tab when activeTab === 'account'. */
+  accountSection: AccountSettingsSection | null;
   open: (
     tab?: SettingsSectionId,
     pluginCategory?: PluginCategoryTarget,
     artistSection?: ArtistSettingsSection,
+    accountSection?: AccountSettingsSection,
   ) => void;
   close: () => void;
   setActiveTab: (tab: SettingsSectionId) => void;
@@ -38,13 +43,16 @@ export const useSettingsModalStore = create<SettingsModalState>((set) => ({
   activeTab: 'account',
   pluginCategory: null,
   artistSection: null,
-  open: (tab, pluginCategory, artistSection) =>
+  accountSection: null,
+  open: (tab, pluginCategory, artistSection, accountSection) =>
     set((state) => ({
       isOpen: true,
       activeTab: tab ?? state.activeTab,
       pluginCategory: pluginCategory ?? null,
       artistSection: artistSection ?? null,
+      accountSection: accountSection ?? null,
     })),
   close: () => set({ isOpen: false }),
-  setActiveTab: (tab) => set({ activeTab: tab, artistSection: null }),
+  setActiveTab: (tab) =>
+    set({ activeTab: tab, artistSection: null, accountSection: null }),
 }));
