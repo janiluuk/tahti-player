@@ -4115,3 +4115,38 @@ Slices came from two sweeps: database fields with no writer, reader or enforceme
 - **Tracks**: the track page shows genre, BPM/key, Creative Commons licence, credits and commentary, plus the mix version next to the title. TrackHero moved to `@tahti-player/ui` components (#430). The track editor sets BPM, key, version, "use detected" and the AI-generated label (#428). Collection rows show "Added by @username" and the contributor's note (#429).
 - **Sharing tab honesty (#433)**: "Not listed", per-tier "Stash", the downloads switch and the tracklist overlay had no API storage and silently didn't save. Audience is now Public or Private. Fan-subscriber gating uses the existing access route (`SUBSCRIBERS_ONLY`), and the downloads switch and overlay are marked "Coming soon". Until a real switch exists, every public track can be downloaded.
 - **Checks:** for each PR, tahti-web type-check, eslint on the changed files, the size guard and the touched tests. tahti-org ran Vitest for each touched route against a throwaway Postgres, each new test failing on `main`, plus tsc, eslint, Prettier and `@tahti/api-client generate`. The live-hours backfill ran on a test database only. Nothing was tried in a browser or against the live API.
+
+## 2026-10-03 - Ten cross-repo slices, twenty-ninth batch (tahti-player #435-#440, tahti-org #656-#660)
+
+Slices came from the batch 28 sweeps. No `docs/todo/` file covered them.
+
+- **Downloads switch (tahti-org#659)**: `Sound.downloadsEnabled` (default true) is accepted on the sound PATCH, returned to the owner and on the public track, and enforced in the sound and release-track download routes with `403 downloads_disabled`. The owner and board can still download.
+- **Discover**: the Loved list counts web likes (`SoundLike`) as well as LOVE reactions, once per listener (tahti-org#656).
+- **Artist page**: a "Tip jar" button (#435), a "Tahti ry member" badge on artist and channel pages (#438), fan tier descriptions and perks (tahti-org#658, #440), and pinned releases first, with a Studio pin action (#437).
+- **Channel**: the stage player shows time left and "Up next", and fetches the next track when one ends, retrying at 5, 10 and 20 s without constant polling (#436).
+- **News posts**: artists can edit posts, schedule them with "Publish at" and add a link label. Post links show on the channel feed (#439).
+- **Safety**: collection contributor and track owner names go through `safeDisplayName` (tahti-org#657). Stash share bodies are validated, so bad values get a 400 instead of a 500 or a stored unknown permission (tahti-org#660).
+- **Checks:** for each PR, tahti-web type-check, eslint on the changed files, the size guard and the touched tests. tahti-org ran Vitest for each touched route against a throwaway Postgres, each new test failing on `main`; #659 also ran the full `apps/api` suite. Nothing was tried in a browser or against the live API.
+
+## 2026-10-03 - Ten cross-repo slices, thirtieth batch (tahti-player #441-#448, tahti-org #661-#665)
+
+- **Downloads switch, web (#446)**: the Sharing tab and the Studio sound page have a working "Allow downloads" switch. The track page hides Download when it's off and shows a toast on `downloads_disabled`.
+- **Gated tracks (#445)**: track pages show a locked panel for fan-subscriber and purchase gates, with subscribe, sign-in and buy actions. People who had already bought a track no longer see "Buy this track".
+- **Tags and venues**: track tags are public, and search takes `?tag=` (tahti-org#664). The editor has a tags input, tracks show `#tag` chips and `/search?tag=` lists matches (#447). Tracks show "Recorded at" for verified venues, and venue pages list "Recorded here" (tahti-org#665, #448).
+- **Jam**: the host can give guests play/pause control (`PATCH /api/v1/jam/:id/participants/:userId`). The host's device now follows co-controller changes instead of overwriting them (tahti-org#663, #443).
+- **Avatars**: artists without a picture can pick an avatar colour (#442), and can upload an animated GIF, shown as a still first frame until hover and always for reduced motion (#444).
+- **Profile and Studio**: older pinned releases are no longer dropped by the 24-release cap (tahti-org#661). Studio playlist and collection editors show "Added by" and contributor notes (#441).
+- **Display names (tahti-org#662)**: Discover lists, search, Tahti Selects, radio, the track page and several other responses go through `safeDisplayName`. The PR lists the remaining raw emitters.
+- **Checks:** as above. #442 needed four player snapshots updated for the new `MediaArtwork` fallback markup. Nothing was tried in a browser or against the live API.
+
+## 2026-10-03 - Ten cross-repo slices, thirty-first batch (tahti-player #449-#455, tahti-org #666-#671)
+
+Slices came from a new sweep of notifications, DMs, chat, smart links, events and radio shows.
+
+- **Notifications**: like and repost notices link to the track, and radio rejections link to Studio → Channel → Tahti Radio (tahti-org#666). Message and sound links keep their id and open the right page (#449).
+- **DMs**: long threads show the newest 200 messages (tahti-org#668). Deleted and suspended accounts are left out of search and can't be messaged (`403 recipient_unavailable`, tahti-org#670).
+- **Chat (tahti-org#671, #454)**: `/access` returns `chatEnabled` and `artistUsername`. The panel says when the artist turned chat off, and turns error codes into sentences with a subscribe link where it helps. Specific send errors still reach the browser as a generic error through Centrifugo.
+- **Smart links**: the page plays from the release's own `audioUrl`s, so releases beyond the profile's 24 work. It shows locked tracks, credits, ℗/© and MusicBrainz/Discogs links (#450). Genre went away with the profile lookup. The editor offers Deezer, Amazon Music and Mixcloud (#453).
+- **Events**: `PATCH /api/me/events/:id` edits an event without notifying followers again, and Studio has an Edit action (tahti-org#669, #452).
+- **Radio shows**: past episodes carry the broadcast's title, description and cover (tahti-org#667), and the show page lists them with a "Listen to the recording" link (#451). "Show tagline" now saves the series tagline, and the air-time note has its own "When it airs" field (#455).
+- **Checks:** as above. Nothing was tried in a browser, against the live API or against Centrifugo.
