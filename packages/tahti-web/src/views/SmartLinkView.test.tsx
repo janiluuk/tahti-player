@@ -71,6 +71,24 @@ describe('SmartLinkView', () => {
     expect(link.getAttribute('target')).toBeNull();
   });
 
+  it('lists the release genre between its year and type', async () => {
+    await renderSmartLink({
+      releaseDate: '2026-03-01T00:00:00.000Z',
+      genre: 'House',
+      type: 'EP',
+    });
+    expect(screen.getByText('2026 · House · EP')).toBeTruthy();
+  });
+
+  it('leaves the genre out when the smart link has none', async () => {
+    await renderSmartLink({
+      releaseDate: '2026-03-01T00:00:00.000Z',
+      genre: null,
+      type: 'EP',
+    });
+    expect(screen.getByText('2026 · EP')).toBeTruthy();
+  });
+
   it('hides the footer when it is off or missing', async () => {
     await renderSmartLink({ showPoweredByFooter: false });
     expect(screen.queryByText('Powered by Tahti')).toBeNull();
