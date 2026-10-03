@@ -9,18 +9,20 @@ vi.mock('@tanstack/react-router', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@tanstack/react-router')>()),
   Link: ({
     children,
+    to,
     params,
     search,
   }: {
     children: ReactNode;
-    params?: { username: string };
+    to: string;
+    params?: Record<string, string>;
     search?: { tag: string };
   }) => (
     <a
       href={
         search
           ? `/search?tag=${encodeURIComponent(search.tag)}`
-          : `/u/${params?.username}`
+          : to.replace(/\$(\w+)/g, (_, key: string) => params?.[key] ?? '')
       }
     >
       {children}
@@ -66,6 +68,19 @@ describe('TrackDetailsBlock', () => {
     expect(screen.getByText('Made on a rainy Sunday.')).toBeInTheDocument();
     expect(screen.queryByText('Key')).not.toBeInTheDocument();
     expect(screen.queryByText('Licence')).not.toBeInTheDocument();
+  });
+
+  it('links the recorded-at venue to its page', () => {
+    render(
+      <TrackDetailsBlock
+        detail={detail({ venue: { name: 'Kaiku', slug: 'kaiku' } })}
+      />,
+    );
+    expect(screen.getByText('Recorded at')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Kaiku' })).toHaveAttribute(
+      'href',
+      '/v/kaiku',
+    );
   });
 
   it('links each tag to tag search', () => {

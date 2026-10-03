@@ -304,11 +304,23 @@ export type VenueUpcomingBroadcast = {
   description: string | null;
 };
 
+export type VenueRecording = {
+  id: string;
+  title: string;
+  artistName: string;
+  channelSlug: string;
+  durationSec: number | null;
+  coverUrl: string | null;
+  releasedAt: string;
+};
+
 export type VenueProfile = VenueDirectoryItem & {
   address: string;
   latitude: number | null;
   longitude: number | null;
   broadcasts: VenueUpcomingBroadcast[];
+  /** Absent from APIs that predate venue recordings. */
+  recordings?: VenueRecording[];
 };
 
 /** Playable item in the Tahti listen client (live channel, radio, or archive URL). */

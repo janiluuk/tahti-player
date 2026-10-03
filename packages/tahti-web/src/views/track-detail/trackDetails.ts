@@ -28,6 +28,7 @@ export type TrackDetailFacts = {
   license: string | null;
   credits: TrackDetailCredit[];
   commentary: string | null;
+  venue: { name: string; slug: string } | null;
 };
 
 type DetailFields = Partial<
@@ -41,6 +42,7 @@ type DetailFields = Partial<
     | 'license'
     | 'credits'
     | 'commentary'
+    | 'venue'
   >
 >;
 
@@ -68,6 +70,16 @@ function parseCredit(row: unknown): TrackDetailCredit | null {
     name: safeName,
     artistUsername: username,
   };
+}
+
+function parseVenue(value: unknown): TrackDetailFacts['venue'] {
+  if (!value || typeof value !== 'object') {
+    return null;
+  }
+  const { name, slug } = value as Record<string, unknown>;
+  const safeName = text(name);
+  const safeSlug = text(slug);
+  return safeName && safeSlug ? { name: safeName, slug: safeSlug } : null;
 }
 
 function uniqueTexts(values: unknown[]): string[] {
@@ -102,6 +114,7 @@ export function trackDetailFacts(detail: DetailFields): TrackDetailFacts {
     license: detail.license ? (LICENSE_LABELS[detail.license] ?? null) : null,
     credits,
     commentary: text(detail.commentary),
+    venue: parseVenue(detail.venue),
   };
 }
 
@@ -113,7 +126,8 @@ export function hasTrackDetailFacts(facts: TrackDetailFacts): boolean {
     facts.musicalKey !== null ||
     facts.license !== null ||
     facts.credits.length > 0 ||
-    facts.commentary !== null
+    facts.commentary !== null ||
+    facts.venue !== null
   );
 }
 

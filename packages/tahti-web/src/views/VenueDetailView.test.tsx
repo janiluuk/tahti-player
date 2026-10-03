@@ -81,6 +81,43 @@ describe('VenueDetailView', () => {
     ).toMatch(/\/api\/v1\/venues\/kaiku\/calendar\.ics$/);
   });
 
+  it('lists tracks recorded here, linking to each track page', async () => {
+    vi.spyOn(client, 'fetchVenueProfile').mockResolvedValue({
+      data: {
+        ...VENUE,
+        recordings: [
+          {
+            id: 's1',
+            title: 'Live at Kaiku',
+            artistName: 'Northern Signals',
+            channelSlug: 'northern-signals',
+            durationSec: 3600,
+            coverUrl: null,
+            releasedAt: '2026-06-01T00:00:00.000Z',
+          },
+        ],
+      },
+      meta: { source: 'api' },
+    });
+
+    await renderVenue();
+
+    expect(screen.getByText('Recorded here')).toBeTruthy();
+    expect(
+      screen.getByRole('link', { name: /Live at Kaiku/ }).getAttribute('href'),
+    ).toBe('/t/s1');
+    expect(screen.getByText('Northern Signals')).toBeTruthy();
+  });
+
+  it('hides Recorded here when the API sends no recordings', async () => {
+    vi.spyOn(client, 'fetchVenueProfile').mockResolvedValue({
+      data: VENUE,
+      meta: { source: 'api' },
+    });
+    await renderVenue();
+    expect(screen.queryByText('Recorded here')).toBeNull();
+  });
+
   it('says when nothing is booked and when the venue is missing', async () => {
     vi.spyOn(client, 'fetchVenueProfile').mockResolvedValueOnce({
       data: { ...VENUE, broadcasts: [] },

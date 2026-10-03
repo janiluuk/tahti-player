@@ -26,6 +26,15 @@ export type StudioSound = {
   subGenres?: string[];
   /** Free-form artist labels (mood, series...), case kept as typed. */
   tags?: string[];
+  /** Structured "recorded at" venue; `venue` is its summary. */
+  venueId?: string | null;
+  venue?: {
+    id: string;
+    slug: string;
+    name: string;
+    city: string | null;
+    countryCode: string | null;
+  } | null;
   /** Role-based credits when this track differs from the channel's
    * Members/Credits roster — same role vocabulary as release credits. */
   credits?: ReleaseCredit[] | null;
@@ -96,6 +105,7 @@ export type StudioSoundPatch = {
   subGenres?: string[];
   tags?: string[];
   credits?: ReleaseCredit[] | null;
+  venueId?: string | null;
   contentType?: string;
   license?: string;
   isPublic?: boolean;

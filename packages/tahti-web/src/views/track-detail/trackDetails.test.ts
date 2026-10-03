@@ -32,8 +32,22 @@ describe('trackDetailFacts', () => {
         { role: 'Engineer', name: 'Mikko', artistUsername: null },
       ],
       commentary: 'Recorded live at Kaiku.',
+      venue: null,
     });
     expect(hasTrackDetailFacts(facts)).toBe(true);
+  });
+
+  it('keeps a recorded-at venue only when it has a name and slug', () => {
+    expect(
+      trackDetailFacts({ venue: { name: ' Kaiku ', slug: 'kaiku' } }).venue,
+    ).toEqual({ name: 'Kaiku', slug: 'kaiku' });
+    expect(trackDetailFacts({ venue: null }).venue).toBeNull();
+    expect(trackDetailFacts({}).venue).toBeNull();
+    expect(
+      hasTrackDetailFacts(
+        trackDetailFacts({ venue: { name: 'Kaiku', slug: 'kaiku' } }),
+      ),
+    ).toBe(true);
   });
 
   it('treats missing tags from an older API as none', () => {

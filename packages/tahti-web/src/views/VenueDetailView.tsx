@@ -22,6 +22,7 @@ import {
 } from '../components/EntitySocialHeader';
 import { PageFrame } from '../components/PageHeader';
 import { PageLoading } from '../components/PageStates';
+import { VenueRecordings } from '../components/VenueRecordings';
 import { countryFlagAndName } from '../lib/countries';
 import { syncDocumentMetadata } from '../lib/seo';
 
@@ -156,6 +157,7 @@ export function VenueDetailView({ slug }: { slug: string }) {
         </p>
       ) : null}
       <VenueUpcomingShows slug={venue.slug} broadcasts={venue.broadcasts} />
+      <VenueRecordings recordings={venue.recordings} />
     </PageFrame>
   );
 }
