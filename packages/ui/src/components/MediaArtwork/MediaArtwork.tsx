@@ -1,6 +1,7 @@
 import { CassetteTape, Heart, ListPlus, Pause, Play } from 'lucide-react';
-import { FC, ReactNode, type MouseEvent } from 'react';
+import { FC, ReactNode, useState, type MouseEvent } from 'react';
 
+import { usePrefersReducedMotion } from '../../hooks/usePrefersReducedMotion';
 import { cn } from '../../utils';
 import { Button } from '../Button';
 import { ImageReveal } from '../ImageReveal';
@@ -18,6 +19,13 @@ export type MediaArtworkAction = {
 export type MediaArtworkProps = {
   src?: string | null;
   alt?: string;
+  /** Still first frame of an animated `src` (GIF). Shown at rest, swapped
+   * for `src` while the artwork is hovered or focused, and kept when the
+   * viewer prefers reduced motion. */
+  posterSrc?: string | null;
+  /** Plays the animated `src` regardless of hover, e.g. while a control
+   * wrapping the artwork has keyboard focus. */
+  animate?: boolean;
   /** Visual size preset — `fill` stretches to parent (card cover). `thumb`
    * is the standard inline track-row thumbnail (a step up from `sm`). */
   size?: 'sm' | 'thumb' | 'md' | 'lg' | 'fill';
@@ -80,6 +88,8 @@ const overlayReveal =
 export const MediaArtwork: FC<MediaArtworkProps> = ({
   src,
   alt,
+  posterSrc,
+  animate = false,
   size = 'fill',
   className,
   imageReveal = true,
@@ -101,7 +111,18 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
   actions = [],
   onArtworkClick,
 }) => {
-  const resolvedSrc = src ?? undefined;
+  const reducedMotion = usePrefersReducedMotion();
+  const [animating, setAnimating] = useState(false);
+  const still = posterSrc && src && (reducedMotion || !(animate || animating));
+  const resolvedSrc = (still ? posterSrc : src) ?? undefined;
+  const motionHandlers = posterSrc
+    ? {
+        onPointerEnter: () => setAnimating(true),
+        onPointerLeave: () => setAnimating(false),
+        onFocus: () => setAnimating(true),
+        onBlur: () => setAnimating(false),
+      }
+    : {};
   const iconPx = playIconSize[size];
   const overlayPx = overlayIconSize[size];
   // At small/thumb/md sizes the card reads as crowded with more than a
@@ -160,6 +181,7 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
   return (
     <div
       data-testid="media-artwork"
+      {...motionHandlers}
       className={cn(
         'group relative overflow-hidden',
         sizeClass[size],
@@ -179,7 +201,8 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
       }
     >
       {resolvedSrc ? (
-        imageReveal && size !== 'sm' ? (
+        // ImageReveal would replay its fade-in on every poster/GIF swap.
+        imageReveal && size !== 'sm' && !posterSrc ? (
           <ImageReveal
             enabled
             src={resolvedSrc}

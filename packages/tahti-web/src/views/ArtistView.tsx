@@ -457,6 +457,7 @@ function ArtistProfilePage({ username }: { username: string }) {
         }
         visualSettingsJson={channelVisual?.visualSettingsJson}
         artworkUrlForVisualizer={artist.avatarUrl}
+        imagePosterUrl={artist.avatarUrl ? artist.avatarPosterUrl : null}
         onImageClick={artist.avatarUrl ? () => setAvatarOpen(true) : undefined}
         stats={headerStats}
         actions={

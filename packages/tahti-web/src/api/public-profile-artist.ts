@@ -8,6 +8,8 @@ export type PublicProfileArtist = ArtistLogoFields & {
   /** Optional longer-form history, shown expanded below the short bio. */
   fullBio: string | null;
   avatarUrl: string | null;
+  /** Still first frame when `avatarUrl` is an animated GIF. */
+  avatarPosterUrl?: string | null;
   /** Raw `AvatarTheme`; read it through `readAvatarTheme`, the payload is
    * not trusted to be well-formed. */
   avatarTheme?: unknown;

@@ -108,6 +108,8 @@ export type PublicChannel = {
     displayName: string;
     bio: string | null;
     avatarUrl: string | null;
+    /** Still first frame when `avatarUrl` is an animated GIF. */
+    avatarPosterUrl?: string | null;
     /** False hides the header card (avatar, name, stats) on the channel page. */
     showPageHero?: boolean;
     /** True when the artist is a Tahti ry (association) member. */

@@ -25,7 +25,10 @@ import {
   type SelectableTile,
 } from '@tahti-player/ui';
 
-import { uploadProfileAvatar } from '../api/artist-settings';
+import {
+  AVATAR_UPLOAD_ACCEPT,
+  uploadProfileAvatar,
+} from '../api/artist-settings';
 import { checkSlugAvailable, updateChannelSlug } from '../api/channel-design';
 import { provisionChannel } from '../api/channel-provision';
 import { isForceMock } from '../api/mode';
@@ -260,6 +263,7 @@ export function OnboardingView() {
                         label="Profile photo"
                         value={avatarUrl}
                         sizeClassName="h-16 w-16"
+                        accept={AVATAR_UPLOAD_ACCEPT}
                         upload={(file) =>
                           uploadProfileAvatar(file).then((r) =>
                             r.ok

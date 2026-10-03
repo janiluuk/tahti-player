@@ -34,3 +34,20 @@ describe('RoundImageUploadButton upload error handling', () => {
     expect(screen.getByRole('button', { name: 'Change avatar' })).toBeEnabled();
   });
 });
+
+describe('RoundImageUploadButton file picking', () => {
+  it('opens the file picker from an empty slot with the given types', () => {
+    render(
+      <RoundImageUploadButton
+        label="Avatar"
+        value={null}
+        onChange={vi.fn()}
+        accept="image/png,image/gif"
+      />,
+    );
+    const click = vi.spyOn(fileInput(), 'click');
+    fireEvent.click(screen.getByRole('button', { name: 'Change avatar' }));
+    expect(click).toHaveBeenCalled();
+    expect(fileInput().accept).toBe('image/png,image/gif');
+  });
+});
