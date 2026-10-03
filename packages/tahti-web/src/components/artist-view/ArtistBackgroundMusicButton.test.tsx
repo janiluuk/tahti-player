@@ -87,6 +87,22 @@ describe('ArtistBackgroundMusicButton', () => {
     ).toBeTruthy();
   });
 
+  it('pauses the main player before starting the clip', async () => {
+    usePlayerStore.setState({ status: 'playing' });
+    render(<ArtistBackgroundMusicButton url={URL} artistName="Selector" />);
+    await act(async () => {
+      fireEvent.click(
+        screen.getByRole('button', {
+          name: "Play Selector's background music",
+        }),
+      );
+    });
+    const [audio] = FakeAudio.instances;
+    expect(usePlayerStore.getState().status).toBe('paused');
+    expect(audio.play).toHaveBeenCalledTimes(1);
+    expect(audio.pause).not.toHaveBeenCalled();
+  });
+
   it('stops the clip on unmount', async () => {
     const { unmount } = render(
       <ArtistBackgroundMusicButton url={URL} artistName="Selector" />,

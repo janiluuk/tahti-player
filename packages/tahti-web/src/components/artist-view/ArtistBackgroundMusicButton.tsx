@@ -55,6 +55,10 @@ export function ArtistBackgroundMusicButton({
       setPlaying(false);
       return;
     }
+    const player = usePlayerStore.getState();
+    if (player.status === 'playing' || player.status === 'loading') {
+      player.setStatus('paused');
+    }
     let audio = audioRef.current;
     if (!audio) {
       audio = new Audio(url);
