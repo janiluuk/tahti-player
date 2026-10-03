@@ -20,6 +20,7 @@ import { prefetchHls } from '../../lib/hlsLoader';
 import { usePlayerStore } from '../../stores/playerStore';
 import { NowPlayingOverlay } from '../NowPlayingOverlay';
 import { WaveformSeekbar } from '../tahti/WaveformSeekbar';
+import { ChannelStageTrackMeta } from './ChannelStageTrackMeta';
 
 type Props = {
   channel: PublicChannel;
@@ -111,34 +112,40 @@ export function ChannelStagePlayer({
       }`}
     >
       {channel.nowPlaying ? (
-        <NowPlayingOverlay
-          presetId={resolveNowPlayingOverlayPreset(
-            channel.nowPlayingOverlayStyle,
-          )}
-          title={channel.nowPlaying.title}
-          artist={channel.nowPlaying.artistName}
-          artworkUrl={channel.nowPlaying.artworkUrl}
-          settings={parseNowPlayingOverlaySettings(
-            channel.nowPlayingOverlaySettingsJson,
-          )}
-          seekbar={
-            <WaveformSeekbar
-              trackId={`channel:${slug}`}
-              progress={
-                channelIsCurrent && duration > 0 ? currentTime / duration : 0
-              }
-              bars={72}
-              className="mt-3 h-10 max-w-2xl"
-              playedColor={channel.colorScheme?.accent}
-              unplayedColor={channel.colorScheme?.muted}
-              onSeek={
-                channelIsCurrent && duration > 0
-                  ? (fraction) => seekTo(fraction * duration)
-                  : undefined
-              }
-            />
-          }
-        />
+        <>
+          <NowPlayingOverlay
+            presetId={resolveNowPlayingOverlayPreset(
+              channel.nowPlayingOverlayStyle,
+            )}
+            title={channel.nowPlaying.title}
+            artist={channel.nowPlaying.artistName}
+            artworkUrl={channel.nowPlaying.artworkUrl}
+            settings={parseNowPlayingOverlaySettings(
+              channel.nowPlayingOverlaySettingsJson,
+            )}
+            seekbar={
+              <WaveformSeekbar
+                trackId={`channel:${slug}`}
+                progress={
+                  channelIsCurrent && duration > 0 ? currentTime / duration : 0
+                }
+                bars={72}
+                className="mt-3 h-10 max-w-2xl"
+                playedColor={channel.colorScheme?.accent}
+                unplayedColor={channel.colorScheme?.muted}
+                onSeek={
+                  channelIsCurrent && duration > 0
+                    ? (fraction) => seekTo(fraction * duration)
+                    : undefined
+                }
+              />
+            }
+          />
+          <ChannelStageTrackMeta
+            nowPlaying={channel.nowPlaying}
+            next={channel.nowPlayingNext}
+          />
+        </>
       ) : (
         <p className="text-sm text-white/80">
           Stream is live — hit Play live to drive the visualizer.
