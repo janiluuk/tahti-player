@@ -6,6 +6,7 @@ import { Button, Input, ViewShell } from '@tahti-player/ui';
 import {
   fetchConversation,
   fetchConversations,
+  fetchOlderMessages,
   searchUsers,
   sendDm,
   startConversation,
@@ -13,6 +14,7 @@ import {
   type ConversationSummary,
 } from '../api/messages';
 import { DmRoleBadge } from '../components/DmRoleBadge';
+import { DmThreadMessages } from '../components/DmThreadMessages';
 import { MessageContacts } from '../components/MessageContacts';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
@@ -23,6 +25,8 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
   const [inbox, setInbox] = useState<ConversationSummary[]>([]);
   const [activeId, setActiveId] = useState<string | null>(threadId ?? null);
   const [messages, setMessages] = useState<ChatDm[]>([]);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingOlder, setLoadingOlder] = useState(false);
   const [other, setOther] = useState<ConversationSummary['otherUser'] | null>(
     null,
   );
@@ -49,25 +53,45 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
       return;
     }
     setActiveId(threadId);
-    void fetchConversation(threadId).then((r) => {
-      if (!r.data) {
-        return;
-      }
-      setMessages(r.data.messages);
-      setOther(r.data.otherUser);
-    });
+    loadThread(threadId);
   }, [user, threadId]);
 
-  const openThread = (id: string) => {
-    setActiveId(id);
+  function loadThread(id: string) {
     void fetchConversation(id).then((r) => {
       if (!r.data) {
         return;
       }
       setMessages(r.data.messages);
+      setHasMore(r.data.hasMore === true);
       setOther(r.data.otherUser);
     });
+  }
+
+  const openThread = (id: string) => {
+    setActiveId(id);
+    loadThread(id);
     void navigate({ to: '/messages/$id', params: { id } });
+  };
+
+  const loadOlder = () => {
+    const id = activeId;
+    const oldest = messages[0];
+    if (!id || !oldest || loadingOlder) {
+      return;
+    }
+    setLoadingOlder(true);
+    void fetchOlderMessages(id, oldest.id).then((page) => {
+      setLoadingOlder(false);
+      if (!page) {
+        return;
+      }
+      const shown = new Set(messages.map((m) => m.id));
+      setMessages((current) => [
+        ...page.messages.filter((m) => !shown.has(m.id)),
+        ...current,
+      ]);
+      setHasMore(page.hasMore);
+    });
   };
 
   const start = (username: string) => {
@@ -186,26 +210,12 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
                 {other?.displayName}
                 <DmRoleBadge role={other?.channelRole} />
               </div>
-              <div className="flex-1 space-y-2 overflow-y-auto p-3 text-sm">
-                {messages.map((m) => (
-                  <div
-                    key={m.id}
-                    className={`max-w-[85%] rounded-lg px-3 py-2 ${
-                      m.isMine
-                        ? 'bg-primary text-primary-foreground ml-auto'
-                        : 'border-accent-purple/30 bg-accent-purple/15'
-                    }`}
-                  >
-                    <div className="flex items-center gap-1 text-[10px]">
-                      <span className="opacity-70">{m.senderDisplayName}</span>
-                      {m.isMine ? null : (
-                        <DmRoleBadge role={m.senderChannelRole} />
-                      )}
-                    </div>
-                    {m.body}
-                  </div>
-                ))}
-              </div>
+              <DmThreadMessages
+                messages={messages}
+                hasMore={hasMore}
+                loadingOlder={loadingOlder}
+                onLoadOlder={loadOlder}
+              />
               <div className="border-border flex gap-2 border-t p-3">
                 <Input
                   value={body}
