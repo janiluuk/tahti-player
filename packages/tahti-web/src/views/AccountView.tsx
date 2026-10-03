@@ -9,6 +9,11 @@ import type { FanSubscriptionRow, MembershipStatus } from '../api/types';
 import { FanSubscriptionsBillingButton } from '../components/FanSubscriptionsBillingButton';
 import { MembershipStatusPanel } from '../components/MembershipStatusPanel';
 import { PageLoading } from '../components/PageStates';
+import {
+  fanSubscriptionStatusLabel,
+  hasPortalManagedSubscription,
+  isCanceledAtPeriodEnd,
+} from '../lib/fanSubscriptionStatus';
 import { useAuthStore } from '../stores/authStore';
 
 function euros(cents: number): string {
@@ -162,10 +167,13 @@ export function AccountView() {
                           <p className="text-foreground-secondary text-xs">
                             {subscription.tierName},{' '}
                             {euros(subscription.amountCents)}/mo,{' '}
-                            {subscription.state}
-                            {subscription.currentPeriodEnd
-                              ? `, until ${new Date(subscription.currentPeriodEnd).toLocaleDateString()}`
-                              : ''}
+                            {isCanceledAtPeriodEnd(subscription)
+                              ? fanSubscriptionStatusLabel(subscription)
+                              : `${subscription.state}${
+                                  subscription.currentPeriodEnd
+                                    ? `, until ${new Date(subscription.currentPeriodEnd).toLocaleDateString()}`
+                                    : ''
+                                }`}
                           </p>
                         </div>
                         <ButtonLink
@@ -179,7 +187,7 @@ export function AccountView() {
                       </li>
                     ))}
                   </ul>
-                  {subs.some((sub) => sub.state === 'ACTIVE') ? (
+                  {hasPortalManagedSubscription(subs) ? (
                     <FanSubscriptionsBillingButton />
                   ) : null}
                 </div>

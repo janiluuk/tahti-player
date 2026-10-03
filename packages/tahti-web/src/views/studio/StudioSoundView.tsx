@@ -15,6 +15,7 @@ import { StudioNav } from '../../components/StudioNav';
 import { TrackInsightsPanel } from '../../components/TrackInsightsPanel';
 import { DetailsTabContent } from './sound/DetailsTabContent';
 import { PlaylistsTabContent } from './sound/PlaylistsTabContent';
+import { ProcessingFailedAlert } from './sound/ProcessingFailedAlert';
 import { SoundHeader } from './sound/SoundHeader';
 import { useSoundEditor } from './sound/useSoundEditor';
 
@@ -30,6 +31,7 @@ export function StudioSoundView({ id }: { id: string }) {
     playlistOpen,
     setPlaylistOpen,
     title,
+    setItem,
   } = state;
 
   return (
@@ -60,10 +62,12 @@ export function StudioSoundView({ id }: { id: string }) {
             )}
 
             {hasError && (
-              <Alert tone="error">
-                Processing failed for this file. Try uploading it again, or
-                contact support if it keeps happening.
-              </Alert>
+              <ProcessingFailedAlert
+                item={item}
+                onRetried={() =>
+                  setItem({ ...item, status: 'PENDING', processingError: null })
+                }
+              />
             )}
 
             <Tabs

@@ -23,6 +23,7 @@ import {
   ButtonLink,
   Tabs,
   Textarea,
+  toast,
   type TabsItem,
 } from '@tahti-player/ui';
 
@@ -49,6 +50,11 @@ import { MembershipInvoices } from '../../../components/MembershipInvoices';
 import { MembershipStatusPanel } from '../../../components/MembershipStatusPanel';
 import { PageLoading } from '../../../components/PageStates';
 import { SecurityTotpPanel } from '../../../components/SecurityTotpPanel';
+import {
+  fanSubscriptionStatusLabel,
+  hasPortalManagedSubscription,
+  isCanceledAtPeriodEnd,
+} from '../../../lib/fanSubscriptionStatus';
 import { useAuthModalStore } from '../../../stores/authModalStore';
 import { useAuthStore } from '../../../stores/authStore';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
@@ -243,15 +249,10 @@ export function AccountPanel() {
                     </Link>
                     <p className="text-foreground-secondary text-xs">
                       {subscription.tierName}, {euros(subscription.amountCents)}
-                      /mo,{' '}
-                      {subscription.canceledAt && subscription.currentPeriodEnd
-                        ? `cancels ${new Date(
-                            subscription.currentPeriodEnd,
-                          ).toLocaleDateString()}`
-                        : subscription.state}
+                      /mo, {fanSubscriptionStatusLabel(subscription)}
                     </p>
                   </div>
-                  {subscription.canceledAt ? null : (
+                  {isCanceledAtPeriodEnd(subscription) ? null : (
                     <Button
                       variant="ghost"
                       size="sm"
@@ -264,7 +265,7 @@ export function AccountPanel() {
               ))}
             </ul>
           )}
-          {subscriptions.some((sub) => sub.state === 'ACTIVE') ? (
+          {hasPortalManagedSubscription(subscriptions) ? (
             <FanSubscriptionsBillingButton />
           ) : null}
           <ConfirmDialog
@@ -289,6 +290,8 @@ export function AccountPanel() {
                 setPendingCancel(null);
                 if (r.ok) {
                   void reloadSubscriptions();
+                } else {
+                  toast.error(r.error);
                 }
               });
             }}

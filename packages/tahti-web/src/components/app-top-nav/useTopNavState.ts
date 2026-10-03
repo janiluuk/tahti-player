@@ -22,6 +22,7 @@ import { useAuthStore } from '../../stores/authStore';
 import { useNotificationInboxStore } from '../../stores/notificationInboxStore';
 import { useProcessingJobsStore } from '../../stores/processingJobsStore';
 import { useSettingsModalStore } from '../../stores/settingsModalStore';
+import { toastProcessingFailures } from './processingFailureToast';
 
 export function useTopNavState() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -170,6 +171,12 @@ export function useTopNavState() {
     const watched = useProcessingJobsStore.getState().jobs.map((job) => job.id);
     void fetchSoundProcessingStatus(watched).then((result) => {
       setServerProcessing(result.data.processing);
+      toastProcessingFailures(
+        result.data.settled,
+        useProcessingJobsStore.getState().jobs,
+        (id) =>
+          void router.navigate({ to: '/studio/sounds/$id', params: { id } }),
+      );
       settleProcessingJobs(result.data.settled.map((item) => item.id));
     });
   };

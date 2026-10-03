@@ -1,6 +1,10 @@
 import { Button } from '@tahti-player/ui';
 
 import type { FanSubscriptionRow } from '../api/types';
+import {
+  fanSubscriptionStatusLabel,
+  isCanceledAtPeriodEnd,
+} from '../lib/fanSubscriptionStatus';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 
 function formatEur(cents: number) {
@@ -30,8 +34,8 @@ export function CurrentFanSubscriptionCard({
         <div className="text-foreground-secondary text-sm">
           {formatEur(subscription.amountCents)}
           {periodEnd
-            ? subscription.canceledAt
-              ? `, ends ${periodEnd}`
+            ? isCanceledAtPeriodEnd(subscription)
+              ? `, ${fanSubscriptionStatusLabel(subscription)}`
               : `, renews ${periodEnd}`
             : null}
         </div>
