@@ -1,41 +1,13 @@
 import { fetchSpotifyArtistProfile } from '../api/distribution';
 import { fetchMeProfile } from '../api/studio-extras';
 import { useListenerWidgetsStore } from '../stores/listenerWidgetsStore';
+import { DSP_SERVICES, type DspServiceKey } from './dspServices';
 
-export type DspServiceKey =
-  'spotify' | 'apple' | 'bandcamp' | 'soundcloud' | 'youtube' | 'tidal';
-
-export type DspService = {
-  key: DspServiceKey;
-  label: string;
-  /** Used only when no embed/import/export plugin URL is configured. */
-  fallbackPrefix?: string;
-};
-
-export const DSP_SERVICES: DspService[] = [
-  { key: 'spotify', label: 'Spotify' },
-  {
-    key: 'apple',
-    label: 'Apple Music',
-    fallbackPrefix: 'https://music.apple.com/album/',
-  },
-  {
-    key: 'bandcamp',
-    label: 'Bandcamp',
-    fallbackPrefix: 'https://bandcamp.com/',
-  },
-  { key: 'soundcloud', label: 'SoundCloud' },
-  {
-    key: 'youtube',
-    label: 'YouTube Music',
-    fallbackPrefix: 'https://music.youtube.com/browse/',
-  },
-  {
-    key: 'tidal',
-    label: 'Tidal',
-    fallbackPrefix: 'https://listen.tidal.com/album/',
-  },
-];
+export {
+  DSP_SERVICES,
+  type DspService,
+  type DspServiceKey,
+} from './dspServices';
 
 const PLUGIN_STREAM_KEYS = new Set<DspServiceKey>(['spotify', 'soundcloud']);
 
