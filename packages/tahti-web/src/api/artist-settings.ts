@@ -55,6 +55,7 @@ export {
   deletePressKitImage,
 } from './artist-settings/press-kit-images';
 export {
+  AVATAR_UPLOAD_ACCEPT,
   uploadProfileAvatar,
   removeProfileAvatar,
 } from './artist-settings/avatar';

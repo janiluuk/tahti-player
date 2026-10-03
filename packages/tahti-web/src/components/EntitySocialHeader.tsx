@@ -4,9 +4,9 @@ import {
   XIcon,
   type LucideIcon,
 } from 'lucide-react';
-import type { CSSProperties, ReactNode } from 'react';
+import { useState, type CSSProperties, type ReactNode } from 'react';
 
-import { Button, StatChip } from '@tahti-player/ui';
+import { Button, MediaArtwork, StatChip } from '@tahti-player/ui';
 
 import {
   isHeaderImageUrl,
@@ -58,6 +58,9 @@ export type EntitySocialHeaderProps = {
   /** Square cover / avatar shown beside the title. */
   imageUrl?: string | null;
   imageAlt?: string;
+  /** Still first frame of an animated `imageUrl`, shown until the image is
+   * hovered or focused (and always under reduced motion). */
+  imagePosterUrl?: string | null;
   /** When true, image is a circle (artist); otherwise rounded square (collection). */
   roundImage?: boolean;
   /** Optional location / place badge under the title. */
@@ -111,6 +114,7 @@ export function EntitySocialHeader({
   nameplate,
   imageUrl,
   imageAlt = '',
+  imagePosterUrl,
   roundImage = false,
   location,
   subtitle,
@@ -132,6 +136,7 @@ export function EntitySocialHeader({
   children,
   'data-testid': dataTestId = 'entity-social-header',
 }: EntitySocialHeaderProps) {
+  const [imageFocused, setImageFocused] = useState(false);
   const scheme = colorScheme ? normalizeColorScheme(colorScheme) : null;
   const mediaUrl = videoBackgroundUrl ?? backdropUrl;
   const showVideo =
@@ -276,15 +281,19 @@ export function EntitySocialHeader({
                   type="button"
                   onClick={onImageClick}
                   className={cn(
-                    'border-border shadow-shadow size-24 overflow-hidden border-(length:--border-width) p-0',
+                    'border-border shadow-shadow relative size-24 overflow-hidden border-(length:--border-width) p-0',
                     roundImage ? 'rounded-full' : 'rounded-md',
                   )}
                   aria-label={`Change ${title} artwork`}
+                  onFocus={() => setImageFocused(true)}
+                  onBlur={() => setImageFocused(false)}
                 >
-                  <img
+                  <MediaArtwork
                     src={imageUrl}
+                    posterSrc={imagePosterUrl}
+                    animate={imageFocused}
                     alt={imageAlt}
-                    className="size-full object-cover"
+                    imageReveal={false}
                   />
                 </button>
                 {onImageDelete ? (
@@ -303,11 +312,14 @@ export function EntitySocialHeader({
                 ) : null}
               </div>
             ) : (
-              <img
+              <MediaArtwork
                 src={imageUrl}
+                posterSrc={imagePosterUrl}
                 alt={imageAlt}
+                size="lg"
+                imageReveal={false}
                 className={cn(
-                  'border-border shadow-shadow size-24 shrink-0 border-(length:--border-width) object-cover',
+                  'border-border shadow-shadow size-24 min-w-24 shrink-0 border-(length:--border-width)',
                   roundImage ? 'rounded-full' : 'rounded-md',
                 )}
               />

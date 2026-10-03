@@ -56,6 +56,7 @@ import { listenerWidgetType } from '../content/listenerWidgets';
 import { useChannelLayoutEditing } from '../hooks/useChannelLayoutEditing';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { hasAccountRole } from '../lib/accountRoles';
+import { avatarPoster } from '../lib/avatarPoster';
 import {
   BACKDROP_FOLDED_ITEM_TYPES,
   getLayoutPreset,
@@ -643,6 +644,7 @@ export function ChannelView({ slug }: { slug: string }) {
                 channel.user.avatarUrl ??
                 placeholderArtworkUrl(channel.user.username)
               }
+              imagePosterUrl={avatarPoster(channel.user)}
               roundImage
               colorScheme={channel.colorScheme}
               subtitle={

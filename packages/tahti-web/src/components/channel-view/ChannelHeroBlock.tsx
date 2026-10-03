@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { Button } from '@tahti-player/ui';
 
 import type { PublicChannel } from '../../api/types';
+import { avatarPoster } from '../../lib/avatarPoster';
 import type {
   ChannelNavigationTab,
   ChannelPageItem,
@@ -146,6 +147,7 @@ export function ChannelHeroBlock({
         username={channel.user.username}
         channelSlug={slug}
         avatarUrl={channel.user.avatarUrl}
+        avatarPosterUrl={avatarPoster(channel.user)}
         bio={channel.user.bio}
         avatarVisible={avatarVisible}
         bioVisible={bioVisible}

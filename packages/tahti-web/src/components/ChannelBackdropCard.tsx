@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { Button, ButtonLink } from '@tahti-player/ui';
+import { Button, ButtonLink, MediaArtwork } from '@tahti-player/ui';
 
 import {
   isHeaderImageUrl,
@@ -28,6 +28,8 @@ export type ChannelBackdropCardProps = {
   username: string;
   channelSlug?: string;
   avatarUrl?: string | null;
+  /** Still first frame of an animated `avatarUrl`. */
+  avatarPosterUrl?: string | null;
   bio?: string | null;
   /** Backdrop toggles (Channel Designer → Backdrop settings) — bio/CTA
    * folded into the backdrop instead of being separate draggable page
@@ -110,6 +112,7 @@ export function ChannelBackdropCard({
   username,
   channelSlug,
   avatarUrl,
+  avatarPosterUrl,
   bio,
   avatarVisible = true,
   bioVisible = true,
@@ -289,14 +292,14 @@ export function ChannelBackdropCard({
         <div className="flex flex-wrap items-center gap-4 sm:gap-6">
           {avatarVisible ? (
             <div
-              className="flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 text-3xl font-bold sm:size-32 sm:text-4xl"
+              className="relative flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 text-3xl font-bold sm:size-32 sm:text-4xl"
               style={{ borderColor: accent, background: bg }}
             >
               {avatarUrl ? (
-                <img
+                <MediaArtwork
                   src={avatarUrl}
-                  alt=""
-                  className="size-full object-cover"
+                  posterSrc={avatarPosterUrl}
+                  imageReveal={false}
                 />
               ) : (
                 displayName.slice(0, 1).toUpperCase()
