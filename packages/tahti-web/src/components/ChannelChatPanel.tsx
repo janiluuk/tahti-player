@@ -10,11 +10,17 @@ import {
 } from '../api/client';
 import type { ChatMessage } from '../api/types';
 import { centrifugoWsUrl } from '../lib/centrifugoWsUrl';
+import {
+  CHAT_OFF_MESSAGE,
+  chatErrorFor,
+  type ChatErrorAction,
+} from '../lib/chatErrors';
 import { useHcaptcha } from '../lib/useHcaptcha';
 import { useAuthStore } from '../stores/authStore';
 import { ChatAvatar } from './ChatAvatar';
 import { ChatDailyListeners } from './ChatDailyListeners';
 import { ChatListeningNow } from './ChatListeningNow';
+import { ChatNotice } from './ChatNotice';
 import { ChatReactionBar } from './ChatReactionBar';
 import { FanChatRoom } from './FanChatRoom';
 
@@ -41,12 +47,15 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
   const user = useAuthStore((s) => s.user);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [accessNote, setAccessNote] = useState<string | null>(null);
+  const [chatOff, setChatOff] = useState(false);
+  const [artistUsername, setArtistUsername] = useState<string | null>(null);
   const [canJoinFanChat, setCanJoinFanChat] = useState(false);
   const [inFanRoom, setInFanRoom] = useState(false);
   const [handle, setHandle] = useState('');
   const [pendingHandle, setPendingHandle] = useState('');
   const [input, setInput] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [errorAction, setErrorAction] = useState<ChatErrorAction>(null);
   const [joining, setJoining] = useState(false);
   const [mode, setMode] = useState<LiveMode>('rest');
   const [wsStatus, setWsStatus] = useState<'off' | 'connecting' | 'connected'>(
@@ -70,6 +79,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
 
   const wsRef = useRef<WebSocket | null>(null);
   const msgIdRef = useRef(1);
+  const publishIdsRef = useRef(new Set<number>());
   const scrollRef = useRef<HTMLDivElement>(null);
   const badgesRef = useRef({
     supporter: false,
@@ -115,9 +125,12 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
           setMode('rest');
         }
         setCanJoinFanChat(access.data.canJoinFanChat);
+        // Older APIs omit chatEnabled; only an explicit false hides the join form.
+        setChatOff(access.data.chatEnabled === false);
+        setArtistUsername(access.data.artistUsername || null);
         if (access.data.subscribersOnly && !access.data.canPostInChat) {
           setAccessNote(
-            'Subscribers-only chat — you can read; posting needs a fan sub + login.',
+            'Only fan subscribers can post here. You can still read along.',
           );
         }
       },
@@ -229,6 +242,27 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
     }, RECONNECT_DELAY_MS * reconnectAttemptsRef.current);
   }
 
+  function showError(message: string | null, action: ChatErrorAction = null) {
+    setError(message);
+    setErrorAction(action);
+  }
+
+  function showChatError(err: unknown, fallback?: string) {
+    const { message, action } = chatErrorFor(err, fallback);
+    if (action === 'chat_off') {
+      setChatOff(true);
+      showError(null);
+      return;
+    }
+    if (action === 'captcha') {
+      // Only the join form can collect a fresh captcha solve; pendingHandle
+      // still holds the joined handle, so the form comes back prefilled.
+      setHandle('');
+      setPublishToken(null);
+    }
+    showError(message, action);
+  }
+
   function connectWs(token: string, canPublish: boolean) {
     const url = centrifugoWsUrl();
     if (!url) {
@@ -249,6 +283,8 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
           }
           try {
             const data = JSON.parse(line) as {
+              id?: number;
+              error?: { code?: number; message?: string };
               connect?: { client: string };
               push?: {
                 pub?: {
@@ -264,6 +300,15 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
                 };
               };
             };
+            if (data.id != null && publishIdsRef.current.delete(data.id)) {
+              if (data.error) {
+                showChatError(
+                  data.error.message,
+                  'Your message was not sent. Try again in a moment.',
+                );
+              }
+              continue;
+            }
             if (data.connect) {
               ws.send(
                 JSON.stringify({
@@ -321,17 +366,17 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
   async function join() {
     const h = pendingHandle.trim().slice(0, 32);
     if (!h) {
-      setError('Pick a handle to join.');
+      showError('Pick a handle to join.');
       return;
     }
     const hcaptchaToken =
       captchaNeeded && captchaConfigured ? getToken() : undefined;
     if (captchaNeeded && captchaConfigured && !hcaptchaToken) {
-      setError('Complete hCaptcha before joining.');
+      showError('Complete hCaptcha before joining.', 'captcha');
       return;
     }
     setJoining(true);
-    setError(null);
+    showError(null);
     try {
       const { data, meta: joinMeta } = await requestChatToken(
         slug,
@@ -359,11 +404,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
       // locally — that reads as sent but nobody else ever sees it. Stay on
       // the join form and let the user retry once the real thing works.
       resetCaptcha();
-      setError(
-        err instanceof Error
-          ? `${err.message} — try again in a moment.`
-          : 'Could not join live chat — try again in a moment.',
-      );
+      showChatError(err, 'Could not join chat. Try again in a moment.');
     } finally {
       setJoining(false);
     }
@@ -382,9 +423,11 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
       wsStatus === 'connected'
     ) {
       const badges = badgesRef.current;
+      const publishId = msgIdRef.current++;
+      publishIdsRef.current.add(publishId);
       wsRef.current.send(
         JSON.stringify({
-          id: msgIdRef.current++,
+          id: publishId,
           publish: {
             channel: `channel:${slug}`,
             data: {
@@ -406,7 +449,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
     // can't actually reach the live channel must not be echoed locally as
     // if it had — that looks sent but nobody else ever sees it.
     if (mode !== 'mock') {
-      setError('Not connected — message not sent. Try again in a moment.');
+      showError('Not connected - message not sent. Try again in a moment.');
       return;
     }
 
@@ -467,12 +510,23 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
         )}
       </div>
 
-      <ChatReactionBar slug={slug} onError={setError} />
+      <ChatReactionBar slug={slug} onError={(m) => showError(m)} />
 
-      {(error || accessNote) && (
-        <div className="text-foreground-secondary border-border border-b px-3 py-2 text-xs">
-          {error ?? accessNote}
-        </div>
+      {error ? (
+        <ChatNotice
+          message={error}
+          action={errorAction}
+          artistUsername={artistUsername}
+        />
+      ) : (
+        accessNote &&
+        !chatOff && (
+          <ChatNotice
+            message={accessNote}
+            action="subscribe"
+            artistUsername={artistUsername}
+          />
+        )
       )}
 
       <div
@@ -511,7 +565,14 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
         ))}
       </div>
 
-      {!handle ? (
+      {chatOff ? (
+        <p
+          role="status"
+          className="border-border text-foreground-secondary border-t p-3 text-sm"
+        >
+          {CHAT_OFF_MESSAGE}
+        </p>
+      ) : !handle ? (
         <div className="border-border flex flex-col gap-2 border-t p-3">
           <Input
             label="Handle"
@@ -525,7 +586,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
           )}
           {user && (
             <p className="text-foreground-secondary text-[10px]">
-              Signed in as @{user.username} — captcha not required.
+              Signed in as @{user.username} - captcha not required.
             </p>
           )}
           <Button size="sm" disabled={joining} onClick={() => void join()}>

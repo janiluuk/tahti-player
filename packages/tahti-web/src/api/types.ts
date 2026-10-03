@@ -365,6 +365,9 @@ export type ChatMessage = {
 };
 
 export type ChatAccess = {
+  /** Missing on APIs older than the chat-off flag; treat as on. */
+  chatEnabled?: boolean;
+  artistUsername?: string;
   fanChatEnabled: boolean;
   isSupporter: boolean;
   canJoinFanChat: boolean;
