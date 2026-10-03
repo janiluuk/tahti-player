@@ -1,8 +1,9 @@
 import { toast } from 'sonner';
 
 import { isHeaderImageUrl } from '../../api/channel-design';
-import { fetchPublicSoundDownload, postTrackComment } from '../../api/client';
+import { postTrackComment } from '../../api/client';
 import { deleteComment } from '../../api/comments';
+import { fetchPublicSoundDownload } from '../../api/public-sound-download';
 import { checkoutPurchaseTier } from '../../api/purchase-tiers';
 import { fetchDownloadGates } from '../../api/sound-download-gates';
 import { type TahtiPlayable, type TrackComment } from '../../api/types';
@@ -36,6 +37,7 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
     setCommentError,
     deletingCommentId,
     setDeletingCommentId,
+    setDetail,
     setDownloadBusy,
     setDownloadGates,
     setBuyBusy,
@@ -224,6 +226,9 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
     setDownloadBusy(false);
     if (!result.ok) {
       toast.error(result.error);
+      if (result.downloadsDisabled) {
+        setDetail({ ...detail, downloadsEnabled: false });
+      }
       return;
     }
     const filename =
@@ -237,6 +242,8 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
     link.click();
     link.remove();
   };
+
+  const showDownload = detail?.downloadsEnabled !== false;
 
   const showBuyTrack =
     Boolean(detail?.accessMode === 'PURCHASE' && detail.purchaseTierId) &&
@@ -321,6 +328,7 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
     deletingCommentId,
     shareTrack,
     downloadTrack,
+    showDownload,
     showBuyTrack,
     buyTrack,
     startBuy,

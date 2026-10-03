@@ -71,13 +71,40 @@ describe('SharingTab', () => {
     expect(screen.queryByText('Included fan tiers')).toBeNull();
   });
 
-  it('marks the downloads switch as coming soon but keeps the gates', async () => {
+  it('loads and edits the downloads switch, keeping the gates while on', async () => {
+    const setForm = vi.fn();
+    await renderTab(
+      stateFor({ isPublic: true, downloadsEnabled: true }, setForm),
+    );
+    const toggle = screen.getByRole('switch', { name: 'Allow downloads' });
+    expect(toggle.getAttribute('aria-checked')).toBe('true');
+    expect(
+      screen.getByRole('switch', { name: 'Require a follow' }),
+    ).toBeTruthy();
+    fireEvent.click(toggle);
+    expect(setForm).toHaveBeenCalledWith({
+      isPublic: true,
+      downloadsEnabled: false,
+    });
+  });
+
+  it('hides the follow and share gates when downloads are off', async () => {
+    await renderTab(stateFor({ isPublic: true, downloadsEnabled: false }));
+    expect(
+      screen
+        .getByRole('switch', { name: 'Allow downloads' })
+        .getAttribute('aria-checked'),
+    ).toBe('false');
+    expect(
+      screen.queryByRole('switch', { name: 'Require a follow' }),
+    ).toBeNull();
+  });
+
+  it('hides the switch when the API does not report the setting', async () => {
     await renderTab(stateFor({ isPublic: true }));
     expect(
       screen.queryByRole('switch', { name: 'Allow downloads' }),
     ).toBeNull();
-    expect(screen.getByText('Coming soon')).toBeTruthy();
-    expect(screen.getByText('Turning downloads off')).toBeTruthy();
     expect(
       screen.getByRole('switch', { name: 'Require a follow' }),
     ).toBeTruthy();

@@ -182,6 +182,9 @@ export async function patchStudioSound(
       ...(patch.isPublic !== undefined
         ? { visibility: patch.isPublic ? 'PUBLIC' : 'PRIVATE' }
         : {}),
+      ...(patch.downloadsEnabled !== undefined
+        ? { downloadsEnabled: patch.downloadsEnabled }
+        : {}),
     });
     if (idx >= 0) {
       const next: StudioSound = {
