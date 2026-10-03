@@ -37,6 +37,8 @@ function makeForm(overrides: Partial<ScheduleForm> = {}): ScheduleForm {
     setEpisodeArtworkUrl: vi.fn(),
     showTagline: '',
     setShowTagline: vi.fn(),
+    showScheduleNote: '',
+    setShowScheduleNote: vi.fn(),
     showVisibility: 'PUBLIC',
     setShowVisibility: vi.fn(),
     autoPublish: true,
@@ -65,6 +67,7 @@ describe('ScheduleEditorDialog create-only fields', () => {
   it('are enabled when creating a new show', () => {
     render(<ScheduleEditorDialog form={makeForm({ selectedShowId: '' })} />);
     expect(screen.getByLabelText('Show tagline')).toBeEnabled();
+    expect(screen.getByLabelText('When it airs')).toBeEnabled();
     expect(
       screen.getByLabelText('Publish recordings automatically'),
     ).toBeEnabled();
@@ -82,6 +85,7 @@ describe('ScheduleEditorDialog create-only fields', () => {
       <ScheduleEditorDialog form={makeForm({ selectedShowId: 'show-1' })} />,
     );
     expect(screen.getByLabelText('Show tagline')).toBeDisabled();
+    expect(screen.getByLabelText('When it airs')).toBeDisabled();
     expect(
       screen.getByLabelText('Publish recordings automatically'),
     ).toBeDisabled();

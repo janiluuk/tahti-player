@@ -41,6 +41,8 @@ export function useShowDetail(id: string) {
   const [busy, setBusy] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [tagline, setTagline] = useState('');
+  const [scheduleNote, setScheduleNote] = useState('');
   const [thumbnailUrl, setThumbnailUrl] = useState('');
   const [backdropUrl, setBackdropUrl] = useState('');
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
@@ -59,6 +61,8 @@ export function useShowDetail(id: string) {
         if (r.data) {
           setTitle(r.data.title);
           setDescription(r.data.description);
+          setTagline(r.data.tagline ?? '');
+          setScheduleNote(r.data.scheduleNote ?? '');
           setThumbnailUrl(r.data.coverUrl ?? '');
           setBackdropUrl(r.data.backdropUrl ?? '');
           setAutoPublish(r.data.autoPublish ?? true);
@@ -127,6 +131,8 @@ export function useShowDetail(id: string) {
       const r = await patchShowSeries(show.id, {
         title: title.trim() || show.title,
         description: description.trim(),
+        tagline: tagline.trim() || null,
+        scheduleNote: scheduleNote.trim() || null,
         coverUrl: coverUrl || null,
         backdropUrl: backdrop || null,
         autoPublish,
@@ -265,6 +271,10 @@ export function useShowDetail(id: string) {
     setTitle,
     description,
     setDescription,
+    tagline,
+    setTagline,
+    scheduleNote,
+    setScheduleNote,
     thumbnailUrl,
     setThumbnailUrl,
     backdropUrl,

@@ -35,6 +35,10 @@ export function OverviewTab({
     setTitle,
     description,
     setDescription,
+    tagline,
+    setTagline,
+    scheduleNote,
+    setScheduleNote,
     thumbnailUrl,
     setThumbnailUrl,
     backdropUrl,
@@ -66,6 +70,13 @@ export function OverviewTab({
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
+          <Input
+            label="Tagline"
+            description="Short line under the show name. New broadcasts start with it."
+            value={tagline}
+            onChange={(e) => setTagline(e.target.value)}
+            maxLength={200}
+          />
           <label className="flex flex-col gap-1 text-sm">
             <span className="text-foreground-secondary text-xs uppercase">
               Description
@@ -77,6 +88,13 @@ export function OverviewTab({
               rows={3}
             />
           </label>
+          <Input
+            label="When it airs"
+            description="Shown with your upcoming shows, e.g. Fridays 20:00."
+            value={scheduleNote}
+            onChange={(e) => setScheduleNote(e.target.value)}
+            maxLength={200}
+          />
           <ShowImagePicker
             label="Show thumbnail"
             description="JPEG, PNG, WebP, or GIF"

@@ -11,6 +11,7 @@ export type WireLiveShowSeries = {
   id: string;
   name: string;
   description: string | null;
+  tagline?: string | null;
   artworkUrl: string | null;
   backdropUrl?: string | null;
   mode?: ShowMode;
@@ -53,6 +54,7 @@ export function seriesFromWire(w: WireLiveShowSeries): StudioShowSeries {
     id: w.id,
     title: w.name,
     description: w.description ?? '',
+    tagline: w.tagline ?? null,
     coverUrl: w.artworkUrl,
     backdropUrl: w.backdropUrl ?? null,
     mode: w.mode ?? 'SERIES',

@@ -61,6 +61,8 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
     setEpisodeArtworkUrl,
     showTagline,
     setShowTagline,
+    showScheduleNote,
+    setShowScheduleNote,
     showVisibility,
     setShowVisibility,
     autoPublish,
@@ -168,9 +170,9 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
         <div className="grid gap-3 sm:grid-cols-2">
           {selectedShowId ? (
             <p className="text-foreground-secondary text-xs sm:col-span-2">
-              Tagline, visibility, recording and numbering are the show&apos;s
-              own settings — change them on its show page. They apply here only
-              when you create a new show.
+              Tagline, air time, visibility, recording and numbering are the
+              show&apos;s own settings — change them on its show page. They
+              apply here only when you create a new show.
             </p>
           ) : null}
           <Input
@@ -179,6 +181,13 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
             value={showTagline}
             onChange={(event) => setShowTagline(event.target.value)}
             placeholder="Optional subtitle"
+          />
+          <Input
+            label="When it airs"
+            disabled={Boolean(selectedShowId)}
+            value={showScheduleNote}
+            onChange={(event) => setShowScheduleNote(event.target.value)}
+            placeholder="e.g. Fridays 20:00"
           />
           <Select
             label="Visibility"

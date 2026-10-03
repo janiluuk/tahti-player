@@ -85,6 +85,7 @@ export async function fetchShowSchedule(): Promise<{
 export async function createShowSeries(input: {
   title: string;
   description?: string;
+  tagline?: string | null;
   coverUrl?: string | null;
   backdropUrl?: string | null;
   mode?: ShowMode;
@@ -114,6 +115,7 @@ export async function createShowSeries(input: {
       id: `show-${Date.now()}`,
       title,
       description: input.description?.trim() || '',
+      tagline: input.tagline?.trim() || null,
       coverUrl: input.coverUrl ?? null,
       backdropUrl: input.backdropUrl ?? null,
       mode: input.mode ?? 'SERIES',
@@ -143,6 +145,7 @@ export async function createShowSeries(input: {
         body: JSON.stringify({
           name: title,
           description: input.description,
+          tagline: input.tagline,
           artworkUrl: input.coverUrl,
           backdropUrl: input.backdropUrl,
           mode: input.mode,
@@ -265,6 +268,7 @@ export async function patchShowSeries(
       StudioShowSeries,
       | 'title'
       | 'description'
+      | 'tagline'
       | 'coverUrl'
       | 'backdropUrl'
       | 'mode'
@@ -303,6 +307,9 @@ export async function patchShowSeries(
     }
     if ('description' in patch) {
       body.description = patch.description;
+    }
+    if ('tagline' in patch) {
+      body.tagline = patch.tagline;
     }
     if ('coverUrl' in patch) {
       body.artworkUrl = patch.coverUrl;
