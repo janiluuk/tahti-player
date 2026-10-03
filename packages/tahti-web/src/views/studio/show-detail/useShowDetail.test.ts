@@ -19,7 +19,8 @@ const baseShow: StudioShowSeries = {
   showType: 'MUSIC',
   nextEpisodeNumber: 1,
   intervalHours: 1,
-  scheduleNote: null,
+  tagline: 'Old tagline',
+  scheduleNote: 'Fridays',
   createdAt: new Date().toISOString(),
 };
 
@@ -109,5 +110,40 @@ describe('useShowDetail — saveMeta uploads picked images', () => {
     });
 
     expect(patchShowSeries).not.toHaveBeenCalled();
+  });
+});
+
+describe('useShowDetail — tagline and air time', () => {
+  beforeEach(() => {
+    patchShowSeries.mockReset();
+    uploadUserMediaFile.mockReset();
+  });
+
+  it('loads the show tagline and air time and saves edits to each', async () => {
+    patchShowSeries.mockImplementation(async (id: string, patch: unknown) => ({
+      ok: true,
+      data: { ...baseShow, ...(patch as object) },
+    }));
+
+    const { result } = renderHook(() => useShowDetail('show-1'));
+    await waitFor(() => expect(result.current.loaded).toBe(true));
+    expect(result.current.tagline).toBe('Old tagline');
+    expect(result.current.scheduleNote).toBe('Fridays');
+
+    act(() => {
+      result.current.setTagline(' Slow techno for a Friday ');
+      result.current.setScheduleNote('');
+    });
+    await act(async () => {
+      await result.current.saveMeta();
+    });
+
+    expect(patchShowSeries).toHaveBeenCalledWith(
+      'show-1',
+      expect.objectContaining({
+        tagline: 'Slow techno for a Friday',
+        scheduleNote: null,
+      }),
+    );
   });
 });

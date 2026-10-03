@@ -8,6 +8,8 @@ export type StudioShowSeries = {
   id: string;
   title: string;
   description: string;
+  /** Short line under the show name; seeds each broadcast's tagline. */
+  tagline?: string | null;
   coverUrl: string | null;
   backdropUrl?: string | null;
   mode?: ShowMode;
@@ -16,7 +18,7 @@ export type StudioShowSeries = {
   nextEpisodeNumber: number;
   /** Preferred slot length in hours (1–2). */
   intervalHours: 1 | 2;
-  /** Optional recurring note / weekday hint for booking. */
+  /** When the show usually airs (e.g. "Fridays 20:00"), shown publicly. */
   scheduleNote: string | null;
   visibility?: 'PUBLIC' | 'FAN_ONLY';
   autoPublish?: boolean;

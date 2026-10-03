@@ -51,6 +51,7 @@ export function useScheduleForm() {
   const [location, setLocation] = useState('');
   const [episodeArtworkUrl, setEpisodeArtworkUrl] = useState('');
   const [showTagline, setShowTagline] = useState('');
+  const [showScheduleNote, setShowScheduleNote] = useState('');
   const [showVisibility, setShowVisibility] = useState<'PUBLIC' | 'FAN_ONLY'>(
     'PUBLIC',
   );
@@ -104,7 +105,8 @@ export function useScheduleForm() {
     setShowMode(show.mode ?? 'SERIES');
     setShowType(show.showType);
     setDurationHours(show.intervalHours);
-    setShowTagline(show.scheduleNote ?? '');
+    setShowTagline(show.tagline ?? '');
+    setShowScheduleNote(show.scheduleNote ?? '');
     setShowVisibility(show.visibility ?? 'PUBLIC');
     setAutoPublish(show.autoPublish ?? true);
     setEpisodeNumberEnabled(show.episodeNumberEnabled ?? true);
@@ -334,7 +336,8 @@ export function useScheduleForm() {
         mode: showMode,
         showType,
         intervalHours: durationHours,
-        scheduleNote: showTagline.trim() || null,
+        tagline: showTagline.trim() || null,
+        scheduleNote: showScheduleNote.trim() || null,
         visibility: showVisibility,
         autoPublish,
         episodeNumberEnabled,
@@ -401,6 +404,8 @@ export function useScheduleForm() {
     setEpisodeArtworkUrl,
     showTagline,
     setShowTagline,
+    showScheduleNote,
+    setShowScheduleNote,
     showVisibility,
     setShowVisibility,
     autoPublish,

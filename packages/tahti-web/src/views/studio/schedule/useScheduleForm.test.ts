@@ -1,28 +1,34 @@
 // @vitest-environment jsdom
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { StudioShowSeries } from '../../../api/shows';
 import { useScheduleForm } from './useScheduleForm';
 
-const { fetchShowSchedule, fetchShowSeries } = vi.hoisted(() => ({
-  fetchShowSchedule: vi.fn(),
-  fetchShowSeries: vi.fn(),
-}));
+const { createShowSeries, fetchShowSchedule, fetchShowSeries } = vi.hoisted(
+  () => ({
+    createShowSeries: vi.fn(),
+    fetchShowSchedule: vi.fn(),
+    fetchShowSeries: vi.fn(),
+  }),
+);
 
 vi.mock('../../../api/shows', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../../api/shows')>();
   return {
     ...actual,
+    createShowSeries,
     fetchShowSchedule,
     fetchShowSeries,
   };
 });
 
-const { fetchChannelSchedule, fetchUpcomingBroadcasts } = vi.hoisted(() => ({
-  fetchChannelSchedule: vi.fn(),
-  fetchUpcomingBroadcasts: vi.fn(),
-}));
+const { fetchChannelSchedule, fetchUpcomingBroadcasts, patchChannelSchedule } =
+  vi.hoisted(() => ({
+    fetchChannelSchedule: vi.fn(),
+    fetchUpcomingBroadcasts: vi.fn(),
+    patchChannelSchedule: vi.fn(),
+  }));
 
 vi.mock('../../../api/studio-extras', async (importOriginal) => {
   const actual =
@@ -31,6 +37,7 @@ vi.mock('../../../api/studio-extras', async (importOriginal) => {
     ...actual,
     fetchChannelSchedule,
     fetchUpcomingBroadcasts,
+    patchChannelSchedule,
   };
 });
 
@@ -128,5 +135,80 @@ describe('useScheduleForm upcoming-broadcast show linking', () => {
       (item) => item.id === 'upcoming-2',
     );
     expect(row?.showId).toBe('show-not-yet-loaded');
+  });
+});
+
+describe('useScheduleForm show tagline', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    fetchChannelSchedule.mockResolvedValue({
+      data: { nextBroadcastAt: null, nextBroadcastNote: null },
+      meta: { source: 'mock' },
+    });
+    fetchUpcomingBroadcasts.mockResolvedValue({
+      data: [],
+      meta: { source: 'mock' },
+    });
+  });
+
+  it("loads a picked show's tagline and air time into separate fields", async () => {
+    fetchShowSchedule.mockResolvedValue({
+      data: {
+        series: [
+          show({
+            id: 'show-t',
+            tagline: 'Slow techno for a Friday',
+            scheduleNote: 'Fridays 20:00',
+          }),
+        ],
+        scheduledShows: [],
+      },
+      meta: { source: 'mock' },
+    });
+
+    const { result } = renderHook(() => useScheduleForm());
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    act(() => result.current.selectShow('show-t'));
+
+    expect(result.current.showTagline).toBe('Slow techno for a Friday');
+    expect(result.current.showScheduleNote).toBe('Fridays 20:00');
+  });
+
+  it('creates a new show with its tagline and air time as separate fields', async () => {
+    fetchShowSchedule.mockResolvedValue({
+      data: { series: [], scheduledShows: [] },
+      meta: { source: 'mock' },
+    });
+    const created = show({ id: 'show-new', title: 'New Show' });
+    createShowSeries.mockResolvedValue({ ok: true, data: created });
+    patchChannelSchedule.mockResolvedValue({
+      ok: true,
+      data: { nextBroadcastAt: null, nextBroadcastNote: 'New Show' },
+    });
+
+    const { result } = renderHook(() => useScheduleForm());
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    act(() => {
+      result.current.onBroadcastFieldsChange({
+        title: 'New Show',
+        description: '',
+        coverUrl: '',
+        mode: 'SERIES',
+        showType: 'LIVE_SET',
+        durationHours: 1,
+      });
+      result.current.setShowTagline(' Slow techno for a Friday ');
+      result.current.setShowScheduleNote('Fridays 20:00');
+    });
+    await act(async () => {
+      await result.current.saveSchedule();
+    });
+
+    expect(createShowSeries).toHaveBeenCalledWith(
+      expect.objectContaining({
+        tagline: 'Slow techno for a Friday',
+        scheduleNote: 'Fridays 20:00',
+      }),
+    );
   });
 });
