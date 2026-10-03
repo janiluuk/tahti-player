@@ -38,6 +38,7 @@ import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { resolveNewReleaseVisualizer } from '../../lib/releaseVisualizer';
 import { ReleaseCsvImportButton } from './ReleaseCsvImportButton';
+import { ReleasePinButton } from './ReleasePinButton';
 
 const RELEASE_TYPES = [
   {
@@ -237,6 +238,7 @@ export function StudioReleasesView({
                         {typeof r._count?.tracks === 'number'
                           ? `, ${r._count.tracks} tracks`
                           : ''}
+                        {r.pinnedAt ? ', pinned to profile' : ''}
                         {' · '}
                         <code className="text-foreground-secondary">
                           /r/{r.smartLinkSlug}
@@ -285,6 +287,16 @@ export function StudioReleasesView({
                     </Tooltip>
                     {openMoreId === r.id && (
                       <div className="flex w-full flex-wrap gap-2 pt-1">
+                        <ReleasePinButton
+                          release={r}
+                          onChange={(pinnedAt) =>
+                            setReleases((list) =>
+                              list.map((x) =>
+                                x.id === r.id ? { ...x, pinnedAt } : x,
+                              ),
+                            )
+                          }
+                        />
                         <Tooltip content="Public link" side="top">
                           <ButtonLink
                             to="/r/$slug"
