@@ -35,7 +35,8 @@ export const MemberProfile: Story = {
   `packages/tahti-web/src/api/mock-overrides.ts` (channel, profile,
   collection, smartLink, trackDetail, trackComments, soundItems, directory,
   search, radio, feed, announcements, fanTiers, venueProfile, chatHistory,
-  topTracks, latestTracks, studioSounds, studioCollections, studioReleases).
+  topTracks, latestTracks, studioSounds, studioCollections, studioReleases,
+  userLikes, channelEvents, publicGallery, tagTracks).
 - Derived fixtures follow their source: overriding `channel` also changes
   the profile, fan tiers and sound items built from it.
 - Meta-level and story-level `mockData` deep-merge like any other

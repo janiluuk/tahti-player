@@ -1,4 +1,5 @@
 import type { FetchMeta } from './client';
+import { mockFixture } from './mock-overrides';
 import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
@@ -215,7 +216,11 @@ export async function fetchChannelEvents(slug: string): Promise<{
   if (isForceMock()) {
     const now = new Date().toISOString();
     return {
-      data: mockEvents.filter((e) => e.startAt >= now),
+      data: mockFixture(
+        'channelEvents',
+        mockEvents.filter((e) => e.startAt >= now),
+        slug,
+      ),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
