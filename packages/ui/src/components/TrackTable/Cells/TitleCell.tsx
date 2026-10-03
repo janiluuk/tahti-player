@@ -1,4 +1,5 @@
 import { CellContext } from '@tanstack/react-table';
+import { ReactNode } from 'react';
 
 import { Track } from '@tahti-player/model';
 
@@ -8,6 +9,7 @@ import { narrowOnlyClass } from '../utils/columns';
 
 type TitleCellMeta = {
   isCurrentTrack?: (track: Track) => boolean;
+  getTrackAnnotation?: (track: Track) => ReactNode;
 };
 
 export const TitleCell = <T extends Track>({
@@ -19,6 +21,7 @@ export const TitleCell = <T extends Track>({
   const { actions } = useTrackTableContext<T>();
   const track = row.original;
   const isCurrent = meta?.isCurrentTrack?.(track) ?? false;
+  const annotation = meta?.getTrackAnnotation?.(track);
 
   return (
     <td className="truncate px-2">
@@ -46,6 +49,14 @@ export const TitleCell = <T extends Track>({
       >
         {track.artists[0]?.name}
       </div>
+      {annotation ? (
+        <div
+          className="text-foreground-secondary truncate text-xs"
+          data-testid="track-annotation"
+        >
+          {annotation}
+        </div>
+      ) : null}
     </td>
   );
 };

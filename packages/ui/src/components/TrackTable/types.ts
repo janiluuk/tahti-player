@@ -105,6 +105,9 @@ export type TrackTableProps<T extends Track = Track> = {
     /** Per-row gate for actions.onOpenDetail's icon -- same convention as
      * canEditTrack. */
     canOpenDetail?: (track: T) => boolean;
+    /** Extra secondary line under a row's title (e.g. who added the track
+     * to a shared playlist). Pair with a larger `rowHeight` when used. */
+    getTrackAnnotation?: (track: T) => ReactNode;
     ContextMenuWrapper?: FC<ContextMenuWrapperProps<T>>;
   };
   rowHeight?: number;
