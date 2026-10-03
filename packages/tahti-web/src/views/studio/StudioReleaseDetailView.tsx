@@ -43,6 +43,7 @@ import { StudioGate } from '../../components/StudioGate';
 import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { trackTableLabels } from '../../lib/trackTableLabels';
+import { ReleasePoweredByFooterToggle } from './release-detail/ReleasePoweredByFooterToggle';
 import { ReleaseSmartLinksPanel } from './release-detail/ReleaseSmartLinksPanel';
 import { ReleaseSmartLinkStats } from './release-detail/ReleaseSmartLinkStats';
 import { ReleaseTrackCreditsPanel } from './release-detail/ReleaseTrackCreditsPanel';
@@ -405,6 +406,16 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                           )
                         }
                         onReleaseChange={setRelease}
+                      />
+                      <ReleasePoweredByFooterToggle
+                        release={release}
+                        onChange={(showPoweredByFooter) =>
+                          setRelease((current) =>
+                            current
+                              ? { ...current, showPoweredByFooter }
+                              : current,
+                          )
+                        }
                       />
                     </div>
                   ),

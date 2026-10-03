@@ -276,6 +276,14 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
           ))}
         </section>
       ) : null}
+
+      {data.release.showPoweredByFooter === true ? (
+        <footer className="text-foreground-secondary pt-4 text-center text-xs">
+          <Link to="/" className="hover:text-foreground hover:underline">
+            Powered by Tahti
+          </Link>
+        </footer>
+      ) : null}
     </div>
   );
 };

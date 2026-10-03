@@ -377,39 +377,6 @@ export type PublicCollection = {
   links: { page: string; rss: string };
 };
 
-export type SmartLinkView = {
-  release: {
-    id: string;
-    title: string;
-    type?: string;
-    artworkUrl?: string | null;
-    visualPreset?: string | null;
-    slideshowImages?: string[];
-    galleryMode?: string | null;
-    releaseDate?: string | null;
-    genre?: string | null;
-    description?: string | null;
-    smartLinkSlug?: string;
-    tracks?: import('./release-download').SmartLinkTrack[];
-  };
-  artist: {
-    username: string;
-    displayName: string;
-    avatarUrl: string | null;
-  };
-  featuredCollections: Array<{
-    slug: string;
-    name: string;
-    coverUrl?: string | null;
-    itemCount?: number;
-    url?: string;
-  }>;
-  profileUrl: string;
-  releaseUrl: string;
-  targets: Record<string, string>;
-  embedUrl: string;
-};
-
 export type VenueDirectoryItem = {
   id: string;
   slug: string;
@@ -888,4 +855,5 @@ export type SearchResponse = {
 };
 
 export * from './embed-types';
+export * from './smart-link-types';
 export * from './jam-types';
