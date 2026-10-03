@@ -2,7 +2,7 @@ import { ImageIcon, UploadCloudIcon } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { MediaArtwork } from '@tahti-player/ui';
+import { Button, MediaArtwork } from '@tahti-player/ui';
 
 import { uploadUserMediaFile } from '../api/user-media';
 import { cn } from '../lib/cn';
@@ -71,8 +71,9 @@ export function RoundImageUploadButton({
 
   return (
     <div className={cn('group relative inline-flex', className)}>
-      <button
-        type="button"
+      <Button
+        variant="text"
+        size="flexible"
         onClick={() =>
           !busy && (value ? chrome.openPreview() : inputRef.current?.click())
         }
@@ -88,7 +89,7 @@ export function RoundImageUploadButton({
             : `Change ${label.toLowerCase()}`
         }
         className={cn(
-          'border-border bg-background-secondary relative flex items-center justify-center overflow-hidden rounded-full border-2',
+          'border-border bg-background-secondary hover:bg-background-secondary relative justify-center overflow-hidden rounded-full border-2 p-0',
           sizeClassName,
         )}
       >
@@ -101,7 +102,7 @@ export function RoundImageUploadButton({
             className="text-foreground-secondary"
           />
         )}
-      </button>
+      </Button>
       {value ? (
         <ImageSlotDeleteBadge label={label} onClick={chrome.requestDelete} />
       ) : (
@@ -109,6 +110,9 @@ export function RoundImageUploadButton({
           <UploadCloudIcon size={18} aria-hidden />
         </div>
       )}
+      {/* No @tahti-player/ui component fits: FilePicker is a labelled
+          dropzone, while this slot and the preview's Change action open
+          the OS picker from their own controls. */}
       <input
         ref={inputRef}
         type="file"
