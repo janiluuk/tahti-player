@@ -24,6 +24,8 @@ export type StudioSound = {
   artistName?: string | null;
   genre?: string | null;
   subGenres?: string[];
+  /** Free-form artist labels (mood, series...), case kept as typed. */
+  tags?: string[];
   /** Role-based credits when this track differs from the channel's
    * Members/Credits roster — same role vocabulary as release credits. */
   credits?: ReleaseCredit[] | null;
@@ -92,6 +94,7 @@ export type StudioSoundPatch = {
   artistName?: string | null;
   genre?: string | null;
   subGenres?: string[];
+  tags?: string[];
   credits?: ReleaseCredit[] | null;
   contentType?: string;
   license?: string;

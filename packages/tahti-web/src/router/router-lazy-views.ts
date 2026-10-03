@@ -324,6 +324,10 @@ export const SubscribeView = lazyRouteComponent(
   () => import('../views/SubscribeView'),
   'SubscribeView',
 );
+export const TagSearchView = lazyRouteComponent(
+  () => import('../views/TagSearchView'),
+  'TagSearchView',
+);
 export const TrackDetailView = lazyRouteComponent(
   () => import('../views/TrackDetailView'),
   'TrackDetailView',

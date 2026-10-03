@@ -10,10 +10,22 @@ vi.mock('@tanstack/react-router', async (importOriginal) => ({
   Link: ({
     children,
     params,
+    search,
   }: {
     children: ReactNode;
-    params: { username: string };
-  }) => <a href={`/u/${params.username}`}>{children}</a>,
+    params?: { username: string };
+    search?: { tag: string };
+  }) => (
+    <a
+      href={
+        search
+          ? `/search?tag=${encodeURIComponent(search.tag)}`
+          : `/u/${params?.username}`
+      }
+    >
+      {children}
+    </a>
+  ),
 }));
 
 function detail(overrides: Partial<PublicTrackDetail>): PublicTrackDetail {
@@ -54,6 +66,21 @@ describe('TrackDetailsBlock', () => {
     expect(screen.getByText('Made on a rainy Sunday.')).toBeInTheDocument();
     expect(screen.queryByText('Key')).not.toBeInTheDocument();
     expect(screen.queryByText('Licence')).not.toBeInTheDocument();
+  });
+
+  it('links each tag to tag search', () => {
+    render(
+      <TrackDetailsBlock detail={detail({ tags: ['Late night', 'drone'] })} />,
+    );
+    expect(screen.getByText('Tags')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: '#Late night' })).toHaveAttribute(
+      'href',
+      '/search?tag=Late%20night',
+    );
+    expect(screen.getByRole('link', { name: '#drone' })).toHaveAttribute(
+      'href',
+      '/search?tag=drone',
+    );
   });
 
   it('shows an explicit Creative Commons licence and key', () => {

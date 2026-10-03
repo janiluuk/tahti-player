@@ -22,6 +22,7 @@ export type TrackDetailCredit = {
 
 export type TrackDetailFacts = {
   genres: string[];
+  tags: string[];
   bpm: number | null;
   musicalKey: string | null;
   license: string | null;
@@ -34,6 +35,7 @@ type DetailFields = Partial<
     PublicTrackDetail,
     | 'genre'
     | 'subGenres'
+    | 'tags'
     | 'effectiveBpm'
     | 'effectiveKey'
     | 'license'
@@ -68,14 +70,19 @@ function parseCredit(row: unknown): TrackDetailCredit | null {
   };
 }
 
-export function trackDetailFacts(detail: DetailFields): TrackDetailFacts {
-  const genres = [detail.genre, ...(detail.subGenres ?? [])]
+function uniqueTexts(values: unknown[]): string[] {
+  return values
     .map(text)
-    .filter((genre): genre is string => genre !== null)
+    .filter((value): value is string => value !== null)
     .filter(
-      (genre, index, all) =>
-        all.findIndex((g) => g.toLowerCase() === genre.toLowerCase()) === index,
+      (value, index, all) =>
+        all.findIndex((v) => v.toLowerCase() === value.toLowerCase()) === index,
     );
+}
+
+export function trackDetailFacts(detail: DetailFields): TrackDetailFacts {
+  const genres = uniqueTexts([detail.genre, ...(detail.subGenres ?? [])]);
+  const tags = Array.isArray(detail.tags) ? uniqueTexts(detail.tags) : [];
   const bpm =
     typeof detail.effectiveBpm === 'number' &&
     Number.isFinite(detail.effectiveBpm) &&
@@ -89,6 +96,7 @@ export function trackDetailFacts(detail: DetailFields): TrackDetailFacts {
     : [];
   return {
     genres,
+    tags,
     bpm,
     musicalKey: text(detail.effectiveKey),
     license: detail.license ? (LICENSE_LABELS[detail.license] ?? null) : null,
@@ -100,6 +108,7 @@ export function trackDetailFacts(detail: DetailFields): TrackDetailFacts {
 export function hasTrackDetailFacts(facts: TrackDetailFacts): boolean {
   return (
     facts.genres.length > 0 ||
+    facts.tags.length > 0 ||
     facts.bpm !== null ||
     facts.musicalKey !== null ||
     facts.license !== null ||
