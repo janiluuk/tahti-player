@@ -53,6 +53,7 @@ export type { ProfileFields, ProfilePatch } from './studio-extras/profile';
 export { fetchMeProfile, patchMeProfile } from './studio-extras/profile';
 export type {
   ArtistPost,
+  ArtistPostPatch,
   NewsletterDraft,
   NewsletterSubscriberStats,
 } from './studio-extras/posts';
@@ -60,6 +61,8 @@ export {
   fetchArtistPosts,
   fetchChannelPosts,
   createArtistPost,
+  updateArtistPost,
+  isScheduledPost,
   uploadArtistPostImage,
   deleteArtistPost,
   fetchNewsletterDrafts,

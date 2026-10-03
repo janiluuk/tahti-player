@@ -20,6 +20,8 @@ import { prefetchHls } from '../../lib/hlsLoader';
 import { usePlayerStore } from '../../stores/playerStore';
 import { NowPlayingOverlay } from '../NowPlayingOverlay';
 import { WaveformSeekbar } from '../tahti/WaveformSeekbar';
+import { ChannelStageTrackMeta } from './ChannelStageTrackMeta';
+import { useRotationNowPlaying } from './useRotationNowPlaying';
 
 type Props = {
   channel: PublicChannel;
@@ -64,6 +66,11 @@ export function ChannelStagePlayer({
       : 'Favorited'
     : favoriteLabel;
   const navigate = useNavigate();
+  const { nowPlaying, next } = useRotationNowPlaying(
+    slug,
+    channel.nowPlaying,
+    channel.nowPlayingNext,
+  );
 
   const channelIsCurrent =
     currentId === `live:${slug}` || currentId === `radio:${slug}`;
@@ -93,7 +100,7 @@ export function ChannelStagePlayer({
       .catch(() => toast.error('Could not start the stream. Try again.'));
   };
 
-  return !live && !channel.nowPlaying ? (
+  return !live && !nowPlaying ? (
     <div className="bg-background-secondary flex items-center justify-center py-12">
       <WifiOffIcon
         size={56}
@@ -110,35 +117,38 @@ export function ChannelStagePlayer({
           : 'bg-gradient-to-t from-black/70 to-black/5'
       }`}
     >
-      {channel.nowPlaying ? (
-        <NowPlayingOverlay
-          presetId={resolveNowPlayingOverlayPreset(
-            channel.nowPlayingOverlayStyle,
-          )}
-          title={channel.nowPlaying.title}
-          artist={channel.nowPlaying.artistName}
-          artworkUrl={channel.nowPlaying.artworkUrl}
-          settings={parseNowPlayingOverlaySettings(
-            channel.nowPlayingOverlaySettingsJson,
-          )}
-          seekbar={
-            <WaveformSeekbar
-              trackId={`channel:${slug}`}
-              progress={
-                channelIsCurrent && duration > 0 ? currentTime / duration : 0
-              }
-              bars={72}
-              className="mt-3 h-10 max-w-2xl"
-              playedColor={channel.colorScheme?.accent}
-              unplayedColor={channel.colorScheme?.muted}
-              onSeek={
-                channelIsCurrent && duration > 0
-                  ? (fraction) => seekTo(fraction * duration)
-                  : undefined
-              }
-            />
-          }
-        />
+      {nowPlaying ? (
+        <>
+          <NowPlayingOverlay
+            presetId={resolveNowPlayingOverlayPreset(
+              channel.nowPlayingOverlayStyle,
+            )}
+            title={nowPlaying.title}
+            artist={nowPlaying.artistName}
+            artworkUrl={nowPlaying.artworkUrl}
+            settings={parseNowPlayingOverlaySettings(
+              channel.nowPlayingOverlaySettingsJson,
+            )}
+            seekbar={
+              <WaveformSeekbar
+                trackId={`channel:${slug}`}
+                progress={
+                  channelIsCurrent && duration > 0 ? currentTime / duration : 0
+                }
+                bars={72}
+                className="mt-3 h-10 max-w-2xl"
+                playedColor={channel.colorScheme?.accent}
+                unplayedColor={channel.colorScheme?.muted}
+                onSeek={
+                  channelIsCurrent && duration > 0
+                    ? (fraction) => seekTo(fraction * duration)
+                    : undefined
+                }
+              />
+            }
+          />
+          <ChannelStageTrackMeta nowPlaying={nowPlaying} next={next} />
+        </>
       ) : (
         <p className="text-sm text-white/80">
           Stream is live — hit Play live to drive the visualizer.

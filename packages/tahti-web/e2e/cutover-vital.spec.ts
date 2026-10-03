@@ -210,7 +210,7 @@ test('artist library starts with a searchable archive and track tools', async ({
   await expect(page.getByRole('tab', { name: 'Details' })).toBeVisible();
   await expect(page.getByLabel('Release date')).toBeVisible();
   await expect(page.getByLabel('Visibility')).toBeVisible();
-  await expect(page.getByLabel('Allow downloads')).toBeVisible();
+  await expect(page.getByText('Turning downloads off')).toBeVisible();
   await expect(page.getByLabel('Allow comments')).toBeVisible();
   await expect(
     page.getByRole('link', { name: 'Open audio editor' }),

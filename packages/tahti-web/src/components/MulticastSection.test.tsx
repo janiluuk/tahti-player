@@ -1,5 +1,11 @@
 // @vitest-environment jsdom
-import { act, cleanup, render, screen } from '@testing-library/react';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+} from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as broadcast from '../api/broadcast';
@@ -38,5 +44,47 @@ describe('MulticastSection', () => {
       render(<MulticastSection />);
     });
     expect(fetchTargets).toHaveBeenCalledWith('me');
+  });
+
+  it('lets the radio scope switch rotation mirroring on and back off', async () => {
+    vi.spyOn(broadcast, 'fetchRtmpTargets').mockResolvedValue({
+      data: [
+        {
+          id: 'r1',
+          provider: 'YOUTUBE',
+          label: 'Radio YouTube',
+          rtmpUrl: 'rtmp://a.rtmp.youtube.com/live2',
+          alwaysMirror: false,
+          enabled: true,
+          keyLast4: '9999',
+        },
+      ],
+      meta: { source: 'api' },
+    });
+    const patch = vi
+      .spyOn(broadcast, 'patchRtmpTarget')
+      .mockResolvedValue({ ok: true });
+    await act(async () => {
+      render(<MulticastSection scope="radio" />);
+    });
+    fireEvent.click(screen.getByRole('button', { name: /YouTube/ }));
+    const toggle = () =>
+      screen.getByRole('switch', {
+        name: "Keep mirroring the 24/7 rotation when I'm offline",
+      });
+    const save = () => screen.getByRole('button', { name: /Save changes/ });
+    fireEvent.click(toggle());
+    await act(async () => {
+      fireEvent.click(save());
+    });
+    fireEvent.click(toggle());
+    await act(async () => {
+      fireEvent.click(save());
+    });
+    expect(patch.mock.calls.map((call) => call[1].alwaysMirror)).toEqual([
+      true,
+      false,
+    ]);
+    expect(patch.mock.calls[0]?.[2]).toBe('radio');
   });
 });

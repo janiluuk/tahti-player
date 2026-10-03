@@ -97,6 +97,7 @@ export function TrackTable<T extends Track = Track>({
       isTrackQueued: meta?.isTrackQueued,
       canEditTrack: meta?.canEditTrack,
       canOpenDetail: meta?.canOpenDetail,
+      getTrackAnnotation: meta?.getTrackAnnotation,
       ContextMenuWrapper: meta?.ContextMenuWrapper,
       isRowSelected: rowSelection.isSelected,
       onToggleRowSelected: rowSelection.toggle,

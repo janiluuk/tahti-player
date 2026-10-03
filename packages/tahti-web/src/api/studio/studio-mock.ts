@@ -39,7 +39,6 @@ export const mockSoundStore: StudioSound[] = [
         startSec: 1800,
       },
     ],
-    tracklistOverlay: { enabled: true, preset: 'cards' },
   },
   {
     id: 'arch-mock-2',

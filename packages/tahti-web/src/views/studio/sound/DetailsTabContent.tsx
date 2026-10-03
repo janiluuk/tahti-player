@@ -8,6 +8,7 @@ import {
 
 import { AudienceVisibilitySection } from '../../../components/AudienceVisibilitySection';
 import { AudioRevisionList } from '../../../components/AudioRevisionList';
+import { DownloadsSwitchNotice } from '../../../components/DownloadsSwitchNotice';
 import { SELECTABLE_CONTENT_TYPES } from '../../../content/contentTypes';
 import { capitalizeGenre, PRESET_GENRES } from '../../../lib/genres';
 import type { SoundEditorState } from './useSoundEditor';
@@ -35,10 +36,6 @@ export function DetailsTabContent({
     setGenre,
     visibility,
     setVisibility,
-    fanTierIds,
-    setFanTierIds,
-    downloadsEnabled,
-    setDownloadsEnabled,
     commentsEnabled,
     setCommentsEnabled,
     quickMsg,
@@ -103,22 +100,8 @@ export function DetailsTabContent({
         <AudienceVisibilitySection
           visibility={visibility}
           onVisibilityChange={setVisibility}
-          tierIds={fanTierIds}
-          onTierIdsChange={setFanTierIds}
         />
-        <div className="border-border flex items-center justify-between gap-3 rounded-lg border p-3 text-sm">
-          <span>
-            <span className="block font-medium">Allow downloads</span>
-            <span className="text-foreground-secondary block text-xs">
-              Listeners can download the released audio file.
-            </span>
-          </span>
-          <Toggle
-            label="Allow downloads"
-            checked={downloadsEnabled}
-            onChange={setDownloadsEnabled}
-          />
-        </div>
+        {!item.embedProvider ? <DownloadsSwitchNotice /> : null}
         <div className="border-border flex items-center justify-between gap-3 rounded-lg border p-3 text-sm">
           <span>
             <span className="block font-medium">Allow comments</span>

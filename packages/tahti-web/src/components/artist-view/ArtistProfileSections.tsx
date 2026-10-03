@@ -28,13 +28,14 @@ import {
   publicPressKitUrl,
   type ArtistProfileEmbed,
 } from '../../lib/artistProfile';
-import { humanizeFanTierPerk } from '../../lib/fanTierPerks';
 import { DiscoWidgetsSection } from '../disco-widgets/DiscoWidgetsSection';
 import { EmbedButton } from '../EmbedButton';
 import { NewsletterSubscribeToggle } from '../NewsletterSubscribeToggle';
+import { PostLink } from '../PostLink';
 import { RssFeedButton } from '../RssFeedButton';
 import { ShowEpisodeList } from '../ShowEpisodeList';
 import { Eyebrow } from '../tahti/Eyebrow';
+import { ArtistBackgroundMusicButton } from './ArtistBackgroundMusicButton';
 
 const headerButtonClass =
   'bg-background border-border rounded-md border-(length:--border-width)';
@@ -54,6 +55,11 @@ export function ArtistHeaderActions({
   const subscriptionsOn = artist.freeSubscriptionsEnabled !== false;
   return (
     <>
+      <ArtistBackgroundMusicButton
+        url={profile.backgroundMusicUrl}
+        artistName={artist.displayName}
+        className={headerButtonClass}
+      />
       {!isOwner && subscriptionsOn ? (
         <NewsletterSubscribeToggle
           artistUsername={artist.username}
@@ -375,6 +381,11 @@ export function ArtistFeed({ posts }: { posts: ArtistPost[] }) {
               <p className="text-sm font-semibold">{post.title}</p>
             ) : null}
             <p className="text-foreground-secondary text-sm">{post.body}</p>
+            <PostLink
+              linkUrl={post.linkUrl}
+              linkLabel={post.linkLabel}
+              className="self-start text-sm"
+            />
           </li>
         ))}
       </ul>
@@ -409,63 +420,4 @@ export function ArtistEmbeds({ embeds }: { embeds: ArtistProfileEmbed[] }) {
       </div>
     </section>
   );
-}
-
-export function ArtistFanTiersNote({
-  tiers,
-}: {
-  tiers: PublicProfile['fanTiers'];
-}) {
-  if (tiers.length === 0) {
-    return null;
-  }
-  const hasDetails = tiers.some(
-    (t) => Boolean(t.description) || (t.perks?.length ?? 0) > 0,
-  );
-  if (!hasDetails) {
-    return (
-      <p className="text-foreground-secondary text-xs">
-        Fan tiers:{' '}
-        {tiers
-          .map((t) => `${t.name} (${fanTierPrice(t.amountCents)})`)
-          .join(', ')}
-      </p>
-    );
-  }
-  return (
-    <section className="flex flex-col gap-3" aria-label="Fan tiers">
-      <Eyebrow>Fan tiers</Eyebrow>
-      <ul className="border-border divide-border divide-y overflow-hidden rounded-xl border">
-        {tiers.map((tier) => (
-          <li key={tier.id} className="flex flex-col gap-1 p-3 text-sm">
-            <p className="font-medium">
-              {tier.name}{' '}
-              <span className="text-foreground-secondary">
-                {fanTierPrice(tier.amountCents)}/mo
-              </span>
-            </p>
-            {tier.description ? (
-              <p className="text-foreground-secondary text-xs">
-                {tier.description}
-              </p>
-            ) : null}
-            {tier.perks && tier.perks.length > 0 ? (
-              <ul
-                className="text-foreground-secondary list-disc pl-4 text-xs"
-                aria-label={`${tier.name} perks`}
-              >
-                {tier.perks.map((perk) => (
-                  <li key={perk}>{humanizeFanTierPerk(perk)}</li>
-                ))}
-              </ul>
-            ) : null}
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
-}
-
-function fanTierPrice(amountCents: number): string {
-  return `€${(amountCents / 100).toFixed(0)}`;
 }

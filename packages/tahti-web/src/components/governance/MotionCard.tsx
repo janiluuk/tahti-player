@@ -11,6 +11,7 @@ import {
   type MotionComment,
 } from '../../api/client';
 import type { GovernanceMotion } from '../../api/types';
+import { toDatetimeLocalValue } from '../../lib/datetimeLocal';
 
 function stateBadge(state: string): {
   color: 'green' | 'orange' | 'secondary';
@@ -53,15 +54,6 @@ function isExpiredMotion(motion: GovernanceMotion): boolean {
     Boolean(motion.closeAt) &&
     new Date(motion.closeAt!).getTime() <= Date.now()
   );
-}
-
-/** ISO string -> `datetime-local` input value, in the viewer's own
- * timezone (the input has no timezone concept of its own — using
- * toISOString() directly would silently relabel UTC as local). */
-function toDatetimeLocalValue(iso: string): string {
-  const d = new Date(iso);
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
 export function MotionCard({

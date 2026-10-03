@@ -14,6 +14,7 @@ import {
 import { ClientCapabilityNotice } from '../../../components/ClientCapabilityNotice';
 import { SettingsHint, SettingsToggle } from '../SettingsFields';
 import { CommentSettingsToggles } from './CommentSettingsToggles';
+import { GrantReportAttributionToggle } from './GrantReportAttributionToggle';
 import { TopListsToggle } from './TopListsToggle';
 
 export function NotificationsPanel() {
@@ -118,7 +119,11 @@ export function NotificationsVisibilityPanel() {
 
   const updateVisibility = (
     key:
-      'showJoinDate' | 'showFollowers' | 'showFollowing' | 'showDailyListeners',
+      | 'showJoinDate'
+      | 'showFollowers'
+      | 'showFollowing'
+      | 'showLikes'
+      | 'showDailyListeners',
     value: boolean,
   ) => {
     if (!profile) {
@@ -193,6 +198,11 @@ export function NotificationsVisibilityPanel() {
             onChange={(value) => updateVisibility('showFollowing', value)}
           />
           <SettingsToggle
+            label="Show tracks I like on my profile"
+            value={profile.showLikes ?? true}
+            onChange={(value) => updateVisibility('showLikes', value)}
+          />
+          <SettingsToggle
             label="Show today’s listener count in my chat"
             value={profile.showDailyListeners ?? true}
             onChange={(value) => updateVisibility('showDailyListeners', value)}
@@ -215,6 +225,10 @@ export function NotificationsVisibilityPanel() {
             </ClientCapabilityNotice>
           </div>
           <TopListsToggle />
+          <GrantReportAttributionToggle
+            profile={profile}
+            onSaved={setProfile}
+          />
           <CommentSettingsToggles />
         </div>
       )}
