@@ -7,6 +7,9 @@
  * shared fixtures in mock.ts. The app itself never sets overrides, so with
  * an empty registry every fixture passes through unchanged.
  */
+import type { PublicPressKitImage } from './artist-settings/press-kit-images';
+import type { ArtistEvent } from './events';
+import type { LikedTrack } from './likes';
 import type { StudioCollection, StudioSound } from './studio-types';
 import type {
   Announcement,
@@ -22,6 +25,7 @@ import type {
   PublicTrackDetail,
   RadioNowPlaying,
   SearchResponse,
+  SearchTrackResult,
   SmartLinkView,
   TrackComment,
   VenueProfile,
@@ -36,6 +40,7 @@ import type {
 export interface MockFixtures {
   announcements: { data: Announcement[]; args: [] };
   channel: { data: PublicChannel; args: [slug: string] };
+  channelEvents: { data: ArtistEvent[]; args: [slug: string] };
   chatHistory: { data: ChatMessage[]; args: [slug: string] };
   collection: {
     data: PublicCollection;
@@ -46,15 +51,21 @@ export interface MockFixtures {
   feed: { data: FeedResponse; args: [] };
   latestTracks: { data: DiscoverTrackItem[]; args: [] };
   profile: { data: PublicProfile; args: [username: string] };
+  publicGallery: { data: PublicPressKitImage[]; args: [username: string] };
   radio: { data: RadioNowPlaying; args: [] };
   search: { data: SearchResponse; args: [q: string, type: string] };
   smartLink: { data: SmartLinkView; args: [smartLinkSlug: string] };
   soundItems: { data: ChannelSoundItem[]; args: [slug: string] };
   studioCollections: { data: StudioCollection[]; args: [] };
   studioSounds: { data: StudioSound[]; args: [] };
+  tagTracks: { data: SearchTrackResult[]; args: [tag: string] };
   topTracks: { data: DiscoverTrackItem[]; args: [sort: 'asc' | 'desc'] };
   trackComments: { data: TrackComment[]; args: [id: string] };
   trackDetail: { data: PublicTrackDetail | null; args: [id: string] };
+  userLikes: {
+    data: { showLikes: boolean; items: LikedTrack[] };
+    args: [username: string];
+  };
   venueProfile: { data: VenueProfile | null; args: [slug: string] };
 }
 

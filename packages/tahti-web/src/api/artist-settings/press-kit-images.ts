@@ -1,4 +1,5 @@
 import type { FetchMeta } from '.././client';
+import { mockFixture } from '.././mock-overrides';
 import { failMeta, isForceMock } from '.././mode';
 import { requestJson } from '.././request-json';
 import { mockPress, setMockPress } from './mock';
@@ -35,13 +36,17 @@ export async function fetchPublicPressKitImages(
 ): Promise<{ data: PublicPressKitImage[]; meta: FetchMeta }> {
   if (isForceMock()) {
     return {
-      data: mockGalleryPublic
-        ? mockGalleryImages.map(({ id, imageUrl, title }) => ({
-            id,
-            imageUrl,
-            title,
-          }))
-        : [],
+      data: mockFixture(
+        'publicGallery',
+        mockGalleryPublic
+          ? mockGalleryImages.map(({ id, imageUrl, title }) => ({
+              id,
+              imageUrl,
+              title,
+            }))
+          : [],
+        username,
+      ),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }

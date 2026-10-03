@@ -1,5 +1,6 @@
 import { requestJson } from './client-request';
 import { mockDirectory, mockFeed, mockSearch, TAHTI_RADIO_SLUG } from './mock';
+import { mockFixture } from './mock-overrides';
 import {
   apiErrorMeta,
   isForceMock,
@@ -101,7 +102,7 @@ export async function fetchTracksByTag(
     return { ok: true, tracks: [] };
   }
   if (isForceMock()) {
-    return { ok: true, tracks: [] };
+    return { ok: true, tracks: mockFixture('tagTracks', [], trimmed) };
   }
   try {
     const data = await getJson<SearchResponse>(
