@@ -1,8 +1,9 @@
 import { toast } from 'sonner';
 
 import { isHeaderImageUrl } from '../../api/channel-design';
-import { fetchPublicSoundDownload, postTrackComment } from '../../api/client';
+import { postTrackComment } from '../../api/client';
 import { deleteComment } from '../../api/comments';
+import { fetchPublicSoundDownload } from '../../api/public-sound-download';
 import { checkoutPurchaseTier } from '../../api/purchase-tiers';
 import { fetchDownloadGates } from '../../api/sound-download-gates';
 import { type TahtiPlayable, type TrackComment } from '../../api/types';
@@ -15,6 +16,7 @@ import {
   formatTimedCommentBody,
   parseTimedComment,
 } from '../../lib/timedComment';
+import { resolveTrackAccessGate } from './resolveAccessGate';
 import { type TrackDetailState } from './useTrackDetail';
 
 export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
@@ -35,9 +37,12 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
     setCommentError,
     deletingCommentId,
     setDeletingCommentId,
+    setDetail,
     setDownloadBusy,
     setDownloadGates,
     setBuyBusy,
+    setPwywOpen,
+    setPwywAmt,
     setPurchaseBump,
     play,
     setStatus,
@@ -58,7 +63,14 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
   const elapsed = isCurrent ? currentTime : 0;
   const progress = isCurrent && totalDuration > 0 ? elapsed / totalDuration : 0;
   const favorited = favoriteTracks.some((t) => t.id === playable.id);
-  const canPlay = Boolean(playable.streamUrl);
+  const isOwner = Boolean(user && detail?.channel.username === user.username);
+  const accessGate = resolveTrackAccessGate(detail, {
+    isOwner,
+    purchaseEntitled,
+  });
+  // A cached/queued playable can still carry a stream URL from before the
+  // gate applied, so the gate wins over the URL.
+  const canPlay = Boolean(playable.streamUrl) && !accessGate;
   // EMBED_ONLY tracks (hearthis.at, Mixcloud, Spotify, Bandcamp) have no
   // Tahti-hosted audio — the provider's own widget is the only way to
   // play them, so the transport/waveform controls above are replaced by
@@ -106,7 +118,6 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
     }
     return cue.id;
   }, null);
-  const isOwner = Boolean(user && detail?.channel.username === user.username);
   const canEdit = isOwner || hasAccountRole(user, 'BOARD');
   const artistLive = channel?.state === 'LIVE';
   const relatedTracks = (profile?.tracks ?? [])
@@ -215,6 +226,9 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
     setDownloadBusy(false);
     if (!result.ok) {
       toast.error(result.error);
+      if (result.downloadsDisabled) {
+        setDetail({ ...detail, downloadsEnabled: false });
+      }
       return;
     }
     const filename =
@@ -228,6 +242,8 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
     link.click();
     link.remove();
   };
+
+  const showDownload = detail?.downloadsEnabled !== false;
 
   const showBuyTrack =
     Boolean(detail?.accessMode === 'PURCHASE' && detail.purchaseTierId) &&
@@ -264,6 +280,15 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
     setPurchaseBump((value) => value + 1);
     toast.success('Purchase complete');
     await downloadTrack();
+  };
+
+  const startBuy = () => {
+    if (detail?.purchaseTierPriceOptional) {
+      setPwywAmt(((detail.purchaseTierPriceCents ?? 0) / 100).toFixed(2));
+      setPwywOpen(true);
+      return;
+    }
+    void buyTrack();
   };
 
   return {
@@ -303,8 +328,11 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
     deletingCommentId,
     shareTrack,
     downloadTrack,
+    showDownload,
     showBuyTrack,
     buyTrack,
+    startBuy,
+    accessGate,
   };
 }
 

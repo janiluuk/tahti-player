@@ -11,6 +11,7 @@ import { Button, CardGrid, Tooltip } from '@tahti-player/ui';
 
 import type {
   PublicProfile,
+  PublicProfileRelease,
   PublicProfileTrack,
   TahtiPlayable,
 } from '../../api/types';
@@ -33,6 +34,7 @@ import { ArtistCredits } from './ArtistCredits';
 import { ArtistLikes } from './ArtistLikes';
 import { ArtistReposts } from './ArtistReposts';
 import { ArtistUpcomingEvents } from './ArtistUpcomingEvents';
+import type { ArtistPinnedTile } from './useArtistCatalog';
 
 const GLOW_COLORS = [
   'var(--color-accent-purple)',
@@ -70,8 +72,9 @@ type Props = {
     track: PublicProfileTrack | undefined;
     onPlay: () => void;
   };
-  pinnedTiles: Array<{ track: PublicProfileTrack; playable: TahtiPlayable }>;
+  pinnedTiles: ArtistPinnedTile[];
   onPlay: (playable: TahtiPlayable) => void;
+  onPlayRelease: (release: PublicProfileRelease) => void;
   onToggleFavorite: (playable: TahtiPlayable) => void;
   favoriteTracks: TahtiPlayable[];
   onOpenManager: () => void;
@@ -95,6 +98,7 @@ export function ArtistMusicTab({
   featured,
   pinnedTiles,
   onPlay,
+  onPlayRelease,
   onToggleFavorite,
   favoriteTracks,
   onOpenManager,
@@ -275,18 +279,40 @@ export function ArtistMusicTab({
             )}
           </div>
           <CardGrid className="grid-cols-[repeat(auto-fill,minmax(11rem,1fr))] gap-6">
-            {pinnedTiles.map(({ track, playable }, i) => (
-              <GlowMediaTile
-                key={track.id}
-                title={track.title}
-                subtitle={track.artistName ?? artist.displayName}
-                src={track.bannerUrl ?? placeholderArtworkUrl(track.id)}
-                glowColor={GLOW_COLORS[i % GLOW_COLORS.length]}
-                onPlay={() => onPlay(playable)}
-                onFavorite={() => onToggleFavorite(playable)}
-                favorited={favoriteTracks.some((t) => t.id === playable.id)}
-              />
-            ))}
+            {pinnedTiles.map((tile, i) => {
+              const { playable } = tile;
+              const shared = {
+                glowColor: GLOW_COLORS[i % GLOW_COLORS.length],
+                onFavorite: () => onToggleFavorite(playable),
+                favorited: favoriteTracks.some((t) => t.id === playable.id),
+              };
+              if (tile.kind === 'release') {
+                const { release } = tile;
+                return (
+                  <GlowMediaTile
+                    key={`release:${release.id}`}
+                    {...shared}
+                    title={release.title}
+                    subtitle={release.type ?? 'Release'}
+                    src={
+                      release.artworkUrl ?? placeholderArtworkUrl(release.id)
+                    }
+                    onPlay={() => onPlayRelease(release)}
+                  />
+                );
+              }
+              const { track } = tile;
+              return (
+                <GlowMediaTile
+                  key={track.id}
+                  {...shared}
+                  title={track.title}
+                  subtitle={track.artistName ?? artist.displayName}
+                  src={track.bannerUrl ?? placeholderArtworkUrl(track.id)}
+                  onPlay={() => onPlay(playable)}
+                />
+              );
+            })}
           </CardGrid>
         </div>
       )}

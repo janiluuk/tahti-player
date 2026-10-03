@@ -39,6 +39,25 @@ export async function pushJamState(
   return data;
 }
 
+/** Host-only: lets a guest change the jam's playback, or takes that back.
+ * Resolves to the updated session, or null when the API refuses or doesn't
+ * support it yet - the caller hides the control in that case. */
+export async function setJamParticipantControl(
+  sessionId: string,
+  userId: string,
+  canControl: boolean,
+): Promise<JamSession | null> {
+  try {
+    const { data } = await requestJson<JamSession>(
+      `/api/v1/jam/${encodeURIComponent(sessionId)}/participants/${encodeURIComponent(userId)}`,
+      { method: 'PATCH', body: JSON.stringify({ canControl }) },
+    );
+    return data;
+  } catch {
+    return null;
+  }
+}
+
 export async function leaveJam(sessionId: string): Promise<void> {
   await requestJson(`/api/v1/jam/${encodeURIComponent(sessionId)}/leave`, {
     method: 'POST',

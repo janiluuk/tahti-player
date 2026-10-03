@@ -8,7 +8,7 @@ import {
 
 import { AudienceVisibilitySection } from '../../../components/AudienceVisibilitySection';
 import { AudioRevisionList } from '../../../components/AudioRevisionList';
-import { DownloadsSwitchNotice } from '../../../components/DownloadsSwitchNotice';
+import { DownloadsSwitch } from '../../../components/DownloadsSwitch';
 import { SELECTABLE_CONTENT_TYPES } from '../../../content/contentTypes';
 import { capitalizeGenre, PRESET_GENRES } from '../../../lib/genres';
 import type { SoundEditorState } from './useSoundEditor';
@@ -36,6 +36,8 @@ export function DetailsTabContent({
     setGenre,
     visibility,
     setVisibility,
+    downloadsEnabled,
+    setDownloadsEnabled,
     commentsEnabled,
     setCommentsEnabled,
     quickMsg,
@@ -101,7 +103,12 @@ export function DetailsTabContent({
           visibility={visibility}
           onVisibilityChange={setVisibility}
         />
-        {!item.embedProvider ? <DownloadsSwitchNotice /> : null}
+        {!item.embedProvider ? (
+          <DownloadsSwitch
+            enabled={downloadsEnabled}
+            onChange={setDownloadsEnabled}
+          />
+        ) : null}
         <div className="border-border flex items-center justify-between gap-3 rounded-lg border p-3 text-sm">
           <span>
             <span className="block font-medium">Allow comments</span>

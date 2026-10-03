@@ -14,18 +14,14 @@ import {
   type DiscoWidgetRenderItem,
 } from '../../api/disco-widgets';
 import { fetchLatestTracks } from '../../api/discover';
-import { fetchOnAirChannels } from '../../api/listen';
+import { fetchOnAirChannels, type OnAirChannel } from '../../api/listen';
 import type { FetchMeta } from '../../api/mode';
 import {
   fetchEnabledInternetRadioPresets,
   fetchRadioStation,
   type EnabledInternetRadioPreset,
 } from '../../api/radio-public';
-import type {
-  OnAirChannel,
-  PublicChannel,
-  TahtiPlayable,
-} from '../../api/types';
+import type { PublicChannel, TahtiPlayable } from '../../api/types';
 import { discoverTrackPlayable } from '../../lib/discoverTrackPlayable';
 
 export type ListenSectionStatus = 'loading' | 'ready' | 'error';

@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import type { Track } from '@tahti-player/model';
 import { Button, Dialog, TrackTable } from '@tahti-player/ui';
 
+import { ANNOTATED_ROW_HEIGHT } from '../api/collection-contribution';
 import type { TahtiPlayable } from '../api/types';
 import { playableToTrack } from '../lib/playableToTrack';
 import { soundIdFromPlayableId } from '../lib/soundId';
@@ -39,8 +40,6 @@ type Props = {
    * playlist. Rows grow taller only when some item has one. */
   getAnnotation?: (item: TahtiPlayable) => ReactNode;
 };
-
-const ANNOTATED_ROW_HEIGHT = 68;
 
 export function PlayableTrackTable({
   items,

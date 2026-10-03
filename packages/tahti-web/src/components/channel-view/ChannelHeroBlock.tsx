@@ -145,6 +145,7 @@ export function ChannelHeroBlock({
         minHeightClassName="min-h-[12rem] sm:min-h-[14rem]"
         displayName={channel.user.displayName}
         username={channel.user.username}
+        isMember={channel.user.isMember}
         channelSlug={slug}
         avatarUrl={channel.user.avatarUrl}
         avatarPosterUrl={avatarPoster(channel.user)}

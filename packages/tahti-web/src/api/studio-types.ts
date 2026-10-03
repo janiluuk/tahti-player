@@ -1,5 +1,7 @@
 /** Artist studio / catalog / editor types (mirrors Tahti /api/me/*). */
 
+import type { CollectionItemContribution } from './collection-contribution';
+
 export type StudioChannel = {
   slug: string;
   state: string;
@@ -32,6 +34,7 @@ export type StudioSound = {
   selectsOptIn?: boolean;
   topListsEligible?: boolean;
   commentsEnabled?: boolean;
+  /** Absent from APIs older than tahti-org#659, so callers must not assume a default. */
   downloadsEnabled?: boolean;
   followToDownload?: boolean;
   repostToDownload?: boolean;
@@ -97,6 +100,7 @@ export type StudioSoundPatch = {
   selectsOptIn?: boolean;
   topListsEligible?: boolean;
   commentsEnabled?: boolean;
+  downloadsEnabled?: boolean;
   followToDownload?: boolean;
   repostToDownload?: boolean;
   bpm?: number | null;
@@ -178,6 +182,8 @@ export type StudioRelease = {
   upc?: string | null;
   revelatorId?: string | null;
   revelatorStatus?: string | null;
+  /** Set while the release is pinned to the top of the artist's public profile. */
+  pinnedAt?: string | null;
 };
 
 export type StudioReleaseList = {
@@ -214,7 +220,7 @@ export type StudioCollectionItem = {
   } | null;
   /** Another artist's track that has since gone private. */
   unavailable?: boolean;
-};
+} & CollectionItemContribution;
 
 /** MANUAL = drag order; TIME = oldest first (track upload or release date); NAME = A-Z by title. */
 export type CollectionTrackSortMode = 'MANUAL' | 'TIME' | 'NAME';

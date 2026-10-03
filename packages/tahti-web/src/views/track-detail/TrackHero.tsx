@@ -26,6 +26,7 @@ import { resolveArtworkVisualizerPreset } from '../../lib/artworkVisualizer';
 import { EMBED_PROVIDER_HEIGHT } from '../../lib/embedSrc';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { formatDuration } from '../../lib/playableToTrack';
+import { useAuthModalStore } from '../../stores/authModalStore';
 import { AiGeneratedBadge } from './AiGeneratedBadge';
 import { type TrackPage } from './buildTrackPage';
 import {
@@ -34,6 +35,7 @@ import {
   UNPLAYED_WAVE_COLOR,
   WAVEFORM_BARS,
 } from './helpers';
+import { TrackAccessGate } from './TrackAccessGate';
 import { mixVersionLabel } from './trackDetails';
 
 export function TrackHero({ page }: { page: TrackPage }) {
@@ -56,8 +58,6 @@ export function TrackHero({ page }: { page: TrackPage }) {
     setPlaylistOpen,
     downloadBusy,
     buyBusy,
-    setPwywOpen,
-    setPwywAmt,
     setEditOpen,
     toggleFavoriteTrack,
     playable,
@@ -84,8 +84,10 @@ export function TrackHero({ page }: { page: TrackPage }) {
     submitComment,
     shareTrack,
     downloadTrack,
+    showDownload,
     showBuyTrack,
-    buyTrack,
+    startBuy,
+    accessGate,
   } = page;
   const mixVersion = mixVersionLabel(playable.title, detail?.mixVersion);
   const like = useSoundEngagement('like', detail?.channelSlug, id);
@@ -155,7 +157,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
         <div className="flex items-start gap-6">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-4">
-              {embedSrc ? (
+              {accessGate ? null : embedSrc ? (
                 <span className="border-border/40 flex size-14 shrink-0 items-center justify-center rounded-full border bg-white/10">
                   <PlayIcon
                     size={22}
@@ -197,7 +199,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
                 <span className="shrink-0 text-xs tracking-wide text-white/55">
                   via {embedLabel}
                 </span>
-              ) : playable.streamUrl ? (
+              ) : canPlay ? (
                 <span className="shrink-0 text-xs tracking-wide text-white/55">
                   lossless
                 </span>
@@ -206,7 +208,18 @@ export function TrackHero({ page }: { page: TrackPage }) {
             </div>
 
             <div className="mt-6">
-              {embedSrc ? (
+              {accessGate && detail ? (
+                <TrackAccessGate
+                  gate={accessGate}
+                  artist={detail.channel}
+                  signedIn={Boolean(user)}
+                  priceCents={detail.purchaseTierPriceCents}
+                  priceOptional={detail.purchaseTierPriceOptional}
+                  buyBusy={buyBusy}
+                  onBuy={startBuy}
+                  onSignIn={() => useAuthModalStore.getState().open('login')}
+                />
+              ) : embedSrc ? (
                 <div className="overflow-hidden rounded-lg">
                   <iframe
                     title={`${playable.title} — ${embedLabel} player`}
@@ -387,26 +400,17 @@ export function TrackHero({ page }: { page: TrackPage }) {
                 label={playable.title}
               />
             ) : null}
-            {showBuyTrack ? (
+            {accessGate ? null : showBuyTrack ? (
               <Button
                 size="sm"
                 variant="default"
                 disabled={buyBusy || !detail}
-                onClick={() => {
-                  if (detail?.purchaseTierPriceOptional) {
-                    setPwywAmt(
-                      ((detail.purchaseTierPriceCents ?? 0) / 100).toFixed(2),
-                    );
-                    setPwywOpen(true);
-                    return;
-                  }
-                  void buyTrack();
-                }}
+                onClick={startBuy}
               >
                 <ShoppingBagIcon size={14} aria-hidden className="mr-1.5" />
                 {buyBusy ? 'Buying…' : 'Buy this track'}
               </Button>
-            ) : (
+            ) : showDownload ? (
               <Button
                 size="sm"
                 variant="secondary"
@@ -417,7 +421,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
                 <DownloadIcon size={14} aria-hidden className="mr-1.5" />
                 Download
               </Button>
-            )}
+            ) : null}
             <Tooltip
               content={
                 favorited

@@ -10,6 +10,9 @@ export type PublicProfileArtist = ArtistLogoFields & {
   avatarUrl: string | null;
   /** Still first frame when `avatarUrl` is an animated GIF. */
   avatarPosterUrl?: string | null;
+  /** Raw `AvatarTheme`; read it through `readAvatarTheme`, the payload is
+   * not trusted to be well-formed. */
+  avatarTheme?: unknown;
   tipJarUrl?: string | null;
   tier?: string;
   pronouns?: string | null;
@@ -27,4 +30,6 @@ export type PublicProfileArtist = ArtistLogoFields & {
   nameplateColor?: string | null;
   /** False when the artist turned the profile hero off in Settings. */
   showPageHero?: boolean;
+  /** True when the artist is a Tahti ry (association) member. */
+  isMember?: boolean;
 };

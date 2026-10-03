@@ -389,7 +389,8 @@ exports[`FavoriteTracks view > (Snapshot) renders with tracks 1`] = `
                               data-testid="media-artwork"
                             >
                               <div
-                                class="bg-background-secondary absolute inset-0 flex items-center justify-center"
+                                class="absolute inset-0 flex items-center justify-center bg-background-secondary"
+                                data-testid="media-artwork-fallback"
                               >
                                 <svg
                                   aria-hidden="true"
@@ -621,7 +622,8 @@ exports[`FavoriteTracks view > (Snapshot) renders with tracks 1`] = `
                               data-testid="media-artwork"
                             >
                               <div
-                                class="bg-background-secondary absolute inset-0 flex items-center justify-center"
+                                class="absolute inset-0 flex items-center justify-center bg-background-secondary"
+                                data-testid="media-artwork-fallback"
                               >
                                 <svg
                                   aria-hidden="true"

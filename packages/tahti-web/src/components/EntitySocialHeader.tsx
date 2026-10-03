@@ -21,6 +21,7 @@ import {
 } from '../lib/colorScheme';
 import { ChannelVisualizer } from './ChannelVisualizer';
 import { Nameplate } from './Nameplate';
+import { TahtiMemberBadge } from './TahtiMemberBadge';
 
 const VIDEO_BACKDROP_PATTERN = /\.(mp4|webm)(\?|$)/i;
 
@@ -55,12 +56,17 @@ export type EntitySocialHeaderProps = {
     nameplateText?: string | null;
     nameplateColor?: string | null;
   } | null;
+  /** Shows the Tahti ry member badge beside the title. */
+  isMember?: boolean;
   /** Square cover / avatar shown beside the title. */
   imageUrl?: string | null;
   imageAlt?: string;
   /** Still first frame of an animated `imageUrl`, shown until the image is
    * hovered or focused (and always under reduced motion). */
   imagePosterUrl?: string | null;
+  /** CSS `background` drawn when there is no `imageUrl` (artist avatar
+   * theme), with the title's initial on top. */
+  imageFallback?: string | null;
   /** When true, image is a circle (artist); otherwise rounded square (collection). */
   roundImage?: boolean;
   /** Optional location / place badge under the title. */
@@ -112,9 +118,11 @@ export type EntitySocialHeaderProps = {
 export function EntitySocialHeader({
   title,
   nameplate,
+  isMember,
   imageUrl,
   imageAlt = '',
   imagePosterUrl,
+  imageFallback,
   roundImage = false,
   location,
   subtitle,
@@ -336,6 +344,21 @@ export function EntitySocialHeader({
             >
               <UploadCloudIcon size={22} aria-hidden />
             </button>
+          ) : imageFallback ? (
+            <MediaArtwork
+              src={null}
+              fallbackBackground={imageFallback}
+              size="lg"
+              placeholder={
+                <span className="font-heading text-4xl font-extrabold text-white drop-shadow">
+                  {title.trim().charAt(0).toUpperCase()}
+                </span>
+              }
+              className={cn(
+                'border-border shadow-shadow size-24 min-w-24 border-(length:--border-width)',
+                roundImage ? 'rounded-full' : 'rounded-md',
+              )}
+            />
           ) : (
             <div
               className={cn(
@@ -364,6 +387,7 @@ export function EntitySocialHeader({
               color={nameplate?.nameplateColor}
               fallbackColor={scheme?.accent}
             />
+            <TahtiMemberBadge isMember={isMember} />
           </div>
           {location ? (
             <span

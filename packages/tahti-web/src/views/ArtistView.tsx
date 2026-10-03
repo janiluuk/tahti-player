@@ -81,10 +81,10 @@ import {
   type ArtistProfileEmbed,
 } from '../lib/artistProfile';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
+import { artistHeroImage } from '../lib/avatarTheme';
 import { colorSchemeCssVars } from '../lib/colorScheme';
 import { countryName } from '../lib/countries';
 import { isPinned } from '../lib/pinnedTracks';
-import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { syncDocumentMetadata } from '../lib/seo';
 import { useArtistFollow } from '../lib/useArtistFollow';
 import { useFollowList } from '../lib/useFollowList';
@@ -158,12 +158,12 @@ function ArtistProfilePage({ username }: { username: string }) {
     }
   };
 
-  const playOrPromptAlbum = (
-    release: PublicProfileRelease,
-    artist: string,
-    channelSlug?: string,
-  ) => {
-    const playables = releasePlayables(release, artist, channelSlug);
+  const playOrPromptAlbum = (release: PublicProfileRelease) => {
+    const playables = releasePlayables(
+      release,
+      profile?.artist.displayName ?? '',
+      profile?.channel?.slug,
+    );
     if (playables.length === 0) {
       return;
     }
@@ -435,7 +435,8 @@ function ArtistProfilePage({ username }: { username: string }) {
         hidden={artist.showPageHero === false}
         title={artist.displayName}
         nameplate={artist}
-        imageUrl={artist.avatarUrl ?? placeholderArtworkUrl(artist.username)}
+        isMember={artist.isMember}
+        {...artistHeroImage(artist)}
         roundImage
         location={countryName(artist.countryCode) || null}
         colorScheme={headerScheme}
@@ -517,9 +518,7 @@ function ArtistProfilePage({ username }: { username: string }) {
           isFavorite={(playable) =>
             favoriteTracks.some((t) => t.id === playable.id)
           }
-          onPlayRelease={(release) =>
-            playOrPromptAlbum(release, artist.displayName, channel?.slug)
-          }
+          onPlayRelease={playOrPromptAlbum}
           onQueueRelease={queueRelease}
           onToggleFavorite={toggleFavoriteTrack}
           onTitleClick={setTracklistRelease}
@@ -651,6 +650,7 @@ function ArtistProfilePage({ username }: { username: string }) {
           }}
           pinnedTiles={pinnedTiles}
           onPlay={play}
+          onPlayRelease={playOrPromptAlbum}
           onToggleFavorite={toggleFavoriteTrack}
           favoriteTracks={favoriteTracks}
           onOpenManager={() => setManagerOpen(true)}
