@@ -32,6 +32,7 @@ export type StudioSound = {
   selectsOptIn?: boolean;
   topListsEligible?: boolean;
   commentsEnabled?: boolean;
+  /** Absent from APIs older than tahti-org#659, so callers must not assume a default. */
   downloadsEnabled?: boolean;
   followToDownload?: boolean;
   repostToDownload?: boolean;
@@ -97,6 +98,7 @@ export type StudioSoundPatch = {
   selectsOptIn?: boolean;
   topListsEligible?: boolean;
   commentsEnabled?: boolean;
+  downloadsEnabled?: boolean;
   followToDownload?: boolean;
   repostToDownload?: boolean;
   bpm?: number | null;

@@ -84,6 +84,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
     submitComment,
     shareTrack,
     downloadTrack,
+    showDownload,
     showBuyTrack,
     buyTrack,
   } = page;
@@ -406,7 +407,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
                 <ShoppingBagIcon size={14} aria-hidden className="mr-1.5" />
                 {buyBusy ? 'Buying…' : 'Buy this track'}
               </Button>
-            ) : (
+            ) : showDownload ? (
               <Button
                 size="sm"
                 variant="secondary"
@@ -417,7 +418,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
                 <DownloadIcon size={14} aria-hidden className="mr-1.5" />
                 Download
               </Button>
-            )}
+            ) : null}
             <Tooltip
               content={
                 favorited

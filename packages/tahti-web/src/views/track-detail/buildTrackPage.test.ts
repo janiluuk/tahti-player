@@ -1,11 +1,19 @@
+import { toast } from 'sonner';
 import { describe, expect, it, vi } from 'vitest';
 
 import * as comments from '../../api/comments';
+import { fetchPublicSoundDownload } from '../../api/public-sound-download';
 import type { TahtiPlayable } from '../../api/types';
 import { buildTrackPage } from './buildTrackPage';
 import type { TrackDetailState } from './useTrackDetail';
 
 vi.mock('sonner', () => ({ toast: { error: vi.fn(), success: vi.fn() } }));
+vi.mock('../../api/public-sound-download', () => ({
+  fetchPublicSoundDownload: vi.fn(),
+}));
+vi.mock('../../api/sound-download-gates', () => ({
+  fetchDownloadGates: vi.fn().mockResolvedValue(null),
+}));
 
 const playable = {
   id: 'sound:t1',
@@ -160,5 +168,52 @@ describe('buildTrackPage', () => {
     expect(update([comment, { ...comment, id: 'c2' }])).toEqual([
       { ...comment, id: 'c2' },
     ]);
+  });
+
+  it('hides the download button only when the artist turned downloads off', () => {
+    const detail = (downloadsEnabled?: boolean) =>
+      ({
+        channelSlug: 'night-drive',
+        downloadsEnabled,
+      }) as TrackDetailState['detail'];
+    expect(
+      buildTrackPage(state({ detail: detail(false) }), playable).showDownload,
+    ).toBe(false);
+    expect(
+      buildTrackPage(state({ detail: detail(true) }), playable).showDownload,
+    ).toBe(true);
+    expect(
+      buildTrackPage(state({ detail: detail() }), playable).showDownload,
+    ).toBe(true);
+  });
+
+  it('explains a downloads_disabled refusal and hides the button', async () => {
+    const detail = {
+      channelSlug: 'night-drive',
+      title: 'Track',
+      downloadsEnabled: true,
+    } as TrackDetailState['detail'];
+    const setDetail = vi.fn();
+    vi.mocked(fetchPublicSoundDownload).mockResolvedValue({
+      ok: false,
+      error: 'The artist has turned off downloads for this track.',
+      downloadsDisabled: true,
+    });
+    await buildTrackPage(
+      state({
+        detail,
+        setDetail,
+        setDownloadBusy: vi.fn(),
+        setDownloadGates: vi.fn(),
+      }),
+      playable,
+    ).downloadTrack();
+    expect(toast.error).toHaveBeenCalledWith(
+      'The artist has turned off downloads for this track.',
+    );
+    expect(setDetail).toHaveBeenCalledWith({
+      ...detail,
+      downloadsEnabled: false,
+    });
   });
 });
