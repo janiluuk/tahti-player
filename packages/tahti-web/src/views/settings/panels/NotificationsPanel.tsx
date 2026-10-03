@@ -14,6 +14,7 @@ import {
 import { ClientCapabilityNotice } from '../../../components/ClientCapabilityNotice';
 import { SettingsHint, SettingsToggle } from '../SettingsFields';
 import { CommentSettingsToggles } from './CommentSettingsToggles';
+import { GrantReportAttributionToggle } from './GrantReportAttributionToggle';
 import { TopListsToggle } from './TopListsToggle';
 
 export function NotificationsPanel() {
@@ -215,6 +216,10 @@ export function NotificationsVisibilityPanel() {
             </ClientCapabilityNotice>
           </div>
           <TopListsToggle />
+          <GrantReportAttributionToggle
+            profile={profile}
+            onSaved={setProfile}
+          />
           <CommentSettingsToggles />
         </div>
       )}
