@@ -6,6 +6,7 @@ import {
   ButtonLink,
   Input,
   SaveButton,
+  Select,
   Textarea,
   Toggle,
 } from '@tahti-player/ui';
@@ -49,6 +50,12 @@ export function OverviewTab({
     setBackdropFile,
     autoPublish,
     setAutoPublish,
+    visibility,
+    setVisibility,
+    episodeNumberEnabled,
+    setEpisodeNumberEnabled,
+    nextEpisodeNumberDraft,
+    setNextEpisodeNumberDraft,
     savingMeta,
     saveMeta,
     busy,
@@ -119,6 +126,18 @@ export function OverviewTab({
             }}
             onUrlChange={setBackdropUrl}
           />
+          <Select
+            label="Visibility"
+            description="Who can see this show and its episodes."
+            value={visibility}
+            onValueChange={(value) =>
+              setVisibility(value as 'PUBLIC' | 'FAN_ONLY')
+            }
+            options={[
+              { id: 'PUBLIC', label: 'Public' },
+              { id: 'FAN_ONLY', label: 'Fans only' },
+            ]}
+          />
           <div className="border-border bg-background-secondary/30 flex items-center justify-between gap-3 rounded-md border p-3 text-sm">
             <span>
               <span className="block font-medium">
@@ -135,6 +154,40 @@ export function OverviewTab({
               onChange={setAutoPublish}
             />
           </div>
+          {show.mode !== 'SINGLE' ? (
+            <div className="border-border bg-background-secondary/30 flex flex-col gap-3 rounded-md border p-3 text-sm">
+              <div className="flex items-center justify-between gap-3">
+                <span>
+                  <span className="block font-medium">
+                    Number episodes automatically
+                  </span>
+                  <span className="text-foreground-secondary block text-xs">
+                    New episodes get the next number in their title.
+                  </span>
+                </span>
+                <Toggle
+                  label="Number episodes automatically"
+                  checked={episodeNumberEnabled}
+                  onChange={setEpisodeNumberEnabled}
+                />
+              </div>
+              {episodeNumberEnabled ? (
+                <Input
+                  type="number"
+                  variant="number"
+                  label="Next episode number"
+                  min={1}
+                  value={nextEpisodeNumberDraft}
+                  onChange={(e) =>
+                    setNextEpisodeNumberDraft(
+                      Math.max(1, Math.floor(Number(e.target.value)) || 1),
+                    )
+                  }
+                  className="w-24"
+                />
+              ) : null}
+            </div>
+          ) : null}
           <div className="flex justify-end">
             <SaveButton
               saving={savingMeta}
