@@ -5,6 +5,10 @@ import {
 } from '@tanstack/react-router';
 
 import { diagnosticsEnabled } from '../lib/buildPolicy';
+import {
+  fanCheckoutReturn,
+  parseFanCheckoutReturnSearch,
+} from '../lib/fanCheckoutReturn';
 import { appLayoutRoute } from './router-core';
 import {
   ArtistView,
@@ -335,9 +339,16 @@ export const chatSlugRoute = createRoute({
 export const subscribeRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/subscribe/$username',
+  validateSearch: parseFanCheckoutReturnSearch,
   component: function SubscribeRoute() {
     const { username } = subscribeRoute.useParams();
-    return <SubscribeView username={username} />;
+    const search = subscribeRoute.useSearch();
+    return (
+      <SubscribeView
+        username={username}
+        checkoutReturn={fanCheckoutReturn(search)}
+      />
+    );
   },
 });
 
