@@ -1,3 +1,8 @@
+import type {
+  ChannelNowPlaying,
+  ChannelNowPlayingNext,
+} from './channel-now-playing-types';
+
 export type ChannelDirectoryItem = {
   slug: string;
   username: string;
@@ -39,13 +44,6 @@ export type OnAirChannelResponse = {
   live: OnAirChannel[];
   replaying: OnAirChannel[];
   recent: OnAirChannel[];
-};
-
-export type ChannelNowPlaying = {
-  title: string;
-  artistName: string;
-  artistUsername: string | null;
-  artworkUrl: string | null;
 };
 
 export type PublicChannel = {
@@ -130,6 +128,7 @@ export type PublicChannel = {
     showPageHero?: boolean;
   };
   nowPlaying: ChannelNowPlaying | null;
+  nowPlayingNext?: ChannelNowPlayingNext | null;
   /** Public follower count for the channel's Stats block — sourced from the
    * artist profile (GET /api/v1/u/:username/profile), fetched alongside the
    * channel so the backdrop's Stats element has something real to show. */
@@ -842,6 +841,7 @@ export type SearchResponse = {
   collections: SearchCollectionResult[];
 };
 
+export * from './channel-now-playing-types';
 export * from './embed-types';
 export * from './status-types';
 export * from './smart-link-types';
