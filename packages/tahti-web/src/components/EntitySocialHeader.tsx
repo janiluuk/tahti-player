@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import type { CSSProperties, ReactNode } from 'react';
 
-import { Button, StatChip } from '@tahti-player/ui';
+import { Button, MediaArtwork, StatChip } from '@tahti-player/ui';
 
 import {
   isHeaderImageUrl,
@@ -58,6 +58,9 @@ export type EntitySocialHeaderProps = {
   /** Square cover / avatar shown beside the title. */
   imageUrl?: string | null;
   imageAlt?: string;
+  /** CSS `background` drawn when there is no `imageUrl` (artist avatar
+   * theme), with the title's initial on top. */
+  imageFallback?: string | null;
   /** When true, image is a circle (artist); otherwise rounded square (collection). */
   roundImage?: boolean;
   /** Optional location / place badge under the title. */
@@ -111,6 +114,7 @@ export function EntitySocialHeader({
   nameplate,
   imageUrl,
   imageAlt = '',
+  imageFallback,
   roundImage = false,
   location,
   subtitle,
@@ -324,6 +328,21 @@ export function EntitySocialHeader({
             >
               <UploadCloudIcon size={22} aria-hidden />
             </button>
+          ) : imageFallback ? (
+            <MediaArtwork
+              src={null}
+              fallbackBackground={imageFallback}
+              size="lg"
+              placeholder={
+                <span className="font-heading text-4xl font-extrabold text-white drop-shadow">
+                  {title.trim().charAt(0).toUpperCase()}
+                </span>
+              }
+              className={cn(
+                'border-border shadow-shadow size-24 min-w-24 border-(length:--border-width)',
+                roundImage ? 'rounded-full' : 'rounded-md',
+              )}
+            />
           ) : (
             <div
               className={cn(

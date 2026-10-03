@@ -24,6 +24,9 @@ export type MediaArtworkProps = {
   className?: string;
   imageReveal?: boolean;
   placeholder?: ReactNode;
+  /** CSS `background` for the no-image state, e.g. an artist's avatar
+   * theme (`#22D3EE` or a `linear-gradient(...)`). */
+  fallbackBackground?: string | null;
   /** Centered circular play control. */
   onPlay?: () => void;
   playLabel?: string;
@@ -81,6 +84,7 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
   className,
   imageReveal = true,
   placeholder,
+  fallbackBackground,
   onPlay,
   playLabel = 'Play',
   pauseLabel = 'Pause',
@@ -200,7 +204,16 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
           />
         )
       ) : (
-        <div className="bg-background-secondary absolute inset-0 flex items-center justify-center">
+        <div
+          data-testid="media-artwork-fallback"
+          className={cn(
+            'absolute inset-0 flex items-center justify-center',
+            !fallbackBackground && 'bg-background-secondary',
+          )}
+          style={
+            fallbackBackground ? { background: fallbackBackground } : undefined
+          }
+        >
           {placeholder ?? (
             <CassetteTape
               size={size === 'sm' ? 20 : 48}

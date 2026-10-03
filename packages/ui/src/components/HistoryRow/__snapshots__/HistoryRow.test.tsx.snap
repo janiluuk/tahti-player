@@ -18,7 +18,8 @@ exports[`HistoryRow > (Snapshot) renders a placeholder when artwork is missing 1
         data-testid="media-artwork"
       >
         <div
-          class="bg-background-secondary absolute inset-0 flex items-center justify-center"
+          class="absolute inset-0 flex items-center justify-center bg-background-secondary"
+          data-testid="media-artwork-fallback"
         >
           <svg
             aria-hidden="true"

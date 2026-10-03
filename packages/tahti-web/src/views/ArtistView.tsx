@@ -81,10 +81,10 @@ import {
   type ArtistProfileEmbed,
 } from '../lib/artistProfile';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
+import { artistHeroImage } from '../lib/avatarTheme';
 import { colorSchemeCssVars } from '../lib/colorScheme';
 import { countryName } from '../lib/countries';
 import { isPinned } from '../lib/pinnedTracks';
-import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { syncDocumentMetadata } from '../lib/seo';
 import { useArtistFollow } from '../lib/useArtistFollow';
 import { useFollowList } from '../lib/useFollowList';
@@ -435,7 +435,7 @@ function ArtistProfilePage({ username }: { username: string }) {
         hidden={artist.showPageHero === false}
         title={artist.displayName}
         nameplate={artist}
-        imageUrl={artist.avatarUrl ?? placeholderArtworkUrl(artist.username)}
+        {...artistHeroImage(artist)}
         roundImage
         location={countryName(artist.countryCode) || null}
         colorScheme={headerScheme}
