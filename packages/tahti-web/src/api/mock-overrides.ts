@@ -7,6 +7,7 @@
  * shared fixtures in mock.ts. The app itself never sets overrides, so with
  * an empty registry every fixture passes through unchanged.
  */
+import type { ChannelVisual, ChannelVisualPreset } from './channel-design';
 import type { StudioCollection, StudioSound } from './studio-types';
 import type {
   Announcement,
@@ -36,6 +37,8 @@ import type {
 export interface MockFixtures {
   announcements: { data: Announcement[]; args: [] };
   channel: { data: PublicChannel; args: [slug: string] };
+  channelVisual: { data: ChannelVisual; args: [] };
+  channelVisualPresets: { data: ChannelVisualPreset[]; args: [] };
   chatHistory: { data: ChatMessage[]; args: [slug: string] };
   collection: {
     data: PublicCollection;
