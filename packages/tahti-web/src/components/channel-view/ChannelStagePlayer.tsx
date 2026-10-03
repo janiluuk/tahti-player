@@ -21,6 +21,7 @@ import { usePlayerStore } from '../../stores/playerStore';
 import { NowPlayingOverlay } from '../NowPlayingOverlay';
 import { WaveformSeekbar } from '../tahti/WaveformSeekbar';
 import { ChannelStageTrackMeta } from './ChannelStageTrackMeta';
+import { useRotationNowPlaying } from './useRotationNowPlaying';
 
 type Props = {
   channel: PublicChannel;
@@ -65,6 +66,11 @@ export function ChannelStagePlayer({
       : 'Favorited'
     : favoriteLabel;
   const navigate = useNavigate();
+  const { nowPlaying, next } = useRotationNowPlaying(
+    slug,
+    channel.nowPlaying,
+    channel.nowPlayingNext,
+  );
 
   const channelIsCurrent =
     currentId === `live:${slug}` || currentId === `radio:${slug}`;
@@ -94,7 +100,7 @@ export function ChannelStagePlayer({
       .catch(() => toast.error('Could not start the stream. Try again.'));
   };
 
-  return !live && !channel.nowPlaying ? (
+  return !live && !nowPlaying ? (
     <div className="bg-background-secondary flex items-center justify-center py-12">
       <WifiOffIcon
         size={56}
@@ -111,15 +117,15 @@ export function ChannelStagePlayer({
           : 'bg-gradient-to-t from-black/70 to-black/5'
       }`}
     >
-      {channel.nowPlaying ? (
+      {nowPlaying ? (
         <>
           <NowPlayingOverlay
             presetId={resolveNowPlayingOverlayPreset(
               channel.nowPlayingOverlayStyle,
             )}
-            title={channel.nowPlaying.title}
-            artist={channel.nowPlaying.artistName}
-            artworkUrl={channel.nowPlaying.artworkUrl}
+            title={nowPlaying.title}
+            artist={nowPlaying.artistName}
+            artworkUrl={nowPlaying.artworkUrl}
             settings={parseNowPlayingOverlaySettings(
               channel.nowPlayingOverlaySettingsJson,
             )}
@@ -141,10 +147,7 @@ export function ChannelStagePlayer({
               />
             }
           />
-          <ChannelStageTrackMeta
-            nowPlaying={channel.nowPlaying}
-            next={channel.nowPlayingNext}
-          />
+          <ChannelStageTrackMeta nowPlaying={nowPlaying} next={next} />
         </>
       ) : (
         <p className="text-sm text-white/80">
