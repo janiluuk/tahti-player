@@ -1,15 +1,21 @@
 import { Button, ImageReveal } from '@tahti-player/ui';
 
+import { PostLink } from '../../../components/PostLink';
+
 export function PostPreview({
   title,
   body,
   publishAt,
+  linkUrl,
+  linkLabel,
   images,
   onImageClick,
 }: {
   title: string | null;
   body: string;
   publishAt?: string;
+  linkUrl?: string | null;
+  linkLabel?: string | null;
   images: string[];
   onImageClick?: (index: number) => void;
 }) {
@@ -24,6 +30,11 @@ export function PostPreview({
         )}
       </div>
       <p className="text-sm whitespace-pre-wrap">{body}</p>
+      <PostLink
+        linkUrl={linkUrl}
+        linkLabel={linkLabel}
+        className="self-start text-sm"
+      />
       {images.length > 0 && (
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
           {images.map((image, index) => (

@@ -31,6 +31,7 @@ import {
 import { DiscoWidgetsSection } from '../disco-widgets/DiscoWidgetsSection';
 import { EmbedButton } from '../EmbedButton';
 import { NewsletterSubscribeToggle } from '../NewsletterSubscribeToggle';
+import { PostLink } from '../PostLink';
 import { RssFeedButton } from '../RssFeedButton';
 import { ShowEpisodeList } from '../ShowEpisodeList';
 import { Eyebrow } from '../tahti/Eyebrow';
@@ -374,6 +375,11 @@ export function ArtistFeed({ posts }: { posts: ArtistPost[] }) {
               <p className="text-sm font-semibold">{post.title}</p>
             ) : null}
             <p className="text-foreground-secondary text-sm">{post.body}</p>
+            <PostLink
+              linkUrl={post.linkUrl}
+              linkLabel={post.linkLabel}
+              className="self-start text-sm"
+            />
           </li>
         ))}
       </ul>
