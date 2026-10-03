@@ -48,6 +48,9 @@ export function useShowDetail(id: string) {
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [backdropFile, setBackdropFile] = useState<File | null>(null);
   const [autoPublish, setAutoPublish] = useState(true);
+  const [visibility, setVisibility] = useState<'PUBLIC' | 'FAN_ONLY'>('PUBLIC');
+  const [episodeNumberEnabled, setEpisodeNumberEnabled] = useState(true);
+  const [nextEpisodeNumberDraft, setNextEpisodeNumberDraft] = useState(1);
   const [savingMeta, setSavingMeta] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const recordingCount = episodes.filter(
@@ -66,6 +69,9 @@ export function useShowDetail(id: string) {
           setThumbnailUrl(r.data.coverUrl ?? '');
           setBackdropUrl(r.data.backdropUrl ?? '');
           setAutoPublish(r.data.autoPublish ?? true);
+          setVisibility(r.data.visibility ?? 'PUBLIC');
+          setEpisodeNumberEnabled(r.data.episodeNumberEnabled ?? true);
+          setNextEpisodeNumberDraft(r.data.nextEpisodeNumber);
         }
       })
       .catch(() => toast.error('Could not load the show.'))
@@ -136,6 +142,13 @@ export function useShowDetail(id: string) {
         coverUrl: coverUrl || null,
         backdropUrl: backdrop || null,
         autoPublish,
+        visibility,
+        episodeNumberEnabled,
+        // The server bumps the counter whenever an episode is created, so a
+        // stale loaded value would rewind it; send it only when edited.
+        ...(nextEpisodeNumberDraft !== show.nextEpisodeNumber
+          ? { nextEpisodeNumber: nextEpisodeNumberDraft }
+          : {}),
       });
       if (!r.ok) {
         toast.error(r.error);
@@ -144,6 +157,7 @@ export function useShowDetail(id: string) {
       setShow(r.data);
       setThumbnailUrl(r.data.coverUrl ?? '');
       setBackdropUrl(r.data.backdropUrl ?? '');
+      setNextEpisodeNumberDraft(r.data.nextEpisodeNumber);
       setThumbnailFile(null);
       setBackdropFile(null);
       toast.success('Show details saved — new episodes will inherit these.');
@@ -285,6 +299,12 @@ export function useShowDetail(id: string) {
     setBackdropFile,
     autoPublish,
     setAutoPublish,
+    visibility,
+    setVisibility,
+    episodeNumberEnabled,
+    setEpisodeNumberEnabled,
+    nextEpisodeNumberDraft,
+    setNextEpisodeNumberDraft,
     savingMeta,
     loaded,
     showTab,

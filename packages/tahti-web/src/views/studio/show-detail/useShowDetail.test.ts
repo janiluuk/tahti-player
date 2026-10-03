@@ -147,3 +147,52 @@ describe('useShowDetail — tagline and air time', () => {
     );
   });
 });
+
+describe('useShowDetail - visibility and episode numbering', () => {
+  beforeEach(() => {
+    patchShowSeries.mockReset();
+    uploadUserMediaFile.mockReset();
+    patchShowSeries.mockImplementation(async (id: string, patch: unknown) => ({
+      ok: true,
+      data: { ...baseShow, ...(patch as object) },
+    }));
+  });
+
+  it('saves visibility and numbering edits with the other details', async () => {
+    const { result } = renderHook(() => useShowDetail('show-1'));
+    await waitFor(() => expect(result.current.loaded).toBe(true));
+    expect(result.current.visibility).toBe('PUBLIC');
+    expect(result.current.episodeNumberEnabled).toBe(true);
+    expect(result.current.nextEpisodeNumberDraft).toBe(1);
+
+    act(() => {
+      result.current.setVisibility('FAN_ONLY');
+      result.current.setEpisodeNumberEnabled(false);
+      result.current.setNextEpisodeNumberDraft(12);
+    });
+    await act(async () => {
+      await result.current.saveMeta();
+    });
+
+    expect(patchShowSeries).toHaveBeenCalledWith(
+      'show-1',
+      expect.objectContaining({
+        visibility: 'FAN_ONLY',
+        episodeNumberEnabled: false,
+        nextEpisodeNumber: 12,
+      }),
+    );
+  });
+
+  it('leaves the episode counter alone when it was not edited', async () => {
+    const { result } = renderHook(() => useShowDetail('show-1'));
+    await waitFor(() => expect(result.current.loaded).toBe(true));
+
+    await act(async () => {
+      await result.current.saveMeta();
+    });
+
+    const [, patch] = patchShowSeries.mock.calls[0] as [string, object];
+    expect(patch).not.toHaveProperty('nextEpisodeNumber');
+  });
+});
