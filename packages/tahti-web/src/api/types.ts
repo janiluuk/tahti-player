@@ -2,6 +2,7 @@ import type {
   ChannelNowPlaying,
   ChannelNowPlayingNext,
 } from './channel-now-playing-types';
+import type { PublicProfileArtist } from './public-profile-artist';
 
 export type ChannelDirectoryItem = {
   slug: string;
@@ -164,33 +165,7 @@ export type TrackComment = {
   createdAt: string;
 };
 
-export type PublicProfileArtist = import('./profile-logo').ArtistLogoFields & {
-  username: string;
-  displayName: string;
-  bio: string | null;
-  /** Optional longer-form history, shown expanded below the short bio. */
-  fullBio: string | null;
-  avatarUrl: string | null;
-  tipJarUrl?: string | null;
-  tier?: string;
-  pronouns?: string | null;
-  /** ISO 3166-1 alpha-2; GET /api/v1/u/:username/profile */
-  countryCode?: string | null;
-  /** ISO datetime of account creation; null when the artist hides it. */
-  joinDate?: string | null;
-  followerCount?: number | null;
-  followingCount?: number | null;
-  freeSubscriptionsEnabled?: boolean;
-  socialLinks?: Record<string, string> | null;
-  /** Short label shown as a coloured pill beside the display name. */
-  nameplateText?: string | null;
-  /** `#RRGGBB`; null uses the page accent. */
-  nameplateColor?: string | null;
-  /** False when the artist turned the profile hero off in Settings. */
-  showPageHero?: boolean;
-  /** True when the artist is a Tahti ry (association) member. */
-  isMember?: boolean;
-};
+export type { PublicProfileArtist } from './public-profile-artist';
 
 export type PublicProfileTrack = {
   id: string;

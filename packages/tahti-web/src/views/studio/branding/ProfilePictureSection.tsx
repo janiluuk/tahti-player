@@ -8,10 +8,12 @@ import { setProfileAvatarFromUrl } from '../../../api/image-from-url';
 import { ImageUrlForm } from '../../../components/ImageUrlForm';
 import { RoundImageUploadButton } from '../../../components/RoundImageUploadButton';
 import { StudioPanel } from '../../../components/StudioPanel';
+import { readAvatarTheme } from '../../../lib/avatarTheme';
+import { AvatarThemePicker } from './AvatarThemePicker';
 import type { PressKitState } from './usePressKit';
 
 export function ProfilePictureSection({ kit }: { kit: PressKitState }) {
-  const { avatarUrl, handleAvatarChange } = kit;
+  const { avatarUrl, handleAvatarChange, profile, setProfile } = kit;
   const [fetching, setFetching] = useState(false);
 
   const saveImageUrl = async (sourceUrl: string) => {
@@ -65,6 +67,18 @@ export function ProfilePictureSection({ kit }: { kit: PressKitState }) {
       <div className="mt-5 max-w-md">
         <ImageUrlForm busy={fetching} onSubmit={saveImageUrl} />
       </div>
+      {profile ? (
+        <div className="mt-5">
+          <AvatarThemePicker
+            value={readAvatarTheme(profile.avatarTheme)}
+            onChange={(avatarTheme) =>
+              setProfile((current) =>
+                current ? { ...current, avatarTheme } : current,
+              )
+            }
+          />
+        </div>
+      ) : null}
     </StudioPanel>
   );
 }

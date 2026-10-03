@@ -1,3 +1,4 @@
+import type { AvatarTheme } from '../../lib/avatarTheme';
 import type { FetchMeta } from '.././client';
 import { setMockFreeSubscriptionsEnabled } from '.././mock-profile-preferences';
 import {
@@ -18,6 +19,9 @@ export type ProfileFields = {
   /** Optional longer-form history, shown expanded below the short bio. */
   fullBio?: string | null;
   avatarUrl?: string | null;
+  /** Fill drawn in place of a missing avatar image; null uses the
+   * generated placeholder. */
+  avatarTheme?: AvatarTheme | null;
   tipJarUrl: string | null;
   pronouns: string | null;
   chatEnabled: boolean;
@@ -142,6 +146,7 @@ export type ProfilePatch = Partial<
     | 'nameplateColor'
     | 'showPageHero'
     | 'publicAttribution'
+    | 'avatarTheme'
   > &
     Record<NonNullableProfileField, string>
 >;
