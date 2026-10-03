@@ -1,8 +1,38 @@
 import type { FetchMeta } from './client';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
-import { requestJson } from './request-json';
+import { requestJson, RequestJsonError } from './request-json';
 
 export type ChannelStaffRole = 'owner' | 'moderator';
+
+export const RECIPIENT_UNAVAILABLE_MESSAGE =
+  'This account is no longer available';
+
+function isRecipientUnavailable(err: unknown): boolean {
+  return (
+    err instanceof RequestJsonError &&
+    err.status === 403 &&
+    err.code === 'recipient_unavailable'
+  );
+}
+
+/** Failure shape for send/start: `recipientUnavailable` is set when the other
+ * account was deleted or suspended. */
+export type DmFailure = {
+  ok: false;
+  error: string;
+  recipientUnavailable?: true;
+};
+
+function dmFailure(err: unknown, fallback: string): DmFailure {
+  if (isRecipientUnavailable(err)) {
+    return {
+      ok: false,
+      error: RECIPIENT_UNAVAILABLE_MESSAGE,
+      recipientUnavailable: true,
+    };
+  }
+  return { ok: false, error: err instanceof Error ? err.message : fallback };
+}
 
 export type ConversationSummary = {
   id: string;
@@ -11,6 +41,8 @@ export type ConversationSummary = {
     displayName: string;
     avatarUrl: string | null;
     channelRole?: ChannelStaffRole | null;
+    /** False once the account is deleted or suspended; missing on older APIs. */
+    available?: boolean;
   };
   lastMessage: {
     body: string;
@@ -190,7 +222,7 @@ export async function fetchOlderMessages(
 export async function sendDm(
   conversationId: string,
   body: string,
-): Promise<{ ok: true; data: ChatDm } | { ok: false; error: string }> {
+): Promise<{ ok: true; data: ChatDm } | DmFailure> {
   if (isForceMock()) {
     const msg: ChatDm = {
       id: `m-${Date.now()}`,
@@ -227,18 +259,13 @@ export async function sendDm(
     );
     return { ok: true, data };
   } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Send failed',
-    };
+    return dmFailure(err, 'Send failed');
   }
 }
 
 export async function startConversation(
   username: string,
-): Promise<
-  { ok: true; conversationId: string } | { ok: false; error: string }
-> {
+): Promise<{ ok: true; conversationId: string } | DmFailure> {
   if (isForceMock()) {
     const existing = mockConversations.find(
       (c) => c.otherUser.username === username,
@@ -267,10 +294,7 @@ export async function startConversation(
     );
     return { ok: true, conversationId: data.conversationId };
   } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Start failed',
-    };
+    return dmFailure(err, 'Start failed');
   }
 }
 

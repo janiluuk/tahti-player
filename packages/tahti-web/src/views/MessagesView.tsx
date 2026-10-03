@@ -7,6 +7,7 @@ import {
   fetchConversation,
   fetchConversations,
   fetchOlderMessages,
+  RECIPIENT_UNAVAILABLE_MESSAGE,
   searchUsers,
   sendDm,
   startConversation,
@@ -91,6 +92,36 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
         ...current,
       ]);
       setHasMore(page.hasMore);
+    });
+  };
+
+  const markUnavailable = (id: string) => {
+    setOther((o) => (o ? { ...o, available: false } : o));
+    setInbox((list) =>
+      list.map((c) =>
+        c.id === id
+          ? { ...c, otherUser: { ...c.otherUser, available: false } }
+          : c,
+      ),
+    );
+  };
+
+  const send = () => {
+    const text = body.trim();
+    const id = activeId;
+    if (!text || !id) {
+      return;
+    }
+    void sendDm(id, text).then((r) => {
+      if (r.ok) {
+        setBody('');
+        openThread(id);
+        reloadInbox();
+      } else if (r.recipientUnavailable) {
+        markUnavailable(id);
+      } else {
+        setMsg(r.error);
+      }
     });
   };
 
@@ -216,51 +247,32 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
                 loadingOlder={loadingOlder}
                 onLoadOlder={loadOlder}
               />
-              <div className="border-border flex gap-2 border-t p-3">
-                <Input
-                  value={body}
-                  onChange={(e) => setBody(e.target.value)}
-                  placeholder="Write a message…"
-                  size="sm"
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault();
-                      if (!body.trim() || !activeId) {
-                        return;
-                      }
-                      void sendDm(activeId, body.trim()).then((r) => {
-                        if (!r.ok) {
-                          setMsg(r.error);
-                        } else {
-                          setBody('');
-                          openThread(activeId);
-                          reloadInbox();
-                        }
-                      });
-                    }
-                  }}
-                />
-                <Button
-                  size="sm"
-                  disabled={!body.trim()}
-                  onClick={() => {
-                    if (!activeId) {
-                      return;
-                    }
-                    void sendDm(activeId, body.trim()).then((r) => {
-                      if (!r.ok) {
-                        setMsg(r.error);
-                      } else {
-                        setBody('');
-                        openThread(activeId);
-                        reloadInbox();
-                      }
-                    });
-                  }}
+              {other?.available === false ? (
+                <p
+                  role="status"
+                  className="border-border text-foreground-secondary border-t p-3 text-sm"
                 >
-                  Send
-                </Button>
-              </div>
+                  {RECIPIENT_UNAVAILABLE_MESSAGE}
+                </p>
+              ) : (
+                <div className="border-border flex gap-2 border-t p-3">
+                  <Input
+                    value={body}
+                    onChange={(e) => setBody(e.target.value)}
+                    placeholder="Write a message…"
+                    size="sm"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        send();
+                      }
+                    }}
+                  />
+                  <Button size="sm" disabled={!body.trim()} onClick={send}>
+                    Send
+                  </Button>
+                </div>
+              )}
             </>
           )}
         </div>
