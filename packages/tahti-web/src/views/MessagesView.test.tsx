@@ -5,7 +5,14 @@ import {
   createRouter,
   RouterProvider,
 } from '@tanstack/react-router';
-import { act, cleanup, render, screen, within } from '@testing-library/react';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as contacts from '../api/message-contacts';
@@ -101,5 +108,46 @@ describe('MessagesView role badges', () => {
     await renderView(conversation(null), [dm('m1', false, null)]);
     expect(screen.queryByText('Artist')).toBeNull();
     expect(screen.queryByText('Moderator')).toBeNull();
+  });
+});
+
+describe('MessagesView with an unavailable account', () => {
+  afterEach(() => {
+    cleanup();
+    vi.restoreAllMocks();
+    useAuthStore.setState({ user: null });
+  });
+
+  it('replaces the composer when the other account is gone', async () => {
+    const summary = conversation();
+    await renderView(
+      { ...summary, otherUser: { ...summary.otherUser, available: false } },
+      [dm('m1', false)],
+    );
+    expect(screen.getByText('message m1')).toBeTruthy();
+    expect(screen.getByRole('status').textContent).toBe(
+      'This account is no longer available',
+    );
+    expect(screen.queryByRole('button', { name: 'Send' })).toBeNull();
+  });
+
+  it('switches to the notice when a send is refused', async () => {
+    await renderView(conversation());
+    const sendSpy = vi.spyOn(api, 'sendDm').mockResolvedValue({
+      ok: false,
+      error: api.RECIPIENT_UNAVAILABLE_MESSAGE,
+      recipientUnavailable: true,
+    });
+    fireEvent.change(screen.getByPlaceholderText('Write a message…'), {
+      target: { value: 'Still there?' },
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Send' }));
+    });
+    expect(sendSpy).toHaveBeenCalledWith('c1', 'Still there?');
+    expect(screen.getByRole('status').textContent).toBe(
+      'This account is no longer available',
+    );
+    expect(screen.queryByRole('button', { name: 'Send' })).toBeNull();
   });
 });
