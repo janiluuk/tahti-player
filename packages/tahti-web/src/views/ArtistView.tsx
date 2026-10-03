@@ -158,12 +158,12 @@ function ArtistProfilePage({ username }: { username: string }) {
     }
   };
 
-  const playOrPromptAlbum = (
-    release: PublicProfileRelease,
-    artist: string,
-    channelSlug?: string,
-  ) => {
-    const playables = releasePlayables(release, artist, channelSlug);
+  const playOrPromptAlbum = (release: PublicProfileRelease) => {
+    const playables = releasePlayables(
+      release,
+      profile?.artist.displayName ?? '',
+      profile?.channel?.slug,
+    );
     if (playables.length === 0) {
       return;
     }
@@ -435,6 +435,7 @@ function ArtistProfilePage({ username }: { username: string }) {
         hidden={artist.showPageHero === false}
         title={artist.displayName}
         nameplate={artist}
+        isMember={artist.isMember}
         {...artistHeroImage(artist)}
         roundImage
         location={countryName(artist.countryCode) || null}
@@ -516,9 +517,7 @@ function ArtistProfilePage({ username }: { username: string }) {
           isFavorite={(playable) =>
             favoriteTracks.some((t) => t.id === playable.id)
           }
-          onPlayRelease={(release) =>
-            playOrPromptAlbum(release, artist.displayName, channel?.slug)
-          }
+          onPlayRelease={playOrPromptAlbum}
           onQueueRelease={queueRelease}
           onToggleFavorite={toggleFavoriteTrack}
           onTitleClick={setTracklistRelease}
@@ -650,6 +649,7 @@ function ArtistProfilePage({ username }: { username: string }) {
           }}
           pinnedTiles={pinnedTiles}
           onPlay={play}
+          onPlayRelease={playOrPromptAlbum}
           onToggleFavorite={toggleFavoriteTrack}
           favoriteTracks={favoriteTracks}
           onOpenManager={() => setManagerOpen(true)}

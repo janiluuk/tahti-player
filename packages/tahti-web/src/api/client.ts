@@ -1,10 +1,8 @@
-import { listenerFingerprint } from '../lib/listenerFingerprint';
 import { requestJson } from './client-request';
 import type { MotionComment } from './governance-member';
 import { apiBase } from './http';
 import {
   channelToPlayable,
-  DEMO_MP3,
   mockAnnouncements,
   mockChannel,
   mockChatAccess,
@@ -36,6 +34,7 @@ import {
   type FetchMeta,
 } from './mode';
 import { findMockPurchaseTier } from './purchase-tiers';
+import { withShareKey } from './share-key';
 import type {
   Announcement,
   BoardResolution,
@@ -175,21 +174,6 @@ export async function fetchChannelSound(slug: string): Promise<{
       () => [],
     );
   }
-}
-
-/** Appends a private-share key as `?key=` (or `&key=` if the path already
- * has a query string) — the one thing every call below needs to pass
- * through to let the backend recognize "this request is using a share
- * link for a PRIVATE/STASH sound, not normal public access" and (per the
- * share-link contract) serve it without a public visibility check, and
- * log the access/interaction to the audit log instead of fanning it out
- * as a normal public activity/notification event. */
-function withShareKey(path: string, shareKey: string | undefined): string {
-  if (!shareKey) {
-    return path;
-  }
-  const separator = path.includes('?') ? '&' : '?';
-  return `${path}${separator}key=${encodeURIComponent(shareKey)}`;
 }
 
 function mockTrackDetailFromUpload(id: string): PublicTrackDetail | null {
@@ -338,53 +322,7 @@ export async function postTrackComment(
   }
 }
 
-const SOUND_DOWNLOAD_SOURCE_FORMAT = 'source';
-
-export async function fetchPublicSoundDownload(
-  channelSlug: string,
-  itemId: string,
-  shareKey?: string,
-): Promise<
-  { ok: true; url: string; filename?: string } | { ok: false; error: string }
-> {
-  if (isForceMock()) {
-    const uploaded = await ensureMockUploadedSound(itemId);
-    if (uploaded?.objectUrl) {
-      return {
-        ok: true,
-        url: uploaded.objectUrl,
-        filename: uploaded.filename,
-      };
-    }
-    return { ok: true, url: DEMO_MP3, filename: 'tahti-sound.mp3' };
-  }
-  try {
-    const fp = encodeURIComponent(listenerFingerprint());
-    const path = `/api/v1/c/${encodeURIComponent(channelSlug)}/archive/${encodeURIComponent(itemId)}/download`;
-    const tryFormats = [SOUND_DOWNLOAD_SOURCE_FORMAT, undefined] as const;
-    for (const format of tryFormats) {
-      try {
-        const query = format ? `?fp=${fp}&format=${format}` : `?fp=${fp}`;
-        const { data } = await requestJson<{ url?: string; filename?: string }>(
-          withShareKey(`${path}${query}`, shareKey),
-        );
-        if (data.url) {
-          return { ok: true, url: data.url, filename: data.filename };
-        }
-      } catch (err) {
-        if (format === undefined) {
-          throw err;
-        }
-      }
-    }
-    return { ok: false, error: 'Download unavailable' };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Download unavailable',
-    };
-  }
-}
+export { fetchPublicSoundDownload } from './public-sound-download';
 
 export * from './radio-public';
 

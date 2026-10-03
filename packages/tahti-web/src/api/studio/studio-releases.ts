@@ -141,6 +141,7 @@ export async function patchStudioRelease(
     state?: string;
     description?: string;
     smartLinkTargets?: Record<string, string>;
+    pinned?: boolean;
     showPoweredByFooter?: boolean;
   },
 ): Promise<{ ok: true; data: StudioRelease } | { ok: false; error: string }> {
@@ -156,6 +157,7 @@ export async function patchStudioRelease(
         description: patch.description,
         smartLinkSlug: 'mock-ep',
         smartLinkTargets: patch.smartLinkTargets ?? null,
+        pinnedAt: patch.pinned ? new Date().toISOString() : null,
         showPoweredByFooter: patch.showPoweredByFooter ?? false,
       },
     };

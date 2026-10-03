@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { fetchJam, pushJamState, subscribeToJamEvents } from '../api/jam';
+import { fetchJam, subscribeToJamEvents } from '../api/jam';
 import type { JamSession } from '../api/types';
-import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
+import { estimatedPositionSec, jamPlayable } from '../lib/jamPlayback';
+import { usePlayerStore } from '../stores/playerStore';
 import { usePolling } from './usePolling';
 
 export type JamConnectionStatus =
@@ -74,92 +75,11 @@ export function useJamState(sessionId: string | null): {
   return { session, connectionStatus, ended };
 }
 
-const HOST_PUSH_INTERVAL_MS = 5000;
-
-/** Host side: while `active`, mirrors this device's own player into the jam
- * session every few seconds and on every play/pause/track change, so
- * participants' views stay in sync. No-ops (and pushes nothing) when
- * `active` is false — a host closing the jam or navigating away just stops
- * calling this, it doesn't need its own explicit teardown request. */
-export function useJamHostSync(
-  sessionId: string | null,
-  active: boolean,
-): void {
-  const status = usePlayerStore((s) => s.status);
-  const currentId = usePlayerStore((s) => s.currentId);
-  const queue = usePlayerStore((s) => s.queue);
-  const lastSentRef = useRef<string>('');
-
-  const push = () => {
-    if (!sessionId || !active) {
-      return;
-    }
-    const state = usePlayerStore.getState();
-    const item = state.queue.find((q) => q.id === state.currentId);
-    const playable = item ? playableFromQueueItem(item) : null;
-    const body = {
-      isPlaying: state.status === 'playing',
-      currentTrack: playable
-        ? {
-            id: playable.id,
-            title: playable.title,
-            artistName: playable.artist,
-            coverUrl: playable.coverUrl ?? null,
-            // Embed-only tracks (Mixcloud/Hearthis/Spotify) have nothing a
-            // guest's own player can stream — leave these null so a guest
-            // sees "now playing" without trying to auto-play them.
-            streamUrl: playable.embed ? null : playable.streamUrl,
-            protocol: playable.embed ? null : playable.protocol,
-            channelSlug: playable.channelSlug ?? null,
-            durationSec: playable.durationSec ?? null,
-          }
-        : null,
-      positionSec: state.currentTime,
-    };
-    // Position ticks constantly; only worth a request when something a
-    // guest would actually notice changed (track/play-state), plus the
-    // regular interval below for position drift.
-    const signature = `${body.isPlaying}:${body.currentTrack?.id ?? ''}`;
-    if (signature === lastSentRef.current) {
-      return;
-    }
-    lastSentRef.current = signature;
-    void pushJamState(sessionId, body).catch(() => {
-      // Transient failure — the next interval tick or state change retries.
-    });
-  };
-
-  useEffect(() => {
-    if (!sessionId || !active) {
-      return;
-    }
-    push();
-  }, [sessionId, active, status, currentId, queue]);
-
-  usePolling(
-    () => {
-      lastSentRef.current = ''; // force-send on the regular tick too, for position drift
-      push();
-    },
-    HOST_PUSH_INTERVAL_MS,
-    Boolean(sessionId && active),
-  );
-}
-
 const GUEST_DRIFT_THRESHOLD_SEC = 3;
 const GUEST_DRIFT_CHECK_INTERVAL_MS = 5000;
 
-function estimatedPositionSec(session: JamSession): number {
-  if (!session.isPlaying) {
-    return session.positionSec;
-  }
-  const elapsedSec =
-    (Date.now() - new Date(session.positionUpdatedAt).getTime()) / 1000;
-  return session.positionSec + Math.max(0, elapsedSec);
-}
-
 /** Guest side: while `enabled`, drives this device's own player to match
- * the jam's host-reported state — same track, same play/pause, same
+ * the jam's reported state — same track, same play/pause, same
  * position (periodically drift-corrected against `positionUpdatedAt`).
  * Loading a new track always re-seeks to the host's current estimated
  * position; play/pause toggles on the same track don't (see the effect's
@@ -187,17 +107,7 @@ export function useJamGuestPlayback(
     }
     if (loadedTrackIdRef.current !== track.id) {
       loadedTrackIdRef.current = track.id;
-      play({
-        id: `sound:${track.id}`,
-        kind: 'sound',
-        title: track.title,
-        artist: track.artistName,
-        coverUrl: track.coverUrl ?? undefined,
-        streamUrl: track.streamUrl,
-        protocol: track.protocol ?? 'https',
-        channelSlug: track.channelSlug ?? undefined,
-        durationSec: track.durationSec ?? undefined,
-      });
+      play(jamPlayable(track, track.streamUrl));
       seekTo(estimatedPositionSec(session));
     }
     setStatus(isPlaying ? 'playing' : 'paused');
@@ -209,7 +119,7 @@ export function useJamGuestPlayback(
         return;
       }
       const state = usePlayerStore.getState();
-      if (state.currentId !== `sound:${track.id}`) {
+      if (state.currentId !== track.id) {
         return;
       }
       const estimated = estimatedPositionSec(session);

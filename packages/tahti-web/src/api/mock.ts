@@ -942,11 +942,15 @@ export function mockProfile(username: string): PublicProfile {
         id: 'tier-1',
         name: 'Supporter',
         amountCents: 500,
+        description: 'Keeps the stream running.',
+        perks: ['FAN_CHAT'],
       },
       {
         id: 'tier-2',
         name: 'Patron',
         amountCents: 1500,
+        description: null,
+        perks: ['FAN_CHAT', 'FAN_NEWSLETTER', 'Monthly thank-you mix'],
       },
     ],
     collections: [

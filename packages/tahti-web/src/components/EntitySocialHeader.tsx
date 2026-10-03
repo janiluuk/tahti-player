@@ -21,6 +21,7 @@ import {
 } from '../lib/colorScheme';
 import { ChannelVisualizer } from './ChannelVisualizer';
 import { Nameplate } from './Nameplate';
+import { TahtiMemberBadge } from './TahtiMemberBadge';
 
 const VIDEO_BACKDROP_PATTERN = /\.(mp4|webm)(\?|$)/i;
 
@@ -55,6 +56,8 @@ export type EntitySocialHeaderProps = {
     nameplateText?: string | null;
     nameplateColor?: string | null;
   } | null;
+  /** Shows the Tahti ry member badge beside the title. */
+  isMember?: boolean;
   /** Square cover / avatar shown beside the title. */
   imageUrl?: string | null;
   imageAlt?: string;
@@ -112,6 +115,7 @@ export type EntitySocialHeaderProps = {
 export function EntitySocialHeader({
   title,
   nameplate,
+  isMember,
   imageUrl,
   imageAlt = '',
   imageFallback,
@@ -371,6 +375,7 @@ export function EntitySocialHeader({
               color={nameplate?.nameplateColor}
               fallbackColor={scheme?.accent}
             />
+            <TahtiMemberBadge isMember={isMember} />
           </div>
           {location ? (
             <span

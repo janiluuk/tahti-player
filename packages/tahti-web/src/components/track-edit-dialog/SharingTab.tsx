@@ -7,7 +7,7 @@ import {
   AudienceVisibilitySection,
   visibilityFromIsPublic,
 } from '../AudienceVisibilitySection';
-import { DownloadsSwitchNotice } from '../DownloadsSwitchNotice';
+import { DownloadsSwitch } from '../DownloadsSwitch';
 import { PurchaseAccessSection } from '../PurchaseAccessSection';
 import { SoundShareLinksSection } from '../SoundShareLinksSection';
 import { DownloadGateSection } from './DownloadGateSection';
@@ -54,13 +54,20 @@ export function SharingTab({
       ) : null}
       {!item.embedProvider ? (
         <>
-          <DownloadsSwitchNotice />
-          <DownloadGateSection
-            soundId={soundId}
-            followToDownload={form.followToDownload ?? false}
-            repostToDownload={form.repostToDownload ?? false}
-            onChange={(patch) => setForm({ ...form, ...patch })}
+          <DownloadsSwitch
+            enabled={form.downloadsEnabled}
+            onChange={(downloadsEnabled) =>
+              setForm({ ...form, downloadsEnabled })
+            }
           />
+          {form.downloadsEnabled !== false ? (
+            <DownloadGateSection
+              soundId={soundId}
+              followToDownload={form.followToDownload ?? false}
+              repostToDownload={form.repostToDownload ?? false}
+              onChange={(patch) => setForm({ ...form, ...patch })}
+            />
+          ) : null}
         </>
       ) : null}
       {item.embedProvider === 'HEARTHIS' ? (

@@ -79,6 +79,7 @@ export function SoundRow({
             : ''}
           {item.genre ? `, ${item.genre}` : ''}
           {item.isPublic === false ? ', private' : ''}
+          {item.downloadsEnabled === false ? ', downloads off' : ''}
           {embedSrc ? `, via ${EMBED_PROVIDER_LABEL[item.embedProvider!]}` : ''}
         </p>
       </div>
@@ -107,7 +108,7 @@ export function SoundRow({
           <PlayIcon size={16} aria-hidden />
         </Button>
       </Tooltip>
-      {item.downloadsEnabled ? (
+      {!item.embedProvider ? (
         <Tooltip content="Download original" side="top">
           <Button
             size="icon-sm"

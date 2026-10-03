@@ -1,11 +1,19 @@
+import { toast } from 'sonner';
 import { describe, expect, it, vi } from 'vitest';
 
 import * as comments from '../../api/comments';
+import { fetchPublicSoundDownload } from '../../api/public-sound-download';
 import type { TahtiPlayable } from '../../api/types';
 import { buildTrackPage } from './buildTrackPage';
 import type { TrackDetailState } from './useTrackDetail';
 
 vi.mock('sonner', () => ({ toast: { error: vi.fn(), success: vi.fn() } }));
+vi.mock('../../api/public-sound-download', () => ({
+  fetchPublicSoundDownload: vi.fn(),
+}));
+vi.mock('../../api/sound-download-gates', () => ({
+  fetchDownloadGates: vi.fn().mockResolvedValue(null),
+}));
 
 const playable = {
   id: 'sound:t1',
@@ -108,6 +116,52 @@ describe('buildTrackPage', () => {
         .showBuyTrack,
     ).toBe(false);
   });
+
+  it('blocks playback while the API gates the track, even with a cached URL', () => {
+    const detail = {
+      accessMode: 'SUBSCRIBERS_ONLY',
+      audioUrl: null,
+      gate: { reason: 'SUBSCRIBERS_ONLY' },
+      channel: { username: 'artist' },
+    } as TrackDetailState['detail'];
+    const gated = state({ detail, currentId: 'sound:other' });
+    const page = buildTrackPage(gated, playable);
+
+    expect(page.accessGate).toEqual({ reason: 'SUBSCRIBERS_ONLY' });
+    expect(page.canPlay).toBe(false);
+    page.togglePlayback();
+    page.jumpTo(10);
+    expect(gated.play).not.toHaveBeenCalled();
+
+    const open = buildTrackPage(
+      state({ detail: { ...detail!, gate: null } }),
+      playable,
+    );
+    expect(open.accessGate).toBeNull();
+    expect(open.canPlay).toBe(true);
+  });
+
+  it('opens the name-your-price dialog or buys at the set price', () => {
+    const setPwywOpen = vi.fn();
+    const setPwywAmt = vi.fn();
+    buildTrackPage(
+      state({
+        detail: {
+          purchaseTierId: 'tier',
+          purchaseTierPriceCents: 350,
+          purchaseTierPriceOptional: true,
+          channel: { username: 'artist' },
+        } as TrackDetailState['detail'],
+        setPwywOpen,
+        setPwywAmt,
+      }),
+      playable,
+    ).startBuy();
+
+    expect(setPwywAmt).toHaveBeenCalledWith('3.50');
+    expect(setPwywOpen).toHaveBeenCalledWith(true);
+  });
+
   it('lets the author and the track owner delete a comment', async () => {
     const setComments = vi.fn();
     const comment = {
@@ -160,5 +214,52 @@ describe('buildTrackPage', () => {
     expect(update([comment, { ...comment, id: 'c2' }])).toEqual([
       { ...comment, id: 'c2' },
     ]);
+  });
+
+  it('hides the download button only when the artist turned downloads off', () => {
+    const detail = (downloadsEnabled?: boolean) =>
+      ({
+        channelSlug: 'night-drive',
+        downloadsEnabled,
+      }) as TrackDetailState['detail'];
+    expect(
+      buildTrackPage(state({ detail: detail(false) }), playable).showDownload,
+    ).toBe(false);
+    expect(
+      buildTrackPage(state({ detail: detail(true) }), playable).showDownload,
+    ).toBe(true);
+    expect(
+      buildTrackPage(state({ detail: detail() }), playable).showDownload,
+    ).toBe(true);
+  });
+
+  it('explains a downloads_disabled refusal and hides the button', async () => {
+    const detail = {
+      channelSlug: 'night-drive',
+      title: 'Track',
+      downloadsEnabled: true,
+    } as TrackDetailState['detail'];
+    const setDetail = vi.fn();
+    vi.mocked(fetchPublicSoundDownload).mockResolvedValue({
+      ok: false,
+      error: 'The artist has turned off downloads for this track.',
+      downloadsDisabled: true,
+    });
+    await buildTrackPage(
+      state({
+        detail,
+        setDetail,
+        setDownloadBusy: vi.fn(),
+        setDownloadGates: vi.fn(),
+      }),
+      playable,
+    ).downloadTrack();
+    expect(toast.error).toHaveBeenCalledWith(
+      'The artist has turned off downloads for this track.',
+    );
+    expect(setDetail).toHaveBeenCalledWith({
+      ...detail,
+      downloadsEnabled: false,
+    });
   });
 });

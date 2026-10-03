@@ -1990,6 +1990,8 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           'Join a Jam by code or shared link',
           'Copy the invite link',
           'See the live participant list',
+          'Let a guest control playback (host)',
+          'Play or pause for everyone (host and guests with control)',
           'Leave the Jam',
           'End the Jam for everyone (host only)',
         ],

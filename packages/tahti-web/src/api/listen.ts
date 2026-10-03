@@ -9,9 +9,25 @@ import {
 import type {
   ChannelDirectoryResponse,
   FeedResponse,
-  OnAirChannelResponse,
   SearchResponse,
 } from './types';
+
+export type OnAirChannel = {
+  slug: string;
+  state: string;
+  fallbackEnabled: boolean;
+  user: {
+    username: string;
+    displayName: string;
+    avatarUrl: string | null;
+  };
+};
+
+export type OnAirChannelResponse = {
+  live: OnAirChannel[];
+  replaying: OnAirChannel[];
+  recent: OnAirChannel[];
+};
 
 async function getJson<T>(path: string): Promise<T> {
   const { data } = await requestJson<T>(path);

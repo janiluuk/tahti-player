@@ -28,4 +28,6 @@ export type PublicProfileArtist = ArtistLogoFields & {
   nameplateColor?: string | null;
   /** False when the artist turned the profile hero off in Settings. */
   showPageHero?: boolean;
+  /** True when the artist is a Tahti ry (association) member. */
+  isMember?: boolean;
 };

@@ -639,6 +639,7 @@ export function ChannelView({ slug }: { slug: string }) {
           >
             <EntitySocialHeader
               title={channel.user.displayName}
+              isMember={channel.user.isMember}
               imageUrl={
                 channel.user.avatarUrl ??
                 placeholderArtworkUrl(channel.user.username)

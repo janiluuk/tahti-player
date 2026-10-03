@@ -54,6 +54,9 @@ export function useSoundEditor(id: string) {
   const [contentType, setContentType] = useState('TRACK');
   const [visibility, setVisibility] = useState<TrackVisibility>('PUBLIC');
   const [releaseDate, setReleaseDate] = useState('');
+  const [downloadsEnabled, setDownloadsEnabled] = useState<boolean | undefined>(
+    undefined,
+  );
   const [commentsEnabled, setCommentsEnabled] = useState(true);
   const tab = search.tab ?? 'details';
   const setTab = (next: 'details' | 'playlists' | 'insights') => {
@@ -84,6 +87,7 @@ export function useSoundEditor(id: string) {
       setContentType(res.data.contentType ?? 'TRACK');
       setVisibility(visibilityFromIsPublic(res.data.isPublic));
       setReleaseDate(releaseDateFromReleasedAt(res.data.releasedAt));
+      setDownloadsEnabled(res.data.downloadsEnabled);
       setCommentsEnabled(res.data.commentsEnabled ?? true);
     });
     void fetchEditorDraft(id).then((res) => {
@@ -145,6 +149,7 @@ export function useSoundEditor(id: string) {
           contentType,
           isPublic: visibility === 'PUBLIC',
           ...(isAudioClip ? {} : releasedAtFromReleaseDate(releaseDate)),
+          ...(downloadsEnabled !== undefined ? { downloadsEnabled } : {}),
           commentsEnabled,
         },
         'Saved.',
@@ -324,6 +329,8 @@ export function useSoundEditor(id: string) {
     setVisibility,
     releaseDate,
     setReleaseDate,
+    downloadsEnabled,
+    setDownloadsEnabled,
     commentsEnabled,
     setCommentsEnabled,
     tab,

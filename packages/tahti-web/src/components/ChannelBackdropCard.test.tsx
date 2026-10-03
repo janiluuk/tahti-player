@@ -60,6 +60,18 @@ describe('ChannelBackdropCard backdrop', () => {
     vi.unstubAllGlobals();
   });
 
+  it('shows the Tahti ry member badge beside the name only for members', () => {
+    expect(
+      render({ isMember: true }).querySelector(
+        '[data-testid="tahti-member-badge"]',
+      ),
+    ).not.toBeNull();
+    document.body.replaceChildren();
+    expect(
+      render({}).querySelector('[data-testid="tahti-member-badge"]'),
+    ).toBeNull();
+  });
+
   it('shows the top bar text only when set', () => {
     expect(
       render({ topBarText: ' New album out ' }).querySelector(

@@ -165,3 +165,47 @@ describe('StudioPlaylistEditorView track removal', () => {
     expect(screen.getByText('First Track')).toBeInTheDocument();
   });
 });
+
+describe('StudioPlaylistEditorView contributions', () => {
+  it("shows who added a track and their note, by username only, and doesn't credit the owner", async () => {
+    collection = {
+      ...collection,
+      collaborative: true,
+      items: [
+        {
+          id: 'item-1',
+          position: 0,
+          soundId: 'sound-1',
+          sound: { id: 'sound-1', title: 'First Track' },
+          addedBy: { username: 'mira', displayName: 'mira@example.com' },
+          addNote: 'Perfect opener',
+        },
+        {
+          id: 'item-2',
+          position: 1,
+          soundId: 'sound-2',
+          sound: { id: 'sound-2', title: 'Owner Pick' },
+          addedBy: { username: 'artist', displayName: 'An Artist' },
+        },
+      ],
+    };
+
+    await renderEditor();
+
+    const lines = screen.getAllByTestId('collection-contribution');
+    expect(lines).toHaveLength(1);
+    expect(lines[0]).toHaveTextContent('Added by @mira · “Perfect opener”');
+    expect(screen.getByRole('link', { name: '@mira' })).toHaveAttribute(
+      'href',
+      '/u/mira',
+    );
+    expect(document.body.textContent).not.toContain('mira@example.com');
+  });
+
+  it('shows no contribution line when the API omits contributors', async () => {
+    await renderEditor();
+
+    expect(screen.getByText('First Track')).toBeInTheDocument();
+    expect(screen.queryByTestId('collection-contribution')).toBeNull();
+  });
+});

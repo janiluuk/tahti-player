@@ -23,6 +23,7 @@ export async function uploadSoundFile(input: {
       status: 'READY',
       durationSec: 180,
       isPublic: false,
+      downloadsEnabled: true,
       createdAt: new Date().toISOString(),
     });
     await registerMockUploadedSound({
@@ -31,7 +32,7 @@ export async function uploadSoundFile(input: {
       filename,
       objectUrl: URL.createObjectURL(input.file),
       channelSlug,
-      downloadsEnabled: false,
+      downloadsEnabled: true,
       visibility: 'PRIVATE',
       mimeType: input.file.type || 'audio/wav',
     });
