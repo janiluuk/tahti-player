@@ -43,6 +43,9 @@ export type ProfileFields = {
   nameplateColor?: string | null;
   /** Shows the header card (avatar, name, stats) on the channel page. */
   showPageHero?: boolean;
+  /** Names this user in the annual grant report; off publishes them as
+   * "Channel #<member number>" instead. Defaults to true on the API. */
+  publicAttribution?: boolean;
 };
 
 export let mockProfile: ProfileFields = {
@@ -65,6 +68,7 @@ export let mockProfile: ProfileFields = {
   showLikes: true,
   showDailyListeners: true,
   socialLinks: {},
+  publicAttribution: true,
 };
 
 export async function fetchMeProfile(): Promise<{
@@ -137,6 +141,7 @@ export type ProfilePatch = Partial<
     | 'nameplateText'
     | 'nameplateColor'
     | 'showPageHero'
+    | 'publicAttribution'
   > &
     Record<NonNullableProfileField, string>
 >;
