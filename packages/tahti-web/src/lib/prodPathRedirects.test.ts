@@ -25,9 +25,13 @@ describe('resolveDashboardRedirect', () => {
     ['settings/internet-radio', '/settings/widgets'],
     ['settings/themes', '/settings/themes'],
     ['settings/moderators', '/studio/moderation'],
-    ['settings/distribution', '/studio/distribution'],
+    ['settings/distribution', '/studio/channel?tab=tahti-radio'],
     ['playlists', '/studio/collections'],
     ['messages', '/messages'],
+    ['messages/conv-1', '/messages/conv-1'],
+    ['messages/conv-1/', '/messages/conv-1'],
+    ['sound', '/studio/sounds'],
+    ['sound/track-1', '/studio/sounds/track-1'],
   ])('maps /dashboard/%s to %s', (source, expected) => {
     expect(resolveDashboardRedirect(source)).toBe(expected);
   });

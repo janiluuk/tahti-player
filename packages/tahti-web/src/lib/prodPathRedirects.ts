@@ -33,6 +33,7 @@ export const DASHBOARD_REDIRECTS: Record<string, string> = {
   revenue: '/studio/audience',
   audience: '/studio/audience',
   messages: '/messages',
+  sound: '/studio/sounds',
   'setup-channel': '/studio/channel?tab=setup',
   settings: '/settings',
   'settings/account': '/settings/account',
@@ -50,7 +51,9 @@ export const DASHBOARD_REDIRECTS: Record<string, string> = {
   'settings/themes': '/settings/themes',
   'settings/announcements': '/settings/broadcast',
   'settings/green-room': '/settings/broadcast',
-  'settings/distribution': '/studio/distribution',
+  // Tahti Radio opt-in and submissions (incl. board rejection notes) live on
+  // the channel's Tahti Radio tab, not the royalties Distribution page.
+  'settings/distribution': '/studio/channel?tab=tahti-radio',
   'settings/moderators': '/studio/moderation',
   'settings/multistream': '/studio/channel?tab=multicast',
   'upload/from-broadcast': '/library/recordings',
@@ -70,6 +73,11 @@ export function resolveDashboardRedirect(rest: string | undefined): string {
       return `/studio/sounds/${id}/editor`;
     }
     return id ? `/studio/sounds/${id}` : '/studio/sounds';
+  }
+  if ((first === 'sound' || first === 'messages') && key.includes('/')) {
+    const id = key.split('/')[1];
+    const base = first === 'sound' ? '/studio/sounds' : '/messages';
+    return id ? `${base}/${id}` : base;
   }
   if (first === 'releases' && key.includes('/')) {
     const id = key.split('/')[1];
