@@ -108,6 +108,52 @@ describe('buildTrackPage', () => {
         .showBuyTrack,
     ).toBe(false);
   });
+
+  it('blocks playback while the API gates the track, even with a cached URL', () => {
+    const detail = {
+      accessMode: 'SUBSCRIBERS_ONLY',
+      audioUrl: null,
+      gate: { reason: 'SUBSCRIBERS_ONLY' },
+      channel: { username: 'artist' },
+    } as TrackDetailState['detail'];
+    const gated = state({ detail, currentId: 'sound:other' });
+    const page = buildTrackPage(gated, playable);
+
+    expect(page.accessGate).toEqual({ reason: 'SUBSCRIBERS_ONLY' });
+    expect(page.canPlay).toBe(false);
+    page.togglePlayback();
+    page.jumpTo(10);
+    expect(gated.play).not.toHaveBeenCalled();
+
+    const open = buildTrackPage(
+      state({ detail: { ...detail!, gate: null } }),
+      playable,
+    );
+    expect(open.accessGate).toBeNull();
+    expect(open.canPlay).toBe(true);
+  });
+
+  it('opens the name-your-price dialog or buys at the set price', () => {
+    const setPwywOpen = vi.fn();
+    const setPwywAmt = vi.fn();
+    buildTrackPage(
+      state({
+        detail: {
+          purchaseTierId: 'tier',
+          purchaseTierPriceCents: 350,
+          purchaseTierPriceOptional: true,
+          channel: { username: 'artist' },
+        } as TrackDetailState['detail'],
+        setPwywOpen,
+        setPwywAmt,
+      }),
+      playable,
+    ).startBuy();
+
+    expect(setPwywAmt).toHaveBeenCalledWith('3.50');
+    expect(setPwywOpen).toHaveBeenCalledWith(true);
+  });
+
   it('lets the author and the track owner delete a comment', async () => {
     const setComments = vi.fn();
     const comment = {

@@ -129,7 +129,7 @@ export function useTrackDetail(id: string, shareKey?: string) {
       return true;
     }
     if (!isForceMock()) {
-      return false;
+      return detail.gate === null;
     }
     const subscribedInSession = listMockSubscriptions().some(
       (row) =>
