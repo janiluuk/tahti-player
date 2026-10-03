@@ -8,9 +8,10 @@ import {
   PlusIcon,
   SearchIcon,
   Trash2Icon,
+  UploadIcon,
   Wand2Icon,
 } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
@@ -30,7 +31,11 @@ import {
   removeStudioReleaseTrack,
   reorderStudioReleaseTracks,
 } from '../../../api/studio';
-import type { StudioRelease, StudioSound } from '../../../api/studio-types';
+import type {
+  StudioRelease,
+  StudioReleaseTrack,
+  StudioSound,
+} from '../../../api/studio-types';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { StudioPanel } from '../../../components/StudioPanel';
 import {
@@ -42,7 +47,10 @@ import {
   loadDspPluginPrefixes,
   prefixesForServices,
 } from '../../../lib/dspPluginDefaults';
+import { NewReleaseTrackUploadDialog } from './NewReleaseTrackUploadDialog';
+import { ReleaseTrackAudioUpload } from './ReleaseTrackAudioUpload';
 import { ReleaseTrackRow } from './ReleaseTrackRow';
+import { useReleaseTrackProcessingPoll } from './useReleaseTrackProcessingPoll';
 
 export function ReleaseSmartLinksPanel({
   release,
@@ -61,6 +69,7 @@ export function ReleaseSmartLinksPanel({
   );
   const [tracks, setTracks] = useState(release.tracks ?? []);
   const [libraryOpen, setLibraryOpen] = useState(false);
+  const [newUploadOpen, setNewUploadOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [contentType, setContentType] = useState('ALL');
   const [draggedId, setDraggedId] = useState<string | null>(null);
@@ -74,10 +83,42 @@ export function ReleaseSmartLinksPanel({
     title: string;
   } | null>(null);
 
+  // Split so a tracklist refresh doesn't wipe unsaved destination edits.
   useEffect(() => {
     setTargets(release.smartLinkTargets ?? {});
+  }, [release.smartLinkTargets]);
+  useEffect(() => {
     setTracks(release.tracks ?? []);
-  }, [release]);
+  }, [release.tracks]);
+
+  // Uploads finish long after they start; read the latest release, not the
+  // one captured when the upload began.
+  const releaseRef = useRef(release);
+  releaseRef.current = release;
+  const updateTracks = (
+    change: (current: StudioReleaseTrack[]) => StudioReleaseTrack[],
+  ) => {
+    const latest = releaseRef.current;
+    const next = change(latest.tracks ?? []);
+    releaseRef.current = { ...latest, tracks: next };
+    setTracks(next);
+    onReleaseChange(releaseRef.current);
+  };
+  const patchTrack = (trackId: string, patch: Partial<StudioReleaseTrack>) =>
+    updateTracks((current) =>
+      current.map((track) =>
+        track.id === trackId ? { ...track, ...patch } : track,
+      ),
+    );
+
+  useReleaseTrackProcessingPoll(release.id, tracks, (updates) =>
+    updateTracks((current) =>
+      current.map((track) => {
+        const update = updates.get(track.id);
+        return update ? { ...track, ...update } : track;
+      }),
+    ),
+  );
 
   useEffect(() => {
     void loadDspPluginPrefixes().then(setPluginPrefixes);
@@ -311,13 +352,13 @@ export function ReleaseSmartLinksPanel({
 
       <StudioPanel
         title="Smart-link playlist"
-        description="Arrange the release order, play a track, remove it, or add audio from your library."
+        description="Arrange the release order, play a track, remove it, add audio from your library or upload it from your device."
       >
         {tracks.length === 0 ? (
           <EmptyState
             size="sm"
             title="No tracks yet"
-            description="Add tracks from your library to build this release."
+            description="Add tracks from your library or upload audio files to build this release."
           />
         ) : (
           <ol className="flex flex-col gap-2">
@@ -350,6 +391,13 @@ export function ReleaseSmartLinksPanel({
                     shopUrl={targets.bandcamp}
                     sound={soundById.get(track.soundId ?? '')}
                   />
+                  <li className="mt-1 list-none empty:hidden">
+                    <ReleaseTrackAudioUpload
+                      releaseId={release.id}
+                      track={track}
+                      onUploaded={patchTrack}
+                    />
+                  </li>
                 </ul>
                 <Tooltip content="Move up" side="top">
                   <Button
@@ -402,14 +450,25 @@ export function ReleaseSmartLinksPanel({
             ))}
           </ol>
         )}
-        <Button
-          className="mt-4"
-          variant="secondary"
-          onClick={() => setLibraryOpen(true)}
-        >
-          <PlusIcon size={16} aria-hidden /> Add tracks from library
-        </Button>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Button variant="secondary" onClick={() => setLibraryOpen(true)}>
+            <PlusIcon size={16} aria-hidden /> Add tracks from library
+          </Button>
+          <Button variant="secondary" onClick={() => setNewUploadOpen(true)}>
+            <UploadIcon size={16} aria-hidden /> Upload a new track
+          </Button>
+        </div>
       </StudioPanel>
+
+      <NewReleaseTrackUploadDialog
+        releaseId={release.id}
+        isOpen={newUploadOpen}
+        onClose={() => setNewUploadOpen(false)}
+        onTrackCreated={(track) =>
+          updateTracks((current) => [...current, track])
+        }
+        onUploaded={patchTrack}
+      />
 
       <Dialog.Root isOpen={libraryOpen} onClose={() => setLibraryOpen(false)}>
         <Dialog.Title>Add tracks from library</Dialog.Title>
