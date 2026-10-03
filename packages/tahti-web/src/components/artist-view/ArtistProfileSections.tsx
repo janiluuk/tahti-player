@@ -28,6 +28,7 @@ import {
   publicPressKitUrl,
   type ArtistProfileEmbed,
 } from '../../lib/artistProfile';
+import { humanizeFanTierPerk } from '../../lib/fanTierPerks';
 import { DiscoWidgetsSection } from '../disco-widgets/DiscoWidgetsSection';
 import { EmbedButton } from '../EmbedButton';
 import { NewsletterSubscribeToggle } from '../NewsletterSubscribeToggle';
@@ -418,12 +419,53 @@ export function ArtistFanTiersNote({
   if (tiers.length === 0) {
     return null;
   }
-  return (
-    <p className="text-foreground-secondary text-xs">
-      Fan tiers:{' '}
-      {tiers
-        .map((t) => `${t.name} (€${(t.amountCents / 100).toFixed(0)})`)
-        .join(', ')}
-    </p>
+  const hasDetails = tiers.some(
+    (t) => Boolean(t.description) || (t.perks?.length ?? 0) > 0,
   );
+  if (!hasDetails) {
+    return (
+      <p className="text-foreground-secondary text-xs">
+        Fan tiers:{' '}
+        {tiers
+          .map((t) => `${t.name} (${fanTierPrice(t.amountCents)})`)
+          .join(', ')}
+      </p>
+    );
+  }
+  return (
+    <section className="flex flex-col gap-3" aria-label="Fan tiers">
+      <Eyebrow>Fan tiers</Eyebrow>
+      <ul className="border-border divide-border divide-y overflow-hidden rounded-xl border">
+        {tiers.map((tier) => (
+          <li key={tier.id} className="flex flex-col gap-1 p-3 text-sm">
+            <p className="font-medium">
+              {tier.name}{' '}
+              <span className="text-foreground-secondary">
+                {fanTierPrice(tier.amountCents)}/mo
+              </span>
+            </p>
+            {tier.description ? (
+              <p className="text-foreground-secondary text-xs">
+                {tier.description}
+              </p>
+            ) : null}
+            {tier.perks && tier.perks.length > 0 ? (
+              <ul
+                className="text-foreground-secondary list-disc pl-4 text-xs"
+                aria-label={`${tier.name} perks`}
+              >
+                {tier.perks.map((perk) => (
+                  <li key={perk}>{humanizeFanTierPerk(perk)}</li>
+                ))}
+              </ul>
+            ) : null}
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function fanTierPrice(amountCents: number): string {
+  return `€${(amountCents / 100).toFixed(0)}`;
 }
