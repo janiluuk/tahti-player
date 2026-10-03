@@ -118,7 +118,11 @@ export function NotificationsVisibilityPanel() {
 
   const updateVisibility = (
     key:
-      'showJoinDate' | 'showFollowers' | 'showFollowing' | 'showDailyListeners',
+      | 'showJoinDate'
+      | 'showFollowers'
+      | 'showFollowing'
+      | 'showLikes'
+      | 'showDailyListeners',
     value: boolean,
   ) => {
     if (!profile) {
@@ -191,6 +195,11 @@ export function NotificationsVisibilityPanel() {
             label="Show who I follow on my profile"
             value={profile.showFollowing ?? true}
             onChange={(value) => updateVisibility('showFollowing', value)}
+          />
+          <SettingsToggle
+            label="Show tracks I like on my profile"
+            value={profile.showLikes ?? true}
+            onChange={(value) => updateVisibility('showLikes', value)}
           />
           <SettingsToggle
             label="Show today’s listener count in my chat"
