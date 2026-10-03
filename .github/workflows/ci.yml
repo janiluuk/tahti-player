@@ -457,6 +457,10 @@ jobs:
 
       - name: Run stories as tests
         run: pnpm --filter @tahti-player/storybook test
+        env:
+          # Serial browser workers + retries are configured in
+          # packages/storybook/vitest.config.ts; CI=true enables retry: 2.
+          CI: true
 
   # Manual-only e2e run: dispatch the workflow with run_e2e=true. Runs the
   # Playwright suite against the deployed site (beta.tahti.live by default).
