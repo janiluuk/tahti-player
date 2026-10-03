@@ -377,4 +377,23 @@ describe('TrackTable', () => {
       screen.queryByRole('checkbox', { name: 'Select Track 1' }),
     ).not.toBeInTheDocument();
   });
+
+  it('renders a per-row annotation under the title only where one is given', async () => {
+    render(
+      <TrackTable
+        tracks={makeTracks(2)}
+        labels={labels}
+        display={{ displayThumbnail: false }}
+        meta={{
+          getTrackAnnotation: (track) =>
+            track.source.id === 't-1' ? 'Added by @mira' : null,
+        }}
+      />,
+    );
+
+    await screen.findByText('Track 1');
+    const annotations = screen.getAllByTestId('track-annotation');
+    expect(annotations).toHaveLength(1);
+    expect(annotations[0]).toHaveTextContent('Added by @mira');
+  });
 });

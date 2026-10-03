@@ -51,3 +51,34 @@ export async function fetchMyLikes(): Promise<{
     return { data: [], meta: apiErrorMeta(err) };
   }
 }
+
+/** A user's public liked tracks (`GET /api/v1/u/:username/likes`), newest
+ * first. `showLikes` stays false unless the API says the user shows them, so
+ * a failed request or an API without the route hides the list. */
+export async function fetchUserLikes(username: string): Promise<{
+  showLikes: boolean;
+  data: LikedTrack[];
+  meta: FetchMeta;
+}> {
+  if (isForceMock()) {
+    return {
+      showLikes: false,
+      data: [],
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const { data } = await requestJson<{
+      showLikes?: boolean;
+      items?: LikedTrack[];
+    }>(`/api/v1/u/${encodeURIComponent(username)}/likes?limit=20`);
+    const showLikes = data.showLikes === true;
+    return {
+      showLikes,
+      data: showLikes && Array.isArray(data.items) ? data.items : [],
+      meta: { source: 'api' },
+    };
+  } catch (err) {
+    return { showLikes: false, data: [], meta: apiErrorMeta(err) };
+  }
+}

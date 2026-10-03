@@ -34,6 +34,7 @@ import { NewsletterSubscribeToggle } from '../NewsletterSubscribeToggle';
 import { RssFeedButton } from '../RssFeedButton';
 import { ShowEpisodeList } from '../ShowEpisodeList';
 import { Eyebrow } from '../tahti/Eyebrow';
+import { ArtistBackgroundMusicButton } from './ArtistBackgroundMusicButton';
 
 const headerButtonClass =
   'bg-background border-border rounded-md border-(length:--border-width)';
@@ -53,6 +54,11 @@ export function ArtistHeaderActions({
   const subscriptionsOn = artist.freeSubscriptionsEnabled !== false;
   return (
     <>
+      <ArtistBackgroundMusicButton
+        url={profile.backgroundMusicUrl}
+        artistName={artist.displayName}
+        className={headerButtonClass}
+      />
       {!isOwner && subscriptionsOn ? (
         <NewsletterSubscribeToggle
           artistUsername={artist.username}

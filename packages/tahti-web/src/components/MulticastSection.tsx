@@ -26,6 +26,10 @@ import {
   multicastProviders,
   type MulticastProviderId,
 } from '../plugins/multicast';
+import {
+  RotationMirrorToggle,
+  useRotationMirror,
+} from './RotationMirrorToggle';
 
 const PROVIDER_ICON: Record<MulticastProviderId, LucideIcon> = {
   YOUTUBE: Youtube,
@@ -116,28 +120,36 @@ function DestinationDialog({
   >(null);
   const [error, setError] = useState<string | null>(null);
   const [savedTarget, setSavedTarget] = useState(state.target);
+  const mirror = useRotationMirror(state.target, scope);
 
   const save = () => {
     setSaving(true);
     setError(null);
     if (savedTarget) {
+      const mirrorField = mirror.field();
       void patchRtmpTarget(
         savedTarget.id,
         {
           label: label.trim() || undefined,
           ...(streamKey.trim() ? { streamKey: streamKey.trim() } : {}),
+          ...mirrorField,
         },
         scope,
       ).then((result) => {
         setSaving(false);
         if (!result.ok) {
           setError(result.error);
+          if ('alwaysMirror' in mirrorField) {
+            mirror.refuse();
+          }
           return;
         }
         const updated = {
           ...savedTarget,
+          ...mirrorField,
           label: label.trim() || savedTarget.label,
         };
+        mirror.commit(updated.alwaysMirror);
         setSavedTarget(updated);
         setStreamKey('');
         onSaved(updated);
@@ -154,6 +166,7 @@ function DestinationDialog({
         label: label.trim(),
         streamKey: streamKey.trim(),
         rtmpUrl: isCustom ? rtmpUrl.trim() : undefined,
+        ...mirror.field(),
       },
       scope,
     ).then((result) => {
@@ -162,6 +175,7 @@ function DestinationDialog({
         setError(result.error);
         return;
       }
+      mirror.commit(result.target.alwaysMirror);
       setSavedTarget(result.target);
       setStreamKey('');
       onSaved(result.target);
@@ -272,6 +286,13 @@ function DestinationDialog({
                 onChange={(event) => setRtmpUrl(event.target.value)}
                 placeholder="rtmp://example.com/live"
                 disabled={Boolean(savedTarget)}
+              />
+            )}
+            {mirror.visible && (
+              <RotationMirrorToggle
+                checked={mirror.checked}
+                onChange={mirror.setChecked}
+                disabled={saving}
               />
             )}
             {savedTarget && (
