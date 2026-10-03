@@ -2,12 +2,15 @@ import type { FetchMeta } from './client';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
 import { requestJson } from './request-json';
 
+export type ChannelStaffRole = 'owner' | 'moderator';
+
 export type ConversationSummary = {
   id: string;
   otherUser: {
     username: string;
     displayName: string;
     avatarUrl: string | null;
+    channelRole?: ChannelStaffRole | null;
   };
   lastMessage: {
     body: string;
@@ -26,6 +29,7 @@ export type ChatDm = {
   body: string;
   createdAt: string;
   isMine: boolean;
+  senderChannelRole?: ChannelStaffRole | null;
 };
 
 export type ConversationDetail = {

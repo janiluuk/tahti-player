@@ -12,6 +12,7 @@ import {
   type ChatDm,
   type ConversationSummary,
 } from '../api/messages';
+import { DmRoleBadge } from '../components/DmRoleBadge';
 import { MessageContacts } from '../components/MessageContacts';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
@@ -22,7 +23,9 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
   const [inbox, setInbox] = useState<ConversationSummary[]>([]);
   const [activeId, setActiveId] = useState<string | null>(threadId ?? null);
   const [messages, setMessages] = useState<ChatDm[]>([]);
-  const [otherName, setOtherName] = useState('');
+  const [other, setOther] = useState<ConversationSummary['otherUser'] | null>(
+    null,
+  );
   const [body, setBody] = useState('');
   const [composeUser, setComposeUser] = useState('');
   const [msg, setMsg] = useState<string | null>(null);
@@ -51,7 +54,7 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
         return;
       }
       setMessages(r.data.messages);
-      setOtherName(r.data.otherUser.displayName);
+      setOther(r.data.otherUser);
     });
   }, [user, threadId]);
 
@@ -62,7 +65,7 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
         return;
       }
       setMessages(r.data.messages);
-      setOtherName(r.data.otherUser.displayName);
+      setOther(r.data.otherUser);
     });
     void navigate({ to: '/messages/$id', params: { id } });
   };
@@ -148,21 +151,25 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
           ) : (
             inbox.map((c) => (
               <li key={c.id}>
-                <button
-                  type="button"
+                <Button
+                  variant="text"
+                  size="flexible"
                   onClick={() => openThread(c.id)}
                   aria-current={activeId === c.id ? 'page' : undefined}
-                  className={`w-full border-l-2 px-3 py-2 text-left text-sm transition-colors ${
+                  className={`w-full flex-col items-stretch rounded-none border-l-2 px-3 py-2 text-left text-sm whitespace-normal active:scale-100 ${
                     activeId === c.id
                       ? 'border-accent-purple bg-accent-purple/20 text-foreground'
                       : 'hover:bg-background-secondary border-transparent'
                   }`}
                 >
-                  <div className="font-medium">{c.otherUser.displayName}</div>
+                  <div className="flex items-center gap-1.5 font-medium">
+                    <span className="truncate">{c.otherUser.displayName}</span>
+                    <DmRoleBadge role={c.otherUser.channelRole} />
+                  </div>
                   <div className="text-foreground-secondary truncate text-xs">
                     {c.lastMessage?.body ?? 'No messages yet'}
                   </div>
-                </button>
+                </Button>
               </li>
             ))
           )}
@@ -175,8 +182,9 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
             </p>
           ) : (
             <>
-              <div className="border-border border-b px-3 py-2 text-sm font-medium">
-                {otherName}
+              <div className="border-border flex items-center gap-1.5 border-b px-3 py-2 text-sm font-medium">
+                {other?.displayName}
+                <DmRoleBadge role={other?.channelRole} />
               </div>
               <div className="flex-1 space-y-2 overflow-y-auto p-3 text-sm">
                 {messages.map((m) => (
@@ -188,8 +196,11 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
                         : 'border-accent-purple/30 bg-accent-purple/15'
                     }`}
                   >
-                    <div className="text-[10px] opacity-70">
-                      {m.senderDisplayName}
+                    <div className="flex items-center gap-1 text-[10px]">
+                      <span className="opacity-70">{m.senderDisplayName}</span>
+                      {m.isMine ? null : (
+                        <DmRoleBadge role={m.senderChannelRole} />
+                      )}
                     </div>
                     {m.body}
                   </div>

@@ -4,6 +4,7 @@ import { MessageSquareIcon } from 'lucide-react';
 import { Badge, Button } from '@tahti-player/ui';
 
 import { cn } from '../../lib/cn';
+import { DmRoleBadge } from '../DmRoleBadge';
 import { iconBtnClass } from './shared';
 import { type TopNavState } from './useTopNavState';
 
@@ -99,8 +100,14 @@ export function MessagesPopover({ nav }: { nav: TopNavState }) {
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center justify-between gap-2 font-medium">
-                    <span className="truncate">
-                      {conversation.otherUser.displayName}
+                    <span className="flex min-w-0 items-center gap-1">
+                      <span className="truncate">
+                        {conversation.otherUser.displayName}
+                      </span>
+                      <DmRoleBadge
+                        role={conversation.otherUser.channelRole}
+                        className="shrink-0"
+                      />
                     </span>
                     {conversation.unreadCount > 0 ? (
                       <Badge variant="pill" color="red">
