@@ -1,6 +1,7 @@
 import { useNavigate } from '@tanstack/react-router';
-import { LogOutIcon, PlayIcon, UsersIcon, XIcon } from 'lucide-react';
+import { LogOutIcon, PauseIcon, PlayIcon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   Badge,
@@ -10,13 +11,18 @@ import {
   TahtiJam,
 } from '@tahti-player/ui';
 
-import { endJam, joinJam, leaveJam } from '../api/jam';
-import { ChannelVisualizer } from '../components/ChannelVisualizer';
 import {
-  useJamGuestPlayback,
-  useJamHostSync,
-  useJamState,
-} from '../hooks/useJam';
+  endJam,
+  joinJam,
+  leaveJam,
+  pushJamState,
+  setJamParticipantControl,
+} from '../api/jam';
+import { ChannelVisualizer } from '../components/ChannelVisualizer';
+import { JamParticipantList } from '../components/JamParticipantList';
+import { useJamGuestPlayback, useJamState } from '../hooks/useJam';
+import { useJamCoControl, useJamHostSync } from '../hooks/useJamControl';
+import { canControlJam, toggledJamState } from '../lib/jamPlayback';
 import { useAuthStore } from '../stores/authStore';
 
 /** A frosted glass panel whose glow tints toward the current track's own
@@ -64,9 +70,41 @@ export function JamView({ code }: { code: string }) {
 
   const { session, connectionStatus, ended } = useJamState(sessionId);
   const isHost = Boolean(session && userId && session.hostUserId === userId);
+  const canControl = Boolean(session && canControlJam(session, userId));
   const [audioUnlocked, setAudioUnlocked] = useState(false);
-  useJamHostSync(sessionId, isHost && !ended);
+  const [controlSupported, setControlSupported] = useState(true);
+  const [pendingControl, setPendingControl] = useState<ReadonlySet<string>>(
+    () => new Set(),
+  );
+  useJamHostSync(session, isHost && !ended);
   useJamGuestPlayback(session, !isHost && audioUnlocked && !ended);
+  useJamCoControl(session, !isHost && canControl && audioUnlocked && !ended);
+
+  const setGuestControl = async (guestId: string, allow: boolean) => {
+    if (!sessionId) {
+      return;
+    }
+    setPendingControl((prev) => new Set(prev).add(guestId));
+    const updated = await setJamParticipantControl(sessionId, guestId, allow);
+    setPendingControl((prev) => {
+      const next = new Set(prev);
+      next.delete(guestId);
+      return next;
+    });
+    if (!updated) {
+      setControlSupported(false);
+      toast.error("Couldn't change who controls this Jam.");
+    }
+  };
+
+  const togglePlaybackForEveryone = async () => {
+    if (!session) {
+      return;
+    }
+    await pushJamState(session.id, toggledJamState(session)).catch(() => {
+      toast.error("Couldn't change playback for the Jam.");
+    });
+  };
 
   const leave = async () => {
     if (sessionId) {
@@ -167,38 +205,49 @@ export function JamView({ code }: { code: string }) {
             artist={track?.artistName}
             coverUrl={track?.coverUrl ?? undefined}
           />
-          {!isHost && !audioUnlocked && track?.streamUrl ? (
-            <Button onClick={() => setAudioUnlocked(true)}>
-              <PlayIcon size={16} /> Play along
-            </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            {canControl && track ? (
+              <Button
+                variant="secondary"
+                onClick={() => void togglePlaybackForEveryone()}
+              >
+                {session.isPlaying ? (
+                  <>
+                    <PauseIcon size={16} /> Pause for everyone
+                  </>
+                ) : (
+                  <>
+                    <PlayIcon size={16} /> Play for everyone
+                  </>
+                )}
+              </Button>
+            ) : null}
+            {!isHost && !audioUnlocked && track?.streamUrl ? (
+              <Button onClick={() => setAudioUnlocked(true)}>
+                <PlayIcon size={16} /> Play along
+              </Button>
+            ) : null}
+          </div>
+          {!isHost && canControl ? (
+            <p className="text-foreground-secondary w-full text-xs">
+              The host has given you control of playback
+              {audioUnlocked
+                ? ' - pausing or resuming your player does it for everyone.'
+                : '.'}
+            </p>
           ) : null}
         </GlassPanel>
 
         <GlassPanel>
-          <div className="mb-3 flex items-center gap-2">
-            <UsersIcon size={16} className="text-foreground-secondary" />
-            <h2 className="text-sm font-bold tracking-tight">
-              {session.participants.length} jamming
-            </h2>
-          </div>
-          <ul className="flex flex-wrap gap-2">
-            {session.participants.map((p) => (
-              <li
-                key={p.userId}
-                className="border-border/60 bg-background-secondary/40 flex items-center gap-2 rounded-full border py-1 pr-3 pl-1"
-              >
-                <span className="bg-primary/20 text-primary flex size-6 items-center justify-center rounded-full text-xs font-bold">
-                  {p.displayName.slice(0, 1).toUpperCase()}
-                </span>
-                <span className="text-xs font-semibold">{p.displayName}</span>
-                {p.role === 'HOST' && (
-                  <Badge variant="pill" color="blue">
-                    Host
-                  </Badge>
-                )}
-              </li>
-            ))}
-          </ul>
+          <JamParticipantList
+            participants={session.participants}
+            onSetControl={
+              isHost && controlSupported
+                ? (guestId, allow) => void setGuestControl(guestId, allow)
+                : undefined
+            }
+            pendingUserIds={pendingControl}
+          />
         </GlassPanel>
 
         <div className="mt-auto flex justify-end gap-2">
