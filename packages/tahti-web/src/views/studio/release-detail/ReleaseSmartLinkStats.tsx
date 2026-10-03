@@ -7,11 +7,7 @@ import {
   type ReleaseSmartLinkAnalytics,
 } from '../../../api/release-analytics';
 import { StudioPanel } from '../../../components/StudioPanel';
-import { DSP_SERVICES } from '../../../lib/dspPluginDefaults';
-
-const platformLabel = (platform: string) =>
-  DSP_SERVICES.find((service) => service.key === platform)?.label ??
-  platform.charAt(0).toUpperCase() + platform.slice(1);
+import { dspServiceLabel } from '../../../lib/dspServices';
 
 export function ReleaseSmartLinkStats({ releaseId }: { releaseId: string }) {
   const [stats, setStats] = useState<ReleaseSmartLinkAnalytics | null>(null);
@@ -66,7 +62,7 @@ export function ReleaseSmartLinkStats({ releaseId }: { releaseId: string }) {
               key={platform}
               className="flex items-center justify-between gap-3"
             >
-              <span>{platformLabel(platform)}</span>
+              <span>{dspServiceLabel(platform)}</span>
               <span className="tabular-nums">{count.toLocaleString()}</span>
             </li>
           ))}

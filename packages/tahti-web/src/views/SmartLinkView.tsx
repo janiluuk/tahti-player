@@ -22,6 +22,7 @@ import { PlayableTrackTable } from '../components/PlayableTrackTable';
 import { ReleaseTrackDownloads } from '../components/ReleaseTrackDownloads';
 import { Eyebrow } from '../components/tahti/Eyebrow';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
+import { dspServiceLabel } from '../lib/dspServices';
 import { syncDocumentMetadata } from '../lib/seo';
 import { usePlayerStore } from '../stores/playerStore';
 import {
@@ -29,18 +30,6 @@ import {
   SmartLinkReleaseCredits,
 } from './smart-link/SmartLinkReleaseDetails';
 import { smartLinkPlayables } from './smart-link/smartLinkTracks';
-
-const DSP_LABELS: Record<string, string> = {
-  apple: 'Apple Music',
-  amazon: 'Amazon Music',
-  bandcamp: 'Bandcamp',
-  deezer: 'Deezer',
-  soundcloud: 'SoundCloud',
-  spotify: 'Spotify',
-  tahti: 'Tahti',
-  tidal: 'Tidal',
-  youtube: 'YouTube Music',
-};
 
 type SmartLinkViewProps = { slug: string };
 
@@ -224,7 +213,7 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
               }
               className="border-border hover:bg-background-secondary flex items-center justify-between rounded-lg border px-4 py-3 font-semibold no-underline transition-colors"
             >
-              <span>{DSP_LABELS[name.toLowerCase()] ?? name}</span>
+              <span>{dspServiceLabel(name)}</span>
               <span className="text-foreground-secondary flex items-center gap-2 text-xs font-normal">
                 Listen
                 <ExternalLinkIcon size={15} aria-hidden />
