@@ -1,5 +1,5 @@
 import { useNavigate } from '@tanstack/react-router';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
 
 import type { Track } from '@tahti-player/model';
@@ -35,7 +35,12 @@ type Props = {
    * appears when `onBulkRemove` is provided, same convention as `onRemove`. */
   selectable?: boolean;
   onBulkRemove?: (items: TahtiPlayable[]) => void;
+  /** Secondary line under a row's title, e.g. who added it to a shared
+   * playlist. Rows grow taller only when some item has one. */
+  getAnnotation?: (item: TahtiPlayable) => ReactNode;
 };
+
+const ANNOTATED_ROW_HEIGHT = 68;
 
 export function PlayableTrackTable({
   items,
@@ -46,6 +51,7 @@ export function PlayableTrackTable({
   onRemove,
   selectable = false,
   onBulkRemove,
+  getAnnotation,
 }: Props) {
   const navigate = useNavigate();
   const play = usePlayerStore((s) => s.play);
@@ -72,6 +78,13 @@ export function PlayableTrackTable({
 
   const resolve = (track: Track): TahtiPlayable | null =>
     byId.get(track.source.id) ?? null;
+
+  const annotations = getAnnotation
+    ? new Map(items.map((i) => [i.embed?.embedUri ?? i.id, getAnnotation(i)]))
+    : null;
+  const hasAnnotations = annotations
+    ? [...annotations.values()].some(Boolean)
+    : false;
 
   const resolveSelection = (ids: string[]): TahtiPlayable[] =>
     ids
@@ -128,6 +141,7 @@ export function PlayableTrackTable({
         <TrackTable
           tracks={tracks}
           labels={trackTableLabels}
+          rowHeight={hasAnnotations ? ANNOTATED_ROW_HEIGHT : undefined}
           features={{
             header: true,
             filterable: true,
@@ -245,6 +259,9 @@ export function PlayableTrackTable({
             // rendering a dead link.
             canOpenDetail: (track) =>
               Boolean(soundIdFromPlayableId(track.source.id)),
+            getTrackAnnotation: annotations
+              ? (track) => annotations.get(track.source.id)
+              : undefined,
             ContextMenuWrapper: PlayableTrackContextMenu,
           }}
         />
