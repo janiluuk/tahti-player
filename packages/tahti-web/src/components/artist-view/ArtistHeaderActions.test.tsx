@@ -1,13 +1,29 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import {
+  createMemoryHistory,
+  createRootRoute,
+  createRouter,
+  RouterProvider,
+} from '@tanstack/react-router';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+} from '@testing-library/react';
+import type { ReactNode } from 'react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { PublicProfile } from '../../api/types';
 import { ArtistHeaderActions } from './ArtistProfileSections';
 
-const profile = (sound: string | null) =>
+const profile = (
+  sound: string | null,
+  channel: { slug: string } | null = null,
+) =>
   ({
     artist: { username: 'selector', displayName: 'Selector' },
-    channel: null,
+    channel,
     fanTiers: [],
     links: {
       channel: null,
@@ -16,6 +32,10 @@ const profile = (sound: string | null) =>
       presskit: '',
     },
   }) as unknown as PublicProfile;
+
+afterEach(() => {
+  cleanup();
+});
 
 describe('ArtistHeaderActions RSS feed', () => {
   it("copies the artist's sound feed", async () => {
@@ -49,5 +69,52 @@ describe('ArtistHeaderActions RSS feed', () => {
       />,
     );
     expect(screen.queryByRole('button', { name: /RSS feed/ })).toBeNull();
+  });
+});
+
+async function renderInRouter(ui: ReactNode) {
+  const router = createRouter({
+    routeTree: createRootRoute({ component: () => ui }),
+    history: createMemoryHistory({ initialEntries: ['/'] }),
+  });
+  await act(async () => {
+    render(<RouterProvider router={router} />);
+  });
+}
+
+describe('ArtistHeaderActions report', () => {
+  it("lets a visitor report the artist's channel", async () => {
+    await renderInRouter(
+      <ArtistHeaderActions
+        profile={profile(null, { slug: 'selector' })}
+        isOwner={false}
+        onEditLook={() => undefined}
+      />,
+    );
+    expect(
+      screen.getByRole('button', { name: 'Report Selector' }),
+    ).toBeTruthy();
+  });
+
+  it('hides the report button from the artist', async () => {
+    await renderInRouter(
+      <ArtistHeaderActions
+        profile={profile(null, { slug: 'selector' })}
+        isOwner
+        onEditLook={() => undefined}
+      />,
+    );
+    expect(screen.queryByRole('button', { name: /^Report/ })).toBeNull();
+  });
+
+  it('hides the report button when the artist has no channel', () => {
+    render(
+      <ArtistHeaderActions
+        profile={profile(null)}
+        isOwner={false}
+        onEditLook={() => undefined}
+      />,
+    );
+    expect(screen.queryByRole('button', { name: /^Report/ })).toBeNull();
   });
 });

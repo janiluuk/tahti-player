@@ -17,6 +17,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as client from '../api/client';
 import * as clicks from '../api/smart-link-clicks';
+import { useAuthStore, type AuthUser } from '../stores/authStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { SmartLinkView } from './SmartLinkView';
 
@@ -54,6 +55,22 @@ describe('SmartLinkView', () => {
   afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
+    useAuthStore.setState({ user: null });
+  });
+
+  it('lets a visitor report the release', async () => {
+    await renderSmartLink({});
+    expect(
+      screen.getByRole('button', { name: 'Report Night Drive' }),
+    ).toBeTruthy();
+  });
+
+  it('hides the report button from the artist', async () => {
+    useAuthStore.setState({ user: { username: 'tahti' } as AuthUser });
+    await renderSmartLink({});
+    expect(
+      screen.queryByRole('button', { name: 'Report Night Drive' }),
+    ).toBeNull();
   });
 
   it('shows the "Powered by Tahti" footer linking home when turned on', async () => {

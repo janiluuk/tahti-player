@@ -43,6 +43,7 @@ import {
 import { PageFrame } from '../components/PageHeader';
 import { PageEmpty, PageLoading } from '../components/PageStates';
 import { PlayableTrackTable } from '../components/PlayableTrackTable';
+import { ReportButton } from '../components/ReportButton';
 import { RssFeedButton } from '../components/RssFeedButton';
 import { Eyebrow } from '../components/tahti/Eyebrow';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
@@ -403,6 +404,13 @@ export function CollectionView({ slug }: { slug: string }) {
                 ? ` (${subscription.subscriberCount})`
                 : ''}
             </Button>
+          ) : null}
+          {!isOwner && collection.isPublic ? (
+            <ReportButton
+              targetType="COLLECTION"
+              targetId={slug}
+              label={collection.name}
+            />
           ) : null}
         </div>
       </EntitySocialHeader>

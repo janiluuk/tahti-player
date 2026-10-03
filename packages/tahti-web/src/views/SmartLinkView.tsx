@@ -20,10 +20,12 @@ import {
 import { PageEmpty, PageLoading } from '../components/PageStates';
 import { PlayableTrackTable } from '../components/PlayableTrackTable';
 import { ReleaseTrackDownloads } from '../components/ReleaseTrackDownloads';
+import { ReportButton } from '../components/ReportButton';
 import { Eyebrow } from '../components/tahti/Eyebrow';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
 import { dspServiceLabel } from '../lib/dspServices';
 import { syncDocumentMetadata } from '../lib/seo';
+import { useAuthStore } from '../stores/authStore';
 import { usePlayerStore } from '../stores/playerStore';
 import {
   SmartLinkLockedTracks,
@@ -37,6 +39,7 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
   const [data, setData] = useState<SmartLinkData | null>(null);
   const [loading, setLoading] = useState(true);
   const play = usePlayerStore((state) => state.play);
+  const me = useAuthStore((state) => state.user);
 
   useEffect(() => {
     let cancelled = false;
@@ -89,6 +92,7 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
     );
   }
 
+  const isOwner = Boolean(me && me.username === data.artist.username);
   const targets = Object.entries(data.targets).filter(([, url]) => url?.trim());
   const releaseYear = data.release.releaseDate
     ? new Date(data.release.releaseDate).getFullYear()
@@ -155,7 +159,16 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
         }
         stats={headerStats}
         actions={
-          <EmbedButton target={{ kind: 'release', id: data.release.id }} />
+          <>
+            <EmbedButton target={{ kind: 'release', id: data.release.id }} />
+            {isOwner ? null : (
+              <ReportButton
+                targetType="RELEASE"
+                targetId={data.release.id}
+                label={data.release.title}
+              />
+            )}
+          </>
         }
         data-testid="release-social-header"
       >

@@ -32,6 +32,7 @@ import { DiscoWidgetsSection } from '../disco-widgets/DiscoWidgetsSection';
 import { EmbedButton } from '../EmbedButton';
 import { NewsletterSubscribeToggle } from '../NewsletterSubscribeToggle';
 import { PostLink } from '../PostLink';
+import { ReportButton } from '../ReportButton';
 import { RssFeedButton } from '../RssFeedButton';
 import { ShowEpisodeList } from '../ShowEpisodeList';
 import { Eyebrow } from '../tahti/Eyebrow';
@@ -109,6 +110,13 @@ export function ArtistHeaderActions({
         <EmbedButton
           target={{ kind: 'channel', slug: channel.slug }}
           iconOnly
+        />
+      ) : null}
+      {channel?.slug && !isOwner ? (
+        <ReportButton
+          targetType="CHANNEL"
+          targetId={channel.slug}
+          label={artist.displayName}
         />
       ) : null}
       {channel?.slug ? (
