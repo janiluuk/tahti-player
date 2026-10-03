@@ -31,6 +31,7 @@ import { GlowMediaTile } from '../GlowMediaTile';
 import { NowPlayingOverlay } from '../NowPlayingOverlay';
 import { Eyebrow } from '../tahti/Eyebrow';
 import { ArtistCredits } from './ArtistCredits';
+import { ArtistLikes } from './ArtistLikes';
 import { ArtistReposts } from './ArtistReposts';
 import { ArtistUpcomingEvents } from './ArtistUpcomingEvents';
 import type { ArtistPinnedTile } from './useArtistCatalog';
@@ -324,6 +325,7 @@ export function ArtistMusicTab({
       {visibility.feed !== false ? (
         <ArtistReposts username={artist.username} />
       ) : null}
+      <ArtistLikes username={artist.username} />
     </section>
   );
 }

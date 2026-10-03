@@ -8,6 +8,7 @@ import { MusicBrainzSubmissionAssistant } from '../MusicBrainzSubmissionAssistan
 import { TrackCreditsEditor } from '../TrackCreditsEditor';
 import { HearthisExportSection } from './HearthisExportSection';
 import { PublishToReleaseSection } from './PublishToReleaseSection';
+import { TrackAnalysisSection } from './TrackAnalysisSection';
 import type { TrackEditDialogState } from './useTrackEditDialog';
 
 const LICENSES = [
@@ -34,7 +35,8 @@ export function AdvancedTab({
   item: StudioSound;
   state: TrackEditDialogState;
 }) {
-  const { form, setForm, isAudioClip, setPlaylistOpen } = state;
+  const { form, setForm, analysis, setAnalysis, isAudioClip, setPlaylistOpen } =
+    state;
 
   return (
     <div className="flex flex-col gap-4">
@@ -46,6 +48,12 @@ export function AdvancedTab({
           options={LICENSES.map(([value, label]) => ({ id: value, label }))}
         />
       </div>
+      <TrackAnalysisSection
+        item={item}
+        value={analysis}
+        onChange={setAnalysis}
+        showMusicFields={!isAudioClip}
+      />
       {!isAudioClip ? (
         <div className="border-border flex items-center gap-4 rounded-xl border p-4">
           <ListMusicIcon

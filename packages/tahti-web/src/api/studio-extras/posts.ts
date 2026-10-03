@@ -105,10 +105,23 @@ export async function fetchChannelPosts(slug: string): Promise<{
   }
 }
 
+/** A post whose publish time is still ahead - the API keeps it off the
+ * public channel and follower feeds until then. */
+export function isScheduledPost(
+  post: Pick<ArtistPost, 'publishAt'>,
+  now: number = Date.now(),
+): boolean {
+  const at = new Date(post.publishAt).getTime();
+  return Number.isFinite(at) && at > now;
+}
+
 export async function createArtistPost(input: {
   title?: string;
   body: string;
   linkUrl?: string;
+  linkLabel?: string;
+  /** ISO time; omit to publish now, a future time schedules the post. */
+  publishAt?: string;
 }): Promise<{ ok: true; data: ArtistPost } | { ok: false; error: string }> {
   if (isForceMock()) {
     const row: ArtistPost = {
@@ -116,9 +129,9 @@ export async function createArtistPost(input: {
       title: input.title ?? null,
       body: input.body,
       linkUrl: input.linkUrl ?? null,
-      linkLabel: null,
+      linkLabel: input.linkLabel ?? null,
       images: [],
-      publishAt: new Date().toISOString(),
+      publishAt: input.publishAt ?? new Date().toISOString(),
       createdAt: new Date().toISOString(),
     };
     mockPosts = [row, ...mockPosts];
@@ -134,6 +147,43 @@ export async function createArtistPost(input: {
     return {
       ok: false,
       error: err instanceof Error ? err.message : 'Create failed',
+    };
+  }
+}
+
+/** Fields to change on an existing post; `null` clears an optional field. */
+export type ArtistPostPatch = {
+  title?: string | null;
+  body?: string;
+  linkUrl?: string | null;
+  linkLabel?: string | null;
+  /** ISO time; a future time reschedules, now/past publishes. */
+  publishAt?: string;
+};
+
+export async function updateArtistPost(
+  id: string,
+  patch: ArtistPostPatch,
+): Promise<{ ok: true; data: ArtistPost } | { ok: false; error: string }> {
+  if (isForceMock()) {
+    const current = mockPosts.find((post) => post.id === id);
+    if (!current) {
+      return { ok: false, error: 'Post not found.' };
+    }
+    const data: ArtistPost = { ...current, ...patch };
+    mockPosts = mockPosts.map((post) => (post.id === id ? data : post));
+    return { ok: true, data };
+  }
+  try {
+    const { data } = await requestJson<ArtistPost>(
+      `/api/me/posts/${encodeURIComponent(id)}`,
+      { method: 'PATCH', body: JSON.stringify(patch) },
+    );
+    return { ok: true, data: { ...data, images: data.images ?? [] } };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Save failed',
     };
   }
 }

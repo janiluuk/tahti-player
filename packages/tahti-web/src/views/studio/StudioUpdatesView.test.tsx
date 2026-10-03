@@ -11,10 +11,12 @@ import { act, fireEvent, screen } from '@testing-library/react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import type { ArtistPost } from '../../api/studio-extras';
 import { useAuthStore } from '../../stores/authStore';
 import { StudioUpdatesView } from './StudioUpdatesView';
 
 const sendNewsletterDraft = vi.fn();
+let artistPosts: ArtistPost[] = [];
 
 vi.mock('../../api/studio-extras', async (importOriginal) => {
   const actual =
@@ -22,7 +24,7 @@ vi.mock('../../api/studio-extras', async (importOriginal) => {
   return {
     ...actual,
     fetchArtistPosts: async () => ({
-      data: [],
+      data: artistPosts,
       meta: { source: 'mock' as const },
     }),
     fetchNewsletterDrafts: async () => ({
@@ -80,6 +82,7 @@ afterEach(() => {
   container.remove();
   vi.unstubAllEnvs();
   vi.clearAllMocks();
+  artistPosts = [];
   useAuthStore.setState({ user: null, hydrated: true, loading: false });
 });
 
@@ -158,5 +161,41 @@ describe('StudioUpdatesView newsletter subscribers', () => {
     expect(stats.textContent).toContain('6 unconfirmed or unsubscribed');
     expect(stats.textContent).toContain('7');
     expect(stats.textContent).toContain('5');
+  });
+});
+
+describe('StudioUpdatesView posts', () => {
+  const post = (id: string, publishAt: string): ArtistPost => ({
+    id,
+    title: `Post ${id}`,
+    body: 'Body',
+    linkUrl: null,
+    linkLabel: null,
+    images: [],
+    publishAt,
+    createdAt: '2026-01-01T00:00:00.000Z',
+  });
+
+  it('marks scheduled posts and lets the artist edit a post', async () => {
+    const scheduledAt = '2099-06-01T09:00:00.000Z';
+    artistPosts = [
+      post('scheduled', scheduledAt),
+      post('live', '2026-01-01T00:00:00.000Z'),
+    ];
+    await renderView();
+
+    const scheduledLabels = screen.getAllByText(/Scheduled for/);
+    expect(scheduledLabels).toHaveLength(1);
+    expect(scheduledLabels[0]!.textContent).toContain(
+      new Date(scheduledAt).toLocaleString(),
+    );
+
+    await act(async () =>
+      fireEvent.click(screen.getAllByRole('button', { name: 'Edit post' })[0]!),
+    );
+    expect(screen.getByText('Edit post')).toBeInTheDocument();
+    expect(screen.getByLabelText('Title (optional)')).toHaveValue(
+      'Post scheduled',
+    );
   });
 });

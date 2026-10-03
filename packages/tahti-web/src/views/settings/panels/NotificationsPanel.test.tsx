@@ -1,6 +1,7 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { patchMeProfile, type ProfileFields } from '../../../api/studio-extras';
 import {
   NotificationsPanel,
   NotificationsVisibilityPanel,
@@ -40,6 +41,20 @@ describe('NotificationsPanel', () => {
     expect(screen.queryAllByRole('note')).toHaveLength(0);
     expect(screen.getByText(/3 new chat messages/)).toBeTruthy();
     expect(screen.getByText(/1,247 plays/)).toBeTruthy();
+  });
+
+  it('saves whether liked tracks show on the profile', async () => {
+    vi.mocked(patchMeProfile).mockResolvedValue({
+      ok: true,
+      data: { showLikes: false } as ProfileFields,
+    });
+    render(<NotificationsVisibilityPanel />);
+    const toggle = await screen.findByRole('switch', {
+      name: 'Show tracks I like on my profile',
+    });
+    expect(toggle.getAttribute('aria-checked')).toBe('true');
+    fireEvent.click(toggle);
+    expect(patchMeProfile).toHaveBeenCalledWith({ showLikes: false });
   });
 
   it('shows favourites and release announcements as coming soon', async () => {

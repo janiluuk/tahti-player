@@ -16,53 +16,20 @@ import {
   type FC,
 } from 'react';
 
-import {
-  Button,
-  Input,
-  Tabs,
-  Textarea,
-  Toggle,
-  Tooltip,
-} from '@tahti-player/ui';
+import { Button, Input, Tabs, Textarea, Tooltip } from '@tahti-player/ui';
 
 import { searchMentionUsers, type MentionUser } from '../api/mentions';
-import type {
-  TracklistEntry,
-  TracklistOverlaySettings,
-} from '../api/studio-types';
+import type { TracklistEntry } from '../api/studio-types';
 import { parseTracklist, readTracklistFile } from '../lib/tracklistImport';
+import { ClientCapabilityNotice } from './ClientCapabilityNotice';
 import { WaveformCanvas } from './WaveformCanvas';
 
 type Props = {
   durationSec: number;
   peaks: number[];
   value: TracklistEntry[];
-  overlay: TracklistOverlaySettings;
   onChange: (entries: TracklistEntry[]) => void;
-  onOverlayChange: (overlay: TracklistOverlaySettings) => void;
 };
-
-const OVERLAY_PRESETS: Array<{
-  id: TracklistOverlaySettings['preset'];
-  label: string;
-  description: string;
-}> = [
-  {
-    id: 'minimal',
-    label: 'Minimal pin',
-    description: 'Small current-track label.',
-  },
-  {
-    id: 'cards',
-    label: 'Now playing card',
-    description: 'Artwork-friendly card with artist credit.',
-  },
-  {
-    id: 'ticker',
-    label: 'Timeline ticker',
-    description: 'Compact scrolling-style track label.',
-  },
-];
 
 function formatTime(seconds: number | null | undefined): string {
   if (seconds == null || !Number.isFinite(seconds)) {
@@ -78,9 +45,7 @@ export const TracklistEditor: FC<Props> = ({
   durationSec,
   peaks,
   value,
-  overlay,
   onChange,
-  onOverlayChange,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedId, setSelectedId] = useState<string | null>(
@@ -544,60 +509,13 @@ export const TracklistEditor: FC<Props> = ({
             label: 'Overlay',
             icon: <ListMusicIcon size={15} />,
             content: (
-              <div className="flex flex-col gap-5">
-                <div className="border-border bg-background-secondary/30 flex items-center justify-between gap-4 rounded-xl border p-4">
-                  <div>
-                    <p className="font-medium">Tracklist overlay</p>
-                    <p className="text-foreground-secondary text-sm">
-                      Show the current track&apos;s title (and artist, if
-                      tagged) over the player while this set plays.
-                    </p>
-                  </div>
-                  <Toggle
-                    label="Show tracklist overlay on the current track"
-                    checked={overlay.enabled}
-                    onChange={(enabled) =>
-                      onOverlayChange({ ...overlay, enabled })
-                    }
-                  />
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <p className="text-foreground-secondary text-xs font-semibold tracking-wide uppercase">
-                    Style
-                  </p>
-                  <div className="grid gap-3 sm:grid-cols-3">
-                    {OVERLAY_PRESETS.map((preset) => {
-                      const active = overlay.preset === preset.id;
-                      return (
-                        <button
-                          key={preset.id}
-                          type="button"
-                          aria-pressed={active}
-                          disabled={!overlay.enabled}
-                          onClick={() =>
-                            onOverlayChange({ ...overlay, preset: preset.id })
-                          }
-                          className={`flex flex-col gap-1 rounded-xl border p-3 text-left transition-colors disabled:opacity-40 ${
-                            active
-                              ? 'border-primary bg-primary/10'
-                              : 'border-border hover:bg-background-secondary/40'
-                          }`}
-                        >
-                          <span
-                            className={`text-sm font-semibold ${active ? 'text-primary' : ''}`}
-                          >
-                            {preset.label}
-                          </span>
-                          <span className="text-foreground-secondary text-xs">
-                            {preset.description}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
+              <ClientCapabilityNotice
+                kind="coming-soon"
+                title="Tracklist overlay"
+              >
+                Showing the current track&apos;s title and artist over the
+                player while this set plays isn&apos;t available yet.
+              </ClientCapabilityNotice>
             ),
           },
         ]}

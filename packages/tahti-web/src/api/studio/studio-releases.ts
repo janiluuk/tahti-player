@@ -30,6 +30,7 @@ export async function fetchStudioReleases(): Promise<{
             releaseDate: '2026-06-01',
             smartLinkSlug: 'after-hours',
             smartLinkViewCount: 214,
+            showPoweredByFooter: false,
             tracks: [
               {
                 id: 't1',
@@ -141,6 +142,7 @@ export async function patchStudioRelease(
     description?: string;
     smartLinkTargets?: Record<string, string>;
     pinned?: boolean;
+    showPoweredByFooter?: boolean;
   },
 ): Promise<{ ok: true; data: StudioRelease } | { ok: false; error: string }> {
   if (isForceMock()) {
@@ -156,6 +158,7 @@ export async function patchStudioRelease(
         smartLinkSlug: 'mock-ep',
         smartLinkTargets: patch.smartLinkTargets ?? null,
         pinnedAt: patch.pinned ? new Date().toISOString() : null,
+        showPoweredByFooter: patch.showPoweredByFooter ?? false,
       },
     };
   }

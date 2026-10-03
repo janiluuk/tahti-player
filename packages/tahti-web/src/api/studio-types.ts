@@ -35,14 +35,23 @@ export type StudioSound = {
   downloadsEnabled?: boolean;
   followToDownload?: boolean;
   repostToDownload?: boolean;
+  /** Mock-only; the API stores just `isPublic`. */
   visibility?: 'PUBLIC' | 'UNLISTED' | 'PRIVATE' | 'STASH';
-  fanTierIds?: string[];
-  /** One-time-purchase gate — set via `setSoundPurchaseAccess`, not part
+  /** Playback gate — set via `setSoundAccess`, not part
    * of the general `patchStudioSound` body. */
   accessMode?: 'FREE' | 'SUBSCRIBERS_ONLY' | 'PURCHASE';
   purchaseTierId?: string | null;
   releasedAt?: string | null;
   pinnedAt?: string | null;
+  /** Manually entered values; `effectiveBpm`/`effectiveKey` resolve these
+   * against the detected ones when `useDetectedBpmKey` is on. */
+  bpm?: number | null;
+  musicalKey?: string | null;
+  bpmDetected?: number | null;
+  keyDetected?: string | null;
+  useDetectedBpmKey?: boolean;
+  mixVersion?: string | null;
+  isAiGenerated?: boolean;
   effectiveBpm?: number | null;
   effectiveKey?: string | null;
   createdAt?: string;
@@ -63,7 +72,6 @@ export type StudioSound = {
   /** [0..255] amplitude buckets for the real waveform — null/absent when not yet decoded. */
   peaks?: number[] | null;
   tracklist?: TracklistEntry[] | null;
-  tracklistOverlay?: TracklistOverlaySettings | null;
 };
 
 export type TracklistEntry = {
@@ -73,11 +81,6 @@ export type TracklistEntry = {
   /** Tahti member handle; saving this creates a tracklist mention. */
   artistUsername?: string | null;
   startSec?: number | null;
-};
-
-export type TracklistOverlaySettings = {
-  enabled: boolean;
-  preset: 'minimal' | 'cards' | 'ticker';
 };
 
 export type StudioSoundPatch = {
@@ -94,11 +97,13 @@ export type StudioSoundPatch = {
   selectsOptIn?: boolean;
   topListsEligible?: boolean;
   commentsEnabled?: boolean;
-  downloadsEnabled?: boolean;
   followToDownload?: boolean;
   repostToDownload?: boolean;
-  visibility?: 'PUBLIC' | 'UNLISTED' | 'PRIVATE' | 'STASH';
-  fanTierIds?: string[];
+  bpm?: number | null;
+  musicalKey?: string | null;
+  useDetectedBpmKey?: boolean;
+  mixVersion?: string | null;
+  isAiGenerated?: boolean;
   /** ISO datetime; the API rejects null, so omit it to keep the stored date. */
   releasedAt?: string;
   pinned?: boolean;
@@ -106,7 +111,6 @@ export type StudioSoundPatch = {
   backgroundUrl?: string | null;
   replaceFallbackItemId?: string;
   tracklist?: TracklistEntry[] | null;
-  tracklistOverlay?: TracklistOverlaySettings | null;
 };
 
 export type FingerprintMatch = {
@@ -167,6 +171,8 @@ export type StudioRelease = {
   smartLinkSlug: string;
   smartLinkViewCount?: number;
   smartLinkTargets?: Record<string, string> | null;
+  /** Absent until the API returns it; the studio hides the toggle then. */
+  showPoweredByFooter?: boolean;
   tracks?: StudioReleaseTrack[];
   _count?: { tracks: number };
   upc?: string | null;

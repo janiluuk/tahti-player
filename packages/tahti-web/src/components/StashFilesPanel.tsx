@@ -80,10 +80,7 @@ export const StashFilesPanel = () => {
 
   const moveTrackToStash = async (item: StudioSound) => {
     setBusy(true);
-    const result = await patchStudioSound(item.id, {
-      visibility: 'PRIVATE',
-      isPublic: false,
-    });
+    const result = await patchStudioSound(item.id, { isPublic: false });
     setBusy(false);
     if (!result.ok) {
       setMessage(result.error);

@@ -12,6 +12,10 @@ import {
   multicastProviders,
   type MulticastProviderId,
 } from '../plugins/multicast';
+import {
+  RotationMirrorToggle,
+  useRotationMirror,
+} from './RotationMirrorToggle';
 
 export type MulticastConfiguring = {
   provider: MulticastProviderId;
@@ -39,23 +43,28 @@ export function MulticastConfigureDialog({
   const [port, setPort] = useState('1935');
   const [streamKey, setStreamKey] = useState('');
   const [enabled, setEnabled] = useState(existing?.enabled ?? true);
+  const mirror = useRotationMirror(existing, 'me');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const save = () => {
     setError(null);
     if (existing) {
-      // The API only lets an existing target's label/enabled state change
-      // -- its stream key and RTMP address are fixed at creation, so there
-      // is nothing else here to resend.
+      // Stream key and RTMP address are fixed at creation here, so only
+      // label/enabled/alwaysMirror are resent.
       setSaving(true);
+      const mirrorField = mirror.field();
       void patchRtmpTarget(existing.id, {
         label: label.trim() || undefined,
         enabled,
+        ...mirrorField,
       }).then((result) => {
         setSaving(false);
         if (!result.ok) {
           setError(result.error);
+          if ('alwaysMirror' in mirrorField) {
+            mirror.refuse();
+          }
           return;
         }
         onSaved();
@@ -80,6 +89,7 @@ export function MulticastConfigureDialog({
       label: label.trim() || undefined,
       rtmpUrl,
       enabled,
+      ...mirror.field(),
     }).then((result) => {
       setSaving(false);
       if (!result.ok) {
@@ -157,6 +167,13 @@ export function MulticastConfigureDialog({
             onChange={setEnabled}
           />
         </div>
+        {mirror.visible ? (
+          <RotationMirrorToggle
+            checked={mirror.checked}
+            onChange={mirror.setChecked}
+            disabled={saving}
+          />
+        ) : null}
         {error ? (
           <p className="text-accent-red-strong text-sm" role="alert">
             {error}
