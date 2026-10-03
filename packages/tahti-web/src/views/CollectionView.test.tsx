@@ -10,6 +10,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { CollectionItemContribution } from '../api/collection-contribution';
 import type { CollectionItem, PublicCollection } from '../api/types';
+import { useAuthStore, type AuthUser } from '../stores/authStore';
 import { CollectionView } from './CollectionView';
 
 const TEST_ROW_HEIGHT = 42;
@@ -89,6 +90,26 @@ async function renderView() {
 
 afterEach(() => {
   cleanup();
+  useAuthStore.setState({ user: null });
+});
+
+describe('CollectionView reporting', () => {
+  it('lets a visitor report a public collection', async () => {
+    collection = makeCollection([item(1)]);
+    await renderView();
+    expect(
+      screen.getByRole('button', { name: 'Report Road trip' }),
+    ).toBeInTheDocument();
+  });
+
+  it('hides the report button from the owner', async () => {
+    useAuthStore.setState({ user: { username: 'owner' } as AuthUser });
+    collection = makeCollection([item(1)]);
+    await renderView();
+    expect(
+      screen.queryByRole('button', { name: 'Report Road trip' }),
+    ).not.toBeInTheDocument();
+  });
 });
 
 describe('CollectionView contributions', () => {
