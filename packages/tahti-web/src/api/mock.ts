@@ -1048,9 +1048,14 @@ export function mockSmartLink(smartLinkSlug: string): SmartLinkView {
       description: release.description,
       smartLinkSlug,
       tracks: (release.tracks ?? []).map((t) => ({
+        id: `${release.id}-track-${t.position}`,
+        soundId: t.soundId ?? null,
         title: t.title,
         position: t.position,
+        durationSec: t.durationSec ?? null,
         isrc: null,
+        audioUrl: t.playUrl ?? null,
+        gate: null,
       })),
     },
     artist: {

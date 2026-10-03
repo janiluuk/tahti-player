@@ -1,16 +1,21 @@
 import { listenerFingerprint } from '../lib/listenerFingerprint';
 import { apiBase } from './http';
 import { isForceMock } from './mode';
+import type { TrackAccessGate } from './track-detail-types';
 
 /** One release track as `GET /api/v1/r/:slug` returns it. `audioUrl` is
- * null when the viewer can't play it (subscriber-only or paid). */
+ * null when the viewer can't play it, and `gate` says why (subscriber-only
+ * or paid). `credits` is raw JSON: `[{ role, name, artistUsername? }]`. */
 export type SmartLinkTrack = {
   id?: string;
+  soundId?: string | null;
   title: string;
   position: number;
+  durationSec?: number | null;
   isrc?: string | null;
   audioUrl?: string | null;
-  gate?: string | null;
+  gate?: TrackAccessGate | null;
+  credits?: unknown;
 };
 
 /** Presigned URL for one published release track; the API applies the
