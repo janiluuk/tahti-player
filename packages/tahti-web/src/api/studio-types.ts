@@ -43,6 +43,15 @@ export type StudioSound = {
   purchaseTierId?: string | null;
   releasedAt?: string | null;
   pinnedAt?: string | null;
+  /** Manually entered values; `effectiveBpm`/`effectiveKey` resolve these
+   * against the detected ones when `useDetectedBpmKey` is on. */
+  bpm?: number | null;
+  musicalKey?: string | null;
+  bpmDetected?: number | null;
+  keyDetected?: string | null;
+  useDetectedBpmKey?: boolean;
+  mixVersion?: string | null;
+  isAiGenerated?: boolean;
   effectiveBpm?: number | null;
   effectiveKey?: string | null;
   createdAt?: string;
@@ -99,6 +108,11 @@ export type StudioSoundPatch = {
   repostToDownload?: boolean;
   visibility?: 'PUBLIC' | 'UNLISTED' | 'PRIVATE' | 'STASH';
   fanTierIds?: string[];
+  bpm?: number | null;
+  musicalKey?: string | null;
+  useDetectedBpmKey?: boolean;
+  mixVersion?: string | null;
+  isAiGenerated?: boolean;
   /** ISO datetime; the API rejects null, so omit it to keep the stored date. */
   releasedAt?: string;
   pinned?: boolean;
