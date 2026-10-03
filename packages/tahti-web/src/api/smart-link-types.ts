@@ -15,6 +15,10 @@ export type SmartLinkView = {
     smartLinkSlug?: string;
     showPoweredByFooter?: boolean;
     tracks?: SmartLinkTrack[];
+    pLine?: string | null;
+    cLine?: string | null;
+    musicbrainzUrl?: string | null;
+    discogsUrl?: string | null;
   };
   artist: {
     username: string;

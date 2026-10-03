@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import { ExternalLinkIcon, MusicIcon, PlayIcon } from 'lucide-react';
-import { useEffect, useState, type FC } from 'react';
+import { useEffect, useMemo, useState, type FC } from 'react';
 
 import {
   Button,
@@ -9,12 +9,9 @@ import {
   ExternalLink,
 } from '@tahti-player/ui';
 
-import { fetchChannelSound, fetchProfile, fetchSmartLink } from '../api/client';
+import { fetchSmartLink } from '../api/client';
 import { recordSmartLinkClick } from '../api/smart-link-clicks';
-import type {
-  SmartLinkView as SmartLinkData,
-  TahtiPlayable,
-} from '../api/types';
+import type { SmartLinkView as SmartLinkData } from '../api/types';
 import { EmbedButton } from '../components/EmbedButton';
 import {
   EntitySocialHeader,
@@ -27,6 +24,11 @@ import { Eyebrow } from '../components/tahti/Eyebrow';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
 import { syncDocumentMetadata } from '../lib/seo';
 import { usePlayerStore } from '../stores/playerStore';
+import {
+  SmartLinkLockedTracks,
+  SmartLinkReleaseCredits,
+} from './smart-link/SmartLinkReleaseDetails';
+import { smartLinkPlayables } from './smart-link/smartLinkTracks';
 
 const DSP_LABELS: Record<string, string> = {
   apple: 'Apple Music',
@@ -44,78 +46,46 @@ type SmartLinkViewProps = { slug: string };
 
 export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
   const [data, setData] = useState<SmartLinkData | null>(null);
-  const [playables, setPlayables] = useState<TahtiPlayable[]>([]);
-  const [genre, setGenre] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const play = usePlayerStore((state) => state.play);
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    void fetchSmartLink(slug).then(async (result) => {
-      if (cancelled) {
-        return;
-      }
-      setData(result.data);
-      setGenre(result.data.release.genre ?? null);
-
-      const { release, artist } = result.data;
-      syncDocumentMetadata(window.location.pathname, {
-        title: `${release.title} by ${artist.displayName} on Tahti`,
-        description:
-          release.description ??
-          `Listen to ${release.title} and find its official links on Tahti.`,
-        image: release.artworkUrl ?? artist.avatarUrl ?? undefined,
+    fetchSmartLink(slug)
+      .then((result) => {
+        if (cancelled) {
+          return;
+        }
+        setData(result.data);
+        const { release, artist } = result.data;
+        syncDocumentMetadata(window.location.pathname, {
+          title: `${release.title} by ${artist.displayName} on Tahti`,
+          description:
+            release.description ??
+            `Listen to ${release.title} and find its official links on Tahti.`,
+          image: release.artworkUrl ?? artist.avatarUrl ?? undefined,
+        });
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setData(null);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoading(false);
+        }
       });
-
-      try {
-        const profile = await fetchProfile(result.data.artist.username);
-        const matched = profile.data.releases.find(
-          (release) =>
-            release.smartLinkSlug === slug ||
-            release.id === result.data.release.id,
-        );
-        const fromRelease =
-          matched?.tracks
-            ?.filter((track) => track.playUrl)
-            .map((track): TahtiPlayable => ({
-              id: `sound:${track.soundId ?? `${matched.id}-${track.position}`}`,
-              kind: 'sound',
-              title: track.title,
-              artist: result.data.artist.displayName,
-              coverUrl: matched.artworkUrl ?? undefined,
-              streamUrl: track.playUrl!,
-              protocol: track.playUrl!.includes('.m3u8') ? 'hls' : 'https',
-              channelSlug: profile.data.channel?.slug,
-            })) ?? [];
-        let soundGenre = matched?.genre ?? null;
-        if (!soundGenre && profile.data.channel?.slug && matched?.tracks) {
-          const sound = await fetchChannelSound(profile.data.channel.slug);
-          const soundIds = new Set(
-            matched.tracks
-              .map((track) => track.soundId)
-              .filter((id): id is string => Boolean(id)),
-          );
-          soundGenre =
-            sound.data.find((item) => soundIds.has(item.id))?.genre ?? null;
-        }
-        if (!cancelled) {
-          setPlayables(fromRelease);
-          setGenre(result.data.release.genre ?? soundGenre);
-        }
-      } catch {
-        if (!cancelled) {
-          setPlayables([]);
-        }
-      }
-      if (!cancelled) {
-        setLoading(false);
-      }
-    });
     return () => {
       cancelled = true;
     };
   }, [slug]);
+
+  const playables = useMemo(
+    () => (data ? smartLinkPlayables(data) : []),
+    [data],
+  );
 
   if (loading) {
     return <PageLoading label="Loading release…" />;
@@ -134,7 +104,7 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
   const releaseYear = data.release.releaseDate
     ? new Date(data.release.releaseDate).getFullYear()
     : null;
-  const metadata = [releaseYear, genre, data.release.type]
+  const metadata = [releaseYear, data.release.genre, data.release.type]
     .filter(Boolean)
     .join(' · ');
   const backdropUrl =
@@ -225,6 +195,8 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
         </section>
       ) : null}
 
+      <SmartLinkLockedTracks data={data} />
+
       <ReleaseTrackDownloads
         smartLinkSlug={slug}
         tracks={data.release.tracks ?? []}
@@ -261,6 +233,8 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
           ))
         )}
       </section>
+
+      <SmartLinkReleaseCredits data={data} />
 
       {data.featuredCollections.length > 0 ? (
         <section className="flex flex-col gap-2">
