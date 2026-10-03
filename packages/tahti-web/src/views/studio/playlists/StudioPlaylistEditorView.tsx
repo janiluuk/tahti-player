@@ -50,6 +50,7 @@ import { collectionItemToTrack } from '../../../lib/collectionTrackMapping';
 import { playableFromStudioHearthis } from '../../../lib/embedPlayback';
 import { trackTableLabels } from '../../../lib/trackTableLabels';
 import { usePlayerStore } from '../../../stores/playerStore';
+import { useStudioContributions } from '../useStudioContributions';
 
 export function StudioPlaylistEditorView({ slug }: { slug: string }) {
   const [col, setCol] = useState<StudioCollection | null>(null);
@@ -120,6 +121,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
     () => items.map(collectionItemToTrack),
     [items],
   );
+  const contributions = useStudioContributions(items);
 
   const headerStats: EntitySocialStat[] =
     items.length > 0
@@ -406,6 +408,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                   <TrackTable
                     tracks={tracks}
                     labels={trackTableLabels}
+                    rowHeight={contributions.rowHeight}
                     getItemId={(_t, index) => items[index]?.id ?? String(index)}
                     features={{
                       header: true,
@@ -460,6 +463,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                       },
                     }}
                     meta={{
+                      getTrackAnnotation: contributions.getTrackAnnotation,
                       isCurrentTrack: (track) => {
                         const item = items.find(
                           (candidate) => candidate.id === track.source.id,
