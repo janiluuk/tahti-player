@@ -150,6 +150,40 @@ export async function createEvent(
   }
 }
 
+/** `PATCH /api/me/events/:id`. An empty `eventUrl` or `description` clears it.
+ * Unlike `createEvent`, followers are not notified again. */
+export async function updateEvent(
+  id: string,
+  input: Partial<CreateArtistEventInput>,
+): Promise<{ ok: true; data: ArtistEvent } | { ok: false; error: string }> {
+  if (isForceMock()) {
+    const row = mockEvents.find((e) => e.id === id);
+    if (!row) {
+      return { ok: false, error: 'Event not found' };
+    }
+    Object.assign(row, {
+      ...input,
+      ...(input.eventUrl !== undefined
+        ? { eventUrl: input.eventUrl || null }
+        : {}),
+    });
+    mockEvents.sort((a, b) => a.startAt.localeCompare(b.startAt));
+    return { ok: true, data: { ...row } };
+  }
+  try {
+    const { data } = await requestJson<ArtistEvent>(
+      `/api/me/events/${encodeURIComponent(id)}`,
+      { method: 'PATCH', body: JSON.stringify(input) },
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not save event',
+    };
+  }
+}
+
 export async function deleteEvent(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {

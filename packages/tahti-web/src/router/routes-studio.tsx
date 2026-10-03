@@ -399,6 +399,15 @@ export const studioEventCreateRoute = createRoute({
   component: StudioEventCreateView,
 });
 
+export const studioEventEditRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/studio/events/$eventId/edit',
+  component: function StudioEventEditRoute() {
+    const { eventId } = studioEventEditRoute.useParams();
+    return <StudioEventCreateView eventId={eventId} />;
+  },
+});
+
 export const studioInsightsIndexRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/insights',
