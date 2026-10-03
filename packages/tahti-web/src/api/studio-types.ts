@@ -167,6 +167,8 @@ export type StudioRelease = {
   smartLinkSlug: string;
   smartLinkViewCount?: number;
   smartLinkTargets?: Record<string, string> | null;
+  /** Absent until the API returns it; the studio hides the toggle then. */
+  showPoweredByFooter?: boolean;
   tracks?: StudioReleaseTrack[];
   _count?: { tracks: number };
   upc?: string | null;
