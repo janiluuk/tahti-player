@@ -140,6 +140,7 @@ import {
   radioShowRoute,
   radioStationRoute,
   scheduleRoute,
+  tagSearchRoute,
   themesRoute,
 } from './router/routes-listen';
 import {
@@ -211,6 +212,7 @@ const routeTree = rootRoute.addChildren([
     radioShowRoute,
     radioStationRoute,
     scheduleRoute,
+    tagSearchRoute,
     discoverRoute,
     themesRoute,
     settingsRoute,

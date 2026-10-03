@@ -29,6 +29,8 @@ export type PublicTrackDetail = {
   galleryMode?: string | null;
   genre: string | null;
   subGenres: string[];
+  /** Artist-defined labels; absent from APIs that predate public tags. */
+  tags?: string[];
   contentType: string;
   mixVersion: string | null;
   description: string | null;

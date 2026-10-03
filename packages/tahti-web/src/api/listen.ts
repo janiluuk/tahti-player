@@ -10,6 +10,7 @@ import type {
   ChannelDirectoryResponse,
   FeedResponse,
   SearchResponse,
+  SearchTrackResult,
 } from './types';
 
 export type OnAirChannel = {
@@ -84,6 +85,34 @@ export async function fetchSearch(
       () => mockSearch(q, type),
       () => empty,
     );
+  }
+}
+
+/** Public tracks carrying an exact tag (case-insensitive) - the track page's
+ * tag chips land here. Errors are returned, not mocked: an API without the
+ * `tag` filter answers 400, and the view says it couldn't load. */
+export async function fetchTracksByTag(
+  tag: string,
+): Promise<
+  { ok: true; tracks: SearchTrackResult[] } | { ok: false; error: string }
+> {
+  const trimmed = tag.trim();
+  if (!trimmed) {
+    return { ok: true, tracks: [] };
+  }
+  if (isForceMock()) {
+    return { ok: true, tracks: [] };
+  }
+  try {
+    const data = await getJson<SearchResponse>(
+      `/api/v1/search?tag=${encodeURIComponent(trimmed)}&type=tracks&count=50`,
+    );
+    return { ok: true, tracks: data.tracks };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Search failed',
+    };
   }
 }
 

@@ -11,6 +11,7 @@ describe('trackDetailFacts', () => {
     const facts = trackDetailFacts({
       genre: 'Techno',
       subGenres: ['Dub techno', 'techno', ' '],
+      tags: ['Late night', 'late night', ' Kaiku '],
       effectiveBpm: 127.6,
       effectiveKey: 'Am',
       license: 'CC_BY_NC',
@@ -22,6 +23,7 @@ describe('trackDetailFacts', () => {
     });
     expect(facts).toEqual({
       genres: ['Techno', 'Dub techno'],
+      tags: ['Late night', 'Kaiku'],
       bpm: 128,
       musicalKey: 'Am',
       license: 'CC BY-NC',
@@ -32,6 +34,14 @@ describe('trackDetailFacts', () => {
       commentary: 'Recorded live at Kaiku.',
     });
     expect(hasTrackDetailFacts(facts)).toBe(true);
+  });
+
+  it('treats missing tags from an older API as none', () => {
+    const facts = trackDetailFacts({ genre: 'House' });
+    expect(facts.tags).toEqual([]);
+    expect(hasTrackDetailFacts(trackDetailFacts({ tags: ['drone'] }))).toBe(
+      true,
+    );
   });
 
   it('never uses an email address as a credit name', () => {
