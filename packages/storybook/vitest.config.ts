@@ -17,10 +17,17 @@ export default defineConfig({
         ],
         test: {
           name: 'storybook',
+          // CI runners have a small /dev/shm and ~7GB RAM; with one page per
+          // CPU, Chromium's renderer got killed mid-run ("Browser connection
+          // was closed"). Use regular memory for shared buffers and cap the
+          // number of story files running at once there.
+          maxWorkers: process.env.CI ? 2 : undefined,
           browser: {
             enabled: true,
             headless: true,
-            provider: playwright({}),
+            provider: playwright({
+              launchOptions: { args: ['--disable-dev-shm-usage'] },
+            }),
             instances: [{ browser: 'chromium' }],
           },
         },
