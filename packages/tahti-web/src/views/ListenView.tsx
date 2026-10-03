@@ -27,8 +27,9 @@ import {
   TAHTI_RADIO_SLUG,
   type EnabledInternetRadioPreset,
 } from '../api/client';
+import type { OnAirChannel } from '../api/listen';
 import { readIcyStreamTitle } from '../api/radio-sources';
-import type { OnAirChannel, TahtiPlayable } from '../api/types';
+import type { TahtiPlayable } from '../api/types';
 import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
 import { ListenSection } from '../components/listen-view/ListenSection';
 import { useListenSections } from '../components/listen-view/useListenSections';

@@ -435,6 +435,7 @@ function ArtistProfilePage({ username }: { username: string }) {
         hidden={artist.showPageHero === false}
         title={artist.displayName}
         nameplate={artist}
+        isMember={artist.isMember}
         imageUrl={artist.avatarUrl ?? placeholderArtworkUrl(artist.username)}
         roundImage
         location={countryName(artist.countryCode) || null}

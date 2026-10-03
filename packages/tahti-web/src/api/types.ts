@@ -29,23 +29,6 @@ export type ChannelDirectoryResponse = {
   items: ChannelDirectoryItem[];
 };
 
-export type OnAirChannel = {
-  slug: string;
-  state: string;
-  fallbackEnabled: boolean;
-  user: {
-    username: string;
-    displayName: string;
-    avatarUrl: string | null;
-  };
-};
-
-export type OnAirChannelResponse = {
-  live: OnAirChannel[];
-  replaying: OnAirChannel[];
-  recent: OnAirChannel[];
-};
-
 export type PublicChannel = {
   slug: string;
   state: 'LIVE' | 'OFFLINE' | string;
@@ -126,6 +109,8 @@ export type PublicChannel = {
     avatarUrl: string | null;
     /** False hides the header card (avatar, name, stats) on the channel page. */
     showPageHero?: boolean;
+    /** True when the artist is a Tahti ry (association) member. */
+    isMember?: boolean;
   };
   nowPlaying: ChannelNowPlaying | null;
   nowPlayingNext?: ChannelNowPlayingNext | null;
@@ -203,6 +188,8 @@ export type PublicProfileArtist = import('./profile-logo').ArtistLogoFields & {
   nameplateColor?: string | null;
   /** False when the artist turned the profile hero off in Settings. */
   showPageHero?: boolean;
+  /** True when the artist is a Tahti ry (association) member. */
+  isMember?: boolean;
 };
 
 export type PublicProfileTrack = {

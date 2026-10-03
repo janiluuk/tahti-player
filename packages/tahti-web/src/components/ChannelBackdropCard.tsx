@@ -9,6 +9,7 @@ import {
 } from '../api/channel-design';
 import { ChannelSlideshowBackdrop } from './ChannelSlideshowBackdrop';
 import { ChannelVisualizer, type VisualColorScheme } from './ChannelVisualizer';
+import { TahtiMemberBadge } from './TahtiMemberBadge';
 
 export type ChannelBackdropNavItem = {
   id: string;
@@ -26,6 +27,8 @@ export type ChannelBackdropQuickAdd = {
 export type ChannelBackdropCardProps = {
   displayName: string;
   username: string;
+  /** Shows the Tahti ry member badge beside the name. */
+  isMember?: boolean;
   channelSlug?: string;
   avatarUrl?: string | null;
   bio?: string | null;
@@ -108,6 +111,7 @@ const DEFAULT_NAV_ITEMS: ChannelBackdropNavItem[] = [
 export function ChannelBackdropCard({
   displayName,
   username,
+  isMember,
   channelSlug,
   avatarUrl,
   bio,
@@ -304,11 +308,14 @@ export function ChannelBackdropCard({
             </div>
           ) : null}
           <div className="min-w-0 flex-1">
-            <div
-              data-testid="channel-backdrop-card-name"
-              className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl"
-            >
-              {displayName}
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+              <div
+                data-testid="channel-backdrop-card-name"
+                className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl"
+              >
+                {displayName}
+              </div>
+              <TahtiMemberBadge isMember={isMember} />
             </div>
             <div
               data-testid="channel-backdrop-card-handle"
