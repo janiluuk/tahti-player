@@ -30,6 +30,12 @@ import {
 import { useMasteringFeatureStore } from '../../plugins/mastering/store';
 import { useAuthStore } from '../../stores/authStore';
 import { usePlayerStore } from '../../stores/playerStore';
+import {
+  analysisFormFromSound,
+  analysisPatchFromForm,
+  EMPTY_TRACK_ANALYSIS,
+  type TrackAnalysisForm,
+} from './trackAnalysisFields';
 
 /** The date input edits a `YYYY-MM-DD` string; `releasedAt` is derived on save. */
 type TrackEditForm = Omit<StudioSoundPatch, 'releasedAt'> & {
@@ -80,6 +86,8 @@ export function useTrackEditDialog(
     accessMode: 'FREE',
     purchaseTierId: null,
   });
+  const [analysis, setAnalysis] =
+    useState<TrackAnalysisForm>(EMPTY_TRACK_ANALYSIS);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [playlistOpen, setPlaylistOpen] = useState(false);
@@ -157,6 +165,7 @@ export function useTrackEditDialog(
           tracklist: res.data.tracklist ?? [],
         });
         setAccess(accessFromSound(res.data));
+        setAnalysis(analysisFormFromSound(res.data));
       })
       .catch((err: unknown) => {
         if (!cancelled) {
@@ -335,6 +344,11 @@ export function useTrackEditDialog(
     if (!soundId || !item || !form.title?.trim()) {
       return;
     }
+    const analysisPatch = analysisPatchFromForm(analysis);
+    if (!analysisPatch.ok) {
+      toast.error(analysisPatch.error);
+      return;
+    }
     setSaving(true);
     const { license, releaseDate, ...metadata } = form;
     const trimmedCredits = (form.credits ?? [])
@@ -354,6 +368,7 @@ export function useTrackEditDialog(
       .filter((credit) => credit.name.length > 0);
     const result = await patchStudioSound(soundId, {
       ...metadata,
+      ...analysisPatch.patch,
       ...(license ? { license } : {}),
       title: form.title.trim(),
       artistName: form.artistName?.trim() || null,
@@ -383,6 +398,7 @@ export function useTrackEditDialog(
       }
     }
     setItem(result.data);
+    setAnalysis(analysisFormFromSound(result.data));
     setForm((current) => ({
       ...current,
       title: result.data.title,
@@ -418,6 +434,8 @@ export function useTrackEditDialog(
     setForm,
     access,
     setAccess,
+    analysis,
+    setAnalysis,
     loading,
     saving,
     playlistOpen,

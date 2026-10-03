@@ -20,6 +20,10 @@ import {
   fetchCollectionSubscription,
   setCollectionSubscription,
 } from '../api/client';
+import {
+  contributionLine,
+  type ContributionLine,
+} from '../api/collection-contribution';
 import type { CollectionTextLayer } from '../api/collection-text-layer';
 import { createJam } from '../api/jam';
 import type {
@@ -29,6 +33,7 @@ import type {
 } from '../api/types';
 import { ChannelTextOverlayView } from '../components/ChannelTextOverlayView';
 import { CollaborativePlaylistAdd } from '../components/CollaborativePlaylistAdd';
+import { CollectionContribution } from '../components/CollectionContribution';
 import { EmbedButton } from '../components/EmbedButton';
 import { EmbedTrackRow } from '../components/EmbedTrackRow';
 import {
@@ -69,6 +74,19 @@ function collectionToPlayables(col: PublicCollection): TahtiPlayable[] {
       protocol: isHls ? 'hls' : 'https',
       channelSlug: sound.channel?.slug,
     });
+  }
+  return out;
+}
+
+function contributionsByPlayableId(
+  col: PublicCollection,
+): Map<string, ContributionLine> {
+  const out = new Map<string, ContributionLine>();
+  for (const item of col.items) {
+    const line = contributionLine(item, col.user.username);
+    if (item.sound && line) {
+      out.set(`sound:${item.sound.id}`, line);
+    }
   }
   return out;
 }
@@ -132,6 +150,14 @@ export function CollectionView({ slug }: { slug: string }) {
 
   const playables = useMemo(
     () => (collection ? collectionToPlayables(collection) : []),
+    [collection],
+  );
+
+  const contributions = useMemo(
+    () =>
+      collection
+        ? contributionsByPlayableId(collection)
+        : new Map<string, ContributionLine>(),
     [collection],
   );
 
@@ -392,6 +418,10 @@ export function CollectionView({ slug }: { slug: string }) {
           items={playables}
           compactActions
           emptyMessage="No tracks yet."
+          getAnnotation={(item) => {
+            const line = contributions.get(item.id);
+            return line ? <CollectionContribution line={line} /> : null;
+          }}
         />
       )}
 

@@ -2,7 +2,12 @@ import { Link } from '@tanstack/react-router';
 import { ExternalLinkIcon, MusicIcon, PlayIcon } from 'lucide-react';
 import { useEffect, useState, type FC } from 'react';
 
-import { Button, ExternalLink } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonAnchor,
+  ButtonLink,
+  ExternalLink,
+} from '@tahti-player/ui';
 
 import { fetchChannelSound, fetchProfile, fetchSmartLink } from '../api/client';
 import { recordSmartLinkClick } from '../api/smart-link-clicks';
@@ -228,13 +233,15 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
       <section className="flex flex-col gap-2" aria-label="Listen on">
         <Eyebrow>Listen on</Eyebrow>
         {targets.length === 0 ? (
-          <a
+          <ButtonAnchor
             href={data.releaseUrl}
-            className="border-border hover:bg-background-secondary flex items-center justify-between rounded-lg border px-4 py-3 font-semibold transition-colors"
+            variant="text"
+            size="flexible"
+            className="border-border hover:bg-background-secondary flex items-center justify-between rounded-lg border px-4 py-3 font-semibold transition-colors active:scale-100"
           >
             Tahti
             <ExternalLinkIcon size={16} aria-hidden />
-          </a>
+          </ButtonAnchor>
         ) : (
           targets.map(([name, url]) => (
             <ExternalLink
@@ -275,6 +282,19 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
             </Link>
           ))}
         </section>
+      ) : null}
+
+      {data.release.showPoweredByFooter === true ? (
+        <footer className="text-foreground-secondary pt-4 text-center text-xs">
+          <ButtonLink
+            to="/"
+            variant="text"
+            size="xs"
+            className="text-foreground-secondary hover:text-foreground text-xs"
+          >
+            Powered by Tahti
+          </ButtonLink>
+        </footer>
       ) : null}
     </div>
   );

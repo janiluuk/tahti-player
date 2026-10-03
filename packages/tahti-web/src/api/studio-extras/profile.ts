@@ -29,6 +29,8 @@ export type ProfileFields = {
   showJoinDate?: boolean;
   showFollowers?: boolean;
   showFollowing?: boolean;
+  /** Lists the tracks this user liked on their public profile. */
+  showLikes?: boolean;
   showDailyListeners?: boolean;
   /** Handles for cross-posting/import sources — e.g. { hearthisAt: 'myhandle' }. */
   socialLinks?: Record<string, string> | null;
@@ -41,6 +43,9 @@ export type ProfileFields = {
   nameplateColor?: string | null;
   /** Shows the header card (avatar, name, stats) on the channel page. */
   showPageHero?: boolean;
+  /** Names this user in the annual grant report; off publishes them as
+   * "Channel #<member number>" instead. Defaults to true on the API. */
+  publicAttribution?: boolean;
 };
 
 export let mockProfile: ProfileFields = {
@@ -60,8 +65,10 @@ export let mockProfile: ProfileFields = {
   showJoinDate: true,
   showFollowers: true,
   showFollowing: true,
+  showLikes: true,
   showDailyListeners: true,
   socialLinks: {},
+  publicAttribution: true,
 };
 
 export async function fetchMeProfile(): Promise<{
@@ -102,6 +109,7 @@ export async function fetchMeProfile(): Promise<{
         showJoinDate: false,
         showFollowers: false,
         showFollowing: false,
+        showLikes: false,
         showDailyListeners: false,
         socialLinks: {},
       },
@@ -127,11 +135,13 @@ export type ProfilePatch = Partial<
     | 'showJoinDate'
     | 'showFollowers'
     | 'showFollowing'
+    | 'showLikes'
     | 'showDailyListeners'
     | 'socialLinks'
     | 'nameplateText'
     | 'nameplateColor'
     | 'showPageHero'
+    | 'publicAttribution'
   > &
     Record<NonNullableProfileField, string>
 >;
