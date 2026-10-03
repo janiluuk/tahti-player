@@ -1202,6 +1202,7 @@ export function soundItemToPlayable(
 
 export function mockChatAccess(): ChatAccess {
   return {
+    chatEnabled: true,
     fanChatEnabled: true,
     isSupporter: false,
     canJoinFanChat: false,
