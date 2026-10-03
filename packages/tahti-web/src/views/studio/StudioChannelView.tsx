@@ -64,7 +64,11 @@ const RADIO_SETTING_TABS = [
 const isTab = (value: string | undefined): value is Tab =>
   ['setup', 'radio', 'green-room', 'selects'].includes(value ?? '');
 
-const DEEP_LINKED_RADIO_TABS = ['rotation', 'multicast'] as const;
+const DEEP_LINKED_RADIO_TABS = [
+  'rotation',
+  'multicast',
+  'tahti-radio',
+] as const;
 
 const isDeepLinkedRadioTab = (
   value: string | undefined,
