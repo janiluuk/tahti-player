@@ -1,3 +1,4 @@
+import { mockFixture } from './mock-overrides';
 import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
 import { requestJson } from './request-json';
 import type { TahtiPlayable } from './types';
@@ -61,9 +62,14 @@ export async function fetchUserLikes(username: string): Promise<{
   meta: FetchMeta;
 }> {
   if (isForceMock()) {
+    const mock = mockFixture(
+      'userLikes',
+      { showLikes: false, items: [] },
+      username,
+    );
     return {
-      showLikes: false,
-      data: [],
+      showLikes: mock.showLikes,
+      data: mock.showLikes ? mock.items : [],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
