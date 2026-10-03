@@ -5,8 +5,11 @@ import {
   SearchIcon,
   Trash2Icon,
 } from 'lucide-react';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { Button, Input, Popover } from '@tahti-player/ui';
+
+import { withinBody } from './tahti-web/_lib/play';
 
 const meta: Meta<typeof Popover> = {
   title: 'Components/Popover',
@@ -92,6 +95,10 @@ export const SectionedMenu: Story = {
   ),
 };
 
+const onEdit = fn();
+const onDuplicate = fn();
+const onDelete = fn();
+
 export const DropdownMenu: Story = {
   render: () => (
     <Popover
@@ -100,25 +107,38 @@ export const DropdownMenu: Story = {
       anchor="bottom"
     >
       <Popover.Menu>
-        <Popover.Item
-          icon={<PencilIcon size={16} />}
-          onClick={() => console.log('edit')}
-        >
+        <Popover.Item icon={<PencilIcon size={16} />} onClick={onEdit}>
           Edit
         </Popover.Item>
-        <Popover.Item onClick={() => console.log('duplicate')}>
-          Duplicate
-        </Popover.Item>
+        <Popover.Item onClick={onDuplicate}>Duplicate</Popover.Item>
         <Popover.Item
           intent="danger"
           icon={<Trash2Icon size={16} />}
-          onClick={() => console.log('delete')}
+          onClick={onDelete}
         >
           Delete
         </Popover.Item>
       </Popover.Menu>
     </Popover>
   ),
+  play: async ({ canvasElement }) => {
+    onEdit.mockClear();
+    const body = withinBody(canvasElement);
+    const trigger = within(canvasElement).getByRole('button', {
+      name: 'Actions',
+    });
+    await userEvent.click(trigger);
+    for (const name of ['Edit', 'Duplicate', 'Delete']) {
+      await expect(await body.findByRole('button', { name })).toBeVisible();
+    }
+    await userEvent.click(body.getByRole('button', { name: 'Edit' }));
+    await expect(onEdit).toHaveBeenCalledOnce();
+
+    await userEvent.keyboard('{Escape}');
+    await waitFor(() =>
+      expect(body.queryByRole('button', { name: 'Duplicate' })).toBeNull(),
+    );
+  },
 };
 
 /** Popover sits in normal flow, so it can share a row with other controls without overlapping them. */

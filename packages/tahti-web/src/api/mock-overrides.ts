@@ -7,6 +7,8 @@
  * shared fixtures in mock.ts. The app itself never sets overrides, so with
  * an empty registry every fixture passes through unchanged.
  */
+import type { ConversationSummary } from './messages';
+import type { TahtiNotification } from './notifications';
 import type { StudioCollection, StudioSound } from './studio-types';
 import type {
   Announcement,
@@ -41,10 +43,15 @@ export interface MockFixtures {
     data: PublicCollection;
     args: [slug: string, username: string];
   };
+  conversations: { data: ConversationSummary[]; args: [] };
   directory: { data: ChannelDirectoryResponse; args: [] };
   fanTiers: { data: FanTiersResponse; args: [username: string] };
   feed: { data: FeedResponse; args: [] };
   latestTracks: { data: DiscoverTrackItem[]; args: [] };
+  notifications: {
+    data: TahtiNotification[];
+    args: [includeInboxExtras: boolean];
+  };
   profile: { data: PublicProfile; args: [username: string] };
   radio: { data: RadioNowPlaying; args: [] };
   search: { data: SearchResponse; args: [q: string, type: string] };

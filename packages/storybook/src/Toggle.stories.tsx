@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { Toggle } from '@tahti-player/ui';
 
@@ -26,6 +27,20 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     label: 'Toggle',
+    onChange: fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const toggle = within(canvasElement).getByRole('switch', {
+      name: 'Toggle',
+    });
+    await expect(toggle).not.toBeChecked();
+    await userEvent.click(toggle);
+    await expect(toggle).toBeChecked();
+    await expect(args.onChange).toHaveBeenLastCalledWith(true);
+    // Space toggles it back from the keyboard.
+    await userEvent.keyboard(' ');
+    await expect(toggle).not.toBeChecked();
+    await expect(args.onChange).toHaveBeenLastCalledWith(false);
   },
 };
 
@@ -40,6 +55,16 @@ export const Disabled: Story = {
   args: {
     label: 'Disabled Toggle',
     disabled: true,
+    onChange: fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const toggle = within(canvasElement).getByRole('switch', {
+      name: 'Disabled Toggle',
+    });
+    await expect(toggle).toBeDisabled();
+    await userEvent.click(toggle, { pointerEventsCheck: 0 });
+    await expect(toggle).not.toBeChecked();
+    await expect(args.onChange).not.toHaveBeenCalled();
   },
 };
 
@@ -67,6 +92,14 @@ export const Controlled: Story = {
         </p>
       </div>
     );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText('Status: Off')).toBeVisible();
+    await userEvent.click(
+      canvas.getByRole('switch', { name: 'Controlled Toggle' }),
+    );
+    await expect(canvas.getByText('Status: On')).toBeVisible();
   },
 };
 

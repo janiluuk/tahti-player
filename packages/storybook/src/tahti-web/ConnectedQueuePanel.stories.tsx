@@ -1,6 +1,7 @@
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite';
 import { ConnectedQueuePanel } from '@tahti-web/components/ConnectedQueuePanel';
 import { usePlayerStore } from '@tahti-web/stores/playerStore';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import type { QueueItem } from '@tahti-player/model';
 
@@ -52,6 +53,16 @@ function withSeededQueue(
   };
 }
 
+/** The clickable queue row (role=button) that holds `title`. */
+function queueRow(canvas: ReturnType<typeof within>, title: string) {
+  const label: HTMLElement = canvas.getByText(title);
+  const row = label.closest<HTMLElement>('[role="button"]');
+  if (!row) {
+    throw new Error(`No queue row for ${title}`);
+  }
+  return row;
+}
+
 const meta: Meta<typeof ConnectedQueuePanel> = {
   title: 'Tahti/Player/ConnectedQueuePanel',
   component: ConnectedQueuePanel,
@@ -65,6 +76,22 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: { isCollapsed: false },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const lowTide = queueRow(canvas, 'Low Tide');
+    await userEvent.click(lowTide);
+    await expect(usePlayerStore.getState().currentId).toBe('archive:3');
+
+    const glassHours = queueRow(canvas, 'Glass Hours');
+    await userEvent.hover(glassHours);
+    await userEvent.click(
+      within(glassHours).getByRole('button', { name: 'Remove' }),
+    );
+    await expect(
+      usePlayerStore.getState().queue.map((item) => item.id),
+    ).toEqual(['archive:1', 'archive:2', 'archive:3']);
+    await waitFor(() => expect(canvas.queryByText('Glass Hours')).toBeNull());
+  },
 };
 
 export const Collapsed: Story = {
@@ -74,4 +101,11 @@ export const Collapsed: Story = {
 export const EmptyQueue: Story = {
   decorators: [withSeededQueue([], null)],
   args: { isCollapsed: false },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText('Queue empty')).toBeVisible();
+    await expect(
+      canvas.getByText('Play a channel or radio to start listening'),
+    ).toBeVisible();
+  },
 };

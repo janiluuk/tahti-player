@@ -2,6 +2,7 @@ import type { Decorator, Meta, StoryObj } from '@storybook/react-vite';
 import { ConnectedPlayerBar } from '@tahti-web/components/ConnectedPlayerBar';
 import { useLayoutStore } from '@tahti-web/stores/layoutStore';
 import { usePlayerStore } from '@tahti-web/stores/playerStore';
+import { expect, userEvent, within } from 'storybook/test';
 
 import type { QueueItem } from '@tahti-player/model';
 
@@ -98,6 +99,35 @@ type Story = StoryObj<typeof meta>;
 
 export const PlayingArchive: Story = {
   decorators: [withSeededPlayerBar({})],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getAllByText('Midnight Drift')[0]).toBeVisible();
+
+    await userEvent.click(canvas.getByTestId('player-pause-button'));
+    await expect(usePlayerStore.getState().status).toBe('paused');
+    await userEvent.click(await canvas.findByTestId('player-play-button'));
+    await expect(usePlayerStore.getState().status).toBe('playing');
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Next' }));
+    await expect(usePlayerStore.getState().currentId).toBe('archive:2');
+    await expect(await canvas.findAllByText('Static Bloom')).not.toHaveLength(
+      0,
+    );
+  },
+};
+
+/** Shuffle and repeat cycle through the store (off -> all -> one -> off). */
+export const ShuffleAndRepeat: Story = {
+  decorators: [withSeededPlayerBar({})],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole('button', { name: /^Shuffle/ }));
+    await expect(usePlayerStore.getState().shuffle).toBe(true);
+    for (const mode of ['all', 'one', 'off'] as const) {
+      await userEvent.click(canvas.getByRole('button', { name: /^Repeat/ }));
+      await expect(usePlayerStore.getState().repeatMode).toBe(mode);
+    }
+  },
 };
 
 export const LiveChannel: Story = {
@@ -119,6 +149,17 @@ export const LiveChannel: Story = {
 export const QueueExpanded: Story = {
   name: 'Queue strip expanded',
   decorators: [withSeededPlayerBar({ bottomQueueOpen: true })],
+  // The bottom queue strip is the phone layout; desktop uses the right rail.
+  parameters: { viewport: { defaultViewport: 'mobile1' } },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole('button', { name: 'Hide queue' }));
+    await expect(useLayoutStore.getState().bottomQueueOpen).toBe(false);
+    await userEvent.click(
+      await canvas.findByRole('button', { name: 'Show queue, 3 in queue' }),
+    );
+    await expect(useLayoutStore.getState().bottomQueueOpen).toBe(true);
+  },
 };
 
 export const Loading: Story = {
