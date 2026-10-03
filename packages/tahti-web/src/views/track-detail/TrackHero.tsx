@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
-import { Badge, Button, Tooltip } from '@tahti-player/ui';
+import { Badge, Button, Input, MediaArtwork, Tooltip } from '@tahti-player/ui';
 
 import { ChannelVisualizer } from '../../components/ChannelVisualizer';
 import { ReportButton } from '../../components/ReportButton';
@@ -94,16 +94,16 @@ export function TrackHero({ page }: { page: TrackPage }) {
   return (
     <section className="relative overflow-hidden px-6 pt-8 pb-6 md:px-10">
       {showBackdropImage ? (
-        <img
-          src={detail?.backgroundUrl ?? undefined}
+        <MediaArtwork
+          src={detail?.backgroundUrl}
           alt=""
-          className="pointer-events-none absolute inset-0 size-full object-cover"
+          className="pointer-events-none"
         />
       ) : showBackdropSlideshow ? (
-        <img
+        <MediaArtwork
           src={detail?.slideshowUrls?.[0]}
           alt=""
-          className="pointer-events-none absolute inset-0 size-full object-cover"
+          className="pointer-events-none"
         />
       ) : (
         <>
@@ -112,10 +112,10 @@ export function TrackHero({ page }: { page: TrackPage }) {
             style={ambient ? { backgroundImage: ambient } : undefined}
             aria-hidden
           />
-          <img
+          <MediaArtwork
             src={cover}
             alt=""
-            className="pointer-events-none absolute inset-0 size-full object-cover opacity-40 blur-3xl saturate-150"
+            className="pointer-events-none opacity-40 blur-3xl saturate-150"
           />
           <div className="pointer-events-none absolute inset-0 opacity-40">
             <ChannelVisualizer
@@ -132,14 +132,15 @@ export function TrackHero({ page }: { page: TrackPage }) {
 
       <div className="relative z-10 flex flex-col gap-5 text-white">
         <Tooltip content="Back" side="right">
-          <button
-            type="button"
+          <Button
+            variant="text"
+            size="icon-sm"
             onClick={() => router.history.back()}
             aria-label="Back"
-            className="flex size-8 w-fit items-center justify-center rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/20"
+            className="w-fit rounded-full bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 active:bg-white/20"
           >
             <ArrowLeftIcon size={16} aria-hidden />
-          </button>
+          </Button>
         </Tooltip>
         {shareKey ? (
           <Badge
@@ -164,12 +165,12 @@ export function TrackHero({ page }: { page: TrackPage }) {
                   />
                 </span>
               ) : (
-                <button
-                  type="button"
+                <Button
+                  variant="text"
                   disabled={!canPlay}
                   onClick={togglePlayback}
                   aria-label={isPlaying ? 'Pause' : 'Play'}
-                  className="flex size-14 shrink-0 items-center justify-center rounded-full bg-white text-black shadow-xl disabled:opacity-40"
+                  className="size-14 shrink-0 justify-center rounded-full bg-white p-0 text-black shadow-xl hover:bg-white active:bg-white disabled:opacity-40"
                 >
                   {isPlaying ? (
                     <PauseIcon size={22} fill="currentColor" aria-hidden />
@@ -181,7 +182,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
                       aria-hidden
                     />
                   )}
-                </button>
+                </Button>
               )}
               <h1 className="font-display min-w-0 text-2xl font-semibold tracking-tight sm:text-3xl">
                 {playable.title}
@@ -249,12 +250,8 @@ export function TrackHero({ page }: { page: TrackPage }) {
             </div>
           </div>
 
-          <div className="hidden w-56 shrink-0 overflow-hidden rounded-md shadow-2xl sm:block lg:w-72">
-            <img
-              src={cover}
-              alt=""
-              className="aspect-video w-full object-cover"
-            />
+          <div className="relative hidden aspect-video w-56 shrink-0 overflow-hidden rounded-md shadow-2xl sm:block lg:w-72">
+            <MediaArtwork src={cover} alt="" />
           </div>
         </div>
 
@@ -267,16 +264,17 @@ export function TrackHero({ page }: { page: TrackPage }) {
                 void submitComment();
               }}
             >
-              <img
+              <MediaArtwork
                 src={
                   user?.avatarUrl ??
                   placeholderArtworkUrl(user?.id ?? 'listener')
                 }
                 alt=""
-                className="size-7 shrink-0 rounded-full object-cover"
+                size="sm"
+                className="size-7 min-w-7 shrink-0 rounded-full"
               />
               {commentsEnabled && user ? (
-                <input
+                <Input
                   value={commentBody}
                   onChange={(event) => setCommentBody(event.target.value)}
                   placeholder={
@@ -287,7 +285,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
                   aria-label={
                     embedSrc ? 'Write a comment' : 'Write a timed comment'
                   }
-                  className="min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-white/45"
+                  className="h-auto min-w-0 rounded-none border-0 bg-transparent px-0 text-sm text-white outline-none placeholder:text-white/45 focus-visible:ring-0 focus-visible:ring-offset-0"
                 />
               ) : (
                 <Link
@@ -464,19 +462,20 @@ export function TrackHero({ page }: { page: TrackPage }) {
               params={{ username: detail.channel.username }}
               className="flex items-center gap-2 rounded-full bg-black/35 py-1 pr-3 pl-1"
             >
-              <span className="relative">
-                <img
+              <div className="relative">
+                <MediaArtwork
                   src={
                     detail.channel.avatarUrl ??
                     placeholderArtworkUrl(detail.channel.username)
                   }
                   alt=""
-                  className="size-8 rounded-full object-cover"
+                  size="sm"
+                  className="size-8 min-w-8 rounded-full"
                 />
                 {artistLive ? (
                   <span className="bg-accent-red absolute right-0 bottom-0 size-2.5 rounded-full ring-2 ring-black" />
                 ) : null}
-              </span>
+              </div>
               <span className="text-sm font-medium">
                 {detail.channel.displayName}
               </span>
