@@ -2,6 +2,7 @@ import { EmptyState, TrackTable } from '@tahti-player/ui';
 
 import { StudioPanel } from '../../../components/StudioPanel';
 import { trackTableLabels } from '../../../lib/trackTableLabels';
+import { useStudioContributions } from '../useStudioContributions';
 import { NowPlayingBar } from './NowPlayingBar';
 import type { CollectionEditState } from './useCollectionEditState';
 
@@ -25,6 +26,7 @@ export function TracklistPanel({
     onReorder,
     setPendingRemove,
   } = state;
+  const { rowHeight, getTrackAnnotation } = useStudioContributions(items);
 
   return (
     <StudioPanel
@@ -44,6 +46,7 @@ export function TracklistPanel({
           <TrackTable
             tracks={tracks}
             labels={trackTableLabels}
+            rowHeight={rowHeight}
             getItemId={(_t, index) => items[index]?.id ?? String(index)}
             features={{
               header: true,
@@ -86,6 +89,7 @@ export function TracklistPanel({
               },
             }}
             meta={{
+              getTrackAnnotation,
               isCurrentTrack: (track) => {
                 const item = items.find(
                   (candidate) => candidate.id === track.source.id,

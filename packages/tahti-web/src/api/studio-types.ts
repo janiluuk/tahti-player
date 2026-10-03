@@ -1,5 +1,7 @@
 /** Artist studio / catalog / editor types (mirrors Tahti /api/me/*). */
 
+import type { CollectionItemContribution } from './collection-contribution';
+
 export type StudioChannel = {
   slug: string;
   state: string;
@@ -214,7 +216,7 @@ export type StudioCollectionItem = {
   } | null;
   /** Another artist's track that has since gone private. */
   unavailable?: boolean;
-};
+} & CollectionItemContribution;
 
 /** MANUAL = drag order; TIME = oldest first (track upload or release date); NAME = A-Z by title. */
 export type CollectionTrackSortMode = 'MANUAL' | 'TIME' | 'NAME';

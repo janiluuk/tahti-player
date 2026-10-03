@@ -36,6 +36,7 @@ vi.mock('@tanstack/react-virtual', () => ({
 
 const addStudioCollectionItem = vi.fn();
 let collectionName = 'Original Name';
+let collectionItems: StudioCollection['items'] = [];
 const sounds: StudioSound[] = [
   { id: 'sound-1', title: 'Bonus Track', status: 'READY' },
 ];
@@ -45,7 +46,7 @@ function makeCollection(): StudioCollection {
     slug: 'my-album',
     name: collectionName,
     isPublic: true,
-    items: [],
+    items: collectionItems,
   };
 }
 
@@ -94,6 +95,7 @@ let root: Root;
 beforeEach(() => {
   vi.stubEnv('VITE_FORCE_MOCK', '1');
   collectionName = 'Original Name';
+  collectionItems = [];
   addStudioCollectionItem.mockImplementation(async () => {
     // The server round trip that follows a successful add would normally
     // reflect any concurrent server-side change too — simulate that here.
@@ -160,5 +162,27 @@ describe('StudioCollectionEditView add-track keeps unsaved details edits', () =>
     // The title input still shows the unsaved edit — a full reload() would
     // have overwritten it with the (changed) server value.
     expect(titleInput.value).toBe('My Edited Name');
+  });
+});
+
+describe('StudioCollectionEditView contributions', () => {
+  it('shows who added a track and their note on its row', async () => {
+    collectionItems = [
+      {
+        id: 'item-1',
+        position: 0,
+        soundId: 'sound-9',
+        sound: { id: 'sound-9', title: 'Shared Track' },
+        addedBy: { username: 'mira', displayName: 'mira@example.com' },
+        addNote: 'Perfect opener',
+      },
+    ];
+
+    await renderView();
+
+    expect(screen.getByTestId('collection-contribution')).toHaveTextContent(
+      'Added by @mira · “Perfect opener”',
+    );
+    expect(document.body.textContent).not.toContain('mira@example.com');
   });
 });
