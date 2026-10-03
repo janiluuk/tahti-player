@@ -207,6 +207,9 @@ export type PublicTrackDetail = {
   description: string | null;
   commentary: string | null;
   tracklist?: unknown;
+  /** `[{ role, name, artistUsername? }]` as stored on the sound; parse with
+   * `trackDetailFacts` before rendering. */
+  credits?: unknown;
   license: string;
   releasedAt: string;
   effectiveBpm: number | null;
@@ -537,21 +540,6 @@ export type FollowListUser = {
   avatarUrl: string | null;
 };
 
-export type PlatformStatusCheck = {
-  state: 'ok' | 'degraded' | 'down' | string;
-  critical?: boolean;
-  latencyMs?: number;
-  detail?: string;
-};
-
-export type PlatformStatus = {
-  status: 'ok' | 'degraded' | 'down' | string;
-  version?: string;
-  uptimeSec?: number;
-  checks: Record<string, PlatformStatusCheck>;
-  ts?: string;
-};
-
 export type MembershipStatus = {
   status: string;
   isMember: boolean;
@@ -855,5 +843,6 @@ export type SearchResponse = {
 };
 
 export * from './embed-types';
+export * from './status-types';
 export * from './smart-link-types';
 export * from './jam-types';
