@@ -18,7 +18,13 @@ import {
 } from 'lucide-react';
 import { lazy, Suspense, useEffect, useState } from 'react';
 
-import { Button, ButtonLink, Tabs, Textarea } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonLink,
+  Tabs,
+  Textarea,
+  type TabsItem,
+} from '@tahti-player/ui';
 
 import {
   cancelMySubscription,
@@ -68,6 +74,7 @@ export function AccountPanel() {
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
   const closeSettings = useSettingsModalStore((s) => s.close);
+  const accountSection = useSettingsModalStore((s) => s.accountSection);
   const [membership, setMembership] = useState<MembershipStatus | null>(null);
   const [subscriptions, setSubscriptions] = useState<FanSubscriptionRow[]>([]);
   const [purchases, setPurchases] = useState<PurchaseRow[]>([]);
@@ -108,253 +115,255 @@ export function AccountPanel() {
     );
   }
 
+  const tabItems: TabsItem[] = [
+    {
+      id: 'session',
+      label: 'Session',
+      icon: <User size={14} />,
+      content: (
+        <div className="flex flex-col gap-6">
+          <SettingsInfo label="Signed in as" value={`@${user.username}`} />
+          <SettingsInfo label="Display name" value={user.displayName} />
+          {user.email && <SettingsInfo label="Email" value={user.email} />}
+          <div className="flex flex-wrap gap-2">
+            <ButtonLink
+              to="/help/$slug"
+              params={{ slug: 'keyboard-shortcuts' }}
+              onClick={closeSettings}
+              size="sm"
+              variant="secondary"
+            >
+              <Keyboard size={15} aria-hidden className="mr-1.5" />
+              Keyboard shortcuts
+            </ButtonLink>
+            <Button size="sm" variant="text" onClick={() => void logout()}>
+              <LogOutIcon size={15} aria-hidden className="mr-1.5" />
+              Log out
+            </Button>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'security',
+      label: 'Security',
+      icon: <Lock size={14} />,
+      content: (
+        <Tabs
+          className="min-w-0"
+          listClassName="border-border flex-wrap gap-1 border-b pb-2"
+          panelClassName="pt-3"
+          items={[
+            {
+              id: 'two-factor',
+              label: 'Two-factor authentication',
+              icon: <Lock size={14} />,
+              content: <SecurityTotpPanel />,
+            },
+            {
+              id: 'api-tokens',
+              label: 'API tokens',
+              icon: <KeyRound size={14} />,
+              content: <ApiTokensPanel />,
+            },
+          ]}
+        />
+      ),
+    },
+    {
+      id: 'membership',
+      label: 'Membership',
+      icon: <Wallet size={14} />,
+      content: !membership ? (
+        <SettingsHint>Could not load membership.</SettingsHint>
+      ) : (
+        <div className="flex flex-col gap-6">
+          <MembershipStatusPanel
+            membership={membership}
+            userEmail={user.email}
+            onChange={() => {
+              void fetchMembership().then((r) => setMembership(r.data));
+            }}
+          />
+          <MembershipInvoices />
+        </div>
+      ),
+    },
+    {
+      id: 'governance',
+      label: 'Governance',
+      icon: <Landmark size={14} />,
+      content: (
+        <Suspense fallback={<PageLoading label="Loading governance…" />}>
+          <GovernanceView embedded />
+        </Suspense>
+      ),
+    },
+    {
+      id: 'storage',
+      label: 'Storage',
+      icon: <Database size={14} />,
+      content: <AccountStoragePanel />,
+    },
+    {
+      id: 'notifications',
+      label: 'Notifications & visibility',
+      icon: <Bell size={14} />,
+      content: <NotificationsVisibilityPanel />,
+    },
+    {
+      id: 'mentions',
+      label: 'Mentions',
+      icon: <AtSign size={14} />,
+      content: <MentionsPanel />,
+    },
+    {
+      id: 'subscriptions',
+      label: 'Your subs',
+      icon: <Wallet size={14} />,
+      content: (
+        <div className="flex flex-col gap-4">
+          {subscriptions.length === 0 ? (
+            <SettingsHint>No fan subscriptions on this account.</SettingsHint>
+          ) : (
+            <ul className="flex flex-col gap-2">
+              {subscriptions.map((subscription) => (
+                <li
+                  key={subscription.id}
+                  className="border-border flex flex-wrap items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm"
+                >
+                  <div>
+                    <Link
+                      to="/u/$username"
+                      params={{ username: subscription.artist.username }}
+                      onClick={closeSettings}
+                      className="font-medium underline-offset-2 hover:underline"
+                    >
+                      {subscription.artist.displayName}
+                    </Link>
+                    <p className="text-foreground-secondary text-xs">
+                      {subscription.tierName}, {euros(subscription.amountCents)}
+                      /mo,{' '}
+                      {subscription.canceledAt && subscription.currentPeriodEnd
+                        ? `cancels ${new Date(
+                            subscription.currentPeriodEnd,
+                          ).toLocaleDateString()}`
+                        : subscription.state}
+                    </p>
+                  </div>
+                  {subscription.canceledAt ? null : (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setPendingCancel(subscription)}
+                    >
+                      Manage
+                    </Button>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+          {subscriptions.some((sub) => sub.state === 'ACTIVE') ? (
+            <FanSubscriptionsBillingButton />
+          ) : null}
+          <ConfirmDialog
+            isOpen={pendingCancel !== null}
+            title={
+              pendingCancel
+                ? `Cancel your ${pendingCancel.tierName} subscription to ${pendingCancel.artist.displayName}?`
+                : 'Cancel subscription?'
+            }
+            description="You'll keep access until the end of the current billing period, then it won't renew."
+            confirmLabel={cancelBusy ? 'Cancelling…' : 'Cancel subscription'}
+            cancelLabel="Keep subscription"
+            onCancel={() => setPendingCancel(null)}
+            onConfirm={() => {
+              const target = pendingCancel;
+              if (!target || cancelBusy) {
+                return;
+              }
+              setCancelBusy(true);
+              void cancelMySubscription(target.id).then((r) => {
+                setCancelBusy(false);
+                setPendingCancel(null);
+                if (r.ok) {
+                  void reloadSubscriptions();
+                }
+              });
+            }}
+          />
+        </div>
+      ),
+    },
+    {
+      id: 'purchases',
+      label: 'Purchases',
+      icon: <CreditCardIcon size={14} />,
+      content:
+        purchases.length === 0 ? (
+          <SettingsHint>No track purchases on this account.</SettingsHint>
+        ) : (
+          <ul className="flex flex-col gap-2">
+            {purchases.map((purchase) => (
+              <li
+                key={purchase.id}
+                className="border-border flex flex-wrap items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm"
+              >
+                <div>
+                  <p className="font-medium">
+                    {purchase.tracks.map((t) => t.title).join(', ') ||
+                      purchase.tierName}
+                  </p>
+                  <p className="text-foreground-secondary text-xs">
+                    <Link
+                      to="/u/$username"
+                      params={{ username: purchase.artist.username }}
+                      onClick={closeSettings}
+                      className="underline-offset-2 hover:underline"
+                    >
+                      {purchase.artist.displayName}
+                    </Link>
+                    {' · '}
+                    {euros(purchase.amountCents)}
+                    {' · '}
+                    {new Date(purchase.createdAt).toLocaleDateString()}
+                  </p>
+                </div>
+                {purchase.tracks[0] ? (
+                  <ButtonLink
+                    to="/t/$id"
+                    params={{ id: purchase.tracks[0].id }}
+                    onClick={closeSettings}
+                    variant="ghost"
+                    size="sm"
+                  >
+                    Listen
+                  </ButtonLink>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+        ),
+    },
+    {
+      id: 'privacy',
+      label: 'Privacy & data',
+      icon: <Shield size={14} />,
+      content: <PrivacyDataPanel username={user.username} />,
+    },
+  ];
+
   return (
     <Tabs
+      key={accountSection ?? 'session'}
       className="min-w-0"
       listClassName="flex-wrap"
-      items={[
-        {
-          id: 'session',
-          label: 'Session',
-          icon: <User size={14} />,
-          content: (
-            <div className="flex flex-col gap-6">
-              <SettingsInfo label="Signed in as" value={`@${user.username}`} />
-              <SettingsInfo label="Display name" value={user.displayName} />
-              {user.email && <SettingsInfo label="Email" value={user.email} />}
-              <div className="flex flex-wrap gap-2">
-                <ButtonLink
-                  to="/help/$slug"
-                  params={{ slug: 'keyboard-shortcuts' }}
-                  onClick={closeSettings}
-                  size="sm"
-                  variant="secondary"
-                >
-                  <Keyboard size={15} aria-hidden className="mr-1.5" />
-                  Keyboard shortcuts
-                </ButtonLink>
-                <Button size="sm" variant="text" onClick={() => void logout()}>
-                  <LogOutIcon size={15} aria-hidden className="mr-1.5" />
-                  Log out
-                </Button>
-              </div>
-            </div>
-          ),
-        },
-        {
-          id: 'security',
-          label: 'Security',
-          icon: <Lock size={14} />,
-          content: (
-            <Tabs
-              className="min-w-0"
-              listClassName="border-border flex-wrap gap-1 border-b pb-2"
-              panelClassName="pt-3"
-              items={[
-                {
-                  id: 'two-factor',
-                  label: 'Two-factor authentication',
-                  icon: <Lock size={14} />,
-                  content: <SecurityTotpPanel />,
-                },
-                {
-                  id: 'api-tokens',
-                  label: 'API tokens',
-                  icon: <KeyRound size={14} />,
-                  content: <ApiTokensPanel />,
-                },
-              ]}
-            />
-          ),
-        },
-        {
-          id: 'membership',
-          label: 'Membership',
-          icon: <Wallet size={14} />,
-          content: !membership ? (
-            <SettingsHint>Could not load membership.</SettingsHint>
-          ) : (
-            <div className="flex flex-col gap-6">
-              <MembershipStatusPanel
-                membership={membership}
-                userEmail={user.email}
-                onChange={() => {
-                  void fetchMembership().then((r) => setMembership(r.data));
-                }}
-              />
-              <MembershipInvoices />
-            </div>
-          ),
-        },
-        {
-          id: 'governance',
-          label: 'Governance',
-          icon: <Landmark size={14} />,
-          content: (
-            <Suspense fallback={<PageLoading label="Loading governance…" />}>
-              <GovernanceView embedded />
-            </Suspense>
-          ),
-        },
-        {
-          id: 'storage',
-          label: 'Storage',
-          icon: <Database size={14} />,
-          content: <AccountStoragePanel />,
-        },
-        {
-          id: 'notifications',
-          label: 'Notifications & visibility',
-          icon: <Bell size={14} />,
-          content: <NotificationsVisibilityPanel />,
-        },
-        {
-          id: 'mentions',
-          label: 'Mentions',
-          icon: <AtSign size={14} />,
-          content: <MentionsPanel />,
-        },
-        {
-          id: 'subscriptions',
-          label: 'Your subs',
-          icon: <Wallet size={14} />,
-          content: (
-            <div className="flex flex-col gap-4">
-              {subscriptions.length === 0 ? (
-                <SettingsHint>
-                  No fan subscriptions on this account.
-                </SettingsHint>
-              ) : (
-                <ul className="flex flex-col gap-2">
-                  {subscriptions.map((subscription) => (
-                    <li
-                      key={subscription.id}
-                      className="border-border flex flex-wrap items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm"
-                    >
-                      <div>
-                        <Link
-                          to="/u/$username"
-                          params={{ username: subscription.artist.username }}
-                          onClick={closeSettings}
-                          className="font-medium underline-offset-2 hover:underline"
-                        >
-                          {subscription.artist.displayName}
-                        </Link>
-                        <p className="text-foreground-secondary text-xs">
-                          {subscription.tierName},{' '}
-                          {euros(subscription.amountCents)}/mo,{' '}
-                          {subscription.canceledAt &&
-                          subscription.currentPeriodEnd
-                            ? `cancels ${new Date(
-                                subscription.currentPeriodEnd,
-                              ).toLocaleDateString()}`
-                            : subscription.state}
-                        </p>
-                      </div>
-                      {subscription.canceledAt ? null : (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setPendingCancel(subscription)}
-                        >
-                          Manage
-                        </Button>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              )}
-              {subscriptions.some((sub) => sub.state === 'ACTIVE') ? (
-                <FanSubscriptionsBillingButton />
-              ) : null}
-              <ConfirmDialog
-                isOpen={pendingCancel !== null}
-                title={
-                  pendingCancel
-                    ? `Cancel your ${pendingCancel.tierName} subscription to ${pendingCancel.artist.displayName}?`
-                    : 'Cancel subscription?'
-                }
-                description="You'll keep access until the end of the current billing period, then it won't renew."
-                confirmLabel={
-                  cancelBusy ? 'Cancelling…' : 'Cancel subscription'
-                }
-                cancelLabel="Keep subscription"
-                onCancel={() => setPendingCancel(null)}
-                onConfirm={() => {
-                  const target = pendingCancel;
-                  if (!target || cancelBusy) {
-                    return;
-                  }
-                  setCancelBusy(true);
-                  void cancelMySubscription(target.id).then((r) => {
-                    setCancelBusy(false);
-                    setPendingCancel(null);
-                    if (r.ok) {
-                      void reloadSubscriptions();
-                    }
-                  });
-                }}
-              />
-            </div>
-          ),
-        },
-        {
-          id: 'purchases',
-          label: 'Purchases',
-          icon: <CreditCardIcon size={14} />,
-          content:
-            purchases.length === 0 ? (
-              <SettingsHint>No track purchases on this account.</SettingsHint>
-            ) : (
-              <ul className="flex flex-col gap-2">
-                {purchases.map((purchase) => (
-                  <li
-                    key={purchase.id}
-                    className="border-border flex flex-wrap items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm"
-                  >
-                    <div>
-                      <p className="font-medium">
-                        {purchase.tracks.map((t) => t.title).join(', ') ||
-                          purchase.tierName}
-                      </p>
-                      <p className="text-foreground-secondary text-xs">
-                        <Link
-                          to="/u/$username"
-                          params={{ username: purchase.artist.username }}
-                          onClick={closeSettings}
-                          className="underline-offset-2 hover:underline"
-                        >
-                          {purchase.artist.displayName}
-                        </Link>
-                        {' · '}
-                        {euros(purchase.amountCents)}
-                        {' · '}
-                        {new Date(purchase.createdAt).toLocaleDateString()}
-                      </p>
-                    </div>
-                    {purchase.tracks[0] ? (
-                      <ButtonLink
-                        to="/t/$id"
-                        params={{ id: purchase.tracks[0].id }}
-                        onClick={closeSettings}
-                        variant="ghost"
-                        size="sm"
-                      >
-                        Listen
-                      </ButtonLink>
-                    ) : null}
-                  </li>
-                ))}
-              </ul>
-            ),
-        },
-        {
-          id: 'privacy',
-          label: 'Privacy & data',
-          icon: <Shield size={14} />,
-          content: <PrivacyDataPanel username={user.username} />,
-        },
-      ]}
+      defaultIndex={Math.max(
+        0,
+        tabItems.findIndex((item) => item.id === accountSection),
+      )}
+      items={tabItems}
     />
   );
 }

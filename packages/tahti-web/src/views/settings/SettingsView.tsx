@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { pluginAudienceForTarget } from '../../content/pluginStoreCategories';
 import {
   useSettingsModalStore,
+  type AccountSettingsSection,
   type ArtistSettingsSection,
 } from '../../stores/settingsModalStore';
 import { isSettingsSectionId, type SettingsSectionId } from './settingsNav';
@@ -28,6 +29,12 @@ function isArtistSettingsSection(
   );
 }
 
+function isAccountSettingsSection(
+  value: string | null,
+): value is AccountSettingsSection {
+  return value === 'subscriptions';
+}
+
 /** Deep link `/settings` → Nuclear SettingsPanel modal. Also the landing
  * pad for OAuth connect callbacks (see cutoverReturns.ts) - `?status=` and
  * `?social=` are surfaced as a toast, same as the retired Sources page did. */
@@ -40,13 +47,12 @@ export function SettingsView({ sectionId }: { sectionId?: string }) {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const category = params.get('category');
-    const artistTab = params.get('tab');
+    const tab = params.get('tab');
     open(
       section,
       category ? pluginAudienceForTarget(category) : undefined,
-      section === 'artist' && isArtistSettingsSection(artistTab)
-        ? artistTab
-        : undefined,
+      section === 'artist' && isArtistSettingsSection(tab) ? tab : undefined,
+      section === 'account' && isAccountSettingsSection(tab) ? tab : undefined,
     );
     const status = params.get('status');
     if (status === 'connected') {
