@@ -44,6 +44,8 @@ export type PublicTrackDetail = {
   isAiGenerated?: boolean;
   /** [0..255] amplitude buckets for the real waveform — null when not yet decoded. */
   peaks: number[] | null;
+  /** Verified venue the track was recorded at; absent from older APIs. */
+  venue?: { name: string; slug: string } | null;
   commentCount: number;
   downloadCount: number;
   accessMode?: 'FREE' | 'SUBSCRIBERS_ONLY' | 'PURCHASE';

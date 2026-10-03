@@ -29,7 +29,8 @@ export function TrackDetailsBlock({
   if (!hasTrackDetailFacts(facts)) {
     return null;
   }
-  const { genres, bpm, musicalKey, license, credits, commentary } = facts;
+  const { genres, bpm, musicalKey, license, credits, commentary, venue } =
+    facts;
 
   return (
     <div className={className} data-testid="track-details">
@@ -71,6 +72,17 @@ export function TrackDetailsBlock({
                 </li>
               ))}
             </ul>
+          </Row>
+        ) : null}
+        {venue ? (
+          <Row label="Recorded at">
+            <Link
+              to="/v/$slug"
+              params={{ slug: venue.slug }}
+              className="text-primary hover:underline"
+            >
+              {venue.name}
+            </Link>
           </Row>
         ) : null}
       </dl>

@@ -8,6 +8,7 @@ import { MusicBrainzSubmissionAssistant } from '../MusicBrainzSubmissionAssistan
 import { TrackCreditsEditor } from '../TrackCreditsEditor';
 import { HearthisExportSection } from './HearthisExportSection';
 import { PublishToReleaseSection } from './PublishToReleaseSection';
+import { RecordedAtVenuePicker } from './RecordedAtVenuePicker';
 import { TrackAnalysisSection } from './TrackAnalysisSection';
 import type { TrackEditDialogState } from './useTrackEditDialog';
 
@@ -48,6 +49,13 @@ export function AdvancedTab({
           options={LICENSES.map(([value, label]) => ({ id: value, label }))}
         />
       </div>
+      {!isAudioClip ? (
+        <RecordedAtVenuePicker
+          value={form.venueId ?? null}
+          current={item.venue ?? null}
+          onChange={(venueId) => setForm({ ...form, venueId })}
+        />
+      ) : null}
       <TrackAnalysisSection
         item={item}
         value={analysis}
