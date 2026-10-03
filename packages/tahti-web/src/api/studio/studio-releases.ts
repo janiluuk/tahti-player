@@ -1,5 +1,6 @@
 import type { FetchMeta } from '../client';
 import { DEMO_MP3 } from '../mock';
+import { mockFixture } from '../mock-overrides';
 import { apiErrorMeta, isForceMock } from '../mode';
 import type {
   FingerprintMatch,
@@ -17,7 +18,7 @@ export async function fetchStudioReleases(): Promise<{
 }> {
   if (isForceMock()) {
     return {
-      data: {
+      data: mockFixture('studioReleases', {
         page: 1,
         limit: 100,
         total: 3,
@@ -95,7 +96,7 @@ export async function fetchStudioReleases(): Promise<{
             _count: { tracks: 1 },
           },
         ],
-      },
+      }),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
