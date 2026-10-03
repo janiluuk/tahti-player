@@ -14,6 +14,7 @@ import {
 } from '../../api/social-autopost';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { SettingsHint } from './SettingsFields';
+import { showOAuthPlatform, SocialOAuthPlatform } from './SocialOAuthPlatform';
 import { SocialPostNow } from './SocialPostNow';
 
 const PLATFORMS: Record<
@@ -218,6 +219,15 @@ export function SocialAutoPost() {
 
   useEffect(load, []);
 
+  const onChanged = (next: SocialAutoPostSettings | null) => {
+    if (next) {
+      setSettings(next);
+      setVersion((current) => current + 1);
+    } else {
+      load();
+    }
+  };
+
   if (!loaded) {
     return null;
   }
@@ -240,16 +250,20 @@ export function SocialAutoPost() {
           key={`${platform}-${version}`}
           platform={platform}
           status={settings[platform]}
-          onChanged={(next) => {
-            if (next) {
-              setSettings(next);
-              setVersion((current) => current + 1);
-            } else {
-              load();
-            }
-          }}
+          onChanged={onChanged}
         />
       ))}
+      {(['twitter', 'instagram'] as const).map((platform) => {
+        const status = settings[platform];
+        return showOAuthPlatform(status) ? (
+          <SocialOAuthPlatform
+            key={`${platform}-${version}`}
+            platform={platform}
+            status={status}
+            onChanged={onChanged}
+          />
+        ) : null;
+      })}
       <SocialPostNow settings={settings} />
     </div>
   );

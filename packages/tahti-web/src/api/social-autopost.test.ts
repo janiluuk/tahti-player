@@ -4,9 +4,11 @@ import {
   disconnectSocial,
   fetchSocialAutoPost,
   fetchSocialPosts,
+  patchSocialOAuth,
   postToSocial,
   saveBluesky,
   saveMastodon,
+  socialOAuthStartUrl,
 } from './social-autopost';
 
 describe('social auto-post API', () => {
@@ -41,6 +43,32 @@ describe('social auto-post API', () => {
       accessToken: 'token',
       onReleasePublished: true,
     });
+  });
+
+  it('patches and disconnects the OAuth platforms', async () => {
+    const fetchSpy = vi
+      .spyOn(globalThis, 'fetch')
+      .mockImplementation(
+        async () => new Response(JSON.stringify({}), { status: 200 }),
+      );
+    await patchSocialOAuth('twitter', {
+      onChannelLive: true,
+      postTemplate: 'Live now',
+    });
+    await disconnectSocial('instagram');
+    expect(
+      fetchSpy.mock.calls.map(([url, init]) => [url, init?.method ?? 'GET']),
+    ).toEqual([
+      ['/tahti-api/api/me/social/twitter', 'PATCH'],
+      ['/tahti-api/api/me/social/instagram', 'DELETE'],
+    ]);
+    expect(JSON.parse(String(fetchSpy.mock.calls[0]![1]?.body))).toEqual({
+      onChannelLive: true,
+      postTemplate: 'Live now',
+    });
+    expect(socialOAuthStartUrl('instagram')).toBe(
+      '/tahti-api/api/me/social/instagram/oauth/start',
+    );
   });
 
   it('passes the API error through when a connection is refused', async () => {
