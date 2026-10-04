@@ -1,6 +1,6 @@
 # Listener account, and the basics without signing in
 
-**Status:** open
+**Status:** partial
 
 User ask (2026-10-04): add a separate listener user who is registered but has no Studio or Admin features, and make sure all the basic things work without ever having to log in.
 
@@ -13,7 +13,7 @@ User ask (2026-10-04): add a separate listener user who is registered but has no
 
 ## Plan
 
-- [ ] 1. Mock app: a second mock login for a plain listener (registered, no channel, not a member of the board), selectable at sign-in. Studio and Admin entries must not show for it.
+- [ ] 1. Decide what a listener sees where Studio is. `listener@tahti.live` signs in as a plain listener since #498, and the sidebar still shows Studio to everyone, signed out included.
 - [ ] 2. Audit as that listener: sidebar, top bar, Settings sections, Library, Favorites, messages, subscriptions, purchases, notifications. List every Studio or Admin control that leaks through and every dead end.
 - [ ] 3. Audit signed out: play a channel, radio station and track; browse Discover, an artist page, a collection, a smart link; search; open Help; read comments; report something. Every action that needs an account should say so and offer sign-in, never fail silently or show an error.
 - [ ] 4. Fix what the two audits find, one slice each.
