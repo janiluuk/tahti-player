@@ -488,7 +488,8 @@ for (const s of shotsToCapture) {
       await page.getByLabel('Authentication code').waitFor({ timeout: 3000 });
     }
     if (s.id === 'money-fan-subs') {
-      await page.getByRole('tab', { name: 'Fan subs' }).click();
+      // /settings/audience redirects to Studio → Audience, whose Overview
+      // tab carries the fan subscription summary.
       await page
         .getByRole('region', { name: 'Fan subscription summary' })
         .waitFor();

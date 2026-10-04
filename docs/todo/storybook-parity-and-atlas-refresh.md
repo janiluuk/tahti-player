@@ -1,6 +1,6 @@
 # Storybook parity and atlas refresh
 
-**Status:** open
+**Status:** partial
 
 User ask (2026-10-03): bring every Storybook story in line with the real page (same elements, interactions via play functions), including the Channel Designer. Update the Tahti atlas navigation Mermaid graphs and recapture its screenshots.
 
@@ -11,13 +11,17 @@ User ask (2026-10-03): bring every Storybook story in line with the real page (s
 - No story for ArtistView, SmartLinkView, CollectionView, MessagesView, JamView, RadioShowView, ListenView, DiscoverView, SettingsView, StudioShowDetailView, StudioReleaseDetailView or StudioEventCreateView. 16 Channel Designer panels and 13 `channel-view/*` blocks have no story.
 - `packages/tahti-web/STORYBOOK-SURFACES.md` is stale. `tw/RadioBrowserDirectory`, `tw/ElementLocations` and `tw/PageTourSpotlight` are hand-rolled.
 
+## Done so far
+
+- Infra (#471): per-story mock-data overrides, play/`expect` helpers, `@storybook/addon-vitest`, plays run in CI (four shards since #481).
+- Track page, track edit dialog, downloads, tags and Studio release detail (#475).
+- Artist page, SmartLinkView, CollectionView, Listen and Discover (#476).
+- Atlas (2026-10-04): Mermaid graphs and screen cases refreshed (#472, then the support, reports and moderation graph), and every screenshot recaptured in the Spotify theme, dark and light.
+
 ## Plan
 
-- [ ] 1. Infra: per-story mock-data overrides, play/`expect` helpers, `@storybook/addon-vitest` with a CI step, and Chrome, Player and ui primitive plays. Regenerate STORYBOOK-SURFACES.md.
+- [ ] 1. Chrome, Player and ui primitive plays (#474 was closed unmerged).
 - [ ] 2. Channel Designer: stories for the missing panels, plays for tabs, presets, reset and layers, plus the missing args.
 - [ ] 3. Channel page blocks, chat (ChatNotice states), radio show, schedule, jam and DMs.
-- [ ] 4. Artist page (all `artist-view/*`), SmartLinkView, CollectionView, Listen and Discover.
-- [ ] 5. Track page (`track-detail/*`), track edit dialog tabs, downloads, tags and Studio release detail.
 - [ ] 6. Studio shows, events, playlists and branding, plus Settings panels.
 - [ ] 7. Admin tabs and dialogs, plus auth pages.
-- [ ] 8. Atlas: update `src/content/flowDiagrams.ts` Mermaid graphs and `src/content/mapScreens.ts` cases for features shipped since the last refresh (#147). Recapture `public/map/nuclear/` with `scripts/capture-map-screens.mjs` in mock mode, dark and light.

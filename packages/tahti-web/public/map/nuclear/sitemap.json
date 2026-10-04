@@ -1,7 +1,7 @@
 {
   "surface": "nuclear",
-  "capturedAt": "2026-09-25",
-  "baseUrl": "http://localhost:5180",
+  "capturedAt": "2026-10-04",
+  "baseUrl": "http://127.0.0.1:5180",
   "images": [
     {
       "file": "about--light.png",
@@ -1052,6 +1052,10 @@
       "url": "/map/nuclear/admin-moderation--16-tab.png"
     },
     {
+      "file": "admin-moderation--17-tab--light.png",
+      "url": "/map/nuclear/admin-moderation--17-tab--light.png"
+    },
+    {
       "file": "admin-moderation--17-tab.png",
       "url": "/map/nuclear/admin-moderation--17-tab.png"
     },
@@ -1226,6 +1230,10 @@
     {
       "file": "admin-moderation-tab--16-tab.png",
       "url": "/map/nuclear/admin-moderation-tab--16-tab.png"
+    },
+    {
+      "file": "admin-moderation-tab--17-tab--light.png",
+      "url": "/map/nuclear/admin-moderation-tab--17-tab--light.png"
     },
     {
       "file": "admin-moderation-tab--17-tab.png",
@@ -2828,6 +2836,14 @@
       "url": "/map/nuclear/green-room.png"
     },
     {
+      "file": "help--0-start-here--light.png",
+      "url": "/map/nuclear/help--0-start-here--light.png"
+    },
+    {
+      "file": "help--0-start-here.png",
+      "url": "/map/nuclear/help--0-start-here.png"
+    },
+    {
       "file": "help--0-transparency--light.png",
       "url": "/map/nuclear/help--0-transparency--light.png"
     },
@@ -2846,6 +2862,14 @@
     {
       "file": "help--1-legal-policies.png",
       "url": "/map/nuclear/help--1-legal-policies.png"
+    },
+    {
+      "file": "help--1-listen-and-share--light.png",
+      "url": "/map/nuclear/help--1-listen-and-share--light.png"
+    },
+    {
+      "file": "help--1-listen-and-share.png",
+      "url": "/map/nuclear/help--1-listen-and-share.png"
     },
     {
       "file": "help--10-add-ons--light.png",
@@ -2876,6 +2900,14 @@
       "url": "/map/nuclear/help--12-build-with-tahti.png"
     },
     {
+      "file": "help--2-artist-tools--light.png",
+      "url": "/map/nuclear/help--2-artist-tools--light.png"
+    },
+    {
+      "file": "help--2-artist-tools.png",
+      "url": "/map/nuclear/help--2-artist-tools.png"
+    },
+    {
       "file": "help--2-legal-policies.png",
       "url": "/map/nuclear/help--2-legal-policies.png"
     },
@@ -2886,6 +2918,14 @@
     {
       "file": "help--2-operations.png",
       "url": "/map/nuclear/help--2-operations.png"
+    },
+    {
+      "file": "help--3-broadcasting--light.png",
+      "url": "/map/nuclear/help--3-broadcasting--light.png"
+    },
+    {
+      "file": "help--3-broadcasting.png",
+      "url": "/map/nuclear/help--3-broadcasting.png"
     },
     {
       "file": "help--3-operations.png",
@@ -2908,8 +2948,24 @@
       "url": "/map/nuclear/help--4-listen-and-share.png"
     },
     {
+      "file": "help--4-releasing--light.png",
+      "url": "/map/nuclear/help--4-releasing--light.png"
+    },
+    {
+      "file": "help--4-releasing.png",
+      "url": "/map/nuclear/help--4-releasing.png"
+    },
+    {
       "file": "help--4-start-here.png",
       "url": "/map/nuclear/help--4-start-here.png"
+    },
+    {
+      "file": "help--5-account-and-support--light.png",
+      "url": "/map/nuclear/help--5-account-and-support--light.png"
+    },
+    {
+      "file": "help--5-account-and-support.png",
+      "url": "/map/nuclear/help--5-account-and-support.png"
     },
     {
       "file": "help--5-artist-tools--light.png",
@@ -2924,6 +2980,14 @@
       "url": "/map/nuclear/help--5-listen-and-share.png"
     },
     {
+      "file": "help--6-admin--light.png",
+      "url": "/map/nuclear/help--6-admin--light.png"
+    },
+    {
+      "file": "help--6-admin.png",
+      "url": "/map/nuclear/help--6-admin.png"
+    },
+    {
       "file": "help--6-artist-tools.png",
       "url": "/map/nuclear/help--6-artist-tools.png"
     },
@@ -2934,6 +2998,14 @@
     {
       "file": "help--6-broadcasting.png",
       "url": "/map/nuclear/help--6-broadcasting.png"
+    },
+    {
+      "file": "help--7-add-ons--light.png",
+      "url": "/map/nuclear/help--7-add-ons--light.png"
+    },
+    {
+      "file": "help--7-add-ons.png",
+      "url": "/map/nuclear/help--7-add-ons.png"
     },
     {
       "file": "help--7-broadcasting.png",
@@ -2954,6 +3026,14 @@
     {
       "file": "help--8-account-and-support.png",
       "url": "/map/nuclear/help--8-account-and-support.png"
+    },
+    {
+      "file": "help--8-build-with-tahti--light.png",
+      "url": "/map/nuclear/help--8-build-with-tahti--light.png"
+    },
+    {
+      "file": "help--8-build-with-tahti.png",
+      "url": "/map/nuclear/help--8-build-with-tahti.png"
     },
     {
       "file": "help--8-releasing.png",
@@ -3928,6 +4008,94 @@
       "url": "/map/nuclear/messages.png"
     },
     {
+      "file": "money-fan-subs--0-overview--light.png",
+      "url": "/map/nuclear/money-fan-subs--0-overview--light.png"
+    },
+    {
+      "file": "money-fan-subs--0-overview.png",
+      "url": "/map/nuclear/money-fan-subs--0-overview.png"
+    },
+    {
+      "file": "money-fan-subs--1-stats--light.png",
+      "url": "/map/nuclear/money-fan-subs--1-stats--light.png"
+    },
+    {
+      "file": "money-fan-subs--1-stats.png",
+      "url": "/map/nuclear/money-fan-subs--1-stats.png"
+    },
+    {
+      "file": "money-fan-subs--10-events--light.png",
+      "url": "/map/nuclear/money-fan-subs--10-events--light.png"
+    },
+    {
+      "file": "money-fan-subs--10-events.png",
+      "url": "/map/nuclear/money-fan-subs--10-events.png"
+    },
+    {
+      "file": "money-fan-subs--2-governance--light.png",
+      "url": "/map/nuclear/money-fan-subs--2-governance--light.png"
+    },
+    {
+      "file": "money-fan-subs--2-governance.png",
+      "url": "/map/nuclear/money-fan-subs--2-governance.png"
+    },
+    {
+      "file": "money-fan-subs--3-posts--light.png",
+      "url": "/map/nuclear/money-fan-subs--3-posts--light.png"
+    },
+    {
+      "file": "money-fan-subs--3-posts.png",
+      "url": "/map/nuclear/money-fan-subs--3-posts.png"
+    },
+    {
+      "file": "money-fan-subs--4-audience--light.png",
+      "url": "/map/nuclear/money-fan-subs--4-audience--light.png"
+    },
+    {
+      "file": "money-fan-subs--4-audience.png",
+      "url": "/map/nuclear/money-fan-subs--4-audience.png"
+    },
+    {
+      "file": "money-fan-subs--5-releases--light.png",
+      "url": "/map/nuclear/money-fan-subs--5-releases--light.png"
+    },
+    {
+      "file": "money-fan-subs--5-releases.png",
+      "url": "/map/nuclear/money-fan-subs--5-releases.png"
+    },
+    {
+      "file": "money-fan-subs--6-editor--light.png",
+      "url": "/map/nuclear/money-fan-subs--6-editor--light.png"
+    },
+    {
+      "file": "money-fan-subs--6-editor.png",
+      "url": "/map/nuclear/money-fan-subs--6-editor.png"
+    },
+    {
+      "file": "money-fan-subs--7-broadcast--light.png",
+      "url": "/map/nuclear/money-fan-subs--7-broadcast--light.png"
+    },
+    {
+      "file": "money-fan-subs--7-broadcast.png",
+      "url": "/map/nuclear/money-fan-subs--7-broadcast.png"
+    },
+    {
+      "file": "money-fan-subs--8-broadcast--light.png",
+      "url": "/map/nuclear/money-fan-subs--8-broadcast--light.png"
+    },
+    {
+      "file": "money-fan-subs--8-broadcast.png",
+      "url": "/map/nuclear/money-fan-subs--8-broadcast.png"
+    },
+    {
+      "file": "money-fan-subs--9-schedule--light.png",
+      "url": "/map/nuclear/money-fan-subs--9-schedule--light.png"
+    },
+    {
+      "file": "money-fan-subs--9-schedule.png",
+      "url": "/map/nuclear/money-fan-subs--9-schedule.png"
+    },
+    {
       "file": "money-fan-subs--light.png",
       "url": "/map/nuclear/money-fan-subs--light.png"
     },
@@ -4228,6 +4396,10 @@
       "url": "/map/nuclear/radio.png"
     },
     {
+      "file": "release-detail--0-overview--light.png",
+      "url": "/map/nuclear/release-detail--0-overview--light.png"
+    },
+    {
       "file": "release-detail--0-overview.png",
       "url": "/map/nuclear/release-detail--0-overview.png"
     },
@@ -4236,12 +4408,116 @@
       "url": "/map/nuclear/release-detail--1-smart-links.png"
     },
     {
+      "file": "release-detail--1-stats--light.png",
+      "url": "/map/nuclear/release-detail--1-stats--light.png"
+    },
+    {
+      "file": "release-detail--1-stats.png",
+      "url": "/map/nuclear/release-detail--1-stats.png"
+    },
+    {
+      "file": "release-detail--10-events--light.png",
+      "url": "/map/nuclear/release-detail--10-events--light.png"
+    },
+    {
+      "file": "release-detail--10-events.png",
+      "url": "/map/nuclear/release-detail--10-events.png"
+    },
+    {
+      "file": "release-detail--11-shows--light.png",
+      "url": "/map/nuclear/release-detail--11-shows--light.png"
+    },
+    {
+      "file": "release-detail--11-shows.png",
+      "url": "/map/nuclear/release-detail--11-shows.png"
+    },
+    {
+      "file": "release-detail--12-channel--light.png",
+      "url": "/map/nuclear/release-detail--12-channel--light.png"
+    },
+    {
+      "file": "release-detail--12-channel.png",
+      "url": "/map/nuclear/release-detail--12-channel.png"
+    },
+    {
+      "file": "release-detail--13-radio--light.png",
+      "url": "/map/nuclear/release-detail--13-radio--light.png"
+    },
+    {
+      "file": "release-detail--13-radio.png",
+      "url": "/map/nuclear/release-detail--13-radio.png"
+    },
+    {
       "file": "release-detail--2-fingerprinting.png",
       "url": "/map/nuclear/release-detail--2-fingerprinting.png"
     },
     {
+      "file": "release-detail--2-governance--light.png",
+      "url": "/map/nuclear/release-detail--2-governance--light.png"
+    },
+    {
+      "file": "release-detail--2-governance.png",
+      "url": "/map/nuclear/release-detail--2-governance.png"
+    },
+    {
       "file": "release-detail--3-export.png",
       "url": "/map/nuclear/release-detail--3-export.png"
+    },
+    {
+      "file": "release-detail--3-posts--light.png",
+      "url": "/map/nuclear/release-detail--3-posts--light.png"
+    },
+    {
+      "file": "release-detail--3-posts.png",
+      "url": "/map/nuclear/release-detail--3-posts.png"
+    },
+    {
+      "file": "release-detail--4-audience--light.png",
+      "url": "/map/nuclear/release-detail--4-audience--light.png"
+    },
+    {
+      "file": "release-detail--4-audience.png",
+      "url": "/map/nuclear/release-detail--4-audience.png"
+    },
+    {
+      "file": "release-detail--5-releases--light.png",
+      "url": "/map/nuclear/release-detail--5-releases--light.png"
+    },
+    {
+      "file": "release-detail--5-releases.png",
+      "url": "/map/nuclear/release-detail--5-releases.png"
+    },
+    {
+      "file": "release-detail--6-editor--light.png",
+      "url": "/map/nuclear/release-detail--6-editor--light.png"
+    },
+    {
+      "file": "release-detail--6-editor.png",
+      "url": "/map/nuclear/release-detail--6-editor.png"
+    },
+    {
+      "file": "release-detail--7-broadcast--light.png",
+      "url": "/map/nuclear/release-detail--7-broadcast--light.png"
+    },
+    {
+      "file": "release-detail--7-broadcast.png",
+      "url": "/map/nuclear/release-detail--7-broadcast.png"
+    },
+    {
+      "file": "release-detail--8-broadcast--light.png",
+      "url": "/map/nuclear/release-detail--8-broadcast--light.png"
+    },
+    {
+      "file": "release-detail--8-broadcast.png",
+      "url": "/map/nuclear/release-detail--8-broadcast.png"
+    },
+    {
+      "file": "release-detail--9-schedule--light.png",
+      "url": "/map/nuclear/release-detail--9-schedule--light.png"
+    },
+    {
+      "file": "release-detail--9-schedule.png",
+      "url": "/map/nuclear/release-detail--9-schedule.png"
     },
     {
       "file": "release-detail--light.png",
@@ -4456,6 +4732,14 @@
       "url": "/map/nuclear/settings--6-add-ons.png"
     },
     {
+      "file": "settings--6-mentions--light.png",
+      "url": "/map/nuclear/settings--6-mentions--light.png"
+    },
+    {
+      "file": "settings--6-mentions.png",
+      "url": "/map/nuclear/settings--6-mentions.png"
+    },
+    {
       "file": "settings--6-your-subs--light.png",
       "url": "/map/nuclear/settings--6-your-subs--light.png"
     },
@@ -4480,6 +4764,14 @@
       "url": "/map/nuclear/settings--7-what-s-new.png"
     },
     {
+      "file": "settings--7-your-subs--light.png",
+      "url": "/map/nuclear/settings--7-your-subs--light.png"
+    },
+    {
+      "file": "settings--7-your-subs.png",
+      "url": "/map/nuclear/settings--7-your-subs.png"
+    },
+    {
       "file": "settings--8-privacy-data--light.png",
       "url": "/map/nuclear/settings--8-privacy-data--light.png"
     },
@@ -4488,8 +4780,24 @@
       "url": "/map/nuclear/settings--8-privacy-data.png"
     },
     {
+      "file": "settings--8-purchases--light.png",
+      "url": "/map/nuclear/settings--8-purchases--light.png"
+    },
+    {
+      "file": "settings--8-purchases.png",
+      "url": "/map/nuclear/settings--8-purchases.png"
+    },
+    {
       "file": "settings--8-tab.png",
       "url": "/map/nuclear/settings--8-tab.png"
+    },
+    {
+      "file": "settings--9-privacy-data--light.png",
+      "url": "/map/nuclear/settings--9-privacy-data--light.png"
+    },
+    {
+      "file": "settings--9-privacy-data.png",
+      "url": "/map/nuclear/settings--9-privacy-data.png"
     },
     {
       "file": "settings--9-security.png",
@@ -4600,6 +4908,14 @@
       "url": "/map/nuclear/settings-account--6-add-ons.png"
     },
     {
+      "file": "settings-account--6-mentions--light.png",
+      "url": "/map/nuclear/settings-account--6-mentions--light.png"
+    },
+    {
+      "file": "settings-account--6-mentions.png",
+      "url": "/map/nuclear/settings-account--6-mentions.png"
+    },
+    {
       "file": "settings-account--6-your-subs--light.png",
       "url": "/map/nuclear/settings-account--6-your-subs--light.png"
     },
@@ -4624,6 +4940,14 @@
       "url": "/map/nuclear/settings-account--7-what-s-new.png"
     },
     {
+      "file": "settings-account--7-your-subs--light.png",
+      "url": "/map/nuclear/settings-account--7-your-subs--light.png"
+    },
+    {
+      "file": "settings-account--7-your-subs.png",
+      "url": "/map/nuclear/settings-account--7-your-subs.png"
+    },
+    {
       "file": "settings-account--8-privacy-data--light.png",
       "url": "/map/nuclear/settings-account--8-privacy-data--light.png"
     },
@@ -4632,8 +4956,24 @@
       "url": "/map/nuclear/settings-account--8-privacy-data.png"
     },
     {
+      "file": "settings-account--8-purchases--light.png",
+      "url": "/map/nuclear/settings-account--8-purchases--light.png"
+    },
+    {
+      "file": "settings-account--8-purchases.png",
+      "url": "/map/nuclear/settings-account--8-purchases.png"
+    },
+    {
       "file": "settings-account--8-tab.png",
       "url": "/map/nuclear/settings-account--8-tab.png"
+    },
+    {
+      "file": "settings-account--9-privacy-data--light.png",
+      "url": "/map/nuclear/settings-account--9-privacy-data--light.png"
+    },
+    {
+      "file": "settings-account--9-privacy-data.png",
+      "url": "/map/nuclear/settings-account--9-privacy-data.png"
     },
     {
       "file": "settings-account--9-tab.png",
@@ -4648,12 +4988,28 @@
       "url": "/map/nuclear/settings-account.png"
     },
     {
+      "file": "settings-addons--0-listener--light.png",
+      "url": "/map/nuclear/settings-addons--0-listener--light.png"
+    },
+    {
+      "file": "settings-addons--0-listener.png",
+      "url": "/map/nuclear/settings-addons--0-listener.png"
+    },
+    {
       "file": "settings-addons--0-themes--light.png",
       "url": "/map/nuclear/settings-addons--0-themes--light.png"
     },
     {
       "file": "settings-addons--0-themes.png",
       "url": "/map/nuclear/settings-addons--0-themes.png"
+    },
+    {
+      "file": "settings-addons--1-artist--light.png",
+      "url": "/map/nuclear/settings-addons--1-artist--light.png"
+    },
+    {
+      "file": "settings-addons--1-artist.png",
+      "url": "/map/nuclear/settings-addons--1-artist.png"
     },
     {
       "file": "settings-addons--1-visualizers--light.png",
@@ -4686,6 +5042,14 @@
     {
       "file": "settings-addons--12-channel.png",
       "url": "/map/nuclear/settings-addons--12-channel.png"
+    },
+    {
+      "file": "settings-addons--2-admin--light.png",
+      "url": "/map/nuclear/settings-addons--2-admin--light.png"
+    },
+    {
+      "file": "settings-addons--2-admin.png",
+      "url": "/map/nuclear/settings-addons--2-admin.png"
     },
     {
       "file": "settings-addons--2-export--light.png",
@@ -4760,6 +5124,70 @@
       "url": "/map/nuclear/settings-addons.png"
     },
     {
+      "file": "settings-artist-connections--0-identity--light.png",
+      "url": "/map/nuclear/settings-artist-connections--0-identity--light.png"
+    },
+    {
+      "file": "settings-artist-connections--0-identity.png",
+      "url": "/map/nuclear/settings-artist-connections--0-identity.png"
+    },
+    {
+      "file": "settings-artist-connections--1-story--light.png",
+      "url": "/map/nuclear/settings-artist-connections--1-story--light.png"
+    },
+    {
+      "file": "settings-artist-connections--1-story.png",
+      "url": "/map/nuclear/settings-artist-connections--1-story.png"
+    },
+    {
+      "file": "settings-artist-connections--2-connections--light.png",
+      "url": "/map/nuclear/settings-artist-connections--2-connections--light.png"
+    },
+    {
+      "file": "settings-artist-connections--2-connections.png",
+      "url": "/map/nuclear/settings-artist-connections--2-connections.png"
+    },
+    {
+      "file": "settings-artist-connections--3-branding--light.png",
+      "url": "/map/nuclear/settings-artist-connections--3-branding--light.png"
+    },
+    {
+      "file": "settings-artist-connections--3-branding.png",
+      "url": "/map/nuclear/settings-artist-connections--3-branding.png"
+    },
+    {
+      "file": "settings-artist-connections--4-gallery--light.png",
+      "url": "/map/nuclear/settings-artist-connections--4-gallery--light.png"
+    },
+    {
+      "file": "settings-artist-connections--4-gallery.png",
+      "url": "/map/nuclear/settings-artist-connections--4-gallery.png"
+    },
+    {
+      "file": "settings-artist-connections--5-press-kit--light.png",
+      "url": "/map/nuclear/settings-artist-connections--5-press-kit--light.png"
+    },
+    {
+      "file": "settings-artist-connections--5-press-kit.png",
+      "url": "/map/nuclear/settings-artist-connections--5-press-kit.png"
+    },
+    {
+      "file": "settings-artist-connections--6-releases--light.png",
+      "url": "/map/nuclear/settings-artist-connections--6-releases--light.png"
+    },
+    {
+      "file": "settings-artist-connections--6-releases.png",
+      "url": "/map/nuclear/settings-artist-connections--6-releases.png"
+    },
+    {
+      "file": "settings-artist-connections--light.png",
+      "url": "/map/nuclear/settings-artist-connections--light.png"
+    },
+    {
+      "file": "settings-artist-connections.png",
+      "url": "/map/nuclear/settings-artist-connections.png"
+    },
+    {
       "file": "settings-audience--0-fan-tiers.png",
       "url": "/map/nuclear/settings-audience--0-fan-tiers.png"
     },
@@ -4832,6 +5260,14 @@
       "url": "/map/nuclear/settings-notifications--5-notifications-visibility.png"
     },
     {
+      "file": "settings-notifications--6-mentions--light.png",
+      "url": "/map/nuclear/settings-notifications--6-mentions--light.png"
+    },
+    {
+      "file": "settings-notifications--6-mentions.png",
+      "url": "/map/nuclear/settings-notifications--6-mentions.png"
+    },
+    {
       "file": "settings-notifications--6-your-subs--light.png",
       "url": "/map/nuclear/settings-notifications--6-your-subs--light.png"
     },
@@ -4852,12 +5288,36 @@
       "url": "/map/nuclear/settings-notifications--7-purchases.png"
     },
     {
+      "file": "settings-notifications--7-your-subs--light.png",
+      "url": "/map/nuclear/settings-notifications--7-your-subs--light.png"
+    },
+    {
+      "file": "settings-notifications--7-your-subs.png",
+      "url": "/map/nuclear/settings-notifications--7-your-subs.png"
+    },
+    {
       "file": "settings-notifications--8-privacy-data--light.png",
       "url": "/map/nuclear/settings-notifications--8-privacy-data--light.png"
     },
     {
       "file": "settings-notifications--8-privacy-data.png",
       "url": "/map/nuclear/settings-notifications--8-privacy-data.png"
+    },
+    {
+      "file": "settings-notifications--8-purchases--light.png",
+      "url": "/map/nuclear/settings-notifications--8-purchases--light.png"
+    },
+    {
+      "file": "settings-notifications--8-purchases.png",
+      "url": "/map/nuclear/settings-notifications--8-purchases.png"
+    },
+    {
+      "file": "settings-notifications--9-privacy-data--light.png",
+      "url": "/map/nuclear/settings-notifications--9-privacy-data--light.png"
+    },
+    {
+      "file": "settings-notifications--9-privacy-data.png",
+      "url": "/map/nuclear/settings-notifications--9-privacy-data.png"
     },
     {
       "file": "settings-notifications--light.png",
@@ -5066,6 +5526,142 @@
     {
       "file": "setup-password.png",
       "url": "/map/nuclear/setup-password.png"
+    },
+    {
+      "file": "show-detail--0-overview--light.png",
+      "url": "/map/nuclear/show-detail--0-overview--light.png"
+    },
+    {
+      "file": "show-detail--0-overview.png",
+      "url": "/map/nuclear/show-detail--0-overview.png"
+    },
+    {
+      "file": "show-detail--1-stats--light.png",
+      "url": "/map/nuclear/show-detail--1-stats--light.png"
+    },
+    {
+      "file": "show-detail--1-stats.png",
+      "url": "/map/nuclear/show-detail--1-stats.png"
+    },
+    {
+      "file": "show-detail--10-events--light.png",
+      "url": "/map/nuclear/show-detail--10-events--light.png"
+    },
+    {
+      "file": "show-detail--10-events.png",
+      "url": "/map/nuclear/show-detail--10-events.png"
+    },
+    {
+      "file": "show-detail--11-shows--light.png",
+      "url": "/map/nuclear/show-detail--11-shows--light.png"
+    },
+    {
+      "file": "show-detail--11-shows.png",
+      "url": "/map/nuclear/show-detail--11-shows.png"
+    },
+    {
+      "file": "show-detail--12-channel--light.png",
+      "url": "/map/nuclear/show-detail--12-channel--light.png"
+    },
+    {
+      "file": "show-detail--12-channel.png",
+      "url": "/map/nuclear/show-detail--12-channel.png"
+    },
+    {
+      "file": "show-detail--13-radio--light.png",
+      "url": "/map/nuclear/show-detail--13-radio--light.png"
+    },
+    {
+      "file": "show-detail--13-radio.png",
+      "url": "/map/nuclear/show-detail--13-radio.png"
+    },
+    {
+      "file": "show-detail--14-stream--light.png",
+      "url": "/map/nuclear/show-detail--14-stream--light.png"
+    },
+    {
+      "file": "show-detail--14-stream.png",
+      "url": "/map/nuclear/show-detail--14-stream.png"
+    },
+    {
+      "file": "show-detail--15-24-7--light.png",
+      "url": "/map/nuclear/show-detail--15-24-7--light.png"
+    },
+    {
+      "file": "show-detail--15-24-7.png",
+      "url": "/map/nuclear/show-detail--15-24-7.png"
+    },
+    {
+      "file": "show-detail--16-announcements--light.png",
+      "url": "/map/nuclear/show-detail--16-announcements--light.png"
+    },
+    {
+      "file": "show-detail--16-announcements.png",
+      "url": "/map/nuclear/show-detail--16-announcements.png"
+    },
+    {
+      "file": "show-detail--2-governance--light.png",
+      "url": "/map/nuclear/show-detail--2-governance--light.png"
+    },
+    {
+      "file": "show-detail--2-governance.png",
+      "url": "/map/nuclear/show-detail--2-governance.png"
+    },
+    {
+      "file": "show-detail--3-posts--light.png",
+      "url": "/map/nuclear/show-detail--3-posts--light.png"
+    },
+    {
+      "file": "show-detail--3-posts.png",
+      "url": "/map/nuclear/show-detail--3-posts.png"
+    },
+    {
+      "file": "show-detail--4-audience--light.png",
+      "url": "/map/nuclear/show-detail--4-audience--light.png"
+    },
+    {
+      "file": "show-detail--4-audience.png",
+      "url": "/map/nuclear/show-detail--4-audience.png"
+    },
+    {
+      "file": "show-detail--5-releases--light.png",
+      "url": "/map/nuclear/show-detail--5-releases--light.png"
+    },
+    {
+      "file": "show-detail--5-releases.png",
+      "url": "/map/nuclear/show-detail--5-releases.png"
+    },
+    {
+      "file": "show-detail--6-editor--light.png",
+      "url": "/map/nuclear/show-detail--6-editor--light.png"
+    },
+    {
+      "file": "show-detail--6-editor.png",
+      "url": "/map/nuclear/show-detail--6-editor.png"
+    },
+    {
+      "file": "show-detail--7-broadcast--light.png",
+      "url": "/map/nuclear/show-detail--7-broadcast--light.png"
+    },
+    {
+      "file": "show-detail--7-broadcast.png",
+      "url": "/map/nuclear/show-detail--7-broadcast.png"
+    },
+    {
+      "file": "show-detail--8-broadcast--light.png",
+      "url": "/map/nuclear/show-detail--8-broadcast--light.png"
+    },
+    {
+      "file": "show-detail--8-broadcast.png",
+      "url": "/map/nuclear/show-detail--8-broadcast.png"
+    },
+    {
+      "file": "show-detail--9-schedule--light.png",
+      "url": "/map/nuclear/show-detail--9-schedule--light.png"
+    },
+    {
+      "file": "show-detail--9-schedule.png",
+      "url": "/map/nuclear/show-detail--9-schedule.png"
     },
     {
       "file": "show-detail--light.png",
@@ -5392,12 +5988,76 @@
       "url": "/map/nuclear/studio-branding--0-branding.png"
     },
     {
+      "file": "studio-branding--0-overview--light.png",
+      "url": "/map/nuclear/studio-branding--0-overview--light.png"
+    },
+    {
+      "file": "studio-branding--0-overview.png",
+      "url": "/map/nuclear/studio-branding--0-overview.png"
+    },
+    {
       "file": "studio-branding--1-gallery.png",
       "url": "/map/nuclear/studio-branding--1-gallery.png"
     },
     {
+      "file": "studio-branding--1-stats--light.png",
+      "url": "/map/nuclear/studio-branding--1-stats--light.png"
+    },
+    {
+      "file": "studio-branding--1-stats.png",
+      "url": "/map/nuclear/studio-branding--1-stats.png"
+    },
+    {
+      "file": "studio-branding--2-governance--light.png",
+      "url": "/map/nuclear/studio-branding--2-governance--light.png"
+    },
+    {
+      "file": "studio-branding--2-governance.png",
+      "url": "/map/nuclear/studio-branding--2-governance.png"
+    },
+    {
       "file": "studio-branding--2-press-kit.png",
       "url": "/map/nuclear/studio-branding--2-press-kit.png"
+    },
+    {
+      "file": "studio-branding--3-posts--light.png",
+      "url": "/map/nuclear/studio-branding--3-posts--light.png"
+    },
+    {
+      "file": "studio-branding--3-posts.png",
+      "url": "/map/nuclear/studio-branding--3-posts.png"
+    },
+    {
+      "file": "studio-branding--4-audience--light.png",
+      "url": "/map/nuclear/studio-branding--4-audience--light.png"
+    },
+    {
+      "file": "studio-branding--4-audience.png",
+      "url": "/map/nuclear/studio-branding--4-audience.png"
+    },
+    {
+      "file": "studio-branding--5-releases--light.png",
+      "url": "/map/nuclear/studio-branding--5-releases--light.png"
+    },
+    {
+      "file": "studio-branding--5-releases.png",
+      "url": "/map/nuclear/studio-branding--5-releases.png"
+    },
+    {
+      "file": "studio-branding--6-editor--light.png",
+      "url": "/map/nuclear/studio-branding--6-editor--light.png"
+    },
+    {
+      "file": "studio-branding--6-editor.png",
+      "url": "/map/nuclear/studio-branding--6-editor.png"
+    },
+    {
+      "file": "studio-branding--7-broadcast--light.png",
+      "url": "/map/nuclear/studio-branding--7-broadcast--light.png"
+    },
+    {
+      "file": "studio-branding--7-broadcast.png",
+      "url": "/map/nuclear/studio-branding--7-broadcast.png"
     },
     {
       "file": "studio-branding--light.png",
@@ -5932,6 +6592,14 @@
       "url": "/map/nuclear/studio-channel-tahti-radio.png"
     },
     {
+      "file": "studio-event-edit--light.png",
+      "url": "/map/nuclear/studio-event-edit--light.png"
+    },
+    {
+      "file": "studio-event-edit.png",
+      "url": "/map/nuclear/studio-event-edit.png"
+    },
+    {
       "file": "studio-event-new--light.png",
       "url": "/map/nuclear/studio-event-new--light.png"
     },
@@ -6154,6 +6822,14 @@
     {
       "file": "studio-governance--10-tab.png",
       "url": "/map/nuclear/studio-governance--10-tab.png"
+    },
+    {
+      "file": "studio-governance--11-shows--light.png",
+      "url": "/map/nuclear/studio-governance--11-shows--light.png"
+    },
+    {
+      "file": "studio-governance--11-shows.png",
+      "url": "/map/nuclear/studio-governance--11-shows.png"
     },
     {
       "file": "studio-governance--2-governance--light.png",
@@ -6380,6 +7056,14 @@
       "url": "/map/nuclear/studio-setup-channel.png"
     },
     {
+      "file": "studio-signed-out--light.png",
+      "url": "/map/nuclear/studio-signed-out--light.png"
+    },
+    {
+      "file": "studio-signed-out.png",
+      "url": "/map/nuclear/studio-signed-out.png"
+    },
+    {
       "file": "studio-venues--0-themes.png",
       "url": "/map/nuclear/studio-venues--0-themes.png"
     },
@@ -6480,6 +7164,14 @@
       "url": "/map/nuclear/t-shortlink.png"
     },
     {
+      "file": "tag-search--light.png",
+      "url": "/map/nuclear/tag-search--light.png"
+    },
+    {
+      "file": "tag-search.png",
+      "url": "/map/nuclear/tag-search.png"
+    },
+    {
       "file": "terms--light.png",
       "url": "/map/nuclear/terms--light.png"
     },
@@ -6510,6 +7202,14 @@
     {
       "file": "themes.png",
       "url": "/map/nuclear/themes.png"
+    },
+    {
+      "file": "track-page--light.png",
+      "url": "/map/nuclear/track-page--light.png"
+    },
+    {
+      "file": "track-page.png",
+      "url": "/map/nuclear/track-page.png"
     },
     {
       "file": "transparency--light.png",
@@ -6598,6 +7298,14 @@
     {
       "file": "v-shortlink.png",
       "url": "/map/nuclear/v-shortlink.png"
+    },
+    {
+      "file": "venue-detail--light.png",
+      "url": "/map/nuclear/venue-detail--light.png"
+    },
+    {
+      "file": "venue-detail.png",
+      "url": "/map/nuclear/venue-detail.png"
     },
     {
       "file": "venues--0-discover.png",

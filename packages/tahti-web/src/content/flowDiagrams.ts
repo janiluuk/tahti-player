@@ -282,7 +282,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
     source: 'ArtistView · ChannelView · TrackDetailView · SmartLinkView',
     title: 'Public artist, channel, track and release pages',
     blurb:
-      'What a visitor sees and where each public page leads. Report buttons sit on artist, channel, track, collection and smart-link pages and send the report to the board.',
+      "What a visitor sees and where each public page leads. Report buttons sit on artist, channel, track, collection and smart-link pages, and on other people's track and channel comments, and send the report to the board.",
     mermaid: `flowchart TB
   subgraph artist["/u/:username · artist page"]
     A1["Member badge · joined date · nameplate"]
@@ -296,11 +296,12 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
     C2["Upcoming shows"]
     C3["Member badge · top bar text"]
     C4["Live chat · fan-only room"]
+    C5["Channel comments"]
   end
   subgraph track["/t/:id · track page"]
     T1["Details: genre · tempo · key · licence · credits · notes"]
     T2["Tags · recorded at"]
-    T3["Like · repost · timed comments"]
+    T3["Like · repost · timed comments, newest 200"]
     T4["Download, gated or switched off"]
     T5["AI-generated label"]
   end
@@ -328,6 +329,8 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   channel -.-> Report
   track -.-> Report
   release -.-> Report
+  T3 -.->|a comment| Report
+  C5 -.->|a comment| Report
   classDef page fill:#eef4ff,stroke:#3b82f6,color:#1e3a8a;
   classDef act fill:#fff7ed,stroke:#f97316,color:#7c2d12;
   class Sub,ChatPage,Sched,Tag,Venue page;
@@ -438,6 +441,55 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   classDef redir fill:#fff7ed,stroke:#f97316,color:#7c2d12;
   class Account,ArtistS,ChannelS,Bc,App sec;
   class Moved,Themes redir;
+`,
+  },
+  {
+    id: 'nuclear-support-reports-moderation-2026-10',
+    pack: 'nuclear',
+    source:
+      'SupportCenter · MySupportTickets · ReportButton · ContentReportsTab · notifications',
+    title: 'Support requests, reports and the moderation queue',
+    blurb:
+      'How a support request and a content report travel from the person who sends them to the board and back. A board reply reaches the requester as a notification and an email; a request sent while signed out is answered by email only.',
+    mermaid: `flowchart LR
+  subgraph help["/help/support · Help"]
+    H1["Contact support form"]
+    H2["Your requests · status · replies"]
+    H3["Reply box · reopens a resolved request"]
+  end
+  subgraph pages["Public pages"]
+    P1["Track · release · channel · artist · collection"]
+    P2["Track and channel comments"]
+    PR["Report dialog · reason · details"]
+  end
+  subgraph admin["/admin/moderation/:tab · board"]
+    M1["Support · ticket timeline · reply · status"]
+    M2["Content reports · link to the reported page · quoted comment"]
+    M3["Start review · mark actioned · dismiss"]
+    M4["Item removed notice"]
+  end
+  H1 --> M1
+  H2 --> H3
+  H3 --> M1
+  M1 -->|reply| N1["Notification · Tahti support replied"]
+  M1 -->|reply| N2["Email to the requester"]
+  N1 --> H2
+  P1 --> PR
+  P2 --> PR
+  PR --> M2
+  M2 --> M3
+  M2 -->|open| P1
+  M2 -.->|target gone| M4
+  subgraph notices["Other notification links"]
+    X1["Subscription ended"] --> S1["/subscribe/:username"]
+    X2["Subscription payment failed"] --> S2["/account"]
+  end
+  classDef page fill:#eef4ff,stroke:#3b82f6,color:#1e3a8a;
+  classDef act fill:#fff7ed,stroke:#f97316,color:#7c2d12;
+  classDef note fill:#ecfdf5,stroke:#10b981,color:#065f46;
+  class H1,H2,H3,P1,P2,M1,M2,S1,S2 page;
+  class PR,M3,M4 act;
+  class N1,N2,X1,X2 note;
 `,
   },
   {
