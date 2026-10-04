@@ -34,6 +34,8 @@ export type ApiToken = {
   tokenPrefix: string;
   scopes: Array<'read' | 'write'>;
   lastUsedAt: string | null;
+  /** Null or absent: the token never expires. */
+  expiresAt?: string | null;
   createdAt: string;
 };
 
@@ -74,6 +76,7 @@ export async function fetchApiTokens(): Promise<{
 export async function createApiToken(
   name: string,
   scopes: Array<'read' | 'write'>,
+  expiresInDays?: number,
 ): Promise<{ ok: true; data: CreatedApiToken } | { ok: false; error: string }> {
   if (isForceMock()) {
     const token: CreatedApiToken = {
@@ -82,6 +85,9 @@ export async function createApiToken(
       tokenPrefix: 'tk_live_mock',
       scopes,
       lastUsedAt: null,
+      expiresAt: expiresInDays
+        ? new Date(Date.now() + expiresInDays * 86_400_000).toISOString()
+        : null,
       createdAt: new Date().toISOString(),
       token: `tk_live_mock_${Date.now()}`,
     };
@@ -91,6 +97,7 @@ export async function createApiToken(
       tokenPrefix: token.tokenPrefix,
       scopes: token.scopes,
       lastUsedAt: token.lastUsedAt,
+      expiresAt: token.expiresAt,
       createdAt: token.createdAt,
     };
     mockTokens = [view, ...mockTokens];
@@ -99,7 +106,11 @@ export async function createApiToken(
   try {
     const data = await requestJson<CreatedApiToken>('/api/me/api-tokens', {
       method: 'POST',
-      body: JSON.stringify({ name, scopes }),
+      body: JSON.stringify({
+        name,
+        scopes,
+        ...(expiresInDays ? { expiresInDays } : {}),
+      }),
     });
     return { ok: true, data };
   } catch (error) {
