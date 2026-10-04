@@ -4222,3 +4222,15 @@ Slices from the todos added on 2026-10-04 (radio now-playing, leave warning, lis
 - **Player**: a refresh or tab close asks for confirmation while audio is playing (#494).
 - **Mock app**: `listener@tahti.live` signs in as a plain listener with no channel, membership or staff role (#498).
 - **Checks:** for each PR, tahti-web type-check, eslint on the changed files, the size guard and the touched tests. tahti-org ran Vitest for each touched route against a throwaway Postgres with `fetch` stubbed. Nothing was tried against the live API or the stations' real pages. `warn-before-leaving-while-playing.md` is done and deleted. Still open in their todo files: the remaining scrapers, the listener and signed-out audits, the duplicate radio add-ons and the queue button overlap.
+
+## 2026-10-04 - Ten slices, thirty-seventh batch (tahti-player #502-#506, tahti-org #701-#705)
+
+A sweep of what a personal API token may do, plus follow-ups on support tickets, moderators and radio.
+
+- **API tokens**: a token can no longer create or revoke tokens, set up or turn off 2FA, or ask for the account to be deleted; those need a browser session (`403 session_required`, tahti-org#701). Expired tokens no longer count toward the limit of 20 (tahti-org#702). The web can give a new token an expiry and shows when each one expires, with an "Expired" badge (#506). A board member's token still reaches every admin route; that is left as a decision.
+- **Support**: the admin list can return only tickets waiting on the board (`?awaitingReply=true`, tahti-org#704). Admin → Moderation → Support has a "Needs reply" filter (#502), and the dashboard's Open tickets card says how many need a reply (#503).
+- **Moderators (tahti-org#703)**: a new moderator gets a `MODERATOR_ADDED` notification. Suspended and deleted accounts cannot be made moderators and are left out of the list.
+- **Reports (tahti-org#705)**: the content-report queue filters by target type, e.g. only comments.
+- **Radio (#505)**: the player bar title shows what a catalog station is playing, with the station name on the second line.
+- **Tests (#504)**: the Channel Designer test unmounts its React roots. Left mounted, a late render failed the whole tahti-web test job with "window is not defined" on #492 and #499 although every test passed.
+- **Checks:** for each PR, tahti-web type-check, eslint on the changed files, the size guard and the touched tests. tahti-org ran Vitest for each touched route against a throwaway Postgres. Nothing was tried in a browser or against the live API. The #504 fix rests on the stack trace; the failure was never reproduced locally.
