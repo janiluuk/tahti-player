@@ -93,7 +93,9 @@ describe('SupportTab', () => {
     });
     await renderTab([ticket({ awaitingReply: true })]);
     expect(screen.getByText('Needs reply')).toBeTruthy();
-    const box = screen.getByRole('textbox', { name: /reply/i });
+    const box = await screen.findByRole('textbox', {
+      name: 'Reply to ticket',
+    });
     fireEvent.change(box, { target: { value: 'On it' } });
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: /^(Send|Reply)/ }));
