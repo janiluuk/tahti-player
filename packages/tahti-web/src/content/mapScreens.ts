@@ -1642,7 +1642,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         title: 'Channel design',
         viewName: 'Channel design',
         caption:
-          'Look, presets, accent — Settings → Channel & design → Channel Designer.',
+          'Look, presets, accent — Settings → Channel & chat → Channel Designer.',
         actions: [
           'Pick a visual preset',
           'Pick a brand accent',

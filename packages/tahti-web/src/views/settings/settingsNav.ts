@@ -51,15 +51,15 @@ export const SETTINGS_NAV: SettingsNavItem[] = [
   },
   {
     id: 'channel',
-    label: 'Channel & design',
-    description: 'Channel Designer, discovery, username, moderation',
+    label: 'Channel & chat',
+    description: 'Channel Designer, discovery, username, chat, moderators',
     Icon: Paintbrush,
     group: 'Settings',
   },
   {
     id: 'broadcast',
     label: 'Broadcast',
-    description: 'Radio, green room, moderators, multistream',
+    description: 'Radio, green room, multistream',
     Icon: Radio,
     group: 'Settings',
   },

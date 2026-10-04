@@ -1,4 +1,4 @@
-import { Cast, Mic, Radio as RadioIcon, Shield } from 'lucide-react';
+import { Cast, Mic, Radio as RadioIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -11,10 +11,8 @@ import {
 
 import {
   fetchGreenRoomPrefs,
-  fetchModerators,
   patchGreenRoomPrefs,
   type GreenRoomPrefs,
-  type ModeratorRow,
   type WireGreenRoomInvitePool,
 } from '../../../api/artist-settings';
 import {
@@ -44,18 +42,14 @@ export function BroadcastPanel({
   const closeSettings = useSettingsModalStore((s) => s.close);
   const [programme, setProgramme] = useState<ProgrammeView | null>(null);
   const [green, setGreen] = useState<GreenRoomPrefs | null>(null);
-  const [mods, setMods] = useState<ModeratorRow[]>([]);
 
   useEffect(() => {
-    void Promise.all([
-      fetchProgramme(),
-      fetchGreenRoomPrefs(),
-      fetchModerators(),
-    ]).then(([p, g, m]) => {
-      setProgramme(p.data);
-      setGreen(g.data);
-      setMods(m.data);
-    });
+    void Promise.all([fetchProgramme(), fetchGreenRoomPrefs()]).then(
+      ([p, g]) => {
+        setProgramme(p.data);
+        setGreen(g.data);
+      },
+    );
   }, []);
 
   // Both saves show the new value at once and put the old one back, with the
@@ -173,41 +167,6 @@ export function BroadcastPanel({
           >
             Broadcast
           </ButtonLink>
-        </div>
-      ),
-    },
-    {
-      id: 'moderators',
-      label: 'Moderators',
-      icon: <Shield size={14} />,
-      content: (
-        <div className="flex flex-col gap-4">
-          <SettingsHint>Chat moderators for your live channel.</SettingsHint>
-          {mods.length === 0 ? (
-            <SettingsHint>No moderators yet.</SettingsHint>
-          ) : (
-            <ul className="flex flex-col gap-2">
-              {mods.map((m) => (
-                <li
-                  key={m.id}
-                  className="border-border flex flex-wrap items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm"
-                >
-                  <span>
-                    {m.displayName} (@{m.username})
-                  </span>
-                  <span className="text-foreground-secondary text-xs">
-                    {m.canTimeout ? 'timeout' : ''}
-                    {m.canTimeout && m.canDelete ? ', ' : ''}
-                    {m.canDelete ? 'delete' : ''}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-          <SettingsHint>
-            View the current team here. Manage invitations and permissions from
-            your account on tahti.live.
-          </SettingsHint>
         </div>
       ),
     },

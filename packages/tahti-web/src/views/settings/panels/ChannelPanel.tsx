@@ -1,4 +1,10 @@
-import { Compass, Globe, Paintbrush, Shield } from 'lucide-react';
+import {
+  Compass,
+  Globe,
+  MessageSquare,
+  Paintbrush,
+  Shield,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -18,6 +24,9 @@ import {
 } from '../../../api/studio-extras';
 import { ClientCapabilityNotice } from '../../../components/ClientCapabilityNotice';
 import { GenrePicker } from '../../../components/GenrePicker';
+import { ChannelModeratorsPanel } from '../../../components/moderation/ChannelModeratorsPanel';
+import { ChatAccessPanel } from '../../../components/moderation/ChatAccessPanel';
+import { ChatBansPanel } from '../../../components/moderation/ChatBansPanel';
 import {
   formatGenreTags,
   MAX_GENRES,
@@ -27,7 +36,6 @@ import {
 import { useAuthStore } from '../../../stores/authStore';
 import { useChannelShareStore } from '../../../stores/channelShareStore';
 import { StudioBrandingPanel } from '../../studio/StudioBrandingView';
-import { StudioModerationView } from '../../studio/StudioModerationView';
 import { SettingsHint, SettingsToggle } from '../SettingsFields';
 import { channelRenameNote } from './channelRenameNote';
 
@@ -53,6 +61,26 @@ export function ChannelPanel() {
     });
     setSlug(channel?.slug ?? user?.username ?? '');
   }, [channel?.slug, user?.username]);
+
+  const saveChatSetting = (
+    key: 'chatEnabled' | 'showDailyListeners',
+    value: boolean,
+  ) => {
+    if (!channelProfile) {
+      return;
+    }
+    const previous = channelProfile;
+    setChannelProfile({ ...previous, [key]: value });
+    void patchMeProfile({ [key]: value }).then((result) => {
+      if (!result.ok) {
+        setChannelProfile(previous);
+        toast.error(result.error);
+        return;
+      }
+      setChannelProfile(result.data);
+      toast.success('Chat setting saved.');
+    });
+  };
 
   if (!user) {
     return (
@@ -152,30 +180,6 @@ export function ChannelPanel() {
                   You can&apos;t change these discovery settings yet.
                 </ClientCapabilityNotice>
               </div>
-              <SettingsToggle
-                label="Enable live chat on my channel"
-                description="Allow listeners to chat while you are broadcasting."
-                value={channelProfile.chatEnabled}
-                onChange={(value) => {
-                  const previous = channelProfile.chatEnabled;
-                  setChannelProfile({
-                    ...channelProfile,
-                    chatEnabled: value,
-                  });
-                  void patchMeProfile({ chatEnabled: value }).then((result) => {
-                    if (!result.ok) {
-                      setChannelProfile({
-                        ...channelProfile,
-                        chatEnabled: previous,
-                      });
-                      toast.error(result.error);
-                      return;
-                    }
-                    setChannelProfile(result.data);
-                    toast.success('Channel chat setting saved.');
-                  });
-                }}
-              />
             </div>
           ),
         },
@@ -268,10 +272,41 @@ export function ChannelPanel() {
           ),
         },
         {
-          id: 'moderation',
-          label: 'Moderation',
+          id: 'chat',
+          label: 'Chat',
+          icon: <MessageSquare size={14} />,
+          content: (
+            <div className="flex flex-col gap-6">
+              {!channelProfile ? (
+                <SettingsHint>Loading…</SettingsHint>
+              ) : (
+                <div className="flex flex-col gap-5">
+                  <SettingsToggle
+                    label="Enable live chat on my channel"
+                    description="Allow listeners to chat while you are broadcasting."
+                    value={channelProfile.chatEnabled}
+                    onChange={(value) => saveChatSetting('chatEnabled', value)}
+                  />
+                  <SettingsToggle
+                    label="Show today’s listener count in my chat"
+                    description="Listeners see how many people tuned in today."
+                    value={channelProfile.showDailyListeners ?? true}
+                    onChange={(value) =>
+                      saveChatSetting('showDailyListeners', value)
+                    }
+                  />
+                </div>
+              )}
+              <ChatAccessPanel />
+              <ChatBansPanel />
+            </div>
+          ),
+        },
+        {
+          id: 'moderators',
+          label: 'Moderators',
           icon: <Shield size={14} />,
-          content: <StudioModerationView embedded />,
+          content: <ChannelModeratorsPanel />,
         },
       ]}
     />
