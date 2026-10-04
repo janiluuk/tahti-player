@@ -2,6 +2,7 @@
 import { parseArgs } from 'node:util';
 
 import { CliError, resolveConfig } from './api-client.mjs';
+import { runImport } from './commands/import.mjs';
 import { LIBRARY_SORTS, runLibraryList } from './commands/library-list.mjs';
 import { runLibraryShow } from './commands/library-show.mjs';
 import { runReleasesList } from './commands/releases-list.mjs';
@@ -92,11 +93,44 @@ TAHTI_API_TOKEN and never sends it. Words after "search" form one query.
         limit: values.limit,
       }),
   },
+  {
+    path: ['import'],
+    usage: 'tahti import <folder> [--recursive] [--dry-run] [--force] [--json]',
+    summary: 'Upload the audio files in a folder to your library',
+    details: `Uploads each audio file (mp3, flac, wav, aiff, m4a, aac, ogg, opus) as a new
+sound, titled after its file name. Files whose title is already in your library
+are skipped, so running it again only sends what is new. Needs a token with
+the write scope. Exits with 1 when any file fails.
+  --recursive   Include subfolders
+  --dry-run     List what would be uploaded without sending anything
+  --force       Upload even when the title is already in your library`,
+    options: {
+      ...JSON_OPTION,
+      recursive: { type: 'boolean', default: false },
+      'dry-run': { type: 'boolean', default: false },
+      force: { type: 'boolean', default: false },
+    },
+    positionals: 1,
+    run: (config, { values, positionals }) => {
+      if (!positionals[0]) {
+        throw new CliError(
+          'Missing folder.\nRun `tahti import --help` for usage.',
+        );
+      }
+      return runImport(config, positionals[0], {
+        json: values.json,
+        recursive: values.recursive,
+        dryRun: values['dry-run'],
+        force: values.force,
+      });
+    },
+  },
 ];
 
 const ENVIRONMENT_HELP = `Environment:
   TAHTI_API_TOKEN   Personal API token (tahti.live → Settings → Account → API tokens).
-                    Required by every command except search.
+                    Required by every command except search; import needs
+                    the write scope.
   TAHTI_API_URL     API base URL (default: https://api.tahti.live)`;
 
 function commandList() {
@@ -183,9 +217,15 @@ export async function main(argv) {
   }
 
   const parsed = parseCommandArgs(command, args);
-  const output = await command.run(resolveConfig(), parsed);
-  console.log(output);
-  return 0;
+  // A command returns its output, or `{ output, exitCode }` when it can
+  // finish with something to show and still have failed (a partial import).
+  const result = await command.run(resolveConfig(), parsed);
+  if (typeof result === 'string') {
+    console.log(result);
+    return 0;
+  }
+  console.log(result.output);
+  return result.exitCode;
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

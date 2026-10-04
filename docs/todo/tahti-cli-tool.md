@@ -82,3 +82,11 @@ this environment) — the token-required path is covered by tests mocking
   - **User actions:** `NPM_TOKEN` secret in tahti-org (publish rights on the `@tahti` npm scope; scope ownership not checked), optionally `TAHTI_CLI_DISPATCH_TOKEN` (Contents: write on tahti-cli).
 - **After the new repo builds:** remove `packages/tahti-cli` from this repo and move this todo to tahti-cli.
 
+
+## 2026-10-04: status check and `tahti import <folder>`
+
+- **Shipped:** `tahti import <folder> [--recursive] [--dry-run] [--force] [--json]` uploads each audio file in a folder as a new library sound through `POST /api/uploads/prepare`, the presigned storage `PUT` and `POST /api/uploads/complete`. Titles come from file names, titles already in the library are skipped, a failed file does not stop the rest, and the exit code is 1 when any file failed. It is the first write command, so it needs a token with the `write` scope. Tested with a temp folder and mocked `fetch`; not run against the live API or real storage.
+- **Standalone repo status:** `janiluuk/tahti-cli` `main` still equals `packages/tahti-cli` here and cannot install on its own (it depends on the workspace eslint config). Draft tahti-cli#1 is unchanged since 2026-09-26.
+- **Still blocked on the user:** tahti-org#564 is merged, but `@tahti/api-client` is not on npm yet (`npm view` returns 404). The publish job needs the `NPM_TOKEN` secret and the `@tahti` npm scope. Until the first publish, tahti-cli#1 cannot install or build.
+- **Left to port, in order:** (1) after the first SDK publish, finish tahti-cli#1: convert `src/*.mjs` to TypeScript on `createTahtiClient`, commit a lockfile, update the README; (2) carry `import` over to the standalone repo (opened as a PR against its `main` so it does not fall behind); (3) remove `packages/tahti-cli` from this repo and move this todo.
+- **Not done in `import`:** reading tags or artwork from the files, resumable or parallel uploads, adding the uploads to a release or collection.
