@@ -4189,3 +4189,13 @@ A sweep of comments, content reports, support requests and the press kit, plus o
 - **Press kit**: the public press kit JSON, gallery and zip no longer serve deleted or suspended artists (tahti-org#691).
 - **Also**: tahti-org#564 (publish `@tahti/api-client` to npm) was merged with `main`, checked with `actionlint` and a local pack and smoke test, and marked ready. It still needs `NPM_TOKEN` and the `@tahti` npm scope. #475 and #476 were rebased and got a regenerated `STORYBOOK-SURFACES.md`.
 - **Checks:** for each PR, tahti-web type-check, eslint on the changed files, the size guard and the touched tests. tahti-org ran Vitest for each touched route or job against a throwaway Postgres (mail mocked). Nothing was tried in a browser, against the live API or with real mail. The Storybook plays job crashed Chromium once on #478 ("Browser connection was closed"), unrelated to the change.
+
+## 2026-10-04 - Atlas graphs and all screenshots refreshed
+
+Part of `docs/todo/storybook-parity-and-atlas-refresh.md` (still open for the remaining Storybook chunks).
+
+- **Tahti map graphs**: a new graph shows how support requests and content reports reach the board and come back (reply notification and email, links to the reported page). The public-pages graph and the track, help and moderation screen entries cover comment reports and support replies.
+- **Screenshots**: the atlas (`public/map/nuclear/`), README guide (`docs/readme-shots/`) and redesign shots (`docs/redesign-shots/`) were recaptured from the mock app in the Spotify theme, dark and light. 177 new files are per-tab shots of pages that gained tabs.
+- **Capture scripts**: the fan-subs atlas shot follows `/settings/audience` to Studio → Audience. The README guide capture waits for page content and retries a blank or crashed page in a fresh browser, after Chromium died on a few pages in every run.
+- **Checks:** Mermaid parse tests, tahti-web type-check, eslint and Prettier on the changed sources, the size guard, and a look at the smallest and a sample of the new images. Older orphan screenshots for tabs that no longer exist were not removed.
+
