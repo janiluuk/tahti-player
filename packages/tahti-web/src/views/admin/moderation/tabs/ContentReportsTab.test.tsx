@@ -1,9 +1,16 @@
 // @vitest-environment jsdom
-import { act, cleanup, render, screen } from '@testing-library/react';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+} from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as api from '../../../../api/admin/admin-content-reports';
 import type { AdminContentReportRow } from '../../../../api/admin/admin-content-reports';
+import * as comments from '../../../../api/comments';
 import { ContentReportsTab } from './ContentReportsTab';
 
 function report(
@@ -68,5 +75,46 @@ describe('ContentReportsTab', () => {
       screen.queryByText('The reported item has been removed.'),
     ).toBeNull();
     expect(screen.queryByRole('link')).toBeNull();
+  });
+
+  it('deletes a reported comment after a confirm and closes the report', async () => {
+    const remove = vi
+      .spyOn(comments, 'deleteComment')
+      .mockResolvedValue({ ok: true });
+    const resolve = vi
+      .spyOn(api, 'resolveContentReport')
+      .mockResolvedValue({ ok: true } as never);
+    await renderTab([
+      report({
+        targetLabel: 'Comment by @fan',
+        targetUrl: '/t/s1',
+        targetExcerpt: 'a rude comment',
+      }),
+    ]);
+    fireEvent.click(screen.getByRole('button', { name: 'Delete comment' }));
+    expect(remove).not.toHaveBeenCalled();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Confirm delete' }));
+    });
+    expect(remove).toHaveBeenCalledWith('c1');
+    expect(resolve).toHaveBeenCalledWith('r1', 'ACTIONED', 'Comment deleted');
+  });
+
+  it('offers no delete for other targets or a comment that is gone', async () => {
+    await renderTab([
+      report({
+        id: 'r2',
+        targetType: 'SOUND_ITEM',
+        targetLabel: 'Night Drive',
+        targetUrl: '/t/s1',
+      }),
+      report({
+        id: 'r3',
+        targetLabel: null,
+        targetUrl: null,
+        targetExcerpt: null,
+      }),
+    ]);
+    expect(screen.queryByRole('button', { name: 'Delete comment' })).toBeNull();
   });
 });
