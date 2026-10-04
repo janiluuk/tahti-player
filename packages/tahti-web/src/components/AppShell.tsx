@@ -505,17 +505,11 @@ export function AppShell() {
     toggleTour,
   ]);
 
-  // The artist's own public profile is meant to feel like a standalone page
-  // (a link people share), not an internal app screen: no sidebar, no
-  // management icons -- just the Tahti logo (back to the app) plus compact
-  // nav icons for signed-in visitors.
-  const isArtistPage = /^\/u\/[^/]+/.test(pathname);
-
   return (
     <PlayerShell className={isMobile ? 'tahti-mobile-shell' : undefined}>
       {!fullScreenPlayerOpen && (
         <AppTopNav
-          showMenuButton={isMobile && !isArtistPage}
+          showMenuButton={isMobile}
           onOpenMenu={() => setMobileNavOpen(true)}
         />
       )}
@@ -545,27 +539,12 @@ export function AppShell() {
             </RouteContent>
           </div>
           {!fullScreenPlayerOpen && <ConnectedPlayerBar />}
-          {!isArtistPage && !mobileNavHidden && (
+          {!mobileNavHidden && (
             <MobileBottomNav
               onOpenMore={() => setMobileNavOpen(true)}
               moreOpen={mobileNavOpen}
             />
           )}
-        </div>
-      ) : isArtistPage ? (
-        <div
-          className={cn(
-            'tahti-ambient-surface min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto',
-            MAIN_CONTENT_PADDING,
-          )}
-          data-studio-shell
-        >
-          <RouteContent>
-            <RouteTransition
-              key={userId ?? 'anonymous'}
-              fast={fastNavigationRoute}
-            />
-          </RouteContent>
         </div>
       ) : (
         <PlayerWorkspace className="tahti-ambient-surface">
