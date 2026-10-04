@@ -235,7 +235,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           image: '/map/nuclear/listen.png',
           route: '/',
           caption: 'Nuclear Listen hub',
-          capturedAt: '2026-09-16',
+          capturedAt: '2026-10-04',
         },
       },
       {
@@ -298,7 +298,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/channel/$slug',
           caption:
             'Nuclear channel (live or archive) — current shot happens to show an offline demo channel; see the offline case below for the intended state.',
-          capturedAt: '2026-09-16',
+          capturedAt: '2026-10-04',
         },
         storybookUrl: storybookStory('Tahti/Channel/ChannelView', 'Visitor'),
       },
@@ -334,7 +334,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           image: '/map/nuclear/channel.png',
           route: '/channel/$slug',
           caption: 'Same route; archive library tab',
-          capturedAt: '2026-09-16',
+          capturedAt: '2026-10-04',
         },
         storybookUrl: storybookStory('Tahti/Channel/ChannelView', 'Visitor'),
       },
@@ -405,7 +405,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           image: '/map/nuclear/profile.png',
           route: '/u/$username',
           caption: 'Nuclear profile tabs',
-          capturedAt: '2026-09-16',
+          capturedAt: '2026-10-04',
         },
       },
       {
@@ -1018,7 +1018,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           image: '/map/nuclear/listen.png',
           route: '/',
           caption: 'Nuclear defaults to Listen shell',
-          capturedAt: '2026-09-16',
+          capturedAt: '2026-10-04',
         },
       },
       {
@@ -1145,7 +1145,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/studio',
           caption:
             'Nuclear studio hub — shot from a real beta admin account with no content yet, so plays/broadcasts read zero.',
-          capturedAt: '2026-09-16',
+          capturedAt: '2026-10-04',
         },
       },
       {
@@ -2389,7 +2389,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/admin',
           caption:
             'Nuclear Admin dashboard — real beta admin session, live platform KPIs.',
-          capturedAt: '2026-09-16',
+          capturedAt: '2026-10-04',
         },
         storybookUrl: storybookStory(
           'Tahti/Admin/AdminDashboardView',
@@ -2413,7 +2413,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           route: '/admin/users',
           caption:
             'Nuclear user admin — real beta admin session, real (beta-seeded) accounts.',
-          capturedAt: '2026-09-16',
+          capturedAt: '2026-10-04',
         },
         storybookUrl: storybookStory('Tahti/Admin/AdminUsersView', 'Default'),
       },

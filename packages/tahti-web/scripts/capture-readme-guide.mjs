@@ -655,6 +655,22 @@ async function recreatePage() {
   await seedSession();
 }
 
+/** Waits until the page has real content and no loading placeholder, so a
+ * slow first paint is not captured as a blank or "Loading…" screen. */
+async function waitForSettled() {
+  await page
+    .waitForFunction(
+      () => {
+        const text = document.body.innerText.trim();
+        return text.length > 40 && !/Loading\b/.test(text);
+      },
+      undefined,
+      { timeout: 12000 },
+    )
+    .catch(() => {});
+  await page.waitForTimeout(800);
+}
+
 async function captureShot(imagePath) {
   try {
     await page.screenshot({ path: imagePath, fullPage: false, type: 'png' });
@@ -678,59 +694,78 @@ async function captureShot(imagePath) {
 await seedSession();
 
 const results = [];
+// Chromium sometimes dies mid-run on the heavier pages; a shot that fails
+// outright gets one more go in a fresh browser before it is recorded as failed.
+const SHOT_ATTEMPTS = 2;
+
 for (const [path, file, title, narration] of routes) {
-  const errors = [];
-  const onConsole = (message) => {
-    if (message.type() === 'error') {
-      errors.push(message.text());
-    }
-  };
-  try {
-    if (page.isClosed()) {
-      await recreatePage();
-    }
-    page.on('console', onConsole);
-    await page.goto(`${BASE}${path}`, {
-      waitUntil: 'domcontentloaded',
-      timeout: 30000,
-    });
-    await page.waitForTimeout(800);
-    const bodyText = await page.locator('body').innerText();
-    const imagePath = join(outputDirectory, withThemeSuffix(`${file}.png`));
-    const ok = await captureShot(imagePath);
-    if (!ok) {
-      await recreatePage();
+  for (let attempt = 1; attempt <= SHOT_ATTEMPTS; attempt += 1) {
+    const errors = [];
+    const onConsole = (message) => {
+      if (message.type() === 'error') {
+        errors.push(message.text());
+      }
+    };
+    try {
+      if (page.isClosed()) {
+        await recreatePage();
+      }
+      page.on('console', onConsole);
       await page.goto(`${BASE}${path}`, {
         waitUntil: 'domcontentloaded',
         timeout: 30000,
       });
-      await page.waitForTimeout(800);
-      await captureShot(imagePath);
+      await waitForSettled();
+      const bodyText = await page.locator('body').innerText();
+      if (bodyText.trim().length <= 40 && attempt < SHOT_ATTEMPTS) {
+        // A blank page here is a renderer that died without closing the tab.
+        console.error(`retry ${file}: page stayed blank`);
+        await browser.close().catch(() => {});
+        await recreatePage().catch(() => {});
+        continue;
+      }
+      const imagePath = join(outputDirectory, withThemeSuffix(`${file}.png`));
+      const ok = await captureShot(imagePath);
+      if (!ok) {
+        await recreatePage();
+        await page.goto(`${BASE}${path}`, {
+          waitUntil: 'domcontentloaded',
+          timeout: 30000,
+        });
+        await waitForSettled();
+        await captureShot(imagePath);
+      }
+      results.push({
+        path,
+        file: `${file}.png`,
+        id: file,
+        title,
+        narration,
+        hasContent: bodyText.trim().length > 40,
+        errors: errors.slice(0, 3),
+      });
+      console.log(`${file}: ${bodyText.trim().length} chars`);
+      break;
+    } catch (error) {
+      if (attempt < SHOT_ATTEMPTS) {
+        console.error(`retry ${file}: ${error.message.split('\n')[0]}`);
+        await recreatePage().catch(() => {});
+        continue;
+      }
+      console.error(`fail ${file}: ${error.message}`);
+      results.push({
+        path,
+        file: `${file}.png`,
+        id: file,
+        title,
+        narration,
+        hasContent: false,
+        errors: [error.message],
+      });
+      await recreatePage().catch(() => {});
+    } finally {
+      page.off('console', onConsole);
     }
-    results.push({
-      path,
-      file: `${file}.png`,
-      id: file,
-      title,
-      narration,
-      hasContent: bodyText.trim().length > 40,
-      errors: errors.slice(0, 3),
-    });
-    console.log(`${file}: ${bodyText.trim().length} chars`);
-  } catch (error) {
-    console.error(`fail ${file}: ${error.message}`);
-    results.push({
-      path,
-      file: `${file}.png`,
-      id: file,
-      title,
-      narration,
-      hasContent: false,
-      errors: [error.message],
-    });
-    await recreatePage();
-  } finally {
-    page.off('console', onConsole);
   }
 }
 
