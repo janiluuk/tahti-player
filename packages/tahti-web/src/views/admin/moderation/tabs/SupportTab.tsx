@@ -74,11 +74,20 @@ export function SupportTab() {
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
-  const applyTicketPatch = (updated: AdminSupportTicketDetail) => {
+  const applyTicketPatch = (
+    updated: AdminSupportTicketDetail,
+    answered = updated.status === 'RESOLVED',
+  ) => {
     setDetail(updated);
     setTickets((current) =>
       current.map((row) =>
-        row.id === updated.id ? { ...row, status: updated.status } : row,
+        row.id === updated.id
+          ? {
+              ...row,
+              status: updated.status,
+              awaitingReply: answered ? false : row.awaitingReply,
+            }
+          : row,
       ),
     );
   };
@@ -154,7 +163,7 @@ export function SupportTab() {
         setMsg(r.error);
         return;
       }
-      applyTicketPatch(r.data);
+      applyTicketPatch(r.data, true);
       setReply('');
     });
   };
@@ -198,10 +207,11 @@ export function SupportTab() {
                 const badge = statusBadge(t.status);
                 return (
                   <li key={t.id}>
-                    <button
-                      type="button"
+                    <Button
+                      variant="text"
+                      size="flexible"
                       onClick={() => setSelectedId(t.id)}
-                      className={`w-full px-3 py-2.5 text-left text-sm ${
+                      className={`block w-full rounded-none px-3 py-2.5 text-left text-sm font-normal whitespace-normal active:scale-100 ${
                         selectedId === t.id ? 'bg-background-secondary' : ''
                       }`}
                     >
@@ -209,15 +219,22 @@ export function SupportTab() {
                         <span className="min-w-0 truncate font-medium">
                           {t.subject}
                         </span>
-                        <Badge variant="pill" color={badge.color}>
-                          {badge.label}
-                        </Badge>
+                        <span className="flex shrink-0 items-center gap-1.5">
+                          {t.awaitingReply ? (
+                            <Badge variant="pill" color="red">
+                              Needs reply
+                            </Badge>
+                          ) : null}
+                          <Badge variant="pill" color={badge.color}>
+                            {badge.label}
+                          </Badge>
+                        </span>
                       </div>
                       <div className="text-foreground-secondary truncate text-xs">
                         {requesterLabel(t)} · {t.category} ·{' '}
                         {new Date(t.createdAt).toLocaleDateString()}
                       </div>
-                    </button>
+                    </Button>
                   </li>
                 );
               })}
