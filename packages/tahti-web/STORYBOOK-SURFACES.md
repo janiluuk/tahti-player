@@ -33,6 +33,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Admin/AdminTopListsView` | `tahti-web/AdminTopListsView.stories.tsx` |
 | `Tahti/Admin/AdminUsersView` | `tahti-web/AdminUsersView.stories.tsx` |
 | `Tahti/Admin/AdminVendorsView` | `tahti-web/AdminVendorsView.stories.tsx` |
+| `Tahti/Track/AiGeneratedBadge` | `tahti-web/AiGeneratedBadge.stories.tsx` |
 | `Tahti/Chrome/API connection` | `tahti-web/ApiConnectionIndicator.stories.tsx` |
 | `Tahti/Chrome/AppShell` | `tahti-web/AppShell.stories.tsx` |
 | `Tahti/Chrome/AppTopNav` | `tahti-web/AppTopNav.stories.tsx` |
@@ -81,6 +82,8 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Widgets/DiscoWidgetManagerPanel` | `tahti-web/DiscoWidgetManagerPanel.stories.tsx` |
 | `Tahti/Widgets/DiscoWidgetsSection` | `tahti-web/DiscoWidgetsSection.stories.tsx` |
 | `Tahti/Discover/DiscoverGatewayBackground` | `tahti-web/DiscoverGatewayBackground.stories.tsx` |
+| `Tahti/Track/DownloadGateDialog` | `tahti-web/DownloadGateDialog.stories.tsx` |
+| `Tahti/Track/DownloadsSwitch` | `tahti-web/DownloadsSwitch.stories.tsx` |
 | `Tahti/Reference/Element locations` | `tahti-web/ElementLocations.stories.tsx` |
 | `Tahti/Media/EmbedButton` | `tahti-web/EmbedButton.stories.tsx` |
 | `Tahti/Media/EmbedTrackRow` | `tahti-web/EmbedTrackRow.stories.tsx` |
@@ -138,6 +141,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/Updates/PostDialog` | `tahti-web/PostDialog.stories.tsx` |
 | `Tahti/Studio/Updates/PostPreview` | `tahti-web/PostPreview.stories.tsx` |
 | `Tahti/Studio/Branding/PressKitPreview` | `tahti-web/PressKitPreview.stories.tsx` |
+| `Tahti/Studio/ProcessingFailedAlert` | `tahti-web/ProcessingFailedAlert.stories.tsx` |
 | `Tahti/Misc/ProviderSetImportDialog` | `tahti-web/ProviderSetImportDialog.stories.tsx` |
 | `Tahti/Studio/RadioBookingCalendar` | `tahti-web/RadioBookingCalendar.stories.tsx` |
 | `Tahti/Settings/RadioBrowserDirectory` | `tahti-web/RadioBrowserDirectory.stories.tsx` |
@@ -147,6 +151,8 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Admin/RadioStationSuggestionsTab` | `tahti-web/RadioStationSuggestionsTab.stories.tsx` |
 | `Tahti/Listen/RadioStationView` | `tahti-web/RadioStationView.stories.tsx` |
 | `Tahti/Studio/Home/RecentBroadcastRow` | `tahti-web/RecentBroadcastRow.stories.tsx` |
+| `Tahti/Studio/ReleasePinButton` | `tahti-web/ReleasePinButton.stories.tsx` |
+| `Tahti/Studio/ReleaseTrackAudioUpload` | `tahti-web/ReleaseTrackAudioUpload.stories.tsx` |
 | `Tahti/Track/ReleaseTracklistDialog` | `tahti-web/ReleaseTracklistDialog.stories.tsx` |
 | `Tahti/Settings/ReleaseVisualDefaultsPanel` | `tahti-web/ReleaseVisualDefaultsPanel.stories.tsx` |
 | `Tahti/Studio/ReleasesPanel` | `tahti-web/ReleasesPanel.stories.tsx` |
@@ -175,21 +181,27 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/StudioNav` | `tahti-web/StudioNav.stories.tsx` |
 | `Tahti/Page/StudioPanel` | `tahti-web/StudioPanel.stories.tsx` |
 | `Tahti/Studio/StudioPlaylistsView` | `tahti-web/StudioPlaylistsView.stories.tsx` |
+| `Tahti/Studio/StudioReleaseDetailView` | `tahti-web/StudioReleaseDetailView.stories.tsx` |
 | `Tahti/Studio/StudioScheduleView` | `tahti-web/StudioScheduleView.stories.tsx` |
+| `Tahti/Studio/StudioSoundView` | `tahti-web/StudioSoundView.stories.tsx` |
 | `Tahti/Studio/StudioSoundsView` | `tahti-web/StudioSoundsView.stories.tsx` |
 | `Tahti/Studio/StudioStripeView` | `tahti-web/StudioStripeView.stories.tsx` |
 | `Tahti/Studio/StudioUpdatesView` | `tahti-web/StudioUpdatesView.stories.tsx` |
+| `Tahti/Track/SubgenreTagInput` | `tahti-web/SubgenreTagInput.stories.tsx` |
 | `Tahti/Misc/SupportContactForm` | `tahti-web/SupportContactForm.stories.tsx` |
+| `Tahti/Track/TagChipInput` | `tahti-web/TagChipInput.stories.tsx` |
 | `Tahti/Misc/TahtiLogo` | `tahti-web/TahtiLogo.stories.tsx` |
 | `Tahti/Studio/TahtiRotationPlaylistEditor` | `tahti-web/TahtiRotationPlaylistEditor.stories.tsx` |
 | `Tahti/Settings/ThemeEditor` | `tahti-web/ThemeEditor.stories.tsx` |
 | `Tahti/Settings/ThemeVisualizationSettings` | `tahti-web/ThemeVisualizationSettings.stories.tsx` |
 | `Tahti/Track/TimelineReactionBar` | `tahti-web/TimelineReactionBar.stories.tsx` |
+| `Tahti/Track/TrackAccessGate` | `tahti-web/TrackAccessGate.stories.tsx` |
 | `Tahti/Track/TrackDetailView` | `tahti-web/TrackDetailView.stories.tsx` |
 | `Tahti/Track/TrackEditDialog` | `tahti-web/TrackEditDialog.stories.tsx` |
 | `Tahti/Track/TrackExportPanel` | `tahti-web/TrackExportPanel.stories.tsx` |
 | `Tahti/Track/TrackInfoDialog` | `tahti-web/TrackInfoDialog.stories.tsx` |
 | `Tahti/Studio/TrackInsightsPanel` | `tahti-web/TrackInsightsPanel.latest.stories.tsx` |
+| `Tahti/Track/TrackTagInput` | `tahti-web/TrackTagInput.stories.tsx` |
 | `Tahti/Studio/TracklistEditor` | `tahti-web/TracklistEditor.stories.tsx` |
 | `Tahti/Track/UploadTrackDialog` | `tahti-web/UploadTrackDialog.stories.tsx` |
 | `Tahti/Player/WaveformCanvas` | `tahti-web/WaveformCanvas.stories.tsx` |

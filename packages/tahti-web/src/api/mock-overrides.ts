@@ -7,7 +7,11 @@
  * shared fixtures in mock.ts. The app itself never sets overrides, so with
  * an empty registry every fixture passes through unchanged.
  */
-import type { StudioCollection, StudioSound } from './studio-types';
+import type {
+  StudioCollection,
+  StudioReleaseList,
+  StudioSound,
+} from './studio-types';
 import type {
   Announcement,
   ChannelDirectoryResponse,
@@ -51,6 +55,7 @@ export interface MockFixtures {
   smartLink: { data: SmartLinkView; args: [smartLinkSlug: string] };
   soundItems: { data: ChannelSoundItem[]; args: [slug: string] };
   studioCollections: { data: StudioCollection[]; args: [] };
+  studioReleases: { data: StudioReleaseList; args: [] };
   studioSounds: { data: StudioSound[]; args: [] };
   topTracks: { data: DiscoverTrackItem[]; args: [sort: 'asc' | 'desc'] };
   trackComments: { data: TrackComment[]; args: [id: string] };
