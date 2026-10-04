@@ -1,7 +1,11 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "types": ["vite/client", "vite-plugin-svgr/client", "vitest/globals"]
+    "types": [
+      "vite/client",
+      "vite-plugin-svgr/client",
+      "vitest/globals"
+    ]
   },
   "include": [
     "src/tahti-web/SectionNavigation.stories.tsx",
@@ -11,23 +15,39 @@
     "src/tahti-web/ImageUploadField.stories.tsx",
     "src/tahti-web/RoundImageUploadButton.stories.tsx",
     "src/tahti-web/TrackDetailView.stories.tsx",
-    "src/tahti-web/_fixtures/track-release.tsx",
+    "src/tahti-web/_fixtures/**/*",
     "src/tahti-web/AiGeneratedBadge.stories.tsx",
+    "src/tahti-web/AlbumPlayPromptDialog.stories.tsx",
+    "src/tahti-web/ArtistBackgroundMusicButton.stories.tsx",
+    "src/tahti-web/ArtistCredits.stories.tsx",
+    "src/tahti-web/ArtistLikes.stories.tsx",
+    "src/tahti-web/ArtistNews.stories.tsx",
+    "src/tahti-web/ArtistReposts.stories.tsx",
+    "src/tahti-web/ArtistSupportNote.stories.tsx",
+    "src/tahti-web/ArtistUpcomingEvents.stories.tsx",
+    "src/tahti-web/ArtistView.stories.tsx",
+    "src/tahti-web/CollaborativePlaylistAdd.stories.tsx",
+    "src/tahti-web/CollectionView.stories.tsx",
+    "src/tahti-web/DiscoverView.stories.tsx",
     "src/tahti-web/DownloadGateDialog.stories.tsx",
     "src/tahti-web/DownloadsSwitch.stories.tsx",
+    "src/tahti-web/ListenView.stories.tsx",
     "src/tahti-web/ProcessingFailedAlert.stories.tsx",
     "src/tahti-web/ReleasePinButton.stories.tsx",
     "src/tahti-web/ReleaseTrackAudioUpload.stories.tsx",
+    "src/tahti-web/SmartLinkView.stories.tsx",
     "src/tahti-web/StudioReleaseDetailView.stories.tsx",
     "src/tahti-web/StudioSoundView.stories.tsx",
     "src/tahti-web/StudioSoundsView.stories.tsx",
     "src/tahti-web/SubgenreTagInput.stories.tsx",
     "src/tahti-web/TagChipInput.stories.tsx",
+    "src/tahti-web/TagSearchView.stories.tsx",
     "src/tahti-web/TrackAccessGate.stories.tsx",
     "src/tahti-web/TrackEditDialog.stories.tsx",
     "src/tahti-web/TrackInfoDialog.stories.tsx",
     "src/tahti-web/TrackTagInput.stories.tsx",
     "src/tahti-web/UploadTrackDialog.stories.tsx",
+    "src/tahti-web/VenueDetailView.stories.tsx",
     ".storybook/preview.ts",
     "vitest.config.ts",
     "../tahti-web/src/vite-env.d.ts"
