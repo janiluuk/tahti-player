@@ -141,8 +141,11 @@ function toSupportTicketRow(t: AdminSupportTicketDetail): AdminSupportTicket {
 export async function fetchAdminSupportTickets(params?: {
   status?: AdminSupportStatus;
   q?: string;
+  /** Only unresolved tickets where the next move is the board's. */
+  awaitingReply?: boolean;
 }): Promise<{ data: AdminSupportTicket[]; meta: FetchMeta }> {
   const status = params?.status;
+  const awaitingReply = params?.awaitingReply === true;
   const q = params?.q?.trim();
   if (isForceMock()) {
     let data = getMockSupportTickets();
@@ -160,8 +163,9 @@ export async function fetchAdminSupportTickets(params?: {
           (t.contactEmail ?? '').toLowerCase().includes(needle),
       );
     }
+    const rows = data.map(toSupportTicketRow);
     return {
-      data: data.map(toSupportTicketRow),
+      data: awaitingReply ? rows.filter((row) => row.awaitingReply) : rows,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
@@ -172,6 +176,9 @@ export async function fetchAdminSupportTickets(params?: {
     }
     if (q) {
       qs.set('q', q);
+    }
+    if (awaitingReply) {
+      qs.set('awaitingReply', 'true');
     }
     const data = await getJson<{ tickets: AdminSupportTicket[] }>(
       `/api/admin/support/tickets?${qs.toString()}`,

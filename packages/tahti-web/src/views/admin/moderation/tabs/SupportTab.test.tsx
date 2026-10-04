@@ -48,6 +48,13 @@ async function renderTab(rows: AdminSupportTicket[]) {
   await screen.findByRole('button', { name: new RegExp(rows[0]!.subject) });
 }
 
+/** The badges on ticket rows; the filter tab of the same name is not one. */
+function needsReplyBadges() {
+  return screen
+    .getAllByRole('listitem')
+    .flatMap((row) => within(row).queryAllByText('Needs reply'));
+}
+
 describe('SupportTab', () => {
   afterEach(() => {
     cleanup();
@@ -62,7 +69,7 @@ describe('SupportTab', () => {
     ]);
     const waiting = screen.getByRole('button', { name: /Payout missing/ });
     expect(within(waiting).getByText('Needs reply')).toBeTruthy();
-    expect(screen.getAllByText('Needs reply')).toHaveLength(1);
+    expect(needsReplyBadges()).toHaveLength(1);
   });
 
   it('clears the mark once the board replies', async () => {
@@ -92,7 +99,7 @@ describe('SupportTab', () => {
       },
     });
     await renderTab([ticket({ awaitingReply: true })]);
-    expect(screen.getByText('Needs reply')).toBeTruthy();
+    expect(needsReplyBadges()).toHaveLength(1);
     const box = await screen.findByRole('textbox', {
       name: 'Reply to ticket',
     });
@@ -100,6 +107,22 @@ describe('SupportTab', () => {
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: /^(Send|Reply)/ }));
     });
-    expect(screen.queryByText('Needs reply')).toBeNull();
+    expect(needsReplyBadges()).toHaveLength(0);
+  });
+
+  it('asks the API for only the tickets that need a reply', async () => {
+    await renderTab([ticket({ awaitingReply: true })]);
+    const fetchTickets = vi.mocked(api.fetchAdminSupportTickets);
+    fetchTickets.mockClear();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('tab', { name: /Needs reply/ }));
+    });
+    await vi.waitFor(() =>
+      expect(fetchTickets).toHaveBeenCalledWith({
+        status: undefined,
+        awaitingReply: true,
+        q: undefined,
+      }),
+    );
   });
 });
