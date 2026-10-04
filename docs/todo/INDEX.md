@@ -24,6 +24,10 @@ Status values: `open` | `blocked` | `partial`.
 | open    | [channel-page-redesign.md](channel-page-redesign.md) | Redesign the artist channel page (`/channel/:slug`): false red "On air" when not live (e.g. tahti-selects), drop the outer borders and use the full container, fix clipped top-right icons and cut-off content/tracklist |
 | partial | [storybook-parity-and-atlas-refresh.md](storybook-parity-and-atlas-refresh.md) | Make every Storybook story match the real page. Done: per-story mock data and plays in CI (#471, #481), track/release (#475), artist/smart link/collection/listen (#476), atlas graphs and screenshots (2026-10-04). Left: Chrome/Player/ui plays, Channel Designer, channel blocks/chat/radio show/jam/DMs, Studio shows/events/Settings, admin tabs and auth pages |
 | open    | [finnish-radio-now-playing-scrapers.md](finnish-radio-now-playing-scrapers.md) | Now-playing scrapers for the six catalog stations (YleX, Radio Helsinki, Radio Rock, Suomipop, NRJ, Radio Nova) so Listen, the player and the station page show the programme and track. Parsers exist for Radio Helsinki and Bauer (NRJ, Nova) but only run for user-added stations; YleX, Radio Rock and Suomipop have none |
+| open    | [listener-account-and-signed-out-basics.md](listener-account-and-signed-out-basics.md) | A plain listener account (registered, no Studio or Admin) in the mock app, plus audits that everything basic works as that listener and with no sign-in at all |
+| open    | [duplicate-radio-plugins.md](duplicate-radio-plugins.md) | Two radio add-ons ("Internet radio stations" and "Internet radio URL", unconfirmed pair): remove the duplicate or document how they differ |
+| open    | [warn-before-leaving-while-playing.md](warn-before-leaving-while-playing.md) | Ask for confirmation before a refresh or tab close while the player is playing |
+| open    | [queue-collapse-button-overlap.md](queue-collapse-button-overlap.md) | The collapse-panel button overlaps the first queue item and cuts its top corner; fix in the shared `PlayerWorkspace` sidebar |
 
 ## Fold rule (copy into CLAUDE / chat)
 
