@@ -47,6 +47,7 @@ import {
   type RadioStation,
 } from '../content/radioStations';
 import { usePolling } from '../hooks/usePolling';
+import { useStationNowPlaying } from '../hooks/useStationNowPlaying';
 import { resolveLocalPlayableForReplay } from '../lib/nativeLibrary';
 import { activeListenTab } from '../lib/navigationActive';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
@@ -54,6 +55,20 @@ import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { useListenerWidgetsStore } from '../stores/listenerWidgetsStore';
 import { usePlayerStore } from '../stores/playerStore';
+
+/** A catalog station card's second line: what the station is playing, or
+ * its language and bitrate until that is known. */
+function StationCardSubtitle({
+  programmingUrl,
+  streamUrl,
+  fallback,
+}: {
+  programmingUrl?: string | null;
+  streamUrl?: string | null;
+  fallback: string;
+}) {
+  return <>{useStationNowPlaying(programmingUrl, streamUrl) ?? fallback}</>;
+}
 
 export type ListenTab = 'listen' | 'feed' | 'history';
 
@@ -367,7 +382,13 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
               {station.name}
             </Link>
           }
-          subtitle={`${station.language} · ${station.bitrateKbps}kbps`}
+          subtitle={
+            <StationCardSubtitle
+              programmingUrl={station.programmingUrl}
+              streamUrl={station.streamUrl}
+              fallback={`${station.language} · ${station.bitrateKbps}kbps`}
+            />
+          }
           src={station.logoUrl}
           isPlaying={isActive(item.id)}
           playLabel={streamUrl ? 'Play' : 'Stream pending'}
