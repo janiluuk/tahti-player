@@ -606,7 +606,7 @@ export function ChannelView({ slug }: { slug: string }) {
                 </Button>
               </Tooltip>
             )}
-            {!editing && (
+            {!editing && channel.user.showShareButton !== false && (
               <ChannelShareButton
                 channelSlug={slug}
                 displayName={channel.user.displayName}

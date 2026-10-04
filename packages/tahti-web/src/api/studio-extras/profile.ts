@@ -36,6 +36,8 @@ export type ProfileFields = {
   /** Lists the tracks this user liked on their public profile. */
   showLikes?: boolean;
   showDailyListeners?: boolean;
+  /** False hides the share button on the channel page for every visitor. */
+  showShareButton?: boolean;
   /** Handles for cross-posting/import sources — e.g. { hearthisAt: 'myhandle' }. */
   socialLinks?: Record<string, string> | null;
   /** Wide banner behind the artist page header. */
@@ -141,6 +143,7 @@ export type ProfilePatch = Partial<
     | 'showFollowing'
     | 'showLikes'
     | 'showDailyListeners'
+    | 'showShareButton'
     | 'socialLinks'
     | 'nameplateText'
     | 'nameplateColor'
