@@ -403,12 +403,15 @@ jobs:
   # via @storybook/addon-vitest. Its own job so a story failure is clearly
   # attributable; shares the Playwright browser cache key with `test`.
   storybook:
-    name: Storybook (plays ${{ matrix.shard }}/2)
+    name: Storybook (plays ${{ matrix.shard }}/4)
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2]
+        # Four shards, not two: one Chromium page serves a whole shard, and
+        # past roughly 110 story files its renderer was killed ("Browser
+        # connection was closed") on about half the runs.
+        shard: [1, 2, 3, 4]
 
     steps:
       - name: Checkout code
@@ -461,7 +464,7 @@ jobs:
         run: node scripts/generate-storybook-surfaces.mjs --check
 
       - name: Run stories as tests
-        run: pnpm --filter @tahti-player/storybook test --shard=${{ matrix.shard }}/2
+        run: pnpm --filter @tahti-player/storybook test --shard=${{ matrix.shard }}/4
 
   # Manual-only e2e run: dispatch the workflow with run_e2e=true. Runs the
   # Playwright suite against the deployed site (beta.tahti.live by default).
