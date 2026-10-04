@@ -4211,3 +4211,14 @@ Leftovers from batch 34, plus a sweep of newsletters and account deletion.
 - **Moderation**: a repeat content report from the same reporter folds into the open one (tahti-org#696). A reported comment can be deleted from the reports queue, after a confirm, which closes the report (#485).
 - **Support**: tickets where the requester wrote last, or nobody has answered, are flagged `awaitingReply` (tahti-org#697) and show a "Needs reply" badge in Admin → Moderation (#484).
 - **Checks:** for each PR, tahti-web type-check, eslint on the changed files, the size guard and the touched tests. tahti-org ran Vitest for each touched route or job against a throwaway Postgres (mail mocked). Two PRs were pushed with a failing check that the ship script did not gate on (a timing-dependent test in #484, a worker type error in tahti-org#698); both were fixed in a follow-up commit on the same PR. Nothing was tried in a browser, against the live API, or with a real mail provider's unsubscribe button. Left open: the public subscribe limit is one per IP per day across all artists, which blocks subscribing to a second artist the same day.
+
+## 2026-10-04 - Nine slices, thirty-sixth batch (tahti-player #493-#499, tahti-org #699-#700)
+
+Slices from the todos added on 2026-10-04 (radio now-playing, leave warning, listener account) and from the settings audit. Nine, not ten: the queue collapse-button overlap could not be reproduced and stays open.
+
+- **Radio now-playing**: `GET /api/v1/internet-radio/now-playing?url=` reads a catalog station's programme page, for https pages on hosts with a parser only, cached for a minute (tahti-org#699). Listen's catalog station cards, the station page (#493) and the board's radio presets (#499) show "Programme · Artist — Track", falling back to the stream title. Covers Radio Helsinki, NRJ and Radio Nova; YleX, Radio Rock and Suomipop have no parser yet.
+- **Share button**: the channel share-button switch is stored on the account as `showShareButton` and returned on the public channel (tahti-org#700). The web saves it there and hides the button for every visitor when off; the browser-only store is gone (#496).
+- **Settings**: Broadcast switches undo themselves and show the error when a save fails (#495). Renaming a channel asks first and says the stream key may change (#497).
+- **Player**: a refresh or tab close asks for confirmation while audio is playing (#494).
+- **Mock app**: `listener@tahti.live` signs in as a plain listener with no channel, membership or staff role (#498).
+- **Checks:** for each PR, tahti-web type-check, eslint on the changed files, the size guard and the touched tests. tahti-org ran Vitest for each touched route against a throwaway Postgres with `fetch` stubbed. Nothing was tried against the live API or the stations' real pages. Still open in their todo files: the remaining scrapers, the listener and signed-out audits, the duplicate radio add-ons and the queue button overlap.
