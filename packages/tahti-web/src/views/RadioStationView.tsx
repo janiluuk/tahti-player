@@ -1,5 +1,4 @@
 import { Link } from '@tanstack/react-router';
-import { useCallback, useEffect, useState } from 'react';
 
 import {
   Badge,
@@ -9,18 +8,15 @@ import {
   ViewShell,
 } from '@tahti-player/ui';
 
-import { readIcyStreamTitle } from '../api/radio-sources';
 import { PageEmpty } from '../components/PageStates';
 import {
   RADIO_STATIONS,
   radioStation,
   radioStationPlayable,
 } from '../content/radioStations';
-import { usePolling } from '../hooks/usePolling';
+import { useStationNowPlaying } from '../hooks/useStationNowPlaying';
 import { useListenerWidgetsStore } from '../stores/listenerWidgetsStore';
 import { usePlayerStore } from '../stores/playerStore';
-
-const NOW_PLAYING_POLL_MS = 30_000;
 
 /** In-app page for one of the curated external stations in
  * `content/radioStations.ts`, instead of sending listeners off to the
@@ -38,29 +34,9 @@ export function RadioStationView({ stationId }: { stationId: string }) {
   const currentId = usePlayerStore((s) => s.currentId);
   const status = usePlayerStore((s) => s.status);
   const setStatus = usePlayerStore((s) => s.setStatus);
-  const [nowPlaying, setNowPlaying] = useState<string | null>(null);
-
   const station = base ? { ...base, ...override } : undefined;
   const streamUrl = station?.streamUrl ?? null;
-
-  const refreshNowPlaying = useCallback(async () => {
-    if (!streamUrl) {
-      return;
-    }
-    const title = await readIcyStreamTitle(streamUrl).catch(() => null);
-    setNowPlaying(title);
-  }, [streamUrl]);
-
-  useEffect(() => {
-    setNowPlaying(null);
-    void refreshNowPlaying();
-  }, [refreshNowPlaying]);
-
-  usePolling(
-    () => void refreshNowPlaying(),
-    NOW_PLAYING_POLL_MS,
-    Boolean(streamUrl),
-  );
+  const nowPlaying = useStationNowPlaying(station?.programmingUrl, streamUrl);
 
   if (!station) {
     return (
