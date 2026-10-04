@@ -82,6 +82,7 @@ import {
   helpGovernanceRedirectRoute,
   helpRoute,
   helpSlugRoute,
+  notFoundRoute,
 } from './router/routes-help';
 import {
   aboutRoute,
@@ -378,6 +379,7 @@ const routeTree = rootRoute.addChildren([
     studioInsightsRoute,
     dashboardIndexAliasRoute,
     dashboardSplatAliasRoute,
+    notFoundRoute,
   ]),
   embedChannelRoute,
   embedReleaseRoute,
