@@ -1,6 +1,6 @@
 # Now-playing scrapers for the six Finnish radio stations
 
-**Status:** open
+**Status:** partial
 
 User ask (2026-10-04): make a scraper for each of the six Finnish stations in the radio catalog, so Listen, the player and the station page show what is playing instead of just the station name.
 
@@ -24,11 +24,16 @@ The stations are the catalog in `packages/tahti-web/src/content/radioStations.ts
 | Radio Rock | radiorock.fi | No parser. Nelonen Media's widget is fetched client-side, nothing in the HTML |
 | Suomipop | supla.fi/suomipop | No parser. Same Nelonen/Supla client-side widget |
 
+## Done (2026-10-04)
+
+- tahti-org#699: `GET /api/v1/internet-radio/now-playing?url=<programme page>` reads a station's page on demand (https, hosts with a parser only), cached for a minute. The parsers moved to `@tahti/shared`.
+- #493 and #499: Listen's catalog station cards, the board's radio presets and the station page show "Programme · Artist — Track", falling back to the stream title.
+- That covers Radio Helsinki, NRJ and Radio Nova. A probe of radiorock.fi and supla.fi/suomipop found no now-playing data in the served HTML.
+
 ## Plan
 
 - [ ] 1. tahti-org: one scraper module per station with a shared interface (`fetchNowPlaying(station) -> { program, artist, title }`), with a recorded fixture and a test each. Find the JSON endpoints the Radio Rock and Suomipop widgets call; decide on a Yle API key or the ICY title for YleX.
-- [ ] 2. tahti-org: run the sync for the six catalog stations (not only user-added rows), cache the result, and expose it on a public route such as `GET /api/v1/internet-radio/now-playing`.
-- [ ] 3. tahti-web: show programme and track on the Listen radio cards, in the player bar title, and in a "Now playing" block on the station page. Fall back to the ICY title, then to the station name.
+- [ ] 3. tahti-web: also show it in the player bar title while a catalog station plays.
 - [ ] 4. Keep polite: one request per station per interval, a clear User-Agent, and a kill switch per station when a site changes or objects.
 
 ## Open questions for the user
