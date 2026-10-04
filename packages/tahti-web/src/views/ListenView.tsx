@@ -28,7 +28,7 @@ import {
   type EnabledInternetRadioPreset,
 } from '../api/client';
 import type { OnAirChannel } from '../api/listen';
-import { readIcyStreamTitle } from '../api/radio-sources';
+import { fetchStationNowPlaying } from '../api/radio-now-playing';
 import type { TahtiPlayable } from '../api/types';
 import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
 import { ListenSection } from '../components/listen-view/ListenSection';
@@ -153,10 +153,10 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     try {
       const entries = await Promise.all(
         radioPresets.map(async (preset) => {
-          if (!preset.streamUrl) {
-            return [preset.id, null] as const;
-          }
-          const title = await readIcyStreamTitle(preset.streamUrl);
+          const title = await fetchStationNowPlaying({
+            programmingUrl: preset.programmingUrl,
+            streamUrl: preset.streamUrl,
+          });
           return [preset.id, title] as const;
         }),
       );
