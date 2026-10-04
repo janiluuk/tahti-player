@@ -4199,3 +4199,15 @@ Part of `docs/todo/storybook-parity-and-atlas-refresh.md` (still open for the re
 - **Capture scripts**: the fan-subs atlas shot follows `/settings/audience` to Studio → Audience. The README guide capture waits for page content and retries a blank or crashed page in a fresh browser, after Chromium died on a few pages in every run.
 - **Checks:** Mermaid parse tests, tahti-web type-check, eslint and Prettier on the changed sources, the size guard, and a look at the smallest and a sample of the new images. Older orphan screenshots for tabs that no longer exist were not removed.
 
+
+## 2026-10-04 - Ten cross-repo slices, thirty-fifth batch (tahti-player #484-#486, tahti-org #692-#698)
+
+Leftovers from batch 34, plus a sweep of newsletters and account deletion.
+
+- **Newsletter consent**: an address that had unsubscribed has to confirm again before it is back on a list (tahti-org#692). The signed-in shortcut past the confirmation email needs a verified account email (`403 email_not_verified`, tahti-org#693). Neither route takes subscriptions for a suspended or deleted artist.
+- **One-click unsubscribe (tahti-org#698)**: newsletter mail announced one-click unsubscribe but pointed it at a web page that cannot take the POST. The header points at the API, which has the new `POST /api/newsletter/unsubscribe/:token`. Dispatch skips people who unsubscribed after the send was queued, and never uses an email address as the sender name. The worker needs the public `API_URL`.
+- **Account deletion (tahti-org#694)**: API tokens, the 2FA secret and backup codes, integration credentials, RTMP stream keys, the remaining import OAuth tokens and moderator rights are removed with the account.
+- **Data export**: the export includes uploads, collections, posts, events, comments, likes, reposts, follows, sent messages, purchases, newsletter subscriptions and support requests (tahti-org#695). Settings says what the file holds and saves it as `tahti-data-export.json` (#486).
+- **Moderation**: a repeat content report from the same reporter folds into the open one (tahti-org#696). A reported comment can be deleted from the reports queue, after a confirm, which closes the report (#485).
+- **Support**: tickets where the requester wrote last, or nobody has answered, are flagged `awaitingReply` (tahti-org#697) and show a "Needs reply" badge in Admin → Moderation (#484).
+- **Checks:** for each PR, tahti-web type-check, eslint on the changed files, the size guard and the touched tests. tahti-org ran Vitest for each touched route or job against a throwaway Postgres (mail mocked). Two PRs were pushed with a failing check that the ship script did not gate on (a timing-dependent test in #484, a worker type error in tahti-org#698); both were fixed in a follow-up commit on the same PR. Nothing was tried in a browser, against the live API, or with a real mail provider's unsubscribe button. Left open: the public subscribe limit is one per IP per day across all artists, which blocks subscribing to a second artist the same day.
