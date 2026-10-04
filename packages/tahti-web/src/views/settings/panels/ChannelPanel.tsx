@@ -34,7 +34,6 @@ import {
   parseGenreTags,
 } from '../../../lib/genres';
 import { useAuthStore } from '../../../stores/authStore';
-import { useChannelShareStore } from '../../../stores/channelShareStore';
 import { StudioBrandingPanel } from '../../studio/StudioBrandingView';
 import { SettingsHint, SettingsToggle } from '../SettingsFields';
 import { channelRenameNote } from './channelRenameNote';
@@ -49,10 +48,6 @@ export function ChannelPanel() {
   const [slug, setSlug] = useState(channel?.slug ?? '');
   const [domain, setDomain] = useState('');
   const [note, setNote] = useState<string | null>(null);
-  const shareEnabled = useChannelShareStore(
-    (state) => state.enabledByChannel[channel?.slug ?? ''] !== false,
-  );
-  const setShareEnabled = useChannelShareStore((state) => state.setEnabled);
 
   useEffect(() => {
     void fetchMeProfile().then((r) => {
@@ -62,9 +57,10 @@ export function ChannelPanel() {
     setSlug(channel?.slug ?? user?.username ?? '');
   }, [channel?.slug, user?.username]);
 
-  const saveChatSetting = (
-    key: 'chatEnabled' | 'showDailyListeners',
+  const saveProfileSwitch = (
+    key: 'chatEnabled' | 'showDailyListeners' | 'showShareButton',
     value: boolean,
+    saved: string,
   ) => {
     if (!channelProfile) {
       return;
@@ -78,7 +74,7 @@ export function ChannelPanel() {
         return;
       }
       setChannelProfile(result.data);
-      toast.success('Chat setting saved.');
+      toast.success(saved);
     });
   };
 
@@ -111,14 +107,16 @@ export function ChannelPanel() {
           ) : (
             <div className="flex flex-col gap-6">
               <SettingsToggle
-                label="Show share button on my channel and Broadcast"
-                description="Let listeners and collaborators copy or share your live channel link."
-                value={shareEnabled}
-                onChange={(value) => {
-                  if (channel?.slug) {
-                    setShareEnabled(channel.slug, value);
-                  }
-                }}
+                label="Show share button on my channel"
+                description="Let listeners copy or share your channel link from your channel page."
+                value={channelProfile.showShareButton ?? true}
+                onChange={(value) =>
+                  saveProfileSwitch(
+                    'showShareButton',
+                    value,
+                    'Share button setting saved.',
+                  )
+                }
               />
               <label className="flex flex-col gap-2">
                 <span className="text-foreground text-sm font-semibold">
@@ -285,14 +283,24 @@ export function ChannelPanel() {
                     label="Enable live chat on my channel"
                     description="Allow listeners to chat while you are broadcasting."
                     value={channelProfile.chatEnabled}
-                    onChange={(value) => saveChatSetting('chatEnabled', value)}
+                    onChange={(value) =>
+                      saveProfileSwitch(
+                        'chatEnabled',
+                        value,
+                        'Chat setting saved.',
+                      )
+                    }
                   />
                   <SettingsToggle
                     label="Show today’s listener count in my chat"
                     description="Listeners see how many people tuned in today."
                     value={channelProfile.showDailyListeners ?? true}
                     onChange={(value) =>
-                      saveChatSetting('showDailyListeners', value)
+                      saveProfileSwitch(
+                        'showDailyListeners',
+                        value,
+                        'Chat setting saved.',
+                      )
                     }
                   />
                 </div>

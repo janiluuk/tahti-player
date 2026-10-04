@@ -118,6 +118,27 @@ describe('ChannelPanel discovery', () => {
     expect(api.patchMeProfile).not.toHaveBeenCalled();
   });
 
+  it('saves the share button switch to the account, not the browser', async () => {
+    api.fetchMeProfile.mockResolvedValue({
+      data: profile,
+      meta: { source: 'api' },
+    });
+    api.patchMeProfile.mockResolvedValue({
+      ok: true,
+      data: { ...profile, showShareButton: false },
+    });
+    await openDiscovery();
+    const toggle = screen.getByRole('switch', {
+      name: 'Show share button on my channel',
+    });
+    expect(toggle.getAttribute('aria-checked')).toBe('true');
+    await act(async () => {
+      fireEvent.click(toggle);
+    });
+    expect(api.patchMeProfile).toHaveBeenCalledWith({ showShareButton: false });
+    expect(toggle.getAttribute('aria-checked')).toBe('false');
+  });
+
   it('keeps chat settings out of Discovery', async () => {
     api.fetchMeProfile.mockResolvedValue({
       data: profile,

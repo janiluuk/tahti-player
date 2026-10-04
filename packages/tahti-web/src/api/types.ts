@@ -112,6 +112,8 @@ export type PublicChannel = {
     avatarPosterUrl?: string | null;
     /** False hides the header card (avatar, name, stats) on the channel page. */
     showPageHero?: boolean;
+    /** False when the artist turned the channel's share button off. */
+    showShareButton?: boolean;
     /** True when the artist is a Tahti ry (association) member. */
     isMember?: boolean;
   };

@@ -12,7 +12,6 @@ import { useEffect, useState } from 'react';
 import { Button, CopyButton, Dialog, Tooltip } from '@tahti-player/ui';
 
 import { fetchChannel } from '../api/client';
-import { useChannelShareStore } from '../stores/channelShareStore';
 
 export function ChannelShareButton({
   channelSlug,
@@ -25,9 +24,6 @@ export function ChannelShareButton({
 }) {
   const [open, setOpen] = useState(false);
   const [playlistUrl, setPlaylistUrl] = useState<string | null>(null);
-  const enabled = useChannelShareStore(
-    (state) => state.enabledByChannel[channelSlug] !== false,
-  );
   const url = `${window.location.origin}/channel/${channelSlug}`;
   const embedUrl = `${window.location.origin}/embed/c/${channelSlug}`;
   const embedSnippet = `<iframe src="${embedUrl}" width="100%" height="180" frameborder="0" allow="autoplay"></iframe>`;
@@ -74,10 +70,6 @@ export function ChannelShareButton({
       href: `mailto:?subject=${encodeURIComponent(text)}&body=${encodeURIComponent(url)}`,
     },
   ];
-
-  if (!enabled) {
-    return null;
-  }
 
   return (
     <>
