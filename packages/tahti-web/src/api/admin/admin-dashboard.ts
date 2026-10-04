@@ -104,6 +104,9 @@ export type AdminDashboard = {
     liveNow: number;
     betaQueue: number;
     openTickets: number;
+    /** Unresolved tickets where the next move is the board's. Absent when
+     * the API cannot filter by it. */
+    ticketsAwaitingReply?: number;
   };
   actionRows: AdminActionRow[];
   health: AdminSystemHealth;
@@ -232,7 +235,13 @@ export async function fetchAdminContentOverview(): Promise<{
 
 function mockDashboard(): AdminDashboard {
   return {
-    kpis: { activeMembers: 214, liveNow: 3, betaQueue: 5, openTickets: 2 },
+    kpis: {
+      activeMembers: 214,
+      liveNow: 3,
+      betaQueue: 5,
+      openTickets: 2,
+      ticketsAwaitingReply: 1,
+    },
     actionRows: [
       {
         id: 'beta-1',
@@ -326,6 +335,7 @@ export async function fetchAdminDashboard(): Promise<{
       streams,
       betaRes,
       support,
+      awaiting,
       health,
       ytd,
       queues,
@@ -342,6 +352,11 @@ export async function fetchAdminDashboard(): Promise<{
       getJson<{ total: number }>(
         '/api/admin/support/tickets?status=OPEN&limit=1',
       ),
+      // Optional: an API without the filter returns every ticket, which the
+      // check below tells apart by the row's own flag.
+      getJson<{ total: number; tickets: Array<{ awaitingReply?: boolean }> }>(
+        '/api/admin/support/tickets?awaitingReply=true&limit=1',
+      ).catch(() => null),
       getJson<AdminSystemHealth>('/api/admin/stats/system-health'),
       getJson<{ runningSurplus: string; byCategory: Record<string, string> }>(
         '/api/v1/transparency/ytd',
@@ -363,6 +378,10 @@ export async function fetchAdminDashboard(): Promise<{
           liveNow: streams.count,
           betaQueue: betaRes.applications.length,
           openTickets: support.total,
+          ...(awaiting &&
+          awaiting.tickets.every((ticket) => ticket.awaitingReply === true)
+            ? { ticketsAwaitingReply: awaiting.total }
+            : {}),
         },
         actionRows: [],
         health,

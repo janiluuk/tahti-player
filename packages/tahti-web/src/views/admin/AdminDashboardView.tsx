@@ -62,12 +62,18 @@ export function AdminDashboardView() {
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                   {(
                     [
-                      ['Active members', data.kpis.activeMembers],
-                      ['Live now', data.kpis.liveNow],
-                      ['Beta queue', data.kpis.betaQueue],
-                      ['Open tickets', data.kpis.openTickets],
+                      ['Active members', data.kpis.activeMembers, null],
+                      ['Live now', data.kpis.liveNow, null],
+                      ['Beta queue', data.kpis.betaQueue, null],
+                      [
+                        'Open tickets',
+                        data.kpis.openTickets,
+                        data.kpis.ticketsAwaitingReply
+                          ? `${data.kpis.ticketsAwaitingReply.toLocaleString()} need a reply`
+                          : null,
+                      ],
                     ] as const
-                  ).map(([label, value]) => (
+                  ).map(([label, value, note]) => (
                     <StudioPanel key={label} className="!p-4 sm:!p-5">
                       <div className="text-foreground-secondary text-xs tracking-wide uppercase">
                         {label}
@@ -75,6 +81,11 @@ export function AdminDashboardView() {
                       <StatNumber className="mt-2 block text-3xl">
                         {value.toLocaleString()}
                       </StatNumber>
+                      {note ? (
+                        <p className="text-accent-red-strong mt-1 text-xs font-semibold">
+                          {note}
+                        </p>
+                      ) : null}
                     </StudioPanel>
                   ))}
                 </div>
