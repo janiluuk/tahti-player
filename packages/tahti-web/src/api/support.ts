@@ -18,6 +18,8 @@ export type MySupportTicketReply = {
   id: string;
   body: string;
   authorName: string;
+  /** True for your own follow-up. Absent on API versions without replies. */
+  fromRequester?: boolean;
   createdAt: string;
 };
 
@@ -91,6 +93,39 @@ export async function fetchMySupportTickets(): Promise<
       ok: false,
       error:
         err instanceof Error ? err.message : 'Could not load your requests',
+    };
+  }
+}
+
+/** Answer the board on one of your own support requests. */
+export async function replyToSupportTicket(
+  ticketId: string,
+  body: string,
+): Promise<
+  { ok: true; reply: MySupportTicketReply } | { ok: false; error: string }
+> {
+  if (isForceMock()) {
+    return {
+      ok: true,
+      reply: {
+        id: `mock-reply-${Date.now()}`,
+        body,
+        authorName: 'You',
+        fromRequester: true,
+        createdAt: new Date().toISOString(),
+      },
+    };
+  }
+  try {
+    const { data } = await requestJson<MySupportTicketReply>(
+      `/api/me/support/tickets/${encodeURIComponent(ticketId)}/replies`,
+      { method: 'POST', body: JSON.stringify({ body }) },
+    );
+    return { ok: true, reply: data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not send your reply',
     };
   }
 }
