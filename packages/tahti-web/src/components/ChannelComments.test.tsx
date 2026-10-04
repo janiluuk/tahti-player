@@ -57,7 +57,12 @@ describe('ChannelComments', () => {
       { username: 'fan' },
     );
     const list = screen.getByTestId('channel-comments');
-    expect(within(list).getAllByRole('button')).toHaveLength(1);
+    expect(
+      within(list).getAllByRole('button', { name: /^Delete comment/ }),
+    ).toHaveLength(1);
+    expect(
+      within(list).getAllByRole('button', { name: /^Report comment/ }),
+    ).toHaveLength(1);
 
     const post = vi
       .spyOn(api, 'postChannelComment')

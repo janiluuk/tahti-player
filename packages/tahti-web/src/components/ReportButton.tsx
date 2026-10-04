@@ -20,25 +20,29 @@ const REASONS: Array<{ id: ContentReportReason; label: string }> = [
 
 const MAX_DETAILS = 2000;
 
-/** Flag a track, release, channel or collection for the board to review. */
+/** Flag a track, release, channel, collection or comment for the board to review. */
 export function ReportButton({
   targetType,
   targetId,
   label,
+  defaultReason = 'COPYRIGHT',
+  variant = 'secondary',
 }: {
   targetType: ContentReportTarget;
   targetId: string;
   /** What's being reported, for the dialog title — e.g. the track name. */
   label: string;
+  defaultReason?: ContentReportReason;
+  variant?: 'secondary' | 'text';
 }) {
   const [open, setOpen] = useState(false);
-  const [reason, setReason] = useState<ContentReportReason>('COPYRIGHT');
+  const [reason, setReason] = useState<ContentReportReason>(defaultReason);
   const [details, setDetails] = useState('');
   const [sending, setSending] = useState(false);
 
   const close = () => {
     setOpen(false);
-    setReason('COPYRIGHT');
+    setReason(defaultReason);
     setDetails('');
   };
 
@@ -64,7 +68,7 @@ export function ReportButton({
       <Tooltip content="Report" side="top">
         <Button
           size="icon-sm"
-          variant="secondary"
+          variant={variant}
           aria-label={`Report ${label}`}
           onClick={() => setOpen(true)}
         >

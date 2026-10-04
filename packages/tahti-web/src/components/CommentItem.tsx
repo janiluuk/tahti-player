@@ -5,9 +5,12 @@ import { Button, MediaArtwork } from '@tahti-player/ui';
 
 import type { TrackComment } from '../api/types';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
+import { useAuthStore } from '../stores/authStore';
+import { ReportButton } from './ReportButton';
 
-/** One track or channel comment: avatar, name, date, text, and a delete
- * button when the viewer may remove it. */
+/** One track or channel comment: avatar, name, date, text, a report button
+ * on other people's comments, and a delete button when the viewer may
+ * remove it. */
 export function CommentItem({
   comment,
   text,
@@ -23,6 +26,8 @@ export function CommentItem({
   onDelete?: () => void;
   deleting?: boolean;
 }) {
+  const viewerUsername = useAuthStore((s) => s.user?.username);
+  const isOwn = viewerUsername === comment.authorUsername;
   return (
     <li className="flex gap-3">
       <MediaArtwork
@@ -49,6 +54,15 @@ export function CommentItem({
         </div>
         <p className="mt-1 text-sm">{text ?? comment.body}</p>
       </div>
+      {isOwn ? null : (
+        <ReportButton
+          targetType="COMMENT"
+          targetId={comment.id}
+          label={`comment by ${comment.authorDisplayName}`}
+          defaultReason="HARASSMENT"
+          variant="text"
+        />
+      )}
       {onDelete ? (
         <Button
           variant="text"
