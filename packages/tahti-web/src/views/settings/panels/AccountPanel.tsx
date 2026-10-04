@@ -20,6 +20,7 @@ import { lazy, Suspense, useEffect, useState } from 'react';
 
 import {
   Button,
+  ButtonAnchor,
   ButtonLink,
   Tabs,
   Textarea,
@@ -481,21 +482,27 @@ function PrivacyDataPanel({ username }: { username: string }) {
         </p>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
-        <a
+        <ButtonAnchor
           href="/tahti-api/api/me/data-export.json"
-          className="border-border hover:border-primary flex items-center gap-3 rounded-lg border p-3 transition-colors"
+          download="tahti-data-export.json"
+          variant="text"
+          size="flexible"
+          className="border-border hover:border-primary flex items-center justify-start gap-3 rounded-lg border p-3 text-left font-normal whitespace-normal transition-colors active:scale-100"
         >
           <Download size={17} aria-hidden />
           <span>
             <span className="block text-sm font-semibold">Data export</span>
             <span className="text-foreground-secondary block text-xs">
-              Full account JSON download
+              Your profile, uploads, posts, comments, likes, follows, messages
+              you sent, purchases and subscriptions, as JSON
             </span>
           </span>
-        </a>
-        <a
+        </ButtonAnchor>
+        <ButtonAnchor
           href="/tahti-api/api/me/press-kit.json"
-          className="border-border hover:border-primary flex items-center gap-3 rounded-lg border p-3 transition-colors"
+          variant="text"
+          size="flexible"
+          className="border-border hover:border-primary flex items-center justify-start gap-3 rounded-lg border p-3 text-left font-normal whitespace-normal transition-colors active:scale-100"
         >
           <Download size={17} aria-hidden />
           <span>
@@ -504,7 +511,7 @@ function PrivacyDataPanel({ username }: { username: string }) {
               Your artist metadata as JSON
             </span>
           </span>
-        </a>
+        </ButtonAnchor>
       </div>
       <div className="border-accent-red/40 bg-accent-red/5 flex flex-col gap-3 rounded-lg border p-4">
         <div className="flex items-center gap-2">
