@@ -2,6 +2,7 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { useAuthStore } from '../stores/authStore';
 import { CommentItem } from './CommentItem';
 
 const COMMENT = {
@@ -14,7 +15,10 @@ const COMMENT = {
 };
 
 describe('CommentItem', () => {
-  afterEach(cleanup);
+  afterEach(() => {
+    cleanup();
+    useAuthStore.setState({ user: null });
+  });
 
   it('shows the author and text, and deletes when allowed', () => {
     const onDelete = vi.fn();
@@ -38,6 +42,32 @@ describe('CommentItem', () => {
       </ul>,
     );
     expect(screen.getByText('[1:30] Nice drop')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: /Delete/ })).toBeNull();
+  });
+
+  it("offers to report someone else's comment", () => {
+    render(
+      <ul>
+        <CommentItem comment={COMMENT} />
+      </ul>,
+    );
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Report comment by Fan' }),
+    );
+    expect(screen.getByText('Harassment or abuse')).toBeTruthy();
+  });
+
+  it('has no report button on your own comment', () => {
+    useAuthStore.setState({
+      user: { username: 'fan' } as ReturnType<
+        typeof useAuthStore.getState
+      >['user'],
+    });
+    render(
+      <ul>
+        <CommentItem comment={COMMENT} />
+      </ul>,
+    );
     expect(screen.queryByRole('button')).toBeNull();
   });
 });
