@@ -57,7 +57,7 @@ describe('StudioModerationView chat access', () => {
       .spyOn(artistSettings, 'setChatSubscribersOnly')
       .mockResolvedValue({ ok: true, subscribersOnly: true });
     await act(async () => {
-      render(<StudioModerationView embedded />);
+      render(<StudioModerationView />);
     });
 
     const toggle = screen.getByRole('switch', {
@@ -77,7 +77,7 @@ describe('StudioModerationView chat access', () => {
       meta: { source: 'api' },
     });
     await act(async () => {
-      render(<StudioModerationView embedded />);
+      render(<StudioModerationView />);
     });
     expect(screen.queryByText('Chat access')).toBeNull();
   });

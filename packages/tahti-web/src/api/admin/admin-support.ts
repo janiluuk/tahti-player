@@ -93,7 +93,7 @@ function mockSupportTickets(): AdminSupportTicketDetail[] {
       notes: [
         {
           id: 'note-3',
-          body: 'Settings → Channel & design → Username & domain.',
+          body: 'Settings → Channel & chat → Username & domain.',
           kind: 'MESSAGE',
           authorId: 'mock-board',
           authorDisplayName: 'You',

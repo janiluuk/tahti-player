@@ -115,7 +115,7 @@ export const FEATURES: FeatureRow[] = [
     nuclear: '/settings, /settings/$section',
     status: 'live',
     notes:
-      'Account · Artist · Channel & design · Broadcast · Money · Notifications · Themes · Connections',
+      'Account · Artist · Channel & chat · Broadcast · Money · Notifications · Themes · Connections',
   },
   {
     feature: 'Themes',

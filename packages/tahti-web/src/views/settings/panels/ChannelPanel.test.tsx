@@ -20,8 +20,14 @@ vi.mock('../../../api/studio-extras', () => api);
 vi.mock('../../studio/StudioBrandingView', () => ({
   StudioBrandingPanel: () => null,
 }));
-vi.mock('../../studio/StudioModerationView', () => ({
-  StudioModerationView: () => null,
+vi.mock('../../../components/moderation/ChatAccessPanel', () => ({
+  ChatAccessPanel: () => <div>chat access panel</div>,
+}));
+vi.mock('../../../components/moderation/ChatBansPanel', () => ({
+  ChatBansPanel: () => <div>chat bans panel</div>,
+}));
+vi.mock('../../../components/moderation/ChannelModeratorsPanel', () => ({
+  ChannelModeratorsPanel: () => <div>moderators panel</div>,
 }));
 
 const profile = {
@@ -110,5 +116,77 @@ describe('ChannelPanel discovery', () => {
       fireEvent.click(screen.getByRole('checkbox', { name: 'Techno' }));
     });
     expect(api.patchMeProfile).not.toHaveBeenCalled();
+  });
+
+  it('keeps chat settings out of Discovery', async () => {
+    api.fetchMeProfile.mockResolvedValue({
+      data: profile,
+      meta: { source: 'api' },
+    });
+    await openDiscovery();
+    expect(
+      screen.queryByRole('switch', { name: 'Enable live chat on my channel' }),
+    ).toBeNull();
+  });
+});
+
+describe('ChannelPanel chat and moderators', () => {
+  beforeEach(() => {
+    useAuthStore.setState({
+      user: {
+        id: 'u1',
+        username: 'artist',
+        channel: { slug: 'artist' },
+      } as never,
+    });
+    api.fetchMeProfile.mockResolvedValue({
+      data: profile,
+      meta: { source: 'api' },
+    });
+  });
+
+  afterEach(() => {
+    cleanup();
+    vi.clearAllMocks();
+    vi.restoreAllMocks();
+  });
+
+  it('gathers the chat settings, chat access and bans on the Chat tab', async () => {
+    api.patchMeProfile.mockResolvedValue({
+      ok: true,
+      data: { ...profile, chatEnabled: false },
+    });
+    await act(async () => {
+      render(<ChannelPanel />);
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('tab', { name: /Chat/ }));
+    });
+    expect(screen.getByText('chat access panel')).toBeTruthy();
+    expect(screen.getByText('chat bans panel')).toBeTruthy();
+    expect(screen.queryByText('moderators panel')).toBeNull();
+    expect(
+      screen.getByRole('switch', {
+        name: 'Show today’s listener count in my chat',
+      }),
+    ).toBeTruthy();
+
+    await act(async () => {
+      fireEvent.click(
+        screen.getByRole('switch', { name: 'Enable live chat on my channel' }),
+      );
+    });
+    expect(api.patchMeProfile).toHaveBeenCalledWith({ chatEnabled: false });
+  });
+
+  it('puts the channel moderators on their own tab', async () => {
+    await act(async () => {
+      render(<ChannelPanel />);
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('tab', { name: /Moderators/ }));
+    });
+    expect(screen.getByText('moderators panel')).toBeTruthy();
+    expect(screen.queryByText('chat bans panel')).toBeNull();
   });
 });

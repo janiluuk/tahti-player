@@ -28,6 +28,7 @@ Status values: `open` | `blocked` | `partial`.
 | open    | [duplicate-radio-plugins.md](duplicate-radio-plugins.md) | Two radio add-ons ("Internet radio stations" and "Internet radio URL", unconfirmed pair): remove the duplicate or document how they differ |
 | open    | [warn-before-leaving-while-playing.md](warn-before-leaving-while-playing.md) | Ask for confirmation before a refresh or tab close while the player is playing |
 | open    | [queue-collapse-button-overlap.md](queue-collapse-button-overlap.md) | The collapse-panel button overlaps the first queue item and cuts its top corner; fix in the shared `PlayerWorkspace` sidebar |
+| partial | [settings-audit.md](settings-audit.md) | Settings audit. Done 2026-10-04: Channel & chat section with Chat and Moderators tabs, stale Broadcast moderators tab removed. Left: six placeholder switches, a share toggle saved only in the browser, unchecked saves in Broadcast, Account (12 tabs) and Artist (8 tabs) regrouping, one panel component for all of Settings |
 
 ## Fold rule (copy into CLAUDE / chat)
 

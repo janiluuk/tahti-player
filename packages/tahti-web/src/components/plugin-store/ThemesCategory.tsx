@@ -461,7 +461,7 @@ export function VisualizersCategory() {
           className="underline underline-offset-2"
           onClick={() => useSettingsModalStore.getState().close()}
         >
-          Settings → Channel & design → Channel Designer
+          Settings → Channel & chat → Channel Designer
         </Link>
         .
       </p>

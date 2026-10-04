@@ -153,7 +153,7 @@ export function NotificationsVisibilityPanel() {
       ...profile,
       socialLinks: { ...(previous ?? {}), showConnections: String(value) },
     });
-    setSavingKey('chatEnabled');
+    setSavingKey('socialLinks');
     void patchMeProfile({
       socialLinks: { ...(previous ?? {}), showConnections: String(value) },
     }).then((result) => {
@@ -201,11 +201,6 @@ export function NotificationsVisibilityPanel() {
             label="Show tracks I like on my profile"
             value={profile.showLikes ?? true}
             onChange={(value) => updateVisibility('showLikes', value)}
-          />
-          <SettingsToggle
-            label="Show today’s listener count in my chat"
-            value={profile.showDailyListeners ?? true}
-            onChange={(value) => updateVisibility('showDailyListeners', value)}
           />
           <SettingsToggle
             label="Show my connections on my artist profile"
