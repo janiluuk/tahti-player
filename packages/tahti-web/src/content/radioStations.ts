@@ -98,6 +98,39 @@ export function radioStation(id: string): RadioStation | undefined {
   return RADIO_STATIONS.find((s) => s.id === id);
 }
 
+const CATALOG_PLAYABLE_PREFIX = 'radio-widget:';
+const PRESET_PLAYABLE_PREFIX = 'radio-preset:';
+
+/** True for a playable that is an internet radio stream (a catalog station
+ * or an admin preset), as opposed to a Tahti channel. */
+export function isInternetRadioPlayableId(id: string): boolean {
+  return (
+    id.startsWith(CATALOG_PLAYABLE_PREFIX) ||
+    id.startsWith(PRESET_PLAYABLE_PREFIX)
+  );
+}
+
+/** The catalog station a playing internet radio stream belongs to, so the
+ * player can link to its page. Presets carry no catalog id and are matched
+ * by station name, which the player keeps as the title or the artist line. */
+export function radioStationIdForPlayable(playable: {
+  id: string;
+  title: string;
+  artist: string;
+}): string | undefined {
+  if (playable.id.startsWith(CATALOG_PLAYABLE_PREFIX)) {
+    const id = playable.id.slice(CATALOG_PLAYABLE_PREFIX.length);
+    return radioStation(id)?.id;
+  }
+  if (playable.id.startsWith(PRESET_PLAYABLE_PREFIX)) {
+    return RADIO_STATIONS.find(
+      (station) =>
+        station.name === playable.artist || station.name === playable.title,
+    )?.id;
+  }
+  return undefined;
+}
+
 export function radioStationPlayable(
   station: RadioStation & { streamUrl: string },
 ): {
