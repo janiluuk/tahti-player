@@ -1,5 +1,6 @@
 import { Cast, Mic, Radio as RadioIcon, Shield } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import {
   ButtonLink,
@@ -57,6 +58,43 @@ export function BroadcastPanel({
     });
   }, []);
 
+  // Both saves show the new value at once and put the old one back, with the
+  // API's reason, when the save fails.
+  const saveProgramme = (
+    patch: Partial<
+      Pick<
+        ProgrammeView,
+        'announcementsEnabled' | 'fallbackEnabled' | 'fallbackAutoEnroll'
+      >
+    >,
+  ) => {
+    if (!programme) {
+      return;
+    }
+    const previous = programme;
+    setProgramme({ ...previous, ...patch });
+    void patchProgramme(patch).then((result) => {
+      if (!result.ok) {
+        setProgramme(previous);
+        toast.error(result.error);
+      }
+    });
+  };
+
+  const saveGreenRoom = (patch: Partial<GreenRoomPrefs>) => {
+    if (!green) {
+      return;
+    }
+    const previous = green;
+    setGreen({ ...previous, ...patch });
+    void patchGreenRoomPrefs(patch).then((result) => {
+      if (!result.ok) {
+        setGreen(previous);
+        toast.error(result.error);
+      }
+    });
+  };
+
   const items = [
     {
       id: 'radio',
@@ -70,29 +108,17 @@ export function BroadcastPanel({
             label="Announcements enabled"
             description="Allow platform/radio announcements on your channel programme."
             value={programme.announcementsEnabled}
-            onChange={(v) => {
-              const next = { ...programme, announcementsEnabled: v };
-              setProgramme(next);
-              void patchProgramme({ announcementsEnabled: v });
-            }}
+            onChange={(v) => saveProgramme({ announcementsEnabled: v })}
           />
           <SettingsToggle
             label="Fallback / autoplay when offline"
             value={programme.fallbackEnabled}
-            onChange={(v) => {
-              const next = { ...programme, fallbackEnabled: v };
-              setProgramme(next);
-              void patchProgramme({ fallbackEnabled: v });
-            }}
+            onChange={(v) => saveProgramme({ fallbackEnabled: v })}
           />
           <SettingsToggle
             label="Auto-enroll new archive into fallback"
             value={programme.fallbackAutoEnroll}
-            onChange={(v) => {
-              const next = { ...programme, fallbackAutoEnroll: v };
-              setProgramme(next);
-              void patchProgramme({ fallbackAutoEnroll: v });
-            }}
+            onChange={(v) => saveProgramme({ fallbackAutoEnroll: v })}
           />
           <BroadcastRecordingToggles />
           <ButtonLink
@@ -119,10 +145,7 @@ export function BroadcastPanel({
             label="Open the green room when I go live"
             description="Each new broadcast starts with its green room open, and invites the people below. You can still open or close it from Go Live."
             value={green.defaultEnabled}
-            onChange={(defaultEnabled) => {
-              setGreen({ ...green, defaultEnabled });
-              void patchGreenRoomPrefs({ defaultEnabled });
-            }}
+            onChange={(defaultEnabled) => saveGreenRoom({ defaultEnabled })}
           />
           <label className="flex flex-col gap-1.5 text-sm">
             <span className="text-foreground text-sm font-semibold">
@@ -132,9 +155,7 @@ export function BroadcastPanel({
               items={GREEN_ROOM_POOL_OPTIONS}
               selected={green.invitePool}
               onChange={(value) => {
-                const invitePool = value as WireGreenRoomInvitePool;
-                setGreen({ ...green, invitePool });
-                void patchGreenRoomPrefs({ invitePool });
+                saveGreenRoom({ invitePool: value as WireGreenRoomInvitePool });
               }}
               className="grid-cols-2"
             />
