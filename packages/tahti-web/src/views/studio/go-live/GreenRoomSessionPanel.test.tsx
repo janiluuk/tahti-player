@@ -53,6 +53,12 @@ describe('GreenRoomSessionPanel', () => {
     useAuthStore.setState({ user: null });
   });
 
+  it('links to the Green Room chat', async () => {
+    await renderPanel(session());
+    const link = screen.getByRole('link', { name: 'Open Green Room chat' });
+    expect(link.getAttribute('href')).toBe('/u/artist/green-room');
+  });
+
   it('opens the green room and lists who was invited', async () => {
     await renderPanel(session());
     const open = vi.spyOn(api, 'setGreenRoomSessionEnabled').mockResolvedValue({

@@ -1,8 +1,14 @@
-import { XIcon } from 'lucide-react';
+import { MessageSquareIcon, XIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Badge, Button, CopyButton, Toggle } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  ButtonAnchor,
+  CopyButton,
+  Toggle,
+} from '@tahti-player/ui';
 
 import {
   fetchGreenRoomSession,
@@ -91,6 +97,17 @@ export function GreenRoomSessionPanel() {
       title="Green room"
       description="Let invited guests hear your stream before it goes public."
     >
+      {username ? (
+        <ButtonAnchor
+          href={`/u/${encodeURIComponent(username)}/green-room`}
+          size="sm"
+          variant="secondary"
+          className="mb-3 self-start"
+        >
+          <MessageSquareIcon size={14} aria-hidden />
+          Open Green Room chat
+        </ButtonAnchor>
+      ) : null}
       {!live ? (
         <p className="text-foreground-secondary text-sm">
           Start streaming to open a green room for this broadcast.

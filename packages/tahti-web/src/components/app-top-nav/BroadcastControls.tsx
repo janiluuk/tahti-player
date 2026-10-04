@@ -1,8 +1,6 @@
-import { Link } from '@tanstack/react-router';
 import {
   CalendarIcon,
   ListMusicIcon,
-  MessageSquareIcon,
   RadioIcon,
   UploadIcon,
 } from 'lucide-react';
@@ -16,7 +14,6 @@ import { type TopNavState } from './useTopNavState';
 export function BroadcastControls({ nav }: { nav: TopNavState }) {
   const {
     pathname,
-    user,
     setUploadOpen,
     broadcastOpen,
     setBroadcastOpen,
@@ -75,18 +72,6 @@ export function BroadcastControls({ nav }: { nav: TopNavState }) {
               />
               {broadcast.label}
             </div>
-            {user?.username ? (
-              <Link
-                to="/u/$username/green-room"
-                params={{ username: user.username }}
-                role="menuitem"
-                onClick={() => setBroadcastOpen(false)}
-                className="hover:bg-background-secondary flex items-center gap-2 rounded-md px-2 py-2 text-xs"
-              >
-                <MessageSquareIcon size={14} aria-hidden />
-                Open Green Room chat
-              </Link>
-            ) : null}
             <Button
               variant="text"
               size="flexible"

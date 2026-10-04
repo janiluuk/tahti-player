@@ -3,6 +3,7 @@ import {
   DoorOpenIcon,
   ListMusicIcon,
   MegaphoneIcon,
+  MessageSquareIcon,
   PinIcon,
   PlusIcon,
   RadioIcon,
@@ -13,7 +14,13 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, TabLabel, Tabs, ViewShell } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonLink,
+  TabLabel,
+  Tabs,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import {
   fetchStatsPlays,
@@ -306,7 +313,23 @@ export function StudioChannelView() {
             </div>
           )}
 
-          {tab === 'green-room' && <BroadcastPanel section="green-room" />}
+          {tab === 'green-room' && (
+            <div className="flex flex-col gap-4">
+              {user?.username ? (
+                <ButtonLink
+                  to="/u/$username/green-room"
+                  params={{ username: user.username }}
+                  size="sm"
+                  variant="secondary"
+                  className="self-start"
+                >
+                  <MessageSquareIcon size={14} aria-hidden />
+                  Open Green Room chat
+                </ButtonLink>
+              ) : null}
+              <BroadcastPanel section="green-room" />
+            </div>
+          )}
 
           {tab === 'selects' && <SelectsTab />}
         </ViewShell>
