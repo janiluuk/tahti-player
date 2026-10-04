@@ -23,6 +23,7 @@ import {
   type ProfileFields,
 } from '../../../api/studio-extras';
 import { ClientCapabilityNotice } from '../../../components/ClientCapabilityNotice';
+import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { GenrePicker } from '../../../components/GenrePicker';
 import { ChannelModeratorsPanel } from '../../../components/moderation/ChannelModeratorsPanel';
 import { ChatAccessPanel } from '../../../components/moderation/ChatAccessPanel';
@@ -48,6 +49,7 @@ export function ChannelPanel() {
   const [slug, setSlug] = useState(channel?.slug ?? '');
   const [domain, setDomain] = useState('');
   const [note, setNote] = useState<string | null>(null);
+  const [confirmingRename, setConfirmingRename] = useState(false);
 
   useEffect(() => {
     void fetchMeProfile().then((r) => {
@@ -210,14 +212,24 @@ export function ChannelPanel() {
                 </Button>
                 <Button
                   size="sm"
-                  onClick={() => {
+                  disabled={!slug.trim() || slug.trim() === channel?.slug}
+                  onClick={() => setConfirmingRename(true)}
+                >
+                  Rename
+                </Button>
+                <ConfirmDialog
+                  isOpen={confirmingRename}
+                  title={`Rename your channel to ${slug.trim()}?`}
+                  description="Your channel address changes, and your stream key may change with it, so an encoder such as OBS needs the new key before your next stream. The old address redirects for a while."
+                  confirmLabel="Rename"
+                  onCancel={() => setConfirmingRename(false)}
+                  onConfirm={() => {
+                    setConfirmingRename(false);
                     void updateChannelSlug(slug.trim()).then((r) => {
                       setNote(r.ok ? channelRenameNote(r) : r.error);
                     });
                   }}
-                >
-                  Rename
-                </Button>
+                />
               </div>
               <Input
                 label="Custom domain"

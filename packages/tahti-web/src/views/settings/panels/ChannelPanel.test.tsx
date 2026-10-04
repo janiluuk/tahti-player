@@ -8,6 +8,7 @@ import {
 } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import * as channelDesign from '../../../api/channel-design';
 import { useAuthStore } from '../../../stores/authStore';
 import { ChannelPanel } from './ChannelPanel';
 
@@ -209,5 +210,35 @@ describe('ChannelPanel chat and moderators', () => {
     });
     expect(screen.getByText('moderators panel')).toBeTruthy();
     expect(screen.queryByText('chat bans panel')).toBeNull();
+  });
+
+  it('asks before renaming the channel', async () => {
+    const rename = vi
+      .spyOn(channelDesign, 'updateChannelSlug')
+      .mockResolvedValue({ ok: false, error: 'Taken' } as never);
+    await act(async () => {
+      render(<ChannelPanel />);
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('tab', { name: /Username/ }));
+    });
+    const button = screen.getByRole('button', { name: 'Rename' });
+    expect((button as HTMLButtonElement).disabled).toBe(true);
+
+    fireEvent.change(screen.getByLabelText('Channel slug / username'), {
+      target: { value: 'new-name' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Rename' }));
+    expect(rename).not.toHaveBeenCalled();
+    expect(screen.getByText('Rename your channel to new-name?')).toBeTruthy();
+
+    const confirm = screen
+      .getAllByRole('button', { name: 'Rename' })
+      .at(-1) as HTMLElement;
+    await act(async () => {
+      fireEvent.click(confirm);
+    });
+    expect(rename).toHaveBeenCalledWith('new-name');
+    expect(screen.getByText('Taken')).toBeTruthy();
   });
 });
