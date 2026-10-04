@@ -1,12 +1,13 @@
 import {
   CheckCircle2Icon,
   Clock3Icon,
+  ExternalLinkIcon,
   ListFilterIcon,
   XCircleIcon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, Input } from '@tahti-player/ui';
+import { Button, ButtonAnchor, Input } from '@tahti-player/ui';
 
 import {
   fetchAdminContentReports,
@@ -33,6 +34,41 @@ const FILTER_TAB_ICONS = {
   ACTIONED: CheckCircle2Icon,
   DISMISSED: XCircleIcon,
 };
+
+/** What the report points at: a link to its page and, for a comment, the
+ * text. Older API versions send none of these fields. */
+function ReportTarget({ report }: { report: AdminContentReportRow }) {
+  if (report.targetLabel === undefined) {
+    return null;
+  }
+  if (!report.targetLabel || !report.targetUrl) {
+    return (
+      <p className="text-foreground-secondary text-xs">
+        The reported item has been removed.
+      </p>
+    );
+  }
+  return (
+    <div className="flex flex-col items-start gap-1">
+      <ButtonAnchor
+        href={report.targetUrl}
+        target="_blank"
+        rel="noreferrer"
+        variant="text"
+        size="sm"
+        className="text-primary h-auto p-0"
+      >
+        <ExternalLinkIcon size={12} aria-hidden />
+        {report.targetLabel}
+      </ButtonAnchor>
+      {report.targetExcerpt ? (
+        <blockquote className="border-border text-foreground-secondary border-l-2 pl-2 text-xs">
+          {report.targetExcerpt}
+        </blockquote>
+      ) : null}
+    </div>
+  );
+}
 
 function ReportActions({
   report,
@@ -135,8 +171,8 @@ export function ContentReportsTab() {
   return (
     <div className="flex flex-col gap-4">
       <p className="text-foreground-secondary text-sm">
-        Anonymous reports of channels, releases, archive items, and collections
-        — reporting needs no account.
+        Anonymous reports of channels, releases, tracks, collections and
+        comments — reporting needs no account.
       </p>
 
       <ModerationTabs
@@ -170,6 +206,7 @@ export function ContentReportsTab() {
                       {r.targetType.replace(/_/g, ' ').toLowerCase()}
                     </span>
                   </div>
+                  <ReportTarget report={r} />
                   <div className="text-foreground-secondary text-xs">
                     {r.details ?? 'No details provided'} ·{' '}
                     {new Date(r.createdAt).toLocaleDateString()}

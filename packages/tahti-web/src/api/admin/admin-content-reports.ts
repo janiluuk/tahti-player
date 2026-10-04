@@ -10,8 +10,18 @@ export type AdminContentReportStatus =
 export type AdminContentReportRow = {
   id: string;
   targetType:
-    'SOUND_ITEM' | 'RELEASE' | 'CHANNEL' | 'COLLECTION' | 'MOTION_COMMENT';
+    | 'SOUND_ITEM'
+    | 'RELEASE'
+    | 'CHANNEL'
+    | 'COLLECTION'
+    | 'MOTION_COMMENT'
+    | 'COMMENT';
   targetId: string;
+  /** Title of the reported thing, or who wrote the comment. Null once it's gone. */
+  targetLabel?: string | null;
+  targetUrl?: string | null;
+  /** The reported comment's text. */
+  targetExcerpt?: string | null;
   reason: 'COPYRIGHT' | 'HARASSMENT' | 'SPAM' | 'ILLEGAL_CONTENT' | 'OTHER';
   details: string | null;
   status: AdminContentReportStatus;
@@ -26,6 +36,9 @@ function mockContentReports(): AdminContentReportRow[] {
       id: 'rep-1',
       targetType: 'SOUND_ITEM',
       targetId: 'arch-sub-1',
+      targetLabel: 'Night Drive',
+      targetUrl: '/t/arch-sub-1',
+      targetExcerpt: null,
       reason: 'COPYRIGHT',
       details: 'Uses an unlicensed sample around 1:40.',
       status: 'OPEN',
