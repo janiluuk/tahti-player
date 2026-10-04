@@ -90,3 +90,36 @@ export async function apiGet(path, config, { auth = true } = {}) {
   }
   return res.json();
 }
+
+export function requireToken(config) {
+  if (!config.token) {
+    throw new CliError(`Missing API token. ${TOKEN_HELP}`);
+  }
+}
+
+/** JSON POST for write commands. Needs a token with the `write` scope. */
+export async function apiPost(path, body, config) {
+  requireToken(config);
+  let res;
+  try {
+    res = await fetch(`${config.apiUrl}${path}`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${config.token}`,
+      },
+      body: JSON.stringify(body),
+    });
+  } catch (error) {
+    throw new CliError(
+      `Could not reach the Tahti API at ${config.apiUrl}: ${error?.message ?? error}`,
+    );
+  }
+  if (!res.ok) {
+    throw new CliError(
+      describeHttpError(res.status, path, await readErrorMessage(res)),
+    );
+  }
+  return res.json();
+}

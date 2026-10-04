@@ -7,7 +7,8 @@ the roadmap this v1 slice comes from.
 
 ## Scope
 
-Read-only commands only. No playback/TUI yet (that's an explicit stretch
+Read-only commands, plus `import`, which uploads a folder of audio files to
+your library. No playback/TUI yet (that's an explicit stretch
 goal in the roadmap doc, not started here).
 
 ## Auth
@@ -47,18 +48,34 @@ pnpm --filter @tahti-player/tahti-cli exec tahti search night drive --limit 10
 Every command accepts `--json` (prints the API response unchanged) and
 `--help`. Tables use the same aligned layout, with `-` for empty values.
 
-| Command | API route | Output |
-| --- | --- | --- |
-| `tahti whoami [--json]` | `GET /api/auth/me` | Username, display name, tier, membership, channel slug, storage used |
-| `tahti library list [--sort <order>] [--json]` | `GET /api/me/sound` | Your library sounds (up to 100); `--sort` is one of `newest`, `oldest`, `title`, `duration`, `bpm`, `genre` |
-| `tahti library show <id> [--json]` | `GET /api/me/sound/:id` | One sound's metadata (status, duration, visibility, genre, BPM/key, source format, dates) |
-| `tahti releases list [--page <n>] [--limit <n>] [--json]` | `GET /api/me/releases` | Your releases (id, title, type, state, release date, track count); `--limit` is 1-100 |
-| `tahti releases show <id> [--json]` | `GET /api/me/releases/:id` | One release (type, state, release date, genre, UPC, label, smart link and its views, catalog checklist) plus its tracklist (position, title, duration, status, ISRC) |
-| `tahti search <query> [--page <n>] [--limit <n>] [--json]` | `GET /api/v1/search/tracks` | Public, ready tracks whose title matches (id, title, artist, duration, channel), newest first |
+| Command                                                              | API route                                                                | Output                                                                                                                                                               |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tahti whoami [--json]`                                              | `GET /api/auth/me`                                                       | Username, display name, tier, membership, channel slug, storage used                                                                                                 |
+| `tahti library list [--sort <order>] [--json]`                       | `GET /api/me/sound`                                                      | Your library sounds (up to 100); `--sort` is one of `newest`, `oldest`, `title`, `duration`, `bpm`, `genre`                                                          |
+| `tahti library show <id> [--json]`                                   | `GET /api/me/sound/:id`                                                  | One sound's metadata (status, duration, visibility, genre, BPM/key, source format, dates)                                                                            |
+| `tahti releases list [--page <n>] [--limit <n>] [--json]`            | `GET /api/me/releases`                                                   | Your releases (id, title, type, state, release date, track count); `--limit` is 1-100                                                                                |
+| `tahti releases show <id> [--json]`                                  | `GET /api/me/releases/:id`                                               | One release (type, state, release date, genre, UPC, label, smart link and its views, catalog checklist) plus its tracklist (position, title, duration, status, ISRC) |
+| `tahti search <query> [--page <n>] [--limit <n>] [--json]`           | `GET /api/v1/search/tracks`                                              | Public, ready tracks whose title matches (id, title, artist, duration, channel), newest first                                                                        |
+| `tahti import <folder> [--recursive] [--dry-run] [--force] [--json]` | `POST /api/uploads/prepare`, storage `PUT`, `POST /api/uploads/complete` | One row per audio file: uploaded (with the new sound id), skipped, or failed with the reason                                                                         |
 
-Everything except `search` is a `GET` route behind `requireAuth`, so any
-personal API token works (the API only requires the `write` scope for non-GET
-requests).
+Everything except `search` and `import` is a `GET` route behind `requireAuth`,
+so any personal API token works. `import` sends `POST` requests and needs a
+token with the `write` scope.
+
+`import` uploads each audio file in the folder (mp3, flac, wav, aiff, m4a, aac,
+ogg, opus) as a new sound titled after its file name, one file at a time:
+
+- Hidden files, empty files and files over 2 GB are skipped; subfolders are
+  only read with `--recursive`.
+- A file whose title is already in your library is skipped, so running the
+  import again only sends what is new. `--force` uploads it anyway.
+- `--dry-run` lists what would be uploaded and sends nothing.
+- One failed file does not stop the rest; the command exits with 1 if any
+  file failed. `--json` prints one object per file (`file`, `title`, `status`,
+  `id`, `error`).
+- Uploaded sounds are processed by Tahti afterwards, so they show as
+  `PROCESSING` in `tahti library list` for a while. Tags inside the files
+  (artist, album, artwork) are not read; edit the sound on tahti.live.
 
 `search` is public: it works without `TAHTI_API_TOKEN` and never sends the
 token, since the API rejects a request carrying an invalid token even on public
@@ -77,14 +94,14 @@ which does include the `email` field.
 
 ## Errors
 
-| Situation | Message |
-| --- | --- |
-| No `TAHTI_API_TOKEN` (every command except `search`) | `Missing API token. Create a personal API token ...` |
-| 401 (revoked, expired or wrong token) | `Token invalid or missing scope (<API message>) ...` |
-| 403 | `Token invalid or missing scope (<API message>): this token is not allowed to access <path>.` |
-| 404 | The API's message, e.g. `Sound item not found` or `Release not found` |
-| Network failure | `Could not reach the Tahti API at <url>: <reason>` |
-| Unknown flag or bad value | The problem plus a pointer to `tahti <command> --help` |
+| Situation                                            | Message                                                                                       |
+| ---------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| No `TAHTI_API_TOKEN` (every command except `search`) | `Missing API token. Create a personal API token ...`                                          |
+| 401 (revoked, expired or wrong token)                | `Token invalid or missing scope (<API message>) ...`                                          |
+| 403                                                  | `Token invalid or missing scope (<API message>): this token is not allowed to access <path>.` |
+| 404                                                  | The API's message, e.g. `Sound item not found` or `Release not found`                         |
+| Network failure                                      | `Could not reach the Tahti API at <url>: <reason>`                                            |
+| Unknown flag or bad value                            | The problem plus a pointer to `tahti <command> --help`                                        |
 
 All errors exit with status 1.
 
@@ -92,4 +109,4 @@ All errors exit with status 1.
 
 - Where this CLI ultimately ships from (this workspace vs. its own repo).
 - Playback / TUI.
-- Write commands (upload, edit metadata), which need a `write`-scoped token.
+- More write commands (edit metadata, create releases). `import` is the first.
