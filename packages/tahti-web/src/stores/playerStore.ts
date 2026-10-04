@@ -4,6 +4,7 @@ import { create } from 'zustand';
 import type { QueueItem, RepeatMode } from '@tahti-player/model';
 
 import type { TahtiPlayable } from '../api/types';
+import { isInternetRadioPlayableId } from '../content/radioStations';
 import { playableToTrack } from '../lib/playableToTrack';
 import { useLayoutStore } from './layoutStore';
 import { useLibraryStore } from './libraryStore';
@@ -129,13 +130,15 @@ export function playableFromQueueItem(qi: QueueItem): TahtiPlayable | null {
     provider === 'hearthis' && !url
       ? { provider: 'hearthis' as const, embedUri: qi.track.source.id }
       : undefined;
+  const internetRadio = isInternetRadioPlayableId(qi.id);
   return {
     id: qi.id,
-    kind: qi.id.startsWith('radio:')
-      ? 'radio'
-      : qi.id.startsWith('sound:')
-        ? 'sound'
-        : 'live',
+    kind:
+      qi.id.startsWith('radio:') || internetRadio
+        ? 'radio'
+        : qi.id.startsWith('sound:')
+          ? 'sound'
+          : 'live',
     title: qi.track.title,
     artist: qi.track.artists.map((a) => a.name).join(', '),
     coverUrl: qi.track.artwork?.items[0]?.url,
@@ -143,7 +146,10 @@ export function playableFromQueueItem(qi: QueueItem): TahtiPlayable | null {
     protocol,
     embed,
     sourceProvider: provider,
-    channelSlug: qi.id.includes(':') ? qi.id.split(':')[1] : undefined,
+    // An internet radio id ends in a station id, not a channel slug: treating
+    // it as one linked the station name to an artist page that doesn't exist.
+    channelSlug:
+      !internetRadio && qi.id.includes(':') ? qi.id.split(':')[1] : undefined,
   };
 }
 

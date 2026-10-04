@@ -11,6 +11,7 @@ import { formatArtistNames } from '@tahti-player/model';
 import { Badge, Button, cn, PlayerBar, Tooltip } from '@tahti-player/ui';
 
 import { TAHTI_RADIO_SLUG } from '../api/client';
+import { radioStationIdForPlayable } from '../content/radioStations';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { soundIdFromPlayableId } from '../lib/soundId';
 import { useAuthStore } from '../stores/authStore';
@@ -110,9 +111,24 @@ export function ConnectedPlayerBar() {
     (current
       ? formatArtistNames(current.track.artists)
       : 'Pick a channel to listen');
-  const artist = provider ? `${artistBase}, ${provider}` : artistBase;
+  // "internet-radio" is an internal provider id, not a source worth naming.
+  const artist =
+    provider && provider !== 'internet-radio'
+      ? `${artistBase}, ${provider}`
+      : artistBase;
   const soundId = soundIdFromPlayableId(playable?.id ?? currentId);
   const artistSlug = playable?.channelSlug;
+  const radioStationId = playable
+    ? radioStationIdForPlayable(playable)
+    : undefined;
+  const openRadioStation = radioStationId
+    ? () => {
+        void navigate({
+          to: '/radio/station/$stationId',
+          params: { stationId: radioStationId },
+        });
+      }
+    : undefined;
   const progress = duration > 0 ? currentTime / duration : 0;
   const coverUrl = playable?.coverUrl ?? current?.track.artwork?.items[0]?.url;
 
@@ -303,12 +319,14 @@ export function ConnectedPlayerBar() {
               coverUrl={coverUrl}
               action={isRealLive ? <PlayerLiveBadge /> : undefined}
               onTitleClick={
-                isLive
+                openRadioStation ??
+                (isLive
                   ? undefined
-                  : () => setWaveformExpanded((expanded) => !expanded)
+                  : () => setWaveformExpanded((expanded) => !expanded))
               }
               onArtistClick={
-                playable?.kind === 'radio'
+                openRadioStation ??
+                (playable?.kind === 'radio'
                   ? artistSlug === TAHTI_RADIO_SLUG
                     ? () => {
                         void navigate({
@@ -324,7 +342,7 @@ export function ConnectedPlayerBar() {
                           params: { username: artistSlug },
                         });
                       }
-                    : undefined
+                    : undefined)
               }
             />
             {soundId && playable && (
