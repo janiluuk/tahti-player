@@ -232,7 +232,15 @@ export function setMockOauthConnected(
   oauthConnected.set(id, connected);
 }
 
-/** Build a studio-ready demo user (channel slug matches username). */
+/** Emails that sign in as a plain listener in mock mode: registered, with no
+ * channel, no membership and no Studio or Admin role. */
+export function isMockListenerEmail(email: string): boolean {
+  return /^listener([+.][^@]*)?@/i.test(email.trim());
+}
+
+/** Build a demo user for a mock sign-in. `listener@…` gets a plain listener
+ * account; any other address gets a studio-ready artist whose channel slug
+ * matches the username. */
 export function buildMockLoginUser(
   email: string,
   overrides?: Partial<AuthUser>,
@@ -261,6 +269,17 @@ export function buildMockLoginUser(
       customDomain: null,
       customDomainVerified: false,
     },
+    ...(isMockListenerEmail(email)
+      ? {
+          displayName: 'Demo Listener',
+          role: 'LISTENER' as const,
+          roles: ['LISTENER' as const],
+          tier: 'FREE',
+          isMember: false,
+          isBoard: false,
+          channel: null,
+        }
+      : {}),
     ...overrides,
   };
   // Seeded/demo accounts skip the "Finish your profile?" toast — they are

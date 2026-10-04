@@ -4,24 +4,25 @@ Offline demo state lives in [`src/api/mock-session.ts`](src/api/mock-session.ts)
 
 ## Working end-to-end paths
 
-| Flow                               | Notes                                                                          |
-| ---------------------------------- | ------------------------------------------------------------------------------ |
-| Login / TOTP / logout              | Session via `setMockSessionUser`; `/me` returns it; persist rehydrates session |
-| Listen / Radio / Channel / Archive | Directory + HLS/MP3 fixtures                                                   |
-| Favorites / Follow                 | Mutable following set                                                          |
-| Fan subscribe                      | Activates in-session; Account / Settings Money lists it                        |
+| Flow                               | Notes                                                                                                         |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Login / TOTP / logout              | Session via `setMockSessionUser`; `/me` returns it; persist rehydrates session                                |
+| Listen / Radio / Channel / Archive | Directory + HLS/MP3 fixtures                                                                                  |
+| Favorites / Follow                 | Mutable following set                                                                                         |
+| Fan subscribe                      | Activates in-session; Account / Settings Money lists it                                                       |
 | Studio upload (FORCE_MOCK)         | `mock-uploads.ts` keeps the original file; public `/t/:id` and download use it once visibility is not PRIVATE |
-| Studio Go Live                     | Broadcast mocks + simulate signal                                              |
-| Sources OAuth Connect              | In-app mock connect/disconnect (no real OAuth redirect)                        |
-| Stripe Connect onboard             | In-app activate — no `connect.stripe.com` redirect                             |
-| Chat join / send                   | Local mock append (history REST)                                               |
-| Governance vote / comment          | In-memory motions                                                              |
-| Messages / Studio catalog          | Module-local stores                                                            |
+| Studio Go Live                     | Broadcast mocks + simulate signal                                                                             |
+| Sources OAuth Connect              | In-app mock connect/disconnect (no real OAuth redirect)                                                       |
+| Stripe Connect onboard             | In-app activate — no `connect.stripe.com` redirect                                                            |
+| Chat join / send                   | Local mock append (history REST)                                                                              |
+| Governance vote / comment          | In-memory motions                                                                                             |
+| Messages / Studio catalog          | Module-local stores                                                                                           |
 
 ## Demo credentials
 
 - Any email + password → artist user with matching channel slug
 - `demo@tahti.live` → username `demo`, Studio ready
+- `listener@tahti.live` (or `listener+anything@…`) → a plain listener: registered, no channel, not a member, role `LISTENER`
 - TOTP: email containing `+totp` or password `totp-demo`, then code `000000` or `123456`
 
 ## Live vs mock (demock)
