@@ -81,10 +81,12 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Widgets/ClientCapabilityNotice` | `tahti-web/ClientCapabilityNotice.stories.tsx` |
 | `Tahti/Collection/CollaborativePlaylistAdd` | `tahti-web/CollaborativePlaylistAdd.stories.tsx` |
 | `Tahti/Collection/CollectionView` | `tahti-web/CollectionView.stories.tsx` |
+| `Tahti/Track/CommentItem` | `tahti-web/CommentItem.stories.tsx` |
 | `Tahti/Player/ConnectedPlayerBar` | `tahti-web/ConnectedPlayerBar.stories.tsx` |
 | `Tahti/Player/ConnectedQueuePanel` | `tahti-web/ConnectedQueuePanel.stories.tsx` |
 | `Tahti/Player/ConnectedSettingsModal` | `tahti-web/ConnectedSettingsModal.stories.tsx` |
 | `Tahti/Layout/ConnectedStatusBar` | `tahti-web/ConnectedStatusBar.stories.tsx` |
+| `Tahti/Admin/ContentReportsTab` | `tahti-web/ContentReportsTab.stories.tsx` |
 | `Tahti/Studio/CoverArtGenerator` | `tahti-web/CoverArtGenerator.stories.tsx` |
 | `Tahti/Studio/Distribution/CreditsEditor` | `tahti-web/CreditsEditor.stories.tsx` |
 | `Tahti/Studio/Distribution/DeliveryTab` | `tahti-web/DeliveryTab.stories.tsx` |
@@ -138,6 +140,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Broadcast/MulticastSection` | `tahti-web/MulticastSection.stories.tsx` |
 | `Tahti/Studio/GoLive/MultistreamPanel` | `tahti-web/MultistreamPanel.stories.tsx` |
 | `Tahti/Studio/MultitrackTimeline` | `tahti-web/MultitrackTimeline.stories.tsx` |
+| `Tahti/Misc/MySupportTickets` | `tahti-web/MySupportTickets.stories.tsx` |
 | `Tahti/Studio/Updates/NewDraftDialog` | `tahti-web/NewDraftDialog.stories.tsx` |
 | `Tahti/Misc/NewsletterSubscribeToggle` | `tahti-web/NewsletterSubscribeToggle.stories.tsx` |
 | `Tahti/Misc/NotificationToasts` | `tahti-web/NotificationToasts.stories.tsx` |
@@ -169,6 +172,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Track/ReleaseTracklistDialog` | `tahti-web/ReleaseTracklistDialog.stories.tsx` |
 | `Tahti/Settings/ReleaseVisualDefaultsPanel` | `tahti-web/ReleaseVisualDefaultsPanel.stories.tsx` |
 | `Tahti/Studio/ReleasesPanel` | `tahti-web/ReleasesPanel.stories.tsx` |
+| `Tahti/Misc/ReportButton` | `tahti-web/ReportButton.stories.tsx` |
 | `Tahti/Misc/RightRailPanel` | `tahti-web/RightRailPanel.stories.tsx` |
 | `Tahti/Media/RoundImageUploadButton` | `tahti-web/RoundImageUploadButton.stories.tsx` |
 | `Tahti/Studio/Schedule/ScheduleAnalytics` | `tahti-web/ScheduleAnalytics.stories.tsx` |
