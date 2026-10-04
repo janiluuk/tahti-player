@@ -15,6 +15,8 @@ export type AdminSupportTicket = {
   artistUsername: string | null;
   artistDisplayName: string | null;
   contactEmail: string | null;
+  /** The requester wrote last, or nobody has answered yet, on an unresolved ticket. */
+  awaitingReply?: boolean;
   createdAt: string;
 };
 
@@ -128,6 +130,10 @@ function toSupportTicketRow(t: AdminSupportTicketDetail): AdminSupportTicket {
     artistUsername: t.artistUsername,
     artistDisplayName: t.artistDisplayName,
     contactEmail: t.contactEmail,
+    // Mock: every board message is by 'mock-board', so a ticket with none
+    // is still waiting on the board.
+    awaitingReply:
+      t.status !== 'RESOLVED' && !t.notes.some((n) => n.kind === 'MESSAGE'),
     createdAt: t.createdAt,
   };
 }
