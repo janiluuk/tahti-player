@@ -3,6 +3,7 @@ import {
   Clock3Icon,
   ExternalLinkIcon,
   ListFilterIcon,
+  Trash2Icon,
   XCircleIcon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -15,6 +16,7 @@ import {
   type AdminContentReportRow,
   type AdminContentReportStatus,
 } from '../../../../api/admin';
+import { deleteComment } from '../../../../api/comments';
 import { PageLoading } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { ModerationTabs } from '../ModerationTabs';
@@ -79,6 +81,8 @@ function ReportActions({
 }) {
   const [note, setNote] = useState('');
   const [pending, setPending] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (report.status === 'ACTIONED' || report.status === 'DISMISSED') {
     return (
@@ -102,6 +106,36 @@ function ReportActions({
         onDone();
       },
     );
+  };
+
+  // A reported comment that still exists can be removed from here; the
+  // report is then closed as actioned.
+  const canDeleteComment =
+    report.targetType === 'COMMENT' && Boolean(report.targetLabel);
+
+  const removeComment = () => {
+    if (!confirmingDelete) {
+      setConfirmingDelete(true);
+      return;
+    }
+    setPending(true);
+    setError(null);
+    void deleteComment(report.targetId).then((result) => {
+      if (!result.ok) {
+        setPending(false);
+        setConfirmingDelete(false);
+        setError(result.error);
+        return;
+      }
+      void resolveContentReport(
+        report.id,
+        'ACTIONED',
+        note.trim() || 'Comment deleted',
+      ).then(() => {
+        setPending(false);
+        onDone();
+      });
+    });
   };
 
   return (
@@ -141,7 +175,24 @@ function ReportActions({
           <XCircleIcon size={14} aria-hidden />
           Dismiss
         </Button>
+        {canDeleteComment ? (
+          <Button
+            size="sm"
+            variant="secondary"
+            intent="danger"
+            disabled={pending}
+            onClick={removeComment}
+          >
+            <Trash2Icon size={14} aria-hidden />
+            {confirmingDelete ? 'Confirm delete' : 'Delete comment'}
+          </Button>
+        ) : null}
       </div>
+      {error ? (
+        <p className="text-accent-red-strong text-xs" role="alert">
+          {error}
+        </p>
+      ) : null}
     </div>
   );
 }
