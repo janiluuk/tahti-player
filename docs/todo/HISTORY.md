@@ -4176,3 +4176,16 @@ Follow-ups from batch 32, plus a sweep of fan subscriptions, uploads, follows an
 - **Notification titles**: new titles use the username when the display name is empty or an email. Stored rows are not rewritten (tahti-org#680).
 - **Stream overlay (tahti-org#678)**: the orchestrator can draw the backdrop image and visualizer preset. Both stay off behind `STREAM_OVERLAY_BACKDROP_ENABLED` / `STREAM_OVERLAY_VISUALIZER_ENABLED` until `liquidsoap --check` and a staging stream confirm them, because a script error takes the whole channel offline.
 - **Checks:** for each PR, tahti-web type-check, eslint on the changed files, the size guard and the touched tests. tahti-org ran Vitest for each touched route or job against a throwaway Postgres, with new tests failing on `main` (Stripe mocked). Nothing was tried in a browser, against real Stripe, Liquidsoap or storage CORS.
+
+## 2026-10-04 - Ten cross-repo slices, thirty-fourth batch (tahti-player #477-#479, tahti-org #685-#691)
+
+A sweep of comments, content reports, support requests and the press kit, plus one unshipped notice from batch 26.
+
+- **Comments**: long threads return the newest 200 comments instead of the oldest 200. Comments by deleted or suspended accounts are left out, and a board member can delete any comment (tahti-org#686).
+- **Reporting**: comments can be reported (`COMMENT` target, tahti-org#687), with a Report button on other people's track and channel comments (#477). The report route answers 404 when the reported thing does not exist.
+- **Moderation queue**: report rows carry the target's title, web path and, for a comment, its text (tahti-org#688). Admin → Moderation links to the reported page, quotes the comment and says when the item is gone (#478).
+- **Support requests**: a board reply sends the requester a `SUPPORT_REPLY` notification and an email. Requests sent while signed out get the reply by email, which they could not receive before (tahti-org#689). People can reply on their own request, and replying to a resolved one reopens it (tahti-org#690, #479).
+- **Fan subscriptions**: fans get a `FAN_SUB_EXPIRED` notification when a subscription lapses or runs out after cancelling (tahti-org#685).
+- **Press kit**: the public press kit JSON, gallery and zip no longer serve deleted or suspended artists (tahti-org#691).
+- **Also**: tahti-org#564 (publish `@tahti/api-client` to npm) was merged with `main`, checked with `actionlint` and a local pack and smoke test, and marked ready. It still needs `NPM_TOKEN` and the `@tahti` npm scope. #475 and #476 were rebased and got a regenerated `STORYBOOK-SURFACES.md`.
+- **Checks:** for each PR, tahti-web type-check, eslint on the changed files, the size guard and the touched tests. tahti-org ran Vitest for each touched route or job against a throwaway Postgres (mail mocked). Nothing was tried in a browser, against the live API or with real mail. The Storybook plays job crashed Chromium once on #478 ("Browser connection was closed"), unrelated to the change.
