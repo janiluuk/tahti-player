@@ -25,6 +25,7 @@ import {
 import { useAutoHideNavWhilePlaying } from '../hooks/useAutoHideNavWhilePlaying';
 import { useIsCompactDesktop, useIsMobile } from '../hooks/useIsMobile';
 import { useOpenedOnce } from '../hooks/useOpenedOnce';
+import { useWarnBeforeLeavingWhilePlaying } from '../hooks/useWarnBeforeLeavingWhilePlaying';
 import { MAIN_CONTENT_PADDING } from '../layout/contentPadding';
 import { hasAccountRole } from '../lib/accountRoles';
 import { diagnosticsEnabled } from '../lib/buildPolicy';
@@ -265,6 +266,7 @@ export function AppShell() {
   // on every mousemove -- a single unselected useLayoutStore() call would
   // re-render this entire shell, including the routed content tree, on
   // every one of those ticks.
+  useWarnBeforeLeavingWhilePlaying();
   const leftCollapsed = useLayoutStore((s) => s.leftCollapsed);
   const rightCollapsed = useLayoutStore((s) => s.rightCollapsed);
   const leftWidth = useLayoutStore((s) => s.leftWidth);
