@@ -257,6 +257,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
                     commentOpen={commentComposerOpen}
                     onReact={(emoticon) => void submitComment(emoticon)}
                     onComment={() => setCommentComposerOpen((open) => !open)}
+                    onSignIn={() => useAuthModalStore.getState().open('login')}
                   />
                 </>
               )}
@@ -300,17 +301,19 @@ export function TrackHero({ page }: { page: TrackPage }) {
                   }
                   className="h-auto min-w-0 rounded-none border-0 bg-transparent px-0 text-sm text-white outline-none placeholder:text-white/45 focus-visible:ring-0 focus-visible:ring-offset-0"
                 />
-              ) : (
+              ) : commentsEnabled ? (
                 <Link
                   to="/login"
                   className="min-w-0 flex-1 text-sm text-white/55"
                 >
-                  {!commentsEnabled
-                    ? 'Comments are off for this track'
-                    : embedSrc
-                      ? 'Log in to write a comment'
-                      : `Log in to write a comment at ${clock}`}
+                  {embedSrc
+                    ? 'Log in to write a comment'
+                    : `Log in to write a comment at ${clock}`}
                 </Link>
+              ) : (
+                <span className="min-w-0 flex-1 text-sm text-white/55">
+                  Comments are off for this track
+                </span>
               )}
             </form>
           ) : null}
@@ -368,8 +371,11 @@ export function TrackHero({ page }: { page: TrackPage }) {
             <Button
               size="sm"
               variant="secondary"
-              onClick={() => setPlaylistOpen(true)}
-              disabled={!user}
+              onClick={() =>
+                user
+                  ? setPlaylistOpen(true)
+                  : useAuthModalStore.getState().open('login')
+              }
             >
               <PlusIcon size={14} aria-hidden className="mr-1.5" />
               Add
