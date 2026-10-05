@@ -15,6 +15,7 @@ import {
 } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import * as blocks from '../api/blocks';
 import * as contacts from '../api/message-contacts';
 import * as api from '../api/messages';
 import { useAuthStore, type AuthUser } from '../stores/authStore';
@@ -185,5 +186,56 @@ describe('MessagesView older messages', () => {
     expect(
       screen.queryByRole('button', { name: 'Load older messages' }),
     ).toBeNull();
+  });
+
+  it('blocks the other person after a confirm and closes the composer', async () => {
+    vi.spyOn(blocks, 'fetchBlockedUsers').mockResolvedValue([]);
+    const block = vi.spyOn(blocks, 'blockUser').mockResolvedValue({
+      ok: true,
+      data: {
+        username: 'aino',
+        displayName: 'Aino',
+        avatarUrl: null,
+        blockedAt: '2026-10-05T10:00:00.000Z',
+      },
+    });
+    await renderView(conversation());
+    expect(screen.getByPlaceholderText('Write a message…')).toBeTruthy();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Block' }));
+    expect(block).not.toHaveBeenCalled();
+    expect(screen.getByText('Block Aino?')).toBeTruthy();
+    const confirm = screen
+      .getAllByRole('button', { name: 'Block' })
+      .at(-1) as HTMLElement;
+    await act(async () => {
+      fireEvent.click(confirm);
+    });
+    expect(block).toHaveBeenCalledWith('aino');
+    expect(screen.queryByPlaceholderText('Write a message…')).toBeNull();
+    expect(screen.getByText(/You blocked this account/)).toBeTruthy();
+    // The closing dialog still hides the page from role queries here.
+    expect(screen.getByText('Unblock')).toBeTruthy();
+  });
+
+  it('shows an already blocked thread as blocked and unblocks it', async () => {
+    vi.spyOn(blocks, 'fetchBlockedUsers').mockResolvedValue([
+      {
+        username: 'aino',
+        displayName: 'Aino',
+        avatarUrl: null,
+        blockedAt: '2026-10-05T10:00:00.000Z',
+      },
+    ]);
+    const unblock = vi
+      .spyOn(blocks, 'unblockUser')
+      .mockResolvedValue({ ok: true });
+    await renderView(conversation());
+    expect(screen.getByText(/You blocked this account/)).toBeTruthy();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Unblock' }));
+    });
+    expect(unblock).toHaveBeenCalledWith('aino');
+    expect(screen.getByPlaceholderText('Write a message…')).toBeTruthy();
   });
 });

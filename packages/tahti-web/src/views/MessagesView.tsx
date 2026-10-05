@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { Button, Input, ViewShell } from '@tahti-player/ui';
 
+import { fetchBlockedUsers } from '../api/blocks';
 import {
   fetchConversation,
   fetchConversations,
@@ -14,6 +15,7 @@ import {
   type ChatDm,
   type ConversationSummary,
 } from '../api/messages';
+import { DmBlockButton } from '../components/DmBlockButton';
 import { DmRoleBadge } from '../components/DmRoleBadge';
 import { DmThreadMessages } from '../components/DmThreadMessages';
 import { MessageContacts } from '../components/MessageContacts';
@@ -35,6 +37,9 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
   const [composeUser, setComposeUser] = useState('');
   const [msg, setMsg] = useState<string | null>(null);
   const [starting, setStarting] = useState(false);
+  const [blockedUsernames, setBlockedUsernames] = useState<Set<string>>(
+    () => new Set(),
+  );
 
   const reloadInbox = () => {
     void fetchConversations().then((r) => {
@@ -47,7 +52,22 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
       return;
     }
     reloadInbox();
+    void fetchBlockedUsers().then((blocked) =>
+      setBlockedUsernames(new Set(blocked.map((b) => b.username))),
+    );
   }, [user]);
+
+  const setBlocked = (username: string, blocked: boolean) => {
+    setBlockedUsernames((current) => {
+      const next = new Set(current);
+      if (blocked) {
+        next.add(username);
+      } else {
+        next.delete(username);
+      }
+      return next;
+    });
+  };
 
   useEffect(() => {
     if (!user || !threadId) {
@@ -238,8 +258,20 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
           ) : (
             <>
               <div className="border-border flex items-center gap-1.5 border-b px-3 py-2 text-sm font-medium">
-                {other?.displayName}
+                <span className="min-w-0 truncate">{other?.displayName}</span>
                 <DmRoleBadge role={other?.channelRole} />
+                {other && other.available !== false ? (
+                  <span className="ml-auto">
+                    <DmBlockButton
+                      username={other.username}
+                      displayName={other.displayName}
+                      blocked={blockedUsernames.has(other.username)}
+                      onChange={(blocked) =>
+                        setBlocked(other.username, blocked)
+                      }
+                    />
+                  </span>
+                ) : null}
               </div>
               <DmThreadMessages
                 messages={messages}
@@ -247,7 +279,15 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
                 loadingOlder={loadingOlder}
                 onLoadOlder={loadOlder}
               />
-              {other?.available === false ? (
+              {other && blockedUsernames.has(other.username) ? (
+                <p
+                  role="status"
+                  className="border-border text-foreground-secondary border-t p-3 text-sm"
+                >
+                  You blocked this account. Unblock it to message each other
+                  again.
+                </p>
+              ) : other?.available === false ? (
                 <p
                   role="status"
                   className="border-border text-foreground-secondary border-t p-3 text-sm"
