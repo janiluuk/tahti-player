@@ -186,7 +186,7 @@ export function RadioBrowserDirectoryCard() {
           <AudioPluginToggleRow
             name="Radio Browser directory"
             author="radio-browser.info · community directory"
-            description="Browse and search 50,000+ public internet radio stations, with genre and country filters — Finnish curated stations live under Stations."
+            description="Finnish stations, your own M3U or stream URLs, and 50,000+ public internet radio stations to browse by genre and country."
             enabled={enabled}
             onToggle={() => setEnabled(!enabled)}
           />
