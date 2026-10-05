@@ -41,6 +41,7 @@ export type BandcampSourceAdapter = OAuthAdapterBase & {
     data: BandcampAlbum[];
     connected: boolean;
     message?: string;
+    importAvailable?: boolean;
     meta: FetchMeta;
   }>;
   importAlbum(

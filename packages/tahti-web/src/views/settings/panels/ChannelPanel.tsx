@@ -177,7 +177,8 @@ export function ChannelPanel() {
                   disabled
                 />
                 <ClientCapabilityNotice kind="coming-soon">
-                  You can&apos;t change these discovery settings yet.
+                  Discovery listing, Radio pickup, and Featured placement are
+                  not configurable from this client yet (no API).
                 </ClientCapabilityNotice>
               </div>
             </div>

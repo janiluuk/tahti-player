@@ -59,7 +59,10 @@ beforeEach(() => {
   adapter.checkStatus.mockResolvedValue({
     data: { connected: true, username: 'me' },
   });
-  adapter.listAlbums.mockResolvedValue({ data: albums });
+  adapter.listAlbums.mockResolvedValue({
+    data: albums,
+    importAvailable: true,
+  });
 });
 
 describe('OAuthServiceCard', () => {

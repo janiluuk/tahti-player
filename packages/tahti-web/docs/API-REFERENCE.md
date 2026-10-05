@@ -17,7 +17,7 @@ permission boundaries that must be checked before adding a new view. It is
 not a replacement for the generated OpenAPI document. For sibling-repo naming,
 route aliases, and governance context, see [CROSS-REPO-SYNC.md](./CROSS-REPO-SYNC.md).
 
-<!-- API_PATHS_SHA256: d87518a15a6bac8d37a6e325de77329df480e5df0ca85b006e673579e6d9c55a -->
+<!-- API_PATHS_SHA256: d0576b2e811464e2876647a5e9cef177a661b8b13f6835e9be8fe913bbdfc0a3 -->
 
 ## Authentication
 

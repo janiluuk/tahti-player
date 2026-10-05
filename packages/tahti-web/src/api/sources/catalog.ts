@@ -78,13 +78,14 @@ export const SOURCE_DEFS: SourceDef[] = [
   {
     id: 'bandcamp',
     name: 'Bandcamp',
-    description: 'Connect Bandcamp and import albums into your catalog.',
+    description:
+      'Connect Bandcamp. Album listing and catalog import are not available yet (API approval pending).',
     oauthStartPath: '/api/me/bandcamp/oauth/start',
     kind: 'oauth',
     capabilities: {
       connect: true,
       search: false,
-      import: true,
+      import: false,
       playback: true,
     },
   },

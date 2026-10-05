@@ -5,7 +5,7 @@ export type CapabilityKind =
 
 const KIND_LABEL: Record<CapabilityKind, string> = {
   'not-in-client': 'Not available in this client',
-  'coming-soon': 'Coming soon',
+  'coming-soon': 'Not available yet',
   partial: 'Partial',
   'link-out': 'Opens tahti.live',
   'mock-only': 'Preview only',

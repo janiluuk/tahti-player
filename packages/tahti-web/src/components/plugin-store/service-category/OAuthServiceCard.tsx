@@ -43,6 +43,7 @@ export function OAuthServiceCard({
   const [bandcampAlbums, setBandcampAlbums] = useState<BandcampAlbum[]>([]);
   const [bandcampBusy, setBandcampBusy] = useState(false);
   const [bandcampMessage, setBandcampMessage] = useState<string | null>(null);
+  const [bandcampImportAvailable, setBandcampImportAvailable] = useState(false);
   const [scTracks, setScTracks] = useState<SoundcloudTrack[]>([]);
   const [scBusy, setScBusy] = useState(false);
   const [scMessage, setScMessage] = useState<string | null>(null);
@@ -85,11 +86,13 @@ export function OAuthServiceCard({
         if (!cancelled) {
           setBandcampAlbums(result.data);
           setBandcampMessage(result.message ?? null);
+          setBandcampImportAvailable(result.importAvailable ?? false);
         }
       })
       .catch(() => {
         if (!cancelled) {
           setBandcampMessage('Could not load your Bandcamp releases.');
+          setBandcampImportAvailable(false);
         }
       })
       .finally(() => {
@@ -268,6 +271,11 @@ export function OAuthServiceCard({
               ) : bandcampAlbums.length === 0 ? (
                 <p className="text-foreground-secondary text-sm">
                   {bandcampMessage ?? 'No Bandcamp releases were found.'}
+                </p>
+              ) : !bandcampImportAvailable ? (
+                <p className="text-foreground-secondary text-sm">
+                  {bandcampMessage ??
+                    'Catalog import is not available yet for Bandcamp.'}
                 </p>
               ) : (
                 <ul className="flex flex-col gap-2">

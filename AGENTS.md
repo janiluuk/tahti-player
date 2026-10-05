@@ -54,7 +54,7 @@ pnpm --filter @tahti-player/ui test -- src/components/Badge/Badge.test.tsx
 ## Invariants (keep short)
 
 - No comments in code; never commit unless asked; rebase onto the latest base before every push; format changed files with Prettier before every push; small focused changes.
-- Import-provider Configure lives in this Nuclear repo (modal: settings → test → save/enable). Open API questions → [`docs/DECISIONS.md`](./docs/DECISIONS.md).
+- Import-provider Configure lives in this repo (host-rendered modal: settings → test → save, then enable). Settled 2026-10-05 — [`docs/DECISIONS.md`](./docs/DECISIONS.md).
 - **Todo lifecycle:** `docs/todo/` + INDEX (`open|blocked|partial`) → when done fold HISTORY, delete file, strip WORKPLAN. See [`CLAUDE.md`](./CLAUDE.md).
 - Governance API in `../tahti-org`. Contexts: member `/governance`, artist `/studio/governance`, board `/admin/governance` + `/admin/agm`. No invented DTOs; advisory ≠ AGM ballot until sibling contracts exist.
 - Registry: after plugin/theme add/change, update `../tahti-registry` — full checklist in [`docs/agent/REGISTRY.md`](./docs/agent/REGISTRY.md). Do not migrate runtime `plugins.json` yet.

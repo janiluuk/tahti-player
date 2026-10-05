@@ -103,7 +103,7 @@ describe('ChannelPanel discovery', () => {
           toggle.getAttribute('aria-disabled') === 'true',
       ).toBe(true);
     }
-    expect(screen.getByText('Coming soon')).toBeTruthy();
+    expect(screen.getByText('Not available yet')).toBeTruthy();
   });
 
   it('does not write genres over links it could not load', async () => {

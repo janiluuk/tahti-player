@@ -81,10 +81,14 @@ const EXPORT_SERVICE_PLUGINS: ServicePlugin[] = EXPORT_TARGETS.filter(
 ).map((target) => ({
   id: `export-${target.id}`,
   name: target.label,
-  author: 'Tahti distribution',
+  author: 'Deep link · via Revelator',
   description: target.note,
   tags: ['export'],
-  action: { kind: 'deep-link', to: target.to },
+  action: {
+    kind: 'deep-link',
+    to: target.to,
+    label: 'Open distribution',
+  },
 }));
 
 const SERVICE_PLUGINS: ServicePlugin[] = [

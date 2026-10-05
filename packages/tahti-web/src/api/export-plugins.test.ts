@@ -30,7 +30,7 @@ describe('fetchExportPlugins', () => {
               id: 'revelator',
               name: 'Revelator',
               description: 'x',
-              capabilities: { submit: true, status: true, webhook: false },
+              capabilities: { submit: true, status: true, webhook: true },
               submitPath: '/api/me/releases/:id/revelator/submit',
               statusPath: '/api/me/releases/:id/revelator',
               webhookPath: '/api/webhooks/export/revelator',

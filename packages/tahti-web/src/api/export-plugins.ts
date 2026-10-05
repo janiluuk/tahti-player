@@ -17,9 +17,8 @@ const MOCK_EXPORT_PLUGINS: ExportPluginProviderRow[] = [
     contractVersion: 1,
     id: 'revelator',
     name: 'Revelator',
-    description:
-      'DSP delivery via Revelator (submit / status; webhook sync pending).',
-    capabilities: { submit: true, status: true, webhook: false },
+    description: 'DSP delivery via Revelator (submit / status / webhook).',
+    capabilities: { submit: true, status: true, webhook: true },
     submitPath: '/api/me/releases/:id/revelator/submit',
     statusPath: '/api/me/releases/:id/revelator',
     webhookPath: '/api/webhooks/export/revelator',

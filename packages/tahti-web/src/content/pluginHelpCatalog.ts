@@ -70,10 +70,10 @@ export const READY_PLUGIN_HELP: PluginHelpEntry[] = [
     name: 'Bandcamp',
     category: 'Import',
     state: 'partial',
-    stateLabel: 'Importer ready',
+    stateLabel: 'Connect only',
     description:
-      'Connects your Bandcamp account to browse your discography and bring albums into your catalog, with in-app playback through the Bandcamp widget once a track is imported.',
-    help: 'Connect Bandcamp from Sources, then import albums into your catalog. Imported tracks play through the Bandcamp widget on Tahti. Production catalog import is still pending the sibling API’s Bandcamp import endpoint.',
+      'Connects your Bandcamp account. Album listing and catalog import wait on Bandcamp API approval; playback through the Bandcamp widget works for linked tracks.',
+    help: 'Connect Bandcamp from Sources. Catalog import is not available yet — the API marks bandcamp import:false until Bandcamp API v1 lands.',
   },
   {
     name: 'Google Drive',

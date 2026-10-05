@@ -152,7 +152,7 @@ export function sourceTileSubtitle(id: IntegrationId): string {
     case 'stash':
       return 'Private locker';
     case 'bandcamp':
-      return 'Import albums';
+      return 'Connect account';
     case 'soundcloud':
       return 'Import tracks';
     case 'google-drive':
