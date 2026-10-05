@@ -67,3 +67,30 @@ export function SettingsHint({ children }: { children: ReactNode }) {
     </p>
   );
 }
+
+/** Shared bordered section used by Notifications, Mentions, and similar
+ * settings panels — replaces hand-rolled `rounded-xl border p-4` cards. */
+export function SettingsSectionCard({
+  title,
+  description,
+  children,
+  footer,
+}: {
+  title: string;
+  description?: ReactNode;
+  children?: ReactNode;
+  footer?: ReactNode;
+}) {
+  return (
+    <section className="border-border bg-background-secondary/30 rounded-xl border p-4">
+      <h3 className="font-display text-base font-bold">{title}</h3>
+      {description ? (
+        <p className="text-foreground-secondary mt-1 text-sm">{description}</p>
+      ) : null}
+      {children ? (
+        <div className="mt-4 flex flex-col gap-3">{children}</div>
+      ) : null}
+      {footer ? <div className="mt-4">{footer}</div> : null}
+    </section>
+  );
+}

@@ -21,17 +21,18 @@ paths.
 | 3 | Library Upload tab | done | `LIBRARY_SECTION_TABS` + mount tabs on `StudioUploadView` |
 | 4 | Studio↔Library catalog chrome | done | Drop catalog paths from Studio `SECTION_PREFIXES`; Library sidebar + `LibrarySectionTabs` on sounds/collections/upload; branding → settings |
 | 5 | Account / Broadcast splits | done | Go Live tabs (Prep · Credentials · Recording · Destinations · Green room); Settings↔Broadcast deep links; Channel → session links; dead non-global `StudioNav` swept |
-| 6 | Channel page redesign | open | See `channel-page-redesign.md` — visual redesign still needs a reference; beta verify leftover |
+| 6 | Channel page redesign | open | See `channel-page-redesign.md` — visual redesign still needs a reference; beta verify leftover. Edit mode (`?edit=`) + nav tabs already land; no further light split in phase 10 |
 | 7 | Admin Radio tabs | done | Feature · Presets · Opt-outs · History (`?tab=`) |
 | 8 | Release detail tab URLs | done | Existing six tabs sync to `?tab=` (smart-links, credits, …) |
 | 9 | Catalog twin (sounds) | done | `/library/sounds` mounts `StudioSoundsView`; `/studio/sounds` + `/studio/archive` redirect |
+| 10 | Collections twin + Settings panels | done | `/library/collections` mounts `StudioCollectionsView` (+ subscribed); `/studio/collections` + `/studio/playlists` redirect; `SettingsSectionCard` on Notifications / Mentions |
 
-## Leftovers after phases 1–9
+## Leftovers after phases 1–10
 
 - Channel page visual redesign + beta check (`channel-page-redesign.md`).
-- Account settings panel component unification (`settings-audit.md`).
-- Collections catalog twin (`/studio/collections` vs `/library/collections`) — same pattern as sounds if needed.
+- Optional: migrate remaining settings panels onto `SettingsSectionCard`.
 - Optional: true child routes under `/studio/releases/$id/...` instead of `?tab=` only.
+- Moderator role decision (`settings-audit.md`).
 
 ## Nav highlight gaps
 
