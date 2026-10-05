@@ -90,3 +90,17 @@ this environment) — the token-required path is covered by tests mocking
 - **Still blocked on the user:** tahti-org#564 is merged, but `@tahti/api-client` is not on npm yet (`npm view` returns 404). The publish job needs the `NPM_TOKEN` secret and the `@tahti` npm scope. Until the first publish, tahti-cli#1 cannot install or build.
 - **Left to port, in order:** (1) after the first SDK publish, finish tahti-cli#1: convert `src/*.mjs` to TypeScript on `createTahtiClient`, commit a lockfile, update the README; (2) carry `import` over to the standalone repo (opened as a PR against its `main` so it does not fall behind); (3) remove `packages/tahti-cli` from this repo and move this todo.
 - **Not done in `import`:** reading tags or artwork from the files, resumable or parallel uploads, adding the uploads to a release or collection.
+
+## 2026-10-05: `tahti shell` TUI (library + radio + play)
+
+- **Shipped (this branch / #508):** interactive `tahti shell` using **blessed**
+  (nav / list / now-playing) and external **mpv** over JSON IPC. Scope is
+  listener shell: Library (`GET /api/me/sound` + `editor/source` play URL),
+  Search (`GET /api/v1/search/tracks` — play only when a stream URL is present),
+  Radio (`GET /api/channels/tahti-radio` HLS + `GET /api/v1/internet-radio/presets/enabled`),
+  and an in-memory queue. Keys: Tab, Enter, Space, n/p, seek, `/`, a/c, ?, q.
+- **Deps:** runtime `blessed`; host must provide `mpv` on PATH. Unit tests cover
+  state, key routing, IPC message builders, and radio/library API mapping (no
+  real TTY/mpv in CI).
+- **Out of this slice:** studio/dashboard, hearthis download inside the TUI,
+  favorites/history accounts, pure-Node decoding.

@@ -6,6 +6,8 @@
 const MAX_SEGMENT = 120;
 
 /** Characters Windows/macOS/Linux reject or that break shell paths. */
+// Control chars (NUL–US) must be stripped from path segments.
+// eslint-disable-next-line no-control-regex -- intentional C0 control strip
 const UNSAFE = /[<>:"/\\|?*\u0000-\u001f]+/g;
 
 export function sanitizePathSegment(value, fallback = 'Unknown') {
@@ -120,7 +122,9 @@ export function resolveAlbumYear(set, tracks) {
   let best = null;
   for (const track of tracks ?? []) {
     const match = /^(\d{4})/.exec(String(track.releaseDate ?? '').trim());
-    if (!match) continue;
+    if (!match) {
+      continue;
+    }
     const year = Number.parseInt(match[1], 10);
     if (year >= 1900 && year <= 2100 && (best === null || year < best)) {
       best = year;

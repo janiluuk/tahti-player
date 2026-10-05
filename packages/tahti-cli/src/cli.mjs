@@ -12,6 +12,7 @@ import { runReleasesList } from './commands/releases-list.mjs';
 import { runReleasesShow } from './commands/releases-show.mjs';
 import { runSearch, SEARCH_PAGE_SIZE } from './commands/search.mjs';
 import { runWhoami } from './commands/whoami.mjs';
+import { runShell } from './shell/shell.mjs';
 
 const JSON_OPTION = { json: { type: 'boolean', default: false } };
 
@@ -182,6 +183,18 @@ paths that already exist (unless --force).
         force: values.force,
       }),
   },
+  {
+    path: ['shell'],
+    usage: 'tahti shell',
+    summary: 'Interactive TUI: library, search, radio, queue (needs mpv)',
+    details: `Opens a blessed terminal UI. Browse your library, search public tracks,
+tune Tahti Radio / internet-radio presets, and manage a simple queue.
+Playback uses an external mpv process (must be on PATH) over JSON IPC.
+Requires a TTY and TAHTI_API_TOKEN. Keys: Tab focus, Enter play, Space
+pause, n/p next/prev, ←/→ seek, / search, a queue, ? help, q quit.`,
+    options: {},
+    run: (config) => runShell(config),
+  },
 ];
 
 const ENVIRONMENT_HELP = `Environment:
@@ -189,7 +202,11 @@ const ENVIRONMENT_HELP = `Environment:
                     Required by every command except search; import needs
                     the write scope. hearthis download-set only needs read
                     (files are fetched from hearthis.at, not uploaded to Tahti).
-  TAHTI_API_URL     API base URL (default: https://api.tahti.live)`;
+                    shell needs a token for library playback.
+  TAHTI_API_URL     API base URL (default: https://api.tahti.live)
+
+External tools:
+  mpv               Required for \`tahti shell\` playback (install separately).`;
 
 function commandList() {
   const width = Math.max(...COMMANDS.map((command) => command.usage.length));
@@ -209,13 +226,15 @@ ${ENVIRONMENT_HELP}
 `;
 
 function commandHelp(command) {
+  const jsonHelp = command.options?.json
+    ? '  --json           Print the raw API response as JSON\n'
+    : '';
   return `Usage: ${command.usage}
 
 ${command.summary}.
 
 ${command.details}
-  --json           Print the raw API response as JSON
-  -h, --help       Show this help
+${jsonHelp}  -h, --help       Show this help
 
 ${ENVIRONMENT_HELP}
 `;
@@ -279,10 +298,14 @@ export async function main(argv) {
   // finish with something to show and still have failed (a partial import).
   const result = await command.run(resolveConfig(), parsed);
   if (typeof result === 'string') {
-    console.log(result);
+    if (result) {
+      console.log(result);
+    }
     return 0;
   }
-  console.log(result.output);
+  if (result.output) {
+    console.log(result.output);
+  }
   return result.exitCode;
 }
 

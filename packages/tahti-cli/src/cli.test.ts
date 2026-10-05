@@ -34,6 +34,7 @@ describe('main', () => {
     expect(help).toContain('tahti hearthis sets');
     expect(help).toContain('tahti hearthis set <permalink-or-url>');
     expect(help).toContain('tahti hearthis download-set');
+    expect(help).toContain('tahti shell');
   });
 
   it('prints help and exits 0 with no arguments', async () => {
@@ -71,6 +72,7 @@ describe('main', () => {
     [['hearthis', 'sets', '--help'], 'hearthis.at Sets'],
     [['hearthis', 'set', '--help'], 'tracks in one hearthis.at Set'],
     [['hearthis', 'download-set', '--help'], 'Artist/Album'],
+    [['shell', '--help'], 'Interactive TUI'],
   ])(
     'prints per-command help for %j without calling the API',
     async (argv, text) => {
@@ -79,7 +81,9 @@ describe('main', () => {
       const code = await main(argv);
       expect(code).toBe(0);
       expect(logSpy).toHaveBeenCalledWith(expect.stringContaining(text));
-      expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('--json'));
+      if (argv[0] !== 'shell') {
+        expect(logSpy).toHaveBeenCalledWith(expect.stringContaining('--json'));
+      }
       expect(fetchMock).not.toHaveBeenCalled();
     },
   );
