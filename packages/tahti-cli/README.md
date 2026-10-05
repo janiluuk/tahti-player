@@ -2,8 +2,11 @@
 
 Terminal-first CLI for Tahti — thin, scriptable access to the public Tahti
 API, in the spirit of [antiwork/gumroad-cli](https://github.com/antiwork/gumroad-cli).
-See [`docs/todo/tahti-cli-tool.md`](../../docs/todo/tahti-cli-tool.md) for
-the roadmap this v1 slice comes from.
+
+**Standalone docs + cheatsheet:**
+[janiluuk/tahti-cli](https://github.com/janiluuk/tahti-cli) (shell key map,
+related repos). This package is the monorepo copy used in day-to-day player
+development; see [`docs/todo/tahti-cli-tool.md`](../../docs/todo/tahti-cli-tool.md).
 
 ## Scope
 
