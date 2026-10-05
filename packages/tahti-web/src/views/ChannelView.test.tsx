@@ -174,6 +174,18 @@ describe('ChannelView', () => {
     ).toBe('New album out Friday');
   });
 
+  it('offers Subscribe on an artist channel but not on a radio station', async () => {
+    await renderChannel('/channel/northern-lights');
+    expect(
+      await screen.findByTestId('channel-backdrop-subscribe-cta'),
+    ).toBeTruthy();
+    cleanup();
+
+    await renderChannel('/channel/tahti-radio');
+    await screen.findByTestId('channel-backdrop-card-name');
+    expect(screen.queryByTestId('channel-backdrop-subscribe-cta')).toBeNull();
+  });
+
   it('shows the page but not the editor to a visitor, even with ?edit', async () => {
     signInAs('someone-else');
     await renderChannel(`/channel/${SLUG}?edit=true`);

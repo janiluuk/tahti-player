@@ -235,7 +235,8 @@ export function ChannelView({ slug }: { slug: string }) {
     layout.find((i) => i.type === 'avatar')?.visible ?? true;
   const bioVisible = layout.find((i) => i.type === 'about')?.visible ?? true;
   const subscribeVisible =
-    layout.find((i) => i.type === 'subscribe')?.visible ?? false;
+    channel?.channelKind !== 'RADIO' &&
+    (layout.find((i) => i.type === 'subscribe')?.visible ?? false);
   const layersMenu =
     editing && channel ? (
       <ChannelLayersPanel
