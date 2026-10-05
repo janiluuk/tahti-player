@@ -13,6 +13,8 @@ export type Mention = {
     displayName: string;
     avatarUrl: string | null;
   };
+  sourceTitle?: string | null;
+  sourceUrl?: string | null;
 };
 
 export type MentionSettings = {
@@ -39,6 +41,20 @@ export function mentionSurfaceLabel(surface: string): string {
 export function mentionerName(mentioner: Mention['mentioner']): string {
   const name = mentioner.displayName.trim();
   return name && !name.includes('@') ? name : mentioner.username;
+}
+
+export function mentionSourcePath(mention: Mention): string | null {
+  const url = mention.sourceUrl;
+  return url && url.startsWith('/') && !url.startsWith('//') ? url : null;
+}
+
+export function mentionSourceTitle(mention: Mention): string | null {
+  const title = mention.sourceTitle?.trim();
+  if (!title || title.includes('@')) {
+    return null;
+  }
+  const { username, displayName } = mention.mentioner;
+  return title === displayName.trim() || title === username ? null : title;
 }
 
 export function normalizeHandle(value: string): string {
@@ -69,6 +85,8 @@ export async function fetchMentions(limit = 20): Promise<Result<Mention[]>> {
             displayName: 'Aurora',
             avatarUrl: null,
           },
+          sourceTitle: 'Northern Lights EP',
+          sourceUrl: '/r/northern-lights',
         },
       ],
     };

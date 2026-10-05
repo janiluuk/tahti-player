@@ -57,6 +57,59 @@ describe('MentionsPanel', () => {
     vi.restoreAllMocks();
   });
 
+  it('links a mention to where it happened', async () => {
+    vi.spyOn(mentions, 'fetchMentionSettings').mockResolvedValue({
+      ok: true,
+      data: { mentionsEnabled: true, publicMentionsEnabled: false, muted: [] },
+    });
+    const mentioner = {
+      username: 'aurora',
+      displayName: 'Aurora',
+      avatarUrl: null,
+    };
+    vi.spyOn(mentions, 'fetchMentions').mockResolvedValue({
+      ok: true,
+      data: [
+        {
+          id: 'm1',
+          surface: 'RELEASE',
+          createdAt: '2026-09-28T18:00:00.000Z',
+          mentioner,
+          sourceTitle: 'Northern Lights EP',
+          sourceUrl: '/r/northern-lights',
+        },
+        {
+          id: 'm2',
+          surface: 'CHAT',
+          createdAt: '2026-09-28T17:00:00.000Z',
+          mentioner,
+          sourceTitle: 'Aurora',
+          sourceUrl: '/chat/aurora',
+        },
+        {
+          id: 'm3',
+          surface: 'TRACKLIST',
+          createdAt: '2026-09-28T16:00:00.000Z',
+          mentioner,
+          sourceTitle: null,
+          sourceUrl: 'https://elsewhere.example/t/1',
+        },
+      ],
+    });
+
+    await renderPanel();
+    expect(
+      screen
+        .getByRole('link', { name: 'a release: Northern Lights EP' })
+        .getAttribute('href'),
+    ).toBe('/r/northern-lights');
+    expect(
+      screen.getByRole('link', { name: 'chat' }).getAttribute('href'),
+    ).toBe('/chat/aurora');
+    expect(screen.getByText('mentioned you in a tracklist')).toBeTruthy();
+    expect(screen.queryByRole('link', { name: /tracklist/ })).toBeNull();
+  });
+
   it('lists mentions, mutes by username and unmutes', async () => {
     vi.spyOn(mentions, 'fetchMentionSettings').mockResolvedValue({
       ok: true,

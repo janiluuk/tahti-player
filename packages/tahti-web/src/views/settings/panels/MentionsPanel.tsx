@@ -8,6 +8,8 @@ import {
   fetchMentions,
   fetchMentionSettings,
   mentionerName,
+  mentionSourcePath,
+  mentionSourceTitle,
   mentionSurfaceLabel,
   patchMentionSettings,
   setMentionMute,
@@ -18,6 +20,37 @@ import { StudioPanel } from '../../../components/StudioPanel';
 import { humanizePastDate } from '../../../lib/humanizeDate';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import { SettingsHint, SettingsToggle } from '../SettingsFields';
+
+function MentionSource({
+  mention,
+  onOpen,
+}: {
+  mention: Mention;
+  onOpen: () => void;
+}) {
+  const label = mentionSurfaceLabel(mention.surface);
+  const path = mentionSourcePath(mention);
+  const title = mentionSourceTitle(mention);
+  if (!path) {
+    return (
+      <span className="text-foreground-secondary">
+        mentioned you in {label}
+      </span>
+    );
+  }
+  return (
+    <span className="text-foreground-secondary">
+      mentioned you in{' '}
+      <Link
+        to={path as never}
+        onClick={onOpen}
+        className="text-foreground underline underline-offset-2"
+      >
+        {title ? `${label}: ${title}` : label}
+      </Link>
+    </span>
+  );
+}
 
 export function MentionsPanel() {
   const closeSettings = useSettingsModalStore((state) => state.close);
@@ -127,9 +160,7 @@ export function MentionsPanel() {
                   >
                     {mentionerName(mention.mentioner)}
                   </Link>{' '}
-                  <span className="text-foreground-secondary">
-                    mentioned you in {mentionSurfaceLabel(mention.surface)}
-                  </span>
+                  <MentionSource mention={mention} onOpen={closeSettings} />
                   <div className="text-foreground-secondary text-xs">
                     {humanizePastDate(mention.createdAt)}
                   </div>
