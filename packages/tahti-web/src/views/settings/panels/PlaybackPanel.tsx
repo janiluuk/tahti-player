@@ -160,22 +160,8 @@ export function PlaybackPanel() {
           </div>
         </div>
       </SectionShell>
-      <SectionShell
-        title="Skipping and transitions"
-        className={SECTION_DIVIDER}
-      >
-        <div className="flex flex-col gap-6">
-          <SkipDurationField />
-          <Input
-            variant="number"
-            label="Crossfade"
-            description="Crossfade duration between tracks in milliseconds. Not supported on web yet."
-            value="0"
-            disabled
-            readOnly
-            className="cursor-not-allowed opacity-60"
-          />
-        </div>
+      <SectionShell title="Skipping" className={SECTION_DIVIDER}>
+        <SkipDurationField />
       </SectionShell>
       {signedIn ? (
         <SectionShell title="My radio stations" className={SECTION_DIVIDER}>

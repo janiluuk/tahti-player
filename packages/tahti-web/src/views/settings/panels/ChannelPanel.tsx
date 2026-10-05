@@ -22,7 +22,6 @@ import {
   patchMeProfile,
   type ProfileFields,
 } from '../../../api/studio-extras';
-import { ClientCapabilityNotice } from '../../../components/ClientCapabilityNotice';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { GenrePicker } from '../../../components/GenrePicker';
 import { ChannelModeratorsPanel } from '../../../components/moderation/ChannelModeratorsPanel';
@@ -161,31 +160,9 @@ export function ChannelPanel() {
                   }}
                 />
               </label>
-              <div className="flex flex-col gap-4">
-                <SettingsToggle
-                  label="List in Listen directory"
-                  description="Channels with public tracks are listed."
-                  value
-                  onChange={() => undefined}
-                  disabled
-                />
-                <SettingsToggle
-                  label="Allow Tahti Radio pickup"
-                  value={false}
-                  onChange={() => undefined}
-                  disabled
-                />
-                <SettingsToggle
-                  label="Featured on Listen home"
-                  description="Subject to editorial / algorithmic placement."
-                  value={false}
-                  onChange={() => undefined}
-                  disabled
-                />
-                <ClientCapabilityNotice kind="coming-soon">
-                  You can&apos;t change these discovery settings yet.
-                </ClientCapabilityNotice>
-              </div>
+              <SettingsHint>
+                A channel with public tracks is listed in the Listen directory.
+              </SettingsHint>
             </div>
           ),
         },

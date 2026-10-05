@@ -13,7 +13,7 @@ const meta: Meta<typeof PlaybackPanel> = {
     docs: {
       description: {
         component:
-          'Settings → Playback: volume, mute, shuffle, repeat and skip duration (Shift+Arrow, media keys). Crossfade is shown disabled because the web player has no crossfade yet. Missing states: loading/error (all values are local, so there are none).',
+          'Settings → Playback: volume, mute, shuffle, repeat and skip duration (Shift+Arrow, media keys). Missing states: loading/error (all values are local, so there are none).',
       },
     },
   },

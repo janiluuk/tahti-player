@@ -85,7 +85,7 @@ describe('ChannelPanel discovery', () => {
     ).toBe(false);
   });
 
-  it('shows the unsupported discovery switches as coming soon', async () => {
+  it('offers no discovery switch that cannot be changed', async () => {
     api.fetchMeProfile.mockResolvedValue({
       data: profile,
       meta: { source: 'api' },
@@ -97,13 +97,12 @@ describe('ChannelPanel discovery', () => {
       'Allow Tahti Radio pickup',
       'Featured on Listen home',
     ]) {
-      const toggle = screen.getByRole('switch', { name });
-      expect(
-        toggle.hasAttribute('disabled') ||
-          toggle.getAttribute('aria-disabled') === 'true',
-      ).toBe(true);
+      expect(screen.queryByRole('switch', { name })).toBeNull();
     }
-    expect(screen.getByText('Coming soon')).toBeTruthy();
+    expect(screen.queryByText('Coming soon')).toBeNull();
+    expect(
+      screen.getByText(/public tracks is listed in the Listen directory/),
+    ).toBeTruthy();
   });
 
   it('does not write genres over links it could not load', async () => {
