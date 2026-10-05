@@ -1,5 +1,7 @@
 import { MessageCircleIcon } from 'lucide-react';
 
+import { Button } from '@tahti-player/ui';
+
 export const TIMELINE_EMOTICONS = ['❤️', '🔥', '😍', '👏', '😭', '😮'];
 
 export function TimelineReactionBar({
@@ -10,6 +12,7 @@ export function TimelineReactionBar({
   commentOpen,
   onReact,
   onComment,
+  onSignIn,
 }: {
   clock: string;
   commentsEnabled: boolean;
@@ -18,6 +21,8 @@ export function TimelineReactionBar({
   commentOpen: boolean;
   onReact: (emoticon: string) => void;
   onComment: () => void;
+  /** Called instead of `onReact` for a visitor with no account. */
+  onSignIn: () => void;
 }) {
   return (
     <div
@@ -28,27 +33,35 @@ export function TimelineReactionBar({
         At {clock}
       </span>
       {TIMELINE_EMOTICONS.map((emoticon) => (
-        <button
+        <Button
           key={emoticon}
           type="button"
+          variant="text"
+          size="flexible"
           className="rounded-full bg-black/35 px-2 py-1 text-base transition-transform hover:scale-110 disabled:opacity-50"
-          onClick={() => onReact(emoticon)}
-          disabled={busy || !commentsEnabled || !signedIn}
-          aria-label={`Add ${emoticon} at ${clock}`}
+          onClick={() => (signedIn ? onReact(emoticon) : onSignIn())}
+          disabled={busy || !commentsEnabled}
+          aria-label={
+            signedIn
+              ? `Add ${emoticon} at ${clock}`
+              : `Log in to add ${emoticon} at ${clock}`
+          }
         >
           {emoticon}
-        </button>
+        </Button>
       ))}
       {commentsEnabled ? (
-        <button
+        <Button
           type="button"
+          variant="text"
+          size="flexible"
           className="rounded-full bg-black/35 p-1.5 text-white/85 transition-transform hover:scale-110"
           onClick={onComment}
           aria-expanded={commentOpen}
           aria-label={`Comment at ${clock}`}
         >
           <MessageCircleIcon size={16} aria-hidden />
-        </button>
+        </Button>
       ) : null}
     </div>
   );
