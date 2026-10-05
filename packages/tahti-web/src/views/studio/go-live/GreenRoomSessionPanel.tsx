@@ -20,6 +20,7 @@ import {
 import { StudioPanel } from '../../../components/StudioPanel';
 import { usePolling } from '../../../hooks/usePolling';
 import { useAuthStore } from '../../../stores/authStore';
+import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import { GreenRoomInviteForm } from './GreenRoomInviteForm';
 
 const REFRESH_MS = 20_000;
@@ -95,7 +96,16 @@ export function GreenRoomSessionPanel() {
   return (
     <StudioPanel
       title="Green room"
-      description="Let invited guests hear your stream before it goes public."
+      description="Let invited guests hear your stream before it goes public. Default invite rules live in Settings → Broadcast."
+      action={
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={() => useSettingsModalStore.getState().open('broadcast')}
+        >
+          Prefs
+        </Button>
+      }
     >
       {username ? (
         <ButtonAnchor

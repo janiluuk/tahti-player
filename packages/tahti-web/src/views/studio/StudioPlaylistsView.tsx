@@ -29,8 +29,8 @@ import {
 import type { StudioCollection } from '../../api/studio-types';
 import { PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
+import { LibrarySectionTabs } from '../LibraryView';
 
 function isPlaylist(c: StudioCollection) {
   return !c.style || c.style === 'PLAYLIST' || c.style === 'CUSTOM';
@@ -89,7 +89,7 @@ export function StudioPlaylistsView() {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
-        <StudioNav current="/studio/playlists" />
+        <LibrarySectionTabs active="collections" />
         <ViewShell
           title="Playlists"
           classes={{ root: 'px-0 pt-0' }}
