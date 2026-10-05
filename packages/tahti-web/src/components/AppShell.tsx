@@ -26,6 +26,7 @@ import { useAutoHideNavWhilePlaying } from '../hooks/useAutoHideNavWhilePlaying'
 import { useIsCompactDesktop, useIsMobile } from '../hooks/useIsMobile';
 import { useOpenedOnce } from '../hooks/useOpenedOnce';
 import { useWarnBeforeLeavingWhilePlaying } from '../hooks/useWarnBeforeLeavingWhilePlaying';
+import { isAnonymousRouteAllowed } from '../layout/anonymousRoutes';
 import {
   isFullBleedRoute,
   MAIN_CONTENT_PADDING,
@@ -110,27 +111,6 @@ function DeferredDialogs() {
       )}
     </>
   );
-}
-
-const ANONYMOUS_ALLOWED_ROUTES = [
-  /^\/$/,
-  /^\/listen(?:\/|$)/,
-  /^\/settings(?:\/|$)/,
-  /^\/(login|join|apply|signup|verify|setup-password|forgot-password|reset-password)(?:\/|$)/,
-  /^\/(about|privacy|terms|agpl|help|what-is-it|how-it-works|for-artists)(?:\/|$)/,
-  /^\/(status|whats-new|news)(?:\/|$)/,
-  /^\/(radio|discover)(?:\/|$)/,
-  /^\/(channel|u|r|t|v|venues)(?:\/|$)/,
-  /^\/(listen\/favorites|library\/favorites|favorites)(?:\/|$)/,
-  /^\/library\/local(?:\/|$)/,
-  /^\/studio(?:\/|$)/,
-  /^\/transparency(?:\/|$)/,
-  /^\/governance\/history(?:\/|$)/,
-  /^\/governance(?:\/feature-requests)?$/,
-];
-
-function isAnonymousRouteAllowed(pathname: string) {
-  return ANONYMOUS_ALLOWED_ROUTES.some((route) => route.test(pathname));
 }
 
 function SidebarNavItems({ compact }: { compact: boolean }) {
