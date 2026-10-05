@@ -26,7 +26,10 @@ import { useAutoHideNavWhilePlaying } from '../hooks/useAutoHideNavWhilePlaying'
 import { useIsCompactDesktop, useIsMobile } from '../hooks/useIsMobile';
 import { useOpenedOnce } from '../hooks/useOpenedOnce';
 import { useWarnBeforeLeavingWhilePlaying } from '../hooks/useWarnBeforeLeavingWhilePlaying';
-import { MAIN_CONTENT_PADDING } from '../layout/contentPadding';
+import {
+  isFullBleedRoute,
+  MAIN_CONTENT_PADDING,
+} from '../layout/contentPadding';
 import { hasAccountRole } from '../lib/accountRoles';
 import { diagnosticsEnabled } from '../lib/buildPolicy';
 import { cn } from '../lib/cn';
@@ -298,6 +301,7 @@ export function AppShell() {
     /^\/(studio|admin|library)(\/|$)/.test(pathname) ||
     /^\/$|^\/listen(?:\/|$)/.test(pathname) ||
     pathname === '/favorites';
+  const fullBleedRoute = isFullBleedRoute(pathname);
   const currentTrackId = usePlayerStore((state) => state.currentId);
   const playerQueue = usePlayerStore((state) => state.queue);
   const playerStatus = usePlayerStore((state) => state.status);
@@ -566,11 +570,14 @@ export function AppShell() {
           <PlayerWorkspace.Main
             className={cn(
               'tahti-ambient-surface min-h-0 min-w-0 overflow-hidden',
-              MAIN_CONTENT_PADDING,
+              !fullBleedRoute && MAIN_CONTENT_PADDING,
             )}
           >
             <div
-              className="h-full min-w-0 overflow-x-hidden overflow-y-auto"
+              className={cn(
+                'h-full min-w-0 overflow-x-hidden overflow-y-auto',
+                fullBleedRoute && MAIN_CONTENT_PADDING,
+              )}
               data-studio-shell
             >
               {userId && getStudioPrimaryRoute(pathname) ? (
