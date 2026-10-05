@@ -24,7 +24,9 @@ route aliases, and governance context, see [CROSS-REPO-SYNC.md](./CROSS-REPO-SYN
 The API accepts the `tahti_session` session cookie for browser requests. A
 personal bearer token is also supported for scripts and integrations. Tokens
 are created and revoked through `/api/me/api-tokens`; read-only tokens are
-restricted to safe methods.
+restricted to safe methods. A token can carry an expiry date, and the routes
+that manage tokens, two-factor authentication and account deletion accept the
+session cookie only, never a bearer token.
 
 Login is `POST /api/auth/login`, TOTP login is
 `POST /api/auth/login/totp`, the current session is checked with
@@ -52,6 +54,11 @@ Login is `POST /api/auth/login`, TOTP login is
 | Widgets and announcements | `/api/me/addons/installs`, `/api/me/channel/addons/installs`, `/api/admin/announcements` | Add-ons, channel widgets, announcements |
 | Sound private shares | `POST/GET /api/me/sound/{id}/share(s)`, `DELETE /api/me/sound/shares/{shareId}`; public `GET /api/tracks/{id}?key=` | Track Edit → Sharing |
 | Jam control | `PATCH /api/v1/jam/{id}/participants/{userId}` | Jam host “allow control” |
+| Reports and comments | `POST /api/v1/reports` (track, release, channel, collection, comment), `DELETE /api/comments/{id}`, `GET/PATCH /api/admin/content-reports` (`status`, `targetType`) | Report dialogs, Admin → Moderation → Content reports |
+| Support requests | `POST /api/support/contact`, `GET /api/me/support/tickets`, `POST /api/me/support/tickets/{id}/replies`, `/api/admin/support/tickets` (`awaitingReply`) | Help → Support, Admin → Moderation → Support |
+| Blocking | `GET/POST /api/me/blocks`, `DELETE /api/me/blocks/{username}` | Artist page, DM thread, Settings → Account → Privacy & data |
+| Internet radio | `GET /api/v1/internet-radio/now-playing?url=`, `GET /api/v1/internet-radio/presets/enabled`, `/api/me/internet-radio` | Listen station cards, station page, player bar, Settings → Playback |
+| Newsletter | `POST /api/newsletter/subscribe`, `/api/newsletter/confirm/{token}`, `/api/newsletter/unsubscribe/{token}` (one-click), `/api/me/newsletter/*` | Artist page, `/newsletter/*` pages, Studio → Updates |
 | Import / export catalogs | `GET /api/me/import-plugins`, `GET /api/me/export-plugins` | Settings → Add-ons |
 
 ## Permission boundaries

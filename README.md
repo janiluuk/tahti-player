@@ -35,44 +35,68 @@ Full prod-parity status per item lives in [`packages/tahti-web/FEATURES.md`](./p
 
 ### Listen (public, no account)
 
-- Channel directory, live channel (HLS) + archive replay, Tahti Radio 24/7 stream
-- Channel chat (Centrifugo WS, reactions, subscriber-only gating, hCaptcha on anonymous join)
-- Artist profiles, collections/albums, smart links, embeds (channel / release / collection)
-- Venue directory + venue registration, governance (public motions), transparency reports, platform status
-- Help center, disco-widgets on listen/profile/channel
+- Channel directory, live channel (HLS) + archive replay, Tahti Radio 24/7 stream with its week of booked live shows
+- Curated Finnish internet radio stations, each with its own station page; Listen, the station page and the player bar show the programme and track where the station publishes them
+- Channel chat (Centrifugo WS, live emoji reactions, today's listener count, subscriber-only gating, hCaptcha on anonymous join)
+- Artist profiles (credits roster, upcoming events, news feed, reposts, Store section), track pages with comments, collections/albums, smart links, embeds (channel / release / collection)
+- RSS feeds for artists, channels and public collections; link previews and sitemaps for track, channel and venue pages
+- Report a track, channel or comment to the board without an account
+- Newsletter confirm and one-click unsubscribe pages
+- Venue directory, venue pages with upcoming shows + calendar feed, venue registration, governance (public motions), transparency reports, platform status
+- Help center and support form, disco-widgets on listen/profile/channel
+- A persistent left menu on every page; the browser asks before you leave while audio is playing
 
 ### Listener account
 
-- Follows, favorites, listening history, add-to-playlist from anywhere (player bar, tables)
-- Fan subscribe (Stripe Checkout) + manage subscriptions
-- DMs, member governance voting
-- Library: sounds, collections, recordings, smart links, history, favorites
+- Follows, liked tracks, reposts, listening history, add-to-playlist from anywhere (player bar, tables)
+- Fan subscribe (Stripe Checkout), billing portal, fan-only chat room, follow- or repost-gated free downloads
+- DMs with thread links, older-message paging and Artist/Moderator badges; member governance voting and feature requests
+- Block an account from its artist page or a DM thread; blocked accounts are listed under Settings → Account
+- Your support requests and the board's replies, with a reply box of your own
+- Library: sounds, collections (including the ones you subscribed to), recordings, smart links, history, favorites
+- Settings → Account in four groups: two-factor authentication, API tokens with an expiry date, membership + invoices, mentions and mutes, a data export that says what it contains, an account deletion request
+- Settings → Playback keeps your own internet radio stations
 
 ### Artist studio — publish & broadcast
 
-- Studio home, Go Live wizard (OBS/RTMP + multistream)
-- Music library, upload, releases & album designer, playlists/collections
-- Pro audio editor (trim/master), stash
-- Schedule / 24/7 programme, radio slots & shows (series + episodes)
-- Channel designer (visual presets, layers, backdrop, gallery, press kit)
-- Stats (summary + detail), Updates/newsletter posts
-- Revenue: fan tiers, Stripe Connect payouts
-- Distribution (Revelator: catalog, pay + submit, Spotify profile, royalties)
-- Channel moderators, sound share links
+- Studio home, Go Live wizard (OBS/RTMP + multistream destination health, OBS scene download, weekly live-time meter, new stream key)
+- Green room for a broadcast: open it from Channel or Go live, invite guests, see who joined
+- Music library, upload with retry on failure, releases & album designer (track credits, audio versions, CSV import of draft releases), playlists/collections
+- Pro audio editor (trim/master), station ID and announcement clips, stash
+- Schedule / 24/7 programme (rotation from a collection or released tracks), radio slots & shows (series + episodes)
+- Channel designer (visual presets, layers, backdrop, logo placement, gallery, press kit)
+- Stats (summary + detail, smart-link clicks per service, download-gate funnel), Updates/newsletter posts with delivery results and subscriber counts
+- Revenue: fan tiers, paid track sales, Stripe Connect payouts
+- Distribution (Revelator: catalog, pay + submit, Spotify profile, royalties); push a track to your own hearthis.at account
+- Auto-post releases and go-live to Mastodon and Bluesky, or post by hand
+- Settings → Channel & chat: Channel Designer, Discovery (share-button switch, genres), Username & domain (rename with confirmation), Chat (chat switches, access, bans) and Moderators (a new moderator is notified)
+- Sound share links
 
 ### Operate (board admin)
 
 - 22 admin surfaces gated on `isBoard`: dashboard, moderation queues, stream oversight, financial, governance, grants, AGM, i18n, files/storage, announcements, feature requests, support, radio submissions, and more
+- Content reports queue: links to what was reported, the reported comment's text, a filter by what was reported, and delete-comment from the queue
+- Support tickets: reply threads, a count and a filter for tickets waiting on the board
+- Fan-subscription payout queue with retry, ledger year + CSV export, background workers and cron run history on Status
 
 ### Desktop player (Tauri)
 
 - Full Nuclear-based desktop app: search, local library, add-ons, themes, remote control
+- Local library: recursive folder import, iTunes / Music.app XML import, hearthis.at and SoundCloud set import, embedded artwork, BPM/key/ReplayGain and composer tags, smart playlists, opt-in volume normalization
 - Built-in MCP server for AI-agent control (playback, queue, favorites, playlists, providers) — see [MCP](#mcp-desktop-player) below
+
+### Command line (`tahti`)
+
+- [`packages/tahti-cli`](./packages/tahti-cli/README.md): `whoami`, `library`, `releases`, `search` against the Tahti API with a personal API token
+- `tahti import <folder>` uploads a folder of audio files into your library (`--recursive`, `--dry-run`)
+- `tahti hearthis` lists your hearthis.at Sets and downloads one as an `Artist/Album (year)` folder tree
+- `tahti shell` is an interactive terminal player (library, search, radio; needs `mpv`)
 
 ### Developers
 
 - Same-origin `/tahti-api` proxy to the live API on beta; public OpenAPI/Scalar at [`https://api.tahti.live/api`](https://api.tahti.live/api)
-- Offline mock mode (`VITE_FORCE_MOCK=1`) — every fetcher short-circuits to realistic fixture data, zero network calls
+- Offline mock mode (`VITE_FORCE_MOCK=1`) — every fetcher short-circuits to realistic fixture data, zero network calls. Sign in as `demo@tahti.live` (artist with a Studio) or `listener@tahti.live` (plain listener, no channel)
+- Storybook stories run their plays as browser tests in CI, with per-story mock data
 
 Open gaps only (not the full matrix): [`packages/tahti-web/FEATURES-REMAINING.md`](./packages/tahti-web/FEATURES-REMAINING.md).
 
@@ -176,6 +200,7 @@ same screenshots inline, see [`packages/tahti-web/README.md`](./packages/tahti-w
 | **Desktop player** | `@tahti-player/player` | Tahti Player Tauri app (React + Rust) |
 | Shared UI / themes | `@tahti-player/ui`, `themes`, … | Design system used by player and Tahti web |
 | Plugin SDK | `@tahti-player/plugin-sdk` | Plugin API (published upstream to npm) |
+| Command line | `@tahti-player/tahti-cli` | `tahti` CLI: library, releases, search, folder import, hearthis.at Sets, terminal player |
 
 pnpm + Turborepo. Package manager: `pnpm@10.33.4` (see root `package.json`).
 
@@ -203,7 +228,7 @@ pnpm install
 # Tahti listen + studio → http://localhost:5180
 pnpm dev:tahti
 
-# Offline demo (no API); login: demo@tahti.live / any password
+# Offline demo (no API); login: demo@tahti.live (artist) or listener@tahti.live (listener), any password
 VITE_FORCE_MOCK=1 pnpm dev:tahti
 
 # Tahti Player (Tauri desktop app)
