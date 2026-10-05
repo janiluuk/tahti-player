@@ -238,4 +238,34 @@ describe('MessagesView older messages', () => {
     expect(unblock).toHaveBeenCalledWith('aino');
     expect(screen.getByPlaceholderText('Write a message…')).toBeTruthy();
   });
+
+  it('starts a conversation when Enter is pressed in the username box', async () => {
+    const start = vi
+      .spyOn(api, 'startConversation')
+      .mockResolvedValue({ ok: true, conversationId: 'c1' });
+    await renderView(conversation());
+    const input = screen.getByPlaceholderText('username');
+    fireEvent.change(input, { target: { value: ' aino ' } });
+    await act(async () => {
+      fireEvent.submit(input.closest('form') as HTMLFormElement);
+    });
+    expect(start).toHaveBeenCalledWith('aino');
+  });
+
+  it('says so when Search finds no account', async () => {
+    vi.spyOn(api, 'searchUsers').mockResolvedValue({
+      data: [],
+      meta: { source: 'api' },
+    });
+    await renderView(conversation());
+    fireEvent.change(screen.getByPlaceholderText('username'), {
+      target: { value: 'nobody' },
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Search' }));
+    });
+    expect(screen.getByRole('status').textContent).toBe(
+      'No account found for "nobody".',
+    );
+  });
 });
