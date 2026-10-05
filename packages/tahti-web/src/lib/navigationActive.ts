@@ -24,8 +24,12 @@ export function locationPathname(location: string | undefined): string {
 /** Desktop sidebar: exactly one item, or null when the route is contextual. */
 export function activeSidebarItem(
   location: string | undefined,
+  opts?: { settingsModalOpen?: boolean },
 ): SidebarItemId | null {
   const path = locationPathname(location);
+  if (opts?.settingsModalOpen) {
+    return 'settings';
+  }
   if (isFavoritesRoute(path)) {
     return 'favorites';
   }
@@ -35,7 +39,7 @@ export function activeSidebarItem(
   if (matchesSectionRoute(path, ['/discover'])) {
     return 'discover';
   }
-  if (matchesSectionRoute(path, ['/library'])) {
+  if (isLibrarySidebarRoute(path)) {
     return 'library';
   }
   if (getStudioPrimaryRoute(path) === '/studio') {
@@ -67,7 +71,7 @@ export function activeMobileItem(
   if (matchesSectionRoute(path, ['/discover'])) {
     return 'discover';
   }
-  if (matchesSectionRoute(path, ['/library'])) {
+  if (isLibrarySidebarRoute(path)) {
     return 'library';
   }
   if (getStudioPrimaryRoute(path) === '/studio') {
@@ -124,6 +128,24 @@ function isFavoritesRoute(path: string): boolean {
   );
 }
 
+/** Library main-menu routes, including catalog pages that still live under
+ * `/studio/...` until the full Studio→Library redirect lands. */
+export function isLibrarySidebarRoute(path: string): boolean {
+  return (
+    matchesSectionRoute(path, ['/library']) ||
+    path.startsWith('/studio/sounds') ||
+    path.startsWith('/studio/archive') ||
+    path === '/studio/collections' ||
+    path.startsWith('/studio/collections/') ||
+    path === '/studio/playlists' ||
+    path.startsWith('/studio/playlists/') ||
+    path === '/studio/stash' ||
+    path.startsWith('/studio/stash/') ||
+    path === '/studio/recordings' ||
+    path.startsWith('/studio/recordings/')
+  );
+}
+
 function isListenSidebarRoute(path: string): boolean {
   return (
     path === '/' ||
@@ -136,7 +158,11 @@ function isListenSidebarRoute(path: string): boolean {
     path.startsWith('/chat') ||
     path.startsWith('/t/') ||
     path.startsWith('/r/') ||
-    path.startsWith('/c/')
+    path.startsWith('/c/') ||
+    path.startsWith('/u/') ||
+    path === '/search' ||
+    path.startsWith('/search/') ||
+    path.startsWith('/v/')
   );
 }
 

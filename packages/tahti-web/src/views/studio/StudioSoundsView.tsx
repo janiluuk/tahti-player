@@ -6,8 +6,8 @@ import { AddToMusicActions } from '../../components/AddToMusicActions';
 import { PageLoading } from '../../components/PageStates';
 import { StashFilesPanel } from '../../components/StashFilesPanel';
 import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
+import { LibrarySectionTabs } from '../LibraryView';
 import { SoundFilters } from './sounds/SoundFilters';
 import { SoundRow } from './sounds/SoundRow';
 import { SoundsDialogs } from './sounds/SoundsDialogs';
@@ -27,7 +27,7 @@ export function StudioSoundsView() {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
-        <StudioNav current="/studio/sounds" />
+        <LibrarySectionTabs active="sounds" />
         <Tabs.Root
           selectedIndex={FOLDER_TABS.findIndex((entry) => entry.id === folder)}
           onChange={setTabFolder}

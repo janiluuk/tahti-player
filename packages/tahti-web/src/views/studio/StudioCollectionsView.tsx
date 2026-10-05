@@ -35,12 +35,12 @@ import {
 import type { StudioCollection } from '../../api/studio-types';
 import { PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import {
   collectionStyleLabel,
   normalizeCollectionStyle,
 } from '../../content/collectionStyles';
+import { LibrarySectionTabs } from '../LibraryView';
 import { CollectionOrderButton } from './CollectionOrderButton';
 
 /** Styles this quick-create dialog and the filter tabs offer — a subset of
@@ -184,7 +184,7 @@ export function StudioCollectionsView() {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
-        <StudioNav current="/studio/collections" />
+        <LibrarySectionTabs active="collections" />
         <ViewShell
           title="Collections"
           classes={{ root: 'px-0 pt-0' }}

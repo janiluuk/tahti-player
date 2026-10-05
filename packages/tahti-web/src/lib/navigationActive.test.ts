@@ -17,6 +17,7 @@ const SIDEBAR_IDS = [
   'studio',
   'admin',
   'help',
+  'settings',
 ] as const;
 
 describe('navigation active states', () => {
@@ -31,6 +32,10 @@ describe('navigation active states', () => {
     ['/r/demo-release', 'listen'],
     ['/c/northern-lights', 'listen'],
     ['/chat/northern-lights', 'listen'],
+    ['/u/demo-artist', 'listen'],
+    ['/search', 'listen'],
+    ['/search?q=techno', 'listen'],
+    ['/v/helsinki-club', 'listen'],
     ['/listen/favorites', 'favorites'],
     ['/favorites', 'favorites'],
     ['/library/favorites', 'favorites'],
@@ -39,22 +44,36 @@ describe('navigation active states', () => {
     ['/discover', 'discover'],
     ['/discover?tab=artists', 'discover'],
     ['/studio', 'studio'],
-    ['/studio/branding', 'studio'],
-    ['/library', 'library'],
-    ['/library/sounds', 'library'],
     ['/studio/go-live', 'studio'],
     ['/studio/schedule', 'studio'],
     ['/studio/channel?tab=radio', 'studio'],
+    ['/library', 'library'],
+    ['/library/sounds', 'library'],
+    ['/library/upload', 'library'],
+    ['/studio/sounds', 'library'],
+    ['/studio/sounds/arch-1', 'library'],
+    ['/studio/collections', 'library'],
     ['/admin', 'admin'],
     ['/admin/users', 'admin'],
     ['/help', 'help'],
     ['/help/getting-started', 'help'],
+    ['/settings', 'settings'],
+    ['/account', 'settings'],
   ];
 
   it('lights exactly one desktop sidebar item on covered routes', () => {
     for (const [location, expected] of sidebarCases) {
       expect(activeSidebarItem(location), location).toBe(expected);
     }
+  });
+
+  it('lights Settings while the settings modal is open', () => {
+    expect(activeSidebarItem('/radio', { settingsModalOpen: true })).toBe(
+      'settings',
+    );
+    expect(
+      activeSidebarItem('/studio/go-live', { settingsModalOpen: true }),
+    ).toBe('settings');
   });
 
   it('never returns two sidebar ids for the same location', () => {
@@ -83,9 +102,12 @@ describe('navigation active states', () => {
   it('keeps phone Listen lit on Favorites because that bar has no Favorites item', () => {
     expect(activeMobileItem('/')).toBe('listen');
     expect(activeMobileItem('/listen/feed')).toBe('listen');
+    expect(activeMobileItem('/u/demo-artist')).toBe('listen');
+    expect(activeMobileItem('/search')).toBe('listen');
     expect(activeMobileItem('/listen/favorites')).toBe('listen');
     expect(activeMobileItem('/library/favorites')).toBe('library');
     expect(activeMobileItem('/library')).toBe('library');
+    expect(activeMobileItem('/studio/sounds')).toBe('library');
     expect(activeMobileItem('/studio/go-live')).toBe('studio');
   });
 
