@@ -282,9 +282,9 @@ export function ChannelBackdropCard({
               }
             : undefined
         }
-        className={`relative z-[1] p-4 pr-24 outline-none sm:p-6 sm:pr-40 ${
-          onEditIdentity ? 'cursor-pointer' : ''
-        } ${
+        className={`relative z-[1] p-4 outline-none sm:p-6 sm:pr-40 ${
+          editable ? 'pr-12' : ''
+        } ${onEditIdentity ? 'cursor-pointer' : ''} ${
           editable
             ? `rounded-lg transition-shadow hover:ring-2 hover:ring-white/40 focus-visible:ring-2 focus-visible:ring-white/70 ${
                 identitySelected ? 'ring-primary ring-2' : ''
@@ -310,11 +310,11 @@ export function ChannelBackdropCard({
               )}
             </div>
           ) : null}
-          <div className="min-w-0 flex-1">
+          <div className="min-w-36 flex-1">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
               <div
                 data-testid="channel-backdrop-card-name"
-                className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl"
+                className="font-display text-2xl font-extrabold tracking-tight break-words sm:text-3xl"
               >
                 {displayName}
               </div>
