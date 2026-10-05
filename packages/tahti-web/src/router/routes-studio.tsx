@@ -3,7 +3,6 @@ import { createRoute, redirect } from '@tanstack/react-router';
 import { StudioSetupChannelRedirect } from '../views/studio/StudioSetupChannelRedirect';
 import { appLayoutRoute } from './router-core';
 import {
-  StudioBrandingView,
   StudioChannelView,
   StudioCollectionEditView,
   StudioCollectionsView,
@@ -270,7 +269,28 @@ export const studioBrandingRoute = createRoute({
         ? search.tab
         : undefined,
   }),
-  component: StudioBrandingView,
+  beforeLoad: ({ search }) => {
+    // Branding / gallery / press kit live under Settings → Artist. Channel
+    // Designer lives under Settings → Channel. Keep this path as a
+    // bookmark-friendly redirect.
+    if (search.tab === 'channel-designer') {
+      throw redirect({
+        to: '/settings/$section',
+        params: { section: 'channel' },
+      });
+    }
+    const tab =
+      search.tab === 'gallery'
+        ? 'gallery'
+        : search.tab === 'press-kit'
+          ? 'press-kit'
+          : 'branding';
+    throw redirect({
+      to: '/settings/$section',
+      params: { section: 'artist' },
+      search: { tab },
+    });
+  },
 });
 
 export const studioShowsRoute = createRoute({

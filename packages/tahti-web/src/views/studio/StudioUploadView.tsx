@@ -34,7 +34,6 @@ import { connectIntegrationMock, type IntegrationId } from '../../api/sources';
 import { fetchEditorSource, uploadSoundFile } from '../../api/studio';
 import { SourceServiceIcon } from '../../components/SourceServiceIcon';
 import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
 import { WaveformSeekbar } from '../../components/tahti/WaveformSeekbar';
 import {
   importSourcePlugins,
@@ -42,6 +41,7 @@ import {
 } from '../../plugins/import-sources';
 import { useAuthStore } from '../../stores/authStore';
 import { usePlayerStore } from '../../stores/playerStore';
+import { LibrarySectionTabs } from '../LibraryView';
 
 const ENABLED_SOURCES_STORAGE_KEY = 'tahti-web-enabled-sources';
 const UPLOAD_SOURCES = importSourcePlugins.filter(
@@ -397,7 +397,7 @@ export function StudioUploadView() {
   return (
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6">
-        <StudioNav current="/library/upload" />
+        <LibrarySectionTabs active="upload" />
         <ViewShell title="Upload" classes={{ root: 'px-0 pt-0' }}>
           <div className="grid gap-4 lg:grid-cols-2">
             <div className="border-accent-cyan flex min-h-48 flex-col justify-center rounded-xl border border-dashed p-5 sm:p-6">

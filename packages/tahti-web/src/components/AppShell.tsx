@@ -117,10 +117,11 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
   const isLoggedIn = useAuthStore((state) => Boolean(state.user));
   const isBoard = useAuthStore((state) => hasAccountRole(state.user, 'BOARD'));
   const openSettings = useSettingsModalStore((state) => state.open);
+  const settingsModalOpen = useSettingsModalStore((state) => state.isOpen);
   const pathname = useRouterState({
     select: (state) => state.location.pathname,
   });
-  const sidebarActive = activeSidebarItem(pathname);
+  const sidebarActive = activeSidebarItem(pathname, { settingsModalOpen });
   return (
     <SidebarNavigation isCompact={compact}>
       <div className="flex h-full min-h-0 flex-col p-1">

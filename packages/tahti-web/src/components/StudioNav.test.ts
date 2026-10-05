@@ -146,14 +146,19 @@ describe('StudioNav section coverage', () => {
     for (const location of [
       '/library',
       '/library/sounds',
+      '/studio/sounds',
+      '/studio/sounds/arch-1',
       '/studio/archive/arch-1',
       '/library/collections',
+      '/studio/collections',
       '/studio/playlists',
       '/studio/stash',
       '/library/smartlinks',
       '/library/media',
+      '/library/upload',
     ]) {
       expect(litStudioSubmenuDestinations(location), location).toEqual([]);
+      expect(getStudioPrimaryRoute(location), location).toBeNull();
     }
   });
 
@@ -166,6 +171,8 @@ describe('StudioNav section coverage', () => {
       '/library/smartlinks',
       '/library/upload',
       '/library/media',
+      '/studio/sounds',
+      '/studio/collections',
     ]) {
       expect(getStudioPrimaryRoute(location), location).toBeNull();
     }

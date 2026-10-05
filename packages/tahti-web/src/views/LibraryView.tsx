@@ -10,6 +10,7 @@ import {
   MicIcon,
   Music2Icon,
   PackageIcon,
+  UploadIcon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -43,7 +44,8 @@ export type Tab =
   | 'stash'
   | 'embeds'
   | 'smartlinks'
-  | 'local';
+  | 'local'
+  | 'upload';
 
 export const LIBRARY_SECTION_TABS = [
   {
@@ -63,6 +65,12 @@ export const LIBRARY_SECTION_TABS = [
     label: 'Collections',
     icon: LibraryIcon,
     to: '/library/collections',
+  },
+  {
+    id: 'upload' as const,
+    label: 'Upload',
+    icon: UploadIcon,
+    to: '/library/upload',
   },
   {
     id: 'recordings' as const,
@@ -142,19 +150,21 @@ export function LibraryView({ tab = 'library' }: { tab?: Tab }) {
       ? 'Overview'
       : tab === 'sounds'
         ? 'Tracks'
-        : tab === 'recordings'
-          ? 'Recordings'
-          : tab === 'embeds'
-            ? 'Embeds'
-            : tab === 'media'
-              ? 'Media'
-              : tab === 'stash'
-                ? 'Stash'
-                : tab === 'smartlinks'
-                  ? 'Smart links'
-                  : tab === 'local'
-                    ? 'Local files'
-                    : 'Collections';
+        : tab === 'upload'
+          ? 'Upload'
+          : tab === 'recordings'
+            ? 'Recordings'
+            : tab === 'embeds'
+              ? 'Embeds'
+              : tab === 'media'
+                ? 'Media'
+                : tab === 'stash'
+                  ? 'Stash'
+                  : tab === 'smartlinks'
+                    ? 'Smart links'
+                    : tab === 'local'
+                      ? 'Local files'
+                      : 'Collections';
 
   return (
     <div className="studio-page-layout flex w-full flex-col gap-6">
