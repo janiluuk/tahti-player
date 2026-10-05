@@ -14,6 +14,7 @@ import {
   type Mention,
   type MentionSettings,
 } from '../../../api/me-mentions';
+import { StudioPanel } from '../../../components/StudioPanel';
 import { humanizePastDate } from '../../../lib/humanizeDate';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import { SettingsHint, SettingsToggle } from '../SettingsFields';
@@ -83,13 +84,11 @@ export function MentionsPanel() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="border-border bg-background-secondary/30 rounded-xl border p-4">
-        <h3 className="font-display text-base font-bold">Mentions</h3>
-        <p className="text-foreground-secondary mt-1 text-sm">
-          When another artist tags you as @username in a bio, release,
-          announcement, newsletter, tracklist or chat.
-        </p>
-        <div className="mt-4 flex flex-col gap-3">
+      <StudioPanel
+        title="Mentions"
+        description="When another artist tags you as @username in a bio, release, announcement, newsletter, tracklist or chat."
+      >
+        <div className="flex flex-col gap-3">
           <SettingsToggle
             label="Let artists mention me"
             value={settings.mentionsEnabled}
@@ -101,14 +100,13 @@ export function MentionsPanel() {
             onChange={(value) => toggle('publicMentionsEnabled', value)}
           />
         </div>
-      </div>
+      </StudioPanel>
 
-      <div className="border-border bg-background-secondary/30 rounded-xl border p-4">
-        <h3 className="font-display text-base font-bold">Recent mentions</h3>
+      <StudioPanel title="Recent mentions">
         {mentions.length === 0 ? (
           <SettingsHint>Nobody has mentioned you yet.</SettingsHint>
         ) : (
-          <ul className="divide-border mt-2 divide-y">
+          <ul className="divide-border divide-y">
             {mentions.map((mention) => (
               <li
                 key={mention.id}
@@ -153,15 +151,14 @@ export function MentionsPanel() {
             ))}
           </ul>
         )}
-      </div>
+      </StudioPanel>
 
-      <div className="border-border bg-background-secondary/30 rounded-xl border p-4">
-        <h3 className="font-display text-base font-bold">Muted</h3>
-        <p className="text-foreground-secondary mt-1 text-sm">
-          Mentions from these people don't reach you.
-        </p>
+      <StudioPanel
+        title="Muted"
+        description="Mentions from these people don't reach you."
+      >
         {settings.muted.length > 0 ? (
-          <ul className="divide-border mt-2 divide-y">
+          <ul className="divide-border divide-y">
             {settings.muted.map((item) => (
               <li
                 key={item.username}
@@ -188,7 +185,7 @@ export function MentionsPanel() {
           </ul>
         ) : null}
         <form
-          className="mt-3 flex flex-wrap items-end gap-2"
+          className={`flex flex-wrap items-end gap-2 ${settings.muted.length > 0 ? 'mt-3' : ''}`}
           onSubmit={(event) => {
             event.preventDefault();
             mute(handle, true);
@@ -215,7 +212,7 @@ export function MentionsPanel() {
             {muteError}
           </p>
         ) : null}
-      </div>
+      </StudioPanel>
     </div>
   );
 }
