@@ -159,11 +159,24 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
       </SectionShell>
 
       <SectionShell title="Tracks">
-        <PlayableTrackTable
-          items={audioFavorites}
-          emptyMessage="No favorite tracks yet. Heart rows in Tracks / Collections."
-          playAll={false}
-        />
+        {audioFavorites.length === 0 ? (
+          <PageEmpty
+            title="No favorite tracks"
+            description="Heart a track on its page or in any track list."
+            action={
+              <ButtonLink
+                className="w-fit"
+                to="/discover"
+                size="sm"
+                variant="secondary"
+              >
+                Find music
+              </ButtonLink>
+            }
+          />
+        ) : (
+          <PlayableTrackTable items={audioFavorites} playAll={false} />
+        )}
       </SectionShell>
 
       {likedTracks.length > 0 ? (
