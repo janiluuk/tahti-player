@@ -3,6 +3,7 @@ import {
   CircleDotIcon,
   Clock3Icon,
   ListFilterIcon,
+  ReplyIcon,
   SearchIcon,
   SendIcon,
 } from 'lucide-react';
@@ -36,8 +37,11 @@ function statusBadge(status: AdminSupportStatus): {
   return { label: 'Resolved', color: 'green' };
 }
 
-const FILTERS: { id: AdminSupportStatus | 'all'; label: string }[] = [
+type SupportFilter = AdminSupportStatus | 'all' | 'awaiting';
+
+const FILTERS: { id: SupportFilter; label: string }[] = [
   { id: 'all', label: 'All' },
+  { id: 'awaiting', label: 'Needs reply' },
   { id: 'OPEN', label: 'Open' },
   { id: 'IN_PROGRESS', label: 'In progress' },
   { id: 'RESOLVED', label: 'Resolved' },
@@ -45,6 +49,7 @@ const FILTERS: { id: AdminSupportStatus | 'all'; label: string }[] = [
 
 const FILTER_TAB_ICONS = {
   all: ListFilterIcon,
+  awaiting: ReplyIcon,
   OPEN: CircleDotIcon,
   IN_PROGRESS: Clock3Icon,
   RESOLVED: CheckIcon,
@@ -63,7 +68,7 @@ function requesterLabel(t: {
  * (tahti-org 02beac67); a board reply is `kind: 'MESSAGE'`, an automatic
  * transition record is `kind: 'STATUS_CHANGE'`. */
 export function SupportTab() {
-  const [filter, setFilter] = useState<AdminSupportStatus | 'all'>('OPEN');
+  const [filter, setFilter] = useState<SupportFilter>('OPEN');
   const [query, setQuery] = useState('');
   const [tickets, setTickets] = useState<AdminSupportTicket[]>([]);
   const [loading, setLoading] = useState(true);
@@ -98,7 +103,9 @@ export function SupportTab() {
     const handle = setTimeout(
       () => {
         void fetchAdminSupportTickets({
-          status: filter === 'all' ? undefined : filter,
+          status:
+            filter === 'all' || filter === 'awaiting' ? undefined : filter,
+          awaitingReply: filter === 'awaiting',
           q: query.trim() || undefined,
         }).then((result) => {
           if (cancelled) {
@@ -178,7 +185,7 @@ export function SupportTab() {
             icon: FILTER_TAB_ICONS[item.id],
           }))}
           ariaLabel="Support ticket status"
-          onChange={(id) => setFilter(id as AdminSupportStatus | 'all')}
+          onChange={(id) => setFilter(id as SupportFilter)}
           className="min-w-0 flex-1"
         />
         <div className="w-full shrink-0 xl:max-w-sm">
