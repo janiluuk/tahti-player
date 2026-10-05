@@ -4259,3 +4259,14 @@ A sweep of direct messages, which had no way to stop an unwanted sender. Most of
 - **Web**: Block and Unblock in a message thread (#514), a "Blocked accounts" list under Settings → Account → Privacy & data (#515), and a Block button on the artist page (#516).
 - **Message notifications (tahti-org#713)**: one unread notification per conversation, refreshed with the latest message, instead of one per message.
 - **Checks:** for each PR, tahti-web type-check, eslint on the changed files, the size guard and the touched tests. tahti-org ran Vitest for each touched route against a throwaway Postgres with the new migration applied. `prisma migrate diff` could not confirm the hand-written migration on this multi-schema database (it reports every table as changed on `main` too); the tests exercise every column. Nothing was tried in a browser or against the live API. Not covered: loves and reposts by a blocked account still count, and channel chat is not affected by a block.
+
+## 2026-10-05 - Ten slices, fortieth batch (tahti-player #518-#527)
+
+Slices from three open todos: the channel page redesign, the settings audit, and the listener and signed-out audit. All in tahti-web; no tahti-org change.
+
+- **Channel page**: the page and the track page reach the pane edges on desktop, which removes the frame and the clipped report button, "Tracks" heading and toolbar (#518). The shell's inset sat outside the scroll area, so the pages' negative margins pushed them under the clip edge. On phones Subscribe no longer covers the channel name (#519). "On air" shows only with a connected broadcast signal; the 24/7 rotation says "24/7 rotation" (#520). A radio-station channel has no Subscribe button (#521).
+- **Settings**: the six disabled "Coming soon" controls are gone: Show favourites and Announce releases (#522), the three Discovery switches and Crossfade (#523). Account's twelve tabs are four groups: Sign-in & security, Membership & billing, Notifications, Privacy & data (#527).
+- **Listener account**: Channel & chat and Broadcast are hidden from an account with no channel, and its profile section is called Profile (#525). Studio offers a listener "Create your channel" instead of "Artist access required", without the Studio tab bar or a dialog that opens by itself (#526).
+- **Signed out**: on the track page, reactions and Add open sign-in instead of being disabled (#524).
+- **Not done**: the queue collapse-button overlap did not reproduce in the web app at any width from 768 to 1920 px, expanded or collapsed. It may only happen in the desktop player.
+- **Checks:** for each PR, tahti-web type-check, eslint and Prettier on the changed files, the size guard and the touched test directories. Each change was looked at in the mock app (signed out, as `listener@tahti.live`, or as the demo artist). Nothing was tried against the live API, and the edited purchase-flow e2e spec was not run.
