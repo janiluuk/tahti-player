@@ -20,6 +20,7 @@ import {
   SelectableTiles,
   Tabs,
   type SelectOption,
+  type TabsItem,
 } from '@tahti-player/ui';
 
 import {
@@ -54,6 +55,8 @@ import { NewsFeedUrlField } from '../NewsFeedUrlField';
 import { SettingsHint } from '../SettingsFields';
 import { SocialAutoPost } from '../SocialAutoPost';
 import { buildArtistInfoPatch } from './artist-info-patch';
+import { ARTIST_TAB_GROUPS } from './artistTabGroups';
+import { groupTabs, tabLanding } from './tabGroups';
 
 const PRONOUN_OPTIONS: SelectOption[] = [
   { id: 'she/her', label: 'she/her' },
@@ -218,318 +221,318 @@ export function ArtistPanel() {
     );
   }
 
+  const tabItems: TabsItem[] = [
+    {
+      id: 'identity',
+      label: 'Identity',
+      icon: <UserCircle2 size={14} />,
+      content: !profile ? (
+        <SettingsHint>Loading…</SettingsHint>
+      ) : (
+        <div className="flex flex-col gap-6">
+          <Input
+            label="Display name"
+            value={profile.displayName}
+            onChange={(e) =>
+              setProfile({ ...profile, displayName: e.target.value })
+            }
+          />
+          <NameplateFields profile={profile} setProfile={setProfile} />
+          <div className="flex flex-col gap-2">
+            <div>
+              <p className="text-foreground text-sm font-semibold">
+                What do you do?
+              </p>
+              <p className="text-foreground-secondary mt-1 text-xs">
+                Choose the creative roles you want listeners to associate with
+                you.
+              </p>
+            </div>
+            <FilterChips
+              multiple
+              items={ARTIST_ROLE_OPTIONS.map(([id, label]) => ({
+                id,
+                label,
+              }))}
+              selected={artistRoles}
+              onChange={setArtistRoles}
+              aria-label="Creative roles"
+            />
+            <p className="text-foreground-secondary text-xs">
+              Selected:{' '}
+              {artistRoles.length > 0
+                ? artistRoles
+                    .map(
+                      (role) =>
+                        ARTIST_ROLE_OPTIONS.find(([id]) => id === role)?.[1] ??
+                        role,
+                    )
+                    .join(', ')
+                : 'None yet'}
+            </p>
+          </div>
+          <ArtistImagePurposePicker
+            avatarUrl={profile.avatarUrl}
+            displayName={profile.displayName}
+            onProfileUploaded={(avatarUrl) => {
+              setProfile({ ...profile, avatarUrl });
+              void refreshAuth();
+              toast.success('Profile image updated.');
+            }}
+            onGalleryUploaded={() => {
+              toast.success('Image added to your gallery.');
+            }}
+          />
+          <PronounsField profile={profile} setProfile={setProfile} />
+          <Select
+            label="Country"
+            value={profile.countryCode ?? ''}
+            onValueChange={(value) =>
+              setProfile({
+                ...profile,
+                countryCode: value || null,
+              })
+            }
+            options={[
+              { id: '', label: 'Prefer not to say' },
+              ...COUNTRIES.map((c) => ({
+                id: c.code,
+                label: `${flagEmoji(c.code)} ${c.name}`,
+              })),
+            ]}
+          />
+          {profile.countryCode && (
+            <Input
+              label="City / location"
+              value={profile.defaultLocation ?? ''}
+              onChange={(e) =>
+                setProfile({ ...profile, defaultLocation: e.target.value })
+              }
+              description="Optional — shown on your public profile"
+            />
+          )}
+          <Input
+            label="Tip jar URL"
+            value={profile.tipJarUrl ?? ''}
+            onChange={(e) =>
+              setProfile({ ...profile, tipJarUrl: e.target.value })
+            }
+          />
+          <div className="flex justify-end">
+            <SaveButton
+              saving={busy}
+              label="Save identity"
+              onClick={saveArtistInfo}
+            />
+          </div>
+          {msg && <SettingsHint>{msg}</SettingsHint>}
+        </div>
+      ),
+    },
+    {
+      id: 'story',
+      label: 'Story',
+      icon: <UserCircle2 size={14} />,
+      content: !profile ? (
+        <SettingsHint>Loading…</SettingsHint>
+      ) : (
+        <div className="flex flex-col gap-6">
+          <MentionTextarea
+            label="Short bio"
+            rows={4}
+            value={profile.bio ?? ''}
+            onChange={(bio) => setProfile({ ...profile, bio })}
+            placeholder="The concise introduction shown on your profile."
+          />
+          <MentionTextarea
+            label="Your story"
+            rows={8}
+            value={profile.fullBio ?? ''}
+            onChange={(fullBio) => setProfile({ ...profile, fullBio })}
+            placeholder="Share your history, influences, milestones, and what listeners should know."
+          />
+          <div className="flex justify-end">
+            <SaveButton
+              saving={busy}
+              label="Save story"
+              onClick={saveArtistInfo}
+            />
+          </div>
+          {msg && <SettingsHint>{msg}</SettingsHint>}
+        </div>
+      ),
+    },
+    {
+      id: 'people',
+      label: 'People',
+      icon: <Users size={14} />,
+      content: (
+        <div className="flex flex-col gap-5">
+          <label className="flex flex-col gap-1.5 text-sm">
+            <span className="text-foreground text-sm font-semibold">
+              Project type
+            </span>
+            <span className="text-foreground-secondary text-xs">
+              Tell listeners whether this profile represents one artist or a
+              collective.
+            </span>
+            <SelectableTiles
+              items={ARTIST_KIND_OPTIONS}
+              selected={profile?.artistKind ?? 'SINGLE'}
+              onChange={(kind) =>
+                profile &&
+                setProfile({
+                  ...profile,
+                  artistKind: kind as 'SINGLE' | 'COLLECTIVE',
+                })
+              }
+              className="grid-cols-2"
+            />
+          </label>
+          <div className="flex flex-col gap-3">
+            <div>
+              <h3 className="text-foreground text-sm font-semibold">
+                Members and credits
+              </h3>
+              <p className="text-foreground-secondary mt-1 text-xs">
+                People shown alongside this project on its public artist page.
+              </p>
+            </div>
+            <ChannelMembersEditor members={members} onChange={setMembers} />
+          </div>
+          <div className="flex justify-end">
+            <SaveButton
+              saving={busy}
+              label="Save people settings"
+              onClick={saveArtistInfo}
+            />
+          </div>
+          {msg && <SettingsHint>{msg}</SettingsHint>}
+        </div>
+      ),
+    },
+    {
+      id: 'connections',
+      label: 'Connections',
+      icon: <Share2 size={14} />,
+      content: !social ? (
+        <SettingsHint>Loading…</SettingsHint>
+      ) : (
+        <div className="flex flex-col gap-6">
+          <SettingsHint>
+            Add the places listeners can find you. These links appear as branded
+            buttons on your public artist profile.
+          </SettingsHint>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {(
+              [
+                ['website', 'Website'],
+                ['instagram', 'Instagram'],
+                ['bandcamp', 'Bandcamp'],
+                ['soundcloud', 'SoundCloud'],
+                ['youtube', 'YouTube'],
+                ['hearthisAt', 'hearthis.at'],
+                ['mixcloud', 'Mixcloud'],
+                ['twitch', 'Twitch'],
+                ['kick', 'Kick'],
+                ['spotify', 'Spotify'],
+                ['discord', 'Discord'],
+                ['tiktok', 'TikTok'],
+                ['twitter', 'X / Twitter'],
+                ['facebook', 'Facebook'],
+              ] as const
+            ).map(([key, label]) => (
+              <label key={key} className="flex min-w-0 flex-col gap-1.5">
+                <span className="text-foreground flex items-center gap-2 text-sm font-semibold">
+                  <SocialLinkIcon label={label} url={social[key]} />
+                  {label}
+                </span>
+                <Input
+                  aria-label={label}
+                  value={social[key]}
+                  placeholder={`https://…/${label.toLowerCase()}`}
+                  onChange={(e) =>
+                    setSocial({ ...social, [key]: e.target.value })
+                  }
+                />
+              </label>
+            ))}
+          </div>
+          <div className="flex justify-end">
+            <SaveButton
+              label="Save social links"
+              onClick={() => {
+                if (!social) {
+                  return;
+                }
+                void patchSocialConnections(social).then((result) => {
+                  if (!result.ok) {
+                    setSocialMsg(result.error);
+                    return;
+                  }
+                  setSocialMsg('Connections saved.');
+                  setSocial(result.data);
+                  toast.success('Connections saved.');
+                });
+              }}
+            />
+          </div>
+          {socialMsg && <SettingsHint>{socialMsg}</SettingsHint>}
+          <NewsFeedUrlField />
+          <SocialAutoPost />
+        </div>
+      ),
+    },
+    {
+      id: 'branding',
+      label: 'Branding',
+      icon: <Paintbrush size={14} />,
+      content: <StudioBrandingPanel section="branding" />,
+    },
+    {
+      id: 'gallery',
+      label: 'Gallery',
+      icon: <Images size={14} />,
+      content: <StudioBrandingPanel section="gallery" />,
+    },
+    {
+      id: 'press-kit',
+      label: 'Press kit',
+      icon: <Download size={14} />,
+      content: <StudioBrandingPanel section="press-kit" />,
+    },
+    {
+      id: 'release-visuals',
+      label: 'Releases',
+      icon: <Sparkles size={14} />,
+      content: <ReleaseVisualDefaultsPanel />,
+    },
+  ].filter(
+    (item) => item.id !== 'people' || profile?.artistKind === 'COLLECTIVE',
+  );
+  const grouped = groupTabs(ARTIST_TAB_GROUPS, tabItems);
+  const landing = tabLanding(grouped, artistSection);
+
   return (
     <Tabs
       key={artistSection ?? 'identity'}
+      className="min-w-0"
       listClassName="flex-wrap"
-      defaultIndex={Math.max(
-        0,
-        [
-          'identity',
-          'story',
-          'people',
-          'connections',
-          'branding',
-          'gallery',
-          'press-kit',
-          'release-visuals',
-        ]
-          .filter(
-            (id) => id !== 'people' || profile?.artistKind === 'COLLECTIVE',
-          )
-          .indexOf(artistSection ?? 'identity'),
-      )}
-      items={[
-        {
-          id: 'identity',
-          label: 'Identity',
-          icon: <UserCircle2 size={14} />,
-          content: !profile ? (
-            <SettingsHint>Loading…</SettingsHint>
-          ) : (
-            <div className="flex flex-col gap-6">
-              <Input
-                label="Display name"
-                value={profile.displayName}
-                onChange={(e) =>
-                  setProfile({ ...profile, displayName: e.target.value })
-                }
-              />
-              <NameplateFields profile={profile} setProfile={setProfile} />
-              <div className="flex flex-col gap-2">
-                <div>
-                  <p className="text-foreground text-sm font-semibold">
-                    What do you do?
-                  </p>
-                  <p className="text-foreground-secondary mt-1 text-xs">
-                    Choose the creative roles you want listeners to associate
-                    with you.
-                  </p>
-                </div>
-                <FilterChips
-                  multiple
-                  items={ARTIST_ROLE_OPTIONS.map(([id, label]) => ({
-                    id,
-                    label,
-                  }))}
-                  selected={artistRoles}
-                  onChange={setArtistRoles}
-                  aria-label="Creative roles"
-                />
-                <p className="text-foreground-secondary text-xs">
-                  Selected:{' '}
-                  {artistRoles.length > 0
-                    ? artistRoles
-                        .map(
-                          (role) =>
-                            ARTIST_ROLE_OPTIONS.find(
-                              ([id]) => id === role,
-                            )?.[1] ?? role,
-                        )
-                        .join(', ')
-                    : 'None yet'}
-                </p>
-              </div>
-              <ArtistImagePurposePicker
-                avatarUrl={profile.avatarUrl}
-                displayName={profile.displayName}
-                onProfileUploaded={(avatarUrl) => {
-                  setProfile({ ...profile, avatarUrl });
-                  void refreshAuth();
-                  toast.success('Profile image updated.');
-                }}
-                onGalleryUploaded={() => {
-                  toast.success('Image added to your gallery.');
-                }}
-              />
-              <PronounsField profile={profile} setProfile={setProfile} />
-              <Select
-                label="Country"
-                value={profile.countryCode ?? ''}
-                onValueChange={(value) =>
-                  setProfile({
-                    ...profile,
-                    countryCode: value || null,
-                  })
-                }
-                options={[
-                  { id: '', label: 'Prefer not to say' },
-                  ...COUNTRIES.map((c) => ({
-                    id: c.code,
-                    label: `${flagEmoji(c.code)} ${c.name}`,
-                  })),
-                ]}
-              />
-              {profile.countryCode && (
-                <Input
-                  label="City / location"
-                  value={profile.defaultLocation ?? ''}
-                  onChange={(e) =>
-                    setProfile({ ...profile, defaultLocation: e.target.value })
-                  }
-                  description="Optional — shown on your public profile"
-                />
-              )}
-              <Input
-                label="Tip jar URL"
-                value={profile.tipJarUrl ?? ''}
-                onChange={(e) =>
-                  setProfile({ ...profile, tipJarUrl: e.target.value })
-                }
-              />
-              <div className="flex justify-end">
-                <SaveButton
-                  saving={busy}
-                  label="Save identity"
-                  onClick={saveArtistInfo}
-                />
-              </div>
-              {msg && <SettingsHint>{msg}</SettingsHint>}
-            </div>
-          ),
-        },
-        {
-          id: 'story',
-          label: 'Story',
-          icon: <UserCircle2 size={14} />,
-          content: !profile ? (
-            <SettingsHint>Loading…</SettingsHint>
-          ) : (
-            <div className="flex flex-col gap-6">
-              <MentionTextarea
-                label="Short bio"
-                rows={4}
-                value={profile.bio ?? ''}
-                onChange={(bio) => setProfile({ ...profile, bio })}
-                placeholder="The concise introduction shown on your profile."
-              />
-              <MentionTextarea
-                label="Your story"
-                rows={8}
-                value={profile.fullBio ?? ''}
-                onChange={(fullBio) => setProfile({ ...profile, fullBio })}
-                placeholder="Share your history, influences, milestones, and what listeners should know."
-              />
-              <div className="flex justify-end">
-                <SaveButton
-                  saving={busy}
-                  label="Save story"
-                  onClick={saveArtistInfo}
-                />
-              </div>
-              {msg && <SettingsHint>{msg}</SettingsHint>}
-            </div>
-          ),
-        },
-        {
-          id: 'people',
-          label: 'People',
-          icon: <Users size={14} />,
-          content: (
-            <div className="flex flex-col gap-5">
-              <label className="flex flex-col gap-1.5 text-sm">
-                <span className="text-foreground text-sm font-semibold">
-                  Project type
-                </span>
-                <span className="text-foreground-secondary text-xs">
-                  Tell listeners whether this profile represents one artist or a
-                  collective.
-                </span>
-                <SelectableTiles
-                  items={ARTIST_KIND_OPTIONS}
-                  selected={profile?.artistKind ?? 'SINGLE'}
-                  onChange={(kind) =>
-                    profile &&
-                    setProfile({
-                      ...profile,
-                      artistKind: kind as 'SINGLE' | 'COLLECTIVE',
-                    })
-                  }
-                  className="grid-cols-2"
-                />
-              </label>
-              <div className="flex flex-col gap-3">
-                <div>
-                  <h3 className="text-foreground text-sm font-semibold">
-                    Members and credits
-                  </h3>
-                  <p className="text-foreground-secondary mt-1 text-xs">
-                    People shown alongside this project on its public artist
-                    page.
-                  </p>
-                </div>
-                <ChannelMembersEditor members={members} onChange={setMembers} />
-              </div>
-              <div className="flex justify-end">
-                <SaveButton
-                  saving={busy}
-                  label="Save people settings"
-                  onClick={saveArtistInfo}
-                />
-              </div>
-              {msg && <SettingsHint>{msg}</SettingsHint>}
-            </div>
-          ),
-        },
-        {
-          id: 'connections',
-          label: 'Connections',
-          icon: <Share2 size={14} />,
-          content: !social ? (
-            <SettingsHint>Loading…</SettingsHint>
-          ) : (
-            <div className="flex flex-col gap-6">
-              <SettingsHint>
-                Add the places listeners can find you. These links appear as
-                branded buttons on your public artist profile.
-              </SettingsHint>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {(
-                  [
-                    ['website', 'Website'],
-                    ['instagram', 'Instagram'],
-                    ['bandcamp', 'Bandcamp'],
-                    ['soundcloud', 'SoundCloud'],
-                    ['youtube', 'YouTube'],
-                    ['hearthisAt', 'hearthis.at'],
-                    ['mixcloud', 'Mixcloud'],
-                    ['twitch', 'Twitch'],
-                    ['kick', 'Kick'],
-                    ['spotify', 'Spotify'],
-                    ['discord', 'Discord'],
-                    ['tiktok', 'TikTok'],
-                    ['twitter', 'X / Twitter'],
-                    ['facebook', 'Facebook'],
-                  ] as const
-                ).map(([key, label]) => (
-                  <label key={key} className="flex min-w-0 flex-col gap-1.5">
-                    <span className="text-foreground flex items-center gap-2 text-sm font-semibold">
-                      <SocialLinkIcon label={label} url={social[key]} />
-                      {label}
-                    </span>
-                    <Input
-                      aria-label={label}
-                      value={social[key]}
-                      placeholder={`https://…/${label.toLowerCase()}`}
-                      onChange={(e) =>
-                        setSocial({ ...social, [key]: e.target.value })
-                      }
-                    />
-                  </label>
-                ))}
-              </div>
-              <div className="flex justify-end">
-                <SaveButton
-                  label="Save social links"
-                  onClick={() => {
-                    if (!social) {
-                      return;
-                    }
-                    void patchSocialConnections(social).then((result) => {
-                      if (!result.ok) {
-                        setSocialMsg(result.error);
-                        return;
-                      }
-                      setSocialMsg('Connections saved.');
-                      setSocial(result.data);
-                      toast.success('Connections saved.');
-                    });
-                  }}
-                />
-              </div>
-              {socialMsg && <SettingsHint>{socialMsg}</SettingsHint>}
-              <NewsFeedUrlField />
-              <SocialAutoPost />
-            </div>
-          ),
-        },
-        {
-          id: 'branding',
-          label: 'Branding',
-          icon: <Paintbrush size={14} />,
-          content: <StudioBrandingPanel section="branding" />,
-        },
-        {
-          id: 'gallery',
-          label: 'Gallery',
-          icon: <Images size={14} />,
-          content: <StudioBrandingPanel section="gallery" />,
-        },
-        {
-          id: 'press-kit',
-          label: 'Press kit',
-          icon: <Download size={14} />,
-          content: <StudioBrandingPanel section="press-kit" />,
-        },
-        {
-          id: 'release-visuals',
-          label: 'Releases',
-          icon: <Sparkles size={14} />,
-          content: <ReleaseVisualDefaultsPanel />,
-        },
-      ].filter(
-        (item) => item.id !== 'people' || profile?.artistKind === 'COLLECTIVE',
-      )}
+      defaultIndex={landing.group}
+      items={grouped.map(({ group, tabs }, index) => ({
+        id: group.id,
+        label: group.label,
+        icon: <group.Icon size={14} />,
+        content: (
+          <Tabs
+            className="min-w-0"
+            listClassName="border-border flex-wrap gap-1 border-b pb-2"
+            panelClassName="pt-3"
+            defaultIndex={index === landing.group ? landing.tab : 0}
+            items={tabs}
+          />
+        ),
+      }))}
     />
   );
 }
