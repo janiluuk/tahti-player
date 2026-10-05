@@ -4,7 +4,6 @@ import { CalendarIcon, RadioIcon } from 'lucide-react';
 import { Badge, Button, EmptyState, ViewShell } from '@tahti-player/ui';
 
 import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
 import { useStripeConfigured } from '../../hooks/useStripeConfigured';
 import { accountRoleLabel, getAccountRole } from '../../lib/accountRoles';
 import { GovernanceSection } from './home/GovernanceSection';
@@ -23,8 +22,6 @@ export function StudioHomeView() {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-8">
-        <StudioNav current="/studio" />
-
         <ViewShell title="Studio" classes={{ root: 'px-0 pt-0' }}>
           {user ? (
             <div

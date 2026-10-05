@@ -34,7 +34,6 @@ import type { StudioRelease } from '../../api/studio-types';
 import { PageLoading } from '../../components/PageStates';
 import { SourceServiceIcon } from '../../components/SourceServiceIcon';
 import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { resolveNewReleaseVisualizer } from '../../lib/releaseVisualizer';
 import { ReleaseCsvImportButton } from './ReleaseCsvImportButton';
@@ -55,11 +54,7 @@ const RELEASE_TYPES = [
   },
 ] as const;
 
-export function StudioReleasesView({
-  embedded = false,
-}: {
-  embedded?: boolean;
-}) {
+export function StudioReleasesView() {
   const [releases, setReleases] = useState<StudioRelease[]>([]);
   const [loading, setLoading] = useState(true);
   const [createOpen, setCreateOpen] = useState(false);
@@ -126,7 +121,6 @@ export function StudioReleasesView({
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
-        {!embedded ? <StudioNav current="/studio/releases" /> : null}
         <ViewShell
           title="Releases"
           classes={{ root: 'px-0 pt-0' }}

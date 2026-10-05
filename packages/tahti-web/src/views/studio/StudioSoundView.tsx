@@ -11,8 +11,8 @@ import { Alert, Tabs, Tooltip } from '@tahti-player/ui';
 import { AddToPlaylistPanel } from '../../components/AddToPlaylistPanel';
 import { PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
 import { TrackInsightsPanel } from '../../components/TrackInsightsPanel';
+import { LibrarySectionTabs } from '../LibraryView';
 import { DetailsTabContent } from './sound/DetailsTabContent';
 import { PlaylistsTabContent } from './sound/PlaylistsTabContent';
 import { ProcessingFailedAlert } from './sound/ProcessingFailedAlert';
@@ -37,7 +37,7 @@ export function StudioSoundView({ id }: { id: string }) {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout flex w-full flex-col gap-6">
-        <StudioNav current={`/studio/sounds/${id}`} />
+        <LibrarySectionTabs active="sounds" />
         <Tooltip content="Back to Music" side="right">
           <Link
             to="/studio/sounds"

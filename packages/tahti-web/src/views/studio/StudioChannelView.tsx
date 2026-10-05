@@ -315,18 +315,27 @@ export function StudioChannelView() {
 
           {tab === 'green-room' && (
             <div className="flex flex-col gap-4">
-              {user?.username ? (
+              <div className="flex flex-wrap items-center gap-2">
+                {user?.username ? (
+                  <ButtonLink
+                    to="/u/$username/green-room"
+                    params={{ username: user.username }}
+                    size="sm"
+                    variant="secondary"
+                  >
+                    <MessageSquareIcon size={14} aria-hidden />
+                    Open Green Room chat
+                  </ButtonLink>
+                ) : null}
                 <ButtonLink
-                  to="/u/$username/green-room"
-                  params={{ username: user.username }}
+                  to="/studio/go-live"
+                  search={{ tab: 'green-room' }}
                   size="sm"
                   variant="secondary"
-                  className="self-start"
                 >
-                  <MessageSquareIcon size={14} aria-hidden />
-                  Open Green Room chat
+                  Session on Broadcast
                 </ButtonLink>
-              ) : null}
+              </div>
               <BroadcastPanel section="green-room" />
             </div>
           )}

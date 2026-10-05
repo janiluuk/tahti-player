@@ -5,7 +5,6 @@ import { Tooltip } from '@tahti-player/ui';
 
 import { PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { LibrarySectionTabs } from '../LibraryView';
 import { CollectionDialogs } from './collection-edit/CollectionDialogs';
@@ -31,11 +30,7 @@ export function StudioCollectionEditView({
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout flex w-full flex-col gap-6 px-1 py-2">
-        {nav === 'library' ? (
-          <LibrarySectionTabs active="collections" />
-        ) : (
-          <StudioNav current="/studio/collections" />
-        )}
+        {nav === 'library' ? <LibrarySectionTabs active="collections" /> : null}
         <Tooltip content="Back to Collections" side="right">
           <Link
             to={

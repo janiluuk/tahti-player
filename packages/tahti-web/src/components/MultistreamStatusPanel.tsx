@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { Badge } from '@tahti-player/ui';
+import { Badge, ButtonLink } from '@tahti-player/ui';
 
 import {
   fetchRtmpTargetStatuses,
@@ -42,6 +42,16 @@ export function MultistreamStatusPanel({ slug }: { slug: string }) {
     <StudioPanel
       title="Multistream status"
       description="Whether each destination is receiving your stream right now. Refreshes every 15 seconds."
+      action={
+        <ButtonLink
+          to="/studio/go-live"
+          search={{ tab: 'destinations' }}
+          size="sm"
+          variant="ghost"
+        >
+          Manage
+        </ButtonLink>
+      }
     >
       <ul
         className="divide-border divide-y text-sm"

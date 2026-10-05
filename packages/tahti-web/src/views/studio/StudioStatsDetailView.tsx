@@ -15,7 +15,6 @@ import {
 } from '../../api/studio-extras';
 import { PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { Eyebrow } from '../../components/tahti/Eyebrow';
 import { StatNumber } from '../../components/tahti/StatNumber';
@@ -83,7 +82,6 @@ export function StudioStatsDetailView() {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
-        <StudioNav current="/studio/stats" />
         <p className="text-foreground-secondary -mb-2 text-xs">
           <Link
             to="/studio/insights"

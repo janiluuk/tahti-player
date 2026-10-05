@@ -1,4 +1,13 @@
-import { Badge, Dialog, ViewShell } from '@tahti-player/ui';
+import { useNavigate, useRouterState } from '@tanstack/react-router';
+import {
+  CastIcon,
+  Disc3Icon,
+  KeyRoundIcon,
+  MicIcon,
+  RadioTowerIcon,
+} from 'lucide-react';
+
+import { Badge, Dialog, Tabs, ViewShell } from '@tahti-player/ui';
 
 import {
   BroadcastPreflightPanel,
@@ -10,6 +19,11 @@ import { HelpLayer } from '../../components/HelpLayer';
 import { StudioGate } from '../../components/StudioGate';
 import { OnAirBadge } from '../../components/tahti/OnAirBadge';
 import { BroadcastCredentialsPanel } from './go-live/BroadcastCredentialsPanel';
+import {
+  GO_LIVE_TABS,
+  goLiveTabFromSearch,
+  type GoLiveTabId,
+} from './go-live/goLiveTabs';
 import { GreenRoomSessionPanel } from './go-live/GreenRoomSessionPanel';
 import { MultistreamPanel } from './go-live/MultistreamPanel';
 import { RecordingPanel } from './go-live/RecordingPanel';
@@ -26,8 +40,36 @@ function channelStateColor(state: string): 'green' | 'cyan' | 'secondary' {
   return 'secondary';
 }
 
+const TAB_META: Record<
+  GoLiveTabId,
+  { label: string; icon: typeof RadioTowerIcon }
+> = {
+  prep: { label: 'Prep', icon: RadioTowerIcon },
+  credentials: { label: 'Credentials', icon: KeyRoundIcon },
+  recording: { label: 'Recording', icon: Disc3Icon },
+  destinations: { label: 'Destinations', icon: CastIcon },
+  'green-room': { label: 'Green room', icon: MicIcon },
+};
+
 export function StudioGoLiveView() {
   const state = useGoLiveState();
+  const navigate = useNavigate();
+  const searchTab = useRouterState({
+    select: (s) => {
+      const raw = s.location.search;
+      if (typeof raw === 'string') {
+        return new URLSearchParams(raw).get('tab') ?? undefined;
+      }
+      if (raw && typeof raw === 'object' && 'tab' in raw) {
+        const tab = (raw as { tab?: unknown }).tab;
+        return typeof tab === 'string' ? tab : undefined;
+      }
+      return undefined;
+    },
+  });
+  const activeTab = goLiveTabFromSearch(searchTab);
+  const selectedIndex = GO_LIVE_TABS.indexOf(activeTab);
+
   const {
     channelState,
     message,
@@ -45,6 +87,14 @@ export function StudioGoLiveView() {
     onGoLive,
     targets,
   } = state;
+
+  const setTab = (tab: GoLiveTabId) => {
+    void navigate({
+      to: '/studio/go-live',
+      search: tab === 'prep' ? {} : { tab },
+      replace: true,
+    });
+  };
 
   return (
     <StudioGate>
@@ -68,33 +118,9 @@ export function StudioGoLiveView() {
             )}
           </div>
 
-          <HelpLayer title="How broadcasting works here" className="mb-4">
-            <p>
-              Connect OBS, Streamlabs, Traktor, Mixxx, or another
-              Icecast-compatible app using the Server and Stream key (or
-              Mount/Password) shown below — pick your app under "Connect
-              broadcasting software" to see the matching fields.
-            </p>
-            <p>
-              Using OBS? The "Ready-made OBS setup" download bundles a scene
-              preset with this channel&apos;s current credentials already filled
-              in, so you don&apos;t have to type them in by hand.
-            </p>
-            <p>
-              Multistream mirrors your broadcast to other platforms like YouTube
-              or Twitch at the same time — add a destination from the
-              Multistream panel once you&apos;re set up.
-            </p>
-            <p>
-              Recording saves this and future broadcasts to your recordings
-              archive automatically; turn it off if you&apos;d rather not keep a
-              copy.
-            </p>
-          </HelpLayer>
-
           {message && (
             <p
-              className={`rounded-lg border px-3 py-2 text-sm ${
+              className={`mb-4 rounded-lg border px-3 py-2 text-sm ${
                 message.tone === 'error'
                   ? 'border-accent-red/40 bg-accent-red/10 text-foreground'
                   : 'border-border bg-background-secondary'
@@ -105,54 +131,95 @@ export function StudioGoLiveView() {
             </p>
           )}
 
-          <>
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <p className="text-foreground-secondary text-xs font-semibold tracking-[0.16em] uppercase">
-                  Before you start
-                </p>
-                {showInfoConfirmed && <ShowInfoConfirmed />}
-              </div>
+          <Tabs
+            listClassName="mb-4 flex-wrap overflow-x-auto"
+            selectedIndex={Math.max(0, selectedIndex)}
+            onChange={(index) => {
+              const next = GO_LIVE_TABS[index];
+              if (next) {
+                setTab(next);
+              }
+            }}
+            items={GO_LIVE_TABS.map((id) => {
+              const meta = TAB_META[id];
+              const Icon = meta.icon;
+              return {
+                id,
+                label: meta.label,
+                icon: <Icon size={14} aria-hidden />,
+                content:
+                  id === 'prep' ? (
+                    <div className="flex flex-col gap-5">
+                      <HelpLayer title="How broadcasting works here">
+                        <p>
+                          Connect OBS, Streamlabs, Traktor, Mixxx, or another
+                          Icecast-compatible app using the Server and Stream key
+                          (or Mount/Password) under Credentials — pick your app
+                          there to see the matching fields.
+                        </p>
+                        <p>
+                          Using OBS? The &quot;Ready-made OBS setup&quot;
+                          download under Credentials bundles a scene preset with
+                          this channel&apos;s current credentials already filled
+                          in.
+                        </p>
+                        <p>
+                          Multistream mirrors your broadcast to other platforms
+                          — manage destinations under Destinations. Recording
+                          and green room prefs that apply to every show live in
+                          Settings → Broadcast; this page is for the session in
+                          progress.
+                        </p>
+                      </HelpLayer>
+
+                      <div className="flex items-center justify-between gap-3">
+                        <div>
+                          <p className="text-foreground-secondary text-xs font-semibold tracking-[0.16em] uppercase">
+                            Before you start
+                          </p>
+                          {showInfoConfirmed && <ShowInfoConfirmed />}
+                        </div>
+                      </div>
+                      <BroadcastPreflightPanel
+                        onSaved={() => {
+                          setShowInfoConfirmed(true);
+                          void reload();
+                        }}
+                        onDirty={() => setShowInfoConfirmed(false)}
+                      />
+                      <SignalPanel state={state} />
+                    </div>
+                  ) : id === 'credentials' ? (
+                    <BroadcastCredentialsPanel state={state} />
+                  ) : id === 'recording' ? (
+                    <RecordingPanel state={state} />
+                  ) : id === 'destinations' ? (
+                    <MultistreamPanel targets={targets} reload={reload} />
+                  ) : (
+                    <GreenRoomSessionPanel />
+                  ),
+              };
+            })}
+          />
+
+          <Dialog.Root
+            isOpen={showInfoModalOpen}
+            onClose={() => setShowInfoModalOpen(false)}
+            className="max-w-lg"
+          >
+            <Dialog.Title>Show info</Dialog.Title>
+            <div className="mt-4">
+              <BroadcastPreflightPanel
+                onSaved={() => {
+                  setShowInfoConfirmed(true);
+                  setShowInfoModalOpen(false);
+                  void reload();
+                }}
+                onDirty={() => setShowInfoConfirmed(false)}
+              />
             </div>
-            <BroadcastPreflightPanel
-              onSaved={() => {
-                setShowInfoConfirmed(true);
-                void reload();
-              }}
-              onDirty={() => setShowInfoConfirmed(false)}
-            />
+          </Dialog.Root>
 
-            <Dialog.Root
-              isOpen={showInfoModalOpen}
-              onClose={() => setShowInfoModalOpen(false)}
-              className="max-w-lg"
-            >
-              <Dialog.Title>Show info</Dialog.Title>
-              <div className="mt-4">
-                <BroadcastPreflightPanel
-                  onSaved={() => {
-                    setShowInfoConfirmed(true);
-                    setShowInfoModalOpen(false);
-                    void reload();
-                  }}
-                  onDirty={() => setShowInfoConfirmed(false)}
-                />
-              </div>
-            </Dialog.Root>
-
-            <div className="grid gap-5 lg:grid-cols-[minmax(0,3fr)_minmax(17rem,2fr)]">
-              <div className="flex min-w-0 flex-col gap-5">
-                <SignalPanel state={state} />
-                <BroadcastCredentialsPanel state={state} />
-              </div>
-
-              <div className="flex min-w-0 flex-col gap-5">
-                <RecordingPanel state={state} />
-                <GreenRoomSessionPanel />
-                <MultistreamPanel targets={targets} reload={reload} />
-              </div>
-            </div>
-          </>
           <ConfirmDialog
             isOpen={confirmGoLive}
             title="Go live now?"

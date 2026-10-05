@@ -13,7 +13,6 @@ import type {
 } from '../../api/studio-types';
 import { PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { Eyebrow } from '../../components/tahti/Eyebrow';
 import { euros } from './distribution/distribution-helpers';
@@ -39,7 +38,6 @@ export function StudioDistributionView() {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-6">
-        <StudioNav current="/studio/distribution" />
         <ViewShell title="Distribution" classes={{ root: 'px-0 pt-0' }}>
           <Link
             to="/studio/releases"

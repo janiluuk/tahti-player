@@ -20,14 +20,15 @@ paths.
 | 2 | Settings modal highlight | done | Sidebar Settings lit while `useSettingsModalStore.isOpen` |
 | 3 | Library Upload tab | done | `LIBRARY_SECTION_TABS` + mount tabs on `StudioUploadView` |
 | 4 | Studio↔Library catalog chrome | done | Drop catalog paths from Studio `SECTION_PREFIXES`; Library sidebar + `LibrarySectionTabs` on sounds/collections/upload; branding → settings |
-| 5 | Account / Broadcast splits | open | See `settings-audit.md`; dedupe Go Live / Channel / Settings |
+| 5 | Account / Broadcast splits | done | Go Live tabs (Prep · Credentials · Recording · Destinations · Green room); Settings↔Broadcast deep links; Channel → session links; dead non-global `StudioNav` swept |
 | 6 | Channel page redesign | open | See `channel-page-redesign.md` |
 
-## Leftovers after phases 1–4
+## Leftovers after phases 1–5
 
 - Full merge of `/studio/sounds` list into `/library/sounds` (both UIs still exist; chrome now agrees Library owns catalog).
-- Dead `<StudioNav />` mounts elsewhere (no-op) — sweep remaining call sites.
-- Phases 5–6 still open.
+- Account settings panel component unification (`settings-audit.md`).
+- Phase 6: channel page redesign.
+- Crowded splits still open: Release detail child routes, Admin radio tabs, Go Live already tabbed.
 
 ## Nav highlight gaps
 

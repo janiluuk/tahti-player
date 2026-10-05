@@ -17,7 +17,6 @@ import { createDefaultEditList } from '../../api/studio-types';
 import { ClientCapabilityNotice } from '../../components/ClientCapabilityNotice';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { usePolling } from '../../hooks/usePolling';
 import { useAudioFxStore } from '../../plugins/audio-fx';
@@ -294,7 +293,6 @@ function ProEditor({ soundId }: { soundId: string }) {
         className="studio-page-layout mx-auto flex w-full max-w-[1400px] flex-col gap-6 px-1 py-2"
         onKeyDown={onEditorKeyDown}
       >
-        <StudioNav current="/studio/editor" />
         <div className="flex flex-wrap gap-3 text-xs">
           <Link
             to="/studio/sounds"
