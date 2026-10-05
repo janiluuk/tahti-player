@@ -4270,3 +4270,13 @@ Slices from three open todos: the channel page redesign, the settings audit, and
 - **Signed out**: on the track page, reactions and Add open sign-in instead of being disabled (#524).
 - **Not done**: the queue collapse-button overlap did not reproduce in the web app at any width from 768 to 1920 px, expanded or collapsed. It may only happen in the desktop player.
 - **Checks:** for each PR, tahti-web type-check, eslint and Prettier on the changed files, the size guard and the touched test directories. Each change was looked at in the mock app (signed out, as `listener@tahti.live`, or as the demo artist). Nothing was tried against the live API, and the edited purchase-flow e2e spec was not run.
+
+## 2026-10-05 - Duplicate radio add-on removed (tahti-player #529)
+
+Settings → Add-ons → Radio had two cards doing the same job. The user named the pair: the one without the Finnish stations was the duplicate, and adding your own M3U playlist as a station had to stay.
+
+- **Removed**: the "Personal radio stream" card, which pasted an M3U or stream URL and searched Radio Browser by name.
+- **Kept**: "Radio Browser directory", with the Finnish stations, the directory search by genre and country, and **Add URL** for an M3U/M3U8 playlist or a direct stream URL, saved to "Your stations".
+- The help catalog's separate radio URL entry is folded into the one radio entry.
+- **Lost**: playing a pasted URL once without saving it. Add URL saves the station first; it can be removed again.
+- **Checks:** tahti-web type-check, eslint, Prettier, the size guard and the `plugin-store`, `api/radio*` and `content` tests. Not tried against the live API.

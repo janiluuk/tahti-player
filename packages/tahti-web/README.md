@@ -176,7 +176,7 @@ More in this area: see the [full view guide](./docs/VIEW-GUIDE.md).
 
 ### Listen page
 
-- **Radio** — curated internet radio stations in the main player bar, either enabled for everyone by a board admin or added by you.
+- **Radio** — curated internet radio stations in the main player bar, either enabled for everyone by a board admin or added by you: pick from the catalog, search Radio Browser, or use Add URL for a stream or M3U address. Each catalog station has a page at `/radio/station/:id`, and the player bar shows its programme and track where the station publishes them.
 - **Listen** — inline listener widgets played through the provider's own official embedded player: SoundCloud, YouTube, Spotify, hearthis.at, Bandcamp.
 - **Discovery** — sandboxed, admin-curated third-party embeds on the Listen page, visible only to the listener who enables them.
 
@@ -196,6 +196,7 @@ More in this area: see the [full view guide](./docs/VIEW-GUIDE.md).
 
 ```bash
 pnpm dev
+VITE_FORCE_MOCK=1 pnpm dev:tahti   # offline: demo@tahti.live (artist) or listener@tahti.live (listener), any password
 pnpm storybook
 pnpm --filter @tahti-player/tahti-web type-check
 pnpm --filter @tahti-player/tahti-web lint

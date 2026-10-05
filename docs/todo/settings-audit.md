@@ -33,8 +33,7 @@ User ask (2026-10-04): audit Settings thoroughly. Make sure it uses the standard
 
 ## Crowding
 
-- [ ] Artist has 8 tabs (identity, story, people, connections, branding, gallery, press kit, release visuals) in a 591-line panel.
-- [ ] Section descriptions under the title repeat the tab names; drop them once Artist is grouped too.
+- Done 2026-10-05: Artist's eight tabs are three groups (#530), and the section descriptions that repeated the tab names are gone (#532).
 
 ## Needs a decision
 

@@ -79,6 +79,10 @@ Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
 | Platform status | `/status` | `/status` | `live-api` | |
 | Marketing home / apply | `/`, `/apply` | — | `missing` | listen hub is home |
 | VOD seek | player | PlayerBar | `live-api` | |
+| Internet radio stations | — | Listen cards + `/radio/station/$stationId` | `live-api` | curated catalog; programme and track from `GET /api/v1/internet-radio/now-playing` on Listen, the station page and the player bar (Radio Helsinki, NRJ, Radio Nova so far) |
+| Report content | report dialogs | track, channel, release, collection, comment | `live-api` | `POST /api/v1/reports`; no account needed |
+| Newsletter confirm / unsubscribe | email links | `/newsletter/*` | `live-api` | consent on subscribe, one-click unsubscribe |
+| Leave-page warning | — | whole app | `mock-ok` | the browser asks before a reload or close while audio is playing |
 
 ## 2. Auth / account
 
@@ -104,7 +108,11 @@ Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
 | Membership status | account | `/settings/account` | `live-api` | |
 | Governance list/vote | `/governance` | `/governance` | `live-api` | demock wave 5; 401/403 → forbidden empty |
 | DMs | `/dashboard/messages` | `/messages` | `live-api` | demock wave 5 |
-| Listener-only dashboard | `/dashboard` | `/dashboard` → `/library` | `live-api` | non-artists no longer hit the Studio "create a channel" wall |
+| Listener-only dashboard | `/dashboard` | `/dashboard` → `/library` | `live-api` | non-artists no longer hit the Studio "create a channel" wall; channel and broadcast settings are hidden without a channel |
+| Block an account | — | artist page, DM thread, Settings → Account → Privacy & data | `live-api` | `/api/me/blocks`; blocks DMs, comments, follows, mentions and search results both ways |
+| Support requests | `/help/support` | `/help/support` | `live-api` | your tickets, the board's replies, and a reply of your own |
+| API tokens | account | Settings → Account → API tokens | `live-api` | optional expiry date, shown per token; token management needs a signed-in session |
+| Data export | account | Settings → Account → Privacy & data | `live-api` | lists what the export contains before you request it |
 
 ## 4. Artist studio
 
@@ -127,14 +135,15 @@ Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
 | Sound share links | none (no prod equivalent) | `TrackEditDialog` → Sharing tab (PRIVATE/STASH only) | `partial` | Client + mock complete (`SoundShareLinksSection.tsx`, `api/studio.ts`); backend routes in review (tahti-org#568 manage links, #569 `?key=` on track + comments); key access creates no listen events, but there is no per-share audit log yet |
 | Distribution | `/dashboard/distribution` | `/studio/distribution` | `live-api` | catalog, Revelator pay+submit, Spotify profile, royalties |
 | Radio slots / Shows | `/dashboard/tahti-radio-slots` | `/studio/shows` | `live-api` | bookings, series, and episodes all live-API |
-| Channel moderators | `/dashboard/moderate/:slug` | `/studio/moderation` | `live-api` | |
+| Channel moderators | `/dashboard/moderate/:slug` | `/studio/moderation`, Settings → Channel & chat → Moderators | `live-api` | a new moderator gets a notification |
+| Green room | broadcast | Channel and Go live | `live-api` | open the room, invite guests, see who joined |
 
 ## 5. Settings / sources
 
 | Feature | Prod | POC | Status | Notes |
 |---------|------|-----|--------|-------|
 | Settings shell | `/dashboard/settings/*` | `/settings` | `partial` | Nuclear sections |
-| Artist / discovery / domain | settings | sections | `live-api` | |
+| Artist / discovery / domain | settings | sections | `live-api` | Artist tabs in three groups, Account tabs in four; Channel & chat holds Channel Designer, Discovery (share-button switch), Username & domain (rename asks first), Chat and Moderators |
 | Notifications / social | settings | sections | `live-api` | |
 | Themes | — | `/settings/themes` | `mock-ok` | Nuclear presets |
 | Fan-sub tier editor | fan-subs settings | Settings → Money → Fan tiers | `live-api` | create + activate/deactivate |
@@ -149,6 +158,8 @@ Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
 | Embeds c/r/col | `/embed/*` | `/embed/*` | `live-api` | |
 | Feature map | — | `/more` | `mock-ok` | checklist + flow diagrams |
 | Screen atlas | e2e screenshots | `/more` (Screen atlas) | `mock-ok` | curated prod PNGs under `public/map/` + Nuclear routes |
+| Content reports queue | `/admin/moderation` | `/admin/moderation` → Content reports | `live-api` | link and excerpt of what was reported, filter by status and by target type, delete a reported comment |
+| Support queue | `/admin/support` | `/admin/moderation` → Support | `live-api` | reply threads, waiting-on-board count and filter |
 | Board admin | `/admin/*` (~35 pages Next) | `/admin/*` (22 pages) | `partial` | Gated on `user.isBoard`; wired to real admin API endpoints (`api/admin.ts`). Deliberately scope-trimmed: no Users/Support/Announcement-clip detail pages, no bulk file ops (Files), no per-subscriber payout retry / legacy-member migration (Financial), no grant run/preview flow (Grants) — see UI-REDESIGN-WORKLOG.md admin entries A3/A9/A11–A13/A15/A18 |
 | WebGL visualizer | channel page | ChannelView Live | `live-api` | full ten-preset Three.js catalog; analyser-reactive and lazy-loaded |
 
@@ -216,8 +227,8 @@ Still not ported (do not block cutover unless noted):
 
 - [x] Integrations marketplace credentials (`/api/me/integrations`) — ListenBrainz + Last.fm **SCROBBLE** are live (Settings → Integrations; Add-ons → Scrobbling links there). Sources OAuth and fingerprint plugins remain separate. Chart dashboards / OmniSource are out of scope — see `src/plugins/scrobble/README.md`'s "Out of scope" note.
 - [ ] Theme editor public-submit / GitHub PR pipeline — local Nuclear themes only.
-- [ ] Internet Radio personal library (`/api/me/internet-radio`) — this client has a local catalog + Radio Browser search, not the server-side station library.
-- [ ] Hearthis export push — import is live; export is still a manual cross-post note.
+- [x] Internet Radio personal library (`/api/me/internet-radio`) — Settings → Playback keeps your own stations on the account.
+- [x] Hearthis export push — a track can be pushed to your own hearthis.at account from Studio.
 - [ ] Help spotlight tours covering disco-widgets specifically (generic `?` tours exist).
 - [ ] Admin Disco-widgets / Internet Radio / Themes board tools (Next admin remains canonical).
 - [ ] Collection/venue bot OG endpoints (no `/api/og/collection` or `/api/og/venue` in tahti-org yet).
