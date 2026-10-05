@@ -1,5 +1,5 @@
 import { apiBase } from './http';
-import { isForceMock } from './mode';
+import { allowMockFallback, isForceMock } from './mode';
 
 export type ExportPluginProviderRow = {
   contractVersion: 1;
@@ -17,8 +17,9 @@ const MOCK_EXPORT_PLUGINS: ExportPluginProviderRow[] = [
     contractVersion: 1,
     id: 'revelator',
     name: 'Revelator',
-    description: 'DSP delivery via Revelator (submit / status / webhook).',
-    capabilities: { submit: true, status: true, webhook: true },
+    description:
+      'DSP delivery via Revelator (submit / status; webhook sync pending).',
+    capabilities: { submit: true, status: true, webhook: false },
     submitPath: '/api/me/releases/:id/revelator/submit',
     statusPath: '/api/me/releases/:id/revelator',
     webhookPath: '/api/webhooks/export/revelator',
@@ -47,7 +48,10 @@ export async function fetchExportPlugins(): Promise<{
       data: Array.isArray(json.providers) ? json.providers : [],
       source: 'api',
     };
-  } catch {
-    return { data: MOCK_EXPORT_PLUGINS, source: 'mock' };
+  } catch (err) {
+    if (allowMockFallback()) {
+      return { data: MOCK_EXPORT_PLUGINS, source: 'mock' };
+    }
+    throw err instanceof Error ? err : new Error('export-plugins fetch failed');
   }
 }

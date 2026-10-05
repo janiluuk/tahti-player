@@ -54,20 +54,14 @@ composing `pluginBootstrap`/`pluginStore`/`pluginAutoUpdate` behind the
 interface), and caller migration off direct `pluginRegistry.ts` imports (PR
 #46). Contract tests (`pluginRegistryAdapter.test.ts`,
 `pluginRegistryHost.test.ts`, plus existing store/hydration/auto-update
-suites) were verified line-by-line 2026-09-11 against the 22-scenario
-checklist in `../tahti-org/docs/todo/plugin-registry-extraction.md` §6:
-20/22 covered. **2 gaps still open:**
+suites) cover the §6 scenarios from
+`../tahti-org/docs/todo/plugin-registry-extraction.md`. The two former unit
+gaps (enable/disable persistence across restart; refuse delete outside the
+managed plugins dir) are covered by `App.hydration.test.tsx` and
+`pluginDir.test.ts` (see `docs/todo/HISTORY.md` 2026-09-15).
 
-1. Enable/disable persistence across restart — `it.todo` in
-   `packages/player/src/App.hydration.test.tsx` (`toggling enable/disable
-   persists to registry and is respected on next startup`).
-2. Refusing to delete outside the managed plugins dir —
-   `removeManagedPluginInstall` in
-   `packages/player/src/services/plugins/pluginDir.ts` has the guard
-   implemented but **no test file exists** for `pluginDir.ts` at all.
-
-Close both gaps and get a migration/rollback plan + the ownership split
-(player core / plugin SDK / import-provider plugins / tahti-registry / Tahti
-API — drafted in the sibling doc's §7, not yet accepted) signed off before
-changing registry keys, storage location, discovery semantics, or bootstrap
+Still required before real extraction: a migration/rollback plan and sign-off
+on the ownership split (player core / plugin SDK / import-provider plugins /
+tahti-registry / Tahti API — drafted in the sibling doc's §7). Until then, do
+not change registry keys, storage location, discovery semantics, or bootstrap
 order.
