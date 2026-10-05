@@ -45,6 +45,7 @@ import type {
   PurchaseRow,
 } from '../../../api/types';
 import { ApiTokensPanel } from '../../../components/ApiTokensPanel';
+import { BlockedAccounts } from '../../../components/BlockedAccounts';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { FanSubscriptionsBillingButton } from '../../../components/FanSubscriptionsBillingButton';
 import { MembershipInvoices } from '../../../components/MembershipInvoices';
@@ -513,6 +514,7 @@ function PrivacyDataPanel({ username }: { username: string }) {
           </span>
         </ButtonAnchor>
       </div>
+      <BlockedAccounts />
       <div className="border-accent-red/40 bg-accent-red/5 flex flex-col gap-3 rounded-lg border p-4">
         <div className="flex items-center gap-2">
           <Trash2 size={17} className="text-accent-red-strong" aria-hidden />
