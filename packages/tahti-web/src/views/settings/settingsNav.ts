@@ -124,11 +124,50 @@ export function isPublicSettingsSection(id: SettingsSectionId): boolean {
   return PUBLIC_SETTINGS_SECTION_IDS.includes(id);
 }
 
-export function settingsNavForAuth(signedIn: boolean): SettingsNavItem[] {
-  if (signedIn) {
-    return SETTINGS_NAV;
+/** Sections that configure a channel; an account without one has nothing
+ * for them to act on. */
+export const CHANNEL_SETTINGS_SECTION_IDS: readonly SettingsSectionId[] = [
+  'channel',
+  'broadcast',
+];
+
+const PROFILE_NAV_OVERRIDE = {
+  label: 'Profile',
+  description: 'Name, picture, story and links',
+};
+
+export type SettingsNavAudience = {
+  signedIn: boolean;
+  /** False for a listener account that has not created a channel. */
+  hasChannel: boolean;
+};
+
+export function isSettingsSectionAvailable(
+  id: SettingsSectionId,
+  audience: SettingsNavAudience,
+): boolean {
+  if (!audience.signedIn) {
+    return isPublicSettingsSection(id);
   }
-  return SETTINGS_NAV.filter((item) => isPublicSettingsSection(item.id));
+  return audience.hasChannel || !CHANNEL_SETTINGS_SECTION_IDS.includes(id);
+}
+
+export function settingsNavFor(
+  audience: SettingsNavAudience,
+): SettingsNavItem[] {
+  return SETTINGS_NAV.filter((item) =>
+    isSettingsSectionAvailable(item.id, audience),
+  ).map((item) =>
+    item.id === 'artist' && audience.signedIn && !audience.hasChannel
+      ? { ...item, ...PROFILE_NAV_OVERRIDE }
+      : item,
+  );
+}
+
+export function fallbackSettingsSection(
+  audience: SettingsNavAudience,
+): SettingsSectionId {
+  return audience.signedIn ? 'account' : DEFAULT_PUBLIC_SETTINGS_SECTION;
 }
 
 export function isSettingsSectionId(

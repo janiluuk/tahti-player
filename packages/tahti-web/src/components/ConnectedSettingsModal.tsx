@@ -7,9 +7,9 @@ import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 import {
-  DEFAULT_PUBLIC_SETTINGS_SECTION,
-  isPublicSettingsSection,
-  settingsNavForAuth,
+  fallbackSettingsSection,
+  isSettingsSectionAvailable,
+  settingsNavFor,
   type SettingsSectionId,
 } from '../views/settings/settingsNav';
 import { SettingsSectionBody } from '../views/settings/SettingsPanels';
@@ -50,21 +50,23 @@ export function ConnectedSettingsModal() {
   const openAuth = useAuthModalStore((s) => s.open);
   const signedIn = Boolean(user);
 
-  const nav = settingsNavForAuth(signedIn);
+  const profileLoaded = useAuthStore((s) => s.profileLoaded);
+  const hasChannel = Boolean(user?.channel) || !profileLoaded;
+
+  const nav = settingsNavFor({ signedIn, hasChannel });
+  const available = isSettingsSectionAvailable(activeTab, {
+    signedIn,
+    hasChannel,
+  });
+  const fallbackTab = fallbackSettingsSection({ signedIn, hasChannel });
 
   useEffect(() => {
-    if (!isOpen || signedIn) {
-      return;
+    if (isOpen && !available) {
+      setActiveTab(fallbackTab);
     }
-    if (!isPublicSettingsSection(activeTab)) {
-      setActiveTab(DEFAULT_PUBLIC_SETTINGS_SECTION);
-    }
-  }, [activeTab, isOpen, setActiveTab, signedIn]);
+  }, [available, fallbackTab, isOpen, setActiveTab]);
 
-  const resolvedTab =
-    !signedIn && !isPublicSettingsSection(activeTab)
-      ? DEFAULT_PUBLIC_SETTINGS_SECTION
-      : activeTab;
+  const resolvedTab = available ? activeTab : fallbackTab;
 
   const tabs = nav.map((item) => {
     const Icon = item.Icon;
