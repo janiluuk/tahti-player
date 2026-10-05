@@ -1,6 +1,8 @@
 // Checks what a visitor with no account and a plain listener account see.
 //   1. Signed out: public pages must open without the sign-in dialog and
 //      account pages must ask for sign-in. Dead (disabled) buttons are listed.
+//      Follow, Add, reactions and Comment must open sign-in, and the top
+//      search must find and open a result.
 //   2. Listener (no channel): no Studio tab bar, no channel settings.
 // Exits 1 when something is wrong. Run against the mock app:
 //   VITE_FORCE_MOCK=1 pnpm dev:tahti
@@ -33,6 +35,22 @@ const PUBLIC_PATHS = [
   '/studio',
 ];
 const ACCOUNT_PATHS = ['/messages', '/feed', '/library'];
+// Actions that need an account: each must open sign-in, not sit disabled
+// or do nothing.
+const SIGN_IN_ACTIONS = [
+  { path: '/u/liis-kask', what: 'Follow', button: /^Log in to follow/ },
+  { path: '/t/liis-kask-archive-1', what: 'Add', button: /^Add$/ },
+  {
+    path: '/t/liis-kask-archive-1',
+    what: 'React',
+    button: /^Log in to add /,
+  },
+  {
+    path: '/channel/liis-kask-ee',
+    what: 'Comment',
+    button: /^Log in to comment$/,
+  },
+];
 const LISTENER = {
   id: 'mock-listener@tahti.live',
   email: 'listener@tahti.live',
@@ -135,6 +153,41 @@ const notes = [];
       await page.keyboard.press('Escape');
     }
   }
+  for (const action of SIGN_IN_ACTIONS) {
+    await visit(page, action.path);
+    const button = page.getByRole('button', { name: action.button }).first();
+    const opened = await button
+      .click({ timeout: 4000 })
+      .then(() => page.waitForTimeout(500))
+      .then(() => page.locator('[role=dialog] input[type=password]').count())
+      .catch(() => null);
+    if (opened === null) {
+      problems.push(
+        `signed out: ${action.path} has no "${action.what}" button`,
+      );
+    } else if (opened === 0) {
+      problems.push(
+        `signed out: "${action.what}" on ${action.path} does not ask for sign-in`,
+      );
+    } else {
+      await page.keyboard.press('Escape');
+    }
+  }
+  {
+    await visit(page, '/');
+    const search = page.getByRole('combobox', { name: /search artists/i });
+    const found = await search
+      .fill('mid', { timeout: 4000 })
+      .then(() => page.getByRole('option').first().click({ timeout: 4000 }))
+      .then(() => page.waitForTimeout(500))
+      .then(() => new URL(page.url()).pathname)
+      .catch(() => null);
+    if (found === null) {
+      problems.push('signed out: the top search shows no result for "mid"');
+    } else if (!/^\/(u|t|c)\//.test(found)) {
+      problems.push(`signed out: a search result opened ${found}`);
+    }
+  }
   for (const error of new Set(errors)) {
     problems.push(`signed out: page error: ${error}`);
   }
@@ -162,7 +215,7 @@ const notes = [];
 await browser.close();
 
 console.log(
-  `checked ${PUBLIC_PATHS.length} public and ${ACCOUNT_PATHS.length} account pages signed out, plus Studio and Settings as a listener`,
+  `checked ${PUBLIC_PATHS.length} public and ${ACCOUNT_PATHS.length} account pages, ${SIGN_IN_ACTIONS.length} sign-in actions and the search signed out, plus Studio and Settings as a listener`,
 );
 if (notes.length > 0) {
   console.log('\nTo look at:\n' + notes.join('\n'));
