@@ -31,7 +31,9 @@ export function SettingsSectionBody({
   let content: ReactNode;
   const [showAddonInfo, setShowAddonInfo] = useState(false);
   const signedIn = useAuthStore((s) => Boolean(s.user));
-  const hasChannel = useAuthStore((s) => Boolean(s.user?.channel));
+  const hasChannel = useAuthStore(
+    (s) => Boolean(s.user?.channel) || !s.profileLoaded,
+  );
 
   switch (section) {
     case 'account':

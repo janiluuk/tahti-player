@@ -50,7 +50,8 @@ export function ConnectedSettingsModal() {
   const openAuth = useAuthModalStore((s) => s.open);
   const signedIn = Boolean(user);
 
-  const hasChannel = Boolean(user?.channel);
+  const profileLoaded = useAuthStore((s) => s.profileLoaded);
+  const hasChannel = Boolean(user?.channel) || !profileLoaded;
 
   const nav = settingsNavFor({ signedIn, hasChannel });
   const available = isSettingsSectionAvailable(activeTab, {
