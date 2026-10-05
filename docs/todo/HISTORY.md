@@ -4293,3 +4293,17 @@ Slices from the listener and signed-out audit (search, Follow, Messages, Favorit
 - **Settings**: the Notifications cards (#541) and the Mentions cards (#542) use `StudioPanel`, the panel the Chat and Moderators tabs already use.
 - **Audit script (#544, stacked on #535)**: `scripts/audit-signed-out.mjs` clicks Follow, Add, a reaction and Comment signed out and expects sign-in, and checks that the top search opens a result.
 - **Checks:** for each PR, tahti-web type-check, eslint and Prettier on the changed files, the size guard and the touched tests. Each visible change was looked at in the mock app (signed out, as `listener@tahti.live`, or as the demo artist). With all ten branches merged together: the whole tahti-web suite (474 files), the type-check, the size guard, the audit script and the Storybook plays of the touched components pass. Nothing was tried against the live API or on a real phone. The mock search matches any text, so the "No account found" line in Messages was only seen in its test.
+
+## 2026-10-06 - Ten slices, forty-second batch (tahti-player #552-#553, tahti-org #724-#731)
+
+A sweep of @mentions, which nobody had looked at since they shipped, plus the rest of what an account block should do (left open after batch 39).
+
+- **Mute (tahti-org#724)**: muting someone under Settings → Mentions did nothing. The check ran the wrong way round: it skipped people the mentioner had muted and still notified someone who had muted the mentioner.
+- **Who can be mentioned (tahti-org#725)**: no mention is recorded across a block in either direction, or for a suspended or deleted account.
+- **Public feed (tahti-org#726)**: a release mention links to `/r/:slug` with the release title once published, a newsletter mention links to the mentioner, mentions by suspended or deleted accounts are left out, and the mentioner name is never an email address. The per-surface lookup moved to `lib/mention-sources.ts`.
+- **Signed-in list (tahti-org#727)**: `GET /api/me/mentions` carries `sourceTitle` and `sourceUrl`; `?limit=abc` no longer answers 500.
+- **Earlier mentions (tahti-org#728)**: both lists hide mentions from muted and blocked accounts. Nothing is deleted; unmuting or unblocking brings them back.
+- **Blocks**: a block stops new loves and reposts between the two accounts (tahti-org#729), removes the ones they already had on each other's tracks (tahti-org#730), and closes the owner's channel chat and fan room to the other account, answered as `banned` so the block is not announced (tahti-org#731).
+- **Web**: Settings → Mentions links each mention to where it happened, with the track or release title (#552). The artist page's "Tagged in" list labels release and newsletter mentions and puts names through `safeCreditName` (#553).
+- **Also**: `main` in tahti-org did not type-check after #721 (`sound.userId` does not exist; the keyed share lookup would throw). Fixed in tahti-org#723 so CI could run.
+- **Checks:** for each PR, tahti-web type-check, eslint and Prettier on the changed files, the size guard and the touched test directories. tahti-org ran Vitest for each touched route or helper against a throwaway Postgres. Nothing was tried in a browser, against the live API or against a running Centrifugo. Left open: the anonymous side of chat (a blocked person who signs out can still post until fingerprint-banned), blocks on collection subscriptions and collaborative playlists, and the block copy in Settings, which still lists only messages, comments and follows.
