@@ -11,6 +11,7 @@ import {
   patchMeProfile,
   type ProfileFields,
 } from '../../../api/studio-extras';
+import { StudioPanel } from '../../../components/StudioPanel';
 import { SettingsHint, SettingsToggle } from '../SettingsFields';
 import { CommentSettingsToggles } from './CommentSettingsToggles';
 import { GrantReportAttributionToggle } from './GrantReportAttributionToggle';
@@ -50,12 +51,11 @@ export function NotificationsPanel() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="border-border bg-background-secondary/30 rounded-xl border p-4">
-        <h3 className="font-display text-base font-bold">Money moves</h3>
-        <p className="text-foreground-secondary mt-1 text-sm">
-          When fan subscriptions arrive or payouts complete.
-        </p>
-        <div className="mt-4 flex flex-col gap-3">
+      <StudioPanel
+        title="Money moves"
+        description="When fan subscriptions arrive or payouts complete."
+      >
+        <div className="flex flex-col gap-3">
           <SettingsToggle
             label="Email me"
             value={prefs.notifyMoneyMovesEmail}
@@ -70,40 +70,33 @@ export function NotificationsPanel() {
         <p className="border-border bg-background mt-4 rounded-lg border px-3 py-2 text-xs">
           Tahti · @aurora_fi subscribed (€5/mo)
         </p>
-      </div>
-      <div className="border-border bg-background-secondary/30 rounded-xl border p-4">
-        <h3 className="font-display text-base font-bold">Listener actions</h3>
-        <p className="text-foreground-secondary mt-1 text-sm">
-          A daily email digest of new chat messages, comments, and broadcast
-          feedback.
-        </p>
-        <div className="mt-4">
-          <SettingsToggle
-            label="Email digest, daily"
-            value={prefs.notifyListenerActivityEmail}
-            onChange={(value) => toggle('notifyListenerActivityEmail', value)}
-          />
-        </div>
+      </StudioPanel>
+      <StudioPanel
+        title="Listener actions"
+        description="A daily email digest of new chat messages, comments, and broadcast feedback."
+      >
+        <SettingsToggle
+          label="Email digest, daily"
+          value={prefs.notifyListenerActivityEmail}
+          onChange={(value) => toggle('notifyListenerActivityEmail', value)}
+        />
         <p className="border-border bg-background mt-4 rounded-lg border px-3 py-2 text-xs">
           Tahti · 3 new chat messages · 1 new comment
         </p>
-      </div>
-      <div className="border-border bg-background-secondary/30 rounded-xl border p-4">
-        <h3 className="font-display text-base font-bold">Weekly recap</h3>
-        <p className="text-foreground-secondary mt-1 text-sm">
-          A Sunday summary of your activity and audience.
-        </p>
-        <div className="mt-4">
-          <SettingsToggle
-            label="Email me"
-            value={prefs.notifyWeeklyRecapEmail}
-            onChange={(value) => toggle('notifyWeeklyRecapEmail', value)}
-          />
-        </div>
+      </StudioPanel>
+      <StudioPanel
+        title="Weekly recap"
+        description="A Sunday summary of your activity and audience."
+      >
+        <SettingsToggle
+          label="Email me"
+          value={prefs.notifyWeeklyRecapEmail}
+          onChange={(value) => toggle('notifyWeeklyRecapEmail', value)}
+        />
         <p className="border-border bg-background mt-4 rounded-lg border px-3 py-2 text-xs">
           Your week on Tahti · 1,247 plays · 89 downloads · €115.00 from fans
         </p>
-      </div>
+      </StudioPanel>
     </div>
   );
 }
