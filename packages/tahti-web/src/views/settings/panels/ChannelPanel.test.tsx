@@ -239,6 +239,40 @@ describe('ChannelPanel chat and moderators', () => {
       fireEvent.click(confirm);
     });
     expect(rename).toHaveBeenCalledWith('new-name');
-    expect(screen.getByText('Taken')).toBeTruthy();
+    expect(screen.getByText('Taken').getAttribute('role')).toBe('alert');
+  });
+
+  it('says in red when a name is taken and plainly when it is free', async () => {
+    const check = vi.spyOn(channelDesign, 'checkSlugAvailable');
+    await act(async () => {
+      render(<ChannelPanel />);
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('tab', { name: /Username/ }));
+    });
+    const button = screen.getByRole('button', { name: 'Check availability' });
+    fireEvent.change(screen.getByLabelText('Channel slug / username'), {
+      target: { value: 'taken-name' },
+    });
+    check.mockResolvedValueOnce({ available: false, reason: 'reserved' });
+    await act(async () => {
+      fireEvent.click(button);
+    });
+    expect(screen.getByRole('alert').textContent).toBe(
+      'Not available (reserved)',
+    );
+
+    check.mockResolvedValueOnce({ available: true });
+    await act(async () => {
+      fireEvent.click(button);
+    });
+    expect(screen.queryByRole('alert')).toBeNull();
+    expect(screen.getByRole('status').textContent).toBe(
+      'taken-name is available.',
+    );
+    expect(
+      (screen.getByRole('button', { name: 'Set domain' }) as HTMLButtonElement)
+        .disabled,
+    ).toBe(true);
   });
 });
