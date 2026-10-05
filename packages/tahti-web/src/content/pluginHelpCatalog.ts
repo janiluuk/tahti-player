@@ -121,14 +121,15 @@ export const READY_PLUGIN_HELP: PluginHelpEntry[] = [
     help: 'Paste Spotify, Bandcamp, or similar URLs when building a release smart link.',
   },
   {
-    name: 'Internet radio URL',
+    name: 'Paste radio stream URL',
     category: 'Import',
     state: 'ready',
     stateLabel: 'Ready',
     description:
-      'Plays any direct stream or M3U/M3U8 playlist URL as a station in the shared Tahti player.',
-    help: 'Paste an M3U, M3U8, or direct stream URL in Sources to play a station in the shared player.',
+      'Plays one direct stream or M3U/M3U8 playlist URL you paste under Import. Not the curated station catalog — that is the separate Radio add-on.',
+    help: 'Paste an M3U, M3U8, or direct stream URL under Sources. For the curated station list, enable “Curated internet radio stations” under Add-ons → Radio.',
   },
+
   {
     name: 'YouTube Live',
     category: 'Multicast',
@@ -237,14 +238,15 @@ export const READY_PLUGIN_HELP: PluginHelpEntry[] = [
     help: 'Activate it under Audio tools, then choose low-pass, high-pass, or shelf in the Pro Editor.',
   },
   {
-    name: 'Internet radio stations',
+    name: 'Curated internet radio stations',
     category: 'Radio',
     state: 'ready',
     stateLabel: 'Ready',
     description:
-      'Adds curated internet radio stations as extra options in the main player, alongside Tahti channels.',
-    help: 'Enable stations in Settings → Add-ons → Radio. They appear as extra stations in the main player.',
+      'Adds a curated station catalog to the main player (Add-ons → Radio). Distinct from paste-a-stream-URL under Import.',
+    help: 'Enable under Settings → Add-ons → Radio. Stations appear in the main player. To play an arbitrary M3U/stream URL instead, use Import → Paste radio stream URL.',
   },
+
   {
     name: 'SoundCloud embed',
     category: 'Embed',

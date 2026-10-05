@@ -23,6 +23,7 @@ const SIBLING_IMPORT_PLUGIN_IDS = [
   'google-drive',
   'hearthis',
   'mixcloud',
+  'mixcloud-embed',
   'radio',
   'soundcloud',
   'spotify',
@@ -107,6 +108,12 @@ describe('importSourcePlugins', () => {
     expect(hearthisSourceAdapter.search).toEqual(expect.any(Function));
     expect(hearthisSourceAdapter.importTracks).toEqual(expect.any(Function));
     expect(hearthisSourceAdapter.library).toEqual(expect.any(Function));
+    expect(importSourcePlugin('mixcloud-embed')?.kind).toBe('search');
+    expect(importSourcePlugin('mixcloud-embed')?.capabilities.search).toBe(
+      true,
+    );
+    expect(importSourcePlugin('radio')?.capabilities.search).toBe(false);
+    expect(importSourcePlugin('mixcloud')?.capabilities.import).toBe(false);
   });
 
   it('oauthAdapterFor falls back to MusicBrainz without inventing a catalog adapter', () => {

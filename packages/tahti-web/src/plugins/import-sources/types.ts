@@ -5,6 +5,7 @@ import type {
   HearthisLibrary,
   HearthisTrack,
   IntegrationId,
+  MixcloudCloudcast,
   SoundcloudTrack,
   SourceDef,
   SpotifyTrack,
@@ -111,7 +112,23 @@ export type HearthisSourceAdapter = SearchAdapterBase & {
   ): Promise<HearthisImportResult>;
 };
 
-export type SearchSourceAdapter = SpotifySourceAdapter | HearthisSourceAdapter;
+export type MixcloudEmbedSourceAdapter = SearchAdapterBase & {
+  id: 'mixcloud-embed';
+  search(
+    query: string,
+  ): Promise<
+    { ok: true; data: MixcloudCloudcast[] } | { ok: false; error: string }
+  >;
+  addToCollection(
+    collectionId: string,
+    cloudcastUrl: string,
+  ): Promise<
+    { ok: true; data: { soundId: string } } | { ok: false; error: string }
+  >;
+};
+
+export type SearchSourceAdapter =
+  SpotifySourceAdapter | HearthisSourceAdapter | MixcloudEmbedSourceAdapter;
 
 export type ToolSourceAdapter = ImportSourcePlugin & {
   kind: 'tool' | 'upload';

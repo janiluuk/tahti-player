@@ -12,6 +12,7 @@ export type IntegrationId =
   | 'soundcloud'
   | 'google-drive'
   | 'mixcloud'
+  | 'mixcloud-embed'
   | 'url'
   | 'spotify'
   | 'hearthis'
@@ -120,13 +121,13 @@ export const SOURCE_DEFS: SourceDef[] = [
     id: 'mixcloud',
     name: 'Mixcloud',
     description:
-      'Connect Mixcloud for rescue/upload of mixes to/from your archive.',
+      'Connect Mixcloud for rescue/upload of mixes to/from your archive. Catalog search is the separate Mixcloud search source.',
     oauthStartPath: '/api/me/mixcloud/oauth/start',
     kind: 'oauth',
     capabilities: {
       connect: true,
       search: false,
-      import: true,
+      import: false,
       playback: false,
     },
   },
@@ -174,15 +175,29 @@ export const SOURCE_DEFS: SourceDef[] = [
     },
   },
   {
-    id: 'radio',
-    name: 'Internet radio',
+    id: 'mixcloud-embed',
+    name: 'Mixcloud search',
     description:
-      'Paste an M3U/M3U8 playlist or direct stream URL to play a station, with metadata looked up automatically.',
+      'Search Mixcloud cloudcasts and add them as provider-hosted embeds (no audio re-host). Distinct from Mixcloud OAuth upload/rescue.',
+    oauthStartPath: null,
+    kind: 'search',
+    capabilities: {
+      connect: false,
+      search: true,
+      import: true,
+      playback: true,
+    },
+  },
+  {
+    id: 'radio',
+    name: 'Internet radio URL',
+    description:
+      'Paste an M3U/M3U8 playlist or direct stream URL to play a station (client-side; no search API). Curated station catalogs are a separate Radio add-on.',
     oauthStartPath: null,
     kind: 'tool',
     capabilities: {
       connect: false,
-      search: true,
+      search: false,
       import: false,
       playback: true,
     },

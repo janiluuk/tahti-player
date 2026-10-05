@@ -1,20 +1,20 @@
 # Two radio plugins: remove the duplicate or say how they differ
 
-**Status:** open
+**Status:** partial (help copy disambiguated 2026-10-05)
 
 User ask (2026-10-04): there are now two radio plugins. Remove the duplicate, or list what one does that the other doesn't.
 
-## Candidates (not verified which pair the user means)
+## Difference (confirmed)
 
-`packages/tahti-web/src/content/pluginHelpCatalog.ts` lists two radio add-ons:
+| Surface | Help catalog name | What it does |
+| ------- | ----------------- | ------------ |
+| Import tool (`id: radio`) | **Paste radio stream URL** | Artist pastes one M3U/M3U8/direct URL; client-side playback only — no search API |
+| Radio add-on | **Curated internet radio stations** | Enables the curated station catalog in the main player (Add-ons → Radio) |
 
-- **Internet radio stations** (category Radio): adds the curated station catalog to the main player; enabled in Settings → Add-ons → Radio.
-- **Internet radio URL** (category Import): plays any direct stream or M3U/M3U8 URL as a station.
-
-There is also the Radio Browser directory card in the Radio add-on category (`components/plugin-store/radio-category/RadioBrowserDirectoryCard.tsx`) and "My radio stations" in Settings.
+Also related (not duplicates of the above): Radio Browser directory card and “My radio stations” in Settings.
 
 ## Plan
 
-- [ ] 1. Confirm with a screenshot or names which two entries the user sees as duplicates.
-- [ ] 2. Write the comparison: what each one adds, where it shows up, what the other lacks.
-- [ ] 3. Either merge them into one add-on with both abilities, or rename and re-describe them so the difference is clear. Update the plugin help catalog and `../tahti-registry` if an entry is removed (see `docs/agent/REGISTRY.md`).
+- [x] 1. Confirm the two Import vs Radio entries and write the comparison.
+- [x] 2. Rename/re-describe in `pluginHelpCatalog.ts` so the difference is clear.
+- [ ] 3. Optional later: merge into one add-on with both abilities, or drop one from the Store if product decides they should be one surface. Update `../tahti-registry` if an entry is removed.

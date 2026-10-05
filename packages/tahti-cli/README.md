@@ -11,6 +11,11 @@ Read-only commands, plus `import`, which uploads a folder of audio files to
 your library. No playback/TUI yet (that's an explicit stretch
 goal in the roadmap doc, not started here).
 
+Capability catalogs used by Tahti Player (`GET /api/me/import-plugins`,
+`GET /api/me/export-plugins`) are **not** CLI commands yet — call them with
+`curl`/`fetch` against the same API if you need registry discovery from
+scripts.
+
 ## Auth
 
 Tahti's API already has a personal API token mechanism
