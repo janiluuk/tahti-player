@@ -16,6 +16,19 @@ Capability catalogs used by Tahti Player (`GET /api/me/import-plugins`,
 `curl`/`fetch` against the same API if you need registry discovery from
 scripts.
 
+### hearthis.at discography (inspect first)
+
+List your hearthis.at Sets (playlists / album-like groups) and the tracks
+inside one set. Requires `TAHTI_API_TOKEN` and a hearthis.at handle on your
+Tahti profile (Settings → Profile). Download/import into a neat
+`Artist/Album (year)/01 - Track` tree is a follow-up.
+
+```bash
+pnpm --filter @tahti-player/tahti-cli exec tahti hearthis sets
+pnpm --filter @tahti-player/tahti-cli exec tahti hearthis set 378936-9675121
+pnpm --filter @tahti-player/tahti-cli exec tahti hearthis set 'https://hearthis.at/set/378936-9675121/'
+```
+
 ## Auth
 
 Tahti's API already has a personal API token mechanism
@@ -62,6 +75,8 @@ Every command accepts `--json` (prints the API response unchanged) and
 | `tahti releases show <id> [--json]`                                  | `GET /api/me/releases/:id`                                               | One release (type, state, release date, genre, UPC, label, smart link and its views, catalog checklist) plus its tracklist (position, title, duration, status, ISRC) |
 | `tahti search <query> [--page <n>] [--limit <n>] [--json]`           | `GET /api/v1/search/tracks`                                              | Public, ready tracks whose title matches (id, title, artist, duration, channel), newest first                                                                        |
 | `tahti import <folder> [--recursive] [--dry-run] [--force] [--json]` | `POST /api/uploads/prepare`, storage `PUT`, `POST /api/uploads/complete` | One row per audio file: uploaded (with the new sound id), skipped, or failed with the reason                                                                         |
+| `tahti hearthis sets [--json]`                                       | `GET /api/v1/imports/hearthis/me-sets`                                   | Your hearthis.at Sets (permalink, title, track count, year, artist)                                                                                                  |
+| `tahti hearthis set <permalink-or-url> [--json]`                     | `GET /api/v1/imports/hearthis/sets/:permalink/tracks`                    | Tracks in one Set (#, title, artist, duration, downloadable, filename)                                                                                               |
 
 Everything except `search` and `import` is a `GET` route behind `requireAuth`,
 so any personal API token works. `import` sends `POST` requests and needs a

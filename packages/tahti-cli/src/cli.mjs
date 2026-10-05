@@ -2,6 +2,8 @@
 import { parseArgs } from 'node:util';
 
 import { CliError, resolveConfig } from './api-client.mjs';
+import { runHearthisSet } from './commands/hearthis-set.mjs';
+import { runHearthisSets } from './commands/hearthis-sets.mjs';
 import { runImport } from './commands/import.mjs';
 import { LIBRARY_SORTS, runLibraryList } from './commands/library-list.mjs';
 import { runLibraryShow } from './commands/library-show.mjs';
@@ -124,6 +126,30 @@ the write scope. Exits with 1 when any file fails.
         force: values.force,
       });
     },
+  },
+  {
+    path: ['hearthis', 'sets'],
+    usage: 'tahti hearthis sets [--json]',
+    summary: 'List your hearthis.at Sets (playlists / album-like groups)',
+    details: `Calls GET /api/v1/imports/hearthis/me-sets. Requires a personal API token and
+a hearthis.at handle on your Tahti profile (Settings → Profile). On hearthis.at
+a "Set" is usually an album-like grouping but can also be a playlist.
+Use \`tahti hearthis set <permalink>\` to inspect tracks in one set.`,
+    options: JSON_OPTION,
+    run: (config, { values }) => runHearthisSets(config, { json: values.json }),
+  },
+  {
+    path: ['hearthis', 'set'],
+    usage: 'tahti hearthis set <permalink-or-url> [--json]',
+    summary: 'List tracks in one hearthis.at Set',
+    details: `Calls GET /api/v1/imports/hearthis/sets/:permalink/tracks.
+Accepts a bare permalink from \`tahti hearthis sets\` or a full
+https://hearthis.at/set/<permalink>/ URL. Shows whether each track is
+downloadable (for a future discography download command).`,
+    options: JSON_OPTION,
+    positionals: 1,
+    run: (config, { values, positionals }) =>
+      runHearthisSet(config, positionals[0], { json: values.json }),
   },
 ];
 

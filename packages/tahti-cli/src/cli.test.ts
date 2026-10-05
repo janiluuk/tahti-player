@@ -31,6 +31,8 @@ describe('main', () => {
     expect(help).toContain('tahti releases list');
     expect(help).toContain('tahti releases show <id>');
     expect(help).toContain('tahti search <query>');
+    expect(help).toContain('tahti hearthis sets');
+    expect(help).toContain('tahti hearthis set <permalink-or-url>');
   });
 
   it('prints help and exits 0 with no arguments', async () => {
@@ -65,6 +67,8 @@ describe('main', () => {
       'Usage: tahti releases show <id> [--json]',
     ],
     [['search', '--help'], 'works without'],
+    [['hearthis', 'sets', '--help'], 'hearthis.at Sets'],
+    [['hearthis', 'set', '--help'], 'tracks in one hearthis.at Set'],
   ])(
     'prints per-command help for %j without calling the API',
     async (argv, text) => {
