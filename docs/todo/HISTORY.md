@@ -4249,3 +4249,13 @@ A sweep of follower notifications and the like, repost, follow and listen routes
 - **Listen (#510)**: a recently played radio station links to its station page.
 - **Settings (#511)**: Username & domain shows failures in red as alerts and successes as status lines, and disables empty submits. This closes the last "likely bug" in the settings audit.
 - **Checks:** for each PR, tahti-web type-check, eslint on the changed files, the size guard and the touched tests. tahti-org ran Vitest for each touched route or helper against a throwaway Postgres. Nothing was tried in a browser or against the live API. A first idea for this batch, notifying followers when a scheduled post goes live, turned out to exist already (`post-publish-notify`).
+
+## 2026-10-05 - Ten slices, thirty-ninth batch (tahti-player #514-#516, tahti-org #713-#719)
+
+A sweep of direct messages, which had no way to stop an unwanted sender. Most of the batch is blocking an account, built up in stacked PRs.
+
+- **Blocking (tahti-org#714)**: `UserBlock` table and `GET` / `POST` / `DELETE /api/me/blocks`. With a block in either direction the two accounts cannot start a conversation or send each other messages. Both get the same answer as for a closed account, so a block is not announced.
+- **What a block also does**: no comments on each other's tracks or channel, no new follow, and existing follows are removed (tahti-org#715). The two are hidden from each other in the message search, and the blocker's threads hide the blocked account's earlier comments (tahti-org#716). No follow, love or repost notices from a blocked account (tahti-org#717). Moderator rights between the two end, and the block list is in the data export (tahti-org#718). The blocked person sees the thread as unavailable up front (tahti-org#719).
+- **Web**: Block and Unblock in a message thread (#514), a "Blocked accounts" list under Settings → Account → Privacy & data (#515), and a Block button on the artist page (#516).
+- **Message notifications (tahti-org#713)**: one unread notification per conversation, refreshed with the latest message, instead of one per message.
+- **Checks:** for each PR, tahti-web type-check, eslint on the changed files, the size guard and the touched tests. tahti-org ran Vitest for each touched route against a throwaway Postgres with the new migration applied. `prisma migrate diff` could not confirm the hand-written migration on this multi-schema database (it reports every table as changed on `main` too); the tests exercise every column. Nothing was tried in a browser or against the live API. Not covered: loves and reposts by a blocked account still count, and channel chat is not affected by a block.
