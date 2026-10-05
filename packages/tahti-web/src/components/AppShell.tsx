@@ -26,8 +26,11 @@ import { useAutoHideNavWhilePlaying } from '../hooks/useAutoHideNavWhilePlaying'
 import { useIsCompactDesktop, useIsMobile } from '../hooks/useIsMobile';
 import { useOpenedOnce } from '../hooks/useOpenedOnce';
 import { useWarnBeforeLeavingWhilePlaying } from '../hooks/useWarnBeforeLeavingWhilePlaying';
-import { MAIN_CONTENT_PADDING } from '../layout/contentPadding';
-import { hasAccountRole } from '../lib/accountRoles';
+import {
+  isFullBleedRoute,
+  MAIN_CONTENT_PADDING,
+} from '../layout/contentPadding';
+import { hasAccountRole, hasStudioAccess } from '../lib/accountRoles';
 import { diagnosticsEnabled } from '../lib/buildPolicy';
 import { cn } from '../lib/cn';
 import { activeSidebarItem } from '../lib/navigationActive';
@@ -284,6 +287,7 @@ export function AppShell() {
   const refresh = useAuthStore((s) => s.refresh);
   const userId = useAuthStore((s) => s.user?.id);
   const authHydrated = useAuthStore((s) => s.hydrated);
+  const studioAccess = useAuthStore((s) => hasStudioAccess(s.user));
   const openAuth = useAuthModalStore((s) => s.open);
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -298,6 +302,7 @@ export function AppShell() {
     /^\/(studio|admin|library)(\/|$)/.test(pathname) ||
     /^\/$|^\/listen(?:\/|$)/.test(pathname) ||
     pathname === '/favorites';
+  const fullBleedRoute = isFullBleedRoute(pathname);
   const currentTrackId = usePlayerStore((state) => state.currentId);
   const playerQueue = usePlayerStore((state) => state.queue);
   const playerStatus = usePlayerStore((state) => state.status);
@@ -530,7 +535,7 @@ export function AppShell() {
             )}
             data-studio-shell
           >
-            {userId && getStudioPrimaryRoute(pathname) ? (
+            {studioAccess && getStudioPrimaryRoute(pathname) ? (
               <StudioNav current={navigationLocation} global />
             ) : null}
             <RouteContent>
@@ -566,14 +571,17 @@ export function AppShell() {
           <PlayerWorkspace.Main
             className={cn(
               'tahti-ambient-surface min-h-0 min-w-0 overflow-hidden',
-              MAIN_CONTENT_PADDING,
+              !fullBleedRoute && MAIN_CONTENT_PADDING,
             )}
           >
             <div
-              className="h-full min-w-0 overflow-x-hidden overflow-y-auto"
+              className={cn(
+                'h-full min-w-0 overflow-x-hidden overflow-y-auto',
+                fullBleedRoute && MAIN_CONTENT_PADDING,
+              )}
               data-studio-shell
             >
-              {userId && getStudioPrimaryRoute(pathname) ? (
+              {studioAccess && getStudioPrimaryRoute(pathname) ? (
                 <StudioNav current={navigationLocation} global />
               ) : null}
               <RouteContent>

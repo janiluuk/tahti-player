@@ -85,7 +85,7 @@ describe('ChannelPanel discovery', () => {
     ).toBe(false);
   });
 
-  it('shows the unsupported discovery switches as coming soon', async () => {
+  it('offers no discovery switch that cannot be changed', async () => {
     api.fetchMeProfile.mockResolvedValue({
       data: profile,
       meta: { source: 'api' },
@@ -97,13 +97,12 @@ describe('ChannelPanel discovery', () => {
       'Allow Tahti Radio pickup',
       'Featured on Listen home',
     ]) {
-      const toggle = screen.getByRole('switch', { name });
-      expect(
-        toggle.hasAttribute('disabled') ||
-          toggle.getAttribute('aria-disabled') === 'true',
-      ).toBe(true);
+      expect(screen.queryByRole('switch', { name })).toBeNull();
     }
-    expect(screen.getByText('Not available yet')).toBeTruthy();
+    expect(screen.queryByText('Coming soon')).toBeNull();
+    expect(
+      screen.getByText(/public tracks is listed in the Listen directory/),
+    ).toBeTruthy();
   });
 
   it('does not write genres over links it could not load', async () => {
@@ -239,6 +238,40 @@ describe('ChannelPanel chat and moderators', () => {
       fireEvent.click(confirm);
     });
     expect(rename).toHaveBeenCalledWith('new-name');
-    expect(screen.getByText('Taken')).toBeTruthy();
+    expect(screen.getByText('Taken').getAttribute('role')).toBe('alert');
+  });
+
+  it('says in red when a name is taken and plainly when it is free', async () => {
+    const check = vi.spyOn(channelDesign, 'checkSlugAvailable');
+    await act(async () => {
+      render(<ChannelPanel />);
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('tab', { name: /Username/ }));
+    });
+    const button = screen.getByRole('button', { name: 'Check availability' });
+    fireEvent.change(screen.getByLabelText('Channel slug / username'), {
+      target: { value: 'taken-name' },
+    });
+    check.mockResolvedValueOnce({ available: false, reason: 'reserved' });
+    await act(async () => {
+      fireEvent.click(button);
+    });
+    expect(screen.getByRole('alert').textContent).toBe(
+      'Not available (reserved)',
+    );
+
+    check.mockResolvedValueOnce({ available: true });
+    await act(async () => {
+      fireEvent.click(button);
+    });
+    expect(screen.queryByRole('alert')).toBeNull();
+    expect(screen.getByRole('status').textContent).toBe(
+      'taken-name is available.',
+    );
+    expect(
+      (screen.getByRole('button', { name: 'Set domain' }) as HTMLButtonElement)
+        .disabled,
+    ).toBe(true);
   });
 });

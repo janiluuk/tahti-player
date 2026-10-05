@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, ButtonAnchor, Input } from '@tahti-player/ui';
+import { Button, ButtonAnchor, Input, Select } from '@tahti-player/ui';
 
 import {
   fetchAdminContentReports,
@@ -197,6 +197,18 @@ function ReportActions({
   );
 }
 
+type TargetFilter = AdminContentReportRow['targetType'] | 'all';
+
+const TARGET_OPTIONS: { id: TargetFilter; label: string }[] = [
+  { id: 'all', label: 'Everything' },
+  { id: 'SOUND_ITEM', label: 'Tracks' },
+  { id: 'RELEASE', label: 'Releases' },
+  { id: 'CHANNEL', label: 'Channels' },
+  { id: 'COLLECTION', label: 'Collections' },
+  { id: 'COMMENT', label: 'Comments' },
+  { id: 'MOTION_COMMENT', label: 'Motion comments' },
+];
+
 /** Content reports tab — ported as-is from the standalone admin route (see
  * AdminModerationView). Anonymous reports of channels, releases, archive
  * items, and collections — reporting needs no account. */
@@ -204,20 +216,22 @@ export function ContentReportsTab() {
   const [filter, setFilter] = useState<AdminContentReportStatus | 'all'>(
     'OPEN',
   );
+  const [target, setTarget] = useState<TargetFilter>('all');
   const [reports, setReports] = useState<AdminContentReportRow[]>([]);
   const [loading, setLoading] = useState(true);
 
   const reload = () => {
     setLoading(true);
-    void fetchAdminContentReports(filter === 'all' ? undefined : filter).then(
-      (res) => {
-        setReports(res.data);
-        setLoading(false);
-      },
-    );
+    void fetchAdminContentReports(
+      filter === 'all' ? undefined : filter,
+      target === 'all' ? undefined : target,
+    ).then((res) => {
+      setReports(res.data);
+      setLoading(false);
+    });
   };
 
-  useEffect(reload, [filter]);
+  useEffect(reload, [filter, target]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -234,6 +248,14 @@ export function ContentReportsTab() {
         }))}
         ariaLabel="Content report status"
         onChange={(id) => setFilter(id as AdminContentReportStatus | 'all')}
+      />
+
+      <Select
+        label="Reported"
+        value={target}
+        onValueChange={(value) => setTarget(value as TargetFilter)}
+        options={TARGET_OPTIONS}
+        className="max-w-xs"
       />
 
       <StudioPanel>

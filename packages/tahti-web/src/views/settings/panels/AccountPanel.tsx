@@ -45,6 +45,7 @@ import type {
   PurchaseRow,
 } from '../../../api/types';
 import { ApiTokensPanel } from '../../../components/ApiTokensPanel';
+import { BlockedAccounts } from '../../../components/BlockedAccounts';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { FanSubscriptionsBillingButton } from '../../../components/FanSubscriptionsBillingButton';
 import { MembershipInvoices } from '../../../components/MembershipInvoices';
@@ -60,6 +61,7 @@ import { useAuthModalStore } from '../../../stores/authModalStore';
 import { useAuthStore } from '../../../stores/authStore';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import { SettingsHint, SettingsInfo } from '../SettingsFields';
+import { accountTabLanding, groupAccountTabs } from './accountTabGroups';
 import { MentionsPanel } from './MentionsPanel';
 import { NotificationsVisibilityPanel } from './NotificationsPanel';
 
@@ -152,30 +154,16 @@ export function AccountPanel() {
       ),
     },
     {
-      id: 'security',
-      label: 'Security',
+      id: 'two-factor',
+      label: 'Two-factor authentication',
       icon: <Lock size={14} />,
-      content: (
-        <Tabs
-          className="min-w-0"
-          listClassName="border-border flex-wrap gap-1 border-b pb-2"
-          panelClassName="pt-3"
-          items={[
-            {
-              id: 'two-factor',
-              label: 'Two-factor authentication',
-              icon: <Lock size={14} />,
-              content: <SecurityTotpPanel />,
-            },
-            {
-              id: 'api-tokens',
-              label: 'API tokens',
-              icon: <KeyRound size={14} />,
-              content: <ApiTokensPanel />,
-            },
-          ]}
-        />
-      ),
+      content: <SecurityTotpPanel />,
+    },
+    {
+      id: 'api-tokens',
+      label: 'API tokens',
+      icon: <KeyRound size={14} />,
+      content: <ApiTokensPanel />,
     },
     {
       id: 'membership',
@@ -358,16 +346,28 @@ export function AccountPanel() {
     },
   ];
 
+  const landing = accountTabLanding(accountSection);
+
   return (
     <Tabs
       key={accountSection ?? 'session'}
       className="min-w-0"
       listClassName="flex-wrap"
-      defaultIndex={Math.max(
-        0,
-        tabItems.findIndex((item) => item.id === accountSection),
-      )}
-      items={tabItems}
+      defaultIndex={landing.group}
+      items={groupAccountTabs(tabItems).map(({ group, tabs }, index) => ({
+        id: group.id,
+        label: group.label,
+        icon: <group.Icon size={14} />,
+        content: (
+          <Tabs
+            className="min-w-0"
+            listClassName="border-border flex-wrap gap-1 border-b pb-2"
+            panelClassName="pt-3"
+            defaultIndex={index === landing.group ? landing.tab : 0}
+            items={tabs}
+          />
+        ),
+      }))}
     />
   );
 }
@@ -513,6 +513,7 @@ function PrivacyDataPanel({ username }: { username: string }) {
           </span>
         </ButtonAnchor>
       </div>
+      <BlockedAccounts />
       <div className="border-accent-red/40 bg-accent-red/5 flex flex-col gap-3 rounded-lg border p-4">
         <div className="flex items-center gap-2">
           <Trash2 size={17} className="text-accent-red-strong" aria-hidden />

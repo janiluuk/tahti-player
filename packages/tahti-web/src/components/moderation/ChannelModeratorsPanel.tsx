@@ -33,14 +33,22 @@ export function ChannelModeratorsPanel() {
     reload();
   }, [reload]);
 
+  // People paste handles with the @ in front; the API wants the bare name.
+  const handle = username.trim().replace(/^@+/, '');
+
   const add = () => {
-    void addModerator(username.trim()).then((result) => {
+    if (!handle) {
+      return;
+    }
+    void addModerator(handle).then((result) => {
       if (!result.ok) {
         toast.error(result.error);
         return;
       }
       setUsername('');
-      toast.success(`Added ${result.data.displayName} as moderator.`);
+      toast.success(
+        `Added ${result.data.displayName} as moderator. They've been notified.`,
+      );
       reload();
     });
   };
@@ -48,7 +56,7 @@ export function ChannelModeratorsPanel() {
   return (
     <StudioPanel
       title="Channel moderators"
-      description="People you trust to look after your channel's chat: they can remove messages and ban people from posting. They cannot change your channel or its settings."
+      description="People you trust to look after your channel's chat: they can remove messages and ban people from posting. They cannot change your channel or its settings. Tahti tells them when you add them."
     >
       <div className="flex flex-col gap-4">
         {loading ? (
@@ -84,13 +92,19 @@ export function ChannelModeratorsPanel() {
             label="Username"
             value={username}
             onChange={(event) => setUsername(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                event.preventDefault();
+                add();
+              }
+            }}
             placeholder="listener-handle"
             className="min-w-0 sm:min-w-48"
           />
           <Tooltip content="Add moderator" side="top">
             <Button
               size="icon-sm"
-              disabled={!username.trim()}
+              disabled={!handle}
               aria-label="Add moderator"
               onClick={add}
             >

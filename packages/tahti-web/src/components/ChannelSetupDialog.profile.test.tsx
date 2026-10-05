@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import type { AuthUser } from '../api/types';
@@ -45,6 +45,33 @@ describe('channel setup only for accounts known to have no channel', () => {
     useChannelSetupModalStore.getState().open();
     render(<ChannelSetupDialog />);
     expect(screen.getByText('Create your channel')).toBeTruthy();
+  });
+
+  it('Studio offers a listener a channel instead of a dead end', () => {
+    signIn({ ...artist, role: 'LISTENER', roles: ['LISTENER'] }, true);
+    render(
+      <StudioGate>
+        <p>studio</p>
+      </StudioGate>,
+    );
+    expect(screen.queryByText('studio')).toBeNull();
+    expect(screen.queryByText('Artist access required')).toBeNull();
+    expect(screen.getByText('Studio is for artists')).toBeTruthy();
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Create your channel' }),
+    );
+    expect(useChannelSetupModalStore.getState().isOpen).toBe(true);
+  });
+
+  it('Studio does not call an account a listener before its profile loads', () => {
+    signIn({ ...artist, role: 'LISTENER', roles: ['LISTENER'] }, false);
+    render(
+      <StudioGate>
+        <p>studio</p>
+      </StudioGate>,
+    );
+    expect(screen.queryByText('Studio is for artists')).toBeNull();
+    expect(screen.getByText('Loading your account…')).toBeTruthy();
   });
 
   it('Studio waits for the profile instead of asking for a channel', () => {

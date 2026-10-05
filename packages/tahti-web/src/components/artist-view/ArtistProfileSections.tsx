@@ -37,6 +37,7 @@ import { RssFeedButton } from '../RssFeedButton';
 import { ShowEpisodeList } from '../ShowEpisodeList';
 import { Eyebrow } from '../tahti/Eyebrow';
 import { ArtistBackgroundMusicButton } from './ArtistBackgroundMusicButton';
+import { ArtistBlockButton } from './ArtistBlockButton';
 
 const headerButtonClass =
   'bg-background border-border rounded-md border-(length:--border-width)';
@@ -117,6 +118,12 @@ export function ArtistHeaderActions({
           targetType="CHANNEL"
           targetId={channel.slug}
           label={artist.displayName}
+        />
+      ) : null}
+      {!isOwner ? (
+        <ArtistBlockButton
+          username={artist.username}
+          displayName={artist.displayName}
         />
       ) : null}
       {channel?.slug ? (

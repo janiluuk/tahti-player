@@ -15,3 +15,9 @@ User ask (2026-10-04): the collapse panel button sits over the queue item and cu
 - [ ] 1. Reproduce with a queue of several items in the mock app, expanded and collapsed, and capture it.
 - [ ] 2. Give the toggle its own space in the panel header (or pad the scroll area under it) so it never overlaps content. Check the left sidebar and the collapsed rail too.
 - [ ] 3. Update the `PlayerWorkspace` story and snapshots.
+
+## Tried (2026-10-05)
+
+- Mock web app with three queued tracks at 768, 900, 1024, 1100, 1280, 1400 and 1920 px, right rail expanded and collapsed: the toggle's box never intersects a queue item. Below 768 px there is no rail.
+- Needed from the user: a screenshot, or which surface it happens on (the desktop player uses the same sidebar with a different queue panel).
+

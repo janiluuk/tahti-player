@@ -22,7 +22,6 @@ import {
   patchMeProfile,
   type ProfileFields,
 } from '../../../api/studio-extras';
-import { ClientCapabilityNotice } from '../../../components/ClientCapabilityNotice';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { GenrePicker } from '../../../components/GenrePicker';
 import { ChannelModeratorsPanel } from '../../../components/moderation/ChannelModeratorsPanel';
@@ -48,7 +47,13 @@ export function ChannelPanel() {
   const [profileLoaded, setProfileLoaded] = useState(false);
   const [slug, setSlug] = useState(channel?.slug ?? '');
   const [domain, setDomain] = useState('');
-  const [note, setNote] = useState<string | null>(null);
+  const [note, setNote] = useState<{ text: string; failed: boolean } | null>(
+    null,
+  );
+  // One result line for the whole tab: what happened, and in red with an
+  // alert role when it did not work.
+  const say = (text: string) => setNote({ text, failed: false });
+  const sayFailed = (text: string) => setNote({ text, failed: true });
   const [confirmingRename, setConfirmingRename] = useState(false);
 
   useEffect(() => {
@@ -155,32 +160,9 @@ export function ChannelPanel() {
                   }}
                 />
               </label>
-              <div className="flex flex-col gap-4">
-                <SettingsToggle
-                  label="List in Listen directory"
-                  description="Channels with public tracks are listed."
-                  value
-                  onChange={() => undefined}
-                  disabled
-                />
-                <SettingsToggle
-                  label="Allow Tahti Radio pickup"
-                  value={false}
-                  onChange={() => undefined}
-                  disabled
-                />
-                <SettingsToggle
-                  label="Featured on Listen home"
-                  description="Subject to editorial / algorithmic placement."
-                  value={false}
-                  onChange={() => undefined}
-                  disabled
-                />
-                <ClientCapabilityNotice kind="coming-soon">
-                  Discovery listing, Radio pickup, and Featured placement are
-                  not configurable from this client yet (no API).
-                </ClientCapabilityNotice>
-              </div>
+              <SettingsHint>
+                A channel with public tracks is listed in the Listen directory.
+              </SettingsHint>
             </div>
           ),
         },
@@ -199,13 +181,16 @@ export function ChannelPanel() {
                 <Button
                   size="sm"
                   variant="secondary"
+                  disabled={!slug.trim()}
                   onClick={() => {
                     void checkSlugAvailable(slug.trim()).then((r) => {
-                      setNote(
-                        r.available
-                          ? 'Available'
-                          : `Not available${r.reason ? ` (${r.reason})` : ''}`,
-                      );
+                      if (r.available) {
+                        say(`${slug.trim()} is available.`);
+                      } else {
+                        sayFailed(
+                          `Not available${r.reason ? ` (${r.reason})` : ''}`,
+                        );
+                      }
                     });
                   }}
                 >
@@ -227,7 +212,11 @@ export function ChannelPanel() {
                   onConfirm={() => {
                     setConfirmingRename(false);
                     void updateChannelSlug(slug.trim()).then((r) => {
-                      setNote(r.ok ? channelRenameNote(r) : r.error);
+                      if (r.ok) {
+                        say(channelRenameNote(r));
+                      } else {
+                        sayFailed(r.error);
+                      }
                     });
                   }}
                 />
@@ -246,12 +235,13 @@ export function ChannelPanel() {
               <div className="flex flex-wrap gap-2">
                 <Button
                   size="sm"
+                  disabled={!domain.trim()}
                   onClick={() => {
                     void setCustomDomain(domain.trim()).then((r) => {
                       if (!r.ok) {
-                        setNote(r.error);
+                        sayFailed(r.error);
                       } else {
-                        setNote(
+                        say(
                           `Add TXT ${r.txtHost} = ${r.txtRecord}, then Verify.`,
                         );
                       }
@@ -265,20 +255,33 @@ export function ChannelPanel() {
                   variant="secondary"
                   onClick={() => {
                     void verifyCustomDomain().then((r) => {
-                      setNote(
-                        r.ok
-                          ? r.verified
-                            ? 'Verified!'
-                            : 'Not verified yet'
-                          : r.error,
-                      );
+                      if (!r.ok) {
+                        sayFailed(r.error);
+                      } else if (r.verified) {
+                        say('Domain verified.');
+                      } else {
+                        sayFailed(
+                          'Not verified yet. DNS changes can take a while to show.',
+                        );
+                      }
                     });
                   }}
                 >
                   Verify DNS
                 </Button>
               </div>
-              {note && <SettingsHint>{note}</SettingsHint>}
+              {note ? (
+                <p
+                  role={note.failed ? 'alert' : 'status'}
+                  className={
+                    note.failed
+                      ? 'text-accent-red-strong text-sm'
+                      : 'text-foreground-secondary text-sm'
+                  }
+                >
+                  {note.text}
+                </p>
+              ) : null}
             </div>
           ),
         },

@@ -18,28 +18,23 @@ User ask (2026-10-04): audit Settings thoroughly. Make sure it uses the standard
 - No hand-rolled `<button>`, `<input>`, `<select>`, `<textarea>`, `<a>` or `<img>` is left in `src/views/settings/`.
 - Panels are not consistent: Notifications builds its own cards (`rounded-xl border p-4` with an `h3`), the moderation panels use `StudioPanel`, and most toggles are bare `SettingsToggle` rows. Pick one panel component for all of Settings.
 
-## Unwired or placeholder controls
-
-- Discovery: "List in Listen directory", "Allow Tahti Radio pickup" and "Featured on Listen home" are disabled switches marked "Coming soon". No API exists for them.
-- Notifications → Visibility: "Show favourites" is a disabled placeholder. Notifications: "Announce releases" is a disabled placeholder.
-- Playback: "Crossfade" is disabled (not supported by the web player).
-- Decide for each: build it, or remove it until it exists. Six dead switches make the page look broken.
-
 ## Fixed since the audit
 
 - The share-button switch is saved on the account and hides the button for every visitor (tahti-org#700, #496).
 - Broadcast → Radio and Green room switches undo themselves and show the error when a save fails (#495).
 - Renaming a channel asks first and says the stream key may change (#497).
+- The six disabled "Coming soon" controls are removed: Show favourites and Announce releases (#522), the three Discovery switches and Crossfade (#523).
+- Account's tabs are four groups: Sign-in & security, Membership & billing, Notifications, Privacy & data (#527).
+- An account with no channel does not see Channel & chat or Broadcast (#525).
 
 ## Likely bugs
 
-- [ ] Username & domain: availability, rename and domain results still appear as a plain note under the form instead of a toast or field error.
+- None left: Username & domain shows failures as red alerts since #511.
 
 ## Crowding
 
-- [ ] Account has 12 tabs (session, security, two-factor, API tokens, membership, governance, storage, notifications, mentions, subscriptions, purchases, privacy). Group them: Sign-in and security / Membership and billing / Notifications / Privacy and data.
 - [ ] Artist has 8 tabs (identity, story, people, connections, branding, gallery, press kit, release visuals) in a 591-line panel.
-- [ ] Section descriptions under the title repeat the tab names; drop them once tabs are grouped.
+- [ ] Section descriptions under the title repeat the tab names; drop them once Artist is grouped too.
 
 ## Needs a decision
 

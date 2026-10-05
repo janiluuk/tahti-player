@@ -4234,3 +4234,39 @@ A sweep of what a personal API token may do, plus follow-ups on support tickets,
 - **Radio (#505)**: the player bar title shows what a catalog station is playing, with the station name on the second line.
 - **Tests (#504)**: the Channel Designer test unmounts its React roots. Left mounted, a late render failed the whole tahti-web test job with "window is not defined" on #492 and #499 although every test passed.
 - **Checks:** for each PR, tahti-web type-check, eslint on the changed files, the size guard and the touched tests. tahti-org ran Vitest for each touched route against a throwaway Postgres. Nothing was tried in a browser or against the live API. The #504 fix rests on the stack trace; the failure was never reproduced locally.
+
+## 2026-10-05 - Ten slices, thirty-eighth batch (tahti-player #509-#512, tahti-org #706-#708, #710-#712)
+
+A sweep of follower notifications and the like, repost, follow and listen routes, plus follow-ups from batch 37 and the settings audit.
+
+- **New-track notices (tahti-org#706)**: they open the track instead of the artist page, and a track is announced once, not every time it goes from private to public.
+- **Follower fan-outs (tahti-org#707)**: post, track, live, event and release notifications skip deleted and suspended followers.
+- **Repeat notices (tahti-org#708)**: following, loving or reposting, undoing it and doing it again notifies the artist at most once a day.
+- **Unavailable artists (tahti-org#710)**: a suspended or deleted artist cannot gain new follows, loves or reposts. Undoing still works.
+- **Private tracks (tahti-org#712)**: like and repost counts answer 404 for a private or unfinished track, except to its artist.
+- **Charts (tahti-org#711)**: an artist's own plays are not recorded as listens.
+- **Moderation**: the content-report queue has a "Reported" filter by target type (#509). Adding a moderator says they were notified, accepts `@handle` and Enter (#512).
+- **Listen (#510)**: a recently played radio station links to its station page.
+- **Settings (#511)**: Username & domain shows failures in red as alerts and successes as status lines, and disables empty submits. This closes the last "likely bug" in the settings audit.
+- **Checks:** for each PR, tahti-web type-check, eslint on the changed files, the size guard and the touched tests. tahti-org ran Vitest for each touched route or helper against a throwaway Postgres. Nothing was tried in a browser or against the live API. A first idea for this batch, notifying followers when a scheduled post goes live, turned out to exist already (`post-publish-notify`).
+
+## 2026-10-05 - Ten slices, thirty-ninth batch (tahti-player #514-#516, tahti-org #713-#719)
+
+A sweep of direct messages, which had no way to stop an unwanted sender. Most of the batch is blocking an account, built up in stacked PRs.
+
+- **Blocking (tahti-org#714)**: `UserBlock` table and `GET` / `POST` / `DELETE /api/me/blocks`. With a block in either direction the two accounts cannot start a conversation or send each other messages. Both get the same answer as for a closed account, so a block is not announced.
+- **What a block also does**: no comments on each other's tracks or channel, no new follow, and existing follows are removed (tahti-org#715). The two are hidden from each other in the message search, and the blocker's threads hide the blocked account's earlier comments (tahti-org#716). No follow, love or repost notices from a blocked account (tahti-org#717). Moderator rights between the two end, and the block list is in the data export (tahti-org#718). The blocked person sees the thread as unavailable up front (tahti-org#719).
+- **Web**: Block and Unblock in a message thread (#514), a "Blocked accounts" list under Settings → Account → Privacy & data (#515), and a Block button on the artist page (#516).
+- **Message notifications (tahti-org#713)**: one unread notification per conversation, refreshed with the latest message, instead of one per message.
+- **Checks:** for each PR, tahti-web type-check, eslint on the changed files, the size guard and the touched tests. tahti-org ran Vitest for each touched route against a throwaway Postgres with the new migration applied. `prisma migrate diff` could not confirm the hand-written migration on this multi-schema database (it reports every table as changed on `main` too); the tests exercise every column. Nothing was tried in a browser or against the live API. Not covered: loves and reposts by a blocked account still count, and channel chat is not affected by a block.
+
+## 2026-10-05 - Ten slices, fortieth batch (tahti-player #518-#527)
+
+Slices from three open todos: the channel page redesign, the settings audit, and the listener and signed-out audit. All in tahti-web; no tahti-org change.
+
+- **Channel page**: the page and the track page reach the pane edges on desktop, which removes the frame and the clipped report button, "Tracks" heading and toolbar (#518). The shell's inset sat outside the scroll area, so the pages' negative margins pushed them under the clip edge. On phones Subscribe no longer covers the channel name (#519). "On air" shows only with a connected broadcast signal; the 24/7 rotation says "24/7 rotation" (#520). A radio-station channel has no Subscribe button (#521).
+- **Settings**: the six disabled "Coming soon" controls are gone: Show favourites and Announce releases (#522), the three Discovery switches and Crossfade (#523). Account's twelve tabs are four groups: Sign-in & security, Membership & billing, Notifications, Privacy & data (#527).
+- **Listener account**: Channel & chat and Broadcast are hidden from an account with no channel, and its profile section is called Profile (#525). Studio offers a listener "Create your channel" instead of "Artist access required", without the Studio tab bar or a dialog that opens by itself (#526).
+- **Signed out**: on the track page, reactions and Add open sign-in instead of being disabled (#524).
+- **Not done**: the queue collapse-button overlap did not reproduce in the web app at any width from 768 to 1920 px, expanded or collapsed. It may only happen in the desktop player.
+- **Checks:** for each PR, tahti-web type-check, eslint and Prettier on the changed files, the size guard and the touched test directories. Each change was looked at in the mock app (signed out, as `listener@tahti.live`, or as the demo artist). Nothing was tried against the live API, and the edited purchase-flow e2e spec was not run.

@@ -11,7 +11,6 @@ import {
   patchMeProfile,
   type ProfileFields,
 } from '../../../api/studio-extras';
-import { ClientCapabilityNotice } from '../../../components/ClientCapabilityNotice';
 import { SettingsHint, SettingsToggle } from '../SettingsFields';
 import { CommentSettingsToggles } from './CommentSettingsToggles';
 import { GrantReportAttributionToggle } from './GrantReportAttributionToggle';
@@ -207,18 +206,6 @@ export function NotificationsVisibilityPanel() {
             value={profile.socialLinks?.showConnections !== 'false'}
             onChange={updateConnectionsVisibility}
           />
-          <div className="flex flex-col gap-3">
-            <SettingsToggle
-              label="Show favourites"
-              description="Your favourited tracks and channels are visible on your public profile."
-              value={false}
-              onChange={() => undefined}
-              disabled
-            />
-            <ClientCapabilityNotice kind="coming-soon">
-              Tahti doesn&apos;t show favourites on profiles yet.
-            </ClientCapabilityNotice>
-          </div>
           <TopListsToggle />
           <GrantReportAttributionToggle
             profile={profile}
@@ -235,18 +222,6 @@ export function NotificationsVisibilityPanel() {
           Choose which activity reaches you by email or in the app.
         </p>
         <NotificationsPanel />
-        <div className="mt-5 flex flex-col gap-3">
-          <SettingsToggle
-            label="Announce releases"
-            description="Followers get a notification (and optional email) when you publish a release."
-            value={false}
-            onChange={() => undefined}
-            disabled
-          />
-          <ClientCapabilityNotice kind="coming-soon">
-            Tahti doesn&apos;t announce releases to followers yet.
-          </ClientCapabilityNotice>
-        </div>
       </div>
       {savingKey ? (
         <p className="text-foreground-secondary text-xs" role="status">

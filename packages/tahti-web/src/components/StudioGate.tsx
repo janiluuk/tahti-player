@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 
 import { Button, EmptyState } from '@tahti-player/ui';
 
-import { hasAccountRole } from '../lib/accountRoles';
+import { hasStudioAccess } from '../lib/accountRoles';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { useChannelSetupModalStore } from '../stores/channelSetupModalStore';
@@ -37,20 +37,25 @@ export function StudioGate({ children, requireChannel = true }: Props) {
     );
   }
 
-  if (!hasAccountRole(user, 'ARTIST') && !hasAccountRole(user, 'BOARD')) {
+  if (!hasStudioAccess(user) && !profileLoaded) {
+    return <PageLoading label="Loading your account…" />;
+  }
+
+  if (!hasStudioAccess(user)) {
     return (
       <EmptyState
-        icon={<Lock size={40} className="opacity-40" />}
-        title="Artist access required"
-        description={`Signed in as @${user.username}, but this account does not have artist access.`}
+        icon={<LayoutDashboard size={40} className="opacity-40" />}
+        title="Studio is for artists"
+        description={`@${user.username} is a listener account. Create your channel to upload, release and broadcast. Listening needs none of it.`}
         action={
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={() => openAuth('login')}
-          >
-            Switch account
-          </Button>
+          <div className="flex flex-wrap justify-center gap-2">
+            <Button size="sm" onClick={openChannelSetup}>
+              Create your channel
+            </Button>
+            <Button size="sm" variant="text" onClick={() => openAuth('login')}>
+              Switch account
+            </Button>
+          </div>
         }
       />
     );

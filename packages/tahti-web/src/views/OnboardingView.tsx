@@ -33,7 +33,6 @@ import { checkSlugAvailable, updateChannelSlug } from '../api/channel-design';
 import { provisionChannel } from '../api/channel-provision';
 import { isForceMock } from '../api/mode';
 import { fetchMeProfile, patchMeProfile } from '../api/studio-extras';
-import { ClientCapabilityNotice } from '../components/ClientCapabilityNotice';
 import { GenrePicker } from '../components/GenrePicker';
 import { PageLoading } from '../components/PageStates';
 import { RoundImageUploadButton } from '../components/RoundImageUploadButton';
@@ -449,25 +448,12 @@ export function OnboardingView() {
                           showFollowing,
                           setShowFollowing,
                         ],
-                        [
-                          'Show favourites',
-                          'Your favourited tracks and channels are visible on your public profile.',
-                          false,
-                          undefined,
-                        ],
-                        [
-                          'Announce releases',
-                          'Followers get a notification (and optional email) when you publish a release.',
-                          false,
-                          undefined,
-                        ],
                       ] as const
                     ).map(([label, hint, checked, setter]) => (
                       <div key={label} className="flex items-start gap-3">
                         <Toggle
                           checked={checked}
-                          onChange={setter ?? (() => undefined)}
-                          disabled={!setter}
+                          onChange={setter}
                           aria-label={label}
                         />
                         <div>
@@ -478,10 +464,6 @@ export function OnboardingView() {
                         </div>
                       </div>
                     ))}
-                    <ClientCapabilityNotice kind="coming-soon">
-                      Showing favourites and announcing releases aren&apos;t
-                      available yet.
-                    </ClientCapabilityNotice>
                   </div>
                 ),
               },
