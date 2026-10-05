@@ -2,8 +2,8 @@ import {
   imageUploadTypeError,
   resolveImageUploadContentType,
 } from '../lib/imageUploadContentType';
-import type { FetchMeta } from './client';
 import { apiBase } from './http';
+import { isForceMock, withMockFallback, type FetchMeta } from './mode';
 
 async function readErrorMessage(
   response: Response,
@@ -58,27 +58,25 @@ export async function fetchUserMedia(): Promise<{
   data: UserMediaFile[];
   meta: FetchMeta;
 }> {
-  if (import.meta.env.VITE_FORCE_MOCK === '1') {
+  if (isForceMock()) {
     return { data: [...mockMedia], meta: { source: 'mock' } };
   }
   try {
     const data = await requestJson<{ files: UserMediaFile[] }>('/api/me/media');
     return { data: data.files ?? [], meta: { source: 'api' } };
   } catch (error) {
-    return {
-      data: [],
-      meta: {
-        source: 'mock',
-        reason: error instanceof Error ? error.message : 'Media unavailable',
-      },
-    };
+    return withMockFallback(
+      error,
+      () => [...mockMedia],
+      () => [],
+    );
   }
 }
 
 export async function uploadUserMediaFile(
   file: File,
 ): Promise<{ ok: true; data: UserMediaFile } | { ok: false; error: string }> {
-  if (import.meta.env.VITE_FORCE_MOCK === '1') {
+  if (isForceMock()) {
     const contentType = resolveImageUploadContentType(file);
     if (!contentType) {
       return { ok: false, error: imageUploadTypeError(file) };
@@ -137,7 +135,7 @@ export async function uploadUserMediaFile(
 export async function deleteUserMedia(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (import.meta.env.VITE_FORCE_MOCK === '1') {
+  if (isForceMock()) {
     mockMedia = mockMedia.filter((file) => file.id !== id);
     return { ok: true };
   }
