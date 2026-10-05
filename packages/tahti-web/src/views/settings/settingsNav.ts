@@ -29,7 +29,9 @@ export type SettingsNavGroup = 'Settings' | 'App';
 export type SettingsNavItem = {
   id: SettingsSectionId;
   label: string;
-  description: string;
+  /** One line under the title. Left out where the section's own tabs
+   * already say what is in it. */
+  description?: string;
   Icon: LucideIcon;
   group: SettingsNavGroup;
 };
@@ -38,28 +40,24 @@ export const SETTINGS_NAV: SettingsNavItem[] = [
   {
     id: 'account',
     label: 'Account',
-    description: 'Session, security, membership, notifications',
     Icon: User,
     group: 'Settings',
   },
   {
     id: 'artist',
     label: 'Artist',
-    description: 'Profile, branding, social links, members, press kit',
     Icon: UserCircle2,
     group: 'Settings',
   },
   {
     id: 'channel',
     label: 'Channel & chat',
-    description: 'Channel Designer, discovery, username, chat, moderators',
     Icon: Paintbrush,
     group: 'Settings',
   },
   {
     id: 'broadcast',
     label: 'Broadcast',
-    description: 'Radio, green room, multistream',
     Icon: Radio,
     group: 'Settings',
   },
@@ -131,10 +129,7 @@ export const CHANNEL_SETTINGS_SECTION_IDS: readonly SettingsSectionId[] = [
   'broadcast',
 ];
 
-const PROFILE_NAV_OVERRIDE = {
-  label: 'Profile',
-  description: 'Name, picture, story and links',
-};
+const PROFILE_NAV_OVERRIDE = { label: 'Profile' };
 
 export type SettingsNavAudience = {
   signedIn: boolean;

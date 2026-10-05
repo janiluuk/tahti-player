@@ -42,6 +42,16 @@ describe('settingsNavFor', () => {
     expect(nav.find((item) => item.id === 'artist')?.label).toBe('Profile');
   });
 
+  it('gives no description to sections whose tabs already list their content', () => {
+    const nav = settingsNavFor({ signedIn: true, hasChannel: true });
+    for (const id of ['account', 'artist', 'channel', 'broadcast']) {
+      expect(nav.find((item) => item.id === id)?.description).toBeUndefined();
+    }
+    expect(
+      nav.find((item) => item.id === 'playback')?.description,
+    ).toBeTruthy();
+  });
+
   it('sends a deep link to an unavailable section somewhere that exists', () => {
     const listener = { signedIn: true, hasChannel: false };
     expect(isSettingsSectionAvailable('broadcast', listener)).toBe(false);
