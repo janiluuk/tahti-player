@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import {
   Button,
+  cn,
   EmptyState,
   ImageReveal,
   Input,
@@ -236,7 +237,10 @@ export function GlobalSearch() {
             activeIndex >= 0 ? flatOptions[activeIndex]?.id : undefined
           }
           autoComplete="off"
-          className={query ? 'pr-9' : undefined}
+          className={cn(
+            '[&::-webkit-search-cancel-button]:appearance-none',
+            query && 'pr-9',
+          )}
           startAddon={
             <SearchIcon size={14} aria-hidden className="opacity-70" />
           }
