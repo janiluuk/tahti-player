@@ -1,0 +1,174 @@
+// Checks what a visitor with no account and a plain listener account see.
+//   1. Signed out: public pages must open without the sign-in dialog and
+//      account pages must ask for sign-in. Dead (disabled) buttons are listed.
+//   2. Listener (no channel): no Studio tab bar, no channel settings.
+// Exits 1 when something is wrong. Run against the mock app:
+//   VITE_FORCE_MOCK=1 pnpm dev:tahti
+//   BASE=http://127.0.0.1:5173 node packages/tahti-web/scripts/audit-signed-out.mjs
+import { chromium } from '@playwright/test';
+
+const base = process.env.BASE || 'http://127.0.0.1:5173';
+
+const PUBLIC_PATHS = [
+  '/',
+  '/discover',
+  '/radio',
+  '/radio/station/radio-helsinki',
+  '/u/liis-kask',
+  '/channel/liis-kask-ee',
+  '/c/demo-collection',
+  '/t/liis-kask-archive-1',
+  '/v/kuudes-linja',
+  '/search?tag=electronic',
+  '/subscribe/liis-kask',
+  '/schedule',
+  '/newsletter/confirmed',
+  '/newsletter/unsubscribed',
+  '/newsletter/unsubscribe/token',
+  '/favorites',
+  '/listen/history',
+  '/help',
+  '/transparency',
+  '/governance',
+  '/studio',
+];
+const ACCOUNT_PATHS = ['/messages', '/feed', '/library'];
+const LISTENER = {
+  id: 'mock-listener@tahti.live',
+  email: 'listener@tahti.live',
+  username: 'listener',
+  displayName: 'Demo Listener',
+  role: 'LISTENER',
+  roles: ['LISTENER'],
+  avatarUrl: null,
+  isMember: false,
+  isBoard: false,
+  channel: null,
+};
+
+const browser = await chromium.launch({
+  headless: true,
+  executablePath: process.env.CHROMIUM_PATH || undefined,
+  args: ['--no-sandbox'],
+});
+
+async function openAs(user) {
+  const context = await browser.newContext({
+    viewport: { width: 1400, height: 900 },
+  });
+  const page = await context.newPage();
+  await page.goto(base + '/');
+  await page.evaluate((account) => {
+    if (!account) {
+      localStorage.removeItem('tahti-web-auth');
+      return;
+    }
+    localStorage.setItem(
+      'tahti-web-auth',
+      JSON.stringify({ state: { user: account }, version: 0 }),
+    );
+    localStorage.setItem(`tahti-web-onboarded:${account.id}`, '1');
+  }, user);
+  return { context, page };
+}
+
+async function visit(page, path) {
+  await page.goto(base + path, {
+    waitUntil: 'domcontentloaded',
+    timeout: 20000,
+  });
+  await page.waitForTimeout(1500);
+  return page.evaluate(() => {
+    const visible = (el) => {
+      const rect = el.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0;
+    };
+    const main = document.querySelector('[data-studio-shell]') ?? document.body;
+    return {
+      signInDialog: [...document.querySelectorAll('[role=dialog]')].some(
+        (dialog) => dialog.querySelector('input[type=password]'),
+      ),
+      deadButtons: [...main.querySelectorAll('button:disabled')]
+        .filter(visible)
+        .map((button) =>
+          (
+            button.getAttribute('aria-label') ||
+            button.textContent ||
+            ''
+          ).trim(),
+        ),
+      tabs: [...main.querySelectorAll('[role=tab], nav a')]
+        .filter(visible)
+        .map((tab) => (tab.textContent || '').trim()),
+      settingsNav: [...document.querySelectorAll('[role=dialog] [role=tab]')]
+        .filter(visible)
+        .map((tab) => (tab.textContent || '').trim()),
+    };
+  });
+}
+
+const problems = [];
+const notes = [];
+
+{
+  const { context, page } = await openAs(null);
+  const errors = [];
+  page.on('pageerror', (error) => errors.push(error.message.slice(0, 120)));
+  for (const path of PUBLIC_PATHS) {
+    const seen = await visit(page, path);
+    if (seen.signInDialog) {
+      problems.push(`signed out: ${path} opens the sign-in dialog`);
+      await page.keyboard.press('Escape');
+    }
+    const dead = [...new Set(seen.deadButtons)].filter(Boolean);
+    if (dead.length > 0) {
+      notes.push(
+        `signed out: ${path} has disabled buttons: ${dead.slice(0, 6).join(', ')}`,
+      );
+    }
+  }
+  for (const path of ACCOUNT_PATHS) {
+    const seen = await visit(page, path);
+    if (!seen.signInDialog) {
+      problems.push(`signed out: ${path} does not ask for sign-in`);
+    } else {
+      await page.keyboard.press('Escape');
+    }
+  }
+  for (const error of new Set(errors)) {
+    problems.push(`signed out: page error: ${error}`);
+  }
+  await context.close();
+}
+
+{
+  const { context, page } = await openAs(LISTENER);
+  const studio = await visit(page, '/studio');
+  if (studio.tabs.some((tab) => /^(Stats|Releases|Broadcast)$/.test(tab))) {
+    problems.push('listener: /studio shows the Studio tab bar');
+  }
+  if (studio.signInDialog) {
+    problems.push('listener: /studio opens the sign-in dialog');
+  }
+  const settings = await visit(page, '/settings');
+  for (const section of ['Channel & chat', 'Broadcast']) {
+    if (settings.settingsNav.includes(section)) {
+      problems.push(`listener: Settings lists "${section}"`);
+    }
+  }
+  await context.close();
+}
+
+await browser.close();
+
+console.log(
+  `checked ${PUBLIC_PATHS.length} public and ${ACCOUNT_PATHS.length} account pages signed out, plus Studio and Settings as a listener`,
+);
+if (notes.length > 0) {
+  console.log('\nTo look at:\n' + notes.join('\n'));
+}
+if (problems.length > 0) {
+  console.log('\nProblems:\n' + problems.join('\n'));
+  process.exit(1);
+}
+console.log('\nNo problems.');
