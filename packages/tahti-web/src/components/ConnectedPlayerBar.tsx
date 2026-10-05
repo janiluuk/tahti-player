@@ -11,8 +11,12 @@ import { formatArtistNames } from '@tahti-player/model';
 import { Badge, Button, cn, PlayerBar, Tooltip } from '@tahti-player/ui';
 
 import { TAHTI_RADIO_SLUG } from '../api/client';
-import { radioStationIdForPlayable } from '../content/radioStations';
+import {
+  radioStation,
+  radioStationIdForPlayable,
+} from '../content/radioStations';
 import { useIsMobile } from '../hooks/useIsMobile';
+import { useStationNowPlaying } from '../hooks/useStationNowPlaying';
 import { soundIdFromPlayableId } from '../lib/soundId';
 import { useAuthStore } from '../stores/authStore';
 import { useLayoutStore } from '../stores/layoutStore';
@@ -94,11 +98,25 @@ export function ConnectedPlayerBar() {
     return () => document.removeEventListener('pointerdown', onPointerDown);
   }, [signedOutPopoverOpen]);
 
+  // A catalog radio station is queued under its own name; while it plays the
+  // title shows what the station says is on, and the name moves to the
+  // second line.
+  const catalogStation = playable
+    ? radioStation(radioStationIdForPlayable(playable) ?? '')
+    : undefined;
+  const stationNowPlaying = useStationNowPlaying(
+    catalogStation?.programmingUrl,
+    catalogStation ? playable?.streamUrl : null,
+  );
+
   if (!playerBarVisible || !playable) {
     return null;
   }
 
-  const title = playable?.title ?? 'Nothing playing';
+  const title =
+    catalogStation && stationNowPlaying
+      ? stationNowPlaying
+      : (playable?.title ?? 'Nothing playing');
   const provider =
     playable?.sourceProvider && playable.sourceProvider !== 'tahti'
       ? playable.sourceProvider
@@ -107,6 +125,7 @@ export function ConnectedPlayerBar() {
         ? current.track.source.provider
         : null;
   const artistBase =
+    (catalogStation && stationNowPlaying ? catalogStation.name : null) ??
     playable?.artist ??
     (current
       ? formatArtistNames(current.track.artists)
