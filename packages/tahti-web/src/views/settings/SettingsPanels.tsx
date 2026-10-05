@@ -3,6 +3,7 @@ import { lazy, Suspense, useEffect, useState, type ReactNode } from 'react';
 
 import { Box, Button, Loader, Tooltip } from '@tahti-player/ui';
 
+import { useAuthStore } from '../../stores/authStore';
 import { WhatsNewPanel } from '../WhatsNewView';
 import { AccountPanel } from './panels/AccountPanel';
 import { ArtistPanel, ReleaseVisualDefaultsPanel } from './panels/ArtistPanel';
@@ -12,7 +13,7 @@ import { IntegrationsPanel } from './panels/IntegrationsPanel';
 import { LogsPanel } from './panels/LogsPanel';
 import { PlaybackPanel } from './panels/PlaybackPanel';
 import { ThemesPanel } from './panels/ThemesPanel';
-import { SETTINGS_NAV, type SettingsSectionId } from './settingsNav';
+import { settingsNavFor, type SettingsSectionId } from './settingsNav';
 
 const PluginStorePanel = lazy(() =>
   import('../../components/PluginStorePanel').then((module) => ({
@@ -29,6 +30,8 @@ export function SettingsSectionBody({
 }) {
   let content: ReactNode;
   const [showAddonInfo, setShowAddonInfo] = useState(false);
+  const signedIn = useAuthStore((s) => Boolean(s.user));
+  const hasChannel = useAuthStore((s) => Boolean(s.user?.channel));
 
   switch (section) {
     case 'account':
@@ -75,7 +78,9 @@ export function SettingsSectionBody({
       return null;
   }
 
-  const navItem = SETTINGS_NAV.find((item) => item.id === section);
+  const navItem = settingsNavFor({ signedIn, hasChannel }).find(
+    (item) => item.id === section,
+  );
   const isAddonStore = section === 'plugin-store';
 
   useEffect(() => {
