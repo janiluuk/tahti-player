@@ -28,6 +28,7 @@ import {
   publicPressKitUrl,
   type ArtistProfileEmbed,
 } from '../../lib/artistProfile';
+import { safeCreditName } from '../../lib/displayName';
 import { DiscoWidgetsSection } from '../disco-widgets/DiscoWidgetsSection';
 import { EmbedButton } from '../EmbedButton';
 import { NewsletterSubscribeToggle } from '../NewsletterSubscribeToggle';
@@ -331,7 +332,20 @@ const MENTION_SURFACE_LABELS: Record<string, string> = {
   BIO: 'Artist description',
   ANNOUNCEMENT: 'Channel announcement',
   CHAT: 'Channel chat',
+  RELEASE: 'Release notes',
+  NEWSLETTER: 'Newsletter',
 };
+
+function mentionerDisplayName(mention: PublicMention): string {
+  const { displayName, username } = mention.mentioner;
+  return safeCreditName(displayName, username) ?? username;
+}
+
+function mentionSourceTitle(mention: PublicMention): string {
+  return (
+    safeCreditName(mention.sourceTitle, null) ?? mentionerDisplayName(mention)
+  );
+}
 
 function mentionSourcePath(mention: PublicMention): string {
   const url = mention.sourceUrl;
@@ -368,11 +382,11 @@ export function ArtistTaggedIn({
                 to={mentionSourcePath(mention) as never}
                 className="text-primary truncate text-sm font-semibold hover:underline"
               >
-                {mention.sourceTitle ?? mention.mentioner.displayName}
+                {mentionSourceTitle(mention)}
               </Link>
               <p className="text-foreground-secondary text-xs">
                 {MENTION_SURFACE_LABELS[mention.surface] ?? 'Mention'}
-                {` · by ${mention.mentioner.displayName}`}
+                {` · by ${mentionerDisplayName(mention)}`}
               </p>
             </div>
             <span className="text-foreground-secondary shrink-0 text-xs">
