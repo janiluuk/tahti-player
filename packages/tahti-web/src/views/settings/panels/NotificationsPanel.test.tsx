@@ -57,20 +57,17 @@ describe('NotificationsPanel', () => {
     expect(patchMeProfile).toHaveBeenCalledWith({ showLikes: false });
   });
 
-  it('shows favourites and release announcements as coming soon', async () => {
+  it('offers no switch that cannot be changed', async () => {
     render(<NotificationsVisibilityPanel />);
-    for (const name of ['Show favourites', 'Announce releases']) {
-      const toggle = await screen.findByRole('switch', { name });
-      expect(
-        toggle.hasAttribute('disabled') ||
-          toggle.getAttribute('aria-disabled') === 'true',
-      ).toBe(true);
-    }
+    await screen.findByRole('switch', {
+      name: 'Show tracks I like on my profile',
+    });
     expect(
-      screen.getByText(/doesn.t show favourites on profiles yet/),
-    ).toBeTruthy();
+      screen.queryByRole('switch', { name: 'Show favourites' }),
+    ).toBeNull();
     expect(
-      screen.getByText(/doesn.t announce releases to followers yet/),
-    ).toBeTruthy();
+      screen.queryByRole('switch', { name: 'Announce releases' }),
+    ).toBeNull();
+    expect(screen.queryByText(/Coming soon/i)).toBeNull();
   });
 });
