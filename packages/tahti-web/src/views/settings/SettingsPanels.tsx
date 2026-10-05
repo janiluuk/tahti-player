@@ -130,11 +130,11 @@ export function SettingsSectionBody({
               <p className="text-foreground text-sm">{navItem.description}</p>
             </Box>
           ) : null
-        ) : (
+        ) : navItem?.description ? (
           <p className="text-foreground-secondary text-sm">
-            {navItem?.description}
+            {navItem.description}
           </p>
-        )}
+        ) : null}
       </header>
       {content}
     </div>
