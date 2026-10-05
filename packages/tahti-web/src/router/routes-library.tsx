@@ -23,6 +23,7 @@ import {
   NewsView,
   SmartLinkView,
   StudioCollectionEditView,
+  StudioSoundsView,
   SubscribeView,
   TrackDetailView,
   VenueDetailView,
@@ -47,7 +48,7 @@ export const libraryRoute = createRoute({
 export const librarySoundsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library/sounds',
-  component: () => <LibraryView tab="sounds" />,
+  component: StudioSoundsView,
 });
 
 export const libraryReleasesRoute = createRoute({

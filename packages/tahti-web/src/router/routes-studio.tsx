@@ -24,7 +24,6 @@ import {
   StudioScheduleView,
   StudioShowDetailView,
   StudioShowsView,
-  StudioSoundsView,
   StudioSoundView,
   StudioStatsDetailView,
   StudioStatsView,
@@ -60,7 +59,9 @@ export const studioBroadcastInfoRoute = createRoute({
 export const studioSoundsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/sounds',
-  component: StudioSoundsView,
+  beforeLoad: () => {
+    throw redirect({ to: '/library/sounds' });
+  },
 });
 
 /** Old path, kept as a redirect — linked from bookmarks, old shares, and
@@ -69,7 +70,7 @@ export const studioArchiveRedirectRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/archive',
   beforeLoad: () => {
-    throw redirect({ to: '/studio/sounds' });
+    throw redirect({ to: '/library/sounds' });
   },
 });
 
@@ -148,6 +149,9 @@ export const studioReleasesRoute = createRoute({
 export const studioReleaseDetailRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/releases/$id',
+  validateSearch: (search: Record<string, unknown>): { tab?: string } => ({
+    tab: typeof search.tab === 'string' ? search.tab : undefined,
+  }),
   component: function StudioReleaseDetailRoute() {
     const { id } = studioReleaseDetailRoute.useParams();
     return <StudioReleaseDetailView id={id} />;
