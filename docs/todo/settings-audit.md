@@ -33,7 +33,7 @@ User ask (2026-10-04): audit Settings thoroughly. Make sure it uses the standard
 
 ## Likely bugs
 
-- [ ] Username & domain: availability, rename and domain results still appear as a plain note under the form instead of a toast or field error.
+- None left: Username & domain shows failures as red alerts since #511.
 
 ## Crowding
 
