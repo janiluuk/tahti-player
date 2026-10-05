@@ -4234,3 +4234,18 @@ A sweep of what a personal API token may do, plus follow-ups on support tickets,
 - **Radio (#505)**: the player bar title shows what a catalog station is playing, with the station name on the second line.
 - **Tests (#504)**: the Channel Designer test unmounts its React roots. Left mounted, a late render failed the whole tahti-web test job with "window is not defined" on #492 and #499 although every test passed.
 - **Checks:** for each PR, tahti-web type-check, eslint on the changed files, the size guard and the touched tests. tahti-org ran Vitest for each touched route against a throwaway Postgres. Nothing was tried in a browser or against the live API. The #504 fix rests on the stack trace; the failure was never reproduced locally.
+
+## 2026-10-05 - Ten slices, thirty-eighth batch (tahti-player #509-#512, tahti-org #706-#708, #710-#712)
+
+A sweep of follower notifications and the like, repost, follow and listen routes, plus follow-ups from batch 37 and the settings audit.
+
+- **New-track notices (tahti-org#706)**: they open the track instead of the artist page, and a track is announced once, not every time it goes from private to public.
+- **Follower fan-outs (tahti-org#707)**: post, track, live, event and release notifications skip deleted and suspended followers.
+- **Repeat notices (tahti-org#708)**: following, loving or reposting, undoing it and doing it again notifies the artist at most once a day.
+- **Unavailable artists (tahti-org#710)**: a suspended or deleted artist cannot gain new follows, loves or reposts. Undoing still works.
+- **Private tracks (tahti-org#712)**: like and repost counts answer 404 for a private or unfinished track, except to its artist.
+- **Charts (tahti-org#711)**: an artist's own plays are not recorded as listens.
+- **Moderation**: the content-report queue has a "Reported" filter by target type (#509). Adding a moderator says they were notified, accepts `@handle` and Enter (#512).
+- **Listen (#510)**: a recently played radio station links to its station page.
+- **Settings (#511)**: Username & domain shows failures in red as alerts and successes as status lines, and disables empty submits. This closes the last "likely bug" in the settings audit.
+- **Checks:** for each PR, tahti-web type-check, eslint on the changed files, the size guard and the touched tests. tahti-org ran Vitest for each touched route or helper against a throwaway Postgres. Nothing was tried in a browser or against the live API. A first idea for this batch, notifying followers when a scheduled post goes live, turned out to exist already (`post-publish-notify`).
