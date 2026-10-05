@@ -43,6 +43,7 @@ import { RemoveWidgetDialog } from '../components/RemoveWidgetDialog';
 import {
   RADIO_STATIONS,
   radioStation,
+  radioStationIdForPlayable,
   radioStationPlayable,
   type RadioStation,
 } from '../content/radioStations';
@@ -444,15 +445,32 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     );
   };
 
-  const renderRecentItem = ({ playable }: RecentRowItem) => (
-    <Card
-      title={playable.title}
-      subtitle={playable.artist}
-      src={playable.coverUrl ?? placeholderArtworkUrl(playable.id)}
-      isPlaying={isActive(playable.id)}
-      onPlay={() => replayFromHistory(playable)}
-    />
-  );
+  const renderRecentItem = ({ playable }: RecentRowItem) => {
+    // A radio station in the history opens its station page from the title,
+    // like the station cards in the Radio row.
+    const stationId = radioStationIdForPlayable(playable);
+    return (
+      <Card
+        title={
+          stationId ? (
+            <Link
+              to="/radio/station/$stationId"
+              params={{ stationId }}
+              className="hover:underline"
+            >
+              {playable.title}
+            </Link>
+          ) : (
+            playable.title
+          )
+        }
+        subtitle={playable.artist}
+        src={playable.coverUrl ?? placeholderArtworkUrl(playable.id)}
+        isPlaying={isActive(playable.id)}
+        onPlay={() => replayFromHistory(playable)}
+      />
+    );
+  };
 
   return (
     <div className="flex w-full min-w-0 flex-col gap-6">

@@ -19,6 +19,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as discover from '../api/discover';
 import * as listen from '../api/listen';
 import { clearListenSectionCache } from '../components/listen-view/useListenSections';
+import { useLibraryStore } from '../stores/libraryStore';
 import { ListenView } from './ListenView';
 
 vi.mock('sonner', () => ({
@@ -110,5 +111,50 @@ describe('ListenView sections', () => {
     );
     expect(within(onAir).getByText('Nobody is on air right now')).toBeTruthy();
     expect(within(onAir).queryByRole('button', { name: 'Retry' })).toBeNull();
+  });
+
+  it('links a recently played radio station to its station page', async () => {
+    useLibraryStore.setState({
+      history: [
+        {
+          playable: {
+            id: 'radio-widget:radio-helsinki',
+            kind: 'radio',
+            title: 'Radio Helsinki',
+            artist: 'Finnish · Talk / Variety',
+            streamUrl: 'https://example.test/stream',
+            protocol: 'https',
+          },
+          playedAt: '2026-10-04T10:00:00.000Z',
+        },
+        {
+          playable: {
+            id: 'sound:s1',
+            kind: 'sound',
+            title: 'Night Drive',
+            artist: 'Northern Lights',
+            streamUrl: 'https://example.test/s1.mp3',
+            protocol: 'https',
+          },
+          playedAt: '2026-10-04T09:00:00.000Z',
+        },
+      ],
+    });
+    await renderListen();
+
+    // The Radio row's own station card is one link; the history card is the
+    // second.
+    await waitFor(() =>
+      expect(
+        screen
+          .getAllByRole('link', { name: 'Radio Helsinki' })
+          .filter(
+            (link) =>
+              link.getAttribute('href') === '/radio/station/radio-helsinki',
+          ),
+      ).toHaveLength(2),
+    );
+    expect(screen.queryByRole('link', { name: 'Night Drive' })).toBeNull();
+    useLibraryStore.setState({ history: [] });
   });
 });
