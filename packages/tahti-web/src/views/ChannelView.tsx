@@ -39,6 +39,7 @@ import {
   useEditRail,
   usePresetLookDraft,
 } from '../components/channel-view';
+import { ChannelAirBadge } from '../components/channel-view/ChannelAirBadge';
 import { ChannelComments } from '../components/ChannelComments';
 import type { ChannelDesignerHandle } from '../components/ChannelDesigner';
 import { ChannelShareButton } from '../components/ChannelShareButton';
@@ -51,7 +52,6 @@ import { PageLoading } from '../components/PageStates';
 import { ReportButton } from '../components/ReportButton';
 import { RssFeedButton } from '../components/RssFeedButton';
 import { StreamManagerPanel } from '../components/StreamManagerPanel';
-import { OnAirBadge } from '../components/tahti/OnAirBadge';
 import { listenerWidgetType } from '../content/listenerWidgets';
 import { useChannelLayoutEditing } from '../hooks/useChannelLayoutEditing';
 import { useIsMobile } from '../hooks/useIsMobile';
@@ -579,13 +579,7 @@ export function ChannelView({ slug }: { slug: string }) {
             <span />
           )}
           <div className="flex flex-wrap items-center gap-2">
-            {live ? (
-              <OnAirBadge />
-            ) : (
-              <span className="text-foreground-secondary border-border rounded border px-2 py-0.5 font-mono text-xs uppercase">
-                {channel.state}
-              </span>
-            )}
+            <ChannelAirBadge channel={channel} />
             {isOwner && !editing && (
               <Button size="sm" variant="secondary" onClick={startEdit}>
                 <span className="inline-flex items-center gap-1.5">
