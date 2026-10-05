@@ -1,8 +1,28 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { DeliveryTab } from './DeliveryTab';
+
+vi.mock('../../../api/distribution', async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import('../../../api/distribution')>();
+  return {
+    ...actual,
+    fetchDistributionStatus: vi.fn(async () => ({
+      data: [
+        {
+          id: 'revelator' as const,
+          label: 'Revelator',
+          configured: true,
+          mode: 'live' as const,
+          detail: 'ok',
+        },
+      ],
+      meta: { source: 'api' as const },
+    })),
+  };
+});
 
 function ControlledDeliveryTab({ onSubmit }: { onSubmit: () => void }) {
   const [confirmSubmit, setConfirmSubmit] = useState(false);
@@ -24,12 +44,16 @@ function ControlledDeliveryTab({ onSubmit }: { onSubmit: () => void }) {
 }
 
 describe('DeliveryTab submit-to-Revelator confirmation', () => {
-  it('asks for confirmation before paying and submitting to stores', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('asks for confirmation before paying and submitting to stores', async () => {
     const onSubmit = vi.fn();
     render(<ControlledDeliveryTab onSubmit={onSubmit} />);
 
     fireEvent.click(
-      screen.getByRole('button', { name: 'Submit to Revelator' }),
+      await screen.findByRole('button', { name: 'Submit to Revelator' }),
     );
 
     expect(onSubmit).not.toHaveBeenCalled();
@@ -40,19 +64,19 @@ describe('DeliveryTab submit-to-Revelator confirmation', () => {
     expect(onSubmit).toHaveBeenCalledTimes(1);
   });
 
-  it('submits nothing when the confirmation is cancelled', () => {
+  it('submits nothing when the confirmation is cancelled', async () => {
     const onSubmit = vi.fn();
     render(<ControlledDeliveryTab onSubmit={onSubmit} />);
 
     fireEvent.click(
-      screen.getByRole('button', { name: 'Submit to Revelator' }),
+      await screen.findByRole('button', { name: 'Submit to Revelator' }),
     );
     fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
 
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
-  it('disables the button while busy or when submission is not allowed', () => {
+  it('disables the button while busy or when submission is not allowed', async () => {
     const { rerender } = render(
       <DeliveryTab
         revelatorStatus={null}
@@ -69,7 +93,7 @@ describe('DeliveryTab submit-to-Revelator confirmation', () => {
       />,
     );
     expect(
-      screen.getByRole('button', { name: 'Submit to Revelator' }),
+      await screen.findByRole('button', { name: 'Submit to Revelator' }),
     ).toBeDisabled();
 
     rerender(

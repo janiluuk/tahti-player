@@ -608,3 +608,53 @@ export function parseCredits(value: unknown): ReleaseCredit[] {
       roles.has((row as ReleaseCredit).role),
   );
 }
+
+export type DistributionPlatformMode = {
+  id: 'mixcloud' | 'revelator';
+  label: string;
+  configured: boolean;
+  mode: 'live' | 'stub';
+  detail: string;
+};
+
+/** Artist-safe live/stub modes (no secrets) for Studio Distribution banners. */
+export async function fetchDistributionStatus(): Promise<{
+  data: DistributionPlatformMode[];
+  meta: { source: 'api' | 'mock'; reason?: string };
+}> {
+  if (isForceMock()) {
+    return {
+      data: [
+        {
+          id: 'revelator',
+          label: 'Revelator',
+          configured: true,
+          mode: 'live',
+          detail: 'mock',
+        },
+        {
+          id: 'mixcloud',
+          label: 'Mixcloud',
+          configured: true,
+          mode: 'live',
+          detail: 'mock',
+        },
+      ],
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const { data } = await requestJson<{
+      integrations: DistributionPlatformMode[];
+    }>('/api/me/distribution/status');
+    return {
+      data: Array.isArray(data.integrations) ? data.integrations : [],
+      meta: { source: 'api' },
+    };
+  } catch (err) {
+    if (allowMockFallback()) {
+      return { data: [], meta: failMeta(err) };
+    }
+    return { data: [], meta: apiErrorMeta(err) };
+  }
+}
