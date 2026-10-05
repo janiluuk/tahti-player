@@ -16,7 +16,7 @@ User ask (2026-10-04): audit Settings thoroughly. Make sure it uses the standard
 ## Component audit
 
 - No hand-rolled `<button>`, `<input>`, `<select>`, `<textarea>`, `<a>` or `<img>` is left in `src/views/settings/`.
-- Panels are not consistent: Notifications builds its own cards (`rounded-xl border p-4` with an `h3`), the moderation panels use `StudioPanel`, and most toggles are bare `SettingsToggle` rows. Pick one panel component for all of Settings.
+- **Done (phase 10):** `SettingsSectionCard` in `SettingsFields.tsx` — Notifications and Mentions use it. Remaining panels may still use bare toggles or `StudioPanel`; migrate opportunistically.
 
 ## Fixed since the audit
 

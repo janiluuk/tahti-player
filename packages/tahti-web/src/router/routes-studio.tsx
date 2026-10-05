@@ -5,7 +5,6 @@ import { appLayoutRoute } from './router-core';
 import {
   StudioChannelView,
   StudioCollectionEditView,
-  StudioCollectionsView,
   StudioDistributionView,
   StudioEditorListView,
   StudioEditorProjectView,
@@ -161,7 +160,9 @@ export const studioReleaseDetailRoute = createRoute({
 export const studioCollectionsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/collections',
-  component: StudioCollectionsView,
+  beforeLoad: () => {
+    throw redirect({ to: '/library/collections' });
+  },
 });
 
 export const studioCollectionEditRoute = createRoute({
@@ -338,7 +339,7 @@ export const studioPlaylistsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/playlists',
   beforeLoad: () => {
-    throw redirect({ to: '/studio/collections' });
+    throw redirect({ to: '/library/collections' });
   },
 });
 

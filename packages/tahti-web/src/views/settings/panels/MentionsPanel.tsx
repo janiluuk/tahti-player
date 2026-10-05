@@ -16,7 +16,11 @@ import {
 } from '../../../api/me-mentions';
 import { humanizePastDate } from '../../../lib/humanizeDate';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
-import { SettingsHint, SettingsToggle } from '../SettingsFields';
+import {
+  SettingsHint,
+  SettingsSectionCard,
+  SettingsToggle,
+} from '../SettingsFields';
 
 export function MentionsPanel() {
   const closeSettings = useSettingsModalStore((state) => state.close);
@@ -83,32 +87,27 @@ export function MentionsPanel() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="border-border bg-background-secondary/30 rounded-xl border p-4">
-        <h3 className="font-display text-base font-bold">Mentions</h3>
-        <p className="text-foreground-secondary mt-1 text-sm">
-          When another artist tags you as @username in a bio, release,
-          announcement, newsletter, tracklist or chat.
-        </p>
-        <div className="mt-4 flex flex-col gap-3">
-          <SettingsToggle
-            label="Let artists mention me"
-            value={settings.mentionsEnabled}
-            onChange={(value) => toggle('mentionsEnabled', value)}
-          />
-          <SettingsToggle
-            label="Show mentions on my public profile"
-            value={settings.publicMentionsEnabled}
-            onChange={(value) => toggle('publicMentionsEnabled', value)}
-          />
-        </div>
-      </div>
+      <SettingsSectionCard
+        title="Mentions"
+        description="When another artist tags you as @username in a bio, release, announcement, newsletter, tracklist or chat."
+      >
+        <SettingsToggle
+          label="Let artists mention me"
+          value={settings.mentionsEnabled}
+          onChange={(value) => toggle('mentionsEnabled', value)}
+        />
+        <SettingsToggle
+          label="Show mentions on my public profile"
+          value={settings.publicMentionsEnabled}
+          onChange={(value) => toggle('publicMentionsEnabled', value)}
+        />
+      </SettingsSectionCard>
 
-      <div className="border-border bg-background-secondary/30 rounded-xl border p-4">
-        <h3 className="font-display text-base font-bold">Recent mentions</h3>
+      <SettingsSectionCard title="Recent mentions">
         {mentions.length === 0 ? (
           <SettingsHint>Nobody has mentioned you yet.</SettingsHint>
         ) : (
-          <ul className="divide-border mt-2 divide-y">
+          <ul className="divide-border -mt-1 divide-y">
             {mentions.map((mention) => (
               <li
                 key={mention.id}
@@ -153,15 +152,46 @@ export function MentionsPanel() {
             ))}
           </ul>
         )}
-      </div>
+      </SettingsSectionCard>
 
-      <div className="border-border bg-background-secondary/30 rounded-xl border p-4">
-        <h3 className="font-display text-base font-bold">Muted</h3>
-        <p className="text-foreground-secondary mt-1 text-sm">
-          Mentions from these people don't reach you.
-        </p>
+      <SettingsSectionCard
+        title="Muted"
+        description="Mentions from these people don't reach you."
+        footer={
+          <>
+            <form
+              className="flex flex-wrap items-end gap-2"
+              onSubmit={(event) => {
+                event.preventDefault();
+                mute(handle, true);
+              }}
+            >
+              <Input
+                label="Mute a username"
+                placeholder="@username"
+                value={handle}
+                onChange={(event) => setHandle(event.target.value)}
+                className="max-w-xs"
+              />
+              <Button
+                type="submit"
+                size="sm"
+                variant="secondary"
+                disabled={busy || !handle.trim()}
+              >
+                Mute
+              </Button>
+            </form>
+            {muteError ? (
+              <p className="text-accent-red-strong mt-2 text-sm" role="alert">
+                {muteError}
+              </p>
+            ) : null}
+          </>
+        }
+      >
         {settings.muted.length > 0 ? (
-          <ul className="divide-border mt-2 divide-y">
+          <ul className="divide-border -mt-1 divide-y">
             {settings.muted.map((item) => (
               <li
                 key={item.username}
@@ -187,35 +217,7 @@ export function MentionsPanel() {
             ))}
           </ul>
         ) : null}
-        <form
-          className="mt-3 flex flex-wrap items-end gap-2"
-          onSubmit={(event) => {
-            event.preventDefault();
-            mute(handle, true);
-          }}
-        >
-          <Input
-            label="Mute a username"
-            placeholder="@username"
-            value={handle}
-            onChange={(event) => setHandle(event.target.value)}
-            className="max-w-xs"
-          />
-          <Button
-            type="submit"
-            size="sm"
-            variant="secondary"
-            disabled={busy || !handle.trim()}
-          >
-            Mute
-          </Button>
-        </form>
-        {muteError ? (
-          <p className="text-accent-red-strong mt-2 text-sm" role="alert">
-            {muteError}
-          </p>
-        ) : null}
-      </div>
+      </SettingsSectionCard>
     </div>
   );
 }

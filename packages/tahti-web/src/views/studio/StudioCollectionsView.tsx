@@ -33,6 +33,7 @@ import {
   fetchStudioCollections,
 } from '../../api/studio';
 import type { StudioCollection } from '../../api/studio-types';
+import { SubscribedCollections } from '../../components/library/SubscribedCollections';
 import { PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -417,6 +418,7 @@ export function StudioCollectionsView() {
               </ul>
             )}
           </StudioPanel>
+          <SubscribedCollections />
         </ViewShell>
       </div>
     </StudioGate>

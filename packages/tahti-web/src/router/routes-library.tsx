@@ -23,6 +23,7 @@ import {
   NewsView,
   SmartLinkView,
   StudioCollectionEditView,
+  StudioCollectionsView,
   StudioSoundsView,
   SubscribeView,
   TrackDetailView,
@@ -83,7 +84,7 @@ export const libraryCollectionsRoute = createRoute({
       throw redirect({ to: `/library/${search.tab}` });
     }
   },
-  component: () => <LibraryView tab="collections" />,
+  component: StudioCollectionsView,
 });
 
 export const libraryCollectionEditRoute = createRoute({
