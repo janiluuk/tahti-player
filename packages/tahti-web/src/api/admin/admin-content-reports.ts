@@ -95,20 +95,26 @@ let mockContentReportsState: AdminContentReportRow[] | null = null;
 
 export async function fetchAdminContentReports(
   status?: AdminContentReportStatus,
+  targetType?: AdminContentReportRow['targetType'],
 ): Promise<{ data: AdminContentReportRow[]; meta: FetchMeta }> {
   if (isForceMock()) {
     if (!mockContentReportsState) {
       mockContentReportsState = mockContentReports();
     }
-    const data = status
-      ? mockContentReportsState.filter((r) => r.status === status)
-      : mockContentReportsState;
+    const data = mockContentReportsState.filter(
+      (r) =>
+        (!status || r.status === status) &&
+        (!targetType || r.targetType === targetType),
+    );
     return { data, meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
   }
   try {
     const qs = new URLSearchParams({ limit: '50' });
     if (status) {
       qs.set('status', status);
+    }
+    if (targetType) {
+      qs.set('targetType', targetType);
     }
     const data = await getJson<{ reports: AdminContentReportRow[] }>(
       `/api/admin/content-reports?${qs.toString()}`,
