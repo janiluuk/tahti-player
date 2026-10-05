@@ -2,6 +2,7 @@
 import { parseArgs } from 'node:util';
 
 import { CliError, resolveConfig } from './api-client.mjs';
+import { runHearthisDownloadSet } from './commands/hearthis-download-set.mjs';
 import { runHearthisSet } from './commands/hearthis-set.mjs';
 import { runHearthisSets } from './commands/hearthis-sets.mjs';
 import { runImport } from './commands/import.mjs';
@@ -145,18 +146,49 @@ Use \`tahti hearthis set <permalink>\` to inspect tracks in one set.`,
     details: `Calls GET /api/v1/imports/hearthis/sets/:permalink/tracks.
 Accepts a bare permalink from \`tahti hearthis sets\` or a full
 https://hearthis.at/set/<permalink>/ URL. Shows whether each track is
-downloadable (for a future discography download command).`,
+downloadable.`,
     options: JSON_OPTION,
     positionals: 1,
     run: (config, { values, positionals }) =>
       runHearthisSet(config, positionals[0], { json: values.json }),
+  },
+  {
+    path: ['hearthis', 'download-set'],
+    usage:
+      'tahti hearthis download-set <permalink-or-url> [--out <dir>] [--dry-run] [--force] [--json]',
+    summary: 'Download a hearthis.at Set into Artist/Album (year)/01 - Track',
+    details: `Fetches the Set tracklist, then downloads every track that is
+downloadable for the authenticated hearthis.at visitor (public download
+flag). Files go under:
+  <out>/<Artist>/<Album (year)>/<NN> - <Track>.<ext>
+Uses hearthis.at's download_url (original upload — often WAV/FLAC), never
+the compressed stream preview. Skips tracks that are not downloadable and
+paths that already exist (unless --force).
+  --out <dir>   Destination root (default: current directory)
+  --dry-run     List paths without downloading
+  --force       Re-download even when the file already exists`,
+    options: {
+      ...JSON_OPTION,
+      out: { type: 'string' },
+      'dry-run': { type: 'boolean', default: false },
+      force: { type: 'boolean', default: false },
+    },
+    positionals: 1,
+    run: (config, { values, positionals }) =>
+      runHearthisDownloadSet(config, positionals[0], {
+        json: values.json,
+        outDir: values.out || '.',
+        dryRun: values['dry-run'],
+        force: values.force,
+      }),
   },
 ];
 
 const ENVIRONMENT_HELP = `Environment:
   TAHTI_API_TOKEN   Personal API token (tahti.live → Settings → Account → API tokens).
                     Required by every command except search; import needs
-                    the write scope.
+                    the write scope. hearthis download-set only needs read
+                    (files are fetched from hearthis.at, not uploaded to Tahti).
   TAHTI_API_URL     API base URL (default: https://api.tahti.live)`;
 
 function commandList() {

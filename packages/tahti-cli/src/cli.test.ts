@@ -33,6 +33,7 @@ describe('main', () => {
     expect(help).toContain('tahti search <query>');
     expect(help).toContain('tahti hearthis sets');
     expect(help).toContain('tahti hearthis set <permalink-or-url>');
+    expect(help).toContain('tahti hearthis download-set');
   });
 
   it('prints help and exits 0 with no arguments', async () => {
@@ -69,6 +70,7 @@ describe('main', () => {
     [['search', '--help'], 'works without'],
     [['hearthis', 'sets', '--help'], 'hearthis.at Sets'],
     [['hearthis', 'set', '--help'], 'tracks in one hearthis.at Set'],
+    [['hearthis', 'download-set', '--help'], 'Artist/Album'],
   ])(
     'prints per-command help for %j without calling the API',
     async (argv, text) => {
