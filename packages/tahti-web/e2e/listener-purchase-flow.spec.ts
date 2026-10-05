@@ -173,6 +173,7 @@ test('listener buys a track, sees it in Purchases, artist sees the order', async
   await expect(buyButton).toHaveCount(0);
 
   await openSettings(page);
+  await page.getByRole('tab', { name: 'Membership & billing' }).click();
   await page.getByRole('tab', { name: 'Purchases' }).click();
   // Scope to the settings panel, not just getByText: the underlying
   // TrackDetailView page is still mounted behind this overlay (Settings is
@@ -234,6 +235,7 @@ test('listener subscribes, sees it in Your subs, cancels it', async ({
   ).toBeVisible({ timeout: 15_000 });
 
   await openSettings(page);
+  await page.getByRole('tab', { name: 'Membership & billing' }).click();
   await page.getByRole('tab', { name: 'Your subs' }).click();
   // Target this artist's own row specifically — a seeded demo row for a
   // different artist ("northern-lights", also tierName "Supporter") already
