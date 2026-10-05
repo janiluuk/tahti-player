@@ -2,6 +2,9 @@
 import { parseArgs } from 'node:util';
 
 import { CliError, resolveConfig } from './api-client.mjs';
+import { runHearthisDownloadSet } from './commands/hearthis-download-set.mjs';
+import { runHearthisSet } from './commands/hearthis-set.mjs';
+import { runHearthisSets } from './commands/hearthis-sets.mjs';
 import { runImport } from './commands/import.mjs';
 import { LIBRARY_SORTS, runLibraryList } from './commands/library-list.mjs';
 import { runLibraryShow } from './commands/library-show.mjs';
@@ -9,6 +12,7 @@ import { runReleasesList } from './commands/releases-list.mjs';
 import { runReleasesShow } from './commands/releases-show.mjs';
 import { runSearch, SEARCH_PAGE_SIZE } from './commands/search.mjs';
 import { runWhoami } from './commands/whoami.mjs';
+import { runShell } from './shell/shell.mjs';
 
 const JSON_OPTION = { json: { type: 'boolean', default: false } };
 
@@ -125,13 +129,84 @@ the write scope. Exits with 1 when any file fails.
       });
     },
   },
+  {
+    path: ['hearthis', 'sets'],
+    usage: 'tahti hearthis sets [--json]',
+    summary: 'List your hearthis.at Sets (playlists / album-like groups)',
+    details: `Calls GET /api/v1/imports/hearthis/me-sets. Requires a personal API token and
+a hearthis.at handle on your Tahti profile (Settings → Profile). On hearthis.at
+a "Set" is usually an album-like grouping but can also be a playlist.
+Use \`tahti hearthis set <permalink>\` to inspect tracks in one set.`,
+    options: JSON_OPTION,
+    run: (config, { values }) => runHearthisSets(config, { json: values.json }),
+  },
+  {
+    path: ['hearthis', 'set'],
+    usage: 'tahti hearthis set <permalink-or-url> [--json]',
+    summary: 'List tracks in one hearthis.at Set',
+    details: `Calls GET /api/v1/imports/hearthis/sets/:permalink/tracks.
+Accepts a bare permalink from \`tahti hearthis sets\` or a full
+https://hearthis.at/set/<permalink>/ URL. Shows whether each track is
+downloadable.`,
+    options: JSON_OPTION,
+    positionals: 1,
+    run: (config, { values, positionals }) =>
+      runHearthisSet(config, positionals[0], { json: values.json }),
+  },
+  {
+    path: ['hearthis', 'download-set'],
+    usage:
+      'tahti hearthis download-set <permalink-or-url> [--out <dir>] [--dry-run] [--force] [--json]',
+    summary: 'Download a hearthis.at Set into Artist/Album (year)/01 - Track',
+    details: `Fetches the Set tracklist, then downloads every track that is
+downloadable for the authenticated hearthis.at visitor (public download
+flag). Files go under:
+  <out>/<Artist>/<Album (year)>/<NN> - <Track>.<ext>
+Uses hearthis.at's download_url (original upload — often WAV/FLAC), never
+the compressed stream preview. Skips tracks that are not downloadable and
+paths that already exist (unless --force).
+  --out <dir>   Destination root (default: current directory)
+  --dry-run     List paths without downloading
+  --force       Re-download even when the file already exists`,
+    options: {
+      ...JSON_OPTION,
+      out: { type: 'string' },
+      'dry-run': { type: 'boolean', default: false },
+      force: { type: 'boolean', default: false },
+    },
+    positionals: 1,
+    run: (config, { values, positionals }) =>
+      runHearthisDownloadSet(config, positionals[0], {
+        json: values.json,
+        outDir: values.out || '.',
+        dryRun: values['dry-run'],
+        force: values.force,
+      }),
+  },
+  {
+    path: ['shell'],
+    usage: 'tahti shell',
+    summary: 'Interactive TUI: library, search, radio, queue (needs mpv)',
+    details: `Opens a blessed terminal UI. Browse your library, search public tracks,
+tune Tahti Radio / internet-radio presets, and manage a simple queue.
+Playback uses an external mpv process (must be on PATH) over JSON IPC.
+Requires a TTY and TAHTI_API_TOKEN. Keys: Tab focus, Enter play, Space
+pause, n/p next/prev, ←/→ seek, / search, a queue, ? help, q quit.`,
+    options: {},
+    run: (config) => runShell(config),
+  },
 ];
 
 const ENVIRONMENT_HELP = `Environment:
   TAHTI_API_TOKEN   Personal API token (tahti.live → Settings → Account → API tokens).
                     Required by every command except search; import needs
-                    the write scope.
-  TAHTI_API_URL     API base URL (default: https://api.tahti.live)`;
+                    the write scope. hearthis download-set only needs read
+                    (files are fetched from hearthis.at, not uploaded to Tahti).
+                    shell needs a token for library playback.
+  TAHTI_API_URL     API base URL (default: https://api.tahti.live)
+
+External tools:
+  mpv               Required for \`tahti shell\` playback (install separately).`;
 
 function commandList() {
   const width = Math.max(...COMMANDS.map((command) => command.usage.length));
@@ -151,13 +226,15 @@ ${ENVIRONMENT_HELP}
 `;
 
 function commandHelp(command) {
+  const jsonHelp = command.options?.json
+    ? '  --json           Print the raw API response as JSON\n'
+    : '';
   return `Usage: ${command.usage}
 
 ${command.summary}.
 
 ${command.details}
-  --json           Print the raw API response as JSON
-  -h, --help       Show this help
+${jsonHelp}  -h, --help       Show this help
 
 ${ENVIRONMENT_HELP}
 `;
@@ -221,10 +298,14 @@ export async function main(argv) {
   // finish with something to show and still have failed (a partial import).
   const result = await command.run(resolveConfig(), parsed);
   if (typeof result === 'string') {
-    console.log(result);
+    if (result) {
+      console.log(result);
+    }
     return 0;
   }
-  console.log(result.output);
+  if (result.output) {
+    console.log(result.output);
+  }
   return result.exitCode;
 }
 

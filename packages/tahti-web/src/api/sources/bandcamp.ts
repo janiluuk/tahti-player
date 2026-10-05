@@ -18,6 +18,7 @@ export async function fetchBandcampAlbums(): Promise<{
   data: BandcampAlbum[];
   connected: boolean;
   message?: string;
+  importAvailable?: boolean;
   meta: FetchMeta;
 }> {
   if (isForceMock()) {
@@ -34,6 +35,7 @@ export async function fetchBandcampAlbums(): Promise<{
         },
       ],
       connected: true,
+      importAvailable: true,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
@@ -41,17 +43,20 @@ export async function fetchBandcampAlbums(): Promise<{
     const { data } = await requestJson<{
       albums?: BandcampAlbum[];
       message?: string;
+      importAvailable?: boolean;
     }>('/api/me/bandcamp/albums');
     return {
       data: data.albums ?? [],
       connected: true,
       message: data.message,
+      importAvailable: data.importAvailable ?? false,
       meta: { source: 'api' },
     };
   } catch (err) {
     return {
       data: [],
       connected: false,
+      importAvailable: false,
       meta: failMeta(err),
     };
   }
@@ -63,19 +68,12 @@ export async function importBandcampAlbum(
   if (isForceMock()) {
     return { ok: true, count: album.trackCount ?? 0 };
   }
-  try {
-    const { data } = await requestJson<{ imported?: number }>(
-      '/api/v1/imports/bandcamp/add',
-      {
-        method: 'POST',
-        body: JSON.stringify({ albumUrl: album.url }),
-      },
-    );
-    return { ok: true, count: data.imported ?? album.trackCount ?? 0 };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Bandcamp import failed',
-    };
-  }
+  // Catalog honesty: GET /api/me/import-plugins marks bandcamp import:false —
+  // there is no /api/v1/imports/bandcamp/add route until Bandcamp API v1 lands.
+  void album;
+  return {
+    ok: false,
+    error:
+      'Bandcamp album import is not available yet (API catalog import:false).',
+  };
 }

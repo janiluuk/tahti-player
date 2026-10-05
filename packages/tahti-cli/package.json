@@ -15,8 +15,12 @@
   },
   "devDependencies": {
     "@tahti-player/eslint-config": "workspace:*",
+    "@types/blessed": "^0.1.27",
     "@types/node": "^24.13.4",
     "typescript": "^5.9.2",
     "vitest": "^4.1.11"
+  },
+  "dependencies": {
+    "blessed": "^0.1.81"
   }
 }

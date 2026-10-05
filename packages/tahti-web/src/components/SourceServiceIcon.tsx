@@ -28,6 +28,7 @@ const TILE: Record<
   soundcloud: { bg: '#ff5500', fg: '#fff', brand: 'sc' },
   'google-drive': { bg: '#0f172a', fg: '#fff', brand: 'gd' },
   mixcloud: { bg: '#5000ff', fg: '#fff', brand: 'mc' },
+  'mixcloud-embed': { bg: '#5000ff', fg: '#fff', brand: 'mc' },
   url: { bg: '#334155', fg: '#f8fafc', Icon: Link2 },
   spotify: { bg: '#1db954', fg: '#fff', brand: 'sp' },
   // hearthis.at's own embed widget color (see hcolor in lib/embedSrc.ts) —
@@ -152,13 +153,15 @@ export function sourceTileSubtitle(id: IntegrationId): string {
     case 'stash':
       return 'Private locker';
     case 'bandcamp':
-      return 'Import albums';
+      return 'Connect account';
     case 'soundcloud':
       return 'Import tracks';
     case 'google-drive':
       return 'Cloud import';
     case 'mixcloud':
       return 'Mix rescue';
+    case 'mixcloud-embed':
+      return 'Search & embed';
     case 'url':
       return 'DSP paste';
     case 'spotify':
@@ -168,7 +171,8 @@ export function sourceTileSubtitle(id: IntegrationId): string {
     case 'broadcast':
       return 'Live captures';
     case 'radio':
-      return 'M3U / stream URL';
+      return 'Paste stream URL';
+
     case 'musicbrainz':
       return 'Release/artist metadata';
     default:

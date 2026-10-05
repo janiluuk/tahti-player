@@ -1,6 +1,5 @@
 import { SearchIcon } from 'lucide-react';
 import { useState } from 'react';
-import { toast } from 'sonner';
 
 import { Button, Dialog, Input, PluginStoreItem } from '@tahti-player/ui';
 
@@ -59,11 +58,9 @@ export function SoulseekAddonCard() {
           <Button
             size="sm"
             disabled
-            onClick={() => {
-              toast.info('Soulseek connects from the desktop player only.');
-            }}
+            title="Soulseek connects from the desktop player only."
           >
-            Test connection
+            Desktop only
           </Button>
         </Dialog.Actions>
       </Dialog.Root>

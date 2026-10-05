@@ -34,11 +34,20 @@ export {
 } from './sources/spotify-collection';
 export type { BandcampAlbum } from './sources/bandcamp';
 export { fetchBandcampAlbums, importBandcampAlbum } from './sources/bandcamp';
+export type { MixcloudCloudcast } from './sources/mixcloud';
+export {
+  addMixcloudCloudcast,
+  fetchMixcloudProfileCloudcasts,
+  fetchMyMixcloudCloudcasts,
+  mixcloudCoverUrl,
+  searchMixcloud,
+} from './sources/mixcloud';
 export type {
   HearthisTrack,
   HearthisCollection,
   HearthisLibrary,
 } from './sources/hearthis';
+
 export {
   fetchHearthisLibrary,
   fetchHearthisCollectionTracks,

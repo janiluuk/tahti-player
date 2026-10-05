@@ -2,14 +2,52 @@
 
 Terminal-first CLI for Tahti — thin, scriptable access to the public Tahti
 API, in the spirit of [antiwork/gumroad-cli](https://github.com/antiwork/gumroad-cli).
-See [`docs/todo/tahti-cli-tool.md`](../../docs/todo/tahti-cli-tool.md) for
-the roadmap this v1 slice comes from.
+
+**Standalone docs + cheatsheet:**
+[janiluuk/tahti-cli](https://github.com/janiluuk/tahti-cli) (shell key map,
+related repos). This package is the monorepo copy used in day-to-day player
+development; see [`docs/todo/tahti-cli-tool.md`](../../docs/todo/tahti-cli-tool.md).
 
 ## Scope
 
-Read-only commands, plus `import`, which uploads a folder of audio files to
-your library. No playback/TUI yet (that's an explicit stretch
-goal in the roadmap doc, not started here).
+Read-only commands, plus `import` (folder upload) and `shell` (interactive
+TUI with mpv playback). Capability catalogs used by Tahti Player
+(`GET /api/me/import-plugins`, `GET /api/me/export-plugins`) are **not** CLI
+commands yet — call them with `curl`/`fetch` against the same API if you need
+registry discovery from scripts.
+
+### Interactive shell (`tahti shell`)
+
+Opens a blessed TUI: Library · Search · Radio · Queue. Playback is delegated
+to an external **mpv** process (must be on `PATH`). Needs a TTY and
+`TAHTI_API_TOKEN` for library audio (`GET /api/me/sound/:id/editor/source`).
+
+```bash
+# Install mpv on the host first (apt/brew/etc.), then:
+pnpm --filter @tahti-player/tahti-cli exec tahti shell
+```
+
+Keys: `Tab` focus nav/list, `Enter` play, `Space` pause, `n`/`p` next/prev,
+`←`/`→` seek ±5s, `/` search, `a` add to queue, `c` clear queue, `?` help,
+`q` quit. Radio loads Tahti Radio HLS plus public internet-radio presets.
+Search results list titles but usually have no stream URL — play those from
+the Library when you own them.
+
+### hearthis.at discography
+
+List Sets, inspect tracks, then download downloadable originals into a neat
+folder tree. Requires `TAHTI_API_TOKEN` and a hearthis.at handle on your Tahti
+profile (Settings → Profile). Downloads use hearthis.at `download_url`
+(original upload — often WAV/FLAC), never the compressed stream preview.
+
+```bash
+pnpm --filter @tahti-player/tahti-cli exec tahti hearthis sets
+pnpm --filter @tahti-player/tahti-cli exec tahti hearthis set 378936-9675121
+pnpm --filter @tahti-player/tahti-cli exec tahti hearthis download-set 378936-9675121 --dry-run
+pnpm --filter @tahti-player/tahti-cli exec tahti hearthis download-set 378936-9675121 --out ~/Music/hearthis
+```
+
+Layout: `Artist/Album (year)/01 - Track.ext`
 
 ## Auth
 
@@ -57,10 +95,15 @@ Every command accepts `--json` (prints the API response unchanged) and
 | `tahti releases show <id> [--json]`                                  | `GET /api/me/releases/:id`                                               | One release (type, state, release date, genre, UPC, label, smart link and its views, catalog checklist) plus its tracklist (position, title, duration, status, ISRC) |
 | `tahti search <query> [--page <n>] [--limit <n>] [--json]`           | `GET /api/v1/search/tracks`                                              | Public, ready tracks whose title matches (id, title, artist, duration, channel), newest first                                                                        |
 | `tahti import <folder> [--recursive] [--dry-run] [--force] [--json]` | `POST /api/uploads/prepare`, storage `PUT`, `POST /api/uploads/complete` | One row per audio file: uploaded (with the new sound id), skipped, or failed with the reason                                                                         |
+| `tahti hearthis sets [--json]`                                       | `GET /api/v1/imports/hearthis/me-sets`                                   | Your hearthis.at Sets (permalink, title, track count, year, artist)                                                                                                  |
+| `tahti hearthis set <permalink-or-url> [--json]`                     | `GET /api/v1/imports/hearthis/sets/:permalink/tracks`                    | Tracks in one Set (#, title, artist, duration, downloadable, filename)                                                                                               |
+| `tahti hearthis download-set <permalink-or-url> [--out <dir>] [--dry-run] [--force] [--json]` | same set-tracks route + hearthis.at `download_url` | Writes `Artist/Album (year)/NN - Track.ext` for downloadable tracks (lossless original when offered) |
+| `tahti shell` | library / search / radio / presets + mpv IPC | Interactive TUI; library play uses `GET /api/me/sound/:id/editor/source` |
 
 Everything except `search` and `import` is a `GET` route behind `requireAuth`,
 so any personal API token works. `import` sends `POST` requests and needs a
-token with the `write` scope.
+token with the `write` scope. `shell` needs a token for library playback and
+`mpv` on PATH.
 
 `import` uploads each audio file in the folder (mp3, flac, wav, aiff, m4a, aac,
 ogg, opus) as a new sound titled after its file name, one file at a time:
@@ -97,6 +140,7 @@ which does include the `email` field.
 | Situation                                            | Message                                                                                       |
 | ---------------------------------------------------- | --------------------------------------------------------------------------------------------- |
 | No `TAHTI_API_TOKEN` (every command except `search`) | `Missing API token. Create a personal API token ...`                                          |
+| `tahti shell` without mpv / non-TTY                  | Install-mpv message, or “needs an interactive terminal”                                       |
 | 401 (revoked, expired or wrong token)                | `Token invalid or missing scope (<API message>) ...`                                          |
 | 403                                                  | `Token invalid or missing scope (<API message>): this token is not allowed to access <path>.` |
 | 404                                                  | The API's message, e.g. `Sound item not found` or `Release not found`                         |
@@ -108,5 +152,5 @@ All errors exit with status 1.
 ## Not yet designed (see the roadmap doc)
 
 - Where this CLI ultimately ships from (this workspace vs. its own repo).
-- Playback / TUI.
+- Shell stretch: favorites/history, studio commands, seeking “previous” track.
 - More write commands (edit metadata, create releases). `import` is the first.
