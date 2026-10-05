@@ -11,13 +11,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import {
-  Dialog,
-  FavoriteButton,
-  TabLabel,
-  Tabs,
-  Tooltip,
-} from '@tahti-player/ui';
+import { Dialog, TabLabel, Tabs, Tooltip } from '@tahti-player/ui';
 
 import {
   fetchMyPressKitImages,
@@ -39,6 +33,7 @@ import {
   ArtistBioSection,
   ArtistEmbeds,
   ArtistFeed,
+  ArtistFollowButton,
   ArtistHeaderActions,
   ArtistLiveShows,
   artistLookSchemes,
@@ -467,16 +462,12 @@ function ArtistProfilePage({ username }: { username: string }) {
               isOwner={isOwner}
               onEditLook={() => setTab('design')}
             />
-            {me && !isOwner && followChannel ? (
-              <FavoriteButton
-                size="sm"
-                isFavorite={follow.following}
-                disabled={follow.busy}
+            {!isOwner && followChannel ? (
+              <ArtistFollowButton
+                displayName={artist.displayName}
+                following={follow.following}
+                busy={follow.busy}
                 onToggle={() => void follow.toggle()}
-                ariaLabelAdd={`Follow ${artist.displayName}`}
-                ariaLabelRemove={`Unfollow ${artist.displayName}`}
-                className="bg-background border-border rounded-md border-(length:--border-width)"
-                data-testid="artist-favorite-button"
               />
             ) : null}
           </>

@@ -1,4 +1,5 @@
 export { ArtistMusicTab } from './ArtistMusicTab';
+export { ArtistFollowButton } from './ArtistFollowButton';
 export { ArtistNews } from './ArtistNews';
 export { ArtistPageHero } from './ArtistPageHero';
 export {

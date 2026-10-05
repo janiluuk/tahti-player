@@ -144,7 +144,9 @@ export const SignedOut: Story = {
   decorators: [withMockAuth(null)],
   play: async ({ canvasElement }) => {
     const canvas = await findHero(canvasElement);
-    await expect(canvas.queryByTestId('artist-favorite-button')).toBeNull();
+    await expect(
+      canvas.getByRole('button', { name: `Log in to follow ${ARTIST_NAME}` }),
+    ).toBeVisible();
     await expect(
       canvas.getByRole('button', { name: `Report ${ARTIST_NAME}` }),
     ).toBeVisible();
