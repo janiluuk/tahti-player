@@ -27,7 +27,7 @@ Status values: `open` | `blocked` | `partial`.
 | open    | [listener-account-and-signed-out-basics.md](listener-account-and-signed-out-basics.md) | `listener@tahti.live` signs in as a plain listener in the mock app (#498). Left: audits that everything basic works as that listener and with no sign-in at all |
 | open    | [duplicate-radio-plugins.md](duplicate-radio-plugins.md) | Two radio add-ons ("Internet radio stations" and "Internet radio URL", unconfirmed pair): remove the duplicate or document how they differ |
 | open    | [queue-collapse-button-overlap.md](queue-collapse-button-overlap.md) | The collapse-panel button overlaps the first queue item and cuts its top corner; fix in the shared `PlayerWorkspace` sidebar |
-| partial | [settings-audit.md](settings-audit.md) | Settings audit. Done 2026-10-04: Channel & chat section with Chat and Moderators tabs, stale Broadcast moderators tab removed. Left: six placeholder switches, a share toggle saved only in the browser, unchecked saves in Broadcast, Account (12 tabs) and Artist (8 tabs) regrouping, one panel component for all of Settings |
+| partial | [settings-audit.md](settings-audit.md) | Settings audit. Done 2026-10-04: Channel & chat section with Chat and Moderators tabs, stale Broadcast moderators tab removed. Share toggle, Broadcast save errors and rename confirm fixed (#495-#497). Left: six placeholder switches, Account (12 tabs) and Artist (8 tabs) regrouping, one panel component for all of Settings |
 
 ## Fold rule (copy into CLAUDE / chat)
 

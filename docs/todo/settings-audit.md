@@ -25,11 +25,15 @@ User ask (2026-10-04): audit Settings thoroughly. Make sure it uses the standard
 - Playback: "Crossfade" is disabled (not supported by the web player).
 - Decide for each: build it, or remove it until it exists. Six dead switches make the page look broken.
 
+## Fixed since the audit
+
+- The share-button switch is saved on the account and hides the button for every visitor (tahti-org#700, #496).
+- Broadcast → Radio and Green room switches undo themselves and show the error when a save fails (#495).
+- Renaming a channel asks first and says the stream key may change (#497).
+
 ## Likely bugs
 
-- [ ] "Show share button on my channel and Broadcast" (Discovery) is saved in the browser only (`channelShareStore`, localStorage). The text says it controls what listeners see, but nothing reaches the API, so it has no effect for anyone else or on another device.
-- [ ] Broadcast → Radio and Green room switches save without checking the result (`void patchProgramme(...)`, `void patchGreenRoomPrefs(...)`). On a failed save the switch stays flipped and nothing is shown.
-- [ ] Username & domain: "Rename" changes the public address with no confirmation, and results appear as a plain note under the form instead of a toast or field error.
+- [ ] Username & domain: availability, rename and domain results still appear as a plain note under the form instead of a toast or field error.
 
 ## Crowding
 
