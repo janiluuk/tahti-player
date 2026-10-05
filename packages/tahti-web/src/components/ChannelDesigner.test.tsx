@@ -56,6 +56,11 @@ function createDesignerRouter(variant: DesignerVariant) {
   });
 }
 
+// Every root is unmounted after its test. Left mounted, a render React had
+// scheduled could commit after jsdom was torn down and fail the whole run
+// with "window is not defined".
+const mountedRoots: Root[] = [];
+
 async function renderDesigner(variant: DesignerVariant = {}): Promise<{
   container: HTMLDivElement;
   root: Root;
@@ -63,6 +68,7 @@ async function renderDesigner(variant: DesignerVariant = {}): Promise<{
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
+  mountedRoots.push(root);
   const router = createDesignerRouter(variant);
   await act(async () => {
     root.render(<RouterProvider router={router} />);
@@ -83,7 +89,12 @@ describe('ChannelDesigner', () => {
     localStorage.clear();
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    await act(async () => {
+      for (const root of mountedRoots.splice(0)) {
+        root.unmount();
+      }
+    });
     document.body.replaceChildren();
     vi.unstubAllEnvs();
     vi.unstubAllGlobals();
