@@ -117,4 +117,17 @@ describe('ContentReportsTab', () => {
     ]);
     expect(screen.queryByRole('button', { name: 'Delete comment' })).toBeNull();
   });
+
+  it('asks the API for one kind of reported thing', async () => {
+    await renderTab([report({})]);
+    const fetchReports = vi.mocked(api.fetchAdminContentReports);
+    fetchReports.mockClear();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /Reported/ }));
+    });
+    await act(async () => {
+      fireEvent.click(await screen.findByRole('option', { name: 'Comments' }));
+    });
+    expect(fetchReports).toHaveBeenLastCalledWith('OPEN', 'COMMENT');
+  });
 });
