@@ -30,7 +30,7 @@ import {
   isFullBleedRoute,
   MAIN_CONTENT_PADDING,
 } from '../layout/contentPadding';
-import { hasAccountRole } from '../lib/accountRoles';
+import { hasAccountRole, hasStudioAccess } from '../lib/accountRoles';
 import { diagnosticsEnabled } from '../lib/buildPolicy';
 import { cn } from '../lib/cn';
 import { activeSidebarItem } from '../lib/navigationActive';
@@ -287,6 +287,7 @@ export function AppShell() {
   const refresh = useAuthStore((s) => s.refresh);
   const userId = useAuthStore((s) => s.user?.id);
   const authHydrated = useAuthStore((s) => s.hydrated);
+  const studioAccess = useAuthStore((s) => hasStudioAccess(s.user));
   const openAuth = useAuthModalStore((s) => s.open);
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -534,7 +535,7 @@ export function AppShell() {
             )}
             data-studio-shell
           >
-            {userId && getStudioPrimaryRoute(pathname) ? (
+            {studioAccess && getStudioPrimaryRoute(pathname) ? (
               <StudioNav current={navigationLocation} global />
             ) : null}
             <RouteContent>
@@ -580,7 +581,7 @@ export function AppShell() {
               )}
               data-studio-shell
             >
-              {userId && getStudioPrimaryRoute(pathname) ? (
+              {studioAccess && getStudioPrimaryRoute(pathname) ? (
                 <StudioNav current={navigationLocation} global />
               ) : null}
               <RouteContent>

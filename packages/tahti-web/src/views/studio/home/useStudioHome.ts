@@ -20,6 +20,7 @@ import {
   type StatsSummary,
 } from '../../../api/studio-extras';
 import type { FeatureRequest, GovernanceMotion } from '../../../api/types';
+import { hasStudioAccess } from '../../../lib/accountRoles';
 import { useAuthStore } from '../../../stores/authStore';
 import { useChannelSetupModalStore } from '../../../stores/channelSetupModalStore';
 import { Counts, EMPTY_STATS } from './home-helpers';
@@ -53,6 +54,7 @@ export function useStudioHome() {
       !user ||
       !profileLoaded ||
       user.channel ||
+      !hasStudioAccess(user) ||
       autoPromptedChannelSetup.current
     ) {
       return;
