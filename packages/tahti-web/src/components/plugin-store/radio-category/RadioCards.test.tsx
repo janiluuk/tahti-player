@@ -4,22 +4,17 @@ import {
   fireEvent,
   render,
   screen,
-  waitFor,
 } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useRadioBrowserStore } from '../../../stores/radioBrowserStore';
-import { PersonalRadioStreamCard } from './PersonalRadioStreamCard';
 import { RadioBrowserDirectoryCard } from './RadioBrowserDirectoryCard';
 
 const { toast, radio } = vi.hoisted(() => ({
   toast: { error: vi.fn(), success: vi.fn() },
   radio: {
-    COMMON_STATIONS: [],
     resolveStreamUrl: vi.fn(),
     lookupStationByUrl: vi.fn(),
-    readIcyStreamTitle: vi.fn(),
-    searchStationsByName: vi.fn(),
     searchStations: vi.fn(),
     fetchStationCount: vi.fn(),
     fetchCountryList: vi.fn(),
@@ -46,48 +41,6 @@ const station = (id: string, name: string) => ({
   name,
   streamUrl: `https://${id}/s`,
   source: 'radio-browser',
-});
-
-describe('PersonalRadioStreamCard', () => {
-  it('shows "…" while reading ICY metadata, then the title', async () => {
-    let finish: (v: string | null) => void = () => {};
-    radio.resolveStreamUrl.mockResolvedValue({
-      streamUrl: 'https://a/s',
-      wasPlaylist: false,
-    });
-    radio.lookupStationByUrl.mockResolvedValue(station('a', 'Alpha'));
-    radio.readIcyStreamTitle.mockReturnValue(
-      new Promise((resolve) => (finish = resolve)),
-    );
-    render(<PersonalRadioStreamCard />);
-    fireEvent.click(screen.getAllByRole('button', { name: 'Open' })[0]!);
-    fireEvent.change(await screen.findByPlaceholderText(/example.com/), {
-      target: { value: 'https://a/s' },
-    });
-    fireEvent.click(screen.getByRole('button', { name: 'Resolve' }));
-    expect(await screen.findByText('…')).toBeTruthy();
-    await act(async () => finish('Song X'));
-    expect(await screen.findByText('Now playing: Song X')).toBeTruthy();
-  });
-
-  it('toasts when the URL cannot be resolved and frees the button', async () => {
-    radio.resolveStreamUrl.mockRejectedValue(new Error('x'));
-    render(<PersonalRadioStreamCard />);
-    fireEvent.click(screen.getAllByRole('button', { name: 'Open' })[0]!);
-    fireEvent.change(await screen.findByPlaceholderText(/example.com/), {
-      target: { value: 'https://a/s' },
-    });
-    fireEvent.click(screen.getByRole('button', { name: 'Resolve' }));
-    await waitFor(() =>
-      expect(toast.error).toHaveBeenCalledWith(
-        'Could not resolve that stream URL.',
-      ),
-    );
-    expect(
-      (screen.getByRole('button', { name: 'Resolve' }) as HTMLButtonElement)
-        .disabled,
-    ).toBe(false);
-  });
 });
 
 describe('RadioBrowserDirectoryCard', () => {

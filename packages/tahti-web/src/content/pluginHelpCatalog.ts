@@ -121,16 +121,6 @@ export const READY_PLUGIN_HELP: PluginHelpEntry[] = [
     help: 'Paste Spotify, Bandcamp, or similar URLs when building a release smart link.',
   },
   {
-    name: 'Paste radio stream URL',
-    category: 'Import',
-    state: 'ready',
-    stateLabel: 'Ready',
-    description:
-      'Plays one direct stream or M3U/M3U8 playlist URL you paste under Import. Not the curated station catalog — that is the separate Radio add-on.',
-    help: 'Paste an M3U, M3U8, or direct stream URL under Sources. For the curated station list, enable “Curated internet radio stations” under Add-ons → Radio.',
-  },
-
-  {
     name: 'YouTube Live',
     category: 'Multicast',
     state: 'ready',
@@ -243,8 +233,8 @@ export const READY_PLUGIN_HELP: PluginHelpEntry[] = [
     state: 'ready',
     stateLabel: 'Ready',
     description:
-      'Adds a curated station catalog to the main player (Add-ons → Radio). Distinct from paste-a-stream-URL under Import.',
-    help: 'Enable under Settings → Add-ons → Radio. Stations appear in the main player. To play an arbitrary M3U/stream URL instead, use Import → Paste radio stream URL.',
+      'Adds internet radio stations to the main player alongside Tahti channels: the Finnish stations, any station from the public Radio Browser directory, and your own M3U/M3U8 or direct stream URL.',
+    help: 'Open Settings → Add-ons → Radio. Switch on the Finnish stations you want, save stations from Browser, or use Add URL to add your own M3U playlist or stream.',
   },
 
   {
