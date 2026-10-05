@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
+  Badge,
   Button,
   CopyButton,
   Input,
   SectionShell,
+  Select,
   Toggle,
 } from '@tahti-player/ui';
 
@@ -17,6 +19,17 @@ import {
 } from '../api/api-tokens';
 import { ConfirmDialog } from './ConfirmDialog';
 import { PageLoading } from './PageStates';
+
+const EXPIRY_OPTIONS = [
+  { id: 'never', label: 'Never' },
+  { id: '30', label: '30 days' },
+  { id: '90', label: '90 days' },
+  { id: '365', label: '1 year' },
+];
+
+function isExpired(token: ApiToken): boolean {
+  return Boolean(token.expiresAt && new Date(token.expiresAt) <= new Date());
+}
 
 function formatDate(value: string | null): string {
   if (!value) {
@@ -35,6 +48,7 @@ export function ApiTokensPanel() {
   const [adding, setAdding] = useState(false);
   const [name, setName] = useState('');
   const [canWrite, setCanWrite] = useState(false);
+  const [expiry, setExpiry] = useState('never');
   const [saving, setSaving] = useState(false);
   const [revealedToken, setRevealedToken] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -57,6 +71,7 @@ export function ApiTokensPanel() {
     void createApiToken(
       trimmedName,
       canWrite ? ['read', 'write'] : ['read'],
+      expiry === 'never' ? undefined : Number(expiry),
     ).then((result) => {
       setSaving(false);
       if (!result.ok) {
@@ -69,6 +84,7 @@ export function ApiTokensPanel() {
       setAdding(false);
       setName('');
       setCanWrite(false);
+      setExpiry('never');
       toast.success('API token created.');
     });
   };
@@ -142,6 +158,11 @@ export function ApiTokensPanel() {
                       <span className="text-foreground-secondary font-mono text-xs">
                         {token.tokenPrefix}…
                       </span>
+                      {isExpired(token) ? (
+                        <Badge variant="pill" color="red">
+                          Expired
+                        </Badge>
+                      ) : null}
                     </p>
                     <p className="text-foreground-secondary text-xs">
                       {token.scopes.includes('write')
@@ -149,6 +170,9 @@ export function ApiTokensPanel() {
                         : 'Read-only'}{' '}
                       · last used {formatDate(token.lastUsedAt)} · created{' '}
                       {formatDate(token.createdAt)}
+                      {token.expiresAt
+                        ? ` · ${isExpired(token) ? 'expired' : 'expires'} ${formatDate(token.expiresAt)}`
+                        : ''}
                     </p>
                   </div>
                   <Button
@@ -196,6 +220,12 @@ export function ApiTokensPanel() {
                   onChange={setCanWrite}
                 />
               </div>
+              <Select
+                label="Expires"
+                value={expiry}
+                onValueChange={setExpiry}
+                options={EXPIRY_OPTIONS}
+              />
               <div className="flex flex-wrap gap-2">
                 <Button
                   size="sm"
