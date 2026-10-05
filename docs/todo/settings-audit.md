@@ -16,7 +16,7 @@ User ask (2026-10-04): audit Settings thoroughly. Make sure it uses the standard
 ## Component audit
 
 - No hand-rolled `<button>`, `<input>`, `<select>`, `<textarea>`, `<a>` or `<img>` is left in `src/views/settings/`.
-- Panels are not consistent: Notifications builds its own cards (`rounded-xl border p-4` with an `h3`), the moderation panels use `StudioPanel`, and most toggles are bare `SettingsToggle` rows. Pick one panel component for all of Settings.
+- Panels: `StudioPanel` is the one card component. The moderation panels used it; Notifications (#541) and Mentions (#542) now do too. Left: most other tabs are bare `SettingsToggle` rows under an `h2` with no card at all (Visibility, Discovery, Playback); decide whether those get panels too.
 
 ## Fixed since the audit
 

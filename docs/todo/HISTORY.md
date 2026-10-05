@@ -4280,3 +4280,16 @@ Settings → Add-ons → Radio had two cards doing the same job. The user named 
 - The help catalog's separate radio URL entry is folded into the one radio entry.
 - **Lost**: playing a pasted URL once without saving it. Add URL saves the station first; it can be removed again.
 - **Checks:** tahti-web type-check, eslint, Prettier, the size guard and the `plugin-store`, `api/radio*` and `content` tests. Not tried against the live API.
+
+## 2026-10-05 - Ten slices, forty-first batch (tahti-player #535-#544)
+
+Slices from the listener and signed-out audit (search, Follow, Messages, Favorites, Feed) and from the settings audit (one panel component). All in tahti-web; no tahti-org change.
+
+- **Artist page**: a visitor with no account sees the Follow heart, labelled "Log in to follow", and it opens sign-in (#535). On a phone the header's action buttons wrap instead of running past the card edge (#536).
+- **Search**: the top search box shows one clear button, not the browser's own next to ours (#537). Enter opens the first result when none is highlighted (#538, stacked on #537).
+- **Feed (#539)**: release cards say "released an album" and "an EP" instead of "a album" and "a ep".
+- **Favorites (#540)**: the empty Tracks section has a proper empty state with a link to Discover, replacing a line that pointed at pages a listener does not have.
+- **Messages (#543)**: the start form, contacts and conversation list have space between them, Enter starts a conversation, and Search says when it finds no account.
+- **Settings**: the Notifications cards (#541) and the Mentions cards (#542) use `StudioPanel`, the panel the Chat and Moderators tabs already use.
+- **Audit script (#544, stacked on #535)**: `scripts/audit-signed-out.mjs` clicks Follow, Add, a reaction and Comment signed out and expects sign-in, and checks that the top search opens a result.
+- **Checks:** for each PR, tahti-web type-check, eslint and Prettier on the changed files, the size guard and the touched tests. Each visible change was looked at in the mock app (signed out, as `listener@tahti.live`, or as the demo artist). With all ten branches merged together: the whole tahti-web suite (474 files), the type-check, the size guard, the audit script and the Storybook plays of the touched components pass. Nothing was tried against the live API or on a real phone. The mock search matches any text, so the "No account found" line in Messages was only seen in its test.
