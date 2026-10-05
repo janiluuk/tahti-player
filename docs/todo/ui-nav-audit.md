@@ -21,14 +21,17 @@ paths.
 | 3 | Library Upload tab | done | `LIBRARY_SECTION_TABS` + mount tabs on `StudioUploadView` |
 | 4 | Studio↔Library catalog chrome | done | Drop catalog paths from Studio `SECTION_PREFIXES`; Library sidebar + `LibrarySectionTabs` on sounds/collections/upload; branding → settings |
 | 5 | Account / Broadcast splits | done | Go Live tabs (Prep · Credentials · Recording · Destinations · Green room); Settings↔Broadcast deep links; Channel → session links; dead non-global `StudioNav` swept |
-| 6 | Channel page redesign | open | See `channel-page-redesign.md` |
+| 6 | Channel page redesign | open | See `channel-page-redesign.md` — visual redesign still needs a reference; beta verify leftover |
+| 7 | Admin Radio tabs | done | Feature · Presets · Opt-outs · History (`?tab=`) |
+| 8 | Release detail tab URLs | done | Existing six tabs sync to `?tab=` (smart-links, credits, …) |
+| 9 | Catalog twin (sounds) | done | `/library/sounds` mounts `StudioSoundsView`; `/studio/sounds` + `/studio/archive` redirect |
 
-## Leftovers after phases 1–5
+## Leftovers after phases 1–9
 
-- Full merge of `/studio/sounds` list into `/library/sounds` (both UIs still exist; chrome now agrees Library owns catalog).
+- Channel page visual redesign + beta check (`channel-page-redesign.md`).
 - Account settings panel component unification (`settings-audit.md`).
-- Phase 6: channel page redesign.
-- Crowded splits still open: Release detail child routes, Admin radio tabs, Go Live already tabbed.
+- Collections catalog twin (`/studio/collections` vs `/library/collections`) — same pattern as sounds if needed.
+- Optional: true child routes under `/studio/releases/$id/...` instead of `?tab=` only.
 
 ## Nav highlight gaps
 

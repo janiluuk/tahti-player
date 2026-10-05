@@ -76,6 +76,9 @@ export const adminUsersRoute = createRoute({
 export const adminRadioRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/admin/radio',
+  validateSearch: (search: Record<string, unknown>): { tab?: string } => ({
+    tab: typeof search.tab === 'string' ? search.tab : undefined,
+  }),
   component: AdminRadioView,
 });
 

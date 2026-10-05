@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
 import {
   ArrowLeftIcon,
   Code2Icon,
@@ -42,6 +42,11 @@ import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { trackTableLabels } from '../../lib/trackTableLabels';
+import {
+  RELEASE_DETAIL_TABS,
+  releaseDetailTabFromSearch,
+  type ReleaseDetailTabId,
+} from './release-detail/releaseDetailTabs';
 import { ReleasePoweredByFooterToggle } from './release-detail/ReleasePoweredByFooterToggle';
 import { ReleaseSmartLinksPanel } from './release-detail/ReleaseSmartLinksPanel';
 import { ReleaseSmartLinkStats } from './release-detail/ReleaseSmartLinkStats';
@@ -85,6 +90,32 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
     playFirstTrack,
     updateTrackFingerprint,
   } = useReleaseDetail(id);
+
+  const navigate = useNavigate();
+  const searchTab = useRouterState({
+    select: (s) => {
+      const raw = s.location.search;
+      if (typeof raw === 'string') {
+        return new URLSearchParams(raw).get('tab') ?? undefined;
+      }
+      if (raw && typeof raw === 'object' && 'tab' in raw) {
+        const tab = (raw as { tab?: unknown }).tab;
+        return typeof tab === 'string' ? tab : undefined;
+      }
+      return undefined;
+    },
+  });
+  const activeTab = releaseDetailTabFromSearch(searchTab);
+  const selectedIndex = RELEASE_DETAIL_TABS.indexOf(activeTab);
+
+  const setTab = (tab: ReleaseDetailTabId) => {
+    void navigate({
+      to: '/studio/releases/$id',
+      params: { id },
+      search: tab === 'overview' ? {} : { tab },
+      replace: true,
+    });
+  };
 
   const headerStats: EntitySocialStat[] =
     release?.tracks && release.tracks.length > 0
@@ -243,6 +274,13 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
             <Tabs
               listClassName="border-border border-b pb-3"
               panelClassName="flex flex-col gap-6 pt-2"
+              selectedIndex={Math.max(0, selectedIndex)}
+              onChange={(index) => {
+                const next = RELEASE_DETAIL_TABS[index];
+                if (next) {
+                  setTab(next);
+                }
+              }}
               items={[
                 {
                   id: 'overview',
