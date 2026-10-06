@@ -86,7 +86,7 @@ export function ChatView({ slug }: { slug?: string }) {
           </Link>
         </div>
       </div>
-      <ChannelChatPanel slug={slug} />
+      <ChannelChatPanel key={slug} slug={slug} />
     </ViewShell>
   );
 }
