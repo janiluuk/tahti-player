@@ -58,6 +58,23 @@ export async function setJamParticipantControl(
   }
 }
 
+/** Host-only: takes a guest out of the jam. They cannot rejoin through the
+ * same link. Resolves to `null` when the API refuses or lacks the route. */
+export async function removeJamParticipant(
+  sessionId: string,
+  userId: string,
+): Promise<JamSession | null> {
+  try {
+    const { data } = await requestJson<JamSession>(
+      `/api/v1/jam/${encodeURIComponent(sessionId)}/participants/${encodeURIComponent(userId)}`,
+      { method: 'DELETE' },
+    );
+    return data;
+  } catch {
+    return null;
+  }
+}
+
 export async function leaveJam(sessionId: string): Promise<void> {
   await requestJson(`/api/v1/jam/${encodeURIComponent(sessionId)}/leave`, {
     method: 'POST',
