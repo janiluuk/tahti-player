@@ -45,13 +45,23 @@ const KNOWN: Record<string, ChatError> = {
   },
 };
 
+function knownError(err: unknown): ChatError | undefined {
+  const code = err instanceof Error ? err.message : err;
+  return typeof code === 'string'
+    ? KNOWN[code.trim().toLowerCase()]
+    : undefined;
+}
+
+/** True when the server gave a reason of its own, as opposed to a network
+ * failure or an outage that a retry may get past. */
+export function isKnownChatError(err: unknown): boolean {
+  return knownError(err) !== undefined;
+}
+
 /** Turns a chat API error code into a sentence; never echoes the raw code. */
 export function chatErrorFor(
   err: unknown,
   fallback: string = GENERIC_MESSAGE,
 ): ChatError {
-  const code = err instanceof Error ? err.message : err;
-  const known =
-    typeof code === 'string' ? KNOWN[code.trim().toLowerCase()] : undefined;
-  return known ?? { message: fallback, action: null };
+  return knownError(err) ?? { message: fallback, action: null };
 }
