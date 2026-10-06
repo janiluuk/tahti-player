@@ -4321,3 +4321,17 @@ Two sweeps: adding to playlists, where batch 42 had left blocks open, and channe
 - **Subscribers-only (tahti-org#737)**: the owner and their moderators can post in their own subscribers-only chat.
 - **Web**: the chat panel asks for a new token before reconnecting, so chat survives the hour a token lasts, and shows the API's reason when it is refused (#555). The fan room reconnects after a drop and says why a post was refused (#556). Opening another channel's chat from inside one starts a fresh panel instead of carrying the first channel's handle and token over (#557).
 - **Checks:** for each PR, tahti-web type-check, eslint and Prettier on the changed files, the size guard and the touched test directories. tahti-org ran Vitest for each touched route or helper against a throwaway Postgres. Nothing was tried in a browser, against the live API or against a running Centrifugo, and the Mixcloud and Spotify import routes have no test. Left open: the anonymous side of chat after a block, blocks on collection subscriptions, and the block copy in Settings.
+
+## 2026-10-06 - Ten slices, forty-fourth batch (tahti-player #559-#560, tahti-org #739-#746)
+
+A sweep of Tahti Jam, which nobody had looked at since it shipped, plus the block leftover on collection subscriptions from batches 42 and 43.
+
+- **Blocks (tahti-org#739)**: joining a jam answers 404 when the host and the caller have a block between them, in either direction.
+- **Host leaving (tahti-org#740)**: `POST /api/v1/jam/:id/leave` by the host ends the jam. Before, the guests were left in a session nobody could stop or steer.
+- **One jam per host (tahti-org#741)**: starting a jam ends the host's earlier open ones, so the link of a jam whose tab was closed stops working.
+- **Remove a guest (tahti-org#742, #559)**: the host can take a guest out (`DELETE /api/v1/jam/:id/participants/:userId`, new `JamParticipant.removedAt`), and the same link does not let them back in. The web list has a remove button with a confirmation, and the removed guest sees "You are no longer in this Jam".
+- **Event stream (tahti-org#743)**: the stream closes for someone who left or was removed, and after the jam ended. Before, it kept sending them what the host played.
+- **Control (tahti-org#744)**: a guest who leaves loses playback control and rejoins as a plain guest.
+- **Signed out (#560)**: a Jam link offers log-in instead of "Jam not found" to a visitor with no session.
+- **Collection subscriptions**: a block refuses a new subscription between the two accounts and hides the other's collections from "Subscribed" (tahti-org#745); setting a block removes the subscriptions they already had on each other's collections (tahti-org#746).
+- **Checks:** for each PR, tahti-web type-check, eslint and Prettier on the changed files, the size guard and the touched tests. tahti-org ran Vitest for each touched route against a throwaway Postgres. Nothing was tried in a browser (the mock app has no Jam routes), against the live API, or with Redis delivering jam events; the stream change is tested through its decision function, not the socket. Left open: jams whose host never comes back stay open (no time-based cleanup), `streamUrl` in the jam state is whatever the controlling client sends, the track reaction route (`/api/reactions/track/:id`, no web caller) ignores blocks and suspended artists, and the anonymous side of chat after a block.
