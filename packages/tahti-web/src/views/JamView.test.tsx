@@ -10,6 +10,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as jamApi from '../api/jam';
 import type { JamParticipant, JamSession } from '../api/types';
+import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { JamView } from './JamView';
 
@@ -118,5 +119,24 @@ describe('JamView', () => {
     await renderAs('g1', sessionWith([participant('host', 'HOST')]));
     expect(screen.getByText('You are no longer in this Jam')).toBeTruthy();
     expect(screen.queryByRole('button', { name: /Leave Jam/ })).toBeNull();
+  });
+
+  it('offers a signed-out visitor the login instead of calling the link invalid', async () => {
+    useAuthStore.setState({ user: null });
+    useAuthModalStore.setState({ isOpen: false });
+    const join = vi.spyOn(jamApi, 'joinJam').mockRejectedValue(new Error());
+    hooks.state = {
+      session: null,
+      connectionStatus: 'connecting',
+      ended: false,
+    };
+    await act(async () => {
+      render(<JamView code="ABC234" />);
+    });
+
+    expect(join).not.toHaveBeenCalled();
+    expect(screen.queryByText('Jam not found')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Log in' }));
+    expect(useAuthModalStore.getState().isOpen).toBe(true);
   });
 });
