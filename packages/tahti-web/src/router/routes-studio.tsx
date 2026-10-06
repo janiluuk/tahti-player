@@ -5,7 +5,6 @@ import { appLayoutRoute } from './router-core';
 import {
   StudioChannelView,
   StudioCollectionEditView,
-  StudioCollectionsView,
   StudioDistributionView,
   StudioEditorListView,
   StudioEditorProjectView,
@@ -24,7 +23,6 @@ import {
   StudioScheduleView,
   StudioShowDetailView,
   StudioShowsView,
-  StudioSoundsView,
   StudioSoundView,
   StudioStatsDetailView,
   StudioStatsView,
@@ -43,6 +41,9 @@ export const studioRoute = createRoute({
 export const studioGoLiveRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/go-live',
+  validateSearch: (search: Record<string, unknown>): { tab?: string } => ({
+    tab: typeof search.tab === 'string' ? search.tab : undefined,
+  }),
   component: StudioGoLiveView,
 });
 
@@ -57,7 +58,9 @@ export const studioBroadcastInfoRoute = createRoute({
 export const studioSoundsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/sounds',
-  component: StudioSoundsView,
+  beforeLoad: () => {
+    throw redirect({ to: '/library/sounds' });
+  },
 });
 
 /** Old path, kept as a redirect — linked from bookmarks, old shares, and
@@ -66,7 +69,7 @@ export const studioArchiveRedirectRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/archive',
   beforeLoad: () => {
-    throw redirect({ to: '/studio/sounds' });
+    throw redirect({ to: '/library/sounds' });
   },
 });
 
@@ -145,6 +148,9 @@ export const studioReleasesRoute = createRoute({
 export const studioReleaseDetailRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/releases/$id',
+  validateSearch: (search: Record<string, unknown>): { tab?: string } => ({
+    tab: typeof search.tab === 'string' ? search.tab : undefined,
+  }),
   component: function StudioReleaseDetailRoute() {
     const { id } = studioReleaseDetailRoute.useParams();
     return <StudioReleaseDetailView id={id} />;
@@ -154,7 +160,9 @@ export const studioReleaseDetailRoute = createRoute({
 export const studioCollectionsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/collections',
-  component: StudioCollectionsView,
+  beforeLoad: () => {
+    throw redirect({ to: '/library/collections' });
+  },
 });
 
 export const studioCollectionEditRoute = createRoute({
@@ -331,7 +339,7 @@ export const studioPlaylistsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/playlists',
   beforeLoad: () => {
-    throw redirect({ to: '/studio/collections' });
+    throw redirect({ to: '/library/collections' });
   },
 });
 

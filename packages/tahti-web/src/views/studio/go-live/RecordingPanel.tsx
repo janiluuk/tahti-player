@@ -4,13 +4,26 @@ import { CircleDotIcon, FolderOpenIcon } from 'lucide-react';
 import { Toggle } from '@tahti-player/ui';
 
 import { StudioPanel } from '../../../components/StudioPanel';
+import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import type { GoLiveState } from './useGoLiveState';
 
 export function RecordingPanel({ state }: { state: GoLiveState }) {
   const { recordEnabled, recordBusy, toggleRecording } = state;
 
   return (
-    <StudioPanel title="Recording">
+    <StudioPanel
+      title="Recording"
+      description="For this broadcast only. Default on/off for future shows is in Settings → Broadcast → Radio."
+      action={
+        <button
+          type="button"
+          className="text-foreground-secondary text-xs underline-offset-2 hover:underline"
+          onClick={() => useSettingsModalStore.getState().open('broadcast')}
+        >
+          Prefs
+        </button>
+      }
+    >
       <div className="border-border bg-background flex w-full items-center gap-3 rounded-lg border p-3">
         <CircleDotIcon
           size={20}

@@ -1,9 +1,25 @@
 // @vitest-environment jsdom
+import {
+  createMemoryHistory,
+  createRootRoute,
+  createRouter,
+  RouterProvider,
+} from '@tanstack/react-router';
 import { act, cleanup, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as api from '../api/rtmp-status';
 import { MultistreamStatusPanel } from './MultistreamStatusPanel';
+
+function renderPanel(slug: string) {
+  const router = createRouter({
+    routeTree: createRootRoute({
+      component: () => <MultistreamStatusPanel slug={slug} />,
+    }),
+    history: createMemoryHistory({ initialEntries: ['/'] }),
+  });
+  return render(<RouterProvider router={router} />);
+}
 
 describe('MultistreamStatusPanel', () => {
   afterEach(() => {
@@ -42,7 +58,7 @@ describe('MultistreamStatusPanel', () => {
       meta: { source: 'api' },
     });
     await act(async () => {
-      render(<MultistreamStatusPanel slug="night-drive" />);
+      renderPanel('night-drive');
     });
     expect(spy).toHaveBeenCalledWith('night-drive');
     const rows = within(screen.getByTestId('multistream-status')).getAllByRole(
@@ -51,6 +67,9 @@ describe('MultistreamStatusPanel', () => {
     expect(rows[0]!.textContent).toBe('YouTubeStreaming');
     expect(rows[1]!.textContent).toContain('Stream key rejected');
     expect(rows[2]!.textContent).toBe('customOff');
+    expect(
+      screen.getByRole('link', { name: 'Manage' }).getAttribute('href'),
+    ).toContain('/studio/go-live');
 
     await act(async () => {
       await vi.advanceTimersByTimeAsync(15_000);
@@ -63,9 +82,7 @@ describe('MultistreamStatusPanel', () => {
       data: null,
       meta: { source: 'api' },
     });
-    const { container } = await act(async () =>
-      render(<MultistreamStatusPanel slug="night-drive" />),
-    );
+    const { container } = await act(async () => renderPanel('night-drive'));
     expect(container.textContent).toBe('');
   });
 });

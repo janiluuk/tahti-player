@@ -43,13 +43,13 @@ import {
 import { PageLoading } from '../../../components/PageStates';
 import { StudioCollectionMoreMenu } from '../../../components/StudioCollectionMoreMenu';
 import { StudioGate } from '../../../components/StudioGate';
-import { StudioNav } from '../../../components/StudioNav';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { normalizeCollectionStyle } from '../../../content/collectionStyles';
 import { collectionItemToTrack } from '../../../lib/collectionTrackMapping';
 import { playableFromStudioHearthis } from '../../../lib/embedPlayback';
 import { trackTableLabels } from '../../../lib/trackTableLabels';
 import { usePlayerStore } from '../../../stores/playerStore';
+import { LibrarySectionTabs } from '../../LibraryView';
 import { useStudioContributions } from '../useStudioContributions';
 
 export function StudioPlaylistEditorView({ slug }: { slug: string }) {
@@ -295,7 +295,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout flex w-full flex-col gap-6 px-1 py-2">
-        <StudioNav current="/studio/collections" />
+        <LibrarySectionTabs active="collections" />
         <Tooltip content="Back to Collections" side="right">
           <Link
             to="/studio/collections"

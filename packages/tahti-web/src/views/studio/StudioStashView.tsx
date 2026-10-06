@@ -14,9 +14,9 @@ import { fetchStudioSounds } from '../../api/studio';
 import type { StudioSound } from '../../api/studio-types';
 import { StashFilesPanel } from '../../components/StashFilesPanel';
 import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { TrackEditDialog } from '../../components/TrackEditDialog';
+import { LibrarySectionTabs } from '../LibraryView';
 
 export function StudioStashView({ embedded = false }: { embedded?: boolean }) {
   const [tab, setTab] = useState<'all' | 'files'>('all');
@@ -102,7 +102,7 @@ export function StudioStashView({ embedded = false }: { embedded?: boolean }) {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-4xl flex-col gap-6 px-1 py-2">
-        {!embedded && <StudioNav current="/studio/stash" />}
+        {!embedded ? <LibrarySectionTabs active="stash" /> : null}
         {!embedded ? (
           <>
             {tabs}

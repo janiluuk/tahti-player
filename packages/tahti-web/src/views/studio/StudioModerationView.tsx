@@ -6,7 +6,6 @@ import { ChannelModeratorsPanel } from '../../components/moderation/ChannelModer
 import { ChatAccessPanel } from '../../components/moderation/ChatAccessPanel';
 import { ChatBansPanel } from '../../components/moderation/ChatBansPanel';
 import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
 
 /** Studio → Moderation: who may post in chat, the channel's moderators and
  * chat bans. Settings shows the same panels under Channel → Chat and
@@ -15,7 +14,6 @@ export function StudioModerationView() {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-6">
-        <StudioNav current="/studio/moderation" />
         <ViewShell title="Moderation" classes={{ root: 'px-0 pt-0' }}>
           <ChatAccessPanel />
           <Tabs

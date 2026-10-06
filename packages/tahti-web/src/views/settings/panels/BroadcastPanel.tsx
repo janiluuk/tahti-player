@@ -161,11 +161,12 @@ export function BroadcastPanel({
           <ButtonLink
             className="w-fit"
             to="/studio/go-live"
+            search={{ tab: 'green-room' }}
             onClick={closeSettings}
             size="sm"
             variant="secondary"
           >
-            Broadcast
+            Open green room session
           </ButtonLink>
         </div>
       ),
@@ -174,7 +175,21 @@ export function BroadcastPanel({
       id: 'multistream',
       label: 'Multistream',
       icon: <Cast size={14} />,
-      content: <MulticastSection />,
+      content: (
+        <div className="flex flex-col gap-6">
+          <MulticastSection />
+          <ButtonLink
+            className="w-fit"
+            to="/studio/go-live"
+            search={{ tab: 'destinations' }}
+            onClick={closeSettings}
+            size="sm"
+            variant="secondary"
+          >
+            Manage live destinations
+          </ButtonLink>
+        </div>
+      ),
     },
   ];
 

@@ -24,13 +24,11 @@ import {
   type StorageUsage,
 } from '../api/studio-extras';
 import { DesktopLibraryPanel } from '../components/DesktopLibraryPanel';
-import { SubscribedCollections } from '../components/library/SubscribedCollections';
 import { StudioPanel } from '../components/StudioPanel';
 import { formatPlayCount } from '../lib/topListEntries';
 import { LibraryEmbedsView } from './LibraryEmbedsView';
 import { LibraryMediaView } from './LibraryMediaView';
 import { LibrarySmartLinksView } from './LibrarySmartLinksView';
-import { MyCollectionsView } from './MyCollectionsView';
 import { MyDiscographyView } from './MyDiscographyView';
 import { StudioRecordingsView } from './studio/StudioRecordingsView';
 import { StudioStashView } from './studio/StudioStashView';
@@ -178,12 +176,6 @@ export function LibraryView({ tab = 'library' }: { tab?: Tab }) {
         {tab === 'sounds' ? (
           <div className="mt-2">
             <MyDiscographyView />
-          </div>
-        ) : null}
-        {tab === 'collections' ? (
-          <div className="mt-2">
-            <MyCollectionsView embedded />
-            <SubscribedCollections />
           </div>
         ) : null}
         {tab === 'recordings' ? (

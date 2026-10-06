@@ -19,6 +19,7 @@ import {
   multicastProviderLabel,
   multicastProviders,
 } from '../../../plugins/multicast';
+import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 
 /** Multistream destinations: list, enable/disable, add, configure and remove
  * (with confirmation). Owns the dialogs' state. */
@@ -39,17 +40,27 @@ export function MultistreamPanel({
     <>
       <StudioPanel
         title="Multistream"
+        description="Destinations for this session. Add or edit targets here; Settings → Broadcast only mirrors the same list for convenience."
         action={
-          <Tooltip content="Add destination" side="top">
+          <div className="flex items-center gap-2">
             <Button
-              size="icon-sm"
-              variant="secondary"
-              onClick={() => setShowAddDestination(true)}
-              aria-label="Add destination"
+              size="sm"
+              variant="ghost"
+              onClick={() => useSettingsModalStore.getState().open('broadcast')}
             >
-              <PlusIcon size={16} />
+              Prefs
             </Button>
-          </Tooltip>
+            <Tooltip content="Add destination" side="top">
+              <Button
+                size="icon-sm"
+                variant="secondary"
+                onClick={() => setShowAddDestination(true)}
+                aria-label="Add destination"
+              >
+                <PlusIcon size={16} />
+              </Button>
+            </Tooltip>
+          </div>
         }
       >
         {targets.length === 0 ? (

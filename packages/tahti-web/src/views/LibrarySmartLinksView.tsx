@@ -13,8 +13,8 @@ import { fetchStudioReleases } from '../api/studio';
 import type { StudioRelease } from '../api/studio-types';
 import { PageLoading } from '../components/PageStates';
 import { StudioGate } from '../components/StudioGate';
-import { StudioNav } from '../components/StudioNav';
 import { StudioPanel } from '../components/StudioPanel';
+import { LibrarySectionTabs } from './LibraryView';
 
 const DSP_LABELS: Record<string, string> = {
   apple: 'Apple Music',
@@ -53,7 +53,7 @@ export function LibrarySmartLinksView() {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
-        <StudioNav current="/library/smartlinks" />
+        <LibrarySectionTabs active="smartlinks" />
         <ViewShell title="Smartlinks" classes={{ root: 'px-0 pt-0' }}>
           <ButtonLink className="w-fit" to="/studio/releases" size="sm">
             New release

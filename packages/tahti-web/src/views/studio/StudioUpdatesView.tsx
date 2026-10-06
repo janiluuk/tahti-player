@@ -33,7 +33,6 @@ import {
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { ImageLightbox } from '../../components/ImageLightbox';
 import { StudioGate } from '../../components/StudioGate';
-import { StudioNav } from '../../components/StudioNav';
 import { StudioPanel } from '../../components/StudioPanel';
 import { newsletterDeliverySummary } from '../../lib/newsletterDelivery';
 import { NewDraftDialog } from './updates/NewDraftDialog';
@@ -106,7 +105,6 @@ export function StudioUpdatesView() {
   return (
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-6 px-1 py-2">
-        <StudioNav current="/studio/updates" />
         <Tabs.Root
           selectedIndex={tab === 'posts' ? 0 : 1}
           onChange={(index) => setTab(index === 0 ? 'posts' : 'newsletter')}
