@@ -1,5 +1,11 @@
 import { useNavigate } from '@tanstack/react-router';
-import { LogOutIcon, PauseIcon, PlayIcon, XIcon } from 'lucide-react';
+import {
+  LogInIcon,
+  LogOutIcon,
+  PauseIcon,
+  PlayIcon,
+  XIcon,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -26,6 +32,7 @@ import { JamParticipantList } from '../components/JamParticipantList';
 import { useJamGuestPlayback, useJamState } from '../hooks/useJam';
 import { useJamCoControl, useJamHostSync } from '../hooks/useJamControl';
 import { canControlJam, toggledJamState } from '../lib/jamPlayback';
+import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 
 /** A frosted glass panel whose glow tints toward the current track's own
@@ -50,11 +57,16 @@ function GlassPanel({
 export function JamView({ code }: { code: string }) {
   const navigate = useNavigate();
   const userId = useAuthStore((s) => s.user?.id);
+  const openAuth = useAuthModalStore((s) => s.open);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [joinError, setJoinError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!userId) {
+      return;
+    }
     let cancelled = false;
+    setJoinError(null);
     void joinJam(code)
       .then((session) => {
         if (!cancelled) {
@@ -69,7 +81,7 @@ export function JamView({ code }: { code: string }) {
     return () => {
       cancelled = true;
     };
-  }, [code]);
+  }, [code, userId]);
 
   const { session, connectionStatus, ended } = useJamState(sessionId);
   const isHost = Boolean(session && userId && session.hostUserId === userId);
@@ -144,6 +156,20 @@ export function JamView({ code }: { code: string }) {
     }
     void navigate({ to: '/' });
   };
+
+  if (!userId) {
+    return (
+      <TahtiJam>
+        <EmptyState
+          icon={<LogInIcon size={48} />}
+          title="Log in to join this Jam"
+          description="A Jam plays the host's music in sync for everyone in it, so the host needs to see who joined."
+          action={<Button onClick={() => openAuth('login')}>Log in</Button>}
+          className="flex-1"
+        />
+      </TahtiJam>
+    );
+  }
 
   if (joinError) {
     return (
