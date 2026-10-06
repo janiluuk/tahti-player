@@ -16,9 +16,12 @@ import {
   joinJam,
   leaveJam,
   pushJamState,
+  removeJamParticipant,
   setJamParticipantControl,
 } from '../api/jam';
+import type { JamParticipant } from '../api/types';
 import { ChannelVisualizer } from '../components/ChannelVisualizer';
+import { ConfirmDialog } from '../components/ConfirmDialog';
 import { JamParticipantList } from '../components/JamParticipantList';
 import { useJamGuestPlayback, useJamState } from '../hooks/useJam';
 import { useJamCoControl, useJamHostSync } from '../hooks/useJamControl';
@@ -76,9 +79,31 @@ export function JamView({ code }: { code: string }) {
   const [pendingControl, setPendingControl] = useState<ReadonlySet<string>>(
     () => new Set(),
   );
-  useJamHostSync(session, isHost && !ended);
-  useJamGuestPlayback(session, !isHost && audioUnlocked && !ended);
-  useJamCoControl(session, !isHost && canControl && audioUnlocked && !ended);
+  const [removing, setRemoving] = useState<JamParticipant | null>(null);
+  const removed = Boolean(
+    session && userId && !session.participants.some((p) => p.userId === userId),
+  );
+  const live = !ended && !removed;
+  useJamHostSync(session, isHost && live);
+  useJamGuestPlayback(session, !isHost && audioUnlocked && live);
+  useJamCoControl(session, !isHost && canControl && audioUnlocked && live);
+
+  const removeGuest = async (guest: JamParticipant) => {
+    setRemoving(null);
+    if (!sessionId) {
+      return;
+    }
+    setPendingControl((prev) => new Set(prev).add(guest.userId));
+    const updated = await removeJamParticipant(sessionId, guest.userId);
+    setPendingControl((prev) => {
+      const next = new Set(prev);
+      next.delete(guest.userId);
+      return next;
+    });
+    if (!updated) {
+      toast.error("Couldn't remove them from this Jam.");
+    }
+  };
 
   const setGuestControl = async (guestId: string, allow: boolean) => {
     if (!sessionId) {
@@ -137,6 +162,19 @@ export function JamView({ code }: { code: string }) {
           icon={<XIcon size={48} />}
           title="This Jam has ended"
           description="The host closed the session."
+          className="flex-1"
+        />
+      </TahtiJam>
+    );
+  }
+
+  if (removed) {
+    return (
+      <TahtiJam>
+        <EmptyState
+          icon={<XIcon size={48} />}
+          title="You are no longer in this Jam"
+          description="The host removed you from the session."
           className="flex-1"
         />
       </TahtiJam>
@@ -246,6 +284,7 @@ export function JamView({ code }: { code: string }) {
                 ? (guestId, allow) => void setGuestControl(guestId, allow)
                 : undefined
             }
+            onRemove={isHost ? setRemoving : undefined}
             pendingUserIds={pendingControl}
           />
         </GlassPanel>
@@ -266,6 +305,18 @@ export function JamView({ code }: { code: string }) {
           )}
         </div>
       </div>
+      <ConfirmDialog
+        isOpen={removing !== null}
+        title={`Remove ${removing?.displayName?.trim() || removing?.username || 'this guest'} from the Jam?`}
+        description="They stop hearing the Jam and can't rejoin it with this link."
+        confirmLabel="Remove"
+        onCancel={() => setRemoving(null)}
+        onConfirm={() => {
+          if (removing) {
+            void removeGuest(removing);
+          }
+        }}
+      />
     </TahtiJam>
   );
 }

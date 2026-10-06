@@ -77,4 +77,24 @@ describe('JamParticipantList', () => {
     expect(screen.getByText('g2-handle')).toBeTruthy();
     expect(screen.getByText('3 jamming')).toBeTruthy();
   });
+
+  it('gives the host a remove button per guest, never one for the host', () => {
+    const onRemove = vi.fn();
+    render(
+      <JamParticipantList participants={participants} onRemove={onRemove} />,
+    );
+
+    expect(
+      screen.queryByRole('button', { name: 'Remove Hosty from the Jam' }),
+    ).toBeNull();
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Remove Guest One from the Jam' }),
+    );
+    expect(onRemove).toHaveBeenCalledWith(participants[1]);
+  });
+
+  it('shows guests no remove button', () => {
+    render(<JamParticipantList participants={participants} />);
+    expect(screen.queryByRole('button')).toBeNull();
+  });
 });

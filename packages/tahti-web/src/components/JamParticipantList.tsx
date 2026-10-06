@@ -1,6 +1,6 @@
-import { UsersIcon } from 'lucide-react';
+import { UsersIcon, XIcon } from 'lucide-react';
 
-import { Badge, Toggle } from '@tahti-player/ui';
+import { Badge, Button, Toggle } from '@tahti-player/ui';
 
 import type { JamParticipant } from '../api/types';
 
@@ -8,6 +8,8 @@ type Props = {
   participants: JamParticipant[];
   /** When set, each guest gets a "Can control" toggle (the host's view). */
   onSetControl?: (userId: string, canControl: boolean) => void;
+  /** When set, each guest gets a remove button (the host's view). */
+  onRemove?: (participant: JamParticipant) => void;
   /** Guests whose control change is still saving. */
   pendingUserIds?: ReadonlySet<string>;
 };
@@ -19,6 +21,7 @@ function nameOf(p: JamParticipant): string {
 export function JamParticipantList({
   participants,
   onSetControl,
+  onRemove,
   pendingUserIds,
 }: Props) {
   return (
@@ -61,6 +64,17 @@ export function JamParticipantList({
                 <Badge variant="pill" color="green">
                   Can control
                 </Badge>
+              ) : null}
+              {isGuest && onRemove ? (
+                <Button
+                  size="icon-sm"
+                  variant="ghost"
+                  aria-label={`Remove ${name} from the Jam`}
+                  disabled={pendingUserIds?.has(p.userId)}
+                  onClick={() => onRemove(p)}
+                >
+                  <XIcon size={14} />
+                </Button>
               ) : null}
             </li>
           );
