@@ -5,9 +5,13 @@ import { Button, EmptyState, Input } from '@tahti-player/ui';
 
 import { fetchFanChatHistory, requestFanChatToken } from '../api/fan-chat';
 import { centrifugoWsUrl } from '../lib/centrifugoWsUrl';
+import { chatErrorFor } from '../lib/chatErrors';
 import { ChatAvatar } from './ChatAvatar';
 
 type FanMessage = { id: string; handle: string; text: string };
+
+const RECONNECT_DELAY_MS = 2000;
+const MAX_RECONNECT_ATTEMPTS = 5;
 
 export function FanChatRoom({
   slug,
@@ -25,6 +29,7 @@ export function FanChatRoom({
   const wsRef = useRef<WebSocket | null>(null);
   const roomRef = useRef<{ channel: string; handle: string } | null>(null);
   const nextIdRef = useRef(1);
+  const publishIdsRef = useRef(new Set<number>());
 
   useEffect(() => {
     let cancelled = false;
@@ -40,71 +45,104 @@ export function FanChatRoom({
         ]);
       }
     });
-    void requestFanChatToken(slug).then((result) => {
-      const url = centrifugoWsUrl();
-      if (cancelled) {
-        return;
-      }
-      if (!result.ok) {
-        setError(result.error);
-        return;
-      }
-      if (!url) {
-        return;
-      }
-      const { token, channel, handle } = result.data;
-      roomRef.current = { channel, handle };
-      const ws = new WebSocket(url);
-      wsRef.current = ws;
-      ws.onopen = () => {
-        ws.send(
-          JSON.stringify({ id: nextIdRef.current++, connect: { token } }),
-        );
-      };
-      ws.onmessage = (ev) => {
-        for (const line of String(ev.data).split('\n')) {
-          if (!line.trim()) {
-            continue;
-          }
-          try {
-            const msg = JSON.parse(line) as {
-              connect?: unknown;
-              push?: {
-                channel?: string;
-                pub?: { data?: { handle?: string; text?: string } };
-              };
-            };
-            if (msg.connect) {
-              ws.send(
-                JSON.stringify({
-                  id: nextIdRef.current++,
-                  subscribe: { channel },
-                }),
-              );
-              setConnected(true);
-            }
-            const data = msg.push?.pub?.data;
-            if (msg.push?.channel === channel && data?.text) {
-              setMessages((prev) =>
-                [
-                  ...prev,
-                  {
-                    id: `${Date.now()}-${Math.random()}`,
-                    handle: data.handle ?? 'fan',
-                    text: data.text!,
-                  },
-                ].slice(-100),
-              );
-            }
-          } catch {
-            continue;
-          }
+    let attempts = 0;
+    let retryTimer: ReturnType<typeof setTimeout> | null = null;
+
+    // A fan token lasts an hour and the server closes the connection when it
+    // runs out, so every (re)connect asks for a new one.
+    function connect() {
+      void requestFanChatToken(slug).then((result) => {
+        const url = centrifugoWsUrl();
+        if (cancelled) {
+          return;
         }
-      };
-      ws.onclose = () => setConnected(false);
-    });
+        if (!result.ok) {
+          setError(result.error);
+          return;
+        }
+        if (!url) {
+          return;
+        }
+        const { token, channel, handle } = result.data;
+        roomRef.current = { channel, handle };
+        const ws = new WebSocket(url);
+        wsRef.current = ws;
+        ws.onopen = () => {
+          ws.send(
+            JSON.stringify({ id: nextIdRef.current++, connect: { token } }),
+          );
+        };
+        ws.onmessage = (ev) => {
+          for (const line of String(ev.data).split('\n')) {
+            if (!line.trim()) {
+              continue;
+            }
+            try {
+              const msg = JSON.parse(line) as {
+                id?: number;
+                error?: { message?: string };
+                connect?: unknown;
+                push?: {
+                  channel?: string;
+                  pub?: { data?: { handle?: string; text?: string } };
+                };
+              };
+              if (msg.id != null && publishIdsRef.current.delete(msg.id)) {
+                if (msg.error) {
+                  setError(
+                    chatErrorFor(
+                      msg.error.message,
+                      'Your message was not sent. Try again in a moment.',
+                    ).message,
+                  );
+                }
+                continue;
+              }
+              if (msg.connect) {
+                ws.send(
+                  JSON.stringify({
+                    id: nextIdRef.current++,
+                    subscribe: { channel },
+                  }),
+                );
+                attempts = 0;
+                setError(null);
+                setConnected(true);
+              }
+              const data = msg.push?.pub?.data;
+              if (msg.push?.channel === channel && data?.text) {
+                setMessages((prev) =>
+                  [
+                    ...prev,
+                    {
+                      id: `${Date.now()}-${Math.random()}`,
+                      handle: data.handle ?? 'fan',
+                      text: data.text!,
+                    },
+                  ].slice(-100),
+                );
+              }
+            } catch {
+              continue;
+            }
+          }
+        };
+        ws.onclose = () => {
+          setConnected(false);
+          if (cancelled || attempts >= MAX_RECONNECT_ATTEMPTS) {
+            return;
+          }
+          attempts += 1;
+          retryTimer = setTimeout(connect, RECONNECT_DELAY_MS * attempts);
+        };
+      });
+    }
+    connect();
     return () => {
       cancelled = true;
+      if (retryTimer) {
+        clearTimeout(retryTimer);
+      }
       wsRef.current?.close();
       wsRef.current = null;
     };
@@ -116,9 +154,12 @@ export function FanChatRoom({
     if (!text || !room || !wsRef.current || !connected) {
       return;
     }
+    const publishId = nextIdRef.current++;
+    publishIdsRef.current.add(publishId);
+    setError(null);
     wsRef.current.send(
       JSON.stringify({
-        id: nextIdRef.current++,
+        id: publishId,
         publish: {
           channel: room.channel,
           data: { handle: room.handle, text, ts: Date.now(), supporter: true },

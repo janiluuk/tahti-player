@@ -25,12 +25,11 @@ paths.
 | 7 | Admin Radio tabs | done | Feature · Presets · Opt-outs · History (`?tab=`) |
 | 8 | Release detail tab URLs | done | Existing six tabs sync to `?tab=` (smart-links, credits, …) |
 | 9 | Catalog twin (sounds) | done | `/library/sounds` mounts `StudioSoundsView`; `/studio/sounds` + `/studio/archive` redirect |
-| 10 | Collections twin + Settings panels | done | `/library/collections` mounts `StudioCollectionsView` (+ subscribed); `/studio/collections` + `/studio/playlists` redirect; `SettingsSectionCard` on Notifications / Mentions |
+| 10 | Collections twin + Settings panels | done | `/library/collections` mounts `StudioCollectionsView` (+ subscribed); `/studio/collections` + `/studio/playlists` redirect; Notifications / Mentions cards use `StudioPanel` (#541, #542) |
 
 ## Leftovers after phases 1–10
 
 - Channel page visual redesign + beta check (`channel-page-redesign.md`).
-- Optional: migrate remaining settings panels onto `SettingsSectionCard`.
 - Optional: true child routes under `/studio/releases/$id/...` instead of `?tab=` only.
 - Moderator role decision (`settings-audit.md`).
 

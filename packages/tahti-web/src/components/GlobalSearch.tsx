@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import {
   Button,
+  cn,
   EmptyState,
   ImageReveal,
   Input,
@@ -208,9 +209,9 @@ export function GlobalSearch() {
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       setActiveIndex((i) => (i <= 0 ? flatOptions.length - 1 : i - 1));
-    } else if (e.key === 'Enter' && activeIndex >= 0) {
+    } else if (e.key === 'Enter' && !loading) {
       e.preventDefault();
-      flatOptions[activeIndex]?.select();
+      flatOptions[Math.max(activeIndex, 0)]?.select();
     }
   };
 
@@ -236,7 +237,10 @@ export function GlobalSearch() {
             activeIndex >= 0 ? flatOptions[activeIndex]?.id : undefined
           }
           autoComplete="off"
-          className={query ? 'pr-9' : undefined}
+          className={cn(
+            '[&::-webkit-search-cancel-button]:appearance-none',
+            query && 'pr-9',
+          )}
           startAddon={
             <SearchIcon size={14} aria-hidden className="opacity-70" />
           }

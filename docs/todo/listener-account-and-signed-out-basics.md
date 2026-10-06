@@ -17,13 +17,16 @@ User ask (2026-10-04): add a separate listener user who is registered but has no
 - Studio: a listener is offered "Create your channel" instead of "Artist access required", with no Studio tab bar and no dialog opening by itself (#526).
 - Signed out, track page: reactions and Add open sign-in instead of being disabled; "Comments are off" is no longer a login link (#524).
 - Signed-out pass over track, artist, channel, collection, radio station, Favorites, Library, Messages, Feed, History and the subscribe page: report, follower list, queue and download work; Library, Messages and Feed ask for sign-in.
+- Second pass (search, Help, channel comments, artist follow): the artist page offers Follow to a signed-out visitor and opens sign-in (#535); the top search has one clear button and Enter opens the first result (#537, #538). Help and channel comments needed no change.
+- Found on the way: the artist header buttons wrap on phones (#536), feed cards say "an album" (#539), Favorites has an empty state for tracks (#540), the Messages start form is spaced and starts on Enter (#543).
+- `scripts/audit-signed-out.mjs` clicks Follow, Add, a reaction and Comment and checks the search (#544).
 
 ## Plan
 
 - [ ] 1. Decide what a listener sees where Studio is in the sidebar. It still shows Studio to everyone, signed out included.
 - [ ] 2. Library as a listener still lists artist tools (Recordings, Embeds, Smart links, upload). Decide which a listener keeps.
-- [ ] 3. Signed out: search, Help, comments on a channel, and the artist-page follow button were not exercised yet.
-- [ ] 4. Add the listener and signed-out passes to the capture and audit scripts so they stay covered.
+- [ ] 3. Signed out on a phone: the top search box is not in the phone top bar; check where a visitor finds search there.
+- [ ] 4. Add a listener pass to the capture scripts (the audit script covers both since #533 and #544).
 
 ## Open questions for the user
 

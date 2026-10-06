@@ -13,6 +13,7 @@ import { centrifugoWsUrl } from '../lib/centrifugoWsUrl';
 import {
   CHAT_OFF_MESSAGE,
   chatErrorFor,
+  isKnownChatError,
   type ChatErrorAction,
 } from '../lib/chatErrors';
 import { useHcaptcha } from '../lib/useHcaptcha';
@@ -153,7 +154,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
       if (cancelled || !token || modeRef.current === 'mock') {
         return;
       }
-      connectWs(token, false);
+      connectWs(token, null);
     });
     return () => {
       cancelled = true;
@@ -212,10 +213,9 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
   }, []);
 
   // Retries a dropped socket in the background instead of leaving chat
-  // silently dead until the listener manually rejoins. `token` is the one
-  // this specific connection was opened with, closed over per-call so a
-  // publisher's retry doesn't depend on state that may have moved on.
-  function scheduleReconnect(token: string, canPublish: boolean) {
+  // silently dead until the listener manually rejoins. `publishAs` is the
+  // handle this connection posts under, or null for a read-only viewer.
+  function scheduleReconnect(token: string, publishAs: string | null) {
     if (intentionalCloseRef.current) {
       // We closed this ourselves (slug change / unmount) -- not a drop.
       intentionalCloseRef.current = false;
@@ -230,16 +230,42 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
     }
     reconnectTimerRef.current = setTimeout(() => {
       reconnectTimerRef.current = null;
-      if (canPublish) {
-        connectWs(token, true);
-      } else {
+      if (publishAs === null) {
         void requestChatViewerToken(slug).then((freshToken) => {
           if (freshToken) {
-            connectWs(freshToken, false);
+            connectWs(freshToken, null);
           }
         });
+        return;
       }
+      void rejoin(token, publishAs);
     }, RECONNECT_DELAY_MS * reconnectAttemptsRef.current);
+  }
+
+  // A chat token lasts an hour and the server drops the connection when it
+  // runs out, so reconnecting with the old one fails every time. Ask for a
+  // new one first; signed-in listeners and recently verified anonymous ones
+  // get it without a captcha.
+  async function rejoin(staleToken: string, publishAs: string) {
+    try {
+      const { data } = await requestChatToken(slug, publishAs, undefined);
+      if (!data.token || data.token === 'mock-token') {
+        return;
+      }
+      setPublishToken(data.token);
+      setSupporter(Boolean(data.supporter));
+      setChannelRole(data.channelRole ?? null);
+      setCountryCode(data.countryCode ?? null);
+      connectWs(data.token, publishAs);
+    } catch (err) {
+      if (isKnownChatError(err)) {
+        // The server has a reason (captcha again, banned, chat switched
+        // off, subscribers only): say so instead of retrying into it.
+        showChatError(err);
+        return;
+      }
+      connectWs(staleToken, publishAs);
+    }
   }
 
   function showError(message: string | null, action: ChatErrorAction = null) {
@@ -263,7 +289,8 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
     showError(message, action);
   }
 
-  function connectWs(token: string, canPublish: boolean) {
+  function connectWs(token: string, publishAs: string | null) {
+    const canPublish = publishAs !== null;
     const url = centrifugoWsUrl();
     if (!url) {
       return;
@@ -356,7 +383,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
         if (canPublish) {
           setMode((m) => (m === 'live' ? 'rest' : m));
         }
-        scheduleReconnect(token, canPublish);
+        scheduleReconnect(token, publishAs);
       };
     } catch {
       setWsStatus('off');
@@ -393,7 +420,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
       if (joinMeta.source === 'mock') {
         setMode('mock');
       } else if (data.token && data.token !== 'mock-token') {
-        connectWs(data.token, true);
+        connectWs(data.token, data.handle);
         setMode('rest');
       } else {
         setMode('mock');

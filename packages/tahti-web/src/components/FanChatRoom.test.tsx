@@ -1,4 +1,10 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+} from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { fetchFanChatHistory, requestFanChatToken } from '../api/fan-chat';
@@ -106,5 +112,77 @@ describe('FanChatRoom', () => {
     expect(
       screen.getByText('Active fan subscription with FAN_CHAT perk required'),
     ).toBeInTheDocument();
+  });
+
+  it('says so when a post is refused', async () => {
+    const ws = await openRoom();
+    fireEvent.change(screen.getByLabelText('Message the fan room'), {
+      target: { value: 'still here?' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Send' }));
+    const publishId = ws.sent[2]!.id;
+
+    act(() => {
+      ws.onmessage?.({
+        data: JSON.stringify({
+          id: publishId,
+          error: { code: 403, message: 'fan_chat_required' },
+        }),
+      });
+    });
+
+    expect(
+      screen.getByText('The fan room is for fan subscribers.'),
+    ).toBeInTheDocument();
+  });
+
+  it('comes back with a new token after the connection drops', async () => {
+    const first = await openRoom();
+    vi.mocked(requestFanChatToken).mockResolvedValue({
+      ok: true,
+      data: { token: 'next-fan-token', handle: 'Aino', channel: room },
+    });
+    vi.useFakeTimers();
+    try {
+      act(() => {
+        first.onclose?.();
+      });
+      expect(screen.getByText('Connecting…')).toBeInTheDocument();
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(2000);
+      });
+      const second = FakeSocket.last!;
+      expect(second).not.toBe(first);
+      act(() => {
+        second.onopen?.();
+        second.onmessage?.({ data: JSON.stringify({ id: 9, connect: {} }) });
+      });
+
+      expect(second.sent[0]).toMatchObject({
+        connect: { token: 'next-fan-token' },
+      });
+      expect(screen.getByText('Subscribers only')).toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('stops retrying once the room is left', async () => {
+    const first = await openRoom();
+    vi.useFakeTimers();
+    try {
+      act(() => {
+        first.onclose?.();
+      });
+      const calls = vi.mocked(requestFanChatToken).mock.calls.length;
+      cleanup();
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(10000);
+      });
+      expect(vi.mocked(requestFanChatToken).mock.calls.length).toBe(calls);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

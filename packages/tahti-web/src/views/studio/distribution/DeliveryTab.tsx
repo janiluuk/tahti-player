@@ -1,7 +1,12 @@
 import { SendIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 import { Button, EmptyState } from '@tahti-player/ui';
 
+import {
+  fetchDistributionStatus,
+  type DistributionPlatformMode,
+} from '../../../api/distribution';
 import type {
   RevelatorBillingStatus,
   RevelatorRoyaltyReportRow,
@@ -35,8 +40,37 @@ export function DeliveryTab({
   royaltiesLoaded: boolean;
   royalties: RevelatorRoyaltyReportRow[];
 }) {
+  const [platforms, setPlatforms] = useState<DistributionPlatformMode[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    void fetchDistributionStatus().then((result) => {
+      if (!cancelled) {
+        setPlatforms(result.data);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const stubPlatforms = platforms.filter((row) => row.mode === 'stub');
+  const revelatorStub = stubPlatforms.some((row) => row.id === 'revelator');
+
   return (
     <div className="flex flex-col gap-3">
+      {stubPlatforms.length > 0 ? (
+        <div
+          role="status"
+          className="border-accent-amber bg-accent-amber/10 text-foreground rounded-md border px-3 py-2 text-xs"
+        >
+          Platform stub mode —{' '}
+          {stubPlatforms
+            .map((row) => `${row.label} (${row.detail})`)
+            .join('; ')}
+          . DSP submit is refused in production until keys are configured.
+        </div>
+      ) : null}
       <p className="text-foreground-secondary text-xs">
         Submits catalog metadata to Revelator (Spotify, Apple, etc.). Requires
         UPC or ISRC on every track.
@@ -73,15 +107,17 @@ export function DeliveryTab({
       <Button
         size="sm"
         className="self-start"
-        disabled={busy || !canSubmit}
+        disabled={busy || !canSubmit || revelatorStub}
         onClick={() => setConfirmSubmit(true)}
       >
         {!busy && <SendIcon size={14} aria-hidden className="mr-1.5" />}
         {busy
           ? 'Submitting…'
-          : billing && !billing.paid && billing.feeCents > 0
-            ? `Pay ${euros(billing.feeCents)} & submit`
-            : 'Submit to Revelator'}
+          : revelatorStub
+            ? 'Revelator stub — configure keys'
+            : billing && !billing.paid && billing.feeCents > 0
+              ? `Pay ${euros(billing.feeCents)} & submit`
+              : 'Submit to Revelator'}
       </Button>
 
       <ConfirmDialog

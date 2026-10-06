@@ -135,6 +135,7 @@ describe('ArtistView', () => {
     ].map((el) => el.getAttribute('data-testid'));
     expect(order).toEqual([
       'artist-social-header',
+      'artist-favorite-button',
       'artist-popular',
       'artist-related',
       'artist-releases',

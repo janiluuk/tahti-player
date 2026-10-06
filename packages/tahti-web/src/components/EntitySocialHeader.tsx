@@ -427,7 +427,7 @@ export function EntitySocialHeader({
           ) : null}
         </div>
         {actions ? (
-          <div className="z-10 flex shrink-0 flex-wrap items-center justify-end gap-2 self-start">
+          <div className="z-10 flex max-w-full shrink-0 flex-wrap items-center gap-2 self-start sm:justify-end">
             {actions}
           </div>
         ) : null}

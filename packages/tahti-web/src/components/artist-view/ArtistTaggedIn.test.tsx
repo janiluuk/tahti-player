@@ -89,4 +89,36 @@ describe('ArtistTaggedIn', () => {
       screen.getByRole('link', { name: 'Veikko' }).getAttribute('href'),
     ).toBe('/u/veikko');
   });
+
+  it('labels release and newsletter mentions and never shows an email as a name', async () => {
+    await renderTaggedIn([
+      {
+        id: 'm1',
+        surface: 'RELEASE',
+        createdAt: '2026-09-01T00:00:00.000Z',
+        mentioner,
+        sourceTitle: 'Northern Lights EP',
+        sourceUrl: '/r/northern-lights',
+      },
+      {
+        id: 'm2',
+        surface: 'NEWSLETTER',
+        createdAt: '2026-09-02T00:00:00.000Z',
+        mentioner: { username: 'veikko', displayName: 'veikko@example.fi' },
+        sourceTitle: 'veikko@example.fi',
+        sourceUrl: '/u/veikko',
+      },
+    ]);
+    expect(
+      screen
+        .getByRole('link', { name: 'Northern Lights EP' })
+        .getAttribute('href'),
+    ).toBe('/r/northern-lights');
+    expect(screen.getByText('Release notes · by Aino')).toBeTruthy();
+    expect(screen.getByText('Newsletter · by veikko')).toBeTruthy();
+    expect(
+      screen.getByRole('link', { name: 'veikko' }).getAttribute('href'),
+    ).toBe('/u/veikko');
+    expect(document.body.textContent).not.toContain('@example.fi');
+  });
 });

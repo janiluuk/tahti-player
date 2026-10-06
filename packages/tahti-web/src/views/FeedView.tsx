@@ -20,6 +20,7 @@ import type {
 import { PageEmpty, PageLoading } from '../components/PageStates';
 import { releasePlayables } from '../components/ReleaseTracklistDialog';
 import { TrackInfoDialog, type TrackInfo } from '../components/TrackInfoDialog';
+import { feedBadge } from '../lib/feedBadge';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { usePlayerStore } from '../stores/playerStore';
@@ -31,16 +32,6 @@ function formatFeedDate(iso: string): string {
     day: 'numeric',
     month: 'short',
   });
-}
-
-function feedBadge(item: FeedItem): string {
-  if (item.kind === 'post') {
-    return 'posted';
-  }
-  if (item.kind === 'track') {
-    return 'shared a track';
-  }
-  return `released a ${item.releaseType.replace(/_/g, ' ').toLowerCase()}`;
 }
 
 function ArtistAvatar({ name, src }: { name: string; src: string | null }) {

@@ -11,11 +11,8 @@ import {
   patchMeProfile,
   type ProfileFields,
 } from '../../../api/studio-extras';
-import {
-  SettingsHint,
-  SettingsSectionCard,
-  SettingsToggle,
-} from '../SettingsFields';
+import { StudioPanel } from '../../../components/StudioPanel';
+import { SettingsHint, SettingsToggle } from '../SettingsFields';
 import { CommentSettingsToggles } from './CommentSettingsToggles';
 import { GrantReportAttributionToggle } from './GrantReportAttributionToggle';
 import { TopListsToggle } from './TopListsToggle';
@@ -54,56 +51,52 @@ export function NotificationsPanel() {
 
   return (
     <div className="flex flex-col gap-4">
-      <SettingsSectionCard
+      <StudioPanel
         title="Money moves"
         description="When fan subscriptions arrive or payouts complete."
-        footer={
-          <p className="border-border bg-background rounded-lg border px-3 py-2 text-xs">
-            Tahti · @aurora_fi subscribed (€5/mo)
-          </p>
-        }
       >
-        <SettingsToggle
-          label="Email me"
-          value={prefs.notifyMoneyMovesEmail}
-          onChange={(value) => toggle('notifyMoneyMovesEmail', value)}
-        />
-        <SettingsToggle
-          label="In-app"
-          value={prefs.notifyMoneyMovesInApp}
-          onChange={(value) => toggle('notifyMoneyMovesInApp', value)}
-        />
-      </SettingsSectionCard>
-      <SettingsSectionCard
+        <div className="flex flex-col gap-3">
+          <SettingsToggle
+            label="Email me"
+            value={prefs.notifyMoneyMovesEmail}
+            onChange={(value) => toggle('notifyMoneyMovesEmail', value)}
+          />
+          <SettingsToggle
+            label="In-app"
+            value={prefs.notifyMoneyMovesInApp}
+            onChange={(value) => toggle('notifyMoneyMovesInApp', value)}
+          />
+        </div>
+        <p className="border-border bg-background mt-4 rounded-lg border px-3 py-2 text-xs">
+          Tahti · @aurora_fi subscribed (€5/mo)
+        </p>
+      </StudioPanel>
+      <StudioPanel
         title="Listener actions"
         description="A daily email digest of new chat messages, comments, and broadcast feedback."
-        footer={
-          <p className="border-border bg-background rounded-lg border px-3 py-2 text-xs">
-            Tahti · 3 new chat messages · 1 new comment
-          </p>
-        }
       >
         <SettingsToggle
           label="Email digest, daily"
           value={prefs.notifyListenerActivityEmail}
           onChange={(value) => toggle('notifyListenerActivityEmail', value)}
         />
-      </SettingsSectionCard>
-      <SettingsSectionCard
+        <p className="border-border bg-background mt-4 rounded-lg border px-3 py-2 text-xs">
+          Tahti · 3 new chat messages · 1 new comment
+        </p>
+      </StudioPanel>
+      <StudioPanel
         title="Weekly recap"
         description="A Sunday summary of your activity and audience."
-        footer={
-          <p className="border-border bg-background rounded-lg border px-3 py-2 text-xs">
-            Your week on Tahti · 1,247 plays · 89 downloads · €115.00 from fans
-          </p>
-        }
       >
         <SettingsToggle
           label="Email me"
           value={prefs.notifyWeeklyRecapEmail}
           onChange={(value) => toggle('notifyWeeklyRecapEmail', value)}
         />
-      </SettingsSectionCard>
+        <p className="border-border bg-background mt-4 rounded-lg border px-3 py-2 text-xs">
+          Your week on Tahti · 1,247 plays · 89 downloads · €115.00 from fans
+        </p>
+      </StudioPanel>
     </div>
   );
 }

@@ -212,4 +212,94 @@ describe('ChannelChatPanel', () => {
       screen.getByText('Your message was not sent. Try again in a moment.'),
     ).toBeTruthy();
   });
+
+  describe('when the connection drops', () => {
+    async function joinAndDrop(next: 'second-token' | Error) {
+      const tokens = vi.mocked(requestChatToken).mockResolvedValueOnce({
+        data: { token: 'first-token', handle: 'nightowl' },
+        meta: { source: 'api' },
+      });
+      if (next instanceof Error) {
+        tokens.mockRejectedValueOnce(next);
+      } else {
+        tokens.mockResolvedValueOnce({
+          data: { token: next, handle: 'nightowl' },
+          meta: { source: 'api' },
+        });
+      }
+      await renderPanel();
+      await join();
+      const first = FakeSocket.last!;
+      act(() => {
+        first.onopen?.();
+        first.onmessage?.({ data: JSON.stringify({ id: 1, connect: {} }) });
+      });
+      vi.useFakeTimers();
+      act(() => {
+        first.onclose?.();
+      });
+      return first;
+    }
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('reconnects with a new token, since the old one may have run out', async () => {
+      const first = await joinAndDrop('second-token');
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(2000);
+      });
+
+      expect(vi.mocked(requestChatToken)).toHaveBeenLastCalledWith(
+        'night-drive',
+        'nightowl',
+        undefined,
+      );
+      const second = FakeSocket.last!;
+      expect(second).not.toBe(first);
+      act(() => {
+        second.onopen?.();
+      });
+      expect(second.sent[0]).toMatchObject({
+        connect: { token: 'second-token' },
+      });
+    });
+
+    it('shows the join form again when the new token needs a captcha', async () => {
+      const first = await joinAndDrop(
+        new Error('hCaptcha verification failed'),
+      );
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(2000);
+      });
+
+      expect(FakeSocket.last).toBe(first);
+      expect(
+        screen.getByText(
+          'The captcha check did not go through. Please try it again.',
+        ),
+      ).toBeTruthy();
+      expect(screen.getByRole('button', { name: 'Join chat' })).toBeTruthy();
+    });
+
+    it('retries with the token it has when the API cannot be reached', async () => {
+      const first = await joinAndDrop(new Error('Failed to fetch'));
+
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(2000);
+      });
+
+      const second = FakeSocket.last!;
+      expect(second).not.toBe(first);
+      act(() => {
+        second.onopen?.();
+      });
+      expect(second.sent[0]).toMatchObject({
+        connect: { token: 'first-token' },
+      });
+    });
+  });
 });
