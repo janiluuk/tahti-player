@@ -4336,7 +4336,7 @@ A sweep of Tahti Jam, which nobody had looked at since it shipped, plus the bloc
 - **Collection subscriptions**: a block refuses a new subscription between the two accounts and hides the other's collections from "Subscribed" (tahti-org#745); setting a block removes the subscriptions they already had on each other's collections (tahti-org#746).
 - **Checks:** for each PR, tahti-web type-check, eslint and Prettier on the changed files, the size guard and the touched tests. tahti-org ran Vitest for each touched route against a throwaway Postgres. Nothing was tried in a browser (the mock app has no Jam routes), against the live API, or with Redis delivering jam events; the stream change is tested through its decision function, not the socket. Left open: jams whose host never comes back stay open (no time-based cleanup), `streamUrl` in the jam state is whatever the controlling client sends, the track reaction route (`/api/reactions/track/:id`, no web caller) ignores blocks and suspended artists, and the anonymous side of chat after a block.
 
-## 2026-10-08 - Ten slices, forty-fifth batch (tahti-player #563-#573)
+## 2026-10-08 - Ten slices, forty-sixth batch (tahti-player #563-#573)
 
 A pass over the mock app at 390 px, signed out and as the listener account, plus the hand-rolled buttons left on the listener pages. The pass found one cause behind most of what looked wrong: pages asked `ViewShell` for space between their sections with a class that landed on the scroll frame, where it does nothing.
 
