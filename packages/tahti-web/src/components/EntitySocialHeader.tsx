@@ -360,12 +360,18 @@ export function EntitySocialHeader({
               )}
             />
           ) : (
-            <div
+            <MediaArtwork
+              src={null}
+              size="lg"
+              placeholder={
+                <span className="font-heading text-foreground-secondary text-4xl font-extrabold">
+                  {title.trim().charAt(0).toUpperCase()}
+                </span>
+              }
               className={cn(
-                'border-border bg-background-secondary/40 shadow-shadow size-24 shrink-0 border-(length:--border-width)',
+                'border-border shadow-shadow size-24 min-w-24 border-(length:--border-width)',
                 roundImage ? 'rounded-full' : 'rounded-md',
               )}
-              aria-hidden
             />
           )}
           {logo && logo.placement !== 'COVER' ? (
