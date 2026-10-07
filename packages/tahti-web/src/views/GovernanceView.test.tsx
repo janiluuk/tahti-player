@@ -128,6 +128,12 @@ describe('GovernanceView', () => {
     expect(container.textContent).toMatch(/\d+% for/);
   });
 
+  it('counts a single unvoted topic in the singular', async () => {
+    await renderAsBoard();
+    expect(container.textContent).toContain('1 topic you have not voted on');
+    expect(container.textContent).not.toContain('1 topics');
+  });
+
   it('shows quorum status on published meetings', async () => {
     await renderAsBoard();
     expect(container.textContent).toMatch(/quorum (met|not met)/);

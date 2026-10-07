@@ -268,13 +268,14 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             variant="primary"
           >
             <p className="text-sm opacity-90">
-              {openMotionsCount} open motion
-              {openMotionsCount === 1 ? '' : 's'} still need your vote.
+              {openMotionsCount === 1
+                ? '1 open motion still needs your vote.'
+                : `${openMotionsCount} open motions still need your vote.`}
             </p>
             <p className="text-xs opacity-70">
               {openMotionsTotal} open motion
-              {openMotionsTotal === 1 ? '' : 's'} · {openTopicsCount} topics you
-              have not voted on
+              {openMotionsTotal === 1 ? '' : 's'} · {openTopicsCount} topic
+              {openTopicsCount === 1 ? '' : 's'} you have not voted on
             </p>
             <ButtonLink
               to="/governance"
