@@ -11,7 +11,10 @@ export function AdminStreamsView() {
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/streams">
-          <ViewShell title="Streams" classes={{ root: 'px-0 pt-0' }}>
+          <ViewShell
+            title="Streams"
+            classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+          >
             <div className="flex flex-col gap-6">
               <AdminStreamManagerPanel />
               <ChannelRotationPanel />

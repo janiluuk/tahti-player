@@ -88,7 +88,7 @@ export function AdminGrantCycleView() {
           <div className="flex max-w-5xl flex-col gap-6">
             <ViewShell
               title={`${year} grant cycle`}
-              classes={{ root: 'px-0 pt-0' }}
+              classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               <div className="flex flex-wrap gap-2">
                 <ButtonAnchor

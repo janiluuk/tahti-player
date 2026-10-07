@@ -168,7 +168,10 @@ export function AdminLogsView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/logs">
           <div className="flex max-w-6xl flex-col gap-6">
-            <ViewShell title="Logs" classes={{ root: 'px-0 pt-0' }}>
+            <ViewShell
+              title="Logs"
+              classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+            >
               <Tabs
                 items={[
                   {

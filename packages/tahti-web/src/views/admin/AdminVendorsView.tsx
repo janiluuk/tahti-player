@@ -278,7 +278,10 @@ export function AdminVendorsContent() {
 
   return (
     <div className="flex flex-col gap-6">
-      <ViewShell title="Vendors" classes={{ root: 'px-0 pt-0' }}>
+      <ViewShell
+        title="Vendors"
+        classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+      >
         <StudioPanel
           title={`${blockers.length} launch blockers · ${pending.length} checks pending`}
           description="A vendor is not considered live until its credentials, contract, callback/webhook, DPA, and operational test are confirmed."
