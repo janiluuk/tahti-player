@@ -26,6 +26,9 @@ export type ConnectionStatus = {
   /** Only set by providers that expose a display name once connected
    * (e.g. musicbrainz's connected editor username). */
   username?: string | null;
+  /** The status request itself failed (offline, signed out, server error).
+   * `connected`/`configured` are then unknown, not a real "needs setup". */
+  unavailable?: boolean;
 };
 
 export type SourceDef = {
@@ -288,7 +291,7 @@ export async function fetchConnectionStatus(
     return { data, meta: { source: 'api' } };
   } catch (err) {
     return {
-      data: { connected: false, configured: false },
+      data: { connected: false, configured: false, unavailable: true },
       meta: failMeta(err),
     };
   }

@@ -1,7 +1,7 @@
 import type { FetchMeta } from '.././client';
 import { DEMO_MP3 } from '.././mock';
 import { isForceMock } from '.././mode';
-import { requestJson } from '.././request-json';
+import { requestJson, RequestJsonError } from '.././request-json';
 import type { TahtiPlayable } from '.././types';
 import { failMeta, SOUNDCLOUD_IMPORT_BATCH_SIZE } from './shared';
 
@@ -13,8 +13,23 @@ export type SoundcloudTrack = {
   downloadable?: boolean;
 };
 
+/**
+ * True when the API says the SoundCloud link is gone: never connected, or the
+ * stored token expired (the API has then already dropped it). A plain 401 is
+ * not enough — that is also what a signed-out Tahti session answers.
+ */
+function soundcloudNeedsReconnect(err: unknown): boolean {
+  return (
+    err instanceof RequestJsonError &&
+    (err.code === 'PROVIDER_TOKEN_EXPIRED' ||
+      err.code === 'PROVIDER_NOT_CONNECTED')
+  );
+}
+
 export async function fetchSoundcloudTracks(): Promise<{
   data: SoundcloudTrack[];
+  /** The connection is gone; an empty `data` is not "no tracks". */
+  needsReconnect?: boolean;
   meta: FetchMeta;
 }> {
   if (isForceMock()) {
@@ -36,6 +51,9 @@ export async function fetchSoundcloudTracks(): Promise<{
     );
     return { data: data.tracks ?? [], meta: { source: 'api' } };
   } catch (err) {
+    if (soundcloudNeedsReconnect(err)) {
+      return { data: [], needsReconnect: true, meta: failMeta(err) };
+    }
     return { data: [], meta: failMeta(err) };
   }
 }
