@@ -90,7 +90,10 @@ export function StudioStatsDetailView() {
             ← Insights
           </Link>
         </p>
-        <ViewShell title="Insights" classes={{ root: 'px-0 pt-0' }}>
+        <ViewShell
+          title="Insights"
+          classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+        >
           <FilterChips
             items={RANGES}
             selected={range}
