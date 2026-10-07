@@ -26,7 +26,7 @@ export function ChatView({ slug }: { slug?: string }) {
         title="Chat"
         classes={{
           root: 'px-0 pt-0 mx-auto max-w-lg',
-          scrollableArea: 'gap-6',
+          content: 'gap-6',
         }}
       >
         <Input
@@ -66,7 +66,7 @@ export function ChatView({ slug }: { slug?: string }) {
       subtitle={slug}
       classes={{
         root: 'px-0 pt-0 mx-auto max-w-lg',
-        scrollableArea: 'gap-6',
+        content: 'gap-6',
       }}
     >
       <div className="flex flex-wrap items-center justify-between gap-2">

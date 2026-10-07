@@ -75,6 +75,7 @@ export function RadioStationView({ stationId }: { stationId: string }) {
       title={station.name}
       subtitle={`${station.genre} · ${station.language}`}
       data-testid="radio-station-page"
+      classes={{ content: 'gap-6' }}
     >
       <div className="flex flex-col gap-6 md:flex-row md:items-start">
         <MediaArtwork

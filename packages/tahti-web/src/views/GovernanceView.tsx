@@ -612,7 +612,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
       title="Governance"
       classes={{
         root: 'px-0 pt-0 mx-auto max-w-5xl',
-        scrollableArea: 'gap-6',
+        content: 'gap-6',
       }}
     >
       {body}

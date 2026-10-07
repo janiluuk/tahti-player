@@ -54,10 +54,9 @@ export function TransparencyView() {
       title="Transparency"
       classes={{
         root: 'px-0 pt-0 mx-auto max-w-4xl',
-        scrollableArea: 'gap-8',
       }}
     >
-      <div className="flex flex-col gap-1">
+      <div className="mb-6 flex flex-col gap-1">
         <Link
           to="/transparency/methodology"
           className="text-foreground-secondary w-fit text-xs underline-offset-2 hover:underline"
