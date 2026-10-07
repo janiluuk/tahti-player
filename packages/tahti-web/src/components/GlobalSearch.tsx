@@ -57,7 +57,7 @@ function ResultRow({
   meta: string;
   onSelect: () => void;
 }) {
-  const ref = useRef<HTMLButtonElement>(null);
+  const ref = useRef<HTMLElement>(null);
   useEffect(() => {
     if (active) {
       ref.current?.scrollIntoView({ block: 'nearest' });
@@ -65,7 +65,9 @@ function ResultRow({
   }, [active]);
 
   return (
-    <button
+    <Button
+      variant="text"
+      size="flexible"
       id={id}
       ref={ref}
       type="button"
@@ -84,7 +86,7 @@ function ResultRow({
           {meta}
         </span>
       </span>
-    </button>
+    </Button>
   );
 }
 

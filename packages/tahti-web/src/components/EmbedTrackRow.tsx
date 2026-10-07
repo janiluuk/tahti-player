@@ -1,6 +1,8 @@
 import { PlayIcon } from 'lucide-react';
 import { useState } from 'react';
 
+import { Button } from '@tahti-player/ui';
+
 import { playableFromHearthis } from '../api/sources';
 import {
   EMBED_PROVIDER_HEIGHT,
@@ -77,9 +79,11 @@ export function EmbedTrackRow({ title, provider, embedUri, className }: Props) {
           loading="lazy"
         />
       ) : (
-        <button
+        <Button
+          variant="text"
+          size="flexible"
           type="button"
-          className="hover:bg-background-secondary flex w-full items-center gap-3 px-3 py-2 text-left transition-colors"
+          className="hover:bg-background-secondary flex w-full items-center gap-3 rounded-none px-3 py-2 text-left"
           onClick={() => void start()}
           aria-label={`${isPlaying ? 'Pause' : 'Play'} ${title} on ${label}`}
         >
@@ -95,7 +99,7 @@ export function EmbedTrackRow({ title, provider, embedUri, className }: Props) {
           <span className="text-foreground-secondary shrink-0 font-mono text-[10px] tracking-wide uppercase">
             Embed
           </span>
-        </button>
+        </Button>
       )}
     </li>
   );

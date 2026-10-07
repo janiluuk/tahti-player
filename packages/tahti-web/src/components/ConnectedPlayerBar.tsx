@@ -8,7 +8,14 @@ import {
 import { useEffect, useRef, useState } from 'react';
 
 import { formatArtistNames } from '@tahti-player/model';
-import { Badge, Button, cn, PlayerBar, Tooltip } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  cn,
+  MediaArtwork,
+  PlayerBar,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import { TAHTI_RADIO_SLUG } from '../api/client';
 import {
@@ -294,19 +301,17 @@ export function ConnectedPlayerBar() {
         {waveform}
         {hearthisPanel}
         <div className="flex w-full items-center gap-3 px-4 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
-          <button
+          <Button
+            variant="text"
+            size="flexible"
             type="button"
-            className="flex min-w-0 flex-1 items-center gap-3 text-left"
+            className="flex min-w-0 flex-1 items-center gap-3 text-left hover:bg-transparent"
             onClick={() => setFullScreenPlayerOpen(true)}
             aria-label="Open full-screen player"
             data-testid="expand-full-screen-player"
           >
             {coverUrl ? (
-              <img
-                src={coverUrl}
-                alt=""
-                className="size-10 shrink-0 rounded-md object-cover"
-              />
+              <MediaArtwork src={coverUrl} size="sm" className="shrink-0" />
             ) : null}
             <span className="min-w-0">
               <span className="block truncate text-sm font-semibold">
@@ -317,7 +322,7 @@ export function ConnectedPlayerBar() {
               </span>
             </span>
             {isRealLive ? <PlayerLiveBadge /> : null}
-          </button>
+          </Button>
           {mobilePlayPauseButton}
           {queueButton}
         </div>

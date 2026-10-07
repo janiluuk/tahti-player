@@ -74,13 +74,15 @@ export function ListenerWidgetsSection() {
     >
       <div className="flex w-full flex-wrap items-center justify-between gap-2">
         <h2 className="text-2xl font-bold">Listen add-ons</h2>
-        <button
+        <Button
+          variant="text"
+          size="flexible"
           type="button"
           onClick={() => openSettings('plugin-store', 'listen')}
-          className="text-foreground-secondary text-xs underline-offset-2 hover:underline"
+          className="text-foreground-secondary text-xs underline-offset-2 hover:bg-transparent hover:underline"
         >
           Manage widgets
-        </button>
+        </Button>
       </div>
 
       {savedBrowserStations.length > 0 && (

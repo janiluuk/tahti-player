@@ -2,6 +2,8 @@ import { useRouterState } from '@tanstack/react-router';
 import { ChevronLeftIcon, ChevronRightIcon, XIcon } from 'lucide-react';
 import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 
+import { Button } from '@tahti-player/ui';
+
 import { cn } from '../lib/cn';
 import { getPageTourSteps, type TourStep } from '../lib/pageTour';
 import { useTourStore } from '../stores/tourStore';
@@ -164,14 +166,16 @@ export function PageTourSpotlight() {
       <div className="border-border bg-background pointer-events-auto fixed bottom-8 left-1/2 z-[102] w-[min(90vw,420px)] -translate-x-1/2 rounded-xl border p-4 shadow-xl">
         <div className="flex items-start justify-between gap-2">
           <h2 className="font-display text-sm font-bold">{step.label}</h2>
-          <button
+          <Button
+            variant="text"
+            size="icon-sm"
             type="button"
             onClick={close}
             aria-label="Close tour"
-            className="text-foreground-secondary hover:text-foreground -mt-1 -mr-1 rounded p-1"
+            className="text-foreground-secondary hover:text-foreground -mt-1 -mr-1 size-6"
           >
             <XIcon size={16} />
-          </button>
+          </Button>
         </div>
         <p className="text-foreground-secondary mt-1.5 text-sm">
           {step.description}
@@ -179,15 +183,17 @@ export function PageTourSpotlight() {
 
         {steps.length > 1 && (
           <div className="mt-3 flex items-center justify-between gap-2">
-            <button
+            <Button
+              variant="text"
+              size="flexible"
               type="button"
               disabled={stepIndex === 0}
               onClick={() => setStepIndex(stepIndex - 1)}
-              className="text-foreground-secondary hover:text-foreground inline-flex items-center gap-1 text-xs font-medium disabled:opacity-30"
+              className="text-foreground-secondary hover:text-foreground gap-1 text-xs font-medium hover:bg-transparent disabled:opacity-30"
             >
               <ChevronLeftIcon size={14} aria-hidden />
               Back
-            </button>
+            </Button>
             <div className="flex items-center gap-1">
               {steps.map((s, index) => (
                 <span
@@ -199,15 +205,17 @@ export function PageTourSpotlight() {
                 />
               ))}
             </div>
-            <button
+            <Button
+              variant="text"
+              size="flexible"
               type="button"
               disabled={stepIndex === steps.length - 1}
               onClick={() => setStepIndex(stepIndex + 1)}
-              className="text-foreground-secondary hover:text-foreground inline-flex items-center gap-1 text-xs font-medium disabled:opacity-30"
+              className="text-foreground-secondary hover:text-foreground gap-1 text-xs font-medium hover:bg-transparent disabled:opacity-30"
             >
               Next
               <ChevronRightIcon size={14} aria-hidden />
-            </button>
+            </Button>
           </div>
         )}
 
