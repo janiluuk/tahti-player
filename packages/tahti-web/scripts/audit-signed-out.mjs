@@ -4,6 +4,8 @@
 //      Follow, Add, reactions and Comment must open sign-in, and the top
 //      search must find and open a result.
 //   2. Listener (no channel): no Studio tab bar, no channel settings.
+//   3. Signed out on a phone (390 px): no public page scrolls sideways, and
+//      the top bar's search button finds and opens a result.
 // Exits 1 when something is wrong. Run against the mock app:
 //   VITE_FORCE_MOCK=1 pnpm dev:tahti
 //   BASE=http://127.0.0.1:5173 node packages/tahti-web/scripts/audit-signed-out.mjs
@@ -70,10 +72,11 @@ const browser = await chromium.launch({
   args: ['--no-sandbox'],
 });
 
-async function openAs(user) {
-  const context = await browser.newContext({
-    viewport: { width: 1400, height: 900 },
-  });
+const DESKTOP = { width: 1400, height: 900 };
+const PHONE = { width: 390, height: 800 };
+
+async function openAs(user, viewport = DESKTOP) {
+  const context = await browser.newContext({ viewport });
   const page = await context.newPage();
   await page.goto(base + '/');
   await page.evaluate((account) => {
@@ -212,10 +215,43 @@ const notes = [];
   await context.close();
 }
 
+{
+  const { context, page } = await openAs(null, PHONE);
+  for (const path of PUBLIC_PATHS) {
+    await visit(page, path);
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - window.innerWidth,
+    );
+    if (overflow > 2) {
+      problems.push(`phone: ${path} scrolls sideways by ${overflow} px`);
+    }
+  }
+  await visit(page, '/');
+  const found = await page
+    .getByRole('button', { name: 'Search', exact: true })
+    .click({ timeout: 4000 })
+    .then(() =>
+      page
+        .getByTestId('phone-search')
+        .getByRole('combobox')
+        .fill('mid', { timeout: 4000 }),
+    )
+    .then(() => page.getByRole('option').first().click({ timeout: 4000 }))
+    .then(() => page.waitForTimeout(500))
+    .then(() => new URL(page.url()).pathname)
+    .catch(() => null);
+  if (found === null) {
+    problems.push('phone: the top bar search shows no result for "mid"');
+  } else if (!/^\/(u|t|c)\//.test(found)) {
+    problems.push(`phone: a search result opened ${found}`);
+  }
+  await context.close();
+}
+
 await browser.close();
 
 console.log(
-  `checked ${PUBLIC_PATHS.length} public and ${ACCOUNT_PATHS.length} account pages, ${SIGN_IN_ACTIONS.length} sign-in actions and the search signed out, plus Studio and Settings as a listener`,
+  `checked ${PUBLIC_PATHS.length} public and ${ACCOUNT_PATHS.length} account pages, ${SIGN_IN_ACTIONS.length} sign-in actions and the search signed out, plus Studio and Settings as a listener, and the public pages and the search at 390 px`,
 );
 if (notes.length > 0) {
   console.log('\nTo look at:\n' + notes.join('\n'));
