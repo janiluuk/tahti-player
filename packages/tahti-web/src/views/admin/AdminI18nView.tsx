@@ -26,6 +26,7 @@ import { StudioPanel } from '../../components/StudioPanel';
 export function AdminI18nView() {
   const [languages, setLanguages] = useState<AdminLanguage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [unavailable, setUnavailable] = useState(false);
   const [newOpen, setNewOpen] = useState(false);
   const [code, setCode] = useState('');
   const [name, setName] = useState('');
@@ -38,6 +39,7 @@ export function AdminI18nView() {
     setLoading(true);
     void fetchAdminLanguages().then((res) => {
       setLanguages(res.data);
+      setUnavailable(res.unavailable === true);
       setLoading(false);
     });
   };
@@ -94,15 +96,17 @@ export function AdminI18nView() {
               title="Languages"
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
               actions={
-                <Tooltip content="New language" side="top">
-                  <Button
-                    size="icon-sm"
-                    onClick={() => setNewOpen(true)}
-                    aria-label="New language"
-                  >
-                    <PlusIcon size={16} aria-hidden />
-                  </Button>
-                </Tooltip>
+                unavailable ? undefined : (
+                  <Tooltip content="New language" side="top">
+                    <Button
+                      size="icon-sm"
+                      onClick={() => setNewOpen(true)}
+                      aria-label="New language"
+                    >
+                      <PlusIcon size={16} aria-hidden />
+                    </Button>
+                  </Tooltip>
+                )
               }
             >
               {msg && (
@@ -114,6 +118,12 @@ export function AdminI18nView() {
               <StudioPanel>
                 {loading ? (
                   <PageLoading label="Loading languages…" />
+                ) : unavailable ? (
+                  <p className="text-foreground-secondary text-sm">
+                    Not available yet. This server has no translation
+                    management, so languages cannot be added or imported here.
+                    The app&apos;s translations ship with each release.
+                  </p>
                 ) : (
                   <ul className="divide-border divide-y">
                     {languages.map((lang) => {
