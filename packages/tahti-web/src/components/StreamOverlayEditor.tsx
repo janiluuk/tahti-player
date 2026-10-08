@@ -217,7 +217,9 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
       )}
 
       <div className="group relative aspect-video w-full max-w-xs">
-        <button
+        <Button
+          variant="plain"
+          size="flexible"
           type="button"
           onClick={() =>
             !coverUploading &&
@@ -236,7 +238,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
               ? 'Preview overlay cover'
               : 'Change overlay cover'
           }
-          className="border-border bg-background-secondary relative flex size-full items-center justify-center overflow-hidden rounded-xl border"
+          className="border-border bg-background-secondary relative flex size-full items-center justify-center overflow-hidden rounded-xl border whitespace-normal active:scale-100"
         >
           {overlay.streamOverlayCoverUrl ? (
             <img
@@ -276,7 +278,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
               scrimEnabled={overlay.streamOverlayScrimEnabled}
             />
           ) : null}
-        </button>
+        </Button>
         {overlay.streamOverlayCoverUrl ? (
           <ImageSlotDeleteBadge
             label="overlay cover"
