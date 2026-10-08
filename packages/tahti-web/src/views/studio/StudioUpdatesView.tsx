@@ -184,7 +184,7 @@ export function StudioUpdatesView() {
                       key={p.id}
                       className="flex flex-wrap items-start justify-between gap-2 py-3 text-sm first:pt-0 last:pb-0"
                     >
-                      <div className="min-w-0 flex-1">
+                      <div className="min-w-56 flex-1">
                         <div className="font-medium">
                           {p.title || 'Untitled'}
                         </div>
