@@ -102,7 +102,7 @@ export function StudioRevenueView() {
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-4 px-1 py-2">
         <ViewShell
           title={showTiers ? 'Tiers' : 'Audience'}
-          classes={{ root: 'px-0 pt-0' }}
+          classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
         >
           {!showTiers ? (
             <div className="flex items-center gap-2">

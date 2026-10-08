@@ -354,7 +354,7 @@ export function DiscoverView() {
       </Tabs.Root>
       <ViewShell
         title="Discover"
-        classes={{ root: 'px-0 pt-0' }}
+        classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
         actions={
           activeTab === 'discover' ? (
             <DiscoverAddWidgetButton

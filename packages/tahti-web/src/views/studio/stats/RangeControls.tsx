@@ -26,7 +26,7 @@ export function RangeControls({ state }: { state: StatsData }) {
   } = state;
 
   return (
-    <div className="mb-4 flex flex-col gap-3">
+    <div className="flex flex-col gap-3">
       <FilterChips
         items={RANGE_CHIPS}
         selected={range}
