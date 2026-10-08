@@ -110,6 +110,7 @@ export function Toolbar({
             value={filterValue}
             onChange={(event) => onFilterChange(event.target.value)}
             placeholder={labels.filterPlaceholder}
+            aria-label={labels.filterPlaceholder.replace(/(…|\.{3})$/, '')}
             endAddon={
               <FilterIcon
                 className="h-4 w-4"

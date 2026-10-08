@@ -74,6 +74,7 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
             size="sm"
             tone="secondary"
             placeholder={labels.filterPlaceholder}
+            aria-label={labels.filterPlaceholder.replace(/(…|\.{3})$/, '')}
             value={filterText}
             onChange={(event) => setFilterText(event.target.value)}
             endAddon={
