@@ -114,7 +114,7 @@ export function GreenRoomSessionPanel() {
           variant="secondary"
           className="mb-3 self-start"
         >
-          <MessageSquareIcon size={14} aria-hidden />
+          <MessageSquareIcon size={14} aria-hidden className="mr-1.5" />
           Open Green Room chat
         </ButtonAnchor>
       ) : null}

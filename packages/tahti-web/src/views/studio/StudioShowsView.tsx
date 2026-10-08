@@ -280,7 +280,7 @@ function ShowRow({
         className="border-border bg-background-secondary size-20 rounded-lg border"
         placeholder={<RadioIcon size={28} className="opacity-40" aria-hidden />}
       />
-      <div className="min-w-0 flex-1">
+      <div className="min-w-40 flex-1">
         <Link
           to="/studio/shows/$id"
           params={{ id: show.id }}
