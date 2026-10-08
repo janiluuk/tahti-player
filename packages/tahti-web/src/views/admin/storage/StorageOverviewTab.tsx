@@ -1,8 +1,7 @@
-import { Link } from '@tanstack/react-router';
 import { CloudIcon, ExternalLinkIcon, HardDriveIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Button, DonutChart, Meter, Tooltip } from '@tahti-player/ui';
+import { ButtonLink, DonutChart, Meter, Tooltip } from '@tahti-player/ui';
 
 import {
   fetchAdminFiles,
@@ -247,20 +246,18 @@ export function StorageOverviewTab() {
                       displayName={row.displayName}
                       onSaved={reload}
                     />
-                    <Link
-                      to="/admin/storage/$userId"
-                      params={{ userId: row.userId }}
-                    >
-                      <Tooltip content="View files" side="top">
-                        <Button
-                          size="icon-sm"
-                          variant="secondary"
-                          aria-label={`View ${row.displayName}'s files`}
-                        >
-                          <ExternalLinkIcon size={14} aria-hidden />
-                        </Button>
-                      </Tooltip>
-                    </Link>
+                    <Tooltip content="View files" side="top">
+                      <ButtonLink
+                        to="/admin/storage/$userId"
+                        params={{ userId: row.userId }}
+
+                        size="icon-sm"
+                        variant="secondary"
+                        aria-label={`View ${row.displayName}'s files`}
+                      >
+                        <ExternalLinkIcon size={14} aria-hidden />
+                      </ButtonLink>
+                    </Tooltip>
                   </div>
                 </li>
               );

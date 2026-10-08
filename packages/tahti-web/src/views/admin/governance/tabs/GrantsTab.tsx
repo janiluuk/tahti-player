@@ -1,7 +1,6 @@
-import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { Button, ButtonLink, Tooltip } from '@tahti-player/ui';
+import { ButtonLink, Tooltip } from '@tahti-player/ui';
 
 import {
   fetchAdminGrants,
@@ -48,20 +47,18 @@ export function GrantsTab() {
                 <div className="text-sm font-medium">
                   {formatEur(row.totalCents)}
                 </div>
-                <Link
-                  to="/admin/grants/$year"
-                  params={{ year: String(row.year) }}
-                >
-                  <Tooltip content={`View ${row.year} grants`} side="top">
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      aria-label={`View ${row.year} grants`}
-                    >
-                      →
-                    </Button>
-                  </Tooltip>
-                </Link>
+                <Tooltip content={`View ${row.year} grants`} side="top">
+                  <ButtonLink
+                    to="/admin/grants/$year"
+                    params={{ year: String(row.year) }}
+
+                    size="icon-sm"
+                    variant="text"
+                    aria-label={`View ${row.year} grants`}
+                  >
+                    →
+                  </ButtonLink>
+                </Tooltip>
               </li>
             ))}
           </ul>

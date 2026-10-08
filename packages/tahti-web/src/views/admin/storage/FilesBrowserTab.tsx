@@ -14,6 +14,7 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   Badge,
   Button,
+  ButtonLink,
   Dialog,
   Input,
   Select,
@@ -130,17 +131,17 @@ function FileRow({
             <SearchIcon size={15} aria-hidden />
           </Button>
         </Tooltip>
-        <Link to="/admin/storage/$userId" params={{ userId: f.userId }}>
-          <Tooltip content="View uploader's storage" side="top">
-            <Button
-              size="icon-sm"
-              variant="text"
-              aria-label={`View ${f.displayName}'s storage`}
-            >
-              <ExternalLinkIcon size={15} aria-hidden />
-            </Button>
-          </Tooltip>
-        </Link>
+        <Tooltip content="View uploader's storage" side="top">
+          <ButtonLink
+            to="/admin/storage/$userId"
+            params={{ userId: f.userId }}
+            size="icon-sm"
+            variant="text"
+            aria-label={`View ${f.displayName}'s storage`}
+          >
+            <ExternalLinkIcon size={15} aria-hidden />
+          </ButtonLink>
+        </Tooltip>
         <Tooltip content="Delete" side="top">
           <Button
             size="icon-sm"
