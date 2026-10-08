@@ -54,6 +54,9 @@ export function SettingsView({ sectionId }: { sectionId?: string }) {
       section === 'artist' && isArtistSettingsSection(tab) ? tab : undefined,
       section === 'account' && isAccountSettingsSection(tab) ? tab : undefined,
     );
+    if (!isSettingsSectionId(sectionId)) {
+      useSettingsModalStore.setState({ openedToSection: false });
+    }
     const status = params.get('status');
     if (status === 'connected') {
       toast.success('Connected.');
@@ -66,7 +69,7 @@ export function SettingsView({ sectionId }: { sectionId?: string }) {
     if (social) {
       toast[social.kind](social.message);
     }
-  }, [open, section]);
+  }, [open, section, sectionId]);
 
   return null;
 }

@@ -20,6 +20,7 @@ type SettingsPanelProps = {
   activeTab: string;
   onTabChange: (tabId: string) => void;
   navFooter?: ReactNode;
+  startOnContent?: boolean;
 };
 
 export const SettingsPanel: FC<SettingsPanelProps> = ({
@@ -29,18 +30,19 @@ export const SettingsPanel: FC<SettingsPanelProps> = ({
   activeTab,
   onTabChange,
   navFooter,
+  startOnContent = false,
 }) => {
   const activeTabMeta = tabs.find((tab) => tab.id === activeTab);
   // Below `sm`, nav and content share one screen — list first, then detail.
   // Desktop always shows both; `sm:flex!` on each pane overrides the mobile
   // `hidden`/`flex` toggle above the breakpoint.
-  const [mobileShowList, setMobileShowList] = useState(true);
+  const [mobileShowList, setMobileShowList] = useState(!startOnContent);
 
   useEffect(() => {
     if (isOpen) {
-      setMobileShowList(true);
+      setMobileShowList(!startOnContent);
     }
-  }, [isOpen]);
+  }, [isOpen, startOnContent]);
 
   return (
     <DialogRoot
