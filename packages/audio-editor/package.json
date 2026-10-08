@@ -1,0 +1,49 @@
+{
+  "name": "@tahti-player/audio-editor",
+  "version": "0.0.10",
+  "description": "theDAW-ported audio-editor for Tahti Player",
+  "type": "module",
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "src",
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest --run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "type-check": "tsc -p tsconfig.json --noEmit",
+    "clean": "rm -rf dist .turbo"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "dependencies": {
+    "zustand": "^5.0.7",
+    "@tahti-player/audio-core": "workspace:*",
+    "@tahti-player/audio-rack": "workspace:*",
+    "@tahti-player/ui": "workspace:*",
+    "lucide-react": "^0.542.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^5.0.1",
+    "@vitest/coverage-v8": "^4.0.0",
+    "jsdom": "^26.1.0",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.3",
+    "vitest": "^4.0.0"
+  },
+  "packageManager": "pnpm@10.33.4"
+}

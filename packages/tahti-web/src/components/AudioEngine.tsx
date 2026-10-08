@@ -5,6 +5,7 @@ import type { QueueItem } from '@tahti-player/model';
 
 import { postListenEvent } from '../api/client';
 import type { TahtiPlayable } from '../api/types';
+import { ensureAudioCoreBridge } from '../lib/audioCoreBridge';
 import {
   canAirPlay,
   canPlayNativeHls,
@@ -27,6 +28,7 @@ const LISTEN_EVENT_AFTER_SEC = 15;
  * Live / radio: HLS via hls.js (or native Safari).
  */
 export function AudioEngine() {
+  ensureAudioCoreBridge();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const hlsRef = useRef<Hls | null>(null);
   const listenReportedRef = useRef<Set<string>>(new Set());

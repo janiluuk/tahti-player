@@ -1,14 +1,22 @@
 import { Link, useBlocker } from '@tanstack/react-router';
 import { UploadIcon } from 'lucide-react';
-import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react';
 import { toast } from 'sonner';
 
+import { preferInternalEngine } from '@tahti-player/audio-core';
+import {
+  loadBlobOntoNewTrack,
+  MultitrackEditor,
+  useEditorStore,
+} from '@tahti-player/audio-editor';
 import { Button, Dialog, Input, SaveButton, ViewShell } from '@tahti-player/ui';
+import { VisualizerHost } from '@tahti-player/visualizer';
 
 import { fetchSoundVersions } from '../../api/sound-versions';
 import {
   fetchEditorDraft,
   fetchEditorSource,
+  fetchEditorStreamBlob,
   renderEditorDraft,
   saveEditorDraft,
 } from '../../api/studio';
@@ -48,6 +56,10 @@ function ProEditor({ soundId }: { soundId: string }) {
   const masteringEnabled = useMasteringFeatureStore((state) => state.enabled);
   const [sourceUrl, setSourceUrl] = useState<string | null>(null);
   const [title, setTitle] = useState('');
+  const [editorMode, setEditorMode] = useState<'trim' | 'multitrack'>('trim');
+  const [multitrackReady, setMultitrackReady] = useState(false);
+  const modeTrimId = useId();
+  const modeMultiId = useId();
   const [editList, setEditList] = useState<EditList | null>(null);
   const [updatedAt, setUpdatedAt] = useState<string | null>(null);
   const [serverPeaks, setServerPeaks] = useState<EditorPeaks | null>(null);
@@ -328,10 +340,58 @@ function ProEditor({ soundId }: { soundId: string }) {
           title={title || 'Pro editor'}
           classes={{ root: 'px-0 pt-0' }}
         >
-          <ClientCapabilityNotice kind="partial" title="Single-track editor">
-            Cut, trim, adjust effects, or request stems here. Use a multitrack
-            session when you need to arrange several tracks together.
+          <ClientCapabilityNotice kind="partial" title="Studio editor">
+            Trim mode keeps the draft/render pipeline. Multitrack mode ports
+            theDAW&apos;s browser rack + live mixer; bounce downloads a WAV you
+            can attach as a version after render.
           </ClientCapabilityNotice>
+
+          <div
+            className="flex flex-wrap gap-3 text-sm"
+            role="radiogroup"
+            aria-label="Editor mode"
+          >
+            <div className="flex items-center gap-2">
+              <input
+                id={modeTrimId}
+                name="studio-editor-mode"
+                type="radio"
+                checked={editorMode === 'trim'}
+                onChange={() => setEditorMode('trim')}
+              />
+              <label htmlFor={modeTrimId}>Trim / effects</label>
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                id={modeMultiId}
+                name="studio-editor-mode"
+                type="radio"
+                checked={editorMode === 'multitrack'}
+                onChange={() => {
+                  setEditorMode('multitrack');
+                  // Isolate the editor graph from the player bridge.
+                  preferInternalEngine();
+                  if (!multitrackReady) {
+                    void (async () => {
+                      try {
+                        const blob = await fetchEditorStreamBlob(soundId);
+                        useEditorStore
+                          .getState()
+                          .loadProject({ tracks: [], clips: [] });
+                        await loadBlobOntoNewTrack(blob, title || 'Source');
+                        setMultitrackReady(true);
+                      } catch {
+                        toast.error(
+                          'Could not load audio into the multitrack editor.',
+                        );
+                      }
+                    })();
+                  }
+                }}
+              />
+              <label htmlFor={modeMultiId}>Multitrack + viz</label>
+            </div>
+          </div>
 
           {loading ? (
             <StudioPanel>
@@ -344,60 +404,100 @@ function ProEditor({ soundId }: { soundId: string }) {
             />
           ) : (
             <>
-              <WaveformEditor
-                sourceUrl={sourceUrl}
-                serverPeaks={serverPeaks}
-                editList={editList}
-                onChange={edit}
-                onDuration={adoptDecodedDuration}
-                canUndo={history.past.length > 0}
-                canRedo={history.future.length > 0}
-                onUndo={undo}
-                onRedo={redo}
-              />
+              {editorMode === 'trim' ? (
+                <WaveformEditor
+                  sourceUrl={sourceUrl}
+                  serverPeaks={serverPeaks}
+                  editList={editList}
+                  onChange={edit}
+                  onDuration={adoptDecodedDuration}
+                  canUndo={history.past.length > 0}
+                  canRedo={history.future.length > 0}
+                  onUndo={undo}
+                  onRedo={redo}
+                />
+              ) : (
+                <MultitrackEditor
+                  showVizSlot
+                  vizSlot={
+                    <VisualizerHost className="h-full min-h-48 w-full" />
+                  }
+                  onBounce={async (blob) => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${title || 'mixdown'}-bounce.wav`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    toast.success(
+                      'Bounce ready — WAV downloaded. Use Render version in trim mode to publish a revision, or upload the bounce from Music.',
+                    );
+                  }}
+                />
+              )}
 
-              <div className="grid gap-4 md:grid-cols-2">
-                <StemsPanel soundId={soundId} />
+              {editorMode === 'trim' ? (
+                <>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <StemsPanel soundId={soundId} />
 
-                <StudioPanel title="Export">
-                  <div className="flex flex-col gap-3">
-                    <Input
-                      label="Version label"
-                      value={versionLabel}
-                      onChange={(e) => setVersionLabel(e.target.value)}
-                    />
-                    <div className="flex flex-wrap justify-end gap-2">
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        disabled={busy}
-                        onClick={() => setRenderPromptOpen(true)}
-                      >
-                        <UploadIcon size={16} aria-hidden className="mr-1.5" />
-                        Render version
-                      </Button>
-                      <SaveButton
-                        saving={busy}
-                        label="Save draft"
-                        onClick={() => void save()}
-                      />
-                    </div>
-                    {message && (
-                      <p
-                        className="text-foreground-secondary text-sm"
-                        role="status"
-                      >
-                        {message}
-                      </p>
-                    )}
+                    <StudioPanel title="Export">
+                      <div className="flex flex-col gap-3">
+                        <Input
+                          label="Version label"
+                          value={versionLabel}
+                          onChange={(e) => setVersionLabel(e.target.value)}
+                        />
+                        <div className="flex flex-wrap justify-end gap-2">
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            disabled={busy}
+                            onClick={() => setRenderPromptOpen(true)}
+                          >
+                            <UploadIcon
+                              size={16}
+                              aria-hidden
+                              className="mr-1.5"
+                            />
+                            Render version
+                          </Button>
+                          <SaveButton
+                            saving={busy}
+                            label="Save draft"
+                            onClick={() => void save()}
+                          />
+                        </div>
+                        {message && (
+                          <p
+                            className="text-foreground-secondary text-sm"
+                            role="status"
+                          >
+                            {message}
+                          </p>
+                        )}
+                      </div>
+                    </StudioPanel>
                   </div>
-                </StudioPanel>
-              </div>
 
-              <MasteringPanel
-                editList={editList}
-                onChange={(next) => edit(next, 'mastering')}
-              />
+                  <MasteringPanel
+                    editList={editList}
+                    onChange={(next) => edit(next, 'mastering')}
+                  />
+                </>
+              ) : (
+                <StudioPanel title="Multitrack export">
+                  <p className="text-foreground-secondary text-sm">
+                    Multitrack sessions autosave locally in this browser. Use{' '}
+                    <strong>Bounce</strong> to download a WAV, then switch to
+                    Trim mode to render a published version, or upload the
+                    bounce from Music. Server-side multitrack publish is not
+                    wired yet (no{' '}
+                    <code className="text-xs">/editor/bounce</code> — that route
+                    returns 410).
+                  </p>
+                </StudioPanel>
+              )}
             </>
           )}
         </ViewShell>

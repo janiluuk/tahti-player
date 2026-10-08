@@ -228,6 +228,125 @@ importers:
         specifier: ^4.1.11
         version: 4.1.11(@types/node@25.9.8)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-v8@4.1.11)(jsdom@26.1.0(supports-color@8.1.1))(vite@7.3.6(@types/node@25.9.8)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.1))
 
+  packages/audio-core:
+    devDependencies:
+      '@types/react':
+        specifier: ^18.3.23
+        version: 18.3.31
+      '@types/react-dom':
+        specifier: ^18.3.7
+        version: 18.3.7(@types/react@18.3.31)
+      '@vitejs/plugin-react':
+        specifier: ^5.0.1
+        version: 5.2.0(supports-color@8.1.1)(vite@7.3.6(@types/node@25.9.8)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.1))
+      '@vitest/coverage-v8':
+        specifier: ^4.0.0
+        version: 4.1.11(@vitest/browser@4.1.11)(vitest@4.1.11)
+      jsdom:
+        specifier: ^26.1.0
+        version: 26.1.0(supports-color@8.1.1)
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
+      vite:
+        specifier: ^7.1.3
+        version: 7.3.6(@types/node@25.9.8)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.1)
+      vitest:
+        specifier: ^4.0.0
+        version: 4.1.11(@types/node@25.9.8)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-v8@4.1.11)(jsdom@26.1.0(supports-color@8.1.1))(vite@7.3.6(@types/node@25.9.8)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.1))
+
+  packages/audio-editor:
+    dependencies:
+      '@tahti-player/audio-core':
+        specifier: workspace:*
+        version: link:../audio-core
+      '@tahti-player/audio-rack':
+        specifier: workspace:*
+        version: link:../audio-rack
+      '@tahti-player/ui':
+        specifier: workspace:*
+        version: link:../ui
+      lucide-react:
+        specifier: ^0.542.0
+        version: 0.542.0(react@18.3.1)
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
+      zustand:
+        specifier: ^5.0.7
+        version: 5.0.15(@types/react@18.3.31)(immer@11.1.18)(react@18.3.1)(use-sync-external-store@1.7.0(react@18.3.1))
+    devDependencies:
+      '@types/react':
+        specifier: ^18.3.23
+        version: 18.3.31
+      '@types/react-dom':
+        specifier: ^18.3.7
+        version: 18.3.7(@types/react@18.3.31)
+      '@vitejs/plugin-react':
+        specifier: ^5.0.1
+        version: 5.2.0(supports-color@8.1.1)(vite@7.3.6(@types/node@25.9.8)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.1))
+      '@vitest/coverage-v8':
+        specifier: ^4.0.0
+        version: 4.1.11(@vitest/browser@4.1.11)(vitest@4.1.11)
+      jsdom:
+        specifier: ^26.1.0
+        version: 26.1.0(supports-color@8.1.1)
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
+      vite:
+        specifier: ^7.1.3
+        version: 7.3.6(@types/node@25.9.8)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.1)
+      vitest:
+        specifier: ^4.0.0
+        version: 4.1.11(@types/node@25.9.8)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-v8@4.1.11)(jsdom@26.1.0(supports-color@8.1.1))(vite@7.3.6(@types/node@25.9.8)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.1))
+
+  packages/audio-rack:
+    dependencies:
+      '@tahti-player/audio-core':
+        specifier: workspace:*
+        version: link:../audio-core
+      '@tahti-player/ui':
+        specifier: workspace:*
+        version: link:../ui
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
+      zustand:
+        specifier: ^5.0.7
+        version: 5.0.15(@types/react@18.3.31)(immer@11.1.18)(react@18.3.1)(use-sync-external-store@1.7.0(react@18.3.1))
+    devDependencies:
+      '@types/react':
+        specifier: ^18.3.23
+        version: 18.3.31
+      '@types/react-dom':
+        specifier: ^18.3.7
+        version: 18.3.7(@types/react@18.3.31)
+      '@vitejs/plugin-react':
+        specifier: ^5.0.1
+        version: 5.2.0(supports-color@8.1.1)(vite@7.3.6(@types/node@25.9.8)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.1))
+      '@vitest/coverage-v8':
+        specifier: ^4.0.0
+        version: 4.1.11(@vitest/browser@4.1.11)(vitest@4.1.11)
+      jsdom:
+        specifier: ^26.1.0
+        version: 26.1.0(supports-color@8.1.1)
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
+      vite:
+        specifier: ^7.1.3
+        version: 7.3.6(@types/node@25.9.8)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.1)
+      vitest:
+        specifier: ^4.0.0
+        version: 4.1.11(@types/node@25.9.8)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-v8@4.1.11)(jsdom@26.1.0(supports-color@8.1.1))(vite@7.3.6(@types/node@25.9.8)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.1))
+
   packages/docs: {}
 
   packages/eslint-config:
@@ -695,6 +814,15 @@ importers:
       '@fontsource/space-mono':
         specifier: ^5.2.9
         version: 5.3.0
+      '@tahti-player/audio-core':
+        specifier: workspace:*
+        version: link:../audio-core
+      '@tahti-player/audio-editor':
+        specifier: workspace:*
+        version: link:../audio-editor
+      '@tahti-player/audio-rack':
+        specifier: workspace:*
+        version: link:../audio-rack
       '@tahti-player/model':
         specifier: workspace:*
         version: link:../model
@@ -707,6 +835,9 @@ importers:
       '@tahti-player/ui':
         specifier: workspace:*
         version: link:../ui
+      '@tahti-player/visualizer':
+        specifier: workspace:*
+        version: link:../visualizer
       '@tanstack/react-router':
         specifier: ^1.131.2
         version: 1.170.38(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -817,6 +948,15 @@ importers:
 
   packages/tahti-web:
     dependencies:
+      '@tahti-player/audio-core':
+        specifier: workspace:*
+        version: link:../audio-core
+      '@tahti-player/audio-editor':
+        specifier: workspace:*
+        version: link:../audio-editor
+      '@tahti-player/audio-rack':
+        specifier: workspace:*
+        version: link:../audio-rack
       '@tahti-player/i18n':
         specifier: workspace:*
         version: link:../i18n
@@ -832,6 +972,9 @@ importers:
       '@tahti-player/ui':
         specifier: workspace:*
         version: link:../ui
+      '@tahti-player/visualizer':
+        specifier: workspace:*
+        version: link:../visualizer
       '@tanstack/react-router':
         specifier: ^1.131.2
         version: 1.170.38(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1154,6 +1297,55 @@ importers:
       vite-plugin-svgr:
         specifier: ^4.3.0
         version: 4.5.0(rollup@4.63.4)(supports-color@8.1.1)(typescript@5.9.3)(vite@7.3.6(@types/node@25.9.8)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.1))
+      vitest:
+        specifier: ^4.0.0
+        version: 4.1.11(@types/node@25.9.8)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-v8@4.1.11)(jsdom@26.1.0(supports-color@8.1.1))(vite@7.3.6(@types/node@25.9.8)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.1))
+
+  packages/visualizer:
+    dependencies:
+      '@tahti-player/audio-core':
+        specifier: workspace:*
+        version: link:../audio-core
+      '@tahti-player/ui':
+        specifier: workspace:*
+        version: link:../ui
+      lucide-react:
+        specifier: ^0.542.0
+        version: 0.542.0(react@18.3.1)
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
+      three:
+        specifier: ^0.184.0
+        version: 0.184.0
+    devDependencies:
+      '@types/react':
+        specifier: ^18.3.23
+        version: 18.3.31
+      '@types/react-dom':
+        specifier: ^18.3.7
+        version: 18.3.7(@types/react@18.3.31)
+      '@types/three':
+        specifier: ^0.184.1
+        version: 0.184.1
+      '@vitejs/plugin-react':
+        specifier: ^5.0.1
+        version: 5.2.0(supports-color@8.1.1)(vite@7.3.6(@types/node@25.9.8)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.1))
+      '@vitest/coverage-v8':
+        specifier: ^4.0.0
+        version: 4.1.11(@vitest/browser@4.1.11)(vitest@4.1.11)
+      jsdom:
+        specifier: ^26.1.0
+        version: 26.1.0(supports-color@8.1.1)
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.3
+      vite:
+        specifier: ^7.1.3
+        version: 7.3.6(@types/node@25.9.8)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.1)
       vitest:
         specifier: ^4.0.0
         version: 4.1.11(@types/node@25.9.8)(@vitest/browser-playwright@4.1.11)(@vitest/coverage-v8@4.1.11)(jsdom@26.1.0(supports-color@8.1.1))(vite@7.3.6(@types/node@25.9.8)(jiti@2.7.0)(lightningcss@1.32.0)(yaml@2.9.1))

@@ -1,0 +1,1385 @@
+// @ts-nocheck
+import { create } from 'zustand';
+
+import type { ChainEntry, VstNode } from '@tahti-player/audio-rack';
+import { rackEffectDefaults } from '@tahti-player/audio-rack';
+
+import { logError, logInfo } from './log';
+import type { LaneBend, MeterSegment, PianoNote, PolyLane } from './stubs';
+
+export type ToolMode = 'move' | 'cut' | 'split';
+
+/** Grid divisions for snapping. Straight notes, plus triplet (T) and dotted (D)
+ *  variants. The four original values ('off' | '1/4' | '1/8' | '1/16') are all
+ *  still members, so projects and prefs saved before the grid was widened keep
+ *  resolving to the same step. */
+export type SnapDivision =
+  | 'off'
+  | '1/1'
+  | '1/2'
+  | '1/4'
+  | '1/8'
+  | '1/16'
+  | '1/32'
+  | '1/4T'
+  | '1/8T'
+  | '1/16T'
+  | '1/4D'
+  | '1/8D'
+  | '1/16D';
+
+/** Grid step for each division, in beats (a beat = one 1/4 note). Triplets are
+ *  2/3 of the straight value, dotted are 3/2. '1/1' assumes 4/4 — the editor has
+ *  no time-signature model yet, so a "bar" is four beats. */
+const SNAP_BEATS: Record<Exclude<SnapDivision, 'off'>, number> = {
+  '1/1': 4,
+  '1/2': 2,
+  '1/4': 1,
+  '1/8': 0.5,
+  '1/16': 0.25,
+  '1/32': 0.125,
+  '1/4T': 2 / 3,
+  '1/8T': 1 / 3,
+  '1/16T': 1 / 6,
+  '1/4D': 1.5,
+  '1/8D': 0.75,
+  '1/16D': 0.375,
+};
+
+/** Ordered for the toolbar picker: straight, then triplets, then dotted. */
+export const SNAP_DIVISIONS: SnapDivision[] = [
+  'off',
+  '1/1',
+  '1/2',
+  '1/4',
+  '1/8',
+  '1/16',
+  '1/32',
+  '1/4T',
+  '1/8T',
+  '1/16T',
+  '1/4D',
+  '1/8D',
+  '1/16D',
+];
+
+/** The grid step in seconds, or null when snapping is off (or the stored value
+ *  is not a division we know — e.g. a hand-edited project file). */
+export const snapStepSec = (snap: SnapDivision, bpm: number): number | null => {
+  if (snap === 'off') {
+    return null;
+  }
+  const beats = SNAP_BEATS[snap];
+  if (!beats) {
+    return null;
+  }
+  return (60 / bpm) * beats;
+};
+
+export type ClipSourceKind = 'audio' | 'piano-roll';
+
+export interface InpaintSelection {
+  clipId: string;
+  startSec: number; // timeline seconds
+  endSec: number; // timeline seconds
+}
+
+export interface AudioClip {
+  id: string;
+  trackId: string;
+  label: string;
+  /** Source audio Blob (the bytes we play / decode peaks from). */
+  audioBlob: Blob;
+  mimeType: string;
+  /** Total length of the source audio in seconds. */
+  sourceDuration: number;
+  /** Seconds into the source where this clip starts. */
+  offsetIntoSource: number;
+  /** Length of this clip on the timeline. */
+  durationSec: number;
+  /** Position on the timeline (start time in seconds). */
+  startSec: number;
+  color: string;
+  /** Cached peaks for waveform rendering; lazy-populated. */
+  peaks?: Float32Array;
+  /** Optional reference back to a Library entry id, if dropped from the library. */
+  libraryEntryId?: string;
+  /** How this clip was produced — informs "Edit in Piano Roll" availability. */
+  sourceKind?: ClipSourceKind;
+  /** When sourceKind === 'piano-roll', the note list that produced the audio, as it
+   *  sounds: looping lanes written out, no lane ids. Playback and drawing read it. */
+  sourcePianoRoll?: PianoNote[];
+  /** When sourceKind === 'piano-roll', the roll's own notes with their lanes, which
+   *  "Edit in Piano Roll" loads. Absent on clips bounced before lanes existed. */
+  sourceRollNotes?: PianoNote[];
+  /** When sourceKind === 'piano-roll', the BPM at render time. */
+  sourceBpm?: number;
+  /** The tempo the audio plays at after a beat match or a time-stretch, in
+   *  BPM. Absent until one runs; the library analysis of the source is the
+   *  readout until then. */
+  bpm?: number;
+  /** When sourceKind === 'piano-roll', the grid length at render time. */
+  sourceTotalSteps?: number;
+  /** When sourceKind === 'piano-roll', the roll's time signatures by bar at render time. */
+  sourceMeterMap?: MeterSegment[];
+  /** When sourceKind === 'piano-roll', the steps before bar 0 at render time. */
+  sourcePickupSteps?: number;
+  /** When sourceKind === 'piano-roll', the roll's polymeter lanes at render time.
+   *  `sourcePianoRoll` holds the notes already unrolled across those lanes. */
+  sourceLanes?: PolyLane[];
+  /** When sourceKind === 'piano-roll', each lane's pitch bend at render time (lib/pitchBend).
+   *  Absent on clips bounced before the roll had pitch bend, or with none. */
+  sourceBends?: LaneBend[];
+  /** GM program (0-127) this MIDI clip plays through live on the timeline; falls
+   *  back to the track default, then the global active instrument. Audio clips: undefined. */
+  instrumentProgram?: number;
+  /** The GM program `audioBlob` was actually rendered with. The live scheduler
+   *  synthesises MIDI clips from `sourcePianoRoll` and honours instrumentProgram,
+   *  but every offline bounce reads the pre-rendered blob — so the two diverge the
+   *  moment an instrument is reassigned after insert. Recording what the blob
+   *  contains lets the editor re-render it on change and keep export == preview. */
+  renderedProgram?: number;
+  /** Fade-in duration in seconds (0 = no fade). */
+  fadeInSec?: number;
+  /** Fade-out duration in seconds (0 = no fade). */
+  fadeOutSec?: number;
+  /** Linear clip gain (1 = unity, undefined = unity). Multiplies the fade
+   *  envelope's peak, so it sits BEFORE the track fader and the per-track FX —
+   *  gain-staging a loud clip changes what the track's compressor sees, exactly
+   *  as clip gain does in a conventional DAW. Applied identically in live
+   *  playback (liveMixer.scheduleClips) and in every offline bounce. */
+  gain?: number;
+  /** Muted: the clip is skipped by playback and every offline bounce. This is
+   *  the ONE clip property liveMixer gates live mid-playback; all other clip
+   *  edits are structural and take effect on the next play. */
+  muted?: boolean;
+}
+
+export interface EditorTrack {
+  id: string;
+  name: string;
+  /** If true, the name was auto-generated and should be replaced by the first clip's label when one lands. */
+  nameAutoGenerated: boolean;
+  volume: number; // 0..1
+  pan: number; // -1..1
+  mute: boolean;
+  solo: boolean;
+  color: string;
+  /** Record-armed: target for mic/vocal recording. Shown as a red dot in the
+   *  track header. */
+  armed?: boolean;
+  /** Default GM program (0-127) for MIDI clips on this track; undefined = global default. */
+  instrumentProgram?: number;
+  /** Per-track insert FX chain (real-time psychoacoustic rack), spliced between
+   *  the track fader and its panner during live playback and offline bounce. */
+  fxChain?: ChainEntry[];
+  /** Present while the track is FROZEN: its clips + insert chain are rendered to a
+   *  single printed stem (so backend-hosted VST3 — which can't run live in the
+   *  browser — becomes audible). The originals are stashed here for unfreeze; the
+   *  live fxChain is emptied because every effect is baked into the stem. */
+  frozenOriginal?: { clips: AudioClip[]; fxChain: ChainEntry[] };
+}
+
+/* ── Automation (Phase E) ─────────────────────────────────────────────────────
+   A lane records a parameter's value over timeline time as breakpoints. Playback
+   schedules them ahead of the playhead: native AudioParam envelope for vol/pan
+   (sample-accurate), a lookahead writer for FX params. */
+export type AutomationTargetKind =
+  'trackVolume' | 'trackPan' | 'trackFx' | 'masterFx';
+
+export interface AutomationTarget {
+  kind: AutomationTargetKind;
+  /** Set for trackVolume / trackPan / trackFx. */
+  trackId?: string;
+  /** ChainEntry id, set for trackFx / masterFx. */
+  entryId?: string;
+  /** Effect param key, set for trackFx / masterFx. */
+  paramKey?: string;
+}
+
+/** One breakpoint: timeline seconds -> value (in the param's natural units). */
+export interface AutomationPoint {
+  t: number;
+  v: number;
+}
+
+export interface AutomationLane {
+  id: string;
+  target: AutomationTarget;
+  points: AutomationPoint[]; // kept sorted ascending by t
+  enabled: boolean;
+}
+
+/** A named position flag on the timeline (Phase F). */
+export interface TimelineMarker {
+  id: string;
+  t: number; // timeline seconds
+  label: string;
+}
+
+/** Clip gain as a safe multiplier — unity for undefined, NaN, or negative values.
+ *  Every scheduling path (live + the three offline bounces) reads clip gain through
+ *  this, so a malformed value can never silence or invert a clip. */
+export const clipPeakGain = (clip: Pick<AudioClip, 'gain'>): number => {
+  const g = clip.gain;
+  return typeof g === 'number' && Number.isFinite(g) && g >= 0 ? g : 1;
+};
+
+/** Stable identity for a target, so a control resolves to its one lane. */
+export const automationTargetKey = (target: AutomationTarget): string =>
+  `${target.kind}|${target.trackId ?? ''}|${target.entryId ?? ''}|${target.paramKey ?? ''}`;
+
+/** Linear-interpolated lane value at time `t`; null when the lane has no points.
+ *  Holds the first/last value outside the breakpoint range. */
+export const sampleLane = (lane: AutomationLane, t: number): number | null => {
+  const pts = lane.points;
+  if (pts.length === 0) {
+    return null;
+  }
+  if (t <= pts[0].t) {
+    return pts[0].v;
+  }
+  const last = pts[pts.length - 1];
+  if (t >= last.t) {
+    return last.v;
+  }
+  let lo = 0;
+  let hi = pts.length - 1;
+  while (lo + 1 < hi) {
+    const mid = (lo + hi) >> 1;
+    if (pts[mid].t <= t) {
+      lo = mid;
+    } else {
+      hi = mid;
+    }
+  }
+  const a = pts[lo];
+  const b = pts[hi];
+  const f = (t - a.t) / Math.max(1e-6, b.t - a.t);
+  return a.v + (b.v - a.v) * f;
+};
+
+/** Minimum spacing between recorded breakpoints (thins ~50 Hz gestures). */
+const MIN_POINT_DT = 0.02;
+
+/** Insert (or replace a near neighbor's value) keeping `points` sorted + thinned. */
+const upsertPoint = (
+  points: AutomationPoint[],
+  t: number,
+  v: number,
+): AutomationPoint[] => {
+  let lo = 0;
+  let hi = points.length;
+  while (lo < hi) {
+    const mid = (lo + hi) >> 1;
+    if (points[mid].t < t) {
+      lo = mid + 1;
+    } else {
+      hi = mid;
+    }
+  }
+  const idx = lo;
+  const left = idx > 0 ? points[idx - 1] : null;
+  const right = idx < points.length ? points[idx] : null;
+  const next = points.slice();
+  if (left && t - left.t < MIN_POINT_DT) {
+    next[idx - 1] = { t: left.t, v };
+  } else if (right && right.t - t < MIN_POINT_DT) {
+    next[idx] = { t: right.t, v };
+  } else {
+    next.splice(idx, 0, { t, v });
+  }
+  return next;
+};
+
+interface EditorStoreState {
+  tracks: EditorTrack[];
+  clips: AudioClip[];
+  selectedClipId: string | null;
+  tool: ToolMode;
+  zoom: number; // pixels per second
+  /** Vertical zoom: the on-screen height of every track lane, in px. Uniform
+   *  across tracks (per-track heights would need the timeline's `index * height`
+   *  layout maths replaced with a cumulative offset table). View state, so it is
+   *  deliberately outside undo history. */
+  trackHeight: number;
+  scrollSec: number; // horizontal scroll position in seconds
+  playheadSec: number;
+  isPlaying: boolean;
+  snap: SnapDivision;
+  bpm: number; // for snap math
+  inpaintSelection: InpaintSelection | null;
+  /** Master-bus insert FX chain (real-time psychoacoustic rack). Session-local —
+   *  liveMixer routes the editor mix through it before the shared engine master. */
+  masterFxChain: ChainEntry[];
+  /** Automation lanes (Phase E): one per automated parameter. */
+  automationLanes: AutomationLane[];
+  /** Write/arm mode: while on, moving an armed control during playback records. */
+  automationWrite: boolean;
+  /** Master-bus VST3 chain (hosted via pedalboard). NOT a Web-Audio rack — these
+   *  apply when the master is rendered ("frozen"); see frozenMaster + previewMode. */
+  masterVstChain: ChainEntry[];
+  /** 'live' = play the realtime multitrack mix; 'frozen' = play the rendered
+   *  VST-processed master. Toggled from the Master VST panel. */
+  previewMode: 'live' | 'frozen';
+  /** The latest VST-rendered master plus the project signature it was rendered
+   *  from, so the UI can flag it stale after edits. Never persisted. */
+  frozenMaster: { blob: Blob; sig: string } | null;
+
+  // Mutations
+  /** Replace the whole timeline with a loaded project (atomic; one fresh
+   *  document — undo history is reset). Used when opening a .tasmo. */
+  loadProject: (payload: {
+    tracks: EditorTrack[];
+    clips: AudioClip[];
+    bpm?: number;
+  }) => void;
+  addTrack: (overrides?: Partial<EditorTrack>) => string;
+  /** A new lane at `index` (0 = above every lane, `tracks.length` = below
+   *  them), so a clip dragged into the gap between two lanes gets a lane of
+   *  its own there. Returns the new id. */
+  insertTrack: (index: number, overrides?: Partial<EditorTrack>) => string;
+  removeTrack: (id: string) => void;
+  updateTrack: (id: string, updates: Partial<EditorTrack>) => void;
+  toggleSolo: (id: string) => void;
+  /** Freeze a track: replace its clips with one printed stem and empty its
+   *  fxChain (effects + VST baked in), stashing the originals for unfreeze. */
+  freezeTrack: (
+    trackId: string,
+    stem: { audioBlob: Blob; durationSec: number; peaks?: Float32Array },
+  ) => void;
+  /** Restore a frozen track's original clips + insert chain. */
+  unfreezeTrack: (trackId: string) => void;
+
+  addClipToTrack: (clip: Omit<AudioClip, 'id'> & { id?: string }) => string;
+  updateClip: (id: string, updates: Partial<AudioClip>) => void;
+  removeClip: (id: string) => void;
+  splitClipAt: (id: string, atSec: number) => string | null;
+  /** Store peaks decoded from a clip's audio. Peaks are derived data, so the
+   *  write goes through applyClipRender and stays out of undo history. */
+  cachePeaks: (id: string, peaks: Float32Array) => void;
+  /** Store audio derived from a clip's own document data, such as a MIDI clip's
+   *  bounce through its instrument, together with its peaks. The write adds no
+   *  undo step and keeps the redo stack: undo can restore a clip from before its
+   *  bounce or peaks landed, and the write that replaces them must leave redo
+   *  intact. */
+  applyClipRender: (
+    id: string,
+    updates: Partial<AudioClip>,
+    peaks?: Float32Array,
+  ) => void;
+
+  setSelected: (id: string | null) => void;
+  setTool: (t: ToolMode) => void;
+  setZoom: (z: number) => void;
+  setTrackHeight: (h: number) => void;
+  setScrollSec: (s: number) => void;
+  setPlayhead: (s: number) => void;
+  setPlaying: (p: boolean) => void;
+  setSnap: (s: SnapDivision) => void;
+  setBpm: (b: number) => void;
+  setInpaintSelection: (sel: InpaintSelection | null) => void;
+  clearInpaintSelection: () => void;
+
+  // Master FX rack
+  addMasterEffect: (effectId: string) => void;
+  removeMasterEffect: (entryId: string) => void;
+  reorderMasterEffect: (from: number, to: number) => void;
+  toggleMasterEffect: (entryId: string) => void;
+  updateMasterEffectParams: (
+    entryId: string,
+    params: Record<string, number>,
+  ) => void;
+
+  // Per-track FX rack
+  addTrackEffect: (trackId: string, effectId: string) => void;
+  /** Append a VST3 plugin to a track's insert chain. VST3 can't run in the live
+   *  Web Audio graph (buildEffectChain only knows the rack effects), so the entry
+   *  is inert during preview and is applied on the backend by renderTrackStem
+   *  when the track is frozen — the same contract as the master VST chain. */
+  addTrackVst: (trackId: string, plugin: VstNode) => void;
+  removeTrackEffect: (trackId: string, entryId: string) => void;
+  reorderTrackEffect: (trackId: string, from: number, to: number) => void;
+  toggleTrackEffect: (trackId: string, entryId: string) => void;
+  updateTrackEffectParams: (
+    trackId: string,
+    entryId: string,
+    params: Record<string, number>,
+  ) => void;
+  /** Store a VST entry's captured native-editor state on a track chain node,
+   *  so the dialed-in sound is applied at freeze/render time. */
+  setTrackVstRawState: (
+    trackId: string,
+    entryId: string,
+    rawState: string,
+  ) => void;
+  /** Replace an existing chain entry's effect with a live rack effect (reset to
+   *  its defaults, enabled), keeping the entry's id + slot. Used to "rebuild" an
+   *  imported device that came in inert so a controller mapping has a live home. */
+  rebuildTrackEffect: (
+    trackId: string,
+    entryId: string,
+    effectId: string,
+  ) => void;
+
+  // Automation (Phase E)
+  setAutomationWrite: (on: boolean) => void;
+  recordAutomationPoint: (
+    target: AutomationTarget,
+    t: number,
+    v: number,
+  ) => void;
+  addAutomationPoint: (laneId: string, t: number, v: number) => void;
+  updateAutomationPoint: (
+    laneId: string,
+    index: number,
+    t: number,
+    v: number,
+  ) => void;
+  removeAutomationPoint: (laneId: string, index: number) => void;
+  toggleAutomationLane: (laneId: string) => void;
+  clearAutomationLane: (laneId: string) => void;
+  removeAutomationLane: (laneId: string) => void;
+  getLaneForTarget: (target: AutomationTarget) => AutomationLane | undefined;
+
+  // Loop region + markers (Phase F). The loop region, when enabled and valid,
+  // makes the transport cycle within [loopStart, loopEnd] instead of the whole
+  // timeline. Markers are named position flags.
+  loopEnabled: boolean;
+  loopStart: number;
+  loopEnd: number;
+  markers: TimelineMarker[];
+  setLoopEnabled: (on: boolean) => void;
+  setLoopRegion: (start: number, end: number) => void;
+  clearLoop: () => void;
+  addMarker: (t: number, label?: string) => void;
+  removeMarker: (id: string) => void;
+  renameMarker: (id: string, label: string) => void;
+  moveMarker: (id: string, t: number) => void;
+
+  // Undo / redo (Phase D). Snapshots capture the document slices below; because
+  // every mutation replaces arrays immutably, a snapshot just references the prior
+  // arrays (no cloning, audio blobs/peaks stay shared). Rapid bursts (a drag, a
+  // WRITE-record pass) coalesce into one step. _undo/_redo are exposed so the UI
+  // can reflect availability.
+  _undo: EditorHistorySnapshot[];
+  _redo: EditorHistorySnapshot[];
+  undo: () => void;
+  redo: () => void;
+
+  /** True when the document has changed since the last save (or since a load).
+   *  Drives the unsaved-changes guard and the modified indicator. Set by the same
+   *  subscription that records undo history, so it tracks exactly the slices that
+   *  constitute "the project". */
+  dirty: boolean;
+  /** Clear the dirty flag — call after a successful save. */
+  markSaved: () => void;
+
+  // Selectors
+  addMasterVst: (plugin: VstNode) => void;
+  /** Store a VST entry's captured native-editor state on a master VST chain
+   *  node (staleness is caught by the freeze signature, which covers raw_state). */
+  setMasterVstRawState: (entryId: string, rawState: string) => void;
+  removeMasterVst: (entryId: string) => void;
+  reorderMasterVst: (from: number, to: number) => void;
+  clearMasterVst: () => void;
+  setPreviewMode: (mode: 'live' | 'frozen') => void;
+  setFrozenMaster: (frozen: { blob: Blob; sig: string } | null) => void;
+
+  getTotalDurationSec: () => number;
+  snapSec: (s: number) => number;
+}
+
+/** The document slices tracked by undo / redo.
+ *  `markers` and `bpm` are document state (they are part of what a project IS),
+ *  so they belong here. The loop region deliberately does NOT — it is transport
+ *  state, and DAWs that put it in the undo stack make undo unusable during a
+ *  loop-edit session. */
+interface EditorHistorySnapshot {
+  tracks: EditorTrack[];
+  clips: AudioClip[];
+  masterFxChain: ChainEntry[];
+  automationLanes: AutomationLane[];
+  markers: TimelineMarker[];
+  bpm: number;
+}
+
+const DEFAULT_COLORS = [
+  '#8b5cf6',
+  '#a855f7',
+  '#ec4899',
+  '#06b6d4',
+  '#10b981',
+  '#facc15',
+  '#f97316',
+  '#ef4444',
+];
+
+/** Track-lane height bounds, in px. The default matches the height the timeline
+ *  was hardcoded to before vertical zoom existed, so an untouched session looks
+ *  exactly as it did. */
+export const TRACK_HEIGHT_MIN = 56;
+export const TRACK_HEIGHT_MAX = 260;
+export const TRACK_HEIGHT_DEFAULT = 104;
+
+/** Horizontal zoom bounds, in px per second. The floor lets a whole set fit
+ *  one screen: a 60-minute arrangement at 0.25 px/s is 900px wide. */
+export const ZOOM_MIN = 0.25;
+export const ZOOM_MAX = 400;
+
+/** Lanes a fresh timeline starts with, so the first sends from the library
+ *  land on lanes of their own without anyone adding lanes first. */
+export const DEFAULT_TRACK_COUNT = 6;
+
+const makeTrack = (
+  index: number,
+  overrides?: Partial<EditorTrack>,
+): EditorTrack => ({
+  id: `track-${index + 1}`,
+  name: `Track ${index + 1}`,
+  nameAutoGenerated: true,
+  volume: 0.8,
+  pan: 0,
+  mute: false,
+  solo: false,
+  color: DEFAULT_COLORS[index % DEFAULT_COLORS.length],
+  ...overrides,
+});
+
+/** The lanes of an empty document. */
+export const defaultTracks = (): EditorTrack[] =>
+  Array.from({ length: DEFAULT_TRACK_COUNT }, (_, i) => makeTrack(i));
+
+const uid = (): string =>
+  typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : `id-${Math.random().toString(36).slice(2)}-${Date.now()}`;
+
+// ── Undo / redo plumbing (module-scoped) ─────────────────────────────────────
+const HISTORY_LIMIT = 100;
+const HISTORY_COALESCE_MS = 300; // changes closer than this fold into one undo step
+let historyApplying = false; // true while undo/redo writes, so it doesn't self-record
+let lastDocChangeAt = -Infinity;
+
+const docSnapshot = (s: EditorStoreState): EditorHistorySnapshot => ({
+  tracks: s.tracks,
+  clips: s.clips,
+  masterFxChain: s.masterFxChain,
+  automationLanes: s.automationLanes,
+  markers: s.markers,
+  bpm: s.bpm,
+});
+
+export const useEditorStore = create<EditorStoreState>()((set, get) => ({
+  // Start blank so hosts/Storybook can show EmptyState; `addTrack` / import seed lanes.
+  tracks: [],
+  clips: [],
+  selectedClipId: null,
+  tool: 'move',
+  zoom: 30, // px per second
+  trackHeight: TRACK_HEIGHT_DEFAULT,
+  scrollSec: 0,
+  playheadSec: 0,
+  isPlaying: false,
+  snap: '1/16',
+  bpm: 120,
+  inpaintSelection: null,
+  masterFxChain: [],
+  masterVstChain: [],
+  previewMode: 'live',
+  frozenMaster: null,
+  automationLanes: [],
+  automationWrite: false,
+  loopEnabled: false,
+  loopStart: 0,
+  loopEnd: 0,
+  markers: [],
+  _undo: [],
+  _redo: [],
+  dirty: false,
+
+  loadProject: ({ tracks, clips, bpm }) => {
+    // Suppress undo recording for the bulk swap, then start the loaded project as
+    // a fresh document (empty undo/redo) so the user can't undo back into the
+    // previous session's tracks.
+    //
+    // Markers, automation lanes and the loop region are cleared with the tracks:
+    // they are per-project document state, and automation lanes in particular key
+    // off trackId/entryId, so carrying them across a load left lanes pointing at
+    // tracks that no longer exist. Empty tracks+clips stay empty (EmptyState);
+    // clips without tracks get a default lane bank so imports still land.
+    historyApplying = true;
+    set({
+      tracks: tracks.length ? tracks : clips.length ? defaultTracks() : [],
+      clips,
+      selectedClipId: null,
+      playheadSec: 0,
+      scrollSec: 0,
+      isPlaying: false,
+      bpm:
+        bpm && Number.isFinite(bpm)
+          ? Math.max(40, Math.min(240, bpm))
+          : get().bpm,
+      markers: [],
+      automationLanes: [],
+      loopEnabled: false,
+      loopStart: 0,
+      loopEnd: 0,
+      _undo: [],
+      _redo: [],
+      // A freshly loaded project is by definition unmodified.
+      dirty: false,
+    });
+    historyApplying = false;
+    lastDocChangeAt = -Infinity;
+    logInfo(
+      'editor',
+      `Loaded project: ${tracks.length} track(s), ${clips.length} clip(s)`,
+    );
+  },
+
+  addTrack: (overrides) => get().insertTrack(get().tracks.length, overrides),
+
+  insertTrack: (index, overrides) => {
+    const id = `track-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    set((s) => {
+      const at = Math.max(0, Math.min(s.tracks.length, Math.round(index)));
+      const track: EditorTrack = {
+        ...makeTrack(s.tracks.length, { id }),
+        ...overrides,
+      };
+      return {
+        tracks: [...s.tracks.slice(0, at), track, ...s.tracks.slice(at)],
+      };
+    });
+    logInfo('editor', `Added track: ${id}`);
+    return id;
+  },
+
+  removeTrack: (id) => {
+    set((s) => ({
+      tracks: s.tracks.filter((t) => t.id !== id),
+      clips: s.clips.filter((c) => c.trackId !== id),
+      automationLanes: s.automationLanes.filter((l) => l.target.trackId !== id),
+      selectedClipId: s.clips.some(
+        (c) => c.id === s.selectedClipId && c.trackId === id,
+      )
+        ? null
+        : s.selectedClipId,
+    }));
+    logInfo('editor', `Removed track: ${id}`);
+  },
+
+  updateTrack: (id, updates) =>
+    set((s) => ({
+      tracks: s.tracks.map((t) => (t.id === id ? { ...t, ...updates } : t)),
+    })),
+
+  freezeTrack: (trackId, stem) => {
+    set((s) => {
+      const track = s.tracks.find((t) => t.id === trackId);
+      if (!track) {
+        return {};
+      }
+      const original = s.clips.filter((c) => c.trackId === trackId);
+      const others = s.clips.filter((c) => c.trackId !== trackId);
+      const stemClip: AudioClip = {
+        id: uid(),
+        trackId,
+        label: `${track.name} (frozen)`,
+        audioBlob: stem.audioBlob,
+        mimeType: stem.audioBlob.type || 'audio/wav',
+        sourceDuration: stem.durationSec,
+        offsetIntoSource: 0,
+        durationSec: stem.durationSec,
+        startSec: 0,
+        color: track.color,
+        peaks: stem.peaks,
+      };
+      return {
+        clips: [...others, stemClip],
+        tracks: s.tracks.map((t) =>
+          t.id === trackId
+            ? {
+                ...t,
+                fxChain: [],
+                frozenOriginal: { clips: original, fxChain: t.fxChain ?? [] },
+              }
+            : t,
+        ),
+        selectedClipId: null,
+      };
+    });
+    logInfo('editor', `Froze track ${trackId}: printed FX into a stem`);
+  },
+
+  unfreezeTrack: (trackId) => {
+    set((s) => {
+      const track = s.tracks.find((t) => t.id === trackId);
+      if (!track || !track.frozenOriginal) {
+        return {};
+      }
+      const fo = track.frozenOriginal;
+      const others = s.clips.filter((c) => c.trackId !== trackId);
+      return {
+        clips: [...others, ...fo.clips],
+        tracks: s.tracks.map((t) =>
+          t.id === trackId
+            ? { ...t, fxChain: fo.fxChain, frozenOriginal: undefined }
+            : t,
+        ),
+        selectedClipId: null,
+      };
+    });
+    logInfo('editor', `Unfroze track ${trackId}: restored clips + FX`);
+  },
+
+  toggleSolo: (id) => {
+    const target = get().tracks.find((t) => t.id === id);
+    if (!target) {
+      return;
+    }
+    const willSolo = !target.solo;
+    set((s) => ({
+      tracks: s.tracks.map((t) => ({
+        ...t,
+        solo: t.id === id ? willSolo : willSolo ? false : t.solo,
+      })),
+    }));
+  },
+
+  addClipToTrack: (clip) => {
+    const id = clip.id ?? uid();
+    const full: AudioClip = { ...clip, id };
+    set((s) => {
+      // If the track's name is still auto-generated and this is its first clip, inherit the clip label.
+      const tracks = s.tracks.map((t) => {
+        if (t.id !== full.trackId) {
+          return t;
+        }
+        const hasExistingClips = s.clips.some((c) => c.trackId === t.id);
+        if (!hasExistingClips && t.nameAutoGenerated && full.label) {
+          return { ...t, name: full.label, nameAutoGenerated: false };
+        }
+        return t;
+      });
+      return {
+        tracks,
+        clips: [...s.clips, full],
+        selectedClipId: id,
+      };
+    });
+    logInfo(
+      'editor',
+      `Added clip "${full.label}" to ${full.trackId} at ${full.startSec.toFixed(2)}s`,
+    );
+    return id;
+  },
+
+  updateClip: (id, updates) =>
+    set((s) => ({
+      clips: s.clips.map((c) => (c.id === id ? { ...c, ...updates } : c)),
+    })),
+
+  removeClip: (id) => {
+    const clip = get().clips.find((c) => c.id === id);
+    set((s) => ({
+      clips: s.clips.filter((c) => c.id !== id),
+      selectedClipId: s.selectedClipId === id ? null : s.selectedClipId,
+    }));
+    if (clip) {
+      logInfo('editor', `Removed clip: ${clip.label}`);
+    }
+  },
+
+  splitClipAt: (id, atSec) => {
+    const state = get();
+    const clip = state.clips.find((c) => c.id === id);
+    if (!clip) {
+      return null;
+    }
+    const relSplit = atSec - clip.startSec;
+    // Don't split too close to either edge.
+    if (relSplit <= 0.05 || relSplit >= clip.durationSec - 0.05) {
+      logError('editor', 'Cut point too close to clip edge');
+      return null;
+    }
+    const newId = uid();
+    const left: AudioClip = { ...clip, durationSec: relSplit };
+    const right: AudioClip = {
+      ...clip,
+      id: newId,
+      startSec: clip.startSec + relSplit,
+      offsetIntoSource: clip.offsetIntoSource + relSplit,
+      durationSec: clip.durationSec - relSplit,
+      label: `${clip.label}_b`,
+    };
+    set((s) => ({
+      clips: s.clips.flatMap((c) => (c.id === id ? [left, right] : [c])),
+      selectedClipId: newId,
+    }));
+    logInfo(
+      'editor',
+      `Split clip at ${atSec.toFixed(2)}s → ${left.label} | ${right.label}`,
+    );
+    return newId;
+  },
+
+  cachePeaks: (id, peaks) => get().applyClipRender(id, {}, peaks),
+
+  applyClipRender: (id, updates, peaks) => {
+    if (!get().clips.some((c) => c.id === id)) {
+      return;
+    }
+    historyApplying = true;
+    set((s) => ({
+      clips: s.clips.map((c) =>
+        c.id === id ? { ...c, ...updates, ...(peaks ? { peaks } : {}) } : c,
+      ),
+      // The saved project carries the clip's audio, so new audio still makes the
+      // document dirty, as it did when this went through updateClip.
+      dirty: true,
+    }));
+    historyApplying = false;
+  },
+
+  setSelected: (id) => set({ selectedClipId: id }),
+  setTool: (t) => set({ tool: t }),
+  setZoom: (z) => set({ zoom: Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, z)) }),
+  setTrackHeight: (h) =>
+    set({
+      trackHeight: Math.max(
+        TRACK_HEIGHT_MIN,
+        Math.min(TRACK_HEIGHT_MAX, Math.round(h)),
+      ),
+    }),
+  setScrollSec: (s) => set({ scrollSec: Math.max(0, s) }),
+  setPlayhead: (s) => set({ playheadSec: Math.max(0, s) }),
+  setPlaying: (p) => set({ isPlaying: p }),
+  setSnap: (s) => set({ snap: s }),
+  setBpm: (b) => set({ bpm: Math.max(40, Math.min(240, b)) }),
+  setInpaintSelection: (sel) => set({ inpaintSelection: sel }),
+  clearInpaintSelection: () => set({ inpaintSelection: null }),
+
+  addMasterEffect: (effectId) =>
+    set((s) => ({
+      masterFxChain: [
+        ...s.masterFxChain,
+        {
+          id: uid(),
+          effect: effectId,
+          params: rackEffectDefaults(effectId),
+          enabled: true,
+        },
+      ],
+    })),
+
+  removeMasterEffect: (entryId) =>
+    set((s) => ({
+      masterFxChain: s.masterFxChain.filter((e) => e.id !== entryId),
+      automationLanes: s.automationLanes.filter(
+        (l) => l.target.entryId !== entryId,
+      ),
+    })),
+
+  reorderMasterEffect: (from, to) =>
+    set((s) => {
+      if (
+        from === to ||
+        from < 0 ||
+        to < 0 ||
+        from >= s.masterFxChain.length ||
+        to >= s.masterFxChain.length
+      ) {
+        return {};
+      }
+      const next = [...s.masterFxChain];
+      const [item] = next.splice(from, 1);
+      next.splice(to, 0, item);
+      return { masterFxChain: next };
+    }),
+
+  toggleMasterEffect: (entryId) =>
+    set((s) => ({
+      masterFxChain: s.masterFxChain.map((e) =>
+        e.id === entryId ? { ...e, enabled: !e.enabled } : e,
+      ),
+    })),
+
+  updateMasterEffectParams: (entryId, params) =>
+    set((s) => ({
+      masterFxChain: s.masterFxChain.map((e) =>
+        e.id === entryId ? { ...e, params } : e,
+      ),
+    })),
+
+  // --- Master VST3 chain (rendered/frozen, not live Web-Audio) ---
+  addMasterVst: (plugin) =>
+    set((s) => ({
+      masterVstChain: [
+        ...s.masterVstChain,
+        { id: uid(), effect: 'vst3', params: {}, enabled: true, vst: plugin },
+      ],
+      frozenMaster: null,
+    })),
+
+  setMasterVstRawState: (entryId, rawState) =>
+    set((s) => ({
+      masterVstChain: s.masterVstChain.map((e) =>
+        e.id === entryId && e.vst
+          ? { ...e, vst: { ...e.vst, raw_state: rawState } }
+          : e,
+      ),
+    })),
+
+  removeMasterVst: (entryId) =>
+    set((s) => ({
+      masterVstChain: s.masterVstChain.filter((e) => e.id !== entryId),
+      frozenMaster: null,
+    })),
+
+  reorderMasterVst: (from, to) =>
+    set((s) => {
+      if (
+        from === to ||
+        from < 0 ||
+        to < 0 ||
+        from >= s.masterVstChain.length ||
+        to >= s.masterVstChain.length
+      ) {
+        return {};
+      }
+      const next = [...s.masterVstChain];
+      const [item] = next.splice(from, 1);
+      next.splice(to, 0, item);
+      return { masterVstChain: next, frozenMaster: null };
+    }),
+
+  clearMasterVst: () =>
+    set({ masterVstChain: [], frozenMaster: null, previewMode: 'live' }),
+
+  setPreviewMode: (mode) => set({ previewMode: mode }),
+
+  setFrozenMaster: (frozen) => set({ frozenMaster: frozen }),
+
+  addTrackEffect: (trackId, effectId) =>
+    set((s) => ({
+      tracks: s.tracks.map((t) =>
+        t.id === trackId
+          ? {
+              ...t,
+              fxChain: [
+                ...(t.fxChain ?? []),
+                {
+                  id: uid(),
+                  effect: effectId,
+                  params: rackEffectDefaults(effectId),
+                  enabled: true,
+                },
+              ],
+            }
+          : t,
+      ),
+    })),
+
+  addTrackVst: (trackId, plugin) =>
+    set((s) => ({
+      tracks: s.tracks.map((t) =>
+        t.id === trackId
+          ? {
+              ...t,
+              fxChain: [
+                ...(t.fxChain ?? []),
+                {
+                  id: uid(),
+                  effect: 'vst3',
+                  params: {},
+                  enabled: true,
+                  vst: plugin,
+                },
+              ],
+            }
+          : t,
+      ),
+    })),
+
+  removeTrackEffect: (trackId, entryId) =>
+    set((s) => ({
+      tracks: s.tracks.map((t) =>
+        t.id === trackId
+          ? { ...t, fxChain: (t.fxChain ?? []).filter((e) => e.id !== entryId) }
+          : t,
+      ),
+      automationLanes: s.automationLanes.filter(
+        (l) => l.target.entryId !== entryId,
+      ),
+    })),
+
+  reorderTrackEffect: (trackId, from, to) =>
+    set((s) => ({
+      tracks: s.tracks.map((t) => {
+        if (t.id !== trackId) {
+          return t;
+        }
+        const chain = t.fxChain ?? [];
+        if (
+          from === to ||
+          from < 0 ||
+          to < 0 ||
+          from >= chain.length ||
+          to >= chain.length
+        ) {
+          return t;
+        }
+        const next = [...chain];
+        const [item] = next.splice(from, 1);
+        next.splice(to, 0, item);
+        return { ...t, fxChain: next };
+      }),
+    })),
+
+  toggleTrackEffect: (trackId, entryId) =>
+    set((s) => ({
+      tracks: s.tracks.map((t) =>
+        t.id === trackId
+          ? {
+              ...t,
+              fxChain: (t.fxChain ?? []).map((e) =>
+                e.id === entryId ? { ...e, enabled: !e.enabled } : e,
+              ),
+            }
+          : t,
+      ),
+    })),
+
+  updateTrackEffectParams: (trackId, entryId, params) =>
+    set((s) => ({
+      tracks: s.tracks.map((t) =>
+        t.id === trackId
+          ? {
+              ...t,
+              fxChain: (t.fxChain ?? []).map((e) =>
+                e.id === entryId ? { ...e, params } : e,
+              ),
+            }
+          : t,
+      ),
+    })),
+
+  setTrackVstRawState: (trackId, entryId, rawState) =>
+    set((s) => ({
+      tracks: s.tracks.map((t) =>
+        t.id === trackId
+          ? {
+              ...t,
+              fxChain: (t.fxChain ?? []).map((e) =>
+                e.id === entryId && e.vst
+                  ? { ...e, vst: { ...e.vst, raw_state: rawState } }
+                  : e,
+              ),
+            }
+          : t,
+      ),
+    })),
+
+  rebuildTrackEffect: (trackId, entryId, effectId) =>
+    set((s) => ({
+      tracks: s.tracks.map((t) =>
+        t.id === trackId
+          ? {
+              ...t,
+              // Keep the entry's id + original label (so the source device name
+              // still shows), but make it a live rack effect at its defaults.
+              fxChain: (t.fxChain ?? []).map((e) =>
+                e.id === entryId
+                  ? {
+                      ...e,
+                      effect: effectId,
+                      params: rackEffectDefaults(effectId),
+                      enabled: true,
+                      vst: undefined,
+                    }
+                  : e,
+              ),
+            }
+          : t,
+      ),
+    })),
+
+  setAutomationWrite: (on) => set({ automationWrite: on }),
+
+  recordAutomationPoint: (target, t, v) =>
+    set((s) => {
+      const key = automationTargetKey(target);
+      const existing = s.automationLanes.find(
+        (l) => automationTargetKey(l.target) === key,
+      );
+      if (existing) {
+        return {
+          automationLanes: s.automationLanes.map((l) =>
+            l.id === existing.id
+              ? { ...l, points: upsertPoint(l.points, t, v) }
+              : l,
+          ),
+        };
+      }
+      return {
+        automationLanes: [
+          ...s.automationLanes,
+          { id: uid(), target, points: [{ t, v }], enabled: true },
+        ],
+      };
+    }),
+
+  addAutomationPoint: (laneId, t, v) =>
+    set((s) => ({
+      automationLanes: s.automationLanes.map((l) =>
+        l.id === laneId ? { ...l, points: upsertPoint(l.points, t, v) } : l,
+      ),
+    })),
+
+  updateAutomationPoint: (laneId, index, t, v) =>
+    set((s) => ({
+      automationLanes: s.automationLanes.map((l) => {
+        if (l.id !== laneId || index < 0 || index >= l.points.length) {
+          return l;
+        }
+        const without = l.points.filter((_, i) => i !== index);
+        return { ...l, points: upsertPoint(without, t, v) };
+      }),
+    })),
+
+  removeAutomationPoint: (laneId, index) =>
+    set((s) => ({
+      automationLanes: s.automationLanes.map((l) =>
+        l.id === laneId
+          ? { ...l, points: l.points.filter((_, i) => i !== index) }
+          : l,
+      ),
+    })),
+
+  toggleAutomationLane: (laneId) =>
+    set((s) => ({
+      automationLanes: s.automationLanes.map((l) =>
+        l.id === laneId ? { ...l, enabled: !l.enabled } : l,
+      ),
+    })),
+
+  clearAutomationLane: (laneId) =>
+    set((s) => ({
+      automationLanes: s.automationLanes.map((l) =>
+        l.id === laneId ? { ...l, points: [] } : l,
+      ),
+    })),
+
+  removeAutomationLane: (laneId) =>
+    set((s) => ({
+      automationLanes: s.automationLanes.filter((l) => l.id !== laneId),
+    })),
+
+  getLaneForTarget: (target) => {
+    const key = automationTargetKey(target);
+    return get().automationLanes.find(
+      (l) => automationTargetKey(l.target) === key,
+    );
+  },
+
+  setLoopEnabled: (on) => set({ loopEnabled: on }),
+  setLoopRegion: (start, end) =>
+    set(() => {
+      const a = Math.max(0, Math.min(start, end));
+      const b = Math.max(start, end);
+      return { loopStart: a, loopEnd: b, loopEnabled: b - a > 0.05 };
+    }),
+  clearLoop: () => set({ loopEnabled: false, loopStart: 0, loopEnd: 0 }),
+  addMarker: (t, label) =>
+    set((s) => ({
+      markers: [
+        ...s.markers,
+        {
+          id: uid(),
+          t: Math.max(0, t),
+          label: label ?? String(s.markers.length + 1),
+        },
+      ].sort((x, y) => x.t - y.t),
+    })),
+  removeMarker: (id) =>
+    set((s) => ({ markers: s.markers.filter((m) => m.id !== id) })),
+  renameMarker: (id, label) =>
+    set((s) => ({
+      markers: s.markers.map((m) => (m.id === id ? { ...m, label } : m)),
+    })),
+  moveMarker: (id, t) =>
+    set((s) => ({
+      markers: s.markers
+        .map((m) => (m.id === id ? { ...m, t: Math.max(0, t) } : m))
+        .sort((x, y) => x.t - y.t),
+    })),
+
+  undo: () => {
+    const s = get();
+    if (s._undo.length === 0) {
+      return;
+    }
+    const prev = s._undo[s._undo.length - 1];
+    const current = docSnapshot(s);
+    historyApplying = true;
+    set({
+      tracks: prev.tracks,
+      clips: prev.clips,
+      masterFxChain: prev.masterFxChain,
+      automationLanes: prev.automationLanes,
+      markers: prev.markers,
+      bpm: prev.bpm,
+      _undo: s._undo.slice(0, -1),
+      _redo: [...s._redo, current],
+      // undo/redo run under historyApplying, so the dirty subscription skips
+      // them — but stepping through history still moves the document away from
+      // what is on disk, so mark it here explicitly.
+      dirty: true,
+    });
+    historyApplying = false;
+    lastDocChangeAt = -Infinity; // the next real edit starts a fresh undo step
+  },
+
+  redo: () => {
+    const s = get();
+    if (s._redo.length === 0) {
+      return;
+    }
+    const next = s._redo[s._redo.length - 1];
+    const current = docSnapshot(s);
+    historyApplying = true;
+    set({
+      tracks: next.tracks,
+      clips: next.clips,
+      masterFxChain: next.masterFxChain,
+      automationLanes: next.automationLanes,
+      markers: next.markers,
+      bpm: next.bpm,
+      _undo: [...s._undo, current],
+      _redo: s._redo.slice(0, -1),
+      dirty: true,
+    });
+    historyApplying = false;
+    lastDocChangeAt = -Infinity;
+  },
+
+  markSaved: () => set({ dirty: false }),
+
+  getTotalDurationSec: () => {
+    const { clips } = get();
+    if (clips.length === 0) {
+      return 60;
+    } // default empty timeline shows 60s
+    return Math.max(...clips.map((c) => c.startSec + c.durationSec), 30);
+  },
+
+  snapSec: (s) => {
+    const { snap, bpm } = get();
+    const step = snapStepSec(snap, bpm);
+    if (step === null) {
+      return Math.max(0, s);
+    }
+    return Math.max(0, Math.round(s / step) * step);
+  },
+}));
+
+// Record undo history whenever a tracked document slice changes. Only the FIRST
+// change of a burst captures the pre-change snapshot, so a continuous gesture (clip
+// drag, fader ride, WRITE-record pass) collapses into a single undo step. Playhead,
+// zoom, selection, and transport changes don't touch these slices, so they never
+// pollute history. undo/redo set historyApplying so their own writes aren't recorded.
+useEditorStore.subscribe((state, prev) => {
+  if (historyApplying) {
+    return;
+  }
+  if (
+    state.tracks === prev.tracks &&
+    state.clips === prev.clips &&
+    state.masterFxChain === prev.masterFxChain &&
+    state.automationLanes === prev.automationLanes &&
+    state.markers === prev.markers &&
+    state.bpm === prev.bpm
+  ) {
+    return;
+  }
+  const now = performance.now();
+  const coalesce = now - lastDocChangeAt < HISTORY_COALESCE_MS;
+  lastDocChangeAt = now;
+  // The same slices that constitute an undo step constitute "the project", so
+  // this is also where the document becomes dirty. Skip the write entirely when
+  // there is nothing to record AND nothing to flag — otherwise a 50 Hz clip drag
+  // would push a no-op setState (and wake every subscriber) on every frame.
+  const needsDirty = !state.dirty;
+  if (coalesce && !needsDirty) {
+    return;
+  } // mid-burst; the burst start captured the undo point
+  historyApplying = true;
+  useEditorStore.setState((s) => {
+    if (coalesce) {
+      return { dirty: true };
+    }
+    const undo = [...s._undo, docSnapshot(prev)];
+    if (undo.length > HISTORY_LIMIT) {
+      undo.shift();
+    }
+    return needsDirty
+      ? { dirty: true, _undo: undo, _redo: [] }
+      : { _undo: undo, _redo: [] };
+  });
+  historyApplying = false;
+});
+
+/**
+ * Decode an audio Blob and produce a downsampled peak array suitable for
+ * rendering. Returns a Float32Array of `bins` values in [0, 1] representing
+ * the absolute peak amplitude in each bin.
+ */
+export const computePeaks = async (
+  blob: Blob,
+  bins = 200,
+): Promise<{ peaks: Float32Array; duration: number }> => {
+  const arrayBuf = await blob.arrayBuffer();
+  const Ctor =
+    window.AudioContext ||
+    (window as unknown as { webkitAudioContext: typeof AudioContext })
+      .webkitAudioContext;
+  const ctx = new Ctor();
+  try {
+    const audioBuf = await ctx.decodeAudioData(arrayBuf.slice(0));
+    const data = audioBuf.getChannelData(0);
+    const out = new Float32Array(bins);
+    const samplesPerBin = Math.floor(data.length / bins);
+    let max = 0;
+    for (let i = 0; i < bins; i += 1) {
+      let peak = 0;
+      const start = i * samplesPerBin;
+      const end = Math.min(start + samplesPerBin, data.length);
+      for (let j = start; j < end; j += 1) {
+        const v = Math.abs(data[j]);
+        if (v > peak) {
+          peak = v;
+        }
+      }
+      out[i] = peak;
+      if (peak > max) {
+        max = peak;
+      }
+    }
+    // Normalize.
+    if (max > 0) {
+      for (let i = 0; i < bins; i += 1) {
+        out[i] /= max;
+      }
+    }
+    return { peaks: out, duration: audioBuf.duration };
+  } finally {
+    // Don't await close; some browsers GC fine without explicit close.
+    try {
+      await ctx.close();
+    } catch {
+      /* ignore */
+    }
+  }
+};

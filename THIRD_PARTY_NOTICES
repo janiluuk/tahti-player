@@ -1,0 +1,13 @@
+## theDAW audio editor, rack effects, and visualizers
+
+Portions of the following packages are derived from code originally published
+under the MIT License as part of theDAW / Stable Audio 3 (Copyright (c) 2026
+Stability AI and contributors):
+
+- @tahti-player/audio-core
+- @tahti-player/audio-rack
+- @tahti-player/audio-editor
+- @tahti-player/visualizer
+
+The MIT permission notice is retained. Combined with Tahti Player these works
+are distributed under the GNU Affero General Public License v3.

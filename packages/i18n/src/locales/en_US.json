@@ -679,5 +679,11 @@
       "label": "Language",
       "description": "Choose the language for the app. You can change this anytime."
     }
+  },
+  "studioEditor": {
+    "editorModeTrim": "Trim / effects",
+    "editorModeMultitrack": "Multitrack + viz",
+    "editorBounceReady": "Bounce ready — WAV downloaded.",
+    "visualizerMode": "Visualizer mode"
   }
 }
