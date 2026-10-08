@@ -138,18 +138,20 @@ export function ChannelLayersMenu({
             { id: 'look' as const, label: 'Look' },
           ] as const
         ).map((t) => (
-          <button
+          <Button
+            variant="plain"
+            size="flexible"
             key={t.id}
             type="button"
             onClick={() => setPanel(t.id)}
-            className={`flex-1 rounded-md px-1.5 py-1.5 text-[10px] font-medium tracking-wide uppercase ${
+            className={`inline-block flex-1 rounded-md px-1.5 py-1.5 text-[10px] font-medium tracking-wide whitespace-normal uppercase active:scale-100 ${
               panel === t.id
                 ? 'bg-primary text-primary-foreground'
                 : 'text-foreground-secondary hover:text-foreground'
             }`}
           >
             {t.label}
-          </button>
+          </Button>
         ))}
       </div>
 
@@ -216,16 +218,18 @@ export function ChannelLayersMenu({
               <span className="text-foreground-secondary w-5 shrink-0 px-0.5">
                 <ImageIcon size={14} aria-hidden />
               </span>
-              <button
+              <Button
+                variant="plain"
+                size="flexible"
                 type="button"
-                className="min-w-0 flex-1 text-left"
+                className="inline-block min-w-0 flex-1 rounded-none text-left whitespace-normal active:scale-100"
                 onClick={() => onSelect(CHANNEL_BACKGROUND_LAYER_ID)}
               >
                 <div className="truncate text-xs font-medium">Background</div>
                 <div className="text-foreground-secondary truncate text-[10px]">
                   Banner, page color, header style
                 </div>
-              </button>
+              </Button>
             </li>
             {items.map((item) => {
               const meta = CHANNEL_PAGE_ITEM_META[item.type];
@@ -263,9 +267,11 @@ export function ChannelLayersMenu({
                       <GripVerticalIcon size={14} />
                     </Button>
                   </Tooltip>
-                  <button
+                  <Button
+                    variant="plain"
+                    size="flexible"
                     type="button"
-                    className="min-w-0 flex-1 text-left"
+                    className="inline-block min-w-0 flex-1 rounded-none text-left whitespace-normal active:scale-100"
                     onClick={() => onSelect(item.id)}
                   >
                     <div className="truncate text-xs font-medium">
@@ -274,13 +280,15 @@ export function ChannelLayersMenu({
                     <div className="text-foreground-secondary truncate text-[10px]">
                       {item.type === 'playlist' ? layerLabel(item) : meta.hint}
                     </div>
-                  </button>
+                  </Button>
                   <div className="border-border flex shrink-0 items-center gap-0.5 rounded border p-0.5">
                     {(['compact', 'wide', 'full'] as const).map((width) => (
-                      <button
+                      <Button
+                        variant="plain"
+                        size="flexible"
                         key={width}
                         type="button"
-                        className={`rounded px-1 py-0.5 text-[9px] font-semibold uppercase ${
+                        className={`inline-block rounded px-1 py-0.5 text-[9px] font-semibold whitespace-normal uppercase active:scale-100 ${
                           (item.width ?? 'full') === width
                             ? 'bg-primary text-primary-foreground'
                             : 'text-foreground-secondary hover:text-foreground'
@@ -294,7 +302,7 @@ export function ChannelLayersMenu({
                           : width === 'wide'
                             ? 'M'
                             : 'L'}
-                      </button>
+                      </Button>
                     ))}
                   </div>
                   <Tooltip
