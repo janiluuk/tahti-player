@@ -20,8 +20,7 @@ export const DayOfWeekChart: FC<DayOfWeekChartProps> = ({
     index,
   }));
 
-  const tickInterval =
-    data.length > 14 ? Math.max(0, Math.ceil(data.length / 10) - 1) : 0;
+  const tickInterval = data.length > 14 ? 'equidistantPreserveStart' : 0;
 
   return (
     <ResponsiveContainer
@@ -37,6 +36,8 @@ export const DayOfWeekChart: FC<DayOfWeekChartProps> = ({
           tickLine={false}
           axisLine={false}
           interval={tickInterval}
+          minTickGap={12}
+          padding={data.length > 14 ? { left: 12, right: 12 } : undefined}
           tick={{ className: 'fill-foreground-secondary text-xs' }}
         />
         <Tooltip
