@@ -348,11 +348,13 @@ export function RadioBookingCalendar({
             const isToday = isSameDay(day, today);
             const isSelected = isSameDay(day, selectedDate);
             return (
-              <button
+              <Button
+                variant="plain"
+                size="flexible"
                 key={day.toISOString()}
                 type="button"
                 onClick={() => setSelectedDate(day)}
-                className={`flex flex-col items-center gap-1 rounded-md py-1.5 text-sm ${
+                className={`flex flex-col items-center gap-1 rounded-md py-1.5 text-sm whitespace-normal active:scale-100 ${
                   isSelected
                     ? 'bg-primary text-primary-foreground'
                     : inMonth
@@ -370,7 +372,7 @@ export function RadioBookingCalendar({
                       : 'bg-transparent'
                   }`}
                 />
-              </button>
+              </Button>
             );
           })}
         </div>
@@ -413,17 +415,19 @@ export function RadioBookingCalendar({
                   <span className="text-foreground-secondary shrink-0 tabular-nums">
                     {formatTimeRange(b.startAt, b.endAt)}
                   </span>
-                  <button
+                  <Button
+                    variant="plain"
+                    size="flexible"
                     type="button"
                     onClick={() => setSelectedBooking(b)}
-                    className="min-w-0 flex-1 truncate text-left font-medium hover:underline"
+                    className="inline-block min-w-0 flex-1 truncate rounded-none text-left font-medium hover:underline active:scale-100"
                   >
                     {b.showTitle ?? b.note ?? b.displayName}
                     {b.episodeNumber != null
                       ? ` · Episode ${b.episodeNumber}`
                       : ''}
                     {b.isMine ? ' (you)' : ''}
-                  </button>
+                  </Button>
                 </li>
               ))}
             </ul>

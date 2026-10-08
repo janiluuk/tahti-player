@@ -216,10 +216,12 @@ export function RadioSubmissionsTab() {
                     row.id === active?.id ? 'bg-background-secondary/40' : ''
                   }`}
                 >
-                  <button
+                  <Button
+                    variant="plain"
+                    size="flexible"
                     type="button"
                     onClick={() => setActiveId(row.id)}
-                    className="min-w-0 flex-1 text-left"
+                    className="inline-block min-w-0 flex-1 rounded-none text-left whitespace-normal active:scale-100"
                   >
                     <div className="font-medium">{row.sound.title}</div>
                     <div className="text-foreground-secondary text-xs">
@@ -227,7 +229,7 @@ export function RadioSubmissionsTab() {
                       {fmtDuration(row.sound.durationSec)} ·{' '}
                       {new Date(row.createdAt).toLocaleDateString()}
                     </div>
-                  </button>
+                  </Button>
                   <Badge
                     variant="pill"
                     color={statusBadge(row.status).color}
