@@ -92,7 +92,17 @@ function ResultRow({
 
 /** Top-nav search across artists, tracks, and collections — debounced,
  * thumbnailed results grouped and labeled by type. */
-export function GlobalSearch() {
+type GlobalSearchProps = {
+  autoFocus?: boolean;
+  fullWidth?: boolean;
+  onDone?: () => void;
+};
+
+export function GlobalSearch({
+  autoFocus,
+  fullWidth,
+  onDone,
+}: GlobalSearchProps = {}) {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResponse>(EMPTY);
@@ -153,6 +163,7 @@ export function GlobalSearch() {
   const close = () => {
     setOpen(false);
     setQuery('');
+    onDone?.();
   };
 
   const goToArtist = (artist: SearchArtistResult) => {
@@ -218,7 +229,13 @@ export function GlobalSearch() {
   };
 
   return (
-    <div ref={rootRef} className="relative w-full max-w-xs min-w-0 sm:max-w-sm">
+    <div
+      ref={rootRef}
+      className={cn(
+        'relative w-full min-w-0',
+        !fullWidth && 'max-w-xs sm:max-w-sm',
+      )}
+    >
       <div className="relative">
         <Input
           type="search"
@@ -239,6 +256,7 @@ export function GlobalSearch() {
             activeIndex >= 0 ? flatOptions[activeIndex]?.id : undefined
           }
           autoComplete="off"
+          autoFocus={autoFocus}
           className={cn(
             '[&::-webkit-search-cancel-button]:appearance-none',
             query && 'pr-9',
