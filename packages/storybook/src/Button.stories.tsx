@@ -20,6 +20,7 @@ const meta: Meta<typeof Button> = {
         'noShadow',
         'text',
         'ghost',
+        'plain',
       ],
     },
     size: {
@@ -114,6 +115,7 @@ export const AllVariants: Story = {
         <Button variant="noShadow">No Shadow</Button>
         <Button variant="text">Text</Button>
         <Button variant="ghost">Ghost</Button>
+        <Button variant="plain">Plain</Button>
       </div>
       <div className="flex items-center gap-4">
         <Button size="sm">Small</Button>

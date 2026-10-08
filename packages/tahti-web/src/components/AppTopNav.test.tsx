@@ -63,6 +63,22 @@ afterEach(() => {
 });
 
 describe('AppTopNav', () => {
+  it('opens a search row from the phone search button and closes it again', async () => {
+    useAuthStore.setState({ user: null, hydrated: true, loading: false });
+    await renderNav();
+    expect(query('[data-testid="phone-search"]')).toBeNull();
+
+    await act(async () => {
+      query('[data-testid="topbar-search"]')?.click();
+    });
+    expect(query('[data-testid="phone-search"]')).toBeTruthy();
+
+    await act(async () => {
+      query('[aria-label="Close search"]')?.click();
+    });
+    expect(query('[data-testid="phone-search"]')).toBeNull();
+  });
+
   it('shows only the login action when signed out', async () => {
     useAuthStore.setState({ user: null, hydrated: true, loading: false });
     await renderNav();

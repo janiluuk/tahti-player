@@ -1,7 +1,7 @@
 import { ChevronDownIcon, SlidersHorizontalIcon } from 'lucide-react';
 import { useMemo, useState, type FC } from 'react';
 
-import { FilterChips, Input } from '@tahti-player/ui';
+import { Button, FilterChips, Input } from '@tahti-player/ui';
 
 import {
   isDirectoryArtistActive,
@@ -149,23 +149,27 @@ export const DirectoryArtistsBrowser: FC<DirectoryArtistsBrowserProps> = ({
             placeholder="Artist name, username, genre…"
             className="min-w-48 flex-1"
           />
-          <button
+          <Button
+            variant="text"
+            size="flexible"
             type="button"
             aria-pressed={activeOnly}
             onClick={() => setActiveOnly((previous) => !previous)}
-            className={`inline-flex shrink-0 cursor-pointer items-center justify-center rounded-full border px-3 py-1 text-sm font-medium transition-colors ${
+            className={`shrink-0 justify-center rounded-full border px-3 py-1 text-sm font-medium ${
               activeOnly
-                ? 'bg-foreground text-background border-foreground'
+                ? 'bg-foreground text-background border-foreground hover:bg-foreground'
                 : 'border-border text-foreground hover:bg-foreground/10 bg-transparent'
             }`}
           >
             Active now ({artists.filter(isDirectoryArtistActive).length})
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="text"
+            size="flexible"
             type="button"
             aria-expanded={filtersExpanded}
             onClick={() => setFiltersExpanded((previous) => !previous)}
-            className="border-border text-foreground-secondary hover:text-foreground inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1 text-sm font-medium transition-colors"
+            className="border-border text-foreground-secondary hover:text-foreground shrink-0 gap-1.5 rounded-full border px-3 py-1 text-sm font-medium hover:bg-transparent"
           >
             <SlidersHorizontalIcon size={14} aria-hidden />
             Filters
@@ -175,7 +179,7 @@ export const DirectoryArtistsBrowser: FC<DirectoryArtistsBrowserProps> = ({
               aria-hidden
               className={`transition-transform ${filtersExpanded ? 'rotate-180' : ''}`}
             />
-          </button>
+          </Button>
           {genres.length > 0 ? (
             <FilterChips
               items={chipItems}

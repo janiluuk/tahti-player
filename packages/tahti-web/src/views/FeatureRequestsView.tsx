@@ -347,7 +347,7 @@ export function FeatureRequestsView({
       title="Feature requests"
       classes={{
         root: 'px-0 pt-0 mx-auto max-w-3xl',
-        scrollableArea: 'gap-6',
+        content: 'gap-6',
       }}
     >
       {body}

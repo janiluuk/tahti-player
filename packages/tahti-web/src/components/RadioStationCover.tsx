@@ -2,7 +2,7 @@ import { LoaderCircleIcon, UploadCloudIcon } from 'lucide-react';
 import { useEffect, useRef, useState, type FC, type RefObject } from 'react';
 import { toast } from 'sonner';
 
-import { ImageReveal } from '@tahti-player/ui';
+import { Button, ImageReveal } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
 import { IMAGE_UPLOAD_ACCEPT_ATTR } from '../lib/imageUploadContentType';
@@ -103,14 +103,16 @@ export const RadioStationCoverEditButton: FC<
 
   return (
     <>
-      <button
+      <Button
+        variant="text"
+        size="icon-sm"
         type="button"
         disabled={busy}
         title={`Edit ${label} cover`}
         aria-label={`Edit ${label} cover`}
         data-testid="radio-station-cover-edit"
         className={cn(
-          'flex cursor-pointer items-center justify-center border-0 p-0',
+          'p-0',
           'bg-background/80 hover:bg-background/90 disabled:cursor-wait',
           'opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100',
           'size-8 rounded-full',
@@ -127,7 +129,7 @@ export const RadioStationCoverEditButton: FC<
         ) : (
           <UploadCloudIcon size={18} aria-hidden />
         )}
-      </button>
+      </Button>
       <input
         ref={inputRef}
         type="file"
@@ -185,15 +187,17 @@ export const RadioStationCover: FC<RadioStationCoverProps> = ({
       className={cn('group relative size-full', className)}
     >
       {canEdit ? (
-        <button
+        <Button
+          variant="text"
+          size="flexible"
           type="button"
           title={`Preview ${label} cover`}
           aria-label={`Preview ${label} cover`}
-          className="block size-full cursor-pointer border-0 p-0 text-left"
+          className="block size-full rounded-none p-0 text-left hover:bg-transparent active:scale-100"
           onClick={() => setPreviewOpen(true)}
         >
           {coverImage}
-        </button>
+        </Button>
       ) : (
         coverImage
       )}

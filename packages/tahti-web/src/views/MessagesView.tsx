@@ -1,5 +1,5 @@
 import { useNavigate } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { Button, Input, ViewShell } from '@tahti-player/ui';
 
@@ -88,9 +88,14 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
     });
   }
 
+  const threadRef = useRef<HTMLDivElement>(null);
+
   const openThread = (id: string) => {
     setActiveId(id);
     loadThread(id);
+    requestAnimationFrame(() => {
+      threadRef.current?.scrollIntoView?.({ block: 'nearest' });
+    });
     void navigate({ to: '/messages/$id', params: { id } });
   };
 
@@ -194,7 +199,7 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
             }
           }}
         >
-          <div className="min-w-48 flex-1">
+          <div className="min-w-36 flex-1">
             <Input
               label="Message @"
               value={composeUser}
@@ -273,7 +278,13 @@ export function MessagesView({ threadId }: { threadId?: string } = {}) {
             )}
           </ul>
 
-          <div className="border-border flex min-h-72 flex-col rounded-lg border">
+          <div
+            ref={threadRef}
+            data-testid="dm-thread"
+            className={`border-border min-h-72 flex-col rounded-lg border ${
+              activeId ? 'flex' : 'hidden md:flex'
+            }`}
+          >
             {!activeId ? (
               <p className="text-foreground-secondary p-4 text-sm">
                 Select a conversation.

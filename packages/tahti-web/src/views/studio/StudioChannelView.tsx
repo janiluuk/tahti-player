@@ -323,7 +323,11 @@ export function StudioChannelView() {
                     size="sm"
                     variant="secondary"
                   >
-                    <MessageSquareIcon size={14} aria-hidden />
+                    <MessageSquareIcon
+                      size={14}
+                      aria-hidden
+                      className="mr-1.5"
+                    />
                     Open Green Room chat
                   </ButtonLink>
                 ) : null}

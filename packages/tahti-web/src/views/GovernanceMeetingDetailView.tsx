@@ -44,7 +44,7 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
       title={meeting?.title ?? 'Meeting'}
       classes={{
         root: 'px-0 pt-0 mx-auto max-w-2xl',
-        scrollableArea: 'gap-6',
+        content: 'gap-6',
       }}
     >
       <Link

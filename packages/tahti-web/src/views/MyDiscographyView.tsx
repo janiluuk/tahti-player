@@ -437,23 +437,21 @@ export const MyDiscographyView: FC = () => {
                         <PencilIcon size={16} aria-hidden />
                       </Button>
                     </Tooltip>
-                    <Link
-                      to="/studio/sounds/$id/editor"
-                      params={{ id: item.id }}
+                    <Tooltip
+                      content={`Open ${item.title} in audio editor`}
+                      side="top"
                     >
-                      <Tooltip
-                        content={`Open ${item.title} in audio editor`}
-                        side="top"
+                      <ButtonLink
+                        to="/studio/sounds/$id/editor"
+                        params={{ id: item.id }}
+
+                        size="icon-sm"
+                        variant="text"
+                        aria-label={`Open ${item.title} in audio editor`}
                       >
-                        <Button
-                          size="icon-sm"
-                          variant="text"
-                          aria-label={`Open ${item.title} in audio editor`}
-                        >
-                          <AudioLinesIcon size={16} aria-hidden />
-                        </Button>
-                      </Tooltip>
-                    </Link>
+                        <AudioLinesIcon size={16} aria-hidden />
+                      </ButtonLink>
+                    </Tooltip>
                   </li>
                 ))}
               </ul>

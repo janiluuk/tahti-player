@@ -28,6 +28,7 @@ type SettingsModalState = {
   artistSection: ArtistSettingsSection | null;
   /** Sub-tab when activeTab === 'account'. */
   accountSection: AccountSettingsSection | null;
+  openedToSection: boolean;
   open: (
     tab?: SettingsSectionId,
     pluginCategory?: PluginCategoryTarget,
@@ -44,9 +45,11 @@ export const useSettingsModalStore = create<SettingsModalState>((set) => ({
   pluginCategory: null,
   artistSection: null,
   accountSection: null,
+  openedToSection: false,
   open: (tab, pluginCategory, artistSection, accountSection) =>
     set((state) => ({
       isOpen: true,
+      openedToSection: tab !== undefined,
       activeTab: tab ?? state.activeTab,
       pluginCategory: pluginCategory ?? null,
       artistSection: artistSection ?? null,

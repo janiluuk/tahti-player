@@ -196,9 +196,11 @@ function ColorTokenRow({
       className="border-border rounded-md border"
       data-testid={`theme-editor-token-${field.key}`}
     >
-      <button
+      <Button
+        variant="plain"
+        size="flexible"
         type="button"
-        className="hover:bg-background-secondary/60 flex w-full items-center gap-2 px-2 py-1.5 text-left"
+        className="hover:bg-background-secondary/60 flex w-full items-center gap-2 rounded-none px-2 py-1.5 text-left whitespace-normal active:scale-100"
         aria-expanded={expanded}
         onClick={() => (expanded ? onCollapse() : onExpand())}
       >
@@ -222,7 +224,7 @@ function ColorTokenRow({
             expanded ? 'rotate-180' : ''
           }`}
         />
-      </button>
+      </Button>
       {expanded ? (
         <div className="border-border flex flex-col gap-2 border-t px-2 py-2">
           <div className="flex items-center gap-2">

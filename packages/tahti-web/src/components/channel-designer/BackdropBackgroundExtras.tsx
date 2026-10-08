@@ -1,4 +1,4 @@
-import { Toggle } from '@tahti-player/ui';
+import { Button, Toggle } from '@tahti-player/ui';
 
 import {
   BACKGROUND_VISUAL_PRESETS,
@@ -70,14 +70,16 @@ export function BackdropBackgroundExtras({
             const selected =
               (backgroundVisualPreset ?? 'INTERACTIVE_POINTS') === preset;
             return (
-              <button
+              <Button
+                variant="plain"
+                size="flexible"
                 key={preset}
                 type="button"
                 title={meta.description}
                 aria-label={`${preset.replace(/_/g, ' ')} background visualizer`}
                 aria-pressed={selected}
                 onClick={() => onBackgroundVisualPreset(preset)}
-                className={`border-border flex flex-col items-start gap-1 rounded-md border p-2 text-left text-xs transition-transform hover:scale-[1.02] ${
+                className={`border-border flex flex-col items-start gap-1 rounded-md border p-2 text-left text-xs whitespace-normal transition-transform hover:scale-[1.02] active:scale-100 ${
                   selected
                     ? 'border-primary bg-primary/10 ring-primary ring-1'
                     : 'bg-background-secondary/40'
@@ -87,7 +89,7 @@ export function BackdropBackgroundExtras({
                 <span className="font-semibold tracking-wide uppercase">
                   {preset.replace(/_/g, ' ')}
                 </span>
-              </button>
+              </Button>
             );
           })}
         </div>

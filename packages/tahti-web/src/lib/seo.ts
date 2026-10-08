@@ -18,6 +18,69 @@ function displaySlug(value: string): string {
     .join(' ');
 }
 
+const PAGE_TITLES: [string, string][] = [
+  ['/discover', 'Discover'],
+  ['/favorites', 'Favorites'],
+  ['/listen/favorites', 'Favorites'],
+  ['/library/favorites', 'Favorites'],
+  ['/feed', 'Feed'],
+  ['/listen/feed', 'Feed'],
+  ['/history', 'History'],
+  ['/listen/history', 'History'],
+  ['/library/history', 'History'],
+  ['/library/sounds', 'Tracks'],
+  ['/library/smartlinks', 'Smart links'],
+  ['/library/local', 'Local files'],
+  ['/messages', 'Messages'],
+  ['/governance/feature-requests', 'Feature requests'],
+  ['/governance/history', 'Closed decisions'],
+  ['/governance/members', 'Member directory'],
+  ['/governance', 'Governance'],
+  ['/transparency', 'Transparency'],
+  ['/help', 'Help'],
+  ['/news', 'Platform news'],
+  ['/whats-new', 'What’s new'],
+  ['/schedule', 'Schedule'],
+  ['/search', 'Search'],
+  ['/settings', 'Settings'],
+  ['/venues', 'Venues'],
+  ['/chat', 'Chat'],
+  ['/status', 'Status'],
+  ['/more', 'Tahti map'],
+];
+
+const SECTION_NAMES: [string, string][] = [
+  ['/studio', 'Studio'],
+  ['/admin', 'Admin'],
+  ['/library', 'Library'],
+];
+
+function sentenceCase(value: string): string {
+  const words = decodeURIComponent(value).split('-').filter(Boolean).join(' ');
+  return words.charAt(0).toUpperCase() + words.slice(1);
+}
+
+function matchesPrefix(pathname: string, prefix: string): boolean {
+  return pathname === prefix || pathname.startsWith(`${prefix}/`);
+}
+
+function pageTitleForPath(pathname: string): string | null {
+  const page = PAGE_TITLES.find(([prefix]) => matchesPrefix(pathname, prefix));
+  if (page) {
+    return `${page[1]} · Tahti`;
+  }
+  const section = SECTION_NAMES.find(([prefix]) =>
+    matchesPrefix(pathname, prefix),
+  );
+  if (!section) {
+    return null;
+  }
+  const child = pathname.slice(section[0].length).split('/').filter(Boolean)[0];
+  return child
+    ? `${sentenceCase(child)} · ${section[1]} · Tahti`
+    : `${section[1]} · Tahti`;
+}
+
 export function metadataForPath(pathname: string): RouteMetadata {
   const channel = /^\/(?:channel|c)\/([^/]+)/.exec(pathname)?.[1];
   if (channel) {
@@ -72,12 +135,17 @@ export function metadataForPath(pathname: string): RouteMetadata {
     };
   }
 
+  const pageTitle = pageTitleForPath(pathname);
   if (pathname.startsWith('/studio')) {
     return {
-      title: 'Studio · Tahti',
+      title: pageTitle ?? 'Studio · Tahti',
       description:
         'Manage your music, channel, broadcasts, and audience on Tahti.',
     };
+  }
+
+  if (pageTitle) {
+    return { ...DEFAULT_METADATA, title: pageTitle };
   }
 
   return DEFAULT_METADATA;

@@ -183,7 +183,7 @@ export function StudioRevenueView() {
               ) : null}
 
               {fanPayouts ? (
-                <div className="grid gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(16rem,1fr)]">
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(16rem,1fr)]">
                   <StudioPanel
                     title="Order management"
                     description="Subscribers, net revenue, payout health, and recent fan-sub plus distribution payouts."

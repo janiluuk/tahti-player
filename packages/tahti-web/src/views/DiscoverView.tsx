@@ -622,9 +622,11 @@ function DiscoverWaveformPlayer({
       aria-label="Waveform player"
     >
       <div className="flex items-start gap-3">
-        <button
+        <Button
           type="button"
-          className="bg-primary text-primary-foreground flex size-10 shrink-0 items-center justify-center rounded-full transition-transform hover:scale-105"
+          variant="text"
+          size="flexible"
+          className="bg-primary text-primary-foreground hover:bg-primary flex size-10 shrink-0 items-center justify-center rounded-full transition-transform hover:scale-105"
           onClick={() => {
             if (isCurrent) {
               setStatus(isPlaying ? 'paused' : 'playing');
@@ -637,7 +639,7 @@ function DiscoverWaveformPlayer({
           }
         >
           {isPlaying ? <PauseIcon size={17} /> : <PlayIcon size={17} />}
-        </button>
+        </Button>
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold">
             {selection.playable.title}
@@ -658,14 +660,16 @@ function DiscoverWaveformPlayer({
             }
           />
         </div>
-        <button
+        <Button
           type="button"
-          className="text-foreground-secondary hover:text-foreground shrink-0 rounded p-1 transition-colors"
+          variant="text"
+          size="icon-sm"
+          className="text-foreground-secondary hover:text-foreground shrink-0"
           onClick={onClose}
           aria-label="Close waveform player"
         >
           <XIcon size={16} />
-        </button>
+        </Button>
       </div>
     </section>
   );
