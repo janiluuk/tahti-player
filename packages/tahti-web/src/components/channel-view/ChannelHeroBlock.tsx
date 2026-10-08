@@ -135,6 +135,7 @@ export function ChannelHeroBlock({
   return (
     <div className="flex flex-col gap-0">
       <ChannelBackdropCard
+        nameAsHeading
         className={
           editing
             ? ''
