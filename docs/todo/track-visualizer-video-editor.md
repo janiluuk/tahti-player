@@ -1,55 +1,229 @@
-# track-visualizer-video-editor.md
+# Track visualizer video editor (PulseForge → Studio Channel & Design)
 
 **Status:** open
 
-## What
+## Goal
 
-A full-screen editor in tahti-web where a user makes an audio-reactive visualization video for one of their tracks. It builds on [PulseForge](https://github.com/TheAwaken1/PulseForge) and brings its features into Tahti.
+Ship a Studio **Visualization Editor** where an artist picks one of their
+tracks, tunes a visualization (reusing Tahti’s existing visualizer presets /
+settings / selectors), previews it full-screen, **exports MP4**, and applies
+that file as the channel **background video** (`videoBackgroundUrl`) — the same
+path Backdrop / Player video already uses.
 
-Added to the roadmap 2026-09-26 at the user's request. Nothing is built or designed yet.
+Placement: **Studio → Channel & Design** (Channel Designer / Settings → Artist
+→ Branding / Channel Designer — not a disconnected orphan route). Prefer a
+takeover surface from Designer (like maximized Pro Editor) so ordinary chrome
+rules still hold for the parent page.
 
-## What PulseForge brings (from its README, 2026-09-26)
+Upstream inspiration: [PulseForge](https://github.com/TheAwaken1/PulseForge)
+(PixiJS layers, beat-reactive effects, lyrics, deterministic MP4). Added to
+the roadmap 2026-09-26; licence / port findings 2026-09-27 below. Nothing
+product-facing is built yet.
 
-- Stack: React + TypeScript, Vite, Zustand, PixiJS 8 / WebGL, Web Audio API with a custom FFT, Transformers.js Whisper, Tauri 2, and a Pinokio launcher. This lines up closely with tahti-web and the Tauri desktop app.
-- Quick "Brand Visualizer" flow: background, logo and track, then a preview.
-- Advanced layer editor: background, logo, spectra, particles, shaders, text, lyrics and spectrogram layers. Effects include bloom, colour grade, beat pixelate, glow, pulse, shake, chromatic aberration and vignette. Reactions can target the full mix, bass, mids, highs or detected beats.
-- Lyrics: `.lrc` import, auto-timed `.txt`, Whisper alignment or transcription (local, or the OpenAI API).
-- Deterministic, frame-perfect MP4 export (720p to 4K) from offline audio analysis.
-- The project format is a JSON document: resolution, fps, assets by reference, an ordered layer stack, effects and audio. The README calls this JSON its only stable integration surface. There's no HTTP API.
+## Product loop (must ship end-to-end)
 
-## Open questions (decide before building)
+```
+Library track → pick preset + tune (shared selectors) → live preview
+  → export MP4 → upload / attach → use as Designer background video
+  → public channel / artist page plays that backdrop
+```
 
-- **Licence:** the README says MIT, but GitHub's API detects no licence file. Confirm before copying any code; ask the author to add `LICENSE` if needed.
-- **Port vs vendor vs fork:** port the renderer and layers into a `@tahti-player/*` package, or vendor/fork it as-is? tahti-web UI rules still apply: chrome must use `@tahti-player/ui` components with Storybook stories.
-- **Export path in the browser:** PulseForge writes MP4s through its local server into `output/`. For tahti-web, the options are WebCodecs + an MP4 muxer, ffmpeg.wasm, or a native (Tauri) path on desktop. Server-side rendering on the worker is a further option, with a cost and queue impact.
-- **Where videos go:** download only, or upload to MinIO and attach to the track/release (would need `../tahti-org` API and schema changes; don't invent the shapes - inspect first).
-- **Whisper:** is local Transformers.js Whisper acceptable (model download size, WebGPU availability)? The OpenAI API option needs a key and a privacy decision.
-- **Entry point:** likely an action on the Studio sound page next to the existing editor routes (`/studio/sounds/$id/editor`, `/studio/editor`). Needs a design call.
+Secondary (later): attach export to the track/release artwork surface; browse
+prior exports; lyrics layer / Whisper.
+
+## Where it lives in the app
+
+| Surface | Role |
+| --- | --- |
+| Channel Designer → Player → Visualizer | Existing preset chrome (`PlayerVisualizerControls`, picker dialog, `TuningSliders`, audio-reactive toggle). **Reuse these**, do not invent a second preset system. |
+| Channel Designer → Backdrop / Video or image | Existing `VideoOrImageField` + `videoBackgroundUrl` upload. Export CTA: “Use as background video”. |
+| Settings → Add-ons / Themes visualizers | `ThemesCategory` / `VISUAL_PRESETS` + `visualSettingsJson` — keep settings schema in sync with Designer and the editor. |
+| Studio Branding / `/studio/branding` | Same `ChannelDesigner` host; entry CTA visible when editing Look. |
+| Public channel / artist | Already consume `videoBackgroundUrl` + live `ChannelVisualizer`; exported MP4 is the static/video backdrop option. |
+
+**Entry points (phase 1):**
+
+1. Channel Designer — Visualizer section: **Open visualization editor** (takeover).
+2. Optional deep link: `/studio/channel?tab=design&vizEditor=1` or
+   `/studio/sounds/$id/visualizer` that opens the same shell with the track
+   preselected (sounds route only if it stays one editor, not a fork).
+
+## Integration with existing visualization settings & selectors
+
+Do **not** fork preset IDs or tuning keys.
+
+- Read/write the same `VisualPreset` enum and `VisualSettingsMap` /
+  `visualSettingsJson` as `useChannelLook` / `buildVisualPatch` /
+  `parseVisualSettingsMap`.
+- Mount **the same** UI building blocks:
+  - `PlayerVisualizerControls` (prev/next, picker, enable, settings dock)
+  - Visualizer picker dialog pattern from `ChannelDesigner`
+  - `TuningSliders` (speed / intensity / scale / audioReactive)
+  - `ChannelVisualizer` (or a shared preview host that feeds the analyser)
+- Brand / color scheme: reuse Designer color-scheme fields when the export
+  should match the Look (optional toggle: “Match channel Look”).
+- When the user finishes export → hand a `File` into the existing pending
+  backdrop video path (`usePendingBackdropFile` / upload that already sets
+  `videoBackgroundUrl`), or call the same upload helper Designer uses today.
+- Background **live** visualizer vs **baked** MP4: Designer must make the
+  choice explicit (header style video vs visualizer). Applying an export sets
+  video backdrop and should not silently leave a conflicting live preset
+  expectation — follow existing header-style rules in `ChannelPageBackdrop`.
+
+PulseForge layers are an **advanced** mode on top of (or beside) the Tahti
+preset stack — phase them so the v1 path is “Tahti preset → MP4” without
+requiring Pixi layer literacy.
+
+## UI / component rules
+
+- Storybook-first: look up `packages/storybook/src/tahti-web/` +
+  `STORYBOOK-SURFACES.md` before hand-rolling chrome.
+- All new chrome from `@tahti-player/ui` (Button, Dialog, FilePicker,
+  PluginItem, Slider, Select, ViewShell / PlayerWorkspace patterns, etc.).
+- Takeover may hide sidebar/bottom chrome (same class as full-screen player /
+  maximized Pro Editor). Parent Channel Designer visit keeps persistent chrome.
+- No PulseForge CSS / LayersPanel / Pinokio shell.
+
+## Storybook (required)
+
+Add surfaces + rows in `STORYBOOK-SURFACES.md` / `docs/VIEW-CATALOG.md` when
+routes or stories land.
+
+| Story | Covers |
+| --- | --- |
+| `Tahti/Studio/VisualizerEditor` (shell) | Takeover layout, track header, transport |
+| `…/TrackPicker` | Pick from library sounds (empty / loading / list) |
+| `…/PresetBar` | Wrapper around shared controls or documented composition with `PlayerVisualizerControls` |
+| `…/ExportPanel` | Resolution, fps, progress, cancel, error |
+| `…/ApplyAsBackground` | Success → “Use as channel background” |
+| Update `ChannelDesignerPlayerVisualizer` | Entry CTA + apply-export state |
+| Update `ChannelDesignerVideoOrImageField` / Backdrop | “Generated viz” pending file state |
+
+Flag `Missing states:` for empty library, export failure, unsupported codec.
+
+## Screenshots / atlas (required)
+
+Affected views must get refreshed captures when the UI ships (atlas + any
+e2e screenshot paths referenced from `mapScreens.ts`):
+
+- Studio Branding / Channel Designer (Visualizer + Backdrop tabs with new CTAs)
+- Visualization Editor takeover (idle, previewing, exporting, done)
+- Public channel page with **video** backdrop from an exported viz (mock or seed)
+- Settings → Artist Branding if it shares the panel
+
+Also update `mapScreens` “you can do” lines for Designer (open viz editor,
+export MP4, apply as background). Keep `storybook-parity-and-atlas-refresh.md`
+in mind — Designer parity is already called out there; this feature adds
+stories that that leaf should eventually cover.
+
+CI note: Vitest DOM snapshot digest ≠ Storybook screenshots
+(`docs/agent/TESTING.md`). Update both if component snapshots change; atlas
+PNGs under the map / capture scripts when those views change.
+
+## Architecture (recommended)
+
+| Piece | Approach |
+| --- | --- |
+| Package | New `@tahti-player/visualizer-studio` — **logic only** (audio offline analysis, renderer, project JSON, export). MIT headers if PulseForge code is ported. |
+| UI | `packages/tahti-web` editor route/shell using `@tahti-player/ui` + shared Designer controls. |
+| Preview | Web Audio + existing analyser patterns from `AudioEngine` / channel visualizer; prefer one WebGL context. |
+| v1 renderer | **Tahti Three.js presets** rendered offscreen / canvas for export (lowest product risk, already matches channel). |
+| Advanced renderer | Port PulseForge Pixi `layers/` + `effects/` + `audio/` (lazy chunk; Pixi only loads with the editor). |
+| Export desktop | Tauri `ffmpeg` frame pipe (PulseForge pattern); ffmpeg found or bundled — decide in spike. |
+| Export web | WebCodecs + MP4 muxer; `MediaRecorder` fallback (non-deterministic). |
+| Persist project | PulseForge-compatible JSON in local storage / IndexedDB first; cloud later. |
+| Upload | Existing channel gallery / backdrop upload; **no invented DTOs**. If track-level attach needs API, inspect `../tahti-org` first and gate behind user go-ahead. |
 
 ## Licence and port/vendor findings (2026-09-27)
 
 Checked with the GitHub API; no code was copied.
 
-- **Licence:** the README ends with "## License — MIT", but the repo still has no `LICENSE` file and GitHub reports no licence. There are 11 commits: 10 by the Pinokio account and 1 by "gepeto" (an agent), so the copyright holder is the README's author (@TheAwakenOne619). MIT code can go into this AGPL-3.0-only repo if its copyright and permission notice is kept. **Before copying anything,** ask the author to add a `LICENSE` file (or confirm MIT in an issue we can link), and record the notice in a `THIRD_PARTY_NOTICES` entry plus a header on each ported file.
-- **What the code is:** `app/` is a Vite + React 18 + Zustand + PixiJS 8 app with a Tauri 2 shell (about 620 KB of TypeScript). The parts worth reusing are self-contained modules: `audio/` (RealtimeAnalyzer, OfflineAnalyzer, BeatDetector, log bins, smoothing), `layers/` (14 layer types, 16 GLSL shader presets), `effects/` (10 post effects + registry), `renderer/` (PixiApp, SceneManager, ResourceManager), `project/` (JSON schema and persistence, `PROJECT_FORMAT.md`), `utils/lrc.ts` and `lyricsAlignment.ts`, and a Whisper worker on Transformers.js. The UI (`ui/`, 26 KB `LayersPanel`, inline styles plus a 25 KB `global.css`) doesn't fit tahti-web's rule that UI comes from `@tahti-player/ui`.
-- **Export as built:** two paths. Desktop: the Tauri command `start_export` / `write_export_frame` pipes raw RGBA frames into a system `ffmpeg` process (`src-tauri/src/ffmpeg.rs`), which is deterministic and frame-perfect. Browser: `canvas.captureStream()` + `MediaRecorder` in real time (not deterministic), saved through the local dev server's `/api/save-export`. Neither uses WebCodecs.
-- **Dependencies it would add to tahti-web:** `pixi.js` 8 (tahti-web renders visuals with `three` today) and `@huggingface/transformers` (only for lyrics transcription).
+- **Licence:** README says MIT, but there is still no `LICENSE` file; GitHub
+  reports none. Ask @TheAwakenOne619 to add `LICENSE` (or confirm MIT in a
+  linkable issue) before copying. Record notices in `THIRD_PARTY_NOTICES`.
+- **Port, don’t vendor:** reuse `audio/`, `layers/`, `effects/`, `renderer/`,
+  `project/`; rebuild UI. Export: desktop ffmpeg pipe; web WebCodecs.
+- **Deps:** `pixi.js` 8 only if advanced mode ships (lazy). Whisper /
+  Transformers.js deferred.
 
-**Recommendation: port, don't vendor or fork.** Port `audio/`, `layers/`, `effects/`, `renderer/` and `project/` into a new `@tahti-player/visualizer-studio` package (logic only, MIT headers kept), and build the editor UI fresh from `@tahti-player/ui` with stories. A git fork or vendored copy would bring its UI, CSS and Pinokio launcher, and it would drift. Export: port the ffmpeg frame pipe into the player's Rust side for the desktop app (it already bundles Tauri; ffmpeg must be found or bundled). On the web, use WebCodecs + an MP4 muxer, keeping MediaRecorder as a fallback. Keep the PulseForge project JSON compatible so projects move between the two apps. Leave Whisper for a later phase (model download size).
+**v1 can ship without copying PulseForge** by exporting Tahti’s existing
+Three.js visualizers — unblocks Channel & Design integration and the
+background-video loop while licence / Pixi port is open.
 
-Still the user's call: whether to go ahead once the licence is confirmed, and whether PixiJS alongside three.js is acceptable in tahti-web's bundle (lazy-loaded with the editor route, so it doesn't touch initial JS).
+## Work plan (phases)
 
-## Plan (draft)
+### Phase 0 — Decisions (blocked until answered)
 
-- [ ] Resolve the licence and the port/vendor decision. **2026-09-27:** findings and a port recommendation above; waiting on a `LICENSE` file from the author and the user's go-ahead.
-- [ ] Spike: render one PulseForge-style layer stack with PixiJS from a Tahti track (stream URL through Web Audio), full screen, with play/pause.
-- [ ] Spike: deterministic export of a 30s clip at 1080p in the browser (WebCodecs), and measure time and memory.
-- [ ] Editor UI: full-screen shell, layer list, per-layer properties and presets, all from `@tahti-player/ui` with stories.
-- [ ] Save and load projects (PulseForge-compatible JSON), stored locally at first.
-- [ ] Lyrics layer and Whisper alignment (optional phase).
-- [ ] Upload the finished video and attach it to the track (needs a `../tahti-org` API change and the user's go-ahead).
+- [ ] Confirm MIT (`LICENSE` on PulseForge or written confirmation).
+- [ ] Accept v1 = Tahti Three.js export first; PulseForge layers = Phase 3+.
+- [ ] Accept Pixi alongside three in a lazy editor chunk (if Phase 3).
+- [ ] Export target: channel backdrop only for v1 vs also track/release attach
+      (API inspect in `../tahti-org` if attach).
+
+### Phase 1 — Entry + shared selectors (Channel & Design)
+
+- [ ] Add **Open visualization editor** on Designer Player → Visualizer
+      (and Branding host). Takeover shell; persistent chrome on parent.
+- [ ] Wire editor to current Look: preset + `visualSettings` from
+      `useChannelLook` (or equivalent props); changes can optionally write
+      back to the Look draft.
+- [ ] Track picker: artist library sounds (stream URL / local blob); empty /
+      error states.
+- [ ] Live preview: selected track drives analyser → `ChannelVisualizer`
+      (or shared preview) with current tuning.
+- [ ] Storybook: shell + track picker + preset bar composition; update
+      `ChannelDesignerPlayerVisualizer` story with CTA.
+- [ ] Tests: nav mounted on Designer; takeover hides chrome; selector parity
+      with Designer tuning keys.
+
+### Phase 2 — Export MP4 + apply as background video
+
+- [ ] Spike: 30s / 1080p export time & memory (WebCodecs vs MediaRecorder).
+- [ ] Export panel: resolution, fps, duration (full track vs clip), progress,
+      cancel.
+- [ ] Desktop (optional in same slice if cheap): Tauri ffmpeg frame pipe.
+- [ ] On success: produce `File` (`video/mp4`) → existing backdrop pending /
+      upload → set `videoBackgroundUrl` via `buildVisualPatch` path.
+- [ ] Designer Backdrop / `VideoOrImageField`: show pending generated file;
+      primary button **Use as background video**.
+- [ ] Public channel smoke: video backdrop plays (mock upload in tests).
+- [ ] Storybook: ExportPanel + ApplyAsBackground; Backdrop story with
+      generated file.
+- [ ] Refresh atlas / mapScreens screenshots for Designer + editor + channel
+      video backdrop.
+
+### Phase 3 — PulseForge port (advanced editor)
+
+- [ ] Licence cleared → port modules into `@tahti-player/visualizer-studio`.
+- [ ] Layer stack UI from `@tahti-player/ui` (reorder, visibility, per-layer
+      props); stories for each new control.
+- [ ] Keep project JSON compatible with PulseForge where practical.
+- [ ] Effects / beat bands; still export through Phase 2 pipeline.
+- [ ] Screenshot pass for advanced editor views.
+
+### Phase 4 — Lyrics / Whisper / cloud projects (later)
+
+- [ ] `.lrc` / timed text; Whisper optional and kill-switched.
+- [ ] Cloud save / track attach via real `../tahti-org` contracts only.
+
+## Docs / tracker updates when implementing
+
+- Keep this file as the living plan; set `partial` when Phase 1 lands.
+- INDEX one-liner stays in sync.
+- WORKPLAN epic row until the epic’s last leaf ships.
+- `STORYBOOK-SURFACES.md`, `VIEW-CATALOG.md`, `NAVIGATION-SITEMAP.md` when
+  the route/entry ships.
+- Append UI-REDESIGN-WORKLOG when a slice ships (not for planning).
 
 ## Related
 
-- The existing player visualizers live in `packages/tahti-web/src/components/ChannelVisualizer.tsx` and `AudioEngine.tsx`.
-- [`audio-editor-waveform-screenshot.md`](audio-editor-waveform-screenshot.md) covers the audio editor, which is a separate feature.
+- Existing visualizers: `packages/tahti-web/src/components/ChannelVisualizer.tsx`,
+  `plugins/visualizers/`, `channel-designer/PlayerVisualizerControls.tsx`,
+  `TuningSliders.tsx`, `VideoOrImageField.tsx`, `useChannelLook.ts`.
+- Designer host: `ChannelDesigner.tsx`, `StudioBrandingView.tsx`, Settings →
+  Artist Branding.
+- Atlas / screenshots: `src/content/mapScreens.ts` (Studio Branding, Channel
+  Designer); capture scripts / `storybook-parity-and-atlas-refresh.md`.
+- Separate: audio waveform editor (`audio-editor-waveform-screenshot.md` if
+  present) — do not conflate.
+- PulseForge upstream: https://github.com/TheAwaken1/PulseForge

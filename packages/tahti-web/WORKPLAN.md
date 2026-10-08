@@ -12,6 +12,7 @@ Sibling API: **`../tahti-org`**. Product matrix: [`FEATURES.md`](FEATURES.md) Re
 
 ## Next (queued after today's cycles)
 
+- [ ] **Track visualization editor (Channel & Design)** — Studio takeover from Channel Designer: shared visualizer selectors/settings, track → MP4 export → `videoBackgroundUrl` backdrop; Storybook + atlas screenshots. PulseForge advanced layers after licence. Leaf: [track-visualizer-video-editor.md](../../docs/todo/track-visualizer-video-editor.md).
 - [ ] **(Later) Player performance** — baseline CPU and native memory on the release desktop build, then optimize startup, queue scaling, playback updates, visualizers and section loading; require before/after profiling. Leaf: [player-performance-optimizations.md](../../docs/todo/player-performance-optimizations.md).
 - [ ] **(Later) Discussion topics, not just feature requests** — `admin/moderation/tabs/FeatureRequestsTab.tsx` currently only handles feature-request tickets. Add admin-creatable discussion topics as a distinct concept (not a feature request). Participants get notified on new updates to a topic they're in; users can mute a specific topic.
 
