@@ -89,11 +89,13 @@ export function FlowGallery() {
           {diagrams.map((d, i) => {
             const active = d.id === selected?.id;
             return (
-              <button
+              <Button
+                variant="plain"
+                size="flexible"
                 key={d.id}
                 type="button"
                 onClick={() => setSelectedId(d.id)}
-                className={`rounded-md px-3 py-2 text-left text-sm transition-colors ${
+                className={`inline-block rounded-md px-3 py-2 text-left text-sm whitespace-normal transition-colors active:scale-100 ${
                   active
                     ? 'bg-primary text-primary-foreground'
                     : 'text-foreground-secondary hover:text-foreground hover:bg-background-secondary'
@@ -103,7 +105,7 @@ export function FlowGallery() {
                   {i + 1}
                 </span>
                 {d.title}
-              </button>
+              </Button>
             );
           })}
         </nav>

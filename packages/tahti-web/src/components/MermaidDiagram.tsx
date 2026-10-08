@@ -1,6 +1,8 @@
 import { Maximize2, Minimize2 } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 
+import { Button } from '@tahti-player/ui';
+
 type Props = {
   chart: string;
   className?: string;
@@ -106,25 +108,31 @@ export function MermaidDiagram({ chart, className }: Props) {
         className="mb-2 flex items-center justify-end gap-1"
         aria-label="Diagram zoom controls"
       >
-        <button
+        <Button
+          variant="plain"
+          size="flexible"
           type="button"
-          className="border-border text-foreground-secondary hover:text-foreground rounded border px-2 py-1 text-xs"
+          className="border-border text-foreground-secondary hover:text-foreground inline-block rounded border px-2 py-1 text-xs whitespace-normal active:scale-100"
           onClick={() => setZoom((current) => Math.max(0.6, current - 0.2))}
           aria-label="Zoom out diagram"
         >
           −
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="plain"
+          size="flexible"
           type="button"
-          className="border-border text-foreground-secondary hover:text-foreground rounded border px-2 py-1 text-xs tabular-nums"
+          className="border-border text-foreground-secondary hover:text-foreground inline-block rounded border px-2 py-1 text-xs whitespace-normal tabular-nums active:scale-100"
           onClick={() => setZoom(1)}
           aria-label="Reset diagram zoom"
         >
           {Math.round(zoom * 100)}%
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="plain"
+          size="flexible"
           type="button"
-          className="border-border text-foreground-secondary hover:text-foreground rounded border px-2 py-1"
+          className="border-border text-foreground-secondary hover:text-foreground inline-block rounded border px-2 py-1 whitespace-normal active:scale-100"
           onClick={toggleFullscreen}
           aria-label={
             isFullscreen ? 'Exit fullscreen diagram' : 'View diagram fullscreen'
@@ -132,15 +140,17 @@ export function MermaidDiagram({ chart, className }: Props) {
           title={isFullscreen ? 'Exit fullscreen' : 'View fullscreen'}
         >
           {isFullscreen ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="plain"
+          size="flexible"
           type="button"
-          className="border-border text-foreground-secondary hover:text-foreground rounded border px-2 py-1 text-xs"
+          className="border-border text-foreground-secondary hover:text-foreground inline-block rounded border px-2 py-1 text-xs whitespace-normal active:scale-100"
           onClick={() => setZoom((current) => Math.min(2, current + 0.2))}
           aria-label="Zoom in diagram"
         >
           +
-        </button>
+        </Button>
       </div>
       {!ready && !error && (
         <p className="text-foreground-secondary text-sm">Rendering diagram…</p>
