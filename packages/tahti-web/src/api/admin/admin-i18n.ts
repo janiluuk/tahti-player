@@ -54,9 +54,16 @@ function mockLanguages(): AdminLanguage[] {
   return mockLanguagesState;
 }
 
+/** True when the error is the API saying it has no such route. */
+function isMissingRoute(err: unknown): boolean {
+  return err instanceof Error && /→ 404$/.test(err.message);
+}
+
 export async function fetchAdminLanguages(): Promise<{
   data: AdminLanguage[];
   meta: FetchMeta;
+  /** The server has no translation routes, so nothing here can be saved. */
+  unavailable?: true;
 }> {
   if (isForceMock()) {
     return {
@@ -70,6 +77,11 @@ export async function fetchAdminLanguages(): Promise<{
     );
     return { data: data.languages, meta: { source: 'api' } };
   } catch (err) {
+    // A missing route is not an outage: sample languages here would look like
+    // real translation progress, and Add/Import could never be saved.
+    if (isMissingRoute(err)) {
+      return { data: [], meta: apiErrorMeta(err), unavailable: true };
+    }
     if (allowMockFallback()) {
       return { data: mockLanguages(), meta: failMeta(err) };
     }
