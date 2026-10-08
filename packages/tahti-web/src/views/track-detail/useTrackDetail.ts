@@ -19,6 +19,7 @@ import {
   type TrackComment,
 } from '../../api/types';
 import { parsePublicTracklist } from '../../lib/publicTracklist';
+import { syncDocumentMetadata } from '../../lib/seo';
 import { useDominantColor } from '../../lib/useDominantColor';
 import { useAuthStore } from '../../stores/authStore';
 import { useLibraryStore } from '../../stores/libraryStore';
@@ -78,6 +79,10 @@ export function useTrackDetail(id: string, shareKey?: string) {
         setDetail(data);
         setLoading(false);
         if (data) {
+          syncDocumentMetadata(window.location.pathname, {
+            title: `${data.title} by ${data.artistName} on Tahti`,
+            image: data.bannerUrl ?? undefined,
+          });
           void fetchChannel(data.channelSlug).then((result) =>
             setChannel(result.data),
           );

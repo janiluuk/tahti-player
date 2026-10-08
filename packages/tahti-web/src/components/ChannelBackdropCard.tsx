@@ -26,6 +26,7 @@ export type ChannelBackdropQuickAdd = {
 
 export type ChannelBackdropCardProps = {
   displayName: string;
+  nameAsHeading?: boolean;
   username: string;
   /** Shows the Tahti ry member badge beside the name. */
   isMember?: boolean;
@@ -112,6 +113,7 @@ const DEFAULT_NAV_ITEMS: ChannelBackdropNavItem[] = [
  * else → dimmed artwork + live visualizer. */
 export function ChannelBackdropCard({
   displayName,
+  nameAsHeading = false,
   username,
   isMember,
   channelSlug,
@@ -158,6 +160,7 @@ export function ChannelBackdropCard({
   bottomSlot,
   className,
 }: ChannelBackdropCardProps) {
+  const NameTag = nameAsHeading ? 'h1' : 'div';
   const showVideo =
     showVideoOverride ??
     (headerStyle === 'VIDEO_LOOP' &&
@@ -312,12 +315,12 @@ export function ChannelBackdropCard({
           ) : null}
           <div className="min-w-36 flex-1">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-              <div
+              <NameTag
                 data-testid="channel-backdrop-card-name"
                 className="font-display text-2xl font-extrabold tracking-tight break-words sm:text-3xl"
               >
                 {displayName}
-              </div>
+              </NameTag>
               <TahtiMemberBadge isMember={isMember} />
             </div>
             <div
