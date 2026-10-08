@@ -1,4 +1,3 @@
-import { Link } from '@tanstack/react-router';
 import {
   ExternalLinkIcon,
   MessageSquareIcon,
@@ -11,6 +10,7 @@ import { useEffect, useState } from 'react';
 import {
   Badge,
   Button,
+  ButtonLink,
   Input,
   MediaArtwork,
   SaveButton,
@@ -278,17 +278,17 @@ export function AdminUserEditPanel({
                 <MessageSquareIcon size={15} aria-hidden />
               </Button>
             </Tooltip>
-            <Link to="/u/$username" params={{ username: detail.username }}>
-              <Tooltip content="View profile" side="top">
-                <Button
-                  size="icon-sm"
-                  variant="secondary"
-                  aria-label={`View ${detail.displayName}'s profile`}
-                >
-                  <ExternalLinkIcon size={15} aria-hidden />
-                </Button>
-              </Tooltip>
-            </Link>
+            <Tooltip content="View profile" side="top">
+              <ButtonLink
+                to="/u/$username"
+                params={{ username: detail.username }}
+                size="icon-sm"
+                variant="secondary"
+                aria-label={`View ${detail.displayName}'s profile`}
+              >
+                <ExternalLinkIcon size={15} aria-hidden />
+              </ButtonLink>
+            </Tooltip>
           </div>
         </div>
 
