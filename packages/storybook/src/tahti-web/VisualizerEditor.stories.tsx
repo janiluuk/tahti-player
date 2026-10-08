@@ -5,9 +5,9 @@ import { VisualizerTrackPicker } from '@tahti-web/components/channel-designer/Vi
 import { useState } from 'react';
 
 /**
- * Channel & Design visualization editor takeover (Phase 1).
+ * Channel & Design visualization editor takeover.
  *
- * Missing states: export panel (Phase 2), apply-as-background success.
+ * Missing states: live export against AudioEngine in Storybook play.
  * Orphan: none — hosted from ChannelDesigner Player → Visualizer.
  */
 const meta: Meta<typeof VisualizerEditor> = {
@@ -70,6 +70,7 @@ function EditorDemo() {
           },
         }));
       }}
+      onUseAsBackground={() => undefined}
     />
   );
 }

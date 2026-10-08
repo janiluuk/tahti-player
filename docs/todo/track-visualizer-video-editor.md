@@ -179,19 +179,18 @@ background-video loop while licence / Pixi port is open.
 
 ### Phase 2 — Export MP4 + apply as background video
 
-- [ ] Spike: 30s / 1080p export time & memory (WebCodecs vs MediaRecorder).
-- [ ] Export panel: resolution, fps, duration (full track vs clip), progress,
-      cancel.
-- [ ] Desktop (optional in same slice if cheap): Tauri ffmpeg frame pipe.
-- [ ] On success: produce `File` (`video/mp4`) → existing backdrop pending /
-      upload → set `videoBackgroundUrl` via `buildVisualPatch` path.
-- [ ] Designer Backdrop / `VideoOrImageField`: show pending generated file;
-      primary button **Use as background video**.
-- [ ] Public channel smoke: video backdrop plays (mock upload in tests).
-- [ ] Storybook: ExportPanel + ApplyAsBackground; Backdrop story with
-      generated file.
-- [ ] Refresh atlas / mapScreens screenshots for Designer + editor + channel
-      video backdrop.
+- [x] Spike: MediaRecorder + scaled offscreen canvas (WebCodecs deferred);
+      bitrate/duration kept under the 10 MB header upload cap.
+- [x] Export panel: quality (480/720), duration (5/10/15s), progress, cancel.
+- [ ] Desktop (optional): Tauri ffmpeg frame pipe.
+- [x] On success: produce `File` (webm/mp4 per browser) →
+      `selectVideoFile` + `headerStyle: VIDEO_LOOP` (pending until Save look).
+- [x] Designer Player → Video/image tab selected after apply; pending file
+      shown via existing `VideoOrImageField`.
+- [ ] Public channel smoke after save (manual / later e2e).
+- [x] Storybook: ExportPanel states + VideoOrImageField pending generated clip.
+- [x] mapScreens Branding actions updated; full atlas PNG refresh deferred
+      until UI freeze / capture pass.
 
 ### Phase 3 — PulseForge port (advanced editor)
 

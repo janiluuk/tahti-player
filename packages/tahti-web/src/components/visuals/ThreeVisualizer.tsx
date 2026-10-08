@@ -101,6 +101,8 @@ export const ThreeVisualizer: FC<ThreeVisualizerProps> = ({
       alpha: true,
       antialias: true,
       powerPreference: 'high-performance',
+      // Needed so export can sample frames via drawImage / captureStream.
+      preserveDrawingBuffer: true,
     });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO));
     renderer.outputColorSpace = THREE.SRGBColorSpace;

@@ -1,5 +1,6 @@
 import { PauseIcon, PlayIcon, XIcon } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { toast } from 'sonner';
 
 import { Button, cn } from '@tahti-player/ui';
 
@@ -15,9 +16,17 @@ import type { StudioSound } from '../../api/studio-types';
 import { useAuthStore } from '../../stores/authStore';
 import { usePlayerStore } from '../../stores/playerStore';
 import { ChannelVisualizer } from '../ChannelVisualizer';
+import {
+  bitrateForExport,
+  EXPORT_RESOLUTION_OPTIONS,
+  exportVisualizerClip,
+  type ExportDurationSec,
+  type ExportResolutionId,
+} from './exportVisualizerClip';
 import { PlayerVisualizerControls } from './PlayerVisualizerControls';
 import { TuningSliders } from './TuningSliders';
 import { filterVisualizerEditorTracks } from './visualizerEditorTracks';
+import { VisualizerExportPanel } from './VisualizerExportPanel';
 import { VisualizerPickerDialog } from './VisualizerPickerDialog';
 import { VisualizerTrackPicker } from './VisualizerTrackPicker';
 
@@ -39,6 +48,8 @@ export type VisualizerEditorProps = {
     key: 'speed' | 'intensity' | 'audioReactive',
     value: number | boolean,
   ) => void;
+  /** Hands the exported clip to Channel Designer’s backdrop pending file. */
+  onUseAsBackground?: (file: File) => void;
 };
 
 function playableId(sound: StudioSound): string {
@@ -47,7 +58,7 @@ function playableId(sound: StudioSound): string {
 
 /**
  * Channel & Design takeover: preview a Look’s visualizer against a library
- * track. Export-to-MP4 lands in Phase 2.
+ * track, export a short clip, and apply it as the channel background video.
  */
 export function VisualizerEditor({
   open,
@@ -61,12 +72,15 @@ export function VisualizerEditor({
   onApplyPreset,
   onToggleEnabled,
   onSettingChange,
+  onUseAsBackground,
 }: VisualizerEditorProps) {
   const user = useAuthStore((state) => state.user);
   const play = usePlayerStore((state) => state.play);
   const setStatus = usePlayerStore((state) => state.setStatus);
   const status = usePlayerStore((state) => state.status);
   const currentId = usePlayerStore((state) => state.currentId);
+  const previewRef = useRef<HTMLDivElement>(null);
+  const exportAbortRef = useRef<AbortController | null>(null);
 
   const [tracks, setTracks] = useState<StudioSound[]>([]);
   const [tracksLoading, setTracksLoading] = useState(false);
@@ -77,6 +91,12 @@ export function VisualizerEditor({
   const [pickerOpen, setPickerOpen] = useState(false);
   const [pickerPreset, setPickerPreset] =
     useState<ActivePreset>(activeVisualizer);
+  const [durationSec, setDurationSec] = useState<ExportDurationSec>(10);
+  const [resolutionId, setResolutionId] = useState<ExportResolutionId>('720');
+  const [exporting, setExporting] = useState(false);
+  const [exportProgress, setExportProgress] = useState(0);
+  const [exportError, setExportError] = useState<string | null>(null);
+  const [exportFile, setExportFile] = useState<File | null>(null);
 
   const availableVisualizers = useMemo(
     () =>
@@ -116,20 +136,31 @@ export function VisualizerEditor({
     loadTracks();
     setPickerPreset(activeVisualizer);
     setShowSettings(true);
+    setExportError(null);
+    setExportFile(null);
+    setExportProgress(0);
+    setExporting(false);
   }, [open, loadTracks, activeVisualizer]);
+
+  useEffect(() => {
+    if (!open) {
+      exportAbortRef.current?.abort();
+      exportAbortRef.current = null;
+    }
+  }, [open]);
 
   useEffect(() => {
     if (!open) {
       return;
     }
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && !pickerOpen) {
+      if (event.key === 'Escape' && !pickerOpen && !exporting) {
         onClose();
       }
     };
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
-  }, [open, onClose, pickerOpen]);
+  }, [open, onClose, pickerOpen, exporting]);
 
   useEffect(() => {
     if (!open) {
@@ -184,6 +215,84 @@ export function VisualizerEditor({
     }
   };
 
+  const findPreviewCanvas = () =>
+    previewRef.current?.querySelector('canvas') ?? null;
+
+  const ensurePlayingForExport = async () => {
+    if (!selectedTrack) {
+      throw new Error('Pick a track before exporting.');
+    }
+    if (!visualizerEnabled) {
+      throw new Error('Enable the visualizer before exporting.');
+    }
+    if (!(playingThis && status === 'playing')) {
+      await playTrack(selectedTrack);
+      await new Promise((resolve) => window.setTimeout(resolve, 400));
+    }
+  };
+
+  const startExport = async () => {
+    setExportError(null);
+    setExportFile(null);
+    try {
+      await ensurePlayingForExport();
+      const canvas = findPreviewCanvas();
+      if (!canvas) {
+        throw new Error('Visualizer canvas is not ready yet.');
+      }
+      const resolution = EXPORT_RESOLUTION_OPTIONS.find(
+        (option) => option.id === resolutionId,
+      );
+      const controller = new AbortController();
+      exportAbortRef.current = controller;
+      setExporting(true);
+      setExportProgress(0);
+      const result = await exportVisualizerClip(canvas, {
+        durationSec,
+        fps: 24,
+        height: resolution?.height ?? 720,
+        videoBitsPerSecond: bitrateForExport(durationSec, resolutionId),
+        signal: controller.signal,
+        onProgress: setExportProgress,
+      });
+      setExportFile(result.file);
+      toast.success('Clip exported');
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        setExportError(null);
+        return;
+      }
+      setExportError(error instanceof Error ? error.message : 'Export failed');
+    } finally {
+      setExporting(false);
+      exportAbortRef.current = null;
+    }
+  };
+
+  const cancelExport = () => {
+    exportAbortRef.current?.abort();
+  };
+
+  const downloadExport = () => {
+    if (!exportFile) {
+      return;
+    }
+    const url = URL.createObjectURL(exportFile);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = exportFile.name;
+    anchor.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const useAsBackground = () => {
+    if (!exportFile || !onUseAsBackground) {
+      return;
+    }
+    onUseAsBackground(exportFile);
+    onClose();
+  };
+
   const tuned = resolveVisualPresetSettings(visualSettings, activeVisualizer);
   const previewGradient = `linear-gradient(135deg, ${scheme.highlight ?? '#A78BFA'}, ${scheme.accent ?? '#22D3EE'}, ${scheme.bg ?? '#0B1220'})`;
 
@@ -205,7 +314,8 @@ export function VisualizerEditor({
             Visualization editor
           </h2>
           <p className="text-foreground-secondary truncate text-xs">
-            Preview your channel visualizer on a track. MP4 export comes next.
+            Preview, export a short clip, and use it as your channel background
+            video.
           </p>
         </div>
         <Button
@@ -261,10 +371,27 @@ export function VisualizerEditor({
               onToggleEnabled={onToggleEnabled}
             />
           </section>
+
+          <VisualizerExportPanel
+            durationSec={durationSec}
+            resolutionId={resolutionId}
+            exporting={exporting}
+            progress={exportProgress}
+            error={exportError}
+            resultFile={exportFile}
+            disabled={!selectedTrack || !visualizerEnabled || playBusy}
+            onDurationChange={setDurationSec}
+            onResolutionChange={setResolutionId}
+            onStart={() => void startExport()}
+            onCancel={cancelExport}
+            onUseAsBackground={useAsBackground}
+            onDownload={downloadExport}
+          />
         </aside>
 
         <main className="relative min-h-0 min-w-0 flex-1 bg-black">
           <div
+            ref={previewRef}
             className={cn(
               'absolute inset-0',
               !visualizerEnabled && 'opacity-40 grayscale',

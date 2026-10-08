@@ -28,5 +28,6 @@ export { SavePresetDialog } from './SavePresetDialog';
 export { TuningSliders } from './TuningSliders';
 export { VideoOrImageField } from './VideoOrImageField';
 export { VisualizerEditor } from './VisualizerEditor';
+export { VisualizerExportPanel } from './VisualizerExportPanel';
 export { VisualizerPickerDialog } from './VisualizerPickerDialog';
 export { VisualizerTrackPicker } from './VisualizerTrackPicker';

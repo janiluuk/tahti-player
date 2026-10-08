@@ -1,3 +1,10 @@
+## 2026-10-08 — Visualization editor Phase 2 (export + background)
+
+VisualizerEditor records a short video-only clip from the live Three.js
+preview (MediaRecorder, 5/10/15s, 480/720 quality under the 10 MB header
+cap) and **Use as background video** drops it into the Designer’s pending
+backdrop upload with `VIDEO_LOOP` header style.
+
 ## 2026-10-08 — Visualization editor Phase 1 (Channel & Design)
 
 Channel Designer Player → Visualizer gains **Open visualization editor**:

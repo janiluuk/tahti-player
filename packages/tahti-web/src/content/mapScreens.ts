@@ -2165,6 +2165,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           'Pick an avatar colour when there is no picture',
           'Set the profile backdrop and logo',
           'Switch Branding / Gallery / Press kit / Channel Designer tabs',
+          'Open the visualization editor, export a clip, use it as background video',
         ],
         old: {
           route: '/dashboard/settings/branding',

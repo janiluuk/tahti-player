@@ -65,3 +65,28 @@ export const BackdropWithPreview: Story = {
   name: 'Backdrop — image preview + remove',
   render: () => <Demo variant="backdrop" withPreview />,
 };
+
+export const CompactPendingGenerated: Story = {
+  name: 'Player → pending generated viz clip',
+  render: () => {
+    const [urlOpen, setUrlOpen] = useState(false);
+    const pending = new File(
+      [new Uint8Array(512_000)],
+      'tahti-visualizer.webm',
+      { type: 'video/webm' },
+    );
+    return (
+      <div className="max-w-lg">
+        <VideoOrImageField
+          variant="compact"
+          pendingFile={pending}
+          url=""
+          urlOpen={urlOpen}
+          onUrlOpenChange={setUrlOpen}
+          onUrlChange={() => undefined}
+          onFiles={() => undefined}
+        />
+      </div>
+    );
+  },
+};

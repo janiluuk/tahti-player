@@ -67,6 +67,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Channel/Designer/PlayerPanel` | `tahti-web/ChannelDesignerPlayerPanel.stories.tsx` |
 | `Tahti/Channel/Designer/PlayerVisualizerControls` | `tahti-web/ChannelDesignerPlayerVisualizer.stories.tsx` |
 | `Tahti/Studio/VisualizerEditor` | `tahti-web/VisualizerEditor.stories.tsx` |
+| `Tahti/Studio/VisualizerEditor/ExportPanel` | `tahti-web/VisualizerExportPanel.stories.tsx` |
 | `Tahti/Channel/Designer/Playlist` | `tahti-web/ChannelDesignerPlaylist.stories.tsx` |
 | `Tahti/Channel/Designer/SlideshowControls` | `tahti-web/ChannelDesignerSlideshowControls.stories.tsx` |
 | `Tahti/Channel/Designer/VideoOrImageField` | `tahti-web/ChannelDesignerVideoOrImageField.stories.tsx` |

@@ -679,6 +679,12 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
           }
         }}
         onSettingChange={setPresetSetting}
+        onUseAsBackground={(file) => {
+          selectVideoFile([file]);
+          applyLocal({ headerStyle: 'VIDEO_LOOP' });
+          setPlayerDesignTab('video-image');
+          setSelectedLookId('player');
+        }}
       />
     );
 
