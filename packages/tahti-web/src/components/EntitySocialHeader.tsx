@@ -285,11 +285,13 @@ export function EntitySocialHeader({
           {imageUrl ? (
             onImageClick ? (
               <div className="group relative size-24 shrink-0">
-                <button
+                <Button
+                  variant="plain"
+                  size="flexible"
                   type="button"
                   onClick={onImageClick}
                   className={cn(
-                    'border-border shadow-shadow relative size-24 overflow-hidden border-(length:--border-width) p-0',
+                    'border-border shadow-shadow relative inline-block size-24 overflow-hidden border-(length:--border-width) p-0 whitespace-normal active:scale-100',
                     roundImage ? 'rounded-full' : 'rounded-md',
                   )}
                   aria-label={`Change ${title} artwork`}
@@ -303,9 +305,11 @@ export function EntitySocialHeader({
                     alt={imageAlt}
                     imageReveal={false}
                   />
-                </button>
+                </Button>
                 {onImageDelete ? (
-                  <button
+                  <Button
+                    variant="plain"
+                    size="flexible"
                     type="button"
                     onClick={(event) => {
                       event.stopPropagation();
@@ -313,10 +317,10 @@ export function EntitySocialHeader({
                     }}
                     aria-label={`Remove ${title} artwork`}
                     title="Remove artwork"
-                    className="border-border bg-background text-accent-red-strong shadow-shadow hover:bg-background-secondary absolute -top-1.5 -right-1.5 flex size-6 items-center justify-center rounded-full border-(length:--border-width) opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100"
+                    className="border-border bg-background text-accent-red-strong shadow-shadow hover:bg-background-secondary absolute -top-1.5 -right-1.5 flex size-6 items-center justify-center rounded-full border-(length:--border-width) whitespace-normal opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 active:scale-100"
                   >
                     <XIcon size={12} aria-hidden />
-                  </button>
+                  </Button>
                 ) : null}
               </div>
             ) : (
@@ -333,17 +337,19 @@ export function EntitySocialHeader({
               />
             )
           ) : onImageClick ? (
-            <button
+            <Button
+              variant="plain"
+              size="flexible"
               type="button"
               onClick={onImageClick}
               className={cn(
-                'border-border bg-background-secondary/40 text-foreground-secondary shadow-shadow flex size-24 shrink-0 items-center justify-center border-(length:--border-width)',
+                'border-border bg-background-secondary/40 text-foreground-secondary shadow-shadow flex size-24 shrink-0 items-center justify-center border-(length:--border-width) whitespace-normal active:scale-100',
                 roundImage ? 'rounded-full' : 'rounded-md',
               )}
               aria-label={`Upload ${title} artwork`}
             >
               <UploadCloudIcon size={22} aria-hidden />
-            </button>
+            </Button>
           ) : imageFallback ? (
             <MediaArtwork
               src={null}
