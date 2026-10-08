@@ -33,10 +33,12 @@ export function PlaylistDialog({ state }: { state: StreamManagerState }) {
         <div className="grid gap-4 sm:grid-cols-[minmax(10rem,0.8fr)_minmax(0,1.2fr)]">
           <div className="border-border flex max-h-56 flex-col gap-1 overflow-y-auto rounded-lg border p-1">
             {collections.map((collection) => (
-              <button
+              <Button
+                variant="plain"
+                size="flexible"
                 key={collection.slug}
                 type="button"
-                className={`rounded-md px-3 py-2 text-left text-sm ${
+                className={`inline-block rounded-md px-3 py-2 text-left text-sm whitespace-normal active:scale-100 ${
                   selectedCollectionSlug === collection.slug
                     ? 'bg-primary text-primary-foreground'
                     : 'hover:bg-background-secondary'
@@ -49,7 +51,7 @@ export function PlaylistDialog({ state }: { state: StreamManagerState }) {
                 <span className="block text-xs opacity-75">
                   {collection.itemCount ?? collection.items?.length ?? 0} tracks
                 </span>
-              </button>
+              </Button>
             ))}
           </div>
           <div className="border-border min-h-32 rounded-lg border p-3">
