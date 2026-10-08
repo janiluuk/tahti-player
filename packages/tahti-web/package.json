@@ -38,7 +38,11 @@
     "react-dom": "^18.3.1",
     "sonner": "^2.0.7",
     "three": "^0.184.0",
-    "zustand": "^5.0.7"
+    "zustand": "^5.0.7",
+    "@tahti-player/audio-core": "workspace:*",
+    "@tahti-player/audio-rack": "workspace:*",
+    "@tahti-player/audio-editor": "workspace:*",
+    "@tahti-player/visualizer": "workspace:*"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0",

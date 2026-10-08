@@ -131,7 +131,11 @@ export function FullScreenPlayer() {
       aria-label="Now playing, full screen"
     >
       <div className="bg-background/35 absolute inset-0 backdrop-blur-md">
-        <ChannelVisualizer className="h-full w-full" artworkUrl={coverUrl} />
+        <ChannelVisualizer
+          className="h-full w-full"
+          artworkUrl={coverUrl}
+          engineMode="spectrum"
+        />
       </div>
 
       {/* Must outrank the content column below: that div is `absolute`'s

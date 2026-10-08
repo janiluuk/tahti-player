@@ -210,7 +210,7 @@ Compared the current `apps/web/src/app/**/page.tsx` tree in the Tahti repository
 - [x] ~~Public venue governance (`/governance/venues`)~~ — not actually a gap. Checked prod (`apps/web/src/app/governance/venues/page.tsx`): it's board-only ("Venue verification"), same as this POC's `/studio/venues`/admin tooling. Prod has no member-facing venue governance route to port.
 - [x] Direct-message thread URLs — new `/messages/$id` route; opening a conversation now navigates there so refresh/share preserves it.
 - [ ] Admin detail operations remain intentionally reduced: user/support/announcement detail, bulk file operations, per-subscriber payout retry, legacy-member migration, grant preview/run, and governance report/resolution/audit tools.
-- [ ] Pro editor remains shallower than Tahti's full ffmpeg/multitrack workflow; a true multitrack timeline still needs a rendering and persistence design.
+- [ ] Multitrack + viz (theDAW port) is available beside trim mode; server-side multitrack render still open. Was: Pro editor remains shallower than Tahti's full ffmpeg/multitrack workflow; a true multitrack timeline still needs a rendering and persistence design.
 - [x] Dynamic SEO/OG parity for artist, channel, and release pages — client-side sync on real data resolve (`src/lib/seo.ts`) plus a bot-facing `/api/og/*` proxy (see SEO-OG-NOTES.md). Collection and venue pages now sync client-side metadata after fetch; they still have no dedicated bot OG routes.
 
 ## 2026-08-25 tahti-org sweep

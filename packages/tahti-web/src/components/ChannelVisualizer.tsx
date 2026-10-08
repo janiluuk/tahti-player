@@ -1,4 +1,11 @@
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
+
+import {
+  isAdvancedMode,
+  isCymaticsMode,
+  VisualizerHost,
+  type VisualizerMode,
+} from '@tahti-player/visualizer';
 
 import { supportsWebGL } from '../lib/webgl';
 import type { ThreeVisualizerProps } from './visuals/ThreeVisualizer';
@@ -20,6 +27,8 @@ type Props = {
   className?: string;
   artworkUrl?: string | null;
   audioReactive?: boolean;
+  /** Prefer theDAW-ported Advanced/Cymatics modes when the preset matches. */
+  engineMode?: VisualizerMode | null;
 };
 
 const ThreeVisualizer = lazy(() =>
@@ -115,6 +124,26 @@ function parseStoredAudioReactive(
   return parsed[preset]?.audioReactive ?? DEFAULT_SETTINGS.audioReactive;
 }
 
+function resolveEngineMode(
+  engineMode: VisualizerMode | null | undefined,
+  preset: string,
+): VisualizerMode | null {
+  if (
+    engineMode &&
+    (isAdvancedMode(engineMode) || isCymaticsMode(engineMode))
+  ) {
+    return engineMode;
+  }
+  const lower = preset.toLowerCase();
+  if (
+    isAdvancedMode(lower as VisualizerMode) ||
+    isCymaticsMode(lower as VisualizerMode)
+  ) {
+    return lower as VisualizerMode;
+  }
+  return null;
+}
+
 export const ChannelVisualizer = ({
   preset,
   colorScheme,
@@ -124,9 +153,13 @@ export const ChannelVisualizer = ({
   className,
   artworkUrl,
   audioReactive,
+  engineMode,
 }: Props) => {
   const [canAnimate, setCanAnimate] = useState(false);
+  const [offscreen, setOffscreen] = useState(false);
+  const hostRef = useRef<HTMLDivElement | null>(null);
   const mode = (preset ?? 'AURORA').toUpperCase();
+  const portedMode = resolveEngineMode(engineMode, preset ?? '');
   const scheme = useMemo(
     () => parseScheme(colorScheme, colorSchemeJson),
     [colorScheme, colorSchemeJson],
@@ -149,6 +182,23 @@ export const ChannelVisualizer = ({
     setCanAnimate(!reducedMotion && mode !== 'MINIMAL' && supportsWebGL());
   }, [mode]);
 
+  useEffect(() => {
+    const el = hostRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          setOffscreen(!entry.isIntersecting);
+        }
+      },
+      { rootMargin: '80px' },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [portedMode]);
+
   const fallback = (
     <div
       className={className}
@@ -161,6 +211,19 @@ export const ChannelVisualizer = ({
 
   if (!canAnimate) {
     return fallback;
+  }
+
+  if (portedMode) {
+    return (
+      <div ref={hostRef} className={className}>
+        <VisualizerHost
+          mode={portedMode}
+          showModePicker={false}
+          suspended={offscreen || !resolvedAudioReactive}
+          className="h-full w-full"
+        />
+      </div>
+    );
   }
 
   return (

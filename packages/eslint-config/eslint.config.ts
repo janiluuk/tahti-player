@@ -20,6 +20,7 @@ const ignores = [
   '**/*.d.ts',
   '**/*.d.ts.map',
   '**/*.js.map',
+  '**/*.worklet.js',
   'packages/*/coverage',
   '**/.astro/**/*',
 ];
@@ -73,6 +74,34 @@ const config: TSESLint.FlatConfig.ConfigArray = tseslint.config([
     files: ['**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     rules: {
       curly: ['error', 'all'],
+    },
+  },
+  // theDAW ports keep @ts-nocheck until typed incrementally; worklets are ignored above.
+  {
+    files: [
+      'packages/audio-core/**/*.{ts,tsx}',
+      'packages/audio-editor/**/*.{ts,tsx}',
+      'packages/audio-rack/**/*.{ts,tsx}',
+      'packages/visualizer/**/*.{ts,tsx}',
+    ],
+    rules: {
+      '@typescript-eslint/ban-ts-comment': [
+        'error',
+        {
+          'ts-expect-error': 'allow-with-description',
+          'ts-ignore': true,
+          'ts-nocheck': false,
+        },
+      ],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+        },
+      ],
     },
   },
 ]);

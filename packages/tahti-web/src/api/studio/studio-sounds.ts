@@ -1,4 +1,5 @@
 import type { FetchMeta } from '../client';
+import { apiBase } from '../http';
 import { DEMO_MP3 } from '../mock';
 import { mockFixture } from '../mock-overrides';
 import { getMockUploadedSound, patchMockUploadedSound } from '../mock-uploads';
@@ -593,4 +594,27 @@ export async function fetchEditorSource(soundId: string): Promise<{
       meta: apiErrorMeta(err),
     };
   }
+}
+
+/**
+ * Same-origin CORP stream for COEP pages (tahti-org
+ * `GET /api/me/sound/:id/editor/stream`). Prefer this for decode/fetch in the
+ * Pro multitrack path instead of the MinIO presigned URL from `editor/source`.
+ */
+export async function fetchEditorStreamBlob(soundId: string): Promise<Blob> {
+  if (isForceMock()) {
+    const res = await fetch(DEMO_MP3);
+    if (!res.ok) {
+      throw new Error(`Mock editor stream failed (${res.status})`);
+    }
+    return res.blob();
+  }
+  const res = await fetch(
+    `${apiBase()}/api/me/sound/${encodeURIComponent(soundId)}/editor/stream`,
+    { credentials: 'include', headers: { Accept: 'audio/*,*/*' } },
+  );
+  if (!res.ok) {
+    throw new Error(`Editor stream failed (${res.status})`);
+  }
+  return res.blob();
 }
