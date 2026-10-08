@@ -679,5 +679,11 @@
       "label": "Kieli",
       "description": "Valitse sovelluksen kieli. Voit vaihtaa sen milloin tahansa."
     }
+  },
+  "studioEditor": {
+    "editorModeTrim": "Trimmaus / efektit",
+    "editorModeMultitrack": "Moniraita + viz",
+    "editorBounceReady": "Bounce valmis — WAV ladattu.",
+    "visualizerMode": "Visualisoinnin tila"
   }
 }
