@@ -20,6 +20,7 @@ export const buttonVariants = cva(
         text: 'text-foreground bg-transparent hover:bg-black/5 active:bg-black/10',
         ghost:
           'border border-current bg-transparent hover:bg-black/10 active:bg-black/15',
+        plain: '',
       },
       size: {
         default: 'h-10 px-4 py-2',

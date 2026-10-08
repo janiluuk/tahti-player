@@ -48,14 +48,16 @@ export function PlayerVisualizerControls({
     >
       <PluginItem
         icon={
-          <button
+          <Button
+            variant="plain"
+            size="flexible"
             type="button"
-            className="hover:bg-background-secondary flex size-full items-center justify-center rounded-lg transition-colors"
+            className="hover:bg-background-secondary flex size-full items-center justify-center rounded-lg whitespace-normal transition-colors active:scale-100"
             aria-label="Choose visualizer"
             onClick={onOpenPicker}
           >
             <meta.Icon size={22} aria-hidden />
-          </button>
+          </Button>
         }
         name={
           <span className="inline-flex flex-wrap items-center gap-2 text-base">

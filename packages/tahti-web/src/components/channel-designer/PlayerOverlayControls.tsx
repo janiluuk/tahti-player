@@ -98,12 +98,14 @@ export function PlayerOverlayControls({
           {NOW_PLAYING_OVERLAY_PRESETS.map((preset) => {
             const active = activePresetId === preset.id;
             return (
-              <button
+              <Button
+                variant="plain"
+                size="flexible"
                 key={preset.id}
                 type="button"
                 aria-pressed={active}
                 onClick={() => onNowPlayingStyleChange(preset.id)}
-                className={`flex flex-col gap-2 rounded-lg border p-2 text-left transition-colors ${
+                className={`flex flex-col gap-2 rounded-lg border p-2 text-left whitespace-normal transition-colors active:scale-100 ${
                   active
                     ? 'border-primary bg-primary/10 ring-primary ring-1'
                     : 'border-border bg-background hover:bg-background-secondary'
@@ -145,7 +147,7 @@ export function PlayerOverlayControls({
                     {preset.description}
                   </p>
                 </div>
-              </button>
+              </Button>
             );
           })}
         </div>

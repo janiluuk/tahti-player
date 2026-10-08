@@ -1,6 +1,6 @@
 import { Trash2Icon } from 'lucide-react';
 
-import { Tooltip } from '@tahti-player/ui';
+import { Button, Tooltip } from '@tahti-player/ui';
 
 import type { ChannelVisualPreset } from '../../api/channel-design';
 
@@ -32,24 +32,28 @@ export function SavedLooksRow({
           key={preset.id}
           className="border-border bg-background flex items-center gap-1 rounded-full border py-1 pr-1 pl-3 text-sm"
         >
-          <button
+          <Button
+            variant="plain"
+            size="flexible"
             type="button"
-            className="hover:text-primary font-semibold"
+            className="hover:text-primary inline-block rounded-none font-semibold whitespace-normal active:scale-100"
             disabled={presetBusy}
             onClick={() => onApply(preset)}
           >
             {preset.name}
-          </button>
+          </Button>
           <Tooltip content="Delete preset">
-            <button
+            <Button
+              variant="plain"
+              size="flexible"
               type="button"
               aria-label={`Delete "${preset.name}"`}
-              className="text-foreground-secondary hover:text-accent-red-strong rounded-full p-1.5"
+              className="text-foreground-secondary hover:text-accent-red-strong inline-block rounded-full p-1.5 whitespace-normal active:scale-100"
               disabled={presetBusy}
               onClick={() => onRequestDelete(preset)}
             >
               <Trash2Icon size={14} />
-            </button>
+            </Button>
           </Tooltip>
         </div>
       ))}

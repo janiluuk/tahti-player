@@ -46,12 +46,14 @@ export function VisualizerPickerDialog({
             const meta = visualizerMetadata(preset);
             const selected = selectedPreset === preset;
             return (
-              <button
+              <Button
+                variant="plain"
+                size="flexible"
                 key={preset}
                 type="button"
                 aria-pressed={selected}
                 onClick={() => onSelectPreset(preset)}
-                className={`border-border flex items-center gap-3 rounded-lg border p-3 text-left transition-colors ${
+                className={`border-border flex items-center gap-3 rounded-lg border p-3 text-left whitespace-normal transition-colors active:scale-100 ${
                   selected
                     ? 'border-primary bg-primary/10'
                     : 'hover:border-primary/50'
@@ -97,7 +99,7 @@ export function VisualizerPickerDialog({
                     {meta.description}
                   </span>
                 </span>
-              </button>
+              </Button>
             );
           })}
         </div>
