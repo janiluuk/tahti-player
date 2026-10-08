@@ -38,7 +38,10 @@ export function StudioDistributionView() {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-6">
-        <ViewShell title="Distribution" classes={{ root: 'px-0 pt-0' }}>
+        <ViewShell
+          title="Distribution"
+          classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+        >
           <Link
             to="/studio/releases"
             className="text-foreground-secondary hover:text-foreground inline-flex items-center gap-1 text-xs underline underline-offset-2"

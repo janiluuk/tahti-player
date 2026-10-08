@@ -1,3 +1,5 @@
+import { Button } from '@tahti-player/ui';
+
 import { HEADER_STYLES, type HeaderStyle } from '../../api/channel-design';
 
 export const HEADER_DESIGN_OPTIONS = [
@@ -36,20 +38,22 @@ export function HeaderStyleTabs({ value, onChange }: Props) {
       {HEADER_DESIGN_OPTIONS.map((mode) => {
         const selected = value === mode;
         return (
-          <button
+          <Button
+            variant="plain"
+            size="flexible"
             key={mode}
             type="button"
             role="tab"
             aria-selected={selected}
             onClick={() => onChange(mode)}
-            className={`rounded-md px-2.5 py-1.5 text-[10px] font-semibold tracking-wide uppercase ${
+            className={`inline-block rounded-md px-2.5 py-1.5 text-[10px] font-semibold tracking-wide whitespace-normal uppercase active:scale-100 ${
               selected
                 ? 'bg-primary text-primary-foreground'
                 : 'text-foreground-secondary hover:text-foreground'
             }`}
           >
             {labelFor(mode)}
-          </button>
+          </Button>
         );
       })}
     </div>

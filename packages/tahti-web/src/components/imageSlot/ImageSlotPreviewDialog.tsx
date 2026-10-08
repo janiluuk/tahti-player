@@ -77,15 +77,17 @@ export function ImageSlotPreviewDialog({
                     className="size-full object-cover"
                   />
                   {frame.onDelete ? (
-                    <button
+                    <Button
+                      variant="plain"
+                      size="flexible"
                       type="button"
                       aria-label="Remove image"
                       title="Remove image"
-                      className="bg-background/90 text-foreground hover:bg-accent-red absolute top-0.5 right-0.5 flex size-5 items-center justify-center rounded-full opacity-0 shadow-sm transition-opacity group-hover:opacity-100 hover:text-white"
+                      className="bg-background/90 text-foreground hover:bg-accent-red absolute top-0.5 right-0.5 flex size-5 items-center justify-center rounded-full whitespace-normal opacity-0 shadow-sm transition-opacity group-hover:opacity-100 hover:text-white active:scale-100"
                       onClick={frame.onDelete}
                     >
                       <XIcon size={12} aria-hidden />
-                    </button>
+                    </Button>
                   ) : null}
                 </div>
               ))}

@@ -35,7 +35,10 @@ export function StatusView() {
   }, []);
 
   return (
-    <ViewShell title="Status" classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl' }}>
+    <ViewShell
+      title="Status"
+      classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl', content: 'gap-4' }}
+    >
       {loading && (
         <p className="text-foreground-secondary text-sm">Checking…</p>
       )}

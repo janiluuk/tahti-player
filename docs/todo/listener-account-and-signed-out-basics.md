@@ -21,12 +21,17 @@ User ask (2026-10-04): add a separate listener user who is registered but has no
 - Found on the way: the artist header buttons wrap on phones (#536), feed cards say "an album" (#539), Favorites has an empty state for tracks (#540), the Messages start form is spaced and starts on Enter (#543).
 - `scripts/audit-signed-out.mjs` clicks Follow, Add, a reaction and Comment and checks the search (#544).
 
+## Done (2026-10-08)
+
+- Search on phones: the phone top bar has a search button that opens a search row across the bar (#567). Before, a phone had no search.
+- `scripts/audit-signed-out.mjs` opens the public pages at 390 px, fails on sideways scroll and checks the phone search (#573).
+- Found on the way, at 390 px: the menu drawer opened with a "Close" tooltip over its first item (#566), the rail filter box shrank to one letter (#568), a venue with no photo showed an empty box (#569), Messages showed an empty thread box (#572).
+
 ## Plan
 
 - [ ] 1. Decide what a listener sees where Studio is in the sidebar. It still shows Studio to everyone, signed out included.
 - [ ] 2. Library as a listener still lists artist tools (Recordings, Embeds, Smart links, upload). Decide which a listener keeps.
-- [ ] 3. Signed out on a phone: the top search box is not in the phone top bar; check where a visitor finds search there.
-- [ ] 4. Add a listener pass to the capture scripts (the audit script covers both since #533 and #544).
+- [ ] 3. Add a listener pass to the capture scripts (the audit script covers both since #533 and #544, and phones since #573).
 
 ## Open questions for the user
 

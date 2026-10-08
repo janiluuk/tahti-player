@@ -74,7 +74,10 @@ export function AdminTopListsView() {
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/top-lists">
-          <ViewShell title="Top lists" classes={{ root: 'px-0 pt-0' }}>
+          <ViewShell
+            title="Top lists"
+            classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+          >
             <div className="flex flex-col gap-3">
               <Input
                 value={query}

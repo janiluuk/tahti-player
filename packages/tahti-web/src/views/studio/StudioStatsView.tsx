@@ -55,7 +55,10 @@ export const StudioStatsView: FC = () => {
             ))}
           </Tabs.List>
         </Tabs.Root>
-        <ViewShell title="Stats" classes={{ root: 'px-0 pt-0' }}>
+        <ViewShell
+          title="Stats"
+          classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+        >
           <RangeControls state={state} />
           <KeyMetrics state={state} active={activeTab === 'overview'} />
           <PlaysTab state={state} active={activeTab === 'plays'} />

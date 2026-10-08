@@ -404,7 +404,9 @@ export function SelectsTab() {
                         key={item.id}
                         className={`flex items-center gap-3 px-3 py-2.5 text-sm ${index % 2 === 1 ? 'bg-background-secondary/40' : 'bg-background'}`}
                       >
-                        <button
+                        <Button
+                          variant="plain"
+                          size="flexible"
                           type="button"
                           disabled={already}
                           aria-label={`${selected ? 'Deselect' : 'Select'} ${item.title}`}
@@ -420,10 +422,10 @@ export function SelectsTab() {
                               return next;
                             });
                           }}
-                          className={`border-border flex size-5 shrink-0 items-center justify-center rounded border ${selected ? 'bg-primary text-primary-foreground' : 'bg-background'} disabled:opacity-40`}
+                          className={`border-border flex size-5 shrink-0 items-center justify-center rounded border whitespace-normal active:scale-100 ${selected ? 'bg-primary text-primary-foreground' : 'bg-background'} disabled:opacity-40`}
                         >
                           {selected && <CheckIcon size={13} aria-hidden />}
-                        </button>
+                        </Button>
                         <div className="min-w-0 flex-1">
                           <div className="truncate font-medium">
                             {item.title}

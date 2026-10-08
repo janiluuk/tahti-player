@@ -153,7 +153,7 @@ export function AdminArtworkPresetsView() {
         <div className="flex flex-col gap-6">
           <ViewShell
             title="Artwork presets"
-            classes={{ root: 'px-0 pt-0' }}
+            classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             actions={
               <div className="flex items-center gap-1.5">
                 <Tooltip content="Add new artwork" side="top">
@@ -210,17 +210,19 @@ export function AdminArtworkPresetsView() {
               alt="Selected artwork preset"
               className="h-full w-full rounded-xl object-cover"
             />
-            <button
+            <Button
+              variant="plain"
+              size="flexible"
               type="button"
               onClick={() => {
                 setUploadTarget('slot');
                 setUploadOpen(true);
               }}
               aria-label={`Upload artwork for ${DEFAULT_NAMES[selected] ?? 'this slot'}`}
-              className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/0 opacity-0 transition group-hover:bg-black/40 group-hover:opacity-100"
+              className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/0 whitespace-normal opacity-0 transition group-hover:bg-black/40 group-hover:opacity-100 active:scale-100"
             >
               <UploadIcon size={28} aria-hidden className="text-white" />
-            </button>
+            </Button>
           </div>
           <Input
             label="Editing slot"
@@ -247,7 +249,9 @@ export function AdminArtworkPresetsView() {
                 selected={assignments[selected] ?? null}
                 onSelect={assignToSelected}
                 trailingAction={
-                  <button
+                  <Button
+                    variant="plain"
+                    size="flexible"
                     type="button"
                     onClick={() => {
                       setUploadTarget('slot');
@@ -255,10 +259,10 @@ export function AdminArtworkPresetsView() {
                     }}
                     aria-label="Upload a new artwork"
                     title="Upload a new artwork"
-                    className="border-border text-foreground-secondary flex size-12 items-center justify-center rounded-md border border-dashed"
+                    className="border-border text-foreground-secondary flex size-12 items-center justify-center rounded-md border border-dashed whitespace-normal active:scale-100"
                   >
                     <PlusIcon size={16} aria-hidden />
-                  </button>
+                  </Button>
                 }
               />
             </div>

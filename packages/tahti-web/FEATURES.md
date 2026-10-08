@@ -226,7 +226,7 @@ Compared `tahti-org` (apps/web + recent API) with this SPA. Ported in this pass:
 Still not ported (do not block cutover unless noted):
 
 - [x] Integrations marketplace credentials (`/api/me/integrations`) — ListenBrainz + Last.fm **SCROBBLE** are live (Settings → Integrations; Add-ons → Scrobbling links there). Sources OAuth and fingerprint plugins remain separate. Chart dashboards / OmniSource are out of scope — see `src/plugins/scrobble/README.md`'s "Out of scope" note.
-- [ ] Theme editor public-submit / GitHub PR pipeline — local Nuclear themes only.
+- [ ] Theme editor public-submit / GitHub PR pipeline — submit and board approval exist; the API worker opens the pull request in `tahti-registry`, but its GitHub token is not provisioned yet, so no theme has been published this way.
 - [x] Internet Radio personal library (`/api/me/internet-radio`) — Settings → Playback keeps your own stations on the account.
 - [x] Hearthis export push — a track can be pushed to your own hearthis.at account from Studio.
 - [ ] Help spotlight tours covering disco-widgets specifically (generic `?` tours exist).

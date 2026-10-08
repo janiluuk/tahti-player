@@ -50,7 +50,11 @@ function ArtistAvatar({ name, src }: { name: string; src: string | null }) {
 function FeedItemHeader({ item }: { item: FeedItem }) {
   return (
     <div className="flex min-w-0 items-center gap-3">
-      <Link to="/u/$username" params={{ username: item.artist.username }}>
+      <Link
+        to="/u/$username"
+        params={{ username: item.artist.username }}
+        aria-label={item.artist.displayName}
+      >
         <ArtistAvatar
           name={item.artist.displayName}
           src={item.artist.avatarUrl}

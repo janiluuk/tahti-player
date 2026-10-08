@@ -3,7 +3,10 @@ import {
   ChevronRightIcon,
   LogInIcon,
   MenuIcon,
+  SearchIcon,
+  XIcon,
 } from 'lucide-react';
+import { useState } from 'react';
 
 import { Button, Dialog } from '@tahti-player/ui';
 
@@ -49,6 +52,7 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
     hasChannel,
     processingItems,
   } = nav;
+  const [phoneSearchOpen, setPhoneSearchOpen] = useState(false);
 
   return (
     <header className="border-border bg-background-secondary sticky top-0 z-30 flex h-14 shrink-0 items-center justify-between gap-2 border-b px-2 sm:px-3 md:px-6">
@@ -105,6 +109,17 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
       </div>
 
       <div className="flex shrink-0 items-center gap-1" ref={popupRef}>
+        <Button
+          variant="text"
+          size="icon-sm"
+          className={cn(iconBtnClass, 'sm:hidden')}
+          aria-label="Search"
+          title="Search"
+          data-testid="topbar-search"
+          onClick={() => setPhoneSearchOpen(true)}
+        >
+          <SearchIcon size={16} />
+        </Button>
         {user && hasChannel ? <BroadcastControls nav={nav} /> : null}
 
         {user ? <NotificationsPopover nav={nav} /> : null}
@@ -127,6 +142,33 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
           </Button>
         )}
       </div>
+      {phoneSearchOpen ? (
+        <div
+          className="bg-background-secondary absolute inset-0 z-10 flex items-center gap-1 px-2 sm:hidden"
+          data-testid="phone-search"
+          onKeyDown={(event) => {
+            if (event.key === 'Escape') {
+              setPhoneSearchOpen(false);
+            }
+          }}
+        >
+          <GlobalSearch
+            autoFocus
+            fullWidth
+            onDone={() => setPhoneSearchOpen(false)}
+          />
+          <Button
+            variant="text"
+            size="icon-sm"
+            className={iconBtnClass}
+            aria-label="Close search"
+            title="Close search"
+            onClick={() => setPhoneSearchOpen(false)}
+          >
+            <XIcon size={16} />
+          </Button>
+        </div>
+      ) : null}
       <UploadTrackDialog
         isOpen={uploadOpen}
         onClose={() => setUploadOpen(false)}

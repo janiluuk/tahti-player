@@ -1,0 +1,3 @@
+{
+  "/api/admin/i18n/languages": "The API has no translation routes. Admin → Languages shows \"Not available yet\" on a 404 instead of offering Add/Import."
+}

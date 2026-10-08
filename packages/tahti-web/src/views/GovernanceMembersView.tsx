@@ -44,7 +44,7 @@ export function GovernanceMembersView() {
       title="Member directory"
       classes={{
         root: 'px-0 pt-0 mx-auto max-w-2xl',
-        scrollableArea: 'gap-6',
+        content: 'gap-6',
       }}
     >
       <Link
@@ -83,6 +83,7 @@ export function GovernanceMembersView() {
           <Input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
+            aria-label="Search by name or username"
             placeholder="Search by name or username"
           />
           {filtered.length === 0 ? (

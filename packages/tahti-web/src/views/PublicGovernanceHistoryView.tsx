@@ -21,7 +21,7 @@ export function PublicGovernanceHistoryView() {
   return (
     <ViewShell
       title="Governance history"
-      classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl', scrollableArea: 'gap-6' }}
+      classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl', content: 'gap-6' }}
     >
       <ButtonLink
         className="w-fit"

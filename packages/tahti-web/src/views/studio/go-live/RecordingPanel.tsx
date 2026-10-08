@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { CircleDotIcon, FolderOpenIcon } from 'lucide-react';
 
-import { Toggle } from '@tahti-player/ui';
+import { Button, Toggle } from '@tahti-player/ui';
 
 import { StudioPanel } from '../../../components/StudioPanel';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
@@ -15,13 +15,15 @@ export function RecordingPanel({ state }: { state: GoLiveState }) {
       title="Recording"
       description="For this broadcast only. Default on/off for future shows is in Settings → Broadcast → Radio."
       action={
-        <button
+        <Button
+          variant="plain"
+          size="flexible"
           type="button"
-          className="text-foreground-secondary text-xs underline-offset-2 hover:underline"
+          className="text-foreground-secondary inline-block rounded-none text-xs whitespace-normal underline-offset-2 hover:underline active:scale-100"
           onClick={() => useSettingsModalStore.getState().open('broadcast')}
         >
           Prefs
-        </button>
+        </Button>
       }
     >
       <div className="border-border bg-background flex w-full items-center gap-3 rounded-lg border p-3">

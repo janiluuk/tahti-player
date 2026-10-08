@@ -46,6 +46,7 @@ export function ConnectedSettingsModal() {
   const close = useSettingsModalStore((s) => s.close);
   const activeTab = useSettingsModalStore((s) => s.activeTab);
   const setActiveTab = useSettingsModalStore((s) => s.setActiveTab);
+  const openedToSection = useSettingsModalStore((s) => s.openedToSection);
   const user = useAuthStore((s) => s.user);
   const openAuth = useAuthModalStore((s) => s.open);
   const signedIn = Boolean(user);
@@ -92,6 +93,7 @@ export function ConnectedSettingsModal() {
       tabs={tabs}
       activeTab={resolvedTab}
       onTabChange={(tabId) => setActiveTab(tabId as SettingsSectionId)}
+      startOnContent={openedToSection}
       navFooter={
         <div className="flex flex-col gap-2">
           {!signedIn ? (

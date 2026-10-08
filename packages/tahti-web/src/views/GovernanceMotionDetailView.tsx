@@ -59,7 +59,7 @@ export function GovernanceMotionDetailView({ id }: { id: string }) {
       title={motion?.title ?? 'Motion'}
       classes={{
         root: 'px-0 pt-0 mx-auto max-w-3xl',
-        scrollableArea: 'gap-6',
+        content: 'gap-6',
       }}
     >
       <Link

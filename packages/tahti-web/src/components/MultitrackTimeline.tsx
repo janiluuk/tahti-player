@@ -334,7 +334,10 @@ export const MultitrackTimeline = ({
                 <span className="min-w-0 flex-1 truncate font-semibold">
                   {track.name}
                 </span>
-                <button
+                <Button
+                  variant="plain"
+                  size="flexible"
+                  className="inline-block rounded-none whitespace-normal active:scale-100"
                   aria-label={`Remove ${track.name}`}
                   onClick={() =>
                     onChange({
@@ -346,10 +349,13 @@ export const MultitrackTimeline = ({
                   }
                 >
                   <Trash2Icon size={13} />
-                </button>
+                </Button>
               </div>
               <div className="flex items-center gap-1">
-                <button
+                <Button
+                  variant="plain"
+                  size="flexible"
+                  className="inline-block rounded-none whitespace-normal active:scale-100"
                   aria-label={`Move ${track.name} up`}
                   disabled={!index}
                   onClick={() =>
@@ -357,8 +363,11 @@ export const MultitrackTimeline = ({
                   }
                 >
                   <ChevronUpIcon size={14} />
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="plain"
+                  size="flexible"
+                  className="inline-block rounded-none whitespace-normal active:scale-100"
                   aria-label={`Move ${track.name} down`}
                   disabled={index === value.tracks.length - 1}
                   onClick={() =>
@@ -366,8 +375,11 @@ export const MultitrackTimeline = ({
                   }
                 >
                   <ChevronDownIcon size={14} />
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="plain"
+                  size="flexible"
+                  className="inline-block rounded-none whitespace-normal active:scale-100"
                   aria-label={`${track.muted ? 'Unmute' : 'Mute'} ${track.name}`}
                   onClick={() =>
                     onChange(toggleTimelineTrack(value, track.id, 'mute'))
@@ -378,19 +390,26 @@ export const MultitrackTimeline = ({
                   ) : (
                     <Volume2Icon size={14} />
                   )}
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="plain"
+                  size="flexible"
                   aria-label={`${track.solo ? 'Unsolo' : 'Solo'} ${track.name}`}
                   className={
-                    track.solo ? 'text-accent-yellow-strong font-bold' : ''
+                    track.solo
+                      ? 'text-accent-yellow-strong inline-block rounded-none font-bold whitespace-normal active:scale-100'
+                      : ''
                   }
                   onClick={() =>
                     onChange(toggleTimelineTrack(value, track.id, 'solo'))
                   }
                 >
                   S
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="plain"
+                  size="flexible"
+                  className="inline-block rounded-none whitespace-normal active:scale-100"
                   aria-label={`Lower gain for ${track.name}`}
                   onClick={() =>
                     onChange({
@@ -404,8 +423,11 @@ export const MultitrackTimeline = ({
                   }
                 >
                   −
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="plain"
+                  size="flexible"
+                  className="inline-block rounded-none whitespace-normal active:scale-100"
                   aria-label={`Raise gain for ${track.name}`}
                   onClick={() =>
                     onChange({
@@ -419,7 +441,7 @@ export const MultitrackTimeline = ({
                   }
                 >
                   +
-                </button>
+                </Button>
                 <span className="ml-auto">{track.gainDb} dB</span>
               </div>
             </div>
@@ -456,10 +478,12 @@ export const MultitrackTimeline = ({
                     unavailableSourceIds.includes(clip.sourceSoundId) ||
                     !source?.url;
                   return (
-                    <button
+                    <Button
+                      variant="plain"
+                      size="flexible"
                       key={clip.id}
                       data-testid={`clip-${clip.id}`}
-                      className={`absolute top-2 h-16 overflow-hidden rounded border-2 px-2 text-left text-xs ${selectedClipId === clip.id ? 'ring-accent-yellow ring-2' : ''} ${unavailable ? 'opacity-40' : ''}`}
+                      className={`absolute top-2 block h-16 overflow-hidden rounded border-2 px-2 text-left text-xs whitespace-normal active:scale-100 ${selectedClipId === clip.id ? 'ring-accent-yellow ring-2' : ''} ${unavailable ? 'opacity-40' : ''}`}
                       style={{
                         left: clip.startSec * pixelsPerSecond,
                         width: Math.max(70, clip.durationSec * pixelsPerSecond),
@@ -501,7 +525,7 @@ export const MultitrackTimeline = ({
                       <span className="font-mono text-[10px]">
                         {formatTime(clip.durationSec)}
                       </span>
-                    </button>
+                    </Button>
                   );
                 })}
                 <div

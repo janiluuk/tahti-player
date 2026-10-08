@@ -17,9 +17,26 @@ describe('metadataForPath', () => {
     ['/v/tavastia', 'Tavastia on Tahti'],
     ['/r/summer-release', 'Summer Release on Tahti'],
     ['/radio', 'Tahti Radio'],
-    ['/studio/go-live', 'Studio · Tahti'],
+    ['/studio', 'Studio · Tahti'],
+    ['/studio/go-live', 'Go live · Studio · Tahti'],
+    ['/studio/releases/abc/edit', 'Releases · Studio · Tahti'],
+    ['/admin/content-reports', 'Content reports · Admin · Tahti'],
+    ['/library', 'Library · Tahti'],
+    ['/library/sounds', 'Tracks · Tahti'],
+    ['/library/collections', 'Collections · Library · Tahti'],
+    ['/discover', 'Discover · Tahti'],
+    ['/governance/members', 'Member directory · Tahti'],
+    ['/governance/motions/m1', 'Governance · Tahti'],
+    ['/listen/history', 'History · Tahti'],
+    ['/settings', 'Settings · Tahti'],
   ])('provides route-aware metadata for %s', (path, title) => {
     expect(metadataForPath(path).title).toBe(title);
+  });
+
+  it('does not mistake a longer first segment for a known page', () => {
+    expect(metadataForPath('/helpers').title).toBe(
+      'Tahti · Independent music, live',
+    );
   });
 
   it('uses the listen metadata for unknown routes', () => {

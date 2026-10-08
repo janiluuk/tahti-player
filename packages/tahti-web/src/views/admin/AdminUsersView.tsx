@@ -54,7 +54,10 @@ export const AdminUsersView = () => {
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/users">
-          <ViewShell title="Users" classes={{ root: 'px-0 pt-0' }}>
+          <ViewShell
+            title="Users"
+            classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+          >
             <div className="flex flex-wrap items-center justify-between gap-2">
               <p className="text-foreground-secondary text-sm">
                 {total} accounts

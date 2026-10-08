@@ -277,7 +277,10 @@ export function RadioScheduleView() {
   }
 
   return (
-    <ViewShell title="Schedule" classes={{ root: 'px-0 pt-0 max-w-5xl' }}>
+    <ViewShell
+      title="Schedule"
+      classes={{ root: 'px-0 pt-0 max-w-5xl', content: 'gap-4' }}
+    >
       {greenRoomBookings.length > 0 ? (
         <div className="border-border bg-primary/10 flex flex-col gap-2 rounded-lg border p-3">
           {greenRoomBookings.map((b) => (
@@ -321,9 +324,11 @@ export function RadioScheduleView() {
               <ul className="flex flex-col gap-2">
                 {upcomingBookings.map((booking) => (
                   <li key={booking.id}>
-                    <button
+                    <Button
+                      variant="plain"
+                      size="flexible"
                       type="button"
-                      className="hover:bg-background-secondary w-full rounded-md p-2 text-left text-sm transition-colors"
+                      className="hover:bg-background-secondary inline-block w-full rounded-md p-2 text-left text-sm whitespace-normal transition-colors active:scale-100"
                       onClick={() => {
                         setSelectedBooking(booking);
                         setEditNote(booking.note ?? '');
@@ -347,7 +352,7 @@ export function RadioScheduleView() {
                       <span className="text-foreground-secondary block truncate text-xs">
                         {booking.channelSlug}
                       </span>
-                    </button>
+                    </Button>
                   </li>
                 ))}
               </ul>
@@ -460,7 +465,9 @@ export function RadioScheduleView() {
                       hour < selection.startHour + selection.hours,
                     );
                     return (
-                      <button
+                      <Button
+                        variant="plain"
+                        size="flexible"
                         key={`${day.toISOString()}-${hour}`}
                         type="button"
                         disabled={loading || (isPast && !booking?.isMine)}
@@ -479,7 +486,7 @@ export function RadioScheduleView() {
                               }`
                         }
                         className={cn(
-                          'border-border h-8 border-r border-b px-1.5 text-left text-[11px] transition-colors',
+                          'border-border inline-block h-8 rounded-none border-r border-b px-1.5 text-left text-[11px] whitespace-normal transition-colors active:scale-100 disabled:opacity-100',
                           booking
                             ? booking.isMine
                               ? 'bg-primary/20 text-primary hover:bg-primary/30'
@@ -510,7 +517,7 @@ export function RadioScheduleView() {
                             </span>
                           </span>
                         ) : null}
-                      </button>
+                      </Button>
                     );
                   })}
                 </Fragment>

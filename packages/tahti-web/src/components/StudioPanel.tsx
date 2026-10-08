@@ -23,7 +23,7 @@ export function StudioPanel({
     >
       {(title || action) && (
         <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-          <div className="min-w-0 flex-1">
+          <div className="min-w-40 flex-1">
             {title ? (
               <h2 className="font-display flex items-center gap-2 text-lg font-bold tracking-tight">
                 {Icon && <Icon size={18} aria-hidden />}

@@ -174,9 +174,11 @@ export const TracklistEditor: FC<Props> = ({
             key={entry.id}
             className={`flex items-center gap-2 p-2 ${selectedId === entry.id ? 'bg-primary/10' : ''}`}
           >
-            <button
+            <Button
+              variant="plain"
+              size="flexible"
               type="button"
-              className="flex min-w-0 flex-1 items-center gap-2 text-left text-sm"
+              className="flex min-w-0 flex-1 items-center gap-2 rounded-none text-left text-sm whitespace-normal active:scale-100"
               onClick={() => {
                 setSelectedId(entry.id);
                 setPlayhead(entry.startSec ?? 0);
@@ -190,7 +192,7 @@ export const TracklistEditor: FC<Props> = ({
                 {entry.title}
                 {entry.artist ? ` · ${entry.artist}` : ''}
               </span>
-            </button>
+            </Button>
             <span className="text-foreground-secondary w-12 text-right text-xs tabular-nums">
               {formatTime(entry.startSec)}
             </span>
@@ -266,10 +268,12 @@ export const TracklistEditor: FC<Props> = ({
                   />
                   <div className="pointer-events-none absolute inset-x-2 top-2 h-56">
                     {sortedEntries.map((entry) => (
-                      <button
+                      <Button
+                        variant="plain"
+                        size="flexible"
                         key={entry.id}
                         type="button"
-                        className="border-background bg-primary text-primary-foreground pointer-events-auto absolute top-1 -translate-x-1/2 rounded-full border-2 p-1 shadow"
+                        className="border-background bg-primary text-primary-foreground pointer-events-auto absolute top-1 block -translate-x-1/2 rounded-full border-2 p-1 whitespace-normal shadow active:scale-100"
                         style={{
                           left: `${Math.min(100, Math.max(0, ((entry.startSec ?? 0) / Math.max(1, durationSec)) * 100))}%`,
                         }}
@@ -281,7 +285,7 @@ export const TracklistEditor: FC<Props> = ({
                         }}
                       >
                         <MapPinPlusIcon size={13} aria-hidden />
-                      </button>
+                      </Button>
                     ))}
                   </div>
                 </div>
@@ -304,16 +308,18 @@ export const TracklistEditor: FC<Props> = ({
                       >
                         {mentionMatches.map((user) => (
                           <li key={user.username}>
-                            <button
+                            <Button
+                              variant="plain"
+                              size="flexible"
                               type="button"
-                              className="hover:bg-background-secondary flex w-full gap-2 px-3 py-2 text-left text-sm"
+                              className="hover:bg-background-secondary flex w-full gap-2 rounded-none px-3 py-2 text-left text-sm whitespace-normal active:scale-100"
                               onClick={() => setSelectedMention(user)}
                             >
                               <span>{user.displayName}</span>
                               <span className="text-foreground-secondary">
                                 @{user.username}
                               </span>
-                            </button>
+                            </Button>
                           </li>
                         ))}
                       </ul>

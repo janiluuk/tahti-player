@@ -78,7 +78,10 @@ export function AdminAnnouncementsView() {
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/announcements">
-          <ViewShell title="Announcements" classes={{ root: 'px-0 pt-0' }}>
+          <ViewShell
+            title="Announcements"
+            classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+          >
             {msg && (
               <p className="text-foreground-secondary text-sm" role="status">
                 {msg}

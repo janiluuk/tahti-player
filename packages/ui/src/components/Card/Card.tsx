@@ -86,7 +86,7 @@ export const Card: FC<CardProps> = ({
           <MediaArtwork
             size="fill"
             src={src}
-            alt={typeof title === 'string' ? title : undefined}
+            alt={typeof title === 'string' ? title : ''}
             imageReveal={imageReveal}
             onPlay={onPlay}
             playLabel={playLabel}

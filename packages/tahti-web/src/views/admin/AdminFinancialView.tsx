@@ -34,7 +34,10 @@ export function AdminFinancialView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/financial">
           <div className="flex max-w-4xl flex-col gap-6">
-            <ViewShell title="Financial" classes={{ root: 'px-0 pt-0' }}>
+            <ViewShell
+              title="Financial"
+              classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+            >
               {loading ? (
                 <PageLoading label="Loading financial data…" />
               ) : !overview ? (

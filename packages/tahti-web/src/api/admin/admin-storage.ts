@@ -548,3 +548,48 @@ export async function bulkPatchAdminFiles(
     };
   }
 }
+
+export type AdminFilesBulkDeleteResult = {
+  deleted: number;
+  /** Files the server kept, each with the reason. */
+  failed: { id: string; error: string }[];
+};
+
+export async function bulkDeleteAdminFiles(
+  ids: string[],
+): Promise<
+  ({ ok: true } & AdminFilesBulkDeleteResult) | { ok: false; error: string }
+> {
+  if (ids.length === 0) {
+    return { ok: false, error: 'Choose the files to delete.' };
+  }
+  if (ids.length > 200) {
+    return { ok: false, error: 'Delete at most 200 files at a time.' };
+  }
+  if (isForceMock()) {
+    const files = mockAdminFilesState ?? mockAdminFiles();
+    mockAdminFilesState = files.filter((file) => !ids.includes(file.id));
+    return {
+      ok: true,
+      deleted: files.length - mockAdminFilesState.length,
+      failed: [],
+    };
+  }
+  try {
+    const result = await sendJson<AdminFilesBulkDeleteResult>(
+      '/api/admin/files/bulk-delete',
+      'POST',
+      { ids },
+    );
+    return {
+      ok: true,
+      deleted: result.deleted,
+      failed: Array.isArray(result.failed) ? result.failed : [],
+    };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not delete the files',
+    };
+  }
+}

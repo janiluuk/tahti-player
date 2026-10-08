@@ -21,7 +21,7 @@ export function MoreView() {
       title="Tahti map"
       classes={{
         root: 'px-0 pt-0 mx-auto max-w-7xl',
-        scrollableArea: 'gap-8',
+        content: 'gap-8',
       }}
     >
       <nav className="flex flex-wrap gap-2 text-xs">

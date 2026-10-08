@@ -1,5 +1,11 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as admin from '../../../api/admin';
@@ -83,6 +89,7 @@ describe('BulkEditBar', () => {
         facets={{ users: [], genres: [], contentTypes: [] }}
         onClear={onClear}
         onApplied={vi.fn()}
+        onDeleted={vi.fn()}
       />,
     );
     expect(screen.getByText('2 files selected')).toBeTruthy();
@@ -93,5 +100,57 @@ describe('BulkEditBar', () => {
     ).toBe(true);
     fireEvent.click(screen.getByRole('button', { name: 'Clear selection' }));
     expect(onClear).toHaveBeenCalled();
+  });
+
+  it('deletes the selection only after the confirmation', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          deleted: 1,
+          failed: [{ id: 'b', error: 'Linked' }],
+        }),
+        { status: 200 },
+      ),
+    );
+    const onDeleted = vi.fn();
+    render(
+      <BulkEditBar
+        selectedIds={['a', 'b']}
+        facets={{ users: [], genres: [], contentTypes: [] }}
+        onClear={vi.fn()}
+        onApplied={vi.fn()}
+        onDeleted={onDeleted}
+      />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Delete 2' }));
+    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(screen.getByText('Delete 2 files permanently?')).toBeTruthy();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
+    await waitFor(() => expect(onDeleted).toHaveBeenCalledWith(1, 1));
+    const [url, init] = fetchSpy.mock.calls[0]!;
+    expect(url).toBe('/tahti-api/api/admin/files/bulk-delete');
+    expect(init?.method).toBe('POST');
+    expect(JSON.parse(String(init?.body))).toEqual({ ids: ['a', 'b'] });
+  });
+
+  it('shows the reason and keeps the selection when the delete fails', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ error: 'Board only' }), { status: 403 }),
+    );
+    const onDeleted = vi.fn();
+    render(
+      <BulkEditBar
+        selectedIds={['a']}
+        facets={{ users: [], genres: [], contentTypes: [] }}
+        onClear={vi.fn()}
+        onApplied={vi.fn()}
+        onDeleted={onDeleted}
+      />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Delete 1' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
+    expect((await screen.findByRole('alert')).textContent).toBeTruthy();
+    expect(onDeleted).not.toHaveBeenCalled();
   });
 });

@@ -107,7 +107,9 @@ export function CoverArtGenerator({ onGenerate, generating }: Props) {
         </span>
         <div className="flex flex-wrap gap-2">
           {COLOR_PALETTES.map((palette) => (
-            <button
+            <Button
+              variant="plain"
+              size="flexible"
               key={palette.id}
               type="button"
               title={palette.label}
@@ -115,7 +117,7 @@ export function CoverArtGenerator({ onGenerate, generating }: Props) {
               aria-pressed={paletteId === palette.id}
               onClick={() => setPaletteId(palette.id)}
               className={cn(
-                'h-9 w-14 overflow-hidden rounded-md border-2 transition-transform hover:scale-105',
+                'inline-block h-9 w-14 overflow-hidden rounded-md border-2 whitespace-normal transition-transform hover:scale-105 active:scale-100',
                 paletteId === palette.id
                   ? 'border-primary shadow-md'
                   : 'border-transparent',
@@ -134,7 +136,9 @@ export function CoverArtGenerator({ onGenerate, generating }: Props) {
         </span>
         <div className="flex flex-wrap gap-2">
           {BACKGROUND_COLORS.map((bg) => (
-            <button
+            <Button
+              variant="plain"
+              size="flexible"
               key={bg.id}
               type="button"
               title={bg.id}
@@ -142,7 +146,7 @@ export function CoverArtGenerator({ onGenerate, generating }: Props) {
               aria-pressed={bgColor === bg.hex}
               onClick={() => setBgColor(bg.hex)}
               className={cn(
-                'border-border size-8 rounded-full border-(length:--border-width) transition-transform hover:scale-105',
+                'border-border inline-block size-8 rounded-full border-(length:--border-width) whitespace-normal transition-transform hover:scale-105 active:scale-100',
                 bgColor === bg.hex && 'ring-primary ring-2 ring-offset-2',
               )}
               style={{ background: bg.hex }}

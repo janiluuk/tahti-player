@@ -67,7 +67,7 @@ This maps the public Tahti product described at [tahti.live](https://tahti.live/
 | News, announcements, streams, status | Corresponding `/admin/*` routes | Present | Core operational pages are ported. |
 | Top lists, storage, financial, governance | Corresponding `/admin/*` routes | Partial | Core pages exist, but some production actions are intentionally trimmed. |
 | Grants | `/admin/grants` | Partial | Listing/review exists; grant run/preview depth is missing. |
-| Storage/files operations | `/admin/storage` | Partial | Files browser filters by uploader/genre/type (#244) and bulk-edits genre, type, visibility and license (#245). No bulk delete (the API has none). |
+| Storage/files operations | `/admin/storage` | Partial | Files browser filters by uploader/genre/type (#244) and bulk-edits genre, type, visibility and license (#245). Bulk delete with a confirmation, through `POST /api/admin/files/bulk-delete` (gap-mapping batch 5). |
 | Financial operations | `/admin/financial` | Partial | Fan-sub payout queue with retry (#237); ledger entries can be added again (#241), by year with CSV export (#242); legacy-member migration queue, read-only because the API has no action for it (#243). |
 | User/support detail pages | `/admin/users` | Partial | User panel now has CSV export (#231), engagement by year with board adjustments (#232, #233), account restrictions (#234) and GDPR deletion (#235). Support ticket detail depth not re-checked. |
 | Announcement clip/detail workflows | `/admin/announcements` | Present | Switch and upload fixed to the real routes (#239); trim editor for system clips (#240); uploads send the clip length (#248). |

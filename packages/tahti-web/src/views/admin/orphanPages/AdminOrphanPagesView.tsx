@@ -58,7 +58,7 @@ export function AdminOrphanPagesView({ tab }: { tab?: AdminOrphanPageTabId }) {
           <ViewShell
             title="Orphan pages"
             subtitle="Pages with no menu entry."
-            classes={{ root: 'px-0 pt-0 max-w-5xl' }}
+            classes={{ root: 'px-0 pt-0 max-w-5xl', content: 'gap-4' }}
           >
             {tabContent(active)}
           </ViewShell>

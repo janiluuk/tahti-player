@@ -1,3 +1,4 @@
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { CardsRowWrapper as Wrapper } from './CardsRow.test-wrapper';
@@ -6,6 +7,12 @@ describe('CardsRow', () => {
   it('(Snapshot) renders correctly with items', () => {
     const { container } = Wrapper.mount();
     expect(container.firstChild).toMatchSnapshot();
+  });
+
+  it('names the filter box after its placeholder', () => {
+    Wrapper.mount();
+
+    expect(screen.getByTestId('cards-row-filter')).toHaveAccessibleName();
   });
 
   it('renders all card titles when no filter is applied', () => {

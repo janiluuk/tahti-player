@@ -151,7 +151,7 @@ export function MobileDrawer({
       panel
         ? Array.from(panel.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR))
         : [];
-    focusables()[0]?.focus();
+    panel?.focus();
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -167,7 +167,10 @@ export function MobileDrawer({
       }
       const first = items[0]!;
       const last = items[items.length - 1]!;
-      if (e.shiftKey && document.activeElement === first) {
+      if (
+        e.shiftKey &&
+        (document.activeElement === first || document.activeElement === panel)
+      ) {
         e.preventDefault();
         last.focus();
       } else if (!e.shiftKey && document.activeElement === last) {
@@ -187,7 +190,12 @@ export function MobileDrawer({
   }
 
   return (
-    <div className="fixed inset-0 z-50 md:hidden" role="dialog" aria-modal>
+    <div
+      className="fixed inset-0 z-50 md:hidden"
+      role="dialog"
+      aria-modal
+      aria-label={title}
+    >
       <button
         type="button"
         className="absolute inset-0 bg-black/50"
@@ -196,8 +204,9 @@ export function MobileDrawer({
       />
       <div
         ref={panelRef}
+        tabIndex={-1}
         className={cn(
-          'border-border bg-background absolute inset-y-0 flex flex-col border shadow-lg',
+          'border-border bg-background absolute inset-y-0 flex flex-col border shadow-lg outline-none',
           fullScreen
             ? 'inset-x-0 w-full'
             : cn('w-[min(100%,20rem)]', side === 'left' ? 'left-0' : 'right-0'),

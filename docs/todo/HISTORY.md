@@ -4335,3 +4335,79 @@ A sweep of Tahti Jam, which nobody had looked at since it shipped, plus the bloc
 - **Signed out (#560)**: a Jam link offers log-in instead of "Jam not found" to a visitor with no session.
 - **Collection subscriptions**: a block refuses a new subscription between the two accounts and hides the other's collections from "Subscribed" (tahti-org#745); setting a block removes the subscriptions they already had on each other's collections (tahti-org#746).
 - **Checks:** for each PR, tahti-web type-check, eslint and Prettier on the changed files, the size guard and the touched tests. tahti-org ran Vitest for each touched route against a throwaway Postgres. Nothing was tried in a browser (the mock app has no Jam routes), against the live API, or with Redis delivering jam events; the stream change is tested through its decision function, not the socket. Left open: jams whose host never comes back stay open (no time-based cleanup), `streamUrl` in the jam state is whatever the controlling client sends, the track reaction route (`/api/reactions/track/:id`, no web caller) ignores blocks and suspended artists, and the anonymous side of chat after a block.
+
+## 2026-10-08 - Ten slices, forty-fifth batch (tahti-player #562, tahti-org #749)
+
+A sweep of the provider connections (Bandcamp, SoundCloud, Google Drive, Mixcloud, MusicBrainz), following tahti-org#748, which put the import providers' routes in OpenAPI and made their `configured` honest.
+
+- **MusicBrainz (tahti-org#749)**: status, connect, both callback paths, disconnect and the remembered "register on MusicBrainz" choice are in OpenAPI. `configured` needs the client id and the secret; connect answers 503 otherwise. The callback takes the account from the request's session like the other providers.
+- **Error codes (tahti-org#749)**: "not connected" (403) and "token expired" (401) on the SoundCloud, Bandcamp and Google Drive routes carry `PROVIDER_NOT_CONNECTED` and `PROVIDER_TOKEN_EXPIRED`.
+- **Expired SoundCloud link (#562)**: the card showed "No tracks returned." when the token had died. It now says the connection expired and falls back to Connect. A 401 without the code is the Tahti session and is not blamed on SoundCloud.
+- **Not set up (#562)**: the service card and the Import sources dialog no longer send the artist to a provider's OAuth start when the API says the server has no credentials for it.
+- **Status unavailable (#562)**: a status request that failed read as "Needs setup". It is now `unavailable` and the UI says the status could not be checked.
+- **Docs (#562)**: `API-REFERENCE` has the new paths hash and an OAuth provider section.
+- **Checks:** tahti-web type-check, eslint and Prettier on the changed files, the size guard and the touched test directories. tahti-org ran Vitest for the touched routes against a throwaway Postgres. Nothing was tried in a browser or against a real provider; the Import sources dialog change has no test of its own. `check:api-docs` passes only once tahti-org #748 and #749 are on `main`. Left open: real Bandcamp album import (needs Bandcamp API v1 keys), and the OAuth callbacks still return to the old dashboard paths, which the player redirects.
+
+## 2026-10-08 - Ten slices, forty-sixth batch (tahti-player #563-#573)
+
+A pass over the mock app at 390 px, signed out and as the listener account, plus the hand-rolled buttons left on the listener pages. The pass found one cause behind most of what looked wrong: pages asked `ViewShell` for space between their sections with a class that landed on the scroll frame, where it does nothing.
+
+- **Library buttons (#563)**: `Button` from `@tahti-player/ui` replaces `<button>` on Discover, News, the artist directory, the top search results, the phone tab bar and player bar, the channel stage and backdrop nav, the track dialog's tracklist, embed rows, "Manage widgets", the page tour and radio station covers. The phone player bar cover is a `MediaArtwork`. 56 raw buttons are left in tahti-web, in Studio, admin and the Channel Designer.
+- **Section spacing (#565, #570, #571)**: `ViewShell` takes `classes.content` for the column the children sit in. Governance and eleven related pages move their dead `scrollableArea: 'gap-6'` there (#565); the 24 admin views get a gap, which fixes fifteen pages whose panels touched, the Dashboard among them (#570); so do Studio Audience, Revenue, Distribution, Insights and Stats, Discover, Schedule and the public Status page (#571).
+- **Governance (#564)**: the attention panel says "1 topic" and "1 open motion still needs your vote".
+- **Phone menu (#566)**: the drawer focuses its panel on open, so the "Close" tooltip no longer covers the first item.
+- **Search on phones (#567)**: the phone top bar has a search button that opens a search row across the bar. Before, a phone had no search at all.
+- **Rails (#568)**: the filter box of a card rail wraps under the title on phones instead of shrinking to one letter (`CardsRow`).
+- **Venue (#569)**: a header with no image shows the name's initial instead of an empty box.
+- **Messages (#572)**: no empty thread box on phones; an opened conversation scrolls into view; Search stays beside Start.
+- **Audit script (#573)**: `scripts/audit-signed-out.mjs` also opens the public pages at 390 px, fails on sideways scroll, and checks the phone search.
+- **Checks:** for each PR, tahti-web (and ui where touched) type-check, eslint and Prettier on the changed files, the size guard and the touched tests; every slice was looked at or measured in the mock app with Playwright. The eleven branches merge together cleanly; on the merged tree the tahti-web unit suite (480 files), the ui suite and the Storybook plays (940) pass, the plays on the second run after two failed once under load. Nothing was tried on a real phone or against the live API. Left open: the 56 raw buttons in Studio, admin and the Channel Designer; the drawer scrim; a listener pass in the capture scripts; Studio in the sidebar and artist tools in Library for a listener (needs a decision); the channel page redesign.
+
+## 2026-10-08 - Backfill: pull requests from 4-6 October that had no entry
+
+A review of the last 150 pull requests found these merged without a HISTORY entry. Each line is written from the pull request's own description, not from a new check of the code.
+
+- **Atlas refresh (#482)**: the entry of 2026-10-04 above ("Atlas graphs and all screenshots refreshed") is this pull request.
+- **Storybook (#483)**: stories with plays for `CommentItem`, `ReportButton`, `MySupportTickets` and the admin `ContentReportsTab`, and mock content reports that carry their target. Covers the UI of #477-#479 only.
+- **Radio station in the player (#488)**: clicking a playing station's name opened "Artist not found". `playableFromQueueItem` treated every id that is not `radio:` or `sound:` as a live channel. Internet radio ids stay `kind: 'radio'`, and the title and the name open `/radio/station/:stationId`.
+- **Five todos (#489)**: Finnish radio now-playing scrapers, the listener account, duplicate radio add-ons, the leave-page warning and the queue collapse button, each with the ask and a plan.
+- **Left menu (#490)**: `/u/...` pages rendered with no sidebar, menu button or bottom nav on purpose. They use the normal shell now, an unknown address shows "Page not found" inside the shell, and `scripts/audit-left-menu.mjs` lists routes without the menu (147 routes; only the four `/embed/...` pages lack it).
+- **Green Room chat link (#491)**: moved from the broadcast menu to Studio → Channel → Green room and to the Green room panel on Go live. Not tried in a browser.
+- **CLI import (#501)**: `tahti import <folder> [--recursive] [--dry-run] [--force] [--json]` uploads mp3, flac, wav, aiff, m4a, aac, ogg and opus files through the presigned upload routes, skips titles already in the library and exits 1 when a file fails.
+- **CLI hearthis and shell (#508, tahti-org#709)**: `tahti hearthis sets|set|download-set` and `tahti shell`, an interactive terminal player that plays through `mpv`. The same pull request made the Bandcamp, Mixcloud and export catalogs fail closed; tahti-org#709 aligned `GET /api/me/import-plugins` and `export-plugins` with the routes that exist. The manual steps in its test plan (`tahti shell` with `mpv`, `download-set --dry-run`) were not ticked.
+- **Settings, Artist tabs (#530)**: eight tabs became three groups (Profile, Links & press, Visuals) through a shared `tabGroups.ts`; deep links still land on the right tab.
+- **Public pages (#531)**: no login popup on the newsletter pages, tag search, the fan subscription page, the radio schedule and `/c/:slug`. The public list moved to `layout/anonymousRoutes.ts` with a test.
+- **Settings descriptions (#532)**: Account, Artist, Channel & chat and Broadcast lost the line that repeated their tab names.
+- **Audit script (#533)**: `scripts/audit-signed-out.mjs` checks 21 public pages signed out and Studio and Settings as a listener. Not in CI; it needs the dev server and a browser.
+- **READMEs (#534)**: the root and tahti-web READMEs, `FEATURES.md` and `docs/API-REFERENCE.md` brought up to date from #305 onwards.
+- **UI/nav audit (#546, #551; #548-#550 closed and replaced by #551)**: plan in `docs/todo/ui-nav-audit.md`. Phases 1-4: the Listen sidebar lights on `/u/*`, `/search` and `/v/*`, Settings lights while its dialog is open, Library tabs include Upload, and the catalog paths left the Studio tab bar. Phases 5-10: Go Live tabs, Admin Radio tabs, release detail tabs in `?tab=`, and `/library/sounds` and `/library/collections` as the catalog homes with the Studio list addresses redirecting. The manual steps in both test plans were not ticked; only the `navigationActive` and `StudioNav` unit tests are recorded as run.
+- **Gap-mapping batch 4 (#547, tahti-org#721)**: `fetchUserMedia` fails closed, Studio Distribution shows a banner when `GET /api/me/distribution/status` reports stub mode, and the API reference hash was regenerated. tahti-org#721 added that route and an audit event for keyed share access. Its test plan was not ticked, and `main` in tahti-org did not type-check after it until tahti-org#723.
+- **SDK test (tahti-org#720)**: every CI run on tahti-org `main` since #701 failed in the `@tahti/api-client` job, because its test managed tokens with a bearer token. The test was updated and the package's tests now run on pull requests.
+- **Still open when this was written**: tahti-org#747 (Dozzle agents on the remote hosts, not deployed) and tahti-org#748 (OAuth import routes in OpenAPI).
+- **Not covered here**: tahti-org's own `docs/todo/HISTORY.md` has no entry after 2026-09-05. The tahti-org pull requests of the batches are recorded in this file only.
+
+## 2026-10-08 - Twenty slices, forty-seventh batch (tahti-player #576-#595)
+
+Three passes over the mock app: a script that opened every static route and listed unnamed controls, unlabeled fields, missing or doubled headings, shared tab titles and console errors; contact sheets of Studio, Library, Settings and Admin at 390 px as an artist; and the rest of the hand-rolled buttons.
+
+- **Tab titles (#576)**: 82 of 132 routes shared the tab title "Tahti · Independent music, live". Listener pages are named and Studio, Admin and Library pages take theirs from the address ("Go live · Studio · Tahti").
+- **Menu that did not open (#579)**: the More menu on a track row in Library → Tracks and "Quick edits" on a track's Studio page never opened. Both wrapped a `Tooltip` in the menu trigger, and `Tooltip` drops the handlers the trigger hands its child.
+- **Settings on phones (#592)**: a link to one section (`/settings/playback`) landed on the section list. `SettingsPanel` takes `startOnContent` and the store records whether a section was asked for.
+- **Tab bars on phones (#587)**: Studio, Admin sub-tabs and Library tabs stay on one scrolling row below 640 px, with the selected tab centred, instead of wrapping into up to five rows.
+- **Phone layout**: Shows and Updates rows and the Green Room chat button (#588), Audience and Transparency running off the side (#589), overlapping chart labels on Insights (#590), track rows and `StudioPanel` headers (#591).
+- **Headings and names**: Smart links drew its tab bar and title twice, and "What is tahti.live" had two `h1`s (#580); the channel name is the channel page's `h1` and a track page names itself in the tab (#581); filter boxes of rails and track tables have an accessible name (#577); twelve governance and admin fields are labelled (#578); six buttons nested in links became `ButtonLink`, the feed avatar link is named and Listen card images have `alt` (#593).
+- **Library buttons (#582-#586, #594)**: `Button` gets a `plain` variant (focus, disabled and type handling with no colours of its own), and 55 of the 56 remaining hand-rolled buttons use it: Channel Designer and theme editor (#582), Studio editors (#583), image and release controls (#584), radio booking and admin (#585), the map (#586), page header artwork controls (#594). One is left, the phone drawer's scrim.
+- **Mock data (#595)**: the mock admin activity honours the `action` filter, so Admin → Governance stops repeating rows and logging duplicate React keys.
+- **Checks:** for each PR, type-check, eslint and Prettier on the changed files, the size guard and the touched tests. The button conversions were compared by screenshot before and after at 1366 px with motion off; all differ by 0 pixels except clock text, the dimmed disabled controls in the multitrack editor (intended) and one 2 px shadow line. The phone fixes were looked at in the mock app at 390 px. All 31 open branches of batches 46 and 47 merge together cleanly, and on the merged tree the tahti-web (2,288 tests), ui (401) and player (707) suites and the 940 Storybook plays pass. Nothing was tried on a real phone, with a screen reader or against the live API. Left open: the drawer scrim; three tooltip-wrapped links in the track edit dialog and the purchase tiers link, whose tests mock `Link` without a router; touch scrolling of the new tab rows; Studio in the sidebar and artist tools in Library for a listener (needs a decision); the channel page redesign.
+
+## 2026-10-08 - Gap-mapping batch 5 (slices 41-50, with tahti-org)
+
+Found by comparing every `/api/...` path in `tahti-web/src` with the API's route table, in both directions. The ledger is `../tahti-org/docs/todo/api-player-gap-mapping.md`.
+
+- **Admin → Storage**: the bulk bar has a Delete button with a confirmation, through the new `POST /api/admin/files/bulk-delete`. The notice says how many files the server kept. A failed single delete used to be silent and is now shown.
+- **Admin → Languages**: the API has no `/api/admin/i18n/*` routes. On a 404 the page says "Not available yet" and offers no Add or Import; in development it used to fall back to three sample languages.
+- **`pnpm check:api-routes`**: fails when the app calls a path the OpenAPI export does not have. One allowed exception today (the Languages page). `check:api-docs` and the new check read `TAHTI_OPENAPI`.
+- **Docs**: API reference rows for bulk delete, themes and the missing i18n routes, and the paths hash regenerated; `GAP-MAPPING.md` and `FEATURES.md` rows.
+- **tahti-org side**: approved themes open their pull request in `tahti-registry` instead of tahti-org, `GET /api/v1/themes/gallery` reads the registry catalog, and `PATCH /api/me/musicbrainz/default` answers 400 instead of 500 without a body.
+- **Checks:** the touched tests (bulk bar, Languages page, the route check's helpers), type-check, eslint and Prettier. Neither page was opened against a live API; the bulk delete was exercised against the API only in tahti-org's own route test. `check:api-routes` is not in CI.
+

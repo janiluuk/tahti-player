@@ -78,7 +78,10 @@ export function AdminAddonsView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/addons">
           <div className="flex max-w-5xl flex-col gap-6">
-            <ViewShell title="Add-ons" classes={{ root: 'px-0 pt-0' }}>
+            <ViewShell
+              title="Add-ons"
+              classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+            >
               <p className="text-foreground-secondary text-sm">
                 Covers the sandboxed widget-bundle store behind two of the 13
                 Settings → Add-ons categories: Discovery (Listen page) and

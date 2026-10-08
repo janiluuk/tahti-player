@@ -151,6 +151,7 @@ export function MotionCard({
           <Input
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
+            aria-label="Motion title"
             placeholder="Motion title"
             maxLength={200}
           />
@@ -389,6 +390,7 @@ export function MotionCard({
                 className="min-w-[200px] flex-1"
                 value={commentBody}
                 onChange={(e) => setCommentBody(e.target.value)}
+                aria-label="Add a comment"
                 placeholder="Add a comment…"
               />
               <Button

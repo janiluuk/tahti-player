@@ -518,10 +518,12 @@ function ReviewCaseCard({ c }: { c: MapCase }) {
         }`}
       >
         <div className="flex flex-wrap items-start justify-between gap-3 p-5 pb-4">
-          <button
+          <Button
+            variant="plain"
+            size="flexible"
             type="button"
             onClick={() => setExpanded((v) => !v)}
-            className="flex min-w-0 flex-1 flex-col items-start gap-1 text-left"
+            className="flex min-w-0 flex-1 flex-col items-start gap-1 rounded-none text-left whitespace-normal active:scale-100"
             aria-expanded={expanded}
           >
             <span className="flex items-center gap-2">
@@ -542,7 +544,7 @@ function ReviewCaseCard({ c }: { c: MapCase }) {
               {' — '}
               {c.caption}
             </p>
-          </button>
+          </Button>
           <div className="flex flex-shrink-0 items-center gap-2">
             <ParityBadges parity={parity} />
             <Button

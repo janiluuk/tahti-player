@@ -17,6 +17,7 @@
     "journeys:admin": "./scripts/run-e2e-journeys.sh admin",
     "type-check": "tsc -p tsconfig.json --noEmit",
     "check:api-docs": "node scripts/check-api-docs.mjs",
+    "check:api-routes": "node scripts/check-api-routes.mjs",
     "lint": "eslint . --ignore-pattern test-results --ignore-pattern playwright-report",
     "clean": "rm -rf dist .turbo node_modules/.vite",
     "deploy:vimage": "./deploy/deploy-vimage.sh"
