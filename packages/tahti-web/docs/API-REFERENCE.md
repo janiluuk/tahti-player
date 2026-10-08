@@ -17,7 +17,7 @@ permission boundaries that must be checked before adding a new view. It is
 not a replacement for the generated OpenAPI document. For sibling-repo naming,
 route aliases, and governance context, see [CROSS-REPO-SYNC.md](./CROSS-REPO-SYNC.md).
 
-<!-- API_PATHS_SHA256: 2bf70674f0200a5f3d5447a7a8513689b104dcd1fc40b7cc64f7fb36be70b8b0 -->
+<!-- API_PATHS_SHA256: bfe681bc5c8b698254642397f0dca33f59e106f9a9eec978442ccd963017cba0 -->
 
 ## Authentication
 
@@ -48,7 +48,9 @@ Login is `POST /api/auth/login`, TOTP login is
 | Profile and audience | `/api/me/profile`, `/api/me/notification-preferences`, `/api/me/fan-tiers`, `/api/me/fan-sub-payouts`, `/api/me/fan-sub-payouts/summary`, `/api/me/fan-subs/connect`, `/api/me/revelator/royalties`, `/api/me/fan-subscriptions`, `/api/me/grants` | Settings, Studio → Audience, subscriptions |
 | Chat and mentions | `/api/channels/{slug}/presence`, `/api/me/chat/settings`, `/api/me/chat/announcements`, `/api/me/channel/moderators`, `/api/me/mentions` | Chat rail, moderation, tagged-in profile sections |
 | Governance | `GET/POST /api/v1/governance/motions`, `PATCH /api/v1/governance/motions/{id}`, `POST .../vote`, comments and reports | Artist and public Governance |
-| Admin operations | `/api/admin/users`, `/api/admin/streams`, `/api/admin/files`, `/api/admin/logs`, `/api/admin/audit`, `/api/admin/storage` | Admin overview, users, streams, logs, storage |
+| Admin operations | `/api/admin/users`, `/api/admin/streams`, `/api/admin/files`, `PATCH /api/admin/files/bulk`, `POST /api/admin/files/bulk-delete` (answers `{ deleted, failed: [{ id, error }] }`), `/api/admin/logs`, `/api/admin/audit`, `/api/admin/storage` | Admin overview, users, streams, logs, storage |
+| Themes | `GET /api/v1/themes/gallery` (the `tahti-registry` `themes.json` catalog), `/api/admin/themes`, `POST /api/admin/themes/{id}/approve` (opens the pull request in `tahti-registry`) | Settings → Themes, Admin → Moderation → Themes |
+| Not served | `/api/admin/i18n/*` has no API. Admin → Languages shows "Not available yet" on a 404 | Admin → Languages |
 | Admin moderation | `/api/admin/support/tickets`, `/api/admin/content-reports`, `/api/admin/radio-submissions`, `/api/admin/missed-live-shows`, `/api/admin/feature-requests` | Admin → Moderation queues |
 | Admin governance and finance | `/api/admin/ledger`, `/api/admin/resolutions`, `/api/admin/grants`, `/api/admin/fansubs`, `/api/admin/reports` | Admin governance, financial, grants, AGM |
 | Widgets and announcements | `/api/me/addons/installs`, `/api/me/channel/addons/installs`, `/api/admin/announcements` | Add-ons, channel widgets, announcements |
@@ -131,3 +133,15 @@ The check hashes the sibling OpenAPI `paths` object and compares it with the
 marker in this page. If the check fails, review new and removed paths in
 `../tahti-org/openapi.json`, update this reference, and re-audit affected client
 wrappers before committing.
+
+A second check finds calls to paths the API does not serve:
+
+```bash
+pnpm --filter @tahti-player/tahti-web check:api-routes
+```
+
+It reads every `/api/...` string in `src/` and compares it with the same
+OpenAPI export. A path built in pieces passes when a served path starts with
+it. Known exceptions go in `scripts/api-routes-allowlist.json` with the reason.
+Both checks read `TAHTI_OPENAPI` when the export is somewhere else, for example
+in a git worktree.
