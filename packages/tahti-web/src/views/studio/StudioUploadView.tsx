@@ -86,6 +86,12 @@ function UploadSourceWidgets() {
 
   const selected = UPLOAD_SOURCES.find((source) => source.id === selectedId);
   const selectedStatus = selectedId ? statuses[selectedId]?.data : undefined;
+  // A definite "no" from the API. An unread status is not one: the artist
+  // can still try, and the API answers 503 if it really is not set up.
+  const serverNotSetUp =
+    selectedStatus !== undefined &&
+    !selectedStatus.unavailable &&
+    !selectedStatus.configured;
   const toggleEnabled = (id: IntegrationId) => {
     setEnabledIds((current) => {
       const next = new Set(current);
@@ -124,9 +130,11 @@ function UploadSourceWidgets() {
               subtitle={
                 enabled && configured
                   ? 'Enabled'
-                  : !configured
-                    ? 'Needs setup'
-                    : 'Disabled'
+                  : status?.unavailable
+                    ? 'Status unavailable'
+                    : !configured
+                      ? 'Needs setup'
+                      : 'Disabled'
               }
               image={<SourceServiceIcon id={source.id} />}
               className={
@@ -152,7 +160,11 @@ function UploadSourceWidgets() {
                   variant="pill"
                   color={selectedStatus?.configured ? 'green' : 'secondary'}
                 >
-                  {selectedStatus?.configured ? 'Configured' : 'Needs setup'}
+                  {selectedStatus?.configured
+                    ? 'Configured'
+                    : selectedStatus?.unavailable
+                      ? 'Status unavailable'
+                      : 'Needs setup'}
                 </Badge>
                 <span className="text-foreground-secondary text-sm">
                   {enabledIds.has(selected.id) ? 'Enabled' : 'Disabled'}
@@ -199,7 +211,7 @@ function UploadSourceWidgets() {
                   className="w-fit"
                   href={selected.oauthUrl}
                   size="sm"
-                  disabled={!user}
+                  disabled={!user || serverNotSetUp}
                 >
                   <PlugIcon size={16} aria-hidden className="mr-1.5" />
                   {selectedStatus?.connected ? 'Reconnect' : 'Connect'}
@@ -208,6 +220,12 @@ function UploadSourceWidgets() {
             ) : (
               <p className="text-foreground-secondary text-sm">
                 This source is ready without an external connection.
+              </p>
+            )}
+            {selected.kind === 'oauth' && serverNotSetUp && (
+              <p className="text-foreground-secondary text-sm">
+                {selected.name} is not set up on this server yet, so it cannot
+                be connected.
               </p>
             )}
           </div>

@@ -30,6 +30,9 @@ export function OAuthServiceCard({
   );
   const [status, setStatus] = useState<{
     connected: boolean;
+    /** Absent while unknown; false only when the API says so. */
+    configured?: boolean;
+    unavailable?: boolean;
     username?: string | null;
   } | null>(null);
   const [busy, setBusy] = useState(false);
@@ -59,7 +62,7 @@ export function OAuthServiceCard({
       })
       .catch(() => {
         if (!cancelled) {
-          setStatus({ connected: false });
+          setStatus({ connected: false, unavailable: true });
         }
       });
     return () => {
@@ -113,8 +116,15 @@ export function OAuthServiceCard({
     adapter
       .listTracks()
       .then((r) => {
-        if (!cancelled) {
-          setScTracks(r.data);
+        if (cancelled) {
+          return;
+        }
+        setScTracks(r.data);
+        if (r.needsReconnect) {
+          // The API already dropped the dead token, so re-read the status:
+          // the card falls back to Connect instead of an empty track list.
+          toast.error('Your SoundCloud connection expired. Connect again.');
+          setStatusTick((n) => n + 1);
         }
       })
       .catch(() => {
@@ -231,6 +241,11 @@ export function OAuthServiceCard({
     }
   };
 
+  // Only a definite "no" from the API counts; an unread status still lets
+  // the artist try, and the API answers 503 if it really is not set up.
+  const notSetUp =
+    status !== null && !status.unavailable && status.configured === false;
+
   return (
     <ConfigurableCard
       title={plugin.name}
@@ -241,6 +256,10 @@ export function OAuthServiceCard({
           description={plugin.description}
           isInstalled={Boolean(status?.connected)}
           onInstall={() => {
+            if (notSetUp) {
+              toast.error(`${plugin.name} is not set up on this server yet.`);
+              return;
+            }
             window.location.href = adapter.oauthUrl;
           }}
           labels={{ install: 'Connect', installed: 'Connected' }}
@@ -336,7 +355,7 @@ export function OAuthServiceCard({
               </div>
               {scTracks.length === 0 ? (
                 <p className="text-foreground-secondary text-sm">
-                  No tracks returned.
+                  No downloadable tracks on this SoundCloud account.
                 </p>
               ) : (
                 <ul className="flex flex-col gap-2">
@@ -389,7 +408,11 @@ export function OAuthServiceCard({
       ) : (
         <>
           <p className="text-foreground-secondary text-sm">
-            Not connected yet.
+            {status?.unavailable
+              ? 'Could not check this connection. Try again in a moment.'
+              : notSetUp
+                ? `${plugin.name} is not set up on this server yet, so it cannot be connected.`
+                : 'Not connected yet.'}
           </p>
           {action.instructionsHref && action.instructionsLabel && (
             <ExternalLink href={action.instructionsHref} className="text-sm">

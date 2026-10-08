@@ -52,7 +52,11 @@ export type BandcampSourceAdapter = OAuthAdapterBase & {
 
 export type SoundcloudSourceAdapter = OAuthAdapterBase & {
   id: 'soundcloud';
-  listTracks(): Promise<{ data: SoundcloudTrack[]; meta: FetchMeta }>;
+  listTracks(): Promise<{
+    data: SoundcloudTrack[];
+    needsReconnect?: boolean;
+    meta: FetchMeta;
+  }>;
   importTracks(
     tracks: Array<{ trackId: string; title: string }>,
   ): Promise<{ ok: true; count: number } | { ok: false; error: string }>;

@@ -17,7 +17,7 @@ permission boundaries that must be checked before adding a new view. It is
 not a replacement for the generated OpenAPI document. For sibling-repo naming,
 route aliases, and governance context, see [CROSS-REPO-SYNC.md](./CROSS-REPO-SYNC.md).
 
-<!-- API_PATHS_SHA256: 42d709ca1c067f48533c1fa3cf3a5dcf7c942a6e7dc33d07c34e6187739ef506 -->
+<!-- API_PATHS_SHA256: 2bf70674f0200a5f3d5447a7a8513689b104dcd1fc40b7cc64f7fb36be70b8b0 -->
 
 ## Authentication
 
@@ -60,6 +60,7 @@ Login is `POST /api/auth/login`, TOTP login is
 | Internet radio | `GET /api/v1/internet-radio/now-playing?url=`, `GET /api/v1/internet-radio/presets/enabled`, `/api/me/internet-radio` | Listen station cards, station page, player bar, Settings → Playback |
 | Newsletter | `POST /api/newsletter/subscribe`, `/api/newsletter/confirm/{token}`, `/api/newsletter/unsubscribe/{token}` (one-click), `/api/me/newsletter/*` | Artist page, `/newsletter/*` pages, Studio → Updates |
 | Import / export catalogs | `GET /api/me/import-plugins`, `GET /api/me/export-plugins` | Settings → Add-ons |
+| OAuth provider connections | `GET/DELETE /api/me/{bandcamp,soundcloud,google-drive,mixcloud,musicbrainz}`, `GET .../oauth/start`, `GET /api/me/soundcloud/tracks`, `POST /api/me/soundcloud/import` | Add-ons service cards, Library → Upload → Import sources |
 
 ## Permission boundaries
 
@@ -89,6 +90,22 @@ PRIVATE/non-public sounds → keyed access. Client:
 
 Bandcamp album **import** remains unavailable (`import: false` on
 `GET /api/me/import-plugins`); albums list may return an empty stub message.
+
+## OAuth provider connections
+
+`GET /api/me/{provider}` answers `{ connected, configured }` (MusicBrainz adds
+`username`). `configured` is false when the server has no client id **and**
+secret for the provider; `.../oauth/start` then answers 503, so the client
+does not offer Connect (`OAuthServiceCard`, `StudioUploadView`). A status
+request that fails is `unavailable` in `fetchConnectionStatus`, which the UI
+shows as "status unavailable", not "needs setup".
+
+Provider routes put a `code` on their error body:
+
+- `PROVIDER_NOT_CONNECTED` (403) — the account was never connected.
+- `PROVIDER_TOKEN_EXPIRED` (401) — the stored token died and the API has
+  dropped it; `fetchSoundcloudTracks` returns `needsReconnect` and the card
+  falls back to Connect. A 401 without this code is the Tahti session.
 
 ## Adding or changing an API call
 
