@@ -256,6 +256,12 @@ export async function fetchAdminActivity(
       const topicActions = new Set(ADMIN_AUDIT_TOPIC_ACTIONS[filters.topic]);
       rows = rows.filter((row) => topicActions.has(row.action));
     }
+    if (filters.action) {
+      rows = rows.filter((row) => row.action === filters.action);
+    }
+    if (filters.actorId) {
+      rows = rows.filter((row) => row.actorId === filters.actorId);
+    }
     const total = rows.length;
     const start = (page - 1) * limit;
     return {
