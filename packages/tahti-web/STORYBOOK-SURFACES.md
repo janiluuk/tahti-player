@@ -264,6 +264,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/MediaArtwork` | `MediaArtwork.stories.tsx` |
 | `Components/Meter` | `Meter.stories.tsx` |
 | `Components/Mosaic` | `Mosaic.stories.tsx` |
+| `Audio/MultitrackEditor` | `MultitrackEditor.stories.tsx` |
 | `Components/NewsWidget` | `NewsWidget.stories.tsx` |
 | `Components/Pagination` | `Pagination.stories.tsx` |
 | `Layout/PlayerBar` | `PlayerBar.stories.tsx` |
@@ -311,6 +312,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/TrackContextMenu` | `TrackContextMenu.stories.tsx` |
 | `Components/TrackTable` | `TrackTable.stories.tsx` |
 | `Components/ViewShell` | `ViewShell.stories.tsx` |
+| `Audio/VisualizerHost` | `VisualizerHost.stories.tsx` |
 | `Welcome` | `Welcome.stories.tsx` |
 
 If nothing matches: add a story with today’s states, flag `Missing states:` / `Orphan:`.

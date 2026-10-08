@@ -9,21 +9,12 @@
     "declarationMap": true,
     "sourceMap": true,
     "jsx": "react-jsx",
-    "types": [
-      "vitest/globals"
-    ],
+    "types": ["vitest/globals"],
     "skipLibCheck": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "strict": false
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "src/**/*.test.ts",
-    "src/**/*.test.tsx"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "src/**/*.test.ts", "src/**/*.test.tsx"]
 }
