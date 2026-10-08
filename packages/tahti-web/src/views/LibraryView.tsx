@@ -24,6 +24,10 @@ import {
   type StorageUsage,
 } from '../api/studio-extras';
 import { DesktopLibraryPanel } from '../components/DesktopLibraryPanel';
+import {
+  PHONE_SCROLL_TAB_LIST,
+  useSelectedTabInView,
+} from '../components/SectionTabs';
 import { StudioPanel } from '../components/StudioPanel';
 import { formatPlayCount } from '../lib/topListEntries';
 import { LibraryEmbedsView } from './LibraryEmbedsView';
@@ -118,27 +122,33 @@ export type LibrarySectionId = (typeof LIBRARY_SECTION_TABS)[number]['id'];
  */
 export function LibrarySectionTabs({ active }: { active: LibrarySectionId }) {
   const navigate = useNavigate();
+  const ref = useSelectedTabInView(active);
   return (
-    <Tabs.Root
-      selectedIndex={Math.max(
-        0,
-        LIBRARY_SECTION_TABS.findIndex((item) => item.id === active),
-      )}
-      onChange={(index) => {
-        const next = LIBRARY_SECTION_TABS[index];
-        if (next) {
-          void navigate({ to: next.to as never });
-        }
-      }}
-    >
-      <Tabs.List aria-label="Library sections" className="overflow-x-auto">
-        {LIBRARY_SECTION_TABS.map((item) => (
-          <Tabs.Tab key={item.id}>
-            <TabLabel icon={<item.icon size={14} />}>{item.label}</TabLabel>
-          </Tabs.Tab>
-        ))}
-      </Tabs.List>
-    </Tabs.Root>
+    <div ref={ref} className="min-w-0">
+      <Tabs.Root
+        selectedIndex={Math.max(
+          0,
+          LIBRARY_SECTION_TABS.findIndex((item) => item.id === active),
+        )}
+        onChange={(index) => {
+          const next = LIBRARY_SECTION_TABS[index];
+          if (next) {
+            void navigate({ to: next.to as never });
+          }
+        }}
+      >
+        <Tabs.List
+          aria-label="Library sections"
+          className={PHONE_SCROLL_TAB_LIST}
+        >
+          {LIBRARY_SECTION_TABS.map((item) => (
+            <Tabs.Tab key={item.id}>
+              <TabLabel icon={<item.icon size={14} />}>{item.label}</TabLabel>
+            </Tabs.Tab>
+          ))}
+        </Tabs.List>
+      </Tabs.Root>
+    </div>
   );
 }
 
