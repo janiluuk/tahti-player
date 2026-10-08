@@ -97,22 +97,24 @@ export function TransparencyView() {
                   value={String(Object.keys(ytd.byCategory).length)}
                 />
               </div>
-              <table className="mt-3 w-full border-collapse text-left text-sm">
-                <thead>
-                  <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
-                    <th className="py-2 pr-3 font-medium">Category</th>
-                    <th className="py-2 font-medium">Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {Object.entries(ytd.byCategory).map(([cat, amt]) => (
-                    <tr key={cat} className="border-border border-b">
-                      <td className="py-2 pr-3 font-mono text-xs">{cat}</td>
-                      <td className="py-2">{centsLabel(amt)}</td>
+              <div className="mt-3 overflow-x-auto">
+                <table className="w-full border-collapse text-left text-sm">
+                  <thead>
+                    <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
+                      <th className="py-2 pr-3 font-medium">Category</th>
+                      <th className="py-2 font-medium">Amount</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {Object.entries(ytd.byCategory).map(([cat, amt]) => (
+                      <tr key={cat} className="border-border border-b">
+                        <td className="py-2 pr-3 font-mono text-xs">{cat}</td>
+                        <td className="py-2">{centsLabel(amt)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </SectionShell>
           )}
 
@@ -128,29 +130,33 @@ export function TransparencyView() {
                   }
                 />
               </div>
-              <table className="mt-3 w-full border-collapse text-left text-sm">
-                <thead>
-                  <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
-                    <th className="py-2 pr-3 font-medium">Published as</th>
-                    <th className="py-2 pr-3 font-medium">Amount</th>
-                    <th className="py-2 font-medium">State</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {grants.grants.map((g) => (
-                    <tr
-                      key={`${g.publishedAs}-${g.amountCents}`}
-                      className="border-border border-b"
-                    >
-                      <td className="py-2 pr-3">{g.publishedAs}</td>
-                      <td className="py-2 pr-3">{centsLabel(g.amountCents)}</td>
-                      <td className="text-foreground-secondary py-2 text-xs">
-                        {g.state}
-                      </td>
+              <div className="mt-3 overflow-x-auto">
+                <table className="w-full border-collapse text-left text-sm">
+                  <thead>
+                    <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
+                      <th className="py-2 pr-3 font-medium">Published as</th>
+                      <th className="py-2 pr-3 font-medium">Amount</th>
+                      <th className="py-2 font-medium">State</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {grants.grants.map((g) => (
+                      <tr
+                        key={`${g.publishedAs}-${g.amountCents}`}
+                        className="border-border border-b"
+                      >
+                        <td className="py-2 pr-3">{g.publishedAs}</td>
+                        <td className="py-2 pr-3">
+                          {centsLabel(g.amountCents)}
+                        </td>
+                        <td className="text-foreground-secondary py-2 text-xs">
+                          {g.state}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
               <div className="mt-3 flex flex-wrap gap-2 text-xs">
                 {Array.from(
                   { length: 5 },
@@ -170,30 +176,32 @@ export function TransparencyView() {
           )}
 
           <SectionShell title="Latest ledger">
-            <table className="w-full border-collapse text-left text-sm">
-              <thead>
-                <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
-                  <th className="py-2 pr-3 font-medium">When</th>
-                  <th className="py-2 pr-3 font-medium">Category</th>
-                  <th className="py-2 pr-3 font-medium">Description</th>
-                  <th className="py-2 font-medium">Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                {ledger.map((e) => (
-                  <tr key={e.id} className="border-border border-b">
-                    <td className="text-foreground-secondary py-2 pr-3 text-xs">
-                      {e.createdAt.slice(0, 10)}
-                    </td>
-                    <td className="py-2 pr-3 font-mono text-xs">
-                      {e.category}
-                    </td>
-                    <td className="py-2 pr-3">{e.description}</td>
-                    <td className="py-2">{centsLabel(e.amountCents)}</td>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse text-left text-sm">
+                <thead>
+                  <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
+                    <th className="py-2 pr-3 font-medium">When</th>
+                    <th className="py-2 pr-3 font-medium">Category</th>
+                    <th className="py-2 pr-3 font-medium">Description</th>
+                    <th className="py-2 font-medium">Amount</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {ledger.map((e) => (
+                    <tr key={e.id} className="border-border border-b">
+                      <td className="text-foreground-secondary py-2 pr-3 text-xs">
+                        {e.createdAt.slice(0, 10)}
+                      </td>
+                      <td className="py-2 pr-3 font-mono text-xs">
+                        {e.category}
+                      </td>
+                      <td className="py-2 pr-3">{e.description}</td>
+                      <td className="py-2">{centsLabel(e.amountCents)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </SectionShell>
         </>
       )}
