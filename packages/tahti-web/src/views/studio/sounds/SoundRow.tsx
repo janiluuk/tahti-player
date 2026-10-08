@@ -76,7 +76,7 @@ export function SoundRow({
 
   return (
     <li className="flex flex-wrap items-center gap-2 py-3 text-sm first:pt-0 last:pb-0">
-      <div className="min-w-0 flex-1">
+      <div className="min-w-44 flex-1">
         <Link
           to="/t/$id"
           params={{ id: item.id }}
