@@ -40,6 +40,7 @@ async function renderView(
   summary: api.ConversationSummary,
   messages: api.ChatDm[] = [],
   hasMore?: boolean,
+  threadId: string | undefined = 'c1',
 ) {
   useAuthStore.setState({ user: { username: 'me' } as AuthUser });
   vi.spyOn(contacts, 'fetchMessageContacts').mockResolvedValue({
@@ -56,9 +57,11 @@ async function renderView(
   });
   const router = createRouter({
     routeTree: createRootRoute({
-      component: () => <MessagesView threadId="c1" />,
+      component: () => <MessagesView threadId={threadId} />,
     }),
-    history: createMemoryHistory({ initialEntries: ['/messages/c1'] }),
+    history: createMemoryHistory({
+      initialEntries: [threadId ? `/messages/${threadId}` : '/messages'],
+    }),
   });
   await act(async () => {
     render(<RouterProvider router={router} />);
@@ -95,6 +98,17 @@ describe('MessagesView role badges', () => {
     const inboxRow = screen.getByRole('button', { name: /Aino/ });
     expect(within(inboxRow).getByText('Artist')).toBeTruthy();
     expect(screen.getAllByText('Artist')).toHaveLength(3);
+  });
+
+  it('keeps the empty thread pane off phones until a conversation is open', async () => {
+    await renderView(conversation('ARTIST'), [], undefined, '');
+    expect(screen.getByTestId('dm-thread').className).toContain('hidden');
+    expect(screen.getByTestId('dm-thread').className).toContain('md:flex');
+  });
+
+  it('shows the thread pane at every width once a conversation is open', async () => {
+    await renderView(conversation('ARTIST'), [dm('m1', false)]);
+    expect(screen.getByTestId('dm-thread').className).not.toContain('hidden');
   });
 
   it('marks a moderator', async () => {
