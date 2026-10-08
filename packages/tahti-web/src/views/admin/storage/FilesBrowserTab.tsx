@@ -380,6 +380,16 @@ export function FilesBrowserTab() {
             );
             reload();
           }}
+          onDeleted={(deleted, kept) => {
+            setSelectedIds(new Set());
+            setNotice(
+              `Deleted ${deleted} ${deleted === 1 ? 'file' : 'files'}.` +
+                (kept > 0
+                  ? ` ${kept} could not be deleted, for example because of a linked Mixcloud upload.`
+                  : ''),
+            );
+            reload();
+          }}
         />
       ) : null}
 
@@ -518,7 +528,12 @@ export function FilesBrowserTab() {
           if (!file) {
             return;
           }
-          void deleteAdminFile(file.id).then(() => reload());
+          void deleteAdminFile(file.id).then((result) => {
+            if (!result.ok) {
+              setNotice(`Could not delete "${file.title}": ${result.error}`);
+            }
+            reload();
+          });
         }}
       />
     </div>

@@ -3,11 +3,13 @@ import { useState } from 'react';
 import { Button, Select } from '@tahti-player/ui';
 
 import {
+  bulkDeleteAdminFiles,
   bulkPatchAdminFiles,
   FILE_LICENSES,
   type AdminFileFacets,
   type AdminFilesBulkPatch,
 } from '../../../api/admin';
+import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { contentTypeLabel } from '../../../content/contentTypes';
 
 const UNCHANGED = '';
@@ -42,11 +44,13 @@ export function BulkEditBar({
   facets,
   onClear,
   onApplied,
+  onDeleted,
 }: {
   selectedIds: string[];
   facets: AdminFileFacets | null;
   onClear: () => void;
   onApplied: (updated: number) => void;
+  onDeleted: (deleted: number, kept: number) => void;
 }) {
   const [genre, setGenre] = useState(UNCHANGED);
   const [contentType, setContentType] = useState(UNCHANGED);
@@ -54,6 +58,7 @@ export function BulkEditBar({
   const [license, setLicense] = useState(UNCHANGED);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   const patch = bulkPatchFromChoices({
     genre,
@@ -152,12 +157,40 @@ export function BulkEditBar({
         >
           {pending ? 'Applying…' : `Apply to ${count}`}
         </Button>
+        <Button
+          size="sm"
+          intent="danger"
+          disabled={pending || count === 0}
+          onClick={() => setConfirmingDelete(true)}
+        >
+          Delete {count}
+        </Button>
       </div>
       {error ? (
         <p className="text-accent-red-strong text-sm" role="alert">
           {error}
         </p>
       ) : null}
+      <ConfirmDialog
+        isOpen={confirmingDelete}
+        title={`Delete ${count} ${count === 1 ? 'file' : 'files'} permanently?`}
+        description="This removes the selected files from platform storage. It cannot be undone."
+        confirmLabel="Delete"
+        onCancel={() => setConfirmingDelete(false)}
+        onConfirm={() => {
+          setConfirmingDelete(false);
+          setPending(true);
+          setError(null);
+          void bulkDeleteAdminFiles(selectedIds).then((result) => {
+            setPending(false);
+            if (!result.ok) {
+              setError(result.error);
+              return;
+            }
+            onDeleted(result.deleted, result.failed.length);
+          });
+        }}
+      />
     </div>
   );
 }
