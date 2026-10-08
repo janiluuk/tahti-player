@@ -9,7 +9,10 @@ export function AdminSelectsView() {
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/tahti-selects">
-          <ViewShell title="Tahti Selects" classes={{ root: 'px-0 pt-0' }}>
+          <ViewShell
+            title="Tahti Selects"
+            classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+          >
             <SelectsTab />
           </ViewShell>
         </AdminPageLayout>

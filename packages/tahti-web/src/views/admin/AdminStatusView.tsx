@@ -60,7 +60,10 @@ export function AdminStatusView() {
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/status">
-          <ViewShell title="Status" classes={{ root: 'px-0 pt-0' }}>
+          <ViewShell
+            title="Status"
+            classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+          >
             <StudioPanel>
               {loading ? (
                 <PageLoading label="Loading service status…" />

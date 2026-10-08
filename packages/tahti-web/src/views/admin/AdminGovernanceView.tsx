@@ -74,7 +74,10 @@ export function AdminGovernanceView({ tab }: { tab?: AdminGovernanceTabId }) {
                 });
               }}
             />
-            <ViewShell title="Governance" classes={{ root: 'px-0 pt-0' }}>
+            <ViewShell
+              title="Governance"
+              classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+            >
               {tabContent(active)}
             </ViewShell>
           </div>

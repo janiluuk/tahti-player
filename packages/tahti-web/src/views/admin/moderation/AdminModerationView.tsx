@@ -112,7 +112,10 @@ export function AdminModerationView({ tab }: { tab?: AdminModerationTabId }) {
                 });
               }}
             />
-            <ViewShell title="Moderation" classes={{ root: 'px-0 pt-0' }}>
+            <ViewShell
+              title="Moderation"
+              classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+            >
               {tabContent(active)}
             </ViewShell>
           </div>

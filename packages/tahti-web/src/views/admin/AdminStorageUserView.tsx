@@ -66,7 +66,7 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
           <>
             <ViewShell
               title={detail.displayName}
-              classes={{ root: 'px-0 pt-0' }}
+              classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               <StudioPanel>
                 <div className="flex flex-wrap gap-6">

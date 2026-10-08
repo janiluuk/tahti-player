@@ -153,7 +153,7 @@ export function AdminArtworkPresetsView() {
         <div className="flex flex-col gap-6">
           <ViewShell
             title="Artwork presets"
-            classes={{ root: 'px-0 pt-0' }}
+            classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             actions={
               <div className="flex items-center gap-1.5">
                 <Tooltip content="Add new artwork" side="top">

@@ -92,7 +92,7 @@ export function AdminI18nView() {
           <div className="flex max-w-4xl flex-col gap-6">
             <ViewShell
               title="Languages"
-              classes={{ root: 'px-0 pt-0' }}
+              classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
               actions={
                 <Tooltip content="New language" side="top">
                   <Button
