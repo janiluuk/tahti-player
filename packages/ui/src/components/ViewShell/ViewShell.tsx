@@ -6,6 +6,7 @@ import { ScrollableArea } from '../ScrollableArea';
 type ViewShellClasses = {
   root?: string;
   scrollableArea?: string;
+  content?: string;
 };
 
 type ViewShellProps = {
@@ -75,6 +76,7 @@ export const ViewShell: FC<ViewShellProps> = ({
         'flex min-h-0 w-full flex-1 flex-col',
         classes?.scrollableArea,
       )}
+      viewportClassName={classes?.content}
     >
       {children}
     </ScrollableArea>
