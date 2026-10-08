@@ -46,6 +46,7 @@ import {
   TopBarTextField,
   TuningSliders,
   VideoOrImageField,
+  VisualizerEditor,
   VisualizerPickerDialog,
   type HeaderDesignMode,
   type PlayerDesignTab,
@@ -228,6 +229,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
     const [galleryPickerOpen, setGalleryPickerOpen] = useState(false);
     const [videoUrlOpen, setVideoUrlOpen] = useState(false);
     const [showVisualizerSettings, setShowVisualizerSettings] = useState(false);
+    const [vizEditorOpen, setVizEditorOpen] = useState(false);
     const [overlayConfigOpen, setOverlayConfigOpen] = useState(false);
     const [visualizerPickerOpen, setVisualizerPickerOpen] = useState(false);
     const [visualizerPickerPreset, setVisualizerPickerPreset] =
@@ -508,6 +510,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
             applyLocal({ visualPreset: activeVisualizer });
           }
         }}
+        onOpenEditor={() => setVizEditorOpen(true)}
       />
     );
 
@@ -657,8 +660,35 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
     );
     controlsForRailRef.current = dockControlsInRail ? controls : null;
 
+    const visualizationEditor = (
+      <VisualizerEditor
+        open={vizEditorOpen}
+        onClose={() => setVizEditorOpen(false)}
+        activeVisualizer={activeVisualizer}
+        visualizerEnabled={visualizerEnabled}
+        visualSettings={visualSettings}
+        visualSettingsJson={visualSettingsJson}
+        scheme={scheme}
+        avatarUrl={avatarUrl}
+        onApplyPreset={(preset) => applyLocal({ visualPreset: preset })}
+        onToggleEnabled={() => {
+          if (visualizerEnabled) {
+            applyLocal({ visualPreset: 'MINIMAL' });
+          } else {
+            applyLocal({ visualPreset: activeVisualizer });
+          }
+        }}
+        onSettingChange={setPresetSetting}
+      />
+    );
+
     if (lookOnly) {
-      return <div className="flex h-full min-h-0 flex-col">{controls}</div>;
+      return (
+        <div className="flex h-full min-h-0 flex-col">
+          {controls}
+          {visualizationEditor}
+        </div>
+      );
     }
 
     return (
@@ -765,6 +795,8 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
             avatarUrl={avatarUrl}
             previewGradient={previewStyle.gradient}
           />
+
+          {visualizationEditor}
         </div>
 
         <SavePresetDialog

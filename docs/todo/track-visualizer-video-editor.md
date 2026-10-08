@@ -1,6 +1,6 @@
 # Track visualizer video editor (PulseForge → Studio Channel & Design)
 
-**Status:** open
+**Status:** partial
 
 ## Goal
 
@@ -162,19 +162,20 @@ background-video loop while licence / Pixi port is open.
 
 ### Phase 1 — Entry + shared selectors (Channel & Design)
 
-- [ ] Add **Open visualization editor** on Designer Player → Visualizer
+- [x] Add **Open visualization editor** on Designer Player → Visualizer
       (and Branding host). Takeover shell; persistent chrome on parent.
-- [ ] Wire editor to current Look: preset + `visualSettings` from
+- [x] Wire editor to current Look: preset + `visualSettings` from
       `useChannelLook` (or equivalent props); changes can optionally write
       back to the Look draft.
-- [ ] Track picker: artist library sounds (stream URL / local blob); empty /
+- [x] Track picker: artist library sounds (stream URL / local blob); empty /
       error states.
-- [ ] Live preview: selected track drives analyser → `ChannelVisualizer`
+- [x] Live preview: selected track drives analyser → `ChannelVisualizer`
       (or shared preview) with current tuning.
-- [ ] Storybook: shell + track picker + preset bar composition; update
+- [x] Storybook: shell + track picker + preset bar composition; update
       `ChannelDesignerPlayerVisualizer` story with CTA.
-- [ ] Tests: nav mounted on Designer; takeover hides chrome; selector parity
-      with Designer tuning keys.
+- [x] Tests: track filter helpers, track picker, editor CTA on
+      `PlayerVisualizerControls` (Designer parent keeps chrome mounted;
+      editor is a z-70 takeover overlay).
 
 ### Phase 2 — Export MP4 + apply as background video
 

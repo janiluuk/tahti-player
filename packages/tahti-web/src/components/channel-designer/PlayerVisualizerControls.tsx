@@ -2,6 +2,7 @@ import {
   CheckIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  ClapperboardIcon,
   PlaySquareIcon,
   SettingsIcon,
 } from 'lucide-react';
@@ -24,6 +25,8 @@ type Props = {
   onNext: () => void;
   onToggleSettings: () => void;
   onToggleEnabled: () => void;
+  /** Opens the Channel & Design visualization editor takeover. */
+  onOpenEditor?: () => void;
 };
 
 /** Player tab → Visualizer: preset chrome + optional tuning dock. */
@@ -37,6 +40,7 @@ export function PlayerVisualizerControls({
   onNext,
   onToggleSettings,
   onToggleEnabled,
+  onOpenEditor,
 }: Props) {
   const meta = visualizerMetadata(activeVisualizer);
   const label = activeVisualizer.replace(/_/g, ' ');
@@ -140,6 +144,18 @@ export function PlayerVisualizerControls({
           <Eyebrow>Tune {label}</Eyebrow>
           {tuningSlot}
         </div>
+      ) : null}
+      {onOpenEditor ? (
+        <Button
+          type="button"
+          variant="secondary"
+          className="w-full"
+          data-testid="open-visualization-editor"
+          onClick={onOpenEditor}
+        >
+          <ClapperboardIcon size={16} aria-hidden />
+          <span className="ml-2">Open visualization editor</span>
+        </Button>
       ) : null}
     </section>
   );

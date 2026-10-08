@@ -21,9 +21,11 @@ type Story = StoryObj<typeof meta>;
 function Demo({
   enabled = true,
   withTuning = false,
+  withEditor = false,
 }: {
   enabled?: boolean;
   withTuning?: boolean;
+  withEditor?: boolean;
 }) {
   const [visualizerEnabled, setVisualizerEnabled] = useState(enabled);
   const [showSettings, setShowSettings] = useState(withTuning);
@@ -45,6 +47,7 @@ function Demo({
         onNext={() => undefined}
         onToggleSettings={() => setShowSettings((value) => !value)}
         onToggleEnabled={() => setVisualizerEnabled((value) => !value)}
+        onOpenEditor={withEditor ? () => undefined : undefined}
       />
     </div>
   );
@@ -61,4 +64,9 @@ export const Disabled: Story = {
 export const WithTuning: Story = {
   name: 'Settings open + tuning slot',
   render: () => <Demo withTuning />,
+};
+
+export const WithEditorCta: Story = {
+  name: 'Open visualization editor CTA',
+  render: () => <Demo withEditor />,
 };

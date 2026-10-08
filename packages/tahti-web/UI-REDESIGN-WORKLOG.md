@@ -1,3 +1,10 @@
+## 2026-10-08 — Visualization editor Phase 1 (Channel & Design)
+
+Channel Designer Player → Visualizer gains **Open visualization editor**:
+full-viewport takeover reusing `PlayerVisualizerControls` / `TuningSliders` /
+picker, library track picker, and live `ChannelVisualizer` preview driven by
+the shared AudioEngine analyser. MP4 export is Phase 2.
+
 ## 2026-09-18 — Root README screenshots refreshed to dark/amber theme
 
 `scripts/capture-tahti-dark-refresh.mjs` (previously not actually setting
