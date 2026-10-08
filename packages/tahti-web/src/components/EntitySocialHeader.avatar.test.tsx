@@ -19,6 +19,11 @@ describe('EntitySocialHeader avatar fallback', () => {
     expect(fallback.textContent).toBe('S');
   });
 
+  it('shows the initial when there is no image and no theme', () => {
+    render(<EntitySocialHeader title="kuudes Linja" />);
+    expect(screen.getByTestId('media-artwork-fallback').textContent).toBe('K');
+  });
+
   it('shows the image instead when there is one', () => {
     render(
       <EntitySocialHeader
