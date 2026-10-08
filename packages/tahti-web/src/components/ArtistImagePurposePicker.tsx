@@ -159,15 +159,17 @@ export const ArtistImagePurposePicker: FC<Props> = ({
             displayName.slice(0, 1).toUpperCase()
           )}
         </div>
-        <button
+        <Button
+          variant="plain"
+          size="flexible"
           type="button"
           onClick={() => setPickerOpen(true)}
           aria-label="Change profile image"
           title="Change profile image"
-          className="bg-background/80 text-foreground absolute inset-0 flex items-center justify-center rounded-full opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
+          className="bg-background/80 text-foreground absolute inset-0 flex items-center justify-center rounded-full whitespace-normal opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 active:scale-100"
         >
           <UploadCloudIcon size={20} aria-hidden />
-        </button>
+        </Button>
       </div>
 
       <Dialog.Root
@@ -235,12 +237,14 @@ export const ArtistImagePurposePicker: FC<Props> = ({
                   role="radiogroup"
                 >
                   {PURPOSES.map((purpose) => (
-                    <button
+                    <Button
+                      variant="plain"
+                      size="flexible"
                       key={purpose.id}
                       type="button"
                       role="radio"
                       aria-checked={image.purpose === purpose.id}
-                      className={`rounded-lg border px-3 py-2 text-left text-xs transition-colors ${
+                      className={`inline-block rounded-lg border px-3 py-2 text-left text-xs whitespace-normal transition-colors active:scale-100 ${
                         image.purpose === purpose.id
                           ? 'border-primary bg-primary/10 text-primary'
                           : 'border-border text-foreground-secondary hover:text-foreground'
@@ -253,7 +257,7 @@ export const ArtistImagePurposePicker: FC<Props> = ({
                       <span className="mt-1 block opacity-80">
                         {purpose.description}
                       </span>
-                    </button>
+                    </Button>
                   ))}
                 </div>
               </div>

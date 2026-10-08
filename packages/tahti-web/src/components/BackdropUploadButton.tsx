@@ -2,7 +2,7 @@ import { ImageIcon, UploadCloudIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { Dialog, FilePicker } from '@tahti-player/ui';
+import { Button, Dialog, FilePicker } from '@tahti-player/ui';
 
 import { uploadUserMediaFile } from '../api/user-media';
 import { cn } from '../lib/cn';
@@ -70,7 +70,9 @@ export function BackdropUploadButton({
           className,
         )}
       >
-        <button
+        <Button
+          variant="plain"
+          size="flexible"
           type="button"
           onClick={() => (value ? chrome.openPreview() : setOpen(true))}
           aria-label={
@@ -83,7 +85,7 @@ export function BackdropUploadButton({
               ? `Preview ${label.toLowerCase()}`
               : `Change ${label.toLowerCase()}`
           }
-          className="border-border bg-background-secondary flex size-full items-center justify-center overflow-hidden border"
+          className="border-border bg-background-secondary flex size-full items-center justify-center overflow-hidden rounded-none border whitespace-normal active:scale-100"
         >
           {value ? (
             <img src={value} alt="" className="size-full object-cover" />
@@ -99,7 +101,7 @@ export function BackdropUploadButton({
               <UploadCloudIcon size={22} aria-hidden />
             </div>
           )}
-        </button>
+        </Button>
         {value ? (
           <ImageSlotDeleteBadge label={label} onClick={chrome.requestDelete} />
         ) : null}
