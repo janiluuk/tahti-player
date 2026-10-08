@@ -95,8 +95,8 @@ export function SoundHeader({
             </Button>
           </Tooltip>
           <TrackContextMenu>
-            <TrackContextMenu.Trigger>
-              <Tooltip content="Quick edits" side="top">
+            <Tooltip content="Quick edits" side="top">
+              <TrackContextMenu.Trigger>
                 <Button
                   variant="secondary"
                   size="icon-sm"
@@ -106,8 +106,8 @@ export function SoundHeader({
                 >
                   <MoreHorizontalIcon size={16} aria-hidden />
                 </Button>
-              </Tooltip>
-            </TrackContextMenu.Trigger>
+              </TrackContextMenu.Trigger>
+            </Tooltip>
             <TrackContextMenu.Content>
               <TrackContextMenu.Header title="Quick edits" />
               <TrackContextMenu.Action
