@@ -353,18 +353,24 @@ export function ChannelBackdropCard({
           >
             {navItems.map((navItem) =>
               navItem.onClick ? (
-                <button
+                <Button
                   key={navItem.id}
                   type="button"
+                  variant="text"
+                  size="flexible"
                   onClick={(event) => {
                     event.stopPropagation();
                     navItem.onClick?.();
                   }}
-                  className={navItem.active ? 'border-b-2 pb-2' : 'pb-2'}
-                  style={navItem.active ? { borderColor: accent } : undefined}
+                  className={`rounded-none text-xs font-semibold uppercase hover:bg-transparent ${navItem.active ? 'border-b-2 pb-2' : 'pb-2'}`}
+                  style={
+                    navItem.active
+                      ? { borderColor: accent, color: 'inherit' }
+                      : { color: 'inherit' }
+                  }
                 >
                   {navItem.label}
-                </button>
+                </Button>
               ) : (
                 <span
                   key={navItem.id}

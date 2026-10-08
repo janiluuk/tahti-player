@@ -210,18 +210,20 @@ export function ChannelHeroBlock({
         >
           {stageNavItems.map((navItem) =>
             navItem.onClick ? (
-              <button
+              <Button
+                variant="text"
+                size="flexible"
                 key={navItem.id}
                 type="button"
                 onClick={navItem.onClick}
-                className={
+                className={`rounded-none text-xs font-semibold uppercase hover:bg-transparent ${
                   navItem.active
                     ? 'border-primary border-b-2 pb-2'
                     : 'text-foreground-secondary hover:text-foreground pb-2'
-                }
+                }`}
               >
                 {navItem.label}
-              </button>
+              </Button>
             ) : (
               <span
                 key={navItem.id}

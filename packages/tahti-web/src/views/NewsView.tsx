@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { ExternalLinkIcon, SparklesIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { cn, ImageReveal, ViewShell } from '@tahti-player/ui';
+import { Button, cn, ImageReveal, ViewShell } from '@tahti-player/ui';
 
 import { fetchAnnouncements } from '../api/client';
 import type { Announcement } from '../api/types';
@@ -168,13 +168,15 @@ export function NewsView() {
         ))}
 
         {!showAll && hiddenCount > 0 && (
-          <button
+          <Button
             type="button"
-            className="hover:text-foreground cursor-pointer py-4 text-sm transition-colors"
+            variant="text"
+            size="sm"
+            className="self-start"
             onClick={() => setShowAll(true)}
           >
             Show {hiddenCount} more
-          </button>
+          </Button>
         )}
       </div>
     </ViewShell>

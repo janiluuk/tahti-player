@@ -133,11 +133,13 @@ export function TrackInfoDialog({
                 <ul className="flex max-h-48 flex-col overflow-y-auto">
                   {track.tracklist.map((entry, i) => (
                     <li key={entry.id}>
-                      <button
+                      <Button
+                        variant="text"
+                        size="flexible"
                         type="button"
                         disabled={!entry.onSelect}
                         onClick={entry.onSelect}
-                        className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm ${
+                        className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm disabled:cursor-default disabled:opacity-100 ${
                           entry.active
                             ? 'text-primary font-semibold'
                             : 'hover:bg-background-secondary'
@@ -147,7 +149,7 @@ export function TrackInfoDialog({
                           {i + 1}
                         </span>
                         <span className="truncate">{entry.title}</span>
-                      </button>
+                      </Button>
                     </li>
                   ))}
                 </ul>

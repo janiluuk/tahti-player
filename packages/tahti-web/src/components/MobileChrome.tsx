@@ -93,13 +93,15 @@ export function MobileBottomNav({
           </Link>
         );
       })}
-      <button
+      <Button
+        variant="text"
+        size="flexible"
         type="button"
         onClick={onOpenMore}
         aria-label="More"
         aria-expanded={moreOpen}
         className={cn(
-          'flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-md px-1 py-1.5 text-[10px] tracking-wide',
+          'flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-md px-1 py-1.5 text-[10px] tracking-wide hover:bg-transparent',
           moreActive || moreOpen
             ? 'text-primary'
             : 'text-foreground-secondary hover:text-foreground',
@@ -110,7 +112,7 @@ export function MobileBottomNav({
           strokeWidth={moreActive || moreOpen ? 2.5 : 2}
         />
         <span className="truncate">More</span>
-      </button>
+      </Button>
     </nav>
   );
 }

@@ -332,15 +332,16 @@ export function RadioBrowserDirectoryCard() {
                         }
                         endAddon={
                           <Tooltip content="Search" side="top">
-                            <button
+                            <Button
                               type="button"
+                              variant="text"
+                              size="flexible"
                               disabled={searching}
                               onClick={() => void runSearch()}
                               aria-label="Search"
-                              className="disabled:opacity-60"
                             >
                               <SearchIcon size={14} aria-hidden />
-                            </button>
+                            </Button>
                           </Tooltip>
                         }
                       />
