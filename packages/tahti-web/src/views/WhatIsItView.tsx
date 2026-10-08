@@ -283,9 +283,9 @@ export function WhatIsItView() {
       {/* Hero */}
       <section className="border-border bg-background-secondary/30 rounded-2xl border p-6 sm:p-10">
         <Eyebrow>On air · beta live</Eyebrow>
-        <h1 className="font-display mt-2 text-3xl font-extrabold tracking-tight sm:text-4xl">
+        <h2 className="font-display mt-2 text-3xl font-extrabold tracking-tight sm:text-4xl">
           A home for your music, and your live shows.
-        </h1>
+        </h2>
         <p className="text-foreground-secondary mt-3 max-w-2xl text-sm leading-relaxed sm:text-base">
           You make the music. We take care of the rest — the tedious, mechanical
           work automated, drawn from two decades in streaming.
