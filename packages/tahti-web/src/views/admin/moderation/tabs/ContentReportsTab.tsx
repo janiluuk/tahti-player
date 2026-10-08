@@ -141,6 +141,7 @@ function ReportActions({
   return (
     <div className="flex flex-col gap-1.5">
       <Input
+        aria-label="Resolution note"
         placeholder="Resolution note (optional)"
         value={note}
         onChange={(e) => setNote(e.target.value)}

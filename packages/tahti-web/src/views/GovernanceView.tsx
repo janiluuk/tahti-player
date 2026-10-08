@@ -510,6 +510,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             <Input
               value={draftTitle}
               onChange={(event) => setDraftTitle(event.target.value)}
+              aria-label="Motion title"
               placeholder="Motion title"
               maxLength={200}
             />
@@ -517,6 +518,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
               tone="secondary"
               value={draftDescription}
               onChange={(event) => setDraftDescription(event.target.value)}
+              aria-label="Explain the proposal"
               placeholder="Explain the proposal"
               maxLength={10000}
               rows={4}
