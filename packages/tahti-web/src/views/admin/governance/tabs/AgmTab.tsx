@@ -77,6 +77,7 @@ function AgendaBuilder() {
             </span>
             <Input
               value={item}
+              aria-label={`Agenda item ${i + 1}`}
               onChange={(e) =>
                 setItems((prev) =>
                   prev.map((it, idx) => (idx === i ? e.target.value : it)),

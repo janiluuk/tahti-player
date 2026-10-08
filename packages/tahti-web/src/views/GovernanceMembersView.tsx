@@ -83,6 +83,7 @@ export function GovernanceMembersView() {
           <Input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
+            aria-label="Search by name or username"
             placeholder="Search by name or username"
           />
           {filtered.length === 0 ? (

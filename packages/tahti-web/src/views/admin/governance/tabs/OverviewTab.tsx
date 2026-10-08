@@ -246,6 +246,7 @@ export function OverviewTab() {
           <Input
             value={resolutionTitle}
             onChange={(event) => setResolutionTitle(event.target.value)}
+            aria-label="Resolution title"
             placeholder="Resolution title"
           />
           <Select
@@ -262,6 +263,7 @@ export function OverviewTab() {
           <Textarea
             value={resolutionBody}
             onChange={(event) => setResolutionBody(event.target.value)}
+            aria-label="Resolution body"
             placeholder="Resolution body"
             rows={4}
             className="sm:col-span-2"
@@ -270,18 +272,21 @@ export function OverviewTab() {
             value={resolutionFor}
             onChange={(event) => setResolutionFor(event.target.value)}
             inputMode="numeric"
+            aria-label="Votes for"
             placeholder="Votes for"
           />
           <Input
             value={resolutionAgainst}
             onChange={(event) => setResolutionAgainst(event.target.value)}
             inputMode="numeric"
+            aria-label="Votes against"
             placeholder="Votes against"
           />
           <Input
             value={resolutionAbstain}
             onChange={(event) => setResolutionAbstain(event.target.value)}
             inputMode="numeric"
+            aria-label="Abstentions"
             placeholder="Abstentions"
           />
         </div>
