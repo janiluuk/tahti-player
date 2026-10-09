@@ -66,7 +66,6 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Channel/Designer/PlayerOverlayControls` | `tahti-web/ChannelDesignerPlayerOverlay.stories.tsx` |
 | `Tahti/Channel/Designer/PlayerPanel` | `tahti-web/ChannelDesignerPlayerPanel.stories.tsx` |
 | `Tahti/Channel/Designer/PlayerVisualizerControls` | `tahti-web/ChannelDesignerPlayerVisualizer.stories.tsx` |
-| `Tahti/Channel/Designer/ChannelVizPackPicker` | `tahti-web/ChannelVizPackPicker.stories.tsx` |
 | `Tahti/Channel/Designer/Playlist` | `tahti-web/ChannelDesignerPlaylist.stories.tsx` |
 | `Tahti/Channel/Designer/SlideshowControls` | `tahti-web/ChannelDesignerSlideshowControls.stories.tsx` |
 | `Tahti/Channel/Designer/VideoOrImageField` | `tahti-web/ChannelDesignerVideoOrImageField.stories.tsx` |
@@ -79,6 +78,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Channel/ChannelTextOverlayView` | `tahti-web/ChannelTextOverlayView.stories.tsx` |
 | `Tahti/Channel/ChannelView` | `tahti-web/ChannelView.stories.tsx` |
 | `Tahti/Channel/ChannelVisualizer` | `tahti-web/ChannelVisualizer.stories.tsx` |
+| `Tahti/Channel/Designer/ChannelVizPackPicker` | `tahti-web/ChannelVizPackPicker.stories.tsx` |
 | `Tahti/Widgets/ClientCapabilityNotice` | `tahti-web/ClientCapabilityNotice.stories.tsx` |
 | `Tahti/Collection/CollaborativePlaylistAdd` | `tahti-web/CollaborativePlaylistAdd.stories.tsx` |
 | `Tahti/Collection/CollectionView` | `tahti-web/CollectionView.stories.tsx` |
