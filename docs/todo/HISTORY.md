@@ -4411,3 +4411,20 @@ Found by comparing every `/api/...` path in `tahti-web/src` with the API's route
 - **tahti-org side**: approved themes open their pull request in `tahti-registry` instead of tahti-org, `GET /api/v1/themes/gallery` reads the registry catalog, and `PATCH /api/me/musicbrainz/default` answers 400 instead of 500 without a body.
 - **Checks:** the touched tests (bulk bar, Languages page, the route check's helpers), type-check, eslint and Prettier. Neither page was opened against a live API; the bulk delete was exercised against the API only in tahti-org's own route test. `check:api-routes` is not in CI.
 
+
+## 2026-10-09 - Ten slices, forty-eighth batch (tahti-player #600-#602, tahti-org #754-#760)
+
+A sweep of channel chat moderation, which nobody had tried end to end. A ban needed a fingerprint hash that no screen showed, no route removed a message, and a moderator had no page to moderate from.
+
+- **Message list (tahti-org#754)**: chat messages keep the sender's fingerprint, and `GET /api/me/moderate/:slug/chat/messages` gives the owner and moderators the last 100 messages with ids. The fingerprint is not sent.
+- **Ban from a message (tahti-org#755)**: `POST .../chat/messages/:id/ban`. A ban keeps the sender's name, the list returns `id` and `handle`, and `DELETE .../chat/bans/:id` lifts one (the fingerprint route could not address fan room bans).
+- **Remove a message (tahti-org#756)**: `DELETE .../chat/messages/:id` marks it removed; the public, fan room and moderation lists leave it out. A moderator cannot remove the owner's messages.
+- **Bans follow the account (tahti-org#757)**: a ban set on a signed-in sender's message also holds on another network or browser and in the fan room.
+- **Reactions (tahti-org#758)**: banned fingerprints and accounts blocked by the owner cannot send stream reactions.
+- **History while chat is off (tahti-org#759)**: the chat and fan room histories return nothing while the owner has chat switched off.
+- **Stepping down (tahti-org#760)**: `DELETE /api/me/moderate/:slug`, and channels of suspended or deleted owners leave `GET /api/me/moderate`.
+- **Recent messages (#600)**: Settings → Channel → Chat lists the messages with Remove and Ban.
+- **Ban list (#601)**: names in place of hashes, no hash field, bans lifted by id.
+- **Moderator page (#602)**: `/moderate/$slug` for a channel the account owns or moderates, with Stop moderating and a link from the chat header.
+- **Stacks**: tahti-org #755 on #754, #756 on #755, #757 on #756; tahti-player #601 on #600, #602 on #601.
+- **Checks:** per PR the touched tests, type-check, eslint and Prettier. All seven tahti-org branches merged together pass the whole API suite (1,667 tests) on a fresh Postgres; the web stack's tip passes the whole tahti-web suite (2,323 tests) and the new Storybook plays. The web screens were looked at in the mock app at 1366 and 390 px. Nothing was tried against the live API or a running Centrifugo. Left open: a removed message stays on screen for people who already have the chat open; the "you are a moderator" notification still links to the channel page; reactions still work while chat is off; the track reactions route (`/api/reactions/track/:id`, no web caller) still ignores blocks.
