@@ -93,7 +93,7 @@ export function ChatMessagesPanel({ slug: slugProp, onBanned }: Props) {
       {loading ? (
         <PageLoading label="Loading…" />
       ) : loadError ? (
-        <p role="alert" className="text-accent-red text-sm">
+        <p role="alert" className="text-accent-red-strong text-sm">
           {loadError}
         </p>
       ) : messages.length === 0 ? (
