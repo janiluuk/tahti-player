@@ -59,6 +59,29 @@ describe('station now playing', () => {
     expect(icy).toHaveBeenCalledWith('https://example.test/stream');
   });
 
+  it('shares one stream read per station within 25 seconds', async () => {
+    vi.useFakeTimers();
+    try {
+      const icy = vi
+        .spyOn(sources, 'readIcyStreamTitle')
+        .mockResolvedValue('Stream Title');
+      const station = { streamUrl: 'https://example.test/rock' };
+      await Promise.all([
+        fetchStationNowPlaying(station),
+        fetchStationNowPlaying(station),
+      ]);
+      expect(icy).toHaveBeenCalledTimes(1);
+      vi.advanceTimersByTime(24_000);
+      await fetchStationNowPlaying(station);
+      expect(icy).toHaveBeenCalledTimes(1);
+      vi.advanceTimersByTime(2_000);
+      await fetchStationNowPlaying(station);
+      expect(icy).toHaveBeenCalledTimes(2);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('prefers the programme page over the stream title', async () => {
     vi.spyOn(http, 'getJson').mockResolvedValue({
       title: 'CADIA',
