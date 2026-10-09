@@ -29,15 +29,17 @@ StudioProEditorView, ChannelVisualizer, audioCoreBridge vs tahti-org.
 | `GET/PATCH …/editor/draft`, `POST …/render`, `GET …/source` | Wired in tahti-org + client |
 | `GET …/editor/stream` | **Exists in tahti-org, unwired in player** → P1 #5 |
 | `POST …/editor/bounce` | **410 removed** — client-only bounce OK |
-| `/api/me/editor/projects` | Wired for `StudioEditorProjectView` / `MultitrackTimeline` only — **not** Pro MultitrackEditor (OPFS) |
+| `/api/me/editor/projects` | Pro Multitrack find-or-creates + hydrate + debounced metadata PATCH (#613); FX/blobs stay OPFS |
 | hearthis `me-tracks` / add / search | Wired; set tracklists may hit hearthis.at from browser |
-| Multitrack → server version publish | **No API** — Bounce WAV + manual upload |
+| Multitrack → server version publish | Bounce → sound versions prepare/complete (#613); download fallback remains |
 
-## C — nice-to-haves (defer)
+## C — nice-to-haves (#613)
 
-- Track vol/pan Sliders (readout only today)
-- Clip drag/split/zoom UI
-- Unify Pro MultitrackEditor with editor-projects API
-- FullScreenPlayer per-channel viz preset
-- AdvancedVisualizer token restyle
-- Multitrack StudioProEditor tests
+1. [x] **Track vol/pan Sliders** — `updateTrack` + labelled controls.
+2. [x] **Clip drag/split/zoom UI** — store zoom; clip drag `startSec`; split at playhead.
+3. [x] **Unify Pro MultitrackEditor with editor-projects API** — find-or-create + hydrate + debounced PATCH.
+4. [x] **FullScreenPlayer per-channel viz preset** — localStorage via `channelVizPreset`.
+5. [x] **AdvancedVisualizer token restyle** — Tahti tokens.
+6. [x] **Multitrack StudioProEditor tests** — adapter, viz preset, StudioProEditorView, stems→lanes.
+
+Further artist-creative work is listed in [`next-twenty-slices.md`](next-twenty-slices.md).
