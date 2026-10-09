@@ -34,6 +34,7 @@ import {
   renderEditorDraft,
   saveEditorDraft,
   updateEditorProject,
+  type StemJob,
 } from '../../api/studio';
 import type { EditList, EditorTimeline } from '../../api/studio-types';
 import { createDefaultEditList } from '../../api/studio-types';
@@ -47,6 +48,7 @@ import {
   toEditorTimeline,
   tracksFromTimeline,
 } from '../../lib/editorTimelineAdapter';
+import { sendStemFilesToMultitrack } from '../../lib/stemsToMultitrack';
 import { useAudioFxStore } from '../../plugins/audio-fx';
 import { chainForRender, withLegacyChain } from '../../plugins/audio-fx/chain';
 import { useMasteringFeatureStore } from '../../plugins/mastering/store';
@@ -397,6 +399,64 @@ function ProEditor({ soundId }: { soundId: string }) {
     }
   }, [soundId, title]);
 
+  const sendStemsToMultitrack = useCallback(
+    async (job: StemJob) => {
+      if (!job.files?.length) {
+        toast.error('This stem job has no files yet.');
+        return;
+      }
+      preferInternalEngine();
+      setEditorMode('multitrack');
+      setBusy(true);
+      try {
+        let projectId = editorProjectId;
+        if (!projectId) {
+          const listed = await fetchEditorProjects();
+          let project =
+            listed.data.find((row) => row.soundId === soundId) ?? null;
+          if (!project) {
+            const created = await createEditorProject({
+              soundId,
+              title: title || 'Multitrack session',
+            });
+            if (!created.ok) {
+              toast.error(created.error);
+              return;
+            }
+            project = created.data;
+          }
+          projectId = project.id;
+          setEditorProjectId(projectId);
+        }
+
+        const result = await sendStemFilesToMultitrack(job.files);
+        if (!result.ok) {
+          toast.error(result.error);
+          return;
+        }
+        setMultitrackReady(true);
+        toast.success(
+          `Loaded ${result.trackIds.length} stem lanes into Multitrack.`,
+        );
+        const st = useEditorStore.getState();
+        await updateEditorProject(
+          projectId,
+          toEditorTimeline(
+            { tracks: st.tracks, clips: st.clips, bpm: st.bpm },
+            soundId,
+          ),
+        );
+        setSessionSync('synced');
+      } catch {
+        setSessionSync('local');
+        toast.error('Could not send stems to Multitrack.');
+      } finally {
+        setBusy(false);
+      }
+    },
+    [editorProjectId, soundId, title],
+  );
+
   useEffect(() => {
     if (editorMode !== 'multitrack' || !editorProjectId) {
       return;
@@ -645,7 +705,12 @@ function ProEditor({ soundId }: { soundId: string }) {
               {editorMode === 'trim' ? (
                 <>
                   <div className="grid gap-4 md:grid-cols-2">
-                    <StemsPanel soundId={soundId} />
+                    <StemsPanel
+                      soundId={soundId}
+                      onSendToMultitrack={(job) =>
+                        void sendStemsToMultitrack(job)
+                      }
+                    />
 
                     <StudioPanel title="Export">
                       <div className="flex flex-col gap-3">
@@ -692,49 +757,57 @@ function ProEditor({ soundId }: { soundId: string }) {
                   />
                 </>
               ) : (
-                <StudioPanel title="Multitrack session">
-                  <div className="flex flex-col gap-3">
-                    <p
-                      className="text-foreground-secondary text-sm"
-                      role="status"
-                    >
-                      {sessionSync === 'synced'
-                        ? 'Session synced to editor projects (arrange metadata). FX and audio stay in this browser (OPFS).'
-                        : sessionSync === 'syncing'
-                          ? 'Syncing session…'
-                          : sessionSync === 'local'
-                            ? 'Local only — server sync unavailable. OPFS autosave still applies.'
-                            : 'Open Multitrack to link an editor project for this sound.'}
-                    </p>
-                    <Input
-                      label="Version label"
-                      value={versionLabel}
-                      onChange={(e) => setVersionLabel(e.target.value)}
-                    />
-                    <div className="flex flex-wrap justify-end gap-2">
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        disabled={busy || !editorProjectId}
-                        onClick={() => void persistSession()}
-                      >
-                        Save session
-                      </Button>
-                    </div>
-                    <p className="text-foreground-secondary text-sm">
-                      <strong>Bounce</strong> uploads a WAV revision via sound
-                      versions. Full mix FX remain local until bounce.
-                    </p>
-                    {message && (
+                <>
+                  <StemsPanel
+                    soundId={soundId}
+                    onSendToMultitrack={(job) =>
+                      void sendStemsToMultitrack(job)
+                    }
+                  />
+                  <StudioPanel title="Multitrack session">
+                    <div className="flex flex-col gap-3">
                       <p
                         className="text-foreground-secondary text-sm"
                         role="status"
                       >
-                        {message}
+                        {sessionSync === 'synced'
+                          ? 'Session synced to editor projects (arrange metadata). FX and audio stay in this browser (OPFS).'
+                          : sessionSync === 'syncing'
+                            ? 'Syncing session…'
+                            : sessionSync === 'local'
+                              ? 'Local only — server sync unavailable. OPFS autosave still applies.'
+                              : 'Open Multitrack to link an editor project for this sound.'}
                       </p>
-                    )}
-                  </div>
-                </StudioPanel>
+                      <Input
+                        label="Version label"
+                        value={versionLabel}
+                        onChange={(e) => setVersionLabel(e.target.value)}
+                      />
+                      <div className="flex flex-wrap justify-end gap-2">
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          disabled={busy || !editorProjectId}
+                          onClick={() => void persistSession()}
+                        >
+                          Save session
+                        </Button>
+                      </div>
+                      <p className="text-foreground-secondary text-sm">
+                        <strong>Bounce</strong> uploads a WAV revision via sound
+                        versions. Full mix FX remain local until bounce.
+                      </p>
+                      {message && (
+                        <p
+                          className="text-foreground-secondary text-sm"
+                          role="status"
+                        >
+                          {message}
+                        </p>
+                      )}
+                    </div>
+                  </StudioPanel>
+                </>
               )}
             </>
           )}

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { RACK_EFFECTS } from '@tahti-player/audio-rack';
 
+import { colorForStemLabel } from './components/MultitrackEditor';
 import { useEditorStore } from './state/editorStore';
 
 describe('audio-editor package surface', () => {
@@ -37,5 +38,13 @@ describe('audio-editor package surface', () => {
     expect(track?.volume).toBeCloseTo(0.8, 5);
     expect(track?.pan).toBeCloseTo(-0.25, 5);
     useEditorStore.getState().loadProject({ tracks: [], clips: [] });
+  });
+});
+
+describe('colorForStemLabel', () => {
+  it('maps known stem names to lane colors', () => {
+    expect(colorForStemLabel('Vocals')).toBe('#ef4444');
+    expect(colorForStemLabel('Drums')).toBe('#f59e0b');
+    expect(colorForStemLabel('Mystery')).toBe('#64748b');
   });
 });

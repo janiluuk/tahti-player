@@ -646,9 +646,10 @@ export function MultitrackEditor({
 export async function loadBlobOntoNewTrack(
   blob: Blob,
   name: string,
+  color = '#3b82f6',
 ): Promise<string> {
   const { peaks, duration } = await computePeaks(blob, 240);
-  const trackId = useEditorStore.getState().addTrack({ name });
+  const trackId = useEditorStore.getState().addTrack({ name, color });
   useEditorStore.getState().addClipToTrack({
     trackId,
     startSec: 0,
@@ -659,8 +660,43 @@ export async function loadBlobOntoNewTrack(
     mimeType: blob.type || 'audio/wav',
     peaks,
     label: name,
-    color: '#3b82f6',
+    color,
     sourceKind: 'audio',
   });
   return trackId;
+}
+
+const STEM_LANE_COLORS: Record<string, string> = {
+  vocals: '#ef4444',
+  vocal: '#ef4444',
+  instrumental: '#3b82f6',
+  drums: '#f59e0b',
+  drum: '#f59e0b',
+  bass: '#8b5cf6',
+  other: '#10b981',
+};
+
+export function colorForStemLabel(label: string): string {
+  const key = label.trim().toLowerCase();
+  return STEM_LANE_COLORS[key] ?? '#64748b';
+}
+
+/** Replace the arrange with one lane per stem file (start at 0). */
+export async function loadStemFilesOntoMultitrack(
+  files: Array<{ label: string; blob: Blob }>,
+): Promise<string[]> {
+  if (files.length === 0) {
+    return [];
+  }
+  useEditorStore.getState().loadProject({ tracks: [], clips: [] });
+  const trackIds: string[] = [];
+  for (const file of files) {
+    const id = await loadBlobOntoNewTrack(
+      file.blob,
+      file.label,
+      colorForStemLabel(file.label),
+    );
+    trackIds.push(id);
+  }
+  return trackIds;
 }

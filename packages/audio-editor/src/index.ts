@@ -25,6 +25,8 @@ export * as liveMixer from './state/liveMixer';
 export {
   MultitrackEditor,
   loadBlobOntoNewTrack,
+  loadStemFilesOntoMultitrack,
+  colorForStemLabel,
 } from './components/MultitrackEditor';
 export type { MultitrackEditorProps } from './components/MultitrackEditor';
 
