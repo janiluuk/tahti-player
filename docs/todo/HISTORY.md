@@ -4428,3 +4428,19 @@ A sweep of channel chat moderation, which nobody had tried end to end. A ban nee
 - **Moderator page (#602)**: `/moderate/$slug` for a channel the account owns or moderates, with Stop moderating and a link from the chat header.
 - **Stacks**: tahti-org #755 on #754, #756 on #755, #757 on #756; tahti-player #601 on #600, #602 on #601.
 - **Checks:** per PR the touched tests, type-check, eslint and Prettier. All seven tahti-org branches merged together pass the whole API suite (1,667 tests) on a fresh Postgres; the web stack's tip passes the whole tahti-web suite (2,323 tests) and the new Storybook plays. The web screens were looked at in the mock app at 1366 and 390 px. Nothing was tried against the live API or a running Centrifugo. Left open: a removed message stays on screen for people who already have the chat open; the "you are a moderator" notification still links to the channel page; reactions still work while chat is off; the track reactions route (`/api/reactions/track/:id`, no web caller) still ignores blocks.
+
+## 2026-10-09 - Ten slices, forty-ninth batch (tahti-player #604-#611, tahti-org #761-#762)
+
+The two open developer items of the project roadmap (`tahti-org/docs/project-roadmap.md`): PLAT-085, loading states in the player and queue, and PLAT-086, per-channel autoplay. Everything else still open there belongs to the board, the director or ops.
+
+- **Play button (#604)**: `PlayerBar.Controls` takes `isLoading` and shows a spinner in place of the pause icon; the web bar passes it on desktop and phone.
+- **Full-screen player (#605)**: the large play button spins and a status line reads "Buffering…".
+- **Stalls (#606)**: the audio element's `waiting` event moves a playing player back to loading, so a dropped connection no longer looks like playback.
+- **Queue rows (#607, #608)**: the current row shows the loading stripe and "Could not play"; local tracks restored with the queue show as loading until their file is found.
+- **Setting (tahti-org#761, #762)**: `Channel.autoplayEnabled`, default on, with `GET`/`PATCH /api/me/channel/autoplay`, and the flag on `GET /api/channels/:slug`.
+- **Artist's switch (#609)**: Settings → Channel & chat → Discovery, "Start playing when someone opens my channel".
+- **Muted start (#610)**: a channel that allows it starts muted when nothing is playing, with an Unmute notice; Settings → Playback has the listener's own switch.
+- **Fade over (#611)**: when something else is playing, it fades out (0.7 s) and the channel fades in (1.2 s); the queue is kept and the channel goes in after the current track.
+- **Decisions the roadmap left open**: the fade durations above; "nothing playing" means an idle or failed player or an untouched restored queue, and a track the listener paused is left alone. One audio element plays at a time, so the fade is out-then-in, not an overlap.
+- **Stacks**: #605 on #604, #608 on #607, #611 on #610; tahti-org #762 on #761.
+- **Checks:** per PR the touched tests, type-check, eslint, Prettier and the size guard. All web branches of batches 48 and 49 merged together pass the tahti-web (2,364), ui (402), player (707) and themes suites and the 953 Storybook plays. Autoplay and the fade were not seen or heard in a browser: the mock channels do not carry the setting, and nothing autoplays until tahti-org#762 is deployed. The roadmap rows are not ticked yet (tahti-org folds at merge).
