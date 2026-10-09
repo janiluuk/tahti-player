@@ -1,11 +1,20 @@
-import { PauseIcon, PlayIcon, PlusIcon, UploadIcon } from 'lucide-react';
+import {
+  MinusIcon,
+  PauseIcon,
+  PlayIcon,
+  PlusIcon,
+  ScissorsIcon,
+  UploadIcon,
+} from 'lucide-react';
 import {
   useCallback,
   useEffect,
   useId,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
+  type PointerEvent as ReactPointerEvent,
 } from 'react';
 
 import {
@@ -21,6 +30,7 @@ import {
   EmptyState,
   FilePicker,
   SegmentedControl,
+  Slider,
 } from '@tahti-player/ui';
 
 import {
@@ -30,6 +40,8 @@ import {
 import {
   computePeaks,
   useEditorStore,
+  ZOOM_MAX,
+  ZOOM_MIN,
   type AudioClip,
   type EditorTrack,
 } from '../state/editorStore';
@@ -42,23 +54,158 @@ export type MultitrackEditorProps = {
   vizSlot?: ReactNode;
 };
 
+function TrackFaders({
+  track,
+  onSelect,
+}: {
+  track: EditorTrack;
+  onSelect: () => void;
+}) {
+  const updateTrack = useEditorStore((s) => s.updateTrack);
+
+  return (
+    <div
+      className="border-border flex w-44 shrink-0 flex-col gap-1.5 border-r p-2 text-sm"
+      onPointerDown={(e) => e.stopPropagation()}
+    >
+      <button
+        type="button"
+        className="truncate text-left font-semibold hover:underline"
+        onClick={onSelect}
+      >
+        {track.name}
+      </button>
+      <div
+        className="w-full"
+        onClick={(e) => e.stopPropagation()}
+        onPointerDown={(e) => e.stopPropagation()}
+      >
+        <Slider
+          value={Math.round(track.volume * 100)}
+          min={0}
+          max={100}
+          step={1}
+          onValueChange={(v) => {
+            updateTrack(track.id, { volume: v / 100 });
+            liveMixer.syncMixerParams();
+          }}
+          formatValue={(v) => `${v}%`}
+        >
+          <Slider.Header label="Volume" showValue />
+          <Slider.Surface>
+            <Slider.Track />
+            <Slider.RangeInput />
+          </Slider.Surface>
+        </Slider>
+      </div>
+      <div
+        className="w-full"
+        onClick={(e) => e.stopPropagation()}
+        onPointerDown={(e) => e.stopPropagation()}
+      >
+        <Slider
+          value={Math.round(((track.pan + 1) / 2) * 100)}
+          min={0}
+          max={100}
+          step={1}
+          onValueChange={(v) => {
+            updateTrack(track.id, { pan: v / 50 - 1 });
+            liveMixer.syncMixerParams();
+          }}
+          formatValue={(v) => {
+            const pan = v / 50 - 1;
+            if (Math.abs(pan) < 0.05) {
+              return 'C';
+            }
+            return pan < 0
+              ? `L${Math.round(-pan * 100)}`
+              : `R${Math.round(pan * 100)}`;
+          }}
+        >
+          <Slider.Header label="Pan" showValue />
+          <Slider.Surface>
+            <Slider.Track />
+            <Slider.RangeInput />
+          </Slider.Surface>
+        </Slider>
+      </div>
+    </div>
+  );
+}
+
 function ClipBar({
   clips,
   track,
   pxPerSec,
+  selectedClipId,
+  onSelectClip,
 }: {
   clips: AudioClip[];
   track: EditorTrack;
   pxPerSec: number;
+  selectedClipId: string | null;
+  onSelectClip: (id: string) => void;
 }) {
+  const updateClip = useEditorStore((s) => s.updateClip);
+  const dragRef = useRef<{
+    clipId: string;
+    startX: number;
+    originStartSec: number;
+  } | null>(null);
+
+  const onPointerDown = (
+    e: ReactPointerEvent<HTMLDivElement>,
+    clip: AudioClip,
+  ) => {
+    e.stopPropagation();
+    e.currentTarget.setPointerCapture(e.pointerId);
+    onSelectClip(clip.id);
+    dragRef.current = {
+      clipId: clip.id,
+      startX: e.clientX,
+      originStartSec: clip.startSec,
+    };
+  };
+
+  const onPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
+    const drag = dragRef.current;
+    if (!drag) {
+      return;
+    }
+    const deltaSec = (e.clientX - drag.startX) / pxPerSec;
+    const next = Math.max(0, drag.originStartSec + deltaSec);
+    updateClip(drag.clipId, { startSec: next });
+  };
+
+  const onPointerUp = (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (dragRef.current) {
+      try {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      } catch {
+        /* already released */
+      }
+      dragRef.current = null;
+    }
+  };
+
   return (
-    <div className="relative h-12 border-b" style={{ minWidth: 800 }}>
+    <div className="relative h-14 border-b" style={{ minWidth: 800 }}>
       {clips.map((clip) => {
         const peaks = clip.peaks?.length ? clip.peaks : [];
+        const selected = selectedClipId === clip.id;
         return (
           <div
             key={clip.id}
-            className="absolute top-1 bottom-1 overflow-hidden rounded border"
+            role="button"
+            tabIndex={0}
+            aria-label={`Clip ${clip.label || clip.id}`}
+            aria-pressed={selected}
+            className={cn(
+              'absolute top-1 bottom-1 cursor-grab overflow-hidden rounded border active:cursor-grabbing',
+              selected
+                ? 'border-primary ring-primary/40 ring-2'
+                : 'border-border',
+            )}
             style={{
               left: clip.startSec * pxPerSec,
               width: Math.max(4, clip.durationSec * pxPerSec),
@@ -66,10 +213,20 @@ function ClipBar({
               opacity: clip.muted ? 0.4 : 0.85,
             }}
             title={clip.label}
+            onPointerDown={(e) => onPointerDown(e, clip)}
+            onPointerMove={onPointerMove}
+            onPointerUp={onPointerUp}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onSelectClip(clip.id);
+              }
+            }}
           >
             <canvas
               width={Math.max(1, Math.floor(clip.durationSec * pxPerSec))}
-              height={40}
+              height={48}
+              className="pointer-events-none"
               ref={(canvas) => {
                 if (!canvas || !peaks.length) {
                   return;
@@ -105,6 +262,11 @@ export function MultitrackEditor({
   const clips = useEditorStore((s) => s.clips);
   const playheadSec = useEditorStore((s) => s.playheadSec);
   const bpm = useEditorStore((s) => s.bpm);
+  const zoom = useEditorStore((s) => s.zoom);
+  const setZoom = useEditorStore((s) => s.setZoom);
+  const selectedClipId = useEditorStore((s) => s.selectedClipId);
+  const setSelected = useEditorStore((s) => s.setSelected);
+  const splitClipAt = useEditorStore((s) => s.splitClipAt);
   const masterFxChain = useEditorStore((s) => s.masterFxChain);
   const addTrack = useEditorStore((s) => s.addTrack);
   const addClipToTrack = useEditorStore((s) => s.addClipToTrack);
@@ -127,7 +289,7 @@ export function MultitrackEditor({
   const [fxScope, setFxScope] = useState<'track' | 'master'>('track');
   const [busy, setBusy] = useState(false);
   const fileId = useId();
-  const pxPerSec = 80;
+  const pxPerSec = zoom;
 
   const offer = useAutosaveRecoveryStore((s) => s.offer);
   const restore = useAutosaveRecoveryStore((s) => s.restore);
@@ -214,6 +376,13 @@ export function MultitrackEditor({
     }
   };
 
+  const doSplit = () => {
+    if (!selectedClipId) {
+      return;
+    }
+    splitClipAt(selectedClipId, playheadSec);
+  };
+
   return (
     <div
       className={cn(
@@ -285,6 +454,39 @@ export function MultitrackEditor({
             />
           </>
         ) : null}
+        <Button
+          size="sm"
+          variant="ghost"
+          disabled={!selectedClipId || busy}
+          onClick={doSplit}
+          aria-label="Split selected clip at playhead"
+        >
+          <ScissorsIcon size={15} aria-hidden className="mr-1.5" />
+          Split
+        </Button>
+        <div className="border-border flex items-center gap-1 rounded-md border px-1">
+          <Button
+            size="icon"
+            variant="ghost"
+            aria-label="Zoom out"
+            disabled={busy || zoom <= ZOOM_MIN}
+            onClick={() => setZoom(zoom / 1.25)}
+          >
+            <MinusIcon size={14} aria-hidden />
+          </Button>
+          <span className="text-foreground-secondary min-w-12 text-center font-mono text-xs tabular-nums">
+            {Math.round(zoom)} px/s
+          </span>
+          <Button
+            size="icon"
+            variant="ghost"
+            aria-label="Zoom in"
+            disabled={busy || zoom >= ZOOM_MAX}
+            onClick={() => setZoom(zoom * 1.25)}
+          >
+            <PlusIcon size={14} aria-hidden />
+          </Button>
+        </div>
         {onBounce ? (
           <Button
             size="sm"
@@ -331,31 +533,30 @@ export function MultitrackEditor({
             tracks.map((track) => {
               const selected = selectedTrack?.id === track.id;
               return (
-                <div key={track.id} className="flex">
-                  <button
-                    type="button"
-                    aria-current={selected ? 'true' : undefined}
-                    className={cn(
-                      'border-border w-40 shrink-0 border-r p-2 text-left text-sm transition-colors',
-                      selected
-                        ? 'bg-primary/15 text-primary'
-                        : 'hover:bg-background-secondary',
-                    )}
-                    onClick={() => {
-                      setSelectedTrackId(track.id);
-                      setFxScope('track');
-                    }}
-                  >
-                    <div className="truncate font-semibold">{track.name}</div>
-                    <div className="text-foreground-secondary text-xs">
-                      vol {track.volume.toFixed(2)} · pan {track.pan.toFixed(2)}
-                    </div>
-                  </button>
+                <div
+                  key={track.id}
+                  className={cn('flex', selected && 'bg-primary/5')}
+                >
+                  <div className={cn(selected && 'bg-primary/15 text-primary')}>
+                    <TrackFaders
+                      track={track}
+                      onSelect={() => {
+                        setSelectedTrackId(track.id);
+                        setFxScope('track');
+                      }}
+                    />
+                  </div>
                   <div className="relative flex-1 overflow-x-auto">
                     <ClipBar
                       track={track}
                       clips={clips.filter((c) => c.trackId === track.id)}
                       pxPerSec={pxPerSec}
+                      selectedClipId={selectedClipId}
+                      onSelectClip={(id) => {
+                        setSelected(id);
+                        setSelectedTrackId(track.id);
+                        setFxScope('track');
+                      }}
                     />
                     <div
                       className="pointer-events-none absolute top-0 bottom-0 w-px bg-red-500"

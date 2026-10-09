@@ -31,6 +31,84 @@ vi.mock('sonner', () => ({
   Toaster: () => null,
 }));
 
+vi.mock('../../api/studio', async () => {
+  const actual =
+    await vi.importActual<typeof import('../../api/studio')>(
+      '../../api/studio',
+    );
+  return {
+    ...actual,
+    fetchEditorStreamBlob: vi.fn(
+      async () => new Blob([new Uint8Array(64)], { type: 'audio/wav' }),
+    ),
+    fetchEditorProjects: vi.fn(async () => ({
+      data: [],
+      meta: { source: 'mock' as const, reason: 'test' },
+    })),
+    createEditorProject: vi.fn(async () => ({
+      ok: true as const,
+      data: {
+        id: 'proj-test-1',
+        title: 'Test session',
+        soundId: 'arch-mock-1',
+        updatedAt: new Date().toISOString(),
+      },
+    })),
+    fetchEditorProject: vi.fn(async () => ({
+      data: {
+        id: 'proj-test-1',
+        title: 'Test session',
+        soundId: 'arch-mock-1',
+        updatedAt: new Date().toISOString(),
+        timeline: { version: 1 as const, durationSec: 1, tracks: [] },
+      },
+      meta: { source: 'mock' as const, reason: 'test' },
+    })),
+    updateEditorProject: vi.fn(async () => ({
+      ok: true as const,
+      data: {
+        id: 'proj-test-1',
+        title: 'Test session',
+        soundId: 'arch-mock-1',
+        updatedAt: new Date().toISOString(),
+      },
+    })),
+  };
+});
+
+vi.mock('@tahti-player/audio-editor', async () => {
+  const actual = await vi.importActual<
+    typeof import('@tahti-player/audio-editor')
+  >('@tahti-player/audio-editor');
+  return {
+    ...actual,
+    loadBlobOntoNewTrack: vi.fn(async () => 'track-mock'),
+    computePeaks: vi.fn(async () => ({
+      peaks: new Float32Array(8),
+      duration: 1,
+    })),
+    MultitrackEditor: ({
+      onBounce,
+    }: {
+      onBounce?: (blob: Blob) => void | Promise<void>;
+    }) => (
+      <div data-testid="multitrack-editor">
+        <button type="button" onClick={() => void onBounce?.(new Blob())}>
+          Bounce
+        </button>
+      </div>
+    ),
+  };
+});
+
+vi.mock('@tahti-player/visualizer', () => ({
+  VisualizerHost: () => <div data-testid="viz-host" />,
+}));
+
+vi.mock('@tahti-player/audio-core', () => ({
+  preferInternalEngine: vi.fn(),
+}));
+
 const SOUND_ID = 'arch-mock-1';
 
 function createRouterFor() {
@@ -225,5 +303,18 @@ describe('StudioProEditorView', () => {
         .getByRole('button', { name: 'Start selection at playhead' })
         .getAttribute('aria-keyshortcuts'),
     ).toBe('[');
+  });
+
+  it('switches to multitrack mode and hides trim export chrome', async () => {
+    await renderEditor();
+    fireEvent.click(screen.getByRole('radio', { name: /multitrack \+ viz/i }));
+    await waitFor(() =>
+      expect(screen.getByText(/multitrack session/i)).toBeTruthy(),
+    );
+    expect(
+      screen.queryByRole('button', { name: /render version/i }),
+    ).toBeNull();
+    expect(screen.getByRole('button', { name: /save session/i })).toBeTruthy();
+    expect(screen.getByRole('button', { name: /^bounce$/i })).toBeTruthy();
   });
 });

@@ -218,14 +218,14 @@ export const AdvancedVisualizer: React.FC<AdvancedVisualizerProps> = ({
     <div
       className={
         className ??
-        'hardware-card group relative flex h-full flex-col overflow-hidden bg-black/40'
+        'border-border bg-background-secondary/40 group relative flex h-full flex-col overflow-hidden rounded-xl border'
       }
     >
       {/* Background Grid */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-7"
+        className="border-border pointer-events-none absolute inset-0 opacity-10"
         style={{
-          backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`,
+          backgroundImage: `linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)`,
           backgroundSize: '20px 20px',
         }}
       />
@@ -251,8 +251,8 @@ export const AdvancedVisualizer: React.FC<AdvancedVisualizerProps> = ({
                   aria-pressed={mode === m}
                   className={`flex size-5 items-center justify-center rounded text-[8px] font-black transition-colors ${
                     mode === m
-                      ? 'bg-purple-600 text-white shadow-[0_0_6px_rgba(139,92,246,0.6)]'
-                      : 'border border-white/10 bg-black/50 text-zinc-600 hover:border-white/20 hover:text-zinc-300'
+                      ? 'bg-primary text-primary-foreground'
+                      : 'border-border bg-background/70 text-foreground-secondary hover:border-border hover:text-foreground border'
                   }`}
                 >
                   {modeLabels[m]}
@@ -262,48 +262,26 @@ export const AdvancedVisualizer: React.FC<AdvancedVisualizerProps> = ({
           </div>
         ) : null}
 
-        {/* Bottom overlay — gradient backdrop with kHz / RMS / PEAK / LIVE + controls */}
-        <div
-          className="absolute right-0 bottom-0 left-0 flex h-7 items-center gap-2.5 px-2.5"
-          style={{
-            background:
-              'linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%)',
-            filter: 'drop-shadow(0 -1px 4px rgba(0,0,0,0.6))',
-          }}
-        >
-          <span
-            className="font-mono text-[9px] text-zinc-400 uppercase tabular-nums"
-            style={{ textShadow: '0 1px 3px rgba(0,0,0,0.9)' }}
-          >
+        {/* Bottom overlay — kHz / RMS / PEAK / LIVE + controls */}
+        <div className="from-background/90 absolute right-0 bottom-0 left-0 flex h-7 items-center gap-2.5 bg-linear-to-t to-transparent px-2.5">
+          <span className="text-foreground-secondary font-mono text-[9px] uppercase tabular-nums">
             {(ctxInfo.sr / 1000).toFixed(1)} kHz · {ctxInfo.fft}
           </span>
 
-          <div className="h-3 w-px bg-white/15" />
+          <div className="bg-border h-3 w-px" />
 
           <div className="flex items-center gap-1">
-            <Zap
-              className="h-3 w-3 shrink-0 text-yellow-400"
-              style={{ filter: 'drop-shadow(0 0 3px rgba(0,0,0,0.9))' }}
-            />
-            <span
-              className="font-mono text-[9px] text-zinc-300 tabular-nums"
-              style={{ textShadow: '0 1px 3px rgba(0,0,0,0.9)' }}
-            >
+            <Zap className="text-primary h-3 w-3 shrink-0" aria-hidden />
+            <span className="text-foreground-secondary font-mono text-[9px] tabular-nums">
               RMS {formatDb(rmsDb)} dB
             </span>
           </div>
 
-          <div className="h-3 w-px bg-white/15" />
+          <div className="bg-border h-3 w-px" />
 
           <div className="flex items-center gap-1">
-            <Target
-              className="h-3 w-3 shrink-0 text-emerald-400"
-              style={{ filter: 'drop-shadow(0 0 3px rgba(0,0,0,0.9))' }}
-            />
-            <span
-              className="font-mono text-[9px] text-zinc-300 tabular-nums"
-              style={{ textShadow: '0 1px 3px rgba(0,0,0,0.9)' }}
-            >
+            <Target className="text-primary h-3 w-3 shrink-0" aria-hidden />
+            <span className="text-foreground-secondary font-mono text-[9px] tabular-nums">
               PEAK {formatDb(peakDb)} dB
             </span>
           </div>
@@ -312,14 +290,15 @@ export const AdvancedVisualizer: React.FC<AdvancedVisualizerProps> = ({
 
           <div className="flex items-center gap-1">
             <span
-              className={`font-mono text-[9px] font-black uppercase ${peakDb > -60 ? 'text-purple-300' : 'text-zinc-600'}`}
-              style={{ textShadow: '0 1px 3px rgba(0,0,0,0.9)' }}
+              className={`font-mono text-[9px] font-black uppercase ${
+                peakDb > -60 ? 'text-primary' : 'text-foreground-secondary'
+              }`}
             >
               {peakDb > -60 ? 'LIVE' : 'SILENT'}
             </span>
           </div>
 
-          <div className="h-3 w-px bg-white/15" />
+          <div className="bg-border h-3 w-px" />
 
           <div className="flex gap-0.5">
             <button
@@ -327,7 +306,7 @@ export const AdvancedVisualizer: React.FC<AdvancedVisualizerProps> = ({
               title={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
               aria-label={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
               aria-pressed={isFullscreen}
-              className="rounded p-0.5 text-zinc-500 transition-colors hover:bg-white/15 hover:text-zinc-200"
+              className="text-foreground-secondary hover:bg-background-secondary hover:text-foreground rounded p-0.5 transition-colors"
               onClick={() => {
                 if (isFullscreen) {
                   void document.exitFullscreen().catch(() => {});

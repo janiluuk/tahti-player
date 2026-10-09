@@ -1,10 +1,15 @@
 import { ArrowLeftIcon, MoreHorizontalIcon } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { formatArtistNames } from '@tahti-player/model';
 import { Button, cn, PlayerBar, Tooltip } from '@tahti-player/ui';
+import type { VisualizerMode } from '@tahti-player/visualizer';
 
 import { useIsMobile } from '../hooks/useIsMobile';
+import {
+  loadChannelVizMode,
+  saveChannelVizMode,
+} from '../lib/channelVizPreset';
 import { soundIdFromPlayableId } from '../lib/soundId';
 import { useDominantColor } from '../lib/useDominantColor';
 import { useLayoutStore } from '../stores/layoutStore';
@@ -97,6 +102,21 @@ export function FullScreenPlayer() {
     playable?.artist ??
     (current ? formatArtistNames(current.track.artists) : '');
   const soundId = soundIdFromPlayableId(playable?.id ?? currentId);
+  const channelKey =
+    playable?.channelSlug?.trim() || soundId || currentId || 'default';
+  const [engineMode, setEngineMode] = useState<VisualizerMode>(() =>
+    loadChannelVizMode(channelKey),
+  );
+  useEffect(() => {
+    setEngineMode(loadChannelVizMode(channelKey));
+  }, [channelKey]);
+  const onEngineModeChange = useMemo(
+    () => (mode: VisualizerMode) => {
+      setEngineMode(mode);
+      saveChannelVizMode(channelKey, mode);
+    },
+    [channelKey],
+  );
   const isPlaying = status === 'playing' || status === 'loading';
   const isLoading = status === 'loading';
   const hearthisEmbed = playable?.embed;
@@ -135,7 +155,9 @@ export function FullScreenPlayer() {
         <ChannelVisualizer
           className="h-full w-full"
           artworkUrl={coverUrl}
-          engineMode="spectrum"
+          engineMode={engineMode}
+          showModePicker
+          onEngineModeChange={onEngineModeChange}
         />
       </div>
 
