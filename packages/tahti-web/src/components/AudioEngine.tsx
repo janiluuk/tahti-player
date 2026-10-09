@@ -277,6 +277,14 @@ export function AudioEngine() {
     setStatus('loading');
 
     const onPlaying = () => setStatus('playing');
+    // The element ran out of data mid-stream (slow network, a seek into an
+    // unbuffered part). It fires `playing` again once audio resumes; until
+    // then the player is loading, not playing. A pause is left alone.
+    const onWaiting = () => {
+      if (usePlayerStore.getState().status === 'playing') {
+        setStatus('loading');
+      }
+    };
     const onPause = () => {
       if (!audio.ended) {
         setStatus('paused');
@@ -330,6 +338,7 @@ export function AudioEngine() {
 
     audio.crossOrigin = canAirPlay() ? null : 'anonymous';
     audio.addEventListener('playing', onPlaying);
+    audio.addEventListener('waiting', onWaiting);
     audio.addEventListener('pause', onPause);
     audio.addEventListener('ended', onEnded);
     audio.addEventListener('timeupdate', onTime);
@@ -387,6 +396,7 @@ export function AudioEngine() {
     return () => {
       disposed = true;
       audio.removeEventListener('playing', onPlaying);
+      audio.removeEventListener('waiting', onWaiting);
       audio.removeEventListener('pause', onPause);
       audio.removeEventListener('ended', onEnded);
       audio.removeEventListener('timeupdate', onTime);
