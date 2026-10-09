@@ -98,6 +98,7 @@ export function FullScreenPlayer() {
     (current ? formatArtistNames(current.track.artists) : '');
   const soundId = soundIdFromPlayableId(playable?.id ?? currentId);
   const isPlaying = status === 'playing' || status === 'loading';
+  const isLoading = status === 'loading';
   const hearthisEmbed = playable?.embed;
 
   const rgb = useDominantColor(coverUrl);
@@ -217,9 +218,16 @@ export function FullScreenPlayer() {
               autoplay={isPlaying}
             />
           ) : null}
+          <p
+            role="status"
+            className="text-foreground-secondary h-4 text-xs tracking-wide uppercase"
+          >
+            {isLoading ? 'Buffering…' : ''}
+          </p>
           <PlayerBar.Controls
             size="large"
             isPlaying={isPlaying}
+            isLoading={isLoading}
             isShuffleActive={!isLive && shuffle}
             repeatMode={isLive ? 'off' : repeatMode}
             showDiscovery={false}

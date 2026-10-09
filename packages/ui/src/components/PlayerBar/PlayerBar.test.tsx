@@ -42,6 +42,22 @@ describe('PlayerBar', () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
+  it('shows a spinner on the play button while loading and keeps the pause action', () => {
+    const { getByTestId, queryByTestId, rerender } = render(
+      <PlayerBar.Controls isPlaying isLoading />,
+    );
+    const button = getByTestId('player-pause-button');
+    expect(button.getAttribute('aria-busy')).toBe('true');
+    expect(button.getAttribute('aria-label')).toBe('Pause');
+    expect(getByTestId('player-loading-spinner')).toBeTruthy();
+
+    rerender(<PlayerBar.Controls isPlaying />);
+    expect(queryByTestId('player-loading-spinner')).toBeNull();
+    expect(getByTestId('player-pause-button').hasAttribute('aria-busy')).toBe(
+      false,
+    );
+  });
+
   it('(Snapshot) long metadata truncation', () => {
     const longTitle =
       'An Incredibly, Ridiculously Long Song Title That Should Truncate Nicely';
