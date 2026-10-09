@@ -4,6 +4,9 @@ import {
   type TextOverlayDraft,
 } from '@tahti-web/components/ChannelTextOverlayEditor';
 import { useState } from 'react';
+import { expect, userEvent, within } from 'storybook/test';
+
+import { withinBody } from './_lib/play';
 
 const meta: Meta<typeof ChannelTextOverlayEditor> = {
   title: 'Tahti/Channel/ChannelTextOverlayEditor',
@@ -28,6 +31,22 @@ export const NoEffect: Story = {
   render: () => (
     <EditorDemo initial={{ mode: 'NONE', text: '', align: 'CENTER' }} />
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.queryByLabelText('Your text')).toBeNull();
+    await userEvent.click(canvas.getByRole('button', { name: 'Text effect' }));
+    await userEvent.click(
+      await withinBody(canvasElement).findByRole('option', {
+        name: 'Cosmic neon',
+      }),
+    );
+    const text = await canvas.findByLabelText('Your text');
+    await userEvent.type(text, 'Live from Helsinki');
+    await expect(text).toHaveValue('Live from Helsinki');
+    await expect(
+      canvas.getByRole('button', { name: 'Alignment' }),
+    ).toHaveTextContent('Center');
+  },
 };
 
 export const GradientShimmer: Story = {

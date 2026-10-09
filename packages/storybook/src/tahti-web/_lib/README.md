@@ -36,7 +36,8 @@ export const MemberProfile: Story = {
   collection, smartLink, trackDetail, trackComments, soundItems, directory,
   search, radio, feed, announcements, fanTiers, venueProfile, chatHistory,
   topTracks, latestTracks, studioSounds, studioCollections, studioReleases,
-  userLikes, channelEvents, publicGallery, tagTracks).
+  userLikes, channelEvents, publicGallery, tagTracks, channelVisual,
+  channelVisualPresets).
 - Derived fixtures follow their source: overriding `channel` also changes
   the profile, fan tiers and sound items built from it.
 - Meta-level and story-level `mockData` deep-merge like any other
@@ -53,6 +54,11 @@ the fixture's return value in `mockFixture('<key>', base, ...args)`.
 
 Put rich, area-specific fixtures in a fixture file next to your stories
 (e.g. `_fixtures/studio.ts`) rather than growing the shared `mock.ts`.
+
+Overrides only cover reads. Mock *writes* (saving a channel look or a
+preset) still change module state and localStorage; plays that save
+should undo that in a story `beforeEach`, as
+`_fixtures/channel-design.ts`'s `restoreChannelDesignState` does.
 
 ## Play functions
 
