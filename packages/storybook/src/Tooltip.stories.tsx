@@ -5,8 +5,11 @@ import {
   ScrollTextIcon,
   SettingsIcon,
 } from 'lucide-react';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { Button, Tooltip } from '@tahti-player/ui';
+
+import { withinBody } from './tahti-web/_lib/play';
 
 const meta: Meta<typeof Tooltip> = {
   title: 'Components/Tooltip',
@@ -53,27 +56,43 @@ export const SidebarIcons: Story = {
   render: () => (
     <div className="bg-background-secondary flex flex-col items-center gap-2 rounded-md p-2">
       <Tooltip content="Settings" side="right">
-        <Button variant="text" size="icon">
+        <Button variant="text" size="icon" aria-label="Settings">
           <SettingsIcon />
         </Button>
       </Tooltip>
       <Tooltip content="Plugins" side="right">
-        <Button variant="text" size="icon">
+        <Button variant="text" size="icon" aria-label="Plugins">
           <BlocksIcon />
         </Button>
       </Tooltip>
       <Tooltip content="Themes" side="right">
-        <Button variant="text" size="icon">
+        <Button variant="text" size="icon" aria-label="Themes">
           <PaletteIcon />
         </Button>
       </Tooltip>
       <Tooltip content="Logs" side="right">
-        <Button variant="text" size="icon">
+        <Button variant="text" size="icon" aria-label="Logs">
           <ScrollTextIcon />
         </Button>
       </Tooltip>
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const body = withinBody(canvasElement);
+    await expect(body.queryByRole('tooltip')).toBeNull();
+
+    await userEvent.hover(canvas.getByRole('button', { name: 'Plugins' }));
+    await expect(await body.findByRole('tooltip')).toHaveTextContent('Plugins');
+    await userEvent.unhover(canvas.getByRole('button', { name: 'Plugins' }));
+    await waitFor(() => expect(body.queryByRole('tooltip')).toBeNull());
+
+    // Keyboard focus opens it too, not just the mouse.
+    canvas.getByRole('button', { name: 'Logs' }).focus();
+    await expect(await body.findByRole('tooltip')).toHaveTextContent('Logs');
+    canvas.getByRole('button', { name: 'Logs' }).blur();
+    await waitFor(() => expect(body.queryByRole('tooltip')).toBeNull());
+  },
 };
 
 export const WithReactNodeContent: Story = {
@@ -88,7 +107,7 @@ export const WithReactNodeContent: Story = {
         }
         side="right"
       >
-        <Button variant="text" size="icon">
+        <Button variant="text" size="icon" aria-label="Settings">
           <SettingsIcon />
         </Button>
       </Tooltip>

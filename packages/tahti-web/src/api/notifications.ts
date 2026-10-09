@@ -1,6 +1,7 @@
 /** Mock-mode dismissals that survive reload within this browser (not just
  * one tab). Without this, forceMock dismissNotification is a no-op and the
  * other mock fixtures reappear on every reload. */
+import { mockFixture } from './mock-overrides';
 import {
   allowMockFallback,
   apiErrorMeta,
@@ -62,6 +63,16 @@ function emptyMeta(err: unknown): FetchMeta {
 }
 
 function mockNotifications(includeInboxExtras: boolean): TahtiNotification[] {
+  return mockFixture(
+    'notifications',
+    buildMockNotifications(includeInboxExtras),
+    includeInboxExtras,
+  );
+}
+
+function buildMockNotifications(
+  includeInboxExtras: boolean,
+): TahtiNotification[] {
   // No sticky fixture: the real API type exists in ../tahti-org, but
   // mock-only sticky toasts re-appeared every session and got confused
   // with real notifications. (See Storybook for a sticky example.)

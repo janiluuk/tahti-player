@@ -11,6 +11,8 @@ import type { PublicPressKitImage } from './artist-settings/press-kit-images';
 import type { ChannelVisual, ChannelVisualPreset } from './channel-design';
 import type { ArtistEvent } from './events';
 import type { LikedTrack } from './likes';
+import type { ConversationSummary } from './messages';
+import type { TahtiNotification } from './notifications';
 import type {
   StudioCollection,
   StudioReleaseList,
@@ -54,11 +56,16 @@ export interface MockFixtures {
     data: PublicCollection;
     args: [slug: string, username: string];
   };
+  conversations: { data: ConversationSummary[]; args: [] };
   directory: { data: ChannelDirectoryResponse; args: [] };
   fanTiers: { data: FanTiersResponse; args: [username: string] };
   feed: { data: FeedResponse; args: [] };
   latestTracks: { data: DiscoverTrackItem[]; args: [] };
   membership: { data: MembershipStatus | null; args: [] };
+  notifications: {
+    data: TahtiNotification[];
+    args: [includeInboxExtras: boolean];
+  };
   profile: { data: PublicProfile; args: [username: string] };
   publicGallery: { data: PublicPressKitImage[]; args: [username: string] };
   radio: { data: RadioNowPlaying; args: [] };

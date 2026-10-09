@@ -14,8 +14,12 @@ import {
   Star,
   TrendingUp,
 } from 'lucide-react';
+import { useState } from 'react';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { SidebarNavigation, SidebarNavigationItem } from '@tahti-player/ui';
+
+import { withinBody } from './tahti-web/_lib/play';
 
 const meta = {
   title: 'Navigation/SidebarNavigation',
@@ -48,6 +52,44 @@ export const FlatList = () => (
   </div>
 );
 
+const SECTIONS = [
+  { label: 'Home', icon: <Home size={16} /> },
+  { label: 'Search', icon: <Search size={16} /> },
+  { label: 'Liked Songs', icon: <Heart size={16} /> },
+];
+
+/** Items with `onClick` are buttons; the selected one gets the primary fill. */
+export const Selectable = {
+  render: function SelectableSidebar() {
+    const [selected, setSelected] = useState('Home');
+    return (
+      <div className="bg-background-secondary border-border w-64 border-(length:--border-width) p-2">
+        <SidebarNavigation>
+          {SECTIONS.map(({ label, icon }) => (
+            <SidebarNavigationItem
+              key={label}
+              icon={icon}
+              label={label}
+              isSelected={selected === label}
+              onClick={() => setSelected(label)}
+            />
+          ))}
+        </SidebarNavigation>
+      </div>
+    );
+  },
+  play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
+    const canvas = within(canvasElement);
+    const liked = canvas.getByRole('button', { name: 'Liked Songs' });
+    await expect(liked).not.toHaveClass('bg-primary');
+    await userEvent.click(liked);
+    await expect(liked).toHaveClass('bg-primary');
+    await expect(canvas.getByRole('button', { name: 'Home' })).not.toHaveClass(
+      'bg-primary',
+    );
+  },
+};
+
 export const CompactMode = () => (
   <div className="bg-background-secondary border-border flex h-[600px] w-[54px] flex-col border-(length:--border-width) p-2">
     <SidebarNavigation isCompact>
@@ -63,6 +105,23 @@ export const CompactMode = () => (
     </SidebarNavigation>
   </div>
 );
+// Compact items hide their label, so it moves into the tooltip.
+CompactMode.play = async ({
+  canvasElement,
+}: {
+  canvasElement: HTMLElement;
+}) => {
+  const canvas = within(canvasElement);
+  const body = withinBody(canvasElement);
+  const items = canvas.getAllByTestId('sidebar-navigation-item');
+  await expect(canvas.getByText('Liked Songs')).toHaveClass('sr-only');
+  await userEvent.hover(items[2]!);
+  await expect(await body.findByRole('tooltip')).toHaveTextContent(
+    'Liked Songs',
+  );
+  await userEvent.unhover(items[2]!);
+  await waitFor(() => expect(body.queryByRole('tooltip')).toBeNull());
+};
 
 export const FullNavigationExample = {
   name: 'Tahti white theme navigation',

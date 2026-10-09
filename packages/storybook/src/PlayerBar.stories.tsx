@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useCallback, useState } from 'react';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { PlayerBar } from '@tahti-player/ui';
 
@@ -191,4 +192,71 @@ export const SeekLoading: Story = {
       />
     </div>
   ),
+};
+
+const onNext = fn();
+const onPrevious = fn();
+const REPEAT_ORDER = ['off', 'all', 'one'] as const;
+
+/** Controls wired to local state, as the apps wire them to their stores. */
+export const Interactive: Story = {
+  render: function InteractivePlayerBar() {
+    const [isPlaying, setPlaying] = useState(false);
+    const [isShuffleActive, setShuffle] = useState(false);
+    const [repeat, setRepeat] = useState(0);
+    return (
+      <PlayerBar
+        left={
+          <PlayerBar.NowPlaying
+            title="Midnight Drift"
+            artist="Northern Lights"
+            coverUrl={cover}
+          />
+        }
+        center={
+          <PlayerBar.Controls
+            isPlaying={isPlaying}
+            isShuffleActive={isShuffleActive}
+            repeatMode={REPEAT_ORDER[repeat % 3]}
+            labels={labels}
+            onPlayPause={() => setPlaying((v) => !v)}
+            onNext={onNext}
+            onPrevious={onPrevious}
+            onShuffleToggle={() => setShuffle((v) => !v)}
+            onRepeatToggle={() => setRepeat((v) => v + 1)}
+            showDiscovery={false}
+          />
+        }
+        right={<PlayerBar.Volume defaultValue={75} />}
+      />
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    onNext.mockClear();
+    onPrevious.mockClear();
+
+    const play = canvas.getByRole('button', { name: 'Play' });
+    await expect(play).toHaveAttribute('aria-pressed', 'false');
+    await userEvent.click(play);
+    const pause = canvas.getByRole('button', { name: 'Pause' });
+    await expect(pause).toHaveAttribute('aria-pressed', 'true');
+    await userEvent.click(pause);
+    await expect(canvas.getByRole('button', { name: 'Play' })).toBeVisible();
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Next' }));
+    await userEvent.click(canvas.getByRole('button', { name: 'Previous' }));
+    await expect(onNext).toHaveBeenCalledOnce();
+    await expect(onPrevious).toHaveBeenCalledOnce();
+
+    await userEvent.click(canvas.getByRole('button', { name: 'Shuffle: off' }));
+    await expect(
+      canvas.getByRole('button', { name: 'Shuffle: on' }),
+    ).toBeVisible();
+
+    for (const next of ['Repeat: all', 'Repeat: one', 'Repeat: off']) {
+      await userEvent.click(canvas.getByRole('button', { name: /^Repeat/ }));
+      await expect(canvas.getByRole('button', { name: next })).toBeVisible();
+    }
+  },
 };

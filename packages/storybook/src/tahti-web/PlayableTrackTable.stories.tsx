@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { ContributionLine } from '@tahti-web/api/collection-contribution';
 import type { TahtiPlayable } from '@tahti-web/api/types';
+import { CollectionContribution } from '@tahti-web/components/CollectionContribution';
 import { PlayableTrackTable } from '@tahti-web/components/PlayableTrackTable';
-import { fn } from 'storybook/test';
+import { expect, fn, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 
@@ -55,14 +57,12 @@ const items: TahtiPlayable[] = [
 export const Default: Story = {
   args: {
     items,
-    artistUsername: 'northern-lights',
   },
 };
 
 export const Editable: Story = {
   args: {
     items,
-    artistUsername: 'northern-lights',
     onEdit: fn(),
   },
 };
@@ -77,7 +77,6 @@ export const Empty: Story = {
 export const Removable: Story = {
   args: {
     items,
-    artistUsername: 'northern-lights',
     onRemove: fn(),
   },
 };
@@ -85,8 +84,40 @@ export const Removable: Story = {
 export const Selectable: Story = {
   args: {
     items,
-    artistUsername: 'northern-lights',
     selectable: true,
     onBulkRemove: fn(),
+  },
+};
+
+const CONTRIBUTIONS = new Map<string, ContributionLine>([
+  [
+    'sound:archive-item-1',
+    { addedByUsername: 'kaamos-mod', note: 'Opener for Friday' },
+  ],
+  ['sound:archive-item-2', { addedByUsername: null, note: 'Owner note only' }],
+]);
+
+/** Shared playlist rows credit who added a track, as CollectionView does. */
+export const WithContributions: Story = {
+  args: {
+    items,
+    compactActions: true,
+    getAnnotation: (item) => {
+      const line = CONTRIBUTIONS.get(item.id);
+      return line ? <CollectionContribution line={line} /> : null;
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const lines = canvas.getAllByTestId('collection-contribution');
+    await expect(lines).toHaveLength(2);
+    await expect(lines[0]).toHaveTextContent(
+      'Added by @kaamos-mod · “Opener for Friday”',
+    );
+    await expect(
+      within(lines[0]!).getByRole('link', { name: '@kaamos-mod' }),
+    ).toHaveAttribute('href', '/u/kaamos-mod');
+    await expect(lines[1]).toHaveTextContent('“Owner note only”');
+    await expect(lines[1]).not.toHaveTextContent('Added by');
   },
 };
