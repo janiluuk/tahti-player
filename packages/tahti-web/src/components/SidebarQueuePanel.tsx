@@ -5,6 +5,7 @@ import { useCallback, useMemo } from 'react';
 import { Button, QueuePanel, Tooltip } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
+import { queueWithPlaybackStatus } from '../lib/queueItemStatus';
 import { soundIdFromPlayableId } from '../lib/soundId';
 import { useLibraryStore } from '../stores/libraryStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
@@ -32,6 +33,12 @@ export function SidebarQueuePanel({
   const navigate = useNavigate();
   const queue = usePlayerStore((s) => s.queue);
   const currentId = usePlayerStore((s) => s.currentId);
+  const status = usePlayerStore((s) => s.status);
+  const playbackError = usePlayerStore((s) => s.error);
+  const rows = useMemo(
+    () => queueWithPlaybackStatus(queue, currentId, status, playbackError),
+    [queue, currentId, status, playbackError],
+  );
   const playQueueIndex = usePlayerStore((s) => s.playQueueIndex);
   const removeFromQueue = usePlayerStore((s) => s.removeFromQueue);
   const reorderQueue = usePlayerStore((s) => s.reorderQueue);
@@ -91,7 +98,7 @@ export function SidebarQueuePanel({
     >
       <div className="min-h-0 flex-1">
         <QueuePanel
-          items={queue}
+          items={rows}
           currentItemId={currentId ?? undefined}
           fadePastItems
           reorderable
