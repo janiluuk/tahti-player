@@ -1,3 +1,4 @@
+import { mockChatBans } from './artist-settings/mock';
 import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
@@ -107,6 +108,14 @@ export async function banChatMessageSender(
 ): Promise<Result> {
   if (isForceMock()) {
     const sender = mockMessages.find((m) => m.id === id)?.handle;
+    if (sender && !mockChatBans.some((b) => b.handle === sender)) {
+      mockChatBans.unshift({
+        id: `mock-ban-${id}`,
+        fingerprintHash: `mock-${id}`,
+        handle: sender,
+        bannedAt: new Date().toISOString(),
+      });
+    }
     mockMessages = mockMessages.map((m) =>
       m.handle === sender ? { ...m, banned: true } : m,
     );

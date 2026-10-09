@@ -32,8 +32,7 @@ export {
   fetchChatBans,
   fetchChatSettings,
   setChatSubscribersOnly,
-  banChatFingerprint,
-  unbanChatFingerprint,
+  unbanChat,
 } from './artist-settings/moderation';
 export type { PressKitMeta } from './artist-settings/press-kit';
 export {
