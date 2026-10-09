@@ -1,5 +1,6 @@
 import {
   BoomBox,
+  LoaderCircle,
   Pause,
   Play,
   Repeat,
@@ -34,6 +35,9 @@ const REPEAT_LABEL_KEY: Record<RepeatMode, keyof PlayerBarControlsLabels> = {
 
 type PlayerBarControlsProps = {
   isPlaying?: boolean;
+  /** The current track or stream is still buffering: the play button keeps
+   * its pause action and shows a spinner in place of the pause icon. */
+  isLoading?: boolean;
   isShuffleActive?: boolean;
   isDiscoveryActive?: boolean;
   repeatMode?: RepeatMode;
@@ -55,6 +59,7 @@ type PlayerBarControlsProps = {
 
 export const PlayerBarControls: FC<PlayerBarControlsProps> = ({
   isPlaying = false,
+  isLoading = false,
   isShuffleActive = false,
   isDiscoveryActive = false,
   repeatMode = 'off',
@@ -127,9 +132,17 @@ export const PlayerBarControls: FC<PlayerBarControlsProps> = ({
           )}
           aria-label={isPlaying ? 'Pause' : 'Play'}
           aria-pressed={isPlaying}
+          aria-busy={isLoading || undefined}
           data-testid={isPlaying ? 'player-pause-button' : 'player-play-button'}
         >
-          {isPlaying ? (
+          {isLoading ? (
+            <LoaderCircle
+              size={playIconSize}
+              className="animate-spin motion-reduce:animate-none"
+              data-testid="player-loading-spinner"
+              aria-hidden
+            />
+          ) : isPlaying ? (
             <Pause size={playIconSize} />
           ) : (
             <Play size={playIconSize} />

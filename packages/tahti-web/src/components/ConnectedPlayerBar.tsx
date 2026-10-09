@@ -1,6 +1,7 @@
 import { useNavigate } from '@tanstack/react-router';
 import {
   ListMusicIcon,
+  LoaderCircleIcon,
   Maximize2Icon,
   PauseIcon,
   PlayIcon,
@@ -87,6 +88,7 @@ export function ConnectedPlayerBar() {
   const current = queue.find((q) => q.id === currentId);
   const playable = current ? playableFromQueueItem(current) : null;
   const isPlaying = status === 'playing' || status === 'loading';
+  const isLoading = status === 'loading';
   const hearthisEmbed = playable?.embed;
 
   useEffect(() => {
@@ -181,6 +183,7 @@ export function ConnectedPlayerBar() {
     <div className="flex flex-col items-center gap-1">
       <PlayerBar.Controls
         isPlaying={isPlaying}
+        isLoading={isLoading}
         isShuffleActive={!isLive && shuffle}
         repeatMode={isLive ? 'off' : repeatMode}
         showDiscovery={false}
@@ -216,9 +219,17 @@ export function ConnectedPlayerBar() {
       )}
       aria-label={isPlaying ? 'Pause' : 'Play'}
       aria-pressed={isPlaying}
+      aria-busy={isLoading || undefined}
       data-testid={isPlaying ? 'player-pause-button' : 'player-play-button'}
     >
-      {isPlaying ? (
+      {isLoading ? (
+        <LoaderCircleIcon
+          size={28}
+          className="animate-spin motion-reduce:animate-none"
+          data-testid="player-loading-spinner"
+          aria-hidden
+        />
+      ) : isPlaying ? (
         <PauseIcon size={28} />
       ) : (
         <PlayIcon size={28} className="ml-0.5" />
