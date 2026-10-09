@@ -3,7 +3,8 @@
 //   pnpm check:api-routes
 //
 // Reads the OpenAPI export of the sibling tahti-org checkout (or the file in
-// TAHTI_OPENAPI) and every '/api/...' string in src/. A path that is built in
+// TAHTI_OPENAPI; CI downloads openapi.json from the latest tahti-org release)
+// and every '/api/...' string in src/. A path that is built in
 // pieces ('/api/me/rtmp-targets' + '/' + id) passes when a served path starts
 // with it. Known exceptions live in api-routes-allowlist.json, each with the
 // reason it is allowed.
@@ -94,6 +95,10 @@ function main() {
   const allowlist = JSON.parse(fs.readFileSync(allowlistPath, 'utf8'));
   const allowed = new Set(Object.keys(allowlist));
   const usedAllowances = new Set();
+  const unexplained = [...allowed].filter(
+    (entry) =>
+      typeof allowlist[entry] !== 'string' || allowlist[entry].trim() === '',
+  );
 
   const missing = [];
   for (const file of sourceFiles(sourceRoot)) {
@@ -129,7 +134,13 @@ function main() {
       console.error(`  ${entry}`);
     }
   }
-  if (missing.length > 0 || stale.length > 0) {
+  if (unexplained.length > 0) {
+    console.error('Allowlist entries without a reason:');
+    for (const entry of unexplained) {
+      console.error(`  ${entry}`);
+    }
+  }
+  if (missing.length > 0 || stale.length > 0 || unexplained.length > 0) {
     process.exit(1);
   }
   console.log(

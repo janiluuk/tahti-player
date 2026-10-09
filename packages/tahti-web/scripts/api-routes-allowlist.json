@@ -1,3 +1,4 @@
 {
-  "/api/admin/i18n/languages": "The API has no translation routes. Admin → Languages shows \"Not available yet\" on a 404 instead of offering Add/Import."
+  "/api/admin/i18n/languages": "The API has no translation routes. Admin → Languages shows \"Not available yet\" on a 404 instead of offering Add/Import.",
+  "/api/me/channel/autoplay": "The route ships in tahti-org #761, which is not in a tahti-org release yet. The Autoplay toggle is hidden when the read fails."
 }
