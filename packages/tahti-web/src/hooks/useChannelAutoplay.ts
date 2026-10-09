@@ -22,7 +22,7 @@ export function useChannelAutoplay(
     }
     handled.current = slug;
     const playable = channelToPlayable(channel);
-    const { status, currentId, hasPlayed, autoplayMuted } =
+    const { status, currentId, hasPlayed, autoplayMuted, fadeOverTo } =
       usePlayerStore.getState();
     const action = channelAutoplayAction({
       channel,
@@ -32,6 +32,9 @@ export function useChannelAutoplay(
     });
     if (action === 'muted' && playable) {
       autoplayMuted(playable);
+    }
+    if (action === 'fade' && playable) {
+      void fadeOverTo(playable);
     }
   }, [channel, slug, enabled]);
 }
