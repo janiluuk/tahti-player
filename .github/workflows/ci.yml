@@ -399,6 +399,35 @@ jobs:
           echo "Tests failed (core packages). See test logs above."
           exit 1
 
+  # Fails when tahti-web calls an API path the API does not serve. The spec is
+  # openapi.json from the latest tahti-org release (what production runs);
+  # tahti-org does not commit it, and generating it needs Postgres + Redis.
+  # Known gaps live in packages/tahti-web/scripts/api-routes-allowlist.json.
+  api-routes:
+    name: API routes exist
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      - name: Download the API's OpenAPI export
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download --repo janiluuk/tahti-org --pattern openapi.json --dir "$RUNNER_TEMP"
+          gh release view --repo janiluuk/tahti-org --json tagName,publishedAt --jq '"Checking against tahti-org release \(.tagName) (\(.publishedAt))"'
+
+      - name: Check API routes
+        run: node packages/tahti-web/scripts/check-api-routes.mjs
+        env:
+          TAHTI_OPENAPI: ${{ runner.temp }}/openapi.json
+
   # Storybook stories as browser tests (render smoke + `play` assertions)
   # via @storybook/addon-vitest. Its own job so a story failure is clearly
   # attributable; shares the Playwright browser cache key with `test`.
@@ -535,15 +564,24 @@ jobs:
   ci:
     name: CI
     runs-on: ubuntu-latest
-    needs: [build-upstream, build-player, lint, test, test-core, storybook]
+    needs:
+      [
+        build-upstream,
+        build-player,
+        lint,
+        test,
+        test-core,
+        storybook,
+        api-routes,
+      ]
     if: always()
     steps:
       - name: Check required jobs
-        if: needs.build-upstream.result != 'success' || needs.build-player.result != 'success' || needs.lint.result != 'success' || needs.test.result != 'success' || needs.test-core.result != 'success' || needs.storybook.result != 'success'
+        if: needs.build-upstream.result != 'success' || needs.build-player.result != 'success' || needs.lint.result != 'success' || needs.test.result != 'success' || needs.test-core.result != 'success' || needs.storybook.result != 'success' || needs.api-routes.result != 'success'
         run: |
-          echo "::error::build-upstream=${{ needs.build-upstream.result }} build-player=${{ needs.build-player.result }} lint=${{ needs.lint.result }} test=${{ needs.test.result }} test-core=${{ needs.test-core.result }} storybook=${{ needs.storybook.result }}"
+          echo "::error::build-upstream=${{ needs.build-upstream.result }} build-player=${{ needs.build-player.result }} lint=${{ needs.lint.result }} test=${{ needs.test.result }} test-core=${{ needs.test-core.result }} storybook=${{ needs.storybook.result }} api-routes=${{ needs.api-routes.result }}"
           exit 1
 
       - name: Required jobs passed
-        if: needs.build-upstream.result == 'success' && needs.build-player.result == 'success' && needs.lint.result == 'success' && needs.test.result == 'success' && needs.test-core.result == 'success' && needs.storybook.result == 'success'
-        run: echo "build-upstream, build-player, lint, test, test-core, storybook all succeeded"
+        if: needs.build-upstream.result == 'success' && needs.build-player.result == 'success' && needs.lint.result == 'success' && needs.test.result == 'success' && needs.test-core.result == 'success' && needs.storybook.result == 'success' && needs.api-routes.result == 'success'
+        run: echo "build-upstream, build-player, lint, test, test-core, storybook, api-routes all succeeded"
