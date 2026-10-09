@@ -1,4 +1,3 @@
-import { Link } from '@tanstack/react-router';
 import {
   AudioLinesIcon,
   GaugeIcon,
@@ -8,7 +7,7 @@ import {
   Wand2Icon,
 } from 'lucide-react';
 
-import { Button, Tooltip } from '@tahti-player/ui';
+import { Button, ButtonLink, Tooltip } from '@tahti-player/ui';
 
 import type { StudioSound } from '../../api/studio-types';
 import { AudioRevisionList } from '../AudioRevisionList';
@@ -170,29 +169,29 @@ export function AudioTab({
               </Button>
             </Tooltip>
             <span className="bg-border mx-1 h-6 w-px" aria-hidden />
-            <Link to="/studio/sounds/$id/editor" params={{ id: item.id }}>
-              <Tooltip content="Open full audio editor" side="top">
-                <Button
+            <Tooltip content="Open full audio editor" side="top">
+              <ButtonLink
+                to="/studio/sounds/$id/editor"
+                params={{ id: item.id }}
+                size="icon-sm"
+                variant="text"
+                aria-label="Open full audio editor"
+              >
+                <AudioLinesIcon size={16} aria-hidden />
+              </ButtonLink>
+            </Tooltip>
+            {masteringEnabled && (
+              <Tooltip content="Match to a reference track" side="top">
+                <ButtonLink
+                  to="/studio/mastering/$id"
+                  params={{ id: item.id }}
                   size="icon-sm"
                   variant="text"
-                  aria-label="Open full audio editor"
+                  aria-label="Match to a reference track"
                 >
-                  <AudioLinesIcon size={16} aria-hidden />
-                </Button>
+                  <Wand2Icon size={16} aria-hidden />
+                </ButtonLink>
               </Tooltip>
-            </Link>
-            {masteringEnabled && (
-              <Link to="/studio/mastering/$id" params={{ id: item.id }}>
-                <Tooltip content="Match to a reference track" side="top">
-                  <Button
-                    size="icon-sm"
-                    variant="text"
-                    aria-label="Match to a reference track"
-                  >
-                    <Wand2Icon size={16} aria-hidden />
-                  </Button>
-                </Tooltip>
-              </Link>
             )}
           </div>
 

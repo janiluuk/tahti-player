@@ -1,21 +1,10 @@
 // @vitest-environment jsdom
-import {
-  act,
-  cleanup,
-  fireEvent,
-  render,
-  screen,
-} from '@testing-library/react';
-import type { ReactNode } from 'react';
+import { cleanup, fireEvent, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as purchaseTiers from '../api/purchase-tiers';
+import { renderWithRouter } from '../test/renderWithRouter';
 import { PurchaseAccessSection } from './PurchaseAccessSection';
-
-vi.mock('@tanstack/react-router', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@tanstack/react-router')>()),
-  Link: ({ children }: { children: ReactNode }) => <a>{children}</a>,
-}));
 
 const TIER = {
   id: 'tier-1',
@@ -35,12 +24,11 @@ async function renderSection(
     data: [TIER],
     meta: { source: 'api' },
   });
-  await act(async () => {
-    render(
-      <PurchaseAccessSection access={access} onAccessChange={onAccessChange} />,
-    );
-  });
-  return onAccessChange;
+  const { router } = await renderWithRouter(
+    <PurchaseAccessSection access={access} onAccessChange={onAccessChange} />,
+    { paths: ['/studio/audience'] },
+  );
+  return { onAccessChange, router };
 }
 
 describe('PurchaseAccessSection', () => {
@@ -58,7 +46,7 @@ describe('PurchaseAccessSection', () => {
   });
 
   it('maps the picked option onto accessMode', async () => {
-    const onAccessChange = await renderSection({
+    const { onAccessChange } = await renderSection({
       accessMode: 'FREE',
       purchaseTierId: null,
     });
@@ -76,5 +64,18 @@ describe('PurchaseAccessSection', () => {
       accessMode: 'PURCHASE',
       purchaseTierId: 'tier-1',
     });
+  });
+
+  it('opens the purchase tiers page from the tooltip-wrapped link', async () => {
+    const { router } = await renderSection({
+      accessMode: 'FREE',
+      purchaseTierId: null,
+    });
+    const link = screen.getByRole('link', { name: 'Manage purchase tiers' });
+    expect(link.getAttribute('href')).toBe('/studio/audience');
+    expect(link.querySelector('button')).toBeNull();
+    fireEvent.click(link);
+    expect(await screen.findByTestId('routed-to')).toBeTruthy();
+    expect(router.state.location.pathname).toBe('/studio/audience');
   });
 });
