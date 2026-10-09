@@ -73,3 +73,38 @@ export const WithArtwork: Story = {
     artworkUrl: 'https://picsum.photos/seed/tahti-channel/512',
   },
 };
+
+export const SavedSettingsJson: Story = {
+  name: 'Saved look JSON (colorSchemeJson + visualSettingsJson)',
+  args: {
+    preset: 'PARTICLE_FIELD',
+    colorSchemeJson: JSON.stringify({
+      accent: '#A855F7',
+      highlight: '#EC4899',
+      bg: '#140A1F',
+      text: '#FAF5FF',
+    }),
+    visualSettingsJson: JSON.stringify({
+      PARTICLE_FIELD: { speed: 1.6, intensity: 1.4, audioReactive: false },
+    }),
+  },
+};
+
+export const SettingsOverride: Story = {
+  name: 'Live tuning override (settings)',
+  args: {
+    preset: 'WAVEFORM_BARS',
+    settings: { speed: 0.5, intensity: 2, scale: 1.4 },
+  },
+};
+
+export const AudioReactiveOff: Story = {
+  name: 'Audio reactive forced off (ambient background)',
+  args: {
+    preset: 'INTERACTIVE_POINTS',
+    audioReactive: false,
+    visualSettingsJson: JSON.stringify({
+      INTERACTIVE_POINTS: { audioReactive: true },
+    }),
+  },
+};

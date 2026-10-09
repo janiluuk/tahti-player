@@ -1,4 +1,5 @@
 import type { FetchMeta } from '.././client';
+import { mockFixture } from '.././mock-overrides';
 import {
   allowMockFallback,
   apiErrorMeta,
@@ -26,7 +27,10 @@ export async function fetchChannelVisualPresets(): Promise<{
   meta: FetchMeta;
 }> {
   if (isForceMock()) {
-    return { data: [...mockVisualPresets], meta: { source: 'mock' } };
+    return {
+      data: mockFixture('channelVisualPresets', [...mockVisualPresets]),
+      meta: { source: 'mock' },
+    };
   }
   try {
     const { data } = await requestJson<ChannelVisualPreset[]>(

@@ -8,6 +8,7 @@
  * an empty registry every fixture passes through unchanged.
  */
 import type { PublicPressKitImage } from './artist-settings/press-kit-images';
+import type { ChannelVisual, ChannelVisualPreset } from './channel-design';
 import type { ArtistEvent } from './events';
 import type { LikedTrack } from './likes';
 import type {
@@ -45,6 +46,8 @@ export interface MockFixtures {
   announcements: { data: Announcement[]; args: [] };
   channel: { data: PublicChannel; args: [slug: string] };
   channelEvents: { data: ArtistEvent[]; args: [slug: string] };
+  channelVisual: { data: ChannelVisual; args: [] };
+  channelVisualPresets: { data: ChannelVisualPreset[]; args: [] };
   chatHistory: { data: ChatMessage[]; args: [slug: string] };
   collection: {
     data: PublicCollection;
