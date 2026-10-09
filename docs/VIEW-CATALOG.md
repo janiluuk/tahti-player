@@ -216,6 +216,7 @@ pro-editor `MasteringPanel`/`StemsPanel`/`PluginControls`.
 | View                          | Route                                                                  | File                                              | Storybook | Candidate For                        |
 | ----------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------- | --------- | ------------------------------------ |
 | [Messages](#messages)         | `/messages`, `/messages/$id` (also `/library/messages` redirects here) | `src/views/MessagesView.tsx`                      | No Story  | Card layout, InPageNav               |
+| Moderate channel              | `/moderate/$slug`                                                      | `src/views/ModerateChannelView.tsx`               | Story     | Card layout (moderation panels)      |
 | [More](#more)                 | `/more` (diagnostics-gated; redirects to `/` otherwise)                | `src/views/MoreView.tsx`                          | No Story  | Card layout                          |
 | Dashboard alias               | `/dashboard`                                                           | `src/views/DashboardAliasView.tsx`                | No Story  | — (thin redirect/alias to Listen)    |
 | Studio Setup Channel redirect | `/studio/setup-channel`                                                | `src/views/studio/StudioSetupChannelRedirect.tsx` | No Story  | — (redirect-only helper, no real UI) |
