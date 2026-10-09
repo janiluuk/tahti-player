@@ -97,6 +97,8 @@ function SkipDurationField() {
 export function PlaybackPanel() {
   const volume = usePlayerStore((s) => s.volume);
   const muted = usePlayerStore((s) => s.muted);
+  const channelAutoplay = usePlaybackPrefsStore((s) => s.channelAutoplay);
+  const setChannelAutoplay = usePlaybackPrefsStore((s) => s.setChannelAutoplay);
   const shuffle = usePlayerStore((s) => s.shuffle);
   const repeatMode = usePlayerStore((s) => s.repeatMode);
   const setVolume = usePlayerStore((s) => s.setVolume);
@@ -130,6 +132,12 @@ export function PlaybackPanel() {
             description="Silence playback without changing the volume level."
             value={muted}
             onChange={() => toggleMute()}
+          />
+          <SettingsToggle
+            label="Let channels start playing on their own"
+            description="A channel whose artist allows it starts muted when you open its page. Off means nothing plays until you press play."
+            value={channelAutoplay}
+            onChange={(value) => setChannelAutoplay(value)}
           />
           {hasLocalAnalysis ? <NormalizationField /> : null}
         </div>

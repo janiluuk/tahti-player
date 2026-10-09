@@ -20,6 +20,10 @@ type PlayerState = {
   error: string | null;
   volume: number;
   muted: boolean;
+  /** Set while a channel that started on its own is playing muted: holds
+   * what `muted` was before, to put back when the listener starts something
+   * themselves. `null` whenever the mute is the listener's own. */
+  autoplayRestoreMuted: boolean | null;
   currentTime: number;
   duration: number;
   isLive: boolean;
@@ -56,6 +60,11 @@ type PlayerState = {
   /** Cache waveform peaks for a playable id; updates currentPeaks when that id is playing. */
   cachePeaks: (id: string, peaks: number[]) => void;
   play: (item: TahtiPlayable, opts?: { enqueueRest?: TahtiPlayable[] }) => void;
+  /** Starts a channel nobody pressed play on: muted, because browsers refuse
+   * sound without a gesture, until `unmuteAutoplay`. */
+  autoplayMuted: (item: TahtiPlayable) => void;
+  /** The listener asked to hear the channel that started muted. */
+  unmuteAutoplay: () => void;
   enqueue: (item: TahtiPlayable) => void;
   /** Installs a queue saved by an earlier session: paused, nothing loaded, no history entry. */
   hydrateQueue: (items: TahtiPlayable[], currentId: string | null) => void;
@@ -163,6 +172,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   error: null,
   volume: 0.85,
   muted: false,
+  autoplayRestoreMuted: null,
   currentTime: 0,
   duration: 0,
   isLive: true,
@@ -211,8 +221,24 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       hasPlayed: true,
       lastRadioPlayable: isRadioOrLive ? item : s.lastRadioPlayable,
       playerBarVisible: true,
+      ...(s.autoplayRestoreMuted === null
+        ? {}
+        : { muted: s.autoplayRestoreMuted, autoplayRestoreMuted: null }),
     }));
   },
+
+  autoplayMuted: (item) => {
+    const before = get().autoplayRestoreMuted ?? get().muted;
+    const hadPlayed = get().hasPlayed;
+    // Muted before the source changes, so the element is silent by the time
+    // the engine asks it to play.
+    set({ muted: true, autoplayRestoreMuted: null });
+    get().play(item);
+    set({ autoplayRestoreMuted: before, hasPlayed: hadPlayed });
+  },
+
+  unmuteAutoplay: () =>
+    set({ muted: false, autoplayRestoreMuted: null, hasPlayed: true }),
 
   enqueue: (item) => {
     const qi = toQueueItem(item);
@@ -431,9 +457,15 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 
   setProgress: (currentTime, duration) => set({ currentTime, duration }),
 
-  setVolume: (volume) => set({ volume, muted: volume === 0 ? true : false }),
+  setVolume: (volume) =>
+    set({
+      volume,
+      muted: volume === 0 ? true : false,
+      autoplayRestoreMuted: null,
+    }),
 
-  toggleMute: () => set((s) => ({ muted: !s.muted })),
+  toggleMute: () =>
+    set((s) => ({ muted: !s.muted, autoplayRestoreMuted: null })),
 
   toggleShuffle: () => {
     const { isLive } = get();

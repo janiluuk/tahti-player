@@ -88,6 +88,11 @@ export function AudioEngine() {
     }
     applyNormalization();
     audio.muted = muted;
+    // A channel that started on its own did so without a gesture, which
+    // leaves the audio context suspended; unmuting is the gesture.
+    if (!muted && audioCtxRef.current?.state === 'suspended') {
+      void audioCtxRef.current.resume().catch(() => undefined);
+    }
   }, [applyNormalization, muted]);
 
   const applyNormalizationRef = useRef(applyNormalization);
