@@ -184,7 +184,7 @@ export async function fetchConversation(
 ): Promise<{ data: ConversationDetail | null; meta: FetchMeta }> {
   if (isForceMock()) {
     return {
-      data: mockConversationDetail(id),
+      data: mockFixture('conversation', mockConversationDetail(id), id),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }

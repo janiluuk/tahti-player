@@ -38,7 +38,15 @@ export const MemberProfile: Story = {
   search, radio, feed, announcements, fanTiers, venueProfile, chatHistory,
   topTracks, latestTracks, studioSounds, studioCollections, studioReleases,
   userLikes, channelEvents, publicGallery, tagTracks, channelVisual,
-  channelVisualPresets, membership, resetPasswordInfo, setupPasswordInfo).
+  channelVisualPresets, membership, resetPasswordInfo, setupPasswordInfo,
+  chatAccess, chatToken, liveTracklist, channelSchedule, radioShow,
+  radioShowNowPlaying, radioShowUpcoming, radioSlots, showBookings,
+  conversations, conversation, messageContacts).
+- A function override can throw to make the call fail the way the API
+  would, e.g. `chatToken: () => { throw new Error('banned'); }`.
+- APIs with no offline mock at all (Jam) are stood in for by a story-level
+  fake: see `_fixtures/jam.ts`, which stubs `fetch` and `EventSource` in
+  `beforeEach` and restores them afterwards.
 - Derived fixtures follow their source: overriding `channel` also changes
   the profile, fan tiers and sound items built from it.
 - Meta-level and story-level `mockData` deep-merge like any other

@@ -1,4 +1,5 @@
 import type { FetchMeta } from '.././client';
+import { mockFixture } from '.././mock-overrides';
 import { apiErrorMeta, isForceMock } from '.././mode';
 import { requestJson } from '.././request-json';
 import { mockBookings, seedEpisodes } from './mock';
@@ -46,20 +47,21 @@ export async function fetchPublicRadioShow(
       .filter((booking) => new Date(booking.endAt).getTime() <= now)
       .map(mapBooking);
     const first = matchingBookings[0];
-    return {
-      data: {
-        artist: {
-          displayName: first?.displayName ?? 'Demo Artist',
-          username: channelSlug,
-          avatarUrl: null,
-          channelSlug,
-          bio: null,
-        },
-        pastEpisodes: past,
-        upcomingEpisodes: upcoming,
-        nextShowAt: upcoming[0]?.startAt ?? null,
-        lastShowAt: past[0]?.startAt ?? null,
+    const base: PublicRadioShow = {
+      artist: {
+        displayName: first?.displayName ?? 'Demo Artist',
+        username: channelSlug,
+        avatarUrl: null,
+        channelSlug,
+        bio: null,
       },
+      pastEpisodes: past,
+      upcomingEpisodes: upcoming,
+      nextShowAt: upcoming[0]?.startAt ?? null,
+      lastShowAt: past[0]?.startAt ?? null,
+    };
+    return {
+      data: mockFixture('radioShow', base, channelSlug),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
@@ -91,7 +93,10 @@ export async function fetchRadioShowNowPlaying(
   channelSlug: string,
 ): Promise<{ data: RadioShowNowPlayingTrack | null; meta: FetchMeta }> {
   if (isForceMock()) {
-    return { data: null, meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
+    return {
+      data: mockFixture('radioShowNowPlaying', null, channelSlug),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
   }
   try {
     const { data } = await requestJson<{
@@ -119,7 +124,10 @@ export async function fetchRadioShowUpcoming(
   channelSlug: string,
 ): Promise<{ data: RadioShowUpcomingTrack[]; meta: FetchMeta }> {
   if (isForceMock()) {
-    return { data: [], meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
+    return {
+      data: mockFixture('radioShowUpcoming', [], channelSlug),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
   }
   try {
     const { data } = await requestJson<RadioShowUpcomingTrack[]>(
@@ -155,28 +163,29 @@ export async function fetchPublicRadioSlots(
   if (isForceMock()) {
     const start = new Date(from).getTime();
     const end = new Date(to).getTime();
+    const slots: PublicRadioSlot[] = mockBookings
+      .filter(
+        (booking) =>
+          new Date(booking.startAt).getTime() < end &&
+          new Date(booking.endAt).getTime() > start,
+      )
+      .sort((a, b) => a.startAt.localeCompare(b.startAt))
+      .map((booking) => ({
+        id: booking.id,
+        startAt: booking.startAt,
+        endAt: booking.endAt,
+        note: booking.note,
+        showType: booking.showType,
+        coverUrl: booking.coverUrl ?? null,
+        artist: {
+          displayName: booking.displayName,
+          username: booking.username,
+          avatarUrl: null,
+          channelSlug: booking.channelSlug,
+        },
+      }));
     return {
-      data: mockBookings
-        .filter(
-          (booking) =>
-            new Date(booking.startAt).getTime() < end &&
-            new Date(booking.endAt).getTime() > start,
-        )
-        .sort((a, b) => a.startAt.localeCompare(b.startAt))
-        .map((booking) => ({
-          id: booking.id,
-          startAt: booking.startAt,
-          endAt: booking.endAt,
-          note: booking.note,
-          showType: booking.showType,
-          coverUrl: booking.coverUrl ?? null,
-          artist: {
-            displayName: booking.displayName,
-            username: booking.username,
-            avatarUrl: null,
-            channelSlug: booking.channelSlug,
-          },
-        })),
+      data: mockFixture('radioSlots', slots, from, to),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }

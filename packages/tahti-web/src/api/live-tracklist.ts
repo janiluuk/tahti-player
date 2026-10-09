@@ -1,4 +1,5 @@
 import { getJson } from './http';
+import { mockFixture } from './mock-overrides';
 import { isForceMock } from './mode';
 
 export type LiveTracklistEntry = {
@@ -16,10 +17,18 @@ export async function fetchLiveTracklist(
   slug: string,
 ): Promise<LiveTracklistEntry[]> {
   if (isForceMock()) {
-    return [
-      { startSec: 0, title: 'Opening drone', artist: 'Night Drive' },
-      { startSec: 412, title: 'Borrowed Light', artistUsername: 'nightdrive' },
-    ];
+    return mockFixture(
+      'liveTracklist',
+      [
+        { startSec: 0, title: 'Opening drone', artist: 'Night Drive' },
+        {
+          startSec: 412,
+          title: 'Borrowed Light',
+          artistUsername: 'nightdrive',
+        },
+      ],
+      slug,
+    );
   }
   try {
     const data = await getJson<{ tracklist?: LiveTracklistEntry[] }>(

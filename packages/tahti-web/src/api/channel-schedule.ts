@@ -1,4 +1,5 @@
 import { getJson } from './http';
+import { mockFixture } from './mock-overrides';
 import { isForceMock } from './mode';
 
 export type PublicChannelScheduleShow = {
@@ -68,7 +69,7 @@ export async function fetchChannelSchedule(
   slug: string,
 ): Promise<PublicChannelSchedule> {
   if (isForceMock()) {
-    return mockSchedule();
+    return mockFixture('channelSchedule', mockSchedule(), slug);
   }
   try {
     const data = await getJson<Partial<PublicChannelSchedule>>(

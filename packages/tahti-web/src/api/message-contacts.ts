@@ -1,5 +1,6 @@
 import type { FetchMeta } from './client';
 import { getJson } from './http';
+import { mockFixture } from './mock-overrides';
 import { failMeta, isForceMock } from './mode';
 
 /** Someone you follow or who follows you, for starting a DM. */
@@ -17,7 +18,7 @@ export async function fetchMessageContacts(): Promise<{
 }> {
   if (isForceMock()) {
     return {
-      data: [
+      data: mockFixture('messageContacts', [
         {
           username: 'listener',
           displayName: 'Listener One',
@@ -25,7 +26,7 @@ export async function fetchMessageContacts(): Promise<{
           followsYou: true,
           followedByYou: true,
         },
-      ],
+      ]),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
