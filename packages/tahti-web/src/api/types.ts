@@ -63,6 +63,9 @@ export type PublicChannel = {
   slideshowIntervalSeconds?: number;
   slideshowTransitionMs?: number;
   slideshowAutoplay?: boolean;
+  /** PLAT-086: the artist lets the channel page start playing on its own.
+   * Missing from an API that predates the setting. */
+  autoplayEnabled?: boolean;
   colorSchemeJson?: string | null;
   colorScheme?: {
     accent?: string;

@@ -43,6 +43,7 @@ export function AudioEngine() {
   const status = usePlayerStore((s) => s.status);
   const volume = usePlayerStore((s) => s.volume);
   const muted = usePlayerStore((s) => s.muted);
+  const fadeLevel = usePlayerStore((s) => s.fadeLevel);
   const seekTarget = usePlayerStore((s) => s.seekTarget);
   const setStatus = usePlayerStore((s) => s.setStatus);
   const setProgress = usePlayerStore((s) => s.setProgress);
@@ -77,9 +78,10 @@ export function AudioEngine() {
     }
     const audio = audioRef.current;
     if (audio) {
-      audio.volume = gainRef.current ? volume : volume * Math.min(factor, 1);
+      const level = volume * fadeLevel;
+      audio.volume = gainRef.current ? level : level * Math.min(factor, 1);
     }
-  }, [volume]);
+  }, [volume, fadeLevel]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -88,6 +90,11 @@ export function AudioEngine() {
     }
     applyNormalization();
     audio.muted = muted;
+    // A channel that started on its own did so without a gesture, which
+    // leaves the audio context suspended; unmuting is the gesture.
+    if (!muted && audioCtxRef.current?.state === 'suspended') {
+      void audioCtxRef.current.resume().catch(() => undefined);
+    }
   }, [applyNormalization, muted]);
 
   const applyNormalizationRef = useRef(applyNormalization);

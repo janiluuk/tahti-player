@@ -24,6 +24,10 @@ type PlaybackPrefsState = {
   /** Loudness normalization for local library files; off by default. */
   normalization: NormalizationMode;
   setNormalization: (mode: NormalizationMode) => void;
+  /** Whether a channel page may start playing on its own; on by default.
+   * The channel's artist has a switch of their own, and both must be on. */
+  channelAutoplay: boolean;
+  setChannelAutoplay: (value: boolean) => void;
 };
 
 export const usePlaybackPrefsStore = create<PlaybackPrefsState>()(
@@ -33,6 +37,8 @@ export const usePlaybackPrefsStore = create<PlaybackPrefsState>()(
       setSkipSeconds: (value) => set({ skipSeconds: clampSkipSeconds(value) }),
       normalization: 'off',
       setNormalization: (normalization) => set({ normalization }),
+      channelAutoplay: true,
+      setChannelAutoplay: (channelAutoplay) => set({ channelAutoplay }),
     }),
     { name: 'tahti-playback-prefs' },
   ),
