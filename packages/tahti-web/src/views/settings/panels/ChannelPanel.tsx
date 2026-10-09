@@ -36,6 +36,7 @@ import {
 import { useAuthStore } from '../../../stores/authStore';
 import { StudioBrandingPanel } from '../../studio/StudioBrandingView';
 import { SettingsHint, SettingsToggle } from '../SettingsFields';
+import { ChannelAutoplayToggle } from './ChannelAutoplayToggle';
 import { channelRenameNote } from './channelRenameNote';
 
 export function ChannelPanel() {
@@ -125,6 +126,7 @@ export function ChannelPanel() {
                   )
                 }
               />
+              <ChannelAutoplayToggle />
               <label className="flex flex-col gap-2">
                 <span className="text-foreground text-sm font-semibold">
                   Genres
