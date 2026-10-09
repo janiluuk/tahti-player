@@ -133,3 +133,53 @@ export async function banChatMessageSender(
     };
   }
 }
+
+/** A channel whose chat the signed-in account looks after
+ * (`GET /api/me/moderate`): its own, and those it moderates for others. */
+export type ModeratedChannel = {
+  slug: string;
+  displayName: string;
+  isOwner: boolean;
+};
+
+let mockModerated: ModeratedChannel[] = [
+  { slug: 'demo', displayName: 'Demo Artist', isOwner: true },
+  { slug: 'night-drive', displayName: 'Night Drive', isOwner: false },
+];
+
+export async function fetchModeratedChannels(): Promise<
+  { ok: true; data: ModeratedChannel[] } | { ok: false; error: string }
+> {
+  if (isForceMock()) {
+    return { ok: true, data: [...mockModerated] };
+  }
+  try {
+    const { data } = await requestJson<ModeratedChannel[]>('/api/me/moderate');
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not load channels',
+    };
+  }
+}
+
+/** Gives up the signed-in account's moderator role on someone else's
+ * channel (`DELETE /api/me/moderate/:slug`). */
+export async function stopModerating(slug: string): Promise<Result> {
+  if (isForceMock()) {
+    mockModerated = mockModerated.filter((c) => c.slug !== slug || c.isOwner);
+    return { ok: true };
+  }
+  try {
+    await requestJson(`/api/me/moderate/${encodeURIComponent(slug)}`, {
+      method: 'DELETE',
+    });
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not step down',
+    };
+  }
+}
