@@ -29,6 +29,10 @@ import {
   parseNowPlayingOverlaySettings,
   type NowPlayingOverlaySettings,
 } from '../../content/nowPlayingOverlayPresets';
+import {
+  channelVizPackId,
+  withChannelVizPack,
+} from '../../lib/channelVizPacks';
 import { buildVisualPatch } from './buildVisualPatch';
 import { buildLoadedLook } from './lookLoad';
 import type { LookSnapshot } from './lookSnapshot';
@@ -363,6 +367,11 @@ export function useChannelLook({
     markDirty();
   };
 
+  const setVizPack = (packId: string | null) => {
+    setVisualSettings((current) => withChannelVizPack(current, packId));
+    markDirty();
+  };
+
   const setOverlaySetting = <
     SettingKey extends keyof NowPlayingOverlaySettings,
   >(
@@ -681,6 +690,7 @@ export function useChannelLook({
     setPresetNameInput,
     setPresetSetting,
     setPreviewPreset,
+    setVizPack,
     setResetConfirmOpen,
     setSavePresetOpen,
     setSlideshowAutoplay,
@@ -696,5 +706,6 @@ export function useChannelLook({
     visual,
     visualSettings,
     visualSettingsJson,
+    vizPackId: channelVizPackId(visualSettings),
   };
 }

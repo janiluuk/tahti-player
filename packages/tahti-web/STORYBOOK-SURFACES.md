@@ -99,6 +99,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Channel/ChannelTextOverlayView` | `tahti-web/ChannelTextOverlayView.stories.tsx` |
 | `Tahti/Channel/ChannelView` | `tahti-web/ChannelView.stories.tsx` |
 | `Tahti/Channel/ChannelVisualizer` | `tahti-web/ChannelVisualizer.stories.tsx` |
+| `Tahti/Channel/Designer/ChannelVizPackPicker` | `tahti-web/ChannelVizPackPicker.stories.tsx` |
 | `Tahti/Widgets/ClientCapabilityNotice` | `tahti-web/ClientCapabilityNotice.stories.tsx` |
 | `Tahti/Collection/CollaborativePlaylistAdd` | `tahti-web/CollaborativePlaylistAdd.stories.tsx` |
 | `Tahti/Collection/CollectionView` | `tahti-web/CollectionView.stories.tsx` |
