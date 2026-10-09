@@ -7,6 +7,15 @@ type StationProgramme = { title: string | null; artist: string | null };
 const CACHE_MS = 60_000;
 const cache = new Map<string, { at: number; value: string | null }>();
 
+// Shorter than the 30 s poll so each poller still gets a fresh answer every
+// interval, while the player bar, the station page and Listen polling the
+// same station share one request.
+const NOW_PLAYING_CACHE_MS = 25_000;
+const nowPlayingCache = new Map<
+  string,
+  { at: number; value: Promise<string | null> }
+>();
+
 /** "Programme · Artist — Track" from the two fields the API reads off a
  * station's programme page; null when it has neither. */
 export function formatStationProgramme(
@@ -46,8 +55,23 @@ export async function fetchStationProgramme(
 }
 
 /** What is on a station right now: its programme page first (programme and
- * track), then the title the stream itself announces. */
-export async function fetchStationNowPlaying(station: {
+ * track), then the title the stream itself announces. Callers asking about
+ * the same station within 25 seconds share one lookup. */
+export function fetchStationNowPlaying(station: {
+  programmingUrl?: string | null;
+  streamUrl?: string | null;
+}): Promise<string | null> {
+  const key = `${station.programmingUrl ?? ''}\n${station.streamUrl ?? ''}`;
+  const cached = nowPlayingCache.get(key);
+  if (cached && Date.now() - cached.at < NOW_PLAYING_CACHE_MS) {
+    return cached.value;
+  }
+  const value = lookUpStationNowPlaying(station);
+  nowPlayingCache.set(key, { at: Date.now(), value });
+  return value;
+}
+
+async function lookUpStationNowPlaying(station: {
   programmingUrl?: string | null;
   streamUrl?: string | null;
 }): Promise<string | null> {
@@ -65,4 +89,5 @@ export async function fetchStationNowPlaying(station: {
 
 export function clearStationProgrammeCache() {
   cache.clear();
+  nowPlayingCache.clear();
 }

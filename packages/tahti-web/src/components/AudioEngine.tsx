@@ -5,6 +5,7 @@ import type { QueueItem } from '@tahti-player/model';
 
 import { postListenEvent } from '../api/client';
 import type { TahtiPlayable } from '../api/types';
+import { usePlayerStationNowPlaying } from '../hooks/useStationNowPlaying';
 import { ensureAudioCoreBridge } from '../lib/audioCoreBridge';
 import {
   canAirPlay,
@@ -157,8 +158,9 @@ export function AudioEngine() {
   }, [setStatus, previous, next, seekBy, skipSeconds]);
 
   const hasPlayable = playable != null;
-  const metaTitle = playable?.title;
-  const metaArtist = playable?.artist;
+  const stationNowPlaying = usePlayerStationNowPlaying(playable);
+  const metaTitle = stationNowPlaying?.title ?? playable?.title;
+  const metaArtist = stationNowPlaying?.artist ?? playable?.artist;
   const metaArtworkJson = useMemo(
     () =>
       JSON.stringify(mediaSessionArtwork(current?.track.artwork?.items ?? [])),

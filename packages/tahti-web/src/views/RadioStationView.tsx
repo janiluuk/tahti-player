@@ -13,6 +13,7 @@ import {
   RADIO_STATIONS,
   radioStation,
   radioStationPlayable,
+  stationNowPlayingSource,
 } from '../content/radioStations';
 import { useStationNowPlaying } from '../hooks/useStationNowPlaying';
 import { useListenerWidgetsStore } from '../stores/listenerWidgetsStore';
@@ -36,7 +37,11 @@ export function RadioStationView({ stationId }: { stationId: string }) {
   const setStatus = usePlayerStore((s) => s.setStatus);
   const station = base ? { ...base, ...override } : undefined;
   const streamUrl = station?.streamUrl ?? null;
-  const nowPlaying = useStationNowPlaying(station?.programmingUrl, streamUrl);
+  const nowPlayingSource = station ? stationNowPlayingSource(station) : null;
+  const nowPlaying = useStationNowPlaying(
+    nowPlayingSource?.programmingUrl,
+    nowPlayingSource?.streamUrl,
+  );
 
   if (!station) {
     return (

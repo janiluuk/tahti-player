@@ -9,6 +9,9 @@ export type RadioStation = {
   streamUrl: string | null;
   detailUrl: string;
   programmingUrl?: string | null;
+  /** False stops Tahti reading what this station is playing, from its
+   * programme page and from its stream, when a site changes or objects. */
+  nowPlaying?: boolean;
 };
 
 export const RADIO_STATIONS: RadioStation[] = [
@@ -96,6 +99,20 @@ export const DEFAULT_ENABLED_STATION_IDS: string[] = RADIO_STATIONS.map(
 
 export function radioStation(id: string): RadioStation | undefined {
   return RADIO_STATIONS.find((s) => s.id === id);
+}
+
+/** Where to read what a station is playing, or null when its now-playing is
+ * switched off. */
+export function stationNowPlayingSource(
+  station: Pick<RadioStation, 'programmingUrl' | 'streamUrl' | 'nowPlaying'>,
+): { programmingUrl: string | null; streamUrl: string | null } | null {
+  if (station.nowPlaying === false) {
+    return null;
+  }
+  return {
+    programmingUrl: station.programmingUrl ?? null,
+    streamUrl: station.streamUrl ?? null,
+  };
 }
 
 const CATALOG_PLAYABLE_PREFIX = 'radio-widget:';

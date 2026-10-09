@@ -15,14 +15,14 @@ The stations are the catalog in `packages/tahti-web/src/content/radioStations.ts
 
 ## Missing
 
-| Station | Site | State |
-| --- | --- | --- |
-| Radio Helsinki | radiohelsinki.fi | Parser exists; not run for the catalog station |
-| NRJ | radioplay.fi/nrj | Parser exists; not run for the catalog station |
-| Radio Nova | radioplay.fi/radio-nova | Parser exists; not run for the catalog station |
-| YleX | areena.yle.fi | No parser. The worker notes say Yle Areena needs an API key |
-| Radio Rock | radiorock.fi | No parser. Nelonen Media's widget is fetched client-side, nothing in the HTML |
-| Suomipop | supla.fi/suomipop | No parser. Same Nelonen/Supla client-side widget |
+| Station        | Site                    | State                                                                         |
+| -------------- | ----------------------- | ----------------------------------------------------------------------------- |
+| Radio Helsinki | radiohelsinki.fi        | Parser exists; not run for the catalog station                                |
+| NRJ            | radioplay.fi/nrj        | Parser exists; not run for the catalog station                                |
+| Radio Nova     | radioplay.fi/radio-nova | Parser exists; not run for the catalog station                                |
+| YleX           | areena.yle.fi           | No parser. The worker notes say Yle Areena needs an API key                   |
+| Radio Rock     | radiorock.fi            | No parser. Nelonen Media's widget is fetched client-side, nothing in the HTML |
+| Suomipop       | supla.fi/suomipop       | No parser. Same Nelonen/Supla client-side widget                              |
 
 ## Done (2026-10-04)
 
@@ -33,8 +33,10 @@ The stations are the catalog in `packages/tahti-web/src/content/radioStations.ts
 ## Plan
 
 - [ ] 1. tahti-org: one scraper module per station with a shared interface (`fetchNowPlaying(station) -> { program, artist, title }`), with a recorded fixture and a test each. Find the JSON endpoints the Radio Rock and Suomipop widgets call; decide on a Yle API key or the ICY title for YleX.
-- [ ] 3. tahti-web: also show it in the player bar title while a catalog station plays.
+- [x] 3. tahti-web: also show it in the player bar title while a catalog station plays. The title came with #505; the batch-51 follow-up makes the player bar and the OS media controls (Media Session) share it, polls only while the station plays and the tab is visible, and drops answers for a station the listener has left.
 - [ ] 4. Keep polite: one request per station per interval, a clear User-Agent, and a kill switch per station when a site changes or objects.
+  - Client side done: `fetchStationNowPlaying` shares one lookup per station for 25 seconds across the player bar, the station page and Listen, and a catalog station with `nowPlaying: false` in `radioStations.ts` is never asked (programme page or stream).
+  - Still open (tahti-org): the User-Agent on the API's page fetches and a server-side switch per station.
 
 ## Open questions for the user
 

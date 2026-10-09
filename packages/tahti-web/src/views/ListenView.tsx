@@ -45,6 +45,7 @@ import {
   radioStation,
   radioStationIdForPlayable,
   radioStationPlayable,
+  stationNowPlayingSource,
   type RadioStation,
 } from '../content/radioStations';
 import { usePolling } from '../hooks/usePolling';
@@ -60,15 +61,18 @@ import { usePlayerStore } from '../stores/playerStore';
 /** A catalog station card's second line: what the station is playing, or
  * its language and bitrate until that is known. */
 function StationCardSubtitle({
-  programmingUrl,
-  streamUrl,
+  source,
   fallback,
 }: {
-  programmingUrl?: string | null;
-  streamUrl?: string | null;
+  source: ReturnType<typeof stationNowPlayingSource>;
   fallback: string;
 }) {
-  return <>{useStationNowPlaying(programmingUrl, streamUrl) ?? fallback}</>;
+  return (
+    <>
+      {useStationNowPlaying(source?.programmingUrl, source?.streamUrl) ??
+        fallback}
+    </>
+  );
 }
 
 export type ListenTab = 'listen' | 'feed' | 'history';
@@ -385,8 +389,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
           }
           subtitle={
             <StationCardSubtitle
-              programmingUrl={station.programmingUrl}
-              streamUrl={station.streamUrl}
+              source={stationNowPlayingSource(station)}
               fallback={`${station.language} · ${station.bitrateKbps}kbps`}
             />
           }
