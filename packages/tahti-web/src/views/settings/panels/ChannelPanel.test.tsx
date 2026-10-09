@@ -24,6 +24,9 @@ vi.mock('../../studio/StudioBrandingView', () => ({
 vi.mock('../../../components/moderation/ChatAccessPanel', () => ({
   ChatAccessPanel: () => <div>chat access panel</div>,
 }));
+vi.mock('../../../components/moderation/ChatMessagesPanel', () => ({
+  ChatMessagesPanel: () => <div>chat messages panel</div>,
+}));
 vi.mock('../../../components/moderation/ChatBansPanel', () => ({
   ChatBansPanel: () => <div>chat bans panel</div>,
 }));
@@ -184,6 +187,7 @@ describe('ChannelPanel chat and moderators', () => {
       fireEvent.click(screen.getByRole('tab', { name: /Chat/ }));
     });
     expect(screen.getByText('chat access panel')).toBeTruthy();
+    expect(screen.getByText('chat messages panel')).toBeTruthy();
     expect(screen.getByText('chat bans panel')).toBeTruthy();
     expect(screen.queryByText('moderators panel')).toBeNull();
     expect(
