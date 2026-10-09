@@ -4,19 +4,17 @@ import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react';
 import { toast } from 'sonner';
 
 import { preferInternalEngine } from '@tahti-player/audio-core';
-import {
-  loadBlobOntoNewTrack,
-  MultitrackEditor,
-  useEditorStore,
-} from '@tahti-player/audio-editor';
+import { MultitrackEditor } from '@tahti-player/audio-editor';
 import { Button, Dialog, Input, SaveButton, ViewShell } from '@tahti-player/ui';
 import { VisualizerHost } from '@tahti-player/visualizer';
 
-import { fetchSoundVersions } from '../../api/sound-versions';
+import {
+  fetchSoundVersions,
+  uploadSoundVersion,
+} from '../../api/sound-versions';
 import {
   fetchEditorDraft,
   fetchEditorSource,
-  fetchEditorStreamBlob,
   renderEditorDraft,
   saveEditorDraft,
 } from '../../api/studio';
@@ -42,8 +40,10 @@ import { MasteringPanel } from './pro-editor/MasteringPanel';
 import { StemsPanel } from './pro-editor/StemsPanel';
 import type { EditorPeaks } from './pro-editor/waveform/useWaveformData';
 import { WaveformEditor } from './pro-editor/WaveformEditor';
+import { useMultitrackSession } from './useMultitrackSession';
 
 const DEFAULT_VERSION_LABEL = 'Edited mix';
+const MULTITRACK_BOUNCE_LABEL = 'Multitrack bounce';
 
 /** Keyed by sound so navigating between tracks starts from a clean editor
  * (selection, markers, zoom, unsaved edits, audio) instead of carrying the
@@ -57,7 +57,6 @@ function ProEditor({ soundId }: { soundId: string }) {
   const [sourceUrl, setSourceUrl] = useState<string | null>(null);
   const [title, setTitle] = useState('');
   const [editorMode, setEditorMode] = useState<'trim' | 'multitrack'>('trim');
-  const [multitrackReady, setMultitrackReady] = useState(false);
   const modeTrimId = useId();
   const modeMultiId = useId();
   const [editList, setEditList] = useState<EditList | null>(null);
@@ -68,6 +67,20 @@ function ProEditor({ soundId }: { soundId: string }) {
   const [versionLabel, setVersionLabel] = useState(DEFAULT_VERSION_LABEL);
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const {
+    multitrackReady,
+    editorProjectId,
+    sessionSync,
+    persistSession,
+    ensureMultitrackSession,
+    sendStemsToMultitrack,
+  } = useMultitrackSession({
+    soundId,
+    title,
+    editorMode,
+    setEditorMode,
+    setBusy,
+  });
   // A render's versionId while it is PENDING/PROCESSING, polled for
   // completion — the old Next app streamed live SSE progress; the SPA has no
   // equivalent, so without this a render is fire-and-forget.
@@ -369,23 +382,10 @@ function ProEditor({ soundId }: { soundId: string }) {
                 checked={editorMode === 'multitrack'}
                 onChange={() => {
                   setEditorMode('multitrack');
-                  // Isolate the editor graph from the player bridge.
-                  preferInternalEngine();
                   if (!multitrackReady) {
-                    void (async () => {
-                      try {
-                        const blob = await fetchEditorStreamBlob(soundId);
-                        useEditorStore
-                          .getState()
-                          .loadProject({ tracks: [], clips: [] });
-                        await loadBlobOntoNewTrack(blob, title || 'Source');
-                        setMultitrackReady(true);
-                      } catch {
-                        toast.error(
-                          'Could not load audio into the multitrack editor.',
-                        );
-                      }
-                    })();
+                    void ensureMultitrackSession();
+                  } else {
+                    preferInternalEngine();
                   }
                 }}
               />
@@ -423,15 +423,38 @@ function ProEditor({ soundId }: { soundId: string }) {
                     <VisualizerHost className="h-full min-h-48 w-full" />
                   }
                   onBounce={async (blob) => {
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `${title || 'mixdown'}-bounce.wav`;
-                    a.click();
-                    URL.revokeObjectURL(url);
-                    toast.success(
-                      'Bounce ready — WAV downloaded. Use Render version in trim mode to publish a revision, or upload the bounce from Music.',
-                    );
+                    setBusy(true);
+                    try {
+                      const file = new File(
+                        [blob],
+                        `${title || 'mixdown'}-bounce.wav`,
+                        { type: blob.type || 'audio/wav' },
+                      );
+                      const uploaded = await uploadSoundVersion(
+                        soundId,
+                        file,
+                        versionLabel.trim() || MULTITRACK_BOUNCE_LABEL,
+                      );
+                      if (uploaded.ok) {
+                        toast.success(
+                          `Bounce uploaded as revision ${uploaded.versionNumber}.`,
+                        );
+                        setMessage(
+                          `Bounce uploaded as revision ${uploaded.versionNumber} (${uploaded.status}).`,
+                        );
+                      } else {
+                        toast.error(uploaded.error);
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = file.name;
+                        a.click();
+                        URL.revokeObjectURL(url);
+                        toast.info('WAV downloaded as a fallback.');
+                      }
+                    } finally {
+                      setBusy(false);
+                    }
                   }}
                 />
               )}
@@ -439,7 +462,12 @@ function ProEditor({ soundId }: { soundId: string }) {
               {editorMode === 'trim' ? (
                 <>
                   <div className="grid gap-4 md:grid-cols-2">
-                    <StemsPanel soundId={soundId} />
+                    <StemsPanel
+                      soundId={soundId}
+                      onSendToMultitrack={(job) =>
+                        void sendStemsToMultitrack(job)
+                      }
+                    />
 
                     <StudioPanel title="Export">
                       <div className="flex flex-col gap-3">
@@ -486,17 +514,57 @@ function ProEditor({ soundId }: { soundId: string }) {
                   />
                 </>
               ) : (
-                <StudioPanel title="Multitrack export">
-                  <p className="text-foreground-secondary text-sm">
-                    Multitrack sessions autosave locally in this browser. Use{' '}
-                    <strong>Bounce</strong> to download a WAV, then switch to
-                    Trim mode to render a published version, or upload the
-                    bounce from Music. Server-side multitrack publish is not
-                    wired yet (no{' '}
-                    <code className="text-xs">/editor/bounce</code> — that route
-                    returns 410).
-                  </p>
-                </StudioPanel>
+                <>
+                  <StemsPanel
+                    soundId={soundId}
+                    onSendToMultitrack={(job) =>
+                      void sendStemsToMultitrack(job)
+                    }
+                  />
+                  <StudioPanel title="Multitrack session">
+                    <div className="flex flex-col gap-3">
+                      <p
+                        className="text-foreground-secondary text-sm"
+                        role="status"
+                      >
+                        {sessionSync === 'synced'
+                          ? 'Session synced to editor projects (arrange metadata). FX and audio stay in this browser (OPFS).'
+                          : sessionSync === 'syncing'
+                            ? 'Syncing session…'
+                            : sessionSync === 'local'
+                              ? 'Local only — server sync unavailable. OPFS autosave still applies.'
+                              : 'Open Multitrack to link an editor project for this sound.'}
+                      </p>
+                      <Input
+                        label="Version label"
+                        value={versionLabel}
+                        onChange={(e) => setVersionLabel(e.target.value)}
+                      />
+                      <div className="flex flex-wrap justify-end gap-2">
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          disabled={busy || !editorProjectId}
+                          onClick={() => void persistSession()}
+                        >
+                          Save session
+                        </Button>
+                      </div>
+                      <p className="text-foreground-secondary text-sm">
+                        <strong>Bounce</strong> uploads a WAV revision via sound
+                        versions. Full mix FX remain local until bounce.
+                      </p>
+                      {message && (
+                        <p
+                          className="text-foreground-secondary text-sm"
+                          role="status"
+                        >
+                          {message}
+                        </p>
+                      )}
+                    </div>
+                  </StudioPanel>
+                </>
               )}
             </>
           )}

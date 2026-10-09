@@ -1,4 +1,4 @@
-import { LoaderCircleIcon, SplitIcon } from 'lucide-react';
+import { LayersIcon, LoaderCircleIcon, SplitIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -20,7 +20,14 @@ const isRunning = (job: StemJob | undefined) =>
 
 /** Stem separation: request a 2- or 4-stem split, follow its progress, and
  * play the results. Owns its own job list. */
-export function StemsPanel({ soundId }: { soundId: string }) {
+export function StemsPanel({
+  soundId,
+  onSendToMultitrack,
+}: {
+  soundId: string;
+  /** When set, READY jobs offer “Send to Multitrack” (one lane per stem). */
+  onSendToMultitrack?: (job: StemJob) => void | Promise<void>;
+}) {
   const [stems, setStems] = useState<StemJob[]>([]);
   const [activeStemSet, setActiveStemSet] = useState<StemSet>('TWO_STEM');
   const [requesting, setRequesting] = useState(false);
@@ -72,6 +79,19 @@ export function StemsPanel({ soundId }: { soundId: string }) {
   const existing = stems.find((s) => s.stemSet === activeStemSet);
   const busyStem = requesting || isRunning(existing);
   const setLabel = STEM_SET_LABELS[activeStemSet];
+  const [sendingSet, setSendingSet] = useState<string | null>(null);
+
+  const sendJob = async (job: StemJob) => {
+    if (!onSendToMultitrack || !job.files?.length) {
+      return;
+    }
+    setSendingSet(job.stemSet);
+    try {
+      await onSendToMultitrack(job);
+    } finally {
+      setSendingSet(null);
+    }
+  };
 
   const requestSplit = async () => {
     setRequesting(true);
@@ -170,8 +190,30 @@ export function StemsPanel({ soundId }: { soundId: string }) {
                 </p>
               )}
               {job.files && job.files.length > 0 && (
-                <div className="mt-2">
+                <div className="mt-2 flex flex-col gap-2">
                   <StemPlayer files={job.files} />
+                  {onSendToMultitrack && job.status === 'READY' ? (
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      className="self-start"
+                      disabled={sendingSet === job.stemSet}
+                      onClick={() => void sendJob(job)}
+                    >
+                      {sendingSet === job.stemSet ? (
+                        <LoaderCircleIcon
+                          size={14}
+                          aria-hidden
+                          className="mr-1.5 animate-spin"
+                        />
+                      ) : (
+                        <LayersIcon size={14} aria-hidden className="mr-1.5" />
+                      )}
+                      {sendingSet === job.stemSet
+                        ? 'Loading lanes…'
+                        : 'Send to Multitrack'}
+                    </Button>
+                  ) : null}
                 </div>
               )}
             </li>

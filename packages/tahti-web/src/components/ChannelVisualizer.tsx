@@ -29,6 +29,9 @@ type Props = {
   audioReactive?: boolean;
   /** Prefer theDAW-ported Advanced/Cymatics modes when the preset matches. */
   engineMode?: VisualizerMode | null;
+  /** When true, show VisualizerHost mode picker (e.g. fullscreen player). */
+  showModePicker?: boolean;
+  onEngineModeChange?: (mode: VisualizerMode) => void;
 };
 
 const ThreeVisualizer = lazy(() =>
@@ -154,6 +157,8 @@ export const ChannelVisualizer = ({
   artworkUrl,
   audioReactive,
   engineMode,
+  showModePicker = false,
+  onEngineModeChange,
 }: Props) => {
   const [canAnimate, setCanAnimate] = useState(false);
   const [offscreen, setOffscreen] = useState(false);
@@ -218,7 +223,8 @@ export const ChannelVisualizer = ({
       <div ref={hostRef} className={className}>
         <VisualizerHost
           mode={portedMode}
-          showModePicker={false}
+          showModePicker={showModePicker}
+          onModeChange={onEngineModeChange}
           suspended={offscreen || !resolvedAudioReactive}
           className="h-full w-full"
         />
