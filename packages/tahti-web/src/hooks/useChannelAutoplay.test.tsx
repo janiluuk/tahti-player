@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { cleanup, renderHook } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { PublicChannel } from '../api/types';
 import { usePlaybackPrefsStore } from '../stores/playbackPrefsStore';
@@ -70,5 +70,27 @@ describe('useChannelAutoplay', () => {
     usePlaybackPrefsStore.setState({ channelAutoplay: true });
     renderHook(() => useChannelAutoplay(channel(), false));
     expect(state().currentId).toBeNull();
+  });
+
+  it('fades over to the channel when something else is playing', () => {
+    state().play({
+      id: 'sound:a',
+      kind: 'sound',
+      title: 'A',
+      artist: 'Artist',
+      streamUrl: 'https://cdn.example/a.mp3',
+      protocol: 'https',
+    });
+    usePlayerStore.setState({ status: 'playing' });
+    const original = state().fadeOverTo;
+    const fade = vi.fn().mockResolvedValue(true);
+    usePlayerStore.setState({ fadeOverTo: fade });
+    renderHook(() => useChannelAutoplay(channel(), true));
+    usePlayerStore.setState({ fadeOverTo: original });
+    expect(fade).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'live:night-drive' }),
+    );
+    expect(state().muted).toBe(false);
+    expect(state().currentId).toBe('sound:a');
   });
 });

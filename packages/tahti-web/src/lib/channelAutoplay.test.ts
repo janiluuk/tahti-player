@@ -55,7 +55,15 @@ describe('channelAutoplayAction', () => {
     ).toBe('muted');
   });
 
-  it('leaves alone what the listener paused, is playing, or already has on', () => {
+  it('fades over something else that is playing or still loading', () => {
+    for (const status of ['playing', 'loading'] as const) {
+      expect(
+        decide({ player: { status, currentId: 'sound:a', hasPlayed: true } }),
+      ).toBe('fade');
+    }
+  });
+
+  it('leaves alone what the listener paused or already has on', () => {
     expect(
       decide({
         player: { status: 'paused', currentId: 'sound:a', hasPlayed: true },
@@ -63,12 +71,7 @@ describe('channelAutoplayAction', () => {
     ).toBe('none');
     expect(
       decide({
-        player: { status: 'playing', currentId: 'sound:a', hasPlayed: true },
-      }),
-    ).toBe('none');
-    expect(
-      decide({
-        player: { status: 'paused', currentId: PLAYABLE.id, hasPlayed: false },
+        player: { status: 'playing', currentId: PLAYABLE.id, hasPlayed: true },
       }),
     ).toBe('none');
   });
