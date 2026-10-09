@@ -7,6 +7,11 @@ import {
   type VisualizerMode,
 } from '@tahti-player/visualizer';
 
+import {
+  channelVizPackFromJson,
+  vizPackModeAt,
+  type ChannelVizPack,
+} from '../lib/channelVizPacks';
 import { supportsWebGL } from '../lib/webgl';
 import type { ThreeVisualizerProps } from './visuals/ThreeVisualizer';
 
@@ -27,7 +32,8 @@ type Props = {
   className?: string;
   artworkUrl?: string | null;
   audioReactive?: boolean;
-  /** Prefer theDAW-ported Advanced/Cymatics modes when the preset matches. */
+  /** Prefer theDAW-ported Advanced/Cymatics modes when the preset matches.
+   * Without one, a viz pack saved in `visualSettingsJson` picks the mode. */
   engineMode?: VisualizerMode | null;
   /** When true, show VisualizerHost mode picker (e.g. fullscreen player). */
   showModePicker?: boolean;
@@ -147,6 +153,25 @@ function resolveEngineMode(
   return null;
 }
 
+function useVizPackMode(pack: ChannelVizPack | null): VisualizerMode | null {
+  const [elapsedMs, setElapsedMs] = useState(0);
+
+  useEffect(() => {
+    setElapsedMs(0);
+    if (!pack || pack.modes.length < 2) {
+      return;
+    }
+    const startedAt = Date.now();
+    const id = window.setInterval(
+      () => setElapsedMs(Date.now() - startedAt),
+      pack.rotateSeconds * 1000,
+    );
+    return () => window.clearInterval(id);
+  }, [pack]);
+
+  return pack ? vizPackModeAt(pack, elapsedMs) : null;
+}
+
 export const ChannelVisualizer = ({
   preset,
   colorScheme,
@@ -164,7 +189,12 @@ export const ChannelVisualizer = ({
   const [offscreen, setOffscreen] = useState(false);
   const hostRef = useRef<HTMLDivElement | null>(null);
   const mode = (preset ?? 'AURORA').toUpperCase();
-  const portedMode = resolveEngineMode(engineMode, preset ?? '');
+  const pack = useMemo(
+    () => (engineMode ? null : channelVizPackFromJson(visualSettingsJson)),
+    [engineMode, visualSettingsJson],
+  );
+  const packMode = useVizPackMode(pack);
+  const portedMode = resolveEngineMode(engineMode ?? packMode, preset ?? '');
   const scheme = useMemo(
     () => parseScheme(colorScheme, colorSchemeJson),
     [colorScheme, colorSchemeJson],

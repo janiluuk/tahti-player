@@ -41,6 +41,7 @@ import {
   usePresetLookDraft,
 } from '../components/channel-view';
 import { ChannelAirBadge } from '../components/channel-view/ChannelAirBadge';
+import { ChannelVizPackLabel } from '../components/channel-view/ChannelVizPackLabel';
 import { ChannelComments } from '../components/ChannelComments';
 import type { ChannelDesignerHandle } from '../components/ChannelDesigner';
 import { ChannelShareButton } from '../components/ChannelShareButton';
@@ -585,6 +586,7 @@ export function ChannelView({ slug }: { slug: string }) {
           )}
           <div className="flex flex-wrap items-center gap-2">
             <ChannelAirBadge channel={channel} />
+            {!editing && <ChannelVizPackLabel channel={channel} />}
             {isOwner && !editing && (
               <Button size="sm" variant="secondary" onClick={startEdit}>
                 <span className="inline-flex items-center gap-1.5">

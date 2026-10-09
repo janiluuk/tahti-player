@@ -5,6 +5,7 @@ import {
   youtubeEmbedUrl,
 } from '../../api/channel-design';
 import type { PublicChannel } from '../../api/types';
+import { hasPresetTuning } from '../../lib/channelVizPacks';
 import {
   normalizeColorScheme,
   type NormalizedColorScheme,
@@ -16,7 +17,9 @@ const CHANNEL_RADIO_VIZ_SETTINGS = { speed: 1.15, intensity: 1.8, scale: 1 };
 /** Channels with their own saved visualizer tuning keep it; others get the
  * radio defaults. */
 export function heroVisualizerSettingsFor(channel: PublicChannel) {
-  return channel.visualSettingsJson ? undefined : CHANNEL_RADIO_VIZ_SETTINGS;
+  return hasPresetTuning(channel.visualSettingsJson)
+    ? undefined
+    : CHANNEL_RADIO_VIZ_SETTINGS;
 }
 
 type Props = {
