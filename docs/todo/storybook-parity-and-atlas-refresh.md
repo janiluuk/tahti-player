@@ -26,4 +26,4 @@ Tracked as slices 11–15 in [`next-twenty-slices.md`](next-twenty-slices.md):
 - [x] 2. Channel Designer: stories for the missing panels, plays for tabs, presets, reset and layers, plus the missing args.
 - [ ] 3. Channel page blocks, chat (ChatNotice states), radio show, schedule, jam and DMs.
 - [ ] 6. Studio shows, events, playlists and branding, plus Settings panels.
-- [ ] 7. Admin tabs and dialogs, plus auth pages.
+- [x] 7. Admin tabs and dialogs, plus auth pages.

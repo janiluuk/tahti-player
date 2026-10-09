@@ -24,6 +24,7 @@ import type {
   DiscoverTrackItem,
   FanTiersResponse,
   FeedResponse,
+  MembershipStatus,
   PublicChannel,
   PublicCollection,
   PublicProfile,
@@ -57,9 +58,12 @@ export interface MockFixtures {
   fanTiers: { data: FanTiersResponse; args: [username: string] };
   feed: { data: FeedResponse; args: [] };
   latestTracks: { data: DiscoverTrackItem[]; args: [] };
+  membership: { data: MembershipStatus | null; args: [] };
   profile: { data: PublicProfile; args: [username: string] };
   publicGallery: { data: PublicPressKitImage[]; args: [username: string] };
   radio: { data: RadioNowPlaying; args: [] };
+  resetPasswordInfo: { data: PasswordLinkInfo; args: [token: string] };
+  setupPasswordInfo: { data: PasswordLinkInfo; args: [token: string] };
   search: { data: SearchResponse; args: [q: string, type: string] };
   smartLink: { data: SmartLinkView; args: [smartLinkSlug: string] };
   soundItems: { data: ChannelSoundItem[]; args: [slug: string] };
@@ -76,6 +80,11 @@ export interface MockFixtures {
   };
   venueProfile: { data: VenueProfile | null; args: [slug: string] };
 }
+
+/** What the setup-password and reset-password link lookups resolve to. */
+export type PasswordLinkInfo =
+  | { ok: true; email: string; username: string; displayName: string }
+  | { ok: false; error: string };
 
 export type MockFixtureKey = keyof MockFixtures;
 
