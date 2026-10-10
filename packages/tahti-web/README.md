@@ -210,6 +210,18 @@ README_GUIDE_BASE_URL=http://127.0.0.1:5180 node packages/tahti-web/scripts/capt
 
 That rewrites the README feature highlights and the full [`docs/VIEW-GUIDE.md`](./docs/VIEW-GUIDE.md) index from 1680×1050 viewport captures (mock content, reduced motion).
 
+The guide and the screen atlas are captured as the artist/board account. To see the app as a plain listener, and to check what a listener and a signed-out visitor get, run against the mock app:
+
+```bash
+# listener@tahti.live on the public and listener pages, plus the Studio and Admin gates;
+# shots go to docs/listener-shots/ (not committed), never into the atlas
+MAP_BASE_URL=http://127.0.0.1:5173 MAP_ACCOUNT=listener node packages/tahti-web/scripts/capture-map-screens.mjs
+# fails on sign-in prompts, page errors, owner tools or the email address shown to a listener
+BASE=http://127.0.0.1:5173 node packages/tahti-web/scripts/audit-signed-out.mjs
+```
+
+See [`docs/SCREEN-ATLAS.md`](./docs/SCREEN-ATLAS.md#listener-pass) for what each pass covers.
+
 ## Documentation and architecture
 
 The application is a Vite/React client in a pnpm monorepo. Shared Nuclear components live in `packages/ui`; the Tahti web client lives in `packages/tahti-web`; plugin contracts and player services live in the surrounding packages. Product planning and implementation notes are kept in [`WORKPLAN.md`](./WORKPLAN.md) and [`UI-REDESIGN-WORKLOG.md`](./UI-REDESIGN-WORKLOG.md).
