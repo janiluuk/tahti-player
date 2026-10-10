@@ -241,9 +241,15 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Chrome/Section navigation` | `tahti-web/SectionNavigation.stories.tsx` |
 | `Tahti/Navigation/SectionTabs` | `tahti-web/SectionTabs.stories.tsx` |
 | `Tahti/Misc/SecurityTotpPanel` | `tahti-web/SecurityTotpPanel.stories.tsx` |
+| `Tahti/Settings/AccountPanel` | `tahti-web/SettingsAccountPanel.stories.tsx` |
+| `Tahti/Settings/ArtistPanel` | `tahti-web/SettingsArtistPanel.stories.tsx` |
+| `Tahti/Settings/BroadcastPanel` | `tahti-web/SettingsBroadcastPanel.stories.tsx` |
+| `Tahti/Settings/ChannelPanel` | `tahti-web/SettingsChannelPanel.stories.tsx` |
 | `Tahti/Settings/IntegrationsPanel` | `tahti-web/SettingsIntegrationsPanel.stories.tsx` |
 | `Tahti/Settings/LogsPanel` | `tahti-web/SettingsLogsPanel.stories.tsx` |
 | `Tahti/Settings/PlaybackPanel` | `tahti-web/SettingsPlaybackPanel.stories.tsx` |
+| `Tahti/Settings/ThemesPanel` | `tahti-web/SettingsThemesPanel.stories.tsx` |
+| `Tahti/Settings/SettingsView` | `tahti-web/SettingsView.stories.tsx` |
 | `Tahti/Auth/SetupPasswordView` | `tahti-web/SetupPasswordView.stories.tsx` |
 | `Tahti/Misc/SidebarBuildInfo` | `tahti-web/SidebarBuildInfo.stories.tsx` |
 | `Tahti/Auth/SignupPaymentView` | `tahti-web/SignupPaymentView.stories.tsx` |
@@ -254,6 +260,8 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/StreamManagerPanel` | `tahti-web/StreamManagerPanel.stories.tsx` |
 | `Tahti/Studio/StudioBrandingView` | `tahti-web/StudioBrandingView.stories.tsx` |
 | `Tahti/Studio/StudioDistributionView` | `tahti-web/StudioDistributionView.stories.tsx` |
+| `Tahti/Studio/StudioEventCreateView` | `tahti-web/StudioEventCreateView.stories.tsx` |
+| `Tahti/Studio/StudioEventsView` | `tahti-web/StudioEventsView.stories.tsx` |
 | `Tahti/Studio/StudioGate` | `tahti-web/StudioGate.stories.tsx` |
 | `Tahti/Studio/StudioGoLiveView` | `tahti-web/StudioGoLiveView.stories.tsx` |
 | `Tahti/Studio/StudioHomeView` | `tahti-web/StudioHomeView.stories.tsx` |
@@ -263,6 +271,8 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/StudioPlaylistsView` | `tahti-web/StudioPlaylistsView.stories.tsx` |
 | `Tahti/Studio/StudioReleaseDetailView` | `tahti-web/StudioReleaseDetailView.stories.tsx` |
 | `Tahti/Studio/StudioScheduleView` | `tahti-web/StudioScheduleView.stories.tsx` |
+| `Tahti/Studio/StudioShowDetailView` | `tahti-web/StudioShowDetailView.stories.tsx` |
+| `Tahti/Studio/StudioShowsView` | `tahti-web/StudioShowsView.stories.tsx` |
 | `Tahti/Studio/StudioSoundView` | `tahti-web/StudioSoundView.stories.tsx` |
 | `Tahti/Studio/StudioSoundsView` | `tahti-web/StudioSoundsView.stories.tsx` |
 | `Tahti/Studio/StudioStripeView` | `tahti-web/StudioStripeView.stories.tsx` |

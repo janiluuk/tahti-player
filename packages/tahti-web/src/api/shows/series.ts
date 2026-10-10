@@ -1,4 +1,5 @@
 import type { FetchMeta } from '.././client';
+import { mockFixture } from '.././mock-overrides';
 import {
   allowMockFallback,
   apiErrorMeta,
@@ -29,7 +30,7 @@ export async function fetchShowSeries(): Promise<{
 }> {
   if (isForceMock()) {
     return {
-      data: seedSeries(),
+      data: mockFixture('showSeries', seedSeries()),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }

@@ -23,6 +23,7 @@ import type {
   RadioShowUpcomingTrack,
   StudioShowBooking,
 } from './shows';
+import type { StudioShowSeries } from './shows/types';
 import type {
   StudioCollection,
   StudioReleaseList,
@@ -84,6 +85,7 @@ export interface MockFixtures {
   liveTracklist: { data: LiveTracklistEntry[]; args: [slug: string] };
   membership: { data: MembershipStatus | null; args: [] };
   messageContacts: { data: MessageContact[]; args: [] };
+  myEvents: { data: ArtistEvent[]; args: [] };
   notifications: {
     data: TahtiNotification[];
     args: [includeInboxExtras: boolean];
@@ -105,6 +107,7 @@ export interface MockFixtures {
   setupPasswordInfo: { data: PasswordLinkInfo; args: [token: string] };
   search: { data: SearchResponse; args: [q: string, type: string] };
   showBookings: { data: StudioShowBooking[]; args: [from: string, to: string] };
+  showSeries: { data: StudioShowSeries[]; args: [] };
   smartLink: { data: SmartLinkView; args: [smartLinkSlug: string] };
   soundItems: { data: ChannelSoundItem[]; args: [slug: string] };
   studioCollections: { data: StudioCollection[]; args: [] };

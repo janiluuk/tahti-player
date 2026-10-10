@@ -7,7 +7,7 @@ Shared decorators, fixture overrides and `play` helpers for the stories in
 | --- | --- |
 | `decorators.tsx` | `withTahtiRouter(path)`, `withMockAuth(user)`, `MOCK_USERS`, `withPageSurface()` |
 | `mock-data.tsx` | `mockData(overrides)` for `parameters.mockData`, `withMockData(overrides)` decorator |
-| `play.ts` | `withinBody`, `findDialog`, `openDialog`, `expectNoDialog`, `selectTab`, `findToast` |
+| `play.ts` | `withinBody`, `findDialog`, `openDialog`, `expectNoDialog`, `selectTab`, `findToast`, `expectVisible` |
 | `location.ts` | `withLocationSearch(search)` story `beforeEach` for views that read `?token=` from `window.location` |
 
 ## Per-story mock data
@@ -41,7 +41,7 @@ export const MemberProfile: Story = {
   channelVisualPresets, membership, resetPasswordInfo, setupPasswordInfo,
   chatAccess, chatToken, liveTracklist, channelSchedule, radioShow,
   radioShowNowPlaying, radioShowUpcoming, radioSlots, showBookings,
-  conversations, conversation, messageContacts).
+  conversations, conversation, messageContacts, myEvents, showSeries).
 - A function override can throw to make the call fail the way the API
   would, e.g. `chatToken: () => { throw new Error('banned'); }`.
 - APIs with no offline mock at all (Jam) are stood in for by a story-level

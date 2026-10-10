@@ -99,7 +99,7 @@ export async function fetchMyEvents(): Promise<{
 }> {
   if (isForceMock()) {
     return {
-      data: [...mockEvents],
+      data: mockFixture('myEvents', [...mockEvents]),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
