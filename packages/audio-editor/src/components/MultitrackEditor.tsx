@@ -46,6 +46,7 @@ import {
   type EditorTrack,
 } from '../state/editorStore';
 import * as liveMixer from '../state/liveMixer';
+import { TrackAutomationLane } from './TrackAutomationLane';
 
 export type MultitrackEditorProps = {
   className?: string;
@@ -557,6 +558,11 @@ export function MultitrackEditor({
                         setSelectedTrackId(track.id);
                         setFxScope('track');
                       }}
+                    />
+                    <TrackAutomationLane
+                      track={track}
+                      clips={clips.filter((c) => c.trackId === track.id)}
+                      pxPerSec={pxPerSec}
                     />
                     <div
                       className="pointer-events-none absolute top-0 bottom-0 w-px bg-red-500"

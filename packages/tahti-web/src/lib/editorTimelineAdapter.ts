@@ -1,4 +1,10 @@
-import type { AudioClip, EditorTrack } from '@tahti-player/audio-editor';
+import {
+  parseAutomation,
+  serializeAutomation,
+  type AudioClip,
+  type AutomationLane,
+  type EditorTrack,
+} from '@tahti-player/audio-editor';
 
 import type {
   EditorTimeline,
@@ -24,10 +30,13 @@ export type EditorStoreSnapshot = {
   tracks: EditorTrack[];
   clips: AudioClip[];
   bpm?: number;
+  automationLanes?: AutomationLane[];
 };
 
 /** Serialize the local Multitrack store into the server EditorTimeline shape.
- * FX chains, pan, and audio blobs are OPFS-only and omitted. */
+ * FX chains, pan, and audio blobs are OPFS-only and omitted. Automation lanes
+ * are included unless they exceed the metadata budget, in which case they stay
+ * OPFS-only too. */
 export function toEditorTimeline(
   snapshot: EditorStoreSnapshot,
   defaultSoundId: string,
@@ -59,11 +68,23 @@ export function toEditorTimeline(
       clips: trackClips,
     };
   });
+  const automation = serializeAutomation(snapshot.automationLanes ?? []);
   return {
     version: 1,
     durationSec: Math.max(1, durationSec),
     tracks,
+    ...(automation ? { automation } : {}),
   };
+}
+
+/** Automation lanes saved in a server timeline, limited to its own tracks. */
+export function automationFromTimeline(
+  timeline: EditorTimeline,
+): AutomationLane[] {
+  return parseAutomation(
+    timeline.automation,
+    new Set(timeline.tracks.map((t) => t.id)),
+  );
 }
 
 export type HydratedClipSeed = {

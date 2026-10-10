@@ -15,6 +15,7 @@ export type {
   AudioClip,
   EditorTrack,
   AutomationLane,
+  AutomationPoint,
   AutomationTarget,
   TimelineMarker,
   SnapDivision,
@@ -35,3 +36,16 @@ export {
   useAutosaveRecoveryStore,
 } from './lib/editorAutosave';
 export { encodeWav } from './lib/wavEncode';
+export { TrackAutomationLane } from './components/TrackAutomationLane';
+export type { TrackAutomationLaneProps } from './components/TrackAutomationLane';
+export {
+  serializeAutomation,
+  parseAutomation,
+  laneParamEvents,
+  trackFxAutomationParam,
+  AUTOMATION_SYNC_MAX_BYTES,
+} from './lib/automation';
+export type {
+  SerializedAutomation,
+  SerializedAutomationLane,
+} from './lib/automation';

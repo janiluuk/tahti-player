@@ -1,5 +1,7 @@
 /** Artist studio / catalog / editor types (mirrors Tahti /api/me/*). */
 
+import type { SerializedAutomation } from '@tahti-player/audio-editor';
+
 import type { CollectionItemContribution } from './collection-contribution';
 
 export type StudioChannel = {
@@ -298,6 +300,9 @@ export type EditorTimeline = {
   version: 1;
   durationSec: number;
   tracks: EditorTimelineTrack[];
+  /** Multitrack automation lanes. The API stores `timeline` as free-form JSON
+   * (capped at 500 kB), so this rides along without its own field. */
+  automation?: SerializedAutomation;
 };
 
 export type EditCut = { start: number; end: number };
