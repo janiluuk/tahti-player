@@ -5,6 +5,7 @@ import {
 } from '@tahti-player/audio-core';
 import {
   buildEffectChain,
+  getRackEffect,
   SPATIAL_TELEPORT,
   teleportXYZ,
   type ChainEntry,
@@ -13,14 +14,26 @@ import {
 
 import { sliceChunks, type AudioChunk } from '../lib/audioAnalysis';
 import {
+  activeFxLanes,
+  activeTrackLane,
+  fxWriteTimes,
+  PAN_RANGE,
+  scheduleLaneOnParam,
+  VOLUME_RANGE,
+} from '../lib/automation';
+import {
   clipPeakGain,
+  sampleLane,
   useEditorStore,
   type AudioClip,
+  type AutomationLane,
   type EditorTrack,
 } from './editorStore';
 import { logError } from './log';
 
 const RAMP_TC = 0.015;
+const FX_WRITE_EPSILON = 1e-4;
+const OFFLINE_FX_STEP_SEC = 0.02;
 
 const decodeCache = new WeakMap<Blob, AudioBuffer>();
 const analysisCache = new WeakMap<Blob, AudioChunk[]>();
@@ -44,6 +57,7 @@ let startCtxTime = 0;
 let startPlayhead = 0;
 let raf = 0;
 const scheduled: AudioBufferSourceNode[] = [];
+const lastFxWrite = new Map<string, number>();
 
 async function decodeBlob(
   ctx: BaseAudioContext,
@@ -203,12 +217,90 @@ function tick(): void {
   const ctx = getEngineCtx();
   const now = startPlayhead + (ctx.currentTime - startCtxTime);
   useEditorStore.getState().setPlayhead(Math.max(0, now));
+  writeFxAutomation(Math.max(0, now));
   const { loopEnabled, loopStart, loopEnd } = useEditorStore.getState();
   if (loopEnabled && loopEnd > loopStart && now >= loopEnd) {
     void seek(loopStart);
     return;
   }
   raf = requestAnimationFrame(tick);
+}
+
+function paramDefault(entryEffect: string, key: string): number | undefined {
+  return getRackEffect(entryEffect)?.params.find((p) => p.key === key)?.default;
+}
+
+function writeFxAutomation(timelineSec: number): void {
+  const { automationLanes } = useEditorStore.getState();
+  for (const [trackId, nodes] of trackNodes) {
+    if (!nodes.chain) {
+      continue;
+    }
+    for (const lane of activeFxLanes(automationLanes, trackId)) {
+      const v = sampleLane(lane, timelineSec);
+      const { entryId, paramKey } = lane.target;
+      if (v === null || !entryId || !paramKey) {
+        continue;
+      }
+      const prev = lastFxWrite.get(lane.id);
+      if (prev !== undefined && Math.abs(prev - v) < FX_WRITE_EPSILON) {
+        continue;
+      }
+      lastFxWrite.set(lane.id, v);
+      nodes.chain.updateParams(entryId, { [paramKey]: v });
+    }
+  }
+}
+
+function applyTrackAutomation(
+  lanes: readonly AutomationLane[],
+  playhead: number,
+  ctxStart: number,
+): void {
+  lastFxWrite.clear();
+  for (const [trackId, nodes] of trackNodes) {
+    const vol = activeTrackLane(lanes, trackId, 'trackVolume');
+    if (vol) {
+      scheduleLaneOnParam(
+        nodes.gain.gain,
+        vol,
+        playhead,
+        ctxStart,
+        VOLUME_RANGE,
+      );
+    }
+    const pan = activeTrackLane(lanes, trackId, 'trackPan');
+    if (pan) {
+      scheduleLaneOnParam(nodes.panner.pan, pan, playhead, ctxStart, PAN_RANGE);
+    }
+  }
+  writeFxAutomation(playhead);
+}
+
+/** Hand the params back to the static mixer values once the transport stops. */
+function releaseAutomation(): void {
+  const st = useEditorStore.getState();
+  for (const track of st.tracks) {
+    const nodes = trackNodes.get(track.id);
+    if (!nodes) {
+      continue;
+    }
+    nodes.gain.gain.cancelScheduledValues(0);
+    nodes.panner.pan.cancelScheduledValues(0);
+    for (const lane of activeFxLanes(st.automationLanes, track.id)) {
+      const { entryId, paramKey } = lane.target;
+      const entry = (track.fxChain ?? []).find((e) => e.id === entryId);
+      if (!entry || !paramKey || !nodes.chain) {
+        continue;
+      }
+      const v = entry.params[paramKey] ?? paramDefault(entry.effect, paramKey);
+      if (v !== undefined) {
+        nodes.chain.updateParams(entry.id, { [paramKey]: v });
+      }
+    }
+  }
+  lastFxWrite.clear();
+  syncMixerParams();
 }
 
 function clipsForTrack(trackId: string): AudioClip[] {
@@ -227,6 +319,7 @@ async function scheduleFrom(playhead: number): Promise<void> {
   rebuildMasterChain(st.masterFxChain as ChainEntry[]);
 
   const when0 = ctx.currentTime + 0.02;
+  applyTrackAutomation(st.automationLanes, playhead, when0);
   for (const track of st.tracks) {
     const nodes = trackNodes.get(track.id);
     if (!nodes) {
@@ -321,6 +414,7 @@ export function stop(): void {
   useEditorStore.getState().setPlaying(false);
   cancelAnimationFrame(raf);
   stopAllSources();
+  releaseAutomation();
 }
 
 export async function seek(sec: number): Promise<void> {
@@ -340,8 +434,20 @@ export function syncMixerParams(): void {
       continue;
     }
     const ctx = getEngineCtx();
-    nodes.gain.gain.setTargetAtTime(track.volume, ctx.currentTime, RAMP_TC);
-    nodes.panner.pan.setTargetAtTime(track.pan, ctx.currentTime, RAMP_TC);
+    // While playing, an automated param follows its lane; a fader move must not
+    // cut into the scheduled envelope.
+    if (
+      !playing ||
+      !activeTrackLane(st.automationLanes, track.id, 'trackVolume')
+    ) {
+      nodes.gain.gain.setTargetAtTime(track.volume, ctx.currentTime, RAMP_TC);
+    }
+    if (
+      !playing ||
+      !activeTrackLane(st.automationLanes, track.id, 'trackPan')
+    ) {
+      nodes.panner.pan.setTargetAtTime(track.pan, ctx.currentTime, RAMP_TC);
+    }
   }
   applyMuteSolo(st.tracks);
 }
@@ -386,6 +492,8 @@ export async function bounceMixdown(): Promise<Blob | null> {
   masterOut.connect(offline.destination);
 
   const anySolo = st.tracks.some((t) => t.solo);
+  const trackHandles: ChainHandle[] = [];
+  const fxWrites: OfflineFxWrites = new Map();
   for (const track of st.tracks) {
     if (track.mute || (anySolo && !track.solo)) {
       continue;
@@ -394,16 +502,34 @@ export async function bounceMixdown(): Promise<Blob | null> {
     tGain.gain.value = track.volume;
     const pan = offline.createStereoPanner();
     pan.pan.value = track.pan;
+    const volLane = activeTrackLane(
+      st.automationLanes,
+      track.id,
+      'trackVolume',
+    );
+    if (volLane) {
+      scheduleLaneOnParam(tGain.gain, volLane, 0, 0, VOLUME_RANGE);
+    }
+    const panLane = activeTrackLane(st.automationLanes, track.id, 'trackPan');
+    if (panLane) {
+      scheduleLaneOnParam(pan.pan, panLane, 0, 0, PAN_RANGE);
+    }
+    const fxLanes = activeFxLanes(st.automationLanes, track.id);
     const insertIn = offline.createGain();
     const insertOut = offline.createGain();
     tGain.connect(insertIn);
-    const chain = (track.fxChain ?? []).filter(
-      (e) => e.enabled && e.effect !== 'vst3',
-    ) as ChainEntry[];
+    const chain = (
+      (track.fxChain ?? []).filter(
+        (e) => e.enabled && e.effect !== 'vst3',
+      ) as ChainEntry[]
+    ).map((e) => withLaneStartValues(e, fxLanes));
     const handle = chain.length
       ? buildEffectChain(offline, insertIn, insertOut, chain)
       : null;
-    if (!handle) {
+    if (handle) {
+      trackHandles.push(handle);
+      collectOfflineFxWrites(fxWrites, handle, fxLanes, end);
+    } else {
       insertIn.connect(insertOut);
     }
     insertOut.connect(pan);
@@ -427,11 +553,90 @@ export async function bounceMixdown(): Promise<Blob | null> {
       g.connect(tGain);
       src.start(clip.startSec, clip.offsetIntoSource, clip.durationSec);
     }
-    handle?.dispose();
   }
+  registerOfflineFxWrites(offline, fxWrites, end);
 
   const rendered = await offline.startRendering();
+  // Track chains stay wired until rendering finishes; disposing them inside
+  // the loop disconnected every track insert before a sample was rendered.
+  for (const h of trackHandles) {
+    h.dispose();
+  }
   mh?.dispose();
   const { encodeWav } = await import('../lib/wavEncode');
   return encodeWav(rendered);
+}
+
+function withLaneStartValues(
+  entry: ChainEntry,
+  lanes: readonly AutomationLane[],
+): ChainEntry {
+  const own = lanes.filter((l) => l.target.entryId === entry.id);
+  if (!own.length) {
+    return entry;
+  }
+  const params = { ...entry.params };
+  for (const lane of own) {
+    const v = sampleLane(lane, 0);
+    if (v !== null && lane.target.paramKey) {
+      params[lane.target.paramKey] = v;
+    }
+  }
+  return { ...entry, params };
+}
+
+/** Pending FX param pushes keyed by render time in ms. One map serves every
+ *  track because an OfflineAudioContext rejects a second suspend at a time
+ *  that already has one. */
+type OfflineFxWrites = Map<number, Array<() => void>>;
+
+function collectOfflineFxWrites(
+  writes: OfflineFxWrites,
+  handle: ChainHandle,
+  lanes: readonly AutomationLane[],
+  endSec: number,
+): void {
+  for (const lane of lanes) {
+    const { entryId, paramKey } = lane.target;
+    if (!entryId || !paramKey) {
+      continue;
+    }
+    for (const t of fxWriteTimes(lane, OFFLINE_FX_STEP_SEC, endSec)) {
+      const key = Math.round(t * 1000);
+      const list = writes.get(key) ?? [];
+      list.push(() => {
+        const v = sampleLane(lane, t);
+        if (v !== null) {
+          handle.updateParams(entryId, { [paramKey]: v });
+        }
+      });
+      writes.set(key, list);
+    }
+  }
+}
+
+function registerOfflineFxWrites(
+  offline: OfflineAudioContext,
+  writes: OfflineFxWrites,
+  endSec: number,
+): void {
+  // Rack params are plain values, not AudioParams, so an offline render can only
+  // follow them by pausing at fixed steps and pushing the next value.
+  for (const [ms, fns] of writes) {
+    const t = ms / 1000;
+    if (t <= 0 || t >= endSec) {
+      continue;
+    }
+    offline
+      .suspend(t)
+      .then(() => {
+        for (const fn of fns) {
+          fn();
+        }
+        return offline.resume();
+      })
+      .catch((e: unknown) =>
+        logError('liveMixer', e instanceof Error ? e.message : String(e)),
+      );
+  }
 }

@@ -18,6 +18,7 @@ import {
 } from '../../api/studio';
 import type { EditorTimeline } from '../../api/studio-types';
 import {
+  automationFromTimeline,
   timelineHasClips,
   toEditorTimeline,
   tracksFromTimeline,
@@ -93,6 +94,7 @@ async function hydrateFromTimeline(
       color: t.color || '#3b82f6',
     })),
     clips,
+    automationLanes: automationFromTimeline(timeline),
   });
   return clips.length > 0;
 }
@@ -121,7 +123,12 @@ export function useMultitrackSession({
     }
     const st = useEditorStore.getState();
     const timeline = toEditorTimeline(
-      { tracks: st.tracks, clips: st.clips, bpm: st.bpm },
+      {
+        tracks: st.tracks,
+        clips: st.clips,
+        bpm: st.bpm,
+        automationLanes: st.automationLanes,
+      },
       soundId,
     );
     setSessionSync('syncing');
@@ -238,7 +245,12 @@ export function useMultitrackSession({
         await updateEditorProject(
           projectId,
           toEditorTimeline(
-            { tracks: st.tracks, clips: st.clips, bpm: st.bpm },
+            {
+              tracks: st.tracks,
+              clips: st.clips,
+              bpm: st.bpm,
+              automationLanes: st.automationLanes,
+            },
             soundId,
           ),
         );
