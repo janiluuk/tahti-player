@@ -37,6 +37,7 @@ import {
   type EditHistory,
 } from './pro-editor/editHistory';
 import { MasteringPanel } from './pro-editor/MasteringPanel';
+import { PromptScoreBridgePanel } from './pro-editor/prompt-bridge/PromptScoreBridgePanel';
 import { StemsPanel } from './pro-editor/StemsPanel';
 import type { EditorPeaks } from './pro-editor/waveform/useWaveformData';
 import { WaveformEditor } from './pro-editor/WaveformEditor';
@@ -566,6 +567,8 @@ function ProEditor({ soundId }: { soundId: string }) {
                   </StudioPanel>
                 </>
               )}
+
+              <PromptScoreBridgePanel />
             </>
           )}
         </ViewShell>
