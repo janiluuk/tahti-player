@@ -8,6 +8,7 @@ Shared decorators, fixture overrides and `play` helpers for the stories in
 | `decorators.tsx` | `withTahtiRouter(path)`, `withMockAuth(user)`, `MOCK_USERS`, `withPageSurface()` |
 | `mock-data.tsx` | `mockData(overrides)` for `parameters.mockData`, `withMockData(overrides)` decorator |
 | `play.ts` | `withinBody`, `findDialog`, `openDialog`, `expectNoDialog`, `selectTab`, `findToast` |
+| `location.ts` | `withLocationSearch(search)` story `beforeEach` for views that read `?token=` from `window.location` |
 
 ## Per-story mock data
 
@@ -37,7 +38,7 @@ export const MemberProfile: Story = {
   search, radio, feed, announcements, fanTiers, venueProfile, chatHistory,
   topTracks, latestTracks, studioSounds, studioCollections, studioReleases,
   userLikes, channelEvents, publicGallery, tagTracks, channelVisual,
-  channelVisualPresets).
+  channelVisualPresets, membership, resetPasswordInfo, setupPasswordInfo).
 - Derived fixtures follow their source: overriding `channel` also changes
   the profile, fan tiers and sound items built from it.
 - Meta-level and story-level `mockData` deep-merge like any other
