@@ -11,7 +11,7 @@ import {
   type StemJob,
   type StemSet,
 } from '../../../api/studio';
-import { StemPlayer } from '../../../components/StemPlayer';
+import { StemMixer } from '../../../components/StemMixer';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { usePolling } from '../../../hooks/usePolling';
 
@@ -191,7 +191,7 @@ export function StemsPanel({
               )}
               {job.files && job.files.length > 0 && (
                 <div className="mt-2 flex flex-col gap-2">
-                  <StemPlayer files={job.files} />
+                  <StemMixer files={job.files} />
                   {onSendToMultitrack && job.status === 'READY' ? (
                     <Button
                       size="sm"
