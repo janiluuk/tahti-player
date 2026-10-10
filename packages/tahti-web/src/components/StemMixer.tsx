@@ -61,7 +61,10 @@ export function StemMixer({
     for (const label of labels) {
       const el = audioRefs.current[label];
       if (el) {
-        el.volume = gains[label] ?? 1;
+        const gain = gains[label] ?? 1;
+        el.volume = gain;
+        // iOS Safari ignores `volume`, so silence also goes through `muted`.
+        el.muted = gain === 0;
       }
     }
   }, [labels, gains]);

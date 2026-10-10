@@ -40,6 +40,14 @@ describe('StemMixer', () => {
     );
   });
 
+  it('also sets muted on silenced stems', () => {
+    const { container } = render(<StemMixer files={files} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Mute Drums' }));
+    expect(
+      Array.from(container.querySelectorAll('audio')).map((el) => el.muted),
+    ).toEqual([false, true, false]);
+  });
+
   it('scales a stem by its level fader', () => {
     const { container } = render(<StemMixer files={files} />);
     fireEvent.change(screen.getByLabelText('Bass level'), {
