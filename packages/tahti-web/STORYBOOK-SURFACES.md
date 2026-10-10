@@ -233,6 +233,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Discover/TagSearchView` | `tahti-web/TagSearchView.stories.tsx` |
 | `Tahti/Misc/TahtiLogo` | `tahti-web/TahtiLogo.stories.tsx` |
 | `Tahti/Studio/TahtiRotationPlaylistEditor` | `tahti-web/TahtiRotationPlaylistEditor.stories.tsx` |
+| `Tahti/Studio/ProEditor/TakeMetamorphDialog` | `tahti-web/TakeMetamorphDialog.stories.tsx` |
 | `Tahti/Settings/ThemeEditor` | `tahti-web/ThemeEditor.stories.tsx` |
 | `Tahti/Settings/ThemeVisualizationSettings` | `tahti-web/ThemeVisualizationSettings.stories.tsx` |
 | `Tahti/Track/TimelineReactionBar` | `tahti-web/TimelineReactionBar.stories.tsx` |
