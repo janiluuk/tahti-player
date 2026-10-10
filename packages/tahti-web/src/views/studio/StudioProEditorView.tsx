@@ -38,6 +38,7 @@ import {
 } from './pro-editor/editHistory';
 import { MasteringPanel } from './pro-editor/MasteringPanel';
 import { StemsPanel } from './pro-editor/StemsPanel';
+import { TakeMetamorphPanel } from './pro-editor/TakeMetamorphPanel';
 import type { EditorPeaks } from './pro-editor/waveform/useWaveformData';
 import { WaveformEditor } from './pro-editor/WaveformEditor';
 import { useMultitrackSession } from './useMultitrackSession';
@@ -520,6 +521,10 @@ function ProEditor({ soundId }: { soundId: string }) {
                     onSendToMultitrack={(job) =>
                       void sendStemsToMultitrack(job)
                     }
+                  />
+                  <TakeMetamorphPanel
+                    soundId={soundId}
+                    onAdded={setVersionLabel}
                   />
                   <StudioPanel title="Multitrack session">
                     <div className="flex flex-col gap-3">

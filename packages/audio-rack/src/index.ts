@@ -37,3 +37,11 @@ export type {
   RackEffectPanelProps,
   FxChainListProps,
 } from './ui/RackEffectPanel';
+
+export {
+  morphGains,
+  morphTakeChannels,
+  renderTakeMorph,
+  TAKE_MORPH_DEFAULTS,
+} from './takeMetamorph';
+export type { MorphCurve, MorphSweep, TakeMorphOptions } from './takeMetamorph';
