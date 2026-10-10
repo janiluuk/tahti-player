@@ -24,3 +24,6 @@ flatpak/.flatpak-cargo-generator.py
 .keys/
 
 snapshot-baseline/
+
+# Listener capture pass output (scripts/capture-map-screens.mjs, MAP_ACCOUNT=listener)
+packages/tahti-web/docs/listener-shots/
