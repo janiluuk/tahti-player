@@ -9,6 +9,7 @@ import {
   UserPlusIcon,
   UsersIcon,
 } from 'lucide-react';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { Button } from '@tahti-player/ui';
 
@@ -130,9 +131,26 @@ export const CollectionEditable: Story = {
   name: 'Collection / playlist — editable cover',
   args: {
     ...Collection.args,
-    onImageClick: () => {},
-    onImageDelete: () => {},
+    onImageClick: fn(),
+    onImageDelete: fn(),
     'data-testid': 'collection-social-header-editable',
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(
+      canvas.getByRole('button', {
+        name: 'Change Night Bus Selections artwork',
+      }),
+    );
+    await expect(args.onImageClick).toHaveBeenCalledOnce();
+    await userEvent.click(
+      canvas.getByRole('button', {
+        name: 'Remove Night Bus Selections artwork',
+      }),
+    );
+    await expect(args.onImageDelete).toHaveBeenCalledOnce();
+    // The X sits on the cover; deleting must not also open the picker.
+    await expect(args.onImageClick).toHaveBeenCalledOnce();
   },
   parameters: {
     docs: {
@@ -205,5 +223,143 @@ export const Release: Story = {
       </Button>
     ),
     'data-testid': 'release-social-header',
+  },
+};
+
+/** Artist profile with a coloured nameplate and the Tahti ry member badge. */
+export const ArtistMemberWithNameplate: Story = {
+  name: 'Artist + nameplate + member badge',
+  args: {
+    ...Artist.args,
+    title: 'Northern Lights',
+    subtitle: '@northern-lights',
+    isMember: true,
+    nameplate: { nameplateText: 'Resident DJ', nameplateColor: '#F59E0B' },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      canvas.getByRole('heading', { name: 'Northern Lights' }),
+    ).toBeVisible();
+    const nameplate = canvas.getByTestId('nameplate');
+    await expect(nameplate).toHaveTextContent('Resident DJ');
+    await expect(nameplate).toHaveStyle({
+      backgroundColor: 'rgb(245, 158, 11)',
+    });
+    await expect(canvas.getByTestId('tahti-member-badge')).toHaveTextContent(
+      'Tahti ry member',
+    );
+  },
+};
+
+/** Non-members get neither badge; an invalid colour falls back to the accent. */
+export const ArtistNonMember: Story = {
+  name: 'Artist (not a member, nameplate without colour)',
+  args: {
+    ...Artist.args,
+    isMember: false,
+    nameplate: { nameplateText: 'Guest', nameplateColor: 'not-a-colour' },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByTestId('nameplate')).toHaveTextContent('Guest');
+    await expect(canvas.queryByTestId('tahti-member-badge')).toBeNull();
+  },
+};
+
+const ANIMATED_AVATAR = 'https://picsum.photos/seed/tahti-animated-avatar/256';
+const AVATAR_POSTER = 'https://picsum.photos/seed/tahti-avatar-poster/256';
+
+/** Animated avatar: the still poster shows at rest, the animation on hover. */
+export const AnimatedAvatarPoster: Story = {
+  name: 'Artist + animated avatar (poster until hover)',
+  args: {
+    ...Artist.args,
+    imageUrl: ANIMATED_AVATAR,
+    imagePosterUrl: AVATAR_POSTER,
+    imageAlt: 'Pooh Shiesty avatar',
+    visualizerPreset: undefined,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const avatar = canvas.getByRole('img', { name: 'Pooh Shiesty avatar' });
+    await expect(avatar).toHaveAttribute('src', AVATAR_POSTER);
+    await userEvent.hover(avatar);
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('img', { name: 'Pooh Shiesty avatar' }),
+      ).toHaveAttribute('src', ANIMATED_AVATAR),
+    );
+    await userEvent.unhover(avatar);
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('img', { name: 'Pooh Shiesty avatar' }),
+      ).toHaveAttribute('src', AVATAR_POSTER),
+    );
+  },
+};
+
+/** No avatar: the artist's theme background with their initial. */
+export const ImageFallback: Story = {
+  name: 'Artist without avatar (theme fallback)',
+  args: {
+    ...Artist.args,
+    imageUrl: null,
+    imageFallback: 'linear-gradient(135deg, #7C3AED, #22D3EE)',
+    visualizerPreset: undefined,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const fallback = canvas.getByTestId('media-artwork-fallback');
+    await expect(fallback).toBeVisible();
+    await expect(canvas.getByText('P')).toBeVisible();
+  },
+};
+
+const LOGO_URL = '/tahti-logo.svg';
+
+/** Transparent logo over both the avatar and the cover. */
+export const LogoBoth: Story = {
+  name: 'Artist + logo (avatar and cover)',
+  args: {
+    ...ArtistWithBackdrop.args,
+    logo: { url: LOGO_URL, placement: 'BOTH' },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByTestId('header-logo-avatar')).toHaveAttribute(
+      'src',
+      LOGO_URL,
+    );
+    await expect(canvas.getByTestId('header-logo-cover')).toHaveAttribute(
+      'src',
+      LOGO_URL,
+    );
+  },
+};
+
+export const LogoAvatarOnly: Story = {
+  name: 'Artist + logo (avatar only)',
+  args: {
+    ...ArtistWithBackdrop.args,
+    logo: { url: LOGO_URL, placement: 'AVATAR' },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByTestId('header-logo-avatar')).toBeInTheDocument();
+    await expect(canvas.queryByTestId('header-logo-cover')).toBeNull();
+  },
+};
+
+export const LogoCoverOnly: Story = {
+  name: 'Artist + logo (cover only)',
+  args: {
+    ...ArtistWithBackdrop.args,
+    logo: { url: LOGO_URL, placement: 'COVER' },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByTestId('header-logo-cover')).toBeInTheDocument();
+    await expect(canvas.queryByTestId('header-logo-avatar')).toBeNull();
   },
 };

@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
+import { expect, fireEvent, within } from 'storybook/test';
 
 import { Slider } from '@tahti-player/ui';
 
@@ -45,6 +46,14 @@ export const Controlled: Story = {
         <div style={{ marginTop: 12 }}>Current: {val}%</div>
       </div>
     );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const slider = canvas.getByRole('slider', { name: 'Volume' });
+    await expect(slider).toHaveValue('20');
+    fireEvent.change(slider, { target: { value: '64' } });
+    await expect(canvas.getByText('Current: 64%')).toBeVisible();
+    await expect(slider).toHaveValue('64');
   },
 };
 

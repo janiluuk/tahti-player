@@ -1,4 +1,5 @@
 import type { FetchMeta } from './client';
+import { mockFixture } from './mock-overrides';
 import { allowMockFallback, apiErrorMeta, failMeta, isForceMock } from './mode';
 import { requestJson, RequestJsonError } from './request-json';
 
@@ -146,7 +147,7 @@ export async function fetchConversations(): Promise<{
 }> {
   if (isForceMock()) {
     return {
-      data: mockConversationsWithReadState(),
+      data: mockFixture('conversations', mockConversationsWithReadState()),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
@@ -157,7 +158,10 @@ export async function fetchConversations(): Promise<{
     return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
-      return { data: [...mockConversations], meta: failMeta(err) };
+      return {
+        data: mockFixture('conversations', [...mockConversations]),
+        meta: failMeta(err),
+      };
     }
     return { data: [], meta: apiErrorMeta(err) };
   }

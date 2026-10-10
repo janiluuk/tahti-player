@@ -139,15 +139,16 @@ export function seedStudioSounds(sounds: StudioSound[]) {
 
 const TIERS_KEY = 'tahti-mock-purchase-tiers';
 
-/** `beforeEach` that gives the mock artist ('demo' with no mock session)
- * one active purchase tier, so the track editor's Access select offers it. */
-export function seedPurchaseTier() {
+/** `beforeEach` that gives `artistUsername` one active purchase tier, so the
+ * track editor's Access select offers it. Mock tiers are keyed by the mock
+ * session user, which `withMockAuth` sets. */
+export function seedPurchaseTier(artistUsername: string) {
   const previous = localStorage.getItem(TIERS_KEY);
   localStorage.setItem(
     TIERS_KEY,
     JSON.stringify([
       {
-        artistUsername: 'demo',
+        artistUsername,
         tiers: [
           {
             id: STORY_TIER_ID,

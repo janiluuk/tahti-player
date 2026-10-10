@@ -6,16 +6,24 @@ import {
 } from '@tahti-web/components/MobileChrome';
 import { usePlayerStore } from '@tahti-web/stores/playerStore';
 import { useState } from 'react';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import type { QueueItem } from '@tahti-player/model';
 import { Button } from '@tahti-player/ui';
 
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
+import { withinBody } from './_lib/play';
 
 const meta: Meta<typeof MobileBottomNav> = {
   title: 'Tahti/Chrome/MobileChrome',
   component: MobileBottomNav,
-  parameters: { layout: 'fullscreen' },
+  // The drawer is `md:hidden` and the bottom nav is phone chrome, so the
+  // whole file renders at a phone viewport (also in the test runner).
+  parameters: {
+    layout: 'fullscreen',
+    viewport: { defaultViewport: 'mobile1' },
+  },
+  args: { onOpenMore: fn() },
   decorators: [withTahtiRouter('/')],
 };
 
@@ -71,21 +79,45 @@ function seedPlayingBar() {
 export const BottomNavListener: Story = {
   name: 'MobileBottomNav (listener — Listen / Discover / Radio / More)',
   decorators: [withMockAuth(MOCK_USERS.listener)],
-  render: () => (
+  render: (args) => (
     <div className="bg-background-secondary flex h-24 flex-col justify-end">
-      <MobileBottomNav />
+      <MobileBottomNav {...args} />
     </div>
   ),
+  play: async ({ canvasElement, args }) => {
+    const nav = within(
+      within(canvasElement).getByRole('navigation', { name: 'Primary' }),
+    );
+    await expect(nav.getByRole('link', { name: 'Listen' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
+    await expect(nav.getByRole('link', { name: 'Discover' })).toBeVisible();
+    await expect(nav.getByRole('link', { name: 'Radio' })).toBeVisible();
+    await expect(nav.queryByRole('link', { name: 'Studio' })).toBeNull();
+    await userEvent.click(nav.getByRole('button', { name: 'More' }));
+    await expect(args.onOpenMore).toHaveBeenCalledOnce();
+  },
 };
 
 export const BottomNavArtist: Story = {
-  name: 'MobileBottomNav (artist — Studio tab + More)',
+  name: 'MobileBottomNav (artist — Studio tab + More open)',
   decorators: [withMockAuth(MOCK_USERS.artist)],
-  render: () => (
+  render: (args) => (
     <div className="bg-background-secondary flex h-24 flex-col justify-end">
-      <MobileBottomNav />
+      <MobileBottomNav {...args} moreOpen />
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    const nav = within(
+      within(canvasElement).getByRole('navigation', { name: 'Primary' }),
+    );
+    await expect(nav.getByRole('link', { name: 'Studio' })).toBeVisible();
+    await expect(nav.getByRole('button', { name: 'More' })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    );
+  },
 };
 
 export const ChromeStackPlaying: Story = {
@@ -125,7 +157,35 @@ export const Drawer: StoryObj = {
       </div>
     );
   },
+  play: async ({ canvasElement }) => {
+    const body = withinBody(canvasElement);
+    const drawer = within(await body.findByRole('dialog'));
+    await expect(
+      drawer.getByRole('heading', { name: 'Navigate' }),
+    ).toBeVisible();
+    // Focus moves to the panel itself, so Tab lands on its first control.
+    const panel =
+      panelCloseButton(body).closest<HTMLElement>('[tabindex="-1"]');
+    await waitFor(() => expect(panel).toHaveFocus());
+
+    await userEvent.keyboard('{Escape}');
+    await waitFor(() => expect(body.queryByRole('dialog')).toBeNull());
+
+    await userEvent.click(body.getByRole('button', { name: 'Open drawer' }));
+    await expect(await body.findByRole('dialog')).toBeVisible();
+    await userEvent.click(panelCloseButton(body));
+    await waitFor(() => expect(body.queryByRole('dialog')).toBeNull());
+  },
 };
+
+/** The panel's X button; the full-screen backdrop is also labelled Close
+ * and comes first in the DOM. */
+function panelCloseButton(body: ReturnType<typeof within>) {
+  const buttons = within(body.getByRole('dialog')).getAllByRole('button', {
+    name: 'Close',
+  });
+  return buttons[buttons.length - 1]!;
+}
 
 export const DrawerNoTitle: StoryObj = {
   name: 'MobileDrawer (no title — content owns its own header)',

@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { CalendarDaysIcon, ListIcon } from 'lucide-react';
 import { useState } from 'react';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { SegmentedControl } from '@tahti-player/ui';
 
@@ -36,6 +37,25 @@ function Demo({ iconOnly }: { iconOnly?: boolean }) {
   );
 }
 
-export const IconOnly: Story = { render: () => <Demo iconOnly /> };
+async function expectSwitchesView(canvasElement: HTMLElement) {
+  const group = within(
+    within(canvasElement).getByRole('radiogroup', { name: 'View' }),
+  );
+  const cards = group.getByRole('radio', { name: 'Card view' });
+  const list = group.getByRole('radio', { name: 'List view' });
+  await expect(cards).toHaveAttribute('aria-checked', 'true');
+  await expect(list).toHaveAttribute('aria-checked', 'false');
+  await userEvent.click(list);
+  await expect(list).toHaveAttribute('aria-checked', 'true');
+  await expect(cards).toHaveAttribute('aria-checked', 'false');
+}
 
-export const WithLabels: Story = { render: () => <Demo /> };
+export const IconOnly: Story = {
+  render: () => <Demo iconOnly />,
+  play: ({ canvasElement }) => expectSwitchesView(canvasElement),
+};
+
+export const WithLabels: Story = {
+  render: () => <Demo />,
+  play: ({ canvasElement }) => expectSwitchesView(canvasElement),
+};

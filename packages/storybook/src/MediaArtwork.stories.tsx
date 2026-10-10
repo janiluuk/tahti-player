@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { MediaArtwork } from '@tahti-player/ui';
 
@@ -76,8 +77,18 @@ export const AnimatedWithPoster: Story = {
       '<rect width="64" height="64" fill="#A78BFA"><animate attributeName="fill" values="#A78BFA;#22D3EE;#F472B6;#A78BFA" dur="1.5s" repeatCount="indefinite"/></rect>',
     ),
     posterSrc: svgDataUri('<rect width="64" height="64" fill="#A78BFA"/>'),
+    alt: 'Animated cover',
     size: 'lg',
     className: 'rounded-full',
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const cover = () => canvas.getByRole('img', { name: 'Animated cover' });
+    await expect(cover()).toHaveAttribute('src', args.posterSrc);
+    await userEvent.hover(canvas.getByTestId('media-artwork'));
+    await waitFor(() => expect(cover()).toHaveAttribute('src', args.src));
+    await userEvent.unhover(canvas.getByTestId('media-artwork'));
+    await waitFor(() => expect(cover()).toHaveAttribute('src', args.posterSrc));
   },
 };
 

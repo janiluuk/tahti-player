@@ -22,7 +22,7 @@ User ask (2026-10-03): bring every Storybook story in line with the real page (s
 
 Tracked as slices 11–15 in [`next-twenty-slices.md`](next-twenty-slices.md):
 
-- [ ] 1. Chrome, Player and ui primitive plays (#474 was closed unmerged).
+- [x] 1. Chrome, Player and ui primitive plays.
 - [x] 2. Channel Designer: stories for the missing panels, plays for tabs, presets, reset and layers, plus the missing args.
 - [ ] 3. Channel page blocks, chat (ChatNotice states), radio show, schedule, jam and DMs.
 - [ ] 6. Studio shows, events, playlists and branding, plus Settings panels.
