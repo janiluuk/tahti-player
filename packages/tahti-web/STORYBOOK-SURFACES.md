@@ -231,7 +231,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Release/SmartLinkView` | `tahti-web/SmartLinkView.stories.tsx` |
 | `Tahti/Misc/SourceServiceIcon` | `tahti-web/SourceServiceIcon.stories.tsx` |
 | `Tahti/Studio/StashFilesPanel` | `tahti-web/StashFilesPanel.stories.tsx` |
-| `Tahti/Player/StemPlayer` | `tahti-web/StemPlayer.stories.tsx` |
+| `Tahti/Player/StemMixer` | `tahti-web/StemMixer.stories.tsx` |
 | `Tahti/Studio/StreamManagerPanel` | `tahti-web/StreamManagerPanel.stories.tsx` |
 | `Tahti/Studio/StudioBrandingView` | `tahti-web/StudioBrandingView.stories.tsx` |
 | `Tahti/Studio/StudioDistributionView` | `tahti-web/StudioDistributionView.stories.tsx` |

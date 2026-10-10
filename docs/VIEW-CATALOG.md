@@ -90,7 +90,7 @@ Legend:
 | [Track Detail](#track-detail)     | `/t/$id`                  | `src/views/TrackDetailView.tsx` | Has Story | —                                                                                                                                            |
 | [Smart Link](#smart-link)         | `/r/$slug`                | `src/views/SmartLinkView.tsx`   | No Story  | PlayableTrackTable, PageHeader                                                                                                               |
 | [Subscribe](#subscribe)           | `/subscribe/$username`    | `src/views/SubscribeView.tsx`   | No Story  | Card layout                                                                                                                                  |
-| [Green Room](#green-room)         | `/u/$username/green-room` | `src/views/GreenRoomView.tsx`   | No Story  | ConnectedPlayerBar, StemPlayer                                                                                                               |
+| [Green Room](#green-room)         | `/u/$username/green-room` | `src/views/GreenRoomView.tsx`   | No Story  | ConnectedPlayerBar                                                                                                                         |
 | [Jam](#jam)                       | `/jam/$code`              | `src/views/JamView.tsx`         | No Story  | TahtiJam components                                                                                                                          |
 | [Chat](#chat)                     | `/chat`                   | `src/views/ChatView.tsx`        | No Story  | ChannelChatPanel                                                                                                                             |
 
@@ -308,7 +308,7 @@ These shared components are used across many views but lack dedicated Storybook 
 | **InPageNav**                  | Long-form pages                               | Has story                                                    |
 | **EmbedButton**                | Channel, Collection, Release                  | Has story                                                    |
 | **AudioEngine**                | Player playback                               | Has story (non-visual)                                       |
-| **StemPlayer**                 | Green Room, Pro Editor                        | Has story                                                    |
+| **StemMixer**                  | Pro Editor                                    | Has story                                                    |
 | **WaveformCanvas**             | Editor, Mastering views                       | Has story                                                    |
 
 ### Confirmed Duplicates / No-Ops (2026-09-12/14 sweep — full app, ~140/140 views)

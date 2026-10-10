@@ -239,7 +239,7 @@ const locations: ElementLocation[] = [
     pages: 'Studio editor and upload',
   },
   { element: 'WaveformMinimap', kind: 'Component', pages: 'Studio editor' },
-  { element: 'StemPlayer', kind: 'Component', pages: 'Studio audio editor' },
+  { element: 'StemMixer', kind: 'Component', pages: 'Studio audio editor' },
   {
     element: 'SecurityTotpPanel',
     kind: 'Component',
