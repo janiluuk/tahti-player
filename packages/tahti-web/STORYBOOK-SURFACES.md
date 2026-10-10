@@ -313,6 +313,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Audio/MultitrackEditor` | `MultitrackEditor.stories.tsx` |
 | `Components/NewsWidget` | `NewsWidget.stories.tsx` |
 | `Components/Pagination` | `Pagination.stories.tsx` |
+| `Audio/PianoRoll` | `PianoRoll.stories.tsx` |
 | `Layout/PlayerBar` | `PlayerBar.stories.tsx` |
 | `Layout/PlayerWorkspace` | `PlayerWorkspace.stories.tsx` |
 | `Components/PluginItem` | `PluginItem.stories.tsx` |

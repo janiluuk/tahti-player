@@ -49,3 +49,20 @@ export type {
   SerializedAutomation,
   SerializedAutomationLane,
 } from './lib/automation';
+export { PianoRoll } from './midi/PianoRoll';
+export type { PianoRollProps } from './midi/PianoRoll';
+export { MidiClipPanel } from './midi/MidiClipPanel';
+export {
+  addNote,
+  deleteNote,
+  moveNote,
+  quantizeNotes,
+  resizeNote,
+} from './midi/noteEditing';
+export type { PianoNote } from './midi/noteEditing';
+export {
+  createMidiClip,
+  isMidiClip,
+  sanitizePianoNotes,
+} from './midi/midiClip';
+export { bounceMidiClipToAudio } from './midi/midiClipActions';
