@@ -180,6 +180,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/Updates/PostPreview` | `tahti-web/PostPreview.stories.tsx` |
 | `Tahti/Studio/Branding/PressKitPreview` | `tahti-web/PressKitPreview.stories.tsx` |
 | `Tahti/Studio/ProcessingFailedAlert` | `tahti-web/ProcessingFailedAlert.stories.tsx` |
+| `Tahti/Studio/PromptScoreBridgePanel` | `tahti-web/PromptScoreBridgePanel.stories.tsx` |
 | `Tahti/Misc/ProviderSetImportDialog` | `tahti-web/ProviderSetImportDialog.stories.tsx` |
 | `Tahti/Studio/RadioBookingCalendar` | `tahti-web/RadioBookingCalendar.stories.tsx` |
 | `Tahti/Settings/RadioBrowserDirectory` | `tahti-web/RadioBrowserDirectory.stories.tsx` |
