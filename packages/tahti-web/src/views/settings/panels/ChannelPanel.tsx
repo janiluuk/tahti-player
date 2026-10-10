@@ -27,6 +27,7 @@ import { GenrePicker } from '../../../components/GenrePicker';
 import { ChannelModeratorsPanel } from '../../../components/moderation/ChannelModeratorsPanel';
 import { ChatAccessPanel } from '../../../components/moderation/ChatAccessPanel';
 import { ChatBansPanel } from '../../../components/moderation/ChatBansPanel';
+import { ChatMessagesPanel } from '../../../components/moderation/ChatMessagesPanel';
 import {
   formatGenreTags,
   MAX_GENRES,
@@ -47,6 +48,7 @@ export function ChannelPanel() {
   );
   const [profileLoaded, setProfileLoaded] = useState(false);
   const [slug, setSlug] = useState(channel?.slug ?? '');
+  const [bansVersion, setBansVersion] = useState(0);
   const [domain, setDomain] = useState('');
   const [note, setNote] = useState<{ text: string; failed: boolean } | null>(
     null,
@@ -324,7 +326,10 @@ export function ChannelPanel() {
                 </div>
               )}
               <ChatAccessPanel />
-              <ChatBansPanel />
+              <ChatMessagesPanel
+                onBanned={() => setBansVersion((v) => v + 1)}
+              />
+              <ChatBansPanel key={bansVersion} />
             </div>
           ),
         },
