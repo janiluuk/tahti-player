@@ -69,7 +69,9 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Auth/AuthDialog` | `tahti-web/AuthDialog.stories.tsx` |
 | `Tahti/Media/BackdropUploadButton` | `tahti-web/BackdropUploadButton.stories.tsx` |
 | `Tahti/Studio/BroadcastPreflightPanel` | `tahti-web/BroadcastPreflightPanel.stories.tsx` |
+| `Tahti/Channel/ChannelAirBadge` | `tahti-web/ChannelAirBadge.stories.tsx` |
 | `Tahti/Channel/ChannelBackdropCard` | `tahti-web/ChannelBackdropCard.stories.tsx` |
+| `Tahti/Channel/ChannelBlockFrame` | `tahti-web/ChannelBlockFrame.stories.tsx` |
 | `Tahti/Channel/ChannelChatPanel` | `tahti-web/ChannelChatPanel.stories.tsx` |
 | `Tahti/Artist/ChannelControlsWidget` | `tahti-web/ChannelControlsWidget.stories.tsx` |
 | `Tahti/Channel/Designer` | `tahti-web/ChannelDesigner.stories.tsx` |
@@ -103,19 +105,30 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Channel/Designer/VisualizerPickerDialog` | `tahti-web/ChannelDesignerVisualizerPickerDialog.stories.tsx` |
 | `Tahti/Channel/Designer/EditToolbar` | `tahti-web/ChannelEditToolbar.stories.tsx` |
 | `Tahti/Channel/Designer/ElementEditor` | `tahti-web/ChannelElementEditor.stories.tsx` |
+| `Tahti/Channel/ChannelHeroBlock` | `tahti-web/ChannelHeroBlock.stories.tsx` |
 | `Tahti/Channel/Designer/LayersMenu` | `tahti-web/ChannelLayersMenu.stories.tsx` |
 | `Tahti/Channel/Designer/LayersPanel` | `tahti-web/ChannelLayersPanel.stories.tsx` |
 | `Tahti/Channel/Designer/LinksEditor` | `tahti-web/ChannelLinksEditor.stories.tsx` |
+| `Tahti/Channel/ChannelLiveTracklist` | `tahti-web/ChannelLiveTracklist.stories.tsx` |
 | `Tahti/Channel/Designer/NavigationEditor` | `tahti-web/ChannelNavigationEditor.stories.tsx` |
+| `Tahti/Channel/ChannelNotFound` | `tahti-web/ChannelNotFound.stories.tsx` |
+| `Tahti/Channel/ChannelPageBackdrop` | `tahti-web/ChannelPageBackdrop.stories.tsx` |
 | `Tahti/Channel/ChannelRadioPlaylistPanel` | `tahti-web/ChannelRadioPlaylistPanel.stories.tsx` |
 | `Tahti/Studio/ChannelRotationEditor` | `tahti-web/ChannelRotationEditor.latest.stories.tsx` |
 | `Tahti/Channel/Designer/ChannelSetupDialog` | `tahti-web/ChannelSetupDialog.stories.tsx` |
 | `Tahti/Channel/ChannelSlideshowBackdrop` | `tahti-web/ChannelSlideshowBackdrop.stories.tsx` |
+| `Tahti/Channel/ChannelStagePlayer` | `tahti-web/ChannelStagePlayer.stories.tsx` |
+| `Tahti/Channel/ChannelStageTrackMeta` | `tahti-web/ChannelStageTrackMeta.stories.tsx` |
 | `Tahti/Channel/ChannelTextOverlayEditor` | `tahti-web/ChannelTextOverlayEditor.stories.tsx` |
 | `Tahti/Channel/ChannelTextOverlayView` | `tahti-web/ChannelTextOverlayView.stories.tsx` |
+| `Tahti/Channel/ChannelTopBar` | `tahti-web/ChannelTopBar.stories.tsx` |
+| `Tahti/Channel/ChannelUpcomingShows` | `tahti-web/ChannelUpcomingShows.stories.tsx` |
 | `Tahti/Channel/ChannelView` | `tahti-web/ChannelView.stories.tsx` |
+| `Tahti/Channel/ChannelViewBlocks` | `tahti-web/ChannelViewBlocks.stories.tsx` |
 | `Tahti/Channel/ChannelVisualizer` | `tahti-web/ChannelVisualizer.stories.tsx` |
 | `Tahti/Channel/Designer/ChannelVizPackPicker` | `tahti-web/ChannelVizPackPicker.stories.tsx` |
+| `Tahti/Channel/ChatNotice` | `tahti-web/ChatNotice.stories.tsx` |
+| `Tahti/Channel/ChatView` | `tahti-web/ChatView.stories.tsx` |
 | `Tahti/Widgets/ClientCapabilityNotice` | `tahti-web/ClientCapabilityNotice.stories.tsx` |
 | `Tahti/Collection/CollaborativePlaylistAdd` | `tahti-web/CollaborativePlaylistAdd.stories.tsx` |
 | `Tahti/Collection/CollectionView` | `tahti-web/CollectionView.stories.tsx` |
@@ -161,6 +174,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Media/ImageUploadField` | `tahti-web/ImageUploadField.stories.tsx` |
 | `Tahti/Page/InPageNav` | `tahti-web/InPageNav.stories.tsx` |
 | `Tahti/Misc/ItunesImportDialog` | `tahti-web/ItunesImportDialog.stories.tsx` |
+| `Tahti/Social/JamView` | `tahti-web/JamView.stories.tsx` |
 | `Tahti/Reference/Latest view surfaces` | `tahti-web/LatestViewSurfaces.stories.tsx` |
 | `Tahti/Widgets/LegalDocShell` | `tahti-web/LegalDocShell.stories.tsx` |
 | `Tahti/Widgets/ListenAddonsPanel` | `tahti-web/ListenAddonsPanel.stories.tsx` |
@@ -175,6 +189,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Media/MediaIconActions` | `tahti-web/MediaIconActions.stories.tsx` |
 | `Tahti/Community/MentionTextarea` | `tahti-web/MentionTextarea.stories.tsx` |
 | `Tahti/Widgets/MermaidDiagram` | `tahti-web/MermaidDiagram.stories.tsx` |
+| `Tahti/Social/MessagesView` | `tahti-web/MessagesView.stories.tsx` |
 | `Tahti/Chrome/MobileChrome` | `tahti-web/MobileChrome.stories.tsx` |
 | `Tahti/Broadcast/MulticastConfigureDialog` | `tahti-web/MulticastConfigureDialog.stories.tsx` |
 | `Tahti/Broadcast/MulticastSection` | `tahti-web/MulticastSection.stories.tsx` |
@@ -204,6 +219,9 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Settings/RadioBrowserDirectory` | `tahti-web/RadioBrowserDirectory.stories.tsx` |
 | `Tahti/Widgets/PluginStorePanel/Radio category` | `tahti-web/RadioCategory.stories.tsx` |
 | `Tahti/Radio/RadioListItem` | `tahti-web/RadioListItem.stories.tsx` |
+| `Tahti/Channel/RadioProgrammingGrid` | `tahti-web/RadioProgrammingGrid.stories.tsx` |
+| `Tahti/Channel/RadioScheduleView` | `tahti-web/RadioScheduleView.stories.tsx` |
+| `Tahti/Channel/RadioShowView` | `tahti-web/RadioShowView.stories.tsx` |
 | `Tahti/Widgets/RadioStationCover` | `tahti-web/RadioStationCover.stories.tsx` |
 | `Tahti/Admin/RadioStationSuggestionsTab` | `tahti-web/RadioStationSuggestionsTab.stories.tsx` |
 | `Tahti/Listen/RadioStationView` | `tahti-web/RadioStationView.stories.tsx` |

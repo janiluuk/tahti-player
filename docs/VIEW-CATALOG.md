@@ -75,10 +75,10 @@ Legend:
 | [Favorites](#favorites-web) | `/favorites`               | `src/views/FavoritesView.tsx`     | Has Story | —                                                                                                                                                                                                                     |
 | [History](#history-web)     | (embedded)                 | `src/views/HistoryView.tsx`       | No Story  | Tabs (Stats / Listening history), CalendarHeatmap, ListeningClock, DayOfWeekChart, TopList                                                                                                                             |
 | [Radio](#radio)             | `/radio`                   | `src/views/RadioView.tsx`         | No Story  | Box, Button, ImageReveal, MediaArtwork, Tabs, Tooltip — uses `OnAirBadge` (confirmed `Badge` duplicate), see sweep section below                                                                                      |
-| [Radio Show](#radio-show)   | `/radio/show/$channelSlug` | `src/views/RadioShowView.tsx`     | No Story  | Button, SectionShell, Tabs, Tooltip                                                                                                                                                                                   |
+| [Radio Show](#radio-show)   | `/radio/show/$channelSlug` | `src/views/RadioShowView.tsx`     | Has Story | Button, SectionShell, Tabs, Tooltip                                                                                                                                                                                   |
 | Radio Station | `/radio/station/$stationId` | `src/views/RadioStationView.tsx` | Has Story | — (curated external stations from `content/radioStations.ts`; Listen station cards link here) |
 | Tag search | `/search?tag=` | `src/views/TagSearchView.tsx` | No Story | ViewShell, MediaArtwork, PageStates - public tracks with one tag, reached from the track page's tag chips |
-| [Schedule](#schedule)       | `/schedule`                | `src/views/RadioScheduleView.tsx` | No Story  | Button, Dialog, FilterChips, Input, SaveButton, TabLabel, Tabs, Tooltip — hand-rolled show-type toggle at ~line 700 duplicates `FilterChips` (already used correctly elsewhere in this file), see sweep section below |
+| [Schedule](#schedule)       | `/schedule`                | `src/views/RadioScheduleView.tsx` | Has Story | Button, Dialog, FilterChips, Input, SaveButton, TabLabel, Tabs, Tooltip — hand-rolled show-type toggle at ~line 700 duplicates `FilterChips` (already used correctly elsewhere in this file), see sweep section below |
 
 ### Artist / Channel / Collection Views
 
@@ -91,8 +91,8 @@ Legend:
 | [Smart Link](#smart-link)         | `/r/$slug`                | `src/views/SmartLinkView.tsx`   | No Story  | PlayableTrackTable, PageHeader                                                                                                               |
 | [Subscribe](#subscribe)           | `/subscribe/$username`    | `src/views/SubscribeView.tsx`   | No Story  | Card layout                                                                                                                                  |
 | [Green Room](#green-room)         | `/u/$username/green-room` | `src/views/GreenRoomView.tsx`   | No Story  | ConnectedPlayerBar                                                                                                                         |
-| [Jam](#jam)                       | `/jam/$code`              | `src/views/JamView.tsx`         | No Story  | TahtiJam components                                                                                                                          |
-| [Chat](#chat)                     | `/chat`                   | `src/views/ChatView.tsx`        | No Story  | ChannelChatPanel                                                                                                                             |
+| [Jam](#jam)                       | `/jam/$code`              | `src/views/JamView.tsx`         | Has Story | TahtiJam components                                                                                                                          |
+| [Chat](#chat)                     | `/chat`                   | `src/views/ChatView.tsx`        | Has Story | ChannelChatPanel                                                                                                                             |
 
 ### Auth / Account Views
 
@@ -215,7 +215,7 @@ pro-editor `MasteringPanel`/`StemsPanel`/`PluginControls`.
 
 | View                          | Route                                                                  | File                                              | Storybook | Candidate For                        |
 | ----------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------- | --------- | ------------------------------------ |
-| [Messages](#messages)         | `/messages`, `/messages/$id` (also `/library/messages` redirects here) | `src/views/MessagesView.tsx`                      | No Story  | Card layout, InPageNav               |
+| [Messages](#messages)         | `/messages`, `/messages/$id` (also `/library/messages` redirects here) | `src/views/MessagesView.tsx`                      | Has Story | Card layout, InPageNav               |
 | [More](#more)                 | `/more` (diagnostics-gated; redirects to `/` otherwise)                | `src/views/MoreView.tsx`                          | No Story  | Card layout                          |
 | Dashboard alias               | `/dashboard`                                                           | `src/views/DashboardAliasView.tsx`                | No Story  | — (thin redirect/alias to Listen)    |
 | Studio Setup Channel redirect | `/studio/setup-channel`                                                | `src/views/studio/StudioSetupChannelRedirect.tsx` | No Story  | — (redirect-only helper, no real UI) |
