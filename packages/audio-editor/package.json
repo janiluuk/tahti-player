@@ -29,11 +29,12 @@
     "react-dom": "^18.3.1"
   },
   "dependencies": {
-    "zustand": "^5.0.7",
     "@tahti-player/audio-core": "workspace:*",
     "@tahti-player/audio-rack": "workspace:*",
     "@tahti-player/ui": "workspace:*",
-    "lucide-react": "^0.542.0"
+    "lucide-react": "^0.542.0",
+    "spessasynth_core": "4.3.22",
+    "zustand": "^5.0.7"
   },
   "devDependencies": {
     "@types/react": "^18.3.23",

@@ -34,9 +34,10 @@ export type EditorStoreSnapshot = {
 };
 
 /** Serialize the local Multitrack store into the server EditorTimeline shape.
- * FX chains, pan, and audio blobs are OPFS-only and omitted. Automation lanes
- * are included unless they exceed the metadata budget, in which case they stay
- * OPFS-only too. */
+ * FX chains, pan, audio blobs and unbounced MIDI clips are OPFS-only and
+ * omitted: the server timeline only references sound audio, and a MIDI clip
+ * has none until it is bounced. Automation lanes are included unless they
+ * exceed the metadata budget, in which case they stay OPFS-only too. */
 export function toEditorTimeline(
   snapshot: EditorStoreSnapshot,
   defaultSoundId: string,
@@ -44,7 +45,7 @@ export function toEditorTimeline(
   let durationSec = 0;
   const tracks: EditorTimelineTrack[] = snapshot.tracks.map((track, index) => {
     const trackClips = snapshot.clips
-      .filter((c) => c.trackId === track.id)
+      .filter((c) => c.trackId === track.id && c.sourceKind !== 'piano-roll')
       .map((clip): EditorTimelineClip => {
         const end = clip.startSec + clip.durationSec;
         if (end > durationSec) {

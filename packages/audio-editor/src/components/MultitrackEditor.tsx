@@ -1,5 +1,6 @@
 import {
   MinusIcon,
+  MusicIcon,
   PauseIcon,
   PlayIcon,
   PlusIcon,
@@ -37,6 +38,8 @@ import {
   initEditorAutosave,
   useAutosaveRecoveryStore,
 } from '../lib/editorAutosave';
+import { createMidiClip, isMidiClip } from '../midi/midiClip';
+import { MidiClipPanel } from '../midi/MidiClipPanel';
 import {
   computePeaks,
   useEditorStore,
@@ -213,7 +216,7 @@ function ClipBar({
               background: track.color || '#3b82f6',
               opacity: clip.muted ? 0.4 : 0.85,
             }}
-            title={clip.label}
+            title={isMidiClip(clip) ? `${clip.label} (MIDI)` : clip.label}
             onPointerDown={(e) => onPointerDown(e, clip)}
             onPointerMove={onPointerMove}
             onPointerUp={onPointerUp}
@@ -246,6 +249,11 @@ function ClipBar({
                 }
               }}
             />
+            {isMidiClip(clip) ? (
+              <span className="pointer-events-none absolute top-0.5 left-1 text-[10px] font-semibold text-white/90">
+                MIDI · {clip.sourcePianoRoll?.length ?? 0}
+              </span>
+            ) : null}
           </div>
         );
       })}
@@ -377,6 +385,21 @@ export function MultitrackEditor({
     }
   };
 
+  const addMidiClip = () => {
+    const trackId = selectedTrack?.id ?? addTrack({ name: 'MIDI' });
+    const id = addClipToTrack(
+      createMidiClip({ trackId, startSec: playheadSec, bpm }),
+    );
+    setSelected(id);
+    setSelectedTrackId(trackId);
+  };
+
+  const selectedMidiClipId = clips.some(
+    (c) => c.id === selectedClipId && isMidiClip(c),
+  )
+    ? selectedClipId
+    : null;
+
   const doSplit = () => {
     if (!selectedClipId) {
       return;
@@ -455,6 +478,10 @@ export function MultitrackEditor({
             />
           </>
         ) : null}
+        <Button size="sm" variant="ghost" disabled={busy} onClick={addMidiClip}>
+          <MusicIcon size={15} aria-hidden className="mr-1.5" />
+          Add MIDI clip
+        </Button>
         <Button
           size="sm"
           variant="ghost"
@@ -578,6 +605,10 @@ export function MultitrackEditor({
           <div className="min-h-48 overflow-hidden">{vizSlot}</div>
         ) : null}
       </div>
+
+      {selectedMidiClipId ? (
+        <MidiClipPanel clipId={selectedMidiClipId} />
+      ) : null}
 
       <div className="grid gap-3 md:grid-cols-2">
         <div className="border-border bg-background rounded-lg border p-3">
