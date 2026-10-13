@@ -201,26 +201,26 @@ export function OverviewTab() {
               {votingActivity.slice(0, 12).map((entry) => (
                 <li
                   key={entry.id}
-                  className="flex min-w-[38rem] items-start gap-3 px-3 py-2.5 text-sm"
+                  className="flex flex-wrap items-start gap-x-3 gap-y-1 px-3 py-2.5 text-sm sm:min-w-[38rem] sm:flex-nowrap"
                 >
                   <time
                     dateTime={entry.createdAt}
-                    className="text-foreground-secondary w-32 shrink-0 text-xs"
+                    className="text-foreground-secondary shrink-0 text-xs sm:w-32"
                   >
                     {new Date(entry.createdAt).toLocaleString([], {
                       dateStyle: 'short',
                       timeStyle: 'short',
                     })}
                   </time>
-                  <span className="w-36 shrink-0 font-medium">
+                  <span className="min-w-0 font-medium break-words sm:w-36 sm:shrink-0">
                     {entry.actorDisplayName ??
                       entry.actorUsername ??
                       entry.actorId}
                   </span>
-                  <span className="text-foreground-secondary w-32 shrink-0 text-xs">
+                  <span className="text-foreground-secondary shrink-0 text-xs sm:w-32">
                     {activityAction(entry)}
                   </span>
-                  <span className="min-w-0 truncate">
+                  <span className="min-w-0 basis-full break-words sm:basis-auto sm:truncate">
                     {activitySubject(entry)}
                   </span>
                 </li>
