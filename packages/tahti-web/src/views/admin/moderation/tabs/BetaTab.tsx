@@ -139,14 +139,14 @@ export function BetaTab() {
                   key={app.id}
                   className="flex flex-wrap items-start justify-between gap-3 py-3 first:pt-0 last:pb-0"
                 >
-                  <div className="min-w-0 flex-1">
+                  <div className="min-w-0 flex-1 basis-64">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="text-sm font-medium">{app.name}</span>
                       <Badge variant="pill" color={badge.color}>
                         {badge.label}
                       </Badge>
                     </div>
-                    <p className="text-foreground-secondary text-xs">
+                    <p className="text-foreground-secondary text-xs break-words">
                       {app.email} · {app.artistType} ·{' '}
                       {new Date(app.createdAt).toLocaleDateString()}
                     </p>
