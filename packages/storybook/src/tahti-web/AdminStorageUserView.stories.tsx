@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminStorageUserView } from '@tahti-web/views/admin/AdminStorageUserView';
+import { expect, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 
@@ -22,4 +23,15 @@ export const Default: Story = {
       <AdminStorageUserView userId="u-1" />
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByRole('heading', { name: 'DJ Moonlight' }),
+    ).toBeVisible();
+    await expect(canvas.getByRole('heading', { name: 'Files' })).toBeVisible();
+    await expect(canvas.getByText('Moonlight Drive')).toBeVisible();
+    await expect(
+      canvas.getByRole('link', { name: 'Back to Storage' }),
+    ).toHaveAttribute('href', '/admin/storage');
+  },
 };

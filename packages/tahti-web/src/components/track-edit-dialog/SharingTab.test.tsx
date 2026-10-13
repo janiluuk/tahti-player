@@ -1,22 +1,11 @@
 // @vitest-environment jsdom
-import {
-  act,
-  cleanup,
-  fireEvent,
-  render,
-  screen,
-} from '@testing-library/react';
-import type { ReactNode } from 'react';
+import { cleanup, fireEvent, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { StudioSound } from '../../api/studio-types';
+import { renderWithRouter } from '../../test/renderWithRouter';
 import { SharingTab } from './SharingTab';
 import type { TrackEditDialogState } from './useTrackEditDialog';
-
-vi.mock('@tanstack/react-router', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@tanstack/react-router')>()),
-  Link: ({ children }: { children: ReactNode }) => <a>{children}</a>,
-}));
 
 vi.mock('../../api/purchase-tiers', () => ({
   fetchMyPurchaseTiers: vi.fn().mockResolvedValue({ data: [] }),
@@ -47,9 +36,7 @@ function stateFor(
 }
 
 async function renderTab(state: TrackEditDialogState) {
-  await act(async () => {
-    render(<SharingTab soundId="s1" item={ITEM} state={state} />);
-  });
+  await renderWithRouter(<SharingTab soundId="s1" item={ITEM} state={state} />);
 }
 
 describe('SharingTab', () => {

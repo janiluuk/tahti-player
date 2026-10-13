@@ -1,8 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { PlusIcon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
+import { expect, userEvent, waitFor } from 'storybook/test';
 
 import { Button, Dialog, Input } from '@tahti-player/ui';
+
+import { expectNoDialog, openDialog } from './tahti-web/_lib/play';
 
 const meta: Meta<typeof Dialog> = {
   title: 'Components/Dialog',
@@ -42,6 +45,22 @@ export const Confirmation: Story = {
       </>
     );
   },
+  play: async ({ canvasElement }) => {
+    const dialog = await openDialog(
+      canvasElement,
+      'Delete Playlist',
+      'Delete Playlist',
+    );
+    await expect(
+      dialog.getByText(/This action cannot be undone/),
+    ).toBeVisible();
+    await userEvent.click(dialog.getByRole('button', { name: 'Cancel' }));
+    await expectNoDialog(canvasElement);
+
+    await openDialog(canvasElement, 'Delete Playlist', 'Delete Playlist');
+    await userEvent.keyboard('{Escape}');
+    await expectNoDialog(canvasElement);
+  },
 };
 
 export const WithInput: Story = {
@@ -77,5 +96,18 @@ export const WithInput: Story = {
         </Dialog.Root>
       </>
     );
+  },
+  play: async ({ canvasElement }) => {
+    const dialog = await openDialog(
+      canvasElement,
+      'Create Playlist',
+      'Create new playlist',
+    );
+    const name = dialog.getByLabelText('Name');
+    await waitFor(() => expect(name).toBeVisible());
+    await userEvent.type(name, 'Night bus');
+    await expect(name).toHaveValue('Night bus');
+    await userEvent.click(dialog.getByRole('button', { name: 'Create' }));
+    await expectNoDialog(canvasElement);
   },
 };

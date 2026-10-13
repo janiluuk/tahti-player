@@ -21,6 +21,7 @@ import {
 } from '../api/channel-design';
 import { soundItemToPlayable } from '../api/client';
 import type { ChannelSoundItem, TahtiPlayable } from '../api/types';
+import { AutoplayUnmuteNotice } from '../components/AutoplayUnmuteNotice';
 import {
   ChannelBlockFrame,
   ChannelEditToolbar,
@@ -40,6 +41,7 @@ import {
   usePresetLookDraft,
 } from '../components/channel-view';
 import { ChannelAirBadge } from '../components/channel-view/ChannelAirBadge';
+import { ChannelVizPackLabel } from '../components/channel-view/ChannelVizPackLabel';
 import { ChannelComments } from '../components/ChannelComments';
 import type { ChannelDesignerHandle } from '../components/ChannelDesigner';
 import { ChannelShareButton } from '../components/ChannelShareButton';
@@ -53,6 +55,7 @@ import { ReportButton } from '../components/ReportButton';
 import { RssFeedButton } from '../components/RssFeedButton';
 import { StreamManagerPanel } from '../components/StreamManagerPanel';
 import { listenerWidgetType } from '../content/listenerWidgets';
+import { useChannelAutoplay } from '../hooks/useChannelAutoplay';
 import { useChannelLayoutEditing } from '../hooks/useChannelLayoutEditing';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { hasAccountRole } from '../lib/accountRoles';
@@ -115,6 +118,7 @@ export function ChannelView({ slug }: { slug: string }) {
     sectionStatus,
     retrySection,
   } = useChannelData(slug, lookTick);
+  useChannelAutoplay(channel, !editing);
   const linksDraft = useChannelLinksDraft(channel, artistSocialLinks);
   const channelLinksDraft = linksDraft.links;
   const linksDirty = linksDraft.dirty;
@@ -384,6 +388,7 @@ export function ChannelView({ slug }: { slug: string }) {
   // below, independent of hero's own visibility.
   const stagePlayer = (
     <>
+      <AutoplayUnmuteNotice />
       <ChannelStagePlayer
         channel={channel}
         slug={slug}
@@ -581,6 +586,7 @@ export function ChannelView({ slug }: { slug: string }) {
           )}
           <div className="flex flex-wrap items-center gap-2">
             <ChannelAirBadge channel={channel} />
+            {!editing && <ChannelVizPackLabel channel={channel} />}
             {isOwner && !editing && (
               <Button size="sm" variant="secondary" onClick={startEdit}>
                 <span className="inline-flex items-center gap-1.5">

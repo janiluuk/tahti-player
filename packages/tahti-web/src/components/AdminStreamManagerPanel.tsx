@@ -201,17 +201,18 @@ export function AdminStreamManagerPanel({
                   </div>
                   <div className="ml-auto flex shrink-0 items-center gap-1">
                     {stream.hlsUrl ? (
-                      <a href={stream.hlsUrl} target="_blank" rel="noreferrer">
-                        <Tooltip content="Listen" side="top">
-                          <Button
-                            size="icon-sm"
-                            variant="text"
-                            aria-label={`Listen to ${stream.artistName}`}
-                          >
-                            <ExternalLinkIcon size={14} aria-hidden />
-                          </Button>
-                        </Tooltip>
-                      </a>
+                      <Tooltip content="Listen" side="top">
+                        <ButtonAnchor
+                          href={stream.hlsUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          size="icon-sm"
+                          variant="text"
+                          aria-label={`Listen to ${stream.artistName}`}
+                        >
+                          <ExternalLinkIcon size={14} aria-hidden />
+                        </ButtonAnchor>
+                      </Tooltip>
                     ) : null}
                     <Tooltip content="Details" side="top">
                       <Button

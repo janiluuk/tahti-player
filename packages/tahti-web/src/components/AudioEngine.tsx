@@ -5,6 +5,7 @@ import type { QueueItem } from '@tahti-player/model';
 
 import { postListenEvent } from '../api/client';
 import type { TahtiPlayable } from '../api/types';
+import { usePlayerStationNowPlaying } from '../hooks/useStationNowPlaying';
 import { ensureAudioCoreBridge } from '../lib/audioCoreBridge';
 import {
   canAirPlay,
@@ -43,6 +44,7 @@ export function AudioEngine() {
   const status = usePlayerStore((s) => s.status);
   const volume = usePlayerStore((s) => s.volume);
   const muted = usePlayerStore((s) => s.muted);
+  const fadeLevel = usePlayerStore((s) => s.fadeLevel);
   const seekTarget = usePlayerStore((s) => s.seekTarget);
   const setStatus = usePlayerStore((s) => s.setStatus);
   const setProgress = usePlayerStore((s) => s.setProgress);
@@ -77,9 +79,10 @@ export function AudioEngine() {
     }
     const audio = audioRef.current;
     if (audio) {
-      audio.volume = gainRef.current ? volume : volume * Math.min(factor, 1);
+      const level = volume * fadeLevel;
+      audio.volume = gainRef.current ? level : level * Math.min(factor, 1);
     }
-  }, [volume]);
+  }, [volume, fadeLevel]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -88,6 +91,11 @@ export function AudioEngine() {
     }
     applyNormalization();
     audio.muted = muted;
+    // A channel that started on its own did so without a gesture, which
+    // leaves the audio context suspended; unmuting is the gesture.
+    if (!muted && audioCtxRef.current?.state === 'suspended') {
+      void audioCtxRef.current.resume().catch(() => undefined);
+    }
   }, [applyNormalization, muted]);
 
   const applyNormalizationRef = useRef(applyNormalization);
@@ -150,8 +158,9 @@ export function AudioEngine() {
   }, [setStatus, previous, next, seekBy, skipSeconds]);
 
   const hasPlayable = playable != null;
-  const metaTitle = playable?.title;
-  const metaArtist = playable?.artist;
+  const stationNowPlaying = usePlayerStationNowPlaying(playable);
+  const metaTitle = stationNowPlaying?.title ?? playable?.title;
+  const metaArtist = stationNowPlaying?.artist ?? playable?.artist;
   const metaArtworkJson = useMemo(
     () =>
       JSON.stringify(mediaSessionArtwork(current?.track.artwork?.items ?? [])),
@@ -277,6 +286,14 @@ export function AudioEngine() {
     setStatus('loading');
 
     const onPlaying = () => setStatus('playing');
+    // The element ran out of data mid-stream (slow network, a seek into an
+    // unbuffered part). It fires `playing` again once audio resumes; until
+    // then the player is loading, not playing. A pause is left alone.
+    const onWaiting = () => {
+      if (usePlayerStore.getState().status === 'playing') {
+        setStatus('loading');
+      }
+    };
     const onPause = () => {
       if (!audio.ended) {
         setStatus('paused');
@@ -330,6 +347,7 @@ export function AudioEngine() {
 
     audio.crossOrigin = canAirPlay() ? null : 'anonymous';
     audio.addEventListener('playing', onPlaying);
+    audio.addEventListener('waiting', onWaiting);
     audio.addEventListener('pause', onPause);
     audio.addEventListener('ended', onEnded);
     audio.addEventListener('timeupdate', onTime);
@@ -387,6 +405,7 @@ export function AudioEngine() {
     return () => {
       disposed = true;
       audio.removeEventListener('playing', onPlaying);
+      audio.removeEventListener('waiting', onWaiting);
       audio.removeEventListener('pause', onPause);
       audio.removeEventListener('ended', onEnded);
       audio.removeEventListener('timeupdate', onTime);

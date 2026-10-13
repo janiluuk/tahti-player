@@ -42,7 +42,7 @@ const QUIET_STORAGE = {
 const QUIET_CSS = '[data-sonner-toaster] { display: none !important; }';
 
 /** User ids the capture scripts sign in as. */
-const MOCK_USER_IDS = ['mock-1', 'mock-board-1'];
+const MOCK_USER_IDS = ['mock-1', 'mock-board-1', 'mock-listener@tahti.live'];
 
 const DEMO_TRACKS = [
   ['Midnight Broadcast', 'Northern Lights', 372],

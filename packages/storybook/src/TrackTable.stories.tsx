@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
-import { fn } from 'storybook/test';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { Track } from '@tahti-player/model';
 import {
@@ -235,6 +235,45 @@ export const WithFavorites: Story = {
           isTrackFavorite: (track) => favorites.has(track.source.id),
         }}
       />
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const [first] = canvas.getAllByRole('button', { name: 'Add to favorites' });
+    await userEvent.click(first!);
+    await expect(
+      canvas.getAllByRole('button', { name: 'Remove from favorites' }),
+    ).toHaveLength(1);
+  },
+};
+
+/** A secondary line under the title, as shared playlists credit who added
+ * a track (tahti-web passes CollectionContribution here). */
+export const WithAnnotation: Story = {
+  args: {
+    tracks,
+    labels,
+    rowHeight: 68,
+    display: {
+      displayPosition: true,
+      displayThumbnail: true,
+      displayArtist: true,
+      displayDuration: true,
+    },
+    meta: {
+      getTrackAnnotation: (track: Track) =>
+        track.source.id === '1'
+          ? 'Added by @kaamos-mod · “Opener for Friday”'
+          : null,
+    },
+  },
+  render: (args) => <TrackTable {...(args as TrackTableProps)} />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const annotations = canvas.getAllByTestId('track-annotation');
+    await expect(annotations).toHaveLength(1);
+    await expect(annotations[0]).toHaveTextContent(
+      'Added by @kaamos-mod · “Opener for Friday”',
     );
   },
 };

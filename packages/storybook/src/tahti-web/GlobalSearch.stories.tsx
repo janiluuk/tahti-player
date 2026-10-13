@@ -4,7 +4,7 @@ import { expect, userEvent, within } from 'storybook/test';
 
 import { withTahtiRouter } from './_lib/decorators';
 
-const meta: Meta<typeof GlobalSearch> = {
+const meta: Meta<NonNullable<Parameters<typeof GlobalSearch>[0]>> = {
   title: 'Tahti/Widgets/GlobalSearch',
   component: GlobalSearch,
   parameters: { layout: 'padded' },

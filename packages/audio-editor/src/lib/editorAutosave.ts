@@ -24,6 +24,7 @@
  */
 import { create } from 'zustand';
 
+import { reviveMidiClip } from '../midi/midiClip';
 import {
   computePeaks,
   useEditorStore,
@@ -358,10 +359,13 @@ async function restoreFromAutosave(): Promise<void> {
   const reviveClip = async (sc: SerializedClip): Promise<AudioClip> => {
     const { assetHash, ...rest } = sc;
     const audioBlob = await loadAsset(assetHash, sc.mimeType);
-    const clip: AudioClip = {
+    const clip: AudioClip = reviveMidiClip({
       ...(rest as Omit<AudioClip, 'audioBlob'>),
       audioBlob,
-    };
+    });
+    if (clip.sourceKind === 'piano-roll') {
+      return clip;
+    }
     try {
       const { peaks } = await computePeaks(audioBlob, 240);
       clip.peaks = peaks;

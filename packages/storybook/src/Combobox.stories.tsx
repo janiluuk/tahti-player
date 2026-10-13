@@ -1,7 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { CreatableCombobox } from '@tahti-player/ui';
+
+import { withinBody } from './tahti-web/_lib/play';
 
 const meta: Meta<typeof CreatableCombobox> = {
   title: 'Components/Combobox',
@@ -46,4 +49,29 @@ function Interactive() {
 
 export const Default: Story = {
   render: () => <Interactive />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const body = withinBody(canvasElement);
+    const input = canvas.getByRole('combobox', { name: 'Genre' });
+
+    await userEvent.type(input, 'tech');
+    const listbox = within(await body.findByRole('listbox'));
+    // The options panel fades in.
+    await waitFor(() =>
+      expect(listbox.getByRole('option', { name: 'Techno' })).toBeVisible(),
+    );
+    await expect(listbox.queryByRole('option', { name: 'House' })).toBeNull();
+
+    await userEvent.clear(input);
+    await userEvent.type(input, 'Jungle');
+    await userEvent.click(
+      await body.findByRole('option', { name: 'Add "Jungle"' }),
+    );
+    await expect(input).toHaveValue('Jungle');
+
+    await userEvent.clear(input);
+    await userEvent.type(input, 'jun');
+    const created = await body.findByRole('option', { name: /^Jungle/ });
+    await waitFor(() => expect(created).toBeVisible());
+  },
 };

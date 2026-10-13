@@ -1,8 +1,7 @@
-import { Link } from '@tanstack/react-router';
 import { PlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, Select, Tooltip } from '@tahti-player/ui';
+import { ButtonLink, Select, Tooltip } from '@tahti-player/ui';
 
 import {
   fetchMyPurchaseTiers,
@@ -59,17 +58,16 @@ export function PurchaseAccessSection({
             purchase tier. Fan subscribers can always play gated tracks.
           </p>
         </div>
-        <Link to="/studio/audience">
-          <Tooltip content="Manage purchase tiers" side="top">
-            <Button
-              size="icon-sm"
-              variant="secondary"
-              aria-label="Manage purchase tiers"
-            >
-              <PlusIcon size={15} aria-hidden />
-            </Button>
-          </Tooltip>
-        </Link>
+        <Tooltip content="Manage purchase tiers" side="top">
+          <ButtonLink
+            to="/studio/audience"
+            size="icon-sm"
+            variant="secondary"
+            aria-label="Manage purchase tiers"
+          >
+            <PlusIcon size={15} aria-hidden />
+          </ButtonLink>
+        </Tooltip>
       </div>
       <div className="sm:max-w-xs">
         <Select

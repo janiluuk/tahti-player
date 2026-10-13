@@ -5,10 +5,13 @@ import type { QueueItem, RepeatMode } from '@tahti-player/model';
 
 import type { TahtiPlayable } from '../api/types';
 import { isInternetRadioPlayableId } from '../content/radioStations';
+import { FADE_IN_MS, FADE_OUT_MS, rampLevel } from '../lib/audioFade';
 import { playableToTrack } from '../lib/playableToTrack';
 import { useLayoutStore } from './layoutStore';
 import { useLibraryStore } from './libraryStore';
 import { peaksFor, rememberPeaks, type PeaksCache } from './peaksCache';
+
+const FADE_START_TIMEOUT_MS = 4000;
 
 export type PlaybackStatus =
   'idle' | 'loading' | 'playing' | 'paused' | 'error';
@@ -20,6 +23,13 @@ type PlayerState = {
   error: string | null;
   volume: number;
   muted: boolean;
+  /** Set while a channel that started on its own is playing muted: holds
+   * what `muted` was before, to put back when the listener starts something
+   * themselves. `null` whenever the mute is the listener's own. */
+  autoplayRestoreMuted: boolean | null;
+  /** Multiplier on the output level, 1 except while one source fades out
+   * and the next fades in. The listener's `volume` is never touched. */
+  fadeLevel: number;
   currentTime: number;
   duration: number;
   isLive: boolean;
@@ -56,6 +66,15 @@ type PlayerState = {
   /** Cache waveform peaks for a playable id; updates currentPeaks when that id is playing. */
   cachePeaks: (id: string, peaks: number[]) => void;
   play: (item: TahtiPlayable, opts?: { enqueueRest?: TahtiPlayable[] }) => void;
+  /** Starts a channel nobody pressed play on: muted, because browsers refuse
+   * sound without a gesture, until `unmuteAutoplay`. */
+  autoplayMuted: (item: TahtiPlayable) => void;
+  /** The listener asked to hear the channel that started muted. */
+  unmuteAutoplay: () => void;
+  /** Fades what is playing out, switches to `item` and fades it in. The
+   * queue is kept: `item` goes in after the current track, so Previous
+   * leads back. Resolves `false` when the listener changed track meanwhile. */
+  fadeOverTo: (item: TahtiPlayable) => Promise<boolean>;
   enqueue: (item: TahtiPlayable) => void;
   /** Installs a queue saved by an earlier session: paused, nothing loaded, no history entry. */
   hydrateQueue: (items: TahtiPlayable[], currentId: string | null) => void;
@@ -163,6 +182,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   error: null,
   volume: 0.85,
   muted: false,
+  autoplayRestoreMuted: null,
+  fadeLevel: 1,
   currentTime: 0,
   duration: 0,
   isLive: true,
@@ -211,7 +232,65 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       hasPlayed: true,
       lastRadioPlayable: isRadioOrLive ? item : s.lastRadioPlayable,
       playerBarVisible: true,
+      ...(s.autoplayRestoreMuted === null
+        ? {}
+        : { muted: s.autoplayRestoreMuted, autoplayRestoreMuted: null }),
     }));
+  },
+
+  autoplayMuted: (item) => {
+    const before = get().autoplayRestoreMuted ?? get().muted;
+    const hadPlayed = get().hasPlayed;
+    // Muted before the source changes, so the element is silent by the time
+    // the engine asks it to play.
+    set({ muted: true, autoplayRestoreMuted: null });
+    get().play(item);
+    set({ autoplayRestoreMuted: before, hasPlayed: hadPlayed });
+  },
+
+  unmuteAutoplay: () =>
+    set({ muted: false, autoplayRestoreMuted: null, hasPlayed: true }),
+
+  fadeOverTo: async (item) => {
+    const from = get().currentId;
+    const setLevel = (fadeLevel: number) => set({ fadeLevel });
+    const faded = await rampLevel({
+      from: get().fadeLevel,
+      to: 0,
+      ms: FADE_OUT_MS,
+      onLevel: setLevel,
+      cancelled: () => get().currentId !== from,
+    });
+    if (!faded) {
+      setLevel(1);
+      return false;
+    }
+    get().playNext(item);
+    get().playQueueIndex(item.id);
+    set({ isRealLive: Boolean(item.isRealLive) });
+    // Stay silent until the new source has sound, or give up waiting.
+    await new Promise<void>((resolve) => {
+      const timer = setTimeout(done, FADE_START_TIMEOUT_MS);
+      const unsubscribe = usePlayerStore.subscribe((s) => {
+        if (s.status !== 'loading' || s.currentId !== item.id) {
+          done();
+        }
+      });
+      function done() {
+        clearTimeout(timer);
+        unsubscribe();
+        resolve();
+      }
+    });
+    const arrived = await rampLevel({
+      from: 0,
+      to: 1,
+      ms: FADE_IN_MS,
+      onLevel: setLevel,
+      cancelled: () => get().currentId !== item.id,
+    });
+    setLevel(1);
+    return arrived;
   },
 
   enqueue: (item) => {
@@ -431,9 +510,15 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 
   setProgress: (currentTime, duration) => set({ currentTime, duration }),
 
-  setVolume: (volume) => set({ volume, muted: volume === 0 ? true : false }),
+  setVolume: (volume) =>
+    set({
+      volume,
+      muted: volume === 0 ? true : false,
+      autoplayRestoreMuted: null,
+    }),
 
-  toggleMute: () => set((s) => ({ muted: !s.muted })),
+  toggleMute: () =>
+    set((s) => ({ muted: !s.muted, autoplayRestoreMuted: null })),
 
   toggleShuffle: () => {
     const { isLive } = get();

@@ -11,3 +11,18 @@ Stability AI and contributors):
 
 The MIT permission notice is retained. Combined with Tahti Player these works
 are distributed under the GNU Affero General Public License v3.
+
+## spessasynth_core (MIDI clip synthesis)
+
+`@tahti-player/audio-editor` uses spessasynth_core 4.3.22 (Copyright (c)
+spessasus and contributors, https://github.com/spessasus/spessasynth_core) and
+its dependency stb-vorbis 0.0.6 (https://github.com/spessasus/stb-vorbis), both
+under the Apache License, Version 2.0
+(https://www.apache.org/licenses/LICENSE-2.0). They are loaded on demand to
+render Multitrack MIDI clips.
+
+No SoundFont file is bundled. MIDI clips play through the small saw-wave bank
+that spessasynth_core generates in code (`BasicSoundBank.getSampleSoundBankFile`,
+covered by the same Apache-2.0 licence). A SoundFont an artist loads from their
+own device is used only in their browser session and is not distributed.
+

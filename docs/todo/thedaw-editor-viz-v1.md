@@ -14,7 +14,7 @@
 - [.gan sidecar] Owl/Ares as hosted plugins (plan option 1b)
 - VST3 freeze + pedalboard host
 - FFmpeg Edit Tool Stack / mastering families
-- MIDI / piano-roll clips (spessasynth)
-- Bounce → direct `renderEditorDraft` / version upload without WAV download
+- ~~Bounce → version upload~~ — client bounce → sound versions prepare/complete (#613)
 - PulseForge video export editor (separate todo)
 - Bidirectional package sync back into theDAW
+- Artist-creative next steps: [`next-twenty-slices.md`](next-twenty-slices.md)

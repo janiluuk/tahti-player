@@ -1,5 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { FilterChip, FilterChips } from '@tahti-player/ui';
 
@@ -66,5 +67,30 @@ export const Interactive: Story = {
         </div>
       </div>
     );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const [single, multi, disabled] = canvas.getAllByTestId('filter-chips');
+
+    const singleGroup = within(single!);
+    await userEvent.click(singleGroup.getByRole('radio', { name: 'Lyrics' }));
+    await expect(
+      singleGroup.getByRole('radio', { name: 'Lyrics' }),
+    ).toBeChecked();
+    await expect(
+      singleGroup.getByRole('radio', { name: 'All' }),
+    ).not.toBeChecked();
+    await expect(canvas.getByText('Selected: lyrics')).toBeVisible();
+
+    const multiGroup = within(multi!);
+    await userEvent.click(multiGroup.getByRole('checkbox', { name: 'Lyrics' }));
+    await userEvent.click(
+      multiGroup.getByRole('checkbox', { name: 'Streaming' }),
+    );
+    await expect(canvas.getByText('Selected: metadata, lyrics')).toBeVisible();
+
+    for (const chip of within(disabled!).getAllByRole('radio')) {
+      await expect(chip).toBeDisabled();
+    }
   },
 };

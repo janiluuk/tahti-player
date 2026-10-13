@@ -1,4 +1,5 @@
 import type { Decorator } from '@storybook/react-vite';
+import { setMockSessionUser } from '@tahti-web/api/mock-session';
 import type { AuthUser } from '@tahti-web/api/types';
 import { useAuthStore } from '@tahti-web/stores/authStore';
 import {
@@ -77,6 +78,17 @@ export const MOCK_USERS = {
 };
 
 /**
+ * Sets both the auth store and the mock API session. Seeding only the store
+ * isn't enough: `useAuthStore.refresh()` (run by AppShell and friends) asks
+ * the mock `/auth/me`, which would otherwise hand back whichever user an
+ * earlier story left in the mock session.
+ */
+export function seedMockAuth(user: AuthUser | null) {
+  setMockSessionUser(user);
+  useAuthStore.setState({ user, hydrated: true, loading: false });
+}
+
+/**
  * Seeds `useAuthStore` with a signed-in mock user before render — needed
  * for anything behind `AdminGate`/`StudioGate`, or that just reads
  * `useAuthStore` for the current user. `null` renders the signed-out state.
@@ -85,7 +97,7 @@ export function withMockAuth(
   user: AuthUser | null = MOCK_BOARD_USER,
 ): Decorator {
   return (Story) => {
-    useAuthStore.setState({ user, hydrated: true, loading: false });
+    seedMockAuth(user);
     return <Story />;
   };
 }
