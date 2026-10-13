@@ -47,6 +47,17 @@ const PAGE_TITLES: [string, string][] = [
   ['/chat', 'Chat'],
   ['/status', 'Status'],
   ['/more', 'Tahti map'],
+  ['/about', 'About'],
+  ['/what-is-it', 'What is it'],
+  ['/how-it-works', 'How it works'],
+  ['/for-artists', 'For artists'],
+  ['/terms', 'Terms of service'],
+  ['/privacy', 'Privacy policy'],
+  ['/agpl', 'Source code & AGPL licence'],
+  ['/subscribe', 'Subscribe'],
+  ['/newsletter', 'Newsletter'],
+  ['/moderate', 'Chat moderation'],
+  ['/jam', 'Jam'],
 ];
 
 const SECTION_NAMES: [string, string][] = [
