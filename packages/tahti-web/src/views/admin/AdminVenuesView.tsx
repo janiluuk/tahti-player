@@ -36,7 +36,7 @@ export function AdminVenuesView() {
       return venues;
     }
     return venues.filter((venue) =>
-      [venue.name, venue.slug, venue.city, venue.countryCode, venue.createdBy]
+      [venue.name, venue.slug, venue.city, venue.countryCode]
         .join(' ')
         .toLowerCase()
         .includes(normalized),
@@ -108,7 +108,8 @@ export function AdminVenuesView() {
                             <p className="font-medium">{venue.name}</p>
                             <p className="text-foreground-secondary text-xs">
                               {venue.city}, {venue.countryCode} · /{venue.slug}{' '}
-                              · submitted by {venue.createdBy}
+                              · submitted{' '}
+                              {new Date(venue.createdAt).toLocaleDateString()}
                             </p>
                           </div>
                           <Button
