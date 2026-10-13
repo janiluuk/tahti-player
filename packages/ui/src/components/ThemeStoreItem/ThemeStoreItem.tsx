@@ -118,9 +118,9 @@ export const ThemeStoreItem: FC<ThemeStoreItemProps> = ({
         <Box
           variant="tertiary"
           shadow="none"
-          className="relative flex-1 flex-row items-center justify-between gap-2 !p-2"
+          className="relative flex-1 flex-row flex-wrap items-center justify-between gap-2 !p-2"
         >
-          <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+          <div className="flex min-w-0 flex-1 basis-40 flex-col gap-0.5">
             <div className="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-0.5">
               <h3
                 data-testid="theme-store-item-name"
