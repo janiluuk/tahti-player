@@ -132,7 +132,7 @@ export const SignalCheckWidget = ({
           <Mic2Icon size={21} aria-hidden />
           <span className="ring-background bg-accent-yellow absolute right-0 bottom-0 size-2.5 rounded-full ring-2" />
         </div>
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 basis-40">
           <p className="text-sm font-semibold">
             {state === 'waiting'
               ? 'Waiting for your signal…'
