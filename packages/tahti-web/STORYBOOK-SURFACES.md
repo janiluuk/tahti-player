@@ -191,6 +191,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Widgets/MermaidDiagram` | `tahti-web/MermaidDiagram.stories.tsx` |
 | `Tahti/Social/MessagesView` | `tahti-web/MessagesView.stories.tsx` |
 | `Tahti/Chrome/MobileChrome` | `tahti-web/MobileChrome.stories.tsx` |
+| `Tahti/Listen/ModerateChannelView` | `tahti-web/ModerateChannelView.stories.tsx` |
 | `Tahti/Broadcast/MulticastConfigureDialog` | `tahti-web/MulticastConfigureDialog.stories.tsx` |
 | `Tahti/Broadcast/MulticastSection` | `tahti-web/MulticastSection.stories.tsx` |
 | `Tahti/Studio/GoLive/MultistreamPanel` | `tahti-web/MultistreamPanel.stories.tsx` |

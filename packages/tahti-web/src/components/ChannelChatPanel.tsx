@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { Button, EmptyState, Input } from '@tahti-player/ui';
+import { Button, ButtonLink, EmptyState, Input } from '@tahti-player/ui';
 
 import {
   fetchChatAccess,
@@ -515,6 +515,16 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
         <div className="flex min-w-0 items-center gap-2">
           <div className="font-display text-sm font-bold">Chat</div>
           <ChatDailyListeners slug={slug} />
+          {channelRole && (
+            <ButtonLink
+              to="/moderate/$slug"
+              params={{ slug }}
+              size="xs"
+              variant="ghost"
+            >
+              Moderate
+            </ButtonLink>
+          )}
           {canJoinFanChat && (
             <Button
               size="xs"

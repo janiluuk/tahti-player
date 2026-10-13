@@ -308,6 +308,10 @@ export const JamView = lazyRouteComponent(
   () => import('../views/JamView'),
   'JamView',
 );
+export const ModerateChannelView = lazyRouteComponent(
+  () => import('../views/ModerateChannelView'),
+  'ModerateChannelView',
+);
 export const MessagesView = lazyRouteComponent(
   () => import('../views/MessagesView'),
   'MessagesView',

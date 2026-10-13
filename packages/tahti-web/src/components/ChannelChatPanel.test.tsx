@@ -145,6 +145,28 @@ describe('ChannelChatPanel', () => {
     expect(screen.queryByText(/weird_code/)).toBe(null);
   });
 
+  it('links the owner and moderators to the moderation page, and nobody else', async () => {
+    vi.mocked(requestChatToken).mockResolvedValue({
+      data: { token: 't', handle: 'nightowl', channelRole: 'moderator' },
+      meta: { source: 'api' },
+    });
+    await renderPanel();
+    expect(screen.queryByRole('link', { name: 'Moderate' })).toBe(null);
+    await join();
+    expect(
+      screen.getByRole('link', { name: 'Moderate' }).getAttribute('href'),
+    ).toBe('/moderate/night-drive');
+    cleanup();
+
+    vi.mocked(requestChatToken).mockResolvedValue({
+      data: { token: 't', handle: 'nightowl', channelRole: null },
+      meta: { source: 'api' },
+    });
+    await renderPanel();
+    await join();
+    expect(screen.queryByRole('link', { name: 'Moderate' })).toBe(null);
+  });
+
   it('sends the listener back to the captcha when a post needs one', async () => {
     vi.mocked(requestChatToken).mockResolvedValue({
       data: { token: 'publish-token', handle: 'nightowl' },

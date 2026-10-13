@@ -19,6 +19,7 @@ import {
   GreenRoomView,
   JamView,
   MessagesView,
+  ModerateChannelView,
   MoreView,
   NewsView,
   SmartLinkView,
@@ -289,6 +290,15 @@ export const jamRoute = createRoute({
   component: function JamRoute() {
     const { code } = jamRoute.useParams();
     return <JamView code={code} />;
+  },
+});
+
+export const moderateChannelRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/moderate/$slug',
+  component: function ModerateChannelRoute() {
+    const { slug } = moderateChannelRoute.useParams();
+    return <ModerateChannelView slug={slug} />;
   },
 });
 
