@@ -24,17 +24,17 @@ type Story = StoryObj<typeof meta>;
 export const Queue: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByText('No missed shows in this view'),
-    ).toBeVisible();
-    await expect(canvas.getByText('Queue · 0')).toBeVisible();
+    await expect(await canvas.findByText('Friday Frequency')).toBeVisible();
+    await expect(canvas.getByText('Northern Signals #4')).toBeVisible();
+    await expect(canvas.getByText('Queue · 2')).toBeVisible();
     await expect(canvas.getByRole('tab', { name: 'All' })).toHaveAttribute(
       'aria-selected',
       'true',
     );
-    await selectTab(canvas, 'Open');
+    await selectTab(canvas, 'Dismissed');
     await expect(
       await canvas.findByText('No missed shows in this view'),
     ).toBeVisible();
+    await expect(canvas.getByText('Queue · 0')).toBeVisible();
   },
 };
