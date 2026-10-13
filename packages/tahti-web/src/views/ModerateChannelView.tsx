@@ -110,7 +110,7 @@ export function ModerateChannelView({ slug }: { slug: string }) {
           <div className="flex flex-col gap-3">
             <p className="text-foreground-secondary text-sm">
               {channel.isOwner
-                ? 'Your channel. Who may post and who moderates is under Settings, Channel.'
+                ? 'Your channel. Who may post is in the chat settings, and who moderates is under Moderators.'
                 : `You moderate this chat for ${channel.displayName}. You can remove messages and ban people from posting.`}
             </p>
             <div className="flex flex-wrap gap-2">
@@ -122,6 +122,28 @@ export function ModerateChannelView({ slug }: { slug: string }) {
               >
                 Open channel
               </ButtonLink>
+              {channel.isOwner && (
+                <>
+                  <ButtonLink
+                    to="/settings/$section"
+                    params={{ section: 'channel' }}
+                    search={{ tab: 'chat' }}
+                    size="sm"
+                    variant="text"
+                  >
+                    Chat settings
+                  </ButtonLink>
+                  <ButtonLink
+                    to="/settings/$section"
+                    params={{ section: 'channel' }}
+                    search={{ tab: 'moderators' }}
+                    size="sm"
+                    variant="text"
+                  >
+                    Moderators
+                  </ButtonLink>
+                </>
+              )}
               {!channel.isOwner && (
                 <Button
                   size="sm"
