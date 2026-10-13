@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminLogsView } from '@tahti-web/views/admin/AdminLogsView';
-import { expect, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 import { selectTab } from './_lib/play';
@@ -29,7 +29,8 @@ export const Default: Story = {
     await expect(
       canvas.getByRole('tab', { name: 'Audit events' }),
     ).toHaveAttribute('aria-selected', 'true');
-    await expect(await canvas.findByText('Nova Drift logged in')).toBeVisible();
+    const entry = await canvas.findByText('Nova Drift logged in');
+    await waitFor(() => expect(entry).toBeVisible());
     await selectTab(canvas, 'Container logs');
   },
 };
