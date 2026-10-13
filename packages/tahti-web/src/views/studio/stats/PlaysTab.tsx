@@ -85,17 +85,19 @@ export function PlaysTab({
             </div>
           ) : (
             <div className="h-52 w-full">
-              <DayOfWeekChart
-                values={chartValues}
-                labels={{ weekdays: chartLabels }}
-                formatValue={(value) => `${value.toLocaleString()} plays`}
-                onBarClick={(index) => {
-                  const day = plays.daily[index];
-                  if (day) {
-                    openDay(day.date);
-                  }
-                }}
-              />
+              {active ? (
+                <DayOfWeekChart
+                  values={chartValues}
+                  labels={{ weekdays: chartLabels }}
+                  formatValue={(value) => `${value.toLocaleString()} plays`}
+                  onBarClick={(index) => {
+                    const day = plays.daily[index];
+                    if (day) {
+                      openDay(day.date);
+                    }
+                  }}
+                />
+              ) : null}
             </div>
           )}
           <p className="text-foreground-secondary mt-2 text-xs">
