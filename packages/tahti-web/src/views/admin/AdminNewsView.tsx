@@ -206,7 +206,7 @@ export function AdminNewsView() {
                         key={post.id}
                         className="flex flex-wrap items-start justify-between gap-3 py-3 first:pt-0 last:pb-0"
                       >
-                        <div className="min-w-0 flex-1">
+                        <div className="min-w-0 flex-1 basis-64">
                           <div className="flex items-center gap-2 font-medium">
                             {post.imageUrl ? (
                               <ImageIcon
