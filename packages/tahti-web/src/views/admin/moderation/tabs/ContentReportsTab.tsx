@@ -273,7 +273,7 @@ export function ContentReportsTab() {
                 key={r.id}
                 className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm first:pt-0 last:pb-0"
               >
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 basis-64">
                   <div className="font-medium">
                     {r.reason.replace(/_/g, ' ')} ·{' '}
                     <span className="text-foreground-secondary font-normal">
