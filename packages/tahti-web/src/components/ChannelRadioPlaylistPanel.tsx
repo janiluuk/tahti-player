@@ -469,13 +469,14 @@ export const ChannelRadioPlaylistPanel: FC = () => {
             />
 
             <label className="flex items-center justify-between gap-3 text-sm">
-              <span>
+              <span className="min-w-0">
                 Auto-add uploads
                 <span className="text-foreground-secondary block text-xs">
                   Add new ready uploads to the rotation automatically
                 </span>
               </span>
               <Toggle
+                className="shrink-0"
                 checked={fallbackAutoEnroll}
                 disabled={busy || !programme}
                 onChange={setFallbackAutoEnroll}
@@ -484,13 +485,14 @@ export const ChannelRadioPlaylistPanel: FC = () => {
             </label>
 
             <label className="flex items-center justify-between gap-3 text-sm">
-              <span>
+              <span className="min-w-0">
                 Artist announcements
                 <span className="text-foreground-secondary block text-xs">
                   Include your station IDs and clips
                 </span>
               </span>
               <Toggle
+                className="shrink-0"
                 checked={announcementsEnabled}
                 disabled={busy || !programme}
                 onChange={setAnnouncementsEnabled}
