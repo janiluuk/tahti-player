@@ -226,7 +226,7 @@ const STATUS_COLOR: Record<VendorStatus, 'green' | 'yellow' | 'red'> = {
 
 function VendorTable({ vendors }: { vendors: readonly Vendor[] }) {
   return (
-    <ul className="divide-border divide-y">
+    <ul className="divide-border divide-y break-words">
       {vendors.map((v) => (
         <li
           key={v.name}
@@ -287,7 +287,7 @@ export function AdminVendorsContent() {
           description="A vendor is not considered live until its credentials, contract, callback/webhook, DPA, and operational test are confirmed."
         >
           {blockers.length > 0 ? (
-            <ul className="text-foreground-secondary flex flex-col gap-2 text-sm">
+            <ul className="text-foreground-secondary flex flex-col gap-2 text-sm break-words">
               {blockers.map((vendor) => (
                 <li key={vendor.name}>
                   <span className="text-foreground font-medium">
@@ -304,13 +304,13 @@ export function AdminVendorsContent() {
 
         {integrations.length > 0 && (
           <StudioPanel title="Distribution status">
-            <ul className="flex flex-col gap-2">
+            <ul className="flex flex-col gap-2 break-words">
               {integrations.map((row) => (
                 <li key={row.name} className="flex items-center gap-3 text-sm">
                   <Badge variant="pill" color={row.live ? 'green' : 'red'}>
                     {row.live ? 'Live' : 'Blocking launch'}
                   </Badge>
-                  <div>
+                  <div className="min-w-0">
                     <div className="font-medium">{row.name}</div>
                     <div className="text-foreground-secondary text-xs">
                       {row.detail}
@@ -334,7 +334,7 @@ export function AdminVendorsContent() {
           title="DSP & catalog partners"
           description="Distribution partners artists reach through Studio → Distribution — no vendor account for us to configure beyond Revelator."
         >
-          <ul className="divide-border divide-y">
+          <ul className="divide-border divide-y break-words">
             {DISTRIBUTION_ACTIONS.map((row) => (
               <li
                 key={row.name}
@@ -353,7 +353,7 @@ export function AdminVendorsContent() {
           title="Cooperative governance & local culture-organisation actions"
           description="Open questions for the board/legal counsel — not legal advice, and not something this tool has verified or completed."
         >
-          <ul className="divide-border divide-y">
+          <ul className="divide-border divide-y break-words">
             {COOPERATIVE_ACTIONS.map((row) => (
               <li
                 key={row.title}
