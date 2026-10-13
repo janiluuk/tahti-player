@@ -149,14 +149,14 @@ export function StemMixer({
           </Button>
         ) : null}
       </div>
-      <ul className="divide-border divide-y" aria-label="Stem mix">
+      <ul className="divide-border @container divide-y" aria-label="Stem mix">
         {files.map((f) => {
           const channel = channelFor(mix, f.label);
           const silent = (gains[f.label] ?? 1) === 0;
           return (
             <li
               key={f.label}
-              className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1 py-1.5 text-sm sm:grid-cols-[minmax(0,8rem)_minmax(0,1fr)_auto]"
+              className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1 py-1.5 text-sm @sm:grid-cols-[minmax(0,8rem)_minmax(0,1fr)_auto]"
             >
               <span
                 className={cn(
@@ -169,7 +169,7 @@ export function StemMixer({
                   <span className="sr-only"> (silenced by solo)</span>
                 ) : null}
               </span>
-              <div className="col-span-2 row-start-2 min-w-0 sm:col-span-1 sm:col-start-2 sm:row-start-1">
+              <div className="col-span-2 row-start-2 min-w-0 @sm:col-span-1 @sm:col-start-2 @sm:row-start-1">
                 <Slider
                   min={0}
                   max={100}
