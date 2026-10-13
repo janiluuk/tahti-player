@@ -4474,3 +4474,18 @@ The full-screen player painted the visualizer's "Mode" select (showing "Spectrum
 
 - **Checks:** `FullScreenPlayer.test.tsx` (6 tests, 3 new), eslint and Prettier on the changed files, the tahti-web type-check, and a headless Chromium run of the mock app at 1366 px (open the menu on a radio station, pick Orb). Not tried at phone width, against the live API, or as a Storybook play run.
 - **Left open:** the analyzer's frequency/RMS/peak strip and its fullscreen toggle are still drawn in the backdrop and cannot be clicked there.
+
+## 2026-10-14 - Fifteen slices, fifty-second batch (tahti-player #633-#647)
+
+The five slices left in `next-twenty-slices.md` still wait on generation or broadcast-bus work or a product decision, so this batch came from two headless Chromium sweeps of the mock app as a board artist, at 1024 px and 390 px over every static route (unnamed controls, unlabelled inputs, page titles, elements wider than their box, console errors), plus contact sheets of the phone screenshots. Before the batch, #601 and #602 were merged on request after their conflicts with master were resolved; tahti-org #754 and #760 were still open on 2026-10-14, so the moderator's page and the message list on beta show the API's error until those ship.
+
+- **Full-screen player (#633)**: the analyzer's kHz / RMS / PEAK strip and fullscreen toggle are no longer drawn in the backdrop, where they could not be clicked. This closes the item left open on 2026-10-12.
+- **Moderation links (#634, #638)**: Settings → Channel & chat opens on the tab named in `?tab=`, `/studio/moderation` lands on Moderators, and the chat moderation page links its owner to the chat settings and the moderators (#638 is stacked on #634).
+- **Tab titles (#635)**: About, What is it, How it works, For artists, Terms, Privacy, AGPL, the fan subscription page, the newsletter pages, chat moderation and jams no longer share the site-wide title.
+- **1024 px (#636)**: the Audience summary tiles follow the width of their card, so "€128.40" is no longer cut off.
+- **Admin Venues (#637)**: the row shows the submission date. `createdBy` is an account id in the API, and the mock had an email address there.
+- **Keyboard (#639)**: the hidden file inputs behind station covers and round image uploads are out of the tab order and the accessibility tree.
+- **Phones, 390 px**: admin News posts (#640), beta applications (#641), Vendors (#642), Add-on cards (#644) and recent voting activity (#647) no longer squeeze text into a one-word column or run off the card; the Broadcast signal check (#643) and the programme switches on Schedule (#646) likewise.
+- **Chat moderation times (#645)**: date and time to the minute in a `<time>` element, from one `moderationTime` helper.
+- **Checks:** per PR the touched tests, tahti-web type-check, eslint and Prettier on the changed files and the size guard; the layout fixes were looked at as screenshots or with a script that lists elements wider than their box, as each PR says. All fifteen branches merged together pass the tahti-web type-check and suite (2,479 tests). Not tried against the live API, on a real phone, or with a screen reader.
+- **Left open:** see `sweep-leftovers.md`.
