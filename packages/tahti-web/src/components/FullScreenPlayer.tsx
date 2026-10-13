@@ -19,6 +19,7 @@ import { ChannelVisualizer } from './ChannelVisualizer';
 import { HearthisEmbedSurface } from './HearthisEmbedSurface';
 import { NowPlayingActionSheet } from './NowPlayingActionSheet';
 import { ConnectedSeekBar, PlayerLiveIndicator } from './PlayerSeekBar';
+import { VisualizerModeMenu } from './VisualizerModeMenu';
 
 const ANIMATION_MS = 280;
 
@@ -156,8 +157,7 @@ export function FullScreenPlayer() {
           className="h-full w-full"
           artworkUrl={coverUrl}
           engineMode={engineMode}
-          showModePicker
-          onEngineModeChange={onEngineModeChange}
+          showModeButtons={false}
         />
       </div>
 
@@ -178,20 +178,28 @@ export function FullScreenPlayer() {
             <ArrowLeftIcon size={28} aria-hidden />
           </Button>
         </Tooltip>
-        {playable ? (
-          <Tooltip content="More options" side="left">
-            <Button
-              size="icon"
-              variant="text"
-              onClick={() => setMenuOpen(true)}
-              aria-label="More options"
-              aria-haspopup="dialog"
-              className="size-12 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50"
-            >
-              <MoreHorizontalIcon size={28} aria-hidden />
-            </Button>
-          </Tooltip>
-        ) : null}
+        <div className="flex items-start gap-2">
+          <VisualizerModeMenu
+            mode={engineMode}
+            onModeChange={onEngineModeChange}
+            triggerClassName="size-12 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50"
+            panelClassName="z-[70]"
+          />
+          {playable ? (
+            <Tooltip content="More options" side="left">
+              <Button
+                size="icon"
+                variant="text"
+                onClick={() => setMenuOpen(true)}
+                aria-label="More options"
+                aria-haspopup="dialog"
+                className="size-12 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50"
+              >
+                <MoreHorizontalIcon size={28} aria-hidden />
+              </Button>
+            </Tooltip>
+          ) : null}
+        </div>
       </div>
 
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center gap-8 overflow-y-auto px-6 pb-10">

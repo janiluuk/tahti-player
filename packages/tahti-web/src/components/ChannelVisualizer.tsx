@@ -35,8 +35,9 @@ type Props = {
   /** Prefer theDAW-ported Advanced/Cymatics modes when the preset matches.
    * Without one, a viz pack saved in `visualSettingsJson` picks the mode. */
   engineMode?: VisualizerMode | null;
-  /** When true, show VisualizerHost mode picker (e.g. fullscreen player). */
-  showModePicker?: boolean;
+  /** The visualizer's own O/S/R/Q mode chips. Turn off where the visualizer
+   * is a backdrop under other content and cannot be clicked. */
+  showModeButtons?: boolean;
   onEngineModeChange?: (mode: VisualizerMode) => void;
 };
 
@@ -182,7 +183,7 @@ export const ChannelVisualizer = ({
   artworkUrl,
   audioReactive,
   engineMode,
-  showModePicker = false,
+  showModeButtons = true,
   onEngineModeChange,
 }: Props) => {
   const [canAnimate, setCanAnimate] = useState(false);
@@ -253,7 +254,8 @@ export const ChannelVisualizer = ({
       <div ref={hostRef} className={className}>
         <VisualizerHost
           mode={portedMode}
-          showModePicker={showModePicker}
+          showModePicker={false}
+          showModeButtons={showModeButtons}
           onModeChange={onEngineModeChange}
           suspended={offscreen || !resolvedAudioReactive}
           className="h-full w-full"
