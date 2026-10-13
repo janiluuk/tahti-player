@@ -63,16 +63,12 @@ export const Default: Story = {
   },
 };
 
-/** No report generated yet in the mock data. */
+/** The mock data holds one generated report. */
 export const ReportsTab: Story = {
   render: renderTab('reports'),
   play: async ({ canvasElement }) => {
     const canvas = await expectSection(canvasElement, 'Annual reports');
-    await expect(
-      await canvas.findByRole('heading', {
-        name: 'No annual reports generated yet',
-      }),
-    ).toBeVisible();
+    await expect(await canvas.findByText('Annual report 2025')).toBeVisible();
     await expect(canvas.getByRole('textbox', { name: 'Year' })).toBeVisible();
     await expect(
       canvas.getByRole('button', { name: 'Generate report' }),
