@@ -176,7 +176,7 @@ const LogEntryImpl: FC<LogEntryProps> = ({
         ))}
       <span
         data-testid="log-message"
-        className="text-foreground break-all whitespace-pre-wrap"
+        className="text-foreground col-span-full break-all whitespace-pre-wrap sm:col-span-1"
       >
         {isExpanded ? entry.message : displayedText}
       </span>

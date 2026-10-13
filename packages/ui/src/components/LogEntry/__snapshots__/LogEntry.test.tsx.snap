@@ -32,7 +32,7 @@ exports[`LogEntry > (Snapshot) renders core log entry 1`] = `
     app
   </button>
   <span
-    class="text-foreground break-all whitespace-pre-wrap"
+    class="text-foreground col-span-full break-all whitespace-pre-wrap sm:col-span-1"
     data-testid="log-message"
   >
     Application started
@@ -112,7 +112,7 @@ exports[`LogEntry > (Snapshot) renders plugin log entry 1`] = `
     youtube-music
   </button>
   <span
-    class="text-foreground break-all whitespace-pre-wrap"
+    class="text-foreground col-span-full break-all whitespace-pre-wrap sm:col-span-1"
     data-testid="log-message"
   >
     Application started
