@@ -403,6 +403,7 @@ export const studioModerationRoute = createRoute({
     throw redirect({
       to: '/settings/$section',
       params: { section: 'channel' },
+      search: { tab: 'moderators' },
     });
   },
 });

@@ -218,6 +218,33 @@ describe('ChannelPanel chat and moderators', () => {
     expect(screen.queryByText('chat bans panel')).toBeNull();
   });
 
+  it('opens on the tab a link asks for', async () => {
+    window.history.replaceState(null, '', '/settings/channel?tab=moderators');
+    await act(async () => {
+      render(<ChannelPanel />);
+    });
+    expect(
+      screen
+        .getByRole('tab', { name: /Moderators/ })
+        .getAttribute('aria-selected'),
+    ).toBe('true');
+    expect(screen.getByText('moderators panel')).toBeTruthy();
+    window.history.replaceState(null, '', '/settings/channel');
+  });
+
+  it('opens on the first tab when the link names no known tab', async () => {
+    window.history.replaceState(null, '', '/settings/channel?tab=nope');
+    await act(async () => {
+      render(<ChannelPanel />);
+    });
+    expect(
+      screen
+        .getByRole('tab', { name: /Channel Designer/ })
+        .getAttribute('aria-selected'),
+    ).toBe('true');
+    window.history.replaceState(null, '', '/settings/channel');
+  });
+
   it('asks before renaming the channel', async () => {
     const rename = vi
       .spyOn(channelDesign, 'updateChannelSlug')
