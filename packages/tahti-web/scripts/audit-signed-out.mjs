@@ -3,7 +3,12 @@
 //      account pages must ask for sign-in. Dead (disabled) buttons are listed.
 //      Follow, Add, reactions and Comment must open sign-in, and the top
 //      search must find and open a result.
-//   2. Listener (no channel): no Studio tab bar, no channel settings.
+//   2. Listener (no channel, `listener@tahti.live`): the listener pages open
+//      without sign-in, page errors, owner tools or the account's email;
+//      Studio pages offer "Create your channel" with no Studio tab bar;
+//      /admin says Board access is required; Settings has no channel
+//      sections. The Studio menu entry, Library's artist tabs and the
+//      listener's own profile are listed under "To look at".
 //   3. Signed out on a phone (390 px): no public page scrolls sideways, and
 //      the top bar's search button finds and opens a result.
 // Exits 1 when something is wrong. Run against the mock app:
@@ -52,6 +57,44 @@ const SIGN_IN_ACTIONS = [
     what: 'Comment',
     button: /^Log in to comment$/,
   },
+];
+// Pages a signed-in listener uses. Settings is left out on purpose: the
+// account section shows the email address as the login, not as a name.
+const LISTENER_PATHS = [
+  '/',
+  '/discover',
+  '/radio',
+  '/feed',
+  '/favorites',
+  '/listen/history',
+  '/library',
+  '/library/favorites',
+  '/library/history',
+  '/messages',
+  '/u/liis-kask',
+  '/channel/liis-kask-ee',
+  '/t/liis-kask-archive-1',
+  '/c/demo-collection',
+  '/subscribe/liis-kask',
+  '/search?tag=electronic',
+  '/help',
+];
+const STUDIO_PATHS = [
+  '/studio',
+  '/studio/go-live',
+  '/studio/releases',
+  '/library/upload',
+];
+// Owner tools on a channel or artist page.
+const ARTIST_ONLY_CONTROL =
+  /^(\+ )?(Edit design|Add full bio|Full studio settings|Go live|Edit channel)$/;
+const LIBRARY_ARTIST_TABS = [
+  'Upload',
+  'Recordings',
+  'Media',
+  'Stash',
+  'Embeds',
+  'Smart links',
 ];
 const LISTENER = {
   id: 'mock-listener@tahti.live',
@@ -104,6 +147,8 @@ async function visit(page, path) {
       const rect = el.getBoundingClientRect();
       return rect.width > 0 && rect.height > 0;
     };
+    const label = (el) =>
+      (el.getAttribute('aria-label') || el.textContent || '').trim();
     const main = document.querySelector('[data-studio-shell]') ?? document.body;
     return {
       signInDialog: [...document.querySelectorAll('[role=dialog]')].some(
@@ -124,8 +169,21 @@ async function visit(page, path) {
       settingsNav: [...document.querySelectorAll('[role=dialog] [role=tab]')]
         .filter(visible)
         .map((tab) => (tab.textContent || '').trim()),
+      controls: [...main.querySelectorAll('button, a[href], [role=tab]')]
+        .filter(visible)
+        .map(label),
+      sideControls: [...document.querySelectorAll('button, a[href]')]
+        .filter((el) => !el.closest('main') && visible(el))
+        .map(label),
+      text: document.body.innerText,
     };
   });
+}
+
+function artistControls(seen) {
+  return [
+    ...new Set(seen.controls.filter((text) => ARTIST_ONLY_CONTROL.test(text))),
+  ];
 }
 
 const problems = [];
@@ -199,18 +257,73 @@ const notes = [];
 
 {
   const { context, page } = await openAs(LISTENER);
-  const studio = await visit(page, '/studio');
-  if (studio.tabs.some((tab) => /^(Stats|Releases|Broadcast)$/.test(tab))) {
-    problems.push('listener: /studio shows the Studio tab bar');
+  const errors = [];
+  page.on('pageerror', (error) => errors.push(error.message.slice(0, 120)));
+  for (const path of LISTENER_PATHS) {
+    const seen = await visit(page, path);
+    if (seen.signInDialog) {
+      problems.push(`listener: ${path} opens the sign-in dialog`);
+      await page.keyboard.press('Escape');
+    }
+    const artistOnly = artistControls(seen);
+    if (artistOnly.length > 0) {
+      problems.push(
+        `listener: ${path} shows artist controls: ${artistOnly.join(', ')}`,
+      );
+    }
+    if (seen.text.includes(LISTENER.email)) {
+      problems.push(`listener: ${path} shows the account's email address`);
+    }
   }
-  if (studio.signInDialog) {
-    problems.push('listener: /studio opens the sign-in dialog');
+  for (const path of STUDIO_PATHS) {
+    const seen = await visit(page, path);
+    if (seen.tabs.some((tab) => /^(Stats|Releases|Broadcast)$/.test(tab))) {
+      problems.push(`listener: ${path} shows the Studio tab bar`);
+    }
+    if (seen.signInDialog) {
+      problems.push(`listener: ${path} opens the sign-in dialog`);
+    }
+    if (!seen.controls.includes('Create your channel')) {
+      problems.push(`listener: ${path} does not offer "Create your channel"`);
+    }
+  }
+  const admin = await visit(page, '/admin');
+  if (!admin.text.includes('Board access required')) {
+    problems.push('listener: /admin does not say Board access is required');
   }
   const settings = await visit(page, '/settings');
   for (const section of ['Channel & chat', 'Broadcast']) {
     if (settings.settingsNav.includes(section)) {
       problems.push(`listener: Settings lists "${section}"`);
     }
+  }
+  // Still open product questions (plan items 1 and 2 in
+  // docs/todo/listener-account-and-signed-out-basics.md), so listed, not failed.
+  const home = await visit(page, '/');
+  if (home.sideControls.includes('Studio')) {
+    notes.push('listener: the left menu shows Studio');
+  }
+  const library = await visit(page, '/library');
+  const libraryArtistTabs = library.controls.filter((label) =>
+    LIBRARY_ARTIST_TABS.includes(label),
+  );
+  if (libraryArtistTabs.length > 0) {
+    notes.push(
+      `listener: Library shows artist tabs: ${libraryArtistTabs.join(', ')}`,
+    );
+  }
+  // The mock app builds an artist profile for any username, so this may be a
+  // fixture effect rather than what the API returns for a listener.
+  const ownProfile = artistControls(
+    await visit(page, `/u/${LISTENER.username}`),
+  );
+  if (ownProfile.length > 0) {
+    notes.push(
+      `listener: their own /u/${LISTENER.username} shows artist tools: ${ownProfile.join(', ')}`,
+    );
+  }
+  for (const error of new Set(errors)) {
+    problems.push(`listener: page error: ${error}`);
   }
   await context.close();
 }
@@ -251,7 +364,7 @@ const notes = [];
 await browser.close();
 
 console.log(
-  `checked ${PUBLIC_PATHS.length} public and ${ACCOUNT_PATHS.length} account pages, ${SIGN_IN_ACTIONS.length} sign-in actions and the search signed out, plus Studio and Settings as a listener, and the public pages and the search at 390 px`,
+  `checked ${PUBLIC_PATHS.length} public and ${ACCOUNT_PATHS.length} account pages, ${SIGN_IN_ACTIONS.length} sign-in actions and the search signed out, plus ${LISTENER_PATHS.length} pages, ${STUDIO_PATHS.length} Studio pages, Admin and Settings as a listener, and the public pages and the search at 390 px`,
 );
 if (notes.length > 0) {
   console.log('\nTo look at:\n' + notes.join('\n'));

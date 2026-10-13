@@ -1,6 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
-import { fn } from 'storybook/test';
+import { expect, fn, userEvent, within } from 'storybook/test';
 
 import { DEFAULT_PAGINATION_LABELS, Pagination } from '@tahti-player/ui';
 
@@ -99,5 +99,33 @@ export const Interactive: Story = {
         </div>
       </div>
     );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const navs = canvas.getAllByRole('navigation', {
+      name: DEFAULT_PAGINATION_LABELS.navigation,
+    });
+    // The single-page example renders nothing.
+    await expect(navs).toHaveLength(3);
+
+    const few = within(navs[1]!);
+    await userEvent.click(
+      few.getByRole('button', { name: DEFAULT_PAGINATION_LABELS.previous }),
+    );
+    await expect(
+      few.getByRole('button', { name: DEFAULT_PAGINATION_LABELS.previous }),
+    ).toBeDisabled();
+    await userEvent.click(
+      few.getByRole('button', { name: DEFAULT_PAGINATION_LABELS.next }),
+    );
+    await expect(
+      few.getByRole('button', { name: DEFAULT_PAGINATION_LABELS.previous }),
+    ).toBeEnabled();
+
+    const many = within(navs[0]!);
+    await userEvent.click(
+      many.getByRole('button', { name: DEFAULT_PAGINATION_LABELS.next }),
+    );
+    await expect(canvas.getByText(/Page 13 of 24/)).toBeVisible();
   },
 };

@@ -1,5 +1,8 @@
+import { useMemo } from 'react';
+
 import { QueuePanel } from '@tahti-player/ui';
 
+import { queueWithPlaybackStatus } from '../lib/queueItemStatus';
 import { usePlayerStore } from '../stores/playerStore';
 
 const QUEUE_LABELS = {
@@ -14,12 +17,18 @@ const QUEUE_LABELS = {
 export function ConnectedQueuePanel({ isCollapsed }: { isCollapsed: boolean }) {
   const queue = usePlayerStore((s) => s.queue);
   const currentId = usePlayerStore((s) => s.currentId);
+  const status = usePlayerStore((s) => s.status);
+  const playbackError = usePlayerStore((s) => s.error);
+  const rows = useMemo(
+    () => queueWithPlaybackStatus(queue, currentId, status, playbackError),
+    [queue, currentId, status, playbackError],
+  );
   const playQueueIndex = usePlayerStore((s) => s.playQueueIndex);
   const removeFromQueue = usePlayerStore((s) => s.removeFromQueue);
 
   return (
     <QueuePanel
-      items={queue}
+      items={rows}
       currentItemId={currentId ?? undefined}
       isCollapsed={isCollapsed}
       reorderable={false}

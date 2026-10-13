@@ -7,7 +7,32 @@ import {
   radioStation,
   radioStationIdForPlayable,
   radioStationPlayable,
+  stationNowPlayingSource,
 } from './radioStations';
+
+describe('stationNowPlayingSource', () => {
+  it('reads the programme page and the stream by default', () => {
+    expect(
+      stationNowPlayingSource({
+        programmingUrl: 'https://www.radioplay.fi/nrj',
+        streamUrl: 'https://example.test/nrj',
+      }),
+    ).toEqual({
+      programmingUrl: 'https://www.radioplay.fi/nrj',
+      streamUrl: 'https://example.test/nrj',
+    });
+  });
+
+  it('reads nothing for a station whose now-playing is switched off', () => {
+    expect(
+      stationNowPlayingSource({
+        programmingUrl: 'https://www.radioplay.fi/nrj',
+        streamUrl: 'https://example.test/nrj',
+        nowPlaying: false,
+      }),
+    ).toBeNull();
+  });
+});
 
 describe('radioStationIdForPlayable', () => {
   it('reads the station id from a catalog playable', () => {

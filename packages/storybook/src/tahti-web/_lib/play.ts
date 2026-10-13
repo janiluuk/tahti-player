@@ -76,3 +76,12 @@ export async function findToast(canvasElement: HTMLElement, text: Name) {
   await waitFor(() => expect(toast).toBeVisible());
   return toast;
 }
+
+/**
+ * Waits for `element` to become visible. Tab panels, dialogs and toasts
+ * fade in from opacity 0, so a bare `toBeVisible()` right after a render or
+ * a tab switch can catch them mid-animation on a busy machine.
+ */
+export async function expectVisible(element: HTMLElement) {
+  await waitFor(() => expect(element).toBeVisible(), { timeout: 3000 });
+}

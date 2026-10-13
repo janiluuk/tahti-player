@@ -12,6 +12,10 @@ vi.mock('../api/client', async (importOriginal) => ({
   postListenEvent,
 }));
 
+vi.mock('../api/radio-now-playing', () => ({
+  fetchStationNowPlaying: () => Promise.resolve('Usa · Viivi'),
+}));
+
 vi.mock('hls.js', () => {
   class FakeHls {
     static isSupported = () => true;
@@ -190,6 +194,29 @@ describe('AudioEngine MediaSession integration', () => {
 
     act(() => usePlayerStore.getState().clearQueue());
     expect(metadataWrites.at(-1)).toBeNull();
+  });
+
+  it('follows what a playing catalog station says is on', async () => {
+    renderEngine();
+    act(() =>
+      usePlayerStore.getState().play({
+        id: 'radio-widget:nrj-fi',
+        kind: 'radio',
+        title: 'NRJ',
+        artist: 'Finnish · Pop / Hits',
+        streamUrl: 'https://example.test/nrj',
+        protocol: 'https',
+      }),
+    );
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(metadataWrites.at(-1)).toMatchObject({
+      title: 'Usa · Viivi',
+      artist: 'NRJ',
+    });
   });
 
   it('types the cover from its extension', () => {

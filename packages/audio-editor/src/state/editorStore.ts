@@ -333,6 +333,8 @@ interface EditorStoreState {
     tracks: EditorTrack[];
     clips: AudioClip[];
     bpm?: number;
+    /** Lanes saved with the project; any for tracks not in `tracks` are dropped. */
+    automationLanes?: AutomationLane[];
   }) => void;
   addTrack: (overrides?: Partial<EditorTrack>) => string;
   /** A new lane at `index` (0 = above every lane, `tracks.length` = below
@@ -598,7 +600,7 @@ export const useEditorStore = create<EditorStoreState>()((set, get) => ({
   _redo: [],
   dirty: false,
 
-  loadProject: ({ tracks, clips, bpm }) => {
+  loadProject: ({ tracks, clips, bpm, automationLanes }) => {
     // Suppress undo recording for the bulk swap, then start the loaded project as
     // a fresh document (empty undo/redo) so the user can't undo back into the
     // previous session's tracks.
@@ -621,7 +623,10 @@ export const useEditorStore = create<EditorStoreState>()((set, get) => ({
           ? Math.max(40, Math.min(240, bpm))
           : get().bpm,
       markers: [],
-      automationLanes: [],
+      automationLanes: (automationLanes ?? []).filter(
+        (l) =>
+          !l.target.trackId || tracks.some((t) => t.id === l.target.trackId),
+      ),
       loopEnabled: false,
       loopStart: 0,
       loopEnd: 0,

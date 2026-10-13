@@ -8,8 +8,22 @@
  * an empty registry every fixture passes through unchanged.
  */
 import type { PublicPressKitImage } from './artist-settings/press-kit-images';
+import type { ChannelVisual, ChannelVisualPreset } from './channel-design';
+import type { PublicChannelSchedule } from './channel-schedule';
 import type { ArtistEvent } from './events';
 import type { LikedTrack } from './likes';
+import type { LiveTracklistEntry } from './live-tracklist';
+import type { MessageContact } from './message-contacts';
+import type { ConversationDetail, ConversationSummary } from './messages';
+import type { TahtiNotification } from './notifications';
+import type {
+  PublicRadioShow,
+  PublicRadioSlot,
+  RadioShowNowPlayingTrack,
+  RadioShowUpcomingTrack,
+  StudioShowBooking,
+} from './shows';
+import type { StudioShowSeries } from './shows/types';
 import type {
   StudioCollection,
   StudioReleaseList,
@@ -19,10 +33,13 @@ import type {
   Announcement,
   ChannelDirectoryResponse,
   ChannelSoundItem,
+  ChatAccess,
   ChatMessage,
+  ChatTokenResponse,
   DiscoverTrackItem,
   FanTiersResponse,
   FeedResponse,
+  MembershipStatus,
   PublicChannel,
   PublicCollection,
   PublicProfile,
@@ -45,19 +62,52 @@ export interface MockFixtures {
   announcements: { data: Announcement[]; args: [] };
   channel: { data: PublicChannel; args: [slug: string] };
   channelEvents: { data: ArtistEvent[]; args: [slug: string] };
+  channelVisual: { data: ChannelVisual; args: [] };
+  channelVisualPresets: { data: ChannelVisualPreset[]; args: [] };
+  channelSchedule: { data: PublicChannelSchedule; args: [slug: string] };
+  chatAccess: { data: ChatAccess; args: [slug: string] };
   chatHistory: { data: ChatMessage[]; args: [slug: string] };
+  /** A function override that throws makes the join fail with that error. */
+  chatToken: {
+    data: ChatTokenResponse;
+    args: [slug: string, handle: string];
+  };
   collection: {
     data: PublicCollection;
     args: [slug: string, username: string];
   };
+  conversation: { data: ConversationDetail | null; args: [id: string] };
+  conversations: { data: ConversationSummary[]; args: [] };
   directory: { data: ChannelDirectoryResponse; args: [] };
   fanTiers: { data: FanTiersResponse; args: [username: string] };
   feed: { data: FeedResponse; args: [] };
   latestTracks: { data: DiscoverTrackItem[]; args: [] };
+  liveTracklist: { data: LiveTracklistEntry[]; args: [slug: string] };
+  membership: { data: MembershipStatus | null; args: [] };
+  messageContacts: { data: MessageContact[]; args: [] };
+  myEvents: { data: ArtistEvent[]; args: [] };
+  notifications: {
+    data: TahtiNotification[];
+    args: [includeInboxExtras: boolean];
+  };
   profile: { data: PublicProfile; args: [username: string] };
   publicGallery: { data: PublicPressKitImage[]; args: [username: string] };
   radio: { data: RadioNowPlaying; args: [] };
+  radioShow: { data: PublicRadioShow | null; args: [channelSlug: string] };
+  radioShowNowPlaying: {
+    data: RadioShowNowPlayingTrack | null;
+    args: [channelSlug: string];
+  };
+  radioShowUpcoming: {
+    data: RadioShowUpcomingTrack[];
+    args: [channelSlug: string];
+  };
+  radioSlots: { data: PublicRadioSlot[]; args: [from: string, to: string] };
+  resetPasswordInfo: { data: PasswordLinkInfo; args: [token: string] };
+  setupPasswordInfo: { data: PasswordLinkInfo; args: [token: string] };
   search: { data: SearchResponse; args: [q: string, type: string] };
+  showBookings: { data: StudioShowBooking[]; args: [from: string, to: string] };
+  showSeries: { data: StudioShowSeries[]; args: [] };
   smartLink: { data: SmartLinkView; args: [smartLinkSlug: string] };
   soundItems: { data: ChannelSoundItem[]; args: [slug: string] };
   studioCollections: { data: StudioCollection[]; args: [] };
@@ -73,6 +123,11 @@ export interface MockFixtures {
   };
   venueProfile: { data: VenueProfile | null; args: [slug: string] };
 }
+
+/** What the setup-password and reset-password link lookups resolve to. */
+export type PasswordLinkInfo =
+  | { ok: true; email: string; username: string; displayName: string }
+  | { ok: false; error: string };
 
 export type MockFixtureKey = keyof MockFixtures;
 

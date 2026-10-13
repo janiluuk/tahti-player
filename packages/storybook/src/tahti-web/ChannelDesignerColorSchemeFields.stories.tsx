@@ -1,7 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { DEFAULT_COLOR_SCHEME } from '@tahti-web/api/channel-design';
+import {
+  DEFAULT_COLOR_SCHEME,
+  type ColorScheme,
+} from '@tahti-web/api/channel-design';
 import { ColorSchemeFields } from '@tahti-web/components/channel-designer/ColorSchemeFields';
 import { useState } from 'react';
+import { expect, fireEvent, within } from 'storybook/test';
 
 /**
  * Shared color pickers used by Channel Designer Backdrop / Player / page
@@ -19,7 +23,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 function Interactive({ variant }: { variant?: 'player' | 'generic' }) {
-  const [scheme, setScheme] = useState({ ...DEFAULT_COLOR_SCHEME });
+  const [scheme, setScheme] = useState<ColorScheme>({
+    ...DEFAULT_COLOR_SCHEME,
+  });
   return (
     <div className="max-w-lg">
       <ColorSchemeFields
@@ -39,12 +45,20 @@ export const Default: Story = {
 export const Generic: Story = {
   name: 'Generic (header / page background — no waveform wording)',
   render: () => <Interactive variant="generic" />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.queryByLabelText(/waveform/)).toBeNull();
+    fireEvent.change(canvas.getByLabelText('Muted'), {
+      target: { value: '#334155' },
+    });
+    await expect(canvas.getByText('#334155')).toBeVisible();
+  },
 };
 
 export const PartialScheme: Story = {
   name: 'Partial (missing keys fall back to defaults)',
   render: () => {
-    const [scheme, setScheme] = useState({
+    const [scheme, setScheme] = useState<ColorScheme>({
       accent: '#7CFFB2',
       bg: '#0B1220',
     });

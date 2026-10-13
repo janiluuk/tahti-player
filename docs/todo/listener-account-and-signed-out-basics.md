@@ -27,11 +27,15 @@ User ask (2026-10-04): add a separate listener user who is registered but has no
 - `scripts/audit-signed-out.mjs` opens the public pages at 390 px, fails on sideways scroll and checks the phone search (#573).
 - Found on the way, at 390 px: the menu drawer opened with a "Close" tooltip over its first item (#566), the rail filter box shrank to one letter (#568), a venue with no photo showed an empty box (#569), Messages showed an empty thread box (#572).
 
+## Done (2026-10-10)
+
+- The capture script takes `MAP_ACCOUNT=listener` and `audit-signed-out.mjs` checks 17 listener pages for owner tools, sign-in prompts, errors and the email address (#625).
+
 ## Plan
 
 - [ ] 1. Decide what a listener sees where Studio is in the sidebar. It still shows Studio to everyone, signed out included.
 - [ ] 2. Library as a listener still lists artist tools (Recordings, Embeds, Smart links, upload). Decide which a listener keeps.
-- [ ] 3. Add a listener pass to the capture scripts (the audit script covers both since #533 and #544, and phones since #573).
+- [ ] 3. `/u/listener` shows artist owner tools (Edit design, Add full bio, Full studio settings, a broadcast button, track edit pencils) and a made-up channel in the mock app. The mock builds an artist profile for any username, but `ArtistView` sets `isOwner` from the username alone, so check it against the real API (found by the listener pass, #625).
 
 ## Open questions for the user
 

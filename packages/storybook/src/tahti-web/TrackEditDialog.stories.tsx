@@ -222,7 +222,7 @@ export const SharingAndAccess: Story = {
 
 // Sell the track through the artist's one-time purchase tier.
 export const PurchaseTierAccess: Story = {
-  beforeEach: seedPurchaseTier,
+  beforeEach: () => seedPurchaseTier(MOCK_USERS.artist.username),
   play: async ({ canvasElement, args }) => {
     const dialog = await openEditor(canvasElement);
     await selectTab(dialog, 'Sharing');

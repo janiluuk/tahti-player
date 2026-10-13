@@ -145,3 +145,20 @@ OpenAPI export. A path built in pieces passes when a served path starts with
 it. Known exceptions go in `scripts/api-routes-allowlist.json` with the reason.
 Both checks read `TAHTI_OPENAPI` when the export is somewhere else, for example
 in a git worktree.
+
+`check:api-routes` runs in CI as the "API routes exist" job, part of the `CI`
+gate. tahti-org does not commit `openapi.json`, and generating it needs
+Postgres and Redis, so the job downloads `openapi.json` from the latest
+tahti-org GitHub release, the API that production runs. It fails on a path the
+release does not serve, on an allow-list entry without a reason, and on an
+allow-list entry the app no longer calls. A route merged in tahti-org but not
+yet released therefore needs an allow-list entry until the next release; the
+stale-entry rule then forces its removal. A new tahti-org release can turn a
+passing master red this way, which is the signal to remove the entry.
+
+To run it locally against the same spec:
+
+```bash
+gh release download --repo janiluuk/tahti-org --pattern openapi.json --dir /tmp/tahti-openapi
+TAHTI_OPENAPI=/tmp/tahti-openapi/openapi.json pnpm --filter @tahti-player/tahti-web check:api-routes
+```

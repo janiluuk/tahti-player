@@ -197,6 +197,8 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       visual,
       visualSettings,
       visualSettingsJson,
+      vizPackId,
+      setVizPack,
     } = useChannelLook({ layoutSlug, reloadToken, onSaved, onDirtyChange });
     useImperativeHandle(ref, () => ({ save }), [save]);
 
@@ -508,6 +510,8 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
             applyLocal({ visualPreset: activeVisualizer });
           }
         }}
+        vizPackId={vizPackId}
+        onVizPackChange={setVizPack}
       />
     );
 

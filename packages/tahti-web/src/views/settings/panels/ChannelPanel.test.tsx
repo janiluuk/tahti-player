@@ -21,6 +21,9 @@ vi.mock('../../../api/studio-extras', () => api);
 vi.mock('../../studio/StudioBrandingView', () => ({
   StudioBrandingPanel: () => null,
 }));
+vi.mock('./ChannelAutoplayToggle', () => ({
+  ChannelAutoplayToggle: () => <div>autoplay toggle</div>,
+}));
 vi.mock('../../../components/moderation/ChatAccessPanel', () => ({
   ChatAccessPanel: () => <div>chat access panel</div>,
 }));

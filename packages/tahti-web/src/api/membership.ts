@@ -1,4 +1,5 @@
 import { requestJson } from './client-request';
+import { mockFixture } from './mock-overrides';
 import {
   listMockPurchases,
   listMockSubscriptions,
@@ -22,7 +23,7 @@ export async function fetchMembership(): Promise<{
 }> {
   if (isForceMock()) {
     return {
-      data: {
+      data: mockFixture('membership', {
         status: 'ACTIVE',
         isMember: true,
         memberNumber: 42,
@@ -30,7 +31,7 @@ export async function fetchMembership(): Promise<{
         tier: 'ARTIST',
         priceCents: 4000,
         emailVerified: true,
-      },
+      }),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }

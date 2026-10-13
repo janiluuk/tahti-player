@@ -5,6 +5,7 @@ import {
   type ChannelLookElementId,
 } from '@tahti-web/lib/channelLookElements';
 import { useState } from 'react';
+import { expect, userEvent, within } from 'storybook/test';
 
 /**
  * Look element list used by Channel Designer. Ids must stay in sync with
@@ -59,10 +60,32 @@ function EditorDemo({
 
 export const Default: Story = {
   render: () => <EditorDemo />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const section = canvas.getByRole('button', { name: 'Section' });
+    await expect(section).toHaveTextContent('Background');
+    await userEvent.click(canvas.getByRole('button', { name: 'Next section' }));
+    await expect(section).toHaveTextContent('Releases');
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Previous section' }),
+    );
+    await expect(section).toHaveTextContent('Background');
+    await expect(canvas.queryByRole('button', { name: /^Hide / })).toBeNull();
+  },
 };
 
 export const PlayerSelected: Story = {
   render: () => <EditorDemo initialId="player" />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole('button', { name: 'Hide Player' }));
+    const show = canvas.getByRole('button', { name: 'Show Player' });
+    await expect(show).toHaveAttribute('aria-pressed', 'false');
+    await userEvent.click(show);
+    await expect(
+      canvas.getByRole('button', { name: 'Hide Player' }),
+    ).toHaveAttribute('aria-pressed', 'true');
+  },
 };
 
 export const BackdropSelected: Story = {

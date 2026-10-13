@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminActivityView } from '@tahti-web/views/admin/AdminActivityView';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 
@@ -21,4 +22,21 @@ export const Default: Story = {
       <AdminActivityView />
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByRole('heading', { name: 'Activity' }),
+    ).toBeVisible();
+    await expect(await canvas.findByText('Nova Drift logged in')).toBeVisible();
+    await expect(canvas.getByText('9 entries')).toBeVisible();
+    await expect(
+      canvas.getByRole('link', { name: 'Export full audit log as CSV' }),
+    ).toBeVisible();
+    await userEvent.click(
+      canvas.getByRole('radio', { name: 'Finance & grants' }),
+    );
+    await waitFor(() =>
+      expect(canvas.queryByText('Nova Drift logged in')).toBeNull(),
+    );
+  },
 };

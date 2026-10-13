@@ -1,6 +1,7 @@
 import { useNavigate } from '@tanstack/react-router';
 import {
   ListMusicIcon,
+  LoaderCircleIcon,
   Maximize2Icon,
   PauseIcon,
   PlayIcon,
@@ -18,12 +19,9 @@ import {
 } from '@tahti-player/ui';
 
 import { TAHTI_RADIO_SLUG } from '../api/client';
-import {
-  radioStation,
-  radioStationIdForPlayable,
-} from '../content/radioStations';
+import { radioStationIdForPlayable } from '../content/radioStations';
 import { useIsMobile } from '../hooks/useIsMobile';
-import { useStationNowPlaying } from '../hooks/useStationNowPlaying';
+import { usePlayerStationNowPlaying } from '../hooks/useStationNowPlaying';
 import { soundIdFromPlayableId } from '../lib/soundId';
 import { useAuthStore } from '../stores/authStore';
 import { useLayoutStore } from '../stores/layoutStore';
@@ -87,6 +85,7 @@ export function ConnectedPlayerBar() {
   const current = queue.find((q) => q.id === currentId);
   const playable = current ? playableFromQueueItem(current) : null;
   const isPlaying = status === 'playing' || status === 'loading';
+  const isLoading = status === 'loading';
   const hearthisEmbed = playable?.embed;
 
   useEffect(() => {
@@ -108,22 +107,14 @@ export function ConnectedPlayerBar() {
   // A catalog radio station is queued under its own name; while it plays the
   // title shows what the station says is on, and the name moves to the
   // second line.
-  const catalogStation = playable
-    ? radioStation(radioStationIdForPlayable(playable) ?? '')
-    : undefined;
-  const stationNowPlaying = useStationNowPlaying(
-    catalogStation?.programmingUrl,
-    catalogStation ? playable?.streamUrl : null,
-  );
+  const stationNowPlaying = usePlayerStationNowPlaying(playable);
 
   if (!playerBarVisible || !playable) {
     return null;
   }
 
   const title =
-    catalogStation && stationNowPlaying
-      ? stationNowPlaying
-      : (playable?.title ?? 'Nothing playing');
+    stationNowPlaying?.title ?? playable?.title ?? 'Nothing playing';
   const provider =
     playable?.sourceProvider && playable.sourceProvider !== 'tahti'
       ? playable.sourceProvider
@@ -132,7 +123,7 @@ export function ConnectedPlayerBar() {
         ? current.track.source.provider
         : null;
   const artistBase =
-    (catalogStation && stationNowPlaying ? catalogStation.name : null) ??
+    stationNowPlaying?.artist ??
     playable?.artist ??
     (current
       ? formatArtistNames(current.track.artists)
@@ -181,6 +172,7 @@ export function ConnectedPlayerBar() {
     <div className="flex flex-col items-center gap-1">
       <PlayerBar.Controls
         isPlaying={isPlaying}
+        isLoading={isLoading}
         isShuffleActive={!isLive && shuffle}
         repeatMode={isLive ? 'off' : repeatMode}
         showDiscovery={false}
@@ -216,9 +208,17 @@ export function ConnectedPlayerBar() {
       )}
       aria-label={isPlaying ? 'Pause' : 'Play'}
       aria-pressed={isPlaying}
+      aria-busy={isLoading || undefined}
       data-testid={isPlaying ? 'player-pause-button' : 'player-play-button'}
     >
-      {isPlaying ? (
+      {isLoading ? (
+        <LoaderCircleIcon
+          size={28}
+          className="animate-spin motion-reduce:animate-none"
+          data-testid="player-loading-spinner"
+          aria-hidden
+        />
+      ) : isPlaying ? (
         <PauseIcon size={28} />
       ) : (
         <PlayIcon size={28} className="ml-0.5" />

@@ -4411,3 +4411,66 @@ Found by comparing every `/api/...` path in `tahti-web/src` with the API's route
 - **tahti-org side**: approved themes open their pull request in `tahti-registry` instead of tahti-org, `GET /api/v1/themes/gallery` reads the registry catalog, and `PATCH /api/me/musicbrainz/default` answers 400 instead of 500 without a body.
 - **Checks:** the touched tests (bulk bar, Languages page, the route check's helpers), type-check, eslint and Prettier. Neither page was opened against a live API; the bulk delete was exercised against the API only in tahti-org's own route test. `check:api-routes` is not in CI.
 
+
+## 2026-10-09 - Ten slices, forty-eighth batch (tahti-player #600-#602, tahti-org #754-#760)
+
+A sweep of channel chat moderation, which nobody had tried end to end. A ban needed a fingerprint hash that no screen showed, no route removed a message, and a moderator had no page to moderate from.
+
+- **Message list (tahti-org#754)**: chat messages keep the sender's fingerprint, and `GET /api/me/moderate/:slug/chat/messages` gives the owner and moderators the last 100 messages with ids. The fingerprint is not sent.
+- **Ban from a message (tahti-org#755)**: `POST .../chat/messages/:id/ban`. A ban keeps the sender's name, the list returns `id` and `handle`, and `DELETE .../chat/bans/:id` lifts one (the fingerprint route could not address fan room bans).
+- **Remove a message (tahti-org#756)**: `DELETE .../chat/messages/:id` marks it removed; the public, fan room and moderation lists leave it out. A moderator cannot remove the owner's messages.
+- **Bans follow the account (tahti-org#757)**: a ban set on a signed-in sender's message also holds on another network or browser and in the fan room.
+- **Reactions (tahti-org#758)**: banned fingerprints and accounts blocked by the owner cannot send stream reactions.
+- **History while chat is off (tahti-org#759)**: the chat and fan room histories return nothing while the owner has chat switched off.
+- **Stepping down (tahti-org#760)**: `DELETE /api/me/moderate/:slug`, and channels of suspended or deleted owners leave `GET /api/me/moderate`.
+- **Recent messages (#600)**: Settings → Channel → Chat lists the messages with Remove and Ban.
+- **Ban list (#601)**: names in place of hashes, no hash field, bans lifted by id.
+- **Moderator page (#602)**: `/moderate/$slug` for a channel the account owns or moderates, with Stop moderating and a link from the chat header.
+- **Stacks**: tahti-org #755 on #754, #756 on #755, #757 on #756; tahti-player #601 on #600, #602 on #601.
+- **Checks:** per PR the touched tests, type-check, eslint and Prettier. All seven tahti-org branches merged together pass the whole API suite (1,667 tests) on a fresh Postgres; the web stack's tip passes the whole tahti-web suite (2,323 tests) and the new Storybook plays. The web screens were looked at in the mock app at 1366 and 390 px. Nothing was tried against the live API or a running Centrifugo. Left open: a removed message stays on screen for people who already have the chat open; the "you are a moderator" notification still links to the channel page; reactions still work while chat is off; the track reactions route (`/api/reactions/track/:id`, no web caller) still ignores blocks.
+
+## 2026-10-09 - Ten slices, forty-ninth batch (tahti-player #604-#611, tahti-org #761-#762)
+
+The two open developer items of the project roadmap (`tahti-org/docs/project-roadmap.md`): PLAT-085, loading states in the player and queue, and PLAT-086, per-channel autoplay. Everything else still open there belongs to the board, the director or ops.
+
+- **Play button (#604)**: `PlayerBar.Controls` takes `isLoading` and shows a spinner in place of the pause icon; the web bar passes it on desktop and phone.
+- **Full-screen player (#605)**: the large play button spins and a status line reads "Buffering…".
+- **Stalls (#606)**: the audio element's `waiting` event moves a playing player back to loading, so a dropped connection no longer looks like playback.
+- **Queue rows (#607, #608)**: the current row shows the loading stripe and "Could not play"; local tracks restored with the queue show as loading until their file is found.
+- **Setting (tahti-org#761, #762)**: `Channel.autoplayEnabled`, default on, with `GET`/`PATCH /api/me/channel/autoplay`, and the flag on `GET /api/channels/:slug`.
+- **Artist's switch (#609)**: Settings → Channel & chat → Discovery, "Start playing when someone opens my channel".
+- **Muted start (#610)**: a channel that allows it starts muted when nothing is playing, with an Unmute notice; Settings → Playback has the listener's own switch.
+- **Fade over (#611)**: when something else is playing, it fades out (0.7 s) and the channel fades in (1.2 s); the queue is kept and the channel goes in after the current track.
+- **Decisions the roadmap left open**: the fade durations above; "nothing playing" means an idle or failed player or an untouched restored queue, and a track the listener paused is left alone. One audio element plays at a time, so the fade is out-then-in, not an overlap.
+- **Stacks**: #605 on #604, #608 on #607, #611 on #610; tahti-org #762 on #761.
+- **Checks:** per PR the touched tests, type-check, eslint, Prettier and the size guard. All web branches of batches 48 and 49 merged together pass the tahti-web (2,364), ui (402), player (707) and themes suites and the 953 Storybook plays. Autoplay and the fade were not seen or heard in a browser: the mock channels do not carry the setting, and nothing autoplays until tahti-org#762 is deployed. The roadmap rows are not ticked yet (tahti-org folds at merge).
+## 2026-10-09 - Twenty slices, fiftieth batch (plan + editor/viz fold; tahti-player #598, #599, #613)
+
+Fold of the theDAW editor/rack/viz port and the Pro polish that followed it, plus a plan file for the next twenty implementation slices (`docs/todo/next-twenty-slices.md`). Chat moderation and PLAT-085/086 stay in the forty-eighth and forty-ninth fold PRs (#603, #612).
+
+- **Packages + host (#598)**: `@tahti-player/{audio-core,audio-rack,audio-editor,visualizer}` with MultitrackEditor, FX rack, Advanced/Cymatics via `VisualizerHost`; Studio Pro, ChannelVisualizer and FullScreenPlayer through `audioCoreBridge`; analyser gain/context split, empty-project load, editor stream fetch, offscreen viz suspend; UX/API fixlist in `thedaw-editor-viz-ux-fixlist.md`.
+- **CI (#599)**: editor/viz packages type-check and tests green after the port.
+- **Pro polish + stems (#613)**: Multitrack track vol/pan Sliders, store zoom, clip drag and split at playhead; AdvancedVisualizer Tahti tokens; FullScreenPlayer per-channel viz mode in localStorage; Pro Multitrack find-or-creates `/api/me/editor/projects` with hydrate + debounced metadata PATCH (FX/blobs stay OPFS); Bounce uploads a WAV revision via sound versions prepare/complete; StemsPanel “Send to Multitrack” loads stem blobs onto lanes.
+- **Next twenty (plan only)**: `next-twenty-slices.md` lists region inpaint, init/reference + Chimera, live bus FX, viz packs, stem-aware live mix, automation, MIDI clips, metamorph, prompt↔score lite, five Storybook parity slices, drawer scrim / tooltip links / listener capture, remaining Finnish radio scrapers, and `check:api-routes` in CI.
+- **Checks:** #598/#599 merged; #613 open with package and Studio Pro tests listed in its plan. The twenty plan slices are not implemented in this fold. Left open: items in `next-twenty-slices.md`; chat moderation and autoplay folds (#603, #612) until those stacks merge.
+
+
+## 2026-10-10 - Fifteen slices, fifty-first batch (tahti-player #613, #615-#630)
+
+Slices 5-15 and 17-20 of `next-twenty-slices.md`, tahti-player only (the user's call for this batch: no tahti-org work). Slices 1-4 (inpaint, reference audio, Chimera fuse, live bus FX) were skipped because they may depend on generation or broadcast-bus work that isn't wired yet (not checked), and 16 (phone drawer scrim) needs a product decision. Before the batch, the green backlog landed: #603-#612 and the batch-50 plan (#614). #613 failed only the size guard; `useMultitrackSession` was split out of `StudioProEditorView` (860 → 616 lines) and it merged. #600 was merged separately on 2026-10-10; #601 and #602 stay open until tahti-org#754-#760 are released, so the batch-48 entry above describes them ahead of master.
+
+- **API routes in CI (#615, #624)**: the "API routes exist" job fails a PR when tahti-web calls a path missing from the latest tahti-org release's OpenAPI export, and on allow-list entries that are stale or have no reason. It caught #600's `/api/me/moderate/:slug/chat/messages` on master at once; #624 allow-lists it until tahti-org#754 is released, next to `/api/me/channel/autoplay` (#761) and Languages.
+- **Studio Pro**: stems get mute, solo and level in a compact `StemMixer` (#626). Multitrack gets volume/pan/one-FX-param automation lanes that play back, bounce and round-trip through the editor-projects metadata within a size budget (#629), MIDI clips with a piano roll that bounce to audio (#630), and "Metamorph between takes" that renders a morph of two sound versions onto a lane named after both (#628). "Describe a melody" turns a dropped `.mid` phrase into a description and a prompt snippet, all on the client (#627).
+- **Channel**: artists pick a visualizer show pack (five Advanced/Cymatics rotations) saved under a `pack:<id>` key in the channel's existing `visualSettings` map (no new API field), and listeners see "This show uses …" (#619).
+- **Radio (#618)**: the OS media controls show the same "Programme · Artist — Track" as the player bar; lookups run only while a station plays and the tab is visible, and a catalog station can opt out with `nowPlaying: false`. The tahti-org scrapers for YleX, Radio Rock and Suomipop and the Yle key question stay in `finnish-radio-now-playing-scrapers.md`.
+- **Links (#616)**: four icon links were a `Button` inside a link; they are now `ButtonLink`/`ButtonAnchor` inside `Tooltip`, and the tests render inside a router instead of mocking `Link`.
+- **Listener capture (#625)**: `MAP_ACCOUNT=listener` captures the app as `listener@tahti.live` (gitignored output), and `audit-signed-out.mjs` checks 17 listener pages for owner tools, sign-in prompts, errors and the account's email. One finding is left open in `listener-account-and-signed-out-basics.md`: `/u/listener` shows artist owner tools in the mock, and `ArtistView` sets `isOwner` from the username alone.
+- **Storybook parity, finished**: Chrome, player bar and ui plays (#620, reviving #474, which closed when its stacked base merged), every Channel Designer panel (#617), channel blocks, chat, radio show, schedule, jam and DMs (#622), Studio shows/events/playlists/branding and the Settings panels (#623), Admin and auth pages (#621). `storybook-parity-and-atlas-refresh.md` is folded here.
+- **Checks:** per PR, tahti-web type-check, eslint and Prettier on the changed files, the size guard and the touched tests; the Storybook PRs ran the play shards locally as well as in CI. Every PR but #613 merged with CI green: #613 merged before its post-rebase run reported (an auto-merge script bug, since fixed); master's CI was green with it at #619. Master's only red run was #600 failing the new API-routes check, fixed by #624. Conflicts between the Storybook PRs (`mock-overrides.ts`, the `_lib` README, `VIEW-CATALOG.md`) and between #629 and #630 (`audio-editor` exports, `editorTimelineAdapter`) were resolved as unions, and `STORYBOOK-SURFACES.md` was regenerated rather than hand-merged. Not tried in a real browser by hand, against the live API, or with real stems and MIDI files beyond the fixtures.
+
+## 2026-10-12 - Full-screen player visualizer menu
+
+The full-screen player painted the visualizer's "Mode" select (showing "Spectrum") inside the backdrop layer, underneath the cover art and controls, so it never received a click. The select and the O/S/R/Q chips are gone from that backdrop, and the top bar has a waveform button that opens a popup menu (`VisualizerModeMenu`) listing the eight visualizers in two groups, Analyzer and Cymatics, with a check on the current one. The choice is still stored per channel or track. `ChannelVisualizer` takes `showModeButtons` instead of `showModePicker`, and `VisualizerHost` passes it on.
+
+- **Checks:** `FullScreenPlayer.test.tsx` (6 tests, 3 new), eslint and Prettier on the changed files, the tahti-web type-check, and a headless Chromium run of the mock app at 1366 px (open the menu on a radio station, pick Orb). Not tried at phone width, against the live API, or as a Storybook play run.
+- **Left open:** the analyzer's frequency/RMS/peak strip and its fullscreen toggle are still drawn in the backdrop and cannot be clicked there.

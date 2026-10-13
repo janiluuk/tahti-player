@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminAnnouncementsView } from '@tahti-web/views/admin/AdminAnnouncementsView';
+import { expect, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 
@@ -19,4 +20,16 @@ export const Default: Story = {
       <AdminAnnouncementsView />
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByRole('heading', { name: 'Announcements' }),
+    ).toBeVisible();
+    await expect(await canvas.findByText('Welcome to Tahti')).toBeVisible();
+    await expect(canvas.getByText('AGM reminder — October')).toBeVisible();
+    await expect(canvas.getByText('Choose audio')).toBeVisible();
+    await expect(canvas.getAllByRole('button', { name: 'Trim' })).toHaveLength(
+      2,
+    );
+  },
 };

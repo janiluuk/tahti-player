@@ -1,7 +1,7 @@
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite';
 import type { AuthUser } from '@tahti-web/api/types';
 import { AppShell } from '@tahti-web/components/AppShell';
-import { useAuthStore } from '@tahti-web/stores/authStore';
+import { ListenView } from '@tahti-web/views/ListenView';
 import {
   createMemoryHistory,
   createRootRoute,
@@ -9,22 +9,9 @@ import {
   createRouter,
   RouterProvider,
 } from '@tanstack/react-router';
+import { expect, within } from 'storybook/test';
 
-import { MOCK_USERS } from './_lib/decorators';
-
-const FakePage = () => (
-  <div className="flex flex-col gap-4">
-    <h1 className="font-display text-2xl font-bold tracking-tight">
-      Storybook page content
-    </h1>
-    <p className="text-foreground-secondary max-w-prose text-sm">
-      This is stand-in route content rendered through AppShell&apos;s real
-      {' <Outlet/> '}
-      (via RouteTransition) — the sidebar, top nav, and player chrome around it
-      are the genuine app shell, not a mock.
-    </p>
-  </div>
-);
+import { MOCK_USERS, seedMockAuth } from './_lib/decorators';
 
 // AppShell redirects a signed-in user straight to `/onboarding` on first
 // sign-in of the session (see hasSeenOnboarding in views/OnboardingView),
@@ -44,17 +31,18 @@ function markOnboarded(userId: string) {
  * `RouteTransition`), not a `children` prop, so the shared `withTahtiRouter`
  * decorator (which puts the story's own output at the root route) doesn't
  * fit here. This builds its own small two-level route tree instead: the
- * root route's component is AppShell itself, and a child index route
- * supplies fake page content for AppShell's `<Outlet/>` to render.
+ * root route's component is AppShell itself, and the child index route
+ * renders the real Listen page (the app's `/`) through AppShell's
+ * `<Outlet/>`.
  *
- * Also seeds `useAuthStore` directly (rather than composing with the
+ * Also seeds auth directly via `seedMockAuth` (rather than composing with the
  * separate `withMockAuth` decorator) so ordering between decorators can't
  * accidentally skip it — AppShell reads the auth store on first render for
  * sidebar items and the onboarding redirect.
  */
 function withAppShellRouter(user: AuthUser | null, path = '/'): Decorator {
   return () => {
-    useAuthStore.setState({ user, hydrated: true, loading: false });
+    seedMockAuth(user);
     if (user) {
       markOnboarded(user.id);
     }
@@ -64,7 +52,7 @@ function withAppShellRouter(user: AuthUser | null, path = '/'): Decorator {
       createRoute({
         getParentRoute: () => rootRoute,
         path,
-        component: FakePage,
+        component: ListenView,
       }),
     ]);
     const router = createRouter({
@@ -96,12 +84,48 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   name: 'White theme reference',
   decorators: [withAppShellRouter(MOCK_USERS.board)],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // Real Listen page in the outlet...
+    const main = within(canvas.getByRole('main'));
+    await expect(
+      await main.findByRole('heading', { name: 'Listen' }),
+    ).toBeVisible();
+    await expect(main.getByRole('heading', { name: 'Radio' })).toBeVisible();
+    // ...inside the real chrome: top bar and the board's sidebar entries.
+    const banner = within(canvas.getByRole('banner'));
+    await expect(
+      banner.getByRole('button', { name: 'Signed in as Jani (Board)' }),
+    ).toBeVisible();
+    for (const name of ['Listen', 'Discover', 'Library', 'Studio', 'Admin']) {
+      await expect(canvas.getByRole('link', { name })).toBeVisible();
+    }
+  },
 };
 
 export const SignedOut: Story = {
   decorators: [withAppShellRouter(null)],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByRole('button', { name: 'Log in' }),
+    ).toBeVisible();
+    await expect(
+      canvas.queryByRole('button', { name: /^Signed in as/ }),
+    ).toBeNull();
+    await expect(canvas.queryByRole('link', { name: 'Admin' })).toBeNull();
+  },
 };
 
 export const ArtistView: Story = {
   decorators: [withAppShellRouter(MOCK_USERS.artist)],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByRole('button', {
+        name: 'Signed in as Northern Lights',
+      }),
+    ).toBeVisible();
+    await expect(canvas.queryByRole('link', { name: 'Admin' })).toBeNull();
+  },
 };

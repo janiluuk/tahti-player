@@ -10,7 +10,14 @@ import {
 } from './lib/captureSetup.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const outRoot = join(__dirname, '../public/map/nuclear');
+// MAP_ACCOUNT=listener signs in as the mock `listener@tahti.live` account
+// (no channel, no Studio or Admin role) and captures only what a listener
+// can reach. Its shots go to their own folder, outside the /more atlas, so
+// they never replace or mix with the artist shots.
+const LISTENER_PASS = process.env.MAP_ACCOUNT === 'listener';
+const outRoot = LISTENER_PASS
+  ? join(__dirname, '../docs/listener-shots')
+  : join(__dirname, '../public/map/nuclear');
 mkdirSync(outRoot, { recursive: true });
 
 const BASE = process.env.MAP_BASE_URL || 'https://beta.tahti.live';
@@ -27,8 +34,7 @@ const EVENT_ID = process.env.MAP_EVENT_ID || 'evt-mock-1';
 const TAG = process.env.MAP_TAG || 'ambient';
 
 /** @type {{ id: string; path: string; wait?: number; auth?: boolean }[]} */
-const shots = [
-  // ── Anonymous / public ──────────────────────────────────────────────────
+const PUBLIC_SHOTS = [
   { id: 'listen', path: '/', auth: false },
   { id: 'radio', path: '/radio', auth: false },
   { id: 'discover', path: '/discover', auth: false },
@@ -86,8 +92,9 @@ const shots = [
   { id: 'venue-detail', path: `/v/${VENUE}`, auth: false },
   { id: 'studio-signed-out', path: '/studio', auth: false },
   { id: 'c-shortlink', path: `/c/${CHANNEL}`, auth: false },
+];
 
-  // ── Listener / member ────────────────────────────────────────────────────
+const MEMBER_SHOTS = [
   { id: 'library', path: '/library' },
   { id: 'library-sounds', path: '/library/sounds' },
   { id: 'library-collections', path: '/library/collections' },
@@ -129,8 +136,9 @@ const shots = [
   },
   { id: 'sources', path: '/settings/plugin-store?category=import' },
   { id: 'radio-show', path: `/radio/show/${RADIO_SHOW}` },
+];
 
-  // ── Artist / Studio ──────────────────────────────────────────────────────
+const STUDIO_SHOTS = [
   { id: 'studio', path: '/studio' },
   { id: 'go-live', path: '/studio/go-live' },
   { id: 'archive', path: '/studio/sounds' },
@@ -171,8 +179,9 @@ const shots = [
   { id: 'revenue', path: '/studio/revenue' },
   { id: 'stripe', path: '/studio/stripe' },
   { id: 'distribution', path: '/studio/distribution' },
+];
 
-  // ── Admin ────────────────────────────────────────────────────────────────
+const ADMIN_SHOTS = [
   { id: 'admin', path: '/admin' },
   { id: 'admin-financial', path: '/admin/financial' },
   { id: 'admin-storage', path: '/admin/storage' },
@@ -205,6 +214,22 @@ const shots = [
     path: '/admin/radio-station-suggestions',
   },
 ];
+
+const LISTENER_USERNAME = 'listener';
+
+/** What a listener meets on their own profile and on artist or board pages. */
+const LISTENER_GATE_SHOTS = [
+  { id: 'own-profile', path: `/u/${LISTENER_USERNAME}` },
+  { id: 'studio', path: '/studio' },
+  { id: 'go-live', path: '/studio/go-live' },
+  { id: 'releases', path: '/studio/releases' },
+  { id: 'upload', path: '/library/upload' },
+  { id: 'admin', path: '/admin' },
+];
+
+const shots = LISTENER_PASS
+  ? [...PUBLIC_SHOTS, ...MEMBER_SHOTS, ...LISTENER_GATE_SHOTS]
+  : [...PUBLIC_SHOTS, ...MEMBER_SHOTS, ...STUDIO_SHOTS, ...ADMIN_SHOTS];
 
 /** Auth-flow pages only make sense signed out; everything else is captured
  * as the board (admin) user. */
@@ -268,19 +293,35 @@ await prepareCapturePage(page);
 // Pitch-quality captures: a named, populated artist (not generic "Demo
 // Artist"), and LIVE so the go-live/studio shots show the real on-air
 // state instead of an empty connect flow.
+const ARTIST_USER = {
+  id: 'mock-1',
+  email: 'demo@tahti.live',
+  username: USER,
+  displayName: 'Mart Saar',
+  role: 'BOARD',
+  isBoard: true,
+  membershipStatus: 'ACTIVE',
+  channel: { slug: CHANNEL, state: 'LIVE' },
+};
+
+/** The account `listener@tahti.live` signs in as in the mock app
+ * (`buildMockLoginUser` in src/api/mock-session.ts). */
+const LISTENER_USER = {
+  id: 'mock-listener@tahti.live',
+  email: 'listener@tahti.live',
+  username: LISTENER_USERNAME,
+  displayName: 'Demo Listener',
+  role: 'LISTENER',
+  roles: ['LISTENER'],
+  tier: 'FREE',
+  avatarUrl: null,
+  isMember: false,
+  isBoard: false,
+  channel: null,
+};
+
 const AUTH_STATE = {
-  state: {
-    user: {
-      id: 'mock-1',
-      email: 'demo@tahti.live',
-      username: USER,
-      displayName: 'Mart Saar',
-      role: 'BOARD',
-      isBoard: true,
-      membershipStatus: 'ACTIVE',
-      channel: { slug: CHANNEL, state: 'LIVE' },
-    },
-  },
+  state: { user: LISTENER_PASS ? LISTENER_USER : ARTIST_USER },
   version: 0,
 };
 
@@ -487,7 +528,7 @@ for (const s of shotsToCapture) {
       await page.getByRole('button', { name: 'Sign in' }).click();
       await page.getByLabel('Authentication code').waitFor({ timeout: 3000 });
     }
-    if (s.id === 'money-fan-subs') {
+    if (s.id === 'money-fan-subs' && !LISTENER_PASS) {
       // /settings/audience redirects to Studio → Audience, whose Overview
       // tab carries the fan subscription summary.
       await page
@@ -532,6 +573,10 @@ for (const s of shotsToCapture) {
 }
 
 await browser.close();
+if (LISTENER_PASS) {
+  console.log('done', outRoot);
+  process.exit(0);
+}
 const imageFiles = readdirSync(outRoot)
   .filter((fileName) => fileName.endsWith('.png'))
   .sort();

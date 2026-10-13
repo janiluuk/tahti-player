@@ -23,6 +23,7 @@ import {
   soundItemToPlayable,
   TAHTI_RADIO_SLUG,
 } from './mock';
+import { mockFixture } from './mock-overrides';
 import { getMockSessionUser, mockActivateSubscription } from './mock-session';
 import { ensureMockUploadedSound, getMockUploadedSound } from './mock-uploads';
 import {
@@ -571,7 +572,7 @@ export async function fetchChatAccess(slug: string): Promise<{
 }> {
   if (isForceMock()) {
     return {
-      data: mockChatAccess(),
+      data: mockFixture('chatAccess', mockChatAccess(), slug),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
@@ -626,13 +627,18 @@ export async function requestChatToken(
 ): Promise<{ data: ChatTokenResponse; meta: FetchMeta }> {
   if (isForceMock()) {
     return {
-      data: {
-        token: 'mock-token',
+      data: mockFixture(
+        'chatToken',
+        {
+          token: 'mock-token',
+          handle,
+          supporter: false,
+          channelRole: null,
+          countryCode: null,
+        },
+        slug,
         handle,
-        supporter: false,
-        channelRole: null,
-        countryCode: null,
-      },
+      ),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }

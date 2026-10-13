@@ -1,4 +1,5 @@
 import type { FetchMeta } from '.././client';
+import { mockFixture } from '.././mock-overrides';
 import {
   allowMockFallback,
   apiErrorMeta,
@@ -15,11 +16,16 @@ export async function fetchShowBookings(
 ): Promise<{ data: StudioShowBooking[]; meta: FetchMeta }> {
   if (isForceMock()) {
     return {
-      data: mockBookings.filter((b) => {
-        const s = new Date(b.startAt).getTime();
-        const e = new Date(b.endAt).getTime();
-        return s < new Date(to).getTime() && e > new Date(from).getTime();
-      }),
+      data: mockFixture(
+        'showBookings',
+        mockBookings.filter((b) => {
+          const s = new Date(b.startAt).getTime();
+          const e = new Date(b.endAt).getTime();
+          return s < new Date(to).getTime() && e > new Date(from).getTime();
+        }),
+        from,
+        to,
+      ),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }

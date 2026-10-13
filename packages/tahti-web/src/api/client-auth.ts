@@ -1,4 +1,5 @@
 import { requestJson } from './client-request';
+import { mockFixture, type PasswordLinkInfo } from './mock-overrides';
 import {
   buildMockLoginUser,
   clearMockSessionUser,
@@ -174,17 +175,18 @@ export async function verifyEmailRequest(
  * passwordless account (board-invited, imported) set an initial password. */
 export async function fetchSetupPasswordInfo(
   token: string,
-): Promise<
-  | { ok: true; email: string; username: string; displayName: string }
-  | { ok: false; error: string }
-> {
+): Promise<PasswordLinkInfo> {
   if (isForceMock()) {
-    return {
-      ok: true,
-      email: 'newartist@tahti.live',
-      username: 'newartist',
-      displayName: 'New Artist',
-    };
+    return mockFixture(
+      'setupPasswordInfo',
+      {
+        ok: true,
+        email: 'newartist@tahti.live',
+        username: 'newartist',
+        displayName: 'New Artist',
+      },
+      token,
+    );
   }
   try {
     const { data } = await requestJson<{
@@ -254,17 +256,18 @@ export async function submitForgotPassword(email: string): Promise<string> {
  * password-reset link before the user commits to a new password. */
 export async function fetchResetPasswordInfo(
   token: string,
-): Promise<
-  | { ok: true; email: string; username: string; displayName: string }
-  | { ok: false; error: string }
-> {
+): Promise<PasswordLinkInfo> {
   if (isForceMock()) {
-    return {
-      ok: true,
-      email: 'newartist@tahti.live',
-      username: 'newartist',
-      displayName: 'New Artist',
-    };
+    return mockFixture(
+      'resetPasswordInfo',
+      {
+        ok: true,
+        email: 'newartist@tahti.live',
+        username: 'newartist',
+        displayName: 'New Artist',
+      },
+      token,
+    );
   }
   try {
     const { data } = await requestJson<{
