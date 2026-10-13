@@ -67,7 +67,9 @@ export const mockMods: ModeratorRow[] = [
 
 export const mockChatBans: ChatBan[] = [
   {
+    id: 'mock-ban-1',
     fingerprintHash: 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4',
+    handle: 'Night Troll',
     bannedAt: '2026-07-20T18:00:00.000Z',
   },
 ];

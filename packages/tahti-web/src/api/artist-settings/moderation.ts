@@ -22,7 +22,11 @@ export type ModeratorRow = {
 };
 
 export type ChatBan = {
+  /** Missing from an API that predates bans by message. */
+  id?: string;
   fingerprintHash: string;
+  /** The name the sender posted under; null for a ban set by hash. */
+  handle?: string | null;
   bannedAt: string;
 };
 
@@ -160,49 +164,28 @@ export async function fetchChatBans(slug: string): Promise<{
   }
 }
 
-export async function banChatFingerprint(
+/** Lifts a ban. Bans are addressed by id; the fingerprint route is the
+ * fallback for a row without one, and it cannot address the fan room's
+ * short fingerprints. */
+export async function unbanChat(
   slug: string,
-  fingerprintHash: string,
-): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
-    if (!mockChatBans.some((b) => b.fingerprintHash === fingerprintHash)) {
-      mockChatBans.unshift({
-        fingerprintHash,
-        bannedAt: new Date().toISOString(),
-      });
-    }
-    return { ok: true };
-  }
-  try {
-    await requestJson(`/api/me/moderate/${encodeURIComponent(slug)}/chat/ban`, {
-      method: 'POST',
-      body: JSON.stringify({ fingerprintHash }),
-    });
-    return { ok: true };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Could not ban',
-    };
-  }
-}
-
-export async function unbanChatFingerprint(
-  slug: string,
-  fingerprintHash: string,
+  ban: Pick<ChatBan, 'id' | 'fingerprintHash'>,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   if (isForceMock()) {
     const idx = mockChatBans.findIndex(
-      (b) => b.fingerprintHash === fingerprintHash,
+      (b) => b.fingerprintHash === ban.fingerprintHash,
     );
     if (idx >= 0) {
       mockChatBans.splice(idx, 1);
     }
     return { ok: true };
   }
+  const base = `/api/me/moderate/${encodeURIComponent(slug)}/chat`;
   try {
     await requestJson(
-      `/api/me/moderate/${encodeURIComponent(slug)}/chat/ban/${encodeURIComponent(fingerprintHash)}`,
+      ban.id
+        ? `${base}/bans/${encodeURIComponent(ban.id)}`
+        : `${base}/ban/${encodeURIComponent(ban.fingerprintHash)}`,
       { method: 'DELETE' },
     );
     return { ok: true };

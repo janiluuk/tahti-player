@@ -2,11 +2,10 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
   addModerator,
-  banChatFingerprint,
   fetchChatBans,
   fetchModerators,
   removeModerator,
-  unbanChatFingerprint,
+  unbanChat,
 } from './artist-settings';
 
 function jsonResponse(data: unknown, status = 200): Response {
@@ -83,33 +82,42 @@ describe('channel moderation API', () => {
     );
   });
 
-  it('uses the channel-scoped chat ban endpoints', async () => {
+  it('lifts a ban by id, and by fingerprint for a row without one', async () => {
     const fetchMock = vi
       .spyOn(globalThis, 'fetch')
-      .mockResolvedValueOnce(jsonResponse({ ok: true }))
+      .mockResolvedValueOnce(jsonResponse(undefined, 204))
       .mockResolvedValueOnce(jsonResponse(undefined, 204))
       .mockResolvedValueOnce(
-        jsonResponse([{ fingerprintHash: 'hash-1', bannedAt: '2026-08-28' }]),
+        jsonResponse([
+          {
+            id: 'ban-1',
+            fingerprintHash: 'hash-1',
+            handle: 'Promo Bot',
+            bannedAt: '2026-08-28',
+          },
+        ]),
       );
 
-    await banChatFingerprint('my-channel', 'hash-1');
-    await unbanChatFingerprint('my-channel', 'hash-1');
+    await unbanChat('my-channel', { id: 'ban-1', fingerprintHash: 'hash-1' });
+    await unbanChat('my-channel', { fingerprintHash: 'hash-2' });
     const bans = await fetchChatBans('my-channel');
 
     expect(bans.data).toEqual([
-      { fingerprintHash: 'hash-1', bannedAt: '2026-08-28' },
+      {
+        id: 'ban-1',
+        fingerprintHash: 'hash-1',
+        handle: 'Promo Bot',
+        bannedAt: '2026-08-28',
+      },
     ]);
     expect(fetchMock).toHaveBeenNthCalledWith(
       1,
-      '/tahti-api/api/me/moderate/my-channel/chat/ban',
-      expect.objectContaining({
-        method: 'POST',
-        body: JSON.stringify({ fingerprintHash: 'hash-1' }),
-      }),
+      '/tahti-api/api/me/moderate/my-channel/chat/bans/ban-1',
+      expect.objectContaining({ method: 'DELETE' }),
     );
     expect(fetchMock).toHaveBeenNthCalledWith(
       2,
-      '/tahti-api/api/me/moderate/my-channel/chat/ban/hash-1',
+      '/tahti-api/api/me/moderate/my-channel/chat/ban/hash-2',
       expect.objectContaining({ method: 'DELETE' }),
     );
     expect(fetchMock).toHaveBeenNthCalledWith(
