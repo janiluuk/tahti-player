@@ -32,7 +32,7 @@ export function AddonCard({
   onDelete: (addon: AdminAddon) => void;
 }) {
   return (
-    <article className="border-border bg-background-secondary/40 flex gap-4 rounded-xl border p-4">
+    <article className="border-border bg-background-secondary/40 flex min-w-0 flex-wrap gap-4 rounded-xl border p-4">
       <div className="border-border bg-background flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-lg border">
         <ImageReveal
           src={addon.iconUrl ?? undefined}
@@ -45,7 +45,7 @@ export function AddonCard({
           }
         />
       </div>
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0 flex-1 basis-44">
         <div className="flex flex-wrap items-center gap-2">
           <h2 className="font-semibold">{addon.name}</h2>
           <Badge variant="pill" color={statusColor(addon.status)}>
@@ -80,7 +80,7 @@ export function AddonCard({
           </span>
         </div>
       </div>
-      <div className="flex shrink-0 items-start gap-1">
+      <div className="ml-auto flex shrink-0 items-start gap-1">
         <Tooltip content={`Edit ${addon.name}`} side="top">
           <Button
             type="button"
