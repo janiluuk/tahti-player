@@ -28,6 +28,9 @@ export type AdvancedVisualizerProps = {
   suspended?: boolean;
   /** O/S/R/Q chip column. Hide when a parent (e.g. VisualizerHost) already picks mode. */
   showModeButtons?: boolean;
+  /** Bottom kHz / RMS / PEAK strip with the fullscreen toggle. Hide where
+   * the visualizer sits under other content and cannot be clicked. */
+  showStatusBar?: boolean;
 };
 
 export const AdvancedVisualizer: React.FC<AdvancedVisualizerProps> = ({
@@ -36,6 +39,7 @@ export const AdvancedVisualizer: React.FC<AdvancedVisualizerProps> = ({
   className,
   suspended,
   showModeButtons = true,
+  showStatusBar = true,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -263,66 +267,70 @@ export const AdvancedVisualizer: React.FC<AdvancedVisualizerProps> = ({
         ) : null}
 
         {/* Bottom overlay — kHz / RMS / PEAK / LIVE + controls */}
-        <div className="from-background/90 absolute right-0 bottom-0 left-0 flex h-7 items-center gap-2.5 bg-linear-to-t to-transparent px-2.5">
-          <span className="text-foreground-secondary font-mono text-[9px] uppercase tabular-nums">
-            {(ctxInfo.sr / 1000).toFixed(1)} kHz · {ctxInfo.fft}
-          </span>
-
-          <div className="bg-border h-3 w-px" />
-
-          <div className="flex items-center gap-1">
-            <Zap className="text-primary h-3 w-3 shrink-0" aria-hidden />
-            <span className="text-foreground-secondary font-mono text-[9px] tabular-nums">
-              RMS {formatDb(rmsDb)} dB
+        {showStatusBar ? (
+          <div className="from-background/90 absolute right-0 bottom-0 left-0 flex h-7 items-center gap-2.5 bg-linear-to-t to-transparent px-2.5">
+            <span className="text-foreground-secondary font-mono text-[9px] uppercase tabular-nums">
+              {(ctxInfo.sr / 1000).toFixed(1)} kHz · {ctxInfo.fft}
             </span>
+
+            <div className="bg-border h-3 w-px" />
+
+            <div className="flex items-center gap-1">
+              <Zap className="text-primary h-3 w-3 shrink-0" aria-hidden />
+              <span className="text-foreground-secondary font-mono text-[9px] tabular-nums">
+                RMS {formatDb(rmsDb)} dB
+              </span>
+            </div>
+
+            <div className="bg-border h-3 w-px" />
+
+            <div className="flex items-center gap-1">
+              <Target className="text-primary h-3 w-3 shrink-0" aria-hidden />
+              <span className="text-foreground-secondary font-mono text-[9px] tabular-nums">
+                PEAK {formatDb(peakDb)} dB
+              </span>
+            </div>
+
+            <div className="flex-1" />
+
+            <div className="flex items-center gap-1">
+              <span
+                className={`font-mono text-[9px] font-black uppercase ${
+                  peakDb > -60 ? 'text-primary' : 'text-foreground-secondary'
+                }`}
+              >
+                {peakDb > -60 ? 'LIVE' : 'SILENT'}
+              </span>
+            </div>
+
+            <div className="bg-border h-3 w-px" />
+
+            <div className="flex gap-0.5">
+              <button
+                type="button"
+                title={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+                aria-label={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+                aria-pressed={isFullscreen}
+                className="text-foreground-secondary hover:bg-background-secondary hover:text-foreground rounded p-0.5 transition-colors"
+                onClick={() => {
+                  if (isFullscreen) {
+                    void document.exitFullscreen().catch(() => {});
+                  } else {
+                    void wrapperRef.current
+                      ?.requestFullscreen()
+                      .catch(() => {});
+                  }
+                }}
+              >
+                {isFullscreen ? (
+                  <Minimize2 className="h-3 w-3" />
+                ) : (
+                  <Maximize2 className="h-3 w-3" />
+                )}
+              </button>
+            </div>
           </div>
-
-          <div className="bg-border h-3 w-px" />
-
-          <div className="flex items-center gap-1">
-            <Target className="text-primary h-3 w-3 shrink-0" aria-hidden />
-            <span className="text-foreground-secondary font-mono text-[9px] tabular-nums">
-              PEAK {formatDb(peakDb)} dB
-            </span>
-          </div>
-
-          <div className="flex-1" />
-
-          <div className="flex items-center gap-1">
-            <span
-              className={`font-mono text-[9px] font-black uppercase ${
-                peakDb > -60 ? 'text-primary' : 'text-foreground-secondary'
-              }`}
-            >
-              {peakDb > -60 ? 'LIVE' : 'SILENT'}
-            </span>
-          </div>
-
-          <div className="bg-border h-3 w-px" />
-
-          <div className="flex gap-0.5">
-            <button
-              type="button"
-              title={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
-              aria-label={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
-              aria-pressed={isFullscreen}
-              className="text-foreground-secondary hover:bg-background-secondary hover:text-foreground rounded p-0.5 transition-colors"
-              onClick={() => {
-                if (isFullscreen) {
-                  void document.exitFullscreen().catch(() => {});
-                } else {
-                  void wrapperRef.current?.requestFullscreen().catch(() => {});
-                }
-              }}
-            >
-              {isFullscreen ? (
-                <Minimize2 className="h-3 w-3" />
-              ) : (
-                <Maximize2 className="h-3 w-3" />
-              )}
-            </button>
-          </div>
-        </div>
+        ) : null}
       </div>
     </div>
   );
