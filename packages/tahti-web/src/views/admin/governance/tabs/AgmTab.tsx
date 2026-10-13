@@ -530,7 +530,7 @@ export function AgmTab() {
                 key={m.id}
                 className="flex flex-wrap items-center justify-between gap-2 py-3 text-sm first:pt-0 last:pb-0"
               >
-                <div className="min-w-0 flex-1">
+                <div className="min-w-0 flex-1 basis-56">
                   <div className="font-medium">{m.title}</div>
                   <div className="text-foreground-secondary text-xs">
                     {m.advisory ? 'Advisory' : 'Binding'} ·{' '}
