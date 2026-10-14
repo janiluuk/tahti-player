@@ -71,9 +71,7 @@ function QuarterlyReportsPanel() {
           }}
         >
           <FileTextIcon size={14} aria-hidden />
-          {generating
-            ? 'Generating…'
-            : `Generate ${currentQuarterLabel()} report`}
+          {generating ? 'Generating…' : `Generate ${currentQuarterLabel()}`}
         </Button>
       </div>
       {error && <p className="text-accent-red-strong mt-2 text-xs">{error}</p>}
