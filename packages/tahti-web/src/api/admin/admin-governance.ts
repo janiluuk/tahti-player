@@ -25,6 +25,7 @@ import {
   mockPatchGovernanceMeeting,
   mockPatchResolution,
 } from './admin-governance.mock';
+import { mockGrantHistory, mockGrantHistoryDetail } from './admin-grants.mock';
 
 // ── Governance ──────────────────────────────────────────────────────────────
 
@@ -259,14 +260,6 @@ export type AdminGrantYearSummary = {
   totalCents: number;
 };
 
-function mockGrantHistory(): AdminGrantYearSummary[] {
-  const year = new Date().getUTCFullYear();
-  return [
-    { year: year - 1, grantCount: 18, totalCents: 940000 },
-    { year: year - 2, grantCount: 14, totalCents: 710000 },
-  ];
-}
-
 export async function fetchAdminGrants(): Promise<{
   data: AdminGrantYearSummary[];
   meta: FetchMeta;
@@ -388,6 +381,12 @@ export async function fetchAdminGrantPreview(
 export async function fetchAdminGrantHistory(
   year: number,
 ): Promise<{ data: AdminGrantHistoryDetail | null; meta: FetchMeta }> {
+  if (isForceMock()) {
+    return {
+      data: mockGrantHistoryDetail(year),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
   try {
     const data = await getJson<AdminGrantHistoryDetail>(
       `/api/v1/transparency/grants/${year}`,
