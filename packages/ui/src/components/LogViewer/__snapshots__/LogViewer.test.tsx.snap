@@ -658,7 +658,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             plugins
           </button>
           <span
-            class="text-foreground break-all whitespace-pre-wrap"
+            class="text-foreground col-span-full break-all whitespace-pre-wrap sm:col-span-1"
             data-testid="log-message"
           >
             Plugin failed to load
@@ -741,7 +741,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             http
           </button>
           <span
-            class="text-foreground break-all whitespace-pre-wrap"
+            class="text-foreground col-span-full break-all whitespace-pre-wrap sm:col-span-1"
             data-testid="log-message"
           >
             Rate limited
@@ -824,7 +824,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             app
           </button>
           <span
-            class="text-foreground break-all whitespace-pre-wrap"
+            class="text-foreground col-span-full break-all whitespace-pre-wrap sm:col-span-1"
             data-testid="log-message"
           >
             Application started
@@ -907,7 +907,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             streaming
           </button>
           <span
-            class="text-foreground break-all whitespace-pre-wrap"
+            class="text-foreground col-span-full break-all whitespace-pre-wrap sm:col-span-1"
             data-testid="log-message"
           >
             Resolving stream
@@ -990,7 +990,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             playback
           </button>
           <span
-            class="text-foreground break-all whitespace-pre-wrap"
+            class="text-foreground col-span-full break-all whitespace-pre-wrap sm:col-span-1"
             data-testid="log-message"
           >
             Buffer status
@@ -1073,7 +1073,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             youtube-music
           </button>
           <span
-            class="text-foreground break-all whitespace-pre-wrap"
+            class="text-foreground col-span-full break-all whitespace-pre-wrap sm:col-span-1"
             data-testid="log-message"
           >
             Searching...
