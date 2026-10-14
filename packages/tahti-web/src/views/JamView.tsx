@@ -32,6 +32,7 @@ import { JamParticipantList } from '../components/JamParticipantList';
 import { useJamGuestPlayback, useJamState } from '../hooks/useJam';
 import { useJamCoControl, useJamHostSync } from '../hooks/useJamControl';
 import { canControlJam, toggledJamState } from '../lib/jamPlayback';
+import { syncDocumentMetadata } from '../lib/seo';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 
@@ -99,6 +100,18 @@ export function JamView({ code }: { code: string }) {
   useJamHostSync(session, isHost && live);
   useJamGuestPlayback(session, !isHost && audioUnlocked && live);
   useJamCoControl(session, !isHost && canControl && audioUnlocked && live);
+
+  const host = session?.participants.find(
+    (p) => p.userId === session.hostUserId,
+  );
+  const hostName = host ? host.displayName.trim() || host.username : null;
+  useEffect(() => {
+    if (hostName) {
+      syncDocumentMetadata(window.location.pathname, {
+        title: `${hostName}'s Jam · Tahti`,
+      });
+    }
+  }, [hostName]);
 
   const removeGuest = async (guest: JamParticipant) => {
     setRemoving(null);
