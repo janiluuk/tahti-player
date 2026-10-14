@@ -4489,3 +4489,16 @@ The five slices left in `next-twenty-slices.md` still wait on generation or broa
 - **Chat moderation times (#645)**: date and time to the minute in a `<time>` element, from one `moderationTime` helper.
 - **Checks:** per PR the touched tests, tahti-web type-check, eslint and Prettier on the changed files and the size guard; the layout fixes were looked at as screenshots or with a script that lists elements wider than their box, as each PR says. All fifteen branches merged together pass the tahti-web type-check and suite (2,479 tests). Not tried against the live API, on a real phone, or with a screen reader.
 - **Left open:** see `sweep-leftovers.md`.
+
+## 2026-10-14 - Fifteen slices, fifty-third batch (tahti-player #649-#663)
+
+A second sweep batch, asked for straight after the fifty-second. Sources: the leftovers list from batch 52, a crawler that follows the mock app's own links to detail pages and flags text squeezed into a narrow column, elements wider than their box and controls off the right edge (390 px as a board artist and as a plain listener, 768 px as a board artist), and a log of every request the mock app sends to the network.
+
+- **Shared components**: `Toggle` never shrinks beside its label (#649); a `LogEntry` puts its message on its own line below `sm` (#651); `ThemeStoreItem` (#654) and `PluginStoreItem` (#656) let their action buttons drop under the text when narrow. Each changes ui or player snapshots by the added classes only.
+- **Phones, 390 px**: AGM motions (#650), Studio → Stats engagement units, now a plain list with full names instead of the ranked `TopList` (#655).
+- **Tablets, 768 px**: content report actions no longer cover the report (#659), the support queue and the open ticket stack below `lg` (#660), the grant cycle tiles (#661) and the stem mixer's level sliders (#662) follow the width of their own column with container queries.
+- **Mock app**: missed shows (#652) and governance meetings, documents, resolutions and annual reports (#653) have sample data instead of a failing network request, and the governance forms change that data (#658, stacked on #653). Three Storybook plays that asserted an empty list now check the records.
+- **Titles (#657, stacked on #635)**: the subscribe and chat moderation tab titles name the artist or channel from the address.
+- **Console (#663)**: the weekday chart on Studio → Stats is drawn only while its tab shows, which ends the chart-size warnings on every load.
+- **Checks:** per PR the touched tests, tahti-web type-check, eslint and Prettier on the changed files and the size guard; each layout fix was looked at as screenshots at the width it was found and at a desktop width, as each PR says. All open branches of batches 52 and 53 merged together pass the tahti-web type-check and suite (2,490 tests) and the ui suite (402); the player suite (707) passed once #649's missed Search snapshot was updated, which CI had caught. Two other red CI jobs were reruns of known flakes (the `PlaylistDetail` snapshot on #647 and a Storybook play on #640, neither touched by its PR). Not tried against the live API, on a real phone or tablet, or in the desktop player.
+- **Left open:** see `sweep-leftovers.md`.
