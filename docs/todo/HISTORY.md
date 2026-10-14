@@ -4550,6 +4550,14 @@ A sixth sweep batch, run while another session worked on the governance slices f
 - **Checks:** per PR the touched tests or the reason there are none, Prettier and the size guard. Each layout fix was re-measured in the mock app at the widths its PR lists, with screenshots. All 35 open non-docs branches (this batch, #657, #658, #674-#678, #693, #698-#712 and the governance PRs #714-#721) merged together without conflicts pass the tahti-web type-check and suite (2,541 tests, 5 expected failures), the ui suite (403), the player suite (707) and the size guard; the size guard first failed there (`admin-governance.ts` 819/800 with #658 and #678), so #731 moved the grant mocks out (790 now). #722's and #724's first PR bodies claimed checks that had not run (a test file that does not exist; "unchanged at 360 px" when the row also wraps there); both were corrected. Not tried against the live API, on a real phone, with a screen reader, or in the desktop player.
 - **Left open:** see `sweep-leftovers.md`.
 
+## 2026-10-14 - storybook.tahti.live plays race the story router
+
+- **Symptom:** on the deployed Storybook, 112 of 1235 stories failed their interaction tests, mostly ones wrapped in `withTahtiRouter`, while CI and `pnpm storybook` were green.
+- **Cause:** `RouterProvider` renders nothing until its async route load settles. `@storybook/react` wraps rendering in React's `act` only outside production, so a `storybook build` started plays against an empty canvas. The decorator also built a new router on every re-render (e.g. an auth store update), blanking the canvas again.
+- **Fix:** `withTahtiRouter` keeps one router per story, and the project `mount` in `.storybook/preview.ts` waits for it to resolve before the play runs (`storyRouterSettled`).
+- **Checks:** full `vitest --project storybook` run; a production build swept in headless Chromium went from 112 failing stories to none (the remaining console noise is external audio/embed URLs).
+
+
 ## 2026-10-14 - Desktop MCP rebuilt, Tahti API MCP tools (tahti-player #737-#740, tahti-org #801)
 
 Asked for as "concentrate on the MCP side of things, see what exists and how this could be improved", then "do both, start with 1 and the docs fix".
@@ -4563,6 +4571,8 @@ Asked for as "concentrate on the MCP side of things, see what exists and how thi
 - **Checks:** `cargo test --lib` (286), tahti-web `lib/mcp`, `McpIntegrationRow` and `ApiTokensPanel` tests, the Settings and Help Storybook plays, tahti-org `routes/mcp` (10, through a real MCP client). Not tried: the running desktop app with a real MCP client (no headless display), or the account tools against staging.
 - **Left:** MPD, the HTTP remote-control API and Discord Rich Presence still don't start in the desktop app; Nuclear's `plugin-sdk/src/mcp` metadata and `player/src/services/bridge` dispatcher are unused.
 
+
+
 ## 2026-10-14 - Desktop MPD, Discord and Tahti Jam rebuilt on tahti-web (tahti-player #741-#743)
 
 Asked for as "continue" after the MCP work, then "handle the jam issue".
@@ -4572,4 +4582,3 @@ Asked for as "continue" after the MCP work, then "handle the jam issue".
 - **Tahti Jam (#743):** the HTTP API had bound `0.0.0.0` with no authentication and served Nuclear's remote UI, which the desktop build no longer contains. Now every `/api/*` route except `/api/health` needs a pairing code (bearer header, or `?token=` for the SSE stream; `http_api/pairing.rs`). The code is made and kept by tahti-web (`lib/jam/desktop.ts`), rides in the QR link's fragment, and **New pairing link** replaces it. Calls carry a `Jam.` prefix and are answered by `src/lib/jam/bridge.ts`, which sends phones no file paths, stream URLs or local artwork. The phone remote (`src/remote/`, on the `TahtiJam` components) is a second Vite entry (`remote.html`) that the server serves at `/remote`. Search adds Tahti tracks only. The settings routes for Nuclear setting ids are gone.
 - **Checks:** `cargo test --lib`, tahti-web unit suite, both type-checks, the IntegrationsPanel and JamRemote Storybook plays. Not tried: the desktop app with a real `mpc`, Discord client or phone.
 - **Left:** Nuclear's `player/src/remoteControl/`, `services/httpApi`, `services/mpd`, `services/discordHandler.ts` and `services/bridge` are dead code.
-
