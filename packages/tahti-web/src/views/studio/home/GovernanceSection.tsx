@@ -8,7 +8,7 @@ export function GovernanceSection({ state }: { state: StudioHomeState }) {
 
   return (
     <Group title="Governance">
-      <div className="border-border bg-background-secondary/30 rounded-xl border p-4">
+      <div className="border-border bg-background-secondary/30 @container rounded-xl border p-4">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <p className="text-sm font-bold">Have your say</p>
@@ -24,7 +24,7 @@ export function GovernanceSection({ state }: { state: StudioHomeState }) {
             Open governance →
           </Link>
         </div>
-        <div className="mt-4 grid gap-4 md:grid-cols-2">
+        <div className="mt-4 grid grid-cols-1 gap-4 @xl:grid-cols-2">
           <div>
             <p className="text-foreground-secondary mb-2 text-xs font-semibold tracking-wide uppercase">
               Needs your opinion
