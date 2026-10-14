@@ -1,5 +1,6 @@
 import { listen } from '@tauri-apps/api/event';
 
+import { initDesktopDiscord } from '../../tahti-web/src/lib/discord/presence';
 import { initDesktopMcp } from '../../tahti-web/src/lib/mcp/desktop';
 import { dispatchMcp } from '../../tahti-web/src/lib/mcp/registry';
 import {
@@ -43,7 +44,7 @@ async function answer(request: BridgeRequest) {
   }
 }
 
-/** Lets tahti-web start the MCP and MPD servers and answers their bridge requests. */
+/** Lets tahti-web start the MCP and MPD servers and Discord Rich Presence, and answers the servers' bridge requests. */
 export async function installDesktopMcp(): Promise<void> {
   globalThis.__TAHTI_NATIVE_MCP__ = {
     start: async () => unwrapResult(await commands.mcpStart()),
@@ -60,6 +61,19 @@ export async function installDesktopMcp(): Promise<void> {
       void commands.bridgeNotify({ subsystem });
     },
   };
+  globalThis.__TAHTI_NATIVE_DISCORD__ = {
+    start: async () => {
+      unwrapResult(await commands.discordConnect());
+    },
+    stop: async () => {
+      unwrapResult(await commands.discordDisconnect());
+    },
+    setActivity: async (presence) =>
+      unwrapResult(await commands.discordSetActivity(presence)),
+    clearActivity: async () => {
+      unwrapResult(await commands.discordClearActivity());
+    },
+  };
   await listen('bridge:request', (event) => {
     if (isBridgeRequest(event.payload)) {
       void answer(event.payload);
@@ -67,4 +81,4 @@ export async function installDesktopMcp(): Promise<void> {
   });
 }
 
-export { initDesktopMcp, initDesktopMpd };
+export { initDesktopDiscord, initDesktopMcp, initDesktopMpd };

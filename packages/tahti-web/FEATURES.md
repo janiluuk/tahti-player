@@ -170,6 +170,7 @@ Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
 | MCP server (Streamable HTTP) | Tauri `packages/player` MCP | same paths | **rebuilt** | Tools over tahti-web's player, desktop library, radio and Tahti search (`src/lib/mcp/`); switch in Settings → Integrations in the desktop app; see [`docs/MCP.md`](docs/MCP.md) |
 | MCP tool meta | `@tahti-player/plugin-sdk/mcp` | same | unused | Only read by Nuclear's bridge dispatcher, which no longer runs |
 | MPD server | Tauri player | same Rust server | **rebuilt** | Answered from tahti-web's player (`src/lib/mpd/`); switch in Settings → Integrations in the desktop app |
+| Discord Rich Presence | Tauri player | same Rust commands | **rebuilt** | Set from tahti-web's player (`src/lib/discord/`); switch in Settings → Integrations in the desktop app |
 | Nuclear Jam HTTP | Tauri player | present in player | **broken** (not started since 2026-09-01) | Needs a remote view and LAN pairing; see [`docs/todo/desktop-integrations.md`](../../docs/todo/desktop-integrations.md). Web Settings → Integrations lists what the browser can't run as "Desktop app only" |
 
 Web cutover (`beta.tahti.live`) does **not** host Nuclear MCP — localhost player control plane. Do not strip `packages/player/src-tauri/src/mcp/` when packaging desktop.

@@ -1,7 +1,9 @@
 import { Badge, SectionShell } from '@tahti-player/ui';
 
+import { DiscordIntegrationRow } from '../../../components/DiscordIntegrationRow';
 import { McpIntegrationRow } from '../../../components/McpIntegrationRow';
 import { MpdIntegrationRow } from '../../../components/MpdIntegrationRow';
+import { getNativeDiscord } from '../../../lib/discord/presence';
 import { getNativeMcp } from '../../../lib/mcp/desktop';
 import { getNativeMpd } from '../../../lib/mpd/desktop';
 import { LastFmIntegrationRow } from '../../../plugins/scrobble/LastFmIntegrationRow';
@@ -38,9 +40,12 @@ const DESKTOP_ONLY_INTEGRATIONS = [
 export function IntegrationsPanel() {
   const nativeMcp = getNativeMcp() !== null;
   const nativeMpd = getNativeMpd() !== null;
+  const nativeDiscord = getNativeDiscord() !== null;
   const desktopOnly = DESKTOP_ONLY_INTEGRATIONS.filter(
     (item) =>
-      !(nativeMcp && item.id === 'mcp') && !(nativeMpd && item.id === 'mpd'),
+      !(nativeMcp && item.id === 'mcp') &&
+      !(nativeMpd && item.id === 'mpd') &&
+      !(nativeDiscord && item.id === 'discord'),
   );
   return (
     <div
@@ -61,6 +66,7 @@ export function IntegrationsPanel() {
         <div className="flex flex-col gap-6">
           {nativeMcp ? <McpIntegrationRow /> : null}
           {nativeMpd ? <MpdIntegrationRow /> : null}
+          {nativeDiscord ? <DiscordIntegrationRow /> : null}
           {desktopOnly.map((item) => (
             <div key={item.id} className="flex flex-col gap-2">
               <div className="flex items-center gap-3">
