@@ -114,7 +114,7 @@ export function AddToPlaylistDialog({
             <Button
               key={playlist.id}
               variant="text"
-              className="border-border h-auto w-full justify-start rounded-md border px-2 py-1.5 text-left"
+              className="border-border h-auto w-full justify-start gap-1.5 rounded-md border px-2 py-1.5 text-left"
               disabled={busy !== null}
               onClick={() =>
                 void addTo(playlist.id, () => Promise.resolve(playlist))
@@ -156,6 +156,7 @@ export function AddToPlaylistDialog({
           onClick={() =>
             void addTo('new', () => library.playlists.create(name.trim()))
           }
+          className="gap-1.5"
         >
           {busy === 'new' ? (
             <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />

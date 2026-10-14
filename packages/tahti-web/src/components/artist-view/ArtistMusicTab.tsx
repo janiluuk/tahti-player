@@ -154,7 +154,7 @@ export function ArtistMusicTab({
               type="button"
               size="sm"
               variant="secondary"
-              className="absolute top-3 right-3 z-[2]"
+              className="absolute top-3 right-3 z-[2] gap-1.5"
               onClick={onOpenManager}
               aria-label="Manage stream playlist"
               title="Manage stream playlist"
