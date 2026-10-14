@@ -19,7 +19,6 @@ export const CardGrid: FC<CardGridProps> = ({
         'grid grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] gap-4 pr-2 pb-4',
         className,
       )}
-      role="grid"
       data-testid={dataTestId}
     >
       {children}
