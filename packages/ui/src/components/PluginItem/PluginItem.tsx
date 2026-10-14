@@ -94,7 +94,7 @@ export const PluginItem: FC<PluginItemProps> = ({
               <span data-testid="plugin-name">{name}</span>
               {author ? (
                 <span className="text-foreground-secondary text-sm font-normal select-none">
-                  <span className="mr-1 opacity-60">{labels.by ?? 'by'}</span>
+                  <span className="mr-1">{labels.by ?? 'by'}</span>
                   <span data-testid="plugin-author">{author}</span>
                 </span>
               ) : null}

@@ -97,7 +97,7 @@ exports[`PluginStoreItem > (Snapshot) renders default state 1`] = `
           class="text-foreground-secondary text-sm font-normal select-none"
         >
           <span
-            class="mr-1 opacity-60"
+            class="mr-1"
           >
             by
           </span>
@@ -191,7 +191,7 @@ exports[`PluginStoreItem > (Snapshot) renders installed state 1`] = `
           class="text-foreground-secondary text-sm font-normal select-none"
         >
           <span
-            class="mr-1 opacity-60"
+            class="mr-1"
           >
             by
           </span>
@@ -281,7 +281,7 @@ exports[`PluginStoreItem > (Snapshot) renders installing state 1`] = `
           class="text-foreground-secondary text-sm font-normal select-none"
         >
           <span
-            class="mr-1 opacity-60"
+            class="mr-1"
           >
             by
           </span>
@@ -383,7 +383,7 @@ exports[`PluginStoreItem > (Snapshot) renders with custom labels 1`] = `
           class="text-foreground-secondary text-sm font-normal select-none"
         >
           <span
-            class="mr-1 opacity-60"
+            class="mr-1"
           >
             from
           </span>
@@ -477,7 +477,7 @@ exports[`PluginStoreItem > (Snapshot) renders with long description 1`] = `
           class="text-foreground-secondary text-sm font-normal select-none"
         >
           <span
-            class="mr-1 opacity-60"
+            class="mr-1"
           >
             by
           </span>
