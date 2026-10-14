@@ -67,7 +67,7 @@ exports[`Tabs > (Snapshot) renders correctly 1`] = `
     >
       <div
         aria-labelledby="headlessui-tabs-tab-:r1:"
-        class="relative flex-1 overflow-hidden outline-none"
+        class="focus-visible:ring-primary relative flex-1 overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-inset"
         data-headlessui-state="selected"
         data-selected=""
         id="headlessui-tabs-panel-:r7:"
@@ -571,7 +571,7 @@ exports[`Tabs > (Snapshot) renders icons and count pills 1`] = `
     >
       <div
         aria-labelledby="headlessui-tabs-tab-:re:"
-        class="relative flex-1 overflow-hidden outline-none"
+        class="focus-visible:ring-primary relative flex-1 overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-inset"
         data-headlessui-state="selected"
         data-selected=""
         id="headlessui-tabs-panel-:ri:"
@@ -653,7 +653,7 @@ exports[`Tabs > (Snapshot) renders in composition mode 1`] = `
     >
       <div
         aria-labelledby="headlessui-tabs-tab-:r14:"
-        class="relative flex-1 overflow-hidden outline-none"
+        class="focus-visible:ring-primary relative flex-1 overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-inset"
         data-headlessui-state="selected"
         data-selected=""
         id="headlessui-tabs-panel-:r18:"
@@ -776,7 +776,7 @@ exports[`Tabs > (Snapshot) switches tabs 1`] = `
       />
       <div
         aria-labelledby="headlessui-tabs-tab-:rr:"
-        class="relative flex-1 overflow-hidden outline-none"
+        class="focus-visible:ring-primary relative flex-1 overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-inset"
         data-headlessui-state="selected"
         data-selected=""
         id="headlessui-tabs-panel-:r11:"

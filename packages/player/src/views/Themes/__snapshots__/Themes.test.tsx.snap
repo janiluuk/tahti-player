@@ -583,7 +583,7 @@ exports[`Themes view > (Snapshot) renders the themes view 1`] = `
                     >
                       <div
                         aria-labelledby="headlessui-tabs-tab-:rc:"
-                        class="relative outline-none flex flex-1 overflow-hidden"
+                        class="focus-visible:ring-primary relative outline-none focus-visible:ring-2 focus-visible:ring-inset flex flex-1 overflow-hidden"
                         data-headlessui-state="selected"
                         data-selected=""
                         id="headlessui-tabs-panel-:rg:"
