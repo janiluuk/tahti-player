@@ -2,7 +2,7 @@
 
 exports[`LogEntry > (Snapshot) renders core log entry 1`] = `
 <div
-  class="group border-border/50 relative grid grid-cols-[auto_auto_auto_auto_1fr] items-start gap-2 border-b px-2 py-2 font-mono text-sm border-l-[3px] border-l-accent-cyan"
+  class="group border-border/50 relative grid grid-cols-[auto_auto_auto_minmax(0,auto)_1fr] items-start gap-2 border-b px-2 py-2 font-mono text-sm border-l-[3px] border-l-accent-cyan"
 >
   <div
     class="flex w-4 items-center justify-center pt-0.5"
@@ -25,7 +25,7 @@ exports[`LogEntry > (Snapshot) renders core log entry 1`] = `
     INFO
   </button>
   <button
-    class="inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium bg-foreground/10 text-foreground cursor-pointer hover:opacity-80"
+    class="block max-w-full min-w-0 truncate rounded-full px-2 py-0.5 text-center text-xs font-medium bg-foreground/10 text-foreground cursor-pointer hover:opacity-80"
     data-testid="log-scope"
     type="button"
   >
@@ -82,7 +82,7 @@ exports[`LogEntry > (Snapshot) renders core log entry 1`] = `
 
 exports[`LogEntry > (Snapshot) renders plugin log entry 1`] = `
 <div
-  class="group border-border/50 relative grid grid-cols-[auto_auto_auto_auto_1fr] items-start gap-2 border-b px-2 py-2 font-mono text-sm border-l-[3px] border-l-accent-cyan"
+  class="group border-border/50 relative grid grid-cols-[auto_auto_auto_minmax(0,auto)_1fr] items-start gap-2 border-b px-2 py-2 font-mono text-sm border-l-[3px] border-l-accent-cyan"
 >
   <div
     class="flex w-4 items-center justify-center pt-0.5"
@@ -105,7 +105,7 @@ exports[`LogEntry > (Snapshot) renders plugin log entry 1`] = `
     INFO
   </button>
   <button
-    class="inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium bg-accent-orange/50 text-accent-foreground cursor-pointer hover:opacity-80"
+    class="block max-w-full min-w-0 truncate rounded-full px-2 py-0.5 text-center text-xs font-medium bg-accent-orange/50 text-accent-foreground cursor-pointer hover:opacity-80"
     data-testid="log-scope"
     type="button"
   >
