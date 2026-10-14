@@ -107,6 +107,22 @@ describe('ModerateChannelView', () => {
     ).toBeNull();
   });
 
+  it('links the owner to the chat settings and the moderators', async () => {
+    await renderView('mine');
+    expect(
+      screen.getByRole('link', { name: 'Chat settings' }).getAttribute('href'),
+    ).toBe('/settings/channel?tab=chat');
+    expect(
+      screen.getByRole('link', { name: 'Moderators' }).getAttribute('href'),
+    ).toBe('/settings/channel?tab=moderators');
+  });
+
+  it('offers a moderator no link to the owner settings', async () => {
+    await renderView('night-drive');
+    expect(screen.queryByRole('link', { name: 'Chat settings' })).toBeNull();
+    expect(screen.queryByRole('link', { name: 'Moderators' })).toBeNull();
+  });
+
   it('says so when the account does not moderate the channel', async () => {
     await renderView('somebody-else');
     expect(screen.getByText("You don't moderate this channel")).toBeTruthy();
