@@ -1,4 +1,5 @@
 import { getMockSessionUser } from './mock-session';
+import { isForceMock } from './mode';
 import type { JamParticipant, JamSession, JamTrack } from './types';
 
 const MOCK_JAM_TRACK: JamTrack = {
@@ -23,6 +24,15 @@ const MOCK_JAM_HOST: JamParticipant = {
 };
 
 const sessions = new Map<string, JamSession>();
+let mockJamEnabled = true;
+
+export function setMockJamEnabled(enabled: boolean): void {
+  mockJamEnabled = enabled;
+}
+
+export function mockJamActive(): boolean {
+  return isForceMock() && mockJamEnabled;
+}
 
 function sessionUserParticipant(role: JamParticipant['role']): JamParticipant {
   const user = getMockSessionUser();

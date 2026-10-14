@@ -2,14 +2,14 @@ import { apiBase, requestJson } from './client';
 import {
   mockCreateJam,
   mockFetchJam,
+  mockJamActive,
   mockJoinJam,
   mockUpdateJam,
 } from './jam.mock';
-import { isForceMock } from './mode';
 import type { JamEvent, JamSession, JamTrack } from './types';
 
 export async function createJam(collectionSlug: string): Promise<JamSession> {
-  if (isForceMock()) {
+  if (mockJamActive()) {
     return mockCreateJam();
   }
   const { data } = await requestJson<JamSession>('/api/v1/jam', {
@@ -20,7 +20,7 @@ export async function createJam(collectionSlug: string): Promise<JamSession> {
 }
 
 export async function joinJam(code: string): Promise<JamSession> {
-  if (isForceMock()) {
+  if (mockJamActive()) {
     return mockJoinJam(code);
   }
   const { data } = await requestJson<JamSession>(
@@ -31,7 +31,7 @@ export async function joinJam(code: string): Promise<JamSession> {
 }
 
 export async function fetchJam(sessionId: string): Promise<JamSession> {
-  if (isForceMock()) {
+  if (mockJamActive()) {
     return mockFetchJam(sessionId);
   }
   const { data } = await requestJson<JamSession>(
@@ -48,7 +48,7 @@ export async function pushJamState(
     positionSec: number;
   },
 ): Promise<JamSession> {
-  if (isForceMock()) {
+  if (mockJamActive()) {
     return mockUpdateJam(sessionId, (session) => ({
       ...session,
       ...state,
@@ -70,7 +70,7 @@ export async function setJamParticipantControl(
   userId: string,
   canControl: boolean,
 ): Promise<JamSession | null> {
-  if (isForceMock()) {
+  if (mockJamActive()) {
     return mockUpdateJam(sessionId, (session) => ({
       ...session,
       participants: session.participants.map((participant) =>
@@ -97,7 +97,7 @@ export async function removeJamParticipant(
   sessionId: string,
   userId: string,
 ): Promise<JamSession | null> {
-  if (isForceMock()) {
+  if (mockJamActive()) {
     return mockUpdateJam(sessionId, (session) => ({
       ...session,
       participants: session.participants.filter(
@@ -117,7 +117,7 @@ export async function removeJamParticipant(
 }
 
 export async function leaveJam(sessionId: string): Promise<void> {
-  if (isForceMock()) {
+  if (mockJamActive()) {
     return;
   }
   await requestJson(`/api/v1/jam/${encodeURIComponent(sessionId)}/leave`, {
@@ -126,7 +126,7 @@ export async function leaveJam(sessionId: string): Promise<void> {
 }
 
 export async function endJam(sessionId: string): Promise<void> {
-  if (isForceMock()) {
+  if (mockJamActive()) {
     return;
   }
   await requestJson(`/api/v1/jam/${encodeURIComponent(sessionId)}`, {
@@ -147,7 +147,7 @@ export function subscribeToJamEvents(
     onOpen?: () => void;
   },
 ): () => void {
-  if (isForceMock()) {
+  if (mockJamActive()) {
     const timer = setTimeout(() => handlers.onOpen?.(), 0);
     return () => clearTimeout(timer);
   }

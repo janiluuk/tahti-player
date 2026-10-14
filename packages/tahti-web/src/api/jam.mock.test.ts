@@ -8,6 +8,7 @@ import {
   removeJamParticipant,
   setJamParticipantControl,
 } from './jam';
+import { setMockJamEnabled } from './jam.mock';
 
 describe('jam in the offline mock app', () => {
   afterEach(() => {
@@ -52,5 +53,21 @@ describe('jam in the offline mock app', () => {
     expect(granted?.participants[1]?.canControl).toBe(true);
     const removed = await removeJamParticipant('GUEST1', guest.userId);
     expect(removed?.participants).toHaveLength(1);
+  });
+
+  it('uses the API again while a story stands in for it', async () => {
+    vi.stubEnv('VITE_FORCE_MOCK', '1');
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ id: 'story', code: 'STORY1' }), {
+        status: 200,
+      }),
+    );
+    setMockJamEnabled(false);
+    try {
+      await expect(joinJam('STORY1')).resolves.toMatchObject({ id: 'story' });
+      expect(fetchSpy).toHaveBeenCalledOnce();
+    } finally {
+      setMockJamEnabled(true);
+    }
   });
 });
