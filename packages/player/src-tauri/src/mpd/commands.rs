@@ -14,13 +14,16 @@ fn field(key: &str, value: impl ToString) -> (String, String) {
     (key.to_string(), value.to_string())
 }
 
+const BRIDGE_METHOD_PREFIX: &str = "Mpd.";
+
 async fn call(
     bridge: &Bridge,
     command: &str,
     method: &str,
     params: Value,
 ) -> Result<Value, MpdError> {
-    bridge.call(method, params).await.map_err(|err| MpdError {
+    let method = format!("{BRIDGE_METHOD_PREFIX}{method}");
+    bridge.call(&method, params).await.map_err(|err| MpdError {
         code: ACK_ERROR_SYSTEM,
         command: command.to_string(),
         list_index: 0,

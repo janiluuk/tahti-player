@@ -140,3 +140,12 @@ export async function revokeApiToken(
     };
   }
 }
+
+/** The Tahti API's MCP endpoint, absolute so it can be pasted into an AI tool. */
+export function mcpEndpointUrl(): string {
+  const base = apiBase();
+  const absolute = base.startsWith('http')
+    ? base
+    : `${window.location.origin}${base}`;
+  return `${absolute}/api/v1/mcp`;
+}

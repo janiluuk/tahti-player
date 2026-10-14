@@ -61,6 +61,10 @@ import type {
 export interface MockFixtures {
   announcements: { data: Announcement[]; args: [] };
   channel: { data: PublicChannel; args: [slug: string] };
+  channelComments: {
+    data: { comments: TrackComment[]; commentsEnabled: boolean };
+    args: [slug: string];
+  };
   channelEvents: { data: ArtistEvent[]; args: [slug: string] };
   channelVisual: { data: ChannelVisual; args: [] };
   channelVisualPresets: { data: ChannelVisualPreset[]; args: [] };
@@ -79,6 +83,10 @@ export interface MockFixtures {
   conversation: { data: ConversationDetail | null; args: [id: string] };
   conversations: { data: ConversationSummary[]; args: [] };
   directory: { data: ChannelDirectoryResponse; args: [] };
+  fanChatHistory: {
+    data: Array<{ handle: string; text: string; ts: number }>;
+    args: [slug: string];
+  };
   fanTiers: { data: FanTiersResponse; args: [username: string] };
   feed: { data: FeedResponse; args: [] };
   latestTracks: { data: DiscoverTrackItem[]; args: [] };

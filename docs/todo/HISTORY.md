@@ -4556,3 +4556,35 @@ A sixth sweep batch, run while another session worked on the governance slices f
 - **Cause:** `RouterProvider` renders nothing until its async route load settles. `@storybook/react` wraps rendering in React's `act` only outside production, so a `storybook build` started plays against an empty canvas. The decorator also built a new router on every re-render (e.g. an auth store update), blanking the canvas again.
 - **Fix:** `withTahtiRouter` keeps one router per story, and the project `mount` in `.storybook/preview.ts` waits for it to resolve before the play runs (`storyRouterSettled`).
 - **Checks:** full `vitest --project storybook` run; a production build swept in headless Chromium went from 112 failing stories to none (the remaining console noise is external audio/embed URLs).
+
+
+## 2026-10-14 - Desktop MCP rebuilt, Tahti API MCP tools (tahti-player #737-#740, tahti-org #801)
+
+Asked for as "concentrate on the MCP side of things, see what exists and how this could be improved", then "do both, start with 1 and the docs fix".
+
+- **Found:** since `126a4fc9e` (2026-09-01) the desktop entry mounts the tahti-web UI and never called Nuclear's `initPlayerApp`, so the desktop MCP server (and MPD, the HTTP remote-control API and Discord Rich Presence) never started, while the docs called it complete. Its bridge drove Nuclear's stores, not tahti-web's player. `rmcp` 0.17 checks neither `Origin` nor `Host`. The API was described twice (Rust JSON and plugin-sdk), and `Settings` was callable but not discoverable. tahti-org's `/api/v1/mcp` had one tool.
+- **Docs fix (#737):** CUTOVER, FEATURES, `docs/MCP.md`, the docs site and the Help article said what worked.
+- **Rust (#738):** discovery tools ask the webview over the bridge (`Meta.listMethods`/`methodDetails`/`describeType`), the 1,000-line metadata copy is gone, `list_methods` without a domain lists the domains, and `origin.rs` refuses non-loopback `Host`/`Origin` (403).
+- **tahti-web (#739):** `src/lib/mcp/` domains Playback, Queue, Library (desktop library), Radio and Tahti over `usePlayerStore`, with argument checks; `packages/player/src/desktopMcp.ts` answers bridge requests and starts the server; Settings → Integrations has a working MCP switch with the URL in the desktop app. Docs site, architecture page, Help and the `tahti-mcp.zip` skill (API reference generated from the registry) rewritten.
+- **Tahti API (tahti-org #801):** `my_likes`, `my_playlists`, `like_track`, `follow_artist`, `create_playlist`, `add_to_playlist`, each running the API's own route as the caller via `inject` (same token gate, blocks and visibility).
+- **Account MCP in tahti-web (#740):** Settings → Account → API tokens shows the MCP URL with a copy button; the Help article explains both ways to connect.
+- **Checks:** `cargo test --lib` (286), tahti-web `lib/mcp`, `McpIntegrationRow` and `ApiTokensPanel` tests, the Settings and Help Storybook plays, tahti-org `routes/mcp` (10, through a real MCP client). Not tried: the running desktop app with a real MCP client (no headless display), or the account tools against staging.
+- **Left:** MPD, the HTTP remote-control API and Discord Rich Presence still don't start in the desktop app; Nuclear's `plugin-sdk/src/mcp` metadata and `player/src/services/bridge` dispatcher are unused.
+
+
+
+## 2026-10-14 - Desktop MPD, Discord and Tahti Jam rebuilt on tahti-web (tahti-player #741-#743)
+
+Asked for as "continue" after the MCP work, then "handle the jam issue".
+
+- **MPD (#741):** the Rust MPD server prefixes its bridge calls with `Mpd.` (the MCP domains use the same names with other shapes); `src/lib/mpd/` answers them from `usePlayerStore` and sends the `idle` notifications. MCP and MPD share `lib/desktopService.ts` and `DesktopServiceRow`.
+- **Discord (#742):** `src/lib/discord/presence.ts` sets or clears the activity through the existing `discord_*` commands; artwork only when it's on the web, no end time on live streams.
+- **Tahti Jam (#743):** the HTTP API had bound `0.0.0.0` with no authentication and served Nuclear's remote UI, which the desktop build no longer contains. Now every `/api/*` route except `/api/health` needs a pairing code (bearer header, or `?token=` for the SSE stream; `http_api/pairing.rs`). The code is made and kept by tahti-web (`lib/jam/desktop.ts`), rides in the QR link's fragment, and **New pairing link** replaces it. Calls carry a `Jam.` prefix and are answered by `src/lib/jam/bridge.ts`, which sends phones no file paths, stream URLs or local artwork. The phone remote (`src/remote/`, on the `TahtiJam` components) is a second Vite entry (`remote.html`) that the server serves at `/remote`. Search adds Tahti tracks only. The settings routes for Nuclear setting ids are gone.
+- **Checks:** `cargo test --lib`, tahti-web unit suite, both type-checks, the IntegrationsPanel and JamRemote Storybook plays. Not tried: the desktop app with a real `mpc`, Discord client or phone.
+- **Left:** Nuclear's `player/src/remoteControl/`, `services/httpApi`, `services/mpd`, `services/discordHandler.ts` and `services/bridge` are dead code.
+
+## 2026-10-14 - Storybook stories for nine chat, channel and radio components
+
+- **Salvaged** from a stale agent worktree whose PR (#622) shipped from another branch: stories with plays for `ChannelComments`, `ChannelShareButton`, `ChatAvatar`, `ChatDailyListeners`, `ChatListeningNow`, `ChatReactionBar`, `FanChatRoom`, `RadioShowEpisodeList` and `RadioView`, which had none. The rest of that worktree was superseded by master and dropped.
+- **Mock hooks:** `channelComments` and `fanChatHistory` fixture overrides, so stories can seed comments and fan chat history. Mock-mode defaults are unchanged.
+- **Checks:** the nine stories' plays (27/27), tahti-web `src/api` tests (336/336), lint; `STORYBOOK-SURFACES.md` regenerated.

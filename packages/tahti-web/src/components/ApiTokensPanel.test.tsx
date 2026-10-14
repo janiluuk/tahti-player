@@ -36,6 +36,16 @@ describe('ApiTokensPanel', () => {
     vi.restoreAllMocks();
   });
 
+  it('shows the MCP server URL an AI tool uses with a token', async () => {
+    await renderPanel([]);
+    expect(
+      screen.getByTestId('api-tokens-mcp').querySelector('code')?.textContent,
+    ).toBe(`${window.location.origin}/tahti-api/api/v1/mcp`);
+    expect(
+      screen.getByRole('button', { name: 'Copy MCP server URL' }),
+    ).toBeTruthy();
+  });
+
   it('marks an expired token and says when a live one expires', async () => {
     await renderPanel([
       { ...base, id: 't1', name: 'old', expiresAt: '2020-01-01T00:00:00.000Z' },
