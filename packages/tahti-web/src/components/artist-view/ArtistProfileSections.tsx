@@ -375,9 +375,9 @@ export function ArtistTaggedIn({
         {mentions.map((mention) => (
           <li
             key={mention.id}
-            className="flex items-center justify-between gap-3 p-3"
+            className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 p-3"
           >
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1 basis-40 break-words">
               <Link
                 to={mentionSourcePath(mention) as never}
                 className="text-primary truncate text-sm font-semibold hover:underline"
