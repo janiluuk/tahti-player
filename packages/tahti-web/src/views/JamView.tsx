@@ -272,6 +272,7 @@ export function JamView({ code }: { code: string }) {
           <div className="flex flex-wrap items-center gap-2">
             {canControl && track ? (
               <Button
+                className="gap-1.5"
                 variant="secondary"
                 onClick={() => void togglePlaybackForEveryone()}
               >
@@ -287,7 +288,10 @@ export function JamView({ code }: { code: string }) {
               </Button>
             ) : null}
             {!isHost && !audioUnlocked && track?.streamUrl ? (
-              <Button onClick={() => setAudioUnlocked(true)}>
+              <Button
+                className="gap-1.5"
+                onClick={() => setAudioUnlocked(true)}
+              >
                 <PlayIcon size={16} /> Play along
               </Button>
             ) : null}
@@ -319,13 +323,17 @@ export function JamView({ code }: { code: string }) {
           {isHost ? (
             <Button
               variant="secondary"
-              className="text-accent-red-strong border-accent-red/40 hover:bg-accent-red/10"
+              className="text-accent-red-strong border-accent-red/40 hover:bg-accent-red/10 gap-1.5"
               onClick={() => void endForEveryone()}
             >
               <XIcon size={16} /> End Jam for everyone
             </Button>
           ) : (
-            <Button variant="secondary" onClick={() => void leave()}>
+            <Button
+              className="gap-1.5"
+              variant="secondary"
+              onClick={() => void leave()}
+            >
               <LogOutIcon size={16} /> Leave Jam
             </Button>
           )}
