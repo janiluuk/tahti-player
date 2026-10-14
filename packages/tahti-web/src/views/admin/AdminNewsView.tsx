@@ -232,7 +232,7 @@ export function AdminNewsView() {
                           </p>
                           <p className="mt-1 text-sm">{post.summary}</p>
                         </div>
-                        <div className="flex shrink-0 flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-2">
                           <Button
                             size="sm"
                             variant="text"
