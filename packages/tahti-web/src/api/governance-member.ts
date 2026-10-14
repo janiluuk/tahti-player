@@ -100,6 +100,21 @@ const mockMotionDescriptions: Record<string, string> = {
     'Requires an overnight broadcast blackout window to reduce infrastructure costs; rejected by members in favor of keeping overnight hours uncapped (motion-3).',
 };
 
+const mockMotionMeetings: Record<string, GovernanceMotionDetail['meeting']> = {
+  'motion-1': {
+    id: 'meeting-agm-2026',
+    title: '2026 Annual General Meeting',
+    scheduledAt: '2026-11-15T16:00:00.000Z',
+  },
+};
+
+export function setMockMotionMeeting(
+  id: string,
+  meeting: GovernanceMotionDetail['meeting'],
+): void {
+  mockMotionMeetings[id] = meeting;
+}
+
 const mockMotionComments: Record<string, MotionComment[]> = {
   'motion-5': [
     {
@@ -240,7 +255,11 @@ export async function fetchGovernanceMotion(
     }
     return {
       ok: true,
-      data: { ...motion, description: mockMotionDescriptions[id] ?? '' },
+      data: {
+        ...motion,
+        description: mockMotionDescriptions[id] ?? '',
+        meeting: mockMotionMeetings[id] ?? null,
+      },
     };
   }
   try {
