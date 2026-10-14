@@ -60,7 +60,6 @@ import {
   verifyRoute,
 } from './router/routes-auth';
 import {
-  dashboardIndexAliasRoute,
   dashboardSplatAliasRoute,
   embedChannelRoute,
   embedColRoute,
@@ -379,7 +378,6 @@ const routeTree = rootRoute.addChildren([
     studioEventEditRoute,
     studioInsightsIndexRoute,
     studioInsightsRoute,
-    dashboardIndexAliasRoute,
     dashboardSplatAliasRoute,
     notFoundRoute,
   ]),

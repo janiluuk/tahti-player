@@ -7,7 +7,6 @@ import {
 import { parseFanCheckoutReturnSearch } from '../lib/fanCheckoutReturn';
 import { resolveDashboardRedirect } from '../lib/prodPathRedirects';
 import { useAuthStore } from '../stores/authStore';
-import { DashboardAliasView } from '../views/DashboardAliasView';
 import { appLayoutRoute, rootRoute } from './router-core';
 import {
   EmbedChannelView,
@@ -86,12 +85,6 @@ export const prodSubscribeAliasRoute = createRoute({
   },
 });
 
-export const dashboardIndexAliasRoute = createRoute({
-  getParentRoute: () => appLayoutRoute,
-  path: '/dashboard',
-  component: DashboardAliasView,
-});
-
 function waitForAuthHydration(): Promise<void> {
   if (useAuthStore.getState().hydrated) {
     return Promise.resolve();
@@ -120,9 +113,8 @@ export const dashboardSplatAliasRoute = createRoute({
       typeof params._splat === 'string'
         ? params._splat
         : String((params as { _splat?: string })._splat ?? '');
-    // This route also matches bare `/dashboard` (empty splat) ahead of the
-    // `/dashboard` index route — apply the same artist-vs-listener split
-    // here instead of falling through to the `''` → `/studio` prod alias.
+    // Bare `/dashboard` (empty splat): artists land in Studio, members
+    // without a channel go to Feed instead of the "create a channel" wall.
     if (!splat.replace(/^\/+|\/+$/g, '')) {
       const callbackRedirect = resolveDashboardCallbackRedirect(
         search as Record<string, unknown>,
