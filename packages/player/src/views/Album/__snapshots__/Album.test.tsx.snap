@@ -906,7 +906,7 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                                 </span>
                               </th>
                               <th
-                                class="w-20 text-center"
+                                class="w-20 @max-md:w-10 text-center"
                                 role="columnheader"
                               >
                                 <span
@@ -1008,12 +1008,14 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                                 </button>
                               </td>
                               <td
-                                class="w-20 px-1"
+                                class="w-20 @max-md:w-10 px-1"
                               >
                                 <div
                                   class="flex items-center justify-end gap-1"
                                 >
-                                  <div>
+                                  <div
+                                    class="@max-md:hidden"
+                                  >
                                     <button
                                       aria-label="Add to queue"
                                       aria-pressed="false"
@@ -1161,12 +1163,14 @@ exports[`Album view > (Snapshot) renders the album view 1`] = `
                                 </button>
                               </td>
                               <td
-                                class="w-20 px-1"
+                                class="w-20 @max-md:w-10 px-1"
                               >
                                 <div
                                   class="flex items-center justify-end gap-1"
                                 >
-                                  <div>
+                                  <div
+                                    class="@max-md:hidden"
+                                  >
                                     <button
                                       aria-label="Add to queue"
                                       aria-pressed="false"

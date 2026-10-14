@@ -78,6 +78,7 @@ type AddToQueueButtonProps = {
   label: string;
   queued: boolean;
   onClick: () => void;
+  className?: string;
 };
 
 const QUEUE_FEEDBACK_MS = 700;
@@ -86,6 +87,7 @@ const AddToQueueButton: FC<AddToQueueButtonProps> = ({
   label,
   queued,
   onClick,
+  className,
 }) => {
   const [flashing, setFlashing] = useState(false);
 
@@ -101,7 +103,7 @@ const AddToQueueButton: FC<AddToQueueButtonProps> = ({
   }, [flashing]);
 
   return (
-    <Tooltip content={label} side="top">
+    <Tooltip content={label} side="top" wrapperClassName={className}>
       <Button
         data-testid="add-to-queue-button"
         size="icon-sm"
@@ -187,6 +189,7 @@ export const ActionsCell = <T extends Track>({
             label={isQueued ? labels.inQueue : labels.addToQueue}
             queued={isQueued}
             onClick={() => meta?.onAddToQueue?.(track)}
+            className={hasContextMenu ? narrowHiddenClass : undefined}
           />
         )}
         {canEdit && (
