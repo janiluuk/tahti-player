@@ -195,7 +195,7 @@ export function StudioStripeView() {
                 A paid order here means Tahti booked the period.{' '}
                 <Link
                   to="/studio/audience"
-                  className="text-foreground underline-offset-2 hover:underline"
+                  className="text-foreground underline underline-offset-2"
                 >
                   Order flow and grants live on Audience
                 </Link>

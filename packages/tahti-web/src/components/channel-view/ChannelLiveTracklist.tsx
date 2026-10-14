@@ -62,7 +62,7 @@ export function ChannelLiveTracklist({ slug }: { slug: string }) {
                   <Link
                     to="/u/$username"
                     params={{ username: entry.artistUsername }}
-                    className="text-foreground-secondary hover:underline"
+                    className="text-foreground-secondary underline underline-offset-2"
                   >
                     @{entry.artistUsername}
                   </Link>

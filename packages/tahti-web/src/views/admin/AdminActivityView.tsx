@@ -207,7 +207,7 @@ export function AdminActivityView({
         aggregate play counts.{' '}
         <a
           href={adminActivityExportCsvUrl({ topic: exportTopic })}
-          className="text-primary underline-offset-2 hover:underline"
+          className="text-primary underline underline-offset-2"
         >
           Export{topic !== 'ALL' ? ' this topic' : ' full audit log'} as CSV
         </a>
