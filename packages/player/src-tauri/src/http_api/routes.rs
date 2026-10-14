@@ -1,7 +1,8 @@
-use std::convert::Infallible;
+use std::{convert::Infallible, sync::Arc};
 
 use axum::{
-    extract::{Path, State},
+    extract::State,
+    middleware,
     http::StatusCode,
     response::{
         sse::{Event, KeepAlive, Sse},
@@ -21,6 +22,7 @@ use crate::bridge::{bridge::Bridge, types::BridgeError};
 pub struct AppState {
     pub(super) bridge: Bridge,
     events_tx: broadcast::Sender<RemoteEvent>,
+    pub(super) pairing_token: Arc<str>,
 }
 
 pub(super) struct BridgeErrorResponse(pub(super) BridgeError);
@@ -40,72 +42,30 @@ async fn health() -> Json<Value> {
     Json(json!({ "status": "ok" }))
 }
 
-async fn get_queue(State(state): State<AppState>) -> Result<Json<Value>, BridgeErrorResponse> {
-    state
-        .bridge
-        .call("Queue.getQueue", json!({}))
+const BRIDGE_METHOD_PREFIX: &str = "Jam.";
+
+/** Calls the webview's Tahti Jam adapter; `Jam.` keeps these apart from the MCP and MPD calls. */
+pub(super) async fn call(
+    bridge: &Bridge,
+    method: &str,
+    params: Value,
+) -> Result<Value, BridgeErrorResponse> {
+    bridge
+        .call(&format!("{BRIDGE_METHOD_PREFIX}{method}"), params)
         .await
-        .map(Json)
         .map_err(BridgeErrorResponse)
+}
+
+async fn get_queue(State(state): State<AppState>) -> Result<Json<Value>, BridgeErrorResponse> {
+    call(&state.bridge, "Queue.getQueue", json!({})).await.map(Json)
 }
 
 async fn get_playback(State(state): State<AppState>) -> Result<Json<Value>, BridgeErrorResponse> {
-    state
-        .bridge
-        .call("Playback.getState", json!({}))
-        .await
-        .map(Json)
-        .map_err(BridgeErrorResponse)
+    call(&state.bridge, "Playback.getState", json!({})).await.map(Json)
 }
 
 async fn get_settings(State(state): State<AppState>) -> Result<Json<Value>, BridgeErrorResponse> {
-    let bridge = &state.bridge;
-    let (shuffle, repeat, discovery, language, dark, theme_id) = tokio::try_join!(
-        bridge.call("Settings.getGlobal", json!({"id": "core.playback.shuffle"})),
-        bridge.call("Settings.getGlobal", json!({"id": "core.playback.repeat"})),
-        bridge.call(
-            "Settings.getGlobal",
-            json!({"id": "core.playback.discovery"})
-        ),
-        bridge.call("Settings.getGlobal", json!({"id": "core.general.language"})),
-        bridge.call("Settings.getGlobal", json!({"id": "core.theme.dark"})),
-        bridge.call("Settings.getGlobal", json!({"id": "core.theme.active.id"})),
-    )
-    .map_err(BridgeErrorResponse)?;
-
-    Ok(Json(json!({
-        "shuffle": shuffle,
-        "repeat": repeat,
-        "discovery": discovery,
-        "language": language,
-        "dark": dark,
-        "themeId": theme_id,
-    })))
-}
-
-async fn get_setting(
-    State(state): State<AppState>,
-    Path(id): Path<String>,
-) -> Result<Json<Value>, BridgeErrorResponse> {
-    state
-        .bridge
-        .call("Settings.getGlobal", json!({"id": id}))
-        .await
-        .map(Json)
-        .map_err(BridgeErrorResponse)
-}
-
-async fn set_setting(
-    State(state): State<AppState>,
-    Path(id): Path<String>,
-    Json(body): Json<Value>,
-) -> Result<StatusCode, BridgeErrorResponse> {
-    state
-        .bridge
-        .call("Settings.setGlobal", json!({"id": id, "value": body}))
-        .await
-        .map(|_| StatusCode::OK)
-        .map_err(BridgeErrorResponse)
+    call(&state.bridge, "Settings.get", json!({})).await.map(Json)
 }
 
 fn events_stream(
@@ -139,26 +99,40 @@ async fn get_events(
     Sse::new(events_stream(receiver)).keep_alive(KeepAlive::default())
 }
 
-pub fn router(bridge: Bridge, events_tx: broadcast::Sender<RemoteEvent>) -> Router {
-    let state = AppState { bridge, events_tx };
+pub fn router(
+    bridge: Bridge,
+    events_tx: broadcast::Sender<RemoteEvent>,
+    pairing_token: &str,
+) -> Router {
+    let state = AppState {
+        bridge,
+        events_tx,
+        pairing_token: Arc::from(pairing_token),
+    };
 
     Router::new()
         .route("/api/health", get(health))
         .route("/api/queue", get(get_queue))
         .route("/api/playback", get(get_playback))
         .route("/api/settings", get(get_settings))
-        .route("/api/settings/{id}", get(get_setting).post(set_setting))
         .route("/api/events", get(get_events))
         .route("/api/playback/play", post(actions::play))
+        .route("/api/playback/pause", post(actions::pause))
         .route("/api/playback/toggle", post(actions::toggle_playback))
         .route("/api/playback/next", post(actions::next_track))
         .route("/api/playback/previous", post(actions::previous_track))
         .route("/api/playback/seek", post(actions::seek))
         .route("/api/playback/shuffle", post(actions::set_shuffle))
         .route("/api/playback/repeat", post(actions::set_repeat))
+        .route("/api/playback/volume", post(actions::set_volume))
+        .route("/api/queue/play", post(actions::play_queue_item))
         .route("/api/queue/add", post(actions::add_to_queue))
         .route("/api/queue/remove", post(actions::remove_from_queue))
         .route("/api/search", post(search::search))
         .fallback(super::frontend::serve_frontend)
+        .layer(middleware::from_fn_with_state(
+            state.clone(),
+            super::pairing::require_pairing,
+        ))
         .with_state(state)
 }

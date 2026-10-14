@@ -181,6 +181,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Media/ImageUploadField` | `tahti-web/ImageUploadField.stories.tsx` |
 | `Tahti/Page/InPageNav` | `tahti-web/InPageNav.stories.tsx` |
 | `Tahti/Misc/ItunesImportDialog` | `tahti-web/ItunesImportDialog.stories.tsx` |
+| `Tahti/Desktop/JamRemote` | `tahti-web/JamRemote.stories.tsx` |
 | `Tahti/Social/JamView` | `tahti-web/JamView.stories.tsx` |
 | `Tahti/Reference/Latest view surfaces` | `tahti-web/LatestViewSurfaces.stories.tsx` |
 | `Tahti/Widgets/LegalDocShell` | `tahti-web/LegalDocShell.stories.tsx` |

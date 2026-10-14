@@ -77,7 +77,9 @@ Beta already talks to **live** `api.tahti.live` / `chat.tahti.live` / `cdn.tahti
 - [ ] Archive or slim `apps/web` Next tree (admin-only extract).
 - [ ] Channel custom-domain / wildcard host behaviour with SPA (Caddy/NPM #55).
 - [ ] Client-only storage migration story for favorites/history (localStorage namespaced).
-- [ ] **Desktop MCP / MPD / Jam** — since 2026-09-01 the desktop app mounts the tahti-web UI and none of Nuclear's local servers start (MCP, MPD, HTTP remote control, Discord). MCP is being rebuilt on tahti-web's player: [`docs/todo/desktop-mcp.md`](../../docs/todo/desktop-mcp.md).
+- [x] **Desktop MCP** — rebuilt on tahti-web's player after it stopped starting on 2026-09-01 (see [`docs/MCP.md`](docs/MCP.md)).
+- [x] **Desktop MPD and Discord** — rebuilt on tahti-web's player (`src/lib/mpd/`, `src/lib/discord/`).
+- [x] **Desktop Tahti Jam** — rebuilt on tahti-web: the phone remote (`src/remote/`) and its API (`src/lib/jam/`), now behind a pairing code.
 
 ---
 
@@ -440,9 +442,9 @@ Per the admin-host decision (§0.2 / §1.1), Next `apps/web` is **not** fully re
 
 ## Desktop integrations (MCP / MPD / Jam)
 
-Nuclear’s **MCP server** is Tauri-only (`packages/player` + `plugin-sdk/mcp`), localhost Streamable HTTP on `:8800–8809`. **It has not started since 2026-09-01**, when the desktop entry switched from Nuclear's `initPlayerApp` to the tahti-web UI; MPD, the HTTP remote-control API and Discord Rich Presence stopped with it. MCP is being rebuilt on tahti-web's player ([`docs/todo/desktop-mcp.md`](../../docs/todo/desktop-mcp.md)). It is **out of scope** for the SPA cutover / `beta.tahti.live` — do not expose `/mcp` on the public edge. See [`docs/MCP.md`](docs/MCP.md).
+Nuclear’s **MCP server** is Tauri-only (`packages/player` + `plugin-sdk/mcp`), localhost Streamable HTTP on `:8800–8809`. It did not start from 2026-09-01, when the desktop entry switched from Nuclear's `initPlayerApp` to the tahti-web UI, until it was rebuilt on tahti-web's player (domains in `src/lib/mcp/`, the toggle in Settings → Integrations). The MPD server and Discord Rich Presence were rebuilt the same way (`src/lib/mpd/`, `src/lib/discord/`); so was Tahti Jam, the phone remote and its HTTP API (`src/lib/jam/`, `src/remote/`), which now needs a pairing code. It is **out of scope** for the SPA cutover / `beta.tahti.live` — do not expose `/mcp` on the public edge. See [`docs/MCP.md`](docs/MCP.md).
 
-Web Settings → Integrations shows Jam, MCP, MPD and Discord Rich Presence as "Desktop app only" rows (no toggles) next to the live ListenBrainz and Last.fm scrobble toggles.
+Web Settings → Integrations shows Jam, MCP, MPD and Discord Rich Presence as "Desktop app only" rows (no toggles; in the desktop app all four are working switches) next to the live ListenBrainz and Last.fm scrobble toggles.
 
 ## Phase 10 — Risks & open decisions
 

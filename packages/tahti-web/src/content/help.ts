@@ -506,22 +506,31 @@ export const HELP_ARTICLES: HelpArticle[] = [
   },
   {
     slug: 'desktop-mcp',
-    title: 'Desktop app & AI tools (MCP)',
+    title: 'AI tools (MCP)',
     description:
-      'Control playback from Claude, Cursor, or another AI tool using the separate Tahti Player desktop app.',
+      'Let Claude, Cursor or another AI tool search Tahti and manage your likes, follows and playlists, or control the desktop app.',
     sections: [
       {
-        heading: 'This is a separate app, not this website',
+        heading: 'Two ways to connect',
         body: [
-          'AI-tool control uses the Model Context Protocol (MCP) and only runs inside the Tahti Player desktop app (Tauri), not on this website — a browser tab can’t host the local server an AI tool connects to.',
-          'If you only use tahti.live in a browser, this feature isn’t available to you yet; everything else in this guide still applies to the web app as usual.',
+          'Your Tahti account: an AI tool connects to the Tahti API with a personal API token. This works wherever you use Tahti, including this website.',
+          'The desktop app: an AI tool connects to the Tahti Player app on your computer and controls what it plays, its queue, your desktop library and radio.',
         ],
       },
       {
-        heading: 'Not available right now',
+        heading: 'Connect your Tahti account',
         body: [
-          'The desktop app’s MCP server is switched off in current builds while it is rebuilt for the new player, so there is no Enable MCP Server toggle in Settings → Integrations yet.',
-          'This guide will say how to turn it on and connect your AI tool once it is back.',
+          'Create a token in Settings → Account → Sign-in & security → API tokens. A read-only token can search and list your likes and playlists; give it write access if the tool should also like tracks, follow artists and create or fill playlists.',
+          'Point your AI tool at the MCP server URL shown above the token list, with the Streamable HTTP transport, and send the token as a bearer token. For Claude Code: claude mcp add tahti-account --transport http <URL> --header "Authorization: Bearer <token>".',
+          'Anything the tool does is done as you, with the same rules as the website. Revoke the token to cut it off at once.',
+        ],
+      },
+      {
+        heading: 'Turn it on in the desktop app',
+        body: [
+          'Open the Tahti Player desktop app → Settings → Integrations and turn on MCP server. The switch is remembered, so the server starts again with the app.',
+          'The server starts at http://127.0.0.1:8800/mcp. If that port is busy it tries the next one up to 8809; the row shows the exact URL with a copy button. It only answers requests from this computer.',
+          'Point your AI tool at that URL with the Streamable HTTP transport, for example claude mcp add tahti --transport http http://127.0.0.1:8800/mcp. It can then play, pause and skip, change the queue, search and play your desktop library and its playlists, tune in to radio, and search Tahti.',
         ],
       },
     ],
