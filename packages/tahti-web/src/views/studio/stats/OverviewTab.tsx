@@ -1,11 +1,45 @@
 import { Link } from '@tanstack/react-router';
 
-import { TopList } from '@tahti-player/ui';
-
 import { StudioPanel } from '../../../components/StudioPanel';
 import { Eyebrow } from '../../../components/tahti/Eyebrow';
 import { StatNumber } from '../../../components/tahti/StatNumber';
 import type { StatsData } from './useStatsData';
+
+function EngagementUnitList({
+  entries,
+}: {
+  entries: StatsData['engagementEntries'];
+}) {
+  const most = Math.max(1, ...entries.map((entry) => entry.value));
+  return (
+    <ul className="flex flex-col gap-3" data-testid="engagement-units">
+      {entries.map((entry) => (
+        <li key={entry.id} className="flex flex-col gap-1.5 text-sm">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-3">
+            <span className="font-medium">
+              {entry.label}{' '}
+              <span className="text-foreground-secondary text-xs font-normal">
+                {entry.sublabel}
+              </span>
+            </span>
+            <strong className="tabular-nums">
+              {entry.value.toLocaleString()}
+            </strong>
+          </div>
+          <div
+            aria-hidden
+            className="bg-background-secondary h-1.5 overflow-hidden rounded-full"
+          >
+            <div
+              className="bg-primary/60 h-full rounded-full"
+              style={{ width: `${(entry.value / most) * 100}%` }}
+            />
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 export function KeyMetrics({
   state,
@@ -52,10 +86,7 @@ export function EngagementSection({
   return (
     <div className={active ? '' : 'hidden'}>
       <StudioPanel title="Engagement units">
-        <TopList
-          formatValue={(value) => value.toLocaleString()}
-          entries={engagementEntries}
-        />
+        <EngagementUnitList entries={engagementEntries} />
         <div className="border-border mt-4 flex flex-wrap items-center justify-between gap-3 border-t pt-4 text-sm">
           <span className="text-foreground-secondary">
             {grant?.eligible
