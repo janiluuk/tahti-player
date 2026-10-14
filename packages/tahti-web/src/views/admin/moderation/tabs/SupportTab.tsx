@@ -277,6 +277,7 @@ export function SupportTab() {
                 <div className="flex shrink-0 flex-wrap gap-1.5">
                   {detail.status === 'OPEN' && (
                     <Button
+                      className="gap-1.5"
                       size="sm"
                       variant="secondary"
                       disabled={busy}
@@ -288,6 +289,7 @@ export function SupportTab() {
                   )}
                   {detail.status !== 'RESOLVED' ? (
                     <Button
+                      className="gap-1.5"
                       size="sm"
                       disabled={busy}
                       onClick={() => setStatus('RESOLVED')}
@@ -297,6 +299,7 @@ export function SupportTab() {
                     </Button>
                   ) : (
                     <Button
+                      className="gap-1.5"
                       size="sm"
                       variant="text"
                       disabled={busy}
@@ -357,6 +360,7 @@ export function SupportTab() {
                     }}
                   />
                   <Button
+                    className="gap-1.5"
                     size="sm"
                     disabled={busy || !reply.trim()}
                     onClick={sendReply}

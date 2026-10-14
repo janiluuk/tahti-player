@@ -29,7 +29,7 @@ export function CollapsibleRecord({
         variant="text"
         size="flexible"
         aria-expanded={open}
-        className="text-foreground-secondary hover:text-foreground flex w-full items-center justify-between px-3 py-2 text-xs"
+        className="text-foreground-secondary hover:text-foreground flex w-full items-center justify-between gap-1.5 px-3 py-2 text-xs"
         onClick={onToggle}
       >
         <span>{label}</span>

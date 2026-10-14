@@ -281,6 +281,7 @@ export function AdminRadioView() {
                                     </div>
                                     <div className="flex gap-2">
                                       <Button
+                                        className="gap-1.5"
                                         size="sm"
                                         variant="secondary"
                                         onClick={() => {
@@ -302,6 +303,7 @@ export function AdminRadioView() {
                                         Move to front
                                       </Button>
                                       <Button
+                                        className="gap-1.5"
                                         size="sm"
                                         variant="text"
                                         onClick={() => {
@@ -375,6 +377,7 @@ export function AdminRadioView() {
                                     )}
                                   </div>
                                   <Button
+                                    className="gap-1.5"
                                     size="sm"
                                     variant="secondary"
                                     onClick={() => {

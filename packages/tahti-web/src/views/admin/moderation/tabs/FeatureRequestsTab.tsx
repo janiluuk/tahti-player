@@ -53,6 +53,7 @@ function QuarterlyReportsPanel() {
           Quarterly review reports
         </h3>
         <Button
+          className="gap-1.5"
           size="sm"
           variant="secondary"
           disabled={generating}
@@ -172,6 +173,7 @@ function RowActions({
   if (terminal) {
     return (
       <Button
+        className="gap-1.5"
         size="sm"
         variant="text"
         disabled={pending}
@@ -186,6 +188,7 @@ function RowActions({
   return (
     <div className="flex flex-wrap gap-1.5">
       <Button
+        className="gap-1.5"
         size="sm"
         variant="secondary"
         disabled={pending}
@@ -195,6 +198,7 @@ function RowActions({
         Plan
       </Button>
       <Button
+        className="gap-1.5"
         size="sm"
         variant="secondary"
         disabled={pending}
@@ -203,11 +207,17 @@ function RowActions({
         <LoaderCircleIcon size={14} aria-hidden />
         In progress
       </Button>
-      <Button size="sm" disabled={pending} onClick={() => apply('DONE')}>
+      <Button
+        className="gap-1.5"
+        size="sm"
+        disabled={pending}
+        onClick={() => apply('DONE')}
+      >
         <CheckCircle2Icon size={14} aria-hidden />
         Done
       </Button>
       <Button
+        className="gap-1.5"
         size="sm"
         variant="text"
         disabled={pending}

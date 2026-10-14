@@ -113,6 +113,7 @@ export function AdminVenuesView() {
                             </p>
                           </div>
                           <Button
+                            className="gap-1.5"
                             size="sm"
                             variant={venue.verifiedAt ? 'text' : undefined}
                             disabled={busySlug === venue.slug}

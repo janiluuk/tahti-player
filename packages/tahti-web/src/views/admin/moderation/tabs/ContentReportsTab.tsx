@@ -58,7 +58,7 @@ function ReportTarget({ report }: { report: AdminContentReportRow }) {
         rel="noreferrer"
         variant="text"
         size="sm"
-        className="text-primary h-auto p-0"
+        className="text-primary h-auto gap-1.5 p-0"
       >
         <ExternalLinkIcon size={12} aria-hidden />
         {report.targetLabel}
@@ -150,6 +150,7 @@ function ReportActions({
       <div className="flex flex-wrap gap-1.5">
         {report.status === 'OPEN' && (
           <Button
+            className="gap-1.5"
             size="sm"
             variant="secondary"
             disabled={pending}
@@ -160,6 +161,7 @@ function ReportActions({
           </Button>
         )}
         <Button
+          className="gap-1.5"
           size="sm"
           disabled={pending}
           onClick={() => resolve('ACTIONED')}
@@ -168,6 +170,7 @@ function ReportActions({
           Mark actioned
         </Button>
         <Button
+          className="gap-1.5"
           size="sm"
           variant="text"
           disabled={pending}
@@ -178,6 +181,7 @@ function ReportActions({
         </Button>
         {canDeleteComment ? (
           <Button
+            className="gap-1.5"
             size="sm"
             variant="secondary"
             intent="danger"
