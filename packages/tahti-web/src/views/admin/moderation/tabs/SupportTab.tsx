@@ -200,7 +200,7 @@ export function SupportTab() {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-[20rem_1fr]">
+      <div className="grid gap-4 lg:grid-cols-[20rem_minmax(0,1fr)]">
         <StudioPanel className="max-h-[32rem] overflow-y-auto p-0 sm:p-0">
           {loading ? (
             <PageLoading label="Loading support tickets…" />
@@ -249,7 +249,7 @@ export function SupportTab() {
           )}
         </StudioPanel>
 
-        <StudioPanel className="flex min-h-[24rem] flex-col p-0 sm:p-0">
+        <StudioPanel className="flex min-h-[24rem] min-w-0 flex-col p-0 sm:p-0">
           {!selectedId ? (
             <p className="text-foreground-secondary p-4 text-sm">
               Select a ticket.
