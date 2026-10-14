@@ -26,6 +26,7 @@ export type AdminVenue = {
   countryCode: string;
   verifiedAt: string | null;
   createdAt: string;
+  /** The submitting account's id, not a name: never show it. */
   createdBy: string;
 };
 
@@ -44,7 +45,7 @@ export async function fetchAdminVenues(): Promise<{
           countryCode: 'FI',
           verifiedAt: '2026-06-01T00:00:00.000Z',
           createdAt: '2026-05-20T00:00:00.000Z',
-          createdBy: 'artist@example.test',
+          createdBy: 'mock-user-artist',
         },
       ],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
