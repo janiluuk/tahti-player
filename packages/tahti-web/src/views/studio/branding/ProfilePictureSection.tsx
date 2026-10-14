@@ -62,6 +62,7 @@ export function ProfilePictureSection({ kit }: { kit: PressKitState }) {
           >
             <span
               tabIndex={0}
+              role="img"
               aria-label="Accepted image formats"
               className="text-foreground-secondary hover:text-foreground inline-flex size-4 cursor-help items-center justify-center rounded-full border border-current"
             >

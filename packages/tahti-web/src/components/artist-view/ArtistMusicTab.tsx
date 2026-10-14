@@ -225,6 +225,7 @@ export function ArtistMusicTab({
       {visibility.player && featured.playable ? (
         <div
           className="flex items-center justify-center gap-5"
+          role="group"
           aria-label="Track engagement"
         >
           <Button

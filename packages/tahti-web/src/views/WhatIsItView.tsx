@@ -19,7 +19,6 @@ import {
   ScissorsIcon,
   ServerIcon,
   ShieldCheckIcon,
-  StarIcon,
   UsersIcon,
   VoteIcon,
   Wand2Icon,
@@ -30,6 +29,7 @@ import type { ReactNode } from 'react';
 import { LegalHubLinks } from '../components/LegalHubLinks';
 import { PageFrame, PageHeader } from '../components/PageHeader';
 import { PlatformStatsStrip } from '../components/PlatformStatsStrip';
+import { StarRating } from '../components/StarRating';
 import { getLegalPage } from '../content/legal';
 
 const detail = getLegalPage('what-is-it');
@@ -467,20 +467,7 @@ export function WhatIsItView() {
                   {row.meta}
                 </div>
               </div>
-              <div className="flex gap-0.5" aria-label={`${row.stars} of 5`}>
-                {Array.from({ length: 5 }, (_, i) => (
-                  <StarIcon
-                    key={i}
-                    size={16}
-                    aria-hidden
-                    className={
-                      i < row.stars
-                        ? 'fill-primary text-primary'
-                        : 'text-border'
-                    }
-                  />
-                ))}
-              </div>
+              <StarRating stars={row.stars} />
             </div>
           ))}
         </div>
