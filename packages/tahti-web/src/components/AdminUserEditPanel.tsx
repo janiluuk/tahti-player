@@ -256,7 +256,7 @@ export function AdminUserEditPanel({
                   </Badge>
                 ) : null}
               </div>
-              <p className="text-foreground-secondary text-sm">
+              <p className="text-foreground-secondary text-sm break-words">
                 @{detail.username} · {detail.email}
               </p>
               {publicProfile?.artist.pronouns ? (
