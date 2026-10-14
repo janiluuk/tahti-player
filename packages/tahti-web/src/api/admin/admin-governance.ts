@@ -380,9 +380,36 @@ export async function fetchAdminGrantPreview(
   }
 }
 
+function mockGrantHistoryDetail(year: number): AdminGrantHistoryDetail | null {
+  const summary = mockGrantHistory().find((entry) => entry.year === year);
+  if (!summary) return null;
+  const names = ['Northern Lights', 'Kaiku Collective', null, 'DJ Moonlight'];
+  const share = Math.floor(summary.totalCents / summary.grantCount);
+  return {
+    ...summary,
+    disbursedAt: `${year + 1}-01-15T10:00:00.000Z`,
+    grants: Array.from({ length: summary.grantCount }, (_, index) => ({
+      publishedAs: names[index % names.length],
+      units: 40 - index,
+      amountCents: String(
+        index === 0
+          ? summary.totalCents - share * (summary.grantCount - 1)
+          : share,
+      ),
+      state: 'PAID',
+    })),
+  };
+}
+
 export async function fetchAdminGrantHistory(
   year: number,
 ): Promise<{ data: AdminGrantHistoryDetail | null; meta: FetchMeta }> {
+  if (isForceMock()) {
+    return {
+      data: mockGrantHistoryDetail(year),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
   try {
     const data = await getJson<AdminGrantHistoryDetail>(
       `/api/v1/transparency/grants/${year}`,
