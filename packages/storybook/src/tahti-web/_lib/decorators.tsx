@@ -9,7 +9,19 @@ import {
   createRouter,
   RouterProvider,
 } from '@tanstack/react-router';
-import type { ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useLayoutEffect,
+  useState,
+  type ReactNode,
+} from 'react';
+
+const StoryElementContext = createContext<ReactNode>(null);
+
+function StoryElement() {
+  return <>{useContext(StoryElementContext)}</>;
+}
 
 /**
  * A throwaway single-route router so components that render `<Link>` /
@@ -18,10 +30,8 @@ import type { ReactNode } from 'react';
  * only good for rendering a component in isolation — not for following
  * links across stories.
  */
-function makeStoryRouter(children: ReactNode, path: string) {
-  const rootRoute = createRootRoute({
-    component: () => children,
-  });
+function makeStoryRouter(path: string) {
+  const rootRoute = createRootRoute({ component: StoryElement });
   const routeTree = rootRoute.addChildren([
     createRoute({ getParentRoute: () => rootRoute, path }),
   ]);
@@ -31,15 +41,75 @@ function makeStoryRouter(children: ReactNode, path: string) {
   });
 }
 
+let storyRouterResolved: Promise<void> | null = null;
+
+/**
+ * Keeps one router for the story's lifetime: a decorator re-render (e.g.
+ * an auth store update) must not swap in a fresh router, which would
+ * blank the canvas again while it reloads.
+ */
+function StoryRouter({
+  path,
+  children,
+}: {
+  path: string;
+  children: ReactNode;
+}) {
+  const [router] = useState(() => makeStoryRouter(path));
+  useLayoutEffect(() => {
+    if (router.state.status === 'idle' && router.state.resolvedLocation) {
+      return;
+    }
+    let unsubscribe = () => {};
+    storyRouterResolved = new Promise((resolve) => {
+      unsubscribe = router.subscribe('onResolved', () => {
+        unsubscribe();
+        resolve();
+      });
+    });
+    return () => unsubscribe();
+  }, [router]);
+  return (
+    <StoryElementContext.Provider value={children}>
+      <RouterProvider router={router} />
+    </StoryElementContext.Provider>
+  );
+}
+
 /**
  * Wraps a story in a minimal TanStack Router context. Pass `path` when a
  * component reads the current location (e.g. nav "active" highlighting).
  */
 export function withTahtiRouter(path = '/'): Decorator {
-  return (Story) => {
-    const router = makeStoryRouter(<Story />, path);
-    return <RouterProvider router={router} />;
-  };
+  return (Story) => (
+    <StoryRouter path={path}>
+      <Story />
+    </StoryRouter>
+  );
+}
+
+export function forgetStoryRouter(): void {
+  storyRouterResolved = null;
+}
+
+/**
+ * Resolves once the story's `withTahtiRouter` router has rendered its
+ * route. `RouterProvider` renders nothing until an async route load
+ * settles; Storybook's dev server and the vitest runner wrap rendering in
+ * React's `act`, which waits for that, but a production `storybook build`
+ * doesn't, so without this a play can query an empty canvas.
+ */
+export async function storyRouterSettled(timeoutMs = 5000): Promise<void> {
+  const pending = storyRouterResolved;
+  storyRouterResolved = null;
+  if (!pending) {
+    return;
+  }
+  await Promise.race([
+    pending,
+    new Promise((resolve) => setTimeout(resolve, timeoutMs)),
+  ]);
+  await new Promise((resolve) => requestAnimationFrame(() => resolve(null)));
 }
 
 const MOCK_BOARD_USER: AuthUser = {
