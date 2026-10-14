@@ -235,7 +235,7 @@ function RouteContent({ children }: { children: React.ReactNode }) {
       {showLoadingBar ? (
         <div
           className="bg-primary pointer-events-none absolute inset-x-0 top-0 z-10 h-0.5 opacity-70"
-          aria-live="polite"
+          role="progressbar"
           aria-label="Loading page content"
         />
       ) : null}
