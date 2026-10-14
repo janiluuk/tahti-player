@@ -118,3 +118,100 @@ export const MOCK_ANNUAL_REPORTS: AdminAnnualReport[] = [
     downloadUrl: null,
   },
 ];
+
+const MOCK_META = { source: 'mock', reason: 'VITE_FORCE_MOCK' } as const;
+
+function replaceIn<T extends { id: string }>(
+  list: T[],
+  id: string,
+  change: Partial<T>,
+): T | null {
+  const index = list.findIndex((item) => item.id === id);
+  if (index < 0) {
+    return null;
+  }
+  list[index] = { ...list[index], ...change };
+  return list[index];
+}
+
+export function mockCreateGovernanceMeeting(
+  input: Pick<GovernanceMeeting, 'title' | 'type'> & Partial<GovernanceMeeting>,
+) {
+  const now = new Date().toISOString();
+  const meeting: GovernanceMeeting = {
+    id: `meeting-mock-${MOCK_GOVERNANCE_MEETINGS.length + 1}`,
+    state: 'DRAFT',
+    scheduledAt: null,
+    location: null,
+    remoteUrl: null,
+    noticeAt: null,
+    minutesKey: null,
+    minutesUrl: null,
+    minutesApprovedAt: null,
+    eligibleMemberCount: null,
+    quorumRequired: null,
+    attendanceCount: 0,
+    presentCount: 0,
+    quorumMet: null,
+    createdAt: now,
+    updatedAt: now,
+    ...input,
+  };
+  MOCK_GOVERNANCE_MEETINGS.unshift(meeting);
+  return { data: meeting, meta: MOCK_META };
+}
+
+export function mockPatchGovernanceMeeting(
+  id: string,
+  change: Partial<GovernanceMeeting>,
+) {
+  return {
+    data: replaceIn(MOCK_GOVERNANCE_MEETINGS, id, {
+      ...change,
+      updatedAt: new Date().toISOString(),
+    }),
+    meta: MOCK_META,
+  };
+}
+
+export function mockCreateResolution(
+  input: Omit<BoardResolution, 'id' | 'publishedAt' | 'createdAt'>,
+) {
+  const resolution: BoardResolution = {
+    id: `resolution-mock-${MOCK_BOARD_RESOLUTIONS.length + 1}`,
+    publishedAt: null,
+    createdAt: new Date().toISOString(),
+    createdByDisplayName: 'Demo Artist',
+    ...input,
+  };
+  MOCK_BOARD_RESOLUTIONS.unshift(resolution);
+  return { data: resolution, meta: MOCK_META };
+}
+
+export function mockPatchResolution(
+  id: string,
+  change: Partial<BoardResolution>,
+) {
+  return {
+    data: replaceIn(MOCK_BOARD_RESOLUTIONS, id, change),
+    meta: MOCK_META,
+  };
+}
+
+export function mockGenerateAnnualReport(year: number) {
+  const report: AdminAnnualReport = {
+    id: `report-mock-${year}`,
+    year,
+    storageKey: `reports/annual-${year}.pdf`,
+    generatedAt: new Date().toISOString(),
+    generatedByDisplayName: 'Demo Artist',
+    downloadUrl: null,
+  };
+  const index = MOCK_ANNUAL_REPORTS.findIndex((item) => item.year === year);
+  if (index >= 0) {
+    MOCK_ANNUAL_REPORTS[index] = report;
+  } else {
+    MOCK_ANNUAL_REPORTS.unshift(report);
+  }
+  return { data: report, meta: MOCK_META };
+}

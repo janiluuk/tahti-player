@@ -19,6 +19,11 @@ import {
   MOCK_BOARD_RESOLUTIONS,
   MOCK_GOVERNANCE_DOCUMENTS,
   MOCK_GOVERNANCE_MEETINGS,
+  mockCreateGovernanceMeeting,
+  mockCreateResolution,
+  mockGenerateAnnualReport,
+  mockPatchGovernanceMeeting,
+  mockPatchResolution,
 } from './admin-governance.mock';
 
 // ── Governance ──────────────────────────────────────────────────────────────
@@ -486,6 +491,9 @@ export async function createAdminGovernanceMeeting(input: {
   quorumRequired?: number;
   agenda?: Array<{ title: string; description?: string }>;
 }): Promise<{ data: GovernanceMeeting | null; meta: FetchMeta }> {
+  if (isForceMock()) {
+    return mockCreateGovernanceMeeting(input);
+  }
   try {
     const data = await sendJson<GovernanceMeeting>(
       '/api/admin/governance/meetings',
@@ -515,6 +523,9 @@ export async function patchAdminGovernanceMeeting(
     >
   > & { agenda?: unknown },
 ): Promise<{ data: GovernanceMeeting | null; meta: FetchMeta }> {
+  if (isForceMock()) {
+    return mockPatchGovernanceMeeting(id, input);
+  }
   try {
     const data = await sendJson<GovernanceMeeting>(
       `/api/admin/governance/meetings/${encodeURIComponent(id)}`,
@@ -684,6 +695,9 @@ export async function createAdminResolution(input: {
   voteAgainst: number;
   voteAbstain: number;
 }): Promise<{ data: BoardResolution | null; meta: FetchMeta }> {
+  if (isForceMock()) {
+    return mockCreateResolution(input);
+  }
   try {
     const data = await sendJson<BoardResolution>(
       '/api/admin/resolutions',
@@ -702,6 +716,9 @@ export async function patchAdminResolution(
     Pick<BoardResolution, 'title' | 'body' | 'outcome' | 'publishedAt'>
   >,
 ): Promise<{ data: BoardResolution | null; meta: FetchMeta }> {
+  if (isForceMock()) {
+    return mockPatchResolution(id, input);
+  }
   try {
     const data = await sendJson<BoardResolution>(
       `/api/admin/resolutions/${encodeURIComponent(id)}`,
@@ -745,6 +762,9 @@ export async function generateAdminAnnualReport(year: number): Promise<{
   data: AdminAnnualReport | null;
   meta: FetchMeta;
 }> {
+  if (isForceMock()) {
+    return mockGenerateAnnualReport(year);
+  }
   try {
     const data = await sendJson<AdminAnnualReport>(
       `/api/admin/reports/annual/${year}`,
