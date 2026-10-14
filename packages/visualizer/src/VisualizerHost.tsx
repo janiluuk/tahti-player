@@ -27,6 +27,7 @@ export type VisualizerHostProps = {
   className?: string;
   showModePicker?: boolean;
   showModeButtons?: boolean;
+  showStatusBar?: boolean;
   suspended?: boolean;
   audioNode?: AudioNode | null;
   fallback?: ReactNode;
@@ -38,6 +39,7 @@ export function VisualizerHost({
   className,
   showModePicker = true,
   showModeButtons,
+  showStatusBar,
   suspended,
   audioNode,
   fallback,
@@ -93,6 +95,7 @@ export function VisualizerHost({
             onModeChange={(m) => setMode(m)}
             suspended={suspended}
             showModeButtons={showModeButtons ?? !showModePicker}
+            showStatusBar={showStatusBar}
           />
         )}
       </div>
