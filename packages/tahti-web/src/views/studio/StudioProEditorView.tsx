@@ -463,7 +463,7 @@ function ProEditor({ soundId }: { soundId: string }) {
 
               {editorMode === 'trim' ? (
                 <>
-                  <div className="grid gap-4 md:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <StemsPanel
                       soundId={soundId}
                       onSendToMultitrack={(job) =>
