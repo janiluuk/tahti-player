@@ -125,7 +125,6 @@ exports[`FavoriteAlbums view > (Snapshot) renders with albums 1`] = `
           >
             <div
               class="grid grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] gap-4 pr-2 pb-4"
-              role="grid"
             >
               <div
                 class="text-primary-foreground bg-primary border-border shadow-shadow flex w-46 flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all hover:translate-x-shadow-x hover:translate-y-shadow-y cursor-pointer hover:shadow-none"

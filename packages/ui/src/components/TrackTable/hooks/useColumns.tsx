@@ -56,7 +56,13 @@ export function useColumns<T extends Track = Track>(
         columnHelper.accessor((track) => track.trackNumber, {
           id: 'position',
           enableSorting: true,
-          header: (context) => <IconHeader Icon={HashIcon} context={context} />,
+          header: (context) => (
+            <IconHeader
+              Icon={HashIcon}
+              label={labels.headers.position ?? 'Track number'}
+              context={context}
+            />
+          ),
           cell: PositionCell,
         }),
       display?.displayThumbnail &&
@@ -65,7 +71,12 @@ export function useColumns<T extends Track = Track>(
           {
             id: 'thumbnail',
             header: (context) => (
-              <IconHeader Icon={ImageIcon} context={context} className="w-14" />
+              <IconHeader
+                Icon={ImageIcon}
+                label={labels.headers.artwork ?? 'Artwork'}
+                context={context}
+                className="w-14"
+              />
             ),
             cell: ThumbnailCell,
             enableSorting: false,
@@ -123,7 +134,13 @@ export function useColumns<T extends Track = Track>(
       showFavorite &&
         columnHelper.display({
           id: 'favorite',
-          header: (context) => <IconHeader Icon={Heart} context={context} />,
+          header: (context) => (
+            <IconHeader
+              Icon={Heart}
+              label={labels.headers.favorite ?? 'Favorite'}
+              context={context}
+            />
+          ),
           cell: FavoriteCell,
         }),
       showActions &&
@@ -135,7 +152,10 @@ export function useColumns<T extends Track = Track>(
               className={cn(actionsColumn.className, 'text-center')}
             >
               <span className="flex w-full items-center justify-center">
-                <EllipsisVertical className="h-4 w-4" />
+                <EllipsisVertical className="h-4 w-4" aria-hidden />
+                <span className="sr-only">
+                  {labels.headers.actions ?? 'Actions'}
+                </span>
               </span>
             </th>
           ),
@@ -144,7 +164,13 @@ export function useColumns<T extends Track = Track>(
       showDelete &&
         columnHelper.display({
           id: 'delete',
-          header: (context) => <IconHeader Icon={Trash2} context={context} />,
+          header: (context) => (
+            <IconHeader
+              Icon={Trash2}
+              label={labels.headers.remove ?? 'Remove'}
+              context={context}
+            />
+          ),
           cell: RemoveCell,
         }),
     ],

@@ -1,8 +1,14 @@
 import { PopoverButton } from '@headlessui/react';
-import { FC, ReactNode } from 'react';
+import { FC, Fragment, ReactElement } from 'react';
 
-export const ClickTrigger: FC<{ children: ReactNode }> = ({ children }) => (
-  <PopoverButton as="div" className="cursor-pointer">
-    {children}
-  </PopoverButton>
-);
+import { Tooltip, TooltipProps } from '../Tooltip/Tooltip';
+
+export type PopoverTooltip = Pick<TooltipProps, 'content' | 'side'>;
+
+export const ClickTrigger: FC<{
+  children: ReactElement;
+  tooltip?: PopoverTooltip;
+}> = ({ children, tooltip }) => {
+  const button = <PopoverButton as={Fragment}>{children}</PopoverButton>;
+  return tooltip ? <Tooltip {...tooltip}>{button}</Tooltip> : button;
+};

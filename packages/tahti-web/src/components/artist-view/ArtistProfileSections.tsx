@@ -426,7 +426,11 @@ export function ArtistEmbeds({ embeds }: { embeds: ArtistProfileEmbed[] }) {
   return (
     <section className="flex flex-col gap-3">
       <Eyebrow>Elsewhere</Eyebrow>
-      <div className="grid gap-3 lg:grid-cols-2" aria-label="Artist embeds">
+      <div
+        className="grid gap-3 lg:grid-cols-2"
+        role="group"
+        aria-label="Artist embeds"
+      >
         {embeds.map((embed) => (
           <div
             key={`${embed.label}-${embed.url}`}

@@ -7,7 +7,8 @@
 // and every '/api/...' string in src/. A path that is built in
 // pieces ('/api/me/rtmp-targets' + '/' + id) passes when a served path starts
 // with it. Known exceptions live in api-routes-allowlist.json, each with the
-// reason it is allowed.
+// reason it is allowed. src/remote/ is skipped: the Jam phone remote calls
+// the desktop app's local Jam server, not the Tahti API.
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
@@ -70,7 +71,7 @@ function sourceFiles(directory) {
   for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
     const full = path.join(directory, entry.name);
     if (entry.isDirectory()) {
-      if (entry.name !== 'node_modules' && entry.name !== 'mocks') {
+      if (!['node_modules', 'mocks', 'remote'].includes(entry.name)) {
         files.push(...sourceFiles(full));
       }
     } else if (

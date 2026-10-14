@@ -266,7 +266,8 @@ describe('PlaylistDetail view', () => {
     await PlaylistDetailWrapper.mount('readonly-playlist');
 
     const rows = screen.getAllByTestId('track-row');
-    expect(rows[0]).toHaveAttribute('aria-disabled', 'true');
+    expect(rows[0]).not.toHaveAttribute('aria-roledescription');
+    expect(rows[0]).not.toHaveAttribute('tabindex');
   });
 
   it('adds all tracks to queue without clearing', async () => {

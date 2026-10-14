@@ -1,5 +1,6 @@
 mod actions;
 mod frontend;
+mod pairing;
 mod routes;
 mod search;
 
@@ -73,10 +74,11 @@ pub struct HttpApiStartResult {
 async fn start_server(
     bridge: crate::bridge::bridge::Bridge,
     events_tx: broadcast::Sender<RemoteEvent>,
+    pairing_token: String,
     ct: CancellationToken,
     ready: oneshot::Sender<Result<HttpApiStartResult, String>>,
 ) {
-    let router = routes::router(bridge, events_tx);
+    let router = routes::router(bridge, events_tx, &pairing_token);
 
     let tcp_listener =
         match crate::net::bind_first_available_port("0.0.0.0", REMOTE_PORT_START, REMOTE_PORT_END)
@@ -136,7 +138,11 @@ pub fn init_http_api(app_handle: AppHandle) {
 pub async fn http_api_start(
     state: tauri::State<'_, HttpApiState>,
     bridge: tauri::State<'_, crate::bridge::bridge::Bridge>,
+    pairing_token: String,
 ) -> Result<HttpApiStartResult, String> {
+    if pairing_token.len() < 16 {
+        return Err("The pairing token must be at least 16 characters".into());
+    }
     let mut guard = state.running.lock().await;
     if let Some(server) = guard.as_ref() {
         log::info!("HTTP API server already running on port {}", server.port);
@@ -153,6 +159,7 @@ pub async fn http_api_start(
     let task = tauri::async_runtime::spawn(start_server(
         bridge.inner().clone(),
         state.events_tx.clone(),
+        pairing_token,
         ct.clone(),
         ready_tx,
     ));

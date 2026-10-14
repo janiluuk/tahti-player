@@ -18,6 +18,7 @@ import {
 import { mountTahtiApp } from '../../tahti-web/src/TahtiApp';
 import {
   initDesktopDiscord,
+  initDesktopJam,
   initDesktopMcp,
   initDesktopMpd,
   installDesktopMcp,
@@ -588,3 +589,4 @@ await mountTahtiApp(rootElement);
 void initDesktopMcp();
 void initDesktopMpd();
 void initDesktopDiscord();
+void initDesktopJam();

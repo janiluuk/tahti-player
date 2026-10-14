@@ -58,7 +58,7 @@ export function StudioEventsView() {
             <div className="flex min-w-0 items-center gap-3">
               <div
                 className="bg-primary/15 text-primary flex size-14 shrink-0 items-center justify-center rounded-md"
-                aria-label={`${event.title} thumbnail`}
+                aria-hidden
               >
                 <CalendarDaysIcon size={24} aria-hidden />
               </div>
