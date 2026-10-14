@@ -49,7 +49,7 @@ export const Toggle = forwardRef<HTMLButtonElement, ToggleProps>(
       value={value}
       form={form}
       className={cn(
-        'border-border relative inline-flex h-6 w-11 cursor-pointer items-center rounded-full border-(length:--border-width) transition-all focus:ring-2 focus:ring-black focus:ring-offset-2 focus:outline-none',
+        'border-border relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full border-(length:--border-width) transition-all focus:ring-2 focus:ring-black focus:ring-offset-2 focus:outline-none',
         'data-checked:bg-primary bg-white',
         'data-disabled:cursor-not-allowed data-disabled:opacity-50',
         'group',
