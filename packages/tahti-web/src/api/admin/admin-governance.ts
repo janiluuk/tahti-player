@@ -14,6 +14,12 @@ import type {
   GovernanceQuarterlyReport,
   UpsertGovernanceAttendance,
 } from '../types';
+import {
+  MOCK_ANNUAL_REPORTS,
+  MOCK_BOARD_RESOLUTIONS,
+  MOCK_GOVERNANCE_DOCUMENTS,
+  MOCK_GOVERNANCE_MEETINGS,
+} from './admin-governance.mock';
 
 // ── Governance ──────────────────────────────────────────────────────────────
 
@@ -453,6 +459,12 @@ export async function fetchAdminGovernanceMeetings(): Promise<{
   data: GovernanceMeeting[];
   meta: FetchMeta;
 }> {
+  if (isForceMock()) {
+    return {
+      data: MOCK_GOVERNANCE_MEETINGS,
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
   try {
     const data = await getJson<GovernanceMeeting[]>(
       '/api/admin/governance/meetings',
@@ -601,6 +613,12 @@ export async function fetchAdminGovernanceDocuments(): Promise<{
   data: GovernanceDocument[];
   meta: FetchMeta;
 }> {
+  if (isForceMock()) {
+    return {
+      data: MOCK_GOVERNANCE_DOCUMENTS,
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
   try {
     const data = await getJson<GovernanceDocument[]>(
       '/api/admin/governance/documents',
@@ -638,6 +656,14 @@ export async function fetchAdminResolutions(publishedOnly = false): Promise<{
   data: BoardResolution[];
   meta: FetchMeta;
 }> {
+  if (isForceMock()) {
+    return {
+      data: MOCK_BOARD_RESOLUTIONS.filter(
+        (resolution) => !publishedOnly || resolution.publishedAt,
+      ),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
   try {
     const suffix = publishedOnly ? '?publishedOnly=true' : '';
     const data = await getJson<BoardResolution[]>(
@@ -701,6 +727,12 @@ export async function fetchAdminAnnualReports(): Promise<{
   data: AdminAnnualReport[];
   meta: FetchMeta;
 }> {
+  if (isForceMock()) {
+    return {
+      data: MOCK_ANNUAL_REPORTS,
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
   try {
     const data = await getJson<AdminAnnualReport[]>('/api/admin/reports');
     return { data, meta: { source: 'api' } };
