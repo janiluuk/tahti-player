@@ -71,7 +71,7 @@ export function WidgetCard({
     <section className="group border-border bg-background-secondary flex min-h-[280px] flex-col gap-3 rounded-md border-(length:--border-width) p-4">
       <header className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <h3 className="truncate text-sm font-semibold">{title}</h3>
+          <h2 className="truncate text-sm font-semibold">{title}</h2>
           {subtitle && (
             <p className="text-foreground-secondary truncate text-xs">
               {subtitle}
@@ -145,7 +145,7 @@ export function WidgetCard({
               </span>
             }
           />
-          <h4 className="mt-4 text-lg font-semibold">{artist.displayName}</h4>
+          <h3 className="mt-4 text-lg font-semibold">{artist.displayName}</h3>
           <p className="text-foreground-secondary mt-2 line-clamp-4 max-w-xl text-sm">
             {artist.bio ?? 'Discover this artist’s music on Tahti.'}
           </p>
@@ -233,9 +233,9 @@ export function WidgetCard({
                 }
               />
               <div className="min-w-0">
-                <h4 className="truncate text-sm font-semibold">
+                <h3 className="truncate text-sm font-semibold">
                   {collection.name}
-                </h4>
+                </h3>
                 <p className="text-foreground-secondary truncate text-xs">
                   {collection.ownerDisplayName} · {collection.itemCount} tracks
                 </p>

@@ -49,9 +49,9 @@ function QuarterlyReportsPanel() {
   return (
     <StudioPanel>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h3 className="font-display text-sm font-bold">
+        <h2 className="font-display text-sm font-bold">
           Quarterly review reports
-        </h3>
+        </h2>
         <Button
           className="gap-1.5"
           size="sm"
