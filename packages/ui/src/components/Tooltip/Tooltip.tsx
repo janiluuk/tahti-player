@@ -72,7 +72,7 @@ function useCoarsePointer(): boolean {
   );
 }
 
-type TooltipProps = PropsWithChildren<{
+export type TooltipProps = PropsWithChildren<{
   content: ReactNode;
   side?: TooltipSide;
   disabled?: boolean;
