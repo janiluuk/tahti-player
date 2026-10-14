@@ -518,10 +518,11 @@ export const HELP_ARTICLES: HelpArticle[] = [
         ],
       },
       {
-        heading: 'Not available right now',
+        heading: 'Turn it on in the desktop app',
         body: [
-          'The desktop app’s MCP server is switched off in current builds while it is rebuilt for the new player, so there is no Enable MCP Server toggle in Settings → Integrations yet.',
-          'This guide will say how to turn it on and connect your AI tool once it is back.',
+          'Open the Tahti Player desktop app → Settings → Integrations and turn on MCP server. The switch is remembered, so the server starts again with the app.',
+          'The server starts at http://127.0.0.1:8800/mcp. If that port is busy it tries the next one up to 8809; the row shows the exact URL with a copy button. It only answers requests from this computer.',
+          'Point your AI tool at that URL with the Streamable HTTP transport, for example claude mcp add tahti --transport http http://127.0.0.1:8800/mcp. It can then play, pause and skip, change the queue, search and play your desktop library and its playlists, tune in to radio, and search Tahti.',
         ],
       },
     ],
