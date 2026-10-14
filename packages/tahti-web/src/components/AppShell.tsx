@@ -509,7 +509,7 @@ export function AppShell() {
 
       {isMobile ? (
         <div className="tahti-ambient-surface bg-background relative flex min-h-0 flex-1 flex-col overflow-hidden">
-          <div
+          <main
             className={cn(
               'min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto',
               MAIN_CONTENT_PADDING,
@@ -525,7 +525,7 @@ export function AppShell() {
                 fast={fastNavigationRoute}
               />
             </RouteContent>
-          </div>
+          </main>
           {!fullScreenPlayerOpen && <ConnectedPlayerBar />}
           {!mobileNavHidden && (
             <MobileBottomNav
