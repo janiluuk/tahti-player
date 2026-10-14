@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { soundItemToPlayable } from './mock';
+import { mockSmartLink, soundItemToPlayable } from './mock';
 import type { ChannelSoundItem } from './types';
 
 function baseItem(overrides: Partial<ChannelSoundItem> = {}): ChannelSoundItem {
@@ -61,5 +61,16 @@ describe('soundItemToPlayable', () => {
   it('returns null when there is neither audioUrl nor embed data', () => {
     const playable = soundItemToPlayable(baseItem({ audioUrl: null }));
     expect(playable).toBeNull();
+  });
+});
+
+describe('mockSmartLink', () => {
+  it('returns the release the slug names', () => {
+    expect(mockSmartLink('northern-lights-release-1').release.title).toBe(
+      'First Light EP',
+    );
+    expect(mockSmartLink('northern-lights-release-2').release.title).toBe(
+      'Polar Static',
+    );
   });
 });
