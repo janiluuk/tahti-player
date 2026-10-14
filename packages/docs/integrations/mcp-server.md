@@ -4,16 +4,15 @@ description: Let AI agents control Tahti Player via the Model Context Protocol.
 
 # MCP server
 
-Tahti Player includes a built-in [MCP](https://modelcontextprotocol.io/) server that lets your AI control the music player, doing pretty much anything that you can!
+The Tahti Player desktop app includes an [MCP](https://modelcontextprotocol.io/) server, so an AI tool can control playback, the queue, your desktop library and radio, and search Tahti.
 
 ## Enable the server
 
 1. Open Tahti Player → Settings → Integrations.
-2. Toggle `Enable MCP Server` on.
-3. The server starts on `http://127.0.0.1:8800/mcp` (localhost only). If port 8800 is taken, it tries 8801, 8802, and so on up to 8809.
-4. The **MCP Server URL** field below the toggle shows the actual URL. Click the copy button to grab it.
+2. Turn on **MCP server**.
+3. The server starts on `http://127.0.0.1:8800/mcp`. If port 8800 is taken, it tries 8801, 8802, and so on up to 8809. The row shows the actual URL with a copy button.
 
-<figure><img src="../.gitbook/assets/mcp-settings.png" alt="The Integrations section of Settings with the Enable MCP Server toggle and the MCP Server URL field showing http://127.0.0.1:8800/mcp" width="450"><figcaption><p>Enabling the MCP server in Settings</p></figcaption></figure>
+The server only answers requests from this computer: it refuses any request whose `Host`, or `Origin` when one is sent, is not `127.0.0.1`, `localhost` or `[::1]`. The switch is remembered, so the server starts again with the app.
 
 ## Connect your AI tool
 
@@ -81,59 +80,56 @@ Enter `http://127.0.0.1:8800/mcp` as the URL and select `Streamable HTTP` as the
 
 ## Tools
 
-Tahti Player exposes four MCP tools. The server uses a hierarchical discovery pattern: start broad, drill down, then act.
+Tahti Player exposes four MCP tools. Start broad, drill down, then act.
 
 ### `list_methods`
 
-Lists available methods in a domain.
-
-| Parameter | Type   | Required | Description                                                                                                            |
-| --------- | ------ | -------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `domain`  | string | yes      | One of: `Queue`, `Playback`, `Metadata`, `Favorites`, `Playlists`, `Dashboard`, `Providers`. |
-
-Returns the method names and short descriptions for that domain.
+| Parameter | Type   | Required | Description |
+| --------- | ------ | -------- | ----------- |
+| `domain`  | string | no       | Leave it out to list the domains. Give one (`Playback`, `Queue`, `Library`, `Radio`, `Tahti`) to list its methods. |
 
 ### `method_details`
 
-Gets full details for a single method: its description, parameter names and types, and return type.
-
-| Parameter | Type   | Required | Description                                                       |
-| --------- | ------ | -------- | ----------------------------------------------------------------- |
-| `method`  | string | yes      | The method name in `Domain.method` format, e.g. `Queue.addToQueue`. |
+| Parameter | Type   | Required | Description |
+| --------- | ------ | -------- | ----------- |
+| `method`  | string | yes      | `Domain.method`, e.g. `Library.play`. Returns the description, each parameter's type (allowed values for a choice) and whether it is optional, and the return type. |
 
 ### `describe_type`
 
-Gets the JSON shape of a data type. Use this when `method_details` returns a parameter or return type that references a complex type.
-
-| Parameter | Type   | Required | Description                                          |
-| --------- | ------ | -------- | ---------------------------------------------------- |
-| `type`    | string | yes      | The type name, e.g. `Track`, `QueueItem`, `Playlist`. |
+| Parameter | Type   | Required | Description |
+| --------- | ------ | -------- | ----------- |
+| `type`    | string | yes      | A type named in a return type, e.g. `PlaybackState`, `QueueItem`, `LibraryTrack`. |
 
 ### `call`
 
-Calls a Tahti Player API method.
+| Parameter | Type   | Required | Description |
+| --------- | ------ | -------- | ----------- |
+| `method`  | string | yes      | `Domain.method`, e.g. `Playback.toggle`. |
+| `params`  | object | no       | Named arguments. Omit or pass `{}` for methods without parameters. Unknown or mistyped arguments are refused with a message that says what was expected. |
 
-| Parameter | Type   | Required | Description                                                                                    |
-| --------- | ------ | -------- | ---------------------------------------------------------------------------------------------- |
-| `method`  | string | yes      | The method name in `Domain.method` format, e.g. `Queue.addToQueue`.                              |
-| `params`  | object | no       | A JSON object with named fields matching the method's parameters. Omit or pass `{}` for methods with no parameters. |
+## Domains
 
-## Discovery workflow
+| Domain | What it does |
+| ------ | ------------ |
+| `Playback` | `getState`, `play`, `pause`, `toggle`, `next`, `previous`, `seekTo`, `setVolume` (0 to 1), `setMuted`, `setShuffle`, `setRepeatMode` |
+| `Queue` | `get`, `playItem`, `remove`, `move`, `clear` |
+| `Library` | The desktop library: `search`, `totals`, `play` (by track id), `playlists`, `playPlaylist` |
+| `Radio` | `stations` (the built-in stations), `search` (the radio-browser.info directory), `play` |
+| `Tahti` | `search` the Tahti catalog, `playArtist` |
 
-An agent follows this sequence to find and call an API method:
+Methods that start playback take an optional `mode`: `now` (default) replaces what is playing, `next` inserts after the current item, `end` appends to the queue.
 
-1. Read the `list_methods` tool description to see the seven available domains.
-2. Call `list_methods` with a domain (e.g. `Queue`) to see that domain's methods.
-3. Call `method_details` (e.g. `Queue.addToQueue`) to get parameter names, types, and the return type.
-4. If a parameter or return type is a complex type like `Track`, call `describe_type` to see its fields.
-5. Call `call` with the method name and parameters to execute it.
+## Example
 
-Each step returns a small, focused payload to save on tokens.
+1. `list_methods` with no arguments lists the five domains.
+2. `call` `Library.search` with `{ "query": "aurora" }` returns matching tracks and their ids.
+3. `call` `Library.play` with `{ "ids": ["…"], "mode": "next" }` queues them after the current track.
+4. `call` `Playback.getState` confirms what is playing.
 
 ## Agent skill
 
-If your AI tool supports skills (like Claude Code), you can install one that teaches the agent how to use Tahti Player's MCP tools, including the discovery workflow, common recipes, and the full API reference.
+If your AI tool supports skills (like Claude Code), install the one that teaches it these tools and the workflow above.
 
 [Download tahti-mcp.zip](../.gitbook/assets/tahti-mcp.zip)
 
-Unzip it into your skills directory (e.g. `~/.claude/skills/`) and the agent will pick it up automatically.
+Unzip it into your skills directory (e.g. `~/.claude/skills/`).
