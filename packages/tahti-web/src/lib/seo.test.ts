@@ -29,6 +29,17 @@ describe('metadataForPath', () => {
     ['/governance/motions/m1', 'Governance · Tahti'],
     ['/listen/history', 'History · Tahti'],
     ['/settings', 'Settings · Tahti'],
+    ['/about', 'About · Tahti'],
+    ['/what-is-it', 'What is it · Tahti'],
+    ['/how-it-works', 'How it works · Tahti'],
+    ['/for-artists', 'For artists · Tahti'],
+    ['/terms', 'Terms of service · Tahti'],
+    ['/privacy', 'Privacy policy · Tahti'],
+    ['/agpl', 'Source code & AGPL licence · Tahti'],
+    ['/subscribe/liis-kask', 'Subscribe · Tahti'],
+    ['/newsletter/confirmed', 'Newsletter · Tahti'],
+    ['/moderate/demo', 'Chat moderation · Tahti'],
+    ['/jam/abc123', 'Jam · Tahti'],
   ])('provides route-aware metadata for %s', (path, title) => {
     expect(metadataForPath(path).title).toBe(title);
   });
