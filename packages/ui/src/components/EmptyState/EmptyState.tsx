@@ -43,7 +43,7 @@ export const EmptyState: FC<EmptyStateProps> = ({
   >
     {icon && <div className="text-foreground">{icon}</div>}
     <div className="flex flex-col gap-1">
-      <h3 className="text-foreground text-lg font-bold">{title}</h3>
+      <h2 className="text-foreground text-lg font-bold">{title}</h2>
       {description && (
         <p className="text-foreground text-sm opacity-60">{description}</p>
       )}

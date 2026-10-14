@@ -37,11 +37,11 @@ exports[`EmptyState > (Snapshot) renders all size variants 1`] = `
     <div
       class="flex flex-col gap-1"
     >
-      <h3
+      <h2
         class="text-foreground text-lg font-bold"
       >
         Small size
-      </h3>
+      </h2>
       <p
         class="text-foreground text-sm opacity-60"
       >
@@ -82,11 +82,11 @@ exports[`EmptyState > (Snapshot) renders all size variants 1`] = `
     <div
       class="flex flex-col gap-1"
     >
-      <h3
+      <h2
         class="text-foreground text-lg font-bold"
       >
         Default size
-      </h3>
+      </h2>
       <p
         class="text-foreground text-sm opacity-60"
       >
@@ -127,11 +127,11 @@ exports[`EmptyState > (Snapshot) renders all size variants 1`] = `
     <div
       class="flex flex-col gap-1"
     >
-      <h3
+      <h2
         class="text-foreground text-lg font-bold"
       >
         Large size
-      </h3>
+      </h2>
       <p
         class="text-foreground text-sm opacity-60"
       >
@@ -189,11 +189,11 @@ exports[`EmptyState > (Snapshot) renders with action button 1`] = `
   <div
     class="flex flex-col gap-1"
   >
-    <h3
+    <h2
       class="text-foreground text-lg font-bold"
     >
       Connection failed
-    </h3>
+    </h2>
     <p
       class="text-foreground text-sm opacity-60"
     >
@@ -244,11 +244,11 @@ exports[`EmptyState > (Snapshot) renders with icon 1`] = `
   <div
     class="flex flex-col gap-1"
   >
-    <h3
+    <h2
       class="text-foreground text-lg font-bold"
     >
       Your inbox is empty
-    </h3>
+    </h2>
     <p
       class="text-foreground text-sm opacity-60"
     >
@@ -266,11 +266,11 @@ exports[`EmptyState > (Snapshot) renders with title and description 1`] = `
   <div
     class="flex flex-col gap-1"
   >
-    <h3
+    <h2
       class="text-foreground text-lg font-bold"
     >
       No plugins installed
-    </h3>
+    </h2>
     <p
       class="text-foreground text-sm opacity-60"
     >
@@ -288,11 +288,11 @@ exports[`EmptyState > (Snapshot) renders with title only 1`] = `
   <div
     class="flex flex-col gap-1"
   >
-    <h3
+    <h2
       class="text-foreground text-lg font-bold"
     >
       No items found
-    </h3>
+    </h2>
   </div>
 </div>
 `;
