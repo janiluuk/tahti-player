@@ -526,7 +526,11 @@ export function CatalogTable<T>({
                 </div>
               );
             })}
-            {renderActions ? <div role="columnheader" /> : null}
+            {renderActions ? (
+              <div role="columnheader">
+                <span className="sr-only">Actions</span>
+              </div>
+            ) : null}
           </div>
           <div
             ref={scrollRef}
