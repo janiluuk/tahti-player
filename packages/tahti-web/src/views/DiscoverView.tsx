@@ -477,7 +477,7 @@ export function DiscoverView() {
 
         {activeTab === 'discover' && enabledWidgets.length > 0 && (
           <div
-            className="grid gap-4 lg:grid-cols-3"
+            className="grid grid-cols-1 gap-4 lg:grid-cols-3"
             data-testid="discover-widget-columns"
           >
             {enabledWidgets.map((id, index) => {
