@@ -150,7 +150,11 @@ export function AdminI18nView() {
                               )}
                             </div>
                             <div className="mt-1.5 flex items-center gap-2">
-                              <Meter value={pct} className="w-32" />
+                              <Meter
+                                value={pct}
+                                aria-label={`${lang.name} translated`}
+                                className="w-32"
+                              />
                               <span className="text-foreground-secondary text-xs">
                                 {lang.translatedKeys}/{lang.totalKeys} ({pct}%)
                               </span>

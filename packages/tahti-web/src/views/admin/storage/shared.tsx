@@ -273,7 +273,14 @@ export function DiskSpaceCard({
           <dd className="font-semibold">{formatBytes(space.totalBytes)}</dd>
         </div>
       </dl>
-      {pctUsed != null ? <Meter value={pctUsed} className="mt-3" /> : null}
+      {pctUsed != null ? (
+        <Meter
+          value={pctUsed}
+          aria-label={`${title} used`}
+          aria-valuetext={`${Math.round(pctUsed)}%`}
+          className="mt-3"
+        />
+      ) : null}
       {space.note ? (
         <p className="text-foreground-secondary mt-3 text-xs">{space.note}</p>
       ) : null}
