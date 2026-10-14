@@ -163,6 +163,7 @@ export const NATIVE_TRACK_COLUMNS: CatalogColumn<NativeLibraryTrack>[] = [
     render: (track) =>
       track.rating > 0 ? (
         <span
+          role="img"
           title={`${track.rating} of 5 stars`}
           aria-label={`${track.rating} of 5 stars`}
         >

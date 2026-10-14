@@ -25,6 +25,7 @@ export function StudioHomeView() {
         <ViewShell title="Studio" classes={{ root: 'px-0 pt-0' }}>
           {user ? (
             <div
+              role="group"
               aria-label="Account status"
               className="mb-4 flex flex-wrap items-center gap-2"
             >
