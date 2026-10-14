@@ -12,7 +12,7 @@ exports[`PluginStoreItem > (Snapshot) renders compact 1`] = `
       class="flex flex-wrap items-center gap-2"
     >
       <h3
-        class="text-foreground inline-flex flex-row items-baseline gap-2 font-bold select-none text-sm"
+        class="text-foreground inline-flex flex-row flex-wrap items-baseline gap-x-2 gap-y-0.5 font-bold select-none text-sm"
       >
         <span
           data-testid="plugin-store-item-name"
@@ -86,14 +86,14 @@ exports[`PluginStoreItem > (Snapshot) renders default state 1`] = `
       class="flex flex-wrap items-center gap-2"
     >
       <h3
-        class="text-foreground inline-flex flex-row items-baseline gap-2 font-bold select-none text-lg"
+        class="text-foreground inline-flex flex-row flex-wrap items-baseline gap-x-2 gap-y-0.5 font-bold select-none text-lg"
       >
         <span
           data-testid="plugin-store-item-name"
         >
           YouTube Music
         </span>
-        <p
+        <span
           class="text-foreground-secondary text-sm font-normal select-none"
         >
           <span
@@ -106,7 +106,7 @@ exports[`PluginStoreItem > (Snapshot) renders default state 1`] = `
           >
             Nuclear Team
           </span>
-        </p>
+        </span>
       </h3>
       <span
         class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold bg-accent-cyan text-accent-foreground"
@@ -180,14 +180,14 @@ exports[`PluginStoreItem > (Snapshot) renders installed state 1`] = `
       class="flex flex-wrap items-center gap-2"
     >
       <h3
-        class="text-foreground inline-flex flex-row items-baseline gap-2 font-bold select-none text-lg"
+        class="text-foreground inline-flex flex-row flex-wrap items-baseline gap-x-2 gap-y-0.5 font-bold select-none text-lg"
       >
         <span
           data-testid="plugin-store-item-name"
         >
           YouTube Music
         </span>
-        <p
+        <span
           class="text-foreground-secondary text-sm font-normal select-none"
         >
           <span
@@ -200,7 +200,7 @@ exports[`PluginStoreItem > (Snapshot) renders installed state 1`] = `
           >
             Nuclear Team
           </span>
-        </p>
+        </span>
       </h3>
       <span
         class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold bg-accent-cyan text-accent-foreground"
@@ -270,14 +270,14 @@ exports[`PluginStoreItem > (Snapshot) renders installing state 1`] = `
       class="flex flex-wrap items-center gap-2"
     >
       <h3
-        class="text-foreground inline-flex flex-row items-baseline gap-2 font-bold select-none text-lg"
+        class="text-foreground inline-flex flex-row flex-wrap items-baseline gap-x-2 gap-y-0.5 font-bold select-none text-lg"
       >
         <span
           data-testid="plugin-store-item-name"
         >
           YouTube Music
         </span>
-        <p
+        <span
           class="text-foreground-secondary text-sm font-normal select-none"
         >
           <span
@@ -290,7 +290,7 @@ exports[`PluginStoreItem > (Snapshot) renders installing state 1`] = `
           >
             Nuclear Team
           </span>
-        </p>
+        </span>
       </h3>
       <span
         class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold bg-accent-cyan text-accent-foreground"
@@ -372,14 +372,14 @@ exports[`PluginStoreItem > (Snapshot) renders with custom labels 1`] = `
       class="flex flex-wrap items-center gap-2"
     >
       <h3
-        class="text-foreground inline-flex flex-row items-baseline gap-2 font-bold select-none text-lg"
+        class="text-foreground inline-flex flex-row flex-wrap items-baseline gap-x-2 gap-y-0.5 font-bold select-none text-lg"
       >
         <span
           data-testid="plugin-store-item-name"
         >
           YouTube Music
         </span>
-        <p
+        <span
           class="text-foreground-secondary text-sm font-normal select-none"
         >
           <span
@@ -392,7 +392,7 @@ exports[`PluginStoreItem > (Snapshot) renders with custom labels 1`] = `
           >
             Nuclear Team
           </span>
-        </p>
+        </span>
       </h3>
       <span
         class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold bg-accent-cyan text-accent-foreground"
@@ -466,14 +466,14 @@ exports[`PluginStoreItem > (Snapshot) renders with long description 1`] = `
       class="flex flex-wrap items-center gap-2"
     >
       <h3
-        class="text-foreground inline-flex flex-row items-baseline gap-2 font-bold select-none text-lg"
+        class="text-foreground inline-flex flex-row flex-wrap items-baseline gap-x-2 gap-y-0.5 font-bold select-none text-lg"
       >
         <span
           data-testid="plugin-store-item-name"
         >
           YouTube Music
         </span>
-        <p
+        <span
           class="text-foreground-secondary text-sm font-normal select-none"
         >
           <span
@@ -486,7 +486,7 @@ exports[`PluginStoreItem > (Snapshot) renders with long description 1`] = `
           >
             Nuclear Team
           </span>
-        </p>
+        </span>
       </h3>
       <span
         class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold bg-accent-cyan text-accent-foreground"

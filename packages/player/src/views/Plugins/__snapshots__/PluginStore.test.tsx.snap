@@ -714,14 +714,14 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                                             class="flex flex-wrap items-center gap-2"
                                           >
                                             <h3
-                                              class="text-foreground inline-flex flex-row items-baseline gap-2 font-bold select-none text-lg"
+                                              class="text-foreground inline-flex flex-row flex-wrap items-baseline gap-x-2 gap-y-0.5 font-bold select-none text-lg"
                                             >
                                               <span
                                                 data-testid="plugin-store-item-name"
                                               >
                                                 YouTube Music
                                               </span>
-                                              <p
+                                              <span
                                                 class="text-foreground-secondary text-sm font-normal select-none"
                                               >
                                                 <span
@@ -734,7 +734,7 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                                                 >
                                                   nukeop
                                                 </span>
-                                              </p>
+                                              </span>
                                             </h3>
                                             <span
                                               class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold bg-accent-cyan text-accent-foreground"
@@ -800,14 +800,14 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                                             class="flex flex-wrap items-center gap-2"
                                           >
                                             <h3
-                                              class="text-foreground inline-flex flex-row items-baseline gap-2 font-bold select-none text-lg"
+                                              class="text-foreground inline-flex flex-row flex-wrap items-baseline gap-x-2 gap-y-0.5 font-bold select-none text-lg"
                                             >
                                               <span
                                                 data-testid="plugin-store-item-name"
                                               >
                                                 Last.fm Scrobbler
                                               </span>
-                                              <p
+                                              <span
                                                 class="text-foreground-secondary text-sm font-normal select-none"
                                               >
                                                 <span
@@ -820,7 +820,7 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                                                 >
                                                   nukeop
                                                 </span>
-                                              </p>
+                                              </span>
                                             </h3>
                                             <span
                                               class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold bg-accent-cyan text-accent-foreground"
@@ -886,14 +886,14 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                                             class="flex flex-wrap items-center gap-2"
                                           >
                                             <h3
-                                              class="text-foreground inline-flex flex-row items-baseline gap-2 font-bold select-none text-lg"
+                                              class="text-foreground inline-flex flex-row flex-wrap items-baseline gap-x-2 gap-y-0.5 font-bold select-none text-lg"
                                             >
                                               <span
                                                 data-testid="plugin-store-item-name"
                                               >
                                                 MusicBrainz Metadata
                                               </span>
-                                              <p
+                                              <span
                                                 class="text-foreground-secondary text-sm font-normal select-none"
                                               >
                                                 <span
@@ -906,7 +906,7 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                                                 >
                                                   nukeop
                                                 </span>
-                                              </p>
+                                              </span>
                                             </h3>
                                             <span
                                               class="border-border inline-flex items-center justify-center border-(length:--border-width) whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold bg-accent-cyan text-accent-foreground"
