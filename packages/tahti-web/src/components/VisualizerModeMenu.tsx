@@ -1,6 +1,6 @@
 import { AudioWaveformIcon, CheckIcon } from 'lucide-react';
 
-import { Button, Popover, Tooltip } from '@tahti-player/ui';
+import { Button, Popover } from '@tahti-player/ui';
 import {
   ADVANCED_MODES,
   CYMATICS_MODES,
@@ -33,19 +33,18 @@ export function VisualizerModeMenu({
     <Popover
       anchor="bottom end"
       panelClassName={panelClassName}
+      tooltip={{ content: 'Visualizer', side: 'left' }}
       trigger={
-        <Tooltip content="Visualizer" side="left">
-          <Button
-            size="icon"
-            variant="text"
-            aria-label={`Visualizer: ${VISUALIZER_MODE_LABELS[mode]}`}
-            aria-haspopup="menu"
-            data-testid="visualizer-mode-trigger"
-            className={triggerClassName}
-          >
-            <AudioWaveformIcon size={24} aria-hidden />
-          </Button>
-        </Tooltip>
+        <Button
+          size="icon"
+          variant="text"
+          aria-label={`Visualizer: ${VISUALIZER_MODE_LABELS[mode]}`}
+          aria-haspopup="menu"
+          data-testid="visualizer-mode-trigger"
+          className={triggerClassName}
+        >
+          <AudioWaveformIcon size={24} aria-hidden />
+        </Button>
       }
     >
       <Popover.Menu
