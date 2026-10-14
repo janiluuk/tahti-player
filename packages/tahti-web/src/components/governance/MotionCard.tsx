@@ -12,6 +12,7 @@ import {
 } from '../../api/client';
 import type { GovernanceMotion } from '../../api/types';
 import { toDatetimeLocalValue } from '../../lib/datetimeLocal';
+import { MotionSecondControl } from './MotionSecondControl';
 
 function stateBadge(state: string): {
   color: 'green' | 'orange' | 'secondary';
@@ -242,6 +243,7 @@ export function MotionCard({
             : 'Voting opens after circulation period (bylaws §9).'}
         </p>
       )}
+      <MotionSecondControl motion={m} onChanged={onChanged} />
       {m.youVoted && (
         <p className="mt-2 text-sm">
           Your vote:{' '}
