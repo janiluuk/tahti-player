@@ -6,6 +6,7 @@ export * from './Box';
 export * from './Button';
 export * from './Card';
 export * from './CardsRow';
+export * from './HorizontalScroll';
 export * from './NewsWidget';
 export * from './Combobox';
 export * from './CopyButton';

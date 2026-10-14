@@ -1,82 +1,97 @@
 ---
-description: Control Tahti Player from scripts and other tools via the HTTP API.
+description: Control Tahti Player from a phone, scripts and other tools with Tahti Jam.
 ---
 
-# HTTP API
+# Tahti Jam and the HTTP API
 
-{% hint style="warning" %}
-Tahti Jam and this API don't start in the current desktop app. They stopped when the app switched to the new Tahti interface, and they haven't been rebuilt yet.
-{% endhint %}
+Tahti Jam lets you control the Tahti Player desktop app from a phone, tablet or another computer on the same network. It also exposes a small HTTP API you can use from scripts.
 
-When Tahti Jam is enabled, Tahti Player exposes a local HTTP API on the same server that serves the remote control UI. You can use it to build your own integrations, scripts, or alternative remotes.
+Tahti Jam isn't the same as shared listening sessions (`/jam/…` links on tahti.live). Those run through your Tahti account; Tahti Jam only talks to the desktop app on your network.
 
-Enable Tahti Jam in Settings, then Integrations. The **API URL** field shows the base URL (e.g. `http://192.168.1.42:4120/api`).
+## Pair a phone
 
-## Endpoints
+1. In Tahti Player, go to Settings, then Integrations, and turn **Tahti Jam** on.
+2. Scan the QR code with your phone, or open the link shown under the switch. It looks like `http://192.168.1.42:4120/remote#token=…`.
+3. The remote opens in the phone's browser. The phone remembers it's paired, so next time you can open `http://192.168.1.42:4120/remote` directly.
+
+The server listens on ports 4120–4129, on every network the computer is connected to. Only devices that have the pairing code can control the player.
+
+**New pairing link** makes a new code and restarts the server. Every device paired before has to scan again. Use it if you shared the link with someone who shouldn't keep it.
+
+## What the remote does
+
+- Shows what's playing, with the time and progress.
+- Play and pause, skip, go back, seek, shuffle and repeat.
+- Shows the queue and removes items from it.
+- Searches Tahti and adds tracks to the queue. On an empty queue, the first track added starts playing.
+
+## HTTP API
+
+Every endpoint except `/api/health` needs the pairing code, sent as a bearer token:
+
+```bash
+TOKEN=…   # the part after #token= in the pairing link
+curl -H "Authorization: Bearer $TOKEN" http://192.168.1.42:4120/api/playback
+```
+
+Without it the server answers `401` with `{ "error": "This device isn't paired. …" }`.
 
 ### State
 
 | Method | Path | Returns |
 |--------|------|---------|
-| GET | `/api/health` | `{ "status": "ok" }` |
+| GET | `/api/health` | `{ "status": "ok" }` (no token needed) |
 | GET | `/api/queue` | `{ "items": QueueItem[], "currentIndex": number }` |
-| GET | `/api/playback` | `{ "status": string, "seek": number, "duration": number }` |
-| GET | `/api/settings` | `{ "shuffle": boolean, "repeat": string, "discovery": boolean, "language": string, "dark": boolean, "themeId": string }` |
-| GET | `/api/settings/{id}` | The value of a single setting by its fully-qualified ID (e.g. `core.playback.shuffle`) |
+| GET | `/api/playback` | `{ "status": "playing" \| "paused" \| "loading" \| "stopped", "seek": number, "duration": number, "volume": number, "muted": boolean }` |
+| GET | `/api/settings` | `{ "shuffle": boolean, "repeat": "off" \| "all" \| "one" }` |
+
+Queue items never include file paths or stream URLs, and artwork is only included when it's an image on the web.
 
 ### Actions
 
-All action endpoints return `200 OK` with no body on success.
+Action endpoints take a JSON body (send `{}` when there's nothing to send) and return `200 OK` with no body.
 
 | Method | Path | Body | Effect |
 |--------|------|------|--------|
-| POST | `/api/playback/play` | none | Start playback |
-| POST | `/api/playback/toggle` | none | Toggle play/pause |
-| POST | `/api/playback/next` | none | Skip to next track |
-| POST | `/api/playback/previous` | none | Go to previous track |
-| POST | `/api/playback/seek` | `{ "seconds": number }` | Seek to position |
-| POST | `/api/playback/shuffle` | `{ "enabled": boolean }` | Set shuffle on or off |
-| POST | `/api/playback/repeat` | `{ "mode": "off" \| "all" \| "one" }` | Set repeat mode |
-| POST | `/api/queue/add` | `{ "tracks": Track[] }` | Append tracks to the queue |
-| POST | `/api/queue/remove` | `{ "ids": string[] }` | Remove items from the queue by ID |
-| POST | `/api/search` | `{ "query": string, "types"?: SearchCategory[], "limit"?: number }` | Search for music. Returns `{ "tracks"?: Track[], "artists"?: ArtistRef[], "albums"?: AlbumRef[], "playlists"?: PlaylistRef[] }` |
-| POST | `/api/settings/{id}` | JSON value | Set a single setting by its fully-qualified ID |
+| POST | `/api/playback/play` | none | Resume, or start the queue from the top |
+| POST | `/api/playback/pause` | none | Pause |
+| POST | `/api/playback/toggle` | none | Play or pause |
+| POST | `/api/playback/next` | none | Skip to the next track |
+| POST | `/api/playback/previous` | none | Go to the previous track |
+| POST | `/api/playback/seek` | `{ "seconds": number }` | Seek (ignored on radio and live streams) |
+| POST | `/api/playback/volume` | `{ "volume": number }` | Set the volume, 0 to 1 |
+| POST | `/api/playback/shuffle` | `{ "enabled": boolean }` | Shuffle on or off |
+| POST | `/api/playback/repeat` | `{ "mode": "off" \| "all" \| "one" }` | Set the repeat mode |
+| POST | `/api/queue/play` | `{ "id": string }` | Play a queue item |
+| POST | `/api/queue/remove` | `{ "ids": string[] }` | Remove queue items |
+| POST | `/api/queue/add` | `{ "tracks": Track[] }` | Add tracks returned by `/api/search` |
+| POST | `/api/search` | `{ "query": string, "limit"?: number }` | Search Tahti tracks. Returns `{ "tracks": Track[] }`, at most 20 |
+
+`/api/queue/add` only accepts Tahti tracks as `/api/search` returns them.
 
 ### Events (SSE)
 
-`GET /api/events` opens a Server-Sent Events stream. The server pushes named events whenever state changes in Tahti Player.
+`GET /api/events` opens a Server-Sent Events stream. Browsers can't add headers to an `EventSource`, so this endpoint also accepts the code as `?token=…`.
 
-Three event types:
-
-{% code title="queue" %}
 ```
 event: queue
 data: {"items":[...],"currentIndex":3}
-```
-{% endcode %}
 
-{% code title="playback" %}
-```
 event: playback
-data: {"status":"playing","seek":42.1,"duration":213.0}
-```
-{% endcode %}
+data: {"status":"playing","seek":42.1,"duration":213.0,"volume":0.8,"muted":false}
 
-{% code title="settings" %}
-```
 event: settings
-data: {"shuffle":false,"repeat":"off","discovery":false,"language":"en_US","dark":false,"themeId":"default"}
+data: {"shuffle":false,"repeat":"off"}
 ```
-{% endcode %}
 
-Events carry the full state for their domain in JSON.
+Each event carries the full state for its kind. `playback` is sent when the status, duration or volume changes, and at most once a second while a track plays.
 
 ## Errors
 
 Failed requests return a JSON body with an `error` field:
 
 ```json
-{ "error": "Playback.toggle failed: no track in queue" }
+{ "error": "mode must be off, all or one." }
 ```
 
-The status code is `500` for bridge errors (the command reached Tahti Player but failed) and standard HTTP codes for anything else (404 for unknown routes, etc.).
+The status is `401` without a valid pairing code, `500` when the request reached Tahti Player but failed, and the usual HTTP codes otherwise (404 for unknown routes).

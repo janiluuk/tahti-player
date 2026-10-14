@@ -105,6 +105,7 @@ export function VisualizerPickerDialog({
         </div>
         <div
           className="border-border bg-background relative min-h-56 overflow-hidden rounded-xl border"
+          role="img"
           aria-label={`${selectedPreset.replace(/_/g, ' ')} preview`}
         >
           {livePreview ? (

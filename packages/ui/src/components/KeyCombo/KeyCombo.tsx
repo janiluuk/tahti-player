@@ -72,7 +72,6 @@ export const KeyCombo: FC<KeyComboProps> = ({ shortcut, className }) => {
       {keys.map((key, index) => (
         <kbd
           key={index}
-          role="kbd"
           className="bg-background-secondary text-foreground border-border shadow-shadow inline-flex min-w-6 items-center justify-center rounded border-(length:--border-width) px-1.5 py-0.5 font-mono text-xs"
         >
           {key}

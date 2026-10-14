@@ -21,6 +21,7 @@ type SettingsPanelProps = {
   onTabChange: (tabId: string) => void;
   navFooter?: ReactNode;
   startOnContent?: boolean;
+  label?: string;
 };
 
 export const SettingsPanel: FC<SettingsPanelProps> = ({
@@ -31,6 +32,7 @@ export const SettingsPanel: FC<SettingsPanelProps> = ({
   onTabChange,
   navFooter,
   startOnContent = false,
+  label = 'Settings',
 }) => {
   const activeTabMeta = tabs.find((tab) => tab.id === activeTab);
   // Below `sm`, nav and content share one screen — list first, then detail.
@@ -48,6 +50,7 @@ export const SettingsPanel: FC<SettingsPanelProps> = ({
     <DialogRoot
       isOpen={isOpen}
       onClose={onClose}
+      aria-label={label}
       // Fill the DialogRoot padded viewport on mobile (`w-full` + dvh), not a
       // second `100vw-2rem` that stacks with the overlay's `p-4`. `min-w-0`
       // + `overflow-hidden` keep section bodies scrolling inside the pane.

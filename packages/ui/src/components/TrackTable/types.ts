@@ -11,6 +11,11 @@ export type TrackTableLabels = {
     /** Optional -- older label sets that predate the release-date column
      * still type-check; the column falls back to a default when absent. */
     releaseDate?: string;
+    position?: string;
+    artwork?: string;
+    favorite?: string;
+    actions?: string;
+    remove?: string;
   };
   favorite: string;
   unfavorite: string;

@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useDesktopDiscordStore } from '@tahti-web/lib/discord/presence';
+import { useDesktopJamStore } from '@tahti-web/lib/jam/desktop';
 import { useDesktopMcpStore } from '@tahti-web/lib/mcp/desktop';
 import { useDesktopMpdStore } from '@tahti-web/lib/mpd/desktop';
 import { IntegrationsPanel } from '@tahti-web/views/settings/panels/IntegrationsPanel';
@@ -15,7 +16,7 @@ const meta: Meta<typeof IntegrationsPanel> = {
     docs: {
       description: {
         component:
-          'Settings → Integrations: ListenBrainz and Last.fm scrobble toggles (mock integrations API in Storybook), plus Jam, MCP, MPD and Discord Rich Presence listed as desktop-app only. In the desktop app MCP, MPD and Discord are working switches; the servers show their address. Missing states: integrations API error.',
+          'Settings → Integrations: ListenBrainz and Last.fm scrobble toggles (mock integrations API in Storybook), plus Jam, MCP, MPD and Discord Rich Presence listed as desktop-app only. In the desktop app Tahti Jam, MCP, MPD and Discord are working switches; the servers show their address, and Jam a pairing QR code. Missing states: integrations API error.',
       },
     },
   },
@@ -29,7 +30,7 @@ export const Default: Story = {};
 
 const off = { enabled: false, url: null, error: null };
 
-/** The desktop app: MCP, MPD and Discord are switches; the servers show their address. */
+/** The desktop app: Tahti Jam, MCP, MPD and Discord are switches; the servers show their address, and Jam a pairing QR code. */
 export const DesktopApp: Story = {
   beforeEach: () => {
     globalThis.__TAHTI_NATIVE_MCP__ = {
@@ -41,6 +42,11 @@ export const DesktopApp: Story = {
       stop: async () => {},
       notify: () => {},
     };
+    globalThis.__TAHTI_NATIVE_JAM__ = {
+      start: async () => ({ port: 4120, lanAddress: '192.168.1.20' }),
+      stop: async () => {},
+      send: () => {},
+    };
     globalThis.__TAHTI_NATIVE_DISCORD__ = {
       start: async () => {},
       stop: async () => {},
@@ -50,10 +56,12 @@ export const DesktopApp: Story = {
     useDesktopMcpStore.setState(off);
     useDesktopMpdStore.setState(off);
     useDesktopDiscordStore.setState(off);
+    useDesktopJamStore.setState(off);
     return () => {
       globalThis.__TAHTI_NATIVE_MCP__ = undefined;
       globalThis.__TAHTI_NATIVE_MPD__ = undefined;
       globalThis.__TAHTI_NATIVE_DISCORD__ = undefined;
+      globalThis.__TAHTI_NATIVE_JAM__ = undefined;
     };
   },
   play: async ({ canvasElement }) => {
@@ -74,6 +82,12 @@ export const DesktopApp: Story = {
     await expect(
       canvas.getByRole('switch', { name: 'Discord Rich Presence' }),
     ).toBeChecked();
-    await expect(canvas.queryByText('Desktop app only')).toBeVisible();
+    await userEvent.click(
+      await canvas.findByRole('switch', { name: 'Tahti Jam' }),
+    );
+    await expect(
+      await canvas.findByLabelText('Tahti Jam pairing QR code'),
+    ).toBeVisible();
+    await expect(canvas.queryByText('Desktop app only')).toBeNull();
   },
 };

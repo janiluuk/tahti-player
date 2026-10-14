@@ -20,7 +20,6 @@ import {
   Select,
   TabLabel,
   Tabs,
-  Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -570,18 +569,17 @@ function DiscoverAddWidgetButton({
   return (
     <Popover
       anchor="bottom end"
+      tooltip={{ content: 'Add a widget', side: 'top' }}
       trigger={
-        <Tooltip content="Add a widget" side="top">
-          <Button
-            size="icon"
-            variant="secondary"
-            aria-label="Add a widget"
-            data-testid="discover-add-widget"
-          >
-            <Plus size={17} aria-hidden />
-            <Blocks size={15} aria-hidden />
-          </Button>
-        </Tooltip>
+        <Button
+          size="icon"
+          variant="secondary"
+          aria-label="Add a widget"
+          data-testid="discover-add-widget"
+        >
+          <Plus size={17} aria-hidden />
+          <Blocks size={15} aria-hidden />
+        </Button>
       }
       panelClassName="w-56"
     >

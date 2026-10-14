@@ -55,12 +55,12 @@ export const ImageLightbox: FC<ImageLightboxProps> = ({
       isOpen
       onClose={onClose}
       showCloseButton={false}
+      aria-label={label}
       className="max-w-5xl border-transparent bg-transparent p-0 shadow-none"
     >
       <div
         ref={panelRef}
         tabIndex={-1}
-        aria-label={label}
         className="relative outline-none"
         onKeyDown={(event) => {
           if (event.key === 'ArrowLeft') {

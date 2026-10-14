@@ -92,6 +92,7 @@ export function ChannelPagePreview({
           >
             <span
               tabIndex={0}
+              role="img"
               aria-label="About this preview"
               className="text-foreground-secondary hover:text-foreground inline-flex size-4 cursor-help items-center justify-center rounded-full border border-current"
             >

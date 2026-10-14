@@ -3,7 +3,7 @@ import { MoreVerticalIcon, Share2Icon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, Popover, Tooltip } from '@tahti-player/ui';
+import { Button, Popover } from '@tahti-player/ui';
 
 import { deleteStudioCollection } from '../api/studio';
 import type { StudioCollection } from '../api/studio-types';
@@ -70,16 +70,15 @@ export function StudioCollectionMoreMenu({
     <>
       <Popover
         anchor="bottom end"
+        tooltip={{ content: 'More options', side: 'top' }}
         trigger={
-          <Tooltip content="More options" side="top">
-            <Button
-              variant="secondary"
-              size="icon"
-              aria-label={`More options for ${kindLabel}`}
-            >
-              <MoreVerticalIcon size={16} aria-hidden />
-            </Button>
-          </Tooltip>
+          <Button
+            variant="secondary"
+            size="icon"
+            aria-label={`More options for ${kindLabel}`}
+          >
+            <MoreVerticalIcon size={16} aria-hidden />
+          </Button>
         }
         panelClassName="min-w-48"
       >

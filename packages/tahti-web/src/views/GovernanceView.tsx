@@ -500,6 +500,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             >
               <span
                 tabIndex={0}
+                role="img"
                 aria-label="About motion drafts"
                 className="text-foreground-secondary hover:text-foreground inline-flex size-4 cursor-help items-center justify-center rounded-full border border-current"
               >

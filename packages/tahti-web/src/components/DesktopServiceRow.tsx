@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 import { CopyButton } from '@tahti-player/ui';
 
 import type { DesktopServiceStore } from '../lib/desktopService';
@@ -12,6 +14,7 @@ export function DesktopServiceRow({
   description,
   copyLabel,
   failure,
+  children,
 }: {
   store: DesktopServiceStore;
   testId: string;
@@ -19,6 +22,8 @@ export function DesktopServiceRow({
   description: string;
   copyLabel?: string;
   failure: string;
+  /** Shown under the address while the service is on. */
+  children?: ReactNode;
 }) {
   const { enabled, url, error, busy, setEnabled } = store();
   return (
@@ -44,6 +49,7 @@ export function DesktopServiceRow({
           ) : null}
         </div>
       ) : null}
+      {enabled && url ? children : null}
       {error ? (
         <p className="text-accent-red-strong text-sm" role="alert">
           {failure}: {error}

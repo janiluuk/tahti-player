@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { Badge, StatTile } from '@tahti-player/ui';
+import { Badge, HorizontalScroll, StatTile } from '@tahti-player/ui';
 
 import {
   fetchDownloadGateStats,
@@ -62,7 +62,7 @@ export function DownloadGatesPanel({ active }: { active: boolean }) {
             description="Turn on a follow or repost gate in a track's download settings."
           />
         ) : (
-          <div className="mt-4 overflow-x-auto">
+          <HorizontalScroll label="Gated downloads" className="mt-4">
             <table
               className="w-full min-w-[32rem] text-sm"
               data-testid="download-gates"
@@ -111,7 +111,7 @@ export function DownloadGatesPanel({ active }: { active: boolean }) {
                 ))}
               </tbody>
             </table>
-          </div>
+          </HorizontalScroll>
         )}
       </StudioPanel>
     </div>

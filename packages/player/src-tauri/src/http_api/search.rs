@@ -26,10 +26,7 @@ pub async fn search(
     State(state): State<AppState>,
     Json(params): Json<SearchParams>,
 ) -> Result<Json<Value>, BridgeErrorResponse> {
-    state
-        .bridge
-        .call("Metadata.search", json!({ "params": params }))
+    super::routes::call(&state.bridge, "search", json!(params))
         .await
         .map(Json)
-        .map_err(BridgeErrorResponse)
 }

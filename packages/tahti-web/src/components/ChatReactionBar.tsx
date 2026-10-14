@@ -87,6 +87,7 @@ export function ChatReactionBar({
       {incoming.length > 0 && (
         <span
           className="ml-auto flex gap-0.5 text-sm"
+          role="group"
           aria-label="Listeners' reactions"
           data-testid="incoming-reactions"
         >

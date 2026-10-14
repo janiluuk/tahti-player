@@ -1,6 +1,11 @@
-import { listen } from '@tauri-apps/api/event';
+import { emit, listen } from '@tauri-apps/api/event';
 
 import { initDesktopDiscord } from '../../tahti-web/src/lib/discord/presence';
+import {
+  dispatchJam,
+  JAM_METHOD_PREFIX,
+} from '../../tahti-web/src/lib/jam/bridge';
+import { initDesktopJam } from '../../tahti-web/src/lib/jam/desktop';
 import { initDesktopMcp } from '../../tahti-web/src/lib/mcp/desktop';
 import { dispatchMcp } from '../../tahti-web/src/lib/mcp/registry';
 import {
@@ -28,7 +33,9 @@ async function answer(request: BridgeRequest) {
   try {
     const dispatch = request.method.startsWith(MPD_METHOD_PREFIX)
       ? dispatchMpd
-      : dispatchMcp;
+      : request.method.startsWith(JAM_METHOD_PREFIX)
+        ? dispatchJam
+        : dispatchMcp;
     const data = await dispatch(request.method, request.params ?? {});
     await commands.bridgeRespond({
       traceId: request.traceId,
@@ -44,7 +51,7 @@ async function answer(request: BridgeRequest) {
   }
 }
 
-/** Lets tahti-web start the MCP and MPD servers and Discord Rich Presence, and answers the servers' bridge requests. */
+/** Lets tahti-web start the MCP, MPD and Tahti Jam servers and Discord Rich Presence, and answers the servers' bridge requests. */
 export async function installDesktopMcp(): Promise<void> {
   globalThis.__TAHTI_NATIVE_MCP__ = {
     start: async () => unwrapResult(await commands.mcpStart()),
@@ -59,6 +66,18 @@ export async function installDesktopMcp(): Promise<void> {
     },
     notify: (subsystem) => {
       void commands.bridgeNotify({ subsystem });
+    },
+  };
+  globalThis.__TAHTI_NATIVE_JAM__ = {
+    start: async (pairingToken) => {
+      const started = unwrapResult(await commands.httpApiStart(pairingToken));
+      return { port: started.port, lanAddress: started.lan_address };
+    },
+    stop: async () => {
+      unwrapResult(await commands.httpApiStop());
+    },
+    send: (kind, data) => {
+      void emit(`remote:${kind}`, data);
     },
   };
   globalThis.__TAHTI_NATIVE_DISCORD__ = {
@@ -81,4 +100,4 @@ export async function installDesktopMcp(): Promise<void> {
   });
 }
 
-export { initDesktopDiscord, initDesktopMcp, initDesktopMpd };
+export { initDesktopDiscord, initDesktopJam, initDesktopMcp, initDesktopMpd };
