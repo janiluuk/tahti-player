@@ -25,6 +25,7 @@ import { SortableRow } from './SortableRow';
 import { Toolbar } from './Toolbar';
 import { TrackTableProvider } from './TrackTableContext';
 import { TrackTableProps } from './types';
+import { getActionsColumn } from './utils/columns';
 import { DEFAULT_OVERSCAN, DEFAULT_ROW_HEIGHT } from './utils/constants';
 import { VirtualizedBody } from './VirtualizedBody';
 
@@ -65,12 +66,26 @@ export function TrackTable<T extends Track = Track>({
     useGlobalFilter<T>();
   const rowSelection = useRowSelection(itemIds);
 
-  const columns: ColumnDef<T>[] = useColumns<T>({
-    display: resolvedDisplay,
-    labels,
-    actions,
-    features: resolvedFeatures,
-  });
+  const actionsColumn = useMemo(
+    () =>
+      getActionsColumn({
+        tracks,
+        displayQueueControls: resolvedDisplay.displayQueueControls,
+        actions,
+        meta,
+      }),
+    [tracks, resolvedDisplay.displayQueueControls, actions, meta],
+  );
+
+  const columns: ColumnDef<T>[] = useColumns<T>(
+    {
+      display: resolvedDisplay,
+      labels,
+      actions,
+      features: resolvedFeatures,
+    },
+    actionsColumn,
+  );
 
   const table = useReactTable({
     columns,
@@ -99,6 +114,7 @@ export function TrackTable<T extends Track = Track>({
       canOpenDetail: meta?.canOpenDetail,
       getTrackAnnotation: meta?.getTrackAnnotation,
       ContextMenuWrapper: meta?.ContextMenuWrapper,
+      actionsWidthClass: actionsColumn.className,
       isRowSelected: rowSelection.isSelected,
       onToggleRowSelected: rowSelection.toggle,
       onToggleAllRows: rowSelection.toggleAll,

@@ -1,4 +1,7 @@
+import { Track } from '@tahti-player/model';
+
 import { cn } from '../../../utils';
+import { TrackTableProps } from '../types';
 
 /** Columns folded away in a narrow table (phones, side panels). The artist
  * then shows under the title instead, see TitleCell. */
@@ -17,3 +20,49 @@ export const collapsibleColumnClass = (columnId: string) =>
 export const narrowOnlyClass = '@md:hidden';
 
 export const narrowHiddenClass = '@max-md:hidden';
+
+const ACTIONS_WIDTH = ['w-10', 'w-10', 'w-20', 'w-28', 'w-28'];
+
+const NARROW_ACTIONS_WIDTH = [
+  '@max-md:w-10',
+  '@max-md:w-10',
+  '@max-md:w-20',
+  '@max-md:w-28',
+  '@max-md:w-28',
+];
+
+export const getActionsColumn = <T extends Track>({
+  tracks,
+  displayQueueControls,
+  actions,
+  meta,
+}: {
+  tracks: T[];
+  displayQueueControls?: boolean;
+  actions?: TrackTableProps<T>['actions'];
+  meta?: TrackTableProps<T>['meta'];
+}) => {
+  const canEdit =
+    Boolean(actions?.onEdit) &&
+    (!meta?.canEditTrack || tracks.some(meta.canEditTrack));
+  const canOpen =
+    Boolean(actions?.onOpenDetail) &&
+    (!meta?.canOpenDetail || tracks.some(meta.canOpenDetail));
+  const always = [
+    displayQueueControls && actions?.onAddToQueue,
+    canEdit,
+    meta?.ContextMenuWrapper,
+  ].filter(Boolean).length;
+  const wide = Math.min(always + (canOpen ? 1 : 0), 4);
+  const narrow = Math.min(
+    always + (canOpen && !actions?.onOpenDetails ? 1 : 0),
+    4,
+  );
+  return {
+    show: Boolean(displayQueueControls) && wide > 0,
+    className: cn(
+      ACTIONS_WIDTH[wide],
+      narrow !== wide && NARROW_ACTIONS_WIDTH[narrow],
+    ),
+  };
+};
