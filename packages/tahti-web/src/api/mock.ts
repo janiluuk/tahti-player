@@ -1037,7 +1037,9 @@ function buildMockSmartLink(smartLinkSlug: string): SmartLinkView {
   const username =
     smartLinkSlug.match(/^(.*)-release-\d+$/)?.[1] ?? 'northern-lights';
   const profile = mockProfile(username);
-  const release = profile.releases[0]!;
+  const release =
+    profile.releases.find((r) => r.smartLinkSlug === smartLinkSlug) ??
+    profile.releases[0]!;
   return {
     release: {
       id: release.id,
