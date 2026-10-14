@@ -59,7 +59,7 @@
 ## Integrations
 
 * [Discord Rich Presence](integrations/discord.md)
-* [HTTP API](integrations/http-api.md)
+* [Tahti Jam and HTTP API](integrations/http-api.md)
 * [MCP Server](integrations/mcp-server.md)
 * [MPD Server](integrations/mpd-server.md)
 

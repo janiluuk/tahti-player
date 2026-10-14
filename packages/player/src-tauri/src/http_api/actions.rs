@@ -8,15 +8,17 @@ async fn bridge_action(
     method: &str,
     params: Value,
 ) -> Result<StatusCode, BridgeErrorResponse> {
-    bridge
-        .call(method, params)
+    super::routes::call(bridge, method, params)
         .await
         .map(|_| StatusCode::OK)
-        .map_err(BridgeErrorResponse)
 }
 
 pub async fn play(State(state): State<AppState>) -> Result<StatusCode, BridgeErrorResponse> {
     bridge_action(&state.bridge, "Playback.play", json!({})).await
+}
+
+pub async fn pause(State(state): State<AppState>) -> Result<StatusCode, BridgeErrorResponse> {
+    bridge_action(&state.bridge, "Playback.pause", json!({})).await
 }
 
 pub async fn toggle_playback(
@@ -54,6 +56,20 @@ pub async fn set_repeat(
     Json(body): Json<Value>,
 ) -> Result<StatusCode, BridgeErrorResponse> {
     bridge_action(&state.bridge, "Playback.setRepeatMode", body).await
+}
+
+pub async fn set_volume(
+    State(state): State<AppState>,
+    Json(body): Json<Value>,
+) -> Result<StatusCode, BridgeErrorResponse> {
+    bridge_action(&state.bridge, "Playback.setVolume", body).await
+}
+
+pub async fn play_queue_item(
+    State(state): State<AppState>,
+    Json(body): Json<Value>,
+) -> Result<StatusCode, BridgeErrorResponse> {
+    bridge_action(&state.bridge, "Queue.playItem", body).await
 }
 
 pub async fn add_to_queue(

@@ -9,12 +9,15 @@ use rust_embed::RustEmbed;
 #[folder = "../dist/"]
 struct FrontendAssets;
 
-// Hack that lets Nuclear serve the Nuclear Jam frontend from the same files
-// as the normal UI
+const REMOTE_PAGE: &str = "remote.html";
 
 pub(super) async fn serve_frontend(uri: Uri) -> impl IntoResponse {
     let path = uri.path().trim_start_matches('/');
-    let path = if path.is_empty() { "index.html" } else { path };
+    let path = if path.is_empty() || path == "remote" || path == "remote/" {
+        REMOTE_PAGE
+    } else {
+        path
+    };
     serve_file(path)
 }
 
@@ -28,7 +31,7 @@ fn serve_file(path: &str) -> Response {
                 .body(Body::from(content.data.into_owned()))
                 .unwrap()
         }
-        None => match FrontendAssets::get("index.html") {
+        None => match FrontendAssets::get(REMOTE_PAGE) {
             Some(index) => Response::builder()
                 .status(StatusCode::OK)
                 .header(CONTENT_TYPE, HeaderValue::from_static("text/html"))

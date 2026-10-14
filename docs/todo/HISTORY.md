@@ -4570,3 +4570,15 @@ Asked for as "concentrate on the MCP side of things, see what exists and how thi
 - **Account MCP in tahti-web (#740):** Settings → Account → API tokens shows the MCP URL with a copy button; the Help article explains both ways to connect.
 - **Checks:** `cargo test --lib` (286), tahti-web `lib/mcp`, `McpIntegrationRow` and `ApiTokensPanel` tests, the Settings and Help Storybook plays, tahti-org `routes/mcp` (10, through a real MCP client). Not tried: the running desktop app with a real MCP client (no headless display), or the account tools against staging.
 - **Left:** MPD, the HTTP remote-control API and Discord Rich Presence still don't start in the desktop app; Nuclear's `plugin-sdk/src/mcp` metadata and `player/src/services/bridge` dispatcher are unused.
+
+
+
+## 2026-10-14 - Desktop MPD, Discord and Tahti Jam rebuilt on tahti-web (tahti-player #741-#743)
+
+Asked for as "continue" after the MCP work, then "handle the jam issue".
+
+- **MPD (#741):** the Rust MPD server prefixes its bridge calls with `Mpd.` (the MCP domains use the same names with other shapes); `src/lib/mpd/` answers them from `usePlayerStore` and sends the `idle` notifications. MCP and MPD share `lib/desktopService.ts` and `DesktopServiceRow`.
+- **Discord (#742):** `src/lib/discord/presence.ts` sets or clears the activity through the existing `discord_*` commands; artwork only when it's on the web, no end time on live streams.
+- **Tahti Jam (#743):** the HTTP API had bound `0.0.0.0` with no authentication and served Nuclear's remote UI, which the desktop build no longer contains. Now every `/api/*` route except `/api/health` needs a pairing code (bearer header, or `?token=` for the SSE stream; `http_api/pairing.rs`). The code is made and kept by tahti-web (`lib/jam/desktop.ts`), rides in the QR link's fragment, and **New pairing link** replaces it. Calls carry a `Jam.` prefix and are answered by `src/lib/jam/bridge.ts`, which sends phones no file paths, stream URLs or local artwork. The phone remote (`src/remote/`, on the `TahtiJam` components) is a second Vite entry (`remote.html`) that the server serves at `/remote`. Search adds Tahti tracks only. The settings routes for Nuclear setting ids are gone.
+- **Checks:** `cargo test --lib`, tahti-web unit suite, both type-checks, the IntegrationsPanel and JamRemote Storybook plays. Not tried: the desktop app with a real `mpc`, Discord client or phone.
+- **Left:** Nuclear's `player/src/remoteControl/`, `services/httpApi`, `services/mpd`, `services/discordHandler.ts` and `services/bridge` are dead code.

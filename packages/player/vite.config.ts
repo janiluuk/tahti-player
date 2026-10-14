@@ -107,6 +107,14 @@ export default defineConfig(({ mode }) => {
         uploadToken: process.env.CODECOV_TOKEN,
       }),
     ],
+    build: {
+      rollupOptions: {
+        input: {
+          main: resolve(__dirname, 'index.html'),
+          remote: resolve(__dirname, 'remote.html'),
+        },
+      },
+    },
     clearScreen: false,
     server: {
       host: process.env.VITE_HOST ?? 'localhost',
