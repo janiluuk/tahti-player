@@ -1,5 +1,6 @@
 import type { FetchMeta } from './client';
 import { getJson } from './http';
+import { mockFixture } from './mock-overrides';
 import { failMeta, isForceMock } from './mode';
 import { requestJson } from './request-json';
 import type { TrackComment } from './types';
@@ -21,7 +22,11 @@ export async function fetchChannelComments(slug: string): Promise<{
 }> {
   if (isForceMock()) {
     return {
-      data: { comments: mockComments, commentsEnabled: true },
+      data: mockFixture(
+        'channelComments',
+        { comments: mockComments, commentsEnabled: true },
+        slug,
+      ),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }

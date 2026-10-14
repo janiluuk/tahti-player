@@ -1,4 +1,5 @@
 import { getJson } from './http';
+import { mockFixture } from './mock-overrides';
 import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
@@ -30,7 +31,7 @@ export async function fetchFanChatHistory(
   slug: string,
 ): Promise<Array<{ handle: string; text: string; ts: number }>> {
   if (isForceMock()) {
-    return [];
+    return mockFixture('fanChatHistory', [], slug);
   }
   try {
     const data = await getJson<{
