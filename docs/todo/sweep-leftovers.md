@@ -1,15 +1,12 @@
 # Sweep leftovers
 
-**Status:** open
+**Status:** partial
 
 Found by the sweeps of batches 52-59 (2026-10-14 and 15) and not fixed there. Batch 56 (#698-#712) fixed the component icon gaps, most of the 320 px overflows and widened phone track titles; batch 58 (#722-#735) fixed the Add-ons docs path, the gated downloads table and the rest of the 320 px list except the stem editor tab below.
 
-- [ ] Admin → Venues cannot say who submitted a venue: `GET /api/admin/venues` sends `createdBy` as an account id. Needs the submitter's username from tahti-org.
-- [ ] Track tables on a phone still truncate titles: #710 gave the Title column back the empty actions column (about five letters at 320 px, ten at 390), but the thumbnail (56 px) and favourite (40 px) columns stay. More room needs dropping or folding one of them on narrow tables (product call).
-- [ ] At 320 px only (fine at 360): the stem editor's "Vocals, drums, bass, other" tab is about 12 px wider than the Stems panel (#733, #735 fixed the grid and the split button); Studio → Upload measured 3 px over in batch 56 and did not reproduce in batch 58.
-- [ ] Not looked at in the desktop player: #671, #675, #676, #677, #679, #681, #690, #695, #710 (the track table's actions column is narrower or gone where a table has fewer row actions; the player's Album, Artist, Favorites and Playlist snapshots changed) and #729 (`SegmentedControl` wraps; the player does not use it today) touch shared components or CSS the player also uses.
-- [ ] Text contrast in the default dark theme (batch 59 axe sweep, about 65 of 70 `color-contrast` hits): `--primary` `#338c77` as text on the dark background (`text-primary`, 4.0-4.3:1) and light `--primary-foreground` on primary buttons and selected tabs (3.0-3.6:1). Fixing it changes the brand colour or the button text colour, so it needs a palette decision.
-- [ ] `CatalogTable` (desktop library): the focusable "Rows" region carries `aria-activedescendant` but no role that allows it. The fix moves keyboard handling onto the `grid` element beside the header's select-all checkbox; check it in the desktop app (#765 named the actions column only).
+
+- [ ] Deploy janiluuk/tahti-org#834 (submitter on `GET /api/admin/venues`). Until then Admin → Venues reads "submitted <date>" as before (#770 handles both).
+- [ ] The contrast fix (#771) only measured the default Nuclear Green theme. Re-check the other built-in themes, especially a light theme's `--primary-foreground` on `bg-primary/50` and the `Card` subtitle, which no longer fades.
 
 Checked and not a bug: channel and track pages measure 24-32 px wider than their column because the full-bleed banner uses `-m-8` against the scroll frame's `p-8` and the frame clips at its own edge; the Feed cards' extra 12 px is the blurred glow behind each card; the 768 px voting-activity list on Admin → Governance scrolls sideways on purpose (#647); the phone avatar's unread badge sits outside the 24 px avatar on purpose (#666); the stem editor's 1 px "level" rows are screen-reader-only labels; the hidden file inputs flagged as unlabeled are `aria-hidden` with `tabindex="-1"` (#639); the crawler counted no `h1` on `/account`, but it measured during the redirect; `/settings/account` has one ("Account") in the Settings dialog. Settings → Themes' preview stripes overhang their card on purpose (skewed, clipped by the card); the admin second-level nav scrolls sideways on a phone on purpose. The schedule week grid and the Feed card carousels run past the edge inside their own sideways scroll on purpose; the Add-ons card author beside its title is #675.
 

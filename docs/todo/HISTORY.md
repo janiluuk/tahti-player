@@ -4595,3 +4595,15 @@ The todo slices left are blocked, and six layout sweeps had already run, so this
 - **Other:** sideways-scrolling tables reachable from the keyboard through a new `HorizontalScroll` (#756); links inside text underlined (#755); header handle, venue badge and plugin "by" contrast, with `readableMuted` for profile colour schemes (#761); Radio's show links are 24 px touch targets (#764).
 - **Checks:** per PR the ui, player and tahti-web suites (snapshot diffs read and limited to the change), the touched Storybook plays, and an axe or keyboard re-check in the mock app against master. Two PR bodies were corrected after posting: #748's violation counts, and #753 briefly carried my helper scripts in its commit (removed before review). Not tried with a real screen reader, on a phone, or in the desktop app.
 - **Left open:** the default theme's primary colour fails text contrast (palette decision) and `CatalogTable`'s rows region; see `sweep-leftovers.md`. New todo from the user mid-batch: `desktop-smart-playlists.md`.
+
+## 2026-10-15 - Sweep leftovers (tahti-player #767-#771, tahti-org #834)
+
+Asked for as "do the sweep leftovers and make pr's". Two items had been listed as product calls; I made both calls and said so in the PRs.
+
+- **Stem editor at 320 px (#767):** the four-stem tab label wraps, so it fits the 222 px panel.
+- **Phone track titles (#768, my call):** narrow track tables (`@max-md`) that have a Track options menu fold the inline Add to queue button into it; both apps' menus already offer it. Thumbnail and favourite stay. Titles gain 40 px (102 px at 320, 172 at 390 on an artist profile).
+- **`CatalogTable` (#769, on #765):** the `grid` takes focus and `aria-activedescendant`; the scroll area is a `rowgroup`.
+- **Venue submitter (tahti-org #834 + #770):** `GET /api/admin/venues` adds `submitter { username, displayName }` (through `safeDisplayName`); Admin → Venues links "submitted by <name>", and its search matches the submitter. Works with and without the API change.
+- **Default theme contrast (#771, my call):** Nuclear Green's teal `#338c77` → `#3a9a83`, `primary-foreground` light → dark `#0c1915`, `Card` subtitles stop fading and `TopList` values use the normal text colour. axe contrast nodes on ten main pages 54 → 1 (the profile handle, fixed in #761).
+- **Desktop player check:** closed without code. The desktop app has mounted tahti-web since 2026-09-01, so the changed player snapshots are Nuclear's old views, which no longer run; the mock-app checks cover what the desktop shows.
+- **Checks:** per PR the ui, player and tahti-web suites, the touched Storybook plays and mock-app measurements; tahti-org `src/routes/admin` (217) on a fresh database. Not tried on a phone, in the desktop app, or on the other themes.
