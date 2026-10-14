@@ -725,7 +725,7 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                                                 class="text-foreground-secondary text-sm font-normal select-none"
                                               >
                                                 <span
-                                                  class="mr-1 opacity-60"
+                                                  class="mr-1"
                                                 >
                                                   by
                                                 </span>
@@ -811,7 +811,7 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                                                 class="text-foreground-secondary text-sm font-normal select-none"
                                               >
                                                 <span
-                                                  class="mr-1 opacity-60"
+                                                  class="mr-1"
                                                 >
                                                   by
                                                 </span>
@@ -897,7 +897,7 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                                                 class="text-foreground-secondary text-sm font-normal select-none"
                                               >
                                                 <span
-                                                  class="mr-1 opacity-60"
+                                                  class="mr-1"
                                                 >
                                                   by
                                                 </span>

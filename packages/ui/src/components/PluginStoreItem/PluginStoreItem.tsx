@@ -89,7 +89,7 @@ export const PluginStoreItem: FC<PluginStoreItemProps> = ({
             <span data-testid="plugin-store-item-name">{name}</span>
             {!compact && (
               <span className="text-foreground-secondary text-sm font-normal select-none">
-                <span className="mr-1 opacity-60">{by}</span>
+                <span className="mr-1">{by}</span>
                 <span data-testid="plugin-store-item-author">{author}</span>
               </span>
             )}
