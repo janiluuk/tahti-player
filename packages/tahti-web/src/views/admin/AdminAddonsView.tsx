@@ -86,9 +86,7 @@ export function AdminAddonsView() {
                 Covers the sandboxed widget-bundle store behind two of the 13
                 Settings → Add-ons categories: Discovery (Listen page) and
                 Channel (artist page). The other 11 are fixed code registries or
-                private per-user connections with nothing to moderate here — see
-                docs/todo/admin-plugin-management-panel.md for the full category
-                audit.
+                private per-user connections with nothing to moderate here.
               </p>
               <Tooltip content="Register a new add-on" side="top">
                 <Button
