@@ -1,0 +1,45 @@
+name: Setup Node, pnpm and dependencies
+description: Node 24, pnpm with a cached store, and a frozen-lockfile install.
+
+inputs:
+  turbo-cache:
+    description: Restore and save turbo's local cache (.turbo)
+    required: false
+    default: 'false'
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v7
+      with:
+        node-version: '24'
+
+    - name: Setup PNPM
+      uses: pnpm/action-setup@v5
+
+    - name: Get PNPM store directory
+      shell: bash
+      run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+    - name: Setup PNPM cache
+      uses: actions/cache@v6
+      with:
+        path: ${{ env.STORE_PATH }}
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
+
+    - name: Cache turbo build outputs
+      if: inputs.turbo-cache == 'true'
+      uses: actions/cache@v6
+      with:
+        path: .turbo
+        key: ${{ runner.os }}-turbo-${{ github.job }}-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-turbo-${{ github.job }}-
+          ${{ runner.os }}-turbo-
+
+    - name: Install dependencies
+      shell: bash
+      run: pnpm install --frozen-lockfile
