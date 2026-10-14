@@ -63,7 +63,10 @@ export function DownloadGatesPanel({ active }: { active: boolean }) {
           />
         ) : (
           <div className="mt-4 overflow-x-auto">
-            <table className="w-full text-sm" data-testid="download-gates">
+            <table
+              className="w-full min-w-[32rem] text-sm"
+              data-testid="download-gates"
+            >
               <thead>
                 <tr className="text-foreground-secondary text-left text-xs">
                   <th className="py-2 pr-3 font-semibold">Track</th>
