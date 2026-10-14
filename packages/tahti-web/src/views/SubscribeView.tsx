@@ -16,6 +16,7 @@ import { PageEmpty, PageLoading } from '../components/PageStates';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
 import type { FanCheckoutReturn } from '../lib/fanCheckoutReturn';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
+import { syncDocumentMetadata } from '../lib/seo';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 
@@ -61,6 +62,12 @@ export function SubscribeView({
       setData(res.data);
       setMeta(res.meta);
       setLoading(false);
+      const name = res.data?.artist.displayName;
+      if (name) {
+        syncDocumentMetadata(window.location.pathname, {
+          title: `Subscribe to ${name} · Tahti`,
+        });
+      }
     });
     return () => {
       cancelled = true;

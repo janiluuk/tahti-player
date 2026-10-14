@@ -76,6 +76,7 @@ describe('ModerateChannelView', () => {
     expect(
       screen.getByRole('button', { name: 'Stop moderating' }),
     ).toBeTruthy();
+    expect(document.title).toBe('Night Drive: chat moderation · Tahti');
   });
 
   it('steps down after a confirm', async () => {
