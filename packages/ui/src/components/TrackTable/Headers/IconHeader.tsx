@@ -11,9 +11,11 @@ type HeaderValue = string | number | Artwork;
 export function IconHeader<T extends Track>({
   Icon,
   context,
+  className = 'w-10',
 }: {
   Icon: FC<LucideProps>;
   context: HeaderContext<T, HeaderValue>;
+  className?: string;
 }) {
   const { getCanSort, getIsSorted, toggleSorting } = context.column;
 
@@ -29,7 +31,7 @@ export function IconHeader<T extends Track>({
   return (
     <th
       role="columnheader"
-      className={cn('w-10 text-center', {
+      className={cn('text-center', className, {
         'cursor-pointer': canSort,
       })}
       onClick={onClick}

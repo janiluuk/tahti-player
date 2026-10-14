@@ -15,6 +15,7 @@ import { Button } from '../../Button';
 import { Tooltip } from '../../Tooltip';
 import { useTrackTableContext } from '../TrackTableContext';
 import { ContextMenuWrapperProps } from '../types';
+import { narrowHiddenClass } from '../utils/columns';
 
 type ActionsCellMeta = {
   displayQueueControls?: boolean;
@@ -50,8 +51,12 @@ const EditButton: FC<IconButtonProps> = ({ label, onClick }) => (
   </Tooltip>
 );
 
-const OpenDetailButton: FC<IconButtonProps> = ({ label, onClick }) => (
-  <Tooltip content={label} side="top">
+const OpenDetailButton: FC<IconButtonProps & { className?: string }> = ({
+  label,
+  onClick,
+  className,
+}) => (
+  <Tooltip content={label} side="top" wrapperClassName={className}>
     <Button
       data-testid="open-track-detail-button"
       size="icon-sm"
@@ -155,7 +160,7 @@ export const ActionsCell = <T extends Track>({
   table,
 }: CellContext<T, unknown>) => {
   const meta = table.options.meta as ActionsCellMeta | undefined;
-  const { labels } = useTrackTableContext<T>();
+  const { labels, actions } = useTrackTableContext<T>();
   const track = row.original;
   const showControls = meta?.displayQueueControls;
   const ContextMenuWrapper = meta?.ContextMenuWrapper;
@@ -198,6 +203,7 @@ export const ActionsCell = <T extends Track>({
           <OpenDetailButton
             label="Open track"
             onClick={() => meta?.onOpenDetail?.(track)}
+            className={actions.onOpenDetails ? narrowHiddenClass : undefined}
           />
         )}
       </div>
