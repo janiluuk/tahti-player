@@ -3,6 +3,7 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { GovernanceMotion } from '../../api/types';
+import { useAuthStore } from '../../stores/authStore';
 import { MotionSecondControl } from './MotionSecondControl';
 
 const secondMotion = vi.fn();
@@ -25,6 +26,31 @@ describe('MotionSecondControl', () => {
   afterEach(() => {
     cleanup();
     vi.clearAllMocks();
+    useAuthStore.setState({ user: null });
+  });
+
+  it('does not ask the proposer to second their own motion', () => {
+    useAuthStore.setState({
+      user: {
+        id: 'u1',
+        email: 'u1@tahti.live',
+        username: 'aino',
+        displayName: 'Aino',
+        role: 'ARTIST',
+        isMember: true,
+      },
+      hydrated: true,
+      loading: false,
+    });
+    render(
+      <MotionSecondControl
+        motion={{ ...draft, proposer: 'Aino' }}
+        onChanged={() => {}}
+      />,
+    );
+
+    expect(screen.getByText('Seconded by 1 member')).toBeTruthy();
+    expect(screen.queryByRole('button')).toBeNull();
   });
 
   it('seconds a draft and reloads the motion', async () => {
