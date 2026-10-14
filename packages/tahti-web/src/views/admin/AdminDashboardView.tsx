@@ -105,7 +105,7 @@ export function AdminDashboardView() {
                           key={row.id}
                           className="flex flex-wrap items-center justify-between gap-2 py-3 text-sm first:pt-0 last:pb-0"
                         >
-                          <div className="min-w-0 flex-1">
+                          <div className="min-w-0 flex-1 basis-48">
                             <div className="font-medium">{row.title}</div>
                             <div className="text-foreground-secondary text-xs">
                               {row.meta}
