@@ -91,6 +91,11 @@ describe('SubscribeView', () => {
     expect(screen.getByText('Thanks for subscribing!')).toBeTruthy();
   });
 
+  it('names the artist by their display name in the tab title', async () => {
+    await renderSubscribe();
+    expect(document.title).toBe('Subscribe to Aurora · Tahti');
+  });
+
   it('tells the viewer a cancelled checkout did not charge them', async () => {
     signIn();
     await renderSubscribe({ checkoutReturn: 'canceled' });

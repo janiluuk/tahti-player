@@ -14,6 +14,7 @@ import { ConfirmDialog } from '../components/ConfirmDialog';
 import { ChatBansPanel } from '../components/moderation/ChatBansPanel';
 import { ChatMessagesPanel } from '../components/moderation/ChatMessagesPanel';
 import { PageError, PageLoading } from '../components/PageStates';
+import { syncDocumentMetadata } from '../lib/seo';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 
@@ -46,14 +47,17 @@ export function ModerateChannelView({ slug }: { slug: string }) {
       if (cancelled) {
         return;
       }
-      setLoad(
-        result.ok
-          ? {
-              state: 'ready',
-              channel: result.data.find((c) => c.slug === slug) ?? null,
-            }
-          : { state: 'error', error: result.error },
-      );
+      if (!result.ok) {
+        setLoad({ state: 'error', error: result.error });
+        return;
+      }
+      const channel = result.data.find((c) => c.slug === slug) ?? null;
+      setLoad({ state: 'ready', channel });
+      if (channel) {
+        syncDocumentMetadata(window.location.pathname, {
+          title: `${channel.displayName}: chat moderation · Tahti`,
+        });
+      }
     });
     return () => {
       cancelled = true;
