@@ -10,10 +10,12 @@ Tahti Player supports the subset of the protocol needed for playback control, qu
 
 ## Enable the server
 
-1. Open Tahti Player, then go to Settings, then Integrations.
-2. Toggle **Enable MPD Server** on.
-3. The server starts on `127.0.0.1:6600` (localhost only). If port 6600 is taken, it tries 6601, 6602, and so on up to 6609.
-4. The **MPD Server URL** field below the toggle shows the bound address. Click the copy button to grab it.
+1. Open the Tahti Player desktop app, then go to Settings, then Integrations.
+2. Turn **MPD server** on.
+3. The server starts on `127.0.0.1:6600` (this computer only). If port 6600 is taken, it tries 6601, 6602, and so on up to 6609.
+4. The address it got is shown below the switch. Click the copy button to copy it.
+
+The server starts again with the app until you turn it off.
 
 ## Connect a client
 
@@ -68,12 +70,14 @@ Use `127.0.0.1` on the port shown in Tahti Player's settings. No password is req
 | -------------------- | ------------------------------------------------ |
 | `play [POS]`         | Resume playback, or jump to a queue position.    |
 | `pause [0\|1]`       | Pause, resume, or toggle.                        |
-| `stop`               | Stop playback.                                   |
+| `stop`               | Pause and go back to the start of the track.     |
 | `next`               | Skip to the next track.                          |
 | `previous`           | Go back to the previous track.                   |
 | `seek SONGPOS TIME`  | Seek to TIME seconds in the song at queue position SONGPOS. Jumps to that position if it differs from the current one. |
 | `seekid SONGID TIME` | Same as `seek` (song IDs equal queue positions). |
 | `seekcur TIME`       | Seek within the current song. TIME can be absolute (`30`), or relative (`+10`, `-5`). |
+
+Live streams and radio stations can't seek; a seek on one is ignored.
 
 ### Queue
 

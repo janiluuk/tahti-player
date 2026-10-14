@@ -4,6 +4,10 @@ description: Control Tahti Player from scripts and other tools via the HTTP API.
 
 # HTTP API
 
+{% hint style="warning" %}
+Tahti Jam and this API don't start in the current desktop app. They stopped when the app switched to the new Tahti interface, and they haven't been rebuilt yet.
+{% endhint %}
+
 When Tahti Jam is enabled, Tahti Player exposes a local HTTP API on the same server that serves the remote control UI. You can use it to build your own integrations, scripts, or alternative remotes.
 
 Enable Tahti Jam in Settings, then Integrations. The **API URL** field shows the base URL (e.g. `http://192.168.1.42:4120/api`).

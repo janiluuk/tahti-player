@@ -4557,6 +4557,7 @@ A sixth sweep batch, run while another session worked on the governance slices f
 - **Fix:** `withTahtiRouter` keeps one router per story, and the project `mount` in `.storybook/preview.ts` waits for it to resolve before the play runs (`storyRouterSettled`).
 - **Checks:** full `vitest --project storybook` run; a production build swept in headless Chromium went from 112 failing stories to none (the remaining console noise is external audio/embed URLs).
 
+
 ## 2026-10-14 - Desktop MCP rebuilt, Tahti API MCP tools (tahti-player #737-#740, tahti-org #801)
 
 Asked for as "concentrate on the MCP side of things, see what exists and how this could be improved", then "do both, start with 1 and the docs fix".

@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useDesktopMcpStore } from '@tahti-web/lib/mcp/desktop';
+import { useDesktopMpdStore } from '@tahti-web/lib/mpd/desktop';
 import { IntegrationsPanel } from '@tahti-web/views/settings/panels/IntegrationsPanel';
 import { expect, userEvent, within } from 'storybook/test';
 
@@ -13,7 +14,7 @@ const meta: Meta<typeof IntegrationsPanel> = {
     docs: {
       description: {
         component:
-          'Settings → Integrations: ListenBrainz and Last.fm scrobble toggles (mock integrations API in Storybook), plus Jam, MCP, MPD and Discord Rich Presence listed as desktop-app only. In the desktop app the MCP row is a working toggle with the server URL. Missing states: integrations API error.',
+          'Settings → Integrations: ListenBrainz and Last.fm scrobble toggles (mock integrations API in Storybook), plus Jam, MCP, MPD and Discord Rich Presence listed as desktop-app only. In the desktop app MCP and MPD are working switches; the servers show their address. Missing states: integrations API error.',
       },
     },
   },
@@ -25,16 +26,25 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
-/** The desktop app: the MCP server can be switched on and shows its URL. */
+const off = { enabled: false, url: null, error: null };
+
+/** The desktop app: MCP and MPD are switches; the servers show their address. */
 export const DesktopApp: Story = {
   beforeEach: () => {
     globalThis.__TAHTI_NATIVE_MCP__ = {
       start: async () => 8800,
       stop: async () => {},
     };
-    useDesktopMcpStore.setState({ enabled: false, url: null, error: null });
+    globalThis.__TAHTI_NATIVE_MPD__ = {
+      start: async () => 6600,
+      stop: async () => {},
+      notify: () => {},
+    };
+    useDesktopMcpStore.setState(off);
+    useDesktopMpdStore.setState(off);
     return () => {
       globalThis.__TAHTI_NATIVE_MCP__ = undefined;
+      globalThis.__TAHTI_NATIVE_MPD__ = undefined;
     };
   },
   play: async ({ canvasElement }) => {
@@ -45,5 +55,9 @@ export const DesktopApp: Story = {
     await expect(
       await canvas.findByText('http://127.0.0.1:8800/mcp'),
     ).toBeVisible();
+    await userEvent.click(
+      await canvas.findByRole('switch', { name: 'MPD server' }),
+    );
+    await expect(await canvas.findByText('127.0.0.1:6600')).toBeVisible();
   },
 };

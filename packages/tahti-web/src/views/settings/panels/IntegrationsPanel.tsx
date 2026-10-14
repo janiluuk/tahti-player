@@ -1,7 +1,9 @@
 import { Badge, SectionShell } from '@tahti-player/ui';
 
 import { McpIntegrationRow } from '../../../components/McpIntegrationRow';
+import { MpdIntegrationRow } from '../../../components/MpdIntegrationRow';
 import { getNativeMcp } from '../../../lib/mcp/desktop';
+import { getNativeMpd } from '../../../lib/mpd/desktop';
 import { LastFmIntegrationRow } from '../../../plugins/scrobble/LastFmIntegrationRow';
 import { ListenBrainzIntegrationRow } from '../../../plugins/scrobble/ListenBrainzIntegrationRow';
 
@@ -35,8 +37,10 @@ const DESKTOP_ONLY_INTEGRATIONS = [
 
 export function IntegrationsPanel() {
   const nativeMcp = getNativeMcp() !== null;
+  const nativeMpd = getNativeMpd() !== null;
   const desktopOnly = DESKTOP_ONLY_INTEGRATIONS.filter(
-    (item) => !(nativeMcp && item.id === 'mcp'),
+    (item) =>
+      !(nativeMcp && item.id === 'mcp') && !(nativeMpd && item.id === 'mpd'),
   );
   return (
     <div
@@ -56,6 +60,7 @@ export function IntegrationsPanel() {
       >
         <div className="flex flex-col gap-6">
           {nativeMcp ? <McpIntegrationRow /> : null}
+          {nativeMpd ? <MpdIntegrationRow /> : null}
           {desktopOnly.map((item) => (
             <div key={item.id} className="flex flex-col gap-2">
               <div className="flex items-center gap-3">
