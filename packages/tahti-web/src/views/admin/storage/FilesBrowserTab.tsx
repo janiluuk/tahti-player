@@ -103,7 +103,7 @@ function FileRow({
           {f.genre ? ` · ${f.genre}` : ''}
         </div>
       </div>
-      <div className="flex shrink-0 items-center gap-1.5">
+      <div className="flex min-w-0 flex-wrap items-center gap-1.5">
         <Badge variant="pill" color="secondary">
           {f.format ?? '—'}
         </Badge>
