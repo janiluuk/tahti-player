@@ -24,7 +24,7 @@ export function MoreView() {
         content: 'gap-8',
       }}
     >
-      <nav className="flex flex-wrap gap-2 text-xs">
+      <nav aria-label="Jump to cases" className="flex flex-wrap gap-2 text-xs">
         <a
           href="#cases-anonymous"
           className="border-border hover:text-foreground text-foreground-secondary rounded-md border px-2 py-1"
