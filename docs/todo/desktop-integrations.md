@@ -8,13 +8,13 @@ been dead. MCP was rebuilt first (#738-#740). This file covers the rest.
 
 ## Slices
 
-1. **MPD server.** The Rust MPD server (`src-tauri/src/mpd/`) asks the webview
+1. **MPD server (shipped).** The Rust MPD server (`src-tauri/src/mpd/`) asks the webview
    over the bridge. Its calls now carry an `Mpd.` prefix so they don't collide
    with the MCP domains, and tahti-web answers them from `usePlayerStore`
    (`src/lib/mpd/`). tahti-web also sends the `player`, `playlist`, `mixer` and
    `options` notifications that MPD `idle` waits on. Settings → Integrations
    gets an on/off switch with the address.
-2. **Discord Rich Presence.** tahti-web watches `usePlayerStore` and sets or
+2. **Discord Rich Presence (shipped).** tahti-web watches `usePlayerStore` and sets or
    clears the activity through the existing `discord_*` commands
    (`src/lib/discord/`). Settings → Integrations gets an on/off switch.
 3. **Tahti Jam (open).** The phone remote. The Rust HTTP API
