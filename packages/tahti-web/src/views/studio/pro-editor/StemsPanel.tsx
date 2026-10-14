@@ -150,7 +150,7 @@ export function StemsPanel({
             ) : (
               <SplitIcon size={14} aria-hidden className="mr-1.5" />
             )}
-            {busyStem ? 'Splitting…' : `Split ${setLabel.toLowerCase()}`}
+            {busyStem ? 'Splitting…' : 'Split into stems'}
           </Button>
           {busyStem && (
             <div
