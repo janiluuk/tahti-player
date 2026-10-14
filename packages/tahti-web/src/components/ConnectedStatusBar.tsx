@@ -99,6 +99,7 @@ export function StatusBarContent({
           <span
             className="text-foreground-secondary inline-flex items-center gap-1.5 px-1.5 py-1"
             data-testid="status-bar-notifications"
+            role="img"
             aria-label={notificationsLabel}
           >
             <BellIcon size={16} aria-hidden />
@@ -145,6 +146,7 @@ export function StatusBarContent({
             <span
               className="text-foreground-secondary inline-flex items-center gap-1.5 px-1.5 py-1"
               data-testid="status-bar-local-library"
+              role="img"
               aria-label={`Local library: ${localTrackCount.toLocaleString()} tracks on this device`}
             >
               <FolderIcon size={16} aria-hidden />
@@ -163,6 +165,7 @@ export function StatusBarContent({
           <Tooltip content={encodingLabel} side="top">
             <span
               className="text-foreground-secondary inline-flex max-w-48 items-center gap-1.5 truncate sm:max-w-xs"
+              role="status"
               aria-label={encodingLabel}
             >
               <LoaderCircleIcon

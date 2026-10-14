@@ -1,3 +1,5 @@
+import { HorizontalScroll } from '@tahti-player/ui';
+
 import {
   countByStatus,
   PORT_BACKLOG,
@@ -59,7 +61,7 @@ function InventoryTable({
           {description}
         </p>
       </div>
-      <div className="overflow-x-auto">
+      <HorizontalScroll label={title}>
         <table className="w-full min-w-[560px] border-collapse text-left text-sm">
           <thead>
             <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
@@ -99,7 +101,7 @@ function InventoryTable({
             ))}
           </tbody>
         </table>
-      </div>
+      </HorizontalScroll>
     </section>
   );
 }
@@ -151,7 +153,10 @@ export function PortInventoryPanel() {
             ) : null,
           )}
         </div>
-        <nav className="flex flex-wrap gap-2 pt-1 text-xs">
+        <nav
+          aria-label="Jump to section"
+          className="flex flex-wrap gap-2 pt-1 text-xs"
+        >
           <a
             href="#port-backlog"
             className="border-border hover:text-foreground rounded border px-2.5 py-1 tracking-wide uppercase"

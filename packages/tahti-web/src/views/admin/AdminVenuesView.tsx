@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router';
 import { CheckIcon, MapPinIcon, XIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -36,7 +37,14 @@ export function AdminVenuesView() {
       return venues;
     }
     return venues.filter((venue) =>
-      [venue.name, venue.slug, venue.city, venue.countryCode]
+      [
+        venue.name,
+        venue.slug,
+        venue.city,
+        venue.countryCode,
+        venue.submitter?.username,
+        venue.submitter?.displayName,
+      ]
         .join(' ')
         .toLowerCase()
         .includes(normalized),
@@ -109,6 +117,21 @@ export function AdminVenuesView() {
                             <p className="text-foreground-secondary text-xs">
                               {venue.city}, {venue.countryCode} · /{venue.slug}{' '}
                               · submitted{' '}
+                              {venue.submitter ? (
+                                <>
+                                  by{' '}
+                                  <Link
+                                    to="/u/$username"
+                                    params={{
+                                      username: venue.submitter.username,
+                                    }}
+                                    className="text-foreground underline underline-offset-2"
+                                  >
+                                    {venue.submitter.displayName}
+                                  </Link>{' '}
+                                  on{' '}
+                                </>
+                              ) : null}
                               {new Date(venue.createdAt).toLocaleDateString()}
                             </p>
                           </div>

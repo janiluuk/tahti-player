@@ -47,7 +47,7 @@ export const Default: Story = {
     const canvas = await expectQueue(canvasElement, 'Support');
     await expect(
       await canvas.findByRole('heading', {
-        level: 3,
+        level: 2,
         name: 'Cannot connect OBS to multistream target',
       }),
     ).toBeVisible();

@@ -4583,6 +4583,12 @@ Asked for as "continue" after the MCP work, then "handle the jam issue".
 - **Checks:** `cargo test --lib`, tahti-web unit suite, both type-checks, the IntegrationsPanel and JamRemote Storybook plays. Not tried: the desktop app with a real `mpc`, Discord client or phone.
 - **Left:** Nuclear's `player/src/remoteControl/`, `services/httpApi`, `services/mpd`, `services/discordHandler.ts` and `services/bridge` are dead code.
 
+## 2026-10-14 - Storybook stories for nine chat, channel and radio components
+
+- **Salvaged** from a stale agent worktree whose PR (#622) shipped from another branch: stories with plays for `ChannelComments`, `ChannelShareButton`, `ChatAvatar`, `ChatDailyListeners`, `ChatListeningNow`, `ChatReactionBar`, `FanChatRoom`, `RadioShowEpisodeList` and `RadioView`, which had none. The rest of that worktree was superseded by master and dropped.
+- **Mock hooks:** `channelComments` and `fanChatHistory` fixture overrides, so stories can seed comments and fan chat history. Mock-mode defaults are unchanged.
+- **Checks:** the nine stories' plays (27/27), tahti-web `src/api` tests (336/336), lint; `STORYBOOK-SURFACES.md` regenerated.
+
 ## 2026-10-15 - Twenty accessibility slices, fifty-ninth batch (tahti-player #746-#765)
 
 Asked for as "merge all the pr's and make next 20 slices of todo". The open PRs were the desktop MCP/MPD/Discord/Jam stack (#737-#743) and another session's Storybook fix (#744, merged by that session). #740 had been held until tahti-org#801 was deployed; that release went out 2026-10-14 17:22, so it was merged. Merging the stack meant merging master into each child after its parent's squash and keeping the branch side, while keeping files the branch had deleted (`desktop-mcp.md`) deleted and both HISTORY entries. #743 had never run CI while stacked and failed two checks: the API route check flagged the Jam remote's calls to the local Jam server (`check-api-routes.mjs` now skips `src/remote/`), and `STORYBOOK-SURFACES.md` was stale.

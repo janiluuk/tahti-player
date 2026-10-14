@@ -106,6 +106,7 @@ export function MermaidDiagram({ chart, className }: Props) {
     >
       <div
         className="mb-2 flex items-center justify-end gap-1"
+        role="group"
         aria-label="Diagram zoom controls"
       >
         <Button

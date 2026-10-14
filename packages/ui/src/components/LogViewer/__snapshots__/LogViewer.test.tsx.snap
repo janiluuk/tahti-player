@@ -59,59 +59,54 @@ exports[`LogViewer > (Snapshot) renders empty state 1`] = `
       class="relative shrink-0"
       data-headlessui-state=""
     >
-      <div
-        aria-expanded="false"
-        class="cursor-pointer"
-        data-headlessui-state=""
-        id="headlessui-popover-button-:ra:"
-      >
-        <div>
-          <button
-            aria-label="Date range"
-            class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center"
-            data-headlessui-state=""
-            data-testid="log-date-range-toggle"
-            type="button"
+      <div>
+        <button
+          aria-expanded="false"
+          aria-label="Date range"
+          class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center"
+          data-headlessui-state=""
+          data-testid="log-date-range-toggle"
+          id="headlessui-popover-button-:ra:"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-calendar size-4"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <svg
-              aria-hidden="true"
-              class="lucide lucide-calendar size-4"
-              fill="none"
-              height="24"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              viewBox="0 0 24 24"
-              width="24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M8 2v4"
-              />
-              <path
-                d="M16 2v4"
-              />
-              <rect
-                height="18"
-                rx="2"
-                width="18"
-                x="3"
-                y="4"
-              />
-              <path
-                d="M3 10h18"
-              />
-            </svg>
-          </button>
-        </div>
+            <path
+              d="M8 2v4"
+            />
+            <path
+              d="M16 2v4"
+            />
+            <rect
+              height="18"
+              rx="2"
+              width="18"
+              x="3"
+              y="4"
+            />
+            <path
+              d="M3 10h18"
+            />
+          </svg>
+        </button>
       </div>
     </div>
     <div
       class="flex gap-2"
     >
       <button
-        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3"
         data-headlessui-state=""
         type="button"
       >
@@ -147,7 +142,7 @@ exports[`LogViewer > (Snapshot) renders empty state 1`] = `
         Clear
       </button>
       <button
-        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3"
         data-headlessui-state=""
         type="button"
       >
@@ -177,7 +172,7 @@ exports[`LogViewer > (Snapshot) renders empty state 1`] = `
         Export
       </button>
       <button
-        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3"
         data-headlessui-state=""
         type="button"
       >
@@ -341,59 +336,54 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
       class="relative shrink-0"
       data-headlessui-state=""
     >
-      <div
-        aria-expanded="false"
-        class="cursor-pointer"
-        data-headlessui-state=""
-        id="headlessui-popover-button-:r4:"
-      >
-        <div>
-          <button
-            aria-label="Date range"
-            class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center"
-            data-headlessui-state=""
-            data-testid="log-date-range-toggle"
-            type="button"
+      <div>
+        <button
+          aria-expanded="false"
+          aria-label="Date range"
+          class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center"
+          data-headlessui-state=""
+          data-testid="log-date-range-toggle"
+          id="headlessui-popover-button-:r4:"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-calendar size-4"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <svg
-              aria-hidden="true"
-              class="lucide lucide-calendar size-4"
-              fill="none"
-              height="24"
-              stroke="currentColor"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              viewBox="0 0 24 24"
-              width="24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M8 2v4"
-              />
-              <path
-                d="M16 2v4"
-              />
-              <rect
-                height="18"
-                rx="2"
-                width="18"
-                x="3"
-                y="4"
-              />
-              <path
-                d="M3 10h18"
-              />
-            </svg>
-          </button>
-        </div>
+            <path
+              d="M8 2v4"
+            />
+            <path
+              d="M16 2v4"
+            />
+            <rect
+              height="18"
+              rx="2"
+              width="18"
+              x="3"
+              y="4"
+            />
+            <path
+              d="M3 10h18"
+            />
+          </svg>
+        </button>
       </div>
     </div>
     <div
       class="flex gap-2"
     >
       <button
-        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3"
         data-headlessui-state=""
         type="button"
       >
@@ -429,7 +419,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
         Clear
       </button>
       <button
-        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3"
         data-headlessui-state=""
         type="button"
       >
@@ -459,7 +449,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
         Export
       </button>
       <button
-        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3"
         data-headlessui-state=""
         type="button"
       >
@@ -670,7 +660,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             <div>
               <button
                 aria-label="Copy"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
                 data-headlessui-state=""
                 data-testid="log-copy-button"
                 type="button"
@@ -753,7 +743,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             <div>
               <button
                 aria-label="Copy"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
                 data-headlessui-state=""
                 data-testid="log-copy-button"
                 type="button"
@@ -836,7 +826,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             <div>
               <button
                 aria-label="Copy"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
                 data-headlessui-state=""
                 data-testid="log-copy-button"
                 type="button"
@@ -919,7 +909,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             <div>
               <button
                 aria-label="Copy"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
                 data-headlessui-state=""
                 data-testid="log-copy-button"
                 type="button"
@@ -1002,7 +992,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             <div>
               <button
                 aria-label="Copy"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
                 data-headlessui-state=""
                 data-testid="log-copy-button"
                 type="button"
@@ -1085,7 +1075,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             <div>
               <button
                 aria-label="Copy"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
                 data-headlessui-state=""
                 data-testid="log-copy-button"
                 type="button"

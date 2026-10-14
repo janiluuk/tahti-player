@@ -44,7 +44,7 @@ export const SelectableList: FC<SelectableListProps> = ({
     {items.map((item) => {
       const checked = selected === item.id;
       return (
-        <li key={item.id}>
+        <li key={item.id} role="none">
           <button
             type="button"
             role="radio"
@@ -52,7 +52,7 @@ export const SelectableList: FC<SelectableListProps> = ({
             disabled={disabled}
             onClick={() => onChange(item.id)}
             className={cn(
-              'w-full rounded-lg border px-3 py-2.5 text-left transition-colors',
+              'focus-visible:ring-primary w-full rounded-lg border px-3 py-2.5 text-left transition-colors outline-none focus-visible:ring-2',
               checked
                 ? 'border-primary bg-primary/10'
                 : 'hover:border-border hover:bg-background-secondary border-transparent',

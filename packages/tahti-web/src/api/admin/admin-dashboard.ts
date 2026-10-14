@@ -28,6 +28,8 @@ export type AdminVenue = {
   createdAt: string;
   /** The submitting account's id, not a name: never show it. */
   createdBy: string;
+  /** Missing from API builds before tahti-org#834; null when the account is gone. */
+  submitter?: { username: string; displayName: string } | null;
 };
 
 export async function fetchAdminVenues(): Promise<{
@@ -46,6 +48,10 @@ export async function fetchAdminVenues(): Promise<{
           verifiedAt: '2026-06-01T00:00:00.000Z',
           createdAt: '2026-05-20T00:00:00.000Z',
           createdBy: 'mock-user-artist',
+          submitter: {
+            username: 'northern-lights',
+            displayName: 'Northern Lights',
+          },
         },
       ],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

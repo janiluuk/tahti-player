@@ -68,6 +68,7 @@ import { PageTourSpotlight } from './PageTourSpotlight';
 import { RightRailHeaderActions } from './RightRailHeaderActions';
 import { RightRailPanel } from './RightRailPanel';
 import { SidebarQueuePanel } from './SidebarQueuePanel';
+import { MAIN_CONTENT_ID, SkipToContent } from './SkipToContent';
 import {
   getStudioPrimaryRoute,
   StudioMainNavItems,
@@ -234,7 +235,7 @@ function RouteContent({ children }: { children: React.ReactNode }) {
       {showLoadingBar ? (
         <div
           className="bg-primary pointer-events-none absolute inset-x-0 top-0 z-10 h-0.5 opacity-70"
-          aria-live="polite"
+          role="progressbar"
           aria-label="Loading page content"
         />
       ) : null}
@@ -495,6 +496,7 @@ export function AppShell() {
 
   return (
     <PlayerShell className={isMobile ? 'tahti-mobile-shell' : undefined}>
+      <SkipToContent />
       {!fullScreenPlayerOpen && (
         <AppTopNav
           showMenuButton={isMobile}
@@ -509,9 +511,11 @@ export function AppShell() {
 
       {isMobile ? (
         <div className="tahti-ambient-surface bg-background relative flex min-h-0 flex-1 flex-col overflow-hidden">
-          <div
+          <main
+            id={MAIN_CONTENT_ID}
+            tabIndex={-1}
             className={cn(
-              'min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto',
+              'min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto outline-none',
               MAIN_CONTENT_PADDING,
             )}
             data-studio-shell
@@ -525,7 +529,7 @@ export function AppShell() {
                 fast={fastNavigationRoute}
               />
             </RouteContent>
-          </div>
+          </main>
           {!fullScreenPlayerOpen && <ConnectedPlayerBar />}
           {!mobileNavHidden && (
             <MobileBottomNav
@@ -556,8 +560,10 @@ export function AppShell() {
             )}
           >
             <div
+              id={MAIN_CONTENT_ID}
+              tabIndex={-1}
               className={cn(
-                'h-full min-w-0 overflow-x-hidden overflow-y-auto',
+                'h-full min-w-0 overflow-x-hidden overflow-y-auto outline-none',
                 fullBleedRoute && MAIN_CONTENT_PADDING,
               )}
               data-studio-shell

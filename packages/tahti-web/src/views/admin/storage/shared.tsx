@@ -257,7 +257,7 @@ export function DiskSpaceCard({
     <StudioPanel>
       <div className="mb-3 flex items-center gap-2">
         <Icon size={18} aria-hidden className="text-primary" />
-        <h3 className="font-display text-base font-bold">{title}</h3>
+        <h2 className="font-display text-base font-bold">{title}</h2>
       </div>
       <dl className="grid grid-cols-3 gap-3 text-sm">
         <div>
@@ -273,7 +273,14 @@ export function DiskSpaceCard({
           <dd className="font-semibold">{formatBytes(space.totalBytes)}</dd>
         </div>
       </dl>
-      {pctUsed != null ? <Meter value={pctUsed} className="mt-3" /> : null}
+      {pctUsed != null ? (
+        <Meter
+          value={pctUsed}
+          aria-label={`${title} used`}
+          aria-valuetext={`${Math.round(pctUsed)}%`}
+          className="mt-3"
+        />
+      ) : null}
       {space.note ? (
         <p className="text-foreground-secondary mt-3 text-xs">{space.note}</p>
       ) : null}

@@ -51,7 +51,13 @@ function TopUsersChart({ users }: { users: AdminStorageUserRow[] }) {
               {u.unlimited ? ' · unlimited quota' : ''}
             </span>
           </div>
-          <Meter value={u.usedBytes} max={max} className="mt-1" />
+          <Meter
+            value={u.usedBytes}
+            max={max}
+            aria-label={`Storage used by ${u.displayName}`}
+            aria-valuetext={formatBytes(u.usedBytes)}
+            className="mt-1"
+          />
         </div>
       ))}
     </div>

@@ -17,6 +17,7 @@ import { cn } from '../lib/cn';
 import {
   colorSchemeCssVars,
   normalizeColorScheme,
+  readableMuted,
   type LooseColorScheme,
 } from '../lib/colorScheme';
 import { ChannelVisualizer } from './ChannelVisualizer';
@@ -405,7 +406,8 @@ export function EntitySocialHeader({
             <span
               className={cn(
                 'inline-flex w-fit items-center gap-1 rounded-md border px-2 py-0.5 text-sm font-bold',
-                !scheme && 'bg-accent-orange border-border',
+                !scheme &&
+                  'bg-accent-orange border-border text-accent-foreground',
               )}
               style={
                 scheme
@@ -424,7 +426,7 @@ export function EntitySocialHeader({
           {subtitle ? (
             <div
               className={cn('text-sm', !scheme && 'text-foreground-secondary')}
-              style={scheme ? { color: scheme.muted } : undefined}
+              style={scheme ? { color: readableMuted(scheme) } : undefined}
             >
               {subtitle}
             </div>

@@ -6,6 +6,7 @@ import {
   Button,
   ButtonAnchor,
   ButtonLink,
+  HorizontalScroll,
   SectionShell,
   ViewShell,
 } from '@tahti-player/ui';
@@ -142,7 +143,7 @@ export function AdminGrantCycleView() {
                   </div>
 
                   <SectionShell title="Per-artist allocation preview">
-                    <div className="overflow-x-auto">
+                    <HorizontalScroll label="Per-artist allocation preview">
                       <table className="w-full text-left text-sm">
                         <thead className="text-foreground-secondary border-border border-b text-xs">
                           <tr>
@@ -188,7 +189,7 @@ export function AdminGrantCycleView() {
                             ))}
                         </tbody>
                       </table>
-                    </div>
+                    </HorizontalScroll>
                     <p className="text-foreground-secondary mt-3 text-xs">
                       Sum check: allocations {sumCheckOk ? '=' : '≠'} pool to
                       the cent using largest remainder.

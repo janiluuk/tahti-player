@@ -14,7 +14,7 @@ exports[`Tabs > (Snapshot) renders correctly 1`] = `
       <button
         aria-controls="headlessui-tabs-panel-:r7:"
         aria-selected="true"
-        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-8 px-2 text-sm"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-8 px-2 text-sm"
         data-headlessui-state=""
         data-selected=""
         id="headlessui-tabs-tab-:r1:"
@@ -31,7 +31,7 @@ exports[`Tabs > (Snapshot) renders correctly 1`] = `
       <button
         aria-controls="headlessui-tabs-panel-:r9:"
         aria-selected="false"
-        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-8 px-2 text-sm"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-8 px-2 text-sm"
         data-headlessui-state=""
         id="headlessui-tabs-tab-:r3:"
         role="tab"
@@ -47,7 +47,7 @@ exports[`Tabs > (Snapshot) renders correctly 1`] = `
       <button
         aria-controls="headlessui-tabs-panel-:rb:"
         aria-selected="false"
-        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-8 px-2 text-sm"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-8 px-2 text-sm"
         data-headlessui-state=""
         id="headlessui-tabs-tab-:r5:"
         role="tab"
@@ -67,7 +67,7 @@ exports[`Tabs > (Snapshot) renders correctly 1`] = `
     >
       <div
         aria-labelledby="headlessui-tabs-tab-:r1:"
-        class="relative flex-1 overflow-hidden outline-none"
+        class="focus-visible:ring-primary relative flex-1 overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-inset"
         data-headlessui-state="selected"
         data-selected=""
         id="headlessui-tabs-panel-:r7:"
@@ -91,7 +91,6 @@ exports[`Tabs > (Snapshot) renders correctly 1`] = `
               >
                 <div
                   class="grid grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] gap-4 pr-2 pb-4"
-                  role="grid"
                 >
                   <div
                     class="text-primary-foreground bg-primary border-border shadow-shadow flex w-46 flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all"
@@ -514,7 +513,7 @@ exports[`Tabs > (Snapshot) renders icons and count pills 1`] = `
       <button
         aria-controls="headlessui-tabs-panel-:ri:"
         aria-selected="true"
-        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-8 px-2 text-sm"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-8 px-2 text-sm"
         data-headlessui-state=""
         data-selected=""
         id="headlessui-tabs-tab-:re:"
@@ -546,7 +545,7 @@ exports[`Tabs > (Snapshot) renders icons and count pills 1`] = `
       <button
         aria-controls="headlessui-tabs-panel-:rk:"
         aria-selected="false"
-        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-8 px-2 text-sm"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-8 px-2 text-sm"
         data-headlessui-state=""
         id="headlessui-tabs-tab-:rg:"
         role="tab"
@@ -571,7 +570,7 @@ exports[`Tabs > (Snapshot) renders icons and count pills 1`] = `
     >
       <div
         aria-labelledby="headlessui-tabs-tab-:re:"
-        class="relative flex-1 overflow-hidden outline-none"
+        class="focus-visible:ring-primary relative flex-1 overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-inset"
         data-headlessui-state="selected"
         data-selected=""
         id="headlessui-tabs-panel-:ri:"
@@ -624,7 +623,7 @@ exports[`Tabs > (Snapshot) renders in composition mode 1`] = `
       <button
         aria-controls="headlessui-tabs-panel-:r18:"
         aria-selected="true"
-        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-8 px-2 text-sm"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-8 px-2 text-sm"
         data-headlessui-state=""
         data-selected=""
         id="headlessui-tabs-tab-:r14:"
@@ -637,7 +636,7 @@ exports[`Tabs > (Snapshot) renders in composition mode 1`] = `
       <button
         aria-controls="headlessui-tabs-panel-:r1a:"
         aria-selected="false"
-        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-8 px-2 text-sm"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-8 px-2 text-sm"
         data-headlessui-state=""
         id="headlessui-tabs-tab-:r16:"
         role="tab"
@@ -653,7 +652,7 @@ exports[`Tabs > (Snapshot) renders in composition mode 1`] = `
     >
       <div
         aria-labelledby="headlessui-tabs-tab-:r14:"
-        class="relative flex-1 overflow-hidden outline-none"
+        class="focus-visible:ring-primary relative flex-1 overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-inset"
         data-headlessui-state="selected"
         data-selected=""
         id="headlessui-tabs-panel-:r18:"
@@ -706,7 +705,7 @@ exports[`Tabs > (Snapshot) switches tabs 1`] = `
       <button
         aria-controls="headlessui-tabs-panel-:rt:"
         aria-selected="false"
-        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-8 px-2 text-sm"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-8 px-2 text-sm"
         data-headlessui-state=""
         id="headlessui-tabs-tab-:rn:"
         role="tab"
@@ -722,7 +721,7 @@ exports[`Tabs > (Snapshot) switches tabs 1`] = `
       <button
         aria-controls="headlessui-tabs-panel-:rv:"
         aria-selected="false"
-        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-8 px-2 text-sm"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 h-8 px-2 text-sm"
         data-headlessui-state=""
         id="headlessui-tabs-tab-:rp:"
         role="tab"
@@ -738,7 +737,7 @@ exports[`Tabs > (Snapshot) switches tabs 1`] = `
       <button
         aria-controls="headlessui-tabs-panel-:r11:"
         aria-selected="true"
-        class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-8 px-2 text-sm"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-8 px-2 text-sm"
         data-headlessui-state="hover"
         data-hover=""
         data-selected=""
@@ -776,7 +775,7 @@ exports[`Tabs > (Snapshot) switches tabs 1`] = `
       />
       <div
         aria-labelledby="headlessui-tabs-tab-:rr:"
-        class="relative flex-1 overflow-hidden outline-none"
+        class="focus-visible:ring-primary relative flex-1 overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-inset"
         data-headlessui-state="selected"
         data-selected=""
         id="headlessui-tabs-panel-:r11:"

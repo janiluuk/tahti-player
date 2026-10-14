@@ -37,7 +37,7 @@ exports[`PluginStoreItem > (Snapshot) renders compact 1`] = `
     data-testid="plugin-store-item-actions"
   >
     <button
-      class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3 w-20"
+      class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-9 px-3 w-20"
       data-headlessui-state=""
       type="button"
     >
@@ -97,7 +97,7 @@ exports[`PluginStoreItem > (Snapshot) renders default state 1`] = `
           class="text-foreground-secondary text-sm font-normal select-none"
         >
           <span
-            class="mr-1 opacity-60"
+            class="mr-1"
           >
             by
           </span>
@@ -131,7 +131,7 @@ exports[`PluginStoreItem > (Snapshot) renders default state 1`] = `
     data-testid="plugin-store-item-actions"
   >
     <button
-      class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2 w-28"
+      class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2 w-28"
       data-headlessui-state=""
       type="button"
     >
@@ -191,7 +191,7 @@ exports[`PluginStoreItem > (Snapshot) renders installed state 1`] = `
           class="text-foreground-secondary text-sm font-normal select-none"
         >
           <span
-            class="mr-1 opacity-60"
+            class="mr-1"
           >
             by
           </span>
@@ -225,7 +225,7 @@ exports[`PluginStoreItem > (Snapshot) renders installed state 1`] = `
     data-testid="plugin-store-item-actions"
   >
     <button
-      class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2 w-28"
+      class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2 w-28"
       data-disabled=""
       data-headlessui-state="disabled"
       disabled=""
@@ -281,7 +281,7 @@ exports[`PluginStoreItem > (Snapshot) renders installing state 1`] = `
           class="text-foreground-secondary text-sm font-normal select-none"
         >
           <span
-            class="mr-1 opacity-60"
+            class="mr-1"
           >
             by
           </span>
@@ -315,7 +315,7 @@ exports[`PluginStoreItem > (Snapshot) renders installing state 1`] = `
     data-testid="plugin-store-item-actions"
   >
     <button
-      class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2 w-28 disabled:opacity-100"
+      class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2 w-28 disabled:opacity-100"
       data-disabled=""
       data-headlessui-state="disabled"
       disabled=""
@@ -383,7 +383,7 @@ exports[`PluginStoreItem > (Snapshot) renders with custom labels 1`] = `
           class="text-foreground-secondary text-sm font-normal select-none"
         >
           <span
-            class="mr-1 opacity-60"
+            class="mr-1"
           >
             from
           </span>
@@ -417,7 +417,7 @@ exports[`PluginStoreItem > (Snapshot) renders with custom labels 1`] = `
     data-testid="plugin-store-item-actions"
   >
     <button
-      class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2 w-28"
+      class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2 w-28"
       data-headlessui-state=""
       type="button"
     >
@@ -477,7 +477,7 @@ exports[`PluginStoreItem > (Snapshot) renders with long description 1`] = `
           class="text-foreground-secondary text-sm font-normal select-none"
         >
           <span
-            class="mr-1 opacity-60"
+            class="mr-1"
           >
             by
           </span>
@@ -511,7 +511,7 @@ exports[`PluginStoreItem > (Snapshot) renders with long description 1`] = `
     data-testid="plugin-store-item-actions"
   >
     <button
-      class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2 w-28"
+      class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none h-10 px-4 py-2 w-28"
       data-headlessui-state=""
       type="button"
     >

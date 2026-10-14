@@ -49,7 +49,7 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
             <div>
               <button
                 aria-label="Back"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
                 data-disabled=""
                 data-headlessui-state="disabled"
                 disabled=""
@@ -77,7 +77,7 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
             <div>
               <button
                 aria-label="Forward"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
                 data-disabled=""
                 data-headlessui-state="disabled"
                 disabled=""
@@ -222,7 +222,7 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
             <button
               aria-label="Collapse panel"
               aria-pressed="true"
-              class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none justify-center size-7 transition-all opacity-100"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none justify-center size-7 transition-all opacity-100"
               data-headlessui-state=""
               data-testid="sidebar-toggle-left"
               type="button"
@@ -257,7 +257,8 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
         <div
           class="flex flex-1 flex-col overflow-hidden"
         >
-          <div
+          <nav
+            aria-label="Main"
             class="flex flex-1 flex-col"
             data-testid="sidebar-navigation"
           >
@@ -627,7 +628,7 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
                 </span>
               </div>
             </div>
-          </div>
+          </nav>
         </div>
         <div
           class="absolute top-0 bottom-0 w-1 cursor-col-resize transition-colors right-0"
@@ -1111,7 +1112,7 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
             <button
               aria-label="Collapse panel"
               aria-pressed="true"
-              class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none justify-center size-7 transition-all opacity-100"
+              class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none justify-center size-7 transition-all opacity-100"
               data-headlessui-state=""
               data-testid="sidebar-toggle-right"
               type="button"
@@ -1307,7 +1308,7 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
               <button
                 aria-label="Shuffle: off"
                 aria-pressed="false"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
                 data-headlessui-state=""
                 data-testid="player-shuffle-button"
                 type="button"
@@ -1346,7 +1347,7 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
             <div>
               <button
                 aria-label="Previous"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
                 data-headlessui-state=""
                 type="button"
               >
@@ -1376,7 +1377,7 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
               <button
                 aria-label="Play"
                 aria-pressed="false"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none justify-center active:bg-accent-green rounded-full shadow-md active:text-black size-10"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none justify-center active:bg-accent-green rounded-full shadow-md active:text-black size-10"
                 data-headlessui-state=""
                 data-testid="player-play-button"
                 type="button"
@@ -1403,7 +1404,7 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
             <div>
               <button
                 aria-label="Next"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
                 data-headlessui-state=""
                 data-testid="player-next-button"
                 type="button"
@@ -1434,7 +1435,7 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
               <button
                 aria-label="Repeat: off"
                 aria-pressed="false"
-                class="inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center rounded-full"
                 data-headlessui-state=""
                 data-testid="player-repeat-button"
                 type="button"
@@ -1479,7 +1480,7 @@ exports[`Sources view > (Snapshot) renders the view 1`] = `
               <button
                 aria-label="Mute"
                 aria-pressed="false"
-                class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center"
+                class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-10 justify-center"
                 data-headlessui-state=""
                 type="button"
               >

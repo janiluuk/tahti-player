@@ -62,7 +62,7 @@ exports[`PluginItem > (Snapshot) renders disabled state 1`] = `
                 class="text-foreground-secondary text-sm font-normal select-none"
               >
                 <span
-                  class="mr-1 opacity-60"
+                  class="mr-1"
                 >
                   by
                 </span>
@@ -129,7 +129,7 @@ exports[`PluginItem > (Snapshot) renders rightAccessory content 1`] = `
                 class="text-foreground-secondary text-sm font-normal select-none"
               >
                 <span
-                  class="mr-1 opacity-60"
+                  class="mr-1"
                 >
                   by
                 </span>
@@ -234,7 +234,7 @@ exports[`PluginItem > (Snapshot) renders with all props 1`] = `
                 class="text-foreground-secondary text-sm font-normal select-none"
               >
                 <span
-                  class="mr-1 opacity-60"
+                  class="mr-1"
                 >
                   by
                 </span>
@@ -303,7 +303,7 @@ exports[`PluginItem > (Snapshot) renders with all props 1`] = `
       <div>
         <button
           aria-label="Configure"
-          class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
+          class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y border-(length:--border-width) hover:shadow-none size-8 justify-center"
           data-headlessui-state=""
           data-testid="plugin-action-view-details"
           type="button"

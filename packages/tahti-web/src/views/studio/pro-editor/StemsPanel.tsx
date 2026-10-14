@@ -121,7 +121,10 @@ export function StemsPanel({
         >
           <Tabs.List className="w-fit">
             {(['TWO_STEM', 'FOUR_STEM'] as const).map((stemSet) => (
-              <Tabs.Tab key={stemSet}>
+              <Tabs.Tab
+                key={stemSet}
+                className="h-auto min-h-8 py-1 text-left whitespace-normal"
+              >
                 <TabLabel
                   icon={<SplitIcon size={14} />}
                   count={stemSet === 'TWO_STEM' ? 2 : 4}

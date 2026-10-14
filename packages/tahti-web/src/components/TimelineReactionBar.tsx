@@ -27,6 +27,7 @@ export function TimelineReactionBar({
   return (
     <div
       className="mt-3 flex flex-wrap items-center gap-2"
+      role="group"
       aria-label={`React at ${clock}`}
     >
       <span className="text-xs font-semibold text-white/70 tabular-nums">

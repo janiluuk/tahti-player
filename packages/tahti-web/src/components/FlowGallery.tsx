@@ -85,7 +85,10 @@ export function FlowGallery() {
       </p>
 
       <div className="flex flex-col gap-4 lg:flex-row">
-        <nav className="border-border flex max-h-64 flex-col gap-1 overflow-y-auto lg:max-h-[28rem] lg:w-64 lg:shrink-0 lg:border-r lg:pr-3">
+        <nav
+          aria-label="Diagrams"
+          className="border-border flex max-h-64 flex-col gap-1 overflow-y-auto lg:max-h-[28rem] lg:w-64 lg:shrink-0 lg:border-r lg:pr-3"
+        >
           {diagrams.map((d, i) => {
             const active = d.id === selected?.id;
             return (

@@ -308,7 +308,7 @@ exports[`QueuePanel > (Snapshot) renders default state 1`] = `
                       <div>
                         <button
                           aria-label="Remove from queue"
-                          class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border border-(length:--border-width) size-8 justify-center absolute right-4 opacity-0 group-hover:opacity-100"
+                          class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border border-(length:--border-width) size-8 justify-center absolute right-4 opacity-0 group-hover:opacity-100"
                           data-headlessui-state=""
                           data-testid="queue-item-remove-button"
                           type="button"
@@ -409,7 +409,7 @@ exports[`QueuePanel > (Snapshot) renders default state 1`] = `
                       <div>
                         <button
                           aria-label="Remove from queue"
-                          class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border border-(length:--border-width) size-8 justify-center absolute right-4 opacity-0 group-hover:opacity-100"
+                          class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border border-(length:--border-width) size-8 justify-center absolute right-4 opacity-0 group-hover:opacity-100"
                           data-headlessui-state=""
                           data-testid="queue-item-remove-button"
                           type="button"
@@ -510,7 +510,7 @@ exports[`QueuePanel > (Snapshot) renders default state 1`] = `
                       <div>
                         <button
                           aria-label="Remove from queue"
-                          class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border border-(length:--border-width) size-8 justify-center absolute right-4 opacity-0 group-hover:opacity-100"
+                          class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border border-(length:--border-width) size-8 justify-center absolute right-4 opacity-0 group-hover:opacity-100"
                           data-headlessui-state=""
                           data-testid="queue-item-remove-button"
                           type="button"

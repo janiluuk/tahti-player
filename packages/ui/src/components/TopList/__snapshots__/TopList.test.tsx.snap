@@ -46,7 +46,7 @@ exports[`TopList > (Snapshot) renders a list of albums with their artists 1`] = 
           </div>
         </div>
         <div
-          class="bg-primary/50 text-primary-foreground min-w-fit px-2 py-1 whitespace-nowrap tabular-nums"
+          class="bg-primary/50 text-foreground min-w-fit px-2 py-1 whitespace-nowrap tabular-nums"
           data-testid="top-list-value"
           style="width: 100%;"
         >
@@ -120,7 +120,7 @@ exports[`TopList > (Snapshot) renders a list of albums with their artists 1`] = 
           </div>
         </div>
         <div
-          class="bg-primary/50 text-primary-foreground min-w-fit px-2 py-1 whitespace-nowrap tabular-nums"
+          class="bg-primary/50 text-foreground min-w-fit px-2 py-1 whitespace-nowrap tabular-nums"
           data-testid="top-list-value"
           style="width: 50%;"
         >
@@ -172,7 +172,7 @@ exports[`TopList > (Snapshot) renders a list of artists 1`] = `
           </div>
         </div>
         <div
-          class="bg-primary/50 text-primary-foreground min-w-fit px-2 py-1 whitespace-nowrap tabular-nums"
+          class="bg-primary/50 text-foreground min-w-fit px-2 py-1 whitespace-nowrap tabular-nums"
           data-testid="top-list-value"
           style="width: 100%;"
         >
@@ -240,7 +240,7 @@ exports[`TopList > (Snapshot) renders a list of artists 1`] = `
           </div>
         </div>
         <div
-          class="bg-primary/50 text-primary-foreground min-w-fit px-2 py-1 whitespace-nowrap tabular-nums"
+          class="bg-primary/50 text-foreground min-w-fit px-2 py-1 whitespace-nowrap tabular-nums"
           data-testid="top-list-value"
           style="width: 50%;"
         >
@@ -276,7 +276,7 @@ exports[`TopList > (Snapshot) renders a list of artists 1`] = `
           </div>
         </div>
         <div
-          class="bg-primary/50 text-primary-foreground min-w-fit px-2 py-1 whitespace-nowrap tabular-nums"
+          class="bg-primary/50 text-foreground min-w-fit px-2 py-1 whitespace-nowrap tabular-nums"
           data-testid="top-list-value"
           style="width: 25%;"
         >

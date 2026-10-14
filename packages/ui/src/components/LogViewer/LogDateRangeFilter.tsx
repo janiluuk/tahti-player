@@ -4,7 +4,6 @@ import { FC, useState } from 'react';
 import { Button } from '../Button';
 import { Input } from '../Input';
 import { Popover } from '../Popover';
-import { Tooltip } from '../Tooltip';
 import { useLogViewerContext } from './context';
 
 function toInputValue(d: Date | null): string {
@@ -37,22 +36,21 @@ export const LogDateRangeFilter: FC = () => {
     <Popover
       className="relative shrink-0"
       anchor="bottom start"
+      tooltip={{ content: labels.dateRangeButtonLabel, side: 'top' }}
       trigger={
-        <Tooltip content={labels.dateRangeButtonLabel} side="top">
-          <Button
-            type="button"
-            variant={active ? 'secondary' : 'text'}
-            size="icon-sm"
-            aria-label={labels.dateRangeButtonLabel}
-            data-testid="log-date-range-toggle"
-            onClick={() => {
-              setDraftFrom(toInputValue(dateRange.from));
-              setDraftTo(toInputValue(dateRange.to));
-            }}
-          >
-            <CalendarIcon className="size-4" />
-          </Button>
-        </Tooltip>
+        <Button
+          type="button"
+          variant={active ? 'secondary' : 'text'}
+          size="icon-sm"
+          aria-label={labels.dateRangeButtonLabel}
+          data-testid="log-date-range-toggle"
+          onClick={() => {
+            setDraftFrom(toInputValue(dateRange.from));
+            setDraftTo(toInputValue(dateRange.to));
+          }}
+        >
+          <CalendarIcon className="size-4" />
+        </Button>
       }
     >
       <div
