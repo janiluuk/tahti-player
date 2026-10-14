@@ -139,6 +139,23 @@ export function metadataForPath(pathname: string): RouteMetadata {
     };
   }
 
+  const subscribe = /^\/subscribe\/([^/]+)/.exec(pathname)?.[1];
+  if (subscribe) {
+    const name = displaySlug(subscribe);
+    return {
+      title: `Subscribe to ${name} · Tahti`,
+      description: `Support ${name} with a fan subscription on Tahti.`,
+    };
+  }
+
+  const moderated = /^\/moderate\/([^/]+)/.exec(pathname)?.[1];
+  if (moderated) {
+    return {
+      ...DEFAULT_METADATA,
+      title: `${displaySlug(moderated)}: chat moderation · Tahti`,
+    };
+  }
+
   if (pathname.startsWith('/radio')) {
     return {
       title: 'Tahti Radio',

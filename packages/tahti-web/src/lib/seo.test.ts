@@ -36,9 +36,11 @@ describe('metadataForPath', () => {
     ['/terms', 'Terms of service · Tahti'],
     ['/privacy', 'Privacy policy · Tahti'],
     ['/agpl', 'Source code & AGPL licence · Tahti'],
-    ['/subscribe/liis-kask', 'Subscribe · Tahti'],
+    ['/subscribe/liis-kask', 'Subscribe to Liis Kask · Tahti'],
+    ['/subscribe', 'Subscribe · Tahti'],
     ['/newsletter/confirmed', 'Newsletter · Tahti'],
-    ['/moderate/demo', 'Chat moderation · Tahti'],
+    ['/moderate/night-drive', 'Night Drive: chat moderation · Tahti'],
+    ['/moderate', 'Chat moderation · Tahti'],
     ['/jam/abc123', 'Jam · Tahti'],
   ])('provides route-aware metadata for %s', (path, title) => {
     expect(metadataForPath(path).title).toBe(title);
