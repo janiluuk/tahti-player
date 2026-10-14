@@ -704,11 +704,11 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                                       class="flex flex-col gap-3 px-2 py-2"
                                     >
                                       <div
-                                        class="border-border flex h-full w-full rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow flex-row items-center justify-between gap-4"
+                                        class="border-border flex h-full w-full rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow flex-row flex-wrap items-center justify-between gap-4"
                                         data-testid="plugin-store-item"
                                       >
                                         <div
-                                          class="flex min-w-0 flex-1 flex-col gap-1"
+                                          class="flex min-w-0 flex-1 basis-48 flex-col gap-1"
                                         >
                                           <div
                                             class="flex flex-wrap items-center gap-2"
@@ -790,11 +790,11 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                                         </div>
                                       </div>
                                       <div
-                                        class="border-border flex h-full w-full rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow flex-row items-center justify-between gap-4"
+                                        class="border-border flex h-full w-full rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow flex-row flex-wrap items-center justify-between gap-4"
                                         data-testid="plugin-store-item"
                                       >
                                         <div
-                                          class="flex min-w-0 flex-1 flex-col gap-1"
+                                          class="flex min-w-0 flex-1 basis-48 flex-col gap-1"
                                         >
                                           <div
                                             class="flex flex-wrap items-center gap-2"
@@ -876,11 +876,11 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                                         </div>
                                       </div>
                                       <div
-                                        class="border-border flex h-full w-full rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow flex-row items-center justify-between gap-4"
+                                        class="border-border flex h-full w-full rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-shadow flex-row flex-wrap items-center justify-between gap-4"
                                         data-testid="plugin-store-item"
                                       >
                                         <div
-                                          class="flex min-w-0 flex-1 flex-col gap-1"
+                                          class="flex min-w-0 flex-1 basis-48 flex-col gap-1"
                                         >
                                           <div
                                             class="flex flex-wrap items-center gap-2"
