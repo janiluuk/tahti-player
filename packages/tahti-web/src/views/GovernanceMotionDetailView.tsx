@@ -27,7 +27,6 @@ export function GovernanceMotionDetailView({ id }: { id: string }) {
     if (!user) {
       return;
     }
-    setLoading(true);
     void Promise.all([
       fetchGovernanceMotion(id),
       fetchGovernanceMembers(),
@@ -53,6 +52,7 @@ export function GovernanceMotionDetailView({ id }: { id: string }) {
       setForbidden(true);
       return;
     }
+    setLoading(true);
     reload();
   }, [user, id]);
 

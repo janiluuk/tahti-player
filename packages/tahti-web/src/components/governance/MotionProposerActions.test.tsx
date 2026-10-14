@@ -8,6 +8,7 @@ import { MotionProposerActions } from './MotionProposerActions';
 
 const navigate = vi.fn();
 const withdrawMotionDraft = vi.fn();
+const editMotionDraft = vi.fn();
 
 vi.mock('@tanstack/react-router', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@tanstack/react-router')>()),
@@ -16,6 +17,7 @@ vi.mock('@tanstack/react-router', async (importOriginal) => ({
 
 vi.mock('../../api/governance-drafts', () => ({
   withdrawMotionDraft: (id: string) => withdrawMotionDraft(id),
+  editMotionDraft: (id: string, input: unknown) => editMotionDraft(id, input),
 }));
 
 const draft: GovernanceMotion = {
@@ -95,5 +97,42 @@ describe('MotionProposerActions', () => {
       />,
     );
     expect(container.textContent).toBe('');
+  });
+
+  it('lets the proposer edit the draft and says which seconds were cleared', async () => {
+    signInAs('Aino');
+    editMotionDraft.mockResolvedValue({ ok: true, secondsCleared: 2 });
+    const onChanged = vi.fn();
+    render(
+      <MotionProposerActions
+        motion={{ ...draft, secondCount: 2 }}
+        description="Old text"
+        onChanged={onChanged}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Edit draft' }));
+    expect(screen.getByText(/clears the seconds it has/)).toBeTruthy();
+    fireEvent.change(screen.getByLabelText('Draft text'), {
+      target: { value: '  New text ' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Save draft' }));
+
+    expect((await screen.findByRole('status')).textContent).toBe(
+      'Draft saved. Its 2 seconds were cleared, because they backed the old text.',
+    );
+    expect(editMotionDraft).toHaveBeenCalledWith('m1', {
+      title: 'Draft',
+      description: 'New text',
+    });
+    expect(onChanged).toHaveBeenCalled();
+  });
+
+  it('offers editing only where the full text is loaded', () => {
+    signInAs('Aino');
+    render(<MotionProposerActions motion={draft} onChanged={() => {}} />);
+
+    expect(screen.queryByRole('button', { name: 'Edit draft' })).toBeNull();
+    expect(screen.getByRole('button', { name: 'Withdraw draft' })).toBeTruthy();
   });
 });

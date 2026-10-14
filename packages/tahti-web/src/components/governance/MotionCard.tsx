@@ -225,7 +225,11 @@ export function MotionCard({
         </p>
       )}
       <MotionSecondControl motion={m} onChanged={onChanged} />
-      <MotionProposerActions motion={m} onChanged={onChanged} />
+      <MotionProposerActions
+        motion={m}
+        description={description}
+        onChanged={onChanged}
+      />
       {m.youVoted && (
         <p className="mt-2 text-sm">
           Your vote:{' '}
