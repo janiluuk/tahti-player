@@ -864,7 +864,7 @@ exports[`Artist view > with bio provider > (Snapshot) renders the artist view 1`
                                   role="row"
                                 >
                                   <th
-                                    class="w-10 text-center"
+                                    class="text-center w-14"
                                     role="columnheader"
                                   >
                                     <span
@@ -923,7 +923,7 @@ exports[`Artist view > with bio provider > (Snapshot) renders the artist view 1`
                                     </span>
                                   </th>
                                   <th
-                                    class="w-10 text-center"
+                                    class="text-center w-10"
                                     role="columnheader"
                                   >
                                     <span
@@ -1000,7 +1000,7 @@ exports[`Artist view > with bio provider > (Snapshot) renders the artist view 1`
                                   tabindex="0"
                                 >
                                   <td
-                                    class="w-12 text-center"
+                                    class="w-14 text-center"
                                   >
                                     <div
                                       class="flex w-full justify-center"
@@ -2899,7 +2899,7 @@ exports[`Artist view > with social stats provider > (Snapshot) renders the artis
                                   role="row"
                                 >
                                   <th
-                                    class="w-10 text-center"
+                                    class="text-center w-14"
                                     role="columnheader"
                                   >
                                     <span
@@ -2958,7 +2958,7 @@ exports[`Artist view > with social stats provider > (Snapshot) renders the artis
                                     </span>
                                   </th>
                                   <th
-                                    class="w-10 text-center"
+                                    class="text-center w-10"
                                     role="columnheader"
                                   >
                                     <span
@@ -3035,7 +3035,7 @@ exports[`Artist view > with social stats provider > (Snapshot) renders the artis
                                   tabindex="0"
                                 >
                                   <td
-                                    class="w-12 text-center"
+                                    class="w-14 text-center"
                                   >
                                     <div
                                       class="flex w-full justify-center"

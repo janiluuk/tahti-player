@@ -22,7 +22,7 @@ export const ThumbnailCell = <T extends Track>({
   const isPlaying = meta?.isTrackPlaying?.(track) ?? false;
 
   return (
-    <td className="w-12 text-center">
+    <td className="w-14 text-center">
       <div className="flex w-full justify-center">
         <MediaArtwork
           size="thumb"

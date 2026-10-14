@@ -63,7 +63,7 @@ export function useColumns<T extends Track = Track>(
           {
             id: 'thumbnail',
             header: (context) => (
-              <IconHeader Icon={ImageIcon} context={context} />
+              <IconHeader Icon={ImageIcon} context={context} className="w-14" />
             ),
             cell: ThumbnailCell,
             enableSorting: false,
