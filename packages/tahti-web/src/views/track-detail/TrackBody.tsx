@@ -126,7 +126,7 @@ export function TrackBody({ page }: { page: TrackPage }) {
           </div>
         </div>
 
-        <aside className="flex min-w-0 flex-col gap-6">
+        <div className="flex min-w-0 flex-col gap-6">
           {relatedCollections.length > 0 ? (
             <div>
               <h2 className="mb-3 text-sm font-semibold tracking-wide uppercase">
@@ -202,7 +202,7 @@ export function TrackBody({ page }: { page: TrackPage }) {
               </ul>
             </div>
           ) : null}
-        </aside>
+        </div>
       </div>
     </section>
   );

@@ -151,7 +151,10 @@ export function PortInventoryPanel() {
             ) : null,
           )}
         </div>
-        <nav className="flex flex-wrap gap-2 pt-1 text-xs">
+        <nav
+          aria-label="Jump to section"
+          className="flex flex-wrap gap-2 pt-1 text-xs"
+        >
           <a
             href="#port-backlog"
             className="border-border hover:text-foreground rounded border px-2.5 py-1 tracking-wide uppercase"
