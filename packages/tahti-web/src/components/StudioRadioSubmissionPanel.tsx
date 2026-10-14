@@ -98,8 +98,9 @@ export function StudioRadioSubmissionPanel() {
             />{' '}
             Include my channel in Tahti Radio
           </label>
-          <Button onClick={() => setOpen(true)}>
-            <SendIcon size={16} aria-hidden /> Select tracks
+          <Button className="gap-1.5" onClick={() => setOpen(true)}>
+            <SendIcon size={16} aria-hidden />
+            Select tracks
           </Button>
         </div>
       </StudioPanel>

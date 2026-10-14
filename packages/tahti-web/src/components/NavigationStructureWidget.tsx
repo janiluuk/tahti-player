@@ -119,6 +119,7 @@ export function NavigationStructureWidget() {
           size="sm"
           onClick={add}
           disabled={!label.trim() || !path.trim()}
+          className="gap-1.5"
         >
           <PlusIcon size={15} aria-hidden />
           Add top-level item
