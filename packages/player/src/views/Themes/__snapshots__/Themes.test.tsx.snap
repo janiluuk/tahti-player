@@ -2,6 +2,7 @@
 
 exports[`Themes view > (Snapshot) renders the themes view 1`] = `
 <div
+  aria-label="Settings"
   aria-modal="true"
   class="relative z-50"
   data-headlessui-state="open"

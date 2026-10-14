@@ -2,6 +2,7 @@
 
 exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from the registry 1`] = `
 <div
+  aria-label="Settings"
   aria-modal="true"
   class="relative z-50"
   data-headlessui-state="open"

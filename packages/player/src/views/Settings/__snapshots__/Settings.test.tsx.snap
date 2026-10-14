@@ -2,6 +2,7 @@
 
 exports[`Settings view > (Snapshot) renders the settings view 1`] = `
 <div
+  aria-label="Settings"
   aria-modal="true"
   class="relative z-50"
   data-headlessui-state="open"

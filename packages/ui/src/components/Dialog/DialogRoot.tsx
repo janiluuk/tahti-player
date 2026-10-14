@@ -16,6 +16,7 @@ type DialogRootProps = PropsWithChildren<{
   /** Stacking class for the dialog layer. Raise it (e.g. `z-[70]`) for
    * dialogs opened from the full-screen player, which sits at `z-[60]`. */
   layerClassName?: string;
+  'aria-label'?: string;
 }>;
 
 export const DialogRoot: FC<DialogRootProps> = ({
@@ -25,6 +26,7 @@ export const DialogRoot: FC<DialogRootProps> = ({
   className,
   showCloseButton = true,
   layerClassName = 'z-50',
+  'aria-label': ariaLabel,
   children,
 }) => {
   return (
@@ -36,6 +38,7 @@ export const DialogRoot: FC<DialogRootProps> = ({
             open={isOpen}
             onClose={onClose}
             initialFocus={initialFocus}
+            aria-label={ariaLabel}
             className={cn('relative', layerClassName)}
           >
             <DialogOverlayBackdrop />
