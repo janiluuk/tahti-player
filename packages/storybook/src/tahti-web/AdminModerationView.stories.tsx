@@ -131,19 +131,15 @@ export const FeatureRequestsTab: Story = {
   },
 };
 
-/** The mock queue has no missed shows, so the empty state renders. */
+/** The mock queue holds two missed shows. */
 export const MissedShowsTab: Story = {
   render: renderTab('missed-shows'),
   play: async ({ canvasElement }) => {
     const canvas = await expectQueue(canvasElement, 'Missed shows');
     await expect(
-      await canvas.findByRole('heading', {
-        name: 'No missed shows in this view',
-      }),
+      await canvas.findByRole('heading', { name: 'Queue · 2' }),
     ).toBeVisible();
-    await expect(
-      canvas.getByRole('heading', { name: 'Queue · 0' }),
-    ).toBeVisible();
+    await expect(canvas.getByText('Friday Frequency')).toBeVisible();
   },
 };
 

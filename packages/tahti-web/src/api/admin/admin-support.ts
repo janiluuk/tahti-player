@@ -300,9 +300,50 @@ export type AdminMissedShow = {
   };
 };
 
+let mockMissedShows: AdminMissedShow[] = [
+  {
+    id: 'missed-mock-1',
+    status: 'OPEN',
+    detectedAt: '2026-10-10T19:20:00.000Z',
+    scheduledLiveShow: {
+      id: 'show-mock-1',
+      title: 'Friday Frequency',
+      startAt: '2026-10-10T19:00:00.000Z',
+    },
+    channel: {
+      slug: 'dj-moonlight',
+      userId: 'mock-user-moonlight',
+      username: 'dj-moonlight',
+      displayName: 'DJ Moonlight',
+    },
+  },
+  {
+    id: 'missed-mock-2',
+    status: 'REVIEWING',
+    detectedAt: '2026-10-03T21:15:00.000Z',
+    scheduledLiveShow: {
+      id: 'show-mock-2',
+      title: 'Northern Signals #4',
+      startAt: '2026-10-03T21:00:00.000Z',
+    },
+    channel: {
+      slug: 'kaiku-collective',
+      userId: 'mock-user-kaiku',
+      username: 'kaiku-collective',
+      displayName: 'Kaiku Collective',
+    },
+  },
+];
+
 export async function fetchAdminMissedShows(
   status?: AdminMissedShowStatus,
 ): Promise<{ data: AdminMissedShow[]; meta: FetchMeta }> {
+  if (isForceMock()) {
+    return {
+      data: mockMissedShows.filter((show) => !status || show.status === status),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
   try {
     const query = new URLSearchParams({ limit: '100' });
     if (status) {
@@ -321,6 +362,15 @@ export async function updateAdminMissedShow(
   id: string,
   status: AdminMissedShowStatus,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (isForceMock()) {
+    if (!mockMissedShows.some((show) => show.id === id)) {
+      return { ok: false, error: 'Missed show not found' };
+    }
+    mockMissedShows = mockMissedShows.map((show) =>
+      show.id === id ? { ...show, status } : show,
+    );
+    return { ok: true };
+  }
   return mutate(
     `/api/admin/missed-live-shows/${encodeURIComponent(id)}`,
     'PATCH',
