@@ -7,7 +7,11 @@ import {
   postMotionComment,
   type MotionComment,
 } from '../../api/client';
+import { removeMotionComment } from '../../api/governance-comments';
 import type { GovernanceMotion } from '../../api/types';
+import { hasAccountRole } from '../../lib/accountRoles';
+import { useAuthStore } from '../../stores/authStore';
+import { ConfirmDialog } from '../ConfirmDialog';
 
 export function MotionDiscussion({
   motion,
@@ -32,6 +36,36 @@ export function MotionDiscussion({
     preloadedComments !== undefined,
   );
   const [commentBody, setCommentBody] = useState('');
+  const [removing, setRemoving] = useState<MotionComment | null>(null);
+  const user = useAuthStore((s) => s.user);
+  const isBoard = hasAccountRole(user, 'BOARD');
+
+  const canRemove = (c: MotionComment) =>
+    !c.removed &&
+    (isBoard ||
+      (Boolean(user?.id) &&
+        c.authorId === user?.id &&
+        motion.state !== 'CLOSED'));
+
+  const confirmRemove = () => {
+    const target = removing;
+    setRemoving(null);
+    if (!target) {
+      return;
+    }
+    void removeMotionComment(motion.id, target.id).then((r) => {
+      if (!r.ok) {
+        onMessage(r.error);
+        return;
+      }
+      setComments((prev) =>
+        prev.map((c) =>
+          c.id === target.id ? { ...c, body: '', removed: true } : c,
+        ),
+      );
+      onMessage('Comment removed.');
+    });
+  };
 
   useEffect(() => {
     if (!expanded || commentsLoaded) {
@@ -77,13 +111,31 @@ export function MotionDiscussion({
             <ul className="border-border divide-border divide-y overflow-hidden rounded-md border text-sm">
               {comments.map((c) => (
                 <li key={c.id} className="px-3 py-2">
-                  <div className="text-foreground-secondary text-xs">
-                    {c.authorDisplayName ?? 'Member'}
-                    {c.createdAt
-                      ? `, ${new Date(c.createdAt).toLocaleString()}`
-                      : ''}
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="text-foreground-secondary text-xs">
+                      {c.authorDisplayName ?? 'Member'}
+                      {c.createdAt
+                        ? `, ${new Date(c.createdAt).toLocaleString()}`
+                        : ''}
+                    </div>
+                    {canRemove(c) && (
+                      <Button
+                        size="sm"
+                        variant="text"
+                        aria-label={`Remove the comment by ${c.authorDisplayName ?? 'a member'}`}
+                        onClick={() => setRemoving(c)}
+                      >
+                        Remove
+                      </Button>
+                    )}
                   </div>
-                  <p className="mt-1">{c.body}</p>
+                  {c.removed ? (
+                    <p className="text-foreground-secondary mt-1 italic">
+                      Comment removed.
+                    </p>
+                  ) : (
+                    <p className="mt-1">{c.body}</p>
+                  )}
                 </li>
               ))}
             </ul>
@@ -121,6 +173,18 @@ export function MotionDiscussion({
           )}
         </div>
       )}
+      <ConfirmDialog
+        isOpen={removing !== null}
+        title="Remove this comment?"
+        description={
+          removing && removing.authorId !== user?.id
+            ? 'It is replaced by "Comment removed." for every member, and the removal is logged.'
+            : 'It is replaced by "Comment removed." for every member.'
+        }
+        confirmLabel="Remove"
+        onCancel={() => setRemoving(null)}
+        onConfirm={confirmRemove}
+      />
     </>
   );
 }

@@ -25,9 +25,10 @@ async function getJson<T>(path: string): Promise<T> {
 export type MotionComment = {
   id: string;
   body: string;
-  authorId?: string;
+  authorId?: string | null;
   authorDisplayName?: string | null;
   createdAt: string;
+  removed?: boolean;
 };
 
 let mockMotions: GovernanceMotion[] = [
@@ -120,6 +121,7 @@ const mockMotionComments: Record<string, MotionComment[]> = {
     {
       id: 'c5',
       body: 'Would like to see explicit escalation steps before a ban.',
+      authorId: 'mock-1',
       authorDisplayName: 'Demo Member',
       createdAt: new Date().toISOString(),
     },
@@ -169,6 +171,14 @@ export function updateMockMotion(
 ): GovernanceMotion | null {
   mockMotions = mockMotions.map((m) => (m.id === id ? update(m) : m));
   return mockMotions.find((m) => m.id === id) ?? null;
+}
+
+export function updateMockMotionComments(
+  id: string,
+  update: (comments: MotionComment[]) => MotionComment[],
+): MotionComment[] {
+  mockMotionComments[id] = update(mockMotionComments[id] ?? []);
+  return mockMotionComments[id];
 }
 
 export type FetchGovernanceMotionsOpts = {
@@ -593,6 +603,7 @@ export async function postMotionComment(
     const row: MotionComment = {
       id: `c-${Date.now()}`,
       body,
+      authorId: 'mock-1',
       authorDisplayName: 'You',
       createdAt: new Date().toISOString(),
     };
