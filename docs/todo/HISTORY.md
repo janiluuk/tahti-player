@@ -4582,3 +4582,9 @@ Asked for as "continue" after the MCP work, then "handle the jam issue".
 - **Tahti Jam (#743):** the HTTP API had bound `0.0.0.0` with no authentication and served Nuclear's remote UI, which the desktop build no longer contains. Now every `/api/*` route except `/api/health` needs a pairing code (bearer header, or `?token=` for the SSE stream; `http_api/pairing.rs`). The code is made and kept by tahti-web (`lib/jam/desktop.ts`), rides in the QR link's fragment, and **New pairing link** replaces it. Calls carry a `Jam.` prefix and are answered by `src/lib/jam/bridge.ts`, which sends phones no file paths, stream URLs or local artwork. The phone remote (`src/remote/`, on the `TahtiJam` components) is a second Vite entry (`remote.html`) that the server serves at `/remote`. Search adds Tahti tracks only. The settings routes for Nuclear setting ids are gone.
 - **Checks:** `cargo test --lib`, tahti-web unit suite, both type-checks, the IntegrationsPanel and JamRemote Storybook plays. Not tried: the desktop app with a real `mpc`, Discord client or phone.
 - **Left:** Nuclear's `player/src/remoteControl/`, `services/httpApi`, `services/mpd`, `services/discordHandler.ts` and `services/bridge` are dead code.
+
+## 2026-10-14 - Storybook stories for nine chat, channel and radio components
+
+- **Salvaged** from a stale agent worktree whose PR (#622) shipped from another branch: stories with plays for `ChannelComments`, `ChannelShareButton`, `ChatAvatar`, `ChatDailyListeners`, `ChatListeningNow`, `ChatReactionBar`, `FanChatRoom`, `RadioShowEpisodeList` and `RadioView`, which had none. The rest of that worktree was superseded by master and dropped.
+- **Mock hooks:** `channelComments` and `fanChatHistory` fixture overrides, so stories can seed comments and fan chat history. Mock-mode defaults are unchanged.
+- **Checks:** the nine stories' plays (27/27), tahti-web `src/api` tests (336/336), lint; `STORYBOOK-SURFACES.md` regenerated.
