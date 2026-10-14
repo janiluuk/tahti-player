@@ -7,7 +7,7 @@ import { setAdminChannelKind, type ChannelKind } from '../../api/admin';
 
 const OPTIONS = [
   { id: 'ARTIST', label: 'Artist' },
-  { id: 'RADIO', label: 'Radio station' },
+  { id: 'RADIO', label: 'Radio' },
 ] as const;
 
 export function AdminChannelKindControl({
