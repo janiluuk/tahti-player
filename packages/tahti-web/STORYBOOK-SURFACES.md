@@ -329,6 +329,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/FilterChips` | `FilterChips.stories.tsx` |
 | `Components/HistoryDayGroup` | `HistoryDayGroup.stories.tsx` |
 | `Components/HistoryRow` | `HistoryRow.stories.tsx` |
+| `Components/HorizontalScroll` | `HorizontalScroll.stories.tsx` |
 | `Components/ImageReveal` | `ImageReveal.stories.tsx` |
 | `Components/ImageThumbnailPicker` | `ImageThumbnailPicker.stories.tsx` |
 | `Components/Input` | `Input.stories.tsx` |

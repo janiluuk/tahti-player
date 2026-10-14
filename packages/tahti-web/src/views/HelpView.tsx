@@ -21,6 +21,7 @@ import {
   Button,
   ButtonLink,
   EmptyState,
+  HorizontalScroll,
   Input,
   SectionShell,
   Tabs,
@@ -501,7 +502,10 @@ export function HelpArticleView({ slug }: { slug: string }) {
                         </ul>
                       ) : null}
                       {section.table ? (
-                        <div className="mt-4 overflow-x-auto">
+                        <HorizontalScroll
+                          label={section.heading}
+                          className="mt-4"
+                        >
                           <table className="w-full min-w-[40rem] border-collapse text-left text-sm">
                             <caption className="sr-only">
                               {section.heading}
@@ -536,7 +540,7 @@ export function HelpArticleView({ slug }: { slug: string }) {
                               ))}
                             </tbody>
                           </table>
-                        </div>
+                        </HorizontalScroll>
                       ) : null}
                     </div>
                   </div>

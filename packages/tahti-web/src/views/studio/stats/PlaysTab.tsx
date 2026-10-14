@@ -1,6 +1,10 @@
 import { BarChart3Icon } from 'lucide-react';
 
-import { CalendarHeatmap, DayOfWeekChart } from '@tahti-player/ui';
+import {
+  CalendarHeatmap,
+  DayOfWeekChart,
+  HorizontalScroll,
+} from '@tahti-player/ui';
 
 import { ListenerWorldMap } from '../../../components/ListenerWorldMap';
 import { StudioPanel } from '../../../components/StudioPanel';
@@ -68,7 +72,7 @@ export function PlaysTab({
               No plays in this period.
             </p>
           ) : useHeatmap ? (
-            <div className="overflow-x-auto">
+            <HorizontalScroll label="Daily plays">
               <CalendarHeatmap
                 days={heatmapDays}
                 colorScheme={isDark ? 'dark' : 'light'}
@@ -82,7 +86,7 @@ export function PlaysTab({
                 formatDate={formatDate}
                 onDayClick={openDay}
               />
-            </div>
+            </HorizontalScroll>
           ) : (
             <div className="h-52 w-full">
               {active ? (

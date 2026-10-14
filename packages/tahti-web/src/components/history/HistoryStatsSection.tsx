@@ -7,6 +7,7 @@ import {
   cn,
   DayOfWeekChart,
   EmptyState,
+  HorizontalScroll,
   ListeningClock,
   Select,
   TopList,
@@ -189,7 +190,10 @@ export function HistoryStatsSection({ history }: { history: HistoryEntry[] }) {
         <h3 className="font-heading text-xl">Listening calendar</h3>
         {/* An rtl scroller starts at its right edge, so a pane too narrow
             for the whole year opens on the most recent weeks. */}
-        <div className="overflow-x-auto [direction:rtl]">
+        <HorizontalScroll
+          label="Listening calendar"
+          className="[direction:rtl]"
+        >
           <CalendarHeatmap
             className="mx-auto w-fit [direction:ltr]"
             days={dailyDays}
@@ -207,7 +211,7 @@ export function HistoryStatsSection({ history }: { history: HistoryEntry[] }) {
               })
             }
           />
-        </div>
+        </HorizontalScroll>
       </Box>
     </div>
   );

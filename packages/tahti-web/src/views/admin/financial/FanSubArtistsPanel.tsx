@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useCallback, useEffect, useState } from 'react';
 
-import { Badge } from '@tahti-player/ui';
+import { Badge, HorizontalScroll } from '@tahti-player/ui';
 
 import { fetchFanSubArtists, type AdminFanSubArtist } from '../../../api/admin';
 import {
@@ -45,7 +45,7 @@ export function FanSubArtistsPanel() {
       ) : rows.length === 0 ? (
         <PageEmpty title="No active fan subscriptions" />
       ) : (
-        <div className="overflow-x-auto">
+        <HorizontalScroll label="Fan subscriptions by artist">
           <table className="w-full text-sm" data-testid="fansub-artists">
             <thead>
               <tr className="text-foreground-secondary text-left text-xs">
@@ -96,7 +96,7 @@ export function FanSubArtistsPanel() {
               ))}
             </tbody>
           </table>
-        </div>
+        </HorizontalScroll>
       )}
     </StudioPanel>
   );

@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import type { FC, ReactNode } from 'react';
 
-import { Badge } from '@tahti-player/ui';
+import { Badge, HorizontalScroll } from '@tahti-player/ui';
 
 import type { FanPayoutStats } from '../api/revenue';
 import type { RevenueOrderRow } from '../lib/revenueOrders';
@@ -118,7 +118,7 @@ export const FanSubscriptionStats: FC<FanSubscriptionStatsProps> = ({
 
     <div data-tour-id="revenue-orders" data-testid="fan-order-list">
       <h3 className="mb-2 text-sm font-bold">Payout history</h3>
-      <div className="overflow-x-auto">
+      <HorizontalScroll label="Payout history">
         <table className="w-full min-w-[430px] text-left text-sm">
           <thead className="text-foreground-secondary text-[11px] tracking-wide uppercase">
             <tr className="border-border border-b">
@@ -164,7 +164,7 @@ export const FanSubscriptionStats: FC<FanSubscriptionStatsProps> = ({
             )}
           </tbody>
         </table>
-      </div>
+      </HorizontalScroll>
       {footnote ? (
         <p className="text-foreground-secondary mt-3 text-xs">{footnote}</p>
       ) : null}
