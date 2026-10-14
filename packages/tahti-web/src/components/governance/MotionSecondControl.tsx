@@ -7,6 +7,8 @@ import {
   withdrawMotionSecond,
 } from '../../api/governance-seconds';
 import type { GovernanceMotion } from '../../api/types';
+import { isMotionProposer } from '../../lib/motionProposer';
+import { useAuthStore } from '../../stores/authStore';
 
 function secondsLabel(count: number): string {
   return count === 1 ? 'Seconded by 1 member' : `Seconded by ${count} members`;
@@ -19,10 +21,12 @@ export function MotionSecondControl({
   motion: GovernanceMotion;
   onChanged: () => void;
 }) {
+  const user = useAuthStore((s) => s.user);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const count = motion.secondCount ?? 0;
   const isDraft = motion.state === 'DRAFT';
+  const canSecond = isDraft && !isMotionProposer(motion, user);
 
   if (!isDraft && count === 0) {
     return null;
@@ -50,7 +54,7 @@ export function MotionSecondControl({
             ? secondsLabel(count)
             : 'No seconds yet. A second asks the board to put this to a vote.'}
         </span>
-        {isDraft && (
+        {canSecond && (
           <Button
             size="sm"
             variant={motion.youSeconded ? 'secondary' : 'default'}

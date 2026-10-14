@@ -173,6 +173,12 @@ export function updateMockMotion(
   return mockMotions.find((m) => m.id === id) ?? null;
 }
 
+export function removeMockMotion(id: string): GovernanceMotion | null {
+  const motion = mockMotions.find((m) => m.id === id) ?? null;
+  mockMotions = mockMotions.filter((m) => m.id !== id);
+  return motion;
+}
+
 export function updateMockMotionComments(
   id: string,
   update: (comments: MotionComment[]) => MotionComment[],
