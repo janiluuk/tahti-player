@@ -265,6 +265,7 @@ export function TrackEditorDialog({
                         return next;
                       })
                     }
+                    className="gap-1.5"
                   >
                     <Undo2Icon size={13} aria-hidden />
                     {field in draft
@@ -304,7 +305,11 @@ export function TrackEditorDialog({
       ) : null}
       <Dialog.Actions>
         <Dialog.Close>Cancel</Dialog.Close>
-        <Button disabled={!canApply} onClick={() => void apply()}>
+        <Button
+          className="gap-1.5"
+          disabled={!canApply}
+          onClick={() => void apply()}
+        >
           {busy ? (
             <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
           ) : null}

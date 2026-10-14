@@ -189,6 +189,7 @@ export function BackupRestoreDialog({
                     size="sm"
                     variant="secondary"
                     onClick={() => void chooseFolder(root.from)}
+                    className="gap-1.5"
                   >
                     <FolderOpenIcon size={14} aria-hidden />
                     Choose new folder…
@@ -214,6 +215,7 @@ export function BackupRestoreDialog({
         <Button
           disabled={busy || !preview || preview.filesFound === 0}
           onClick={() => void restore()}
+          className="gap-1.5"
         >
           {busy ? (
             <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
