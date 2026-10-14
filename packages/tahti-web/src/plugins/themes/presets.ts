@@ -80,13 +80,13 @@ const NUCLEAR_GREEN_VARS: Record<string, string> = {
   foreground: '#dadfde',
   'foreground-secondary': '#8fa39d',
   'foreground-input': '#dadfde',
-  primary: '#338c77',
-  'primary-foreground': '#dadfde',
+  primary: '#3a9a83',
+  'primary-foreground': '#0c1915',
   secondary: '#2b6357',
   'secondary-foreground': '#dadfde',
   border: '#435c55',
   'border-input': '#435c55',
-  ring: '#338c77',
+  ring: '#3a9a83',
 };
 
 export const NUCLEAR_GREEN_THEME: AdvancedTheme = {
@@ -96,7 +96,7 @@ export const NUCLEAR_GREEN_THEME: AdvancedTheme = {
   description:
     "Deep green-black background with a teal signal — the original Nuclear player's dark look.",
   tags: ['dark', 'nuclear'],
-  palette: ['#338c77', '#2b6357', '#142621', '#0c1915'],
+  palette: ['#3a9a83', '#2b6357', '#142621', '#0c1915'],
   vars: NUCLEAR_GREEN_VARS,
   dark: NUCLEAR_GREEN_VARS,
 };
