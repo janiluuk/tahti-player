@@ -189,14 +189,16 @@ export function TransparencyView() {
                 <tbody>
                   {ledger.map((e) => (
                     <tr key={e.id} className="border-border border-b">
-                      <td className="text-foreground-secondary py-2 pr-3 text-xs">
+                      <td className="text-foreground-secondary py-2 pr-3 text-xs whitespace-nowrap">
                         {e.createdAt.slice(0, 10)}
                       </td>
                       <td className="py-2 pr-3 font-mono text-xs">
                         {e.category}
                       </td>
                       <td className="py-2 pr-3">{e.description}</td>
-                      <td className="py-2">{centsLabel(e.amountCents)}</td>
+                      <td className="py-2 whitespace-nowrap">
+                        {centsLabel(e.amountCents)}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
