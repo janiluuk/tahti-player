@@ -43,9 +43,9 @@ describe('earnings help', () => {
       (section) => section.heading === 'The money flow',
     );
     expect(flow?.body.some((line) => line.includes('€4.45'))).toBe(true);
-    expect(flow?.body.some((line) => line.includes('payout runbook'))).toBe(
-      true,
-    );
+    expect(
+      flow?.body.some((line) => line.includes('not a guaranteed bank deposit')),
+    ).toBe(true);
     const where = article?.sections.find(
       (section) => section.heading === 'Where to look',
     );
