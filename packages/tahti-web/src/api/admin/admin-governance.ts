@@ -20,6 +20,7 @@ import {
   MOCK_GOVERNANCE_DOCUMENTS,
   MOCK_GOVERNANCE_MEETINGS,
 } from './admin-governance.mock';
+import { mockGrantHistory, mockGrantHistoryDetail } from './admin-grants.mock';
 
 // ── Governance ──────────────────────────────────────────────────────────────
 
@@ -254,14 +255,6 @@ export type AdminGrantYearSummary = {
   totalCents: number;
 };
 
-function mockGrantHistory(): AdminGrantYearSummary[] {
-  const year = new Date().getUTCFullYear();
-  return [
-    { year: year - 1, grantCount: 18, totalCents: 940000 },
-    { year: year - 2, grantCount: 14, totalCents: 710000 },
-  ];
-}
-
 export async function fetchAdminGrants(): Promise<{
   data: AdminGrantYearSummary[];
   meta: FetchMeta;
@@ -378,27 +371,6 @@ export async function fetchAdminGrantPreview(
   } catch (err) {
     return { data: null, meta: failMeta(err) };
   }
-}
-
-function mockGrantHistoryDetail(year: number): AdminGrantHistoryDetail | null {
-  const summary = mockGrantHistory().find((entry) => entry.year === year);
-  if (!summary) return null;
-  const names = ['Northern Lights', 'Kaiku Collective', null, 'DJ Moonlight'];
-  const share = Math.floor(summary.totalCents / summary.grantCount);
-  return {
-    ...summary,
-    disbursedAt: `${year + 1}-01-15T10:00:00.000Z`,
-    grants: Array.from({ length: summary.grantCount }, (_, index) => ({
-      publishedAs: names[index % names.length],
-      units: 40 - index,
-      amountCents: String(
-        index === 0
-          ? summary.totalCents - share * (summary.grantCount - 1)
-          : share,
-      ),
-      state: 'PAID',
-    })),
-  };
 }
 
 export async function fetchAdminGrantHistory(
