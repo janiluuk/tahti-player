@@ -451,10 +451,18 @@ export function ReleaseSmartLinksPanel({
           </ol>
         )}
         <div className="mt-4 flex flex-wrap gap-2">
-          <Button variant="secondary" onClick={() => setLibraryOpen(true)}>
+          <Button
+            className="gap-1.5"
+            variant="secondary"
+            onClick={() => setLibraryOpen(true)}
+          >
             <PlusIcon size={16} aria-hidden /> Add tracks from library
           </Button>
-          <Button variant="secondary" onClick={() => setNewUploadOpen(true)}>
+          <Button
+            className="gap-1.5"
+            variant="secondary"
+            onClick={() => setNewUploadOpen(true)}
+          >
             <UploadIcon size={16} aria-hidden /> Upload a new track
           </Button>
         </div>

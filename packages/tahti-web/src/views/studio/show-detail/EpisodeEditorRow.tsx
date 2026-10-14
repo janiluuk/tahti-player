@@ -50,6 +50,7 @@ export function EpisodeEditorRow({
           </p>
         </div>
         <Button
+          className="gap-1.5"
           size="sm"
           variant="text"
           onClick={() => setStatsOpen((open) => !open)}

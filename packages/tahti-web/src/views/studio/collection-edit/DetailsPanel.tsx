@@ -45,6 +45,7 @@ export function DetailsPanel({ state }: { state: CollectionEditState }) {
       title="Details"
       action={
         <Button
+          className="gap-1.5"
           size="sm"
           variant="secondary"
           onClick={() => setDetailsExpanded((v) => !v)}
