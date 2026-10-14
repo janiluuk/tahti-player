@@ -167,9 +167,9 @@ Track what has been ported from `apps/web` into the Nuclear listen/studio POC.
 
 | Feature | Upstream Nuclear | This fork | Status | Notes |
 |---------|------------------|-----------|--------|-------|
-| MCP server (Streamable HTTP) | Tauri `packages/player` MCP | same paths | **complete / as-is** | Byte-identical to sibling `nuclear` checkout; Settings → Integrations in **desktop player**; see [`docs/MCP.md`](docs/MCP.md) |
-| MCP tool meta | `@tahti-player/plugin-sdk/mcp` | same | **complete / as-is** | |
-| MPD / Nuclear Jam HTTP | Tauri player | present in player | desktop-only | Not ported to beta SPA (same as upstream); web Settings → Integrations lists Jam/MCP/MPD/Discord as "Desktop app only" |
+| MCP server (Streamable HTTP) | Tauri `packages/player` MCP | same paths | **broken** | Not started since 2026-09-01 (the desktop app mounts tahti-web, not Nuclear's `initPlayerApp`); being rebuilt, see [`docs/todo/desktop-mcp.md`](../../docs/todo/desktop-mcp.md) |
+| MCP tool meta | `@tahti-player/plugin-sdk/mcp` | same | unused | Only read by Nuclear's bridge dispatcher, which no longer runs |
+| MPD / Nuclear Jam HTTP | Tauri player | present in player | **broken** (not started since 2026-09-01) | Not ported to beta SPA (same as upstream); web Settings → Integrations lists Jam/MCP/MPD/Discord as "Desktop app only" |
 
 Web cutover (`beta.tahti.live`) does **not** host Nuclear MCP — localhost player control plane. Do not strip `packages/player/src-tauri/src/mcp/` when packaging desktop.
 

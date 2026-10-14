@@ -4,6 +4,8 @@ description: How the MCP server works internally and how to extend it.
 
 # MCP architecture
 
+> **Not running since 2026-09-01.** The desktop app now mounts the tahti-web UI, and nothing calls Nuclear's `initPlayerApp`, which started this server. The steps below describe the old Nuclear player and do not work in current builds. The server is being rebuilt on tahti-web's player: see `docs/todo/desktop-mcp.md` in the repository.
+
 Tahti Player's [MCP](https://modelcontextprotocol.io/) server lets your AI control the music player and do anything that plugins can do!
 
 The server runs on `localhost:8800/mcp` using the Streamable HTTP transport.

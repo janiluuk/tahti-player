@@ -4,6 +4,8 @@ description: Let AI agents control Tahti Player via the Model Context Protocol.
 
 # MCP server
 
+> **Not available in current builds.** The desktop app's MCP server has not started since 2026-09-01, and Settings → Integrations has no **Enable MCP Server** toggle. It is being rebuilt; this page will be updated when it is back.
+
 Tahti Player includes a built-in [MCP](https://modelcontextprotocol.io/) server that lets your AI control the music player, doing pretty much anything that you can!
 
 ## Enable the server
