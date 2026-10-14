@@ -506,15 +506,23 @@ export const HELP_ARTICLES: HelpArticle[] = [
   },
   {
     slug: 'desktop-mcp',
-    title: 'Desktop app & AI tools (MCP)',
+    title: 'AI tools (MCP)',
     description:
-      'Control playback from Claude, Cursor, or another AI tool using the separate Tahti Player desktop app.',
+      'Let Claude, Cursor or another AI tool search Tahti and manage your likes, follows and playlists, or control the desktop app.',
     sections: [
       {
-        heading: 'This is a separate app, not this website',
+        heading: 'Two ways to connect',
         body: [
-          'AI-tool control uses the Model Context Protocol (MCP) and only runs inside the Tahti Player desktop app (Tauri), not on this website — a browser tab can’t host the local server an AI tool connects to.',
-          'If you only use tahti.live in a browser, this feature isn’t available to you yet; everything else in this guide still applies to the web app as usual.',
+          'Your Tahti account: an AI tool connects to the Tahti API with a personal API token. This works wherever you use Tahti, including this website.',
+          'The desktop app: an AI tool connects to the Tahti Player app on your computer and controls what it plays, its queue, your desktop library and radio.',
+        ],
+      },
+      {
+        heading: 'Connect your Tahti account',
+        body: [
+          'Create a token in Settings → Account → Sign-in & security → API tokens. A read-only token can search and list your likes and playlists; give it write access if the tool should also like tracks, follow artists and create or fill playlists.',
+          'Point your AI tool at the MCP server URL shown above the token list, with the Streamable HTTP transport, and send the token as a bearer token. For Claude Code: claude mcp add tahti-account --transport http <URL> --header "Authorization: Bearer <token>".',
+          'Anything the tool does is done as you, with the same rules as the website. Revoke the token to cut it off at once.',
         ],
       },
       {

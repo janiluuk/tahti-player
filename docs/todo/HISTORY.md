@@ -4556,3 +4556,16 @@ A sixth sweep batch, run while another session worked on the governance slices f
 - **Cause:** `RouterProvider` renders nothing until its async route load settles. `@storybook/react` wraps rendering in React's `act` only outside production, so a `storybook build` started plays against an empty canvas. The decorator also built a new router on every re-render (e.g. an auth store update), blanking the canvas again.
 - **Fix:** `withTahtiRouter` keeps one router per story, and the project `mount` in `.storybook/preview.ts` waits for it to resolve before the play runs (`storyRouterSettled`).
 - **Checks:** full `vitest --project storybook` run; a production build swept in headless Chromium went from 112 failing stories to none (the remaining console noise is external audio/embed URLs).
+
+## 2026-10-14 - Desktop MCP rebuilt, Tahti API MCP tools (tahti-player #737-#740, tahti-org #801)
+
+Asked for as "concentrate on the MCP side of things, see what exists and how this could be improved", then "do both, start with 1 and the docs fix".
+
+- **Found:** since `126a4fc9e` (2026-09-01) the desktop entry mounts the tahti-web UI and never called Nuclear's `initPlayerApp`, so the desktop MCP server (and MPD, the HTTP remote-control API and Discord Rich Presence) never started, while the docs called it complete. Its bridge drove Nuclear's stores, not tahti-web's player. `rmcp` 0.17 checks neither `Origin` nor `Host`. The API was described twice (Rust JSON and plugin-sdk), and `Settings` was callable but not discoverable. tahti-org's `/api/v1/mcp` had one tool.
+- **Docs fix (#737):** CUTOVER, FEATURES, `docs/MCP.md`, the docs site and the Help article said what worked.
+- **Rust (#738):** discovery tools ask the webview over the bridge (`Meta.listMethods`/`methodDetails`/`describeType`), the 1,000-line metadata copy is gone, `list_methods` without a domain lists the domains, and `origin.rs` refuses non-loopback `Host`/`Origin` (403).
+- **tahti-web (#739):** `src/lib/mcp/` domains Playback, Queue, Library (desktop library), Radio and Tahti over `usePlayerStore`, with argument checks; `packages/player/src/desktopMcp.ts` answers bridge requests and starts the server; Settings → Integrations has a working MCP switch with the URL in the desktop app. Docs site, architecture page, Help and the `tahti-mcp.zip` skill (API reference generated from the registry) rewritten.
+- **Tahti API (tahti-org #801):** `my_likes`, `my_playlists`, `like_track`, `follow_artist`, `create_playlist`, `add_to_playlist`, each running the API's own route as the caller via `inject` (same token gate, blocks and visibility).
+- **Account MCP in tahti-web (#740):** Settings → Account → API tokens shows the MCP URL with a copy button; the Help article explains both ways to connect.
+- **Checks:** `cargo test --lib` (286), tahti-web `lib/mcp`, `McpIntegrationRow` and `ApiTokensPanel` tests, the Settings and Help Storybook plays, tahti-org `routes/mcp` (10, through a real MCP client). Not tried: the running desktop app with a real MCP client (no headless display), or the account tools against staging.
+- **Left:** MPD, the HTTP remote-control API and Discord Rich Presence still don't start in the desktop app; Nuclear's `plugin-sdk/src/mcp` metadata and `player/src/services/bridge` dispatcher are unused.

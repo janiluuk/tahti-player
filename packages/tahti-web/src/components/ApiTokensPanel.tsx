@@ -14,6 +14,7 @@ import {
 import {
   createApiToken,
   fetchApiTokens,
+  mcpEndpointUrl,
   revokeApiToken,
   type ApiToken,
 } from '../api/api-tokens';
@@ -106,6 +107,23 @@ export function ApiTokensPanel() {
         Personal tokens for scripts and third-party integrations. Each token is
         shown only once when created.
       </p>
+      <div className="mb-4 flex flex-col gap-2" data-testid="api-tokens-mcp">
+        <p className="text-foreground-secondary text-sm">
+          AI tools such as Claude Code or Cursor can use a token with Tahti’s
+          MCP server: search, your likes and playlists, and with write access
+          liking, following and adding to playlists.
+        </p>
+        <div className="flex items-center gap-2">
+          <code className="border-border bg-background-secondary min-w-0 flex-1 overflow-x-auto rounded-md border px-3 py-2 text-sm whitespace-nowrap">
+            {mcpEndpointUrl()}
+          </code>
+          <CopyButton
+            text={mcpEndpointUrl()}
+            aria-label="Copy MCP server URL"
+            toastMessage="URL copied."
+          />
+        </div>
+      </div>
       {loading ? (
         <PageLoading label="Loading API tokens…" />
       ) : (
