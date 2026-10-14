@@ -116,23 +116,29 @@ export function AdminGrantCycleView() {
                 </p>
               ) : (
                 <>
-                  <div className="grid gap-3 sm:grid-cols-4">
-                    <StudioPanel title="Pool">
-                      <div className="text-xl font-bold">
-                        {formatEur(preview.poolCents)}
-                      </div>
-                    </StudioPanel>
-                    <StudioPanel title="Engagement units">
-                      <div className="text-xl font-bold">
-                        {preview.totalUnits.toLocaleString()}
-                      </div>
-                    </StudioPanel>
-                    <StudioPanel title={`Eligible ≥${MIN_UNITS}`}>
-                      <div className="text-xl font-bold">{eligible.length}</div>
-                    </StudioPanel>
-                    <StudioPanel title="Below threshold">
-                      <div className="text-xl font-bold">{belowThreshold}</div>
-                    </StudioPanel>
+                  <div className="@container">
+                    <div className="grid grid-cols-1 gap-3 @md:grid-cols-2 @4xl:grid-cols-4">
+                      <StudioPanel title="Pool">
+                        <div className="text-xl font-bold">
+                          {formatEur(preview.poolCents)}
+                        </div>
+                      </StudioPanel>
+                      <StudioPanel title="Engagement units">
+                        <div className="text-xl font-bold">
+                          {preview.totalUnits.toLocaleString()}
+                        </div>
+                      </StudioPanel>
+                      <StudioPanel title={`Eligible ≥${MIN_UNITS}`}>
+                        <div className="text-xl font-bold">
+                          {eligible.length}
+                        </div>
+                      </StudioPanel>
+                      <StudioPanel title="Below threshold">
+                        <div className="text-xl font-bold">
+                          {belowThreshold}
+                        </div>
+                      </StudioPanel>
+                    </div>
                   </div>
 
                   <SectionShell title="Per-artist allocation preview">
