@@ -72,4 +72,4 @@ Neo-brutalist, purposeful motion, no generic AI chrome. pnpm workspaces, Turbore
 
 - Don't install Rust or Tauri system deps to work on `tahti-web` — `pnpm dev:tahti` is pure Vite.
 - The lockfile (`pnpm-lock.yaml`) is committed; don't delete it — installs are deterministic against it.
-- CI snapshot mismatches warn but don't fail the workflow; a red CI run isn't always a real failure — check the logs.
+- A red CI run isn't always a real failure: Storybook shards sometimes lose their browser ("Browser connection was closed"); re-run the failed job. Snapshot mismatches in the core packages fail `test-core` and post a visual digest to the PR. Docs-only PRs skip every job except the gate. See [`docs/agent/TESTING.md`](./docs/agent/TESTING.md) → CI pipeline.
