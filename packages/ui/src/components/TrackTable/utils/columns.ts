@@ -48,14 +48,16 @@ export const getActionsColumn = <T extends Track>({
   const canOpen =
     Boolean(actions?.onOpenDetail) &&
     (!meta?.canOpenDetail || tracks.some(meta.canOpenDetail));
-  const always = [
-    displayQueueControls && actions?.onAddToQueue,
-    canEdit,
-    meta?.ContextMenuWrapper,
-  ].filter(Boolean).length;
+  const hasQueueButton = Boolean(displayQueueControls && actions?.onAddToQueue);
+  const hasContextMenu = Boolean(meta?.ContextMenuWrapper);
+  const always = [hasQueueButton, canEdit, hasContextMenu].filter(
+    Boolean,
+  ).length;
   const wide = Math.min(always + (canOpen ? 1 : 0), 4);
   const narrow = Math.min(
-    always + (canOpen && !actions?.onOpenDetails ? 1 : 0),
+    always -
+      (hasQueueButton && hasContextMenu ? 1 : 0) +
+      (canOpen && !actions?.onOpenDetails ? 1 : 0),
     4,
   );
   return {
