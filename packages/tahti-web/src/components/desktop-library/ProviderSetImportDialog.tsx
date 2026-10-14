@@ -345,7 +345,7 @@ export function ProviderSetImportDialog({
           </>
         ) : null}
         {state.phase === 'running' ? (
-          <Button disabled>
+          <Button className="gap-1.5" disabled>
             <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
             Downloading…
           </Button>

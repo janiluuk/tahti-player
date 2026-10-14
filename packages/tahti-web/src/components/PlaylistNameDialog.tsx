@@ -68,7 +68,11 @@ export function PlaylistNameDialog({
       </form>
       <Dialog.Actions>
         <Dialog.Close>Cancel</Dialog.Close>
-        <Button disabled={!name.trim() || busy} onClick={() => void submit()}>
+        <Button
+          className="gap-1.5"
+          disabled={!name.trim() || busy}
+          onClick={() => void submit()}
+        >
           {busy ? (
             <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
           ) : null}

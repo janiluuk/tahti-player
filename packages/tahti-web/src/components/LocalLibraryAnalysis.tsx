@@ -150,7 +150,12 @@ export function LocalLibraryAnalysis({ library, onChanged }: Props) {
       </div>
       {running ? (
         <>
-          <Button size="sm" variant="text" onClick={() => void togglePause()}>
+          <Button
+            className="gap-1.5"
+            size="sm"
+            variant="text"
+            onClick={() => void togglePause()}
+          >
             {paused ? (
               <PlayIcon size={14} aria-hidden />
             ) : (
@@ -159,6 +164,7 @@ export function LocalLibraryAnalysis({ library, onChanged }: Props) {
             {paused ? 'Resume' : 'Pause'}
           </Button>
           <Button
+            className="gap-1.5"
             size="sm"
             variant="text"
             onClick={() => void library.analysis.cancel()}
@@ -169,6 +175,7 @@ export function LocalLibraryAnalysis({ library, onChanged }: Props) {
         </>
       ) : (
         <Button
+          className="gap-1.5"
           size="sm"
           variant="text"
           disabled={summary !== null && remaining === 0}

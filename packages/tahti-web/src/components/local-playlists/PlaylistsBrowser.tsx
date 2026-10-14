@@ -104,6 +104,7 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
           separate from your Tahti cloud collections.
         </p>
         <Button
+          className="gap-1.5"
           size="sm"
           variant="text"
           disabled={choosing}
@@ -116,7 +117,12 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
           )}
           Import…
         </Button>
-        <Button size="sm" variant="secondary" onClick={() => setCreating(true)}>
+        <Button
+          className="gap-1.5"
+          size="sm"
+          variant="secondary"
+          onClick={() => setCreating(true)}
+        >
           <PlusIcon size={14} aria-hidden />
           New playlist
         </Button>

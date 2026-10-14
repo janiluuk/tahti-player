@@ -72,6 +72,7 @@ export function LocalLibraryTools({ library, onChanged }: Props) {
       >
         <p className="flex-1 text-xs font-semibold">Library tools</p>
         <Button
+          className="gap-1.5"
           size="sm"
           variant="text"
           onClick={() => setDuplicatesOpen(true)}
@@ -79,12 +80,18 @@ export function LocalLibraryTools({ library, onChanged }: Props) {
           <CopyIcon size={14} aria-hidden />
           Find duplicates
         </Button>
-        <Button size="sm" variant="text" onClick={() => setHistoryOpen(true)}>
+        <Button
+          className="gap-1.5"
+          size="sm"
+          variant="text"
+          onClick={() => setHistoryOpen(true)}
+        >
           <HistoryIcon size={14} aria-hidden />
           History
         </Button>
         {artwork.available ? (
           <Button
+            className="gap-1.5"
             size="sm"
             variant="text"
             disabled={artwork.running}
@@ -103,6 +110,7 @@ export function LocalLibraryTools({ library, onChanged }: Props) {
           </Button>
         ) : null}
         <Button
+          className="gap-1.5"
           size="sm"
           variant="text"
           disabled={backingUp}
@@ -115,7 +123,12 @@ export function LocalLibraryTools({ library, onChanged }: Props) {
           )}
           Back up catalog
         </Button>
-        <Button size="sm" variant="text" onClick={() => void chooseBackup()}>
+        <Button
+          className="gap-1.5"
+          size="sm"
+          variant="text"
+          onClick={() => void chooseBackup()}
+        >
           <ArchiveRestoreIcon size={14} aria-hidden />
           Restore…
         </Button>

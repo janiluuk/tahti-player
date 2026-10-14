@@ -101,7 +101,7 @@ export function PlaylistExportDialog({ playlist, library, onClose }: Props) {
       </div>
       <Dialog.Actions>
         <Dialog.Close>Cancel</Dialog.Close>
-        <Button disabled={busy} onClick={() => void run()}>
+        <Button className="gap-1.5" disabled={busy} onClick={() => void run()}>
           {busy ? (
             <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
           ) : null}

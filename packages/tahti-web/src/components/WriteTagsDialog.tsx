@@ -145,6 +145,7 @@ export function WriteTagsDialog({
       <Dialog.Actions>
         <Dialog.Close>Cancel</Dialog.Close>
         <Button
+          className="gap-1.5"
           disabled={busy || !preview || preview.writable === 0}
           onClick={() => void write()}
         >
