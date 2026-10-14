@@ -2,13 +2,12 @@
 
 **Status:** open
 
-Found by the sweeps of batches 52-54 (2026-10-14) and not fixed there. Batch 54 (#665-#679) fixed eight of the eleven items listed after batch 53; what is left, and what batch 54 found, is below.
+Found by the sweeps of batches 52-55 (2026-10-14) and not fixed there. Batch 55 (#681-#695) fixed three of the six items listed after batch 54; what is left, and what batch 55 found, is below.
 
 - [ ] Admin → Venues cannot say who submitted a venue: `GET /api/admin/venues` sends `createdBy` as an account id. Needs the submitter's username from tahti-org.
 - [ ] Track tables on a phone still cut titles after about twelve letters. #671 stopped the controls overlapping; there is no more room in the row without dropping a control or moving the actions into a menu.
-- [ ] `PluginItem` (the installed-plugins list) has the same name-and-author row as `PluginStoreItem` had before #675, including a `<p>` inside its `<h3>`.
-- [ ] Admin → Users at 1280 px: the account's name row (name plus role badge) is 5 px wider than its column; not visibly cut.
-- [ ] The mock app has no Jam sessions, so a Jam page (#668) cannot be checked offline.
-- [ ] Not looked at in the desktop player: #671 (track table), #675 (add-on cards), #676 (log rows), #677 (one Tailwind build) and #679 (slider thumb) change shared components or CSS the player also uses.
+- [ ] Icon buttons with no gap between icon and label, outside the files #691, #692, #694 and #695 fixed: about 28 in `components/` (`AddToPlaylistButton`, `AddToPlaylistDialog`, `ArtistMusicTab`, `BackdropUploadButton`, `BackupRestoreDialog`, `PlayerOverlayControls`, `ChannelLayersMenu`, `ChannelLinksEditor`, `ChannelNavigationEditor`, `ChannelPlaylistPicker`, `ChannelShareButton`, `ConnectedSettingsModal`, `DmBlockButton`, `MultitrackTimeline`, `NavigationStructureWidget`, `StemMixer`, `StreamOverlayEditor`, `StudioRadioSubmissionPanel`, `TrackAnalysisSection`, `track-edit-dialog/AdvancedTab`, `TrackEditorDialog`). Read each before changing it: the scan also flags icon-only buttons and rows that already space their children.
+- [ ] At 320 px only (fine at 360): the artist page header row and its track table's Title header, Library → Recordings rows, Studio → Audience and Stripe stat tiles, Studio → Governance tiles, Help → Earnings steps, Settings → Playback and Library → Upload overflow their column by 5-50 px.
+- [ ] Not looked at in the desktop player: #671 (track table), #675 (add-on cards), #676 (log rows), #677 (one Tailwind build), #679 (slider thumb), #681 (installed plugins), #690 (combobox) and #695 (local library buttons) change shared components or CSS the player also uses.
 
-Checked and not a bug: channel and track pages measure 32 px wider than their column because the full-bleed banner uses `-m-8` against the scroll frame's `p-8` and the frame clips at its own edge; the Feed cards' extra 12 px is the blurred glow behind each card; the 768 px voting-activity list on Admin → Governance scrolls sideways on purpose (#647).
+Checked and not a bug: channel and track pages measure 24-32 px wider than their column because the full-bleed banner uses `-m-8` against the scroll frame's `p-8` and the frame clips at its own edge; the Feed cards' extra 12 px is the blurred glow behind each card; the 768 px voting-activity list on Admin → Governance scrolls sideways on purpose (#647); the phone avatar's unread badge sits outside the 24 px avatar on purpose (#666); the stem editor's 1 px "level" rows are screen-reader-only labels; the hidden file inputs flagged as unlabeled are `aria-hidden` with `tabindex="-1"` (#639); the crawler counted no `h1` on `/account`, but it measured during the redirect; `/settings/account` has one ("Account") in the Settings dialog.
