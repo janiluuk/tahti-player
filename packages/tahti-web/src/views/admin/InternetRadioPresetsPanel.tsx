@@ -199,6 +199,7 @@ export function InternetRadioPresetsPanel() {
               </div>
               <div className="flex shrink-0 items-center gap-2">
                 <Button
+                  className="gap-1.5"
                   size="sm"
                   variant={preset.enabled ? 'secondary' : 'default'}
                   onClick={() => toggleEnabled(preset)}
@@ -211,6 +212,7 @@ export function InternetRadioPresetsPanel() {
                   {preset.enabled ? 'Disable' : 'Enable for everyone'}
                 </Button>
                 <Button
+                  className="gap-1.5"
                   size="sm"
                   variant="text"
                   onClick={() => openEdit(preset)}
@@ -219,6 +221,7 @@ export function InternetRadioPresetsPanel() {
                   Edit
                 </Button>
                 <Button
+                  className="gap-1.5"
                   size="sm"
                   variant="text"
                   onClick={() => {
@@ -281,6 +284,7 @@ export function InternetRadioPresetsPanel() {
             </span>
             {catalogLogoForName(draft.name) ? (
               <Button
+                className="gap-1.5"
                 type="button"
                 size="xs"
                 variant="text"
@@ -386,6 +390,7 @@ export function InternetRadioPresetsPanel() {
             />
           ) : (
             <Button
+              className="gap-1.5"
               type="button"
               disabled={pending || !draft.name.trim()}
               onClick={save}

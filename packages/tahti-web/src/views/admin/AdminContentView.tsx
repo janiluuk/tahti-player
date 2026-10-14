@@ -49,7 +49,12 @@ export function AdminContentView() {
             classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
           >
             <div>
-              <ButtonLink to="/admin/top-lists" size="sm" variant="secondary">
+              <ButtonLink
+                className="gap-1.5"
+                to="/admin/top-lists"
+                size="sm"
+                variant="secondary"
+              >
                 <ListMusicIcon size={15} aria-hidden /> Top lists
               </ButtonLink>
             </div>

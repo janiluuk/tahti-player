@@ -167,11 +167,16 @@ export function BetaTab() {
                   <div className="flex shrink-0 flex-wrap gap-2">
                     {app.status === 'PENDING' && (
                       <>
-                        <Button size="sm" onClick={() => openApprove(app)}>
+                        <Button
+                          className="gap-1.5"
+                          size="sm"
+                          onClick={() => openApprove(app)}
+                        >
                           <CheckCircle2Icon size={14} aria-hidden />
                           Approve
                         </Button>
                         <Button
+                          className="gap-1.5"
                           size="sm"
                           variant="text"
                           onClick={() => {
@@ -193,6 +198,7 @@ export function BetaTab() {
                       app.userId &&
                       !app.hasPassword && (
                         <Button
+                          className="gap-1.5"
                           size="sm"
                           variant="secondary"
                           onClick={() => {
@@ -272,6 +278,7 @@ export function BetaTab() {
             <Dialog.Actions>
               <Dialog.Close>Cancel</Dialog.Close>
               <Button
+                className="gap-1.5"
                 type="submit"
                 disabled={busy || !username.trim() || !displayName.trim()}
               >

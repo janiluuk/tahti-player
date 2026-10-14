@@ -159,6 +159,7 @@ export function RadioSubmissionsTab() {
                 </label>
                 <div className="flex flex-wrap gap-2">
                   <Button
+                    className="gap-1.5"
                     size="sm"
                     disabled={
                       busyId === active.id || active.status !== 'PENDING'
@@ -179,6 +180,7 @@ export function RadioSubmissionsTab() {
                     Approve to radio
                   </Button>
                   <Button
+                    className="gap-1.5"
                     size="sm"
                     variant="text"
                     disabled={
