@@ -69,9 +69,9 @@ export function InstallsPanel({
           {installs.map((install, index) => (
             <li
               key={install.id}
-              className="border-border bg-background-secondary/40 flex items-center gap-3 rounded-lg border p-3"
+              className="border-border bg-background-secondary/40 flex flex-wrap items-center gap-3 rounded-lg border p-3"
             >
-              <div className="min-w-0 flex-1">
+              <div className="min-w-0 flex-1 basis-40">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="font-medium">{install.widget.name}</span>
                   <Badge
