@@ -1,6 +1,6 @@
 # Desktop MCP and the Tahti API MCP
 
-**Status:** open
+**Status:** partial
 
 User request (2026-10-14): bring back the desktop app's MCP server, fix the docs that describe it, then grow the Tahti API MCP in tahti-org.
 
@@ -14,10 +14,10 @@ User request (2026-10-14): bring back the desktop app's MCP server, fix the docs
 
 ## Plan
 
-1. Docs say what works today (this file's first PR).
-2. Rust: discovery tools ask the webview for metadata over the bridge (one source of truth), `list_methods` without a domain lists the domains, reject requests whose `Origin` or `Host` is not loopback, Tahti naming.
-3. tahti-web `src/lib/mcp/`: domains over `usePlayerStore` (Playback, Queue), the desktop library (Library), radio (Radio) and Tahti search (Tahti); the desktop entry answers `bridge:request` with it; Settings → Integrations gets a working MCP toggle and URL in the desktop app.
-4. Docs and the agent skill rewritten for the new tools.
+1. ~~Docs say what works today~~ (#737).
+2. ~~Rust:~~ (#738) discovery tools ask the webview for metadata over the bridge (one source of truth), `list_methods` without a domain lists the domains, reject requests whose `Origin` or `Host` is not loopback, Tahti naming.
+3. ~~tahti-web `src/lib/mcp/`~~ (#739): domains over `usePlayerStore` (Playback, Queue), the desktop library (Library), radio (Radio) and Tahti search (Tahti); the desktop entry answers `bridge:request` with it; Settings → Integrations gets a working MCP toggle and URL in the desktop app.
+4. ~~Docs and the agent skill rewritten for the new tools~~ (#739).
 5. tahti-org: more tools on `/api/v1/mcp` (favorites, playlists, follow, own library), each checking a write-scoped token; a Help section on connecting with an API token.
 
 Not in scope: MPD, the local HTTP remote-control API and Discord Rich Presence (also not started since 2026-09-01; listed in Settings as desktop features).

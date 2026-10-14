@@ -1,69 +1,54 @@
 ---
-description: How the MCP server works internally and how to extend it.
+description: How the desktop MCP server works internally and how to extend it.
 ---
 
 # MCP architecture
 
-> **Not running since 2026-09-01.** The desktop app now mounts the tahti-web UI, and nothing calls Nuclear's `initPlayerApp`, which started this server. The steps below describe the old Nuclear player and do not work in current builds. The server is being rebuilt on tahti-web's player: see `docs/todo/desktop-mcp.md` in the repository.
+The desktop app's MCP server lets an AI tool control the player. It runs on `127.0.0.1:8800/mcp` (up to 8809 when the port is taken) with the Streamable HTTP transport.
 
-Tahti Player's [MCP](https://modelcontextprotocol.io/) server lets your AI control the music player and do anything that plugins can do!
+## Pieces
 
-The server runs on `localhost:8800/mcp` using the Streamable HTTP transport.
+| Piece | Path |
+| ----- | ---- |
+| Rust server (`rmcp`), the four tools, the loopback check | `packages/player/src-tauri/src/mcp/` |
+| Rust ↔ webview bridge | `packages/player/src-tauri/src/bridge/` |
+| Desktop wiring: start/stop, answering bridge requests | `packages/player/src/desktopMcp.ts` |
+| The API: domains, methods, types, argument checks | `packages/tahti-web/src/lib/mcp/` |
+| Settings → Integrations row and its store | `packages/tahti-web/src/components/McpIntegrationRow.tsx`, `src/lib/mcp/desktop.ts` |
 
-## The four MCP tools
+## The four tools
 
-Rust defines four tools in `tools.rs`. Three are discovery tools that return metadata directly from Rust. The fourth, `call`, goes through a Rust-Typescript IPC bridge to execute methods in TypeScript.
+Rust defines the tools in `tools.rs`, and all four go over the bridge to the webview:
 
-| Tool | Purpose | Arguments |
-|------|---------|-----------|
-| `list_methods` | List methods in a domain | `{ domain: "Queue" }` |
-| `method_details` | Get parameter names, types, return type for a method | `{ method: "Queue.addToQueue" }` |
-| `describe_type` | Get the JSON shape of a data type (Track, QueueItem, etc.) | `{ type: "Track" }` |
-| `call` | Execute a method | `{ method: "Queue.addToQueue", params: { tracks: [...] } }` |
+| Tool | Bridge method |
+| ---- | ------------- |
+| `list_methods` | `Meta.listMethods` (`{}` lists the domains, `{ domain }` a domain's methods) |
+| `method_details` | `Meta.methodDetails` |
+| `describe_type` | `Meta.describeType` |
+| `call` | the method itself, e.g. `Playback.toggle` (`Meta.*` is refused) |
 
-## Discovery tools
+The API is described once, in `packages/tahti-web/src/lib/mcp/registry.ts`, so discovery always matches what `call` runs. `dispatchMcp` checks every argument against the method's parameters (type, allowed values, unknown names) before running it, and throws `McpUserError` with a message the agent can act on.
 
-`list_methods`, `method_details`, and `describe_type` are handled entirely in Rust. All API metadata (domain listings, method signatures, type shapes) is inlined in `mcp/metadata.rs` as static JSON.
+## The bridge
 
-## The IPC bridge
+1. An agent calls a tool. Rust's `Bridge::call()` stores a `oneshot` sender under a new trace id and emits `bridge:request` `{ traceId, method, params }` to the webview.
+2. `desktopMcp.ts` hears the event, runs `dispatchMcp(method, params)` and replies with `commands.bridgeRespond({ traceId, status: 'success', data })` or `{ status: 'error', error }`.
+3. Rust matches the trace id and returns the result. After 30 seconds without a reply it gives up.
 
-Tahti Player has a generic Rust-to-TypeScript bridge that the MCP server uses as an adapter. The bridge lives in `src-tauri/src/bridge/` (Rust) and `src/services/bridge/` (TypeScript).
+An error the method returned reaches the agent as tool error content. A broken bridge (timeout, closed channel) is an MCP internal error.
 
-### How `call` works
+## Lifecycle
 
-1. An agent calls the `call` tool. Rust receives the HTTP request.
-2. The MCP server passes the method name and params to `Bridge::call()`.
-3. The bridge generates a UUID trace ID, stores a `oneshot::Sender` in a pending map, and emits a `bridge:request` event to the webview with `{ traceId, method, params }`.
-4. TypeScript receives the event, validates the payload with Zod, and passes it to the bridge dispatcher.
-5. The dispatcher parses `"Queue.addToQueue"` into domain + method, looks up the `MethodMeta` (from `apiMeta` in the plugin SDK) to get the parameter order, converts named params to positional args, and calls the method on `TahtiPluginAPI`.
-6. TypeScript calls `invoke('bridge_respond', { response: { traceId, status: 'success', data } })` (or `{ traceId, status: 'error', error }` on failure).
-7. The bridge looks up the trace ID in the pending map and sends the response through the oneshot channel back to the original `call`.
+`mcp_start` and `mcp_stop` are Tauri commands. `desktopMcp.ts` exposes them to tahti-web as `globalThis.__TAHTI_NATIVE_MCP__`; the Settings row calls them, remembers the switch in `localStorage` (`tahti-desktop-mcp-enabled`), and `initDesktopMcp()` starts the server at launch when it was left on. The web app has no `__TAHTI_NATIVE_MCP__`, so the row there stays a "Desktop app only" note.
 
-### Timeout and error handling
+## Local requests only
 
-The bridge times out after 30 seconds. If TypeScript doesn't respond in that window, Rust removes the pending entry and returns an error.
+`origin.rs` wraps the router: a request whose `Host` is not `127.0.0.1`, `localhost` or `[::1]`, or whose `Origin` (when sent) is not one of those, gets a 403. That stops a web page from reaching the server through DNS rebinding.
 
-There are two error types:
+## Adding a method or domain
 
-- `InfrastructureError`: The bridge itself broke. Timeout, channel closed, event emission failed. Rust logs the error and returns it as an MCP protocol error (internal error). This means something is wrong with the bridge, not with the requested operation.
-- `HandlerError`: The method ran but returned an error (e.g., "unknown domain", "playlist not found"). Rust passes this through as tool error content, which the agent can read and react to.
+1. Add the method to a domain file in `packages/tahti-web/src/lib/mcp/` (or a new domain file, registered in `MCP_DOMAINS` in `registry.ts`).
+2. Name its return type in `MCP_TYPES`; `registry.test.ts` fails when a return type cannot be described.
+3. Update the domain table in `packages/docs/integrations/mcp-server.md` and the agent skill.
 
-## Server lifecycle
-
-`mcp_start` and `mcp_stop` are Tauri commands (not events), so the JS caller gets a `Result` back and can handle errors.
-
-### Startup
-
-MCP tries to bind to `localhost:8800` by default, but if that port is taken, it tries the next one up, up to 8809. If all are taken, it returns an error.
-
-### Settings
-
-The server can be disabled or enabled in the settings, and shows you its URL.
-
-## How to add a new domain
-
-1. Create the host interface, host implementation, and API class following the [host pattern](host-pattern.md).
-2. Create a `yourdomain.meta.ts` file in `packages/plugin-sdk/src/mcp/` exporting a `DomainMeta`.
-3. Import and register it in the `apiMeta` object in `packages/plugin-sdk/src/mcp/meta.ts`.
-4. Add the domain's methods and types to `packages/player/src-tauri/src/mcp/metadata.rs` so discovery tools can serve them.
-5. Update the domain list in the `list_methods` tool description string in `packages/player/src-tauri/src/mcp/tools.rs`.
+No Rust change is needed.
