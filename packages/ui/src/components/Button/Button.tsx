@@ -5,7 +5,7 @@ import { ComponentPropsWithoutRef, forwardRef } from 'react';
 import { cn } from '../../utils';
 
 export const buttonVariants = cva(
-  'inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none',
+  'focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none',
   {
     variants: {
       variant: {

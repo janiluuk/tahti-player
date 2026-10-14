@@ -23,7 +23,7 @@ exports[`NewsWidget > (Snapshot) renders a row of articles 1`] = `
       <div>
         <button
           aria-label="Scroll left"
-          class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border border-(length:--border-width) size-10 justify-center"
+          class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border border-(length:--border-width) size-10 justify-center"
           data-headlessui-state=""
           data-testid="news-widget-scroll-left"
           type="button"
@@ -50,7 +50,7 @@ exports[`NewsWidget > (Snapshot) renders a row of articles 1`] = `
       <div>
         <button
           aria-label="Scroll right"
-          class="inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border border-(length:--border-width) size-10 justify-center"
+          class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border border-(length:--border-width) size-10 justify-center"
           data-headlessui-state=""
           data-testid="news-widget-scroll-right"
           type="button"
