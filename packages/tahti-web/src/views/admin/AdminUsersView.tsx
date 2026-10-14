@@ -74,7 +74,7 @@ export const AdminUsersView = () => {
               </ButtonAnchor>
             </div>
 
-            <div className="grid min-h-[36rem] gap-4 lg:grid-cols-[20rem_minmax(0,1fr)]">
+            <div className="grid min-h-[36rem] grid-cols-1 gap-4 lg:grid-cols-[20rem_minmax(0,1fr)]">
               <StudioPanel className="flex min-h-0 flex-col gap-3">
                 <Input
                   aria-label="Search users"
