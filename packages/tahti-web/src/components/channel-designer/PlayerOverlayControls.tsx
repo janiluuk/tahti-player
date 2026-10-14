@@ -86,7 +86,12 @@ export function PlayerOverlayControls({
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between gap-3">
           <Eyebrow>Now playing</Eyebrow>
-          <Button size="sm" variant="secondary" onClick={onConfigureText}>
+          <Button
+            className="gap-1.5"
+            size="sm"
+            variant="secondary"
+            onClick={onConfigureText}
+          >
             <SettingsIcon size={14} aria-hidden />
             Configure text
           </Button>

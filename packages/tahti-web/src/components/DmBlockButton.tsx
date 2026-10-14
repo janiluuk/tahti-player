@@ -57,6 +57,7 @@ export function DmBlockButton({
         variant="text"
         disabled={busy}
         onClick={blocked ? unblock : () => setConfirming(true)}
+        className="gap-1.5"
       >
         <BanIcon size={14} aria-hidden />
         {blocked ? 'Unblock' : 'Block'}
