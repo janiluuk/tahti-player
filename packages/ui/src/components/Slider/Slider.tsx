@@ -169,8 +169,8 @@ export const SliderTrack: FC = () => {
           style={{ width: `${percentage}%` }}
         />
         <div
-          className="border-border absolute top-1/2 -ml-2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
-          style={{ left: `${percentage}%` }}
+          className="border-border absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
+          style={{ left: `calc(${percentage}% - ${percentage * 0.2}px)` }}
         />
       </div>
     </div>
