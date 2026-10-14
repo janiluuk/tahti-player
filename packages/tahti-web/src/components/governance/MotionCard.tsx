@@ -99,6 +99,7 @@ export function MotionCard({
     ? { color: 'secondary' as const, label: 'Expired' }
     : stateBadge(motion.state);
   const resultLabel = advisoryResultLabel(motion);
+  const eligibleVoters = motion.eligibleMemberCount ?? memberCount;
   const m = motion;
 
   return (
@@ -254,12 +255,12 @@ export function MotionCard({
           </span>
         </div>
       )}
-      {typeof memberCount === 'number' &&
-        memberCount > 0 &&
+      {typeof eligibleVoters === 'number' &&
+        eligibleVoters > 0 &&
         typeof m.totalVotes === 'number' &&
         (m.state === 'OPEN' || m.state === 'CLOSED') && (
           <p className="text-foreground-secondary mt-2 text-xs">
-            {m.totalVotes} of {memberCount} members voted
+            {m.totalVotes} of {eligibleVoters} members voted
             {m.state === 'OPEN'
               ? ' · tally revealed at close'
               : m.tally

@@ -111,6 +111,15 @@ describe('GovernanceMotionDetailView', () => {
     expect(container.textContent).not.toContain('Loading…');
   });
 
+  it('counts turnout against the members who could vote when it opened', async () => {
+    const router = createDetailRouter('motion-1');
+    await act(async () => {
+      root.render(<RouterProvider router={router} />);
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    expect(container.textContent).toContain('3 of 15 members voted');
+  });
+
   it('shows a not-found message for an unknown motion id', async () => {
     const router = createDetailRouter('motion-does-not-exist');
     await act(async () => {
