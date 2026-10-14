@@ -77,7 +77,7 @@ exports[`Card > (Snapshot) renders correctly 1`] = `
         Test album
       </div>
       <div
-        class="text-primary-foreground truncate text-xs opacity-60"
+        class="text-primary-foreground truncate text-xs"
       >
         Test artist
       </div>

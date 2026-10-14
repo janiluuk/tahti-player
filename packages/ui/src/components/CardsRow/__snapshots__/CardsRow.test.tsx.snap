@@ -207,7 +207,7 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
           Midnight Drive
         </div>
         <div
-          class="text-primary-foreground truncate text-xs opacity-60"
+          class="text-primary-foreground truncate text-xs"
         >
           Neon City
         </div>
@@ -288,7 +288,7 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
           Northern Lights
         </div>
         <div
-          class="text-primary-foreground truncate text-xs opacity-60"
+          class="text-primary-foreground truncate text-xs"
         >
           Aurora
         </div>
@@ -369,7 +369,7 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
           Echoes of Silence
         </div>
         <div
-          class="text-primary-foreground truncate text-xs opacity-60"
+          class="text-primary-foreground truncate text-xs"
         >
           The Wanderers
         </div>

@@ -134,7 +134,7 @@ export const Card: FC<CardProps> = ({
               </div>
             ))}
           {subtitle && (
-            <div className="text-primary-foreground truncate text-xs opacity-60">
+            <div className="text-primary-foreground truncate text-xs">
               {subtitle}
             </div>
           )}

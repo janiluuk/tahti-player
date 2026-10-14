@@ -75,7 +75,7 @@ export const TopListRow: FC<TopListRowProps> = ({
       </div>
       <div
         data-testid="top-list-value"
-        className="bg-primary/50 text-primary-foreground min-w-fit px-2 py-1 whitespace-nowrap tabular-nums"
+        className="bg-primary/50 text-foreground min-w-fit px-2 py-1 whitespace-nowrap tabular-nums"
         style={{ width: `${fillRatio * 100}%` }}
       >
         {formatValue(entry.value)}

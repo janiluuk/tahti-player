@@ -1347,7 +1347,7 @@ exports[`Artist view > with bio provider > (Snapshot) renders the artist view 1`
                         Hello World LP
                       </div>
                       <div
-                        class="text-primary-foreground truncate text-xs opacity-60"
+                        class="text-primary-foreground truncate text-xs"
                       >
                         Test Artist
                       </div>
