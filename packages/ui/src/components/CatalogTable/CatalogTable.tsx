@@ -145,6 +145,7 @@ export function CatalogTable<T>({
     (renderActions ? ACTIONS_WIDTH : 0);
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const gridRef = useRef<HTMLDivElement | null>(null);
   const virtualizer = useVirtualizer({
     count: rows.length,
     getScrollElement: () => scrollRef.current,
@@ -440,9 +441,16 @@ export function CatalogTable<T>({
       </div>
       <div className="tahti-hide-scrollbar min-h-0 flex-1 overflow-x-auto">
         <div
+          ref={gridRef}
           role="grid"
+          tabIndex={0}
+          aria-label="Rows"
           aria-rowcount={total}
-          className="flex h-full min-h-0 flex-col"
+          aria-activedescendant={
+            activeIndex !== null ? `${gridId}-r${activeIndex}` : undefined
+          }
+          onKeyDown={handleKeyDown}
+          className="focus-visible:ring-primary/50 flex h-full min-h-0 flex-col focus-visible:ring-2 focus-visible:outline-none"
           style={{ minWidth: contentWidth }}
         >
           <div
@@ -534,13 +542,8 @@ export function CatalogTable<T>({
           </div>
           <div
             ref={scrollRef}
-            tabIndex={0}
-            aria-label="Rows"
-            aria-activedescendant={
-              activeIndex !== null ? `${gridId}-r${activeIndex}` : undefined
-            }
-            onKeyDown={handleKeyDown}
-            className="focus-visible:ring-primary/50 tahti-hide-scrollbar min-h-0 flex-1 overflow-y-auto focus-visible:ring-2 focus-visible:outline-none"
+            role="rowgroup"
+            className="tahti-hide-scrollbar min-h-0 flex-1 overflow-y-auto"
           >
             <div
               className="relative w-full"
@@ -602,7 +605,7 @@ export function CatalogTable<T>({
                       ) {
                         setActiveIndex(item.index);
                         anchorRef.current = item.index;
-                        scrollRef.current?.focus({ preventScroll: true });
+                        gridRef.current?.focus({ preventScroll: true });
                       }
                     }}
                     onDoubleClick={(event) => {
