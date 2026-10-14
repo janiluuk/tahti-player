@@ -6,10 +6,12 @@ exports[`SelectableList > (Snapshot) renders a list of rows 1`] = `
   data-testid="selectable-list"
   role="radiogroup"
 >
-  <li>
+  <li
+    role="none"
+  >
     <button
       aria-checked="true"
-      class="w-full rounded-lg border px-3 py-2.5 text-left transition-colors border-primary bg-primary/10"
+      class="focus-visible:ring-primary w-full rounded-lg border px-3 py-2.5 text-left transition-colors outline-none focus-visible:ring-2 border-primary bg-primary/10"
       role="radio"
       type="button"
     >
@@ -34,10 +36,12 @@ exports[`SelectableList > (Snapshot) renders a list of rows 1`] = `
       </span>
     </button>
   </li>
-  <li>
+  <li
+    role="none"
+  >
     <button
       aria-checked="false"
-      class="w-full rounded-lg border px-3 py-2.5 text-left transition-colors hover:border-border hover:bg-background-secondary border-transparent"
+      class="focus-visible:ring-primary w-full rounded-lg border px-3 py-2.5 text-left transition-colors outline-none focus-visible:ring-2 hover:border-border hover:bg-background-secondary border-transparent"
       role="radio"
       type="button"
     >
