@@ -311,12 +311,13 @@ export function TakeMetamorphDialog({
       <Dialog.Actions>
         <Dialog.Close>Cancel</Dialog.Close>
         {previewing ? (
-          <Button variant="secondary" onClick={stopPreview}>
+          <Button className="gap-1.5" variant="secondary" onClick={stopPreview}>
             <PauseIcon size={16} aria-hidden />
             Stop preview
           </Button>
         ) : (
           <Button
+            className="gap-1.5"
             variant="secondary"
             disabled={!canRender}
             onClick={() => void preview()}
@@ -325,7 +326,11 @@ export function TakeMetamorphDialog({
             Preview
           </Button>
         )}
-        <Button disabled={!canRender} onClick={() => void addToMultitrack()}>
+        <Button
+          className="gap-1.5"
+          disabled={!canRender}
+          onClick={() => void addToMultitrack()}
+        >
           <PlusIcon size={16} aria-hidden />
           {busy === 'add' ? 'Adding…' : 'Add to Multitrack'}
         </Button>
