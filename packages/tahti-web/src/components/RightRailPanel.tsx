@@ -37,7 +37,8 @@ export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
 
   if (railOverride) {
     return (
-      <div
+      <aside
+        aria-label={railOverride.title}
         className="flex h-full min-h-0 flex-col"
         data-testid="right-rail"
         data-right-rail-override={railOverride.title}
@@ -50,18 +51,19 @@ export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
         <div className="tahti-hide-scrollbar min-h-0 flex-1 overflow-y-auto p-2">
           {railOverride.content}
         </div>
-      </div>
+      </aside>
     );
   }
 
   return (
-    <div
+    <aside
+      aria-label="Queue"
       className="flex h-full min-h-0 flex-col"
       data-testid="right-rail"
       data-right-rail-view="queue"
     >
       <SidebarQueuePanel toolbar={false} />
-    </div>
+    </aside>
   );
 }
 

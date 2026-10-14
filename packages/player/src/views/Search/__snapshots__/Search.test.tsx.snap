@@ -283,7 +283,8 @@ exports[`Search view > (Snapshot) renders the search view 1`] = `
         <div
           class="flex flex-1 flex-col overflow-hidden"
         >
-          <div
+          <nav
+            aria-label="Main"
             class="flex flex-1 flex-col"
             data-testid="sidebar-navigation"
           >
@@ -650,7 +651,7 @@ exports[`Search view > (Snapshot) renders the search view 1`] = `
                 </span>
               </div>
             </div>
-          </div>
+          </nav>
         </div>
         <div
           class="absolute top-0 bottom-0 w-1 cursor-col-resize transition-colors right-0"

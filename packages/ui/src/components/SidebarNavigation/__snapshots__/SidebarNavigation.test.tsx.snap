@@ -2,7 +2,8 @@
 
 exports[`SidebarNavigation > (Snapshot) renders flat nav items in compact mode 1`] = `
 <DocumentFragment>
-  <div
+  <nav
+    aria-label="Main"
     class="flex flex-1 flex-col"
     data-testid="sidebar-navigation"
   >
@@ -77,13 +78,14 @@ exports[`SidebarNavigation > (Snapshot) renders flat nav items in compact mode 1
         </span>
       </div>
     </div>
-  </div>
+  </nav>
 </DocumentFragment>
 `;
 
 exports[`SidebarNavigation > (Snapshot) renders flat nav items in normal mode 1`] = `
 <DocumentFragment>
-  <div
+  <nav
+    aria-label="Main"
     class="flex flex-1 flex-col"
     data-testid="sidebar-navigation"
   >
@@ -158,6 +160,6 @@ exports[`SidebarNavigation > (Snapshot) renders flat nav items in normal mode 1`
         </span>
       </div>
     </div>
-  </div>
+  </nav>
 </DocumentFragment>
 `;
