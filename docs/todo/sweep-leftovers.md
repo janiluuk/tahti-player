@@ -2,16 +2,13 @@
 
 **Status:** open
 
-Found by the sweeps of batches 52 and 53 (2026-10-14) and not fixed there.
+Found by the sweeps of batches 52-54 (2026-10-14) and not fixed there. Batch 54 (#665-#679) fixed eight of the eleven items listed after batch 53; what is left, and what batch 54 found, is below.
 
-- [ ] Track tables on a phone (artist page as its owner): the cover sticks out a few pixels past the row (a 44 px button in a 39 px cell), titles are cut after about ten letters, and the favourite and queue icons sit on top of each other. Shared `TrackTable`.
 - [ ] Admin → Venues cannot say who submitted a venue: `GET /api/admin/venues` sends `createdBy` as an account id. Needs the submitter's username from tahti-org.
-- [ ] Still going to the network in the mock app: governance minutes upload, attendance, conflicts of interest, notice deliveries and new documents.
-- [ ] `/dashboard` logs a router warning: the index route and the `/dashboard/$` splat both match it.
-- [ ] On a phone the phone top bar's unread badge covers the account button's caret.
-- [ ] On a phone an add-on's name and author share a line and both wrap ("Radio / Browser / directory").
-- [ ] A log row's scope chip touches the right edge on a phone, and a stem slider's thumb sticks out about 10 px at 100 %.
-- [ ] Admin → AGM agenda items on a phone: the inputs cut long titles beside their three buttons.
-- [ ] Jam tab titles do not name the host; subscribe and moderation titles use the handle, not the display name.
-- [ ] In the mock app every `/r/<slug>` shows the same release ("First Light EP").
-- [ ] Channel and track pages are 24–32 px wider than their column at every width (no visible effect found; not investigated).
+- [ ] Track tables on a phone still cut titles after about twelve letters. #671 stopped the controls overlapping; there is no more room in the row without dropping a control or moving the actions into a menu.
+- [ ] `PluginItem` (the installed-plugins list) has the same name-and-author row as `PluginStoreItem` had before #675, including a `<p>` inside its `<h3>`.
+- [ ] Admin → Users at 1280 px: the account's name row (name plus role badge) is 5 px wider than its column; not visibly cut.
+- [ ] The mock app has no Jam sessions, so a Jam page (#668) cannot be checked offline.
+- [ ] Not looked at in the desktop player: #671 (track table), #675 (add-on cards), #676 (log rows), #677 (one Tailwind build) and #679 (slider thumb) change shared components or CSS the player also uses.
+
+Checked and not a bug: channel and track pages measure 32 px wider than their column because the full-bleed banner uses `-m-8` against the scroll frame's `p-8` and the frame clips at its own edge; the Feed cards' extra 12 px is the blurred glow behind each card; the 768 px voting-activity list on Admin → Governance scrolls sideways on purpose (#647).
