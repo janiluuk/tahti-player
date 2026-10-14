@@ -6,6 +6,7 @@ import { Box, Button, ViewShell } from '@tahti-player/ui';
 import { fetchGovernanceMembers, fetchGovernanceMotion } from '../api/client';
 import type { GovernanceMember, GovernanceMotionDetail } from '../api/types';
 import { MotionCard } from '../components/governance/MotionCard';
+import { MotionMeetingNote } from '../components/governance/MotionMeetingNote';
 import { MotionSeconders } from '../components/governance/MotionSeconders';
 import { PageLoading } from '../components/PageStates';
 import { hasAccountRole } from '../lib/accountRoles';
@@ -121,6 +122,10 @@ export function GovernanceMotionDetailView({ id }: { id: string }) {
             onChanged={reload}
           />
         </ul>
+      )}
+
+      {user && !loading && !forbidden && motion && (
+        <MotionMeetingNote meeting={motion.meeting} />
       )}
 
       {user && !loading && !forbidden && motion && (
