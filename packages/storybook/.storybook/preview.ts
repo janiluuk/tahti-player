@@ -17,6 +17,11 @@ import {
 
 import { listBasicThemes } from '@tahti-player/themes';
 
+import {
+  forgetStoryRouter,
+  storyRouterSettled,
+} from '../src/tahti-web/_lib/decorators';
+
 // Every real basic theme (Default/Aurora/Ember/Lagoon/Moss/Tahti), read
 // from the same source the live app's theme picker uses — see
 // packages/themes/src/index.ts's listBasicThemes(). Keeps this toolbar in
@@ -58,8 +63,16 @@ const preview: Preview = {
   // before each story renders, and clears them afterwards so one story's
   // data never leaks into the next. See src/tahti-web/_lib/README.md.
   beforeEach: ({ parameters }) => {
+    forgetStoryRouter();
     setMockOverrides((parameters.mockData as MockOverrides | undefined) ?? {});
     return () => resetMockOverrides();
+  },
+  // Same as the React renderer's default mount, plus waiting for a
+  // story's router to render before its play runs (see storyRouterSettled).
+  mount: (context) => async () => {
+    await context.renderToCanvas();
+    await storyRouterSettled();
+    return context.canvas;
   },
   globalTypes: {
     themeId: {
