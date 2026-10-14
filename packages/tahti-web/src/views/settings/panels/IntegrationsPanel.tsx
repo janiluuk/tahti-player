@@ -1,5 +1,7 @@
 import { Badge, SectionShell } from '@tahti-player/ui';
 
+import { McpIntegrationRow } from '../../../components/McpIntegrationRow';
+import { getNativeMcp } from '../../../lib/mcp/desktop';
 import { LastFmIntegrationRow } from '../../../plugins/scrobble/LastFmIntegrationRow';
 import { ListenBrainzIntegrationRow } from '../../../plugins/scrobble/ListenBrainzIntegrationRow';
 
@@ -32,6 +34,10 @@ const DESKTOP_ONLY_INTEGRATIONS = [
 ] as const;
 
 export function IntegrationsPanel() {
+  const nativeMcp = getNativeMcp() !== null;
+  const desktopOnly = DESKTOP_ONLY_INTEGRATIONS.filter(
+    (item) => !(nativeMcp && item.id === 'mcp'),
+  );
   return (
     <div
       className="flex w-full max-w-xl flex-col"
@@ -49,7 +55,8 @@ export function IntegrationsPanel() {
         data-testid="integrations-desktop-only"
       >
         <div className="flex flex-col gap-6">
-          {DESKTOP_ONLY_INTEGRATIONS.map((item) => (
+          {nativeMcp ? <McpIntegrationRow /> : null}
+          {desktopOnly.map((item) => (
             <div key={item.id} className="flex flex-col gap-2">
               <div className="flex items-center gap-3">
                 <span className="text-foreground text-sm font-semibold">
