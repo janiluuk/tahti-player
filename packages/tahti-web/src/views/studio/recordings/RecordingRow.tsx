@@ -30,7 +30,7 @@ export function RecordingRow({
 
   return (
     <li
-      className={`flex items-center gap-3 border-l-4 p-3 transition-colors ${
+      className={`flex flex-wrap items-center gap-3 border-l-4 p-3 transition-colors ${
         published
           ? `border-l-transparent ${index % 2 === 0 ? 'bg-background-secondary/55' : 'bg-background'}`
           : 'border-l-primary bg-primary/10'
@@ -43,7 +43,7 @@ export function RecordingRow({
           className="text-foreground-secondary"
         />
       </div>
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0 flex-1 basis-28">
         {show.soundId ? (
           <Link
             to="/studio/sounds/$id"
