@@ -29,8 +29,8 @@ function ReleaseEntry({
   isLast: boolean;
 }) {
   return (
-    <div data-testid="release-note-entry" className="flex gap-4">
-      <div className="flex w-4 flex-col items-center gap-1">
+    <div data-testid="release-note-entry" className="flex gap-3 sm:gap-4">
+      <div className="flex w-7 shrink-0 flex-col items-center gap-1">
         <div
           className={cn(
             'w-1 flex-1 rounded-b-full',
@@ -45,7 +45,7 @@ function ReleaseEntry({
           )}
         />
       </div>
-      <div className="my-4 flex flex-1 flex-col gap-1">
+      <div className="my-4 flex min-w-0 flex-1 flex-col gap-1">
         <div className="flex items-center justify-between px-1">
           <span className="text-foreground-secondary text-xs font-medium">
             Version {note.version}
@@ -59,7 +59,7 @@ function ReleaseEntry({
           </span>
         </div>
         <div className="border-border bg-background-secondary shadow-shadow flex-1 overflow-hidden rounded-md border-(length:--border-width)">
-          <ul className="flex list-disc flex-col gap-1.5 p-4 pl-8 text-sm">
+          <ul className="flex list-disc flex-col gap-1.5 p-3 pl-7 text-sm sm:p-4 sm:pl-8">
             {note.highlights.map((highlight) => (
               <li key={highlight}>{highlight}</li>
             ))}
@@ -99,8 +99,8 @@ export function WhatsNewPanel() {
 
 export function WhatsNewView() {
   return (
-    <ViewShell title="What's New" classes={{ scrollableArea: 'px-4' }}>
-      <div className="mx-auto flex w-full max-w-2xl flex-col pr-4 pl-2">
+    <ViewShell title="What's New">
+      <div className="mx-auto flex w-full max-w-2xl flex-col">
         <WhatsNewPanel />
       </div>
     </ViewShell>
