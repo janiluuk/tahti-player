@@ -47,7 +47,7 @@ const FanStat: FC<{
     className="border-border bg-background flex max-w-full min-w-0 flex-col gap-2 overflow-hidden rounded-lg border p-3"
   >
     <span className="text-foreground-secondary flex min-w-0 items-center gap-2 text-[11px] font-semibold tracking-wide break-words uppercase">
-      <Icon size={14} aria-hidden className="text-primary" />
+      <Icon size={14} aria-hidden className="text-primary shrink-0" />
       {label}
     </span>
     <strong className="font-display text-2xl font-extrabold tabular-nums">
@@ -64,12 +64,12 @@ export const FanSubscriptionStats: FC<FanSubscriptionStatsProps> = ({
 }) => (
   <section
     aria-label="Fan subscription summary"
-    className="flex max-w-full min-w-0 flex-col gap-4"
+    className="@container flex max-w-full min-w-0 flex-col gap-4"
   >
     <div
       data-tour-id="revenue-stats"
       data-testid="fan-order-stats"
-      className="grid min-w-0 grid-cols-2 gap-2 lg:grid-cols-[repeat(4,minmax(0,1fr))]"
+      className="grid min-w-0 grid-cols-2 gap-2 @xl:grid-cols-[repeat(4,minmax(0,1fr))]"
     >
       <FanStat
         label="Active subscribers"
