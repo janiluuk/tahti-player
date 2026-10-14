@@ -305,10 +305,10 @@ describe('TrackTable', () => {
     // icon-only favorite/actions cluster, not after it.
     expect(durationIndex).toBeGreaterThan(-1);
     const trailing = headerCells.slice(durationIndex + 1);
-    expect(trailing.length).toBe(2);
-    for (const cell of trailing) {
-      expect(cell.textContent?.trim()).toBe('');
-    }
+    expect(trailing.map((cell) => cell.textContent?.trim())).toEqual([
+      'Favorite',
+      'Actions',
+    ]);
   });
 
   it('selects rows via checkboxes and runs a bulk action on the selection', async () => {

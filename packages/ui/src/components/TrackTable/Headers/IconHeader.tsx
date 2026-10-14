@@ -10,10 +10,12 @@ type HeaderValue = string | number | Artwork;
 
 export function IconHeader<T extends Track>({
   Icon,
+  label,
   context,
   className = 'w-10',
 }: {
   Icon: FC<LucideProps>;
+  label: string;
   context: HeaderContext<T, HeaderValue>;
   className?: string;
 }) {
@@ -37,9 +39,12 @@ export function IconHeader<T extends Track>({
       onClick={onClick}
     >
       <span className="flex w-full items-center justify-center">
-        <Icon className="h-4 w-4" />
-        {isSorted === 'desc' && <SortDesc className="ml-1 h-4 w-4" />}
-        {isSorted === 'asc' && <SortAsc className="ml-1 h-4 w-4" />}
+        <Icon className="h-4 w-4" aria-hidden />
+        <span className="sr-only">{label}</span>
+        {isSorted === 'desc' && (
+          <SortDesc className="ml-1 h-4 w-4" aria-hidden />
+        )}
+        {isSorted === 'asc' && <SortAsc className="ml-1 h-4 w-4" aria-hidden />}
       </span>
     </th>
   );

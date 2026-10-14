@@ -31,6 +31,7 @@ export function SortableRow<T extends Track = Track>({
   } = useSortable({
     id: itemId,
     disabled: !isReorderable,
+    attributes: { role: 'row' },
   });
 
   const style = {
@@ -54,8 +55,7 @@ export function SortableRow<T extends Track = Track>({
           'border-l-primary bg-primary/10 border-l-2': isCurrent,
         },
       )}
-      {...attributes}
-      {...(isReorderable ? listeners : {})}
+      {...(isReorderable ? { ...attributes, ...listeners } : {})}
     >
       {row.getVisibleCells().map((cell) => (
         <Cell key={cell.id} cell={cell} />
