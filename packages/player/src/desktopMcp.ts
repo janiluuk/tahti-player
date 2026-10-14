@@ -2,6 +2,11 @@ import { listen } from '@tauri-apps/api/event';
 
 import { initDesktopMcp } from '../../tahti-web/src/lib/mcp/desktop';
 import { dispatchMcp } from '../../tahti-web/src/lib/mcp/registry';
+import {
+  dispatchMpd,
+  MPD_METHOD_PREFIX,
+} from '../../tahti-web/src/lib/mpd/bridge';
+import { initDesktopMpd } from '../../tahti-web/src/lib/mpd/desktop';
 import { commands } from './services/tauri/bindings';
 import { unwrapResult } from './services/tauri/results';
 
@@ -20,7 +25,10 @@ function isBridgeRequest(value: unknown): value is BridgeRequest {
 
 async function answer(request: BridgeRequest) {
   try {
-    const data = await dispatchMcp(request.method, request.params ?? {});
+    const dispatch = request.method.startsWith(MPD_METHOD_PREFIX)
+      ? dispatchMpd
+      : dispatchMcp;
+    const data = await dispatch(request.method, request.params ?? {});
     await commands.bridgeRespond({
       traceId: request.traceId,
       status: 'success',
@@ -35,12 +43,21 @@ async function answer(request: BridgeRequest) {
   }
 }
 
-/** Lets tahti-web start the MCP server and answers its bridge requests. */
+/** Lets tahti-web start the MCP and MPD servers and answers their bridge requests. */
 export async function installDesktopMcp(): Promise<void> {
   globalThis.__TAHTI_NATIVE_MCP__ = {
     start: async () => unwrapResult(await commands.mcpStart()),
     stop: async () => {
       unwrapResult(await commands.mcpStop());
+    },
+  };
+  globalThis.__TAHTI_NATIVE_MPD__ = {
+    start: async () => unwrapResult(await commands.mpdStart()),
+    stop: async () => {
+      unwrapResult(await commands.mpdStop());
+    },
+    notify: (subsystem) => {
+      void commands.bridgeNotify({ subsystem });
     },
   };
   await listen('bridge:request', (event) => {
@@ -50,4 +67,4 @@ export async function installDesktopMcp(): Promise<void> {
   });
 }
 
-export { initDesktopMcp };
+export { initDesktopMcp, initDesktopMpd };

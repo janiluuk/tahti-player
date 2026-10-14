@@ -58,6 +58,15 @@ export function playableToTrack(item: TahtiPlayable): Track {
   };
 }
 
+/** The track's album title, unless it is only the provider label `playableToTrack` puts there. */
+export function albumTitle(track: Track): string | null {
+  const title = track.album?.title;
+  if (!title || track.tags?.includes(title)) {
+    return null;
+  }
+  return title;
+}
+
 export function formatDuration(sec?: number | null): string {
   if (sec == null || !Number.isFinite(sec)) {
     return '';

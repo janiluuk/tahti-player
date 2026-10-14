@@ -16,7 +16,11 @@ import {
   type TahtiNativeLibrary,
 } from '../../tahti-web/src/lib/nativeLibrary';
 import { mountTahtiApp } from '../../tahti-web/src/TahtiApp';
-import { initDesktopMcp, installDesktopMcp } from './desktopMcp';
+import {
+  initDesktopMcp,
+  initDesktopMpd,
+  installDesktopMcp,
+} from './desktopMcp';
 import { commands } from './services/tauri/bindings';
 import { unwrapResult } from './services/tauri/results';
 
@@ -581,3 +585,4 @@ if (!rootElement) {
 await installDesktopMcp();
 await mountTahtiApp(rootElement);
 void initDesktopMcp();
+void initDesktopMpd();
