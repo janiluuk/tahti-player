@@ -462,7 +462,7 @@ export function RadioView() {
                               <Link
                                 to="/radio/show/$channelSlug"
                                 params={{ channelSlug: b.channelSlug }}
-                                className="block truncate text-sm font-medium underline-offset-2 hover:underline"
+                                className="block truncate text-sm leading-6 font-medium underline-offset-2 hover:underline"
                               >
                                 {b.note ?? b.displayName}
                               </Link>
@@ -551,7 +551,7 @@ export function RadioView() {
                                 <Link
                                   to="/t/$id"
                                   params={{ id: item.id }}
-                                  className={`block truncate text-sm font-medium underline-offset-2 hover:underline ${
+                                  className={`block truncate text-sm leading-6 font-medium underline-offset-2 hover:underline ${
                                     isPlaying ? 'text-accent-green-strong' : ''
                                   }`}
                                 >
