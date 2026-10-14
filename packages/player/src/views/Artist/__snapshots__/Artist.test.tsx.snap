@@ -1792,8 +1792,8 @@ exports[`Artist view > with bio provider > (Snapshot) renders the artist view 1`
                         style="width: 100%;"
                       />
                       <div
-                        class="border-border absolute top-1/2 -ml-2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
-                        style="left: 100%;"
+                        class="border-border absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
+                        style="left: calc(100% - 20px);"
                       />
                     </div>
                   </div>
@@ -3803,8 +3803,8 @@ exports[`Artist view > with social stats provider > (Snapshot) renders the artis
                         style="width: 100%;"
                       />
                       <div
-                        class="border-border absolute top-1/2 -ml-2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
-                        style="left: 100%;"
+                        class="border-border absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
+                        style="left: calc(100% - 20px);"
                       />
                     </div>
                   </div>

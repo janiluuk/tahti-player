@@ -1157,8 +1157,8 @@ exports[`Settings view > (Snapshot) renders the settings view 1`] = `
                                             style="width: 50%;"
                                           />
                                           <div
-                                            class="border-border absolute top-1/2 -ml-2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
-                                            style="left: 50%;"
+                                            class="border-border absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
+                                            style="left: calc(50% - 10px);"
                                           />
                                         </div>
                                       </div>

@@ -298,8 +298,8 @@ exports[`PlayerBar > (Snapshot) active states render 1`] = `
                       style="width: 60%;"
                     />
                     <div
-                      class="border-border absolute top-1/2 -ml-2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
-                      style="left: 60%;"
+                      class="border-border absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
+                      style="left: calc(60% - 12px);"
                     />
                   </div>
                 </div>
@@ -614,8 +614,8 @@ exports[`PlayerBar > (Snapshot) default render 1`] = `
                       style="width: 75%;"
                     />
                     <div
-                      class="border-border absolute top-1/2 -ml-2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
-                      style="left: 75%;"
+                      class="border-border absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
+                      style="left: calc(75% - 15px);"
                     />
                   </div>
                 </div>
@@ -933,8 +933,8 @@ exports[`PlayerBar > (Snapshot) long metadata truncation 1`] = `
                         style="width: 50%;"
                       />
                       <div
-                        class="border-border absolute top-1/2 -ml-2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
-                        style="left: 50%;"
+                        class="border-border absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
+                        style="left: calc(50% - 10px);"
                       />
                     </div>
                   </div>
@@ -1271,8 +1271,8 @@ exports[`PlayerBar > (Snapshot) no artwork fallback 1`] = `
                       style="width: 30%;"
                     />
                     <div
-                      class="border-border absolute top-1/2 -ml-2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
-                      style="left: 30%;"
+                      class="border-border absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-(length:--border-width) bg-white"
+                      style="left: calc(30% - 6px);"
                     />
                   </div>
                 </div>
