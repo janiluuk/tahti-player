@@ -24,7 +24,6 @@ export const ButtonAnchor = forwardRef<HTMLAnchorElement, ButtonAnchorProps>(
         aria-disabled={disabled || undefined}
         className={cn(
           buttonVariants({ variant, size, intent }),
-          'focus-visible:ring-primary focus-visible:ring-2',
           disabled && 'pointer-events-none cursor-not-allowed opacity-50',
           className,
         )}
