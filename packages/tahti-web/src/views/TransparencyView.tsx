@@ -1,7 +1,12 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { Box, SectionShell, ViewShell } from '@tahti-player/ui';
+import {
+  Box,
+  HorizontalScroll,
+  SectionShell,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import {
   fetchTransparencyGrants,
@@ -97,7 +102,10 @@ export function TransparencyView() {
                   value={String(Object.keys(ytd.byCategory).length)}
                 />
               </div>
-              <div className="mt-3 overflow-x-auto">
+              <HorizontalScroll
+                label={`Spending ${ytd.year} by category`}
+                className="mt-3"
+              >
                 <table className="w-full border-collapse text-left text-sm">
                   <thead>
                     <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
@@ -114,7 +122,7 @@ export function TransparencyView() {
                     ))}
                   </tbody>
                 </table>
-              </div>
+              </HorizontalScroll>
             </SectionShell>
           )}
 
@@ -130,7 +138,10 @@ export function TransparencyView() {
                   }
                 />
               </div>
-              <div className="mt-3 overflow-x-auto">
+              <HorizontalScroll
+                label={`Grants ${grants.year}`}
+                className="mt-3"
+              >
                 <table className="w-full border-collapse text-left text-sm">
                   <thead>
                     <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
@@ -156,7 +167,7 @@ export function TransparencyView() {
                     ))}
                   </tbody>
                 </table>
-              </div>
+              </HorizontalScroll>
               <div className="mt-3 flex flex-wrap gap-2 text-xs">
                 {Array.from(
                   { length: 5 },
@@ -176,7 +187,7 @@ export function TransparencyView() {
           )}
 
           <SectionShell title="Latest ledger">
-            <div className="overflow-x-auto">
+            <HorizontalScroll label="Latest ledger">
               <table className="w-full border-collapse text-left text-sm">
                 <thead>
                   <tr className="border-border text-foreground-secondary border-b text-xs uppercase">
@@ -203,7 +214,7 @@ export function TransparencyView() {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </HorizontalScroll>
           </SectionShell>
         </>
       )}

@@ -14,6 +14,7 @@ import {
   ButtonLink,
   Dialog,
   FilterChips,
+  HorizontalScroll,
   Input,
   SaveButton,
   TabLabel,
@@ -429,7 +430,10 @@ export function RadioScheduleView() {
             </div>
           </div>
 
-          <div className="border-border overflow-x-auto rounded-xl border">
+          <HorizontalScroll
+            label="Weekly schedule"
+            className="border-border rounded-xl border"
+          >
             <div className="grid min-w-[46.5rem] grid-cols-[4.5rem_repeat(7,minmax(6rem,1fr))]">
               <div className="border-border bg-background-secondary/40 border-r border-b" />
               {days.map((day) => (
@@ -523,7 +527,7 @@ export function RadioScheduleView() {
                 </Fragment>
               ))}
             </div>
-          </div>
+          </HorizontalScroll>
         </div>
       </div>
 

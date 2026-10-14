@@ -5,6 +5,7 @@ import {
   CalendarHeatmap,
   DayOfWeekChart,
   FilterChips,
+  HorizontalScroll,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -124,7 +125,7 @@ export function StudioStatsDetailView() {
                     No daily points in this range.
                   </p>
                 ) : useHeatmap ? (
-                  <div className="mt-4 overflow-x-auto">
+                  <HorizontalScroll label="Daily activity" className="mt-4">
                     <CalendarHeatmap
                       days={data.daily.map((day) => ({
                         date: day.date,
@@ -140,7 +141,7 @@ export function StudioStatsDetailView() {
                       formatValue={(value) => `${value.toLocaleString()} plays`}
                       formatDate={formatAxisDate}
                     />
-                  </div>
+                  </HorizontalScroll>
                 ) : (
                   <div className="mt-4 h-48 w-full">
                     <DayOfWeekChart
