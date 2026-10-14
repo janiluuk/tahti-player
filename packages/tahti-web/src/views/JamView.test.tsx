@@ -106,6 +106,17 @@ describe('JamView', () => {
     expect(remove).toHaveBeenCalledWith('s1', 'g1');
   });
 
+  it('names the host in the tab title', async () => {
+    await renderAs(
+      'g1',
+      sessionWith([
+        { ...participant('host', 'HOST'), displayName: 'Liis Kask' },
+        participant('g1', 'GUEST'),
+      ]),
+    );
+    expect(document.title).toBe("Liis Kask's Jam · Tahti");
+  });
+
   it('gives a guest no remove buttons', async () => {
     await renderAs(
       'g1',
