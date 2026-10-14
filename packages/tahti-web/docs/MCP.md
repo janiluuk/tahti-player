@@ -1,5 +1,7 @@
 # Tahti Player MCP (desktop)
 
+> **Not running since 2026-09-01.** The desktop app now mounts the tahti-web UI, and nothing calls Nuclear's `initPlayerApp`, which started this server. The steps below describe the old Nuclear player and do not work in current builds. The server is being rebuilt on tahti-web's player: see `docs/todo/desktop-mcp.md` in the repository.
+
 The **Model Context Protocol** server is **not** part of the Vite SPA (`@tahti-player/tahti-web` / beta.tahti.live). It is part of the Tahti Player Tauri desktop stack and exposes the local player controls to AI tools.
 
 ## Where it lives
@@ -62,5 +64,5 @@ MCP requires the Tauri process + webview **bridge** to the live player API. A mu
 
 ## Product stance
 
-- **Desktop Tahti Player:** MCP **complete / local-only**.
+- **Desktop Tahti Player:** MCP **broken since 2026-09-01**, being rebuilt (local-only).
 - **Web cutover (`tahti-web`):** N/A for desktop MCP; an optional future *Tahti API* MCP would be a separate package, not a browser-hosted local control plane.
