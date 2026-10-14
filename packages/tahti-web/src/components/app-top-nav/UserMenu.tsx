@@ -37,6 +37,10 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
     return null;
   }
 
+  const unreadCount = isMobile
+    ? unreadNotificationCount + unreadMessagesCount
+    : 0;
+
   return (
     <div className="relative" ref={menuRef}>
       <Button
@@ -47,7 +51,11 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
           'hover:bg-background-secondary inline-flex items-center gap-1.5 rounded-lg border px-1.5 py-1 transition-colors active:scale-100',
           open ? 'border-border bg-background-secondary' : 'border-border/60',
         )}
-        aria-label={`Signed in as ${displayName}`}
+        aria-label={
+          unreadCount > 0
+            ? `Signed in as ${displayName}, ${unreadCount} unread`
+            : `Signed in as ${displayName}`
+        }
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
@@ -64,24 +72,24 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
           />
         ) : null}
         <span
-          className="bg-primary/20 text-primary font-display flex size-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold"
+          className="bg-primary/20 text-primary font-display relative flex size-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold"
           aria-hidden
         >
           {initial}
+          {unreadCount > 0 ? (
+            <Badge
+              variant="pill"
+              color="red"
+              className="absolute -top-1.5 -right-2 min-w-4 px-1 text-center text-[9px] font-bold"
+            >
+              {Math.min(9, unreadCount)}
+            </Badge>
+          ) : null}
         </span>
         <span className="text-foreground-secondary text-[10px]" aria-hidden>
           {open ? '▴' : '▾'}
         </span>
       </Button>
-      {isMobile && (unreadNotificationCount > 0 || unreadMessagesCount > 0) ? (
-        <Badge
-          variant="pill"
-          color="red"
-          className="absolute -top-1 -right-1 min-w-4 px-1 text-center text-[9px] font-bold"
-        >
-          {Math.min(9, unreadNotificationCount + unreadMessagesCount)}
-        </Badge>
-      ) : null}
 
       {open ? (
         <div
