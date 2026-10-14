@@ -1,4 +1,10 @@
 import { getJson, sendJson } from '../http';
+import { isForceMock } from '../mode';
+import {
+  mockDeclareGovernanceConflict,
+  mockGovernanceConflicts,
+  mockGovernanceNoticeDeliveries,
+} from './admin-governance-records.mock';
 
 export type GovernanceConflictDeclaration = {
   id: string;
@@ -24,6 +30,9 @@ export async function fetchAdminGovernanceConflicts(
   | { ok: true; data: GovernanceConflictDeclaration[] }
   | { ok: false; error: string }
 > {
+  if (isForceMock()) {
+    return mockGovernanceConflicts(meetingId);
+  }
   try {
     const data = await getJson<GovernanceConflictDeclaration[]>(
       `/api/admin/governance/meetings/${encodeURIComponent(meetingId)}/conflicts`,
@@ -49,6 +58,13 @@ export async function declareAdminGovernanceConflict(
   if (!displayName || !matter) {
     return { ok: false, error: 'Give the name and the matter.' };
   }
+  if (isForceMock()) {
+    return mockDeclareGovernanceConflict(meetingId, {
+      displayName,
+      matter,
+      recused: input.recused,
+    });
+  }
   try {
     const data = await sendJson<GovernanceConflictDeclaration>(
       `/api/admin/governance/meetings/${encodeURIComponent(meetingId)}/conflicts`,
@@ -69,6 +85,9 @@ export async function fetchAdminGovernanceNoticeDeliveries(
 ): Promise<
   { ok: true; data: GovernanceNoticeDelivery[] } | { ok: false; error: string }
 > {
+  if (isForceMock()) {
+    return mockGovernanceNoticeDeliveries(meetingId);
+  }
   try {
     const data = await getJson<GovernanceNoticeDelivery[]>(
       `/api/admin/governance/meetings/${encodeURIComponent(meetingId)}/notice-deliveries`,

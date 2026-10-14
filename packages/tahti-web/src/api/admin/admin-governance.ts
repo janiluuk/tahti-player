@@ -15,6 +15,11 @@ import type {
   UpsertGovernanceAttendance,
 } from '../types';
 import {
+  mockCreateGovernanceDocument,
+  mockGovernanceAttendance,
+  mockUpsertGovernanceAttendance,
+} from './admin-governance-records.mock';
+import {
   MOCK_ANNUAL_REPORTS,
   MOCK_BOARD_RESOLUTIONS,
   MOCK_GOVERNANCE_DOCUMENTS,
@@ -590,6 +595,9 @@ export async function uploadAdminGovernanceMinutes(
 export async function fetchAdminGovernanceAttendance(
   meetingId: string,
 ): Promise<{ data: GovernanceAttendanceItem[]; meta: FetchMeta }> {
+  if (isForceMock()) {
+    return mockGovernanceAttendance(meetingId);
+  }
   try {
     const data = await getJson<GovernanceAttendanceItem[]>(
       `/api/admin/governance/meetings/${encodeURIComponent(meetingId)}/attendance`,
@@ -607,6 +615,9 @@ export async function upsertAdminGovernanceAttendance(
   meetingId: string,
   input: UpsertGovernanceAttendance,
 ): Promise<{ data: GovernanceAttendanceItem | null; meta: FetchMeta }> {
+  if (isForceMock()) {
+    return mockUpsertGovernanceAttendance(meetingId, input);
+  }
   try {
     const data = await sendJson<GovernanceAttendanceItem>(
       `/api/admin/governance/meetings/${encodeURIComponent(meetingId)}/attendance`,
@@ -650,6 +661,9 @@ export async function createAdminGovernanceDocument(input: {
   publishedAt?: string | null;
   meetingId?: string | null;
 }): Promise<{ data: GovernanceDocument | null; meta: FetchMeta }> {
+  if (isForceMock()) {
+    return mockCreateGovernanceDocument(input);
+  }
   try {
     const data = await sendJson<GovernanceDocument>(
       '/api/admin/governance/documents',
