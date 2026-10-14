@@ -126,6 +126,16 @@ Methods that start playback take an optional `mode`: `now` (default) replaces wh
 3. `call` `Library.play` with `{ "ids": ["…"], "mode": "next" }` queues them after the current track.
 4. `call` `Playback.getState` confirms what is playing.
 
+## Your Tahti account (any AI tool)
+
+The Tahti API has its own MCP server at `https://<api host>/api/v1/mcp` (Settings → Account → API tokens shows the exact URL with a copy button). It works without the desktop app. Send a personal API token as `Authorization: Bearer tahti_…`:
+
+```bash
+claude mcp add tahti-account --transport http <URL> --header "Authorization: Bearer <token>"
+```
+
+Tools: `search`, `my_likes`, `my_playlists`, and with a write-scoped token `like_track`, `follow_artist`, `create_playlist` and `add_to_playlist`. Each runs the API's own route as you, with the same rules as the website.
+
 ## Agent skill
 
 If your AI tool supports skills (like Claude Code), install the one that teaches it these tools and the workflow above.
