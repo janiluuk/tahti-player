@@ -30,10 +30,10 @@ exports[`ThemeStoreItem > (Snapshot) renders installed state 1`] = `
         />
       </div>
       <div
-        class="border-border flex h-full w-full rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-none relative flex-1 flex-row items-center justify-between gap-2 !p-2"
+        class="border-border flex h-full w-full rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-none relative flex-1 flex-row flex-wrap items-center justify-between gap-2 !p-2"
       >
         <div
-          class="flex min-w-0 flex-1 flex-col gap-0.5"
+          class="flex min-w-0 flex-1 basis-40 flex-col gap-0.5"
         >
           <div
             class="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-0.5"
@@ -174,10 +174,10 @@ exports[`ThemeStoreItem > (Snapshot) renders with all props 1`] = `
         />
       </div>
       <div
-        class="border-border flex h-full w-full rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-none relative flex-1 flex-row items-center justify-between gap-2 !p-2"
+        class="border-border flex h-full w-full rounded-md border-(length:--border-width) p-4 bg-background-secondary text-foreground shadow-none relative flex-1 flex-row flex-wrap items-center justify-between gap-2 !p-2"
       >
         <div
-          class="flex min-w-0 flex-1 flex-col gap-0.5"
+          class="flex min-w-0 flex-1 basis-40 flex-col gap-0.5"
         >
           <div
             class="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-0.5"
