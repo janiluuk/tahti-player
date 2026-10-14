@@ -213,7 +213,7 @@ function NavigationItem({
         onDragEnd={onDragEnd}
         onDragOver={(event) => event.preventDefault()}
         onDrop={() => onDrop(siblings, item.id)}
-        className="border-border bg-background flex items-center gap-2 rounded-md border px-2 py-1.5"
+        className="border-border bg-background flex flex-wrap items-center gap-2 rounded-md border px-2 py-1.5"
         style={{ marginLeft: depth * 20 }}
       >
         {children.length > 0 ? (
@@ -239,58 +239,60 @@ function NavigationItem({
           className="text-foreground-secondary shrink-0 cursor-grab"
           aria-label="Drag to reorder"
         />
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 basis-28">
           <p className="truncate text-sm font-semibold">{item.label}</p>
           <p className="text-foreground-secondary truncate font-mono text-xs">
             {item.path}
           </p>
         </div>
-        <Tooltip content="Add sub-item" side="top">
-          <Button
-            size="icon-sm"
-            variant="text"
-            aria-label={`Add sub-item under ${item.label}`}
-            onClick={() => {
-              setAddingChild((value) => !value);
-              setExpanded(true);
-            }}
-          >
-            <PlusIcon size={15} aria-hidden />
-          </Button>
-        </Tooltip>
-        <Tooltip content="Move up" side="top">
-          <Button
-            size="icon-sm"
-            variant="text"
-            disabled={index === 0}
-            aria-label={`Move ${item.label} up`}
-            onClick={() => onMove(item.id, -1)}
-          >
-            <ChevronUpIcon size={15} aria-hidden />
-          </Button>
-        </Tooltip>
-        <Tooltip content="Move down" side="top">
-          <Button
-            size="icon-sm"
-            variant="text"
-            disabled={index === total - 1}
-            aria-label={`Move ${item.label} down`}
-            onClick={() => onMove(item.id, 1)}
-          >
-            <ChevronDownIcon size={15} aria-hidden />
-          </Button>
-        </Tooltip>
-        <Tooltip content="Remove" side="top">
-          <Button
-            size="icon-sm"
-            variant="text"
-            intent="danger"
-            aria-label={`Remove ${item.label}`}
-            onClick={() => onRemove(item.id)}
-          >
-            <Trash2Icon size={15} aria-hidden />
-          </Button>
-        </Tooltip>
+        <div className="ml-auto flex items-center gap-2">
+          <Tooltip content="Add sub-item" side="top">
+            <Button
+              size="icon-sm"
+              variant="text"
+              aria-label={`Add sub-item under ${item.label}`}
+              onClick={() => {
+                setAddingChild((value) => !value);
+                setExpanded(true);
+              }}
+            >
+              <PlusIcon size={15} aria-hidden />
+            </Button>
+          </Tooltip>
+          <Tooltip content="Move up" side="top">
+            <Button
+              size="icon-sm"
+              variant="text"
+              disabled={index === 0}
+              aria-label={`Move ${item.label} up`}
+              onClick={() => onMove(item.id, -1)}
+            >
+              <ChevronUpIcon size={15} aria-hidden />
+            </Button>
+          </Tooltip>
+          <Tooltip content="Move down" side="top">
+            <Button
+              size="icon-sm"
+              variant="text"
+              disabled={index === total - 1}
+              aria-label={`Move ${item.label} down`}
+              onClick={() => onMove(item.id, 1)}
+            >
+              <ChevronDownIcon size={15} aria-hidden />
+            </Button>
+          </Tooltip>
+          <Tooltip content="Remove" side="top">
+            <Button
+              size="icon-sm"
+              variant="text"
+              intent="danger"
+              aria-label={`Remove ${item.label}`}
+              onClick={() => onRemove(item.id)}
+            >
+              <Trash2Icon size={15} aria-hidden />
+            </Button>
+          </Tooltip>
+        </div>
       </div>
 
       {addingChild && (
