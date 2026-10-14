@@ -274,7 +274,7 @@ export function SupportTab() {
                     {new Date(detail.createdAt).toLocaleDateString()}
                   </p>
                 </div>
-                <div className="flex shrink-0 flex-wrap gap-1.5">
+                <div className="flex flex-wrap gap-1.5">
                   {detail.status === 'OPEN' && (
                     <Button
                       className="gap-1.5"
