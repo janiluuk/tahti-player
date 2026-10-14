@@ -51,8 +51,8 @@ function TimelineEntry({
   const linkUrl = safeUrl(entry.linkUrl, true);
 
   return (
-    <div data-testid="announcement-entry" className="flex gap-4">
-      <div className="flex w-4 flex-col items-center gap-1">
+    <div data-testid="announcement-entry" className="flex gap-3 sm:gap-4">
+      <div className="flex w-7 shrink-0 flex-col items-center gap-1">
         <div
           className={cn(
             'w-1 flex-1 rounded-b-full',
@@ -67,7 +67,7 @@ function TimelineEntry({
           )}
         />
       </div>
-      <div className="my-4 flex flex-1 flex-col gap-1">
+      <div className="my-4 flex min-w-0 flex-1 flex-col gap-1">
         <div className="flex items-center justify-between px-1">
           <span className="text-foreground-secondary text-xs font-medium">
             {entry.authorName}
@@ -88,7 +88,7 @@ function TimelineEntry({
               className="aspect-[16/7] w-full"
             />
           ) : null}
-          <div className="p-4">
+          <div className="p-3 sm:p-4">
             <p className="text-sm font-semibold">{entry.headline}</p>
             <p className="text-foreground-secondary mt-1 text-sm whitespace-pre-wrap">
               {entry.summary}
@@ -137,8 +137,8 @@ export function NewsView() {
   const hiddenCount = entries.length - INITIAL_COUNT;
 
   return (
-    <ViewShell title="Platform news" classes={{ scrollableArea: 'px-4' }}>
-      <div className="mx-auto flex w-full max-w-2xl flex-col pr-4 pl-2">
+    <ViewShell title="Platform news">
+      <div className="mx-auto flex w-full max-w-2xl flex-col">
         <p className="text-foreground-secondary mb-4 text-sm">
           News, service updates, and posts from the Tahti team.{' '}
           <Link
