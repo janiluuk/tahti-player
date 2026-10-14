@@ -133,6 +133,7 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
       <div className="flex items-center gap-1">
         <h3 className="flex-1 text-xs font-semibold">Smart playlists</h3>
         <Button
+          className="gap-1.5"
           size="sm"
           variant="text"
           onClick={() => setEditing({ id: null, definition: EMPTY_SMART })}

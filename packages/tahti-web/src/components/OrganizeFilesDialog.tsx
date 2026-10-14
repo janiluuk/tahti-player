@@ -168,7 +168,11 @@ export function OrganizeFilesDialog({
                 placeholder="Choose a folder…"
               />
             </div>
-            <Button variant="secondary" onClick={() => void pick()}>
+            <Button
+              className="gap-1.5"
+              variant="secondary"
+              onClick={() => void pick()}
+            >
               <FolderOpenIcon size={14} aria-hidden />
               Choose…
             </Button>
@@ -244,6 +248,7 @@ export function OrganizeFilesDialog({
         <Dialog.Actions>
           <Dialog.Close>Cancel</Dialog.Close>
           <Button
+            className="gap-1.5"
             disabled={!canRun}
             onClick={() => (move ? setConfirmingMove(true) : void run())}
           >

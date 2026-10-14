@@ -251,6 +251,7 @@ export function TrackOrganizeDialog({
               ) : null}
               {tagCounts.map(([name, count]) => (
                 <Button
+                  className="gap-1.5"
                   key={name}
                   size="sm"
                   variant="secondary"

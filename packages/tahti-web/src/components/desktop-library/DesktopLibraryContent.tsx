@@ -146,7 +146,12 @@ export function DesktopLibraryContent({
   return (
     <>
       <div className="flex flex-wrap gap-2">
-        <Button variant="secondary" onClick={onImportFiles} disabled={busy}>
+        <Button
+          className="gap-1.5"
+          variant="secondary"
+          onClick={onImportFiles}
+          disabled={busy}
+        >
           <LibraryIcon size={15} aria-hidden />
           {busy ? 'Working…' : 'Import files'}
         </Button>
@@ -182,7 +187,12 @@ export function DesktopLibraryContent({
           </Button>
         ) : null}
         {progress ? (
-          <Button variant="text" intent="danger" onClick={onCancelImport}>
+          <Button
+            className="gap-1.5"
+            variant="text"
+            intent="danger"
+            onClick={onCancelImport}
+          >
             <XIcon size={14} aria-hidden />
             Cancel
           </Button>
@@ -244,6 +254,7 @@ export function DesktopLibraryContent({
           {facetFilter ? (
             <div className="flex items-center gap-2">
               <Button
+                className="gap-1.5"
                 size="sm"
                 variant="secondary"
                 aria-label={`Clear ${FACET_KIND_LABEL[facetFilter.kind]} filter`}
@@ -273,6 +284,7 @@ export function DesktopLibraryContent({
               />
             </div>
             <Button
+              className="gap-1.5"
               variant={activeFilterCount ? 'secondary' : 'text'}
               aria-label={
                 activeFilterCount

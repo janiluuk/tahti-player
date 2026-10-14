@@ -171,6 +171,7 @@ export function DuplicatesDialog({
         </Dialog.Description>
         <div className="flex items-center gap-2">
           <Button
+            className="gap-1.5"
             variant="secondary"
             disabled={hashing !== null}
             onClick={() => void compare()}

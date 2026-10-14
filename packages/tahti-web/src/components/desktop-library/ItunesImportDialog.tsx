@@ -343,7 +343,7 @@ export function ItunesImportDialog({
 
       {state.phase === 'pick' ? (
         <div className="py-2">
-          <Button onClick={() => void state.pickFile()}>
+          <Button className="gap-1.5" onClick={() => void state.pickFile()}>
             <FolderOpenIcon size={14} aria-hidden />
             Choose library file…
           </Button>
@@ -420,11 +420,17 @@ export function ItunesImportDialog({
               </div>
             ))}
             <div className="flex flex-wrap gap-2">
-              <Button size="sm" variant="text" onClick={state.addMapping}>
+              <Button
+                className="gap-1.5"
+                size="sm"
+                variant="text"
+                onClick={state.addMapping}
+              >
                 <PlusIcon size={14} aria-hidden />
                 Add folder remap
               </Button>
               <Button
+                className="gap-1.5"
                 size="sm"
                 variant="secondary"
                 disabled={!state.dirty || working}
@@ -476,6 +482,7 @@ export function ItunesImportDialog({
         ) : null}
         {reviewing || state.phase === 'committing' ? (
           <Button
+            className="gap-1.5"
             disabled={working || state.dirty || importable === 0}
             onClick={() => void state.commit()}
           >

@@ -177,6 +177,7 @@ export function PlaylistImportDialog({
           {preview.missing > 0 || relinkRoot ? (
             <div className="flex items-center gap-2">
               <Button
+                className="gap-1.5"
                 size="sm"
                 variant="secondary"
                 disabled={busy !== null}
@@ -238,6 +239,7 @@ export function PlaylistImportDialog({
       <Dialog.Actions>
         <Dialog.Close>Cancel</Dialog.Close>
         <Button
+          className="gap-1.5"
           disabled={!preview || !name.trim() || busy !== null}
           onClick={() => void commit()}
         >

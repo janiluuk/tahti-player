@@ -54,6 +54,7 @@ export function SelectionToolbar({
   return selectedCount === 0 ? (
     <>
       <Button
+        className="gap-1.5"
         size="sm"
         variant="text"
         disabled={selectionBusy}
@@ -67,6 +68,7 @@ export function SelectionToolbar({
         Play all
       </Button>
       <Button
+        className="gap-1.5"
         size="sm"
         variant="text"
         disabled={selectionBusy || nativeTotal === 0}
@@ -79,6 +81,7 @@ export function SelectionToolbar({
   ) : (
     <>
       <Button
+        className="gap-1.5"
         size="sm"
         variant="text"
         disabled={selectionBusy}
@@ -108,6 +111,7 @@ export function SelectionToolbar({
         Add to queue
       </Button>
       <Button
+        className="gap-1.5"
         size="sm"
         variant="text"
         disabled={selectionBusy}
@@ -117,6 +121,7 @@ export function SelectionToolbar({
         Edit tags
       </Button>
       <Button
+        className="gap-1.5"
         size="sm"
         variant="text"
         disabled={selectionBusy}
@@ -126,6 +131,7 @@ export function SelectionToolbar({
         Write tags to files
       </Button>
       <Button
+        className="gap-1.5"
         size="sm"
         variant="text"
         disabled={selectionBusy}
@@ -135,6 +141,7 @@ export function SelectionToolbar({
         Organize files
       </Button>
       <Button
+        className="gap-1.5"
         size="sm"
         variant="text"
         disabled={selectionBusy || analyzing}
@@ -148,6 +155,7 @@ export function SelectionToolbar({
         Analyze
       </Button>
       <Button
+        className="gap-1.5"
         size="sm"
         variant="text"
         disabled={selectionBusy}
@@ -157,6 +165,7 @@ export function SelectionToolbar({
         Rate and label
       </Button>
       <Button
+        className="gap-1.5"
         size="sm"
         variant="text"
         disabled={selectionBusy}
@@ -166,6 +175,7 @@ export function SelectionToolbar({
         Add to playlist
       </Button>
       <Button
+        className="gap-1.5"
         size="sm"
         variant="text"
         intent="danger"

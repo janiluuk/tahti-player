@@ -90,6 +90,7 @@ export function SaveQueueLocalDialog({ isOpen, onClose, library }: Props) {
       <Dialog.Actions>
         <Dialog.Close>Cancel</Dialog.Close>
         <Button
+          className="gap-1.5"
           disabled={busy || !name.trim() || trackIds.length === 0}
           onClick={() => void save()}
         >

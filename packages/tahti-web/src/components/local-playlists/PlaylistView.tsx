@@ -304,7 +304,7 @@ export function PlaylistView({ library, id, onBack }: ViewProps) {
       data-testid="playlist-view"
     >
       <div className="flex flex-wrap items-center gap-1">
-        <Button size="sm" variant="text" onClick={onBack}>
+        <Button className="gap-1.5" size="sm" variant="text" onClick={onBack}>
           <ArrowLeftIcon size={14} aria-hidden />
           Playlists
         </Button>
@@ -315,6 +315,7 @@ export function PlaylistView({ library, id, onBack }: ViewProps) {
           </p>
         </div>
         <Button
+          className="gap-1.5"
           size="sm"
           variant="secondary"
           disabled={busy || !summary?.trackCount}
@@ -324,6 +325,7 @@ export function PlaylistView({ library, id, onBack }: ViewProps) {
           Play
         </Button>
         <Button
+          className="gap-1.5"
           size="sm"
           variant="text"
           disabled={busy || !summary?.trackCount}
@@ -418,6 +420,7 @@ export function PlaylistView({ library, id, onBack }: ViewProps) {
                   Add to queue
                 </Button>
                 <Button
+                  className="gap-1.5"
                   size="sm"
                   variant="text"
                   intent="danger"

@@ -47,6 +47,7 @@ export function LibraryRootsBlock({
       <div className="flex items-center gap-1">
         <p className="flex-1 text-xs font-semibold">Watched folders</p>
         <Button
+          className="gap-1.5"
           size="sm"
           variant="text"
           onClick={() => onAdd()}
@@ -68,6 +69,7 @@ export function LibraryRootsBlock({
         ) : null}
         {roots.length > 0 ? (
           <Button
+            className="gap-1.5"
             size="sm"
             variant="text"
             onClick={() => onRescan()}

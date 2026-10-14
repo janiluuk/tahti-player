@@ -200,6 +200,7 @@ export function SmartPlaylistDialog({
         </ul>
         <div>
           <Button
+            className="gap-1.5"
             size="sm"
             variant="text"
             onClick={() =>
@@ -266,6 +267,7 @@ export function SmartPlaylistDialog({
       <Dialog.Actions>
         <Dialog.Close>Cancel</Dialog.Close>
         <Button
+          className="gap-1.5"
           disabled={saving || problem !== null || draft.name.trim() === ''}
           onClick={() => void save()}
         >
