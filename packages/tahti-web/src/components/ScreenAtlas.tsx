@@ -545,7 +545,7 @@ function ReviewCaseCard({ c }: { c: MapCase }) {
               {c.caption}
             </p>
           </Button>
-          <div className="flex flex-shrink-0 items-center gap-2">
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
             <ParityBadges parity={parity} />
             <Button
               size="sm"
