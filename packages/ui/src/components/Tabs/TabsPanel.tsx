@@ -20,7 +20,7 @@ export const TabsPanel: FC<TabsPanelProps> = ({ children, className }) => {
   return (
     <TabPanel
       className={cn(
-        'relative flex-1 overflow-hidden outline-none',
+        'focus-visible:ring-primary relative flex-1 overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-inset',
         panelClassName,
         className,
       )}

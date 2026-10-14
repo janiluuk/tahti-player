@@ -577,7 +577,7 @@ exports[`Plugin Store > (Snapshot) renders the plugin store with plugins from th
                       />
                       <div
                         aria-labelledby="headlessui-tabs-tab-:re:"
-                        class="relative outline-none flex flex-1 overflow-hidden"
+                        class="focus-visible:ring-primary relative outline-none focus-visible:ring-2 focus-visible:ring-inset flex flex-1 overflow-hidden"
                         data-headlessui-state="selected"
                         data-selected=""
                         id="headlessui-tabs-panel-:ri:"
