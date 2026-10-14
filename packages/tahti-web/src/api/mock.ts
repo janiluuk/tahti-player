@@ -876,6 +876,7 @@ function buildMockProfile(username: string): PublicProfile {
   const content = stationContent(username);
   const archive = mockSoundItems(username);
   const releaseSlugFor = (i: number) => `${username}-release-${i + 1}`;
+  const favoritesSlug = mockFavoritesSlug(username);
 
   const releases = content.releases.map((rel, i) => ({
     id: `${username}-rel-${i + 1}`,
@@ -956,7 +957,7 @@ function buildMockProfile(username: string): PublicProfile {
     ],
     collections: [
       {
-        slug: 'favorites-vault',
+        slug: favoritesSlug,
         name: 'Favorites vault',
         type: 'PLAYLIST',
         style: 'LIST',
@@ -964,8 +965,8 @@ function buildMockProfile(username: string): PublicProfile {
         coverUrl: null,
         isFeatured: true,
         itemCount: 2,
-        url: `/u/${username}/c/favorites-vault`,
-        rssUrl: `/api/v1/collections/favorites-vault/rss.xml`,
+        url: `/u/${username}/c/${favoritesSlug}`,
+        rssUrl: `/api/v1/collections/${favoritesSlug}/rss.xml`,
       },
     ],
     links: {
@@ -978,14 +979,22 @@ function buildMockProfile(username: string): PublicProfile {
   };
 }
 
+/** Collection slugs are global in the API, so each mock artist's vault
+ * gets its own; Northern Lights keeps the bare one the fixtures use. */
+function mockFavoritesSlug(username: string): string {
+  return username === 'northern-lights'
+    ? 'favorites-vault'
+    : `${username}-favorites-vault`;
+}
+
 function buildMockCollection(
   slug: string,
-  username = 'northern-lights',
+  username = slug.match(/^(.+)-favorites-vault$/)?.[1] ?? 'northern-lights',
 ): PublicCollection {
   const archive = mockSoundItems(username);
   return {
     slug,
-    name: slug === 'favorites-vault' ? 'Favorites vault' : slug,
+    name: slug.endsWith('favorites-vault') ? 'Favorites vault' : slug,
     description: 'Mock public collection for the Nuclear × Tahti POC.',
     coverUrl: null,
     isPublic: true,
@@ -1523,7 +1532,7 @@ export function mockProfile(username: string): PublicProfile {
 
 export function mockCollection(
   slug: string,
-  username = 'northern-lights',
+  username = slug.match(/^(.+)-favorites-vault$/)?.[1] ?? 'northern-lights',
 ): PublicCollection {
   return mockFixture(
     'collection',
