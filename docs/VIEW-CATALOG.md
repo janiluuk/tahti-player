@@ -41,6 +41,12 @@ Legend:
 | [Logs](#logs)                             | Logs       | `src/views/Logs/Logs.tsx`                           | Has Story | LogViewer                          |
 | [What's New](#whats-new)                  | What's New | `src/views/WhatsNew/WhatsNew.tsx`                   | No Story  | Timeline components                |
 
+### Served to other devices by the desktop app
+
+| View                         | Route                                  | File                                          | Storybook | Candidate For                                                         |
+| ---------------------------- | -------------------------------------- | --------------------------------------------- | --------- | --------------------------------------------------------------------- |
+| [Tahti Jam remote](#tahti-jam-remote) | `/remote` on the Jam server (LAN, port 4120-4129) | `packages/tahti-web/src/remote/JamRemote.tsx` | Has Story | TahtiJam components; not the `/jam/$code` shared listening sessions |
+
 ### Player Sub-Components (no stories, candidates)
 
 | Component            | File                                                      | Potential Story                                                   |

@@ -1,9 +1,11 @@
 import { Badge, SectionShell } from '@tahti-player/ui';
 
 import { DiscordIntegrationRow } from '../../../components/DiscordIntegrationRow';
+import { JamIntegrationRow } from '../../../components/JamIntegrationRow';
 import { McpIntegrationRow } from '../../../components/McpIntegrationRow';
 import { MpdIntegrationRow } from '../../../components/MpdIntegrationRow';
 import { getNativeDiscord } from '../../../lib/discord/presence';
+import { getNativeJam } from '../../../lib/jam/desktop';
 import { getNativeMcp } from '../../../lib/mcp/desktop';
 import { getNativeMpd } from '../../../lib/mpd/desktop';
 import { LastFmIntegrationRow } from '../../../plugins/scrobble/LastFmIntegrationRow';
@@ -41,11 +43,13 @@ export function IntegrationsPanel() {
   const nativeMcp = getNativeMcp() !== null;
   const nativeMpd = getNativeMpd() !== null;
   const nativeDiscord = getNativeDiscord() !== null;
+  const nativeJam = getNativeJam() !== null;
   const desktopOnly = DESKTOP_ONLY_INTEGRATIONS.filter(
     (item) =>
       !(nativeMcp && item.id === 'mcp') &&
       !(nativeMpd && item.id === 'mpd') &&
-      !(nativeDiscord && item.id === 'discord'),
+      !(nativeDiscord && item.id === 'discord') &&
+      !(nativeJam && item.id === 'jam'),
   );
   return (
     <div
@@ -64,6 +68,7 @@ export function IntegrationsPanel() {
         data-testid="integrations-desktop-only"
       >
         <div className="flex flex-col gap-6">
+          {nativeJam ? <JamIntegrationRow /> : null}
           {nativeMcp ? <McpIntegrationRow /> : null}
           {nativeMpd ? <MpdIntegrationRow /> : null}
           {nativeDiscord ? <DiscordIntegrationRow /> : null}
