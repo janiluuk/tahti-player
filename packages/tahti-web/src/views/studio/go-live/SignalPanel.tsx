@@ -63,13 +63,13 @@ export function SignalPanel({ state }: { state: GoLiveState }) {
           : 'Start streaming in OBS, Traktor, Mixxx, or another Icecast-compatible app.'
       }
       action={
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Button
             type="button"
             size="sm"
             variant="secondary"
             onClick={() => setShowInfoModalOpen(true)}
-            className="rounded-full"
+            className="gap-1.5 rounded-full"
           >
             <Badge variant="dot" color={showInfoReady ? 'green' : 'yellow'} />
             Show info
