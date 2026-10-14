@@ -253,6 +253,7 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
           variant="secondary"
           disabled={!dirty || busy !== null}
           onClick={() => void save()}
+          className="gap-1.5"
         >
           {busy === 'save' ? (
             <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
@@ -264,6 +265,7 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
           variant="text"
           disabled={busy !== null}
           onClick={() => void analyze()}
+          className="gap-1.5"
         >
           {busy === 'analyze' ? (
             <LoaderCircleIcon size={14} className="animate-spin" aria-hidden />
