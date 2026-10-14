@@ -509,6 +509,7 @@ export type GovernanceMotion = {
   youVoted?: boolean;
   yourChoice?: string | null;
   commentCount?: number;
+  eligibleMemberCount?: number | null;
   secondCount?: number;
   youSeconded?: boolean;
   tally?: { YES: number; NO: number; ABSTAIN: number };
