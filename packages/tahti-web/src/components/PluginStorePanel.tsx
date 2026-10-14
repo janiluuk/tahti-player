@@ -56,30 +56,32 @@ export function PluginStorePanel() {
   );
 
   return (
-    <Tabs
-      vertical
-      className="flex min-w-0 flex-col gap-4 sm:flex-row"
-      listClassName="flex min-w-0 w-full flex-wrap gap-1 sm:w-40 sm:flex-nowrap sm:flex-col shrink-0"
-      panelClassName="min-w-0 flex-1"
-      selectedIndex={selectedIndex}
-      onChange={(index) => setCategory(categories[index]!.id)}
-      items={categories.map((candidate) => ({
-        id: candidate.id,
-        label: (
-          <span className="flex min-w-0 items-center gap-2">
-            <candidate.icon size={14} aria-hidden className="shrink-0" />
-            <span className="truncate">{candidate.label}</span>
-          </span>
-        ),
-        content: (
-          <AudienceBody
-            key={`${candidate.id}:${pluginCategory ?? ''}`}
-            categoryId={candidate.id}
-            target={pluginCategory}
-          />
-        ),
-      }))}
-    />
+    <div className="@container min-w-0">
+      <Tabs
+        vertical
+        className="flex min-w-0 flex-col gap-4 @2xl:flex-row"
+        listClassName="flex min-w-0 w-full flex-wrap gap-1 @2xl:w-40 @2xl:flex-nowrap @2xl:flex-col shrink-0"
+        panelClassName="min-w-0 flex-1"
+        selectedIndex={selectedIndex}
+        onChange={(index) => setCategory(categories[index]!.id)}
+        items={categories.map((candidate) => ({
+          id: candidate.id,
+          label: (
+            <span className="flex min-w-0 items-center gap-2">
+              <candidate.icon size={14} aria-hidden className="shrink-0" />
+              <span className="truncate">{candidate.label}</span>
+            </span>
+          ),
+          content: (
+            <AudienceBody
+              key={`${candidate.id}:${pluginCategory ?? ''}`}
+              categoryId={candidate.id}
+              target={pluginCategory}
+            />
+          ),
+        }))}
+      />
+    </div>
   );
 }
 
