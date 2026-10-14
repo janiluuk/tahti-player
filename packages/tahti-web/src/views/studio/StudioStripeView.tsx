@@ -115,6 +115,7 @@ export function StudioStripeView() {
                     {!connect.paymentsReady ? (
                       <Button
                         size="sm"
+                        className="h-auto min-h-9 py-1.5 text-left whitespace-normal"
                         onClick={() => {
                           void startFanConnectOnboard().then((result) => {
                             if (!result.ok) {
@@ -136,7 +137,11 @@ export function StudioStripeView() {
                           });
                         }}
                       >
-                        <PlugIcon size={15} aria-hidden className="mr-1.5" />
+                        <PlugIcon
+                          size={15}
+                          aria-hidden
+                          className="mr-1.5 shrink-0"
+                        />
                         Start / resume onboarding
                       </Button>
                     ) : null}

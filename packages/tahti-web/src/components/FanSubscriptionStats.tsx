@@ -69,7 +69,7 @@ export const FanSubscriptionStats: FC<FanSubscriptionStatsProps> = ({
     <div
       data-tour-id="revenue-stats"
       data-testid="fan-order-stats"
-      className="grid min-w-0 grid-cols-2 gap-2 @xl:grid-cols-[repeat(4,minmax(0,1fr))]"
+      className="grid min-w-0 grid-cols-1 gap-2 @[16rem]:grid-cols-2 @xl:grid-cols-[repeat(4,minmax(0,1fr))]"
     >
       <FanStat
         label="Active subscribers"
