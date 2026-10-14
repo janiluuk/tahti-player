@@ -223,7 +223,7 @@ export function AdminUserEditPanel({
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="@container flex flex-col gap-4">
       <StudioPanel>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="flex min-w-0 items-start gap-4">
@@ -298,7 +298,7 @@ export function AdminUserEditPanel({
           </p>
         ) : null}
 
-        <dl className="border-border mt-4 grid gap-3 border-t pt-4 text-sm sm:grid-cols-2 lg:grid-cols-4">
+        <dl className="border-border mt-4 grid gap-3 border-t pt-4 text-sm @sm:grid-cols-2 @2xl:grid-cols-4">
           <div>
             <dt className="text-foreground-secondary text-xs uppercase">
               Member since
@@ -338,7 +338,7 @@ export function AdminUserEditPanel({
           </div>
         </dl>
 
-        <dl className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <dl className="mt-5 grid gap-3 @sm:grid-cols-2 @2xl:grid-cols-4">
           <div className="bg-background-secondary rounded-lg p-3">
             <dt className="text-foreground-secondary text-xs uppercase">
               Engagement
@@ -392,7 +392,7 @@ export function AdminUserEditPanel({
         </dl>
       </StudioPanel>
 
-      <div className="grid gap-4 xl:grid-cols-2">
+      <div className="grid gap-4 @3xl:grid-cols-2">
         <StudioPanel
           title="Account details"
           description="Edit access, membership, and governance roles."
@@ -474,7 +474,7 @@ export function AdminUserEditPanel({
         </StudioPanel>
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-2">
+      <div className="grid gap-4 @3xl:grid-cols-2">
         <AdminUserEngagementPanel userId={detail.id} />
         <AdminUserRestrictionsPanel userId={detail.id} />
       </div>

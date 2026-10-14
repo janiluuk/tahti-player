@@ -18,12 +18,10 @@ describe('AdminChannelKindControl', () => {
       .spyOn(admin, 'setAdminChannelKind')
       .mockResolvedValue({ ok: true, channelKind: 'RADIO' });
     render(<AdminChannelKindControl slug="kaski" initialKind="ARTIST" />);
-    fireEvent.click(screen.getByRole('radio', { name: 'Radio station' }));
+    fireEvent.click(screen.getByRole('radio', { name: 'Radio' }));
     await vi.waitFor(() => expect(save).toHaveBeenCalledWith('kaski', 'RADIO'));
     expect(
-      screen
-        .getByRole('radio', { name: 'Radio station' })
-        .getAttribute('aria-checked'),
+      screen.getByRole('radio', { name: 'Radio' }).getAttribute('aria-checked'),
     ).toBe('true');
   });
 
@@ -33,7 +31,7 @@ describe('AdminChannelKindControl', () => {
       error: 'Channel not found',
     });
     render(<AdminChannelKindControl slug="kaski" initialKind="ARTIST" />);
-    fireEvent.click(screen.getByRole('radio', { name: 'Radio station' }));
+    fireEvent.click(screen.getByRole('radio', { name: 'Radio' }));
     await vi.waitFor(() =>
       expect(
         screen
