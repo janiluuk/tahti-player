@@ -509,6 +509,8 @@ export type GovernanceMotion = {
   youVoted?: boolean;
   yourChoice?: string | null;
   commentCount?: number;
+  secondCount?: number;
+  youSeconded?: boolean;
   tally?: { YES: number; NO: number; ABSTAIN: number };
 };
 

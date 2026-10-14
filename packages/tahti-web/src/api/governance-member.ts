@@ -40,6 +40,8 @@ let mockMotions: GovernanceMotion[] = [
     totalVotes: 0,
     youVoted: false,
     commentCount: 1,
+    secondCount: 1,
+    youSeconded: false,
   },
   {
     id: 'motion-1',
@@ -145,6 +147,14 @@ const mockMotionComments: Record<string, MotionComment[]> = {
     },
   ],
 };
+
+export function updateMockMotion(
+  id: string,
+  update: (motion: GovernanceMotion) => GovernanceMotion,
+): GovernanceMotion | null {
+  mockMotions = mockMotions.map((m) => (m.id === id ? update(m) : m));
+  return mockMotions.find((m) => m.id === id) ?? null;
+}
 
 export type FetchGovernanceMotionsOpts = {
   limit?: number;
