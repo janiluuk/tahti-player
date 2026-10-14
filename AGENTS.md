@@ -10,7 +10,7 @@ On-demand detail (do not load unless the task needs it):
 | --- | --- |
 | System architecture (repos, infra, diagram) | [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md) |
 | Data flow (listen / studio publish / go-live, traced) | [`docs/DATA-FLOW.md`](./docs/DATA-FLOW.md) |
-| Code style / components / domains / i18n | [`docs/agent/CODE-STYLE.md`](./docs/agent/CODE-STYLE.md) |
+| Code style / components / accessibility / layout / domains / i18n | [`docs/agent/CODE-STYLE.md`](./docs/agent/CODE-STYLE.md) |
 | View catalog (Storybook coverage, routes, candidates) | [`docs/VIEW-CATALOG.md`](./docs/VIEW-CATALOG.md) |
 | Marketplace registry checklist | [`docs/agent/REGISTRY.md`](./docs/agent/REGISTRY.md) |
 | Testing wrappers & conventions | [`docs/agent/TESTING.md`](./docs/agent/TESTING.md) |
