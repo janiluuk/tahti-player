@@ -79,6 +79,7 @@ export function AdvancedTab({
             size="sm"
             variant="secondary"
             onClick={() => setPlaylistOpen(true)}
+            className="gap-1.5"
           >
             <ListMusicIcon size={15} aria-hidden />
             Choose playlists
