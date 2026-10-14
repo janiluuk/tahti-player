@@ -77,7 +77,7 @@ Beta already talks to **live** `api.tahti.live` / `chat.tahti.live` / `cdn.tahti
 - [ ] Archive or slim `apps/web` Next tree (admin-only extract).
 - [ ] Channel custom-domain / wildcard host behaviour with SPA (Caddy/NPM #55).
 - [ ] Client-only storage migration story for favorites/history (localStorage namespaced).
-- [x] **Desktop MCP / MPD / Jam** — Nuclear MCP remains in `@tahti-player/player` **as-is** (not a SPA feature). Documented in [`docs/MCP.md`](docs/MCP.md); verify with `scripts/verify-nuclear-mcp-parity.mjs`.
+- [ ] **Desktop MCP / MPD / Jam** — since 2026-09-01 the desktop app mounts the tahti-web UI and none of Nuclear's local servers start (MCP, MPD, HTTP remote control, Discord). MCP is being rebuilt on tahti-web's player: [`docs/todo/desktop-mcp.md`](../../docs/todo/desktop-mcp.md).
 
 ---
 
@@ -440,7 +440,7 @@ Per the admin-host decision (§0.2 / §1.1), Next `apps/web` is **not** fully re
 
 ## Desktop integrations (MCP / MPD / Jam)
 
-Nuclear’s **MCP server** is Tauri-only (`packages/player` + `plugin-sdk/mcp`), localhost Streamable HTTP on `:8800–8809`. It is **preserved as-is** in this fork (parity with upstream `nuclear`). It is **out of scope** for the SPA cutover / `beta.tahti.live` — do not expose `/mcp` on the public edge. See [`docs/MCP.md`](docs/MCP.md).
+Nuclear’s **MCP server** is Tauri-only (`packages/player` + `plugin-sdk/mcp`), localhost Streamable HTTP on `:8800–8809`. **It has not started since 2026-09-01**, when the desktop entry switched from Nuclear's `initPlayerApp` to the tahti-web UI; MPD, the HTTP remote-control API and Discord Rich Presence stopped with it. MCP is being rebuilt on tahti-web's player ([`docs/todo/desktop-mcp.md`](../../docs/todo/desktop-mcp.md)). It is **out of scope** for the SPA cutover / `beta.tahti.live` — do not expose `/mcp` on the public edge. See [`docs/MCP.md`](docs/MCP.md).
 
 Web Settings → Integrations shows Jam, MCP, MPD and Discord Rich Presence as "Desktop app only" rows (no toggles) next to the live ListenBrainz and Last.fm scrobble toggles.
 
