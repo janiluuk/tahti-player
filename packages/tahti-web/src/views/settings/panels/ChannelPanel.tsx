@@ -40,6 +40,21 @@ import { SettingsHint, SettingsToggle } from '../SettingsFields';
 import { ChannelAutoplayToggle } from './ChannelAutoplayToggle';
 import { channelRenameNote } from './channelRenameNote';
 
+const CHANNEL_TABS = [
+  'appearance',
+  'discovery',
+  'domain',
+  'chat',
+  'moderators',
+];
+
+/** The tab a link asked for with `?tab=` (for example `?tab=moderators`),
+ * or the first tab. */
+function initialTabIndex(): number {
+  const tab = new URLSearchParams(window.location.search).get('tab');
+  return Math.max(0, CHANNEL_TABS.indexOf(tab ?? ''));
+}
+
 export function ChannelPanel() {
   const user = useAuthStore((s) => s.user);
   const channel = user?.channel;
@@ -99,6 +114,7 @@ export function ChannelPanel() {
   return (
     <Tabs
       listClassName="flex-wrap"
+      defaultIndex={initialTabIndex()}
       items={[
         {
           id: 'appearance',
