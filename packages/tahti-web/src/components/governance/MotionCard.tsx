@@ -4,14 +4,13 @@ import { useState } from 'react';
 import { Badge, Button, Input, Textarea } from '@tahti-player/ui';
 
 import {
-  fetchMotionComments,
   patchGovernanceMotion,
-  postMotionComment,
   voteOnMotion,
   type MotionComment,
 } from '../../api/client';
 import type { GovernanceMotion } from '../../api/types';
 import { toDatetimeLocalValue } from '../../lib/datetimeLocal';
+import { MotionDiscussion } from './MotionDiscussion';
 import { MotionSecondControl } from './MotionSecondControl';
 
 function stateBadge(state: string): {
@@ -83,14 +82,6 @@ export function MotionCard({
   preloadedComments?: MotionComment[];
   onChanged: () => void;
 }) {
-  const [expanded, setExpanded] = useState(defaultExpanded);
-  const [comments, setComments] = useState<MotionComment[]>(
-    preloadedComments ?? [],
-  );
-  const [commentsLoaded, setCommentsLoaded] = useState(
-    preloadedComments !== undefined,
-  );
-  const [commentBody, setCommentBody] = useState('');
   const [actionMsg, setActionMsg] = useState<string | null>(null);
   const [voting, setVoting] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
@@ -101,17 +92,6 @@ export function MotionCard({
     motion.closeAt ? toDatetimeLocalValue(motion.closeAt) : '',
   );
   const [savingEdit, setSavingEdit] = useState(false);
-
-  const openThread = () => {
-    setExpanded(true);
-    setCommentBody('');
-    if (!commentsLoaded) {
-      void fetchMotionComments(motion.id).then((res) => {
-        setComments(res.data);
-        setCommentsLoaded(true);
-      });
-    }
-  };
 
   const expired = isExpiredMotion(motion);
   const badge = expired
@@ -347,76 +327,14 @@ export function MotionCard({
         </p>
       )}
 
-      <div className="mt-3">
-        <Button
-          size="sm"
-          variant="text"
-          onClick={() => {
-            if (expanded) {
-              setExpanded(false);
-            } else {
-              openThread();
-            }
-          }}
-        >
-          {expanded ? 'Hide discussion' : 'Discussion'}
-        </Button>
-      </div>
-
-      {expanded && (
-        <div className="border-border mt-3 flex flex-col gap-2 border-t pt-3">
-          {!commentsLoaded ? (
-            <p className="text-foreground-secondary text-xs">Loading…</p>
-          ) : comments.length === 0 ? (
-            <p className="text-foreground-secondary text-xs">
-              No comments yet.
-            </p>
-          ) : (
-            <ul className="border-border divide-border divide-y overflow-hidden rounded-md border text-sm">
-              {comments.map((c) => (
-                <li key={c.id} className="px-3 py-2">
-                  <div className="text-foreground-secondary text-xs">
-                    {c.authorDisplayName ?? 'Member'}
-                    {c.createdAt
-                      ? `, ${new Date(c.createdAt).toLocaleString()}`
-                      : ''}
-                  </div>
-                  <p className="mt-1">{c.body}</p>
-                </li>
-              ))}
-            </ul>
-          )}
-          {m.state !== 'CLOSED' && !expired && (
-            <div className="flex flex-wrap gap-2">
-              <Input
-                className="min-w-[200px] flex-1"
-                value={commentBody}
-                onChange={(e) => setCommentBody(e.target.value)}
-                aria-label="Add a comment"
-                placeholder="Add a comment…"
-              />
-              <Button
-                size="sm"
-                disabled={!commentBody.trim()}
-                onClick={() => {
-                  void postMotionComment(m.id, commentBody.trim()).then((r) => {
-                    if (!r.ok) {
-                      setActionMsg(r.error);
-                      return;
-                    }
-                    setComments((prev) => [...prev, r.data]);
-                    setCommentBody('');
-                    setActionMsg('Comment posted.');
-                    onChanged();
-                  });
-                }}
-              >
-                Post
-              </Button>
-            </div>
-          )}
-        </div>
-      )}
+      <MotionDiscussion
+        motion={m}
+        canPost={m.state !== 'CLOSED' && !expired}
+        defaultExpanded={defaultExpanded}
+        preloadedComments={preloadedComments}
+        onMessage={setActionMsg}
+        onChanged={onChanged}
+      />
     </li>
   );
 }
