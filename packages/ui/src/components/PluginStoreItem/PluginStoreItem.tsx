@@ -82,16 +82,16 @@ export const PluginStoreItem: FC<PluginStoreItemProps> = ({
         <div className="flex flex-wrap items-center gap-2">
           <h3
             className={cn(
-              'text-foreground inline-flex flex-row items-baseline gap-2 leading-tight font-bold select-none',
+              'text-foreground inline-flex flex-row flex-wrap items-baseline gap-x-2 gap-y-0.5 leading-tight font-bold select-none',
               compact ? 'text-sm' : 'text-lg',
             )}
           >
             <span data-testid="plugin-store-item-name">{name}</span>
             {!compact && (
-              <p className="text-foreground-secondary text-sm font-normal select-none">
+              <span className="text-foreground-secondary text-sm font-normal select-none">
                 <span className="mr-1 opacity-60">{by}</span>
                 <span data-testid="plugin-store-item-author">{author}</span>
-              </p>
+              </span>
             )}
           </h3>
           {version && (
