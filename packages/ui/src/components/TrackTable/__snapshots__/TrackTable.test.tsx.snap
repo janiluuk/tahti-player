@@ -194,44 +194,6 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
                   Duration
                 </span>
               </th>
-              <th
-                class="w-28 text-center"
-                role="columnheader"
-              >
-                <span
-                  class="flex w-full items-center justify-center"
-                >
-                  <svg
-                    aria-hidden="true"
-                    class="lucide lucide-ellipsis-vertical h-4 w-4"
-                    fill="none"
-                    height="24"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                    width="24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle
-                      cx="12"
-                      cy="12"
-                      r="1"
-                    />
-                    <circle
-                      cx="12"
-                      cy="5"
-                      r="1"
-                    />
-                    <circle
-                      cx="12"
-                      cy="19"
-                      r="1"
-                    />
-                  </svg>
-                </span>
-              </th>
             </tr>
           </thead>
           <tbody>
@@ -309,9 +271,6 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
                   0:30
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
             <tr
               aria-describedby=""
@@ -387,9 +346,6 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
                   0:31
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
             <tr
               aria-describedby=""
@@ -465,9 +421,6 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
                   0:32
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
           </tbody>
         </table>
@@ -671,44 +624,6 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
                   Duration
                 </span>
               </th>
-              <th
-                class="w-28 text-center"
-                role="columnheader"
-              >
-                <span
-                  class="flex w-full items-center justify-center"
-                >
-                  <svg
-                    aria-hidden="true"
-                    class="lucide lucide-ellipsis-vertical h-4 w-4"
-                    fill="none"
-                    height="24"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                    width="24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle
-                      cx="12"
-                      cy="12"
-                      r="1"
-                    />
-                    <circle
-                      cx="12"
-                      cy="5"
-                      r="1"
-                    />
-                    <circle
-                      cx="12"
-                      cy="19"
-                      r="1"
-                    />
-                  </svg>
-                </span>
-              </th>
             </tr>
           </thead>
           <tbody>
@@ -786,9 +701,6 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
                   0:30
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
             <tr
               aria-describedby="DndDescribedBy-0"
@@ -864,9 +776,6 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
                   0:31
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
             <tr
               aria-describedby="DndDescribedBy-0"
@@ -942,9 +851,6 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
                   0:32
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
             <tr
               aria-describedby="DndDescribedBy-0"
@@ -1020,9 +926,6 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
                   0:33
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
             <tr
               aria-describedby="DndDescribedBy-0"
@@ -1098,9 +1001,6 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
                   0:34
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
           </tbody>
         </table>
@@ -1321,44 +1221,6 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
                   Duration
                 </span>
               </th>
-              <th
-                class="w-28 text-center"
-                role="columnheader"
-              >
-                <span
-                  class="flex w-full items-center justify-center"
-                >
-                  <svg
-                    aria-hidden="true"
-                    class="lucide lucide-ellipsis-vertical h-4 w-4"
-                    fill="none"
-                    height="24"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                    width="24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle
-                      cx="12"
-                      cy="12"
-                      r="1"
-                    />
-                    <circle
-                      cx="12"
-                      cy="5"
-                      r="1"
-                    />
-                    <circle
-                      cx="12"
-                      cy="19"
-                      r="1"
-                    />
-                  </svg>
-                </span>
-              </th>
             </tr>
           </thead>
           <tbody>
@@ -1436,9 +1298,6 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
                   0:30
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
             <tr
               aria-describedby=""
@@ -1514,9 +1373,6 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
                   0:31
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
             <tr
               aria-describedby=""
@@ -1592,9 +1448,6 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
                   0:32
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
             <tr
               aria-describedby=""
@@ -1670,9 +1523,6 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
                   0:33
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
             <tr
               aria-describedby=""
@@ -1748,9 +1598,6 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
                   0:34
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
           </tbody>
         </table>
@@ -1957,44 +1804,6 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                     Duration
                   </span>
                 </th>
-                <th
-                  class="w-28 text-center"
-                  role="columnheader"
-                >
-                  <span
-                    class="flex w-full items-center justify-center"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      class="lucide lucide-ellipsis-vertical h-4 w-4"
-                      fill="none"
-                      height="24"
-                      stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      viewBox="0 0 24 24"
-                      width="24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <circle
-                        cx="12"
-                        cy="12"
-                        r="1"
-                      />
-                      <circle
-                        cx="12"
-                        cy="5"
-                        r="1"
-                      />
-                      <circle
-                        cx="12"
-                        cy="19"
-                        r="1"
-                      />
-                    </svg>
-                  </span>
-                </th>
               </tr>
             </thead>
             <tbody>
@@ -2072,9 +1881,6 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                     0:30
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
                 aria-describedby=""
@@ -2150,9 +1956,6 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                     0:31
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
                 aria-describedby=""
@@ -2228,9 +2031,6 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                     0:32
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
                 aria-describedby=""
@@ -2306,9 +2106,6 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                     0:33
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
                 aria-describedby=""
@@ -2384,9 +2181,6 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                     0:34
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
                 aria-describedby=""
@@ -2462,9 +2256,6 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                     0:35
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
                 aria-describedby=""
@@ -2540,9 +2331,6 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                     0:36
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
                 aria-describedby=""
@@ -2618,9 +2406,6 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                     0:37
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
                 aria-describedby=""
@@ -2696,9 +2481,6 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                     0:38
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
                 aria-describedby=""
@@ -2774,9 +2556,6 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                     0:39
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
                 aria-describedby=""
@@ -2852,9 +2631,6 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                     0:40
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
                 aria-describedby=""
@@ -2930,9 +2706,6 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                     0:41
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
                 aria-describedby=""
@@ -3008,9 +2781,6 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                     0:42
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
                 aria-describedby=""
@@ -3086,9 +2856,6 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                     0:43
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
                 aria-describedby=""
@@ -3164,9 +2931,6 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                     0:44
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
                 aria-describedby=""
@@ -3242,9 +3006,6 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                     0:45
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
                 aria-describedby=""
@@ -3320,9 +3081,6 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                     0:46
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
                 aria-describedby=""
@@ -3398,9 +3156,6 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                     0:47
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
                 aria-describedby=""
@@ -3476,9 +3231,6 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                     0:48
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
                 aria-describedby=""
@@ -3554,16 +3306,13 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                     0:49
                   </div>
                 </td>
-                <td
-                  class="w-28"
-                />
               </tr>
               <tr
                 class="border-none"
                 style="height: 20160px;"
               >
                 <td
-                  colspan="7"
+                  colspan="6"
                 />
               </tr>
             </tbody>
@@ -3826,44 +3575,6 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
                   Duration
                 </span>
               </th>
-              <th
-                class="w-28 text-center"
-                role="columnheader"
-              >
-                <span
-                  class="flex w-full items-center justify-center"
-                >
-                  <svg
-                    aria-hidden="true"
-                    class="lucide lucide-ellipsis-vertical h-4 w-4"
-                    fill="none"
-                    height="24"
-                    stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    viewBox="0 0 24 24"
-                    width="24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle
-                      cx="12"
-                      cy="12"
-                      r="1"
-                    />
-                    <circle
-                      cx="12"
-                      cy="5"
-                      r="1"
-                    />
-                    <circle
-                      cx="12"
-                      cy="19"
-                      r="1"
-                    />
-                  </svg>
-                </span>
-              </th>
             </tr>
           </thead>
           <tbody>
@@ -3941,9 +3652,6 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
                   0:30
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
             <tr
               aria-describedby=""
@@ -4019,9 +3727,6 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
                   0:31
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
             <tr
               aria-describedby=""
@@ -4097,9 +3802,6 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
                   0:32
                 </div>
               </td>
-              <td
-                class="w-28"
-              />
             </tr>
           </tbody>
         </table>

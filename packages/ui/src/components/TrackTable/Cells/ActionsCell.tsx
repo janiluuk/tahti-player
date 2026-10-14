@@ -26,6 +26,7 @@ type ActionsCellMeta = {
   canEditTrack?: (track: Track) => boolean;
   canOpenDetail?: (track: Track) => boolean;
   ContextMenuWrapper?: FC<ContextMenuWrapperProps>;
+  actionsWidthClass?: string;
 };
 
 type IconButtonProps = {
@@ -175,11 +176,11 @@ export const ActionsCell = <T extends Track>({
   const isQueued = meta?.isTrackQueued?.(track) ?? false;
 
   if (!hasActions) {
-    return <td className="w-28" />;
+    return <td className={meta?.actionsWidthClass} />;
   }
 
   return (
-    <td className="w-28 px-1">
+    <td className={cn(meta?.actionsWidthClass, 'px-1')}>
       <div className="flex items-center justify-end gap-1">
         {showControls && hasAddToQueue && (
           <AddToQueueButton

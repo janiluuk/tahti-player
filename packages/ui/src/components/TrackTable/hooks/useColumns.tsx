@@ -10,6 +10,7 @@ import { useMemo } from 'react';
 
 import { pickArtwork, Track } from '@tahti-player/model';
 
+import { cn } from '../../../utils';
 import { formatTimeMillis } from '../../../utils/time';
 import { ActionsCell } from '../Cells/ActionsCell';
 import { FavoriteCell } from '../Cells/FavoriteCell';
@@ -30,6 +31,7 @@ export function useColumns<T extends Track = Track>(
     TrackTableProps<T>,
     'display' | 'labels' | 'actions' | 'features'
   >,
+  actionsColumn: { show: boolean; className: string },
 ): ColumnDef<T>[] {
   const { display, labels, actions, features } = props;
   const columnHelper = createColumnHelper<T>();
@@ -37,7 +39,7 @@ export function useColumns<T extends Track = Track>(
   const showFavorite =
     display?.displayFavorite && Boolean(actions?.onToggleFavorite);
   const showDelete = display?.displayDeleteButton && Boolean(actions?.onRemove);
-  const showActions = Boolean(display?.displayQueueControls);
+  const showActions = actionsColumn.show;
 
   const showSelect = Boolean(features?.selectable);
 
@@ -127,10 +129,11 @@ export function useColumns<T extends Track = Track>(
       showActions &&
         columnHelper.display({
           id: 'actions',
-          // Wider than IconHeader's fixed w-10 -- this column can hold up
-          // to four icon buttons (queue, edit, context menu, open detail).
           header: () => (
-            <th role="columnheader" className="w-28 text-center">
+            <th
+              role="columnheader"
+              className={cn(actionsColumn.className, 'text-center')}
+            >
               <span className="flex w-full items-center justify-center">
                 <EllipsisVertical className="h-4 w-4" />
               </span>
@@ -145,7 +148,15 @@ export function useColumns<T extends Track = Track>(
           cell: RemoveCell,
         }),
     ],
-    [labels, display, showFavorite, showActions, showDelete, showSelect],
+    [
+      labels,
+      display,
+      showFavorite,
+      showActions,
+      showDelete,
+      showSelect,
+      actionsColumn.className,
+    ],
   ).filter(Boolean) as ColumnDef<T>[];
 
   return columns;

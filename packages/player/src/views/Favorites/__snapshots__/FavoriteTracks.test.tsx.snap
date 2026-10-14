@@ -329,7 +329,7 @@ exports[`FavoriteTracks view > (Snapshot) renders with tracks 1`] = `
                           </span>
                         </th>
                         <th
-                          class="w-28 text-center"
+                          class="w-20 text-center"
                           role="columnheader"
                         >
                           <span
@@ -511,7 +511,7 @@ exports[`FavoriteTracks view > (Snapshot) renders with tracks 1`] = `
                           </button>
                         </td>
                         <td
-                          class="w-28 px-1"
+                          class="w-20 px-1"
                         >
                           <div
                             class="flex items-center justify-end gap-1"
@@ -744,7 +744,7 @@ exports[`FavoriteTracks view > (Snapshot) renders with tracks 1`] = `
                           </button>
                         </td>
                         <td
-                          class="w-28 px-1"
+                          class="w-20 px-1"
                         >
                           <div
                             class="flex items-center justify-end gap-1"
