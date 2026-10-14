@@ -49,5 +49,7 @@ describe('RoundImageUploadButton file picking', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Change avatar' }));
     expect(click).toHaveBeenCalled();
     expect(fileInput().accept).toBe('image/png,image/gif');
+    expect(fileInput().tabIndex).toBe(-1);
+    expect(fileInput().getAttribute('aria-hidden')).toBe('true');
   });
 });

@@ -89,6 +89,8 @@ describe('RadioStationCover', () => {
     const input = container.querySelector(
       'input[type="file"]',
     ) as HTMLInputElement;
+    expect(input.tabIndex).toBe(-1);
+    expect(input.getAttribute('aria-hidden')).toBe('true');
     const file = new File([Uint8Array.from([137, 80, 78, 71])], 'cover.png', {
       type: 'image/png',
     });

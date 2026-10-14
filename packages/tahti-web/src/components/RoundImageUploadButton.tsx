@@ -119,6 +119,8 @@ export function RoundImageUploadButton({
         accept={accept}
         disabled={busy}
         className="sr-only"
+        tabIndex={-1}
+        aria-hidden
         onChange={(e) => {
           void handleFiles(e.target.files);
           e.target.value = '';

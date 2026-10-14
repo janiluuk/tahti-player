@@ -136,6 +136,8 @@ export const RadioStationCoverEditButton: FC<
         accept={IMAGE_UPLOAD_ACCEPT_ATTR}
         disabled={busy}
         className="sr-only"
+        tabIndex={-1}
+        aria-hidden
         onChange={(event) => {
           const file = event.target.files?.[0];
           event.target.value = '';
