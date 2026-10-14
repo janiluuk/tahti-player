@@ -1,3 +1,4 @@
+import { setMockJamEnabled } from '@tahti-web/api/jam.mock';
 import type { JamEvent, JamSession } from '@tahti-web/api/types';
 
 import { MOCK_USERS } from '../_lib/decorators';
@@ -80,10 +81,10 @@ function json(body: unknown, status = 200): Response {
 }
 
 /**
- * The Jam API has no offline mock, so Jam stories stand in for it: `fetch`
- * answers the `/api/v1/jam` routes from `initial`, and `EventSource` is a
- * fake that pushes every change as the real SSE stream does. Other
- * requests pass through. Returns the cleanup for `beforeEach`.
+ * Jam stories switch off the app's offline Jam mock and stand in for the
+ * API: `fetch` answers the `/api/v1/jam` routes from `initial`, and
+ * `EventSource` is a fake that pushes every change as the real SSE stream
+ * does. Other requests pass through. Returns the cleanup for `beforeEach`.
  */
 export function installFakeJam(
   initial: JamSession,
@@ -188,8 +189,10 @@ export function installFakeJam(
     return json(null, 204);
   };
   window.EventSource = FakeEventSource as unknown as typeof EventSource;
+  setMockJamEnabled(false);
 
   return () => {
+    setMockJamEnabled(true);
     window.fetch = realFetch;
     window.EventSource = RealEventSource;
     streams.clear();
