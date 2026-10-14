@@ -202,7 +202,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
       )}
 
       {user && !loading && !forbidden && (
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="grid grid-cols-1 gap-3 min-[22.5rem]:grid-cols-2 sm:grid-cols-4">
           <StatChip
             value={openMotionsTotal}
             label="Open motions"
@@ -261,7 +261,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
       )}
 
       {user && !loading && !forbidden && (
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <GovernancePanel
             title="Needs your attention"
             icon={VoteIcon}
@@ -329,7 +329,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
       )}
 
       {user && !loading && !forbidden && (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <GovernancePanel title="Published meetings" icon={UsersIcon}>
             {meetings.length === 0 ? (
               <p className="text-foreground-secondary text-sm">
