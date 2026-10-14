@@ -14,6 +14,7 @@ import { useAuthStore } from '../../stores/authStore';
 import { ConfirmDialog } from '../ConfirmDialog';
 import { PageLoading } from '../PageStates';
 import { StudioPanel } from '../StudioPanel';
+import { moderationTime } from './moderationTime';
 
 type Pending = {
   action: 'remove' | 'ban';
@@ -123,9 +124,12 @@ export function ChatMessagesPanel({ slug: slugProp, onBanned }: Props) {
                       Banned
                     </Badge>
                   )}
-                  <span className="text-foreground-secondary text-xs">
-                    {new Date(message.createdAt).toLocaleString()}
-                  </span>
+                  <time
+                    dateTime={message.createdAt}
+                    className="text-foreground-secondary text-xs"
+                  >
+                    {moderationTime(message.createdAt)}
+                  </time>
                 </div>
                 <p className="break-words">{message.text}</p>
               </div>

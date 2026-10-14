@@ -12,6 +12,7 @@ import {
 import { useAuthStore } from '../../stores/authStore';
 import { PageLoading } from '../PageStates';
 import { StudioPanel } from '../StudioPanel';
+import { moderationTime } from './moderationTime';
 
 /** A ban set from a message carries the name its sender posted under. Older
  * bans were typed in by hash and have nothing but that to show. */
@@ -64,7 +65,10 @@ export function ChatBansPanel({ slug: slugProp }: Props) {
               <div className="min-w-0">
                 <div className="font-semibold break-words">{banName(ban)}</div>
                 <div className="text-foreground-secondary text-xs">
-                  Banned {new Date(ban.bannedAt).toLocaleString()}
+                  Banned{' '}
+                  <time dateTime={ban.bannedAt}>
+                    {moderationTime(ban.bannedAt)}
+                  </time>
                 </div>
               </div>
               <Tooltip content="Lift ban" side="top">
