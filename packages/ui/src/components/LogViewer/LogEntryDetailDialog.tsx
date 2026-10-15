@@ -1,6 +1,6 @@
-import { DateTime } from 'luxon';
 import { FC } from 'react';
 
+import { formatDateTime } from '../../utils/time';
 import { CopyButton } from '../CopyButton';
 import { Dialog } from '../Dialog';
 import { useLogViewerContext } from './context';
@@ -28,9 +28,7 @@ export const LogEntryDetailDialog: FC = () => {
         <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
           <dt className="text-foreground/60">Timestamp</dt>
           <dd className="font-mono">
-            {DateTime.fromJSDate(selectedEntry.timestamp).toFormat(
-              'yyyy-MM-dd HH:mm:ss.SSS',
-            )}
+            {formatDateTime(selectedEntry.timestamp)}
           </dd>
           <dt className="text-foreground/60">Level</dt>
           <dd className="font-mono uppercase">{selectedEntry.level}</dd>
