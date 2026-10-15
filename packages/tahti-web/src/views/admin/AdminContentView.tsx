@@ -106,7 +106,10 @@ export function AdminContentView() {
                               aria-hidden
                             />
                             <div className="min-w-0 flex-1">
-                              <p className="truncate text-sm font-medium">
+                              <p
+                                className="truncate text-sm font-medium"
+                                title={item.title}
+                              >
                                 {item.title}
                               </p>
                               <p className="text-foreground-secondary text-xs">
@@ -146,7 +149,10 @@ export function AdminContentView() {
                               aria-hidden
                             />
                             <div className="min-w-0 flex-1">
-                              <p className="truncate text-sm font-medium">
+                              <p
+                                className="truncate text-sm font-medium"
+                                title={broadcast.title}
+                              >
                                 {broadcast.title}
                               </p>
                               <p className="text-foreground-secondary text-xs">
