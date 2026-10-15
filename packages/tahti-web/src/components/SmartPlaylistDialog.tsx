@@ -20,6 +20,7 @@ import {
   withField,
 } from './smartPlaylistRules';
 import { SmartRuleValueInput } from './SmartRuleValueInput';
+import { useLibraryChangeTick } from './useLibraryChangeTick';
 
 type Props = {
   library: TahtiNativeLibrary;
@@ -47,7 +48,10 @@ export function SmartPlaylistDialog({
     }
   }, [editing]);
 
-  // Live preview: evaluate the draft (debounced) so the count follows edits.
+  const changeTick = useLibraryChangeTick(library);
+
+  // Live preview: evaluate the draft (debounced) so the count follows edits
+  // and changes to the library.
   useEffect(() => {
     if (!editing) {
       return;
@@ -75,7 +79,7 @@ export function SmartPlaylistDialog({
       cancelled = true;
       window.clearTimeout(timer);
     };
-  }, [library, draft, editing]);
+  }, [library, draft, editing, changeTick]);
 
   const setRule = (index: number, rule: NativeSmartRule) =>
     setDraft((current) => ({

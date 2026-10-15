@@ -24,6 +24,7 @@ import { ConfirmDialog } from './ConfirmDialog';
 import { PlaylistNameDialog } from './PlaylistNameDialog';
 import { SmartPlaylistDialog } from './SmartPlaylistDialog';
 import { describeRules, EMPTY_SMART } from './smartPlaylistRules';
+import { useLibraryChangeTick } from './useLibraryChangeTick';
 
 type Props = {
   library: TahtiNativeLibrary;
@@ -65,7 +66,7 @@ async function playSmart(
   usePlayerStore.getState().play(head, { enqueueRest: rest });
 }
 
-/** Smart playlists: saved rule sets that are re-evaluated on every use. */
+/** Smart playlists: saved rule sets; counts follow library changes as they happen. */
 export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
   const [lists, setLists] = useState<NativeSmartPlaylist[] | null>(null);
   const [counts, setCounts] = useState<Record<string, number>>({});
@@ -83,7 +84,6 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
     try {
       const next = await library.analysis.smart.list();
       setLists(next);
-      // Live counts: each list is evaluated now, not remembered.
       const entries = await Promise.all(
         next.map(async (list) => {
           try {
@@ -109,9 +109,11 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
     }
   }, [library]);
 
+  const changeTick = useLibraryChangeTick(library);
+
   useEffect(() => {
     void load();
-  }, [load]);
+  }, [load, changeTick]);
 
   const run = async (
     id: string,
