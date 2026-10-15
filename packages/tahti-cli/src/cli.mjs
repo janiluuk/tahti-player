@@ -33,6 +33,7 @@ import { runPurchases } from './commands/purchases.mjs';
 import { runReleasesList } from './commands/releases-list.mjs';
 import { runReleasesShow } from './commands/releases-show.mjs';
 import { runSearch, SEARCH_PAGE_SIZE } from './commands/search.mjs';
+import { MAX_STASH_LIMIT, runStashList } from './commands/stash-list.mjs';
 import { runStats, STATS_RANGES } from './commands/stats.mjs';
 import { runWhoami } from './commands/whoami.mjs';
 import { runShell } from './shell/shell.mjs';
@@ -427,6 +428,27 @@ characters. Needs a token with the write scope.`,
     options: { ...JSON_OPTION, limit: { type: 'string' } },
     run: (config, { values }) =>
       runFeed(config, { json: values.json, limit: values.limit }),
+  },
+  {
+    path: ['stash', 'list'],
+    usage: 'tahti stash list [--page <n>] [--limit <n>] [--json]',
+    summary: 'List the files in your private stash (stems, masters)',
+    details: `Calls GET /api/me/stash, newest first: id, file name, size, audio format and
+how many shares each file has. The table never shows share links; --json
+prints the API response, share tokens included.
+  --page <n>    Page number (default: 1)
+  --limit <n>   Files per page, 1-${MAX_STASH_LIMIT} (default: ${MAX_STASH_LIMIT})`,
+    options: {
+      ...JSON_OPTION,
+      page: { type: 'string' },
+      limit: { type: 'string' },
+    },
+    run: (config, { values }) =>
+      runStashList(config, {
+        json: values.json,
+        page: values.page,
+        limit: values.limit,
+      }),
   },
   {
     path: ['collections', 'list'],
