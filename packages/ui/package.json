@@ -4,6 +4,10 @@
   "description": "Shared UI component library for Tahti",
   "type": "module",
   "main": "./src/index.ts",
+  "sideEffects": [
+    "**/*.css",
+    "./src/index.ts"
+  ],
   "module": "./src/index.ts",
   "types": "./dist/index.d.ts",
   "exports": {
