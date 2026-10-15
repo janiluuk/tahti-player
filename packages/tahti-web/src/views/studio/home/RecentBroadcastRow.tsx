@@ -21,7 +21,7 @@ export function RecentBroadcastRow({
       </span>
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-bold">{title}</p>
-        <p className="text-foreground-secondary truncate text-xs">
+        <p className="text-foreground-secondary text-xs break-words">
           {formatBroadcastDate(broadcast.startedAt)}
           {broadcast.durationSec
             ? ` · ${formatBroadcastDuration(broadcast.durationSec)}`

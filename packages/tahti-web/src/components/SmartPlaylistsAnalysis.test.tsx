@@ -94,6 +94,11 @@ describe('smart playlist rules', () => {
   it('offers only operators that make sense for a field', () => {
     expect(opsFor('bpm').map((o) => o.id)).toContain('between');
     expect(opsFor('genre').map((o) => o.id)).not.toContain('between');
+    expect(opsFor('rating').map((o) => o.id)).toEqual(
+      expect.arrayContaining(['above', 'below']),
+    );
+    expect(opsFor('genre').map((o) => o.id)).toContain('startsWith');
+    expect(opsFor('genre').map((o) => o.id)).not.toContain('above');
     expect(opsFor('lastPlayed').map((o) => o.id)).toContain('notInLastDays');
     expect(opsFor('analyzed').map((o) => o.label)).toEqual([
       'has been analyzed',

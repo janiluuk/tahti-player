@@ -8,8 +8,8 @@ import {
   MarketplaceTheme,
   MarketplaceThemeRegistrySchema,
   MarketplaceThemeSchema,
-  parseAdvancedTheme,
 } from './advanced/schema';
+import { parseAdvancedTheme } from './advanced/validate';
 import { BUILTIN_BASIC_THEME_IDS, DEFAULT_THEME_ID } from './basic';
 
 import './basic/aurora.css';
@@ -104,7 +104,7 @@ export function setBasicTheme(id: string): void {
 const ADV_STYLE_ID = 'advanced-theme';
 
 export function applyAdvancedTheme(theme: AdvancedTheme): void {
-  const parsed = AdvancedThemeSchema.parse(theme);
+  const parsed = parseAdvancedTheme(theme);
   const css = generateAdvancedThemeCSS(parsed);
   let style = document.getElementById(ADV_STYLE_ID) as HTMLStyleElement | null;
   if (!style) {
