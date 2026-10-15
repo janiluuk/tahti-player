@@ -173,38 +173,54 @@ export function NotificationsVisibilityPanel() {
       {!profile ? (
         <SettingsHint>Loading…</SettingsHint>
       ) : (
-        <div className="flex flex-col gap-5">
-          <SettingsToggle
-            label="Show join date on my profile"
-            value={profile.showJoinDate ?? true}
-            onChange={(value) => updateVisibility('showJoinDate', value)}
-          />
-          <SettingsToggle
-            label="Show my followers on my profile"
-            value={profile.showFollowers ?? true}
-            onChange={(value) => updateVisibility('showFollowers', value)}
-          />
-          <SettingsToggle
-            label="Show who I follow on my profile"
-            value={profile.showFollowing ?? true}
-            onChange={(value) => updateVisibility('showFollowing', value)}
-          />
-          <SettingsToggle
-            label="Show tracks I like on my profile"
-            value={profile.showLikes ?? true}
-            onChange={(value) => updateVisibility('showLikes', value)}
-          />
-          <SettingsToggle
-            label="Show my connections on my artist profile"
-            value={profile.socialLinks?.showConnections !== 'false'}
-            onChange={updateConnectionsVisibility}
-          />
-          <TopListsToggle />
-          <GrantReportAttributionToggle
-            profile={profile}
-            onSaved={setProfile}
-          />
-          <CommentSettingsToggles />
+        <div className="flex flex-col gap-4">
+          <StudioPanel
+            title="Your profile"
+            description="What visitors see on your profile and artist page."
+          >
+            <div className="flex flex-col gap-5">
+              <SettingsToggle
+                label="Show join date on my profile"
+                value={profile.showJoinDate ?? true}
+                onChange={(value) => updateVisibility('showJoinDate', value)}
+              />
+              <SettingsToggle
+                label="Show my followers on my profile"
+                value={profile.showFollowers ?? true}
+                onChange={(value) => updateVisibility('showFollowers', value)}
+              />
+              <SettingsToggle
+                label="Show who I follow on my profile"
+                value={profile.showFollowing ?? true}
+                onChange={(value) => updateVisibility('showFollowing', value)}
+              />
+              <SettingsToggle
+                label="Show tracks I like on my profile"
+                value={profile.showLikes ?? true}
+                onChange={(value) => updateVisibility('showLikes', value)}
+              />
+              <SettingsToggle
+                label="Show my connections on my artist profile"
+                value={profile.socialLinks?.showConnections !== 'false'}
+                onChange={updateConnectionsVisibility}
+              />
+            </div>
+          </StudioPanel>
+          <StudioPanel
+            title="Uploads and comments"
+            description="Where your tracks can show up and who can comment."
+          >
+            <div className="flex flex-col gap-5">
+              <TopListsToggle />
+              <CommentSettingsToggles />
+            </div>
+          </StudioPanel>
+          <StudioPanel title="Grant reports">
+            <GrantReportAttributionToggle
+              profile={profile}
+              onSaved={setProfile}
+            />
+          </StudioPanel>
         </div>
       )}
       <div className="border-border border-t pt-5">

@@ -35,14 +35,7 @@ paths.
 
 ## Nav highlight gaps
 
-| Sev | Surface | Routes | Fix |
-| --- | ------- | ------ | --- |
-| High | Listen sidebar | `/u/*`, `/search`, `/v/*` | Extend `isListenSidebarRoute` |
-| High | Studio top tabs | `/studio/sounds*`, `/collections*`, `/branding` | Library chrome / redirects |
-| High | Library tabs | `/library/upload` | Upload tab |
-| Med | Settings sidebar | Settings modal open | `isSelected` from store |
-| Med | Dead `StudioNav` | Views with `<StudioNav />` sans `global` | No-op today — replace with real tabs or delete |
-| Low | Catalog twins | `/library/sounds` vs `/studio/sounds` | One home per intent (phase 4 partial; full merge later) |
+All six rows from the first audit are resolved (checked 2026-10-15): `isListenSidebarRoute` covers `/u/*`, `/search` and `/v/*`; `/studio/sounds`, `/studio/collections` and `/studio/playlists` redirect to Library (phases 9-10); Library has an Upload tab; the Settings sidebar item stays lit while the modal is open; and `StudioNav`'s no-op `global` prop is gone, since only `AppShell` and the Storybook stories mount it.
 
 ## Crowded views to split (phases 5–6+)
 
