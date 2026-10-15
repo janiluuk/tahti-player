@@ -10,6 +10,7 @@ import { runHearthisSet } from './commands/hearthis-set.mjs';
 import { runHearthisSets } from './commands/hearthis-sets.mjs';
 import { runImport } from './commands/import.mjs';
 import { runLibraryDelete } from './commands/library-delete.mjs';
+import { runLibraryDownload } from './commands/library-download.mjs';
 import { runLibraryEdit } from './commands/library-edit.mjs';
 import { LIBRARY_SORTS, runLibraryList } from './commands/library-list.mjs';
 import { runLibraryShow } from './commands/library-show.mjs';
@@ -97,6 +98,32 @@ Needs a token with the write scope.
     positionals: 1,
     run: (config, { values, positionals }) =>
       runLibraryDelete(config, positionals[0], { yes: values.yes }),
+  },
+  {
+    path: ['library', 'download'],
+    usage:
+      'tahti library download <id> [--out <dir>] [--force] [--url] [--json]',
+    summary: 'Download the original audio file of one of your sounds',
+    details: `Calls GET /api/me/sound/:id/download for a signed link (valid for an hour) to
+the best file Tahti keeps: the upload as sent, else FLAC, else MP3. The file
+is saved under the name the API gives, made safe for the file system.
+  --out <dir>   Destination folder (default: current directory)
+  --force       Replace a file that already exists
+  --url         Print the signed link instead of downloading`,
+    options: {
+      ...JSON_OPTION,
+      out: { type: 'string' },
+      force: { type: 'boolean', default: false },
+      url: { type: 'boolean', default: false },
+    },
+    positionals: 1,
+    run: (config, { values, positionals }) =>
+      runLibraryDownload(config, positionals[0], {
+        json: values.json,
+        outDir: values.out || '.',
+        force: values.force,
+        url: values.url,
+      }),
   },
   {
     path: ['releases', 'list'],
