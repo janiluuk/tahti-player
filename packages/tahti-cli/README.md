@@ -94,6 +94,7 @@ Every command accepts `--json` (prints the API response unchanged) and
 | `tahti library edit <id> [--title] [--description] [--genre] [--tags] [--bpm] [--key] [--public \| --private] [--downloads on\|off] [--json]` | `PATCH /api/me/sound/:id` | Changes only the given fields and prints the sound as saved; `""` or `none` clears a field; needs the `write` scope |
 | `tahti library delete <id> --yes` | `GET /api/me/sound/:id`, `DELETE /api/me/sound/:id` | Deletes the sound and all its versions; without `--yes` it names the sound and stops; needs the `write` scope |
 | `tahti library download <id> [--out <dir>] [--force] [--url] [--json]` | `GET /api/me/sound/:id/download` + the signed storage link | Saves the original upload (else FLAC, else MP3) under the API's file name; `--url` prints the hour-long signed link instead |
+| `tahti library processing [--wait] [--timeout <s>] [--json]` | `GET /api/me/sound/processing` | Sounds still `PENDING` or `PROCESSING` (id, status, title); `--wait` checks every 5 s until none are left and exits 1 after `--timeout` (default 600 s) |
 | `tahti releases list [--page <n>] [--limit <n>] [--json]`                                     | `GET /api/me/releases`                                                        | Your releases (id, title, type, state, release date, track count); `--limit` is 1-100                                                                                                         |
 | `tahti releases show <id> [--json]`                                                           | `GET /api/me/releases/:id`                                                    | One release (type, state, release date, genre, UPC, label, smart link and its views, catalog checklist) plus its tracklist (position, title, duration, status, ISRC)                          |
 | `tahti search <query> [--page <n>] [--limit <n>] [--json]`                                    | `GET /api/v1/search/tracks`                                                   | Public, ready tracks whose title matches (id, title, artist, duration, channel), newest first                                                                                                 |
@@ -126,7 +127,8 @@ ogg, opus) as a new sound titled after its file name, one file at a time:
   file failed. `--json` prints one object per file (`file`, `title`, `status`,
   `id`, `error`).
 - Uploaded sounds are processed by Tahti afterwards, so they show as
-  `PROCESSING` in `tahti library list` for a while. Tags inside the files
+  `PROCESSING` in `tahti library list` for a while;
+  `tahti library processing --wait` returns once they are done. Tags inside the files
   (artist, album, artwork) are not read; edit the sound on tahti.live.
 
 `search` is public: it works without `TAHTI_API_TOKEN` and never sends the
