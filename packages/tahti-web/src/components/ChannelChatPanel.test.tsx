@@ -30,7 +30,14 @@ vi.mock('../api/client', () => ({
 }));
 vi.mock('./ChatDailyListeners', () => ({ ChatDailyListeners: () => null }));
 vi.mock('./ChatListeningNow', () => ({ ChatListeningNow: () => null }));
-vi.mock('./ChatReactionBar', () => ({ ChatReactionBar: () => null }));
+const reaction = vi.hoisted(() => ({ error: 'banned' }));
+vi.mock('./ChatReactionBar', () => ({
+  ChatReactionBar: ({ onError }: { onError: (message: string) => void }) => (
+    <button type="button" onClick={() => onError(reaction.error)}>
+      react-stub
+    </button>
+  ),
+}));
 vi.mock('./FanChatRoom', () => ({ FanChatRoom: () => null }));
 
 class FakeSocket {
@@ -104,6 +111,42 @@ describe('ChannelChatPanel', () => {
     await renderPanel({ chatEnabled: false });
     expect(screen.getByText('The artist has turned chat off.')).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'Join chat' })).toBe(null);
+  });
+
+  it('hides the reactions while chat is off', async () => {
+    await renderPanel({ chatEnabled: false });
+    expect(screen.queryByText('react-stub')).toBe(null);
+  });
+
+  it('says why a reaction was refused instead of showing the code', async () => {
+    await renderPanel();
+    reaction.error = 'banned';
+    fireEvent.click(screen.getByText('react-stub'));
+    expect(
+      screen.getByText('You can no longer post in this chat.'),
+    ).toBeTruthy();
+    expect(screen.queryByText('banned')).toBe(null);
+
+    reaction.error = 'Slow down';
+    fireEvent.click(screen.getByText('react-stub'));
+    expect(
+      screen.getByText('Slow down: a few reactions at a time.'),
+    ).toBeTruthy();
+
+    reaction.error = 'HTTP 502';
+    fireEvent.click(screen.getByText('react-stub'));
+    expect(
+      screen.getByText('Your reaction was not sent. Try again in a moment.'),
+    ).toBeTruthy();
+  });
+
+  it('switches to the chat-off note when a reaction finds chat turned off', async () => {
+    await renderPanel();
+    reaction.error = 'chat_disabled';
+    fireEvent.click(screen.getByText('react-stub'));
+    expect(screen.getByText('The artist has turned chat off.')).toBeTruthy();
+    expect(screen.queryByText('react-stub')).toBe(null);
+    expect(screen.queryByText(/chat_disabled/)).toBe(null);
   });
 
   it('keeps the join form when the API does not say whether chat is on', async () => {

@@ -12,7 +12,7 @@ const GENERIC_MESSAGE =
   'Something went wrong with chat. Try again in a moment.';
 
 // Keys are the `error` strings the chat token and publish routes send
-// (../tahti-org apps/api/src/routes/chat/token.ts and message.ts).
+// (../tahti-org apps/api/src/routes/chat/token.ts, message.ts and react.ts).
 const KNOWN: Record<string, ChatError> = {
   chat_disabled: { message: CHAT_OFF_MESSAGE, action: 'chat_off' },
   subscribers_only: {
@@ -37,6 +37,10 @@ const KNOWN: Record<string, ChatError> = {
   },
   'too many requests': {
     message: 'Too many tries. Wait a minute and try again.',
+    action: null,
+  },
+  'slow down': {
+    message: 'Slow down: a few reactions at a time.',
     action: null,
   },
   'channel not found': {
