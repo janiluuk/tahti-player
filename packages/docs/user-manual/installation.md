@@ -4,7 +4,9 @@ description: Download and install Tahti Player on your platform
 
 # Installation
 
-Download the latest release from [GitHub Releases](https://github.com/janiluuk/tahti-player/releases). Pick the file that matches your platform.
+You don't have to install anything to listen: [beta.tahti.live](https://beta.tahti.live) runs in the browser. The desktop app is the same app in its own window, plus your local music library, Tahti Jam, the MCP and MPD servers and Discord Rich Presence.
+
+Download the latest release from [GitHub Releases](https://github.com/janiluuk/tahti-player/releases/latest). Pick the file for your platform; `x.y.z` is the version number.
 
 {% tabs %}
 
@@ -12,14 +14,11 @@ Download the latest release from [GitHub Releases](https://github.com/janiluuk/t
 
 | File | What it is |
 | ---- | ---------- |
-| `Nuclear_x.y.z_x64-setup.exe` | Interactive installer. Installs per-user, no admin required. Recommended for most users. |
-| `Nuclear_x.y.z_x64_en-US.msi` | MSI installer. For system-wide or managed deployments (e.g. via Group Policy). |
+| `Tahti.Player_x.y.z_x64-setup.exe` | Installer for 64-bit Windows. Installs for your user only, no admin rights needed. |
 
-{% hint style="warning" %}
-Release artifacts are still named `Nuclear_*` — this predates the Tahti Player rebrand and hasn't been re-cut yet.
-{% endhint %}
+Run the installer and follow the prompts. Tahti Player is then in the Start menu.
 
-Run the installer and follow the prompts. Tahti Player will be available from the Start menu after installation.
+The installer isn't signed, so Windows SmartScreen may warn about an unknown publisher. Choose **More info**, then **Run anyway**.
 
 {% endtab %}
 
@@ -27,22 +26,22 @@ Run the installer and follow the prompts. Tahti Player will be available from th
 
 | File | What it is |
 | ---- | ---------- |
-| `Nuclear_x.y.z_aarch64.dmg` | Disk image for Apple Silicon Macs (M1, M2, M3, M4). |
-| `Nuclear_x.y.z_x64.dmg` | Disk image for Intel Macs. |
+| `Tahti.Player_aarch64.app.tar.gz` | Apple Silicon Macs (M1 and later). |
+| `Tahti.Player_x64.app.tar.gz` | Intel Macs. |
 
-Open the `.dmg` and drag Tahti Player to your Applications folder.
+Double-click the file to unpack it, then drag **Tahti Player** to your Applications folder.
 
 ### Gatekeeper warning
 
-Tahti Player is not signed with an Apple Developer certificate. macOS will block it from opening the first time. To allow it:
+Tahti Player isn't signed with an Apple Developer certificate, so macOS blocks it the first time. To allow it:
 
-1. Right-click the app in your Applications folder and select **Open**
-2. Click **Open** in the dialog that appears
+1. Right-click the app in Applications and choose **Open**.
+2. Choose **Open** in the dialog.
 
-If that doesn't work, run this in Terminal:
+If macOS still refuses, run this in Terminal:
 
 ```bash
-sudo xattr -r -d com.apple.quarantine "/Applications/Nuclear.app"
+xattr -r -d com.apple.quarantine "/Applications/Tahti Player.app"
 ```
 
 You only need to do this once.
@@ -53,37 +52,37 @@ You only need to do this once.
 
 | File | What it is |
 | ---- | ---------- |
-| `Nuclear_x.y.z_amd64.AppImage` | Portable binary. No installation needed, just make it executable and run it. Works on most distributions. |
-| `Nuclear_x.y.z_amd64.deb` | Debian package for Ubuntu, Debian, Pop!_OS, and other Debian-based distributions. |
-| `Nuclear-x.y.z-1.x86_64.rpm` | RPM package for Fedora, openSUSE, and other RPM-based distributions. |
+| `Tahti.Player_x.y.z_amd64.AppImage` | Runs on most distributions without installing. |
+| `Tahti.Player_x.y.z_amd64.deb` | Package for Ubuntu, Debian, Linux Mint, Pop!\_OS and other Debian-based distributions. |
+| `tahti-player_x.y.z_amd64.snap` | Snap package. |
 
-### Flatpak
-
-Tahti Player is available on [Flathub](https://flathub.org/en/apps/com.nuclearplayer.Nuclear). This is the recommended way to install on Linux if your distribution supports Flatpak, since Flathub handles updates automatically.
+### AppImage
 
 ```bash
-flatpak install flathub com.nuclearplayer.Nuclear
+chmod +x Tahti.Player_*_amd64.AppImage
+./Tahti.Player_*_amd64.AppImage
 ```
 
-Note that the Flatpak sandbox may prevent some features from working. If you run into issues, try the `.deb`, `.rpm`, or AppImage instead.
-
-### Arch Linux
-
-Tahti Player is available in the AUR:
-
-- [nuclear-player-bin](https://aur.archlinux.org/packages/nuclear-player-bin) - prebuilt binary
-- [nuclear-player-git](https://aur.archlinux.org/packages/nuclear-player-git) - built from source
-
-Install with your AUR helper of choice, e.g.:
+### Debian / Ubuntu
 
 ```bash
-yay -S nuclear-player-bin
+sudo apt install ./Tahti.Player_*_amd64.deb
 ```
+
+### Snap
+
+Tahti Player isn't in the Snap Store yet, so install the downloaded file with `--dangerous` (it isn't signed by the store):
+
+```bash
+sudo snap install --dangerous ./tahti-player_*_amd64.snap
+```
+
+There are no Flatpak, RPM or AUR packages. Fedora, openSUSE and Arch users can use the AppImage.
 
 {% endtab %}
 
 {% endtabs %}
 
-## Auto-updates
+## Updating
 
-Tahti Player checks for updates on startup and can install them automatically. You can toggle this in Settings under **General > Updates**.
+Download and install the new release the same way. Your library, settings and sign-in are kept.
