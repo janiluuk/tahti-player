@@ -7,15 +7,13 @@ Found in the 2026-10-15 docs audit. The GitBook user manual in `packages/docs` w
 ## Done
 
 - Favorites, Playlists, The queue, Listening history and Listening stats rewritten against tahti-web (#789).
+- Getting started, How Tahti Player works and Plugins and providers rewritten (#790).
 
 ## Pages to rewrite against tahti-web
 
 | Page | What is stale |
 | --- | --- |
-| `user-manual/getting-started.md` | Streams "from the internet" via providers; Nuclear first-run screens and screenshots |
 | `user-manual/installation.md` | Mostly current (releases, platforms); check Nuclear names and the Snap/Flatpak notes |
-| `core-concepts/how-nuclear-works.md` | Provider/plugin framework as the core idea; tahti-web is a Tahti client with a desktop library |
-| `core-concepts/plugins-and-providers.md` | Nuclear metadata/streaming providers; tahti-web has add-ons (`src/plugins/`, Settings → Add-ons) |
 | `core-concepts/tahti-sitemap-and-journeys.md` | 2026-08-28 route map; superseded by `packages/tahti-web/NAVIGATION-SITEMAP.md` (2026-10-03). Replace with a short user-facing tour or drop it |
 | `misc/discovery.md` | Nuclear's auto-queue discovery; tahti-web has the Discover page |
 | `themes/*.md` | `Preferences → Themes`; now Settings → Themes, with Nuclear Green as the default |
