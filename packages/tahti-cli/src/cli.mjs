@@ -24,6 +24,7 @@ import { runLibraryEdit } from './commands/library-edit.mjs';
 import { LIBRARY_SORTS, runLibraryList } from './commands/library-list.mjs';
 import { runLibraryProcessing } from './commands/library-processing.mjs';
 import { runLibraryShow } from './commands/library-show.mjs';
+import { MAX_MENTIONS_LIMIT, runMentions } from './commands/mentions.mjs';
 import { runNotificationsList } from './commands/notifications-list.mjs';
 import { runNotificationsRead } from './commands/notifications-read.mjs';
 import { runPurchases } from './commands/purchases.mjs';
@@ -379,6 +380,17 @@ write scope.`,
     options: {},
     positionals: 1,
     run: (config, { positionals }) => runBlocksRemove(config, positionals[0]),
+  },
+  {
+    path: ['mentions'],
+    usage: 'tahti mentions [--limit <n>] [--json]',
+    summary: 'List where other artists have @mentioned you',
+    details: `Calls GET /api/me/mentions, newest first: who, in what (bio, announcement,
+release, newsletter, tracklist, chat) and where.
+  --limit <n>   How many, 1-${MAX_MENTIONS_LIMIT} (default: 20)`,
+    options: { ...JSON_OPTION, limit: { type: 'string' } },
+    run: (config, { values }) =>
+      runMentions(config, { json: values.json, limit: values.limit }),
   },
   {
     path: ['collections', 'list'],
