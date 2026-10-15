@@ -35,7 +35,7 @@ export function BroadcastControls({ nav }: { nav: TopNavState }) {
           className={cn(
             iconBtnClass,
             (broadcastOpen || pathname.startsWith('/studio/go-live')) &&
-              'border-primary bg-primary/15 text-primary',
+              'border-primary bg-primary/15 text-primary-strong',
             broadcastToneClass,
           )}
           aria-label={`Open live panel — ${broadcast.label}`}

@@ -97,7 +97,7 @@ function ScreenNavigation({ c }: { c: MapCase }) {
                     {targetCaseId ? (
                       <a
                         href={`#case-${targetCaseId}`}
-                        className="text-primary underline-offset-2 hover:underline"
+                        className="text-primary-strong underline-offset-2 hover:underline"
                       >
                         {link.label}
                       </a>
@@ -464,7 +464,7 @@ function ShotPane({
                 href={screenshotUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="text-primary font-mono break-all underline-offset-2 hover:underline"
+                className="text-primary-strong font-mono break-all underline-offset-2 hover:underline"
               >
                 {screenshotUrl}
               </a>
@@ -475,7 +475,7 @@ function ShotPane({
               href={storybookUrl}
               target="_blank"
               rel="noreferrer"
-              className="text-primary ml-auto font-semibold underline-offset-2 hover:underline"
+              className="text-primary-strong ml-auto font-semibold underline-offset-2 hover:underline"
             >
               Storybook →
             </a>
@@ -486,7 +486,7 @@ function ShotPane({
         {shot.caption}
       </p>
       <p className="border-border bg-background border-t px-4 py-3 text-sm leading-snug">
-        <span className="text-primary font-semibold">You can: </span>
+        <span className="text-primary-strong font-semibold">You can: </span>
         {action}
       </p>
     </div>
@@ -584,7 +584,7 @@ function ReviewCaseCard({ c }: { c: MapCase }) {
             {openHref && !nuclearAbsent ? (
               <a
                 href={openHref}
-                className="text-primary border-border border-t px-5 py-3 text-sm font-medium underline-offset-2 hover:underline"
+                className="text-primary-strong border-border border-t px-5 py-3 text-sm font-medium underline-offset-2 hover:underline"
               >
                 Open beta.tahti.live →
               </a>

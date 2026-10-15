@@ -84,7 +84,7 @@ export function MobileBottomNav({
             className={cn(
               'flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-md px-1 py-1.5 text-[10px] tracking-wide',
               active
-                ? 'text-primary'
+                ? 'text-primary-strong'
                 : 'text-foreground-secondary hover:text-foreground',
             )}
           >
@@ -103,7 +103,7 @@ export function MobileBottomNav({
         className={cn(
           'flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-md px-1 py-1.5 text-[10px] tracking-wide hover:bg-transparent',
           moreActive || moreOpen
-            ? 'text-primary'
+            ? 'text-primary-strong'
             : 'text-foreground-secondary hover:text-foreground',
         )}
       >

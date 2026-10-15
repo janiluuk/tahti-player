@@ -9,7 +9,7 @@ exports[`FilePicker > (Snapshot) renders empty and selected states 1`] = `
     for="file-picker-:r0:"
   >
     <span
-      class="border-border bg-background text-primary flex size-10 items-center justify-center rounded-lg border"
+      class="border-border bg-background text-primary-strong flex size-10 items-center justify-center rounded-lg border"
     >
       <svg
         aria-hidden="true"
@@ -74,7 +74,7 @@ exports[`FilePicker > (Snapshot) renders empty and selected states 2`] = `
     for="file-picker-:r0:"
   >
     <span
-      class="border-border bg-background text-primary flex size-10 items-center justify-center rounded-lg border"
+      class="border-border bg-background text-primary-strong flex size-10 items-center justify-center rounded-lg border"
     >
       <svg
         aria-hidden="true"
@@ -135,7 +135,7 @@ exports[`FilePicker > (Snapshot) renders empty and selected states 2`] = `
     >
       <svg
         aria-hidden="true"
-        class="lucide lucide-file text-primary"
+        class="lucide lucide-file text-primary-strong"
         fill="none"
         height="14"
         stroke="currentColor"

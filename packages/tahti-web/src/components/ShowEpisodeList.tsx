@@ -64,7 +64,7 @@ export function ShowEpisodeList({
                   <Link
                     to="/radio/show/$channelSlug"
                     params={{ channelSlug }}
-                    className="text-primary underline-offset-2 hover:underline"
+                    className="text-primary-strong underline-offset-2 hover:underline"
                   >
                     Show details
                   </Link>
@@ -72,7 +72,7 @@ export function ShowEpisodeList({
                 {episode.recording ? (
                   <a
                     href={episode.recording.channelItemUrl}
-                    className="text-primary underline-offset-2 hover:underline"
+                    className="text-primary-strong underline-offset-2 hover:underline"
                   >
                     Listen to recording
                   </a>

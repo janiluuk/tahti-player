@@ -110,7 +110,7 @@ export function TrackExportPanel({ soundId }: { soundId: string }) {
         ) : status ? (
           <CheckCircle2Icon
             size={18}
-            className="text-primary"
+            className="text-primary-strong"
             aria-label="Export added"
           />
         ) : (

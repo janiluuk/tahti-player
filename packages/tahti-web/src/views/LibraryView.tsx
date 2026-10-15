@@ -254,14 +254,18 @@ function LibraryStats() {
     >
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="border-border bg-background-secondary/40 rounded-lg border p-3">
-          <Music2Icon size={18} className="text-primary" aria-hidden />
+          <Music2Icon size={18} className="text-primary-strong" aria-hidden />
           <p className="text-foreground-secondary mt-2 text-xs uppercase">
             Total sounds
           </p>
           <p className="mt-1 text-2xl font-bold tabular-nums">{soundCount}</p>
         </div>
         <div className="border-border bg-background-secondary/40 rounded-lg border p-3">
-          <HardDriveIcon size={18} className="text-primary" aria-hidden />
+          <HardDriveIcon
+            size={18}
+            className="text-primary-strong"
+            aria-hidden
+          />
           <p className="text-foreground-secondary mt-2 text-xs uppercase">
             Storage used
           </p>
@@ -277,7 +281,11 @@ function LibraryStats() {
           </p>
         </div>
         <div className="border-border bg-background-secondary/40 rounded-lg border p-3">
-          <HeadphonesIcon size={18} className="text-primary" aria-hidden />
+          <HeadphonesIcon
+            size={18}
+            className="text-primary-strong"
+            aria-hidden
+          />
           <p className="text-foreground-secondary mt-2 text-xs uppercase">
             Top sound
           </p>

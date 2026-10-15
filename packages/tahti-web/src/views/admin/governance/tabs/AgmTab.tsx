@@ -439,7 +439,7 @@ export function AgmTab() {
                       Download
                     </a>
                   )}
-                  <label className="text-primary cursor-pointer underline-offset-2 hover:underline">
+                  <label className="text-primary-strong cursor-pointer underline-offset-2 hover:underline">
                     {minutesUploading === meeting.id
                       ? 'Uploading…'
                       : meeting.minutesKey

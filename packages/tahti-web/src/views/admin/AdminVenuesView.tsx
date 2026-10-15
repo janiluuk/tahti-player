@@ -109,7 +109,7 @@ export function AdminVenuesView() {
                         >
                           <MapPinIcon
                             size={17}
-                            className="text-primary"
+                            className="text-primary-strong"
                             aria-hidden
                           />
                           <div className="min-w-0 flex-1">

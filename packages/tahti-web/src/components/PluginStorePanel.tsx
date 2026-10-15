@@ -141,7 +141,7 @@ function AudienceBody({
           className="border-primary/40 bg-primary/10 flex-row items-start gap-2 py-3"
         >
           <InfoIcon
-            className="text-primary mt-0.5 shrink-0"
+            className="text-primary-strong mt-0.5 shrink-0"
             size={16}
             aria-hidden
           />

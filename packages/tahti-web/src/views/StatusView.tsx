@@ -7,7 +7,7 @@ import type { PlatformStatus } from '../api/types';
 
 function stateClass(state: string): string {
   if (state === 'ok' || state === 'healthy') {
-    return 'text-primary';
+    return 'text-primary-strong';
   }
   if (state === 'degraded') {
     return 'text-foreground';

@@ -41,7 +41,7 @@ export function JamParticipantList({
               key={p.userId}
               className="border-border/60 bg-background-secondary/40 flex items-center gap-2 rounded-full border py-1 pr-3 pl-1"
             >
-              <span className="bg-primary/20 text-primary flex size-6 items-center justify-center rounded-full text-xs font-bold">
+              <span className="bg-primary/20 text-primary-strong flex size-6 items-center justify-center rounded-full text-xs font-bold">
                 {name.slice(0, 1).toUpperCase()}
               </span>
               <span className="text-xs font-semibold">{name}</span>

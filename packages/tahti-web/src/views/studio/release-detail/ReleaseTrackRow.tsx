@@ -84,7 +84,7 @@ export function ReleaseTrackRow({
 
   return (
     <li
-      className={`flex flex-wrap items-center gap-2 rounded-md border px-2 py-1.5 transition-colors ${isPlaying ? 'border-primary bg-primary/10 text-primary' : 'border-transparent'}`}
+      className={`flex flex-wrap items-center gap-2 rounded-md border px-2 py-1.5 transition-colors ${isPlaying ? 'border-primary bg-primary/10 text-primary-strong' : 'border-transparent'}`}
       aria-current={isPlaying ? 'true' : undefined}
     >
       <span className="min-w-0 flex-1 truncate">{track.title}</span>
@@ -138,7 +138,7 @@ export function ReleaseTrackRow({
         <Link
           to="/studio/sounds/$id/editor"
           params={{ id: track.soundId }}
-          className="text-primary text-xs underline"
+          className="text-primary-strong text-xs underline"
         >
           editor
         </Link>

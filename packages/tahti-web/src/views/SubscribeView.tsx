@@ -199,7 +199,7 @@ export function SubscribeView({
                     <div className="font-display text-lg font-bold">
                       {tier.name}
                     </div>
-                    <div className="text-primary text-sm font-semibold">
+                    <div className="text-primary-strong text-sm font-semibold">
                       {formatEur(tier.amountCents)}
                     </div>
                   </div>

@@ -213,7 +213,7 @@ export const VerticalIconOnly: Story = {
           selectedIndex={index}
           onChange={setIndex}
           listClassName="flex-col items-center gap-2"
-          tabClassName="relative size-9 shrink-0 rounded-md p-0 data-[selected]:bg-primary/15 data-[selected]:text-primary"
+          tabClassName="relative size-9 shrink-0 rounded-md p-0 data-[selected]:bg-primary/15 data-[selected]:text-primary-strong"
         >
           <Tabs.List aria-label="Rail" className="w-auto flex-col">
             <Tabs.Tab aria-label="Chat" title="Chat">

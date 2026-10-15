@@ -335,7 +335,7 @@ export const MyDiscographyView: FC = () => {
                       <Link
                         to="/studio/sounds/$id"
                         params={{ id: item.id }}
-                        className={`block truncate font-semibold hover:underline ${isPlayingItem(item) ? 'text-primary' : ''}`}
+                        className={`block truncate font-semibold hover:underline ${isPlayingItem(item) ? 'text-primary-strong' : ''}`}
                       >
                         {item.title}
                       </Link>
@@ -350,7 +350,7 @@ export const MyDiscographyView: FC = () => {
                       </p>
                       <div className="mt-1 flex flex-wrap items-center gap-2">
                         {isPinned(item) ? (
-                          <span className="text-primary inline-flex items-center gap-1 text-[10px] font-semibold tracking-wide uppercase">
+                          <span className="text-primary-strong inline-flex items-center gap-1 text-[10px] font-semibold tracking-wide uppercase">
                             <PinIcon size={11} aria-hidden /> Pinned to profile
                           </span>
                         ) : null}
