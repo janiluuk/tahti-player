@@ -1,13 +1,18 @@
+import { readSavedConfig } from './config-file.mjs';
+
 const DEFAULT_API_URL = 'https://api.tahti.live';
 
 const TOKEN_HELP =
-  'Create a personal API token at tahti.live → Settings → Account → API tokens and export it as TAHTI_API_TOKEN.';
+  'Create a personal API token at tahti.live → Settings → Account → API tokens, then run `tahti login` or export it as TAHTI_API_TOKEN.';
 
 export class CliError extends Error {}
 
-export function resolveConfig(env = process.env) {
-  const apiUrl = (env.TAHTI_API_URL || DEFAULT_API_URL).replace(/\/$/, '');
-  const token = env.TAHTI_API_TOKEN || null;
+export function resolveConfig(env = process.env, saved = readSavedConfig(env)) {
+  const apiUrl = (env.TAHTI_API_URL || saved.apiUrl || DEFAULT_API_URL).replace(
+    /\/$/,
+    '',
+  );
+  const token = env.TAHTI_API_TOKEN || saved.token || null;
   return { apiUrl, token };
 }
 
