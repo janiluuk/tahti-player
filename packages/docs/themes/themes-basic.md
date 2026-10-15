@@ -1,9 +1,11 @@
 ---
-description: Use built-in presets.
+description: The themes that come with Tahti Player.
 ---
 
-# Basic themes
+# Built-in themes
 
-Basic themes are ready to go right out of the box. Head to Tahti Player → Preferences → Themes and you'll see buttons for each preset (like Aurora and Ember). Click any button to change the player's look, or choose "Default" to clear all customizations and return to Tahti Player's original style.
+**Nuclear Green** is the default: a deep green-black background with a teal accent. The others are in **Settings → Themes → Browse**, among them Tahti Blue, Tahti Dark, Aurora, Ember, Lagoon and Arctic Moss, plus community themes that ship with the app.
 
-<figure><img src="../.gitbook/assets/my-themes.png" alt="The themes view showing available themes"><figcaption></figcaption></figure>
+Most have a light and a dark version; the switch at the top of Settings → Themes picks one. Tahti Dark and Nuclear Green are dark only.
+
+Click a theme to apply it.

@@ -17,20 +17,19 @@
 * [Playlists](core-concepts/playlists.md)
 * [Listening history](core-concepts/listening-history.md)
 * [Listening stats](core-concepts/listening-stats.md)
-* [Tahti sitemap and user journeys](core-concepts/tahti-sitemap-and-journeys.md)
 
 ## Theming
 
 * [Themes](themes/themes.md)
-* [Basic themes](themes/themes-basic.md)
+* [Built-in themes](themes/themes-basic.md)
 * [Advanced themes](themes/themes-advanced.md)
-* [Theme store](themes/theme-store.md)
+* [Community themes](themes/theme-store.md)
 
 ## Misc
 
 * [Keyboard shortcuts](misc/keyboard-shortcuts.md)
 * [Platform-specific notes](misc/platform-specific.md)
-* [Music discovery](misc/discovery.md)
+* [Discover](misc/discovery.md)
 
 ## Plugins
 
