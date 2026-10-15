@@ -4,6 +4,10 @@ description: Search YouTube and resolve audio stream URLs via yt-dlp.
 
 # yt-dlp
 
+{% hint style="warning" %}
+**Legacy: Nuclear plugin SDK.** This page describes the plugin SDK Tahti Player inherited from Nuclear. Since 2026-09 the Tahti Player app — desktop and web — no longer loads these plugins, so nothing on this page runs in the current app. To extend Tahti, see [Tahti add-on and plugin authoring](tahti-web-authoring.md).
+{% endhint %}
+
 ## yt-dlp API for Plugins
 
 The yt-dlp API gives plugins access to the [yt-dlp](https://github.com/yt-dlp/yt-dlp) command-line tool for searching YouTube and resolving direct audio stream URLs.

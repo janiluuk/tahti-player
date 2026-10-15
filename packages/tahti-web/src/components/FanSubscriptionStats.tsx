@@ -47,7 +47,7 @@ const FanStat: FC<{
     className="border-border bg-background flex max-w-full min-w-0 flex-col gap-2 overflow-hidden rounded-lg border p-3"
   >
     <span className="text-foreground-secondary flex min-w-0 items-center gap-2 text-[11px] font-semibold tracking-wide break-words uppercase">
-      <Icon size={14} aria-hidden className="text-primary shrink-0" />
+      <Icon size={14} aria-hidden className="text-primary-strong shrink-0" />
       {label}
     </span>
     <strong className="font-display text-2xl font-extrabold tabular-nums">

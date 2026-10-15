@@ -1,47 +1,25 @@
 ---
-description: The big picture of how Tahti Player is structured and why it works differently from other music players
+description: What Tahti Player is made of
 ---
 
 # How Tahti Player works
 
-Tahti Player is a player framework that lets you listen to music from multiple sources, and where plugins provide all the content. The player itself handles the interface, playback engine, queue, playlists, and favorites. Everything else comes from plugins you choose to install.
+## The app
 
-## The plugin model
+Tahti Player is one React app (`packages/tahti-web` in the repository). The browser version is served from beta.tahti.live; the desktop app is the same app inside a [Tauri](https://tauri.app) window. The project started as a fork of the [Nuclear](https://github.com/nukeop/nuclear) music player, and the player bar, queue and much of the design come from there. Since 2026-09 the desktop window shows the Tahti app rather than Nuclear's.
 
-A fresh Tahti Player install comes without any plugins installed. To start playing music, you need to choose your music sources by installing plugins from the store. When you install plugins, they register **providers** that give Tahti Player specific capabilities:
+## Where the music comes from
 
-- A **metadata provider** lets you search for artists, albums, and tracks, and browse their details
-- A **streaming provider** finds and delivers the actual audio when you play a track
-- A **dashboard provider** populates the home screen with top tracks, new releases, and recommendations
-- A **discovery provider** generates track recommendations based on what you're listening to
-- A **playlists provider** lets you import playlists from external services by URL
+- **Tahti:** artists' channels (live broadcasts and their archive), releases, collections and Tahti Radio, all served by the Tahti API.
+- **Internet radio:** a curated list of stations, plus your own stations in Settings → Playback.
+- **Linked tracks:** hearthis.at, Mixcloud, Spotify and Bandcamp tracks that artists link. Tahti keeps only the link and the provider's own player plays them.
+- **Your files** (desktop app): the local library under Library → Local files.
 
-Some plugins register a single provider type. Others register several at once, giving you metadata and streaming from the same source.
+## What only the desktop app does
 
-You can install as many plugins as you want. When multiple plugins offer the same type of provider, you pick which one is active in the **Sources** view.
+- The local library: import, folder watching, tag editing, analysis (BPM, key, loudness), playlists and smart playlists.
+- Local servers you can turn on in Settings → Integrations: [Tahti Jam](../user-manual/remote-control.md) (a phone remote for paired devices), an [MCP server](../integrations/mcp-server.md) for AI tools, an [MPD server](../integrations/mpd-server.md) for MPD clients, and [Discord](../integrations/discord.md) Rich Presence.
 
-Some providers can all be active at the same time. For example playlist providers don't interfere with each other and simply let you import playlists from multiple sources.
+## Add-ons
 
-## How playback works
-
-When you add a track to the queue and press play, two providers work together:
-
-1. The active **metadata provider** supplied the track information (title, artist, album, artwork) when you searched for it
-2. The active **streaming provider** takes that information and finds an audio stream to play
-
-The player handles everything from there: buffering, seeking, volume, and moving through the queue.
-
-{% hint style="info" %}
-Some metadata providers are paired with a specific streaming provider. When you select one of these, Tahti Player automatically switches to the matching streaming provider and locks the selection. This happens because the metadata and audio come from the same source and can't be mixed with other providers.
-{% endhint %}
-
-## What the player manages
-
-While plugins handle content, the player itself owns:
-
-- **The queue**: your current listening session. Add tracks, reorder them, shuffle, repeat. The queue persists across restarts.
-- **Favorites**: save tracks, albums, and artists to your favorites.
-- **Playlists**: create and manage playlists. Import and export them as JSON files, or from other services via plugins.
-- **Settings**: audio configuration, appearance, key shortcuts, update preferences.
-- **Themes**: change how Tahti Player looks without affecting functionality. Choose from built-in themes, create yours, or install community themes from the theme store.
-- **Plugins**: install, update, and manage plugins that provide sources and expand Tahti Player's functionalities.
+Themes, visualizers, import sources and other add-ons are in Settings → Add-ons; see [Plugins and providers](plugins-and-providers.md).

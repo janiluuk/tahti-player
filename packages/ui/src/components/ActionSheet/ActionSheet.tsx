@@ -142,7 +142,7 @@ const ActionSheetAction: FC<ActionSheetActionProps> = ({
       )}
     >
       {icon ? (
-        <span className="text-primary flex size-6 shrink-0 items-center justify-center">
+        <span className="text-primary-strong flex size-6 shrink-0 items-center justify-center">
           {icon}
         </span>
       ) : null}

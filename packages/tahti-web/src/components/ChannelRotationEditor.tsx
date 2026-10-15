@@ -198,7 +198,7 @@ export const ChannelRotationEditor: FC<ChannelRotationEditorProps> = ({
                       {item.title}
                     </div>
                     {isCurrent ? (
-                      <span className="text-primary shrink-0 text-[10px] font-semibold tracking-wide uppercase">
+                      <span className="text-primary-strong shrink-0 text-[10px] font-semibold tracking-wide uppercase">
                         Now
                       </span>
                     ) : null}

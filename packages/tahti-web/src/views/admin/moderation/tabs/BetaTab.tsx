@@ -232,7 +232,7 @@ export function BetaTab() {
             </p>
             <a
               href={setupUrl}
-              className="text-primary text-sm break-all underline-offset-2 hover:underline"
+              className="text-primary-strong text-sm break-all underline-offset-2 hover:underline"
             >
               {setupUrl}
             </a>

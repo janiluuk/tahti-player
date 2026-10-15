@@ -60,7 +60,7 @@ export function KeyMetrics({
           <StudioPanel key={metric.label} className="!p-4 sm:!p-5">
             <div className="flex items-center justify-between gap-3">
               <Eyebrow>{metric.label}</Eyebrow>
-              <Icon size={17} aria-hidden className="text-primary" />
+              <Icon size={17} aria-hidden className="text-primary-strong" />
             </div>
             <StatNumber className="mt-1 block text-3xl">
               {loading ? '—' : metric.value.toLocaleString()}

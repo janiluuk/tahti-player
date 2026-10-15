@@ -4,6 +4,10 @@ description: Resolve audio streams for tracks in Tahti Player's queue.
 
 # Streaming
 
+{% hint style="warning" %}
+**Legacy: Nuclear plugin SDK.** This page describes the plugin SDK Tahti Player inherited from Nuclear. Since 2026-09 the Tahti Player app — desktop and web — no longer loads these plugins, so nothing on this page runs in the current app. To extend Tahti, see [Tahti add-on and plugin authoring](tahti-web-authoring.md).
+{% endhint %}
+
 ## Streaming API for Plugins
 
 The Streaming API resolves playable audio URLs for tracks. When a user plays a track, Tahti Player searches for stream candidates (e.g., YouTube videos) and then resolves the actual audio URL just-in-time.

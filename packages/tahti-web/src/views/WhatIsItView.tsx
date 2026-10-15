@@ -36,7 +36,7 @@ const detail = getLegalPage('what-is-it');
 
 function Eyebrow({ children }: { children: ReactNode }) {
   return (
-    <p className="text-primary font-mono text-xs font-semibold tracking-[0.2em] uppercase">
+    <p className="text-primary-strong font-mono text-xs font-semibold tracking-[0.2em] uppercase">
       {children}
     </p>
   );
@@ -85,7 +85,7 @@ function Card({
 function Stat({ value, label }: { value: string; label: string }) {
   return (
     <div className="border-border bg-background-secondary/50 rounded-xl border p-4 text-center">
-      <div className="font-display text-primary text-3xl font-bold">
+      <div className="font-display text-primary-strong text-3xl font-bold">
         {value}
       </div>
       <div className="text-foreground-secondary mt-1 text-xs">{label}</div>
@@ -569,7 +569,7 @@ export function WhatIsItView() {
             </ul>
           </div>
           <div className="border-primary/50 bg-primary/5 rounded-xl border p-5">
-            <div className="text-primary font-mono text-xs tracking-widest uppercase">
+            <div className="text-primary-strong font-mono text-xs tracking-widest uppercase">
               Artist membership
             </div>
             <div className="font-display mt-1 text-3xl font-bold">
@@ -736,7 +736,7 @@ export function WhatIsItView() {
         <h2 className="font-display mt-2 text-2xl font-extrabold tracking-tight sm:text-3xl">
           You won&rsquo;t be a user here.
           <br />
-          <span className="text-primary">You&rsquo;ll be a member.</span>
+          <span className="text-primary-strong">You&rsquo;ll be a member.</span>
         </h2>
         <p className="text-foreground-secondary mx-auto mt-3 max-w-xl text-sm leading-relaxed">
           One member, one vote — you help decide what we build next. The beta is

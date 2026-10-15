@@ -29,7 +29,7 @@ export function MessagesPopover({ nav }: { nav: TopNavState }) {
           'relative',
           isMobile && 'hidden',
           (messagesOpen || pathname.startsWith('/messages')) &&
-            'border-primary bg-primary/15 text-primary',
+            'border-primary bg-primary/15 text-primary-strong',
         )}
         aria-label="Messages"
         aria-haspopup="menu"
@@ -95,7 +95,7 @@ export function MessagesPopover({ nav }: { nav: TopNavState }) {
                   conversation.unreadCount > 0 && 'bg-accent-purple/10',
                 )}
               >
-                <span className="bg-primary/20 text-primary flex size-7 shrink-0 items-center justify-center rounded-full font-semibold">
+                <span className="bg-primary/20 text-primary-strong flex size-7 shrink-0 items-center justify-center rounded-full font-semibold">
                   {conversation.otherUser.displayName.charAt(0).toUpperCase()}
                 </span>
                 <span className="min-w-0 flex-1">

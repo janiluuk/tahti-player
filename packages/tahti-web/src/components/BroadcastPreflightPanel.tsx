@@ -140,7 +140,7 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
   return (
     <section className="border-border bg-background-secondary/35 rounded-xl border p-3 shadow-sm sm:p-4">
       <div className="mb-3 flex items-start gap-3">
-        <div className="bg-primary/10 text-primary flex size-9 shrink-0 items-center justify-center rounded-lg">
+        <div className="bg-primary/10 text-primary-strong flex size-9 shrink-0 items-center justify-center rounded-lg">
           <ImageIcon size={18} aria-hidden />
         </div>
         <div className="min-w-0 flex-1">

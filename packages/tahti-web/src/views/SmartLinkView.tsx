@@ -6,6 +6,7 @@ import {
   Button,
   ButtonAnchor,
   ButtonLink,
+  ClampedText,
   ExternalLink,
 } from '@tahti-player/ui';
 
@@ -146,9 +147,13 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
           <>
             {metadata ? <p className="capitalize">{metadata}</p> : null}
             {data.release.description ? (
-              <p className="mt-1 line-clamp-3 whitespace-pre-wrap">
+              <ClampedText
+                lines={3}
+                wrapperClassName="mt-1"
+                className="whitespace-pre-wrap"
+              >
                 {data.release.description}
-              </p>
+              </ClampedText>
             ) : null}
           </>
         }

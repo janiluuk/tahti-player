@@ -4,6 +4,10 @@ description: The big picture of how Tahti Player is structured and why it works 
 
 # How Tahti Player works
 
+{% hint style="warning" %}
+**Legacy: Nuclear plugin SDK.** This page describes the plugin SDK Tahti Player inherited from Nuclear. Since 2026-09 the Tahti Player app — desktop and web — no longer loads these plugins, so nothing on this page runs in the current app. To extend Tahti, see [Tahti add-on and plugin authoring](tahti-web-authoring.md).
+{% endhint %}
+
 Tahti Player is a player framework that lets you listen to music from multiple sources, and where plugins provide all the content. The player itself handles the interface, playback engine, queue, playlists, and favorites. Everything else comes from plugins you choose to install.
 
 ## The plugin model

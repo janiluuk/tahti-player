@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 const TONE_CLASS = {
-  primary: 'text-primary',
+  primary: 'text-primary-strong',
   green: 'text-accent-green-strong',
   blue: 'text-accent-blue-strong',
   red: 'text-accent-red-strong',

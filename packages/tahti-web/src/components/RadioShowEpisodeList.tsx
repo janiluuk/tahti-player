@@ -70,7 +70,7 @@ function EpisodeRow({ episode }: { episode: PublicRadioShowEpisode }) {
           <Link
             to="/t/$id"
             params={{ id: episode.recording.soundId }}
-            className="text-primary mt-2 inline-block text-sm font-medium hover:underline"
+            className="text-primary-strong mt-2 inline-block text-sm font-medium hover:underline"
           >
             Listen to the recording
           </Link>
