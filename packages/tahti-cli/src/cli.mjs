@@ -2,6 +2,9 @@
 import { parseArgs } from 'node:util';
 
 import { CliError, resolveConfig } from './api-client.mjs';
+import { runChannel } from './commands/channel.mjs';
+import { runCollectionsList } from './commands/collections-list.mjs';
+import { runCollectionsShow } from './commands/collections-show.mjs';
 import { runHearthisDownloadSet } from './commands/hearthis-download-set.mjs';
 import { runHearthisSet } from './commands/hearthis-set.mjs';
 import { runHearthisSets } from './commands/hearthis-sets.mjs';
@@ -9,9 +12,11 @@ import { runImport } from './commands/import.mjs';
 import { LIBRARY_SORTS, runLibraryList } from './commands/library-list.mjs';
 import { runLibraryShow } from './commands/library-show.mjs';
 import { runNotificationsList } from './commands/notifications-list.mjs';
+import { runNotificationsRead } from './commands/notifications-read.mjs';
 import { runReleasesList } from './commands/releases-list.mjs';
 import { runReleasesShow } from './commands/releases-show.mjs';
 import { runSearch, SEARCH_PAGE_SIZE } from './commands/search.mjs';
+import { runStats, STATS_RANGES } from './commands/stats.mjs';
 import { runWhoami } from './commands/whoami.mjs';
 import { runShell } from './shell/shell.mjs';
 
@@ -204,6 +209,68 @@ paths that already exist (unless --force).
       }),
   },
   {
+    path: ['notifications', 'read'],
+    usage: 'tahti notifications read <id> | --all',
+    summary: 'Mark a notification, or all of them, read',
+    details: `Calls PATCH /api/me/notifications/:id/read, or POST
+/api/me/notifications/read-all with --all. --all leaves sticky notices
+(announcements you must acknowledge) unread; mark those by id. Needs a
+token with the write scope. Get ids from \`tahti notifications list\`.
+  --all         Mark every non-sticky notification read`,
+    options: { all: { type: 'boolean', default: false } },
+    positionals: 1,
+    run: (config, { values, positionals }) =>
+      runNotificationsRead(config, positionals[0], { all: values.all }),
+  },
+  {
+    path: ['stats'],
+    usage: 'tahti stats [--range <days>] [--json]',
+    summary: 'Show your plays, downloads, followers and top tracks',
+    details: `Calls GET /api/me/stats/summary and GET /api/me/stats/top-tracks (the ten
+most played tracks). The counters are today and all time; --range sets the
+window for the top tracks.
+  --range <days>   One of: ${STATS_RANGES.join(', ')} (default: all)
+--json prints { summary, topTracks } as the API sent them.`,
+    options: { ...JSON_OPTION, range: { type: 'string' } },
+    run: (config, { values }) =>
+      runStats(config, { json: values.json, range: values.range }),
+  },
+  {
+    path: ['collections', 'list'],
+    usage: 'tahti collections list [--json]',
+    summary: 'List your collections (playlists, albums, mix series)',
+    details: `Calls GET /api/me/collections, newest first: slug, name, type, visibility
+and item count. Use the slug with \`tahti collections show\`.`,
+    options: JSON_OPTION,
+    run: (config, { values }) =>
+      runCollectionsList(config, { json: values.json }),
+  },
+  {
+    path: ['collections', 'show'],
+    usage: 'tahti collections show <slug> [--json]',
+    summary: 'Show one of your collections with its items',
+    details: `Calls GET /api/me/collections/:slug. Get slugs from \`tahti collections list\`.
+Items someone else has since made private are marked "no longer public".
+--json includes the API's short-lived signed audio URLs; the table never does.`,
+    options: JSON_OPTION,
+    positionals: 1,
+    run: (config, { values, positionals }) =>
+      runCollectionsShow(config, positionals[0], { json: values.json }),
+  },
+  {
+    path: ['channel'],
+    usage: 'tahti channel [<slug>] [--json]',
+    summary: 'Show whether a channel is live and what it plays',
+    details: `Calls GET /api/channels/:slug (public; the token is not sent). With no slug,
+first looks up your own channel with GET /api/auth/me. Prints the state
+(and whether audio is coming in while live), now playing, up next, the
+next scheduled broadcast, whether chat is on and the HLS stream URL.`,
+    options: JSON_OPTION,
+    positionals: 1,
+    run: (config, { values, positionals }) =>
+      runChannel(config, positionals[0], { json: values.json }),
+  },
+  {
     path: ['shell'],
     usage: 'tahti shell',
     summary: 'Interactive TUI: library, search, radio, queue (needs mpv)',
@@ -219,7 +286,8 @@ pause, n/p next/prev, ←/→ seek, / search, a queue, ? help, q quit.`,
 
 const ENVIRONMENT_HELP = `Environment:
   TAHTI_API_TOKEN   Personal API token (tahti.live → Settings → Account → API tokens).
-                    Required by every command except search; import needs
+                    Required by every command except search and
+                    channel <slug>; import and notifications read need
                     the write scope. hearthis download-set only needs read
                     (files are fetched from hearthis.at, not uploaded to Tahti).
                     shell needs a token for library playback.
