@@ -85,4 +85,8 @@ There are no Flatpak, RPM or AUR packages. Fedora, openSUSE and Arch users can u
 
 ## Updating
 
-Download and install the new release the same way. Your library, settings and sign-in are kept.
+The desktop app checks for a new release about ten seconds after it starts and again every six hours. When one is out, a notice says "Tahti Player <version> is available" with an **Install** button. After the download, **Restart** finishes the update. Your library, settings and sign-in are kept.
+
+You can also update from **Settings → Integrations → Desktop app**: it shows the version you have, **Check now**, and the release notes of a new version before you install it. Turn off **Check for updates** there to stop the automatic checks; **Check now** still works.
+
+This works for the Windows installer, the macOS app, the AppImage and the `.deb` package. The snap installs from a file, so it does not update itself: download the new `.snap` and install it the same way as the first time.
