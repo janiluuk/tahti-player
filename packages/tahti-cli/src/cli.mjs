@@ -13,6 +13,7 @@ import { runNotificationsRead } from './commands/notifications-read.mjs';
 import { runReleasesList } from './commands/releases-list.mjs';
 import { runReleasesShow } from './commands/releases-show.mjs';
 import { runSearch, SEARCH_PAGE_SIZE } from './commands/search.mjs';
+import { runStats, STATS_RANGES } from './commands/stats.mjs';
 import { runWhoami } from './commands/whoami.mjs';
 import { runShell } from './shell/shell.mjs';
 
@@ -217,6 +218,19 @@ token with the write scope. Get ids from \`tahti notifications list\`.
     positionals: 1,
     run: (config, { values, positionals }) =>
       runNotificationsRead(config, positionals[0], { all: values.all }),
+  },
+  {
+    path: ['stats'],
+    usage: 'tahti stats [--range <days>] [--json]',
+    summary: 'Show your plays, downloads, followers and top tracks',
+    details: `Calls GET /api/me/stats/summary and GET /api/me/stats/top-tracks (the ten
+most played tracks). The counters are today and all time; --range sets the
+window for the top tracks.
+  --range <days>   One of: ${STATS_RANGES.join(', ')} (default: all)
+--json prints { summary, topTracks } as the API sent them.`,
+    options: { ...JSON_OPTION, range: { type: 'string' } },
+    run: (config, { values }) =>
+      runStats(config, { json: values.json, range: values.range }),
   },
   {
     path: ['shell'],
