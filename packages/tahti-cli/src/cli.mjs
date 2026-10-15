@@ -2,6 +2,7 @@
 import { parseArgs } from 'node:util';
 
 import { CliError, resolveConfig } from './api-client.mjs';
+import { runCollectionsList } from './commands/collections-list.mjs';
 import { runHearthisDownloadSet } from './commands/hearthis-download-set.mjs';
 import { runHearthisSet } from './commands/hearthis-set.mjs';
 import { runHearthisSets } from './commands/hearthis-sets.mjs';
@@ -231,6 +232,16 @@ window for the top tracks.
     options: { ...JSON_OPTION, range: { type: 'string' } },
     run: (config, { values }) =>
       runStats(config, { json: values.json, range: values.range }),
+  },
+  {
+    path: ['collections', 'list'],
+    usage: 'tahti collections list [--json]',
+    summary: 'List your collections (playlists, albums, mix series)',
+    details: `Calls GET /api/me/collections, newest first: slug, name, type, visibility
+and item count. Use the slug with \`tahti collections show\`.`,
+    options: JSON_OPTION,
+    run: (config, { values }) =>
+      runCollectionsList(config, { json: values.json }),
   },
   {
     path: ['shell'],
