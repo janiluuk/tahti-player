@@ -26,6 +26,7 @@ import {
 import { useAutoHideNavWhilePlaying } from '../hooks/useAutoHideNavWhilePlaying';
 import { useIsCompactDesktop, useIsMobile } from '../hooks/useIsMobile';
 import { useOpenedOnce } from '../hooks/useOpenedOnce';
+import { usePlayerStationNowPlaying } from '../hooks/useStationNowPlaying';
 import { useWarnBeforeLeavingWhilePlaying } from '../hooks/useWarnBeforeLeavingWhilePlaying';
 import { isAnonymousRouteAllowed } from '../layout/anonymousRoutes';
 import {
@@ -43,8 +44,8 @@ import {
   markOnboardingSeen,
 } from '../lib/onboardingPrompt';
 import {
-  reapplyLastMetadata,
-  scrollingPlaybackTitle,
+  playbackDocumentTitle,
+  setPlaybackDocumentTitle,
   syncDocumentMetadata,
 } from '../lib/seo';
 import { useAuthModalStore } from '../stores/authModalStore';
@@ -52,7 +53,7 @@ import { useAuthStore } from '../stores/authStore';
 import { useChannelSetupModalStore } from '../stores/channelSetupModalStore';
 import { useLayoutStore } from '../stores/layoutStore';
 import { usePlaybackPrefsStore } from '../stores/playbackPrefsStore';
-import { usePlayerStore } from '../stores/playerStore';
+import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 import { useTourStore } from '../stores/tourStore';
 import { AmbientBackground } from './AmbientBackground';
@@ -77,7 +78,6 @@ import {
 } from './StudioNav';
 
 const LOADING_BAR_DELAY_MS = 1000;
-const TITLE_SCROLL_MS = 450;
 
 const ChannelSetupDialog = lazy(() =>
   import('./ChannelSetupDialog').then((m) => ({
@@ -353,32 +353,28 @@ export function AppShell() {
     }
   }, [isAudioEditorRoute, leftCollapsed, setLeftCollapsed]);
 
-  useEffect(() => {
-    const currentItem = playerQueue.find((item) => item.id === currentTrackId);
-    const radioPlaying =
-      isLivePlayback &&
-      (playerStatus === 'playing' || playerStatus === 'loading') &&
-      currentItem;
-    if (!radioPlaying) {
-      return;
-    }
+  const currentItem = playerQueue.find((item) => item.id === currentTrackId);
+  const currentPlayable = currentItem
+    ? playableFromQueueItem(currentItem)
+    : null;
+  const stationNowPlaying = usePlayerStationNowPlaying(currentPlayable);
+  const playbackTitle =
+    isLivePlayback &&
+    (playerStatus === 'playing' || playerStatus === 'loading') &&
+    currentItem
+      ? playbackDocumentTitle(
+          stationNowPlaying?.title ?? currentItem.track.title,
+          stationNowPlaying?.artist ??
+            currentItem.track.artists
+              .map((entry) => entry.name)
+              .filter(Boolean)
+              .join(', '),
+        )
+      : null;
 
-    const artist = currentItem.track.artists
-      .map((entry) => entry.name)
-      .filter(Boolean)
-      .join(', ');
-    const title = `▶ ${currentItem.track.title}${artist ? ` — ${artist}` : ''} · Tahti Radio`;
-    let offset = 0;
-    document.title = scrollingPlaybackTitle(title, offset);
-    const timer = window.setInterval(() => {
-      offset += 1;
-      document.title = scrollingPlaybackTitle(title, offset);
-    }, TITLE_SCROLL_MS);
-    return () => {
-      window.clearInterval(timer);
-      reapplyLastMetadata(pathname);
-    };
-  }, [currentTrackId, isLivePlayback, pathname, playerQueue, playerStatus]);
+  useEffect(() => {
+    setPlaybackDocumentTitle(playbackTitle);
+  }, [playbackTitle]);
 
   // Offer onboarding via a dismissible toast instead of forcing a redirect.
   // At most once per browser session (sessionStorage), even if the toast

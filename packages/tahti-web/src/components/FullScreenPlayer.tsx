@@ -1,4 +1,9 @@
-import { ArrowLeftIcon, MoreHorizontalIcon } from 'lucide-react';
+import {
+  ArrowLeftIcon,
+  MaximizeIcon,
+  MinimizeIcon,
+  MoreHorizontalIcon,
+} from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { formatArtistNames } from '@tahti-player/model';
@@ -6,6 +11,7 @@ import { Button, cn, PlayerBar, Tooltip } from '@tahti-player/ui';
 import type { VisualizerMode } from '@tahti-player/visualizer';
 
 import { useIsMobile } from '../hooks/useIsMobile';
+import { usePlayerStationNowPlaying } from '../hooks/useStationNowPlaying';
 import {
   loadChannelVizMode,
   saveChannelVizMode,
@@ -52,7 +58,27 @@ export function FullScreenPlayer() {
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [screenFilled, setScreenFilled] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
+  const canFillScreen =
+    typeof document !== 'undefined' && document.fullscreenEnabled;
+
+  useEffect(() => {
+    const onChange = () => setScreenFilled(Boolean(document.fullscreenElement));
+    onChange();
+    document.addEventListener('fullscreenchange', onChange);
+    return () => document.removeEventListener('fullscreenchange', onChange);
+  }, []);
+
+  const toggleScreenFilled = () => {
+    if (document.fullscreenElement) {
+      void document.exitFullscreen().catch(() => undefined);
+      return;
+    }
+    // The whole page goes full screen, not just this overlay, so the
+    // dialogs it opens (which portal to the body) still show.
+    void document.documentElement.requestFullscreen().catch(() => undefined);
+  };
 
   useEffect(() => {
     if (open) {
@@ -62,6 +88,9 @@ export function FullScreenPlayer() {
     }
     setVisible(false);
     setMenuOpen(false);
+    if (document.fullscreenElement) {
+      void document.exitFullscreen().catch(() => undefined);
+    }
     const t = setTimeout(() => setMounted(false), ANIMATION_MS);
     return () => clearTimeout(t);
   }, [open]);
@@ -98,8 +127,11 @@ export function FullScreenPlayer() {
   const current = queue.find((q) => q.id === currentId);
   const playable = current ? playableFromQueueItem(current) : null;
   const coverUrl = playable?.coverUrl ?? current?.track.artwork?.items[0]?.url;
-  const title = playable?.title ?? 'Nothing playing';
+  const stationNowPlaying = usePlayerStationNowPlaying(playable);
+  const title =
+    stationNowPlaying?.title ?? playable?.title ?? 'Nothing playing';
   const artist =
+    stationNowPlaying?.artist ??
     playable?.artist ??
     (current ? formatArtistNames(current.track.artists) : '');
   const soundId = soundIdFromPlayableId(playable?.id ?? currentId);
@@ -185,6 +217,27 @@ export function FullScreenPlayer() {
             triggerClassName="size-12 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50"
             panelClassName="z-[70]"
           />
+          {canFillScreen ? (
+            <Tooltip
+              content={screenFilled ? 'Exit full screen' : 'Full screen'}
+              side="left"
+            >
+              <Button
+                size="icon"
+                variant="text"
+                onClick={toggleScreenFilled}
+                aria-label={screenFilled ? 'Exit full screen' : 'Full screen'}
+                aria-pressed={screenFilled}
+                className="size-12 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50"
+              >
+                {screenFilled ? (
+                  <MinimizeIcon size={28} aria-hidden />
+                ) : (
+                  <MaximizeIcon size={28} aria-hidden />
+                )}
+              </Button>
+            </Tooltip>
+          ) : null}
           {playable ? (
             <Tooltip content="More options" side="left">
               <Button
@@ -232,7 +285,7 @@ export function FullScreenPlayer() {
             <div className="mt-3 flex justify-center">
               <AddToPlaylistButton
                 soundId={soundId}
-                trackTitle={title}
+                trackTitle={playable.title}
                 variant="secondary"
                 iconOnly={false}
               />
