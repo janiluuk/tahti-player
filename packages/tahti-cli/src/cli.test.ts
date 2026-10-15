@@ -35,6 +35,7 @@ describe('main', () => {
     expect(help).toContain('tahti hearthis set <permalink-or-url>');
     expect(help).toContain('tahti hearthis download-set');
     expect(help).toContain('tahti notifications list');
+    expect(help).toContain('tahti notifications read <id> | --all');
     expect(help).toContain('tahti shell');
   });
 
@@ -245,6 +246,17 @@ describe('main', () => {
       'https://api.example.test/api/me/notifications',
     );
     expect(String(logSpy.mock.calls[0][0])).toContain('nightowl followed you');
+  });
+
+  it('runs notifications read with the positional id', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 204 });
+    vi.stubGlobal('fetch', fetchMock);
+    vi.stubEnv('TAHTI_API_TOKEN', 'tahti_test');
+    expect(await main(['notifications', 'read', 'n_1'])).toBe(0);
+    expect(fetchMock.mock.calls[0][0]).toBe(
+      'https://api.example.test/api/me/notifications/n_1/read',
+    );
+    expect(String(logSpy.mock.calls[0][0])).toBe('Marked n_1 read.');
   });
 
   it('surfaces a 401 as a token error', async () => {

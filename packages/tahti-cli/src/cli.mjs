@@ -9,6 +9,7 @@ import { runImport } from './commands/import.mjs';
 import { LIBRARY_SORTS, runLibraryList } from './commands/library-list.mjs';
 import { runLibraryShow } from './commands/library-show.mjs';
 import { runNotificationsList } from './commands/notifications-list.mjs';
+import { runNotificationsRead } from './commands/notifications-read.mjs';
 import { runReleasesList } from './commands/releases-list.mjs';
 import { runReleasesShow } from './commands/releases-show.mjs';
 import { runSearch, SEARCH_PAGE_SIZE } from './commands/search.mjs';
@@ -202,6 +203,20 @@ paths that already exist (unless --force).
         limit: values.limit,
         unread: values.unread,
       }),
+  },
+  {
+    path: ['notifications', 'read'],
+    usage: 'tahti notifications read <id> | --all',
+    summary: 'Mark a notification, or all of them, read',
+    details: `Calls PATCH /api/me/notifications/:id/read, or POST
+/api/me/notifications/read-all with --all. --all leaves sticky notices
+(announcements you must acknowledge) unread; mark those by id. Needs a
+token with the write scope. Get ids from \`tahti notifications list\`.
+  --all         Mark every non-sticky notification read`,
+    options: { all: { type: 'boolean', default: false } },
+    positionals: 1,
+    run: (config, { values, positionals }) =>
+      runNotificationsRead(config, positionals[0], { all: values.all }),
   },
   {
     path: ['shell'],

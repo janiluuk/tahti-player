@@ -123,3 +123,33 @@ export async function apiPost(path, body, config) {
   }
   return res.json();
 }
+
+/** Write request whose success answer has no body (204), e.g. PATCH or a
+ * POST action. Needs a token with the `write` scope. */
+export async function apiSendNoContent(method, path, config, body) {
+  requireToken(config);
+  const headers = {
+    Accept: 'application/json',
+    Authorization: `Bearer ${config.token}`,
+  };
+  if (body !== undefined) {
+    headers['Content-Type'] = 'application/json';
+  }
+  let res;
+  try {
+    res = await fetch(`${config.apiUrl}${path}`, {
+      method,
+      headers,
+      ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
+    });
+  } catch (error) {
+    throw new CliError(
+      `Could not reach the Tahti API at ${config.apiUrl}: ${error?.message ?? error}`,
+    );
+  }
+  if (!res.ok) {
+    throw new CliError(
+      describeHttpError(res.status, path, await readErrorMessage(res)),
+    );
+  }
+}
