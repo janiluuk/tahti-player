@@ -9,6 +9,7 @@ import {
   RadioIcon,
   SettingsIcon,
   ShieldIcon,
+  SparklesIcon,
 } from 'lucide-react';
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
@@ -117,6 +118,14 @@ function DeferredDialogs() {
 function SidebarNavItems({ compact }: { compact: boolean }) {
   const isLoggedIn = useAuthStore((state) => Boolean(state.user));
   const isBoard = useAuthStore((state) => hasAccountRole(state.user, 'BOARD'));
+  // Until the profile loads, the stored user may lack its channel: treat the
+  // account as an artist so an artist never sees the listener entry flash.
+  const isListener = useAuthStore(
+    (state) =>
+      Boolean(state.user) &&
+      state.profileLoaded &&
+      !hasStudioAccess(state.user),
+  );
   const openSettings = useSettingsModalStore((state) => state.open);
   const settingsModalOpen = useSettingsModalStore((state) => state.isOpen);
   const pathname = useRouterState({
@@ -167,15 +176,23 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
               isSelected={sidebarActive === 'library'}
             />
           </div>
-          <div data-tour-id="nav-studio" className="flex flex-col gap-2">
-            <SidebarNavigationItem
-              to="/studio"
-              icon={<LayoutDashboardIcon size={16} />}
-              label="Studio"
-              isSelected={sidebarActive === 'studio'}
-            />
-            {isLoggedIn && <StudioMainNavItems />}
-          </div>
+          {isLoggedIn ? (
+            <div data-tour-id="nav-studio" className="flex flex-col gap-2">
+              <SidebarNavigationItem
+                to="/studio"
+                icon={
+                  isListener ? (
+                    <SparklesIcon size={16} />
+                  ) : (
+                    <LayoutDashboardIcon size={16} />
+                  )
+                }
+                label={isListener ? 'Become an artist' : 'Studio'}
+                isSelected={sidebarActive === 'studio'}
+              />
+              {!isListener && <StudioMainNavItems />}
+            </div>
+          ) : null}
           {isLoggedIn && isBoard && diagnosticsEnabled && (
             <div data-tour-id="nav-admin">
               <SidebarNavigationItem

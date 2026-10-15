@@ -69,3 +69,44 @@ async fn a_changed_file_is_re_read_once() {
     assert_eq!(list(&pool, "", 0).await.unwrap().tracks[0].title, "A much longer new title");
     assert_eq!(super::reconcile::refresh_changed(&pool, &root).await.unwrap(), 0, "not re-read again");
 }
+
+#[tokio::test]
+async fn a_file_renamed_and_re_tagged_at_once_keeps_its_catalog_id() {
+    use super::analysis_tests::write_kick_wav;
+    let dir = tempfile::tempdir().unwrap();
+    let old = dir.path().join("a.wav");
+    write_kick_wav(&old, 120.0, 3.0, "House");
+    let pool = pool().await;
+    let root = add_root(&pool, dir.path()).await.unwrap();
+    let (fresh, _) = discover_new_paths(&pool, &root).await.unwrap();
+    import_into_root(&pool, &root.id, fresh).await;
+    super::reconcile::refresh_changed(&pool, &root).await.unwrap();
+    let id = list(&pool, "", 0).await.unwrap().tracks[0].id.clone();
+    let size_before = std::fs::metadata(&old).unwrap().len();
+
+    // A tagger renames the file and rewrites its tags: new name, new size, new mtime.
+    std::fs::remove_file(&old).unwrap();
+    let new = dir.path().join("01 - Renamed.wav");
+    write_kick_wav(&new, 120.0, 3.0, "Deep House Classics");
+    assert_ne!(std::fs::metadata(&new).unwrap().len(), size_before);
+
+    let (fresh, _) = discover_new_paths(&pool, &root).await.unwrap();
+    let (moved, rest) = super::reconcile::relink_moved(&pool, &root, fresh).await.unwrap();
+    assert_eq!(moved, 1);
+    assert!(rest.is_empty(), "not imported a second time");
+    let page = list(&pool, "", 0).await.unwrap();
+    assert_eq!(page.total, 1);
+    assert_eq!(page.tracks[0].id, id, "same catalog id, so playlists and ratings stay");
+    assert!(page.tracks[0].path.ends_with("01 - Renamed.wav"));
+}
+
+#[test]
+fn two_copies_of_one_recording_are_never_paired_by_their_audio() {
+    use super::reconcile::{audio_key, pair_retagged};
+    let key = audio_key("WAV", 44_100, 183.25).unwrap();
+    let vanished = vec![("a".to_owned(), key.clone()), ("b".to_owned(), key.clone())];
+    let fresh = vec![(std::path::PathBuf::from("x.wav"), key.clone())];
+    assert!(pair_retagged(&vanished, &fresh).is_empty());
+    assert_eq!(pair_retagged(&vanished[..1], &fresh).len(), 1);
+    assert!(audio_key("wav", 44_100, 0.4).is_none(), "very short clips are too easy to confuse");
+}

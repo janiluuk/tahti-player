@@ -1,10 +1,10 @@
 import { cva } from 'class-variance-authority';
 import { ChevronRight } from 'lucide-react';
-import { DateTime } from 'luxon';
 import { ComponentProps, FC, memo } from 'react';
 
 import { useCollapsibleText } from '../../hooks';
 import { cn } from '../../utils';
+import { formatClockTime } from '../../utils/time';
 import { CopyButton } from '../CopyButton';
 
 export type LogLevel = 'trace' | 'debug' | 'info' | 'warn' | 'error';
@@ -82,9 +82,7 @@ const LogEntryImpl: FC<LogEntryProps> = ({
   onClick,
   ...props
 }) => {
-  const formattedTime = DateTime.fromJSDate(entry.timestamp).toFormat(
-    'HH:mm:ss.SSS',
-  );
+  const formattedTime = formatClockTime(entry.timestamp);
 
   const displayLabel = entry.source.scope || entry.target;
 

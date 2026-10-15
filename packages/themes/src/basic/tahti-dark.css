@@ -1,6 +1,6 @@
 /* tahti-dark — the tahti.live pitch interface as a first-class theme.
  * Values converted from the pitch's hex palette (culori, see
- * TAHTI-DARK-THEME-WORKLOG.md Phase 2) onto this codebase's real semantic
+ * theme worklog, Phase 2; see docs/ARCHIVE.md) onto this codebase's real semantic
  * token names (Phase 1 discovery). Fixed dark identity — applies
  * regardless of the separate [data-theme] light/dark toggle, since the
  * pitch has no light variant. */
