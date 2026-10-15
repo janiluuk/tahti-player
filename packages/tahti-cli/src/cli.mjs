@@ -14,6 +14,7 @@ import {
 } from './commands/collections-edit.mjs';
 import { runCollectionsList } from './commands/collections-list.mjs';
 import { runCollectionsShow } from './commands/collections-show.mjs';
+import { runFeed } from './commands/feed.mjs';
 import { runHearthisDownloadSet } from './commands/hearthis-download-set.mjs';
 import { runHearthisSet } from './commands/hearthis-set.mjs';
 import { runHearthisSets } from './commands/hearthis-sets.mjs';
@@ -415,6 +416,17 @@ characters. Needs a token with the write scope.`,
     positionals: Infinity,
     run: (config, { positionals }) =>
       runMessagesSend(config, positionals[0], positionals.slice(1)),
+  },
+  {
+    path: ['feed'],
+    usage: 'tahti feed [--limit <n>] [--json]',
+    summary: 'Show recent posts, tracks and releases from artists you follow',
+    details: `Calls GET /api/me/feed, newest first: the date, the artist, what it is
+(post, track, or the release type) and its title or the start of the post.
+  --limit <n>   Show only the first n items`,
+    options: { ...JSON_OPTION, limit: { type: 'string' } },
+    run: (config, { values }) =>
+      runFeed(config, { json: values.json, limit: values.limit }),
   },
   {
     path: ['collections', 'list'],
