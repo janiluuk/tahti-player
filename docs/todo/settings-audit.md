@@ -16,7 +16,7 @@ User ask (2026-10-04): audit Settings thoroughly. Make sure it uses the standard
 ## Component audit
 
 - No hand-rolled `<button>`, `<input>`, `<select>`, `<textarea>`, `<a>` or `<img>` is left in `src/views/settings/`.
-- Panels: `StudioPanel` is the one card component. The moderation panels used it; Notifications (#541) and Mentions (#542) now do too. Left: most other tabs are bare `SettingsToggle` rows under an `h2` with no card at all (Visibility, Discovery, Playback); decide whether those get panels too.
+- Panels: `StudioPanel` is the one card component. The moderation panels used it; Notifications (#541) and Mentions (#542) now do too. 2026-10-15: Account → Notifications → Visibility is three cards (Your profile, Uploads and comments, Grant reports; #843) and Channel & chat → Discovery two (Channel page, Genres; #844). Playback stays as it is: it already has Output / Queue / Skipping sections from the library `SectionShell`.
 
 ## Fixed since the audit
 
