@@ -6,7 +6,7 @@ use sqlx::SqlitePool;
 
 use super::analysis::{analyze_tracks, clear_analysis, detail, restore_corrections, set_corrections, AnalysisControl};
 use super::catalog::{add_tag, record_play, set_rating};
-use super::smart_playlists::{evaluate_ids, snapshot, save_smart, RuleField, RuleOp, SmartDefinition, SmartRule};
+use super::smart_playlists::{evaluate_ids, snapshot, save_smart, RuleField, RuleOp, SmartCache, SmartDefinition, SmartRule};
 use super::test_support::pool;
 use super::{import_paths, list_query, AnalysisState, ListQuery, LibraryTrack, SortColumn, TrackFilters, TrackSort};
 
@@ -331,6 +331,78 @@ async fn smart_rules_compare_strictly_and_match_a_text_start() {
 
     assert!(save_smart(&pool, None, &definition(vec![rule(RuleField::Genre, RuleOp::Above, "1", "")], true)).await.is_err());
     assert!(save_smart(&pool, None, &definition(vec![rule(RuleField::Bpm, RuleOp::StartsWith, "1", "")], true)).await.is_err());
+}
+
+#[tokio::test]
+async fn smart_rules_match_dates_before_after_and_between_days() {
+    let (pool, _dir) = library().await;
+    let house = id_of(&pool, "house.wav").await;
+    let slow = id_of(&pool, "slow.wav").await;
+    sqlx::query("UPDATE library_tracks SET added_at = '2026-01-10 12:00:00' WHERE id = ?").bind(&house).execute(&pool).await.unwrap();
+    sqlx::query("UPDATE library_tracks SET added_at = '2026-03-05 08:00:00', last_played_at = '2026-03-06 21:00:00' WHERE id = ?")
+        .bind(&slow)
+        .execute(&pool)
+        .await
+        .unwrap();
+
+    let added = |op, a: &str, b: &str| definition(vec![rule(RuleField::Added, op, a, b)], true);
+    assert_eq!(evaluate_ids(&pool, &added(RuleOp::Before, "2026-02-01", "")).await.unwrap(), vec![house.clone()]);
+    assert_eq!(evaluate_ids(&pool, &added(RuleOp::After, "2026-01-10", "")).await.unwrap(), vec![slow.clone()], "after the whole day");
+    assert_eq!(evaluate_ids(&pool, &added(RuleOp::Between, "2026-03-05", "2026-01-10")).await.unwrap().len(), 2, "both ends included, either order");
+    assert!(evaluate_ids(&pool, &added(RuleOp::Between, "2026-01-11", "2026-03-04")).await.unwrap().is_empty());
+
+    let played = definition(vec![rule(RuleField::LastPlayed, RuleOp::Before, "2026-12-31", "")], true);
+    assert_eq!(evaluate_ids(&pool, &played).await.unwrap(), vec![slow.clone()], "never played is not before a date");
+
+    for bad in ["2026-13-40", "yesterday", ""] {
+        assert!(save_smart(&pool, None, &added(RuleOp::Before, bad, "")).await.is_err(), "{bad}");
+    }
+    assert!(save_smart(&pool, None, &definition(vec![rule(RuleField::Bpm, RuleOp::Before, "2026-01-01", "")], true)).await.is_err());
+}
+
+#[tokio::test]
+async fn smart_results_are_cached_until_the_library_changes() {
+    let (pool, _dir) = library().await;
+    let house = id_of(&pool, "house.wav").await;
+    let cache = SmartCache::default();
+    let rated = definition(vec![rule(RuleField::Rating, RuleOp::AtLeast, "4", "")], true);
+
+    assert_eq!(cache.page(&pool, &rated, 0).await.unwrap().total, 0);
+    assert!(cache.ids(&pool, &rated).await.unwrap().is_empty());
+
+    set_rating(&pool, std::slice::from_ref(&house), 5).await.unwrap();
+    assert_eq!(cache.page(&pool, &rated, 0).await.unwrap().total, 1, "a write moves the version, so the old result is dropped");
+    assert_eq!(cache.ids(&pool, &rated).await.unwrap(), vec![house.clone()]);
+    let cached_at = super::changes::change_version(&pool).await.unwrap();
+
+    // Unrate it, then wind the counter back by hand: the cache can't tell
+    // the difference, which shows repeat reads come from the cache.
+    set_rating(&pool, std::slice::from_ref(&house), 0).await.unwrap();
+    sqlx::query("UPDATE library_change_version SET version = ? WHERE id = 1").bind(cached_at).execute(&pool).await.unwrap();
+    assert_eq!(cache.ids(&pool, &rated).await.unwrap(), vec![house.clone()], "served from the cache");
+    assert!(evaluate_ids(&pool, &rated).await.unwrap().is_empty(), "the live query sees the change");
+}
+
+#[tokio::test]
+async fn cached_smart_results_drop_tracks_that_age_out_of_a_last_days_window() {
+    let (pool, _dir) = library().await;
+    let house = id_of(&pool, "house.wav").await;
+    sqlx::query("UPDATE library_tracks SET added_at = datetime('now', '-30 days', '+1 seconds')").execute(&pool).await.unwrap();
+    sqlx::query("UPDATE library_tracks SET added_at = datetime('now', '-30 days', '+1 hours') WHERE id = ?").bind(&house).execute(&pool).await.unwrap();
+    let cache = SmartCache::default();
+    let recent = definition(vec![rule(RuleField::Added, RuleOp::InLastDays, "30", "")], true);
+    let older = definition(vec![rule(RuleField::Added, RuleOp::NotInLastDays, "30", "")], true);
+    let all = cache.ids(&pool, &recent).await.unwrap().len();
+    assert!(all > 1);
+    assert!(cache.ids(&pool, &older).await.unwrap().is_empty());
+    let version = super::changes::change_version(&pool).await.unwrap();
+
+    tokio::time::sleep(std::time::Duration::from_millis(2100)).await;
+
+    assert_eq!(super::changes::change_version(&pool).await.unwrap(), version, "nothing was written");
+    assert_eq!(cache.ids(&pool, &recent).await.unwrap(), vec![house.clone()], "the others aged out");
+    assert_eq!(cache.page(&pool, &recent, 0).await.unwrap().total, 1);
+    assert_eq!(cache.ids(&pool, &older).await.unwrap().len(), all - 1, "and joined not-within");
 }
 
 #[tokio::test]

@@ -132,7 +132,7 @@ export function ChannelPlaylistBlock({
             username: collection.user.username,
             slug: collection.slug,
           }}
-          className="text-primary text-xs font-semibold underline-offset-2 hover:underline"
+          className="text-primary-strong text-xs font-semibold underline-offset-2 hover:underline"
         >
           Open playlist →
         </Link>

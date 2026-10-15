@@ -29,7 +29,7 @@ function CreditName({ credit }: { credit: SmartLinkCredit }) {
     <Link
       to="/u/$username"
       params={{ username: credit.artistUsername }}
-      className="text-primary hover:underline"
+      className="text-primary-strong hover:underline"
     >
       {credit.name}
     </Link>

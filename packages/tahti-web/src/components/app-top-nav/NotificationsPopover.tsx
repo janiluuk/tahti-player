@@ -30,7 +30,8 @@ export function NotificationsPopover({ nav }: { nav: TopNavState }) {
           iconBtnClass,
           'relative',
           isMobile && 'hidden',
-          notificationsOpen && 'border-primary bg-primary/15 text-primary',
+          notificationsOpen &&
+            'border-primary bg-primary/15 text-primary-strong',
         )}
         aria-label="Notifications"
         aria-haspopup="menu"

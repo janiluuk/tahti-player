@@ -588,7 +588,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
               <span
                 className={
                   m.channelRole === 'owner'
-                    ? 'text-primary font-semibold'
+                    ? 'text-primary-strong font-semibold'
                     : m.supporter
                       ? 'text-foreground font-semibold'
                       : 'text-foreground-secondary font-medium'

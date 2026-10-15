@@ -327,17 +327,17 @@ jobs:
   # Storybook stories as browser tests (render smoke + `play` assertions)
   # via @storybook/addon-vitest.
   storybook:
-    name: Storybook (plays ${{ matrix.shard }}/4)
+    name: Storybook (plays ${{ matrix.shard }}/6)
     runs-on: ubuntu-latest
     needs: changes
     if: needs.changes.outputs.code == 'true'
     strategy:
       fail-fast: false
       matrix:
-        # Four shards, not two: one Chromium page serves a whole shard, and
-        # past roughly 110 story files its renderer was killed ("Browser
-        # connection was closed") on about half the runs.
-        shard: [1, 2, 3, 4]
+        # One Chromium page serves a whole shard, and past roughly 100 story
+        # files its renderer gets killed ("Browser connection was closed").
+        # Six shards keep each near 65 of the ~400 files.
+        shard: [1, 2, 3, 4, 5, 6]
 
     steps:
       - name: Checkout code
@@ -370,7 +370,7 @@ jobs:
         run: node scripts/generate-storybook-surfaces.mjs --check
 
       - name: Run stories as tests
-        run: pnpm --filter @tahti-player/storybook test --shard=${{ matrix.shard }}/4
+        run: pnpm --filter @tahti-player/storybook test --shard=${{ matrix.shard }}/6
 
   # Manual-only e2e run: dispatch the workflow with run_e2e=true. Runs the
   # Playwright suite against the deployed site (beta.tahti.live by default).

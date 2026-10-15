@@ -4,6 +4,10 @@ description: Control playback order, manipulate the queue, and react to track ch
 
 # Queue
 
+{% hint style="warning" %}
+**Legacy: Nuclear plugin SDK.** This page describes the plugin SDK Tahti Player inherited from Nuclear. Since 2026-09 the Tahti Player app — desktop and web — no longer loads these plugins, so nothing on this page runs in the current app. To extend Tahti, see [Tahti add-on and plugin authoring](tahti-web-authoring.md).
+{% endhint %}
+
 ## Queue API for Plugins
 
 The Queue API gives plugins control over Tahti Player's playback queue. Add tracks, reorder items, control navigation, and subscribe to queue changes.

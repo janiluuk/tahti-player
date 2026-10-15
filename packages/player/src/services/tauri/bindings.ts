@@ -276,6 +276,10 @@ export const commands = {
 	 *  is where the damaged file was kept. Returned once, then cleared.
 	 */
 	libraryTakeRecoveryNotice: () => typedError<string | null, string>(__TAURI_INVOKE("library_take_recovery_notice")),
+	/**
+	 *  The current counter, so a view can tell whether what it shows is stale.
+	 */
+	libraryChangeVersion: () => typedError<LibraryChangeVersion, string>(__TAURI_INVOKE("library_change_version")),
 	libraryWatching: () => typedError<boolean, string>(__TAURI_INVOKE("library_watching")),
 	/**  Turns folder watching on or off (persisted); manual rescan always works. */
 	librarySetWatching: (enabled: boolean) => typedError<null, string>(__TAURI_INVOKE("library_set_watching", { enabled })),
@@ -800,6 +804,8 @@ export type ItunesUnresolved = {
 	reason: UnresolvedReason,
 };
 
+export type LibraryChangeVersion = { version: number };
+
 export type LibraryPage = {
 	tracks: LibraryTrack[],
 	total: number,
@@ -1174,7 +1180,11 @@ export type RuleOp = "is" | "isNot" | "contains" | "notContains" | "atLeast" | "
 /**  Dates: within the last `value` days. */
 "inLastDays" | 
 /**  Dates: not within the last `value` days (never-played included). */
-"notInLastDays" | "isSet" | "isNotSet";
+"notInLastDays" | 
+/**  Dates: before the day `value` (`YYYY-MM-DD`). */
+"before" | 
+/**  Dates: after the day `value` (`YYYY-MM-DD`). */
+"after" | "isSet" | "isNotSet";
 
 export type SmartDefinition = {
 	name: string,

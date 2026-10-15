@@ -98,7 +98,7 @@ function TimelineEntry({
                 href={linkUrl}
                 target={linkUrl.startsWith('/') ? undefined : '_blank'}
                 rel={linkUrl.startsWith('/') ? undefined : 'noreferrer'}
-                className="text-primary mt-3 inline-flex items-center gap-1.5 text-sm font-semibold underline-offset-2 hover:underline"
+                className="text-primary-strong mt-3 inline-flex items-center gap-1.5 text-sm font-semibold underline-offset-2 hover:underline"
               >
                 {entry.linkLabel?.trim() || 'Read more'}
                 <ExternalLinkIcon size={14} aria-hidden />
@@ -143,7 +143,7 @@ export function NewsView() {
           News, service updates, and posts from the Tahti team.{' '}
           <Link
             to="/whats-new"
-            className="text-primary font-medium underline-offset-2 hover:underline"
+            className="text-primary-strong font-medium underline-offset-2 hover:underline"
           >
             See what's new in each release
           </Link>

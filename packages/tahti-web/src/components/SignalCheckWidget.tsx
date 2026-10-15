@@ -128,7 +128,7 @@ export const SignalCheckWidget = ({
       data-testid="signal-check-widget"
     >
       <div className="flex flex-wrap items-center gap-3">
-        <div className="bg-background-secondary text-primary relative flex size-10 shrink-0 items-center justify-center rounded-full">
+        <div className="bg-background-secondary text-primary-strong relative flex size-10 shrink-0 items-center justify-center rounded-full">
           <Mic2Icon size={21} aria-hidden />
           <span className="ring-background bg-accent-yellow absolute right-0 bottom-0 size-2.5 rounded-full ring-2" />
         </div>
@@ -174,7 +174,7 @@ export const SignalCheckWidget = ({
         </div>
       )}
       {connected && !isChecking && (
-        <div className="text-primary mt-3 flex items-center gap-2 text-xs">
+        <div className="text-primary-strong mt-3 flex items-center gap-2 text-xs">
           <CheckCircle2Icon size={14} aria-hidden />
           {signal?.codec ?? 'Audio'}
           {signal?.bitrateKbps != null ? ` · ${signal.bitrateKbps} kbps` : ''}

@@ -141,7 +141,7 @@ export function TrackInfoDialog({
                         onClick={entry.onSelect}
                         className={`flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm disabled:cursor-default disabled:opacity-100 ${
                           entry.active
-                            ? 'text-primary font-semibold'
+                            ? 'text-primary-strong font-semibold'
                             : 'hover:bg-background-secondary'
                         }`}
                       >

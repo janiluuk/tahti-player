@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { Dialog, TabLabel, Tabs, Tooltip } from '@tahti-player/ui';
+import { ClampedText, Dialog, TabLabel, Tabs, Tooltip } from '@tahti-player/ui';
 
 import {
   fetchMyPressKitImages,
@@ -443,7 +443,9 @@ function ArtistProfilePage({ username }: { username: string }) {
         subtitle={artistHeaderSubtitle(artist)}
         description={
           artist.bio ? (
-            <p className="line-clamp-2 whitespace-pre-wrap">{artist.bio}</p>
+            <ClampedText className="whitespace-pre-wrap">
+              {artist.bio}
+            </ClampedText>
           ) : null
         }
         backdropUrl={artistBackdropUrl}

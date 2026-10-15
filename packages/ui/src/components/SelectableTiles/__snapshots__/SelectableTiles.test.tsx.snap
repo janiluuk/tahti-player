@@ -9,7 +9,7 @@ exports[`SelectableTiles > (Snapshot) renders centered layout with an icon 1`] =
 >
   <button
     aria-checked="true"
-    class="rounded-lg border-(length:--border-width) p-3 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-primary bg-primary/10 text-primary flex min-h-24 flex-col items-center justify-center gap-2 text-center"
+    class="rounded-lg border-(length:--border-width) p-3 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-primary bg-primary/10 text-primary-strong flex min-h-24 flex-col items-center justify-center gap-2 text-center"
     role="radio"
     type="button"
   >
@@ -41,7 +41,7 @@ exports[`SelectableTiles > (Snapshot) renders multi-select mode 1`] = `
 >
   <button
     aria-checked="true"
-    class="rounded-lg border-(length:--border-width) p-3 text-left text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-primary bg-primary/10 text-primary flex items-start gap-2"
+    class="rounded-lg border-(length:--border-width) p-3 text-left text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-primary bg-primary/10 text-primary-strong flex items-start gap-2"
     role="checkbox"
     type="button"
   >
@@ -88,7 +88,7 @@ exports[`SelectableTiles > (Snapshot) renders single-select mode 1`] = `
 >
   <button
     aria-checked="true"
-    class="rounded-lg border-(length:--border-width) p-3 text-left text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-primary bg-primary/10 text-primary flex items-start gap-2"
+    class="rounded-lg border-(length:--border-width) p-3 text-left text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-primary bg-primary/10 text-primary-strong flex items-start gap-2"
     role="radio"
     type="button"
   >

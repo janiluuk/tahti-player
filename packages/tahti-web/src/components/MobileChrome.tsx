@@ -84,7 +84,7 @@ export function MobileBottomNav({
             className={cn(
               'flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-md px-1 py-1.5 text-[10px] tracking-wide',
               active
-                ? 'text-primary'
+                ? 'text-primary-strong'
                 : 'text-foreground-secondary hover:text-foreground',
             )}
           >
@@ -103,7 +103,7 @@ export function MobileBottomNav({
         className={cn(
           'flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-md px-1 py-1.5 text-[10px] tracking-wide hover:bg-transparent',
           moreActive || moreOpen
-            ? 'text-primary'
+            ? 'text-primary-strong'
             : 'text-foreground-secondary hover:text-foreground',
         )}
       >
@@ -196,10 +196,13 @@ export function MobileDrawer({
       aria-modal
       aria-label={title}
     >
-      <button
-        type="button"
-        className="absolute inset-0 bg-black/50"
-        aria-label="Close"
+      <Button
+        variant="plain"
+        size="flexible"
+        tabIndex={-1}
+        aria-hidden
+        data-testid="mobile-drawer-scrim"
+        className="absolute inset-0 rounded-none bg-black/50 active:scale-100"
         onClick={onClose}
       />
       <div

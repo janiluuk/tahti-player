@@ -1,91 +1,44 @@
 ---
-description: Install Tahti Player and play your first song
+description: Install Tahti Player and play your first track
 ---
 
 # Getting started
 
-Tahti Player is a free music player that streams music from the internet. Unlike many music players, Tahti Player doesn't come with a built-in music catalog. Instead, plugins provide everything: search results, audio streams, lyrics, recommendations, and more. You pick which plugins to install, and they determine where your music comes from.
+Tahti Player is the app for [tahti.live](https://tahti.live), a nonprofit broadcasting platform for independent artists. The same app runs in the browser at beta.tahti.live and as a desktop app for Linux, macOS and Windows. The desktop app adds a library for the music files on your computer and a few local integrations (see [How Tahti Player works](../core-concepts/how-nuclear-works.md)).
 
-This guide walks you through going from a fresh install to playing your first song.
+## Install
 
-## Install Tahti Player
+Download the desktop app for your platform; see [Installation](installation.md). Or open the web app in a browser; nothing to install.
 
-Download and install Tahti Player for your platform. See [Installation](installation.md) for detailed instructions.
+## First look
 
-## First launch
+You don't need an account to listen. The window has:
 
-When you open Tahti Player for the first time, you'll see the Dashboard with a welcome message prompting you to install plugins. Nothing works yet because no plugins are installed.
+- **Top bar:** search (artists, tracks, playlists), and once you are signed in: notifications, messages and your account menu.
+- **Sidebar:** **Listen** (the home page: who is on air, channels, radio), **Radio**, **Discover**, **Favorites** and **Library**; **Studio** for artists. **Help center** and **Settings** are at the bottom.
+- **Right panel:** the queue.
+- **Player bar:** appears at the bottom once a track is loaded.
 
-The app layout has five main areas:
+On a phone the sidebar becomes a bar at the bottom, and the rest is in the menu.
 
-- **Top bar** with back/forward navigation and a search box
-- **Left sidebar** with navigation (Dashboard, Favorites, Playlists, Sources, Settings)
-- **Main area** in the center showing the current view
-- **Queue panel** on the right showing upcoming tracks
-- **Player bar** at the bottom with playback controls
+Press **H** on any page for a short guided tour of it.
 
-<figure><img src="../.gitbook/assets/app-layout-overview.png" alt="The Tahti Player app layout, showing the five main areas"><figcaption><p>The Tahti Player app layout with the five main areas</p></figcaption></figure>
+## Play something
 
-## Install your first plugins
+1. On **Listen**, press play on a live channel, a radio station or a track.
+2. **Add to queue** on any track lines it up next; see [The queue](../core-concepts/the-queue.md).
+3. The heart saves a track or channel to [Favorites](../core-concepts/favorites.md).
 
-Tahti Player needs at least two types of plugins to play music:
+## Sign in or join
 
-- A **metadata plugin** to search for artists, albums, and tracks
-- A **streaming plugin** to provide the actual audio
+**Log in** (top right) to follow artists, like and comment, keep playlists and send messages. Joining is free for listeners. Artists take a membership to get their own channel, releases and live shows; see the Help center's "Free tier vs membership".
 
-Some plugins provide both metadata and streaming in a single package, so you may only need to install one.
+## Play your own files (desktop app)
 
-To install plugins:
+In the desktop app, open **Library → Local files** and add a folder. The app imports your music (MP3, FLAC, WAV, AIFF, M4A, OGG and more), keeps watching the folder, and can analyse BPM, key and loudness. Local tracks play in the same player and queue as Tahti tracks.
 
-1. Click **Browse plugins** on the Dashboard welcome screen (or open Settings and go to the Plugins tab)
-2. Switch to the **Store** sub-tab
-3. Find a metadata plugin and click **Install**
-4. Find a streaming plugin and click **Install** (or a plugin that provides both)
+## Next
 
-You can filter by category (Streaming, Metadata, Lyrics, etc.) and search by name. Installed plugins activate immediately.
-
-<figure><img src="../.gitbook/assets/plugin-store.png" alt="The plugin store showing available plugins"><figcaption><p>The plugin store</p></figcaption></figure>
-
-While you're in the store, consider installing a **dashboard plugin** too. Dashboard plugins populate the home screen with top tracks, new releases, and recommendations so you have something to browse when you open Tahti Player.
-
-## Search for music
-
-With your plugins installed, type an artist or song name in the search box at the top of the window and press Enter.
-
-Results appear in tabs (Albums, Artists, Tracks) depending on what the metadata plugin found. Click an album to see its tracklist, or go to the Tracks tab to see individual songs.
-
-<figure><img src="../.gitbook/assets/search-albums.png" alt="Search results showing album cards"><figcaption><p>Search results with the Albums tab active</p></figcaption></figure>
-
-## Play a track
-
-Each track in a list has a **+** button that adds it to the queue. You can also click the **three-dot menu** (&#8942;) on a track for more options:
-
-- **Play now**: clears the queue and plays this track immediately
-- **Play next**: inserts the track after the currently playing one
-- **Add to queue**: appends the track to the end of the queue
-- **Add to favorites**: saves the track to your favorites
-- **Add to playlist**: adds the track to one of your playlists
-
-<figure><img src="../.gitbook/assets/track-context-menu.png" alt="The three-dot menu on a track showing all available actions"><figcaption><p>The track context menu</p></figcaption></figure>
-
-The player bar at the bottom shows the current track with album art, playback controls, a seek bar, and volume. The queue panel on the right shows what's coming up next. You can drag tracks in the queue to reorder them.
-
-## Choose your sources
-
-If you have multiple metadata or streaming plugins installed, you can pick which one is active. Open the **Sources** view from the left sidebar to see all available providers grouped by type:
-
-- **Metadata**: where search results and artist/album info come from
-- **Streaming**: where audio streams come from
-- **Discovery**: where track recommendations come from (optional, used by the auto-discovery feature)
-
-Select your preferred provider from each dropdown.
-
-## Next steps
-
-Now that you can search and play music, you might want to:
-
-- **Save favorites**: use the three-dot menu on tracks, albums, or artists to add them to favorites
-- **Create playlists**: go to the Playlists view in the sidebar to organize your music
-- **Customize the look**: open Settings and browse the Themes tab, or check the [Themes documentation](../themes/themes.md)
-- **Explore more plugins**: the plugin store has plugins for lyrics, scrobbling, dashboard widgets, and more
-- **Set up discovery**: install a discovery plugin and click the boombox icon in the player bar to get automatic recommendations. Discovery is optional and requires a discovery provider plugin. See [Music discovery](../misc/discovery.md) for details.
+- [Keyboard shortcuts](../misc/keyboard-shortcuts.md)
+- [Remote control](remote-control.md) from your phone
+- [Themes](../themes/themes.md)
