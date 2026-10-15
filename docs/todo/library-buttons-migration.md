@@ -16,7 +16,6 @@
 
 ## Left
 
-- [ ] Decide: the drawer scrim in `MobileChrome` is a full-screen `<button>`; a library `Button` does not obviously cover it. It is the last raw `<button>` in `packages/tahti-web/src`.
 - [ ] Three `Link` → `Tooltip` → `Button` nestings remain in `track-edit-dialog/AudioTab.tsx` (2) and `PurchaseAccessSection.tsx`. Their tests mock `Link` without a router, and `ButtonLink` needs one; give the tests a router first.
 
 ## Notes for whoever continues
