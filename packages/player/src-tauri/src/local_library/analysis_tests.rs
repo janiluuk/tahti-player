@@ -312,6 +312,28 @@ async fn smart_rules_match_composer_and_sort_by_it() {
 }
 
 #[tokio::test]
+async fn smart_rules_compare_strictly_and_match_a_text_start() {
+    let (pool, _dir) = library().await;
+    let house = id_of(&pool, "house.wav").await;
+    let slow = id_of(&pool, "slow.wav").await;
+    set_rating(&pool, std::slice::from_ref(&house), 4).await.unwrap();
+    set_rating(&pool, std::slice::from_ref(&slow), 3).await.unwrap();
+
+    let by = |op, value: &str| definition(vec![rule(RuleField::Rating, op, value, "")], true);
+    assert_eq!(evaluate_ids(&pool, &by(RuleOp::Above, "3")).await.unwrap(), vec![house.clone()], "4 > 3, 3 is not");
+    assert_eq!(evaluate_ids(&pool, &by(RuleOp::Below, "4")).await.unwrap(), vec![slow.clone()], "3 < 4, 4 is not");
+    assert_eq!(evaluate_ids(&pool, &by(RuleOp::AtLeast, "3")).await.unwrap().len(), 2, "at least keeps the bound");
+
+    let genre = |value: &str| definition(vec![rule(RuleField::Genre, RuleOp::StartsWith, value, "")], true);
+    assert_eq!(evaluate_ids(&pool, &genre("HOU")).await.unwrap(), vec![house.clone()], "case-insensitive prefix");
+    assert!(evaluate_ids(&pool, &genre("ouse")).await.unwrap().is_empty(), "the middle of a word is not a start");
+    assert!(evaluate_ids(&pool, &genre("%")).await.unwrap().is_empty(), "wildcards are literal");
+
+    assert!(save_smart(&pool, None, &definition(vec![rule(RuleField::Genre, RuleOp::Above, "1", "")], true)).await.is_err());
+    assert!(save_smart(&pool, None, &definition(vec![rule(RuleField::Bpm, RuleOp::StartsWith, "1", "")], true)).await.is_err());
+}
+
+#[tokio::test]
 async fn invalid_smart_rules_are_rejected_when_saved() {
     let (pool, _dir) = library().await;
     for bad in [

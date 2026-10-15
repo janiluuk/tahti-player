@@ -223,7 +223,10 @@ export function SupportTab() {
                       }`}
                     >
                       <div className="flex items-start justify-between gap-2">
-                        <span className="min-w-0 truncate font-medium">
+                        <span
+                          className="min-w-0 truncate font-medium"
+                          title={t.subject}
+                        >
                           {t.subject}
                         </span>
                         <span className="flex shrink-0 items-center gap-1.5">

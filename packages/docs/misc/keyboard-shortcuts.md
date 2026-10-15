@@ -1,44 +1,57 @@
 ---
-description: Default keyboard shortcuts and how to customize them
+description: Keyboard shortcuts in Tahti Player
 ---
 
-# Key shortcuts
+# Keyboard shortcuts
 
-Tahti Player comes with built-in keyboard shortcuts for common actions. You can customize any shortcut from the settings.
+The same list is in the app under **Help → Keyboard shortcuts**. Shortcuts are off while you type in a text field, a dropdown or any other editable content.
 
-## Default shortcuts
+## Moving around
 
-### Playback
+| Action | Keys |
+| --- | --- |
+| Skip past the top bar and sidebar to the page | `Tab` (first stop on every page), then `Enter` |
+| Listen | `Alt` `1` |
+| Radio | `Alt` `2` |
+| Feed | `Alt` `3` |
+| My Library | `Alt` `4` |
+| Studio | `Alt` `5` |
 
-| Action          | macOS            | Windows / Linux  |
-| --------------- | ---------------- | ---------------- |
-| Play / Pause    | `Space`          | `Space`          |
-| Next track      | `⌘` `→`         | `Ctrl` `→`       |
-| Previous track  | `⌘` `←`         | `Ctrl` `←`       |
-| Seek forward    | `→`              | `→`              |
-| Seek backward   | `←`              | `←`              |
-| Volume up       | `⌘` `↑`         | `Ctrl` `↑`       |
-| Volume down     | `⌘` `↓`         | `Ctrl` `↓`       |
-| Mute / Unmute   | `⌘` `M`         | `Ctrl` `M`       |
+## Player
 
-### General
+| Action | Keys |
+| --- | --- |
+| Open or close the full-screen player (when a track is loaded) | `V` |
+| Skip backward | `Shift` `←` |
+| Skip forward | `Shift` `→` |
 
-| Action          | macOS            | Windows / Linux  |
-| --------------- | ---------------- | ---------------- |
-| Open settings   | `⌘` `,`         | `Ctrl` `,`       |
+**Settings → Playback** sets how far a skip goes.
 
-Seek forward and backward skip by the number of seconds configured in the Playback settings (default: 5 seconds). Volume changes in steps of 5%.
+## Page tour
 
-## Customizing shortcuts
+| Action | Keys |
+| --- | --- |
+| Open or close the guided tour of the page | `H` |
+| Previous step | `←` |
+| Next step | `→` |
+| Close the tour | `Esc` |
 
-1. Open settings (`⌘`/`Ctrl` + `,`)
-2. Click the **Key Shortcuts** tab (keyboard icon)
-3. Click any keybinding to enter recording mode
-4. Press the new key combination you want to use
-5. Press `Escape` to cancel recording without saving
+## Desktop library
 
-If the key combination you record is already used by another command, Tahti Player will show an error and keep the previous binding.
+In the desktop app's library table (the keyboard icon above the table shows this list too):
 
-To restore a single shortcut to its default, click the **Reset** button next to it. To restore all shortcuts at once, click **Reset all to defaults** at the bottom of the page.
+| Action | Keys |
+| --- | --- |
+| Next / previous track | `↓` / `↑` (also `Page Up`, `Page Down`, `Home`, `End`) |
+| Play, or locate a missing file | `Enter` |
+| Select or deselect | `Space` |
+| Extend the selection | `Shift` `↓` |
+| Select all | `⌘`/`Ctrl` `A` |
+| Clear the selection | `Esc` |
+| Add to queue | `Q` |
+| Show details | `I` |
+| Edit tags | `E` |
+| Reveal in folder | `R` |
+| Remove from library | `Delete` |
 
-Custom shortcuts are saved to `shortcuts.json` in your Tahti Player config directory and persist across restarts.
+Shortcuts can't be changed yet.
