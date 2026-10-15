@@ -4654,3 +4654,16 @@ Asked for as "continue with next 20 slices and open pr". Found with a link/conso
 - **Startup size (#806-#810):** see `player-performance-optimizations.md`; initial JS 2,278,433 -> 1,383,959 B raw, 665,094 -> 428,528 B gzip.
 - **Accessibility (#811-#814):** newsletter landing pages had grey text on teal (1.28:1); the governance summary line was dimmed below 4.5:1; admin map diagrams and the governance activity table are focusable named regions; `TopList` and `ThemeStoreItem` take `headingLevel`, so admin top lists and Settings → Themes no longer skip from h1 to h3.
 - **Checks:** per PR the touched suites, before/after axe runs, Playwright clicks and screenshots on the mock dev server, and production builds for every byte figure. #802's body first claimed tests that don't exist and was corrected. Not tried: a real Tauri update, a real station stream, light themes for the contrast fixes, a phone or a screen reader.
+
+## 2026-10-15 - CLI commands, Settings cards and chat fixes, sixty-second batch (tahti-player #817-#846, tahti-cli #4-#5)
+
+Asked for as "wrap up the next 20 slices from the project todo, add prs and merge the existing pr's. inspect the todo for the tahti-cli client under ../tahti-cli". There is no `../tahti-cli` checkout; the CLI is `packages/tahti-cli` here plus the standalone janiluuk/tahti-cli, and its todo is `tahti-cli-tool.md`.
+
+- **Merged from another session's open work:** chat lines a moderator removes leave open chats (#817, with tahti-org#839); a refused chat reaction says why (#823); the user manual says the desktop app updates itself (#824); Settings → Blocked accounts lists everything a block does (#825); `tahti notifications list` (#818). The stacked CLI PRs #819-#826 lost their bases when the branches were deleted on merge (#819, #821, #826 closed; #820, #822 merged into intermediate branches) and were re-landed as #827.
+- **CLI (#828-#842, #846, one stacked chain):** library edit, delete, download and processing; collections add/remove; purchases; blocks; mentions; messages; feed; stash; likes; `login`/`logout` with a saved token; `import` reads ID3v2/FLAC tags; a Likes pane in `tahti shell`. Details in `tahti-cli-tool.md`.
+- **Docs (#841):** a Command line page in the user manual.
+- **Settings (#843, #844):** the Visibility switches are three cards and Channel & chat → Discovery two, closing `settings-audit.md`'s "bare toggle tabs" item.
+- **Navigation (#845):** `StudioNav`'s no-op `global` prop is gone; `ui-nav-audit.md`'s highlight-gap table was all fixed and is now a note.
+- **Standalone CLI repo:** tahti-cli#4 merged; tahti-cli#5 syncs #828-#846.
+- **Checks:** CLI tests per PR (175 → 243) and lint; the tag reader on four real MP3/FLAC files; Settings tests, `tsc`, eslint and mock-app screenshots for #843/#844; `StudioNav` tests for #845. Not tried: any new CLI command against the live API, `tahti shell` in a real terminal with mpv, Settings on a phone.
+
