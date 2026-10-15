@@ -139,7 +139,7 @@ export function SlideshowControls({
           <Tooltip content="Add gallery images" side="top">
             <Button
               variant="text"
-              className="border-border text-foreground-secondary hover:border-primary hover:text-primary h-16 w-full rounded-md border border-dashed"
+              className="border-border text-foreground-secondary hover:border-primary hover:text-primary-strong h-16 w-full rounded-md border border-dashed"
               aria-label="Add gallery images"
               disabled={busy}
               onClick={() => onPickerOpenChange(true)}

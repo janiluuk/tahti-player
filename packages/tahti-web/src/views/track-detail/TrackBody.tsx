@@ -47,8 +47,9 @@ export function TrackBody({ page }: { page: TrackPage }) {
                       }
                     }}
                     className={cn(
-                      'hover:text-primary h-auto rounded-none p-0 text-left whitespace-normal hover:bg-transparent active:scale-100 active:bg-transparent',
-                      cue.id === activeCueId && 'text-primary font-medium',
+                      'hover:text-primary-strong h-auto rounded-none p-0 text-left whitespace-normal hover:bg-transparent active:scale-100 active:bg-transparent',
+                      cue.id === activeCueId &&
+                        'text-primary-strong font-medium',
                     )}
                   >
                     {cue.startSec != null ? (
@@ -66,7 +67,7 @@ export function TrackBody({ page }: { page: TrackPage }) {
                       <Link
                         to="/u/$username"
                         params={{ username: cue.artistUsername }}
-                        className="text-primary hover:underline"
+                        className="text-primary-strong hover:underline"
                       >
                         {cue.artist}
                       </Link>
@@ -105,7 +106,7 @@ export function TrackBody({ page }: { page: TrackPage }) {
                           <Button
                             variant="text"
                             size="sm"
-                            className="text-primary tabular-nums"
+                            className="text-primary-strong tabular-nums"
                             onClick={() => jumpTo(cueSeconds)}
                           >
                             {parsed.timestamp}

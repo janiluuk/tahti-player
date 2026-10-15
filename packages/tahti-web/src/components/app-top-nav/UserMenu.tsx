@@ -72,7 +72,7 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
           />
         ) : null}
         <span
-          className="bg-primary/20 text-primary font-display relative flex size-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold"
+          className="bg-primary/20 text-primary-strong font-display relative flex size-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold"
           aria-hidden
         >
           {initial}

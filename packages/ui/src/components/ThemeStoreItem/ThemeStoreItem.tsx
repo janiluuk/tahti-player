@@ -10,6 +10,8 @@ import { Tooltip } from '../Tooltip';
 
 type ThemeStoreItemProps = {
   name: string;
+  /** Heading level of the theme name, to fit the page's outline. Defaults to 3. */
+  headingLevel?: 2 | 3 | 4;
   description: string;
   author: string;
   palette: [string, string, string, string];
@@ -38,6 +40,7 @@ type ThemeStoreItemProps = {
 
 export const ThemeStoreItem: FC<ThemeStoreItemProps> = ({
   name,
+  headingLevel = 3,
   description,
   author,
   palette,
@@ -54,6 +57,7 @@ export const ThemeStoreItem: FC<ThemeStoreItemProps> = ({
   labels = {},
   className,
 }) => {
+  const Heading = `h${headingLevel}` as const;
   const {
     install = 'Install',
     installing = 'Installing',
@@ -122,12 +126,12 @@ export const ThemeStoreItem: FC<ThemeStoreItemProps> = ({
         >
           <div className="flex min-w-0 flex-1 basis-40 flex-col gap-0.5">
             <div className="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-0.5">
-              <h3
+              <Heading
                 data-testid="theme-store-item-name"
                 className="text-foreground truncate text-sm font-bold"
               >
                 {name}
-              </h3>
+              </Heading>
               <p
                 data-testid="theme-store-item-author"
                 className="text-foreground-secondary truncate text-xs"

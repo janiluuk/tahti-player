@@ -1,6 +1,11 @@
 import type { ReactNode } from 'react';
 
-import { Button, ButtonLink, MediaArtwork } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonLink,
+  ClampedText,
+  MediaArtwork,
+} from '@tahti-player/ui';
 
 import {
   isHeaderImageUrl,
@@ -331,7 +336,12 @@ export function ChannelBackdropCard({
               {channelSlug ? ` · /${channelSlug}` : ''}
             </div>
             {bioVisible && bio ? (
-              <p className="mt-1 line-clamp-2 text-sm opacity-90">{bio}</p>
+              <ClampedText
+                wrapperClassName="mt-1"
+                className="text-sm whitespace-pre-wrap opacity-90"
+              >
+                {bio}
+              </ClampedText>
             ) : null}
           </div>
           {subscribeVisible ? (

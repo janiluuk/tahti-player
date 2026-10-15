@@ -112,7 +112,7 @@ const AddToQueueButton: FC<AddToQueueButtonProps> = ({
         className={cn(
           'size-7 opacity-100 transition-colors [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100',
           (queued || flashing) &&
-            'bg-primary/20 text-primary opacity-100! motion-safe:animate-pulse',
+            'bg-primary/20 text-primary-strong opacity-100! motion-safe:animate-pulse',
         )}
         onClick={(event) => {
           event.stopPropagation();

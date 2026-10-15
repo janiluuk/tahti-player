@@ -612,7 +612,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       <Link
         to="/channel/$slug"
         params={{ slug: channelSlug }}
-        className="text-primary text-sm font-semibold underline-offset-2 hover:underline"
+        className="text-primary-strong text-sm font-semibold underline-offset-2 hover:underline"
       >
         Open my channel →
       </Link>
@@ -620,7 +620,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       <Link
         to="/u/$username"
         params={{ username }}
-        className="text-primary text-sm font-semibold underline-offset-2 hover:underline"
+        className="text-primary-strong text-sm font-semibold underline-offset-2 hover:underline"
       >
         Open my channel →
       </Link>

@@ -78,7 +78,7 @@ export function WhatsNewPanel() {
         What changed in each release, in plain language.{' '}
         <Link
           to="/news"
-          className="text-primary font-medium underline-offset-2 hover:underline"
+          className="text-primary-strong font-medium underline-offset-2 hover:underline"
         >
           See platform announcements
         </Link>

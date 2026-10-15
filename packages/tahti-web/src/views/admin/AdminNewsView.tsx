@@ -212,14 +212,14 @@ export function AdminNewsView() {
                               <ImageIcon
                                 size={14}
                                 aria-label="Includes image"
-                                className="text-primary"
+                                className="text-primary-strong"
                               />
                             ) : null}
                             {post.linkUrl ? (
                               <ExternalLinkIcon
                                 size={14}
                                 aria-label="Includes link"
-                                className="text-primary"
+                                className="text-primary-strong"
                               />
                             ) : null}
                             {post.headline}

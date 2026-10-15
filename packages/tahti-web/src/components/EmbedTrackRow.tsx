@@ -87,7 +87,7 @@ export function EmbedTrackRow({ title, provider, embedUri, className }: Props) {
           onClick={() => void start()}
           aria-label={`${isPlaying ? 'Pause' : 'Play'} ${title} on ${label}`}
         >
-          <span className="bg-primary/15 text-primary flex size-10 shrink-0 items-center justify-center rounded-md">
+          <span className="bg-primary/15 text-primary-strong flex size-10 shrink-0 items-center justify-center rounded-md">
             <PlayIcon size={16} className="fill-current" aria-hidden />
           </span>
           <span className="min-w-0 flex-1">

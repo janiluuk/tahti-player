@@ -238,7 +238,7 @@ export function AdminUserEditPanel({
                 <MediaArtwork src={publicProfile.artist.avatarUrl} alt="" />
               </Button>
             ) : (
-              <span className="bg-primary/15 text-primary flex size-20 shrink-0 items-center justify-center rounded-xl text-2xl font-bold">
+              <span className="bg-primary/15 text-primary-strong flex size-20 shrink-0 items-center justify-center rounded-xl text-2xl font-bold">
                 {detail.displayName.slice(0, 1).toUpperCase()}
               </span>
             )}

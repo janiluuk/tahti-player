@@ -403,7 +403,7 @@ function AccountStoragePanel() {
   return (
     <div className="flex flex-col gap-5">
       <div className="flex items-start gap-3">
-        <div className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-lg">
+        <div className="bg-primary/10 text-primary-strong flex size-10 shrink-0 items-center justify-center rounded-lg">
           <Database size={19} aria-hidden />
         </div>
         <div>

@@ -88,7 +88,7 @@ export function RecordingsPanel({
           <div className="flex flex-col gap-6">
             {drafts.length > 0 ? (
               <div className="flex flex-col gap-2">
-                <h3 className="text-primary text-xs font-semibold tracking-wide uppercase">
+                <h3 className="text-primary-strong text-xs font-semibold tracking-wide uppercase">
                   Drafts · not yet published ({drafts.length})
                 </h3>
                 <ul className="border-border divide-border divide-y overflow-hidden rounded-xl border">

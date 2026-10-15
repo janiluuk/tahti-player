@@ -18,7 +18,7 @@ describe('generateAdvancedThemeCSS', () => {
     });
 
     expect(css).toMatchInlineSnapshot(`
-":root{--background: oklch(98% 0 0); --primary: oklch(70% 0.1 250);}\n[data-theme='dark']{--background: oklch(40% 0.03 277); --primary: oklch(70% 0.1 250);}"`);
+":root{--background: oklch(98% 0 0); --primary: oklch(70% 0.1 250); --primary-strong: var(--primary);}\n[data-theme='dark']{--background: oklch(40% 0.03 277); --primary: oklch(70% 0.1 250); --primary-strong: var(--primary);}"`);
   });
 
   it('handles partial themes and trims whitespace', () => {

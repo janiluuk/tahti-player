@@ -76,7 +76,7 @@ export const FilePicker: FC<FilePickerProps> = ({
           disabled && 'cursor-not-allowed opacity-60',
         )}
       >
-        <span className="border-border bg-background text-primary flex size-10 items-center justify-center rounded-lg border">
+        <span className="border-border bg-background text-primary-strong flex size-10 items-center justify-center rounded-lg border">
           {icon ?? <UploadCloudIcon size={20} aria-hidden />}
         </span>
         <span className="flex flex-col gap-1">
@@ -111,7 +111,7 @@ export const FilePicker: FC<FilePickerProps> = ({
               key={`${file.name}-${file.size}-${file.lastModified}`}
               className="border-border bg-background flex items-center gap-2 rounded-md border px-3 py-2"
             >
-              <FileIcon size={14} aria-hidden className="text-primary" />
+              <FileIcon size={14} aria-hidden className="text-primary-strong" />
               <span className="min-w-0 flex-1 truncate">{file.name}</span>
               <span className="shrink-0">{labels.selected ?? 'Selected'}</span>
             </li>

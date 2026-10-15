@@ -4624,6 +4624,25 @@ Asked for as "audit the project docs and make sure all the last 100 pr(ish) feat
 - **Removed (listed in `docs/ARCHIVE.md` with where the content went):** `CONVERSION-QUEUE.md`, `TAHTI-PORT-CHECKLIST.md`, `STUDIO-ADMIN-UX-SWEEP*.md`, `TAHTI-DARK-THEME-WORKLOG.md`, `MOBILE-USABILITY-AUDIT.md` (its one open finding, native checkboxes, no longer exists), `docs/port-inventory-thedaw-editor-viz.md` (folded into its todo) and `docs/todo/desktop-integrations.md` (shipped, had no INDEX row).
 - **Left:** most of the GitBook user manual still describes Nuclear's UI; `docs/todo/user-manual-refresh.md` lists it page by page.
 
+## 2026-10-15 - Library buttons everywhere in tahti-web (todo closed)
+
+`library-buttons-migration.md` started 2026-10-08 with 70 raw `<button>` elements in tahti-web. The listener pages (#563), a `plain` Button variant and 55 more (#582-#586, #594), and `ButtonLink` for buttons nested in links (#593) left two items. The three tooltip-wrapped links in `AudioTab.tsx` and `PurchaseAccessSection.tsx` had already become `ButtonLink`s, and #780 made the phone drawer's backdrop a library `Button` hidden from screen readers and Tab. No raw `<button>` remains in `packages/tahti-web/src` outside tests and stories.
+
+## 2026-10-15 - Docs audit, lighter CI, and twenty feature slices, sixtieth batch (tahti-player #772-#793)
+
+Asked for as "audit the project docs …", then "after this try to make the CI process more lightweight and fast", then "after this, do 20 more slices of remaining features and add prs".
+
+- **Docs audit (#772):** see its own HISTORY entry. #788 then struck five "remaining" features that turned out to be done (track purchase, upload processing, admin detail operations, multitrack editing, the Disco-widget tour).
+- **CI (#773):** a `changes` job skips everything for docs-only PRs; Coverage runs on master only; no `build-upstream` wait; tahti-web tests in three shards with no build; lint and core tests only for affected packages on PRs; the snapshot digest moved to `test-core` (tahti-web never registered the reporter, so its digest steps did nothing); a shared setup action. Its own run: slowest job 3 min 18 s, against 6-8 min before.
+- **Desktop smart playlists (#774-#779, a chain):** strict comparisons and "starts with"; calendar date rules; typed inputs (date picker, stars, key, `m:ss`); a `library://changed` event from SQLite triggers on every track/tag write; a result cache keyed by that counter, which also expires when a track ages out of a "last N days" window (those move every second, not at midnight); live counts in the list and the editor, re-checked every minute and when the window is shown. Rust tests for each step; full `cargo test --lib` 292-294 passed.
+- **Button migration closed (#780):** the drawer backdrop is a library `Button` hidden from screen readers and Tab; the tooltip-wrapped links had already become `ButtonLink`s; the todo is folded.
+- **Themes (#781-#783, #793):** dark modes of Nuclear, Lagoon and Arctic Moss get a lighter primary with dark text on it (0 contrast failures on six pages). Track tables and stat chips keep the theme's text colour inside an artist's colour scheme; in light themes titles had been white on white. A `--primary-strong` token makes `text-primary` readable in light themes while buttons stay pastel; advanced themes default it to their own primary. ChannelView stories now fail if a track title drops under 4.5:1 in light or dark mode.
+- **Listener basics (#784-#786, a chain):** signed out, no Studio in the sidebar; a listener sees "Become an artist"; a listener's Library hides Upload, Recordings, Embeds and Smart links; their own profile shows no owner tools. All three were my calls and are flagged in the todo's open question.
+- **Disco-widget tour (#787)**, **user manual pages (#789-#791, stacked on #772):** favorites, playlists, queue, history, stats, getting started, how it works, plugins, themes and Discover now describe tahti-web; the stale sitemap page is removed.
+- **Desktop library (#792):** a file renamed and re-tagged at once keeps its catalog ID (third pairing pass on format, sample rate and duration, one-to-one only).
+- **Checks:** per PR the touched suites (ui 407, player 707, tahti-web 2,589-2,600, Rust lib tests), the touched Storybook plays and mock-app checks. Two PR bodies were corrected after posting (#785 named a test run that matched nothing; #792 had a placeholder). Not tried in the running desktop app, on a phone, or with a screen reader.
+- **Merging:** Storybook plays crashed Chromium ("Browser connection was closed") on a different story in about one run in four, with ~99 story files per shard; #816 runs them in six shards.
+
 ## 2026-10-15 - Truncated text, desktop updates, startup size, docs and accessibility, sixty-first batch (tahti-player #795-#814)
 
 Asked for as "continue with next 20 slices and open pr". Found with a link/console/truncation crawl and a fresh axe crawl of the mock app, a production bundle analysis, and the open todos.
