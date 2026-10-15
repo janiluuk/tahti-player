@@ -122,6 +122,40 @@ describe('tahti import', () => {
     });
   });
 
+  it('titles and credits a sound from its tags unless --ignore-tags', async () => {
+    const vorbis = Buffer.concat([
+      Buffer.from([4, 0, 0, 0]),
+      Buffer.from('test'),
+      Buffer.from([2, 0, 0, 0]),
+      Buffer.from([15, 0, 0, 0]),
+      Buffer.from('TITLE=Night Run'),
+      Buffer.from([11, 0, 0, 0]),
+      Buffer.from('ARTIST=Kari'),
+    ]);
+    const header = Buffer.from([0x84, 0, 0, vorbis.length]);
+    await writeFile(
+      join(folder, '01_night_drive.flac'),
+      Buffer.concat([Buffer.from('fLaC'), header, vorbis]),
+    );
+
+    let calls = mockApi();
+    let results = await importFolder(TEST_CONFIG, folder);
+    expect(results[0]).toMatchObject({ title: 'Night Run', artist: 'Kari' });
+    const complete = calls.filter((c) => c.url.endsWith('/complete'));
+    expect(complete[0]?.body).toMatchObject({
+      title: 'Night Run',
+      metadata: { artistName: 'Kari' },
+    });
+    expect(complete[1]?.body).not.toHaveProperty('metadata');
+
+    calls = mockApi();
+    results = await importFolder(TEST_CONFIG, folder, { ignoreTags: true });
+    expect(results[0]?.title).toBe('01 night drive');
+    expect(
+      calls.find((c) => c.url.endsWith('/complete'))?.body,
+    ).not.toHaveProperty('metadata');
+  });
+
   it('skips titles already in the library unless forced', async () => {
     mockApi({ library: [{ title: 'blue hour' }] });
     const results = await importFolder(TEST_CONFIG, folder);

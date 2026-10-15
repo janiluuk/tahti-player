@@ -103,7 +103,7 @@ Every command accepts `--json` (prints the API response unchanged) and
 | `tahti releases list [--page <n>] [--limit <n>] [--json]`                                     | `GET /api/me/releases`                                                        | Your releases (id, title, type, state, release date, track count); `--limit` is 1-100                                                                                                         |
 | `tahti releases show <id> [--json]`                                                           | `GET /api/me/releases/:id`                                                    | One release (type, state, release date, genre, UPC, label, smart link and its views, catalog checklist) plus its tracklist (position, title, duration, status, ISRC)                          |
 | `tahti search <query> [--page <n>] [--limit <n>] [--json]`                                    | `GET /api/v1/search/tracks`                                                   | Public, ready tracks whose title matches (id, title, artist, duration, channel), newest first                                                                                                 |
-| `tahti import <folder> [--recursive] [--dry-run] [--force] [--json]`                          | `POST /api/uploads/prepare`, storage `PUT`, `POST /api/uploads/complete`      | One row per audio file: uploaded (with the new sound id), skipped, or failed with the reason                                                                                                  |
+| `tahti import <folder> [--recursive] [--dry-run] [--force] [--ignore-tags] [--json]`                          | `POST /api/uploads/prepare`, storage `PUT`, `POST /api/uploads/complete`      | One row per audio file: uploaded (with the new sound id), skipped, or failed with the reason                                                                                                  |
 | `tahti notifications list [--limit <n>] [--unread] [--json]`                                  | `GET /api/me/notifications`                                                   | Your notifications, newest first (id, unread mark, date, type, sender, title) and the unread total; `--limit` is 1-50                                                                         |
 | `tahti notifications read <id> \| --all`                                                      | `PATCH /api/me/notifications/:id/read`, `POST /api/me/notifications/read-all` | Marks one notification read, or every non-sticky one with `--all`; needs the `write` scope                                                                                                    |
 | `tahti stats [--range <days>] [--json]`                                                       | `GET /api/me/stats/summary`, `GET /api/me/stats/top-tracks`                   | Plays and downloads today and in total, followers, and the ten most played tracks; `--range` is `1`, `7`, `30` or `all` (default)                                                             |
@@ -131,7 +131,12 @@ token with the `write` scope. `shell` needs a token for library playback and
 `mpv` on PATH.
 
 `import` uploads each audio file in the folder (mp3, flac, wav, aiff, m4a, aac,
-ogg, opus) as a new sound titled after its file name, one file at a time:
+ogg, opus) as a new sound, one file at a time:
+
+- MP3 files' ID3v2 tags and FLAC files' Vorbis comments give the title, the
+  artist credit, the genre and the BPM (40-300). Without a title tag, or with
+  `--ignore-tags`, the title is the file name. Other formats are titled after
+  the file name; album and artwork are not read.
 
 - Hidden files, empty files and files over 2 GB are skipped; subfolders are
   only read with `--recursive`.
@@ -139,12 +144,11 @@ ogg, opus) as a new sound titled after its file name, one file at a time:
   import again only sends what is new. `--force` uploads it anyway.
 - `--dry-run` lists what would be uploaded and sends nothing.
 - One failed file does not stop the rest; the command exits with 1 if any
-  file failed. `--json` prints one object per file (`file`, `title`, `status`,
-  `id`, `error`).
+  file failed. `--json` prints one object per file (`file`, `title`, `artist`,
+  `status`, `id`, `error`).
 - Uploaded sounds are processed by Tahti afterwards, so they show as
   `PROCESSING` in `tahti library list` for a while;
-  `tahti library processing --wait` returns once they are done. Tags inside the files
-  (artist, album, artwork) are not read; edit the sound on tahti.live.
+  `tahti library processing --wait` returns once they are done.
 
 `search` is public: it works without `TAHTI_API_TOKEN` and never sends the
 token, since the API rejects a request carrying an invalid token even on public

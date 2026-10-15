@@ -3,6 +3,7 @@ import { readdir, stat } from 'node:fs/promises';
 import { basename, extname, join, relative, resolve } from 'node:path';
 
 import { apiGet, apiPost, CliError, requireToken } from '../api-client.mjs';
+import { readAudioTags } from '../audio-tags.mjs';
 import { formatTable } from '../format.mjs';
 
 /** Extensions the importer picks up, with the content type sent to the API
@@ -67,7 +68,7 @@ export async function findAudioFiles(folder, { recursive = false } = {}) {
   return found.sort((a, b) => a.localeCompare(b));
 }
 
-async function uploadFile(path, title, sizeBytes, config) {
+async function uploadFile(path, title, sizeBytes, config, metadata) {
   const contentType = AUDIO_TYPES[extname(path).toLowerCase()];
   const prepared = await apiPost(
     '/api/uploads/prepare',
@@ -93,7 +94,12 @@ async function uploadFile(path, title, sizeBytes, config) {
   }
   const done = await apiPost(
     '/api/uploads/complete',
-    { uploadId: prepared.uploadId, etag, title },
+    {
+      uploadId: prepared.uploadId,
+      etag,
+      title,
+      ...(Object.keys(metadata).length > 0 ? { metadata } : {}),
+    },
     config,
   );
   return done.itemId ?? null;
@@ -108,7 +114,13 @@ async function uploadFile(path, title, sizeBytes, config) {
 export async function importFolder(
   config,
   folder,
-  { recursive = false, dryRun = false, force = false, onProgress } = {},
+  {
+    recursive = false,
+    dryRun = false,
+    force = false,
+    ignoreTags = false,
+    onProgress,
+  } = {},
 ) {
   const root = resolve(folder);
   const files = await findAudioFiles(folder, { recursive });
@@ -123,8 +135,21 @@ export async function importFolder(
   const results = [];
   for (const path of files) {
     const file = relative(root, path) || basename(path);
-    const title = titleFromFilename(path);
-    const result = { file, title, status: 'uploaded', id: null, error: null };
+    const tags = ignoreTags ? {} : await readAudioTags(path);
+    const title = tags.title ?? titleFromFilename(path);
+    const metadata = {
+      ...(tags.artist ? { artistName: tags.artist } : {}),
+      ...(tags.genre ? { genre: tags.genre } : {}),
+      ...(tags.bpm ? { bpm: tags.bpm } : {}),
+    };
+    const result = {
+      file,
+      title,
+      artist: tags.artist ?? null,
+      status: 'uploaded',
+      id: null,
+      error: null,
+    };
     const { size } = await stat(path);
     if (size === 0) {
       result.status = 'skipped';
@@ -139,7 +164,7 @@ export async function importFolder(
       result.status = 'would upload';
     } else {
       try {
-        result.id = await uploadFile(path, title, size, config);
+        result.id = await uploadFile(path, title, size, config, metadata);
         existing.add(title.toLowerCase());
       } catch (error) {
         result.status = 'failed';
@@ -186,7 +211,13 @@ export function summarizeImport(results) {
 export async function runImport(
   config,
   folder,
-  { json = false, recursive = false, dryRun = false, force = false } = {},
+  {
+    json = false,
+    recursive = false,
+    dryRun = false,
+    force = false,
+    ignoreTags = false,
+  } = {},
 ) {
   // Checked up front so a dry run fails the same way a real one would.
   requireToken(config);
@@ -194,6 +225,7 @@ export async function runImport(
     recursive,
     dryRun,
     force,
+    ignoreTags,
   });
   const exitCode = results.some((result) => result.status === 'failed') ? 1 : 0;
   if (json) {
