@@ -196,10 +196,13 @@ export function MobileDrawer({
       aria-modal
       aria-label={title}
     >
-      <button
-        type="button"
-        className="absolute inset-0 bg-black/50"
-        aria-label="Close"
+      <Button
+        variant="plain"
+        size="flexible"
+        tabIndex={-1}
+        aria-hidden
+        data-testid="mobile-drawer-scrim"
+        className="absolute inset-0 rounded-none bg-black/50 active:scale-100"
         onClick={onClose}
       />
       <div
