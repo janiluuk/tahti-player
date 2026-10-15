@@ -8,6 +8,7 @@ import { runHearthisSets } from './commands/hearthis-sets.mjs';
 import { runImport } from './commands/import.mjs';
 import { LIBRARY_SORTS, runLibraryList } from './commands/library-list.mjs';
 import { runLibraryShow } from './commands/library-show.mjs';
+import { runNotificationsList } from './commands/notifications-list.mjs';
 import { runReleasesList } from './commands/releases-list.mjs';
 import { runReleasesShow } from './commands/releases-show.mjs';
 import { runSearch, SEARCH_PAGE_SIZE } from './commands/search.mjs';
@@ -181,6 +182,25 @@ paths that already exist (unless --force).
         outDir: values.out || '.',
         dryRun: values['dry-run'],
         force: values.force,
+      }),
+  },
+  {
+    path: ['notifications', 'list'],
+    usage: 'tahti notifications list [--limit <n>] [--unread] [--json]',
+    summary: 'List your notifications, newest first',
+    details: `Calls GET /api/me/notifications. Unread rows are marked with * and the\nunread total is printed under the table.
+  --limit <n>   How many to fetch, 1-50 (default: 30)
+  --unread      Show only the unread ones from what was fetched`,
+    options: {
+      ...JSON_OPTION,
+      limit: { type: 'string' },
+      unread: { type: 'boolean', default: false },
+    },
+    run: (config, { values }) =>
+      runNotificationsList(config, {
+        json: values.json,
+        limit: values.limit,
+        unread: values.unread,
       }),
   },
   {
