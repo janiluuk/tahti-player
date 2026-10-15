@@ -81,7 +81,7 @@ export const SignedOut: Story = {
 
     await step('history shows handles and messages', async () => {
       await expect(within(log).getByText('Northern Lights')).toHaveClass(
-        'text-primary',
+        'text-primary-strong',
       );
       await expect(within(log).getByText('kaamos_fan')).toHaveClass(
         'font-semibold',

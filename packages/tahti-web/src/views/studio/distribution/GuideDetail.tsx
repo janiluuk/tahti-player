@@ -21,7 +21,7 @@ export function GuideDetail({
         ))}
       </ol>
       {href && linkLabel ? (
-        <ExternalLink href={href} showIcon className="text-primary mt-3">
+        <ExternalLink href={href} showIcon className="text-primary-strong mt-3">
           {linkLabel}
         </ExternalLink>
       ) : null}

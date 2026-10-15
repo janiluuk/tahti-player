@@ -57,7 +57,7 @@ export function StudioEventsView() {
           >
             <div className="flex min-w-0 items-center gap-3">
               <div
-                className="bg-primary/15 text-primary flex size-14 shrink-0 items-center justify-center rounded-md"
+                className="bg-primary/15 text-primary-strong flex size-14 shrink-0 items-center justify-center rounded-md"
                 aria-hidden
               >
                 <CalendarDaysIcon size={24} aria-hidden />
@@ -76,7 +76,7 @@ export function StudioEventsView() {
                 {event.eventUrl && (
                   <ExternalLink
                     href={event.eventUrl}
-                    className="text-primary text-xs"
+                    className="text-primary-strong text-xs"
                   >
                     Tickets / event link
                   </ExternalLink>

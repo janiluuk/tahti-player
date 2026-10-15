@@ -246,7 +246,7 @@ export const ArtistImagePurposePicker: FC<Props> = ({
                       aria-checked={image.purpose === purpose.id}
                       className={`inline-block rounded-lg border px-3 py-2 text-left text-xs whitespace-normal transition-colors active:scale-100 ${
                         image.purpose === purpose.id
-                          ? 'border-primary bg-primary/10 text-primary'
+                          ? 'border-primary bg-primary/10 text-primary-strong'
                           : 'border-border text-foreground-secondary hover:text-foreground'
                       }`}
                       onClick={() => setPurpose(image.id, purpose.id)}

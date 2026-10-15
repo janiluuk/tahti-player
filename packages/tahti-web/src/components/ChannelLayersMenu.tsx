@@ -198,7 +198,7 @@ export function ChannelLayersMenu({
                     {preset.description}
                   </p>
                   {active && (
-                    <p className="text-primary mt-1.5 text-[10px] font-medium tracking-wide uppercase">
+                    <p className="text-primary-strong mt-1.5 text-[10px] font-medium tracking-wide uppercase">
                       Applied
                     </p>
                   )}

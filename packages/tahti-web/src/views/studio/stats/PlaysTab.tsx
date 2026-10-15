@@ -65,7 +65,11 @@ export function PlaysTab({
                   : 'Daily activity appears after your first play.'}
               </p>
             </div>
-            <BarChart3Icon size={22} aria-hidden className="text-primary" />
+            <BarChart3Icon
+              size={22}
+              aria-hidden
+              className="text-primary-strong"
+            />
           </div>
           {plays.daily.length === 0 ? (
             <p className="text-foreground-secondary text-sm">

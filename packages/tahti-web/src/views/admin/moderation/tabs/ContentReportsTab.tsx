@@ -58,7 +58,7 @@ function ReportTarget({ report }: { report: AdminContentReportRow }) {
         rel="noreferrer"
         variant="text"
         size="sm"
-        className="text-primary h-auto gap-1.5 p-0"
+        className="text-primary-strong h-auto gap-1.5 p-0"
       >
         <ExternalLinkIcon size={12} aria-hidden />
         {report.targetLabel}

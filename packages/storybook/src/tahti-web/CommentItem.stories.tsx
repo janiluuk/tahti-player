@@ -100,7 +100,9 @@ export const SignedOut: Story = {
 export const WithMeta: Story = {
   args: {
     text: 'Nice drop',
-    meta: <span className="text-primary text-sm tabular-nums">1:30</span>,
+    meta: (
+      <span className="text-primary-strong text-sm tabular-nums">1:30</span>
+    ),
   },
   decorators: [withMockAuth(MOCK_USERS.listener)],
 };

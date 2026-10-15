@@ -76,7 +76,11 @@ export function PublishToReleaseSection({
   return (
     <div className="border-border flex flex-col gap-3 rounded-xl border p-4">
       <div className="flex items-center gap-3">
-        <DiscIcon size={24} className="text-primary shrink-0" aria-hidden />
+        <DiscIcon
+          size={24}
+          className="text-primary-strong shrink-0"
+          aria-hidden
+        />
         <div>
           <p className="font-medium">Add to a release</p>
           <p className="text-foreground-secondary text-sm">

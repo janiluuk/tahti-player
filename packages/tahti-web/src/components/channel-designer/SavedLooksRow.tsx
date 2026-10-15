@@ -36,7 +36,7 @@ export function SavedLooksRow({
             variant="plain"
             size="flexible"
             type="button"
-            className="hover:text-primary inline-block rounded-none font-semibold whitespace-normal active:scale-100"
+            className="hover:text-primary-strong inline-block rounded-none font-semibold whitespace-normal active:scale-100"
             disabled={presetBusy}
             onClick={() => onApply(preset)}
           >

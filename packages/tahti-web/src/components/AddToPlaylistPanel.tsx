@@ -197,7 +197,7 @@ export function AddToPlaylistPanel({
                     {added ? (
                       <CheckIcon
                         size={22}
-                        className="text-primary"
+                        className="text-primary-strong"
                         aria-hidden
                       />
                     ) : (

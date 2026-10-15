@@ -36,7 +36,7 @@ exports[`TahtiJamHeader > (Snapshot) renders the connected header 1`] = `
         Tahti
          
         <span
-          class="text-primary text-stroke-4 stroke-text-black dark:stroke-text-foreground"
+          class="text-primary-strong text-stroke-4 stroke-text-black dark:stroke-text-foreground"
         >
           <span
             animate="[object Object]"

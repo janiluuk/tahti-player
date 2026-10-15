@@ -51,7 +51,7 @@ export function TrackDetailsBlock({
                   <Link
                     to="/search"
                     search={{ tag }}
-                    className="bg-background-secondary hover:text-primary inline-flex rounded-full px-2.5 py-0.5 text-xs"
+                    className="bg-background-secondary hover:text-primary-strong inline-flex rounded-full px-2.5 py-0.5 text-xs"
                   >
                     #{tag}
                   </Link>
@@ -79,7 +79,7 @@ export function TrackDetailsBlock({
                     <Link
                       to="/u/$username"
                       params={{ username: credit.artistUsername }}
-                      className="text-primary hover:underline"
+                      className="text-primary-strong hover:underline"
                     >
                       {credit.name}
                     </Link>
@@ -96,7 +96,7 @@ export function TrackDetailsBlock({
             <Link
               to="/v/$slug"
               params={{ slug: venue.slug }}
-              className="text-primary hover:underline"
+              className="text-primary-strong hover:underline"
             >
               {venue.name}
             </Link>

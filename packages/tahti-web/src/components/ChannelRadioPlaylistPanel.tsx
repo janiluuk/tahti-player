@@ -317,7 +317,7 @@ export const ChannelRadioPlaylistPanel: FC = () => {
     <section className="border-border bg-background-secondary/40 overflow-hidden rounded-xl border shadow-sm">
       <header className="border-border flex flex-wrap items-center justify-between gap-4 border-b px-4 py-4 sm:px-5">
         <div className="flex min-w-0 items-center gap-3">
-          <span className="bg-primary/15 text-primary flex h-10 w-10 shrink-0 items-center justify-center rounded-lg">
+          <span className="bg-primary/15 text-primary-strong flex h-10 w-10 shrink-0 items-center justify-center rounded-lg">
             <RadioIcon size={20} aria-hidden />
           </span>
           <div className="min-w-0">
