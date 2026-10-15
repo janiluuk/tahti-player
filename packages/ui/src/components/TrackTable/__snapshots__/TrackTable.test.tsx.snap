@@ -240,6 +240,7 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -249,11 +250,13 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 1"
                 >
                   Track 1
                 </button>
                 <div
                   class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -263,6 +266,7 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
@@ -272,6 +276,7 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
               >
                 <div
                   class="truncate"
+                  title="0:30"
                 >
                   0:30
                 </div>
@@ -310,6 +315,7 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -319,11 +325,13 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 2"
                 >
                   Track 2
                 </button>
                 <div
                   class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -333,6 +341,7 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
@@ -342,6 +351,7 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
               >
                 <div
                   class="truncate"
+                  title="0:31"
                 >
                   0:31
                 </div>
@@ -380,6 +390,7 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -389,11 +400,13 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 3"
                 >
                   Track 3
                 </button>
                 <div
                   class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -403,6 +416,7 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
@@ -412,6 +426,7 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
               >
                 <div
                   class="truncate"
+                  title="0:32"
                 >
                   0:32
                 </div>
@@ -670,6 +685,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -679,11 +695,13 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 1"
                 >
                   Track 1
                 </button>
                 <div
                   class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -693,6 +711,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
@@ -702,6 +721,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               >
                 <div
                   class="truncate"
+                  title="0:30"
                 >
                   0:30
                 </div>
@@ -745,6 +765,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -754,11 +775,13 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 2"
                 >
                   Track 2
                 </button>
                 <div
                   class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -768,6 +791,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
@@ -777,6 +801,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               >
                 <div
                   class="truncate"
+                  title="0:31"
                 >
                   0:31
                 </div>
@@ -820,6 +845,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -829,11 +855,13 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 3"
                 >
                   Track 3
                 </button>
                 <div
                   class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -843,6 +871,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
@@ -852,6 +881,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               >
                 <div
                   class="truncate"
+                  title="0:32"
                 >
                   0:32
                 </div>
@@ -895,6 +925,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -904,11 +935,13 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 4"
                 >
                   Track 4
                 </button>
                 <div
                   class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -918,6 +951,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
@@ -927,6 +961,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               >
                 <div
                   class="truncate"
+                  title="0:33"
                 >
                   0:33
                 </div>
@@ -970,6 +1005,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -979,11 +1015,13 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 5"
                 >
                   Track 5
                 </button>
                 <div
                   class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -993,6 +1031,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
@@ -1002,6 +1041,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
               >
                 <div
                   class="truncate"
+                  title="0:34"
                 >
                   0:34
                 </div>
@@ -1272,6 +1312,7 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -1281,11 +1322,13 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 1"
                 >
                   Track 1
                 </button>
                 <div
                   class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -1295,6 +1338,7 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
@@ -1304,6 +1348,7 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               >
                 <div
                   class="truncate"
+                  title="0:30"
                 >
                   0:30
                 </div>
@@ -1342,6 +1387,7 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -1351,11 +1397,13 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 2"
                 >
                   Track 2
                 </button>
                 <div
                   class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -1365,6 +1413,7 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
@@ -1374,6 +1423,7 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               >
                 <div
                   class="truncate"
+                  title="0:31"
                 >
                   0:31
                 </div>
@@ -1412,6 +1462,7 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -1421,11 +1472,13 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 3"
                 >
                   Track 3
                 </button>
                 <div
                   class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -1435,6 +1488,7 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
@@ -1444,6 +1498,7 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               >
                 <div
                   class="truncate"
+                  title="0:32"
                 >
                   0:32
                 </div>
@@ -1482,6 +1537,7 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -1491,11 +1547,13 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 4"
                 >
                   Track 4
                 </button>
                 <div
                   class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -1505,6 +1563,7 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
@@ -1514,6 +1573,7 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               >
                 <div
                   class="truncate"
+                  title="0:33"
                 >
                   0:33
                 </div>
@@ -1552,6 +1612,7 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -1561,11 +1622,13 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 5"
                 >
                   Track 5
                 </button>
                 <div
                   class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -1575,6 +1638,7 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
@@ -1584,6 +1648,7 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
               >
                 <div
                   class="truncate"
+                  title="0:34"
                 >
                   0:34
                 </div>
@@ -1840,6 +1905,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -1849,11 +1915,13 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 1"
                   >
                     Track 1
                   </button>
                   <div
                     class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -1863,6 +1931,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
@@ -1872,6 +1941,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="0:30"
                   >
                     0:30
                   </div>
@@ -1910,6 +1980,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -1919,11 +1990,13 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 2"
                   >
                     Track 2
                   </button>
                   <div
                     class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -1933,6 +2006,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
@@ -1942,6 +2016,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="0:31"
                   >
                     0:31
                   </div>
@@ -1980,6 +2055,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -1989,11 +2065,13 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 3"
                   >
                     Track 3
                   </button>
                   <div
                     class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2003,6 +2081,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
@@ -2012,6 +2091,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="0:32"
                   >
                     0:32
                   </div>
@@ -2050,6 +2130,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2059,11 +2140,13 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 4"
                   >
                     Track 4
                   </button>
                   <div
                     class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2073,6 +2156,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
@@ -2082,6 +2166,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="0:33"
                   >
                     0:33
                   </div>
@@ -2120,6 +2205,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2129,11 +2215,13 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 5"
                   >
                     Track 5
                   </button>
                   <div
                     class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2143,6 +2231,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
@@ -2152,6 +2241,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="0:34"
                   >
                     0:34
                   </div>
@@ -2190,6 +2280,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2199,11 +2290,13 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 6"
                   >
                     Track 6
                   </button>
                   <div
                     class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2213,6 +2306,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
@@ -2222,6 +2316,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="0:35"
                   >
                     0:35
                   </div>
@@ -2260,6 +2355,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2269,11 +2365,13 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 7"
                   >
                     Track 7
                   </button>
                   <div
                     class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2283,6 +2381,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
@@ -2292,6 +2391,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="0:36"
                   >
                     0:36
                   </div>
@@ -2330,6 +2430,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2339,11 +2440,13 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 8"
                   >
                     Track 8
                   </button>
                   <div
                     class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2353,6 +2456,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
@@ -2362,6 +2466,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="0:37"
                   >
                     0:37
                   </div>
@@ -2400,6 +2505,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2409,11 +2515,13 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 9"
                   >
                     Track 9
                   </button>
                   <div
                     class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2423,6 +2531,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
@@ -2432,6 +2541,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="0:38"
                   >
                     0:38
                   </div>
@@ -2470,6 +2580,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2479,11 +2590,13 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 10"
                   >
                     Track 10
                   </button>
                   <div
                     class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2493,6 +2606,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
@@ -2502,6 +2616,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="0:39"
                   >
                     0:39
                   </div>
@@ -2540,6 +2655,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2549,11 +2665,13 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 11"
                   >
                     Track 11
                   </button>
                   <div
                     class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2563,6 +2681,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
@@ -2572,6 +2691,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="0:40"
                   >
                     0:40
                   </div>
@@ -2610,6 +2730,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2619,11 +2740,13 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 12"
                   >
                     Track 12
                   </button>
                   <div
                     class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2633,6 +2756,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
@@ -2642,6 +2766,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="0:41"
                   >
                     0:41
                   </div>
@@ -2680,6 +2805,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2689,11 +2815,13 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 13"
                   >
                     Track 13
                   </button>
                   <div
                     class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2703,6 +2831,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
@@ -2712,6 +2841,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="0:42"
                   >
                     0:42
                   </div>
@@ -2750,6 +2880,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2759,11 +2890,13 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 14"
                   >
                     Track 14
                   </button>
                   <div
                     class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2773,6 +2906,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
@@ -2782,6 +2916,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="0:43"
                   >
                     0:43
                   </div>
@@ -2820,6 +2955,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2829,11 +2965,13 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 15"
                   >
                     Track 15
                   </button>
                   <div
                     class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2843,6 +2981,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
@@ -2852,6 +2991,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="0:44"
                   >
                     0:44
                   </div>
@@ -2890,6 +3030,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2899,11 +3040,13 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 16"
                   >
                     Track 16
                   </button>
                   <div
                     class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2913,6 +3056,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
@@ -2922,6 +3066,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="0:45"
                   >
                     0:45
                   </div>
@@ -2960,6 +3105,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2969,11 +3115,13 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 17"
                   >
                     Track 17
                   </button>
                   <div
                     class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -2983,6 +3131,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
@@ -2992,6 +3141,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="0:46"
                   >
                     0:46
                   </div>
@@ -3030,6 +3180,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -3039,11 +3190,13 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 18"
                   >
                     Track 18
                   </button>
                   <div
                     class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -3053,6 +3206,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
@@ -3062,6 +3216,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="0:47"
                   >
                     0:47
                   </div>
@@ -3100,6 +3255,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -3109,11 +3265,13 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 19"
                   >
                     Track 19
                   </button>
                   <div
                     class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -3123,6 +3281,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
@@ -3132,6 +3291,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="0:48"
                   >
                     0:48
                   </div>
@@ -3170,6 +3330,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -3179,11 +3340,13 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <button
                     class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                    title="Track 20"
                   >
                     Track 20
                   </button>
                   <div
                     class="text-foreground-secondary truncate text-xs @md:hidden"
+                    title="Frank Zappa"
                   >
                     Frank Zappa
                   </div>
@@ -3193,6 +3356,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="Album"
                   >
                     Album
                   </div>
@@ -3202,6 +3366,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
                 >
                   <div
                     class="truncate"
+                    title="0:49"
                   >
                     0:49
                   </div>
@@ -3521,6 +3686,7 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -3530,11 +3696,13 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 1"
                 >
                   Track 1
                 </button>
                 <div
                   class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -3544,6 +3712,7 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
@@ -3553,6 +3722,7 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
               >
                 <div
                   class="truncate"
+                  title="0:30"
                 >
                   0:30
                 </div>
@@ -3591,6 +3761,7 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -3600,11 +3771,13 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 2"
                 >
                   Track 2
                 </button>
                 <div
                   class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -3614,6 +3787,7 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
@@ -3623,6 +3797,7 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
               >
                 <div
                   class="truncate"
+                  title="0:31"
                 >
                   0:31
                 </div>
@@ -3661,6 +3836,7 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -3670,11 +3846,13 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
               >
                 <button
                   class="block w-full min-w-0 cursor-pointer truncate text-left hover:underline"
+                  title="Track 3"
                 >
                   Track 3
                 </button>
                 <div
                   class="text-foreground-secondary truncate text-xs @md:hidden"
+                  title="Frank Zappa"
                 >
                   Frank Zappa
                 </div>
@@ -3684,6 +3862,7 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
               >
                 <div
                   class="truncate"
+                  title="Album"
                 >
                   Album
                 </div>
@@ -3693,6 +3872,7 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
               >
                 <div
                   class="truncate"
+                  title="0:32"
                 >
                   0:32
                 </div>
