@@ -28,8 +28,8 @@ User request (2026-10-15): "smart playlists where you can set easily conditions 
 2. Calendar dates for Date added / Last played: before, after, between (#775).
 3. Typed inputs in the editor: date picker, star rating, key picker, `m:ss` length, side-by-side `between` (#776). The per-field operator table and the one-line rule summary already existed.
 4. `library://changed`: SQLite triggers bump a change counter on every track or tag write; a 1 s task emits the event (#777).
-5. A result cache keyed by that counter, today's date and the definition (#778).
-6. The list's counts and the editor preview re-evaluate on the event and at midnight (#779).
+5. A result cache keyed by that counter and the definition (#778). Each entry also expires the moment the oldest track inside a "last N days" window drops out of it, since those windows move every second with no library write.
+6. The list's counts and the editor preview re-evaluate on the event, every minute and when the window is shown again (#779); unchanged results come from the cache.
 
 ## Left
 
