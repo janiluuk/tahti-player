@@ -67,6 +67,35 @@ pub fn pair_renames(
         .collect()
 }
 
+/// The audio itself, as far as the catalog knows it: format, sample rate and
+/// duration to the millisecond. A tag edit or a rename leaves all three alone.
+pub type AudioKey = (String, i64, i64);
+
+pub fn audio_key(format: &str, sample_rate: i64, duration_secs: f64) -> Option<AudioKey> {
+    (duration_secs >= 1.0).then(|| (format.to_ascii_lowercase(), sample_rate, (duration_secs * 1000.0).round() as i64))
+}
+
+/// Third pass for a file that was renamed *and* re-tagged (new name, new
+/// size, new mtime): pairs the remaining vanished tracks with new files by
+/// their audio key, again only one-to-one, so two copies of one recording
+/// never match.
+pub fn pair_retagged(vanished: &[(String, AudioKey)], fresh: &[(PathBuf, AudioKey)]) -> Vec<(String, PathBuf)> {
+    let mut old: HashMap<&AudioKey, Vec<&String>> = HashMap::new();
+    for (id, key) in vanished {
+        old.entry(key).or_default().push(id);
+    }
+    let mut new: HashMap<&AudioKey, Vec<&PathBuf>> = HashMap::new();
+    for (path, key) in fresh {
+        new.entry(key).or_default().push(path);
+    }
+    old.into_iter()
+        .filter_map(|(k, ids)| {
+            let paths = new.get(k)?;
+            (ids.len() == 1 && paths.len() == 1).then(|| (ids[0].clone(), paths[0].clone()))
+        })
+        .collect()
+}
+
 /// Re-points root tracks whose file vanished at a new file that appeared in
 /// the same scan (a rename or move). Returns the moved count and the fresh
 /// paths that were *not* consumed as moves.
@@ -78,17 +107,21 @@ pub async fn relink_moved(
     if fresh.is_empty() {
         return Ok((0, fresh));
     }
-    let rows = sqlx::query_as::<_, (String, String, i64, Option<i64>)>(
-        "SELECT id, path, size_bytes, mtime FROM library_tracks WHERE root_id = ?",
+    let rows = sqlx::query_as::<_, (String, String, i64, Option<i64>, String, i64, f64)>(
+        "SELECT id, path, size_bytes, mtime, format, sample_rate, duration FROM library_tracks WHERE root_id = ?",
     )
     .bind(&root.id)
     .fetch_all(pool)
     .await
     .map_err(|err| err.to_string())?;
     let (pairs, fresh) = tauri::async_runtime::spawn_blocking(move || {
+        let audio: HashMap<String, Option<AudioKey>> = rows
+            .iter()
+            .map(|(id, _, _, _, format, rate, duration)| (id.clone(), audio_key(format, *rate, *duration)))
+            .collect();
         let vanished: Vec<(String, PathBuf, i64, Option<i64>)> = rows
             .into_iter()
-            .map(|(id, path, size, mtime)| (id, PathBuf::from(path), size, mtime))
+            .map(|(id, path, size, mtime, ..)| (id, PathBuf::from(path), size, mtime))
             .filter(|(_, path, _, _)| !path.is_file())
             .collect();
         let sized: Vec<(PathBuf, i64)> = fresh
@@ -114,6 +147,24 @@ pub async fn relink_moved(
             .collect();
         let renamed = pair_renames(&left_old, &left_new);
         pairs.extend(renamed);
+        let claimed: std::collections::HashSet<String> = pairs.iter().map(|(id, _)| id.clone()).collect();
+        let taken: std::collections::HashSet<PathBuf> = pairs.iter().map(|(_, p)| p.clone()).collect();
+        let retag_old: Vec<(String, AudioKey)> = vanished
+            .iter()
+            .filter(|(id, ..)| !claimed.contains(id))
+            .filter_map(|(id, ..)| Some((id.clone(), audio.get(id)?.clone()?)))
+            .collect();
+        if !retag_old.is_empty() {
+            let retag_new: Vec<(PathBuf, AudioKey)> = sized
+                .iter()
+                .filter(|(p, _)| !taken.contains(p))
+                .filter_map(|(p, _)| {
+                    let track = super::metadata::read(p).ok()?;
+                    Some((p.clone(), audio_key(&track.format, track.sample_rate, track.duration)?))
+                })
+                .collect();
+            pairs.extend(pair_retagged(&retag_old, &retag_new));
+        }
         (pairs, fresh)
     })
     .await
