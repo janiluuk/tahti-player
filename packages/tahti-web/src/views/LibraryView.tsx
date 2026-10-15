@@ -29,7 +29,9 @@ import {
   useSelectedTabInView,
 } from '../components/SectionTabs';
 import { StudioPanel } from '../components/StudioPanel';
+import { hasStudioAccess } from '../lib/accountRoles';
 import { formatPlayCount } from '../lib/topListEntries';
+import { useAuthStore } from '../stores/authStore';
 import { LibraryEmbedsView } from './LibraryEmbedsView';
 import { LibraryMediaView } from './LibraryMediaView';
 import { LibrarySmartLinksView } from './LibrarySmartLinksView';
@@ -114,6 +116,28 @@ export const LIBRARY_SECTION_TABS = [
 
 export type LibrarySectionId = (typeof LIBRARY_SECTION_TABS)[number]['id'];
 
+/** Tabs for publishing artists only; a listener's Library leaves them out. */
+const ARTIST_ONLY_TABS: ReadonlySet<LibrarySectionId> = new Set([
+  'upload',
+  'recordings',
+  'embeds',
+  'smartlinks',
+]);
+
+function useLibraryTabs() {
+  // Until the profile loads the stored user may lack its channel: keep every
+  // tab so an artist never sees them disappear and come back.
+  const listener = useAuthStore(
+    (state) =>
+      Boolean(state.user) &&
+      state.profileLoaded &&
+      !hasStudioAccess(state.user),
+  );
+  return listener
+    ? LIBRARY_SECTION_TABS.filter((item) => !ARTIST_ONLY_TABS.has(item.id))
+    : LIBRARY_SECTION_TABS;
+}
+
 /**
  * The horizontal Overview/Tracks/Collections/... tab strip shown at the top
  * of every Library page. Reused outside LibraryView by pages that live one
@@ -123,15 +147,16 @@ export type LibrarySectionId = (typeof LIBRARY_SECTION_TABS)[number]['id'];
 export function LibrarySectionTabs({ active }: { active: LibrarySectionId }) {
   const navigate = useNavigate();
   const ref = useSelectedTabInView(active);
+  const tabs = useLibraryTabs();
   return (
     <div ref={ref} className="min-w-0">
       <Tabs.Root
         selectedIndex={Math.max(
           0,
-          LIBRARY_SECTION_TABS.findIndex((item) => item.id === active),
+          tabs.findIndex((item) => item.id === active),
         )}
         onChange={(index) => {
-          const next = LIBRARY_SECTION_TABS[index];
+          const next = tabs[index];
           if (next) {
             void navigate({ to: next.to as never });
           }
@@ -141,7 +166,7 @@ export function LibrarySectionTabs({ active }: { active: LibrarySectionId }) {
           aria-label="Library sections"
           className={PHONE_SCROLL_TAB_LIST}
         >
-          {LIBRARY_SECTION_TABS.map((item) => (
+          {tabs.map((item) => (
             <Tabs.Tab key={item.id}>
               <TabLabel icon={<item.icon size={14} />}>{item.label}</TabLabel>
             </Tabs.Tab>
