@@ -538,7 +538,7 @@ export function AppShell() {
             data-studio-shell
           >
             {studioAccess && getStudioPrimaryRoute(pathname) ? (
-              <StudioNav current={navigationLocation} global />
+              <StudioNav current={navigationLocation} />
             ) : null}
             <RouteContent>
               <RouteTransition
@@ -586,7 +586,7 @@ export function AppShell() {
               data-studio-shell
             >
               {studioAccess && getStudioPrimaryRoute(pathname) ? (
-                <StudioNav current={navigationLocation} global />
+                <StudioNav current={navigationLocation} />
               ) : null}
               <RouteContent>
                 <RouteTransition
