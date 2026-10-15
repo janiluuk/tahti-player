@@ -37,7 +37,7 @@ export function FanChatRoom({
       if (!cancelled && history.length > 0) {
         setMessages((live) => [
           ...history.map((m, i) => ({
-            id: `history-${m.ts}-${i}`,
+            id: m.id ?? `history-${m.ts}-${i}`,
             handle: m.handle,
             text: m.text,
           })),
@@ -84,7 +84,14 @@ export function FanChatRoom({
                 connect?: unknown;
                 push?: {
                   channel?: string;
-                  pub?: { data?: { handle?: string; text?: string } };
+                  pub?: {
+                    data?: {
+                      handle?: string;
+                      text?: string;
+                      messageId?: string;
+                      removedMessageId?: string;
+                    };
+                  };
                 };
               };
               if (msg.id != null && publishIdsRef.current.delete(msg.id)) {
@@ -110,12 +117,17 @@ export function FanChatRoom({
                 setConnected(true);
               }
               const data = msg.push?.pub?.data;
+              const removedId = data?.removedMessageId;
+              if (msg.push?.channel === channel && removedId) {
+                setMessages((prev) => prev.filter((m) => m.id !== removedId));
+                continue;
+              }
               if (msg.push?.channel === channel && data?.text) {
                 setMessages((prev) =>
                   [
                     ...prev,
                     {
-                      id: `${Date.now()}-${Math.random()}`,
+                      id: data.messageId ?? `${Date.now()}-${Math.random()}`,
                       handle: data.handle ?? 'fan',
                       text: data.text!,
                     },

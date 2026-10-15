@@ -323,6 +323,8 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
                     channelRole?: 'owner' | 'moderator' | null;
                     countryCode?: string | null;
                     system?: boolean;
+                    messageId?: string;
+                    removedMessageId?: string;
                   };
                 };
               };
@@ -349,13 +351,18 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
                 setMode('live');
               }
             }
+            const removedId = data.push?.pub?.data?.removedMessageId;
+            if (removedId) {
+              setMessages((prev) => prev.filter((m) => m.id !== removedId));
+              continue;
+            }
             if (data.push?.pub?.data?.text) {
               const msg = data.push.pub.data;
               setMessages((prev) =>
                 [
                   ...prev,
                   {
-                    id: `${Date.now()}-${Math.random()}`,
+                    id: msg.messageId ?? `${Date.now()}-${Math.random()}`,
                     handle: msg.handle ?? 'anon',
                     text: msg.text!,
                     ts: msg.ts ?? Date.now(),

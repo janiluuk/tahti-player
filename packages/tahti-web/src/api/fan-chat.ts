@@ -29,13 +29,18 @@ export async function requestFanChatToken(
 /** Recent fan-room messages, oldest first (`GET /api/chat/:slug/fan-history`). */
 export async function fetchFanChatHistory(
   slug: string,
-): Promise<Array<{ handle: string; text: string; ts: number }>> {
+): Promise<Array<{ id?: string; handle: string; text: string; ts: number }>> {
   if (isForceMock()) {
     return mockFixture('fanChatHistory', [], slug);
   }
   try {
     const data = await getJson<{
-      messages?: Array<{ handle: string; text: string; ts: number }>;
+      messages?: Array<{
+        id?: string;
+        handle: string;
+        text: string;
+        ts: number;
+      }>;
     }>(`/api/chat/${encodeURIComponent(slug)}/fan-history`);
     return Array.isArray(data.messages) ? data.messages : [];
   } catch {
