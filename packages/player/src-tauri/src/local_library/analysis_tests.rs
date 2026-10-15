@@ -384,6 +384,28 @@ async fn smart_results_are_cached_until_the_library_changes() {
 }
 
 #[tokio::test]
+async fn cached_smart_results_drop_tracks_that_age_out_of_a_last_days_window() {
+    let (pool, _dir) = library().await;
+    let house = id_of(&pool, "house.wav").await;
+    sqlx::query("UPDATE library_tracks SET added_at = datetime('now', '-30 days', '+1 seconds')").execute(&pool).await.unwrap();
+    sqlx::query("UPDATE library_tracks SET added_at = datetime('now', '-30 days', '+1 hours') WHERE id = ?").bind(&house).execute(&pool).await.unwrap();
+    let cache = SmartCache::default();
+    let recent = definition(vec![rule(RuleField::Added, RuleOp::InLastDays, "30", "")], true);
+    let older = definition(vec![rule(RuleField::Added, RuleOp::NotInLastDays, "30", "")], true);
+    let all = cache.ids(&pool, &recent).await.unwrap().len();
+    assert!(all > 1);
+    assert!(cache.ids(&pool, &older).await.unwrap().is_empty());
+    let version = super::changes::change_version(&pool).await.unwrap();
+
+    tokio::time::sleep(std::time::Duration::from_millis(2100)).await;
+
+    assert_eq!(super::changes::change_version(&pool).await.unwrap(), version, "nothing was written");
+    assert_eq!(cache.ids(&pool, &recent).await.unwrap(), vec![house.clone()], "the others aged out");
+    assert_eq!(cache.page(&pool, &recent, 0).await.unwrap().total, 1);
+    assert_eq!(cache.ids(&pool, &older).await.unwrap().len(), all - 1, "and joined not-within");
+}
+
+#[tokio::test]
 async fn invalid_smart_rules_are_rejected_when_saved() {
     let (pool, _dir) = library().await;
     for bad in [
