@@ -17,6 +17,15 @@ const DEFAULT_PROPS = {
 };
 
 describe('ThemeStoreItem', () => {
+  it('names the theme with the heading level it is given', () => {
+    const { getByRole, rerender } = render(
+      <ThemeStoreItem {...DEFAULT_PROPS} />,
+    );
+    expect(getByRole('heading', { level: 3, name: 'Gruvbox' })).toBeTruthy();
+    rerender(<ThemeStoreItem {...DEFAULT_PROPS} headingLevel={2} />);
+    expect(getByRole('heading', { level: 2, name: 'Gruvbox' })).toBeTruthy();
+  });
+
   it('(Snapshot) renders with all props', () => {
     const { asFragment } = render(<ThemeStoreItem {...DEFAULT_PROPS} />);
     expect(asFragment()).toMatchSnapshot();

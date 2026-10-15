@@ -140,6 +140,7 @@ export function AdminTopListsView() {
                 <StudioPanel key={bucket.bucket}>
                   <TopList
                     title={rankingBucketTitle(bucket.bucket)}
+                    headingLevel={2}
                     formatValue={formatListenCount}
                     entries={bucket.entries.map((entry) => ({
                       id: entry.soundId,

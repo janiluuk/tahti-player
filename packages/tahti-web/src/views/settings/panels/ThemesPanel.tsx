@@ -168,6 +168,7 @@ export function ThemesPanel() {
                       <ThemeStoreItem
                         key={theme.id}
                         name={theme.name}
+                        headingLevel={2}
                         description="Built-in Nuclear theme"
                         author="Tahti"
                         palette={theme.palette}
@@ -203,9 +204,9 @@ export function ThemesPanel() {
 
                 {customEntries.length > 0 && (
                   <div className="flex flex-col gap-1.5">
-                    <h3 className="text-foreground-secondary text-xs uppercase">
+                    <h2 className="text-foreground-secondary text-xs uppercase">
                       Your imported themes
-                    </h3>
+                    </h2>
                     <div className="flex flex-col gap-1.5">
                       {customEntries.map(([id, theme]) => {
                         const active = id === themeId;
