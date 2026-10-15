@@ -114,6 +114,11 @@ export type TahtiNativeLibrary = {
   onRootsChanged?: (
     listener: (result: NativeRootScanResult) => void,
   ) => () => void;
+  /**
+   * Subscribes to any change of the catalog's tracks or tags (at most once a
+   * second); returns an unsubscribe function. Missing in older desktop builds.
+   */
+  onLibraryChanged?: (listener: (version: number) => void) => () => void;
   /** Subscribes to files/folders dropped onto the app window; returns an unsubscribe function. */
   onFilesDropped: (listener: (paths: string[]) => void) => () => void;
   /** Downloads a provider set into the library. Missing in older desktop builds. */

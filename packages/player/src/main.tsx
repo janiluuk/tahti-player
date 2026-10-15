@@ -547,6 +547,23 @@ const baseNativeLibrary: TahtiNativeLibrary = {
       unlisten?.();
     };
   },
+  onLibraryChanged(listener) {
+    let unlisten: (() => void) | undefined;
+    let disposed = false;
+    void listen<{ version: number }>('library://changed', (event) =>
+      listener(event.payload.version),
+    ).then((dispose) => {
+      if (disposed) {
+        dispose();
+      } else {
+        unlisten = dispose;
+      }
+    });
+    return () => {
+      disposed = true;
+      unlisten?.();
+    };
+  },
   onFilesDropped(listener) {
     let unlisten: (() => void) | undefined;
     let disposed = false;
