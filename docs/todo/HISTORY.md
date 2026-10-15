@@ -4613,3 +4613,7 @@ Asked for as "do the sweep leftovers and make pr's". Two items had been listed a
 - **Default theme contrast (#771, my call):** Nuclear Green's teal `#338c77` → `#3a9a83`, `primary-foreground` light → dark `#0c1915`, `Card` subtitles stop fading and `TopList` values use the normal text colour. axe contrast nodes on ten main pages 54 → 1 (the profile handle, fixed in #761).
 - **Desktop player check:** closed without code. The desktop app has mounted tahti-web since 2026-09-01, so the changed player snapshots are Nuclear's old views, which no longer run; the mock-app checks cover what the desktop shows.
 - **Checks:** per PR the ui, player and tahti-web suites, the touched Storybook plays and mock-app measurements; tahti-org `src/routes/admin` (217) on a fresh database. Not tried on a phone, in the desktop app, or on the other themes.
+
+## 2026-10-15 - Library buttons everywhere in tahti-web (todo closed)
+
+`library-buttons-migration.md` started 2026-10-08 with 70 raw `<button>` elements in tahti-web. The listener pages (#563), a `plain` Button variant and 55 more (#582-#586, #594), and `ButtonLink` for buttons nested in links (#593) left two items. The three tooltip-wrapped links in `AudioTab.tsx` and `PurchaseAccessSection.tsx` had already become `ButtonLink`s, and #780 made the phone drawer's backdrop a library `Button` hidden from screen readers and Tab. No raw `<button>` remains in `packages/tahti-web/src` outside tests and stories.
