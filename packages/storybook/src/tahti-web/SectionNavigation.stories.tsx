@@ -33,12 +33,12 @@ export const StudioDeepRoute: Story = {
     withMockAuth(MOCK_USERS.artist),
     withTahtiRouter('/studio/channel'),
   ],
-  render: () => frame(<StudioNav current="/studio/channel" global />),
+  render: () => frame(<StudioNav current="/studio/channel" />),
 };
 
 export const StudioLibraryRoute: Story = {
   decorators: [withMockAuth(MOCK_USERS.artist), withTahtiRouter('/library')],
-  render: () => frame(<StudioNav current="/library" global />),
+  render: () => frame(<StudioNav current="/library" />),
 };
 
 export const AdminModerationRoute: Story = {
@@ -61,5 +61,5 @@ export const MobileOverflow: Story = {
     withTahtiRouter('/studio/go-live'),
   ],
   parameters: { viewport: { defaultViewport: 'mobile1' } },
-  render: () => frame(<StudioNav current="/studio/go-live" global />),
+  render: () => frame(<StudioNav current="/studio/go-live" />),
 };
