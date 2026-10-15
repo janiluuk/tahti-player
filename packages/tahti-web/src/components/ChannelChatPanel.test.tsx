@@ -205,6 +205,38 @@ describe('ChannelChatPanel', () => {
     );
   });
 
+  it('drops a line from the open chat when a moderator removes it', async () => {
+    vi.mocked(fetchChatHistory).mockResolvedValue({
+      data: [{ id: 'msg-old', handle: 'early', text: 'from history', ts: 1 }],
+      meta: { source: 'api' },
+    });
+    vi.mocked(requestChatToken).mockResolvedValue({
+      data: { token: 'publish-token', handle: 'nightowl' },
+      meta: { source: 'api' },
+    });
+    await renderPanel();
+    await join();
+    const ws = FakeSocket.last!;
+    const push = (data: Record<string, unknown>) =>
+      act(() => {
+        ws.onmessage?.({ data: JSON.stringify({ push: { pub: { data } } }) });
+      });
+    act(() => {
+      ws.onopen?.();
+      ws.onmessage?.({ data: JSON.stringify({ id: 1, connect: {} }) });
+    });
+    push({ handle: 'troll', text: 'something rude', messageId: 'msg-live' });
+    push({ handle: 'friend', text: 'something kind', messageId: 'msg-kind' });
+    expect(screen.getByText('something rude')).toBeTruthy();
+    expect(screen.getByText('from history')).toBeTruthy();
+
+    push({ removedMessageId: 'msg-live' });
+    push({ removedMessageId: 'msg-old' });
+    expect(screen.queryByText('something rude')).toBe(null);
+    expect(screen.queryByText('from history')).toBe(null);
+    expect(screen.getByText('something kind')).toBeTruthy();
+  });
+
   it('says a post was not sent when the server refuses it without a known code', async () => {
     vi.mocked(requestChatToken).mockResolvedValue({
       data: { token: 'publish-token', handle: 'nightowl' },

@@ -603,12 +603,12 @@ export async function fetchChatHistory(slug: string): Promise<{
     };
   }
   try {
-    const raw = await getJson<{ messages: Array<Omit<ChatMessage, 'id'>> }>(
-      `/api/chat/${encodeURIComponent(slug)}/history`,
-    );
+    const raw = await getJson<{
+      messages: Array<Omit<ChatMessage, 'id'> & { id?: string }>;
+    }>(`/api/chat/${encodeURIComponent(slug)}/history`);
     const data = (raw.messages ?? []).map((m, i) => ({
       ...m,
-      id: `history-${m.ts}-${i}`,
+      id: m.id ?? `history-${m.ts}-${i}`,
     }));
     return { data, meta: { source: 'api' } };
   } catch (err) {
