@@ -115,9 +115,25 @@ export function fieldKind(field: NativeRuleField): FieldKind {
   return fieldOf(field).kind;
 }
 
+/** The value a picker-only field starts with, so the rule is valid as shown. */
+function defaultValue(field: NativeRuleField): string {
+  if (field === 'rating') {
+    return '4';
+  }
+  if (field === 'key') {
+    return 'C';
+  }
+  return '';
+}
+
 /** A rule with sensible defaults for `field`. */
 export function newRule(field: NativeRuleField = 'genre'): NativeSmartRule {
-  return { field, op: opsFor(field)[0]!.id, value: '', value2: '' };
+  return {
+    field,
+    op: opsFor(field)[0]!.id,
+    value: defaultValue(field),
+    value2: '',
+  };
 }
 
 /** Keeps a rule valid when its field changes (operators differ per field). */
@@ -126,10 +142,14 @@ export function withField(
   field: NativeRuleField,
 ): NativeSmartRule {
   const allowed = opsFor(field).map((op) => op.id);
+  if (rule.field === field) {
+    return rule;
+  }
   return {
-    ...rule,
     field,
     op: allowed.includes(rule.op) ? rule.op : allowed[0]!,
+    value: defaultValue(field),
+    value2: '',
   };
 }
 
